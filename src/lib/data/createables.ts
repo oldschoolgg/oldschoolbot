@@ -1430,7 +1430,7 @@ const Createables: Createable[] = [
 	{
 		name: 'Pineapple ring',
 		inputItems: resolveNameBank({
-			'Pineapple': 1
+			Pineapple: 1
 		}),
 		outputItems: resolveNameBank({
 			'Pineapple ring': 4
