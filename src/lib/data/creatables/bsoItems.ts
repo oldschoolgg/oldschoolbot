@@ -657,6 +657,18 @@ const bsoItems: Createable[] = [
 		requiredSkills: {
 			smithing: 105
 		}
+	},
+	{
+		name: 'TzKal-Zuk cape',
+		inputItems: {
+			[itemID("TzKal-Zuk's skin")]: 1,
+			[itemID('Onyx')]: 10,
+			[itemID('Infernal cape')]: 1,
+			[itemID('Abyssal cape')]: 1
+		},
+		outputItems: {
+			[itemID('TzKal-Zuk cape')]: 1
+		}
 	}
 ];
 

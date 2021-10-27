@@ -13,7 +13,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
-import { numberOfGorajanOutfitsEquipped } from '../../tasks/minions/dungeoneeringActivity';
+import { gorajanShardChance, numberOfGorajanOutfitsEquipped } from '../../tasks/minions/dungeoneeringActivity';
 
 export type Floor = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
@@ -190,12 +190,15 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		return msg.channel.send(
-			`<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${msg.author.settings
-				.get(UserSettings.DungeoneeringTokens)
-				.toLocaleString()}
-**Max floor:** ${maxFloorUserCanDo(msg.author)}`
-		);
+		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${msg.author.settings
+			.get(UserSettings.DungeoneeringTokens)
+			.toLocaleString()}
+**Max floor:** ${maxFloorUserCanDo(msg.author)}`;
+		const { boosts } = gorajanShardChance(msg.author);
+		if (boosts.length > 0) {
+			str += `\n**Gorajan shard boosts:** ${boosts.join(', ')}`;
+		}
+		return msg.channel.send(str);
 	}
 
 	async buy(msg: KlasaMessage, [input = '']: [string]) {

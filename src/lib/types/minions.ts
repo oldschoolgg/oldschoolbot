@@ -8,6 +8,7 @@ import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
 import { Monkey } from '../monkeyRumble';
 import { BossUser } from '../structures/Boss';
+import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 
 export interface ActivityTaskOptions {
@@ -377,6 +378,11 @@ export interface MonkeyRumbleOptions extends MinigameActivityTaskOptions {
 	monkeys: Monkey[];
 }
 
+export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
+	favour: KourendFavour;
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
@@ -399,4 +405,5 @@ export type ActivityTaskData =
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
-	| VolcanicMineActivityTaskOptions;
+	| VolcanicMineActivityTaskOptions
+	| KourendFavourActivityTaskOptions;

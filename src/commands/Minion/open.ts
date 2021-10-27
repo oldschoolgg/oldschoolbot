@@ -40,7 +40,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 1,
 			aliases: ['clue'],
-			usage: '[quantity:int] [name:...string]',
+			usage: '[quantity:int{1,1000000}] [name:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
@@ -186,7 +186,7 @@ export default class extends BotCommand {
 
 	async osjsOpenablesOpen(msg: KlasaMessage, quantity: number, osjsOpenable: Openable) {
 		if (osjsOpenable.name === 'Seed pack') {
-			return this.client.commands.get('sp')!.run(msg, []);
+			return this.client.commands.get('sp')!.run(msg, [quantity]);
 		}
 
 		if (msg.author.bank().amount(osjsOpenable.id) < quantity) {
@@ -248,10 +248,7 @@ export default class extends BotCommand {
 		let smokeyBonus = 0;
 		if (botOpenable.name.toLowerCase().includes('mystery')) {
 			// Force names to TMBs/UMBs
-			if (
-				['Tradeables Mystery box', 'Untradeables Mystery box'].includes(botOpenable.name) &&
-				!Boolean(msg.flagArgs.id)
-			) {
+			if (botOpenable.name.toLowerCase().includes('mystery') && !Boolean(msg.flagArgs.id)) {
 				msg.flagArgs.names = 'yes';
 			}
 			if (hasSmokey) {

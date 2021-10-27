@@ -58,9 +58,14 @@ export async function handleTripFinish(
 	if (
 		loot &&
 		!loot[itemID('Gregoyle')] &&
-		![Activity.GroupMonsterKilling, Activity.KingGoldemar, Activity.Ignecarus, Activity.Inferno].includes(
-			data.type
-		) &&
+		![
+			Activity.GroupMonsterKilling,
+			Activity.KingGoldemar,
+			Activity.Ignecarus,
+			Activity.Inferno,
+			Activity.Alching,
+			Activity.Agility
+		].includes(data.type) &&
 		data.duration > Time.Minute * 20 &&
 		roll(15)
 	) {
@@ -246,6 +251,7 @@ export async function handleTripFinish(
 	collectors.set(user.id, collector);
 
 	collector.on('collect', async (mes: KlasaMessage) => {
+		if (client.settings.get(ClientSettings.UserBlacklist).includes(mes.author.id)) return;
 		if (user.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
 			collector.stop();
 			collectors.delete(user.id);

@@ -42,7 +42,7 @@ export const bossEvents: BossEvent[] = [
 			for (const i of lootElligible) {
 				userLoot[i.user.id] = new Bank();
 				userLoot[i.user.id].add(pumpkinHeadNonUniqueTable.roll(5));
-				if (roll(10)) {
+				if (roll(25)) {
 					userLoot[i.user.id].add("Choc'rock");
 				}
 				await i.user.incrementMonsterScore(PUMPKINHEAD_ID, 1);
@@ -66,9 +66,32 @@ export const bossEvents: BossEvent[] = [
 			}
 
 			for (const recip of uniqueItemRecipients) {
+				const cl = recip.user.cl();
 				const items = pumpkinHeadUniqueTable.roll();
+
+				let rerolled = false;
+
+				// If no pet, and they already have 2 of this item in CL
+				if (items.length === 1 && cl.amount(items.items()[0][0].id) >= 2) {
+					// Roll them new loot
+					const newRoll = pumpkinHeadUniqueTable.roll();
+					// If the new loot has no pet, and they also have 2 of this item in CL,
+					// they get nothing, and someone who didn't originally get a drop, now gets one,
+					// however, the new recipient is subject to the same rerolling happening to them.
+					if (newRoll.length === 1 && cl.amount(newRoll.items()[0][0].id) >= 2) {
+						const newRecipient = randArrItem(lootElligible.filter(u => !uniqueItemRecipients.includes(u)));
+						if (newRecipient) {
+							uniqueItemRecipients.push(newRecipient);
+							uniqueLootStr.push(`${recip.user}'s loot got rerolled to ${newRecipient.user}!`);
+						}
+						continue;
+					}
+
+					items.bank = newRoll.bank;
+					rerolled = true;
+				}
 				const hasPet = items.has('Mini Pumpkinhead');
-				let str = `${recip.user} got ${items}`;
+				let str = `${rerolled ? '♻️ ' : ''}${recip.user} got ${items}`;
 				if (hasPet) str = `**${str}**`;
 				if (secondChancePeople.includes(recip)) str = `<:Haunted_amulet:898407574527942677>${str}`;
 				uniqueLootStr.push(str);
@@ -149,7 +172,7 @@ ${specialLootRecipient.user.username} received ${specialLoot}.
 			quantity: 1,
 			allowMoreThan1Solo: false,
 			allowMoreThan1Group: false,
-			automaticStartTime: production ? Time.Minute * 10 : Time.Minute,
+			automaticStartTime: production ? Time.Minute * 20 : Time.Minute,
 			maxSize: 500
 		}
 	}

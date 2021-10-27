@@ -1,3 +1,4 @@
+import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -8,6 +9,7 @@ import { armorAndItemPacks } from './creatables/armorPacks';
 import { BsoCreateables } from './creatables/bsoItems';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
+import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 
@@ -22,6 +24,7 @@ export interface Createable {
 	GPCost?: number;
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
+	requiredFavour?: Favours;
 }
 
 const revWeapons: Createable[] = [
@@ -984,74 +987,6 @@ const Createables: Createable[] = [
 		requiredSkills: { cooking: 85, fishing: 75 }
 	},
 	{
-		name: 'Graceful',
-		inputItems: {
-			[itemID('Mark of grace')]: 260
-		},
-		outputItems: {
-			[itemID('Graceful hood')]: 1,
-			[itemID('Graceful top')]: 1,
-			[itemID('Graceful legs')]: 1,
-			[itemID('Graceful gloves')]: 1,
-			[itemID('Graceful boots')]: 1,
-			[itemID('Graceful cape')]: 1
-		}
-	},
-	{
-		name: 'Graceful hood',
-		inputItems: {
-			[itemID('Mark of grace')]: 35
-		},
-		outputItems: {
-			[itemID('Graceful hood')]: 1
-		}
-	},
-	{
-		name: 'Graceful top',
-		inputItems: {
-			[itemID('Mark of grace')]: 55
-		},
-		outputItems: {
-			[itemID('Graceful top')]: 1
-		}
-	},
-	{
-		name: 'Graceful legs',
-		inputItems: {
-			[itemID('Mark of grace')]: 60
-		},
-		outputItems: {
-			[itemID('Graceful legs')]: 1
-		}
-	},
-	{
-		name: 'Graceful gloves',
-		inputItems: {
-			[itemID('Mark of grace')]: 30
-		},
-		outputItems: {
-			[itemID('Graceful gloves')]: 1
-		}
-	},
-	{
-		name: 'Graceful boots',
-		inputItems: {
-			[itemID('Mark of grace')]: 40
-		},
-		outputItems: {
-			[itemID('Graceful boots')]: 1
-		}
-	},
-	{
-		name: 'Graceful cape',
-		inputItems: {
-			[itemID('Mark of grace')]: 40
-		},
-		outputItems: {
-			[itemID('Graceful cape')]: 1
-		}
-	},
-	{
 		name: 'Hell cat ears',
 		inputItems: {
 			[itemID('Cat ears')]: 1,
@@ -1734,7 +1669,8 @@ const Createables: Createable[] = [
 	...dragonFireShieldCreatables,
 	...revWeapons,
 	...armorAndItemPacks,
-	...BsoCreateables
+	...BsoCreateables,
+	...gracefulOutfitCreatables
 ];
 
 export default Createables;

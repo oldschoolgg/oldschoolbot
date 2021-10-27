@@ -60,8 +60,11 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 }
 
 export function hasGracefulEquipped(setup: Gear) {
-	return setup.hasEquipped(
-		['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
-		true
+	return (
+		setup.hasEquipped('Agility master cape') ||
+		setup.hasEquipped(
+			['Graceful hood', 'Graceful top', 'Graceful legs', 'Graceful boots', 'Graceful gloves', 'Graceful cape'],
+			true
+		)
 	);
 }

@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { Activity, Emoji } from '../../lib/constants';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -54,7 +55,13 @@ export default class extends BotCommand {
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Farming) < 34) {
-			throw `${msg.author.minionName} needs 34 Farming to use the Tithe Farm!`;
+			return msg.channel.send(`${msg.author.minionName} needs 34 Farming to use the Tithe Farm!`);
+		}
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 100);
+		if (!hasFavour) {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to use the Tithe Farm!`
+			);
 		}
 
 		const [duration, boostStr] = this.determineDuration(msg.author);

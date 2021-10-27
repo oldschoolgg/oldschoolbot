@@ -22,13 +22,20 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.roll().item);
 		}
+		let boosts = [];
+		if (user.usingPet('Flappy')) {
+			boosts.push('2x tickets for playing with Flappy.');
+			loot.multiply(2);
+		}
 		await user.addItemsToBank(loot, true);
+
+		const boostMsg = boosts.length ? `\n${boosts.join('\n')}` : '';
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
-			`<@${userID}>, ${minionName} finished ${quantity}x Castle Wars games and received ${loot}.`,
+			`<@${userID}>, ${minionName} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
 			res => {
 				user.log('continued castle wars');
 				return (this.client.commands.get('castlewars') as unknown as CastleWarsCommand)!.play(

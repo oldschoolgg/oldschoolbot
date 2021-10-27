@@ -16,6 +16,15 @@ export function isCustomItem(itemID: number) {
 	return customItems.includes(itemID);
 }
 
+interface CustomItemData {
+	isSuperUntradeable: boolean;
+}
+declare module 'oldschooljs/dist/meta/types' {
+	interface Item {
+		customItemData?: CustomItemData;
+	}
+}
+
 export const hasSet = new Set();
 
 function setCustomItem(id: number, name: string, baseItem: string, newItemData?: Partial<Item>, price = 0) {
@@ -1933,7 +1942,7 @@ setCustomItem(48_321, 'Head of TzKal Zuk', 'Coal', {}, 10_000_000);
 setCustomItem(
 	48_322,
 	'TzKal cape',
-	'Coal',
+	'Abyssal cape',
 	{
 		equipment: {
 			attack_stab: 0,
@@ -1956,6 +1965,9 @@ setCustomItem(
 			requirements: {
 				defence: 100
 			}
+		},
+		customItemData: {
+			isSuperUntradeable: true
 		}
 	},
 	10_000_000
@@ -1992,6 +2004,8 @@ setCustomItem(
 	},
 	10_000_000
 );
+setCustomItem(48_324, "TzKal-Zuk's skin", 'Coal', {}, 10_000_000);
+setCustomItem(48_325, 'Jal-MejJak', 'Herbi', {}, 10_000_000);
 
 /**
  * Misc Items

@@ -956,7 +956,6 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Shayzien Armour': {
-				enabled: false,
 				items: shayzienArmourCL
 			},
 			'Shooting Stars': { enabled: false, items: resolveItems(['Celestial ring (uncharged)', 'Star fragment']) },

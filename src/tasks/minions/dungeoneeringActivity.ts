@@ -13,15 +13,24 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 
 export function gorajanShardChance(user: KlasaUser) {
-	let base = user.hasItemEquippedAnywhere('Dungeoneering master cape')
-		? 500
-		: user.skillLevel(SkillsEnum.Dungeoneering) >= 99
-		? 1200
-		: 2000;
-	if (user.hasItemEquippedAnywhere('Ring of luck')) {
-		base = reduceNumByPercent(base, 5);
+	let goraShardBoosts = [];
+	let baseRate = 2000;
+	if (user.hasItemEquippedAnywhere('Dungeoneering master cape')) {
+		baseRate /= 2;
+		goraShardBoosts.push('2x for Dung. mastery');
+	} else if (user.skillLevel(SkillsEnum.Dungeoneering) >= 99) {
+		baseRate = reduceNumByPercent(baseRate, 30);
+		goraShardBoosts.push('30% for 99+ Dungeoneering');
 	}
-	return base;
+
+	if (user.hasItemEquippedAnywhere('Ring of luck')) {
+		baseRate = reduceNumByPercent(baseRate, 5);
+		goraShardBoosts.push('5% for Ring of Luck');
+	}
+	return {
+		chance: baseRate,
+		boosts: goraShardBoosts
+	};
 }
 
 export const gorajanWarriorOutfit = resolveItems([
@@ -117,7 +126,7 @@ export default class extends Task {
 				str += ` ${bonusXP.toLocaleString()} Bonus XP`;
 			}
 
-			if (floor >= 5 && roll(Math.floor(gorajanShardChance(user) / minutes))) {
+			if (floor >= 5 && roll(Math.floor(gorajanShardChance(user).chance / minutes))) {
 				str += ' **1x Gorajan shards**';
 				let quantity = 1;
 
