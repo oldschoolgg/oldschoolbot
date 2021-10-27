@@ -154,6 +154,26 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Jug of bad wine')
 	},
 	{
+		level: 35,
+		xp: 0,
+		id: itemID('Pizza base'),
+		name: 'Pizza base',
+		inputCookables: { [itemID('Pot of flour')]: 1, [itemID('Jug of water')]: 1 },
+		stopBurnAt: 1,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt pizza')
+	},
+	{
+		level: 35,
+		xp: 143,
+		id: itemID('Plain Pizza'),
+		name: 'Plain pizza',
+		inputCookables: { [itemID('Pizza base')]: 1, [itemID('Cheese')]: 1, [itemID('Tomato')]: 1 },
+		stopBurnAt: 68,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt pizza')
+	},
+	{
 		level: 40,
 		xp: 120,
 		id: itemID('Lobster'),
@@ -184,6 +204,36 @@ export const Cookables: Cookable[] = [
 		burntCookable: itemID('Burnt swordfish')
 	},
 	{
+		level: 45,
+		xp: 26,
+		id: itemID('Meat Pizza'),
+		name: 'Meat pizza',
+		inputCookables: { [itemID('Plain pizza')]: 1, [itemID('Cooked meat')]: 1 },
+		stopBurnAt: 1,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt pizza')
+	},
+	{
+		level: 45,
+		xp: 26,
+		id: itemID('Meat Pizza'),
+		name: 'Chicken pizza',
+		inputCookables: { [itemID('Plain pizza')]: 1, [itemID('Cooked Chicken')]: 1 },
+		stopBurnAt: 1,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt pizza')
+	},
+	{
+		level: 65,
+		xp: 39,
+		id: itemID('Anchovy Pizza'),
+		name: 'Anchovy pizza',
+		inputCookables: { [itemID('Plain pizza')]: 1, [itemID('Anchovies')]: 1 },
+		stopBurnAt: 1,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt pizza')
+	},
+	{
 		level: 62,
 		xp: 150,
 		id: itemID('Monkfish'),
@@ -202,6 +252,16 @@ export const Cookables: Cookable[] = [
 		stopBurnAt: 125,
 		stopBurnAtCG: 125,
 		burntCookable: itemID('Jug of bad wine')
+	},
+	{
+		level: 65,
+		xp: 45,
+		id: itemID('Pineapple Pizza'),
+		name: 'Pineapple pizza',
+		inputCookables: { [itemID('Plain pizza')]: 1, [itemID('Pineapple ring')]: 1 },
+		stopBurnAt: 1,
+		stopBurnAtCG: 1,
+		burntCookable: itemID('Burnt pizza')
 	},
 	{
 		level: 80,

@@ -601,7 +601,24 @@ const Buyables: Buyable[] = [
 		aliases: ['jug of water', 'jugs of water'],
 		gpCost: 100
 	},
-
+	{
+		name: 'Cheese',
+		aliases: ['cheese'],
+		gpCost: 100,
+		ironmanPrice: 5
+	},
+	{
+		name: 'Tomato',
+		aliases: ['tomato'],
+		gpCost: 100,
+		ironmanPrice: 5
+	},
+	{
+		name: 'Pot of flour',
+		aliases: ['pot of flour'],
+		gpCost: 250,
+		ironmanPrice: 13
+	},
 	{
 		name: 'Feather',
 		aliases: ['feather'],

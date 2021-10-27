@@ -59,6 +59,15 @@ export default class extends BotCommand {
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.6;
 		}
+		if (cookable.id === itemID('Plain pizza')) {
+				timeToCookSingleCookable /= 0.432;
+		}
+		if (cookable.id === itemID('Pineapple pizza') || cookable.id === itemID('Anchovy Pizza') || cookable.id === itemID('Meat Pizza')) {
+			timeToCookSingleCookable /= 2;
+		}
+		if (cookable.id === itemID('Pizza base')) {
+			timeToCookSingleCookable /= 1.92;
+		}
 
 		const userBank = msg.author.bank();
 		const inputCost = new Bank(cookable.inputCookables);

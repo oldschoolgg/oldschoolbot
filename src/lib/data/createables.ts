@@ -1427,6 +1427,15 @@ const Createables: Createable[] = [
 			Cabbage: 10
 		})
 	},
+	{
+		name: 'Pineapple ring',
+		inputItems: resolveNameBank({
+			'Pineapple': 1
+		}),
+		outputItems: resolveNameBank({
+			'Pineapple ring': 4
+		})
+	},
 	/* {
 		name: 'Toxic blowpipe (empty)',
 		inputItems: {
