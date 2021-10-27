@@ -63,9 +63,9 @@ export default class extends BotCommand {
 			timeToCookSingleCookable /= 0.432;
 		}
 		if (
-		cookable.id === itemID('Pineapple pizza') ||
-		cookable.id === itemID('Anchovy Pizza') || 
-		cookable.id === itemID('Meat Pizza')
+			cookable.id === itemID('Pineapple pizza') ||
+			cookable.id === itemID('Anchovy Pizza') || 
+			cookable.id === itemID('Meat Pizza')
 		) {
 			timeToCookSingleCookable /= 2;
 		}
