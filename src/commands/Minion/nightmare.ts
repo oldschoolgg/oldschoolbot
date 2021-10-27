@@ -1,8 +1,8 @@
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Activity, BitField, Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -59,7 +59,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number) {
+	checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number, isPhosani: boolean) {
 		// Check if every user has the requirements for this monster.
 		for (const user of users) {
 			if (!user.hasMinion) {
@@ -82,17 +82,53 @@ export default class extends BotCommand {
 					users.length === 1 ? 'start the mass' : 'enter the mass'
 				}.`;
 			}
+
+			const cost = this.perUserCost(user, isPhosani);
+			if (!user.owns(cost)) {
+				throw `${user.username} doesn't own ${cost}`;
+			}
+
+			if (isPhosani) {
+				if (
+					!user.hasSkillReqs({
+						prayer: 70,
+						attack: 90,
+						strength: 90,
+						defence: 90,
+						magic: 90,
+						hitpoints: 90
+					})[0]
+				) {
+					throw `${user.username} doesn't have 70 Prayer`;
+				}
+				if (user.getKC(NightmareMonster.id) < 50) {
+					throw "You need to have killed The Nightmare atleast 50 times before you can face the Phosani's Nightmare.";
+				}
+			}
 		}
+	}
+
+	perUserCost(_user: KlasaUser, isPhosani: boolean) {
+		const cost = new Bank();
+		if (isPhosani) {
+			cost.add('Super combat(4)')
+				.add('Sanfew serum(4)')
+				.add('Super restore(4)')
+				.add('Fire rune', 10 * 100)
+				.add('Air rune', 7 * 100)
+				.add('Wrath rune', 1 * 100);
+		}
+		return cost;
 	}
 
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [type, maximumSizeForParty]: ['mass' | 'solo', number]) {
-		this.checkReqs([msg.author], NightmareMonster, 2);
+		const isPhosani = type === 'solo' && Boolean(msg.flagArgs.phosani);
+
+		this.checkReqs([msg.author], NightmareMonster, 2, isPhosani);
 
 		const maximumSize = 10;
-
-		const isPhosani = type === 'solo' && Boolean(msg.flagArgs.phosani);
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
@@ -140,13 +176,22 @@ export default class extends BotCommand {
 		};
 
 		const users = type === 'mass' ? await msg.makePartyAwaiter(partyOptions) : [msg.author];
+		const soloBoosts: string[] = [];
 
 		let effectiveTime = NightmareMonster.timeToFinish;
 		for (const user of users) {
 			const [data] = getNightmareGearStats(
 				user,
-				users.map(u => u.id)
+				users.map(u => u.id),
+				isPhosani
 			);
+
+			if (users.length === 1) {
+				if (user.bitfield.includes(BitField.HasSlepeyTablet)) {
+					effectiveTime = reduceNumByPercent(effectiveTime, 5);
+					soloBoosts.push('15% for Slepey tablet');
+				}
+			}
 
 			// Special inquisitor outfit damage boost
 			const meleeGear = user.getGear('melee');
@@ -186,6 +231,7 @@ export default class extends BotCommand {
 			} else {
 				effectiveTime *= 0.96;
 			}
+			effectiveTime = reduceNumByPercent(effectiveTime, 40);
 		}
 
 		let [quantity, duration, perKillTime] = await calcDurQty(
@@ -195,24 +241,28 @@ export default class extends BotCommand {
 			Time.Minute * 5,
 			Time.Minute * 30
 		);
-		this.checkReqs(users, NightmareMonster, quantity);
+		this.checkReqs(users, NightmareMonster, quantity, isPhosani);
 
 		duration = quantity * perKillTime - NightmareMonster.respawnTime!;
 
 		const totalCost = new Bank();
-		if (NightmareMonster.healAmountNeeded) {
-			for (const user of users) {
-				const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-				const { foodRemoved } = await removeFoodFromUser({
-					client: this.client,
-					user,
-					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
-					healPerAction: Math.ceil(healAmountNeeded / quantity),
-					activityName: NightmareMonster.name,
-					attackStylesUsed: ['melee']
-				});
-				totalCost.add(foodRemoved);
+		for (const user of users) {
+			const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
+			const cost = this.perUserCost(user, isPhosani);
+			if (!user.owns(cost)) {
+				return msg.channel.send(`${user} doesn't own ${cost}.`);
 			}
+			const { foodRemoved } = await removeFoodFromUser({
+				client: this.client,
+				user,
+				totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
+				healPerAction: Math.ceil(healAmountNeeded / quantity),
+				activityName: NightmareMonster.name,
+				attackStylesUsed: ['melee']
+			});
+			await user.removeItemsFromBank(cost);
+
+			totalCost.add(foodRemoved).add(cost);
 		}
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, totalCost);

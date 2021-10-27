@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { ZALCANO_ID } from '../../../constants';
+import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
@@ -287,7 +287,8 @@ export const NightmareMonster: KillableMonster = {
 		"Inquisitor's mace",
 		'Eldritch orb',
 		'Harmonised orb',
-		'Volatile orb'
+		'Volatile orb',
+		'Parasitic egg'
 	]),
 	qpRequired: 10,
 	groupKillable: true,
@@ -332,5 +333,10 @@ export const effectiveMonsters = [
 	},
 	{ name: 'TzTok-Jad', aliases: ['jad'], id: 3127, emoji: '<:Tzrekjad:324127379188613121>' },
 	{ name: 'Mimic', aliases: ['mimic'], id: 23_184, emoji: '<:Tangleroot:324127378978635778>' },
-	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' }
+	{ name: 'Hespori', aliases: ['hespori'], id: 8583, emoji: '<:Casket:365003978678730772>' },
+	{
+		name: "Phosani's Nightmare",
+		aliases: ['phosani', 'phosanis nightmare'],
+		id: PHOSANI_NIGHTMARE_ID
+	}
 ];
