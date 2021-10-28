@@ -1,4 +1,4 @@
-import { Duration } from '@sapphire/time-utilities';
+import { Duration, Time } from '@sapphire/time-utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
@@ -299,6 +299,9 @@ ${
 				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
 				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(input.id);
 
+				const premiumDate = input.settings.get(UserSettings.PremiumBalanceExpiryDate);
+				const premiumTier = input.settings.get(UserSettings.PremiumBalanceTier);
+
 				return msg.channel.send(
 					`**${input.username}**
 **Perk Tier:** ${getUsersPerkTier(input)}
@@ -311,6 +314,9 @@ ${
 						input.settings.get(UserSettings.GithubID) ?? 'None'
 					}
 **Ironman:** ${input.isIronman ? 'Yes' : 'No'}
+**Premium Balance:** ${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
+						premiumTier ? `Tier ${premiumTier}` : ''
+					}
 
 **Main Account:** ${
 						input.settings.get(UserSettings.MainAccount) !== null
@@ -514,6 +520,46 @@ LIMIT 10;
 			case 'dtp': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				addPatronLootTime(input.perkTier, this.client, input);
+				return msg.channel.send('Done.');
+			}
+			case 'addptime': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				if (!str || typeof str !== 'string' || str.length < 2 || !str.includes(',')) return;
+				const [_tier, _duration] = str.split(',');
+				const tier = parseInt(_tier);
+				if (![1, 2, 3, 4, 5].includes(tier)) return;
+				const duration = new Duration(_duration);
+				const ms = duration.offset;
+				if (ms < Time.Second || ms > Time.Year * 3) return;
+
+				const currentBalanceTier = input.settings.get(UserSettings.PremiumBalanceTier);
+				const currentBalanceTime = input.settings.get(UserSettings.PremiumBalanceExpiryDate);
+
+				if (input.perkTier > 1 && !currentBalanceTier) {
+					return msg.channel.send(`${input.username} is already a patron.`);
+				}
+				if (currentBalanceTier !== null && currentBalanceTier !== tier) {
+					return msg.channel.send(
+						`${input} already has ${formatDuration(
+							currentBalanceTime!
+						)} of Tier ${currentBalanceTier}, you can't add time for a different tier.`
+					);
+				}
+				await msg.confirm(
+					`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}?`
+				);
+				await input.settings.update(UserSettings.PremiumBalanceTier, tier);
+				if (currentBalanceTime !== null) {
+					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, currentBalanceTime + ms);
+				} else {
+					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, Date.now() + ms);
+				}
+
+				return msg.channel.send(
+					`Gave ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}. They have ${formatDuration(
+						input.settings.get(UserSettings.PremiumBalanceExpiryDate)! - Date.now()
+					)} remaning.`
+				);
 			}
 		}
 

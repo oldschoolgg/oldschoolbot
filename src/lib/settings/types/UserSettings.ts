@@ -78,6 +78,9 @@ export namespace UserSettings {
 	export const Blowpipe = T<O.Readonly<BlowpipeData>>('blowpipe');
 	export const WrongAccusations = T<number>('wrong_accusations');
 
+	export const PremiumBalanceTier = T<number | null>('premium_balance_tier');
+	export const PremiumBalanceExpiryDate = T<number | null>('premium_balance_expiry_date');
+
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
 		export const TaskStreak = T<number>('slayer.task_streak');
