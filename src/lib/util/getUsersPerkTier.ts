@@ -44,6 +44,11 @@ export default function getUsersPerkTier(
 		const date = userOrBitfield.settings.get(UserSettings.PremiumBalanceExpiryDate);
 		if (date && Date.now() < date) {
 			return userOrBitfield.settings.get(UserSettings.PremiumBalanceTier)! + 1;
+		} else if (date && Date.now() > date) {
+			userOrBitfield.settings.update([
+				[UserSettings.PremiumBalanceExpiryDate, null],
+				[UserSettings.PremiumBalanceTier, null]
+			]);
 		}
 	}
 
