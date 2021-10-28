@@ -40,6 +40,13 @@ export default function getUsersPerkTier(
 	const bitfield =
 		userOrBitfield instanceof User ? userOrBitfield.settings.get(UserSettings.BitField) : userOrBitfield;
 
+	if (userOrBitfield instanceof User && userOrBitfield.settings.get(UserSettings.PremiumBalanceTier) !== null) {
+		const date = userOrBitfield.settings.get(UserSettings.PremiumBalanceExpiryDate);
+		if (date && Date.now() < date) {
+			return userOrBitfield.settings.get(UserSettings.PremiumBalanceTier)! + 1;
+		}
+	}
+
 	if (bitfield.includes(BitField.IsPatronTier5)) {
 		return PerkTier.Six;
 	}
