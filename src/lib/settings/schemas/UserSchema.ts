@@ -52,6 +52,8 @@ Client.defaultUserSchema
 	.add('ironman_alts', 'string', { array: true, default: [] })
 	.add('main_account', 'string', { default: null })
 	.add('wrong_accusations', 'integer', { default: 0 })
+	.add('premium_balance_tier', 'integer', { default: null })
+	.add('premium_balance_expiry_date', 'integer', { default: null, maximum: Number.MAX_SAFE_INTEGER })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })
