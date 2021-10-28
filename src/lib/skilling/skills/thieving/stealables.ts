@@ -5,11 +5,12 @@ import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/a-f/CaveGoblin'
 import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/DesertBandit';
 import Farmer from 'oldschooljs/dist/simulation/monsters/low/a-f/Farmer';
 import FremennikCitizen from 'oldschooljs/dist/simulation/monsters/low/a-f/FremennikCitizen';
+import FemaleHamMember from 'oldschooljs/dist/simulation/monsters/low/a-f/FemaleHamMember'
 import Gnome from 'oldschooljs/dist/simulation/monsters/low/g-m/Gnome';
 import Guard from 'oldschooljs/dist/simulation/monsters/low/g-m/Guard';
 import Hero from 'oldschooljs/dist/simulation/monsters/low/g-m/Hero';
 import KnightOfArdougne from 'oldschooljs/dist/simulation/monsters/low/g-m/KnightOfArdougne';
-import HamMember from 'oldschooljs/dist/simulation/monsters/low/g-m/MaleHamMember';
+import MaleHamMember from 'oldschooljs/dist/simulation/monsters/low/g-m/MaleHamMember';
 import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/g-m/MasterFarmer';
 import MenaphiteThug from 'oldschooljs/dist/simulation/monsters/low/g-m/MenaphiteThug';
 import Paladin from 'oldschooljs/dist/simulation/monsters/low/n-s/Paladin';
@@ -178,8 +179,8 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Female H.A.M. member',
 		level: 15,
 		xp: 18.5,
-		table: HamMember.pickpocketTable!,
-		id: HamMember.id,
+		table: FemaleHamMember.pickpocketTable!,
+		id: FemaleHamMember.id,
 		stunTime: 4,
 		stunDamage: 2,
 		slope: 0.418_47,
@@ -189,8 +190,8 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Male H.A.M. member',
 		level: 20,
 		xp: 22.5,
-		table: HamMember.pickpocketTable!,
-		id: HamMember.id,
+		table: MaleHamMember.pickpocketTable!,
+		id: MaleHamMember.id,
 		stunTime: 4,
 		stunDamage: 2,
 		slope: 0.490_31,
