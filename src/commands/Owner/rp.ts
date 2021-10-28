@@ -100,9 +100,7 @@ export default class extends BotCommand {
 					.join(', ')}`;
 
 				const task = minionActivityCache.get(u.id);
-				const taskText = task
-					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
-					: 'None';
+				const taskText = task ? `${task.type}` : 'None';
 
 				const userBadges = u.settings.get(UserSettings.Badges).map(i => badges[i]);
 				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(u.id);
