@@ -14,7 +14,6 @@ import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -83,9 +82,63 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		[cmd, input, str]: [string, KlasaUser | string | undefined, KlasaUser | string | undefined]
 	) {
-		if (msg.guild!.id !== SupportServer) return null;
+		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
+		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'check':
+			case 'c': {
+				let u = input;
+				if ((!isMod && !isOwner) || !u) {
+					u = msg.author;
+				}
+				if (!(u instanceof KlasaUser)) return;
+				const bitfields = `${u.settings
+					.get(UserSettings.BitField)
+					.map(i => BitFieldData[i])
+					.filter(notEmpty)
+					.map(i => i.name)
+					.join(', ')}`;
+
+				const task = minionActivityCache.get(u.id);
+				const taskText = task
+					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
+					: 'None';
+
+				const userBadges = u.settings.get(UserSettings.Badges).map(i => badges[i]);
+				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(u.id);
+
+				const premiumDate = u.settings.get(UserSettings.PremiumBalanceExpiryDate);
+				const premiumTier = u.settings.get(UserSettings.PremiumBalanceTier);
+
+				return msg.channel.send(
+					`**${u.username}**
+**Perk Tier:** ${getUsersPerkTier(u)}
+**Bitfields:** ${bitfields}
+**Badges:** ${userBadges}
+**Current Task:** ${taskText}
+**Blacklisted:** ${isBlacklisted ? 'Yes' : 'No'}
+**Patreon/Github:** ${u.settings.get(UserSettings.PatreonID) ? 'Yes' : 'None'}/${
+						u.settings.get(UserSettings.GithubID) ? 'Yes' : 'None'
+					}
+**Ironman:** ${u.isIronman ? 'Yes' : 'No'}
+**Premium Balance:** ${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
+						premiumTier ? `Tier ${premiumTier}` : ''
+					}
+
+**Main Account:** ${
+						u.settings.get(UserSettings.MainAccount) !== null
+							? `${getUsername(this.client, u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
+									UserSettings.MainAccount
+							  )}]`
+							: 'None'
+					}
+**Ironman Alt Accounts:** ${u.settings
+						.get(UserSettings.IronmanAlts)
+						.map(id => `${getUsername(this.client, id)}[${id}]`)}
+`
+				);
+			}
 			case 'itemsearch':
 			case 'is': {
 				if (typeof input !== 'string') return;
@@ -163,15 +216,12 @@ ${
 			}
 		}
 
-		if (msg.guild!.id !== SupportServer) return null;
-
-		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
-		const isOwner = this.client.owners.has(msg.author);
 		if (!isMod && !isOwner) return null;
 
 		if (input && input instanceof KlasaUser) {
 			await input.settings.sync(true);
 		}
+		if (msg.guild!.id !== SupportServer) return null;
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
@@ -274,63 +324,6 @@ ${
 **Daily** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily)}
 **Item Contracts** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceItemContracts)}
 `);
-			}
-			case 'check':
-			case 'c': {
-				if (!input || !(input instanceof KlasaUser)) return;
-				const bitfields = `${input.settings
-					.get(UserSettings.BitField)
-					.map(i => BitFieldData[i])
-					.filter(notEmpty)
-					.map(i => i.name)
-					.join(', ')}`;
-
-				const task = minionActivityCache.get(input.id);
-				const taskText = task
-					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
-					: 'None';
-
-				const lastTasks = await ActivityTable.find({
-					where: { userID: msg.author.id },
-					take: 10
-				});
-				const lastTasksStr = lastTasks.map(i => (i.completed ? i.type : `*${i.type}*`)).join(', ');
-
-				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
-				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(input.id);
-
-				const premiumDate = input.settings.get(UserSettings.PremiumBalanceExpiryDate);
-				const premiumTier = input.settings.get(UserSettings.PremiumBalanceTier);
-
-				return msg.channel.send(
-					`**${input.username}**
-**Perk Tier:** ${getUsersPerkTier(input)}
-**Bitfields:** ${bitfields}
-**Badges:** ${userBadges}
-**Current Task:** ${taskText}
-**Previous Tasks:** ${lastTasksStr}.
-**Blacklisted:** ${isBlacklisted ? 'Yes' : 'No'}
-**Patreon/Github:** ${input.settings.get(UserSettings.PatreonID) ?? 'None'}/${
-						input.settings.get(UserSettings.GithubID) ?? 'None'
-					}
-**Ironman:** ${input.isIronman ? 'Yes' : 'No'}
-**Premium Balance:** ${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
-						premiumTier ? `Tier ${premiumTier}` : ''
-					}
-
-**Main Account:** ${
-						input.settings.get(UserSettings.MainAccount) !== null
-							? `${getUsername(
-									this.client,
-									input.settings.get(UserSettings.MainAccount)!
-							  )}[${input.settings.get(UserSettings.MainAccount)}]`
-							: 'None'
-					}
-**Ironman Alt Accounts:** ${input.settings
-						.get(UserSettings.IronmanAlts)
-						.map(id => `${getUsername(this.client, id)}[${id}]`)}
-`
-				);
 			}
 			case 'patreon': {
 				msg.channel.send('Running patreon task...');
