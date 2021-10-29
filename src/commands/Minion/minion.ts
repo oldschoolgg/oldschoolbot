@@ -41,7 +41,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|opens] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|opens|info] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 
 			usageDelim: ' ',
 			subcommands: true,
@@ -113,6 +113,10 @@ export default class MinionCommand extends BotCommand {
 			};
 			handleButtons();
 		}
+	}
+
+	async info(msg: KlasaMessage) {
+		return runCommand(msg, 'rp', ['c', msg.author]);
 	}
 
 	@requiresMinion
@@ -233,31 +237,36 @@ export default class MinionCommand extends BotCommand {
 		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
 
 		await msg.author.settings.update(UserSettings.Minion.HasBought, true);
+		const accountIsTwoYearsOld = Date.now() - msg.author.createdTimestamp < Time.Year * 2;
 
-		const starter = new Bank({
-			Shark: 300,
-			'Saradomin brew(4)': 50,
-			'Super restore(4)': 20,
-			'Anti-dragon shield': 1,
-			'Tiny lamp': 5,
-			'Small lamp': 2,
-			'Tradeable mystery box': 5,
-			'Untradeable Mystery box': 5,
-			'Dragon bones': 50,
-			Coins: 50_000_000,
-			'Clue scroll (beginner)': 10,
-			'Equippable mystery box': 1,
-			'Pet Mystery box': 1
-		});
+		const starter = accountIsTwoYearsOld
+			? new Bank({
+					Shark: 300,
+					'Saradomin brew(4)': 50,
+					'Super restore(4)': 20,
+					'Anti-dragon shield': 1,
+					'Tiny lamp': 5,
+					'Small lamp': 2,
+					'Tradeable mystery box': 5,
+					'Untradeable Mystery box': 5,
+					'Dragon bones': 50,
+					Coins: 50_000_000,
+					'Clue scroll (beginner)': 10,
+					'Equippable mystery box': 1,
+					'Pet Mystery box': 1
+			  })
+			: null;
 
-		await msg.author.addItemsToBank(starter);
+		if (starter) {
+			await msg.author.addItemsToBank(starter);
+		}
 
 		return msg.channel.send({
 			embeds: [
 				new MessageEmbed().setTitle('Your minion is now ready to use!').setDescription(
 					`You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
 
-You received these starter items: ${starter}.
+${starter !== null ? `You received these starter items: ${starter}` : ''}.
 
 🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://wiki.oldschool.gg/rules>
 
