@@ -16,4 +16,5 @@ if (SENTRY_DSN) {
 
 export const client = new OldSchoolBotClient(clientOptions);
 
+client.on('ready', client.init);
 client.login(botToken);

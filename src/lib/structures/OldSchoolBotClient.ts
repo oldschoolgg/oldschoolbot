@@ -25,9 +25,21 @@ export class OldSchoolBotClient extends Client {
 	public piscinaPool = piscinaPool;
 	public production = production ?? false;
 	public orm!: Connection;
+	_emojis: any;
 
 	public constructor(clientOptions: KlasaClientOptions) {
 		super(clientOptions);
+		this._emojis = super.emojis;
+	}
+
+	refreshEmojis() {
+		this._emojis = super.emojis;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	get emojis() {
+		return this._emojis;
 	}
 
 	public async login(token?: string) {
@@ -55,4 +67,8 @@ export class OldSchoolBotClient extends Client {
 		await user.settings.sync();
 		return user;
 	}
+
+	init = () => {
+		this.refreshEmojis();
+	};
 }
