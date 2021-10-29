@@ -22,7 +22,7 @@ export async function generateNewTame(user: KlasaUser, species: Species) {
 	tame.variant = randArrItem(species.variants);
 
 	let shinyChance = user.hasItemEquippedAnywhere('Ring of luck')
-		? Math.ceil(reduceNumByPercent(species.shinyChance, 3))
+		? Math.floor(reduceNumByPercent(species.shinyChance, 3))
 		: species.shinyChance;
 	if (species.shinyVariant && roll(shinyChance)) {
 		tame.variant = species.shinyVariant;
