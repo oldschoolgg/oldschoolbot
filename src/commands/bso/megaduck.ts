@@ -152,6 +152,17 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 	}
 
 	async run(msg: KlasaMessage, [direction]: ['up' | 'down' | 'left' | 'right' | undefined]) {
+		const settings = await getGuildSettings(msg.guild!);
+		const location = settings.get(GuildSettings.MegaDuckLocation);
+		if (msg.flagArgs.reset && msg.member && msg.member.permissions.has('ADMINISTRATOR')) {
+			await msg.confirm('Are you sure you want to reset your megaduck back to Falador Park?');
+			await settings.update(GuildSettings.MegaDuckLocation, {
+				...location,
+				x: defaultMegaDuckLocation.x,
+				y: defaultMegaDuckLocation.y,
+				placesVisited: []
+			});
+		}
 		if (msg.flagArgs.all && msg.author.perkTier >= PerkTier.Five) {
 			const image = await this.makeAllGuildsImage();
 			return msg.channel.send({
@@ -159,8 +170,6 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			});
 		}
 
-		const settings = await getGuildSettings(msg.guild!);
-		const location = settings.get(GuildSettings.MegaDuckLocation);
 		const { image } = await this.makeImage(location);
 		if (!direction) {
 			return msg.channel.send({
