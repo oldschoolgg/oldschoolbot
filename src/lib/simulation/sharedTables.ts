@@ -1,6 +1,7 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { GemRockTable } from '../skilling/skills/mining';
+import { SeedTable } from './seedTable';
 
 export const Ahrims = new LootTable()
 	.add("Ahrim's hood")
@@ -101,3 +102,5 @@ export const FletchingTipsTable = new LootTable()
 	.add('Sapphire bolt tips');
 
 export const StaffOrbTable = new LootTable().add('Air orb').add('Earth orb').add('Fire orb').add('Water orb');
+
+export const PekyTable = new LootTable().add(SeedTable).oneIn(5, 'Breadcrumbs').tertiary(500, 'Baby raven');

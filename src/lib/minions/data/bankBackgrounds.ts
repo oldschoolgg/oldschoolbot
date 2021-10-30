@@ -457,6 +457,20 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['268767449791332354']
+	},
+	{
+		id: 82,
+		name: 'Guacamole CustomBG',
+		image: null,
+		available: false,
+		owners: ['367701420549341215']
+	},
+	{
+		id: 83,
+		name: 'Zbe CustomBG',
+		image: null,
+		available: false,
+		owners: ['252309543634075659']
 	}
 ];
 
