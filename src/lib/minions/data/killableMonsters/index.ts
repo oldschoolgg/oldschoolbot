@@ -292,7 +292,7 @@ export const NightmareMonster: KillableMonster = {
 	]),
 	qpRequired: 10,
 	groupKillable: true,
-	respawnTime: Time.Minute * 2.5,
+	respawnTime: Time.Minute * 1.5,
 	levelRequirements: {
 		prayer: 43
 	},
@@ -308,7 +308,7 @@ export const NightmareMonster: KillableMonster = {
 		'Harmonised orb',
 		'Volatile orb'
 	]),
-	healAmountNeeded: 40 * 20,
+	healAmountNeeded: 55 * 20,
 	attackStyleToUse: GearStat.AttackCrush,
 	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {

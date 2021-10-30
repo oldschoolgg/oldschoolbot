@@ -5,10 +5,10 @@ import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { GearSetupTypes } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { Gear } from '../../lib/structures/Gear';
 import { itemNameFromID, runCommand } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import { phosaniBISGear } from '../Minion/nightmare';
 
 const gearSpawns = [
 	{
@@ -28,19 +28,7 @@ const gearSpawns = [
 	},
 	{
 		name: 'phosani',
-		gear: new Gear({
-			head: "Inquisitor's great helm",
-			neck: 'Amulet of torture',
-			body: "Inquisitor's hauberk",
-			cape: 'Infernal cape',
-			hands: 'Ferocious gloves',
-			legs: "Inquisitor's plateskirt",
-			feet: 'Primordial boots',
-			ring: 'Berserker ring(i)',
-			weapon: "Inquisitor's mace",
-			shield: 'Dragon defender',
-			ammo: "Rada's blessing 4"
-		}),
+		gear: phosaniBISGear,
 		setup: UserSettings.Gear.Melee,
 		otherItems: new Bank()
 			.add('Super combat potion(4)', 1_000_000)
