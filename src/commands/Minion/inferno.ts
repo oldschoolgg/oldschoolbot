@@ -6,20 +6,30 @@ import { Bank, Monsters } from 'oldschooljs';
 import { table } from 'table';
 
 import { production } from '../../config';
-import { Activity, BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
+import { Activity, BitField, Emoji, projectiles } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { Gear } from '../../lib/structures/Gear';
 import { PercentCounter } from '../../lib/structures/PercentCounter';
 import { Skills } from '../../lib/types';
 import { InfernoOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, percentChance, randomVariation, updateBankSetting } from '../../lib/util';
+import {
+	determineProjectileTypeFromGear,
+	formatDuration,
+	itemNameFromID,
+	percentChance,
+	randomVariation,
+	updateBankSetting
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
+import resolveItems from '../../lib/util/resolveItems';
 import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
@@ -69,17 +79,20 @@ export default class extends BotCommand {
 		projectile,
 		dart,
 		fakeDuration,
-		hasKodai
+		hasKodai,
+		isEmergedZuk
 	}: {
 		projectile: number;
 		dart: number;
 		fakeDuration: number;
 		hasKodai: boolean;
+		isEmergedZuk: boolean;
 	}) {
 		const projectilesPerHour = 150;
 		const dartsPerHour = 300;
 		const bloodBarragePerHour = 200;
 		const iceBarragePerHour = 100;
+		const elderBarragePerHour = 20;
 
 		const hours = fakeDuration / Time.Hour;
 		const cost = new Bank();
@@ -89,6 +102,7 @@ export default class extends BotCommand {
 
 		const iceBarrageRunes = new Bank().add('Death rune', 4).add('Blood rune', 2);
 		const bloodBarrageRunes = new Bank().add('Death rune', 4).add('Blood rune', 4).add('Soul rune');
+		const elderBarrageRunes = new Bank().add('Elder rune', 1).add('Blood rune', 12).add('Death rune', 8);
 
 		if (!hasKodai) {
 			iceBarrageRunes.add('Water rune', 6);
@@ -97,6 +111,11 @@ export default class extends BotCommand {
 
 		cost.add(bloodBarrageRunes.multiply(Math.floor(bloodBarragePerHour * hours)));
 		cost.add(iceBarrageRunes.multiply(Math.floor(iceBarragePerHour * hours)));
+
+		if (isEmergedZuk) {
+			cost.add(elderBarrageRunes.multiply(Math.floor(elderBarragePerHour * hours)));
+			cost.add('Hellfire arrow', randInt(50, 80));
+		}
 
 		cost.add('Saradomin brew(4)', 8);
 		cost.add('Super restore(4)', 12);
@@ -127,6 +146,13 @@ export default class extends BotCommand {
 		return Math.max(Math.min(chance, 99), 15);
 	}
 
+	baseEmergedZukDeathChance(_attempts: number) {
+		const attempts = Math.max(1, _attempts);
+		if (attempts < 30) return 99.9999 - attempts / 7.5;
+		const chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(25))) * 39);
+		return Math.max(Math.min(chance, 20), 15);
+	}
+
 	baseDuration(_attempts: number) {
 		const attempts = Math.max(1, Math.min(250, _attempts));
 		let chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 45);
@@ -141,7 +167,13 @@ export default class extends BotCommand {
 		let baseZuk = [];
 		let duration = [];
 		for (let i = range[0]; i < range[1]; i++) {
-			const res = await this.infernoRun({ user, attempts: i, timesMadeToZuk: 0 });
+			const res = await this.infernoRun({
+				user,
+				attempts: i,
+				timesMadeToZuk: 0,
+				emergedAttempts: 0,
+				isEmergedZuk: false
+			});
 			if (typeof res === 'string') return res;
 			preZuk.push(res.preZukDeathChance.value);
 			zuk.push(res.zukDeathChance.value);
@@ -250,7 +282,13 @@ export default class extends BotCommand {
 			let timesMadeToZuk = 0;
 
 			for (let o = 0; o < 10_000; o++) {
-				const res = await this.infernoRun({ user: msg.author, attempts: o, timesMadeToZuk });
+				const res = await this.infernoRun({
+					user: msg.author,
+					attempts: o,
+					timesMadeToZuk,
+					emergedAttempts: 0,
+					isEmergedZuk: false
+				});
 				if (typeof res === 'string') return res;
 				if (!res.diedPreZuk) timesMadeToZuk++;
 				if (!res.deathTime) {
@@ -283,29 +321,46 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 	async infernoRun({
 		user,
 		attempts,
-		timesMadeToZuk
+		timesMadeToZuk,
+		emergedAttempts,
+		isEmergedZuk
 	}: {
 		user: KlasaUser;
 		attempts: number;
 		timesMadeToZuk: number;
+		emergedAttempts: number;
+		isEmergedZuk: boolean;
 	}) {
 		const userBank = user.bank();
+		const zukKC = await user.getMinigameScore('Inferno');
 
 		const duration = new PercentCounter(this.baseDuration(attempts), 'time');
 		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(attempts), 'percent');
 		const preZukDeathChance = new PercentCounter(this.basePreZukDeathChance(attempts), 'percent');
+		const emergedZukDeathChance = new PercentCounter(this.baseEmergedZukDeathChance(emergedAttempts), 'percent');
 
 		if (!user.settings.get(UserSettings.SacrificedBank)[itemID('Fire cape')]) {
 			return 'To do the Inferno, you must have sacrificed a fire cape.';
 		}
+		if (isEmergedZuk && !user.settings.get(UserSettings.SacrificedBank)[itemID('Infernal cape')]) {
+			return 'To do the Emerged Zuk Inferno, you must have sacrificed an infernal cape.';
+		}
 
-		const skillReqs: Skills = {
-			defence: 92,
-			magic: 94,
-			hitpoints: 92,
-			ranged: 92,
-			prayer: 77
-		};
+		const skillReqs: Skills = isEmergedZuk
+			? {
+					defence: 102,
+					magic: 102,
+					hitpoints: 100,
+					ranged: 107,
+					prayer: 105
+			  }
+			: {
+					defence: 92,
+					magic: 94,
+					hitpoints: 92,
+					ranged: 92,
+					prayer: 77
+			  };
 		const [hasSkillReqs] = user.hasSkillReqs(skillReqs);
 		if (!hasSkillReqs) {
 			return `You not meet skill requirements, you need ${Object.entries(skillReqs)
@@ -330,12 +385,15 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		 */
 		const rangeGear = user.getGear('range');
 		const mageGear = user.getGear('mage');
+		const gearToCheck: [Gear, string][] = [
+			[rangeGear, 'range'],
+			[mageGear, 'mage']
+		];
+		const meleeGear = user.getGear('melee');
+		if (isEmergedZuk) gearToCheck.push([meleeGear, 'melee']);
 
 		for (const key of ['feet', 'body', 'hands', 'cape', 'ring', 'neck', 'legs', 'head'] as const) {
-			for (const [gear, name] of [
-				[rangeGear, 'range'],
-				[mageGear, 'mage']
-			] as const) {
+			for (const [gear, name] of gearToCheck) {
 				if (!gear[key]) {
 					return `You have nothing in your ${key} slot in your ${name} setup.. are you crazy?`;
 				}
@@ -396,14 +454,21 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		if (dartIndex < 5) {
 			return 'Your darts are simply too weak, to work in the Inferno!';
 		}
-		duration.add(true, -percent, `${dartItem.name} in blowpipe`);
+		if (isEmergedZuk) {
+			if (dartItem.name !== 'Dragon dart') {
+				return 'Your darts too weak to hurt Emerged Zuk.';
+			}
+		} else {
+			duration.add(true, -percent, `${dartItem.name} in blowpipe`);
+		}
 
 		const mageWeapons = {
 			'Ancient staff': 1,
 			'Master wand': 1,
 			'Nightmare staff': 5,
 			'Eldritch nightmare staff': 9,
-			'Kodai wand': 10
+			'Kodai wand': 10,
+			'Virtus wand': 12
 		};
 		const rangeWeapons = { 'Armadyl crossbow': 1, 'Twisted bow': 12 };
 		for (const [name, setup, weapons] of [
@@ -411,16 +476,89 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			['range', rangeGear, rangeWeapons]
 		] as const) {
 			const weapon = setup.equippedWeapon();
-			if (!weapon || !Object.keys(weapons).map(itemID).includes(weapon.id)) {
+			if (
+				!weapon ||
+				!Object.keys(weapons)
+					.map(itemID)
+					.map(i => [i, ...getSimilarItems(i)])
+					.flat(2)
+					.includes(weapon.id)
+			) {
 				return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
 			}
 		}
 
+		const allMeleeGearItems = meleeGear.allItems(true);
+
+		if (isEmergedZuk) {
+			const amountOfDrygoreEquipped = resolveItems([
+				'Drygore rapier',
+				'Drygore longsword',
+				'Drygore mace',
+				'Offhand drygore rapier',
+				'Offhand drygore longsword',
+				'Offhand drygore mace'
+			]).filter(i => allMeleeGearItems.includes(i)).length;
+			if (amountOfDrygoreEquipped < 2) {
+				return 'You need strong kalphite weapon to pierce TzKal-Zuk skin!';
+			}
+			if (
+				!resolveItems(['Torva platebody', 'Torva platelegs', 'Torva boots', 'Torva gloves']).every(i =>
+					allMeleeGearItems.includes(i)
+				)
+			) {
+				return 'You need stronger melee armor! TzKal-Zuk will crush you.';
+			}
+		}
+		duration.add(isEmergedZuk && allMeleeGearItems.includes(itemID('Ignis ring(i)')), 5, 'Ignis ring(i)');
+
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
 		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
 
-		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), 1.5, 'Zuk with TBow');
+		zukDeathChance.add(
+			[rangeGear.equippedWeapon()!.id, ...getSimilarItems(rangeGear.equippedWeapon()!.id)].includes(
+				getOSItem('Twisted bow').id
+			),
+			1.5,
+			'Zuk with TBow'
+		);
 		duration.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), -7.5, 'TBow');
+
+		/**
+		 * Emerged
+		 */
+
+		if (isEmergedZuk && zukKC < 20) {
+			return 'You not worthy to fight TzKal-Zuk in his full form, you need defeat his first form 20 times first.';
+		}
+		if (
+			isEmergedZuk &&
+			[
+				'Hellfire bow',
+				'Dragon arrow',
+				'Farsight snapshot necklace',
+				'Gorajan archer top',
+				'Gorajan archer legs',
+				'Gorajan archer gloves',
+				'Gorajan archer boots'
+			].some(i => !rangeGear.hasEquipped(i))
+		) {
+			return 'You not worthy to fight TzKal-Zuk in his full form, you need better range gear and dragon arrows.';
+		}
+		if (
+			isEmergedZuk &&
+			[
+				'Virtus wand',
+				'Virtus book',
+				'Arcane blast necklace',
+				'Gorajan occult top',
+				'Gorajan occult legs',
+				'Gorajan occult gloves',
+				'Gorajan occult boots'
+			].some(i => !mageGear.hasEquipped(i))
+		) {
+			return 'You not worthy to fight TzKal-Zuk in his full form, you need better mage gear.';
+		}
 
 		/**
 		 *
@@ -465,7 +603,10 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		if (!projectile) {
 			return 'You have no projectiles equipped in your range setup.';
 		}
-		const projectileType: ProjectileType = rangeGear.equippedWeapon()!.name === 'Twisted bow' ? 'arrow' : 'bolt';
+		const projectileType = determineProjectileTypeFromGear(rangeGear);
+		if (!projectileType) {
+			return "You aren't wearing an appropriate ranged weapon.";
+		}
 		const projectilesForTheirType = projectiles[projectileType];
 		if (!projectilesForTheirType.includes(projectile.item)) {
 			return `You're using incorrect projectiles, you're using a ${
@@ -490,14 +631,18 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		preZukDeathChance.value = Math.min(preZukDeathChance.value, 100);
 		zukDeathChance.value = Math.min(zukDeathChance.value, 100);
+		emergedZukDeathChance.value = Math.min(emergedZukDeathChance.value, 100);
 
 		const diedPreZuk = percentChance(preZukDeathChance.value);
 		const diedZuk = percentChance(zukDeathChance.value);
+		const diedEmergedZuk = percentChance(emergedZukDeathChance.value);
 		let deathTime: number | null = null;
 		if (diedPreZuk) {
 			deathTime = randInt(Time.Minute, calcPercentOfNum(90, duration.value));
 		} else if (diedZuk) {
 			deathTime = randInt(calcPercentOfNum(90, duration.value), duration.value);
+		} else if (diedEmergedZuk) {
+			deathTime = randInt(calcPercentOfNum(95, duration.value), duration.value);
 		}
 
 		const realDuration = deathTime ?? duration.value;
@@ -506,7 +651,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			projectile: projectile.item,
 			dart: blowpipeData.dartID,
 			fakeDuration,
-			hasKodai: mageGear.hasEquipped('Kodai wand')
+			hasKodai: mageGear.hasEquipped('Kodai wand'),
+			isEmergedZuk
 		});
 
 		return {
@@ -518,7 +664,9 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			diedPreZuk,
 			preZukDeathChance,
 			realDuration,
-			cost
+			cost,
+			emergedZukDeathChance,
+			diedEmergedZuk
 		};
 	}
 
@@ -566,13 +714,18 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		}
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
-		const usersRangeStats = msg.author.getGear('range').stats;
+		const rangeGear = msg.author.getGear('range');
+		const usersRangeStats = rangeGear.stats;
 		const zukKC = await msg.author.getMinigameScore('Inferno');
+
+		const isEmergedZuk = Boolean(msg.flagArgs.emerged);
 
 		const res = await this.infernoRun({
 			user: msg.author,
 			attempts,
-			timesMadeToZuk: await this.timesMadeToZuk(msg.author.id)
+			timesMadeToZuk: await this.timesMadeToZuk(msg.author.id),
+			emergedAttempts: msg.author.settings.get(UserSettings.EmergedInfernoAttempts),
+			isEmergedZuk
 		});
 
 		if (typeof res === 'string') {
@@ -594,7 +747,9 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			fakeDuration,
 			preZukDeathChance,
 			cost,
-			realDuration
+			realDuration,
+			emergedZukDeathChance,
+			diedEmergedZuk
 		} = res;
 
 		let realCost = new Bank();
@@ -622,11 +777,22 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			fakeDuration,
 			diedPreZuk,
 			diedZuk,
-			cost: realCost.bank
+			cost: realCost.bank,
+			isEmergedZuk,
+			emergedZukDeathChance: emergedZukDeathChance.value,
+			diedEmergedZuk
 		});
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, realCost);
-
+		let emergedZukDeathMsg = isEmergedZuk
+			? `**Emerged Zuk Death Chance:** ${emergedZukDeathChance.value.toFixed(
+					1
+			  )}% ${emergedZukDeathChance.messages.join(', ')} ${
+					emergedZukDeathChance.missed.length === 0
+						? ''
+						: `*(You didn't get these: ||${emergedZukDeathChance.missed.join(', ')}||)*`
+			  }`
+			: '';
 		return msg.channel.send({
 			content: `
 **KC:** ${zukKC}
@@ -647,6 +813,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 					? ''
 					: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
 			}
+${emergedZukDeathMsg}
 
 **Items To Be Used:** ${realCost}`,
 			files: [

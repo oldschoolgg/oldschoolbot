@@ -332,6 +332,10 @@ export const allCollectionLogs: ICollection = {
 				alias: ['zuk', 'inferno'],
 				items: theInfernoCL
 			},
+			'Emerged Zuk Inferno': {
+				alias: ['emerged inferno', 'ezi', 'emerged zuk'],
+				items: resolveItems(['Head of TzKal Zuk', 'Infernal core', 'Tokkul'])
+			},
 			'Kalphite Queen': {
 				alias: Monsters.KalphiteQueen.aliases,
 				allItems: Monsters.KalphiteQueen.allItems,

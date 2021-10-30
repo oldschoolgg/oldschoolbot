@@ -103,7 +103,8 @@ const slayerHelmSimilar = resolveItems([
 	'Purple slayer helmet',
 	'Turquoise slayer helmet',
 	'Hydra slayer helmet',
-	'Twisted slayer helmet'
+	'Twisted slayer helmet',
+	'TzKal slayer helmet'
 ]);
 const slayerHelmSimilarI = resolveItems([
 	'Black slayer helmet (i)',
@@ -113,7 +114,8 @@ const slayerHelmSimilarI = resolveItems([
 	'Turquoise slayer helmet (i)',
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
-	'Slayer helmet (i)'
+	'Slayer helmet (i)',
+	'TzKal slayer helmet'
 ]);
 const bowfaCorruptSimilar = resolveItems([
 	25_869, // Red, 'duplicate' according to osrsbox item-search

@@ -643,6 +643,32 @@ const bsoItems: Createable[] = [
 		outputItems: {
 			[itemID('Breadcrumbs')]: 4
 		}
+	},
+	{
+		name: 'Infernal bulwark',
+		inputItems: {
+			[itemID("Dinh's bulwark")]: 1,
+			[itemID('Onyx')]: 5,
+			[itemID('Infernal core')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal bulwark')]: 1
+		},
+		requiredSkills: {
+			smithing: 105
+		}
+	},
+	{
+		name: 'TzKal-Zuk cape',
+		inputItems: {
+			[itemID("TzKal-Zuk's skin")]: 1,
+			[itemID('Onyx')]: 10,
+			[itemID('Infernal cape')]: 1,
+			[itemID('Abyssal cape')]: 1
+		},
+		outputItems: {
+			[itemID('TzKal-Zuk cape')]: 1
+		}
 	}
 ];
 

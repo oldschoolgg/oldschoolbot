@@ -11,9 +11,19 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
 import { production } from '../config';
-import { BitField, CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
+import {
+	BitField,
+	CENA_CHARS,
+	continuationChars,
+	Events,
+	PerkTier,
+	ProjectileType,
+	skillEmoji,
+	SupportServer
+} from './constants';
 import { GearSetupType, GearSetupTypes } from './gear/types';
 import { Consumable } from './minions/types';
+import { Gear } from './structures/Gear';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
@@ -583,6 +593,10 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 
 export function isSuperUntradeable(item: number | Item) {
 	const id = typeof item === 'number' ? item : item.id;
+	const fullItem = Items.get(id);
+	if (fullItem?.customItemData?.isSuperUntradeable) {
+		return true;
+	}
 	return id >= 40_000 && id <= 45_000;
 }
 
@@ -618,6 +632,17 @@ export async function runCommand(
 		return result;
 	} catch (err) {
 		message.client.emit('commandError', message, command, args, err);
+	}
+	return null;
+}
+
+export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
+	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {
+		return 'arrow';
+	} else if (
+		resolveItems(['Chaotic crossbow', 'Armadyl crossbow', 'Dragon crossbow']).some(i => gear.hasEquipped(i))
+	) {
+		return 'bolt';
 	}
 	return null;
 }

@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -18,7 +18,17 @@ import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: InfernoOptions) {
-		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
+		const {
+			userID,
+			channelID,
+			diedZuk,
+			diedPreZuk,
+			duration,
+			deathTime,
+			fakeDuration,
+			diedEmergedZuk,
+			isEmergedZuk
+		} = data;
 		const user = await this.client.users.fetch(userID);
 		const score = await user.getMinigameScore('Inferno');
 
@@ -129,10 +139,24 @@ export default class extends Task {
 			chatText = `You died to Zuk. Nice try JalYt, for your effort I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;
+		} else if (diedEmergedZuk) {
+			text = `You died to TzKal-Zuk after he emerged, ${formatDuration(deathTime!)} into your attempt.`;
+			chatText = `You died to TzKal-Zuk. Nice try JalYt, for your effort I give you ${baseBank.amount(
+				'Tokkul'
+			)}x Tokkul.`;
 		} else {
 			const zukLoot = Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask });
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
 			baseBank.add(zukLoot);
+			if (isEmergedZuk) {
+				zukLoot.add('TzKal cape');
+				if (roll(10)) {
+					zukLoot.add('Infernal core');
+				}
+				if (roll(10)) {
+					zukLoot.add('Head of TzKal Zuk');
+				}
+			}
 
 			if (baseBank.has('Jal-nib-rek')) {
 				this.client.emit(
@@ -185,6 +209,13 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 			}
 `,
 			res => {
+				const flags: Record<string, string> = isEmergedZuk ? { emerged: 'emerged' } : {};
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				if (!res.prompter) res.prompter = {};
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				res.prompter.flags = flags;
 				user.log('continued trip of inferno');
 				return (this.client.commands.get('inferno') as any).start(res, []);
 			},

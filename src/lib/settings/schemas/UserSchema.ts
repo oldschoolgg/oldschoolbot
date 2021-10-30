@@ -56,6 +56,7 @@ Client.defaultUserSchema
 	.add('farming_patch_reminders', 'boolean', { default: true })
 	.add('pest_control_points', 'integer', { default: 0 })
 	.add('inferno_attempts', 'integer', { default: 0 })
+	.add('emerged_inferno_attempts', 'integer', { default: 0 })
 	.add('infernal_cape_sacrifices', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('kourend_favour', 'any', { default: { ...baseUserKourendFavour } })
