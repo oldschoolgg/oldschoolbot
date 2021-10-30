@@ -471,6 +471,14 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['252309543634075659']
+	},
+	{
+		id: 84,
+		name: 'Hayz CustomBG',
+		image: null,
+		available: false,
+		owners: ['416304907243749382'],
+		transparent: true
 	}
 ];
 
