@@ -1,8 +1,8 @@
-import { noOp, percentChance, roll } from 'e';
+import { noOp, percentChance } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
-import { BitField, Emoji, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
+import { Emoji, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
@@ -42,6 +42,7 @@ export default class extends Task {
 			if (!user) continue;
 			const [data] = getNightmareGearStats(user, users, isPhosani);
 			parsedUsers.push({ ...data, user });
+			teamsLoot[id] = new Bank();
 		}
 
 		// Store total amount of deaths
@@ -52,22 +53,13 @@ export default class extends Task {
 				team: parsedUsers.map(user => ({
 					id: user.user.id,
 					damageDone: users.length === 1 ? 2400 : randomVariation(user.damageDone, 5)
-				}))
+				})),
+				isPhosani
 			});
 
 			const loot: Record<string, Bank> = {};
 			for (const [id, itemBank] of Object.entries(_loot)) {
 				loot[id] = new Bank(itemBank);
-			}
-
-			if (isPhosani) {
-				const u = parsedUsers[0].user;
-				if (roll(100) && !u.bitfield.includes(BitField.HasSlepeyTablet)) {
-					loot[u.id].add('Slepey tablet');
-				}
-				if (roll(200)) {
-					loot[u.id].add('Parasitic egg');
-				}
 			}
 
 			for (const { user, chanceOfDeath } of parsedUsers) {
@@ -158,9 +150,9 @@ export default class extends Task {
 				this.client,
 				leaderUser,
 				channelID,
-				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${
-					NightmareMonster.name
-				}, you died ${deaths[leader] ?? 0} times. Your ${monsterName} KC is now ${kc}.`,
+				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${monsterName}, you died ${
+					deaths[leader] ?? 0
+				} times. Your ${monsterName} KC is now ${kc}.`,
 				res => {
 					const flags: Record<string, string> = isPhosani === null ? {} : { phosani: 'phosani' };
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment

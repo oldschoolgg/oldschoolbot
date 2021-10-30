@@ -111,7 +111,7 @@ export default class extends BotCommand {
 	perUserCost(_user: KlasaUser, isPhosani: boolean) {
 		const cost = new Bank();
 		if (isPhosani) {
-			cost.add('Super combat(4)')
+			cost.add('Super combat potion(4)')
 				.add('Sanfew serum(4)')
 				.add('Super restore(4)')
 				.add('Fire rune', 10 * 100)
