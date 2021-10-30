@@ -2,7 +2,7 @@ import { noOp, percentChance } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
-import { Emoji, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
+import { BitField, Emoji, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
@@ -69,6 +69,10 @@ export default class extends Task {
 					deaths[user.id] = deaths[user.id] ? ++deaths[user.id] : 1;
 					kcAmounts[user.id]--;
 				} else {
+					if (user.owns('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet)) {
+						loot[user.id].remove('Slepey tablet', loot[user.id].amount('Slepey tablet'));
+					}
+					loot[user.id].bank;
 					teamsLoot[user.id].add(loot[user.id]);
 				}
 			}

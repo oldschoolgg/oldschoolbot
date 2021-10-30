@@ -261,6 +261,10 @@ export default class extends BotCommand {
 			}
 			if (isPhosani) {
 				effectiveTime = reduceNumByPercent(effectiveTime, 45);
+				if (user.owns('Dragon claws')) {
+					effectiveTime = reduceNumByPercent(effectiveTime, 5);
+					soloBoosts.push('5% for Dragon claws');
+				}
 			}
 		}
 
@@ -319,7 +323,7 @@ Removed ${soloFoodUsage} from your bank.`
 				: `${partyOptions.leader.username}'s party (${users
 						.map(u => u.username)
 						.join(', ')}) is now off to kill ${quantity}x ${
-						isPhosani ? 'Nightmare' : "Phosani's Nightmare"
+						isPhosani ? "Phosani's Nightmare" : 'Nightmare'
 				  }. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
 						NightmareMonster.timeToFinish
 				  )} - the total trip will take ${formatDuration(duration)}.`;
