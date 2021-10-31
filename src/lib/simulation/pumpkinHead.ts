@@ -11,7 +11,7 @@ export const pumpkinHeadUniqueTable = new LootTable()
 	.add('Haunted gloves', 1, 2)
 	.add('Haunted boots', 1, 2)
 	.add("Pumpkinhead's pumpkin head")
-	.tertiary(60, 'Mini Pumpkinhead');
+	.tertiary(1200, 'Mini Pumpkinhead');
 
 export const PUMPKINHEAD_HEALING_NEEDED = 60;
 const pumpkinHeadDescriptors = [
