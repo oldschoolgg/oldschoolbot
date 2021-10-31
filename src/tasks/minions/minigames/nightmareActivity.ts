@@ -158,16 +158,8 @@ export default class extends Task {
 					deaths[leader] ?? 0
 				} times. Your ${monsterName} KC is now ${kc}.`,
 				res => {
-					const flags: Record<string, string> = isPhosani === null ? {} : { phosani: 'phosani' };
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					if (!res.prompter) res.prompter = {};
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					res.prompter.flags = flags;
-
 					leaderUser.log(`continued trip of ${quantity}x Nightmare`);
-					return this.client.commands.get('nightmare')!.run(res, ['solo']);
+					return this.client.commands.get('nightmare')!.run(res, ['phosani']);
 				},
 				image!,
 				data,

@@ -210,7 +210,7 @@ export default class extends BotCommand {
 
 			if (users.length === 1 && isPhosani) {
 				if (user.bitfield.includes(BitField.HasSlepeyTablet)) {
-					effectiveTime = reduceNumByPercent(effectiveTime, 5);
+					effectiveTime = reduceNumByPercent(effectiveTime, 15);
 					soloBoosts.push('15% for Slepey tablet');
 				}
 				const numberOfBISEquipped = phosaniBISGear
