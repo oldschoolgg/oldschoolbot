@@ -75,12 +75,13 @@ export const bossEvents: BossEvent[] = [
 				if (items.length === 1 && cl.amount(items.items()[0][0].id) >= 2) {
 					// Roll them new loot
 					const newRoll = pumpkinHeadUniqueTable.roll();
+					newRoll.remove('Mini Pumpkinhead');
 					// If the new loot has no pet, and they also have 2 of this item in CL,
 					// they get nothing, and someone who didn't originally get a drop, now gets one,
 					// however, the new recipient is subject to the same rerolling happening to them.
 					if (newRoll.length === 1 && cl.amount(newRoll.items()[0][0].id) >= 2) {
 						const newRecipient = randArrItem(lootElligible.filter(u => !uniqueItemRecipients.includes(u)));
-						if (newRecipient) {
+						if (newRecipient && roll(2)) {
 							uniqueItemRecipients.push(newRecipient);
 							uniqueLootStr.push(`${recip.user}'s loot got rerolled to ${newRecipient.user}!`);
 						}
