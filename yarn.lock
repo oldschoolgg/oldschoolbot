@@ -764,12 +764,12 @@
   dependencies:
     "@sapphire/utilities" "^3.0.4"
 
-"@sapphire/time-utilities@^1.4.5":
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.4.5.tgz#57516fd6365edada4c27ae89534db40cc3d2a672"
-  integrity sha512-C8s2zEAg1o842KTENaavmqwaMNyrTKKXYBFCoohTYxViR7cWRHxJ05OyfM413SlJ1GEOE8ByE2cr2+RJJzZA6g==
+"@sapphire/time-utilities@^1.4.6":
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.4.6.tgz#100727981554d4e0f3983c46277e88810835ae7f"
+  integrity sha512-hFT+LfhjtRS0BMjE/ZYlNNkBXE2cFuULljrFHI5+iR8KinLc46U+Ix0F/iK6XWXLmvcQ80QSA1FuPEkjDiTiAw==
   dependencies:
-    "@sapphire/utilities" "^3.0.5"
+    "@sapphire/utilities" "^3.0.6"
 
 "@sapphire/type@^2.1.1":
   version "2.1.1"
@@ -785,10 +785,10 @@
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.4.tgz#fe1ede01201f9f95a1262b7bbf78230965f72305"
   integrity sha512-E76dWoeaI3R93sGpVpW6247Qg7BmKUFTWLpqFtyocvh/xBqIdzzDiGPOsMZuiMsyWsG0rwNsCQ7oKSCUyPQFLg==
 
-"@sapphire/utilities@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.5.tgz#4e8c5646a156cf073c8d26988b85ad942c1ed71b"
-  integrity sha512-JLyxPi0NheNUfA7T6WQUF00mv3/xJTjuBUEEAxficPgbLztl0FCQ17WygtfLVnnNiDoCpKwqFHyOCUW3SUDeRg==
+"@sapphire/utilities@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.6.tgz#ba14fcd6ca19a2665b78335d28477241f99494ea"
+  integrity sha512-veCUmM1Q/zSscv223IveJBaQ/HlENycsmmLnakL79EWpAFnnayycrsa00rMDRUfqgizTJ2rsqoH0JVqqRbxKiA==
 
 "@sentry/core@6.13.3":
   version "6.13.3"
@@ -2471,14 +2471,14 @@ fastify-rate-limit@^5.6.2:
     ms "^2.1.1"
     tiny-lru "^7.0.0"
 
-fastify-sensible@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/fastify-sensible/-/fastify-sensible-3.1.1.tgz#e81119389bfd955da7fdc7fc0a96428ecffcfe13"
-  integrity sha512-qWGsLEcc8VmLpbbWY7VJwXwWISsGBH9H4J2QeIc+l5Ov3a1lYs7ZaSnr0X8dkffdvzr9iy8wQyIuthpKTy5sZA==
+fastify-sensible@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/fastify-sensible/-/fastify-sensible-3.1.2.tgz#8b8672b4c55ca17a5ae267d5953b53c141b2a380"
+  integrity sha512-fS8GeY6db3q38GzWOoZMggrw9yHOoXdHv1Pgnorvv18uDrmh1iL8gP9/cqdWzZRM1J3fYvcHsfV2t4BXQF2+sw==
   dependencies:
     fast-deep-equal "^3.1.1"
     fastify-plugin "^3.0.0"
-    forwarded "^0.1.2"
+    forwarded "^0.2.0"
     http-errors "^1.7.3"
     type-is "^1.6.18"
     vary "^1.1.2"
@@ -2609,15 +2609,10 @@ form-data@~2.3.2:
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
 
-forwarded@0.2.0:
+forwarded@0.2.0, forwarded@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
-
-forwarded@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
-  integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
 fs-minipass@^2.0.0:
   version "2.1.0"
@@ -3765,9 +3760,9 @@ klasa-decorators@^0.0.1:
   resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
   integrity sha512-uCoMz750Lnp0dM8VC787hnRrF9wqWfUrjT7dp+8ihqp6xmtX8ZSXoeK08WJgAhEdEdIDsUG+VMXi9gcG54EZMA==
 
-"klasa@https://github.com/gc/klasa.git#ec2eb706edd797d23e3444deca493a8de4b6fe05":
+"klasa@https://github.com/gc/klasa.git#499a474748d42ddc6b64f56f547751d2f593968c":
   version "0.5.0-dev"
-  resolved "https://github.com/gc/klasa.git#ec2eb706edd797d23e3444deca493a8de4b6fe05"
+  resolved "https://github.com/gc/klasa.git#499a474748d42ddc6b64f56f547751d2f593968c"
   dependencies:
     "@klasa/querybuilder" "^0.0.1"
     "@klasa/settings-gateway" "^0.0.10"
