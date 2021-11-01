@@ -130,9 +130,9 @@ export default class extends BotCommand {
 			cost.add('Super combat potion(4)', Math.max(1, Math.floor(quantity / 2)))
 				.add('Sanfew serum(4)', quantity)
 				.add('Super restore(4)', quantity)
-				.add('Fire rune', 10 * 100)
-				.add('Air rune', 7 * 100)
-				.add('Wrath rune', 1 * 100);
+				.add('Fire rune', 11 * 100 * quantity)
+				.add('Air rune', 7 * 100 * quantity)
+				.add('Wrath rune', 70 * quantity);
 		}
 		return cost;
 	}
