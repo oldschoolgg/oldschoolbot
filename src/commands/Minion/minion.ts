@@ -51,7 +51,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman|opens] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman|opens|info] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			requiredPermissions: ['EMBED_LINKS']
@@ -122,6 +122,10 @@ export default class MinionCommand extends BotCommand {
 			};
 			handleButtons();
 		}
+	}
+
+	async info(msg: KlasaMessage) {
+		return runCommand(msg, 'rp', ['c', msg.author]);
 	}
 
 	@requiresMinion

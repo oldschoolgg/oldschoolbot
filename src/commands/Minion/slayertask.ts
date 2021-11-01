@@ -3,7 +3,6 @@ import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
-import { SILENT_ERROR } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -147,9 +146,6 @@ export default class extends BotCommand {
 				}
 			}
 		} catch (err: unknown) {
-			const error = err as Error;
-			if (error.message === SILENT_ERROR) return;
-			throw err;
 		} finally {
 			await sentMessage.edit({ components: [] });
 		}
