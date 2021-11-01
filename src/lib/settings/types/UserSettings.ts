@@ -70,13 +70,11 @@ export namespace UserSettings {
 	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
-	export const TimesFedGregoyle = T<number>('times_fed_gregoyle');
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
 
 	export const Blowpipe = T<O.Readonly<BlowpipeData>>('blowpipe');
-	export const WrongAccusations = T<number>('wrong_accusations');
 
 	export const PremiumBalanceTier = T<number | null>('premium_balance_tier');
 	export const PremiumBalanceExpiryDate = T<number | null>('premium_balance_expiry_date');
