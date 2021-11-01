@@ -2,14 +2,13 @@ import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, BitField, Emoji } from '../../lib/constants';
+import { Activity, BitField, Emoji, PHOSANI_NIGHTMARE_ID } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { MakePartyOptions } from '../../lib/types';
@@ -22,17 +21,18 @@ import resolveItems from '../../lib/util/resolveItems';
 import { ZAM_HASTA_CRUSH } from './../../lib/constants';
 import { NightmareMonster } from './../../lib/minions/data/killableMonsters/index';
 
-function soloMessage(user: KlasaUser, duration: number, quantity: number) {
-	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 0;
-	let str = `${user.minionName} is now off to kill The Nightmare ${quantity} times.`;
+function soloMessage(user: KlasaUser, duration: number, quantity: number, isPhosani: boolean) {
+	const name = isPhosani ? "Phosani's Nightmare" : 'The Nightmare';
+	const kc = user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id);
+	let str = `${user.minionName} is now off to kill ${name} ${quantity} times.`;
 	if (kc < 5) {
-		str += ' They are terrified to face The Nightmare, and set off to fight it with great fear.';
+		str += ` They are terrified to face ${name}, and set off to fight it with great fear.`;
 	} else if (kc < 10) {
-		str += ' They are scared to face The Nightmare, but set off with great courage.';
+		str += ` They are scared to face ${name}, but set off with great courage.`;
 	} else if (kc < 50) {
-		str += ' They are confident in killing The Nightmare, and prepared for battle.';
+		str += ` They are confident in killing ${name}, and prepared for battle.`;
 	} else {
-		str += ' They are not scared of The Nightmare anymore, and ready to fight!';
+		str += ` They are not scared of ${name} anymore, and ready to fight!`;
 	}
 
 	return `${str} The trip will take approximately ${formatDuration(duration)}.`;
@@ -62,7 +62,7 @@ export const phosaniBISGear = new Gear({
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<mass|solo|phosani> [maximumSize:int{2,10}]',
+			usage: '<mass|solo|phosani>',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -99,7 +99,7 @@ export default class extends BotCommand {
 				}.`;
 			}
 
-			const cost = this.perUserCost(user, isPhosani);
+			const cost = this.perUserCost(user, isPhosani, quantity);
 			if (!user.owns(cost)) {
 				throw `${user.username} doesn't own ${cost}`;
 			}
@@ -124,12 +124,12 @@ export default class extends BotCommand {
 		}
 	}
 
-	perUserCost(_user: KlasaUser, isPhosani: boolean) {
+	perUserCost(_user: KlasaUser, isPhosani: boolean, quantity: number) {
 		const cost = new Bank();
 		if (isPhosani) {
-			cost.add('Super combat potion(4)')
-				.add('Sanfew serum(4)')
-				.add('Super restore(4)')
+			cost.add('Super combat potion(4)', Math.max(1, Math.floor(quantity / 2)))
+				.add('Sanfew serum(4)', quantity)
+				.add('Super restore(4)', quantity)
 				.add('Fire rune', 10 * 100)
 				.add('Air rune', 7 * 100)
 				.add('Wrath rune', 1 * 100);
@@ -139,12 +139,12 @@ export default class extends BotCommand {
 
 	@minionNotBusy
 	@requiresMinion
-	async run(msg: KlasaMessage, [type, maximumSizeForParty]: ['mass' | 'solo' | 'phosani', number]) {
+	async run(msg: KlasaMessage, [type]: ['mass' | 'solo' | 'phosani']) {
+		let isPhosani = false;
 		if (type === 'phosani') {
-			msg.flagArgs.phosani = 'phosani';
+			isPhosani = true;
 			type = 'solo';
 		}
-		const isPhosani = type === 'solo' && Boolean(msg.flagArgs.phosani);
 
 		this.checkReqs([msg.author], NightmareMonster, 2, isPhosani);
 
@@ -153,13 +153,9 @@ export default class extends BotCommand {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 2,
-			maxSize: (maximumSizeForParty ?? maximumSize) - 1,
+			maxSize: maximumSize - 1,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${
-				Emoji.Join
-			} reaction to join, click it again to leave. The maximum size for this mass is ${
-				maximumSizeForParty ?? maximumSize
-			}.`,
+			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. The maximum size for this mass is ${maximumSize}.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -217,8 +213,8 @@ export default class extends BotCommand {
 					.allItems(false)
 					.filter(itemID => meleeGear.hasEquipped(itemID)).length;
 				if (numberOfBISEquipped > 3) {
-					effectiveTime = reduceNumByPercent(effectiveTime, numberOfBISEquipped * 2);
-					soloBoosts.push(`${numberOfBISEquipped * 2}% for Melee gear`);
+					effectiveTime = reduceNumByPercent(effectiveTime, numberOfBISEquipped * 1.2);
+					soloBoosts.push(`${numberOfBISEquipped * 1.2}% for Melee gear`);
 				}
 			}
 
@@ -260,10 +256,18 @@ export default class extends BotCommand {
 				effectiveTime *= 0.96;
 			}
 			if (isPhosani) {
-				effectiveTime = reduceNumByPercent(effectiveTime, 45);
+				effectiveTime = reduceNumByPercent(effectiveTime, 25);
 				if (user.owns('Dragon claws')) {
-					effectiveTime = reduceNumByPercent(effectiveTime, 5);
-					soloBoosts.push('5% for Dragon claws');
+					effectiveTime = reduceNumByPercent(effectiveTime, 3);
+					soloBoosts.push('3% for Dragon claws');
+				}
+				if (user.hasItemEquippedOrInBank('Harmonised nightmare staff')) {
+					effectiveTime = reduceNumByPercent(effectiveTime, 3);
+					soloBoosts.push('3% for Harmonised nightmare staff');
+				}
+				if (user.owns('Elder maul')) {
+					effectiveTime = reduceNumByPercent(effectiveTime, 3);
+					soloBoosts.push('3% for Elder maul');
 				}
 			}
 		}
@@ -283,7 +287,7 @@ export default class extends BotCommand {
 		let soloFoodUsage: Bank | null = null;
 		for (const user of users) {
 			const [healAmountNeeded] = calculateMonsterFood(NightmareMonster, user);
-			const cost = this.perUserCost(user, isPhosani);
+			const cost = this.perUserCost(user, isPhosani, quantity);
 			if (!user.owns(cost)) {
 				return msg.channel.send(`${user} doesn't own ${cost}.`);
 			}
@@ -296,10 +300,10 @@ export default class extends BotCommand {
 				activityName: NightmareMonster.name,
 				attackStylesUsed: ['melee']
 			});
-			await user.removeItemsFromBank(cost);
-			soloFoodUsage = cost.clone().add(foodRemoved);
+			const { realCost } = await user.specialRemoveItems(cost);
+			soloFoodUsage = realCost.clone().add(foodRemoved);
 
-			totalCost.add(foodRemoved).add(cost);
+			totalCost.add(foodRemoved).add(realCost);
 		}
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.NightmareCost, totalCost);
@@ -317,14 +321,14 @@ export default class extends BotCommand {
 
 		const str =
 			type === 'solo'
-				? `${soloMessage(msg.author, duration, quantity)}
+				? `${soloMessage(msg.author, duration, quantity, isPhosani)}
 ${soloBoosts.length > 0 ? `**Boosts:** ${soloBoosts.join(', ')}` : ''}
 Removed ${soloFoodUsage} from your bank.`
 				: `${partyOptions.leader.username}'s party (${users
 						.map(u => u.username)
-						.join(', ')}) is now off to kill ${quantity}x ${
-						isPhosani ? "Phosani's Nightmare" : 'Nightmare'
-				  }. Each kill takes ${formatDuration(perKillTime)} instead of ${formatDuration(
+						.join(', ')}) is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
+						perKillTime
+				  )} instead of ${formatDuration(
 						NightmareMonster.timeToFinish
 				  )} - the total trip will take ${formatDuration(duration)}.`;
 

@@ -159,7 +159,7 @@ export default class extends Task {
 				} times. Your ${monsterName} KC is now ${kc}.`,
 				res => {
 					leaderUser.log(`continued trip of ${quantity}x Nightmare`);
-					return this.client.commands.get('nightmare')!.run(res, ['phosani']);
+					return this.client.commands.get('nightmare')!.run(res, [isPhosani ? 'phosani' : 'solo']);
 				},
 				image!,
 				data,
