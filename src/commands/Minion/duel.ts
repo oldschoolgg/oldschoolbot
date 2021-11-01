@@ -117,7 +117,7 @@ export default class extends BotCommand {
 		const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses);
 		loser.settings.update(UserSettings.Stats.DuelLosses, lossesOfLoser + 1);
 
-		await winner.addItemsToBank(new Bank().add(winningAmount - tax));
+		await winner.addItemsToBank(new Bank().add('Coins', winningAmount - tax));
 
 		if (amount >= 1_000_000_000) {
 			this.client.emit(
