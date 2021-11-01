@@ -81,7 +81,7 @@ const usables = [
 	{
 		item: getOSItem('Mysterious token'),
 		run: async (msg: KlasaMessage) => {
-			if (await bossActiveIsActiveOrSoonActive()) {
+			if ((await bossActiveIsActiveOrSoonActive()) || !msg.client.owners.has(msg.author)) {
 				return msg.channel.send("You can't use your Mysterious token right now.");
 			}
 			await startBossEvent({
