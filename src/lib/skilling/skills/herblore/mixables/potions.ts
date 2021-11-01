@@ -464,8 +464,8 @@ const Potions: Mixable[] = [
 			'Snake weed': 1,
 			'Nail beast nails': 1
 		}),
-		tickRate: 2,
-		bankTimePerPotion: 0.3
+		tickRate: 10,
+		bankTimePerPotion: 0.5
 	}
 ];
 

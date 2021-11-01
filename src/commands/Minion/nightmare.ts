@@ -214,7 +214,7 @@ export default class extends BotCommand {
 					.filter(itemID => meleeGear.hasEquipped(itemID)).length;
 				if (numberOfBISEquipped > 3) {
 					effectiveTime = reduceNumByPercent(effectiveTime, numberOfBISEquipped * 1.2);
-					soloBoosts.push(`${numberOfBISEquipped * 1.2}% for Melee gear`);
+					soloBoosts.push(`${(numberOfBISEquipped * 1.2).toFixed(2)}% for Melee gear`);
 				}
 			}
 
