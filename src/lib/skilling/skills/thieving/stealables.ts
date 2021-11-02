@@ -4,8 +4,8 @@ import BeardedBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/BeardedB
 import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/a-f/CaveGoblin';
 import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/DesertBandit';
 import Farmer from 'oldschooljs/dist/simulation/monsters/low/a-f/Farmer';
-import FremennikCitizen from 'oldschooljs/dist/simulation/monsters/low/a-f/FremennikCitizen';
 import FemaleHamMember from 'oldschooljs/dist/simulation/monsters/low/a-f/FemaleHamMember';
+import FremennikCitizen from 'oldschooljs/dist/simulation/monsters/low/a-f/FremennikCitizen';
 import Gnome from 'oldschooljs/dist/simulation/monsters/low/g-m/Gnome';
 import Guard from 'oldschooljs/dist/simulation/monsters/low/g-m/Guard';
 import Hero from 'oldschooljs/dist/simulation/monsters/low/g-m/Hero';
