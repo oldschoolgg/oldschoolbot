@@ -71,6 +71,15 @@ export const collectables: Collectable[] = [
 		qpRequired: 72
 	},
 	{
+		item: getOSItem('Snake weed'),
+		quantity: 150,
+		itemCost: new Bank({
+			'Ring of dueling(8)': 1
+		}),
+		duration: Time.Minute * 30,
+		qpRequired: 3
+	},
+	{
 		item: getOSItem('Bucket of sand'),
 		quantity: 30,
 		itemCost: new Bank({

@@ -219,8 +219,9 @@ export const theNightmareCL = resolveItems([
 	'Volatile orb',
 	'Harmonised orb',
 	'Eldritch orb',
-	'Jar of dreams'
-	// TODO - Add Slepey tablet	and Parasitic egg when Phosani's Nightmare is added
+	'Jar of dreams',
+	'Slepey tablet',
+	'Parasitic egg'
 ]);
 export const oborCL = resolveItems(['Hill giant club']);
 export const sarachnisCL = resolveItems(['Sraracha', 'Jar of eyes', 'Giant egg sac(full)', 'Sarachnis cudgel']);

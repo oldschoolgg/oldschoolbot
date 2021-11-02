@@ -236,6 +236,7 @@ export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	quantity: number;
+	isPhosani?: boolean;
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
