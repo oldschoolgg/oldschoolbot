@@ -50,14 +50,14 @@ export default class MinionCommand extends BotCommand {
 			totalItemBoost += boostAmount;
 			ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 		}
-		const OwnedPOHBoost=[]
-		let actPOH=false
+		const OwnedPOHBoost=[];
+		let actPOH=false;
 		if (monster.pohBoosts){
 		const [boostPercent, messages] = calcPOHBoosts(await msg.author.getPOH(), monster.pohBoosts);
 			if (boostPercent > 0) {
 				timeToFinish *= (100- boostPercent)/100;
 				OwnedPOHBoost.push(`${messages.join(" ")}`);
-				actPOH=true
+				actPOH=true;
 			}
 		}
 		const maxCanKill = Math.floor(msg.author.maxTripLength(Activity.MonsterKilling) / timeToFinish);
@@ -99,11 +99,11 @@ export default class MinionCommand extends BotCommand {
 				if (objBoosts === undefined) continue;
 				for (const [name, boostPercent] of Object.entries(objBoosts)) {	
 				POHBoosts.push(`${boostPercent}% for ${name}`);
-				usedslots.push([`${slot}`])
+				usedslots.push([`${slot}`]);
 			}
-			str.push(`** POH Boosts: **${POHBoosts.join(" or ")} .\n`)
+			str.push(`** POH Boosts: **${POHBoosts.join(" or ")} .\n`);
 			if (actPOH == true){
-				str.push(`**Active POH Boosts: ** ${OwnedPOHBoost}. \n`);
+				str.push(`**Active POH Boosts: ** ${OwnedPOHBoost} .\n`);
 				}	
 			}
 		}
