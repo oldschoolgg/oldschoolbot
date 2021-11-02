@@ -460,7 +460,7 @@ const Potions: Mixable[] = [
 		xp: 192,
 		inputItems: resolveNameBank({
 			'Super restore(4)': 1,
-			'Unicorn horn dust	': 1,
+			'Unicorn horn dust': 1,
 			'Snake weed': 1,
 			'Nail beast nails': 1
 		}),
