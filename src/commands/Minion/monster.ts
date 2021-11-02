@@ -94,12 +94,10 @@ export default class MinionCommand extends BotCommand {
 		
 		if (monster.pohBoosts) {
 			const POHBoosts=[];
-			const usedslots=[];
 			for (const [slot, objBoosts] of Object.entries(monster.pohBoosts)) {
 				if (objBoosts === undefined) continue;
 				for (const [name, boostPercent] of Object.entries(objBoosts)) {	
 				POHBoosts.push(`${boostPercent}% for ${name}`);
-				usedslots.push([`${slot}`]);
 			}
 			str.push(`** POH Boosts: **${POHBoosts.join(" or ")} .\n`);
 			if (actPOH == true){
