@@ -451,6 +451,21 @@ const Potions: Mixable[] = [
 		tickRate: 2,
 		qpRequired: 205,
 		bankTimePerPotion: 0.3
+	},
+	{
+		name: 'Sanfew serum(4)',
+		aliases: ['sanfew', 'sanfew serum'],
+		id: itemID('Sanfew serum(4)'),
+		level: 65,
+		xp: 192,
+		inputItems: resolveNameBank({
+			'Super restore(4)': 1,
+			'Unicorn horn dust': 1,
+			'Snake weed': 1,
+			'Nail beast nails': 1
+		}),
+		tickRate: 10,
+		bankTimePerPotion: 0.5
 	}
 ];
 

@@ -129,7 +129,9 @@ const backgroundImages: BankBackground[] = [
 			"Inquisitor's mace": 1,
 			'Eldritch orb': 1,
 			'Harmonised orb': 1,
-			'Volatile orb': 1
+			'Volatile orb': 1,
+			'Slepey tablet': 1,
+			'Parasitic egg': 1
 		}),
 		itemCost: resolveNameBank({
 			'Eldritch orb': 1,
