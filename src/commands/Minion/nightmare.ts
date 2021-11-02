@@ -256,7 +256,7 @@ export default class extends BotCommand {
 				effectiveTime *= 0.96;
 			}
 			if (isPhosani) {
-				effectiveTime = reduceNumByPercent(effectiveTime, 25);
+				effectiveTime = reduceNumByPercent(effectiveTime, 31);
 				if (user.owns('Dragon claws')) {
 					effectiveTime = reduceNumByPercent(effectiveTime, 3);
 					soloBoosts.push('3% for Dragon claws');
