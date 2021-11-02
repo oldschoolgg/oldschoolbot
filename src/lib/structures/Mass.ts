@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable prefer-promise-reject-errors */
+import * as Sentry from '@sentry/node';
 import { MessageReaction, TextChannel, User } from 'discord.js';
 import { debounce, sleep, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
@@ -79,7 +80,11 @@ export class Mass {
 					usersReacted = tryGetReactions;
 				} catch (e) {
 					let reason = 'Unknown error';
-					if (e.message && e.message === 'Unknown Message') reason = 'Someone deleted the mass';
+					if (e.message && e.message === 'Unknown Message') {
+						reason = 'Someone deleted the mass';
+					} else {
+						Sentry.captureException(e);
+					}
 					reject(new Error(reason));
 					return;
 				}
