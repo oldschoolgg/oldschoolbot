@@ -366,7 +366,8 @@ export const enum BitField {
 	HasDexScroll = 16,
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
-	IsWikiContributor = 19
+	IsWikiContributor = 19,
+	HasSlepeyTablet = 20
 }
 
 interface BitFieldData {
@@ -523,3 +524,4 @@ export const projectiles: Record<ProjectileType, number[]> = {
 };
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
+export const PHOSANI_NIGHTMARE_ID = 9416;

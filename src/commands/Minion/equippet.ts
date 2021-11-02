@@ -7,11 +7,13 @@ import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { removeItemFromBank } from '../../lib/util';
+import resolveItems from '../../lib/util/resolveItems';
 
 export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
-	...growablePets.map(petSeries => petSeries.stages).flat(1)
+	...growablePets.map(petSeries => petSeries.stages).flat(1),
+	...resolveItems(['Little parasite'])
 ];
 
 export default class extends BotCommand {

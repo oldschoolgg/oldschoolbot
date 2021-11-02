@@ -32,7 +32,10 @@ export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs
 			return 'I can only kill a maximum of 10k nightmares a time!';
 		}
 		for (let i = 0; i < quantity; i++) {
-			bank = addBanks([bank, Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }] }).id]);
+			bank = addBanks([
+				bank,
+				Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id
+			]);
 		}
 		return new Bank(bank);
 	}
