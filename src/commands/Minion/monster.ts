@@ -50,6 +50,16 @@ export default class MinionCommand extends BotCommand {
 			totalItemBoost += boostAmount;
 			ownedBoostItems.push(itemNameFromID(parseInt(itemID)));
 		}
+		const OwnedPOHBoost=[]
+		let actPOH=false
+		if (monster.pohBoosts){
+		const [boostPercent, messages] = calcPOHBoosts(await msg.author.getPOH(), monster.pohBoosts);
+			if (boostPercent > 0) {
+				timeToFinish *= (100- boostPercent)/100;
+				OwnedPOHBoost.push(`${messages.join(" ")}`);
+				actPOH=true
+			}
+		}
 		const maxCanKill = Math.floor(msg.author.maxTripLength(Activity.MonsterKilling) / timeToFinish);
 
 		const QP = msg.author.settings.get(UserSettings.QP);
@@ -81,7 +91,23 @@ export default class MinionCommand extends BotCommand {
 				str.push(`You own ${ownedBoostItems.join(', ')} for a total boost of **${totalItemBoost}**%.\n`);
 			}
 		}
-
+		
+		if (monster.pohBoosts) {
+			const POHBoosts=[]
+			const usedslots=[]
+			for (const [slot, objBoosts] of Object.entries(monster.pohBoosts)) {
+				if (objBoosts === undefined) continue;
+				for (const [name, boostPercent] of Object.entries(objBoosts)) {	
+				POHBoosts.push(`${boostPercent}% for ${name}`);
+				usedslots.push([`${slot}`])
+			}
+			str.push(`** POH Boosts: **${POHBoosts.join(" or ")} .\n`)
+			if (actPOH == true){
+				str.push(`**Active POH Boosts: ** ${OwnedPOHBoost}. \n`);
+				}	
+			}
+		}
+		
 		str.push(`The normal time to kill ${monster.name} is ${formatDuration(monster.timeToFinish)}.`);
 
 		const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
