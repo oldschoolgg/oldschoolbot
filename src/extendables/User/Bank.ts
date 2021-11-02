@@ -11,6 +11,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
 import { bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank } from '../../lib/util';
+import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
@@ -165,7 +166,8 @@ export default class extends Extendable {
 		});
 	}
 
-	public async specialRemoveItems(this: User, bank: Bank) {
+	public async specialRemoveItems(this: User, _bank: Bank) {
+		const bank = determineRunes(this, _bank);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;

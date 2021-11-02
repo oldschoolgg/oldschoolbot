@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { ZALCANO_ID } from '../../../constants';
+import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { KalphiteKingMonster } from '../../../kalphiteking';
 import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
@@ -434,11 +434,12 @@ export const NightmareMonster: KillableMonster = {
 		"Inquisitor's mace",
 		'Eldritch orb',
 		'Harmonised orb',
-		'Volatile orb'
+		'Volatile orb',
+		'Parasitic egg'
 	]),
 	qpRequired: 10,
 	groupKillable: true,
-	respawnTime: Time.Minute * 2.5,
+	respawnTime: Time.Minute * 1.5,
 	levelRequirements: {
 		prayer: 43
 	},
@@ -454,7 +455,7 @@ export const NightmareMonster: KillableMonster = {
 		'Harmonised orb',
 		'Volatile orb'
 	]),
-	healAmountNeeded: 40 * 20,
+	healAmountNeeded: 55 * 20,
 	attackStyleToUse: GearStat.AttackCrush,
 	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {
@@ -509,5 +510,10 @@ export const effectiveMonsters = [
 		id: PUMPKINHEAD_ID,
 		name: 'Pumpkinhead',
 		aliases: ['pumpkinhead', 'ph']
+	},
+	{
+		name: "Phosani's Nightmare",
+		aliases: ['phosani', 'phosanis nightmare'],
+		id: PHOSANI_NIGHTMARE_ID
 	}
 ];

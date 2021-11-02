@@ -403,6 +403,7 @@ export const enum BitField {
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
 	IsWikiContributor = 19,
+	HasSlepeyTablet = 20,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -648,3 +649,5 @@ export const projectiles: Record<ProjectileType, number[]> = {
 	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
 	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
 };
+
+export const PHOSANI_NIGHTMARE_ID = 9416;
