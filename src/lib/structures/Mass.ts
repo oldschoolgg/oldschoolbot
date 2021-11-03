@@ -173,9 +173,9 @@ export class Mass {
 				}
 			});
 
-			collector.once('end', () => {
+			collector.once('end', async () => {
+				await start();
 				this.message!.removeAllReactions();
-				start();
 			});
 
 			for (const emoji of this.leader === undefined ? [ReactionEmoji.Join] : emojis) {
