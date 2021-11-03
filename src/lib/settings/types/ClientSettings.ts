@@ -107,6 +107,7 @@ export namespace ClientSettings {
 		export const GPSourceDaily = T<number>('gp_daily');
 		export const GPSourceItemContracts = T<number>('gp_ic');
 		export const GPSourceLuckyPick = T<number>('gp_luckypick');
+		export const GPSourceSlots = T<number>('gp_slots');
 	}
 
 	export const LockedSkills = T<readonly SkillsEnum[]>('locked_skills');

@@ -179,4 +179,5 @@ Client.defaultUserSchema
 	.add('selected_tame', 'any', { default: null })
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_slots', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('monkeys_fought', 'string', { array: true, default: [] });
