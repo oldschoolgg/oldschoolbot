@@ -1,5 +1,5 @@
 import { MessageButton, MessageOptions } from 'discord.js';
-import { chunk, randInt, sleep } from 'e';
+import { chunk, randInt, shuffleArr, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -61,7 +61,7 @@ function generateColumn() {
 }
 
 function getButtons(): ButtonInstance[] {
-	const columns = [1, 2, 3].map(() => generateColumn());
+	const columns = shuffleArr([1, 2, 3].map(() => generateColumn()));
 	const buttons: ButtonInstance[] = [];
 	for (let i = 0; i < 3; i++) {
 		buttons.push(columns[0][i]);
