@@ -1,6 +1,7 @@
 import { MessageButton, MessageOptions } from 'discord.js';
 import { chunk, randInt, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { toKMB } from 'oldschooljs/dist/util';
 
@@ -125,7 +126,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 		if (currentBalance < amount) {
 			return msg.channel.send("You don't have enough GP to make this bet.");
 		}
-		await msg.author.removeGP(amount);
+		await msg.author.removeItemsFromBank(new Bank().add('Coins', amount));
 		const buttonsToShow = getButtons();
 		let chunkedButtons = chunk(buttonsToShow, 3);
 
@@ -155,7 +156,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 		await sleep(500);
 		sentMessage.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [] }) });
 
-		await msg.author.addGP(amountReceived);
+		await msg.author.addItemsToBank(new Bank().add('Coins', amountReceived));
 		await updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceSlots, amountReceived - amount);
 		await updateGPTrackSetting(msg.author, UserSettings.GPSlots, amountReceived - amount);
 
