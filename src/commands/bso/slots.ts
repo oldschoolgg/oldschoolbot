@@ -83,7 +83,19 @@ export default class extends BotCommand {
 	}
 
 	determineWinnings(bet: number, buttons: ButtonInstance[]) {
-		const winningRow = chunk(buttons, 3).find(row => row.every(b => b.name === row[0].name));
+		const winningRows = chunk(buttons, 3).filter(row => row.every(b => b.name === row[0].name));
+		let winningRow: ButtonInstance[] | undefined = undefined;
+		if (winningRows.length === 1) {
+			[winningRow, ,] = winningRows;
+		} else {
+			let highestWin = 0;
+			for (const testRow of winningRows) {
+				if (testRow[0].mod(bet) > highestWin) {
+					winningRow = testRow;
+					highestWin = testRow[0].mod(bet);
+				}
+			}
+		}
 		let amountReceived = winningRow ? winningRow[0].mod(bet) : 0;
 		return {
 			amountReceived,
@@ -126,11 +138,18 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 		if (currentBalance < amount) {
 			return msg.channel.send("You don't have enough GP to make this bet.");
 		}
-		await msg.author.removeItemsFromBank(new Bank().add('Coins', amount));
+
 		const buttonsToShow = getButtons();
 		let chunkedButtons = chunk(buttonsToShow, 3);
 
 		const { winningRow, amountReceived } = this.determineWinnings(amount, buttonsToShow);
+
+		const deltaCoins = amountReceived - amount;
+		if (deltaCoins < 0) {
+			await msg.author.removeItemsFromBank(new Bank().add('Coins', Math.abs(deltaCoins)));
+		} else {
+			await msg.author.addItemsToBank(new Bank().add('Coins', deltaCoins));
+		}
 
 		function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }): MessageOptions['components'] {
 			return chunkedButtons.map(c =>
@@ -156,7 +175,6 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 		await sleep(500);
 		sentMessage.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [] }) });
 
-		await msg.author.addItemsToBank(new Bank().add('Coins', amountReceived));
 		await updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceSlots, amountReceived - amount);
 		await updateGPTrackSetting(msg.author, UserSettings.GPSlots, amountReceived - amount);
 
