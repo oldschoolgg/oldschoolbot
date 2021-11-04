@@ -1,5 +1,5 @@
 import { MessageButton, MessageOptions } from 'discord.js';
-import { chunk, randInt, sleep } from 'e';
+import { chunk, randInt, shuffleArr, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -39,7 +39,7 @@ const buttonsData: Button[] = [
 	},
 	{
 		name: 'Smokey',
-		mod: (qty: number) => qty * 10,
+		mod: (qty: number) => qty * 15,
 		emoji: '886284971914969149'
 	}
 ];
@@ -57,7 +57,7 @@ function generateColumn() {
 		if (column.some(i => i.name === button.name)) continue;
 		column.push({ ...button, id: randInt(1, 999_999_999).toString() });
 	}
-	return column;
+	return shuffleArr(column);
 }
 
 function getButtons(): ButtonInstance[] {
@@ -83,7 +83,9 @@ export default class extends BotCommand {
 	}
 
 	determineWinnings(bet: number, buttons: ButtonInstance[]) {
-		const winningRow = chunk(buttons, 3).find(row => row.every(b => b.name === row[0].name));
+		const winningRow = chunk(buttons, 3)
+			.filter(row => row.every(b => b.name === row[0].name))
+			.sort((a, b) => b[0].mod(bet) - a[0].mod(bet))[0];
 		let amountReceived = winningRow ? winningRow[0].mod(bet) : 0;
 		return {
 			amountReceived,
@@ -103,7 +105,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 		}
 		if (msg.flagArgs.simulate && !production) {
 			let houseBalance = 0;
-			let betQuantity = 10_000;
+			let betQuantity = 500_000;
 
 			for (let i = 0; i < betQuantity; i++) {
 				let betSize = amount;
