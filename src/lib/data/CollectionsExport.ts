@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
+import { gracefulCapes, gracefulFeet, gracefulHands, gracefulHoods, gracefulLegs, gracefulTops } from './similarItems';
 
 export interface IToReturnCollection {
 	category: string;
@@ -1841,7 +1842,6 @@ export const capesCL = resolveItems([
 	'Kourend graceful cape',
 	'Brimhaven graceful cape',
 	'Dark graceful cape',
-	'Trailblazer graceful cape',
 	'3rd age druidic cloak',
 	'3rd age cloak',
 	'Ancient cloak',
@@ -1879,3 +1879,11 @@ export const questCL = resolveItems([
 ]);
 
 export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
+export const gracefulCL = resolveItems([
+	...gracefulHoods,
+	...gracefulTops,
+	...gracefulLegs,
+	...gracefulFeet,
+	...gracefulHands,
+	...gracefulCapes
+]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)']).includes(id));

@@ -66,6 +66,7 @@ import {
 	giantMoleCL,
 	gnomeRestaurantCL,
 	godWarsDungeonGodswordShards,
+	gracefulCL,
 	grotesqueGuardiansCL,
 	hallowedSepulchreCL,
 	hesporiCL,
@@ -926,6 +927,10 @@ export const allCollectionLogs: ICollection = {
 			Implings: {
 				counts: false,
 				items: implingsCL
+			},
+			Graceful: {
+				counts: false,
+				items: gracefulCL
 			}
 		}
 	}
