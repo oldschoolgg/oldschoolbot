@@ -77,8 +77,7 @@ export default class extends BotCommand {
 			usage: '[amount:int{20000000,1000000000}]',
 			oneAtTime: true,
 			cooldown: 3,
-			altProtection: true,
-			aliases: ['lp']
+			altProtection: true
 		});
 	}
 
