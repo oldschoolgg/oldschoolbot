@@ -22,16 +22,6 @@ interface ButtonInstance extends Button {
 
 const buttonsData: Button[] = [
 	{
-		name: 'Scruffy',
-		mod: (qty: number) => qty,
-		emoji: '886284972221157526'
-	},
-	{
-		name: 'Plopper',
-		mod: (qty: number) => qty * 1.5,
-		emoji: '886284972367945828'
-	},
-	{
 		name: 'Peky',
 		mod: (qty: number) => qty * 2,
 		emoji: '886284972263084133'
@@ -54,12 +44,10 @@ const buttonsData: Button[] = [
 ];
 
 const buttonTable = new SimpleTable<Button>()
-	.add(buttonsData[0], 55)
+	.add(buttonsData[0], 80)
 	.add(buttonsData[1], 50)
 	.add(buttonsData[2], 50)
-	.add(buttonsData[3], 50)
-	.add(buttonsData[4], 50)
-	.add(buttonsData[5], 45);
+	.add(buttonsData[3], 30);
 
 function generateColumn() {
 	const column: ButtonInstance[] = [];
@@ -86,9 +74,9 @@ function getButtons(): ButtonInstance[] {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<amount:int{20000000,5000000000}>',
+			usage: '[amount:int{20000000,1000000000}]',
 			oneAtTime: true,
-			cooldown: 15,
+			cooldown: 3,
 			altProtection: true,
 			aliases: ['lp']
 		});
@@ -103,16 +91,22 @@ export default class extends BotCommand {
 		};
 	}
 
-	async run(msg: KlasaMessage, [amount]: [number]) {
+	async run(msg: KlasaMessage, [amount]: [number | undefined]) {
 		if (msg.author.isIronman) {
 			return msg.channel.send("Ironmen can't gamble! Go pickpocket some men for GP.");
+		}
+		if (!amount) {
+			return msg.channel.send(`**Slots**
+Get 3 in a row horizontally to win! You must gamble between 20m and 1b.       
+
+${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 		}
 		if (msg.flagArgs.simulate && !production) {
 			let houseBalance = 0;
 			let betQuantity = 10_000;
 
 			for (let i = 0; i < betQuantity; i++) {
-				let betSize = randInt(20_000_000, 5_000_000_000);
+				let betSize = amount;
 				houseBalance += betSize;
 				const buttons = getButtons();
 				const { amountReceived } = this.determineWinnings(betSize, buttons);
