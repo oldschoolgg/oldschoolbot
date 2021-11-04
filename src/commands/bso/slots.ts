@@ -148,7 +148,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 		if (deltaCoins < 0) {
 			await msg.author.removeItemsFromBank(new Bank().add('Coins', Math.abs(deltaCoins)));
 		} else {
-			await msg.author.addItemsToBank(new Bank().add('Coins', deltaCoins));
+			await msg.author.addItemsToBank(new Bank().add('Coins', deltaCoins), false, false);
 		}
 
 		function getCurrentButtons({ columnsToHide }: { columnsToHide: number[] }): MessageOptions['components'] {
