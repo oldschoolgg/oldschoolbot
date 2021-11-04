@@ -7,6 +7,7 @@ import { table } from 'table';
 
 import { production } from '../../config';
 import { Activity, BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -20,6 +21,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
+import resolveItems from '../../lib/util/resolveItems';
 import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
@@ -403,15 +405,23 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			'Master wand': 1,
 			'Nightmare staff': 5,
 			'Eldritch nightmare staff': 9,
-			'Kodai wand': 10
+			'Kodai wand': 10,
+			'Virtus wand': 11
 		};
-		const rangeWeapons = { 'Armadyl crossbow': 1, 'Twisted bow': 12 };
+		const rangeWeapons = { 'Armadyl crossbow': 1, 'Twisted bow': 12, 'Zaryte bow': 13, 'Hellfire bow': 13 };
 		for (const [name, setup, weapons] of [
 			['mage', mageGear, mageWeapons],
 			['range', rangeGear, rangeWeapons]
 		] as const) {
 			const weapon = setup.equippedWeapon();
-			if (!weapon || !Object.keys(weapons).map(itemID).includes(weapon.id)) {
+			if (
+				!weapon ||
+				!Object.keys(weapons)
+					.map(itemID)
+					.map(i => [i, ...getSimilarItems(i)])
+					.flat(2)
+					.includes(weapon.id)
+			) {
 				return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
 			}
 		}
@@ -465,8 +475,14 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		if (!projectile) {
 			return 'You have no projectiles equipped in your range setup.';
 		}
-		const projectileType: ProjectileType = rangeGear.equippedWeapon()!.name === 'Twisted bow' ? 'arrow' : 'bolt';
-		const projectilesForTheirType = projectiles[projectileType];
+		const projectileType: ProjectileType = resolveItems(['Twisted bow', 'Zaryte bow', 'Hellfire bow']).some(i =>
+			rangeGear.hasEquipped(i, true, true)
+		)
+			? 'arrow'
+			: 'bolt';
+		const projectilesForTheirType = rangeGear.hasEquipped('Hellfire bow')
+			? resolveItems(['Hellfire arrow'])
+			: projectiles[projectileType];
 		if (!projectilesForTheirType.includes(projectile.item)) {
 			return `You're using incorrect projectiles, you're using a ${
 				rangeGear.equippedWeapon()!.name
