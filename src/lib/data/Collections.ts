@@ -83,6 +83,7 @@ import {
 	giantMoleCL,
 	gnomeRestaurantCL,
 	godWarsDungeonGodswordShards,
+	gracefulCL,
 	grotesqueGuardiansCL,
 	hallowedSepulchreCL,
 	hesporiCL,
@@ -1150,6 +1151,10 @@ export const allCollectionLogs: ICollection = {
 					...pumpkinHeadUniqueTable.allItems
 				]),
 				counts: false
+			},
+			Graceful: {
+				counts: false,
+				items: gracefulCL
 			}
 		}
 	}
