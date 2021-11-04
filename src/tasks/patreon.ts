@@ -226,7 +226,7 @@ export default class PatreonTask extends Task {
 				const duplicateDate = new Date(duplicateAccount.lastChargeDate).getTime();
 				// If the other account paid after this one did, we should skip this account.
 				if (duplicateDate > thisDate) {
-					result.push(
+					messages.push(
 						`Discord[${patron.discordID}] Patron[${patron.patreonID}] is a duplicate of Patron[${duplicateAccount.patreonID}], so continuing.`
 					);
 					continue;
@@ -248,7 +248,11 @@ export default class PatreonTask extends Task {
 				settings.update(UserSettings.PatreonID, patron.patreonID);
 			}
 			const userBitfield = settings.get(UserSettings.BitField);
-			if ([BitField.isModerator, BitField.isContributor].some(bit => userBitfield.includes(bit))) {
+			if (
+				[BitField.isModerator, BitField.isContributor, BitField.IsWikiContributor].some(bit =>
+					userBitfield.includes(bit)
+				)
+			) {
 				continue;
 			}
 
