@@ -1,5 +1,5 @@
 import { MessageButton, MessageOptions } from 'discord.js';
-import { chunk, randInt, shuffleArr, sleep } from 'e';
+import { chunk, noOp, randInt, shuffleArr, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -99,7 +99,8 @@ export default class extends BotCommand {
 		}
 		if (!amount) {
 			return msg.channel.send(`**Slots**
-Get 3 in a row horizontally to win! You must gamble between 20m and 1b.       
+- Get 3 in a row horizontally to win! You must gamble between 20m and 1b.
+- The bot will remove your bet from your balance, and then you will have a chance at receiving a multiple of your bet back, from 2x up to 15x.
 
 ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 		}
@@ -147,22 +148,24 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 			);
 		}
 
-		const sentMessage = await msg.channel.send({
-			content: 'Slots',
-			components: getCurrentButtons({ columnsToHide: [0, 1, 2] })
-		});
+		const sentMessage = await msg.channel
+			.send({
+				content: 'Slots',
+				components: getCurrentButtons({ columnsToHide: [0, 1, 2] })
+			})
+			.catch(noOp);
 		await sleep(2000);
-		sentMessage.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [1, 2] }) });
+		sentMessage?.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [1, 2] }) }).catch(noOp);
 		await sleep(500);
-		sentMessage.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [2] }) });
+		sentMessage?.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [2] }) }).catch(noOp);
 		await sleep(500);
-		sentMessage.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [] }) });
+		sentMessage?.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [] }) }).catch(noOp);
 
 		await msg.author.addItemsToBank(new Bank().add('Coins', amountReceived));
 		await updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceSlots, amountReceived - amount);
 		await updateGPTrackSetting(msg.author, UserSettings.GPSlots, amountReceived - amount);
 
-		return sentMessage.edit({
+		return sentMessage?.edit({
 			content:
 				amountReceived === 0
 					? "Unlucky, you didn't win anything, and lost your bet!"
