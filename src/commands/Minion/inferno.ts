@@ -470,7 +470,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			'Kodai wand': 10,
 			'Virtus wand': 12
 		};
-		const rangeWeapons = { 'Armadyl crossbow': 1, 'Twisted bow': 12 };
+		const rangeWeapons = { 'Armadyl crossbow': 1, 'Twisted bow': 12, 'Zaryte bow': 13, 'Hellfire bow': 13 };
 		for (const [name, setup, weapons] of [
 			['mage', mageGear, mageWeapons],
 			['range', rangeGear, rangeWeapons]

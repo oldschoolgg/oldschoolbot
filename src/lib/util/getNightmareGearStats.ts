@@ -1,14 +1,14 @@
 import { calcWhatPercent } from 'e';
 import { KlasaUser } from 'klasa';
 
-import { NIGHTMARES_HP, ZAM_HASTA_CRUSH } from '../constants';
+import { NIGHTMARES_HP, PHOSANI_NIGHTMARE_ID, ZAM_HASTA_CRUSH } from '../constants';
 import { maxOtherStats } from '../gear';
 import { NightmareMonster } from '../minions/data/killableMonsters';
-import { UserSettings } from '../settings/types/UserSettings';
 
 export function getNightmareGearStats(
 	user: KlasaUser,
-	team: string[]
+	team: string[],
+	isPhosani: boolean
 ): [
 	{
 		chanceOfDeath: number;
@@ -21,7 +21,7 @@ export function getNightmareGearStats(
 	},
 	string
 ] {
-	const kc = user.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ?? 1;
+	const kc = user.getKC(isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id) || 1;
 	const gear = user.getGear('melee');
 	const weapon = gear.equippedWeapon();
 	const gearStats = gear.stats;

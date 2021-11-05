@@ -620,7 +620,7 @@ export function getUsername(client: KlasaClient, id: string): string {
 
 export async function runCommand(
 	message: KlasaMessage,
-	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask' | 'rp',
+	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask' | 'rp' | 'equip',
 	args: unknown[]
 ) {
 	const command = message.client.commands.get(commandName);

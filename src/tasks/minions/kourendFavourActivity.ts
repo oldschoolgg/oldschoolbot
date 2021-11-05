@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { Emoji } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -10,10 +11,14 @@ export default class extends Task {
 	async run(data: KourendFavourActivityTaskOptions) {
 		let { favour, quantity, userID, channelID } = data;
 		const user = await this.client.fetchUser(userID);
-		const favourPoints = favour.pointsGain * quantity;
+		let favourPoints = favour.pointsGain * quantity;
 		let shayzienDone = false;
 		let totalPoints: number | undefined = undefined;
 		const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
+
+		const hasFlappy = user.usingPet('Flappy');
+		if (hasFlappy) favourPoints *= 2;
+
 		for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {
 			if (key.toLowerCase() === favour.name.toLowerCase()) {
 				totalPoints = Math.min(Number(value) + favourPoints, 100);
@@ -63,6 +68,9 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished gaining ${favour.name} Favour, adding ${favourPoints}%.${
 			totalPoints ? ` You now have a total of ${totalPoints}%.` : ''
 		}${loot ? ` You also recieved ${loot}.` : ''}`;
+		if (hasFlappy) {
+			str += `\n\n${Emoji.Flappy} 2x Favour`;
+		}
 
 		handleTripFinish(
 			this.client,

@@ -1,7 +1,7 @@
 import { User } from 'discord.js';
 import { noOp, sleep } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 
 import { Channel, Emoji, Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -90,8 +90,9 @@ export default class extends BotCommand {
 			return msg.channel.send(Emoji.Bpaptu);
 		}
 
-		await msg.author.removeGP(amount);
-		await user.removeGP(amount);
+		const b = new Bank().add('Coins', amount);
+		await msg.author.removeItemsFromBank(b);
+		await user.removeItemsFromBank(b);
 
 		await duelMsg.edit(`${user.username} accepted the duel. You both enter the duel arena...`).catch(noOp);
 
@@ -112,7 +113,7 @@ export default class extends BotCommand {
 		const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses);
 		loser.settings.update(UserSettings.Stats.DuelLosses, lossesOfLoser + 1);
 
-		await winner.addGP(winningAmount);
+		await winner.addItemsToBank(new Bank().add('Coins', winningAmount));
 
 		if (amount >= 1_000_000_000) {
 			this.client.emit(

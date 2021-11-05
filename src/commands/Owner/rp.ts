@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer } from '../../lib/constants';
+import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer, userTimers } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { evalMathExpression } from '../../lib/expressionParser';
@@ -19,6 +19,23 @@ import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
 import PatreonTask from '../../tasks/patreon';
+
+function generateReadyThings(user: KlasaUser) {
+	const readyThings = [];
+	for (const [cooldown, setting, name] of userTimers) {
+		const lastTime = user.settings.get(setting);
+		const difference = Date.now() - lastTime;
+
+		const cd = typeof cooldown === 'number' ? cooldown : cooldown(user);
+
+		readyThings.push(
+			`**${name}:** ${
+				difference < cooldown ? `*${formatDuration(Date.now() - (lastTime + cd), true)}*` : 'ready'
+			}`
+		);
+	}
+	return readyThings;
+}
 
 function itemSearch(msg: KlasaMessage, name: string) {
 	const items = Items.filter(i => {
@@ -109,33 +126,34 @@ export default class extends BotCommand {
 				const premiumDate = u.settings.get(UserSettings.PremiumBalanceExpiryDate);
 				const premiumTier = u.settings.get(UserSettings.PremiumBalanceTier);
 
-				return msg.channel.send(
-					`**${u.username}**
+				let str = `**${getUsername(this.client, u.id)}**
+${generateReadyThings(u).join('\n')}
 **Perk Tier:** ${getUsersPerkTier(u)}
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
 **Current Task:** ${taskText}
 **Blacklisted:** ${isBlacklisted ? 'Yes' : 'No'}
 **Patreon/Github:** ${u.settings.get(UserSettings.PatreonID) ? 'Yes' : 'None'}/${
-						u.settings.get(UserSettings.GithubID) ? 'Yes' : 'None'
-					}
+					u.settings.get(UserSettings.GithubID) ? 'Yes' : 'None'
+				}
 **Ironman:** ${u.isIronman ? 'Yes' : 'No'}
 **Premium Balance:** ${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
-						premiumTier ? `Tier ${premiumTier}` : ''
-					}
+					premiumTier ? `Tier ${premiumTier}` : ''
+				}
 
 **Main Account:** ${
-						u.settings.get(UserSettings.MainAccount) !== null
-							? `${getUsername(this.client, u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
-									UserSettings.MainAccount
-							  )}]`
-							: 'None'
-					}
+					u.settings.get(UserSettings.MainAccount) !== null
+						? `${getUsername(this.client, u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
+								UserSettings.MainAccount
+						  )}]`
+						: 'None'
+				}
 **Ironman Alt Accounts:** ${u.settings
-						.get(UserSettings.IronmanAlts)
-						.map(id => `${getUsername(this.client, id)}[${id}]`)}
-`
-				);
+					.get(UserSettings.IronmanAlts)
+					.map(id => `${getUsername(this.client, id)}[${id}]`)}
+`;
+
+				return msg.channel.send(str);
 			}
 			case 'itemsearch':
 			case 'is': {

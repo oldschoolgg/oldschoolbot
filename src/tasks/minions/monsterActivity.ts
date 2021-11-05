@@ -1,6 +1,6 @@
-import { calcWhatPercent, randArrItem, randInt, reduceNumByPercent, shuffleArr, Time } from 'e';
+import { calcWhatPercent, randArrItem, reduceNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
-import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
+import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Emoji } from '../../lib/constants';
@@ -19,8 +19,6 @@ import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, roll, runCommand } from '../../lib/util';
-import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -284,45 +282,6 @@ export default class extends Task {
 						loot.add(randArrItem(skeleItemsCanGet));
 						break;
 					}
-				}
-			}
-		}
-
-		const hasGottenAGregoyle = user.cl().has('Gregoyle');
-		let goyleChance = hasGottenAGregoyle ? 4 : 2;
-		goyleChance = Math.floor(Math.max(2, (Time.Hour / duration) * goyleChance));
-		let rangeNeededToFeed = hasGottenAGregoyle ? [7, 10] : [3, 5];
-
-		if (monster.name === 'Gargoyle' && roll(goyleChance)) {
-			const userBank = user.bank();
-			if (userBank.has("Choc'rock")) {
-				const timesFed = user.settings.get(UserSettings.TimesFedGregoyle);
-				await user.removeItemsFromBank(new Bank().add("Choc'rock"));
-				await user.settings.update(UserSettings.TimesFedGregoyle, timesFed + 1);
-				if (timesFed >= randInt(rangeNeededToFeed[0], rangeNeededToFeed[1])) {
-					await user.settings.update(UserSettings.TimesFedGregoyle, 0);
-					loot.add('Gregoyle');
-					str +=
-						"\n\n**A young Gargoyle finds a Choc'rock in your bank, and eats it. They love it so much, and after being fed so much by you, they decide to become your pet!**";
-				} else {
-					str += `\n\n**A young Gargoyle finds a Choc'rock in your bank, and eats it. They loved it! This is the ${formatOrdinal(
-						timesFed + 1
-					)} time you've fed this gargoyle.**`;
-				}
-			} else {
-				const otherCandy = shuffleArr([
-					'Candy teeth',
-					'Toffeet',
-					'Chocolified skull',
-					'Rotten sweets',
-					'Hairyfloss',
-					'Eyescream',
-					'Goblinfinger soup',
-					"Benny's brain brew"
-				]).find(i => userBank.has(getOSItem(i).id));
-				if (otherCandy) {
-					await user.removeItemsFromBank(new Bank().add(otherCandy, 1));
-					str += `\n\n**A young Gargoyle finds a ${otherCandy} in your bank, and eats it. They hate it, and spat it out!**`;
 				}
 			}
 		}

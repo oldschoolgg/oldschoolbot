@@ -81,7 +81,7 @@ const usables = [
 	{
 		item: getOSItem('Mysterious token'),
 		run: async (msg: KlasaMessage) => {
-			if (await bossActiveIsActiveOrSoonActive()) {
+			if ((await bossActiveIsActiveOrSoonActive()) || !msg.client.owners.has(msg.author)) {
 				return msg.channel.send("You can't use your Mysterious token right now.");
 			}
 			await startBossEvent({
@@ -126,6 +126,18 @@ const usables = [
 			await msg.author.removeItemsFromBank(new Bank().add('Arcane prayer scroll'));
 			await msg.author.settings.update(UserSettings.BitField, BitField.HasArcaneScroll);
 			return msg.channel.send('You used your Arcane prayer scroll, and unlocked the Augury prayer.');
+		}
+	},
+	{
+		item: getOSItem('Slepey tablet'),
+		run: async (msg: KlasaMessage) => {
+			const bits = msg.author.bitfield;
+			if (bits.includes(BitField.HasSlepeyTablet)) {
+				return msg.channel.send('You have already used a Slepey tablet.');
+			}
+			await msg.author.removeItemsFromBank(new Bank().add('Slepey tablet'));
+			await msg.author.settings.update(UserSettings.BitField, BitField.HasSlepeyTablet);
+			return msg.channel.send('You used your Slepey tablet, and unlocked the Slepe teleport.');
 		}
 	}
 ];

@@ -1,4 +1,4 @@
-import { randArrItem, randInt, sleep, Time } from 'e';
+import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -14,11 +14,10 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks, addItemToBank, bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
+import { addItemToBank, bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {
@@ -423,23 +422,6 @@ export default class extends Task {
 				if (hesporiSeeds > 0) loot[itemID('Hespori seed')] = hesporiSeeds;
 			}
 
-			const gotHweenThing = roll(20);
-			if (gotHweenThing) {
-				const name = user.minionName;
-				const items = [
-					[`${name} found a 'Human appendage' in the farm... spooky.`, new Bank().add('Human appendage')],
-					[`${name} found a 'Human blood' in the farm... scary.`, new Bank().add('Human blood')],
-					[`${name} found a 'Human tooth' in the farm... freaky.`, new Bank().add('Human tooth')],
-					[`${name} found a 'Sliced femur' in the farm... mysterious.`, new Bank().add('Sliced femur')]
-				] as const;
-				const item = randArrItem(items);
-				if (item[1]) {
-					loot = addBanks([item[1].bank, loot]);
-				}
-				await sendToChannelID(this.client, channelID, { content: `${user}, **${item[0]}**` });
-				await sleep(3000);
-			}
-
 			if (tangleroot) {
 				infoStr.push('\n```diff');
 				infoStr.push("\n- You have a funny feeling you're being followed...");
@@ -496,7 +478,7 @@ export default class extends Task {
 
 			if (!planting) {
 				infoStr.push('\nThe patches have been cleared. They are ready to have new seeds planted.');
-			} else if (!gotHweenThing) {
+			} else {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 

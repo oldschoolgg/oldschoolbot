@@ -3,7 +3,7 @@ import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
-import { BitField, Channel, Color, PerkTier, SupportServer } from '../../lib/constants';
+import { Channel, Color, spawnLampResetTime, SupportServer } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
@@ -21,15 +21,6 @@ export default class extends BotCommand {
 		if (!isPrimaryPatron(msg.author)) {
 			return msg.channel.send('Shared-perk accounts cannot use this.');
 		}
-		const bf = msg.author.settings.get(UserSettings.BitField);
-
-		const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
-		const hasTier5 = msg.author.perkTier >= PerkTier.Five;
-		const hasTier4 = !hasTier5 && msg.author.perkTier === PerkTier.Four;
-
-		if (!hasPerm && !hasTier5 && !hasTier4) {
-			return;
-		}
 
 		if (!msg.guild || msg.guild.id !== SupportServer) {
 			return msg.channel.send('You can only do this in the Oldschool.gg server.');
@@ -43,13 +34,8 @@ export default class extends BotCommand {
 		const lastDate = msg.author.settings.get(UserSettings.LastSpawnLamp);
 		const difference = currentDate - lastDate;
 
-		let cooldown = [PerkTier.Six, PerkTier.Five].includes(msg.author.perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+		const cooldown = spawnLampResetTime(msg.author);
 
-		if (!hasTier5 && !hasTier4 && hasPerm) {
-			cooldown = Time.Hour * 48;
-		}
-
-		//                                                                                      Kyra user
 		if (difference < cooldown && !(this.client.owners.has(msg.author) || msg.author.id === '242043489611808769')) {
 			const duration = formatDuration(Date.now() - (lastDate + cooldown));
 			return msg.channel.send(`You can spawn another lamp in ${duration}.`);

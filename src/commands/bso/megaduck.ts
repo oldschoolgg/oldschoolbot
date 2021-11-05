@@ -6,6 +6,7 @@ import { readFileSync } from 'fs';
 import jimp from 'jimp';
 import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { O } from 'ts-toolbelt';
 
 import { Events, PerkTier } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
@@ -153,15 +154,12 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 
 	async run(msg: KlasaMessage, [direction]: ['up' | 'down' | 'left' | 'right' | undefined]) {
 		const settings = await getGuildSettings(msg.guild!);
-		const location = settings.get(GuildSettings.MegaDuckLocation);
+		const location: O.Readonly<MegaDuckLocation> = { ...settings.get(GuildSettings.MegaDuckLocation) };
 		if (msg.flagArgs.reset && msg.member && msg.member.permissions.has('ADMINISTRATOR')) {
-			await msg.confirm('Are you sure you want to reset your megaduck back to Falador Park?');
-			await settings.update(GuildSettings.MegaDuckLocation, {
-				...location,
-				x: defaultMegaDuckLocation.x,
-				y: defaultMegaDuckLocation.y,
-				placesVisited: []
-			});
+			await msg.confirm(
+				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, including the paths its taken, and where its been, and who has contributed steps.'
+			);
+			await settings.update(GuildSettings.MegaDuckLocation, { ...defaultMegaDuckLocation });
 		}
 		if (msg.flagArgs.all && msg.author.perkTier >= PerkTier.Five) {
 			const image = await this.makeAllGuildsImage();

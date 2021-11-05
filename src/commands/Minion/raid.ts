@@ -21,6 +21,7 @@ import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
 import { addBanks, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -156,7 +157,9 @@ export default class extends BotCommand {
 			minSize: 2,
 			maxSize: 15,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is hosting a Chambers of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			message: `${msg.author.username} is hosting a ${
+				isChallengeMode ? '**Challenge mode** ' : ''
+			}Chambers of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -183,7 +186,9 @@ export default class extends BotCommand {
 				if (
 					isChallengeMode &&
 					!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-					!user.hasItemEquippedOrInBank('Twisted bow')
+					resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).every(
+						i => !user.hasItemEquippedAnywhere(i) && user.owns(i)
+					)
 				) {
 					return [
 						true,

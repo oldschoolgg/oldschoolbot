@@ -1,12 +1,13 @@
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { KlasaMessage } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS } from '../config';
+import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
@@ -132,6 +133,7 @@ export const enum Emoji {
 	Slayer = '<:slayer:630911040560824330>',
 	SlayerMasterCape = '<:slayerMasterCape:869497600284459008>',
 	RunecraftMasterCape = '<:runecraftMasterCape:869497600997470258>',
+	Flappy = '<:Flappy:884799334737129513>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -403,6 +405,7 @@ export const enum BitField {
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
 	IsWikiContributor = 19,
+	HasSlepeyTablet = 20,
 	HasGivenBirthdayPack = 200,
 	HasPermanentSpawnLamp = 201,
 	HasScrollOfFarming = 202,
@@ -648,3 +651,31 @@ export const projectiles: Record<ProjectileType, number[]> = {
 	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
 	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
 };
+
+export const PHOSANI_NIGHTMARE_ID = 9416;
+
+export const dailyResetTime = Time.Hour * 4;
+export const spawnLampResetTime = (user: KlasaUser) => {
+	const bf = user.settings.get(UserSettings.BitField);
+
+	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
+	const hasTier5 = user.perkTier >= PerkTier.Five;
+	const hasTier4 = !hasTier5 && user.perkTier === PerkTier.Four;
+
+	let cooldown = [PerkTier.Six, PerkTier.Five].includes(user.perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+
+	if (!hasTier5 && !hasTier4 && hasPerm) {
+		cooldown = Time.Hour * 48;
+	}
+
+	return cooldown;
+};
+export const itemContractResetTime = Time.Hour * 8;
+export const giveBoxResetTime = Time.Hour * 24;
+
+export const userTimers = [
+	[dailyResetTime, UserSettings.LastDailyTimestamp, 'Daily'],
+	[itemContractResetTime, UserSettings.LastItemContractDate, 'ItemContract'],
+	[giveBoxResetTime, UserSettings.LastGivenBox, 'GiveBox'],
+	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
+] as const;

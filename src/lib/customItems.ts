@@ -1888,7 +1888,7 @@ setCustomItem(48_264, 'Hairyfloss', 'Coal', {}, 10_000);
 setCustomItem(48_265, 'Goblinfinger soup', 'Coal', {}, 10_000);
 setCustomItem(48_266, "Benny's brain brew", 'Coal', {}, 10_000);
 setCustomItem(48_267, 'Roasted newt', 'Coal', {}, 10_000);
-setCustomItem(48_268, 'Gregoyle', 'Herbi', {}, 10_000);
+setCustomItem(48_268, 'Gregoyle', 'Herbi', {}, 1_000_000);
 setCustomItem(48_273, "Choc'rock", 'Coal', {}, 100_000);
 
 setCustomItem(48_305, 'Haunted cloak', 'Red cape', {}, 10_000);
@@ -2004,8 +2004,8 @@ setCustomItem(
 	},
 	10_000_000
 );
-setCustomItem(48_324, "TzKal-Zuk's skin", 'Coal', {}, 10_000_000);
 setCustomItem(48_325, 'Jal-MejJak', 'Herbi', {}, 10_000_000);
+setCustomItem(48_326, "TzKal-Zuk's skin", 'Coal', {}, 10_000_000);
 
 /**
  * Misc Items

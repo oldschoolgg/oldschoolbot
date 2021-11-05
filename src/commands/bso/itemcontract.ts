@@ -1,9 +1,10 @@
 import { MessageEmbed } from 'discord.js';
-import { randArrItem, Time } from 'e';
+import { randArrItem, roll } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { itemContractResetTime } from '../../lib/constants';
 import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/data/openables';
 import { kalphiteKingLootTable } from '../../lib/kalphiteking';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
@@ -13,7 +14,7 @@ import { nexLootTable } from '../../lib/nex';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
-import { runeAlchablesTable } from '../../lib/simulation/sharedTables';
+import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, formatDuration, itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
@@ -21,7 +22,6 @@ import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 
-const eightHours = Time.Hour * 8;
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])
 	.tertiary(50, LampTable)
@@ -72,6 +72,20 @@ const itemContractItems = Array.from(
 	])
 );
 
+function pickItemContract(streak: number) {
+	let item = randArrItem(allMbTables);
+	if (streak > 50) {
+		let fifties = Math.floor(streak / 50);
+		for (let i = 0; i < fifties; i++) {
+			if (roll(35 + i * 5)) {
+				item = randArrItem(allThirdAgeItems);
+			}
+		}
+	}
+
+	return item;
+}
+
 export default class DailyCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -106,23 +120,23 @@ export default class DailyCommand extends BotCommand {
 			});
 		}
 		if (!msg.author.settings.get(UserSettings.CurrentItemContract)) {
-			await msg.author.settings.update(UserSettings.CurrentItemContract, randArrItem(itemContractItems));
+			await msg.author.settings.update(UserSettings.CurrentItemContract, pickItemContract(streak));
 		}
 		const currentItem = getOSItem(msg.author.settings.get(UserSettings.CurrentItemContract)!);
-		let durationRemaining = formatDuration(Date.now() - (lastDate + eightHours));
+		let durationRemaining = formatDuration(Date.now() - (lastDate + itemContractResetTime));
 
 		const embed = new MessageEmbed().setThumbnail(
 			`https://static.runelite.net/cache/item/icon/${currentItem.id}.png`
 		);
 
-		if (difference < eightHours) {
+		if (difference < itemContractResetTime) {
 			return msg.channel.send(
 				`You have no item contract available at the moment. Come back in ${durationRemaining}. ${total}`
 			);
 		}
 
 		if (str === 'skip') {
-			if (difference < eightHours) {
+			if (difference < itemContractResetTime) {
 				return msg.channel.send({
 					embeds: [
 						embed.setDescription(
@@ -137,7 +151,7 @@ export default class DailyCommand extends BotCommand {
 					embeds: [
 						embed.setDescription(
 							`Are you sure you want to skip your item contract? You won't be able to get another contract for ${formatDuration(
-								eightHours / 2
+								itemContractResetTime / 2
 							)}. Say \`y\` to confirm.`
 						)
 					]
@@ -154,13 +168,16 @@ export default class DailyCommand extends BotCommand {
 					return sellMsg.edit('Cancelled.');
 				}
 			}
-			const newItem = randArrItem(allMbTables);
-			await msg.author.settings.update(UserSettings.LastItemContractDate, currentDate - eightHours / 2);
+			const newItem = pickItemContract(streak);
+			await msg.author.settings.update(
+				UserSettings.LastItemContractDate,
+				currentDate - itemContractResetTime / 2
+			);
 			await msg.author.settings.update(UserSettings.CurrentItemContract, newItem);
 			await msg.author.settings.reset(UserSettings.ItemContractStreak);
 			return msg.channel.send(
 				`You skipped your item contract, your streak was reset, and your next contract will be available in ${formatDuration(
-					eightHours / 2
+					itemContractResetTime / 2
 				)}.`
 			);
 		}
@@ -222,7 +239,7 @@ export default class DailyCommand extends BotCommand {
 		await Promise.all([
 			msg.author.settings.update(UserSettings.LastItemContractDate, currentDate),
 			msg.author.settings.update(UserSettings.TotalItemContracts, totalContracts + 1),
-			msg.author.settings.update(UserSettings.CurrentItemContract, randArrItem(allMbTables)),
+			msg.author.settings.update(UserSettings.CurrentItemContract, pickItemContract(newStreak)),
 			msg.author.settings.update(
 				UserSettings.ItemContractBank,
 				addBanks([msg.author.settings.get(UserSettings.ItemContractBank), cost.bank])

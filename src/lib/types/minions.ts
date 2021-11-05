@@ -383,6 +383,13 @@ export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	quantity: number;
+	isPhosani?: boolean;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions

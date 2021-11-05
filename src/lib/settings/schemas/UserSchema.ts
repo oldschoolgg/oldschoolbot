@@ -63,8 +63,6 @@ Client.defaultUserSchema
 	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })
 	.add('ironman_alts', 'string', { array: true, default: [] })
 	.add('main_account', 'string', { default: null })
-	.add('times_fed_gregoyle', 'integer', { default: 0 })
-	.add('wrong_accusations', 'integer', { default: 0 })
 	.add('premium_balance_tier', 'integer', { default: null })
 	.add('premium_balance_expiry_date', 'integer', { default: null, maximum: Number.MAX_SAFE_INTEGER })
 	.add('slayer', folder =>
@@ -182,4 +180,5 @@ Client.defaultUserSchema
 	.add('selected_tame', 'any', { default: null })
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_slots', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('monkeys_fought', 'string', { array: true, default: [] });

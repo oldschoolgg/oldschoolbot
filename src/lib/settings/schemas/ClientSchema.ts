@@ -49,6 +49,7 @@ Client.defaultClientSchema
 	.add('dropped_items', 'any', { default: {} })
 	.add('runecraft_cost', 'any', { default: {} })
 	.add('smithing_cost', 'any', { default: {} })
+	.add('nightmare_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
@@ -74,6 +75,7 @@ Client.defaultClientSchema
 	.add('gp_daily', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_ic', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_slots', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 
 	.add('double_loot_finish_time', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('locked_skills', 'any', { array: true, default: [] })
