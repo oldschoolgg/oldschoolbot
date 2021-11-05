@@ -155,10 +155,6 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 			})
 			.catch(noOp);
 		await sleep(2000);
-		sentMessage?.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [1, 2] }) }).catch(noOp);
-		await sleep(500);
-		sentMessage?.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [2] }) }).catch(noOp);
-		await sleep(500);
 		sentMessage?.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [] }) }).catch(noOp);
 
 		await msg.author.addItemsToBank(new Bank().add('Coins', amountReceived));
