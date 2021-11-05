@@ -6,7 +6,12 @@ import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
+import { giveBoxResetTime } from '../commands/bso/givebox';
+import { itemContractResetTime } from '../commands/bso/itemcontract';
+import { spawnLampResetTime } from '../commands/bso/spawnlamp';
+import { dailyResetTime } from '../commands/Minion/daily';
 import { DISCORD_SETTINGS } from '../config';
+import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
@@ -652,3 +657,10 @@ export const projectiles: Record<ProjectileType, number[]> = {
 };
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
+
+export const userTimers = [
+	[dailyResetTime, UserSettings.LastDailyTimestamp, 'Daily'],
+	[itemContractResetTime, UserSettings.LastItemContractDate, 'ItemContract'],
+	[giveBoxResetTime, UserSettings.LastGivenBox, 'GiveBox'],
+	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
+] as const;

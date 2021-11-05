@@ -9,6 +9,8 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemID, roll } from '../../lib/util';
 import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 
+export const giveBoxResetTime = Time.Hour * 24;
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -26,15 +28,14 @@ export default class extends BotCommand {
 		const currentDate = Date.now();
 		const lastDate = msg.author.settings.get(UserSettings.LastGivenBox);
 		const difference = currentDate - lastDate;
-		const timeLimit = Time.Hour * 24;
 		const isOwner = this.client.owners.has(msg.author);
 
 		// If no user or not an owner and can not send one yet, show time till next box.
-		if (!user || (difference < timeLimit && !isOwner)) {
-			if (difference >= timeLimit || isOwner) {
+		if (!user || (difference < giveBoxResetTime && !isOwner)) {
+			if (difference >= giveBoxResetTime || isOwner) {
 				return msg.channel.send('You can give another box!');
 			}
-			return msg.channel.send(`You can give another box in ${formatDuration(timeLimit - difference)}`);
+			return msg.channel.send(`You can give another box in ${formatDuration(giveBoxResetTime - difference)}`);
 		}
 		// Disable box to self or irons
 		if (user.id === msg.author.id) return msg.channel.send("You can't give boxes to yourself!");

@@ -21,7 +21,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 
-const eightHours = Time.Hour * 8;
+export const itemContractResetTime = Time.Hour * 8;
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])
 	.tertiary(50, LampTable)
@@ -123,20 +123,20 @@ export default class DailyCommand extends BotCommand {
 			await msg.author.settings.update(UserSettings.CurrentItemContract, pickItemContract(streak));
 		}
 		const currentItem = getOSItem(msg.author.settings.get(UserSettings.CurrentItemContract)!);
-		let durationRemaining = formatDuration(Date.now() - (lastDate + eightHours));
+		let durationRemaining = formatDuration(Date.now() - (lastDate + itemContractResetTime));
 
 		const embed = new MessageEmbed().setThumbnail(
 			`https://static.runelite.net/cache/item/icon/${currentItem.id}.png`
 		);
 
-		if (difference < eightHours) {
+		if (difference < itemContractResetTime) {
 			return msg.channel.send(
 				`You have no item contract available at the moment. Come back in ${durationRemaining}. ${total}`
 			);
 		}
 
 		if (str === 'skip') {
-			if (difference < eightHours) {
+			if (difference < itemContractResetTime) {
 				return msg.channel.send({
 					embeds: [
 						embed.setDescription(
@@ -151,7 +151,7 @@ export default class DailyCommand extends BotCommand {
 					embeds: [
 						embed.setDescription(
 							`Are you sure you want to skip your item contract? You won't be able to get another contract for ${formatDuration(
-								eightHours / 2
+								itemContractResetTime / 2
 							)}. Say \`y\` to confirm.`
 						)
 					]
@@ -169,12 +169,15 @@ export default class DailyCommand extends BotCommand {
 				}
 			}
 			const newItem = pickItemContract(streak);
-			await msg.author.settings.update(UserSettings.LastItemContractDate, currentDate - eightHours / 2);
+			await msg.author.settings.update(
+				UserSettings.LastItemContractDate,
+				currentDate - itemContractResetTime / 2
+			);
 			await msg.author.settings.update(UserSettings.CurrentItemContract, newItem);
 			await msg.author.settings.reset(UserSettings.ItemContractStreak);
 			return msg.channel.send(
 				`You skipped your item contract, your streak was reset, and your next contract will be available in ${formatDuration(
-					eightHours / 2
+					itemContractResetTime / 2
 				)}.`
 			);
 		}

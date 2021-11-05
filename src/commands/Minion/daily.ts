@@ -8,7 +8,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, isWeekend, rand, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { formatDuration, isWeekend, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
 
 if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
 	fs.writeFileSync(
@@ -32,6 +32,8 @@ const options = {
 	errors: ['time']
 };
 
+export const dailyResetTime = Time.Hour * 4;
+
 export default class DailyCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -52,11 +54,8 @@ export default class DailyCommand extends BotCommand {
 		const difference = currentDate - lastVoteDate;
 
 		// If they have already claimed a daily in the past 4h
-		if (difference < Time.Hour * 4) {
-			let duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 4));
-			if (msg.author.settings.get('troll')) {
-				duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * rand(0, 500)));
-			}
+		if (difference < dailyResetTime) {
+			let duration = formatDuration(Date.now() - (lastVoteDate + dailyResetTime));
 			return msg.channel.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
 		}
 

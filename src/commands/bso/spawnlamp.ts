@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { randInt, Time } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
 import { BitField, Channel, Color, PerkTier, SupportServer } from '../../lib/constants';
@@ -9,6 +9,22 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
 import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { LampTable } from '../../lib/xpLamps';
+
+export const spawnLampResetTime = (user: KlasaUser) => {
+	const bf = user.settings.get(UserSettings.BitField);
+
+	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
+	const hasTier5 = user.perkTier >= PerkTier.Five;
+	const hasTier4 = !hasTier5 && user.perkTier === PerkTier.Four;
+
+	let cooldown = [PerkTier.Six, PerkTier.Five].includes(user.perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+
+	if (!hasTier5 && !hasTier4 && hasPerm) {
+		cooldown = Time.Hour * 48;
+	}
+
+	return cooldown;
+};
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -20,15 +36,6 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		if (!isPrimaryPatron(msg.author)) {
 			return msg.channel.send('Shared-perk accounts cannot use this.');
-		}
-		const bf = msg.author.settings.get(UserSettings.BitField);
-
-		const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
-		const hasTier5 = msg.author.perkTier >= PerkTier.Five;
-		const hasTier4 = !hasTier5 && msg.author.perkTier === PerkTier.Four;
-
-		if (!hasPerm && !hasTier5 && !hasTier4) {
-			return;
 		}
 
 		if (!msg.guild || msg.guild.id !== SupportServer) {
@@ -43,11 +50,7 @@ export default class extends BotCommand {
 		const lastDate = msg.author.settings.get(UserSettings.LastSpawnLamp);
 		const difference = currentDate - lastDate;
 
-		let cooldown = [PerkTier.Six, PerkTier.Five].includes(msg.author.perkTier) ? Time.Hour * 12 : Time.Hour * 24;
-
-		if (!hasTier5 && !hasTier4 && hasPerm) {
-			cooldown = Time.Hour * 48;
-		}
+		const cooldown = spawnLampResetTime(msg.author);
 
 		//                                                                                      Kyra user
 		if (difference < cooldown && !(this.client.owners.has(msg.author) || msg.author.id === '242043489611808769')) {
