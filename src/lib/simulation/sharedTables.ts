@@ -1,7 +1,25 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { GemRockTable } from '../skilling/skills/mining';
+import resolveItems from '../util/resolveItems';
 import { SeedTable } from './seedTable';
+
+export const allThirdAgeItems = resolveItems([
+	'3rd age range coif',
+	'3rd age range top',
+	'3rd age range legs',
+	'3rd age vambraces',
+	'3rd age robe top',
+	'3rd age robe',
+	'3rd age mage hat',
+	'3rd age amulet',
+	'3rd age plateskirt',
+	'3rd age platelegs',
+	'3rd age platebody',
+	'3rd age full helmet',
+	'3rd age kiteshield',
+	'Ring of 3rd age'
+]);
 
 export const Ahrims = new LootTable()
 	.add("Ahrim's hood")

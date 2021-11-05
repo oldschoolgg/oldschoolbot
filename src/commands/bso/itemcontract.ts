@@ -1,5 +1,5 @@
 import { MessageEmbed } from 'discord.js';
-import { randArrItem, Time } from 'e';
+import { randArrItem, roll, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -13,7 +13,7 @@ import { nexLootTable } from '../../lib/nex';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
-import { runeAlchablesTable } from '../../lib/simulation/sharedTables';
+import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addBanks, formatDuration, itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
@@ -72,6 +72,20 @@ const itemContractItems = Array.from(
 	])
 );
 
+function pickItemContract(streak: number) {
+	let item = randArrItem(allMbTables);
+	if (streak > 50) {
+		let fifties = Math.floor(streak / 50);
+		for (let i = 0; i < fifties; i++) {
+			if (roll(35 + i * 5)) {
+				item = randArrItem(allThirdAgeItems);
+			}
+		}
+	}
+
+	return item;
+}
+
 export default class DailyCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -106,7 +120,7 @@ export default class DailyCommand extends BotCommand {
 			});
 		}
 		if (!msg.author.settings.get(UserSettings.CurrentItemContract)) {
-			await msg.author.settings.update(UserSettings.CurrentItemContract, randArrItem(itemContractItems));
+			await msg.author.settings.update(UserSettings.CurrentItemContract, pickItemContract(streak));
 		}
 		const currentItem = getOSItem(msg.author.settings.get(UserSettings.CurrentItemContract)!);
 		let durationRemaining = formatDuration(Date.now() - (lastDate + eightHours));
@@ -154,7 +168,7 @@ export default class DailyCommand extends BotCommand {
 					return sellMsg.edit('Cancelled.');
 				}
 			}
-			const newItem = randArrItem(allMbTables);
+			const newItem = pickItemContract(streak);
 			await msg.author.settings.update(UserSettings.LastItemContractDate, currentDate - eightHours / 2);
 			await msg.author.settings.update(UserSettings.CurrentItemContract, newItem);
 			await msg.author.settings.reset(UserSettings.ItemContractStreak);
@@ -222,7 +236,7 @@ export default class DailyCommand extends BotCommand {
 		await Promise.all([
 			msg.author.settings.update(UserSettings.LastItemContractDate, currentDate),
 			msg.author.settings.update(UserSettings.TotalItemContracts, totalContracts + 1),
-			msg.author.settings.update(UserSettings.CurrentItemContract, randArrItem(allMbTables)),
+			msg.author.settings.update(UserSettings.CurrentItemContract, pickItemContract(newStreak)),
 			msg.author.settings.update(
 				UserSettings.ItemContractBank,
 				addBanks([msg.author.settings.get(UserSettings.ItemContractBank), cost.bank])
