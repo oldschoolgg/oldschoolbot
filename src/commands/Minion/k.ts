@@ -32,6 +32,7 @@ import {
 	SlayerActivityConstants
 } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/KingGoldemar';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
@@ -143,14 +144,15 @@ export default class extends BotCommand {
 			return msg.channel.send(`You can't kill ${monster.name}, because you're not on a slayer task.`);
 		}
 
-		if (monster.id === 696_969) {
-			throw 'You would be foolish to try to face King Goldemar in a solo fight.';
+		if (monster.id === KingGoldemar.id) {
+			return msg.channel.send('You would be foolish to try to face King Goldemar in a solo fight.');
 		}
 
 		if (msg.author.usingPet('Ishi') && monster.name !== 'Ogress Warrior') {
 			this.run(msg, [null, 'Ogress Warrior', '']);
 			return msg.channel.send("Let's kill some ogress warriors instead? 🥰 🐳");
 		}
+
 		// Set chosen boost based on priority:
 		const myCBOpts = msg.author.settings.get(UserSettings.CombatOptions);
 		const boostChoice = determineBoostChoice({
@@ -208,7 +210,7 @@ export default class extends BotCommand {
 			boosts.push('20% boost for Gregoyle');
 		}
 		if (msg.author.hasItemEquippedAnywhere('Dwarven warhammer') && !monster.wildy) {
-			timeToFinish *= 0.6;
+			timeToFinish = reduceNumByPercent(timeToFinish, 40);
 			boosts.push('40% boost for Dwarven warhammer');
 		}
 		if (msg.author.getGear('wildy').hasEquipped(['Hellfire bow']) && monster.wildy) {
