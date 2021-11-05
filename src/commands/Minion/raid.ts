@@ -21,6 +21,7 @@ import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
 import { addBanks, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -185,7 +186,9 @@ export default class extends BotCommand {
 				if (
 					isChallengeMode &&
 					!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-					!user.hasItemEquippedOrInBank('Twisted bow')
+					resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).every(
+						i => !user.hasItemEquippedAnywhere(i) && user.owns(i)
+					)
 				) {
 					return [
 						true,
