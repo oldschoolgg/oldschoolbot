@@ -30,7 +30,7 @@ function generateReadyThings(user: KlasaUser) {
 
 		readyThings.push(
 			`**${name}:** ${
-				difference < cooldown ? `ready in ${formatDuration(Date.now() - (lastTime + cd), true)}` : 'ready'
+				difference < cooldown ? `*${formatDuration(Date.now() - (lastTime + cd), true)}*` : 'ready'
 			}`
 		);
 	}
