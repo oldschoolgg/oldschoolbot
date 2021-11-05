@@ -1,9 +1,10 @@
 import { MessageEmbed } from 'discord.js';
-import { randArrItem, roll, Time } from 'e';
+import { randArrItem, roll } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { itemContractResetTime } from '../../lib/constants';
 import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/data/openables';
 import { kalphiteKingLootTable } from '../../lib/kalphiteking';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
@@ -21,7 +22,6 @@ import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 
-export const itemContractResetTime = Time.Hour * 8;
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])
 	.tertiary(50, LampTable)

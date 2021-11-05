@@ -2,7 +2,7 @@ import { Time } from 'e';
 import * as fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { COINS_ID, Emoji, SupportServer } from '../../lib/constants';
+import { COINS_ID, dailyResetTime, Emoji, SupportServer } from '../../lib/constants';
 import pets from '../../lib/data/pets';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -31,8 +31,6 @@ const options = {
 	time: 13_000,
 	errors: ['time']
 };
-
-export const dailyResetTime = Time.Hour * 4;
 
 export default class DailyCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

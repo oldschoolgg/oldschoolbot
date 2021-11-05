@@ -1,15 +1,11 @@
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { KlasaMessage } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
-import { giveBoxResetTime } from '../commands/bso/givebox';
-import { itemContractResetTime } from '../commands/bso/itemcontract';
-import { spawnLampResetTime } from '../commands/bso/spawnlamp';
-import { dailyResetTime } from '../commands/Minion/daily';
 import { DISCORD_SETTINGS } from '../config';
 import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
@@ -657,6 +653,25 @@ export const projectiles: Record<ProjectileType, number[]> = {
 };
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
+
+export const dailyResetTime = Time.Hour * 4;
+export const spawnLampResetTime = (user: KlasaUser) => {
+	const bf = user.settings.get(UserSettings.BitField);
+
+	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
+	const hasTier5 = user.perkTier >= PerkTier.Five;
+	const hasTier4 = !hasTier5 && user.perkTier === PerkTier.Four;
+
+	let cooldown = [PerkTier.Six, PerkTier.Five].includes(user.perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+
+	if (!hasTier5 && !hasTier4 && hasPerm) {
+		cooldown = Time.Hour * 48;
+	}
+
+	return cooldown;
+};
+export const itemContractResetTime = Time.Hour * 8;
+export const giveBoxResetTime = Time.Hour * 24;
 
 export const userTimers = [
 	[dailyResetTime, UserSettings.LastDailyTimestamp, 'Daily'],

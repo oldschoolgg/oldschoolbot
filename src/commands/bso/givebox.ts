@@ -1,15 +1,12 @@
-import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Channel, PerkTier } from '../../lib/constants';
+import { Channel, giveBoxResetTime, PerkTier } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemID, roll } from '../../lib/util';
 import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
-
-export const giveBoxResetTime = Time.Hour * 24;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

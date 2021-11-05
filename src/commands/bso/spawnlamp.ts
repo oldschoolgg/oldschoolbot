@@ -1,30 +1,14 @@
 import { MessageEmbed } from 'discord.js';
 import { randInt, Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
-import { BitField, Channel, Color, PerkTier, SupportServer } from '../../lib/constants';
+import { Channel, Color, spawnLampResetTime, SupportServer } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
 import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { LampTable } from '../../lib/xpLamps';
-
-export const spawnLampResetTime = (user: KlasaUser) => {
-	const bf = user.settings.get(UserSettings.BitField);
-
-	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
-	const hasTier5 = user.perkTier >= PerkTier.Five;
-	const hasTier4 = !hasTier5 && user.perkTier === PerkTier.Four;
-
-	let cooldown = [PerkTier.Six, PerkTier.Five].includes(user.perkTier) ? Time.Hour * 12 : Time.Hour * 24;
-
-	if (!hasTier5 && !hasTier4 && hasPerm) {
-		cooldown = Time.Hour * 48;
-	}
-
-	return cooldown;
-};
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -52,7 +36,6 @@ export default class extends BotCommand {
 
 		const cooldown = spawnLampResetTime(msg.author);
 
-		//                                                                                      Kyra user
 		if (difference < cooldown && !(this.client.owners.has(msg.author) || msg.author.id === '242043489611808769')) {
 			const duration = formatDuration(Date.now() - (lastDate + cooldown));
 			return msg.channel.send(`You can spawn another lamp in ${duration}.`);
