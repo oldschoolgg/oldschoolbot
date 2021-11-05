@@ -70,4 +70,7 @@ export class AnalyticsTable extends BaseEntity {
 
 	@Column({ type: 'bigint', nullable: true })
 	public gpLuckyPick!: number;
+
+	@Column({ type: 'bigint', nullable: true })
+	public gpSlots!: number;
 }
