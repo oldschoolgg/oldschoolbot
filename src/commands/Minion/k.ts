@@ -200,6 +200,13 @@ export default class extends BotCommand {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 		}
+		if (
+			msg.author.usingPet('Gregoyle') &&
+			[Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id].includes(monster.id)
+		) {
+			timeToFinish = reduceNumByPercent(timeToFinish, 20);
+			boosts.push('20% boost for Gregoyle');
+		}
 		if (msg.author.hasItemEquippedAnywhere('Dwarven warhammer') && !monster.wildy) {
 			timeToFinish *= 0.6;
 			boosts.push('40% boost for Dwarven warhammer');
