@@ -105,7 +105,7 @@ export default class MinionCommand extends BotCommand {
 					str.push(`**Active POH Boosts:  ** ${OwnedPOHBoost}. \n`);
 				}
 			}
-		}	
+		}
 		str.push(`The normal time to kill ${monster.name} is ${formatDuration(monster.timeToFinish)}.`);
 
 		const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
