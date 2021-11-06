@@ -130,7 +130,7 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Monkfish',
 		id: itemID('Monkfish'),
-		healAmount: 16,
+		healAmount: 16
 	},
 	{
 		name: 'Anchovy pizza',
@@ -140,7 +140,7 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Cooked karambwan',
 		id: itemID('Cooked karambwan'),
-		healAmount: 18
+		healAmount: 18,
 		pvmBoost: 1
 	},
 	{
@@ -156,7 +156,7 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Mushroom potato',
 		id: itemID('Mushroom potato'),
-		healAmount: 20
+		healAmount: 20,
 		pvmBoost: 2
 	},
 	{
@@ -174,13 +174,13 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Pineapple pizza',
 		id: itemID('Pineapple pizza'),
-		healAmount: 22
+		healAmount: 22,
 		pvmBoost: 3
 	},
 	{
 		name: 'Summer pie',
 		id: itemID('Summer pie'),
-		healAmount: 22
+		healAmount: 22,
 		pvmBoost: 3
 	},
 	{
@@ -192,7 +192,7 @@ export const Eatables: readonly Eatable[] = [
 	{
 		name: 'Tuna potato',
 		id: itemID('Tuna potato'),
-		healAmount: 22
+		healAmount: 22,
 		pvmBoost: 3
 	},
 	{
