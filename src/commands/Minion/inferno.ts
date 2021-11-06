@@ -30,6 +30,11 @@ import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit
+} from '../../tasks/minions/dungeoneeringActivity';
 import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
@@ -119,6 +124,11 @@ export default class extends BotCommand {
 
 		cost.add('Saradomin brew(4)', 8);
 		cost.add('Super restore(4)', 12);
+		if (isEmergedZuk) {
+			cost.add('Heat res. brew', 4);
+			cost.add('Heat res. restore', 7);
+		}
+
 		cost.add('Ranging potion(4)');
 		cost.add('Stamina potion(4)');
 
@@ -426,11 +436,34 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			'Ancestral'
 		);
 
+		const hasDivine = rangeGear.hasEquipped('Divine spirit shield') || mageGear.hasEquipped('Divine spirit shield');
+		preZukDeathChance.add(hasDivine, -12, 'Divine');
+		emergedZukDeathChance.add(hasDivine, -5, 'Divine');
 		preZukDeathChance.add(
-			rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield'),
+			!hasDivine &&
+				(rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield')),
 			-5,
 			'Ely'
 		);
+		if (isEmergedZuk) {
+			duration.add(user.hasItemEquippedOrInBank('Dwarven warhammer'), 7, 'DWWH');
+		}
+
+		if (isEmergedZuk) {
+			const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true);
+			const rangeGora = rangeGear.hasEquipped(gorajanArcherOutfit, true);
+			const mageGora = mageGear.hasEquipped(gorajanOccultOutfit, true);
+			for (const [name, has] of [
+				['melee', meleeGora],
+				['range', rangeGora],
+				['mage', mageGora]
+			] as const) {
+				preZukDeathChance.add(has, -1.5, `Gorajan ${name}`);
+				zukDeathChance.add(has, -1.5, `Gorajan ${name}`);
+				emergedZukDeathChance.add(has, -3, `Gorajan ${name}`);
+				duration.add(has, 5, `Gorajan ${name}`);
+			}
+		}
 
 		const hasSuffering =
 			rangeGear.hasEquipped('Ring of suffering (i)') || mageGear.hasEquipped('Ring of suffering (i)');
@@ -718,7 +751,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const usersRangeStats = rangeGear.stats;
 		const zukKC = await msg.author.getMinigameScore('Inferno');
 
-		const isEmergedZuk = Boolean(msg.flagArgs.emerged);
+		const isEmergedZuk = Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.e);
 
 		const res = await this.infernoRun({
 			user: msg.author,

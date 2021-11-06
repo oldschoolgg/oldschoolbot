@@ -203,7 +203,9 @@ export const theInfernoCL = resolveItems([
 	'Infernal cape',
 	'Tokkul',
 	'Infernal core',
-	'Infernal bulwark'
+	"TzKal-Zuk's skin",
+	'Head of TzKal Zuk',
+	'Jal-MejJak'
 ]);
 export const kalphiteQueenCL = resolveItems([
 	'Kalphite princess',

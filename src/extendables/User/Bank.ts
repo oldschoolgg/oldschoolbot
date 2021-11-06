@@ -183,7 +183,10 @@ export default class extends Extendable {
 				continue;
 			}
 			if (Object.values(projectiles).flat(2).includes(item.id)) {
-				if (ammoRemove !== null) throw new Error('Tried to remove more than 1 ranged ammunition.');
+				if (ammoRemove !== null) {
+					bankRemove.add(item.id, quantity);
+					continue;
+				}
 				ammoRemove = [item, quantity];
 				continue;
 			}

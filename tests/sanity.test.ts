@@ -12,6 +12,15 @@ describe('Sanity', () => {
 	});
 	test('isSuperUntradeable', () => {
 		expect(isSuperUntradeable(getOSItem('TzKal Cape'))).toEqual(true);
+		expect(isSuperUntradeable(getOSItem("TzKal-Zuk's skin"))).toEqual(true);
+		expect(isSuperUntradeable(getOSItem('Jal-MejJak'))).toEqual(true);
+		expect(isSuperUntradeable(getOSItem('Infernal slayer helmet'))).toEqual(true);
+		expect(isSuperUntradeable(getOSItem('Infernal slayer helmet(i)'))).toEqual(true);
+		expect(isSuperUntradeable(getOSItem('TzKal cape'))).toEqual(true);
+		expect(isSuperUntradeable(getOSItem('Head of TzKal Zuk'))).toEqual(true);
+		expect(isSuperUntradeable(getOSItem('Infernal bulwark'))).toEqual(true);
+		expect(isSuperUntradeable(getOSItem('Infernal core'))).toEqual(true);
+
 		for (const cape of masterCapesCL) {
 			expect(isSuperUntradeable(cape)).toEqual(true);
 		}

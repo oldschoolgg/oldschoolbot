@@ -659,15 +659,41 @@ const bsoItems: Createable[] = [
 		}
 	},
 	{
-		name: 'TzKal-Zuk cape',
+		name: 'TzKal cape',
 		inputItems: {
 			[itemID("TzKal-Zuk's skin")]: 1,
-			[itemID('Onyx')]: 10,
+			[itemID('Onyx')]: 20,
 			[itemID('Infernal cape')]: 1,
 			[itemID('Abyssal cape')]: 1
 		},
 		outputItems: {
-			[itemID('TzKal-Zuk cape')]: 1
+			[itemID('TzKal cape')]: 1
+		}
+	},
+	{
+		name: 'Infernal slayer helmet',
+		inputItems: {
+			[itemID('Head of TzKal Zuk')]: 1,
+			[itemID('Onyx')]: 30,
+			[itemID('Black mask')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal slayer helmet')]: 1
+		}
+	},
+	{
+		name: 'Infernal slayer helmet(i)',
+		inputItems: {
+			[itemID('Infernal slayer helmet')]: 1,
+			[itemID('Onyx')]: 10,
+			[itemID('Magus scroll')]: 1,
+			[itemID('Gorajan shards')]: 3,
+			[itemID('Torva full helm')]: 1,
+			[itemID('Pernix cowl')]: 1,
+			[itemID('Virtus mask')]: 1
+		},
+		outputItems: {
+			[itemID('Infernal slayer helmet(i)')]: 1
 		}
 	}
 ];

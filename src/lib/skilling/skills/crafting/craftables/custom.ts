@@ -45,8 +45,8 @@ export const customCraftables: Craftable[] = [
 		tickRate: 3
 	},
 	{
-		name: 'TzKal slayer helmet',
-		id: itemID('TzKal slayer helmet'),
+		name: 'Infernal slayer helmet',
+		id: itemID('Infernal slayer helmet'),
 		level: 110,
 		xp: 15_210,
 		inputItems: new Bank({ 'Head of TzKal Zuk': 1, Onyx: 10, 'Slayer helmet (i)': 1 }),

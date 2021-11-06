@@ -1,6 +1,7 @@
 import { itemID } from 'oldschooljs/dist/util';
 
 import { Gear } from '../src/lib/structures/Gear';
+import { gorajanWarriorOutfit } from '../src/tasks/minions/dungeoneeringActivity';
 
 describe('Gear', () => {
 	const testGear = new Gear({
@@ -164,5 +165,25 @@ describe('Gear', () => {
 		expect(bsoDyedGear2.hasEquipped('Gorajan archer gloves')).toBeFalsy();
 		expect(bsoDyedGear2.hasEquipped('Gorajan occult top (Celestial)')).toBeFalsy();
 		expect(bsoDyedGear2.hasEquipped('Twisted bownana')).toBeFalsy();
+	});
+
+	test('inferno items', () => {
+		const gear = new Gear({
+			head: 'Infernal slayer helmet(i)',
+			body: 'Gorajan warrior top',
+			legs: 'Gorajan warrior legs',
+			feet: 'Gorajan warrior boots',
+			hands: 'Gorajan warrior gloves'
+		});
+		expect(gear.hasEquipped('Gorajan warrior helmet')).toBeTruthy();
+		expect(gear.hasEquipped('Gorajan occult helmet')).toBeTruthy();
+		expect(gear.hasEquipped('Gorajan archer helmet')).toBeTruthy();
+		expect(gear.hasEquipped(gorajanWarriorOutfit, true)).toBeTruthy();
+		const gear2 = new Gear({
+			head: 'Infernal slayer helmet'
+		});
+		expect(gear2.hasEquipped('Gorajan warrior helmet')).toBeFalsy();
+		expect(gear2.hasEquipped('Gorajan occult helmet')).toBeFalsy();
+		expect(gear2.hasEquipped('Gorajan archer helmet')).toBeFalsy();
 	});
 });

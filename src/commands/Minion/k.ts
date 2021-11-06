@@ -238,9 +238,17 @@ export default class extends BotCommand {
 		// Black mask and salve don't stack.
 		const salveBoost = boosts.join('').toLowerCase().includes('salve amulet');
 		if (!salveBoost) {
-			if (isOnTask && msg.author.hasItemEquippedOrInBank('TzKal slayer helmet')) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('20% for TzKal slayer helmet on task');
+			if (isOnTask && msg.author.hasItemEquippedOrInBank('Infernal slayer helmet(i)')) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 18);
+				boosts.push('22% for Infernal slayer helmet(i) on task');
+			} else if (
+				isOnTask &&
+				msg.author.hasItemEquippedOrInBank('Infernal slayer helmet') &&
+				!attackStyles.includes(SkillsEnum.Ranged) &&
+				!attackStyles.includes(SkillsEnum.Magic)
+			) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 17);
+				boosts.push('18% for Infernal slayer helmet on task');
 			} else if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 				if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
 					timeToFinish = reduceNumByPercent(timeToFinish, 15);

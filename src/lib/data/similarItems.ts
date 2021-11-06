@@ -31,7 +31,7 @@ const slayerHelmSimilar = resolveItems([
 	'Turquoise slayer helmet',
 	'Hydra slayer helmet',
 	'Twisted slayer helmet',
-	'TzKal slayer helmet'
+	'Infernal slayer helmet'
 ]);
 const slayerHelmSimilarI = resolveItems([
 	'Black slayer helmet (i)',
@@ -42,7 +42,7 @@ const slayerHelmSimilarI = resolveItems([
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
 	'Slayer helmet (i)',
-	'TzKal slayer helmet'
+	'Infernal slayer helmet(i)'
 ]);
 const bowfaCorruptSimilar = resolveItems([
 	25_869, // Red, 'duplicate' according to osrsbox item-search
@@ -311,7 +311,10 @@ const source: [string, (string | number)[]][] = [
 	['Salve amulet (e)', ['Salve amulet(ei)']],
 	['Salve amulet (i)', ['Salve amulet(ei)']],
 	['Zaryte bow', ['Hellfire bow']],
-	['Twisted bow', ['Hellfire bow']]
+	['Twisted bow', ['Hellfire bow']],
+	['Gorajan archer helmet', ['Infernal slayer helmet(i)']],
+	['Gorajan occult helmet', ['Infernal slayer helmet(i)']],
+	['Gorajan warrior helmet', ['Infernal slayer helmet(i)']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

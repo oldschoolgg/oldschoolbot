@@ -149,12 +149,15 @@ export default class extends Task {
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
 			baseBank.add(zukLoot);
 			if (isEmergedZuk) {
-				zukLoot.add('TzKal cape');
+				zukLoot.add("TzKal-Zuk's skin");
 				if (roll(10)) {
 					zukLoot.add('Infernal core');
 				}
-				if (roll(10)) {
+				if (roll(15)) {
 					zukLoot.add('Head of TzKal Zuk');
+				}
+				if (roll(100)) {
+					zukLoot.add('Jal-MejJak');
 				}
 			}
 
