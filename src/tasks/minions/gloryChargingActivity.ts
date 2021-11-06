@@ -14,13 +14,13 @@ export default class extends Task {
 		let deaths = 0;
 		let loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
-			if (roll(25)) {
+			if (roll(9)) {
 				deaths++;
-			}
+			} else {
 				for (let i = 0; i < gloriesInventorySize; i++) {
 					if (roll(25_000)) {
 						loot.add('Amulet of eternal glory');
-					else {
+					} else {
 						loot.add('Amulet of glory(6)');
 					}
 				}
@@ -35,7 +35,7 @@ export default class extends Task {
 				: `${user}, ${user.minionName} finished charging ${amnt} Amulets of glory.`;
 
 		if (loot.length !== 0 && deaths > 0) {
-			str += ` They died ${deaths}x times, causing the loss of ${(gloriesInventorySize - 3) * deaths} glories.`;
+			str += ` They died ${deaths}x times, causing the loss of ${gloriesInventorySize * deaths} glories.`;
 		}
 
 		if (loot.has('Amulet of eternal glory')) {
