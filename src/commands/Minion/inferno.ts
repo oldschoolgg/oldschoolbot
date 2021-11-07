@@ -533,14 +533,14 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 				'Offhand drygore mace'
 			]).filter(i => allMeleeGearItems.includes(i)).length;
 			if (amountOfDrygoreEquipped < 2) {
-				return 'You need strong kalphite weapon to pierce TzKal-Zuk skin!';
+				return 'You need strong kalphite weapons to pierce TzKal-Zuk skin!';
 			}
 			if (
 				!resolveItems(['Torva platebody', 'Torva platelegs', 'Torva boots', 'Torva gloves']).every(i =>
 					allMeleeGearItems.includes(i)
 				)
 			) {
-				return 'You need stronger melee armor! TzKal-Zuk will crush you.';
+				return 'You need stronger melee armor! TzKal-Zuk will crush you. Try getting Torva or Gorajan.';
 			}
 		}
 		duration.add(isEmergedZuk && allMeleeGearItems.includes(itemID('Ignis ring(i)')), 5, 'Ignis ring(i)');
