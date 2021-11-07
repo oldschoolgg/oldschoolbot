@@ -14,7 +14,7 @@
 		"@sapphire/discord-utilities": "^2.2.2",
 		"@sapphire/discord.js-utilities": "^3.0.0-next.600390f4.0",
 		"@sapphire/time-utilities": "^1.4.6",
-		"@sapphire/type": "^2.1.1",
+		"@sapphire/type": "^2.1.2",
 		"@sentry/node": "^6.14.1",
 		"@sinclair/typebox": "^0.12.9",
 		"bufferutil": "^4.0.5",

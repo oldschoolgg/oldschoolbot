@@ -771,10 +771,10 @@
   dependencies:
     "@sapphire/utilities" "^3.0.6"
 
-"@sapphire/type@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@sapphire/type/-/type-2.1.1.tgz#a4428b0a7e81eabc3b541c0f8de19af2a0c8c11d"
-  integrity sha512-OPry/Llm64JbBOCV4AsDCYKxHl9ZYw9dctpRN3rH3cpE1ERdqGWK4rV/SaqsxtwaRlIDOuKbJHLhhNWRNnbuTw==
+"@sapphire/type@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@sapphire/type/-/type-2.1.2.tgz#bec6df98b7e70fd3d0dd23e92aa36824afdc72d3"
+  integrity sha512-+QnJFhmGYfUaWavNLTDv5SX5kuG8s0WjHJPOsmZtQO/rvjmixIexz9GmeFT4fJXuHZFUf5GNSAkZ/RO1BSDXjw==
   dependencies:
     "@discordjs/node-pre-gyp" "^0.4.1"
     nan "^2.15.0"
