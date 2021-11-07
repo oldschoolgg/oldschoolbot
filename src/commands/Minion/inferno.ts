@@ -424,17 +424,19 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			return 'Your range gear is too bad! You die quickly.';
 		}
 
-		duration.add(
-			rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt'),
-			-3,
-			'Armadyl'
-		);
+		if (!isEmergedZuk) {
+			duration.add(
+				rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt'),
+				-3,
+				'Armadyl'
+			);
 
-		duration.add(
-			mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom'),
-			-4,
-			'Ancestral'
-		);
+			duration.add(
+				mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom'),
+				-4,
+				'Ancestral'
+			);
+		}
 
 		const hasDivine = rangeGear.hasEquipped('Divine spirit shield') || mageGear.hasEquipped('Divine spirit shield');
 		preZukDeathChance.add(hasDivine, -12, 'Divine');
@@ -446,8 +448,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			'Ely'
 		);
 		if (isEmergedZuk) {
-			duration.add(user.hasItemEquippedOrInBank('Dwarven warhammer'), 7, 'DWWH');
-			duration.add(rangeGear.hasEquipped('Virtus book', true, true), 7, 'DWWH');
+			duration.add(user.hasItemEquippedOrInBank('Dwarven warhammer'), -7, 'DWWH');
+			duration.add(rangeGear.hasEquipped('Virtus book', true, true), -7, 'Virtus book');
 		}
 
 		if (isEmergedZuk) {
@@ -459,10 +461,12 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 				['range', rangeGora],
 				['mage', mageGora]
 			] as const) {
-				preZukDeathChance.add(has, -3.5, `Gorajan ${name}`);
-				zukDeathChance.add(has, -3.5, `Gorajan ${name}`);
+				if (name !== 'melee') {
+					preZukDeathChance.add(has, -3.5, `Gorajan ${name}`);
+					zukDeathChance.add(has, -3.5, `Gorajan ${name}`);
+				}
 				emergedZukDeathChance.add(has, -5, `Gorajan ${name}`);
-				duration.add(has, 5, `Gorajan ${name}`);
+				duration.add(has, -5, `Gorajan ${name}`);
 			}
 		}
 
@@ -526,6 +530,9 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		}
 
 		const allMeleeGearItems = meleeGear.allItems(true);
+		const allRangeGearItems = rangeGear.allItems(true);
+		const allMageGearItems = mageGear.allItems(true);
+		const allItems = [...allMeleeGearItems, ...allRangeGearItems, ...allMageGearItems];
 
 		if (isEmergedZuk) {
 			const amountOfDrygoreEquipped = resolveItems([
@@ -547,14 +554,13 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 				return 'You need stronger melee armor! TzKal-Zuk will crush you. Try getting Torva or Gorajan.';
 			}
 		}
-		duration.add(isEmergedZuk && allMeleeGearItems.includes(itemID('Ignis ring(i)')), 5, 'Ignis ring(i)');
+		duration.add(isEmergedZuk && allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
 
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
 		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
 
-		const usingTbow = [rangeGear.equippedWeapon()!.id, ...getSimilarItems(rangeGear.equippedWeapon()!.id)].includes(
-			getOSItem('Twisted bow').id
-		);
+		const usingTbow =
+			rangeGear.hasEquipped('Twisted bow', true, true) || rangeGear.hasEquipped('Hellfire bow', true, true);
 		zukDeathChance.add(usingTbow, 1.5, `Zuk with ${rangeGear.equippedWeapon()?.name}`);
 		duration.add(usingTbow, -7.5, `${rangeGear.equippedWeapon()?.name}`);
 
