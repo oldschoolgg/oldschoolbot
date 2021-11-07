@@ -174,7 +174,7 @@ export default class extends Extendable {
 
 		const realCost = bank.clone();
 		const rangeGear = this.getGear('range');
-		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
+		const hasAvas = rangeGear.hasEquipped("Ava's assembler", true, true);
 
 		for (const [item, quantity] of bank.items()) {
 			if (blowpipeDarts.includes(item)) {

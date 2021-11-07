@@ -1,6 +1,7 @@
 import { masterCapesCL } from '../src/lib/data/CollectionsExport';
 import { allMbTables, PMBTable } from '../src/lib/data/openables';
 import { growablePets } from '../src/lib/growablePets';
+import { Gear } from '../src/lib/structures/Gear';
 import { isSuperUntradeable } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 
@@ -24,5 +25,10 @@ describe('Sanity', () => {
 		for (const cape of masterCapesCL) {
 			expect(isSuperUntradeable(cape)).toEqual(true);
 		}
+	});
+	test('avas', () => {
+		expect(new Gear({ cape: "Ava's assembler" }).hasEquipped("Ava's assembler")).toEqual(true);
+		expect(new Gear({ cape: 'Assembler max cape' }).hasEquipped("Ava's assembler", true, true)).toEqual(true);
+		expect(new Gear({ cape: "Combatant's cape" }).hasEquipped("Ava's assembler", true, true)).toEqual(true);
 	});
 });
