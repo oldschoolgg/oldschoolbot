@@ -76,7 +76,7 @@ export default class extends BotCommand {
 			categoryFlags: ['minion', 'minigame'],
 			aliases: ['i'],
 			subcommands: true,
-			usage: '[start]'
+			usage: '[start] [str:...str]'
 		});
 	}
 
@@ -449,7 +449,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		);
 		if (isEmergedZuk) {
 			duration.add(user.hasItemEquippedOrInBank('Dwarven warhammer'), -7, 'DWWH');
-			duration.add(rangeGear.hasEquipped('Virtus book', true, true), -7, 'Virtus book');
+			duration.add(mageGear.hasEquipped('Virtus book', true, true), -7, 'Virtus book');
 		}
 
 		if (isEmergedZuk) {
@@ -553,8 +553,12 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			) {
 				return 'You need stronger melee armor! TzKal-Zuk will crush you. Try getting Torva or Gorajan.';
 			}
+			duration.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
+			preZukDeathChance.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
+			zukDeathChance.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
+			emergedZukDeathChance.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
+			duration.add(allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
 		}
-		duration.add(isEmergedZuk && allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
 
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
 		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
@@ -743,7 +747,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 	@minionNotBusy
 	@requiresMinion
-	async start(msg: KlasaMessage) {
+	async start(msg: KlasaMessage, [str]: [string | undefined]) {
 		if (msg.flagArgs.sim && !production) {
 			// msg.channel.send({
 			// 	files: [...(await this.baseDeathChances(msg.author))]
@@ -757,7 +761,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const usersRangeStats = rangeGear.stats;
 		const zukKC = await msg.author.getMinigameScore('Inferno');
 
-		const isEmergedZuk = Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.e);
+		const isEmergedZuk = str === 'emerged' || Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.e);
 
 		const res = await this.infernoRun({
 			user: msg.author,

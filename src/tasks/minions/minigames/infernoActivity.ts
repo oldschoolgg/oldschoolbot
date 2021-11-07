@@ -147,7 +147,6 @@ export default class extends Task {
 		} else {
 			const zukLoot = Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask });
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
-			baseBank.add(zukLoot);
 			if (isEmergedZuk) {
 				zukLoot.add("TzKal-Zuk's skin");
 				if (roll(10)) {
@@ -160,6 +159,7 @@ export default class extends Task {
 					zukLoot.add('Jal-MejJak');
 				}
 			}
+			baseBank.add(zukLoot);
 
 			if (baseBank.has('Jal-nib-rek')) {
 				this.client.emit(
@@ -212,15 +212,8 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 			}
 `,
 			res => {
-				const flags: Record<string, string> = isEmergedZuk ? { emerged: 'emerged' } : {};
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				if (!res.prompter) res.prompter = {};
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				res.prompter.flags = flags;
 				user.log('continued trip of inferno');
-				return (this.client.commands.get('inferno') as any).start(res, []);
+				return (this.client.commands.get('inferno') as any).start(res, ['emerged']);
 			},
 			await chatHeadImage({
 				content: chatText,
