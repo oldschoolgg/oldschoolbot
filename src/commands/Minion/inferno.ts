@@ -450,17 +450,17 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		}
 
 		if (isEmergedZuk) {
-			const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true);
-			const rangeGora = rangeGear.hasEquipped(gorajanArcherOutfit, true);
-			const mageGora = mageGear.hasEquipped(gorajanOccultOutfit, true);
+			const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true, true);
+			const rangeGora = rangeGear.hasEquipped(gorajanArcherOutfit, true, true);
+			const mageGora = mageGear.hasEquipped(gorajanOccultOutfit, true, true);
 			for (const [name, has] of [
 				['melee', meleeGora],
 				['range', rangeGora],
 				['mage', mageGora]
 			] as const) {
-				preZukDeathChance.add(has, -1.5, `Gorajan ${name}`);
-				zukDeathChance.add(has, -1.5, `Gorajan ${name}`);
-				emergedZukDeathChance.add(has, -3, `Gorajan ${name}`);
+				preZukDeathChance.add(has, -3.5, `Gorajan ${name}`);
+				zukDeathChance.add(has, -3.5, `Gorajan ${name}`);
+				emergedZukDeathChance.add(has, -5, `Gorajan ${name}`);
 				duration.add(has, 5, `Gorajan ${name}`);
 			}
 		}
