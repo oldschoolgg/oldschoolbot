@@ -748,6 +748,13 @@
   dependencies:
     twemoji-parser "^13.1.0"
 
+"@sapphire/discord-utilities@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.2.3.tgz#40bcde9034f7e0d43a3e147fd20c4d7e7b70ab88"
+  integrity sha512-iWuUtNFO7yBqzE+l7ecfR4G2tpZds0gIdPbG1Mt6jVdKFG659ZNJuCnC5duiPJkcfVtmzkFmwtwZbZAmQjwoRA==
+  dependencies:
+    twemoji-parser "^13.1.0"
+
 "@sapphire/discord.js-utilities@^3.0.0-next.600390f4.0":
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@sapphire/discord.js-utilities/-/discord.js-utilities-3.2.2.tgz#224b3c35b3c702b9aa40c1ae19ff657e672ba698"
