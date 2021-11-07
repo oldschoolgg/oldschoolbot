@@ -61,7 +61,7 @@ const DeadLumberjackTable = new LootTable().every('Lumberjack hat').every('Bones
 
 export const TreebeardLootTable = new LootTable()
 	.tertiary(1200, TanglerootTable)
-	.tertiary(150, 'Clue scroll (master)')
+	.tertiary(150, 'Clue scroll (grandmaster)')
 	.tertiary(300, DeadLumberjackTable)
 	.tertiary(100, 'Mysterious seed')
 	.tertiary(100, 'Ent hide')
