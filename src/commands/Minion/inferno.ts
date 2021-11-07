@@ -491,6 +491,9 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			if (!['Dragon dart', 'Rune dart'].includes(dartItem.name)) {
 				return 'Your darts too weak to hurt Emerged Zuk.';
 			}
+			if (dartItem.name === 'Dragon dart') {
+				duration.add(true, -3, 'Dragon dart');
+			}
 		} else {
 			duration.add(true, -percent, `${dartItem.name} in blowpipe`);
 		}
