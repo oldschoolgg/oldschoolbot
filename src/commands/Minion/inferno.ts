@@ -125,8 +125,8 @@ export default class extends BotCommand {
 		cost.add('Saradomin brew(4)', 8);
 		cost.add('Super restore(4)', 12);
 		if (isEmergedZuk) {
-			cost.add('Heat res. brew', 4);
-			cost.add('Heat res. restore', 7);
+			cost.add('Heat res. brew', 7);
+			cost.add('Heat res. restore', 4);
 		}
 
 		cost.add('Ranging potion(4)');
