@@ -488,7 +488,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			return 'Your darts are simply too weak, to work in the Inferno!';
 		}
 		if (isEmergedZuk) {
-			if (dartItem.name !== 'Dragon dart') {
+			if (!['Dragon dart', 'Rune dart'].includes(dartItem.name)) {
 				return 'Your darts too weak to hurt Emerged Zuk.';
 			}
 		} else {
