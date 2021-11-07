@@ -447,6 +447,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		);
 		if (isEmergedZuk) {
 			duration.add(user.hasItemEquippedOrInBank('Dwarven warhammer'), 7, 'DWWH');
+			duration.add(rangeGear.hasEquipped('Virtus book', true, true), 7, 'DWWH');
 		}
 
 		if (isEmergedZuk) {
@@ -551,14 +552,11 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
 		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
 
-		zukDeathChance.add(
-			[rangeGear.equippedWeapon()!.id, ...getSimilarItems(rangeGear.equippedWeapon()!.id)].includes(
-				getOSItem('Twisted bow').id
-			),
-			1.5,
-			'Zuk with TBow'
+		const usingTbow = [rangeGear.equippedWeapon()!.id, ...getSimilarItems(rangeGear.equippedWeapon()!.id)].includes(
+			getOSItem('Twisted bow').id
 		);
-		duration.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), -7.5, 'TBow');
+		zukDeathChance.add(usingTbow, 1.5, `Zuk with ${rangeGear.equippedWeapon()?.name}`);
+		duration.add(usingTbow, -7.5, `${rangeGear.equippedWeapon()?.name}`);
 
 		/**
 		 * Emerged
@@ -585,7 +583,6 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			isEmergedZuk &&
 			[
 				'Virtus wand',
-				'Virtus book',
 				'Arcane blast necklace',
 				'Gorajan occult top',
 				'Gorajan occult legs',
@@ -671,7 +668,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		const diedPreZuk = percentChance(preZukDeathChance.value);
 		const diedZuk = percentChance(zukDeathChance.value);
-		const diedEmergedZuk = percentChance(emergedZukDeathChance.value);
+		const diedEmergedZuk = isEmergedZuk && percentChance(emergedZukDeathChance.value);
 		let deathTime: number | null = null;
 		if (diedPreZuk) {
 			deathTime = randInt(Time.Minute, calcPercentOfNum(90, duration.value));
