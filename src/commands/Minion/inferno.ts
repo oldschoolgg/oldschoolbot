@@ -452,22 +452,20 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			duration.add(mageGear.hasEquipped('Virtus book', true, true), -7, 'Virtus book');
 		}
 
-		if (isEmergedZuk) {
-			const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true, true);
-			const rangeGora = rangeGear.hasEquipped(gorajanArcherOutfit, true, true);
-			const mageGora = mageGear.hasEquipped(gorajanOccultOutfit, true, true);
-			for (const [name, has] of [
-				['melee', meleeGora],
-				['range', rangeGora],
-				['mage', mageGora]
-			] as const) {
-				if (name !== 'melee') {
-					preZukDeathChance.add(has, -3.5, `Gorajan ${name}`);
-					zukDeathChance.add(has, -3.5, `Gorajan ${name}`);
-				}
-				emergedZukDeathChance.add(has, -5, `Gorajan ${name}`);
-				duration.add(has, -5, `Gorajan ${name}`);
+		const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true, true);
+		const rangeGora = rangeGear.hasEquipped(gorajanArcherOutfit, true, true);
+		const mageGora = mageGear.hasEquipped(gorajanOccultOutfit, true, true);
+		for (const [name, has] of [
+			['melee', meleeGora],
+			['range', rangeGora],
+			['mage', mageGora]
+		] as const) {
+			if (name !== 'melee') {
+				preZukDeathChance.add(has, -3.5, `Gorajan ${name}`);
+				zukDeathChance.add(has, -3.5, `Gorajan ${name}`);
 			}
+			emergedZukDeathChance.add(has, -5, `Gorajan ${name}`);
+			duration.add(has, -5, `Gorajan ${name}`);
 		}
 
 		const hasSuffering =
@@ -571,7 +569,6 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		/**
 		 * Emerged
 		 */
-
 		if (isEmergedZuk && zukKC < 20) {
 			return 'You not worthy to fight TzKal-Zuk in his full form, you need defeat his first form 20 times first.';
 		}

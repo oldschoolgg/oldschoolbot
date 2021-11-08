@@ -80,7 +80,8 @@ export default class extends Task {
 			});
 		}
 
-		if (!deathTime) {
+		// Give inferno KC if didn't die in normal inferno part
+		if (!diedZuk && !diedPreZuk) {
 			await incrementMinigameScore(userID, 'Inferno', 1);
 		}
 
@@ -148,6 +149,13 @@ export default class extends Task {
 			const zukLoot = Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask });
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
 			if (isEmergedZuk) {
+				const { newScore } = await incrementMinigameScore(userID, 'EmergedInferno', 1);
+				if (newScore === 1) {
+					this.client.emit(
+						Events.ServerNotification,
+						`**${user.username}** just defeated the Emerged Zuk Inferno for the first time!`
+					);
+				}
 				zukLoot.add("TzKal-Zuk's skin");
 				if (roll(10)) {
 					zukLoot.add('Infernal core');
@@ -173,6 +181,24 @@ export default class extends Task {
 			}
 
 			const cl = user.cl();
+
+			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
+				const usersWithInfernalCape = parseInt(
+					(
+						await this.client.query<any>(
+							`SELECT count(id) FROM users WHERE "collectionLogBank"->>'${itemID(
+								'Infernal cape'
+							)}' IS NOT NULL;`
+						)
+					)[0].count
+				);
+				this.client.emit(
+					Events.ServerNotification,
+					`**${user.username}** just received their first Infernal cape on their ${formatOrdinal(
+						attempts
+					)} attempt! They are the ${formatOrdinal(usersWithInfernalCape)} person to get an Infernal cape.`
+				);
+			}
 
 			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
 				const usersWithInfernalCape = parseInt(
