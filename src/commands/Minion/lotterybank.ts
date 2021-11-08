@@ -1,202 +1,110 @@
-import { Time } from '@sapphire/time-utilities';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
-import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
-import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
-import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
+import { Item } from 'oldschooljs/dist/meta/types';
 
-import { production } from '../../config';
-import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { GrandmasterClueTable } from '../../lib/simulation/grandmasterClue';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, formatDuration, isSuperUntradeable, itemID } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
+import { addBanks, isSuperUntradeable, itemID } from '../../lib/util';
+import { parseBank } from '../../lib/util/parseStringBank';
 
-const options = {
-	max: 1,
-	time: 10_000,
-	errors: ['time']
-};
+const specialPrices = new Bank()
+	.add('Clue scroll(beginner)', 50_000)
+	.add('Clue scroll(easy)', 100_000)
+	.add('Clue scroll(medium)', 300_000)
+	.add('Clue scroll(hard)', 700_000)
+	.add('Clue scroll(elite)', 1_000_000)
+	.add('Clue scroll(master)', 5_000_000)
+	.add('Clue scroll(grandmaster)', 50_000_000)
+	.add('Reward casket(beginner)', 500_000)
+	.add('Reward casket(easy)', 1_000_000)
+	.add('Reward casket(medium)', 2_000_000)
+	.add('Reward casket(hard)', 4_500_000)
+	.add('Reward casket(elite)', 10_000_000)
+	.add('Reward casket(master)', 15_000_000)
+	.add('Reward casket(grandmaster)', 50_000_000)
+	.add('Reward casket(grandmaster)', 50_000_000)
+	.add('Reward casket(grandmaster)', 50_000_000)
+	// Drygores
+	.add('Drygore longsword', 2_000_000_000)
+	.add('Offhand drygore longsword', 2_000_000_000)
+	.add('Drygore mace', 2_000_000_000)
+	.add('Offhand drygore mace', 2_000_000_000)
+	.add('Drygore rapier', 1_000_000_000)
+	.add('Offhand drygore rapier', 1_000_000_000)
+	// Nex
+	.add('Torva full helm', 800_000_000)
+	.add('Torva platebody', 800_000_000)
+	.add('Torva platelegs', 800_000_000)
+	.add('Torva boots', 800_000_000)
+	.add('Torva gloves', 800_000_000)
 
-const lotteryItems = [
-	{
-		item: getOSItem('Clue scroll(beginner)'),
-		value: 1_000_000
-	},
-	{
-		item: getOSItem('Clue scroll(easy)'),
-		value: 2_500_000
-	},
-	{
-		item: getOSItem('Clue scroll(medium)'),
-		value: 5_000_000
-	},
-	{
-		item: getOSItem('Clue scroll(hard)'),
-		value: 10_000_000
-	},
-	{
-		item: getOSItem('Clue scroll(elite)'),
-		value: 25_000_000
-	},
-	{
-		item: getOSItem('Clue scroll(master)'),
-		value: 35_000_000
-	},
-	{
-		item: getOSItem('Clue scroll(grandmaster)'),
-		value: 650_000_000
-	},
-	// Caskets
-	{
-		item: getOSItem('Reward casket(beginner)'),
-		value: 1_500_000
-	},
-	{
-		item: getOSItem('Reward casket(easy)'),
-		value: 3_500_000
-	},
-	{
-		item: getOSItem('Reward casket(medium)'),
-		value: 8_000_000
-	},
-	{
-		item: getOSItem('Reward casket(hard)'),
-		value: 15_000_000
-	},
-	{
-		item: getOSItem('Reward casket(elite)'),
-		value: 30_000_000
-	},
-	{
-		item: getOSItem('Reward casket(master)'),
-		value: 45_000_000
-	},
-	{
-		item: getOSItem('Reward casket(grandmaster)'),
-		value: 700_000_000
-	}
-];
+	.add('Pernix cowl', 600_000_000)
+	.add('Pernix body', 600_000_000)
+	.add('Pernix chaps', 600_000_000)
+	.add('Pernix boots', 600_000_000)
+	.add('Pernix gloves', 600_000_000)
 
-const days = [
-	{
-		number: 1,
-		name: 'Beginner Clues, Caskets and Rewards',
-		items: [...BeginnerClueTable.allItems, itemID('Clue scroll(beginner)'), itemID('Reward casket(beginner)')]
-	},
-	{
-		number: 2,
-		name: 'Easy Clues, Caskets and Rewards',
-		items: [...EasyClueTable.allItems, itemID('Clue scroll(easy)'), itemID('Reward casket(easy)')]
-	},
-	{
-		number: 3,
-		name: 'Medium Clues, Caskets and Rewards',
-		items: [...MediumClueTable.allItems, itemID('Clue scroll(medium)'), itemID('Reward casket(medium)')]
-	},
-	{
-		number: 4,
-		name: 'Hard Clues, Caskets and Rewards',
-		items: [...HardClueTable.allItems, itemID('Clue scroll(hard)'), itemID('Reward casket(hard)')]
-	},
-	{
-		number: 5,
-		name: 'Elite Clues, Caskets and Rewards',
-		items: [...EliteClueTable.allItems, itemID('Clue scroll(elite)'), itemID('Reward casket(elite)')]
-	},
-	{
-		number: 6,
-		name: 'Master Clues, Caskets and Rewards',
-		items: [...MasterClueTable.allItems, itemID('Clue scroll(master)'), itemID('Reward casket(master)')]
-	},
-	{
-		number: 7,
-		name: 'Grandmaster Clues, Caskets and Rewards',
-		items: [
-			...GrandmasterClueTable.allItems,
-			itemID('Clue scroll(grandmaster)'),
-			itemID('Reward casket(grandmaster)')
-		]
-	}
-];
+	.add('Virtus mask', 300_000_000)
+	.add('Virtus robe top', 300_000_000)
+	.add('Virtus robe legs', 300_000_000)
+	.add('Virtus boots', 300_000_000)
+	.add('Virtus gloves', 300_000_000)
+
+	// Planks
+	.add('Mahogany plank', 2000)
+	.add('Teak plank', 700)
+	.add('Oak plank', 500)
+
+	// Misc
+	.add('Abyssal thread', 100_000_000)
+	.add('Magus scroll', 400_000_000)
+	.add('Abyssal cape', 3_000_000_000)
+	.add('Ent hide', 60_000_000)
+	.add('Tradeable mystery box', 20_000_000)
+	.add('Untradeable mystery box', 13_000_000)
+
+	// Pets
+	.add('Voidling', 700_000_000)
+	.add('Plopper', 300_000_000);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 1,
-			usage: '[items:...TradeableBank]',
+			usage: '[str:...str]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
-			examples: ['+sacrifice 1 Elysian sigil'],
-			aliases: ['lottery']
+			examples: ['+sacrifice 1 Elysian sigil']
 		});
 	}
 
-	async run(msg: KlasaMessage, [bankArg]: [[Bank, number] | undefined]) {
-		if (1 < 2) {
-			return msg.channel.send("There's currently no lottery going on, check back later!");
-		}
+	async run(msg: KlasaMessage, [str]: [string | undefined]) {
 		if (msg.author.isIronman) {
 			return msg.channel.send('Ironmen cannot participate in the lottery.');
 		}
 
-		const start = 1_631_646_000_000;
-		let now = Date.now();
-		if (!production && msg.flagArgs.day) {
-			const num = parseInt(msg.flagArgs.day);
-			const day = days[num - 1];
-			if (!day) return msg.channel.send('bruv');
-			now = start + day.number * Time.Day - Time.Hour * 12;
-		}
-		if (now < start) {
-			return msg.channel.send(
-				`The clue lottery hasn't started yet, it starts in: ${formatDuration(start - now)}.`
-			);
-		}
-		const day = days.find(d => {
-			const dayFinish = start + d.number * Time.Day;
-			const dayStart = dayFinish - Time.Day;
-			return now > dayStart && now < dayFinish;
+		const bankToSell = parseBank({
+			inputStr: str,
+			inputBank: msg.author.bank(),
+			flags: { ...msg.flagArgs },
+			excludeItems: [...msg.author.settings.get(UserSettings.FavoriteItems)]
 		});
-		if (!day) {
-			return msg.channel.send('The clue lottery has finished! (or this is bugged)');
+		bankToSell.filter(i => !isSuperUntradeable(i), true);
+
+		function getPrice(item: Item) {
+			if (specialPrices.has(item.id)) {
+				return specialPrices.amount(item.id);
+			}
+			return item.price;
 		}
 
-		const dayFinish = start + day.number * Time.Day;
-
-		if (msg.flagArgs.prices) {
-			return msg.channel.send(`Special Item Prices:
-
-${lotteryItems
-	.sort((a, b) => a.value - b.value)
-	.map(i => `**${i.item.name}**: ${i.value.toLocaleString()} GP`)
-	.join('\n')}`);
+		let totalPrice = 0;
+		for (const [item, quantity] of bankToSell.items()) {
+			totalPrice += getPrice(item) * quantity;
 		}
-
-		if (!bankArg) {
-			return msg.channel.sendBankImage({
-				bank: this.client.settings.get(ClientSettings.BankLottery),
-				title: `Day ${day.number} - Clue Lottery`,
-				content:
-					`It's day ${day.number}, today is: ${day.name}! Note: clues and caskets have special prices,` +
-					` do \`${msg.cmdPrefix}lottery --prices\` to see a list. The next day starts in: **${formatDuration(
-						dayFinish - now
-					)}**.`
-			});
-		}
-
-		const [initBankToSell] = bankArg;
-		const favs = msg.author.settings.get(UserSettings.FavoriteItems);
-		const bankToSell = initBankToSell.filter(i => {
-			return !favs.includes(i.id) && !isSuperUntradeable(i) && day.items.includes(i.id);
-		});
 
 		if (bankToSell.amount('Lottery ticket')) {
 			bankToSell.remove('Lottery ticket', bankToSell.amount('Lottery ticket'));
@@ -204,45 +112,37 @@ ${lotteryItems
 		if (bankToSell.amount('Bank lottery ticket')) {
 			bankToSell.remove('Bank lottery ticket', bankToSell.amount('Bank lottery ticket'));
 		}
-		if (bankToSell.length === 0) return msg.channel.send("You didn't specify valid items to put into the lottery.");
-		let totalPrice = 0;
-		for (const [item, qty] of bankToSell.items()) {
-			const clueOrCasket = lotteryItems.find(c => c.item.id === item.id);
-			if (clueOrCasket) {
-				totalPrice += clueOrCasket.value * qty;
-			} else {
-				totalPrice += (item.price < 1_000_000 ? item.price * 3 : item.price) * qty;
-			}
-		}
-		let amountOfTickets = Math.floor(totalPrice / 10_000_000);
+		if (bankToSell.length === 0) return msg.channel.send('No items were given.');
+		if (!msg.author.owns(bankToSell)) return msg.channel.send('You do not own these items.');
 
-		if (amountOfTickets < 1) {
-			return msg.channel.send(
-				`Those items aren't worth enough,\`${bankToSell}\` is worth only ${totalPrice.toLocaleString()}.`
+		const valuePerTicket = 10_000_000;
+		let amountOfTickets = Math.floor(totalPrice / valuePerTicket);
+
+		if (amountOfTickets < 5) {
+			return msg.channel.send("Those items aren't worth enough.");
+		}
+
+		let perItemTickets = [];
+		for (const [item, quantity] of bankToSell
+			.items()
+			.sort((a, b) => getPrice(b[0]) * b[1] - getPrice(a[0]) * a[1])
+			.slice(0, 10)) {
+			perItemTickets.push(
+				`${((quantity * getPrice(item)) / valuePerTicket).toFixed(1)} tickets for ${quantity} ${item.name}`
 			);
 		}
 
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf) {
-			const sellMsg = await msg.channel.send(
-				`${msg.author}, say \`confirm\` to commit ${bankToSell} to the bank lottery - you'll receive **${amountOfTickets} bank lottery tickets**.`
-			);
+		delete msg.flagArgs.cf;
+		delete msg.flagArgs.confirm;
+		await msg.confirm(
+			`${
+				msg.author
+			}, say \`confirm\` to commit ${bankToSell} to the bank lottery - you'll receive **${amountOfTickets} bank lottery tickets**. ${perItemTickets.join(
+				', '
+			)}
 
-			try {
-				await msg.channel.awaitMessages({
-					...options,
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return sellMsg.edit('Cancelling bank lottery sacrifice.');
-			}
-		}
-
-		if (totalPrice > 1_000_000_000) {
-			this.client.emit(
-				Events.ServerNotification,
-				`${msg.author.username} just committed this to the bank lottery: ${bankToSell}`
-			);
-		}
+**WARNING: This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.**`
+		);
 
 		await msg.author.addItemsToBank({ [itemID('Bank lottery ticket')]: amountOfTickets }, true);
 		await msg.author.removeItemsFromBank(bankToSell.bank);
