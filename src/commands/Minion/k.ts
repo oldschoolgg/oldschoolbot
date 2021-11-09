@@ -239,7 +239,7 @@ export default class extends BotCommand {
 		const salveBoost = boosts.join('').toLowerCase().includes('salve amulet');
 		if (!salveBoost) {
 			if (isOnTask && msg.author.hasItemEquippedOrInBank('Infernal slayer helmet(i)')) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 18);
+				timeToFinish = reduceNumByPercent(timeToFinish, 22);
 				boosts.push('22% for Infernal slayer helmet(i) on task');
 			} else if (
 				isOnTask &&
@@ -248,7 +248,7 @@ export default class extends BotCommand {
 				!attackStyles.includes(SkillsEnum.Magic)
 			) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 17);
-				boosts.push('18% for Infernal slayer helmet on task');
+				boosts.push('17% for Infernal slayer helmet on task');
 			} else if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
 				if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
 					timeToFinish = reduceNumByPercent(timeToFinish, 15);
