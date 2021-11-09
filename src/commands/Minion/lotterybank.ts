@@ -1,3 +1,4 @@
+import { calcWhatPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -84,13 +85,32 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
-			examples: ['+sacrifice 1 Elysian sigil']
+			examples: ['+sacrifice 1 Elysian sigil'],
+			aliases: ['lottery']
 		});
 	}
 
 	async run(msg: KlasaMessage, [str]: [string | undefined]) {
 		if (msg.author.isIronman) {
 			return msg.channel.send('Ironmen cannot participate in the lottery.');
+		}
+
+		if (str === 'chance') {
+			const totalTickets = parseInt(
+				(
+					await this.client.query<any>(
+						`SELECT SUM((bank->>'5021')::int)
+FROM users
+WHERE bank->>'5021' IS NOT NULL;`
+					)
+				)[0].sum
+			);
+			const userTickets = msg.author.bank().amount('Bank lottery ticket');
+			return msg.channel.send(
+				`You have an estimated ${calcWhatPercent(userTickets, totalTickets).toFixed(
+					4
+				)}% chance of winning the lottery. This can go up or down from you or others buying more tickets.`
+			);
 		}
 
 		const bankToSell = parseBank({
