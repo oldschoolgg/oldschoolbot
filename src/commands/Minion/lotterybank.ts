@@ -66,7 +66,7 @@ const specialPrices = new Bank()
 	.add('Tradeable mystery box', 20_000_000)
 	.add('Untradeable mystery box', 13_000_000)
 
-	.add('Ignecarus claw', 1_000_000_000)
+	.add('Ignecarus dragonclaw', 1_000_000_000)
 	.add('Blood dye', 3_000_000_000)
 	.add('Monkey egg', 7_000_000_000)
 	.add('Holiday mystery box', 100_000_000)
