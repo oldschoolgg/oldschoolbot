@@ -173,7 +173,7 @@ export default class extends Task {
 				if (roll(15)) {
 					zukLoot.add('Head of TzKal Zuk');
 				}
-				if (roll(100)) {
+				if (roll(isOnTask ? 75 : 100)) {
 					zukLoot.add('Jal-MejJak');
 				}
 			}
@@ -186,6 +186,16 @@ export default class extends Task {
 						user.cl().amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
 						await user.getMinigameScore('Inferno')
+					)} kill!`
+				);
+			}
+			if (baseBank.has('Jal-MejJak')) {
+				this.client.emit(
+					Events.ServerNotification,
+					`**${user.username}** just received their ${formatOrdinal(
+						user.cl().amount('Jal-MejJak') + 1
+					)} Jal-MejJak pet by killing TzKal-Zuk's final form, on their ${formatOrdinal(
+						await user.getMinigameScore('EmergedInferno')
 					)} kill!`
 				);
 			}
@@ -210,21 +220,25 @@ export default class extends Task {
 				);
 			}
 
-			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
-				const usersWithInfernalCape = parseInt(
+			const emergedKC = await user.getMinigameScore('EmergedInferno');
+			// If first successfull emerged zuk kill
+			if (baseBank.has('Infernal cape') && isEmergedZuk && !diedEmergedZuk && emergedKC === 1) {
+				const usersDefeatedEmergedZuk = parseInt(
 					(
 						await this.client.query<any>(
-							`SELECT count(id) FROM users WHERE "collectionLogBank"->>'${itemID(
-								'Infernal cape'
-							)}' IS NOT NULL;`
+							`SELECT COUNT(user_id)
+							 FROM minigames
+						     WHERE "emerged_inferno" > 0;`
 						)
 					)[0].count
 				);
 				this.client.emit(
 					Events.ServerNotification,
-					`**${user.username}** just received their first Infernal cape on their ${formatOrdinal(
-						attempts
-					)} attempt! They are the ${formatOrdinal(usersWithInfernalCape)} person to get an Infernal cape.`
+					`**${user.username}** just defeated the Emerged Zuk Inferno on their ${formatOrdinal(
+						user.settings.get(UserSettings.EmergedInfernoAttempts)
+					)} attempt! They are the ${formatOrdinal(
+						usersDefeatedEmergedZuk
+					)} person to defeat the Emerged Inferno.`
 				);
 			}
 		}
