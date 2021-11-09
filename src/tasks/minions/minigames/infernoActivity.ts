@@ -46,6 +46,12 @@ export default class extends Task {
 		const oldAttempts = user.settings.get(UserSettings.InfernoAttempts);
 		const attempts = oldAttempts + 1;
 		await user.settings.update(UserSettings.InfernoAttempts, attempts);
+		if (isEmergedZuk) {
+			await user.settings.update(
+				UserSettings.EmergedInfernoAttempts,
+				user.settings.get(UserSettings.EmergedInfernoAttempts) + 1
+			);
+		}
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
 
@@ -153,7 +159,11 @@ export default class extends Task {
 				if (newScore === 1) {
 					this.client.emit(
 						Events.ServerNotification,
-						`**${user.username}** just defeated the Emerged Zuk Inferno for the first time!`
+						`**${
+							user.username
+						}** just defeated the Emerged Zuk Inferno for the first time, on their ${formatOrdinal(
+							user.settings.get(UserSettings.EmergedInfernoAttempts)
+						)} attempt!`
 					);
 				}
 				zukLoot.add("TzKal-Zuk's skin");
@@ -239,7 +249,7 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 `,
 			res => {
 				user.log('continued trip of inferno');
-				return (this.client.commands.get('inferno') as any).start(res, ['emerged']);
+				return (this.client.commands.get('inferno') as any).start(res, isEmergedZuk ? ['emerged'] : []);
 			},
 			await chatHeadImage({
 				content: chatText,

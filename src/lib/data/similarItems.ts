@@ -280,7 +280,7 @@ const source: [string, (string | number)[]][] = [
 	['Pernix chaps', ['Gorajan archer legs']],
 	['Pernix gloves', ['Gorajan archer gloves']],
 	['Pernix boots', ['Gorajan archer boots']],
-	['Abyssal cape', ['Vasa cloak']],
+	['Abyssal cape', ['Vasa cloak', 'TzKal cape']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband']],
 	['Angler top', ['Spirit angler top']],

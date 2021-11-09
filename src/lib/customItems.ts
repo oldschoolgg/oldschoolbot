@@ -2030,7 +2030,7 @@ setCustomItem(
 setCustomItem(
 	48_327,
 	'Infernal slayer helmet(i)',
-	'Rune full helm',
+	'Gorajan warrior helmet',
 	{
 		customItemData: {
 			isSuperUntradeable: true

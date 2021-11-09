@@ -11,6 +11,7 @@ import { getSimilarItems } from '../../lib/data/similarItems';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
@@ -440,7 +441,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		const hasDivine = rangeGear.hasEquipped('Divine spirit shield') || mageGear.hasEquipped('Divine spirit shield');
 		preZukDeathChance.add(hasDivine, -12, 'Divine');
-		emergedZukDeathChance.add(hasDivine, -5, 'Divine');
+		emergedZukDeathChance.add(hasDivine, -9, 'Divine');
 		preZukDeathChance.add(
 			!hasDivine &&
 				(rangeGear.hasEquipped('Elysian spirit shield') || mageGear.hasEquipped('Elysian spirit shield')),
@@ -460,11 +461,12 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			['range', rangeGora],
 			['mage', mageGora]
 		] as const) {
+			if (name === 'melee' && !isEmergedZuk) continue;
 			if (name !== 'melee') {
 				preZukDeathChance.add(has, -3.5, `Gorajan ${name}`);
 				zukDeathChance.add(has, -3.5, `Gorajan ${name}`);
 			}
-			emergedZukDeathChance.add(has, -5, `Gorajan ${name}`);
+			emergedZukDeathChance.add(has, -8, `Gorajan ${name}`);
 			duration.add(has, -5, `Gorajan ${name}`);
 		}
 
@@ -554,8 +556,15 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			duration.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
 			preZukDeathChance.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
 			zukDeathChance.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
-			emergedZukDeathChance.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
+			emergedZukDeathChance.add(allItems.includes(itemID('TzKal cape')), -10, 'TzKal cape');
 			duration.add(allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
+			emergedZukDeathChance.add(user.skillLevel(SkillsEnum.Defence) === 120, -10, '120 Defence');
+
+			const emergedKC = await user.getMinigameScore('EmergedInferno');
+			if (emergedKC > 0) {
+				const effectiveKC = Math.min(emergedKC, 3);
+				emergedZukDeathChance.add(true, 0 - effectiveKC * 7.5, `${effectiveKC} Emerged KC`);
+			}
 		}
 
 		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
@@ -578,11 +587,12 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 				'Hellfire bow',
 				'Dragon arrow',
 				'Farsight snapshot necklace',
-				'Gorajan archer top',
-				'Gorajan archer legs',
-				'Gorajan archer gloves',
-				'Gorajan archer boots'
-			].some(i => !rangeGear.hasEquipped(i))
+				'Pernix cowl',
+				'Pernix body',
+				'Pernix chaps',
+				'Pernix boots',
+				'Pernix gloves'
+			].some(i => !rangeGear.hasEquipped(i, true, true))
 		) {
 			return 'You not worthy to fight TzKal-Zuk in his full form, you need better range gear and dragon arrows.';
 		}
@@ -591,11 +601,12 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			[
 				'Virtus wand',
 				'Arcane blast necklace',
-				'Gorajan occult top',
-				'Gorajan occult legs',
-				'Gorajan occult gloves',
-				'Gorajan occult boots'
-			].some(i => !mageGear.hasEquipped(i))
+				'Virtus mask',
+				'Virtus robe top',
+				'Virtus robe legs',
+				'Virtus boots',
+				'Virtus gloves'
+			].some(i => !mageGear.hasEquipped(i, true, true))
 		) {
 			return 'You not worthy to fight TzKal-Zuk in his full form, you need better mage gear.';
 		}
@@ -691,7 +702,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			projectile: projectile.item,
 			dart: blowpipeData.dartID,
 			fakeDuration,
-			hasKodai: mageGear.hasEquipped('Kodai wand'),
+			hasKodai: mageGear.hasEquipped('Kodai wand', true, true),
 			isEmergedZuk
 		});
 
@@ -712,7 +723,9 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 	async run(msg: KlasaMessage) {
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
+		const emergedAttempts = msg.author.settings.get(UserSettings.EmergedInfernoAttempts);
 		const zukKC = await msg.author.getMinigameScore('Inferno');
+		const emergedKC = await msg.author.getMinigameScore('EmergedInferno');
 
 		let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 		if (attempts && !zukKC) {
@@ -732,7 +745,13 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			}
 		}
 
+		str += ` ${emergedAttempts} Emerged Zuk Inferno attempts.`;
+
 		return msg.channel.send({
+			content: `**Inferno Attempts:** ${attempts}
+**Inferno KC:** ${zukKC}
+**Emerged Inferno Attempts:** ${emergedAttempts}
+**Emerged Inferno KC:** ${emergedKC}`,
 			files: [
 				await chatHeadImage({
 					content: str,
