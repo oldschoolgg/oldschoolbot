@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { calcPercentOfNum, randInt, roll, sumArr, Time } from 'e';
+import { calcPercentOfNum, increaseNumByPercent, randInt, roll, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Monsters } from 'oldschooljs';
@@ -164,11 +164,13 @@ export default class extends BotCommand {
 		return Math.max(Math.min(chance, 20), 15);
 	}
 
-	baseDuration(_attempts: number) {
+	baseDuration(_attempts: number, isEmergedZuk: boolean) {
 		const attempts = Math.max(1, Math.min(250, _attempts));
 		let chance = Math.floor(150 - (Math.log(attempts) / Math.log(Math.sqrt(65))) * 45);
 		if (attempts < 20) chance += 20 - attempts;
-		return Math.min(Time.Hour * 2.5, Math.max(Time.Minute * 40, chance * (Time.Minute * 2.9)));
+		let res = Math.min(Time.Hour * 2.5, Math.max(Time.Minute * 40, chance * (Time.Minute * 2.9)));
+		if (isEmergedZuk) res = increaseNumByPercent(res, 15);
+		return res;
 	}
 
 	async baseDeathChances(user: KlasaUser, range = [0, 250]) {
@@ -345,7 +347,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const userBank = user.bank();
 		const zukKC = await user.getMinigameScore('Inferno');
 
-		const duration = new PercentCounter(this.baseDuration(attempts), 'time');
+		const duration = new PercentCounter(this.baseDuration(attempts, isEmergedZuk), 'time');
 		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(attempts), 'percent');
 		const preZukDeathChance = new PercentCounter(this.basePreZukDeathChance(attempts), 'percent');
 		const emergedZukDeathChance = new PercentCounter(this.baseEmergedZukDeathChance(emergedAttempts), 'percent');
@@ -448,9 +450,11 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			-5,
 			'Ely'
 		);
+
+		duration.add(mageGear.hasEquipped('Virtus book', true, true), -7, 'Virtus book');
+
 		if (isEmergedZuk) {
 			duration.add(user.hasItemEquippedOrInBank('Dwarven warhammer'), -7, 'DWWH');
-			duration.add(mageGear.hasEquipped('Virtus book', true, true), -7, 'Virtus book');
 		}
 
 		const meleeGora = meleeGear.hasEquipped(gorajanWarriorOutfit, true, true);
