@@ -162,6 +162,11 @@ export default class extends BotCommand {
 		}
 
 		await msg.confirm(str);
+		if (buyable.name === 'Bank lottery ticket') {
+			await msg.confirm(
+				'**WARNING: This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.**'
+			);
+		}
 
 		const econBankChanges = new Bank();
 
@@ -184,9 +189,6 @@ export default class extends BotCommand {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
 
 		if (buyable.name === 'Bank lottery ticket') {
-			await msg.confirm(
-				'**WARNING: This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.**'
-			);
 			await this.client.settings.update(
 				ClientSettings.BankLottery,
 				new Bank(this.client.settings.get(ClientSettings.BankLottery)).add(995, buyable.gpCost! * quantity).bank
