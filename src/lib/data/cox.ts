@@ -185,7 +185,7 @@ export const maxMeleeGear = constructGearSetup({
 	head: 'Torva full helm',
 	neck: "Brawler's hook necklace",
 	body: 'Torva platebody',
-	cape: 'Abyssal cape',
+	cape: 'TzKal cape',
 	hands: 'Torva gloves',
 	legs: 'Torva platelegs',
 	feet: 'Torva boots',
