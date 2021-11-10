@@ -310,8 +310,7 @@ export default class extends BotCommand {
 					finishes.push(o);
 					break;
 				} else {
-					const percentMadeItThrough =
-						res.deathTime === null ? 100 : calcWhatPercent(res.deathTime, res.fakeDuration);
+					const percentMadeItThrough = calcWhatPercent(res.deathTime, res.fakeDuration);
 					cost.remove(calculateInfernoItemRefund(percentMadeItThrough, res.cost).unusedItems);
 				}
 			}
