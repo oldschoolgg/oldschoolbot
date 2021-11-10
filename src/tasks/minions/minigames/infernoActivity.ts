@@ -16,6 +16,18 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
+export function calculateInfernoItemRefund(percentMadeItThrough: number, cost: Bank) {
+	const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
+	const unusedItems = new Bank();
+	for (const [item, qty] of cost.items()) {
+		const amount = Math.floor(calcPercentOfNum(percSuppliesRefunded, qty));
+		if (amount > 0) {
+			unusedItems.add(item.id, amount);
+		}
+	}
+	return { unusedItems, percSuppliesRefunded };
+}
+
 export default class extends Task {
 	async run(data: InfernoOptions) {
 		const {
@@ -40,9 +52,6 @@ export default class extends Task {
 			score > 0 &&
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
-		const unusedItems = new Bank();
-		const cost = new Bank(data.cost);
-
 		const oldAttempts = user.settings.get(UserSettings.InfernoAttempts);
 		const attempts = oldAttempts + 1;
 		await user.settings.update(UserSettings.InfernoAttempts, attempts);
@@ -54,6 +63,11 @@ export default class extends Task {
 		}
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
+
+		const { unusedItems, percSuppliesRefunded } = calculateInfernoItemRefund(
+			percentMadeItThrough,
+			new Bank(data.cost)
+		);
 
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
 		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
@@ -96,15 +110,7 @@ export default class extends Task {
 			await user.getMinigameScore('Inferno')
 		)} time! Please accept this cape as a token of appreciation.`;
 
-		const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
-
 		if (deathTime) {
-			for (const [item, qty] of cost.items()) {
-				const amount = Math.floor(calcPercentOfNum(percSuppliesRefunded, qty));
-				if (amount > 0) {
-					unusedItems.add(item.id, amount);
-				}
-			}
 			if (isOnTask) {
 				usersTask.currentTask!.quantityRemaining = 0;
 				usersTask.currentTask!.skipped = true;

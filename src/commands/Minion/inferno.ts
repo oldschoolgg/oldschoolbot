@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { calcPercentOfNum, increaseNumByPercent, randInt, roll, sumArr, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, randInt, roll, sumArr, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Monsters } from 'oldschooljs';
@@ -36,6 +36,7 @@ import {
 	gorajanOccultOutfit,
 	gorajanWarriorOutfit
 } from '../../tasks/minions/dungeoneeringActivity';
+import { calculateInfernoItemRefund } from '../../tasks/minions/minigames/infernoActivity';
 import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
@@ -290,31 +291,42 @@ export default class extends BotCommand {
 
 	async simulate(msg: KlasaMessage) {
 		let finishes = [];
+		let cost = new Bank();
 		let n = 1000;
 		for (let i = 0; i < n; i++) {
 			let timesMadeToZuk = 0;
-
 			for (let o = 0; o < 10_000; o++) {
 				const res = await this.infernoRun({
 					user: msg.author,
-					attempts: o,
-					timesMadeToZuk,
-					emergedAttempts: 0,
-					isEmergedZuk: false
+					attempts: 100 + o,
+					timesMadeToZuk: 20 + timesMadeToZuk,
+					emergedAttempts: o,
+					isEmergedZuk: true
 				});
 				if (typeof res === 'string') return res;
+				cost.add(res.cost);
 				if (!res.diedPreZuk) timesMadeToZuk++;
 				if (!res.deathTime) {
 					finishes.push(o);
 					break;
+				} else {
+					const percentMadeItThrough =
+						res.deathTime === null ? 100 : calcWhatPercent(res.deathTime, res.fakeDuration);
+					cost.remove(calculateInfernoItemRefund(percentMadeItThrough, res.cost).unusedItems);
 				}
 			}
 		}
-		return `In ${n} Inferno simulations...
+		for (const [key, val] of Object.entries(cost.bank)) {
+			cost.bank[key] = Math.floor(val / n);
+		}
+		return {
+			str: `In ${n} Inferno simulations...
 **Average Completion:** ${sumArr(finishes) / n} attempts
 **Fastest Completion:** ${Math.min(...finishes)} attempts
 **Longest Completion:** ${Math.max(...finishes)} attempts
-`;
+`,
+			bank: cost
+		};
 	}
 
 	async timesMadeToZuk(userID: string) {
@@ -688,6 +700,13 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		if (attempts < 15) {
 			preZukDeathChance.value += 15 - attempts;
 		}
+		if (emergedAttempts < 4) {
+			emergedZukDeathChance.value = 100;
+		} else if (emergedAttempts < 8) {
+			emergedZukDeathChance.value = 100 - emergedAttempts / 2;
+		} else if (emergedAttempts < 15) {
+			emergedZukDeathChance.value += 15 - emergedAttempts;
+		}
 
 		preZukDeathChance.value = Math.min(preZukDeathChance.value, 100);
 		zukDeathChance.value = Math.min(zukDeathChance.value, 100);
@@ -778,7 +797,10 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			// 	files: [...(await this.baseDeathChances(msg.author))]
 			// });
 			// msg.channel.send({ files: [...(await this.baseDeathChances(msg.author, [250, 500]))] });
-			return msg.channel.send(await this.simulate(msg));
+			const res = await this.simulate(msg);
+			if (typeof res === 'string') return msg.channel.send(res);
+			const { str, bank } = res;
+			return msg.channel.sendBankImage({ content: str, bank: bank.bank });
 		}
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
