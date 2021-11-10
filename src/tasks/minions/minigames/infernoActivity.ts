@@ -155,17 +155,8 @@ export default class extends Task {
 			const zukLoot = Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask });
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
 			if (isEmergedZuk) {
-				const { newScore } = await incrementMinigameScore(userID, 'EmergedInferno', 1);
-				if (newScore === 1) {
-					this.client.emit(
-						Events.ServerNotification,
-						`**${
-							user.username
-						}** just defeated the Emerged Zuk Inferno for the first time, on their ${formatOrdinal(
-							user.settings.get(UserSettings.EmergedInfernoAttempts)
-						)} attempt!`
-					);
-				}
+				await incrementMinigameScore(userID, 'EmergedInferno', 1);
+
 				zukLoot.add("TzKal-Zuk's skin");
 				if (roll(10)) {
 					zukLoot.add('Infernal core');
