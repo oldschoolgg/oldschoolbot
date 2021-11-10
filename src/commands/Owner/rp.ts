@@ -6,7 +6,17 @@ import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer, userTimers } from '../../lib/constants';
+import {
+	badges,
+	BitField,
+	BitFieldData,
+	Channel,
+	DefaultPingableRoles,
+	Emoji,
+	Roles,
+	SupportServer,
+	userTimers
+} from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { evalMathExpression } from '../../lib/expressionParser';
@@ -158,6 +168,16 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'pingbsomass': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
+				if (!msg.member) return;
+				if (!msg.member.roles.cache.has(Roles.BSOMassHoster) && !msg.member.roles.cache.has(Roles.Moderator)) {
+					return;
+				}
+				return msg.channel.send(
+					`<@&${DefaultPingableRoles.BSOMass}> - *Note: You can type \`.roles bso-mass\` to remove, or add, this role to yourself.`
+				);
+			}
 			case 'checkbank': {
 				return checkBank(msg);
 			}
