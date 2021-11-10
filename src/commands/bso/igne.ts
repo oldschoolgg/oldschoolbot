@@ -30,7 +30,10 @@ export default class extends BotCommand {
 			skillRequirements: {
 				slayer: 110
 			},
-			itemBoosts: [['Ignis ring(i)', 10]],
+			itemBoosts: [
+				['Ignis ring(i)', 10],
+				['TzKal cape', 6]
+			],
 			customDenier: async () => {
 				return [false];
 			},
