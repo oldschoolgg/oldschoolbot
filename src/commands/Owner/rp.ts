@@ -3,7 +3,7 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
-import { Items } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { badges, BitField, BitFieldData, Channel, Emoji, SupportServer, userTimers } from '../../lib/constants';
@@ -100,9 +100,19 @@ export default class extends BotCommand {
 		[cmd, input, str]: [string, KlasaUser | string | undefined, KlasaUser | string | undefined]
 	) {
 		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
+		const isContributor = msg.author.settings.get(UserSettings.BitField).includes(BitField.isContributor);
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'givetgb': {
+				if (!(input instanceof KlasaUser)) return;
+				if (!isMod && !isContributor) return;
+				if (input.id === msg.author.id) {
+					return msg.channel.send("You can't give boxes to yourself!");
+				}
+				await input.addItemsToBank(new Bank().add('Tester gift box'));
+				return msg.channel.send(`Gave 1x Tester gift box to ${input.username}.`);
+			}
 			case 'check':
 			case 'c': {
 				let u = input;
