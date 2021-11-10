@@ -40,7 +40,7 @@ export default class extends BotCommand {
 				legs: 'Dwarven platelegs',
 				hands: 'Dwarven gloves',
 				feet: 'Dwarven boots',
-				cape: 'Abyssal cape',
+				cape: 'TzKal cape',
 				ring: 'Ignis ring(i)',
 				weapon: 'Drygore longsword',
 				shield: 'Dragonfire shield',
