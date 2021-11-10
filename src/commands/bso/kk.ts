@@ -200,6 +200,12 @@ export default class extends BotCommand {
 				msgs.push(`${percent}% boost for Offhand drygore mace`);
 			}
 
+			if (meleeGear.hasEquipped('TzKal cape')) {
+				const percent = 4;
+				effectiveTime = reduceNumByPercent(effectiveTime, percent);
+				msgs.push(`${percent}% boost for TzKal cape`);
+			}
+
 			// Increase duration for lower melee-strength gear.
 			let rangeStrBonus = 0;
 			if (data.percentAttackStrength < 40) {
