@@ -1,7 +1,7 @@
 import { itemID } from 'oldschooljs/dist/util';
 
+import { gorajanWarriorOutfit } from '../src/lib/data/CollectionsExport';
 import { Gear } from '../src/lib/structures/Gear';
-import { gorajanWarriorOutfit } from '../src/tasks/minions/dungeoneeringActivity';
 
 describe('Gear', () => {
 	const testGear = new Gear({

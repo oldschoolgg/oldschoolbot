@@ -18,6 +18,7 @@ import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { bossEvents } from '../../lib/bossEvents';
 import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, PerkTier, skillEmoji } from '../../lib/constants';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear';
@@ -114,11 +115,6 @@ import {
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import resolveItems from '../../lib/util/resolveItems';
-import {
-	gorajanArcherOutfit,
-	gorajanOccultOutfit,
-	gorajanWarriorOutfit
-} from '../../tasks/minions/dungeoneeringActivity';
 import { Minigames } from './Minigame';
 
 const suffixes = new SimpleTable<string>()

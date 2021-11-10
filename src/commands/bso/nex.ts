@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { pernixOutfit } from '../../lib/data/CollectionsExport';
+import { gorajanArcherOutfit, pernixOutfit } from '../../lib/data/CollectionsExport';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
@@ -17,7 +17,6 @@ import { formatDuration, isWeekend, itemID, resolveNameBank, updateBankSetting }
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../lib/util/getNexGearStats';
-import { gorajanArcherOutfit } from '../../tasks/minions/dungeoneeringActivity';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

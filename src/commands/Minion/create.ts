@@ -5,12 +5,13 @@ import { table } from 'table';
 
 import Createables from '../../lib/data/createables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID, stringMatches, toTitleCase } from '../../lib/util';
+import { itemNameFromID, stringMatches, toTitleCase, updateBankSetting } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -202,12 +203,15 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (createableItem.GPCost) {
+			inItems.add('Coins', createableItem.GPCost);
+		}
+
 		await msg.author.removeItemsFromBank(inItems);
 		await msg.author.addItemsToBank(outItems);
 
-		if (createableItem.GPCost) {
-			await msg.author.removeGP(createableItem.GPCost);
-		}
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateCost, inItems);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateLoot, outItems);
 
 		// Only allow +create to add items to CL
 		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog(outItems.bank);

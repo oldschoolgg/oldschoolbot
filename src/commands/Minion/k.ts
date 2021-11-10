@@ -15,6 +15,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Activity } from '../../lib/constants';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { GearSetupType, GearStat } from '../../lib/gear';
@@ -61,11 +62,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import combatAmmoUsage from '../../lib/util/combatAmmoUsage';
 import findMonster from '../../lib/util/findMonster';
 import itemID from '../../lib/util/itemID';
-import {
-	gorajanArcherOutfit,
-	gorajanOccultOutfit,
-	gorajanWarriorOutfit
-} from '../../tasks/minions/dungeoneeringActivity';
 
 const validMonsters = killableMonsters.map(mon => mon.name).join('\n');
 const invalidMonsterMsg = (prefix: string) =>

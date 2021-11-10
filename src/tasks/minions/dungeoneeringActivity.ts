@@ -4,13 +4,13 @@ import { Bank } from 'oldschooljs';
 
 import { DungeoneeringOptions, maxFloorUserCanDo } from '../../commands/Minion/dung';
 import { Emoji } from '../../lib/constants';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { randomVariation, roll, toKMB } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import resolveItems from '../../lib/util/resolveItems';
 
 export function gorajanShardChance(user: KlasaUser) {
 	let goraShardBoosts = [];
@@ -33,27 +33,6 @@ export function gorajanShardChance(user: KlasaUser) {
 	};
 }
 
-export const gorajanWarriorOutfit = resolveItems([
-	'Gorajan warrior helmet',
-	'Gorajan warrior top',
-	'Gorajan warrior legs',
-	'Gorajan warrior gloves',
-	'Gorajan warrior boots'
-]);
-export const gorajanOccultOutfit = resolveItems([
-	'Gorajan occult helmet',
-	'Gorajan occult top',
-	'Gorajan occult legs',
-	'Gorajan occult gloves',
-	'Gorajan occult boots'
-]);
-export const gorajanArcherOutfit = resolveItems([
-	'Gorajan archer helmet',
-	'Gorajan archer top',
-	'Gorajan archer legs',
-	'Gorajan archer gloves',
-	'Gorajan archer boots'
-]);
 const data = [
 	[gorajanWarriorOutfit, 'melee'],
 	[gorajanOccultOutfit, 'mage'],

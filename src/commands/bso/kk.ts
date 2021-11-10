@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Activity, Emoji } from '../../lib/constants';
-import { torvaOutfit } from '../../lib/data/CollectionsExport';
+import { gorajanWarriorOutfit, torvaOutfit } from '../../lib/data/CollectionsExport';
 import { KalphiteKingMonster } from '../../lib/kalphiteking';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -18,7 +18,6 @@ import { formatDuration, isWeekend, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../lib/util/getKalphiteKingGearStats';
-import { gorajanWarriorOutfit } from '../../tasks/minions/dungeoneeringActivity';
 
 const minimumSoloGear = new Gear({
 	body: 'Torva platebody',

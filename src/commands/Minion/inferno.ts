@@ -7,6 +7,7 @@ import { table } from 'table';
 
 import { production } from '../../config';
 import { Activity, BitField, Emoji, projectiles } from '../../lib/constants';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -31,11 +32,6 @@ import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
-import {
-	gorajanArcherOutfit,
-	gorajanOccultOutfit,
-	gorajanWarriorOutfit
-} from '../../tasks/minions/dungeoneeringActivity';
 import { calculateInfernoItemRefund } from '../../tasks/minions/minigames/infernoActivity';
 import { blowpipeDarts } from './blowpipe';
 

@@ -2142,3 +2142,25 @@ export const gracefulCL = resolveItems([
 	...gracefulHands,
 	...gracefulCapes
 ]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)']).includes(id));
+
+export const gorajanWarriorOutfit = resolveItems([
+	'Gorajan warrior helmet',
+	'Gorajan warrior top',
+	'Gorajan warrior legs',
+	'Gorajan warrior gloves',
+	'Gorajan warrior boots'
+]);
+export const gorajanOccultOutfit = resolveItems([
+	'Gorajan occult helmet',
+	'Gorajan occult top',
+	'Gorajan occult legs',
+	'Gorajan occult gloves',
+	'Gorajan occult boots'
+]);
+export const gorajanArcherOutfit = resolveItems([
+	'Gorajan archer helmet',
+	'Gorajan archer top',
+	'Gorajan archer legs',
+	'Gorajan archer gloves',
+	'Gorajan archer boots'
+]);
