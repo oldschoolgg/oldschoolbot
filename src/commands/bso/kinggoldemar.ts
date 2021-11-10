@@ -44,7 +44,8 @@ export default class extends BotCommand {
 				['Gorajan warrior legs', 2],
 				['Gorajan warrior gloves', 1],
 				['Gorajan warrior boots', 1],
-				["Brawler's hook necklace", 4]
+				["Brawler's hook necklace", 4],
+				['TzKal cape', 6]
 			],
 			customDenier: async () => {
 				return [false];
