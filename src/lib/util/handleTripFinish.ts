@@ -62,6 +62,7 @@ export async function handleTripFinish(
 			Activity.GroupMonsterKilling,
 			Activity.KingGoldemar,
 			Activity.Ignecarus,
+			Activity.Inferno,
 			Activity.Alching,
 			Activity.Agility
 		].includes(data.type) &&

@@ -86,4 +86,7 @@ export class MinigameTable extends BaseEntity {
 
 	@Column({ name: 'monkey_rumble', type: 'int', nullable: false, default: 0 })
 	public MadMarimbosMonkeyRumble!: number;
+
+	@Column({ name: 'emerged_inferno', type: 'int', nullable: false, default: 0 })
+	public EmergedInferno!: number;
 }

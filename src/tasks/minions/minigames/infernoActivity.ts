@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent } from 'e';
+import { calcPercentOfNum, calcWhatPercent, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -16,9 +16,31 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
+export function calculateInfernoItemRefund(percentMadeItThrough: number, cost: Bank) {
+	const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
+	const unusedItems = new Bank();
+	for (const [item, qty] of cost.items()) {
+		const amount = Math.floor(calcPercentOfNum(percSuppliesRefunded, qty));
+		if (amount > 0) {
+			unusedItems.add(item.id, amount);
+		}
+	}
+	return { unusedItems, percSuppliesRefunded };
+}
+
 export default class extends Task {
 	async run(data: InfernoOptions) {
-		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
+		const {
+			userID,
+			channelID,
+			diedZuk,
+			diedPreZuk,
+			duration,
+			deathTime,
+			fakeDuration,
+			diedEmergedZuk,
+			isEmergedZuk
+		} = data;
 		const user = await this.client.users.fetch(userID);
 		const score = await user.getMinigameScore('Inferno');
 
@@ -30,14 +52,22 @@ export default class extends Task {
 			score > 0 &&
 			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
 
-		const unusedItems = new Bank();
-		const cost = new Bank(data.cost);
-
 		const oldAttempts = user.settings.get(UserSettings.InfernoAttempts);
 		const attempts = oldAttempts + 1;
 		await user.settings.update(UserSettings.InfernoAttempts, attempts);
+		if (isEmergedZuk) {
+			await user.settings.update(
+				UserSettings.EmergedInfernoAttempts,
+				user.settings.get(UserSettings.EmergedInfernoAttempts) + 1
+			);
+		}
 
 		const percentMadeItThrough = deathTime === null ? 100 : calcWhatPercent(deathTime, fakeDuration);
+
+		const { unusedItems, percSuppliesRefunded } = calculateInfernoItemRefund(
+			percentMadeItThrough,
+			new Bank(data.cost)
+		);
 
 		let tokkul = Math.ceil(calcPercentOfNum(calcWhatPercent(duration, fakeDuration), 16_440));
 		const [hasDiary] = await userhasDiaryTier(user, diariesObject.KaramjaDiary.elite);
@@ -70,7 +100,8 @@ export default class extends Task {
 			});
 		}
 
-		if (!deathTime) {
+		// Give inferno KC if didn't die in normal inferno part
+		if (!diedZuk && !diedPreZuk) {
 			await incrementMinigameScore(userID, 'Inferno', 1);
 		}
 
@@ -79,15 +110,7 @@ export default class extends Task {
 			await user.getMinigameScore('Inferno')
 		)} time! Please accept this cape as a token of appreciation.`;
 
-		const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
-
 		if (deathTime) {
-			for (const [item, qty] of cost.items()) {
-				const amount = Math.floor(calcPercentOfNum(percSuppliesRefunded, qty));
-				if (amount > 0) {
-					unusedItems.add(item.id, amount);
-				}
-			}
 			if (isOnTask) {
 				usersTask.currentTask!.quantityRemaining = 0;
 				usersTask.currentTask!.skipped = true;
@@ -129,9 +152,28 @@ export default class extends Task {
 			chatText = `You died to Zuk. Nice try JalYt, for your effort I give you ${baseBank.amount(
 				'Tokkul'
 			)}x Tokkul.`;
+		} else if (diedEmergedZuk) {
+			text = `You died to TzKal-Zuk after he emerged, ${formatDuration(deathTime!)} into your attempt.`;
+			chatText = `You died to TzKal-Zuk. Nice try JalYt, for your effort I give you ${baseBank.amount(
+				'Tokkul'
+			)}x Tokkul.`;
 		} else {
 			const zukLoot = Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask });
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
+			if (isEmergedZuk) {
+				await incrementMinigameScore(userID, 'EmergedInferno', 1);
+
+				zukLoot.add("TzKal-Zuk's skin");
+				if (roll(10)) {
+					zukLoot.add('Infernal core');
+				}
+				if (roll(15)) {
+					zukLoot.add('Head of TzKal Zuk');
+				}
+				if (roll(isOnTask ? 75 : 100)) {
+					zukLoot.add('Jal-MejJak');
+				}
+			}
 			baseBank.add(zukLoot);
 
 			if (baseBank.has('Jal-nib-rek')) {
@@ -141,6 +183,16 @@ export default class extends Task {
 						user.cl().amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
 						await user.getMinigameScore('Inferno')
+					)} kill!`
+				);
+			}
+			if (baseBank.has('Jal-MejJak')) {
+				this.client.emit(
+					Events.ServerNotification,
+					`**${user.username}** just received their ${formatOrdinal(
+						user.cl().amount('Jal-MejJak') + 1
+					)} Jal-MejJak pet by killing TzKal-Zuk's final form, on their ${formatOrdinal(
+						await user.getMinigameScore('EmergedInferno')
 					)} kill!`
 				);
 			}
@@ -162,6 +214,28 @@ export default class extends Task {
 					`**${user.username}** just received their first Infernal cape on their ${formatOrdinal(
 						attempts
 					)} attempt! They are the ${formatOrdinal(usersWithInfernalCape)} person to get an Infernal cape.`
+				);
+			}
+
+			const emergedKC = await user.getMinigameScore('EmergedInferno');
+			// If first successfull emerged zuk kill
+			if (baseBank.has('Infernal cape') && isEmergedZuk && !diedEmergedZuk && emergedKC === 1) {
+				const usersDefeatedEmergedZuk = parseInt(
+					(
+						await this.client.query<any>(
+							`SELECT COUNT(user_id)
+							 FROM minigames
+						     WHERE "emerged_inferno" > 0;`
+						)
+					)[0].count
+				);
+				this.client.emit(
+					Events.ServerNotification,
+					`**${user.username}** just defeated the Emerged Zuk Inferno on their ${formatOrdinal(
+						user.settings.get(UserSettings.EmergedInfernoAttempts)
+					)} attempt! They are the ${formatOrdinal(
+						usersDefeatedEmergedZuk
+					)} person to defeat the Emerged Inferno.`
 				);
 			}
 		}
@@ -186,7 +260,7 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 `,
 			res => {
 				user.log('continued trip of inferno');
-				return (this.client.commands.get('inferno') as any).start(res, []);
+				return (this.client.commands.get('inferno') as any).start(res, isEmergedZuk ? ['emerged'] : []);
 			},
 			await chatHeadImage({
 				content: chatText,

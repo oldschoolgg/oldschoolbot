@@ -174,7 +174,7 @@ export default class extends Extendable {
 
 		const realCost = bank.clone();
 		const rangeGear = this.getGear('range');
-		const hasAvas = rangeGear.hasEquipped("Ava's assembler");
+		const hasAvas = rangeGear.hasEquipped("Ava's assembler", true, true);
 
 		for (const [item, quantity] of bank.items()) {
 			if (blowpipeDarts.includes(item)) {
@@ -183,7 +183,10 @@ export default class extends Extendable {
 				continue;
 			}
 			if (Object.values(projectiles).flat(2).includes(item.id)) {
-				if (ammoRemove !== null) throw new Error('Tried to remove more than 1 ranged ammunition.');
+				if (ammoRemove !== null) {
+					bankRemove.add(item.id, quantity);
+					continue;
+				}
 				ammoRemove = [item, quantity];
 				continue;
 			}

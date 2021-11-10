@@ -30,7 +30,8 @@ const slayerHelmSimilar = resolveItems([
 	'Purple slayer helmet',
 	'Turquoise slayer helmet',
 	'Hydra slayer helmet',
-	'Twisted slayer helmet'
+	'Twisted slayer helmet',
+	'Infernal slayer helmet'
 ]);
 const slayerHelmSimilarI = resolveItems([
 	'Black slayer helmet (i)',
@@ -40,7 +41,8 @@ const slayerHelmSimilarI = resolveItems([
 	'Turquoise slayer helmet (i)',
 	'Hydra slayer helmet (i)',
 	'Twisted slayer helmet (i)',
-	'Slayer helmet (i)'
+	'Slayer helmet (i)',
+	'Infernal slayer helmet(i)'
 ]);
 const bowfaCorruptSimilar = resolveItems([
 	25_869, // Red, 'duplicate' according to osrsbox item-search
@@ -254,6 +256,7 @@ const source: [string, (string | number)[]][] = [
 	['Prayer master cape', ["Combatant's cape"]],
 	['Ranged master cape', ["Combatant's cape"]],
 	['Strength master cape', ["Combatant's cape"]],
+	["Ava's assembler", ["Combatant's cape", 'Assembler max cape']],
 	['Crafting master cape', ["Artisan's cape"]],
 	['Construction master cape', ["Artisan's cape"]],
 	['Cooking master cape', ["Artisan's cape"]],
@@ -277,7 +280,7 @@ const source: [string, (string | number)[]][] = [
 	['Pernix chaps', ['Gorajan archer legs']],
 	['Pernix gloves', ['Gorajan archer gloves']],
 	['Pernix boots', ['Gorajan archer boots']],
-	['Abyssal cape', ['Vasa cloak']],
+	['Abyssal cape', ['Vasa cloak', 'TzKal cape']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband']],
 	['Angler top', ['Spirit angler top']],
@@ -309,7 +312,10 @@ const source: [string, (string | number)[]][] = [
 	['Salve amulet (e)', ['Salve amulet(ei)']],
 	['Salve amulet (i)', ['Salve amulet(ei)']],
 	['Zaryte bow', ['Hellfire bow']],
-	['Twisted bow', ['Hellfire bow']]
+	['Twisted bow', ['Hellfire bow']],
+	['Gorajan archer helmet', ['Infernal slayer helmet(i)']],
+	['Gorajan occult helmet', ['Infernal slayer helmet(i)']],
+	['Gorajan warrior helmet', ['Infernal slayer helmet(i)']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

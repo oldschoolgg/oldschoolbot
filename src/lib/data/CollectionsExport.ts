@@ -198,7 +198,15 @@ export const grotesqueGuardiansCL = resolveItems([
 	'Granite dust'
 ]);
 export const hesporiCL = resolveItems(['Bottomless compost bucket', 'Iasor seed', 'Kronos seed', 'Attas seed']);
-export const theInfernoCL = resolveItems(['Jal-nib-rek', 'Infernal cape', 'Tokkul']);
+export const theInfernoCL = resolveItems([
+	'Jal-nib-rek',
+	'Infernal cape',
+	'Tokkul',
+	'Infernal core',
+	"TzKal-Zuk's skin",
+	'Head of TzKal Zuk',
+	'Jal-MejJak'
+]);
 export const kalphiteQueenCL = resolveItems([
 	'Kalphite princess',
 	'Kq head',
@@ -1939,7 +1947,8 @@ export const customPetsCL = resolveItems([
 	'Steve',
 	'Frosty',
 	'Voidling',
-	'Baby duckling'
+	'Baby duckling',
+	'Jal-MejJak'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([

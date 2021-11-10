@@ -72,6 +72,7 @@ export namespace UserSettings {
 	export const MainAccount = T<string | null>('main_account');
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
+	export const EmergedInfernoAttempts = T<number>('emerged_inferno_attempts');
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
 
 	export const Blowpipe = T<O.Readonly<BlowpipeData>>('blowpipe');

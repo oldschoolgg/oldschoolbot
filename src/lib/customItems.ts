@@ -16,6 +16,15 @@ export function isCustomItem(itemID: number) {
 	return customItems.includes(itemID);
 }
 
+interface CustomItemData {
+	isSuperUntradeable: boolean;
+}
+declare module 'oldschooljs/dist/meta/types' {
+	interface Item {
+		customItemData?: CustomItemData;
+	}
+}
+
 export const hasSet = new Set();
 
 function setCustomItem(id: number, name: string, baseItem: string, newItemData?: Partial<Item>, price = 0) {
@@ -1897,6 +1906,138 @@ setCustomItem(48_315, 'Shiny cat', 'Herbi', {}, 1_000_000);
 setCustomItem(48_316, 'Baby duckling', 'Herbi', {}, 1_000_000);
 setCustomItem(48_317, 'Magic kitten', 'Herbi', {}, 1_000_000);
 setCustomItem(48_318, 'Magic cat', 'Herbi', {}, 1_000_000);
+setCustomItem(
+	48_319,
+	'Infernal core',
+	'Coal',
+	{
+		customItemData: {
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	48_320,
+	'Infernal bulwark',
+	"Dinh's bulwark",
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 140,
+			attack_magic: 0,
+			attack_ranged: 0,
+
+			defence_stab: 129,
+			defence_slash: 135,
+			defence_crush: 129,
+			defence_magic: -19,
+			defence_ranged: 169,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: {
+				defence: 105,
+				strength: 105
+			}
+		},
+		customItemData: {
+			isSuperUntradeable: true
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	48_321,
+	'Head of TzKal Zuk',
+	'Coal',
+	{
+		customItemData: {
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	48_322,
+	'TzKal cape',
+	'Abyssal cape',
+	{
+		equipment: {
+			attack_stab: 20,
+			attack_slash: 20,
+			attack_crush: 20,
+			attack_magic: 6,
+			attack_ranged: 6,
+			defence_stab: 44,
+			defence_slash: 44,
+			defence_crush: 44,
+			defence_magic: 44,
+			defence_ranged: 44,
+			melee_strength: 34,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 12,
+			slot: EquipmentSlot.Cape,
+			requirements: {
+				defence: 100
+			}
+		},
+		customItemData: {
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	48_323,
+	'Infernal slayer helmet',
+	'Gorajan warrior helmet',
+	{
+		customItemData: {
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+
+setCustomItem(
+	48_325,
+	'Jal-MejJak',
+	'Herbi',
+	{
+		customItemData: {
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	48_326,
+	"TzKal-Zuk's skin",
+	'Coal',
+	{
+		customItemData: {
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	48_327,
+	'Infernal slayer helmet(i)',
+	'Gorajan warrior helmet',
+	{
+		customItemData: {
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
 /**
  * Misc Items
  *

@@ -175,6 +175,12 @@ export const Minigames: Minigame[] = [
 		aliases: ['inferno', 'zuk'],
 		key: 'Inferno',
 		column: 'inferno'
+	},
+	{
+		name: 'Emerged Zuk Inferno',
+		aliases: ['ei', 'emerged inferno'],
+		key: 'EmergedInferno',
+		column: 'EmergedInferno'
 	}
 ];
 
