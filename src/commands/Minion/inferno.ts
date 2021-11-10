@@ -429,15 +429,17 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		if (!isEmergedZuk) {
 			duration.add(
-				rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt'),
+				(rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt')) ||
+					(rangeGear.hasEquipped('Pernix body') && rangeGear.hasEquipped('Armadyl chaps')),
 				-3,
-				'Armadyl'
+				'Armadyl/Pernix'
 			);
 
 			duration.add(
-				mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom'),
+				(mageGear.hasEquipped('Ancestral robe top') && mageGear.hasEquipped('Ancestral robe bottom')) ||
+					(mageGear.hasEquipped('Virtus robe top') && mageGear.hasEquipped('Virtus robe legs')),
 				-4,
-				'Ancestral'
+				'Ancestral/Virtus'
 			);
 		}
 
@@ -557,10 +559,11 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			) {
 				return 'You need stronger melee armor! TzKal-Zuk will crush you. Try getting Torva or Gorajan.';
 			}
-			duration.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
-			preZukDeathChance.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
-			zukDeathChance.add(allItems.includes(itemID('TzKal cape')), -5, 'TzKal cape');
-			emergedZukDeathChance.add(allItems.includes(itemID('TzKal cape')), -10, 'TzKal cape');
+			const hasTzkalCape = [meleeGear, rangeGear, mageGear].some(s => s.hasEquipped('Tzkal cape'));
+			duration.add(hasTzkalCape, -5, 'TzKal cape');
+			preZukDeathChance.add(hasTzkalCape, -5, 'TzKal cape');
+			zukDeathChance.add(hasTzkalCape, -5, 'TzKal cape');
+			emergedZukDeathChance.add(hasTzkalCape, -10, 'TzKal cape');
 			duration.add(allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
 			emergedZukDeathChance.add(user.skillLevel(SkillsEnum.Defence) === 120, -10, '120 Defence');
 
