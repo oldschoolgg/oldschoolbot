@@ -93,9 +93,7 @@ function generateReadyThings(user: KlasaUser) {
 		const cd = typeof cooldown === 'number' ? cooldown : cooldown(user);
 
 		readyThings.push(
-			`**${name}:** ${
-				difference < cooldown ? `*${formatDuration(Date.now() - (lastTime + cd), true)}*` : 'ready'
-			}`
+			`**${name}:** ${difference < cd ? `*${formatDuration(Date.now() - (lastTime + cd), true)}*` : 'ready'}`
 		);
 	}
 	return readyThings;
