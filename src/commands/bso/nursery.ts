@@ -222,6 +222,6 @@ export default class POHCommand extends BotCommand {
 		};
 		await msg.author.settings.update(UserSettings.Nursery, newNursery);
 
-		return msg.channel.send(`You put a ${specie.name} Egg in your nursery.`);
+		return msg.channel.send(`You put: ${specie.name} Egg in your nursery.`);
 	}
 }
