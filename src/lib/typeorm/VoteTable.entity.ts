@@ -27,7 +27,9 @@ export class VoteTable extends BaseEntity {
 		return `\`${this.id}. ${Util.escapeMarkdown(cleanMentions(null, this.text).slice(0, 32))} [${
 			this.yesVoters.length === 0
 				? 'No votes'
-				: `${calcWhatPercent(this.yesVoters.length, this.yesVoters.length + this.noVoters.length).toFixed(2)}%`
+				: `${calcWhatPercent(this.yesVoters.length, this.yesVoters.length + this.noVoters.length).toFixed(
+						2
+				  )}% ${this.yesVoters.length} Yes ${this.noVoters.length} No`
 		}]\``;
 	}
 }

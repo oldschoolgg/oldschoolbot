@@ -4,6 +4,7 @@ import { PerkTier } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { VoteTable } from '../../lib/typeorm/VoteTable.entity';
+import { Util } from '../../lib/util';
 
 export default class POHCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -11,26 +12,64 @@ export default class POHCommand extends BotCommand {
 			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion'],
-			description: 'Allows you to access and build in your POH.',
-			examples: ['+poh build demonic throne', '+poh', '+poh items', '+poh destroy demonic throne'],
 			subcommands: true,
-			usage: '[create|delete|vote|list] [input:...str]',
+			usage: '[create|delete|vote|list|search] [input:...str]',
 			usageDelim: ' ',
-			aliases: ['poll']
+			aliases: ['poll', 'p']
 		});
+	}
+
+	async search(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		const result = await VoteTable.createQueryBuilder()
+			.select()
+			.where('text ILIKE :searchTerm', { searchTerm: `%${input.replace(/[\W_]+/g, '')}%` })
+			.limit(10)
+			.getMany();
+
+		return msg.channel.send(`Poll Search Results:
+${result.map(p => p.title()).join('\n')}`);
 	}
 
 	async list(msg: KlasaMessage) {
 		const posts = await VoteTable.createQueryBuilder()
-			.orderBy('cardinality(yes_voters)+cardinality(no_voters)')
+			.orderBy('cardinality(yes_voters)+cardinality(no_voters)', 'DESC')
 			.limit(10)
 			.getMany();
-		return msg.channel.send(`Top 10 Most Voted Polls:
-${posts.map(p => p.title()).join('\n')}`);
+		const mostUpvotes = await VoteTable.createQueryBuilder()
+			.orderBy('cardinality(yes_voters)', 'DESC')
+			.limit(10)
+			.getMany();
+		return msg.channel.send(`**Top 10 Most Voted Polls:**
+${posts.map(p => p.title()).join('\n')}
+
+**Top 10 Most Upvoted:**
+${mostUpvotes.map(p => p.title()).join('\n')}`);
 	}
 
 	@requiresMinion
-	async run(msg: KlasaMessage) {
+	async run(msg: KlasaMessage, [_id]: [string | undefined]) {
+		if (_id) {
+			const id = Number(_id);
+			if (isNaN(id)) return msg.channel.send('Invalid id.');
+			const poll = await VoteTable.findOne({
+				where: {
+					id
+				}
+			});
+
+			if (!poll) {
+				return msg.channel.send('No poll found with that id.');
+			}
+			return msg.channel.send(`${poll.title()}
+\`\`\`
+${Util.escapeMarkdown(poll.text)}
+\`\`\`
+
+Vote Yes: \`=poll vote ${poll.id} yes\`
+Vote No: \`=poll vote ${poll.id} no\`
+`);
+		}
+
 		const myPolls = await VoteTable.find({
 			userID: msg.author.id
 		});
@@ -58,10 +97,10 @@ ${posts.map(p => p.title()).join('\n')}`);
 			return msg.channel.send('No poll found with that id.');
 		}
 		if (poll.yesVoters.includes(msg.author.id)) {
-			return msg.channel.send('You already voted yes.');
+			return msg.channel.send('You already voted yes on this poll.');
 		}
 		if (poll.noVoters.includes(msg.author.id)) {
-			return msg.channel.send('You already voted no.');
+			return msg.channel.send('You already voted no on this poll.');
 		}
 		const key = vote === 'yes' ? 'yesVoters' : 'noVoters';
 
@@ -109,7 +148,7 @@ ${posts.map(p => p.title()).join('\n')}`);
 		if (!poll) {
 			return msg.channel.send('No poll found with that id.');
 		}
-		await msg.confirm(`Are you sure you want to delete ${poll.title}?`);
+		await msg.confirm(`Are you sure you want to delete ${poll.title()}?`);
 		await poll.remove();
 		return msg.channel.send('Deleted.');
 	}
