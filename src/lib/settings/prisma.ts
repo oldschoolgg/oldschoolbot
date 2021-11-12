@@ -44,7 +44,7 @@ export async function completeActivity(_activity: Activity) {
 
 	client.oneCommandAtATimeCache.add(_activity.user_id);
 	try {
-		prisma.activity.update({
+		await prisma.activity.update({
 			where: {
 				id: activity.id
 			},

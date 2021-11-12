@@ -28,7 +28,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 		...__newData
 	};
 
-	prisma.activity.create({
+	await prisma.activity.create({
 		data: {
 			user_id: taskToAdd.userID,
 			start_date: new Date(),

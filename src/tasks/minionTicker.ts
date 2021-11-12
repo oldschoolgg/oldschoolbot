@@ -16,7 +16,7 @@ export default class extends Task {
 						completed: false,
 						finish_date: production
 							? {
-									gt: production ? new Date() : new Date()
+									lt: new Date()
 							  }
 							: undefined
 					}

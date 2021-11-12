@@ -340,6 +340,7 @@ model User {
   farmingPatches_flower      Json?    @map("farmingPatches.flower") @db.Json
   farmingPatches_mushroom    Json?    @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
+  kourend_favour             Json     @map("kourend_favour") @db.Json
 
   @@map("users")
 }
