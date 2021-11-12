@@ -30,7 +30,7 @@ export default class extends BotCommand {
 			return msg.channel.send('You can only do this in the Oldschool.gg server.');
 		}
 
-		if (![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(msg.channel.id)) {
+		if (![Channel.BSOChannel, Channel.BSOGeneral].includes(msg.channel.id)) {
 			return msg.channel.send("You can't use spawnlamp in this channel.");
 		}
 
