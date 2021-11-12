@@ -406,7 +406,7 @@ const Reverteables: Createable[] = [
 		}),
 		inputItems: resolveNameBank({
 			'Toxic blowpipe': 1
-		}),
+		})
 	},
 	{
 		name: 'Revert red decorative full helm',
