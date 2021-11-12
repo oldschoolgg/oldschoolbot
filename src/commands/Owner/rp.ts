@@ -85,6 +85,22 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'pingmass':
+			case 'pm': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
+				if (!msg.member) return;
+				if (!(msg.channel instanceof TextChannel)) return;
+				if (!msg.member.roles.cache.has(Roles.MassHoster) && !msg.member.roles.cache.has(Roles.Moderator)) {
+					return;
+				}
+				if (msg.channel.id === Channel.BarbarianAssault) {
+					return msg.channel.send(`<@&${Roles.BarbarianAssaultMass}>`);
+				}
+				if (msg.channel.parentID === Channel.ChambersOfXeric) {
+					return msg.channel.send(`<@&${Roles.ChambersOfXericMass}>`);
+				}
+				return msg.channel.send(`<@&${Roles.Mass}>`);
+			}
 			case 'check':
 			case 'c': {
 				let u = input;
