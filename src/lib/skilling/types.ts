@@ -241,6 +241,7 @@ export interface Plant {
 	canCompostandPay: boolean;
 	additionalPatchesByQP: number[][];
 	additionalPatchesByFarmLvl: number[][];
+	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
 }

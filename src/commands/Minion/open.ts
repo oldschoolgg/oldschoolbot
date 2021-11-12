@@ -31,7 +31,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 1,
 			aliases: ['clue'],
-			usage: '[quantity:int] [name:...string]',
+			usage: '[quantity:int{1,1000000}] [name:...string]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			categoryFlags: ['minion'],

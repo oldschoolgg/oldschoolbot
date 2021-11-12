@@ -2,6 +2,7 @@ import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -51,6 +52,12 @@ export default class extends BotCommand {
 			if (msg.author.settings.get(UserSettings.QP) < fish.qpRequired) {
 				return msg.channel.send(`You need ${fish.qpRequired} qp to catch those!`);
 			}
+		}
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Piscarilius, 100);
+		if (!hasFavour && fish.name === 'Anglerfish') {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Piscarilius Favour to fish Anglerfish!`
+			);
 		}
 
 		if (

@@ -19,7 +19,6 @@ import { AddXpParams, KillableMonster } from '../minions/types';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
-import { PoHTable } from '../typeorm/PoHTable.entity';
 import { chatHeads } from '../util/chatHeadImage';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
@@ -222,7 +221,7 @@ declare module 'discord.js' {
 		 */
 		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
-		getPOH(): Promise<PoHTable>;
+		getPOH(): Promise<PlayerOwnedHouse>;
 		getUserFavAlchs(): Item[];
 		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;

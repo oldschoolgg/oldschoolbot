@@ -15,11 +15,11 @@ import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
-import { ActivityEnum } from '.prisma/client';
+import { ActivityTypeEnum } from '.prisma/client';
 
 export const collectors = new Map<string, MessageCollector>();
 
-const activitiesToTrackAsPVMGPSource: ActivityEnum[] = [
+const activitiesToTrackAsPVMGPSource: ActivityTypeEnum[] = [
 	'GroupMonsterKilling',
 	'MonsterKilling',
 	'Raids',
@@ -127,6 +127,7 @@ export async function handleTripFinish(
 	collectors.set(user.id, collector);
 
 	collector.on('collect', async (mes: KlasaMessage) => {
+		if (client.settings.get(ClientSettings.UserBlacklist).includes(mes.author.id)) return;
 		if (user.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
 			collector.stop();
 			collectors.delete(user.id);

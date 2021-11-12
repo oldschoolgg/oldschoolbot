@@ -8,18 +8,17 @@ datasource db {
 }
 
 model Activity {
-  id             Int        @default(autoincrement())
-  user_id        String     @db.VarChar(19)
-  start_date     DateTime   @db.Timestamp(6)
-  finish_date    DateTime   @db.Timestamp(6)
+  id             Int              @id @default(autoincrement())
+  user_id        String           @db.VarChar(19)
+  start_date     DateTime         @db.Timestamp(6)
+  finish_date    DateTime         @db.Timestamp(6)
   duration       Int
   completed      Boolean
   group_activity Boolean
-  type           SkillsEnum
-  channel_id     String     @db.VarChar(19)
-  data           Json       @db.Json
+  type           ActivityTypeEnum
+  channel_id     String           @db.VarChar(19)
+  data           Json             @db.Json
 
-  @@id([id, user_id, channel_id])
   @@index([group_activity])
   @@index([completed])
   @@map("activity")
@@ -131,7 +130,7 @@ model GearPreset {
 }
 
 model Giveaway {
-  id          Int      @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   user_id     String   @db.VarChar(19)
   start_date  DateTime @db.Timestamp(6)
   finish_date DateTime @db.Timestamp(6)
@@ -142,7 +141,6 @@ model Giveaway {
   message_id  String   @db.VarChar(19)
   reaction_id String   @db.VarChar(19)
 
-  @@id([id, user_id, channel_id, message_id, reaction_id])
   @@index([completed])
   @@map("giveaway")
 }
@@ -412,7 +410,7 @@ model Minigame {
   inferno                 Int    @default(0)
   volcanic_mine           Int    @default(0)
 
-  new_user NewUser
+  new_user NewUser?
   @@map("minigames")
 }
 
@@ -481,6 +479,7 @@ enum ActivityTypeEnum {
   PestControl
   VolcanicMine
   Inferno
+  KourendFavour
 }
 
 enum SkillsEnum {

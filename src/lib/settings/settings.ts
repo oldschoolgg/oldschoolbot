@@ -39,7 +39,7 @@ export async function getNewUser(id: string): Promise<NewUser> {
 		return prisma.newUser.create({
 			data: {
 				id,
-				minigames: {}
+				minigame: {}
 			}
 		});
 	}

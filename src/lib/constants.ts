@@ -220,6 +220,7 @@ export const enum Tasks {
 	RevenantsActivity = 'revenantsActivity',
 	PestControl = 'pestControlActivity',
 	VolcanicMine = 'volcanicMineActivity',
+	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity'
 }
 
@@ -298,7 +299,9 @@ export const enum BitField {
 	AlwaysSmallBank = 15,
 	HasDexScroll = 16,
 	HasArcaneScroll = 17,
-	HasTornPrayerScroll = 18
+	HasTornPrayerScroll = 18,
+	IsWikiContributor = 19,
+	HasSlepeyTablet = 20
 }
 
 interface BitFieldData {
@@ -318,7 +321,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
-	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' }
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' },
+	[BitField.IsWikiContributor]: { name: 'Wiki Contributor' }
 } as const;
 
 export const enum PatronTierID {
@@ -454,3 +458,4 @@ export const projectiles: Record<ProjectileType, number[]> = {
 };
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
+export const PHOSANI_NIGHTMARE_ID = 9416;

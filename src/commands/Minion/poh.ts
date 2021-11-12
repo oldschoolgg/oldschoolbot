@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../lib/constants';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../lib/poh';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -119,9 +120,14 @@ export default class POHCommand extends BotCommand {
 		if (level < obj.level) {
 			return msg.channel.send(`You need level ${obj.level} Construction to build a ${obj.name} in your house.`);
 		}
-
+		if (obj.id === 29_149 || obj.id === 31_858) {
+			const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Arceuus, 100);
+			if (!hasFavour) {
+				return msg.channel.send(`Build Dark Altar/Occult altar requires ${requiredPoints}% Arceuus Favour.`);
+			}
+		}
 		const inPlace = poh[obj.slot];
-		if (obj.slot === 'mountedItem' && inPlace !== null) {
+		if (obj.slot === 'mounted_item' && inPlace !== null) {
 			return msg.channel.send(
 				`You already have a item mount built. Use \`${msg.cmdPrefix}poh mountitem <tem>\` to mount an item on it.`
 			);
@@ -223,7 +229,7 @@ export default class POHCommand extends BotCommand {
 		const poh = await msg.author.getPOH();
 
 		const inPlace = poh[obj.slot];
-		if (obj.slot === 'mountedItem' && ![1111, 1112, null].includes(inPlace)) {
+		if (obj.slot === 'mounted_item' && ![1111, 1112, null].includes(inPlace)) {
 			poh[obj.slot] = null;
 			await poh.save();
 			await msg.author.addItemsToBank({ [inPlace!]: 1 });

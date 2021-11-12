@@ -2,11 +2,13 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Items, Openables } from 'oldschooljs';
 
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
+import { GearSetupTypes } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID } from '../../lib/util';
+import { itemNameFromID, runCommand } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import { phosaniBISGear } from '../Minion/nightmare';
 
 const gearSpawns = [
 	{
@@ -23,6 +25,22 @@ const gearSpawns = [
 		name: 'coxrange',
 		gear: maxRangeGear,
 		setup: UserSettings.Gear.Range
+	},
+	{
+		name: 'phosani',
+		gear: phosaniBISGear,
+		setup: UserSettings.Gear.Melee,
+		otherItems: new Bank()
+			.add('Super combat potion(4)', 1_000_000)
+			.add('Sanfew serum(4)', 1_000_000)
+			.add('Super restore(4)', 1_000_000)
+			.add('Air rune', 1_000_000)
+			.add('Fire rune', 1_000_000)
+			.add('Wrath rune', 1_000_000)
+			.add('Shark', 1_000_000)
+			.add('Toxic blowpipe', 1)
+			.add('Dragon dart', 1_000_000)
+			.add("Zulrah's scales", 1_000_000)
 	}
 ];
 
@@ -47,8 +65,17 @@ export default class extends BotCommand {
 		for (const i of gearSpawns) {
 			if (msg.flagArgs[i.name]) {
 				try {
-					await msg.author.settings.update(i.setup, i.gear);
-					return msg.channel.send(`Equipped you a premade setup called ${i.name}.`);
+					await msg.author.settings.update(i.setup, i.gear.raw());
+					let str = '';
+					str += `Equipped you a premade setup called ${i.name} which has: ${i.gear
+						.allItems()
+						.map(itemNameFromID)
+						.join(', ')}.`;
+					if (i.otherItems) {
+						await msg.author.addItemsToBank(i.otherItems);
+						str += `\n\n**Added to your bank:** ${i.otherItems}`;
+					}
+					return msg.channel.send(str);
 				} catch (err) {
 					console.error(err);
 				}
@@ -83,16 +110,20 @@ export default class extends BotCommand {
 
 		const bank = new Bank();
 		for (const [item, qty] of items) {
-			bank.add(item.id, qty ?? 1);
-			for (const setup of ['range', 'melee', 'mage', 'skilling', 'wildy']) {
+			bank.add(item.id, qty || 1);
+		}
+		await msg.author.addItemsToBank(bank, Boolean(msg.flagArgs.cl), false);
+
+		for (const [item] of bank.items()) {
+			for (const setup of GearSetupTypes) {
 				if (msg.flagArgs[setup]) {
+					if (!item.equipment) continue;
 					try {
-						await this.client.commands.get('equip')!.run(msg, [setup, 1, [item.name]]);
+						await runCommand(msg, 'equip', [setup, 1, [item.name]]);
 					} catch (err) {}
 				}
 			}
 		}
-		await msg.author.addItemsToBank(bank, Boolean(msg.flagArgs.cl), false);
 
 		return msg.channel.send(`Gave you ${bank}.`);
 	}

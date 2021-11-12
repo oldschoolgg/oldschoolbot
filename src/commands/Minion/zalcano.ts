@@ -11,7 +11,6 @@ import { Skills } from '../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { ActivityEnum } from '.prisma/client';
 
 export const soteSkillRequirements: Skills = {
 	mining: 70,
@@ -82,7 +81,7 @@ export default class extends BotCommand {
 		else if (kc > 50) healAmountNeeded = 3 * 12;
 		else if (kc > 20) healAmountNeeded = 5 * 12;
 
-		const quantity = Math.floor(msg.author.maxTripLength(ActivityEnum.Zalcano) / baseTime);
+		const quantity = Math.floor(msg.author.maxTripLength('Zalcano') / baseTime);
 		const duration = quantity * baseTime;
 
 		const { foodRemoved } = await removeFoodFromUser({
@@ -99,7 +98,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: ActivityEnum.Zalcano,
+			type: 'Zalcano',
 			performance: this.calcPerformance(kcLearned, skillPercentage),
 			isMVP: percentChance(80)
 		});

@@ -18,8 +18,11 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { autoFarm } from '../../lib/minions/functions/autoFarm';
+import { equipPet } from '../../lib/minions/functions/equipPet';
+import { pastActivities } from '../../lib/minions/functions/pastActivities';
+import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { prisma } from '../../lib/settings/prisma';
-import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -39,6 +42,27 @@ const randomPatMessage = (minionName: string) => randArrItem(patMessages).replac
 
 const ironmanArmor = new Bank({ 'Ironman helm': 1, 'Ironman platebody': 1, 'Ironman platelegs': 1 });
 
+const subCommands = [
+	'lvl',
+	'seticon',
+	'clues',
+	'k',
+	'kill',
+	'setname',
+	'buy',
+	'clue',
+	'kc',
+	'pat',
+	'stats',
+	'ironman',
+	'opens',
+	'info',
+	'equippet',
+	'unequippet',
+	'autofarm',
+	'activities'
+];
+
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -46,7 +70,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman|opens] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: `[${subCommands.join('|')}] [quantity:int{1}|name:...string] [name:...string] [name:...string]`,
 			usageDelim: ' ',
 			subcommands: true,
 			requiredPermissions: ['EMBED_LINKS']
@@ -117,6 +141,26 @@ export default class MinionCommand extends BotCommand {
 			};
 			handleButtons();
 		}
+	}
+
+	async info(msg: KlasaMessage) {
+		return runCommand(msg, 'rp', ['c', msg.author]);
+	}
+
+	async unequippet(msg: KlasaMessage) {
+		return unequipPet(msg);
+	}
+
+	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return equipPet(msg, input);
+	}
+
+	async autofarm(msg: KlasaMessage) {
+		return autoFarm(msg);
+	}
+
+	async activities(msg: KlasaMessage) {
+		return pastActivities(msg);
 	}
 
 	@requiresMinion
@@ -272,11 +316,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			await msg.author.settings.reset([...keysToReset]);
 
 			try {
-				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
-				await PoHTable.delete({ userID: msg.author.id });
-				await MinigameTable.delete({ userID: msg.author.id });
-				await XPGainsTable.delete({ userID: msg.author.id });
-				await NewUserTable.delete({ id: msg.author.id });
+				await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
+				await prisma.minigame.delete({ where: { user_id: msg.author.id } });
+				await prisma.xPGain.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.newUser.delete({ where: { id: msg.author.id } });
+				await prisma.activity.deleteMany({ where: { user_id: msg.author.id } });
 			} catch (_) {}
 
 			await msg.author.settings.update([

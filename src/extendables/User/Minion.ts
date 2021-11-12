@@ -14,7 +14,8 @@ import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/kill
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
 import { AddXpParams, KillableMonster } from '../../lib/minions/types';
-import { getActivityOfUser } from '../../lib/settings/settings';
+import { prisma } from '../../lib/settings/prisma';
+import { getActivityOfUser, Minigames } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
@@ -61,6 +62,7 @@ import {
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
 	InfernoOptions,
+	KourendFavourActivityTaskOptions,
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
@@ -95,7 +97,7 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import { ActivityEnum } from '.prisma/client';
+import { ActivityTypeEnum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
 	.add('🎉', 200)
@@ -568,8 +570,11 @@ export default class extends Extendable {
 				const data = currentTask as VolcanicMineActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
-
-			case Activity.Inferno: {
+			case 'KourendFavour': {
+				const data = currentTask as KourendFavourActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.favour.name} Favour tasks. ${formattedDuration}`;
+			}
+			case 'Inferno': {
 				const data = currentTask as InfernoOptions;
 				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 				return `${
@@ -601,7 +606,7 @@ export default class extends Extendable {
 			game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
 		);
 		if (minigame) {
-			return [minigame.name, await this.getMinigameScore(minigame.key)];
+			return [minigame.name, await this.getMinigameScore(minigame.column)];
 		}
 
 		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
@@ -630,7 +635,7 @@ export default class extends Extendable {
 	}
 
 	// @ts-ignore 2784
-	public maxTripLength(this: User, activity?: ActivityEnum) {
+	public maxTripLength(this: User, activity?: ActivityTypeEnum) {
 		let max = Time.Minute * 30;
 
 		max += patronMaxTripCalc(this);
@@ -709,22 +714,26 @@ export default class extends Extendable {
 		let preMax = -1;
 		if (totalXPAdded > 0) {
 			preMax = totalXPAdded;
-			XPGainsTable.insert({
-				userID: this.id,
-				skill: params.skillName,
-				xp: Math.floor(totalXPAdded),
-				artificial: params.artificial ? true : null
+			prisma.xPGain.create({
+				data: {
+					user_id: this.id,
+					skill: params.skillName,
+					xp: Math.floor(totalXPAdded),
+					artificial: params.artificial ? true : null
+				}
 			});
 		}
 
 		// Post-MAX_XP
 		if (params.amount - totalXPAdded > 0) {
-			XPGainsTable.insert({
-				userID: this.id,
-				skill: params.skillName,
-				xp: Math.floor(params.amount - totalXPAdded),
-				artificial: params.artificial ? true : null,
-				postMax: true
+			prisma.xPGain.create({
+				data: {
+					user_id: this.id,
+					skill: params.skillName,
+					xp: Math.floor(params.amount - totalXPAdded),
+					artificial: params.artificial ? true : null,
+					post_max: true
+				}
 			});
 		}
 

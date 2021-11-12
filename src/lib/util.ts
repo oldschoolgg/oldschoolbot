@@ -12,6 +12,7 @@ import { promisify } from 'util';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupType, GearSetupTypes } from './gear/types';
+import { Consumable } from './minions/types';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
@@ -330,6 +331,57 @@ export function formatItemReqs(items: ArrayItemsResolved) {
 	return str.join(', ');
 }
 
+export function formatItemCosts(consumable: Consumable, timeToFinish: number) {
+	const str = [];
+
+	const consumables = [consumable];
+
+	if (consumable.alternativeConsumables) {
+		for (const c of consumable.alternativeConsumables) {
+			consumables.push(c);
+		}
+	}
+
+	for (const c of consumables) {
+		const itemEntries = c.itemCost.items();
+		const multiple = itemEntries.length > 1;
+		const subStr = [];
+
+		let multiply = 1;
+		if (c.qtyPerKill) {
+			multiply = c.qtyPerKill;
+		} else if (c.qtyPerMinute) {
+			multiply = c.qtyPerMinute * (timeToFinish / Time.Minute);
+		}
+
+		for (const [item, quantity] of itemEntries) {
+			subStr.push(`${Number((quantity * multiply).toFixed(3))}x ${item.name}`);
+		}
+
+		if (multiple) {
+			str.push(subStr.join(', '));
+		} else {
+			str.push(subStr.join(''));
+		}
+	}
+
+	if (consumables.length > 1) {
+		return `(${str.join(' OR ')})`;
+	}
+
+	return str.join('');
+}
+
+export function formatMissingItems(consumables: Consumable[], timeToFinish: number) {
+	const str = [];
+
+	for (const consumable of consumables) {
+		str.push(formatItemCosts(consumable, timeToFinish));
+	}
+
+	return str.join(', ');
+}
+
 export function formatSkillRequirements(reqs: Record<string, number>, emojis = true) {
 	let arr = [];
 	for (const [name, num] of objectEntries(reqs)) {
@@ -499,7 +551,7 @@ export function getUsername(client: KlasaClient, id: string): string {
 
 export async function runCommand(
 	message: KlasaMessage,
-	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask',
+	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask' | 'rp' | 'equip' | 'farm',
 	args: unknown[]
 ) {
 	const command = message.client.commands.get(commandName);

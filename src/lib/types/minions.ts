@@ -1,12 +1,13 @@
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { IPatchData } from '../minions/farming/types';
 import { MinigameName } from '../settings/minigames';
+import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import { ItemBank } from '.';
-import { ActivityEnum } from '.prisma/client';
+import { ActivityTypeEnum } from '.prisma/client';
 
 export interface ActivityTaskOptions {
-	type: ActivityEnum;
+	type: ActivityTypeEnum;
 	userID: string;
 	duration: number;
 	id: number;
@@ -232,6 +233,7 @@ export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	quantity: number;
+	isPhosani?: boolean;
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -332,6 +334,11 @@ export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
+	favour: KourendFavour;
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
@@ -354,4 +361,5 @@ export type ActivityTaskData =
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
-	| VolcanicMineActivityTaskOptions;
+	| VolcanicMineActivityTaskOptions
+	| KourendFavourActivityTaskOptions;

@@ -1,7 +1,7 @@
 import { ActivityGroup } from '../constants';
-import { ActivityEnum } from '.prisma/client';
+import { ActivityTypeEnum } from '.prisma/client';
 
-export function taskGroupFromActivity(type: ActivityEnum): ActivityGroup {
+export function taskGroupFromActivity(type: ActivityTypeEnum): ActivityGroup {
 	switch (type) {
 		case 'ClueCompletion':
 			return ActivityGroup.Clue;

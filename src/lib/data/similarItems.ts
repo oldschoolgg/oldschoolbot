@@ -1,86 +1,13 @@
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
-
-export const gracefulHoods = [
-	'Graceful hood',
-	'Arceuus graceful hood',
-	'Piscarilius graceful hood',
-	'Lovakengj graceful hood',
-	'Shayzien graceful hood',
-	'Hosidius graceful hood',
-	'Kourend graceful hood',
-	'Brimhaven graceful hood',
-	'Dark graceful hood',
-	'Trailblazer graceful hood'
-];
-
-export const gracefulTops = [
-	'Graceful top',
-	'Arceuus graceful top',
-	'Piscarilius graceful top',
-	'Lovakengj graceful top',
-	'Shayzien graceful top',
-	'Hosidius graceful top',
-	'Kourend graceful top',
-	'Brimhaven graceful top',
-	'Dark graceful top',
-	'Trailblazer graceful top'
-];
-
-export const gracefulLegs = [
-	'Graceful legs',
-	'Arceuus graceful legs',
-	'Piscarilius graceful legs',
-	'Lovakengj graceful legs',
-	'Shayzien graceful legs',
-	'Hosidius graceful legs',
-	'Kourend graceful legs',
-	'Brimhaven graceful legs',
-	'Dark graceful legs',
-	'Trailblazer graceful legs'
-];
-
-export const gracefulFeet = [
-	'Graceful boots',
-	'Arceuus graceful boots',
-	'Piscarilius graceful boots',
-	'Lovakengj graceful boots',
-	'Shayzien graceful boots',
-	'Hosidius graceful boots',
-	'Kourend graceful boots',
-	'Brimhaven graceful boots',
-	'Dark graceful boots',
-	'Trailblazer graceful boots'
-];
-
-export const gracefulHands = [
-	'Graceful gloves',
-	'Arceuus graceful gloves',
-	'Piscarilius graceful gloves',
-	'Lovakengj graceful gloves',
-	'Shayzien graceful gloves',
-	'Hosidius graceful gloves',
-	'Kourend graceful gloves',
-	'Brimhaven graceful gloves',
-	'Dark graceful gloves',
-	'Trailblazer graceful gloves'
-];
-
-export const gracefulCapes = [
-	'Graceful cape',
-	'Arceuus graceful cape',
-	'Piscarilius graceful cape',
-	'Lovakengj graceful cape',
-	'Shayzien graceful cape',
-	'Hosidius graceful cape',
-	'Kourend graceful cape',
-	'Brimhaven graceful cape',
-	'Dark graceful cape',
-	'Trailblazer graceful cape',
-	'Agility cape',
-	'Agility cape (t)',
-	'Max cape'
-];
+import {
+	gracefulCapes,
+	gracefulFeet,
+	gracefulHands,
+	gracefulHoods,
+	gracefulLegs,
+	gracefulTops
+} from './CollectionsExport';
 
 const blackMaskISimilar = resolveItems([
 	'Black mask (10) (i)',
@@ -153,6 +80,7 @@ const source: [string, (string | number)[]][] = [
 	['Tormented bracelet', ['Tormented bracelet (or)']],
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
+	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
 	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
 	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
@@ -160,7 +88,7 @@ const source: [string, (string | number)[]][] = [
 	['Odium ward', [12_807]],
 	['Malediction ward', [12_806]],
 	['Dark bow', [12_765, 12_766, 12_767, 12_768]],
-	['Abyssal whip', ['Volcanic abyssal whip', 'Frozen abyssal whip']],
+	['Abyssal whip', ['Volcanic abyssal whip', 'Frozen abyssal whip', 'Abyssal tentacle']],
 	['Granite maul', [12_848]],
 	['Rune scimitar', [23_330, 23_332, 23_334]],
 	[

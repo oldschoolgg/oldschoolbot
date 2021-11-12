@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Minigames } from '../../extendables/User/Minigame';
-import { settingsUpdate } from '../../lib/settings/settings';
+import { Minigames, settingsUpdate } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
@@ -22,7 +21,7 @@ export default class extends BotCommand {
 				`That's not a valid minigame. The valid minigames are: ${Minigames.map(m => m.column).join(', ')}.`
 			);
 		}
-		settingsUpdate('minigames', msg.author.id, { [minigame.column]: kc });
+		settingsUpdate('Minigame', msg.author.id, { [minigame.column]: kc });
 
 		return msg.channel.send(`Set your ${minigame.name} kc to ${kc}.`);
 	}

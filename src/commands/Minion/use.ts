@@ -28,6 +28,11 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Arcane prayer scroll'),
 		bitfield: BitField.HasArcaneScroll,
 		resultMessage: 'You used your Arcane prayer scroll, and unlocked the Augury prayer.'
+	},
+	{
+		item: getOSItem('Slepey tablet'),
+		bitfield: BitField.HasSlepeyTablet,
+		resultMessage: 'You used your Slepey tablet, and unlocked the Slepe teleport.'
 	}
 ];
 

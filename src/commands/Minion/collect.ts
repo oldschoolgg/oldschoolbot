@@ -5,12 +5,14 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Skills } from '../../lib/types';
 import { CollectingOptions } from '../../lib/types/minions';
 import { addBanks, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
+import { SkillsEnum } from './../../lib/skilling/types';
 
 interface Collectable {
 	item: Item;
@@ -66,6 +68,15 @@ export const collectables: Collectable[] = [
 		}),
 		duration: Time.Minute * 6.5,
 		qpRequired: 72
+	},
+	{
+		item: getOSItem('Snake weed'),
+		quantity: 150,
+		itemCost: new Bank({
+			'Ring of dueling(8)': 1
+		}),
+		duration: Time.Minute * 30,
+		qpRequired: 3
 	},
 	{
 		item: getOSItem('Bucket of sand'),
@@ -128,6 +139,17 @@ export default class extends BotCommand {
 		}
 
 		const maxTripLength = msg.author.maxTripLength('Collecting');
+		if (collectable.qpRequired && msg.author.settings.get(UserSettings.QP) < collectable.qpRequired) {
+			return msg.channel.send(`You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`);
+		}
+
+		if (collectable.skillReqs) {
+			for (const [skillName, lvl] of Object.entries(collectable.skillReqs)) {
+				if (msg.author.skillLevel(skillName as SkillsEnum) < lvl) {
+					return msg.channel.send(`You need ${lvl} ${skillName} to collect ${collectable.item.name}.`);
+				}
+			}
+		}
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / collectable.duration);

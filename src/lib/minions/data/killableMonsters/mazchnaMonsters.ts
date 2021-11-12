@@ -3,7 +3,6 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { GearStat } from '../../../gear';
 import itemID from '../../../util/itemID';
-import resolveItems from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
 
 export const mazchnaMonsters: KillableMonster[] = [
@@ -187,8 +186,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		existsInCatacombs: false,
 		difficultyRating: 3,
 		qpRequired: 0,
-		itemsRequired: resolveItems(['Giant key']),
-		itemCost: new Bank().add('Giant key', 1),
+		itemCost: { itemCost: new Bank().add('Giant key', 1), qtyPerKill: 1 },
 		healAmountNeeded: 20 * 5,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]

@@ -46,7 +46,7 @@ export default class extends Task {
 		// Build up loot table based on fishing level
 		const fishTable = fishShoal.table.clone();
 		for (const bonus of fishBonusLoot) {
-			if (currentFishLevel > bonus.req) {
+			if (currentFishLevel >= bonus.req) {
 				fishTable.add(bonus.item);
 			}
 		}

@@ -121,13 +121,12 @@ export default class extends Extendable {
 
 	public async getPOH(this: User) {
 		const poh = await prisma.playerOwnedHouse.findFirst({ where: { user_id: this.id } });
-		if (poh !== undefined) return poh;
-		await PoHTable.insert({ userID: this.id });
-		const created = await PoHTable.findOne({ userID: this.id });
-		if (!created) {
+		if (poh !== null) return poh;
+		const createdPoh = await prisma.playerOwnedHouse.create({ data: { user_id: this.id } });
+		if (!createdPoh) {
 			throw new Error('Failed to find POH after creation.');
 		}
-		return created;
+		return createdPoh;
 	}
 
 	public getUserFavAlchs(this: User): Item[] {

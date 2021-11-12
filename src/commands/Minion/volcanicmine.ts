@@ -11,7 +11,6 @@ import { ItemBank } from '../../lib/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { ActivityEnum } from '.prisma/client';
 
 export const VolcanicMineGameTime = Time.Minute * 10;
 
@@ -236,7 +235,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: numberOfGames,
 			duration,
-			type: ActivityEnum.VolcanicMine
+			type: 'VolcanicMine'
 		});
 
 		return msg.channel.send(str);

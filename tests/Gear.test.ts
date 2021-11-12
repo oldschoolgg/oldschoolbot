@@ -29,7 +29,7 @@ describe('Gear', () => {
 	});
 
 	test('allItems', () => {
-		const gear = new Gear({ head: 'Max cape' });
+		const gear = new Gear({ cape: 'Max cape' });
 		const allItems = gear.allItems(true).map(itemNameFromID).sort();
 		expect(allItems).toEqual(
 			['Max cape', 'Graceful cape', 'Attack cape', 'Crafting cape', 'Runecraft cape'].sort()
@@ -62,6 +62,8 @@ describe('Gear', () => {
 		expect(testGear.hasEquipped(['Twisted bow'], false)).toEqual(true);
 		expect(testGear.hasEquipped(['Bronze arrow'])).toEqual(false);
 		expect(testGear.hasEquipped(['Bronze arrow'], false)).toEqual(false);
+		expect(testGear.hasEquipped(itemID('Bronze arrow'))).toEqual(false);
+		expect(testGear.hasEquipped(itemID('Twisted bow'))).toEqual(true);
 
 		const testGear2 = new Gear({
 			weapon: '3rd age pickaxe',

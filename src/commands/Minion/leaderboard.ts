@@ -7,6 +7,7 @@ import { getCollectionItems } from '../../lib/data/Collections';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
+import { Minigames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
@@ -122,7 +123,14 @@ export default class extends BotCommand {
 	}
 
 	async cacheUsernames() {
-		const allNewUsers = await NewUserTable.find({ username: Not(IsNull()) });
+		const allNewUsers = await prisma.newUser.findMany({
+			where: {
+				username: {
+					not: null
+				}
+			}
+		});
+
 		for (const user of allNewUsers) {
 			this.usernameCache.map.set(user.id, stripEmojis(user.username!));
 		}
@@ -337,14 +345,14 @@ LIMIT 10;`);
 			);
 		}
 
-		const res = await prisma.minigames.findMany({
+		const res = await prisma.minigame.findMany({
 			where: {
 				[minigame.column]: {
 					gt: 10
 				}
 			},
 			orderBy: {
-				[minigame.column]: 'sadffdsafsfdsaTODO'
+				[minigame.column]: 'desc'
 			},
 			take: 10
 		});
@@ -357,7 +365,7 @@ LIMIT 10;`);
 					subList
 						.map(
 							(u, j) =>
-								`${this.getPos(i, j)}**${this.getUsername(u.userID)}:** ${u[
+								`${this.getPos(i, j)}**${this.getUsername(u.user_id)}:** ${u[
 									minigame.column
 								].toLocaleString()}`
 						)

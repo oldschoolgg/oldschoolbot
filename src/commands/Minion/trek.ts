@@ -11,7 +11,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { TempleTrekkingActivityTaskOptions } from './../../lib/types/minions';
-import { ActivityEnum } from '.prisma/client';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -156,7 +155,7 @@ export default class extends BotCommand {
 			tripTime *= flailBoost;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(ActivityEnum.Trekking);
+		const maxTripLength = msg.author.maxTripLength('Trekking');
 
 		if (quantity === undefined || quantity === null) {
 			quantity = Math.floor(maxTripLength / tripTime);
@@ -179,7 +178,7 @@ export default class extends BotCommand {
 			quantity,
 			userID: msg.author.id,
 			duration,
-			type: ActivityEnum.Trekking,
+			type: 'Trekking',
 			channelID: msg.channel.id,
 			minigameID: 'temple_trekking'
 		});

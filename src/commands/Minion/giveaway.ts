@@ -59,16 +59,6 @@ export default class extends BotCommand {
 		const reaction = msg.guild.emojis.cache.random();
 		await msg.author.removeItemsFromBank(bank);
 
-		const giveaway = new GiveawayTable();
-		giveaway.channelID = msg.channel.id;
-		giveaway.startDate = new Date();
-		giveaway.finishDate = duration.fromNow;
-		giveaway.completed = false;
-		giveaway.bank = bank.bank;
-		giveaway.userID = msg.author.id;
-		giveaway.reactionID = reaction.id;
-		giveaway.duration = duration.offset;
-
 		const message = await msg.channel.sendBankImage({
 			content: `You created a giveaway that will finish in ${formatDuration(
 				duration.offset
@@ -79,8 +69,19 @@ React to this messsage with ${reaction} to enter.`,
 			title: `${msg.author.username}'s Giveaway`
 		});
 
-		giveaway.messageID = message.id;
-		await giveaway.save();
+		await prisma.giveaway.create({
+			data: {
+				channel_id: msg.channel.id,
+				start_date: new Date(),
+				finish_date: duration.fromNow,
+				completed: false,
+				loot: bank.bank,
+				user_id: msg.author.id,
+				reaction_id: reaction.id,
+				duration: duration.offset,
+				message_id: message.id
+			}
+		});
 
 		await message.react(reaction);
 		return message;

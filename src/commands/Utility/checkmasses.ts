@@ -1,5 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
 
@@ -17,7 +18,7 @@ export default class extends BotCommand {
 		if (!msg.guild) return null;
 		const channelIDs = msg.guild.channels.cache.filter(c => c.type === 'text').map(c => c.id);
 
-		let masses: any[] = await getConnection().query(
+		let masses: any[] = await prisma.$queryRaw(
 			`
 	SELECT *
 	FROM activity

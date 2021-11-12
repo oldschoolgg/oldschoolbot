@@ -85,11 +85,12 @@ export default class PoHImage extends Task {
 	async run(poh: PlayerOwnedHouse, showSpaces = true) {
 		const [canvas, ctx] = this.generateCanvas(poh.background_id);
 		for (const [key, objects] of objectEntries(Placeholders)) {
+			if (!key || !objects) continue;
 			const [placeholder, coordArr] = objects;
 			for (const obj of coordArr) {
 				const [x, y] = obj;
 				let id = poh[key] ?? placeholder;
-				const isMountedItem = key === 'mountedItem' && id !== 1111;
+				const isMountedItem = key === 'mounted_item' && id !== 1111;
 				if (isMountedItem) {
 					const hasCustomItem = id !== 1112;
 					const mount = this.imageCache.get(1112)!;

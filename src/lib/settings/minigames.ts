@@ -134,7 +134,6 @@ export const Minigames: readonly BotMinigame[] = [
 	{
 		name: 'Inferno',
 		aliases: ['inferno', 'zuk'],
-		key: 'Inferno',
 		column: 'inferno'
 	}
 ];

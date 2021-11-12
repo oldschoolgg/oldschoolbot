@@ -1,8 +1,8 @@
 import { noOp } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
-import { getConnection } from 'typeorm';
 
 import { Events, LEVEL_99_XP, SupportServer } from './constants';
+import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
 import { formatOrdinal } from './util/formatOrdinal';
 import { sendToChannelID } from './util/webhook';
@@ -14,10 +14,10 @@ FROM users
 WHERE ${maxFilter}
 ${ironman ? 'AND "minion.ironman" = true' : ''};`;
 
+// TODO VALIDATE/TEST THIS
 async function howManyMaxed() {
-	const connection = await getConnection();
 	const [normies, irons] = (
-		await Promise.all([connection.query(makeQuery(false)), connection.query(makeQuery(true))])
+		await Promise.all([prisma.$queryRaw(makeQuery(false)), prisma.$queryRaw(makeQuery(true))])
 	)
 		.map(i => i[0].count)
 		.map(i => parseInt(i));

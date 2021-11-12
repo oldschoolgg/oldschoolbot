@@ -14,9 +14,11 @@ export default class extends Task {
 				const activities: Activity[] = await prisma.activity.findMany({
 					where: {
 						completed: false,
-						finish_date: {
-							gt: production ? '1' : 'now()'
-						}
+						finish_date: production
+							? {
+									gt: production ? new Date() : new Date()
+							  }
+							: undefined
 					}
 				});
 
