@@ -152,14 +152,14 @@ export default class extends BotCommand {
 			// Special inquisitor outfit damage boost
 			const meleeGear = user.getGear('melee');
 			const equippedWeapon = meleeGear.equippedWeapon();
-			if (meleeGear.hasEquipped(torvaOutfit, true)) {
+			if (meleeGear.hasEquipped(torvaOutfit, true, true)) {
 				const percent = 8;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for full Torva`);
 			} else {
 				let i = 0;
 				for (const inqItem of torvaOutfit) {
-					if (meleeGear.hasEquipped([inqItem])) {
+					if (meleeGear.hasEquipped([inqItem], true, true)) {
 						const percent = 1;
 						i += percent;
 					}
@@ -170,7 +170,7 @@ export default class extends BotCommand {
 				}
 			}
 
-			if (meleeGear.hasEquipped(gorajanWarriorOutfit, true)) {
+			if (meleeGear.hasEquipped(gorajanWarriorOutfit, true, true)) {
 				const perUserPercent = round(15 / users.length, 2);
 				effectiveTime = reduceNumByPercent(effectiveTime, perUserPercent);
 				msgs.push(`${perUserPercent}% for Gorajan warrior`);
@@ -188,19 +188,19 @@ export default class extends BotCommand {
 				msgs.push(`-${percent}% penalty for bad weapon`);
 			}
 
-			if (meleeGear.hasEquipped('Drygore mace')) {
+			if (meleeGear.hasEquipped('Drygore mace', true, true)) {
 				const percent = 14;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Drygore mace`);
 			}
 
-			if (meleeGear.hasEquipped('Offhand drygore mace')) {
+			if (meleeGear.hasEquipped('Offhand drygore mace', true, true)) {
 				const percent = 5;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for Offhand drygore mace`);
 			}
 
-			if (meleeGear.hasEquipped('TzKal cape')) {
+			if (meleeGear.hasEquipped('TzKal cape', true, true)) {
 				const percent = 4;
 				effectiveTime = reduceNumByPercent(effectiveTime, percent);
 				msgs.push(`${percent}% boost for TzKal cape`);
