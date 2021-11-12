@@ -2,6 +2,7 @@ import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
 
@@ -1961,3 +1962,10 @@ export const gracefulCL = resolveItems([
 	...gracefulHands,
 	...gracefulCapes
 ]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)']).includes(id));
+
+export const allPetIDs = [
+	...allPetsCL,
+	...chambersOfXericMetamorphPets,
+	...growablePets.map(petSeries => petSeries.stages).flat(1),
+	...resolveItems(['Little parasite'])
+];
