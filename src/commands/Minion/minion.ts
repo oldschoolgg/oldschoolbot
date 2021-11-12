@@ -18,6 +18,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { getNewUser } from '../../lib/settings/settings';
@@ -62,7 +63,8 @@ const subCommands = [
 	'opens',
 	'info',
 	'equippet',
-	'unequippet'
+	'unequippet',
+	'autofarm'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -155,6 +157,10 @@ export default class MinionCommand extends BotCommand {
 
 	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		return equipPet(msg, input);
+	}
+
+	async autofarm(msg: KlasaMessage) {
+		return autoFarm(msg);
 	}
 
 	@requiresMinion
