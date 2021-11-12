@@ -402,7 +402,7 @@ const Reverteables: Createable[] = [
 	{
 		name: 'Revert toxic blowpipe',
 		outputItems: resolveNameBank({
-			'Toxic blowpipe (empty)'
+			'Toxic blowpipe (empty)': 1
 		}),
 		inputItems: resolveNameBank({
 			'Toxic blowpipe': 1
