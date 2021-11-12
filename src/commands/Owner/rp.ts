@@ -24,7 +24,15 @@ import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
+import {
+	asyncExec,
+	cleanString,
+	formatDuration,
+	getSupportGuild,
+	getUsername,
+	isSuperUntradeable,
+	itemNameFromID
+} from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -120,9 +128,11 @@ function itemSearch(msg: KlasaMessage, name: string) {
 			(item, index) => `${gettedItem!.id === item.id ? '**' : ''}
 ${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
 				item.tradeable_on_ge ? 'GE_Tradeable' : 'Not_GE_Tradeable'
-			} ${item.tradeable ? 'Tradeable' : 'Not_Tradeable'} ${item.incomplete ? 'Incomplete' : 'Not_Incomplete'} ${
-				item.duplicate ? 'Duplicate' : 'Not_Duplicate'
-			}${gettedItem!.id === item.id ? '**' : ''} <${item.wiki_url}>`
+			} ${!isSuperUntradeable(item) ? 'Tradeable' : 'Not_Tradeable'} ${
+				item.incomplete ? 'Incomplete' : 'Not_Incomplete'
+			} ${item.duplicate ? 'Duplicate' : 'Not_Duplicate'}${gettedItem!.id === item.id ? '**' : ''} <${
+				item.wiki_url
+			}>`
 		)
 		.join('\n')}`;
 
