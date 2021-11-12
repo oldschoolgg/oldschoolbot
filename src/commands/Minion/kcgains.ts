@@ -15,7 +15,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: "Show's who has the highest KC gains for a given time period.",
 			categoryFlags: ['minion', 'utility'],
-			examples: ['+kcgains day fire giant', '+kcgains week nightmare'],
+			examples: ['+kcgains day fire giant', '+kcgains week cow'],
 			aliases: ['log'],
 			usage: '<day|week> <monster:...str>',
 			usageDelim: ' ',

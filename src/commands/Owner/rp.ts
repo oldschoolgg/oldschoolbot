@@ -1,5 +1,5 @@
 import { Duration, Time } from '@sapphire/time-utilities';
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
@@ -197,6 +197,17 @@ export default class extends BotCommand {
 				}
 				await input.addItemsToBank(new Bank().add('Tester gift box'));
 				return msg.channel.send(`Gave 1x Tester gift box to ${input.username}.`);
+			}
+			case 'pingmass':
+			case 'pm': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
+				if (!msg.member) return;
+				if (!(msg.channel instanceof TextChannel)) return;
+				if (!msg.member.roles.cache.has(Roles.BSOMassHoster) && !msg.member.roles.cache.has(Roles.Moderator)) {
+					return;
+				}
+
+				return msg.channel.send(`<@&${DefaultPingableRoles.BSOMass}>`);
 			}
 			case 'check':
 			case 'c': {

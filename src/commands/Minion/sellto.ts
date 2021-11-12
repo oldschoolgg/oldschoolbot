@@ -6,7 +6,7 @@ import { Channel, Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { isSuperUntradeable } from '../../lib/util';
+import { isSuperUntradeable, itemNameFromID } from '../../lib/util';
 import { parseInputBankWithPrice } from '../../lib/util/parseStringBank';
 
 const options = {
@@ -35,12 +35,29 @@ export default class extends BotCommand {
 			usersBank: msg.author.bank(),
 			str: strBankWithPrice ?? '',
 			flags: { ...msg.flagArgs },
-			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
+			excludeItems: []
 		});
 		bankToSell.filter(i => !isSuperUntradeable(i), true);
 
 		if (bankToSell.length === 0) {
 			return msg.channel.send('No valid tradeable items that you own were given.');
+		}
+
+		let favoritedItemsBeingSold = msg.author.settings
+			.get(UserSettings.FavoriteItems)
+			.filter(i => bankToSell.has(i));
+		if (favoritedItemsBeingSold) {
+			const isConfirming = Boolean(msg.flagArgs.cf) || Boolean(msg.flagArgs.confirm);
+			delete msg.flagArgs.cf;
+			delete msg.flagArgs.confirm;
+			await msg.confirm(
+				`You're trying to sell favorited items (${favoritedItemsBeingSold
+					.map(itemNameFromID)
+					.join(', ')}), are you sure you want to do that?`
+			);
+			if (isConfirming) {
+				msg.flagArgs.confirm = 'confirm';
+			}
 		}
 
 		if (price < 0 || price > 100_000_000_000) {

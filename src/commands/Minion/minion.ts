@@ -17,6 +17,9 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { becomeIronman } from '../../lib/minions/functions/becomeIronman';
+import { equipPet } from '../../lib/minions/functions/equipPet';
+import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -34,6 +37,25 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
+const subCommands = [
+	'lvl',
+	'seticon',
+	'clues',
+	'k',
+	'kill',
+	'setname',
+	'buy',
+	'clue',
+	'kc',
+	'pat',
+	'stats',
+	'ironman',
+	'opens',
+	'info',
+	'equippet',
+	'unequippet'
+];
+
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -41,8 +63,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|opens|info] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
-
+			usage: `[${subCommands.join('|')}] [quantity:int{1}|name:...string] [name:...string] [name:...string]`,
 			usageDelim: ' ',
 			subcommands: true,
 			requiredPermissions: ['EMBED_LINKS']
@@ -115,8 +136,20 @@ export default class MinionCommand extends BotCommand {
 		}
 	}
 
+	async ironman(msg: KlasaMessage) {
+		return becomeIronman(msg);
+	}
+
 	async info(msg: KlasaMessage) {
 		return runCommand(msg, 'rp', ['c', msg.author]);
+	}
+
+	async unequippet(msg: KlasaMessage) {
+		return unequipPet(msg);
+	}
+
+	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return equipPet(msg, input);
 	}
 
 	@requiresMinion

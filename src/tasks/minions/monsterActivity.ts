@@ -20,7 +20,6 @@ import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerIn
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, roll, runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import resolveItems from '../../lib/util/resolveItems';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
