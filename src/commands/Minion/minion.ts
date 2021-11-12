@@ -20,6 +20,7 @@ import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { equipPet } from '../../lib/minions/functions/equipPet';
+import { pastActivities } from '../../lib/minions/functions/pastActivities';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { getNewUser } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -64,7 +65,8 @@ const subCommands = [
 	'info',
 	'equippet',
 	'unequippet',
-	'autofarm'
+	'autofarm',
+	'activities'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -161,6 +163,10 @@ export default class MinionCommand extends BotCommand {
 
 	async autofarm(msg: KlasaMessage) {
 		return autoFarm(msg);
+	}
+
+	async activities(msg: KlasaMessage) {
+		return pastActivities(msg);
 	}
 
 	@requiresMinion
