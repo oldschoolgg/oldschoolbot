@@ -29,7 +29,7 @@ export default class extends BotCommand {
 		}
 
 		if (!this.client.owners.has(msg.author) && msg.channel.id !== Channel.BSOChannel) {
-			return msg.channel.send('You can only use this in the BSO channel.');
+			return msg.channel.send('You can only use this in #bso-general or #bot-channel-bso');
 		}
 		const item = randArrItem([
 			itemChallenge,
