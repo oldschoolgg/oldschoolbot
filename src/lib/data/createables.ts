@@ -409,15 +409,6 @@ const Reverteables: Createable[] = [
 		}),
 	},
 	{
-		name: 'Revert toxic blowpipe',
-		outputItems: resolveNameBank({
-			'Toxic blowpipe (empty)'
-		}),
-		inputItems: resolveNameBank({
-			'Toxic blowpipe': 1
-		}),
-	},
-	{
 		name: 'Revert red decorative full helm',
 		inputItems: {
 			[itemID('Red decorative full helm')]: 1
