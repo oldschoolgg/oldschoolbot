@@ -46,7 +46,7 @@ export default class extends BotCommand {
 		let favoritedItemsBeingSold = msg.author.settings
 			.get(UserSettings.FavoriteItems)
 			.filter(i => bankToSell.has(i));
-		if (favoritedItemsBeingSold) {
+		if (favoritedItemsBeingSold.length > 0) {
 			const isConfirming = Boolean(msg.flagArgs.cf) || Boolean(msg.flagArgs.confirm);
 			delete msg.flagArgs.cf;
 			delete msg.flagArgs.confirm;
