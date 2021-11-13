@@ -593,6 +593,7 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 
 export function isSuperUntradeable(item: number | Item) {
 	const id = typeof item === 'number' ? item : item.id;
+	if (id === 5021) return true;
 	const fullItem = Items.get(id);
 	if (fullItem?.customItemData?.isSuperUntradeable) {
 		return true;
