@@ -16,7 +16,7 @@
 		"@sapphire/utilities": "^1.4.7",
 		"@sapphire/time-utilities": "^1.4.7",
 		"@sapphire/type": "^2.1.2",
-		"@sentry/node": "^6.14.1",
+		"@sentry/node": "^6.14.3",
 		"@sinclair/typebox": "^0.12.9",
 		"bufferutil": "^4.0.5",
 		"canvas": "^2.8.0",
@@ -49,7 +49,7 @@
 		"table": "^6.7.3",
 		"ts-toolbelt": "^9.6.0",
 		"twit": "^2.2.9",
-		"typeorm": "^0.2.39",
+		"typeorm": "^0.2.40",
 		"utf-8-validate": "^5.0.7",
 		"zlib-sync": "^0.1.7"
 	},
