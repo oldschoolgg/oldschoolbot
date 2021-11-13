@@ -455,8 +455,8 @@ export default class extends BotCommand {
 			const enoughTeleports = await msg.author.hasItem(itemID('Zul-andra teleport'), quantity);
 			if (enoughTeleports) {
 				lootToRemove.addItem(itemID('Zul-andra teleport'), quantity);
-				boosts.push('10% for Zul-andra Teleports');
-				duration = reduceNumByPercent(duration, 10);
+				boosts.push('5% for Zul-andra Teleports');
+				duration = reduceNumByPercent(duration, 5);
 			}
 		}
 
