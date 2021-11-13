@@ -449,6 +449,17 @@ export default class extends BotCommand {
 		}
 
 		// Boosts that don't affect quantity:
+
+		// Zulrah can use Zul-andra Teleports if there are enough for 1 per kill
+		if ( monster.name.toLowerCase() === "zulrah" ) {
+			const enoughTeleports = await msg.author.hasItem(itemID("Zul-andra teleport"), quantity);
+			if ( enoughTeleports ) {
+				lootToRemove.addItem(itemID("Zul-andra teleport"), quantity);
+				boosts.push("10% for Zul-andra Teleports");
+				duration = reduceNumByPercent(duration, 10);
+			};
+		};
+
 		duration = randomVariation(duration, 3);
 
 		if (isWeekend()) {
