@@ -877,7 +877,7 @@ const diaries = resolveItems([
 	'Antique lamp 4'
 ]);
 
-const sire = resolveItems([ 'Abyssal bludgeon', ...abyssalSireCL ]);
+const sire = resolveItems(['Abyssal bludgeon', ...abyssalSireCL]);
 
 const food = resolveItems(Eatables.map(food => food.name));
 
