@@ -118,6 +118,7 @@ export default class extends BotCommand {
 		if (isEmergedZuk) {
 			cost.add(elderBarrageRunes.multiply(Math.floor(elderBarragePerHour * hours)));
 			cost.add('Hellfire arrow', randInt(50, 80));
+			cost.add('Super combat potion(4)');
 		}
 
 		cost.add('Saradomin brew(4)', 8);
