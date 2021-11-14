@@ -5,6 +5,7 @@ import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
 import { allCollectionLogs, collectionLogRoleCategories } from './Collections';
 import {
+	abyssalSireCL,
 	cluesBeginnerCL,
 	cluesEasyCL,
 	cluesEliteCL,
@@ -16,7 +17,6 @@ import {
 	cluesMediumCL,
 	cluesSharedCL,
 	temporossCL,
-	abyssalSireCL,
 	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
