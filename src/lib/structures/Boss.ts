@@ -112,7 +112,7 @@ export interface BossOptions {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupType;
-	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
+	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	settingsKeys?: [string, string];
@@ -147,7 +147,7 @@ export class BossInstance {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupType;
-	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
+	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	bossUsers: BossUser[] = [];
@@ -302,7 +302,7 @@ export class BossInstance {
 		const kc = user.getKC(this.id);
 		let itemsToRemove = calcFood(solo, kc);
 		if (this.itemCost) {
-			return this.itemCost({ user, kills: this.quantity, baseFood: itemsToRemove });
+			return this.itemCost({ user, kills: this.quantity, baseFood: itemsToRemove, solo });
 		}
 		return itemsToRemove.multiply(this.quantity);
 	}

@@ -54,8 +54,12 @@ export default class extends BotCommand {
 				const userBank = data.user.bank();
 				const kc = data.user.getKC(Ignecarus.id);
 
-				let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30))) + 1;
+				let brewsNeeded = Math.max(1, 10 - Math.max(1, Math.ceil((kc + 1) / 40))) + 2;
+				if (data.solo) {
+					brewsNeeded = Math.floor(brewsNeeded * 1.5);
+				}
 				const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
+
 				const heatResBank = new Bank()
 					.add('Heat res. brew', brewsNeeded)
 					.add('Heat res. restore', restoresNeeded)
