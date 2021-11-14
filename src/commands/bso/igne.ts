@@ -79,7 +79,7 @@ export default class extends BotCommand {
 			minSize: 1,
 			solo: qty === 'solo',
 			canDie: true,
-			customDeathChance: (user, preCalcedDeathChance) => {
+			customDeathChance: (user, preCalcedDeathChance, solo) => {
 				let baseDeathChance = 95;
 				const gear = user.getGear('melee');
 				for (const item of [
@@ -97,6 +97,9 @@ export default class extends BotCommand {
 					baseDeathChance -= 33;
 				}
 				baseDeathChance -= (100 - preCalcedDeathChance) / 10;
+				if (solo) {
+					baseDeathChance *= 2.5;
+				}
 				return baseDeathChance;
 			},
 			quantity: qty === 'solo' ? undefined : qty,
