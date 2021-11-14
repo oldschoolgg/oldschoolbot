@@ -10,7 +10,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MahoganyHomesActivityTaskOptions) {
-		const { channelID, quantity, xp, duration, userID, points } = data;
+		const { channelID, quantity, xp, duration, userID, points, tier } = data;
 		const user = await this.client.fetchUser(userID);
 		user.incrementMinigameScore('MahoganyHomes', quantity);
 
@@ -29,7 +29,7 @@ export default class extends Task {
 			user.settings.get(UserSettings.CarpenterPoints) + points
 		);
 
-		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes contracts, you received ${points} Carpenter points. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished doing ${quantity}x Mahogany Homes ${tier} contracts, you received ${points} Carpenter points. ${xpRes}`;
 
 		if (bonusXP > 0) {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
@@ -42,9 +42,10 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of mahogany homes');
-				return (this.client.commands.get('mh') as unknown as MahoganyHomesCommand).build(
-					res
-				) as Promise<KlasaMessage>;
+				console.log(channelID, quantity, xp, duration, userID, points, tier);
+				return (this.client.commands.get('mh') as unknown as MahoganyHomesCommand).build(res, [
+					tier
+				]) as Promise<KlasaMessage>;
 			},
 			undefined,
 			data,
