@@ -14,7 +14,7 @@ import { formatDuration } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[qty:int]',
+			usage: '[qty:int|solo]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -22,7 +22,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [qty]: [number]) {
+	async run(msg: KlasaMessage, [qty]: [number | 'solo']) {
 		const instance = new BossInstance({
 			leader: msg.author,
 			id: Ignecarus.id,
@@ -73,7 +73,7 @@ export default class extends BotCommand {
 			activity: Activity.Ignecarus,
 			massText: `${msg.author.username} is assembling a team to fight Ignecarus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			minSize: 1,
-			solo: false,
+			solo: qty === 'solo',
 			canDie: true,
 			customDeathChance: (user, preCalcedDeathChance) => {
 				let baseDeathChance = 95;
@@ -95,7 +95,7 @@ export default class extends BotCommand {
 				baseDeathChance -= (100 - preCalcedDeathChance) / 10;
 				return baseDeathChance;
 			},
-			quantity: qty,
+			quantity: qty === 'solo' ? undefined : qty,
 			allowMoreThan1Solo: true,
 			allowMoreThan1Group: true
 		});
