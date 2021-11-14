@@ -804,7 +804,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const usersRangeStats = rangeGear.stats;
 		const zukKC = await msg.author.getMinigameScore('Inferno');
 
-		const isEmergedZuk = 1 > 2 && (str === 'emerged' || Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.e));
+		const isEmergedZuk = str === 'emerged' || Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.e);
 
 		const res = await this.infernoRun({
 			user: msg.author,
