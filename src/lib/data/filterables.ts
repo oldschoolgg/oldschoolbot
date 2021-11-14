@@ -16,6 +16,7 @@ import {
 	cluesMediumCL,
 	cluesSharedCL,
 	temporossCL,
+	abyssalSireCL,
 	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
@@ -876,6 +877,11 @@ const diaries = resolveItems([
 	'Antique lamp 4'
 ]);
 
+const sire = resolveItems([
+	'Abyssal bludgeon',
+	...abyssalSireCL
+]);
+
 const food = resolveItems(Eatables.map(food => food.name));
 
 interface Filterable {
@@ -1004,6 +1010,11 @@ export const filterableTypes: Filterable[] = [
 		name: 'Secondaries',
 		aliases: ['seconds', 'secondary', 'secondaries'],
 		items: secondaries
+	},
+	{
+		name: 'Sire',
+		aliases: ['sire', 'abyssalsire', 'abyssal'],
+		items: sire
 	},
 	{
 		name: 'Food',
