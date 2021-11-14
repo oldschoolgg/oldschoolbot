@@ -6,14 +6,12 @@ import resolveItems from '../../../../util/resolveItems';
 import setCustomMonster from '../../../../util/setCustomMonster';
 
 const barTable = new LootTable()
-	.add('Bronze bar', 800)
-	.add('Iron bar', 700)
-	.add('Steel bar', 600)
-	.add('Silver bar', 500)
-	.add('Gold bar', 400)
-	.add('Mithril bar', 300)
-	.add('Adamantite bar', 200)
-	.add('Runite bar', 100);
+	.add('Steel bar', 500, 2)
+	.add('Silver bar', 400, 3)
+	.add('Gold bar', 300, 4)
+	.add('Mithril bar', 200, 2)
+	.add('Adamantite bar', 100)
+	.add('Runite bar', 50);
 
 const gemTable = new LootTable()
 	.add('Uncut sapphire', 50)
