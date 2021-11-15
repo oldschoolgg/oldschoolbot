@@ -2,6 +2,7 @@ import { MessageActionRow, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaMessage, Task, TaskStore } from 'klasa';
 
+import { production } from '../config';
 import { PerkTier } from '../lib/constants';
 import { FarmingPatchTypes, PatchData } from '../lib/minions/farming/types';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -27,6 +28,7 @@ export default class extends Task {
 			clearTimeout(this.client.__farmingPatchReminders);
 		}
 		const ticker = async () => {
+			if (!production) return;
 			try {
 				const now = Date.now();
 				for (const user of this.client.users.cache.values()) {
