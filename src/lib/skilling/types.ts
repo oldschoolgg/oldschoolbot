@@ -108,6 +108,7 @@ export interface Cookable {
 	stopBurnAt: number;
 	stopBurnAtCG: number;
 	burntCookable: number;
+	alias?: string[];
 }
 
 export interface Bar {
