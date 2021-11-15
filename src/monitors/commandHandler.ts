@@ -6,8 +6,8 @@ import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { floatPromise } from '../lib/util';
 
 const whitelistedBots = [
-	'170312142975664128', // BIRDIE#1963
-	'190818429085679616' // Randy#0008
+	'798308589373489172', // BIRDIE#1963
+	'902745429685469264' // Randy#0008
 ];
 
 export default class extends Monitor {
