@@ -82,12 +82,7 @@ export default class extends Task {
 			}
 		}
 
-		// Gem rocks roll off the GemRockTable
-		if (ore.id === 1625) {
-			for (let i = 0; i < quantity; i++) {
-				loot.add(Mining.GemRockTable.roll());
-			}
-		} else if (ore.id === 21_622) {
+		if (ore.id === 21_622) {
 			// Volcanic ash
 			const userLevel = user.skillLevel(SkillsEnum.Mining);
 			const tiers = [
@@ -105,8 +100,11 @@ export default class extends Task {
 				}
 			}
 		} else {
-			loot.add(ore.id, quantity);
+			for (let i = 0; i < quantity; i++) {
+				loot.add(ore.loot.roll());
+			}
 		}
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
