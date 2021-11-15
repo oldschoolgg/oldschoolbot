@@ -438,7 +438,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		if (!isEmergedZuk) {
 			duration.add(
 				(rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt')) ||
-					(rangeGear.hasEquipped('Pernix body') && rangeGear.hasEquipped('Armadyl chaps')),
+					(rangeGear.hasEquipped('Pernix body') && rangeGear.hasEquipped('Pernix chaps')),
 				-3,
 				'Armadyl/Pernix'
 			);
@@ -589,8 +589,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		const usingTbow =
 			rangeGear.hasEquipped('Twisted bow', true, true) || rangeGear.hasEquipped('Hellfire bow', true, true);
-		zukDeathChance.add(usingTbow, 1.5, `Zuk with ${rangeGear.equippedWeapon()?.name}`);
-		duration.add(usingTbow, -7.5, `${rangeGear.equippedWeapon()?.name}`);
+		zukDeathChance.add(usingTbow, 1.5, `Zuk with ${usingTbow ? rangeGear.equippedWeapon()?.name : 'Twisted bow'}`);
+		duration.add(usingTbow, -7.5, `${usingTbow ? rangeGear.equippedWeapon()?.name : 'Twisted bow'}`);
 
 		/**
 		 * Emerged
