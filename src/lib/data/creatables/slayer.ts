@@ -61,9 +61,9 @@ export const slayerCreatables: Createable[] = [
 	{
 		name: 'Revert neitiznot faceguard',
 		inputItems: resolveNameBank({ 'Neitiznot faceguard': 1 }),
-		outputItems: resolveNameBank({ 
+		outputItems: resolveNameBank({
 			'Basilisk jaw': 1,
-			'Helm of neitiznot': 1 
+			'Helm of neitiznot': 1
 		}),
 		GPCost: 0
 	},
