@@ -155,6 +155,7 @@ export default class MinionCommand extends BotCommand {
 		return unequipPet(msg);
 	}
 
+	@minionNotBusy
 	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		return equipPet(msg, input);
 	}
@@ -163,6 +164,7 @@ export default class MinionCommand extends BotCommand {
 		return unequipPet(msg);
 	}
 
+	@minionNotBusy
 	async ep(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		return equipPet(msg, input);
 	}
