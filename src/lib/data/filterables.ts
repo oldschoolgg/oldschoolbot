@@ -353,7 +353,9 @@ const secondaries = resolveItems([
 	"Zulrah's scales",
 	'Torstol',
 	'Crushed superior dragon bones',
-	'Amylase crystal'
+	'Amylase crystal',
+	'Bird nest'
+
 ]);
 
 const bones = resolveItems([
