@@ -14,7 +14,8 @@ export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			ignoreOthers: false,
-			ignoreEdits: !store.client.options.commandEditing
+			ignoreEdits: !store.client.options.commandEditing,
+			ignoreBots: false
 		});
 	}
 
