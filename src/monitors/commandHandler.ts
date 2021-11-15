@@ -5,6 +5,11 @@ import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { floatPromise } from '../lib/util';
 
+const whitelistedBots = [
+	'170312142975664128', // BIRDIE#1963
+	'190818429085679616' // Randy#0008
+];
+
 export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -14,6 +19,9 @@ export default class extends Monitor {
 	}
 
 	public async run(message: KlasaMessage) {
+		if (message.author.bot && !whitelistedBots.includes(message.author.id)) {
+			return;
+		}
 		if (message.guild && message.guild.me === null) {
 			await message.guild.members.fetch(this.client.user!.id);
 		}
