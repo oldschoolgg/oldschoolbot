@@ -105,17 +105,16 @@ export default class extends BotCommand {
 			}
 
 			if (isPhosani) {
-				if (
-					!user.hasSkillReqs({
-						prayer: 70,
-						attack: 90,
-						strength: 90,
-						defence: 90,
-						magic: 90,
-						hitpoints: 90
-					})[0]
-				) {
-					throw `${user.username} doesn't have 70 Prayer`;
+				const requirements = user.hasSkillReqs({
+					prayer: 70,
+					attack: 90,
+					strength: 90,
+					defence: 90,
+					magic: 90,
+					hitpoints: 90
+				});
+				if (!requirements[0]) {
+					throw `${user.username} doesn't meet the requirements: ${requirements[1]}`;
 				}
 				if (user.getKC(NightmareMonster.id) < 50) {
 					throw "You need to have killed The Nightmare atleast 50 times before you can face the Phosani's Nightmare.";
