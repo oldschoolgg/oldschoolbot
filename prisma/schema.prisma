@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Activity {
-  id             Int              @id @default(autoincrement())
+  id             Int              @default(autoincrement())
   user_id        String           @db.VarChar(19)
   start_date     DateTime         @db.Timestamp(6)
   finish_date    DateTime         @db.Timestamp(6)
@@ -19,8 +19,10 @@ model Activity {
   channel_id     String           @db.VarChar(19)
   data           Json             @db.Json
 
-  @@index([group_activity])
-  @@index([completed])
+
+  @@id([id, user_id, channel_id], map: "PK_2c70277d97a802ada5b408873b6")
+  @@index([group_activity], map: "IDX_73e0d6954aecafe0383b77d390")
+  @@index([completed], map: "IDX_d71ac68a9d4b4245287caab788")
   @@map("activity")
 }
 
@@ -133,7 +135,7 @@ model GearPreset {
 }
 
 model Giveaway {
-  id          Int      @id @default(autoincrement())
+  id          Int      @default(autoincrement())
   user_id     String   @db.VarChar(19)
   start_date  DateTime @db.Timestamp(6)
   finish_date DateTime @db.Timestamp(6)
@@ -144,7 +146,8 @@ model Giveaway {
   message_id  String   @db.VarChar(19)
   reaction_id String   @db.VarChar(19)
 
-  @@index([completed])
+  @@id([id, user_id, channel_id, message_id, reaction_id], map: "PK_8dea3077ffeea92ada02ce88acc")
+  @@index([completed], map: "IDX_8d425a61b6093dd2351153b143")
   @@map("giveaway")
 }
 
@@ -171,8 +174,8 @@ model NewUser {
   pizazz_points Int     @default(0)
 
   // Relations
-  minigame_id  Int          @unique
-  minigame     Minigame     @relation(fields: [minigame_id], references: [id])
+  minigame_id  Int?         @unique
+  minigame     Minigame?    @relation(fields: [minigame_id], references: [id])
   slayer_tasks SlayerTask[]
 
   @@map("new_users")
@@ -235,7 +238,7 @@ model User {
   favoriteItems              Int[]
   favorite_alchables         Int[]
   favorite_food              Int[]
-  lastDailyTimestamp         Int      @default(1)
+  lastDailyTimestamp         BigInt   @default(1)
   sacrificedValue            BigInt   @default(0)
   bank                       Json     @default("{}") @db.Json
   collectionLogBank          Json     @default("{}") @db.Json
@@ -482,8 +485,8 @@ enum ActivityTypeEnum {
   Revenants
   PestControl
   VolcanicMine
-  Inferno
   KourendFavour
+  Inferno
 }
 
 enum SkillsEnum {
