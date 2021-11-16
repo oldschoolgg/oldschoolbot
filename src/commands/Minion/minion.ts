@@ -60,7 +60,10 @@ const subCommands = [
 	'equippet',
 	'unequippet',
 	'autofarm',
-	'activities'
+	'activities',
+	'af',
+	'ep',
+	'uep'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -153,6 +156,18 @@ export default class MinionCommand extends BotCommand {
 
 	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		return equipPet(msg, input);
+	}
+
+	async uep(msg: KlasaMessage) {
+		return unequipPet(msg);
+	}
+
+	async ep(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return equipPet(msg, input);
+	}
+
+	async af(msg: KlasaMessage) {
+		return autoFarm(msg);
 	}
 
 	async autofarm(msg: KlasaMessage) {
