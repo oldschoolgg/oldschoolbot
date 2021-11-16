@@ -42,7 +42,7 @@ export default class extends BotCommand {
 		if (fBoost > 1) messages.push(`${fBoost.toFixed(2)}% boost for Fishing level`);
 		durationPerRoss = reduceNumByPercent(durationPerRoss, fBoost);
 
-		const kc = await msg.author.getMinigameScore('Tempoross');
+		const kc = await msg.author.getMinigameScore('tempoross');
 		const kcLearned = Math.min(100, calcWhatPercent(kc, 100));
 
 		if (kcLearned > 0) {

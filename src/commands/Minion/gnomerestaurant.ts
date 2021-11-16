@@ -39,7 +39,7 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		const score = await msg.author.getMinigameScore('GnomeRestaurant');
+		const score = await msg.author.getMinigameScore('gnome_restaurant');
 		const scoreBoost = Math.min(100, calcWhatPercent(score, 100)) / 5;
 		if (scoreBoost > 1) {
 			deliveryLength = reduceNumByPercent(deliveryLength, scoreBoost);

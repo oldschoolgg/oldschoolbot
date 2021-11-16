@@ -21,7 +21,7 @@ export default class extends Task {
 	async run(data: InfernoOptions) {
 		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
 		const user = await this.client.users.fetch(userID);
-		const score = await user.getMinigameScore('Inferno');
+		const score = await user.getMinigameScore('inferno');
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
@@ -77,7 +77,7 @@ export default class extends Task {
 
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zuk for the ${formatOrdinal(
-			await user.getMinigameScore('Inferno')
+			await user.getMinigameScore('inferno')
 		)} time! Please accept this cape as a token of appreciation.`;
 
 		const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
@@ -151,7 +151,7 @@ export default class extends Task {
 					`**${user.username}** just received their ${formatOrdinal(
 						user.cl().amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
-						await user.getMinigameScore('Inferno')
+						await user.getMinigameScore('inferno')
 					)} kill!`
 				);
 			}

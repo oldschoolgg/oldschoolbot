@@ -40,7 +40,7 @@ export default class extends BotCommand {
 
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentReduced = Math.min(
-			Math.floor((await msg.author.getMinigameScore('Sepulchre')) / (Time.Hour / lapLength)),
+			Math.floor((await msg.author.getMinigameScore('sepulchre')) / (Time.Hour / lapLength)),
 			10
 		);
 

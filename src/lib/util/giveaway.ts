@@ -16,7 +16,7 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 	const loot: ItemBank = giveaway.loot as ItemBank;
 
 	try {
-		await prisma.giveaway.update({
+		await prisma.giveaway.updateMany({
 			where: {
 				id: giveaway.id
 			},

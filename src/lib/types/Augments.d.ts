@@ -1,4 +1,4 @@
-import { ActivityEnum, Minigame } from '@prisma/client';
+import { ActivityEnum } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
@@ -9,13 +9,13 @@ import { CommentStream, SubmissionStream } from 'snoostorm';
 import { Connection } from 'typeorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
-import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
 import { BitField, PerkTier } from '../constants';
 import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
 import { AddXpParams, KillableMonster } from '../minions/types';
+import { MinigameName } from '../settings/minigames';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
@@ -199,12 +199,7 @@ declare module 'discord.js' {
 		/**
 		 * Returns minigame score
 		 */
-		getMinigameScore(id: MinigameKey): Promise<number>;
-		getAllMinigameScores(): Promise<MinigameScore[]>;
-		/**
-		 * Returns minigame entity
-		 */
-		getMinigameEntity(): Promise<Minigame>;
+		getMinigameScore(id: MinigameName): Promise<number>;
 		/**
 		 * Returns Creature score
 		 */

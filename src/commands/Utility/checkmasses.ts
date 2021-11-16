@@ -18,18 +18,15 @@ export default class extends BotCommand {
 		if (!msg.guild) return null;
 		const channelIDs = msg.guild.channels.cache.filter(c => c.type === 'text').map(c => c.id);
 
-		let masses: any[] = await prisma.$queryRaw(
-			`
+		let masses: any[] = await prisma.$queryRaw`
 	SELECT *
 	FROM activity
 	WHERE
 	completed = false AND
 	group_activity = true AND
-	channel_id = ANY($1)
+	channel_id = ANY(${channelIDs})
 	ORDER by finish_date ASC;
-`,
-			[channelIDs]
-		);
+`;
 
 		masses = masses.filter(m => m.data.users.length > 1);
 

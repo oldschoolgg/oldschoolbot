@@ -62,7 +62,7 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	async claim(msg: KlasaMessage) {
-		const chompyScore = await msg.author.getMinigameScore('BigChompyBirdHunting');
+		const chompyScore = await msg.author.getMinigameScore('big_chompy_bird_hunting');
 		const userBank = msg.author.bank({ withGP: true });
 		const cl = msg.author.cl();
 

@@ -75,8 +75,8 @@ export default class extends BotCommand {
 		}
 
 		const [corruptedKC, normalKC] = await Promise.all([
-			msg.author.getMinigameScore('CorruptedGauntlet'),
-			msg.author.getMinigameScore('Gauntlet')
+			msg.author.getMinigameScore('corrupted_gauntlet'),
+			msg.author.getMinigameScore('gauntlet')
 		]);
 
 		if (type === 'corrupted' && normalKC < 50) {

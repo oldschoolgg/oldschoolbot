@@ -73,7 +73,7 @@ export default class extends Task {
 				`${Emoji.Phoenix} **${user.username}'s** minion, ${
 					user.minionName
 				}, just received a Phoenix! Their Wintertodt KC is ${
-					(await user.getMinigameScore('Wintertodt')) + quantity
+					(await user.getMinigameScore('wintertodt')) + quantity
 				}, and their Firemaking level is ${user.skillLevel(SkillsEnum.Firemaking)}.`
 			);
 		}

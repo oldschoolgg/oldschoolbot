@@ -97,7 +97,7 @@ export default class extends Task {
 				this.client.emit(
 					Events.ServerNotification,
 					`${emote} ${user.username} just received **${new Bank(itemsToAnnounce)}** on their ${formatOrdinal(
-						await user.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids')
+						await user.getMinigameScore(challengeMode ? 'raids_challenge_mode' : 'raids')
 					)} raid.`
 				);
 			}

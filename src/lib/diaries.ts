@@ -4,7 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAX_QP } from './constants';
-import { MinigameName } from './settings/settings';
+import { getAllMinigameScores, MinigameName } from './settings/settings';
 import { UserSettings } from './settings/types/UserSettings';
 import { courses } from './skilling/skills/agility';
 import { Skills } from './types';
@@ -70,9 +70,9 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 
 	if (tier.minigameReqs) {
 		const entries = Object.entries(tier.minigameReqs);
-		const scores = await user.getAllMinigameScores();
+		const scores = await getAllMinigameScores(user.id);
 		for (const [key, neededScore] of entries) {
-			const thisScore = scores.find(m => m.minigame.key === key)!;
+			const thisScore = scores.find(m => m.minigame.column === key)!;
 			if (thisScore.score < neededScore!) {
 				canDo = false;
 				reasons.push(

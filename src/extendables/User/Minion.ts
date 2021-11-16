@@ -15,7 +15,7 @@ import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
 import { AddXpParams, KillableMonster } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
-import { getActivityOfUser, Minigames } from '../../lib/settings/settings';
+import { getActivityOfUser, getMinigameScore, MinigameName, Minigames } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
@@ -971,5 +971,9 @@ export default class extends Extendable {
 		const range = 0.325 * (Math.floor(ranged / 2) + ranged);
 		const mage = 0.325 * (Math.floor(magic / 2) + magic);
 		return Math.floor(base + Math.max(melee, range, mage));
+	}
+
+	getMinigameScore(this: User, id: MinigameName): Promise<number> {
+		return getMinigameScore(this.id, id);
 	}
 }

@@ -28,14 +28,14 @@ export default class extends BotCommand {
 			return msg.channel.send('You need atleast level 15 Fishing to do the Fishing Trawler.');
 		}
 
-		const tripsDone = await msg.author.getMinigameScore('FishingTrawler');
+		const tripsDone = await msg.author.getMinigameScore('fishing_trawler');
 
 		let tripLength = Time.Minute * 13;
 		// 10% boost for 50 trips done
 		const boost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
 		tripLength = reduceNumByPercent(tripLength, boost);
 
-		const quantity = Math.floor(msg.author.maxTripLength('FishingTrawler') / tripLength);
+		const quantity = Math.floor(msg.author.maxTripLength('fishing_trawler') / tripLength);
 		const duration = quantity * tripLength;
 
 		await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>({

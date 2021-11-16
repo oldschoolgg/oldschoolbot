@@ -433,7 +433,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		duration.add(user.bitfield.includes(BitField.HasArcaneScroll), -4, 'Arc. Prayer scroll');
 
 		// Slayer
-		const score = await user.getMinigameScore('Inferno');
+		const score = await user.getMinigameScore('inferno');
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.currentTask !== null &&
@@ -524,7 +524,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 	async run(msg: KlasaMessage) {
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
-		const zukKC = await msg.author.getMinigameScore('Inferno');
+		const zukKC = await msg.author.getMinigameScore('inferno');
 
 		let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 		if (attempts && !zukKC) {
@@ -567,7 +567,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
 		const usersRangeStats = msg.author.getGear('range').stats;
-		const zukKC = await msg.author.getMinigameScore('Inferno');
+		const zukKC = await msg.author.getMinigameScore('inferno');
 
 		const res = await this.infernoRun({
 			user: msg.author,

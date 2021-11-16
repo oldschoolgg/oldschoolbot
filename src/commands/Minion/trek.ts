@@ -117,7 +117,7 @@ export default class extends BotCommand {
 		const boosts = [];
 
 		// Every 25 trips becomes 1% faster to a cap of 10%
-		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('TempleTrekking')) / 25), 10);
+		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('temple_trekking')) / 25), 10);
 
 		boosts.push(`${percentFaster.toFixed(1)}% from completed treks`);
 

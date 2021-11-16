@@ -121,7 +121,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const points = msg.author.settings.get(UserSettings.PestControlPoints);
-		const kc = await msg.author.getMinigameScore('PestControl');
+		const kc = await msg.author.getMinigameScore('pest_control');
 		const usageStr = `Usage: \`${msg.cmdPrefix}pc [start|buy|xp]\``;
 		return msg.channel.send(`You have ${points} Void knight commendation points.
 You have completed ${kc} games of Pest Control.\n${usageStr}`);
