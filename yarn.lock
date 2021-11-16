@@ -771,12 +771,12 @@
   dependencies:
     "@sapphire/utilities" "^3.0.4"
 
-"@sapphire/time-utilities@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.4.7.tgz#1bd6f16c9e1eb4ca9eb38287a20c81a3183e858b"
-  integrity sha512-Qw3Q7nQG75bJS9hGw2EbU2pfaXpTHWTMaRSjRVtl3bbV70ygle7IUN7JvDY7Q4gKihpXv/oTfm+i9L9XWaJqKA==
+"@sapphire/time-utilities@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.4.8.tgz#cfe9ac72a7902b2f8a8daa684a86a94abf5a31e1"
+  integrity sha512-mSAH8t5Ourn40+26G1ogHWQN6ZaVl5KgMTVMGpynvK01foPQQQuplHum4x3Es2w/U5HQ8ygluFlLrh/QvDDhxA==
   dependencies:
-    "@sapphire/utilities" "^3.0.7"
+    "@sapphire/utilities" "^3.0.8"
 
 "@sapphire/type@^2.1.2":
   version "2.1.2"
@@ -792,10 +792,10 @@
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.4.tgz#fe1ede01201f9f95a1262b7bbf78230965f72305"
   integrity sha512-E76dWoeaI3R93sGpVpW6247Qg7BmKUFTWLpqFtyocvh/xBqIdzzDiGPOsMZuiMsyWsG0rwNsCQ7oKSCUyPQFLg==
 
-"@sapphire/utilities@^3.0.7":
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.7.tgz#9e60ba5987cd8ab9126114fc639712dba3ff831d"
-  integrity sha512-/l0nsS1Vb4aX+szQiqgfT7VvuJkCvo1ixTNFg7ie80Gv+6ERFKxHpVKl3mRA3IAWFNNjYXOYKCqwH9Fxu15pGg==
+"@sapphire/utilities@^3.0.8":
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-3.0.8.tgz#9e00f0872da0f39aed6b481a08028898dd764b00"
+  integrity sha512-qgksAkrIp6OMvxN6YjGEzB3M6iZWZjGvU3CIcULflNQR20efs9aupYCa7Tkb9Mp0bSw4AX0SZ9PRQJ5oJ340YQ==
 
 "@sentry/core@6.14.3":
   version "6.14.3"
