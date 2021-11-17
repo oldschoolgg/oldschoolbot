@@ -576,7 +576,7 @@ LIMIT 10;`);
 			return msg.channel.send("That's not a valid collection log category. Check +cl for all possible logs.");
 		}
 		const users = (
-			await this.client.orm.query(`
+			(await prisma.$queryRaw`
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
   SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
@@ -590,7 +590,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 ) u
 ORDER BY qty DESC
 LIMIT 50;
-`)
+`) as any
 		).filter((i: any) => i.qty > 0) as CLUser[];
 
 		this.doMenu(

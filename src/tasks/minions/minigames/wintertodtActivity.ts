@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
@@ -125,7 +126,7 @@ export default class extends Task {
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
-		user.incrementMinigameScore('Wintertodt', quantity);
+		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			itemsAdded,

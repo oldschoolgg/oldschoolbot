@@ -1,4 +1,4 @@
-import { ActivityEnum } from '@prisma/client';
+import { ActivityEnum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
@@ -35,7 +35,6 @@ type SendBankImageFn = (options: {
 
 declare module 'klasa' {
 	interface KlasaClient {
-		orm: Connection;
 		oneCommandAtATimeCache: Set<string>;
 		secondaryUserBusyCache: Set<string>;
 		public cacheItemPrice(itemID: number): Promise<number>;
@@ -147,11 +146,8 @@ declare module 'discord.js' {
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-
 		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		incrementMinigameScore(this: User, minigame: MinigameKey, amountToAdd = 1): Promise<number>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
 		numberOfItemInBank(itemID: number, sync = true): Promise<number>;

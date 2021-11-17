@@ -123,9 +123,6 @@ export default class extends Extendable {
 		const poh = await prisma.playerOwnedHouse.findFirst({ where: { user_id: this.id } });
 		if (poh !== null) return poh;
 		const createdPoh = await prisma.playerOwnedHouse.create({ data: { user_id: this.id } });
-		if (!createdPoh) {
-			throw new Error('Failed to find POH after creation.');
-		}
 		return createdPoh;
 	}
 

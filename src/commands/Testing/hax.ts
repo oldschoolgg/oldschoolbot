@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { MAX_QP } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -29,9 +30,14 @@ export default class extends BotCommand {
 		bank.add('Zamorakian spear');
 		bank.add('Dragon warhammer');
 		bank.add('Bandos godsword');
-		const poh = await msg.author.getPOH();
-		poh.pool = 29_241;
-		await poh.save();
+		await prisma.playerOwnedHouse.update({
+			where: {
+				user_id: msg.author.id
+			},
+			data: {
+				pool: 29_241
+			}
+		});
 		msg.author.addItemsToBank(bank.bank);
 
 		return msg.channel.send(

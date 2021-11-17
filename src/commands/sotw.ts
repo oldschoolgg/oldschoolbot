@@ -1,12 +1,12 @@
 import { MessageEmbed } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 
+import { prisma } from '../lib/settings/prisma';
 import { BotCommand } from '../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
-		const res = await this.client.orm.query(
-			`SELECT sum(xp) as total_xp, u."minion.ironman" as ironman, u.id
+		const res: any = await prisma.$queryRaw`SELECT sum(xp) as total_xp, u."minion.ironman" as ironman, u.id
 FROM xp_gains
 INNER JOIN "users" "u" ON xp_gains.user_id = "u"."id"
 WHERE date > ('2021-08-14 07:00:00'::timestamp)
@@ -16,8 +16,7 @@ AND artificial IS NULL
 ${msg.flagArgs.im ? 'AND u."minion.ironman" = true' : ''}
 GROUP BY "u".id
 ORDER BY total_xp DESC
-LIMIT 15;`
-		);
+LIMIT 15;`;
 
 		if (res.length === 0) {
 			return msg.channel.send('No results found.');
