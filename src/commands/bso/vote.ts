@@ -13,7 +13,7 @@ export default class POHCommand extends BotCommand {
 			altProtection: true,
 			categoryFlags: ['minion'],
 			subcommands: true,
-			usage: '[create|delete|vote|list|search] [input:...str]',
+			usage: '[create|delete|vote|search] [input:...str]',
 			usageDelim: ' ',
 			aliases: ['poll', 'p']
 		});
@@ -31,19 +31,7 @@ ${result.map(p => p.title()).join('\n')}`);
 	}
 
 	async list(msg: KlasaMessage) {
-		const posts = await VoteTable.createQueryBuilder()
-			.orderBy('cardinality(yes_voters)+cardinality(no_voters)', 'DESC')
-			.limit(10)
-			.getMany();
-		const mostUpvotes = await VoteTable.createQueryBuilder()
-			.orderBy('cardinality(yes_voters)', 'DESC')
-			.limit(10)
-			.getMany();
-		return msg.channel.send(`**Top 10 Most Voted Polls:**
-${posts.map(p => p.title()).join('\n')}
-
-**Top 10 Most Upvoted:**
-${mostUpvotes.map(p => p.title()).join('\n')}`);
+		return msg.channel.send('');
 	}
 
 	@requiresMinion
@@ -73,12 +61,23 @@ Vote No: \`=poll vote ${poll.id} no\`
 		const myPolls = await VoteTable.find({
 			userID: msg.author.id
 		});
-		if (myPolls.length === 0) return msg.channel.send('You have no polls.');
-		let str = 'Your polls:\n';
-		for (const poll of myPolls) {
-			str += `\n${poll.title()}`;
-		}
-		return msg.channel.send(str);
+		const posts = await VoteTable.createQueryBuilder()
+			.orderBy('cardinality(yes_voters)+cardinality(no_voters)', 'DESC')
+			.limit(10)
+			.getMany();
+		const mostUpvotes = await VoteTable.createQueryBuilder()
+			.orderBy('cardinality(yes_voters)', 'DESC')
+			.limit(10)
+			.getMany();
+
+		return msg.channel.send(`**Your Polls:**
+${myPolls.map(p => p.title()).join('\n')}
+
+**Top 10 Most Voted Polls:**
+${posts.map(p => p.title()).join('\n')}
+
+**Top 10 Most Upvoted:**
+${mostUpvotes.map(p => p.title()).join('\n')}`);
 	}
 
 	async vote(msg: KlasaMessage, [str]: [string | undefined]) {
