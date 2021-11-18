@@ -1,6 +1,7 @@
+import { TextChannel } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { PerkTier } from '../../lib/constants';
+import {  HAPPY_EMOJI_ID, PerkTier, SAD_EMOJI_ID, VOTE_CHANNEL_ID } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { VoteTable } from '../../lib/typeorm/VoteTable.entity';
@@ -125,12 +126,23 @@ ${mostUpvotes.map(p => p.title()).join('\n')}`);
 			'Are you sure you want to create this poll? Creating fake, invalid, spam, troll, or inappropriate polls will result in a ban.'
 		);
 
+		text = Util.escapeMarkdown(text)
+
+		const sentMessage = await (this.client.channels.cache.get(VOTE_CHANNEL_ID) as TextChannel).send(`**Poll Created by ${msg.author}**
+\`\`\`
+${text}
+\`\`\``);
+		
+		await sentMessage.react(HAPPY_EMOJI_ID);
+		await sentMessage.react(SAD_EMOJI_ID);
+
 		const poll = new VoteTable();
 		poll.userID = msg.author.id;
 		poll.noVoters = [];
 		poll.yesVoters = [];
 		poll.text = text;
 		poll.createdAt = new Date();
+		poll.messageID = sentMessage.id;
 		await poll.save();
 		return msg.channel.send(`You created a new poll: ${poll.title()}`);
 	}

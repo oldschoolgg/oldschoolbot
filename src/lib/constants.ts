@@ -679,3 +679,7 @@ export const userTimers = [
 	[giveBoxResetTime, UserSettings.LastGivenBox, 'GiveBox'],
 	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
 ] as const;
+
+export const VOTE_CHANNEL_ID = '357422607982919680';
+export const HAPPY_EMOJI_ID = '380915244760825857';
+export const SAD_EMOJI_ID = '380915244652036097';

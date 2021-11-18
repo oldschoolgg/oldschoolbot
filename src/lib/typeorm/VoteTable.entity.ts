@@ -23,6 +23,9 @@ export class VoteTable extends BaseEntity {
 	@Column('varchar', { length: 1200, name: 'text', nullable: false, unique: true })
 	public text!: string;
 
+	@PrimaryColumn('varchar', { length: 19, name: 'message_id', nullable: false })
+	public messageID!: string;
+
 	title() {
 		return `\`${this.id}. ${Util.escapeMarkdown(cleanMentions(null, this.text).slice(0, 32))} [${
 			this.yesVoters.length === 0
