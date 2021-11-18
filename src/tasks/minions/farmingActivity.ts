@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
+import MinionCommand from '../../commands/Minion/minion';
 import { Emoji, Events } from '../../lib/constants';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
@@ -179,7 +180,7 @@ export default class extends Task {
 				autoFarmed
 					? res => {
 							user.log('continued trip of autofarming');
-							return this.client.commands.get('autofarm')!.run(res, []);
+							return (this.client.commands.get('minion') as any as MinionCommand)!.autofarm(res);
 					  }
 					: undefined,
 				undefined,
