@@ -77,7 +77,7 @@ function pickItemContract(streak: number) {
 	if (streak > 50) {
 		let fifties = Math.floor(streak / 50);
 		for (let i = 0; i < fifties; i++) {
-			if (roll(35 + i * 5)) {
+			if (roll(95 + i * 5)) {
 				item = randArrItem(allThirdAgeItems);
 			}
 		}

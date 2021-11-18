@@ -14,7 +14,7 @@ import { formatDuration } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[qty:int]',
+			usage: '[qty:int|solo]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -22,7 +22,7 @@ export default class extends BotCommand {
 		});
 	}
 
-	async run(msg: KlasaMessage, [qty]: [number]) {
+	async run(msg: KlasaMessage, [qty]: [number | 'solo']) {
 		const instance = new BossInstance({
 			leader: msg.author,
 			id: Ignecarus.id,
@@ -54,8 +54,12 @@ export default class extends BotCommand {
 				const userBank = data.user.bank();
 				const kc = data.user.getKC(Ignecarus.id);
 
-				let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30))) + 1;
+				let brewsNeeded = Math.max(1, 10 - Math.max(1, Math.ceil((kc + 1) / 30))) + 2;
+				if (data.solo) {
+					brewsNeeded = Math.floor(brewsNeeded * 1.5);
+				}
 				const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
+
 				const heatResBank = new Bank()
 					.add('Heat res. brew', brewsNeeded)
 					.add('Heat res. restore', restoresNeeded)
@@ -73,9 +77,9 @@ export default class extends BotCommand {
 			activity: Activity.Ignecarus,
 			massText: `${msg.author.username} is assembling a team to fight Ignecarus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			minSize: 1,
-			solo: false,
+			solo: qty === 'solo',
 			canDie: true,
-			customDeathChance: (user, preCalcedDeathChance) => {
+			customDeathChance: (user, preCalcedDeathChance, solo) => {
 				let baseDeathChance = 95;
 				const gear = user.getGear('melee');
 				for (const item of [
@@ -93,9 +97,12 @@ export default class extends BotCommand {
 					baseDeathChance -= 33;
 				}
 				baseDeathChance -= (100 - preCalcedDeathChance) / 10;
+				if (solo) {
+					baseDeathChance *= 2.5;
+				}
 				return baseDeathChance;
 			},
-			quantity: qty,
+			quantity: qty === 'solo' ? undefined : qty,
 			allowMoreThan1Solo: true,
 			allowMoreThan1Group: true
 		});

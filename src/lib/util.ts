@@ -593,6 +593,7 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 
 export function isSuperUntradeable(item: number | Item) {
 	const id = typeof item === 'number' ? item : item.id;
+	if (id === 5021) return true;
 	const fullItem = Items.get(id);
 	if (fullItem?.customItemData?.isSuperUntradeable) {
 		return true;
@@ -620,7 +621,7 @@ export function getUsername(client: KlasaClient, id: string): string {
 
 export async function runCommand(
 	message: KlasaMessage,
-	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask' | 'rp' | 'equip',
+	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask' | 'rp' | 'equip' | 'farm',
 	args: unknown[]
 ) {
 	const command = message.client.commands.get(commandName);

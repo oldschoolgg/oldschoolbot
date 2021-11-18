@@ -37,7 +37,8 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const cookable = Cooking.Cookables.find(
 			cookable =>
-				stringMatches(cookable.name, cookableName) || stringMatches(cookable.name.split(' ')[0], cookableName)
+				stringMatches(cookable.name, cookableName) ||
+				cookable.alias?.some(alias => stringMatches(alias, cookableName))
 		);
 
 		if (!cookable) {

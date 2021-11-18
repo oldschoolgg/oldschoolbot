@@ -89,8 +89,11 @@ export default class extends Task {
 			// Allow MBs to roll per floor and not trip
 			// This allows people that wants to farm mbs and not xp to do a lot of small floors
 			let gotMysteryBox = false;
+			let boxScrollChance = 5;
+			const differenceFromMax = maxFloorUserCanDo(u) - floor;
+			boxScrollChance += Math.floor(differenceFromMax * 11.5);
 			for (let i = 0; i < quantity; i++) {
-				if (u.bank().has('Scroll of mystery') && roll(5)) {
+				if (u.bank().has('Scroll of mystery') && roll(boxScrollChance)) {
 					await u.addItemsToBank({ [getRandomMysteryBox()]: 1 });
 					if (!gotMysteryBox) gotMysteryBox = true;
 				}

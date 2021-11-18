@@ -113,6 +113,10 @@ WHERE bank->>'5021' IS NOT NULL;`
 			);
 		}
 
+		if (1 < 2) {
+			return msg.channel.send('There is currently no lottery.');
+		}
+
 		const bankToSell = parseBank({
 			inputStr: str,
 			inputBank: msg.author.bank(),

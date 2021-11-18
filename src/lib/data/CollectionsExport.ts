@@ -2049,15 +2049,6 @@ export const customBossesDropsThatCantBeDroppedInMBs = [
 ];
 export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
 
-export const allPetIDs = [
-	...allPetsCL,
-	...customPetsCL,
-	...discontinuedCustomPetsCL,
-	...chambersOfXericMetamorphPets,
-	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems(['Little parasite'])
-];
-
 export const holidayCL = allHolidayItems;
 export const gracefulHoods = [
 	'Graceful hood',
@@ -2164,3 +2155,12 @@ export const gorajanArcherOutfit = resolveItems([
 	'Gorajan archer gloves',
 	'Gorajan archer boots'
 ]);
+
+export const allPetIDs = [
+	...allPetsCL,
+	...customPetsCL,
+	...discontinuedCustomPetsCL,
+	...chambersOfXericMetamorphPets,
+	...growablePets.map(petSeries => petSeries.stages).flat(1),
+	...resolveItems(['Little parasite'])
+];

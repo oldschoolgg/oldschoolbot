@@ -1,5 +1,5 @@
 import { Duration, Time } from '@sapphire/time-utilities';
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
@@ -24,7 +24,15 @@ import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
+import {
+	asyncExec,
+	cleanString,
+	formatDuration,
+	getSupportGuild,
+	getUsername,
+	isSuperUntradeable,
+	itemNameFromID
+} from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -93,9 +101,7 @@ function generateReadyThings(user: KlasaUser) {
 		const cd = typeof cooldown === 'number' ? cooldown : cooldown(user);
 
 		readyThings.push(
-			`**${name}:** ${
-				difference < cooldown ? `*${formatDuration(Date.now() - (lastTime + cd), true)}*` : 'ready'
-			}`
+			`**${name}:** ${difference < cd ? `*${formatDuration(Date.now() - (lastTime + cd), true)}*` : 'ready'}`
 		);
 	}
 	return readyThings;
@@ -122,9 +128,11 @@ function itemSearch(msg: KlasaMessage, name: string) {
 			(item, index) => `${gettedItem!.id === item.id ? '**' : ''}
 ${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
 				item.tradeable_on_ge ? 'GE_Tradeable' : 'Not_GE_Tradeable'
-			} ${item.tradeable ? 'Tradeable' : 'Not_Tradeable'} ${item.incomplete ? 'Incomplete' : 'Not_Incomplete'} ${
-				item.duplicate ? 'Duplicate' : 'Not_Duplicate'
-			}${gettedItem!.id === item.id ? '**' : ''} <${item.wiki_url}>`
+			} ${!isSuperUntradeable(item) ? 'Tradeable' : 'Not_Tradeable'} ${
+				item.incomplete ? 'Incomplete' : 'Not_Incomplete'
+			} ${item.duplicate ? 'Duplicate' : 'Not_Duplicate'}${gettedItem!.id === item.id ? '**' : ''} <${
+				item.wiki_url
+			}>`
 		)
 		.join('\n')}`;
 
@@ -189,6 +197,17 @@ export default class extends BotCommand {
 				}
 				await input.addItemsToBank(new Bank().add('Tester gift box'));
 				return msg.channel.send(`Gave 1x Tester gift box to ${input.username}.`);
+			}
+			case 'pingmass':
+			case 'pm': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
+				if (!msg.member) return;
+				if (!(msg.channel instanceof TextChannel)) return;
+				if (!msg.member.roles.cache.has(Roles.BSOMassHoster) && !msg.member.roles.cache.has(Roles.Moderator)) {
+					return;
+				}
+
+				return msg.channel.send(`<@&${DefaultPingableRoles.BSOMass}>`);
 			}
 			case 'check':
 			case 'c': {

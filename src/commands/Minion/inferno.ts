@@ -118,6 +118,7 @@ export default class extends BotCommand {
 		if (isEmergedZuk) {
 			cost.add(elderBarrageRunes.multiply(Math.floor(elderBarragePerHour * hours)));
 			cost.add('Hellfire arrow', randInt(50, 80));
+			cost.add('Super combat potion(4)');
 		}
 
 		cost.add('Saradomin brew(4)', 8);
@@ -437,7 +438,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		if (!isEmergedZuk) {
 			duration.add(
 				(rangeGear.hasEquipped('Armadyl chestplate') && rangeGear.hasEquipped('Armadyl chainskirt')) ||
-					(rangeGear.hasEquipped('Pernix body') && rangeGear.hasEquipped('Armadyl chaps')),
+					(rangeGear.hasEquipped('Pernix body') && rangeGear.hasEquipped('Pernix chaps')),
 				-3,
 				'Armadyl/Pernix'
 			);
@@ -588,8 +589,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		const usingTbow =
 			rangeGear.hasEquipped('Twisted bow', true, true) || rangeGear.hasEquipped('Hellfire bow', true, true);
-		zukDeathChance.add(usingTbow, 1.5, `Zuk with ${rangeGear.equippedWeapon()?.name}`);
-		duration.add(usingTbow, -7.5, `${rangeGear.equippedWeapon()?.name}`);
+		zukDeathChance.add(usingTbow, 1.5, `Zuk with ${usingTbow ? rangeGear.equippedWeapon()?.name : 'Twisted bow'}`);
+		duration.add(usingTbow, -7.5, `${usingTbow ? rangeGear.equippedWeapon()?.name : 'Twisted bow'}`);
 
 		/**
 		 * Emerged
@@ -803,7 +804,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const usersRangeStats = rangeGear.stats;
 		const zukKC = await msg.author.getMinigameScore('Inferno');
 
-		const isEmergedZuk = 1 > 2 && (str === 'emerged' || Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.e));
+		const isEmergedZuk = str === 'emerged' || Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.e);
 
 		const res = await this.infernoRun({
 			user: msg.author,

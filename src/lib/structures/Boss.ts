@@ -112,7 +112,7 @@ export interface BossOptions {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupType;
-	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
+	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	settingsKeys?: [string, string];
@@ -124,7 +124,7 @@ export interface BossOptions {
 	solo: boolean;
 	canDie: boolean;
 	kcLearningCap?: number;
-	customDeathChance?: (user: KlasaUser, deathChance: number) => number;
+	customDeathChance?: (user: KlasaUser, deathChance: number, solo: boolean) => number;
 	allowMoreThan1Solo?: boolean;
 	allowMoreThan1Group?: boolean;
 	quantity?: number;
@@ -147,7 +147,7 @@ export class BossInstance {
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
 	gearSetup: GearSetupType;
-	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank }) => Promise<Bank>;
+	itemCost?: (options: { user: KlasaUser; kills: number; baseFood: Bank; solo: boolean }) => Promise<Bank>;
 	mostImportantStat: keyof GearStats;
 	food: Bank | ((user: KlasaUser) => Bank);
 	bossUsers: BossUser[] = [];
@@ -168,7 +168,7 @@ export class BossInstance {
 	solo: boolean;
 	canDie: boolean;
 	kcLearningCap: number;
-	customDeathChance: null | ((user: KlasaUser, deathChance: number) => number);
+	customDeathChance: null | ((user: KlasaUser, deathChance: number, solo: boolean) => number);
 	boosts: string[] = [];
 	automaticStartTime?: number;
 	maxSize: number;
@@ -302,7 +302,7 @@ export class BossInstance {
 		const kc = user.getKC(this.id);
 		let itemsToRemove = calcFood(solo, kc);
 		if (this.itemCost) {
-			return this.itemCost({ user, kills: this.quantity, baseFood: itemsToRemove });
+			return this.itemCost({ user, kills: this.quantity, baseFood: itemsToRemove, solo });
 		}
 		return itemsToRemove.multiply(this.quantity);
 	}
@@ -316,6 +316,8 @@ export class BossInstance {
 
 		const bossUsers: BossUser[] = [];
 		let totalPercent = 0;
+
+		const solo = this.users!.length === 1;
 
 		// Track user len outside the loop because the loop corrupts it. (calcFoodForUser())
 		for (const user of this.users!) {
@@ -357,7 +359,7 @@ export class BossInstance {
 			let deathChance = this.canDie
 				? Math.max(0, reduceNumByPercent(55, kcBoostPercent * 2.4 + gearBoostPercent)) + randFloat(4.5, 5.5)
 				: 0;
-			if (this.customDeathChance) deathChance = this.customDeathChance(user, deathChance);
+			if (this.customDeathChance) deathChance = this.customDeathChance(user, deathChance, solo);
 			debugStr.push(`**Death**[${deathChance.toFixed(2)}%]`);
 
 			// Apply a percentage of maxReduction based on the percent of total boosts.

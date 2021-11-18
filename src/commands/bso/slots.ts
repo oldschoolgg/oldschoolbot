@@ -77,7 +77,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[amount:int{20000000,1000000000}]',
 			oneAtTime: true,
-			cooldown: 10,
+			cooldown: 5,
 			altProtection: true
 		});
 	}

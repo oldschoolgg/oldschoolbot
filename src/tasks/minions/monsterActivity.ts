@@ -20,7 +20,6 @@ import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerIn
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, roll, runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import resolveItems from '../../lib/util/resolveItems';
 import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
@@ -265,25 +264,6 @@ export default class extends Task {
 
 			usersTask.currentTask!.quantityRemaining = quantityLeft;
 			await usersTask.currentTask!.save();
-		}
-
-		if (monster.name === 'Skeleton') {
-			const cl = user.cl();
-			const skeleItemsCanGet = resolveItems([
-				'Skeleton mask',
-				'Skeleton shirt',
-				'Skeleton leggings',
-				'Skeleton gloves',
-				'Skeleton boots'
-			]).filter(i => !cl.has(i));
-			if (skeleItemsCanGet.length > 0) {
-				for (let i = 0; i < quantity; i++) {
-					if (roll(100)) {
-						loot.add(randArrItem(skeleItemsCanGet));
-						break;
-					}
-				}
-			}
 		}
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);

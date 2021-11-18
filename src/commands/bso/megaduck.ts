@@ -157,9 +157,12 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 		const location: O.Readonly<MegaDuckLocation> = { ...settings.get(GuildSettings.MegaDuckLocation) };
 		if (msg.flagArgs.reset && msg.member && msg.member.permissions.has('ADMINISTRATOR')) {
 			await msg.confirm(
-				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, including the paths its taken, and where its been, and who has contributed steps.'
+				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
 			);
-			await settings.update(GuildSettings.MegaDuckLocation, { ...defaultMegaDuckLocation });
+			await settings.update(GuildSettings.MegaDuckLocation, {
+				...defaultMegaDuckLocation,
+				steps: location.steps
+			});
 		}
 		if (msg.flagArgs.all && msg.author.perkTier >= PerkTier.Five) {
 			const image = await this.makeAllGuildsImage();
