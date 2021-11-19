@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Color } from '../../lib/constants';
-import { defaultGear, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
+import { defaultGear, gearPresetToString, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -39,7 +39,7 @@ export default class extends BotCommand {
 		let title = '**Your presets:**';
 		let str = '';
 		for (const pre of presets) {
-			str += `**${pre.name}:** ${pre}\n`;
+			str += `**${pre.name}:** ${gearPresetToString(pre)}\n`;
 		}
 		if (str.length > 2000) {
 			const attachment = new MessageAttachment(

@@ -31,13 +31,14 @@ export default class extends BotCommand {
 			? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 			: undefined;
 
-		const res: any = await prisma.$queryRaw`SELECT user_id AS user, sum(xp) AS total_xp, max(date) AS lastDate
+		const res: any =
+			await prisma.$queryRawUnsafe(`SELECT user_id AS user, sum(xp) AS total_xp, max(date) AS lastDate
 FROM xp_gains
 WHERE date > now() - INTERVAL '1 ${interval}'
 ${skillObj ? `AND skill = '${skillObj.id}'` : ''}
 GROUP BY user_id
 ORDER BY total_xp DESC, lastDate ASC
-LIMIT 10;`;
+LIMIT 10;`);
 
 		if (res.length === 0) {
 			return msg.channel.send('No results found.');
