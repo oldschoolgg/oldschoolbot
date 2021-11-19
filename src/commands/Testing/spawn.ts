@@ -5,8 +5,11 @@ import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { GearSetupTypes } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { tameSpecies } from '../../lib/tames';
+import { TameGrowthStage } from '../../lib/typeorm/TamesTable.entity';
 import { itemNameFromID, runCommand } from '../../lib/util';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import { generateNewTame } from '../bso/nursery';
 import { phosaniBISGear } from '../Minion/nightmare';
 
 const gearSpawns = [
@@ -96,6 +99,15 @@ export default class extends BotCommand {
 					.map(itemNameFromID)
 					.join(', ')}.`
 			);
+		}
+
+		if (msg.flagArgs.tames) {
+			for (const tame of tameSpecies) {
+				const t = await generateNewTame(msg.author, tame);
+				t.growthStage = TameGrowthStage.Adult;
+				await t.save();
+			}
+			return msg.channel.send('Gave you 1 of every tame.');
 		}
 
 		const items = parseStringBank(str, undefined, true);
