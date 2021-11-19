@@ -114,7 +114,7 @@ export default class extends BotCommand {
 			categoryFlags: ['minion', 'minigame'],
 			subcommands: true,
 			aliases: ['pc'],
-			usage: '[start|buy|xp] [quantity:int{1}|str:...str]',
+			usage: '[start|buy|xp] [quantity:int{1,1000}|str:...str]',
 			usageDelim: ' '
 		});
 	}
@@ -168,7 +168,7 @@ ${xpRes}`);
 
 	@requiresMinion
 	@minionNotBusy
-	async start(msg: KlasaMessage, [quantity]: [number | undefined]) {
+	async start(msg: KlasaMessage, [quantity]: [number | string | undefined]) {
 		const { combatLevel } = msg.author;
 		if (combatLevel < 40) {
 			return msg.channel.send('You need a combat level of at least 40 to do Pest Control.');
@@ -188,7 +188,8 @@ ${xpRes}`);
 				}
 			}
 		}
-		if (!quantity || quantity * gameLength > maxLength) {
+
+		if (!quantity || typeof quantity === 'string' || quantity * gameLength > maxLength) {
 			quantity = Math.floor(maxLength / gameLength);
 		}
 
