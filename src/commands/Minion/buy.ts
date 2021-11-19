@@ -4,6 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
+
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { Minigames } from '../../extendables/User/Minigame';
 import Buyables from '../../lib/data/buyables/buyables';
