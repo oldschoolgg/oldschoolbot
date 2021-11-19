@@ -301,7 +301,7 @@ const pets: Pet[] = [
 	{
 		id: 24,
 		emoji: '<:Phoenix:324127378223792129>',
-		chance: 5000,
+		chance: 2500,
 		name: 'Phoenix',
 		type: 'SPECIAL',
 		altNames: ['PHOENIX', 'PHEONIX', 'WINTERTODT', 'FM'],
