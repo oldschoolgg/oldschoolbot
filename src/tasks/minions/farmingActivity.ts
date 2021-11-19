@@ -2,6 +2,7 @@ import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
+import MinionCommand from '../../commands/Minion/minion';
 import { production } from '../../config';
 import { Emoji, Events } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
@@ -199,7 +200,7 @@ export default class extends Task {
 				autoFarmed
 					? res => {
 							user.log('continued trip of autofarming');
-							return this.client.commands.get('autofarm')!.run(res, []);
+							return (this.client.commands.get('minion') as any as MinionCommand)!.autofarm(res);
 					  }
 					: undefined,
 				undefined,
