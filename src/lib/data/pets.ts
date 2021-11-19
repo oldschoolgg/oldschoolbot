@@ -306,7 +306,7 @@ const pets: Pet[] = [
 		type: 'SPECIAL',
 		altNames: ['PHOENIX', 'PHEONIX', 'WINTERTODT', 'FM'],
 		formatFinish: (num: number) =>
-			`You had to open ${fm(num)} Wintertodt Supply Crates to get the Phoenix Pet! <:Phoenix:324127378223792129>`,
+			`You had to open ${fm(num)} Wintertodt Supply Crates with 2 rolls each to get the Phoenix Pet! <:Phoenix:324127378223792129>`,
 		bossKeys: ['wintertodt']
 	},
 	{
