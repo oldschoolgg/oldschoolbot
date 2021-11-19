@@ -885,6 +885,19 @@ export const cluesMasterCL = resolveItems([
 ]);
 
 export const cluesGrandmasterCL = resolveItems([
+	'Blood dye',
+	'Third age dye',
+	'Ice dye',
+	'Shadow dye',
+	'Dwarven blessing',
+	'Ring of luck',
+	'Mysterious seed',
+	'Holiday mystery box',
+	'Deathtouched dart',
+	'Ignecarus mask',
+	'Malygos mask',
+	'Blabberbeak',
+	...LampTable.allItems,
 	'Helm of raedwald',
 	'Clue hunter garb',
 	'Clue hunter gloves',
@@ -895,19 +908,7 @@ export const cluesGrandmasterCL = resolveItems([
 	'First age amulet',
 	'First age cape',
 	'First age bracelet',
-	'First age ring',
-	'Shadow dye',
-	'Blood dye',
-	'Third age dye',
-	'Ice dye',
-	'Dwarven blessing',
-	'Ring of luck',
-	'Mysterious seed',
-	'Holiday mystery box',
-	'Deathtouched dart',
-	'Ignecarus mask',
-	'Malygos mask',
-	...LampTable.allItems
+	'First age ring'
 ]);
 
 export const cluesHardRareCL = resolveItems([
@@ -1948,7 +1949,8 @@ export const customPetsCL = resolveItems([
 	'Frosty',
 	'Voidling',
 	'Baby duckling',
-	'Jal-MejJak'
+	'Jal-MejJak',
+	'Blabberbeak'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([

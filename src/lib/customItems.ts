@@ -2040,6 +2040,17 @@ setCustomItem(
 	},
 	10_000_000
 );
+setCustomItem(
+	48_328,
+	'Blabberbeak',
+	'Herbi',
+	{
+		customItemData: {
+			isSuperUntradeable: true
+		}
+	},
+	10_000_000
+);
 /**
  * Misc Items
  *
