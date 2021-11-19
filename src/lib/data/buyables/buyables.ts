@@ -5,6 +5,7 @@ import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
+import { Favours } from '../../minions/data/kourendFavour';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
@@ -25,6 +26,7 @@ export interface Buyable {
 	itemCost?: ItemBank;
 	aliases?: string[];
 	skillsNeeded?: Skills;
+	requiredFavour?: Favours;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameKey, number];
 	ironmanPrice?: number;
@@ -131,6 +133,11 @@ const constructionBuyables: Buyable[] = [
 		name: 'Lunar signet',
 		gpCost: 100_000,
 		qpRequired: 52
+	},
+	{
+		name: 'Arceuus signet',
+		gpCost: 100_000,
+		requiredFavour: Favours.Arceuus
 	},
 	{
 		name: 'Bucket of water',

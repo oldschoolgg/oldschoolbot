@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
-
+import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { Minigames } from '../../extendables/User/Minigame';
 import Buyables from '../../lib/data/buyables/buyables';
 import { kittens } from '../../lib/growablePets';
@@ -102,6 +102,25 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (buyable.requiredFavour) {
+			const [success, points] = gotFavour(msg.author, buyable.requiredFavour, 100);
+			if (!success) {
+				return msg.channel.send(
+					`You don't have the required amount of Favour to buy this item.\n\nRequired: ${points}% ${buyable.requiredFavour.toString()} Favour.`
+				);
+			}
+		}
+
+		if (buyable.name.toLowerCase().includes('kourend')) {
+			const currentUserFavour = msg.author.settings.get(UserSettings.KourendFavour);
+			for (const [key, value] of Object.entries(currentUserFavour)) {
+				if (value < 100) {
+					return msg.channel.send(
+						`You don't have the required amount of Favour to buy this item.\n\nRequired: 100% ${key} Favour.`
+					);
+				}
+			}
+		}
 		if (buyable.minigameScoreReq) {
 			const [key, req] = buyable.minigameScoreReq;
 			const kc = await msg.author.getMinigameScore(key);
