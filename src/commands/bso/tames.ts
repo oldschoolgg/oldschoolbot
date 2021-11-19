@@ -166,7 +166,13 @@ export async function removeRawFood({
 	} else {
 		const itemCost = foodToRemove;
 		if (monster.itemCost) {
-			itemCost.add(monster.itemCost.itemCost.clone().multiply(quantity));
+			if (monster.itemCost.qtyPerKill) {
+				for (const [item, qty] of monster.itemCost.itemCost.items()) {
+					itemCost.add(item.id, Math.ceil(qty * monster.itemCost.qtyPerKill * quantity));
+				}
+			} else {
+				itemCost.add(monster.itemCost.itemCost.clone().multiply(quantity));
+			}
 		}
 		if (!user.owns(itemCost)) {
 			throw `You don't have the required items, you need: ${itemCost}.`;
