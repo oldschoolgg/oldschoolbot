@@ -6,9 +6,9 @@ import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
 import { Minigames } from '../../extendables/User/Minigame';
-import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import Buyables from '../../lib/data/buyables/buyables';
 import { kittens } from '../../lib/growablePets';
+import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
