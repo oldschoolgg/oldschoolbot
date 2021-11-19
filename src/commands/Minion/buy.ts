@@ -5,8 +5,8 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
-import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { Minigames } from '../../extendables/User/Minigame';
+import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import Buyables from '../../lib/data/buyables/buyables';
 import { kittens } from '../../lib/growablePets';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
