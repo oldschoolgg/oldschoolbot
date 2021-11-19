@@ -19,8 +19,8 @@ export default class extends BotCommand {
 			usage: '[fire|infernal|skin]',
 			description: 'Allows you to gamble fire capes for a chance at the jad pet.'
 		});
-	}
-	
+	}	
+
 	async run(msg: KlasaMessage, [type]: ['fire' | 'infernal' | 'skin' | undefined]) {
 		const firesGambled = msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed);
 		const infernalsGambled = msg.author.settings.get(UserSettings.Stats.InfernalCapesSacrificed);
@@ -28,29 +28,29 @@ export default class extends BotCommand {
 		if (!type) {
 			return msg.channel
 				.send(`You can gamble Fire capes and Infernal capes, and Zuk skins like this: \`${msg.cmdPrefix}capegamble fire/infernal/skin\`
-				
+
 **Fire Cape's Gambled:** ${firesGambled}
 **Infernal Cape's Gambled:** ${infernalsGambled}
 **Skins Gambled:** ${skinsGambled}`);
 		}
-		
+
 		const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape' : "TzKal-Zuk's skin");
 		const key =
 			type === 'fire' ? UserSettings.Stats.FireCapesSacrificed : UserSettings.Stats.InfernalCapesSacrificed : UserSettings.Stats.SkinsSacrificed;
-		
+
 		const capesOwned = await msg.author.bank().amount(item.id);
-		
+
 		if (capesOwned < 1) return msg.channel.send(`You have no ${item.name}'s' to gamble!`);
-		
+
 		await msg.confirm(`Are you sure you want to gamble a ${item.name}?`);
-		
+
 		const newSacrificedCount = msg.author.settings.get(key) + 1;
 		await msg.author.removeItemsFromBank(new Bank().add(item.id));
 		await msg.author.settings.update(key, newSacrificedCount);
-		
+
 		const chance = type === 'fire' ? 200 : 100 : 175;
 		const pet = getOSItem(type === 'fire' ? 'Tzrek-Jad' : 'Jal-nib-rek' : 'Jal-MejJak');
-		
+
 		if (roll(chance)) {
 			await msg.author.addItemsToBank(new Bank().add(pet.id), true);
 			this.client.emit(
