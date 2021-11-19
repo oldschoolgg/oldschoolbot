@@ -79,7 +79,7 @@ const DyeTable = new LootTable()
 
 const table = new LootTable()
 	.tertiary(2500, ClueHunterTable)
-	.tertiary(9000, 'Blabberbeak')
+	.tertiary(20_000, 'Blabberbeak')
 	.tertiary(10_000, BlessingTable)
 	.tertiary(10_000, DyeTable)
 	.tertiary(8000, 'Ring of luck')
