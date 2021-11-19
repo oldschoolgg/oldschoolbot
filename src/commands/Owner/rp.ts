@@ -1,4 +1,5 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { Duration, Time } from '@sapphire/time-utilities';
+import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
@@ -12,7 +13,6 @@ import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ActivityTable } from '../../lib/typeorm/ActivityTable.entity';
 import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -81,9 +81,77 @@ export default class extends BotCommand {
 		msg: KlasaMessage,
 		[cmd, input, str]: [string, KlasaUser | string | undefined, KlasaUser | string | undefined]
 	) {
-		if (msg.guild!.id !== SupportServer) return null;
+		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
+		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'pingmass':
+			case 'pm': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
+				if (!msg.member) return;
+				if (!(msg.channel instanceof TextChannel)) return;
+				if (!msg.member.roles.cache.has(Roles.MassHoster) && !msg.member.roles.cache.has(Roles.Moderator)) {
+					return;
+				}
+				if (msg.channel.id === Channel.BarbarianAssault) {
+					return msg.channel.send(`<@&${Roles.BarbarianAssaultMass}>`);
+				}
+				if (msg.channel.parentID === Channel.ChambersOfXeric) {
+					return msg.channel.send(`<@&${Roles.ChambersOfXericMass}>`);
+				}
+				return msg.channel.send(`<@&${Roles.Mass}>`);
+			}
+			case 'check':
+			case 'c': {
+				let u = input;
+				if ((!isMod && !isOwner) || !u) {
+					u = msg.author;
+				}
+				if (!(u instanceof KlasaUser)) return;
+				const bitfields = `${u.settings
+					.get(UserSettings.BitField)
+					.map(i => BitFieldData[i])
+					.filter(notEmpty)
+					.map(i => i.name)
+					.join(', ')}`;
+
+				const task = minionActivityCache.get(u.id);
+				const taskText = task ? `${task.type}` : 'None';
+
+				const userBadges = u.settings.get(UserSettings.Badges).map(i => badges[i]);
+				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(u.id);
+
+				const premiumDate = u.settings.get(UserSettings.PremiumBalanceExpiryDate);
+				const premiumTier = u.settings.get(UserSettings.PremiumBalanceTier);
+
+				return msg.channel.send(
+					`**${u.username}**
+**Perk Tier:** ${getUsersPerkTier(u)}
+**Bitfields:** ${bitfields}
+**Badges:** ${userBadges}
+**Current Task:** ${taskText}
+**Blacklisted:** ${isBlacklisted ? 'Yes' : 'No'}
+**Patreon/Github:** ${u.settings.get(UserSettings.PatreonID) ? 'Yes' : 'None'}/${
+						u.settings.get(UserSettings.GithubID) ? 'Yes' : 'None'
+					}
+**Ironman:** ${u.isIronman ? 'Yes' : 'No'}
+**Premium Balance:** ${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
+						premiumTier ? `Tier ${premiumTier}` : ''
+					}
+
+**Main Account:** ${
+						u.settings.get(UserSettings.MainAccount) !== null
+							? `${getUsername(this.client, u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
+									UserSettings.MainAccount
+							  )}]`
+							: 'None'
+					}
+**Ironman Alt Accounts:** ${u.settings
+						.get(UserSettings.IronmanAlts)
+						.map(id => `${getUsername(this.client, id)}[${id}]`)}
+`
+				);
+			}
 			case 'itemsearch':
 			case 'is': {
 				if (typeof input !== 'string') return;
@@ -165,13 +233,12 @@ ${
 			}
 		}
 
-		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
-		const isOwner = this.client.owners.has(msg.author);
 		if (!isMod && !isOwner) return null;
 
 		if (input && input instanceof KlasaUser) {
 			await input.settings.sync(true);
 		}
+		if (msg.guild!.id !== SupportServer) return null;
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
@@ -275,57 +342,6 @@ ${
 **Open** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen)}
 **Daily** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily)}
 `);
-			}
-			case 'check':
-			case 'c': {
-				if (!input || !(input instanceof KlasaUser)) return;
-				const bitfields = `${input.settings
-					.get(UserSettings.BitField)
-					.map(i => BitFieldData[i])
-					.filter(notEmpty)
-					.map(i => i.name)
-					.join(', ')}`;
-
-				const task = minionActivityCache.get(input.id);
-				const taskText = task
-					? `${task.type} - ${formatDuration(task.finishDate - Date.now())} remaining`
-					: 'None';
-
-				const lastTasks = await ActivityTable.find({
-					where: { userID: msg.author.id },
-					take: 10
-				});
-				const lastTasksStr = lastTasks.map(i => (i.completed ? i.type : `*${i.type}*`)).join(', ');
-
-				const userBadges = input.settings.get(UserSettings.Badges).map(i => badges[i]);
-				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(input.id);
-
-				return msg.channel.send(
-					`**${input.username}**
-**Perk Tier:** ${getUsersPerkTier(input)}
-**Bitfields:** ${bitfields}
-**Badges:** ${userBadges}
-**Current Task:** ${taskText}
-**Previous Tasks:** ${lastTasksStr}.
-**Blacklisted:** ${isBlacklisted ? 'Yes' : 'No'}
-**Patreon/Github:** ${input.settings.get(UserSettings.PatreonID) ?? 'None'}/${
-						input.settings.get(UserSettings.GithubID) ?? 'None'
-					}
-**Ironman:** ${input.isIronman ? 'Yes' : 'No'}
-
-**Main Account:** ${
-						input.settings.get(UserSettings.MainAccount) !== null
-							? `${getUsername(
-									this.client,
-									input.settings.get(UserSettings.MainAccount)!
-							  )}[${input.settings.get(UserSettings.MainAccount)}]`
-							: 'None'
-					}
-**Ironman Alt Accounts:** ${input.settings
-						.get(UserSettings.IronmanAlts)
-						.map(id => `${getUsername(this.client, id)}[${id}]`)}
-`
-				);
 			}
 			case 'patreon': {
 				msg.channel.send('Running patreon task...');
@@ -511,6 +527,45 @@ LIMIT 10;
 				if (command.enabled) return msg.channel.send('That command is already enabled.');
 				command.enable();
 				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
+			}
+			case 'addptime': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				if (!str || typeof str !== 'string' || str.length < 2 || !str.includes(',')) return;
+				const [_tier, _duration] = str.split(',');
+				const tier = parseInt(_tier);
+				if (![1, 2, 3, 4, 5].includes(tier)) return;
+				const duration = new Duration(_duration);
+				const ms = duration.offset;
+				if (ms < Time.Second || ms > Time.Year * 3) return;
+
+				const currentBalanceTier = input.settings.get(UserSettings.PremiumBalanceTier);
+				const currentBalanceTime = input.settings.get(UserSettings.PremiumBalanceExpiryDate);
+
+				if (input.perkTier > 1 && !currentBalanceTier) {
+					return msg.channel.send(`${input.username} is already a patron.`);
+				}
+				if (currentBalanceTier !== null && currentBalanceTier !== tier) {
+					return msg.channel.send(
+						`${input} already has ${formatDuration(
+							currentBalanceTime!
+						)} of Tier ${currentBalanceTier}, you can't add time for a different tier.`
+					);
+				}
+				await msg.confirm(
+					`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}?`
+				);
+				await input.settings.update(UserSettings.PremiumBalanceTier, tier);
+				if (currentBalanceTime !== null) {
+					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, currentBalanceTime + ms);
+				} else {
+					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, Date.now() + ms);
+				}
+
+				return msg.channel.send(
+					`Gave ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}. They have ${formatDuration(
+						input.settings.get(UserSettings.PremiumBalanceExpiryDate)! - Date.now()
+					)} remaning.`
+				);
 			}
 		}
 

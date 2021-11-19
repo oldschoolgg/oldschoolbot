@@ -1094,8 +1094,8 @@ export const diariesObject = {
 	KourendKebosDiary,
 	LumbridgeDraynorDiary,
 	MorytaniaDiary,
+	VarrockDiary,
 	WesternProv,
-	WildernessDiary,
-	VarrockDiary
+	WildernessDiary
 } as const;
 export const diaries = Object.values(diariesObject);
