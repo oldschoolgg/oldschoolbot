@@ -19,7 +19,7 @@ export default class extends BotCommand {
 			usage: '[fire|infernal|skin]',
 			description: 'Allows you to gamble fire capes for a chance at the jad pet.'
 		});
-	}	
+	}
 
 	async run(msg: KlasaMessage, [type]: ['fire' | 'infernal' | 'skin' | undefined]) {
 		const firesGambled = msg.author.settings.get(UserSettings.Stats.FireCapesSacrificed);
