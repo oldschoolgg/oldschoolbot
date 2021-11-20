@@ -15,11 +15,11 @@ import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
-import { ActivityTypeEnum } from '.prisma/client';
+import { activity_type_enum } from '.prisma/client';
 
 export const collectors = new Map<string, MessageCollector>();
 
-const activitiesToTrackAsPVMGPSource: ActivityTypeEnum[] = [
+const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'GroupMonsterKilling',
 	'MonsterKilling',
 	'Raids',

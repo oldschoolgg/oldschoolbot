@@ -1,4 +1,4 @@
-import { Activity, ActivityTypeEnum, Prisma, PrismaClient } from '@prisma/client';
+import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
 
 import { client } from '../..';
 import { ActivityTaskData } from '../types/minions';
@@ -11,7 +11,7 @@ export const prisma = new PrismaClient();
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {
 		...(activity.data as Prisma.JsonObject),
-		type: activity.type as ActivityTypeEnum,
+		type: activity.type as activity_type_enum,
 		userID: activity.user_id,
 		channelID: activity.channel_id,
 		duration: activity.duration,

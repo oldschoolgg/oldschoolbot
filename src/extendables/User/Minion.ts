@@ -97,7 +97,7 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import { ActivityTypeEnum } from '.prisma/client';
+import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
 	.add('🎉', 200)
@@ -635,7 +635,7 @@ export default class extends Extendable {
 	}
 
 	// @ts-ignore 2784
-	public maxTripLength(this: User, activity?: ActivityTypeEnum) {
+	public maxTripLength(this: User, activity?: activity_type_enum) {
 		let max = Time.Minute * 30;
 
 		max += patronMaxTripCalc(this);

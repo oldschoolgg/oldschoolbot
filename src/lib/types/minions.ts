@@ -4,10 +4,10 @@ import { MinigameName } from '../settings/minigames';
 import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
 import { ItemBank } from '.';
-import { ActivityTypeEnum } from '.prisma/client';
+import { activity_type_enum } from '.prisma/client';
 
 export interface ActivityTaskOptions {
-	type: ActivityTypeEnum;
+	type: activity_type_enum;
 	userID: string;
 	duration: number;
 	id: number;

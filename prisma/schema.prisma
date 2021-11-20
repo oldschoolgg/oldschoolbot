@@ -8,16 +8,16 @@ datasource db {
 }
 
 model Activity {
-  id             Int              @default(autoincrement())
-  user_id        String           @db.VarChar(19)
-  start_date     DateTime         @db.Timestamp(6)
-  finish_date    DateTime         @db.Timestamp(6)
+  id             Int                @default(autoincrement())
+  user_id        String             @db.VarChar(19)
+  start_date     DateTime           @db.Timestamp(6)
+  finish_date    DateTime           @db.Timestamp(6)
   duration       Int
   completed      Boolean
   group_activity Boolean
-  type           ActivityTypeEnum
-  channel_id     String           @db.VarChar(19)
-  data           Json             @db.Json
+  type           activity_type_enum
+  channel_id     String             @db.VarChar(19)
+  data           Json               @db.Json
 
 
   @@id([id, user_id, channel_id], map: "PK_2c70277d97a802ada5b408873b6")
@@ -360,13 +360,13 @@ model Webhook {
 }
 
 model XPGain {
-  id         Int        @id @default(autoincrement())
-  user_id    String     @db.VarChar(19)
-  date       DateTime   @default(now()) @db.Timestamp(6)
-  skill      SkillsEnum
+  id         Int                 @id @default(autoincrement())
+  user_id    String              @db.VarChar(19)
+  date       DateTime            @default(now()) @db.Timestamp(6)
+  skill      xp_gains_skill_enum
   xp         Int
   artificial Boolean?
-  post_max   Boolean    @default(false)
+  post_max   Boolean             @default(false)
 
   @@index([date])
   @@index([skill])
@@ -421,7 +421,7 @@ model Minigame {
   @@map("minigames")
 }
 
-enum ActivityTypeEnum {
+enum activity_type_enum {
   Agility
   Cooking
   MonsterKilling
@@ -489,7 +489,7 @@ enum ActivityTypeEnum {
   Inferno
 }
 
-enum SkillsEnum {
+enum xp_gains_skill_enum {
   agility
   cooking
   fishing

@@ -1,137 +1,137 @@
 import { Tasks } from '../constants';
-import { ActivityTypeEnum } from '.prisma/client';
+import { activity_type_enum } from '.prisma/client';
 
-export function taskNameFromType(activityType: ActivityTypeEnum): Tasks {
+export function taskNameFromType(activityType: activity_type_enum): Tasks {
 	switch (activityType) {
-		case ActivityTypeEnum.Agility:
+		case 'Agility':
 			return Tasks.AgilityActivity;
-		case ActivityTypeEnum.ClueCompletion:
+		case 'ClueCompletion':
 			return Tasks.ClueActivity;
-		case ActivityTypeEnum.Cooking:
+		case 'Cooking':
 			return Tasks.CookingActivity;
-		case ActivityTypeEnum.MonsterKilling:
+		case 'MonsterKilling':
 			return Tasks.MonsterActivity;
-		case ActivityTypeEnum.GroupMonsterKilling:
+		case 'GroupMonsterKilling':
 			return Tasks.GroupMonsterActivity;
-		case ActivityTypeEnum.Fishing:
+		case 'Fishing':
 			return Tasks.FishingActivity;
-		case ActivityTypeEnum.Mining:
+		case 'Mining':
 			return Tasks.MiningActivity;
-		case ActivityTypeEnum.Smelting:
+		case 'Smelting':
 			return Tasks.SmeltingActivity;
-		case ActivityTypeEnum.Smithing:
+		case 'Smithing':
 			return Tasks.SmithingActivity;
-		case ActivityTypeEnum.Woodcutting:
+		case 'Woodcutting':
 			return Tasks.WoodcuttingActivity;
-		case ActivityTypeEnum.Firemaking:
+		case 'Firemaking':
 			return Tasks.FiremakingActivity;
-		case ActivityTypeEnum.Crafting:
+		case 'Crafting':
 			return Tasks.CraftingActivity;
-		case ActivityTypeEnum.Questing:
+		case 'Questing':
 			return Tasks.QuestingActivity;
-		case ActivityTypeEnum.Runecraft:
+		case 'Runecraft':
 			return Tasks.RunecraftActivity;
-		case ActivityTypeEnum.Burying:
+		case 'Burying':
 			return Tasks.BuryingActivity;
-		case ActivityTypeEnum.Offering:
+		case 'Offering':
 			return Tasks.OfferingActivity;
-		case ActivityTypeEnum.FightCaves:
+		case 'FightCaves':
 			return Tasks.FightCavesActivity;
-		case ActivityTypeEnum.Fletching:
+		case 'Fletching':
 			return Tasks.FletchingActivity;
-		case ActivityTypeEnum.Wintertodt:
+		case 'Wintertodt':
 			return Tasks.WintertodtActivity;
-		case ActivityTypeEnum.Tempoross:
+		case 'Tempoross':
 			return Tasks.TemporossActivity;
-		case ActivityTypeEnum.Alching:
+		case 'Alching':
 			return Tasks.AlchingActivity;
-		case ActivityTypeEnum.Herblore:
+		case 'Herblore':
 			return Tasks.HerbloreActivity;
-		case ActivityTypeEnum.Nightmare:
+		case 'Nightmare':
 			return Tasks.NightmareActivity;
-		case ActivityTypeEnum.AnimatedArmour:
+		case 'AnimatedArmour':
 			return Tasks.AnimatedArmourActivity;
-		case ActivityTypeEnum.Cyclops:
+		case 'Cyclops':
 			return Tasks.CyclopsActivity;
-		case ActivityTypeEnum.Sawmill:
+		case 'Sawmill':
 			return Tasks.SawmillActivity;
-		case ActivityTypeEnum.Sepulchre:
+		case 'Sepulchre':
 			return Tasks.SepulchreActivity;
-		case ActivityTypeEnum.Plunder:
+		case 'Plunder':
 			return Tasks.PlunderActivity;
-		case ActivityTypeEnum.FishingTrawler:
+		case 'FishingTrawler':
 			return Tasks.FishingTrawler;
-		case ActivityTypeEnum.Zalcano:
+		case 'Zalcano':
 			return Tasks.ZalcanoActivity;
-		case ActivityTypeEnum.Pickpocket:
+		case 'Pickpocket':
 			return Tasks.PickpocketActivity;
-		case ActivityTypeEnum.Farming:
+		case 'Farming':
 			return Tasks.FarmingActivity;
-		case ActivityTypeEnum.TitheFarm:
+		case 'TitheFarm':
 			return Tasks.TitheFarmActivity;
-		case ActivityTypeEnum.BarbarianAssault:
+		case 'BarbarianAssault':
 			return Tasks.BarbarianAssault;
-		case ActivityTypeEnum.AgilityArena:
+		case 'AgilityArena':
 			return Tasks.AgilityArena;
-		case ActivityTypeEnum.ChampionsChallenge:
+		case 'ChampionsChallenge':
 			return Tasks.ChampionsChallenge;
-		case ActivityTypeEnum.Hunter:
+		case 'Hunter':
 			return Tasks.HunterActivity;
-		case ActivityTypeEnum.Birdhouse:
+		case 'Birdhouse':
 			return Tasks.BirdhouseActivity;
-		case ActivityTypeEnum.AerialFishing:
+		case 'AerialFishing':
 			return Tasks.AerialFishingActivity;
-		case ActivityTypeEnum.DriftNet:
+		case 'DriftNet':
 			return Tasks.DriftNetActivity;
-		case ActivityTypeEnum.Construction:
+		case 'Construction':
 			return Tasks.ConstructionActivity;
-		case ActivityTypeEnum.MahoganyHomes:
+		case 'MahoganyHomes':
 			return Tasks.MahoganyHomes;
-		case ActivityTypeEnum.Enchanting:
+		case 'Enchanting':
 			return Tasks.Enchanting;
-		case ActivityTypeEnum.Casting:
+		case 'Casting':
 			return Tasks.Casting;
-		case ActivityTypeEnum.GloryCharging:
+		case 'GloryCharging':
 			return Tasks.GloryCharging;
-		case ActivityTypeEnum.WealthCharging:
+		case 'WealthCharging':
 			return Tasks.WealthCharging;
-		case ActivityTypeEnum.GnomeRestaurant:
+		case 'GnomeRestaurant':
 			return Tasks.GnomeRestaurant;
-		case ActivityTypeEnum.SoulWars:
+		case 'SoulWars':
 			return Tasks.SoulWars;
-		case ActivityTypeEnum.RoguesDenMaze:
+		case 'RoguesDenMaze':
 			return Tasks.RoguesDenMaze;
-		case ActivityTypeEnum.Gauntlet:
+		case 'Gauntlet':
 			return Tasks.Gauntlet;
-		case ActivityTypeEnum.CastleWars:
+		case 'CastleWars':
 			return Tasks.CastleWars;
-		case ActivityTypeEnum.MageArena:
+		case 'MageArena':
 			return Tasks.MageArena;
-		case ActivityTypeEnum.Raids:
+		case 'Raids':
 			return Tasks.Raids;
-		case ActivityTypeEnum.Collecting:
+		case 'Collecting':
 			return Tasks.Collecting;
-		case ActivityTypeEnum.MageTrainingArena:
+		case 'MageTrainingArena':
 			return Tasks.MageTrainingArena;
-		case ActivityTypeEnum.BlastFurnace:
+		case 'BlastFurnace':
 			return Tasks.BlastFurnaceActivity;
-		case ActivityTypeEnum.MageArena2:
+		case 'MageArena2':
 			return Tasks.MageArena2;
-		case ActivityTypeEnum.BigChompyBirdHunting:
+		case 'BigChompyBirdHunting':
 			return Tasks.BigChompyBirdHunting;
-		case ActivityTypeEnum.DarkAltar:
+		case 'DarkAltar':
 			return Tasks.DarkAltar;
-		case ActivityTypeEnum.Trekking:
+		case 'Trekking':
 			return Tasks.TrekkingActivity;
-		case ActivityTypeEnum.Revenants:
+		case 'Revenants':
 			return Tasks.RevenantsActivity;
-		case ActivityTypeEnum.PestControl:
+		case 'PestControl':
 			return Tasks.PestControl;
-		case ActivityTypeEnum.VolcanicMine:
+		case 'VolcanicMine':
 			return Tasks.VolcanicMine;
-		case ActivityTypeEnum.KourendFavour:
+		case 'KourendFavour':
 			return Tasks.KourendFavour;
-		case ActivityTypeEnum.Inferno:
+		case 'Inferno':
 			return Tasks.Inferno;
 	}
 }
