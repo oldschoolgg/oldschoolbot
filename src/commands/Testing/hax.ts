@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MAX_QP } from '../../lib/constants';
+import { BitField, MAX_QP } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -20,6 +20,11 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const paths = Object.values(Skills).map(sk => `skills.${sk.id}`);
+
+		if (msg.flagArgs.t3) {
+			await msg.author.settings.update(UserSettings.BitField, BitField.IsPatronTier3);
+			return msg.channel.send('Toggled T3 perks.');
+		}
 
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));
 		msg.author.settings.update(UserSettings.GP, 1_000_000_000);
