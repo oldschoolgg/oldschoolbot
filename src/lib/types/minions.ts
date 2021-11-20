@@ -294,7 +294,7 @@ export interface GnomeRestaurantActivityTaskOptions extends MinigameActivityTask
 	gloriesRemoved: number;
 }
 
-export interface SoulWarsOptions extends ActivityTaskOptions {
+export interface SoulWarsOptions extends MinigameActivityTaskOptions {
 	leader: string;
 	users: string[];
 	quantity: number;

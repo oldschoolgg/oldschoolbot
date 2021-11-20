@@ -10,7 +10,8 @@ export async function pastActivities(msg: KlasaMessage) {
 		},
 		orderBy: {
 			id: 'desc'
-		}
+		},
+		take: 10
 	});
 
 	return msg.channel.send(

@@ -42,7 +42,7 @@ export async function completeActivity(_activity: Activity) {
 		throw new Error('Missing task');
 	}
 
-	client.oneCommandAtATimeCache.add(_activity.user_id);
+	client.oneCommandAtATimeCache.add(activity.userID);
 	try {
 		await prisma.activity.updateMany({
 			where: {

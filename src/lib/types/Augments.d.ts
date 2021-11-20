@@ -1,4 +1,4 @@
-import { ActivityEnum, PlayerOwnedHouse } from '@prisma/client';
+import { ActivityTypeEnum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
@@ -247,7 +247,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: ActivityEnum): number;
+		maxTripLength(activity?: ActivityTypeEnum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;

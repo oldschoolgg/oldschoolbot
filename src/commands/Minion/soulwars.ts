@@ -153,7 +153,8 @@ export default class extends BotCommand {
 				duration,
 				type: 'SoulWars',
 				leader: msg.author.id,
-				users: [msg.author.id]
+				users: [msg.author.id],
+				minigameID: 'soul_wars'
 			});
 
 			const str = `${
@@ -192,7 +193,8 @@ export default class extends BotCommand {
 				duration,
 				type: 'SoulWars',
 				leader: msg.author.id,
-				users: users.map(u => u.id)
+				users: users.map(u => u.id),
+				minigameID: 'soul_wars'
 			});
 
 			const str = `${partyOptions.leader.username}'s party (${users

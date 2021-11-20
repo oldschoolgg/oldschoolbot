@@ -14,7 +14,6 @@ FROM users
 WHERE ${maxFilter}
 ${ironman ? 'AND "minion.ironman" = true' : ''};`;
 
-// TODO VALIDATE/TEST THIS
 async function howManyMaxed() {
 	const [normies, irons] = (
 		(await Promise.all([prisma.$queryRaw`${makeQuery(false)}`, prisma.$queryRaw`${makeQuery(true)}`])) as any
