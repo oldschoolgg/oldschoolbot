@@ -706,7 +706,8 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Pineapple',
-		gpCost: 500
+		gpCost: 1350,
+		ironmanPrice: 5
 	},
 
 	...sepulchreBuyables,
