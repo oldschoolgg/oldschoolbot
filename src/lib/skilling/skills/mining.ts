@@ -166,7 +166,7 @@ const ores: Ore[] = [
 	},
 	{
 		level: 120,
-		xp: 3_000,
+		xp: 3000,
 		id: 508,
 		name: 'Mysterious ore',
 		respawnTime: 90,
