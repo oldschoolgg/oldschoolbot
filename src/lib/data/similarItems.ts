@@ -315,7 +315,8 @@ const source: [string, (string | number)[]][] = [
 	['Twisted bow', ['Hellfire bow']],
 	['Gorajan archer helmet', ['Infernal slayer helmet(i)']],
 	['Gorajan occult helmet', ['Infernal slayer helmet(i)']],
-	['Gorajan warrior helmet', ['Infernal slayer helmet(i)']]
+	['Gorajan warrior helmet', ['Infernal slayer helmet(i)']],
+	['Ring of suffering (i)', ['Ring of suffering (ri)']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {
