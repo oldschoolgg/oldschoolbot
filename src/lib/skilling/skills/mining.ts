@@ -163,6 +163,29 @@ const ores: Ore[] = [
 		minerals: 20,
 		clueScrollChance: 46_350,
 		loot: new LootTable().add('Amethyst', 1, 100)
+	},
+	{
+		level: 120,
+		xp: 3_000,
+		id: 508,
+		name: 'Mysterious ore',
+		respawnTime: 90,
+		petChance: 40_000,
+		loot: new LootTable()
+			// Common
+			.add('Coal', [250, 750], 46)
+			.add('Amethyst', [50, 150], 46)
+			.add('Gold ore', [250, 750], 46)
+			.add('Golden nugget', [1, 50], 46)
+			.add('Pure essence', [1000, 5000], 46)
+			.add('Runite ore', [20, 50], 46)
+			// Uncommon - 1/50 (6/300)
+			.add('Runite ore', [50, 120], 6)
+			.add('Tradeable mystery box', 1, 6)
+			.add('Clue scroll (master)', 2, 6)
+			// Rare
+			.add('Clue scroll (grandmaster)', 1, 2) // 1/150 (2/300)
+			.add('Onyx', 1, 3) // 1/100 (3/300)
 	}
 ];
 

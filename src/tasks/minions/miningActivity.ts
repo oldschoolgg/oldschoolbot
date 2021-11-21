@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -107,6 +108,15 @@ export default class extends Task {
 					break;
 				}
 			}
+		}
+
+		// Mysterious Ore, 500m boost
+		if (
+			ore.id === 508 &&
+			user.hasItemEquippedAnywhere('Mining master cape') &&
+			user.settings.get(UserSettings.Skills.Mining) >= 500_000_000
+		) {
+			ore.loot.add('Dwarven ore', 1, 1);
 		}
 
 		if (ore.id === 21_622) {
