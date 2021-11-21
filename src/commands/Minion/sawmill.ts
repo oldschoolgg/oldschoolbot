@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -65,7 +64,7 @@ export default class extends BotCommand {
 			boosts.push('10% for Woodcutting Guild unlocked');
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Sawmill);
+		const maxTripLength = msg.author.maxTripLength('Sawmill');
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timePerPlank);
@@ -118,7 +117,7 @@ export default class extends BotCommand {
 		);
 
 		await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
-			type: Activity.Sawmill,
+			type: 'Sawmill',
 			duration,
 			plankID: plank!.outputItem,
 			plankQuantity: quantity,

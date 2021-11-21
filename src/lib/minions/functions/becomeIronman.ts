@@ -1,15 +1,7 @@
 import { KlasaMessage } from 'klasa';
 
-import { getNewUser } from '../../settings/settings';
+import { prisma } from '../../settings/prisma';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { ActivityTable } from '../../typeorm/ActivityTable.entity';
-import { GiveawayTable } from '../../typeorm/GiveawayTable.entity';
-import { MinigameTable } from '../../typeorm/MinigameTable.entity';
-import { PoHTable } from '../../typeorm/PoHTable.entity';
-import { SlayerTaskTable } from '../../typeorm/SlayerTaskTable.entity';
-import { TameActivityTable } from '../../typeorm/TameActivityTable.entity';
-import { TamesTable } from '../../typeorm/TamesTable.entity';
-import { XPGainsTable } from '../../typeorm/XPGainsTable.entity';
 
 export async function becomeIronman(msg: KlasaMessage) {
 	/**
@@ -23,9 +15,11 @@ export async function becomeIronman(msg: KlasaMessage) {
 		return msg.channel.send('Your minion is still on a trip.');
 	}
 
-	const existingGiveaways = await GiveawayTable.find({
-		userID: msg.author.id,
-		completed: false
+	const existingGiveaways = await prisma.giveaway.findMany({
+		where: {
+			user_id: msg.author.id,
+			completed: false
+		}
 	});
 
 	if (existingGiveaways.length !== 0) {
@@ -57,13 +51,15 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		await msg.author.settings.reset();
 
 		try {
-			await PoHTable.delete({ userID: msg.author.id });
-			await MinigameTable.delete({ userID: msg.author.id });
-			await ActivityTable.delete({ userID: msg.author.id });
-			await XPGainsTable.delete({ userID: msg.author.id });
-			await TameActivityTable.delete({ userID: msg.author.id });
-			await TamesTable.delete({ userID: msg.author.id });
-			await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
+			await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
+			await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
+			await prisma.minigame.delete({ where: { user_id: msg.author.id } });
+			await prisma.xPGain.deleteMany({ where: { user_id: msg.author.id } });
+			await prisma.newUser.delete({ where: { id: msg.author.id } });
+			await prisma.activity.deleteMany({ where: { user_id: msg.author.id } });
+
+			await prisma.tameActivity.delete({ where: { id: msg.author.id } });
+			await prisma.tame.deleteMany({ where: { user_id: msg.author.id } });
 		} catch (err) {
 			console.log(err);
 		}

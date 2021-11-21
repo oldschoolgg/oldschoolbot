@@ -2,7 +2,6 @@ import { percentChance, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -183,7 +182,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
+		const maxTripLength = msg.author.maxTripLength('Farming');
 
 		// If no quantity provided, set it to the max PATCHES available.
 		if (quantity === null) {
@@ -370,7 +369,7 @@ export default class extends BotCommand {
 			planting: true,
 			duration,
 			currentDate,
-			type: Activity.Farming,
+			type: 'Farming',
 			autoFarmed
 		});
 

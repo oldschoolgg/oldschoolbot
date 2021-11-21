@@ -7,6 +7,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { getRandomMysteryBox } from '../../../lib/data/openables';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
@@ -49,9 +50,9 @@ export default class extends Task {
 		await Promise.all(
 			allUsers.map(u => {
 				if (challengeMode) {
-					u.incrementMinigameScore('RaidsChallengeMode', 1);
+					incrementMinigameScore(u.id, 'raids_challenge_mode', 1);
 				} else {
-					u.incrementMinigameScore('Raids', 1);
+					incrementMinigameScore(u.id, 'raids', 1);
 				}
 			})
 		);
@@ -113,7 +114,7 @@ export default class extends Task {
 				this.client.emit(
 					Events.ServerNotification,
 					`${emote} ${user.username} just received **${new Bank(itemsToAnnounce)}** on their ${formatOrdinal(
-						await user.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids')
+						await user.getMinigameScore(challengeMode ? 'raids_challenge_mode' : 'raids')
 					)} raid.`
 				);
 			}

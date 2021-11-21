@@ -3,7 +3,6 @@ import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -95,7 +94,7 @@ export default class extends BotCommand {
 			timeToSmithSingleBar /= 4;
 		}
 
-		let maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+		let maxTripLength = msg.author.maxTripLength('Smithing');
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;
 		}
@@ -151,7 +150,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Smithing
+			type: 'Smithing'
 		});
 
 		let str = `${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${

@@ -7,7 +7,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { alching } from '../../commands/Minion/laps';
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
+import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { getRandomMysteryBox } from '../data/openables';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
@@ -29,14 +29,15 @@ import {
 } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
+import { activity_type_enum } from '.prisma/client';
 
 export const collectors = new Map<string, MessageCollector>();
 
-const activitiesToTrackAsPVMGPSource = [
-	Activity.GroupMonsterKilling,
-	Activity.MonsterKilling,
-	Activity.Raids,
-	Activity.ClueCompletion
+const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
+	'GroupMonsterKilling',
+	'MonsterKilling',
+	'Raids',
+	'ClueCompletion'
 ];
 
 export async function handleTripFinish(
@@ -58,14 +59,7 @@ export async function handleTripFinish(
 	if (
 		loot &&
 		!loot[itemID('Gregoyle')] &&
-		![
-			Activity.GroupMonsterKilling,
-			Activity.KingGoldemar,
-			Activity.Ignecarus,
-			Activity.Inferno,
-			Activity.Alching,
-			Activity.Agility
-		].includes(data.type) &&
+		!['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'].includes(data.type) &&
 		data.duration > Time.Minute * 20 &&
 		roll(15)
 	) {

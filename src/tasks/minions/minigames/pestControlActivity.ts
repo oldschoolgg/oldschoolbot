@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { getBoatType } from '../../../commands/Minion/pestcontrol';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -24,7 +25,7 @@ export default class extends Task {
 			points *= 2;
 		}
 
-		await user.incrementMinigameScore('PestControl', quantity);
+		await incrementMinigameScore(user.id, 'pest_control', quantity);
 		await user.settings.update(
 			UserSettings.PestControlPoints,
 			user.settings.get(UserSettings.PestControlPoints) + points

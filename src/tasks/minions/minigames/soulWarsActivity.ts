@@ -1,6 +1,7 @@
 import { increaseNumByPercent, noOp, reduceNumByPercent } from 'e';
 import { Task } from 'klasa';
 
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SoulWarsOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -44,7 +45,7 @@ export default class extends Task {
 
 			await user.settings.update(UserSettings.ZealTokens, user.settings.get(UserSettings.ZealTokens) + points);
 
-			user.incrementMinigameScore('SoulWars', quantity);
+			await incrementMinigameScore(user.id, 'soul_wars', quantity);
 			str += `${user} received ${points}x Zeal Tokens.`;
 		}
 

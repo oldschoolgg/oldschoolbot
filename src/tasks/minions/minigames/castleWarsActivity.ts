@@ -13,7 +13,7 @@ export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
 
-		incrementMinigameScore(userID, 'CastleWars', quantity);
+		incrementMinigameScore(userID, 'castle_wars', quantity);
 
 		const minionName = await getMinionName(userID);
 

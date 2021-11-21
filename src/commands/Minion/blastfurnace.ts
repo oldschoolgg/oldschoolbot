@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -112,7 +111,7 @@ export default class extends BotCommand {
 			boosts.push('10% more XP for having the blacksmith outfit equipped');
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+		const maxTripLength = msg.author.maxTripLength('Smithing');
 
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
@@ -164,7 +163,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.BlastFurnace
+			type: 'BlastFurnace'
 		});
 
 		if (bar.id === itemID('Gold bar') && msg.author.hasItemEquippedOrInBank(itemID('Goldsmith gauntlets'))) {

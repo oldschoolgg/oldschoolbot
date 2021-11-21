@@ -2,15 +2,14 @@ import { randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { MoreThan } from 'typeorm';
 
 import { BitField } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { DetermineBoostParams } from '../minions/types';
+import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { addBanks, bankHasItem, roll, skillsMeetRequirements } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
@@ -184,29 +183,9 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 
 	const newUser = await getNewUser(_user.id);
 
-	let messages: string[] = [];
 	let quantity = randInt(assignedTask!.amount[0], assignedTask!.amount[1]);
 
-	if (unlocks) {
-		if (
-			assignedTask!.extendedUnlockId &&
-			assignedTask!.extendedAmount &&
-			unlocks.includes(assignedTask!.extendedUnlockId)
-		) {
-			quantity = randInt(assignedTask!.extendedAmount[0], assignedTask!.extendedAmount[1]);
-		} else {
-			SlayerRewardsShop.filter(srs => {
-				return srs.extendID !== undefined;
-			}).forEach(srsf => {
-				if (unlocks.includes(srsf.id) && srsf.extendID!.includes(assignedTask!.monster.id)) {
-					quantity = assignedTask!.extendedAmount
-						? randInt(assignedTask!.extendedAmount[0], assignedTask!.extendedAmount[1])
-						: Math.ceil(quantity * srsf.extendMult!);
-				}
-			});
-		}
-	}
-
+	let messages: string[] = [];
 	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters)) {
 		quantity *= 2;
 		messages.push('2x qty for unlock');
@@ -216,14 +195,16 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 		messages.push('2x qty for scroll of longevity');
 	}
 
-	const currentTask = new SlayerTaskTable();
-	currentTask.user = newUser;
-	currentTask.quantity = quantity;
-	currentTask.quantityRemaining = currentTask.quantity;
-	currentTask.slayerMasterID = master.id;
-	currentTask.monsterID = assignedTask!.monster.id;
-	currentTask.skipped = false;
-	await currentTask.save();
+	const currentTask = await prisma.slayerTask.create({
+		data: {
+			user_id: newUser.id,
+			quantity,
+			quantity_remaining: quantity,
+			slayer_master_id: master.id,
+			monster_id: assignedTask!.monster.id,
+			skipped: false
+		}
+	});
 	await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask!.monster.id);
 
 	return { currentTask, assignedTask, messages };
@@ -282,23 +263,21 @@ export function getCommonTaskName(task: Monster) {
 }
 
 export async function getUsersCurrentSlayerInfo(id: string) {
-	const [currentTask, totalTasksDone] = await Promise.all([
-		SlayerTaskTable.findOne({
-			where: {
-				user: id,
-				quantityRemaining: MoreThan(0),
-				skipped: false
-			}
-		}),
-		SlayerTaskTable.count({ where: { user: id, quantityRemaining: 0, skipped: false } })
-	]);
+	const currentTask = await prisma.slayerTask.findFirst({
+		where: {
+			user_id: id,
+			quantity_remaining: {
+				gt: 0
+			},
+			skipped: false
+		}
+	});
 
-	const slayerMaster = currentTask ? slayerMasters.find(master => master.id === currentTask.slayerMasterID) : null;
+	const slayerMaster = currentTask ? slayerMasters.find(master => master.id === currentTask.slayer_master_id) : null;
 
 	return {
 		currentTask: currentTask ?? null,
-		assignedTask: currentTask ? slayerMaster!.tasks.find(m => m.monster.id === currentTask.monsterID)! : null,
-		totalTasksDone,
+		assignedTask: currentTask ? slayerMaster!.tasks.find(m => m.monster.id === currentTask.monster_id)! : null,
 		slayerMaster
 	};
 }

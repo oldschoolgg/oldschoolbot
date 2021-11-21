@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../../lib/constants';
 import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { DriftNetActivityTaskOptions } from '../../../lib/types/minions';
@@ -108,9 +107,7 @@ export default class extends Task {
 				return this.client.commands
 					.get('driftnet')!
 					.run(res, [
-						Math.floor(
-							Math.min(user.maxTripLength(Activity.DriftNet) / Time.Minute, duration / Time.Minute)
-						)
+						Math.floor(Math.min(user.maxTripLength('DriftNet') / Time.Minute, duration / Time.Minute))
 					]);
 			},
 			undefined,

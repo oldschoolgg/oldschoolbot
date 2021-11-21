@@ -2,7 +2,6 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -148,8 +147,8 @@ export default class extends BotCommand {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
-			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 		// 15% boost for on task
 		if (isOnTask && msg.author.hasItemEquippedOrInBank('Black mask (i)')) {
@@ -162,7 +161,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: 1,
 			duration,
-			type: Activity.FightCaves,
+			type: 'FightCaves',
 			jadDeathChance,
 			preJadDeathChance,
 			preJadDeathTime

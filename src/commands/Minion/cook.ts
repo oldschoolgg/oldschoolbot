@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -73,7 +72,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.bank();
 		const inputCost = new Bank(cookable.inputCookables);
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Cooking);
+		const maxTripLength = msg.author.maxTripLength('Cooking');
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToCookSingleCookable);
@@ -107,7 +106,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Cooking
+			type: 'Cooking'
 		});
 
 		return msg.channel.send(

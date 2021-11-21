@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -67,12 +67,12 @@ export default class extends BotCommand {
 		const [duration, boostStr] = this.determineDuration(msg.author);
 
 		await addSubTaskToActivityTask<TitheFarmActivityTaskOptions>({
-			minigameID: 'TitheFarm',
+			minigameID: 'tithe_farm',
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: 1,
 			duration,
-			type: Activity.TitheFarm
+			type: 'TitheFarm'
 		});
 
 		return msg.channel.send(

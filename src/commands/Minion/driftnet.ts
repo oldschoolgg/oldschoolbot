@@ -2,7 +2,6 @@ import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -30,7 +29,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [tripTime]: [number | string | undefined]) {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
-		const maxTripLength = msg.author.maxTripLength(Activity.DriftNet);
+		const maxTripLength = msg.author.maxTripLength('DriftNet');
 
 		if (typeof tripTime !== 'number') {
 			tripTime = Math.floor(maxTripLength / Time.Minute);
@@ -117,7 +116,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.DriftNet
+			type: 'DriftNet'
 		});
 
 		await msg.author.removeItemsFromBank(itemsToRemove.bank);

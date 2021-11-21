@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -54,7 +53,7 @@ export default class extends BotCommand {
 			timeToSmithSingleBar /= 2;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+		const maxTripLength = msg.author.maxTripLength('Smithing');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -100,7 +99,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Smelting
+			type: 'Smelting'
 		});
 
 		let goldGauntletMessage = '';

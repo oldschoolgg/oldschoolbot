@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -8,7 +9,7 @@ export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, userID } = data;
 		const user = await this.client.fetchUser(userID);
-		user.incrementMinigameScore('ChampionsChallenge', 1);
+		await incrementMinigameScore(userID, 'champions_challenge', 1);
 
 		const loot = new Bank({ "Champion's cape": 1 });
 

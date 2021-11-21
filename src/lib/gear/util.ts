@@ -2,9 +2,10 @@ import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import { UserSettings } from '../settings/types/UserSettings';
 import { Gear } from '../structures/Gear';
-import { itemID, toTitleCase } from '../util';
+import { itemID, itemNameFromID, toTitleCase } from '../util';
 import getOSItem from '../util/getOSItem';
 import { GearSetup, GearSetupType } from '.';
+import { GearPreset } from '.prisma/client';
 
 export function itemInSlot(setup: GearSetup, slot: EquipmentSlot): [null, null] | [Item, number] {
 	const equipped = setup[slot];
@@ -67,4 +68,18 @@ export function hasGracefulEquipped(setup: Gear) {
 			true
 		)
 	);
+}
+
+export function gearPresetToString(gearPreset: GearPreset) {
+	let parsed = [];
+	const keys = Object.keys(gearPreset) as (keyof GearPreset)[];
+	for (const key of keys) {
+		if (key === 'user_id' || key === 'ammo_qty' || key === 'name') continue;
+		let val = gearPreset[key];
+		if (val) parsed.push(itemNameFromID(val));
+	}
+	if (gearPreset.ammo) {
+		parsed.push(`${gearPreset.ammo_qty}x ${itemNameFromID(gearPreset.ammo)}`);
+	}
+	return parsed.join(', ');
 }

@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 
-import { Activity, BitField } from './constants';
+import { BitField } from './constants';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
@@ -81,7 +81,7 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 };
 
 export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
-	if ([Activity.FightCaves, Activity.Inferno].includes(data.type)) return null;
+	if (['FightCaves', 'Inferno'].includes(data.type)) return null;
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;

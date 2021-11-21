@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -62,7 +61,7 @@ export default class extends BotCommand {
 
 		// 5 tick action
 		const timePerAlch = Time.Second * 1.5;
-		const maxTripLength = msg.author.maxTripLength(Activity.Alching);
+		const maxTripLength = msg.author.maxTripLength('Alching');
 
 		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));
 
@@ -119,7 +118,7 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			alchValue,
-			type: Activity.Alching
+			type: 'Alching'
 		});
 
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);

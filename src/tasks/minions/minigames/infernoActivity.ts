@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
+import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -42,15 +43,15 @@ export default class extends Task {
 			isEmergedZuk
 		} = data;
 		const user = await this.client.users.fetch(userID);
-		const score = await user.getMinigameScore('Inferno');
+		const score = await user.getMinigameScore('inferno');
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
 			score > 0 &&
-			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 		const oldAttempts = user.settings.get(UserSettings.InfernoAttempts);
 		const attempts = oldAttempts + 1;
@@ -102,19 +103,25 @@ export default class extends Task {
 
 		// Give inferno KC if didn't die in normal inferno part
 		if (!diedZuk && !diedPreZuk) {
-			await incrementMinigameScore(userID, 'Inferno', 1);
+			await incrementMinigameScore(userID, 'inferno', 1);
 		}
 
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zuk for the ${formatOrdinal(
-			await user.getMinigameScore('Inferno')
+			await user.getMinigameScore('inferno')
 		)} time! Please accept this cape as a token of appreciation.`;
 
 		if (deathTime) {
 			if (isOnTask) {
-				usersTask.currentTask!.quantityRemaining = 0;
-				usersTask.currentTask!.skipped = true;
-				await usersTask.currentTask!.save();
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: 0,
+						skipped: true
+					}
+				});
 			}
 		}
 
@@ -125,11 +132,15 @@ export default class extends Task {
 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-			usersTask.currentTask!.quantityRemaining = 0;
-			if (deathTime) {
-				usersTask.currentTask!.skipped = true;
-			}
-			await usersTask.currentTask!.save();
+			await prisma.slayerTask.update({
+				where: {
+					id: usersTask.currentTask!.id
+				},
+				data: {
+					quantity_remaining: 0,
+					skipped: deathTime ? true : false
+				}
+			});
 
 			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 		}
@@ -161,7 +172,7 @@ export default class extends Task {
 			const zukLoot = Monsters.TzKalZuk.kill(1, { onSlayerTask: isOnTask });
 			zukLoot.remove('Tokkul', zukLoot.amount('Tokkul'));
 			if (isEmergedZuk) {
-				await incrementMinigameScore(userID, 'EmergedInferno', 1);
+				await incrementMinigameScore(userID, 'emerged_inferno', 1);
 
 				zukLoot.add("TzKal-Zuk's skin");
 				if (roll(10)) {
@@ -182,7 +193,7 @@ export default class extends Task {
 					`**${user.username}** just received their ${formatOrdinal(
 						user.cl().amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
-						await user.getMinigameScore('Inferno')
+						await user.getMinigameScore('inferno')
 					)} kill!`
 				);
 			}
@@ -192,7 +203,7 @@ export default class extends Task {
 					`**${user.username}** just received their ${formatOrdinal(
 						user.cl().amount('Jal-MejJak') + 1
 					)} Jal-MejJak pet by killing TzKal-Zuk's final form, on their ${formatOrdinal(
-						await user.getMinigameScore('EmergedInferno')
+						await user.getMinigameScore('emerged_inferno')
 					)} kill!`
 				);
 			}
@@ -217,7 +228,7 @@ export default class extends Task {
 				);
 			}
 
-			const emergedKC = await user.getMinigameScore('EmergedInferno');
+			const emergedKC = await user.getMinigameScore('emerged_inferno');
 			// If first successfull emerged zuk kill
 			if (baseBank.has('Infernal cape') && isEmergedZuk && !diedEmergedZuk && emergedKC === 1) {
 				const usersDefeatedEmergedZuk = parseInt(

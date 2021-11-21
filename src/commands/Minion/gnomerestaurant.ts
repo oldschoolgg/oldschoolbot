@@ -2,7 +2,6 @@ import { calcWhatPercent, randInt, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -40,7 +39,7 @@ export default class extends BotCommand {
 
 		const boosts = [];
 
-		const score = await msg.author.getMinigameScore('GnomeRestaurant');
+		const score = await msg.author.getMinigameScore('gnome_restaurant');
 		const scoreBoost = Math.min(100, calcWhatPercent(score, 100)) / 5;
 		if (scoreBoost > 1) {
 			deliveryLength = reduceNumByPercent(deliveryLength, scoreBoost);
@@ -88,7 +87,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.GnomeRestaurant) / deliveryLength);
+		const quantity = Math.floor(msg.author.maxTripLength('GnomeRestaurant') / deliveryLength);
 		const duration = randomVariation(deliveryLength * quantity, 5);
 
 		if (msg.author.skillLevel(SkillsEnum.Magic) >= 66) {
@@ -111,9 +110,9 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.GnomeRestaurant,
+			type: 'GnomeRestaurant',
 			quantity,
-			minigameID: 'GnomeRestaurant',
+			minigameID: 'gnome_restaurant',
 			gloriesRemoved: itemsToRemove.amount('Amulet of glory(6)')
 		});
 

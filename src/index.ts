@@ -1,6 +1,5 @@
 import './lib/customItems';
 import './lib/data/itemAliases';
-import 'reflect-metadata';
 
 import * as Sentry from '@sentry/node';
 

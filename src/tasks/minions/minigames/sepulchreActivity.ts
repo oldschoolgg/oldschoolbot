@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallowedCoffin';
 
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -12,7 +13,7 @@ export default class extends Task {
 	async run(data: SepulchreActivityTaskOptions) {
 		const { channelID, quantity, floors, userID } = data;
 		const user = await this.client.fetchUser(userID);
-		user.incrementMinigameScore('Sepulchre', quantity);
+		await incrementMinigameScore(userID, 'sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
 		const loot = new Bank();

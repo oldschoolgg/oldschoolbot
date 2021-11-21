@@ -6,7 +6,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { table } from 'table';
 
 import { production } from '../../config';
-import { Activity, BitField, Emoji, projectiles } from '../../lib/constants';
+import { BitField, Emoji, projectiles } from '../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -639,14 +639,14 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		duration.add(user.bitfield.includes(BitField.HasArcaneScroll), -4, 'Arc. Prayer scroll');
 
 		// Slayer
-		const score = await user.getMinigameScore('Inferno');
+		const score = await user.getMinigameScore('inferno');
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
 			score > 0 &&
-			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 		duration.add(isOnTask && user.hasItemEquippedOrInBank('Black mask (i)'), -9, `${Emoji.Slayer} Slayer Task`);
 
@@ -856,7 +856,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration: realDuration,
-			type: Activity.Inferno,
+			type: 'Inferno',
 			zukDeathChance: zukDeathChance.value,
 			preZukDeathChance: preZukDeathChance.value,
 			deathTime,

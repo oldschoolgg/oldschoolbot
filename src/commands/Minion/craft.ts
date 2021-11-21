@@ -2,7 +2,6 @@ import { MessageAttachment } from 'discord.js';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -92,7 +91,7 @@ export default class extends BotCommand {
 			timeToCraftSingleItem /= 2;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Crafting);
+		const maxTripLength = msg.author.maxTripLength('Crafting');
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
@@ -133,7 +132,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Crafting
+			type: 'Crafting'
 		});
 
 		return msg.channel.send(

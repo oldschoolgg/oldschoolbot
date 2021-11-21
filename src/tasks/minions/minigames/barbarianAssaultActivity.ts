@@ -2,6 +2,7 @@ import { calcPercentOfNum, calcWhatPercent, noOp, randInt } from 'e';
 import { Task } from 'klasa';
 
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { BarbarianAssaultActivityTaskOptions } from '../../../lib/types/minions';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -50,7 +51,7 @@ export default class extends Task {
 
 			let totalPoints = Math.floor(pts * quantity);
 
-			user.incrementMinigameScore('BarbarianAssault', quantity);
+			await incrementMinigameScore(user.id, 'barb_assault', quantity);
 
 			await user.settings.update(
 				UserSettings.HonourPoints,

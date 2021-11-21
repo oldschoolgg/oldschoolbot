@@ -2,7 +2,7 @@ import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, BitField, Emoji, PHOSANI_NIGHTMARE_ID } from '../../lib/constants';
+import { BitField, Emoji, PHOSANI_NIGHTMARE_ID } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -317,7 +317,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Nightmare,
+			type: 'Nightmare',
+			leader: msg.author.id,
 			users: users.map(u => u.id),
 			isPhosani,
 			leader: msg.author.id

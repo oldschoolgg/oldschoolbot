@@ -3,7 +3,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -206,7 +205,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Hunter);
+		const maxTripLength = msg.author.maxTripLength('Hunter');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -306,7 +305,7 @@ export default class extends BotCommand {
 			duration,
 			usingHuntPotion,
 			wildyPeak,
-			type: Activity.Hunter
+			type: 'Hunter'
 		});
 
 		let response = `${msg.author.minionName} is now ${creature.huntTechnique} ${quantity}x ${

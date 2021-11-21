@@ -5,9 +5,9 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
-import { Minigames } from '../../extendables/User/Minigame';
 import Buyables from '../../lib/data/buyables/buyables';
 import { kittens } from '../../lib/growablePets';
+import { Minigames } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -112,7 +112,7 @@ export default class extends BotCommand {
 			if (kc < req) {
 				return msg.channel.send(
 					`You need ${req} KC in ${
-						Minigames.find(i => i.key === key)!.name
+						Minigames.find(i => i.column === key)!.name
 					} to buy this, you only have ${kc} KC.`
 				);
 			}

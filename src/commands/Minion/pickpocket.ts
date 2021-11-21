@@ -3,7 +3,6 @@ import { round, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -105,7 +104,7 @@ export default class extends BotCommand {
 			timeToPickpocket *= 0.7;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Pickpocket);
+		const maxTripLength = msg.author.maxTripLength('Pickpocket');
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
@@ -167,7 +166,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Pickpocket,
+			type: 'Pickpocket',
 			damageTaken,
 			successfulQuantity,
 			xpReceived

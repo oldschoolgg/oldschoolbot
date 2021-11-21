@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
@@ -11,7 +12,7 @@ export default class extends Task {
 	async run(data: PlunderActivityTaskOptions) {
 		const { channelID, quantity, rooms, userID } = data;
 		const user = await this.client.fetchUser(userID);
-		user.incrementMinigameScore('PyramidPlunder', quantity);
+		await incrementMinigameScore(userID, 'pyramid_plunder', quantity);
 		const allRooms = plunderRooms.filter(room => rooms.includes(room.number));
 		const completedRooms = [
 			allRooms.length < 2 ? allRooms[allRooms.length - 1] : allRooms[allRooms.length - 2],

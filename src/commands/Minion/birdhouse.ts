@@ -1,7 +1,7 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -250,7 +250,7 @@ export default class extends BotCommand {
 			placing: true,
 			gotCraft,
 			currentDate,
-			type: Activity.Birdhouse
+			type: 'Birdhouse'
 		});
 
 		return msg.channel.send(
@@ -330,7 +330,7 @@ export default class extends BotCommand {
 			placing: false,
 			gotCraft: false,
 			currentDate,
-			type: Activity.Birdhouse
+			type: 'Birdhouse'
 		});
 
 		return msg.channel.send(returnMessageStr);

@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity, BitField } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -129,7 +129,7 @@ export default class extends BotCommand {
 			return msg.channel.send('The Daemonheim guards deny you access to the course.');
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Agility);
+		const maxTripLength = msg.author.maxTripLength('Agility');
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
@@ -177,7 +177,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Agility,
+			type: 'Agility',
 			alch:
 				alchResult === null
 					? null

@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 
 import { determineXPFromTickets } from '../../../commands/Minion/agilityarena';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemID, randomVariation, roll } from '../../../lib/util';
@@ -37,7 +38,7 @@ export default class extends Task {
 			ticketsReceived *= 2;
 		}
 
-		user.incrementMinigameScore('AgilityArena', ticketsReceived);
+		incrementMinigameScore(user.id, 'agility_arena', ticketsReceived);
 
 		await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
