@@ -180,10 +180,12 @@ describe('Gear', () => {
 		expect(gear.hasEquipped('Gorajan archer helmet')).toBeTruthy();
 		expect(gear.hasEquipped(gorajanWarriorOutfit, true)).toBeTruthy();
 		const gear2 = new Gear({
-			head: 'Infernal slayer helmet'
+			head: 'Infernal slayer helmet',
+			ring: 'Ring of suffering (ri)'
 		});
 		expect(gear2.hasEquipped('Gorajan warrior helmet')).toBeFalsy();
 		expect(gear2.hasEquipped('Gorajan occult helmet')).toBeFalsy();
 		expect(gear2.hasEquipped('Gorajan archer helmet')).toBeFalsy();
+		expect(gear2.hasEquipped('Ring of suffering (i)')).toBeTruthy();
 	});
 });
