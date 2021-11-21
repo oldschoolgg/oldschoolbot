@@ -702,7 +702,8 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Sandworms',
-		gpCost: 500
+		gpCost: 500,
+		ironmanPrice: 90
 	},
 
 	...sepulchreBuyables,
