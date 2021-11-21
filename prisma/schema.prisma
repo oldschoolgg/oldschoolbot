@@ -86,10 +86,10 @@ model ClientStorage {
   dropped_items                Json     @default("{}") @db.Json
   runecraft_cost               Json     @default("{}") @db.Json
   smithing_cost                Json     @default("{}") @db.Json
-  economyStats_dicingBank      Float    @default(0) @map("economyStats.dicingBank")
-  economyStats_duelTaxBank     Float    @default(0) @map("economyStats.duelTaxBank")
-  economyStats_dailiesAmount   Float    @default(0) @map("economyStats.dailiesAmount")
-  economyStats_itemSellTaxBank Float    @default(0) @map("economyStats.itemSellTaxBank")
+  economyStats_dicingBank      Int      @default(0) @map("economyStats.dicingBank")
+  economyStats_duelTaxBank     Int      @default(0) @map("economyStats.duelTaxBank")
+  economyStats_dailiesAmount   Int      @default(0) @map("economyStats.dailiesAmount")
+  economyStats_itemSellTaxBank Int      @default(0) @map("economyStats.itemSellTaxBank")
   economyStats_bankBgCostBank  Json     @default("{}") @map("economyStats.bankBgCostBank") @db.Json
   economyStats_sacrificedBank  Json     @default("{}") @map("economyStats.sacrificedBank") @db.Json
   economyStats_wintertodtCost  Json     @default("{}") @map("economyStats.wintertodtCost") @db.Json
