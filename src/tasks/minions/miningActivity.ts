@@ -111,12 +111,24 @@ export default class extends Task {
 		}
 
 		// Mysterious Ore, 500m boost
-		if (
-			ore.id === 508 &&
-			user.hasItemEquippedAnywhere('Mining master cape') &&
-			user.settings.get(UserSettings.Skills.Mining) >= 500_000_000
-		) {
-			ore.loot.add('Dwarven ore', 1, 1);
+		if ( ore.id === 508 ) {
+			if (
+				user.hasItemEquippedAnywhere('Mining master cape') &&
+				user.settings.get(UserSettings.Skills.Mining) >= 500_000_000
+			) {
+				ore.loot.add('Dwarven ore', 1, 1);
+			} else {
+				str += "\nMissed out on Dwarven ore chances due to ";
+				if ( !user.hasItemEquippedAnywhere('Mining master cape') ) {
+					str += "no Mining master cape";
+				};
+				if ( user.settings.get(UserSettings.Skills.Mining) < 500_000_000 ) {
+					if ( !user.hasItemEquippedAnywhere('Mining master cape') ) {
+						str += " and ";
+					};
+					str += "<500m mining XP";
+				}
+			}
 		}
 
 		if (ore.id === 21_622) {
