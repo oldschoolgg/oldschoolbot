@@ -55,7 +55,7 @@ model Analytic {
 model ClientStorage {
   id                           String   @id @db.VarChar(19)
   userBlacklist                String[] @db.VarChar(19)
-  guildBlacklist               String[]
+  guildBlacklist               String[] @db.VarChar(19)
   commandStats                 Json     @default("{}") @db.Json
   totalCommandsUsed            Int      @default(0)
   prices                       Json     @default("{}") @db.Json
