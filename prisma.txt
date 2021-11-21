@@ -1,1 +1,0 @@
-db minigame keys were changed from key to column, like CastleWars to castle_wars?
