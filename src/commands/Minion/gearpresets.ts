@@ -4,12 +4,13 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Color } from '../../lib/constants';
-import { defaultGear, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
+import { defaultGear, gearPresetToString, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { GearPresetsTable } from '../../lib/typeorm/GearPresetsTable.entity';
 import { cleanString, isValidGearSetup } from '../../lib/util';
+import { GearPreset } from '.prisma/client';
 
 function maxPresets(user: KlasaUser) {
 	return user.perkTier * 2 + 3;
@@ -31,14 +32,14 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		const presets = await GearPresetsTable.find({ userID: msg.author.id });
+		const presets = await prisma.gearPreset.findMany({ where: { user_id: msg.author.id } });
 		if (presets.length === 0) {
 			return msg.channel.send('You have no presets.');
 		}
 		let title = '**Your presets:**';
 		let str = '';
 		for (const pre of presets) {
-			str += `**${pre.name}:** ${pre}\n`;
+			str += `**${pre.name}:** ${gearPresetToString(pre)}\n`;
 		}
 		if (str.length > 2000) {
 			const attachment = new MessageAttachment(
@@ -65,12 +66,12 @@ export default class extends BotCommand {
 			return msg.channel.send("That's not a valid gear setup.");
 		}
 
-		const userPreset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
+		const userPreset = await prisma.gearPreset.findFirst({ where: { user_id: msg.author.id, name } });
 		const globalPreset = globalPresets.find(i => i.name === name);
 		if (!userPreset && !globalPreset) {
 			return msg.channel.send("You don't have a gear preset with that name.");
 		}
-		const preset = (userPreset ?? globalPreset) as GearPresetsTable;
+		const preset = (userPreset ?? globalPreset) as GearPreset;
 
 		const toRemove = new Bank();
 		function gearItem(val: null | number) {
@@ -83,21 +84,21 @@ export default class extends BotCommand {
 		}
 
 		const newGear = { ...defaultGear };
-		newGear.head = gearItem(preset.Head);
-		newGear.neck = gearItem(preset.Neck);
-		newGear.body = gearItem(preset.Body);
-		newGear.legs = gearItem(preset.Legs);
-		newGear.cape = gearItem(preset.Cape);
-		newGear['2h'] = gearItem(preset.TwoHanded);
-		newGear.hands = gearItem(preset.Hands);
-		newGear.feet = gearItem(preset.Feet);
-		newGear.shield = gearItem(preset.Shield);
-		newGear.weapon = gearItem(preset.Weapon);
-		newGear.ring = gearItem(preset.Ring);
+		newGear.head = gearItem(preset.head);
+		newGear.neck = gearItem(preset.neck);
+		newGear.body = gearItem(preset.body);
+		newGear.legs = gearItem(preset.legs);
+		newGear.cape = gearItem(preset.cape);
+		newGear['2h'] = gearItem(preset.two_handed);
+		newGear.hands = gearItem(preset.hands);
+		newGear.feet = gearItem(preset.feet);
+		newGear.shield = gearItem(preset.shield);
+		newGear.weapon = gearItem(preset.weapon);
+		newGear.ring = gearItem(preset.ring);
 
-		if (preset.Ammo) {
-			newGear.ammo = { item: preset.Ammo, quantity: preset.AmmoQuantity! };
-			toRemove.add(preset.Ammo, preset.AmmoQuantity!);
+		if (preset.ammo) {
+			newGear.ammo = { item: preset.ammo, quantity: preset.ammo_qty! };
+			toRemove.add(preset.ammo, preset.ammo_qty!);
 		}
 
 		const userBankWithEquippedItems = msg.author.bank().clone();
@@ -143,13 +144,19 @@ export default class extends BotCommand {
 
 	async delete(msg: KlasaMessage, [name]: [string]) {
 		if (!name) return msg.channel.send("You didn't supply a name.");
-
-		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
+		const preset = await prisma.gearPreset.findFirst({ where: { user_id: msg.author.id, name } });
 		if (!preset) {
 			return msg.channel.send("You don't have a gear preset with that name.");
 		}
 
-		await preset.remove();
+		await prisma.gearPreset.delete({
+			where: {
+				user_id_name: {
+					user_id: msg.author.id,
+					name
+				}
+			}
+		});
 
 		return msg.channel.send(`Successfully deleted your preset called \`${name}\`.`);
 	}
@@ -168,39 +175,41 @@ export default class extends BotCommand {
 			return msg.channel.send("That's not a valid gear setup.");
 		}
 
-		const currentPresets = await GearPresetsTable.find({ userID: msg.author.id });
-		if (currentPresets.some(pre => pre.name === name) && !update) {
+		const userPresets = await prisma.gearPreset.findMany({ where: { user_id: msg.author.id } });
+		if (userPresets.some(pre => pre.name === name) && !update) {
 			return msg.channel.send(`You already have a gear presets called \`${name}\`.`);
 		}
-		if (!currentPresets.some(pre => pre.name === name) && update) {
+		if (!userPresets.some(pre => pre.name === name) && update) {
 			return msg.channel.send('You cant update a gearpreset you dont have.');
 		}
 
 		const max = maxPresets(msg.author);
-		if (currentPresets.length >= max && !update) {
+		if (userPresets.length >= max && !update) {
 			return msg.channel.send(`The maximum amount of gear presets you can have is ${max}.`);
 		}
 
 		let gearSetup = msg.author.rawGear()[setup];
-		const preset = new GearPresetsTable();
 
-		preset.Head = gearSetup.head?.item ?? null;
-		preset.Neck = gearSetup.neck?.item ?? null;
-		preset.Body = gearSetup.body?.item ?? null;
-		preset.Legs = gearSetup.legs?.item ?? null;
-		preset.Cape = gearSetup.cape?.item ?? null;
-		preset.TwoHanded = gearSetup['2h']?.item ?? null;
-		preset.Hands = gearSetup.hands?.item ?? null;
-		preset.Feet = gearSetup.feet?.item ?? null;
-		preset.Shield = gearSetup.shield?.item ?? null;
-		preset.Weapon = gearSetup.weapon?.item ?? null;
-		preset.Ring = gearSetup.ring?.item ?? null;
-		preset.Ammo = gearSetup.ammo?.item ?? null;
-		preset.AmmoQuantity = gearSetup.ammo?.quantity ?? null;
+		const preset = await prisma.gearPreset.create({
+			data: {
+				head: gearSetup.head?.item ?? null,
+				neck: gearSetup.neck?.item ?? null,
+				body: gearSetup.body?.item ?? null,
+				legs: gearSetup.legs?.item ?? null,
+				cape: gearSetup.cape?.item ?? null,
+				two_handed: gearSetup['2h']?.item ?? null,
+				hands: gearSetup.hands?.item ?? null,
+				feet: gearSetup.feet?.item ?? null,
+				shield: gearSetup.shield?.item ?? null,
+				weapon: gearSetup.weapon?.item ?? null,
+				ring: gearSetup.ring?.item ?? null,
+				ammo: gearSetup.ammo?.item ?? null,
+				ammo_qty: gearSetup.ammo?.quantity ?? null,
+				name,
+				user_id: msg.author.id
+			}
+		});
 
-		preset.name = name;
-		preset.userID = msg.author.id;
-		await preset.save();
 		return msg.channel.send(
 			`Successfully ${update ? 'updated the' : 'made a new'} preset called \`${
 				preset.name
@@ -209,13 +218,13 @@ export default class extends BotCommand {
 	}
 
 	async share(msg: KlasaMessage, [name = '', user]: [string, KlasaUser]) {
-		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
+		const preset = await prisma.gearPreset.findFirst({ where: { user_id: msg.author.id, name } });
 		if (!name) return msg.channel.send('You must specify the name of the preset you want to share.');
 		if (!preset) return msg.channel.send(`You do not have any preset called ${name}.`);
 		if (user === msg.author) return msg.channel.send("You can't share a preset with yourself.");
 
 		// Check if user can receive the preset
-		const userPresets = await GearPresetsTable.find({ userID: user.id });
+		const userPresets = await prisma.gearPreset.findMany({ where: { user_id: user.id } });
 		if (userPresets.some(pre => pre.name === name)) {
 			return msg.channel.send(`${user.username} already have a gear presets called \`${name}\`.`);
 		}
@@ -230,23 +239,27 @@ export default class extends BotCommand {
 		await msg.confirm(
 			`${user.username}, do you want to receive ${originalUser.username}'s ${preset.name} preset (Only the preset will be shared, not the items)?`
 		);
-		const newPreset = new GearPresetsTable();
-		newPreset.Head = preset.Head;
-		newPreset.Neck = preset.Neck;
-		newPreset.Body = preset.Body;
-		newPreset.Legs = preset.Legs;
-		newPreset.Cape = preset.Cape;
-		newPreset.TwoHanded = preset.TwoHanded;
-		newPreset.Hands = preset.Hands;
-		newPreset.Feet = preset.Feet;
-		newPreset.Shield = preset.Shield;
-		newPreset.Weapon = preset.Weapon;
-		newPreset.Ring = preset.Ring;
-		newPreset.Ammo = preset.Ammo;
-		newPreset.AmmoQuantity = preset.AmmoQuantity;
-		newPreset.name = preset.name;
-		newPreset.userID = user.id;
-		await newPreset.save();
+
+		const newPreset = await prisma.gearPreset.create({
+			data: {
+				head: preset.head,
+				neck: preset.neck,
+				body: preset.body,
+				legs: preset.legs,
+				cape: preset.cape,
+				two_handed: preset.two_handed,
+				hands: preset.hands,
+				feet: preset.feet,
+				shield: preset.shield,
+				weapon: preset.weapon,
+				ring: preset.ring,
+				ammo: preset.ammo,
+				ammo_qty: preset.ammo_qty,
+				name,
+				user_id: msg.author.id
+			}
+		});
+
 		return msg.channel.send(`${user.username}, you can now use the preset ${newPreset.name}.`);
 	}
 
@@ -258,21 +271,25 @@ export default class extends BotCommand {
 				}gearpresets rename ${name || 'currentname'} newname\``
 			);
 		const realNewName = newName.substr(0, 12);
-		const preset = await GearPresetsTable.findOne({ userID: msg.author.id, name });
+		const preset = await prisma.gearPreset.findFirst({ where: { user_id: msg.author.id, name } });
 		if (!preset) {
 			return msg.channel.send("You don't have a gear preset with that name.");
 		}
-		const presetNewName = await GearPresetsTable.findOne({ userID: msg.author.id, name: realNewName });
+		const presetNewName = await prisma.gearPreset.findFirst({
+			where: { user_id: msg.author.id, name: realNewName }
+		});
 		if (presetNewName) {
 			return msg.channel.send(`You already have a preset called ${realNewName}.`);
 		}
-		await GearPresetsTable.update(
-			{
-				userID: msg.author.id,
-				name
+		await prisma.gearPreset.update({
+			where: {
+				user_id_name: {
+					user_id: msg.author.id,
+					name
+				}
 			},
-			{ name: realNewName }
-		);
+			data: { name: realNewName }
+		});
 		return msg.channel.send(`Successfully renamed your preset from \`${name}\` to \`${realNewName}\`.`);
 	}
 }

@@ -2,7 +2,6 @@ import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -103,7 +102,7 @@ export default class extends BotCommand {
 				break;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Fishing);
+		const maxTripLength = msg.author.maxTripLength('Fishing');
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / scaledTimePerFish);
@@ -142,7 +141,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Fishing
+			type: 'Fishing'
 		});
 
 		let response = `${msg.author.minionName} is now fishing ${quantity}x ${

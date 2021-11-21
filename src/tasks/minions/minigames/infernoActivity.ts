@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
+import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -20,15 +21,15 @@ export default class extends Task {
 	async run(data: InfernoOptions) {
 		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
 		const user = await this.client.users.fetch(userID);
-		const score = await user.getMinigameScore('Inferno');
+		const score = await user.getMinigameScore('inferno');
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
 			score > 0 &&
-			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 		const unusedItems = new Bank();
 		const cost = new Bank(data.cost);
@@ -71,12 +72,12 @@ export default class extends Task {
 		}
 
 		if (!deathTime) {
-			await incrementMinigameScore(userID, 'Inferno', 1);
+			await incrementMinigameScore(userID, 'inferno', 1);
 		}
 
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zuk for the ${formatOrdinal(
-			await user.getMinigameScore('Inferno')
+			await user.getMinigameScore('inferno')
 		)} time! Please accept this cape as a token of appreciation.`;
 
 		const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
@@ -89,9 +90,15 @@ export default class extends Task {
 				}
 			}
 			if (isOnTask) {
-				usersTask.currentTask!.quantityRemaining = 0;
-				usersTask.currentTask!.skipped = true;
-				await usersTask.currentTask!.save();
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: 0,
+						skipped: true
+					}
+				});
 			}
 		}
 
@@ -102,11 +109,15 @@ export default class extends Task {
 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-			usersTask.currentTask!.quantityRemaining = 0;
-			if (deathTime) {
-				usersTask.currentTask!.skipped = true;
-			}
-			await usersTask.currentTask!.save();
+			await prisma.slayerTask.update({
+				where: {
+					id: usersTask.currentTask!.id
+				},
+				data: {
+					quantity_remaining: 0,
+					skipped: deathTime ? true : false
+				}
+			});
 
 			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 		}
@@ -140,7 +151,7 @@ export default class extends Task {
 					`**${user.username}** just received their ${formatOrdinal(
 						user.cl().amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
-						await user.getMinigameScore('Inferno')
+						await user.getMinigameScore('inferno')
 					)} kill!`
 				);
 			}

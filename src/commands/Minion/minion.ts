@@ -22,16 +22,10 @@ import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { getNewUser } from '../../lib/settings/settings';
+import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
-import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
-import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
-import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
-import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
 import { convertLVLtoXP, isValidNickname, runCommand, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
@@ -294,9 +288,11 @@ Please say \`permanent\` to confirm.`
 			}
 		}
 
-		const existingGiveaways = await GiveawayTable.find({
-			userID: msg.author.id,
-			completed: false
+		const existingGiveaways = await prisma.giveaway.findMany({
+			where: {
+				user_id: msg.author.id,
+				completed: false
+			}
 		});
 
 		if (existingGiveaways.length !== 0) {
@@ -335,11 +331,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			await msg.author.settings.reset([...keysToReset]);
 
 			try {
-				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
-				await PoHTable.delete({ userID: msg.author.id });
-				await MinigameTable.delete({ userID: msg.author.id });
-				await XPGainsTable.delete({ userID: msg.author.id });
-				await NewUserTable.delete({ id: msg.author.id });
+				await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
+				await prisma.minigame.delete({ where: { user_id: msg.author.id } });
+				await prisma.xPGain.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.newUser.delete({ where: { id: msg.author.id } });
+				await prisma.activity.deleteMany({ where: { user_id: msg.author.id } });
 			} catch (_) {}
 
 			await msg.author.settings.update([
