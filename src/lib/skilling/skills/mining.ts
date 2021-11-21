@@ -19,7 +19,8 @@ const ores: Ore[] = [
 		xp: 5,
 		id: 1436,
 		name: 'Rune essence',
-		respawnTime: 0.5
+		respawnTime: 0.5,
+		loot: new LootTable().add('Rune essence', 1, 100)
 	},
 	{
 		level: 1,
@@ -28,7 +29,8 @@ const ores: Ore[] = [
 		name: 'Copper ore',
 		respawnTime: 0.5,
 		petChance: 750_000,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		loot: new LootTable().add('Copper ore', 1, 100)
 	},
 	{
 		level: 1,
@@ -37,14 +39,16 @@ const ores: Ore[] = [
 		name: 'Tin ore',
 		respawnTime: 0.5,
 		petChance: 750_000,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		loot: new LootTable().add('Tin ore', 1, 100)
 	},
 	{
 		level: 1,
 		xp: 0,
 		id: 13_421,
 		name: 'Saltpetre',
-		respawnTime: 1
+		respawnTime: 1,
+		loot: new LootTable().add('Saltpetre', 1, 100)
 	},
 	{
 		level: 15,
@@ -54,7 +58,8 @@ const ores: Ore[] = [
 		respawnTime: -0.2,
 		petChance: 750_000,
 		minerals: 100,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		loot: new LootTable().add('Iron ore', 1, 100)
 	},
 	{
 		level: 20,
@@ -63,7 +68,8 @@ const ores: Ore[] = [
 		name: 'Silver ore',
 		respawnTime: 3,
 		petChance: 750_000,
-		clueScrollChance: 741_600
+		clueScrollChance: 741_600,
+		loot: new LootTable().add('Silver ore', 1, 100)
 	},
 	{
 		level: 22,
@@ -71,14 +77,16 @@ const ores: Ore[] = [
 		id: 21_622,
 		name: 'Volcanic ash',
 		respawnTime: 1.9,
-		petChance: 741_600
+		petChance: 741_600,
+		loot: new LootTable().add('Volcanic ash', 1, 100)
 	},
 	{
 		level: 30,
 		xp: 5,
 		id: 7936,
 		name: 'Pure essence',
-		respawnTime: 0.5
+		respawnTime: 0.5,
+		loot: new LootTable().add('Pure essence', 1, 100)
 	},
 	{
 		level: 30,
@@ -88,7 +96,8 @@ const ores: Ore[] = [
 		respawnTime: 2,
 		petChance: 300_000,
 		minerals: 60,
-		clueScrollChance: 296_640
+		clueScrollChance: 296_640,
+		loot: new LootTable().add('Coal', 1, 100)
 	},
 	{
 		level: 40,
@@ -98,7 +107,8 @@ const ores: Ore[] = [
 		respawnTime: 4,
 		petChance: 300_000,
 		nuggets: true,
-		clueScrollChance: 296_640
+		clueScrollChance: 296_640,
+		loot: new LootTable().add('Gold ore', 1, 100)
 	},
 	{
 		level: 40,
@@ -107,7 +117,8 @@ const ores: Ore[] = [
 		name: 'Gem rock',
 		respawnTime: 6,
 		petChance: 211_886,
-		clueScrollChance: 211_886
+		clueScrollChance: 211_886,
+		loot: GemRockTable
 	},
 	{
 		level: 55,
@@ -117,7 +128,8 @@ const ores: Ore[] = [
 		respawnTime: 10,
 		petChance: 150_000,
 		nuggets: true,
-		clueScrollChance: 148_320
+		clueScrollChance: 148_320,
+		loot: new LootTable().add('Mithril ore', 1, 100)
 	},
 	{
 		level: 70,
@@ -127,7 +139,8 @@ const ores: Ore[] = [
 		respawnTime: 18,
 		petChance: 60_000,
 		nuggets: true,
-		clueScrollChance: 59_328
+		clueScrollChance: 59_328,
+		loot: new LootTable().add('Adamantite ore', 1, 100)
 	},
 	{
 		level: 85,
@@ -137,7 +150,8 @@ const ores: Ore[] = [
 		respawnTime: 50,
 		petChance: 45_000,
 		nuggets: true,
-		clueScrollChance: 42_377
+		clueScrollChance: 42_377,
+		loot: new LootTable().add('Runite ore', 1, 100)
 	},
 	{
 		level: 92,
@@ -147,7 +161,8 @@ const ores: Ore[] = [
 		respawnTime: 40,
 		petChance: 50_000,
 		minerals: 20,
-		clueScrollChance: 46_350
+		clueScrollChance: 46_350,
+		loot: new LootTable().add('Amethyst', 1, 100)
 	}
 ];
 

@@ -43,6 +43,7 @@ export interface Ore {
 	nuggets?: boolean;
 	minerals?: number;
 	clueScrollChance?: number;
+	loot: LootTable;
 }
 
 export interface Log {
