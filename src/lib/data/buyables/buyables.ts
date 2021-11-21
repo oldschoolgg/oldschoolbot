@@ -704,6 +704,10 @@ const Buyables: Buyable[] = [
 		name: 'Sandworms',
 		gpCost: 500
 	},
+	{
+		name: 'Pineapple',
+		gpCost: 5
+	},
 
 	...sepulchreBuyables,
 	...constructionBuyables,
