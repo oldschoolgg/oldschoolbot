@@ -4,6 +4,7 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { VolcanicMineGameTime } from '../../commands/Minion/volcanicmine';
 import { Emoji, Events } from '../../lib/constants';
+import { incrementMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
@@ -67,7 +68,7 @@ export default class extends Task {
 			warningMessage += `You are getting close to the maximum amount of points that you can carry (${maxPoints.toLocaleString()}). You should expend some on the Volcanic Mine shop.`;
 		}
 
-		await user.incrementMinigameScore('VolcanicMine', quantity);
+		await incrementMinigameScore(userID, 'volcanic_mine', quantity);
 
 		const fragmentRolls = rand(38, 40) * quantity;
 		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));

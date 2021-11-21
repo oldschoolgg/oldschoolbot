@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { LevelRequirements } from '../skilling/types';
-import { PoHTable } from '../typeorm/PoHTable.entity';
 import { DungeonDecorations } from './objects/dungeon_decorations';
 import { GardenDecorations } from './objects/garden_decorations';
 import { Guards } from './objects/guards';
@@ -19,6 +18,7 @@ import { SpellbookAltars } from './objects/spellbook_altars';
 import { Teleports } from './objects/teleports';
 import { Thrones } from './objects/thrones';
 import { Torches } from './objects/torches';
+import { PlayerOwnedHouse } from '.prisma/client';
 
 export interface PoH {
 	background: 1;
@@ -49,7 +49,7 @@ export const FLOOR_HEIGHT = 112;
 const GARDEN_X = 587;
 const GARDEN_Y = 236;
 
-export type PoHSlot = keyof Omit<PoH, 'background'>;
+export type PoHSlot = keyof Omit<PlayerOwnedHouse, 'background_id' | 'user_id'>;
 
 export interface PoHObject {
 	id: number;
@@ -62,16 +62,16 @@ export interface PoHObject {
 	canBuild?: (user: KlasaUser) => Promise<boolean>;
 }
 
-export const Placeholders: Record<PoHSlot, [number, [number, number][]]> = {
-	mountedHead: [15_382, [[430, GROUND_FLOOR_Y - 60]]],
-	mountedFish: [15_383, [[240, GROUND_FLOOR_Y - 70]]],
+export const Placeholders: Partial<Record<PoHSlot, [number, [number, number][]]>> = {
+	mounted_head: [15_382, [[430, GROUND_FLOOR_Y - 60]]],
+	mounted_fish: [15_383, [[240, GROUND_FLOOR_Y - 70]]],
 
 	throne: [15_426, [[HOUSE_WIDTH / 2, GROUND_FLOOR_Y]]],
-	mountedCape: [29_144, [[220, GROUND_FLOOR_Y]]],
-	jewelleryBox: [29_142, [[369, GROUND_FLOOR_Y]]],
-	prayerAltar: [15_270, [[175, TOP_FLOOR_Y]]],
-	spellbookAltar: [29_140, [[60, TOP_FLOOR_Y]]],
-	mountedItem: [1111, [[80, GROUND_FLOOR_Y - 70]]],
+	mounted_cape: [29_144, [[220, GROUND_FLOOR_Y]]],
+	jewellery_box: [29_142, [[369, GROUND_FLOOR_Y]]],
+	prayer_altar: [15_270, [[175, TOP_FLOOR_Y]]],
+	spellbook_altar: [29_140, [[60, TOP_FLOOR_Y]]],
+	mounted_item: [1111, [[80, GROUND_FLOOR_Y - 70]]],
 
 	// Dungeon
 	guard: [15_323, [[350, DUNGEON_FLOOR_Y]]],
@@ -82,13 +82,13 @@ export const Placeholders: Record<PoHSlot, [number, [number, number][]]> = {
 			[HOUSE_WIDTH - 50, DUNGEON_FLOOR_Y - FLOOR_HEIGHT / 2]
 		]
 	],
-	dungeonDecoration: [15_331, [[100, DUNGEON_FLOOR_Y]]],
+	dungeon_decoration: [15_331, [[100, DUNGEON_FLOOR_Y]]],
 	prison: [15_352, [[100, DUNGEON_FLOOR_Y]]],
 
 	// Garden
 	pool: [29_122, [[GARDEN_X + HOUSE_WIDTH / 6, GARDEN_Y]]],
 	teleport: [29_120, [[GARDEN_X + HOUSE_WIDTH / 2, GARDEN_Y]]],
-	gardenDecoration: [2_342_341, [[GARDEN_X + HOUSE_WIDTH * 0.82, GARDEN_Y]]]
+	garden_decoration: [2_342_341, [[GARDEN_X + HOUSE_WIDTH * 0.82, GARDEN_Y]]]
 };
 
 export const itemsNotRefundable = new Bank()
@@ -132,7 +132,7 @@ export const getPOHObject = (idOrName: number | string) => {
 
 export type POHBoosts = Partial<Record<PoHSlot, Record<string, number>>>;
 
-export function calcPOHBoosts(poh: PoHTable, boosts: POHBoosts): [number, string[]] {
+export function calcPOHBoosts(poh: PlayerOwnedHouse, boosts: POHBoosts): [number, string[]] {
 	let boost = 0;
 	let messages = [];
 	for (const [slot, objBoosts] of objectEntries(boosts)) {

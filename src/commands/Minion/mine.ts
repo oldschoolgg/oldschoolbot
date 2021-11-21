@@ -1,7 +1,6 @@
 import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -105,7 +104,7 @@ export default class extends BotCommand {
 			boosts.push('50% for having an Amulet of glory equipped');
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Mining);
+		const maxTripLength = msg.author.maxTripLength('Mining');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -129,7 +128,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Mining
+			type: 'Mining'
 		});
 
 		let response = `${msg.author.minionName} is now mining ${quantity}x ${

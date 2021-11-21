@@ -1,5 +1,5 @@
+import { prisma } from '../settings/prisma';
 import { getActivityOfUser } from '../settings/settings';
-import { ActivityTable } from '../typeorm/ActivityTable.entity';
 import { ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 
@@ -28,18 +28,17 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 		...__newData
 	};
 
-	const activity = new ActivityTable();
-	activity.userID = taskToAdd.userID;
-	activity.startDate = new Date();
-	activity.finishDate = finishDate;
-	activity.completed = false;
-	activity.type = taskToAdd.type;
-	activity.data = newData;
-	activity.groupActivity = isGroupActivity(taskToAdd);
-	activity.channelID = taskToAdd.channelID;
-	activity.duration = duration;
-
-	activity.activitySync();
-
-	await activity.save();
+	await prisma.activity.create({
+		data: {
+			user_id: taskToAdd.userID,
+			start_date: new Date(),
+			finish_date: finishDate,
+			completed: false,
+			type: taskToAdd.type,
+			data: newData,
+			group_activity: isGroupActivity(taskToAdd),
+			channel_id: taskToAdd.channelID,
+			duration
+		}
+	});
 }

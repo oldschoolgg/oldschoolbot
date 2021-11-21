@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { Task } from 'klasa';
 
 import { collectMetrics } from '../lib/metrics';
-import { MetricsTable } from '../lib/typeorm/MetricsTable.entity';
+import { prisma } from '../lib/settings/prisma';
 
 export default class extends Task {
 	async init() {
@@ -17,9 +17,11 @@ export default class extends Task {
 	}
 
 	async analyticsTick() {
-		await MetricsTable.insert({
-			timestamp: Math.floor(Date.now() / 1000),
-			...collectMetrics()
+		await prisma.metric.create({
+			data: {
+				timestamp: Math.floor(Date.now() / 1000),
+				...collectMetrics()
+			}
 		});
 	}
 }

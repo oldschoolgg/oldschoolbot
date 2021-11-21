@@ -62,7 +62,7 @@ export default class extends Task {
 	async run(data: GnomeRestaurantActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
 
-		incrementMinigameScore(userID, 'GnomeRestaurant', quantity);
+		incrementMinigameScore(userID, 'gnome_restaurant', quantity);
 
 		const loot = new Bank();
 

@@ -8,6 +8,8 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
+export { Activity } from '@prisma/client';
+
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
@@ -220,74 +222,6 @@ export const enum Tasks {
 	VolcanicMine = 'volcanicMineActivity',
 	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity'
-}
-
-export enum Activity {
-	Agility = 'Agility',
-	Cooking = 'Cooking',
-	MonsterKilling = 'MonsterKilling',
-	GroupMonsterKilling = 'GroupMonsterKilling',
-	ClueCompletion = 'ClueCompletion',
-	Fishing = 'Fishing',
-	Mining = 'Mining',
-	Smithing = 'Smithing',
-	Woodcutting = 'Woodcutting',
-	Questing = 'Questing',
-	Firemaking = 'Firemaking',
-	Runecraft = 'Runecraft',
-	Smelting = 'Smelting',
-	Crafting = 'Crafting',
-	Burying = 'Burying',
-	Offering = 'Offering',
-	FightCaves = 'FightCaves',
-	Wintertodt = 'Wintertodt',
-	Tempoross = 'Tempoross',
-	TitheFarm = 'TitheFarm',
-	Fletching = 'Fletching',
-	Pickpocket = 'Pickpocket',
-	Herblore = 'Herblore',
-	Hunter = 'Hunter',
-	Birdhouse = 'Birdhouse',
-	Alching = 'Alching',
-	AnimatedArmour = 'AnimatedArmour',
-	Cyclops = 'Cyclops',
-	Sawmill = 'Sawmill',
-	Nightmare = 'Nightmare',
-	Sepulchre = 'Sepulchre',
-	Plunder = 'Plunder',
-	FishingTrawler = 'FishingTrawler',
-	Zalcano = 'Zalcano',
-	Farming = 'Farming',
-	Construction = 'Construction',
-	Enchanting = 'Enchanting',
-	Casting = 'Casting',
-	GloryCharging = 'GloryCharging',
-	WealthCharging = 'WealthCharging',
-	BarbarianAssault = 'BarbarianAssault',
-	AgilityArena = 'AgilityArena',
-	ChampionsChallenge = 'ChampionsChallenge',
-	AerialFishing = 'AerialFishing',
-	DriftNet = 'DriftNet',
-	MahoganyHomes = 'MahoganyHomes',
-	GnomeRestaurant = 'GnomeRestaurant',
-	SoulWars = 'SoulWars',
-	RoguesDenMaze = 'RoguesDenMaze',
-	Gauntlet = 'Gauntlet',
-	CastleWars = 'CastleWars',
-	MageArena = 'MageArena',
-	Raids = 'Raids',
-	Collecting = 'Collecting',
-	MageTrainingArena = 'MageTrainingArena',
-	BlastFurnace = 'BlastFurnace',
-	MageArena2 = 'MageArena2',
-	BigChompyBirdHunting = 'BigChompyBirdHunting',
-	DarkAltar = 'DarkAltar',
-	Trekking = 'Trekking',
-	Revenants = 'Revenants',
-	PestControl = 'PestControl',
-	VolcanicMine = 'VolcanicMine',
-	KourendFavour = 'KourendFavour',
-	Inferno = 'Inferno'
 }
 
 export enum ActivityGroup {

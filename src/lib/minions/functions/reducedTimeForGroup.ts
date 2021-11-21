@@ -1,8 +1,8 @@
 import { KlasaUser } from 'klasa';
 
 import { calcPOHBoosts } from '../../poh';
+import { prisma } from '../../settings/prisma';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { PoHTable } from '../../typeorm/PoHTable.entity';
 import { KillableMonster } from '../types';
 import reducedTimeFromKC from './reducedTimeFromKC';
 
@@ -15,7 +15,7 @@ export default async function reducedTimeForGroup(
 
 	if (monster.name === 'Corporeal Beast') {
 		for (let i = 0; i < users.length; i++) {
-			const poh = await PoHTable.findOne({ userID: users[i].id });
+			const poh = await prisma.playerOwnedHouse.findFirst({ where: { user_id: users[i].id } });
 
 			if (!poh) {
 				messages.push(`${users[i].username} has no pool`);
