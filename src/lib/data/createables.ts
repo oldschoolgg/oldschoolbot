@@ -401,6 +401,16 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'Revert Ignecarus dragonclaw',
+		outputItems: resolveNameBank({
+			'Ignecarus scales': 100,
+		}),
+		inputItems: resolveNameBank({
+			'Ignecarus dragonclaw': 1
+		}),
+		noCl: true
+	},
+	{
 		name: 'Revert red decorative full helm',
 		inputItems: {
 			[itemID('Red decorative full helm')]: 1
