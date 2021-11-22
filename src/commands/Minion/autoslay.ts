@@ -308,7 +308,8 @@ export default class extends BotCommand {
 				);
 			}
 			const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
-				const masterMatch = !e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayerMasterID);
+				const masterMatch =
+					!e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayer_master_id);
 				return masterMatch && e.monsterID === usersTask.assignedTask!.monster.id;
 			});
 

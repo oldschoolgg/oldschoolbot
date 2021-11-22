@@ -3,7 +3,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
@@ -79,7 +78,7 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Enchanting);
+		const maxTripLength = msg.author.maxTripLength('Enchanting');
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToEnchantTen);
@@ -121,7 +120,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Enchanting
+			type: 'Enchanting'
 		});
 
 		const xpHr = `${Math.round(

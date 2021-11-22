@@ -3,7 +3,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fletching from '../../lib/skilling/skills/fletching';
@@ -84,7 +83,7 @@ export default class extends BotCommand {
 			timeToFletchSingleItem = fletchable.tickRate * Time.Second * 0.6;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Fletching);
+		const maxTripLength = msg.author.maxTripLength('Fletching');
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToFletchSingleItem);
@@ -120,7 +119,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Fletching
+			type: 'Fletching'
 		});
 
 		return msg.channel.send(

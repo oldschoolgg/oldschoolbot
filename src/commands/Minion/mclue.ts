@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClueTier } from '../../lib/minions/types';
@@ -68,7 +67,7 @@ export default class extends BotCommand {
 
 		let duration = timeToFinish * quantity;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.ClueCompletion);
+		const maxTripLength = msg.author.maxTripLength('ClueCompletion');
 
 		if (duration > maxTripLength) {
 			return msg.channel.send(
@@ -113,7 +112,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.ClueCompletion
+			type: 'ClueCompletion'
 		});
 		return msg.channel.send(
 			`${msg.author.minionName} is now completing ${quantity}x ${

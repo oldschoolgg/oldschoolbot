@@ -2,7 +2,7 @@ import { increaseNumByPercent, randInt, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Events } from '../../lib/constants';
+import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -32,7 +32,7 @@ export default class extends Task {
 		// Calculate marks of grace
 		let totalMarks = 0;
 		const timePerLap = course.lapTime * Time.Second;
-		const maxQuantity = Math.floor(user.maxTripLength(Activity.Agility) / timePerLap);
+		const maxQuantity = Math.floor(user.maxTripLength('Agility') / timePerLap);
 		if (course.marksPer60) {
 			for (let i = 0; i < Math.floor(course.marksPer60 * (quantity / maxQuantity)); i++) {
 				if (roll(2)) {

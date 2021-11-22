@@ -1,16 +1,17 @@
 import { KlasaMessage } from 'klasa';
 
-import { ActivityTable } from '../../typeorm/ActivityTable.entity';
+import { prisma } from '../../settings/prisma';
 import { formatDuration } from '../../util';
 
 export async function pastActivities(msg: KlasaMessage) {
-	const res = await ActivityTable.find({
+	const res = await prisma.activity.findMany({
 		where: {
-			userID: msg.author.id
+			user_id: msg.author.id
 		},
-		order: {
-			id: 'DESC'
-		}
+		orderBy: {
+			id: 'desc'
+		},
+		take: 10
 	});
 
 	return msg.channel.send(
