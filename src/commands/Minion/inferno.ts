@@ -353,7 +353,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		isEmergedZuk: boolean;
 	}) {
 		const userBank = user.bank();
-		const zukKC = await user.getMinigameScore('Inferno');
+		const zukKC = await user.getMinigameScore('inferno');
 
 		const duration = new PercentCounter(this.baseDuration(attempts, isEmergedZuk), 'time');
 		const zukDeathChance = new PercentCounter(this.baseZukDeathChance(attempts), 'percent');
@@ -575,7 +575,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			duration.add(allItems.includes(itemID('Ignis ring(i)')), -5, 'Ignis ring(i)');
 			emergedZukDeathChance.add(user.skillLevel(SkillsEnum.Defence) === 120, -10, '120 Defence');
 
-			const emergedKC = await user.getMinigameScore('EmergedInferno');
+			const emergedKC = await user.getMinigameScore('emerged_inferno');
 			if (emergedKC > 0) {
 				const effectiveKC = Math.min(emergedKC, 3);
 				emergedZukDeathChance.add(true, 0 - effectiveKC * 7.5, `${effectiveKC} Emerged KC`);
@@ -748,8 +748,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 	async run(msg: KlasaMessage) {
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
 		const emergedAttempts = msg.author.settings.get(UserSettings.EmergedInfernoAttempts);
-		const zukKC = await msg.author.getMinigameScore('Inferno');
-		const emergedKC = await msg.author.getMinigameScore('EmergedInferno');
+		const zukKC = await msg.author.getMinigameScore('inferno');
+		const emergedKC = await msg.author.getMinigameScore('emerged_inferno');
 
 		let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 		if (attempts && !zukKC) {
@@ -802,7 +802,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
 		const rangeGear = msg.author.getGear('range');
 		const usersRangeStats = rangeGear.stats;
-		const zukKC = await msg.author.getMinigameScore('Inferno');
+		const zukKC = await msg.author.getMinigameScore('inferno');
 
 		const isEmergedZuk = str === 'emerged' || Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.e);
 

@@ -2,7 +2,7 @@ import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { gorajanArcherOutfit, pernixOutfit } from '../../lib/data/CollectionsExport';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -306,7 +306,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Nex,
+			type: 'Nex',
 			users: users.map(u => u.id)
 		});
 

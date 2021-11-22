@@ -113,7 +113,6 @@ export const Minigames: readonly BotMinigame[] = [
 	},
 	{
 		name: 'Ourania Delivery Service',
-		key: 'OuraniaDeliveryService',
 		aliases: ['ods'],
 		column: 'ourania_delivery_service'
 	},
@@ -139,7 +138,6 @@ export const Minigames: readonly BotMinigame[] = [
 	},
 	{
 		name: "Mad Marimbo's Monkey Rumble",
-		key: 'MadMarimbosMonkeyRumble',
 		column: 'monkey_rumble',
 		aliases: ['mmmr', 'mr', 'mmr']
 	},
@@ -151,8 +149,7 @@ export const Minigames: readonly BotMinigame[] = [
 	{
 		name: 'Emerged Zuk Inferno',
 		aliases: ['ei', 'emerged inferno'],
-		key: 'EmergedInferno',
-		column: 'EmergedInferno'
+		column: 'emerged_inferno'
 	}
 ];
 

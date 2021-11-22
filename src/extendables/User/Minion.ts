@@ -17,7 +17,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { bossEvents } from '../../lib/bossEvents';
-import { Activity, Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, PerkTier, skillEmoji } from '../../lib/constants';
+import { Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, PerkTier, skillEmoji } from '../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
@@ -87,7 +87,6 @@ import {
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
 	PlunderActivityTaskOptions,
-	RaidsActivityTaskOptions,
 	RaidsOptions,
 	RevenantOptions,
 	RunecraftActivityTaskOptions,

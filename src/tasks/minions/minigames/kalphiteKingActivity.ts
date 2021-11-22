@@ -9,6 +9,7 @@ import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { KalphiteKingMonster } from '../../../lib/kalphiteking';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
+import { prisma } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -113,12 +114,16 @@ export default class extends Task {
 				taskQuantity: quantity
 			});
 			if (isOnTask) {
-				usersTask.currentTask!.quantityRemaining = Math.max(
-					0,
-					usersTask.currentTask!.quantityRemaining - quantity
-				);
-				await usersTask.currentTask!.save();
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask?.id
+					},
+					data: {
+						quantity_remaining: Math.max(0, usersTask.currentTask!.quantity_remaining - quantity)
+					}
+				});
 			}
+
 			if (user.id === userID) {
 				soloXP = xpStr;
 				soloPrevCl = previousCL;

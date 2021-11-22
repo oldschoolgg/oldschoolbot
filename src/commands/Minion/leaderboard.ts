@@ -571,35 +571,61 @@ LIMIT 10;`);
 	}
 
 	async itemcontracts(msg: KlasaMessage) {
-		const result: { id: string; qty: number }[] = await this.client.orm.query(`
-SELECT id, total_item_contracts as qty
-FROM users
-WHERE total_item_contracts > 0
-ORDER BY total_item_contracts DESC
-LIMIT 50;
-`);
+		const result = await prisma.user.findMany({
+			select: {
+				id: true,
+				total_item_contracts: true
+			},
+			where: {
+				total_item_contracts: {
+					gte: 5
+				}
+			},
+			orderBy: {
+				total_item_contracts: 'desc'
+			},
+			take: 50
+		});
+
 		this.doMenu(
 			msg,
 			util
 				.chunk(result, 10)
-				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
+				.map(subList =>
+					subList
+						.map(({ id, total_item_contracts }) => `**${this.getUsername(id)}:** ${total_item_contracts}`)
+						.join('\n')
+				),
 			'Item Contract Leaderboard'
 		);
 	}
 
 	async itemcontractstreak(msg: KlasaMessage) {
-		const result: { id: string; qty: number }[] = await this.client.orm.query(`
-SELECT id, item_contract_streak as qty
-FROM users
-WHERE item_contract_streak > 0
-ORDER BY qty DESC
-LIMIT 10;
-`);
+		const results = await prisma.user.findMany({
+			select: {
+				id: true,
+				item_contract_streak: true
+			},
+			where: {
+				item_contract_streak: {
+					gte: 5
+				}
+			},
+			orderBy: {
+				item_contract_streak: 'desc'
+			},
+			take: 10
+		});
+
 		this.doMenu(
 			msg,
 			util
-				.chunk(result, 10)
-				.map(subList => subList.map(({ id, qty }) => `**${this.getUsername(id)}:** ${qty}`).join('\n')),
+				.chunk(results, 10)
+				.map(subList =>
+					subList
+						.map(({ id, item_contract_streak }) => `**${this.getUsername(id)}:** ${item_contract_streak}`)
+						.join('\n')
+				),
 			'Item Contract Streak Leaderboard'
 		);
 	}

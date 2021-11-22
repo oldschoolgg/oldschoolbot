@@ -2,7 +2,7 @@ import { randArrItem, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import {
 	fightingMessages,
@@ -85,7 +85,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`**Mad Marimbo's Monkey Rumble**
 
-**Fights Done:** ${scores.MadMarimbosMonkeyRumble}
+**Fights Done:** ${scores.monkey_rumble}
 **Unique Monkeys Fought:** ${
 				msg.author.settings.get(UserSettings.MonkeysFought).length
 			}/${TOTAL_MONKEYS.toLocaleString()}
@@ -99,7 +99,7 @@ export default class extends BotCommand {
 			i => stringMatches(input, i.item.name) || i.aliases.some(a => stringMatches(a, input))
 		);
 
-		const score = await msg.author.getMinigameScore('MadMarimbosMonkeyRumble');
+		const score = await msg.author.getMinigameScore('monkey_rumble');
 
 		if (!buyable) {
 			return msg.channel.send(
@@ -204,7 +204,7 @@ Here are the items you can buy: \n\n${buyables
 			fightDuration = reduceNumByPercent(fightDuration, 15);
 			boosts.push('15% faster fights for gorilla rumble greegree');
 		}
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.MonkeyRumble) / fightDuration);
+		const quantity = Math.floor(msg.author.maxTripLength('MonkeyRumble') / fightDuration);
 		let duration = quantity * fightDuration;
 
 		let chanceOfSpecial = Math.floor(150 * (6 - monkeyTierOfUser(msg.author) / 2));
@@ -251,8 +251,8 @@ Here are the items you can buy: \n\n${buyables
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.MonkeyRumble,
-			minigameID: 'MadMarimbosMonkeyRumble',
+			type: 'MonkeyRumble',
+			minigameID: 'monkey_rumble',
 			monkeys: monkeysToFight
 		});
 

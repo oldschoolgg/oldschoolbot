@@ -11,6 +11,7 @@ import {
 } from '../../../lib/minions/data/killableMonsters/custom/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
+import { prisma } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { BossUser } from '../../../lib/structures/Boss';
@@ -74,11 +75,14 @@ export default class extends Task {
 				usersTask.currentTask !== null &&
 				usersTask.assignedTask.monsters.includes(Ignecarus.id);
 			if (isOnTask) {
-				usersTask.currentTask!.quantityRemaining = Math.max(
-					0,
-					usersTask.currentTask!.quantityRemaining - quantity
-				);
-				await usersTask.currentTask!.save();
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: Math.max(0, usersTask.currentTask!.quantity_remaining - quantity)
+					}
+				});
 			}
 
 			let lootRolls = quantity;

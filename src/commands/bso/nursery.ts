@@ -4,46 +4,45 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
+import { prisma } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Nursery, Species, tameSpecies } from '../../lib/tames';
-import { TameGrowthStage, TamesTable } from '../../lib/typeorm/TamesTable.entity';
 import { formatDuration, gaussianRandom, stringMatches, updateBankSetting } from '../../lib/util';
+import { tame_growth } from '.prisma/client';
 
 export async function generateNewTame(user: KlasaUser, species: Species) {
-	const tame = new TamesTable();
-	tame.userID = user.id;
-	tame.speciesID = species.id;
-	tame.growthStage = TameGrowthStage.Baby;
-	tame.currentGrowthPercent = 0;
-
-	tame.variant = randArrItem(species.variants);
-
 	let shinyChance = user.hasItemEquippedAnywhere('Ring of luck')
 		? Math.floor(reduceNumByPercent(species.shinyChance, 3))
 		: species.shinyChance;
-	if (species.shinyVariant && roll(shinyChance)) {
-		tame.variant = species.shinyVariant;
-	}
 
 	const [minCmbt, maxCmbt] = species.combatLevelRange;
-	tame.maxCombatLevel = gaussianRandom(minCmbt, maxCmbt, 2);
 
 	const [minArt, maxArt] = species.artisanLevelRange;
-	tame.maxArtisanLevel = gaussianRandom(minArt, maxArt, 2);
 
 	const [minSup, maxSup] = species.supportLevelRange;
-	tame.maxSupportLevel = gaussianRandom(minSup, maxSup, 2);
 
 	const [minGath, maxGath] = species.gathererLevelRange;
-	tame.maxGathererLevel = gaussianRandom(minGath, maxGath, 2);
 
-	tame.totalLoot = {};
-	tame.fedItems = {};
+	const tame = await prisma.tame.create({
+		data: {
+			user_id: user.id,
+			species_id: species.id,
+			growth_stage: tame_growth.baby,
+			growth_percent: 0,
+			species_variant:
+				species.shinyVariant && roll(shinyChance) ? species.shinyVariant : randArrItem(species.variants),
+			max_total_loot: {},
+			fed_items: {},
+			max_support_level: gaussianRandom(minSup, maxSup, 2),
+			max_gatherer_level: gaussianRandom(minGath, maxGath, 2),
+			max_artisan_level: gaussianRandom(minArt, maxArt, 2),
+			max_combat_level: gaussianRandom(minCmbt, maxCmbt, 2)
+		}
+	});
 
-	await tame.save();
 	return tame;
 }
 
@@ -95,7 +94,7 @@ export default class POHCommand extends BotCommand {
 			await msg.author.settings.update(UserSettings.Nursery, newNursery);
 			const newUserTame = await generateNewTame(msg.author, specie);
 
-			if (newUserTame.variant === specie.shinyVariant) {
+			if (newUserTame.species_variant === specie.shinyVariant) {
 				this.client.emit(
 					Events.ServerNotification,
 					`**${msg.author.username}** just hatched a shiny ${specie.name}!`

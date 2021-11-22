@@ -2,7 +2,7 @@ import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getMinigameEntity } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -64,7 +64,7 @@ export default class ODSCommand extends BotCommand {
 		const minigames = await getMinigameEntity(msg.author.id);
 		return msg.channel.send(`**Ourania Delivery Service** (ODS)
 
-**Deliveries done:** ${minigames.OuraniaDeliveryService.toLocaleString()}
+**Deliveries done:** ${minigames.ourania_delivery_service.toLocaleString()}
 **Ourania Tokens:** ${msg.author.settings.get(UserSettings.OuraniaTokens).toLocaleString()}`);
 	}
 
@@ -109,7 +109,7 @@ export default class ODSCommand extends BotCommand {
 			boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 		}
 
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.OuraniaDeliveryService) / waveTime);
+		const quantity = Math.floor(msg.author.maxTripLength('OuraniaDeliveryService') / waveTime);
 		const duration = quantity * waveTime;
 		const essenceRequired = quantity * randInt(235, 265);
 		const cost = new Bank().add('Pure essence', essenceRequired);
@@ -135,8 +135,8 @@ export default class ODSCommand extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.OuraniaDeliveryService,
-			minigameID: 'OuraniaDeliveryService'
+			type: 'OuraniaDeliveryService',
+			minigameID: 'ourania_delivery_service'
 		});
 
 		return msg.channel.send(str);

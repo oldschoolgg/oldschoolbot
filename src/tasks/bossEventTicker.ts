@@ -1,8 +1,9 @@
 import { Task } from 'klasa';
-import { createQueryBuilder } from 'typeorm';
 
+import { production } from '../config';
 import { bossEvents, startBossEvent } from '../lib/bossEvents';
-import { BossEventTable } from '../lib/typeorm/BossEventTable.entity';
+import { prisma } from '../lib/settings/prisma';
+import { BossEvent } from '.prisma/client';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -17,24 +18,38 @@ export default class extends Task {
 		}
 		const ticker = async () => {
 			try {
-				const query = createQueryBuilder(BossEventTable)
-					.select()
-					.where('completed = false')
-					.andWhere('start_date < now()');
+				const events: BossEvent[] = await prisma.bossEvent.findMany({
+					where: {
+						completed: false,
+						start_date: production
+							? {
+									lt: new Date()
+							  }
+							: undefined
+					}
+				});
 
-				const result = await query.getMany();
-				for (const act of result) {
+				await prisma.bossEvent.updateMany({
+					where: {
+						id: {
+							in: events.map(i => i.id)
+						}
+					},
+					data: {
+						completed: true
+					}
+				});
+
+				for (const act of events) {
 					try {
 						startBossEvent({
-							boss: bossEvents.find(b => b.id === act.bossID)!,
+							boss: bossEvents.find(b => b.id === act.boss_id)!,
 							client: this.client,
 							id: act.id
 						});
 					} catch (err: unknown) {
 						this.client.wtf(err as Error);
 					}
-					act.completed = true;
-					await act.save();
 				}
 			} catch (err) {
 				console.error(err);

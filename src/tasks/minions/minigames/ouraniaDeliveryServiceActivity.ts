@@ -31,7 +31,7 @@ export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
-		incrementMinigameScore(userID, 'OuraniaDeliveryService', quantity);
+		incrementMinigameScore(userID, 'ourania_delivery_service', quantity);
 
 		const user = await this.client.fetchUser(userID);
 		const level = user.skillLevel(SkillsEnum.Magic);

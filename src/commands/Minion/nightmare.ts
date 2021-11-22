@@ -320,8 +320,7 @@ export default class extends BotCommand {
 			type: 'Nightmare',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
-			isPhosani,
-			leader: msg.author.id
+			isPhosani
 		});
 
 		let str =

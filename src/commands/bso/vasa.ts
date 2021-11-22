@@ -3,7 +3,7 @@ import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/VasaMagus';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BossInstance } from '../../lib/structures/Boss';
@@ -63,7 +63,7 @@ export default class extends BotCommand {
 			food: () => new Bank(),
 			settingsKeys: [ClientSettings.EconomyStats.VasaCost, ClientSettings.EconomyStats.VasaLoot],
 			channel: msg.channel as TextChannel,
-			activity: Activity.VasaMagus,
+			activity: 'VasaMagus',
 			massText: `${msg.author.username} is assembling a team to fight Vasa Magus! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			minSize: 1,
 			solo: true,

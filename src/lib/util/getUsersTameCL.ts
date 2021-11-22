@@ -1,16 +1,18 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
+
+import { prisma } from '../settings/prisma';
 
 export async function getUsersTamesCollectionLog(user: KlasaUser) {
-	const { TamesTable } = await import('../typeorm/TamesTable.entity');
-	const allTames = await TamesTable.find({
+	const allTames = await prisma.tame.findMany({
 		where: {
-			userID: user.id
+			user_id: user.id
 		}
 	});
 	let totalBank = new Bank();
 	for (const tame of allTames) {
-		totalBank.add(tame.totalLoot);
+		totalBank.add(tame.max_total_loot as ItemBank);
 	}
 	return totalBank;
 }

@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/KingGoldemar';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BossInstance, gpCostPerKill } from '../../lib/structures/Boss';
@@ -69,7 +69,7 @@ export default class extends BotCommand {
 			food: () => new Bank(),
 			settingsKeys: [ClientSettings.EconomyStats.KingGoldemarCost, ClientSettings.EconomyStats.KingGoldemarLoot],
 			channel: msg.channel as TextChannel,
-			activity: Activity.KingGoldemar,
+			activity: 'KingGoldemar',
 			massText: `${msg.author.username} is assembling a team to fight King Goldemar! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			minSize: 1,
 			solo: checkSolo,
@@ -102,7 +102,7 @@ ${bossUsers.map(u => `**${u.user.username}**: ${u.debugStr}`).join('\n\n')}
 				embeds: [embed],
 				content: instance.boosts.length > 0 ? `**Boosts:** ${instance.boosts.join(', ')}.` : undefined
 			});
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(`The mass failed to start for this reason: ${err.message}.`);
 		}
 	}

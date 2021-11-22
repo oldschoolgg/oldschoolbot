@@ -1,7 +1,7 @@
 import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -248,7 +248,7 @@ export default class extends BotCommand {
 		}
 
 		const dungeonLength = Time.Minute * 5 * (floorToDo / 2);
-		let quantity = Math.floor(msg.author.maxTripLength(Activity.Dungeoneering) / dungeonLength);
+		let quantity = Math.floor(msg.author.maxTripLength('Dungeoneering') / dungeonLength);
 		let duration = quantity * dungeonLength;
 
 		let message = `${msg.author.username} has created a Dungeoneering party! Anyone can click the ${
@@ -351,7 +351,7 @@ export default class extends BotCommand {
 
 		// Calculate new number of floors will be done now that it is about to start
 		const perFloor = duration / quantity;
-		quantity = Math.floor(msg.author.maxTripLength(Activity.Dungeoneering) / perFloor);
+		quantity = Math.floor(msg.author.maxTripLength('Dungeoneering') / perFloor);
 		duration = quantity * perFloor;
 
 		let str = `${partyOptions.leader.username}'s dungeoneering party (${users
@@ -371,7 +371,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Dungeoneering,
+			type: 'Dungeoneering',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
 			floor: floorToDo

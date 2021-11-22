@@ -2,10 +2,10 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { chunk, percentChance, randArrItem, shuffleArr, Time } from 'e';
 import { KlasaClient } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
-import { createQueryBuilder } from 'typeorm';
 
 import { production } from '../config';
-import { Activity, getScaryFoodFromBank, scaryEatables } from './constants';
+import { getScaryFoodFromBank, scaryEatables } from './constants';
+import { prisma } from './settings/prisma';
 import {
 	getPHeadDescriptor,
 	numberOfPHeadItemsInCL,
@@ -16,8 +16,6 @@ import {
 } from './simulation/pumpkinHead';
 import { BossInstance, BossOptions, BossUser } from './structures/Boss';
 import { Gear } from './structures/Gear';
-import { ActivityTable } from './typeorm/ActivityTable.entity';
-import { BossEventTable } from './typeorm/BossEventTable.entity';
 import { NewBossOptions } from './types/minions';
 import { formatDuration, roll } from './util';
 import { sendToChannelID } from './util/webhook';
@@ -168,7 +166,7 @@ ${specialLootRecipient.user.username} received ${specialLoot}.
 			},
 			mostImportantStat: 'attack_crush',
 			food: () => new Bank(),
-			activity: Activity.BossEvent,
+			activity: 'BossEvent',
 			minSize: production ? 5 : 1,
 			solo: false,
 			canDie: true,
@@ -184,28 +182,41 @@ ${specialLootRecipient.user.username} received ${specialLoot}.
 	}
 ];
 
-export async function bossActiveIsActiveOrSoonActive(id?: string) {
-	const results = await ActivityTable.find({
+export async function bossActiveIsActiveOrSoonActive(id?: BossEvent['id']) {
+	const results = await prisma.activity.findMany({
 		where: {
 			completed: false,
-			type: Activity.BossEvent
+			type: 'BossEvent'
 		}
 	});
 
-	const query = createQueryBuilder(BossEventTable)
-		.select()
-		.where('completed = false')
-		.andWhere("start_date < (now() + interval '20 minutes')");
-	if (id) {
-		query.andWhere(`id != ${id}`);
-	}
-
-	const otherResults = await query.getMany();
+	const otherResults = await prisma.bossEvent.findMany({
+		where: {
+			completed: false,
+			start_date: {
+				lt: new Date(Date.now() + Time.Minute * 20)
+			},
+			id:
+				id === undefined
+					? undefined
+					: {
+							not: id
+					  }
+		}
+	});
 
 	return results.length > 0 || otherResults.length > 0;
 }
 
-export async function startBossEvent({ boss, client, id }: { boss: BossEvent; client: KlasaClient; id?: string }) {
+export async function startBossEvent({
+	boss,
+	client,
+	id
+}: {
+	boss: BossEvent;
+	client: KlasaClient;
+	id?: BossEvent['id'];
+}) {
 	if (await bossActiveIsActiveOrSoonActive(id)) {
 		throw new Error('There is already a boss event activity going on.');
 	}

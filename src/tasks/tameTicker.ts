@@ -1,9 +1,7 @@
-import { Time } from 'e';
 import { Task } from 'klasa';
-import { FindConditions, LessThan } from 'typeorm';
 
-import { production } from '../config';
-import { TameActivityTable } from '../lib/typeorm/TameActivityTable.entity';
+import { prisma } from '../lib/settings/prisma';
+import { runTameTask } from '../lib/tames';
 
 export default class extends Task {
 	async init() {
@@ -12,21 +10,31 @@ export default class extends Task {
 		}
 		const ticker = async () => {
 			try {
-				let opts: FindConditions<TameActivityTable> = {
-					completed: false
-				};
-				if (production) {
-					opts.finishDate = LessThan('now()');
-				} else {
-					// 10 seconds trips on dev mode
-					opts.startDate = LessThan(new Date(Date.now() - Time.Second * 10));
-				}
-				const tameTasks = await TameActivityTable.find({
-					where: opts,
-					relations: ['tame']
+				const tameTasks = await prisma.tameActivity.findMany({
+					where: {
+						finish_date: {
+							lt: new Date()
+						}
+					},
+					include: {
+						tame: true
+					}
 				});
 
-				await Promise.all(tameTasks.map(r => r.complete()));
+				await prisma.tameActivity.updateMany({
+					where: {
+						id: {
+							in: tameTasks.map(i => i.id)
+						}
+					},
+					data: {
+						completed: true
+					}
+				});
+
+				for (const task of tameTasks) {
+					runTameTask(task, task.tame);
+				}
 			} catch (err) {
 				console.error(err);
 			} finally {

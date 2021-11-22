@@ -3,14 +3,15 @@ import { Bank, Items, Openables } from 'oldschooljs';
 
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { GearSetupTypes } from '../../lib/gear';
+import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { tameSpecies } from '../../lib/tames';
-import { TameGrowthStage } from '../../lib/typeorm/TamesTable.entity';
 import { itemNameFromID, runCommand } from '../../lib/util';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { generateNewTame } from '../bso/nursery';
 import { phosaniBISGear } from '../Minion/nightmare';
+import { tame_growth } from '.prisma/client';
 
 const gearSpawns = [
 	{
@@ -102,10 +103,16 @@ export default class extends BotCommand {
 		}
 
 		if (msg.flagArgs.tames) {
-			for (const tame of tameSpecies) {
-				const t = await generateNewTame(msg.author, tame);
-				t.growthStage = TameGrowthStage.Adult;
-				await t.save();
+			for (const specie of tameSpecies) {
+				const tame = await generateNewTame(msg.author, specie);
+				await prisma.tame.update({
+					where: {
+						id: tame.id
+					},
+					data: {
+						growth_stage: tame_growth.adult
+					}
+				});
 			}
 			return msg.channel.send('Gave you 1 of every tame.');
 		}

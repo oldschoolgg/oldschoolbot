@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity } from '../../lib/constants';
 import { Eatable, Eatables } from '../../lib/data/eatables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -129,11 +128,11 @@ export default class extends BotCommand {
 			timePer = Math.floor(timePer / 2);
 		}
 		let duration = timePer * qty;
-		let maxTripLength = msg.author.maxTripLength(Activity.KibbleMaking);
-		if (duration > msg.author.maxTripLength(Activity.KibbleMaking)) {
+		let maxTripLength = msg.author.maxTripLength('KibbleMaking');
+		if (duration > msg.author.maxTripLength('KibbleMaking')) {
 			return msg.channel.send(
 				`The maximum amount of ${kibble.item.name} you can create in ${formatDuration(
-					msg.author.maxTripLength(Activity.KibbleMaking)
+					msg.author.maxTripLength('KibbleMaking')
 				)} is ${Math.floor(maxTripLength / timePer)}.`
 			);
 		}
@@ -150,7 +149,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: qty,
 			duration,
-			type: Activity.KibbleMaking,
+			type: 'KibbleMaking',
 			kibbleType: kibble.type
 		});
 

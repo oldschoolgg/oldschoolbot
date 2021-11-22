@@ -25,7 +25,7 @@ export default class extends Task {
 		const { channelID, quantity, userID, monkeys, duration } = data;
 		const user = await this.client.fetchUser(userID);
 
-		await incrementMinigameScore(userID, 'MadMarimbosMonkeyRumble', quantity);
+		await incrementMinigameScore(userID, 'monkey_rumble', quantity);
 
 		const newMonkeysFought: string[] = uniqueArr([
 			...user.settings.get(UserSettings.MonkeysFought),

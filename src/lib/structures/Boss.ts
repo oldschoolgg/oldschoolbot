@@ -4,7 +4,6 @@ import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { Activity } from '../constants';
 import { GearSetupType, GearStats } from '../gear';
 import { PUMPKINHEAD_ID } from '../simulation/pumpkinHead';
 import { Skills } from '../types';
@@ -13,6 +12,7 @@ import { formatDuration, formatSkillRequirements, isWeekend, updateBankSetting }
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { Gear } from './Gear';
 import { Mass } from './Mass';
+import { activity_type_enum } from '.prisma/client';
 
 export const gpCostPerKill = (user: KlasaUser) =>
 	user.getGear('melee').hasEquipped(['Ring of charos', 'Ring of charos(a)'], false) ? 5_000_000 : 10_000_000;
@@ -117,7 +117,7 @@ export interface BossOptions {
 	food: Bank | ((user: KlasaUser) => Bank);
 	settingsKeys?: [string, string];
 	channel: TextChannel;
-	activity: Activity;
+	activity: activity_type_enum;
 	massText: string;
 	leader?: KlasaUser;
 	minSize: number;
@@ -160,7 +160,7 @@ export class BossInstance {
 	settingsKeys?: [string, string];
 	client: KlasaClient;
 	channel: TextChannel;
-	activity: Activity;
+	activity: activity_type_enum;
 	massText: string;
 	users: KlasaUser[] | null = null;
 	leader?: KlasaUser;

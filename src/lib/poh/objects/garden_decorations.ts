@@ -200,7 +200,7 @@ export const GardenDecorations: PoHObject[] = [
 	{
 		id: 4860,
 		name: 'Marimbo statue',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Marimbo statue'),
 		refundItems: true

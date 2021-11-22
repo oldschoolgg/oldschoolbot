@@ -2,7 +2,7 @@ import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { gorajanWarriorOutfit, torvaOutfit } from '../../lib/data/CollectionsExport';
 import { KalphiteKingMonster } from '../../lib/kalphiteking';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -295,7 +295,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.KalphiteKing,
+			type: 'KalphiteKing',
 			users: users.map(u => u.id)
 		});
 

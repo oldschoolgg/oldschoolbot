@@ -1,5 +1,5 @@
 import { MessageButton } from 'discord.js';
-import { Time } from 'e';
+import { randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
