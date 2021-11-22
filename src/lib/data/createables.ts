@@ -403,7 +403,7 @@ const Reverteables: Createable[] = [
 	{
 		name: 'Revert Ignecarus dragonclaw',
 		outputItems: resolveNameBank({
-			'Ignecarus scales': 100,
+			'Ignecarus scales': 100
 		}),
 		inputItems: resolveNameBank({
 			'Ignecarus dragonclaw': 1
