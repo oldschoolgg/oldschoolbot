@@ -528,7 +528,7 @@ export default class extends BotCommand {
 				return msg.channel.send('No matching tame found.');
 			}
 			return msg.channel.sendBankImage({
-				content: `${tame!.toString()}`,
+				content: `${tameName(tame)}`,
 				flags: msg.flagArgs,
 				bank: tame.max_total_loot as ItemBank,
 				title: `All Loot ${tameName(tame)} Has Gotten You`

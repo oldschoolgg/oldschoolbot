@@ -1,5 +1,6 @@
 import { Task } from 'klasa';
 
+import { production } from '../config';
 import { prisma } from '../lib/settings/prisma';
 import { runTameTask } from '../lib/tames';
 
@@ -12,9 +13,11 @@ export default class extends Task {
 			try {
 				const tameTasks = await prisma.tameActivity.findMany({
 					where: {
-						finish_date: {
-							lt: new Date()
-						},
+						finish_date: production
+							? {
+									lt: new Date()
+							  }
+							: undefined,
 						completed: false
 					},
 					include: {

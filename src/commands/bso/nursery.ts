@@ -2,6 +2,7 @@ import { randArrItem, reduceNumByPercent, roll } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { production } from '../../config';
 import { Events } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
@@ -85,7 +86,7 @@ export default class POHCommand extends BotCommand {
 			diff += specie.hatchTime / 2;
 		}
 		const timeRemaining = Math.max(0, specie.hatchTime - diff);
-		if (diff >= specie.hatchTime) {
+		if (diff >= specie.hatchTime || !production) {
 			const newNursery: Nursery = {
 				egg: null,
 				eggsHatched: nursery.eggsHatched + 1,

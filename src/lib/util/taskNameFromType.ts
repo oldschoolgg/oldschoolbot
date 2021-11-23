@@ -128,7 +128,6 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 		case 'OuraniaDeliveryService':
 			return Tasks.OuraniaDeliveryService;
 		case 'MageArena2':
-		case 'MageArena2':
 			return Tasks.MageArena2;
 		case 'BigChompyBirdHunting':
 			return Tasks.BigChompyBirdHunting;

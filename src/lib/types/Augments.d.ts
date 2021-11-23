@@ -6,7 +6,6 @@ import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank, Player } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
-import { Connection } from 'typeorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { BankImageResult } from '../../tasks/bankImage';
