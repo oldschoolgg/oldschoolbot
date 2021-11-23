@@ -8,7 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GnomeRestaurantActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks, formatDuration, randomVariation } from '../../lib/util';
+import { formatDuration, randomVariation, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -99,13 +99,8 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(itemsToRemove.bank);
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.GnomeRestaurantCostBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.GnomeRestaurantCostBank),
-				itemsToRemove.bank
-			])
-		);
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.GnomeRestaurantCostBank, itemsToRemove);
 		await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,

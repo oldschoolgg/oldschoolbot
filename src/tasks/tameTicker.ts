@@ -14,7 +14,8 @@ export default class extends Task {
 					where: {
 						finish_date: {
 							lt: new Date()
-						}
+						},
+						completed: false
 					},
 					include: {
 						tame: true
