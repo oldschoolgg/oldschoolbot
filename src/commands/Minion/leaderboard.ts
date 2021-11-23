@@ -88,7 +88,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open|inferno] [name:...string]',
+			usage: '[pets|gp|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open|inferno] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -576,7 +576,7 @@ LIMIT 10;`);
 			return msg.channel.send("That's not a valid collection log category. Check +cl for all possible logs.");
 		}
 		const users = (
-			(await prisma.$queryRaw`
+			(await prisma.$queryRawUnsafe(`
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
   SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
@@ -590,7 +590,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 ) u
 ORDER BY qty DESC
 LIMIT 50;
-`) as any
+`)) as any
 		).filter((i: any) => i.qty > 0) as CLUser[];
 
 		this.doMenu(
