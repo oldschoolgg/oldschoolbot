@@ -28,7 +28,6 @@ import { pumpkinHeadUniqueTable } from '../simulation/pumpkinHead';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
 import { addArrayOfNumbers, stringMatches } from '../util';
-import { getUsersTamesCollectionLog } from '../util/getUsersTameCL';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalDragonCL,
@@ -1262,7 +1261,7 @@ function getLeftList(
 	return leftList;
 }
 
-export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection' | 'tame') {
+export async function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection' | 'tame') {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
@@ -1274,8 +1273,10 @@ export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collectio
 		case 'sacrifice':
 			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
 			break;
-		case 'tame':
+		case 'tame': {
+			const { getUsersTamesCollectionLog } = await import('../util/getUsersTameCL');
 			return getUsersTamesCollectionLog(user);
+		}
 	}
 	return userCheckBank;
 }
