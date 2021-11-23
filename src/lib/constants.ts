@@ -8,8 +8,6 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
-export { Activity } from '@prisma/client';
-
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
