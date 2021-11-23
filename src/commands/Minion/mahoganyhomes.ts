@@ -32,20 +32,12 @@ interface IContract {
 
 const contractTiers: IContract[] = [
 	{
-		name: 'Beginner',
-		level: 1,
-		plank: Plank.Plank,
-		xp: 500,
-		points: 2,
-		plankXP: [22.5, 127.5]
-	},
-	{
-		name: 'Novice',
-		level: 20,
-		plank: Plank.OakPlank,
-		xp: 1250,
-		points: 3,
-		plankXP: [48, 160]
+		name: 'Expert',
+		level: 70,
+		plank: Plank.MahoganyPlank,
+		xp: 2750,
+		points: 5,
+		plankXP: [112, 240]
 	},
 	{
 		name: 'Adept',
@@ -56,12 +48,20 @@ const contractTiers: IContract[] = [
 		plankXP: [72, 190]
 	},
 	{
-		name: 'Expert',
-		level: 70,
-		plank: Plank.MahoganyPlank,
-		xp: 2750,
-		points: 5,
-		plankXP: [112, 240]
+		name: 'Novice',
+		level: 20,
+		plank: Plank.OakPlank,
+		xp: 1250,
+		points: 3,
+		plankXP: [48, 160]
+	},
+	{
+		name: 'Beginner',
+		level: 1,
+		plank: Plank.Plank,
+		xp: 500,
+		points: 2,
+		plankXP: [22.5, 127.5]
 	}
 ];
 
@@ -198,7 +198,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 
 		if (msg.flagArgs.tiers) {
 			let str = 'Current Mahogany Homes contracts:\n\n';
-			for (let contractTier of contractTiers) {
+			for (let contractTier of contractTiers.sort( (a, b) => { if (a.level > b.level) return 1; else return -1; })) {
 				if (contractTier.name === 'Beginner')
 					str += `${contractTier.name}: ${contractTier.level} Construction, ${itemNameFromID(
 						contractTier.plank
