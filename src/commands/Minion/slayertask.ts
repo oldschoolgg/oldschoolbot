@@ -377,26 +377,21 @@ Your current streak is ${msg.author.settings.get(UserSettings.Slayer.TaskStreak)
 
 		const newSlayerTask = await assignNewSlayerTask(msg.author, slayerMaster);
 		const myUnlocks = (await msg.author.settings.get(UserSettings.Slayer.SlayerUnlocks)) ?? undefined;
-		if (myUnlocks) {
-			SlayerRewardsShop.filter(srs => {
-				return srs.extendID !== undefined;
-			}).map(async srsf => {
-				if (myUnlocks.includes(srsf.id) && srsf.extendID!.includes(newSlayerTask.currentTask.monster_id)) {
-					const quantity = newSlayerTask.assignedTask.extendedAmount
-						? randInt(
-								newSlayerTask.assignedTask.extendedAmount[0],
-								newSlayerTask.assignedTask.extendedAmount[1]
-						  )
-						: Math.ceil(newSlayerTask.currentTask.quantity * srsf.extendMult!);
-					await prisma.slayerTask.update({
-						where: {
-							id: newSlayerTask.currentTask.id
-						},
-						data: {
-							quantity,
-							quantity_remaining: quantity
-						}
-					});
+		const extendReward = SlayerRewardsShop.find(
+			srs => srs.extendID && srs.extendID.includes(newSlayerTask.currentTask.monster_id)
+		);
+		if (extendReward && myUnlocks.includes(extendReward.id)) {
+			const quantity = newSlayerTask.assignedTask.extendedAmount
+				? randInt(newSlayerTask.assignedTask.extendedAmount[0], newSlayerTask.assignedTask.extendedAmount[1])
+				: Math.ceil(newSlayerTask.currentTask.quantity * extendReward.extendMult!);
+			newSlayerTask.currentTask.quantity = quantity;
+			await prisma.slayerTask.update({
+				where: {
+					id: newSlayerTask.currentTask.id
+				},
+				data: {
+					quantity: newSlayerTask.currentTask.quantity,
+					quantity_remaining: newSlayerTask.currentTask.quantity
 				}
 			});
 		}
