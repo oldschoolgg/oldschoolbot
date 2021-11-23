@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import {
 	calcCoxDuration,
 	calcCoxInput,
@@ -83,8 +83,8 @@ export default class extends BotCommand {
 
 		if (!type) {
 			const [normal, cm] = await Promise.all([
-				msg.author.getMinigameScore('Raids'),
-				msg.author.getMinigameScore('RaidsChallengeMode')
+				msg.author.getMinigameScore('raids'),
+				msg.author.getMinigameScore('raids_challenge_mode')
 			]);
 			let totalUniques = 0;
 			const cl = msg.author.cl();
@@ -139,13 +139,13 @@ export default class extends BotCommand {
 
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
 
-		const userKC = await msg.author.getMinigameScore(isChallengeMode ? 'RaidsChallengeMode' : 'Raids');
+		const userKC = await msg.author.getMinigameScore(isChallengeMode ? 'raids_challenge_mode' : 'raids');
 		if (!isChallengeMode && userKC < 50 && type === 'solo') {
 			return msg.channel.send('You need at least 50 Chambers of Xeric KC before you can attempt a solo raid.');
 		}
 
 		if (isChallengeMode) {
-			const normalKC = await msg.author.getMinigameScore('Raids');
+			const normalKC = await msg.author.getMinigameScore('raids');
 			if (normalKC < 200) {
 				return msg.channel.send(
 					'You need atleast 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.'
@@ -239,7 +239,7 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.Raids,
+			type: 'Raids',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
 			challengeMode: isChallengeMode

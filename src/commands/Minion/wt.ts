@@ -2,7 +2,6 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -68,7 +67,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.Wintertodt) / durationPerTodt);
+		const quantity = Math.floor(msg.author.maxTripLength('Wintertodt') / durationPerTodt);
 
 		const bank = msg.author.settings.get(UserSettings.Bank);
 		for (const food of Eatables) {
@@ -104,12 +103,12 @@ export default class extends BotCommand {
 		const duration = durationPerTodt * quantity;
 
 		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>({
-			minigameID: 'Wintertodt',
+			minigameID: 'wintertodt',
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Wintertodt
+			type: 'Wintertodt'
 		});
 
 		return msg.channel.send(

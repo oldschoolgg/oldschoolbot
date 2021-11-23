@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { Activity } from '../../lib/constants';
 import { userhasDiaryTier, WesternProv } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -115,14 +114,14 @@ export default class extends BotCommand {
 			categoryFlags: ['minion', 'minigame'],
 			subcommands: true,
 			aliases: ['pc'],
-			usage: '[start|buy|xp] [quantity:int{1}|str:...str]',
+			usage: '[start|buy|xp] [quantity:int{1,1000}|str:...str]',
 			usageDelim: ' '
 		});
 	}
 
 	async run(msg: KlasaMessage) {
 		const points = msg.author.settings.get(UserSettings.PestControlPoints);
-		const kc = await msg.author.getMinigameScore('PestControl');
+		const kc = await msg.author.getMinigameScore('pest_control');
 		const usageStr = `Usage: \`${msg.cmdPrefix}pc [start|buy|xp]\``;
 		return msg.channel.send(`You have ${points} Void knight commendation points.
 You have completed ${kc} games of Pest Control.\n${usageStr}`);
@@ -169,14 +168,14 @@ ${xpRes}`);
 
 	@requiresMinion
 	@minionNotBusy
-	async start(msg: KlasaMessage, [quantity]: [number | undefined]) {
+	async start(msg: KlasaMessage, [quantity]: [number | string | undefined]) {
 		const { combatLevel } = msg.author;
 		if (combatLevel < 40) {
 			return msg.channel.send('You need a combat level of at least 40 to do Pest Control.');
 		}
 
 		let gameLength = Time.Minute * 2.8;
-		const maxLength = msg.author.maxTripLength(Activity.PestControl);
+		const maxLength = msg.author.maxTripLength('PestControl');
 
 		let boosts = [];
 		const gear = msg.author.getGear('melee');
@@ -189,7 +188,8 @@ ${xpRes}`);
 				}
 			}
 		}
-		if (!quantity || quantity * gameLength > maxLength) {
+
+		if (!quantity || typeof quantity === 'string' || quantity * gameLength > maxLength) {
 			quantity = Math.floor(maxLength / gameLength);
 		}
 
@@ -199,9 +199,9 @@ ${xpRes}`);
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.PestControl,
+			type: 'PestControl',
 			quantity,
-			minigameID: 'PestControl'
+			minigameID: 'pest_control'
 		});
 
 		let [boat] = getBoatType(combatLevel);

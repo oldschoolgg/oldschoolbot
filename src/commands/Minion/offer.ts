@@ -2,7 +2,7 @@ import { objectKeys, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Events } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { evilChickenOutfit } from '../../lib/data/CollectionsExport';
 import { Offerables } from '../../lib/data/offerData';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -200,7 +200,7 @@ export default class extends BotCommand {
 		const amountOfThisBone = userBank.amount(bone.inputId);
 		if (!amountOfThisBone) return msg.channel.send(`You have no ${bone.name}.`);
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Offering);
+		const maxTripLength = msg.author.maxTripLength('Offering');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -232,7 +232,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Offering
+			type: 'Offering'
 		});
 		return msg.channel.send(
 			`${msg.author.minionName} is now offering ${quantity}x ${

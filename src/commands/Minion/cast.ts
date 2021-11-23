@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -64,7 +63,7 @@ export default class extends BotCommand {
 
 		let timeToEnchantTen = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Casting);
+		const maxTripLength = msg.author.maxTripLength('Casting');
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToEnchantTen);
@@ -116,7 +115,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Casting
+			type: 'Casting'
 		});
 
 		const magicXpHr = `${Math.round(

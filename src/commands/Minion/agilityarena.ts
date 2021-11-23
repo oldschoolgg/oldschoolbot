@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -85,7 +84,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
-		const duration = msg.author.maxTripLength(Activity.AgilityArena);
+		const duration = msg.author.maxTripLength('AgilityArena');
 
 		if (!msg.author.hasGracefulEquipped()) {
 			return msg.channel.send({
@@ -109,9 +108,9 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.AgilityArena,
+			type: 'AgilityArena',
 			quantity: 1,
-			minigameID: 'AgilityArena'
+			minigameID: 'agility_arena'
 		});
 
 		let str = `${msg.author.minionName} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;

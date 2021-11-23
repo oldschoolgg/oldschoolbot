@@ -2,7 +2,7 @@ import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, BitField, Emoji, PHOSANI_NIGHTMARE_ID } from '../../lib/constants';
+import { BitField, Emoji, PHOSANI_NIGHTMARE_ID } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -105,17 +105,16 @@ export default class extends BotCommand {
 			}
 
 			if (isPhosani) {
-				if (
-					!user.hasSkillReqs({
-						prayer: 70,
-						attack: 90,
-						strength: 90,
-						defence: 90,
-						magic: 90,
-						hitpoints: 90
-					})[0]
-				) {
-					throw `${user.username} doesn't have 70 Prayer`;
+				const requirements = user.hasSkillReqs({
+					prayer: 70,
+					attack: 90,
+					strength: 90,
+					defence: 90,
+					magic: 90,
+					hitpoints: 90
+				});
+				if (!requirements[0]) {
+					throw `${user.username} doesn't meet the requirements: ${requirements[1]}`;
 				}
 				if (user.getKC(NightmareMonster.id) < 50) {
 					throw "You need to have killed The Nightmare atleast 50 times before you can face the Phosani's Nightmare.";
@@ -313,7 +312,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Nightmare,
+			type: 'Nightmare',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
 			isPhosani

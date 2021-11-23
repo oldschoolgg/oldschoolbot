@@ -2,6 +2,7 @@ import { calcPercentOfNum } from 'e';
 import { KlasaMessage, Task } from 'klasa';
 
 import MahoganyHomesCommand from '../../../commands/Minion/mahoganyhomes';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
@@ -12,7 +13,7 @@ export default class extends Task {
 	async run(data: MahoganyHomesActivityTaskOptions) {
 		const { channelID, quantity, xp, duration, userID, points, tier } = data;
 		const user = await this.client.fetchUser(userID);
-		user.incrementMinigameScore('MahoganyHomes', quantity);
+		await incrementMinigameScore(userID, 'mahogany_homes', quantity);
 
 		let bonusXP = 0;
 		const outfitMultiplier = calcConBonusXP(user.getGear('skilling'));

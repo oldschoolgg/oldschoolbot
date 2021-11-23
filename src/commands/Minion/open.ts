@@ -225,7 +225,7 @@ export default class extends BotCommand {
 				`<:lil_creator:798221383951319111> **${msg.author.username}'s** minion, ${
 					msg.author.minionName
 				}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
-					'SoulWars'
+					'soul_wars'
 				)} Soul wars games, and this is their ${nthOpenable} Spoils of war crate.`
 			);
 		}
