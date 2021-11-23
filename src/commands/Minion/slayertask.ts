@@ -390,8 +390,8 @@ Your current streak is ${msg.author.settings.get(UserSettings.Slayer.TaskStreak)
 					id: newSlayerTask.currentTask.id
 				},
 				data: {
-					quantity,
-					quantity_remaining: quantity
+					quantity: newSlayerTask.currentTask.quantity,
+					quantity_remaining: newSlayerTask.currentTask.quantity
 				}
 			});
 		}
