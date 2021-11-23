@@ -185,6 +185,13 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 
 	let quantity = randInt(assignedTask!.amount[0], assignedTask!.amount[1]);
 
+	const extendReward = SlayerRewardsShop.find(srs => srs.extendID && srs.extendID.includes(assignedTask!.monster.id));
+	if (extendReward && unlocks.includes(extendReward.id)) {
+		quantity = assignedTask.extendedAmount
+			? randInt(assignedTask.extendedAmount[0], assignedTask.extendedAmount[1])
+			: Math.ceil(quantity * extendReward.extendMult!);
+	}
+
 	let messages: string[] = [];
 	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters)) {
 		quantity *= 2;
