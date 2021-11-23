@@ -318,7 +318,7 @@ export default class extends Task {
 					harvestXp = 0;
 				} else if (plantToHarvest.givesCrops && chopped) {
 					if (!plantToHarvest.outputCrop) return;
-					
+
 					loot[plantToHarvest.outputCrop] = cropYield;
 					harvestXp = cropYield * plantToHarvest.harvestXp;
 				}
