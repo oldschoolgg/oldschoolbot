@@ -198,7 +198,10 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 
 		if (msg.flagArgs.tiers) {
 			let str = 'Current Mahogany Homes contracts:\n\n';
-			for (let contractTier of contractTiers.sort( (a, b) => { if (a.level > b.level) return 1; else return -1; })) {
+			for (let contractTier of contractTiers.sort((a, b) => {
+				if (a.level > b.level) return 1;
+				return -1;
+			})) {
 				if (contractTier.name === 'Beginner')
 					str += `${contractTier.name}: ${contractTier.level} Construction, ${itemNameFromID(
 						contractTier.plank
