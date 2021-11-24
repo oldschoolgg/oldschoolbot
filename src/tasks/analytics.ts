@@ -62,7 +62,7 @@ export default class extends Task {
 
 		const taskCounts = await this.calculateMinionTaskCounts();
 
-		prisma.analytic.create({
+		await prisma.analytic.create({
 			data: {
 				guildsCount: this.client.guilds.cache.size,
 				membersCount: this.client.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount), 0),
