@@ -429,7 +429,7 @@ export default class extends BotCommand {
 			drawText(
 				ctx,
 				`${tame.id}. ${
-					tame.nickname ? `${tame.nickname} (${getTameSpecies(tame)})` : getTameSpecies(tame).name
+					tame.nickname ? `${tame.nickname} (${getTameSpecies(tame).name})` : getTameSpecies(tame).name
 				}`,
 				(10 + 256) * x + 5,
 				(10 + 128) * y + 16
