@@ -756,7 +756,7 @@ export default class extends BotCommand {
 		for (const item of resolveItems(['Voidling', 'Ring of endurance'])) {
 			if (tameHasBeenFed(selectedTame, item)) {
 				speed = reduceNumByPercent(speed, 10);
-				boosts.push(`10% for ${item}`);
+				boosts.push(`10% for ${itemNameFromID(item)}`);
 			}
 		}
 
