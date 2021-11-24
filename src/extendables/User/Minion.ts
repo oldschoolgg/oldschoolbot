@@ -908,7 +908,7 @@ export default class extends Extendable {
 		let preMax = -1;
 		if (totalXPAdded > 0) {
 			preMax = totalXPAdded;
-			prisma.xPGain.create({
+			await prisma.xPGain.create({
 				data: {
 					user_id: this.id,
 					skill: params.skillName,
@@ -920,7 +920,7 @@ export default class extends Extendable {
 
 		// Post-MAX_XP
 		if (params.amount - totalXPAdded > 0) {
-			prisma.xPGain.create({
+			await prisma.xPGain.create({
 				data: {
 					user_id: this.id,
 					skill: params.skillName,
