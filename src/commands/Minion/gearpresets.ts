@@ -190,6 +190,16 @@ export default class extends BotCommand {
 
 		let gearSetup = msg.author.rawGear()[setup];
 
+		if (update) {
+			await prisma.gearPreset.delete({
+				where: {
+					user_id_name: {
+						user_id: msg.author.id,
+						name
+					}
+				}
+			});
+		}
 		const preset = await prisma.gearPreset.create({
 			data: {
 				head: gearSetup.head?.item ?? null,
