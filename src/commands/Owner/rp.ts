@@ -82,6 +82,7 @@ export default class extends BotCommand {
 		[cmd, input, str]: [string, KlasaUser | string | undefined, KlasaUser | string | undefined]
 	) {
 		const isMod = msg.author.settings.get(UserSettings.BitField).includes(BitField.isModerator);
+		const isContrib = msg.author.settings.get(UserSettings.BitField).includes(BitField.isContributor);
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
@@ -233,13 +234,34 @@ ${
 			}
 		}
 
-		if (!isMod && !isOwner) return null;
+		if (msg.guild!.id !== SupportServer) return null;
+
+		if (!isContrib && !isMod && !isOwner) return null;
 
 		if (input && input instanceof KlasaUser) {
 			await input.settings.sync(true);
 		}
-		if (msg.guild!.id !== SupportServer) return null;
 
+		// Conrib / Mod commands:
+		switch (cmd.toLowerCase()) {
+			case 'disable': {
+				if (!input || input instanceof KlasaUser) return;
+				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				if (!command) return msg.channel.send("That's not a valid command.");
+				command.disable();
+				return msg.channel.send(`${emoji(this.client)} Disabled \`+${command}\`.`);
+			}
+			case 'enable': {
+				if (!input || input instanceof KlasaUser) return;
+				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				if (!command) return msg.channel.send("That's not a valid command.");
+				if (command.enabled) return msg.channel.send('That command is already enabled.');
+				command.enable();
+				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
+			}
+		}
+
+		if (!isMod && !isOwner) return null;
 		// Mod commands
 		switch (cmd.toLowerCase()) {
 			case 'addimalt': {
@@ -512,21 +534,6 @@ LIMIT 10;
 			case 'bank': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				return msg.channel.sendBankImage({ bank: input.allItemsOwned().bank });
-			}
-			case 'disable': {
-				if (!input || input instanceof KlasaUser) return;
-				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
-				if (!command) return msg.channel.send("That's not a valid command.");
-				command.disable();
-				return msg.channel.send(`${emoji(this.client)} Disabled \`+${command}\`.`);
-			}
-			case 'enable': {
-				if (!input || input instanceof KlasaUser) return;
-				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
-				if (!command) return msg.channel.send("That's not a valid command.");
-				if (command.enabled) return msg.channel.send('That command is already enabled.');
-				command.enable();
-				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
 			}
 			case 'addptime': {
 				if (!input || !(input instanceof KlasaUser)) return;
