@@ -22,6 +22,17 @@ export default class extends Task {
 					}
 				});
 
+				await prisma.activity.updateMany({
+					where: {
+						id: {
+							in: activities.map(i => i.id)
+						}
+					},
+					data: {
+						completed: true
+					}
+				});
+
 				await Promise.all(activities.map(completeActivity));
 			} catch (err) {
 				console.error(err);
