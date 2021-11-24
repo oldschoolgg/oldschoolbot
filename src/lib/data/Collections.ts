@@ -892,7 +892,7 @@ export const allCollectionLogs: ICollection = {
 					'Rocky',
 					'Herbi',
 					'Beaver',
-					'Giant Squirrel'
+					'Giant squirrel'
 				]),
 				roleCategory: ['skilling']
 			},
