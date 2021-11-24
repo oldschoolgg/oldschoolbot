@@ -34,7 +34,7 @@ export default class extends Task {
 		// Calculate marks of grace
 		let totalMarks = 0;
 		const timePerLap = course.lapTime * Time.Second;
-		const maxQuantity = Math.floor(user.maxTripLength('Agility') / timePerLap);
+		const maxQuantity = Math.floor((Time.Minute * 30) / timePerLap);
 		if (course.marksPer60) {
 			for (let i = 0; i < Math.floor(course.marksPer60 * (quantity / maxQuantity)); i++) {
 				if (roll(2)) {
