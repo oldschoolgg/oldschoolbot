@@ -481,6 +481,13 @@ const backgroundImages: BankBackground[] = [
 		available: false,
 		owners: ['416304907243749382'],
 		transparent: true
+	},
+	{
+		id: 85,
+		name: 'Mylife CustomBG',
+		image: null,
+		available: false,
+		owners: ['251536370613485568']
 	}
 ];
 
