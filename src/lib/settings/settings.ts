@@ -5,6 +5,7 @@ import { Gateway, Settings } from 'klasa';
 import { client } from '../..';
 import { Emoji } from '../constants';
 import { ActivityTaskData } from '../types/minions';
+import { isGroupActivity } from '../util';
 import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
@@ -72,6 +73,16 @@ export const minionActivityCache = new Map<string, ActivityTaskData>();
 export function getActivityOfUser(userID: string) {
 	const task = minionActivityCache.get(userID);
 	return task ?? null;
+}
+
+export function minionActivityCacheDelete(userID: string) {
+	const entry = minionActivityCache.get(userID);
+	if (!entry) return;
+
+	const users: string[] = isGroupActivity(entry) ? entry.users : [entry.userID];
+	for (const u of users) {
+		minionActivityCache.delete(u);
+	}
 }
 
 export async function cancelTask(userID: string) {

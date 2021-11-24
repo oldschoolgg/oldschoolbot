@@ -4,7 +4,7 @@ import { client } from '../..';
 import { ActivityTaskData } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
-import { minionActivityCache } from './settings';
+import { minionActivityCache, minionActivityCacheDelete } from './settings';
 
 export const prisma = new PrismaClient();
 
@@ -58,5 +58,6 @@ export async function completeActivity(_activity: Activity) {
 		console.error(err);
 	} finally {
 		client.oneCommandAtATimeCache.delete(activity.userID);
+		minionActivityCacheDelete(activity.userID);
 	}
 }

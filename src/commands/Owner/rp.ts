@@ -9,7 +9,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { evalMathExpression } from '../../lib/expressionParser';
-import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
+import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -365,7 +365,7 @@ ${
 				await cancelTask(input.id);
 				this.client.oneCommandAtATimeCache.delete(input.id);
 				this.client.secondaryUserBusyCache.delete(input.id);
-				minionActivityCache.delete(input.id);
+				minionActivityCacheDelete(input.id);
 
 				return msg.react(Emoji.Tick);
 			}
