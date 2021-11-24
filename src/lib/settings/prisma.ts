@@ -6,7 +6,7 @@ import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 import { minionActivityCache, minionActivityCacheDelete } from './settings';
 
-export const prisma = new PrismaClient();
+export const prisma = new PrismaClient({ log: ['query'] });
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {
@@ -44,15 +44,6 @@ export async function completeActivity(_activity: Activity) {
 
 	client.oneCommandAtATimeCache.add(activity.userID);
 	try {
-		await prisma.activity.updateMany({
-			where: {
-				id: activity.id
-			},
-			data: {
-				completed: true
-			}
-		});
-
 		await task.run(activity);
 	} catch (err) {
 		console.error(err);
