@@ -13,6 +13,8 @@ interface Castable {
 	gpCost?: number;
 	craftLevel?: number;
 	craftXp?: number;
+	agilityLevel?: number;
+	gracefulPenalty?: number;
 }
 
 export const Castables: Castable[] = [
@@ -329,5 +331,47 @@ export const Castables: Castable[] = [
 		qpRequired: 50,
 		craftXp: 130,
 		craftLevel: 61
+	},
+	{
+		id: itemID('Air orb'),
+		name: 'Charge air orb',
+		input: new Bank().add('Cosmic rune', 3).add('Air rune', 30).add('Unpowered orb', 1),
+		output: new Bank().add('Air orb', 1),
+		xp: 76,
+		level: 66,
+		ticks: 12.63,
+		gracefulPenalty: 20
+	},
+	{
+		id: itemID('Fire orb'),
+		name: 'Charge fire orb',
+		input: new Bank().add('Cosmic rune', 3).add('Fire rune', 30).add('Unpowered orb', 1),
+		output: new Bank().add('Fire orb', 1),
+		xp: 73,
+		level: 63,
+		ticks: 13.33,
+		agilityLevel: 70,
+		gracefulPenalty: 20
+	},
+	{
+		id: itemID('Earth orb'),
+		name: 'Charge earth orb',
+		input: new Bank().add('Cosmic rune', 3).add('Earth rune', 30).add('Unpowered orb', 1),
+		output: new Bank().add('Earth orb', 1),
+		xp: 70,
+		level: 60,
+		ticks: 12.63,
+		gracefulPenalty: 20
+	},
+	{
+		id: itemID('Water orb'),
+		name: 'Charge water orb',
+		input: new Bank().add('Cosmic rune', 3).add('Water rune', 30).add('Unpowered orb', 1),
+		output: new Bank().add('Water orb', 1),
+		xp: 66,
+		level: 56,
+		ticks: 13.33,
+		agilityLevel: 70,
+		gracefulPenalty: 20
 	}
 ];

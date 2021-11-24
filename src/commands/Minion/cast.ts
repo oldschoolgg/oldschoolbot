@@ -58,6 +58,13 @@ export default class extends BotCommand {
 			return msg.channel.send(`${msg.author.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`);
 		}
 
+		if (spell.agilityLevel && msg.author.skillLevel(SkillsEnum.Agility) < spell.agilityLevel) {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${spell.agilityLevel} Agility to cast ${spell.name}.`
+			);
+			
+		}
+		
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
