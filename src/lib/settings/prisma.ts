@@ -6,7 +6,7 @@ import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 import { minionActivityCache, minionActivityCacheDelete } from './settings';
 
-export const prisma = new PrismaClient({ log: ['query'] });
+export const prisma = new PrismaClient();
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {
