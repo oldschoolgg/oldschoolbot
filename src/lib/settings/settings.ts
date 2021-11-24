@@ -86,7 +86,7 @@ export function minionActivityCacheDelete(userID: string) {
 }
 
 export async function cancelTask(userID: string) {
-	prisma.activity.deleteMany({ where: { user_id: userID, completed: false } });
+	await prisma.activity.deleteMany({ where: { user_id: userID, completed: false } });
 	minionActivityCache.delete(userID);
 }
 
