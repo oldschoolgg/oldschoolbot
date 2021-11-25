@@ -35,6 +35,8 @@ export default class extends BotCommand {
 		}
 
 		const spell = Castables.find(spell => stringMatches(spell.name, name));
+		const boosts = [];
+		const missedBoosts = [];
 
 		if (!spell) {
 			return msg.channel.send(
@@ -61,37 +63,58 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
-		let castTime = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
+		let castTimeMilliSeconds = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
 		
 		if ( spell.travelTime ) {
 			let travelTime = spell.travelTime;
-			if ( msg.author.hasGracefulEquipped() ) travelTime = reduceNumByPercent(travelTime, 20); // 20% boost for having graceful
+			if ( msg.author.hasGracefulEquipped() ) {
+				travelTime = reduceNumByPercent(travelTime, 20); // 20% boost for having graceful
+				boosts.push(`20% for Graceful outfit`);
+			} else {
+				missedBoosts.push(`20% for Graceful outfit`);
+			}
 
 			if ( spell.agilityBoost ) {
-				const availableBoost = spell.agilityBoost!.find((boost) => msg.author.skillLevel(SkillsEnum.Agility) >= boost[0]);
-				if ( availableBoost ) travelTime = reduceNumByPercent(travelTime, availableBoost[1]); // Apply an agility boost based on tier
+				const boostLevels = spell.agilityBoost.map((boost) => boost[0]);
+				const boostPercentages = spell.agilityBoost.map((boost) => boost[1]);
+				
+				const availableBoost = boostLevels.find((boost) => msg.author.skillLevel(SkillsEnum.Agility) >= boost);
+				if ( availableBoost ) {
+					const boostIndex = boostLevels.indexOf(availableBoost);
+
+					travelTime = reduceNumByPercent(travelTime, boostPercentages[boostIndex]); // Apply an agility boost based on tier
+					boosts.push(`${boostPercentages[boostIndex]}% for ${availableBoost}+ Agility`);
+
+					if ( boostIndex > 0 ) {
+						missedBoosts.push(`${boostPercentages[boostIndex-1]}% for ${boostLevels[boostIndex-1]}+ Agility`);
+					};
+				} else {
+					const worstBoost = spell.agilityBoost[spell.agilityBoost.length-1];
+					missedBoosts.push(`${worstBoost[1]}% for ${worstBoost[0]}+ Agility`);
+				}
 			};
 
-			castTime += travelTime / 27; // One trip holds 27 casts, scale it down
+			castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
 		};
+
 
 		const maxTripLength = msg.author.maxTripLength('Casting');
 
 		if (quantity === null) {
-			quantity = Math.floor(maxTripLength / castTime);
+			quantity = Math.floor(maxTripLength / castTimeMilliSeconds);
 			const spellRunes = determineRunes(msg.author, spell.input.clone());
 			const max = userBank.fits(spellRunes);
 			if (max < quantity && max !== 0) quantity = max;
 		}
 
-		const duration = quantity * castTime;
+		const duration = quantity * castTimeMilliSeconds;
 
 		if (duration > maxTripLength) {
 			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${spell.name}s you can cast is ${Math.floor(
-					maxTripLength / castTime
+					maxTripLength / castTimeMilliSeconds
 				)}.`
 			);
 		}
@@ -134,19 +157,26 @@ export default class extends BotCommand {
 			((spell.xp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} Magic XP/Hr`;
 
-		let craftXpHr = '';
+		let response = `${msg.author.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
+			duration
+		)} to finish. Removed ${cost}${
+			spell.gpCost ? ` and ${gpCost} Coins` : ''
+		} from your bank. **${magicXpHr}**`
+
 		if (spell.craftXp) {
-			craftXpHr = `and** ${Math.round(
+			response = `and** ${Math.round(
 				((spell.craftXp * quantity) / (duration / Time.Minute)) * 60
 			).toLocaleString()} Crafting XP/Hr**`;
 		}
+		
+		if ( boosts.length > 0 ) {
+			response += `\n**Boosts:** ${boosts.join(', ')}.`
+		};
 
-		return msg.channel.send(
-			`${msg.author.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
-				duration
-			)} to finish. Removed ${cost}${
-				spell.gpCost ? ` and ${gpCost} Coins` : ''
-			} from your bank. **${magicXpHr}** ${craftXpHr}`
-		);
+		if ( missedBoosts.length > 0 ) {
+			response += `\n**Missed boosts:** ${missedBoosts.join(', ')}.`
+		};
+
+		return msg.channel.send(response);
 	}
 }

@@ -339,8 +339,8 @@ export const Castables: Castable[] = [
 		output: new Bank().add('Air orb', 1),
 		xp: 76,
 		level: 66,
-		ticks: 12.63,
-		travelTime: 20
+		ticks: 3,
+		travelTime: 187_000
 	},
 	{
 		id: itemID('Fire orb'),
@@ -349,9 +349,9 @@ export const Castables: Castable[] = [
 		output: new Bank().add('Fire orb', 1),
 		xp: 73,
 		level: 63,
-		ticks: 13.33,
-		agilityBoost:  [[80,45],[70,40]],
-		travelTime: 20
+		ticks: 3,
+		agilityBoost:  [[80,52],[70,45]],
+		travelTime: 362_000
 	},
 	{
 		id: itemID('Earth orb'),
@@ -360,8 +360,8 @@ export const Castables: Castable[] = [
 		output: new Bank().add('Earth orb', 1),
 		xp: 70,
 		level: 60,
-		ticks: 12.63,
-		travelTime: 20
+		ticks: 3,
+		travelTime: 187_000
 	},
 	{
 		id: itemID('Water orb'),
@@ -370,8 +370,8 @@ export const Castables: Castable[] = [
 		output: new Bank().add('Water orb', 1),
 		xp: 66,
 		level: 56,
-		ticks: 13.33,
-		agilityBoost:  [[80,45],[70,40]],
-		travelTime: 20
+		ticks: 3,
+		agilityBoost:  [[80,52],[70,45]],
+		travelTime: 362_000
 	}
 ];
