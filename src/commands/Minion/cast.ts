@@ -59,7 +59,6 @@ export default class extends BotCommand {
 		if (spell.qpRequired && msg.author.settings.get(UserSettings.QP) < spell.qpRequired) {
 			return msg.channel.send(`${msg.author.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`);
 		}
-		
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
