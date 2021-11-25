@@ -350,7 +350,7 @@ export const Castables: Castable[] = [
 		xp: 73,
 		level: 63,
 		ticks: 3,
-		agilityBoost:  [[80,52],[70,45]],
+		agilityBoost:  [[80,52],[70,44]],
 		travelTime: 362_000
 	},
 	{
@@ -371,7 +371,7 @@ export const Castables: Castable[] = [
 		xp: 66,
 		level: 56,
 		ticks: 3,
-		agilityBoost:  [[80,52],[70,45]],
+		agilityBoost:  [[80,52],[70,44]],
 		travelTime: 362_000
 	}
 ];
