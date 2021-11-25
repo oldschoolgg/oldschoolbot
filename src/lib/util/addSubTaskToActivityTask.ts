@@ -1,4 +1,4 @@
-import { prisma } from '../settings/prisma';
+import { activitySync, prisma } from '../settings/prisma';
 import { getActivityOfUser } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
@@ -28,7 +28,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 		...__newData
 	};
 
-	await prisma.activity.create({
+	const createdActivity = await prisma.activity.create({
 		data: {
 			user_id: taskToAdd.userID,
 			start_date: new Date(),
@@ -41,4 +41,5 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 			duration
 		}
 	});
+	activitySync(createdActivity);
 }

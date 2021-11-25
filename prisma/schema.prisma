@@ -241,7 +241,7 @@ model User {
   lastDailyTimestamp         BigInt   @default(1)
   sacrificedValue            BigInt   @default(0)
   bank                       Json     @default("{}") @db.Json
-  collectionLogBank          Json     @default("{}") @db.Json
+  collectionLogBank          Json     @default("{}") @db.JsonB
   creatureScores             Json     @default("{}") @db.Json
   clueScores                 Json     @default("{}") @db.Json
   monsterScores              Json     @default("{}") @db.Json
