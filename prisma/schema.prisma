@@ -403,6 +403,7 @@ model User {
   dungeoneering_tokens        Int      @default(0)
   item_contract_streak        Int      @default(0)
   item_contract_bank          Json     @default("{}") @db.Json
+  has_killed_turkey           Boolean  @default(false)
 
   @@map("users")
 }

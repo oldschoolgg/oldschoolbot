@@ -2051,6 +2051,12 @@ setCustomItem(
 	},
 	10_000_000
 );
+
+setCustomItem(48_329, 'Raw turkey', 'Coal', {}, 100_000);
+setCustomItem(48_330, 'Turkey', 'Coal', {}, 100_000);
+setCustomItem(48_331, 'Turkey drumstick', 'Coal', {}, 100_000);
+setCustomItem(48_332, 'Burnt turkey', 'Coal', {}, 100_000);
+setCustomItem(48_333, 'Cornucopia', 'Coal', {}, 100_000);
 /**
  * Misc Items
  *

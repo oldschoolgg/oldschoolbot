@@ -7,6 +7,17 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
 
+const combinedUsables = [
+	{
+		items: ['Knife', 'Turkey'].map(getOSItem),
+		run: async (msg: KlasaMessage) => {
+			await msg.author.removeItemsFromBank(new Bank().add('Turkey'));
+			await msg.author.addItemsToBank(new Bank().add('Turkey drumstick', 3));
+			return msg.channel.send('You cut your Turkey into 3 drumsticks!');
+		}
+	}
+];
+
 const usables = [
 	{
 		item: getOSItem('Scroll of farming'),
@@ -154,6 +165,22 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [firstItemStr]: [string]) {
 		const bank = msg.author.bank();
+
+		// Combined Usables
+		const items = firstItemStr
+			.split(',')
+			.map(part => part.trim().toLowerCase())
+			.map(getOSItem);
+		const combinedUsable = combinedUsables.find(
+			i => i.items.length === items.length && i.items.every(item => items.includes(item))
+		);
+		if (combinedUsable) {
+			if (combinedUsable.items.some(i => !msg.author.owns(i.id))) {
+				return msg.channel.send("You don't own these items.");
+			}
+			return combinedUsable.run(msg);
+		}
+
 		const firstItem = getOSItem(firstItemStr);
 		const usable = usables.find(u => u.item === firstItem);
 		if (!usable) {

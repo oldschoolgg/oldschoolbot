@@ -7,11 +7,12 @@ import {
 	objectKeys,
 	reduceNumByPercent,
 	round,
+	sleep,
 	Time,
 	uniqueArr
 } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank, LootTable, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
@@ -118,6 +119,20 @@ export default class extends BotCommand {
 		if (typeof quantity === 'string') {
 			name = quantity;
 			quantity = null;
+		}
+
+		if (name.toLowerCase() === 'turkey') {
+			if (msg.author.settings.get(UserSettings.HasKilledTurkey)) {
+				return msg.channel.send('You already killed the Thanksgiving Turkey!');
+			}
+
+			await msg.channel.send('You send your minion to kill the Thanksgiving Turkey...');
+			await sleep(1000);
+			const table = new LootTable().add('Raw turkey').tertiary(10, 'Cornucopia');
+			const loot = table.roll();
+			await msg.author.addItemsToBank(loot, true);
+			await msg.author.settings.update(UserSettings.HasKilledTurkey, true);
+			return msg.channel.send(`You killed the Thanksgiving Turkey and received: ${loot}.`);
 		}
 
 		if (msg.flagArgs.monsters) {

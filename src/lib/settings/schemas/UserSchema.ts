@@ -181,4 +181,5 @@ Client.defaultUserSchema
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_slots', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-	.add('monkeys_fought', 'string', { array: true, default: [] });
+	.add('monkeys_fought', 'string', { array: true, default: [] })
+	.add('has_killed_turkey', 'boolean', { default: false });
