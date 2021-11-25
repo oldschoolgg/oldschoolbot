@@ -13,8 +13,8 @@ interface Castable {
 	gpCost?: number;
 	craftLevel?: number;
 	craftXp?: number;
-	agilityLevel?: number;
-	gracefulPenalty?: number;
+	agilityBoost?: number[][];
+	travelTime?: number;
 }
 
 export const Castables: Castable[] = [
@@ -340,7 +340,7 @@ export const Castables: Castable[] = [
 		xp: 76,
 		level: 66,
 		ticks: 12.63,
-		gracefulPenalty: 20
+		travelTime: 20
 	},
 	{
 		id: itemID('Fire orb'),
@@ -350,8 +350,8 @@ export const Castables: Castable[] = [
 		xp: 73,
 		level: 63,
 		ticks: 13.33,
-		agilityLevel: 70,
-		gracefulPenalty: 20
+		agilityBoost:  [[80,45],[70,40]],
+		travelTime: 20
 	},
 	{
 		id: itemID('Earth orb'),
@@ -361,7 +361,7 @@ export const Castables: Castable[] = [
 		xp: 70,
 		level: 60,
 		ticks: 12.63,
-		gracefulPenalty: 20
+		travelTime: 20
 	},
 	{
 		id: itemID('Water orb'),
@@ -371,7 +371,7 @@ export const Castables: Castable[] = [
 		xp: 66,
 		level: 56,
 		ticks: 13.33,
-		agilityLevel: 70,
-		gracefulPenalty: 20
+		agilityBoost:  [[80,45],[70,40]],
+		travelTime: 20
 	}
 ];

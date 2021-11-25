@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -57,36 +57,41 @@ export default class extends BotCommand {
 		if (spell.qpRequired && msg.author.settings.get(UserSettings.QP) < spell.qpRequired) {
 			return msg.channel.send(`${msg.author.minionName} needs ${spell.qpRequired} QP to cast ${spell.name}.`);
 		}
-
-		if (spell.agilityLevel && msg.author.skillLevel(SkillsEnum.Agility) < spell.agilityLevel) {
-			return msg.channel.send(
-				`${msg.author.minionName} needs ${spell.agilityLevel} Agility to cast ${spell.name}.`
-			);
-			
-		}
 		
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
-		let timeToEnchantTen = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
+		let castTime = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
+		
+		if ( spell.travelTime ) {
+			let travelTime = spell.travelTime;
+			if ( msg.author.hasGracefulEquipped() ) travelTime = reduceNumByPercent(travelTime, 20); // 20% boost for having graceful
+
+			if ( spell.agilityBoost ) {
+				const availableBoost = spell.agilityBoost!.find((boost) => msg.author.skillLevel(SkillsEnum.Agility) >= boost[0]);
+				if ( availableBoost ) travelTime = reduceNumByPercent(travelTime, availableBoost[1]); // Apply an agility boost based on tier
+			};
+
+			castTime += travelTime / 27; // One trip holds 27 casts, scale it down
+		};
 
 		const maxTripLength = msg.author.maxTripLength('Casting');
 
 		if (quantity === null) {
-			quantity = Math.floor(maxTripLength / timeToEnchantTen);
+			quantity = Math.floor(maxTripLength / castTime);
 			const spellRunes = determineRunes(msg.author, spell.input.clone());
 			const max = userBank.fits(spellRunes);
 			if (max < quantity && max !== 0) quantity = max;
 		}
 
-		const duration = quantity * timeToEnchantTen;
+		const duration = quantity * castTime;
 
 		if (duration > maxTripLength) {
 			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${spell.name}s you can cast is ${Math.floor(
-					maxTripLength / timeToEnchantTen
+					maxTripLength / castTime
 				)}.`
 			);
 		}
