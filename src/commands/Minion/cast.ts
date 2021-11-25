@@ -63,39 +63,40 @@ export default class extends BotCommand {
 		const userBank = msg.author.bank();
 
 		let castTimeMilliSeconds = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
-		
-		if ( spell.travelTime ) {
-			let travelTime = spell.travelTime;
-			if ( msg.author.hasGracefulEquipped() ) {
+
+		if (spell.travelTime) {
+			let { travelTime } = spell;
+			if (msg.author.hasGracefulEquipped()) {
 				travelTime = reduceNumByPercent(travelTime, 20); // 20% boost for having graceful
-				boosts.push(`20% for Graceful outfit`);
+				boosts.push('20% for Graceful outfit');
 			} else {
-				missedBoosts.push(`20% for Graceful outfit`);
+				missedBoosts.push('20% for Graceful outfit');
 			}
 
-			if ( spell.agilityBoost ) {
-				const boostLevels = spell.agilityBoost.map((boost) => boost[0]);
-				const boostPercentages = spell.agilityBoost.map((boost) => boost[1]);
-				
-				const availableBoost = boostLevels.find((boost) => msg.author.skillLevel(SkillsEnum.Agility) >= boost);
-				if ( availableBoost ) {
+			if (spell.agilityBoost) {
+				const boostLevels = spell.agilityBoost.map(boost => boost[0]);
+				const boostPercentages = spell.agilityBoost.map(boost => boost[1]);
+
+				const availableBoost = boostLevels.find(boost => msg.author.skillLevel(SkillsEnum.Agility) >= boost);
+				if (availableBoost) {
 					const boostIndex = boostLevels.indexOf(availableBoost);
 
 					travelTime = reduceNumByPercent(travelTime, boostPercentages[boostIndex]); // Apply an agility boost based on tier
 					boosts.push(`${boostPercentages[boostIndex]}% for ${availableBoost}+ Agility`);
 
-					if ( boostIndex > 0 ) {
-						missedBoosts.push(`${boostPercentages[boostIndex-1]}% for ${boostLevels[boostIndex-1]}+ Agility`);
-					};
+					if (boostIndex > 0) {
+						missedBoosts.push(
+							`${boostPercentages[boostIndex - 1]}% for ${boostLevels[boostIndex - 1]}+ Agility`
+						);
+					}
 				} else {
-					const worstBoost = spell.agilityBoost[spell.agilityBoost.length-1];
+					const worstBoost = spell.agilityBoost[spell.agilityBoost.length - 1];
 					missedBoosts.push(`${worstBoost[1]}% for ${worstBoost[0]}+ Agility`);
 				}
-			};
+			}
 
 			castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
-		};
-
+		}
 
 		const maxTripLength = msg.author.maxTripLength('Casting');
 
@@ -156,25 +157,25 @@ export default class extends BotCommand {
 			((spell.xp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} Magic XP/Hr`;
 
-		let response = `${msg.author.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish. Removed ${cost}${
+		let response = `${msg.author.minionName} is now casting ${quantity}x ${
+			spell.name
+		}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost}${
 			spell.gpCost ? ` and ${gpCost} Coins` : ''
-		} from your bank. **${magicXpHr}**`
+		} from your bank. **${magicXpHr}**`;
 
 		if (spell.craftXp) {
 			response = `and** ${Math.round(
 				((spell.craftXp * quantity) / (duration / Time.Minute)) * 60
 			).toLocaleString()} Crafting XP/Hr**`;
 		}
-		
-		if ( boosts.length > 0 ) {
-			response += `\n**Boosts:** ${boosts.join(', ')}.`
-		};
 
-		if ( missedBoosts.length > 0 ) {
-			response += `\n**Missed boosts:** ${missedBoosts.join(', ')}.`
-		};
+		if (boosts.length > 0) {
+			response += `\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		if (missedBoosts.length > 0) {
+			response += `\n**Missed boosts:** ${missedBoosts.join(', ')}.`;
+		}
 
 		return msg.channel.send(response);
 	}
