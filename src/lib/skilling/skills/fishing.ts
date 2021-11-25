@@ -189,7 +189,7 @@ const fishes: Fish[] = [
 		xp: 130,
 		id: itemID('Raw dark crab'),
 		name: 'Dark crab',
-		alias: ['Crab'],
+		alias: ['Crab', 'Dark'],
 		petChance: 149_434,
 		bait: itemID('Dark fishing bait'),
 		timePerFish: 11.7,
