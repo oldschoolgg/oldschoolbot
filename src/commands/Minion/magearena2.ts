@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -51,7 +50,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		const [, foodRemoved] = await removeFoodFromUser({
+		const { foodRemoved } = await removeFoodFromUser({
 			client: this.client,
 			user: msg.author,
 			totalHealingNeeded: 20 * 23,
@@ -70,7 +69,7 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.MageArena2
+			type: 'MageArena2'
 		});
 
 		return msg.channel.send(

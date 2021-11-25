@@ -18,17 +18,15 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { getNewUser } from '../../lib/settings/settings';
+import { autoFarm } from '../../lib/minions/functions/autoFarm';
+import { equipPet } from '../../lib/minions/functions/equipPet';
+import { pastActivities } from '../../lib/minions/functions/pastActivities';
+import { unequipPet } from '../../lib/minions/functions/unequipPet';
+import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
-import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
-import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
-import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
-import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
-import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, runCommand, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -42,16 +40,31 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
-async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
-	try {
-		const command = msg.client.commands.get(name)!;
-		await command!.run(msg, args);
-	} catch (err) {
-		msg.channel.send(typeof err === 'string' ? err : err.message);
-	}
-}
-
 const ironmanArmor = new Bank({ 'Ironman helm': 1, 'Ironman platebody': 1, 'Ironman platelegs': 1 });
+
+const subCommands = [
+	'lvl',
+	'seticon',
+	'clues',
+	'k',
+	'kill',
+	'setname',
+	'buy',
+	'clue',
+	'kc',
+	'pat',
+	'stats',
+	'ironman',
+	'opens',
+	'info',
+	'equippet',
+	'unequippet',
+	'autofarm',
+	'activities',
+	'af',
+	'ep',
+	'uep'
+];
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -60,7 +73,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: `[${subCommands.join('|')}] [quantity:int{1}|name:...string] [name:...string] [name:...string]`,
 			usageDelim: ' ',
 			subcommands: true,
 			requiredPermissions: ['EMBED_LINKS']
@@ -131,6 +144,38 @@ export default class MinionCommand extends BotCommand {
 			};
 			handleButtons();
 		}
+	}
+
+	async info(msg: KlasaMessage) {
+		return runCommand(msg, 'rp', ['c', msg.author]);
+	}
+
+	async unequippet(msg: KlasaMessage) {
+		return unequipPet(msg);
+	}
+
+	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return equipPet(msg, input);
+	}
+
+	async uep(msg: KlasaMessage) {
+		return unequipPet(msg);
+	}
+
+	async ep(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return equipPet(msg, input);
+	}
+
+	async af(msg: KlasaMessage) {
+		return autoFarm(msg);
+	}
+
+	async autofarm(msg: KlasaMessage) {
+		return autoFarm(msg);
+	}
+
+	async activities(msg: KlasaMessage) {
+		return pastActivities(msg);
 	}
 
 	@requiresMinion
@@ -243,9 +288,11 @@ Please say \`permanent\` to confirm.`
 			}
 		}
 
-		const existingGiveaways = await GiveawayTable.find({
-			userID: msg.author.id,
-			completed: false
+		const existingGiveaways = await prisma.giveaway.findMany({
+			where: {
+				user_id: msg.author.id,
+				completed: false
+			}
 		});
 
 		if (existingGiveaways.length !== 0) {
@@ -284,11 +331,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			await msg.author.settings.reset([...keysToReset]);
 
 			try {
-				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
-				await PoHTable.delete({ userID: msg.author.id });
-				await MinigameTable.delete({ userID: msg.author.id });
-				await XPGainsTable.delete({ userID: msg.author.id });
-				await NewUserTable.delete({ id: msg.author.id });
+				await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
+				await prisma.minigame.delete({ where: { user_id: msg.author.id } });
+				await prisma.xPGain.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.newUser.delete({ where: { id: msg.author.id } });
+				await prisma.activity.deleteMany({ where: { user_id: msg.author.id } });
 			} catch (_) {}
 
 			await msg.author.settings.update([
@@ -302,7 +350,6 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	}
 
 	@requiresMinion
-	@minionNotBusy
 	async pat(msg: KlasaMessage) {
 		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
@@ -412,5 +459,10 @@ Please click the buttons below for important links.`
 	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
 		runCommand(msg, 'k', [quantity, name]);
+	}
+
+	async opens(msg: KlasaMessage) {
+		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
+		return msg.channel.send(`You've opened... ${openableScores}`);
 	}
 }

@@ -1,7 +1,6 @@
 import { objectEntries, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { GearStat, readableStatName } from '../../lib/gear';
 import { difficulties, trekBankBoosts } from '../../lib/minions/data/templeTrekking';
@@ -118,7 +117,7 @@ export default class extends BotCommand {
 		const boosts = [];
 
 		// Every 25 trips becomes 1% faster to a cap of 10%
-		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('TempleTrekking')) / 25), 10);
+		const percentFaster = Math.min(Math.floor((await msg.author.getMinigameScore('temple_trekking')) / 25), 10);
 
 		boosts.push(`${percentFaster.toFixed(1)}% from completed treks`);
 
@@ -156,7 +155,7 @@ export default class extends BotCommand {
 			tripTime *= flailBoost;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Trekking);
+		const maxTripLength = msg.author.maxTripLength('Trekking');
 
 		if (quantity === undefined || quantity === null) {
 			quantity = Math.floor(maxTripLength / tripTime);
@@ -179,9 +178,9 @@ export default class extends BotCommand {
 			quantity,
 			userID: msg.author.id,
 			duration,
-			type: Activity.Trekking,
+			type: 'Trekking',
 			channelID: msg.channel.id,
-			minigameID: 'TempleTrekking'
+			minigameID: 'temple_trekking'
 		});
 
 		let str = `${

@@ -2,16 +2,18 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BitField } from '../../lib/constants';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { getPOHObject, GroupedPohObjects, itemsNotRefundable, PoHObjects } from '../../lib/poh';
+import { prisma } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import PoHImage from '../../tasks/pohImage';
+import { PlayerOwnedHouse } from '.prisma/client';
 
 const wallkits = [
 	{
@@ -49,7 +51,7 @@ export default class POHCommand extends BotCommand {
 	@requiresMinion
 	async wallkit(msg: KlasaMessage, [input]: [string]) {
 		const poh = await msg.author.getPOH();
-		const currentWallkit = wallkits.find(i => i.imageID === poh.backgroundID)!;
+		const currentWallkit = wallkits.find(i => i.imageID === poh.background_id)!;
 		const selectedKit = wallkits.find(i => stringMatches(i.name, input));
 
 		if (!input || !selectedKit) {
@@ -74,8 +76,14 @@ export default class POHCommand extends BotCommand {
 				return msg.channel.send(`You haven't unlocked the ${selectedKit.name} wallkit!`);
 			}
 		}
-		poh.backgroundID = selectedKit.imageID;
-		await poh.save();
+		await prisma.playerOwnedHouse.update({
+			where: {
+				user_id: msg.author.id
+			},
+			data: {
+				background_id: selectedKit.imageID
+			}
+		});
 		return msg.channel.send({ files: [await this.genImage(poh)] });
 	}
 
@@ -99,7 +107,7 @@ export default class POHCommand extends BotCommand {
 		return msg.channel.send(str);
 	}
 
-	genImage(poh: PoHTable, showSpaces = false) {
+	genImage(poh: PlayerOwnedHouse, showSpaces = false) {
 		return (this.client.tasks.get('pohImage') as PoHImage).run(poh, showSpaces);
 	}
 
@@ -119,9 +127,14 @@ export default class POHCommand extends BotCommand {
 		if (level < obj.level) {
 			return msg.channel.send(`You need level ${obj.level} Construction to build a ${obj.name} in your house.`);
 		}
-
+		if (obj.id === 29_149 || obj.id === 31_858) {
+			const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Arceuus, 100);
+			if (!hasFavour) {
+				return msg.channel.send(`Build Dark Altar/Occult altar requires ${requiredPoints}% Arceuus Favour.`);
+			}
+		}
 		const inPlace = poh[obj.slot];
-		if (obj.slot === 'mountedItem' && inPlace !== null) {
+		if (obj.slot === 'mounted_item' && inPlace !== null) {
 			return msg.channel.send(
 				`You already have a item mount built. Use \`${msg.cmdPrefix}poh mountitem <tem>\` to mount an item on it.`
 			);
@@ -164,8 +177,14 @@ export default class POHCommand extends BotCommand {
 			}
 		}
 
-		poh[obj.slot] = obj.id;
-		await poh.save();
+		await prisma.playerOwnedHouse.update({
+			where: {
+				user_id: msg.author.id
+			},
+			data: {
+				[obj.slot]: obj.id
+			}
+		});
 		return msg.channel.send({
 			content: `You built a ${obj.name} in your house, using ${obj.itemCost}.`,
 			files: [await this.genImage(poh)]
@@ -181,7 +200,7 @@ export default class POHCommand extends BotCommand {
 			return msg.channel.send({ files: [await this.genImage(poh, true)] });
 		}
 
-		if (poh.mountedItem === null) {
+		if (poh.mounted_item === null) {
 			return msg.channel.send('You need to build a mount for the item first.');
 		}
 
@@ -197,15 +216,23 @@ export default class POHCommand extends BotCommand {
 		if (userBank.amount('Magic stone') < 2) {
 			return msg.channel.send("You don't have 2x Magic stone.");
 		}
-		const currItem = poh.mountedItem === 1112 ? null : poh.mountedItem;
+		const currItem = poh.mounted_item === 1112 ? null : poh.mounted_item;
 
 		userBank.remove(item.id);
 		if (currItem) {
 			userBank.add(item.id);
 		}
 		await msg.author.settings.update(UserSettings.Bank, userBank.bank);
-		poh.mountedItem = item.id;
-		await poh.save();
+
+		await prisma.playerOwnedHouse.update({
+			where: {
+				user_id: msg.author.id
+			},
+			data: {
+				mounted_item: item.id
+			}
+		});
+
 		return msg.channel.send({
 			content: `You mounted a ${item.name} in your house, using 2x Magic stone and 1x ${
 				item.name
@@ -223,9 +250,15 @@ export default class POHCommand extends BotCommand {
 		const poh = await msg.author.getPOH();
 
 		const inPlace = poh[obj.slot];
-		if (obj.slot === 'mountedItem' && ![1111, 1112, null].includes(inPlace)) {
-			poh[obj.slot] = null;
-			await poh.save();
+		if (obj.slot === 'mounted_item' && ![1111, 1112, null].includes(inPlace)) {
+			await prisma.playerOwnedHouse.update({
+				where: {
+					user_id: msg.author.id
+				},
+				data: {
+					[obj.slot]: null
+				}
+			});
 			await msg.author.addItemsToBank({ [inPlace!]: 1 });
 			return msg.channel.send({
 				content: `You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(inPlace!)}.`,
@@ -236,8 +269,6 @@ export default class POHCommand extends BotCommand {
 			return msg.channel.send(`You don't have a ${obj.name} built in your house.`);
 		}
 
-		poh[obj.slot] = null;
-
 		let str = `You removed a ${obj.name} from your house.`;
 		if (obj.refundItems && obj.itemCost) {
 			const itemsToRefund = new Bank(obj.itemCost.bank).remove(itemsNotRefundable);
@@ -247,7 +278,15 @@ export default class POHCommand extends BotCommand {
 			}
 		}
 
-		await poh.save();
+		await prisma.playerOwnedHouse.update({
+			where: {
+				user_id: msg.author.id
+			},
+			data: {
+				[obj.slot]: null
+			}
+		});
+
 		return msg.channel.send({ content: str, files: [await this.genImage(poh)] });
 	}
 }

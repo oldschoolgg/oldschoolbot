@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -119,7 +118,7 @@ export default class extends BotCommand {
 			tripLength *= 0.97;
 			boosts.push('3% for Runecraft cape');
 		}
-		const maxTripLength = msg.author.maxTripLength(Activity.Runecraft);
+		const maxTripLength = msg.author.maxTripLength('Runecraft');
 
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
@@ -244,7 +243,7 @@ export default class extends BotCommand {
 			essenceQuantity: quantity,
 			duration,
 			imbueCasts,
-			type: Activity.Runecraft
+			type: 'Runecraft'
 		});
 
 		let response = `${msg.author.minionName} is now turning ${quantity}x Essence into ${

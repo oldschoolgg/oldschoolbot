@@ -1,22 +1,26 @@
 import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage, util } from 'klasa';
-import { IsNull, Not } from 'typeorm';
 
 import { production } from '../../config';
-import { Minigames } from '../../extendables/User/Minigame';
 import { badges, Emoji } from '../../lib/constants';
 import { getCollectionItems } from '../../lib/data/Collections';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { batchSyncNewUserUsernames } from '../../lib/settings/settings';
+import { prisma } from '../../lib/settings/prisma';
+import { Minigames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
-import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
 import { ItemBank } from '../../lib/types';
-import { convertXPtoLVL, makePaginatedMessage, stringMatches, stripEmojis, toTitleCase } from '../../lib/util';
+import {
+	convertXPtoLVL,
+	formatDuration,
+	makePaginatedMessage,
+	stringMatches,
+	stripEmojis,
+	toTitleCase
+} from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import PostgresProvider from '../../providers/postgres';
 import { allOpenables } from './open';
@@ -84,7 +88,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|petrecords|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open] [name:...string]',
+			usage: '[pets|gp|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open|inferno] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -119,7 +123,14 @@ export default class extends BotCommand {
 	}
 
 	async cacheUsernames() {
-		const allNewUsers = await NewUserTable.find({ username: Not(IsNull()) });
+		const allNewUsers = await prisma.newUser.findMany({
+			where: {
+				username: {
+					not: null
+				}
+			}
+		});
+
 		for (const user of allNewUsers) {
 			this.usernameCache.map.set(user.id, stripEmojis(user.username!));
 		}
@@ -137,8 +148,6 @@ export default class extends BotCommand {
 			}
 			this.usernameCache.map.set(user.id, `${rawBadges.join(' ')} ${rawName}`);
 		}
-
-		batchSyncNewUserUsernames(this.client);
 	}
 
 	async run(msg: KlasaMessage) {
@@ -150,6 +159,26 @@ export default class extends BotCommand {
 		msg.flagArgs.xp = 'xp';
 		this.skills(msg, ['overall']);
 		return null;
+	}
+
+	async inferno(msg: KlasaMessage) {
+		const res = await this.query(`SELECT user_id, duration
+FROM activity
+WHERE type = 'Inferno'
+AND data->>'deathTime' IS NULL
+AND completed = true
+ORDER BY duration ASC
+LIMIT 10;`);
+
+		if (res.length === 0) {
+			return msg.channel.send('No results.');
+		}
+
+		return msg.channel.send(
+			`**Inferno Records**\n\n${res
+				.map((e, i) => `${i + 1}. **${this.getUsername(e.user_id)}:** ${formatDuration(e.duration)}`)
+				.join('\n')}`
+		);
 	}
 
 	async query(query: string, cacheUsernames = true) {
@@ -316,12 +345,17 @@ export default class extends BotCommand {
 			);
 		}
 
-		const res: MinigameTable[] = await MinigameTable.getRepository()
-			.createQueryBuilder('user')
-			.orderBy(minigame.column, 'DESC')
-			.where(`${minigame.column} > 10`)
-			.limit(100)
-			.getMany();
+		const res = await prisma.minigame.findMany({
+			where: {
+				[minigame.column]: {
+					gt: 10
+				}
+			},
+			orderBy: {
+				[minigame.column]: 'desc'
+			},
+			take: 10
+		});
 
 		this.doMenu(
 			msg,
@@ -331,8 +365,8 @@ export default class extends BotCommand {
 					subList
 						.map(
 							(u, j) =>
-								`${this.getPos(i, j)}**${this.getUsername(u.userID)}:** ${u[
-									minigame.key
+								`${this.getPos(i, j)}**${this.getUsername(u.user_id)}:** ${u[
+									minigame.column
 								].toLocaleString()}`
 						)
 						.join('\n')
@@ -542,7 +576,7 @@ export default class extends BotCommand {
 			return msg.channel.send("That's not a valid collection log category. Check +cl for all possible logs.");
 		}
 		const users = (
-			await this.client.orm.query(`
+			(await prisma.$queryRawUnsafe(`
 SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				  FROM (
   SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
@@ -556,7 +590,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 ) u
 ORDER BY qty DESC
 LIMIT 50;
-`)
+`)) as any
 		).filter((i: any) => i.qty > 0) as CLUser[];
 
 		this.doMenu(

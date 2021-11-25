@@ -65,7 +65,7 @@ export async function createTeam(
 			deathChance -= calcPercentOfNum(total, 10);
 		}
 
-		const kc = await u.getMinigameScore(cm ? 'RaidsChallengeMode' : 'Raids');
+		const kc = await u.getMinigameScore(cm ? 'raids_challenge_mode' : 'raids');
 		const kcChange = kcPointsEffect(kc);
 		if (kcChange < 0) points = reduceNumByPercent(points, Math.abs(kcChange));
 		else points = increaseNumByPercent(points, kcChange);
@@ -185,7 +185,7 @@ export const maxMeleeGear = constructGearSetup({
 	head: "Inquisitor's great helm",
 	neck: 'Amulet of torture',
 	body: "Inquisitor's hauberk",
-	cape: 'Fire cape',
+	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
 	legs: "Inquisitor's plateskirt",
 	feet: 'Primordial boots',
@@ -264,7 +264,7 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			) {
 				return `${user.username} doesn't own a Twisted bow or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
-			const kc = await user.getMinigameScore('Raids');
+			const kc = await user.getMinigameScore('raids');
 			if (kc < 200) {
 				return `${user.username} doesn't have the 200 KC required for Challenge Mode.`;
 			}
@@ -278,7 +278,7 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 }
 
 async function kcEffectiveness(u: KlasaUser, challengeMode: boolean, isSolo: boolean) {
-	const kc = await u.getMinigameScore(challengeMode ? 'RaidsChallengeMode' : 'Raids');
+	const kc = await u.getMinigameScore(challengeMode ? 'raids_challenge_mode' : 'raids');
 	let cap = isSolo ? 250 : 400;
 	if (challengeMode) {
 		cap = isSolo ? 75 : 100;
@@ -410,7 +410,7 @@ export async function calcCoxDuration(
 
 export async function calcCoxInput(u: KlasaUser, solo: boolean) {
 	const items = new Bank();
-	const kc = await u.getMinigameScore('Raids');
+	const kc = await u.getMinigameScore('raids');
 	items.add('Stamina potion(4)', solo ? 2 : 1);
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));

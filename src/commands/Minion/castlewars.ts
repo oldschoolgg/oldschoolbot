@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getMinigameEntity } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -28,23 +27,23 @@ export default class CastleWarsCommand extends BotCommand {
 		const bank = msg.author.bank();
 		const kc = await getMinigameEntity(msg.author.id);
 		return msg.channel.send(`You have **${bank.amount('Castle wars ticket')}** Castle wars tickets.
-You have played ${kc.CastleWars} Castle Wars games.`);
+You have played ${kc.castle_wars} Castle Wars games.`);
 	}
 
 	@requiresMinion
 	@minionNotBusy
 	async play(msg: KlasaMessage) {
 		const gameLength = Time.Minute * 18;
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.CastleWars) / gameLength);
+		const quantity = Math.floor(msg.author.maxTripLength('CastleWars') / gameLength);
 		const duration = quantity * gameLength;
 
 		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.CastleWars,
+			type: 'CastleWars',
 			quantity,
-			minigameID: 'CastleWars'
+			minigameID: 'castle_wars'
 		});
 
 		return msg.channel.send(

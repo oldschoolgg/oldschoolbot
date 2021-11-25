@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -236,7 +235,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: numberOfGames,
 			duration,
-			type: Activity.VolcanicMine
+			type: 'VolcanicMine'
 		});
 
 		return msg.channel.send(str);

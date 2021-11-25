@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import {
 	calcCoxDuration,
 	calcCoxInput,
@@ -83,8 +83,8 @@ export default class extends BotCommand {
 
 		if (!type) {
 			const [normal, cm] = await Promise.all([
-				msg.author.getMinigameScore('Raids'),
-				msg.author.getMinigameScore('RaidsChallengeMode')
+				msg.author.getMinigameScore('raids'),
+				msg.author.getMinigameScore('raids_challenge_mode')
 			]);
 			let totalUniques = 0;
 			const cl = msg.author.cl();
@@ -97,7 +97,7 @@ export default class extends BotCommand {
 			const normalTeam = await calcCoxDuration(Array(2).fill(msg.author), false);
 			const cmSolo = await calcCoxDuration([msg.author], true);
 			const cmTeam = await calcCoxDuration(Array(2).fill(msg.author), true);
-			return msg.channel.send(`<:Twisted_bow:403018312402862081> Chamber's of Xeric <:Olmlet:324127376873357316>
+			return msg.channel.send(`<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>
 **Normal:** ${normal} KC (Solo ${Emoji.CombatSword} ${calcWhatPercent(
 				normalSolo.reductions[msg.author.id],
 				normalSolo.totalReduction
@@ -134,21 +134,21 @@ export default class extends BotCommand {
 		}
 
 		if (type !== 'mass' && type !== 'solo') {
-			return msg.channel.send("Specify your team setup for Chamber's of Xeric, either solo or mass.");
+			return msg.channel.send('Specify your team setup for Chambers of Xeric, either solo or mass.');
 		}
 
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
 
-		const userKC = await msg.author.getMinigameScore(isChallengeMode ? 'RaidsChallengeMode' : 'Raids');
+		const userKC = await msg.author.getMinigameScore(isChallengeMode ? 'raids_challenge_mode' : 'raids');
 		if (!isChallengeMode && userKC < 50 && type === 'solo') {
-			return msg.channel.send('You need atleast 50 KC before you can attempt a solo raid.');
+			return msg.channel.send('You need at least 50 Chambers of Xeric KC before you can attempt a solo raid.');
 		}
 
 		if (isChallengeMode) {
-			const normalKC = await msg.author.getMinigameScore('Raids');
+			const normalKC = await msg.author.getMinigameScore('raids');
 			if (normalKC < 200) {
 				return msg.channel.send(
-					"You need atleast 200 completions of the Chamber's of Xeric before you can attempt Challenge Mode."
+					'You need atleast 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.'
 				);
 			}
 		}
@@ -161,7 +161,9 @@ export default class extends BotCommand {
 			minSize: 2,
 			maxSize: 15,
 			ironmanAllowed: true,
-			message: `${msg.author.username} is hosting a Chamber's of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+			message: `${msg.author.username} is hosting a ${
+				isChallengeMode ? '**Challenge mode** ' : ''
+			}Chambers of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 			customDenier: user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
@@ -170,7 +172,7 @@ export default class extends BotCommand {
 					return [true, 'your minion is busy.'];
 				}
 				if (!hasMinRaidsRequirements(user)) {
-					return [true, "You don't meet the stat requirements to do the Chamber's of Xeric."];
+					return [true, "You don't meet the stat requirements to do the Chambers of Xeric."];
 				}
 
 				if (!user.owns(minimumCoxSuppliesNeeded)) {
@@ -182,7 +184,7 @@ export default class extends BotCommand {
 
 				const { total } = calculateUserGearPercents(user);
 				if (total < 20) {
-					return [true, "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric"];
+					return [true, 'Your gear is terrible! You do not stand a chance in the Chambers of Xeric'];
 				}
 
 				if (
@@ -237,7 +239,7 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.Raids,
+			type: 'Raids',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
 			challengeMode: isChallengeMode
@@ -246,12 +248,10 @@ export default class extends BotCommand {
 		let str = isSolo
 			? `${
 					msg.author.minionName
-			  } is now doing a Chamber's of Xeric raid. The total trip will take ${formatDuration(duration)}.`
+			  } is now doing a Chambers of Xeric raid. The total trip will take ${formatDuration(duration)}.`
 			: `${partyOptions.leader.username}'s party (${users
 					.map(u => u.username)
-					.join(
-						', '
-					)}) is now off to do a Chamber's of Xeric raid - the total trip will take ${formatDuration(
+					.join(', ')}) is now off to do a Chambers of Xeric raid - the total trip will take ${formatDuration(
 					duration
 			  )}.`;
 

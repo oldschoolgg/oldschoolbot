@@ -108,6 +108,7 @@ export interface Cookable {
 	stopBurnAt: number;
 	stopBurnAtCG: number;
 	burntCookable: number;
+	alias?: string[];
 }
 
 export interface Bar {
@@ -241,6 +242,7 @@ export interface Plant {
 	canCompostandPay: boolean;
 	additionalPatchesByQP: number[][];
 	additionalPatchesByFarmLvl: number[][];
+	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
 }

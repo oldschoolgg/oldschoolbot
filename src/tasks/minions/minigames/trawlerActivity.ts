@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
@@ -14,7 +15,7 @@ export default class extends Task {
 		const { channelID, quantity, userID } = data;
 		const user = await this.client.fetchUser(userID);
 
-		user.incrementMinigameScore('FishingTrawler', quantity);
+		await incrementMinigameScore(userID, 'fishing_trawler', quantity);
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 

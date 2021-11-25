@@ -5,6 +5,7 @@ import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { fightCavesCost } from '../../../commands/Minion/fightcaves';
 import { Emoji, Events } from '../../../lib/constants';
+import { prisma } from '../../../lib/settings/prisma';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -35,16 +36,23 @@ export default class extends Task {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
-			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 		if (preJadDeathTime) {
 			let slayerMsg = '';
 			if (isOnTask) {
 				slayerMsg = ' **Task cancelled.**';
-				usersTask.currentTask!.quantityRemaining = 0;
-				usersTask.currentTask!.skipped = true;
-				await usersTask.currentTask!.save();
+
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: 0,
+						skipped: true
+					}
+				});
 			}
 			// Give back supplies based on how far in they died, for example if they
 			// died 80% of the way through, give back approximately 20% of their supplies.
@@ -91,9 +99,16 @@ export default class extends Task {
 			if (isOnTask) {
 				const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: 11_760, duration });
 				msg = `**Task cancelled.** \n${msg} ${slayXP}.`;
-				usersTask.currentTask!.quantityRemaining = 0;
-				usersTask.currentTask!.skipped = true;
-				await usersTask.currentTask!.save();
+
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: 0,
+						skipped: true
+					}
+				});
 			}
 
 			return handleTripFinish(
@@ -120,7 +135,7 @@ export default class extends Task {
 		if (loot.has('Tzrek-jad')) {
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Tzrek-jad'))} ${
+				`**${user.username}** just received their ${formatOrdinal(user.cl().amount('Tzrek-jad') + 1)} ${
 					Emoji.TzRekJad
 				} TzRek-jad pet by killing TzTok-Jad, on their ${formatOrdinal(user.getKC(TzTokJad.id))} kill!`
 			);
@@ -150,8 +165,15 @@ export default class extends Task {
 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-			usersTask.currentTask!.quantityRemaining = 0;
-			await usersTask.currentTask!.save();
+			await prisma.slayerTask.update({
+				where: {
+					id: usersTask.currentTask!.id
+				},
+				data: {
+					quantity_remaining: 0
+				}
+			});
+
 			const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
 			const xpMessage = `${msg} ${slayXP}`;
 

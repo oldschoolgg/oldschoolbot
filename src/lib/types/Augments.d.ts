@@ -1,3 +1,4 @@
+import { ActivityTypeEnum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
@@ -5,21 +6,19 @@ import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank, Player } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
-import { Connection } from 'typeorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
-import { MinigameKey, MinigameScore } from '../../extendables/User/Minigame';
 import { BankImageResult } from '../../tasks/bankImage';
-import { Activity as OSBActivity, BitField, PerkTier } from '../constants';
+import { BitField, PerkTier } from '../constants';
 import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
 import { AddXpParams, KillableMonster } from '../minions/types';
+import { MinigameName } from '../settings/minigames';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
-import { MinigameTable } from '../typeorm/MinigameTable.entity';
-import { PoHTable } from '../typeorm/PoHTable.entity';
+import { chatHeads } from '../util/chatHeadImage';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 type SendBankImageFn = (options: {
@@ -35,7 +34,6 @@ type SendBankImageFn = (options: {
 
 declare module 'klasa' {
 	interface KlasaClient {
-		orm: Connection;
 		oneCommandAtATimeCache: Set<string>;
 		secondaryUserBusyCache: Set<string>;
 		public cacheItemPrice(itemID: number): Promise<number>;
@@ -95,6 +93,7 @@ declare module 'klasa' {
 		makePartyAwaiter(options: MakePartyOptions): Promise<KlasaUser[]>;
 		removeAllReactions(): void;
 		confirm(this: KlasaMessage, str: string): Promise<void>;
+		chatHeadImage(head: keyof typeof chatHeads, content: string, messageContent?: string): Promise<KlasaMessage>;
 	}
 
 	interface SettingsFolder {
@@ -143,13 +142,11 @@ declare module 'discord.js' {
 			filterLoot?: boolean
 		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
+		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-
 		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		incrementMinigameScore(this: User, minigame: MinigameKey, amountToAdd = 1): Promise<number>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
 		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
@@ -197,12 +194,7 @@ declare module 'discord.js' {
 		/**
 		 * Returns minigame score
 		 */
-		getMinigameScore(id: MinigameKey): Promise<number>;
-		getAllMinigameScores(): Promise<MinigameScore[]>;
-		/**
-		 * Returns minigame entity
-		 */
-		getMinigameEntity(): Promise<MinigameTable>;
+		getMinigameScore(id: MinigameName): Promise<number>;
 		/**
 		 * Returns Creature score
 		 */
@@ -219,7 +211,7 @@ declare module 'discord.js' {
 		 */
 		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
-		getPOH(): Promise<PoHTable>;
+		getPOH(): Promise<PlayerOwnedHouse>;
 		getUserFavAlchs(): Item[];
 		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
@@ -254,7 +246,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: OSBActivity): number;
+		maxTripLength(activity?: ActivityTypeEnum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;

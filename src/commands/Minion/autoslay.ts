@@ -11,7 +11,7 @@ import {
 	SlayerMasterEnum
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { wipeDBArrayByKey } from '../../lib/util';
+import { runCommand, wipeDBArrayByKey } from '../../lib/util';
 
 interface AutoslayLink {
 	monsterID: number;
@@ -296,7 +296,7 @@ export default class extends BotCommand {
 			if (currentMonID === 0) {
 				return msg.channel.send('Error: Could not get Monster data to find a task.');
 			}
-			return this.client.commands.get('k')?.run(msg, [null, Monsters.get(currentMonID)!.name]);
+			return runCommand(msg, 'k', [null, Monsters.get(currentMonID)!.name]);
 		}
 		if (method === 'ehp') {
 			// Save as default if user --save's
@@ -308,7 +308,8 @@ export default class extends BotCommand {
 				);
 			}
 			const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
-				const masterMatch = !e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayerMasterID);
+				const masterMatch =
+					!e.slayerMasters || e.slayerMasters.includes(usersTask.currentTask!.slayer_master_id);
 				return masterMatch && e.monsterID === usersTask.assignedTask!.monster.id;
 			});
 
@@ -319,16 +320,14 @@ export default class extends BotCommand {
 				ehpKillable?.levelRequirements !== undefined &&
 				!msg.author.hasSkillReqs(ehpKillable.levelRequirements)[0]
 			) {
-				return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
+				return runCommand(msg, 'k', [null, usersTask.assignedTask!.monster.name]);
 			}
 
 			if (ehpMonster && ehpMonster.efficientName) {
 				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'force';
-				return this.client.commands
-					.get('k')
-					?.run(msg, [null, ehpMonster.efficientName, ehpMonster.efficientMethod]);
+				return runCommand(msg, 'k', [null, ehpMonster.efficientName, ehpMonster.efficientMethod]);
 			}
-			return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
+			return runCommand(msg, 'k', [null, usersTask.assignedTask!.monster.name]);
 		}
 		if (method === 'boss') {
 			// This code handles the 'highest/boss' setting of autoslay.
@@ -368,7 +367,7 @@ export default class extends BotCommand {
 				}
 			});
 			if (maxMobName !== '') {
-				return this.client.commands.get('k')?.run(msg, [null, maxMobName]);
+				return runCommand(msg, 'k', [null, maxMobName]);
 			}
 			return msg.channel.send("Can't find any monsters you have the requirements to kill!");
 		} else if (method === 'default') {
@@ -377,7 +376,7 @@ export default class extends BotCommand {
 				// Lowest / default = none
 				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
 			}
-			return this.client.commands.get('k')?.run(msg, [null, usersTask.assignedTask!.monster.name]);
+			return runCommand(msg, 'k', [null, usersTask.assignedTask!.monster.name]);
 		}
 		return msg.channel.send(`Unrecognized mode. Please use:\n\`${msg.cmdPrefix}as [default|highest|efficient]\``);
 	}

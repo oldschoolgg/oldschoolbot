@@ -2,7 +2,7 @@ import { calcPercentOfNum, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, Emoji, Events } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -166,9 +166,7 @@ export default class extends Task {
 				return this.client.commands
 					.get('aerialfish')!
 					.run(res, [
-						Math.floor(
-							Math.min(user.maxTripLength(Activity.AerialFishing) / Time.Minute, duration / Time.Minute)
-						)
+						Math.floor(Math.min(user.maxTripLength('AerialFishing') / Time.Minute, duration / Time.Minute))
 					]);
 			},
 			undefined,

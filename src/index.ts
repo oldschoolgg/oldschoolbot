@@ -1,5 +1,4 @@
 import './lib/data/itemAliases';
-import 'reflect-metadata';
 
 import * as Sentry from '@sentry/node';
 
@@ -15,4 +14,5 @@ if (SENTRY_DSN) {
 
 export const client = new OldSchoolBotClient(clientOptions);
 
+client.on('ready', client.init);
 client.login(botToken);

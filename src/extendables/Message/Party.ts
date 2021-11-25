@@ -4,6 +4,7 @@ import { debounce, sleep } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { ReactionEmoji } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
 
@@ -52,7 +53,8 @@ async function _setup(
 				time: 120_000,
 				max: options.usersAllowed?.length ?? options.maxSize,
 				dispose: true,
-				filter: (reaction: MessageReaction, user: KlasaUser) => {
+				filter: async (reaction: MessageReaction, user: KlasaUser) => {
+					await user.settings.sync();
 					if (
 						(!options.ironmanAllowed && user.isIronman) ||
 						user.bot ||
@@ -106,6 +108,7 @@ async function _setup(
 
 			collector.on('collect', async (reaction, user) => {
 				if (user.partial) await user.fetch();
+				if (user.client.settings?.get(ClientSettings.UserBlacklist).includes(user.id)) return;
 				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
 						if (usersWhoConfirmed.includes(user)) return;

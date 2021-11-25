@@ -5,7 +5,8 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { itemID } from 'oldschooljs/dist/util';
 
 import MinionCommand from '../../commands/Minion/minion';
-import { Activity, BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
+import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
+import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
@@ -14,14 +15,15 @@ import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
+import { activity_type_enum } from '.prisma/client';
 
 export const collectors = new Map<string, MessageCollector>();
 
-const activitiesToTrackAsPVMGPSource = [
-	Activity.GroupMonsterKilling,
-	Activity.MonsterKilling,
-	Activity.Raids,
-	Activity.ClueCompletion
+const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
+	'GroupMonsterKilling',
+	'MonsterKilling',
+	'Raids',
+	'ClueCompletion'
 ];
 
 export async function handleTripFinish(
@@ -93,6 +95,8 @@ export async function handleTripFinish(
 
 	const channel = client.channels.cache.get(channelID);
 
+	message = await handleGrowablePetGrowth(user, data, message);
+
 	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);
 		const randomEventChance = 60 - minutes;
@@ -130,6 +134,7 @@ export async function handleTripFinish(
 	collectors.set(user.id, collector);
 
 	collector.on('collect', async (mes: KlasaMessage) => {
+		if (client.settings.get(ClientSettings.UserBlacklist).includes(mes.author.id)) return;
 		if (user.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
 			collector.stop();
 			collectors.delete(user.id);

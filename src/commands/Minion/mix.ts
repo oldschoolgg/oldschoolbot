@@ -3,7 +3,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -94,7 +93,7 @@ export default class extends BotCommand {
 			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Herblore);
+		const maxTripLength = msg.author.maxTripLength('Herblore');
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
@@ -124,6 +123,9 @@ export default class extends BotCommand {
 		}
 
 		const finalCost = requiredItems.multiply(quantity);
+		if (!msg.author.owns(finalCost)) {
+			return msg.channel.send(`You don't own: ${finalCost}.`);
+		}
 		await msg.author.removeItemsFromBank(finalCost);
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.HerbloreCostBank, finalCost);
@@ -135,7 +137,7 @@ export default class extends BotCommand {
 			zahur,
 			quantity,
 			duration,
-			type: Activity.Herblore
+			type: 'Herblore'
 		});
 
 		return msg.channel.send(

@@ -2,9 +2,9 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '../../../commands/Minion/chompyhunt';
-import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
+import { MinigameName } from '../../settings/settings';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
@@ -26,7 +26,7 @@ export interface Buyable {
 	aliases?: string[];
 	skillsNeeded?: Skills;
 	restockTime?: number;
-	minigameScoreReq?: [MinigameKey, number];
+	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
@@ -67,27 +67,27 @@ const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
 		gpCost: 100_000,
-		minigameScoreReq: ['RaidsChallengeMode', 100]
+		minigameScoreReq: ['raids_challenge_mode', 100]
 	},
 	{
 		name: "Xeric's warrior",
 		gpCost: 500_000,
-		minigameScoreReq: ['RaidsChallengeMode', 500]
+		minigameScoreReq: ['raids_challenge_mode', 500]
 	},
 	{
 		name: "Xeric's sentinel",
 		gpCost: 1_000_000,
-		minigameScoreReq: ['RaidsChallengeMode', 1000]
+		minigameScoreReq: ['raids_challenge_mode', 1000]
 	},
 	{
 		name: "Xeric's general",
 		gpCost: 1_500_000,
-		minigameScoreReq: ['RaidsChallengeMode', 1500]
+		minigameScoreReq: ['raids_challenge_mode', 1500]
 	},
 	{
 		name: "Xeric's champion",
 		gpCost: 2_000_000,
-		minigameScoreReq: ['RaidsChallengeMode', 2000]
+		minigameScoreReq: ['raids_challenge_mode', 2000]
 	}
 ];
 
@@ -175,30 +175,6 @@ const sepulchreBuyables: Buyable[] = [
 		name: 'Dark acorn',
 		outputItems: resolveNameBank({ 'Dark acorn': 1 }),
 		itemCost: resolveNameBank({ 'Hallowed mark': 3000 })
-	},
-	{
-		name: 'Dark graceful hood',
-		itemCost: resolveNameBank({ 'Graceful hood': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful top',
-		itemCost: resolveNameBank({ 'Graceful top': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful legs',
-		itemCost: resolveNameBank({ 'Graceful legs': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful gloves',
-		itemCost: resolveNameBank({ 'Graceful gloves': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful boots',
-		itemCost: resolveNameBank({ 'Graceful boots': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful cape',
-		itemCost: resolveNameBank({ 'Graceful cape': 1, 'Dark dye': 1 })
 	},
 	{
 		name: 'Dark squirrel',
@@ -555,27 +531,32 @@ const questBuyables: Buyable[] = [
 		name: 'Dwarf multicannon',
 		outputItems: CombatCannonItemBank,
 		gpCost: 10_000_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 750_000
 	},
 	{
 		name: 'Cannon barrels',
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon base',
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon furnace',
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon stand',
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Elemental shield',
@@ -719,6 +700,11 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 58
 	},
+	{
+		name: 'Sandworms',
+		gpCost: 500
+	},
+
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -741,7 +727,7 @@ for (const [chompyHat, qty] of chompyHats) {
 		name: chompyHat.name,
 		outputItems: new Bank().add(chompyHat.id).bank,
 		gpCost: qty * 44,
-		minigameScoreReq: ['BigChompyBirdHunting', qty]
+		minigameScoreReq: ['big_chompy_bird_hunting', qty]
 	});
 }
 

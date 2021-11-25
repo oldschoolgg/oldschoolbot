@@ -66,6 +66,7 @@ import {
 	giantMoleCL,
 	gnomeRestaurantCL,
 	godWarsDungeonGodswordShards,
+	gracefulCL,
 	grotesqueGuardiansCL,
 	hallowedSepulchreCL,
 	hesporiCL,
@@ -273,8 +274,8 @@ export const allCollectionLogs: ICollection = {
 			'The Gauntlet': {
 				alias: ['gauntlet', 'crystalline hunllef', 'hunllef'],
 				kcActivity: {
-					Default: user => user.getMinigameScore('Gauntlet'),
-					Corrupted: user => user.getMinigameScore('CorruptedGauntlet')
+					Default: user => user.getMinigameScore('gauntlet'),
+					Corrupted: user => user.getMinigameScore('corrupted_gauntlet')
 				},
 				items: theGauntletCL,
 				roleCategory: ['bosses']
@@ -304,7 +305,6 @@ export const allCollectionLogs: ICollection = {
 				roleCategory: ['bosses']
 			},
 			'The Inferno': {
-				enabled: false,
 				alias: ['zuk', 'inferno'],
 				items: theInfernoCL
 			},
@@ -368,6 +368,7 @@ export const allCollectionLogs: ICollection = {
 				roleCategory: ['bosses']
 			},
 			Tempoross: {
+				alias: ['tempoross', 'temp', 'tempo', 'tr', 'ross'],
 				items: temporossCL,
 				allItems: resolveItems([...spiritAnglerOutfit, 'Spirit flakes']),
 				roleCategory: ['bosses']
@@ -415,8 +416,8 @@ export const allCollectionLogs: ICollection = {
 			"Chamber's of Xeric": {
 				alias: ChambersOfXeric.aliases,
 				kcActivity: {
-					Default: user => user.getMinigameScore('Raids'),
-					Challenge: user => user.getMinigameScore('RaidsChallengeMode')
+					Default: user => user.getMinigameScore('raids'),
+					Challenge: user => user.getMinigameScore('raids_challenge_mode')
 				},
 				items: chambersOfXericCL,
 				roleCategory: ['raids'],
@@ -579,7 +580,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['ba', 'barb assault', 'barbarian assault'],
 				items: barbarianAssaultCL,
 				kcActivity: {
-					Default: async user => user.getMinigameScore('BarbarianAssault'),
+					Default: async user => user.getMinigameScore('barb_assault'),
 					'High Gambles': async user => user.settings.get(UserSettings.HighGambles)
 				},
 				roleCategory: ['minigames'],
@@ -832,7 +833,6 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Shayzien Armour': {
-				enabled: false,
 				items: shayzienArmourCL
 			},
 			'Shooting Stars': { enabled: false, items: resolveItems(['Celestial ring (uncharged)', 'Star fragment']) },
@@ -927,6 +927,10 @@ export const allCollectionLogs: ICollection = {
 			Implings: {
 				counts: false,
 				items: implingsCL
+			},
+			Graceful: {
+				counts: false,
+				items: gracefulCL
 			}
 		}
 	}

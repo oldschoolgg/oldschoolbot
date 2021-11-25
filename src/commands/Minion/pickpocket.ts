@@ -3,7 +3,6 @@ import { round, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
@@ -99,7 +98,7 @@ export default class extends BotCommand {
 
 		const timeToPickpocket = (pickpocketable.customTickRate ?? 2) * 600;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Pickpocket);
+		const maxTripLength = msg.author.maxTripLength('Pickpocket');
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
@@ -133,7 +132,7 @@ export default class extends BotCommand {
 			hasArdyHard
 		);
 
-		const [foodString, foodRemoved] = await removeFoodFromUser({
+		const { foodRemoved } = await removeFoodFromUser({
 			client: this.client,
 			user: msg.author,
 			totalHealingNeeded: damageTaken,
@@ -154,7 +153,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Pickpocket,
+			type: 'Pickpocket',
 			damageTaken,
 			successfulQuantity,
 			xpReceived
@@ -162,7 +161,7 @@ export default class extends BotCommand {
 
 		let str = `${msg.author.minionName} is now going to pickpocket a ${
 			pickpocketable.name
-		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodString}`;
+		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodRemoved}.`;
 
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;

@@ -2,7 +2,7 @@ import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -53,6 +53,12 @@ export default class extends BotCommand {
 				return msg.channel.send(`You need ${fish.qpRequired} qp to catch those!`);
 			}
 		}
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Piscarilius, 100);
+		if (!hasFavour && fish.name === 'Anglerfish') {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Piscarilius Favour to fish Anglerfish!`
+			);
+		}
 
 		if (
 			fish.name === 'Barbarian fishing' &&
@@ -96,7 +102,7 @@ export default class extends BotCommand {
 				break;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Fishing);
+		const maxTripLength = msg.author.maxTripLength('Fishing');
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / scaledTimePerFish);
@@ -135,7 +141,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Fishing
+			type: 'Fishing'
 		});
 
 		let response = `${msg.author.minionName} is now fishing ${quantity}x ${

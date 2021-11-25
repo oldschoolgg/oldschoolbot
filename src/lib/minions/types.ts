@@ -98,7 +98,7 @@ export interface KillableMonster {
 	disallowedAttackStyles?: AttackStyles[];
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
-	itemCost?: Bank;
+	itemCost?: Consumable;
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;
 	canBarrage?: boolean;
@@ -116,6 +116,7 @@ export interface Consumable {
 	qtyPerKill?: number;
 	// For staff of the dead / kodai
 	isRuneCost?: boolean;
+	alternativeConsumables?: Consumable[];
 }
 
 export interface AddXpParams {
@@ -151,4 +152,10 @@ export interface DetermineBoostParams {
 export interface ResolveAttackStylesParams {
 	monsterID: number;
 	boostMethod?: string;
+}
+
+export interface BlowpipeData {
+	scales: number;
+	dartQuantity: number;
+	dartID: number | null;
 }

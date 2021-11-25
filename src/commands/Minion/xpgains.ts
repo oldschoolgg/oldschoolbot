@@ -2,6 +2,7 @@ import { MessageEmbed } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PerkTier } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
 import { Skills } from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
@@ -30,15 +31,14 @@ export default class extends BotCommand {
 			? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
 			: undefined;
 
-		const res = await this.client.orm.query(
-			`SELECT user_id AS user, sum(xp) AS total_xp, max(date) AS lastDate
+		const res: any =
+			await prisma.$queryRawUnsafe(`SELECT user_id AS user, sum(xp) AS total_xp, max(date) AS lastDate
 FROM xp_gains
 WHERE date > now() - INTERVAL '1 ${interval}'
 ${skillObj ? `AND skill = '${skillObj.id}'` : ''}
 GROUP BY user_id
 ORDER BY total_xp DESC, lastDate ASC
-LIMIT 10;`
-		);
+LIMIT 10;`);
 
 		if (res.length === 0) {
 			return msg.channel.send('No results found.');

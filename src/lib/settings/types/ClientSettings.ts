@@ -62,11 +62,16 @@ export namespace ClientSettings {
 		export const RevsCost = T<O.Readonly<ItemBank>>('revs_cost');
 		export const RevsLoot = T<O.Readonly<ItemBank>>('revs_loot');
 
+		export const InfernoCost = T<O.Readonly<ItemBank>>('inferno_cost');
 		export const DroppedItems = T<O.Readonly<ItemBank>>('dropped_items');
 
 		export const RunecraftCost = T<O.Readonly<ItemBank>>('runecraft_cost');
 
 		export const SmithingCost = T<O.Readonly<ItemBank>>('smithing_cost');
+		export const NightmareCost = T<O.Readonly<ItemBank>>('nightmare_cost');
+
+		export const CreateCost = T<O.Readonly<ItemBank>>('create_cost');
+		export const CreateLoot = T<O.Readonly<ItemBank>>('create_loot');
 
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');

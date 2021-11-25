@@ -14,7 +14,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { Activity } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { GearSetupType, GearStat } from '../../lib/gear';
@@ -32,6 +31,7 @@ import {
 	SlayerActivityConstants
 } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
@@ -49,6 +49,7 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addArrayOfNumbers,
 	formatDuration,
+	formatMissingItems,
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
@@ -142,6 +143,13 @@ export default class extends BotCommand {
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
 		if (!hasReqs) throw reason;
+
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Shayzien, 100);
+		if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`
+			);
+		}
 
 		let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, msg.author.getKC(monster.id));
 
@@ -257,23 +265,27 @@ export default class extends BotCommand {
 			boosts.push(`${boostCannon}% for Cannon in singles`);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
+		const maxTripLength = msg.author.maxTripLength('MonsterKilling');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
-			quantity = floor(maxTripLength / timeToFinish);
+			if ([Monsters.Skotizo.id].includes(monster.id)) {
+				quantity = 1;
+			} else {
+				quantity = floor(maxTripLength / timeToFinish);
+			}
 		}
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
-			let effectiveQtyRemaining = usersTask.currentTask!.quantityRemaining;
+			let effectiveQtyRemaining = usersTask.currentTask!.quantity_remaining;
 			if (
 				monster.id === Monsters.KrilTsutsaroth.id &&
-				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+				usersTask.currentTask!.monster_id !== Monsters.KrilTsutsaroth.id
 			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 			} else if (
 				monster.id === Monsters.Kreearra.id &&
-				usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+				usersTask.currentTask!.monster_id !== Monsters.Kreearra.id
 			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
 			} else if (
@@ -301,20 +313,7 @@ export default class extends BotCommand {
 		let pvmCost = false;
 
 		if (monster.itemCost) {
-			consumableCosts.push({
-				itemCost: monster.itemCost.clone(),
-				qtyPerKill: 1
-			});
-		} else {
-			switch (monster.id) {
-				case Monsters.Hydra.id:
-				case Monsters.AlchemicalHydra.id:
-					consumableCosts.push({
-						itemCost: new Bank().add('Antidote++(4)', 1),
-						qtyPerMinute: 0.067
-					});
-					break;
-			}
+			consumableCosts.push(monster.itemCost);
 		}
 
 		const infiniteWaterRunes = msg.author.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')));
@@ -322,9 +321,19 @@ export default class extends BotCommand {
 		// Calculate per kill cost:
 		if (consumableCosts.length > 0) {
 			for (const cc of consumableCosts) {
-				let itemMultiple = cc.qtyPerKill ?? cc.qtyPerMinute ?? null;
+				let consumable = cc;
+				if (consumable.alternativeConsumables && !msg.author.owns(consumable.itemCost)) {
+					for (const c of consumable.alternativeConsumables) {
+						if (msg.author.owns(c.itemCost)) {
+							consumable = c;
+							break;
+						}
+					}
+				}
+
+				let itemMultiple = consumable.qtyPerKill ?? consumable.qtyPerMinute ?? null;
 				if (itemMultiple) {
-					if (cc.isRuneCost) {
+					if (consumable.isRuneCost) {
 						// Free casts for kodai + sotd
 						if (msg.author.hasItemEquippedAnywhere('Kodai wand')) {
 							itemMultiple = Math.ceil(0.85 * itemMultiple);
@@ -334,18 +343,16 @@ export default class extends BotCommand {
 					}
 
 					let multiply = itemMultiple;
-					// Calculate the duration for 1 kill and check how much will be used in 1 kill
 
-					if (cc.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
-					if (cc.itemCost) {
-						// Calculate supply for 1 kill
-						const oneKcCost = cc.itemCost.clone().multiply(multiply);
-						// Can't use Bank.add() because it discards < 1 qty.
-						for (const [itemID, qty] of objectEntries(oneKcCost.bank)) {
-							if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
-							else perKillCost.bank[itemID] = qty;
-						}
-						pvmCost = true;
+					// Calculate the duration for 1 kill and check how much will be used in 1 kill
+					if (consumable.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
+
+					// Calculate supply for 1 kill
+					const oneKcCost = consumable.itemCost.clone().multiply(multiply);
+					// Can't use Bank.add() because it discards < 1 qty.
+					for (const [itemID, qty] of objectEntries(oneKcCost.bank)) {
+						if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
+						else perKillCost.bank[itemID] = qty;
 					}
 				}
 			}
@@ -362,21 +369,24 @@ export default class extends BotCommand {
 			for (const [item, qty] of objectEntries(bank)) {
 				bank[item] = Math.ceil(qty);
 			}
+
 			pvmCost = true;
 			lootToRemove.add(bank);
 		}
 		if (pvmCost) {
 			if (quantity === 0 || !msg.author.owns(lootToRemove)) {
 				return msg.channel.send(
-					`You don't have the items needed to kill any amount of ${monster.name}, you need: ${perKillCost} per kill.`
+					`You don't have the items needed to kill any amount of ${
+						monster.name
+					}, you need: ${formatMissingItems(consumableCosts, timeToFinish)} per kill.`
 				);
 			}
 		}
 		// Check food
-		let foodStr: undefined | string = undefined;
+		let foodStr: string = '';
 		if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
-			messages = messages.concat(foodMessages);
+			foodStr += foodMessages;
 
 			let gearToCheck: GearSetupType = 'melee';
 
@@ -393,7 +403,7 @@ export default class extends BotCommand {
 
 			if (monster.wildy) gearToCheck = 'wildy';
 
-			const [result, foodRemoved] = await removeFoodFromUser({
+			const { foodRemoved, reductions } = await removeFoodFromUser({
 				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: healAmountNeeded * quantity,
@@ -431,7 +441,10 @@ export default class extends BotCommand {
 				}
 			}
 
-			foodStr = result;
+			if (reductions.length > 0) {
+				foodStr += `, ${reductions.join(', ')}`;
+			}
+			foodStr += `, **Removed ${foodRemoved}**`;
 		}
 
 		// Boosts that don't affect quantity:
@@ -453,7 +466,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.MonsterKilling,
+			type: 'MonsterKilling',
 			usingCannon,
 			cannonMulti,
 			burstOrBarrage
@@ -466,16 +479,16 @@ export default class extends BotCommand {
 			response += ` Removed ${lootToRemove}.`;
 		}
 
-		if (foodStr) {
-			response += ` Removed ${foodStr}\n`;
-		}
-
 		if (boosts.length > 0) {
 			response += `\n**Boosts:** ${boosts.join(', ')}.`;
 		}
 
 		if (messages.length > 0) {
-			response += `\n**Messages:** ${messages.join('\n')}.`;
+			response += `\n**Messages:** ${messages.join(', ')}.`;
+		}
+
+		if (foodStr) {
+			response += `\n**Food:** ${foodStr}\n`;
 		}
 
 		return msg.channel.send(response);

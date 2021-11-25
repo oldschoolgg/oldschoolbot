@@ -1,11 +1,13 @@
 import { MessageAttachment } from 'discord.js';
+import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
-import { Minigames } from '../../extendables/User/Minigame';
 import Buyables from '../../lib/data/buyables/buyables';
+import { kittens } from '../../lib/growablePets';
+import { Minigames } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -17,6 +19,7 @@ import {
 	stringMatches,
 	updateBankSetting
 } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -33,6 +36,33 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [quantity = 1, buyableName]: [number, string]) {
+		if (buyableName === 'kitten') {
+			const cost = new Bank().add('Coins', 1000);
+			if (!msg.author.owns(cost)) {
+				return msg.chatHeadImage('gertrude', "You don't have enough GP to buy a kitten! They cost 1000 coins.");
+			}
+			if (msg.author.settings.get(UserSettings.QP) < 10) {
+				return msg.chatHeadImage('gertrude', "You haven't done enough quests to raise a kitten yet!");
+			}
+
+			const allItemsOwned = msg.author.allItemsOwned();
+			if (kittens.some(kitten => allItemsOwned.has(kitten))) {
+				return msg.chatHeadImage('gertrude', "You are already raising a kitten! You can't handle a second.");
+			}
+
+			const kitten = getOSItem(randArrItem(kittens));
+
+			const loot = new Bank().add(kitten.id);
+
+			await msg.author.removeItemsFromBank(cost);
+			await msg.author.addItemsToBank(loot, true);
+			return msg.chatHeadImage(
+				'gertrude',
+				`Here's a ${kitten.name}, raise it well and take care of it, please!`,
+				`Removed ${cost} from your bank.`
+			);
+		}
+
 		const buyable = Buyables.find(
 			item =>
 				stringMatches(buyableName, item.name) ||
@@ -78,7 +108,7 @@ export default class extends BotCommand {
 			if (kc < req) {
 				return msg.channel.send(
 					`You need ${req} KC in ${
-						Minigames.find(i => i.key === key)!.name
+						Minigames.find(i => i.column === key)!.name
 					} to buy this, you only have ${kc} KC.`
 				);
 			}

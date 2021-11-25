@@ -1,27 +1,27 @@
-import { MinigameKey } from '../../extendables/User/Minigame';
 import { Peak } from '../../tasks/WildernessPeakInterval';
-import { Activity } from '../constants';
 import { IPatchData } from '../minions/farming/types';
+import { MinigameName } from '../settings/minigames';
+import { KourendFavour } from './../minions/data/kourendFavour';
 import { BirdhouseData } from './../skilling/skills/hunter/defaultBirdHouseTrap';
+import { ItemBank } from '.';
+import { activity_type_enum } from '.prisma/client';
 
 export interface ActivityTaskOptions {
-	type: Activity;
+	type: activity_type_enum;
 	userID: string;
 	duration: number;
-	id: string;
+	id: number;
 	finishDate: number;
 	channelID: string;
 }
 
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
-	type: Activity.Runecraft;
 	runeID: number;
 	essenceQuantity: number;
 	imbueCasts: number;
 }
 
 export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
-	type: Activity.GloryCharging;
 	quantity: number;
 }
 
@@ -176,6 +176,15 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	preJadDeathTime: number | null;
 	quantity: number;
 }
+export interface InfernoOptions extends ActivityTaskOptions {
+	zukDeathChance: number;
+	preZukDeathChance: number;
+	deathTime: number | null;
+	fakeDuration: number;
+	diedZuk: boolean;
+	diedPreZuk: boolean;
+	cost: ItemBank;
+}
 
 export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
 
@@ -208,7 +217,7 @@ export interface DriftNetActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
-	minigameID: MinigameKey;
+	minigameID: MinigameName;
 	quantity: number;
 }
 
@@ -224,6 +233,7 @@ export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	quantity: number;
+	isPhosani?: boolean;
 }
 
 export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -284,7 +294,7 @@ export interface GnomeRestaurantActivityTaskOptions extends MinigameActivityTask
 	gloriesRemoved: number;
 }
 
-export interface SoulWarsOptions extends ActivityTaskOptions {
+export interface SoulWarsOptions extends MinigameActivityTaskOptions {
 	leader: string;
 	users: string[];
 	quantity: number;
@@ -316,12 +326,16 @@ export interface CollectingOptions extends ActivityTaskOptions {
 }
 
 export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
-	type: Activity.BlastFurnace;
 	barID: number;
 	quantity: number;
 }
 
 export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
+export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
+	favour: KourendFavour;
 	quantity: number;
 }
 
@@ -347,4 +361,5 @@ export type ActivityTaskData =
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
-	| VolcanicMineActivityTaskOptions;
+	| VolcanicMineActivityTaskOptions
+	| KourendFavourActivityTaskOptions;

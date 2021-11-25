@@ -1,7 +1,6 @@
 import { objectEntries, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { plunderBoosts, plunderRooms } from '../../lib/minions/data/plunder';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -43,7 +42,7 @@ export default class extends BotCommand {
 
 		// Every 1h becomes 1% faster to a cap of 10%
 		const percentFaster = Math.min(
-			Math.floor((await msg.author.getMinigameScore('PyramidPlunder')) / (Time.Hour / plunderTime)),
+			Math.floor((await msg.author.getMinigameScore('pyramid_plunder')) / (Time.Hour / plunderTime)),
 			10
 		);
 
@@ -57,7 +56,7 @@ export default class extends BotCommand {
 				plunderTime = reduceNumByPercent(plunderTime, percent);
 			}
 		}
-		const maxQuantity = Math.floor(msg.author.maxTripLength(Activity.Plunder) / plunderTime);
+		const maxQuantity = Math.floor(msg.author.maxTripLength('Plunder') / plunderTime);
 		const tripLength = maxQuantity * plunderTime;
 
 		await addSubTaskToActivityTask<PlunderActivityTaskOptions>({
@@ -65,9 +64,9 @@ export default class extends BotCommand {
 			quantity: maxQuantity,
 			userID: msg.author.id,
 			duration: tripLength,
-			type: Activity.Plunder,
+			type: 'Plunder',
 			channelID: msg.channel.id,
-			minigameID: 'PyramidPlunder'
+			minigameID: 'pyramid_plunder'
 		});
 
 		let str = `${

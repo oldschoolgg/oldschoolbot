@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
+import MinionCommand from '../../commands/Minion/minion';
 import { Emoji, Events } from '../../lib/constants';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
@@ -179,7 +180,7 @@ export default class extends Task {
 				autoFarmed
 					? res => {
 							user.log('continued trip of autofarming');
-							return this.client.commands.get('autofarm')!.run(res, []);
+							return (this.client.commands.get('minion') as any as MinionCommand)!.autofarm(res);
 					  }
 					: undefined,
 				undefined,
@@ -411,12 +412,14 @@ export default class extends Task {
 
 			await user.settings.update(getPatchType, updatePatches);
 
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? {
+				...defaultFarmingContract
+			};
 
 			const { contractsCompleted } = currentContract;
 
 			let janeMessage = false;
-			if (plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
+			if (currentContract.hasContract && plantToHarvest.name === currentContract.plantToGrow && alivePlants > 0) {
 				const farmingContractUpdate: FarmingContract = {
 					hasContract: false,
 					difficultyLevel: null,
@@ -455,7 +458,7 @@ export default class extends Task {
 				autoFarmed
 					? res => {
 							user.log('continued trip of autofarming');
-							return this.client.commands.get('autofarm')!.run(res, []);
+							return this.client.commands.get('m')!.run(res, ['autofarm']);
 					  }
 					: undefined,
 				janeMessage

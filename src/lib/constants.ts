@@ -6,6 +6,7 @@ import { join } from 'path';
 import { DISCORD_SETTINGS } from '../config';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
+import resolveItems from './util/resolveItems';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
@@ -216,73 +217,9 @@ export const enum Tasks {
 	TrekkingActivity = 'templeTrekkingActivity',
 	RevenantsActivity = 'revenantsActivity',
 	PestControl = 'pestControlActivity',
-	VolcanicMine = 'volcanicMineActivity'
-}
-
-export enum Activity {
-	Agility = 'Agility',
-	Cooking = 'Cooking',
-	MonsterKilling = 'MonsterKilling',
-	GroupMonsterKilling = 'GroupMonsterKilling',
-	ClueCompletion = 'ClueCompletion',
-	Fishing = 'Fishing',
-	Mining = 'Mining',
-	Smithing = 'Smithing',
-	Woodcutting = 'Woodcutting',
-	Questing = 'Questing',
-	Firemaking = 'Firemaking',
-	Runecraft = 'Runecraft',
-	Smelting = 'Smelting',
-	Crafting = 'Crafting',
-	Burying = 'Burying',
-	Offering = 'Offering',
-	FightCaves = 'FightCaves',
-	Wintertodt = 'Wintertodt',
-	Tempoross = 'Tempoross',
-	TitheFarm = 'TitheFarm',
-	Fletching = 'Fletching',
-	Pickpocket = 'Pickpocket',
-	Herblore = 'Herblore',
-	Hunter = 'Hunter',
-	Birdhouse = 'Birdhouse',
-	Alching = 'Alching',
-	AnimatedArmour = 'AnimatedArmour',
-	Cyclops = 'Cyclops',
-	Sawmill = 'Sawmill',
-	Nightmare = 'Nightmare',
-	Sepulchre = 'Sepulchre',
-	Plunder = 'Plunder',
-	FishingTrawler = 'FishingTrawler',
-	Zalcano = 'Zalcano',
-	Farming = 'Farming',
-	Construction = 'Construction',
-	Enchanting = 'Enchanting',
-	Casting = 'Casting',
-	GloryCharging = 'GloryCharging',
-	WealthCharging = 'WealthCharging',
-	BarbarianAssault = 'BarbarianAssault',
-	AgilityArena = 'AgilityArena',
-	ChampionsChallenge = 'ChampionsChallenge',
-	AerialFishing = 'AerialFishing',
-	DriftNet = 'DriftNet',
-	MahoganyHomes = 'MahoganyHomes',
-	GnomeRestaurant = 'GnomeRestaurant',
-	SoulWars = 'SoulWars',
-	RoguesDenMaze = 'RoguesDenMaze',
-	Gauntlet = 'Gauntlet',
-	CastleWars = 'CastleWars',
-	MageArena = 'MageArena',
-	Raids = 'Raids',
-	Collecting = 'Collecting',
-	MageTrainingArena = 'MageTrainingArena',
-	BlastFurnace = 'BlastFurnace',
-	MageArena2 = 'MageArena2',
-	BigChompyBirdHunting = 'BigChompyBirdHunting',
-	DarkAltar = 'DarkAltar',
-	Trekking = 'Trekking',
-	Revenants = 'Revenants',
-	PestControl = 'PestControl',
-	VolcanicMine = 'VolcanicMine'
+	VolcanicMine = 'volcanicMineActivity',
+	KourendFavour = 'kourendFavourActivity',
+	Inferno = 'infernoActivity'
 }
 
 export enum ActivityGroup {
@@ -357,7 +294,12 @@ export const enum BitField {
 	HasPermanentTierOne = 12,
 	DisabledRandomEvents = 13,
 	PermanentIronman = 14,
-	AlwaysSmallBank = 15
+	AlwaysSmallBank = 15,
+	HasDexScroll = 16,
+	HasArcaneScroll = 17,
+	HasTornPrayerScroll = 18,
+	IsWikiContributor = 19,
+	HasSlepeyTablet = 20
 }
 
 interface BitFieldData {
@@ -377,7 +319,8 @@ export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
 	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
-	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' }
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' },
+	[BitField.IsWikiContributor]: { name: 'Wiki Contributor' }
 } as const;
 
 export const enum PatronTierID {
@@ -506,4 +449,11 @@ export const lastTripCache = new Map<
 export const PATRON_ONLY_GEAR_SETUP =
 	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
 
+export type ProjectileType = 'arrow' | 'bolt';
+export const projectiles: Record<ProjectileType, number[]> = {
+	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
+	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
+};
+
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
+export const PHOSANI_NIGHTMARE_ID = 9416;

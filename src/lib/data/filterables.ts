@@ -3,7 +3,7 @@ import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
-import { collectionLogRoleCategories } from './Collections';
+import { allCollectionLogs, collectionLogRoleCategories } from './Collections';
 import {
 	cluesBeginnerCL,
 	cluesEasyCL,
@@ -32,8 +32,13 @@ export const warmGear = resolveItems([
 	'Mystic smoke staff',
 	'Infernal axe',
 	'Infernal pickaxe',
+	'Infernal cape',
+	'Infernal max cape',
+	'Volcanic abyssal whip',
+	'Ale of the gods',
 	'Bruma torch',
 	'Tome of fire',
+	'Lit bug lantern',
 	'Pyromancer hood',
 	'Pyromancer garb',
 	'Pyromancer robe',
@@ -48,9 +53,23 @@ export const warmGear = resolveItems([
 	'Santa pantaloons',
 	'Santa gloves',
 	'Santa boots',
+	'Antisanta mask',
+	'Antisanta jacket',
+	'Antisanta pantaloons',
+	'Antisanta gloves',
+	'Antisanta boots',
+	'Bunny top',
+	'Bunny legs',
+	'Bunny paws',
+	'Bunny feet',
 	'Obsidian cape',
 	'Obsidian cape (r)',
 	'Gnome scarf',
+	'Jester scarf',
+	'Tri-jester scarf',
+	'Woolly scarf',
+	'Bobble scarf',
+	'Rainbow scarf',
 	'Clue hunter garb',
 	'Clue hunter trousers',
 	'Clue hunter gloves',
@@ -82,8 +101,12 @@ export const warmGear = resolveItems([
 	'Fire tiara',
 	'Fire max hood',
 	'Firemaking hood',
-	'Black santa hat',
 	'Infernal max hood',
+	'Black santa hat',
+	'Santa hat',
+	'Max cape',
+	'Gloves of silence',
+	'Fremennik gloves',
 	'Bomber jacket',
 	'Bomber cap'
 ]) as number[];
@@ -1048,3 +1071,17 @@ export const filterableTypes: Filterable[] = [
 		items: [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
 	}
 ];
+
+for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
+	for (const [name, cl] of Object.entries(clGroup)) {
+		const aliasesForThisCL: string[] = [name, ...(cl.alias ?? [])].map(i => i.toLowerCase());
+		const already = filterableTypes.some(t => [...t.aliases, t.name].some(i => aliasesForThisCL.includes(i)));
+		if (!already) {
+			filterableTypes.push({
+				name,
+				aliases: aliasesForThisCL,
+				items: cl.items
+			});
+		}
+	}
+}

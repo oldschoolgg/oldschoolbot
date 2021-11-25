@@ -27,15 +27,12 @@ export default class extends Task {
 				);
 
 				for (const row of result.values()) {
+					if (!production) continue;
 					const user = await client.fetchUser(row.id);
 					if (user.settings.get(UserSettings.LastDailyTimestamp) === -1) continue;
 
 					await user.settings.update(UserSettings.LastDailyTimestamp, -1);
-					if (production) {
-						await user.send('Your daily is ready!').catch(noOp);
-					} else {
-						console.log(`Would DM ${user.username}`);
-					}
+					await user.send('Your daily is ready!').catch(noOp);
 				}
 			} catch (err) {
 				console.error(err);

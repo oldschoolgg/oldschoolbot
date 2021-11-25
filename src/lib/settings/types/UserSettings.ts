@@ -7,10 +7,12 @@ import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
 import { PatchTypes } from '../../minions/farming';
 import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
+import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { ItemBank } from '../../types';
+import { UserKourendFavour } from './../../minions/data/kourendFavour';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -53,8 +55,17 @@ export namespace UserSettings {
 	export const PestControlPoints = T<number>('pest_control_points');
 	export const VolcanicMinePoints = T<number>('volcanic_mine_points');
 	export const FavoriteFood = T<readonly number[]>('favorite_food');
+	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
+
+	export const InfernoAttempts = T<number>('inferno_attempts');
+	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
+
+	export const Blowpipe = T<O.Readonly<BlowpipeData>>('blowpipe');
+
+	export const PremiumBalanceTier = T<number | null>('premium_balance_tier');
+	export const PremiumBalanceExpiryDate = T<number | null>('premium_balance_expiry_date');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
@@ -83,6 +94,9 @@ export namespace UserSettings {
 
 		export const TitheFarmsCompleted = T<number>('stats.titheFarmsCompleted');
 		export const TitheFarmPoints = T<number>('stats.titheFarmPoints');
+
+		export const InfernoAttempts = T<number>('inferno_attempts');
+		export const InfernalCapesSacrificed = T<number>('infernal_cape_sacrifices');
 	}
 
 	export namespace Minion {
