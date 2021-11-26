@@ -993,7 +993,7 @@ export default class extends Extendable {
 						count: string;
 					}[]
 				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
-				resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count)));
+				resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count) + 1));
 				if (this.isIronman) {
 					const [nthIron] = await this.client.query<
 						{
@@ -1002,7 +1002,7 @@ export default class extends Extendable {
 					>(
 						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
 					);
-					resultStr = resultStr.replace('{nthIron}', formatOrdinal(Number(nthIron.count)));
+					resultStr = resultStr.replace('{nthIron}', formatOrdinal(Number(nthIron.count) + 1));
 				}
 
 				this.client.emit(Events.ServerNotification, resultStr);
