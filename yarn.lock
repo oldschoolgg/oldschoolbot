@@ -4088,10 +4088,10 @@ object.values@^1.1.3:
     define-properties "^1.1.3"
     es-abstract "^1.18.2"
 
-oldschooljs@^2.0.73:
-  version "2.0.73"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.0.73.tgz#ff6d96e9652a086178bd92a660378a531d8d818d"
-  integrity sha512-2If4+lkPz3jKVFPteR3mSXtdP+1S10j14gnHXE5srAqIKEkKiwlpFLp0FnRx8tJjtp3AhIMRa/5moeGlJAMiLA==
+oldschooljs@^2.0.75:
+  version "2.0.75"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.0.75.tgz#41da8a72148ff9fed7b3dae5f45f184ebb8562b9"
+  integrity sha512-be5HEGSwVb6gB+5rmzIX7LUwwZqeKc5W+HK47T5ZZHhKyD6sD8yYdJGhtk8xee70byk74w/loUCx6f4XYToUqw==
   dependencies:
     e "^0.2.1"
     jsdom "^16.7.0"

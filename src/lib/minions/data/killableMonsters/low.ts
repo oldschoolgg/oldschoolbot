@@ -42,6 +42,34 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 8,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.TzHaarXil.id,
+		name: Monsters.TzHaarXil.name,
+		aliases: Monsters.TzHaarXil.aliases,
+		timeToFinish: Time.Second * 35,
+		table: Monsters.TzHaarXil,
+		wildy: false,
+		difficultyRating: 2,
+		qpRequired: 0,
+		canBarrage: false,
+		healAmountNeeded: 50,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.TzHaarMej.id,
+		name: Monsters.TzHaarMej.name,
+		aliases: Monsters.TzHaarMej.aliases,
+		timeToFinish: Time.Second * 28,
+		table: Monsters.TzHaarMej,
+		wildy: false,
+		difficultyRating: 2,
+		qpRequired: 0,
+		canBarrage: false,
+		healAmountNeeded: 20,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];
 
