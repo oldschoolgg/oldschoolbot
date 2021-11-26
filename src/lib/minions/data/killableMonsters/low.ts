@@ -42,6 +42,20 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 8,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.TzhaarXil.id,
+		name: Monsters.TzhaarXil.name,
+		aliases: Monsters.TzhaarXil.aliases,
+		timeToFinish: Time.Second * 35,
+		table: Monsters.TzhaarXil,
+		wildy: false,
+		difficultyRating: 2,
+		qpRequired: 0,
+		canBarrage: false,
+		healAmountNeeded: 60,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];
 
