@@ -449,10 +449,10 @@ Please click the buttons below for important links.`
 		runCommand(msg, 'mclue', [quantity, tierName]);
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		await this.kill(msg, [quantity, name]).catch(err => {
-			throw err;
-		});
+		runCommand(msg, 'k', [quantity, name]);
 	}
 
 	@requiresMinion
