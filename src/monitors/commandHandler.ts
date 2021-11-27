@@ -1,7 +1,7 @@
 import { command_usage_status } from '@prisma/client';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { PermissionLevelsEnum } from '../lib/constants';
+import { PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
@@ -76,6 +76,7 @@ export default class extends Monitor {
 	public async runCommand(message: KlasaMessage) {
 		const command = message.command!;
 		const { params } = message;
+		let unChangedParams = [...params];
 
 		const timer = new Stopwatch();
 
@@ -136,7 +137,7 @@ export default class extends Monitor {
 			this.client.emit('commandInhibited', message, command, res);
 		}
 
-		if (commandUsage) {
+		if (commandUsage && shouldTrackCommand(command, unChangedParams)) {
 			await prisma.commandUsage.create({ data: commandUsage });
 		}
 

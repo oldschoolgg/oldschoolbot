@@ -11,7 +11,15 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
-import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
+import {
+	CENA_CHARS,
+	continuationChars,
+	Events,
+	PerkTier,
+	shouldTrackCommand,
+	skillEmoji,
+	SupportServer
+} from './constants';
 import { GearSetupType, GearSetupTypes } from './gear/types';
 import { Consumable } from './minions/types';
 import { prisma } from './settings/prisma';
@@ -582,9 +590,11 @@ export async function runCommand(message: KlasaMessage, commandName: string, arg
 		commandUsage.status = command_usage_status.Error;
 		message.client.emit('commandError', message, command, args, err);
 	} finally {
-		await prisma.commandUsage.create({
-			data: commandUsage
-		});
+		if (shouldTrackCommand(command, args)) {
+			await prisma.commandUsage.create({
+				data: commandUsage
+			});
+		}
 	}
 
 	return null;
