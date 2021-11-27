@@ -7,12 +7,11 @@ import {
 	objectKeys,
 	reduceNumByPercent,
 	round,
-	sleep,
 	Time,
 	uniqueArr
 } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Bank, LootTable, Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
