@@ -48,13 +48,7 @@ export default class extends Task {
 			challengeMode ? 'Challenge Mode Raid' : 'Raid'
 		} has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(
-			allUsers.map(u => {
-				if (challengeMode) {
-					incrementMinigameScore(u.id, 'raids_challenge_mode', 1);
-				} else {
-					incrementMinigameScore(u.id, 'raids', 1);
-				}
-			})
+			allUsers.map(u => incrementMinigameScore(u.id, challengeMode ? 'raids_challenge_mode' : 'raids', 1))
 		);
 
 		const onyxChance = users.length * 70;

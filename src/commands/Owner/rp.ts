@@ -1,7 +1,7 @@
 import { Duration, Time } from '@sapphire/time-utilities';
 import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -26,6 +26,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	asyncExec,
+	channelIsSendable,
 	cleanString,
 	formatDuration,
 	getSupportGuild,
@@ -347,6 +348,31 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'blacklist':
+			case 'bl': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				if (str instanceof KlasaUser) return;
+				const reason = str;
+				const entry = this.client.settings.get(ClientSettings.UserBlacklist);
+
+				const alreadyBlacklisted = entry.includes(input.id);
+
+				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
+					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
+				});
+				const emoji = getSupportGuild(this.client).emojis.cache.random().toString();
+				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
+
+				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
+				if (channelIsSendable(channel)) {
+					channel.send(
+						`\`${input.username}\` was ${newStatus} by ${msg.author.username} for \`${
+							reason ?? 'no reason'
+						}\`.`
+					);
+				}
+				return msg.channel.send(`${emoji} Successfully ${newStatus} ${input.username}.`);
+			}
 			case 'addimalt': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				if (!str || !(str instanceof KlasaUser)) return;
@@ -459,7 +485,7 @@ ${
 					return sendToChannelID(this.client, msg.channel.id, {
 						content: result.slice(0, 2500)
 					});
-				} catch (err) {
+				} catch (err: any) {
 					console.error(err);
 					return msg.channel.send(`Failed to run roles task. ${err.message}`);
 				}
@@ -704,6 +730,11 @@ LIMIT 10;
 				if (typeof input !== 'string') return;
 				const bank = JSON.parse(input.replace(/'/g, '"'));
 				return msg.channel.sendBankImage({ bank });
+			}
+			case 'reboot': {
+				await msg.channel.send('Rebooting...');
+				await Promise.all(this.client.providers.map(provider => provider.shutdown()));
+				process.exit();
 			}
 		}
 	}

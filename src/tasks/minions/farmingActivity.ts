@@ -541,7 +541,7 @@ export default class extends Task {
 				autoFarmed
 					? res => {
 							user.log('continued trip of autofarming');
-							return this.client.commands.get('autofarm')!.run(res, []);
+							return this.client.commands.get('m')!.run(res, ['autofarm']);
 					  }
 					: undefined,
 				janeMessage
