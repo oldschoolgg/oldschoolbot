@@ -121,20 +121,6 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		if (name.toLowerCase() === 'turkey') {
-			if (msg.author.settings.get(UserSettings.HasKilledTurkey)) {
-				return msg.channel.send('You already killed the Thanksgiving Turkey!');
-			}
-
-			await msg.channel.send('You send your minion to kill the Thanksgiving Turkey...');
-			await sleep(1000);
-			const table = new LootTable().add('Raw turkey').tertiary(10, 'Cornucopia');
-			const loot = table.roll();
-			await msg.author.addItemsToBank(loot, true);
-			await msg.author.settings.update(UserSettings.HasKilledTurkey, true);
-			return msg.channel.send(`You killed the Thanksgiving Turkey and received: ${loot}.`);
-		}
-
 		if (msg.flagArgs.monsters) {
 			return msg.channel.send({
 				files: [new MessageAttachment(Buffer.from(validMonsters), 'validMonsters.txt')]
