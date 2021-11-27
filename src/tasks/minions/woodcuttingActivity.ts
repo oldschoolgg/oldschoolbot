@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { roll, runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -86,7 +86,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${log.name}[${log.id}]`);
-				return this.client.commands.get('chop')!.run(res, [quantity, log.name]);
+				return runCommand(res, 'chop', [quantity, log.name]);
 			},
 			undefined,
 			data,

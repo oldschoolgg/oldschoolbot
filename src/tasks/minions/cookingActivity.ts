@@ -5,6 +5,7 @@ import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables'
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
+import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -54,7 +55,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
-				return this.client.commands.get('cook')!.run(res, [quantity, cookable.name]);
+				return runCommand(res, 'cook', [quantity, cookable.name]);
 			},
 			undefined,
 			data,

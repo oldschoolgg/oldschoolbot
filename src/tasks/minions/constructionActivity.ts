@@ -4,6 +4,7 @@ import { Task } from 'klasa';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
+import { runCommand } from '../../lib/util';
 import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -37,7 +38,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${object.name}[${object.id}]`);
-				return this.client.commands.get('build')!.run(res, [quantity, object.name]);
+				return runCommand(res, 'build', [quantity, object.name]);
 			},
 			undefined,
 			data,

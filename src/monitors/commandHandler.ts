@@ -1,6 +1,8 @@
+import { command_usage_status } from '@prisma/client';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
 import { PermissionLevelsEnum } from '../lib/constants';
+import { prisma } from '../lib/settings/prisma';
 import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { floatPromise } from '../lib/util';
@@ -72,39 +74,72 @@ export default class extends Monitor {
 	}
 
 	public async runCommand(message: KlasaMessage) {
+		const command = message.command!;
+		const { params } = message;
+
 		const timer = new Stopwatch();
 
+		let commandUsage: {
+			date: Date;
+			user_id: string;
+			command_name: string;
+			status: command_usage_status;
+			args: null | any;
+			channel_id: string;
+		} | null = {
+			date: message.createdAt,
+			user_id: message.author.id,
+			command_name: command.name,
+			status: command_usage_status.Unknown,
+			args: message.args,
+			channel_id: message.channel.id
+		};
+
+		let response: KlasaMessage | null = null;
+
 		try {
-			await this.client.inhibitors.run(message, message.command!);
-			if (message.command!.oneAtTime) {
+			await this.client.inhibitors.run(message, command);
+			if (command.oneAtTime) {
 				this.client.oneCommandAtATimeCache.add(message.author.id);
 			}
 			try {
 				// @ts-ignore 2341
 				await message.prompter!.run();
 				try {
-					const subcommand = message.command!.subcommands ? message.params.shift() : undefined;
+					const subcommand = command.subcommands ? params.shift() : undefined;
 
 					const commandRun = subcommand
 						? // @ts-ignore 7053
-						  message.command![subcommand](message, message.params)
-						: message.command!.run(message, message.params);
+						  command[subcommand](message, params)
+						: command.run(message, params);
 					timer.stop();
-					const response = await commandRun;
-					floatPromise(this, this.client.finalizers.run(message, message.command!, response, timer));
-					this.client.emit('commandSuccess', message, message.command, message.params, response);
+					response = await commandRun;
+					floatPromise(this, this.client.finalizers.run(message, command, response!, timer));
+					this.client.emit('commandSuccess', message, command, params, response);
+					commandUsage.status = command_usage_status.Success;
 				} catch (error) {
-					this.client.emit('commandError', message, message.command, message.params, error);
+					this.client.emit('commandError', message, command, params, error);
+					commandUsage.status = command_usage_status.Error;
 				}
 			} catch (argumentError) {
-				this.client.emit('argumentError', message, message.command, message.params, argumentError);
+				this.client.emit('argumentError', message, command, params, argumentError);
+				commandUsage = null;
 			} finally {
-				if (message.command!.oneAtTime) {
+				if (command.oneAtTime) {
 					setTimeout(() => this.client.oneCommandAtATimeCache.delete(message.author.id), 1500);
 				}
 			}
-		} catch (response) {
-			return this.client.emit('commandInhibited', message, message.command, response);
+		} catch (res) {
+			if (commandUsage) {
+				commandUsage.status = command_usage_status.Inhibited;
+			}
+			this.client.emit('commandInhibited', message, command, res);
 		}
+
+		if (commandUsage) {
+			await prisma.commandUsage.create({ data: commandUsage });
+		}
+
+		return response;
 	}
 }

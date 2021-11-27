@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
+import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -51,7 +52,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${burnable.name}`);
-				return this.client.commands.get('light')!.run(res, [quantity, burnable.name]);
+				return runCommand(res, 'light', [quantity, burnable.name]);
 			},
 			undefined,
 			data,

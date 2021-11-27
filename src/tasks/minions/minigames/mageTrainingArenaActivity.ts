@@ -6,7 +6,7 @@ import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
+import { randomVariation, runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const pizazzPointsPerHour = 100;
@@ -46,9 +46,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued mta');
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				return this.client.commands.get('mta')!.train(res, []);
+				return runCommand(res, 'mta', [], 'train');
 			},
 			undefined,
 			data,

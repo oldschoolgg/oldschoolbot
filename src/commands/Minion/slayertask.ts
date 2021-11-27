@@ -273,7 +273,7 @@ export default class extends BotCommand {
 				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
 			if (Boolean(msg.flagArgs.new)) {
-				return this.client.commands.get('slayertask')!.run(msg, []);
+				return runCommand(msg, 'slayertask', []);
 			}
 			return;
 		}

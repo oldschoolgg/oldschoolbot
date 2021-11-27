@@ -6,7 +6,7 @@ import { getMinionName, incrementMinigameScore } from '../../../lib/settings/set
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, roll } from '../../../lib/util';
+import { addBanks, roll, runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const tipTable = new LootTable()
@@ -101,7 +101,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued gnome restaurant');
-				return this.client.commands.get('gnomerestaurant')!.run(res, []);
+				return runCommand(res, 'gnomerestaurant', []);
 			},
 			undefined,
 			data,

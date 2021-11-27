@@ -10,7 +10,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
 import { RevenantOptions } from '../../lib/types/minions';
-import { updateBankSetting } from '../../lib/util';
+import { runCommand, updateBankSetting } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -61,7 +61,7 @@ export default class extends Task {
 					// @ts-ignore
 					res.prompter.flags = flags;
 					user.log(`continued trip of killing ${monster.name}`);
-					return this.client.commands.get('revs')!.run(res, [style, monster.name]);
+					return runCommand(res, 'revs', [style, monster.name]);
 				},
 				image,
 				data,
@@ -109,7 +109,7 @@ export default class extends Task {
 				// @ts-ignore
 				res.prompter.flags = flags;
 				user.log(`continued trip of killing ${monster.name}`);
-				return this.client.commands.get('revs')!.run(res, [style, monster.name]);
+				return runCommand(res, 'revs', [style, monster.name]);
 			},
 			image!,
 			data,

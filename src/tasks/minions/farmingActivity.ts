@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import MinionCommand from '../../commands/Minion/minion';
 import { Emoji, Events } from '../../lib/constants';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
@@ -12,7 +11,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
+import { bankHasItem, channelIsSendable, rand, roll, runCommand } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -180,7 +179,7 @@ export default class extends Task {
 				autoFarmed
 					? res => {
 							user.log('continued trip of autofarming');
-							return (this.client.commands.get('minion') as any as MinionCommand)!.autofarm(res);
+							return runCommand(res, 'm', [], 'autofarm');
 					  }
 					: undefined,
 				undefined,
@@ -458,7 +457,7 @@ export default class extends Task {
 				autoFarmed
 					? res => {
 							user.log('continued trip of autofarming');
-							return this.client.commands.get('m')!.run(res, ['autofarm']);
+							return runCommand(res, 'm', [], 'autofarm');
 					  }
 					: undefined,
 				janeMessage

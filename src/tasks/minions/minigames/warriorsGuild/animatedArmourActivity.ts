@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Armours } from '../../../../commands/Minion/warriorsguild';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
+import { runCommand } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -28,7 +29,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of animated armor');
-				return this.client.commands.get('warriorsguild')!.run(res, [quantity, 'tokens']);
+				return runCommand(res, 'warriorsguild', [quantity, 'tokens']);
 			},
 			undefined,
 			data,

@@ -8,7 +8,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation } from '../../../lib/util';
+import { randomVariation, runCommand } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -159,7 +159,7 @@ export default class extends Task {
 				} times. Your ${monsterName} KC is now ${kc}.`,
 				res => {
 					leaderUser.log(`continued trip of ${quantity}x Nightmare`);
-					return this.client.commands.get('nightmare')!.run(res, [isPhosani ? 'phosani' : 'solo']);
+					return runCommand(res, 'nightmare', [isPhosani ? 'phosani' : 'solo']);
 				},
 				image!,
 				data,

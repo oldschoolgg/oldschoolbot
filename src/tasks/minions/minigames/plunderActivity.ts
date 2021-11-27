@@ -5,6 +5,7 @@ import { Events } from '../../../lib/constants';
 import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
@@ -68,7 +69,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x plunder`);
-				return this.client.commands.get('plunder')!.run(res, []);
+				return runCommand(res, 'plunder', []);
 			},
 			image!,
 			data,

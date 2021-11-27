@@ -1,3 +1,4 @@
+import { command_usage_status } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
@@ -13,6 +14,7 @@ import { promisify } from 'util';
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { GearSetupType, GearSetupTypes } from './gear/types';
 import { Consumable } from './minions/types';
+import { prisma } from './settings/prisma';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
@@ -549,20 +551,41 @@ export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
 }
 
-export async function runCommand(
-	message: KlasaMessage,
-	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask' | 'rp' | 'equip' | 'farm',
-	args: unknown[]
-) {
+export async function runCommand(message: KlasaMessage, commandName: string, args: unknown[], method = 'run') {
 	const command = message.client.commands.get(commandName);
 	if (!command) {
 		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
 	}
+
+	let commandUsage: {
+		date: Date;
+		user_id: string;
+		command_name: string;
+		status: command_usage_status;
+		args: null | any;
+		channel_id: string;
+	} | null = {
+		date: message.createdAt,
+		user_id: message.author.id,
+		command_name: command.name,
+		status: command_usage_status.Unknown,
+		args,
+		channel_id: message.channel.id
+	};
+
 	try {
-		const result = await command.run(message, args);
+		// @ts-ignore Cant be typechecked
+		const result = await command[method](message, args);
+		commandUsage.status = command_usage_status.Success;
 		return result;
 	} catch (err) {
+		commandUsage.status = command_usage_status.Error;
 		message.client.emit('commandError', message, command, args, err);
+	} finally {
+		await prisma.commandUsage.create({
+			data: commandUsage
+		});
 	}
+
 	return null;
 }

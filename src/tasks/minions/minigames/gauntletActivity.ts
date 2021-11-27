@@ -7,7 +7,7 @@ import { incrementMinigameScore, MinigameName } from '../../../lib/settings/sett
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import { GauntletOptions } from '../../../lib/types/minions';
-import { addBanks } from '../../../lib/util';
+import { addBanks, runCommand } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -85,7 +85,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued gauntlet');
-				return this.client.commands.get('gauntlet')!.run(res, [corrupted ? 'corrupted' : 'normal', quantity]);
+				return runCommand(res, 'gauntlet', [corrupted ? 'corrupted' : 'normal', quantity]);
 			},
 			image!,
 			data,

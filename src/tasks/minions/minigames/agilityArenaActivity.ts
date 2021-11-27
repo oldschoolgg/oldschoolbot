@@ -6,7 +6,7 @@ import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, randomVariation, roll } from '../../../lib/util';
+import { formatDuration, itemID, randomVariation, roll, runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -67,7 +67,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of agility arena');
-				return this.client.commands.get('agilityarena')!.run(res, []);
+				return runCommand(res, 'agilityarena', []);
 			},
 			undefined,
 			data,

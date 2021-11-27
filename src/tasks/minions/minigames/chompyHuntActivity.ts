@@ -6,6 +6,7 @@ import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -44,7 +45,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued chompy hunting');
-				return this.client.commands.get('chompyhunt')!.run(res, []);
+				return runCommand(res, 'chompyhunt', []);
 			},
 			undefined,
 			data,

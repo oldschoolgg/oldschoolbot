@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BlastFurnaceActivityTaskOptions } from '../../lib/types/minions';
+import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -41,7 +42,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${bar.name}[${bar.id}]`);
-				return this.client.commands.get('blastfurnace')!.run(res, [quantity, bar.name]);
+				return runCommand(res, 'blastfurnace', [quantity, bar.name]);
 			},
 			undefined,
 			data,

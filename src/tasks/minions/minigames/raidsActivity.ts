@@ -10,7 +10,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { addBanks, filterBankFromArrayOfItems, roll } from '../../../lib/util';
+import { addBanks, filterBankFromArrayOfItems, roll, runCommand } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
@@ -127,7 +127,7 @@ export default class extends Task {
 					res.prompter.flags = flags;
 
 					allUsers[0].log('continued trip of solo CoX');
-					return this.client.commands.get('raid')!.run(res, ['solo']);
+					return runCommand(res, 'raid', ['solo']);
 				},
 				undefined,
 				data,

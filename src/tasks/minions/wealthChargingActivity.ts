@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { wealthInventorySize } from '../../commands/Minion/chargewealth';
 import { WealthChargingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { roll, runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -41,7 +41,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of charging ${quantity}x ring of wealth`);
-				return this.client.commands.get('chargewealth')!.run(res, [quantity]);
+				return runCommand(res, 'chargewealth', [quantity]);
 			},
 			undefined,
 			data,

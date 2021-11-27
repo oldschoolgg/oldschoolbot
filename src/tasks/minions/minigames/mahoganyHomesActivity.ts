@@ -1,11 +1,11 @@
 import { calcPercentOfNum } from 'e';
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
 
-import MahoganyHomesCommand from '../../../commands/Minion/mahoganyhomes';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
+import { runCommand } from '../../../lib/util';
 import { calcConBonusXP } from '../../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -43,9 +43,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of mahogany homes');
-				return (this.client.commands.get('mh') as unknown as MahoganyHomesCommand).build(
-					res
-				) as Promise<KlasaMessage>;
+				return runCommand(res, 'mh', [], 'build');
 			},
 			undefined,
 			data,

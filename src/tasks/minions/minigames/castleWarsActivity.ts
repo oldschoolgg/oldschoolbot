@@ -1,10 +1,10 @@
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import CastleWarsCommand from '../../../commands/Minion/castlewars';
 import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
@@ -31,9 +31,8 @@ export default class extends Task {
 			`<@${userID}>, ${minionName} finished ${quantity}x Castle Wars games and received ${loot}.`,
 			res => {
 				user.log('continued castle wars');
-				return (this.client.commands.get('castlewars') as unknown as CastleWarsCommand)!.play(
-					res
-				) as Promise<KlasaMessage>;
+
+				return runCommand(res, 'castlewars', [], 'play');
 			},
 			undefined,
 			data,

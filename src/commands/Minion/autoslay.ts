@@ -344,7 +344,7 @@ export default class extends BotCommand {
 
 			let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 			if (commonName === 'TzHaar') {
-				return this.client.commands.get('fightcaves')?.run(msg, []);
+				return runCommand(msg, 'fightcaves', []);
 			}
 
 			const allMonsters = killableMonsters.filter(m => {

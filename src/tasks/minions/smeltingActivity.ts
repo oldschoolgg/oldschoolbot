@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
+import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -58,7 +59,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
-				return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
+				return runCommand(res, 'smelt', [oldQuantity, bar.name]);
 			},
 			undefined,
 			data,

@@ -7,7 +7,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent } from '../../../lib/util';
+import { addBanks, anglerBoostPercent, runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -80,7 +80,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued fishing trawler');
-				return this.client.commands.get('fishingtrawler')!.run(res, []);
+				return runCommand(res, 'fishingtrawler', []);
 			},
 			image!,
 			data,

@@ -137,7 +137,7 @@ export default class MinionCommand extends BotCommand {
 					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
 						return lastTrip.continue(msg);
 					}
-					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
+					await runCommand(msg, 'mclue', [selection.customID]);
 				} catch {
 					await sentMessage.edit({ components: [] });
 				}

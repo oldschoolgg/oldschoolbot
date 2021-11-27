@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { RoguesDenMazeTaskOptions } from '../../../lib/types/minions';
+import { runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -67,7 +68,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued rogues den');
-				return this.client.commands.get('roguesden')!.run(res, []);
+				return runCommand(res, 'roguesden', []);
 			},
 			gotLoot ? image! : undefined,
 			data,

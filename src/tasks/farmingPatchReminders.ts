@@ -7,7 +7,7 @@ import { PerkTier } from '../lib/constants';
 import { FarmingPatchTypes, PatchData } from '../lib/minions/farming/types';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Farming from '../lib/skilling/skills/farming';
-import { stringMatches } from '../lib/util';
+import { runCommand, stringMatches } from '../lib/util';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 declare module 'klasa' {
@@ -96,7 +96,7 @@ export default class extends Task {
 							}
 							if (selection.customID === 'HARVEST') {
 								message.author = user;
-								this.client.commands.get('farm')?.run(message as KlasaMessage, [planted.name]);
+								runCommand(message as KlasaMessage, 'farm', [planted.name]);
 							}
 						} catch {
 							message.edit({ components: [] });

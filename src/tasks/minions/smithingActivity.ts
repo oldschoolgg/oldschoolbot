@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
+import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -35,7 +36,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x  ${smithedItem.name}[${smithedItem.id}]`);
-				return this.client.commands.get('smith')!.run(res, [quantity, smithedItem.name]);
+				return runCommand(res, 'smith', [quantity, smithedItem.name]);
 			},
 			undefined,
 			data,

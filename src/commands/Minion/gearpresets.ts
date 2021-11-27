@@ -9,7 +9,7 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { cleanString, isValidGearSetup } from '../../lib/util';
+import { cleanString, isValidGearSetup, runCommand } from '../../lib/util';
 import { GearPreset } from '.prisma/client';
 
 function maxPresets(user: KlasaUser) {
@@ -113,7 +113,7 @@ export default class extends BotCommand {
 		}
 
 		try {
-			const unequipAllMessage = await this.client.commands.get('unequipall')!.run(msg, [setup]);
+			const unequipAllMessage = await runCommand(msg, 'unequipall', [setup]);
 			if (
 				!(unequipAllMessage instanceof KlasaMessage) ||
 				(!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you unequipped all items') &&

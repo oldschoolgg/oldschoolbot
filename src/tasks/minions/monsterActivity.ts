@@ -158,11 +158,11 @@ export default class extends Task {
 				? undefined
 				: res => {
 						user.log(`continued trip of killing ${monster.name}`);
-						let method = 'none';
-						if (usingCannon) method = 'cannon';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-						return runCommand(res, 'k', [quantity, monster.name, method]);
+						let args = [quantity, monster.name];
+						if (usingCannon) args.push('cannon');
+						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
+						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
+						return runCommand(res, 'k', args);
 				  },
 			image!,
 			data,

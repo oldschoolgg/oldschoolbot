@@ -4,7 +4,6 @@ import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { itemID } from 'oldschooljs/dist/util';
 
-import MinionCommand from '../../commands/Minion/minion';
 import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
@@ -12,7 +11,14 @@ import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
+import {
+	channelIsSendable,
+	generateContinuationChar,
+	roll,
+	runCommand,
+	stringMatches,
+	updateGPTrackSetting
+} from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
 import { activity_type_enum } from '.prisma/client';
@@ -136,7 +142,7 @@ export async function handleTripFinish(
 		client.oneCommandAtATimeCache.add(mes.author.id);
 		try {
 			if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
-				(client.commands.get('minion') as unknown as MinionCommand).clue(mes, [1, clueReceived.name]);
+				runCommand(mes, 'mclue', [1, clueReceived.name]);
 				return;
 			} else if (onContinue && stringMatches(mes.content, continuationChar)) {
 				await onContinue(mes).catch(err => {

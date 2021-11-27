@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import Fletching from '../../lib/skilling/skills/fletching';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
+import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -35,7 +36,7 @@ export default class extends Task {
 			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
 			res => {
 				user.log('continued fletching trip');
-				return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
+				return runCommand(res, 'fletch', [quantity, fletchableItem.name]);
 			},
 			undefined,
 			data,

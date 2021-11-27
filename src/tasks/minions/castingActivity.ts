@@ -4,6 +4,7 @@ import { Task } from 'klasa';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
+import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -51,7 +52,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${spell.name}[${spell.id}]`);
-				return this.client.commands.get('cast')!.run(res, [quantity, spell.name]);
+				return runCommand(res, 'cast', [quantity, spell.name]);
 			},
 			undefined,
 			data,

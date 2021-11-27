@@ -4,7 +4,7 @@ import { Task } from 'klasa';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SoulWarsOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
+import { roll, runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -53,7 +53,7 @@ export default class extends Task {
 				str,
 				res => {
 					leaderUser.log('continued trip of killing soul wars}');
-					return this.client.commands.get('sw')!.run(res, ['solo']);
+					return runCommand(res, 'sw', ['solo']);
 				},
 				undefined!,
 				data,

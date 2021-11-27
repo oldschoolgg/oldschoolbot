@@ -9,7 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, updateGPTrackSetting } from '../../lib/util';
+import { addItemToBank, runCommand, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -123,7 +123,7 @@ export default class extends Task {
 				res.prompter.flags = flags;
 
 				user.log(`continued trip of ${quantity}x ${course.name} laps`);
-				return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
+				return runCommand(res, 'laps', [quantity, course.aliases[0]]);
 			},
 			undefined,
 			data,

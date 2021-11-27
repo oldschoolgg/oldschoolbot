@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { randFloat } from '../../lib/util';
+import { randFloat, runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -48,7 +48,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${item.name}`);
-				return this.client.commands.get('craft')!.run(res, [quantity, item.name]);
+				return runCommand(res, 'craft', [quantity, item.name]);
 			},
 			undefined,
 			data,

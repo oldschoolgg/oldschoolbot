@@ -6,6 +6,7 @@ import { getBoatType } from '../../../commands/Minion/pestcontrol';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -37,8 +38,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log('continued trip of pestcontrol');
-				// @ts-ignore 2339
-				return this.client.commands.get('pestcontrol')!.start(res, [quantity]);
+				return runCommand(res, 'pestcontrol', [quantity], 'start');
 			},
 			undefined,
 			data,

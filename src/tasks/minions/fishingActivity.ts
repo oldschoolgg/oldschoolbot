@@ -7,7 +7,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, roll } from '../../lib/util';
+import { anglerBoostPercent, roll, runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -169,7 +169,7 @@ export default class extends Task {
 			str,
 			res => {
 				user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);
-				return this.client.commands.get('fish')!.run(res, [quantity, fish.name]);
+				return runCommand(res, 'fish', [quantity, fish.name]);
 			},
 			undefined,
 			data,
