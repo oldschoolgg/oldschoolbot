@@ -618,6 +618,11 @@ LIMIT 10;
 				const bank = JSON.parse(input.replace(/'/g, '"'));
 				return msg.channel.sendBankImage({ bank });
 			}
+			case 'reboot': {
+				await msg.channel.send('Rebooting...');
+				await Promise.all(this.client.providers.map(provider => provider.shutdown()));
+				process.exit();
+			}
 		}
 	}
 }
