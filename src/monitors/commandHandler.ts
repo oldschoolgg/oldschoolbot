@@ -76,7 +76,6 @@ export default class extends Monitor {
 	public async runCommand(message: KlasaMessage) {
 		const command = message.command!;
 		const { params } = message;
-		let unChangedParams = [...params];
 
 		const timer = new Stopwatch();
 
@@ -137,7 +136,7 @@ export default class extends Monitor {
 			this.client.emit('commandInhibited', message, command, res);
 		}
 
-		if (commandUsage && shouldTrackCommand(command, unChangedParams)) {
+		if (commandUsage && shouldTrackCommand(command, message.args)) {
 			await prisma.commandUsage.create({ data: commandUsage });
 		}
 
