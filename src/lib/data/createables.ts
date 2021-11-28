@@ -152,6 +152,106 @@ const twistedAncestral: Createable[] = [
 	}
 ];
 
+const metamorphPets: Createable[] = [
+	{
+		name: 'Midnight',
+		inputItems: {
+			[itemID('Noon')]: 1
+		},
+		outputItems: {
+			[itemID('Midnight')]: 1
+		}
+	},
+	{
+		name: 'Noon',
+		inputItems: {
+			[itemID('Midnight')]: 1
+		},
+		outputItems: {
+			[itemID('Noon')]: 1
+		}
+		noCl: true
+	},
+	{
+		name: 'Baby mole-rat',
+		inputItems: {
+			[itemID('Baby mole')]: 1,
+			[itemID('Mole claw')]: 1
+		},
+		outputItems: {
+			[itemID('Baby mole-rat')]: 1
+		}
+	},
+	{
+		name: 'Baby mole',
+		inputItems: {
+			[itemID('Baby mole-rat')]: 1,
+			[itemID('Mole skin')]: 1
+		},
+		outputItems: {
+			[itemID('Baby mole')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Jalrek-jad',
+		inputItems: {
+			[itemID('Tzrek-jad')]: 1
+		},
+		outputItems: {
+			[itemID('Jalrek-jad')]: 1
+		},
+	},
+	{
+		name: 'Tzrek-jad',
+		inputItems: {
+			[itemID('Jalrek-jad')]: 1
+		},
+		outputItems: {
+			[itemID('Tzrek-jad')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Tzrek-zuk',
+		inputItems: {
+			[itemID('Jal-nib-rek')]: 1
+		},
+		outputItems: {
+			[itemID('Tzrek-zuk')]: 1
+		},
+	},
+	{
+		name: 'Jal-nib-rek',
+		inputItems: {
+			[itemID('Tzrek-zuk')]: 1
+		},
+		outputItems: {
+			[itemID('Jal-nib-rek')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: "Lil' destructor,
+		inputItems: {
+			[itemID("Lil' creator")]: 1
+		},
+		outputItems: {
+			[itemID("Lil' destructor")]: 1
+		},
+	},
+	{
+		name: "Lil' creator",
+		inputItems: {
+			[itemID("Lil' destructor")]: 1
+		},
+		outputItems: {
+			[itemID("Lil' creator")]: 1
+		},
+		noCl: true
+	}
+];
+
 const crystalTools: Createable[] = [
 	{
 		name: 'Crystal pickaxe',
