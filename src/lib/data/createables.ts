@@ -169,7 +169,7 @@ const metamorphPets: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Noon')]: 1
-		}
+		},
 		noCl: true
 	},
 	{
@@ -200,7 +200,7 @@ const metamorphPets: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Jalrek-jad')]: 1
-		},
+		}
 	},
 	{
 		name: 'Tzrek-jad',
@@ -219,7 +219,7 @@ const metamorphPets: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Tzrek-zuk')]: 1
-		},
+		}
 	},
 	{
 		name: 'Jal-nib-rek',
@@ -238,7 +238,7 @@ const metamorphPets: Createable[] = [
 		},
 		outputItems: {
 			[itemID("Lil' destructor")]: 1
-		},
+		}
 	},
 	{
 		name: "Lil' creator",
