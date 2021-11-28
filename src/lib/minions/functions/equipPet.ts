@@ -3,8 +3,8 @@ import { KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { allPetIDs } from '../../data/CollectionsExport';
+import { runCommand } from '../../settings/settings';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { runCommand } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
 export async function equipPet(msg: KlasaMessage, itemName: string) {

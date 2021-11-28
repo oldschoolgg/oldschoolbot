@@ -4,13 +4,14 @@ import { Task } from 'klasa';
 import { revenantMonsters } from '../../commands/Minion/revs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { runCommand } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { Gear } from '../../lib/structures/Gear';
 import { RevenantOptions } from '../../lib/types/minions';
-import { runCommand, updateBankSetting } from '../../lib/util';
+import { updateBankSetting } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 

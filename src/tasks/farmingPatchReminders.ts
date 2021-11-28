@@ -5,9 +5,10 @@ import { KlasaMessage, Task, TaskStore } from 'klasa';
 import { production } from '../config';
 import { PerkTier } from '../lib/constants';
 import { FarmingPatchTypes, PatchData } from '../lib/minions/farming/types';
+import { runCommand } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Farming from '../lib/skilling/skills/farming';
-import { runCommand, stringMatches } from '../lib/util';
+import { stringMatches } from '../lib/util';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 
 declare module 'klasa' {

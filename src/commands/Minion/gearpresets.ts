@@ -7,9 +7,10 @@ import { Color } from '../../lib/constants';
 import { defaultGear, gearPresetToString, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { prisma } from '../../lib/settings/prisma';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { cleanString, isValidGearSetup, runCommand } from '../../lib/util';
+import { cleanString, isValidGearSetup } from '../../lib/util';
 import { GearPreset } from '.prisma/client';
 
 function maxPresets(user: KlasaUser) {
