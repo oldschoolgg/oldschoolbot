@@ -442,7 +442,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.TzHaarKet,
 		amount: [130, 199],
 		weight: 10,
-		monsters: [Monsters.TzHaarKet.id],
+		monsters: [Monsters.TzHaarKet.id, Monsters.TzHaarXil.id, Monsters.TzHaarMej.id],
 		unlocked: false
 	},
 	{
