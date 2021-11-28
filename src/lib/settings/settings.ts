@@ -1,10 +1,11 @@
-import { NewUser, Prisma } from '@prisma/client';
+import { command_usage_status, NewUser, Prisma } from '@prisma/client';
 import { Guild, Util } from 'discord.js';
-import { Gateway, Settings } from 'klasa';
+import { Gateway, KlasaMessage, Settings } from 'klasa';
 
 import { client } from '../..';
-import { Emoji } from '../constants';
+import { Emoji, shouldTrackCommand } from '../constants';
 import { ActivityTaskData } from '../types/minions';
+import { isGroupActivity } from '../util';
 import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
@@ -74,8 +75,18 @@ export function getActivityOfUser(userID: string) {
 	return task ?? null;
 }
 
+export function minionActivityCacheDelete(userID: string) {
+	const entry = minionActivityCache.get(userID);
+	if (!entry) return;
+
+	const users: string[] = isGroupActivity(entry) ? entry.users : [entry.userID];
+	for (const u of users) {
+		minionActivityCache.delete(u);
+	}
+}
+
 export async function cancelTask(userID: string) {
-	prisma.activity.deleteMany({ where: { user_id: userID, completed: false } });
+	await prisma.activity.deleteMany({ where: { user_id: userID, completed: false } });
 	minionActivityCache.delete(userID);
 }
 
@@ -92,4 +103,53 @@ export function settingsUpdate(type: Prisma.ModelName, id: string, newData: any)
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	return prisma[type].update({ where: { id }, data: newData });
+}
+
+export async function runCommand(
+	message: KlasaMessage,
+	commandName: string,
+	args: unknown[],
+	isContinue = false,
+	method = 'run'
+) {
+	const command = message.client.commands.get(commandName);
+	if (!command) {
+		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
+	}
+
+	let commandUsage: {
+		date: Date;
+		user_id: string;
+		command_name: string;
+		status: command_usage_status;
+		args: null | any;
+		channel_id: string;
+		is_continue: boolean;
+	} | null = {
+		date: message.createdAt,
+		user_id: message.author.id,
+		command_name: command.name,
+		status: command_usage_status.Unknown,
+		args,
+		channel_id: message.channel.id,
+		is_continue: isContinue
+	};
+
+	try {
+		// @ts-ignore Cant be typechecked
+		const result = await command[method](message, args);
+		commandUsage.status = command_usage_status.Success;
+		return result;
+	} catch (err) {
+		commandUsage.status = command_usage_status.Error;
+		message.client.emit('commandError', message, command, args, err);
+	} finally {
+		if (shouldTrackCommand(command, args)) {
+			await prisma.commandUsage.create({
+				data: commandUsage
+			});
+		}
+	}
+
+	return null;
 }

@@ -1,7 +1,7 @@
 import { Duration, Time } from '@sapphire/time-utilities';
 import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -9,11 +9,19 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { evalMathExpression } from '../../lib/expressionParser';
-import { cancelTask, minionActivityCache } from '../../lib/settings/settings';
+import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
+import {
+	asyncExec,
+	channelIsSendable,
+	cleanString,
+	formatDuration,
+	getSupportGuild,
+	getUsername,
+	itemNameFromID
+} from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -242,6 +250,31 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'blacklist':
+			case 'bl': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				if (str instanceof KlasaUser) return;
+				const reason = str;
+				const entry = this.client.settings.get(ClientSettings.UserBlacklist);
+
+				const alreadyBlacklisted = entry.includes(input.id);
+
+				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
+					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
+				});
+				const emoji = getSupportGuild(this.client).emojis.cache.random().toString();
+				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
+
+				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
+				if (channelIsSendable(channel)) {
+					channel.send(
+						`\`${input.username}\` was ${newStatus} by ${msg.author.username} for \`${
+							reason ?? 'no reason'
+						}\`.`
+					);
+				}
+				return msg.channel.send(`${emoji} Successfully ${newStatus} ${input.username}.`);
+			}
 			case 'addimalt': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				if (!str || !(str instanceof KlasaUser)) return;
@@ -365,7 +398,7 @@ ${
 				await cancelTask(input.id);
 				this.client.oneCommandAtATimeCache.delete(input.id);
 				this.client.secondaryUserBusyCache.delete(input.id);
-				minionActivityCache.delete(input.id);
+				minionActivityCacheDelete(input.id);
 
 				return msg.react(Emoji.Tick);
 			}
@@ -584,6 +617,11 @@ LIMIT 10;
 				if (typeof input !== 'string') return;
 				const bank = JSON.parse(input.replace(/'/g, '"'));
 				return msg.channel.sendBankImage({ bank });
+			}
+			case 'reboot': {
+				await msg.channel.send('Rebooting...');
+				await Promise.all(this.client.providers.map(provider => provider.shutdown()));
+				process.exit();
 			}
 		}
 	}

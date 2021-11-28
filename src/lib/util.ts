@@ -14,7 +14,7 @@ import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportSer
 import { GearSetupType, GearSetupTypes } from './gear/types';
 import { Consumable } from './minions/types';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions } from './types/minions';
+import { GroupMonsterActivityTaskOptions, RaidsOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
@@ -253,6 +253,10 @@ export function randomVariation(value: number, percentage: number) {
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
+}
+
+export function isRaidsActivity(data: any): data is RaidsOptions {
+	return 'challengeMode' in data;
 }
 
 export function sha256Hash(x: string) {
@@ -547,22 +551,4 @@ export function countUsersWithItemInCl(client: KlasaClient, _item: string) {
 
 export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
-}
-
-export async function runCommand(
-	message: KlasaMessage,
-	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask' | 'rp' | 'equip' | 'farm',
-	args: unknown[]
-) {
-	const command = message.client.commands.get(commandName);
-	if (!command) {
-		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
-	}
-	try {
-		const result = await command.run(message, args);
-		return result;
-	} catch (err) {
-		message.client.emit('commandError', message, command, args, err);
-	}
-	return null;
 }

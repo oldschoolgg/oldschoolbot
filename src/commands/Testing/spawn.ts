@@ -3,9 +3,10 @@ import { Bank, Items, Openables } from 'oldschooljs';
 
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { GearSetupTypes } from '../../lib/gear';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID, runCommand } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { phosaniBISGear } from '../Minion/nightmare';

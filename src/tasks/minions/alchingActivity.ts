@@ -56,10 +56,7 @@ export default class extends Task {
 			user,
 			channelID,
 			responses,
-			res => {
-				user.log(`continued trip of alching ${quantity}x ${item.name}`);
-				return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
-			},
+			['alch', [quantity, [item]], true],
 			undefined,
 			data,
 			loot.bank
