@@ -190,6 +190,4 @@ export namespace UserSettings {
 	export const GPLuckyPick = T<number>('gp_luckypick');
 	export const GPDice = T<number>('gp_dice');
 	export const GPSlots = T<number>('gp_slots');
-
-	export const HasKilledTurkey = T<number>('has_killed_turkey');
 }

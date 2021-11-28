@@ -32,7 +32,6 @@ Client.defaultUserSchema
 	.add('monsterScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
-	.add('troll', 'boolean', { default: false })
 	.add('sacrificedBank', 'any', { default: {} })
 	.add('honour_level', 'integer', { default: 1 })
 	.add('honour_points', 'integer', { default: 0 })
@@ -181,5 +180,4 @@ Client.defaultUserSchema
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_slots', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-	.add('monkeys_fought', 'string', { array: true, default: [] })
-	.add('has_killed_turkey', 'boolean', { default: false });
+	.add('monkeys_fought', 'string', { array: true, default: [] });
