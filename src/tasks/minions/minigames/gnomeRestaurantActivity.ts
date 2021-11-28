@@ -94,18 +94,6 @@ export default class extends Task {
 			addBanks([this.client.settings.get(ClientSettings.EconomyStats.GnomeRestaurantLootBank), loot.bank])
 		);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued gnome restaurant');
-				return this.client.commands.get('gnomerestaurant')!.run(res, []);
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		handleTripFinish(this.client, user, channelID, str, ['gnomerestaurant', [], true], undefined, data, loot.bank);
 	}
 }

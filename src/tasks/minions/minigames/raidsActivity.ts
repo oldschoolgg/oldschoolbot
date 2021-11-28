@@ -6,7 +6,7 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore, runCommand } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
@@ -127,7 +127,7 @@ export default class extends Task {
 					res.prompter.flags = flags;
 
 					allUsers[0].log('continued trip of solo CoX');
-					return this.client.commands.get('raid')!.run(res, ['solo']);
+					return runCommand(res, 'raid', ['solo'], true);
 				},
 				undefined,
 				data,

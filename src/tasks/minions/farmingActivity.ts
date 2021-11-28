@@ -1,7 +1,6 @@
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import MinionCommand from '../../commands/Minion/minion';
 import { Emoji, Events } from '../../lib/constants';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
@@ -177,12 +176,7 @@ export default class extends Task {
 				user,
 				channelID,
 				str,
-				autoFarmed
-					? res => {
-							user.log('continued trip of autofarming');
-							return (this.client.commands.get('minion') as any as MinionCommand)!.autofarm(res);
-					  }
-					: undefined,
+				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
 				undefined,
 				data,
 				null
@@ -455,12 +449,7 @@ export default class extends Task {
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed
-					? res => {
-							user.log('continued trip of autofarming');
-							return this.client.commands.get('m')!.run(res, ['autofarm']);
-					  }
-					: undefined,
+				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

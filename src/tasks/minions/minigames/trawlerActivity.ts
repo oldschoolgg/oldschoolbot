@@ -73,18 +73,6 @@ export default class extends Task {
 				previousCL
 			);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued fishing trawler');
-				return this.client.commands.get('fishingtrawler')!.run(res, []);
-			},
-			image!,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(this.client, user, channelID, str, ['fishingtrawler', [], true], image!, data, itemsAdded);
 	}
 }

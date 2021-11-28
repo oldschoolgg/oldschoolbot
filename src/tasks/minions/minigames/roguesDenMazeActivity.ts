@@ -65,10 +65,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued rogues den');
-				return this.client.commands.get('roguesden')!.run(res, []);
-			},
+			['roguesden', [], true],
 			gotLoot ? image! : undefined,
 			data,
 			itemsAdded

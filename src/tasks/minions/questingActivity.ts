@@ -1,4 +1,4 @@
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
 
 import { Emoji, MAX_QP } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -63,12 +63,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			hasMaxQP
-				? undefined
-				: res => {
-						user.log('continued trip of Questing.');
-						return this.client.commands.get('quest')!.run(res as KlasaMessage, []);
-				  },
+			hasMaxQP ? undefined : ['quest', [], true],
 			undefined,
 			data,
 			null

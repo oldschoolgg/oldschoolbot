@@ -46,19 +46,7 @@ export default class extends Task {
 		}
 
 		if (users.length === 1) {
-			handleTripFinish(
-				this.client,
-				leaderUser,
-				channelID,
-				str,
-				res => {
-					leaderUser.log('continued trip of killing soul wars}');
-					return this.client.commands.get('sw')!.run(res, ['solo']);
-				},
-				undefined!,
-				data,
-				null
-			);
+			handleTripFinish(this.client, leaderUser, channelID, str, ['sw', ['solo'], true], undefined!, data, null);
 		} else {
 			sendToChannelID(this.client, channelID, { content: str });
 		}
