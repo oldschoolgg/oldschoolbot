@@ -1736,6 +1736,7 @@ const Createables: Createable[] = [
 	...hunterClothing,
 	...twistedAncestral,
 	...metamorphPetCreatables,
+	...metamorphPets,
 	...slayerCreatables,
 	...capeCreatables,
 	...dragonFireShieldCreatables,
