@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import {
 	AutoslayOptionsEnum,
@@ -11,7 +12,7 @@ import {
 	SlayerMasterEnum
 } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { runCommand, wipeDBArrayByKey } from '../../lib/util';
+import { wipeDBArrayByKey } from '../../lib/util';
 
 interface AutoslayLink {
 	monsterID: number;
@@ -344,7 +345,7 @@ export default class extends BotCommand {
 
 			let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 			if (commonName === 'TzHaar') {
-				return this.client.commands.get('fightcaves')?.run(msg, []);
+				return runCommand(msg, 'fightcaves', []);
 			}
 
 			const allMonsters = killableMonsters.filter(m => {

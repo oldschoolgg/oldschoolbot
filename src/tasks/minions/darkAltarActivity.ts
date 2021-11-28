@@ -61,18 +61,6 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued trip of dark altar');
-				return this.client.commands.get('darkaltar')!.run(res, [rune]);
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		handleTripFinish(this.client, user, channelID, str, ['darkaltar', [rune], true], undefined, data, loot.bank);
 	}
 }

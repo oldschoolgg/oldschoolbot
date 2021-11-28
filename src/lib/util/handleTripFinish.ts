@@ -4,12 +4,12 @@ import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { itemID } from 'oldschooljs/dist/util';
 
-import MinionCommand from '../../commands/Minion/minion';
 import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
+import { runCommand } from '../settings/settings';
 import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
@@ -31,7 +31,10 @@ export async function handleTripFinish(
 	user: KlasaUser,
 	channelID: string,
 	message: string,
-	onContinue: undefined | ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
+	onContinue:
+		| undefined
+		| [string, unknown[], boolean?, string?]
+		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: ItemBank | null
@@ -112,8 +115,10 @@ export async function handleTripFinish(
 		collectors.delete(user.id);
 	}
 
-	if (onContinue) {
-		lastTripCache.set(user.id, { data, continue: onContinue });
+	const onContinueFn = Array.isArray(onContinue) ? (msg: KlasaMessage) => runCommand(msg, ...onContinue) : onContinue;
+
+	if (onContinueFn) {
+		lastTripCache.set(user.id, { data, continue: onContinueFn });
 	}
 
 	if (!channelIsSendable(channel)) return;
@@ -136,10 +141,10 @@ export async function handleTripFinish(
 		client.oneCommandAtATimeCache.add(mes.author.id);
 		try {
 			if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
-				(client.commands.get('minion') as unknown as MinionCommand).clue(mes, [1, clueReceived.name]);
+				runCommand(mes, 'mclue', [1, clueReceived.name]);
 				return;
-			} else if (onContinue && stringMatches(mes.content, continuationChar)) {
-				await onContinue(mes).catch(err => {
+			} else if (onContinueFn && stringMatches(mes.content, continuationChar)) {
+				await onContinueFn(mes).catch(err => {
 					channel.send(err);
 				});
 			}

@@ -6,6 +6,7 @@ import { Monsters } from 'oldschooljs';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { slayerMasters } from '../../lib/slayer/slayerMasters';
@@ -19,7 +20,7 @@ import {
 } from '../../lib/slayer/slayerUtil';
 import { AssignableSlayerTask } from '../../lib/slayer/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { runCommand, stringMatches } from '../../lib/util';
+import { stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
 
 const returnSuccessButtons = [
@@ -273,7 +274,7 @@ export default class extends BotCommand {
 				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
 			if (Boolean(msg.flagArgs.new)) {
-				return this.client.commands.get('slayertask')!.run(msg, []);
+				return runCommand(msg, 'slayertask', []);
 			}
 			return;
 		}

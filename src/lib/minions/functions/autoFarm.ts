@@ -3,10 +3,11 @@ import { KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { runCommand } from '../../settings/settings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
 import Farming, { plants } from '../../skilling/skills/farming';
-import { runCommand, stringMatches } from '../../util';
+import { stringMatches } from '../../util';
 import { defaultPatches, resolvePatchTypeSetting } from '../farming';
 
 export async function autoFarm(msg: KlasaMessage) {

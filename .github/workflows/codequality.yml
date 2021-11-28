@@ -26,6 +26,8 @@ jobs:
                   key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn --frozen-lockfile
+            - name: Generate Prisma Client
+              run: npx prisma generate
             - name: Run ESLint
               uses: icrawl/action-eslint@v1
 
@@ -52,6 +54,8 @@ jobs:
                   pushd src &&
                   cp config.example.ts config.ts &&
                   popd
+            - name: Generate Prisma Client
+              run: npx prisma generate
             - name: Run TSC
               uses: icrawl/action-tsc@v1
               with:

@@ -1,5 +1,5 @@
 import { MessageButton } from 'discord.js';
-import { KlasaMessage } from 'klasa';
+import { Command, KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
@@ -457,3 +457,12 @@ export const projectiles: Record<ProjectileType, number[]> = {
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
+export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
+export function shouldTrackCommand(command: Command, args: any[]) {
+	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
+		if (command.name === name && subs.includes(args[0])) {
+			return false;
+		}
+	}
+	return true;
+}
