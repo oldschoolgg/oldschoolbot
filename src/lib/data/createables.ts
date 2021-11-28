@@ -194,25 +194,6 @@ const metamorphPets: Createable[] = [
 		noCl: true
 	},
 	{
-		name: 'Jalrek-jad',
-		inputItems: {
-			[itemID('Tzrek-jad')]: 1
-		},
-		outputItems: {
-			[itemID('Jalrek-jad')]: 1
-		}
-	},
-	{
-		name: 'Tzrek-jad',
-		inputItems: {
-			[itemID('Jalrek-jad')]: 1
-		},
-		outputItems: {
-			[itemID('Tzrek-jad')]: 1
-		},
-		noCl: true
-	},
-	{
 		name: 'Tzrek-zuk',
 		inputItems: {
 			[itemID('Jal-nib-rek')]: 1
@@ -228,25 +209,6 @@ const metamorphPets: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Jal-nib-rek')]: 1
-		},
-		noCl: true
-	},
-	{
-		name: "Lil' destructor,
-		inputItems: {
-			[itemID("Lil' creator")]: 1
-		},
-		outputItems: {
-			[itemID("Lil' destructor")]: 1
-		}
-	},
-	{
-		name: "Lil' creator",
-		inputItems: {
-			[itemID("Lil' destructor")]: 1
-		},
-		outputItems: {
-			[itemID("Lil' creator")]: 1
 		},
 		noCl: true
 	}
