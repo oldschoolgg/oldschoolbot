@@ -14,7 +14,7 @@ import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportSer
 import { GearSetupType, GearSetupTypes } from './gear/types';
 import { Consumable } from './minions/types';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions } from './types/minions';
+import { GroupMonsterActivityTaskOptions, RaidsOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
@@ -253,6 +253,10 @@ export function randomVariation(value: number, percentage: number) {
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
+}
+
+export function isRaidsActivity(data: any): data is RaidsOptions {
+	return 'challengeMode' in data;
 }
 
 export function sha256Hash(x: string) {
