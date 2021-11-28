@@ -65,7 +65,6 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'BigChompyBirdHunting':
 			return ActivityGroup.Minigame;
 		default: {
-			console.error(`Unrecognized activity: ${type}`);
 			return ActivityGroup.Skilling;
 		}
 	}

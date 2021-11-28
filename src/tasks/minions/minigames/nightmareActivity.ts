@@ -157,10 +157,7 @@ export default class extends Task {
 				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${monsterName}, you died ${
 					deaths[leader] ?? 0
 				} times. Your ${monsterName} KC is now ${kc}.`,
-				res => {
-					leaderUser.log(`continued trip of ${quantity}x Nightmare`);
-					return this.client.commands.get('nightmare')!.run(res, [isPhosani ? 'phosani' : 'solo']);
-				},
+				['nightmare', [isPhosani ? 'phosani' : 'solo'], true],
 				image!,
 				data,
 				totalLoot.bank

@@ -1,8 +1,7 @@
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import CastleWarsCommand from '../../../commands/Minion/castlewars';
 import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -29,12 +28,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`<@${userID}>, ${minionName} finished ${quantity}x Castle Wars games and received ${loot}.`,
-			res => {
-				user.log('continued castle wars');
-				return (this.client.commands.get('castlewars') as unknown as CastleWarsCommand)!.play(
-					res
-				) as Promise<KlasaMessage>;
-			},
+			['castlewars', [], true, 'play'],
 			undefined,
 			data,
 			loot.bank
