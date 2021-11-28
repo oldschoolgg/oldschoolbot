@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
+import { runCommand } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -123,7 +124,7 @@ export default class extends Task {
 				res.prompter.flags = flags;
 
 				user.log(`continued trip of ${quantity}x ${course.name} laps`);
-				return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
+				return runCommand(res, 'laps', [quantity, course.aliases[0], true]);
 			},
 			undefined,
 			data,

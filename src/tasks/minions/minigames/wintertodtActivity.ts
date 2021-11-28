@@ -153,18 +153,6 @@ export default class extends Task {
 			output += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			output,
-			res => {
-				user.log('continued trip of wintertodt');
-				return this.client.commands.get('wintertodt')!.run(res, []);
-			},
-			image!,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(this.client, user, channelID, output, ['wintertodt', [], true], image!, data, itemsAdded);
 	}
 }

@@ -83,10 +83,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued gauntlet');
-				return this.client.commands.get('gauntlet')!.run(res, [corrupted ? 'corrupted' : 'normal', quantity]);
-			},
+			['gauntlet', [corrupted ? 'corrupted' : 'normal', quantity], true],
 			image!,
 			data,
 			loot.bank
