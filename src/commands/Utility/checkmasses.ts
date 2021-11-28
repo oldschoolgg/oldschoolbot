@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { prisma } from '../../lib/settings/prisma';
+import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, isGroupActivity, isRaidsActivity } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -18,29 +18,33 @@ export default class extends BotCommand {
 		if (!msg.guild) return null;
 		const channelIDs = msg.guild.channels.cache.filter(c => c.type === 'text').map(c => c.id);
 
-		let masses: any[] = await prisma.$queryRaw`
-	SELECT *
-	FROM activity
-	WHERE
-	completed = false AND
-	group_activity = true AND
-	channel_id = ANY(${channelIDs})
-	ORDER by finish_date ASC;
-`;
-
-		masses = masses.filter(m => m.data.users.length > 1);
+		const masses = (
+			await prisma.activity.findMany({
+				where: {
+					completed: false,
+					group_activity: true,
+					channel_id: { in: channelIDs }
+				},
+				orderBy: {
+					finish_date: 'asc'
+				}
+			})
+		)
+			.map(convertStoredActivityToFlatActivity)
+			.filter(m => isRaidsActivity(m) || isGroupActivity(m));
 
 		if (masses.length === 0) {
 			return msg.channel.send('There are no active masses in this server.');
 		}
 		const now = Date.now();
 		const massStr = masses
-			.map(
-				m =>
-					`${m.type}${m.data.challengeMode ? ' CM' : ''}: ${m.data.users.length} users returning to <#${
-						m.channel_id
-					}> in ${formatDuration(m.finish_date.getTime() - now)}`
-			)
+			.map(m => {
+				if (isGroupActivity(m)) {
+					return `${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
+						m.users.length
+					} users returning to <#${m.channelID}> in ${formatDuration(m.finishDate - now)}`;
+				}
+			})
 			.join('\n');
 		return msg.channel.send(`**Masses in this server:**
 ${massStr}`);
