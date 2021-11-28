@@ -122,3 +122,15 @@ export const FletchingTipsTable = new LootTable()
 export const StaffOrbTable = new LootTable().add('Air orb').add('Earth orb').add('Fire orb').add('Water orb');
 
 export const PekyTable = new LootTable().add(SeedTable).oneIn(5, 'Breadcrumbs').tertiary(500, 'Baby raven');
+
+export const runeWeaponTable = new LootTable()
+	.add('Rune dagger')
+	.add('Rune sword')
+	.add('Rune mace')
+	.add('Rune longsword')
+	.add('Rune scimitar')
+	.add('Rune spear')
+	.add('Rune warhammer')
+	.add('Rune battleaxe')
+	.add('Rune 2h sword')
+	.add('Rune halberd');

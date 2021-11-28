@@ -2,8 +2,9 @@ import { masterCapesCL } from '../src/lib/data/CollectionsExport';
 import { allMbTables, PMBTable } from '../src/lib/data/openables';
 import { growablePets } from '../src/lib/growablePets';
 import { Gear } from '../src/lib/structures/Gear';
-import { isSuperUntradeable } from '../src/lib/util';
+import { isSuperUntradeable, itemNameFromID } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
+import resolveItems from '../src/lib/util/resolveItems';
 
 describe('Sanity', () => {
 	test('Growable pets cant come from mystery boxes', () => {
@@ -30,5 +31,22 @@ describe('Sanity', () => {
 		expect(new Gear({ cape: "Ava's assembler" }).hasEquipped("Ava's assembler")).toEqual(true);
 		expect(new Gear({ cape: 'Assembler max cape' }).hasEquipped("Ava's assembler", true, true)).toEqual(true);
 		expect(new Gear({ cape: "Combatant's cape" }).hasEquipped("Ava's assembler", true, true)).toEqual(true);
+	});
+	test('cant be dropped by mystery boxes', () => {
+		const shouldntBeIn = resolveItems([
+			'Coins',
+			'Tester gift box',
+			'Primal full helm (real)',
+			'Abyssal pouch',
+			'Cob',
+			'Runite stone spirit',
+			'Coal stone spirit'
+		]);
+		for (const i of shouldntBeIn) {
+			if (allMbTables.includes(i)) {
+				console.error('wtf');
+				throw new Error(`Items rolled includes ${itemNameFromID(i)}`);
+			}
+		}
 	});
 });

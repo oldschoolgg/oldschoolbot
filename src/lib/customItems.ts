@@ -17,7 +17,8 @@ export function isCustomItem(itemID: number) {
 }
 
 interface CustomItemData {
-	isSuperUntradeable: boolean;
+	isSuperUntradeable?: boolean;
+	cantDropFromMysteryBoxes?: boolean;
 }
 declare module 'oldschooljs/dist/meta/types' {
 	interface Item {
@@ -2224,3 +2225,120 @@ setCustomItem(50_045, 'Mystery impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_046, 'Rumble token', 'Coal', {}, 1000);
 setCustomItem(50_047, 'Magic banana', 'Coal', {}, 1000);
 setCustomItem(50_048, 'Monkey crate', 'Coal', {}, 10_000);
+
+setCustomItem(
+	50_049,
+	'Frost dragon bones',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+/**
+ *
+ * Stone spirits
+ *
+ */
+setCustomItem(
+	50_050,
+	'Copper stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_051,
+	'Tin stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_052,
+	'Iron stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_053,
+	'Coal stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_054,
+	'Silver stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_055,
+	'Mithril stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_056,
+	'Adamantite stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_057,
+	'Gold stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_058,
+	'Runite stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);

@@ -33,9 +33,7 @@ export const KalphiteKingMonster: KillableMonster = {
 	aliases: ['kk'],
 	timeToFinish: Time.Minute * 25,
 	notifyDrops: kalphiteKingCL,
-	table: {
-		kill: makeKillTable(kalphiteKingLootTable)
-	},
+	table: makeKillTable(kalphiteKingLootTable),
 	emoji: '',
 	wildy: false,
 	difficultyRating: 10,

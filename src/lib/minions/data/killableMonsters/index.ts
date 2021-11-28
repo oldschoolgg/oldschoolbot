@@ -8,7 +8,7 @@ import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import { makeKillTable } from '../../../util/setCustomMonster';
+import setCustomMonster, { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
@@ -20,6 +20,7 @@ import Koschei, { koscheiTable } from './custom/Koschei';
 import SeaKraken, { KrakenTable } from './custom/SeaKraken';
 import Treebeard, { TreebeardLootTable } from './custom/Treebeard';
 import { VasaMagus } from './custom/VasaMagus';
+import { customMonsters } from './customMonsters';
 import { konarMonsters } from './konarMonsters';
 import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
@@ -224,9 +225,7 @@ const killableMonsters: KillableMonster[] = [
 		name: SeaKraken.name,
 		aliases: SeaKraken.aliases,
 		timeToFinish: Time.Minute * 17,
-		table: {
-			kill: makeKillTable(KrakenTable)
-		},
+		table: makeKillTable(KrakenTable),
 		emoji: '',
 		notifyDrops: resolveItems(['Fish sack', 'Fishing trophy', 'Pufferfish']),
 		wildy: false,
@@ -260,9 +259,7 @@ const killableMonsters: KillableMonster[] = [
 		name: AbyssalDragon.name,
 		aliases: AbyssalDragon.aliases,
 		timeToFinish: Time.Minute * 30,
-		table: {
-			kill: makeKillTable(AbyssalDragonLootTable)
-		},
+		table: makeKillTable(AbyssalDragonLootTable),
 		emoji: '',
 		wildy: true,
 
@@ -344,9 +341,7 @@ const killableMonsters: KillableMonster[] = [
 		name: Koschei.name,
 		aliases: Koschei.aliases,
 		timeToFinish: Time.Hour * 2,
-		table: {
-			kill: makeKillTable(koscheiTable)
-		},
+		table: makeKillTable(koscheiTable),
 		emoji: '',
 		wildy: true,
 
@@ -362,9 +357,7 @@ const killableMonsters: KillableMonster[] = [
 		name: Treebeard.name,
 		aliases: Treebeard.aliases,
 		timeToFinish: Time.Minute * 10,
-		table: {
-			kill: makeKillTable(TreebeardLootTable)
-		},
+		table: makeKillTable(TreebeardLootTable),
 		emoji: '',
 		wildy: true,
 
@@ -468,6 +461,17 @@ export const NightmareMonster: KillableMonster = {
 };
 
 export default killableMonsters;
+
+for (const monster of customMonsters) {
+	if (!Monsters.get(monster.id)) {
+		setCustomMonster(monster.id, monster.name, monster.table, monster.baseMonster, { aliases: monster.aliases });
+	} else {
+		console.error(
+			`Tried to set custom monster called ${monster.name}, but one already existed with the same ID: ${monster.id}`
+		);
+	}
+	killableMonsters.push({ ...monster, table: makeKillTable(monster.table) });
+}
 
 export const effectiveMonsters = [
 	...killableMonsters,

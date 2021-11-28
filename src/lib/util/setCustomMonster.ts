@@ -3,14 +3,16 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 export function makeKillTable(table: LootTable) {
-	return (quantity: number) => {
-		const loot = new Bank();
+	return {
+		kill: (quantity: number) => {
+			const loot = new Bank();
 
-		for (let i = 0; i < quantity; i++) {
-			loot.add(table.roll());
+			for (let i = 0; i < quantity; i++) {
+				loot.add(table.roll());
+			}
+
+			return loot;
 		}
-
-		return loot;
 	};
 }
 
@@ -26,7 +28,7 @@ export default function setCustomMonster(
 		...newItemData,
 		name,
 		id,
-		kill: makeKillTable(table),
+		kill: makeKillTable(table).kill,
 		allItems: table.allItems
 	});
 }

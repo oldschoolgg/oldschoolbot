@@ -1000,12 +1000,8 @@ export const vannakaMonsters: KillableMonster[] = [
 		name: Monsters.OgressWarrior.name,
 		aliases: Monsters.OgressWarrior.aliases,
 		timeToFinish: Time.Second * 25,
-		table: {
-			kill: makeKillTable(Monsters.OgressWarrior.table!.tertiary(6500, 'Ishi'))
-		},
-
+		table: makeKillTable(Monsters.OgressWarrior.table!.tertiary(6500, 'Ishi')),
 		wildy: false,
-
 		difficultyRating: 2,
 		qpRequired: 0,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -1051,9 +1047,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		aliases: Monsters.SeaSnakeYoung.aliases,
 		timeToFinish: Time.Second * 28,
 		table: Monsters.SeaSnakeYoung,
-
 		wildy: false,
-
 		difficultyRating: 2,
 		levelRequirements: {
 			slayer: 40
