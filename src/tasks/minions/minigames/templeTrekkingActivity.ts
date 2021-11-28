@@ -110,10 +110,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x treks`);
-				return this.client.commands.get('trek')!.run(res, [quantity, difficulty]);
-			},
+			['trek', [quantity, difficulty], true],
 			image!,
 			data,
 			itemsAdded

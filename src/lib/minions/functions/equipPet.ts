@@ -1,9 +1,9 @@
 import { noOp } from 'e';
-import { KlasaClient, KlasaMessage } from 'klasa';
+import { KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import MinionCommand from '../../../commands/Minion/minion';
 import { allPetIDs } from '../../data/CollectionsExport';
+import { runCommand } from '../../settings/settings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import getOSItem from '../../util/getOSItem';
 
@@ -17,8 +17,7 @@ export async function equipPet(msg: KlasaMessage, itemName: string) {
 
 	const currentlyEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
 	if (currentlyEquippedPet) {
-		const client = msg.client as KlasaClient;
-		await (client.commands.get('m') as any as MinionCommand)!.unequippet(msg).catch(noOp);
+		await runCommand(msg, 'm', [], false, 'unequippet').catch(noOp);
 	}
 
 	const doubleCheckEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);

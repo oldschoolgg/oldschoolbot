@@ -44,11 +44,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued trip of pestcontrol');
-				// @ts-ignore 2339
-				return this.client.commands.get('pestcontrol')!.start(res, [quantity]);
-			},
+			['pestcontrol', [quantity], true, 'start'],
 			undefined,
 			data,
 			null

@@ -1,5 +1,5 @@
 import { randArrItem, roll, Time, uniqueArr } from 'e';
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { monkeyHeadImage, monkeyTierOfUser } from '../../../lib/monkeyRumble';
@@ -94,10 +94,7 @@ export default class extends Task {
 			`${user}, ${user.minionName} finished fighting ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
 ${xpStr}
 You received **${loot}.**`,
-			res => {
-				user.log('continued mmmr');
-				return (this.client.commands.get('mmmr') as unknown as any)!.start(res) as Promise<KlasaMessage>;
-			},
+			['mmmr', [], true, 'start'],
 			files[0],
 			data,
 			loot.bank

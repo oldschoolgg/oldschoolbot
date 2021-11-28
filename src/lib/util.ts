@@ -618,25 +618,6 @@ export function countUsersWithItemInCl(client: KlasaClient, _item: string) {
 export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
 }
-
-export async function runCommand(
-	message: KlasaMessage,
-	commandName: 'k' | 'mclue' | 'autoslay' | 'slayertask' | 'rp' | 'equip' | 'farm',
-	args: unknown[]
-) {
-	const command = message.client.commands.get(commandName);
-	if (!command) {
-		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
-	}
-	try {
-		const result = await command.run(message, args);
-		return result;
-	} catch (err) {
-		message.client.emit('commandError', message, command, args, err);
-	}
-	return null;
-}
-
 export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
 	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {
 		return 'arrow';

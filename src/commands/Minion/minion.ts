@@ -22,10 +22,11 @@ import { becomeIronman } from '../../lib/minions/functions/becomeIronman';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertLVLtoXP, isValidNickname, runCommand, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -134,7 +135,7 @@ export default class MinionCommand extends BotCommand {
 					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
 						return lastTrip.continue(msg);
 					}
-					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
+					await runCommand(msg, 'mclue', [selection.customID]);
 				} catch {
 					await sentMessage.edit({ components: [] });
 				}

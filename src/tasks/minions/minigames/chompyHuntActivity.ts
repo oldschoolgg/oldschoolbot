@@ -37,18 +37,6 @@ export default class extends Task {
 			}
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued chompy hunting');
-				return this.client.commands.get('chompyhunt')!.run(res, []);
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		handleTripFinish(this.client, user, channelID, str, ['chompyhunt', []], undefined, data, loot.bank);
 	}
 }

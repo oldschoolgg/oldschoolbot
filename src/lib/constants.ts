@@ -1,6 +1,6 @@
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { Command, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
@@ -600,3 +600,12 @@ export const userTimers = [
 	[giveBoxResetTime, UserSettings.LastGivenBox, 'GiveBox'],
 	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
 ] as const;
+export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
+export function shouldTrackCommand(command: Command, args: any[]) {
+	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
+		if (command.name === name && subs.includes(args[0])) {
+			return false;
+		}
+	}
+	return true;
+}

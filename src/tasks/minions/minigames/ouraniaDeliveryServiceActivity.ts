@@ -1,9 +1,8 @@
 import { randFloat } from 'e';
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 import { PrayerPageTable } from 'oldschooljs/dist/simulation/clues/General';
 
-import ODSCommand from '../../../commands/Minion/ods';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -64,18 +63,6 @@ export default class extends Task {
 			str += `\n\nYou received some tips from Wizards in your delivery route: ${loot}.`;
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued ods');
-				return (this.client.commands.get('ods') as ODSCommand)!.start(res) as Promise<KlasaMessage>;
-			},
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(this.client, user, channelID, str, ['ods', [], true, 'start'], undefined, data, null);
 	}
 }

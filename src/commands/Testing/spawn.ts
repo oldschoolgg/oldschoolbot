@@ -1,17 +1,18 @@
+import { tame_growth } from '@prisma/client';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Items, Openables } from 'oldschooljs';
 
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { GearSetupTypes } from '../../lib/gear';
 import { prisma } from '../../lib/settings/prisma';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { tameSpecies } from '../../lib/tames';
-import { itemNameFromID, runCommand } from '../../lib/util';
+import { itemNameFromID } from '../../lib/util';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { generateNewTame } from '../bso/nursery';
 import { phosaniBISGear } from '../Minion/nightmare';
-import { tame_growth } from '.prisma/client';
 
 const gearSpawns = [
 	{

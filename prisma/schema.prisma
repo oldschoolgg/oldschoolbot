@@ -531,6 +531,27 @@ model Tame {
   @@map("tames")
 }
 
+model CommandUsage {
+  id           Int                  @id @default(autoincrement())
+  date         DateTime             @db.Timestamp(6)
+  user_id      String               @db.VarChar(19)
+  command_name String               @db.VarChar(32)
+  status       command_usage_status @default(value: Unknown)
+  is_continue  Boolean              @default(false)
+
+  args       Json?   @db.Json
+  channel_id String? @db.VarChar(19)
+
+  @@map("command_usage")
+}
+
+enum command_usage_status {
+  Unknown
+  Success
+  Error
+  Inhibited
+}
+
 enum activity_type_enum {
   Agility
   Cooking

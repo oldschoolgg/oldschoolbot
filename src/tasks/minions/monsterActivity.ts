@@ -13,13 +13,14 @@ import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { bones } from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll, runCommand } from '../../lib/util';
+import { itemID, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../lib/util/webhook';
 
@@ -295,11 +296,11 @@ export default class extends Task {
 				? undefined
 				: res => {
 						user.log(`continued trip of killing ${monster.name}`);
-						let method = 'none';
-						if (usingCannon) method = 'cannon';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-						return runCommand(res, 'k', [quantity, monster.name, method]);
+						let args = [quantity, monster.name];
+						if (usingCannon) args.push('cannon');
+						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
+						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
+						return runCommand(res, 'k', args, true);
 				  },
 			image!,
 			data,

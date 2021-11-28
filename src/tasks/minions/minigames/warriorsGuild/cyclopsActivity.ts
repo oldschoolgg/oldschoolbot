@@ -84,10 +84,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued cyclops');
-				return this.client.commands.get('wg')!.run(res, [quantity, 'cyclops']);
-			},
+			['wg', [quantity, 'cyclops'], true],
 			image!,
 			data,
 			itemsAdded

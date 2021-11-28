@@ -116,10 +116,7 @@ export default class extends Task {
 				users[0],
 				channelID,
 				resultStr,
-				res => {
-					users[0].log('continued trip of soloing King Goldemar');
-					return this.client.commands.get('kinggoldemar')!.run(res, ['solo']);
-				},
+				['kinggoldemar', ['solo'], true],
 				undefined,
 				data,
 				totalLoot.bank

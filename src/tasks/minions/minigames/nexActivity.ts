@@ -186,10 +186,7 @@ export default class extends Task {
 					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${
 							leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0
 					  }.\n\n${soloXP}`,
-				res => {
-					leaderUser.log('continued nex');
-					return this.client.commands.get('nex')!.run(res, ['solo']);
-				},
+				['nex', ['solo'], true],
 				image!,
 				data,
 				soloItemsAdded

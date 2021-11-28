@@ -109,10 +109,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x Volcanic Mine`);
-				return this.client.commands.get('volcanicmine')!.run(res, [quantity]);
-			},
+			['volcanicmine', [quantity], true],
 			undefined,
 			data,
 			itemsAdded

@@ -47,10 +47,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${plankQuantity}x ${plank.name}`);
-				return this.client.commands.get('sawmill')!.run(res, [plankQuantity, plank.name]);
-			},
+			['sawmill', [plankQuantity, plank.name], true],
 			undefined,
 			data,
 			loot.bank

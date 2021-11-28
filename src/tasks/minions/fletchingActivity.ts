@@ -33,10 +33,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
-			res => {
-				user.log('continued fletching trip');
-				return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
-			},
+			['fletch', [quantity, fletchableItem.name], true],
 			undefined,
 			data,
 			loot.bank

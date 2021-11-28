@@ -129,14 +129,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			users.length > 1
-				? undefined
-				: res => {
-						user.log(`continued trip of ${quantity}x F${floor} dungeoneering`);
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore
-						return this.client.commands.get('dung')!.start(res, ['solo']);
-				  },
+			users.length > 1 ? undefined : ['dung', ['solo'], true],
 			undefined,
 			data,
 			null

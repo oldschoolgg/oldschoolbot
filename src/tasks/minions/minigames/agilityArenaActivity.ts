@@ -69,18 +69,6 @@ export default class extends Task {
 		).toLocaleString()} XP/Hr (after redeeming tickets at 1000 qty)`;
 		await user.addItemsToBank({ [itemID('Agility arena ticket')]: ticketsReceived }, true);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued trip of agility arena');
-				return this.client.commands.get('agilityarena')!.run(res, []);
-			},
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(this.client, user, channelID, str, ['agilityarena', [], true], undefined, data, null);
 	}
 }

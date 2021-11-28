@@ -75,10 +75,7 @@ export default class extends Task {
 				`${user} You died ${formatDuration(
 					preJadDeathTime
 				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
-				res => {
-					user.log('continued trip of fightcaves');
-					return this.client.commands.get('fightcaves')!.run(res, []);
-				},
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
@@ -116,10 +113,7 @@ export default class extends Task {
 				user,
 				channelID,
 				`${user} ${msg}`,
-				res => {
-					user.log('continued trip of fightcaves');
-					return this.client.commands.get('fightcaves')!.run(res, []);
-				},
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
@@ -190,10 +184,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`${user} ${msg}`,
-			res => {
-				user.log('continued trip of fightcaves');
-				return this.client.commands.get('fightcaves')!.run(res, []);
-			},
+			['fightcaves', [], true],
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)

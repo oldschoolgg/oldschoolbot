@@ -32,10 +32,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`${user}, your minion finished cooking ${quantity}x ${kibble.item.name}. ${xpRes}`,
-			res => {
-				user.log('continued kibble trip');
-				return this.client.commands.get('kibble')!.run(res, [quantity, kibble.item.name]);
-			},
+			['kibble', [quantity, kibble.item.name], true],
 			undefined,
 			data,
 			loot.bank

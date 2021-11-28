@@ -189,10 +189,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${fish.name}[${fish.id}]`);
-				return this.client.commands.get('fish')!.run(res, [quantity, fish.name]);
-			},
+			['fish', [quantity, fish.name], true],
 			undefined,
 			data,
 			loot.bank

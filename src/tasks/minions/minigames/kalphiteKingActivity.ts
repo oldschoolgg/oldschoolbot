@@ -197,10 +197,7 @@ export default class extends Task {
 					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
 							leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0
 					  }.\n\n${soloXP}`,
-				res => {
-					leaderUser.log('continued kk');
-					return this.client.commands.get('kk')!.run(res, ['solo']);
-				},
+				['kk', ['solo'], true],
 				image!,
 				data,
 				soloItemsAdded
