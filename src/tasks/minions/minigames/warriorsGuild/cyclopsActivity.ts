@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { UserSettings } from '../../../../lib/settings/types/UserSettings';
 import { CyclopsTable } from '../../../../lib/simulation/cyclops';
 import { CyclopsActivityTaskOptions } from '../../../../lib/types/minions';
-import { roll, runCommand } from '../../../../lib/util';
+import { roll } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import itemID from '../../../../lib/util/itemID';
 
@@ -84,10 +84,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued cyclops');
-				return runCommand(res, 'wg', [quantity, 'cyclops']);
-			},
+			['wg', [quantity, 'cyclops'], true],
 			image!,
 			data,
 			itemsAdded

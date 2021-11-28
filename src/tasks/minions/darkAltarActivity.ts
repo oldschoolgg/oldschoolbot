@@ -6,7 +6,6 @@ import { darkAltarRunes } from '../../commands/Minion/darkaltar';
 import { Events } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
-import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -62,18 +61,6 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued trip of dark altar');
-				return runCommand(res, 'darkaltar', [rune]);
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		handleTripFinish(this.client, user, channelID, str, ['darkaltar', [rune], true], undefined, data, loot.bank);
 	}
 }

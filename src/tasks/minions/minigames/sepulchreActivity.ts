@@ -6,7 +6,7 @@ import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { roll, runCommand } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -57,18 +57,6 @@ export default class extends Task {
 				previousCL
 			);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log(`continued trip of ${quantity}x sepulchre`);
-				return runCommand(res, 'sepulchre', []);
-			},
-			image!,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(this.client, user, channelID, str, ['sepulchre', [], true], image!, data, itemsAdded);
 	}
 }

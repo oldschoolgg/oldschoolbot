@@ -559,7 +559,13 @@ export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
 }
 
-export async function runCommand(message: KlasaMessage, commandName: string, args: unknown[], method = 'run') {
+export async function runCommand(
+	message: KlasaMessage,
+	commandName: string,
+	args: unknown[],
+	isContinue = false,
+	method = 'run'
+) {
 	const command = message.client.commands.get(commandName);
 	if (!command) {
 		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
@@ -572,13 +578,15 @@ export async function runCommand(message: KlasaMessage, commandName: string, arg
 		status: command_usage_status;
 		args: null | any;
 		channel_id: string;
+		is_continue: boolean;
 	} | null = {
 		date: message.createdAt,
 		user_id: message.author.id,
 		command_name: command.name,
 		status: command_usage_status.Unknown,
 		args,
-		channel_id: message.channel.id
+		channel_id: message.channel.id,
+		is_continue: isContinue
 	};
 
 	try {

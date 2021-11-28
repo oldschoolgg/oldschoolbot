@@ -7,7 +7,6 @@ import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { runCommand } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -89,10 +88,7 @@ export default class extends Task {
 			user,
 			channelID,
 			output,
-			res => {
-				user.log('continued trip of Tempoross');
-				return runCommand(res, 'tempoross', [quantity]);
-			},
+			['tempoross', [quantity], true],
 			image!,
 			data,
 			itemsAdded

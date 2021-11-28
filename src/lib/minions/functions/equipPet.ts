@@ -17,7 +17,7 @@ export async function equipPet(msg: KlasaMessage, itemName: string) {
 
 	const currentlyEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
 	if (currentlyEquippedPet) {
-		await runCommand(msg, 'm', [], 'unequippet').catch(noOp);
+		await runCommand(msg, 'm', [], false, 'unequippet').catch(noOp);
 	}
 
 	const doubleCheckEquippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);

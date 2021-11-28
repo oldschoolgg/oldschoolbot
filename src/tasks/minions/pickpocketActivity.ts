@@ -7,7 +7,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { rollRogueOutfitDoubleLoot, runCommand, updateGPTrackSetting } from '../../lib/util';
+import { rollRogueOutfitDoubleLoot, updateGPTrackSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export function calcLootXPPickpocketing(
@@ -100,10 +100,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);
-				return runCommand(res, 'pickpocket', [quantity, npc.name]);
-			},
+			['pickpocket', [quantity, npc.name], true],
 			undefined,
 			data,
 			loot.bank

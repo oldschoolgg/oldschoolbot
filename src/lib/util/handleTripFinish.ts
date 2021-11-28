@@ -37,7 +37,10 @@ export async function handleTripFinish(
 	user: KlasaUser,
 	channelID: string,
 	message: string,
-	onContinue: undefined | ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
+	onContinue:
+		| undefined
+		| [string, unknown[], boolean?, string?]
+		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
 	loot: ItemBank | null
@@ -118,8 +121,10 @@ export async function handleTripFinish(
 		collectors.delete(user.id);
 	}
 
-	if (onContinue) {
-		lastTripCache.set(user.id, { data, continue: onContinue });
+	const onContinueFn = Array.isArray(onContinue) ? (msg: KlasaMessage) => runCommand(msg, ...onContinue) : onContinue;
+
+	if (onContinueFn) {
+		lastTripCache.set(user.id, { data, continue: onContinueFn });
 	}
 
 	if (!channelIsSendable(channel)) return;
@@ -144,8 +149,8 @@ export async function handleTripFinish(
 			if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
 				runCommand(mes, 'mclue', [1, clueReceived.name]);
 				return;
-			} else if (onContinue && stringMatches(mes.content, continuationChar)) {
-				await onContinue(mes).catch(err => {
+			} else if (onContinueFn && stringMatches(mes.content, continuationChar)) {
+				await onContinueFn(mes).catch(err => {
 					channel.send(err);
 				});
 			}

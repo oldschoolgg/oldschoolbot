@@ -4,7 +4,7 @@ import { Task } from 'klasa';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SoulWarsOptions } from '../../../lib/types/minions';
-import { roll, runCommand } from '../../../lib/util';
+import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -46,19 +46,7 @@ export default class extends Task {
 		}
 
 		if (users.length === 1) {
-			handleTripFinish(
-				this.client,
-				leaderUser,
-				channelID,
-				str,
-				res => {
-					leaderUser.log('continued trip of killing soul wars}');
-					return runCommand(res, 'sw', ['solo']);
-				},
-				undefined!,
-				data,
-				null
-			);
+			handleTripFinish(this.client, leaderUser, channelID, str, ['sw', ['solo'], true], undefined!, data, null);
 		} else {
 			sendToChannelID(this.client, channelID, { content: str });
 		}

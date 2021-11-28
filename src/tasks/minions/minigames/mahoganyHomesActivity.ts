@@ -5,7 +5,6 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { runCommand } from '../../../lib/util';
 import { calcConBonusXP } from '../../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -36,18 +35,6 @@ export default class extends Task {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued trip of mahogany homes');
-				return runCommand(res, 'mh', [], 'build');
-			},
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(this.client, user, channelID, str, ['mh', [], true, 'build'], undefined, data, null);
 	}
 }

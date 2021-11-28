@@ -61,7 +61,7 @@ export default class extends Task {
 					// @ts-ignore
 					res.prompter.flags = flags;
 					user.log(`continued trip of killing ${monster.name}`);
-					return runCommand(res, 'revs', [style, monster.name]);
+					return runCommand(res, 'revs', [style, monster.name], true);
 				},
 				image,
 				data,
@@ -109,7 +109,7 @@ export default class extends Task {
 				// @ts-ignore
 				res.prompter.flags = flags;
 				user.log(`continued trip of killing ${monster.name}`);
-				return runCommand(res, 'revs', [style, monster.name]);
+				return runCommand(res, 'revs', [style, monster.name], true);
 			},
 			image!,
 			data,

@@ -4,7 +4,6 @@ import { Task } from 'klasa';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { runCommand } from '../../lib/util';
 import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -36,10 +35,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${object.name}[${object.id}]`);
-				return runCommand(res, 'build', [quantity, object.name]);
-			},
+			['build', [quantity, object.name], true],
 			undefined,
 			data,
 			null

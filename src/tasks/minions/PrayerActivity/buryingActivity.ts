@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { BuryingActivityTaskOptions } from '../../../lib/types/minions';
-import { runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -47,10 +46,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
-				return runCommand(res, 'bury', [quantity, bone.name]);
-			},
+			['bury', [quantity, bone.name], true],
 			undefined,
 			data,
 			null

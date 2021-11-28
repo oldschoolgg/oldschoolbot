@@ -11,7 +11,7 @@ import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, channelIsSendable, rand, roll, runCommand } from '../../lib/util';
+import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -176,12 +176,7 @@ export default class extends Task {
 				user,
 				channelID,
 				str,
-				autoFarmed
-					? res => {
-							user.log('continued trip of autofarming');
-							return runCommand(res, 'm', [], 'autofarm');
-					  }
-					: undefined,
+				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
 				undefined,
 				data,
 				null
@@ -454,12 +449,7 @@ export default class extends Task {
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed
-					? res => {
-							user.log('continued trip of autofarming');
-							return runCommand(res, 'm', [], 'autofarm');
-					  }
-					: undefined,
+				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

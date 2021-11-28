@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import Prayer from '../../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { OfferingActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, runCommand } from '../../../lib/util';
+import { rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -57,10 +57,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
-				return runCommand(res, 'offer', [quantity, bone.name]);
-			},
+			['offer', [quantity, bone.name], true],
 			undefined,
 			data,
 			null

@@ -12,7 +12,7 @@ import {
 } from '../../../lib/minions/data/templeTrekking';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
-import { percentChance, runCommand, stringMatches } from '../../../lib/util';
+import { percentChance, stringMatches } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -102,10 +102,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x treks`);
-				return runCommand(res, 'trek', [quantity, difficulty]);
-			},
+			['trek', [quantity, difficulty], true],
 			image!,
 			data,
 			itemsAdded

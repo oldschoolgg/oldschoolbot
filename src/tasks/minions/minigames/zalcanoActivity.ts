@@ -5,7 +5,6 @@ import { Bank, Misc } from 'oldschooljs';
 import { Events, ZALCANO_ID } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
-import { runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -62,10 +61,7 @@ export default class extends Task {
 			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
 				kc + quantity
 			}. ${xpRes}`,
-			res => {
-				user.log('continued zalcano');
-				return runCommand(res, 'zalcano', []);
-			},
+			['zalcano', [], true],
 			image!,
 			data,
 			itemsAdded

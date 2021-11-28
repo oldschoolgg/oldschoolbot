@@ -8,7 +8,7 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
 import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation, runCommand } from '../../../lib/util';
+import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -157,10 +157,7 @@ export default class extends Task {
 				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${monsterName}, you died ${
 					deaths[leader] ?? 0
 				} times. Your ${monsterName} KC is now ${kc}.`,
-				res => {
-					leaderUser.log(`continued trip of ${quantity}x Nightmare`);
-					return runCommand(res, 'nightmare', [isPhosani ? 'phosani' : 'solo']);
-				},
+				['nightmare', [isPhosani ? 'phosani' : 'solo'], true],
 				image!,
 				data,
 				totalLoot.bank

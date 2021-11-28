@@ -3,7 +3,6 @@ import { Task } from 'klasa';
 import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { EnchantingActivityTaskOptions } from '../../lib/types/minions';
-import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -30,10 +29,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${enchantable.name}[${enchantable.id}]`);
-				return runCommand(res, 'enchant', [quantity, enchantable.name]);
-			},
+			['enchant', [quantity, enchantable.name], true],
 			undefined,
 			data,
 			loot.bank

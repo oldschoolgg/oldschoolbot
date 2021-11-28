@@ -6,7 +6,7 @@ import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, randomVariation, roll, runCommand } from '../../../lib/util';
+import { formatDuration, itemID, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -60,18 +60,6 @@ export default class extends Task {
 		).toLocaleString()} XP/Hr (after redeeming tickets at 1000 qty)`;
 		await user.addItemsToBank({ [itemID('Agility arena ticket')]: ticketsReceived }, true);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued trip of agility arena');
-				return runCommand(res, 'agilityarena', []);
-			},
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(this.client, user, channelID, str, ['agilityarena', [], true], undefined, data, null);
 	}
 }

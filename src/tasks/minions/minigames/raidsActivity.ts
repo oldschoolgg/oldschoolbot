@@ -127,7 +127,7 @@ export default class extends Task {
 					res.prompter.flags = flags;
 
 					allUsers[0].log('continued trip of solo CoX');
-					return runCommand(res, 'raid', ['solo']);
+					return runCommand(res, 'raid', ['solo'], true);
 				},
 				undefined,
 				data,

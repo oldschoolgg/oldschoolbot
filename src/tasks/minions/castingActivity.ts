@@ -1,10 +1,8 @@
 import { Task } from 'klasa';
 
-// import craft from '../../commands/Minion/craft';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
-import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -50,10 +48,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${spell.name}[${spell.id}]`);
-				return runCommand(res, 'cast', [quantity, spell.name]);
-			},
+			['cast', [quantity, spell.name], true],
 			undefined,
 			data,
 			loot?.bank ?? null

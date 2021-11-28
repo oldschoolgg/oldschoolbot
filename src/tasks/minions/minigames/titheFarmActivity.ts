@@ -5,7 +5,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { bankHasItem, roll, runCommand } from '../../../lib/util';
+import { bankHasItem, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -127,10 +127,7 @@ export default class extends Task {
 			user,
 			channelID,
 			returnStr,
-			res => {
-				user.log('attemped another run of the Tithe Farm.');
-				return runCommand(res, 'tithefarm', []);
-			},
+			['tithefarm', [], true],
 			undefined,
 			data,
 			loot.length > 0 ? loot.bank : null

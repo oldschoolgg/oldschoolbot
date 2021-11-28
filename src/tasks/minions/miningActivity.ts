@@ -7,7 +7,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { rand, runCommand } from '../../lib/util';
+import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -119,10 +119,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
-				return runCommand(res, 'mine', [quantity, ore.name]);
-			},
+			['mine', [quantity, ore.name], true],
 			undefined,
 			data,
 			loot.bank

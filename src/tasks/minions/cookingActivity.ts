@@ -5,7 +5,6 @@ import calcBurntCookables from '../../lib/skilling/functions/calcBurntCookables'
 import Cooking from '../../lib/skilling/skills/cooking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
-import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -53,10 +52,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
-				return runCommand(res, 'cook', [quantity, cookable.name]);
-			},
+			['cook', [quantity, cookable.name], true],
 			undefined,
 			data,
 			loot.bank

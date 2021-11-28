@@ -15,7 +15,7 @@ import {
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, runCommand, stringMatches, updateBankSetting } from '../../../lib/util';
+import { rand, roll, stringMatches, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
@@ -187,10 +187,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${creatureName}[${creatureName}]`);
-				return runCommand(res, 'hunt', [quantity, creatureName]);
-			},
+			['hunt', [quantity, creatureName], true],
 			undefined,
 			data,
 			loot.bank

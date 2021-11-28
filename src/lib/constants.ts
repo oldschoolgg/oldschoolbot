@@ -459,7 +459,6 @@ export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: Command, args: any[]) {
-	console.log(command.name, args);
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
 		if (command.name === name && subs.includes(args[0])) {
 			return false;

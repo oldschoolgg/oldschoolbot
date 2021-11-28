@@ -6,7 +6,7 @@ import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantit
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { roll, runCommand } from '../../lib/util';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -60,10 +60,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${runeQuantity}x ${rune.name}[${rune.id}]`);
-				return runCommand(res, 'rc', [essenceQuantity, rune.name]);
-			},
+			['rc', [essenceQuantity, rune.name], true],
 			undefined,
 			data,
 			loot.bank

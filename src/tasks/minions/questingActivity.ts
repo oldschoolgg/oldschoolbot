@@ -4,7 +4,7 @@ import { Emoji, MAX_QP } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { QuestingActivityTaskOptions } from '../../lib/types/minions';
-import { rand, roll, runCommand } from '../../lib/util';
+import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -63,12 +63,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			hasMaxQP
-				? undefined
-				: res => {
-						user.log('continued trip of Questing.');
-						return runCommand(res, 'quest', []);
-				  },
+			hasMaxQP ? undefined : ['quest', [], true],
 			undefined,
 			data,
 			null

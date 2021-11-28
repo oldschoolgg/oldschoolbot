@@ -11,7 +11,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, runCommand } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -195,10 +195,7 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 					: '.'
 			}
 `,
-			res => {
-				user.log('continued trip of inferno');
-				return runCommand(res, 'inferno', [], 'start');
-			},
+			['inferno', [], true, 'start'],
 			await chatHeadImage({
 				content: chatText,
 				head: 'ketKeh'

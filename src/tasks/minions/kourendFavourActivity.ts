@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { KourendFavourActivityTaskOptions } from '../../lib/types/minions';
-import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { KourendFavours, UserKourendFavour } from './../../lib/minions/data/kourendFavour';
 
@@ -70,10 +69,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of kourend Favour ${favour.name}`);
-				return runCommand(res, 'favour', [favour.name]);
-			},
+			['favour', [favour.name], true],
 			undefined,
 			data,
 			loot?.bank ?? null

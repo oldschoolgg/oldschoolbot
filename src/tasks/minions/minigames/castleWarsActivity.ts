@@ -4,7 +4,6 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { runCommand } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
@@ -29,11 +28,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`<@${userID}>, ${minionName} finished ${quantity}x Castle Wars games and received ${loot}.`,
-			res => {
-				user.log('continued castle wars');
-
-				return runCommand(res, 'castlewars', [], 'play');
-			},
+			['castlewars', [], true, 'play'],
 			undefined,
 			data,
 			loot.bank

@@ -6,7 +6,7 @@ import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { randomVariation, runCommand } from '../../../lib/util';
+import { randomVariation } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export const pizazzPointsPerHour = 100;
@@ -39,18 +39,6 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. ${xpRes}`;
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued mta');
-				return runCommand(res, 'mta', [], 'train');
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		handleTripFinish(this.client, user, channelID, str, ['mta', [], true, 'train'], undefined, data, loot.bank);
 	}
 }

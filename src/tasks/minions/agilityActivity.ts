@@ -123,7 +123,7 @@ export default class extends Task {
 				res.prompter.flags = flags;
 
 				user.log(`continued trip of ${quantity}x ${course.name} laps`);
-				return runCommand(res, 'laps', [quantity, course.aliases[0]]);
+				return runCommand(res, 'laps', [quantity, course.aliases[0], true]);
 			},
 			undefined,
 			data,

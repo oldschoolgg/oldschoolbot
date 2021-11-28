@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { gloriesInventorySize } from '../../commands/Minion/chargeglories';
 import { Events } from '../../lib/constants';
 import { GloryChargingActivityTaskOptions } from '../../lib/types/minions';
-import { roll, runCommand } from '../../lib/util';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -54,10 +54,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of charging ${quantity}x glories`);
-				return runCommand(res, 'chargeglories', [quantity]);
-			},
+			['chargeglories', [quantity], true],
 			undefined,
 			data,
 			loot.bank

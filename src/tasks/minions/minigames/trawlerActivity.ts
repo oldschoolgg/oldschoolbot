@@ -7,7 +7,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent, runCommand } from '../../../lib/util';
+import { addBanks, anglerBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -73,18 +73,6 @@ export default class extends Task {
 				previousCL
 			);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued fishing trawler');
-				return runCommand(res, 'fishingtrawler', []);
-			},
-			image!,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(this.client, user, channelID, str, ['fishingtrawler', [], true], image!, data, itemsAdded);
 	}
 }

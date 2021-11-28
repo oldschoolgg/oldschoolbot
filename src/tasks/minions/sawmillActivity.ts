@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { Planks } from '../../lib/minions/data/planks';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
-import { runCommand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -38,10 +37,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${plankQuantity}x ${plank.name}`);
-				return runCommand(res, 'sawmill', [plankQuantity, plank.name]);
-			},
+			['sawmill', [plankQuantity, plank.name], true],
 			undefined,
 			data,
 			loot.bank

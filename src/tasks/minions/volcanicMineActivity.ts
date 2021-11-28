@@ -8,7 +8,7 @@ import { incrementMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
-import { rand, runCommand } from '../../lib/util';
+import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const fossilTable = new LootTable()
@@ -99,10 +99,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x Volcanic Mine`);
-				return runCommand(res, 'volcanicmine', [quantity]);
-			},
+			['volcanicmine', [quantity], true],
 			undefined,
 			data,
 			itemsAdded

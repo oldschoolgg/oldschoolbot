@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { randFloat, runCommand } from '../../lib/util';
+import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -46,10 +46,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${item.name}`);
-				return runCommand(res, 'craft', [quantity, item.name]);
-			},
+			['craft', [quantity, item.name]],
 			undefined,
 			data,
 			loot.bank

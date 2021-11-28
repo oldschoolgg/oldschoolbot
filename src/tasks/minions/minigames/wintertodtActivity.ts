@@ -10,7 +10,7 @@ import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, channelIsSendable, runCommand } from '../../../lib/util';
+import { addBanks, bankHasItem, channelIsSendable } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -153,18 +153,6 @@ export default class extends Task {
 			output += `\n\n${user.minionName}'s Firemaking level is now ${newLevel}!`;
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			output,
-			res => {
-				user.log('continued trip of wintertodt');
-				return runCommand(res, 'wintertodt', []);
-			},
-			image!,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(this.client, user, channelID, output, ['wintertodt', [], true], image!, data, itemsAdded);
 	}
 }
