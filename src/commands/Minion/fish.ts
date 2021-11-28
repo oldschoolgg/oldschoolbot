@@ -34,13 +34,10 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
+		await msg.author.settings.sync(true);
 		const fish = Fishing.Fishes.find(
-			fish =>
-				stringMatches(fish.name, name) ||
-				stringMatches(fish.name.split(' ')[0], name) ||
-				(fish.aliases && fish.aliases.some(alias => stringMatches(alias, name)))
+			fish => stringMatches(fish.name, name) || fish.alias?.some(alias => stringMatches(alias, name))
 		);
-
 		if (!fish) {
 			return msg.channel.send(
 				`Thats not a valid fish to catch. Valid fishes are ${Fishing.Fishes.map(fish => fish.name).join(', ')}.`

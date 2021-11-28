@@ -25,7 +25,7 @@ import { GearSetupType, GearSetupTypes } from './gear/types';
 import { Consumable } from './minions/types';
 import { Gear } from './structures/Gear';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions } from './types/minions';
+import { GroupMonsterActivityTaskOptions, RaidsOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
@@ -627,4 +627,7 @@ export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | nu
 		return 'bolt';
 	}
 	return null;
+}
+export function isRaidsActivity(data: any): data is RaidsOptions {
+	return 'challengeMode' in data;
 }
