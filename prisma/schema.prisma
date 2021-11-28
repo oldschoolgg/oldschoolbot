@@ -432,7 +432,6 @@ model CommandUsage {
   args       Json?   @db.Json
   channel_id String? @db.VarChar(19)
 
-  @@unique([command_name, user_id, date])
   @@map("command_usage")
 }
 
