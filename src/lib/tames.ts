@@ -228,7 +228,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			image: (
 				await (client.tasks.get('bankImage') as BankImageTask).generateBankImage(
 					res.loot,
-					`${tame.nickname}'s Loot`,
+					`${tameName(tame)}'s Loot`,
 					true,
 					{ showNewCL: 1 },
 					res.user,
@@ -292,7 +292,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const fullMonster = Monsters.get(monsterID)!;
 			const loot = fullMonster.kill(killQty, {});
 			const user = await client.fetchUser(activity.user_id);
-			let str = `${user}, ${tame.nickname} finished killing ${quantity}x ${fullMonster.name}.`;
+			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${fullMonster.name}.`;
 			const boosts = [];
 			if (hasOri) {
 				boosts.push('25% extra loot (ate an Ori)');
@@ -314,7 +314,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const totalQuantity = quantity * collectable.quantity;
 			const loot = new Bank().add(collectable.item.id, totalQuantity);
 			const user = await client.fetchUser(activity.user_id);
-			let str = `${user}, ${tame.nickname} finished collecting ${totalQuantity}x ${
+			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 			const { itemsAdded } = await user.addItemsToBank(loot);
