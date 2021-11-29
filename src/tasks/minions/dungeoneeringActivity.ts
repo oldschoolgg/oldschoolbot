@@ -129,7 +129,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			users.length > 1 ? undefined : ['dung', ['solo'], true],
+			users.length > 1 ? undefined : ['dung', ['solo'], true, 'start'],
 			undefined,
 			data,
 			null
