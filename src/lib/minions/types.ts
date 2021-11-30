@@ -63,12 +63,12 @@ export interface KillableMonster {
 		kill(quantity: number, options: MonsterKillOptions): Bank;
 	};
 	emoji?: string;
-	wildy: boolean;
-	difficultyRating: number;
+	wildy?: boolean;
+	difficultyRating?: number;
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
 	existsInCatacombs?: boolean;
-	qpRequired: number;
+	qpRequired?: number;
 
 	/**
 	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
