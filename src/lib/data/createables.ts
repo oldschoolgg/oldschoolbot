@@ -163,16 +163,6 @@ const metamorphPets: Createable[] = [
 		}
 	},
 	{
-		name: 'Noon',
-		inputItems: {
-			[itemID('Midnight')]: 1
-		},
-		outputItems: {
-			[itemID('Noon')]: 1
-		},
-		noCl: true
-	},
-	{
 		name: 'Baby mole-rat',
 		inputItems: {
 			[itemID('Baby mole')]: 1,
@@ -181,17 +171,6 @@ const metamorphPets: Createable[] = [
 		outputItems: {
 			[itemID('Baby mole-rat')]: 1
 		}
-	},
-	{
-		name: 'Baby mole',
-		inputItems: {
-			[itemID('Baby mole-rat')]: 1,
-			[itemID('Mole skin')]: 1
-		},
-		outputItems: {
-			[itemID('Baby mole')]: 1
-		},
-		noCl: true
 	},
 	{
 		name: 'Tzrek-zuk',
@@ -203,16 +182,6 @@ const metamorphPets: Createable[] = [
 		}
 	},
 	{
-		name: 'Jal-nib-rek',
-		inputItems: {
-			[itemID('Tzrek-zuk')]: 1
-		},
-		outputItems: {
-			[itemID('Jal-nib-rek')]: 1
-		},
-		noCl: true
-	},
-	{
 		name: 'Little parasite',
 		inputItems: resolveNameBank({
 			'Parasitic egg': 1,
@@ -221,16 +190,6 @@ const metamorphPets: Createable[] = [
 		outputItems: {
 			[itemID('Little parasite')]: 1
 		}
-	},
-	{
-		name: 'Little nightmare',
-		inputItems: resolveNameBank({
-			'Little parasite': 1
-		}),
-		outputItems: {
-			[itemID('Little nightmare')]: 1
-		},
-		noCl: true
 	}
 ];
 
@@ -934,7 +893,48 @@ const Reverteables: Createable[] = [
 			[itemID('Zamorak hilt')]: 1
 		},
 		noCl: true
-	}
+	},
+ 	{
+ 		name: 'Revert noon',
+ 		inputItems: {
+ 			[itemID('Midnight')]: 1
+ 		},
+ 		outputItems: {
+ 			[itemID('Noon')]: 1
+ 		},
+ 		noCl: true
+ 	},
+	{
+ 		name: 'Revert baby mole',
+ 		inputItems: {
+ 			[itemID('Baby mole-rat')]: 1,
+ 			[itemID('Mole skin')]: 1
+ 		},
+ 		outputItems: {
+ 			[itemID('Baby mole')]: 1
+ 		},
+ 		noCl: true
+ 	},
+	{
+ 		name: 'Revert jal-nib-rek',
+ 		inputItems: {
+ 			[itemID('Tzrek-zuk')]: 1
+ 		},
+ 		outputItems: {
+ 			[itemID('Jal-nib-rek')]: 1
+ 		},
+ 		noCl: true
+ 	},
+	{
+ 		name: 'Revert little nightmare',
+ 		inputItems: resolveNameBank({
+ 			'Little parasite': 1
+ 		}),
+ 		outputItems: {
+ 			[itemID('Little nightmare')]: 1
+ 		},
+ 		noCl: true
+ 	}
 ];
 
 const Createables: Createable[] = [
