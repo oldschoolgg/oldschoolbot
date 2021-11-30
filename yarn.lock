@@ -765,10 +765,10 @@
   dependencies:
     twemoji-parser "^13.1.0"
 
-"@sapphire/discord-utilities@^2.2.3":
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.2.3.tgz#40bcde9034f7e0d43a3e147fd20c4d7e7b70ab88"
-  integrity sha512-iWuUtNFO7yBqzE+l7ecfR4G2tpZds0gIdPbG1Mt6jVdKFG659ZNJuCnC5duiPJkcfVtmzkFmwtwZbZAmQjwoRA==
+"@sapphire/discord-utilities@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@sapphire/discord-utilities/-/discord-utilities-2.3.0.tgz#de2ba8190970902fba7f4c07178faa7db119c765"
+  integrity sha512-GQwuJxDCFIrXJ/K4KLDefroi0uy4WzBFiea3UB8aOHolqkobQM6mFbRkZ6aBzTBcAknqucFDa7MOHfU2QmnQkA==
   dependencies:
     twemoji-parser "^13.1.0"
 
