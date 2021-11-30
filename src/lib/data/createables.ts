@@ -231,7 +231,7 @@ const metamorphPets: Createable[] = [
 			[itemID('Little nightmare')]: 1
 		},
 		noCl: true
-	},
+	}
 ];
 
 const crystalTools: Createable[] = [
