@@ -1740,16 +1740,6 @@ const Createables: Createable[] = [
 			[itemID("Tarn's diary")]: 1
 		}
 	},
-	{
-		name: 'Little parasite',
-		inputItems: resolveNameBank({
-			'Parasitic egg': 1,
-			'Little nightmare': 1
-		}),
-		outputItems: {
-			[itemID('Little parasite')]: 1
-		}
-	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
