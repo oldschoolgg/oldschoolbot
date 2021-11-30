@@ -895,7 +895,7 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
  	{
-		name: 'Revert noon',
+		name: 'Revert midnight',
 		inputItems: {
 			[itemID('Midnight')]: 1
 		},
@@ -905,7 +905,7 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
- 		name: 'Revert baby mole',
+ 		name: 'Revert baby mole-rat',
  		inputItems: {
  			[itemID('Baby mole-rat')]: 1,
  			[itemID('Mole skin')]: 1
@@ -916,7 +916,7 @@ const Reverteables: Createable[] = [
  		noCl: true
  	},
 	{
- 		name: 'Revert jal-nib-rek',
+ 		name: 'Revert tzrek-zuk',
  		inputItems: {
  			[itemID('Tzrek-zuk')]: 1
  		},
@@ -926,7 +926,7 @@ const Reverteables: Createable[] = [
  		noCl: true
  	},
 	{
- 		name: 'Revert little nightmare',
+ 		name: 'Revert little parasite',
  		inputItems: resolveNameBank({
  			'Little parasite': 1
  		}),
