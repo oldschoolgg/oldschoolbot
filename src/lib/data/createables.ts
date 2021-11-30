@@ -914,7 +914,7 @@ const Reverteables: Createable[] = [
 		},
 		noCl: true
 	},
- 	{
+	{
 		name: 'Revert midnight',
 		inputItems: {
 			[itemID('Midnight')]: 1
@@ -927,13 +927,13 @@ const Reverteables: Createable[] = [
 	{
  		name: 'Revert baby mole-rat',
  		inputItems: {
- 			[itemID('Baby mole-rat')]: 1,
- 			[itemID('Mole skin')]: 1
- 		},
- 		outputItems: {
- 			[itemID('Baby mole')]: 1
- 		},
- 		noCl: true
+			[itemID('Baby mole-rat')]: 1,
+			[itemID('Mole skin')]: 1
+		},
+		outputItems: {
+			[itemID('Baby mole')]: 1
+		},
+		noCl: true
  	},
 	{
  		name: 'Revert tzrek-zuk',
