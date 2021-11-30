@@ -203,10 +203,10 @@ const metamorphPets: Createable[] = [
 	},
 	{
 		name: 'Red',
-		inputItems: resolveNameBank({
-			'Rocky': 1,
-			'Redberries': 1
-		}),
+  		inputItems: {
+ 			[itemID('Rocky')]: 1,
+ 			[itemID('Redberries')]: 1
+ 		},
 		outputItems: {
 			[itemID('Red')]: 1
 		}
