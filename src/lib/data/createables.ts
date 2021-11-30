@@ -193,7 +193,7 @@ const metamorphPets: Createable[] = [
 	},
 	{
 		name: 'Ziggy',
- 		inputItems: {
+		inputItems: {
 			[itemID('Rocky')]: 1,
 			[itemID('Poison ivy berries')]: 1
 		},
@@ -934,7 +934,7 @@ const Reverteables: Createable[] = [
 			[itemID('Baby mole')]: 1
 		},
 		noCl: true
- 	},
+	},
 	{
 		name: 'Revert tzrek-zuk',
 		inputItems: {
@@ -957,10 +957,10 @@ const Reverteables: Createable[] = [
 	},
 	{
 		name: 'Revert ziggy',
-		inputItems: resolveNameBank({
-			'Ziggy': 1,
-			'White berries': 1
-		}),
+		inputItems: {
+			[itemID('Ziggy')]: 1,
+			[itemID('White berries')]: 1
+		},
 		outputItems: {
 			[itemID('Rocky')]: 1
 		},
@@ -968,10 +968,10 @@ const Reverteables: Createable[] = [
 	},
 	{
 		name: 'Revert red',
-		inputItems: resolveNameBank({
-			'Red': 1,
-			'White berries': 1
-		}),
+		inputItems: {
+			[itemID('Red')]: 1,
+			[itemID('White berries')]: 1
+		},
 		outputItems: {
 			[itemID('Rocky')]: 1
 		},
