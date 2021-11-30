@@ -193,17 +193,17 @@ const metamorphPets: Createable[] = [
 	},
 	{
 		name: 'Ziggy',
-  		inputItems: {
- 			[itemID('Rocky')]: 1,
- 			[itemID('Poison ivy berries')]: 1
- 		},
+ 		inputItems: {
+			[itemID('Rocky')]: 1,
+			[itemID('Poison ivy berries')]: 1
+		},
 		outputItems: {
 			[itemID('Ziggy')]: 1
 		}
 	},
 	{
 		name: 'Red',
-  		inputItems: {
+		inputItems: {
 			[itemID('Rocky')]: 1,
 			[itemID('Redberries')]: 1
 		},
@@ -925,8 +925,8 @@ const Reverteables: Createable[] = [
 		noCl: true
 	},
 	{
- 		name: 'Revert baby mole-rat',
- 		inputItems: {
+		name: 'Revert baby mole-rat',
+		inputItems: {
 			[itemID('Baby mole-rat')]: 1,
 			[itemID('Mole skin')]: 1
 		},
@@ -936,25 +936,25 @@ const Reverteables: Createable[] = [
 		noCl: true
  	},
 	{
- 		name: 'Revert tzrek-zuk',
- 		inputItems: {
- 			[itemID('Tzrek-zuk')]: 1
- 		},
- 		outputItems: {
- 			[itemID('Jal-nib-rek')]: 1
- 		},
- 		noCl: true
- 	},
+		name: 'Revert tzrek-zuk',
+		inputItems: {
+			[itemID('Tzrek-zuk')]: 1
+		},
+		outputItems: {
+			[itemID('Jal-nib-rek')]: 1
+		},
+		noCl: true
+	},
 	{
- 		name: 'Revert little parasite',
- 		inputItems: resolveNameBank({
- 			'Little parasite': 1
- 		}),
- 		outputItems: {
- 			[itemID('Little nightmare')]: 1
- 		},
- 		noCl: true
- 	},
+		name: 'Revert little parasite',
+		inputItems: resolveNameBank({
+			'Little parasite': 1
+		}),
+		outputItems: {
+			[itemID('Little nightmare')]: 1
+		},
+		noCl: true
+	},
 	{
 		name: 'Revert ziggy',
 		inputItems: resolveNameBank({
