@@ -964,7 +964,7 @@ const Reverteables: Createable[] = [
 		outputItems: {
 			[itemID('Rocky')]: 1
 		},
- 		noCl: true
+		noCl: true
 	},
 	{
 		name: 'Revert red',
@@ -975,7 +975,7 @@ const Reverteables: Createable[] = [
 		outputItems: {
 			[itemID('Rocky')]: 1
 		},
- 		noCl: true
+		noCl: true
 	}
 ];
 
