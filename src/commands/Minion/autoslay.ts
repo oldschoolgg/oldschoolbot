@@ -358,11 +358,11 @@ export default class extends BotCommand {
 			// Use difficultyRating for autoslay highest.
 			allMonsters.forEach(m => {
 				if (
-					m.difficultyRating > maxDiff &&
+					(m.difficultyRating ?? 0) > maxDiff &&
 					(m.levelRequirements === undefined || msg.author.hasSkillReqs(m.levelRequirements))
 				) {
 					if (m.qpRequired === undefined || m.qpRequired <= myQPs) {
-						maxDiff = m.difficultyRating;
+						maxDiff = m.difficultyRating ?? 0;
 						maxMobName = m.name;
 					}
 				}
