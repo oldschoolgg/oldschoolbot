@@ -211,7 +211,27 @@ const metamorphPets: Createable[] = [
 			[itemID('Jal-nib-rek')]: 1
 		},
 		noCl: true
-	}
+	},
+	{
+		name: 'Little parasite',
+		inputItems: resolveNameBank({
+			'Parasitic egg': 1,
+			'Little nightmare': 1
+		}),
+		outputItems: {
+			[itemID('Little parasite')]: 1
+		}
+	},
+	{
+		name: 'Little nightmare',
+		inputItems: resolveNameBank({
+			'Little parasite': 1
+		}),
+		outputItems: {
+			[itemID('Little nightmare')]: 1
+		},
+		noCl: true
+	},
 ];
 
 const crystalTools: Createable[] = [
