@@ -190,6 +190,26 @@ const metamorphPets: Createable[] = [
 		outputItems: {
 			[itemID('Little parasite')]: 1
 		}
+	},
+	{
+		name: 'Ziggy',
+		inputItems: resolveNameBank({
+			'Rocky': 1,
+			'Poison ivy berries': 1
+		}),
+		outputItems: {
+			[itemID('Ziggy')]: 1
+		}
+	},
+	{
+		name: 'Red',
+		inputItems: resolveNameBank({
+			'Rocky': 1,
+			'Redberries': 1
+		}),
+		outputItems: {
+			[itemID('Red')]: 1
+		}
 	}
 ];
 
@@ -934,7 +954,29 @@ const Reverteables: Createable[] = [
  			[itemID('Little nightmare')]: 1
  		},
  		noCl: true
- 	}
+ 	},
+	{
+		name: 'Revert ziggy',
+		inputItems: resolveNameBank({
+			'Ziggy': 1,
+			'White berries': 1
+		}),
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+ 		noCl: true
+	},
+	{
+		name: 'Revert red',
+		inputItems: resolveNameBank({
+			'Red': 1,
+			'White berries': 1
+		}),
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+ 		noCl: true
+	}
 ];
 
 const Createables: Createable[] = [
