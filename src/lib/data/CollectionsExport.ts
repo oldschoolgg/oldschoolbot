@@ -1438,6 +1438,16 @@ export const monkeyBackpacksCL = resolveItems([
 	'Skeleton monkey',
 	'Zombie monkey'
 ]);
+export const metamorphPets = resolveItems([
+	'Little parasite',
+	'Dark squirrel',
+	'Baby mole-rat',
+	'Midnight',
+	'Tzrek-zuk',
+	'Ziggy',
+	'Red',
+	'Great blue heron'
+]);
 export const motherlodeMineCL = resolveItems([
 	'Coal bag',
 	'Gem bag',
@@ -1966,14 +1976,5 @@ export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems([
-'Little parasite',
-'Dark squirrel',
-'Baby mole-rat',
-'Midnight',
-'Tzrek-zuk',
-'Ziggy',
-'Red',
-'Great blue heron'
-])
+	...metamorphPets
 ];
