@@ -552,3 +552,7 @@ export function countUsersWithItemInCl(client: KlasaClient, _item: string) {
 export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
 }
+
+export function assert(condition: boolean, desc: string) {
+	if (!condition) throw new Error(desc);
+}

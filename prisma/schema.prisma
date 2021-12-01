@@ -416,6 +416,8 @@ model Minigame {
   pest_control            Int    @default(0)
   inferno                 Int    @default(0)
   volcanic_mine           Int    @default(0)
+  tob                     Int    @default(0)
+  tob_hard                Int    @default(0)
 
   new_user NewUser?
   @@map("minigames")
@@ -508,6 +510,7 @@ enum activity_type_enum {
   VolcanicMine
   KourendFavour
   Inferno
+  TheatreOfBlood
 }
 
 enum xp_gains_skill_enum {
