@@ -78,7 +78,7 @@ export default class extends BotCommand {
 			.get('bankImage')!
 			.generateBankImage(
 				result.bank,
-				`Loot from ${quantity.toLocaleString()} ${toTitleCase(bossName)}`,
+				`Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster!.name)}`,
 				true,
 				msg.flagArgs,
 				msg.author
