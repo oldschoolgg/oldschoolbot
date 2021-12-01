@@ -1966,5 +1966,13 @@ export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems(['Little parasite', 'Dark squirrel', 'Baby mole-rat', 'Midnight', 'Tzrek-zuk', 'Ziggy', 'Red', 'Great blue heron'])
+	...resolveItems([
+'Little parasite',
+'Dark squirrel',
+'Baby mole-rat',
+'Midnight',
+'Tzrek-zuk',
+'Ziggy',
+'Red',
+'Great blue heron'])
 ];
