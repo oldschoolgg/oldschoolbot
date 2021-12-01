@@ -951,7 +951,8 @@ const Reverteables: Createable[] = [
 			'Little parasite': 1
 		}),
 		outputItems: {
-			[itemID('Little nightmare')]: 1
+			[itemID('Little nightmare')]: 1,
+			[itemID('Parasitic egg')]: 1
 		},
 		noCl: true
 	},
