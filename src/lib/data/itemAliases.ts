@@ -185,6 +185,30 @@ setItemAlias(21_633, 'Ancient wyvern shield');
 setItemAlias(22_003, 'Uncharged dragonfire ward');
 setItemAlias(22_002, 'Dragonfire ward');
 
+// Metamorphs
+setItemAlias(24_555, ['Tangleroot', 'Crystal tangleroot']);
+setItemAlias(24_557, ['Tangleroot', 'Dragonfruit tangleroot']);
+setItemAlias(24_559, ['Tangleroot', 'Herb tangleroot']);
+setItemAlias(24_561, ['Tangleroot', 'White lily tangleroot']);
+setItemAlias(24_563, ['Tangleroot', 'Redwood tangleroot']);
+setItemAlias(13_323, ['Baby chinchompa', 'Red baby chinchompa']);
+setItemAlias(13_324, ['Baby chinchompa', 'Grey baby chinchompa']);
+setItemAlias(13_325, ['Baby chinchompa', 'Black baby chinchompa']);
+setItemAlias(13_326, ['Baby chinchompa', 'Gold baby chinchompa']);
+setItemAlias(20_693, ['Phoenix', 'Red phoenix']);
+setItemAlias(24_483, ['Phoenix', 'Green phoenix']);
+setItemAlias(24_484, ['Phoenix', 'Blue phoenix']);
+setItemAlias(24_485, ['Phoenix', 'White phoenix']);
+setItemAlias(24_486, ['Phoenix', 'Purple phoenix']);
+setItemAlias(12_921, ['Pet snakeling', 'Normal pet snakeling']);
+setItemAlias(12_939, ['Pet snakeling', 'Magma pet snakeling']);
+setItemAlias(12_940, ['Pet snakeling', 'Tanzanite pet snakeling']);
+setItemAlias(23_495, ['Sraracha', 'Normal sraracha']);
+setItemAlias(25_842, ['Sraracha', 'Orange sraracha']);
+setItemAlias(25_843, ['Sraracha', 'Blue sraracha']);
+setItemAlias(12_647, ['Kalphite princess', 'Crawling kalphite princess']);
+setItemAlias(12_654, ['Kalphite princess', 'Airborne kalphite princess']);
+
 // Kittens
 setItemAlias(1555, 'Grey and black kitten');
 setItemAlias(1556, 'White kitten');
