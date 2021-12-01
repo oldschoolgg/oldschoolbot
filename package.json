@@ -12,9 +12,9 @@
 	"dependencies": {
 		"@octokit/graphql": "^4.8.0",
 		"@prisma/client": "^3.5.0",
-		"@sapphire/discord-utilities": "^2.2.3",
+		"@sapphire/discord-utilities": "^2.3.0",
 		"@sapphire/discord.js-utilities": "^3.0.0-next.600390f4.0",
-		"@sapphire/time-utilities": "^1.4.9",
+		"@sapphire/time-utilities": "^1.5.0",
 		"@sapphire/type": "^2.1.2",
 		"@sentry/node": "^6.15.0",
 		"@sinclair/typebox": "^0.12.9",
