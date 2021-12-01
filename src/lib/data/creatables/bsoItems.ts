@@ -698,11 +698,79 @@ const bsoItems: Createable[] = [
 	}
 ];
 
+const ganodermic: Createable[] = [
+	{
+		name: 'Ganodermic visor',
+		inputItems: resolveNameBank({
+			'Mycelium visor web': 1,
+			'Ganodermic flake': 500
+		}),
+		outputItems: resolveNameBank({
+			'Ganodermic visor': 1
+		})
+	},
+	{
+		name: 'Ganodermic poncho',
+		inputItems: resolveNameBank({
+			'Mycelium poncho web': 1,
+			'Ganodermic flake': 5000
+		}),
+		outputItems: resolveNameBank({
+			'Ganodermic poncho': 1
+		})
+	},
+	{
+		name: 'Ganodermic leggings',
+		inputItems: resolveNameBank({
+			'Mycelium leggings web': 1,
+			'Ganodermic flake': 1500
+		}),
+		outputItems: resolveNameBank({
+			'Ganodermic leggings': 1
+		})
+	}
+];
+
+const grifolic: Createable[] = [
+	{
+		name: 'Grifolic visor',
+		inputItems: resolveNameBank({
+			'Mycelium visor web': 1,
+			'Grifolic flake': 500
+		}),
+		outputItems: resolveNameBank({
+			'Grifolic visor': 1
+		})
+	},
+	{
+		name: 'Grifolic poncho',
+		inputItems: resolveNameBank({
+			'Mycelium poncho web': 1,
+			'Grifolic flake': 5000
+		}),
+		outputItems: resolveNameBank({
+			'Grifolic poncho': 1
+		})
+	},
+	{
+		name: 'Grifolic leggings',
+		inputItems: resolveNameBank({
+			'Mycelium leggings web': 1,
+			'Grifolic flake': 1500
+		}),
+		outputItems: resolveNameBank({
+			'Grifolic leggings': 1
+		})
+	}
+];
+
 export const BsoCreateables: Createable[] = [
 	...bsoItems,
 	...chaoticCreatables,
 	...brokenItems,
 	...lockedItems,
 	...bsoArmorSets,
-	...dyeCreatables
+	...dyeCreatables,
+	...ganodermic,
+	...grifolic
 ];

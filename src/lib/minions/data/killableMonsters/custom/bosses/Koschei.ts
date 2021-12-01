@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import setCustomMonster from '../../../../util/setCustomMonster';
+import setCustomMonster from '../../../../../util/setCustomMonster';
 
 export const koscheiTable = new LootTable().add('Fremennik blade');
 

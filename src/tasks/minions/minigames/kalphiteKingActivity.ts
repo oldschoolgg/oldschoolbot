@@ -6,7 +6,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { Emoji } from '../../../lib/constants';
 import { kalphiteKingCL } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { KalphiteKingMonster } from '../../../lib/kalphiteking';
+import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { prisma } from '../../../lib/settings/prisma';

@@ -1,0 +1,134 @@
+import { Time } from 'e';
+import { Monsters } from 'oldschooljs';
+import { itemID } from 'oldschooljs/dist/util';
+
+import { GearStat } from '../../../../gear';
+import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+import { AbyssalDragonLootTable } from './AbyssalDragon';
+import { CustomMonster } from './customMonsters';
+import { KrakenTable } from './SeaKraken';
+import { TreebeardLootTable } from './Treebeard';
+
+const SeaKraken: CustomMonster = {
+	id: 53_466_534,
+	name: 'Sea Kraken',
+	aliases: ['sea kraken'],
+	timeToFinish: Time.Minute * 17,
+	table: KrakenTable,
+	emoji: '',
+	notifyDrops: resolveItems(['Fish sack', 'Fishing trophy', 'Pufferfish']),
+	wildy: false,
+	difficultyRating: 7,
+	qpRequired: 0,
+	healAmountNeeded: 20 * 20,
+	attackStyleToUse: GearStat.AttackRanged,
+	attackStylesUsed: [GearStat.AttackMagic],
+	minimumGearRequirements: {
+		range: {
+			[GearStat.DefenceMagic]: 150,
+			[GearStat.AttackRanged]: 80
+		}
+	},
+	groupKillable: true,
+	respawnTime: Time.Second * 20,
+	levelRequirements: {
+		prayer: 43,
+		ranged: 105,
+		slayer: 101
+	},
+	pohBoosts: {
+		pool: {
+			'Ancient rejuvenation pool': 10
+		}
+	},
+	baseMonster: Monsters.CommanderZilyana
+};
+
+const Malygos: CustomMonster = {
+	id: 707_070,
+	name: 'Malygos',
+	aliases: ['abyssal dragon', 'abyss drag', 'mally', 'maly', 'malygos'],
+	timeToFinish: Time.Minute * 30,
+	table: AbyssalDragonLootTable,
+	emoji: '',
+	wildy: true,
+	difficultyRating: 9,
+	qpRequired: 999,
+	healAmountNeeded: 20 * 25,
+	attackStyleToUse: GearStat.AttackSlash,
+	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+	minimumGearRequirements: {
+		melee: {
+			[GearStat.AttackStab]: 100,
+			[GearStat.DefenceStab]: 150,
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.DefenceMagic]: -20,
+			[GearStat.DefenceRanged]: 150
+		}
+	},
+	itemInBankBoosts: [
+		{
+			[itemID('Saradomin godsword')]: 5
+		},
+		{
+			[itemID('Dragon warhammer')]: 5
+		},
+		{
+			[itemID('Bandos godsword')]: 5
+		}
+	],
+	itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
+	groupKillable: true,
+	respawnTime: Time.Second * 20,
+	levelRequirements: {
+		prayer: 99,
+		attack: 99,
+		strength: 105,
+		defence: 99
+	},
+	pohBoosts: {
+		pool: {
+			'Ancient rejuvenation pool': 10
+		}
+	},
+	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
+	notifyDrops: resolveItems(['Abyssal cape', 'Ori']),
+	baseMonster: Monsters.Vorkath
+};
+
+const Treebeard: CustomMonster = {
+	id: 932_122,
+	name: 'Treebeard',
+	aliases: ['treebeard', 'tree'],
+	timeToFinish: Time.Minute * 10,
+	table: TreebeardLootTable,
+	emoji: '',
+	wildy: true,
+	difficultyRating: 9,
+	qpRequired: 100,
+	healAmountNeeded: 20 * 30,
+	attackStyleToUse: GearStat.AttackMagic,
+	attackStylesUsed: [GearStat.AttackMagic],
+	respawnTime: Time.Second * 40,
+	minimumGearRequirements: {
+		mage: {
+			[GearStat.AttackMagic]: 30 + 10 + 10 + 6 + 6 + 22 + 6
+		}
+	},
+	levelRequirements: {
+		magic: 105,
+		slayer: 101
+	},
+	pohBoosts: {
+		pool: {
+			'Ancient rejuvenation pool': 10
+		}
+	},
+	baseMonster: Monsters.Hespori
+};
+
+export const customDemiBosses = {
+	Treebeard,
+	SeaKraken,
+	Malygos
+};

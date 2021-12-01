@@ -3,24 +3,19 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
-import { KalphiteKingMonster } from '../../../kalphiteking';
 import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
-import setCustomMonster, { makeKillTable } from '../../../util/setCustomMonster';
 import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
 import { chaeldarMonsters } from './chaeldarMonsters';
-import AbyssalDragon, { AbyssalDragonLootTable } from './custom/AbyssalDragon';
-import { Ignecarus } from './custom/Ignecarus';
-import KingGoldemar from './custom/KingGoldemar';
-import Koschei, { koscheiTable } from './custom/Koschei';
-import SeaKraken, { KrakenTable } from './custom/SeaKraken';
-import Treebeard, { TreebeardLootTable } from './custom/Treebeard';
-import { VasaMagus } from './custom/VasaMagus';
-import { customMonsters } from './customMonsters';
+import { Ignecarus } from './custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from './custom/bosses/KalphiteKing';
+import KingGoldemar from './custom/bosses/KingGoldemar';
+import { VasaMagus } from './custom/bosses/VasaMagus';
+import { customKillableMonsters } from './custom/customMonsters';
 import { konarMonsters } from './konarMonsters';
 import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
@@ -39,6 +34,7 @@ const killableMonsters: KillableMonster[] = [
 	...turaelMonsters,
 	...vannakaMonsters,
 	...low,
+	...customKillableMonsters,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
@@ -221,91 +217,6 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0
 	},
 	{
-		id: SeaKraken.id,
-		name: SeaKraken.name,
-		aliases: SeaKraken.aliases,
-		timeToFinish: Time.Minute * 17,
-		table: makeKillTable(KrakenTable),
-		emoji: '',
-		notifyDrops: resolveItems(['Fish sack', 'Fishing trophy', 'Pufferfish']),
-		wildy: false,
-
-		difficultyRating: 7,
-		qpRequired: 0,
-		healAmountNeeded: 20 * 20,
-		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackMagic],
-		minimumGearRequirements: {
-			range: {
-				[GearStat.DefenceMagic]: 150,
-				[GearStat.AttackRanged]: 80
-			}
-		},
-		groupKillable: true,
-		respawnTime: Time.Second * 20,
-		levelRequirements: {
-			prayer: 43,
-			ranged: 105,
-			slayer: 101
-		},
-		pohBoosts: {
-			pool: {
-				'Ancient rejuvenation pool': 10
-			}
-		}
-	},
-	{
-		id: AbyssalDragon.id,
-		name: AbyssalDragon.name,
-		aliases: AbyssalDragon.aliases,
-		timeToFinish: Time.Minute * 30,
-		table: makeKillTable(AbyssalDragonLootTable),
-		emoji: '',
-		wildy: true,
-
-		difficultyRating: 9,
-		qpRequired: 999,
-		healAmountNeeded: 20 * 25,
-		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
-		minimumGearRequirements: {
-			melee: {
-				[GearStat.AttackStab]: 100,
-				[GearStat.DefenceStab]: 150,
-				[GearStat.DefenceSlash]: 150,
-				[GearStat.DefenceMagic]: -20,
-				[GearStat.DefenceRanged]: 150
-			}
-		},
-		itemInBankBoosts: [
-			{
-				[itemID('Saradomin godsword')]: 5
-			},
-			{
-				[itemID('Dragon warhammer')]: 5
-			},
-			{
-				[itemID('Bandos godsword')]: 5
-			}
-		],
-		itemsRequired: deepResolveItems([['Anti-dragon shield', 'Abyssal cape']]),
-		groupKillable: true,
-		respawnTime: Time.Second * 20,
-		levelRequirements: {
-			prayer: 99,
-			attack: 99,
-			strength: 105,
-			defence: 99
-		},
-		pohBoosts: {
-			pool: {
-				'Ancient rejuvenation pool': 10
-			}
-		},
-		uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
-		notifyDrops: resolveItems(['Abyssal cape', 'Ori'])
-	},
-	{
 		id: Monsters.Sarachnis.id,
 		name: Monsters.Sarachnis.name,
 		aliases: Monsters.Sarachnis.aliases,
@@ -336,52 +247,7 @@ const killableMonsters: KillableMonster[] = [
 			}
 		}
 	},
-	{
-		id: Koschei.id,
-		name: Koschei.name,
-		aliases: Koschei.aliases,
-		timeToFinish: Time.Hour * 2,
-		table: makeKillTable(koscheiTable),
-		emoji: '',
-		wildy: true,
 
-		difficultyRating: 9,
-		qpRequired: 100,
-		healAmountNeeded: 10_000 * 25,
-		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash],
-		respawnTime: Time.Second * 20
-	},
-	{
-		id: Treebeard.id,
-		name: Treebeard.name,
-		aliases: Treebeard.aliases,
-		timeToFinish: Time.Minute * 10,
-		table: makeKillTable(TreebeardLootTable),
-		emoji: '',
-		wildy: true,
-
-		difficultyRating: 9,
-		qpRequired: 100,
-		healAmountNeeded: 20 * 30,
-		attackStyleToUse: GearStat.AttackMagic,
-		attackStylesUsed: [GearStat.AttackMagic],
-		respawnTime: Time.Second * 40,
-		minimumGearRequirements: {
-			mage: {
-				[GearStat.AttackMagic]: 30 + 10 + 10 + 6 + 6 + 22 + 6
-			}
-		},
-		levelRequirements: {
-			magic: 105,
-			slayer: 101
-		},
-		pohBoosts: {
-			pool: {
-				'Ancient rejuvenation pool': 10
-			}
-		}
-	},
 	{
 		id: Monsters.PriffRabbit.id,
 		name: Monsters.PriffRabbit.name,
@@ -461,17 +327,6 @@ export const NightmareMonster: KillableMonster = {
 };
 
 export default killableMonsters;
-
-for (const monster of customMonsters) {
-	if (!Monsters.get(monster.id)) {
-		setCustomMonster(monster.id, monster.name, monster.table, monster.baseMonster, { aliases: monster.aliases });
-	} else {
-		console.error(
-			`Tried to set custom monster called ${monster.name}, but one already existed with the same ID: ${monster.id}`
-		);
-	}
-	killableMonsters.push({ ...monster, table: makeKillTable(monster.table) });
-}
 
 export const effectiveMonsters = [
 	...killableMonsters,

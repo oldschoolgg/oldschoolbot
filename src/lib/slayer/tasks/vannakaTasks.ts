@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 
-import { KalphiteKingMonster } from '../../kalphiteking';
 import killableMonsters from '../../minions/data/killableMonsters';
-import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { AssignableSlayerTask } from '../types';
 
 export const vannakaTasks: AssignableSlayerTask[] = [
@@ -20,7 +20,7 @@ export const vannakaTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [60, 120],
 		weight: 5,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, AbyssalDragon.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		unlocked: true

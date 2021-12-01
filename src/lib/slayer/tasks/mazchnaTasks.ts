@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
-import { KalphiteKingMonster } from '../../kalphiteking';
 import killableMonsters from '../../minions/data/killableMonsters';
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { AssignableSlayerTask } from '../types';
 
 export const mazchnaTasks: AssignableSlayerTask[] = [

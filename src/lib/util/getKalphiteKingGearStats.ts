@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 
 import { maxOffenceStats } from '../gear';
 import { GearStats } from '../gear/types';
-import { KalphiteKingMonster } from '../kalphiteking';
+import { KalphiteKingMonster } from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { UserSettings } from '../settings/types/UserSettings';
 
 export function getKalphiteKingGearStats(

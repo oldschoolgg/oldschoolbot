@@ -2342,3 +2342,180 @@ setCustomItem(
 	},
 	10_000
 );
+setCustomItem(
+	50_059,
+	'Brackish blade',
+	'Dragon sword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(50_060, 'Neem drupe', 'Coal', {}, 1000);
+setCustomItem(50_061, 'Neem oil', 'Coal', {}, 1000);
+setCustomItem(50_063, 'Polypore spore', 'Coal', {}, 1000);
+setCustomItem(
+	50_064,
+	'Gorajian mushroom',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_065,
+	'Grifolic gloves',
+	'Rune gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_066,
+	'Grifolic orb',
+	"Mage's book",
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(50_067, 'Grifolic flake ', 'Coal', {}, 1000);
+setCustomItem(
+	50_068,
+	'Grifolic shield',
+	'Dragon sq shield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_069,
+	'Grifolic wand',
+	'Master wand',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_070,
+	'Ganodermic boots',
+	'Wizard boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_071,
+	'Ganodermic gloves',
+	'Mystic gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(50_072, 'Ganodermic flake', 'Coal', {}, 1000);
+setCustomItem(
+	50_073,
+	'Polypore stick',
+	'Master wand',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(50_074, 'Mycelium visor web', 'Mystic hat', {}, 1000);
+setCustomItem(50_075, 'Mycelium poncho web', 'Mystic robe top', {}, 1000);
+setCustomItem(50_076, 'Mycelium leggings web', 'Mystic robe bottom', {}, 1000);
+setCustomItem(
+	50_077,
+	'Ganodermic leggings',
+	'Mystic robe bottom',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_078,
+	'Ganodermic poncho',
+	'Mystic robe top',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	50_079,
+	'Ganodermic visor',
+	'Mystic hat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_080,
+	'Grifolic visor',
+	'Mystic hat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_081,
+	'Grifolic poncho',
+	'Mystic robe top',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	50_082,
+	'Grifolic leggings',
+	'Mystic robe bottom',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);

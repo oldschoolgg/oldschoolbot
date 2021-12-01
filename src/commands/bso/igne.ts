@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
-import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/Ignecarus';
+import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BossInstance } from '../../lib/structures/Boss';
 import { BotCommand } from '../../lib/structures/BotCommand';

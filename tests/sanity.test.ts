@@ -1,6 +1,13 @@
+import { Monsters } from 'oldschooljs';
+
 import { masterCapesCL } from '../src/lib/data/CollectionsExport';
 import { allMbTables, PMBTable } from '../src/lib/data/openables';
 import { growablePets } from '../src/lib/growablePets';
+import killableMonsters from '../src/lib/minions/data/killableMonsters';
+import { Ignecarus } from '../src/lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from '../src/lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import KingGoldemar from '../src/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
+import { VasaMagus } from '../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { Gear } from '../src/lib/structures/Gear';
 import { isSuperUntradeable, itemNameFromID } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
@@ -47,6 +54,14 @@ describe('Sanity', () => {
 				console.error('wtf');
 				throw new Error(`Items rolled includes ${itemNameFromID(i)}`);
 			}
+		}
+	});
+	test('custom monsters', () => {
+		expect(killableMonsters.some(m => m.name === 'Frost Dragon')).toBeTruthy();
+		expect(killableMonsters.some(m => m.name === 'Sea Kraken')).toBeTruthy();
+		expect(Monsters.get(killableMonsters.find(m => m.name === 'Frost Dragon')!.id)?.data.hitpoints).toEqual(330);
+		for (const id of [KalphiteKingMonster.id, Ignecarus.id, VasaMagus.id, KingGoldemar.id]) {
+			expect(killableMonsters.some(i => i.id === id)).toEqual(false);
 		}
 	});
 });

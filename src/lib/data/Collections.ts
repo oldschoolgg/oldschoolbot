@@ -6,14 +6,15 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 import { table } from 'table';
 
 import { dyedItems } from '../dyedItems';
-import { kalphiteKingLootTable, KalphiteKingMonster } from '../kalphiteking';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
-import AbyssalDragon from '../minions/data/killableMonsters/custom/AbyssalDragon';
-import { Ignecarus } from '../minions/data/killableMonsters/custom/Ignecarus';
-import KingGoldemar from '../minions/data/killableMonsters/custom/KingGoldemar';
-import SeaKraken from '../minions/data/killableMonsters/custom/SeaKraken';
-import Treebeard from '../minions/data/killableMonsters/custom/Treebeard';
-import { VasaMagus } from '../minions/data/killableMonsters/custom/VasaMagus';
+import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
+import {
+	kalphiteKingLootTable,
+	KalphiteKingMonster
+} from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import KingGoldemar from '../minions/data/killableMonsters/custom/bosses/KingGoldemar';
+import { VasaMagus } from '../minions/data/killableMonsters/custom/bosses/VasaMagus';
+import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { sepulchreFloors } from '../minions/data/sepulchre';
 import {
 	EasyEncounterLoot,
@@ -444,8 +445,8 @@ export const allCollectionLogs: ICollection = {
 				roleCategory: ['bosses']
 			},
 			Malygos: {
-				alias: AbyssalDragon.aliases,
-				allItems: AbyssalDragon.allItems,
+				alias: BSOMonsters.Malygos.aliases,
+				allItems: BSOMonsters.Malygos.table.allItems,
 				items: abyssalDragonCL,
 				roleCategory: ['bosses']
 			},
@@ -474,14 +475,14 @@ export const allCollectionLogs: ICollection = {
 				roleCategory: ['bosses']
 			},
 			Treebeard: {
-				alias: Treebeard.aliases,
-				allItems: Treebeard.allItems,
+				alias: BSOMonsters.Treebeard.aliases,
+				allItems: BSOMonsters.Treebeard.table.allItems,
 				items: treeBeardCL,
 				roleCategory: ['bosses']
 			},
 			'Sea Kraken': {
-				alias: SeaKraken.aliases,
-				allItems: SeaKraken.allItems,
+				alias: BSOMonsters.SeaKraken.aliases,
+				allItems: BSOMonsters.SeaKraken.table.allItems,
 				items: seaKrakenCL,
 				roleCategory: ['bosses']
 			}

@@ -20,7 +20,7 @@ export default function setCustomMonster(
 	id: number,
 	name: string,
 	table: LootTable,
-	baseItem: Monster,
+	baseItem: Omit<Monster, 'kill'>,
 	newItemData?: Partial<Monster>
 ) {
 	Monsters.set(id, {

@@ -6,10 +6,10 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { itemContractResetTime } from '../../lib/constants';
 import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/data/openables';
-import { kalphiteKingLootTable } from '../../lib/kalphiteking';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
-import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/Ignecarus';
-import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/VasaMagus';
+import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
+import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { nexLootTable } from '../../lib/nex';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

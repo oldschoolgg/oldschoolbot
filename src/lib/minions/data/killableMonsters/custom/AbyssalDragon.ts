@@ -1,11 +1,8 @@
-import { Monsters } from 'oldschooljs';
 import { RareTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import WyvernHerbTable from 'oldschooljs/dist/simulation/subtables/WyvernHerbTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-
-import setCustomMonster from '../../../../util/setCustomMonster';
 
 const petTrollTable = new LootTable().add('Ori', 1, 1).add('Abyssal head', 1, 9);
 
@@ -92,13 +89,3 @@ export const AbyssalDragonLootTable = new LootTable()
 	.tertiary(1024, 'Dragon hunter lance')
 	.tertiary(100, 'Lump of crystal')
 	.tertiary(140, 'Clue scroll (grandmaster)');
-
-setCustomMonster(707_070, 'Malygos', AbyssalDragonLootTable, Monsters.Vorkath, {
-	id: 707_070,
-	name: 'Malygos',
-	aliases: ['abyssal dragon', 'abyss drag', 'mally', 'maly', 'malygos']
-});
-
-const AbyssalDragon = Monsters.find(mon => mon.name === 'Malygos')!;
-
-export default AbyssalDragon;

@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
-import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/VasaMagus';
+import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BossInstance } from '../../lib/structures/Boss';
 import { BotCommand } from '../../lib/structures/BotCommand';

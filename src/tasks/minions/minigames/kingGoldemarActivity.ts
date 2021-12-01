@@ -4,7 +4,9 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import KingGoldemar, { KingGoldemarLootTable } from '../../../lib/minions/data/killableMonsters/custom/KingGoldemar';
+import KingGoldemar, {
+	KingGoldemarLootTable
+} from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { calcDwwhChance, gpCostPerKill } from '../../../lib/structures/Boss';

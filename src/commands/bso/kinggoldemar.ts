@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
-import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/KingGoldemar';
+import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BossInstance, gpCostPerKill } from '../../lib/structures/Boss';
 import { BotCommand } from '../../lib/structures/BotCommand';

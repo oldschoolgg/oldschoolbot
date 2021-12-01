@@ -6,16 +6,13 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { kittens } from '../../../lib/growablePets';
 import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses';
-import AbyssalDragon from '../../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
-import SeaKraken from '../../../lib/minions/data/killableMonsters/custom/SeaKraken';
-import Treebeard from '../../../lib/minions/data/killableMonsters/custom/Treebeard';
-import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/VasaMagus';
+import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { NewBossOptions } from '../../../lib/types/minions';
-import { itemNameFromID, updateBankSetting } from '../../../lib/util';
+import { getMonster, itemNameFromID, updateBankSetting } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
@@ -31,9 +28,9 @@ const vasaBosses: Monster[] = [
 	Monsters.Kraken,
 	Monsters.Sarachnis,
 	Monsters.ThermonuclearSmokeDevil,
-	AbyssalDragon,
-	Treebeard,
-	SeaKraken,
+	getMonster('Malygos'),
+	getMonster('Treebeard'),
+	getMonster('Sea Kraken'),
 	...bossKillables.map(b => b.id).map(id => Monsters.get(id)!)
 ];
 

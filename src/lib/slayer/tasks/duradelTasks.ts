@@ -1,10 +1,9 @@
 import { Monsters } from 'oldschooljs';
 
-import { KalphiteKingMonster } from '../../kalphiteking';
 import killableMonsters from '../../minions/data/killableMonsters';
-import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
-import { Ignecarus } from '../../minions/data/killableMonsters/custom/Ignecarus';
-import SeaKraken from '../../minions/data/killableMonsters/custom/SeaKraken';
+import { Ignecarus } from '../../minions/data/killableMonsters/custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
@@ -26,7 +25,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [130, 200],
 		weight: 12,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, AbyssalDragon.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
 		extendedAmount: [200, 250],
 		extendedUnlockId: SlayerTaskUnlocksEnum.AugmentMyAbbies,
 		combatLevel: 85,
@@ -144,7 +143,7 @@ export const duradelTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [100, 120],
 		weight: 9,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, SeaKraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, BSOMonsters.SeaKraken.id],
 		extendedAmount: [150, 200],
 		extendedUnlockId: SlayerTaskUnlocksEnum.KrackOn,
 		combatLevel: 80,
