@@ -1,7 +1,9 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { LootTable, Monsters } from 'oldschooljs';
+import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import { itemID } from 'oldschooljs/dist/util';
 
+import { HighSeedPackTable } from '../../../../../commands/Minion/seedpack';
 import { GearStat } from '../../../../gear';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
@@ -133,7 +135,28 @@ const QueenBlackDragon: CustomMonster = {
 	name: 'Queen Black Dragon',
 	aliases: ['qbd'],
 	timeToFinish: Time.Minute * 31,
-	table: AbyssalDragonLootTable,
+	table: new LootTable()
+		.every('Royal dragon bones')
+		.every('Royal dragonhide', [5, 7])
+		.tertiary(2500, 'Queen black dragonling')
+		.tertiary(500, 'Draconic visage')
+		.tertiary(250, 'Royal dragon kiteshield')
+		.tertiary(64, 'Dragonbone upgrade kit')
+		.oneIn(
+			12,
+			new LootTable()
+				.add('Royal torsion spring')
+				.add('Royal sight')
+				.add('Royal frame')
+				.add('Royal bolt stabiliser')
+		)
+		.add('Rocktail', [4, 10])
+		.add('Saradomin brew(2)', [4, 10])
+		.add('Super restore(2)', [4, 10])
+		.add(new LootTable().add('Adamantite stone spirit').add('Runite stone spirit'), [1, 3])
+		.add('Uncut dragonstone', 5)
+		.add(HighSeedPackTable)
+		.tertiary(30, RareDropTable),
 	qpRequired: 182,
 	healAmountNeeded: 20 * 45,
 	attackStyleToUse: GearStat.AttackSlash,

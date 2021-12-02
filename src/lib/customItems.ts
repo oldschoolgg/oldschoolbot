@@ -2797,3 +2797,14 @@ setCustomItem(
 	},
 	1000
 );
+setCustomItem(
+	50_111,
+	'Royal dragon bones',
+	'Dragon kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
