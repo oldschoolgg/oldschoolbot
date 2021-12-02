@@ -5,6 +5,8 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { HighSeedPackTable } from '../../../../../commands/Minion/seedpack';
 import { GearStat } from '../../../../gear';
+import { SkillsEnum } from '../../../../skilling/types';
+import { Gear } from '../../../../structures/Gear';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
 import { CustomMonster } from './customMonsters';
@@ -159,43 +161,33 @@ const QueenBlackDragon: CustomMonster = {
 		.tertiary(30, RareDropTable),
 	qpRequired: 182,
 	healAmountNeeded: 20 * 45,
-	attackStyleToUse: GearStat.AttackSlash,
+	attackStyleToUse: GearStat.AttackRanged,
 	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic],
 	minimumGearRequirements: {
-		melee: {
-			[GearStat.AttackStab]: 100,
-			[GearStat.DefenceStab]: 150,
-			[GearStat.DefenceSlash]: 150,
-			[GearStat.DefenceMagic]: -20,
-			[GearStat.DefenceRanged]: 150
-		}
+		range: new Gear({
+			head: 'Armadyl helmet',
+			body: 'Armadyl chestplate',
+			legs: 'Armadyl plateskirt',
+			feet: 'Pegasian boots',
+			hands: 'Barrows gloves',
+			neck: 'Amulet of fury',
+			ring: 'Archers ring',
+			cape: "Ava's assembler"
+		}).stats
 	},
-	itemInBankBoosts: [
-		{
-			[itemID('Saradomin godsword')]: 5
-		},
-		{
-			[itemID('Dragon warhammer')]: 5
-		},
-		{
-			[itemID('Bandos godsword')]: 5
-		}
-	],
 	itemsRequired: deepResolveItems([['Dragonfire shield', 'Abyssal cape']]),
-	groupKillable: true,
 	respawnTime: Time.Second * 20,
 	levelRequirements: {
-		prayer: 99,
-		attack: 99,
-		strength: 105,
-		defence: 99
+		prayer: 70,
+		defence: 80,
+		ranged: 85
 	},
 	pohBoosts: {
 		pool: {
-			'Ancient rejuvenation pool': 10
+			'Ancient rejuvenation pool': 6
 		}
 	},
-	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 	notifyDrops: resolveItems(['Queen black dragonling']),
 	baseMonster: Monsters.Vorkath
 };
