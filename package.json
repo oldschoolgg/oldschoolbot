@@ -62,7 +62,7 @@
 		"@types/twit": "^2.2.30",
 		"concurrently": "^6.4.0",
 		"eslint": "^7.32.0",
-		"jest": "^27.4.2",
+		"jest": "^27.4.3",
 		"jest-circus": "^27.4.2",
 		"prisma": "^3.6.0",
 		"rimraf": "^3.0.2",
