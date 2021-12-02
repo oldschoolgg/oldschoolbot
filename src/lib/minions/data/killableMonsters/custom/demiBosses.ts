@@ -143,7 +143,7 @@ const QueenBlackDragon: CustomMonster = {
 		.tertiary(250, 'Royal dragon kiteshield')
 		.tertiary(64, 'Dragonbone upgrade kit')
 		.oneIn(
-			12,
+			18,
 			new LootTable()
 				.add('Royal torsion spring')
 				.add('Royal sight')
