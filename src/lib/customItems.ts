@@ -2507,11 +2507,289 @@ setCustomItem(
 	},
 	1000
 );
-
 setCustomItem(
 	50_082,
 	'Grifolic leggings',
 	'Mystic robe bottom',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_083,
+	'Tombshroom spore',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_084,
+	'Tombshroom',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_085,
+	'Queen black dragonling',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(50_086, 'Royal dragonhide', 'Coal', {}, 1000);
+setCustomItem(50_087, 'Royal dragonhide leather', 'Coal', {}, 1000);
+setCustomItem(50_088, 'Royal bolts', 'Runite bolts', {}, 1000);
+setCustomItem(
+	50_089,
+	'Royal dragonhide coif',
+	'Armadyl helmet',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_090,
+	'Royal dragonhide body',
+	'Armadyl chestplate',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_091,
+	'Royal dragonhide chaps',
+	'Armadyl chainskirt',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_092,
+	'Royal dragonhide boots',
+	'Pegasian boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_093,
+	'Royal dragonhide vambraces',
+	'Pegasian boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_094,
+	'Royal torsion spring',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_095,
+	'Royal sight',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_096,
+	'Royal frame',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	50_097,
+	'Royal bolt stabiliser',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_098,
+	'Royal crossbow',
+	'Twisted bow',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_099,
+	'Dragonbone upgrade kit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_100,
+	'Dragonbone mage hat',
+	'Mystic hat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_101,
+	'Dragonbone mage gloves',
+	'Mystic gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_102,
+	'Dragonbone mage bottoms',
+	'Mystic robe bottom',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_103,
+	'Dragonbone mage boots',
+	'Mystic boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_104,
+	'Dragonbone gloves',
+	'Barrows gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_105,
+	'Dragonbone platelegs',
+	'Dragon platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_106,
+	'Dragonbone platebody',
+	'Dragon platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_107,
+	'Dragonbone full helm',
+	'Dragon full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_108,
+	'Dragonbone boots',
+	'Dragon boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_109,
+	'Dragonbone mage top',
+	'Mystic robe top',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_110,
+	'Royal dragon kiteshield',
+	'Dragon kiteshield',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true

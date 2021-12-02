@@ -695,6 +695,19 @@ const bsoItems: Createable[] = [
 		outputItems: {
 			[itemID('Infernal slayer helmet(i)')]: 1
 		}
+	},
+	{
+		name: 'Royal crossbow',
+		inputItems: {
+			[itemID('Chaotic crossbow')]: 1,
+			[itemID('Royal bolt stabiliser')]: 1,
+			[itemID('Royal frame')]: 1,
+			[itemID('Royal sight')]: 1,
+			[itemID('Royal torsion spring')]: 1
+		},
+		outputItems: {
+			[itemID('Royal crossbow')]: 1
+		}
 	}
 ];
 

@@ -81,7 +81,7 @@ const RumPumpedCrab: CustomMonster = {
 	id: 918_501,
 	baseMonster: Monsters.BrineRat,
 	name: 'Rum-pumped crab',
-	aliases: ['rpc', 'rum crab'],
+	aliases: ['rpc', 'rum crab', 'rum pumped crab'],
 	timeToFinish: Time.Second * 40,
 	hp: 35,
 	table: new LootTable()

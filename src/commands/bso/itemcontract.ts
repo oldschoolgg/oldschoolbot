@@ -10,6 +10,7 @@ import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
+import { BSOMonsters } from '../../lib/minions/data/killableMonsters/custom/customMonsters';
 import { nexLootTable } from '../../lib/nex';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -49,6 +50,13 @@ const itemContractItems = Array.from(
 		...Ignecarus.allItems.filter(i => i !== itemID('Dragon egg')),
 		...nexLootTable.allItems,
 		...PMBTable.allItems,
+		...[
+			...BSOMonsters.FrostDragon.table.allItems,
+			...BSOMonsters.GanodermicBeast.table.allItems,
+			...BSOMonsters.Grifolaroo.table.allItems,
+			...BSOMonsters.RumPumpedCrab.table.allItems,
+			...BSOMonsters.QueenBlackDragon.table.allItems
+		],
 		...resolveItems([
 			'Untradeable mystery box',
 			'Tradeable mystery box',

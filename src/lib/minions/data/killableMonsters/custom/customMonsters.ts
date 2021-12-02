@@ -1,10 +1,16 @@
-import { LootTable, Monsters } from 'oldschooljs';
+import { LootTable } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import setCustomMonster, { makeKillTable } from '../../../../util/setCustomMonster';
 import { KillableMonster } from '../../../types';
 import { customDemiBosses } from './demiBosses';
 import { resourceDungeonMonsters } from './resourceDungeons';
+
+declare module 'oldschooljs/dist/structures/Monster' {
+	export default interface Monster {
+		isCustom?: true;
+	}
+}
 
 export interface CustomMonster extends Readonly<Omit<Readonly<KillableMonster>, 'table'>> {
 	readonly table: LootTable;
@@ -20,12 +26,6 @@ export const BSOMonsters = {
 };
 
 for (const monster of Object.values(BSOMonsters)) {
-	if (Monsters.get(monster.id)) {
-		throw new Error(
-			`Tried to set custom monster called ${monster.name}, but one already existed with the same ID: ${monster.id}`
-		);
-	}
-
 	const monsterData = { ...monster.baseMonster };
 	if (monster.hp) {
 		monsterData.data.hitpoints = monster.hp;

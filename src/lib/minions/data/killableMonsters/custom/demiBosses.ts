@@ -127,8 +127,59 @@ const Treebeard: CustomMonster = {
 	baseMonster: Monsters.Hespori
 };
 
+// different pet drop if killed by tame?
+const QueenBlackDragon: CustomMonster = {
+	id: 192_195,
+	name: 'Queen Black Dragon',
+	aliases: ['qbd'],
+	timeToFinish: Time.Minute * 31,
+	table: AbyssalDragonLootTable,
+	qpRequired: 182,
+	healAmountNeeded: 20 * 45,
+	attackStyleToUse: GearStat.AttackSlash,
+	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+	minimumGearRequirements: {
+		melee: {
+			[GearStat.AttackStab]: 100,
+			[GearStat.DefenceStab]: 150,
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.DefenceMagic]: -20,
+			[GearStat.DefenceRanged]: 150
+		}
+	},
+	itemInBankBoosts: [
+		{
+			[itemID('Saradomin godsword')]: 5
+		},
+		{
+			[itemID('Dragon warhammer')]: 5
+		},
+		{
+			[itemID('Bandos godsword')]: 5
+		}
+	],
+	itemsRequired: deepResolveItems([['Dragonfire shield', 'Abyssal cape']]),
+	groupKillable: true,
+	respawnTime: Time.Second * 20,
+	levelRequirements: {
+		prayer: 99,
+		attack: 99,
+		strength: 105,
+		defence: 99
+	},
+	pohBoosts: {
+		pool: {
+			'Ancient rejuvenation pool': 10
+		}
+	},
+	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
+	notifyDrops: resolveItems(['Queen black dragonling']),
+	baseMonster: Monsters.Vorkath
+};
+
 export const customDemiBosses = {
 	Treebeard,
 	SeaKraken,
-	Malygos
+	Malygos,
+	QueenBlackDragon
 };
