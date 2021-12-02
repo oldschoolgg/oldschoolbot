@@ -135,7 +135,7 @@ const Treebeard: CustomMonster = {
 const QueenBlackDragon: CustomMonster = {
 	id: 192_195,
 	name: 'Queen Black Dragon',
-	aliases: ['qbd'],
+	aliases: ['qbd', 'qdb'],
 	timeToFinish: Time.Minute * 31,
 	table: new LootTable()
 		.every('Royal dragon bones')
@@ -176,7 +176,7 @@ const QueenBlackDragon: CustomMonster = {
 			cape: "Ava's assembler"
 		}).stats
 	},
-	itemsRequired: deepResolveItems([['Dragonfire shield', 'Abyssal cape']]),
+	itemsRequired: deepResolveItems([['Dragonfire shield']]),
 	respawnTime: Time.Second * 20,
 	levelRequirements: {
 		prayer: 70,
