@@ -777,6 +777,99 @@ const grifolic: Createable[] = [
 	}
 ];
 
+const dragonBoneCreatables: Createable[] = [
+	{
+		name: 'Dragonbone boots',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon boots': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone boots': 1
+		})
+	},
+	{
+		name: 'Dragonbone full helm',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon full helm': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone full helm': 1
+		})
+	},
+	{
+		name: 'Dragonbone platebody',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon platebody': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone platebody': 1
+		})
+	},
+	{
+		name: 'Dragonbone platelegs',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon platelegs': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone platelegs': 1
+		})
+	},
+	{
+		name: 'Dragonbone gloves',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon gloves': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone gloves': 1
+		})
+	},
+	{
+		name: 'Dragonbone mage boots',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Infinity boots': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone mage boots': 1
+		})
+	},
+	{
+		name: 'Dragonbone mage bottoms',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Infinity bottoms': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone mage bottoms': 1
+		})
+	},
+	{
+		name: 'Dragonbone mage hat',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Infinity hat': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone mage hat': 1
+		})
+	},
+	{
+		name: 'Dragonbone mage top',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Infinity top': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone mage top': 1
+		})
+	}
+];
+
 export const BsoCreateables: Createable[] = [
 	...bsoItems,
 	...chaoticCreatables,
@@ -785,5 +878,6 @@ export const BsoCreateables: Createable[] = [
 	...bsoArmorSets,
 	...dyeCreatables,
 	...ganodermic,
-	...grifolic
+	...grifolic,
+	...dragonBoneCreatables
 ];

@@ -2040,6 +2040,17 @@ export const seaKrakenCL = resolveItems([
 	'Fishing trophy'
 ]);
 
+export const queenBlackDragonCL = resolveItems([
+	'Queen black dragonling',
+	'Draconic visage',
+	'Royal dragon kiteshield',
+	'Dragonbone upgrade kit',
+	'Royal torsion spring',
+	'Royal sight',
+	'Royal frame',
+	'Royal bolt stabiliser'
+]);
+
 export const customBossesDropsThatCantBeDroppedInMBs = [
 	...kingGoldemarCL,
 	...abyssalDragonCL,

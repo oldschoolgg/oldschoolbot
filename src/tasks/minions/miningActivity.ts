@@ -147,15 +147,6 @@ export default class extends Task {
 			}
 		}
 
-		str += `\n\nYou received: ${loot}.`;
-		if (bonusXP > 0) {
-			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
-		}
-
-		if (user.hasItemEquippedAnywhere('Mining master cape')) {
-			str += '\n2x minerals/nuggets for Mining master cape.';
-		}
-
 		const userBank = user.bank();
 		const spiritOre = stoneSpirits.find(t => t.ore.id === oreID);
 		if (spiritOre) {
@@ -164,6 +155,15 @@ export default class extends Task {
 				await user.removeItemsFromBank(new Bank().add(spiritOre.spirit.id, amountOfSpirits));
 				loot.add(oreID, amountOfSpirits);
 			}
+		}
+
+		str += `\n\nYou received: ${loot}.`;
+		if (bonusXP > 0) {
+			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
+
+		if (user.hasItemEquippedAnywhere('Mining master cape')) {
+			str += '\n2x minerals/nuggets for Mining master cape.';
 		}
 
 		await user.addItemsToBank(loot, true);

@@ -2552,13 +2552,14 @@ setCustomItem(
 	1000
 );
 setCustomItem(50_086, 'Royal dragonhide', 'Coal', {}, 1000);
-setCustomItem(50_087, 'Royal dragonhide leather', 'Coal', {}, 1000);
+setCustomItem(50_087, 'Royal dragon leather', 'Coal', {}, 1000);
 setCustomItem(50_088, 'Royal bolts', 'Runite bolts', {}, 1000);
 setCustomItem(
 	50_089,
 	'Royal dragonhide coif',
 	'Armadyl helmet',
 	{
+		highalch: 100,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -2570,6 +2571,7 @@ setCustomItem(
 	'Royal dragonhide body',
 	'Armadyl chestplate',
 	{
+		highalch: 100,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -2581,6 +2583,7 @@ setCustomItem(
 	'Royal dragonhide chaps',
 	'Armadyl chainskirt',
 	{
+		highalch: 100,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -2592,6 +2595,7 @@ setCustomItem(
 	'Royal dragonhide boots',
 	'Pegasian boots',
 	{
+		highalch: 100,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -2603,6 +2607,7 @@ setCustomItem(
 	'Royal dragonhide vambraces',
 	'Pegasian boots',
 	{
+		highalch: 100,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}

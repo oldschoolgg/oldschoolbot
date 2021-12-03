@@ -57,15 +57,6 @@ const Tanning: Craftable[] = [
 		inputItems: new Bank({ 'Black dragonhide': 1, Coins: 20 }),
 		tickRate: 1,
 		bankChest: true
-	},
-	{
-		name: 'Royal dragonhide leather',
-		id: itemID('Royal dragonhide leather'),
-		level: 1,
-		xp: 0,
-		inputItems: new Bank({ 'Royal dragonhide': 1, Coins: 2000 }),
-		tickRate: 1,
-		bankChest: true
 	}
 ];
 

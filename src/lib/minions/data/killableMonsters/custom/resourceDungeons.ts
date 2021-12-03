@@ -11,9 +11,11 @@ import resolveItems from '../../../../util/resolveItems';
 import { CustomMonster } from './customMonsters';
 import { GrimyHerbTable } from './Treebeard';
 
-function neemCost() {
+function neemCost(extraCost?: Bank) {
+	const cost = new Bank().add('Neem oil', 1);
+	if (extraCost) cost.add(extraCost);
 	return {
-		itemCost: new Bank().add('Neem oil', 1),
+		itemCost: cost,
 		qtyPerKill: 0.3
 	};
 }
@@ -28,7 +30,7 @@ const FrostDragon: CustomMonster = {
 	table: new LootTable()
 		.every('Frost dragon bones')
 		.tertiary(10_000, 'Draconic visage')
-		.tertiary(110, 'Clue scroll (grandmaster)')
+		.tertiary(190, 'Clue scroll (grandmaster)')
 		.tertiary(33, RareDropTable)
 		.add('Rune arrow', [12, 36])
 		.add('Water talisman')
@@ -274,7 +276,7 @@ const GanodermicRunt: CustomMonster = {
 		dungeoneering: 82,
 		slayer: 95
 	},
-	itemCost: neemCost(),
+	itemCost: neemCost(new Bank().add('Polypore spore', 120).add('Astral rune', 52)),
 	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged]
 };
 
@@ -310,7 +312,7 @@ const GanodermicBeast: CustomMonster = {
 		dungeoneering: 82,
 		slayer: 98
 	},
-	itemCost: neemCost(),
+	itemCost: neemCost(new Bank().add('Polypore spore', 150).add('Astral rune', 64)),
 	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Ranged]
 };
 

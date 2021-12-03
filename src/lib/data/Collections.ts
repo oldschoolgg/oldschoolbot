@@ -110,6 +110,7 @@ import {
 	nexCL,
 	oborCL,
 	pestControlCL,
+	queenBlackDragonCL,
 	questCL,
 	randomEventsCL,
 	revenantsCL,
@@ -484,6 +485,12 @@ export const allCollectionLogs: ICollection = {
 				alias: BSOMonsters.SeaKraken.aliases,
 				allItems: BSOMonsters.SeaKraken.table.allItems,
 				items: seaKrakenCL,
+				roleCategory: ['bosses']
+			},
+			'Queen Black Dragon': {
+				alias: BSOMonsters.QueenBlackDragon.aliases,
+				allItems: BSOMonsters.QueenBlackDragon.table.allItems,
+				items: queenBlackDragonCL,
 				roleCategory: ['bosses']
 			}
 		}
