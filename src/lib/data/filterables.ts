@@ -1096,13 +1096,13 @@ export const filterableTypes: Filterable[] = [
 		items: [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
 	},
 	{
-		name: 'Untradeables',
-		aliases: ['untradeables', 'umb'],
+		name: 'umb',
+		aliases: ['umb'],
 		items: umbTable
 	},
 	{
-		name: 'Tradeables',
-		aliases: ['tradeables', 'tmb'],
+		name: 'tmb',
+		aliases: ['tmb'],
 		items: tmbTable
 	},
 	{
