@@ -150,6 +150,7 @@ export class Gear {
 			const required = gearRequirements?.[key];
 			if (!required) continue;
 			const has = this.stats[key];
+			if (required < 0) continue;
 			if (has < required) {
 				return [false, key, has];
 			}
