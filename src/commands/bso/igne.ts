@@ -14,7 +14,7 @@ import { formatDuration } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[qty:int|solo]',
+			usage: '[qty:int{1,100}|solo]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
