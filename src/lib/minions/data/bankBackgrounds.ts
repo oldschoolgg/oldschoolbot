@@ -488,6 +488,13 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['251536370613485568']
+	},
+	{
+		id: 86,
+		name: 'Anime CustomBG',
+		image: null,
+		available: false,
+		owners: ['363917147052834819']
 	}
 ];
 
