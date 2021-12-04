@@ -173,6 +173,7 @@ const FungalMage: CustomMonster = {
 		.add('Polypore spore', [1, 100])
 		.add('Grifolic flake', [1, 25])
 		.add('Snape grass', 4)
+		.oneIn(64, 'Tombshroom spore')
 		.add('Limpwurt root', 5)
 		.add('Gorajian mushroom')
 		.add('Potato cactus', 8),
@@ -236,6 +237,7 @@ const Grifolapine: CustomMonster = {
 		.add('Polypore spore', [1, 300])
 		.add('Grifolic flake', [1, 100])
 		.add('Gorajian mushroom', 5)
+		.oneIn(64, 'Tombshroom spore')
 		.add('Snape grass', [5, 25]),
 	healAmountNeeded: 20 * 9,
 	attackStyleToUse: GearStat.AttackMagic,
@@ -299,6 +301,7 @@ const GanodermicBeast: CustomMonster = {
 			['Death rune', [5, 60]]
 		])
 		.add(HighSeedPackTable)
+		.oneIn(64, 'Tombshroom spore')
 		.add('Gorajian mushroom', 12)
 		.add('Flax', 40)
 		.add('Ganodermic flake', [1, 298])

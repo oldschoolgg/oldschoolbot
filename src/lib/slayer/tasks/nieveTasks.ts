@@ -78,7 +78,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
 			Monsters.KingBlackDragon.id,
-			Ignecarus.id
+			Ignecarus.id,
+			BSOMonsters.QueenBlackDragon.id
 		],
 		slayerLevel: 77,
 		combatLevel: 80,
@@ -435,7 +436,6 @@ export const nieveTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.FeralVampyre,
 		amount: [110, 170],
-
 		weight: 6,
 		monsters: [
 			Monsters.FeralVampyre.id,

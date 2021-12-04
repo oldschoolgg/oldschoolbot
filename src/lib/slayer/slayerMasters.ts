@@ -3,7 +3,6 @@ import { duradelTasks } from './tasks/duradelTasks';
 import { konarTasks } from './tasks/konarTasks';
 import { mazchnaTasks } from './tasks/mazchnaTasks';
 import { nieveTasks } from './tasks/nieveTasks';
-import { skaldrunTasks } from './tasks/skaldrunTasks';
 import { turaelTasks } from './tasks/turaelTasks';
 import { vannakaTasks } from './tasks/vannakaTasks';
 import { SlayerMaster } from './types';
@@ -69,14 +68,5 @@ export const slayerMasters: SlayerMaster[] = [
 		basePoints: 15,
 		combatLvl: 100,
 		slayerLvl: 50
-	},
-	{
-		id: 20,
-		name: 'Skaldrun',
-		aliases: ['skal', 'skaldrun'],
-		tasks: skaldrunTasks,
-		basePoints: 15,
-		combatLvl: 120,
-		slayerLvl: 90
 	}
 ];

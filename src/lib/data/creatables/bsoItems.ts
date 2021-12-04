@@ -708,6 +708,16 @@ const bsoItems: Createable[] = [
 		outputItems: {
 			[itemID('Royal crossbow')]: 1
 		}
+	},
+	{
+		name: 'Polypore staff',
+		inputItems: {
+			[itemID('Polypore stick')]: 1,
+			[itemID('Polypore spore')]: 7000
+		},
+		outputItems: {
+			[itemID('Polypore staff')]: 1
+		}
 	}
 ];
 

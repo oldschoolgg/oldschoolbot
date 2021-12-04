@@ -2813,3 +2813,26 @@ setCustomItem(
 	},
 	1000
 );
+setCustomItem(50_112, 'Morchella mushroom spore', 'Coal', {}, 1000);
+setCustomItem(
+	50_113,
+	'Morchella mushroom',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_114,
+	'Polypore staff',
+	'Kodai wand',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);

@@ -79,8 +79,10 @@ export enum SlayerTaskUnlocksEnum {
 	RunePouch,
 	DoubleTrouble,
 	BroaderFletching,
+	// Custom
 	SizeMatters,
-	BlockAndRoll
+	BlockAndRoll,
+	PoreDecisions
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
@@ -543,5 +545,13 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 5000,
 		canBeRemoved: true,
 		aliases: ['block n roll', 'block and roll']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.PoreDecisions,
+		name: 'Pore Decisions',
+		desc: 'Allows you to get Polypore Dungeon monsters as slayer tasks',
+		slayerPointCost: 5000,
+		canBeRemoved: true,
+		aliases: ['pore decisions', 'poor decisions']
 	}
 ];
