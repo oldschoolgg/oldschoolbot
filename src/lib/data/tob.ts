@@ -14,22 +14,21 @@ import { Bank } from 'oldschooljs';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { constructGearSetup, GearStats } from '../gear';
-import { SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
 
 export const bareMinStats: Skills = {
-	attack: 80,
-	strength: 80,
-	defence: 80,
-	ranged: 80,
-	magic: 80,
-	prayer: 70
+	attack: 90,
+	strength: 90,
+	defence: 90,
+	ranged: 90,
+	magic: 94,
+	prayer: 77
 };
 
-export function hasMinRaidsRequirements(user: KlasaUser) {
+export function hasMinTOBRequirements(user: KlasaUser) {
 	return skillsMeetRequirements(user.rawSkills, bareMinStats);
 }
 
@@ -45,7 +44,7 @@ function kcPointsEffect(kc: number) {
 	return 30;
 }
 
-export async function createTeam(
+export async function createTOBTeam(
 	users: KlasaUser[],
 	cm: boolean
 ): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
@@ -168,12 +167,12 @@ export const maxMageGear = constructGearSetup({
 const maxMage = new Gear(maxMageGear);
 
 export const maxRangeGear = constructGearSetup({
-	head: 'Armadyl helmet',
+	head: 'Void ranger helm',
 	neck: 'Necklace of anguish',
-	body: 'Armadyl chestplate',
+	body: 'Elite void top',
 	cape: "Ava's assembler",
-	hands: 'Barrows gloves',
-	legs: 'Armadyl chainskirt',
+	hands: 'Void knight gloves',
+	legs: 'Elite void robe',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
 	ring: 'Archers ring(i)',
@@ -182,15 +181,15 @@ export const maxRangeGear = constructGearSetup({
 const maxRange = new Gear(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
-	head: "Inquisitor's great helm",
+	head: 'Neitiznot faceguard',
 	neck: 'Amulet of torture',
-	body: "Inquisitor's hauberk",
+	body: 'Bandos chestplate',
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
-	legs: "Inquisitor's plateskirt",
+	legs: 'Bandos tassets',
 	feet: 'Primordial boots',
-	weapon: "Inquisitor's mace",
-	shield: 'Dragon defender',
+	weapon: 'Scythe of vitur',
+	shield: 'Avernic defender',
 	ring: 'Berserker ring(i)'
 });
 const maxMelee = new Gear(maxMeleeGear);
@@ -231,15 +230,7 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
-export async function checkTOBTeam(users: KlasaUser[], cm: boolean): Promise<string | null> {
-	const hasHerbalist = users.some(u => u.skillLevel(SkillsEnum.Herblore) >= 78);
-	if (!hasHerbalist) {
-		return 'nobody with atleast level 78 Herblore';
-	}
-	const hasFarmer = users.some(u => u.skillLevel(SkillsEnum.Farming) >= 55);
-	if (!hasFarmer) {
-		return 'nobody with atleast level 55 Farming';
-	}
+export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.owns(minimumCoxSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.username} doesn't have enough supplies`;
@@ -250,34 +241,29 @@ export async function checkTOBTeam(users: KlasaUser[], cm: boolean): Promise<str
 		if (total < 20) {
 			return "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric.";
 		}
-		if (!hasMinRaidsRequirements(user)) {
+		if (!hasMinTOBRequirements(user)) {
 			return `${user.username} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
 		}
-		if (cm) {
-			if (users.length === 1 && !user.hasItemEquippedOrInBank('Twisted bow')) {
-				return `${user.username} doesn't own a Twisted bow, which is required for solo Challenge Mode.`;
-			}
-			if (
-				users.length > 1 &&
-				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow')
-			) {
-				return `${user.username} doesn't own a Twisted bow or Dragon hunter crossbow, which is required for Challenge Mode.`;
-			}
-			const kc = await user.getMinigameScore('raids');
-			if (kc < 200) {
-				return `${user.username} doesn't have the 200 KC required for Challenge Mode.`;
-			}
-		}
+
 		if (user.minionIsBusy) {
 			return `${user.username}'s minion is already doing an activity and cannot join.`;
+		}
+		if (!user.owns('Rune pouch')) {
+			return `${user.username} doesn't own a Rune pouch.`;
+		}
+		if (!user.getGear('melee').hasEquipped(['Fire cape', 'Infernal cape'])) {
+			return 'You need atleast an Infernal or Fire cape in your melee setup!';
+		}
+
+		if (isHardMode) {
+			// TODOTODO
 		}
 	}
 
 	return null;
 }
 
-async function kcEffectiveness(u: KlasaUser, hardMode: boolea) {
+async function kcEffectiveness(u: KlasaUser, hardMode: boolean) {
 	const kc = await u.getMinigameScore(hardMode ? 'tob_hard' : 'tob');
 	let cap = 400;
 	if (hardMode) {
@@ -326,12 +312,6 @@ const itemBoosts = [
 			item: getOSItem('Bandos godsword (or)'),
 			boost: 2.5
 		}
-	],
-	[
-		{
-			item: getOSItem('Dragon hunter lance'),
-			boost: 4
-		}
 	]
 ];
 
@@ -354,7 +334,7 @@ export async function calcTOBDuration(
 		userPercentChange += calcPerc(total, speedReductionForGear);
 
 		// Reduce time for KC
-		const kcPercent = await kcEffectiveness(u, challengeMode, team.length === 1);
+		const kcPercent = await kcEffectiveness(u, challengeMode);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
 
 		// Reduce time for item boosts
@@ -379,20 +359,23 @@ export async function calcTOBDuration(
 		duration = reduceNumByPercent(duration, totalReduction);
 	}
 
-	duration -= duration * (teamSizeBoostPercent(size) / 100);
-
 	duration = randomVariation(duration, 5);
 	return { duration, reductions, totalReduction: totalSpeedReductions / size };
 }
 
-export async function calcTOBInput(u: KlasaUser, solo: boolean) {
+export async function calcTOBInput(u: KlasaUser) {
 	const items = new Bank();
 	const kc = await u.getMinigameScore('tob');
-	items.add('Stamina potion(4)', solo ? 2 : 1);
+	items.add('Stamina potion(4)', 1);
+	items.add('Super combat potion(4)', 1);
+	items.add('Ranging potion(4)', 1);
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
-	if (solo) brewsNeeded++;
 	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
+	if (kc < 20) {
+		items.add('Shark', 3);
+		items.add('Cooked karambwan', 3);
+	}
 
 	items.add('Saradomin brew(4)', brewsNeeded);
 	items.add('Super restore(4)', restoresNeeded);
