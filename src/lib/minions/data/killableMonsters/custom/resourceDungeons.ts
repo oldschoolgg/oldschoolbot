@@ -106,7 +106,7 @@ const RumPumpedCrab: CustomMonster = {
 const FungalRodent: CustomMonster = {
 	id: 669_279,
 	baseMonster: Monsters.BrineRat,
-	name: 'Fungal rodent',
+	name: 'Fungal Rodent',
 	aliases: ['fungal rodent'],
 	timeToFinish: Time.Second * 80,
 	hp: 85,

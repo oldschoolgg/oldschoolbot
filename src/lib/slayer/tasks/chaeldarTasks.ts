@@ -4,6 +4,7 @@ import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/
 import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
+import { polyporeTasks } from './polyporeTasks';
 
 export const chaeldarTasks: AssignableSlayerTask[] = [
 	{
@@ -510,5 +511,6 @@ export const chaeldarTasks: AssignableSlayerTask[] = [
 		slayerLevel: 62,
 		unlocked: true
 	},
-	...bossTasks
+	...bossTasks,
+	...polyporeTasks
 ];

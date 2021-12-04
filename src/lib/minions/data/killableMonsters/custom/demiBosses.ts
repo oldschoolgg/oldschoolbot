@@ -6,7 +6,6 @@ import { itemID } from 'oldschooljs/dist/util';
 import { HighSeedPackTable } from '../../../../../commands/Minion/seedpack';
 import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
-import { Gear } from '../../../../structures/Gear';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
 import { CustomMonster } from './customMonsters';
@@ -166,16 +165,22 @@ const QueenBlackDragon: CustomMonster = {
 	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
 	disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic],
 	minimumGearRequirements: {
-		range: new Gear({
-			head: 'Armadyl helmet',
-			body: 'Armadyl chestplate',
-			legs: 'Armadyl plateskirt',
-			feet: 'Pegasian boots',
-			hands: 'Barrows gloves',
-			neck: 'Amulet of fury',
-			ring: 'Archers ring',
-			cape: "Ava's assembler"
-		}).stats
+		range: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: -37,
+			attack_ranged: 78,
+			defence_stab: 146,
+			defence_slash: 138,
+			defence_crush: 151,
+			defence_magic: 110,
+			defence_ranged: 152,
+			melee_strength: 0,
+			ranged_strength: 2,
+			magic_damage: 0,
+			prayer: 3
+		}
 	},
 	itemsRequired: deepResolveItems([['Dragonfire shield']]),
 	respawnTime: Time.Second * 20,

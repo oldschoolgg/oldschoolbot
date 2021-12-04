@@ -7,6 +7,7 @@ import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMo
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
+import { polyporeTasks } from './polyporeTasks';
 
 export const nieveTasks: AssignableSlayerTask[] = [
 	{
@@ -455,5 +456,6 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		slayerLevel: 62,
 		unlocked: true
 	},
-	...bossTasks
+	...bossTasks,
+	...polyporeTasks
 ];

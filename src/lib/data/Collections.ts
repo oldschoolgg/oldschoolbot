@@ -1143,6 +1143,23 @@ export const allCollectionLogs: ICollection = {
 				counts: false,
 				items: dyedItems.map(i => i.dyedVersions.map(i => i.item.id)).flat(2)
 			},
+			'Polypore Dungeon': {
+				items: resolveItems([
+					'Mycelium leggings web',
+					'Mycelium poncho web',
+					'Mycelium visor web',
+					'Neem drupe',
+					'Polypore spore',
+					'Grifolic flake',
+					'Grifolic gloves',
+					'Grifolic orb',
+					'Gorajian mushroom',
+					'Tombshroom spore',
+					'Ganodermic flake',
+					'Ganodermic gloves',
+					'Ganodermic boots'
+				])
+			},
 			'Halloween 2021': {
 				alias: ['hween2021', 'halloween 2021'],
 				items: resolveItems([
