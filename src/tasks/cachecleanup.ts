@@ -1,6 +1,6 @@
 import { SnowflakeUtil } from 'discord.js';
 import { Time } from 'e';
-import { Colors, Task, TaskStore } from 'klasa';
+import { Task, TaskStore } from 'klasa';
 
 import { SupportServer } from '../lib/constants';
 import PostgresProvider from '../providers/postgres';
@@ -8,24 +8,13 @@ import PostgresProvider from '../providers/postgres';
 const THRESHOLD = Time.Minute * 30;
 
 export default class MemorySweeper extends Task {
-	colors: { red: Colors; yellow: Colors; green: Colors };
-	header: string;
 	OLD_SNOWFLAKE: string;
 
 	public constructor(store: TaskStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			enabled: false
+			enabled: true
 		});
 
-		// The colors to stylise the console's logs
-		this.colors = {
-			red: new Colors({ text: 'lightred' }),
-			yellow: new Colors({ text: 'lightyellow' }),
-			green: new Colors({ text: 'green' })
-		};
-
-		// The header with the console colors
-		this.header = new Colors({ text: 'lightblue' }).format('[CACHE CLEANUP]');
 		this.OLD_SNOWFLAKE = SnowflakeUtil.generate(Date.now() - THRESHOLD);
 	}
 
@@ -78,30 +67,7 @@ export default class MemorySweeper extends Task {
 		// Emit a log
 		this.client.emit(
 			'log',
-			`${this.header} ${this.setColor(presences)} [Presence]s | ${this.setColor(
-				guildMembers
-			)} [GuildMember]s | ${this.setColor(voiceStates)} [VoiceState]s | ${this.setColor(
-				users
-			)} [User]s | ${this.setColor(emojis)} [Emoji]s`
+			`CacheCleanup ${presences} [Presence]s | ${guildMembers} [GuildMember]s | ${voiceStates} [VoiceState]s | ${users} [User]s | ${emojis} [Emoji]s`
 		);
-	}
-
-	/**
-	 * Set a colour depending on the amount:
-	 * > 1000 : Light Red colour
-	 * > 100  : Light Yellow colour
-	 * < 100  : Green colour
-	 * @since 3.0.0
-	 * @param {number} number The number to colourise
-	 * @returns {string}
-	 */
-	setColor(number: number) {
-		const text = String(number).padStart(5, ' ');
-		// Light Red color
-		if (number > 1000) return this.colors.red.format(text);
-		// Light Yellow color
-		if (number > 100) return this.colors.yellow.format(text);
-		// Green color
-		return this.colors.green.format(text);
 	}
 }
