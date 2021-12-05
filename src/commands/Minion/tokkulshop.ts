@@ -72,8 +72,8 @@ export default class extends BotCommand {
 		let inItems = new Bank();
 
 		const [hasKaramjaDiary] = await userhasDiaryTier(msg.author, KaramjaDiary.easy);
-		let tokkulCost = hasKaramjaDiary ? shopInventory.diaryTokkulCost : shopInventory.tokkulCost;
-		let tokkulReturn = hasKaramjaDiary ? shopInventory.diaryTokkulReturn : shopInventory.tokkulReturn;
+		const tokkulCost = hasKaramjaDiary ? shopInventory.diaryTokkulCost : shopInventory.tokkulCost;
+		const tokkulReturn = hasKaramjaDiary ? shopInventory.diaryTokkulReturn : shopInventory.tokkulReturn;
 
 		if (type === 'buy') {
 			inItems.add({ Tokkul: quantity * tokkulCost! });
