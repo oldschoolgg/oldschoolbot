@@ -3,6 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
+import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { DetermineBoostParams } from '../minions/types';
 import { prisma } from '../settings/prisma';
@@ -61,19 +62,29 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 	return boostChoice;
 }
 
-export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
+export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: KlasaUser) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 
 	if (currentStreak < 5) {
 		return 0;
-	}
+	}		
+	
+	let basePoints = master.basePoints;
+
+	// Boost points to 20 for Konar + Kourend Elites
+	if ( master.name === "Konar quo Maten" ) {
+		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		if ( hasKourendElite ) {
+			basePoints = 20;
+		};
+	};
 	for (let i = 0; i < streaks.length; i++) {
 		if (currentStreak >= streaks[i] && currentStreak % streaks[i] === 0) {
-			return master.basePoints * multiplier[i];
+			return basePoints * multiplier[i];
 		}
 	}
-	return master.basePoints;
+	return basePoints;
 }
 
 export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
