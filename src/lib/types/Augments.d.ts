@@ -49,6 +49,7 @@ declare module 'klasa' {
 		fastifyServer: FastifyInstance;
 		minionTicker: NodeJS.Timeout;
 		tameTicker: NodeJS.Timeout;
+		cleanupTicker: NodeJS.Timeout;
 		dailyReminderTicker: NodeJS.Timeout;
 		giveawayTicker: NodeJS.Timeout;
 		analyticsInterval: NodeJS.Timeout;
