@@ -150,7 +150,7 @@ export default class extends Task {
 		const userBank = user.bank();
 		const spiritOre = stoneSpirits.find(t => t.ore.id === oreID);
 		if (spiritOre) {
-			const amountOfSpirits = userBank.amount(spiritOre.spirit.id);
+			const amountOfSpirits = Math.max(quantity, userBank.amount(spiritOre.spirit.id));
 			if (amountOfSpirits > 0) {
 				await user.removeItemsFromBank(new Bank().add(spiritOre.spirit.id, amountOfSpirits));
 				loot.add(oreID, amountOfSpirits);

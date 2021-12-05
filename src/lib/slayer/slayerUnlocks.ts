@@ -550,7 +550,7 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		id: SlayerTaskUnlocksEnum.PoreDecisions,
 		name: 'Pore Decisions',
 		desc: 'Allows you to get Polypore Dungeon monsters as slayer tasks',
-		slayerPointCost: 5000,
+		slayerPointCost: 600,
 		canBeRemoved: true,
 		aliases: ['pore decisions', 'poor decisions']
 	}

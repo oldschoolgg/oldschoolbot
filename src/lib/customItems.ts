@@ -2549,7 +2549,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1000
+	1_000_000
 );
 setCustomItem(50_086, 'Royal dragonhide', 'Coal', {}, 1000);
 setCustomItem(50_087, 'Royal dragon leather', 'Coal', {}, 1000);
@@ -2593,7 +2593,7 @@ setCustomItem(
 setCustomItem(
 	50_092,
 	'Royal dragonhide boots',
-	'Pegasian boots',
+	'Leather boots',
 	{
 		highalch: 100,
 		customItemData: {
@@ -2684,7 +2684,7 @@ setCustomItem(
 setCustomItem(
 	50_100,
 	'Dragonbone mage hat',
-	'Mystic hat',
+	'Infinity hat',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -2695,7 +2695,7 @@ setCustomItem(
 setCustomItem(
 	50_101,
 	'Dragonbone mage gloves',
-	'Mystic gloves',
+	'Infinity gloves',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -2706,7 +2706,7 @@ setCustomItem(
 setCustomItem(
 	50_102,
 	'Dragonbone mage bottoms',
-	'Mystic robe bottom',
+	'Infinity bottoms',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -2717,7 +2717,7 @@ setCustomItem(
 setCustomItem(
 	50_103,
 	'Dragonbone mage boots',
-	'Mystic boots',
+	'Infinity boots',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -2783,7 +2783,7 @@ setCustomItem(
 setCustomItem(
 	50_109,
 	'Dragonbone mage top',
-	'Mystic robe top',
+	'Infinity top',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -2805,7 +2805,7 @@ setCustomItem(
 setCustomItem(
 	50_111,
 	'Royal dragon bones',
-	'Dragon kiteshield',
+	'Dragon bones',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true

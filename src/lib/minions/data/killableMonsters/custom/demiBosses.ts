@@ -135,7 +135,7 @@ const QueenBlackDragon: CustomMonster = {
 	id: 192_195,
 	name: 'Queen Black Dragon',
 	aliases: ['qbd', 'qdb'],
-	timeToFinish: Time.Minute * 31,
+	timeToFinish: Time.Minute * 45,
 	table: new LootTable()
 		.every('Royal dragon bones')
 		.every('Royal dragonhide', [5, 7])
@@ -143,7 +143,7 @@ const QueenBlackDragon: CustomMonster = {
 		.tertiary(500, 'Draconic visage')
 		.tertiary(250, 'Royal dragon kiteshield')
 		.tertiary(64, 'Dragonbone upgrade kit')
-		.tertiary(19, 'Clue scroll (grandmaster)')
+		.tertiary(22, 'Clue scroll (grandmaster)')
 		.oneIn(
 			18,
 			new LootTable()

@@ -30,7 +30,7 @@ const FrostDragon: CustomMonster = {
 	table: new LootTable()
 		.every('Frost dragon bones')
 		.tertiary(10_000, 'Draconic visage')
-		.tertiary(190, 'Clue scroll (grandmaster)')
+		.tertiary(290, 'Clue scroll (grandmaster)')
 		.tertiary(33, RareDropTable)
 		.add('Rune arrow', [12, 36])
 		.add('Water talisman')
@@ -139,6 +139,7 @@ const InfestedAxe: CustomMonster = {
 	hp: 85,
 	table: new LootTable()
 		.add(GrimyHerbTable)
+		.oneIn(264, 'Morchella mushroom spore')
 		.add('Chaos rune', [6, 16])
 		.add('Neem drupe', [1, 2])
 		.add('Potato cactus')
@@ -199,6 +200,7 @@ const Grifolaroo: CustomMonster = {
 		.every('Bones')
 		.tertiary(150, 'Clue scroll (master)')
 		.tertiary(230, new LootTable().add('Grifolic gloves').add('Grifolic orb'))
+		.oneIn(64, 'Morchella mushroom spore')
 		.add([
 			['Chaos rune', [5, 60]],
 			['Death rune', [5, 60]]
@@ -260,12 +262,13 @@ const GanodermicRunt: CustomMonster = {
 	table: new LootTable()
 		.every('Neem drupe', [1, 3])
 		.every('Bones')
-		.tertiary(230, 'Clue scroll (grandmaster)')
+		.tertiary(360, 'Clue scroll (grandmaster)')
 		.tertiary(230, new LootTable().add('Ganodermic gloves').add('Ganodermic boots'))
 		.add([
 			['Blood rune', [5, 60]],
 			['Death rune', [5, 60]]
 		])
+		.oneIn(64, 'Morchella mushroom spore')
 		.add(HighSeedPackTable)
 		.add('Gorajian mushroom', 5)
 		.add('Polypore spore', [1, 625])

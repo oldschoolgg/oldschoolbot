@@ -707,6 +707,9 @@ const bsoItems: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Royal crossbow')]: 1
+		},
+		requiredSkills: {
+			farming: 99
 		}
 	},
 	{
