@@ -3,6 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschooljs/dist/util';
 
 import TokkulShopItem from '../../lib/data/buyables/tokkulBuyables';
+import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
@@ -69,12 +70,17 @@ export default class extends BotCommand {
 
 		let outItems = new Bank();
 		let inItems = new Bank();
+
+		const [hasKaramjaDiary] = await userhasDiaryTier(msg.author, KaramjaDiary.easy);
+		let tokkulCost = hasKaramjaDiary ? shopInventory.diaryTokkulCost : shopInventory.tokkulCost;
+		let tokkulReturn = hasKaramjaDiary ? shopInventory.diaryTokkulReturn : shopInventory.tokkulReturn;
+
 		if (type === 'buy') {
-			inItems.add({ Tokkul: quantity * shopInventory.tokkulCost! });
+			inItems.add({ Tokkul: quantity * tokkulCost! });
 			outItems.add({ [shopInventory.inputItem]: quantity });
 		} else {
 			inItems.add({ [shopInventory.inputItem]: quantity });
-			outItems.add({ Tokkul: quantity * shopInventory.tokkulReturn });
+			outItems.add({ Tokkul: quantity * tokkulReturn! });
 		}
 
 		// Buy: inItems = tokkul, outItems = item
