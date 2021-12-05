@@ -2,6 +2,7 @@ import { KlasaMessage } from 'klasa';
 
 import { cancelTask, getActivityOfUser } from '../../settings/settings';
 import { RaidsOptions } from '../../types/minions';
+import chatHeadImage from '../../util/chatHeadImage';
 
 export async function cancelTaskCommand(msg: KlasaMessage) {
 	const currentTask = getActivityOfUser(msg.author.id);
