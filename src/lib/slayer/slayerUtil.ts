@@ -68,17 +68,17 @@ export async function calculateSlayerPoints(currentStreak: number, master: Slaye
 
 	if (currentStreak < 5) {
 		return 0;
-	}		
-	
-	let basePoints = master.basePoints;
+	}
+
+	let { basePoints } = master;
 
 	// Boost points to 20 for Konar + Kourend Elites
-	if ( master.name === "Konar quo Maten" ) {
+	if (master.name === 'Konar quo Maten') {
 		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
-		if ( hasKourendElite ) {
+		if (hasKourendElite) {
 			basePoints = 20;
-		};
-	};
+		}
+	}
 	for (let i = 0; i < streaks.length; i++) {
 		if (currentStreak >= streaks[i] && currentStreak % streaks[i] === 0) {
 			return basePoints * multiplier[i];
