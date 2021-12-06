@@ -94,11 +94,11 @@ export const customCraftables: Craftable[] = [
 		tickRate: 3.5
 	},
 	{
-		name: 'Royal dragonhide coif',
-		id: itemID('Royal dragonhide coif'),
+		name: 'Royal dragonhide vambraces',
+		id: itemID('Royal dragonhide vambraces'),
 		level: 87,
-		xp: 94,
-		inputItems: new Bank({ 'Royal dragon leather': 1 }),
+		xp: 188,
+		inputItems: new Bank({ 'Royal dragon leather': 2 }),
 		tickRate: 3.5
 	}
 ];

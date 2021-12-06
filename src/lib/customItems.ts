@@ -2605,7 +2605,7 @@ setCustomItem(
 setCustomItem(
 	50_093,
 	'Royal dragonhide vambraces',
-	'Pegasian boots',
+	"Black d'hide vambraces",
 	{
 		highalch: 100,
 		customItemData: {
@@ -2662,10 +2662,30 @@ setCustomItem(
 setCustomItem(
 	50_098,
 	'Royal crossbow',
-	'Twisted bow',
+	'Chaotic crossbow',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
+		},
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 123,
+			defence_stab: 2,
+			defence_slash: 2,
+			defence_crush: 2,
+			defence_magic: 12,
+			defence_ranged: 12,
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: {
+				ranged: 105
+			}
 		}
 	},
 	1000
@@ -2800,7 +2820,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1000
+	12_000_000
 );
 setCustomItem(
 	50_111,
