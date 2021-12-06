@@ -14,10 +14,11 @@ import {
 } from '../../lib/data/cox';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
-import { addBanks, formatDuration } from '../../lib/util';
+import { addBanks, calcDropRatesFromBank, formatDuration, toKMB } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const uniques = [
@@ -49,10 +50,36 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [type]: [string | undefined]) {
+		if (msg.flagArgs.sim) {
+			const options: TheatreOfBloodOptions = {
+				hardMode: false,
+				team: [
+					{ id: '1', deaths: [] },
+					{ id: '2', deaths: [] },
+					{ id: '3', deaths: [] },
+					{ id: '4', deaths: [] }
+				]
+			};
+			let its = 100_000;
+			const totalLoot = new Bank();
+			const userLoot = new Bank();
+			for (let i = 0; i < its; i++) {
+				const loot = TheatreOfBlood.complete(options);
+				for (const [id, b] of Object.entries(loot)) {
+					totalLoot.add(b);
+					if (id === '1') {
+						userLoot.add(b);
+					}
+				}
+			}
+			return msg.channel.send(`Loot From ${its.toLocaleString()} TOB, Team of 4
+**Team Loot:** ${toKMB(Math.round(totalLoot.value() / its))} avg \`\`\`${calcDropRatesFromBank(totalLoot, its)}\`\`\`
+**User Loot:** ${toKMB(Math.round(userLoot.value() / its))} avg \`\`\`${calcDropRatesFromBank(userLoot, its)}\`\`\``);
+		}
 		if (!type) {
 			const [normal, cm] = await Promise.all([
-				msg.author.getMinigameScore('raids'),
-				msg.author.getMinigameScore('raids_challenge_mode')
+				msg.author.getMinigameScore('tob'),
+				msg.author.getMinigameScore('tob_hard')
 			]);
 			let totalUniques = 0;
 			const cl = msg.author.cl();

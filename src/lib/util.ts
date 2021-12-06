@@ -556,3 +556,11 @@ export function getUsername(client: KlasaClient, id: string): string {
 export function assert(condition: boolean, desc: string) {
 	if (!condition) throw new Error(desc);
 }
+
+export function calcDropRatesFromBank(bank: Bank, iterations: number) {
+	let result = [];
+	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
+		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
+	}
+	return result.join(', ');
+}

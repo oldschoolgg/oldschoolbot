@@ -14,26 +14,26 @@ export interface TeamMember {
 	deaths: number[];
 }
 
-const Rooms = [
-	{
-		name: 'Maiden'
-	},
-	{
-		name: 'Bloat'
-	},
-	{
-		name: 'Nylocas'
-	},
-	{
-		name: 'Soteseteg'
-	},
-	{
-		name: 'Xarps'
-	},
-	{
-		name: 'Vitir Verizk'
-	}
-];
+// const Rooms = [
+// 	{
+// 		name: 'Maiden'
+// 	},
+// 	{
+// 		name: 'Bloat'
+// 	},
+// 	{
+// 		name: 'Nylocas'
+// 	},
+// 	{
+// 		name: 'Soteseteg'
+// 	},
+// 	{
+// 		name: 'Xarps'
+// 	},
+// 	{
+// 		name: 'Vitir Verizk'
+// 	}
+// ];
 
 export interface TheatreOfBloodOptions {
 	/**
