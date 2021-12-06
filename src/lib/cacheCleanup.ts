@@ -20,6 +20,25 @@ export async function cacheCleanup(client: KlasaClient) {
 	let voiceStates = 0;
 	let emojis = 0;
 	let users = 0;
+	let channels = 0;
+
+	for (const ch of client.channels.cache.array()) {
+		if (['voice', 'category', 'news', 'dm', 'stage'].includes(ch.type)) {
+			client.channels.cache.delete(ch.id);
+			channels++;
+			continue;
+		}
+
+		const c = ch as any;
+
+		delete c.topic;
+		delete c.lastPinTimestamp;
+		delete c.deleted;
+		delete c.name;
+		delete c._typing;
+		delete c.rateLimitPerUser;
+		delete c.nsfw;
+	}
 
 	// Per-Guild sweeper
 	for (const guild of client.guilds.cache.values()) {
@@ -48,15 +67,15 @@ export async function cacheCleanup(client: KlasaClient) {
 	}
 
 	// Per-User sweeper
-	for (const user of client.users.cache.values()) {
-		if (shouldCacheUsers.has(user.id)) continue;
-		client.users.cache.delete(user.id);
-		users++;
-	}
+	// for (const user of client.users.cache.values()) {
+	// 	if (shouldCacheUsers.has(user.id)) continue;
+	// 	client.users.cache.delete(user.id);
+	// 	users++;
+	// }
 
 	// Emit a log
 	client.emit(
 		'log',
-		`CacheCleanup ${presences} [Presence]s | ${guildMembers} [GuildMember]s | ${voiceStates} [VoiceState]s | ${users} [User]s | ${emojis} [Emoji]s`
+		`CacheCleanup ${presences} [Presence]s | ${guildMembers} [GuildMember]s | ${voiceStates} [VoiceState]s | ${users} [User]s | ${emojis} [Emoji]s | ${channels} Channels`
 	);
 }
