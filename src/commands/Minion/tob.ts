@@ -20,6 +20,7 @@ import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
 import { addBanks, calcDropRatesFromBank, formatDuration, toKMB } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -60,7 +61,7 @@ export default class extends BotCommand {
 					{ id: '4', deaths: [] }
 				]
 			};
-			let its = 100_000;
+			let its = 500_000;
 			const totalLoot = new Bank();
 			const userLoot = new Bank();
 			for (let i = 0; i < its; i++) {
@@ -72,9 +73,28 @@ export default class extends BotCommand {
 					}
 				}
 			}
+			const uniques = resolveItems([
+				'Scythe of vitur',
+				'Ghrazi rapier',
+				'Sanguinesti staff',
+				'Justiciar faceguard',
+				'Justiciar chestguard',
+				'Justiciar legguards',
+				'Avernic defender hilt'
+			]);
+
 			return msg.channel.send(`Loot From ${its.toLocaleString()} TOB, Team of 4
-**Team Loot:** ${toKMB(Math.round(totalLoot.value() / its))} avg \`\`\`${calcDropRatesFromBank(totalLoot, its)}\`\`\`
-**User Loot:** ${toKMB(Math.round(userLoot.value() / its))} avg \`\`\`${calcDropRatesFromBank(userLoot, its)}\`\`\``);
+
+**Team Loot:** ${toKMB(Math.round(totalLoot.value() / its))} avg \`\`\`${calcDropRatesFromBank(
+				totalLoot,
+				its,
+				uniques
+			)}\`\`\`
+**User Loot:** ${toKMB(Math.round(userLoot.value() / its))} avg \`\`\`${calcDropRatesFromBank(
+				userLoot,
+				its,
+				uniques
+			)}\`\`\``);
 		}
 		if (!type) {
 			const [normal, cm] = await Promise.all([

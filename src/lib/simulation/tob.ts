@@ -1,10 +1,10 @@
-import { percentChance, reduceNumByPercent, roll, sumArr } from 'e';
+import { reduceNumByPercent, roll, sumArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { ItemBank } from '../types';
-import { assert, convertLootBanksToItemBanks, JSONClone } from '../util';
+import { assert, convertLootBanksToItemBanks, JSONClone, percentChance } from '../util';
 
 export interface TeamMember {
 	id: string;
@@ -53,12 +53,12 @@ interface ParsedMember extends TeamMember {
 
 const UniqueTable = new LootTable()
 	.add('Scythe of vitur')
-	.add('Ghrazi rapier', 2)
-	.add('Sanguinesti staff', 2)
-	.add('Justiciar faceguard', 2)
-	.add('Justiciar chestguard', 2)
-	.add('Justiciar legguards', 2)
-	.add('Avernic defender hilt', 8);
+	.add('Ghrazi rapier', 1, 2)
+	.add('Sanguinesti staff', 1, 2)
+	.add('Justiciar faceguard', 1, 2)
+	.add('Justiciar chestguard', 1, 2)
+	.add('Justiciar legguards', 1, 2)
+	.add('Avernic defender hilt', 1, 8);
 
 const NonUniqueTable = new LootTable()
 	.tertiary(25, 'Clue scroll (elite)')
@@ -152,6 +152,7 @@ export class TheatreOfBloodClass {
 		for (let i = 0; i < totalDeaths; i++) {
 			percentBaseChanceOfUnique = reduceNumByPercent(percentBaseChanceOfUnique, 13.35);
 		}
+		assert(percentBaseChanceOfUnique === 11, 'should be 11');
 
 		const purpleReceived = percentChance(percentBaseChanceOfUnique);
 		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;

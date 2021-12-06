@@ -557,10 +557,15 @@ export function assert(condition: boolean, desc: string) {
 	if (!condition) throw new Error(desc);
 }
 
-export function calcDropRatesFromBank(bank: Bank, iterations: number) {
+export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
 	let result = [];
+	let uniquesReceived = 0;
 	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
+		if (uniques.includes(item.id)) {
+			uniquesReceived += qty;
+		}
 		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
 	}
+	result.push(`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived})`);
 	return result.join(', ');
 }
