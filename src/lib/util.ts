@@ -116,7 +116,7 @@ export function inlineCodeblock(input: string) {
 }
 
 export function isWeekend() {
-	const currentDate = new Date(Date.now() - Time.Hour * 15);
+	const currentDate = new Date(Date.now() - Time.Hour * 6);
 	return [6, 0].includes(currentDate.getDay());
 }
 

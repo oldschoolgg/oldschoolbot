@@ -191,21 +191,32 @@ export default class extends BotCommand {
 
 		let gearSetup = msg.author.rawGear()[setup];
 
-		const preset = await prisma.gearPreset.create({
-			data: {
-				head: gearSetup.head?.item ?? null,
-				neck: gearSetup.neck?.item ?? null,
-				body: gearSetup.body?.item ?? null,
-				legs: gearSetup.legs?.item ?? null,
-				cape: gearSetup.cape?.item ?? null,
-				two_handed: gearSetup['2h']?.item ?? null,
-				hands: gearSetup.hands?.item ?? null,
-				feet: gearSetup.feet?.item ?? null,
-				shield: gearSetup.shield?.item ?? null,
-				weapon: gearSetup.weapon?.item ?? null,
-				ring: gearSetup.ring?.item ?? null,
-				ammo: gearSetup.ammo?.item ?? null,
-				ammo_qty: gearSetup.ammo?.quantity ?? null,
+		const gearData = {
+			head: gearSetup.head?.item ?? null,
+			neck: gearSetup.neck?.item ?? null,
+			body: gearSetup.body?.item ?? null,
+			legs: gearSetup.legs?.item ?? null,
+			cape: gearSetup.cape?.item ?? null,
+			two_handed: gearSetup['2h']?.item ?? null,
+			hands: gearSetup.hands?.item ?? null,
+			feet: gearSetup.feet?.item ?? null,
+			shield: gearSetup.shield?.item ?? null,
+			weapon: gearSetup.weapon?.item ?? null,
+			ring: gearSetup.ring?.item ?? null,
+			ammo: gearSetup.ammo?.item ?? null,
+			ammo_qty: gearSetup.ammo?.quantity ?? null
+		};
+
+		const preset = await prisma.gearPreset.upsert({
+			where: {
+				user_id_name: {
+					user_id: msg.author.id,
+					name
+				}
+			},
+			update: gearData,
+			create: {
+				...gearData,
 				name,
 				user_id: msg.author.id
 			}

@@ -1,3 +1,5 @@
+import { captureException } from '@sentry/minimal';
+
 import { activitySync, prisma } from '../settings/prisma';
 import { getActivityOfUser } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
@@ -11,6 +13,18 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 		throw `That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`;
 	}
 	let duration = Math.floor(taskToAdd.duration);
+	if (duration < 0) {
+		const error = new Error('Task has a negative duration');
+		captureException(error, {
+			user: {
+				id: taskToAdd.userID
+			},
+			tags: {
+				task: taskToAdd.type
+			}
+		});
+		throw error;
+	}
 
 	const finishDate = new Date(Date.now() + duration);
 

@@ -1324,7 +1324,7 @@ ${lootMSG.join('\n')}`);
 						if (!loot.includes('BL') && randomRoll === 2) {
 							loot.push('BL');
 							lootMSG.push(
-								`**Balista Limbs** ${kc.toLocaleString()} KC <:Ballista_limbs:405245077280129025>`
+								`**Ballista Limbs** ${kc.toLocaleString()} KC <:Ballista_limbs:405245077280129025>`
 							);
 						}
 					}

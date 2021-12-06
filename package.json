@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@octokit/graphql": "^4.8.0",
-		"@prisma/client": "^3.5.0",
+		"@prisma/client": "^3.6.0",
 		"@sapphire/discord-utilities": "^2.3.0",
 		"@sapphire/discord.js-utilities": "^3.0.0-next.600390f4.0",
 		"@sapphire/time-utilities": "^1.5.0",
@@ -44,7 +44,7 @@
 		"rss-parser": "^3.12.0",
 		"snoostorm": "^1.5.2",
 		"snoowrap": "github:gc/snoowrap#master",
-		"table": "^6.7.3",
+		"table": "^6.7.5",
 		"ts-toolbelt": "^9.6.0",
 		"twit": "^2.2.9",
 		"utf-8-validate": "^5.0.7",
@@ -62,11 +62,11 @@
 		"@types/twit": "^2.2.30",
 		"concurrently": "^6.4.0",
 		"eslint": "^7.32.0",
-		"jest": "^27.3.1",
-		"jest-circus": "^27.3.1",
-		"prisma": "^3.5.0",
+		"jest": "^27.4.3",
+		"jest-circus": "^27.4.2",
+		"prisma": "^3.6.0",
 		"rimraf": "^3.0.2",
-		"ts-jest": "^27.0.7",
+		"ts-jest": "^27.1.0",
 		"typescript": "^4.3.5"
 	},
 	"engines": {

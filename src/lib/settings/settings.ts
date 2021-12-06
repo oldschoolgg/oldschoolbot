@@ -116,6 +116,9 @@ export async function runCommand(
 	if (!command) {
 		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
 	}
+	if (!command.enabled) {
+		throw new Error(`The ${command.name} command is disabled.`);
+	}
 
 	let commandUsage: {
 		date: Date;
