@@ -2,7 +2,7 @@ import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
-import { objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
+import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -566,6 +566,11 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 		}
 		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
 	}
-	result.push(`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived})`);
+	result.push(
+		`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived} which is ${calcWhatPercent(
+			uniquesReceived,
+			iterations
+		)}%)`
+	);
 	return result.join(', ');
 }
