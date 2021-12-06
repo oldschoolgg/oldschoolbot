@@ -142,8 +142,9 @@ export default class BankImageTask extends Task {
 		this.skillMiniIconsSheet.mage = this.getClippedRegion(this.skillMiniIcons, 24, 0, 12, 12);
 		this.skillMiniIconsSheet.misc = this.getClippedRegion(this.skillMiniIcons, 36, 0, 12, 12);
 		this.skillMiniIconsSheet.skilling = this.getClippedRegion(this.skillMiniIcons, 48, 0, 12, 12);
-		this.skillMiniIconsSheet.more = this.getClippedRegion(this.skillMiniIcons, 60, 0, 12, 12);
+		this.skillMiniIconsSheet.other = this.getClippedRegion(this.skillMiniIcons, 60, 0, 12, 12);
 		this.skillMiniIconsSheet.wildy = this.getClippedRegion(this.skillMiniIcons, 72, 0, 12, 12);
+		this.skillMiniIconsSheet.fashion = this.getClippedRegion(this.skillMiniIcons, 84, 0, 12, 12);
 	}
 
 	// Split sprite into smaller images by coors and size

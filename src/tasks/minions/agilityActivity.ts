@@ -88,7 +88,7 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
 		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
-			diaryBonus ? '(2x bonus Marks for Ardougne Elite diary)' : ''
+			diaryBonus ? '(25% bonus Marks for Ardougne Elite diary)' : ''
 		}.\n${xpRes}`;
 
 		if (user.usingPet('Harry')) {

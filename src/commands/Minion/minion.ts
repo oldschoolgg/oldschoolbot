@@ -19,12 +19,15 @@ import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { becomeIronman } from '../../lib/minions/functions/becomeIronman';
+import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
+import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
+import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
@@ -61,7 +64,10 @@ const subCommands = [
 	'activities',
 	'af',
 	'ep',
-	'uep'
+	'uep',
+	'lapcounts',
+	'cancel',
+	'train'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -146,6 +152,29 @@ export default class MinionCommand extends BotCommand {
 
 	async ironman(msg: KlasaMessage) {
 		return becomeIronman(msg);
+	}
+
+	async cancel(msg: KlasaMessage) {
+		return cancelTaskCommand(msg);
+	}
+
+	async train(msg: KlasaMessage, [input]: [string | undefined]) {
+		return trainCommand(msg, input);
+	}
+
+	async lapcounts(msg: KlasaMessage) {
+		const entries = Object.entries(msg.author.settings.get(UserSettings.LapsScores)).map(arr => [
+			parseInt(arr[0]),
+			arr[1]
+		]);
+		const sepulchreCount = await msg.author.getMinigameScore('sepulchre');
+		if (sepulchreCount === 0 && entries.length === 0) {
+			return msg.channel.send("You haven't done any laps yet! Sad.");
+		}
+		const data = `${entries
+			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
+			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
+		return msg.channel.send(data);
 	}
 
 	async info(msg: KlasaMessage) {
