@@ -218,7 +218,7 @@ model SlayerTask {
   quantity           Int      @db.SmallInt
   quantity_remaining Int      @db.SmallInt
   slayer_master_id   Int      @db.SmallInt
-  monster_id         Int      @db.SmallInt
+  monster_id         Int
   skipped            Boolean
   user_id            String   @db.VarChar(19)
   new_user           NewUser  @relation(fields: [user_id], references: [id])
