@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { getBoatType } from '../../../commands/Minion/pestcontrol';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -16,7 +17,7 @@ export default class extends Task {
 
 		let points = pointsPerGame * quantity;
 
-		await user.incrementMinigameScore('PestControl', quantity);
+		await incrementMinigameScore(userID, 'pest_control', quantity);
 		await user.settings.update(
 			UserSettings.PestControlPoints,
 			user.settings.get(UserSettings.PestControlPoints) + points
@@ -34,11 +35,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued trip of pestcontrol');
-				// @ts-ignore 2339
-				return this.client.commands.get('pestcontrol')!.start(res, [quantity]);
-			},
+			['pestcontrol', [quantity], true, 'start'],
 			undefined,
 			data,
 			null

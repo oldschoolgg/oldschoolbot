@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 
 import { determineXPFromTickets } from '../../../commands/Minion/agilityarena';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemID, randomVariation, roll } from '../../../lib/util';
@@ -32,7 +33,7 @@ export default class extends Task {
 		}
 		ticketsReceived += bonusTickets;
 
-		user.incrementMinigameScore('AgilityArena', ticketsReceived);
+		await incrementMinigameScore(user.id, 'agility_arena', ticketsReceived);
 
 		await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
@@ -59,18 +60,6 @@ export default class extends Task {
 		).toLocaleString()} XP/Hr (after redeeming tickets at 1000 qty)`;
 		await user.addItemsToBank({ [itemID('Agility arena ticket')]: ticketsReceived }, true);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued trip of agility arena');
-				return this.client.commands.get('agilityarena')!.run(res, []);
-			},
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(this.client, user, channelID, str, ['agilityarena', [], true], undefined, data, null);
 	}
 }

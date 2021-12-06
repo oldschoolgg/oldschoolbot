@@ -19,20 +19,18 @@ import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
+import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
+import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { getNewUser } from '../../lib/settings/settings';
+import { prisma } from '../../lib/settings/prisma';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
+import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
-import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
-import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
-import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
-import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
-import { convertLVLtoXP, isValidNickname, runCommand, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -69,7 +67,10 @@ const subCommands = [
 	'activities',
 	'af',
 	'ep',
-	'uep'
+	'uep',
+	'lapcounts',
+	'cancel',
+	'train'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -143,13 +144,36 @@ export default class MinionCommand extends BotCommand {
 					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
 						return lastTrip.continue(msg);
 					}
-					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
+					await runCommand(msg, 'mclue', [selection.customID]);
 				} catch {
 					await sentMessage.edit({ components: [] });
 				}
 			};
 			handleButtons();
 		}
+	}
+
+	async cancel(msg: KlasaMessage) {
+		return cancelTaskCommand(msg);
+	}
+
+	async train(msg: KlasaMessage, [input]: [string | undefined]) {
+		return trainCommand(msg, input);
+	}
+
+	async lapcounts(msg: KlasaMessage) {
+		const entries = Object.entries(msg.author.settings.get(UserSettings.LapsScores)).map(arr => [
+			parseInt(arr[0]),
+			arr[1]
+		]);
+		const sepulchreCount = await msg.author.getMinigameScore('sepulchre');
+		if (sepulchreCount === 0 && entries.length === 0) {
+			return msg.channel.send("You haven't done any laps yet! Sad.");
+		}
+		const data = `${entries
+			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
+			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
+		return msg.channel.send(data);
 	}
 
 	async info(msg: KlasaMessage) {
@@ -294,9 +318,11 @@ Please say \`permanent\` to confirm.`
 			}
 		}
 
-		const existingGiveaways = await GiveawayTable.find({
-			userID: msg.author.id,
-			completed: false
+		const existingGiveaways = await prisma.giveaway.findMany({
+			where: {
+				user_id: msg.author.id,
+				completed: false
+			}
 		});
 
 		if (existingGiveaways.length !== 0) {
@@ -335,11 +361,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			await msg.author.settings.reset([...keysToReset]);
 
 			try {
-				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
-				await PoHTable.delete({ userID: msg.author.id });
-				await MinigameTable.delete({ userID: msg.author.id });
-				await XPGainsTable.delete({ userID: msg.author.id });
-				await NewUserTable.delete({ id: msg.author.id });
+				await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
+				await prisma.minigame.delete({ where: { user_id: msg.author.id } });
+				await prisma.xPGain.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.newUser.delete({ where: { id: msg.author.id } });
+				await prisma.activity.deleteMany({ where: { user_id: msg.author.id } });
 			} catch (_) {}
 
 			await msg.author.settings.update([
@@ -452,10 +479,10 @@ Please click the buttons below for important links.`
 		runCommand(msg, 'mclue', [quantity, tierName]);
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		await this.kill(msg, [quantity, name]).catch(err => {
-			throw err;
-		});
+		runCommand(msg, 'k', [quantity, name]);
 	}
 
 	@requiresMinion

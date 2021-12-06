@@ -16,6 +16,7 @@ export const slayerBuyables: Buyable[] = [
 	{
 		name: 'Broad arrowhead pack',
 		gpCost: 22_500,
+		ironmanPrice: 5500,
 		outputItems: {
 			[itemID('Broad arrowheads')]: 100
 		}

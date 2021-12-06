@@ -1,7 +1,6 @@
 import { increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -99,14 +98,14 @@ export default class extends BotCommand {
 			timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.DarkAltar);
+		const maxTripLength = msg.author.maxTripLength('DarkAltar');
 		const quantity = Math.floor(maxTripLength / timePerRune);
 		await addSubTaskToActivityTask<DarkAltarOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration: maxTripLength,
-			type: Activity.DarkAltar,
+			type: 'DarkAltar',
 			hasElite: hasEliteDiary,
 			rune
 		});

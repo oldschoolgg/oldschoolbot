@@ -1,15 +1,14 @@
-import { captureException } from '@sentry/node';
+import { command_usage_status, NewUser, Prisma } from '@prisma/client';
 import { Guild, Util } from 'discord.js';
-import { Gateway, KlasaClient, Settings } from 'klasa';
-import { getConnection } from 'typeorm';
+import { Gateway, KlasaMessage, Settings } from 'klasa';
 
 import { client } from '../..';
-import { MinigameKey, Minigames } from '../../extendables/User/Minigame';
-import { Emoji } from '../constants';
-import { ActivityTable } from '../typeorm/ActivityTable.entity';
-import { MinigameTable } from '../typeorm/MinigameTable.entity';
-import { NewUserTable } from '../typeorm/NewUserTable.entity';
+import { Emoji, shouldTrackCommand } from '../constants';
 import { ActivityTaskData } from '../types/minions';
+import { isGroupActivity } from '../util';
+import { activitySync, prisma } from './prisma';
+
+export * from './minigames';
 
 const guildSettingsCache = new Map<string, Settings>();
 
@@ -35,74 +34,21 @@ export async function getUserSettings(userID: string): Promise<Settings> {
 		.sync(true);
 }
 
-export async function getNewUser(id: string): Promise<NewUserTable> {
-	let value = await NewUserTable.findOne({ id });
+export async function getNewUser(id: string): Promise<NewUser> {
+	const value = await prisma.newUser.findUnique({ where: { id } });
 	if (!value) {
-		value = new NewUserTable();
-		value.id = id;
-		await value.save();
+		return prisma.newUser.create({
+			data: {
+				id,
+				minigame: {}
+			}
+		});
 	}
 	return value;
 }
 
 export async function syncNewUserUsername(id: string, username: string) {
-	let value = await NewUserTable.findOne({ id });
-	if (!value) {
-		value = new NewUserTable();
-		value.id = id;
-		value.username = username;
-		value.save();
-		return;
-	}
-	value.username = username;
-	value.save();
-}
-
-export async function batchSyncNewUserUsernames(client: KlasaClient) {
-	await getConnection()
-		.createQueryBuilder()
-		.insert()
-		.into(NewUserTable)
-		.values(client.users.cache.filter(u => u.hasMinion).map(u => ({ id: u.id, username: u.username })))
-		.orUpdate({
-			conflict_target: ['id'],
-			overwrite: ['username']
-		})
-		.execute();
-}
-
-export async function getMinigameEntity(userID: string): Promise<MinigameTable> {
-	let value = await MinigameTable.findOne({ userID });
-	if (!value) {
-		value = new MinigameTable();
-		value.userID = userID;
-		try {
-			await value.save();
-		} catch (err) {
-			captureException(err, {
-				user: {
-					id: userID
-				}
-			});
-		}
-	}
-	return value;
-}
-
-export async function incrementMinigameScore(userID: string, minigame: MinigameKey, amountToAdd = 1) {
-	const entity = await getMinigameEntity(userID);
-	const game = Minigames.find(m => m.key === minigame)!;
-
-	let previousScore = entity[game.key];
-
-	entity[game.key] += amountToAdd;
-	await entity.save();
-
-	return {
-		entity,
-		newScore: entity[game.key],
-		previousScore
-	};
+	return prisma.newUser.update({ where: { id }, data: { username } });
 }
 
 export async function getMinionName(userID: string): Promise<string> {
@@ -129,24 +75,84 @@ export function getActivityOfUser(userID: string) {
 	return task ?? null;
 }
 
+export function minionActivityCacheDelete(userID: string) {
+	const entry = minionActivityCache.get(userID);
+	if (!entry) return;
+
+	const users: string[] = isGroupActivity(entry) ? entry.users : [entry.userID];
+	for (const u of users) {
+		minionActivityCache.delete(u);
+	}
+}
+
 export async function cancelTask(userID: string) {
-	await ActivityTable.delete({
-		userID,
-		completed: false
-	});
+	await prisma.activity.deleteMany({ where: { user_id: userID, completed: false } });
 	minionActivityCache.delete(userID);
 }
 
 export async function syncActivityCache() {
-	const tasks = await ActivityTable.find({
-		where: {
-			completed: false
-		}
-	});
+	const tasks = await prisma.activity.findMany({ where: { completed: false } });
+
 	minionActivityCache.clear();
 	for (const task of tasks) {
-		for (const u of task.getUsers()) {
-			minionActivityCache.set(u, task.taskData);
+		activitySync(task);
+	}
+}
+
+export function settingsUpdate(type: Prisma.ModelName, id: string, newData: any) {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	return prisma[type].update({ where: { id }, data: newData });
+}
+
+export async function runCommand(
+	message: KlasaMessage,
+	commandName: string,
+	args: unknown[],
+	isContinue = false,
+	method = 'run'
+) {
+	const command = message.client.commands.get(commandName);
+	if (!command) {
+		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
+	}
+	if (!command.enabled) {
+		throw new Error(`The ${command.name} command is disabled.`);
+	}
+
+	let commandUsage: {
+		date: Date;
+		user_id: string;
+		command_name: string;
+		status: command_usage_status;
+		args: null | any;
+		channel_id: string;
+		is_continue: boolean;
+	} | null = {
+		date: message.createdAt,
+		user_id: message.author.id,
+		command_name: command.name,
+		status: command_usage_status.Unknown,
+		args,
+		channel_id: message.channel.id,
+		is_continue: isContinue
+	};
+
+	try {
+		// @ts-ignore Cant be typechecked
+		const result = await command[method](message, args);
+		commandUsage.status = command_usage_status.Success;
+		return result;
+	} catch (err) {
+		commandUsage.status = command_usage_status.Error;
+		message.client.emit('commandError', message, command, args, err);
+	} finally {
+		if (shouldTrackCommand(command, args)) {
+			await prisma.commandUsage.create({
+				data: commandUsage
+			});
 		}
 	}
+
+	return null;
 }

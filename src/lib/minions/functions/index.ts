@@ -12,12 +12,14 @@ import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 
-export type AttackStyles =
-	| SkillsEnum.Attack
-	| SkillsEnum.Strength
-	| SkillsEnum.Defence
-	| SkillsEnum.Magic
-	| SkillsEnum.Ranged;
+export const attackStylesArr = [
+	SkillsEnum.Attack,
+	SkillsEnum.Strength,
+	SkillsEnum.Defence,
+	SkillsEnum.Magic,
+	SkillsEnum.Ranged
+] as const;
+export type AttackStyles = typeof attackStylesArr[number];
 
 const miscHpMap: Record<number, number> = {
 	9415: NIGHTMARES_HP,
@@ -35,11 +37,9 @@ export function resolveAttackStyles(
 	let attackStyles = user.getAttackStyles();
 
 	// The default attack styles to use for this monster, defaults to shared (melee)
-	const monsterStyles = killableMon?.defaultAttackStyles ?? [
-		SkillsEnum.Attack,
-		SkillsEnum.Strength,
-		SkillsEnum.Defence
-	];
+	const monsterStyles =
+		killableMon?.defaultAttackStyles ??
+		attackStylesArr.filter(i => !killableMon?.disallowedAttackStyles?.includes(i)).slice(0, 1);
 
 	// If their attack style can't be used on this monster, or they have no selected attack styles selected,
 	// use the monsters default attack style.

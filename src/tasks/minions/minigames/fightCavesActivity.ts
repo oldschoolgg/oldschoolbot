@@ -5,6 +5,7 @@ import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { fightCavesCost } from '../../../commands/Minion/fightcaves';
 import { Emoji, Events } from '../../../lib/constants';
+import { prisma } from '../../../lib/settings/prisma';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -35,16 +36,23 @@ export default class extends Task {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
-			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 		if (preJadDeathTime) {
 			let slayerMsg = '';
 			if (isOnTask) {
 				slayerMsg = ' **Task cancelled.**';
-				usersTask.currentTask!.quantityRemaining = 0;
-				usersTask.currentTask!.skipped = true;
-				await usersTask.currentTask!.save();
+
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: 0,
+						skipped: true
+					}
+				});
 			}
 			// Give back supplies based on how far in they died, for example if they
 			// died 80% of the way through, give back approximately 20% of their supplies.
@@ -67,10 +75,7 @@ export default class extends Task {
 				`${user} You died ${formatDuration(
 					preJadDeathTime
 				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
-				res => {
-					user.log('continued trip of fightcaves');
-					return this.client.commands.get('fightcaves')!.run(res, []);
-				},
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
@@ -91,9 +96,16 @@ export default class extends Task {
 			if (isOnTask) {
 				const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: 11_760, duration });
 				msg = `**Task cancelled.** \n${msg} ${slayXP}.`;
-				usersTask.currentTask!.quantityRemaining = 0;
-				usersTask.currentTask!.skipped = true;
-				await usersTask.currentTask!.save();
+
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: 0,
+						skipped: true
+					}
+				});
 			}
 
 			return handleTripFinish(
@@ -101,10 +113,7 @@ export default class extends Task {
 				user,
 				channelID,
 				`${user} ${msg}`,
-				res => {
-					user.log('continued trip of fightcaves');
-					return this.client.commands.get('fightcaves')!.run(res, []);
-				},
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
@@ -150,8 +159,15 @@ export default class extends Task {
 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-			usersTask.currentTask!.quantityRemaining = 0;
-			await usersTask.currentTask!.save();
+			await prisma.slayerTask.update({
+				where: {
+					id: usersTask.currentTask!.id
+				},
+				data: {
+					quantity_remaining: 0
+				}
+			});
+
 			const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
 			const xpMessage = `${msg} ${slayXP}`;
 
@@ -164,10 +180,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`${user} ${msg}`,
-			res => {
-				user.log('continued trip of fightcaves');
-				return this.client.commands.get('fightcaves')!.run(res, []);
-			},
+			['fightcaves', [], true],
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)

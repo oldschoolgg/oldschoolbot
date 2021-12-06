@@ -2,9 +2,8 @@ import { calcWhatPercent, percentChance } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MinigameKey } from '../../../extendables/User/Minigame';
 import { Events } from '../../../lib/constants';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import { GauntletOptions } from '../../../lib/types/minions';
@@ -16,7 +15,7 @@ export default class extends Task {
 	async run(data: GauntletOptions) {
 		const { channelID, quantity, userID, corrupted } = data;
 		const user = await this.client.fetchUser(userID);
-		const key: MinigameKey = corrupted ? 'CorruptedGauntlet' : 'Gauntlet';
+		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
 		const kc = await user.getMinigameScore(key);
 
@@ -84,10 +83,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued gauntlet');
-				return this.client.commands.get('gauntlet')!.run(res, [corrupted ? 'corrupted' : 'normal', quantity]);
-			},
+			['gauntlet', [corrupted ? 'corrupted' : 'normal', quantity], true],
 			image!,
 			data,
 			loot.bank

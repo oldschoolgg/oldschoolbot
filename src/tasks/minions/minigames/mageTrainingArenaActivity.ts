@@ -2,7 +2,8 @@ import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { getNewUser, incrementMinigameScore } from '../../../lib/settings/settings';
+import { prisma } from '../../../lib/settings/prisma';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
@@ -14,7 +15,7 @@ export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
-		incrementMinigameScore(userID, 'MagicTrainingArena', quantity);
+		incrementMinigameScore(userID, 'magic_training_arena', quantity);
 
 		const loot = new Bank();
 
@@ -27,26 +28,17 @@ export default class extends Task {
 			duration
 		});
 		const pizazzPoints = Math.floor((pizazzPointsPerHour / (Time.Minute * 60)) * duration);
-		const newUser = await getNewUser(userID);
-		newUser.PizazzPoints += pizazzPoints;
-		await newUser.save();
+		await prisma.newUser.update({
+			where: { id: userID },
+			data: {
+				pizazz_points: {
+					increment: pizazzPoints
+				}
+			}
+		});
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. ${xpRes}`;
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued mta');
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				return this.client.commands.get('mta')!.train(res, []);
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		handleTripFinish(this.client, user, channelID, str, ['mta', [], true, 'train'], undefined, data, loot.bank);
 	}
 }

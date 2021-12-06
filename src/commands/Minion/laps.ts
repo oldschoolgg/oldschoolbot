@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -109,7 +108,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`You need atleast ${course.qpRequired} Quest Points to do this course.`);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Agility);
+		const maxTripLength = msg.author.maxTripLength('Agility');
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
@@ -149,7 +148,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Agility,
+			type: 'Agility',
 			alch:
 				alchResult === null
 					? null

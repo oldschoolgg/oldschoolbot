@@ -4,6 +4,7 @@ import { Task } from 'klasa';
 import { revenantMonsters } from '../../commands/Minion/revs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { runCommand } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -61,7 +62,7 @@ export default class extends Task {
 					// @ts-ignore
 					res.prompter.flags = flags;
 					user.log(`continued trip of killing ${monster.name}`);
-					return this.client.commands.get('revs')!.run(res, [style, monster.name]);
+					return runCommand(res, 'revs', [style, monster.name], true);
 				},
 				image,
 				data,
@@ -109,7 +110,7 @@ export default class extends Task {
 				// @ts-ignore
 				res.prompter.flags = flags;
 				user.log(`continued trip of killing ${monster.name}`);
-				return this.client.commands.get('revs')!.run(res, [style, monster.name]);
+				return runCommand(res, 'revs', [style, monster.name], true);
 			},
 			image!,
 			data,
