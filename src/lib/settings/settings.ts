@@ -138,21 +138,23 @@ export async function runCommand(
 		is_continue: isContinue
 	};
 
+	let result = null;
 	try {
 		// @ts-ignore Cant be typechecked
-		const result = await command[method](message, args);
+		result = await command[method](message, args);
 		commandUsage.status = command_usage_status.Success;
-		return result;
 	} catch (err) {
 		commandUsage.status = command_usage_status.Error;
 		message.client.emit('commandError', message, command, args, err);
 	} finally {
 		if (shouldTrackCommand(command, args)) {
-			await prisma.commandUsage.create({
-				data: commandUsage
-			});
+			prisma.commandUsage
+				.create({
+					data: commandUsage
+				})
+				.catch(reason => message.client.emit('wtf', reason));
 		}
 	}
 
-	return null;
+	return result;
 }
