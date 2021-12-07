@@ -47,8 +47,8 @@ export const polyporeTasks: AssignableSlayerTask[] = [
 		monster: getMonster('Ganodermic Beast'),
 		amount: [20, 49],
 		weight: 6,
-		monsters: [BSOMonsters.GanodermicRunt.id],
-		slayerLevel: BSOMonsters.GanodermicRunt.levelRequirements?.slayer ?? 20,
+		monsters: [BSOMonsters.GanodermicBeast.id],
+		slayerLevel: BSOMonsters.GanodermicBeast.levelRequirements?.slayer ?? 20,
 		unlocked: false
 	}
 ];
