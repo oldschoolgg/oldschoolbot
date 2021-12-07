@@ -8,7 +8,7 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches, pyromancerBoostPercent } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -96,7 +96,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now lighting ${quantity}x ${log.name}, it'll take around ${formatDuration(
 				duration
-			)} to finish.`
+			)} to finish.\n${pyromancerBoostPercent(msg.author)}% XP boost for Pyromancer pieces in Skilling outfit.`
 		);
 	}
 }
