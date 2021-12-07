@@ -1949,7 +1949,8 @@ export const customPetsCL = resolveItems([
 	'Voidling',
 	'Baby duckling',
 	'Jal-MejJak',
-	'Blabberbeak'
+	'Blabberbeak',
+	'Queen black dragonling'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -2038,6 +2039,17 @@ export const seaKrakenCL = resolveItems([
 	'Fish sack',
 	'Pufferfish',
 	'Fishing trophy'
+]);
+
+export const queenBlackDragonCL = resolveItems([
+	'Queen black dragonling',
+	'Draconic visage',
+	'Royal dragon kiteshield',
+	'Dragonbone upgrade kit',
+	'Royal torsion spring',
+	'Royal sight',
+	'Royal frame',
+	'Royal bolt stabiliser'
 ]);
 
 export const customBossesDropsThatCantBeDroppedInMBs = [

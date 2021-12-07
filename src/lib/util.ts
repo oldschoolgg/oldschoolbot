@@ -4,9 +4,10 @@ import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
 import { objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
+import Monster from 'oldschooljs/dist/structures/Monster';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
@@ -630,4 +631,13 @@ export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | nu
 }
 export function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;
+}
+
+export function getMonster(str: string): Monster {
+	const mon = Monsters.find(_m => _m.name === str);
+
+	if (!mon) {
+		throw new Error(`Invalid monster name given: ${str}`);
+	}
+	return mon;
 }

@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
 import { gorajanWarriorOutfit, torvaOutfit } from '../../lib/data/CollectionsExport';
-import { KalphiteKingMonster } from '../../lib/kalphiteking';
+import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';

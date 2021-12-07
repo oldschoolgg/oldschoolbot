@@ -1,6 +1,10 @@
+import '../../lib/customItems';
+import '../../lib/data/itemAliases';
+
 import { Bank, Misc, Monsters } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
+import killableMonsters from '../minions/data/killableMonsters';
 import { KillWorkerArgs } from '.';
 
 export function cleanString(str: string) {
@@ -12,9 +16,19 @@ export function stringMatches(str: string, str2: string) {
 }
 
 export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): Bank | string => {
-	const osjsMonster = Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, bossName)));
+	const osjsMonster = [...Monsters.values(), ...killableMonsters].find(mon =>
+		mon.aliases.some(alias => stringMatches(alias, bossName))
+	);
 
-	if (osjsMonster) {
+	let killFn =
+		osjsMonster !== undefined
+			? 'kill' in osjsMonster
+				? osjsMonster.kill.bind(osjsMonster)
+				: // eslint-disable-next-line @typescript-eslint/unbound-method
+				  osjsMonster.table.kill
+			: undefined;
+
+	if (killFn) {
 		if (quantity > limit) {
 			return (
 				`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! ` +
@@ -23,7 +37,7 @@ export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs
 			);
 		}
 
-		return osjsMonster.kill(quantity, { inCatacombs: catacombs, onSlayerTask: onTask });
+		return killFn(quantity, { inCatacombs: catacombs, onSlayerTask: onTask });
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {

@@ -1,7 +1,4 @@
-import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-
-import setCustomMonster from '../../../../util/setCustomMonster';
 
 export const FishTable = new LootTable()
 	.add('Raw sea turtle', [1, 10])
@@ -34,13 +31,3 @@ export const KrakenTable = new LootTable()
 	.tertiary(1200, 'Pufferfish')
 	.tertiary(100_000, 'Fishing trophy')
 	.tertiary(50, 'Clue scroll (grandmaster)');
-
-setCustomMonster(53_466_534, 'Sea Kraken', KrakenTable, Monsters.CommanderZilyana, {
-	id: 53_466_534,
-	name: 'Sea Kraken',
-	aliases: ['sea kraken']
-});
-
-const SeaKraken = Monsters.find(mon => mon.name === 'Sea Kraken')!;
-
-export default SeaKraken;

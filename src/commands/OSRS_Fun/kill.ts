@@ -62,10 +62,19 @@ export default class extends BotCommand {
 		const killableInCatacombs =
 			msg.flagArgs.catacombs !== undefined &&
 			killableMonsters.find(m => m.id === osjsMonster?.id)?.existsInCatacombs;
+
+		let limit = this.determineKillLimit(msg.author);
+		if (osjsMonster?.isCustom) {
+			if (msg.author.perkTier < PerkTier.Four) {
+				return msg.channel.send('Simulating kills of custom monsters is a T3 perk!');
+			}
+			limit /= 4;
+		}
+
 		const result = await Workers.kill({
 			quantity,
 			bossName,
-			limit: this.determineKillLimit(msg.author),
+			limit,
 			catacombs: killableInCatacombs !== undefined && killableInCatacombs,
 			onTask: msg.flagArgs.ontask === undefined ? false : true
 		});

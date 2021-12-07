@@ -1,13 +1,13 @@
 import { Monsters } from 'oldschooljs';
 
-import { KalphiteKingMonster } from '../../kalphiteking';
 import killableMonsters from '../../minions/data/killableMonsters';
-import AbyssalDragon from '../../minions/data/killableMonsters/custom/AbyssalDragon';
-import { Ignecarus } from '../../minions/data/killableMonsters/custom/Ignecarus';
-import SeaKraken from '../../minions/data/killableMonsters/custom/SeaKraken';
+import { Ignecarus } from '../../minions/data/killableMonsters/custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMonsters';
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
+import { polyporeTasks } from './polyporeTasks';
 
 export const nieveTasks: AssignableSlayerTask[] = [
 	{
@@ -24,7 +24,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.AbyssalDemon,
 		amount: [120, 185],
 		weight: 9,
-		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, AbyssalDragon.id],
+		monsters: [Monsters.AbyssalDemon.id, Monsters.AbyssalSire.id, BSOMonsters.Malygos.id],
 		combatLevel: 85,
 		slayerLevel: 85,
 		questPoints: 1,
@@ -79,7 +79,8 @@ export const nieveTasks: AssignableSlayerTask[] = [
 			Monsters.BabyBlackDragon.id,
 			Monsters.BrutalBlackDragon.id,
 			Monsters.KingBlackDragon.id,
-			Ignecarus.id
+			Ignecarus.id,
+			BSOMonsters.QueenBlackDragon.id
 		],
 		slayerLevel: 77,
 		combatLevel: 80,
@@ -134,7 +135,7 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		monster: Monsters.CaveKraken,
 		amount: [100, 120],
 		weight: 6,
-		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, SeaKraken.id],
+		monsters: [Monsters.CaveKraken.id, Monsters.Kraken.id, BSOMonsters.SeaKraken.id],
 		combatLevel: 80,
 		slayerLevel: 87,
 		unlocked: true
@@ -436,7 +437,6 @@ export const nieveTasks: AssignableSlayerTask[] = [
 	{
 		monster: Monsters.FeralVampyre,
 		amount: [110, 170],
-
 		weight: 6,
 		monsters: [
 			Monsters.FeralVampyre.id,
@@ -456,5 +456,6 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		slayerLevel: 62,
 		unlocked: true
 	},
-	...bossTasks
+	...bossTasks,
+	...polyporeTasks
 ];

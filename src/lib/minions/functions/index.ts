@@ -3,16 +3,16 @@ import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { NIGHTMARES_HP } from '../../constants';
-import { KalphiteKingMonster } from '../../kalphiteking';
 import { NexMonster } from '../../nex';
 import { SkillsEnum } from '../../skilling/types';
 import { randomVariation } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
-import { Ignecarus } from '../data/killableMonsters/custom/Ignecarus';
-import KingGoldemar from '../data/killableMonsters/custom/KingGoldemar';
-import SeaKraken from '../data/killableMonsters/custom/SeaKraken';
-import { VasaMagus } from '../data/killableMonsters/custom/VasaMagus';
+import { Ignecarus } from '../data/killableMonsters/custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from '../data/killableMonsters/custom/bosses/KalphiteKing';
+import KingGoldemar from '../data/killableMonsters/custom/bosses/KingGoldemar';
+import { VasaMagus } from '../data/killableMonsters/custom/bosses/VasaMagus';
+import { BSOMonsters } from '../data/killableMonsters/custom/customMonsters';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
@@ -34,7 +34,7 @@ const miscHpMap: Record<number, number> = {
 	[KingGoldemar.id]: 10_000,
 	[VasaMagus.id]: 3900,
 	[KalphiteKingMonster.id]: 5300,
-	[SeaKraken.id]: 5200,
+	[BSOMonsters.SeaKraken.id]: 5200,
 	[Ignecarus.id]: 10_000
 };
 

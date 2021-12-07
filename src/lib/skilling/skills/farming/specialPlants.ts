@@ -654,6 +654,76 @@ const specialPlants: Plant[] = [
 		],
 		timePerPatchTravel: 10,
 		timePerHarvest: 15
+	},
+	{
+		level: 73,
+		plantXp: 81.5,
+		checkXp: 0,
+		harvestXp: 127.7,
+		inputItems: resolveNameBank({ 'Tombshroom spore': 1 }),
+		outputCrop: itemID('Tombshroom'),
+		name: 'Tombshroom',
+		aliases: ['tombshroom'],
+		petChance: 7500,
+		seedType: 'mushroom',
+		growthTime: 240,
+		numOfStages: 6,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 23,
+		needsChopForHarvest: false,
+		fixedOutput: true,
+		fixedOutputAmount: 6,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 0,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1] // Canifs patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
+		timePerPatchTravel: 10,
+		timePerHarvest: 5
+	},
+	{
+		level: 73,
+		plantXp: 81.5,
+		checkXp: 0,
+		harvestXp: 127.7,
+		inputItems: resolveNameBank({ 'Morchella mushroom spore': 1 }),
+		outputCrop: itemID('Morchella mushroom'),
+		name: 'Morchella mushroom',
+		aliases: ['morchella mushroom'],
+		petChance: 7500,
+		seedType: 'mushroom',
+		growthTime: 240,
+		numOfStages: 6,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 23,
+		needsChopForHarvest: false,
+		fixedOutput: true,
+		fixedOutputAmount: 6,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 0,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1] // Canifs patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
+		timePerPatchTravel: 10,
+		timePerHarvest: 5
 	}
 ];
 

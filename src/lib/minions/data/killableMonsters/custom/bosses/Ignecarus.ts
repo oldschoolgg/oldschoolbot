@@ -1,9 +1,9 @@
 import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { runeAlchablesTable } from '../../../../simulation/sharedTables';
-import resolveItems from '../../../../util/resolveItems';
-import setCustomMonster from '../../../../util/setCustomMonster';
+import { runeAlchablesTable } from '../../../../../simulation/sharedTables';
+import resolveItems from '../../../../../util/resolveItems';
+import setCustomMonster from '../../../../../util/setCustomMonster';
 
 const barTable = new LootTable()
 	.add('Steel bar', 500, 2)

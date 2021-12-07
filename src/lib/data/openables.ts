@@ -254,7 +254,7 @@ const Openables: Openable[] = [
 		name: 'Tradeables Mystery box',
 		itemID: 6199,
 		aliases: ['mystery', 'mystery box', 'tradeables mystery box', 'tmb'],
-		table: () => getRandomItem(true),
+		table: () => getMysteryBoxItem(true),
 		emoji: Emoji.MysteryBox
 	},
 	{
@@ -275,7 +275,7 @@ const Openables: Openable[] = [
 		name: 'Untradeables Mystery box',
 		itemID: 19_939,
 		aliases: ['untradeables mystery box', 'umb'],
-		table: () => getRandomItem(false),
+		table: () => getMysteryBoxItem(false),
 		emoji: Emoji.MysteryBox
 	},
 	{
@@ -486,6 +486,11 @@ export const tmbTable: number[] = [];
 export const umbTable: number[] = [];
 export const embTable: number[] = [];
 for (const item of Items.values()) {
+	if (item.customItemData?.cantDropFromMysteryBoxes === true) {
+		cantBeDropped.push(item.id);
+		continue;
+	}
+
 	if (
 		(item.id >= 40_000 && item.id <= 50_000) ||
 		allItemsIDs.includes(item.id) ||
@@ -517,11 +522,11 @@ function randomEquippable(): number {
 	return res;
 }
 
-function getRandomItem(tradeables: boolean): number {
+export function getMysteryBoxItem(tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
 	let result = table[Math.floor(Math.random() * table.length)];
-	if (cantBeDropped.includes(result)) return getRandomItem(tradeables);
-	if (result >= 40_000 && result <= 50_000) return getRandomItem(tradeables);
+	if (cantBeDropped.includes(result)) return getMysteryBoxItem(tradeables);
+	if (result >= 40_000 && result <= 50_000) return getMysteryBoxItem(tradeables);
 	return result;
 }
 

@@ -1,8 +1,8 @@
 import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { MysteryBoxes } from '../../../../data/openables';
-import setCustomMonster from '../../../../util/setCustomMonster';
+import { MysteryBoxes } from '../../../../../data/openables';
+import setCustomMonster from '../../../../../util/setCustomMonster';
 
 const dwarvenArmorTable = new LootTable()
 	.add('Dwarven full helm')

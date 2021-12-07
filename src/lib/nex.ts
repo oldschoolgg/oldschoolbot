@@ -36,9 +36,7 @@ export const NexMonster: KillableMonster = {
 	aliases: ['nex'],
 	timeToFinish: Time.Minute * 25,
 	notifyDrops: nexCL,
-	table: {
-		kill: makeKillTable(nexLootTable)
-	},
+	table: makeKillTable(nexLootTable),
 	emoji: '',
 	wildy: false,
 	difficultyRating: 10,

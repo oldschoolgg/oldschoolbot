@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { getRandomMysteryBox } from '../../lib/data/openables';
+import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -143,6 +144,16 @@ export default class extends Task {
 				loot.add(smeltedOre.id, quantity);
 				str +=
 					'\n<:klik:749945070932721676> Klik breathes a incredibly hot fire breath, and smelts all your ores!';
+			}
+		}
+
+		const userBank = user.bank();
+		const spiritOre = stoneSpirits.find(t => t.ore.id === oreID);
+		if (spiritOre) {
+			const amountOfSpirits = Math.min(quantity, userBank.amount(spiritOre.spirit.id));
+			if (amountOfSpirits > 0) {
+				await user.removeItemsFromBank(new Bank().add(spiritOre.spirit.id, amountOfSpirits));
+				loot.add(oreID, amountOfSpirits);
 			}
 		}
 

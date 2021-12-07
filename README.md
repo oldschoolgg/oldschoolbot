@@ -2,7 +2,6 @@
 
 # ![Logo](https://i.imgur.com/VLvOEwo.png) Old School Bot
 
-test
 Old School Bot is a Discord Bot based on [Old School RuneScape](https://oldschool.runescape.com/)
 
 For more information on the bot: https://www.oldschool.gg/oldschoolbot

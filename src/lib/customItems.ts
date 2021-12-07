@@ -17,7 +17,8 @@ export function isCustomItem(itemID: number) {
 }
 
 interface CustomItemData {
-	isSuperUntradeable: boolean;
+	isSuperUntradeable?: boolean;
+	cantDropFromMysteryBoxes?: boolean;
 }
 declare module 'oldschooljs/dist/meta/types' {
 	interface Item {
@@ -2224,3 +2225,634 @@ setCustomItem(50_045, 'Mystery impling jar', 'Coal', {}, 50_000);
 setCustomItem(50_046, 'Rumble token', 'Coal', {}, 1000);
 setCustomItem(50_047, 'Magic banana', 'Coal', {}, 1000);
 setCustomItem(50_048, 'Monkey crate', 'Coal', {}, 10_000);
+
+setCustomItem(
+	50_049,
+	'Frost dragon bones',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+/**
+ *
+ * Stone spirits
+ *
+ */
+setCustomItem(
+	50_050,
+	'Copper stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_051,
+	'Tin stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_052,
+	'Iron stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_053,
+	'Coal stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_054,
+	'Silver stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_055,
+	'Mithril stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_056,
+	'Adamantite stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_057,
+	'Gold stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_058,
+	'Runite stone spirit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	50_059,
+	'Brackish blade',
+	'Dragon sword',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(50_060, 'Neem drupe', 'Coal', {}, 1000);
+setCustomItem(50_061, 'Neem oil', 'Coal', {}, 1000);
+setCustomItem(50_063, 'Polypore spore', 'Coal', {}, 1000);
+setCustomItem(
+	50_064,
+	'Gorajian mushroom',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_065,
+	'Grifolic gloves',
+	'Rune gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_066,
+	'Grifolic orb',
+	"Mage's book",
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(50_067, 'Grifolic flake ', 'Coal', {}, 1000);
+setCustomItem(
+	50_068,
+	'Grifolic shield',
+	'Dragon sq shield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_069,
+	'Grifolic wand',
+	'Master wand',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_070,
+	'Ganodermic boots',
+	'Wizard boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_071,
+	'Ganodermic gloves',
+	'Mystic gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(50_072, 'Ganodermic flake', 'Coal', {}, 1000);
+setCustomItem(
+	50_073,
+	'Polypore stick',
+	'Master wand',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(50_074, 'Mycelium visor web', 'Mystic hat', {}, 1000);
+setCustomItem(50_075, 'Mycelium poncho web', 'Mystic robe top', {}, 1000);
+setCustomItem(50_076, 'Mycelium leggings web', 'Mystic robe bottom', {}, 1000);
+setCustomItem(
+	50_077,
+	'Ganodermic leggings',
+	'Mystic robe bottom',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_078,
+	'Ganodermic poncho',
+	'Mystic robe top',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	50_079,
+	'Ganodermic visor',
+	'Mystic hat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_080,
+	'Grifolic visor',
+	'Mystic hat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_081,
+	'Grifolic poncho',
+	'Mystic robe top',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_082,
+	'Grifolic leggings',
+	'Mystic robe bottom',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_083,
+	'Tombshroom spore',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_084,
+	'Tombshroom',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_085,
+	'Queen black dragonling',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(50_086, 'Royal dragonhide', 'Coal', {}, 1000);
+setCustomItem(50_087, 'Royal dragon leather', 'Coal', {}, 1000);
+setCustomItem(50_088, 'Royal bolts', 'Runite bolts', {}, 1000);
+setCustomItem(
+	50_089,
+	'Royal dragonhide coif',
+	'Armadyl helmet',
+	{
+		highalch: 100,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_090,
+	'Royal dragonhide body',
+	'Armadyl chestplate',
+	{
+		highalch: 100,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_091,
+	'Royal dragonhide chaps',
+	'Armadyl chainskirt',
+	{
+		highalch: 100,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_092,
+	'Royal dragonhide boots',
+	'Leather boots',
+	{
+		highalch: 100,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_093,
+	'Royal dragonhide vambraces',
+	"Black d'hide vambraces",
+	{
+		highalch: 100,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_094,
+	'Royal torsion spring',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_095,
+	'Royal sight',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_096,
+	'Royal frame',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+
+setCustomItem(
+	50_097,
+	'Royal bolt stabiliser',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_098,
+	'Royal crossbow',
+	'Chaotic crossbow',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 123,
+			defence_stab: 2,
+			defence_slash: 2,
+			defence_crush: 2,
+			defence_magic: 12,
+			defence_ranged: 12,
+			melee_strength: 0,
+			ranged_strength: 5,
+			magic_damage: 0,
+			prayer: 1,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: {
+				ranged: 105
+			}
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_099,
+	'Dragonbone upgrade kit',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_100,
+	'Dragonbone mage hat',
+	'Infinity hat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_101,
+	'Dragonbone mage gloves',
+	'Infinity gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_102,
+	'Dragonbone mage bottoms',
+	'Infinity bottoms',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_103,
+	'Dragonbone mage boots',
+	'Infinity boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_104,
+	'Dragonbone gloves',
+	'Barrows gloves',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_105,
+	'Dragonbone platelegs',
+	'Dragon platelegs',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_106,
+	'Dragonbone platebody',
+	'Dragon platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_107,
+	'Dragonbone full helm',
+	'Dragon full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_108,
+	'Dragonbone boots',
+	'Dragon boots',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_109,
+	'Dragonbone mage top',
+	'Infinity top',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_110,
+	'Royal dragon kiteshield',
+	'Dragon kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	12_000_000
+);
+setCustomItem(
+	50_111,
+	'Royal dragon bones',
+	'Dragon bones',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(50_112, 'Morchella mushroom spore', 'Coal', {}, 1000);
+setCustomItem(
+	50_113,
+	'Morchella mushroom',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	50_114,
+	'Polypore staff',
+	'Kodai wand',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);

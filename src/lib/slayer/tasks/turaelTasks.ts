@@ -1,6 +1,6 @@
 import { Monsters } from 'oldschooljs';
 
-import { KalphiteKingMonster } from '../../kalphiteking';
+import { KalphiteKingMonster } from '../../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { AssignableSlayerTask } from '../types';
 
 export const turaelTasks: AssignableSlayerTask[] = [

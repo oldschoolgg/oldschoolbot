@@ -695,6 +695,191 @@ const bsoItems: Createable[] = [
 		outputItems: {
 			[itemID('Infernal slayer helmet(i)')]: 1
 		}
+	},
+	{
+		name: 'Royal crossbow',
+		inputItems: {
+			[itemID('Chaotic crossbow')]: 1,
+			[itemID('Royal bolt stabiliser')]: 1,
+			[itemID('Royal frame')]: 1,
+			[itemID('Royal sight')]: 1,
+			[itemID('Royal torsion spring')]: 1
+		},
+		outputItems: {
+			[itemID('Royal crossbow')]: 1
+		},
+		requiredSkills: {
+			farming: 80
+		}
+	},
+	{
+		name: 'Polypore staff',
+		inputItems: {
+			[itemID('Polypore stick')]: 1,
+			[itemID('Polypore spore')]: 7000
+		},
+		outputItems: {
+			[itemID('Polypore staff')]: 1
+		}
+	}
+];
+
+const ganodermic: Createable[] = [
+	{
+		name: 'Ganodermic visor',
+		inputItems: resolveNameBank({
+			'Mycelium visor web': 1,
+			'Ganodermic flake': 500
+		}),
+		outputItems: resolveNameBank({
+			'Ganodermic visor': 1
+		})
+	},
+	{
+		name: 'Ganodermic poncho',
+		inputItems: resolveNameBank({
+			'Mycelium poncho web': 1,
+			'Ganodermic flake': 5000
+		}),
+		outputItems: resolveNameBank({
+			'Ganodermic poncho': 1
+		})
+	},
+	{
+		name: 'Ganodermic leggings',
+		inputItems: resolveNameBank({
+			'Mycelium leggings web': 1,
+			'Ganodermic flake': 1500
+		}),
+		outputItems: resolveNameBank({
+			'Ganodermic leggings': 1
+		})
+	}
+];
+
+const grifolic: Createable[] = [
+	{
+		name: 'Grifolic visor',
+		inputItems: resolveNameBank({
+			'Mycelium visor web': 1,
+			'Grifolic flake': 500
+		}),
+		outputItems: resolveNameBank({
+			'Grifolic visor': 1
+		})
+	},
+	{
+		name: 'Grifolic poncho',
+		inputItems: resolveNameBank({
+			'Mycelium poncho web': 1,
+			'Grifolic flake': 5000
+		}),
+		outputItems: resolveNameBank({
+			'Grifolic poncho': 1
+		})
+	},
+	{
+		name: 'Grifolic leggings',
+		inputItems: resolveNameBank({
+			'Mycelium leggings web': 1,
+			'Grifolic flake': 1500
+		}),
+		outputItems: resolveNameBank({
+			'Grifolic leggings': 1
+		})
+	}
+];
+
+const dragonBoneCreatables: Createable[] = [
+	{
+		name: 'Dragonbone boots',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon boots': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone boots': 1
+		})
+	},
+	{
+		name: 'Dragonbone full helm',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon full helm': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone full helm': 1
+		})
+	},
+	{
+		name: 'Dragonbone platebody',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon platebody': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone platebody': 1
+		})
+	},
+	{
+		name: 'Dragonbone platelegs',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon platelegs': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone platelegs': 1
+		})
+	},
+	{
+		name: 'Dragonbone gloves',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Dragon gloves': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone gloves': 1
+		})
+	},
+	{
+		name: 'Dragonbone mage boots',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Infinity boots': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone mage boots': 1
+		})
+	},
+	{
+		name: 'Dragonbone mage bottoms',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Infinity bottoms': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone mage bottoms': 1
+		})
+	},
+	{
+		name: 'Dragonbone mage hat',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Infinity hat': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone mage hat': 1
+		})
+	},
+	{
+		name: 'Dragonbone mage top',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Infinity top': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone mage top': 1
+		})
 	}
 ];
 
@@ -704,5 +889,8 @@ export const BsoCreateables: Createable[] = [
 	...brokenItems,
 	...lockedItems,
 	...bsoArmorSets,
-	...dyeCreatables
+	...dyeCreatables,
+	...ganodermic,
+	...grifolic,
+	...dragonBoneCreatables
 ];

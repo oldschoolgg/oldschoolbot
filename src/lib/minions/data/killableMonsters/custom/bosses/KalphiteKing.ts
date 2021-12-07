@@ -1,12 +1,12 @@
 import { Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { kalphiteKingCL } from './data/CollectionsExport';
-import { GearStat } from './gear/types';
-import { GrimyHerbTable } from './minions/data/killableMonsters/custom/Treebeard';
-import { KillableMonster } from './minions/types';
-import { SeedTable } from './simulation/seedTable';
-import { makeKillTable } from './util/setCustomMonster';
+import { kalphiteKingCL } from '../../../../../data/CollectionsExport';
+import { GearStat } from '../../../../../gear';
+import { SeedTable } from '../../../../../simulation/seedTable';
+import { makeKillTable } from '../../../../../util/setCustomMonster';
+import { KillableMonster } from '../../../../types';
+import { GrimyHerbTable } from '../Treebeard';
 
 export const kalphiteKingLootTable = new LootTable()
 	.tertiary(30, 'Clue scroll (grandmaster)')
@@ -33,9 +33,7 @@ export const KalphiteKingMonster: KillableMonster = {
 	aliases: ['kk'],
 	timeToFinish: Time.Minute * 25,
 	notifyDrops: kalphiteKingCL,
-	table: {
-		kill: makeKillTable(kalphiteKingLootTable)
-	},
+	table: makeKillTable(kalphiteKingLootTable),
 	emoji: '',
 	wildy: false,
 	difficultyRating: 10,

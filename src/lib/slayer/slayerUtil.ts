@@ -5,6 +5,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { BitField } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
+import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { DetermineBoostParams } from '../minions/types';
 import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
@@ -131,6 +132,20 @@ export function userCanUseTask(
 	// Slayer unlock restrictions:
 	const lmon = task.monster.name.toLowerCase();
 	const lmast = master.name.toLowerCase();
+	if (
+		[
+			BSOMonsters.FungalRodent.name,
+			BSOMonsters.InfestedAxe.name,
+			BSOMonsters.FungalMage.name,
+			BSOMonsters.Grifolaroo.name,
+			BSOMonsters.Grifolapine.name,
+			BSOMonsters.GanodermicRunt.name,
+			BSOMonsters.GanodermicBeast.name
+		].includes(task.monster.name) &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.PoreDecisions)
+	) {
+		return false;
+	}
 	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank().bank, itemID('Brittle key'))) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;

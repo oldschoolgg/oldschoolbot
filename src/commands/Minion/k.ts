@@ -32,7 +32,7 @@ import {
 	SlayerActivityConstants
 } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/KingGoldemar';
+import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
