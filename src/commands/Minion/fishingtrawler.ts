@@ -34,7 +34,7 @@ export default class extends BotCommand {
 		// 10% boost for 50 trips done
 		const boosts = [];
 		const kcBoost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
-		boosts.push(`${kcBoost}% for 50+ trips`);
+		boosts.push(`${kcBoost}% for KC`);
 		boosts.push(`${skillingBoostPercent(msg.author, "angler")}% XP for Angler pieces in Skilling outfit`);
 		tripLength = reduceNumByPercent(tripLength, kcBoost);
 
