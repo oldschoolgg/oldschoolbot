@@ -58,27 +58,10 @@ export default class extends Task {
 			xpReceived = quantity * fish.xp;
 		}
 		let bonusXP = 0;
-
-		// If they have the entire angler outfit, give an extra 0.5% xp bonus
-		if (
-			user.getGear('skilling').hasEquipped(
-				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
-			xpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
-					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
-					xpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
+	
+		const amountToAdd = Math.floor(xpReceived * (anglerBoostPercent(user) / 100));
+		xpReceived += amountToAdd;
+		bonusXP += amountToAdd;
 
 		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Fishing,

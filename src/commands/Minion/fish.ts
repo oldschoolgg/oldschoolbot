@@ -9,7 +9,7 @@ import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, rand, stringMatches } from '../../lib/util';
+import { anglerBoostPercent, formatDuration, itemID, itemNameFromID, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -101,6 +101,8 @@ export default class extends BotCommand {
 				}
 				break;
 		}
+
+		boosts.push(`${anglerBoostPercent(msg.author)}% XP boost for Angler pieces in Skilling outfit`)
 
 		const maxTripLength = msg.author.maxTripLength('Fishing');
 
