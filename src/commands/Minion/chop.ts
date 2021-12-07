@@ -101,7 +101,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		boosts.push(`${lumberjackBoostPercent(msg.author)}% XP boost for Prospector pieces in Skilling outfit`)
+		boosts.push(`${lumberjackBoostPercent(msg.author)}% XP boost for Lumberjack pieces in Skilling outfit`)
 
 		const maxTripLength = msg.author.maxTripLength('Woodcutting');
 
