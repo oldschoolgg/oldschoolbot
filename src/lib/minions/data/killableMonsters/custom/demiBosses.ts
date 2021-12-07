@@ -130,7 +130,6 @@ const Treebeard: CustomMonster = {
 	baseMonster: Monsters.Hespori
 };
 
-// different pet drop if killed by tame?
 const QueenBlackDragon: CustomMonster = {
 	id: 192_195,
 	name: 'Queen Black Dragon',
