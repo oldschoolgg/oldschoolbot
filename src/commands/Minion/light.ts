@@ -8,7 +8,7 @@ import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, pyromancerBoostPercent } from '../../lib/util';
+import { formatDuration, pyromancerBoostPercent, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {

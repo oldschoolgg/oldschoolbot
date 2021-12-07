@@ -19,7 +19,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * ore.xp;
 		let bonusXP = 0;
-		
+
 		const amountToAdd = Math.floor(xpReceived * (prospectorBoostPercent(user) / 100));
 		xpReceived += amountToAdd;
 		bonusXP += amountToAdd;

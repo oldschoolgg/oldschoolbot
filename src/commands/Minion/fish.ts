@@ -102,7 +102,7 @@ export default class extends BotCommand {
 				break;
 		}
 
-		boosts.push(`${anglerBoostPercent(msg.author)}% XP boost for Angler pieces in Skilling outfit`)
+		boosts.push(`${anglerBoostPercent(msg.author)}% XP boost for Angler pieces in Skilling outfit`);
 
 		const maxTripLength = msg.author.maxTripLength('Fishing');
 

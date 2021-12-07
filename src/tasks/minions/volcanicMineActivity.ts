@@ -8,7 +8,7 @@ import { incrementMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
-import { rand, prospectorBoostPercent } from '../../lib/util';
+import { prospectorBoostPercent, rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const fossilTable = new LootTable()
@@ -33,7 +33,7 @@ export default class extends Task {
 			boost += 0.3;
 		}
 
-		boost += (prospectorBoostPercent(user) / 100);
+		boost += prospectorBoostPercent(user) / 100;
 
 		const xpReceived = Math.round(
 			userMiningLevel * ((VolcanicMineGameTime * quantity) / Time.Minute) * 10 * boost * randFloat(1.02, 1.08)
@@ -74,7 +74,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
 			loot.length > 0 ? `\nYou received ${loot}` : ''
-		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`
+		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
 
 		if (loot.has('Rock golem')) {
 			str += "\nYou have a funny feeling you're being followed...";

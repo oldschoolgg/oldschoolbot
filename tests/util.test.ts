@@ -1,17 +1,17 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { stripEmojis, carpenterBoostPercent } from '../src/lib/util';
-import getOSItem from '../src/lib/util/getOSItem';
 import { constructGearSetup, GearSetup } from '../src/lib/gear';
+import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
+import { carpenterBoostPercent, stripEmojis } from '../src/lib/util';
+import getOSItem from '../src/lib/util/getOSItem';
 
 const fakeUser = (b: Bank, gear?: GearSetup) =>
-({
-	bank: () => b,
-	skillLevel: () => 99,
-	getGear: () => gear
-} as any as KlasaUser);
+	({
+		bank: () => b,
+		skillLevel: () => 99,
+		getGear: () => gear
+	} as any as KlasaUser);
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -47,39 +47,47 @@ describe('util', () => {
 	test('carpenterBoostPercent', () => {
 		expect(
 			carpenterBoostPercent(
-				fakeUser(new Bank(), 
-				constructGearSetup({
-					head: "Carpenter's helmet",
-					body: "Carpenter's shirt",
-					legs: "Carpenter's trousers",
-					feet: "Carpenter's boots"
-				}))
+				fakeUser(
+					new Bank(),
+					constructGearSetup({
+						head: "Carpenter's helmet",
+						body: "Carpenter's shirt",
+						legs: "Carpenter's trousers",
+						feet: "Carpenter's boots"
+					})
+				)
 			)
 		).toEqual(2.5);
 		expect(
 			carpenterBoostPercent(
-				fakeUser(new Bank(), 
-				constructGearSetup({
-					head: "Carpenter's helmet",
-					body: "Carpenter's shirt",
-					legs: "Carpenter's trousers"
-				}))
+				fakeUser(
+					new Bank(),
+					constructGearSetup({
+						head: "Carpenter's helmet",
+						body: "Carpenter's shirt",
+						legs: "Carpenter's trousers"
+					})
+				)
 			)
 		).toEqual(1.8);
 		expect(
 			carpenterBoostPercent(
-				fakeUser(new Bank(), 
-				constructGearSetup({
-					feet: "Carpenter's boots"
-				}))
+				fakeUser(
+					new Bank(),
+					constructGearSetup({
+						feet: "Carpenter's boots"
+					})
+				)
 			)
 		).toEqual(0.2);
 		expect(
 			carpenterBoostPercent(
-				fakeUser(new Bank(), 
-				constructGearSetup({
-					feet: "Dragon boots"
-				}))
+				fakeUser(
+					new Bank(),
+					constructGearSetup({
+						feet: 'Dragon boots'
+					})
+				)
 			)
 		).toEqual(0);
 	});

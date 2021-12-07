@@ -8,7 +8,13 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { determineScaledLogTime, formatDuration, itemNameFromID, lumberjackBoostPercent, stringMatches } from '../../lib/util';
+import {
+	determineScaledLogTime,
+	formatDuration,
+	itemNameFromID,
+	lumberjackBoostPercent,
+	stringMatches
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
@@ -101,7 +107,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		boosts.push(`${lumberjackBoostPercent(msg.author)}% XP boost for Lumberjack pieces in Skilling outfit`)
+		boosts.push(`${lumberjackBoostPercent(msg.author)}% XP boost for Lumberjack pieces in Skilling outfit`);
 
 		const maxTripLength = msg.author.maxTripLength('Woodcutting');
 

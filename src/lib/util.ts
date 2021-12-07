@@ -296,8 +296,6 @@ export function carpenterBoostPercent(user: KlasaUser) {
 	return round(boostPercent, 1);
 }
 
-
-
 const rogueOutfit = resolveItems(['Rogue mask', 'Rogue top', 'Rogue trousers', 'Rogue gloves', 'Rogue boots']);
 
 export function rogueOutfitPercentBonus(user: KlasaUser): number {

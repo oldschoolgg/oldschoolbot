@@ -10,7 +10,7 @@ import Constructables from '../../lib/skilling/skills/construction/constructable
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, carpenterBoostPercent } from '../../lib/util';
+import { carpenterBoostPercent, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {

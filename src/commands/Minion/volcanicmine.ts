@@ -9,7 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, stringMatches, prospectorBoostPercent } from '../../lib/util';
+import { formatDuration, formatSkillRequirements, prospectorBoostPercent, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export const VolcanicMineGameTime = Time.Minute * 10;
@@ -191,7 +191,7 @@ export default class extends BotCommand {
 		}
 
 		boosts.push(`${prospectorBoostPercent(msg.author)}% XP boost for Propector pieces in Skilling outfit.`);
-		
+
 		if (userSkillingGear.hasEquipped('Elysian spirit shield')) {
 			suppliesUsage.remove('Saradomin brew (4)', 1);
 			boosts.push('Lower Saradomin Brew usage for having an Elysian spirit shield equipped.');

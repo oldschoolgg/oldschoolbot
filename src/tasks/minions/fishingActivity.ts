@@ -58,7 +58,7 @@ export default class extends Task {
 			xpReceived = quantity * fish.xp;
 		}
 		let bonusXP = 0;
-	
+
 		const amountToAdd = Math.floor(xpReceived * (anglerBoostPercent(user) / 100));
 		xpReceived += amountToAdd;
 		bonusXP += amountToAdd;
