@@ -5,7 +5,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { TemporossActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, anglerBoostPercent } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -90,13 +90,13 @@ export default class extends BotCommand {
 			type: 'Tempoross',
 			rewardBoost
 		});
-
+		
 		return msg.channel.send(
 			`${
 				msg.author.minionName
 			} is now off to kill Tempoross ${quantity}x times, their trip will take ${formatDuration(
 				duration
-			)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.`
+			)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.\n${anglerBoostPercent(user)}% XP boost for angler pieces in Skilling outfit.`
 		);
 	}
 }
