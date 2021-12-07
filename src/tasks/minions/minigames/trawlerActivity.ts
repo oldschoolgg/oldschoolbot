@@ -7,7 +7,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent } from '../../../lib/util';
+import { addBanks, skillingBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -34,7 +34,7 @@ export default class extends Task {
 			loot.add(_loot);
 		}
 
-		const xpBonusPercent = anglerBoostPercent(user);
+		const xpBonusPercent = skillingBoostPercent(user, 'angler');
 		if (xpBonusPercent > 0) {
 			const bonusXP = Math.ceil(calcPercentOfNum(xpBonusPercent, totalXP));
 			totalXP += bonusXP;

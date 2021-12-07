@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
-import { pyromancerBoostPercent } from '../../lib/util';
+import { skillingBoostPercent } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -16,7 +16,7 @@ export default class extends Task {
 		let xpReceived = quantity * burnable.xp;
 		let bonusXP = 0;
 
-		const amountToAdd = Math.floor(xpReceived * (pyromancerBoostPercent(user) / 100));
+		const amountToAdd = Math.floor(xpReceived * (skillingBoostPercent(user, 'pyromancer') / 100));
 		xpReceived += amountToAdd;
 		bonusXP += amountToAdd;
 

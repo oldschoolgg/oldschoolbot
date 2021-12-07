@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { lumberjackBoostPercent, roll } from '../../lib/util';
+import { roll, skillingBoostPercent } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -19,7 +19,7 @@ export default class extends Task {
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
 
-		const amountToAdd = Math.floor(xpReceived * (lumberjackBoostPercent(user) / 100));
+		const amountToAdd = Math.floor(xpReceived * (skillingBoostPercent(user, 'lumberjack') / 100));
 		xpReceived += amountToAdd;
 		bonusXP += amountToAdd;
 

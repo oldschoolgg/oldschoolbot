@@ -10,7 +10,7 @@ import {
 	determineScaledOreTime,
 	formatDuration,
 	itemNameFromID,
-	prospectorBoostPercent,
+	skillingBoostPercent,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -110,7 +110,9 @@ export default class extends BotCommand {
 			boosts.push('50% for having an Amulet of glory equipped');
 		}
 
-		boosts.push(`${prospectorBoostPercent(msg.author)}% XP boost for Prospector pieces in Skilling outfit`);
+		boosts.push(
+			`${skillingBoostPercent(msg.author, 'prospector')}% XP boost for Prospector pieces in Skilling outfit`
+		);
 
 		const maxTripLength = msg.author.maxTripLength('Mining');
 

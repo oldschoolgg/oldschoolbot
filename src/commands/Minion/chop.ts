@@ -12,7 +12,7 @@ import {
 	determineScaledLogTime,
 	formatDuration,
 	itemNameFromID,
-	lumberjackBoostPercent,
+	skillingBoostPercent,
 	stringMatches
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -107,7 +107,9 @@ export default class extends BotCommand {
 			}
 		}
 
-		boosts.push(`${lumberjackBoostPercent(msg.author)}% XP boost for Lumberjack pieces in Skilling outfit`);
+		boosts.push(
+			`${skillingBoostPercent(msg.author, 'lumberjack')}% XP boost for Lumberjack pieces in Skilling outfit`
+		);
 
 		const maxTripLength = msg.author.maxTripLength('Woodcutting');
 

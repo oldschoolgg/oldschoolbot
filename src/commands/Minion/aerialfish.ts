@@ -6,7 +6,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AerialFishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, formatDuration, randFloat, stringMatches } from '../../lib/util';
+import { formatDuration, randFloat, skillingBoostPercent, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
@@ -126,7 +126,10 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now doing Aerial fishing, it will take around ${formatDuration(
 				duration
-			)} to finish.\n${anglerBoostPercent(msg.author)}% XP boost for Angler pieces in Skilling outfit.`
+			)} to finish.\n${skillingBoostPercent(
+				msg.author,
+				'angler'
+			)}% XP boost for Angler pieces in Skilling outfit.`
 		);
 	}
 

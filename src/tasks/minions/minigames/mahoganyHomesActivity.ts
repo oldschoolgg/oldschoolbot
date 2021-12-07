@@ -5,7 +5,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
-import { carpenterBoostPercent } from '../../../lib/util';
+import { skillingBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -15,7 +15,7 @@ export default class extends Task {
 		await incrementMinigameScore(userID, 'mahogany_homes', quantity);
 
 		let bonusXP = 0;
-		const outfitMultiplier = carpenterBoostPercent(user);
+		const outfitMultiplier = skillingBoostPercent(user, 'carpenter');
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xp);
 		}

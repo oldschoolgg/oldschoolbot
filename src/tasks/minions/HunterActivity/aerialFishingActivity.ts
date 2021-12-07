@@ -6,7 +6,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AerialFishingActivityTaskOptions } from '../../../lib/types/minions';
-import { anglerBoostPercent, rand, roll } from '../../../lib/util';
+import { rand, roll, skillingBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -77,7 +77,7 @@ export default class extends Task {
 
 		let bonusXP = 0;
 
-		const amountToAdd = Math.floor(fishXpReceived * (anglerBoostPercent(user) / 100));
+		const amountToAdd = Math.floor(fishXpReceived * (skillingBoostPercent(user, 'angler') / 100));
 		fishXpReceived += amountToAdd;
 		bonusXP += amountToAdd;
 

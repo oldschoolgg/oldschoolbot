@@ -188,109 +188,50 @@ export const anglerBoosts = [
 	[itemID('Angler waders'), 0.6],
 	[itemID('Angler boots'), 0.2]
 ];
-
-export function anglerBoostPercent(user: KlasaUser) {
-	const skillingSetup = user.getGear('skilling');
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of anglerBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === 4) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
-}
-
-export const prospectorBoosts = [
-	[itemID('Prospector helmet'), 0.4],
-	[itemID('Prospector jacket'), 0.8],
-	[itemID('Prospector legs'), 0.6],
-	[itemID('Prospector boots'), 0.2]
-];
-
-export function prospectorBoostPercent(user: KlasaUser) {
-	const skillingSetup = user.getGear('skilling');
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of prospectorBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === prospectorBoosts.length) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
-}
-
-export const pyromancerBoosts = [
-	[itemID('Pyromancer hood'), 0.4],
-	[itemID('Pyromancer garb'), 0.8],
-	[itemID('Pyromancer robe'), 0.6],
-	[itemID('Pyromancer boots'), 0.2]
-];
-
-export function pyromancerBoostPercent(user: KlasaUser) {
-	const skillingSetup = user.getGear('skilling');
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of pyromancerBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === pyromancerBoosts.length) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
-}
-
-export const lumberjackBoosts = [
-	[itemID('Lumberjack hat'), 0.4],
-	[itemID('Lumberjack top'), 0.8],
-	[itemID('Lumberjack legs'), 0.6],
-	[itemID('Lumberjack boots'), 0.2]
-];
-
-export function lumberjackBoostPercent(user: KlasaUser) {
-	const skillingSetup = user.getGear('skilling');
-	let amountEquipped = 0;
-	let boostPercent = 0;
-	for (const [id, percent] of lumberjackBoosts) {
-		if (skillingSetup.hasEquipped([id])) {
-			boostPercent += percent;
-			amountEquipped++;
-		}
-	}
-	if (amountEquipped === lumberjackBoosts.length) {
-		boostPercent += 0.5;
-	}
-	return round(boostPercent, 1);
-}
 export const carpenterBoosts = [
 	[itemID("Carpenter's helmet"), 0.4],
 	[itemID("Carpenter's shirt"), 0.8],
 	[itemID("Carpenter's trousers"), 0.6],
 	[itemID("Carpenter's boots"), 0.2]
 ];
+export const lumberjackBoosts = [
+	[itemID('Lumberjack hat'), 0.4],
+	[itemID('Lumberjack top'), 0.8],
+	[itemID('Lumberjack legs'), 0.6],
+	[itemID('Lumberjack boots'), 0.2]
+];
+export const prospectorBoosts = [
+	[itemID('Prospector helmet'), 0.4],
+	[itemID('Prospector jacket'), 0.8],
+	[itemID('Prospector legs'), 0.6],
+	[itemID('Prospector boots'), 0.2]
+];
+export const pyromancerBoosts = [
+	[itemID('Pyromancer hood'), 0.4],
+	[itemID('Pyromancer garb'), 0.8],
+	[itemID('Pyromancer robe'), 0.6],
+	[itemID('Pyromancer boots'), 0.2]
+];
+const outfits = {
+	angler: anglerBoosts,
+	carpenter: carpenterBoosts,
+	prospector: prospectorBoosts,
+	pyromancer: pyromancerBoosts,
+	lumberjack: lumberjackBoosts
+};
 
-export function carpenterBoostPercent(user: KlasaUser) {
+export function skillingBoostPercent(user: KlasaUser, outfit: keyof typeof outfits) {
 	const skillingSetup = user.getGear('skilling');
+	const gearBoosts = outfits[outfit];
 	let amountEquipped = 0;
 	let boostPercent = 0;
-	for (const [id, percent] of carpenterBoosts) {
+	for (const [id, percent] of gearBoosts) {
 		if (skillingSetup.hasEquipped([id])) {
 			boostPercent += percent;
 			amountEquipped++;
 		}
 	}
-	if (amountEquipped === carpenterBoosts.length) {
+	if (amountEquipped === gearBoosts.length) {
 		boostPercent += 0.5;
 	}
 	return round(boostPercent, 1);

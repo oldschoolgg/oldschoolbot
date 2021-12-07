@@ -8,7 +8,7 @@ import { incrementMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
-import { prospectorBoostPercent, rand } from '../../lib/util';
+import { rand, skillingBoostPercent } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const fossilTable = new LootTable()
@@ -33,7 +33,7 @@ export default class extends Task {
 			boost += 0.3;
 		}
 
-		boost += prospectorBoostPercent(user) / 100;
+		boost += skillingBoostPercent(user, 'prospector') / 100;
 
 		const xpReceived = Math.round(
 			userMiningLevel * ((VolcanicMineGameTime * quantity) / Time.Minute) * 10 * boost * randFloat(1.02, 1.08)

@@ -7,7 +7,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { prospectorBoostPercent, rand } from '../../lib/util';
+import { rand, skillingBoostPercent } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -20,7 +20,7 @@ export default class extends Task {
 		let xpReceived = quantity * ore.xp;
 		let bonusXP = 0;
 
-		const amountToAdd = Math.floor(xpReceived * (prospectorBoostPercent(user) / 100));
+		const amountToAdd = Math.floor(xpReceived * (skillingBoostPercent(user, 'prospector') / 100));
 		xpReceived += amountToAdd;
 		bonusXP += amountToAdd;
 

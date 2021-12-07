@@ -10,7 +10,7 @@ import Constructables from '../../lib/skilling/skills/construction/constructable
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { carpenterBoostPercent, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, skillingBoostPercent, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -139,7 +139,10 @@ export default class extends BotCommand {
 				object.name
 			}, it'll take around ${formatDuration(duration)} to finish. Removed ${totalPlanksNeeded}x ${itemNameFromID(
 				plank
-			)} from your bank.\n${carpenterBoostPercent(msg.author)}% XP boost for Carpenter pieces in Skilling outfit.
+			)} from your bank.\n${skillingBoostPercent(
+				msg.author,
+				'carpenter'
+			)}% XP boost for Carpenter pieces in Skilling outfit.
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
 `

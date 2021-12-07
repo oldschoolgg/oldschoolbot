@@ -7,7 +7,7 @@ import { getTemporossLoot } from '../../../lib/simulation/tempoross';
 // import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
-import { anglerBoostPercent } from '../../../lib/util';
+import { skillingBoostPercent } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -41,7 +41,7 @@ export default class extends Task {
 		let fBonusXP = 0;
 
 		// Add bonus for Angler outfit
-		const amountToAdd = Math.floor(fXPtoGive * (anglerBoostPercent(user) / 100));
+		const amountToAdd = Math.floor(fXPtoGive * (skillingBoostPercent(user, 'angler') / 100));
 		fXPtoGive += amountToAdd;
 		fBonusXP += amountToAdd;
 

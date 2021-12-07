@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { constructGearSetup, GearSetup } from '../src/lib/gear';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { carpenterBoostPercent, stripEmojis } from '../src/lib/util';
+import { skillingBoostPercent, stripEmojis } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 
 const fakeUser = (b: Bank, gear?: GearSetup) =>
@@ -44,9 +44,9 @@ describe('util', () => {
 		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));
 	});
 
-	test('carpenterBoostPercent', () => {
+	test('skillingBoostPercent', () => {
 		expect(
-			carpenterBoostPercent(
+			skillingBoostPercent(
 				fakeUser(
 					new Bank(),
 					constructGearSetup({
@@ -55,11 +55,12 @@ describe('util', () => {
 						legs: "Carpenter's trousers",
 						feet: "Carpenter's boots"
 					})
-				)
+				),
+				'carpenter'
 			)
 		).toEqual(2.5);
 		expect(
-			carpenterBoostPercent(
+			skillingBoostPercent(
 				fakeUser(
 					new Bank(),
 					constructGearSetup({
@@ -67,27 +68,30 @@ describe('util', () => {
 						body: "Carpenter's shirt",
 						legs: "Carpenter's trousers"
 					})
-				)
+				),
+				'carpenter'
 			)
 		).toEqual(1.8);
 		expect(
-			carpenterBoostPercent(
+			skillingBoostPercent(
 				fakeUser(
 					new Bank(),
 					constructGearSetup({
 						feet: "Carpenter's boots"
 					})
-				)
+				),
+				'carpenter'
 			)
 		).toEqual(0.2);
 		expect(
-			carpenterBoostPercent(
+			skillingBoostPercent(
 				fakeUser(
 					new Bank(),
 					constructGearSetup({
 						feet: 'Dragon boots'
 					})
-				)
+				),
+				'carpenter'
 			)
 		).toEqual(0);
 	});

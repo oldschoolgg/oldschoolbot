@@ -1,4 +1,3 @@
-import { calcPercentOfNum } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, roll } from '../../lib/util';
+import { roll, skillingBoostPercent } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -59,7 +58,7 @@ export default class extends Task {
 		}
 		let bonusXP = 0;
 
-		const amountToAdd = Math.floor(xpReceived * (anglerBoostPercent(user) / 100));
+		const amountToAdd = Math.floor(xpReceived * (skillingBoostPercent(user, 'angler') / 100));
 		xpReceived += amountToAdd;
 		bonusXP += amountToAdd;
 
@@ -107,11 +106,6 @@ export default class extends Task {
 			loot.add('Leaping sturgeon', leapingSturgeon);
 			loot.add('Leaping salmon', leapingSalmon);
 			loot.add('Leaping trout', leapingTrout);
-		}
-
-		const xpBonusPercent = anglerBoostPercent(user);
-		if (xpBonusPercent > 0) {
-			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, xpReceived));
 		}
 
 		if (bonusXP > 0) {
