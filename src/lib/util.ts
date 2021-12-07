@@ -250,6 +250,7 @@ export function pyromancerBoostPercent(user: KlasaUser) {
 	}
 	return round(boostPercent, 1);
 }
+
 export const lumberjackBoosts = [
 	[itemID('Lumberjack hat'), 0.4],
 	[itemID('Lumberjack top'), 0.8],
@@ -268,6 +269,28 @@ export function lumberjackBoostPercent(user: KlasaUser) {
 		}
 	}
 	if (amountEquipped === lumberjackBoosts.length) {
+		boostPercent += 0.5;
+	}
+	return round(boostPercent, 1);
+}
+export const carpenterBoosts = [
+	[itemID("Carpenter's helmet"), 0.4],
+	[itemID("Carpenter's shirt"), 0.8],
+	[itemID("Carpenter's trousers"), 0.6],
+	[itemID("Carpenter's boots"), 0.2]
+];
+
+export function carpenterBoostPercent(user: KlasaUser) {
+	const skillingSetup = user.getGear('skilling');
+	let amountEquipped = 0;
+	let boostPercent = 0;
+	for (const [id, percent] of carpenterBoosts) {
+		if (skillingSetup.hasEquipped([id])) {
+			boostPercent += percent;
+			amountEquipped++;
+		}
+	}
+	if (amountEquipped === carpenterBoosts.length) {
 		boostPercent += 0.5;
 	}
 	return round(boostPercent, 1);
