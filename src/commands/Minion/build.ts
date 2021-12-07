@@ -142,7 +142,7 @@ export default class extends BotCommand {
 			)} from your bank.\n${skillingBoostPercent(
 				msg.author,
 				'carpenter'
-			)}% XP boost for Carpenter pieces in Skilling outfit.
+			)}% XP boost for Carpenter pieces in Skilling gear.
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
 `

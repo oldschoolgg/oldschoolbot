@@ -214,7 +214,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		)}. Removed ${itemsNeeded} from your bank.\n${skillingBoostPercent(
 			msg.author,
 			'carpenter'
-		)}% XP boost for Carpenter pieces in Skilling outfit.`;
+		)}% XP boost for Carpenter pieces in Skilling gear.`;
 
 		if (hasSack) {
 			str += "\nYou're getting more XP/Hr because of your Plank sack!";

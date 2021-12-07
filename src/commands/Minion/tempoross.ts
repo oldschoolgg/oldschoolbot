@@ -99,7 +99,7 @@ export default class extends BotCommand {
 			)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.\n${skillingBoostPercent(
 				user,
 				'angler'
-			)}% XP boost for Angler pieces in Skilling outfit.`
+			)}% XP boost for Angler pieces in Skilling gear.`
 		);
 	}
 }

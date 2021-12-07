@@ -129,7 +129,7 @@ export default class extends BotCommand {
 			)} to finish.\n${skillingBoostPercent(
 				msg.author,
 				'angler'
-			)}% XP boost for Angler pieces in Skilling outfit.`
+			)}% XP boost for Angler pieces in Skilling gear.`
 		);
 	}
 

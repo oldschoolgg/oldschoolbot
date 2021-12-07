@@ -111,7 +111,7 @@ export default class extends BotCommand {
 		}
 
 		boosts.push(
-			`${skillingBoostPercent(msg.author, 'prospector')}% XP boost for Prospector pieces in Skilling outfit`
+			`${skillingBoostPercent(msg.author, 'prospector')}% XP boost for Prospector pieces in Skilling gear`
 		);
 
 		const maxTripLength = msg.author.maxTripLength('Mining');

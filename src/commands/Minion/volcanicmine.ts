@@ -191,7 +191,7 @@ export default class extends BotCommand {
 		}
 
 		boosts.push(
-			`${skillingBoostPercent(msg.author, 'prospector')}% XP boost for Propector pieces in Skilling outfit.`
+			`${skillingBoostPercent(msg.author, 'prospector')}% XP boost for Propector pieces in Skilling gear.`
 		);
 
 		if (userSkillingGear.hasEquipped('Elysian spirit shield')) {

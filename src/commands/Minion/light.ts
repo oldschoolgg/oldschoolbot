@@ -99,7 +99,7 @@ export default class extends BotCommand {
 			)} to finish.\n${skillingBoostPercent(
 				msg.author,
 				'pyromancer'
-			)}% XP boost for Pyromancer pieces in Skilling outfit.`
+			)}% XP boost for Pyromancer pieces in Skilling gear.`
 		);
 	}
 }
