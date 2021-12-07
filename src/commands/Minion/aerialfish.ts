@@ -126,10 +126,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now doing Aerial fishing, it will take around ${formatDuration(
 				duration
-			)} to finish.\n${skillingBoostPercent(
-				msg.author,
-				'angler'
-			)}% XP boost for Angler pieces in Skilling gear.`
+			)} to finish.\n${skillingBoostPercent(msg.author, 'angler')}% XP boost for Angler pieces in Skilling gear.`
 		);
 	}
 
