@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { lumberjackBoostPercent, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -19,26 +19,9 @@ export default class extends Task {
 		let xpReceived = quantity * log.xp;
 		let bonusXP = 0;
 
-		// If they have the entire lumberjack outfit, give an extra 0.5% xp bonus
-		if (
-			user.getGear('skilling').hasEquipped(
-				Object.keys(Woodcutting.lumberjackItems).map(i => parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
-			xpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each lumberjack item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
-				if (user.getGear('skilling').hasEquipped([parseInt(itemID)], false)) {
-					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
-					xpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
+		const amountToAdd = Math.floor(xpReceived * (lumberjackBoostPercent(user) / 100));
+		xpReceived += amountToAdd;
+		bonusXP += amountToAdd;
 
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Woodcutting,
