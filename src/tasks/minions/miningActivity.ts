@@ -7,7 +7,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { rand } from '../../lib/util';
+import { prospectorBoostPercent, rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -19,27 +19,11 @@ export default class extends Task {
 
 		let xpReceived = quantity * ore.xp;
 		let bonusXP = 0;
+		
+		const amountToAdd = Math.floor(xpReceived * (prospectorBoostPercent(user) / 100));
+		xpReceived += amountToAdd;
+		bonusXP += amountToAdd;
 
-		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
-		if (
-			user.getGear('skilling').hasEquipped(
-				Object.keys(Mining.prospectorItems).map(i => parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
-			xpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each prospector item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Mining.prospectorItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
-					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
-					xpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Mining,

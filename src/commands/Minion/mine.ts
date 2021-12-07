@@ -6,7 +6,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { determineScaledOreTime, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { determineScaledOreTime, formatDuration, itemNameFromID, stringMatches, prospectorBoostPercent } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
@@ -103,6 +103,8 @@ export default class extends BotCommand {
 			timeToMine = Math.floor(timeToMine / 2);
 			boosts.push('50% for having an Amulet of glory equipped');
 		}
+
+		boosts.push(`${prospectorBoostPercent(msg.author)}% XP boost for Prospector pieces in Skilling outfit`)
 
 		const maxTripLength = msg.author.maxTripLength('Mining');
 
