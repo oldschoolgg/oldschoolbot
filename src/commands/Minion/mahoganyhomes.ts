@@ -10,7 +10,14 @@ import { Plank } from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MahoganyHomesActivityTaskOptions } from '../../lib/types/minions';
-import { addArrayOfNumbers, formatDuration, roll, skillingBoostPercent, stringMatches, updateBankSetting } from '../../lib/util';
+import {
+	addArrayOfNumbers,
+	formatDuration,
+	roll,
+	skillingBoostPercent,
+	stringMatches,
+	updateBankSetting
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../lib/util/getOSItem';
 
@@ -204,7 +211,10 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 			msg.author.minionName
 		} is now doing ${quantity}x Mahogany homes contracts, the trip will take ${formatDuration(
 			duration
-		)}. Removed ${itemsNeeded} from your bank.\n${skillingBoostPercent(msg.author, "carpenter")}% XP boost for Carpenter pieces in Skilling outfit.`;
+		)}. Removed ${itemsNeeded} from your bank.\n${skillingBoostPercent(
+			msg.author,
+			'carpenter'
+		)}% XP boost for Carpenter pieces in Skilling outfit.`;
 
 		if (hasSack) {
 			str += "\nYou're getting more XP/Hr because of your Plank sack!";
