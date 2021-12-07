@@ -4,7 +4,6 @@ import { Task } from 'klasa';
 import { Emoji, Events } from '../../../lib/constants';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import { getTemporossLoot } from '../../../lib/simulation/tempoross';
-// import Fishing from '../../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { skillingBoostPercent } from '../../../lib/util';
