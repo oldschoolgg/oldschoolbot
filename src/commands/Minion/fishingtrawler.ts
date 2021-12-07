@@ -5,7 +5,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { FishingTrawlerActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, skillingBoostPercent } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -32,8 +32,11 @@ export default class extends BotCommand {
 
 		let tripLength = Time.Minute * 13;
 		// 10% boost for 50 trips done
-		const boost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
-		tripLength = reduceNumByPercent(tripLength, boost);
+		const boosts = [];
+		const kcBoost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
+		boosts.push(`${kcBoost}% for 50+ trips`);
+		boosts.push(`${skillingBoostPercent(msg.author, "angler")}% XP for Angler pieces in Skilling outfit`);
+		tripLength = reduceNumByPercent(tripLength, kcBoost);
 
 		const quantity = Math.floor(msg.author.maxTripLength('FishingTrawler') / tripLength);
 		const duration = quantity * tripLength;
@@ -52,7 +55,7 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} is now doing ${quantity}x Fishing Trawler trips, it will take around ${formatDuration(
 				duration
-			)} to finish.\n\n**Boosts:** ${boost}% boost for experience`
+			)} to finish.\n\n**Boosts:**\n${boosts.join('\n')}.`
 		);
 	}
 }

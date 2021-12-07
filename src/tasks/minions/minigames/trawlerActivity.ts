@@ -48,7 +48,7 @@ export default class extends Task {
 		})}`;
 
 		if (xpBonusPercent > 0) {
-			str += ` ${xpBonusPercent}% Bonus XP for Angler outfit pieces.`;
+			str += ` \n${xpBonusPercent}% Bonus XP for Angler outfit pieces.`;
 		}
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
