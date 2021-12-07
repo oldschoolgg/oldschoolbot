@@ -37,7 +37,6 @@ export default class extends Task {
 		const xpReceived = Math.round(
 			userMiningLevel * ((VolcanicMineGameTime * quantity) / Time.Minute) * 10 * boost * randFloat(1.02, 1.08)
 		);
-		const bonusXp = xpReceived / boost;
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Mining,
 			amount: xpReceived,
@@ -74,8 +73,8 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
 			loot.length > 0 ? `\nYou received ${loot}` : ''
-		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}\n**Mining Bonus XP:** ${bonusXp.toLocaleString()}`;
-
+		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`
+		
 		if (loot.has('Rock golem')) {
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(
