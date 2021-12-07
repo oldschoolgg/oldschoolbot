@@ -8,7 +8,7 @@ import { incrementMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
-import { rand } from '../../lib/util';
+import { rand, prospectorBoostPercent } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const fossilTable = new LootTable()
@@ -32,18 +32,12 @@ export default class extends Task {
 		} else if (userMiningLevel >= 61 && userSkillingGear.hasEquipped('Dragon pickaxe')) {
 			boost += 0.3;
 		}
-		if (
-			userSkillingGear.hasEquipped(
-				['Prospector helmet', 'Prospector jacket', 'Prospector legs', 'Prospector boots'],
-				true
-			)
-		) {
-			boost += 0.025;
-		}
+		boost += prospectorBoostPercent(user);
 
 		const xpReceived = Math.round(
 			userMiningLevel * ((VolcanicMineGameTime * quantity) / Time.Minute) * 10 * boost * randFloat(1.02, 1.08)
 		);
+		const bonusXp = xpReceived / boost;
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Mining,
 			amount: xpReceived,
@@ -80,7 +74,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${
 			loot.length > 0 ? `\nYou received ${loot}` : ''
-		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
+		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}\n**Mining Bonus XP:** ${bonusXp.toLocaleString()}`;
 
 		if (loot.has('Rock golem')) {
 			str += "\nYou have a funny feeling you're being followed...";

@@ -9,7 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
+import { formatDuration, formatSkillRequirements, stringMatches, prospectorBoostPercent } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export const VolcanicMineGameTime = Time.Minute * 10;
@@ -190,15 +190,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (
-			userSkillingGear.hasEquipped(
-				['Prospector helmet', 'Prospector jacket', 'Prospector legs', 'Prospector boots'],
-				true
-			)
-		) {
-			boosts.push('2.5% more Mining XP for having the Propector outfit equipped.');
-		}
-
+		boosts.push(`${prospectorBoostPercent(msg.author)}% XP boost for Propector pieces in Skilling outfit.`);
+		
 		if (userSkillingGear.hasEquipped('Elysian spirit shield')) {
 			suppliesUsage.remove('Saradomin brew (4)', 1);
 			boosts.push('Lower Saradomin Brew usage for having an Elysian spirit shield equipped.');
