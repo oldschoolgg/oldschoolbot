@@ -96,7 +96,7 @@ export default class extends BotCommand {
 				msg.author.minionName
 			} is now off to kill Tempoross ${quantity}x times, their trip will take ${formatDuration(
 				duration
-			)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.\n${anglerBoostPercent(user)}% XP boost for angler pieces in Skilling outfit.`
+			)}. (${formatDuration(durationPerRoss)} per ross)\n\n${messages.join(', ')}.\n${anglerBoostPercent(user)}% XP boost for Angler pieces in Skilling outfit.`
 		);
 	}
 }
