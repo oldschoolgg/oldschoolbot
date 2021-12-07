@@ -10,7 +10,7 @@ import Constructables from '../../lib/skilling/skills/construction/constructable
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { formatDuration, itemNameFromID, stringMatches, carpenterBoostPercent } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -134,14 +134,12 @@ export default class extends BotCommand {
 			type: 'Construction'
 		});
 
-		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
-
 		return msg.channel.send(
 			`${msg.author.minionName} is now constructing ${quantity}x ${
 				object.name
 			}, it'll take around ${formatDuration(duration)} to finish. Removed ${totalPlanksNeeded}x ${itemNameFromID(
 				plank
-			)} from your bank. **${xpHr}**
+			)} from your bank.\n${carpenterBoostPercent(msg.author)}% XP boost for Carpenter pieces in Skilling outfit.
 
 You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
 `

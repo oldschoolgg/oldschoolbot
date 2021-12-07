@@ -4,7 +4,7 @@ import { Task } from 'klasa';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
-import { calcConBonusXP } from '../../lib/util/calcConBonusXP';
+import { carpenterBoostPercent } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -14,7 +14,7 @@ export default class extends Task {
 		const object = Constructables.find(object => object.id === objectID)!;
 		const xpReceived = quantity * object.xp;
 		let bonusXP = 0;
-		const outfitMultiplier = calcConBonusXP(user.getGear('skilling'));
+		const outfitMultiplier = carpenterBoostPercent(user);
 		if (outfitMultiplier > 0) {
 			bonusXP = calcPercentOfNum(outfitMultiplier, xpReceived);
 		}
