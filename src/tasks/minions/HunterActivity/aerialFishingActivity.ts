@@ -1,9 +1,8 @@
-import { calcPercentOfNum, Time } from 'e';
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { AerialFishingActivityTaskOptions } from '../../../lib/types/minions';
@@ -78,26 +77,9 @@ export default class extends Task {
 
 		let bonusXP = 0;
 
-		// If they have the entire angler outfit, give an extra 2.5% xp bonus
-		if (
-			user.getGear('skilling').hasEquipped(
-				Object.keys(Fishing.anglerItems).map(i => parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(fishXpReceived * (2.5 / 100));
-			fishXpReceived += amountToAdd;
-			bonusXP += amountToAdd;
-		} else {
-			// For each angler item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Fishing.anglerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
-					const amountToAdd = Math.floor(fishXpReceived * (bonus / 100));
-					fishXpReceived += amountToAdd;
-					bonusXP += amountToAdd;
-				}
-			}
-		}
+		const amountToAdd = Math.floor(fishXpReceived * (anglerBoostPercent(user) / 100));
+		fishXpReceived += amountToAdd;
+		bonusXP += amountToAdd;
 
 		await user.addXP({ skillName: SkillsEnum.Fishing, amount: fishXpReceived });
 		await user.addXP({ skillName: SkillsEnum.Hunter, amount: huntXpReceived });
@@ -108,11 +90,6 @@ export default class extends Task {
 
 		const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const newFishLevel = user.skillLevel(SkillsEnum.Fishing);
-
-		const xpBonusPercent = anglerBoostPercent(user);
-		if (xpBonusPercent > 0) {
-			bonusXP += Math.ceil(calcPercentOfNum(xpBonusPercent, fishXpReceived));
-		}
 
 		let str = `${user}, ${user.minionName} finished aerial fishing and caught ${greaterSirenCaught}x ${
 			greaterSiren.name
