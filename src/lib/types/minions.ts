@@ -320,6 +320,12 @@ export interface RaidsOptions extends ActivityTaskOptions {
 	challengeMode: boolean;
 }
 
+export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	hardMode: boolean;
+}
+
 export interface CollectingOptions extends ActivityTaskOptions {
 	collectableID: number;
 	quantity: number;

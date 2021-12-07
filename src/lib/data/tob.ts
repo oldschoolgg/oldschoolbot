@@ -1,23 +1,14 @@
-import { captureMessage } from '@sentry/minimal';
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	increaseNumByPercent,
-	percentChance,
-	randInt,
-	reduceNumByPercent,
-	shuffleArr,
-	Time
-} from 'e';
+import { calcPercentOfNum, calcWhatPercent, percentChance, reduceNumByPercent, shuffleArr, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { constructGearSetup, GearStats } from '../gear';
+import { TheatreOfBloodOptions } from '../simulation/tob';
 import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
+import resolveItems from '../util/resolveItems';
 
 export const bareMinStats: Skills = {
 	attack: 90,
@@ -28,91 +19,90 @@ export const bareMinStats: Skills = {
 	prayer: 77
 };
 
+export const TOBRooms = [
+	{
+		name: 'Maiden',
+		difficultyRating: 1
+	},
+	{
+		name: 'Bloat',
+		difficultyRating: 4
+	},
+	{
+		name: 'Nylocas',
+		difficultyRating: 3
+	},
+	{
+		name: 'Soteseteg',
+		difficultyRating: 2
+	},
+	{
+		name: 'Xarps',
+		difficultyRating: 2
+	},
+	{
+		name: 'Vitir Verizk',
+		difficultyRating: 6
+	}
+];
+
+// IF WHOLE TEAM DIES IN SAME ROOM, MUST KILL RAID
+export function calculateTOBDeaths(kc: number, _hardKC: number, _isHardMode: boolean): number[] {
+	let deaths: number[] = [];
+
+	let baseDeathChance = 0;
+	if (kc < 5) {
+		baseDeathChance = 95;
+	}
+
+	for (let i = 0; i < TOBRooms.length; i++) {
+		const room = TOBRooms[i];
+		if (percentChance(room.difficultyRating * baseDeathChance)) {
+			deaths.push(i);
+		}
+	}
+
+	return deaths;
+}
+
+export const baseTOBUniques = resolveItems([
+	'Scythe of vitur',
+	'Ghrazi rapier',
+	'Sanguinesti staff',
+	'Justiciar faceguard',
+	'Justiciar chestguard',
+	'Justiciar legguards',
+	'Avernic defender hilt'
+]);
+
+export const TOBUniques = resolveItems([
+	...baseTOBUniques,
+	"Lil' zik",
+	'Sanguine dust',
+	'Sanguine ornament kit',
+	'Holy ornament kit'
+]);
+
 export function hasMinTOBRequirements(user: KlasaUser) {
 	return skillsMeetRequirements(user.rawSkills, bareMinStats);
 }
 
-function kcPointsEffect(kc: number) {
-	if (kc < 5) return -70;
-	if (kc < 10) return -40;
-	if (kc < 15) return -25;
-	if (kc < 25) return -10;
-	if (kc < 50) return -5;
-	if (kc < 100) return 10;
-	if (kc < 150) return 20;
-	if (kc < 200) return 25;
-	return 30;
-}
-
-export async function createTOBTeam(
-	users: KlasaUser[],
-	cm: boolean
-): Promise<Array<{ deaths: number; deathChance: number } & ChambersOfXericOptions['team'][0]>> {
-	let res = [];
+export async function createTOBTeam(users: KlasaUser[], hardMode: boolean): Promise<TheatreOfBloodOptions['team']> {
+	let res: TheatreOfBloodOptions['team'] = [];
 	for (const u of users) {
-		let points = 24_000;
-		const { total } = calculateUserGearPercents(u);
-		let deathChance = 20;
-		if (total < 30) {
-			points = 1000;
-			deathChance += 20;
-		} else if (total < 50) {
-			points = 5000;
-			deathChance += 10;
-		} else {
-			points = increaseNumByPercent(points, total / 10);
-			deathChance -= calcPercentOfNum(total, 10);
-		}
+		const [kc, hardKC] = await Promise.all([
+			u.getMinigameScore('raids'),
+			u.getMinigameScore('raids_challenge_mode')
+		]);
 
-		const kc = await u.getMinigameScore(cm ? 'raids_challenge_mode' : 'raids');
-		const kcChange = kcPointsEffect(kc);
-		if (kcChange < 0) points = reduceNumByPercent(points, Math.abs(kcChange));
-		else points = increaseNumByPercent(points, kcChange);
+		let deaths = calculateTOBDeaths(kc, hardKC, hardMode);
 
-		const kcPercent = Math.min(100, calcWhatPercent(kc, 100));
-		if (kc < 30) deathChance += Math.max(0, 30 - kc);
-		deathChance -= calcPercentOfNum(kcPercent, 10);
-
-		if (users.length > 1) {
-			points -= Math.min(6, Math.max(3, users.length)) * Math.min(1600, calcPercentOfNum(15, points));
-		} else {
-			deathChance += 5;
-		}
-
-		if (cm) {
-			deathChance *= 2;
-			points = increaseNumByPercent(points, 40);
-		}
-		deathChance += 1;
-
-		if (cm && kc > 20) {
-			points += 5000;
-		}
-
-		let deaths = 0;
-		for (let i = 0; i < randInt(1, 3); i++) {
-			if (percentChance(deathChance)) {
-				points = reduceNumByPercent(points, randInt(36, 44));
-				++deaths;
-			}
-		}
-
-		points = Math.floor(randomVariation(points, 5));
-		if (points < 1 || points > 60_000) {
-			captureMessage(`${u.username} had ${points} points in a team of ${users.length}.`);
-			points = 10_000;
-		}
-
-		const bank = u.bank();
 		res.push({
 			id: u.id,
-			personalPoints: points,
-			canReceiveAncientTablet: !bank.has('Ancient tablet'),
-			canReceiveDust: true,
-			deaths,
-			deathChance
+			deaths
 		});
 	}
+
 	return res;
 }
 
@@ -152,7 +142,7 @@ function calcSetupPercent(
 	return totalPercent;
 }
 
-export const maxMageGear = constructGearSetup({
+export const TOBMaxMageGear = constructGearSetup({
 	head: 'Ancestral hat',
 	neck: 'Occult necklace',
 	body: 'Ancestral robe top',
@@ -164,9 +154,9 @@ export const maxMageGear = constructGearSetup({
 	shield: 'Arcane spirit shield',
 	ring: 'Seers ring(i)'
 });
-const maxMage = new Gear(maxMageGear);
+const maxMage = new Gear(TOBMaxMageGear);
 
-export const maxRangeGear = constructGearSetup({
+export const TOBMaxRangeGear = constructGearSetup({
 	head: 'Void ranger helm',
 	neck: 'Necklace of anguish',
 	body: 'Elite void top',
@@ -178,9 +168,9 @@ export const maxRangeGear = constructGearSetup({
 	ring: 'Archers ring(i)',
 	ammo: 'Dragon arrow'
 });
-const maxRange = new Gear(maxRangeGear);
+const maxRange = new Gear(TOBMaxRangeGear);
 
-export const maxMeleeGear = constructGearSetup({
+export const TOBMaxMeleeGear = constructGearSetup({
 	head: 'Neitiznot faceguard',
 	neck: 'Amulet of torture',
 	body: 'Bandos chestplate',
@@ -192,9 +182,9 @@ export const maxMeleeGear = constructGearSetup({
 	shield: 'Avernic defender',
 	ring: 'Berserker ring(i)'
 });
-const maxMelee = new Gear(maxMeleeGear);
+const maxMelee = new Gear(TOBMaxMeleeGear);
 
-export function calculateUserGearPercents(user: KlasaUser) {
+export function calculateTOBUserGearPercents(user: KlasaUser) {
 	const melee = calcSetupPercent(
 		maxMelee.stats,
 		user.getGear('melee').stats,
@@ -230,6 +220,44 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
+export async function checkTOBUser(user: KlasaUser, _isHardMode: boolean): Promise<[false] | [true, string]> {
+	if (!user.hasMinion) {
+		return [true, "you don't have a minion."];
+	}
+	if (user.minionIsBusy) {
+		return [true, 'your minion is busy.'];
+	}
+	if (!hasMinTOBRequirements(user)) {
+		return [true, "You don't meet the stat requirements to do the Chambers of Xeric."];
+	}
+
+	if (!user.owns(minimumCoxSuppliesNeeded)) {
+		return [
+			true,
+			`You don't have enough items, you need a minimum of this amount of items: ${minimumCoxSuppliesNeeded}.`
+		];
+	}
+	const { total } = calculateTOBUserGearPercents(user);
+	if (total < 20) {
+		return [true, 'Your gear is terrible! You do not stand a chance in the Chambers of Xeric'];
+	}
+
+	if (!user.owns('Rune pouch')) {
+		return [true, `${user.username} doesn't own a Rune pouch.`];
+	}
+
+	const cost = await calcTOBInput(user);
+	if (!user.owns(cost)) {
+		return [true, `${user.username} doesn't own ${cost}`];
+	}
+
+	if (!user.getGear('melee').hasEquipped(['Fire cape', 'Infernal cape'])) {
+		return [true, 'You need atleast an Infernal or Fire cape in your melee setup!'];
+	}
+
+	return [false];
+}
+
 export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Promise<string | null> {
 	const userWithoutSupplies = users.find(u => !u.owns(minimumCoxSuppliesNeeded));
 	if (userWithoutSupplies) {
@@ -237,26 +265,11 @@ export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Pro
 	}
 
 	for (const user of users) {
-		const { total } = calculateUserGearPercents(user);
-		if (total < 20) {
-			return "Your gear is terrible! You do not stand a chance in the Chamber's of Xeric.";
-		}
-		if (!hasMinTOBRequirements(user)) {
-			return `${user.username} doesn't meet the stat requirements to do the Chamber's of Xeric.`;
-		}
-
-		if (user.minionIsBusy) {
-			return `${user.username}'s minion is already doing an activity and cannot join.`;
-		}
-		if (!user.owns('Rune pouch')) {
-			return `${user.username} doesn't own a Rune pouch.`;
-		}
-		if (!user.getGear('melee').hasEquipped(['Fire cape', 'Infernal cape'])) {
-			return 'You need atleast an Infernal or Fire cape in your melee setup!';
-		}
-
-		if (isHardMode) {
-			// TODOTODO
+		const checkResult = await checkTOBUser(user, isHardMode);
+		if (!checkResult[0]) {
+			continue;
+		} else {
+			return checkResult[1];
 		}
 	}
 
@@ -330,7 +343,7 @@ export async function calcTOBDuration(
 		let userPercentChange = 0;
 
 		// Reduce time for gear
-		const { total } = calculateUserGearPercents(u);
+		const { total } = calculateTOBUserGearPercents(u);
 		userPercentChange += calcPerc(total, speedReductionForGear);
 
 		// Reduce time for KC

@@ -1,9 +1,8 @@
-import { reduceNumByPercent, roll, sumArr } from 'e';
+import { calcWhatPercent, reduceNumByPercent, roll, sumArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { ItemBank } from '../types';
 import { assert, convertLootBanksToItemBanks, JSONClone, percentChance } from '../util';
 
 export interface TeamMember {
@@ -13,27 +12,6 @@ export interface TeamMember {
 	 */
 	deaths: number[];
 }
-
-// const Rooms = [
-// 	{
-// 		name: 'Maiden'
-// 	},
-// 	{
-// 		name: 'Bloat'
-// 	},
-// 	{
-// 		name: 'Nylocas'
-// 	},
-// 	{
-// 		name: 'Soteseteg'
-// 	},
-// 	{
-// 		name: 'Xarps'
-// 	},
-// 	{
-// 		name: 'Vitir Verizk'
-// 	}
-// ];
 
 export interface TheatreOfBloodOptions {
 	/**
@@ -105,7 +83,9 @@ export class TheatreOfBloodClass {
 		}
 
 		let petChance = 650;
-		petChance *= member.numDeaths;
+		if (member.numDeaths > 0) {
+			petChance *= member.numDeaths;
+		}
 		if (roll(petChance)) {
 			loot.add("Lil' zik");
 		}
@@ -126,9 +106,7 @@ export class TheatreOfBloodClass {
 		return table.roll().item;
 	}
 
-	public complete(_options: TheatreOfBloodOptions): {
-		[key: string]: ItemBank;
-	} {
+	public complete(_options: TheatreOfBloodOptions) {
 		const options = JSONClone(_options);
 		assert(options.team.length >= 1 || options.team.length <= 5, 'TOB team must have 1-5 members');
 
@@ -149,10 +127,10 @@ export class TheatreOfBloodClass {
 		const totalDeaths = sumArr(parsedTeam.map(i => i.numDeaths));
 
 		let percentBaseChanceOfUnique = 11;
-		for (let i = 0; i < totalDeaths; i++) {
-			percentBaseChanceOfUnique = reduceNumByPercent(percentBaseChanceOfUnique, 13.35);
+		const reductionFactor = 100 - calcWhatPercent(teamPoints, maxPointsTeamCanGet);
+		if (reductionFactor > 0) {
+			percentBaseChanceOfUnique = reduceNumByPercent(percentBaseChanceOfUnique, reductionFactor);
 		}
-		assert(percentBaseChanceOfUnique === 11, 'should be 11');
 
 		const purpleReceived = percentChance(percentBaseChanceOfUnique);
 		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;
@@ -167,7 +145,13 @@ export class TheatreOfBloodClass {
 			}
 		}
 
-		return convertLootBanksToItemBanks(lootResult);
+		return {
+			loot: convertLootBanksToItemBanks(lootResult),
+			percentChanceOfUnique: percentBaseChanceOfUnique,
+			totalDeaths,
+			teamPoints,
+			reductionFactor
+		};
 	}
 }
 

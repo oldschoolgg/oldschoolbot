@@ -246,7 +246,7 @@ export default class extends BotCommand {
 			}! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. There must be 2+ users in the party.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}

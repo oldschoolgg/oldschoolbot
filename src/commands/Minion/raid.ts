@@ -164,7 +164,7 @@ export default class extends BotCommand {
 			message: `${msg.author.username} is hosting a ${
 				isChallengeMode ? '**Challenge mode** ' : ''
 			}Chambers of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}

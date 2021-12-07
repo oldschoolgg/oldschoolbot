@@ -73,6 +73,9 @@ export namespace ClientSettings {
 		export const CreateCost = T<O.Readonly<ItemBank>>('create_cost');
 		export const CreateLoot = T<O.Readonly<ItemBank>>('create_loot');
 
+		export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
+		export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');

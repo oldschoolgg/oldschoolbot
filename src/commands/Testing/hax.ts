@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { BitField, MAX_QP } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
@@ -24,6 +25,22 @@ export default class extends BotCommand {
 		if (msg.flagArgs.t3) {
 			await msg.author.settings.update(UserSettings.BitField, BitField.IsPatronTier3);
 			return msg.channel.send('Toggled T3 perks.');
+		}
+
+		if (msg.flagArgs.tob) {
+			const loot = new Bank()
+				.add('Saradomin brew(4)', 10_000)
+				.add('Super restore(4)', 5000)
+				.add('Stamina potion(4)', 1000)
+				.add('Super combat potion(4)', 100)
+				.add('Cooked karambwan', 1000)
+				.add('Ranging potion(4)', 1000)
+				.add('Shark', 5000);
+			await msg.author.addItemsToBank(loot);
+			await msg.author.settings.update(UserSettings.Gear.Melee, TOBMaxMeleeGear);
+			await msg.author.settings.update(UserSettings.Gear.Range, TOBMaxRangeGear);
+			await msg.author.settings.update(UserSettings.Gear.Mage, TOBMaxMageGear);
+			return msg.channel.send(`Gave you ${loot}, all BIS setups`);
 		}
 
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));

@@ -34,6 +34,8 @@ Client.defaultClientSchema
 	.add('nightmare_cost', 'any', { default: {} })
 	.add('create_cost', 'any', { default: {} })
 	.add('create_loot', 'any', { default: {} })
+	.add('tob_cost', 'any', { default: {} })
+	.add('tob_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
