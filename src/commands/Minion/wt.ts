@@ -10,7 +10,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, bankHasItem, formatDuration } from '../../lib/util';
+import { addItemToBank, bankHasItem, formatDuration, skillingBoostPercent } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -42,6 +42,12 @@ export default class extends BotCommand {
 		// Up to a 10% boost for 99 WC
 		const wcBoost = (wcLevel + 1) / 10;
 		if (wcBoost > 1) messages.push(`${wcBoost.toFixed(2)}% boost for Woodcutting level`);
+		messages.push(
+			`${skillingBoostPercent(
+				msg.author,
+				'pyromancer'
+			)}% Firemaking XP boost for Pyromancer pieces in Skilling gear`
+		);
 		durationPerTodt = reduceNumByPercent(durationPerTodt, wcBoost);
 
 		const baseHealAmountNeeded = 20 * 8;

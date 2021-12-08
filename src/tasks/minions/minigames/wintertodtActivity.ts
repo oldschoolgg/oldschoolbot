@@ -6,11 +6,10 @@ import { Emoji, Events } from '../../../lib/constants';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
-import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, channelIsSendable } from '../../../lib/util';
+import { addBanks, bankHasItem, channelIsSendable, skillingBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -100,26 +99,9 @@ export default class extends Task {
 		const conXP = numberOfBraziers * constructionXPPerBrazier;
 		user.addXP({ skillName: SkillsEnum.Construction, amount: conXP });
 
-		// If they have the entire pyromancer outfit, give an extra 0.5% xp bonus
-		if (
-			user.getGear('skilling').hasEquipped(
-				Object.keys(Firemaking.pyromancerItems).map(i => parseInt(i)),
-				true
-			)
-		) {
-			const amountToAdd = Math.floor(fmXpToGive * (2.5 / 100));
-			fmXpToGive += amountToAdd;
-			fmBonusXP += amountToAdd;
-		} else {
-			// For each pyromancer item, check if they have it, give its' XP boost if so.
-			for (const [itemID, bonus] of Object.entries(Firemaking.pyromancerItems)) {
-				if (user.hasItemEquippedAnywhere(parseInt(itemID))) {
-					const amountToAdd = Math.floor(fmXpToGive * (bonus / 100));
-					fmXpToGive += amountToAdd;
-					fmBonusXP += amountToAdd;
-				}
-			}
-		}
+		const amountToAdd = Math.floor(fmXpToGive * (skillingBoostPercent(user, 'pyromancer') / 100));
+		fmXpToGive += amountToAdd;
+		fmBonusXP += amountToAdd;
 
 		await user.addXP({ skillName: SkillsEnum.Woodcutting, amount: wcXpToGive });
 		await user.addXP({ skillName: SkillsEnum.Firemaking, amount: fmXpToGive });
