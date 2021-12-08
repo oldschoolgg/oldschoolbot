@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
+import { stoneSpirits } from '../minions/data/stoneSpirits';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 import { allHolidayItems } from './holidayItems';
@@ -1651,7 +1652,8 @@ export const slayerCL = resolveItems([
 	// "Dagon'hai hat",
 	// "Dagon'hai robe top",
 	// "Dagon'hai robe bottom",
-	'Blood shard'
+	'Blood shard',
+	...stoneSpirits.map(i => i.spirit.id)
 ]);
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
