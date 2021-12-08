@@ -1,4 +1,4 @@
-import { randArrItem, uniqueArr } from 'e';
+import { randArrItem, roll, uniqueArr } from 'e';
 import { Items } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -58,6 +58,7 @@ export const ALL_PRIMAL = resolveItems([
 ]);
 
 export const PMBTable = new LootTable()
+	.oneIn(200, 'Mr. E')
 	.add('Heron')
 	.add('Rock golem')
 	.add('Beaver')
@@ -482,8 +483,8 @@ const cantBeDropped = [
 	...ALL_PRIMAL
 ] as number[];
 
-export const tmbTable: number[] = [];
-export const umbTable: number[] = [];
+export const tmbTable: number[] = [itemID('Mr. E')];
+export const umbTable: number[] = [itemID('Mr. E')];
 export const embTable: number[] = [];
 for (const item of Items.values()) {
 	if (item.customItemData?.cantDropFromMysteryBoxes === true) {
