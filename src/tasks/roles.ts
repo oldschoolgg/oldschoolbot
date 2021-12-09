@@ -411,7 +411,9 @@ LIMIT 2;`
 		}
 
 		async function monkeyKing() {
-			const res = await q<any>('SELECT id FROM users ORDER BY cardinality(monkeys_fought) DESC LIMIT 1;');
+			const res = await q<any>(
+				'SELECT id FROM users WHERE monkeys_fought IS NOT NULL ORDER BY cardinality(monkeys_fought) DESC LIMIT 1;'
+			);
 			result += await addRoles({ g: g!, users: [res[0].id], role: '886180040465870918', badge: null });
 		}
 
