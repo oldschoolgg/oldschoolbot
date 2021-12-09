@@ -863,11 +863,13 @@ export default class extends BotCommand {
 			return msg.channel.send("You can't merge two tames from two different species!");
 		}
 
-		if (!msg.author.owns(getTameSpecies(currentTame).mergingCost)) {
+		const { mergingCost } = getTameSpecies(currentTame);
+
+		if (!msg.author.owns(mergingCost)) {
 			return msg.channel.send(
-				`You don't have enough materials for this ritual. You need ${
-					getTameSpecies(currentTame).mergingCost
-				}. You are missing **${getTameSpecies(currentTame).mergingCost.clone().remove(msg.author.bank())}**.`
+				`You don't have enough materials for this ritual. You need ${mergingCost}. You are missing **${mergingCost
+					.clone()
+					.remove(msg.author.bank())}**.`
 			);
 		}
 
@@ -892,6 +894,9 @@ export default class extends BotCommand {
 				toSelect
 			)}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
 		);
+
+		await msg.author.removeItemsFromBank(mergingCost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.TameMergingCost, mergingCost);
 
 		// Set the merged tame activities to the tame that is consuming it
 		await prisma.tameActivity.updateMany({
