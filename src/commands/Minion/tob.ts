@@ -44,6 +44,7 @@ export default class extends BotCommand {
 
 	async _graph(user: KlasaUser, teamSize: number, hardMode: boolean) {
 		let duration = [];
+		let successRates = [];
 		for (let i = 0; i < 250; i++) {
 			const t = await createTOBTeam({
 				team: new Array(teamSize).fill(user),
@@ -51,6 +52,22 @@ export default class extends BotCommand {
 				kcOverride: [i, i],
 				disableVariation: true
 			});
+
+			let wins = 0;
+			const winRateSampleSize = 25;
+			for (let o = 0; o < winRateSampleSize; o++) {
+				const sim = await createTOBTeam({
+					team: new Array(teamSize).fill(user),
+					hardMode,
+					kcOverride: [i, i],
+					disableVariation: true
+				});
+				if (!sim.wipedRoom) {
+					wins++;
+				}
+			}
+			let successRate = calcWhatPercent(wins, winRateSampleSize);
+			successRates.push(successRate);
 			duration.push(t.duration);
 		}
 		duration = duration.map(i => i / Time.Minute);
@@ -60,10 +77,10 @@ export default class extends BotCommand {
 				labels: [...Array(duration.length).keys()].map(i => `${i + 1}`),
 				datasets: [
 					{
-						label: 'Cumulative Death Chance',
+						label: 'Success rate (%)',
 						backgroundColor: 'rgb(255, 0, 0)',
 						borderColor: 'rgb(255, 0, 0)',
-						data: [],
+						data: successRates,
 						fill: false,
 						yAxisID: 'left'
 					},

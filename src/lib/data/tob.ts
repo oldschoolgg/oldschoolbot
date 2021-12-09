@@ -58,19 +58,18 @@ interface TOBDeaths {
 	deathChances: { name: string; deathChance: number }[];
 }
 
-// IF WHOLE TEAM DIES IN SAME ROOM, MUST KILL RAID
 export function calculateTOBDeaths(kc: number, hardKC: number, isHardMode: boolean): TOBDeaths {
 	let deaths: number[] = [];
 	let deathChances: { name: string; deathChance: number }[] = [];
 
-	let baseDeathChance = 3;
-	if (kc < 5) {
-		baseDeathChance = 35;
-	}
+	let baseDeathChance = Math.floor(122 - (Math.log(kc + 1) / Math.log(Math.sqrt(35))) * 39);
+	// if (attempts < 30) baseDeathChance += 30 - attempts;
 
 	if (isHardMode) {
 		baseDeathChance += 100 - hardKC;
 	}
+
+	baseDeathChance = Math.max(Math.min(baseDeathChance, 99.9), 0.3);
 
 	for (let i = 0; i < TOBRooms.length; i++) {
 		const room = TOBRooms[i];
