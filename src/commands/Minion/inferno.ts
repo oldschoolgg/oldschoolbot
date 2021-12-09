@@ -597,6 +597,30 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			realDuration
 		} = res;
 
+		let returnMessage = `
+**KC:** ${zukKC}
+**Attempts:** ${attempts}
+		
+**Duration:** ${formatDuration(duration.value)}
+**Boosts:** ${duration.messages.join(', ')} ${
+			duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
+		}
+**Range Attack Bonus:** ${usersRangeStats.attack_ranged}
+**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${
+			preZukDeathChance.missed.length === 0
+				? ''
+				: `*(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*`
+		}
+**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${
+			zukDeathChance.missed.length === 0
+				? ''
+				: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
+		}`;
+
+		if (msg.flagArgs.chance) {
+			return msg.channel.send(returnMessage);
+		}
+
 		let realCost = new Bank();
 		try {
 			realCost = (await msg.author.specialRemoveItems(cost)).realCost;
@@ -628,25 +652,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		updateBankSetting(this.client, ClientSettings.EconomyStats.InfernoCost, realCost);
 
 		return msg.channel.send({
-			content: `
-**KC:** ${zukKC}
-**Attempts:** ${attempts}
-
-**Duration:** ${formatDuration(duration.value)}
-**Boosts:** ${duration.messages.join(', ')} ${
-				duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
-			}
-**Range Attack Bonus:** ${usersRangeStats.attack_ranged}
-**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${
-				preZukDeathChance.missed.length === 0
-					? ''
-					: `*(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*`
-			}
-**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${
-				zukDeathChance.missed.length === 0
-					? ''
-					: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
-			}
+			content: `${returnMessage}
 
 **Items To Be Used:** ${realCost}`,
 			files: [
