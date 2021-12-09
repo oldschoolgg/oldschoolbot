@@ -70,7 +70,7 @@ export const tameSpecies: Species[] = [
 			.add('Onyx', 10)
 			.add('Draconic visage', 1)
 			.add('Soul rune', 2500)
-			.add('Elder rune', 1000)
+			.add('Elder rune', 100)
 			.add('Astral rune', 600)
 			.add('Coins', 10_000_000),
 		emoji: '<:dragonEgg:858948148641660948>'
@@ -95,7 +95,7 @@ export const tameSpecies: Species[] = [
 			.add('Magic banana', 50)
 			.add('Chimpling jar')
 			.add('Soul rune', 2500)
-			.add('Elder rune', 1000)
+			.add('Elder rune', 100)
 			.add('Astral rune', 600)
 			.add('Coins', 10_000_000)
 	}
