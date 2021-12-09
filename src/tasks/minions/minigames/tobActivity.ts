@@ -4,33 +4,30 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { createTOBTeam, TOBRooms, TOBUniques } from '../../../lib/data/tob';
-import { incrementMinigameScore, runCommand } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { filterBankFromArrayOfItems, updateBankSetting } from '../../../lib/util';
+import { convertPercentChance, filterBankFromArrayOfItems, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {
 		const { channelID, users, hardMode, leader } = data;
 		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
-		const team = await createTOBTeam(allUsers, hardMode);
+		const team = await createTOBTeam({ team: allUsers, hardMode });
 
 		const result = TheatreOfBlood.complete({
 			hardMode,
-			team
+			team: team.parsedTeam.map(t => ({ id: t.id, deaths: t.deaths }))
 		});
 
 		const totalLoot = new Bank();
 
 		let resultMessage = `<@${leader}> Your ${hardMode ? 'Hard Mode Raid' : 'Raid'} has finished.
 
-
-Unique chance: ${result.percentChanceOfUnique}
-Reduction factor: ${result.reductionFactor}
+Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})
 Total Deaths: ${result.totalDeaths}
 
 `;
@@ -39,7 +36,7 @@ Total Deaths: ${result.totalDeaths}
 		for (let [userID, _userLoot] of Object.entries(result.loot)) {
 			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
-			const { deaths } = team.find(u => u.id === user.id)!;
+			const { deaths } = team.parsedTeam.find(u => u.id === user.id)!;
 
 			const userLoot = new Bank(_userLoot);
 
@@ -67,31 +64,6 @@ Total Deaths: ${result.totalDeaths}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBLoot, totalLoot.bank);
 
-		if (allUsers.length === 1) {
-			handleTripFinish(
-				this.client,
-				allUsers[0],
-				channelID,
-				resultMessage,
-				res => {
-					const flags: Record<string, string> = hardMode ? { hard: 'hard' } : {};
-
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					if (!res.prompter) res.prompter = {};
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					res.prompter.flags = flags;
-
-					allUsers[0].log('continued trip of hard tob');
-					return runCommand(res, 'tob', [], true);
-				},
-				undefined,
-				data,
-				null
-			);
-		} else {
-			sendToChannelID(this.client, channelID, { content: resultMessage });
-		}
+		sendToChannelID(this.client, channelID, { content: resultMessage });
 	}
 }

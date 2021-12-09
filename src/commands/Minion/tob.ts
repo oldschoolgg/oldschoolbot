@@ -1,15 +1,19 @@
-import { calcWhatPercent } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { MessageAttachment } from 'discord.js';
+import { calcWhatPercent, Time } from 'e';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
+import { table } from 'table';
 
 import { Emoji } from '../../lib/constants';
 import {
 	baseTOBUniques,
-	calcTOBDuration,
 	calcTOBInput,
+	calculateTOBDeaths,
 	calculateTOBUserGearPercents,
 	checkTOBTeam,
-	checkTOBUser
+	checkTOBUser,
+	createTOBTeam
 } from '../../lib/data/tob';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob';
@@ -22,7 +26,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[gear|start|sim]',
+			usage: '[gear|start|sim|graph]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -31,6 +35,92 @@ export default class extends BotCommand {
 			examples: ['+raid solo', '+raid mass'],
 			subcommands: true
 		});
+	}
+
+	async graph(msg: KlasaMessage) {
+		const result = await this._graph(msg.author, 5, false);
+		return msg.channel.send({ files: [result[0]] });
+	}
+
+	async _graph(user: KlasaUser, teamSize: number, hardMode: boolean) {
+		let duration = [];
+		for (let i = 0; i < 250; i++) {
+			const t = await createTOBTeam({
+				team: new Array(teamSize).fill(user),
+				hardMode,
+				kcOverride: [i, i],
+				disableVariation: true
+			});
+			duration.push(t.duration);
+		}
+		duration = duration.map(i => i / Time.Minute);
+		const options = {
+			type: 'line',
+			data: {
+				labels: [...Array(duration.length).keys()].map(i => `${i + 1}`),
+				datasets: [
+					{
+						label: 'Cumulative Death Chance',
+						backgroundColor: 'rgb(255, 0, 0)',
+						borderColor: 'rgb(255, 0, 0)',
+						data: [],
+						fill: false,
+						yAxisID: 'left'
+					},
+					{
+						label: 'Duration (Hours)',
+						fill: false,
+						backgroundColor: 'rgb(0, 0, 0)',
+						borderColor: 'rgb(0, 0, 0)',
+						data: duration,
+						yAxisID: 'right'
+					}
+				]
+			},
+			options: {
+				stacked: false,
+				title: {
+					display: true,
+					text: ''
+				},
+				scales: {
+					yAxes: [
+						{
+							id: 'right',
+							type: 'linear',
+							display: true,
+							position: 'right'
+						},
+						{
+							id: 'left',
+							type: 'linear',
+							display: true,
+							position: 'left',
+							gridLines: {
+								drawOnChartArea: false
+							}
+						}
+					]
+				}
+			}
+		};
+
+		const imageBuffer = await fetch(
+			`https://quickchart.io/chart?bkg=${encodeURIComponent('#fff')}&c=${encodeURIComponent(
+				JSON.stringify(options)
+			)}`
+		).then(result => result.buffer());
+
+		let arr = [['Attempts'].concat(options.data.datasets.map(i => i.label))];
+		for (let i = 1; i < options.data.datasets[0].data.length; i++) {
+			arr[i] = [(i - 1).toString()];
+			for (const dataset of options.data.datasets) {
+				arr[i].push(dataset.data[i - 1].toString());
+			}
+		}
+
+		const normalTable = table(arr);
+		return [imageBuffer, new MessageAttachment(Buffer.from(normalTable), 'Fletchables.txt')];
 	}
 
 	async sim(msg: KlasaMessage) {
@@ -43,7 +133,7 @@ export default class extends BotCommand {
 				{ id: '4', deaths: [] }
 			]
 		};
-		let its = 500_000;
+		let its = 100_000;
 		const totalLoot = new Bank();
 		const userLoot = new Bank();
 		for (let i = 0; i < its; i++) {
@@ -100,17 +190,18 @@ export default class extends BotCommand {
 			customDenier: user => checkTOBUser(user, isHardMode)
 		};
 
-		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
-		while (users.length < 4) {
-			users.push(msg.author);
-		}
+		const magna = await this.client.fetchUser('157797566833098752');
+		const benny = await this.client.fetchUser('507686806624534529');
+		let anime = await this.client.fetchUser('363917147052834819');
+
+		const users = [magna, benny, anime]; // (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
 
 		const teamCheckFailure = await checkTOBTeam(users, isHardMode);
 		if (teamCheckFailure) {
 			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
 		}
 
-		const { duration, totalReduction, reductions } = await calcTOBDuration(users, isHardMode);
+		const { duration, totalReduction, reductions } = await createTOBTeam({ team: users, hardMode: isHardMode });
 
 		let debugStr = '';
 
@@ -155,9 +246,11 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const hardKC = await msg.author.getMinigameScore('tob_hard');
 		const kc = await msg.author.getMinigameScore('tob');
+		const deathChances = calculateTOBDeaths(kc, hardKC, false);
 
 		return msg.channel.send(`**Theatre of Blood**
 KC: ${kc}
-Hard KC: ${hardKC}`);
+Hard KC: ${hardKC}
+Death Chances: ${deathChances.deathChances.map(i => `${i.name}[${i.deathChance}%]`).join(' ')}`);
 	}
 }

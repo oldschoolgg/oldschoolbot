@@ -1,4 +1,4 @@
-import { calcWhatPercent, reduceNumByPercent, roll, sumArr } from 'e';
+import { roll, sumArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -126,11 +126,7 @@ export class TheatreOfBloodClass {
 
 		const totalDeaths = sumArr(parsedTeam.map(i => i.numDeaths));
 
-		let percentBaseChanceOfUnique = 11;
-		const reductionFactor = 100 - calcWhatPercent(teamPoints, maxPointsTeamCanGet);
-		if (reductionFactor > 0) {
-			percentBaseChanceOfUnique = reduceNumByPercent(percentBaseChanceOfUnique, reductionFactor);
-		}
+		let percentBaseChanceOfUnique = 11 * (teamPoints / maxPointsTeamCanGet);
 
 		const purpleReceived = percentChance(percentBaseChanceOfUnique);
 		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;
@@ -149,8 +145,7 @@ export class TheatreOfBloodClass {
 			loot: convertLootBanksToItemBanks(lootResult),
 			percentChanceOfUnique: percentBaseChanceOfUnique,
 			totalDeaths,
-			teamPoints,
-			reductionFactor
+			teamPoints
 		};
 	}
 }

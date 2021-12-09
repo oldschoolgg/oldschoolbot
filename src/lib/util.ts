@@ -574,3 +574,7 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 	);
 	return result.join(', ');
 }
+
+export function convertPercentChance(percent: number) {
+	return (1 / (percent / 100)).toFixed(1);
+}
