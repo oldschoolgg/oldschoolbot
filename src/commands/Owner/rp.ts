@@ -9,6 +9,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { evalMathExpression } from '../../lib/expressionParser';
+import { prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -622,6 +623,14 @@ LIMIT 10;
 				await msg.channel.send('Rebooting...');
 				await Promise.all(this.client.providers.map(provider => provider.shutdown()));
 				process.exit();
+			}
+			case 'owned': {
+				if (typeof input !== 'string') return;
+				const item = getOSItem(input);
+				const result: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
+FROM users
+WHERE bank->>'${item.id}' IS NOT NULL;`);
+				return msg.channel.send(`There are ${result[0].qty.toLocaleString()} ${item.name} owned by everyone.`);
 			}
 		}
 	}
