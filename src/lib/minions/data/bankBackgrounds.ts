@@ -495,6 +495,20 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['363917147052834819']
+	},
+	{
+		id: 87,
+		name: 'Hekla CustomBG',
+		image: null,
+		available: false,
+		owners: ['255767128051810305']
+	},
+	{
+		id: 88,
+		name: 'Benny CustomBG',
+		image: null,
+		available: false,
+		owners: ['507686806624534529']
 	}
 ];
 

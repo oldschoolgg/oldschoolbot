@@ -66,9 +66,13 @@ export const tameSpecies: Species[] = [
 		egg: getOSItem(48_210),
 		mergingCost: new Bank()
 			.add('Ignecarus scales', 100)
-			.add('Zenyte', 2)
+			.add('Zenyte', 6)
+			.add('Onyx', 10)
+			.add('Draconic visage', 1)
 			.add('Soul rune', 2500)
-			.add('Elder rune', 100),
+			.add('Elder rune', 100)
+			.add('Astral rune', 600)
+			.add('Coins', 10_000_000),
 		emoji: '<:dragonEgg:858948148641660948>'
 	},
 	{
@@ -87,11 +91,13 @@ export const tameSpecies: Species[] = [
 		egg: getOSItem('Monkey egg'),
 		emoji: '<:monkey_egg:883326001445224488>',
 		mergingCost: new Bank()
-			.add('Banana', 1000)
+			.add('Banana', 3000)
 			.add('Magic banana', 50)
 			.add('Chimpling jar')
 			.add('Soul rune', 2500)
 			.add('Elder rune', 100)
+			.add('Astral rune', 600)
+			.add('Coins', 10_000_000)
 	}
 ];
 
