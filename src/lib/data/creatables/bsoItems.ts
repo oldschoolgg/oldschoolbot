@@ -872,6 +872,16 @@ const dragonBoneCreatables: Createable[] = [
 		})
 	},
 	{
+		name: 'Dragonbone mage gloves',
+		inputItems: resolveNameBank({
+			'Dragonbone upgrade kit': 1,
+			'Infinity gloves': 1
+		}),
+		outputItems: resolveNameBank({
+			'Dragonbone mage gloves': 1
+		})
+	},
+	{
 		name: 'Dragonbone mage top',
 		inputItems: resolveNameBank({
 			'Dragonbone upgrade kit': 1,
