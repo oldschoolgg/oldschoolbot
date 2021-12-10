@@ -46,6 +46,8 @@ Client.defaultUserSchema
 	.add('pest_control_points', 'integer', { default: 0 })
 	.add('inferno_attempts', 'integer', { default: 0 })
 	.add('infernal_cape_sacrifices', 'integer', { default: 0 })
+	.add('tob_attempts', 'integer', { default: 0 })
+	.add('tob_hard_attempts', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('kourend_favour', 'any', { default: { ...baseUserKourendFavour } })
 	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })

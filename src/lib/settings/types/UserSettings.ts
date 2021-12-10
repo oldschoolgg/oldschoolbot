@@ -97,6 +97,9 @@ export namespace UserSettings {
 
 		export const InfernoAttempts = T<number>('inferno_attempts');
 		export const InfernalCapesSacrificed = T<number>('infernal_cape_sacrifices');
+
+		export const TobAttempts = T<number>('tob_attempts');
+		export const TobHardModeAttempts = T<number>('tob_hard_attempts');
 	}
 
 	export namespace Minion {
