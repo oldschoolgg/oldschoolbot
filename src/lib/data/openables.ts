@@ -10,6 +10,7 @@ import CasketTable from '../simulation/casket';
 import CrystalChestTable from '../simulation/crystalChest';
 import { RuneTable } from '../simulation/seedTable';
 import { ExoticSeedsTable } from '../simulation/sharedTables';
+import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
@@ -28,6 +29,10 @@ interface Openable {
 	table: (() => number) | LootTable;
 	emoji: Emoji | string;
 }
+
+const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;
+const MR_E_DROPRATE_FROM_PMB = 200;
+const MR_E_DROPRATE_FROM_EMB = 500;
 
 export const MysteryBoxes = new LootTable()
 	.oneIn(40, 'Pet Mystery Box')
@@ -58,7 +63,7 @@ export const ALL_PRIMAL = resolveItems([
 ]);
 
 export const PMBTable = new LootTable()
-	.oneIn(200, 'Mr. E')
+	.oneIn(MR_E_DROPRATE_FROM_PMB, 'Mr. E')
 	.add('Heron')
 	.add('Rock golem')
 	.add('Beaver')
@@ -483,8 +488,8 @@ const cantBeDropped = [
 	...ALL_PRIMAL
 ] as number[];
 
-export const tmbTable: number[] = [itemID('Mr. E')];
-export const umbTable: number[] = [itemID('Mr. E')];
+export const tmbTable: number[] = [];
+export const umbTable: number[] = [];
 export const embTable: number[] = [];
 for (const item of Items.values()) {
 	if (item.customItemData?.cantDropFromMysteryBoxes === true) {
@@ -520,14 +525,20 @@ function randomEquippable(): number {
 	const res = randArrItem(embTable);
 	if (cantBeDropped.includes(res)) return randomEquippable();
 	if (res >= 40_000 && res <= 50_000) return randomEquippable();
+	if (roll(MR_E_DROPRATE_FROM_EMB)) {
+		return itemID('Mr. E');
+	}
 	return res;
 }
 
 export function getMysteryBoxItem(tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
-	let result = table[Math.floor(Math.random() * table.length)];
+	let result = randArrItem(table);
 	if (cantBeDropped.includes(result)) return getMysteryBoxItem(tradeables);
 	if (result >= 40_000 && result <= 50_000) return getMysteryBoxItem(tradeables);
+	if (roll(MR_E_DROPRATE_FROM_UMB_AND_TMB)) {
+		return itemID('Mr. E');
+	}
 	return result;
 }
 

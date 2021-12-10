@@ -67,17 +67,30 @@ const defaultImpTable = new LootTable()
 	.add('Chimpling jar', 1, 19)
 	.add('Eternal impling jar', 1, 7)
 	.add('Mystery impling jar', 1, 3);
+const mrETable = new LootTable()
+	.add('Earth impling jar', 1, 68)
+	.add('Essence impling jar', 1, 49)
+	.add('Eclectic impling jar', 1, 44)
+	.add('Nature impling jar', 1, 63)
+	.add('Magpie impling jar', 1, 44)
+	.add('Ninja impling jar', 1, 41)
+	.add('Dragon impling jar', 1, 24)
+	.add('Infernal impling jar', 1, 9)
+	.add('Chimpling jar', 1, 19)
+	.add('Eternal impling jar', 1, 7)
+	.add('Mystery impling jar', 1, 3);
 
 const IMPLING_CHANCE_PER_MINUTE = 98;
 
-type TWorldLocationImplingTable = Record<number, (caughtChance: number) => LootTable>;
+type TWorldLocationImplingTable = Record<number, (caughtChance: number, hasMrE: boolean) => LootTable>;
 
 const implingTableByWorldLocation: TWorldLocationImplingTable = {
 	[WorldLocations.Priffdinas]: caughtChance => {
 		const reductionFactor = IMPLING_CHANCE_PER_MINUTE / caughtChance;
 		return new LootTable({ limit: Math.floor(142 / reductionFactor) }).add('Crystal impling jar', 1, 1);
 	},
-	[WorldLocations.World]: caughtChance => new LootTable().oneIn(caughtChance, defaultImpTable)
+	[WorldLocations.World]: (caughtChance, hasMrE) =>
+		new LootTable().oneIn(caughtChance, hasMrE ? mrETable : defaultImpTable)
 };
 
 export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
@@ -95,7 +108,7 @@ export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskO
 	if (hasScrollOfTheHunt) baseChance = Math.floor(baseChance / 2);
 	if (user.hasItemEquippedAnywhere('Hunter master cape')) baseChance = Math.floor(baseChance / 2);
 
-	const impTable = implingTableByWorldLocation[activityInArea(data)](baseChance);
+	const impTable = implingTableByWorldLocation[activityInArea(data)](baseChance, user.usingPet('Mr. E'));
 
 	for (let i = 0; i < minutes; i++) {
 		const loot = impTable.roll();
