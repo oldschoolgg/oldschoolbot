@@ -9,6 +9,7 @@ import botOpenables, { IronmanPMBTable } from '../../lib/data/openables';
 import { emojiMap } from '../../lib/itemEmojiMap';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClueTier } from '../../lib/minions/types';
+import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -293,6 +294,24 @@ export default class extends BotCommand {
 		await msg.author.addItemsToBank(loot.values(), true, false);
 		if (loot.amount('Coins') > 0) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
+		}
+
+		if (loot.has('Mr. E')) {
+			const usersWith = await countUsersWithItemInCl(itemID('Mr. E'), false);
+			const ironmenWith = msg.author.isIronman ? await countUsersWithItemInCl(itemID('Mr. E'), true) : null;
+			const amountOwned = formatOrdinal(msg.author.cl().amount('Mr. E'));
+			this.client.emit(
+				Events.ServerNotification,
+				`<:MrE:918888222417887352> **${
+					msg.author.username
+				}** just received their ${amountOwned} Mr. E from their ${nthOpenable} ${botOpenable.name}!${
+					Boolean(previousCL[itemID('Mr. E')])
+						? ''
+						: ` They are the ${formatOrdinal(usersWith)} person to get one${
+								ironmenWith === null ? '' : `, and the ${formatOrdinal(ironmenWith)} ironman to get one`
+						  }.`
+				}`
+			);
 		}
 
 		return msg.channel.sendBankImage({
