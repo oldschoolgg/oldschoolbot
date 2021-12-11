@@ -20,7 +20,7 @@ export const bareMinStats: Skills = {
 	prayer: 77
 };
 
-interface TOBRoom {
+export interface TOBRoom {
 	name: string;
 	difficultyRating: number;
 }

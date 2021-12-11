@@ -1,4 +1,5 @@
 import { Peak } from '../../tasks/WildernessPeakInterval';
+import { TOBRoom } from '../data/tob';
 import { IPatchData } from '../minions/farming/types';
 import { MinigameName } from '../settings/minigames';
 import { KourendFavour } from './../minions/data/kourendFavour';
@@ -324,6 +325,7 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	hardMode: boolean;
+	fakeDuration?: number;
 }
 
 export interface CollectingOptions extends ActivityTaskOptions {
