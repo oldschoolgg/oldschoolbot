@@ -10,13 +10,11 @@ import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
 
 export default class extends Task {
 	async run(data: TearsOfGuthixActivityTaskOptions) {
-		console.log(data)
 		const { userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		await incrementMinigameScore(userID, 'tears_of_guthix', 1);
 		await user.settings.update(UserSettings.LastTearsOfGuthixTimestamp, new Date().getTime());
 
-		console.log(user.rawSkills)
 		// Find lowest level skill
 		let lowestXp = Object.values(user.rawSkills)[0];
 		let lowestSkill = Object.keys(user.rawSkills)[0];
@@ -47,7 +45,7 @@ export default class extends Task {
 		
 		let xpToGive = tears * scaledXPperTear;
 
-		// 10% boost for Lumbridge Hard
+		// 10% boost for Lumbridge&Draynor Hard
 		const [hasDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.hard); 
 		if ( hasDiary ) xpToGive = increaseNumByPercent(xpToGive, 10);
 
@@ -55,7 +53,7 @@ export default class extends Task {
 
 		let output = `${user}, ${
 			user.minionName
-		} finished telling Juna a story and drinking from the Tears of Guthix. ${xpStr.toLocaleString()}`;
+		} finished telling Juna a story and drinking from the Tears of Guthix and collected ${tears} tears.\nLowest XP skill is ${lowestSkill}.\n${xpStr.toLocaleString()}.${hasDiary?"\n10% XP bonus for Lumbridge & Draynor Hard diary.":""}`;
 
 		handleTripFinish(
 			this.client,
