@@ -1,6 +1,7 @@
 import { objectEntries, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { Emoji } from '../../lib/constants';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -21,6 +22,8 @@ export default class extends BotCommand {
 		});
 	}
 
+	@minionNotBusy
+	@requiresMinion
 	async run(msg: KlasaMessage) {
 		const skillReqs = {
 			[SkillsEnum.Firemaking]: 49,
@@ -37,10 +40,10 @@ export default class extends BotCommand {
 		const currentDate = new Date().getTime();
 		const lastPlayedDate = msg.author.settings.get(UserSettings.LastTearsOfGuthixTimestamp);
 		const difference = currentDate - lastPlayedDate;
-
+		
 		// If they have already claimed a ToG in the past 7days
 		if (difference < Time.Day * 7) {
-			const duration = formatDuration(Date.now() - (difference + Time.Day * 7));
+			const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Day * 7));
 			return msg.channel.send(`**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${duration}.`);
 		}
 
