@@ -2137,7 +2137,8 @@ export const gracefulCapes = [
 	'Dark graceful cape',
 	'Agility cape',
 	'Agility cape (t)',
-	'Max cape'
+	'Max cape',
+	'Agility master cape'
 ];
 
 export const gracefulCL = resolveItems([
@@ -2147,7 +2148,7 @@ export const gracefulCL = resolveItems([
 	...gracefulFeet,
 	...gracefulHands,
 	...gracefulCapes
-]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)']).includes(id));
+]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)','Agility master cape']).includes(id));
 
 export const gorajanWarriorOutfit = resolveItems([
 	'Gorajan warrior helmet',
