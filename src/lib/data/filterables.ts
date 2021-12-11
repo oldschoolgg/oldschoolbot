@@ -355,7 +355,8 @@ const secondaries = resolveItems([
 	'Crushed superior dragon bones',
 	'Amylase crystal',
 	'Bird nest',
-	'Cave nightshade'
+	'Cave nightshade',
+	'Cactus spine'
 ]);
 
 const bones = resolveItems([
@@ -419,7 +420,8 @@ const skilling = resolveItems([
 	...ores,
 	...herbs,
 	...smithingMisc,
-	...craftingItemsSet
+	...craftingItemsSet,
+	...secondaries
 ]);
 
 const godwarsGear = resolveItems([
@@ -728,16 +730,6 @@ const potions = resolveItems([
 ]);
 
 const herblore = resolveItems([
-	'Ashes',
-	'Cactus spine',
-	'Crushed nest',
-	'Desert goat horn',
-	'Limpwurt root',
-	'Mort myre fungus',
-	'Potato cactus',
-	"Red spiders' eggs",
-	'Snape grass',
-	'White berries',
 	'Avantoe potion (unf)',
 	'Cadantine potion (unf)',
 	'Dwarf weed potion (unf)',
@@ -753,20 +745,9 @@ const herblore = resolveItems([
 	'Toadflax potion (unf)',
 	'Torstol potion (unf)',
 	'Vial of water',
-	'Eye of newt',
-	'Unicorn horn dust',
-	'Volcanic ash',
-	'Chocolate dust',
-	"Toad's legs",
-	'Dragon scale dust',
-	'Wine of zamorak',
-	'Amylase crystal',
-	'Jangerberries',
-	'Poison ivy berries',
-	"Zulrah's scales",
-	'Crushed superior dragon bones',
 	...potions,
-	...herbs
+	...herbs,
+	...secondaries
 ]);
 
 const agility = resolveItems([...gracefulItems, 'Mark of grace', 'Amylase crystal']);
