@@ -271,16 +271,6 @@ export default class extends BotCommand {
 
 		const score = msg.author.getOpenableScore(botOpenable.itemID);
 		const nthOpenable = formatOrdinal(score + randInt(1, quantity));
-		if (loot.has("Lil' creator")) {
-			this.client.emit(
-				Events.ServerNotification,
-				`<:lil_creator:798221383951319111> **${msg.author.username}'s** minion, ${
-					msg.author.minionName
-				}, just received a Lil' creator! They've done ${await msg.author.getMinigameScore(
-					'soul_wars'
-				)} Soul wars games, and this is their ${nthOpenable} Spoils of war crate.`
-			);
-		}
 
 		if (botOpenable.itemID === itemID('Bag full of gems') && loot.has('Uncut onyx')) {
 			this.client.emit(
