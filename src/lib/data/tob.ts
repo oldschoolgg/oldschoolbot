@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { constructGearSetup, GearStats } from '../gear';
 import { getMinigameScore } from '../settings/minigames';
+import { UserSettings } from '../settings/types/UserSettings';
 import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { assert, formatSkillRequirements, randomVariation, skillsMeetRequirements } from '../util';
@@ -19,7 +20,7 @@ export const bareMinStats: Skills = {
 	prayer: 77
 };
 
-interface TOBRoom {
+export interface TOBRoom {
 	name: string;
 	difficultyRating: number;
 }
@@ -58,23 +59,34 @@ interface TOBDeaths {
 	deathChances: { name: string; deathChance: number }[];
 }
 
-export function calculateTOBDeaths(kc: number, hardKC: number, isHardMode: boolean): TOBDeaths {
+export function calculateTOBDeaths(
+	kc: number,
+	hardKC: number,
+	attempts: number,
+	hardAttempts: number,
+	isHardMode: boolean
+): TOBDeaths {
 	let deaths: number[] = [];
 	let deathChances: { name: string; deathChance: number }[] = [];
 
-	let baseDeathChance = Math.floor(122 - (Math.log(kc + 1) / Math.log(Math.sqrt(35))) * 39);
-	// if (attempts < 30) baseDeathChance += 30 - attempts;
+	// This shifts the graph left or right, to start getting kc sooner or later. Higher = sooner:
+	const minionLearningBase = isHardMode ? 5 : 1;
+	const minionLearning = minionLearningBase + Math.floor(Math.min(20, (isHardMode ? hardAttempts : attempts) / 2));
+	const basePosition = isHardMode ? 92 : 85;
+	const difficultySlider = 30; // Lower is harder. Be careful with this. (30 default).
+	const curveStrength = isHardMode ? 2 : 2.5; // 1 - 5. Higher numbers mean a slower learning curve. (2.5 default)
+	const baseKC = isHardMode ? hardKC : kc;
 
-	if (isHardMode) {
-		baseDeathChance += 100 - hardKC;
-	}
+	let baseDeathChance = Math.floor(
+		basePosition - (Math.log(baseKC / curveStrength + minionLearning) / Math.log(Math.sqrt(100))) * difficultySlider
+	);
 
-	baseDeathChance = Math.max(Math.min(baseDeathChance, 99.9), 0.3);
+	baseDeathChance = Math.max(Math.min(baseDeathChance, 99.9), 3);
 
 	for (let i = 0; i < TOBRooms.length; i++) {
 		const room = TOBRooms[i];
-		const deathChance = room.difficultyRating * baseDeathChance;
-		if (percentChance(room.difficultyRating * baseDeathChance)) {
+		const deathChance = Math.min(98, (1 + room.difficultyRating / 10) * baseDeathChance);
+		if (percentChance(deathChance)) {
 			deaths.push(i);
 		}
 		deathChances.push({ name: room.name, deathChance });
@@ -345,11 +357,13 @@ export async function createTOBTeam({
 	team,
 	hardMode,
 	kcOverride,
+	attemptsOverride,
 	disableVariation
 }: {
 	team: KlasaUser[];
 	hardMode: boolean;
 	kcOverride?: [number, number];
+	attemptsOverride?: [number, number];
 	disableVariation?: true;
 }): Promise<{
 	reductions: Record<string, number>;
@@ -371,6 +385,13 @@ export async function createTOBTeam({
 		const [kc, hardKC] =
 			kcOverride ?? (await Promise.all([u.getMinigameScore('tob'), u.getMinigameScore('tob_hard')]));
 
+		const [attempts, hardAttempts] =
+			attemptsOverride ??
+			(await Promise.all([
+				u.settings.get(UserSettings.Stats.TobAttempts),
+				u.settings.get(UserSettings.Stats.TobHardModeAttempts)
+			]));
+
 		let userPercentChange = 0;
 
 		// Reduce time for gear
@@ -391,7 +412,7 @@ export async function createTOBTeam({
 			}
 		}
 
-		const deathChances = calculateTOBDeaths(kc, hardKC, hardMode);
+		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, hardMode);
 		parsedTeam.push({ kc, hardKC, deathChances, deaths: deathChances.deaths, id: u.id });
 
 		totalReduction += userPercentChange / teamSize;
