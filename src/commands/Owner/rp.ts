@@ -9,7 +9,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { evalMathExpression } from '../../lib/expressionParser';
-import { prisma } from '../../lib/settings/prisma';
+import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -631,6 +631,16 @@ LIMIT 10;
 FROM users
 WHERE bank->>'${item.id}' IS NOT NULL;`);
 				return msg.channel.send(`There are ${result[0].qty.toLocaleString()} ${item.name} owned by everyone.`);
+			}
+			case 'incl': {
+				if (typeof input !== 'string') return;
+				const item = getOSItem(input);
+				const isIron = Boolean(msg.flagArgs.iron);
+				return msg.channel.send(
+					`There are ${await countUsersWithItemInCl(item.id, isIron)} ${
+						isIron ? 'ironmen' : 'people'
+					} with atleast 1 ${item.name} in their collection log.`
+				);
 			}
 		}
 	}
