@@ -20,6 +20,7 @@ import {
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { evalMathExpression } from '../../lib/expressionParser';
+import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -735,6 +736,24 @@ LIMIT 10;
 				await msg.channel.send('Rebooting...');
 				await Promise.all(this.client.providers.map(provider => provider.shutdown()));
 				process.exit();
+			}
+			case 'owned': {
+				if (typeof input !== 'string') return;
+				const item = getOSItem(input);
+				const result: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
+FROM users
+WHERE bank->>'${item.id}' IS NOT NULL;`);
+				return msg.channel.send(`There are ${result[0].qty.toLocaleString()} ${item.name} owned by everyone.`);
+			}
+			case 'incl': {
+				if (typeof input !== 'string') return;
+				const item = getOSItem(input);
+				const isIron = Boolean(msg.flagArgs.iron);
+				return msg.channel.send(
+					`There are ${await countUsersWithItemInCl(item.id, isIron)} ${
+						isIron ? 'ironmen' : 'people'
+					} with atleast 1 ${item.name} in their collection log.`
+				);
 			}
 		}
 	}
