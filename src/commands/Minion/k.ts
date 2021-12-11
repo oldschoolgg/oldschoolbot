@@ -14,7 +14,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { Activity } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { GearSetupType, GearStat } from '../../lib/gear';
@@ -266,7 +265,7 @@ export default class extends BotCommand {
 			boosts.push(`${boostCannon}% for Cannon in singles`);
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.MonsterKilling);
+		const maxTripLength = msg.author.maxTripLength('MonsterKilling');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -278,15 +277,15 @@ export default class extends BotCommand {
 		}
 		if (typeof quantity !== 'number') quantity = parseInt(quantity);
 		if (isOnTask) {
-			let effectiveQtyRemaining = usersTask.currentTask!.quantityRemaining;
+			let effectiveQtyRemaining = usersTask.currentTask!.quantity_remaining;
 			if (
 				monster.id === Monsters.KrilTsutsaroth.id &&
-				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+				usersTask.currentTask!.monster_id !== Monsters.KrilTsutsaroth.id
 			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 			} else if (
 				monster.id === Monsters.Kreearra.id &&
-				usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+				usersTask.currentTask!.monster_id !== Monsters.Kreearra.id
 			) {
 				effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
 			} else if (
@@ -467,7 +466,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.MonsterKilling,
+			type: 'MonsterKilling',
 			usingCannon,
 			cannonMulti,
 			burstOrBarrage

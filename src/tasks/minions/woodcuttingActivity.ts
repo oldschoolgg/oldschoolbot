@@ -84,10 +84,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${log.name}[${log.id}]`);
-				return this.client.commands.get('chop')!.run(res, [quantity, log.name]);
-			},
+			['chop', [quantity, log.name], true],
 			undefined,
 			data,
 			loot.bank

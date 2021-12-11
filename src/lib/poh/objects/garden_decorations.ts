@@ -4,11 +4,11 @@ import { PoHObject } from '..';
 
 const cost = new Bank().add('Magic stone', 2);
 
-const GardenDecorations: PoHObject[] = [
+export const GardenDecorations: PoHObject[] = [
 	{
 		id: 425,
 		name: 'Skotizo decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of darkness'),
 		refundItems: true
@@ -16,7 +16,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 2042,
 		name: 'Zulrah decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of swamp'),
 		refundItems: true
@@ -24,7 +24,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 3564,
 		name: 'Avatar of Creation decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Blue soul cape'),
 		refundItems: true
@@ -32,7 +32,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 3566,
 		name: 'Avatar of Destruction decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Red soul cape'),
 		refundItems: true
@@ -40,7 +40,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 5866,
 		name: 'Cerberus decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of souls'),
 		refundItems: true
@@ -48,7 +48,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 5889,
 		name: 'Abyssal Sire decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of miasma'),
 		refundItems: true
@@ -56,7 +56,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 5893,
 		name: 'Jad decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Fire cape'),
 		refundItems: true
@@ -64,7 +64,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 6492,
 		name: 'Armadyl decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add("Pet kree'arra"),
 		refundItems: true
@@ -72,7 +72,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 6493,
 		name: 'Saradomin decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Pet zilyana'),
 		refundItems: true
@@ -80,7 +80,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 6494,
 		name: 'Bandos decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Pet general graardor'),
 		refundItems: true
@@ -88,7 +88,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 6495,
 		name: 'Zamorak decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add("Pet k'ril tsutsaroth"),
 		refundItems: true
@@ -96,7 +96,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 6642,
 		name: 'Penance Queen decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Pet penance queen'),
 		refundItems: true
@@ -104,7 +104,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 7542,
 		name: 'Tekton decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Tektiny'),
 		refundItems: true
@@ -112,7 +112,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 494,
 		name: 'Kraken decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of dirt'),
 		refundItems: true
@@ -120,7 +120,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 9398,
 		name: 'Nightmare decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of dreams'),
 		refundItems: true
@@ -128,7 +128,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 8713,
 		name: 'Sarachnis decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of eyes'),
 		refundItems: true
@@ -136,7 +136,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 8060,
 		name: 'Vorkath decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of decay'),
 		refundItems: true
@@ -144,7 +144,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 499,
 		name: 'Thermy decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of smoke'),
 		refundItems: true
@@ -152,7 +152,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 8010,
 		name: 'Corporeal Beast decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of spirits'),
 		refundItems: true
@@ -160,7 +160,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 7889,
 		name: 'Grotesque guardian decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of stone'),
 		refundItems: true
@@ -168,7 +168,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 6500,
 		name: 'Kalphite Queen decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Jar of sand'),
 		refundItems: true
@@ -176,7 +176,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 8011,
 		name: 'Zuk decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Infernal cape').add('Jal-nib-rek'),
 		refundItems: true
@@ -184,7 +184,7 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 34_677,
 		name: 'Verzik Vitur decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add("Lil' zik"),
 		refundItems: true
@@ -192,11 +192,9 @@ const GardenDecorations: PoHObject[] = [
 	{
 		id: 29_944,
 		name: 'Olm decoration',
-		slot: 'gardenDecoration',
+		slot: 'garden_decoration',
 		level: 99,
 		itemCost: cost.clone().add('Olmlet'),
 		refundItems: true
 	}
 ];
-
-export { GardenDecorations };

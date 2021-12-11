@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { GloryChargingActivityTaskOptions } from '../../lib/types/minions';
@@ -61,7 +60,7 @@ export default class extends BotCommand {
 			invDuration /= 3;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.GloryCharging);
+		const maxTripLength = msg.author.maxTripLength('GloryCharging');
 
 		const max = Math.min(amountHas / gloriesInventorySize, Math.floor(maxTripLength / invDuration));
 		if (quantity === undefined) {
@@ -90,7 +89,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.GloryCharging
+			type: 'GloryCharging'
 		});
 
 		await msg.author.removeItemsFromBank(new Bank().add('Amulet of glory', quantityGlories));

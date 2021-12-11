@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Minigames } from '../../extendables/User/Minigame';
 import { diaries, DiaryTier, userhasDiaryTier } from '../../lib/diaries';
+import { Minigames } from '../../lib/settings/minigames';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatSkillRequirements, itemNameFromID, stringMatches, textEffect, toTitleCase } from '../../lib/util';
 
@@ -79,7 +79,7 @@ export default class extends BotCommand {
 			if (tier.minigameReqs) {
 				const entries = Object.entries(tier.minigameReqs);
 				for (const [key, neededScore] of entries) {
-					const minigame = Minigames.find(m => m.key === key)!;
+					const minigame = Minigames.find(m => m.column === key)!;
 					thisStr += `- Must Have **${neededScore}** KC in ${minigame.name}\n`;
 				}
 			}

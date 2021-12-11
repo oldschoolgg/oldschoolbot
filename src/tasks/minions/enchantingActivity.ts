@@ -29,10 +29,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${enchantable.name}[${enchantable.id}]`);
-				return this.client.commands.get('enchant')!.run(res, [quantity, enchantable.name]);
-			},
+			['enchant', [quantity, enchantable.name], true],
 			undefined,
 			data,
 			loot.bank

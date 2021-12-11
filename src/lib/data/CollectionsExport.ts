@@ -1609,11 +1609,10 @@ export const tzHaarCL = resolveItems([
 	'Obsidian cape',
 	'Toktz-ket-xil',
 	'Tzhaar-ket-om',
-	// Not possible to obtain at the moment
-	// 'Toktz-xil-ak',
-	// 'Toktz-xil-ek',
-	// 'Toktz-mej-tal',
-	// 'Toktz-xil-ul',
+	'Toktz-xil-ak',
+	'Toktz-xil-ek',
+	'Toktz-mej-tal',
+	'Toktz-xil-ul',
 	'Obsidian helmet',
 	'Obsidian platebody',
 	'Obsidian platelegs'
@@ -1967,5 +1966,5 @@ export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems(['Little parasite'])
+	...resolveItems(['Little parasite', 'Dark squirrel'])
 ];

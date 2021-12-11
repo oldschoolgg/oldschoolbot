@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -139,6 +138,7 @@ export default class extends BotCommand {
 			);
 		}
 
+		const maxTripLength = msg.author.maxTripLength('Collecting');
 		if (collectable.qpRequired && msg.author.settings.get(UserSettings.QP) < collectable.qpRequired) {
 			return msg.channel.send(`You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`);
 		}
@@ -150,8 +150,6 @@ export default class extends BotCommand {
 				}
 			}
 		}
-
-		const maxTripLength = msg.author.maxTripLength(Activity.Collecting);
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / collectable.duration);
@@ -185,7 +183,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Collecting
+			type: 'Collecting'
 		});
 
 		return msg.channel.send(

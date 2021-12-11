@@ -1,8 +1,8 @@
+import { Activity } from '@prisma/client';
 import { Task } from 'klasa';
-import { createQueryBuilder } from 'typeorm';
 
 import { production } from '../config';
-import { ActivityTable } from '../lib/typeorm/ActivityTable.entity';
+import { completeActivity, prisma } from '../lib/settings/prisma';
 
 export default class extends Task {
 	async init() {
@@ -11,16 +11,29 @@ export default class extends Task {
 		}
 		const ticker = async () => {
 			try {
-				const query = createQueryBuilder(ActivityTable).select().where('completed = false');
+				const activities: Activity[] = await prisma.activity.findMany({
+					where: {
+						completed: false,
+						finish_date: production
+							? {
+									lt: new Date()
+							  }
+							: undefined
+					}
+				});
 
-				if (production) {
-					query.andWhere('finish_date < now()');
-				} else {
-					query.andWhere("start_date + interval '10 seconds' < now()");
-				}
+				await prisma.activity.updateMany({
+					where: {
+						id: {
+							in: activities.map(i => i.id)
+						}
+					},
+					data: {
+						completed: true
+					}
+				});
 
-				const result = await query.getMany();
-				await Promise.all(result.map(r => r.complete()));
+				await Promise.all(activities.map(completeActivity));
 			} catch (err) {
 				console.error(err);
 			} finally {

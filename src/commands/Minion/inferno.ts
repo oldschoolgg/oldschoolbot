@@ -6,7 +6,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { table } from 'table';
 
 import { production } from '../../config';
-import { Activity, BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
+import { BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -433,14 +433,14 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		duration.add(user.bitfield.includes(BitField.HasArcaneScroll), -4, 'Arc. Prayer scroll');
 
 		// Slayer
-		const score = await user.getMinigameScore('Inferno');
+		const score = await user.getMinigameScore('inferno');
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
 			score > 0 &&
-			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 		duration.add(isOnTask && user.hasItemEquippedOrInBank('Black mask (i)'), -9, `${Emoji.Slayer} Slayer Task`);
 
@@ -524,7 +524,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 	async run(msg: KlasaMessage) {
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
-		const zukKC = await msg.author.getMinigameScore('Inferno');
+		const zukKC = await msg.author.getMinigameScore('inferno');
 
 		let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 		if (attempts && !zukKC) {
@@ -567,7 +567,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
 		const usersRangeStats = msg.author.getGear('range').stats;
-		const zukKC = await msg.author.getMinigameScore('Inferno');
+		const zukKC = await msg.author.getMinigameScore('inferno');
 
 		const res = await this.infernoRun({
 			user: msg.author,
@@ -615,7 +615,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration: realDuration,
-			type: Activity.Inferno,
+			type: 'Inferno',
 			zukDeathChance: zukDeathChance.value,
 			preZukDeathChance: preZukDeathChance.value,
 			deathTime,

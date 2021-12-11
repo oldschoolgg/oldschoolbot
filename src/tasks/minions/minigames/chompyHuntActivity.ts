@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -13,7 +13,8 @@ export default class extends Task {
 		const { channelID, quantity, userID } = data;
 		const user = await this.client.fetchUser(userID);
 
-		const { newScore, previousScore } = await incrementMinigameScore(userID, 'BigChompyBirdHunting', quantity);
+		const previousScore = (await getMinigameEntity(user.id)).big_chompy_bird_hunting;
+		const { newScore } = await incrementMinigameScore(userID, 'big_chompy_bird_hunting', quantity);
 
 		const loot = new Bank();
 
@@ -36,18 +37,6 @@ export default class extends Task {
 			}
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued chompy hunting');
-				return this.client.commands.get('chompyhunt')!.run(res, []);
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		handleTripFinish(this.client, user, channelID, str, ['chompyhunt', []], undefined, data, loot.bank);
 	}
 }

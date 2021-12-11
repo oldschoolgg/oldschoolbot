@@ -42,10 +42,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of collecting ${collectable.item.name}`);
-				return this.client.commands.get('collect')!.run(res, [quantity, collectable.item.name]);
-			},
+			['collect', [quantity, collectable.item.name]],
 			undefined,
 			data,
 			loot.bank ?? null

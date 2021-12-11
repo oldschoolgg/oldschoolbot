@@ -165,7 +165,12 @@ export default function getUserBestGearFromBank(
 	// Remove items that are already equipped from being added to bank and re-equipped
 	for (const item of Object.keys(toRemoveFromGear)) {
 		if (toRemoveFromBank[Number(item)]) {
-			delete toRemoveFromGear[Number(item)];
+			if (toRemoveFromGear[Number(item)] > 1) {
+				// Don't delete all if there's more than 1 (stackables)
+				toRemoveFromGear[Number(item)]--;
+			} else {
+				delete toRemoveFromGear[Number(item)];
+			}
 			delete toRemoveFromBank[Number(item)];
 		}
 	}

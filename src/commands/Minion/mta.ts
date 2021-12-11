@@ -3,8 +3,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { prisma } from '../../lib/settings/prisma';
 import { getNewUser } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -84,7 +84,7 @@ export default class CastleWarsCommand extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		const user = await getNewUser(msg.author.id);
-		return msg.channel.send(`You have **${user.PizazzPoints.toLocaleString()}** Pizazz points.
+		return msg.channel.send(`You have **${user.pizazz_points.toLocaleString()}** Pizazz points.
 
 **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
 ${buyables
@@ -100,7 +100,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 	@minionNotBusy
 	async train(msg: KlasaMessage) {
 		const roomDuration = Time.Minute * 14;
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.MageTrainingArena) / roomDuration);
+		const quantity = Math.floor(msg.author.maxTripLength('MageTrainingArena') / roomDuration);
 		const duration = quantity * roomDuration;
 
 		const cost = determineRunes(msg.author, new Bank().add(RuneTable.roll())).multiply(quantity);
@@ -116,9 +116,9 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.MageTrainingArena,
+			type: 'MageTrainingArena',
 			quantity,
-			minigameID: 'MagicTrainingArena'
+			minigameID: 'magic_training_arena'
 		});
 
 		return msg.channel.send(
@@ -142,7 +142,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 
 		const { item, cost, upgradesFrom } = buyable;
 		const newUser = await getNewUser(msg.author.id);
-		const balance = newUser.PizazzPoints;
+		const balance = newUser.pizazz_points;
 
 		if (upgradesFrom && !msg.author.owns(upgradesFrom.id)) {
 			return msg.channel.send(
@@ -159,8 +159,17 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 		if (upgradesFrom) {
 			await msg.author.removeItemsFromBank(new Bank().add(upgradesFrom.id));
 		}
-		newUser.PizazzPoints -= cost;
-		await newUser.save();
+
+		await prisma.newUser.update({
+			where: {
+				id: msg.author.id
+			},
+			data: {
+				pizazz_points: {
+					decrement: cost
+				}
+			}
+		});
 
 		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
 

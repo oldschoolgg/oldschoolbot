@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { championScrolls } from '../../lib/data/CollectionsExport';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -41,8 +40,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: 1,
 			duration: randomVariation(Time.Minute * 20, 5),
-			type: Activity.ChampionsChallenge,
-			minigameID: 'ChampionsChallenge'
+			type: 'ChampionsChallenge',
+			minigameID: 'champions_challenge'
 		});
 
 		return msg.channel.send(

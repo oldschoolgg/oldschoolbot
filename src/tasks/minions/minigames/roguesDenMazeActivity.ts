@@ -26,7 +26,7 @@ export default class extends Task {
 	async run(data: RoguesDenMazeTaskOptions) {
 		const { channelID, quantity, userID } = data;
 
-		incrementMinigameScore(userID, 'RoguesDenMaze', quantity);
+		incrementMinigameScore(userID, 'rogues_den', quantity);
 
 		const loot = new Bank();
 		const user = await this.client.fetchUser(userID);
@@ -65,10 +65,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued rogues den');
-				return this.client.commands.get('roguesden')!.run(res, []);
-			},
+			['roguesden', [], true],
 			gotLoot ? image! : undefined,
 			data,
 			itemsAdded

@@ -4,10 +4,10 @@ import { Task } from 'klasa';
 
 import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
-import { Minigames } from '../extendables/User/Minigame';
 import { BOT_TYPE, Roles, SupportServer } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import ClueTiers from '../lib/minions/data/clueTiers';
+import { Minigames } from '../lib/settings/minigames';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';

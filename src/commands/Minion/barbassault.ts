@@ -3,9 +3,10 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
-import { Activity, Emoji, Events } from '../../lib/constants';
+import { Emoji, Events } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { getMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/simulation/baGamble';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -284,15 +285,14 @@ export default class extends BotCommand {
 			waveTime = increaseNumByPercent(waveTime, 10);
 			boosts.push('10% slower for solo');
 		}
-
 		// Up to 10%, at 200 kc, speed boost for team average kc
 		const averageKC =
-			addArrayOfNumbers(await Promise.all(users.map(u => u.getMinigameScore('BarbarianAssault')))) / users.length;
+			addArrayOfNumbers(await Promise.all(users.map(u => getMinigameScore(u.id, 'barb_assault')))) / users.length;
 		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
-		let quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
+		let quantity = Math.floor(msg.author.maxTripLength('BarbarianAssault') / waveTime);
 		if (qty > 0 && quantity > qty) quantity = qty;
 		const duration = quantity * waveTime;
 
@@ -311,10 +311,10 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.BarbarianAssault,
+			type: 'BarbarianAssault',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
-			minigameID: 'BarbarianAssault',
+			minigameID: 'barb_assault',
 			totalLevel
 		});
 

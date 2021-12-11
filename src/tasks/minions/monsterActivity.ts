@@ -5,12 +5,14 @@ import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants'
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
+import { prisma } from '../../lib/settings/prisma';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { roll, runCommand } from '../../lib/util';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -25,7 +27,7 @@ export default class extends Task {
 			usersTask.assignedTask !== null &&
 			usersTask.currentTask !== null &&
 			usersTask.assignedTask.monsters.includes(monsterID);
-		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantityRemaining, quantity) : null;
+		const quantitySlayed = isOnTask ? Math.min(usersTask.currentTask!.quantity_remaining, quantity) : null;
 
 		const mySlayerUnlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
 
@@ -97,16 +99,16 @@ export default class extends Task {
 		if (isOnTask) {
 			const effectiveSlayed =
 				monsterID === Monsters.KrilTsutsaroth.id &&
-				usersTask.currentTask!.monsterID !== Monsters.KrilTsutsaroth.id
+				usersTask.currentTask!.monster_id !== Monsters.KrilTsutsaroth.id
 					? quantitySlayed! * 2
-					: monsterID === Monsters.Kreearra.id && usersTask.currentTask!.monsterID !== Monsters.Kreearra.id
+					: monsterID === Monsters.Kreearra.id && usersTask.currentTask!.monster_id !== Monsters.Kreearra.id
 					? quantitySlayed! * 4
 					: monsterID === Monsters.GrotesqueGuardians.id &&
 					  user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 					? quantitySlayed! * 2
 					: quantitySlayed!;
 
-			const quantityLeft = Math.max(0, usersTask.currentTask!.quantityRemaining - effectiveSlayed);
+			const quantityLeft = Math.max(0, usersTask.currentTask!.quantity_remaining - effectiveSlayed);
 
 			thisTripFinishesTask = quantityLeft === 0;
 			if (thisTripFinishesTask) {
@@ -122,11 +124,17 @@ export default class extends Task {
 				}
 			} else {
 				str += `\nYou killed ${effectiveSlayed}x of your ${
-					usersTask.currentTask!.quantityRemaining
+					usersTask.currentTask!.quantity_remaining
 				} remaining kills, you now have ${quantityLeft} kills remaining.`;
 			}
-			usersTask.currentTask!.quantityRemaining = quantityLeft;
-			await usersTask.currentTask!.save();
+			await prisma.slayerTask.update({
+				where: {
+					id: usersTask.currentTask!.id
+				},
+				data: {
+					quantity_remaining: quantityLeft
+				}
+			});
 		}
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
@@ -151,11 +159,11 @@ export default class extends Task {
 				? undefined
 				: res => {
 						user.log(`continued trip of killing ${monster.name}`);
-						let method = 'none';
-						if (usingCannon) method = 'cannon';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-						return runCommand(res, 'k', [quantity, monster.name, method]);
+						let args = [quantity, monster.name];
+						if (usingCannon) args.push('cannon');
+						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
+						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
+						return runCommand(res, 'k', args, true);
 				  },
 			image!,
 			data,

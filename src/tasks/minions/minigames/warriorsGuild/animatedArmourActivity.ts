@@ -26,10 +26,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued trip of animated armor');
-				return this.client.commands.get('warriorsguild')!.run(res, [quantity, 'tokens']);
-			},
+			['warriorsguild', [quantity, 'tokens'], true],
 			undefined,
 			data,
 			loot.bank
