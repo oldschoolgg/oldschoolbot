@@ -114,17 +114,26 @@ export default class extends BotCommand {
 		}
 
 		try {
-			const unequipAllMessage = await runCommand(msg, 'unequipall', [setup]);
+			const unequipAllMessage = await runCommand(msg, 'm', [setup], false, 'unequipall');
 			if (
 				!(unequipAllMessage instanceof KlasaMessage) ||
 				(!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you unequipped all items') &&
 					!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you have no items in your'))
 			) {
 				return msg.channel.send(
-					`It was not possible to equip your **${preset.name}** on your ${setup} gear setup.`
+					`It was not possible to equip your **${preset.name}** preset on your ${setup} gear setup.`
 				);
 			}
-		} catch (_) {}
+		} catch (err) {
+			// On error do not continue which will overwrite [delete] gear.
+			if (!err.message.includes('command is disabled')) {
+				// Only log to sentry if the error is not from a disabled command.
+				this.client.wtf(err);
+			}
+			return msg.channel.send(
+				`It was not possible to equip your **${preset.name}** preset on your ${setup} gear setup.`
+			);
+		}
 
 		await msg.author.removeItemsFromBank(toRemove.bank);
 
