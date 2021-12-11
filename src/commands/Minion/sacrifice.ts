@@ -38,7 +38,7 @@ export default class extends BotCommand {
 			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
 		});
 
-		const SacVal = await msg.author.settings.get(UserSettings.SacrificedValue);
+		const sacVal = await msg.author.settings.get(UserSettings.SacrificedValue);
 
 		if (!msg.author.owns(bankToSac)) {
 			return msg.channel.send(`You don't own ${bankToSac}.`);
@@ -46,8 +46,8 @@ export default class extends BotCommand {
 
 		if (bankToSac.length === 0) {
 			return msg.channel.send(
-				`No items were provided. \nYour current sacrificed value is: ${SacVal.toLocaleString()} (${Util.toKMB(
-					SacVal
+				`No items were provided.\nYour current sacrificed value is: ${SacVal.toLocaleString()} (${Util.toKMB(
+					sacVal
 				)})`
 			);
 		}
@@ -92,7 +92,7 @@ export default class extends BotCommand {
 			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${bankToSac}!`);
 		}
 
-		const newValue = SacVal + totalPrice;
+		const newValue = sacVal + totalPrice;
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
 		await msg.author.removeItemsFromBank(bankToSac.bank);
