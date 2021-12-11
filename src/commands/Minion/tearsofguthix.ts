@@ -65,8 +65,6 @@ export default class extends BotCommand {
 			);
 		}
 		
-
-		// await msg.author.settings.update(UserSettings.LastTearsOfGuthixTimestamp, currentDate); Move to activity
 		const duration = Time.Minute * 8;
 		await addSubTaskToActivityTask<TearsOfGuthixActivityTaskOptions>({
 			minigameID: 'tears_of_guthix',
