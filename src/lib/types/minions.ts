@@ -334,6 +334,8 @@ export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOptions {}
+
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	favour: KourendFavour;
 	quantity: number;
@@ -362,4 +364,5 @@ export type ActivityTaskData =
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
 	| VolcanicMineActivityTaskOptions
+	| TearsOfGuthixActivityTaskOptions
 	| KourendFavourActivityTaskOptions;
