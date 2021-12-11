@@ -17,7 +17,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const userPets = msg.author.settings.get(UserSettings.Pets);
 		const keys = Object.keys(userPets);
-		const petMax=pets.length;
+		const petMax = pets.length;
 		if (keys.length === 0) {
 			return msg.channel.send(`You have no pets yet.
 
@@ -30,8 +30,8 @@ You can get pets by talking in a server which has petmessages enabled. (\`${msg.
 			const pet = pets.find(_pet => _pet.id === id)!;
 			formatted.push(`${pet.emoji} ${pet.name}: ${userPets[id]}`);
 		}
-		const petCount=formatted.length;
-		
-		return msg.channel.send(`You currently have ${petCount}/${petMax}\n${formatted.join('\n')}`);
+		const petCount = formatted.length;
+
+		return msg.channel.send(`You currently have ${petCount}/${petMax}\n ${formatted.join('\n')}`);
 	}
 }
