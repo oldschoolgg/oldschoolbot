@@ -11,7 +11,7 @@ export default class extends BotCommand {
 			examples: ['+tag add test Hello', '+test'],
 			runIn: ['text'],
 			subcommands: true,
-			usage: '<add|remove|source|list|show:default> (tag:string) [content:...string]',
+			usage: '<add|remove|list> (tag:string) [content:...string]',
 			usageDelim: ' ',
 			categoryFlags: ['utility']
 		});

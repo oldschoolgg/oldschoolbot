@@ -131,22 +131,22 @@ export default class extends BotCommand {
 			}
 		});
 
-		for (const user of allNewUsers) {
-			this.usernameCache.map.set(user.id, stripEmojis(user.username!));
-		}
-
-		const arrayOfUsers: { badges: number[]; id: string; ironman: boolean }[] = await this.query(
+		const arrayOfIronmenAndBadges: { badges: number[]; id: string; ironman: boolean }[] = await this.query(
 			'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;',
 			false
 		);
 
-		for (const user of arrayOfUsers) {
-			const rawName = this.usernameCache.map.get(user.id) ?? '(Unknown)';
-			const rawBadges = user.badges.map(num => badges[num]);
-			if (user.ironman) {
-				rawBadges.push(Emoji.Ironman);
+		for (const user of allNewUsers) {
+			const badgeUser = arrayOfIronmenAndBadges.find(i => i.id === user.id);
+			let name = stripEmojis(user.username!);
+			if (badgeUser) {
+				const rawBadges = badgeUser.badges.map(num => badges[num]);
+				if (badgeUser.ironman) {
+					rawBadges.push(Emoji.Ironman);
+				}
+				name = `${rawBadges.join(' ')} ${name}`;
 			}
-			this.usernameCache.map.set(user.id, `${rawBadges.join(' ')} ${rawName}`);
+			this.usernameCache.map.set(user.id, name);
 		}
 	}
 
