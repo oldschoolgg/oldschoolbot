@@ -56,16 +56,11 @@ export default class extends BotCommand {
 			);
 		}
 
-		// Skills required for quest, extra requirements if Ironman
-		if (
-			!msg.author.hasSkillReqs(skillReqs)[0] ||
-			(!msg.author.hasSkillReqs(ironmanExtraReqs)[0] && msg.author.isIronman)
-		) {
+		// Skills required for quest
+		if (!msg.author.hasSkillReqs(skillReqs)[0]) {
 			return msg.channel.send(
-				`You are not skilled enough to participate in Tears of Guthix. ${
-					msg.author.isIronman ? 'As an Ironman, y' : 'Y'
-				}ou need the following requirements: ${objectEntries(
-					msg.author.isIronman ? { ...skillReqs, ...ironmanExtraReqs } : skillReqs
+				`You are not skilled enough to participate in Tears of Guthix. You need the following requirements: ${objectEntries(
+					skillReqs
 				)
 					.map(s => {
 						return msg.author.skillLevel(s[0]) < s[1]
@@ -75,6 +70,22 @@ export default class extends BotCommand {
 					.filter(f => f)
 					.join(', ')}`
 			);
+		}
+
+		// Extra requirements if Ironman
+		if (msg.author.isIronman) {
+			let skillsMatch = 0;
+			Object.entries(ironmanExtraReqs).forEach(([skill, level]) => {
+				if (msg.author.skillLevel(skill as SkillsEnum) >= level) skillsMatch += 1;
+			});
+			if (skillsMatch === 0) {
+				return msg.channel.send(
+					`You are not skilled enough to participate in Tears of Guthix. As an Ironman, you need one of the following requirements:${formatSkillRequirements(
+						ironmanExtraReqs,
+						true
+					)}`
+				);
+			}
 		}
 
 		const duration = Time.Minute * 8;

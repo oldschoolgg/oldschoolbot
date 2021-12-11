@@ -18,7 +18,7 @@ export default class extends Task {
 		// Find lowest level skill
 		let lowestXp = Object.values(user.rawSkills)[0];
 		let lowestSkill = Object.keys(user.rawSkills)[0];
-		Object.entries(user.rawSkills).map(([skill, xp]) => {
+		Object.entries(user.rawSkills).forEach(([skill, xp]) => {
 			if (xp < lowestXp) {
 				lowestXp = xp;
 				lowestSkill = skill;
