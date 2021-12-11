@@ -2856,3 +2856,15 @@ setCustomItem(
 	},
 	1000
 );
+
+setCustomItem(
+	50_115,
+	'Mr. E',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);

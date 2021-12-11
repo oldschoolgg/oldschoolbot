@@ -1952,7 +1952,8 @@ export const customPetsCL = resolveItems([
 	'Baby duckling',
 	'Jal-MejJak',
 	'Blabberbeak',
-	'Queen black dragonling'
+	'Queen black dragonling',
+	'Mr. E'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([

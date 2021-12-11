@@ -20,7 +20,6 @@ import { ActivityTaskOptions } from '../types/minions';
 import {
 	channelIsSendable,
 	generateContinuationChar,
-	getSupportGuild,
 	itemID,
 	roll,
 	stringMatches,
@@ -59,21 +58,21 @@ export async function handleTripFinish(
 		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 	}
 
+	const pet = user.equippedPet();
+
 	if (
 		loot &&
-		!loot[itemID('Gregoyle')] &&
 		!['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'].includes(data.type) &&
 		data.duration > Time.Minute * 20 &&
-		roll(15)
+		roll(pet === itemID('Mr. E') ? 12 : 15)
 	) {
-		const emoji = getSupportGuild(client).emojis.cache.random().toString();
 		const bonusLoot = new Bank().add(loot).add(getRandomMysteryBox());
-		message += `\n${emoji} **You received 2x loot and a Mystery box.**`;
+		message += '\n<:mysterybox:680783258488799277> **You received 2x loot and a Mystery box.**';
 		await user.addItemsToBank(bonusLoot, true);
+		updateBankSetting(client, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
 	}
 
 	const minutes = data.duration / Time.Minute;
-	const pet = user.equippedPet();
 	let bonusLoot = new Bank();
 	if (minutes < 5) {
 		// Do nothing

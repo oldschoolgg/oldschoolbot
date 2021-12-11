@@ -72,7 +72,7 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
 				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
 	const result = parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
-	if (isNaN(result) || typeof result !== 'number') {
+	if (isNaN(result)) {
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
 	}
 	return result;

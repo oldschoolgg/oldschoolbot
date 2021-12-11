@@ -1,4 +1,4 @@
-import { randArrItem, uniqueArr } from 'e';
+import { randArrItem, roll, uniqueArr } from 'e';
 import { Items } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
@@ -29,6 +29,10 @@ interface Openable {
 	emoji: Emoji | string;
 }
 
+const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;
+const MR_E_DROPRATE_FROM_PMB = 200;
+const MR_E_DROPRATE_FROM_EMB = 500;
+
 export const MysteryBoxes = new LootTable()
 	.oneIn(40, 'Pet Mystery Box')
 	.oneIn(150, 'Holiday Mystery Box')
@@ -58,6 +62,7 @@ export const ALL_PRIMAL = resolveItems([
 ]);
 
 export const PMBTable = new LootTable()
+	.oneIn(MR_E_DROPRATE_FROM_PMB, 'Mr. E')
 	.add('Heron')
 	.add('Rock golem')
 	.add('Beaver')
@@ -519,14 +524,20 @@ function randomEquippable(): number {
 	const res = randArrItem(embTable);
 	if (cantBeDropped.includes(res)) return randomEquippable();
 	if (res >= 40_000 && res <= 50_000) return randomEquippable();
+	if (roll(MR_E_DROPRATE_FROM_EMB)) {
+		return itemID('Mr. E');
+	}
 	return res;
 }
 
 export function getMysteryBoxItem(tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
-	let result = table[Math.floor(Math.random() * table.length)];
+	let result = randArrItem(table);
 	if (cantBeDropped.includes(result)) return getMysteryBoxItem(tradeables);
 	if (result >= 40_000 && result <= 50_000) return getMysteryBoxItem(tradeables);
+	if (roll(MR_E_DROPRATE_FROM_UMB_AND_TMB)) {
+		return itemID('Mr. E');
+	}
 	return result;
 }
 
