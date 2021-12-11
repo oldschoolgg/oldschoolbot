@@ -69,6 +69,7 @@ export async function handleTripFinish(
 		const bonusLoot = new Bank().add(loot).add(getRandomMysteryBox());
 		message += '\n<:mysterybox:680783258488799277> **You received 2x loot and a Mystery box.**';
 		await user.addItemsToBank(bonusLoot, true);
+		updateBankSetting(client, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
 	}
 
 	const minutes = data.duration / Time.Minute;

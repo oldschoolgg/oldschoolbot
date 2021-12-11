@@ -10,7 +10,6 @@ import CasketTable from '../simulation/casket';
 import CrystalChestTable from '../simulation/crystalChest';
 import { RuneTable } from '../simulation/seedTable';
 import { ExoticSeedsTable } from '../simulation/sharedTables';
-import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';

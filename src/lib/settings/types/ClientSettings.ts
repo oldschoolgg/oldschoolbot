@@ -101,6 +101,7 @@ export namespace ClientSettings {
 		export const CreateLoot = T<O.Readonly<ItemBank>>('create_loot');
 
 		export const TameMergingCost = T<O.Readonly<ItemBank>>('tame_merging_cost');
+		export const TripDoublingLoot = T<O.Readonly<ItemBank>>('trip_doubling_loot');
 
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
