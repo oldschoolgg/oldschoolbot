@@ -324,6 +324,7 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	hardMode: boolean;
+	fakeDuration?: number;
 }
 
 export interface CollectingOptions extends ActivityTaskOptions {

@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { calcWhatPercent, Time } from 'e';
+import { calcWhatPercent, percentChance, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
@@ -16,6 +16,7 @@ import {
 	createTOBTeam
 } from '../../lib/data/tob';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
@@ -38,18 +39,21 @@ export default class extends BotCommand {
 	}
 
 	async graph(msg: KlasaMessage) {
-		const result = await this._graph(msg.author, 5, false);
+		const result = await this._graph(msg.author, 5, msg.flagArgs.hard ? true : false);
 		return msg.channel.send({ files: [result[0]] });
 	}
 
 	async _graph(user: KlasaUser, teamSize: number, hardMode: boolean) {
 		let duration = [];
 		let successRates = [];
+		let kc = [];
+		let groupKc = 0;
 		for (let i = 0; i < 250; i++) {
 			const t = await createTOBTeam({
 				team: new Array(teamSize).fill(user),
 				hardMode,
-				kcOverride: [i, i],
+				attemptsOverride: [i, i],
+				kcOverride: [groupKc, groupKc],
 				disableVariation: true
 			});
 
@@ -59,7 +63,8 @@ export default class extends BotCommand {
 				const sim = await createTOBTeam({
 					team: new Array(teamSize).fill(user),
 					hardMode,
-					kcOverride: [i, i],
+					attemptsOverride: [i, i],
+					kcOverride: [groupKc, groupKc],
 					disableVariation: true
 				});
 				if (!sim.wipedRoom) {
@@ -67,14 +72,17 @@ export default class extends BotCommand {
 				}
 			}
 			let successRate = calcWhatPercent(wins, winRateSampleSize);
+			if (percentChance(successRate)) groupKc++;
 			successRates.push(successRate);
+			kc.push(groupKc);
 			duration.push(t.duration);
 		}
 		duration = duration.map(i => i / Time.Minute);
 		const options = {
 			type: 'line',
 			data: {
-				labels: [...Array(duration.length).keys()].map(i => `${i + 1}`),
+				// labels: [...Array(duration.length).keys()].map(i => `${i + 1}`),
+				labels: [...Array(kc.length).keys()].map(i => `${i + 1}`),
 				datasets: [
 					{
 						label: 'Success rate (%)',
@@ -85,11 +93,11 @@ export default class extends BotCommand {
 						yAxisID: 'left'
 					},
 					{
-						label: 'Duration (Hours)',
+						label: 'Actual KC',
 						fill: false,
 						backgroundColor: 'rgb(0, 0, 0)',
 						borderColor: 'rgb(0, 0, 0)',
-						data: duration,
+						data: kc,
 						yAxisID: 'right'
 					}
 				]
@@ -188,7 +196,7 @@ export default class extends BotCommand {
 			const normalKC = await msg.author.getMinigameScore('tob');
 			if (normalKC < 200) {
 				return msg.channel.send(
-					'You need atleast 200 completions of the Chambers of Xeric before you can attempt Challenge Mode.'
+					'You need atleast 200 completions of the Theatre of Blood before you can attempt Hard Mode.'
 				);
 			}
 		}
@@ -263,11 +271,15 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const hardKC = await msg.author.getMinigameScore('tob_hard');
 		const kc = await msg.author.getMinigameScore('tob');
-		const deathChances = calculateTOBDeaths(kc, hardKC, false);
+		const attempts = await msg.author.settings.get(UserSettings.Stats.TobAttempts);
+		const hardAttempts = await msg.author.settings.get(UserSettings.Stats.TobHardModeAttempts);
+		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false);
 
 		return msg.channel.send(`**Theatre of Blood**
 KC: ${kc}
+Attempts: ${attempts}
 Hard KC: ${hardKC}
-Death Chances: ${deathChances.deathChances.map(i => `${i.name}[${i.deathChance}%]`).join(' ')}`);
+Hard attempts: ${hardAttempts}
+Death Chances: ${deathChances.deathChances.map(i => `${i.name}[${i.deathChance.toFixed(2)}%]`).join(' ')}`);
 	}
 }
