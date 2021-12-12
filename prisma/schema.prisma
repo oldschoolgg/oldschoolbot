@@ -431,6 +431,7 @@ model CommandUsage {
 
   args       Json?   @db.Json
   channel_id String? @db.VarChar(19)
+  guild_id   String? @db.VarChar(19)
 
   @@map("command_usage")
 }

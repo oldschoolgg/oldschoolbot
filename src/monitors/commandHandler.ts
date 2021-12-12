@@ -86,13 +86,15 @@ export default class extends Monitor {
 			status: command_usage_status;
 			args: null | any;
 			channel_id: string;
+			guild_id: string | null;
 		} | null = {
 			date: message.createdAt,
 			user_id: message.author.id,
 			command_name: command.name,
 			status: command_usage_status.Unknown,
 			args: message.args,
-			channel_id: message.channel.id
+			channel_id: message.channel.id,
+			guild_id: message.guild?.id ?? null
 		};
 
 		let response: KlasaMessage | null = null;
