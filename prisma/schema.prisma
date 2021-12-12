@@ -138,6 +138,8 @@ model ClientStorage {
   vasa_loot               Json   @default("{}") @db.Json
   ods_cost                Json   @default("{}") @db.Json
   ods_loot                Json   @default("{}") @db.Json
+  tame_merging_cost       Json   @default("{}") @db.Json
+  trip_doubling_loot      Json   @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -380,29 +382,30 @@ model User {
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
   kourend_favour             Json?    @map("kourend_favour") @db.Json
 
-  // BSO
-  nursery                     Json?    @db.Json
-  selected_tame               Json?    @db.Json
-  gp_luckypick                BigInt   @default(0)
-  gp_dice                     BigInt   @default(0)
-  monkeys_fought              String[]
-  times_fed_gregoyle          Int      @default(0)
-  wrong_accusations           Int      @default(0)
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
-  gp_slots                    BigInt   @default(0)
-  emerged_inferno_attempts    Int      @default(0)
-  skills_dungeoneering        BigInt   @default(0) @map("skills.dungeoneering")
-  ourania_tokens              Int      @default(0)
-  spawned_rmb                 Boolean  @default(false)
-  total_item_contracts        Int      @default(0)
-  last_item_contract_date     BigInt   @default(0)
-  current_item_contract       Int?
-  lastSpawnLamp               BigInt   @default(1)
-  lastGivenBoxx               BigInt   @default(1)
-  dungeoneering_tokens        Int      @default(0)
-  item_contract_streak        Int      @default(0)
-  item_contract_bank          Json     @default("{}") @db.Json
+
+  // BSO
+  nursery                  Json?    @db.Json
+  selected_tame            Json?    @db.Json
+  gp_luckypick             BigInt   @default(0)
+  gp_dice                  BigInt   @default(0)
+  monkeys_fought           String[]
+  times_fed_gregoyle       Int      @default(0)
+  wrong_accusations        Int      @default(0)
+  gp_slots                 BigInt   @default(0)
+  emerged_inferno_attempts Int      @default(0)
+  skills_dungeoneering     BigInt   @default(0) @map("skills.dungeoneering")
+  ourania_tokens           Int      @default(0)
+  spawned_rmb              Boolean  @default(false)
+  total_item_contracts     Int      @default(0)
+  last_item_contract_date  BigInt   @default(0)
+  current_item_contract    Int?
+  lastSpawnLamp            BigInt   @default(1)
+  lastGivenBoxx            BigInt   @default(1)
+  dungeoneering_tokens     Int      @default(0)
+  item_contract_streak     Int      @default(0)
+  item_contract_bank       Json     @default("{}") @db.Json
 
   @@map("users")
 }
