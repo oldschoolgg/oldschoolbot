@@ -398,7 +398,8 @@ setCustomItem(
 			slot: EquipmentSlot.Hands,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		tradeable: true
 	},
 	50_000_000
 );
@@ -751,7 +752,8 @@ setCustomItem(
 			slot: EquipmentSlot.Weapon,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		tradeable: true
 	},
 	50_000_000
 );
@@ -780,7 +782,8 @@ setCustomItem(
 			slot: EquipmentSlot.Shield,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		tradeable: true
 	},
 	50_000_000
 );
