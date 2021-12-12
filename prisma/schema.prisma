@@ -348,6 +348,9 @@ model User {
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
   kourend_favour             Json?    @map("kourend_favour") @db.Json
 
+  premium_balance_tier        Int?
+  premium_balance_expiry_date BigInt?
+
   @@map("users")
 }
 
