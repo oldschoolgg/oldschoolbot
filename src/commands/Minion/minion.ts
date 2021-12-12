@@ -13,6 +13,7 @@ import {
 	MIMIC_MONSTER_ID,
 	PerkTier
 } from '../../lib/constants';
+import { GearSetupType } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
@@ -23,6 +24,7 @@ import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
+import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -67,7 +69,8 @@ const subCommands = [
 	'uep',
 	'lapcounts',
 	'cancel',
-	'train'
+	'train',
+	'unequipall'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -401,5 +404,11 @@ Please click the buttons below for important links.`
 	async opens(msg: KlasaMessage) {
 		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
 		return msg.channel.send(`You've opened... ${openableScores}`);
+	}
+
+	@requiresMinion
+	@minionNotBusy
+	async unequipall(msg: KlasaMessage, [gearType]: [string]) {
+		return unEquipAllCommand(msg, gearType as GearSetupType);
 	}
 }
