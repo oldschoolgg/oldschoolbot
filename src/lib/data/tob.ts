@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, percentChance, reduceNumByPercent, round, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -415,8 +415,10 @@ export async function createTOBTeam({
 		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, hardMode);
 		parsedTeam.push({ kc, hardKC, deathChances, deaths: deathChances.deaths, id: u.id });
 
-		totalReduction += userPercentChange / teamSize;
-		reductions[u.id] = userPercentChange / teamSize;
+		let reduction = round(userPercentChange / teamSize, 1);
+
+		totalReduction += reduction;
+		reductions[u.id] = reduction;
 	}
 	let duration = baseDuration;
 

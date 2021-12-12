@@ -17,7 +17,7 @@ export default class extends Task {
 		const { channelID, users, hardMode, leader } = data;
 		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
 		const team = await createTOBTeam({ team: allUsers, hardMode });
-
+		console.log(JSON.stringify(team));
 		const result = TheatreOfBlood.complete({
 			hardMode,
 			team: team.parsedTeam.map(t => ({ id: t.id, deaths: t.deaths }))

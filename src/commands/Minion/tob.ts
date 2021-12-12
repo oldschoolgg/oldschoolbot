@@ -1,7 +1,7 @@
+import { ChartConfiguration } from 'chart.js';
 import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, percentChance, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import fetch from 'node-fetch';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
@@ -23,6 +23,7 @@ import { MakePartyOptions } from '../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import { calcDropRatesFromBank, formatDuration, toKMB, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { generateChart } from '../../lib/util/chart';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -48,7 +49,7 @@ export default class extends BotCommand {
 		let successRates = [];
 		let kc = [];
 		let groupKc = 0;
-		for (let i = 0; i < 250; i++) {
+		for (let i = 0; i < 1000; i++) {
 			const t = await createTOBTeam({
 				team: new Array(teamSize).fill(user),
 				hardMode,
@@ -78,7 +79,8 @@ export default class extends BotCommand {
 			duration.push(t.duration);
 		}
 		duration = duration.map(i => i / Time.Minute);
-		const options = {
+
+		const options: ChartConfiguration = {
 			type: 'line',
 			data: {
 				// labels: [...Array(duration.length).keys()].map(i => `${i + 1}`),
@@ -90,57 +92,79 @@ export default class extends BotCommand {
 						borderColor: 'rgb(255, 0, 0)',
 						data: successRates,
 						fill: false,
-						yAxisID: 'left'
+						yAxisID: 'y'
 					},
 					{
-						label: 'Actual KC',
+						label: 'Duration (Minutes)',
+						backgroundColor: 'rgb(0, 255, 0)',
+						borderColor: 'rgb(0, 255, 0)',
+						data: duration,
 						fill: false,
-						backgroundColor: 'rgb(0, 0, 0)',
-						borderColor: 'rgb(0, 0, 0)',
-						data: kc,
-						yAxisID: 'right'
+						yAxisID: 'y1'
 					}
+					// {
+					// 	label: 'Actual KC',
+					// 	fill: false,
+					// 	backgroundColor: 'rgb(0, 0, 0)',
+					// 	borderColor: 'rgb(0, 0, 0)',
+					// 	data: kc,
+					// 	yAxisID: 'right'
+					// }
 				]
 			},
 			options: {
-				stacked: false,
-				title: {
-					display: true,
-					text: ''
+				plugins: {
+					title: {
+						display: true,
+						text: `Simulating 0-1000 TOB, Team Size ${teamSize}, ${hardMode ? 'Hardmode' : 'Not hardmode'}`
+					}
 				},
 				scales: {
-					yAxes: [
-						{
-							id: 'right',
-							type: 'linear',
+					x: {
+						title: {
 							display: true,
-							position: 'right'
-						},
-						{
-							id: 'left',
-							type: 'linear',
-							display: true,
-							position: 'left',
-							gridLines: {
-								drawOnChartArea: false
+							text: 'Attempts',
+							font: {
+								size: 15
 							}
 						}
-					]
+					},
+					y: {
+						type: 'linear',
+						display: true,
+						position: 'left',
+						ticks: {
+							// Include a dollar sign in the ticks
+							callback(value) {
+								return `${value}%`;
+							}
+						}
+					},
+					y1: {
+						type: 'linear',
+						display: true,
+						position: 'right',
+						grid: {
+							drawOnChartArea: false
+						},
+						// Include a dollar sign in the ticks
+						ticks: {
+							callback(value) {
+								return `${value}mins`;
+							}
+						}
+					}
 				}
 			}
 		};
 
-		const imageBuffer = await fetch(
-			`https://quickchart.io/chart?bkg=${encodeURIComponent('#fff')}&c=${encodeURIComponent(
-				JSON.stringify(options)
-			)}`
-		).then(result => result.buffer());
+		const imageBuffer = await generateChart(options);
 
-		let arr = [['Attempts'].concat(options.data.datasets.map(i => i.label))];
+		let arr = [['Attempts'].concat(options.data.datasets.map(i => i.label!))];
 		for (let i = 1; i < options.data.datasets[0].data.length; i++) {
 			arr[i] = [(i - 1).toString()];
 			for (const dataset of options.data.datasets) {
-				arr[i].push(dataset.data[i - 1].toString());
+				arr[i].push(dataset.data[i - 1]!.toString());
 			}
 		}
 
@@ -226,7 +250,10 @@ export default class extends BotCommand {
 			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
 		}
 
-		const { duration, totalReduction, reductions } = await createTOBTeam({ team: users, hardMode: isHardMode });
+		const { duration, totalReduction, reductions, wipedRoom } = await createTOBTeam({
+			team: users,
+			hardMode: isHardMode
+		});
 
 		let debugStr = '';
 
@@ -254,7 +281,8 @@ export default class extends BotCommand {
 			type: 'TheatreOfBlood',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
-			hardMode: isHardMode
+			hardMode: isHardMode,
+			wipedRoom
 		});
 
 		let str = `${partyOptions.leader.username}'s party (${users
