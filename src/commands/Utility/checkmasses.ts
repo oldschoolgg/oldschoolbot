@@ -31,7 +31,7 @@ export default class extends BotCommand {
 			})
 		)
 			.map(convertStoredActivityToFlatActivity)
-			.filter(m => isRaidsActivity(m) || isGroupActivity(m));
+			.filter(m => (isRaidsActivity(m) || isGroupActivity(m)) && m.users.length > 1);
 
 		if (masses.length === 0) {
 			return msg.channel.send('There are no active masses in this server.');

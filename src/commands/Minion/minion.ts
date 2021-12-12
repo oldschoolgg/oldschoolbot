@@ -14,18 +14,23 @@ import {
 	MIMIC_MONSTER_ID,
 	PerkTier
 } from '../../lib/constants';
+import { GearSetupType } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
+import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
+import { trainCommand } from '../../lib/minions/functions/trainCommand';
+import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
+import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
@@ -64,7 +69,11 @@ const subCommands = [
 	'activities',
 	'af',
 	'ep',
-	'uep'
+	'uep',
+	'lapcounts',
+	'cancel',
+	'train',
+	'unequipall'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -145,6 +154,29 @@ export default class MinionCommand extends BotCommand {
 			};
 			handleButtons();
 		}
+	}
+
+	async cancel(msg: KlasaMessage) {
+		return cancelTaskCommand(msg);
+	}
+
+	async train(msg: KlasaMessage, [input]: [string | undefined]) {
+		return trainCommand(msg, input);
+	}
+
+	async lapcounts(msg: KlasaMessage) {
+		const entries = Object.entries(msg.author.settings.get(UserSettings.LapsScores)).map(arr => [
+			parseInt(arr[0]),
+			arr[1]
+		]);
+		const sepulchreCount = await msg.author.getMinigameScore('sepulchre');
+		if (sepulchreCount === 0 && entries.length === 0) {
+			return msg.channel.send("You haven't done any laps yet! Sad.");
+		}
+		const data = `${entries
+			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
+			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
+		return msg.channel.send(data);
 	}
 
 	async info(msg: KlasaMessage) {
@@ -465,5 +497,11 @@ Please click the buttons below for important links.`
 	async opens(msg: KlasaMessage) {
 		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
 		return msg.channel.send(`You've opened... ${openableScores}`);
+	}
+
+	@requiresMinion
+	@minionNotBusy
+	async unequipall(msg: KlasaMessage, [gearType]: [string]) {
+		return unEquipAllCommand(msg, gearType as GearSetupType);
 	}
 }

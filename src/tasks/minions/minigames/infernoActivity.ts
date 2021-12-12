@@ -4,7 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
-import { prisma } from '../../../lib/settings/prisma';
+import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -159,20 +159,14 @@ export default class extends Task {
 			const cl = user.cl();
 
 			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
-				const usersWithInfernalCape = parseInt(
-					(
-						await this.client.query<any>(
-							`SELECT count(id) FROM users WHERE "collectionLogBank"->>'${itemID(
-								'Infernal cape'
-							)}' IS NOT NULL;`
-						)
-					)[0].count
-				);
+				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
 				this.client.emit(
 					Events.ServerNotification,
 					`**${user.username}** just received their first Infernal cape on their ${formatOrdinal(
 						attempts
-					)} attempt! They are the ${formatOrdinal(usersWithInfernalCape)} person to get an Infernal cape.`
+					)} attempt! They are the ${formatOrdinal(
+						usersWithInfernalCape + 1
+					)} person to get an Infernal cape.`
 				);
 			}
 		}

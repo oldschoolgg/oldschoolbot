@@ -145,7 +145,7 @@ export async function handleTripFinish(
 				return;
 			} else if (onContinueFn && stringMatches(mes.content, continuationChar)) {
 				await onContinueFn(mes).catch(err => {
-					channel.send(err);
+					channel.send(err.message ?? err);
 				});
 			}
 		} catch (err) {
