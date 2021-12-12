@@ -52,7 +52,7 @@ Client.defaultClientSchema
 	.add('nightmare_cost', 'any', { default: {} })
 	.add('create_cost', 'any', { default: {} })
 	.add('create_loot', 'any', { default: {} })
-	.add('tame_merging_cost	', 'any', { default: {} })
+	.add('tame_merging_cost', 'any', { default: {} })
 	.add('trip_doubling_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
