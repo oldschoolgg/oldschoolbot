@@ -584,7 +584,7 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
-			case 'KourendFavour': {
+			case 'Christmas': {
 				const data = currentTask as ChristmasTaskOptions;
 				return `${this.minionName} is currently doing ${data.action}ing Christmas presents. ${formattedDuration}`;
 			}
