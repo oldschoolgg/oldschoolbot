@@ -351,6 +351,9 @@ model User {
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
 
+  presents_stolen    Int
+  presents_delivered Int
+
   @@map("users")
 }
 
@@ -512,6 +515,7 @@ enum activity_type_enum {
   VolcanicMine
   KourendFavour
   Inferno
+  Christmas
 }
 
 enum xp_gains_skill_enum {
