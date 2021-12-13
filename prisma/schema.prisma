@@ -351,8 +351,8 @@ model User {
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
 
-  presents_stolen    Int
-  presents_delivered Int
+  presents_stolen    Int @default(0)
+  presents_delivered Int @default(0)
 
   @@map("users")
 }
