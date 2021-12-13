@@ -10,7 +10,9 @@ export const specialTradeables = resolveItems([
 	'Slice of birthday cake',
 	'War ship',
 	'Birthday present',
-	'Mystery box'
+	'Mystery box',
+	'Black santa hat',
+	'Inverted santa hat'
 ]);
 
 export default function itemIsTradeable(itemID: number | string) {

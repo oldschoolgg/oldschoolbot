@@ -9,11 +9,17 @@ import { KalphiteKingMonster } from '../src/lib/minions/data/killableMonsters/cu
 import KingGoldemar from '../src/lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { VasaMagus } from '../src/lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { Gear } from '../src/lib/structures/Gear';
-import { isSuperUntradeable, itemNameFromID } from '../src/lib/util';
+import { isSuperUntradeable, itemID, itemNameFromID } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
+import itemIsTradeable from '../src/lib/util/itemIsTradeable';
 import resolveItems from '../src/lib/util/resolveItems';
 
 describe('Sanity', () => {
+	test('santa hats should be tradeable', () => {
+		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
+	});
 	test('Growable pets cant come from mystery boxes', () => {
 		const allGrowablePets = growablePets.map(p => p.stages).flat();
 		expect(allGrowablePets.every(growablePet => !PMBTable.allItems.includes(growablePet))).toEqual(true);

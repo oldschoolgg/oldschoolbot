@@ -17,6 +17,7 @@ const monkeyChildChatHead = fs.readFileSync('./src/lib/resources/images/monkeych
 const marimboChatHead = fs.readFileSync('./src/lib/resources/images/marimbo.png');
 const ketKehChatHead = fs.readFileSync('./src/lib/resources/images/ketKeh.png');
 const gertrudeChatHead = fs.readFileSync('./src/lib/resources/images/gertrude.png');
+const antiSantaChatHead = fs.readFileSync('./src/lib/resources/images/antisanta.png');
 
 export const chatHeads = {
 	mejJal: mejJalChatHead,
@@ -27,7 +28,8 @@ export const chatHeads = {
 	wurMuTheMonkey: monkeyChildChatHead,
 	marimbo: marimboChatHead,
 	ketKeh: ketKehChatHead,
-	gertrude: gertrudeChatHead
+	gertrude: gertrudeChatHead,
+	antiSanta: antiSantaChatHead
 };
 
 const names: Record<keyof typeof chatHeads, string> = {
@@ -39,7 +41,8 @@ const names: Record<keyof typeof chatHeads, string> = {
 	wurMuTheMonkey: 'Wur Mu the Monkey',
 	marimbo: 'Marimbo',
 	ketKeh: 'Tzhaar-Ket-Keh',
-	gertrude: 'Gertrude'
+	gertrude: 'Gertrude',
+	antiSanta: 'Anti-Santa'
 };
 
 export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {

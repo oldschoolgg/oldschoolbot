@@ -2762,10 +2762,10 @@ fastify-plugin@^3.0.0:
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-3.0.0.tgz#cf1b8c8098e3b5a7c8c30e6aeb06903370c054ca"
   integrity sha512-ZdCvKEEd92DNLps5n0v231Bha8bkz1DjnPP/aEz37rz/q42Z5JVLmgnqR4DYuNn3NXAO3IDCPyRvgvxtJ4Ym4w==
 
-fastify-rate-limit@^5.6.2:
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.6.2.tgz#f7710a49233fe2f7c19d84d21c382331e9934a8e"
-  integrity sha512-3CJudTi0Arf16OyUhXlW3lHaSJDZOtchyYgA3BCR1RpfnEm4pvZCwASR+vYfCJiWGhW+bn8uY/7DWvTHo/Je6A==
+fastify-rate-limit@^5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/fastify-rate-limit/-/fastify-rate-limit-5.7.0.tgz#50a4ec3183e7b357c629e99d10260f65a0950bb3"
+  integrity sha512-9pfnVpz6rUy7VGqBVN9blIT7LgmETiK7hRA0Pu8eHJFq8qq8FBPvrQYXxGXb2nt63laD6ZuvT1O7TxucZI1HIA==
   dependencies:
     fastify-plugin "^3.0.0"
     ms "^2.1.1"
@@ -4349,6 +4349,11 @@ multimap@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/multimap/-/multimap-1.1.0.tgz#5263febc085a1791c33b59bb3afc6a76a2a10ca8"
   integrity sha512-0ZIR9PasPxGXmRsEF8jsDzndzHDj7tIav+JUmvIFB/WHswliFnquxECT/De7GR4yg99ky/NlRKJT82G1y271bw==
+
+murmurhash@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/murmurhash/-/murmurhash-2.0.0.tgz#556779daf7c39a0d2a3f5a9d080d84bf4833f9ee"
+  integrity sha512-Uo7ZHw+PLe2Q8/qbPIVYxAaoi+TYGZwu1a8ryeeASRXJLRSaLCblAGfjh02eu4+/9aUJBpkHXZv42AXmzOW2kw==
 
 nan@^2.14.0:
   version "2.14.2"

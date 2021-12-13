@@ -43,6 +43,11 @@ export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ChristmasTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+	action: 'steal' | 'deliver';
+}
+
 export interface DarkAltarOptions extends ActivityTaskOptions {
 	quantity: number;
 	hasElite: boolean;

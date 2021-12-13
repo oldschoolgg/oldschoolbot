@@ -94,7 +94,7 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 };
 
 export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
-	if (['FightCaves', 'Inferno'].includes(data.type)) return null;
+	if (['FightCaves', 'Inferno', 'Christmas'].includes(data.type)) return null;
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;

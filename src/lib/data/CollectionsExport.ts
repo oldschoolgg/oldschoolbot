@@ -1723,7 +1723,6 @@ export const miscellaneousCL = resolveItems([
 	'Uncut onyx'
 	// 'Merfolk trident'
 ]);
-
 export const dailyCL = resolveItems([
 	'Event rpg',
 	'Green banner',
@@ -2180,3 +2179,11 @@ export const allPetIDs = [
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
 	...resolveItems(['Little parasite', 'Dark squirrel'])
 ];
+
+export const antiSantaOutfit = new Bank({
+	'Antisanta mask': 1,
+	'Antisanta jacket': 1,
+	'Antisanta pantaloons': 1,
+	'Antisanta gloves': 1,
+	'Antisanta boots': 1
+});
