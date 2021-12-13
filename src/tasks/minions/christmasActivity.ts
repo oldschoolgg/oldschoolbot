@@ -35,8 +35,9 @@ export default class extends Task {
 			loot.add(antiSantaOutfit);
 		}
 
-		if (roll(120)) {
-			loot.add(action === 'steal' ? 'Black santa hat' : 'Inverted santa hat');
+		if (roll(90)) {
+			const item = action === 'steal' ? 'Black santa hat' : 'Inverted santa hat';
+			if (!cl.has(item)) loot.add(item);
 		}
 
 		await user.addItemsToBank(loot, true);

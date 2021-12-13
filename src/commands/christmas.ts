@@ -71,10 +71,10 @@ export default class extends BotCommand {
 		const delivered = msg.author.settings.get(UserSettings.PresentsDelivered);
 		const stolen = msg.author.settings.get(UserSettings.PresentsStolen);
 		return msg.channel.send({
-			content: `This year, minions are delivering presents to all the Gielnor children! ${
+			content: `This year, minions are delivering presents to all the Gielinor children! ${
 				style === 'good'
 					? 'But, there are some evil minions out there stealing presents, we need to make sure everyone gets a present!'
-					: "And, we're gonna stop them and get all those presents for ourself!"
+					: "And, we're gonna stop them and get all those presents for ourselves!"
 			}
 			
 **Presents Delivered:** ${delivered}
