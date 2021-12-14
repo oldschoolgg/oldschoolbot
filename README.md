@@ -40,6 +40,7 @@ Contributors are listed in this file, and given a Contributor role in the suppor
 6. Go to https://discord.com/developers/applications and ensure your bot has `Privileged Gateway Intents > Server Members Intent` enabled.
 7. Create a file called `.env` in your project's root directory with the content
    (change as necessary for your DB, this is known as a DSN): `DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres?schema=public`
+8. Run `yarn` then `yarn install`
 8. Run `npx prisma generate` to generate the Prisma client files and load the DSN from #6
 9. Run `npx prisma db push` to create the tables on the database referenced in .env
 10. Run `yarn build` - then run `yarn start`. In the future, you can type only `yarn start` to start the bot.
