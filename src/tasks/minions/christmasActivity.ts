@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { LootTable } from 'oldschooljs';
 
 import { antiSantaOutfit } from '../../lib/data/CollectionsExport';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ChristmasTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import resolveItems from '../../lib/util/resolveItems';
@@ -41,6 +42,10 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank(loot, true);
+
+		const key = action === 'steal' ? UserSettings.PresentsStolen : UserSettings.PresentsDelivered;
+		const current = user.settings.get(key);
+		await user.settings.update(key, current + quantity);
 
 		handleTripFinish(
 			this.client,
