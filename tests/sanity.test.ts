@@ -84,7 +84,8 @@ describe('Sanity', () => {
 			'Sparkler',
 			'Liber tea',
 			'Party music box',
-			'6 sided die'
+			'6 sided die',
+			'Huge lamp'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {
