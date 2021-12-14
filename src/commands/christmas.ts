@@ -6,7 +6,7 @@ import { minionNotBusy, requiresMinion } from '../lib/minions/decorators';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import { ChristmasTaskOptions } from '../lib/types/minions';
-import { murMurHashChance } from '../lib/util';
+import { formatDuration, murMurHashChance } from '../lib/util';
 import addSubTaskToActivityTask from '../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../lib/util/chatHeadImage';
 
@@ -107,7 +107,9 @@ export default class extends BotCommand {
 		});
 
 		return msg.channel.send({
-			content: `${msg.author.minionName} is now off to deliver ${quantity}x presents.`,
+			content: `${
+				msg.author.minionName
+			} is now off to deliver ${quantity}x presents, it'll take around ${formatDuration(duration)} to finish.`,
 			files: [
 				await chatHeadImage({
 					content: randArrItem(style === 'good' ? onTaskDelivering : offTaskDelivering),
@@ -131,7 +133,9 @@ export default class extends BotCommand {
 		});
 
 		return msg.channel.send({
-			content: `${msg.author.minionName} is now off to steal ${quantity}x presents.`,
+			content: `${
+				msg.author.minionName
+			} is now off to steal ${quantity}x presents, it'll take around ${formatDuration(duration)} to finish.`,
 			files: [
 				await chatHeadImage({
 					content: randArrItem(style === 'evil' ? onTaskStealing : offTaskStealing),
