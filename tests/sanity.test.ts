@@ -62,6 +62,45 @@ describe('Sanity', () => {
 			}
 		}
 	});
+	test('exclude certain openables from mystery boxes', () => {
+		// These items appear in some Openables but should still also appear in Mystery boxes:
+		const shouldBeIn = resolveItems([
+			'Coal',
+			'Blacksmith helmet',
+			'Blacksmith boots',
+			'Blacksmith gloves',
+			'Uncut sapphire',
+			'Oak plank',
+			'Pure essence',
+			'Runite bolts'
+		]);
+		// These items should all still excluded by the 'Openables' rule. Some items are also excluded by other means.
+		const shouldntBeIn = resolveItems([
+			'Christmas cracker',
+			'White partyhat',
+			'Corgi',
+			'Beach ball',
+			'Glass of bubbly',
+			'Sparkler',
+			'Liber tea',
+			'Party music box',
+			'6 sided die'
+		]);
+		for (const i of shouldntBeIn) {
+			if (allMbTables.includes(i)) {
+				console.error('wtf');
+				throw new Error(`Item ${itemNameFromID(i)} shouldn't be in Mystery Boxes, but is.`);
+			}
+		}
+		for (const i of shouldBeIn) {
+			if (!allMbTables.includes(i)) {
+				console.error('wtf');
+				throw new Error(`Item ${itemNameFromID(i)} should be in Mystery Boxes, but isn't.`);
+			}
+		}
+		expect(shouldBeIn.every(ss => allMbTables.includes(ss))).toEqual(true);
+		expect(shouldntBeIn.some(ss => allMbTables.includes(ss))).toEqual(false);
+	});
 	test('custom monsters', () => {
 		expect(killableMonsters.some(m => m.name === 'Frost Dragon')).toBeTruthy();
 		expect(killableMonsters.some(m => m.name === 'Sea Kraken')).toBeTruthy();
