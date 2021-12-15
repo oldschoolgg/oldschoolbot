@@ -2871,3 +2871,323 @@ setCustomItem(
 	},
 	1_000_000
 );
+
+setCustomItem(
+	62_100,
+	'Frozen santa hat',
+	'Santa hat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	62_101,
+	'Smokey bbq sauce',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_102,
+	'Pumpkinhead pie',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_103,
+	'Roasted ham',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_104,
+	'Corn on the cob',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_105,
+	"Dougs' chocolate mud",
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_106,
+	"Shepherd's pie",
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_108,
+	'Flappy meal',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_109,
+	'Yule log',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_110,
+	'Christmas pudding',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_111,
+	'Christmas pudding amulet',
+	'Amulet of strength',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	62_112,
+	'Festive mistletoe',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	62_113,
+	'Christmas tree kite',
+	'Rune kiteshield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	62_114,
+	'Gr-egg-oyle special',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_115,
+	'Christmas tree hat',
+	'Rune full helm',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	62_116,
+	'Roast potatoes',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_117,
+	'Ratatouille',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_118,
+	'Fish n chips',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_119,
+	'Pretzel',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_120,
+	'Bacon',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_121,
+	'Prawns',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_122,
+	'Pavlova',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000
+);
+setCustomItem(
+	62_336,
+	'Festive jumper',
+	'Rune platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	62_337,
+	'Festive present',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	62_338,
+	'Festive wrapping paper',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	62_348,
+	'Golden shard',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	62_356,
+	'Smokey painting',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	5_000_000
+);
+setCustomItem(
+	62_496,
+	'Seer',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	62_546,
+	'Golden partyhat',
+	'Yellow partyhat',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000_000
+);

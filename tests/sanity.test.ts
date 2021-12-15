@@ -53,7 +53,13 @@ describe('Sanity', () => {
 			'Abyssal pouch',
 			'Cob',
 			'Runite stone spirit',
-			'Coal stone spirit'
+			'Coal stone spirit',
+			'Frozen santa hat',
+			'Flappy meal',
+			'Seer',
+			'Pretzel',
+			'Smokey painting',
+			'Festive present'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {

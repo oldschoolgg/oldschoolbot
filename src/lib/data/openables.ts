@@ -426,6 +426,20 @@ const Openables: Openable[] = [
 			.add(MysteryBoxes)
 			.add(LampTable),
 		emoji: '<:Monkey_crate:885774318041202708>'
+	},
+	{
+		name: 'Festive present',
+		itemID: itemID('Festive present'),
+		aliases: ['festive present'],
+		table: new LootTable()
+			.tertiary(50, 'Seer')
+			.tertiary(20, 'Frozen santa hat')
+			.tertiary(5, 'Golden shard')
+			.tertiary(5, 'Festive jumper')
+			.add('Toy soldier')
+			.add('Toy doll')
+			.add('Toy cat'),
+		emoji: Emoji.Casket
 	}
 ];
 

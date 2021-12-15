@@ -721,6 +721,15 @@ const bsoItems: Createable[] = [
 		outputItems: {
 			[itemID('Polypore staff')]: 1
 		}
+	},
+	{
+		name: 'Golden partyhat',
+		inputItems: {
+			[itemID('Golden shard')]: 7
+		},
+		outputItems: {
+			[itemID('Golden partyhat')]: 1
+		}
 	}
 ];
 

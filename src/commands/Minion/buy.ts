@@ -130,8 +130,17 @@ export default class extends BotCommand {
 		}
 
 		const GP = msg.author.settings.get(UserSettings.GP);
-		const gpCost =
-			msg.author.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
+		let gpCost = msg.author.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
+
+		if (buyable.name === getOSItem('Festive present').name) {
+			quantity = 1;
+			const previouslyBought = msg.author.cl().amount('Festive present');
+			if (msg.author.isIronman) {
+				gpCost = 10_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 2);
+			} else {
+				gpCost = 100_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 2);
+			}
+		}
 
 		const totalGPCost = (gpCost ?? 0) * quantity;
 

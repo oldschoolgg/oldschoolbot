@@ -66,8 +66,8 @@ export async function handleTripFinish(
 		data.duration > Time.Minute * 20 &&
 		roll(pet === itemID('Mr. E') ? 12 : 15)
 	) {
-		const bonusLoot = new Bank().add(loot).add(getRandomMysteryBox());
-		message += '\n<:mysterybox:680783258488799277> **You received 2x loot and a Mystery box.**';
+		const bonusLoot = new Bank().add(loot).add(getRandomMysteryBox()).add('Festive wrapping paper', randInt(3, 5));
+		message += `\n<:mysterybox:680783258488799277> **You received 2x loot and ${loot}.**`;
 		await user.addItemsToBank(bonusLoot, true);
 		updateBankSetting(client, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
 	}

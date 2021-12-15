@@ -763,7 +763,11 @@ const Buyables: Buyable[] = [
 		name: 'Sandworms',
 		gpCost: 500
 	},
-
+	{
+		name: 'Festive present',
+		gpCost: 100_000_000,
+		itemCost: new Bank().add('Festive wrapping paper', 10).bank
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
