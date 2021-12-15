@@ -1976,7 +1976,13 @@ export const kingGoldemarCL = resolveItems([
 
 export const abyssalDragonCL = resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']);
 
-export const vasaMagusCL = resolveItems(['Tattered robes of Vasa', 'Jar of magic', 'Voidling', 'Magus scroll']);
+export const vasaMagusCL = resolveItems([
+	'Tattered robes of Vasa',
+	'Jar of magic',
+	'Voidling',
+	'Magus scroll',
+	'Magical artifact'
+]);
 
 export const torvaOutfit = resolveItems([
 	'Torva full helm',

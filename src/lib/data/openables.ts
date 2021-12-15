@@ -27,6 +27,7 @@ interface Openable {
 	aliases: string[];
 	table: (() => number) | LootTable;
 	emoji: Emoji | string;
+	excludeFromBoxes?: boolean;
 }
 
 const MR_E_DROPRATE_FROM_UMB_AND_TMB = 5000;
@@ -239,7 +240,8 @@ const Openables: Openable[] = [
 		itemID: 11_918,
 		aliases: ['present', 'birthday present'],
 		table: BirthdayPresentTable,
-		emoji: Emoji.BirthdayPresent
+		emoji: Emoji.BirthdayPresent,
+		excludeFromBoxes: true
 	},
 	{
 		name: 'Casket',
@@ -267,14 +269,16 @@ const Openables: Openable[] = [
 		itemID: 3713,
 		aliases: ['holiday mystery box', 'hmb', 'holiday', 'holiday item mystery box', 'himb'],
 		table: baseHolidayItems,
-		emoji: Emoji.MysteryBox
+		emoji: Emoji.MysteryBox,
+		excludeFromBoxes: true
 	},
 	{
 		name: 'Pet Mystery box',
 		itemID: 3062,
 		aliases: ['pet mystery box', 'pmb'],
 		table: PMBTable,
-		emoji: Emoji.MysteryBox
+		emoji: Emoji.MysteryBox,
+		excludeFromBoxes: true
 	},
 	{
 		name: 'Untradeables Mystery box',
@@ -295,7 +299,8 @@ const Openables: Openable[] = [
 		itemID: itemID('Christmas cracker'),
 		aliases: ['cracker', 'christmas cracker'],
 		table: PartyhatTable,
-		emoji: Emoji.BirthdayPresent
+		emoji: Emoji.BirthdayPresent,
+		excludeFromBoxes: true
 	},
 	{
 		name: 'Dwarven crate',
@@ -337,7 +342,8 @@ const Openables: Openable[] = [
 			.add('Sparkler', [2, 10])
 			.add('Party music box')
 			.tertiary(20, 'Cake hat'),
-		emoji: Emoji.BirthdayPresent
+		emoji: Emoji.BirthdayPresent,
+		excludeFromBoxes: true
 	},
 	{
 		name: 'Spoils of war',
@@ -358,14 +364,16 @@ const Openables: Openable[] = [
 			.add('12 sided die', 1, 3)
 			.add('20 sided die', 1, 3)
 			.add('100 sided die'),
-		emoji: Emoji.BirthdayPresent
+		emoji: Emoji.BirthdayPresent,
+		excludeFromBoxes: true
 	},
 	{
 		name: 'Royal mystery box',
 		itemID: itemID('Royal mystery box'),
 		aliases: ['royal mystery box', 'rmb'],
 		table: new LootTable().add('Diamond crown', 1, 2).add('Diamond sceptre', 1, 2).add('Corgi'),
-		emoji: Emoji.BirthdayPresent
+		emoji: Emoji.BirthdayPresent,
+		excludeFromBoxes: true
 	},
 	{
 		name: 'Equippable mystery box',
@@ -384,14 +392,16 @@ const Openables: Openable[] = [
 			.add('Water balloon')
 			.add('Ice cream')
 			.add('Crab hat'),
-		emoji: Emoji.BirthdayPresent
+		emoji: Emoji.BirthdayPresent,
+		excludeFromBoxes: true
 	},
 	{
 		name: 'Independence box',
 		itemID: itemID('Independence box'),
 		aliases: ['independence box'],
 		table: new LootTable().add('Fireworks').add('Fireworks').add('Liber tea').add("Sam's hat"),
-		emoji: Emoji.BirthdayPresent
+		emoji: Emoji.BirthdayPresent,
+		excludeFromBoxes: true
 	},
 	{
 		name: 'Magic crate',
@@ -447,9 +457,9 @@ export function getRandomMysteryBox() {
 	return MysteryBoxes.roll().items()[0][0].id;
 }
 
-let allItemsIDs = Openables.map(i => (typeof i.table !== 'function' && i.table.allItems) || []).flat(
-	Infinity
-) as number[];
+let allItemsIDs = Openables.filter(o => o.excludeFromBoxes)
+	.map(i => (typeof i.table !== 'function' && i.table.allItems) || [])
+	.flat(Infinity) as number[];
 allItemsIDs = uniqueArr(allItemsIDs);
 const cantBeDropped = [
 	...chambersOfXericCL,
