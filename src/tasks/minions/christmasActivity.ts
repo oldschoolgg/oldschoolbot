@@ -2,6 +2,7 @@ import { roll } from 'e';
 import { Task } from 'klasa';
 import { LootTable } from 'oldschooljs';
 
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ChristmasTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -80,6 +81,10 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished ${action}ing ${quantity}x presents and received ${loot}.`;
 
 		await user.addItemsToBank(loot, true);
+
+		const key = action === 'steal' ? UserSettings.PresentsStolen : UserSettings.PresentsDelivered;
+		const current = user.settings.get(key);
+		await user.settings.update(key, current + quantity);
 
 		handleTripFinish(
 			this.client,
