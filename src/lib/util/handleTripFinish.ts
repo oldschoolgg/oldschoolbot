@@ -71,6 +71,15 @@ export async function handleTripFinish(
 		message += `\n<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`;
 		await user.addItemsToBank(bonusLoot, true);
 		updateBankSetting(client, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
+	} else if (
+		loot &&
+		!['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'].includes(data.type) &&
+		data.duration > Time.Minute * 20 &&
+		roll(2)
+	) {
+		const bonusLoot = new Bank().add('Festive wrapping paper', randInt(3, 5));
+		message += `\n**You received ${bonusLoot}.**`;
+		await user.addItemsToBank(bonusLoot, true);
 	}
 
 	const minutes = data.duration / Time.Minute;

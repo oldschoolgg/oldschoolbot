@@ -444,8 +444,8 @@ const Openables: Openable[] = [
 		table: new LootTable()
 			.tertiary(50, 'Seer')
 			.tertiary(20, 'Frozen santa hat')
-			.tertiary(5, 'Golden shard')
-			.tertiary(5, 'Festive jumper')
+			.tertiary(3, 'Golden shard')
+			.tertiary(4, 'Festive jumper')
 			.add('Toy soldier')
 			.add('Toy doll')
 			.add('Toy cat'),
