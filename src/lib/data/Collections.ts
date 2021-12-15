@@ -1182,6 +1182,39 @@ export const allCollectionLogs: ICollection = {
 				]),
 				counts: false
 			},
+			'Christmas 2021': {
+				alias: ['xmas 2021', 'christmas 2021'],
+				items: resolveItems([
+					'Smokey bbq sauce',
+					'Pumpkinhead pie',
+					'Roasted ham',
+					'Corn on the cob',
+					"Dougs' chocolate mud",
+					"Shepherd's pie",
+					'Flappy meal',
+					'Smokey painting',
+					'Yule log',
+					'Gr-egg-oyle special',
+					'Roast potatoes',
+					'Ratatouille',
+					'Fish n chips',
+					'Pretzel',
+					'Bacon',
+					'Prawns',
+					'Pavlova',
+					'Christmas tree hat',
+					'Christmas pudding',
+					'Christmas pudding amulet',
+					'Festive mistletoe',
+					'Christmas tree kite',
+					'Festive wrapping paper',
+					'Festive jumper',
+					'Frozen santa hat',
+					'Golden shard',
+					'Seer'
+				]),
+				counts: false
+			},
 			Graceful: {
 				counts: false,
 				items: gracefulCL
