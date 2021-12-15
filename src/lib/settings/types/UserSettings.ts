@@ -82,6 +82,7 @@ export namespace UserSettings {
 
 	export const PresentsStolen = T<number>('presents_stolen');
 	export const PresentsDelivered = T<number>('presents_delivered');
+	export const GotFreeFestivePresent = T<boolean>('got_free_festive_present');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

@@ -1,6 +1,6 @@
 import { roll } from 'e';
 import { Task } from 'klasa';
-import { LootTable } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ChristmasTaskOptions } from '../../lib/types/minions';
@@ -79,6 +79,12 @@ export default class extends Task {
 		}
 
 		let str = `${user}, ${user.minionName} finished ${action}ing ${quantity}x presents and received ${loot}.`;
+
+		if (!user.settings.get(UserSettings.GotFreeFestivePresent) && roll(2)) {
+			await user.settings.update(UserSettings.GotFreeFestivePresent, true);
+			await user.addItemsToBank(new Bank().add('Festive present'), false);
+			str += '\n\nYou received 1x Festive Present!';
+		}
 
 		await user.addItemsToBank(loot, true);
 
