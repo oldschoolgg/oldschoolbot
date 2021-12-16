@@ -81,7 +81,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished ${action}ing ${quantity}x presents and received ${loot}.`;
 
-		if (!(await isElligibleForPresent(user)) && !user.settings.get(UserSettings.GotFreeFestivePresent) && roll(2)) {
+		if (!user.settings.get(UserSettings.GotFreeFestivePresent) && roll(2) && (await isElligibleForPresent(user))) {
 			await user.settings.update(UserSettings.GotFreeFestivePresent, true);
 			await user.addItemsToBank(new Bank().add('Festive present'), false);
 			str += '\n\nYou received 1x Festive Present!';
