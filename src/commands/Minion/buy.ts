@@ -7,6 +7,7 @@ import { table } from 'table';
 
 import Buyables from '../../lib/data/buyables/buyables';
 import { kittens } from '../../lib/growablePets';
+import { isElligibleForPresent } from '../../lib/settings/prisma';
 import { Minigames } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -133,10 +134,7 @@ export default class extends BotCommand {
 		let gpCost = msg.author.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		if (buyable.name === getOSItem('Festive present').name) {
-			const isElligible =
-				msg.author.isIronman ||
-				(msg.author.totalLevel() > 1000 && Date.now() - msg.author.createdTimestamp > Time.Year);
-			if (!isElligible) {
+			if (!(await isElligibleForPresent(msg.author))) {
 				return msg.channel.send("Santa doesn't want to sell you a Festive present!");
 			}
 			quantity = 1;

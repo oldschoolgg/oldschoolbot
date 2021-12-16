@@ -1,6 +1,9 @@
 import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
+import { Time } from 'e';
+import { KlasaUser } from 'klasa';
 
 import { client } from '../..';
+import { PerkTier } from '../constants';
 import { ActivityTaskData } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
@@ -76,4 +79,15 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
 	}
 	return result;
+}
+
+export async function isElligibleForPresent(user: KlasaUser) {
+	if (user.isIronman) return true;
+	if (user.perkTier >= PerkTier.Four) return true;
+	if (user.totalLevel() >= 2000) return true;
+	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRaw`SELECT SUM(duration)
+FROM activity
+WHERE user_id = ${user.id};`;
+	if (totalActivityDuration[0].sum >= Time.Hour * 80) return true;
+	return false;
 }
