@@ -165,6 +165,8 @@ WHERE bank->>'5021' IS NOT NULL;`
 		const gpTaxCost = amountOfTickets * 500_000;
 		bankToSell.add('Coins', gpTaxCost);
 
+		if (!msg.author.owns(bankToSell)) return msg.channel.send('You do not own these items.');
+
 		delete msg.flagArgs.cf;
 		delete msg.flagArgs.confirm;
 		await msg.confirm(
