@@ -10,13 +10,13 @@ import { addBanks, isSuperUntradeable, itemID } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 
 const specialPrices = new Bank()
-	.add('Clue scroll(beginner)', 50_000)
-	.add('Clue scroll(easy)', 100_000)
-	.add('Clue scroll(medium)', 300_000)
-	.add('Clue scroll(hard)', 700_000)
-	.add('Clue scroll(elite)', 1_000_000)
-	.add('Clue scroll(master)', 5_000_000)
-	.add('Clue scroll(grandmaster)', 50_000_000)
+	// .add('Clue scroll(beginner)', 50_000)
+	// .add('Clue scroll(easy)', 100_000)
+	// .add('Clue scroll(medium)', 300_000)
+	// .add('Clue scroll(hard)', 700_000)
+	// .add('Clue scroll(elite)', 1_000_000)
+	// .add('Clue scroll(master)', 5_000_000)
+	// .add('Clue scroll(grandmaster)', 50_000_000)
 	.add('Reward casket(beginner)', 500_000)
 	.add('Reward casket(easy)', 1_000_000)
 	.add('Reward casket(medium)', 2_000_000)
@@ -71,6 +71,8 @@ const specialPrices = new Bank()
 	.add('Blood dye', 3_000_000_000)
 	.add('Monkey egg', 7_000_000_000)
 	.add('Holiday mystery box', 100_000_000)
+	.add('Golden shard', 3_000_000_000)
+	.add('Festive present', 1_000_000_000)
 
 	// Pets
 	.add('Voidling', 700_000_000)
@@ -113,10 +115,6 @@ WHERE bank->>'5021' IS NOT NULL;`
 			);
 		}
 
-		if (1 < 2) {
-			return msg.channel.send('There is currently no lottery.');
-		}
-
 		const bankToSell = parseBank({
 			inputStr: str,
 			inputBank: msg.author.bank(),
@@ -147,7 +145,7 @@ WHERE bank->>'5021' IS NOT NULL;`
 		if (!msg.author.owns(bankToSell)) return msg.channel.send('You do not own these items.');
 
 		const valuePerTicket = 10_000_000;
-		let amountOfTickets = Math.floor(totalPrice / valuePerTicket);
+		const amountOfTickets = Math.floor(totalPrice / valuePerTicket);
 
 		if (amountOfTickets < 5) {
 			return msg.channel.send("Those items aren't worth enough.");
@@ -163,6 +161,10 @@ WHERE bank->>'5021' IS NOT NULL;`
 			);
 		}
 
+		// Pay 100k GP per ticket
+		const gpTaxCost = amountOfTickets * 100_000;
+		bankToSell.add('Coins', gpTaxCost);
+
 		delete msg.flagArgs.cf;
 		delete msg.flagArgs.confirm;
 		await msg.confirm(
@@ -172,11 +174,13 @@ WHERE bank->>'5021' IS NOT NULL;`
 				', '
 			)}
 
-**WARNING: This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.**`
+**WARNING:**
+- You have to pay 100k GP per ticket you get from items, alternatively you can \`=buy bank lottery ticket\` to directly buy them with GP.
+- This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.`
 		);
 
 		await msg.author.addItemsToBank({ [itemID('Bank lottery ticket')]: amountOfTickets }, true);
-		await msg.author.removeItemsFromBank(bankToSell.bank);
+		await msg.author.removeItemsFromBank(bankToSell);
 
 		await this.client.settings.update(
 			ClientSettings.BankLottery,
