@@ -10,35 +10,35 @@ import { addBanks, isSuperUntradeable, itemID } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 
 const specialPrices = new Bank()
-	.add('Clue scroll(beginner)', 50_000)
-	.add('Clue scroll(easy)', 100_000)
-	.add('Clue scroll(medium)', 300_000)
-	.add('Clue scroll(hard)', 700_000)
-	.add('Clue scroll(elite)', 1_000_000)
-	.add('Clue scroll(master)', 5_000_000)
-	.add('Clue scroll(grandmaster)', 50_000_000)
-	.add('Reward casket(beginner)', 500_000)
-	.add('Reward casket(easy)', 1_000_000)
-	.add('Reward casket(medium)', 2_000_000)
-	.add('Reward casket(hard)', 4_500_000)
-	.add('Reward casket(elite)', 10_000_000)
-	.add('Reward casket(master)', 15_000_000)
-	.add('Reward casket(grandmaster)', 50_000_000)
-	.add('Reward casket(grandmaster)', 50_000_000)
-	.add('Reward casket(grandmaster)', 50_000_000)
+	// .add('Clue scroll(beginner)', 50_000)
+	// .add('Clue scroll(easy)', 100_000)
+	// .add('Clue scroll(medium)', 300_000)
+	// .add('Clue scroll(hard)', 700_000)
+	// .add('Clue scroll(elite)', 1_000_000)
+	// .add('Clue scroll(master)', 5_000_000)
+	// .add('Clue scroll(grandmaster)', 50_000_000)
+	// .add('Reward casket(beginner)', 500_000)
+	// .add('Reward casket(easy)', 1_000_000)
+	// .add('Reward casket(medium)', 2_000_000)
+	// .add('Reward casket(hard)', 4_500_000)
+	// .add('Reward casket(elite)', 10_000_000)
+	// .add('Reward casket(master)', 15_000_000)
+	// .add('Reward casket(grandmaster)', 50_000_000)
+	// .add('Reward casket(grandmaster)', 50_000_000)
+	// .add('Reward casket(grandmaster)', 50_000_000)
 	// Drygores
-	.add('Drygore longsword', 4_000_000_000)
-	.add('Offhand drygore longsword', 4_000_000_000)
+	.add('Drygore longsword', 3_000_000_000)
+	.add('Offhand drygore longsword', 3_000_000_000)
 	.add('Drygore mace', 2_500_000_000)
 	.add('Offhand drygore mace', 2_500_000_000)
 	.add('Drygore rapier', 1_200_000_000)
 	.add('Offhand drygore rapier', 1_400_000_000)
 	// Nex
-	.add('Torva full helm', 1_000_000_000)
-	.add('Torva platebody', 1_000_000_000)
-	.add('Torva platelegs', 1_000_000_000)
-	.add('Torva boots', 1_000_000_000)
-	.add('Torva gloves', 1_000_000_000)
+	.add('Torva full helm', 800_000_000)
+	.add('Torva platebody', 800_000_000)
+	.add('Torva platelegs', 800_000_000)
+	.add('Torva boots', 800_000_000)
+	.add('Torva gloves', 800_000_000)
 
 	.add('Pernix cowl', 600_000_000)
 	.add('Pernix body', 600_000_000)
@@ -55,22 +55,24 @@ const specialPrices = new Bank()
 	.add('Virtus book', 500_000_000)
 
 	// Planks
-	.add('Mahogany plank', 2000)
-	.add('Teak plank', 700)
-	.add('Oak plank', 500)
+	.add('Mahogany plank', 1000)
+	.add('Teak plank', 400)
+	.add('Oak plank', 200)
 
 	// Misc
-	.add('Abyssal thread', 100_000_000)
-	.add('Magus scroll', 400_000_000)
-	.add('Abyssal cape', 3_000_000_000)
-	.add('Ent hide', 60_000_000)
-	.add('Tradeable mystery box', 20_000_000)
+	.add('Abyssal thread', 50_000_000)
+	.add('Magus scroll', 200_000_000)
+	.add('Abyssal cape', 2_000_000_000)
+	.add('Ent hide', 20_000_000)
+	.add('Tradeable mystery box', 13_000_000)
 	.add('Untradeable mystery box', 13_000_000)
 
-	.add('Ignecarus dragonclaw', 1_000_000_000)
-	.add('Blood dye', 3_000_000_000)
-	.add('Monkey egg', 7_000_000_000)
-	.add('Holiday mystery box', 100_000_000)
+	.add('Ignecarus dragonclaw', 300_000_000)
+	.add('Blood dye', 1_000_000_000)
+	.add('Monkey egg', 5_000_000_000)
+	.add('Holiday mystery box', 50_000_000)
+	.add('Golden shard', 3_000_000_000)
+	.add('Festive present', 1_000_000_000)
 
 	// Pets
 	.add('Voidling', 700_000_000)
@@ -113,10 +115,6 @@ WHERE bank->>'5021' IS NOT NULL;`
 			);
 		}
 
-		if (1 < 2) {
-			return msg.channel.send('There is currently no lottery.');
-		}
-
 		const bankToSell = parseBank({
 			inputStr: str,
 			inputBank: msg.author.bank(),
@@ -147,7 +145,7 @@ WHERE bank->>'5021' IS NOT NULL;`
 		if (!msg.author.owns(bankToSell)) return msg.channel.send('You do not own these items.');
 
 		const valuePerTicket = 10_000_000;
-		let amountOfTickets = Math.floor(totalPrice / valuePerTicket);
+		const amountOfTickets = Math.floor(totalPrice / valuePerTicket);
 
 		if (amountOfTickets < 5) {
 			return msg.channel.send("Those items aren't worth enough.");
@@ -163,6 +161,10 @@ WHERE bank->>'5021' IS NOT NULL;`
 			);
 		}
 
+		// Pay 500k GP per ticket
+		const gpTaxCost = amountOfTickets * 500_000;
+		bankToSell.add('Coins', gpTaxCost);
+
 		delete msg.flagArgs.cf;
 		delete msg.flagArgs.confirm;
 		await msg.confirm(
@@ -172,11 +174,13 @@ WHERE bank->>'5021' IS NOT NULL;`
 				', '
 			)}
 
-**WARNING: This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.**`
+**WARNING:**
+- You have to pay 500k GP per ticket you get from items, alternatively you can \`=buy bank lottery ticket\` to directly buy them with GP.
+- This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.`
 		);
 
 		await msg.author.addItemsToBank({ [itemID('Bank lottery ticket')]: amountOfTickets }, true);
-		await msg.author.removeItemsFromBank(bankToSell.bank);
+		await msg.author.removeItemsFromBank(bankToSell);
 
 		await this.client.settings.update(
 			ClientSettings.BankLottery,
