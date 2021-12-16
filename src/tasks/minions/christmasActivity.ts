@@ -1,4 +1,4 @@
-import { roll, Time } from 'e';
+import { roll } from 'e';
 import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 

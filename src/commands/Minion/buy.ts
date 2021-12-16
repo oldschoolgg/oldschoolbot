@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { randArrItem, Time } from 'e';
+import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
