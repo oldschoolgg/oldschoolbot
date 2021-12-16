@@ -1,7 +1,8 @@
-import { roll, Time } from 'e';
+import { roll } from 'e';
 import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
+import { isElligibleForPresent } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ChristmasTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -80,9 +81,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished ${action}ing ${quantity}x presents and received ${loot}.`;
 
-		const isElligible =
-			user.isIronman || (user.totalLevel() > 1000 && Date.now() - user.createdTimestamp > Time.Year);
-		if (isElligible && !user.settings.get(UserSettings.GotFreeFestivePresent) && roll(2)) {
+		if (!user.settings.get(UserSettings.GotFreeFestivePresent) && roll(2) && (await isElligibleForPresent(user))) {
 			await user.settings.update(UserSettings.GotFreeFestivePresent, true);
 			await user.addItemsToBank(new Bank().add('Festive present'), false);
 			str += '\n\nYou received 1x Festive Present!';
