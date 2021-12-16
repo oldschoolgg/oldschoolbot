@@ -30,4 +30,5 @@ export const KrakenTable = new LootTable()
 	.tertiary(400, 'Fish sack')
 	.tertiary(1200, 'Pufferfish')
 	.tertiary(100_000, 'Fishing trophy')
-	.tertiary(50, 'Clue scroll (grandmaster)');
+	.tertiary(50, 'Clue scroll (grandmaster)')
+	.tertiary(200, 'Squid dye');
