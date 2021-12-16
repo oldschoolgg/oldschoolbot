@@ -161,8 +161,8 @@ WHERE bank->>'5021' IS NOT NULL;`
 			);
 		}
 
-		// Pay 100k GP per ticket
-		const gpTaxCost = amountOfTickets * 100_000;
+		// Pay 500k GP per ticket
+		const gpTaxCost = amountOfTickets * 500_000;
 		bankToSell.add('Coins', gpTaxCost);
 
 		delete msg.flagArgs.cf;
@@ -175,7 +175,7 @@ WHERE bank->>'5021' IS NOT NULL;`
 			)}
 
 **WARNING:**
-- You have to pay 100k GP per ticket you get from items, alternatively you can \`=buy bank lottery ticket\` to directly buy them with GP.
+- You have to pay 500k GP per ticket you get from items, alternatively you can \`=buy bank lottery ticket\` to directly buy them with GP.
 - This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.`
 		);
 
