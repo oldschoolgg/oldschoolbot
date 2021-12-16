@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { randArrItem } from 'e';
+import { randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
@@ -133,6 +133,12 @@ export default class extends BotCommand {
 		let gpCost = msg.author.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		if (buyable.name === getOSItem('Festive present').name) {
+			const isElligible =
+				msg.author.isIronman ||
+				(msg.author.totalLevel() > 1000 && Date.now() - msg.author.createdTimestamp > Time.Year);
+			if (!isElligible) {
+				return msg.channel.send("Santa doesn't want to sell you a Festive present!");
+			}
 			quantity = 1;
 			const previouslyBought = msg.author.cl().amount('Festive present');
 			if (msg.author.isIronman) {
