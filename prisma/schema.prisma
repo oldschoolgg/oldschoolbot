@@ -350,6 +350,12 @@ model User {
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
   kourend_favour             Json?    @map("kourend_favour") @db.Json
 
+  premium_balance_tier        Int?
+  premium_balance_expiry_date BigInt?
+
+  presents_stolen    Int @default(0)
+  presents_delivered Int @default(0)
+
   @@map("users")
 }
 
@@ -435,6 +441,7 @@ model CommandUsage {
 
   args       Json?   @db.Json
   channel_id String? @db.VarChar(19)
+  guild_id   String? @db.VarChar(19)
 
   @@map("command_usage")
 }
@@ -513,6 +520,7 @@ enum activity_type_enum {
   KourendFavour
   Inferno
   TheatreOfBlood
+  Christmas
 }
 
 enum xp_gains_skill_enum {

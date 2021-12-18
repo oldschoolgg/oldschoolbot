@@ -70,7 +70,6 @@ import {
 	grotesqueGuardiansCL,
 	hallowedSepulchreCL,
 	hesporiCL,
-	holidayCL,
 	ICollection,
 	ILeftListStatus,
 	implingsCL,
@@ -903,10 +902,6 @@ export const allCollectionLogs: ICollection = {
 	},
 	Custom: {
 		activities: {
-			Holiday: {
-				counts: false,
-				items: holidayCL
-			},
 			Daily: {
 				counts: false,
 				alias: ['diango'],

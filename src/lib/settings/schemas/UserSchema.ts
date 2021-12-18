@@ -55,6 +55,8 @@ Client.defaultUserSchema
 	.add('main_account', 'string', { default: null })
 	.add('premium_balance_tier', 'integer', { default: null })
 	.add('premium_balance_expiry_date', 'integer', { default: null, maximum: Number.MAX_SAFE_INTEGER })
+	.add('presents_stolen', 'integer', { default: 0 })
+	.add('presents_delivered', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })

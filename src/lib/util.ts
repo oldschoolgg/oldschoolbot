@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -570,4 +571,9 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 
 export function convertPercentChance(percent: number) {
 	return (1 / (percent / 100)).toFixed(1);
+}
+
+export function murMurHashChance(input: string, percent: number) {
+	const hash = murmurHash.v3(input) % 1e4;
+	return hash < percent * 100;
 }

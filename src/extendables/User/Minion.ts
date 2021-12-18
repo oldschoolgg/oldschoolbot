@@ -44,6 +44,7 @@ import {
 	BlastFurnaceActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
+	ChristmasTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
 	ConstructionActivityTaskOptions,
@@ -594,6 +595,10 @@ export default class extends Extendable {
 				} is currently attempting the Theatre of Blood, if your team is successful and doesn't die, the trip should take ${formatDuration(
 					durationRemaining
 				)}.`;
+			}
+			case 'Christmas': {
+				const data = currentTask as ChristmasTaskOptions;
+				return `${this.minionName} is currently doing ${data.action}ing Christmas presents. ${formattedDuration}`;
 			}
 		}
 	}
