@@ -140,7 +140,7 @@ export default class extends BotCommand {
 			quantity = 1;
 			const previouslyBought = msg.author.cl().amount('Festive present');
 			if (msg.author.isIronman) {
-				gpCost = Math.floor(10_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 3));
+				gpCost = Math.floor(10_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 6));
 			} else {
 				gpCost = Math.floor(100_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 3));
 			}
