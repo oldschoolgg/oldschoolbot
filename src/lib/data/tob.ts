@@ -1,7 +1,10 @@
-import { calcPercentOfNum, calcWhatPercent, percentChance, reduceNumByPercent, round, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, percentChance, randInt, reduceNumByPercent, round, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { blowpipeDarts } from '../../commands/Minion/blowpipe';
+import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { getMinigameScore } from '../settings/minigames';
 import { UserSettings } from '../settings/types/UserSettings';
@@ -20,34 +23,50 @@ export const bareMinStats: Skills = {
 	prayer: 77
 };
 
+export const totalXPFromRaid = {
+	[SkillsEnum.Attack]: 12_000,
+	[SkillsEnum.Hitpoints]: 13_100,
+	[SkillsEnum.Strength]: 12_000,
+	[SkillsEnum.Ranged]: 1000,
+	[SkillsEnum.Defence]: 12_000,
+	[SkillsEnum.Magic]: 1000
+} as const;
+
 export interface TOBRoom {
 	name: string;
 	difficultyRating: number;
+	timeWeighting: number;
 }
 export const TOBRooms: TOBRoom[] = [
 	{
 		name: 'Maiden',
-		difficultyRating: 1
+		difficultyRating: 1,
+		timeWeighting: 11
 	},
 	{
 		name: 'Bloat',
-		difficultyRating: 4
+		difficultyRating: 4,
+		timeWeighting: 11
 	},
 	{
 		name: 'Nylocas',
-		difficultyRating: 3
+		difficultyRating: 3,
+		timeWeighting: 22
 	},
 	{
 		name: 'Soteseteg',
-		difficultyRating: 2
+		difficultyRating: 2,
+		timeWeighting: 11
 	},
 	{
 		name: 'Xarps',
-		difficultyRating: 2
+		difficultyRating: 2,
+		timeWeighting: 17
 	},
 	{
 		name: 'Vitir Verizk',
-		difficultyRating: 6
+		difficultyRating: 6,
+		timeWeighting: 28
 	}
 ];
 
@@ -185,8 +204,9 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	hands: 'Ferocious gloves',
 	legs: 'Bandos tassets',
 	feet: 'Primordial boots',
-	weapon: 'Scythe of vitur',
-	ring: 'Berserker ring(i)'
+	weapon: 'Abyssal tentacle',
+	ring: 'Berserker ring(i)',
+	shield: 'Avernic defender'
 });
 const maxMelee = new Gear(TOBMaxMeleeGear);
 
@@ -226,23 +246,27 @@ export const minimumCoxSuppliesNeeded = new Bank({
 	'Super restore(4)': 5
 });
 
+export const TENTACLE_CHARGES_PER_RAID = 400;
+
 export async function checkTOBUser(user: KlasaUser, isHardMode: boolean): Promise<[false] | [true, string]> {
 	if (!user.hasMinion) {
-		return [true, "you don't have a minion."];
+		return [true, `${user.username} doesn't have a minion`];
 	}
 	if (user.minionIsBusy) {
-		return [true, 'your minion is busy.'];
+		return [true, `${user.username} minion is busy`];
 	}
 
 	const kc = await getMinigameScore(user.id, 'tob');
 	if (isHardMode && kc < 250) {
-		return [true, 'you need atleast 250 Theatre of Blood KC before doing Hard mode.'];
+		return [true, `${user.username} needs atleast 250 Theatre of Blood KC before doing Hard mode.`];
 	}
 
 	if (!skillsMeetRequirements(user.rawSkills, bareMinStats)) {
 		return [
 			true,
-			`You don't meet the skill requirements to do the Theatre of Blood, you need: ${formatSkillRequirements(
+			`${
+				user.username
+			} doesn't meet the skill requirements to do the Theatre of Blood, you need: ${formatSkillRequirements(
 				bareMinStats
 			)}.`
 		];
@@ -251,25 +275,46 @@ export async function checkTOBUser(user: KlasaUser, isHardMode: boolean): Promis
 	if (!user.owns(minimumCoxSuppliesNeeded)) {
 		return [
 			true,
-			`You don't have enough items, you need a minimum of this amount of items: ${minimumCoxSuppliesNeeded}.`
+			`${user.username} doesn't have enough items, you need a minimum of this amount of items: ${minimumCoxSuppliesNeeded}.`
 		];
 	}
 	const { total } = calculateTOBUserGearPercents(user);
 	if (total < 20) {
-		return [true, 'Your gear is terrible! You do not stand a chance in the Chambers of Xeric'];
-	}
-
-	if (!user.owns('Rune pouch')) {
-		return [true, `${user.username} doesn't own a Rune pouch.`];
+		return [true, `${user.username}'s gear is terrible! You do not stand a chance in the Chambers of Xeric`];
 	}
 
 	const cost = await calcTOBInput(user);
+	cost.add('Coins', 100_000).add('Rune pouch');
 	if (!user.owns(cost)) {
-		return [true, `${user.username} doesn't own ${cost}`];
+		return [true, `${user.username} doesn't own ${cost.remove(user.bank())}`];
 	}
 
-	if (!user.getGear('melee').hasEquipped(['Fire cape', 'Infernal cape'])) {
-		return [true, 'You need atleast an Infernal or Fire cape in your melee setup!'];
+	if (
+		!user.getGear('melee').hasEquipped('Abyssal tentacle') ||
+		!user.getGear('melee').hasEquipped(['Fire cape', 'Infernal cape'])
+	) {
+		return [true, `${user.username} needs an Abyssal tentacle and Fire/Infernal cape in their melee setup!`];
+	}
+
+	const tentacleResult = checkUserCanUseDegradeableItem({
+		item: getOSItem('Abyssal tentacle'),
+		chargesToDegrade: TENTACLE_CHARGES_PER_RAID,
+		user
+	});
+	if (!tentacleResult.hasEnough) {
+		return [true, tentacleResult.userMessage];
+	}
+
+	const blowpipeData = user.settings.get(UserSettings.Blowpipe);
+	if (!user.owns('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
+		return [
+			true,
+			`${user.username} needs a Toxic blowpipe (with darts and scales equipped) in their bank to do the Theatre of Blood.`
+		];
+	}
+	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
+	if (dartIndex < 5) {
+		return [true, `${user.username}'s darts are too weak`];
 	}
 
 	return [false];
@@ -371,6 +416,7 @@ export async function createTOBTeam({
 	totalReduction: number;
 	parsedTeam: ParsedTeamMember[];
 	wipedRoom: TOBRoom | null;
+	deathDuration: number | null;
 }> {
 	const teamSize = team.length;
 	assert(teamSize > 1 && teamSize < 6, 'TOB team must be 2-5 users');
@@ -412,6 +458,13 @@ export async function createTOBTeam({
 			}
 		}
 
+		// Blowpipe
+		const darts = u.settings.get(UserSettings.Blowpipe).dartID!;
+		const dartItem = getOSItem(darts);
+		const dartIndex = blowpipeDarts.indexOf(dartItem);
+		const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
+		userPercentChange += percent;
+
 		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, hardMode);
 		parsedTeam.push({ kc, hardKC, deathChances, deaths: deathChances.deaths, id: u.id });
 
@@ -434,13 +487,27 @@ export async function createTOBTeam({
 	}
 
 	let wipedRoom: TOBRoom | null = null;
+	let deathDuration: number | null = 0;
 	for (let i = 0; i < TOBRooms.length; i++) {
+		let room = TOBRooms[i];
 		if (parsedTeam.every(member => member.deaths.includes(i))) {
-			wipedRoom = TOBRooms[i];
+			wipedRoom = room;
+			deathDuration += calcWhatPercent(randInt(1, room.timeWeighting), duration);
+		} else {
+			deathDuration += calcWhatPercent(room.timeWeighting, duration);
 		}
 	}
 
-	return { duration, reductions, totalReduction: totalSpeedReductions / teamSize, parsedTeam, wipedRoom };
+	if (!wipedRoom) deathDuration = null;
+
+	return {
+		duration,
+		reductions,
+		totalReduction: totalSpeedReductions / teamSize,
+		parsedTeam,
+		wipedRoom,
+		deathDuration
+	};
 }
 
 export async function calcTOBInput(u: KlasaUser) {
@@ -459,5 +526,10 @@ export async function calcTOBInput(u: KlasaUser) {
 
 	items.add('Saradomin brew(4)', brewsNeeded);
 	items.add('Super restore(4)', restoresNeeded);
+
+	items.add('Blood rune', 110);
+	items.add('Death rune', 100);
+	items.add('Water rune', 800);
+
 	return items;
 }

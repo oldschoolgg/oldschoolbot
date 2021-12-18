@@ -69,7 +69,17 @@ export async function getMinionName(userID: string): Promise<string> {
 	return name ? `${prefix} ${displayIcon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${displayIcon} Your minion`;
 }
 
-export const minionActivityCache = new Map<string, ActivityTaskData>();
+declare global {
+	namespace NodeJS {
+		interface Global {
+			minionActivityCache: Map<string, ActivityTaskData> | undefined;
+		}
+	}
+}
+export const minionActivityCache = global.minionActivityCache || new Map();
+
+if (process.env.NODE_ENV !== 'production') global.minionActivityCache = minionActivityCache;
+
 export function getActivityOfUser(userID: string) {
 	const task = minionActivityCache.get(userID);
 	return task ?? null;

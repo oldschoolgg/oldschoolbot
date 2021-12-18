@@ -70,6 +70,8 @@ export namespace UserSettings {
 	export const PresentsStolen = T<number>('presents_stolen');
 	export const PresentsDelivered = T<number>('presents_delivered');
 
+	export const TentacleCharges = T<number>('tentacle_charges');
+
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
 		export const TaskStreak = T<number>('slayer.task_streak');

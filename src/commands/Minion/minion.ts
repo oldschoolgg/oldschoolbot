@@ -20,6 +20,7 @@ import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
+import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
@@ -73,7 +74,8 @@ const subCommands = [
 	'lapcounts',
 	'cancel',
 	'train',
-	'unequipall'
+	'unequipall',
+	'blowpipe'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -177,6 +179,10 @@ export default class MinionCommand extends BotCommand {
 			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
 			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
 		return msg.channel.send(data);
+	}
+
+	async blowpipe(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return blowpipeCommand(msg, input);
 	}
 
 	async info(msg: KlasaMessage) {

@@ -1,9 +1,9 @@
-import { noOp } from 'e';
+import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { createTOBTeam, TOBRooms, TOBUniques } from '../../../lib/data/tob';
+import { createTOBTeam, TOBRooms, TOBUniques, totalXPFromRaid } from '../../../lib/data/tob';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
@@ -14,7 +14,7 @@ import { sendToChannelID } from '../../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {
-		const { channelID, users, hardMode, leader } = data;
+		const { channelID, users, hardMode, leader, wipedRoom, duration, fakeDuration } = data;
 		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
 		const team = await createTOBTeam({ team: allUsers, hardMode });
 		console.log(JSON.stringify(team));
@@ -22,6 +22,39 @@ export default class extends Task {
 			hardMode,
 			team: team.parsedTeam.map(t => ({ id: t.id, deaths: t.deaths }))
 		});
+
+		const allTag = allUsers.map(u => u.toString()).join('');
+
+		// Add XP
+		await Promise.all(
+			allUsers.map(u =>
+				Promise.all(
+					objectEntries(totalXPFromRaid).map(val =>
+						u.addXP({
+							skillName: val[0],
+							amount: wipedRoom
+								? val[1]
+								: calcPercentOfNum(calcWhatPercent(duration, fakeDuration), val[1])
+						})
+					)
+				)
+			)
+		);
+
+		// GIVE XP HERE
+		// 100k tax if they wipe
+		if (wipedRoom) {
+			sendToChannelID(this.client, channelID, {
+				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${wipedRoom.name} room!`
+			});
+			// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
+			await updateBankSetting(
+				this.client,
+				ClientSettings.EconomyStats.TOBCost,
+				new Bank().add('Coins', users.length * 100_000)
+			);
+			return;
+		}
 
 		const totalLoot = new Bank();
 
@@ -59,7 +92,7 @@ Total Deaths: ${result.totalDeaths}
 			const deathStr = deaths.length === 0 ? '' : `${Emoji.Skull}(${deaths.map(i => TOBRooms[i].name)})`;
 
 			resultMessage += `\n${deathStr}**${user}** received: ${str}`;
-			await user.addItemsToBank(userLoot, true);
+			await user.addItemsToBank(userLoot.clone().add('Coins', 100_000), true);
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBLoot, totalLoot.bank);

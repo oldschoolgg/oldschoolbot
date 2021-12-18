@@ -13,17 +13,20 @@ import {
 	calculateTOBUserGearPercents,
 	checkTOBTeam,
 	checkTOBUser,
-	createTOBTeam
+	createTOBTeam,
+	TENTACLE_CHARGES_PER_RAID
 } from '../../lib/data/tob';
+import { degradeItem } from '../../lib/degradeableItems';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../lib/types/minions';
-import { calcDropRatesFromBank, formatDuration, toKMB, updateBankSetting } from '../../lib/util';
+import { calcDropRatesFromBank, formatDuration, randomVariation, toKMB, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { generateChart } from '../../lib/util/chart';
+import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -240,8 +243,8 @@ export default class extends BotCommand {
 		};
 
 		const magna = await this.client.fetchUser('157797566833098752');
-		const benny = await this.client.fetchUser('507686806624534529');
-		let anime = await this.client.fetchUser('363917147052834819');
+		const benny = await this.client.fetchUser('251536370613485568');
+		let anime = await this.client.fetchUser('425134194436341760');
 
 		const users = [magna, benny, anime]; // (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
 
@@ -250,7 +253,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
 		}
 
-		const { duration, totalReduction, reductions, wipedRoom } = await createTOBTeam({
+		const { duration, totalReduction, reductions, wipedRoom, deathDuration } = await createTOBTeam({
 			team: users,
 			hardMode: isHardMode
 		});
@@ -262,7 +265,21 @@ export default class extends BotCommand {
 		await Promise.all(
 			users.map(async u => {
 				const supplies = await calcTOBInput(u);
-				await u.removeItemsFromBank(supplies);
+				const blowpipeData = u.settings.get(UserSettings.Blowpipe);
+				await u.specialRemoveItems(
+					supplies
+						.clone()
+						.add('Coins', 100_000)
+						.add(
+							blowpipeData.dartID!,
+							Math.floor(Math.min(blowpipeData.dartQuantity, randomVariation(110, 10)))
+						)
+				);
+				await degradeItem({
+					item: getOSItem('Abyssal tentacle'),
+					user: u,
+					chargesToDegrade: TENTACLE_CHARGES_PER_RAID
+				});
 				totalCost.add(supplies);
 				const { total } = calculateTOBUserGearPercents(u);
 				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
@@ -277,12 +294,13 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask<TheatreOfBloodTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			duration,
+			duration: deathDuration ?? duration,
 			type: 'TheatreOfBlood',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
 			hardMode: isHardMode,
-			wipedRoom
+			wipedRoom,
+			fakeDuration: duration
 		});
 
 		let str = `${partyOptions.leader.username}'s party (${users

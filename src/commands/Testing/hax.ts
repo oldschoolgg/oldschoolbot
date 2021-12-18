@@ -8,6 +8,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -35,12 +36,23 @@ export default class extends BotCommand {
 				.add('Super combat potion(4)', 100)
 				.add('Cooked karambwan', 1000)
 				.add('Ranging potion(4)', 1000)
-				.add('Shark', 5000);
+				.add('Death rune', 10_000)
+				.add('Blood rune', 10_000)
+				.add('Water rune', 10_000)
+				.add('Coins', 5_000_000)
+				.add('Shark', 5000)
+				.add('Toxic blowpipe');
 			await msg.author.addItemsToBank(loot);
+			await msg.author.settings.update(UserSettings.Blowpipe, {
+				scales: 100_000,
+				dartQuantity: 100_000,
+				dartID: itemID('Rune dart')
+			});
 			await msg.author.settings.update(UserSettings.Gear.Melee, TOBMaxMeleeGear);
 			await msg.author.settings.update(UserSettings.Gear.Range, TOBMaxRangeGear);
 			await msg.author.settings.update(UserSettings.Gear.Mage, TOBMaxMageGear);
-			return msg.channel.send(`Gave you ${loot}, all BIS setups`);
+			await msg.author.settings.update(UserSettings.TentacleCharges, 10_000);
+			return msg.channel.send(`Gave you ${loot}, all BIS setups, 10k tentacle charges`);
 		}
 
 		msg.author.settings.update(paths.map(path => [path, 14_000_000]));

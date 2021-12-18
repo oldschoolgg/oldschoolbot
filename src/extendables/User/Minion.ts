@@ -587,9 +587,8 @@ export default class extends Extendable {
 			}
 			case 'TheatreOfBlood': {
 				const data = currentTask as TheatreOfBloodTaskOptions;
-				const durationRemaining = data.fakeDuration
-					? data.finishDate - data.duration + data.fakeDuration - Date.now()
-					: data.finishDate - Date.now();
+				const durationRemaining = data.finishDate - data.fakeDuration - Date.now();
+
 				return `${
 					this.minionName
 				} is currently attempting the Theatre of Blood, if your team is successful and doesn't die, the trip should take ${formatDuration(
