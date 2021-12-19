@@ -393,8 +393,8 @@ function kcEffectiveness(normalKC: number, hardKC: number, hardMode: boolean) {
 const speedReductionForGear = 16;
 const speedReductionForKC = 70;
 const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 10 + 5;
-const baseDuration = Time.Minute * 83;
-const baseCmDuration = Time.Minute * 110;
+const baseDuration = Time.Minute * 60;
+const baseCmDuration = Time.Minute * 75;
 
 const { ceil } = Math;
 function calcPerc(perc: number, num: number) {
@@ -430,6 +430,7 @@ export async function createTOBTeam({
 	deathDuration: number | null;
 }> {
 	const teamSize = team.length;
+	const minPlayerTime = hardMode ? 25 * Time.Minute : 20 * Time.Minute;
 	assert(teamSize > 1 && teamSize < 6, 'TOB team must be 2-5 users');
 
 	let totalReduction = 0;
@@ -458,6 +459,9 @@ export async function createTOBTeam({
 		// Reduce time for KC
 		const kcPercent = kcEffectiveness(kc, hardKC, hardMode);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
+		const maxKcCurveBonus = 30;
+		const durationCurveModifier = Math.min(maxKcCurveBonus, kcPercent * 0.6);
+		userPercentChange *= 1 + durationCurveModifier / 100;
 
 		/**
 		 *
@@ -507,6 +511,7 @@ export async function createTOBTeam({
 		duration = reduceNumByPercent(duration, totalReduction);
 	}
 
+	duration = Math.max(minPlayerTime, duration);
 	if (disableVariation !== true) {
 		duration = randomVariation(duration, 5);
 	}
