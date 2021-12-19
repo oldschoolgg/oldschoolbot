@@ -2047,7 +2047,8 @@ export const seaKrakenCL = resolveItems([
 	// Tangleroot pets
 	'Fish sack',
 	'Pufferfish',
-	'Fishing trophy'
+	'Fishing trophy',
+	'Squid dye'
 ]);
 
 export const queenBlackDragonCL = resolveItems([
