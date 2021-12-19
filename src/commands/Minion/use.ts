@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { bossActiveIsActiveOrSoonActive, bossEvents, startBossEvent } from '../../lib/bossEvents';
 import { BitField } from '../../lib/constants';
+import { monkeyTiers } from '../../lib/monkeyRumble';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
@@ -14,6 +15,44 @@ const combinedUsables = [
 			await msg.author.removeItemsFromBank(new Bank().add('Turkey'));
 			await msg.author.addItemsToBank(new Bank().add('Turkey drumstick', 3));
 			return msg.channel.send('You cut your Turkey into 3 drumsticks!');
+		}
+	},
+	{
+		items: ['Shiny mango', 'Magus scroll'].map(getOSItem),
+		run: async (msg: KlasaMessage) => {
+			await msg.author.removeItemsFromBank(new Bank().add('Shiny mango').add('Magus scroll'));
+			await msg.author.addItemsToBank(new Bank().add('Magical mango'));
+			return msg.channel.send('You enchanted your Shiny mango into a Magical mango!');
+		}
+	},
+	{
+		items: ['Blabberbeak', 'Mango'].map(getOSItem),
+		run: async (msg: KlasaMessage) => {
+			return msg.channel.send("Blabberbeak won't eat it.");
+		}
+	},
+	{
+		items: ['Blabberbeak', 'Shiny mango'].map(getOSItem),
+		run: async (msg: KlasaMessage) => {
+			return msg.channel.send("Blabberbeak won't eat it.");
+		}
+	},
+	{
+		items: ['Blabberbeak', 'Magical mango'].map(getOSItem),
+		run: async (msg: KlasaMessage) => {
+			if (
+				!monkeyTiers
+					.map(t => t.greegrees)
+					.flat(2)
+					.some(t => msg.author.hasItemEquippedAnywhere(t.id))
+			) {
+				return msg.channel.send("Blabberbeak doesn't trust you, they won't eat it.");
+			}
+			await msg.author.removeItemsFromBank(new Bank().add('Magical mango').add('Blabberbeak'));
+			await msg.author.addItemsToBank(new Bank().add('Mangobeak'), true);
+			return msg.channel.send(
+				'You fed a Magical mango to Blabberbeak, and he transformed into a weird-looking mango bird, oops.'
+			);
 		}
 	}
 ];

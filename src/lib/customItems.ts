@@ -3263,3 +3263,36 @@ setCustomItem(
 	},
 	1_000_000_000
 );
+setCustomItem(
+	65_197,
+	'Mangobeak',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	63_197,
+	'Magical mango',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	63_127,
+	'Shiny mango',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);

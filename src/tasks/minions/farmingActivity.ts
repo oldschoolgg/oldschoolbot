@@ -514,6 +514,9 @@ export default class extends Task {
 					}
 				}
 			}
+			if (alivePlants && plantToHarvest.name === 'Mango bush' && roll(30)) {
+				loot = addItemToBank(loot, itemID('Shiny mango'));
+			}
 
 			if (Object.keys(loot).length > 0) {
 				infoStr.push(`\nYou received: ${new Bank(loot)}.`);
