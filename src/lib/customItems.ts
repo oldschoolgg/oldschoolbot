@@ -2921,6 +2921,17 @@ setCustomItem(
 	},
 	1_000_000
 );
+setCustomItem(
+	50_116,
+	'Squid dye',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000_000
+);
 
 setCustomItem(
 	62_100,
@@ -3222,6 +3233,17 @@ setCustomItem(
 setCustomItem(
 	62_496,
 	'Seer',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	62_497,
+	'Black swan',
 	'Herbi',
 	{
 		customItemData: {
