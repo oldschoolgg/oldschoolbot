@@ -43,18 +43,20 @@ export default class extends BotCommand {
 	}
 
 	async graph(msg: KlasaMessage) {
-		const result = await this._graph(msg.author, 5, msg.flagArgs.hard ? true : false);
+		const result = await this._graph([msg.author, msg.author, msg.author], msg.flagArgs.hard ? true : false, 0);
 		return msg.channel.send({ files: [result[0]] });
 	}
 
-	async _graph(user: KlasaUser, teamSize: number, hardMode: boolean) {
+	async _graph(users: KlasaUser[], hardMode: boolean, startingKC: number) {
 		let duration = [];
 		let successRates = [];
 		let kc = [];
 		let groupKc = 0;
-		for (let i = 0; i < 1000; i++) {
+		let amountOfKC = 1000;
+
+		for (let i = startingKC; i < startingKC + amountOfKC; i++) {
 			const t = await createTOBTeam({
-				team: new Array(teamSize).fill(user),
+				team: users,
 				hardMode,
 				attemptsOverride: [i, i],
 				kcOverride: [groupKc, groupKc],
@@ -65,7 +67,7 @@ export default class extends BotCommand {
 			const winRateSampleSize = 25;
 			for (let o = 0; o < winRateSampleSize; o++) {
 				const sim = await createTOBTeam({
-					team: new Array(teamSize).fill(user),
+					team: users,
 					hardMode,
 					attemptsOverride: [i, i],
 					kcOverride: [groupKc, groupKc],
@@ -119,7 +121,9 @@ export default class extends BotCommand {
 				plugins: {
 					title: {
 						display: true,
-						text: `Simulating 0-1000 TOB, Team Size ${teamSize}, ${hardMode ? 'Hardmode' : 'Not hardmode'}`
+						text: `Simulating ${startingKC}-${startingKC + amountOfKC} TOB, Team Size ${
+							users.length
+						} (${users.map(u => u.username).join(',')}), ${hardMode ? 'Hardmode' : 'Not hardmode'}`
 					}
 				},
 				scales: {
@@ -244,7 +248,7 @@ export default class extends BotCommand {
 
 		const magna = await this.client.fetchUser('157797566833098752');
 		const benny = await this.client.fetchUser('251536370613485568');
-		let anime = await this.client.fetchUser('425134194436341760');
+		let anime = await this.client.fetchUser('507686806624534529');
 
 		const users = [magna, benny, anime]; // (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
 
@@ -266,7 +270,7 @@ export default class extends BotCommand {
 			users.map(async u => {
 				const supplies = await calcTOBInput(u);
 				const blowpipeData = u.settings.get(UserSettings.Blowpipe);
-				await u.specialRemoveItems(
+				const { realCost } = await u.specialRemoveItems(
 					supplies
 						.clone()
 						.add('Coins', 100_000)
@@ -274,13 +278,16 @@ export default class extends BotCommand {
 							blowpipeData.dartID!,
 							Math.floor(Math.min(blowpipeData.dartQuantity, randomVariation(110, 10)))
 						)
+						.add(u.getGear('range').ammo!.item, 100)
 				);
-				await degradeItem({
-					item: getOSItem('Abyssal tentacle'),
-					user: u,
-					chargesToDegrade: TENTACLE_CHARGES_PER_RAID
-				});
-				totalCost.add(supplies);
+				if (u.getGear('melee').hasEquipped('Abyssal tentacle')) {
+					await degradeItem({
+						item: getOSItem('Abyssal tentacle'),
+						user: u,
+						chargesToDegrade: TENTACLE_CHARGES_PER_RAID
+					});
+				}
+				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
 				const { total } = calculateTOBUserGearPercents(u);
 				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
 					reductions[u.id],
@@ -320,12 +327,16 @@ export default class extends BotCommand {
 		const attempts = await msg.author.settings.get(UserSettings.Stats.TobAttempts);
 		const hardAttempts = await msg.author.settings.get(UserSettings.Stats.TobHardModeAttempts);
 		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false);
+		const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true);
 
 		return msg.channel.send(`**Theatre of Blood**
 KC: ${kc}
 Attempts: ${attempts}
 Hard KC: ${hardKC}
 Hard attempts: ${hardAttempts}
-Death Chances: ${deathChances.deathChances.map(i => `${i.name}[${i.deathChance.toFixed(2)}%]`).join(' ')}`);
+Death Chances: ${deathChances.deathChances.map(i => `${i.name}[${i.deathChance.toFixed(2)}%]`).join(' ')}
+Hard Mode Death Chances: ${hardDeathChances.deathChances
+			.map(i => `${i.name}[${i.deathChance.toFixed(2)}%]`)
+			.join(' ')}`);
 	}
 }

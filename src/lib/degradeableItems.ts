@@ -12,14 +12,24 @@ interface DegradeableItem {
 	settingsKey: 'tentacle_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
+	aliases: string[];
+	chargeInput: {
+		cost: Bank;
+		charges: number;
+	};
 }
 
-const degradeableItems: DegradeableItem[] = [
+export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Abyssal tentacle'),
 		settingsKey: 'tentacle_charges',
 		itemsToRefundOnBreak: new Bank().add('Abyssal tentacle'),
-		setup: 'melee'
+		setup: 'melee',
+		aliases: ['tentacle', 'tent'],
+		chargeInput: {
+			cost: new Bank().add('Abyssal whip'),
+			charges: 10_000
+		}
 	}
 ];
 

@@ -6,6 +6,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { createTOBTeam, TOBRooms, TOBUniques, totalXPFromRaid } from '../../../lib/data/tob';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance, filterBankFromArrayOfItems, updateBankSetting } from '../../../lib/util';
@@ -39,6 +40,15 @@ export default class extends Task {
 					)
 				)
 			)
+		);
+
+		// Give them all +1 attempts
+		await Promise.all(
+			allUsers.map(u => {
+				const key = hardMode ? UserSettings.Stats.TobHardModeAttempts : UserSettings.Stats.TobAttempts;
+				const currentAttempts = u.settings.get(key);
+				return u.settings.update(key, currentAttempts + 1);
+			})
 		);
 
 		// GIVE XP HERE

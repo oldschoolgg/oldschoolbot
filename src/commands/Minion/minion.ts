@@ -22,6 +22,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
+import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
@@ -75,7 +76,9 @@ const subCommands = [
 	'cancel',
 	'train',
 	'unequipall',
-	'blowpipe'
+	'blowpipe',
+	'bp',
+	'charge'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -179,6 +182,14 @@ export default class MinionCommand extends BotCommand {
 			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
 			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
 		return msg.channel.send(data);
+	}
+
+	async charge(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return degradeableItemsCommand(msg, input);
+	}
+
+	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return this.blowpipe(msg, [input]);
 	}
 
 	async blowpipe(msg: KlasaMessage, [input = '']: [string | undefined]) {
