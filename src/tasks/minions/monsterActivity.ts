@@ -173,11 +173,6 @@ export default class extends Task {
 			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
 		}
 
-		const gotSquidDye = loot.has('Squid dye');
-		if (gotSquidDye && user.cl().amount('Squid dye') === 0) {
-			str += "\nYou found a **Squid dye** in your loot. It's thick and black, hmm...";
-		}
-
 		if (isDoubleLootActive(this.client, duration)) {
 			str += '\n\n**Double Loot!**';
 		} else if (oriBoost) {
