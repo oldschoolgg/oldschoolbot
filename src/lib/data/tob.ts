@@ -391,9 +391,9 @@ function kcEffectiveness(normalKC: number, hardKC: number, hardMode: boolean) {
 }
 
 const speedReductionForGear = 16;
-const speedReductionForKC = 70;
-const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 10 + 5;
-const baseDuration = Time.Minute * 60;
+const speedReductionForKC = 40;
+const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 15 + 4;
+const baseDuration = Time.Minute * 90;
 const baseCmDuration = Time.Minute * 75;
 
 const { ceil } = Math;
@@ -430,7 +430,7 @@ export async function createTOBTeam({
 	deathDuration: number | null;
 }> {
 	const teamSize = team.length;
-	const minPlayerTime = hardMode ? 25 * Time.Minute : 20 * Time.Minute;
+	const maxScaling = 350;
 	assert(teamSize > 1 && teamSize < 6, 'TOB team must be 2-5 users');
 
 	let totalReduction = 0;
@@ -454,11 +454,17 @@ export async function createTOBTeam({
 
 		// Reduce time for gear
 		const { total } = calculateTOBUserGearPercents(u);
-		userPercentChange += calcPerc(total, speedReductionForGear);
+		// Blowpipe
+		const darts = u.settings.get(UserSettings.Blowpipe).dartID!;
+		const dartItem = getOSItem(darts);
+		const dartIndex = blowpipeDarts.indexOf(dartItem);
+		const blowPipePercent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
+		userPercentChange += calcPerc(total, (speedReductionForGear + blowPipePercent) / 2);
 
 		// Reduce time for KC
-		const kcPercent = kcEffectiveness(kc, hardKC, hardMode);
+		const kcPercent = kcEffectiveness(Math.min(attempts, maxScaling), Math.min(hardAttempts, maxScaling), hardMode);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
+
 		const maxKcCurveBonus = 30;
 		const durationCurveModifier = Math.min(maxKcCurveBonus, kcPercent * 0.6);
 		userPercentChange *= 1 + durationCurveModifier / 100;
@@ -487,13 +493,6 @@ export async function createTOBTeam({
 			}
 		}
 
-		// Blowpipe
-		const darts = u.settings.get(UserSettings.Blowpipe).dartID!;
-		const dartItem = getOSItem(darts);
-		const dartIndex = blowpipeDarts.indexOf(dartItem);
-		const percent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
-		userPercentChange += percent;
-
 		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, hardMode);
 		parsedTeam.push({ kc, hardKC, deathChances, deaths: deathChances.deaths, id: u.id });
 
@@ -511,10 +510,11 @@ export async function createTOBTeam({
 		duration = reduceNumByPercent(duration, totalReduction);
 	}
 
-	duration = Math.max(minPlayerTime, duration);
 	if (disableVariation !== true) {
 		duration = randomVariation(duration, 5);
 	}
+
+	duration = Math.min(Time.Minute * 50, duration);
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;

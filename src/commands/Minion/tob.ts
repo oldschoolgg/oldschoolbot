@@ -31,7 +31,7 @@ import getOSItem from '../../lib/util/getOSItem';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[gear|start|sim|graph]',
+			usage: '[start|sim|graph]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -43,7 +43,10 @@ export default class extends BotCommand {
 	}
 
 	async graph(msg: KlasaMessage) {
-		const result = await this._graph([msg.author, msg.author, msg.author], msg.flagArgs.hard ? true : false, 0);
+		let size = 3;
+		let inputSize = Number(msg.flagArgs.size);
+		if (!isNaN(inputSize)) size = Math.min(5, Math.max(2, inputSize));
+		const result = await this._graph(new Array(size).fill(msg.author), msg.flagArgs.hard ? true : false, 0);
 		return msg.channel.send({ files: [result[0]] });
 	}
 
@@ -52,7 +55,7 @@ export default class extends BotCommand {
 		let successRates = [];
 		let kc = [];
 		let groupKc = 0;
-		let amountOfKC = 1000;
+		let amountOfKC = 450;
 
 		for (let i = startingKC; i < startingKC + amountOfKC; i++) {
 			const t = await createTOBTeam({
@@ -237,7 +240,7 @@ export default class extends BotCommand {
 
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 1,
+			minSize: 2,
 			maxSize: 5,
 			ironmanAllowed: true,
 			message: `${msg.author.username} is hosting a ${
@@ -246,11 +249,7 @@ export default class extends BotCommand {
 			customDenier: user => checkTOBUser(user, isHardMode)
 		};
 
-		const magna = await this.client.fetchUser('157797566833098752');
-		const benny = await this.client.fetchUser('251536370613485568');
-		let anime = await this.client.fetchUser('507686806624534529');
-
-		const users = [magna, benny, anime]; // (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
+		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
 
 		const teamCheckFailure = await checkTOBTeam(users, isHardMode);
 		if (teamCheckFailure) {
