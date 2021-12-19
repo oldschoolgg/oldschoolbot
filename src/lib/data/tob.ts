@@ -393,8 +393,8 @@ function kcEffectiveness(normalKC: number, hardKC: number, hardMode: boolean) {
 const speedReductionForGear = 16;
 const speedReductionForKC = 70;
 const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 10 + 5;
-const baseDuration = Time.Minute * 83;
-const baseCmDuration = Time.Minute * 110;
+const baseDuration = Time.Minute * 60;
+const baseCmDuration = Time.Minute * 75;
 
 const { ceil } = Math;
 function calcPerc(perc: number, num: number) {
