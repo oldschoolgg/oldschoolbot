@@ -6,8 +6,8 @@ import { botToken, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 
- if (SENTRY_DSN) {
-	Sentry.init({ 
+if (SENTRY_DSN) {
+	Sentry.init({
 		dsn: SENTRY_DSN
 	});
 }
