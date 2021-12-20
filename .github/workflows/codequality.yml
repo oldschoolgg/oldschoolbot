@@ -29,7 +29,7 @@ jobs:
             - name: Generate Prisma Client
               run: npx prisma generate
             - name: Run ESLint
-              uses: yarn test:lint
+              run: yarn test:lint
 
     Typescript:
         name: Typescript
