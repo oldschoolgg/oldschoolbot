@@ -54,17 +54,17 @@ export const TOBRooms: TOBRoom[] = [
 		timeWeighting: 22
 	},
 	{
-		name: 'Soteseteg',
+		name: 'Sotetseg',
 		difficultyRating: 2,
 		timeWeighting: 11
 	},
 	{
-		name: 'Xarps',
+		name: 'Xarpus',
 		difficultyRating: 2,
 		timeWeighting: 17
 	},
 	{
-		name: 'Vitir Verizk',
+		name: 'Verzik',
 		difficultyRating: 6,
 		timeWeighting: 28
 	}
@@ -514,7 +514,7 @@ export async function createTOBTeam({
 		duration = randomVariation(duration, 5);
 	}
 
-	duration = Math.min(Time.Minute * 50, duration);
+	duration = Math.floor(Math.min(Time.Minute * 50, duration));
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;
