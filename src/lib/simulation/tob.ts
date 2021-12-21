@@ -30,9 +30,9 @@ interface ParsedMember extends TeamMember {
 }
 
 const UniqueTable = new LootTable()
-	.add('Scythe of vitur')
+	.add('Scythe of vitur (uncharged)')
 	.add('Ghrazi rapier', 1, 2)
-	.add('Sanguinesti staff', 1, 2)
+	.add('Sanguinesti staff (uncharged)', 1, 2)
 	.add('Justiciar faceguard', 1, 2)
 	.add('Justiciar chestguard', 1, 2)
 	.add('Justiciar legguards', 1, 2)

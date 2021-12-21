@@ -346,11 +346,10 @@ export const theatreOfBLoodCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5'
-	// Missing items on the Items object
-	// 'Sanguine dust',
-	// 'Holy ornament kit',
-	// 'Sanguine ornament kit'
+	'Sinhaza shroud tier 5',
+	'Sanguine dust',
+	'Holy ornament kit',
+	'Sanguine ornament kit'
 ]);
 
 export const cluesBeginnerCL = resolveItems([

@@ -14,7 +14,8 @@ import {
 	checkTOBTeam,
 	checkTOBUser,
 	createTOBTeam,
-	TENTACLE_CHARGES_PER_RAID
+	TENTACLE_CHARGES_PER_RAID,
+	TOBRooms
 } from '../../lib/data/tob';
 import { degradeItem } from '../../lib/degradeableItems';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -291,7 +292,7 @@ export default class extends BotCommand {
 				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
 					reductions[u.id],
 					totalReduction
-				).toFixed(1)}%) used ${supplies}\n`;
+				).toFixed(1)}%) used ${realCost}\n`;
 			})
 		);
 
@@ -305,7 +306,7 @@ export default class extends BotCommand {
 			leader: msg.author.id,
 			users: users.map(u => u.id),
 			hardMode: isHardMode,
-			wipedRoom,
+			wipedRoom: wipedRoom === null ? null : TOBRooms.indexOf(wipedRoom),
 			fakeDuration: duration
 		});
 

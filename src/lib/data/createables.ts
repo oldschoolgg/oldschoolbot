@@ -11,6 +11,7 @@ import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
+import { tobCreatables } from './creatables/tob';
 
 export interface Createable {
 	name: string;
@@ -1679,7 +1680,8 @@ const Createables: Createable[] = [
 	...dragonFireShieldCreatables,
 	...revWeapons,
 	...armorAndItemPacks,
-	...gracefulOutfitCreatables
+	...gracefulOutfitCreatables,
+	...tobCreatables
 ];
 
 export default Createables;

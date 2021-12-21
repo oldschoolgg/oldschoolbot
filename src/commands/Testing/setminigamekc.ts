@@ -33,7 +33,7 @@ export default class extends BotCommand {
 
 		await prisma.minigame.update({
 			where: { user_id: msg.author.id },
-			data: { [minigame.column]: { increment: kc } }
+			data: { [minigame.column]: kc }
 		});
 
 		return msg.channel.send(`Set your ${minigame.name} kc to ${kc}.`);

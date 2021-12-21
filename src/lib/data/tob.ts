@@ -115,9 +115,9 @@ export function calculateTOBDeaths(
 }
 
 export const baseTOBUniques = resolveItems([
-	'Scythe of vitur',
+	'Scythe of vitur (uncharged)',
 	'Ghrazi rapier',
-	'Sanguinesti staff',
+	'Sanguinesti staff (uncharged)',
 	'Justiciar faceguard',
 	'Justiciar chestguard',
 	'Justiciar legguards',
@@ -276,7 +276,7 @@ export async function checkTOBUser(user: KlasaUser, isHardMode: boolean): Promis
 	}
 	const { total } = calculateTOBUserGearPercents(user);
 	if (total < 20) {
-		return [true, `${user.username}'s gear is terrible! You do not stand a chance in the Chambers of Xeric`];
+		return [true, `${user.username}'s gear is terrible! You do not stand a chance in the Theatre of Blood.`];
 	}
 
 	const cost = await calcTOBInput(user);
@@ -520,9 +520,11 @@ export async function createTOBTeam({
 	let deathDuration: number | null = 0;
 	for (let i = 0; i < TOBRooms.length; i++) {
 		let room = TOBRooms[i];
+
 		if (parsedTeam.every(member => member.deaths.includes(i))) {
 			wipedRoom = room;
 			deathDuration += calcWhatPercent(randInt(1, room.timeWeighting), duration);
+			break;
 		} else {
 			deathDuration += calcWhatPercent(room.timeWeighting, duration);
 		}
@@ -543,7 +545,6 @@ export async function createTOBTeam({
 export async function calcTOBInput(u: KlasaUser) {
 	const items = new Bank();
 	const kc = await u.getMinigameScore('tob');
-	items.add('Stamina potion(4)', 1);
 	items.add('Super combat potion(4)', 1);
 	items.add('Ranging potion(4)', 1);
 

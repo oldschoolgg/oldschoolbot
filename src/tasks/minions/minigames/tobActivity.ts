@@ -53,9 +53,9 @@ export default class extends Task {
 
 		// GIVE XP HERE
 		// 100k tax if they wipe
-		if (wipedRoom) {
+		if (wipedRoom !== null) {
 			sendToChannelID(this.client, channelID, {
-				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${wipedRoom.name} room!`
+				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!`
 			});
 			// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
 			await updateBankSetting(
@@ -98,11 +98,13 @@ Total Deaths: ${result.totalDeaths}
 					)}** on their ${formatOrdinal(await user.getMinigameScore(hardMode ? 'tob_hard' : 'tob'))} raid.`
 				);
 			}
-			const str = isPurple ? `${Emoji.Purple} ||${userLoot}||` : userLoot.toString();
 			const deathStr = deaths.length === 0 ? '' : `${Emoji.Skull}(${deaths.map(i => TOBRooms[i].name)})`;
 
+			const { itemsAdded } = await user.addItemsToBank(userLoot.clone().add('Coins', 100_000), true);
+			const lootStr = new Bank(itemsAdded).toString();
+			const str = isPurple ? `${Emoji.Purple} ||${lootStr}||` : lootStr;
+
 			resultMessage += `\n${deathStr}**${user}** received: ${str}`;
-			await user.addItemsToBank(userLoot.clone().add('Coins', 100_000), true);
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBLoot, totalLoot.bank);
