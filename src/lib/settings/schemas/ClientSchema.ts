@@ -10,6 +10,7 @@ Client.defaultClientSchema
 	.add('farming_cost_bank', 'any', { default: {} })
 	.add('farming_loot_bank', 'any', { default: {} })
 	.add('buy_cost_bank', 'any', { default: {} })
+	.add('buy_loot_bank', 'any', { default: {} })
 	.add('magic_cost_bank', 'any', { default: {} })
 	.add('crafting_cost', 'any', { default: {} })
 	.add('gnome_res_cost', 'any', { default: {} })

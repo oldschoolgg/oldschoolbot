@@ -65,6 +65,7 @@ model ClientStorage {
   farming_cost_bank            Json     @default("{}") @db.Json
   farming_loot_bank            Json     @default("{}") @db.Json
   buy_cost_bank                Json     @default("{}") @db.Json
+  buy_loot_bank                Json     @default("{}") @db.Json
   magic_cost_bank              Json     @default("{}") @db.Json
   crafting_cost                Json     @default("{}") @db.Json
   gnome_res_cost               Json     @default("{}") @db.Json
