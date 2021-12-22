@@ -5,10 +5,10 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Lumbridge home teleport',
-	// 	level: 1,
-	// 	magicxp: 0,
+	// 	levels: { Magic: 1 },
+	// 	xp: { Magic: 0 },
+  //   input: new Bank(),
 	// 	category: MagicTypes.Teleport,
-	// 	inputItems: resolveNameBank({}),
 	// 	ticks: 22
 	// },
 	{
@@ -374,10 +374,10 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Telekinetic grab',
-	// 	level: 33,
-	// 	magicxp: 43,
+	// 	levels: { Magic: 33 },
+	// 	xp: { Magic: 43 },
+  //   input: new Bank().add('Air rune', 1).add('Law rune', 1),
 	// 	category: MagicTypes.Skilling,
-	// 	inputItems: resolveNameBank({ 'Air rune': 1, 'Law rune': 1 }),
 	// 	ticks: 5
 	// },
 	{
@@ -420,17 +420,87 @@ const Standard: Castable[] = [
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-  // No implemented use
-	// {
-	// 	// ItemID and inputitems??
-	// 	name: 'Superheat item',
-	// 	//	id: itemID('SmeltedBAR'),
-	// 	level: 43,
-	// 	magicxp: 53,
-	// 	category: MagicTypes.Skilling,
-	// 	inputItems: resolveNameBank({ /* ORESSSS: 1,*/ 'Fire rune': 4, 'Nature rune': 1 }),
-	// 	ticks: 3
-	// },
+	{
+		name: 'Superheat bronze',
+		levels: { Magic: 43, Smithing: 1 },
+		xp: { Magic: 53, Smithing: 6.2 },
+    input: new Bank().add('Bronze ore', 1).add('Tin ore', 1).add('Fire rune', 4).add('Nature rune', 1),
+    output: new Bank().add('Bronze bar', 1),
+		category: MagicTypes.Skilling,
+		ticks: 3
+	},
+	{
+		name: 'Superheat iron',
+		levels: { Magic: 43, Smithing: 15 },
+		xp: { Magic: 53, Smithing: 12.5 },
+    input: new Bank().add('Iron ore', 1).add('Fire rune', 4).add('Nature rune', 1),
+    output: new Bank().add('Iron bar', 1),
+		category: MagicTypes.Skilling,
+		ticks: 3
+	},
+	{
+		name: 'Superheat silver',
+		levels: { Magic: 43, Smithing: 20 },
+		xp: { Magic: 53, Smithing: 13.7 },
+    input: new Bank().add('Silver ore', 1).add('Fire rune', 4).add('Nature rune', 1),
+    output: new Bank().add('Silver bar', 1),
+		category: MagicTypes.Skilling,
+		ticks: 3
+	},
+	{
+		name: 'Superheat steel',
+		levels: { Magic: 43, Smithing: 30 },
+		xp: { Magic: 53, Smithing: 17.5 },
+    input: new Bank().add('Iron ore', 1).add('Coal', 2).add('Fire rune', 4).add('Nature rune', 1),
+    output: new Bank().add('Steel bar', 1),
+		category: MagicTypes.Skilling,
+		ticks: 3
+	},
+	{
+		name: 'Superheat gold',
+		levels: { Magic: 43, Smithing: 40 },
+		xp: { Magic: 53, Smithing: 22.5 },
+    input: new Bank().add('Gold ore', 1).add('Fire rune', 4).add('Nature rune', 1),
+    output: new Bank().add('Gold bar', 1),
+		category: MagicTypes.Skilling,
+		ticks: 3
+	},
+	{
+		name: 'Superheat lovakite',
+		levels: { Magic: 43, Smithing: 45 },
+		xp: { Magic: 53, Smithing: 20 },
+    input: new Bank().add('Lovakite ore', 1).add('Coal', 2).add('Fire rune', 4).add('Nature rune', 1),
+    output: new Bank().add('Lovakite bar', 1),
+		category: MagicTypes.Skilling,
+		ticks: 3
+	},
+	{
+		name: 'Superheat mithril',
+		levels: { Magic: 43, Smithing: 50 },
+		xp: { Magic: 53, Smithing: 30 },
+    input: new Bank().add('Mithril ore', 1).add('Coal', 4).add('Fire rune', 4).add('Nature rune', 1),
+    output: new Bank().add('Mithril bar', 1),
+		category: MagicTypes.Skilling,
+		ticks: 3
+	},
+	{
+		name: 'Superheat adamantite',
+		levels: { Magic: 43, Smithing: 70 },
+		xp: { Magic: 53, Smithing: 37.5 },
+    input: new Bank().add('Adamantite ore', 1).add('Coal', 6).add('Fire rune', 4).add('Nature rune', 1),
+    output: new Bank().add('Adamantite bar', 1),
+		category: MagicTypes.Skilling,
+		ticks: 3
+	},
+	{
+		name: 'Superheat runite',
+		levels: { Magic: 43, Smithing: 85 },
+		xp: { Magic: 53, Smithing: 50 },
+    input: new Bank().add('Runite ore', 1).add('Coal', 8).add('Fire rune', 4).add('Nature rune', 1),
+    output: new Bank().add('Runite bar', 1),
+		category: MagicTypes.Skilling,
+		ticks: 3
+	},
 	{
 		name: 'Camelot teleport',
 		levels: { Magic: 45 },
@@ -582,11 +652,10 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Charge water orb',
-	// 	id: itemID('Water orb'),
-	// 	level: 56,
-	// 	magicxp: 66,
-	// 	category: MagicTypes.Enchantment,
-	// 	inputItems: resolveNameBank({ 'Unpowered orb': 1, 'Water rune': 30, 'Cosmic rune': 3 }),
+	// 	levels: { Magic: 56 },
+	// 	xp: { Magic: 66 },
+  //   input: new Bank().add('Unpowered orb', 1).add('Water rune', 30).add('Cosmic rune', 3),
+	// 	category: MagicTypes.Enchant,
 	// 	ticks: 3
 	// },
 	// Diamond
@@ -667,11 +736,10 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Charge earth orb',
-	// 	id: itemID('Earth orb'),
-	// 	level: 60,
-	// 	magicxp: 70,
-	// 	category: MagicTypes.Enchantment,
-	// 	inputItems: resolveNameBank({ 'Unpowered orb': 1, 'Earth rune': 30, 'Cosmic rune': 3 }),
+	// 	levels: { Magic: 60 },
+	// 	xp: { Magic: 70 },
+  //   input: new Bank().add('Unpowered orb', 1).add('Earth rune', 30).add('Cosmic rune', 3),
+	// 	category: MagicTypes.Enchant,
 	// 	ticks: 3
 	// },
 	{
@@ -727,11 +795,10 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Charge fire orb',
-	// 	id: itemID('Fire orb'),
-	// 	level: 63,
-	// 	magicxp: 73,
-	// 	category: MagicTypes.Enchantment,
-	// 	inputItems: resolveNameBank({ 'Unpowered orb': 1, 'Fire rune': 30, 'Cosmic rune': 3 }),
+	// 	levels: { Magic: 63 },
+	// 	xp: { Magic: 73 },
+  //   input: new Bank().add('Unpowered orb', 1).add('Fire rune', 30).add('Cosmic rune', 3),
+	// 	category: MagicTypes.Enchant,
 	// 	ticks: 3
 	// },
 	{
@@ -752,12 +819,11 @@ const Standard: Castable[] = [
 	},
   // No implemented use
 	// {
-	// 	name: 'Charge airorb',
-	// 	id: itemID('Air orb'),
-	// 	level: 66,
-	// 	magicxp: 76,
-	// 	category: MagicTypes.Enchantment,
-	// 	inputItems: resolveNameBank({ 'Unpowered orb': 1, 'Air rune': 30, 'Cosmic rune': 3 }),
+	// 	name: 'Charge air orb',
+	// 	levels: { Magic: 66 },
+	// 	xp: { Magic: 76 },
+  //   input: new Bank().add('Unpowered orb', 1).add('Air rune', 30).add('Cosmic rune', 3),
+	// 	category: MagicTypes.Enchant,
 	// 	ticks: 3
 	// },
 	{
@@ -855,10 +921,10 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Teleother lumbridge',
-	// 	level: 74,
-	// 	magicxp: 84,
+	// 	levels: { Magic: 74 },
+	// 	xp: { Magic: 84 },
+  //   input: new Bank().add('Earth rune', 1).add('Law rune', 1).add('Soul rune', 1),
 	// 	category: MagicTypes.Teleport,
-	// 	inputItems: resolveNameBank({ 'Earth rune': 1, 'Law rune': 1, 'Soul rune': 1 }),
 	// 	ticks: 10
 	// },
 	{
@@ -888,10 +954,10 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Charge',
-	// 	level: 80,
-	// 	magicxp: 180,
+	// 	levels: { Magic: 80 },
+	// 	xp: { Magic: 180 },
+  //   input: new Bank().add('Air rune', 3).add('Fire rune', 3).add('Blood rune', 3),
 	// 	category: MagicTypes.Combat,
-	// 	inputItems: resolveNameBank({ 'Air rune': 3, 'Fire rune': 3, 'Blood rune': 3 }),
 	// 	ticks: 175
 	// },
 	{
@@ -905,10 +971,10 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Teleother falador',
-	// 	level: 82,
-	// 	magicxp: 92,
+	// 	levels: { Magic: 82 },
+	// 	xp: { Magic: 92 },
+  //   input: new Bank().add('Water rune', 1).add('Law rune', 1).add('Soul rune', 1),
 	// 	category: MagicTypes.Teleport,
-	// 	inputItems: resolveNameBank({ 'Water rune': 1, 'Law rune': 1, 'Soul rune': 1 }),
 	// 	ticks: 10
 	// },
 	{
@@ -922,19 +988,18 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Tele block',
-	// 	level: 85,
-	// 	magicxp: 90,
+	// 	levels: { Magic: 85 },
+	// 	xp: { Magic: 90 },
+  //   input: new Bank().add('Chaos rune', 1).add('Death rune', 1).add('Law rune', 1),
 	// 	category: MagicTypes.Curse,
-	// 	inputItems: resolveNameBank({ 'Chaos rune': 1, 'Death rune': 1, 'Law rune': 1 }),
 	// 	ticks: 5
 	// },
-  // No implemented use
 	// {
 	// 	name: 'Teleport to bounty target',
-	// 	level: 85,
-	// 	magicxp: 45,
+	// 	levels: { Magic: 85 },
+	// 	xp: { Magic: 45 },
+  //   input: new Bank().add('Chaos rune', 1).add('Death rune', 1).add('Law rune', 1),
 	// 	category: MagicTypes.Teleport,
-	// 	inputItems: resolveNameBank({ 'Chaos rune': 1, 'Death rune': 1, 'Law rune': 1 }),
 	// 	ticks: 4
 	// },
 	// Onyx
@@ -995,10 +1060,10 @@ const Standard: Castable[] = [
   // No implemented use
 	// {
 	// 	name: 'Teleother camelot',
-	// 	level: 90,
-	// 	magicxp: 100,
+	// 	levels: { Magic: 90 },
+	// 	xp: { Magic: 100 },
+  //   input: new Bank().add('Law rune', 1).add('Soul rune', 2),
 	// 	category: MagicTypes.Teleport,
-	// 	inputItems: resolveNameBank({ 'Law rune': 1, 'Soul rune': 2 }),
 	// 	ticks: 10
 	// },
 	{
