@@ -513,7 +513,8 @@ const backgroundImages: BankBackground[] = [
 			'Ignecarus scales': 1,
 			'Ignecarus dragonclaw': 1
 		}),
-		gpCost: 500_000_000
+		gpCost: 500_000_000,
+		perkTierNeeded: PerkTier.Four
 	}
 ];
 
