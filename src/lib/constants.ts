@@ -439,7 +439,11 @@ export const informationalButtons = [
 		.setEmoji('778418736180494347')
 		.setURL('https://www.discord.gg/ob')
 		.setStyle('LINK'),
-	new MessageButton().setLabel('Bot Invite').setEmoji('🤖').setURL('http://invite.oldschool.gg/').setStyle('LINK')
+	new MessageButton()
+		.setLabel('Bot Invite')
+		.setEmoji('🤖')
+		.setURL('http://www.oldschool.gg/invite/osb')
+		.setStyle('LINK')
 ];
 
 export const lastTripCache = new Map<
