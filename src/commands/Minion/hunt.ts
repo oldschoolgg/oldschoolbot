@@ -294,7 +294,7 @@ export default class extends BotCommand {
 				wildyPeak!.peakTier
 			} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions. If you feel unsure \`${
 				msg.cmdPrefix
-			}cancel\` the activity.`;
+			}m cancel\` the activity.`;
 		}
 
 		await addSubTaskToActivityTask<HunterActivityTaskOptions>({

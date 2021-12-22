@@ -59,6 +59,10 @@ If you have errors or issues, you can ask us for help in the developer channel i
 -   [[coolbop32](https://github.com/coolbop32)]
 -   [[duracell33](https://github.com/duracell33)]
 -   [[themrrobert](https://github.com/themrrobert)]
+-   [[Fishy](https://github.com/Lajnux)]
+-   [[Lilylicious](https://github.com/Lilylicious)]
+-   [[Gidedin](https://github.com/imgidedin)]
+-   [[Andre](https://github.com/ard35)]
 
 ## Notes
 

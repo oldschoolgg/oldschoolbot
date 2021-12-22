@@ -200,6 +200,7 @@ export default class extends BotCommand {
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyLootBank, outItems);
 
 		if (buyable.name === 'Bank lottery ticket') {
 			await this.client.settings.update(
