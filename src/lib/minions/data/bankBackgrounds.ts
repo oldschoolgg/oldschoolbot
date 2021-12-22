@@ -497,6 +497,23 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['268901875158351872']
+	},
+	{
+		id: 90,
+		name: 'Ignecarus',
+		image: null,
+		available: true,
+		collectionLogItemsNeeded: resolveNameBank({
+			'Dragon egg': 1,
+			'Ignis ring': 1,
+			'Ignecarus dragonclaw': 1,
+			'Ignecarus scales': 1
+		}),
+		itemCost: resolveNameBank({
+			'Ignecarus scales': 1,
+			'Ignecarus dragonclaw': 1
+		}),
+		gpCost: 500_000_000
 	}
 ];
 
