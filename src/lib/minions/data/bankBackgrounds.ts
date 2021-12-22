@@ -283,9 +283,11 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 38,
-		name: 'Caboose',
+		name: 'baannanna CustomBG',
 		image: null,
-		available: false
+		available: false,
+		owners: ['209825195131797504'],
+		transparent: true
 	},
 	{
 		id: 39,
@@ -403,13 +405,6 @@ const backgroundImages: BankBackground[] = [
 		}
 	},
 	{
-		id: 71,
-		name: 'Tiz CustomBG',
-		image: null,
-		available: false,
-		owners: ['150768805637914624']
-	},
-	{
 		id: 75,
 		name: 'Sunny CustomBG',
 		image: null,
@@ -431,20 +426,6 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['793267134821957673']
-	},
-	{
-		id: 78,
-		name: 'Nexacar CustomBG',
-		image: null,
-		available: false,
-		owners: ['874901199348965467']
-	},
-	{
-		id: 79,
-		name: 'DT CustomBG',
-		image: null,
-		available: false,
-		owners: ['310150823986593803']
 	},
 	{
 		id: 80,
@@ -509,6 +490,13 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['507686806624534529']
+	},
+	{
+		id: 89,
+		name: 'Abyssalcrow8 CustomBG',
+		image: null,
+		available: false,
+		owners: ['268901875158351872']
 	}
 ];
 
