@@ -87,10 +87,12 @@ export async function degradeItem({
 			gear.weapon = null;
 			await user.settings.update(`gear.${degItem.setup}`, gear);
 			await user.client.settings!.update(ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted);
+			if (degItem.itemsToRefundOnBreak) await user.addItemsToBank(degItem.itemsToRefundOnBreak);
 		} else if (hasInBank) {
 			// If its in bank, just remove 1 from bank.
 			await user.removeItemsFromBank(new Bank().add(item.id, 1));
 			await user.client.settings!.update(ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted);
+			if (degItem.itemsToRefundOnBreak) await user.addItemsToBank(degItem.itemsToRefundOnBreak);
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(
