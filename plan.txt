@@ -13,9 +13,14 @@ The Geomancy spell could also probably take the place of +cp in informing the us
 
 
 Actions:
-Check all spells exist, correct tickrate, correct cost.
-Identify each magic command, enchant, alch etc.
+Check all spells exist, correct tickrate, correct cost. DONE
+Identify each magic command, enchant, alch etc. DONE
 Check viability for merging.
-Merging enchant with cast
-Alch separate
 https://github.com/oldschoolgg/oldschoolbot/pull/1952 integration
+
+
+Commands:
++alch
++cast
++enchant
++favalch
