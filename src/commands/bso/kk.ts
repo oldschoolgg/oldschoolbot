@@ -106,7 +106,7 @@ export default class extends BotCommand {
 				if (KalphiteKingMonster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(KalphiteKingMonster, user);
-					} catch (err) {
+					} catch (err: any) {
 						return [true, err];
 					}
 
