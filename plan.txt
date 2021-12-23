@@ -1,0 +1,21 @@
+Goal:
+I want to complete the magic skill within the bot.
+This would mean that we'd unify all magic under +cast, excluding for combat use. This will either farm the work out to existing commands, like how +m works, or carry out the work all within +cast. When I looked at it, +enchant seemed feasible to integrate in +cast meaning that the +cast code can handle it but +alch had a lot of custom logic about favourites where we probably want just redirect to the +alch file command. But the intention would be to remove direct calls. E.g. +alch rune platebody becomes +cast alch rune platebody
+
+On completion the bot should have in:
+All spells and spellbooks. With unnecessary/no use spells commented out. This will allow for training methods like spamming teleports or splashing.
+
+Ensouled head revival, humidify, bake pie, degrime and both offering spells will be included with all possible targets.
+
+The fertile soil spell, cure plant and resurrect plant spells could be added to farming.
+
+The Geomancy spell could also probably take the place of +cp in informing the user how long until their patches are ready.
+
+
+Actions:
+Check all spells exist, correct tickrate, correct cost.
+Identify each magic command, enchant, alch etc.
+Check viability for merging.
+Merging enchant with cast
+Alch separate
+
