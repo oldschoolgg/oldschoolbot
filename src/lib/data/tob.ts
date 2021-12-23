@@ -132,6 +132,19 @@ export const TOBUniques = resolveItems([
 	'Holy ornament kit'
 ]);
 
+export const TOBUniquesToAnnounce = resolveItems([
+	'Scythe of vitur (uncharged)',
+	'Ghrazi rapier',
+	'Sanguinesti staff (uncharged)',
+	'Justiciar faceguard',
+	'Justiciar chestguard',
+	'Justiciar legguards',
+	"Lil' zik",
+	'Sanguine dust',
+	'Sanguine ornament kit',
+	'Holy ornament kit'
+]);
+
 function calcSetupPercent(
 	maxStats: GearStats,
 	userStats: GearStats,
@@ -176,7 +189,7 @@ export const TOBMaxMageGear = constructGearSetup({
 	hands: 'Tormented bracelet',
 	legs: 'Ancestral robe bottom',
 	feet: 'Eternal boots',
-	weapon: 'Harmonised nightmare staff',
+	weapon: 'Kodai wand',
 	shield: 'Arcane spirit shield',
 	ring: 'Seers ring(i)'
 });
@@ -325,6 +338,12 @@ export async function checkTOBUser(user: KlasaUser, isHardMode: boolean): Promis
 			`${user.username} needs a Toxic blowpipe (with darts and scales equipped) in their bank to do the Theatre of Blood.`
 		];
 	}
+	if (blowpipeData.dartQuantity < 150) {
+		return [true, `${user.username}, you need atleast 150 darts in your blowpipe.`];
+	}
+	if (blowpipeData.scales < 1000) {
+		return [true, `${user.username}, you need atleast 1000 scales in your blowpipe.`];
+	}
 	const dartIndex = blowpipeDarts.indexOf(getOSItem(blowpipeData.dartID));
 	if (dartIndex < 5) {
 		return [true, `${user.username}'s darts are too weak`];
@@ -333,7 +352,7 @@ export async function checkTOBUser(user: KlasaUser, isHardMode: boolean): Promis
 	const rangeGear = user.getGear('range');
 	if (
 		!rangeGear.hasEquipped(['Magic shortbow', 'Twisted bow']) ||
-		!rangeGear.hasEquipped(['Rune arrow', 'Dragon arrow'])
+		!rangeGear.hasEquipped(['Amethyst arrow', 'Rune arrow', 'Dragon arrow'])
 	) {
 		return [
 			true,
@@ -492,6 +511,27 @@ export async function createTOBTeam({
 				break;
 			}
 		}
+		const userBank = u.bank();
+		const primarySpecWeaponBoosts = [
+			['Dragon claws', 6],
+			['Crystal halberd', 3]
+		] as const;
+		for (const [name, percent] of primarySpecWeaponBoosts) {
+			if (userBank.has(name)) {
+				userPercentChange += percent;
+				break;
+			}
+		}
+		const secondarySpecWeaponBoosts = [
+			['Dragon warhammer', 6],
+			['Bandos godsword', 3]
+		] as const;
+		for (const [name, percent] of secondarySpecWeaponBoosts) {
+			if (userBank.has(name)) {
+				userPercentChange += percent;
+				break;
+			}
+		}
 
 		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, hardMode);
 		parsedTeam.push({ kc, hardKC, deathChances, deaths: deathChances.deaths, id: u.id });
@@ -514,7 +554,7 @@ export async function createTOBTeam({
 		duration = randomVariation(duration, 5);
 	}
 
-	duration = Math.floor(Math.min(Time.Minute * 50, duration));
+	duration = Math.floor(Math.min(Time.Minute * randInt(45, 55), duration));
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;

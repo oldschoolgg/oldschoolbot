@@ -3,7 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { createTOBTeam, TOBRooms, TOBUniques, totalXPFromRaid } from '../../../lib/data/tob';
+import { createTOBTeam, TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -15,13 +15,13 @@ import { sendToChannelID } from '../../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {
-		const { channelID, users, hardMode, leader, wipedRoom, duration, fakeDuration } = data;
+		const { channelID, users, hardMode, leader, wipedRoom, duration, fakeDuration, deaths } = data;
 		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
 		const team = await createTOBTeam({ team: allUsers, hardMode });
 		console.log(JSON.stringify(team));
 		const result = TheatreOfBlood.complete({
 			hardMode,
-			team: team.parsedTeam.map(t => ({ id: t.id, deaths: t.deaths }))
+			team: users.map((i, index) => ({ id: i, deaths: deaths[index] }))
 		});
 
 		const allTag = allUsers.map(u => u.toString()).join('');
@@ -72,14 +72,13 @@ export default class extends Task {
 
 Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})
 Total Deaths: ${result.totalDeaths}
-
 `;
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, hardMode ? 'tob_hard' : 'tob', 1)));
 
 		for (let [userID, _userLoot] of Object.entries(result.loot)) {
 			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
-			const { deaths } = team.parsedTeam.find(u => u.id === user.id)!;
+			const userDeaths = deaths[users.indexOf(user.id)];
 
 			const userLoot = new Bank(_userLoot);
 
@@ -88,8 +87,8 @@ Total Deaths: ${result.totalDeaths}
 			const items = userLoot.items();
 
 			const isPurple = items.some(([item]) => TOBUniques.includes(item.id));
-
-			if (isPurple) {
+			const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
+			if (shouldAnnounce) {
 				const itemsToAnnounce = filterBankFromArrayOfItems(TOBUniques, userLoot.bank);
 				this.client.emit(
 					Events.ServerNotification,
@@ -98,10 +97,10 @@ Total Deaths: ${result.totalDeaths}
 					)}** on their ${formatOrdinal(await user.getMinigameScore(hardMode ? 'tob_hard' : 'tob'))} raid.`
 				);
 			}
-			const deathStr = deaths.length === 0 ? '' : `${Emoji.Skull}(${deaths.map(i => TOBRooms[i].name)})`;
+			const deathStr = userDeaths.length === 0 ? '' : `${Emoji.Skull}(${userDeaths.map(i => TOBRooms[i].name)})`;
 
 			const { itemsAdded } = await user.addItemsToBank(userLoot.clone().add('Coins', 100_000), true);
-			const lootStr = new Bank(itemsAdded).toString();
+			const lootStr = new Bank(itemsAdded).remove('Coins', 100_000).toString();
 			const str = isPurple ? `${Emoji.Purple} ||${lootStr}||` : lootStr;
 
 			resultMessage += `\n${deathStr}**${user}** received: ${str}`;

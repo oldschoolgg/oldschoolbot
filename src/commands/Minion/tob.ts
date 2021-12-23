@@ -32,7 +32,7 @@ import getOSItem from '../../lib/util/getOSItem';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[start|sim|graph]',
+			usage: '[start|sim|graph] [input:...str]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -220,7 +220,7 @@ export default class extends BotCommand {
 		)}\`\`\``);
 	}
 
-	async start(msg: KlasaMessage) {
+	async start(msg: KlasaMessage, [input]: [string | undefined]) {
 		const isHardMode = Boolean(msg.flagArgs.hard);
 		const initialCheck = await checkTOBUser(msg.author, isHardMode);
 		if (initialCheck[0]) {
@@ -239,10 +239,15 @@ export default class extends BotCommand {
 			return msg.channel.send("Your minion is busy, so you can't start a raid.");
 		}
 
+		let maxSize = 5;
+		let maxSizeInput = input ? parseInt(input) : null;
+		if (maxSizeInput && !isNaN(maxSizeInput) && maxSizeInput > 1 && maxSizeInput <= 5) {
+			maxSize = maxSizeInput;
+		}
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
 			minSize: 2,
-			maxSize: 5,
+			maxSize,
 			ironmanAllowed: true,
 			message: `${msg.author.username} is hosting a ${
 				isHardMode ? '**Hard mode** ' : ''
@@ -257,7 +262,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
 		}
 
-		const { duration, totalReduction, reductions, wipedRoom, deathDuration } = await createTOBTeam({
+		const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = await createTOBTeam({
 			team: users,
 			hardMode: isHardMode
 		});
@@ -304,10 +309,11 @@ export default class extends BotCommand {
 			duration: deathDuration ?? duration,
 			type: 'TheatreOfBlood',
 			leader: msg.author.id,
-			users: users.map(u => u.id),
+			users: parsedTeam.map(u => u.id),
 			hardMode: isHardMode,
 			wipedRoom: wipedRoom === null ? null : TOBRooms.indexOf(wipedRoom),
-			fakeDuration: duration
+			fakeDuration: duration,
+			deaths: parsedTeam.map(i => i.deaths)
 		});
 
 		let str = `${partyOptions.leader.username}'s party (${users

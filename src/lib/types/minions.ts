@@ -331,6 +331,7 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	hardMode: boolean;
 	fakeDuration: number;
 	wipedRoom: null | number;
+	deaths: number[][];
 }
 
 export interface CollectingOptions extends ActivityTaskOptions {
