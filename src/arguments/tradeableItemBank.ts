@@ -1,4 +1,4 @@
-import { objectEntries, shuffleArr } from 'e';
+import { shuffleArr } from 'e';
 import { Argument, ArgumentStore, KlasaMessage, Possible } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -36,10 +36,10 @@ export default class TradeableItemBankArgument extends Argument {
 
 		// Adds every non-favorited item
 		if (msg.flagArgs.all) {
-			const entries = shuffleArr(objectEntries(userBank.bank));
+			const entries = shuffleArr(Object.entries(userBank.bank));
 			for (let i = 0; i < entries.length; i++) {
-				let [id, qty] = entries[i];
-				id = Number(id);
+				let [_id, qty] = entries[i];
+				let id = Number(_id);
 				const item: [Item, number] = [getOSItem(id), qtyOverride ?? qty];
 				if (!favorites.includes(id) && !items.some(i => i[0] === item[0])) {
 					items.push(item);

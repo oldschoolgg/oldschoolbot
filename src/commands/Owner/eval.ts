@@ -79,7 +79,7 @@ export default class extends BotCommand {
 				asyncTime = stopwatch.toString();
 			}
 			success = true;
-		} catch (error) {
+		} catch (error: any) {
 			if (!syncTime) syncTime = stopwatch.toString();
 			if (!type) type = new Type(error);
 			if (thenable && !asyncTime) asyncTime = stopwatch.toString();

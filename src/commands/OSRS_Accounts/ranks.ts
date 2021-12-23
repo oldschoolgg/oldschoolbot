@@ -19,7 +19,7 @@ export default class extends BotCommand {
 		try {
 			const player = await Hiscores.fetch(username);
 			return msg.channel.send({ embeds: [this.getStatsEmbed(username, 7_981_338, player, 'rank', false)] });
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

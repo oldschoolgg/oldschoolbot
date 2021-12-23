@@ -1,6 +1,6 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
 import { MessageAttachment, MessageOptions } from 'discord.js';
-import { objectEntries, objectKeys } from 'e';
+import { objectEntries } from 'e';
 import fs from 'fs';
 import { KlasaUser, Task } from 'klasa';
 
@@ -502,7 +502,7 @@ export default class CollectionLogTask extends Task {
 			if (!Boolean(flags.tall)) {
 				let selectedPos = 8;
 				const listItemSize = 15;
-				for (const name of objectKeys(collectionLog.leftList!)) {
+				for (const name of Object.keys(collectionLog.leftList!)) {
 					if (name === collectionLog.name) break;
 					selectedPos += listItemSize;
 				}
