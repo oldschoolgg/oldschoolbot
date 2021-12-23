@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import Standard from './standard';
 import Arceuus from './arceuus';
 import Lunar from './lunar';
+import Ancients from './ancients';
 
 type EnumKeys = keyof typeof SkillsEnum;
 type EnumKeyFields = {[key in EnumKeys]?: number};
@@ -25,7 +26,8 @@ export interface Castable {
 	gpCost?: number;
 }
 
-export const castables: Castable[] = [...Standard, ...Arceuus, ...Lunar];
+export const Castables: Castable[] = [...Standard, ...Arceuus, ...Lunar, ...Ancients];
+export const Spellbooks = { Standard, Lunar, Arceuus, Ancients };
 
 const Magic = {
 	aliases: ['mage', 'magic'],
