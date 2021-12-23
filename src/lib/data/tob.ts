@@ -262,7 +262,11 @@ export const minimumCoxSuppliesNeeded = new Bank({
 
 export const TENTACLE_CHARGES_PER_RAID = 400;
 
-export async function checkTOBUser(user: KlasaUser, isHardMode: boolean): Promise<[false] | [true, string]> {
+export async function checkTOBUser(
+	user: KlasaUser,
+	isHardMode: boolean,
+	teamSize?: number
+): Promise<[false] | [true, string]> {
 	if (!user.hasMinion) {
 		return [true, `${user.username} doesn't have a minion`];
 	}
@@ -378,6 +382,13 @@ export async function checkTOBUser(user: KlasaUser, isHardMode: boolean): Promis
 		}
 	}
 
+	if (teamSize === 2) {
+		const kc = await getMinigameScore(user.id, isHardMode ? 'tob_hard' : 'tob');
+		if (kc < 300) {
+			return [true, `${user.username} needs atleast 300 KC before doing duo's.`];
+		}
+	}
+
 	return [false];
 }
 
@@ -388,7 +399,7 @@ export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Pro
 	}
 
 	for (const user of users) {
-		const checkResult = await checkTOBUser(user, isHardMode);
+		const checkResult = await checkTOBUser(user, isHardMode, users.length);
 		if (!checkResult[0]) {
 			continue;
 		} else {
