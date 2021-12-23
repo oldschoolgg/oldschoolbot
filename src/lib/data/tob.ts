@@ -318,7 +318,7 @@ export async function checkTOBUser(
 	) {
 		return [
 			true,
-			`${user.username} needs an Abyssal tentacle/Blade of saeldor(c) and Fire/Infernal cape in their melee setup!`
+			`${user.username} needs an Abyssal tentacle/Blade of saeldor(c)/Scythe of vitur and Fire/Infernal cape in their melee setup!`
 		];
 	}
 
