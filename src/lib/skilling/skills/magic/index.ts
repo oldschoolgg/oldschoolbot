@@ -13,16 +13,16 @@ export enum MagicTypes {
 }
 
 export interface Castable {
+	alias?: string[];
+	name: string;
+	levels: EnumKeyFields;
+	xp: EnumKeyFields;
 	input: Bank;
 	output?: Bank | null;
-	name: string;
-	alias?: string[];
+	category: MagicTypes;
 	ticks: number;
 	qpRequired?: number;
 	gpCost?: number;
-	xp: EnumKeyFields;
-	levels: EnumKeyFields;
-	category: MagicTypes;
 }
 
 export const castables: Castable[] = [...Standard, ...Arceuus, ...Lunar];
