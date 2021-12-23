@@ -2,14 +2,14 @@ import { Emoji } from '../../../constants';
 import { SkillsEnum } from '../../types';
 import { Bank } from 'oldschooljs';
 import Standard from './standard';
-import Arceuus from './arceuss';
+import Arceuus from './arceuus';
 import Lunar from './lunar';
 
 type EnumKeys = keyof typeof SkillsEnum;
 type EnumKeyFields = {[key in EnumKeys]?: number};
 
 export enum MagicTypes {
-	"Combat", "Curse", "Enchant", "Alchemy", "Skilling", "Teleport"
+	"Combat", "Curse", "Enchant", "Alchemy", "Skilling", "Teleport", "Reanimation"
 }
 
 export interface Castable {
