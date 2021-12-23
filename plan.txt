@@ -18,4 +18,4 @@ Identify each magic command, enchant, alch etc.
 Check viability for merging.
 Merging enchant with cast
 Alch separate
-
+https://github.com/oldschoolgg/oldschoolbot/pull/1952 integration
