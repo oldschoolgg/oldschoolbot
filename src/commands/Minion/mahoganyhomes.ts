@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, objectEntries, randArrItem, randInt, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -160,7 +160,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 						itemsNeeded.add(items);
 					}
 					let avgXP = addArrayOfNumbers(xpArr) / xpArr.length;
-					for (const [key, val] of objectEntries(itemsNeeded.bank)) {
+					for (const [key, val] of Object.entries(itemsNeeded.bank)) {
 						itemsNeeded.bank[key] = Math.round(val / xpArr.length);
 					}
 					str += `${bool ? 'With' : 'NO'} Plank sack ${avgXP.toLocaleString()} XP/HR

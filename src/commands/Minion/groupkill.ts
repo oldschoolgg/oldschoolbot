@@ -98,7 +98,7 @@ export default class extends BotCommand {
 				if (1 > 2 && monster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(monster, user);
-					} catch (err) {
+					} catch (err: any) {
 						return [true, err];
 					}
 

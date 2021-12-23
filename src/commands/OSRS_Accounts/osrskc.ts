@@ -59,7 +59,7 @@ export default class extends BotCommand {
 			}
 
 			return msg.channel.send(`${toTitleCase(username)} doesn't have any recorded kills for that boss.`);
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}
