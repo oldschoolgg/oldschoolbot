@@ -3,7 +3,6 @@ import {
 	calcPercentOfNum,
 	calcWhatPercent,
 	increaseNumByPercent,
-	objectEntries,
 	objectKeys,
 	reduceNumByPercent,
 	round,
@@ -350,7 +349,7 @@ export default class extends BotCommand {
 					// Calculate supply for 1 kill
 					const oneKcCost = consumable.itemCost.clone().multiply(multiply);
 					// Can't use Bank.add() because it discards < 1 qty.
-					for (const [itemID, qty] of objectEntries(oneKcCost.bank)) {
+					for (const [itemID, qty] of Object.entries(oneKcCost.bank)) {
 						if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
 						else perKillCost.bank[itemID] = qty;
 					}
@@ -366,7 +365,7 @@ export default class extends BotCommand {
 			}
 			const { bank } = perKillCost.clone().multiply(Number(quantity));
 			// Ceil cost QTY to avoid fractions
-			for (const [item, qty] of objectEntries(bank)) {
+			for (const [item, qty] of Object.entries(bank)) {
 				bank[item] = Math.ceil(qty);
 			}
 

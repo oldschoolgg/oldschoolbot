@@ -189,11 +189,9 @@ export interface Bone {
 	inputId: number;
 }
 
-export type LevelRequirements = Partial<
-	{
-		[key in SkillsEnum]: number;
-	}
->;
+export type LevelRequirements = Partial<{
+	[key in SkillsEnum]: number;
+}>;
 
 export interface Skill {
 	aliases: string[];
