@@ -134,9 +134,9 @@ export default class extends BotCommand {
 
 Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) using \`${
 					msg.cmdPrefix
-				}agilityarena buy xp 5\`, or recolor a set of plain Graceful using \`${
-					msg.cmdPrefix
-				}agilityarena buy recolor\`.`
+				}agilityarena buy xp ${Object.keys(ticketQuantities).join(
+					'|'
+				)}\`, or recolor a set of plain Graceful using \`${msg.cmdPrefix}agilityarena buy recolor\`.`
 			);
 		}
 
