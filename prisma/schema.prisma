@@ -547,6 +547,7 @@ model CommandUsage {
   command_name String               @db.VarChar(32)
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
+  flags        Json?
 
   args       Json?   @db.Json
   channel_id String? @db.VarChar(19)
