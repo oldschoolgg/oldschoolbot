@@ -24,3 +24,7 @@ Commands:
 +cast
 +enchant
 +favalch
+
+Incorrect spells should respond using Spellbooks to split the data into tables/sections
+Iterate through required skills for spell, report back failed one ? or all required...
+Add extra time based on MagicType, Combat has no extra time (splashing) etc.
