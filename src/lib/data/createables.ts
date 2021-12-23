@@ -25,6 +25,7 @@ export interface Createable {
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	requiredFavour?: Favours;
+	maxCanOwn?: number;
 }
 
 const revWeapons: Createable[] = [
