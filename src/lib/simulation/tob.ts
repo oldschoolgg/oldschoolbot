@@ -3,6 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { TOBRooms } from '../data/tob';
 import { assert, convertLootBanksToItemBanks, JSONClone, percentChance } from '../util';
 
 export interface TeamMember {
@@ -76,7 +77,10 @@ const HardModeUniqueTable = new LootTable()
 	.tertiary(100, 'Holy ornament kit');
 
 export class TheatreOfBloodClass {
-	nonUniqueLoot(member: ParsedMember, isHardMode: boolean) {
+	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[]) {
+		if (deaths.length === TOBRooms.length) {
+			return new Bank().add('Cabbage');
+		}
 		const loot = new Bank();
 		for (let i = 0; i < 3; i++) {
 			loot.add(NonUniqueTable.roll());
@@ -137,7 +141,7 @@ export class TheatreOfBloodClass {
 			if (member === purpleRecipient) {
 				lootResult[member.id] = new Bank().add(UniqueTable.roll());
 			} else {
-				lootResult[member.id] = this.nonUniqueLoot(member, options.hardMode);
+				lootResult[member.id] = this.nonUniqueLoot(member, options.hardMode, member.deaths);
 			}
 		}
 
