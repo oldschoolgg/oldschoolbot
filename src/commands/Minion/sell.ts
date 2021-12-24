@@ -37,8 +37,9 @@ export default class extends BotCommand {
 
 		if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
 		const hasSkipper = msg.author.usingPet('Skipper') || msg.author.bank().amount('Skipper') > 0;
-		const tax = hasSkipper ? 0 : Math.ceil((totalPrice / 0.8) * 0.2);
-		totalPrice = hasSkipper ? totalPrice : Math.floor(totalPrice * 0.8);
+		const taxRate = hasSkipper ? 0.15 : 0.25;
+		const tax = Math.ceil(totalPrice * taxRate);
+		totalPrice = Math.floor(totalPrice - tax);
 
 		await msg.confirm(
 			`${
@@ -64,7 +65,7 @@ export default class extends BotCommand {
 				totalPrice
 			)}).  Tax: ${tax.toLocaleString()} ${
 				hasSkipper
-					? "\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you weren't charged any tax on the sale!"
+					? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
 					: ''
 			}`
 		);
