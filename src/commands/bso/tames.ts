@@ -684,7 +684,7 @@ export default class extends BotCommand {
 		}
 		if (tameHasBeenFed(selectedTame, itemID('Dwarven warhammer'))) {
 			speed = reduceNumByPercent(speed, 20);
-			boosts.push('+35mins trip length (ate a Zak)');
+			boosts.push('20% faster (ate a DWWH');
 		}
 
 		// Calculate monster quantity:
