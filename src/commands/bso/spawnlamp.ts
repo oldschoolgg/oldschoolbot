@@ -77,7 +77,7 @@ export default class extends BotCommand {
 				`Congratulations, ${winner}! You got it! It was: ${level}. I've given you: **${box}**.`
 			);
 		} catch (err) {
-			return msg.channel.send('Nobody got it! :(');
+			return msg.channel.send(`Nobody got it! :( The correct answer was ${level}.`);
 		}
 	}
 }

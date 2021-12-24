@@ -197,24 +197,24 @@ Here are the items you can buy: \n\n${buyables
 
 		let fightDuration = Time.Minute * 9;
 		if (msg.author.hasItemEquippedOrInBank('Strength master cape')) {
-			fightDuration = reduceNumByPercent(fightDuration, 15);
-			boosts.push('15% faster fights for strength master cape');
+			fightDuration = reduceNumByPercent(fightDuration, 17);
+			boosts.push('17% faster fights for strength master cape');
 		}
 		if (msg.author.hasItemEquippedAnywhere('Gorilla rumble greegree')) {
-			fightDuration = reduceNumByPercent(fightDuration, 15);
-			boosts.push('15% faster fights for gorilla rumble greegree');
+			fightDuration = reduceNumByPercent(fightDuration, 17);
+			boosts.push('17% faster fights for gorilla rumble greegree');
 		}
 		const quantity = Math.floor(msg.author.maxTripLength('MonkeyRumble') / fightDuration);
 		let duration = quantity * fightDuration;
 
 		let chanceOfSpecial = Math.floor(150 * (6 - monkeyTierOfUser(msg.author) / 2));
 		if (msg.author.hasItemEquippedAnywhere('Big banana')) {
-			chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 5);
-			boosts.push('10% higher chance of purple monkeys from Big banana');
+			chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 12);
+			boosts.push('12% higher chance of purple monkeys from Big banana');
 		}
 		if (msg.author.hasItemEquippedAnywhere('Ring of luck')) {
-			chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 2);
-			boosts.push('2% higher chance of purple monkeys from ring of luck');
+			chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 4);
+			boosts.push('4% higher chance of purple monkeys from ring of luck');
 		}
 		const monkeysToFight: Monkey[] = [];
 		for (let i = 0; i < quantity; i++) {

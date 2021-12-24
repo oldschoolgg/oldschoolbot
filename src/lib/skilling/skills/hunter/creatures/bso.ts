@@ -34,6 +34,25 @@ const customBSOCreatures: Creature[] = [
 			req.add('Simple kibble', kibbleRequired);
 			return req;
 		}
+	},
+	{
+		name: 'Eastern ferret',
+		id: 91_938,
+		aliases: ['eastern ferret'],
+		level: 96,
+		hunterXP: 2100,
+		table: new LootTable().every('Eastern ferret'),
+		qpRequired: 600,
+		huntTechnique: HunterTechniqueEnum.Tracking,
+		catchTime: 350,
+		slope: 0,
+		intercept: 99,
+		bait: qty => {
+			let req = new Bank();
+			const kibbleRequired = Math.ceil(qty / 2);
+			req.add('Delicious kibble', kibbleRequired);
+			return req;
+		}
 	}
 ];
 

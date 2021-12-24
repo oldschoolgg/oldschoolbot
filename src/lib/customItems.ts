@@ -2612,7 +2612,7 @@ setCustomItem(
 	'Royal dragonhide coif',
 	'Armadyl helmet',
 	{
-		highalch: 100,
+		highalch: 3000 * 2,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -2624,7 +2624,7 @@ setCustomItem(
 	'Royal dragonhide body',
 	'Armadyl chestplate',
 	{
-		highalch: 100,
+		highalch: 3000 * 3,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -2636,7 +2636,7 @@ setCustomItem(
 	'Royal dragonhide chaps',
 	'Armadyl chainskirt',
 	{
-		highalch: 100,
+		highalch: 3000 * 2,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -2648,7 +2648,7 @@ setCustomItem(
 	'Royal dragonhide boots',
 	'Leather boots',
 	{
-		highalch: 100,
+		highalch: 3000 * 1,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -2660,7 +2660,7 @@ setCustomItem(
 	'Royal dragonhide vambraces',
 	"Black d'hide vambraces",
 	{
-		highalch: 100,
+		highalch: 3000 * 2,
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
@@ -3262,4 +3262,15 @@ setCustomItem(
 		}
 	},
 	1_000_000_000
+);
+setCustomItem(
+	50_117,
+	'Eastern ferret',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
 );

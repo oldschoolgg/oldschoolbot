@@ -2185,7 +2185,7 @@ export const allPetIDs = [
 	...discontinuedCustomPetsCL,
 	...chambersOfXericMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems(['Little parasite', 'Dark squirrel'])
+	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan'])
 ];
 
 export const antiSantaOutfit = new Bank({
