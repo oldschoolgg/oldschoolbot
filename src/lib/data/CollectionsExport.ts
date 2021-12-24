@@ -1983,7 +1983,7 @@ export const gracefulCL = resolveItems([
 		'Trailblazer graceful boots',
 		'Trailblazer graceful legs',
 		'Trailblazer graceful cape',
-		'Trailblazer graceful body'
+		'Trailblazer graceful top'
 	]).includes(id)
 );
 
