@@ -72,7 +72,7 @@ export default class extends BotCommand {
 			description: 'Sends your minion to complete the Inferno.',
 			examples: ['+inferno start', '+i'],
 			categoryFlags: ['minion', 'minigame'],
-			aliases: ['i'],
+			aliases: ['i', 'ie'],
 			subcommands: true,
 			usage: '[start] [str:...str]'
 		});
@@ -804,7 +804,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const usersRangeStats = rangeGear.stats;
 		const zukKC = await msg.author.getMinigameScore('inferno');
 
-		const isEmergedZuk = str === 'emerged' || Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.em);
+		const isEmergedZuk =
+			str === 'emerged' || Boolean(msg.flagArgs.emerged) || Boolean(msg.flagArgs.em) || msg.commandText === 'ie';
 
 		const res = await this.infernoRun({
 			user: msg.author,
