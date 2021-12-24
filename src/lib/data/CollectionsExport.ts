@@ -1974,7 +1974,16 @@ export const gracefulCL = resolveItems([
 	...gracefulFeet,
 	...gracefulHands,
 	...gracefulCapes
-]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)', 'Trailblazer graceful gloves', 'Trailblazer graceful boots', 'Trailblazer graceful legs', 'Trailblazer graceful cape', 'Trailblazer graceful body']).includes(id));
+]).filter(id => !resolveItems([
+	'Max cape',
+	'Agility cape',
+	'Agility cape(t)',
+	'Trailblazer graceful gloves',
+	'Trailblazer graceful boots',
+	'Trailblazer graceful legs',
+	'Trailblazer graceful cape', 
+	'Trailblazer graceful body'
+]).includes(id));
 
 export const allPetIDs = [
 	...allPetsCL,
