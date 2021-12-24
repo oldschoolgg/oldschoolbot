@@ -3263,3 +3263,14 @@ setCustomItem(
 	},
 	1_000_000_000
 );
+setCustomItem(
+	50_117,
+	'Eastern ferret',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100
+);
