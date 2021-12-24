@@ -23,7 +23,7 @@ export default class extends BotCommand {
 
 	determineLimit(user: KlasaUser) {
 		if (this.client.owners.has(user)) {
-			return Infinity;
+			return 1_000_000;
 		}
 
 		const perkTier = getUsersPerkTier(user);
@@ -55,12 +55,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [tier, quantity = 1]: [string, number]) {
-		const limit = this.determineLimit(msg.author);
-		if (quantity > limit) {
-			return msg.channel.send(
-				`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`
-			);
-		}
+		let limit = this.determineLimit(msg.author);
 
 		const clueTier = clueTiers.find(_tier => _tier.name.toLowerCase() === tier.toLowerCase());
 
@@ -71,7 +66,12 @@ export default class extends BotCommand {
 		}
 
 		if (clueTier.name === 'Grandmaster') {
-			return msg.channel.send('Error.');
+			limit /= 4;
+		}
+		if (quantity > limit) {
+			return msg.channel.send(
+				`The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`
+			);
 		}
 
 		const [loot, title] = await Workers.casketOpen({ quantity, clueTierID: clueTier.id });
