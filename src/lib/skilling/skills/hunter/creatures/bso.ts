@@ -50,7 +50,7 @@ const customBSOCreatures: Creature[] = [
 		bait: qty => {
 			let req = new Bank();
 			const kibbleRequired = Math.ceil(qty / 2);
-			req.add('Extraordinary kibble', kibbleRequired);
+			req.add('Delicious kibble', kibbleRequired);
 			return req;
 		}
 	}

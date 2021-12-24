@@ -90,9 +90,9 @@ const feedableItems: FeedableItem[] = [
 	},
 	{
 		item: getOSItem('Dwarven warhammer'),
-		description: '20% faster PvM',
+		description: '30% faster PvM',
 		tameSpeciesCanBeFedThis: [TameType.Combat],
-		announcementString: "Your tame can now kill 20% faster! It's holding the Dwarven warhammer in its claws..."
+		announcementString: "Your tame can now kill 30% faster! It's holding the Dwarven warhammer in its claws..."
 	}
 ];
 
@@ -683,8 +683,8 @@ export default class extends BotCommand {
 			boosts.push('10% weekend boost');
 		}
 		if (tameHasBeenFed(selectedTame, itemID('Dwarven warhammer'))) {
-			speed = reduceNumByPercent(speed, 20);
-			boosts.push('20% faster (ate a DWWH');
+			speed = reduceNumByPercent(speed, 30);
+			boosts.push('30% faster (ate a DWWH');
 		}
 
 		// Calculate monster quantity:

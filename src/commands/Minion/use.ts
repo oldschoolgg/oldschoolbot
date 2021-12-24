@@ -183,12 +183,11 @@ export default class extends BotCommand {
 				await msg.confirm(
 					`Are you sure you want to use a ${dyeToApply.dye.name} on your ${dyedVariantTheyHave.item.name}?`
 				);
-				if (!msg.author.owns(dyedVariantTheyHave.item.id)) {
+				const cost = new Bank().add(dyedVariantTheyHave.item.id).add(dyeToApply.dye.id);
+				if (!msg.author.owns(cost)) {
 					return msg.channel.send("You don't own that.");
 				}
-				await msg.author.removeItemsFromBank(
-					new Bank().add(dyedVariantTheyHave.item.id).add(dyeToApply.dye.id)
-				);
+				await msg.author.removeItemsFromBank(cost);
 				await msg.author.addItemsToBank(new Bank().add(dyeToApply.item.id));
 				return msg.channel.send(
 					`You redyed your ${dyedVariantTheyHave.item.name} into a ${dyeToApply.item.name} using a ${dyeToApply.dye.name}.`
