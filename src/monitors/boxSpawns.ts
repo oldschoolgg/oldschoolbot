@@ -7,6 +7,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { production } from '../config';
 import { Channel, Color, SupportServer } from '../lib/constants';
+import Createables from '../lib/data/createables';
 import { getRandomMysteryBox } from '../lib/data/openables';
 import { roll, stringMatches } from '../lib/util';
 
@@ -75,6 +76,39 @@ export async function itemChallenge(msg: KlasaMessage): Promise<KlasaUser | null
 	}
 }
 
+export async function createdChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
+	const all = Createables.filter(
+		i =>
+			['revert', 'fix', '(', 'unlock', 'unpack', 'pouch', ' set', 'graceful'].every(
+				o => !i.name.toLowerCase().includes(o)
+			) && Object.keys(i.outputItems).length === 1
+	);
+	const randomCreatable = randArrItem(all);
+	console.log(all.map(i => i.name));
+
+	const embed = new MessageEmbed()
+		.setColor(Color.Orange)
+		.setTitle('Answer this for a reward!')
+		.setDescription(`What item is created using these? ${new Bank(randomCreatable.inputItems)}`);
+
+	await msg.channel.send({ embeds: [embed] });
+
+	try {
+		const collected = await msg.channel.awaitMessages({
+			max: 1,
+			time: Time.Second * 30,
+			errors: ['time'],
+			filter: _msg => stringMatches(_msg.content, randomCreatable.name)
+		});
+
+		const winner = collected.first()?.author;
+		return winner ?? null;
+	} catch (err) {
+		msg.channel.send(`Nobody answered in time, sorry! The correct answer was: ${randomCreatable.name}`);
+		return null;
+	}
+}
+
 export async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
 	const embed = new MessageEmbed()
 		.setColor(Color.Orange)
@@ -96,14 +130,7 @@ export async function reactChallenge(msg: KlasaMessage): Promise<KlasaUser | nul
 }
 
 async function challenge(msg: KlasaMessage) {
-	const item = randArrItem([
-		itemChallenge,
-		itemChallenge,
-		itemChallenge,
-		itemChallenge,
-		reactChallenge,
-		triviaChallenge
-	]);
+	const item = randArrItem([itemChallenge, itemChallenge, createdChallenge, reactChallenge, triviaChallenge]);
 	const winner = await item(msg);
 	if (winner) {
 		const loot = new Bank().add(getRandomMysteryBox());
