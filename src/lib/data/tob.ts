@@ -83,7 +83,13 @@ export function calculateTOBDeaths(
 	hardKC: number,
 	attempts: number,
 	hardAttempts: number,
-	isHardMode: boolean
+	isHardMode: boolean,
+	gear: {
+		melee: number;
+		range: number;
+		mage: number;
+		total: number;
+	}
 ): TOBDeaths {
 	let deaths: number[] = [];
 	let deathChances: { name: string; deathChance: number }[] = [];
@@ -101,6 +107,15 @@ export function calculateTOBDeaths(
 	);
 
 	baseDeathChance = Math.max(Math.min(baseDeathChance, 99.9), 3);
+
+	if (gear.total < 75) {
+		baseDeathChance = 100;
+	}
+	for (const setup of [gear.mage, gear.melee, gear.range]) {
+		if (setup < 80) {
+			baseDeathChance += (80 - setup) * 2;
+		}
+	}
 
 	for (let i = 0; i < TOBRooms.length; i++) {
 		const room = TOBRooms[i];
@@ -483,13 +498,13 @@ export async function createTOBTeam({
 		let userPercentChange = 0;
 
 		// Reduce time for gear
-		const { total } = calculateTOBUserGearPercents(u);
+		const gearPerecents = calculateTOBUserGearPercents(u);
 		// Blowpipe
 		const darts = u.settings.get(UserSettings.Blowpipe).dartID!;
 		const dartItem = getOSItem(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
 		const blowPipePercent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
-		userPercentChange += calcPerc(total, (speedReductionForGear + blowPipePercent) / 2);
+		userPercentChange += calcPerc(gearPerecents.total, (speedReductionForGear + blowPipePercent) / 2);
 
 		// Reduce time for KC
 		const kcPercent = kcEffectiveness(Math.min(attempts, maxScaling), Math.min(hardAttempts, maxScaling), hardMode);
@@ -544,7 +559,7 @@ export async function createTOBTeam({
 			}
 		}
 
-		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, hardMode);
+		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, hardMode, gearPerecents);
 		parsedTeam.push({ kc, hardKC, deathChances, deaths: deathChances.deaths, id: u.id });
 
 		let reduction = round(userPercentChange / teamSize, 1);

@@ -332,8 +332,9 @@ export default class extends BotCommand {
 		const kc = await msg.author.getMinigameScore('tob');
 		const attempts = await msg.author.settings.get(UserSettings.Stats.TobAttempts);
 		const hardAttempts = await msg.author.settings.get(UserSettings.Stats.TobHardModeAttempts);
-		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false);
-		const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true);
+		const gear = calculateTOBUserGearPercents(msg.author);
+		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false, gear);
+		const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true, gear);
 
 		return msg.channel.send(`**Theatre of Blood**
 KC: ${kc}
