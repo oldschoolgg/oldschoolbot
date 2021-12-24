@@ -1982,9 +1982,9 @@ export const gracefulCL = resolveItems([
 		'Trailblazer graceful gloves',
 		'Trailblazer graceful boots',
 		'Trailblazer graceful legs',
-		'Trailblazer graceful cape', 
+		'Trailblazer graceful cape',
 		'Trailblazer graceful body'
-		]).includes(id)
+	]).includes(id)
 );
 
 export const allPetIDs = [
