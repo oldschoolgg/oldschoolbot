@@ -170,7 +170,7 @@ export default class extends BotCommand {
 				if (NightmareMonster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(NightmareMonster, user);
-					} catch (err) {
+					} catch (err: any) {
 						return [true, err];
 					}
 

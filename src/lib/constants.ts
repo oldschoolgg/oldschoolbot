@@ -481,9 +481,7 @@ export const informationalButtons = [
 	new MessageButton()
 		.setLabel('Bot Invite')
 		.setEmoji('🤖')
-		.setURL(
-			'https://discord.com/oauth2/authorize?client_id=729244028989603850&scope=bot+applications.commands&permissions=537259072'
-		)
+		.setURL('http://www.oldschool.gg/invite/bso')
 		.setStyle('LINK')
 ];
 

@@ -143,6 +143,19 @@ export default class extends Task {
 				loot.add(itemID('Baby chinchompa'));
 			}
 		}
+		if (creature.name === 'Eastern ferret') {
+			const cl = user.cl();
+			const amountOfZippysGotten = cl.amount('Zippy');
+			let baseDropRatePer = 3500;
+			if (amountOfZippysGotten > 0) {
+				baseDropRatePer = 3500 * (amountOfZippysGotten * 1.5);
+			}
+			for (let i = 0; i < quantity; i++) {
+				if (roll(baseDropRatePer)) {
+					loot.add('Zippy');
+				}
+			}
+		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
 		xpStr += await user.addXP({
@@ -157,7 +170,7 @@ export default class extends Task {
 			quantity - successfulQuantity
 		}x catches. ${xpStr}`;
 
-		if (user.usingPet('Sandy')) {
+		if (user.usingPet('Sandy') && creature.name !== 'Eastern ferret') {
 			if (creature.id === 3251) {
 				if (user.hasItemEquippedAnywhere(itemID('Hunter master cape'))) {
 					str += '\nYou received **double** loot because of Sandy, and being a master hunter.';

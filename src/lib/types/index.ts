@@ -99,11 +99,9 @@ export interface MakePartyOptions {
 	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
 }
 
-export type Skills = Partial<
-	{
-		[key in SkillsEnum]: number;
-	}
->;
+export type Skills = Partial<{
+	[key in SkillsEnum]: number;
+}>;
 
 export type CategoryFlag =
 	| 'minion'

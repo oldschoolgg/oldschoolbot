@@ -311,7 +311,7 @@ export default class extends BotCommand {
 		let response = `${msg.author.minionName} is now ${creature.huntTechnique} ${quantity}x ${
 			creature.name
 		}, it'll take around ${formatDuration(duration)} to finish.${
-			removeBank.length > 0 ? `Removed ${removeBank} from your bank` : ''
+			removeBank.length > 0 ? ` Removed ${removeBank} from your bank` : ''
 		}`;
 
 		if (boosts.length > 0) {

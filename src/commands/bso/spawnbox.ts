@@ -7,7 +7,7 @@ import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
-import { itemChallenge, reactChallenge, triviaChallenge } from '../../monitors/boxSpawns';
+import { createdChallenge, itemChallenge, reactChallenge, triviaChallenge } from '../../monitors/boxSpawns';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -31,14 +31,7 @@ export default class extends BotCommand {
 		if (!this.client.owners.has(msg.author) && msg.channel.id !== Channel.BSOChannel) {
 			return msg.channel.send('You can only use this in the BSO channel.');
 		}
-		const item = randArrItem([
-			itemChallenge,
-			itemChallenge,
-			itemChallenge,
-			itemChallenge,
-			reactChallenge,
-			triviaChallenge
-		]);
+		const item = randArrItem([itemChallenge, itemChallenge, createdChallenge, reactChallenge, triviaChallenge]);
 		const winner = await item(msg);
 		if (winner) {
 			const loot = new Bank().add(getRandomMysteryBox());

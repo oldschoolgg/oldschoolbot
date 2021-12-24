@@ -275,7 +275,7 @@ export async function handleTripFinish(
 					channel.send(err.message ?? err);
 				});
 			}
-		} catch (err) {
+		} catch (err: any) {
 			console.log({ err });
 			channel.send(err);
 		} finally {

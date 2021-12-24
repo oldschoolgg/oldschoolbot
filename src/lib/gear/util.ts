@@ -38,11 +38,9 @@ export function resolveGearTypeSetting(type: GearSetupType) {
 	}
 }
 
-export type PartialGearSetup = Partial<
-	{
-		[key in EquipmentSlot]: string;
-	}
->;
+export type PartialGearSetup = Partial<{
+	[key in EquipmentSlot]: string;
+}>;
 export function constructGearSetup(setup: PartialGearSetup): Gear {
 	return new Gear({
 		'2h': setup['2h'] ? { item: itemID(setup['2h']), quantity: 1 } : null,

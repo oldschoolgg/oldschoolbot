@@ -194,7 +194,12 @@ const QueenBlackDragon: CustomMonster = {
 		}
 	},
 	notifyDrops: resolveItems(['Queen black dragonling']),
-	baseMonster: Monsters.Vorkath
+	baseMonster: Monsters.Vorkath,
+	itemInBankBoosts: [
+		{
+			[itemID('Royal crossbow')]: 8
+		}
+	]
 };
 
 export const customDemiBosses = {

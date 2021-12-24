@@ -87,6 +87,12 @@ const feedableItems: FeedableItem[] = [
 		tameSpeciesCanBeFedThis: [TameType.Gatherer],
 		announcementString:
 			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
+	},
+	{
+		item: getOSItem('Dwarven warhammer'),
+		description: '30% faster PvM',
+		tameSpeciesCanBeFedThis: [TameType.Combat],
+		announcementString: "Your tame can now kill 30% faster! It's holding the Dwarven warhammer in its claws..."
 	}
 ];
 
@@ -675,6 +681,10 @@ export default class extends BotCommand {
 		if (isWeekend()) {
 			speed = reduceNumByPercent(speed, 10);
 			boosts.push('10% weekend boost');
+		}
+		if (tameHasBeenFed(selectedTame, itemID('Dwarven warhammer'))) {
+			speed = reduceNumByPercent(speed, 30);
+			boosts.push('30% faster (ate a DWWH');
 		}
 
 		// Calculate monster quantity:

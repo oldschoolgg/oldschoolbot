@@ -65,7 +65,7 @@ export const customCraftables: Craftable[] = [
 		name: 'Royal dragonhide body',
 		id: itemID('Royal dragonhide body'),
 		level: 93,
-		xp: 282,
+		xp: 3 * 188,
 		inputItems: new Bank({ 'Royal dragon leather': 3 }),
 		tickRate: 3.5
 	},
@@ -73,7 +73,7 @@ export const customCraftables: Craftable[] = [
 		name: 'Royal dragonhide boots',
 		id: itemID('Royal dragonhide boots'),
 		level: 87,
-		xp: 94,
+		xp: 1 * 188,
 		inputItems: new Bank({ 'Royal dragon leather': 1 }),
 		tickRate: 3.5
 	},
@@ -81,7 +81,7 @@ export const customCraftables: Craftable[] = [
 		name: 'Royal dragonhide chaps',
 		id: itemID('Royal dragonhide chaps'),
 		level: 89,
-		xp: 188,
+		xp: 2 * 188,
 		inputItems: new Bank({ 'Royal dragon leather': 2 }),
 		tickRate: 3.5
 	},
@@ -89,7 +89,7 @@ export const customCraftables: Craftable[] = [
 		name: 'Royal dragonhide coif',
 		id: itemID('Royal dragonhide coif'),
 		level: 91,
-		xp: 188,
+		xp: 2 * 188,
 		inputItems: new Bank({ 'Royal dragon leather': 2 }),
 		tickRate: 3.5
 	},
@@ -97,7 +97,7 @@ export const customCraftables: Craftable[] = [
 		name: 'Royal dragonhide vambraces',
 		id: itemID('Royal dragonhide vambraces'),
 		level: 87,
-		xp: 188,
+		xp: 2 * 188,
 		inputItems: new Bank({ 'Royal dragon leather': 2 }),
 		tickRate: 3.5
 	}
