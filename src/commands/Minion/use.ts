@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { bossActiveIsActiveOrSoonActive, bossEvents, startBossEvent } from '../../lib/bossEvents';
 import { BitField } from '../../lib/constants';
+import { dyedItems } from '../../lib/dyedItems';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import getOSItem from '../../lib/util/getOSItem';
@@ -171,6 +172,30 @@ export default class extends BotCommand {
 			.split(',')
 			.map(part => part.trim().toLowerCase())
 			.map(getOSItem);
+
+		// Redying
+		if (items.length === 2) {
+			// e.g. [Blood Dye, Dwarven warhammer (blood)]
+			const baseItem = dyedItems.find(i => i.dyedVersions.some(o => items.includes(o.item)));
+			const dyeToApply = baseItem?.dyedVersions.find(i => items.includes(i.dye));
+			const dyedVariantTheyHave = baseItem?.dyedVersions.find(i => items.includes(i.item));
+			if (baseItem && dyeToApply && dyedVariantTheyHave) {
+				await msg.confirm(
+					`Are you sure you want to use a ${dyeToApply.dye.name} on your ${dyedVariantTheyHave.item.name}?`
+				);
+				if (!msg.author.owns(dyedVariantTheyHave.item.id)) {
+					return msg.channel.send("You don't own that.");
+				}
+				await msg.author.removeItemsFromBank(
+					new Bank().add(dyedVariantTheyHave.item.id).add(dyeToApply.dye.id)
+				);
+				await msg.author.addItemsToBank(new Bank().add(dyeToApply.item.id));
+				return msg.channel.send(
+					`You redyed your ${dyedVariantTheyHave.item.name} into a ${dyeToApply.item.name} using a ${dyeToApply.dye.name}.`
+				);
+			}
+		}
+
 		const combinedUsable = combinedUsables.find(
 			i => i.items.length === items.length && i.items.every(item => items.includes(item))
 		);
