@@ -515,6 +515,13 @@ const backgroundImages: BankBackground[] = [
 		}),
 		gpCost: 500_000_000,
 		perkTierNeeded: PerkTier.Four
+	},
+	{
+		id: 91,
+		name: 'Tetreths CustomBG',
+		image: null,
+		available: false,
+		owners: ['577647179909431311']
 	}
 ];
 
