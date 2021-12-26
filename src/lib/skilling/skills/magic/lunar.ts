@@ -1,5 +1,6 @@
-import { Castable, MagicTypes } from './index';
+import { Castable } from './index';
 import { Bank } from 'oldschooljs';
+import { MagicTypes } from '../../types';
 
 const Lunar: Castable[] = [
 	{

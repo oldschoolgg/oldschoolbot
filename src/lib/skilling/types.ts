@@ -31,6 +31,16 @@ export enum SkillsEnum {
 	Slayer = 'slayer'
 }
 
+export enum MagicTypes {
+	Combat = "Combat", 
+	Curse = "Curse",
+	Enchant = "Enchant",
+	Alchemy = "Alchemy", 
+	Skilling = "Skilling", 
+	Teleport = "Teleport", 
+	Reanimation = "Reanimation"
+}
+
 export interface Ore {
 	level: number;
 	xp: number;

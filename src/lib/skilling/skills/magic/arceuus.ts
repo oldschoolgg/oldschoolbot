@@ -1,5 +1,6 @@
-import { Castable, MagicTypes } from './index';
+import { Castable } from './index';
 import { Bank } from 'oldschooljs';
+import { MagicTypes } from '../../types';
 
 const Arceuus: Castable[] = [
 	{
@@ -329,11 +330,11 @@ const Arceuus: Castable[] = [
 		ticks: 8
 	},
 	{
-		name: 'Degrime marrentil',
+		name: 'Degrime marrentill',
 		levels: { Magic: 70 },
 		xp: { Magic: 83, Herblore: 47.5 },
-		input: new Bank().add('Grimy marrentil', 28).add('Earth rune', 4).add('Nature rune', 2),
-		output: new Bank().add('Marrentil', 28),
+		input: new Bank().add('Grimy marrentill', 28).add('Earth rune', 4).add('Nature rune', 2),
+		output: new Bank().add('Marrentill', 28),
 		category: MagicTypes.Skilling,
 		ticks: 8
 	},
@@ -347,11 +348,11 @@ const Arceuus: Castable[] = [
 		ticks: 8
 	},
 	{
-		name: 'Degrime harrlander',
+		name: 'Degrime harralander',
 		levels: { Magic: 70 },
 		xp: { Magic: 83, Herblore: 86.8 },
-		input: new Bank().add('Grimy harrlander', 28).add('Earth rune', 4).add('Nature rune', 2),
-		output: new Bank().add('Harrlander', 28),
+		input: new Bank().add('Grimy harralander', 28).add('Earth rune', 4).add('Nature rune', 2),
+		output: new Bank().add('Harralander', 28),
 		category: MagicTypes.Skilling,
 		ticks: 8
 	},

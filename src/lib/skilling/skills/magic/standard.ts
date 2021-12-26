@@ -1,4 +1,5 @@
-import { Castable, MagicTypes } from './index';
+import { Castable } from './index';
+import { MagicTypes } from '../../types';
 import { Bank } from 'oldschooljs';
 
 const Standard: Castable[] = [
@@ -424,7 +425,7 @@ const Standard: Castable[] = [
 		name: 'Superheat bronze',
 		levels: { Magic: 43, Smithing: 1 },
 		xp: { Magic: 53, Smithing: 6.2 },
-    input: new Bank().add('Bronze ore', 1).add('Tin ore', 1).add('Fire rune', 4).add('Nature rune', 1),
+    input: new Bank().add('Copper ore', 1).add('Tin ore', 1).add('Fire rune', 4).add('Nature rune', 1),
     output: new Bank().add('Bronze bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
