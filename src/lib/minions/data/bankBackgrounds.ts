@@ -522,6 +522,15 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['577647179909431311']
+	},
+	{
+		id: 92,
+		name: 'Smokey',
+		image: null,
+		available: true,
+		gpCost: 100_000_000,
+		perkTierNeeded: PerkTier.Four,
+		transparent: true
 	}
 ];
 
