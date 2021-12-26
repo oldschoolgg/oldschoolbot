@@ -68,10 +68,9 @@ export default class extends Task {
 
 		const totalLoot = new Bank();
 
-		let resultMessage = `<@${leader}> Your ${hardMode ? 'Hard Mode Raid' : 'Raid'} has finished.
+		let resultMessage = `**<@${leader}> Your ${hardMode ? 'Hard Mode' : ''} Theatre of Blood has finished**
 
 Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})
-Total Deaths: ${result.totalDeaths}
 `;
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, hardMode ? 'tob_hard' : 'tob', 1)));
 
@@ -101,7 +100,7 @@ Total Deaths: ${result.totalDeaths}
 
 			const { itemsAdded } = await user.addItemsToBank(userLoot.clone().add('Coins', 100_000), true);
 			const lootStr = new Bank(itemsAdded).remove('Coins', 100_000).toString();
-			const str = isPurple ? `${Emoji.Purple} ||${lootStr}||` : lootStr;
+			const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `||${lootStr}||`;
 
 			resultMessage += `\n${deathStr}**${user}** received: ${str}`;
 		}
