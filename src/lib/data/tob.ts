@@ -349,7 +349,6 @@ export async function checkTOBUser(
 	}
 
 	// Range
-
 	const blowpipeData = user.settings.get(UserSettings.Blowpipe);
 	if (!user.owns('Toxic blowpipe') || !blowpipeData.scales || !blowpipeData.dartID || !blowpipeData.dartQuantity) {
 		return [
@@ -557,6 +556,19 @@ export async function createTOBTeam({
 				userPercentChange += percent;
 				break;
 			}
+		}
+
+		const regularVoid = resolveItems([
+			'Void knight top',
+			'Void knight robe',
+			'Void knight gloves',
+			'Void ranger helm'
+		]);
+		const eliteVoid = resolveItems(['Elite void top', 'Elite void robe', 'Void knight gloves', 'Void ranger helm']);
+		if (!u.getGear('melee').hasEquipped(regularVoid, true, true)) {
+			userPercentChange = reduceNumByPercent(userPercentChange, 20);
+		} else if (u.getGear('melee').hasEquipped(eliteVoid, true, true)) {
+			userPercentChange += 5;
 		}
 
 		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, hardMode, gearPerecents);

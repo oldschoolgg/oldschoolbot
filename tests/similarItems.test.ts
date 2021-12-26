@@ -96,11 +96,13 @@ describe('Gear', () => {
 	const testGear8 = new Gear({
 		weapon: 'Kodai wand',
 		head: 'Black mask (i)',
-		'2h': 'Holy scythe of vitur'
+		'2h': 'Holy scythe of vitur',
+		body: 'Elite void top'
 	});
 	test('', () => {
 		expect(testGear8.hasEquipped('Kodai wand', true)).toBeTruthy();
 		expect(testGear8.hasEquipped('Black mask (i)', true)).toBeTruthy();
 		expect(testGear8.hasEquipped('Scythe of vitur', true)).toBeTruthy();
+		expect(testGear8.hasEquipped('Void knight top', true)).toBeTruthy();
 	});
 });
