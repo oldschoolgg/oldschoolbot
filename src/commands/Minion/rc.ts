@@ -84,7 +84,7 @@ export default class extends BotCommand {
 			boosts.push('**3x slower** for no Stamina potion(4)s');
 		} else if (msg.author.hasItemEquippedOrInBank('Ring of endurance')) {
 			tripLength *= 0.99;
-			const ringStr = "1% boost for Ring of endurance";
+			const ringStr = '1% boost for Ring of endurance';
 			boosts.push(ringStr);
 		}
 
