@@ -1,4 +1,4 @@
-import { command_usage_status } from '@prisma/client';
+import { command_usage_status, Prisma } from '@prisma/client';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
 import { PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
@@ -86,13 +86,17 @@ export default class extends Monitor {
 			status: command_usage_status;
 			args: null | any;
 			channel_id: string;
+			guild_id: string | null;
+			flags: Prisma.InputJsonObject | undefined;
 		} | null = {
 			date: message.createdAt,
 			user_id: message.author.id,
 			command_name: command.name,
 			status: command_usage_status.Unknown,
 			args: message.args,
-			channel_id: message.channel.id
+			channel_id: message.channel.id,
+			guild_id: message.guild?.id ?? null,
+			flags: Object.keys(message.flagArgs).length > 0 ? message.flagArgs : undefined
 		};
 
 		let response: KlasaMessage | null = null;

@@ -1714,7 +1714,15 @@ export const holidayCL = resolveItems([
 	'Banshee mask',
 	'Banshee top',
 	'Banshee robe',
-	'Hunting knife'
+	'Hunting knife',
+	'Yo-yo',
+	'Candy cane',
+	'Snow globe',
+	'Antisanta mask',
+	'Antisanta jacket',
+	'Antisanta pantaloons',
+	'Antisanta gloves',
+	'Antisanta boots'
 ]);
 export const dailyCL = resolveItems([
 	'Event rpg',
@@ -1968,3 +1976,11 @@ export const allPetIDs = [
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
 	...resolveItems(['Little parasite', 'Dark squirrel'])
 ];
+
+export const antiSantaOutfit = new Bank({
+	'Antisanta mask': 1,
+	'Antisanta jacket': 1,
+	'Antisanta pantaloons': 1,
+	'Antisanta gloves': 1,
+	'Antisanta boots': 1
+});
