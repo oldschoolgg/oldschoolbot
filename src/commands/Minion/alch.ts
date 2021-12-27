@@ -37,7 +37,7 @@ export default class extends BotCommand {
 			categoryFlags: ['minion', 'skilling']
 		});
 	}
-	
+
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity = null, item]: [number | null, Item[]]) {
