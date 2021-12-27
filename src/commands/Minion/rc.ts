@@ -88,8 +88,7 @@ export default class extends BotCommand {
 			tripLength *= 0.99;
 			const ringStr = `1% boost for ${
 				msg.author.hasItemEquippedOrInBank('Ring of endurance')
-					: 'Ring of endurance'
-			}`;
+					: 'Ring of endurance' }`;
 			boosts.push(ringStr);
 		}
 
