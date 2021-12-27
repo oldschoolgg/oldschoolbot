@@ -83,13 +83,11 @@ export default class extends BotCommand {
 			tripLength *= 3;
 			boosts.push('**3x slower** for no Stamina potion(4)s');
 		} else if (
-			msg.author.hasItemEquippedOrInBank('Ring of endurance (uncharged)') ||
 			msg.author.hasItemEquippedOrInBank('Ring of endurance')
 		) {
 			tripLength *= 0.99;
 			const ringStr = `1% boost for ${
-				msg.author.hasItemEquippedOrInBank('Ring of endurance (uncharged)')
-					? 'Ring of endurance (uncharged)'
+				msg.author.hasItemEquippedOrInBank('Ring of endurance')
 					: 'Ring of endurance'
 			}`;
 			boosts.push(ringStr);
