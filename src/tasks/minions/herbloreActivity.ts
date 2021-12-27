@@ -24,7 +24,7 @@ export default class extends Task {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished making ${quantity} ${mixableItem.name}s. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished making ${quantity}x ${mixableItem.name}. ${xpRes}`;
 
 		const loot = {
 			[mixableItem.id]: quantity

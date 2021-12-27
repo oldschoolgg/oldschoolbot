@@ -1,4 +1,6 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { table } from 'table';
 
 import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
@@ -11,7 +13,7 @@ export default class extends BotCommand {
 			examples: ['+tag add test Hello', '+test'],
 			runIn: ['text'],
 			subcommands: true,
-			usage: '<add|remove|list> (tag:string) [content:...string]',
+			usage: '<add|remove|export>',
 			usageDelim: ' ',
 			categoryFlags: ['utility']
 		});
@@ -29,27 +31,21 @@ export default class extends BotCommand {
 		);
 	}
 
-	async remove(message: KlasaMessage, [tag]: [string]) {
-		const settings = await getGuildSettings(message.guild!);
-		const isStaff = await message.hasAtLeastPermissionLevel(6);
-		if (!message.member || !isStaff) return;
-		if (!settings.get(GuildSettings.Tags).some(_tag => _tag[0] === tag.toLowerCase())) {
-			return message.channel.send("That tag doesn't exist.");
-		}
-		const filtered = settings.get(GuildSettings.Tags).filter(([name]) => name !== tag.toLowerCase());
-		await settings.update(GuildSettings.Tags, filtered, {
-			arrayAction: 'overwrite'
-		});
-		return message.channel.send(`Removed the tag \`${tag}\`.`);
+	async remove(message: KlasaMessage) {
+		return message.channel.send(
+			'The tags feature is deprecated from Old School Bot. Please use Skyra instead for tags: <https://invite.skyra.pw/>.'
+		);
 	}
 
-	async list(message: KlasaMessage) {
+	async export(message: KlasaMessage) {
 		const settings = await getGuildSettings(message.guild!);
-		return message.channel.send(
-			`Tags for this guild are: ${settings
-				.get(GuildSettings.Tags)
-				.map(([name]) => name)
-				.join(', ')}`
-		);
+		const tags = settings.get(GuildSettings.Tags);
+		if (tags.length === 0) return message.channel.send('This server has no tags.');
+
+		const normalTable = table([['Name', 'Content'], ...tags]);
+		return message.channel.send({
+			content: 'Please save your tags, as we will be deleting them on the 31st of December',
+			files: [new MessageAttachment(Buffer.from(normalTable), 'tags.txt')]
+		});
 	}
 }

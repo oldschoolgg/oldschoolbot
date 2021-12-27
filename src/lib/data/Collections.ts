@@ -1,5 +1,4 @@
 import { MessageAttachment } from 'discord.js';
-import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
@@ -70,7 +69,6 @@ import {
 	grotesqueGuardiansCL,
 	hallowedSepulchreCL,
 	hesporiCL,
-	holidayCL,
 	ICollection,
 	ILeftListStatus,
 	implingsCL,
@@ -903,10 +901,6 @@ export const allCollectionLogs: ICollection = {
 	},
 	Custom: {
 		activities: {
-			Holiday: {
-				counts: false,
-				items: holidayCL
-			},
 			Daily: {
 				counts: false,
 				alias: ['diango'],
@@ -1177,7 +1171,7 @@ export async function getCollection(options: {
 					if (typeof attributes.kcActivity === 'string') {
 						userKC.Default += (await user.getKCByName(attributes.kcActivity))[1];
 					} else {
-						for (const [type, value] of objectEntries(attributes.kcActivity)) {
+						for (const [type, value] of Object.entries(attributes.kcActivity)) {
 							if (!userKC[type]) userKC[type] = 0;
 							if (Array.isArray(value)) {
 								for (const name of value) {

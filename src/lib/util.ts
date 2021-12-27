@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
 import { objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -15,7 +16,6 @@ import { GearSetupType, GearSetupTypes } from './gear/types';
 import { Consumable } from './minions/types';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions, RaidsOptions } from './types/minions';
-import getOSItem from './util/getOSItem';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -543,12 +543,11 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 
 export const asyncExec = promisify(exec);
 
-export function countUsersWithItemInCl(client: KlasaClient, _item: string) {
-	const item = getOSItem(_item);
-	const query = `SELECT COUNT(id) FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL AND "collectionLogBank"->>'${item.id}'::int >= 1;`;
-	return client.query(query);
-}
-
 export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
+}
+
+export function murMurHashChance(input: string, percent: number) {
+	const hash = murmurHash.v3(input) % 1e4;
+	return hash < percent * 100;
 }

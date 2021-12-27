@@ -128,6 +128,8 @@ export async function runCommand(
 		args: null | any;
 		channel_id: string;
 		is_continue: boolean;
+		guild_id: string | null;
+		flags: Prisma.InputJsonObject | undefined;
 	} | null = {
 		date: message.createdAt,
 		user_id: message.author.id,
@@ -135,7 +137,9 @@ export async function runCommand(
 		status: command_usage_status.Unknown,
 		args,
 		channel_id: message.channel.id,
-		is_continue: isContinue
+		is_continue: isContinue,
+		guild_id: message.guild?.id ?? null,
+		flags: Object.keys(message.flagArgs).length > 0 ? message.flagArgs : undefined
 	};
 
 	try {
