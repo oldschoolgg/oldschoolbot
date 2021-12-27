@@ -46,7 +46,7 @@ export default class extends BotCommand {
 
 		if (bankToSac.length === 0) {
 			return msg.channel.send(
-				`No items were provided.\nYour current sacrificed value is: ${SacVal.toLocaleString()} (${Util.toKMB(
+				`No items were provided.\nYour current sacrificed value is: ${sacVal.toLocaleString()} (${Util.toKMB(
 					sacVal
 				)})`
 			);
