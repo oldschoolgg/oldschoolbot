@@ -367,6 +367,56 @@ const hunterClothing: Createable[] = [
 
 const Reverteables: Createable[] = [
 	{
+		name: 'Revert tanzanite fang',
+		inputItems: {
+			[itemID('tanzanite fang')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert toxic blowpipe (empty)',
+		inputItems: {
+			[itemID('tanzanite fang')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert magic fang',
+		inputItems: {
+			[itemID('magic fang')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert serpentine visage',
+		inputItems: {
+			[itemID('serpentine visage')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert serpentine helm (uncharged)',
+		inputItems: {
+			[itemID('serpentine helm (uncharged)')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
 		name: 'Revert volatile nightmare staff',
 		outputItems: resolveNameBank({
 			'Nightmare staff': 1,
