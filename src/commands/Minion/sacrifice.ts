@@ -29,7 +29,6 @@ export default class extends BotCommand {
 			examples: ['+sacrifice 1 Elysian sigil']
 		});
 	}
-
 	async run(msg: KlasaMessage, [bankStr = '']: [string | undefined]) {
 		const bankToSac = parseInputCostBank({
 			inputStr: bankStr,
