@@ -1,9 +1,12 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import Potions from '../../lib/minions/data/potions';
 import decantPotionFromBank from '../../lib/minions/functions/decantPotionFromBank';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+
+const potions = [...Potions.map(i => i.name)];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -21,7 +24,9 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [dose = 4, itemName]: [1 | 2 | 3 | 4, string]) {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
-
+		if (itemName === 'all') {
+			return this.all(msg, [dose]);
+		}
 		const { potionsToAdd, sumOfPots, potionName, potionsToRemove } = decantPotionFromBank(userBank, itemName, dose);
 
 		if (!msg.author.owns(potionsToRemove)) {
@@ -43,5 +48,43 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`You decanted **${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}** into **${potionsToAdd}**.`
 		);
+	}
+
+	async all(msg: KlasaMessage, [dose = 4]: [1 | 2 | 3 | 4]) {
+		await msg.author.settings.sync(true);
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+		const potsAdd = [];
+		const potsRemove = [];
+		for (const item of potions) {
+			let potionDosage = [];
+			potionDosage = [`${item} (1)`, `${item} (2)`, `${item} (3)`, `${item} (4)`];
+			if (
+				(msg.author.owns(potionDosage[0]) && dose !== 1) ||
+				(msg.author.owns(potionDosage[1]) && dose !== 2) ||
+				(msg.author.owns(potionDosage[2]) && dose !== 3) ||
+				(msg.author.owns(potionDosage[3]) && dose !== 4)
+			) {
+				const { potionsToAdd, sumOfPots, potionName, potionsToRemove } = decantPotionFromBank(
+					userBank,
+					item,
+					dose
+				);
+				await msg.author.removeItemsFromBank(potionsToRemove);
+				await msg.author.addItemsToBank(potionsToAdd);
+				potsAdd.push(`${potionsToAdd}`);
+				potsRemove.push(`${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}`);
+			}
+		}
+
+		if (
+			msg.author.hasItemEquippedAnywhere(['Iron dagger', 'Bronze arrow'], true) &&
+			!msg.author.hasItemEquippedOrInBank('Clue hunter gloves')
+		) {
+			await msg.author.addItemsToBank(new Bank({ 'Clue hunter gloves': 1 }), true);
+			msg.channel.send(
+				'\n\nWhile decanting some potions, you find a pair of gloves on the floor and pick them up.'
+			);
+		}
+		return msg.channel.send(`You decanted **${potsRemove}** into **${potsAdd}**`);
 	}
 }
