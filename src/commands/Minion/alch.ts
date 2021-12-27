@@ -24,7 +24,6 @@ const unlimitedFireRuneProviders = resolveItems([
 	'Mystic smoke staff',
 	'Tome of fire'
 ]);
-
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
