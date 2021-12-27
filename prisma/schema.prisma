@@ -110,6 +110,9 @@ model ClientStorage {
   nightmare_cost               Json     @default("{}") @db.Json
   create_cost                  Json     @default("{}") @db.Json
   create_loot                  Json     @default("{}") @db.Json
+  tob_cost                     Json     @default("{}") @db.Json
+  tob_loot                     Json     @default("{}") @db.Json
+  degraded_items_cost          Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -356,6 +359,12 @@ model User {
 
   presents_stolen    Int @default(0)
   presents_delivered Int @default(0)
+
+
+  tentacle_charges Int @default(0)
+
+  tob_cost Json @default("{}") @db.Json
+  tob_loot Json @default("{}") @db.Json
 
   @@map("users")
 }

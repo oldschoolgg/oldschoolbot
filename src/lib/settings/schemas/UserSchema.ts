@@ -164,4 +164,6 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.Flower, 'any', { default: null })
 			.add(FarmingPatchTypes.Mushroom, 'any', { default: null })
 			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
-	);
+	)
+	.add('tob_cost', 'any', { default: {} })
+	.add('tob_loot', 'any', { default: {} });

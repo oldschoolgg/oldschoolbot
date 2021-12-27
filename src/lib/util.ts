@@ -437,7 +437,8 @@ export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank)
 	return returnBank;
 }
 
-export function updateBankSetting(client: KlasaClient, setting: string, bankToAdd: Bank | ItemBank) {
+export function updateBankSetting(client: KlasaClient | KlasaUser, setting: string, bankToAdd: Bank | ItemBank) {
+	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);

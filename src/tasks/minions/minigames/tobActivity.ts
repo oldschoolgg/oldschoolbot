@@ -2,8 +2,8 @@ import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events } from '../../../lib/constants';
-import { createTOBTeam, TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
+import { Emoji, Events, PerkTier } from '../../../lib/constants';
+import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -17,8 +17,6 @@ export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {
 		const { channelID, users, hardMode, leader, wipedRoom, duration, fakeDuration, deaths } = data;
 		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
-		const team = await createTOBTeam({ team: allUsers, hardMode });
-		console.log(JSON.stringify(team));
 		const result = TheatreOfBlood.complete({
 			hardMode,
 			team: users.map((i, index) => ({ id: i, deaths: deaths[index] }))
@@ -49,6 +47,15 @@ export default class extends Task {
 				const currentAttempts = u.settings.get(key);
 				return u.settings.update(key, currentAttempts + 1);
 			})
+		);
+
+		// Track loot for T3+ patrons
+		await Promise.all(
+			allUsers
+				.filter(u => u.perkTier >= PerkTier.Four)
+				.map(user => {
+					return updateBankSetting(user, UserSettings.TOBLoot, result.loot[user.id]);
+				})
 		);
 
 		// GIVE XP HERE

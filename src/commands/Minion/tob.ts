@@ -285,6 +285,7 @@ export default class extends BotCommand {
 						)
 						.add(u.getGear('range').ammo!.item, 100)
 				);
+				await updateBankSetting(u, UserSettings.TOBCost, realCost);
 				if (u.getGear('melee').hasEquipped('Abyssal tentacle')) {
 					await degradeItem({
 						item: getOSItem('Abyssal tentacle'),

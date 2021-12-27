@@ -72,6 +72,9 @@ export namespace UserSettings {
 
 	export const TentacleCharges = T<number>('tentacle_charges');
 
+	export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
+	export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');
+
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
 		export const TaskStreak = T<number>('slayer.task_streak');
