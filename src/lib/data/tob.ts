@@ -565,9 +565,9 @@ export async function createTOBTeam({
 			'Void ranger helm'
 		]);
 		const eliteVoid = resolveItems(['Elite void top', 'Elite void robe', 'Void knight gloves', 'Void ranger helm']);
-		if (!u.getGear('melee').hasEquipped(regularVoid, true, true)) {
+		if (!u.getGear('range').hasEquipped(regularVoid, true, true)) {
 			userPercentChange = reduceNumByPercent(userPercentChange, 20);
-		} else if (u.getGear('melee').hasEquipped(eliteVoid, true, true)) {
+		} else if (u.getGear('range').hasEquipped(eliteVoid, true, true)) {
 			userPercentChange += 5;
 		}
 
