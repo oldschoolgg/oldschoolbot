@@ -209,9 +209,12 @@ export default class CollectionLogTask extends Task {
 	async generateLogImage(options: {
 		user: KlasaUser;
 		collection: string;
-		type: 'collection' | 'sacrifice' | 'bank';
+		type: 'collection' | 'sacrifice' | 'bank' | 'temp';
 		flags: { [key: string]: string | number };
 	}): Promise<MessageOptions | MessageAttachment> {
+		if (options.flags.temp) {
+			options.type = 'temp';
+		}
 		let { collection, type, user, flags } = options;
 
 		await user.settings.sync(true);

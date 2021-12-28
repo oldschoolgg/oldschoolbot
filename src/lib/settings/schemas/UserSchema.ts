@@ -55,6 +55,8 @@ Client.defaultUserSchema
 	.add('premium_balance_expiry_date', 'integer', { default: null, maximum: Number.MAX_SAFE_INTEGER })
 	.add('presents_stolen', 'integer', { default: 0 })
 	.add('presents_delivered', 'integer', { default: 0 })
+	.add('temp_cl', 'any', { default: {} })
+	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })
