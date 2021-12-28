@@ -1,8 +1,7 @@
-import { TextChannel } from 'discord.js';
-import { Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { toKMB } from 'oldschooljs/dist/util';
 
-import { Channel, Events } from '../../lib/constants';
+import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
@@ -31,12 +30,9 @@ export default class extends BotCommand {
 		if (user.id === msg.author.id) throw "You can't send money to yourself.";
 		if (user.bot) throw "You can't send money to a bot.";
 
-		if (
-			Date.now() - msg.author.settings.get(UserSettings.LastDailyTimestamp) < Time.Minute &&
-			this.client.production
-		) {
-			(this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel).send(
-				`(${msg.author.sanitizedName})[${msg.author.id}] paid daily to (${user.sanitizedName})[${user.id}]`
+		if (amount > 500_000_000) {
+			await msg.confirm(
+				`Are you sure you want to pay ${user.username}#${user.discriminator} (ID: ${user.id}) ${toKMB(amount)}?`
 			);
 		}
 
