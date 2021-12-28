@@ -156,7 +156,6 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [action, quantity]: [string | undefined, number | undefined]) {
 		await msg.author.settings.sync(true);
-		console.log(action);
 		if (action === 'buy') {
 			const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 60);
 			const farmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
@@ -170,6 +169,10 @@ export default class extends BotCommand {
 			}
 
 			return this.buy(msg, [quantity]);
+		}
+
+		if (action && !quantity) {
+			quantity = Number(action) || 1;
 		}
 
 		const realQty = quantity ?? 1;
