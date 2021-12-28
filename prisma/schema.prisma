@@ -389,6 +389,9 @@ model User {
   presents_stolen    Int @default(0)
   presents_delivered Int @default(0)
 
+  temp_cl            Json      @default("{}") @db.Json
+  last_temp_cl_reset DateTime? @db.Timestamp(6)
+
   // BSO
   nursery                  Json?    @db.Json
   selected_tame            Json?    @db.Json

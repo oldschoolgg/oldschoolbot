@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { toKMB } from 'oldschooljs/dist/util';
 
 import { Channel, Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -29,6 +30,12 @@ export default class extends BotCommand {
 		if (this.client.oneCommandAtATimeCache.has(user.id)) throw 'That user is busy right now.';
 		if (user.id === msg.author.id) throw "You can't send money to yourself.";
 		if (user.bot) throw "You can't send money to a bot.";
+
+		if (amount > 500_000_000) {
+			await msg.confirm(
+				`Are you sure you want to pay ${user.username}#${user.discriminator} (ID: ${user.id}) ${toKMB(amount)}?`
+			);
+		}
 
 		await msg.author.removeGP(amount);
 		await user.addGP(amount);

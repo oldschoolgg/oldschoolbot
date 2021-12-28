@@ -1318,7 +1318,7 @@ function getLeftList(
 	return leftList;
 }
 
-export async function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection' | 'tame') {
+export async function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection' | 'tame' | 'temp') {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
@@ -1334,12 +1334,15 @@ export async function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'col
 			const { getUsersTamesCollectionLog } = await import('../util/getUsersTameCL');
 			return getUsersTamesCollectionLog(user);
 		}
+		case 'temp':
+			userCheckBank.add(user.settings.get(UserSettings.TempCL));
+			break;
 	}
 	return userCheckBank;
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export async function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection' | 'tame') {
+export async function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection' | 'tame' | 'temp') {
 	if (logType === 'sacrifice' && allCLItems.includes(995)) allCLItems.splice(allCLItems.indexOf(995), 1);
 	const b = await getBank(user, logType);
 	return getUserClData(b.bank, allCLItems);
@@ -1425,7 +1428,7 @@ export async function getCollection(options: {
 	user: KlasaUser;
 	search: string;
 	flags: { [key: string]: string | number };
-	logType?: 'collection' | 'sacrifice' | 'bank' | 'tame';
+	logType?: 'collection' | 'sacrifice' | 'bank' | 'tame' | 'temp';
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
 
