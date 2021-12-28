@@ -5,8 +5,9 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { sorts } from '../../lib/sorts';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, isSuperUntradeable, itemID } from '../../lib/util';
+import { addBanks, isSuperUntradeable, itemID, toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 
 const specialPrices = new Bank()
@@ -16,7 +17,6 @@ const specialPrices = new Bank()
 	// .add('Clue scroll(hard)', 700_000)
 	// .add('Clue scroll(elite)', 1_000_000)
 	// .add('Clue scroll(master)', 5_000_000)
-	// .add('Clue scroll(grandmaster)', 50_000_000)
 	// .add('Reward casket(beginner)', 500_000)
 	// .add('Reward casket(easy)', 1_000_000)
 	// .add('Reward casket(medium)', 2_000_000)
@@ -25,7 +25,8 @@ const specialPrices = new Bank()
 	// .add('Reward casket(master)', 15_000_000)
 	// .add('Reward casket(grandmaster)', 50_000_000)
 	// .add('Reward casket(grandmaster)', 50_000_000)
-	// .add('Reward casket(grandmaster)', 50_000_000)
+	.add('Clue scroll(grandmaster)', 150_000_000)
+	.add('Reward casket(grandmaster)', 200_000_000)
 	// Drygores
 	.add('Drygore longsword', 3_000_000_000)
 	.add('Offhand drygore longsword', 3_000_000_000)
@@ -34,23 +35,23 @@ const specialPrices = new Bank()
 	.add('Drygore rapier', 1_200_000_000)
 	.add('Offhand drygore rapier', 1_400_000_000)
 	// Nex
-	.add('Torva full helm', 800_000_000)
-	.add('Torva platebody', 800_000_000)
-	.add('Torva platelegs', 800_000_000)
-	.add('Torva boots', 800_000_000)
-	.add('Torva gloves', 800_000_000)
+	.add('Torva full helm', 1_200_000_000)
+	.add('Torva platebody', 1_200_000_000)
+	.add('Torva platelegs', 1_200_000_000)
+	.add('Torva boots', 1_200_000_000)
+	.add('Torva gloves', 1_200_000_000)
 
-	.add('Pernix cowl', 600_000_000)
-	.add('Pernix body', 600_000_000)
-	.add('Pernix chaps', 600_000_000)
-	.add('Pernix boots', 600_000_000)
-	.add('Pernix gloves', 600_000_000)
+	.add('Pernix cowl', 900_000_000)
+	.add('Pernix body', 900_000_000)
+	.add('Pernix chaps', 900_000_000)
+	.add('Pernix boots', 900_000_000)
+	.add('Pernix gloves', 900_000_000)
 
-	.add('Virtus mask', 300_000_000)
-	.add('Virtus robe top', 300_000_000)
-	.add('Virtus robe legs', 300_000_000)
-	.add('Virtus boots', 300_000_000)
-	.add('Virtus gloves', 300_000_000)
+	.add('Virtus mask', 700_000_000)
+	.add('Virtus robe top', 700_000_000)
+	.add('Virtus robe legs', 700_000_000)
+	.add('Virtus boots', 700_000_000)
+	.add('Virtus gloves', 700_000_000)
 	.add('Virtus wand', 500_000_000)
 	.add('Virtus book', 500_000_000)
 
@@ -62,21 +63,41 @@ const specialPrices = new Bank()
 	// Misc
 	.add('Abyssal thread', 50_000_000)
 	.add('Magus scroll', 200_000_000)
-	.add('Abyssal cape', 2_000_000_000)
+	.add('Abyssal cape', 3_500_000_000)
+	.add('Dwarven blessing', 4_500_000_000)
 	.add('Ent hide', 20_000_000)
-	.add('Tradeable mystery box', 13_000_000)
-	.add('Untradeable mystery box', 13_000_000)
+	.add('Tradeable mystery box', 16_000_000)
+	.add('Untradeable mystery box', 16_000_000)
 
 	.add('Ignecarus dragonclaw', 300_000_000)
 	.add('Blood dye', 1_000_000_000)
+	.add('Ice dye', 3_000_000_000)
 	.add('Monkey egg', 5_000_000_000)
 	.add('Holiday mystery box', 50_000_000)
 	.add('Golden shard', 3_000_000_000)
 	.add('Festive present', 1_000_000_000)
+	.add('Christmas cracker', 3_000_000_000)
+	.add('Saradomin brew(4)', 150_000)
+	.add('Heat res. brew', 750_000)
+	.add('Ignis ring', 300_000_000)
 
 	// Pets
-	.add('Voidling', 700_000_000)
-	.add('Plopper', 300_000_000);
+	.add('Voidling', 800_000_000)
+	.add('Plopper', 500_000_000)
+	.add('Skipper', 1_000_000_000)
+	.add('Zak', 7_000_000)
+	.add('Takon', 8_000_000)
+	.add('Harry', 500_000_000)
+	.add('Ishi', 300_000_000)
+	.add('Mr. E', 4_000_000_000)
+	.add('Wintertoad', 400_000_000)
+	.add('Scruffy', 3_000_000_000)
+	.add('Zippy', 5_000_000_000)
+	.add('Wilvus', 500_000_000)
+	.add('Shelldon', 900_000_000)
+	.add('Klik', 35_000_000)
+	.add('Peky', 500_000_000)
+	.add('Doug', 1_500_000_000);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -95,6 +116,11 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [str]: [string | undefined]) {
 		if (msg.author.isIronman) {
 			return msg.channel.send('Ironmen cannot participate in the lottery.');
+		}
+
+		if (msg.flagArgs.prices) {
+			const items = specialPrices.items().sort(sorts.value);
+			return msg.channel.send(items.map(i => `${i[0].name}: ${toKMB(i[1])}`).join('  ,   '));
 		}
 
 		if (str === 'chance') {
