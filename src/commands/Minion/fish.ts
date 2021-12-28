@@ -69,12 +69,12 @@ export default class extends BotCommand {
 
 		if (
 			fish.name === 'Minnow' &&
-			(!msg.author.hasItemEquippedAnywhere('Angler top') ||
-				!msg.author.hasItemEquippedAnywhere('Angler waders') ||
-				!msg.author.hasItemEquippedAnywhere('Angler boots') ||
-				!msg.author.hasItemEquippedAnywhere('Angler hat'))
+			(!msg.author.hasItemEquippedOrInBank('Angler top') ||
+				!msg.author.hasItemEquippedOrInBank('Angler waders') ||
+				!msg.author.hasItemEquippedOrInBank('Angler boots') ||
+				!msg.author.hasItemEquippedOrInBank('Angler hat'))
 		) {
-			return msg.channel.send('You need the Angler Outfit equipped to fish for Minnows.');
+			return msg.channel.send('You need the Angler Outfit equipped or in the bank to fish for Minnows.');
 		}
 
 		// If no quantity provided, set it to the max.
