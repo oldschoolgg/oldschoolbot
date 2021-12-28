@@ -67,6 +67,8 @@ Client.defaultUserSchema
 	.add('presents_stolen', 'integer', { default: 0 })
 	.add('presents_delivered', 'integer', { default: 0 })
 	.add('got_free_festive_present', 'boolean', { default: false })
+	.add('temp_cl', 'any', { default: {} })
+	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('slayer', folder =>
 		folder
 			.add('points', 'integer', { default: 0 })
