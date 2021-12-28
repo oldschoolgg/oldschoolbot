@@ -620,11 +620,7 @@ const Buyables: Buyable[] = [
 		aliases: ['jug of water', 'jugs of water'],
 		gpCost: 100
 	},
-	{
-		name: 'Granite Body',
-		gpCost: 95_000,
-		minigameScoreReq: ['BarbarianAssault', 10]
-	},
+	
 	{
 		name: 'Feather',
 		aliases: ['feather'],
@@ -699,7 +695,11 @@ const Buyables: Buyable[] = [
 		},
 		gpCost: 500_000
 	},
-	
+	{
+		name: 'Granite Body',
+		gpCost: 95_000,
+		minigameScoreReq: ['BarbarianAssault', 10]
+	},
 	{
 		name: 'Potato with cheese',
 		gpCost: 650,
