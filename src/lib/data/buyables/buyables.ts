@@ -620,7 +620,7 @@ const Buyables: Buyable[] = [
 		aliases: ['jug of water', 'jugs of water'],
 		gpCost: 100
 	},
-	
+
 	{
 		name: 'Feather',
 		aliases: ['feather'],
