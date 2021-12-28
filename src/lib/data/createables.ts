@@ -372,7 +372,7 @@ const Reverteables: Createable[] = [
 			[itemID('Tanzanite fang')]: 1
 		},
 		outputItems: {
-			[itemID("Zulrah's scales")]: 20000
+			[itemID("Zulrah's scales")]: 20_000
 		},
 		noCl: true
 	},
@@ -382,7 +382,7 @@ const Reverteables: Createable[] = [
 			[itemID('Toxic blowpipe (empty)')]: 1
 		},
 		outputItems: {
-			[itemID("Zulrah's scales")]: 20000
+			[itemID("Zulrah's scales")]: 20_000
 		},
 		noCl: true
 	},
@@ -392,7 +392,7 @@ const Reverteables: Createable[] = [
 			[itemID('Magic fang')]: 1
 		},
 		outputItems: {
-			[itemID("Zulrah's scales")]: 20000
+			[itemID("Zulrah's scales")]: 20_000
 		},
 		noCl: true
 	},
@@ -402,7 +402,7 @@ const Reverteables: Createable[] = [
 			[itemID('Serpentine visage')]: 1
 		},
 		outputItems: {
-			[itemID("Zulrah's scales")]: 20000
+			[itemID("Zulrah's scales")]: 20_000
 		},
 		noCl: true
 	},
@@ -412,7 +412,7 @@ const Reverteables: Createable[] = [
 			[itemID('Serpentine helm (uncharged)')]: 1
 		},
 		outputItems: {
-			[itemID("Zulrah's scales")]: 20000
+			[itemID("Zulrah's scales")]: 20_000
 		},
 		noCl: true
 	},
