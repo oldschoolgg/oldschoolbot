@@ -704,6 +704,15 @@ const Buyables: Buyable[] = [
 		name: 'Sandworms',
 		gpCost: 500
 	},
+	{
+		name: 'Raw shark',
+		itemCost: resolveNameBank({
+			Minnow: 40
+		}),
+		outputItems: resolveNameBank({
+			'Raw shark': 1
+		})
+	},
 
 	...sepulchreBuyables,
 	...constructionBuyables,
