@@ -186,12 +186,12 @@ const fishes: Fish[] = [
 	},
 	{
 		level: 82,
-		xp: 1.9,
+		xp: 2.667,
 		id: itemID('Minnow'),
 		name: 'Minnow',
 		petChance: 13_688_892,
 		qpRequired: 1,
-		timePerFish: 0.144,
+		timePerFish: 0.24,
 		clueScrollChance: 13_688_892
 	},
 	{
