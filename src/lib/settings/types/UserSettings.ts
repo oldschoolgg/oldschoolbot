@@ -58,6 +58,7 @@ export namespace UserSettings {
 	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
+	export const TempCL = T<O.Readonly<ItemBank>>('temp_cl');
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
@@ -66,6 +67,9 @@ export namespace UserSettings {
 
 	export const PremiumBalanceTier = T<number | null>('premium_balance_tier');
 	export const PremiumBalanceExpiryDate = T<number | null>('premium_balance_expiry_date');
+
+	export const PresentsStolen = T<number>('presents_stolen');
+	export const PresentsDelivered = T<number>('presents_delivered');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

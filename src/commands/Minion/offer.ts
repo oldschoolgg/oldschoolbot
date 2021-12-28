@@ -1,4 +1,4 @@
-import { objectKeys, randArrItem, Time } from 'e';
+import { randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -47,7 +47,7 @@ export default class extends BotCommand {
 
 	notifyUniques(user: KlasaUser, activity: string, uniques: number[], loot: ItemBank, qty: number, randQty?: number) {
 		const itemsToAnnounce = filterBankFromArrayOfItems(uniques, loot);
-		if (objectKeys(itemsToAnnounce).length > 0) {
+		if (Object.keys(itemsToAnnounce).length > 0) {
 			const lootStr = new Bank(itemsToAnnounce).toString();
 			this.client.emit(
 				Events.ServerNotification,
@@ -142,13 +142,26 @@ export default class extends BotCommand {
 				skillName: SkillsEnum.Prayer,
 				amount: quantity * 100
 			});
-			await msg.author.addItemsToBank(loot, true);
+
+			const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot, true);
 
 			this.notifyUniques(msg.author, egg.name, evilChickenOutfit, loot.bank, quantity);
 
-			return msg.channel.send(
-				`You offered ${quantity}x ${egg.name} to the Shrine and received ${loot} and ${xpStr}.`
-			);
+			const { image } = await this.client.tasks
+				.get('bankImage')!
+				.generateBankImage(
+					itemsAdded,
+					`${quantity}x ${egg.name}`,
+					true,
+					{ showNewCL: 1 },
+					msg.author,
+					previousCL
+				);
+
+			return msg.channel.send({
+				content: `You offered ${quantity}x ${egg.name} to the Shrine and received the attached loot and ${xpStr}.`,
+				files: [image!]
+			});
 		}
 
 		const specialBone = specialBones.find(bone => stringMatches(bone.item.name, boneName));

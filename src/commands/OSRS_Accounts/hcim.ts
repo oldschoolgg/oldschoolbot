@@ -21,7 +21,7 @@ export default class extends BotCommand {
 		try {
 			const player = await Hiscores.fetch(username, { type: AccountType.Hardcore });
 			return msg.channel.send({ embeds: [this.getStatsEmbed(username, 11_995_146, player)] });
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

@@ -178,6 +178,7 @@ export default class extends BotCommand {
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyLootBank, outItems);
 
 		await msg.author.addItemsToBank(outItems, true);
 

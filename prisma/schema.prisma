@@ -65,6 +65,7 @@ model ClientStorage {
   farming_cost_bank            Json     @default("{}") @db.Json
   farming_loot_bank            Json     @default("{}") @db.Json
   buy_cost_bank                Json     @default("{}") @db.Json
+  buy_loot_bank                Json     @default("{}") @db.Json
   magic_cost_bank              Json     @default("{}") @db.Json
   crafting_cost                Json     @default("{}") @db.Json
   gnome_res_cost               Json     @default("{}") @db.Json
@@ -348,6 +349,16 @@ model User {
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
   kourend_favour             Json?    @map("kourend_favour") @db.Json
 
+  premium_balance_tier        Int?
+  premium_balance_expiry_date BigInt?
+
+  presents_stolen    Int @default(0)
+  presents_delivered Int @default(0)
+
+
+  temp_cl            Json      @default("{}") @db.Json
+  last_temp_cl_reset DateTime? @db.Timestamp(6)
+
   @@map("users")
 }
 
@@ -428,6 +439,7 @@ model CommandUsage {
   command_name String               @db.VarChar(32)
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
+  flags        Json?
 
   args       Json?   @db.Json
   channel_id String? @db.VarChar(19)
@@ -509,6 +521,7 @@ enum activity_type_enum {
   VolcanicMine
   KourendFavour
   Inferno
+  Christmas
 }
 
 enum xp_gains_skill_enum {
