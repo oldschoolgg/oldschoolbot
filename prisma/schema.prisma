@@ -355,6 +355,10 @@ model User {
   presents_stolen    Int @default(0)
   presents_delivered Int @default(0)
 
+
+  temp_cl            Json      @default("{}") @db.Json
+  last_temp_cl_reset DateTime? @db.Timestamp(6)
+
   @@map("users")
 }
 
@@ -518,6 +522,7 @@ enum activity_type_enum {
   KourendFavour
   Inferno
   Christmas
+  TheatreOfBlood
 }
 
 enum xp_gains_skill_enum {

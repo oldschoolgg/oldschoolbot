@@ -23,6 +23,7 @@ import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
+import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
@@ -73,7 +74,8 @@ const subCommands = [
 	'lapcounts',
 	'cancel',
 	'train',
-	'unequipall'
+	'unequipall',
+	'tempcl'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -181,6 +183,10 @@ export default class MinionCommand extends BotCommand {
 
 	async info(msg: KlasaMessage) {
 		return runCommand(msg, 'rp', ['c', msg.author]);
+	}
+
+	async tempcl(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return tempCLCommand(msg, input);
 	}
 
 	async unequippet(msg: KlasaMessage) {
