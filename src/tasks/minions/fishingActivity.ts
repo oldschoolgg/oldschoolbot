@@ -110,16 +110,16 @@ export default class extends Task {
 			lootQuantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		}
 		if (fish.id === itemID('Minnow')) {
-			if (user.skillLevel(SkillsEnum.Fishing) >= 99) 
-			{ lootQuantity *=14
-			} else if (user.skillLevel(SkillsEnum.Fishing) >= 95)
-			{ lootQuantity *=13
-			} else if (user.skillLevel(SkillsEnum.Fishing) >= 90)
-			{ lootQuantity *=12
-			} else if (user.skillLevel(SkillsEnum.Fishing) >= 85)
-			{ lootQuantity *=11
-			} else if (user.skillLevel(SkillsEnum.Fishing) >= 82)
-			{ lootQuantity *=10
+			if (user.skillLevel(SkillsEnum.Fishing) >= 99) {
+				lootQuantity *= 14;
+			} else if (user.skillLevel(SkillsEnum.Fishing) >= 95) {
+				lootQuantity *= 13;
+			} else if (user.skillLevel(SkillsEnum.Fishing) >= 90) {
+				lootQuantity *= 12;
+			} else if (user.skillLevel(SkillsEnum.Fishing) >= 85) {
+				lootQuantity *= 11;
+			} else if (user.skillLevel(SkillsEnum.Fishing) >= 82) {
+				lootQuantity *= 10;
 			}
 		}
 		let loot = new Bank({
