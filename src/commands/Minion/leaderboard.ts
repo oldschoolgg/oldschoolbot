@@ -88,7 +88,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open|inferno] [name:...string]',
+			usage: '[pets|gp|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open|inferno|uniquesac] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
@@ -212,6 +212,30 @@ LIMIT 10;`);
 						.join('\n')
 				),
 			'GP Leaderboard'
+		);
+	}
+
+	async uniquesac(msg: KlasaMessage) {
+		const mostUniques: { id: string; sacbanklength: number }[] =
+			await prisma.$queryRaw`SELECT u.id, u.sacbanklength FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
+) u
+ORDER BY u.sacbanklength DESC LIMIT 10;`;
+		this.doMenu(
+			msg,
+			util
+				.chunk(mostUniques, LB_PAGE_SIZE)
+				.map((subList, i) =>
+					subList
+						.map(
+							({ id, sacbanklength }, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(
+									id
+								)}:** ${sacbanklength.toLocaleString()} Unique Sac's`
+						)
+						.join('\n')
+				),
+			'Unique Sacrifice Leaderboard'
 		);
 	}
 
