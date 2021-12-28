@@ -55,7 +55,7 @@ export const phosaniBISGear = new Gear({
 	feet: 'Primordial boots',
 	ring: 'Berserker ring(i)',
 	weapon: "Inquisitor's mace",
-	shield: 'Dragon defender',
+	shield: 'Avernic defender',
 	ammo: "Rada's blessing 4"
 });
 

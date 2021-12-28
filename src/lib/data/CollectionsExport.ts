@@ -307,6 +307,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vasa minirio',
 	'Vespina'
 ]);
+export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
 export const chambersOfXericCL = resolveItems([
 	'Olmlet',
 	'Metamorphic dust',
@@ -1972,6 +1973,7 @@ export const gracefulCL = resolveItems([
 export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
+	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
 	...resolveItems(['Little parasite', 'Dark squirrel'])
 ];

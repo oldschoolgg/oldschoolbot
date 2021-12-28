@@ -374,6 +374,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			'Ely'
 		);
 
+		preZukDeathChance.add(rangeGear.hasEquipped('Justiciar faceguard'), -5, 'Just. faceguard');
+
 		const hasSuffering =
 			rangeGear.hasEquipped('Ring of suffering (i)') || mageGear.hasEquipped('Ring of suffering (i)');
 		preZukDeathChance.add(hasSuffering, -4, 'Ring of Suffering (i)');

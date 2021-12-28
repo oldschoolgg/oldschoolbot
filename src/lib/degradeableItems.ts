@@ -9,7 +9,7 @@ import getOSItem from './util/getOSItem';
 
 interface DegradeableItem {
 	item: Item;
-	settingsKey: 'tentacle_charges';
+	settingsKey: 'tentacle_charges' | 'sang_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -29,6 +29,17 @@ export const degradeableItems: DegradeableItem[] = [
 		chargeInput: {
 			cost: new Bank().add('Abyssal whip'),
 			charges: 10_000
+		}
+	},
+	{
+		item: getOSItem('Sanguinesti staff'),
+		settingsKey: 'sang_charges',
+		itemsToRefundOnBreak: new Bank().add('Sanguinesti staff (uncharged)'),
+		setup: 'melee',
+		aliases: ['sang', 'sang staff', 'sanguinesti staff', 'sanguinesti'],
+		chargeInput: {
+			cost: new Bank().add('Blood rune', 3),
+			charges: 1
 		}
 	}
 ];

@@ -5,6 +5,7 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
+import { production } from '../../config';
 import { Emoji } from '../../lib/constants';
 import {
 	baseTOBUniques,
@@ -44,6 +45,7 @@ export default class extends BotCommand {
 	}
 
 	async graph(msg: KlasaMessage) {
+		if (production) return;
 		let size = 3;
 		let inputSize = Number(msg.flagArgs.size);
 		if (!isNaN(inputSize)) size = Math.min(5, Math.max(2, inputSize));
@@ -60,21 +62,33 @@ export default class extends BotCommand {
 
 		for (let i = startingKC; i < startingKC + amountOfKC; i++) {
 			const t = await createTOBTeam({
-				team: users,
+				team: users.map(u => ({
+					user: u,
+					bank: u.bank(),
+					gear: u.rawGear(),
+					attempts: i,
+					hardAttempts: i,
+					kc: groupKc,
+					hardKC: groupKc
+				})),
 				hardMode,
-				attemptsOverride: [i, i],
-				kcOverride: [groupKc, groupKc],
 				disableVariation: true
 			});
 
 			let wins = 0;
-			const winRateSampleSize = 25;
+			const winRateSampleSize = 50;
 			for (let o = 0; o < winRateSampleSize; o++) {
 				const sim = await createTOBTeam({
-					team: users,
+					team: users.map(u => ({
+						user: u,
+						bank: u.bank(),
+						gear: u.rawGear(),
+						attempts: i,
+						hardAttempts: i,
+						kc: groupKc,
+						hardKC: groupKc
+					})),
 					hardMode,
-					attemptsOverride: [i, i],
-					kcOverride: [groupKc, groupKc],
 					disableVariation: true
 				});
 				if (!sim.wipedRoom) {
@@ -92,7 +106,6 @@ export default class extends BotCommand {
 		const options: ChartConfiguration = {
 			type: 'line',
 			data: {
-				// labels: [...Array(duration.length).keys()].map(i => `${i + 1}`),
 				labels: [...Array(kc.length).keys()].map(i => `${i + 1}`),
 				datasets: [
 					{
@@ -111,14 +124,6 @@ export default class extends BotCommand {
 						fill: false,
 						yAxisID: 'y1'
 					}
-					// {
-					// 	label: 'Actual KC',
-					// 	fill: false,
-					// 	backgroundColor: 'rgb(0, 0, 0)',
-					// 	borderColor: 'rgb(0, 0, 0)',
-					// 	data: kc,
-					// 	yAxisID: 'right'
-					// }
 				]
 			},
 			options: {
@@ -145,7 +150,6 @@ export default class extends BotCommand {
 						display: true,
 						position: 'left',
 						ticks: {
-							// Include a dollar sign in the ticks
 							callback(value) {
 								return `${value}%`;
 							}
@@ -158,7 +162,6 @@ export default class extends BotCommand {
 						grid: {
 							drawOnChartArea: false
 						},
-						// Include a dollar sign in the ticks
 						ticks: {
 							callback(value) {
 								return `${value}mins`;
@@ -184,6 +187,7 @@ export default class extends BotCommand {
 	}
 
 	async sim(msg: KlasaMessage) {
+		if (production) return;
 		const options: TheatreOfBloodOptions = {
 			hardMode: false,
 			team: [
@@ -221,6 +225,19 @@ export default class extends BotCommand {
 	}
 
 	async start(msg: KlasaMessage, [input]: [string | undefined]) {
+		if (msg.flagArgs.cost) {
+			return msg.channel.sendBankImage({
+				content: "All the items you've personally used at TOB",
+				bank: msg.author.settings.get(UserSettings.TOBCost)
+			});
+		}
+		if (msg.flagArgs.loot) {
+			return msg.channel.sendBankImage({
+				content: "All the loot you've personally gotten at TOB",
+				bank: msg.author.settings.get(UserSettings.TOBLoot)
+			});
+		}
+
 		const isHardMode = Boolean(msg.flagArgs.hard);
 		const initialCheck = await checkTOBUser(msg.author, isHardMode);
 		if (initialCheck[0]) {
@@ -263,7 +280,17 @@ export default class extends BotCommand {
 		}
 
 		const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = await createTOBTeam({
-			team: users,
+			team: await Promise.all(
+				users.map(async u => ({
+					user: u,
+					bank: u.bank(),
+					gear: u.rawGear(),
+					attempts: u.settings.get(UserSettings.Stats.TobAttempts),
+					hardAttempts: u.settings.get(UserSettings.Stats.TobHardModeAttempts),
+					kc: await u.getMinigameScore('tob'),
+					hardKC: await u.getMinigameScore('tob_hard')
+				}))
+			),
 			hardMode: isHardMode
 		});
 

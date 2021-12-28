@@ -301,6 +301,19 @@ const crystalTools: Createable[] = [
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
 		QPRequired: 150
+	},
+	{
+		name: 'Crystal halberd',
+		inputItems: resolveNameBank({
+			'Crystal weapon seed': 1,
+			'Crystal shard': 40
+		}),
+		outputItems: {
+			[itemID('Crystal halberd')]: 1
+		},
+		requiredSkills: { smithing: 78, crafting: 78 },
+		QPRequired: 150,
+		noCl: true
 	}
 ];
 

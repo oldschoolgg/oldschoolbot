@@ -12,7 +12,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
-import { GearSetupType, GearSetupTypes } from './gear/types';
+import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions, RaidsOptions } from './types/minions';
@@ -577,4 +577,21 @@ export function convertPercentChance(percent: number) {
 export function murMurHashChance(input: string, percent: number) {
 	const hash = murmurHash.v3(input) % 1e4;
 	return hash < percent * 100;
+}
+
+export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
+	let setup: GearSetupType = 'melee';
+
+	switch (style) {
+		case GearStat.AttackMagic:
+			setup = 'mage';
+			break;
+		case GearStat.AttackRanged:
+			setup = 'range';
+			break;
+		default:
+			break;
+	}
+
+	return setup;
 }

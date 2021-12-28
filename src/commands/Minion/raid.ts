@@ -14,6 +14,8 @@ import {
 	hasMinRaidsRequirements,
 	minimumCoxSuppliesNeeded
 } from '../../lib/data/cox';
+import { TENTACLE_CHARGES_PER_RAID } from '../../lib/data/tob';
+import { degradeItem } from '../../lib/degradeableItems';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -21,6 +23,7 @@ import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
 import { addBanks, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import getOSItem from '../../lib/util/getOSItem';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -222,6 +225,20 @@ export default class extends BotCommand {
 				const supplies = await calcCoxInput(u, isSolo);
 				await u.removeItemsFromBank(supplies);
 				totalCost.add(supplies);
+				if (u.getGear('melee').hasEquipped('Abyssal tentacle')) {
+					await degradeItem({
+						item: getOSItem('Abyssal tentacle'),
+						user: u,
+						chargesToDegrade: TENTACLE_CHARGES_PER_RAID
+					});
+				}
+				if (u.getGear('mage').hasEquipped('Sanguinesti staff')) {
+					await degradeItem({
+						item: getOSItem('Sanguinesti staff'),
+						user: u,
+						chargesToDegrade: 150
+					});
+				}
 				const { total } = calculateUserGearPercents(u);
 				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
 					reductions[u.id],

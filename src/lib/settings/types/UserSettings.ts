@@ -71,6 +71,7 @@ export namespace UserSettings {
 	export const PresentsDelivered = T<number>('presents_delivered');
 
 	export const TentacleCharges = T<number>('tentacle_charges');
+	export const SangCharges = T<number>('sang_charges');
 
 	export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
 	export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');

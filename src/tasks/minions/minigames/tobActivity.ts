@@ -1,15 +1,16 @@
-import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries } from 'e';
+import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries, roll, shuffleArr } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, Events, PerkTier } from '../../../lib/constants';
+import { Emoji, Events } from '../../../lib/constants';
+import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance, filterBankFromArrayOfItems, updateBankSetting } from '../../../lib/util';
+import { convertPercentChance, filterBankFromArrayOfItems, itemID, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -49,15 +50,6 @@ export default class extends Task {
 			})
 		);
 
-		// Track loot for T3+ patrons
-		await Promise.all(
-			allUsers
-				.filter(u => u.perkTier >= PerkTier.Four)
-				.map(user => {
-					return updateBankSetting(user, UserSettings.TOBLoot, result.loot[user.id]);
-				})
-		);
-
 		// GIVE XP HERE
 		// 100k tax if they wipe
 		if (wipedRoom !== null) {
@@ -73,6 +65,13 @@ export default class extends Task {
 			return;
 		}
 
+		// Track loot for T3+ patrons
+		await Promise.all(
+			allUsers.map(user => {
+				return updateBankSetting(user, UserSettings.TOBLoot, result.loot[user.id]);
+			})
+		);
+
 		const totalLoot = new Bank();
 
 		let resultMessage = `**<@${leader}> Your ${hardMode ? 'Hard Mode' : ''} Theatre of Blood has finished**
@@ -87,6 +86,14 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			const userDeaths = deaths[users.indexOf(user.id)];
 
 			const userLoot = new Bank(_userLoot);
+			const bank = user.allItemsOwned();
+
+			if (hardMode && roll(30) && user.settings.get(UserSettings.CollectionLogBank)[itemID("Lil' zik")]) {
+				const unownedPet = shuffleArr(tobMetamorphPets).find(pet => !bank.has(pet));
+				if (unownedPet) {
+					userLoot.add(unownedPet);
+				}
+			}
 
 			totalLoot.add(userLoot);
 

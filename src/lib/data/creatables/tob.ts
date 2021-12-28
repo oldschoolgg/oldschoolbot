@@ -3,14 +3,30 @@ import { Createable } from '../createables';
 
 export const tobCreatables: Createable[] = [
 	{
-		name: 'Scythe of vitur',
+		name: 'Sanguinesti staff',
 		inputItems: resolveNameBank({
-			'Scythe of vitur (uncharged)': 1,
-			'Blood rune': 100,
-			'Vial of blood': 1
+			'Scythe of vitur (uncharged)': 1
 		}),
 		outputItems: resolveNameBank({
 			'Scythe of vitur': 1
+		})
+	},
+	{
+		name: 'Scythe of vitur',
+		inputItems: resolveNameBank({
+			'Sanguinesti staff (uncharged)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Sanguinesti staff': 1
+		})
+	},
+	{
+		name: 'Revert scythe of vitur',
+		inputItems: resolveNameBank({
+			'Sanguinesti staff': 1
+		}),
+		outputItems: resolveNameBank({
+			'Sanguinesti staff (uncharged)': 1
 		})
 	},
 	{
@@ -119,7 +135,26 @@ export const tobCreatables: Createable[] = [
 			'Avernic defender': 1
 		}),
 		outputItems: resolveNameBank({
-			'Avernic defender hilt': 1
+			'Dragon defender': 1
+		})
+	},
+	{
+		name: 'Holy ghrazi rapier',
+		inputItems: resolveNameBank({
+			'Ghrazi rapier': 1,
+			'Holy ornament kit': 1
+		}),
+		outputItems: resolveNameBank({
+			'Holy ghrazi rapier': 1
+		})
+	},
+	{
+		name: 'Revert holy ghrazi rapier',
+		inputItems: resolveNameBank({
+			'Holy ghrazi rapier': 1
+		}),
+		outputItems: resolveNameBank({
+			'Ghrazi rapier': 1
 		})
 	}
 ];

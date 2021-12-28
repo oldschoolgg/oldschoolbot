@@ -233,9 +233,8 @@ export const TOBMaxMeleeGear = constructGearSetup({
 	hands: 'Ferocious gloves',
 	legs: 'Bandos tassets',
 	feet: 'Primordial boots',
-	weapon: 'Abyssal tentacle',
-	ring: 'Berserker ring(i)',
-	shield: 'Avernic defender'
+	'2h': 'Scythe of vitur',
+	ring: 'Berserker ring(i)'
 });
 const maxMelee = new Gear(TOBMaxMeleeGear);
 
@@ -269,7 +268,7 @@ export function calculateTOBUserGearPercents(user: KlasaUser) {
 	};
 }
 
-export const minimumCoxSuppliesNeeded = new Bank({
+export const minimumTOBSuppliesNeeded = new Bank({
 	'Stamina potion(4)': 3,
 	'Saradomin brew(4)': 10,
 	'Super restore(4)': 5
@@ -300,10 +299,10 @@ export async function checkTOBUser(
 		];
 	}
 
-	if (!user.owns(minimumCoxSuppliesNeeded)) {
+	if (!user.owns(minimumTOBSuppliesNeeded)) {
 		return [
 			true,
-			`${user.username} doesn't have enough items, you need a minimum of this amount of items: ${minimumCoxSuppliesNeeded}.`
+			`${user.username} doesn't have enough items, you need a minimum of this amount of items: ${minimumTOBSuppliesNeeded}.`
 		];
 	}
 	const { total } = calculateTOBUserGearPercents(user);
@@ -407,7 +406,7 @@ export async function checkTOBUser(
 }
 
 export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Promise<string | null> {
-	const userWithoutSupplies = users.find(u => !u.owns(minimumCoxSuppliesNeeded));
+	const userWithoutSupplies = users.find(u => !u.owns(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.username} doesn't have enough supplies`;
 	}
@@ -437,7 +436,7 @@ function kcEffectiveness(normalKC: number, hardKC: number, hardMode: boolean) {
 const speedReductionForGear = 16;
 const speedReductionForKC = 40;
 const totalSpeedReductions = speedReductionForGear + speedReductionForKC + 15 + 4;
-const baseDuration = Time.Minute * 90;
+const baseDuration = Time.Minute * 70;
 const baseCmDuration = Time.Minute * 75;
 
 const { ceil } = Math;
@@ -453,26 +452,30 @@ interface ParsedTeamMember {
 	deaths: number[];
 }
 
-export async function createTOBTeam({
+export function createTOBTeam({
 	team,
 	hardMode,
-	kcOverride,
-	attemptsOverride,
 	disableVariation
 }: {
-	team: KlasaUser[];
+	team: {
+		user: KlasaUser;
+		gear: { melee: Gear; range: Gear; mage: Gear };
+		bank: Bank;
+		kc: number;
+		hardKC: number;
+		attempts: number;
+		hardAttempts: number;
+	}[];
 	hardMode: boolean;
-	kcOverride?: [number, number];
-	attemptsOverride?: [number, number];
 	disableVariation?: true;
-}): Promise<{
+}): {
 	reductions: Record<string, number>;
 	duration: number;
 	totalReduction: number;
 	parsedTeam: ParsedTeamMember[];
 	wipedRoom: TOBRoom | null;
 	deathDuration: number | null;
-}> {
+} {
 	const teamSize = team.length;
 	const maxScaling = 350;
 	assert(teamSize > 1 && teamSize < 6, 'TOB team must be 2-5 users');
@@ -484,29 +487,23 @@ export async function createTOBTeam({
 	let parsedTeam: ParsedTeamMember[] = [];
 
 	for (const u of team) {
-		const [kc, hardKC] =
-			kcOverride ?? (await Promise.all([u.getMinigameScore('tob'), u.getMinigameScore('tob_hard')]));
-
-		const [attempts, hardAttempts] =
-			attemptsOverride ??
-			(await Promise.all([
-				u.settings.get(UserSettings.Stats.TobAttempts),
-				u.settings.get(UserSettings.Stats.TobHardModeAttempts)
-			]));
-
 		let userPercentChange = 0;
 
 		// Reduce time for gear
-		const gearPerecents = calculateTOBUserGearPercents(u);
+		const gearPerecents = calculateTOBUserGearPercents(u.user);
 		// Blowpipe
-		const darts = u.settings.get(UserSettings.Blowpipe).dartID!;
+		const darts = u.user.settings.get(UserSettings.Blowpipe).dartID!;
 		const dartItem = getOSItem(darts);
 		const dartIndex = blowpipeDarts.indexOf(dartItem);
 		const blowPipePercent = dartIndex >= 3 ? dartIndex * 0.9 : -(4 * (4 - dartIndex));
 		userPercentChange += calcPerc(gearPerecents.total, (speedReductionForGear + blowPipePercent) / 2);
 
 		// Reduce time for KC
-		const kcPercent = kcEffectiveness(Math.min(attempts, maxScaling), Math.min(hardAttempts, maxScaling), hardMode);
+		const kcPercent = kcEffectiveness(
+			Math.min(u.attempts, maxScaling),
+			Math.min(u.hardAttempts, maxScaling),
+			hardMode
+		);
 		userPercentChange += calcPerc(kcPercent, speedReductionForKC);
 
 		const maxKcCurveBonus = 30;
@@ -524,25 +521,24 @@ export async function createTOBTeam({
 			['Abyssal tentacle', 5.5]
 		] as const;
 		for (const [name, percent] of meleeWeaponBoosts) {
-			if (u.getGear('melee').hasEquipped(name)) {
+			if (u.gear.melee.hasEquipped(name)) {
 				userPercentChange += percent;
 				break;
 			}
 		}
 		const rangeWeaponBoosts = [['Twisted bow', 4]] as const;
 		for (const [name, percent] of rangeWeaponBoosts) {
-			if (u.getGear('range').hasEquipped(name)) {
+			if (u.gear.range.hasEquipped(name)) {
 				userPercentChange += percent;
 				break;
 			}
 		}
-		const userBank = u.bank();
 		const primarySpecWeaponBoosts = [
 			['Dragon claws', 6],
 			['Crystal halberd', 3]
 		] as const;
 		for (const [name, percent] of primarySpecWeaponBoosts) {
-			if (userBank.has(name)) {
+			if (u.user.hasItemEquippedOrInBank(name)) {
 				userPercentChange += percent;
 				break;
 			}
@@ -552,7 +548,7 @@ export async function createTOBTeam({
 			['Bandos godsword', 3]
 		] as const;
 		for (const [name, percent] of secondarySpecWeaponBoosts) {
-			if (userBank.has(name)) {
+			if (u.user.hasItemEquippedOrInBank(name)) {
 				userPercentChange += percent;
 				break;
 			}
@@ -565,19 +561,19 @@ export async function createTOBTeam({
 			'Void ranger helm'
 		]);
 		const eliteVoid = resolveItems(['Elite void top', 'Elite void robe', 'Void knight gloves', 'Void ranger helm']);
-		if (!u.getGear('range').hasEquipped(regularVoid, true, true)) {
+		if (!u.gear.range.hasEquipped(regularVoid, true, true)) {
 			userPercentChange = reduceNumByPercent(userPercentChange, 20);
-		} else if (u.getGear('range').hasEquipped(eliteVoid, true, true)) {
-			userPercentChange += 5;
+		} else if (!u.gear.range.hasEquipped(eliteVoid, true, true)) {
+			userPercentChange = reduceNumByPercent(userPercentChange, 10);
 		}
 
-		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, hardMode, gearPerecents);
-		parsedTeam.push({ kc, hardKC, deathChances, deaths: deathChances.deaths, id: u.id });
+		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPerecents);
+		parsedTeam.push({ kc: u.kc, hardKC: u.hardKC, deathChances, deaths: deathChances.deaths, id: u.user.id });
 
 		let reduction = round(userPercentChange / teamSize, 1);
 
 		totalReduction += reduction;
-		reductions[u.id] = reduction;
+		reductions[u.user.id] = reduction;
 	}
 	let duration = baseDuration;
 
@@ -588,11 +584,15 @@ export async function createTOBTeam({
 		duration = reduceNumByPercent(duration, totalReduction);
 	}
 
-	if (disableVariation !== true) {
-		duration = randomVariation(duration, 5);
+	if (duration < Time.Minute * 20) {
+		duration = Math.max(Time.Minute * 20, duration);
 	}
 
-	duration = Math.floor(Math.min(Time.Minute * randInt(45, 55), duration));
+	if (team.length < 5) {
+		duration += (5 - team.length) * (Time.Minute * 1.3);
+	}
+
+	duration = randomVariation(duration, 5);
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;
@@ -601,7 +601,10 @@ export async function createTOBTeam({
 
 		if (parsedTeam.every(member => member.deaths.includes(i))) {
 			wipedRoom = room;
-			deathDuration += calcWhatPercent(randInt(1, room.timeWeighting), duration);
+			deathDuration += calcWhatPercent(
+				disableVariation ? room.timeWeighting / 2 : randInt(1, room.timeWeighting),
+				duration
+			);
 			break;
 		} else {
 			deathDuration += calcWhatPercent(room.timeWeighting, duration);
