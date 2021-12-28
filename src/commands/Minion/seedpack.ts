@@ -82,7 +82,7 @@ const HighSeedPackTable = new LootTable()
 	.add('Spirit seed', 1, 1)
 	.add('Redwood tree seed', 1, 1);
 
-export function openSeedPack(seedTier: number): ItemBank {
+function openSeedPack(seedTier: number): ItemBank {
 	const loot = new Bank();
 
 	const tempTable = new LootTable();
