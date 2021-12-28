@@ -156,6 +156,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [action, quantity]: [string | undefined, number | undefined]) {
 		await msg.author.settings.sync(true);
+		console.log(action);
 		if (action === 'buy') {
 			const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 60);
 			const farmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
@@ -205,11 +206,20 @@ export default class extends BotCommand {
 		}
 		await msg.author.removeItemsFromBank(new Bank().add('Spirit seed', realQty));
 		await msg.author.addItemsToBank(loot.bank, true);
-
-		return msg.channel.send(
-			`You've exchanged ${realQty} Spirit seed${realQty > 1 ? 's' : ''} for ${
+		if (realQty < 5) {
+			return msg.channel.send(
+				`You've exchanged ${realQty} Spirit seed${realQty > 1 ? 's' : ''} for ${
+					realQty > 1 ? 'seed packs' : 'a seed pack'
+				}\nYou opened ${realQty} Seed pack${realQty > 1 ? 's' : ''} and received:\n${loot}.`
+			);
+		}
+		return msg.channel.sendBankImage({
+			bank: loot.values(),
+			content: `You've exchanged ${realQty} Spirit seed${realQty > 1 ? 's' : ''} for ${
 				realQty > 1 ? 'seed packs' : 'a seed pack'
-			}\nYou opened ${realQty} Seed pack${realQty > 1 ? 's' : ''} and received:\n${loot}.`
-		);
+			}`,
+			title: `You opened ${realQty} Seed pack${realQty > 1 ? 's' : ''}`,
+			flags: { names: 1 }
+		});
 	}
 }
