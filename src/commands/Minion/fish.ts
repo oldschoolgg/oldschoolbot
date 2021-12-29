@@ -74,7 +74,7 @@ export default class extends BotCommand {
 				!msg.author.hasItemEquippedOrInBank('Angler boots') ||
 				!msg.author.hasItemEquippedOrInBank('Angler hat'))
 		) {
-			return msg.channel.send('You need to own Angler Outfit to fish for Minnows.');
+			return msg.channel.send('You need to own the Angler Outfit to fish for Minnows.');
 		}
 
 		// If no quantity provided, set it to the max.
