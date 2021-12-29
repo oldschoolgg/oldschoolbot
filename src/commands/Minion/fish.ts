@@ -112,6 +112,20 @@ export default class extends BotCommand {
 				break;
 		}
 
+		if (fish.id === itemID('Minnow')) {
+			if (msg.author.skillLevel(SkillsEnum.Fishing) >= 99) {
+				scaledTimePerFish *= 0.8145;
+			} else if (msg.author.skillLevel(SkillsEnum.Fishing) >= 95) {
+				scaledTimePerFish *= 0.9135;
+			} else if (msg.author.skillLevel(SkillsEnum.Fishing) >= 90) {
+				scaledTimePerFish *= 0.9305;
+			} else if (msg.author.skillLevel(SkillsEnum.Fishing) >= 85) {
+				scaledTimePerFish *= 0.9315;
+			} else if (msg.author.skillLevel(SkillsEnum.Fishing) >= 82) {
+				scaledTimePerFish *= 1;
+			}
+		}
+
 		const maxTripLength = msg.author.maxTripLength('Fishing');
 
 		if (quantity === null) {

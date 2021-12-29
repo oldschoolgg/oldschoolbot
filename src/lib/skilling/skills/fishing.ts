@@ -191,7 +191,7 @@ const fishes: Fish[] = [
 		name: 'Minnow',
 		petChance: 977_778,
 		qpRequired: 1,
-		timePerFish: 1.75,
+		timePerFish: 2.04,
 		clueScrollChance: 977_778
 	},
 	{
