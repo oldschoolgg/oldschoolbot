@@ -705,6 +705,11 @@ const Buyables: Buyable[] = [
 		gpCost: 500
 	},
 	{
+		name: 'Granite Body',
+		gpCost: 95_000,
+		minigameScoreReq: ['barb_assault', 10]
+	},
+	{
 		name: 'Raw shark',
 		itemCost: resolveNameBank({
 			Minnow: 40
