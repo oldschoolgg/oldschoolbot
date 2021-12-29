@@ -360,12 +360,15 @@ model User {
   presents_stolen    Int @default(0)
   presents_delivered Int @default(0)
 
+  temp_cl            Json      @default("{}") @db.Json
+  last_temp_cl_reset DateTime? @db.Timestamp(6)
 
   tentacle_charges Int @default(10000)
   sang_charges     Int @default(0)
 
   tob_cost Json @default("{}") @db.Json
   tob_loot Json @default("{}") @db.Json
+
 
   @@map("users")
 }
