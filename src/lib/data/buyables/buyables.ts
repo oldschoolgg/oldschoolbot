@@ -704,6 +704,11 @@ const Buyables: Buyable[] = [
 		name: 'Sandworms',
 		gpCost: 500
 	},
+	{
+		name: 'Granite Body',
+		gpCost: 95_000,
+		minigameScoreReq: ['barb_assault', 10]
+	},
 
 	...sepulchreBuyables,
 	...constructionBuyables,
