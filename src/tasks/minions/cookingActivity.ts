@@ -17,7 +17,7 @@ export default class extends Task {
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;
 
-		if (cookable.stopBurnAtCG > 1 && user.hasItemEquippedAnywhere('Cooking gauntlets')) {
+		if (cookable.stopBurnAtCG && user.hasItemEquippedAnywhere('Cooking gauntlets')) {
 			stopBurningLvl = cookable.stopBurnAtCG;
 		} else {
 			stopBurningLvl = cookable.stopBurnAt;

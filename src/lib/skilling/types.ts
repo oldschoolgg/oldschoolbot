@@ -107,7 +107,7 @@ export interface Cookable {
 	name: string;
 	inputCookables: ItemBank;
 	stopBurnAt: number;
-	stopBurnAtCG: number;
+	stopBurnAtCG?: number;
 	burntCookable: number;
 	alias?: string[];
 }
