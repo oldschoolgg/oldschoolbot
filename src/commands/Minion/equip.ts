@@ -39,7 +39,7 @@ export default class extends BotCommand {
 			);
 		}
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
-
+		let itemToBank = new Bank();
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const itemToEquip = itemArray.find(i => userBank[i.id] >= quantity && i.equipable_by_player && i.equipment);
 
@@ -48,33 +48,13 @@ export default class extends BotCommand {
 		}
 
 		const { slot } = itemToEquip.equipment!;
-		const currentEquippedGear = msg.author.getGear(gearType).raw();
+		let currentEquippedGear = msg.author.getGear(gearType).raw();
 
 		if (gearType === 'other' && msg.author.perkTier < PerkTier.Four) {
 			return msg.channel.send(PATRON_ONLY_GEAR_SETUP);
 		}
 
-		/**
-		 * Handle 2h items
-		 */
-		if (
-			slot === EquipmentSlot.TwoHanded &&
-			(currentEquippedGear[EquipmentSlot.Weapon] || currentEquippedGear[EquipmentSlot.Shield])
-		) {
-			return msg.channel.send(
-				"You can't equip this two-handed item because you have items equipped in your weapon/shield slots."
-			);
-		}
-
-		if (
-			[EquipmentSlot.Weapon, EquipmentSlot.Shield, EquipmentSlot.TwoHanded].includes(slot) &&
-			currentEquippedGear[EquipmentSlot.TwoHanded]
-		) {
-			return msg.channel.send(
-				"You can't equip this weapon or shield, because you have a 2H weapon equipped, and need to unequip it first."
-			);
-		}
-
+		/* checks to do before equipping an item: Stackable? Stats? Wildy?*/
 		if (!itemToEquip.stackable && quantity > 1) {
 			return msg.channel.send("You can't equip more than 1 of this item at once, as it isn't stackable!");
 		}
@@ -94,6 +74,55 @@ export default class extends BotCommand {
 		if (gearType === 'wildy') {
 			await msg.confirm(WILDY_PRESET_WARNING_MESSAGE);
 		}
+
+		/**
+		 * If equipping 2h check whats in the shield and weapon slot
+		 */
+		if (slot === EquipmentSlot.TwoHanded) {
+			const newGear = { ...currentEquippedGear };
+			const currWep = currentEquippedGear[EquipmentSlot.Weapon];
+			if (currWep) {
+				msg.author.log(
+					`automatically unequipping ${itemNameFromID(currWep!.item)}, so they can equip ${itemToEquip.name}`
+				);
+				// if you have a weapon, set the slot to null and add the last equipped item to bank array
+				newGear[EquipmentSlot.Weapon] = null;
+				itemToBank.add(currWep.item, currWep.quantity);
+			}
+
+			const currShield = currentEquippedGear[EquipmentSlot.Shield];
+			if (currShield) {
+				newGear[EquipmentSlot.Shield] = null;
+				msg.author.log(
+					`automatically unequipping ${itemNameFromID(currShield!.item)}, so they can equip ${
+						itemToEquip.name
+					}`
+				);
+				// if you have a shield, set the slot to null and add the last equipped item to bank array
+				itemToBank.add(currShield.item, currShield.quantity);
+			}
+			// Update gear and add both weapon and shield to bank, dont add it to respective CL
+			await msg.author.settings.update(gearTypeSetting, newGear);
+			await msg.author.addItemsToBank(itemToBank.bank, false);
+
+			currentEquippedGear = newGear;
+		}
+		/*
+		 * Handles unequipping 2h items
+		 */
+		const curr2h = currentEquippedGear[EquipmentSlot.TwoHanded];
+		/* if youre equipping something and already have a 2h equipped*/
+		if ([EquipmentSlot.Weapon, EquipmentSlot.Shield, EquipmentSlot.TwoHanded].includes(slot) && curr2h) {
+			msg.author.log(
+				`automatically unequipping ${itemNameFromID(curr2h!.item)}, so they can equip ${itemToEquip.name}`
+			);
+			const newGear = { ...currentEquippedGear };
+			newGear[EquipmentSlot.TwoHanded] = null;
+			await msg.author.settings.update(gearTypeSetting, newGear);
+			await msg.author.addItemsToBank({ [curr2h.item]: curr2h.quantity });
+			currentEquippedGear = newGear;
+		}
+
 		/**
 		 * If there's already an item equipped in this slot, unequip it,
 		 * then recursively call this function again.
@@ -107,7 +136,6 @@ export default class extends BotCommand {
 				}`
 			);
 			newGear[slot] = null;
-
 			await msg.author.addItemsToBank({
 				[equippedInThisSlot.item]: equippedInThisSlot.quantity
 			});
@@ -123,9 +151,7 @@ export default class extends BotCommand {
 			item: itemToEquip.id,
 			quantity
 		};
-
 		msg.author.log(`equipping ${quantity}x ${itemToEquip.name}[${itemToEquip.id}]`);
-
 		await msg.author.settings.update(gearTypeSetting, newGear);
 		const image = await generateGearImage(
 			this.client,
