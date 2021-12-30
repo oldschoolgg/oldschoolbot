@@ -3,7 +3,7 @@ import { Createable } from '../createables';
 
 export const tobCreatables: Createable[] = [
 	{
-		name: 'Sanguinesti staff',
+		name: 'Scythe of vitur',
 		inputItems: resolveNameBank({
 			'Scythe of vitur (uncharged)': 1
 		}),
@@ -12,7 +12,7 @@ export const tobCreatables: Createable[] = [
 		})
 	},
 	{
-		name: 'Scythe of vitur',
+		name: 'Sanguinesti staff',
 		inputItems: resolveNameBank({
 			'Sanguinesti staff (uncharged)': 1
 		}),
@@ -21,7 +21,7 @@ export const tobCreatables: Createable[] = [
 		})
 	},
 	{
-		name: 'Revert scythe of vitur',
+		name: 'Revert sanguinesti staff',
 		inputItems: resolveNameBank({
 			'Sanguinesti staff': 1
 		}),
@@ -59,6 +59,16 @@ export const tobCreatables: Createable[] = [
 		})
 	},
 	{
+		name: 'Revert holy scythe of vitur (uncharged)',
+		inputItems: resolveNameBank({
+			'Holy scythe of vitur (uncharged)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Scythe of vitur (uncharged)': 1,
+			'Holy ornament kit': 1
+		})
+	},
+	{
 		name: 'Sanguine scythe of vitur',
 		inputItems: resolveNameBank({
 			'Sanguine scythe of vitur (uncharged)': 1,
@@ -78,7 +88,6 @@ export const tobCreatables: Createable[] = [
 			'Sanguine scythe of vitur (uncharged)': 1
 		})
 	},
-	// Ornament attaching
 	{
 		name: 'Sanguine scythe of vitur (uncharged)',
 		inputItems: resolveNameBank({
@@ -87,6 +96,16 @@ export const tobCreatables: Createable[] = [
 		}),
 		outputItems: resolveNameBank({
 			'Sanguine scythe of vitur (uncharged)': 1
+		})
+	},
+	{
+		name: 'Revert sanguine scythe of vitur (uncharged)',
+		inputItems: resolveNameBank({
+			'Sanguine scythe of vitur (uncharged)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Scythe of vitur (uncharged)': 1,
+			'Sanguine ornament kit': 1
 		})
 	},
 	{
@@ -110,13 +129,13 @@ export const tobCreatables: Createable[] = [
 		})
 	},
 	{
-		name: 'Holy ghrazi rapier',
+		name: 'Revert holy sanguinesti staff (uncharged)',
 		inputItems: resolveNameBank({
-			'Ghrazi rapier': 1,
-			'Holy ornament kit': 1
+			'holy sanguinesti staff (uncharged)': 1
 		}),
 		outputItems: resolveNameBank({
-			'Holy ghrazi rapier': 1
+			'Sanguinesti staff (uncharged)': 1,
+			'Holy ornament kit': 1
 		})
 	},
 	{
@@ -151,7 +170,8 @@ export const tobCreatables: Createable[] = [
 	{
 		name: 'Revert holy ghrazi rapier',
 		inputItems: resolveNameBank({
-			'Holy ghrazi rapier': 1
+			'Holy ghrazi rapier': 1,
+			'Holy ornament kit': 1
 		}),
 		outputItems: resolveNameBank({
 			'Ghrazi rapier': 1

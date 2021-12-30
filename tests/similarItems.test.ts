@@ -112,13 +112,16 @@ describe('Gear', () => {
 		expect(testGear8.hasEquipped('Void knight top', true)).toBeTruthy();
 	});
 
-	for (const [baseItem, slot, similarItems] of [
-		['Scythe of vitur', '2h', ['Holy scythe of vitur', 'Sanguine scythe of vitur']],
-		[
-			'Scythe of vitur (uncharged)',
-			'2h',
-			['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)']
-		],
+	const chargedScythes = ['Scythe of vitur', 'Holy scythe of vitur', 'Sanguine scythe of vitur'];
+	const unchargedScythes = [
+		'Scythe of vitur (uncharged)',
+		'Holy scythe of vitur (uncharged)',
+		'Sanguine scythe of vitur (uncharged)'
+	];
+
+	for (const [baseItem, slot, similarItems, unsimilarItems] of [
+		[chargedScythes[0], '2h', chargedScythes.slice(1)],
+		[unchargedScythes[0], '2h', unchargedScythes.slice(1), chargedScythes],
 		['Sanguinesti staff', 'weapon', ['Holy sanguinesti staff']],
 		['Sanguinesti staff (uncharged)', 'weapon', ['Holy sanguinesti staff (uncharged)']]
 	] as const) {
@@ -131,6 +134,17 @@ describe('Gear', () => {
 				throw new Error(`${baseItem} didn't match ${itemNameFromID(simItem)}`);
 			}
 			expect(is).toEqual(true);
+		}
+		for (const unSimItem of resolveItems((unsimilarItems as unknown as string[]) ?? [])) {
+			const gear = new Gear({
+				[slot]: itemNameFromID(unSimItem)
+			});
+
+			const is = gear.hasEquipped(itemID(baseItem));
+			if (is) {
+				throw new Error(`${baseItem} matched ${itemNameFromID(unSimItem)}`);
+			}
+			expect(is).toEqual(false);
 		}
 	}
 });

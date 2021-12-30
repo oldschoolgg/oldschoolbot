@@ -6,6 +6,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
+import getUserFoodFromBank from '../minions/functions/getUserFoodFromBank';
 import { getMinigameScore } from '../settings/minigames';
 import { UserSettings } from '../settings/types/UserSettings';
 import { Gear } from '../structures/Gear';
@@ -629,12 +630,19 @@ export async function calcTOBInput(u: KlasaUser) {
 	items.add('Super combat potion(4)', 1);
 	items.add('Ranging potion(4)', 1);
 
-	let brewsNeeded = Math.max(2, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
+	let brewsNeeded = Math.max(1, 6 - Math.max(1, Math.ceil((kc + 1) / 10)));
 	const restoresNeeded = Math.max(2, Math.floor(brewsNeeded / 3));
+
+	let healingNeeded = 60;
 	if (kc < 20) {
-		items.add('Shark', 3);
 		items.add('Cooked karambwan', 3);
+		healingNeeded += 40;
 	}
+
+	items.add(
+		getUserFoodFromBank(u, healingNeeded, u.settings.get(UserSettings.FavoriteFood), 20) ||
+			new Bank().add('Shark', 5)
+	);
 
 	items.add('Saradomin brew(4)', brewsNeeded);
 	items.add('Super restore(4)', restoresNeeded);

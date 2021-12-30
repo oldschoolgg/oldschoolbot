@@ -210,7 +210,6 @@ export default class extends BotCommand {
 				monster.attackStyleToUse &&
 				convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItem.attackStyle &&
 				msg.author.getGear(degItem.attackStyle).hasEquipped(degItem.item.id);
-			console.log(`${isUsing} ${degItem.item.name}`);
 			if (isUsing) {
 				const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
 				await checkUserCanUseDegradeableItem({

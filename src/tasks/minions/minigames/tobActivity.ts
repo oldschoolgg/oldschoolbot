@@ -10,7 +10,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance, filterBankFromArrayOfItems, itemID, updateBankSetting } from '../../../lib/util';
+import { convertPercentChance, filterBankFromArrayOfItems, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -88,7 +88,8 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			const userLoot = new Bank(_userLoot);
 			const bank = user.allItemsOwned();
 
-			if (hardMode && roll(30) && user.settings.get(UserSettings.CollectionLogBank)[itemID("Lil' zik")]) {
+			const cl = user.cl();
+			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {
 				const unownedPet = shuffleArr(tobMetamorphPets).find(pet => !bank.has(pet));
 				if (unownedPet) {
 					userLoot.add(unownedPet);

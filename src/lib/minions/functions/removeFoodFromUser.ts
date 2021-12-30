@@ -42,8 +42,8 @@ export default async function removeFoodFromUser({
 		gearSetupsUsed.some(i => i[0] === 'melee') &&
 		rawGear.melee.hasEquipped(['Justiciar faceguard', 'Justiciar chestguard', 'Justiciar legguards'], true, true)
 	) {
-		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 12.5);
-		reductions.push('-6% for Justiciar');
+		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 6.5);
+		reductions.push('-6.5% for Justiciar');
 	}
 
 	if (learningPercentage && learningPercentage > 1) {
