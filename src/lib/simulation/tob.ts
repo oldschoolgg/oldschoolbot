@@ -1,10 +1,10 @@
-import { percentChance, reduceNumByPercent, roll, sumArr } from 'e';
+import { roll, sumArr } from 'e';
 import { Bank, LootTable } from 'oldschooljs';
 import { LootBank } from 'oldschooljs/dist/meta/types';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { ItemBank } from '../types';
-import { assert, convertLootBanksToItemBanks, JSONClone } from '../util';
+import { TOBRooms } from '../data/tob';
+import { assert, convertLootBanksToItemBanks, JSONClone, percentChance } from '../util';
 
 export interface TeamMember {
 	id: string;
@@ -13,27 +13,6 @@ export interface TeamMember {
 	 */
 	deaths: number[];
 }
-
-const Rooms = [
-	{
-		name: 'Maiden'
-	},
-	{
-		name: 'Bloat'
-	},
-	{
-		name: 'Nylocas'
-	},
-	{
-		name: 'Soteseteg'
-	},
-	{
-		name: 'Xarps'
-	},
-	{
-		name: 'Vitir Verizk'
-	}
-];
 
 export interface TheatreOfBloodOptions {
 	/**
@@ -52,13 +31,13 @@ interface ParsedMember extends TeamMember {
 }
 
 const UniqueTable = new LootTable()
-	.add('Scythe of vitur')
-	.add('Ghrazi rapier', 2)
-	.add('Sanguinesti staff', 2)
-	.add('Justiciar faceguard', 2)
-	.add('Justiciar chestguard', 2)
-	.add('Justiciar legguards', 2)
-	.add('Avernic defender hilt', 8);
+	.add('Scythe of vitur (uncharged)')
+	.add('Ghrazi rapier', 1, 2)
+	.add('Sanguinesti staff (uncharged)', 1, 2)
+	.add('Justiciar faceguard', 1, 2)
+	.add('Justiciar chestguard', 1, 2)
+	.add('Justiciar legguards', 1, 2)
+	.add('Avernic defender hilt', 1, 8);
 
 const NonUniqueTable = new LootTable()
 	.tertiary(25, 'Clue scroll (elite)')
@@ -98,14 +77,19 @@ const HardModeUniqueTable = new LootTable()
 	.tertiary(100, 'Holy ornament kit');
 
 export class TheatreOfBloodClass {
-	nonUniqueLoot(member: ParsedMember, isHardMode: boolean) {
+	nonUniqueLoot(member: ParsedMember, isHardMode: boolean, deaths: number[]) {
+		if (deaths.length === TOBRooms.length) {
+			return new Bank().add('Cabbage');
+		}
 		const loot = new Bank();
 		for (let i = 0; i < 3; i++) {
 			loot.add(NonUniqueTable.roll());
 		}
 
 		let petChance = 650;
-		petChance *= member.numDeaths;
+		if (member.numDeaths > 0) {
+			petChance *= member.numDeaths;
+		}
 		if (roll(petChance)) {
 			loot.add("Lil' zik");
 		}
@@ -126,9 +110,7 @@ export class TheatreOfBloodClass {
 		return table.roll().item;
 	}
 
-	public complete(_options: TheatreOfBloodOptions): {
-		[key: string]: ItemBank;
-	} {
+	public complete(_options: TheatreOfBloodOptions) {
 		const options = JSONClone(_options);
 		assert(options.team.length >= 1 || options.team.length <= 5, 'TOB team must have 1-5 members');
 
@@ -148,10 +130,7 @@ export class TheatreOfBloodClass {
 
 		const totalDeaths = sumArr(parsedTeam.map(i => i.numDeaths));
 
-		let percentBaseChanceOfUnique = 11;
-		for (let i = 0; i < totalDeaths; i++) {
-			percentBaseChanceOfUnique = reduceNumByPercent(percentBaseChanceOfUnique, 13.35);
-		}
+		let percentBaseChanceOfUnique = 11 * (teamPoints / maxPointsTeamCanGet);
 
 		const purpleReceived = percentChance(percentBaseChanceOfUnique);
 		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;
@@ -162,11 +141,16 @@ export class TheatreOfBloodClass {
 			if (member === purpleRecipient) {
 				lootResult[member.id] = new Bank().add(UniqueTable.roll());
 			} else {
-				lootResult[member.id] = this.nonUniqueLoot(member, options.hardMode);
+				lootResult[member.id] = this.nonUniqueLoot(member, options.hardMode, member.deaths);
 			}
 		}
 
-		return convertLootBanksToItemBanks(lootResult);
+		return {
+			loot: convertLootBanksToItemBanks(lootResult),
+			percentChanceOfUnique: percentBaseChanceOfUnique,
+			totalDeaths,
+			teamPoints
+		};
 	}
 }
 

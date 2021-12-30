@@ -104,7 +104,10 @@ export default class extends BotCommand {
 
 		if (buyable.minigameScoreReq) {
 			const [key, req] = buyable.minigameScoreReq;
-			const kc = await msg.author.getMinigameScore(key);
+			let kc = await msg.author.getMinigameScore(key);
+			if (key === 'tob') {
+				kc += await msg.author.getMinigameScore('tob_hard');
+			}
 			if (kc < req) {
 				return msg.channel.send(
 					`You need ${req} KC in ${

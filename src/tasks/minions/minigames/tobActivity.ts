@@ -1,140 +1,127 @@
-import { noOp, shuffleArr } from 'e';
+import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries, roll, shuffleArr } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
-import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
-import { createTeam } from '../../../lib/data/cox';
-import { incrementMinigameScore, runCommand } from '../../../lib/settings/settings';
+import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
+import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { RaidsOptions } from '../../../lib/types/minions';
-import { addBanks, filterBankFromArrayOfItems, roll } from '../../../lib/util';
+import { TheatreOfBlood } from '../../../lib/simulation/tob';
+import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
+import { convertPercentChance, filterBankFromArrayOfItems, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
-import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
-import resolveItems from '../../../lib/util/resolveItems';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
-const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
-const greenItems = resolveItems(['Twisted ancestral colour kit']);
-const blueItems = resolveItems(['Metamorphic dust']);
-const purpleButNotAnnounced = resolveItems(['Dexterous prayer scroll', 'Arcane prayer scroll']);
-
-const purpleItems = chambersOfXericCL.filter(i => !notPurple.includes(i));
-
 export default class extends Task {
-	async run(data: RaidsOptions) {
-		const { channelID, users, challengeMode, duration, leader } = data;
+	async run(data: TheatreOfBloodTaskOptions) {
+		const { channelID, users, hardMode, leader, wipedRoom, duration, fakeDuration, deaths } = data;
 		const allUsers = await Promise.all(users.map(async u => this.client.fetchUser(u)));
-		const team = await createTeam(allUsers, challengeMode);
-
-		const loot = ChambersOfXeric.complete({
-			challengeMode,
-			timeToComplete: duration,
-			team
+		const result = TheatreOfBlood.complete({
+			hardMode,
+			team: users.map((i, index) => ({ id: i, deaths: deaths[index] }))
 		});
 
-		let totalPoints = 0;
-		for (const member of team) {
-			totalPoints += member.personalPoints;
+		const allTag = allUsers.map(u => u.toString()).join('');
+
+		// Add XP
+		await Promise.all(
+			allUsers.map(u =>
+				Promise.all(
+					objectEntries(totalXPFromRaid).map(val =>
+						u.addXP({
+							skillName: val[0],
+							amount: wipedRoom
+								? val[1]
+								: calcPercentOfNum(calcWhatPercent(duration, fakeDuration), val[1])
+						})
+					)
+				)
+			)
+		);
+
+		// Give them all +1 attempts
+		await Promise.all(
+			allUsers.map(u => {
+				const key = hardMode ? UserSettings.Stats.TobHardModeAttempts : UserSettings.Stats.TobAttempts;
+				const currentAttempts = u.settings.get(key);
+				return u.settings.update(key, currentAttempts + 1);
+			})
+		);
+
+		// GIVE XP HERE
+		// 100k tax if they wipe
+		if (wipedRoom !== null) {
+			sendToChannelID(this.client, channelID, {
+				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!`
+			});
+			// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
+			await updateBankSetting(
+				this.client,
+				ClientSettings.EconomyStats.TOBCost,
+				new Bank().add('Coins', users.length * 100_000)
+			);
+			return;
 		}
+
+		// Track loot for T3+ patrons
+		await Promise.all(
+			allUsers.map(user => {
+				return updateBankSetting(user, UserSettings.TOBLoot, result.loot[user.id]);
+			})
+		);
 
 		const totalLoot = new Bank();
 
-		let resultMessage = `<@${leader}> Your ${
-			challengeMode ? 'Challenge Mode Raid' : 'Raid'
-		} has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
-		await Promise.all(
-			allUsers.map(u => incrementMinigameScore(u.id, challengeMode ? 'raids_challenge_mode' : 'raids', 1))
-		);
+		let resultMessage = `**<@${leader}> Your ${hardMode ? 'Hard Mode' : ''} Theatre of Blood has finished**
 
-		const onyxChance = users.length * 70;
+Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})
+`;
+		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, hardMode ? 'tob_hard' : 'tob', 1)));
 
-		for (let [userID, _userLoot] of Object.entries(loot)) {
+		for (let [userID, _userLoot] of Object.entries(result.loot)) {
 			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
-			const { personalPoints, deaths, deathChance } = team.find(u => u.id === user.id)!;
-
-			user.settings.update(
-				UserSettings.TotalCoxPoints,
-				user.settings.get(UserSettings.TotalCoxPoints) + personalPoints
-			);
+			const userDeaths = deaths[users.indexOf(user.id)];
 
 			const userLoot = new Bank(_userLoot);
-			if (
-				challengeMode &&
-				roll(50) &&
-				user.settings.get(UserSettings.CollectionLogBank)[itemID('Metamorphic dust')]
-			) {
-				const { bank } = user.allItemsOwned();
-				const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
+			const bank = user.allItemsOwned();
+
+			const cl = user.cl();
+			if (hardMode && roll(30) && cl.has("Lil' zik") && cl.has('Sanguine dust')) {
+				const unownedPet = shuffleArr(tobMetamorphPets).find(pet => !bank.has(pet));
 				if (unownedPet) {
 					userLoot.add(unownedPet);
 				}
-			}
-
-			if (!totalLoot.has('Onyx') && roll(onyxChance)) {
-				userLoot.add('Onyx');
 			}
 
 			totalLoot.add(userLoot);
 
 			const items = userLoot.items();
 
-			const isPurple = items.some(([item]) => purpleItems.includes(item.id));
-			const isGreen = items.some(([item]) => greenItems.includes(item.id));
-			const isBlue = items.some(([item]) => blueItems.includes(item.id));
-			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
-			if (items.some(([item]) => purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
-				const itemsToAnnounce = filterBankFromArrayOfItems(purpleItems, userLoot.bank);
+			const isPurple = items.some(([item]) => TOBUniques.includes(item.id));
+			const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
+			if (shouldAnnounce) {
+				const itemsToAnnounce = filterBankFromArrayOfItems(TOBUniques, userLoot.bank);
 				this.client.emit(
 					Events.ServerNotification,
-					`${emote} ${user.username} just received **${new Bank(itemsToAnnounce)}** on their ${formatOrdinal(
-						await user.getMinigameScore(challengeMode ? 'raids_challenge_mode' : 'raids')
-					)} raid.`
+					`${Emoji.Purple} ${user.username} just received **${new Bank(
+						itemsToAnnounce
+					)}** on their ${formatOrdinal(await user.getMinigameScore(hardMode ? 'tob_hard' : 'tob'))} raid.`
 				);
 			}
-			const str = isPurple ? `${emote} ||${userLoot}||` : userLoot.toString();
-			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
+			const deathStr = userDeaths.length === 0 ? '' : `${Emoji.Skull}(${userDeaths.map(i => TOBRooms[i].name)})`;
 
-			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
-				Emoji.Skull
-			}${deathChance.toFixed(0)}%)`;
-			await user.addItemsToBank(userLoot, true);
+			const { itemsAdded } = await user.addItemsToBank(userLoot.clone().add('Coins', 100_000), true);
+			const lootStr = new Bank(itemsAdded).remove('Coins', 100_000).toString();
+			const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `||${lootStr}||`;
+
+			resultMessage += `\n${deathStr}**${user}** received: ${str}`;
 		}
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CoxLoot,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxLoot), totalLoot.bank])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBLoot, totalLoot.bank);
 
-		if (allUsers.length === 1) {
-			handleTripFinish(
-				this.client,
-				allUsers[0],
-				channelID,
-				resultMessage,
-				res => {
-					const flags: Record<string, string> = challengeMode ? { cm: 'cm' } : {};
-
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					if (!res.prompter) res.prompter = {};
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					res.prompter.flags = flags;
-
-					allUsers[0].log('continued trip of solo CoX');
-					return runCommand(res, 'raid', ['solo'], true);
-				},
-				undefined,
-				data,
-				null
-			);
-		} else {
-			sendToChannelID(this.client, channelID, { content: resultMessage });
-		}
+		sendToChannelID(this.client, channelID, { content: resultMessage });
 	}
 }
