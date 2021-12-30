@@ -551,3 +551,6 @@ export function murMurHashChance(input: string, percent: number) {
 	const hash = murmurHash.v3(input) % 1e4;
 	return hash < percent * 100;
 }
+export function assert(condition: boolean, desc: string) {
+	if (!condition) throw new Error(desc);
+}
