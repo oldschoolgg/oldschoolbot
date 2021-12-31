@@ -6,7 +6,16 @@ import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 import { minionActivityCache, minionActivityCacheDelete } from './settings';
 
-export const prisma = new PrismaClient();
+declare global {
+	namespace NodeJS {
+		interface Global {
+			prisma: PrismaClient | undefined;
+		}
+	}
+}
+export const prisma = global.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
 	return {
@@ -51,4 +60,20 @@ export async function completeActivity(_activity: Activity) {
 		client.oneCommandAtATimeCache.delete(activity.userID);
 		minionActivityCacheDelete(activity.userID);
 	}
+}
+
+/**
+ * ⚠️ Uses queryRawUnsafe
+ */
+export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolean) {
+	const query = `SELECT COUNT(id)
+				   FROM users
+				   WHERE ("collectionLogBank"->>'${itemID}') IS NOT NULL 
+				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
+				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
+	const result = parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
+	if (isNaN(result) || typeof result !== 'number') {
+		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
+	}
+	return result;
 }

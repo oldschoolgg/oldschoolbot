@@ -36,6 +36,7 @@ export namespace ClientSettings {
 		export const FarmingCostBank = T<O.Readonly<ItemBank>>('farming_cost_bank');
 		export const FarmingLootBank = T<O.Readonly<ItemBank>>('farming_loot_bank');
 		export const BuyCostBank = T<O.Readonly<ItemBank>>('buy_cost_bank');
+		export const BuyLootBank = T<O.Readonly<ItemBank>>('buy_loot_bank');
 		export const MagicCostBank = T<O.Readonly<ItemBank>>('magic_cost_bank');
 		export const CraftingCost = T<O.Readonly<ItemBank>>('crafting_cost');
 
@@ -72,6 +73,11 @@ export namespace ClientSettings {
 
 		export const CreateCost = T<O.Readonly<ItemBank>>('create_cost');
 		export const CreateLoot = T<O.Readonly<ItemBank>>('create_loot');
+
+		export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
+		export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');
+
+		export const DegradedItemsCost = T<O.Readonly<ItemBank>>('degraded_items_cost');
 
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');

@@ -29,6 +29,11 @@ export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface ChristmasTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+	action: 'steal' | 'deliver';
+}
+
 export interface DarkAltarOptions extends ActivityTaskOptions {
 	quantity: number;
 	hasElite: boolean;
@@ -318,6 +323,15 @@ export interface RaidsOptions extends ActivityTaskOptions {
 	leader: string;
 	users: string[];
 	challengeMode: boolean;
+}
+
+export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	hardMode: boolean;
+	fakeDuration: number;
+	wipedRoom: null | number;
+	deaths: number[][];
 }
 
 export interface CollectingOptions extends ActivityTaskOptions {

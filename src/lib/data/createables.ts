@@ -11,6 +11,7 @@ import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
+import { tobCreatables } from './creatables/tob';
 
 export interface Createable {
 	name: string;
@@ -24,6 +25,7 @@ export interface Createable {
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	requiredFavour?: Favours;
+	maxCanOwn?: number;
 }
 
 const revWeapons: Createable[] = [
@@ -299,6 +301,19 @@ const crystalTools: Createable[] = [
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
 		QPRequired: 150
+	},
+	{
+		name: 'Crystal halberd',
+		inputItems: resolveNameBank({
+			'Crystal weapon seed': 1,
+			'Crystal shard': 40
+		}),
+		outputItems: {
+			[itemID('Crystal halberd')]: 1
+		},
+		requiredSkills: { smithing: 78, crafting: 78 },
+		QPRequired: 150,
+		noCl: true
 	}
 ];
 
@@ -1679,7 +1694,8 @@ const Createables: Createable[] = [
 	...dragonFireShieldCreatables,
 	...revWeapons,
 	...armorAndItemPacks,
-	...gracefulOutfitCreatables
+	...gracefulOutfitCreatables,
+	...tobCreatables
 ];
 
 export default Createables;

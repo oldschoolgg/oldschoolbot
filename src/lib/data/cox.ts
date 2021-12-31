@@ -11,14 +11,17 @@ import {
 } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
+import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
+import { TENTACLE_CHARGES_PER_RAID } from './tob';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -190,7 +193,7 @@ export const maxMeleeGear = constructGearSetup({
 	legs: "Inquisitor's plateskirt",
 	feet: 'Primordial boots',
 	weapon: "Inquisitor's mace",
-	shield: 'Dragon defender',
+	shield: 'Avernic defender',
 	ring: 'Berserker ring(i)'
 });
 const maxMelee = new Gear(maxMeleeGear);
@@ -272,6 +275,26 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 		if (user.minionIsBusy) {
 			return `${user.username}'s minion is already doing an activity and cannot join.`;
 		}
+		if (user.getGear('melee').hasEquipped('Abyssal tentacle')) {
+			const tentacleResult = checkUserCanUseDegradeableItem({
+				item: getOSItem('Abyssal tentacle'),
+				chargesToDegrade: TENTACLE_CHARGES_PER_RAID,
+				user
+			});
+			if (!tentacleResult.hasEnough) {
+				return tentacleResult.userMessage;
+			}
+		}
+		if (user.getGear('mage').hasEquipped('Sanguinesti staff')) {
+			const sangResult = checkUserCanUseDegradeableItem({
+				item: getOSItem('Sanguinesti staff'),
+				chargesToDegrade: 250,
+				user
+			});
+			if (!sangResult.hasEnough) {
+				return sangResult.userMessage;
+			}
+		}
 	}
 
 	return null;
@@ -321,39 +344,66 @@ function teamSizeBoostPercent(size: number) {
 	}
 }
 
-const itemBoosts = [
+interface ItemBoost {
+	item: Item;
+	boost: number;
+	mustBeEquipped: boolean;
+	setup?: 'mage';
+}
+
+const itemBoosts: ItemBoost[][] = [
 	[
 		{
 			item: getOSItem('Twisted bow'),
-			boost: 9
+			boost: 8,
+			mustBeEquipped: true
 		},
 		{
 			item: getOSItem('Bow of faerdhinen (c)'),
-			boost: 7
+			boost: 6,
+			mustBeEquipped: true
 		},
 		{
 			item: getOSItem('Dragon hunter crossbow'),
-			boost: 5
+			boost: 5,
+			mustBeEquipped: true
 		}
 	],
 	[
 		{
 			item: getOSItem('Dragon warhammer'),
-			boost: 4
+			boost: 3,
+			mustBeEquipped: false
 		},
 		{
 			item: getOSItem('Bandos godsword'),
-			boost: 2.5
+			boost: 2.5,
+			mustBeEquipped: false
 		},
 		{
 			item: getOSItem('Bandos godsword (or)'),
-			boost: 2.5
+			boost: 2.5,
+			mustBeEquipped: false
 		}
 	],
 	[
 		{
 			item: getOSItem('Dragon hunter lance'),
-			boost: 4
+			boost: 3,
+			mustBeEquipped: false
+		},
+		{
+			item: getOSItem('Abyssal tentacle'),
+			boost: 2,
+			mustBeEquipped: true
+		}
+	],
+	[
+		{
+			item: getOSItem('Sanguinesti staff'),
+			boost: 6,
+			mustBeEquipped: true,
+			setup: 'mage'
 		}
 	]
 ];
@@ -383,7 +433,15 @@ export async function calcCoxDuration(
 		// Reduce time for item boosts
 		itemBoosts.forEach(set => {
 			for (const item of set) {
-				if (u.hasItemEquippedOrInBank(item.item.id)) {
+				if (item.mustBeEquipped) {
+					if (item.setup && u.getGear(item.setup).hasEquipped(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					} else if (!item.setup && u.hasItemEquippedAnywhere(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					}
+				} else if (u.hasItemEquippedOrInBank(item.item.id)) {
 					userPercentChange += item.boost;
 					break;
 				}
@@ -419,5 +477,6 @@ export async function calcCoxInput(u: KlasaUser, solo: boolean) {
 
 	items.add('Saradomin brew(4)', brewsNeeded);
 	items.add('Super restore(4)', restoresNeeded);
+
 	return items;
 }

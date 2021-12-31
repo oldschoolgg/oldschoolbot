@@ -13,7 +13,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		return msg.channel.send(
-			'You can invite the bot to your server using this link: <https://invite.oldschool.gg/>'
+			'You can invite the bot to your server using this link: <https://www.oldschool.gg/invite/osb>'
 		);
 	}
 }

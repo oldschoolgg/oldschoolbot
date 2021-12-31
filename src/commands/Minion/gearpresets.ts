@@ -6,8 +6,8 @@ import { Bank } from 'oldschooljs';
 import { Color } from '../../lib/constants';
 import { defaultGear, gearPresetToString, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../lib/settings/prisma';
-import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { cleanString, isValidGearSetup } from '../../lib/util';
@@ -113,18 +113,16 @@ export default class extends BotCommand {
 			);
 		}
 
-		try {
-			const unequipAllMessage = await runCommand(msg, 'unequipall', [setup]);
-			if (
-				!(unequipAllMessage instanceof KlasaMessage) ||
-				(!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you unequipped all items') &&
-					!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you have no items in your'))
-			) {
-				return msg.channel.send(
-					`It was not possible to equip your **${preset.name}** on your ${setup} gear setup.`
-				);
-			}
-		} catch (_) {}
+		const unequipAllMessage = await unEquipAllCommand(msg, setup);
+		if (
+			!(unequipAllMessage instanceof KlasaMessage) ||
+			(!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you unequipped all items') &&
+				!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you have no items in your'))
+		) {
+			return msg.channel.send(
+				`It was not possible to equip your **${preset.name}** preset on your ${setup} gear setup.`
+			);
+		}
 
 		await msg.author.removeItemsFromBank(toRemove.bank);
 
