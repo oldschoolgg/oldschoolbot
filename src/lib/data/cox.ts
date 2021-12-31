@@ -348,7 +348,7 @@ interface ItemBoost {
 	item: Item;
 	boost: number;
 	mustBeEquipped: boolean;
-	setup?: 'mage';
+	setup?: 'mage' | 'melee';
 }
 
 const itemBoosts: ItemBoost[][] = [
@@ -406,9 +406,17 @@ const itemBoosts: ItemBoost[][] = [
 	[
 		{
 			item: getOSItem('Sanguinesti staff'),
-			boost: 6,
+			boost: 7,
 			mustBeEquipped: true,
 			setup: 'mage'
+		}
+	],
+	[
+		{
+			item: getOSItem('Offhand drygore rapier'),
+			boost: 4,
+			mustBeEquipped: true,
+			setup: 'melee'
 		}
 	]
 ];
