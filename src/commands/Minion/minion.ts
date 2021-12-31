@@ -22,6 +22,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
+import { dataCommand } from '../../lib/minions/functions/dataCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
@@ -80,7 +81,8 @@ const subCommands = [
 	'tempcl',
 	'blowpipe',
 	'bp',
-	'charge'
+	'charge',
+	'data'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -169,6 +171,10 @@ export default class MinionCommand extends BotCommand {
 
 	async train(msg: KlasaMessage, [input]: [string | undefined]) {
 		return trainCommand(msg, input);
+	}
+
+	async data(msg: KlasaMessage) {
+		return msg.channel.send(await dataCommand(msg));
 	}
 
 	async lapcounts(msg: KlasaMessage) {
