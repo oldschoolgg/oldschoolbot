@@ -61,7 +61,7 @@ export default class extends BotCommand {
 		let amountOfKC = 450;
 
 		for (let i = startingKC; i < startingKC + amountOfKC; i++) {
-			const t = await createTOBTeam({
+			const t = createTOBTeam({
 				team: users.map(u => ({
 					user: u,
 					bank: u.bank(),
@@ -78,7 +78,7 @@ export default class extends BotCommand {
 			let wins = 0;
 			const winRateSampleSize = 50;
 			for (let o = 0; o < winRateSampleSize; o++) {
-				const sim = await createTOBTeam({
+				const sim = createTOBTeam({
 					team: users.map(u => ({
 						user: u,
 						bank: u.bank(),
@@ -258,7 +258,7 @@ export default class extends BotCommand {
 
 		let maxSize = 5;
 		let maxSizeInput = input ? parseInt(input) : null;
-		if (maxSizeInput && !isNaN(maxSizeInput) && maxSizeInput > 1 && maxSizeInput <= 5) {
+		if (maxSizeInput && maxSizeInput > 1 && maxSizeInput <= 5) {
 			maxSize = maxSizeInput;
 		}
 		const partyOptions: MakePartyOptions = {
