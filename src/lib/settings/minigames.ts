@@ -150,6 +150,16 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Emerged Zuk Inferno',
 		aliases: ['ei', 'emerged inferno'],
 		column: 'emerged_inferno'
+	},
+	{
+		name: 'Theatre of Blood',
+		aliases: ['tob', 'theatre of blood'],
+		column: 'tob'
+	},
+	{
+		name: 'Theatre of Blood - Hard Mode',
+		aliases: ['tob hard', 'tob hard mode'],
+		column: 'tob_hard'
 	}
 ];
 

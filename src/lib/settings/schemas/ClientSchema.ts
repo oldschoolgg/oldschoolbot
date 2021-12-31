@@ -55,6 +55,9 @@ Client.defaultClientSchema
 	.add('create_loot', 'any', { default: {} })
 	.add('tame_merging_cost', 'any', { default: {} })
 	.add('trip_doubling_loot', 'any', { default: {} })
+	.add('tob_cost', 'any', { default: {} })
+	.add('tob_loot', 'any', { default: {} })
+	.add('degraded_items_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
