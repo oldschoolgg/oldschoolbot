@@ -10,6 +10,7 @@ import { BitField, Emoji, projectiles } from '../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -33,7 +34,6 @@ import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
 import { calculateInfernoItemRefund } from '../../tasks/minions/minigames/infernoActivity';
-import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -483,6 +483,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			emergedZukDeathChance.add(has, -8, `Gorajan ${name}`);
 			duration.add(has, -5, `Gorajan ${name}`);
 		}
+		preZukDeathChance.add(rangeGear.hasEquipped('Justiciar faceguard'), -5, 'Just. faceguard');
 
 		const hasSuffering =
 			rangeGear.hasEquipped('Ring of suffering (i)') || mageGear.hasEquipped('Ring of suffering (i)');

@@ -85,6 +85,12 @@ export namespace UserSettings {
 	export const PresentsDelivered = T<number>('presents_delivered');
 	export const GotFreeFestivePresent = T<boolean>('got_free_festive_present');
 
+	export const TentacleCharges = T<number>('tentacle_charges');
+	export const SangCharges = T<number>('sang_charges');
+
+	export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
+	export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');
+
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
 		export const TaskStreak = T<number>('slayer.task_streak');
@@ -115,6 +121,9 @@ export namespace UserSettings {
 
 		export const InfernoAttempts = T<number>('inferno_attempts');
 		export const InfernalCapesSacrificed = T<number>('infernal_cape_sacrifices');
+
+		export const TobAttempts = T<number>('tob_attempts');
+		export const TobHardModeAttempts = T<number>('tob_hard_attempts');
 	}
 
 	export namespace Minion {

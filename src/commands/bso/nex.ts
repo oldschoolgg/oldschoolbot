@@ -81,7 +81,7 @@ export default class extends BotCommand {
 			message: `${msg.author.username} is doing a ${NexMonster.name} mass! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. The maximum size for this mass is ${8}.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}

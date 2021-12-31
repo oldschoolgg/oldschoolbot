@@ -2,6 +2,8 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { gorajanWarriorOutfit } from '../src/lib/data/CollectionsExport';
 import { Gear } from '../src/lib/structures/Gear';
+import { itemNameFromID } from '../src/lib/util';
+import resolveItems from '../src/lib/util/resolveItems';
 
 describe('Gear', () => {
 	const testGear = new Gear({
@@ -87,20 +89,28 @@ describe('Gear', () => {
 
 	const testGear7 = new Gear({
 		weapon: 'Staff of water',
-		head: 'Black mask'
+		head: 'Black mask',
+		'2h': 'Bandos godsword (or)'
 	});
 	test('', () => {
 		expect(testGear7.hasEquipped('Staff of water', true)).toBeTruthy();
 		expect(testGear7.hasEquipped('Black mask', true)).toBeTruthy();
+		expect(testGear7.hasEquipped('Bandos godsword', true)).toBeTruthy();
 	});
 
 	const testGear8 = new Gear({
 		weapon: 'Kodai wand',
-		head: 'Black mask (i)'
+		head: 'Black mask (i)',
+		'2h': 'Holy scythe of vitur',
+		body: 'Elite void top'
 	});
 	test('', () => {
+		expect(testGear8.hasEquipped('Scythe of vitur', true)).toBeTruthy();
+		expect(testGear8.hasEquipped('Void knight top', true)).toBeTruthy();
 		expect(testGear8.hasEquipped('Kodai wand', true)).toBeTruthy();
 		expect(testGear8.hasEquipped('Black mask (i)', true)).toBeTruthy();
+		expect(testGear8.hasEquipped('Scythe of vitur', true)).toBeTruthy();
+		expect(testGear8.hasEquipped('Void knight top', true)).toBeTruthy();
 	});
 
 	const bsoTestGear = new Gear({
@@ -188,4 +198,39 @@ describe('Gear', () => {
 		expect(gear2.hasEquipped('Gorajan archer helmet')).toBeFalsy();
 		expect(gear2.hasEquipped('Ring of suffering (i)')).toBeTruthy();
 	});
+	const chargedScythes = ['Scythe of vitur', 'Holy scythe of vitur', 'Sanguine scythe of vitur'];
+	const unchargedScythes = [
+		'Scythe of vitur (uncharged)',
+		'Holy scythe of vitur (uncharged)',
+		'Sanguine scythe of vitur (uncharged)'
+	];
+
+	for (const [baseItem, slot, similarItems, unsimilarItems] of [
+		[chargedScythes[0], '2h', chargedScythes.slice(1)],
+		[unchargedScythes[0], '2h', unchargedScythes.slice(1), chargedScythes],
+		['Sanguinesti staff', 'weapon', ['Holy sanguinesti staff']],
+		['Sanguinesti staff (uncharged)', 'weapon', ['Holy sanguinesti staff (uncharged)']]
+	] as const) {
+		for (const simItem of resolveItems(similarItems as unknown as string[])) {
+			const gear = new Gear({
+				[slot]: itemNameFromID(simItem)
+			});
+			const is = gear.hasEquipped(itemID(baseItem));
+			if (!is) {
+				throw new Error(`${baseItem} didn't match ${itemNameFromID(simItem)}`);
+			}
+			expect(is).toEqual(true);
+		}
+		for (const unSimItem of resolveItems((unsimilarItems as unknown as string[]) ?? [])) {
+			const gear = new Gear({
+				[slot]: itemNameFromID(unSimItem)
+			});
+
+			const is = gear.hasEquipped(itemID(baseItem));
+			if (is) {
+				throw new Error(`${baseItem} matched ${itemNameFromID(unSimItem)}`);
+			}
+			expect(is).toEqual(false);
+		}
+	}
 });

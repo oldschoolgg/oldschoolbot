@@ -266,7 +266,7 @@ export default class extends BotCommand {
 			maxSize: maxTeamSize,
 			ironmanAllowed: true,
 			message,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}
@@ -297,7 +297,7 @@ export default class extends BotCommand {
 			}
 		};
 
-		const leaderCheck = partyOptions.customDenier!(msg.author);
+		const leaderCheck = await partyOptions.customDenier!(msg.author);
 		if (leaderCheck[0]) {
 			return msg.channel.send(
 				`You can't start a Dungeoneering party for Floor ${floorToDo} because ${leaderCheck[1]}`
@@ -307,7 +307,7 @@ export default class extends BotCommand {
 		const users = floor === 'solo' ? [msg.author] : await msg.makePartyAwaiter(partyOptions);
 		const boosts = [];
 		for (const user of users) {
-			const check = partyOptions.customDenier!(user);
+			const check = await partyOptions.customDenier!(user);
 			if (check[0]) {
 				return msg.channel.send(
 					`You can't start a Dungeoneering party because of ${user.username}: ${check[1]}`

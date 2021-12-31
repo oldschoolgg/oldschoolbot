@@ -40,7 +40,11 @@ export default class extends BotCommand {
 			return msg.channel.send('You need atleast level 44 Hunter and 47 Fishing to do Drift net fishing.');
 		}
 
-		if (!msg.author.hasItemEquippedAnywhere(['Graceful gloves', 'Graceful top', 'Graceful legs'])) {
+		if (
+			!msg.author.hasItemEquippedAnywhere('Graceful gloves') ||
+			!msg.author.hasItemEquippedAnywhere('Graceful top') ||
+			!msg.author.hasItemEquippedAnywhere('Graceful legs')
+		) {
 			return msg.channel.send('You need Graceful top, legs and gloves equipped to do Drift net fishing.');
 		}
 

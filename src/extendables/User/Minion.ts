@@ -96,6 +96,7 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
+	TheatreOfBloodTaskOptions,
 	VolcanicMineActivityTaskOptions,
 	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
@@ -655,6 +656,16 @@ export default class extends Extendable {
 				return `${
 					this.minionName
 				} is currently attempting the Inferno, if they're successful and don't die, the trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case 'TheatreOfBlood': {
+				const data = currentTask as TheatreOfBloodTaskOptions;
+				const durationRemaining = data.finishDate - data.fakeDuration - Date.now();
+
+				return `${
+					this.minionName
+				} is currently attempting the Theatre of Blood, if your team is successful and doesn't die, the trip should take ${formatDuration(
 					durationRemaining
 				)}.`;
 			}

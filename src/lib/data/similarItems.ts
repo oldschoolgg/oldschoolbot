@@ -10,6 +10,9 @@ import {
 	gracefulTops
 } from './CollectionsExport';
 
+const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
+const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];
+
 const blackMaskISimilar = resolveItems([
 	'Black mask (10) (i)',
 	'Black mask (9) (i)',
@@ -316,7 +319,11 @@ const source: [string, (string | number)[]][] = [
 	['Gorajan archer helmet', ['Infernal slayer helmet(i)']],
 	['Gorajan occult helmet', ['Infernal slayer helmet(i)']],
 	['Gorajan warrior helmet', ['Infernal slayer helmet(i)']],
-	['Ring of suffering (i)', ['Ring of suffering (ri)']]
+	['Ring of suffering (i)', ['Ring of suffering (ri)']],
+	['Scythe of vitur', [...scytheChargedSimilar, ...scytheUnchargedSimilar]],
+	['Scythe of vitur (uncharged)', [...scytheUnchargedSimilar]],
+	['Sanguinesti staff', ['Holy sanguinesti staff']],
+	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

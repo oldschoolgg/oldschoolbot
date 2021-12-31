@@ -57,6 +57,8 @@ Client.defaultUserSchema
 	.add('inferno_attempts', 'integer', { default: 0 })
 	.add('emerged_inferno_attempts', 'integer', { default: 0 })
 	.add('infernal_cape_sacrifices', 'integer', { default: 0 })
+	.add('tob_attempts', 'integer', { default: 0 })
+	.add('tob_hard_attempts', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('kourend_favour', 'any', { default: { ...baseUserKourendFavour } })
 	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })
@@ -67,6 +69,8 @@ Client.defaultUserSchema
 	.add('presents_stolen', 'integer', { default: 0 })
 	.add('presents_delivered', 'integer', { default: 0 })
 	.add('got_free_festive_present', 'boolean', { default: false })
+	.add('tentacle_charges', 'integer', { default: 10_000 })
+	.add('sang_charges', 'integer', { default: 0 })
 	.add('temp_cl', 'any', { default: {} })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('slayer', folder =>
@@ -185,4 +189,6 @@ Client.defaultUserSchema
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_slots', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-	.add('monkeys_fought', 'string', { array: true, default: [] });
+	.add('monkeys_fought', 'string', { array: true, default: [] })
+	.add('tob_cost', 'any', { default: {} })
+	.add('tob_loot', 'any', { default: {} });

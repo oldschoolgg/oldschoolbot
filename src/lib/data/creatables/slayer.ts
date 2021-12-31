@@ -129,7 +129,8 @@ export const slayerCreatables: Createable[] = [
 			'Abyssal whip': 1
 		}),
 		outputItems: resolveNameBank({ 'Abyssal tentacle': 1 }),
-		GPCost: 0
+		GPCost: 0,
+		maxCanOwn: 1
 	},
 	{
 		name: 'Brimstone ring',
