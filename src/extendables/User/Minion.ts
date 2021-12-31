@@ -661,7 +661,7 @@ export default class extends Extendable {
 			}
 			case 'TheatreOfBlood': {
 				const data = currentTask as TheatreOfBloodTaskOptions;
-				const durationRemaining = data.finishDate - data.fakeDuration - Date.now();
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 
 				return `${
 					this.minionName

@@ -27,7 +27,7 @@ import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearSt
 import { Consumable } from './minions/types';
 import { Gear } from './structures/Gear';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions, RaidsOptions } from './types/minions';
+import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -278,6 +278,10 @@ export function randomVariation(value: number, percentage: number) {
 
 export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOptions {
 	return 'users' in data;
+}
+
+export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
+	return 'wipedRoom' in data;
 }
 
 export function sha256Hash(x: string) {
