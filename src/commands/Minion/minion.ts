@@ -173,8 +173,8 @@ export default class MinionCommand extends BotCommand {
 		return trainCommand(msg, input);
 	}
 
-	async data(msg: KlasaMessage) {
-		return msg.channel.send(await dataCommand(msg));
+	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return msg.channel.send(await dataCommand(msg, input));
 	}
 
 	async lapcounts(msg: KlasaMessage) {

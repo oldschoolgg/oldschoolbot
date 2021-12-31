@@ -1,8 +1,6 @@
-import { Chart, ChartConfiguration } from 'chart.js';
+import type { ChartConfiguration } from 'chart.js';
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-Chart.register(ChartDataLabels);
 const width = 1000; // px
 const height = 500; // px
 const backgroundColour = 'white';
@@ -18,7 +16,7 @@ function randomHexColor(num: number) {
 	return `hsl(${hue},50%,75%)`;
 }
 
-export async function pieChart(title: string, values: [string, number][]) {
+export async function pieChart(title: string, format: (value: any) => string, values: [string, number, string?][]) {
 	const options: ChartConfiguration = {
 		type: 'pie',
 		data: {
@@ -26,7 +24,7 @@ export async function pieChart(title: string, values: [string, number][]) {
 			datasets: [
 				{
 					data: values.map(i => i[1]),
-					backgroundColor: values.map((_, index) => randomHexColor(index))
+					backgroundColor: values.map((val, index) => val[2] ?? randomHexColor(index))
 				}
 			]
 		},
@@ -36,6 +34,9 @@ export async function pieChart(title: string, values: [string, number][]) {
 				datalabels: {
 					font: {
 						weight: 'bolder'
+					},
+					formatter(value, _context) {
+						return format(value);
 					}
 				}
 			}
