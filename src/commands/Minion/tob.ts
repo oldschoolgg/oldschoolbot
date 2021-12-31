@@ -225,19 +225,6 @@ export default class extends BotCommand {
 	}
 
 	async start(msg: KlasaMessage, [input]: [string | undefined]) {
-		if (msg.flagArgs.cost) {
-			return msg.channel.sendBankImage({
-				content: "All the items you've personally used at TOB",
-				bank: msg.author.settings.get(UserSettings.TOBCost)
-			});
-		}
-		if (msg.flagArgs.loot) {
-			return msg.channel.sendBankImage({
-				content: "All the loot you've personally gotten at TOB",
-				bank: msg.author.settings.get(UserSettings.TOBLoot)
-			});
-		}
-
 		const isHardMode = Boolean(msg.flagArgs.hard);
 		const initialCheck = await checkTOBUser(msg.author, isHardMode);
 		if (initialCheck[0]) {
