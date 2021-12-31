@@ -422,8 +422,11 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Theatre of Blood': {
-				enabled: false,
 				alias: ['tob'],
+				kcActivity: {
+					Default: user => user.getMinigameScore('tob'),
+					Hard: user => user.getMinigameScore('tob_hard')
+				},
 				items: theatreOfBLoodCL,
 				roleCategory: ['raids'],
 				isActivity: true
