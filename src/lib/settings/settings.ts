@@ -3,7 +3,7 @@ import { Guild, Util } from 'discord.js';
 import { Gateway, KlasaMessage, Settings } from 'klasa';
 
 import { client } from '../..';
-import { Emoji, shouldTrackCommand } from '../constants';
+import { Emoji, getCommandArgs, shouldTrackCommand } from '../constants';
 import { ActivityTaskData } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { activitySync, prisma } from './prisma';
@@ -145,7 +145,7 @@ export async function runCommand(
 		user_id: message.author.id,
 		command_name: command.name,
 		status: command_usage_status.Unknown,
-		args,
+		args: getCommandArgs(command, args),
 		channel_id: message.channel.id,
 		is_continue: isContinue,
 		guild_id: message.guild?.id ?? null,

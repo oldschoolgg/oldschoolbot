@@ -9,9 +9,9 @@ export async function degradeableItemsCommand(msg: KlasaMessage, input: string |
 	const item = degradeableItems.find(i => [i.item.name, ...i.aliases].some(n => stringMatches(n, name)));
 	const number = parseInt(amount);
 
-	if (!name || !amount || !item || isNaN(number) || number < 1 || number > 100) {
+	if (!name || !amount || !item || isNaN(number) || number < 1 || number > 10_000) {
 		return msg.channel.send(
-			`Use \`${msg.cmdPrefix}m charge [${degradeableItems.map(i => i.item.name).join('|')}], [1-100]\`
+			`Use \`${msg.cmdPrefix}m charge [${degradeableItems.map(i => i.item.name).join('|')}], [1-10,000]\`
 ${degradeableItems
 	.map(i => {
 		const charges = msg.author.settings.get(i.settingsKey) as number;
