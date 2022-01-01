@@ -9,7 +9,17 @@ export const reeseCreatables: Createable[] = [
 			'Crystal shard': 1500
 		}),
 		outputItems: resolveNameBank({ 'Blade of saeldor (c)': 1 }),
-		QPRequired: 150
+		QPRequired: 150,
+		requiredSkills: {
+			agility: 70,
+			construction: 70,
+			mining: 70,
+			herblore: 70,
+			farming: 70,
+			woodcutting: 70,
+			hunter: 70,
+			smithing: 70
+		}
 	},
 	{
 		name: 'Reese Blade of saeldor (inactive)',
@@ -18,7 +28,17 @@ export const reeseCreatables: Createable[] = [
 			'Crystal shard': 150
 		}),
 		outputItems: resolveNameBank({ 'Blade of saeldor (inactive)': 1 }),
-		QPRequired: 150
+		QPRequired: 150,
+		requiredSkills: {
+			agility: 70,
+			construction: 70,
+			mining: 70,
+			herblore: 70,
+			farming: 70,
+			woodcutting: 70,
+			hunter: 70,
+			smithing: 70
+		}
 	},
 	{
 		name: 'Reese Bow of faerdhinen (c)',
@@ -27,7 +47,17 @@ export const reeseCreatables: Createable[] = [
 			'Crystal shard': 1500
 		}),
 		outputItems: resolveNameBank({ 'Bow of faerdhinen (c)': 1 }),
-		QPRequired: 150
+		QPRequired: 150,
+		requiredSkills: {
+			agility: 70,
+			construction: 70,
+			mining: 70,
+			herblore: 70,
+			farming: 70,
+			woodcutting: 70,
+			hunter: 70,
+			smithing: 70
+		}
 	},
 	{
 		name: 'Reese Bow of faerdhinen (inactive)',
@@ -36,7 +66,17 @@ export const reeseCreatables: Createable[] = [
 			'Crystal shard': 150
 		}),
 		outputItems: resolveNameBank({ 'Bow of faerdhinen (inactive)': 1 }),
-		QPRequired: 150
+		QPRequired: 150,
+		requiredSkills: {
+			agility: 70,
+			construction: 70,
+			mining: 70,
+			herblore: 70,
+			farming: 70,
+			woodcutting: 70,
+			hunter: 70,
+			smithing: 70
+		}
 	},
 	{
 		name: 'Reese Crystal pickaxe',
@@ -45,7 +85,17 @@ export const reeseCreatables: Createable[] = [
 			'Crystal shard': 180
 		}),
 		outputItems: resolveNameBank({ 'Crystal pickaxe': 1 }),
-		QPRequired: 150
+		QPRequired: 150,
+		requiredSkills: {
+			agility: 70,
+			construction: 70,
+			mining: 70,
+			herblore: 70,
+			farming: 70,
+			woodcutting: 70,
+			hunter: 70,
+			smithing: 70
+		}
 	},
 	{
 		name: 'Reese Crystal harpoon',
@@ -54,7 +104,17 @@ export const reeseCreatables: Createable[] = [
 			'Crystal shard': 180
 		}),
 		outputItems: resolveNameBank({ 'Crystal harpoon': 1 }),
-		QPRequired: 150
+		QPRequired: 150,
+		requiredSkills: {
+			agility: 70,
+			construction: 70,
+			mining: 70,
+			herblore: 70,
+			farming: 70,
+			woodcutting: 70,
+			hunter: 70,
+			smithing: 70
+		}
 	},
 	{
 		name: 'Reese Crystal axe',
@@ -63,7 +123,17 @@ export const reeseCreatables: Createable[] = [
 			'Crystal shard': 180
 		}),
 		outputItems: resolveNameBank({ 'Crystal axe': 1 }),
-		QPRequired: 150
+		QPRequired: 150,
+		requiredSkills: {
+			agility: 70,
+			construction: 70,
+			mining: 70,
+			herblore: 70,
+			farming: 70,
+			woodcutting: 70,
+			hunter: 70,
+			smithing: 70
+		}
 	},
 	{
 		name: 'Reese Enhanced crystal key',
@@ -72,6 +142,16 @@ export const reeseCreatables: Createable[] = [
 			'Crystal shard': 15
 		}),
 		outputItems: resolveNameBank({ 'Enhanced crystal key': 1 }),
-		QPRequired: 150
+		QPRequired: 150,
+		requiredSkills: {
+			agility: 70,
+			construction: 70,
+			mining: 70,
+			herblore: 70,
+			farming: 70,
+			woodcutting: 70,
+			hunter: 70,
+			smithing: 70
+		}
 	}
 ];

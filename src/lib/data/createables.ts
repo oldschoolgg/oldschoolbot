@@ -10,6 +10,7 @@ import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { ornamentKits } from './creatables/ornaments';
+import { reeseCreatables } from './creatables/reese';
 import { slayerCreatables } from './creatables/slayer';
 import { tobCreatables } from './creatables/tob';
 
@@ -1695,7 +1696,8 @@ const Createables: Createable[] = [
 	...revWeapons,
 	...armorAndItemPacks,
 	...gracefulOutfitCreatables,
-	...tobCreatables
+	...tobCreatables,
+	...reeseCreatables
 ];
 
 export default Createables;
