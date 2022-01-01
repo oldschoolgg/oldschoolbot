@@ -14,7 +14,6 @@ import {
 	hasMinRaidsRequirements,
 	minimumCoxSuppliesNeeded
 } from '../../lib/data/cox';
-import { TENTACLE_CHARGES_PER_RAID } from '../../lib/data/tob';
 import { degradeItem } from '../../lib/degradeableItems';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -23,7 +22,6 @@ import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
 import { addBanks, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import getOSItem from '../../lib/util/getOSItem';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -213,39 +211,28 @@ export default class extends BotCommand {
 			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
 		}
 
-		const { duration, totalReduction, reductions } = await calcCoxDuration(users, isChallengeMode);
+		const { duration, totalReduction, reductions, degradeables } = await calcCoxDuration(users, isChallengeMode);
 
 		let debugStr = '';
 		const isSolo = users.length === 1;
 
 		const totalCost = new Bank();
 
-		await Promise.all(
-			users.map(async u => {
+		await Promise.all([
+			degradeables.map(async d => {
+				await degradeItem(d);
+			}),
+			...users.map(async u => {
 				const supplies = await calcCoxInput(u, isSolo);
 				await u.removeItemsFromBank(supplies);
 				totalCost.add(supplies);
-				if (u.getGear('melee').hasEquipped('Abyssal tentacle')) {
-					await degradeItem({
-						item: getOSItem('Abyssal tentacle'),
-						user: u,
-						chargesToDegrade: TENTACLE_CHARGES_PER_RAID
-					});
-				}
-				if (u.getGear('mage').hasEquipped('Sanguinesti staff')) {
-					await degradeItem({
-						item: getOSItem('Sanguinesti staff'),
-						user: u,
-						chargesToDegrade: 150
-					});
-				}
 				const { total } = calculateUserGearPercents(u);
 				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
 					reductions[u.id],
 					totalReduction
 				).toFixed(1)}%) used ${supplies}\n`;
 			})
-		);
+		]);
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.CoxCost,
