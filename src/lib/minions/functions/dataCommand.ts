@@ -120,8 +120,8 @@ GROUP BY data->>'monsterID';`;
 				files: [
 					new MessageAttachment(
 						await pieChart(`${user.username}'s Top Bank Value Items`, val => `${toKMB(val)}%`, [
-							['Complete Collection Log Items', percent, '#09ff00'],
-							['Incomplete Collection Log Items', 100 - percent, '#ff0000']
+							['Complete Collection Log Items', percent, '#9fdfb2'],
+							['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
 						])
 					)
 				]
