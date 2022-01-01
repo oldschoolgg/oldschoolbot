@@ -460,8 +460,8 @@ export async function calcCoxDuration(
 						if (canDegrade.hasEnough) {
 							userPercentChange += item.boost;
 							degradeableItems.push(testItem);
+							break;
 						}
-						break;
 					}
 				} else if (item.mustBeEquipped) {
 					if (item.setup && u.getGear(item.setup).hasEquipped(item.item.id)) {
