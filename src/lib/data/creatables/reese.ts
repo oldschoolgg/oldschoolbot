@@ -44,7 +44,7 @@ export const reeseCreatables: Createable[] = [
 		name: 'Reese Bow of faerdhinen (c)',
 		inputItems: resolveNameBank({
 			'Bow of faerdhinen (inactive)': 1,
-			'Crystal shard': 1500
+			'Crystal shard': 1900
 		}),
 		outputItems: resolveNameBank({ 'Bow of faerdhinen (c)': 1 }),
 		QPRequired: 150,
