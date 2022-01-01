@@ -1,5 +1,5 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
-import { MessageButton, MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageButton, MessageEmbed } from 'discord.js';
 import { chunk, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
@@ -174,7 +174,9 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return msg.channel.send(await dataCommand(msg, input));
+		const result = await dataCommand(msg, input);
+		const output = Buffer.isBuffer(result) ? { files: [new MessageAttachment(result)] } : result;
+		return msg.channel.send(output);
 	}
 
 	async lapcounts(msg: KlasaMessage) {

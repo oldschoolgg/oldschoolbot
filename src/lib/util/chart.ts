@@ -44,3 +44,60 @@ export async function pieChart(title: string, format: (value: any) => string, va
 	};
 	return generateChart(options);
 }
+export async function lineChart(title: string, format: (value: any) => string, values: [string, number, string?][]) {
+	const options: ChartConfiguration = {
+		type: 'line',
+		data: {
+			labels: values.map(i => i[0]),
+			datasets: [
+				{
+					data: values.map(i => i[1]),
+					backgroundColor: values.map((val, index) => val[2] ?? randomHexColor(index))
+				}
+			]
+		},
+		options: {
+			plugins: {
+				title: { display: true, text: title },
+				datalabels: {
+					font: {
+						weight: 'bolder'
+					},
+					formatter(value, _context) {
+						return format(value);
+					}
+				}
+			}
+		}
+	};
+	return generateChart(options);
+}
+
+export async function barChart(title: string, format: (value: any) => string, values: [string, number, string?][]) {
+	const options: ChartConfiguration = {
+		type: 'bar',
+		data: {
+			labels: values.map(i => i[0]),
+			datasets: [
+				{
+					data: values.map(i => i[1]),
+					backgroundColor: values.map((val, index) => val[2] ?? randomHexColor(index))
+				}
+			]
+		},
+		options: {
+			plugins: {
+				title: { display: true, text: title },
+				datalabels: {
+					font: {
+						weight: 'bolder'
+					},
+					formatter(value, _context) {
+						return format(value);
+					}
+				}
+			}
+		}
+	};
+	return generateChart(options);
+}

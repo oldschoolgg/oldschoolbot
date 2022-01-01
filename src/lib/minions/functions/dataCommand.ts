@@ -8,12 +8,12 @@ import { toKMB } from 'oldschooljs/dist/util';
 import { prisma } from '../../settings/prisma';
 import { sorts } from '../../sorts';
 import { stringMatches, toTitleCase } from '../../util';
-import { pieChart } from '../../util/chart';
+import { lineChart, pieChart, timeChart } from '../../util/chart';
 import killableMonsters from '../data/killableMonsters';
 
 interface DataPiece {
 	name: string;
-	run: (user: KlasaUser) => Promise<MessageOptions>;
+	run: (user: KlasaUser) => Promise<MessageOptions | Buffer>;
 }
 // https://www.chartjs.org/docs/latest/general/colors.html
 // https://www.chartjs.org/docs/latest/general/colors.html
@@ -38,13 +38,7 @@ AND user_id = ${user.id}
 OR (data->>'users')::jsonb @> ${user.id}::jsonb
 GROUP BY type;`;
 			const dataPoints: [string, number][] = result.filter(i => i.qty >= 5).map(i => [i.type, i.qty]);
-			return {
-				files: [
-					new MessageAttachment(
-						await pieChart(`${user.username}'s Activity Counts`, val => `${val} Trips`, dataPoints)
-					)
-				]
-			};
+			return pieChart(`${user.username}'s Activity Counts`, val => `${val} Trips`, dataPoints);
 		}
 	},
 	{
@@ -58,13 +52,7 @@ AND user_id = ${user.id}
 OR (data->>'users')::jsonb @> ${user.id}::jsonb
 GROUP BY type;`;
 			const dataPoints: [string, number][] = result.filter(i => i.hours >= 1).map(i => [i.type, i.hours]);
-			return {
-				files: [
-					new MessageAttachment(
-						await pieChart(`${user.username}'s Activity Durations`, val => `${val} Hours`, dataPoints)
-					)
-				]
-			};
+			return pieChart(`${user.username}'s Activity Durations`, val => `${val} Hours`, dataPoints);
 		}
 	},
 	{
@@ -82,13 +70,7 @@ GROUP BY data->>'monsterID';`;
 			const dataPoints: [string, number][] = result
 				.filter(i => i.kc >= 1)
 				.map(i => [killableMonsters.find(mon => mon.id === i.id)?.name ?? i.id.toString(), i.kc]);
-			return {
-				files: [
-					new MessageAttachment(
-						await pieChart(`${user.username}'s Monster KC's`, val => `${val} KC`, dataPoints)
-					)
-				]
-			};
+			return pieChart(`${user.username}'s Monster KC's`, val => `${val} KC`, dataPoints);
 		}
 	},
 	{
@@ -103,13 +85,7 @@ GROUP BY data->>'monsterID';`;
 			let everythingElseBank = new Bank();
 			for (const i of everythingElse) everythingElseBank.add(i[0].id, i[1]);
 			dataPoints.push(['Everything else', everythingElseBank.value()]);
-			return {
-				files: [
-					new MessageAttachment(
-						await pieChart(`${user.username}'s Top Bank Value Items`, val => `${toKMB(val)} GP`, dataPoints)
-					)
-				]
-			};
+			return pieChart(`${user.username}'s Top Bank Value Items`, val => `${toKMB(val)} GP`, dataPoints);
 		}
 	},
 	{
@@ -138,11 +114,58 @@ GROUP BY skill;`;
 			const dataPoints: [string, number][] = result
 				.sort((a, b) => b.xp - a.xp)
 				.map(i => [toTitleCase(i.skill), i.xp]);
-			return {
-				files: [
-					new MessageAttachment(await pieChart(`${user.username}'s XP Gains`, val => `${val} XP`, dataPoints))
-				]
-			};
+			return pieChart(`${user.username}'s XP Gains`, val => `${val} XP`, dataPoints);
+		}
+	},
+	{
+		name: 'Global Inferno Death Times',
+		run: async (_user: KlasaUser) => {
+			const result: { mins: number; count: number }[] =
+				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
+FROM activity
+WHERE type = 'Inferno'
+AND data->>'deathTime' IS NOT NULL) death_mins
+GROUP BY mins;`;
+			return lineChart(
+				'Global Inferno Death Times',
+				val => `${val} Mins`,
+				result.map(i => [i.mins.toString(), i.count])
+			);
+		}
+	},
+	{
+		name: 'Personal Inferno Death Times',
+		run: async (user: KlasaUser) => {
+			const result: { mins: number; count: number }[] =
+				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
+FROM activity
+WHERE type = 'Inferno'
+AND user_id = ${user.id}
+AND data->>'deathTime' IS NOT NULL) death_mins
+GROUP BY mins;`;
+			return lineChart(
+				'Personal Inferno Death Times',
+				val => `${val} Mins`,
+				result.map(i => [i.mins.toString(), i.count])
+			);
+		}
+	},
+	{
+		name: 'Personal XP gains',
+		run: async (_user: KlasaUser) => {
+			const result: { time: number; skill: string; xp: number }[] = await prisma.$queryRaw`SELECT
+  floor(extract(epoch from date)/60)*60 AS "time",
+  skill,
+  floor(avg(sum(xp)) OVER (PARTITION BY skill ORDER BY floor(extract(epoch from date)/60)*60 ROWS 20 PRECEDING)) AS "xp"
+FROM xp_gains
+WHERE user_id = '251536370613485568'
+GROUP BY 1,2
+ORDER BY 1,2`;
+			return timeChart(
+				'Personal XP Gains',
+				val => `${val} Mins`,
+				result.map(i => [i.time * 1000, i.skill, i.xp])
+			);
 		}
 	}
 ];
