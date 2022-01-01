@@ -17,7 +17,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[quantity:int{1}] [itemName:...string]',
-			aliases: ['revert', 'fix', 'unpack'],
+			aliases: ['revert', 'fix', 'unpack', 'reese'],
 			usageDelim: ' ',
 			oneAtTime: true,
 			cooldown: 5,
@@ -83,6 +83,7 @@ export default class extends BotCommand {
 		if (cmd.toLowerCase() === 'revert') itemName = `revert ${itemName}`;
 		if (cmd.toLowerCase() === 'fix') itemName = `fix ${itemName}`;
 		if (cmd.toLowerCase() === 'unpack') itemName = `unpack ${itemName}`;
+		if (cmd.toLowerCase() === 'reese') itemName = `reese ${itemName}`;
 
 		const createableItem = Createables.find(
 			item =>
