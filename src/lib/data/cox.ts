@@ -356,17 +356,17 @@ const itemBoosts: ItemBoost[][] = [
 		{
 			item: getOSItem('Twisted bow'),
 			boost: 8,
-			mustBeEquipped: true
+			mustBeEquipped: false
 		},
 		{
 			item: getOSItem('Bow of faerdhinen (c)'),
 			boost: 6,
-			mustBeEquipped: true
+			mustBeEquipped: false
 		},
 		{
 			item: getOSItem('Dragon hunter crossbow'),
 			boost: 5,
-			mustBeEquipped: true
+			mustBeEquipped: false
 		}
 	],
 	[
@@ -395,14 +395,14 @@ const itemBoosts: ItemBoost[][] = [
 		{
 			item: getOSItem('Abyssal tentacle'),
 			boost: 2,
-			mustBeEquipped: true
+			mustBeEquipped: false
 		}
 	],
 	[
 		{
 			item: getOSItem('Sanguinesti staff'),
 			boost: 6,
-			mustBeEquipped: true,
+			mustBeEquipped: false,
 			setup: 'mage'
 		}
 	]
