@@ -41,9 +41,7 @@ export const tobCreatables: Createable[] = [
 	{
 		name: 'Holy scythe of vitur',
 		inputItems: resolveNameBank({
-			'Holy scythe of vitur (uncharged)': 1,
-			'Blood rune': 100,
-			'Vial of blood': 1
+			'Holy scythe of vitur (uncharged)': 1
 		}),
 		outputItems: resolveNameBank({
 			'Holy scythe of vitur': 1
@@ -71,9 +69,7 @@ export const tobCreatables: Createable[] = [
 	{
 		name: 'Sanguine scythe of vitur',
 		inputItems: resolveNameBank({
-			'Sanguine scythe of vitur (uncharged)': 1,
-			'Blood rune': 100,
-			'Vial of blood': 1
+			'Sanguine scythe of vitur (uncharged)': 1
 		}),
 		outputItems: resolveNameBank({
 			'Sanguine scythe of vitur': 1
