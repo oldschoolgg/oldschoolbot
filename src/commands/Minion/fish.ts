@@ -67,8 +67,8 @@ export default class extends BotCommand {
 			return msg.channel.send('You need at least 15 Agility and Strength to do Barbarian Fishing.');
 		}
 
-		const anglerOutfit = ['Angler hat', 'Angler top', 'Angler waders', 'Angler boots'];
-		if (fish.name === 'Minnow' && anglerOutfit.some(piece => !msg.author.hasItemEquippedOrInBank(piece))) {
+		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(parseInt(i)));
+		if (fish.name === 'Minnow' && anglerOutfit.some(test => !msg.author.hasItemEquippedOrInBank(test!))) {
 			return msg.channel.send('You need to own the Angler Outfit to fish for Minnows.');
 		}
 

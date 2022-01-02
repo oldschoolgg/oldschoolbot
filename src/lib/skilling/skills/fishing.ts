@@ -189,6 +189,7 @@ const fishes: Fish[] = [
 		xp: 26.1,
 		id: itemID('Minnow'),
 		name: 'Minnow',
+		alias: ['minnows'],
 		petChance: 977_778,
 		qpRequired: 1,
 		timePerFish: 2.04,
