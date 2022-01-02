@@ -220,7 +220,6 @@ export const enum Tasks {
 	VolcanicMine = 'volcanicMineActivity',
 	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity',
-	Christmas = 'christmasActivity',
 	ToB = 'tobActivity'
 }
 
