@@ -275,6 +275,20 @@ GROUP BY data->>'plantsName'`;
 				title: `${user.username}'s TOB Loot`
 			};
 		}
+	},
+	{
+		name: 'Gambling PNL',
+		run: async (user: KlasaUser) => {
+			const gpDice = toKMB(user.settings.get(UserSettings.GPDice));
+			const gpLuckyPick = toKMB(user.settings.get(UserSettings.GPLuckyPick));
+			const gpSlots = toKMB(user.settings.get(UserSettings.GPSlots));
+
+			return {
+				content: `**Dicing:** ${gpDice}
+**Lucky Pick:** ${gpLuckyPick}
+**Slots:** ${gpSlots}`
+			};
+		}
 	}
 ];
 
