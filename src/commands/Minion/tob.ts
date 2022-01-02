@@ -357,9 +357,9 @@ export default class extends BotCommand {
 		const kc = await msg.author.getMinigameScore('tob');
 		const attempts = await msg.author.settings.get(UserSettings.Stats.TobAttempts);
 		const hardAttempts = await msg.author.settings.get(UserSettings.Stats.TobHardModeAttempts);
-		const { melee, range, mage, total } = calculateUserGearPercents(msg.author);
-		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false, gear);
-		const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true, gear);
+		const { melee, range, mage, total } = calculateTOBUserGearPercents(msg.author);
+		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false, total);
+		const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true, total);
 		let totalUniques = 0;
 			const cl = msg.author.cl();
 			for (const item of baseTOBUniques) {
