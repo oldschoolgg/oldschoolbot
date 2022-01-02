@@ -198,7 +198,6 @@ model Guild {
   tweetchannel      String?  @db.VarChar(19)
   levelUpMessages   String?  @db.VarChar(19)
   staffOnlyChannels String[] @db.VarChar(19)
-  tags              Json[]   @db.Json
 
   // BSO
   mega_duck_location Json @default("{\"x\":1356,\"y\":209,\"usersParticipated\":{}}") @db.Json
