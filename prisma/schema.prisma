@@ -531,7 +531,6 @@ enum activity_type_enum {
   KourendFavour
   Inferno
   TheatreOfBlood
-  Christmas
 }
 
 enum xp_gains_skill_enum {
