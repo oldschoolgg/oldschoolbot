@@ -63,6 +63,34 @@ const randomEventBuyables: Buyable[] = [
 	}
 ];
 
+const tobCapes: Buyable[] = [
+	{
+		name: 'Sinhaza shroud tier 1',
+		gpCost: 100_000,
+		minigameScoreReq: ['tob', 100]
+	},
+	{
+		name: 'Sinhaza shroud tier 2',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 500]
+	},
+	{
+		name: 'Sinhaza shroud tier 3',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 1000]
+	},
+	{
+		name: 'Sinhaza shroud tier 4',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 1500]
+	},
+	{
+		name: 'Sinhaza shroud tier 5',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 2000]
+	}
+];
+
 const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
@@ -733,7 +761,8 @@ const Buyables: Buyable[] = [
 	...capeBuyables,
 	...miningBuyables,
 	...runeBuyables,
-	...randomEventBuyables
+	...randomEventBuyables,
+	...tobCapes
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

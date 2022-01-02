@@ -46,6 +46,8 @@ Client.defaultUserSchema
 	.add('pest_control_points', 'integer', { default: 0 })
 	.add('inferno_attempts', 'integer', { default: 0 })
 	.add('infernal_cape_sacrifices', 'integer', { default: 0 })
+	.add('tob_attempts', 'integer', { default: 0 })
+	.add('tob_hard_attempts', 'integer', { default: 0 })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('kourend_favour', 'any', { default: { ...baseUserKourendFavour } })
 	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })
@@ -53,8 +55,8 @@ Client.defaultUserSchema
 	.add('main_account', 'string', { default: null })
 	.add('premium_balance_tier', 'integer', { default: null })
 	.add('premium_balance_expiry_date', 'integer', { default: null, maximum: Number.MAX_SAFE_INTEGER })
-	.add('presents_stolen', 'integer', { default: 0 })
-	.add('presents_delivered', 'integer', { default: 0 })
+	.add('tentacle_charges', 'integer', { default: 10_000 })
+	.add('sang_charges', 'integer', { default: 0 })
 	.add('temp_cl', 'any', { default: {} })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('slayer', folder =>
@@ -163,4 +165,6 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.Flower, 'any', { default: null })
 			.add(FarmingPatchTypes.Mushroom, 'any', { default: null })
 			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
-	);
+	)
+	.add('tob_cost', 'any', { default: {} })
+	.add('tob_loot', 'any', { default: {} });

@@ -110,6 +110,9 @@ model ClientStorage {
   nightmare_cost               Json     @default("{}") @db.Json
   create_cost                  Json     @default("{}") @db.Json
   create_loot                  Json     @default("{}") @db.Json
+  tob_cost                     Json     @default("{}") @db.Json
+  tob_loot                     Json     @default("{}") @db.Json
+  degraded_items_cost          Json     @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -164,7 +167,6 @@ model Guild {
   tweetchannel      String?  @db.VarChar(19)
   levelUpMessages   String?  @db.VarChar(19)
   staffOnlyChannels String[] @db.VarChar(19)
-  tags              Json[]   @db.Json
 
   @@map("guilds")
 }
@@ -264,6 +266,8 @@ model User {
   pest_control_points        Int      @default(0)
   inferno_attempts           Int      @default(0)
   infernal_cape_sacrifices   Int      @default(0)
+  tob_attempts               Int      @default(0)
+  tob_hard_attempts          Int      @default(0)
   volcanic_mine_points       Int      @default(0)
   blowpipe                   Json     @default("{\"scales\":0,\"dartID\":null,\"dartQuantity\":0}") @db.Json
   ironman_alts               String[]
@@ -352,12 +356,15 @@ model User {
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
 
-  presents_stolen    Int @default(0)
-  presents_delivered Int @default(0)
-
-
   temp_cl            Json      @default("{}") @db.Json
   last_temp_cl_reset DateTime? @db.Timestamp(6)
+
+  tentacle_charges Int @default(10000)
+  sang_charges     Int @default(0)
+
+  tob_cost Json @default("{}") @db.Json
+  tob_loot Json @default("{}") @db.Json
+
 
   @@map("users")
 }
@@ -427,6 +434,8 @@ model Minigame {
   pest_control            Int    @default(0)
   inferno                 Int    @default(0)
   volcanic_mine           Int    @default(0)
+  tob                     Int    @default(0)
+  tob_hard                Int    @default(0)
 
   new_user NewUser?
   @@map("minigames")
@@ -521,7 +530,7 @@ enum activity_type_enum {
   VolcanicMine
   KourendFavour
   Inferno
-  Christmas
+  TheatreOfBlood
 }
 
 enum xp_gains_skill_enum {
