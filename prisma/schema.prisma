@@ -167,7 +167,6 @@ model Guild {
   tweetchannel      String?  @db.VarChar(19)
   levelUpMessages   String?  @db.VarChar(19)
   staffOnlyChannels String[] @db.VarChar(19)
-  tags              Json[]   @db.Json
 
   @@map("guilds")
 }
