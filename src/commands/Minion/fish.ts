@@ -67,15 +67,11 @@ export default class extends BotCommand {
 			return msg.channel.send('You need at least 15 Agility and Strength to do Barbarian Fishing.');
 		}
 
-		if (
-			fish.name === 'Minnow' &&
-			(!msg.author.hasItemEquippedOrInBank('Angler top') ||
-				!msg.author.hasItemEquippedOrInBank('Angler waders') ||
-				!msg.author.hasItemEquippedOrInBank('Angler boots') ||
-				!msg.author.hasItemEquippedOrInBank('Angler hat'))
-		) {
-			return msg.channel.send('You need to own the Angler Outfit to fish for Minnows.');
-		}
+		const anglerOutfit = ['Angler hat', 'Angler top', 'Angler waders', 'Angler boots'];
+        if (
+            fish.name === 'Minnow' && anglerOutfit.some(piece => !msg.author.hasItemEquippedOrInBank(piece))) {
+            return msg.channel.send('You need to own the Angler Outfit to fish for Minnows.');
+        }
 
 		// If no quantity provided, set it to the max.
 		let scaledTimePerFish =
