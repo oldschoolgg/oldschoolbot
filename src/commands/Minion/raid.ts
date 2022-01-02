@@ -14,6 +14,7 @@ import {
 	hasMinRaidsRequirements,
 	minimumCoxSuppliesNeeded
 } from '../../lib/data/cox';
+import { degradeItem } from '../../lib/degradeableItems';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -164,7 +165,7 @@ export default class extends BotCommand {
 			message: `${msg.author.username} is hosting a ${
 				isChallengeMode ? '**Challenge mode** ' : ''
 			}Chambers of Xeric mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}
@@ -210,15 +211,18 @@ export default class extends BotCommand {
 			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
 		}
 
-		const { duration, totalReduction, reductions } = await calcCoxDuration(users, isChallengeMode);
+		const { duration, totalReduction, reductions, degradeables } = await calcCoxDuration(users, isChallengeMode);
 
 		let debugStr = '';
 		const isSolo = users.length === 1;
 
 		const totalCost = new Bank();
 
-		await Promise.all(
-			users.map(async u => {
+		await Promise.all([
+			degradeables.map(async d => {
+				await degradeItem(d);
+			}),
+			...users.map(async u => {
 				const supplies = await calcCoxInput(u, isSolo);
 				await u.removeItemsFromBank(supplies);
 				totalCost.add(supplies);
@@ -228,7 +232,7 @@ export default class extends BotCommand {
 					totalReduction
 				).toFixed(1)}%) used ${supplies}\n`;
 			})
-		);
+		]);
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.CoxCost,

@@ -68,8 +68,11 @@ export namespace UserSettings {
 	export const PremiumBalanceTier = T<number | null>('premium_balance_tier');
 	export const PremiumBalanceExpiryDate = T<number | null>('premium_balance_expiry_date');
 
-	export const PresentsStolen = T<number>('presents_stolen');
-	export const PresentsDelivered = T<number>('presents_delivered');
+	export const TentacleCharges = T<number>('tentacle_charges');
+	export const SangCharges = T<number>('sang_charges');
+
+	export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
+	export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
@@ -101,6 +104,9 @@ export namespace UserSettings {
 
 		export const InfernoAttempts = T<number>('inferno_attempts');
 		export const InfernalCapesSacrificed = T<number>('infernal_cape_sacrifices');
+
+		export const TobAttempts = T<number>('tob_attempts');
+		export const TobHardModeAttempts = T<number>('tob_hard_attempts');
 	}
 
 	export namespace Minion {

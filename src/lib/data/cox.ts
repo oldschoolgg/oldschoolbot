@@ -11,8 +11,10 @@ import {
 } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
+import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
@@ -28,6 +30,9 @@ export const bareMinStats: Skills = {
 	magic: 80,
 	prayer: 70
 };
+
+export const SANGUINESTI_CHARGES_PER_COX = 150;
+export const TENTACLE_CHARGES_PER_COX = 200;
 
 export function hasMinRaidsRequirements(user: KlasaUser) {
 	return skillsMeetRequirements(user.rawSkills, bareMinStats);
@@ -190,7 +195,7 @@ export const maxMeleeGear = constructGearSetup({
 	legs: "Inquisitor's plateskirt",
 	feet: 'Primordial boots',
 	weapon: "Inquisitor's mace",
-	shield: 'Dragon defender',
+	shield: 'Avernic defender',
 	ring: 'Berserker ring(i)'
 });
 const maxMelee = new Gear(maxMeleeGear);
@@ -272,6 +277,26 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 		if (user.minionIsBusy) {
 			return `${user.username}'s minion is already doing an activity and cannot join.`;
 		}
+		if (user.getGear('melee').hasEquipped('Abyssal tentacle')) {
+			const tentacleResult = checkUserCanUseDegradeableItem({
+				item: getOSItem('Abyssal tentacle'),
+				chargesToDegrade: TENTACLE_CHARGES_PER_COX,
+				user
+			});
+			if (!tentacleResult.hasEnough) {
+				return tentacleResult.userMessage;
+			}
+		}
+		if (user.getGear('mage').hasEquipped('Sanguinesti staff')) {
+			const sangResult = checkUserCanUseDegradeableItem({
+				item: getOSItem('Sanguinesti staff'),
+				chargesToDegrade: SANGUINESTI_CHARGES_PER_COX,
+				user
+			});
+			if (!sangResult.hasEnough) {
+				return sangResult.userMessage;
+			}
+		}
 	}
 
 	return null;
@@ -321,39 +346,72 @@ function teamSizeBoostPercent(size: number) {
 	}
 }
 
-const itemBoosts = [
+interface ItemBoost {
+	item: Item;
+	boost: number;
+	mustBeEquipped: boolean;
+	setup?: 'mage';
+	mustBeCharged?: boolean;
+	requiredCharges?: number;
+}
+
+const itemBoosts: ItemBoost[][] = [
 	[
 		{
 			item: getOSItem('Twisted bow'),
-			boost: 9
+			boost: 8,
+			mustBeEquipped: false
 		},
 		{
 			item: getOSItem('Bow of faerdhinen (c)'),
-			boost: 7
+			boost: 6,
+			mustBeEquipped: false
 		},
 		{
 			item: getOSItem('Dragon hunter crossbow'),
-			boost: 5
+			boost: 5,
+			mustBeEquipped: false
 		}
 	],
 	[
 		{
 			item: getOSItem('Dragon warhammer'),
-			boost: 4
+			boost: 3,
+			mustBeEquipped: false
 		},
 		{
 			item: getOSItem('Bandos godsword'),
-			boost: 2.5
+			boost: 2.5,
+			mustBeEquipped: false
 		},
 		{
 			item: getOSItem('Bandos godsword (or)'),
-			boost: 2.5
+			boost: 2.5,
+			mustBeEquipped: false
 		}
 	],
 	[
 		{
 			item: getOSItem('Dragon hunter lance'),
-			boost: 4
+			boost: 3,
+			mustBeEquipped: false
+		},
+		{
+			item: getOSItem('Abyssal tentacle'),
+			boost: 2,
+			mustBeEquipped: false,
+			mustBeCharged: true,
+			requiredCharges: TENTACLE_CHARGES_PER_COX
+		}
+	],
+	[
+		{
+			item: getOSItem('Sanguinesti staff'),
+			boost: 6,
+			mustBeEquipped: false,
+			setup: 'mage',
+			mustBeCharged: true,
+			requiredCharges: SANGUINESTI_CHARGES_PER_COX
 		}
 	]
 ];
@@ -361,13 +419,21 @@ const itemBoosts = [
 export async function calcCoxDuration(
 	_team: KlasaUser[],
 	challengeMode: boolean
-): Promise<{ reductions: Record<string, number>; duration: number; totalReduction: number }> {
+): Promise<{
+	reductions: Record<string, number>;
+	duration: number;
+	totalReduction: number;
+	degradeables: { item: Item; user: KlasaUser; chargesToDegrade: number }[];
+}> {
 	const team = shuffleArr(_team).slice(0, 9);
 	const size = team.length;
 
 	let totalReduction = 0;
 
 	let reductions: Record<string, number> = {};
+
+	// Track degradeable items:
+	const degradeableItems: { item: Item; user: KlasaUser; chargesToDegrade: number }[] = [];
 
 	for (const u of team) {
 		let userPercentChange = 0;
@@ -383,7 +449,29 @@ export async function calcCoxDuration(
 		// Reduce time for item boosts
 		itemBoosts.forEach(set => {
 			for (const item of set) {
-				if (u.hasItemEquippedOrInBank(item.item.id)) {
+				if (item.mustBeCharged && item.requiredCharges) {
+					if (u.hasItemEquippedOrInBank(item.item.id)) {
+						const testItem = {
+							item: item.item,
+							user: u,
+							chargesToDegrade: item.requiredCharges
+						};
+						const canDegrade = checkUserCanUseDegradeableItem(testItem);
+						if (canDegrade.hasEnough) {
+							userPercentChange += item.boost;
+							degradeableItems.push(testItem);
+							break;
+						}
+					}
+				} else if (item.mustBeEquipped) {
+					if (item.setup && u.getGear(item.setup).hasEquipped(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					} else if (!item.setup && u.hasItemEquippedAnywhere(item.item.id)) {
+						userPercentChange += item.boost;
+						break;
+					}
+				} else if (u.hasItemEquippedOrInBank(item.item.id)) {
 					userPercentChange += item.boost;
 					break;
 				}
@@ -405,7 +493,7 @@ export async function calcCoxDuration(
 	duration -= duration * (teamSizeBoostPercent(size) / 100);
 
 	duration = randomVariation(duration, 5);
-	return { duration, reductions, totalReduction: totalSpeedReductions / size };
+	return { duration, reductions, totalReduction: totalSpeedReductions / size, degradeables: degradeableItems };
 }
 
 export async function calcCoxInput(u: KlasaUser, solo: boolean) {
@@ -419,5 +507,6 @@ export async function calcCoxInput(u: KlasaUser, solo: boolean) {
 
 	items.add('Saradomin brew(4)', brewsNeeded);
 	items.add('Super restore(4)', restoresNeeded);
+
 	return items;
 }
