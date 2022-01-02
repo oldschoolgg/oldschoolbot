@@ -6,7 +6,7 @@ export const reeseCreatables: Createable[] = [
 		name: 'Reese Blade of saeldor (c)',
 		inputItems: resolveNameBank({
 			'Blade of saeldor (inactive)': 1,
-			'Crystal shard': 1500
+			'Crystal shard': 1400
 		}),
 		outputItems: resolveNameBank({ 'Blade of saeldor (c)': 1 }),
 		QPRequired: 150,
