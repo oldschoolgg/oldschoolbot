@@ -33,7 +33,7 @@ import getOSItem from '../../lib/util/getOSItem';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[start|sim|graph] [input:...str]',
+			usage: '[start|sim|graph|check] [input:...str]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -222,6 +222,16 @@ export default class extends BotCommand {
 			its,
 			baseTOBUniques
 		)}\`\`\``);
+	}
+
+	async check(msg: KlasaMessage) {
+		const result = await checkTOBUser(msg.author, Boolean(msg.flagArgs.hard), 5);
+		if (result[0]) {
+			return msg.channel.send(
+				`You aren't able to join a Theatre of Blood raid, address these issues first: ${result[1]}`
+			);
+		}
+		return msg.channel.send('You are ready to do the Theatre of Blood!');
 	}
 
 	async start(msg: KlasaMessage, [input]: [string | undefined]) {
