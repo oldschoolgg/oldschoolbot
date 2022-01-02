@@ -389,7 +389,7 @@ ${
 					return sendToChannelID(this.client, msg.channel.id, {
 						content: result.slice(0, 2500)
 					});
-				} catch (err) {
+				} catch (err: any) {
 					console.error(err);
 					return msg.channel.send(`Failed to run roles task. ${err.message}`);
 				}

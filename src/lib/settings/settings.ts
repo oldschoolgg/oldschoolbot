@@ -3,7 +3,7 @@ import { Guild, Util } from 'discord.js';
 import { Gateway, KlasaMessage, Settings } from 'klasa';
 
 import { client } from '../..';
-import { Emoji, shouldTrackCommand } from '../constants';
+import { Emoji, getCommandArgs, shouldTrackCommand } from '../constants';
 import { ActivityTaskData } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { activitySync, prisma } from './prisma';
@@ -69,7 +69,17 @@ export async function getMinionName(userID: string): Promise<string> {
 	return name ? `${prefix} ${displayIcon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${displayIcon} Your minion`;
 }
 
-export const minionActivityCache = new Map<string, ActivityTaskData>();
+declare global {
+	namespace NodeJS {
+		interface Global {
+			minionActivityCache: Map<string, ActivityTaskData> | undefined;
+		}
+	}
+}
+export const minionActivityCache: Map<string, ActivityTaskData> = global.minionActivityCache || new Map();
+
+if (process.env.NODE_ENV !== 'production') global.minionActivityCache = minionActivityCache;
+
 export function getActivityOfUser(userID: string) {
 	const task = minionActivityCache.get(userID);
 	return task ?? null;
@@ -129,15 +139,17 @@ export async function runCommand(
 		channel_id: string;
 		is_continue: boolean;
 		guild_id: string | null;
+		flags: Prisma.InputJsonObject | undefined;
 	} | null = {
 		date: message.createdAt,
 		user_id: message.author.id,
 		command_name: command.name,
 		status: command_usage_status.Unknown,
-		args,
+		args: getCommandArgs(command, args),
 		channel_id: message.channel.id,
 		is_continue: isContinue,
-		guild_id: message.guild?.id ?? null
+		guild_id: message.guild?.id ?? null,
+		flags: Object.keys(message.flagArgs).length > 0 ? message.flagArgs : undefined
 	};
 
 	try {

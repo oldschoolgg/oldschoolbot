@@ -1,5 +1,4 @@
 import { MessageAttachment } from 'discord.js';
-import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
@@ -423,8 +422,11 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Theatre of Blood': {
-				enabled: false,
 				alias: ['tob'],
+				kcActivity: {
+					Default: user => user.getMinigameScore('tob'),
+					Hard: user => user.getMinigameScore('tob_hard')
+				},
 				items: theatreOfBLoodCL,
 				roleCategory: ['raids'],
 				isActivity: true
@@ -1027,7 +1029,7 @@ function getLeftList(
 	return leftList;
 }
 
-export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection') {
+export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection' | 'temp') {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
@@ -1039,12 +1041,15 @@ export function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collectio
 		case 'sacrifice':
 			userCheckBank.add(user.settings.get(UserSettings.SacrificedBank));
 			break;
+		case 'temp':
+			userCheckBank.add(user.settings.get(UserSettings.TempCL));
+			break;
 	}
 	return userCheckBank;
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection') {
+export function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection' | 'temp') {
 	if (logType === 'sacrifice' && allCLItems.includes(995)) allCLItems.splice(allCLItems.indexOf(995), 1);
 	return getUserClData(getBank(user, logType).bank, allCLItems);
 }
@@ -1129,7 +1134,7 @@ export async function getCollection(options: {
 	user: KlasaUser;
 	search: string;
 	flags: { [key: string]: string | number };
-	logType?: 'collection' | 'sacrifice' | 'bank';
+	logType?: 'collection' | 'sacrifice' | 'bank' | 'temp';
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
 
@@ -1172,7 +1177,7 @@ export async function getCollection(options: {
 					if (typeof attributes.kcActivity === 'string') {
 						userKC.Default += (await user.getKCByName(attributes.kcActivity))[1];
 					} else {
-						for (const [type, value] of objectEntries(attributes.kcActivity)) {
+						for (const [type, value] of Object.entries(attributes.kcActivity)) {
 							if (!userKC[type]) userKC[type] = 0;
 							if (Array.isArray(value)) {
 								for (const name of value) {

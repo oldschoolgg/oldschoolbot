@@ -20,9 +20,12 @@ import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
+import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
+import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
+import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
@@ -73,7 +76,11 @@ const subCommands = [
 	'lapcounts',
 	'cancel',
 	'train',
-	'unequipall'
+	'unequipall',
+	'tempcl',
+	'blowpipe',
+	'bp',
+	'charge'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -179,8 +186,24 @@ export default class MinionCommand extends BotCommand {
 		return msg.channel.send(data);
 	}
 
+	async charge(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return degradeableItemsCommand(msg, input);
+	}
+
+	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return this.blowpipe(msg, [input]);
+	}
+
+	async blowpipe(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return blowpipeCommand(msg, input);
+	}
+
 	async info(msg: KlasaMessage) {
 		return runCommand(msg, 'rp', ['c', msg.author]);
+	}
+
+	async tempcl(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return tempCLCommand(msg, input);
 	}
 
 	async unequippet(msg: KlasaMessage) {
