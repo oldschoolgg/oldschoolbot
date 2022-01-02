@@ -192,7 +192,7 @@ const fishes: Fish[] = [
 		alias: ['minnows'],
 		petChance: 977_778,
 		qpRequired: 1,
-		timePerFish: 2.04,
+		timePerFish: 2.14,
 		clueScrollChance: 977_778
 	},
 	{
@@ -226,12 +226,20 @@ const anglerItems: { [key: number]: number } = {
 	[itemID('Angler boots')]: 0.2
 };
 
+const minnowScaling: { [key: number]: number } = {
+	85: 0.05,
+	90: 0.001,
+	95: 0.03,
+	99: 0.099
+};
+
 const Fishing = {
 	aliases: ['fishing'],
 	Fishes: fishes,
 	id: SkillsEnum.Fishing,
 	emoji: Emoji.Fishing,
 	anglerItems,
+	minnowScaling,
 	name: 'Fishing'
 };
 
