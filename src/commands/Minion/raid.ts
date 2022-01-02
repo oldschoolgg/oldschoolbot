@@ -82,7 +82,7 @@ export default class extends BotCommand {
 			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(normalTable), 'cox-sim.txt')] });
 		}
 
-		if (!type) {
+		if (!type || type === 'gear') {
 			const [normal, cm] = await Promise.all([
 				msg.author.getMinigameScore('raids'),
 				msg.author.getMinigameScore('raids_challenge_mode')
@@ -93,45 +93,38 @@ export default class extends BotCommand {
 				totalUniques += cl.amount(item);
 			}
 			const totalPoints = msg.author.settings.get(UserSettings.TotalCoxPoints);
-			const { total } = calculateUserGearPercents(msg.author);
+			const { melee, range, mage, total } = calculateUserGearPercents(msg.author);
 			const normalSolo = await calcCoxDuration([msg.author], false);
 			const normalTeam = await calcCoxDuration(Array(2).fill(msg.author), false);
 			const cmSolo = await calcCoxDuration([msg.author], true);
 			const cmTeam = await calcCoxDuration(Array(2).fill(msg.author), true);
 			return msg.channel.send(`<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>
-**Normal:** ${normal} KC (Solo ${Emoji.CombatSword} ${calcWhatPercent(
-				normalSolo.reductions[msg.author.id],
-				normalSolo.totalReduction
-			).toFixed(1)}%, Team ${Emoji.CombatSword} ${calcWhatPercent(
-				normalTeam.reductions[msg.author.id],
-				normalTeam.totalReduction
-			).toFixed(1)})
-**Challenge Mode:** ${cm} KC (Solo ${Emoji.CombatSword} ${calcWhatPercent(
+**Normal:** ${normal} KC (Solo: ${Emoji.Skull} ${(await createTeam([msg.author], false))[0].deathChance.toFixed(1)}% ${
+				Emoji.CombatSword
+			} ${calcWhatPercent(normalSolo.reductions[msg.author.id], normalSolo.totalReduction).toFixed(1)}%, Team: ${
+				Emoji.Skull
+			} ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), false))[0].deathChance.toFixed(1)}% ${
+				Emoji.CombatSword
+			} ${calcWhatPercent(normalTeam.reductions[msg.author.id], normalTeam.totalReduction).toFixed(1)}%)
+**Challenge Mode:** ${cm} KC (Solo: ${Emoji.Skull} ${(await createTeam([msg.author], true))[0].deathChance.toFixed(
+				1
+			)}%  ${Emoji.CombatSword} ${calcWhatPercent(
 				cmSolo.reductions[msg.author.id],
 				cmSolo.totalReduction
-			).toFixed(1)}%, Team ${Emoji.CombatSword} ${calcWhatPercent(
+			).toFixed(1)}%, Team: ${Emoji.Skull} ${(
+				await createTeam(Array(2).fill(msg.author), true)
+			)[0].deathChance.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
 				cmTeam.reductions[msg.author.id],
 				cmTeam.totalReduction
-			).toFixed(1)})
+			).toFixed(1)}%)
 **Total Points:** ${totalPoints}
 **Total Uniques:** ${totalUniques} ${
 				totalUniques > 0 ? `(1 unique per ${Math.floor(totalPoints / totalUniques).toLocaleString()} pts)` : ''
-			}
-**Gear Score:** ${Emoji.Gear}${total.toFixed(1)}%`);
-		}
-
-		if (type === 'gear') {
-			const { melee, range, mage, total } = calculateUserGearPercents(msg.author);
-			return msg.channel.send(`**Melee Gear Score:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
-**Range Gear Score:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
-**Mage Gear Score:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
-**Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%
-**Death Chance Solo:** ${Emoji.Skull} ${(await createTeam([msg.author], false))[0].deathChance.toFixed(1)}%, CM ${
-				Emoji.Skull
-			} ${(await createTeam([msg.author], true))[0].deathChance.toFixed(1)}%
-**Death Chance Team:** ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), false))[0].deathChance.toFixed(
-				1
-			)}%, CM ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), true))[0].deathChance.toFixed(1)}%`);
+			}\n
+**Melee:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
+**Range:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
+**Mage:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
+**Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%`);
 		}
 
 		if (type !== 'mass' && type !== 'solo') {
