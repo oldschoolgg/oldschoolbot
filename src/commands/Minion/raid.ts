@@ -101,9 +101,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`<:Twisted_bow:403018312402862081> Chambers of Xeric <:Olmlet:324127376873357316>
 **Normal:** ${normal} KC (Solo: ${Emoji.Skull} ${(await createTeam([msg.author], false))[0].deathChance.toFixed(1)}% ${
 				Emoji.CombatSword
-			} ${calcWhatPercent(normalSolo.reductions[msg.author.id], normalSolo.totalReduction).toFixed(1)}%, Team: ${
-				Emoji.Skull
-			} ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), false))[0].deathChance.toFixed(1)}% ${
+			} ${calcWhatPercent(normalSolo.reductions[msg.author.id], normalSolo.totalReduction).toFixed(1)}%, Team: ${Emoji.Skull} ${(await createTeam(Array(2).fill(msg.author), false))[0].deathChance.toFixed(1)}% ${
 				Emoji.CombatSword
 			} ${calcWhatPercent(normalTeam.reductions[msg.author.id], normalTeam.totalReduction).toFixed(1)}%)
 **Challenge Mode:** ${cm} KC (Solo: ${Emoji.Skull} ${(await createTeam([msg.author], true))[0].deathChance.toFixed(
