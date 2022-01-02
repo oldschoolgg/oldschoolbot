@@ -68,10 +68,9 @@ export default class extends BotCommand {
 		}
 
 		const anglerOutfit = ['Angler hat', 'Angler top', 'Angler waders', 'Angler boots'];
-        if (
-            fish.name === 'Minnow' && anglerOutfit.some(piece => !msg.author.hasItemEquippedOrInBank(piece))) {
-            return msg.channel.send('You need to own the Angler Outfit to fish for Minnows.');
-        }
+		if (fish.name === 'Minnow' && anglerOutfit.some(piece => !msg.author.hasItemEquippedOrInBank(piece))) {
+			return msg.channel.send('You need to own the Angler Outfit to fish for Minnows.');
+		}
 
 		// If no quantity provided, set it to the max.
 		let scaledTimePerFish =
