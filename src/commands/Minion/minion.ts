@@ -175,6 +175,13 @@ export default class MinionCommand extends BotCommand {
 
 	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		const result = await dataCommand(msg, input);
+		if ('bank' in result) {
+			return msg.channel.sendBankImage({
+				title: result.title,
+				bank: result.bank.bank,
+				content: result.content
+			});
+		}
 		const output = Buffer.isBuffer(result) ? { files: [new MessageAttachment(result)] } : result;
 		return msg.channel.send(output);
 	}

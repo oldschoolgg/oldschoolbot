@@ -95,6 +95,9 @@ export async function barChart(title: string, format: (value: any) => string, va
 					formatter(value, _context) {
 						return format(value);
 					}
+				},
+				legend: {
+					display: false
 				}
 			}
 		}
