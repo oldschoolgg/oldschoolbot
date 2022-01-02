@@ -270,7 +270,6 @@ export function calculateTOBUserGearPercents(user: KlasaUser) {
 }
 
 export const minimumTOBSuppliesNeeded = new Bank({
-	'Stamina potion(4)': 3,
 	'Saradomin brew(4)': 10,
 	'Super restore(4)': 5
 });
@@ -593,7 +592,7 @@ export function createTOBTeam({
 		duration += (5 - team.length) * (Time.Minute * 1.3);
 	}
 
-	duration = randomVariation(duration, 5);
+	duration = Math.floor(randomVariation(duration, 5));
 
 	let wipedRoom: TOBRoom | null = null;
 	let deathDuration: number | null = 0;
@@ -602,13 +601,12 @@ export function createTOBTeam({
 
 		if (parsedTeam.every(member => member.deaths.includes(i))) {
 			wipedRoom = room;
-			deathDuration += calcWhatPercent(
-				disableVariation ? room.timeWeighting / 2 : randInt(1, room.timeWeighting),
-				duration
+			deathDuration += Math.floor(
+				calcPercentOfNum(disableVariation ? room.timeWeighting / 2 : randInt(1, room.timeWeighting), duration)
 			);
 			break;
 		} else {
-			deathDuration += calcWhatPercent(room.timeWeighting, duration);
+			deathDuration += Math.floor(calcPercentOfNum(room.timeWeighting, duration));
 		}
 	}
 

@@ -167,7 +167,6 @@ model Guild {
   tweetchannel      String?  @db.VarChar(19)
   levelUpMessages   String?  @db.VarChar(19)
   staffOnlyChannels String[] @db.VarChar(19)
-  tags              Json[]   @db.Json
 
   @@map("guilds")
 }
@@ -356,9 +355,6 @@ model User {
 
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
-
-  presents_stolen    Int @default(0)
-  presents_delivered Int @default(0)
 
   temp_cl            Json      @default("{}") @db.Json
   last_temp_cl_reset DateTime? @db.Timestamp(6)
