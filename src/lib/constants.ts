@@ -247,7 +247,6 @@ export const enum Tasks {
 	BossEvent = 'bossEventActivity',
 	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity',
-	Christmas = 'christmasActivity',
 	ToB = 'tobActivity'
 }
 
