@@ -357,18 +357,25 @@ export default class extends BotCommand {
 		const kc = await msg.author.getMinigameScore('tob');
 		const attempts = await msg.author.settings.get(UserSettings.Stats.TobAttempts);
 		const hardAttempts = await msg.author.settings.get(UserSettings.Stats.TobHardModeAttempts);
-		const gear = calculateTOBUserGearPercents(msg.author);
+		const { melee, range, mage, total } = calculateUserGearPercents(msg.author);
 		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false, gear);
 		const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true, gear);
-
+		let totalUniques = 0;
+			const cl = msg.author.cl();
+			for (const item of baseTOBUniques) {
+				totalUniques += cl.amount(item);
+			}
 		return msg.channel.send(`**Theatre of Blood**
-KC: ${kc}
-Attempts: ${attempts}
-Hard KC: ${hardKC}
-Hard attempts: ${hardAttempts}
-Death Chances: ${deathChances.deathChances.map(i => `${i.name}[${i.deathChance.toFixed(2)}%]`).join(' ')}
-Hard Mode Death Chances: ${hardDeathChances.deathChances
-			.map(i => `${i.name}[${i.deathChance.toFixed(2)}%]`)
-			.join(' ')}`);
+**Normal:** ${kc} KC, ${attempts} attempts
+**Hard Mode:** ${hardKC} KC, ${hardAttempts} attempts
+**Total Uniques:** ${totalUniques}\n
+**Melee:** <:Elder_maul:403018312247803906> ${melee.toFixed(1)}%
+**Range:** <:Twisted_bow:403018312402862081> ${range.toFixed(1)}%
+**Mage:** <:Kodai_insignia:403018312264712193> ${mage.toFixed(1)}%
+**Total Gear Score:** ${Emoji.Gear} ${total.toFixed(1)}%\n
+**Death Chances:** ${deathChances.deathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
+**Hard Mode Death Chances:** ${hardDeathChances.deathChances
+			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
+			.join(', ')}`);
 	}
 }
