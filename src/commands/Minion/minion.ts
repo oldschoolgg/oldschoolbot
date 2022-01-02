@@ -174,6 +174,9 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		if (msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send('Sorry, you need to be a Tier 3 Patron to use this command.');
+		}
 		const result = await dataCommand(msg, input);
 		if ('bank' in result) {
 			return msg.channel.sendBankImage({
