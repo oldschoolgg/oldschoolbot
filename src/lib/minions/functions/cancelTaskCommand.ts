@@ -48,11 +48,11 @@ export async function cancelTaskCommand(msg: KlasaMessage) {
 		});
 	}
 
-	if (currentTask.type === 'Raids') {
+	if (currentTask.type === 'Raids' || currentTask.type === 'TheatreOfBlood') {
 		const data = currentTask as RaidsOptions;
 		if (data.users.length > 1) {
 			return msg.channel.send(
-				`${msg.author.minionName} is currently doing the Chamber's of Xeric, they cannot leave their team!`
+				`${msg.author.minionName} is currently doing a raid, they cannot leave their team!`
 			);
 		}
 	}
