@@ -81,10 +81,6 @@ export namespace UserSettings {
 	export const PremiumBalanceTier = T<number | null>('premium_balance_tier');
 	export const PremiumBalanceExpiryDate = T<number | null>('premium_balance_expiry_date');
 
-	export const PresentsStolen = T<number>('presents_stolen');
-	export const PresentsDelivered = T<number>('presents_delivered');
-	export const GotFreeFestivePresent = T<boolean>('got_free_festive_present');
-
 	export const TentacleCharges = T<number>('tentacle_charges');
 	export const SangCharges = T<number>('sang_charges');
 

@@ -270,7 +270,6 @@ export function calculateTOBUserGearPercents(user: KlasaUser) {
 }
 
 export const minimumTOBSuppliesNeeded = new Bank({
-	'Stamina potion(4)': 3,
 	'Saradomin brew(4)': 10,
 	'Super restore(4)': 5
 });

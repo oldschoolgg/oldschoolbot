@@ -10,5 +10,4 @@ Client.defaultGuildSchema
 	.add('tweetchannel', 'textchannel', { default: null })
 	.add('levelUpMessages', 'textchannel', { default: null })
 	.add('staffOnlyChannels', 'textchannel', { array: true, default: [] })
-	.add('tags', 'any', { array: true })
 	.add('mega_duck_location', 'any', { default: { ...defaultMegaDuckLocation } });
