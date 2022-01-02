@@ -100,7 +100,7 @@ export default class extends BotCommand {
 				}
 				break;
 			default:
-				if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon')) && fish.name !== 'Minnow') {
+				if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
 				}
@@ -109,15 +109,15 @@ export default class extends BotCommand {
 
 		if (fish.id === itemID('Minnow')) {
 			if (msg.author.skillLevel(SkillsEnum.Fishing) >= 99) {
-				scaledTimePerFish *= 0.8145;
+				scaledTimePerFish *= 0.855225;
 			} else if (msg.author.skillLevel(SkillsEnum.Fishing) >= 95) {
-				scaledTimePerFish *= 0.9135;
+				scaledTimePerFish *= 0.959175;
 			} else if (msg.author.skillLevel(SkillsEnum.Fishing) >= 90) {
-				scaledTimePerFish *= 0.9305;
+				scaledTimePerFish *= 0.977025;
 			} else if (msg.author.skillLevel(SkillsEnum.Fishing) >= 85) {
-				scaledTimePerFish *= 0.9315;
+				scaledTimePerFish *= 0.978075;
 			} else if (msg.author.skillLevel(SkillsEnum.Fishing) >= 82) {
-				scaledTimePerFish *= 1;
+				scaledTimePerFish *= 1.05;
 			}
 		}
 
