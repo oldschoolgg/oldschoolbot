@@ -82,10 +82,6 @@ export default class extends BotCommand {
 				break;
 			}
 		}
-		let str = [];
-		if (fireRuneCost > 0) {
-			str.push(`${fireRuneCost}x Fire rune, `);
-		}
 
 		const alchValue = quantity * osItem.highalch;
 		const consumedItems = new Bank({
@@ -100,9 +96,9 @@ export default class extends BotCommand {
 		await msg.confirm(
 			`${msg.author}, please confirm you want to alch ${quantity} ${osItem.name} (${Util.toKMB(
 				alchValue
-			)}). This will take approximately ${formatDuration(
-				duration
-			)}, and consume ${str} ${quantity}x Nature runes.`
+			)}). This will take approximately ${formatDuration(duration)}, and consume ${
+				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
+			} ${quantity}x Nature runes.`
 		);
 
 		await msg.author.removeItemsFromBank(consumedItems);
