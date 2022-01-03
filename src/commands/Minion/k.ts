@@ -12,10 +12,12 @@ import {
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { GearSetupType, GearStat } from '../../lib/gear';
+import { checkUserCanUseDegradeableItem, degradeItem } from '../../lib/degradeableItems';
+import { GearSetupType } from '../../lib/gear';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -36,7 +38,7 @@ import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { Consumable } from '../../lib/minions/types';
+import { Consumable, KillableMonster } from '../../lib/minions/types';
 import { calcPOHBoosts } from '../../lib/poh';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -47,6 +49,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import {
 	addArrayOfNumbers,
+	convertAttackStyleToGearSetup,
 	formatDuration,
 	formatMissingItems,
 	isWeekend,
@@ -56,6 +59,7 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../lib/util/findMonster';
+import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 
 const validMonsters = killableMonsters.map(mon => mon.name).join('\n');
@@ -64,6 +68,21 @@ const invalidMonsterMsg = (prefix: string) =>
 	`\n\nTry: \`${prefix}k --monsters\` for a list of killable monsters.`;
 
 const { floor } = Math;
+
+const degradeableItemsCanUse = [
+	{
+		item: getOSItem('Sanguinesti staff'),
+		attackStyle: 'mage',
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 25,
+		boost: 6
+	},
+	{
+		item: getOSItem('Abyssal tentacle'),
+		attackStyle: 'melee',
+		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
+		boost: 3
+	}
+];
 
 function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
@@ -174,6 +193,32 @@ export default class extends BotCommand {
 		for (const [itemID, boostAmount] of Object.entries(msg.author.resolveAvailableItemBoosts(monster))) {
 			timeToFinish *= (100 - boostAmount) / 100;
 			boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
+		}
+
+		const monsterHP = osjsMon?.data.hitpoints ?? 100;
+		const estimatedQuantity = floor(msg.author.maxTripLength('MonsterKilling') / timeToFinish);
+		const totalMonsterHP = monsterHP * estimatedQuantity;
+
+		/**
+		 *
+		 * Degradeable Items
+		 *
+		 */
+		const degItemBeingUsed = [];
+		for (const degItem of degradeableItemsCanUse) {
+			const isUsing =
+				monster.attackStyleToUse &&
+				convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItem.attackStyle &&
+				msg.author.getGear(degItem.attackStyle).hasEquipped(degItem.item.id);
+			if (isUsing) {
+				const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
+				await checkUserCanUseDegradeableItem({
+					item: degItem.item,
+					chargesToDegrade: estimatedChargesNeeded,
+					user: msg.author
+				});
+				degItemBeingUsed.push(degItem);
+			}
 		}
 
 		// Removed vorkath because he has a special boost.
@@ -387,19 +432,7 @@ export default class extends BotCommand {
 			const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, msg.author);
 			foodStr += foodMessages;
 
-			let gearToCheck: GearSetupType = 'melee';
-
-			switch (monster.attackStyleToUse) {
-				case GearStat.AttackMagic:
-					gearToCheck = 'mage';
-					break;
-				case GearStat.AttackRanged:
-					gearToCheck = 'range';
-					break;
-				default:
-					break;
-			}
-
+			let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
 			if (monster.wildy) gearToCheck = 'wildy';
 
 			const { foodRemoved, reductions } = await removeFoodFromUser({
@@ -448,6 +481,17 @@ export default class extends BotCommand {
 
 		// Boosts that don't affect quantity:
 		duration = randomVariation(duration, 3);
+
+		for (const degItem of degItemBeingUsed) {
+			const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
+			await degradeItem({
+				item: degItem.item,
+				chargesToDegrade: chargesNeeded,
+				user: msg.author
+			});
+			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+			duration = reduceNumByPercent(duration, degItem.boost);
+		}
 
 		if (isWeekend()) {
 			boosts.push('10% for Weekend');
