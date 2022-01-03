@@ -114,7 +114,7 @@ export default class extends Task {
 			if (thisTripFinishesTask) {
 				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
 				await user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-				const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+				const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
