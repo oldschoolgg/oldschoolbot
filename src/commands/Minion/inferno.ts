@@ -658,7 +658,6 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 				: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
 		}`;
 
-
 		let realCost = new Bank();
 		try {
 			realCost = (await msg.author.specialRemoveItems(cost)).realCost;
