@@ -56,14 +56,8 @@ export default class extends BotCommand {
 		const potsAdd = [];
 		const potsRemove = [];
 		for (const item of potions) {
-			let potionDosage = [];
-			potionDosage = [`${item} (1)`, `${item} (2)`, `${item} (3)`, `${item} (4)`];
-			if (
-				(msg.author.owns(potionDosage[0]) && dose !== 1) ||
-				(msg.author.owns(potionDosage[1]) && dose !== 2) ||
-				(msg.author.owns(potionDosage[2]) && dose !== 3) ||
-				(msg.author.owns(potionDosage[3]) && dose !== 4)
-			) {
+			const check = await this.hasPotion(msg, item, dose);
+			if (check) {
 				const { potionsToAdd, sumOfPots, potionName, potionsToRemove } = decantPotionFromBank(
 					userBank,
 					item,
@@ -71,8 +65,8 @@ export default class extends BotCommand {
 				);
 				await msg.author.removeItemsFromBank(potionsToRemove);
 				await msg.author.addItemsToBank(potionsToAdd);
-				potsAdd.push(`${potionsToAdd}`);
-				potsRemove.push(`${sumOfPots}x ${potionName}${sumOfPots > 0 ? 's' : ''}`);
+				potsAdd.push(` ${potionsToAdd}`);
+				potsRemove.push(` ${sumOfPots.toLocaleString()}x ${potionName}${sumOfPots > 0 ? 's' : ' '}`);
 			}
 		}
 
@@ -85,6 +79,17 @@ export default class extends BotCommand {
 				'\n\nWhile decanting some potions, you find a pair of gloves on the floor and pick them up.'
 			);
 		}
-		return msg.channel.send(`You decanted **${potsRemove}** into **${potsAdd}**`);
+		return msg.channel.send(`You decanted**${potsRemove}** into${potsAdd}`);
+	}
+
+	async hasPotion(msg: KlasaMessage, item: string, dose: number) {
+		let check = false;
+		for (let i = 1; i <= 4; i++) {
+			if (msg.author.owns(`${item} (${i})`) && dose !== i) {
+				check = true;
+				break;
+			}
+		}
+		return check;
 	}
 }
