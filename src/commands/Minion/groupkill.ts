@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			} reaction to join, click it again to leave. The maximum size for this mass is ${
 				maximumSizeForParty ?? maximumSize
 			}.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}
@@ -98,7 +98,7 @@ export default class extends BotCommand {
 				if (1 > 2 && monster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(monster, user);
-					} catch (err) {
+					} catch (err: any) {
 						return [true, err];
 					}
 

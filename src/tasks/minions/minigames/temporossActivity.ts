@@ -15,7 +15,7 @@ export default class extends Task {
 		const { userID, channelID, quantity, rewardBoost, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
-		const previousScore = (await getMinigameEntity(user.id)).big_chompy_bird_hunting;
+		const previousScore = (await getMinigameEntity(user.id)).tempoross;
 		const { newScore } = await incrementMinigameScore(userID, 'tempoross', quantity);
 		const kcForPet = randInt(previousScore, newScore);
 

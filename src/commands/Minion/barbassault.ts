@@ -6,6 +6,7 @@ import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 import { Emoji, Events } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { getMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/simulation/baGamble';
@@ -16,6 +17,7 @@ import { formatDuration, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
 
 const BarbBuyables = [
 	{
@@ -202,21 +204,16 @@ export default class extends BotCommand {
 		const loot = new Bank().add(table.roll(qty));
 		if (loot.has('Pet penance queen')) {
 			const gamblesDone = msg.author.settings.get(UserSettings.HighGambles) + 1;
-			const countUsersHas =
-				parseInt(
-					(
-						await this.client.query<[{ count: string }]>(
-							'SELECT COUNT(*) FROM users WHERE "collectionLogBank"->>\'12703\' IS NOT NULL;'
-						)
-					)[0].count
-				) + 1;
+
+			const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
+
 			this.client.emit(
 				Events.ServerNotification,
 				`<:Pet_penance_queen:324127377649303553> **${msg.author.username}'s** minion, ${
 					msg.author.minionName
 				}, just received a Pet penance queen from their ${formatOrdinal(
 					gamblesDone
-				)} High gamble! They are the ${formatOrdinal(countUsersHas)} to it.`
+				)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 			);
 		}
 		const { itemsAdded } = await msg.author.addItemsToBank(loot.bank, true);
@@ -246,7 +243,7 @@ export default class extends BotCommand {
 			}! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. There must be 2+ users in the party.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}

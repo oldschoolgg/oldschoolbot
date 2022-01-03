@@ -45,14 +45,25 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
-		return this.settings.update(
-			UserSettings.CollectionLogBank,
-			addBanks([
-				items,
-				{
-					...this.settings.get(UserSettings.CollectionLogBank)
-				}
-			])
-		);
+		return this.settings.update([
+			[
+				UserSettings.CollectionLogBank,
+				addBanks([
+					items,
+					{
+						...this.settings.get(UserSettings.CollectionLogBank)
+					}
+				])
+			],
+			[
+				UserSettings.TempCL,
+				addBanks([
+					items,
+					{
+						...this.settings.get(UserSettings.TempCL)
+					}
+				])
+			]
+		]);
 	}
 }

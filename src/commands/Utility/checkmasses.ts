@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, isGroupActivity, isRaidsActivity } from '../../lib/util';
+import { formatDuration, isGroupActivity, isRaidsActivity, isTobActivity } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -31,7 +31,7 @@ export default class extends BotCommand {
 			})
 		)
 			.map(convertStoredActivityToFlatActivity)
-			.filter(m => (isRaidsActivity(m) || isGroupActivity(m)) && m.users.length > 1);
+			.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
 
 		if (masses.length === 0) {
 			return msg.channel.send('There are no active masses in this server.');
@@ -39,10 +39,13 @@ export default class extends BotCommand {
 		const now = Date.now();
 		const massStr = masses
 			.map(m => {
+				const remainingTime = isTobActivity(m)
+					? m.finishDate - m.duration + m.fakeDuration - now
+					: m.finishDate - now;
 				if (isGroupActivity(m)) {
 					return `${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
 						m.users.length
-					} users returning to <#${m.channelID}> in ${formatDuration(m.finishDate - now)}`;
+					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`;
 				}
 			})
 			.join('\n');

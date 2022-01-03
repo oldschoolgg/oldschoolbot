@@ -104,7 +104,10 @@ export default class extends BotCommand {
 
 		if (buyable.minigameScoreReq) {
 			const [key, req] = buyable.minigameScoreReq;
-			const kc = await msg.author.getMinigameScore(key);
+			let kc = await msg.author.getMinigameScore(key);
+			if (key === 'tob') {
+				kc += await msg.author.getMinigameScore('tob_hard');
+			}
 			if (kc < req) {
 				return msg.channel.send(
 					`You need ${req} KC in ${
@@ -178,6 +181,7 @@ export default class extends BotCommand {
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyLootBank, outItems);
 
 		await msg.author.addItemsToBank(outItems, true);
 
