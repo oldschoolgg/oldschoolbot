@@ -146,10 +146,6 @@ export const enum ReactionEmoji {
 	Start = '705973302719414329'
 }
 
-export const enum Image {
-	DiceBag = 'https://i.imgur.com/sySQkSX.png'
-}
-
 export const enum Color {
 	Orange = 16_098_851
 }

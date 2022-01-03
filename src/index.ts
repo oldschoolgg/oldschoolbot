@@ -38,4 +38,6 @@ client.on('raw', async event => {
 });
 client.on('ready', client.init);
 mahojiClient.start();
-client.login(botToken);
+client.login(botToken).then(() => {
+	console.log(client.commands.size);
+});
