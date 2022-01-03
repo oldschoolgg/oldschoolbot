@@ -1,4 +1,4 @@
-import { objectEntries, Time } from 'e';
+import { notEmpty, objectEntries, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Emoji } from '../../lib/constants';
@@ -9,6 +9,17 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { TearsOfGuthixActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+
+const skillReqs = {
+	[SkillsEnum.Firemaking]: 49,
+	[SkillsEnum.Crafting]: 20,
+	[SkillsEnum.Mining]: 20
+};
+const ironmanExtraReqs = {
+	[SkillsEnum.Smithing]: 49,
+	[SkillsEnum.Thieving]: 36,
+	[SkillsEnum.Slayer]: 35
+};
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -25,16 +36,6 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const skillReqs = {
-			[SkillsEnum.Firemaking]: 49,
-			[SkillsEnum.Crafting]: 20,
-			[SkillsEnum.Mining]: 20
-		};
-		const ironmanExtraReqs = {
-			[SkillsEnum.Smithing]: 49,
-			[SkillsEnum.Thieving]: 36,
-			[SkillsEnum.Slayer]: 35
-		};
 
 		await msg.author.settings.sync();
 		const currentDate = new Date().getTime();
@@ -67,7 +68,7 @@ export default class extends BotCommand {
 							? formatSkillRequirements({ [s[0]]: s[1] }, true)
 							: undefined;
 					})
-					.filter(f => f)
+					.filter(notEmpty)
 					.join(', ')}`
 			);
 		}
