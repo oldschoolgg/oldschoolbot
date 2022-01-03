@@ -219,7 +219,8 @@ export const enum Tasks {
 	PestControl = 'pestControlActivity',
 	VolcanicMine = 'volcanicMineActivity',
 	KourendFavour = 'kourendFavourActivity',
-	Inferno = 'infernoActivity'
+	Inferno = 'infernoActivity',
+	ToB = 'tobActivity'
 }
 
 export enum ActivityGroup {
@@ -438,7 +439,11 @@ export const informationalButtons = [
 		.setEmoji('778418736180494347')
 		.setURL('https://www.discord.gg/ob')
 		.setStyle('LINK'),
-	new MessageButton().setLabel('Bot Invite').setEmoji('🤖').setURL('http://invite.oldschool.gg/').setStyle('LINK')
+	new MessageButton()
+		.setLabel('Bot Invite')
+		.setEmoji('🤖')
+		.setURL('http://www.oldschool.gg/invite/osb')
+		.setStyle('LINK')
 ];
 
 export const lastTripCache = new Map<
@@ -465,4 +470,10 @@ export function shouldTrackCommand(command: Command, args: any[]) {
 		}
 	}
 	return true;
+}
+export function getCommandArgs(command: Command, args: any[]) {
+	if (args.length === 0) return undefined;
+	if (command.name === 'bank') return undefined;
+	if (command.name === 'rp' && args[0] === 'c') return undefined;
+	return args;
 }

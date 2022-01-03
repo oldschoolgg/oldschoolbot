@@ -36,7 +36,7 @@ export default class extends BotCommand {
 			}
 
 			return msg.channel.send({ embeds: [embed] });
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}
