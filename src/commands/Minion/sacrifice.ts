@@ -38,7 +38,7 @@ export default class extends BotCommand {
 			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
 		});
 
-		const sacVal = await msg.author.settings.get(UserSettings.SacrificedValue);
+		const sacVal = msg.author.settings.get(UserSettings.SacrificedValue);
 
 		if (!msg.author.owns(bankToSac)) {
 			return msg.channel.send(`You don't own ${bankToSac}.`);
