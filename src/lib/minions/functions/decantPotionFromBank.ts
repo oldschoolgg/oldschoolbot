@@ -5,7 +5,9 @@ import { stringMatches } from '../../util';
 import Potions from '../data/potions';
 
 export default function decantPotionFromBank(userBank: ItemBank, potion: string, dose: 1 | 2 | 3 | 4) {
-	const potionToDecant = Potions.find(pot => stringMatches(pot.name, potion));
+	const potionToDecant = Potions.find(
+		pot => stringMatches(pot.name, potion) || pot.alias?.some(a => stringMatches(a, potion))
+	);
 	if (!potionToDecant) {
 		throw "You can't decant that!";
 	}

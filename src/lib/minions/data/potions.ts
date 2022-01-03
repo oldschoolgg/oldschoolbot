@@ -3,6 +3,7 @@ import resolveItems from '../../util/resolveItems';
 const Potions = [
 	{
 		name: 'Saradomin brew',
+		alias: ['Sara brew', 'Brew'],
 		items: resolveItems(['Saradomin brew(1)', 'Saradomin brew(2)', 'Saradomin brew(3)', 'Saradomin brew(4)'])
 	},
 	{
@@ -11,10 +12,12 @@ const Potions = [
 	},
 	{
 		name: 'Prayer potion',
+		alias: ['Ppot', 'Prayer'],
 		items: resolveItems(['Prayer potion(1)', 'Prayer potion(2)', 'Prayer potion(3)', 'Prayer potion(4)'])
 	},
 	{
 		name: 'Sanfew serum',
+		alias: ['Sanfew'],
 		items: resolveItems(['Sanfew serum(1)', 'Sanfew serum(2)', 'Sanfew serum(3)', 'Sanfew serum(4)'])
 	},
 	{
@@ -67,6 +70,7 @@ const Potions = [
 	},
 	{
 		name: 'Super attack',
+		alias: ['Super att', 'Super attk'],
 		items: resolveItems(['Super attack(1)', 'Super attack(2)', 'Super attack(3)', 'Super attack(4)'])
 	},
 	{
@@ -87,6 +91,7 @@ const Potions = [
 	},
 	{
 		name: 'Super strength',
+		alias: ['Super str'],
 		items: resolveItems(['Super strength(1)', 'Super strength(2)', 'Super strength(3)', 'Super strength(4)'])
 	},
 	{
@@ -95,6 +100,7 @@ const Potions = [
 	},
 	{
 		name: 'Super defence',
+		alias: ['Super def'],
 		items: resolveItems(['Super defence(1)', 'Super defence(2)', 'Super defence(3)', 'Super defence(4)'])
 	},
 	{
@@ -134,6 +140,7 @@ const Potions = [
 	},
 	{
 		name: 'Ranging potion',
+		alias: ['Range', 'Range pot', 'Ranging'],
 		items: resolveItems(['Ranging potion(1)', 'Ranging potion(2)', 'Ranging potion(3)', 'Ranging potion(4)'])
 	},
 	{
@@ -147,14 +154,17 @@ const Potions = [
 	},
 	{
 		name: 'Magic potion',
+		alias: ['Magic pot', 'Mage pot', 'Mage', 'Magic'],
 		items: resolveItems(['Magic potion(1)', 'Magic potion(2)', 'Magic potion(3)', 'Magic potion(4)'])
 	},
 	{
 		name: 'Stamina potion',
+		alias: ['Stam', 'Stamina'],
 		items: resolveItems(['Stamina potion(1)', 'Stamina potion(2)', 'Stamina potion(3)', 'Stamina potion(4)'])
 	},
 	{
 		name: 'Zamorak brew',
+		alias: ['Zammy', 'Zammy brew'],
 		items: resolveItems(['Zamorak brew(1)', 'Zamorak brew(2)', 'Zamorak brew(3)', 'Zamorak brew(4)'])
 	},
 	{
@@ -216,6 +226,7 @@ const Potions = [
 	},
 	{
 		name: 'Super combat potion',
+		alias: ['scp', 'super combat'],
 		items: resolveItems([
 			'Super combat potion(1)',
 			'Super combat potion(2)',
