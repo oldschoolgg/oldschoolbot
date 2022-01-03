@@ -17,11 +17,11 @@ export default class extends Task {
 
 		// Find lowest level skill
 		let lowestXp = Object.values(user.rawSkills)[0];
-		let lowestSkill = Object.keys(user.rawSkills)[0];
+		let lowestSkill = Object.keys(user.rawSkills)[0] as SkillsEnum;
 		Object.entries(user.rawSkills).forEach(([skill, xp]) => {
 			if (xp < lowestXp) {
 				lowestXp = xp;
-				lowestSkill = skill;
+				lowestSkill = skill as SkillsEnum;
 			}
 		});
 
@@ -40,7 +40,7 @@ export default class extends Task {
 		const baseXPperTear = 10;
 		const xpPerTearScaling = 50 / 29;
 		const xpScalingLevelCap = 30;
-		const skillLevel = user.skillLevel(lowestSkill as SkillsEnum);
+		const skillLevel = user.skillLevel(lowestSkill);
 		const scaledXPperTear =
 			skillLevel >= xpScalingLevelCap ? 60 : baseXPperTear + (skillLevel - 1) * xpPerTearScaling;
 
@@ -50,7 +50,7 @@ export default class extends Task {
 		const [hasDiary] = await userhasDiaryTier(user, LumbridgeDraynorDiary.hard);
 		if (hasDiary) xpToGive = increaseNumByPercent(xpToGive, 10);
 
-		const xpStr = await user.addXP({ skillName: lowestSkill as SkillsEnum, amount: xpToGive, duration });
+		const xpStr = await user.addXP({ skillName: lowestSkill, amount: xpToGive, duration });
 
 		let output = `${user}, ${
 			user.minionName
