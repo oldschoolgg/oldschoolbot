@@ -17,6 +17,7 @@ import {
 	allPetIDs,
 	chambersOfXericCL,
 	customBossesDropsThatCantBeDroppedInMBs,
+	fancyClothing,
 	frozenKeyPieces
 } from './CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './holidayItems';
@@ -38,6 +39,7 @@ export const MysteryBoxes = new LootTable()
 	.oneIn(40, 'Pet Mystery Box')
 	.oneIn(150, 'Holiday Mystery Box')
 	.oneIn(30, 'Equippable mystery box')
+	.oneIn(30, 'Clothing Mystery Box')
 	.add('Tradeable Mystery Box')
 	.add('Untradeable Mystery Box');
 
@@ -450,6 +452,13 @@ const Openables: Openable[] = [
 			.add('Toy doll')
 			.add('Toy cat'),
 		emoji: Emoji.Casket
+	},
+	{
+		name: 'Clothing Mystery Box',
+		itemID: 50_421,
+		aliases: ['cmb', 'clothing mystery box'],
+		table: () => randArrItem(fancyClothing),
+		emoji: Emoji.MysteryBox
 	}
 ];
 

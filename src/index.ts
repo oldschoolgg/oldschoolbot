@@ -1,4 +1,4 @@
-import './lib/customItems';
+import './lib/customItems/customItems';
 import './lib/data/itemAliases';
 
 import * as Sentry from '@sentry/node';

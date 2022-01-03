@@ -106,6 +106,7 @@ const table = new LootTable()
 	.add(AllBarrows, 3)
 	.add(LogsTable, 4)
 	.add(Supplies, 1, 5)
+	.oneIn(40, 'Clothing mystery box')
 	.oneIn(90, 'Holiday mystery box');
 
 class GrandmasterClue extends Clue {

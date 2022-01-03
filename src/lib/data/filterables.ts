@@ -7,7 +7,7 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { superCompostables } from '../../commands/Minion/compostbin';
-import { customItems } from '../customItems';
+import { customItems } from '../customItems/util';
 import { monkeyEatables } from '../monkeyRumble';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { gracefulItems } from '../skilling/skills/agility';

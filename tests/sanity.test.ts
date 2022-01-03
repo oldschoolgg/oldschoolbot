@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { masterCapesCL } from '../src/lib/data/CollectionsExport';
-import { allMbTables, PMBTable } from '../src/lib/data/openables';
+import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../src/lib/data/openables';
 import { growablePets } from '../src/lib/growablePets';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import { Ignecarus } from '../src/lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -115,5 +115,12 @@ describe('Sanity', () => {
 		for (const id of [KalphiteKingMonster.id, Ignecarus.id, VasaMagus.id, KingGoldemar.id]) {
 			expect(killableMonsters.some(i => i.id === id)).toEqual(false);
 		}
+	});
+	test('fancy', () => {
+		expect(tmbTable.includes(itemID('Clothing Mystery Box'))).toEqual(false);
+		expect(umbTable.includes(itemID('Clothing Mystery Box'))).toEqual(false);
+		expect(tmbTable.includes(itemID('Swanky boots'))).toEqual(false);
+		expect(embTable.includes(itemID('Swanky boots'))).toEqual(false);
+		expect(umbTable.includes(itemID('Swanky boots'))).toEqual(false);
 	});
 });
