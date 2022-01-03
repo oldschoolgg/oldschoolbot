@@ -528,6 +528,48 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);
 		const zukKC = await msg.author.getMinigameScore('inferno');
 
+		if (msg.flagArgs.chance) {
+			const res = await this.infernoRun({
+				user: msg.author,
+				attempts,
+				timesMadeToZuk: await this.timesMadeToZuk(msg.author.id)
+			});
+
+			if (typeof res === 'string') {
+				return msg.channel.send({
+					files: [
+						await chatHeadImage({
+							content: res,
+							head: 'ketKeh'
+						})
+					]
+				});
+			}
+
+			const usersRangeStats = msg.author.getGear('range').stats;
+
+			const { zukDeathChance, duration, preZukDeathChance } = res;
+
+			let boosts = `
+**Boosts:** ${duration.messages.join(', ')} ${
+				duration.missed.length === 0 ? '' : `*(You didn't get these: ||${duration.missed.join(', ')}||)*`
+			}
+**Range Attack Bonus:** ${usersRangeStats.attack_ranged}`;
+			let deathChances = `
+**Pre-Zuk Death Chance:** ${preZukDeathChance.value.toFixed(1)}% ${preZukDeathChance.messages.join(', ')} ${
+				preZukDeathChance.missed.length === 0
+					? ''
+					: `*(You didn't get these: ||${preZukDeathChance.missed.join(', ')}||)*`
+			}
+**Zuk Death Chance:** ${zukDeathChance.value.toFixed(1)}% ${zukDeathChance.messages.join(', ')} ${
+				zukDeathChance.missed.length === 0
+					? ''
+					: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
+			}`;
+
+			return msg.channel.send(`${boosts}${deathChances}`);
+		}
+
 		let str = 'You have never attempted the Inferno, I recommend you stay that way.';
 		if (attempts && !zukKC) {
 			str = `You have tried the Inferno ${attempts} times, but never succeeded. Leave while you can.`;
@@ -616,9 +658,6 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 				: `*(You didn't get these: ||${zukDeathChance.missed.join(', ')}||)*`
 		}`;
 
-		if (msg.flagArgs.chance) {
-			return msg.channel.send(`${boosts}${deathChances}`);
-		}
 
 		let realCost = new Bank();
 		try {
