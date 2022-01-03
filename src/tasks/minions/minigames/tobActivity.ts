@@ -42,19 +42,24 @@ export default class extends Task {
 		);
 
 		// Give them all +1 attempts
-		await Promise.all(
-			allUsers.map(u => {
-				const key = hardMode ? UserSettings.Stats.TobHardModeAttempts : UserSettings.Stats.TobAttempts;
-				const currentAttempts = u.settings.get(key);
-				return u.settings.update(key, currentAttempts + 1);
-			})
-		);
+		const diedToMaiden = wipedRoom !== null && wipedRoom === 0;
+		if (!diedToMaiden) {
+			await Promise.all(
+				allUsers.map(u => {
+					const key = hardMode ? UserSettings.Stats.TobHardModeAttempts : UserSettings.Stats.TobAttempts;
+					const currentAttempts = u.settings.get(key);
+					return u.settings.update(key, currentAttempts + 1);
+				})
+			);
+		}
 
 		// GIVE XP HERE
 		// 100k tax if they wipe
 		if (wipedRoom !== null) {
 			sendToChannelID(this.client, channelID, {
-				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!`
+				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${
+					diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
+				}`
 			});
 			// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
 			await updateBankSetting(

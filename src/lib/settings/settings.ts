@@ -76,7 +76,7 @@ declare global {
 		}
 	}
 }
-export const minionActivityCache = global.minionActivityCache || new Map();
+export const minionActivityCache: Map<string, ActivityTaskData> = global.minionActivityCache || new Map();
 
 if (process.env.NODE_ENV !== 'production') global.minionActivityCache = minionActivityCache;
 

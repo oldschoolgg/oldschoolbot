@@ -4,7 +4,7 @@ import { cancelTask, getActivityOfUser } from '../../settings/settings';
 import { NightmareActivityTaskOptions, RaidsOptions } from '../../types/minions';
 
 export async function cancelTaskCommand(msg: KlasaMessage) {
-	const currentTask = getActivityOfUser(msg.author.id) as any;
+	const currentTask = getActivityOfUser(msg.author.id);
 
 	if (!currentTask) {
 		return msg.channel.send(
@@ -41,11 +41,11 @@ export async function cancelTaskCommand(msg: KlasaMessage) {
 		return msg.channel.send(`${msg.author.minionName} is currently doing Soul Wars, and cant leave their team!`);
 	}
 
-	if (currentTask.type === 'Raids') {
+	if (currentTask.type === 'Raids' || currentTask.type === 'TheatreOfBlood') {
 		const data = currentTask as RaidsOptions;
 		if (data.users.length > 1) {
 			return msg.channel.send(
-				`${msg.author.minionName} is currently doing the Chamber's of Xeric, they cannot leave their team!`
+				`${msg.author.minionName} is currently doing a raid, they cannot leave their team!`
 			);
 		}
 	}
