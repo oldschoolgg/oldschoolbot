@@ -36,7 +36,6 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-
 		await msg.author.settings.sync();
 		const currentDate = new Date().getTime();
 		const lastPlayedDate = msg.author.settings.get(UserSettings.LastTearsOfGuthixTimestamp);
