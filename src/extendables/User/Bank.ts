@@ -5,9 +5,9 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { O } from 'ts-toolbelt';
 
-import { blowpipeDarts, validateBlowpipeData } from '../../commands/Minion/blowpipe';
 import { projectiles } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
+import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions/blowpipeCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
