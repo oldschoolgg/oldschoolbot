@@ -298,6 +298,7 @@ export default class extends BotCommand {
 		await Promise.all(
 			users.map(async u => {
 				const supplies = await calcTOBInput(u);
+				const { total } = calculateTOBUserGearPercents(u);
 				const blowpipeData = u.settings.get(UserSettings.Blowpipe);
 				const { realCost } = await u.specialRemoveItems(
 					supplies
@@ -310,6 +311,7 @@ export default class extends BotCommand {
 						.add(u.getGear('range').ammo!.item, 100)
 				);
 				await updateBankSetting(u, UserSettings.TOBCost, realCost);
+				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
 				if (u.getGear('melee').hasEquipped('Abyssal tentacle')) {
 					await degradeItem({
 						item: getOSItem('Abyssal tentacle'),
@@ -317,8 +319,6 @@ export default class extends BotCommand {
 						chargesToDegrade: TENTACLE_CHARGES_PER_RAID
 					});
 				}
-				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
-				const { total } = calculateTOBUserGearPercents(u);
 				debugStr += `**- ${u.username}** (${Emoji.Gear}${total.toFixed(1)}% ${
 					Emoji.CombatSword
 				} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
