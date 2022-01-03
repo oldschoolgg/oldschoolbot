@@ -319,10 +319,9 @@ export default class extends BotCommand {
 				}
 				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
 				const { total } = calculateTOBUserGearPercents(u);
-				debugStr += `**- ${u.username}** (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
-					reductions[u.id],
-					totalReduction
-				).toFixed(1)}%) used ${realCost}\n\n`;
+				debugStr += `**- ${u.username}** (${Emoji.Gear}${total.toFixed(1)}% ${
+					Emoji.CombatSword
+				} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
 			})
 		);
 
