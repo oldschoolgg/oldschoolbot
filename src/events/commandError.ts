@@ -35,7 +35,8 @@ export default class extends Event {
 				id: message.author.id
 			},
 			tags: {
-				command: command.name
+				command: command.name,
+				args: message.args.join(', ')
 			}
 		});
 

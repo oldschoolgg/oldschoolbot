@@ -307,6 +307,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vasa minirio',
 	'Vespina'
 ]);
+export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
 export const chambersOfXericCL = resolveItems([
 	'Olmlet',
 	'Metamorphic dust',
@@ -346,11 +347,10 @@ export const theatreOfBLoodCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5'
-	// Missing items on the Items object
-	// 'Sanguine dust',
-	// 'Holy ornament kit',
-	// 'Sanguine ornament kit'
+	'Sinhaza shroud tier 5',
+	'Sanguine dust',
+	'Holy ornament kit',
+	'Sanguine ornament kit'
 ]);
 
 export const cluesBeginnerCL = resolveItems([
@@ -1714,7 +1714,15 @@ export const holidayCL = resolveItems([
 	'Banshee mask',
 	'Banshee top',
 	'Banshee robe',
-	'Hunting knife'
+	'Hunting knife',
+	'Yo-yo',
+	'Candy cane',
+	'Snow globe',
+	'Antisanta mask',
+	'Antisanta jacket',
+	'Antisanta pantaloons',
+	'Antisanta gloves',
+	'Antisanta boots'
 ]);
 export const dailyCL = resolveItems([
 	'Event rpg',
@@ -1965,6 +1973,15 @@ export const gracefulCL = resolveItems([
 export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
+	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
 	...resolveItems(['Little parasite', 'Dark squirrel'])
 ];
+
+export const antiSantaOutfit = new Bank({
+	'Antisanta mask': 1,
+	'Antisanta jacket': 1,
+	'Antisanta pantaloons': 1,
+	'Antisanta gloves': 1,
+	'Antisanta boots': 1
+});
