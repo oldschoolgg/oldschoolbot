@@ -273,7 +273,7 @@ export default class extends BotCommand {
 
 		const teamCheckFailure = await checkTOBTeam(users, isHardMode);
 		if (teamCheckFailure) {
-			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
+			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`);
 		}
 
 		const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = await createTOBTeam({
@@ -319,10 +319,9 @@ export default class extends BotCommand {
 				}
 				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
 				const { total } = calculateTOBUserGearPercents(u);
-				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
-					reductions[u.id],
-					totalReduction
-				).toFixed(1)}%) used ${realCost}\n`;
+				debugStr += `**- ${u.username}** (${Emoji.Gear}${total.toFixed(1)}% ${
+					Emoji.CombatSword
+				} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
 			})
 		);
 
@@ -360,15 +359,22 @@ export default class extends BotCommand {
 		const gear = calculateTOBUserGearPercents(msg.author);
 		const deathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, false, gear);
 		const hardDeathChances = calculateTOBDeaths(kc, hardKC, attempts, hardAttempts, true, gear);
-
+		let totalUniques = 0;
+		const cl = msg.author.cl();
+		for (const item of baseTOBUniques) {
+			totalUniques += cl.amount(item);
+		}
 		return msg.channel.send(`**Theatre of Blood**
-KC: ${kc}
-Attempts: ${attempts}
-Hard KC: ${hardKC}
-Hard attempts: ${hardAttempts}
-Death Chances: ${deathChances.deathChances.map(i => `${i.name}[${i.deathChance.toFixed(2)}%]`).join(' ')}
-Hard Mode Death Chances: ${hardDeathChances.deathChances
-			.map(i => `${i.name}[${i.deathChance.toFixed(2)}%]`)
-			.join(' ')}`);
+**Normal:** ${kc} KC, ${attempts} attempts
+**Hard Mode:** ${hardKC} KC, ${hardAttempts} attempts
+**Total Uniques:** ${totalUniques}\n
+**Melee:** <:Elder_maul:403018312247803906> ${gear.melee.toFixed(1)}%
+**Range:** <:Twisted_bow:403018312402862081> ${gear.range.toFixed(1)}%
+**Mage:** <:Kodai_insignia:403018312264712193> ${gear.mage.toFixed(1)}%
+**Total Gear Score:** ${Emoji.Gear} ${gear.total.toFixed(1)}%\n
+**Death Chances:** ${deathChances.deathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
+**Hard Mode Death Chances:** ${hardDeathChances.deathChances
+			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
+			.join(', ')}`);
 	}
 }
