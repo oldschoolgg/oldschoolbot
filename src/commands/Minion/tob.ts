@@ -273,7 +273,7 @@ export default class extends BotCommand {
 
 		const teamCheckFailure = await checkTOBTeam(users, isHardMode);
 		if (teamCheckFailure) {
-			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure}`);
+			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`);
 		}
 
 		const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = await createTOBTeam({
@@ -319,10 +319,10 @@ export default class extends BotCommand {
 				}
 				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
 				const { total } = calculateTOBUserGearPercents(u);
-				debugStr += `${u.username} (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
+				debugStr += `**- ${u.username}** (${Emoji.Gear}${total.toFixed(1)}% ${Emoji.CombatSword} ${calcWhatPercent(
 					reductions[u.id],
 					totalReduction
-				).toFixed(1)}%) used ${realCost}\n`;
+				).toFixed(1)}%) used ${realCost}\n\n`;
 			})
 		);
 
