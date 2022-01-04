@@ -6,7 +6,6 @@ import { BitField, Emoji, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../li
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
-import { ItemBank } from '../../../lib/types';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -30,7 +29,7 @@ export default class extends Task {
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
 
 		const teamsLoot: { [key: string]: Bank } = {};
-		const teamsPreviousCL: { [key: string]: ItemBank } = {};
+		const teamsPreviousCL: { [key: string]: Bank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
 		const parsedUsers: NightmareUser[] = [];
@@ -141,7 +140,7 @@ export default class extends Task {
 			const { image } = await this.client.tasks
 				.get('bankImage')!
 				.generateBankImage(
-					teamsLoot[leader].bank,
+					teamsLoot[leader],
 					`${quantity}x Nightmare`,
 					true,
 					{ showNewCL: 1 },
@@ -160,7 +159,7 @@ export default class extends Task {
 				['nightmare', [isPhosani ? 'phosani' : 'solo'], true],
 				image!,
 				data,
-				totalLoot.bank
+				totalLoot
 			);
 		}
 	}

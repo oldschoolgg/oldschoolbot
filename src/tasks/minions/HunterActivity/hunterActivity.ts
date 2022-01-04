@@ -190,7 +190,7 @@ export default class extends Task {
 			['hunt', [quantity, creatureName], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

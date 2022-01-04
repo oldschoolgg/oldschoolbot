@@ -1,6 +1,8 @@
 import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
+import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
+import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
@@ -76,4 +78,47 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
 	}
 	return result;
+}
+
+export async function trackMonsterLoot({
+	monsterID,
+	loot,
+	duration,
+	kc,
+	teamSize = 1
+}: {
+	monsterID: number;
+	loot: Bank;
+	duration: number;
+	kc: number;
+	teamSize?: number;
+}) {
+	const realDuration = teamSize * duration;
+
+	const current = await prisma.monsterLootTrack.findFirst({
+		where: {
+			monster_id: monsterID
+		}
+	});
+
+	await prisma.monsterLootTrack.upsert({
+		where: {
+			monster_id: monsterID
+		},
+		update: {
+			total_duration: {
+				increment: realDuration
+			},
+			total_kc: {
+				increment: kc
+			},
+			loot: loot.clone().add(current?.loot as ItemBank | undefined).bank
+		},
+		create: {
+			monster_id: monsterID,
+			total_kc: kc,
+			total_duration: realDuration,
+			loot: loot.bank
+		}
+	});
 }

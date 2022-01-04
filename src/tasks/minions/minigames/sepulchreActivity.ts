@@ -39,7 +39,7 @@ export default class extends Task {
 			}
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${

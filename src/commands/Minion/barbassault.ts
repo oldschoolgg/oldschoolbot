@@ -224,9 +224,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`You spent ${(
 				cost * qty
-			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${new Bank(
-				itemsAdded
-			)}.`
+			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${itemsAdded}.`
 		);
 	}
 

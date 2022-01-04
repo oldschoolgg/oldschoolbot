@@ -10,7 +10,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
-import { convertPercentChance, filterBankFromArrayOfItems, updateBankSetting } from '../../../lib/util';
+import { convertPercentChance, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
@@ -108,24 +108,24 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			const isPurple = items.some(([item]) => TOBUniques.includes(item.id));
 			const shouldAnnounce = items.some(([item]) => TOBUniquesToAnnounce.includes(item.id));
 			if (shouldAnnounce) {
-				const itemsToAnnounce = filterBankFromArrayOfItems(TOBUniques, userLoot.bank);
+				const itemsToAnnounce = userLoot.filter(item => TOBUniques.includes(item.id), false);
 				this.client.emit(
 					Events.ServerNotification,
-					`${Emoji.Purple} ${user.username} just received **${new Bank(
-						itemsToAnnounce
-					)}** on their ${formatOrdinal(await user.getMinigameScore(hardMode ? 'tob_hard' : 'tob'))} raid.`
+					`${Emoji.Purple} ${user.username} just received **${itemsToAnnounce}** on their ${formatOrdinal(
+						await user.getMinigameScore(hardMode ? 'tob_hard' : 'tob')
+					)} raid.`
 				);
 			}
 			const deathStr = userDeaths.length === 0 ? '' : `${Emoji.Skull}(${userDeaths.map(i => TOBRooms[i].name)})`;
 
 			const { itemsAdded } = await user.addItemsToBank(userLoot.clone().add('Coins', 100_000), true);
-			const lootStr = new Bank(itemsAdded).remove('Coins', 100_000).toString();
+			const lootStr = itemsAdded.remove('Coins', 100_000).toString();
 			const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `||${lootStr}||`;
 
 			resultMessage += `\n${deathStr}**${user}** received: ${str}`;
 		}
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBLoot, totalLoot.bank);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBLoot, totalLoot);
 
 		sendToChannelID(this.client, channelID, { content: resultMessage });
 	}

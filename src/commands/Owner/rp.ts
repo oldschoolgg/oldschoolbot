@@ -545,7 +545,7 @@ LIMIT 10;
 			}
 			case 'bank': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				return msg.channel.sendBankImage({ bank: input.allItemsOwned().bank });
+				return msg.channel.sendBankImage({ bank: input.allItemsOwned() });
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;

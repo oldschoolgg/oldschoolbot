@@ -10,7 +10,7 @@ import { incrementMinigameScore, runCommand } from '../../../lib/settings/settin
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
-import { addBanks, filterBankFromArrayOfItems, roll } from '../../../lib/util';
+import { roll, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
@@ -88,10 +88,10 @@ export default class extends Task {
 			const isBlue = items.some(([item]) => blueItems.includes(item.id));
 			const emote = isBlue ? Emoji.Blue : isGreen ? Emoji.Green : Emoji.Purple;
 			if (items.some(([item]) => purpleItems.includes(item.id) && !purpleButNotAnnounced.includes(item.id))) {
-				const itemsToAnnounce = filterBankFromArrayOfItems(purpleItems, userLoot.bank);
+				const itemsToAnnounce = userLoot.filter(item => purpleItems.includes(item.id), false);
 				this.client.emit(
 					Events.ServerNotification,
-					`${emote} ${user.username} just received **${new Bank(itemsToAnnounce)}** on their ${formatOrdinal(
+					`${emote} ${user.username} just received **${itemsToAnnounce}** on their ${formatOrdinal(
 						await user.getMinigameScore(challengeMode ? 'raids_challenge_mode' : 'raids')
 					)} raid.`
 				);
@@ -105,10 +105,7 @@ export default class extends Task {
 			await user.addItemsToBank(userLoot, true);
 		}
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CoxLoot,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxLoot), totalLoot.bank])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxLoot, totalLoot);
 
 		if (allUsers.length === 1) {
 			handleTripFinish(

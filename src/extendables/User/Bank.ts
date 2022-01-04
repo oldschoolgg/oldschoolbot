@@ -86,7 +86,7 @@ export default class extends Extendable {
 		inputItems: ItemBank | Bank,
 		collectionLog: boolean = false,
 		filterLoot: boolean = true
-	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
+	): Promise<{ previousCL: Bank; itemsAdded: Bank }> {
 		return this.queueFn(async user => {
 			const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
 			await this.settings.sync(true);

@@ -457,6 +457,13 @@ model CommandUsage {
   @@map("command_usage")
 }
 
+model MonsterLootTrack {
+  monster_id     Int    @id
+  total_duration BigInt
+  total_kc       Int
+  loot           Json   @default("{}") @db.Json
+}
+
 enum command_usage_status {
   Unknown
   Success
