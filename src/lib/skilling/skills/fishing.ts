@@ -227,10 +227,10 @@ const anglerItems: { [key: number]: number } = {
 };
 
 const minnowScaling: { [key: number]: number } = {
-	85: 0.05,
-	90: 0.001,
-	95: 0.03,
-	99: 0.099
+	99: 0.17,
+	95: 0.08,
+	90: 0.053,
+	85: 0.05
 };
 
 const Fishing = {

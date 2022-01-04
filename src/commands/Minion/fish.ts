@@ -109,9 +109,10 @@ export default class extends BotCommand {
 
 		if (fish.id === itemID('Minnow')) {
 			let minnowScale = 1;
-			for (const [level, bonus] of Object.entries(Fishing.minnowScaling)) {
+			for (const [level, bonus] of Object.entries(Fishing.minnowScaling).reverse()) {
 				if (msg.author.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
 					minnowScale -= bonus;
+					break;
 				}
 			}
 			scaledTimePerFish *= minnowScale;

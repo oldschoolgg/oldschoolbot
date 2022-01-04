@@ -19,6 +19,14 @@ export default class extends Task {
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
+		const minnowQuantity: { [key: number]: number[] } = {
+			99: [10, 14],
+			95: [11, 13],
+			90: [10, 13],
+			85: [10, 11],
+			1: [10, 10]
+		};
+
 		let xpReceived = 0;
 		let leapingSturgeon = 0;
 		let leapingSalmon = 0;
@@ -111,17 +119,12 @@ export default class extends Task {
 			lootQuantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		}
 		if (fish.id === itemID('Minnow')) {
-			for (let i = 0; i < quantity; i++) {
-				if (user.skillLevel(SkillsEnum.Fishing) > 98) {
-					minnowQty += rand(10, 14);
-				} else if (user.skillLevel(SkillsEnum.Fishing) >= 95) {
-					minnowQty += rand(11, 13);
-				} else if (user.skillLevel(SkillsEnum.Fishing) >= 90) {
-					minnowQty += rand(10, 13);
-				} else if (user.skillLevel(SkillsEnum.Fishing) >= 85) {
-					minnowQty += rand(10, 11);
-				} else {
-					minnowQty += 10;
+			for (const [level, quantities] of Object.entries(minnowQuantity).reverse()) {
+				if (user.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
+					for (let i = 0; i < quantity; i++) {
+						minnowQty += rand(quantities[0], quantities[1]);
+					}
+					break;
 				}
 			}
 			lootQuantity = minnowQty;
