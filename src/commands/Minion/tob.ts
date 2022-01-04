@@ -76,7 +76,7 @@ export default class extends BotCommand {
 			});
 
 			let wins = 0;
-			const winRateSampleSize = 50;
+			const winRateSampleSize = 25;
 			for (let o = 0; o < winRateSampleSize; o++) {
 				const sim = createTOBTeam({
 					team: users.map(u => ({
@@ -373,7 +373,11 @@ export default class extends BotCommand {
 **Mage:** <:Kodai_insignia:403018312264712193> ${gear.mage.toFixed(1)}%
 **Total Gear Score:** ${Emoji.Gear} ${gear.total.toFixed(1)}%\n
 **Death Chances:** ${deathChances.deathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
+**Wipe Chances:** ${deathChances.wipeDeathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
 **Hard Mode Death Chances:** ${hardDeathChances.deathChances
+			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
+			.join(', ')}
+**Hard Mode Wipe Chances:** ${hardDeathChances.wipeDeathChances
 			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
 			.join(', ')}`);
 	}
