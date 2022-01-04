@@ -108,14 +108,12 @@ export default class extends BotCommand {
 		}
 
 		if (fish.id === itemID('Minnow')) {
-			let minnowScale = 1;
-			for (const [level, bonus] of Object.entries(Fishing.minnowScaling).reverse()) {
-				if (msg.author.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
-					minnowScale -= bonus;
-					break;
-				}
-			}
-			scaledTimePerFish *= minnowScale;
+			scaledTimePerFish *= Math.max(
+				0.83,
+				-0.000_541_351 * msg.author.skillLevel(SkillsEnum.Fishing) ** 2 +
+					0.089_066_3 * msg.author.skillLevel(SkillsEnum.Fishing) -
+					2.681_53
+			);
 		}
 
 		const maxTripLength = msg.author.maxTripLength('Fishing');
