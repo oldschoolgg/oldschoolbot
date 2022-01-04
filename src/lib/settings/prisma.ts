@@ -1,10 +1,11 @@
-import { Activity, activity_type_enum, Prisma, PrismaClient } from '@prisma/client';
+import { Activity, activity_type_enum, loot_track_type, Prisma, PrismaClient } from '@prisma/client';
+import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
-import { isGroupActivity } from '../util';
+import { cleanString, isGroupActivity } from '../util';
 import { taskNameFromType } from '../util/taskNameFromType';
 import { minionActivityCache, minionActivityCacheDelete } from './settings';
 
@@ -80,45 +81,67 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 	return result;
 }
 
-export async function trackMonsterLoot({
-	monsterID,
-	loot,
-	duration,
-	kc,
-	teamSize = 1
-}: {
-	monsterID: number;
-	loot: Bank;
-	duration: number;
-	kc: number;
-	teamSize?: number;
-}) {
-	const realDuration = teamSize * duration;
+type TrackLootOptions =
+	| {
+			id: string;
+			type: loot_track_type;
+			duration: number;
+			kc: number;
+			teamSize?: number;
+			loot: Bank;
+			changeType: 'loot';
+	  }
+	| {
+			id: string;
+			type: loot_track_type;
+			cost: Bank;
+			changeType: 'cost';
+	  };
 
-	const current = await prisma.monsterLootTrack.findFirst({
+export async function trackLoot(opts: TrackLootOptions) {
+	const id = cleanString(opts.id).toLowerCase().replace(/ /g, '_');
+	const bank = opts.changeType === 'cost' ? opts.cost : opts.loot;
+	if (bank.length === 0) return;
+
+	let duration = opts.changeType === 'loot' ? Math.floor((opts.duration * (opts.teamSize ?? 1)) / Time.Minute) : 0;
+
+	const current = await prisma.lootTrack.findUnique({
 		where: {
-			monster_id: monsterID
+			id_type: {
+				type: opts.type,
+				id
+			}
 		}
 	});
 
-	await prisma.monsterLootTrack.upsert({
+	await prisma.lootTrack.upsert({
 		where: {
-			monster_id: monsterID
+			id_type: {
+				type: opts.type,
+				id
+			}
 		},
 		update: {
-			total_duration: {
-				increment: realDuration
-			},
-			total_kc: {
-				increment: kc
-			},
-			loot: loot.clone().add(current?.loot as ItemBank | undefined).bank
+			total_duration:
+				opts.changeType === 'loot'
+					? {
+							increment: duration
+					  }
+					: undefined,
+			total_kc:
+				opts.changeType === 'loot'
+					? {
+							increment: opts.kc
+					  }
+					: undefined,
+			[opts.changeType]: bank.clone().add(current?.[opts.changeType] as ItemBank | undefined).bank
 		},
 		create: {
-			monster_id: monsterID,
-			total_kc: kc,
-			total_duration: realDuration,
-			loot: loot.bank
+			id,
+			total_kc: opts.changeType === 'loot' ? opts.kc : 0,
+			total_duration: duration,
+			[opts.changeType]: bank.bank,
+			type: opts.type
 		}
 	});
 }

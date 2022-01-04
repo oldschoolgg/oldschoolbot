@@ -15,12 +15,13 @@ import {
 	minimumCoxSuppliesNeeded
 } from '../../lib/data/cox';
 import { degradeItem } from '../../lib/degradeableItems';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
-import { addBanks, formatDuration } from '../../lib/util';
+import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 const uniques = [
@@ -132,8 +133,9 @@ export default class extends BotCommand {
 		}
 
 		const isChallengeMode = Boolean(msg.flagArgs.cm);
+		const minigameID = isChallengeMode ? 'raids_challenge_mode' : 'raids';
 
-		const userKC = await msg.author.getMinigameScore(isChallengeMode ? 'raids_challenge_mode' : 'raids');
+		const userKC = await msg.author.getMinigameScore(minigameID);
 		if (!isChallengeMode && userKC < 50 && type === 'solo') {
 			return msg.channel.send('You need at least 50 Chambers of Xeric KC before you can attempt a solo raid.');
 		}
@@ -227,10 +229,14 @@ export default class extends BotCommand {
 			})
 		]);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CoxCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CoxCost), totalCost.bank])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CoxCost, totalCost);
+
+		await trackLoot({
+			id: minigameID,
+			cost: totalCost,
+			type: 'Minigame',
+			changeType: 'cost'
+		});
 
 		await addSubTaskToActivityTask<RaidsOptions>({
 			userID: msg.author.id,

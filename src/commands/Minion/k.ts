@@ -40,6 +40,7 @@ import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../lib/minions/types';
 import { calcPOHBoosts } from '../../lib/poh';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -501,6 +502,12 @@ export default class extends BotCommand {
 		if (lootToRemove.length > 0) {
 			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 			await msg.author.removeItemsFromBank(lootToRemove);
+			await trackLoot({
+				id: monster.name,
+				cost: lootToRemove,
+				type: 'Monster',
+				changeType: 'cost'
+			});
 		}
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>({

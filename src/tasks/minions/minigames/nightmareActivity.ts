@@ -6,6 +6,7 @@ import { BitField, Emoji, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../li
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
+import { trackLoot } from '../../../lib/settings/prisma';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -92,10 +93,11 @@ export default class extends Task {
 				taskQuantity: null
 			});
 
-			totalLoot.add(loot);
-
 			// Fix purple items on solo kills
-			const { previousCL } = await user.addItemsToBank(loot, true);
+			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+
+			totalLoot.add(itemsAdded);
+
 			// Only add previousCL for leader
 			if (user.id === leader) teamsPreviousCL[user.id] = previousCL;
 
@@ -129,6 +131,15 @@ export default class extends Task {
 			}
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
+
+		await trackLoot({
+			loot: totalLoot,
+			id: monsterName,
+			type: 'Monster',
+			changeType: 'loot',
+			duration,
+			kc: quantity
+		});
 
 		if (users.length > 1) {
 			sendToChannelID(this.client, channelID, { content: resultStr });

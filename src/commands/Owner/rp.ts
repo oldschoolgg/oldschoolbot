@@ -3,7 +3,7 @@ import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
-import { Items } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../../lib/constants';
@@ -14,6 +14,7 @@ import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../.
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { ItemBank } from '../../lib/types';
 import {
 	asyncExec,
 	channelIsSendable,
@@ -26,6 +27,7 @@ import {
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
+import BankImageTask from '../../tasks/bankImage';
 import PatreonTask from '../../tasks/patreon';
 
 function itemSearch(msg: KlasaMessage, name: string) {
@@ -545,7 +547,9 @@ LIMIT 10;
 			}
 			case 'bank': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				return msg.channel.sendBankImage({ bank: input.allItemsOwned() });
+				return msg.channel.sendBankImage({
+					bank: input.allItemsOwned()
+				});
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;
@@ -641,6 +645,41 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 						isIron ? 'ironmen' : 'people'
 					} with atleast 1 ${item.name} in their collection log.`
 				);
+			}
+			case 'loottrack': {
+				if (typeof input !== 'string') {
+					const tracks = await prisma.lootTrack.findMany();
+					return msg.channel.send(tracks.map(t => t.id).join(', '));
+				}
+				const loot = await prisma.lootTrack.findFirst({
+					where: {
+						id: input
+					}
+				});
+				if (!loot) return msg.channel.send('Invalid');
+				const arr = [
+					['Cost', loot.cost],
+					['Loot', loot.loot]
+				] as const;
+
+				const images = (
+					await Promise.all(
+						arr.map(i =>
+							(this.client.tasks.get('bankImage') as BankImageTask).generateBankImage(
+								new Bank(i[1] as unknown as ItemBank),
+								`${i[0]}`
+							)
+						)
+					)
+				).map(i => new MessageAttachment(i.image!));
+
+				for (const image of images) {
+					msg.channel.send({ files: [image] });
+				}
+
+				return msg.channel.send({
+					content: `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`
+				});
 			}
 		}
 	}
