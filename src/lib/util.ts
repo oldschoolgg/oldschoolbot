@@ -14,6 +14,7 @@ import { promisify } from 'util';
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
+import { POHBoosts } from './poh';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
@@ -418,6 +419,22 @@ export function formatItemBoosts(items: ItemBank[]) {
 		}
 	}
 	return str.join(', ');
+}
+
+export function formatPohBoosts(boosts: POHBoosts) {
+	const bonusStr = [];
+	const slotStr = [];
+
+	for (const [slot, objBoosts] of objectEntries(boosts)) {
+		if (objBoosts === undefined) continue;
+		for (const [name, boostPercent] of objectEntries(objBoosts)) {
+			bonusStr.push(`${boostPercent}% for ${name}`);
+		}
+
+		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${bonusStr.join(' or ')})\n`);
+	}
+
+	return slotStr.join(', ');
 }
 
 /**
