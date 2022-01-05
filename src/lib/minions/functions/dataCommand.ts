@@ -101,7 +101,7 @@ GROUP BY data->>'monsterID';`;
 	},
 	{
 		name: 'Global Inferno Death Times',
-		run: async (_user: KlasaUser) => {
+		run: async () => {
 			const result: { mins: number; count: number }[] =
 				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
@@ -186,7 +186,7 @@ GROUP BY 1;`;
 	},
 	{
 		name: 'Global TOB Wipes',
-		run: async (_user: KlasaUser) => {
+		run: async () => {
 			const result: { wiped_room: number; count: number }[] =
 				await prisma.$queryRaw`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
 FROM activity
@@ -203,7 +203,7 @@ GROUP BY 1;`;
 	},
 	{
 		name: 'Global 200ms',
-		run: async (_user: KlasaUser) => {
+		run: async () => {
 			const result = (
 				await Promise.all(
 					Object.values(SkillsEnum).map(
@@ -243,7 +243,7 @@ GROUP BY data->>'plantsName'`;
 	},
 	{
 		name: 'Global Farmed Crops',
-		run: async (_user: KlasaUser) => {
+		run: async () => {
 			const result: { plant: string; qty: number }[] =
 				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
 FROM activity
