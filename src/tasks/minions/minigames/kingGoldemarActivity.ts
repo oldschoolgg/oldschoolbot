@@ -121,7 +121,7 @@ export default class extends Task {
 				['kinggoldemar', ['solo'], true],
 				undefined,
 				data,
-				totalLoot.bank
+				totalLoot
 			);
 		}
 	}

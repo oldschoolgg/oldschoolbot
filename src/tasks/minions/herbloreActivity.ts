@@ -1,5 +1,6 @@
 import { percentChance } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -43,9 +44,7 @@ export default class extends Task {
 			bonus > 0 ? `\n\n**${bonus}x extra for Herblore master cape**` : ''
 		}`;
 
-		const loot = {
-			[mixableItem.id]: quantity
-		};
+		const loot = new Bank().add(mixableItem.id, quantity);
 
 		await user.addItemsToBank(loot, true);
 

@@ -137,7 +137,7 @@ export default class extends Task {
 			['tithefarm', [], true],
 			undefined,
 			data,
-			loot.length > 0 ? loot.bank : null
+			loot.length > 0 ? loot : null
 		);
 	}
 }

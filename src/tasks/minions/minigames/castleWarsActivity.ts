@@ -38,7 +38,7 @@ export default class extends Task {
 			['castlewars', [], true, 'play'],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

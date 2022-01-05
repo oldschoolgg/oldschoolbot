@@ -35,7 +35,7 @@ export default class extends Task {
 			['kibble', [quantity, kibble.item.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

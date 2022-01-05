@@ -58,15 +58,6 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['craft', [quantity, item.name]],
-			undefined,
-			data,
-			loot.bank
-		);
+		handleTripFinish(this.client, user, channelID, str, ['craft', [quantity, item.name]], undefined, data, loot);
 	}
 }

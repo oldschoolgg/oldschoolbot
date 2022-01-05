@@ -6,7 +6,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { Events } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks, addItemToBank, itemID, multiplyBank, rand, roll } from '../../lib/util';
+import { addItemToBank, itemID, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const possibleFound = new LootTable()
@@ -44,7 +44,7 @@ export default class extends Task {
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`=open ${clueTier.name}\``;
 
-		let loot = { [clueTier.id]: quantity };
+		let loot = new Bank().add(clueTier.id, quantity);
 
 		if (user.equippedPet() === itemID('Zippy') && duration > Time.Minute * 5) {
 			let bonusLoot = {};
@@ -55,10 +55,10 @@ export default class extends Task {
 				bonusLoot = addItemToBank(bonusLoot, item);
 			}
 
-			loot = addBanks([loot, bonusLoot]);
+			loot.add(bonusLoot);
 
 			if (roll(15)) {
-				loot = multiplyBank(loot, 2);
+				loot.multiply(2);
 				str += '\nZippy has **doubled** your loot.';
 			}
 

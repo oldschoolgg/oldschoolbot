@@ -2,7 +2,6 @@ import { Message, MessageAttachment, MessageCollector, TextChannel } from 'disco
 import { randInt, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { alching } from '../../commands/Minion/laps';
@@ -50,7 +49,7 @@ export async function handleTripFinish(
 		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
-	loot: ItemBank | null
+	loot: Bank | null
 ) {
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar = generateContinuationChar(user);
@@ -132,13 +131,13 @@ export async function handleTripFinish(
 		await user.addItemsToBank(bonusLoot.bank, true);
 	}
 	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-		const GP = loot[COINS_ID];
+		const GP = loot.amount(COINS_ID);
 		if (typeof GP === 'number') {
 			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
 		}
 	}
 
-	const clueReceived = loot ? clueTiers.find(tier => loot[tier.scrollID] > 0) : undefined;
+	const clueReceived = loot ? clueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
 	if (clueReceived) {
 		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;

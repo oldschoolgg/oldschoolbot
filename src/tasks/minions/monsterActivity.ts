@@ -12,7 +12,7 @@ import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { KillableMonster } from '../../lib/minions/types';
-import { prisma } from '../../lib/settings/prisma';
+import { prisma, trackLoot } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { bones } from '../../lib/skilling/skills/prayer';
@@ -275,6 +275,15 @@ export default class extends Task {
 		}
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+
+		await trackLoot({
+			loot: itemsAdded,
+			id: monster.name.toString(),
+			type: 'Monster',
+			changeType: 'loot',
+			kc: quantity,
+			duration
+		});
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!

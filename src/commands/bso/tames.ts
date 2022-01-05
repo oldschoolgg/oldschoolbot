@@ -536,7 +536,7 @@ export default class extends BotCommand {
 			return msg.channel.sendBankImage({
 				content: `${tameName(tame)}`,
 				flags: msg.flagArgs,
-				bank: tame.max_total_loot as ItemBank,
+				bank: new Bank(tame.max_total_loot as ItemBank),
 				title: `All Loot ${tameName(tame)} Has Gotten You`
 			});
 		}
@@ -579,7 +579,7 @@ export default class extends BotCommand {
 
 		if (!str || bankToAdd.length === 0) {
 			return msg.channel.sendBankImage({
-				bank: selectedTame.fed_items as ItemBank,
+				bank: new Bank(selectedTame.fed_items as ItemBank),
 				title: 'Items Fed To This Tame',
 				content: `The items which give a perk/usage to this tame type when fed are:\n${thisTameSpecialFeedableItems
 					.map(i => `- ${i.item.name} (${i.description})`)

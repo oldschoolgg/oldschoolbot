@@ -36,7 +36,7 @@ export default class extends Task {
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
-			await user.addItemsToBank(loot.bank, true);
+			await user.addItemsToBank(loot, true);
 		}
 
 		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
@@ -51,7 +51,7 @@ export default class extends Task {
 			['cast', [quantity, spell.name], true],
 			undefined,
 			data,
-			loot?.bank ?? null
+			loot ?? null
 		);
 	}
 }

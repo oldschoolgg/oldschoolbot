@@ -47,7 +47,7 @@ export default class extends Task {
 			['smith', [quantity, smithedItem.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

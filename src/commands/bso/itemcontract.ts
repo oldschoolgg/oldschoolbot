@@ -121,7 +121,7 @@ export default class DailyCommand extends BotCommand {
 				t.add(i);
 			}
 			return msg.channel.sendBankImage({
-				bank: t.bank,
+				bank: t,
 				content: `There are ${
 					itemContractItems.length
 				} possible items to get. The average bot value of an itemcontract item is ${t.value() / t.length}`

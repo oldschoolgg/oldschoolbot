@@ -70,7 +70,7 @@ export default class extends Task {
 			['alch', [quantity, [item]], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

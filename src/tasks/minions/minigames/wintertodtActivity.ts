@@ -2,6 +2,7 @@ import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 
 import { Emoji, Events } from '../../../lib/constants';
+import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
@@ -9,7 +10,7 @@ import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
 import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, channelIsSendable, multiplyBank, rand, roll } from '../../../lib/util';
+import { addBanks, bankHasItem, multiplyBank, rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -18,7 +19,6 @@ export default class extends Task {
 		const { userID, channelID, quantity, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
-		const channel = await this.client.channels.fetch(channelID);
 
 		let loot: ItemBank = {};
 
@@ -129,8 +129,6 @@ export default class extends Task {
 			previousCL
 		);
 
-		if (!channelIsSendable(channel)) return;
-
 		let output = `${user}, ${
 			user.minionName
 		} finished subduing Wintertodt ${quantity}x times. You got ${fmXpToGive.toLocaleString()} Firemaking XP, ${wcXpToGive.toLocaleString()} Woodcutting XP and ${conXP.toLocaleString()} Construction XP, you cut ${numberOfRoots}x Bruma roots.`;
@@ -146,6 +144,14 @@ export default class extends Task {
 		if (gotToad) {
 			output += '\n\n<:wintertoad:749945071230779493> A Wintertoad sneakily hops into your bank!';
 		}
+		await trackLoot({
+			loot: itemsAdded,
+			id: 'wintertodt',
+			type: 'Minigame',
+			changeType: 'loot',
+			duration: data.duration,
+			kc: quantity
+		});
 
 		handleTripFinish(this.client, user, channelID, output, ['wintertodt', [], true], image!, data, itemsAdded);
 	}

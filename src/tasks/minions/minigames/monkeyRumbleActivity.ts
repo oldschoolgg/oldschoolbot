@@ -97,7 +97,7 @@ You received **${loot}.**`,
 			['mmmr', [], true, 'start'],
 			files[0],
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

@@ -86,7 +86,7 @@ export default class extends BotCommand {
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				result.bank,
+				result,
 				`Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster?.name ?? bossName)}`,
 				true,
 				msg.flagArgs,

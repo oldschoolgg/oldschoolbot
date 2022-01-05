@@ -1,7 +1,6 @@
 import { percentChance, randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Misc, Openables as _Openables } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Openable from 'oldschooljs/dist/structures/Openable';
 
 import { COINS_ID, Events, MIMIC_MONSTER_ID } from '../../lib/constants';
@@ -13,7 +12,7 @@ import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, addItemToBank, rand, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { rand, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
@@ -98,13 +97,13 @@ export default class extends BotCommand {
 		const hasCHEquipped = msg.author.hasItemEquippedAnywhere(clueHunterOutfit, true);
 
 		let extraClueRolls = 0;
-		let loot: ItemBank = {};
+		let loot = new Bank(clueTier.table.open(quantity));
 		for (let i = 0; i < quantity; i++) {
 			const roll = rand(1, 3);
 			extraClueRolls += roll - 1;
-			loot = addBanks([clueTier.table.open(roll), loot]);
+			loot.add(clueTier.table.open(roll));
 			if (clueTier.name === 'Master' && percentChance(hasCHEquipped ? 3.5 : 1.5)) {
-				loot = addItemToBank(loot, itemID('Clue scroll (grandmaster)'));
+				loot.add('Clue scroll (grandmaster)');
 			}
 		}
 
@@ -112,7 +111,7 @@ export default class extends BotCommand {
 		if (clueTier.mimicChance) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(clueTier.mimicChance)) {
-					loot = addBanks([Misc.Mimic.open(clueTier.name as 'master' | 'elite'), loot]);
+					loot.add(Misc.Mimic.open(clueTier.name as 'master' | 'elite'));
 					mimicNumber++;
 				}
 			}
@@ -131,12 +130,12 @@ export default class extends BotCommand {
 			nthCasket >= clueTier.milestoneReward.scoreNeeded &&
 			(await msg.author.numOfItemsOwned(clueTier.milestoneReward.itemReward)) === 0
 		) {
-			loot[clueTier.milestoneReward.itemReward] = 1;
+			loot.add(clueTier.milestoneReward.itemReward);
 		}
 
 		// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
 		// and send a notification if they got one.
-		const announcedLoot = new Bank(loot).filter(i => itemsToNotifyOf.includes(i.id));
+		const announcedLoot = loot.filter(i => itemsToNotifyOf.includes(i.id), false);
 		if (announcedLoot.length > 0) {
 			this.client.emit(
 				Events.ServerNotification,
@@ -155,18 +154,17 @@ export default class extends BotCommand {
 			`${msg.author.username}[${msg.author.id}] opened ${quantity} ${clueTier.name} caskets.`
 		);
 
-		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
+		const previousCL = msg.author.cl();
 		await msg.author.addItemsToBank(loot, true);
-		if (typeof loot[COINS_ID] === 'number') {
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot[COINS_ID]);
+		if (loot.has(COINS_ID)) {
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount(COINS_ID));
 		}
 
-		msg.author.incrementClueScore(clueTier.id, quantity);
-
-		msg.author.incrementOpenableScore(clueTier.id, quantity);
+		await msg.author.incrementClueScore(clueTier.id, quantity);
+		await msg.author.incrementOpenableScore(clueTier.id, quantity);
 
 		if (mimicNumber > 0) {
-			msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
+			await msg.author.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 		}
 
 		return msg.channel.sendBankImage({
@@ -198,7 +196,7 @@ export default class extends BotCommand {
 
 		await msg.author.removeItemsFromBank(new Bank().add(osjsOpenable.id, quantity));
 
-		const loot = osjsOpenable.open(quantity, {});
+		const loot = new Bank(osjsOpenable.open(quantity, {}));
 		const score = msg.author.getOpenableScore(osjsOpenable.id) + quantity;
 		this.client.emit(
 			Events.Log,
@@ -206,10 +204,10 @@ export default class extends BotCommand {
 		);
 
 		msg.author.incrementOpenableScore(osjsOpenable.id, quantity);
-		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
+		const previousCL = msg.author.cl();
 		await msg.author.addItemsToBank(loot, true);
-		if (typeof loot[COINS_ID] === 'number') {
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot[COINS_ID]);
+		if (loot.has(COINS_ID)) {
+			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount(COINS_ID));
 		}
 
 		return msg.channel.sendBankImage({
@@ -280,7 +278,7 @@ export default class extends BotCommand {
 		}
 
 		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
-		const previousCL = msg.author.settings.get(UserSettings.CollectionLogBank);
+		const previousCL = msg.author.cl();
 		await msg.author.addItemsToBank(loot.values(), true, false);
 		if (loot.amount('Coins') > 0) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
@@ -295,7 +293,7 @@ export default class extends BotCommand {
 				`<:MrE:918888222417887352> **${
 					msg.author.username
 				}** just received their ${amountOwned} Mr. E from their ${nthOpenable} ${botOpenable.name}!${
-					Boolean(previousCL[itemID('Mr. E')])
+					previousCL.has('Mr. E')
 						? ''
 						: ` They are the ${formatOrdinal(usersWith)} person to get one${
 								ironmenWith === null ? '' : `, and the ${formatOrdinal(ironmenWith)} ironman to get one`
@@ -305,7 +303,7 @@ export default class extends BotCommand {
 		}
 
 		return msg.channel.sendBankImage({
-			bank: loot.values(),
+			bank: loot,
 			content: `You have opened the ${botOpenable.name.toLowerCase()} ${(
 				score + quantity
 			).toLocaleString()} times. ${

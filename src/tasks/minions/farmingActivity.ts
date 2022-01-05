@@ -12,9 +12,8 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, bankHasItem, multiplyBank, rand, roll } from '../../lib/util';
+import { bankHasItem, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
@@ -59,7 +58,7 @@ export default class extends Task {
 		let lives = 3;
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
-		let loot: ItemBank = {};
+		let loot = new Bank();
 
 		const hasPlopper = user.allItemsOwned().has('Plopper');
 
@@ -130,7 +129,7 @@ export default class extends Task {
 			plantXp = quantity * (plant.plantXp + compostXp);
 			farmingXpReceived = plantXp + harvestXp + rakeXp;
 
-			loot[itemID('Weeds')] = quantity * 3;
+			loot.add('Weeds', quantity * 3);
 
 			let str = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${
 				plant.name
@@ -151,24 +150,24 @@ export default class extends Task {
 				str += `\n${user.minionName}'s Farming level is now ${newLevel}!`;
 			}
 
-			if (hasPlopper) loot = multiplyBank(loot, 4);
+			if (hasPlopper) loot.multiply(4);
 
 			// This code gives the boxes for planing when ONLY planting.
 			if (plant.name === 'Mysterious tree') {
 				for (let j = 0; j < quantity; j++) {
 					let upper = randInt(1, 4);
 					for (let i = 0; i < upper; i++) {
-						loot = addItemToBank(loot, getRandomMysteryBox());
+						loot.add(getRandomMysteryBox());
 					}
 				}
 			}
 
-			if (loot[itemID('Plopper')]) {
-				loot[itemID('Plopper')] = 1;
+			if (loot.has('Plopper')) {
+				loot.bank[itemID('Plopper')] = 1;
 			}
 
 			if (Object.keys(loot).length > 0) {
-				str += `\n\nYou received: ${new Bank(loot)}.`;
+				str += `\n\nYou received: ${loot}.`;
 			}
 
 			await this.client.settings.update(
@@ -265,10 +264,10 @@ export default class extends Task {
 				}
 
 				if (quantity > patchType.lastQuantity) {
-					loot[plantToHarvest.outputCrop] = cropYield;
-					loot[itemID('Weeds')] = quantity - patchType.lastQuantity;
+					loot.add(plantToHarvest.outputCrop, cropYield);
+					loot.add('Weeds', quantity - patchType.lastQuantity);
 				} else {
-					loot[plantToHarvest.outputCrop] = cropYield;
+					loot.add(plantToHarvest.outputCrop, cropYield);
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
@@ -300,10 +299,10 @@ export default class extends Task {
 					if (!plantToHarvest.woodcuttingXp) return;
 
 					const amountOfLogs = rand(5, 10) * alivePlants;
-					loot[plantToHarvest.outputLogs] = amountOfLogs;
+					loot.add(plantToHarvest.outputLogs, amountOfLogs);
 
 					if (plantToHarvest.outputRoots) {
-						loot[plantToHarvest.outputRoots] = rand(1, 4) * alivePlants;
+						loot.add(plantToHarvest.outputRoots, rand(1, 4) * alivePlants);
 					}
 
 					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp;
@@ -312,18 +311,20 @@ export default class extends Task {
 					harvestXp = 0;
 				} else if (plantToHarvest.givesCrops && chopped) {
 					if (!plantToHarvest.outputCrop) return;
-					// cropYield already counts each patch if variableYield is true:
-					loot[plantToHarvest.outputCrop] =
+
+					loot.add(
+						plantToHarvest.outputCrop,
 						plantToHarvest.fixedOutput && plantToHarvest.fixedOutputAmount
 							? plantToHarvest.fixedOutputAmount * alivePlants
-							: cropYield;
+							: cropYield
+					);
 
 					harvestXp = cropYield * alivePlants * plantToHarvest.harvestXp;
 				}
 			}
 
 			if (quantity > patchType.lastQuantity) {
-				loot[itemID('Weeds')] = (quantity - patchType.lastQuantity) * 3;
+				loot.add('Weeds', (quantity - patchType.lastQuantity) * 3);
 				rakeXp = (quantity - patchType.lastQuantity) * 3 * 4;
 				rakeStr += ` ${rakeXp} XP for raking, `;
 			}
@@ -375,20 +376,18 @@ export default class extends Task {
 			}
 
 			if (duration > Time.Minute * 20 && roll(10)) {
-				loot = multiplyBank(loot, 2);
-				loot[getRandomMysteryBox()] = 1;
+				loot.multiply(2);
+				loot.add(getRandomMysteryBox());
 			}
 
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
-				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
-					farmingLevel: currentFarmingLevel
-				});
-				loot = hesporiLoot.bank;
+				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
+				loot = hesporiLoot;
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 				if (roll((plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5)) {
-					loot[itemID('Plopper')] = 1;
+					loot.add('Plopper');
 				}
 			} else if (
 				patchType.patchPlanted &&
@@ -396,7 +395,7 @@ export default class extends Task {
 				alivePlants > 0 &&
 				roll((plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants)
 			) {
-				loot[itemID('Tangleroot')] = 1;
+				loot.add('Tangleroot');
 				tangleroot = true;
 			} else if (
 				patchType.patchPlanted &&
@@ -404,7 +403,7 @@ export default class extends Task {
 				alivePlants > 0 &&
 				roll((plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants / 5)
 			) {
-				loot[itemID('Plopper')] = 1;
+				loot.add('Plopper');
 			}
 
 			if (plantToHarvest.seedType !== 'hespori') {
@@ -414,7 +413,7 @@ export default class extends Task {
 						hesporiSeeds++;
 					}
 				}
-				if (hesporiSeeds > 0) loot[itemID('Hespori seed')] = hesporiSeeds;
+				if (hesporiSeeds > 0) loot.add('Hespori seed', hesporiSeeds);
 			}
 
 			if (tangleroot) {
@@ -466,7 +465,7 @@ export default class extends Task {
 				};
 
 				user.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
-				loot[itemID('Seed pack')] = 1;
+				loot.add('Seed pack');
 
 				janeMessage = true;
 			}
@@ -477,22 +476,22 @@ export default class extends Task {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			if (loot[itemID('Plopper')]) {
+			if (loot.add('Plopper')) {
 				infoStr.push(
 					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
 				);
 			}
 
-			if (hasPlopper) loot = multiplyBank(loot, 4);
+			if (hasPlopper) loot.multiply(4);
 
-			if (loot[itemID('Plopper')]) {
-				loot[itemID('Plopper')] = 1;
+			if (loot.has('Plopper')) {
+				loot.bank[itemID('Plopper')] = 1;
 			}
 
 			if (user.hasItemEquippedOrInBank(itemID('Farming master cape'))) {
 				for (let j = 0; j < alivePlants; j++) {
 					if (roll(10)) {
-						loot = addItemToBank(loot, getRandomMysteryBox());
+						loot.add(getRandomMysteryBox());
 					}
 				}
 			}
@@ -501,7 +500,7 @@ export default class extends Task {
 				for (let j = 0; j < quantity; j++) {
 					let upper = randInt(1, 4);
 					for (let i = 0; i < upper; i++) {
-						loot = addItemToBank(loot, getRandomMysteryBox());
+						loot.add(getRandomMysteryBox());
 					}
 				}
 			}
@@ -510,16 +509,16 @@ export default class extends Task {
 				for (let j = 0; j < alivePlants; j++) {
 					let upper = randInt(1, 6);
 					for (let i = 0; i < upper; i++) {
-						loot = addItemToBank(loot, getRandomMysteryBox());
+						loot.add(getRandomMysteryBox());
 					}
 				}
 			}
 			if (alivePlants && plantToHarvest.name === 'Mango bush' && roll(30)) {
-				loot = addItemToBank(loot, itemID('Shiny mango'));
+				loot.add('Shiny mango');
 			}
 
 			if (Object.keys(loot).length > 0) {
-				infoStr.push(`\nYou received: ${new Bank(loot)}.`);
+				infoStr.push(`\nYou received: ${loot}.`);
 			}
 
 			await this.client.settings.update(

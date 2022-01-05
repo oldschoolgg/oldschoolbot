@@ -53,7 +53,7 @@ export default class extends BotCommand {
 				b.add(id, 1);
 			}
 			return msg.channel.sendBankImage({
-				bank: b.bank,
+				bank: b,
 				title: `${msg.author.username}'s Favorites`
 			});
 		}

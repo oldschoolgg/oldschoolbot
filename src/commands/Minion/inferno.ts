@@ -331,7 +331,7 @@ export default class extends BotCommand {
 				await this.client.query<any>(`SELECT COUNT(*)
 FROM activity
 WHERE type = 'Inferno'
-AND user_id = '${userID}'
+AND user_id = ${userID}
 AND completed = true
 AND (data->>'diedPreZuk')::boolean = false;`)
 			)[0].count
@@ -797,7 +797,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			const res = await this.simulate(msg);
 			if (typeof res === 'string') return msg.channel.send(res);
 			const { str, bank } = res;
-			return msg.channel.sendBankImage({ content: str, bank: bank.bank });
+			return msg.channel.sendBankImage({ content: str, bank });
 		}
 
 		const attempts = msg.author.settings.get(UserSettings.Stats.InfernoAttempts);

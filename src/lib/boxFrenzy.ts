@@ -15,7 +15,7 @@ export async function boxFrenzy(channel: TextChannel, content: string, quantity:
 
 	try {
 		channel.sendBankImage({
-			bank: bank.bank,
+			bank,
 			content,
 			title: 'Guess These Item Names For A Mystery Box'
 		});

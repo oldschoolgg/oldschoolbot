@@ -137,7 +137,7 @@ export default class extends Task {
 			['pickpocket', [quantity, npc.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

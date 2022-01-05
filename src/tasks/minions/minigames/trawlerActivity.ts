@@ -8,7 +8,7 @@ import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent, itemID } from '../../../lib/util';
+import { anglerBoostPercent, itemID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -26,11 +26,7 @@ export default class extends Task {
 		let totalXP = 0;
 		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		for (let i = 0; i < quantity; i++) {
-			const { loot: _loot, xp } = fishingTrawlerLoot(
-				fishingLevel,
-				hasEliteArdy,
-				addBanks([loot.bank, allItemsOwned])
-			);
+			const { loot: _loot, xp } = fishingTrawlerLoot(fishingLevel, hasEliteArdy, loot.clone().add(allItemsOwned));
 			totalXP += xp;
 			loot.add(_loot);
 		}
@@ -68,7 +64,7 @@ export default class extends Task {
 			str += '\nYou received **2x** extra fish from Shelldon helping you.';
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });

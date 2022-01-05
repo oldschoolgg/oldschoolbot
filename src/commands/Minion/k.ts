@@ -42,6 +42,7 @@ import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../lib/minions/types';
 import { calcPOHBoosts } from '../../lib/poh';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -659,6 +660,15 @@ export default class extends BotCommand {
 			await msg.author.removeItemsFromBank(lootToRemove);
 		}
 
+		if (totalEconomyCost.length > 0) {
+			await trackLoot({
+				id: monster.name,
+				cost: totalEconomyCost,
+				type: 'Monster',
+				changeType: 'cost'
+			});
+		}
+
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 			monsterID: monster.id,
 			userID: msg.author.id,
@@ -666,9 +676,9 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			type: 'MonsterKilling',
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage
+			usingCannon: !usingCannon ? undefined : usingCannon,
+			cannonMulti: !cannonMulti ? undefined : cannonMulti,
+			burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
 		});
 
 		if (usedDart) {

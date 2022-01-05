@@ -90,8 +90,8 @@ export default class extends Task {
 		const totalLoot = new Bank();
 
 		let soloXP = '';
-		let soloPrevCl: ItemBank = {};
-		let soloItemsAdded: ItemBank = {};
+		let soloPrevCl = new Bank();
+		let soloItemsAdded: Bank = new Bank();
 
 		for (let [userID, loot] of Object.entries(teamsLoot)) {
 			const user = await this.client.fetchUser(userID).catch(noOp);

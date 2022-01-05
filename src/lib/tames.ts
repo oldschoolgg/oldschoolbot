@@ -3,7 +3,6 @@ import { round, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
-import { addBanks } from 'oldschooljs/dist/util';
 
 import { client } from '..';
 import { collectables } from '../commands/Minion/collect';
@@ -212,14 +211,14 @@ export interface Species {
 
 export async function runTameTask(activity: TameActivity, tame: Tame) {
 	async function handleFinish(res: { loot: Bank; message: string; user: KlasaUser }) {
-		const previousTameCl = { ...(tame.max_total_loot as ItemBank) };
+		const previousTameCl = new Bank({ ...(tame.max_total_loot as ItemBank) });
 
 		await prisma.tame.update({
 			where: {
 				id: tame.id
 			},
 			data: {
-				max_total_loot: addBanks([tame.max_total_loot as ItemBank, res.loot.bank])
+				max_total_loot: previousTameCl.clone().add(res.loot.bank).bank
 			}
 		});
 
@@ -308,7 +307,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			}
 			const { itemsAdded } = await user.addItemsToBank(loot);
 			handleFinish({
-				loot: new Bank(itemsAdded),
+				loot: itemsAdded,
 				message: str,
 				user
 			});
@@ -325,7 +324,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
 			const { itemsAdded } = await user.addItemsToBank(loot);
 			handleFinish({
-				loot: new Bank(itemsAdded),
+				loot: itemsAdded,
 				message: str,
 				user
 			});

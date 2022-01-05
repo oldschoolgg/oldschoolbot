@@ -130,7 +130,7 @@ export default class extends Task {
 
 		// Add barbarian fish to loot
 		if (fish.name === 'Barbarian fishing') {
-			loot.bank[fish.id] = 0;
+			loot.remove(fish.id, loot.amount(fish.id));
 			loot.add('Leaping sturgeon', leapingSturgeon);
 			loot.add('Leaping salmon', leapingSalmon);
 			loot.add('Leaping trout', leapingTrout);
@@ -192,7 +192,7 @@ export default class extends Task {
 			['fish', [quantity, fish.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

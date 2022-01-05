@@ -44,7 +44,7 @@ WHERE "slayer.task_streak" > 20
 ORDER BY "slayer.task_streak" DESC
 LIMIT 1;`;
 
-const mostSlayerTasksDoneQuery = `SELECT user_id as id, 'Most Tasks' as desc
+const mostSlayerTasksDoneQuery = `SELECT user_id::text as id, 'Most Tasks' as desc
 FROM slayer_tasks
 GROUP BY user_id
 ORDER BY count(user_id) DESC
@@ -358,7 +358,7 @@ FROM users
 WHERE "minion.farmingContract" IS NOT NULL
 ORDER BY ("minion.farmingContract"->>'contractsCompleted')::int DESC
 LIMIT 2;`,
-				`SELECT user_id as id, 'Top 2 Most Farming Trips' as desc
+				`SELECT user_id::text as id, 'Top 2 Most Farming Trips' as desc
 FROM activity
 WHERE type = 'Farming'
 GROUP BY user_id
