@@ -46,7 +46,7 @@ export default class extends BotCommand {
 
 	notifyUniques(user: KlasaUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
 		const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);
-		if (Object.keys(itemsToAnnounce).length > 0) {
+		if (itemsToAnnounce.length > 0) {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${
