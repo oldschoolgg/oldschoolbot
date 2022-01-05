@@ -476,7 +476,7 @@ export default class extends Task {
 				infoStr.push(`\n${user.minionName} tells you to come back after your plants have finished growing!`);
 			}
 
-			if (loot.add('Plopper')) {
+			if (loot.has('Plopper')) {
 				infoStr.push(
 					'<:plopper:787310793321349120> You found a pig on a farm and have adopted it to help you with farming.'
 				);
