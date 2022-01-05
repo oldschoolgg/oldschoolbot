@@ -21,7 +21,7 @@ interface DataPiece {
 }
 
 function wrap(str: string) {
-	return `'"${str}"'`
+	return `'"${str}"'`;
 }
 
 const dataPoints: DataPiece[] = [
