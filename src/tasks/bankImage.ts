@@ -289,7 +289,7 @@ export default class BankImageTask extends Task {
 
 		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1);
 		const rawCL = settings?.get(UserSettings.CollectionLogBank);
-		const currentCL: Bank | undefined = collectionLog ?? rawCL === undefined ? undefined : new Bank(rawCL);
+		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
 		let partial = false;
 
 		// Used for flags placeholder and ph
