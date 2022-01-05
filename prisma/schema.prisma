@@ -379,7 +379,7 @@ model Webhook {
 
 model XPGain {
   id         Int                 @id @default(autoincrement())
-  user_id    String              @db.VarChar(19)
+  user_id    BigInt
   date       DateTime            @default(now()) @db.Timestamp(6)
   skill      xp_gains_skill_enum
   xp         Int
