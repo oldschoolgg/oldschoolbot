@@ -123,4 +123,9 @@ describe('Sanity', () => {
 		expect(embTable.includes(itemID('Swanky boots'))).toEqual(false);
 		expect(umbTable.includes(itemID('Swanky boots'))).toEqual(false);
 	});
+	test('misc', () => {
+		expect(itemID('Phoenix')).toEqual(20_693);
+		expect(itemID('Kalphite princess')).toEqual(12_647);
+		expect(itemID('Green phoenix')).toEqual(24_483);
+	});
 });
