@@ -11,9 +11,9 @@ import {
 } from 'discord.js';
 import { isObject } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { bankImageCache } from '../lib/constants';
-import { ItemBank } from '../lib/types';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -114,13 +114,13 @@ export default class extends Extendable {
 			user,
 			cl
 		}: {
-			bank: ItemBank;
+			bank: Bank;
 			content?: string;
 			title?: string;
 			background?: number;
 			flags?: Record<string, string>;
 			user?: KlasaUser;
-			cl?: ItemBank;
+			cl?: Bank;
 		}
 	) {
 		const { image, cacheKey, isTransparent } = await this.client.tasks

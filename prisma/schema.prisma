@@ -457,6 +457,25 @@ model CommandUsage {
   @@map("command_usage")
 }
 
+enum loot_track_type {
+  Monster
+  Minigame
+  Skilling
+}
+
+model LootTrack {
+  id             String          @db.VarChar(32)
+  type           loot_track_type
+  // In minutes
+  total_duration Int
+  total_kc       Int
+  loot           Json            @default("{}") @db.Json
+  cost           Json            @default("{}") @db.Json
+
+  @@id([id, type])
+  @@map("loot_track")
+}
+
 enum command_usage_status {
   Unknown
   Success

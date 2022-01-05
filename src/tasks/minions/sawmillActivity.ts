@@ -40,7 +40,7 @@ export default class extends Task {
 			['sawmill', [plankQuantity, plank.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

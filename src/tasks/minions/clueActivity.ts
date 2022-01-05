@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
@@ -24,7 +25,7 @@ export default class extends Task {
 			quantity > 1 ? 's' : ''
 		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 
-		const loot = { [clueTier.id]: quantity };
+		const loot = new Bank().add(clueTier.id, quantity);
 		await user.addItemsToBank(loot, true);
 
 		this.client.emit(

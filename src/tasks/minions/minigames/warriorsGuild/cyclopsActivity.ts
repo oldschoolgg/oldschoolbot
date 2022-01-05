@@ -68,7 +68,7 @@ export default class extends Task {
 			loot.add(CyclopsTable.roll());
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
 		let str = `${user}, ${user.minionName} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${
 			(user.settings.get(UserSettings.MonsterScores)[cyclopsID] ?? 0) + quantity

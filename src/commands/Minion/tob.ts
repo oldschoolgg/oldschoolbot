@@ -19,6 +19,7 @@ import {
 	TOBRooms
 } from '../../lib/data/tob';
 import { degradeItem } from '../../lib/degradeableItems';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob';
@@ -326,6 +327,12 @@ export default class extends BotCommand {
 		);
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBCost, totalCost);
+		await trackLoot({
+			cost: totalCost,
+			id: isHardMode ? 'tob_hard' : 'tob',
+			type: 'Minigame',
+			changeType: 'cost'
+		});
 
 		await addSubTaskToActivityTask<TheatreOfBloodTaskOptions>({
 			userID: msg.author.id,

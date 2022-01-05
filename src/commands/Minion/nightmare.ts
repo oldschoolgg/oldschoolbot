@@ -8,6 +8,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
@@ -306,6 +307,12 @@ export default class extends BotCommand {
 		}
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.NightmareCost, totalCost);
+		await trackLoot({
+			id: 'nightmare',
+			cost: totalCost,
+			type: 'Monster',
+			changeType: 'cost'
+		});
 
 		await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
 			userID: msg.author.id,

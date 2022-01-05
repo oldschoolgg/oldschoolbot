@@ -87,7 +87,7 @@ export default class extends Task {
 			['chop', [quantity, log.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }
