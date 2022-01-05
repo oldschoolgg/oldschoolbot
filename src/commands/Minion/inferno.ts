@@ -272,7 +272,7 @@ export default class extends BotCommand {
 				await this.client.query<any>(`SELECT COUNT(*)
 FROM activity
 WHERE type = 'Inferno'
-AND user_id = '${userID}'
+AND user_id = ${userID}
 AND completed = true
 AND (data->>'diedPreZuk')::boolean = false;`)
 			)[0].count

@@ -24,8 +24,8 @@ export function convertStoredActivityToFlatActivity(activity: Activity): Activit
 	return {
 		...(activity.data as Prisma.JsonObject),
 		type: activity.type as activity_type_enum,
-		userID: activity.user_id,
-		channelID: activity.channel_id,
+		userID: activity.user_id.toString(),
+		channelID: activity.channel_id.toString(),
 		duration: activity.duration,
 		finishDate: activity.finish_date.getTime(),
 		id: activity.id
@@ -33,11 +33,11 @@ export function convertStoredActivityToFlatActivity(activity: Activity): Activit
 }
 
 export function activitySync(activity: Activity) {
-	const users: string[] = isGroupActivity(activity.data)
+	const users: bigint[] | string[] = isGroupActivity(activity.data)
 		? ((activity.data as Prisma.JsonObject).users! as string[])
 		: [activity.user_id];
 	for (const user of users) {
-		minionActivityCache.set(user, convertStoredActivityToFlatActivity(activity));
+		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
 	}
 }
 

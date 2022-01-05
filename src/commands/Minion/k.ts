@@ -517,9 +517,9 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			type: 'MonsterKilling',
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage
+			usingCannon: !usingCannon ? undefined : usingCannon,
+			cannonMulti: !cannonMulti ? undefined : cannonMulti,
+			burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
 		});
 		let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 			duration
