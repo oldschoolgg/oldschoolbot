@@ -36,7 +36,7 @@ export default class extends Task {
 			['fletch', [quantity, fletchableItem.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

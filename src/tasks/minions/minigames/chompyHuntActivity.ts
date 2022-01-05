@@ -28,7 +28,7 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(loot.bank, true);
+		await user.addItemsToBank(loot, true);
 		let str = `${user}, ${user.minionName} finished hunting Chompy Birds, they killed ${quantity}x Chompies. You have now have ${newScore} Chompies total. You received **${loot}**.`;
 
 		for (const [item, qty] of chompyHats) {
@@ -37,6 +37,6 @@ export default class extends Task {
 			}
 		}
 
-		handleTripFinish(this.client, user, channelID, str, ['chompyhunt', []], undefined, data, loot.bank);
+		handleTripFinish(this.client, user, channelID, str, ['chompyhunt', []], undefined, data, loot);
 	}
 }

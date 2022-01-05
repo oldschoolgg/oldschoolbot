@@ -122,7 +122,7 @@ export default class extends Task {
 			['mine', [quantity, ore.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

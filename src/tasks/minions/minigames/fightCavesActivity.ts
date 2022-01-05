@@ -81,7 +81,7 @@ export default class extends Task {
 					head: 'mejJal'
 				}),
 				data,
-				itemLootBank.bank
+				itemLootBank
 			);
 		}
 
@@ -119,7 +119,7 @@ export default class extends Task {
 					head: 'mejJal'
 				}),
 				data,
-				failBank.bank
+				failBank
 			);
 		}
 
@@ -188,7 +188,7 @@ export default class extends Task {
 				head: 'mejJal'
 			}),
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

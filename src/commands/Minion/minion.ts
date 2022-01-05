@@ -181,7 +181,7 @@ export default class MinionCommand extends BotCommand {
 		if ('bank' in result) {
 			return msg.channel.sendBankImage({
 				title: result.title,
-				bank: result.bank.bank,
+				bank: result.bank,
 				content: result.content
 			});
 		}

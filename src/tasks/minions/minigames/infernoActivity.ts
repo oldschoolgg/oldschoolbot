@@ -195,7 +195,7 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 				head: 'ketKeh'
 			}),
 			data,
-			baseBank.bank
+			baseBank
 		);
 	}
 }

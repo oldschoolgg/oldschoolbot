@@ -19,7 +19,7 @@ export default class extends Task {
 			'Warrior guild token': quantity * armour.tokens
 		});
 
-		await user.addItemsToBank(loot.bank, true);
+		await user.addItemsToBank(loot, true);
 
 		handleTripFinish(
 			this.client,
@@ -29,7 +29,7 @@ export default class extends Task {
 			['warriorsguild', [quantity, 'tokens'], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

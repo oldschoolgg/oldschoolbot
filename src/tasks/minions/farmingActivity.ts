@@ -9,7 +9,6 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { ItemBank } from '../../lib/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
@@ -56,7 +55,7 @@ export default class extends Task {
 		let lives = 3;
 		let bonusXpMultiplier = 0;
 		let farmersPiecesCheck = 0;
-		let loot: ItemBank = {};
+		let loot = new Bank();
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
 		const userBank = user.settings.get(UserSettings.Bank);
@@ -125,7 +124,7 @@ export default class extends Task {
 			plantXp = quantity * (plant.plantXp + compostXp);
 			farmingXpReceived = plantXp + harvestXp + rakeXp;
 
-			loot[itemID('Weeds')] = quantity * 3;
+			loot.add('Weeds', quantity * 3);
 
 			let str = `${user}, ${user.minionName} finished raking ${quantity} patches and planting ${quantity}x ${
 				plant.name
@@ -147,7 +146,7 @@ export default class extends Task {
 			}
 
 			if (Object.keys(loot).length > 0) {
-				str += `\n\nYou received: ${new Bank(loot)}.`;
+				str += `\n\nYou received: ${loot}.`;
 			}
 
 			await this.client.settings.update(
@@ -243,10 +242,10 @@ export default class extends Task {
 				}
 
 				if (quantity > patchType.lastQuantity) {
-					loot[plantToHarvest.outputCrop] = cropYield;
-					loot[itemID('Weeds')] = quantity - patchType.lastQuantity;
+					loot.add(plantToHarvest.outputCrop, cropYield);
+					loot.add('Weeds', quantity - patchType.lastQuantity);
 				} else {
-					loot[plantToHarvest.outputCrop] = cropYield;
+					loot.add(plantToHarvest.outputCrop, cropYield);
 				}
 
 				if (plantToHarvest.name === 'Limpwurt') {
@@ -278,10 +277,10 @@ export default class extends Task {
 					if (!plantToHarvest.woodcuttingXp) return;
 
 					const amountOfLogs = rand(5, 10) * alivePlants;
-					loot[plantToHarvest.outputLogs] = amountOfLogs;
+					loot.add(plantToHarvest.outputLogs, amountOfLogs);
 
 					if (plantToHarvest.outputRoots) {
-						loot[plantToHarvest.outputRoots] = rand(1, 4) * alivePlants;
+						loot.add(plantToHarvest.outputRoots, rand(1, 4) * alivePlants);
 					}
 
 					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp;
@@ -290,14 +289,14 @@ export default class extends Task {
 					harvestXp = 0;
 				} else if (plantToHarvest.givesCrops && chopped) {
 					if (!plantToHarvest.outputCrop) return;
-					loot[plantToHarvest.outputCrop] = cropYield * alivePlants;
+					loot.add(plantToHarvest.outputCrop, cropYield * alivePlants);
 
 					harvestXp = cropYield * alivePlants * plantToHarvest.harvestXp;
 				}
 			}
 
 			if (quantity > patchType.lastQuantity) {
-				loot[itemID('Weeds')] = (quantity - patchType.lastQuantity) * 3;
+				loot.add('Weeds', (quantity - patchType.lastQuantity) * 3);
 				rakeXp = (quantity - patchType.lastQuantity) * 3 * 4;
 				rakeStr += ` ${rakeXp} XP for raking, `;
 			}
@@ -352,7 +351,7 @@ export default class extends Task {
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
 				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
-				loot = hesporiLoot.bank;
+				loot = hesporiLoot;
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 			} else if (
 				patchType.patchPlanted &&
@@ -360,7 +359,7 @@ export default class extends Task {
 				alivePlants > 0 &&
 				roll((plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) / alivePlants)
 			) {
-				loot[itemID('Tangleroot')] = 1;
+				loot.add('Tangleroot');
 				tangleroot = true;
 			}
 
@@ -371,7 +370,7 @@ export default class extends Task {
 						hesporiSeeds++;
 					}
 				}
-				if (hesporiSeeds > 0) loot[itemID('Hespori seed')] = hesporiSeeds;
+				if (hesporiSeeds > 0) loot.add('Hespori seed', hesporiSeeds);
 			}
 
 			if (tangleroot) {
@@ -423,13 +422,13 @@ export default class extends Task {
 				};
 
 				user.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
-				loot[itemID('Seed pack')] = 1;
+				loot.add('Seed pack');
 
 				janeMessage = true;
 			}
 
 			if (Object.keys(loot).length > 0) {
-				infoStr.push(`\nYou received: ${new Bank(loot)}.`);
+				infoStr.push(`\nYou received: ${loot}.`);
 			}
 
 			if (!planting) {
