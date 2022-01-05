@@ -1223,6 +1223,7 @@ export const allCollectionLogs: ICollection = {
 				items: gracefulCL
 			},
 			'Clothing Mystery Box': {
+				counts: false,
 				items: cmbClothes,
 				alias: ['cmb', 'clothing mystery box']
 			}
