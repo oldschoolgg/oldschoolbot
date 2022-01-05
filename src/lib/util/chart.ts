@@ -35,7 +35,7 @@ export async function pieChart(title: string, format: (value: any) => string, va
 					font: {
 						weight: 'bolder'
 					},
-					formatter(value, _context) {
+					formatter(value) {
 						return format(value);
 					}
 				}
@@ -63,7 +63,7 @@ export async function lineChart(title: string, format: (value: any) => string, v
 					font: {
 						weight: 'bolder'
 					},
-					formatter(value, _context) {
+					formatter(value) {
 						return format(value);
 					}
 				}
@@ -92,7 +92,7 @@ export async function barChart(title: string, format: (value: any) => string, va
 					font: {
 						weight: 'bolder'
 					},
-					formatter(value, _context) {
+					formatter(value) {
 						return format(value);
 					}
 				},
