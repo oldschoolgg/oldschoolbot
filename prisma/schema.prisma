@@ -9,14 +9,14 @@ datasource db {
 
 model Activity {
   id             Int                @default(autoincrement())
-  user_id        String             @db.VarChar(19)
+  user_id        BigInt
   start_date     DateTime           @db.Timestamp(6)
   finish_date    DateTime           @db.Timestamp(6)
   duration       Int
   completed      Boolean
   group_activity Boolean
   type           activity_type_enum
-  channel_id     String             @db.VarChar(19)
+  channel_id     BigInt
   data           Json               @db.Json
 
 

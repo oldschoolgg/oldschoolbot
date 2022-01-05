@@ -410,7 +410,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				await prisma.minigame.delete({ where: { user_id: msg.author.id } });
 				await prisma.xPGain.deleteMany({ where: { user_id: msg.author.id } });
 				await prisma.newUser.delete({ where: { id: msg.author.id } });
-				await prisma.activity.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 			} catch (_) {}
 
 			await msg.author.settings.update([

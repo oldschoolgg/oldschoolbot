@@ -28,7 +28,7 @@ const dataPoints: DataPiece[] = [
 				await prisma.$queryRaw`SELECT type, count(type) AS qty
 FROM activity
 WHERE completed = true	
-AND user_id = ${user.id}
+AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${user.id}::jsonb
 GROUP BY type;`;
 			const dataPoints: [string, number][] = result.filter(i => i.qty >= 5).map(i => [i.type, i.qty]);
@@ -42,7 +42,7 @@ GROUP BY type;`;
 				await prisma.$queryRaw`SELECT type, sum(duration) / ${Time.Hour} AS hours
 FROM activity
 WHERE completed = true
-AND user_id = ${user.id}
+AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${user.id}::jsonb
 GROUP BY type;`;
 			const dataPoints: [string, number][] = result.filter(i => i.hours >= 1).map(i => [i.type, i.hours]);
@@ -56,7 +56,7 @@ GROUP BY type;`;
 				await prisma.$queryRaw`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int) AS kc
 FROM activity
 WHERE completed = true
-AND user_id = ${user.id}
+AND user_id = ${BigInt(user.id)}
 AND type = 'MonsterKilling'
 AND data IS NOT NULL
 AND data::text != '{}'
@@ -122,7 +122,7 @@ GROUP BY mins;`;
 				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
 WHERE type = 'Inferno'
-AND user_id = ${user.id}
+AND user_id = ${BigInt(user.id)}
 AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`;
 			return lineChart(
@@ -137,7 +137,7 @@ GROUP BY mins;`;
 		run: async (user: KlasaUser) => {
 			const activities = await prisma.activity.findMany({
 				where: {
-					user_id: user.id,
+					user_id: BigInt(user.id),
 					type: 'Inferno'
 				},
 				orderBy: {
@@ -174,7 +174,7 @@ FROM activity
 WHERE type = 'TheatreOfBlood'
 AND completed = true
 AND data->>'wipedRoom' IS NOT NULL
-AND user_id = ${user.id}
+AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${user.id}::jsonb
 GROUP BY 1;`;
 			return barChart(
@@ -231,7 +231,7 @@ WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name:
 FROM activity
 WHERE type = 'Farming'
 AND data->>'plantsName' IS NOT NULL
-AND user_id = ${user.id}
+AND user_id = ${BigInt(user.id)}
 GROUP BY data->>'plantsName'`;
 			result.sort((a, b) => b.qty - a.qty);
 			return barChart(
