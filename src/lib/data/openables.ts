@@ -16,8 +16,8 @@ import { LampTable } from '../xpLamps';
 import {
 	allPetIDs,
 	chambersOfXericCL,
+	cmbClothes,
 	customBossesDropsThatCantBeDroppedInMBs,
-	fancyClothing,
 	frozenKeyPieces
 } from './CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './holidayItems';
@@ -457,7 +457,7 @@ const Openables: Openable[] = [
 		name: 'Clothing Mystery Box',
 		itemID: 50_421,
 		aliases: ['cmb', 'clothing mystery box'],
-		table: () => randArrItem(fancyClothing),
+		table: () => randArrItem(cmbClothes),
 		emoji: Emoji.MysteryBox
 	}
 ];

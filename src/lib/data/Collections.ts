@@ -61,6 +61,7 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
+	cmbClothes,
 	commanderZilyanaCL,
 	corporealBeastCL,
 	crazyArchaeologistCL,
@@ -1220,6 +1221,10 @@ export const allCollectionLogs: ICollection = {
 			Graceful: {
 				counts: false,
 				items: gracefulCL
+			},
+			'Clothing Mystery Box': {
+				items: cmbClothes,
+				alias: ['cmb', 'clothing mystery box']
 			}
 		}
 	}

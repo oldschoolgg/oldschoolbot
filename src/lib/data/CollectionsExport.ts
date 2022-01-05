@@ -2198,7 +2198,7 @@ export const antiSantaOutfit = new Bank({
 	'Antisanta boots': 1
 });
 
-export const fancyClothing = resolveItems([
+export const cmbClothes = resolveItems([
 	'Swanky boots',
 	'Darkmeyer hood',
 	'Darkmeyer torso',
