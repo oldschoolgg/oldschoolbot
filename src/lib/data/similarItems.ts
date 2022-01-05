@@ -160,7 +160,7 @@ const source: [string, (string | number)[]][] = [
 	['Graceful cape', gracefulCapes],
 	['Agility cape', ['Agility cape(t)']],
 	['Fire cape', ['Fire max cape', 'Fire max cape (l)']],
-	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)']],
+	['Infernal cape', ['Infernal max cape', 'Infernal max cape (l)', 'TzKal cape']],
 	['Ardougne cloak 4', ['Ardougne max cape']],
 	["Ava's accumulator", ['Accumulator max cape']],
 	["Ava's assembler", ['Assembler max cape', 'Assembler max cape (l)']],

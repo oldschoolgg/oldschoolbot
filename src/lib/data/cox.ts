@@ -412,7 +412,7 @@ const itemBoosts: ItemBoost[][] = [
 	[
 		{
 			item: getOSItem('Sanguinesti staff'),
-			boost: 6,
+			boost: 7,
 			mustBeEquipped: false,
 			setup: 'mage',
 			mustBeCharged: true,
