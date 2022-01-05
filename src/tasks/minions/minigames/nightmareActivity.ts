@@ -138,7 +138,8 @@ export default class extends Task {
 			type: 'Monster',
 			changeType: 'loot',
 			duration,
-			kc: quantity
+			kc: quantity,
+			teamSize: users.length
 		});
 
 		if (users.length > 1) {

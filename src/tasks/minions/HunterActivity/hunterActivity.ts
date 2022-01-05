@@ -182,7 +182,7 @@ export default class extends Task {
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.HunterLoot, loot);
-		trackLoot({
+		await trackLoot({
 			id: creature.name,
 			changeType: 'loot',
 			duration,

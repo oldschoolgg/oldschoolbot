@@ -135,7 +135,8 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			type: 'Minigame',
 			changeType: 'loot',
 			duration,
-			kc: 1
+			kc: 1,
+			teamSize: users.length
 		});
 
 		sendToChannelID(this.client, channelID, { content: resultMessage });

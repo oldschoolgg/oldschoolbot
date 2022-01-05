@@ -354,6 +354,7 @@ export default class extends BotCommand {
 			);
 		}
 
+		const totalCost = new Bank();
 		const lootToRemove = new Bank();
 		let pvmCost = false;
 
@@ -474,6 +475,7 @@ export default class extends BotCommand {
 				}
 			}
 
+			totalCost.add(foodRemoved);
 			if (reductions.length > 0) {
 				foodStr += `, ${reductions.join(', ')}`;
 			}
@@ -502,9 +504,13 @@ export default class extends BotCommand {
 		if (lootToRemove.length > 0) {
 			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 			await msg.author.removeItemsFromBank(lootToRemove);
+			totalCost.add(lootToRemove);
+		}
+
+		if (totalCost.length > 0) {
 			await trackLoot({
 				id: monster.name,
-				cost: lootToRemove,
+				cost: totalCost,
 				type: 'Monster',
 				changeType: 'cost'
 			});

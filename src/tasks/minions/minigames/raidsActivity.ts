@@ -108,7 +108,8 @@ export default class extends Task {
 			type: 'Minigame',
 			changeType: 'loot',
 			duration,
-			kc: 1
+			kc: 1,
+			teamSize: users.length
 		});
 
 		if (allUsers.length === 1) {
