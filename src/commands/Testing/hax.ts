@@ -37,10 +37,12 @@ export default class extends BotCommand {
 				.add('Cooked karambwan', 1000)
 				.add('Ranging potion(4)', 1000)
 				.add('Death rune', 10_000)
-				.add('Blood rune', 10_000)
+				.add('Blood rune', 100_000)
 				.add('Water rune', 10_000)
 				.add('Coins', 5_000_000)
 				.add('Shark', 5000)
+				.add('Vial of blood', 10_000)
+				.add('Rune pouch', 1)
 				.add('Toxic blowpipe');
 			await msg.author.addItemsToBank(loot);
 			await msg.author.settings.update(UserSettings.Blowpipe, {

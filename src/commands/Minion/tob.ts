@@ -76,7 +76,7 @@ export default class extends BotCommand {
 			});
 
 			let wins = 0;
-			const winRateSampleSize = 50;
+			const winRateSampleSize = 25;
 			for (let o = 0; o < winRateSampleSize; o++) {
 				const sim = createTOBTeam({
 					team: users.map(u => ({
@@ -298,6 +298,7 @@ export default class extends BotCommand {
 		await Promise.all(
 			users.map(async u => {
 				const supplies = await calcTOBInput(u);
+				const { total } = calculateTOBUserGearPercents(u);
 				const blowpipeData = u.settings.get(UserSettings.Blowpipe);
 				const { realCost } = await u.specialRemoveItems(
 					supplies
@@ -310,6 +311,7 @@ export default class extends BotCommand {
 						.add(u.getGear('range').ammo!.item, 100)
 				);
 				await updateBankSetting(u, UserSettings.TOBCost, realCost);
+				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
 				if (u.getGear('melee').hasEquipped('Abyssal tentacle')) {
 					await degradeItem({
 						item: getOSItem('Abyssal tentacle'),
@@ -317,8 +319,6 @@ export default class extends BotCommand {
 						chargesToDegrade: TENTACLE_CHARGES_PER_RAID
 					});
 				}
-				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
-				const { total } = calculateTOBUserGearPercents(u);
 				debugStr += `**- ${u.username}** (${Emoji.Gear}${total.toFixed(1)}% ${
 					Emoji.CombatSword
 				} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
@@ -373,7 +373,11 @@ export default class extends BotCommand {
 **Mage:** <:Kodai_insignia:403018312264712193> ${gear.mage.toFixed(1)}%
 **Total Gear Score:** ${Emoji.Gear} ${gear.total.toFixed(1)}%\n
 **Death Chances:** ${deathChances.deathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
+**Wipe Chances:** ${deathChances.wipeDeathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
 **Hard Mode Death Chances:** ${hardDeathChances.deathChances
+			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
+			.join(', ')}
+**Hard Mode Wipe Chances:** ${hardDeathChances.wipeDeathChances
 			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
 			.join(', ')}`);
 	}
