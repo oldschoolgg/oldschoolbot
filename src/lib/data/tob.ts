@@ -1,4 +1,4 @@
-import { calcPercentOfNum, calcWhatPercent, percentChance, randInt, reduceNumByPercent, round, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randInt, reduceNumByPercent, round, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -11,7 +11,7 @@ import { getMinigameScore } from '../settings/minigames';
 import { UserSettings } from '../settings/types/UserSettings';
 import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
-import { assert, formatSkillRequirements, randomVariation, skillsMeetRequirements } from '../util';
+import { assert, formatSkillRequirements, randFloat, randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 
@@ -75,8 +75,10 @@ interface TOBDeaths {
 	/**
 	 * An array, where each item is the index of the room they died in.
 	 */
-	deaths: number[];
+	deaths: number[]; // If they actually died or not
+	wipeDeaths: number[]; // Used to determine wipe chance
 	deathChances: { name: string; deathChance: number }[];
+	wipeDeathChances: { name: string; deathChance: number }[];
 }
 
 export function calculateTOBDeaths(
@@ -93,14 +95,20 @@ export function calculateTOBDeaths(
 	}
 ): TOBDeaths {
 	let deaths: number[] = [];
-	let deathChances: { name: string; deathChance: number }[] = [];
+	let wipeDeaths: number[] = [];
+	let realDeathChances: { name: string; deathChance: number }[] = [];
+	let wipeDeathChances: { name: string; deathChance: number }[] = [];
+
+	// These numbers are for proficiency. After this point, the odds of a wipe are the same, but deaths are reduced.
+	const minionProfiencyKC = isHardMode ? 75 : 50;
+	const actualDeathReductionFactor = isHardMode ? 3 : 4;
 
 	// This shifts the graph left or right, to start getting kc sooner or later. Higher = sooner:
 	const minionLearningBase = isHardMode ? 5 : 2;
 	const minionLearning = minionLearningBase + Math.floor(Math.min(20, (isHardMode ? hardAttempts : attempts) / 2));
 	const basePosition = isHardMode ? 92 : 85;
-	const difficultySlider = isHardMode ? 32 : 36; // Lower is harder. Be careful with this. (30 default).
-	const curveStrength = isHardMode ? 2 : 2.5; // 1 - 5. Higher numbers mean a slower learning curve. (2.5 default)
+	const difficultySlider = isHardMode ? 34 : 36; // Lower is harder. Be careful with this. (30 default).
+	const curveStrength = isHardMode ? 1.5 : 2.5; // 1 - 5. Higher numbers mean a slower learning curve. (2.5 default)
 	const baseKC = isHardMode ? hardKC : kc;
 
 	let baseDeathChance = Math.floor(
@@ -120,14 +128,21 @@ export function calculateTOBDeaths(
 
 	for (let i = 0; i < TOBRooms.length; i++) {
 		const room = TOBRooms[i];
-		const deathChance = Math.min(98, (1 + room.difficultyRating / 10) * baseDeathChance);
-		if (percentChance(deathChance)) {
+		const wipeDeathChance = Math.min(98, (1 + room.difficultyRating / 10) * baseDeathChance);
+		const realDeathChance =
+			baseKC >= minionProfiencyKC ? wipeDeathChance / actualDeathReductionFactor : wipeDeathChance;
+		const roll = randFloat(0, 100);
+		if (roll < realDeathChance) {
 			deaths.push(i);
 		}
-		deathChances.push({ name: room.name, deathChance });
+		if (roll < wipeDeathChance) {
+			wipeDeaths.push(i);
+		}
+		realDeathChances.push({ name: room.name, deathChance: realDeathChance });
+		wipeDeathChances.push({ name: room.name, deathChance: wipeDeathChance });
 	}
 
-	return { deaths, deathChances };
+	return { deaths, wipeDeaths, deathChances: realDeathChances, wipeDeathChances };
 }
 
 export const baseTOBUniques = resolveItems([
@@ -450,6 +465,7 @@ interface ParsedTeamMember {
 	hardKC: number;
 	deathChances: TOBDeaths;
 	deaths: number[];
+	wipeDeaths: number[];
 }
 
 export function createTOBTeam({
@@ -568,7 +584,14 @@ export function createTOBTeam({
 		}
 
 		const deathChances = calculateTOBDeaths(u.kc, u.hardKC, u.attempts, u.hardAttempts, hardMode, gearPerecents);
-		parsedTeam.push({ kc: u.kc, hardKC: u.hardKC, deathChances, deaths: deathChances.deaths, id: u.user.id });
+		parsedTeam.push({
+			kc: u.kc,
+			hardKC: u.hardKC,
+			deathChances,
+			wipeDeaths: deathChances.wipeDeaths,
+			deaths: deathChances.deaths,
+			id: u.user.id
+		});
 
 		let reduction = round(userPercentChange / teamSize, 1);
 
@@ -599,7 +622,7 @@ export function createTOBTeam({
 	for (let i = 0; i < TOBRooms.length; i++) {
 		let room = TOBRooms[i];
 
-		if (parsedTeam.every(member => member.deaths.includes(i))) {
+		if (parsedTeam.every(member => member.wipeDeaths.includes(i))) {
 			wipedRoom = room;
 			deathDuration += Math.floor(
 				calcPercentOfNum(disableVariation ? room.timeWeighting / 2 : randInt(1, room.timeWeighting), duration)
