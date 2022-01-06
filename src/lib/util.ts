@@ -595,3 +595,11 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 
 	return setup;
 }
+
+export function convertBankToPerHourStats(bank: Bank, time: number) {
+	let result = [];
+	for (const [item, qty] of bank.items()) {
+		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
+	}
+	return result;
+}
