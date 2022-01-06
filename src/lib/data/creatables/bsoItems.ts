@@ -909,6 +909,15 @@ const dragonBoneCreatables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Black swan': 1
 		})
+	},
+	{
+		name: 'Nexterminator',
+		inputItems: resolveNameBank({
+			'Blood-soaked feather ': 1
+		}),
+		outputItems: resolveNameBank({
+			Nexterminator: 1
+		})
 	}
 ];
 
