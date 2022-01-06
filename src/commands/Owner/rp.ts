@@ -25,11 +25,11 @@ import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../.
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ItemBank } from '../../lib/types';
 import {
 	asyncExec,
 	channelIsSendable,
 	cleanString,
+	convertBankToPerHourStats,
 	formatDuration,
 	getSupportGuild,
 	getUsername,
@@ -770,24 +770,21 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					}
 				});
 				if (!loot) return msg.channel.send('Invalid');
+
+				const durationMillis = loot.total_duration * Time.Minute;
+
 				const arr = [
-					['Cost', loot.cost],
-					['Loot', loot.loot]
+					['Cost', new Bank(loot.cost as any)],
+					['Loot', new Bank(loot.loot as any)]
 				] as const;
 
-				const images = (
-					await Promise.all(
-						arr.map(i =>
-							(this.client.tasks.get('bankImage') as BankImageTask).generateBankImage(
-								new Bank(i[1] as unknown as ItemBank),
-								`${i[0]}`
-							)
-						)
-					)
-				).map(i => new MessageAttachment(i.image!));
+				const task = this.client.tasks.get('bankImage') as BankImageTask;
 
-				for (const image of images) {
-					msg.channel.send({ files: [image] });
+				for (const [name, bank] of arr) {
+					msg.channel.send({
+						content: convertBankToPerHourStats(bank, durationMillis).join(', '),
+						files: [new MessageAttachment((await task.generateBankImage(bank, name)).image!)]
+					});
 				}
 
 				return msg.channel.send({
