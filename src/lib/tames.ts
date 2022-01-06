@@ -8,7 +8,7 @@ import { client } from '..';
 import { collectables } from '../commands/Minion/collect';
 import BankImageTask from '../tasks/bankImage';
 import { effectiveMonsters } from './minions/data/killableMonsters';
-import { prisma } from './settings/prisma';
+import { prisma, trackLoot } from './settings/prisma';
 import { UserSettings } from './settings/types/UserSettings';
 import { generateContinuationChar, itemNameFromID, roll } from './util';
 import { createCollector } from './util/createCollector';
@@ -306,6 +306,14 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 			}
 			const { itemsAdded } = await user.addItemsToBank(loot);
+			await trackLoot({
+				duration: activity.duration,
+				kc: activityData.quantity,
+				id: fullMonster.name,
+				changeType: 'loot',
+				type: 'Monster',
+				loot
+			});
 			handleFinish({
 				loot: itemsAdded,
 				message: str,

@@ -11,7 +11,7 @@ import { Eatables } from '../../lib/data/eatables';
 import { requiresMinion } from '../../lib/minions/decorators';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { KillableMonster } from '../../lib/minions/types';
-import { prisma } from '../../lib/settings/prisma';
+import { prisma, trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -143,7 +143,7 @@ export async function removeRawFood({
 	monster: KillableMonster;
 	quantity: number;
 	tame: Tame;
-}): Promise<[string, ItemBank]> {
+}): Promise<[string, Bank]> {
 	await user.settings.sync(true);
 	if (tameHasBeenFed(tame, itemID('Abyssal cape'))) {
 		totalHealingNeeded = Math.floor(totalHealingNeeded * 0.75);
@@ -180,7 +180,7 @@ export async function removeRawFood({
 
 		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, itemCost);
 
-		return [`${itemCost} from ${user.username}`, itemCost.bank];
+		return [`${itemCost} from ${user.username}`, itemCost];
 	}
 }
 
@@ -692,7 +692,7 @@ export default class extends BotCommand {
 		if (quantity < 1) {
 			return msg.channel.send("Your tame can't kill this monster fast enough.");
 		}
-		const [foodStr] = await removeRawFood({
+		const [foodStr, cost] = await removeRawFood({
 			client: this.client,
 			totalHealingNeeded: (monster.healAmountNeeded ?? 1) * quantity,
 			healPerAction: monster.healAmountNeeded ?? 1,
@@ -702,6 +702,13 @@ export default class extends BotCommand {
 			tame: selectedTame
 		});
 		const duration = Math.floor(quantity * speed);
+
+		await trackLoot({
+			id: monster.name,
+			changeType: 'cost',
+			type: 'Monster',
+			cost
+		});
 
 		await createTameTask({
 			user: msg.author,
