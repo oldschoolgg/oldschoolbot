@@ -1,6 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -86,7 +86,7 @@ export default class extends BotCommand {
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				result,
+				new Bank(result.bank),
 				`Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster?.name ?? bossName)}`,
 				true,
 				msg.flagArgs,
