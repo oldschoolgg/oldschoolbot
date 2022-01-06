@@ -1130,10 +1130,6 @@ export const allCollectionLogs: ICollection = {
 				]),
 				roleCategory: ['skilling']
 			},
-			Miscellaneous: {
-				alias: ['misc'],
-				items: miscellaneousCL
-			},
 			Farming: {
 				counts: false,
 				items: allFarmingItems
