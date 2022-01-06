@@ -36,7 +36,7 @@ AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
 			const dataPoints: [string, number][] = result.filter(i => i.qty >= 5).map(i => [i.type, i.qty]);
-			return barChart(`${user.username}'s Activity Counts`, val => `${val} Trips`, dataPoints);
+			return barChart(`${user.username}'s Activity Types`, val => `${val} Trips`, dataPoints);
 		}
 	},
 	{
@@ -94,7 +94,7 @@ GROUP BY data->>'monsterID';`;
 			return {
 				files: [
 					new MessageAttachment(
-						await pieChart(`${user.username}'s Top Bank Value Items`, val => `${toKMB(val)}%`, [
+						await pieChart(`${user.username}'s Personal Collection Log Progress`, val => `${toKMB(val)}%`, [
 							['Complete Collection Log Items', percent, '#9fdfb2'],
 							['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
 						])
@@ -165,7 +165,7 @@ GROUP BY mins;`;
 **Extra Capes:** ${postFirstCapeCompletions}
 **Total Time Spent in Inferno:** ${formatDuration(sumArr(activities.map(i => i.duration)))}`,
 				bank: totalCost,
-				title: `${user.username}'s Total Inferno Cost`
+				title: `${user.username}'s Personal Inferno`
 			};
 		}
 	},
