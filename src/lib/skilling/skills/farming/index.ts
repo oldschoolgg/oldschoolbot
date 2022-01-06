@@ -45,6 +45,7 @@ for (const plant of plants) {
 }
 allFarmingItems.push(itemID('Tangleroot'));
 allFarmingItems.push(itemID('Plopper'));
+allFarmingItems.push(itemID('Shiny mango'));
 
 const Farming = {
 	aliases: ['farming'],
