@@ -8,6 +8,7 @@ import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/cus
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -289,6 +290,13 @@ export default class extends BotCommand {
 			foodRemoved.push(`${food} from ${user.username}`);
 		}
 		foodString += `${foodRemoved.join(', ')}.`;
+
+		await trackLoot({
+			changeType: 'cost',
+			cost: totalCost,
+			id: KalphiteKingMonster.name,
+			type: 'Monster'
+		});
 
 		await addSubTaskToActivityTask<BossActivityTaskOptions>({
 			userID: msg.author.id,

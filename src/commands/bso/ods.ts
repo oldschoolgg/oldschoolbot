@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { trackLoot } from '../../lib/settings/prisma';
 import { getMinigameEntity } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -129,6 +130,13 @@ export default class ODSCommand extends BotCommand {
 		if (boosts.length > 0) {
 			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 		}
+
+		await trackLoot({
+			changeType: 'cost',
+			cost,
+			id: 'ourania_delivery_service',
+			type: 'Monster'
+		});
 
 		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,

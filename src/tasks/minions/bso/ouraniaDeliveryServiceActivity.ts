@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 import { PrayerPageTable } from 'oldschooljs/dist/simulation/clues/General';
 
+import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -60,6 +61,15 @@ export default class extends Task {
 			}
 			await user.addItemsToBank(loot, true);
 			updateBankSetting(this.client, ClientSettings.EconomyStats.ODSLoot, loot);
+			await trackLoot({
+				duration,
+				teamSize: 1,
+				loot,
+				type: 'Minigame',
+				changeType: 'loot',
+				id: 'ourania_delivery_service',
+				kc: quantity
+			});
 			str += `\n\nYou received some tips from Wizards in your delivery route: ${loot}.`;
 		}
 

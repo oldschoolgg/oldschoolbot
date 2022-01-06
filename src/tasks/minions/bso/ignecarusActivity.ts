@@ -11,7 +11,7 @@ import {
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { prisma } from '../../../lib/settings/prisma';
+import { prisma, trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { BossUser } from '../../../lib/structures/Boss';
@@ -133,6 +133,16 @@ export default class extends Task {
 					})`
 			)}.`;
 		}
+
+		await trackLoot({
+			duration,
+			teamSize: idArr.length,
+			loot: totalLoot,
+			type: 'Monster',
+			changeType: 'loot',
+			id: Ignecarus.name,
+			kc: quantity
+		});
 
 		sendToChannelID(this.client, channelID, { content: resultStr });
 	}

@@ -8,6 +8,7 @@ import KingGoldemar, {
 	KingGoldemarLootTable
 } from '../../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { addMonsterXP } from '../../../lib/minions/functions';
+import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { calcDwwhChance, gpCostPerKill } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
@@ -96,6 +97,16 @@ export default class extends Task {
 			resultStr += `\n${user} received ${loot}.`;
 		}
 		updateBankSetting(this.client, ClientSettings.EconomyStats.KingGoldemarLoot, totalLoot);
+
+		await trackLoot({
+			duration,
+			teamSize: users.length,
+			loot: totalLoot,
+			type: 'Monster',
+			changeType: 'loot',
+			id: KingGoldemar.name,
+			kc: 1
+		});
 
 		// Show deaths in the result
 		if (deaths.length > 0) {

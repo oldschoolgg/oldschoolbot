@@ -1,10 +1,10 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { kibbles } from '../../commands/bso/kibble';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { KibbleOptions } from '../../lib/types/minions';
-import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { kibbles } from '../../../commands/bso/kibble';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { KibbleOptions } from '../../../lib/types/minions';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: KibbleOptions) {

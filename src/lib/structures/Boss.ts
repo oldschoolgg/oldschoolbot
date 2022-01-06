@@ -5,6 +5,8 @@ import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
 import { GearSetupType, GearStats } from '../gear';
+import { effectiveMonsters } from '../minions/data/killableMonsters';
+import { trackLoot } from '../settings/prisma';
 import { PUMPKINHEAD_ID } from '../simulation/pumpkinHead';
 import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
@@ -404,6 +406,18 @@ export class BossInstance {
 		}
 		if (this.settingsKeys) {
 			updateBankSetting(this.client, this.settingsKeys[0], totalCost);
+		}
+
+		const monster = effectiveMonsters.find(m => m.id === this.id);
+		if (!monster) {
+			console.error(`No monster for ${this.id}`);
+		} else {
+			await trackLoot({
+				changeType: 'cost',
+				cost: totalCost,
+				id: monster.name,
+				type: 'Monster'
+			});
 		}
 
 		await addSubTaskToActivityTask<NewBossOptions>({

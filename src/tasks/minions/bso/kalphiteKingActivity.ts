@@ -9,7 +9,7 @@ import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { KalphiteKingMonster } from '../../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { prisma } from '../../../lib/settings/prisma';
+import { prisma, trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -148,6 +148,16 @@ export default class extends Task {
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.KalphiteKingLoot, totalLoot);
+
+		await trackLoot({
+			duration,
+			teamSize: users.length,
+			loot: totalLoot,
+			type: 'Monster',
+			changeType: 'loot',
+			id: KalphiteKingMonster.name,
+			kc: quantity
+		});
 
 		// Show deaths in the result
 		const deathEntries = Object.entries(deaths);

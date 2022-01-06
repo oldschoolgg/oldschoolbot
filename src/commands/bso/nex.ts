@@ -8,6 +8,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import { KillableMonster } from '../../lib/minions/types';
 import { NexMonster } from '../../lib/nex';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -299,6 +300,14 @@ export default class extends BotCommand {
 			await user.removeItemsFromBank(items);
 			foodRemoved.push(`${brewsNeeded}/${restoresNeeded} from ${user.username}`);
 		}
+
+		await trackLoot({
+			changeType: 'cost',
+			cost: totalCost,
+			id: NexMonster.name,
+			type: 'Monster'
+		});
+
 		foodString += `${foodRemoved.join(', ')}.`;
 
 		await addSubTaskToActivityTask<BossActivityTaskOptions>({

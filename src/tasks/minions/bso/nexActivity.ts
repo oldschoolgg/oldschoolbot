@@ -10,6 +10,7 @@ import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { NexMonster } from '../../../lib/nex';
+import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
@@ -135,6 +136,15 @@ export default class extends Task {
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.NexLoot, totalLoot);
+		await trackLoot({
+			duration,
+			teamSize: users.length,
+			loot: totalLoot,
+			type: 'Monster',
+			changeType: 'loot',
+			id: NexMonster.name,
+			kc: quantity
+		});
 
 		// Show deaths in the result
 		const deathEntries = Object.entries(deaths);

@@ -9,6 +9,7 @@ import { bossKillables } from '../../../lib/minions/data/killableMonsters/bosses
 import { VasaMagus, VasaMagusLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
+import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { NewBossOptions } from '../../../lib/types/minions';
@@ -79,6 +80,15 @@ export default class extends Task {
 			taskQuantity: null
 		});
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		await trackLoot({
+			duration,
+			teamSize: 1,
+			loot,
+			type: 'Monster',
+			changeType: 'loot',
+			id: VasaMagus.name,
+			kc: quantity
+		});
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
