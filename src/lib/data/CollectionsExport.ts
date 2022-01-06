@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import { stoneSpirits } from '../minions/data/stoneSpirits';
+import { assert } from '../util';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
 import { allHolidayItems } from './holidayItems';
@@ -2240,7 +2241,6 @@ export const cmbClothes = resolveItems([
 	'Tribal trousers (red)',
 	'Tribal skirt (red)',
 	'Tribal shoes (red, male)',
-	'Tribal shoes (red, male)',
 	'Samba headdress (blue, male)',
 	'Samba headdress (blue, female)',
 	'Samba top (blue, male)',
@@ -2295,7 +2295,6 @@ export const cmbClothes = resolveItems([
 	'Feathered serpent skirt (blue, male)',
 	'Feathered serpent skirt (blue, female)',
 	'Feathered serpent boots (blue, female)',
-	'Feathered serpent boots (blue, female)',
 	'Highland war paint (blue, male)',
 	'Highland war paint (blue, female)',
 	'Highland shirt (blue)',
@@ -2340,5 +2339,19 @@ export const cmbClothes = resolveItems([
 	"Shaman's hand wraps",
 	'Fang of Mohegan',
 	'Round glasses',
-	'Stylish glasses'
+	'Stylish glasses',
+	'Pyjama slippers',
+	'Pyjama top',
+	'Pyjama bottoms',
+	'Tuxedo jacket',
+	'Tuxedo trousers',
+	'Tuxedo shoes',
+	'Tuxedo gloves',
+	'Tuxedo cravat',
+	'Evening bolero',
+	'Evening dipped skirt',
+	'Evening gloves',
+	'Evening boots',
+	'Evening masquerade mask'
 ]);
+assert(cmbClothes.length === new Set(cmbClothes).size, 'Should be no duplicates in CMB clothes');

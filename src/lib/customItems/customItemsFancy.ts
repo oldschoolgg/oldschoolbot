@@ -505,18 +505,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	50_466,
-	'Tribal shoes (red, male)',
-	'Bronze boots',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	100
-);
-
-setCustomItem(
 	50_467,
 	'Samba headdress (blue, male)',
 	'Bronze full helm',
@@ -1154,18 +1142,6 @@ setCustomItem(
 
 setCustomItem(
 	50_520,
-	'Feathered serpent boots (blue, female)',
-	'Bronze boots',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	100
-);
-
-setCustomItem(
-	50_521,
 	'Feathered serpent boots (blue, female)',
 	'Bronze boots',
 	{

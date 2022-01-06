@@ -26,13 +26,15 @@ declare module 'oldschooljs/dist/meta/types' {
 	}
 }
 
-export const hasSet = new Set();
+export const hasSet: Item[] = [];
 
 export function setCustomItem(id: number, name: string, baseItem: string, newItemData?: Partial<Item>, price = 0) {
-	if (hasSet.has(id)) {
+	if (hasSet.some(i => i.id === id)) {
 		throw new Error(`Tried to add 2 custom items with same id ${id}, called ${name}`);
 	}
-	hasSet.add(id);
+	if (hasSet.some(i => i.name === name)) {
+		throw new Error(`Tried to add 2 custom items with same name, called ${name}`);
+	}
 	const data = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id });
 	data.price = price || 1;
 
@@ -43,4 +45,5 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 
 	// Add the item to the custom items array
 	customItems.push(id);
+	hasSet.push(data);
 }
