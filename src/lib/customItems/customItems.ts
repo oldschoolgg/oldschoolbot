@@ -1,4 +1,6 @@
 import './customItemsFancy';
+import './farming';
+import './pets';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -10,20 +12,8 @@ setCustomItem(6199, 'Tradeable Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(3062, 'Pet Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(3713, 'Holiday Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(13_345, 'Tester Gift Box', 'Mystery box', {}, 100_000);
-setCustomItem(5507, 'Remy', 'Herbi', {}, 1_000_000);
-setCustomItem(3714, 'Shelldon', 'Herbi', {}, 1_000_000);
-setCustomItem(9620, 'Doug', 'Herbi', {}, 1_000_000);
-setCustomItem(9619, 'Lil Lamb', 'Herbi', {}, 1_000_000);
-setCustomItem(10_092, 'Zippy', 'Herbi', {}, 1_000_000);
-setCustomItem(9058, 'Harry', 'Herbi', {}, 1_000_000);
-setCustomItem(10_329, 'Wintertoad', 'Herbi', {}, 1_000_000);
-setCustomItem(3469, 'Klik', 'Herbi', {}, 1_000_000);
-setCustomItem(21_313, 'Scruffy', 'Herbi', {}, 1_000_000);
-setCustomItem(9057, 'Zak', 'Herbi', {}, 1_000_000);
-setCustomItem(8441, 'Hammy', 'Herbi', {}, 1_000_000);
 setCustomItem(12_592, 'Divine sigil', 'Elysian sigil', {}, 930_000_000);
 setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000_000);
-setCustomItem(500, 'Skipper', 'Herbi', {}, 1_000_000);
 
 // Dwarven Items
 
@@ -151,14 +141,9 @@ setCustomItem(24_212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
 setCustomItem(24_210, 'Abyssal pouch', 'Giant pouch', {}, 100_000);
 
 // Ori Pet || 4149	 = Abyssal demon
-setCustomItem(4149, 'Ori', 'Herbi', {}, 1_000_000);
 
 // Abyssal bones || 24199 = Seren halo [DUPLICATE]
 setCustomItem(24_199, 'Abyssal dragon bones', 'Superior dragon bones', {}, 20_000);
-
-setCustomItem(19_567, 'Cob', 'Herbi', {}, 1_000_000);
-
-setCustomItem(22_949, 'Takon', 'Herbi', {}, 1_000_000);
 
 setCustomItem(
 	6796,
@@ -216,17 +201,6 @@ setCustomItem(
 	500_000_000
 );
 
-setCustomItem(1808, 'Peky', 'Herbi', {}, 1_000_000);
-
-setCustomItem(1809, 'Obis', 'Herbi', {}, 1_000_000);
-
-setCustomItem(1810, 'Plopper', 'Herbi', {}, 1_000_000);
-
-setCustomItem(244, 'Brock', 'Herbi', {}, 1_000_000);
-
-setCustomItem(76, 'Wilvus', 'Herbi', {}, 1_000_000);
-
-setCustomItem(737, 'Smokey', 'Herbi', {}, 1_000_000);
 setCustomItem(5020, 'Lottery ticket', 'Paramaya ticket');
 setCustomItem(5021, 'Bank lottery ticket', 'Paramaya ticket');
 // setCustomItem(25238, 'Dwarven defender', ('Dragon defender'));
@@ -977,7 +951,6 @@ setCustomItem(40_036, 'Gorajan warrior gloves', 'Torva gloves', {}, 55_000_000);
 setCustomItem(40_037, 'Gorajan warrior boots', 'Torva boots', {}, 55_000_000);
 
 setCustomItem(40_038, 'Scroll of proficiency', 'Coal', {}, 1_000_000);
-setCustomItem(40_039, 'Frosty', 'Herbi', {}, 20_000_000);
 setCustomItem(40_040, 'Chaotic remnant', 'Coal', {}, 10_000_000);
 
 setCustomItem(40_042, 'Gorajan occult helmet', 'Virtus mask', {}, 55_000_000);
@@ -1094,12 +1067,6 @@ setCustomItem(45_105, '12 sided die', 'Coal', {}, 1000);
 setCustomItem(45_106, '20 sided die', 'Coal', {}, 1000);
 setCustomItem(45_107, '100 sided die', 'Coal', {}, 1000);
 setCustomItem(45_108, 'Ring of luck', 'Berserker ring', {}, 1000);
-
-// Pets
-setCustomItem(47_000, 'Flappy', 'Herbi', {}, 1_000_000);
-setCustomItem(47_001, 'Ishi', 'Herbi', {}, 1_000_000);
-setCustomItem(47_002, 'Corgi', 'Herbi', {}, 1_000_000);
-setCustomItem(47_010, 'Sandy', 'Herbi', {}, 1_000_000);
 
 // Royal mystery box
 setCustomItem(47_500, 'Diamond sceptre', 'Rune sword', {}, 1_000_000);
@@ -1291,20 +1258,14 @@ setCustomItem(
 );
 
 setCustomItem(47_517, 'Perfect chitin', 'Magic seed', {}, 1_000_000);
-setCustomItem(47_518, 'Baby kalphite king', 'Herbi', {}, 1_000_000);
-setCustomItem(47_519, 'Hoppy', 'Herbi', {}, 1_000_000);
-setCustomItem(47_520, 'Craig', 'Herbi', {}, 1_000_000);
 
 setCustomItem(47_521, 'Beach mystery box', 'Mystery box', {}, 1_000_000);
-setCustomItem(47_522, 'Snappy the Turtle', 'Herbi', {}, 1_000_000);
 setCustomItem(47_523, 'Beach ball', 'Coal', {}, 100_000);
 setCustomItem(47_524, 'Water balloon', 'Coal', {}, 100_000);
 setCustomItem(47_525, 'Ice cream', 'Coal', {}, 100_000);
 setCustomItem(47_526, 'Crab hat', 'Coal', {}, 100_000);
-setCustomItem(47_527, 'Steve', 'Herbi', {}, 1_000_000);
 
 setCustomItem(47_528, "Bryophyta's staff(i)", "Bryophyta's staff", {}, 1_000_000);
-setCustomItem(47_529, 'Voidling', 'Herbi', {}, 1_000_000);
 
 /**
  * -----------------------------------------------------------------------------------------------
@@ -1906,7 +1867,6 @@ setCustomItem(48_264, 'Hairyfloss', 'Coal', {}, 10_000);
 setCustomItem(48_265, 'Goblinfinger soup', 'Coal', {}, 10_000);
 setCustomItem(48_266, "Benny's brain brew", 'Coal', {}, 10_000);
 setCustomItem(48_267, 'Roasted newt', 'Coal', {}, 10_000);
-setCustomItem(48_268, 'Gregoyle', 'Herbi', {}, 1_000_000);
 setCustomItem(48_273, "Choc'rock", 'Coal', {}, 100_000);
 
 setCustomItem(48_305, 'Haunted cloak', 'Red cape', {}, 10_000);
@@ -1915,7 +1875,6 @@ setCustomItem(48_307, "Pumpkinhead's pumpkin head", 'Rune full helm', {}, 10_000
 setCustomItem(48_308, 'Haunted amulet', 'Amulet of strength', {}, 10_000);
 setCustomItem(48_309, 'Haunted gloves', 'Rune gloves', {}, 10_000);
 setCustomItem(48_310, 'Haunted boots', 'Rune boots', {}, 10_000);
-setCustomItem(48_311, 'Mini Pumpkinhead', 'Herbi', {}, 1_000_000_000);
 setCustomItem(48_312, 'Mysterious token', 'Coal', {}, 1_000_000);
 
 setCustomItem(48_313, 'Baby raven', 'Herbi', {}, 1_000_000);
@@ -2024,17 +1983,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	48_325,
-	'Jal-MejJak',
-	'Herbi',
-	{
-		customItemData: {
-			isSuperUntradeable: true
-		}
-	},
-	10_000_000
-);
-setCustomItem(
 	48_326,
 	"TzKal-Zuk's skin",
 	'Coal',
@@ -2049,17 +1997,6 @@ setCustomItem(
 	48_327,
 	'Infernal slayer helmet(i)',
 	'Gorajan warrior helmet',
-	{
-		customItemData: {
-			isSuperUntradeable: true
-		}
-	},
-	10_000_000
-);
-setCustomItem(
-	48_328,
-	'Blabberbeak',
-	'Herbi',
 	{
 		customItemData: {
 			isSuperUntradeable: true
@@ -2873,17 +2810,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	50_115,
-	'Mr. E',
-	'Herbi',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-setCustomItem(
 	50_116,
 	'Squid dye',
 	'Coal',
@@ -3193,28 +3119,7 @@ setCustomItem(
 	},
 	5_000_000
 );
-setCustomItem(
-	62_496,
-	'Seer',
-	'Herbi',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-setCustomItem(
-	62_497,
-	'Black swan',
-	'Herbi',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
+
 setCustomItem(
 	62_546,
 	'Golden partyhat',
@@ -3237,37 +3142,14 @@ setCustomItem(
 	},
 	100
 );
-
 setCustomItem(
-	65_197,
-	'Mangobeak',
-	'Herbi',
+	50_589,
+	'Pink partyhat',
+	'White partyhat',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1_000_000
-);
-setCustomItem(
-	63_197,
-	'Magical mango',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	1_000_000
-);
-setCustomItem(
-	63_127,
-	'Shiny mango',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	100
+	200_000_000
 );

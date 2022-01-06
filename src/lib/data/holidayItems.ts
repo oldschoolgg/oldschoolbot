@@ -135,6 +135,7 @@ export const baseHolidayItems = new LootTable()
 
 export const PartyhatTable = new LootTable()
 	.oneIn(50, 'Black partyhat')
+	.oneIn(25, 'Pink partyhat')
 	.oneIn(20, 'Rainbow partyhat')
 	.add('Red Partyhat')
 	.add('Yellow partyhat')

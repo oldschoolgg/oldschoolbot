@@ -1,6 +1,7 @@
 import { Monsters } from 'oldschooljs';
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { masterCapesCL } from '../src/lib/data/CollectionsExport';
+import { allPetIDs, masterCapesCL } from '../src/lib/data/CollectionsExport';
 import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../src/lib/data/openables';
 import { growablePets } from '../src/lib/growablePets';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
@@ -127,5 +128,12 @@ describe('Sanity', () => {
 		expect(itemID('Phoenix')).toEqual(20_693);
 		expect(itemID('Kalphite princess')).toEqual(12_647);
 		expect(itemID('Green phoenix')).toEqual(24_483);
+		expect(getOSItem('Nexterminator').id).toEqual(50_588);
+		expect(getOSItem('Smokey').customItemData?.cantDropFromMysteryBoxes).toEqual(true);
+		expect(getOSItem('Pink partyhat').customItemData?.cantDropFromMysteryBoxes).toEqual(true);
+		expect(getOSItem('Pink partyhat').equipment?.slot).toEqual(EquipmentSlot.Head);
+		expect(resolveItems(['Nexterminator', 'Herbi', 'Smokey', 'Craig']).every(id => allPetIDs.includes(id))).toEqual(
+			true
+		);
 	});
 });
