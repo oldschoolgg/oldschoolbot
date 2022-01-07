@@ -941,7 +941,7 @@ const dragonBoneCreatables: Createable[] = [
 					.filter(i => userBank.has(i.inputId))
 					.sort((a, b) => userBank.amount(b.inputId) - userBank.amount(a.inputId))[0] ?? bones[0];
 			let perBone = 2000;
-			if (bones.indexOf(bonesToUse) < 9) {
+			if (bones.indexOf(bonesToUse) < bones.indexOf(bones.find(b => b.name === 'Dragon bones')!)) {
 				perBone *= 2;
 			}
 			const quantity = Math.ceil(Math.floor(perBone / bonesToUse.xp));
