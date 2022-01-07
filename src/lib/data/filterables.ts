@@ -15,8 +15,9 @@ import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
 import { XPLamps } from '../xpLamps';
-import { allCollectionLogs, collectionLogRoleCategories } from './Collections';
+import { allCollectionLogs } from './Collections';
 import {
+	allClueItems,
 	allPetIDs,
 	cluesBeginnerCL,
 	cluesEasyCL,
@@ -1083,7 +1084,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'All Clues',
 		aliases: ['clues all', 'all clues', 'clue all', 'all clue'],
-		items: collectionLogRoleCategories.clues
+		items: allClueItems
 	},
 	{
 		name: 'Clues Shared',
