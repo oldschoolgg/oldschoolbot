@@ -63,9 +63,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [qty, str = '']: [number, string]) {
 		const kibble = kibbles.find(e => [e.item.name, e.type].some(s => stringMatches(s, str)));
 		if (!kibble) {
-			return msg.channel.send(
-				`No matching kibble found, they are: ${kibbles.map(k => k.item.name).join(', ,')}.`
-			);
+			return msg.channel.send(`No matching kibble found, they are: ${kibbles.map(k => k.item.name).join(',')}.`);
 		}
 		if (msg.author.skillLevel(SkillsEnum.Cooking) < kibble.level) {
 			return msg.channel.send(`You need level ${kibble.level} Cooking to make kibble.`);

@@ -778,124 +778,6 @@ setCustomItem(21_807, 'Ancient emblem', 'Ancient emblem');
 setCustomItem(11_196, 'Bloodsoaked feather', 'Feather');
 
 /**
- *
- *
- * Primal
- *
- *
- */
-setCustomItem(4614, 'Primal full helm (real)', 'Rune full helm', {
-	equipment: {
-		attack_stab: 75,
-		attack_slash: 78,
-		attack_crush: 78,
-		attack_magic: -5,
-		attack_ranged: 0,
-
-		defence_stab: 120,
-		defence_slash: 125,
-		defence_crush: 125,
-		defence_magic: -5,
-		defence_ranged: 125,
-
-		melee_strength: 5,
-		ranged_strength: 0,
-		magic_damage: 0,
-		prayer: 1,
-		slot: EquipmentSlot.Head,
-		requirements: null
-	}
-});
-setCustomItem(4655, 'Primal platebody (real)', 'Rune platebody', {
-	equipment: {
-		attack_stab: 55,
-		attack_slash: 58,
-		attack_crush: 58,
-		attack_magic: -5,
-		attack_ranged: 0,
-
-		defence_stab: 260,
-		defence_slash: 250,
-		defence_crush: 250,
-		defence_magic: 0,
-		defence_ranged: 265,
-
-		melee_strength: 5,
-		ranged_strength: 0,
-		magic_damage: 0,
-		prayer: 1,
-		slot: EquipmentSlot.Body,
-		requirements: null
-	}
-});
-setCustomItem(4622, 'Primal platelegs (real)', 'Rune platelegs', {
-	equipment: {
-		attack_stab: 55,
-		attack_slash: 58,
-		attack_crush: 58,
-		attack_magic: -5,
-		attack_ranged: 0,
-
-		defence_stab: 210,
-		defence_slash: 210,
-		defence_crush: 210,
-		defence_magic: 0,
-		defence_ranged: 200,
-
-		melee_strength: 5,
-		ranged_strength: 0,
-		magic_damage: 0,
-		prayer: 1,
-		slot: EquipmentSlot.Legs,
-		requirements: null
-	}
-});
-setCustomItem(6167, 'Primal boots (real)', 'Rune boots', {
-	equipment: {
-		attack_stab: 22,
-		attack_slash: 2,
-		attack_crush: 2,
-		attack_magic: -5,
-		attack_ranged: 0,
-
-		defence_stab: 24,
-		defence_slash: 24,
-		defence_crush: 24,
-		defence_magic: 0,
-		defence_ranged: 35,
-
-		melee_strength: 5,
-		ranged_strength: 0,
-		magic_damage: 0,
-		prayer: 1,
-		slot: EquipmentSlot.Feet,
-		requirements: null
-	}
-});
-setCustomItem(5839, 'Primal gauntlets (real)', 'Rune gloves', {
-	equipment: {
-		attack_stab: 26,
-		attack_slash: 16,
-		attack_crush: 16,
-		attack_magic: -5,
-		attack_ranged: 0,
-
-		defence_stab: 18,
-		defence_slash: 18,
-		defence_crush: 18,
-		defence_magic: 0,
-		defence_ranged: 35,
-
-		melee_strength: 5,
-		ranged_strength: 0,
-		magic_damage: 0,
-		prayer: 1,
-		slot: EquipmentSlot.Hands,
-		requirements: null
-	}
-});
-
-/**
  * Exclusive Items
  *
  * Items from 40_000 to 45_000 will not be dropped by any mystery box, and are untradeable
@@ -3152,4 +3034,92 @@ setCustomItem(
 		}
 	},
 	200_000_000
+);
+
+setCustomItem(
+	50_599,
+	'Divine water',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	50_600,
+	'Dragon claw',
+	'Dragon dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	50_601,
+	'Offhand dragon claw',
+	'Dragon dagger',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		equipment: {
+			...getOSItem('Dragon dagger').equipment!,
+			slot: EquipmentSlot.Shield
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	50_602,
+	'Ruined dragon armour lump',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	50_603,
+	'Ruined dragon armour shard',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	50_604,
+	'Ruined dragon armour slice',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	50_605,
+	'Royal dragon platebody',
+	'Dragon platebody',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
 );

@@ -4,6 +4,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import setCustomMonster, { makeKillTable } from '../../../../util/setCustomMonster';
 import { KillableMonster } from '../../../types';
 import { customDemiBosses } from './demiBosses';
+import { MiscCustomMonsters } from './misc';
 import { resourceDungeonMonsters } from './resourceDungeons';
 
 declare module 'oldschooljs/dist/structures/Monster' {
@@ -22,7 +23,8 @@ export const customKillableMonsters: KillableMonster[] = [];
 
 export const BSOMonsters = {
 	...customDemiBosses,
-	...resourceDungeonMonsters
+	...resourceDungeonMonsters,
+	...MiscCustomMonsters
 };
 
 for (const monster of Object.values(BSOMonsters)) {

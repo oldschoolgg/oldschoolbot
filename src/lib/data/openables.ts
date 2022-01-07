@@ -54,16 +54,6 @@ export const odsCrate = new LootTable()
 	.add('Clue scroll (medium)', 1)
 	.add(RuneTable, [1, 10], 3);
 
-export const ALL_PRIMAL = resolveItems([
-	'Primal full helm (real)',
-	'Primal platebody (real)',
-	'Primal platelegs (real)',
-	'Primal gauntlets (real)',
-	'Primal boots (real)',
-	'Offhand drygore longsword',
-	'Drygore longsword'
-]);
-
 export const PMBTable = new LootTable()
 	.oneIn(MR_E_DROPRATE_FROM_PMB, 'Mr. E')
 	.add('Heron')
@@ -516,8 +506,7 @@ const cantBeDropped = [
 		'Bloodsoaked feather'
 	]),
 	...allPetIDs,
-	...frozenKeyPieces,
-	...ALL_PRIMAL
+	...frozenKeyPieces
 ] as number[];
 
 export const tmbTable: number[] = [];

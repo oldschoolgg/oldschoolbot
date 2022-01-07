@@ -1,5 +1,6 @@
 import { Emoji } from '../../../constants';
 import itemID from '../../../util/itemID';
+import resolveItems from '../../../util/resolveItems';
 import { Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
 import { bushes } from './bushes';
@@ -43,9 +44,19 @@ for (const plant of plants) {
 	if (plant.outputLogs) allFarmingItems.push(plant.outputLogs);
 	if (plant.outputRoots) allFarmingItems.push(plant.outputRoots);
 }
-allFarmingItems.push(itemID('Tangleroot'));
-allFarmingItems.push(itemID('Plopper'));
-allFarmingItems.push(itemID('Shiny mango'));
+
+allFarmingItems.push(
+	...resolveItems([
+		'Master farmer hat',
+		'Master farmer jacket',
+		'Master farmer pants',
+		'Master farmer gloves',
+		'Master farmer boots',
+		'Tangleroot',
+		'Plopper',
+		'Shiny mango'
+	])
+);
 
 const Farming = {
 	aliases: ['farming'],

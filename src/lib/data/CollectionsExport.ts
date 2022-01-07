@@ -1654,7 +1654,8 @@ export const slayerCL = resolveItems([
 	// "Dagon'hai robe top",
 	// "Dagon'hai robe bottom",
 	'Blood shard',
-	...stoneSpirits.map(i => i.spirit.id)
+	...stoneSpirits.map(i => i.spirit.id),
+	'Brackish blade'
 ]);
 export const tzHaarCL = resolveItems([
 	'Obsidian cape',
@@ -1721,8 +1722,9 @@ export const miscellaneousCL = resolveItems([
 	'Dragonstone platelegs',
 	'Dragonstone gauntlets',
 	'Dragonstone boots',
-	'Uncut onyx'
-	// 'Merfolk trident'
+	'Uncut onyx',
+	// 'Merfolk trident',
+	'Brackish blade'
 ]);
 export const dailyCL = resolveItems([
 	'Event rpg',

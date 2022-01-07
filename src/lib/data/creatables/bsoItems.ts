@@ -918,6 +918,17 @@ const dragonBoneCreatables: Createable[] = [
 		outputItems: resolveNameBank({
 			Nexterminator: 1
 		})
+	},
+	{
+		name: 'Royal dragon platebody',
+		inputItems: resolveNameBank({
+			'Ruined dragon armour slice': 1,
+			'Ruined dragon armour lump': 1,
+			'Ruined dragon armour shard': 1
+		}),
+		outputItems: resolveNameBank({
+			'Royal dragon platebody': 1
+		})
 	}
 ];
 

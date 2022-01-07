@@ -11,7 +11,14 @@ import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches, updateBankSetting } from '../../lib/util';
+import {
+	formatDuration,
+	formatSkillRequirements,
+	itemID,
+	skillsMeetRequirements,
+	stringMatches,
+	updateBankSetting
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -65,6 +72,13 @@ export default class extends BotCommand {
 			return msg.channel.send(
 				`${msg.author.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`
 			);
+		}
+		if (craftable.otherSkillRequirements) {
+			if (!skillsMeetRequirements(msg.author.rawSkills, craftable.otherSkillRequirements)) {
+				return msg.channel.send(
+					`You need ${formatSkillRequirements(craftable.otherSkillRequirements)} to craft this item.`
+				);
+			}
 		}
 
 		await msg.author.settings.sync(true);

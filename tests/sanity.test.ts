@@ -50,7 +50,6 @@ describe('Sanity', () => {
 		const shouldntBeIn = resolveItems([
 			'Coins',
 			'Tester gift box',
-			'Primal full helm (real)',
 			'Abyssal pouch',
 			'Cob',
 			'Runite stone spirit',
