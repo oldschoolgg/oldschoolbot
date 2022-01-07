@@ -16,6 +16,7 @@ export interface IToReturnCollection {
 	collectionTotal: number;
 	leftList?: ILeftListStatus;
 	userItems: Bank;
+	counts: boolean;
 }
 
 export interface ILeftListStatus {

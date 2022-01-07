@@ -1161,7 +1161,8 @@ export async function getCollection(options: {
 				collectionObtained: userAmount,
 				collectionTotal: totalCl,
 				leftList: getLeftList(userCheckBank, category, allItems, logType === 'sacrifice'),
-				userItems: userCheckBank
+				userItems: userCheckBank,
+				counts: false
 			};
 		}
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
@@ -1209,7 +1210,8 @@ export async function getCollection(options: {
 						allItems && attributes.allItems !== undefined,
 						logType === 'sacrifice'
 					),
-					userItems: userCheckBank
+					userItems: userCheckBank,
+					counts: attributes.counts ?? true
 				};
 			}
 		}
@@ -1224,7 +1226,8 @@ export async function getCollection(options: {
 			collection: clItems,
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
-			userItems: userCheckBank
+			userItems: userCheckBank,
+			counts: false
 		};
 	}
 	const monster = killableMonsters.find(
@@ -1238,7 +1241,8 @@ export async function getCollection(options: {
 			completions: { Default: user.getKC(monster.id) },
 			collectionObtained: userAmount,
 			collectionTotal: totalCl,
-			userItems: userCheckBank
+			userItems: userCheckBank,
+			counts: false
 		};
 	}
 
