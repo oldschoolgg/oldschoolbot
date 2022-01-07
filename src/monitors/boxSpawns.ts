@@ -1,3 +1,4 @@
+import { isFunction } from '@sapphire/utilities';
 import { MessageEmbed } from 'discord.js';
 import { randArrItem, shuffleArr, Time } from 'e';
 import he from 'he';
@@ -89,7 +90,13 @@ export async function createdChallenge(msg: KlasaMessage): Promise<KlasaUser | n
 	const embed = new MessageEmbed()
 		.setColor(Color.Orange)
 		.setTitle('Answer this for a reward!')
-		.setDescription(`What item is created using these? ${new Bank(randomCreatable.inputItems)}`);
+		.setDescription(
+			`What item is created using these? ${
+				isFunction(randomCreatable.inputItems)
+					? randomCreatable.inputItems(msg.author)
+					: new Bank(randomCreatable.inputItems)
+			}`
+		);
 
 	await msg.channel.send({ embeds: [embed] });
 

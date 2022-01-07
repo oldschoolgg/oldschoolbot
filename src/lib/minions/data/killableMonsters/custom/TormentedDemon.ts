@@ -64,5 +64,6 @@ export const TormentedDemon: CustomMonster = {
 	itemCost: {
 		qtyPerKill: 1,
 		itemCost: new Bank().add('Divine water')
-	}
+	},
+	hp: 657
 };

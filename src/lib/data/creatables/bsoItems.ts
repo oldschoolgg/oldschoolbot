@@ -1,8 +1,10 @@
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
 import { dyedItems } from '../../dyedItems';
-import { resolveNameBank } from '../../util';
+import { bones } from '../../skilling/skills/prayer';
+import { assert, resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
 import { Createable } from '../createables';
 
@@ -928,6 +930,26 @@ const dragonBoneCreatables: Createable[] = [
 		}),
 		outputItems: resolveNameBank({
 			'Royal dragon platebody': 1
+		})
+	},
+	{
+		name: 'Divine water',
+		inputItems: (user: KlasaUser) => {
+			const userBank = user.bank();
+			const bonesToUse =
+				bones
+					.filter(i => userBank.has(i.inputId))
+					.sort((a, b) => userBank.amount(b.inputId) - userBank.amount(a.inputId))[0] ?? bones[0];
+			let perBone = 2000;
+			if (bones.indexOf(bonesToUse) < 9) {
+				perBone *= 2;
+			}
+			const quantity = Math.ceil(Math.floor(perBone / bonesToUse.xp));
+			assert(quantity > 0);
+			return new Bank().add(bonesToUse.inputId, quantity).add('Vial of water');
+		},
+		outputItems: resolveNameBank({
+			'Divine water': 1
 		})
 	}
 ];

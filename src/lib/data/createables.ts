@@ -1,3 +1,6 @@
+import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
+
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
@@ -17,7 +20,7 @@ import { tobCreatables } from './creatables/tob';
 export interface Createable {
 	name: string;
 	outputItems: ItemBank;
-	inputItems: ItemBank;
+	inputItems: ItemBank | ((user: KlasaUser) => Bank);
 	cantHaveItems?: ItemBank;
 	requiredSkills?: Record<string, number>;
 	QPRequired?: number;
