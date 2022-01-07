@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { kibbles } from '../../../commands/bso/kibble';
+import { kibbles } from '../../../lib/data/kibble';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { KibbleOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';

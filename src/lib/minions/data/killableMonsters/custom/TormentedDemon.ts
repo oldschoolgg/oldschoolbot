@@ -38,8 +38,8 @@ export const TormentedDemon: CustomMonster = {
 	difficultyRating: 7,
 	qpRequired: 126,
 	healAmountNeeded: 50 * 20,
-	attackStyleToUse: GearStat.AttackRanged,
-	attackStylesUsed: [GearStat.AttackMagic],
+	attackStyleToUse: GearStat.AttackStab,
+	attackStylesUsed: [GearStat.AttackSlash],
 	minimumGearRequirements: {
 		melee: {
 			[GearStat.AttackStab]: 100,

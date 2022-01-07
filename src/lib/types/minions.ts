@@ -1,8 +1,8 @@
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
-import { Kibble } from '../../commands/bso/kibble';
 import { Peak } from '../../tasks/WildernessPeakInterval';
+import { Kibble } from '../data/kibble';
 import { IPatchData } from '../minions/farming/types';
 import { Monkey } from '../monkeyRumble';
 import { MinigameName } from '../settings/settings';
