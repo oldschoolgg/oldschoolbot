@@ -4,8 +4,6 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 import { table } from 'table';
 
-import { kibbles } from '../../commands/bso/kibble';
-import { customItems } from '../customItems/util';
 import { dyedItems } from '../dyedItems';
 import { growablePets } from '../growablePets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
@@ -34,7 +32,7 @@ import { allFarmingItems } from '../skilling/skills/farming';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import mixables from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
-import { addArrayOfNumbers, itemNameFromID, stringMatches } from '../util';
+import { addArrayOfNumbers, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalDragonCL,
@@ -153,6 +151,7 @@ import {
 	zalcanoCL,
 	zulrahCL
 } from './CollectionsExport';
+import { kibbles } from './kibble';
 
 export const allCollectionLogs: ICollection = {
 	PvM: {
@@ -1209,14 +1208,6 @@ export const allCLItemsFiltered = [
 			.flat(100)
 	)
 ];
-console.log(
-	JSON.stringify(
-		customItems
-			.filter(i => !allCLItems.includes(i))
-			.map(itemNameFromID)
-			.join('\n')
-	)
-);
 
 export function convertCLtoBank(items: number[]) {
 	const clBank = new Bank();
