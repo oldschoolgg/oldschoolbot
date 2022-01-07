@@ -162,9 +162,11 @@ export default class extends BotCommand {
 		}
 
 		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
-		const inItems = isFunction(createableItem.inputItems)
-			? createableItem.inputItems(msg.author)
-			: new Bank(createableItem.inputItems).multiply(quantity);
+		const inItems = (
+			isFunction(createableItem.inputItems)
+				? createableItem.inputItems(msg.author)
+				: new Bank(createableItem.inputItems)
+		).multiply(quantity);
 
 		if (inItems.items().some(i => i[0].name.toLowerCase().includes('dye'))) {
 			await msg.confirm(
