@@ -20,13 +20,12 @@ export interface IToReturnCollection {
 	collectionTotal: number;
 	leftList?: ILeftListStatus;
 	userItems: Bank;
+	counts: boolean;
 }
 
 export interface ILeftListStatus {
 	[key: string]: 'not_started' | 'started' | 'completed';
 }
-
-export type TRoleCategories = 'bosses' | 'slayer' | 'clues' | 'minigames' | 'skilling' | 'raids' | 'pets';
 
 interface IKCActivity {
 	[key: string]: string | string[] | ((user: KlasaUser) => Promise<number>);
@@ -34,10 +33,6 @@ interface IKCActivity {
 
 export interface ICollectionActivity {
 	[key: string]: {
-		// If the collection is enabled (ca not be accesed if set to false)
-		enabled?: false;
-		// If the collection should be hidden from the list
-		hidden?: true;
 		// If the collection will count towards the collection log counter
 		counts?: false;
 		alias?: string[];
@@ -45,7 +40,6 @@ export interface ICollectionActivity {
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
-		roleCategory?: TRoleCategories[];
 	};
 }
 
@@ -2356,3 +2350,15 @@ export const cmbClothes = resolveItems([
 	'Evening masquerade mask'
 ]);
 assert(cmbClothes.length === new Set(cmbClothes).size, 'Should be no duplicates in CMB clothes');
+export const allClueItems = [
+	...cluesBeginnerCL,
+	...cluesEasyCL,
+	...cluesEliteCL,
+	...cluesEliteRareCL,
+	...cluesHardCL,
+	...cluesHardRareCL,
+	...cluesMasterCL,
+	...cluesMasterRareCL,
+	...cluesMediumCL,
+	...cluesSharedCL
+];
