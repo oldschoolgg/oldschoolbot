@@ -1,56 +1,15 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
 import { Eatable, Eatables } from '../../lib/data/eatables';
+import { kibbles } from '../../lib/data/kibble';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { KibbleOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import getOSItem from '../../lib/util/getOSItem';
-
-export interface Kibble {
-	item: Item;
-	type: 'simple' | 'delicious' | 'extraordinary';
-	minimumFishHeal: number;
-	cropComponent: Item[];
-	herbComponent: Item[];
-	xp: number;
-	level: number;
-}
-
-export const kibbles: Kibble[] = [
-	{
-		item: getOSItem('Simple kibble'),
-		type: 'simple',
-		minimumFishHeal: 1,
-		cropComponent: ['Cabbage', 'Potato'].map(getOSItem),
-		herbComponent: ['Marrentill', 'Tarromin'].map(getOSItem),
-		xp: 600,
-		level: 105
-	},
-	{
-		item: getOSItem('Delicious kibble'),
-		type: 'delicious',
-		minimumFishHeal: 19,
-		cropComponent: ['Strawberry', 'Papaya fruit'].map(getOSItem),
-		herbComponent: ['Cadantine', 'Kwuarm'].map(getOSItem),
-		xp: 900,
-		level: 110
-	},
-	{
-		item: getOSItem('Extraordinary kibble'),
-		type: 'extraordinary',
-		minimumFishHeal: 26,
-		cropComponent: ['Orange', 'Pineapple'].map(getOSItem),
-		herbComponent: ['Torstol', 'Dwarf weed'].map(getOSItem),
-		xp: 1100,
-		level: 120
-	}
-];
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -63,9 +22,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [qty, str = '']: [number, string]) {
 		const kibble = kibbles.find(e => [e.item.name, e.type].some(s => stringMatches(s, str)));
 		if (!kibble) {
-			return msg.channel.send(
-				`No matching kibble found, they are: ${kibbles.map(k => k.item.name).join(', ,')}.`
-			);
+			return msg.channel.send(`No matching kibble found, they are: ${kibbles.map(k => k.item.name).join(',')}.`);
 		}
 		if (msg.author.skillLevel(SkillsEnum.Cooking) < kibble.level) {
 			return msg.channel.send(`You need level ${kibble.level} Cooking to make kibble.`);

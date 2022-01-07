@@ -707,7 +707,8 @@ export default class extends BotCommand {
 			id: monster.name,
 			changeType: 'cost',
 			type: 'Monster',
-			cost
+			cost,
+			suffix: 'tame'
 		});
 
 		await createTameTask({

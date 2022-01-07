@@ -1,3 +1,4 @@
+import { isFunction } from '@sapphire/utilities';
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -91,12 +92,6 @@ export default class extends BotCommand {
 		);
 		if (!createableItem) return msg.channel.send(`That's not a valid item you can ${cmd}.`);
 
-		if (new Bank(createableItem.inputItems).items().some(i => i[0].name.toLowerCase().includes('dye'))) {
-			await msg.confirm(
-				'If you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
-			);
-		}
-
 		if (!quantity || createableItem.cantHaveItems) {
 			quantity = 1;
 		}
@@ -167,7 +162,17 @@ export default class extends BotCommand {
 		}
 
 		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
-		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
+		const inItems = (
+			isFunction(createableItem.inputItems)
+				? createableItem.inputItems(msg.author)
+				: new Bank(createableItem.inputItems)
+		).multiply(quantity);
+
+		if (inItems.items().some(i => i[0].name.toLowerCase().includes('dye'))) {
+			await msg.confirm(
+				'If you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
+			);
+		}
 
 		const outputItemsString = outItems.toString();
 		const inputItemsString = inItems.toString();
