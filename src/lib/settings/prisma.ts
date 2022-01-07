@@ -103,16 +103,21 @@ type TrackLootOptions =
 			teamSize?: number;
 			loot: Bank;
 			changeType: 'loot';
+			suffix?: 'tame';
 	  }
 	| {
 			id: string;
 			type: loot_track_type;
 			cost: Bank;
 			changeType: 'cost';
+			suffix?: 'tame';
 	  };
 
 export async function trackLoot(opts: TrackLootOptions) {
-	const id = cleanString(opts.id).toLowerCase().replace(/ /g, '_');
+	let id = cleanString(opts.id).toLowerCase().replace(/ /g, '_');
+	if (opts.suffix) {
+		id = `${id}-${opts.suffix}`;
+	}
 	const bank = opts.changeType === 'cost' ? opts.cost : opts.loot;
 	if (bank.length === 0) return;
 

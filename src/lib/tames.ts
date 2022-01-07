@@ -312,7 +312,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				id: fullMonster.name,
 				changeType: 'loot',
 				type: 'Monster',
-				loot
+				loot,
+				suffix: 'tame'
 			});
 			handleFinish({
 				loot: itemsAdded,
