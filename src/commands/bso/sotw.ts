@@ -30,12 +30,15 @@ export default class extends BotCommand {
 			);
 		}
 
+		const startSQL = `to_timestamp(${start.getTime()}/1000) AT TIME ZONE 'UTC'`;
+		const endSQL = `to_timestamp(${finish.getTime()}/1000) AT TIME ZONE 'UTC'`;
+
 		const res: { id: User['id']; ironman: boolean; total_xp: number }[] = await prisma.$queryRawUnsafe(
 			`SELECT sum(xp) as total_xp, u."minion.ironman" as ironman, u.id
 FROM xp_gains
 INNER JOIN "users" "u" ON (xp_gains.user_id)::text = "u"."id"
-WHERE date > ('2022-01-5 07:00:00'::timestamp)
-AND date < ('2021-07-12 07:00:00'::timestamp)
+WHERE date > ${startSQL}
+AND date < ${endSQL}
 AND skill = '${sotwConfig.skill}'
 ${msg.flagArgs.im ? 'AND u."minion.ironman" = true' : ''}
 GROUP BY "u".id
