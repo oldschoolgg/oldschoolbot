@@ -8,7 +8,7 @@ import { Cookables } from '../../lib/skilling/skills/cooking';
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, roll } from '../../lib/util';
+import { anglerBoostPercent, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -20,10 +20,19 @@ export default class extends Task {
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
+		const minnowQuantity: { [key: number]: number[] } = {
+			99: [10, 14],
+			95: [11, 13],
+			90: [10, 13],
+			85: [10, 11],
+			1: [10, 10]
+		};
+
 		let xpReceived = 0;
 		let leapingSturgeon = 0;
 		let leapingSalmon = 0;
 		let leapingTrout = 0;
+		let minnowQty = 0;
 		let agilityXpReceived = 0;
 		let strengthXpReceived = 0;
 		if (fish.name === 'Barbarian fishing') {
@@ -110,6 +119,18 @@ export default class extends Task {
 		if (fish.id === itemID('Raw karambwanji')) {
 			lootQuantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
 		}
+		if (fish.id === itemID('Minnow')) {
+			for (const [level, quantities] of Object.entries(minnowQuantity).reverse()) {
+				if (user.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
+					for (let i = 0; i < quantity; i++) {
+						minnowQty += rand(quantities[0], quantities[1]);
+					}
+					break;
+				}
+			}
+			lootQuantity = minnowQty;
+		}
+
 		let loot = new Bank({
 			[fish.id]: lootQuantity
 		});

@@ -630,7 +630,7 @@ ${
 				const res = await this.client.query<{ num: number; username: string }[]>(`
 SELECT sum(duration) as num, "new_user"."username", user_id
 FROM activity
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
 WHERE start_date > now() - interval '2 days'
 GROUP BY user_id, "new_user"."username"
 ORDER BY num DESC

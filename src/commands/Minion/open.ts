@@ -84,7 +84,9 @@ export default class extends BotCommand {
 	}
 
 	async clueOpen(msg: KlasaMessage, quantity: number, clueTier: ClueTier) {
-		if (msg.author.bank().amount(clueTier.id) < quantity) {
+		const cost = new Bank().add(clueTier.id, quantity);
+
+		if (!msg.author.owns(cost)) {
 			return msg.channel.send(
 				`You don't have enough ${clueTier.name} Caskets to open!\n\n However... ${await this.showAvailable(
 					msg
@@ -92,7 +94,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemsFromBank(new Bank().add(clueTier.id, quantity));
+		await msg.author.removeItemsFromBank(cost);
 
 		const hasCHEquipped = msg.author.hasItemEquippedAnywhere(clueHunterOutfit, true);
 

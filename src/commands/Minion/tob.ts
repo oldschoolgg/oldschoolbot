@@ -244,9 +244,9 @@ export default class extends BotCommand {
 
 		if (isHardMode) {
 			const normalKC = await msg.author.getMinigameScore('tob');
-			if (normalKC < 200) {
+			if (normalKC < 250) {
 				return msg.channel.send(
-					'You need atleast 200 completions of the Theatre of Blood before you can attempt Hard Mode.'
+					'You need atleast 250 completions of the Theatre of Blood before you can attempt Hard Mode.'
 				);
 			}
 		}
@@ -270,7 +270,7 @@ export default class extends BotCommand {
 			customDenier: user => checkTOBUser(user, isHardMode)
 		};
 
-		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
+		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy).slice(0, 5);
 
 		const teamCheckFailure = await checkTOBTeam(users, isHardMode);
 		if (teamCheckFailure) {
@@ -305,10 +305,7 @@ export default class extends BotCommand {
 					supplies
 						.clone()
 						.add('Coins', 100_000)
-						.add(
-							blowpipeData.dartID!,
-							Math.floor(Math.min(blowpipeData.dartQuantity, randomVariation(110, 10)))
-						)
+						.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
 						.add(u.getGear('range').ammo!.item, 100)
 				);
 				await updateBankSetting(u, UserSettings.TOBCost, realCost);
