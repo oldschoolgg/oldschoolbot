@@ -1,3 +1,5 @@
+import '../../lib/customItems/customItems';
+
 import { roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util';
