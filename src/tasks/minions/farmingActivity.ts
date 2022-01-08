@@ -237,6 +237,7 @@ export default class extends Task {
 				} else if (plantToHarvest.fixedOutput) {
 					if (!plantToHarvest.fixedOutputAmount) return;
 					cropYield = plantToHarvest.fixedOutputAmount;
+					if (plantToHarvest.seedType === 'mushroom') cropYield *= alivePlants;
 				} else {
 					const plantChanceFactor =
 						Math.floor(
@@ -383,7 +384,9 @@ export default class extends Task {
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
-				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
+				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
+					farmingLevel: currentFarmingLevel
+				});
 				loot = hesporiLoot;
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 				if (roll((plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5)) {
