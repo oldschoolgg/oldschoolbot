@@ -181,6 +181,9 @@ AND data->>'wipedRoom' IS NOT NULL
 AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY 1;`);
+			if (result.length === 0) {
+				return { content: "You haven't wiped in any Theatre of Blood raids yet." };
+			}
 			return barChart(
 				'Personal TOB Deaths',
 				val => `${val} Deaths`,
