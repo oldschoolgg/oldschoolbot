@@ -130,7 +130,7 @@ export default class extends BotCommand {
 		}
 
 		return msg.channel.sendBankImage({
-			bank: bank.bank,
+			bank,
 			title: `${msg.author.username}'s Bank`,
 			flags: {
 				...msg.flagArgs,

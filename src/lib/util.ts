@@ -437,27 +437,6 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-/**
- * Given a list of items, and a bank, it will return a new bank with all items not
- * in the filter removed from the bank.
- * @param itemFilter The array of item IDs to use as the filter.
- * @param bank The bank to filter items from.
- */
-export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
-	const returnBank: ItemBank = {};
-	const bankKeys = Object.keys(bank);
-
-	// If there are no items in the filter or bank, just return an empty bank.
-	if (itemFilter.length === 0 || bankKeys.length === 0) return returnBank;
-
-	// For every item in the filter, if its in the bank, add it to the return bank.
-	for (const itemID of itemFilter) {
-		if (bank[itemID]) returnBank[itemID] = bank[itemID];
-	}
-
-	return returnBank;
-}
-
 export function updateBankSetting(client: KlasaClient | KlasaUser, setting: string, bankToAdd: Bank | ItemBank) {
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
 	const current = new Bank(client.settings.get(setting) as ItemBank);
@@ -615,4 +594,12 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	}
 
 	return setup;
+}
+
+export function convertBankToPerHourStats(bank: Bank, time: number) {
+	let result = [];
+	for (const [item, qty] of bank.items()) {
+		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
+	}
+	return result;
 }

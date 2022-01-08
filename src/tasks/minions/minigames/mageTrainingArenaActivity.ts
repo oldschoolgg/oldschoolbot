@@ -39,6 +39,6 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. ${xpRes}`;
 
-		handleTripFinish(this.client, user, channelID, str, ['mta', [], true, 'train'], undefined, data, loot.bank);
+		handleTripFinish(this.client, user, channelID, str, ['mta', [], true, 'train'], undefined, data, loot);
 	}
 }

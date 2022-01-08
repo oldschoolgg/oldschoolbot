@@ -1,8 +1,7 @@
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { itemID } from 'oldschooljs/dist/util';
+import { Bank } from 'oldschooljs';
 
 import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -37,7 +36,7 @@ export async function handleTripFinish(
 		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
-	loot: ItemBank | null
+	loot: Bank | null
 ) {
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar = generateContinuationChar(user);
@@ -46,14 +45,13 @@ export async function handleTripFinish(
 	}
 
 	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-		const GP = loot[COINS_ID];
+		const GP = loot.amount(COINS_ID);
 		if (typeof GP === 'number') {
 			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
 		}
 	}
 
-	const clueReceived = loot ? clueTiers.find(tier => loot[tier.scrollID] > 0) : undefined;
-	const unsiredReceived = loot ? loot[itemID('Unsired')] > 0 : undefined;
+	const clueReceived = loot ? clueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
 	if (clueReceived) {
 		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
@@ -64,7 +62,7 @@ export async function handleTripFinish(
 		}
 	}
 
-	if (unsiredReceived) {
+	if (loot?.has('Unsired')) {
 		message += '\n**You received an unsired!** You can offer it for loot using `+offer unsired`.';
 	}
 

@@ -86,12 +86,12 @@ export default class extends Extendable {
 		inputItems: ItemBank | Bank,
 		collectionLog: boolean = false,
 		filterLoot: boolean = true
-	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
+	): Promise<{ previousCL: Bank; itemsAdded: Bank }> {
 		return this.queueFn(async user => {
 			const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
 			await this.settings.sync(true);
 
-			const previousCL = user.settings.get(UserSettings.CollectionLogBank);
+			const previousCL = user.cl();
 
 			for (const { scrollID } of clueTiers) {
 				// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
@@ -145,7 +145,7 @@ export default class extends Extendable {
 
 			return {
 				previousCL,
-				itemsAdded: items.bank
+				itemsAdded: items
 			};
 		});
 	}

@@ -11,9 +11,8 @@ import { birdsNestID, treeSeedsNest } from '../../lib/simulation/birdsNest';
 import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ItemBank } from '../../lib/types';
 import { OfferingActivityTaskOptions } from '../../lib/types/minions';
-import { filterBankFromArrayOfItems, formatDuration, rand, roll, stringMatches } from '../../lib/util';
+import { formatDuration, rand, roll, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
@@ -45,15 +44,14 @@ export default class extends BotCommand {
 		});
 	}
 
-	notifyUniques(user: KlasaUser, activity: string, uniques: number[], loot: ItemBank, qty: number, randQty?: number) {
-		const itemsToAnnounce = filterBankFromArrayOfItems(uniques, loot);
-		if (Object.keys(itemsToAnnounce).length > 0) {
-			const lootStr = new Bank(itemsToAnnounce).toString();
+	notifyUniques(user: KlasaUser, activity: string, uniques: number[], loot: Bank, qty: number, randQty?: number) {
+		const itemsToAnnounce = loot.filter(item => uniques.includes(item.id), false);
+		if (itemsToAnnounce.length > 0) {
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${
 					user.minionName
-				}, while offering ${qty}x ${activity}, found **${lootStr}**${
+				}, while offering ${qty}x ${activity}, found **${itemsToAnnounce}**${
 					randQty ? ` on their ${formatOrdinal(randQty)} offering!` : '!'
 				}`
 			);
@@ -145,7 +143,7 @@ export default class extends BotCommand {
 
 			const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot, true);
 
-			this.notifyUniques(msg.author, egg.name, evilChickenOutfit, loot.bank, quantity);
+			this.notifyUniques(msg.author, egg.name, evilChickenOutfit, loot, quantity);
 
 			const { image } = await this.client.tasks
 				.get('bankImage')!
