@@ -12,7 +12,7 @@ const dwarvenArmorTable = new LootTable()
 	.add('Dwarven boots');
 
 export const KingGoldemarLootTable = new LootTable()
-	.tertiary(16, 'Clue scroll (master)')
+	.tertiary(20, 'Clue scroll (master)')
 	.tertiary(150, dwarvenArmorTable)
 	.oneIn(
 		20,
@@ -37,7 +37,7 @@ export const KingGoldemarLootTable = new LootTable()
 	.add('Athelas seed')
 	.add('Dwarven rock cake')
 	.add('Dwarven stout')
-	.tertiary(15, 'Clue scroll (grandmaster)')
+	.tertiary(12, 'Clue scroll (grandmaster)')
 	.tertiary(20, MysteryBoxes)
 	.tertiary(60, 'Blacksmith crate');
 
