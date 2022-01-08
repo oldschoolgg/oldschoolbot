@@ -240,7 +240,8 @@ export default class extends Extendable {
 
 		if (dart) {
 			if (hasAvas) {
-				for (let i = 0; i < dart![1]; i++) {
+				let copyDarts = dart![1];
+				for (let i = 0; i < copyDarts; i++) {
 					if (percentChance(80)) {
 						realCost.remove(dart[0].id, 1);
 						dart![1]--;

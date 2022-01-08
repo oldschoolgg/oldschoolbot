@@ -305,10 +305,7 @@ export default class extends BotCommand {
 					supplies
 						.clone()
 						.add('Coins', 100_000)
-						.add(
-							blowpipeData.dartID!,
-							Math.floor(Math.min(blowpipeData.dartQuantity, randomVariation(110, 10)))
-						)
+						.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
 						.add(u.getGear('range').ammo!.item, 100)
 				);
 				await updateBankSetting(u, UserSettings.TOBCost, realCost);
