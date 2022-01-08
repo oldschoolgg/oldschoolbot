@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Bank, LootTable, Monsters } from 'oldschooljs';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
+import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { GearStat } from '../../../../gear';
 import { GrimyHerbTable, lowRuneHighAdamantTable, runeAlchablesTable } from '../../../../simulation/sharedTables';
@@ -65,5 +66,10 @@ export const TormentedDemon: CustomMonster = {
 		qtyPerKill: 1,
 		itemCost: new Bank().add('Divine water')
 	},
-	hp: 657
+	hp: 657,
+	itemInBankBoosts: [
+		resolveNameBank({
+			'TzKal cape': 5
+		})
+	]
 };
