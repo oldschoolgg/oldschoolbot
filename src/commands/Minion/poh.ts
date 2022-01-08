@@ -49,7 +49,7 @@ export default class POHCommand extends BotCommand {
 	}
 
 	@requiresMinion
-	async wallkit(msg: KlasaMessage, [input]: [string]) {
+	async wallkit(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		const poh = await msg.author.getPOH();
 		const currentWallkit = wallkits.find(i => i.imageID === poh.background_id)!;
 		const selectedKit = wallkits.find(i => stringMatches(i.name, input));
