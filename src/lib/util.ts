@@ -691,3 +691,11 @@ export function convertBankToPerHourStats(bank: Bank, time: number) {
 	}
 	return result;
 }
+
+export function formatTimestamp(date: Date, relative = false) {
+	const unixTime = date.getTime() / 1000;
+	if (relative) {
+		return `<t:${unixTime}:R>`;
+	}
+	return `<t:${unixTime}>`;
+}
