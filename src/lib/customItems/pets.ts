@@ -330,7 +330,8 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			isSuperUntradeable: true
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000_000
@@ -342,7 +343,8 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			isSuperUntradeable: true
+			isSuperUntradeable: true,
+			cantDropFromMysteryBoxes: true
 		}
 	},
 	10_000_000
@@ -381,7 +383,8 @@ setCustomItem(
 	'Herbi',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	1_000_000
