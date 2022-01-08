@@ -12,7 +12,7 @@ const dwarvenArmorTable = new LootTable()
 	.add('Dwarven boots');
 
 export const KingGoldemarLootTable = new LootTable()
-	.tertiary(20, 'Clue scroll (master)')
+	.tertiary(16, 'Clue scroll (master)')
 	.tertiary(150, dwarvenArmorTable)
 	.oneIn(
 		20,

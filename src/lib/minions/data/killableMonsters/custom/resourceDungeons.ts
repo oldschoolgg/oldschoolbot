@@ -297,7 +297,7 @@ const GanodermicBeast: CustomMonster = {
 		.every('Bones')
 		.tertiary(5000, 'Curved bone')
 		.tertiary(400, 'Long bone')
-		.tertiary(150, 'Clue scroll (grandmaster)')
+		.tertiary(250, 'Clue scroll (grandmaster)')
 		.tertiary(230, new LootTable().add('Ganodermic gloves').add('Ganodermic boots').add('Polypore stick'))
 		.add([
 			['Blood rune', [5, 60]],

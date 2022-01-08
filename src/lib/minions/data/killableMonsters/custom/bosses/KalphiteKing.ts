@@ -9,7 +9,7 @@ import { KillableMonster } from '../../../../types';
 import { GrimyHerbTable } from '../Treebeard';
 
 export const kalphiteKingLootTable = new LootTable()
-	.tertiary(30, 'Clue scroll (grandmaster)')
+	.tertiary(25, 'Clue scroll (grandmaster)')
 	.tertiary(6000, 'Baby kalphite king')
 	.tertiary(2500, 'Perfect chitin')
 	.tertiary(
