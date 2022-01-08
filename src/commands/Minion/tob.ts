@@ -244,9 +244,9 @@ export default class extends BotCommand {
 
 		if (isHardMode) {
 			const normalKC = await msg.author.getMinigameScore('tob');
-			if (normalKC < 200) {
+			if (normalKC < 250) {
 				return msg.channel.send(
-					'You need atleast 200 completions of the Theatre of Blood before you can attempt Hard Mode.'
+					'You need atleast 250 completions of the Theatre of Blood before you can attempt Hard Mode.'
 				);
 			}
 		}
