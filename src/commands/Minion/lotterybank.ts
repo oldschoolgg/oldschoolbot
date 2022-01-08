@@ -26,7 +26,7 @@ const specialPrices = new Bank()
 	// .add('Reward casket(grandmaster)', 50_000_000)
 	// .add('Reward casket(grandmaster)', 50_000_000)
 	.add('Clue scroll(grandmaster)', 150_000_000)
-	.add('Reward casket(grandmaster)', 200_000_000)
+	.add('Reward casket(grandmaster)', 300_000_000)
 	// Drygores
 	.add('Drygore longsword', 3_000_000_000)
 	.add('Offhand drygore longsword', 3_000_000_000)
