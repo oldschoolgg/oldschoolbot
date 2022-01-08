@@ -270,7 +270,7 @@ export default class extends BotCommand {
 			customDenier: user => checkTOBUser(user, isHardMode)
 		};
 
-		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
+		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy).slice(0, 5);
 
 		const teamCheckFailure = await checkTOBTeam(users, isHardMode);
 		if (teamCheckFailure) {
