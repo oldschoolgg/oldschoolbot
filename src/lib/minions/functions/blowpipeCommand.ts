@@ -28,6 +28,8 @@ export function validateBlowpipeData(data: BlowpipeData) {
 }
 
 export async function blowpipeCommand(msg: KlasaMessage, input: string) {
+	if (typeof input !== 'string') input = '';
+
 	if (input === 'removedarts') {
 		return removeDarts(msg);
 	}
