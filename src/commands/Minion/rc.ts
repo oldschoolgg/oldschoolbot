@@ -15,6 +15,7 @@ import { bankHasItem, formatDuration, stringMatches, updateBankSetting } from '.
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
+import { sotwIsActive } from '../bso/sotw';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -88,7 +89,7 @@ export default class extends BotCommand {
 			boosts.push('2x from Obis (3x more essence)');
 		}
 
-		if (msg.author.hasItemEquippedAnywhere('Runecraft master cape')) {
+		if (!sotwIsActive && msg.author.hasItemEquippedAnywhere('Runecraft master cape')) {
 			tripLength /= 2;
 			boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 		}
