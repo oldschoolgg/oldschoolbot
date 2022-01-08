@@ -14,7 +14,7 @@ export const sotwConfig = {
 	skill: SkillsEnum.Runecraft,
 	notes: ['1st age items do not contribute', 'Master capes do not work']
 } as const;
-const { start, finish, skill } = sotwConfig;
+const { start, finish, skill, notes } = sotwConfig;
 
 export const sotwIsActive = start.getTime() <= Date.now();
 
@@ -26,7 +26,8 @@ export default class extends BotCommand {
 
 **Skill:** ${skillEmoji[skill]} ${toTitleCase(skill)}
 **Start:** ${formatTimestamp(start)}
-**Finish:** ${formatTimestamp(finish)}`
+**Finish:** ${formatTimestamp(finish)}
+**Notes:** ${notes.join(', ')}`
 			);
 		}
 
