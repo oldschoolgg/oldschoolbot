@@ -20,7 +20,7 @@ const customBSOCreatures: Creature[] = [
 					.add('Tradeable Mystery Box')
 					.add('Untradeable Mystery Box')
 			)
-			.tertiary(400, 'Clue scroll (grandmaster)')
+			.tertiary(500, 'Clue scroll (hard)')
 			.tertiary(5, 'Sand')
 			.tertiary(10, 'Sandworms', [2, 20]),
 		qpRequired: 3,
