@@ -26,7 +26,7 @@ import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob'
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../lib/types/minions';
-import { calcDropRatesFromBank, formatDuration, randomVariation, toKMB, updateBankSetting } from '../../lib/util';
+import { calcDropRatesFromBank, formatDuration, toKMB, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { generateChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
