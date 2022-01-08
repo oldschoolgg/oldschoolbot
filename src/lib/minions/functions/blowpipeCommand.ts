@@ -115,7 +115,7 @@ async function add(msg: KlasaMessage, _items: string) {
 		return msg.channel.send(
 			`You already have ${getOSItem(rawBlowpipeData.dartID).name}'s in your Blowpipe, do \`${
 				msg.cmdPrefix
-			}blowpipe removedarts\` to remove the darts from it.`
+			}m blowpipe removedarts\` to remove the darts from it.`
 		);
 	}
 
