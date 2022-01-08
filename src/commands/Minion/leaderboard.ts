@@ -629,7 +629,7 @@ LIMIT 50;
 						)
 						.join('\n')
 				),
-			`${toTitleCase(inputType.toLowerCase())} Collection Log Leaderboard`
+			`${toTitleCase(inputType.toLowerCase())} Collection Log Leaderboard (${items.length} slots)`
 		);
 	}
 
