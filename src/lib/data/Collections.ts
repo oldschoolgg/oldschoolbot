@@ -1297,6 +1297,10 @@ export function getPossibleOptions() {
 }
 
 export function getCollectionItems(collection: string, allItems = false, removeCoins = false): number[] {
+	if (['overall', 'all'].some(s => stringMatches(collection, s))) {
+		return allCLItemsFiltered;
+	}
+
 	let _items: number[] = [];
 	loop: for (const [category, entries] of Object.entries(allCollectionLogs)) {
 		if (
