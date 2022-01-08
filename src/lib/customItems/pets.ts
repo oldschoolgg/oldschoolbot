@@ -261,7 +261,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	20_000_000
+	1_000_000
 );
 
 setCustomItem(
@@ -334,7 +334,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000_000
+	1_000_000
 );
 
 setCustomItem(
@@ -347,7 +347,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	10_000_000
+	1_000_000
 );
 
 setCustomItem(
@@ -359,7 +359,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	100
+	1_000_000
 );
 
 /**
@@ -402,7 +402,7 @@ setCustomItem(
 			cantDropFromMysteryBoxes: true
 		}
 	},
-	1_000_000_000
+	1_000_000
 );
 
 setCustomItem(
