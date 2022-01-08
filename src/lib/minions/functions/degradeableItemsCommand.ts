@@ -5,6 +5,7 @@ import { ClientSettings } from '../../settings/types/ClientSettings';
 import { stringMatches } from '../../util';
 
 export async function degradeableItemsCommand(msg: KlasaMessage, input: string | undefined = '') {
+	if (typeof input !== 'string') input = '';
 	const [name, amount] = input.split(',');
 	const item = degradeableItems.find(i => [i.item.name, ...i.aliases].some(n => stringMatches(n, name)));
 	const number = parseInt(amount);
