@@ -241,7 +241,7 @@ export default class extends BotCommand {
 			totalCost.add(removeTalismanAndOrRunes);
 		}
 
-		totalCost.add('Pure essence', quantity);
+		totalCost.add('Pure essence', essenceRequired);
 		if (!msg.author.owns(totalCost)) {
 			return msg.channel.send(`You don't own: ${totalCost}.`);
 		}
