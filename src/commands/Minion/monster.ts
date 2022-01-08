@@ -108,7 +108,6 @@ export default class MinionCommand extends BotCommand {
 			}
 		}
 		// combat stat boosts
-
 		const skillTotal = addArrayOfNumbers(attackStyles.map(s => user.skillLevel(s)));
 
 		let percent = round(calcWhatPercent(skillTotal, attackStyles.length * 99), 2);
@@ -157,67 +156,59 @@ export default class MinionCommand extends BotCommand {
 				str.push('You meet the required 100% Shayzien favour\n');
 			}
 		}
-
+		let itemRequirements = [];
 		if (monster.itemsRequired && monster.itemsRequired.length > 0) {
-			str.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
+			itemRequirements.push(`**Items Required:** ${formatItemReqs(monster.itemsRequired)}\n`);
 		}
-
-		let totalCost = [];
-		if (monster.itemCost || monster.healAmountNeeded) {
-			if (monster.itemCost) {
-				totalCost.push(
-					`**Item Cost per Trip:** ${formatItemCosts(monster.itemCost, timeToFinish * maxCanKill)}\n`
+		if (monster.itemCost) {
+			itemRequirements.push(
+				`**Item Cost per Trip:** ${formatItemCosts(monster.itemCost, timeToFinish * maxCanKill)}\n`
+			);
+		}
+		// let gearReductions=[];
+		if (monster.healAmountNeeded) {
+			let [hpNeededPerKill, gearStats] = calculateMonsterFood(monster, user);
+			let gearReductions = gearStats.replace(RegExp(': Reduced from (?:[0-9]+?), '), '\n').replace('), ', ')\n');
+			if (hpNeededPerKill > 0) {
+				itemRequirements.push(
+					`**Healing Required:** ${gearReductions}\nYou require ${
+						hpNeededPerKill * maxCanKill
+					} hp for a full trip\n`
 				);
+			} else {
+				itemRequirements.push(`**Healing Required:** ${gearReductions}\n**Food boost**: ${hpString}\n`);
 			}
-			if (monster.healAmountNeeded) {
-				let [hpNeededPerKill, gearStats] = calculateMonsterFood(monster, user);
-				let gearReductions = gearStats
-					.replace(RegExp(': Reduced from (?:[0-9]+?), '), '\n')
-					.replace('), ', ')\n');
-				if (hpNeededPerKill > 0) {
-					totalCost.push(
-						`**Healing Required:** ${gearReductions}\nYou require ${
-							hpNeededPerKill * maxCanKill
-						} hp for a full trip\n`
-					);
-				} else {
-					totalCost.push(`**Healing Required:** ${gearReductions}\n**Food boost**: ${hpString}\n`);
-				}
-			}
-
-			str.push(`${totalCost.join('')}`);
 		}
-
+		str.push(`${itemRequirements.join('')}`);
 		let totalBoost = [];
-		if (monster.itemInBankBoosts || isDragon || monster.pohBoosts) {
-			if (isDragon) {
-				totalBoost.push('15% for Dragon hunter lance OR 15% for Dragon hunter crossbow');
-			}
-			if (monster.itemInBankBoosts) {
-				totalBoost.push(`${formatItemBoosts(monster.itemInBankBoosts)}`);
-			}
-			if (monster.pohBoosts) {
-				totalBoost.push(
-					`${formatPohBoosts(monster.pohBoosts)
-						.replace(RegExp('(Pool:)'), '')
-						.replace(')', '')
-						.replace('(', '')
-						.replace('\n', '')}`
-				);
-			}
-			str.push('**Boosts**');
-			str.push(`Avalible Boosts: ${totalBoost.join(',')}`);
+		if (isDragon) {
+			totalBoost.push('15% for Dragon hunter lance OR 15% for Dragon hunter crossbow');
+		}
+		if (monster.itemInBankBoosts) {
+			totalBoost.push(`${formatItemBoosts(monster.itemInBankBoosts)}`);
+		}
+		if (monster.pohBoosts) {
+			totalBoost.push(
+				`${formatPohBoosts(monster.pohBoosts)
+					.replace(RegExp('(Pool:)'), '')
+					.replace(')', '')
+					.replace('(', '')
+					.replace('\n', '')}`
+			);
+		}
+		if (totalBoost.length > 0) {
 			str.push(
-				`${
+				`**Boosts**\nAvalible Boosts: ${totalBoost.join(',')}\n${
 					ownedBoostItems.length > 0
 						? `Your boosts: ${ownedBoostItems.join(', ')} for ${totalItemBoost}%`
 						: ''
-				}`
+				}\n${skillString}`
 			);
+		} else {
+			str.push(`**Boosts**\n${skillString}`);
 		}
-		str.push(skillString);
-
 		str.push('**Trip info**');
+
 		str.push(
 			`Maximum trip length: ${formatDuration(
 				msg.author.maxTripLength('MonsterKilling')
@@ -230,14 +221,15 @@ export default class MinionCommand extends BotCommand {
 				reduceNumByPercent(timeToFinish, 15)
 			)} per kill).`
 		);
-
 		const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
-		str.push(`Every ${kcForOnePercent}kc you will gain a 1% (upto 10%).\n`);
-		str.push(`You currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`);
+
+		str.push(
+			`Every ${kcForOnePercent}kc you will gain a 1% (upto 10%).\nYou currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`
+		);
 
 		const min = timeToFinish * maxCanKill * 1.01;
-		const max = timeToFinish * maxCanKill * 1.2;
 
+		const max = timeToFinish * maxCanKill * 1.2;
 		str.push(
 			`Due to the random variation of an added 1-20% duration, ${maxCanKill}x kills can take between (${formatDuration(
 				min
