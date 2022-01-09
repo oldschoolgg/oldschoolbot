@@ -6,7 +6,7 @@ import { formatDuration } from '../../util';
 export async function pastActivities(msg: KlasaMessage) {
 	const res = await prisma.activity.findMany({
 		where: {
-			user_id: msg.author.id
+			user_id: BigInt(msg.author.id)
 		},
 		orderBy: {
 			id: 'desc'

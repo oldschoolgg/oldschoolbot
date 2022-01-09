@@ -3,7 +3,7 @@ import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
-import { Items } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../../lib/constants';
@@ -18,6 +18,7 @@ import {
 	asyncExec,
 	channelIsSendable,
 	cleanString,
+	convertBankToPerHourStats,
 	formatDuration,
 	getSupportGuild,
 	getUsername,
@@ -26,6 +27,7 @@ import {
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
+import BankImageTask from '../../tasks/bankImage';
 import PatreonTask from '../../tasks/patreon';
 
 function itemSearch(msg: KlasaMessage, name: string) {
@@ -389,7 +391,7 @@ ${
 					return sendToChannelID(this.client, msg.channel.id, {
 						content: result.slice(0, 2500)
 					});
-				} catch (err) {
+				} catch (err: any) {
 					console.error(err);
 					return msg.channel.send(`Failed to run roles task. ${err.message}`);
 				}
@@ -531,7 +533,7 @@ ${
 				const res = await this.client.query<{ num: number; username: string }[]>(`
 SELECT sum(duration) as num, "new_user"."username", user_id
 FROM activity
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
 WHERE start_date > now() - interval '2 days'
 GROUP BY user_id, "new_user"."username"
 ORDER BY num DESC
@@ -545,7 +547,9 @@ LIMIT 10;
 			}
 			case 'bank': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				return msg.channel.sendBankImage({ bank: input.allItemsOwned().bank });
+				return msg.channel.sendBankImage({
+					bank: input.allItemsOwned()
+				});
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;
@@ -641,6 +645,38 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 						isIron ? 'ironmen' : 'people'
 					} with atleast 1 ${item.name} in their collection log.`
 				);
+			}
+			case 'loottrack': {
+				if (typeof input !== 'string') {
+					const tracks = await prisma.lootTrack.findMany();
+					return msg.channel.send(tracks.map(t => t.id).join(', '));
+				}
+				const loot = await prisma.lootTrack.findFirst({
+					where: {
+						id: input
+					}
+				});
+				if (!loot) return msg.channel.send('Invalid');
+
+				const durationMillis = loot.total_duration * Time.Minute;
+
+				const arr = [
+					['Cost', new Bank(loot.cost as any)],
+					['Loot', new Bank(loot.loot as any)]
+				] as const;
+
+				const task = this.client.tasks.get('bankImage') as BankImageTask;
+
+				for (const [name, bank] of arr) {
+					msg.channel.send({
+						content: convertBankToPerHourStats(bank, durationMillis).join(', '),
+						files: [new MessageAttachment((await task.generateBankImage(bank, name)).image!)]
+					});
+				}
+
+				return msg.channel.send({
+					content: `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`
+				});
 			}
 		}
 	}

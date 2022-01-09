@@ -7,4 +7,9 @@ describe('Sanity', () => {
 		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
 	});
+	test('misc', () => {
+		expect(itemID('Phoenix')).toEqual(20_693);
+		expect(itemID('Kalphite princess')).toEqual(12_647);
+		expect(itemID('Green phoenix')).toEqual(24_483);
+	});
 });

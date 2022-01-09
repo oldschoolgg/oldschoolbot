@@ -173,6 +173,8 @@ export default class extends BotCommand {
 			loot.add(clueTier.milestoneReward.itemReward);
 		}
 
+		// Here we check if the loot has any ultra-rares (3rd age, gilded, bloodhound),
+		// and send a notification if they got one.
 		const announcedLoot = loot.filter(i => itemsToNotifyOf.includes(i.id), false);
 		if (announcedLoot.length > 0) {
 			this.client.emit(

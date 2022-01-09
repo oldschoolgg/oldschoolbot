@@ -42,7 +42,7 @@ export default class extends BotCommand {
 			}
 
 			return msg.channel.send(str);
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

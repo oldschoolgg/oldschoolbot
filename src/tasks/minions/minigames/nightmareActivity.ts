@@ -6,7 +6,7 @@ import { BitField, Emoji, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../li
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
-import { ItemBank } from '../../../lib/types';
+import { trackLoot } from '../../../lib/settings/prisma';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
@@ -30,7 +30,7 @@ export default class extends Task {
 		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
 
 		const teamsLoot: { [key: string]: Bank } = {};
-		const teamsPreviousCL: { [key: string]: ItemBank } = {};
+		const teamsPreviousCL: { [key: string]: Bank } = {};
 		const kcAmounts: { [key: string]: number } = {};
 
 		const parsedUsers: NightmareUser[] = [];
@@ -93,10 +93,11 @@ export default class extends Task {
 				taskQuantity: null
 			});
 
-			totalLoot.add(loot);
-
 			// Fix purple items on solo kills
-			const { previousCL } = await user.addItemsToBank(loot, true);
+			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+
+			totalLoot.add(itemsAdded);
+
 			// Only add previousCL for leader
 			if (user.id === leader) teamsPreviousCL[user.id] = previousCL;
 
@@ -131,6 +132,16 @@ export default class extends Task {
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
 
+		await trackLoot({
+			loot: totalLoot,
+			id: monsterName,
+			type: 'Monster',
+			changeType: 'loot',
+			duration,
+			kc: quantity,
+			teamSize: users.length
+		});
+
 		if (users.length > 1) {
 			sendToChannelID(this.client, channelID, { content: resultStr });
 		} else if (!kcAmounts[leader]) {
@@ -141,7 +152,7 @@ export default class extends Task {
 			const { image } = await this.client.tasks
 				.get('bankImage')!
 				.generateBankImage(
-					teamsLoot[leader].bank,
+					teamsLoot[leader],
 					`${quantity}x Nightmare`,
 					true,
 					{ showNewCL: 1 },
@@ -160,7 +171,7 @@ export default class extends Task {
 				['nightmare', [isPhosani ? 'phosani' : 'solo'], true],
 				image!,
 				data,
-				totalLoot.bank
+				totalLoot
 			);
 		}
 	}

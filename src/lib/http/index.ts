@@ -17,7 +17,8 @@ export function makeServer() {
 
 	server.setErrorHandler((error, _request, reply) => {
 		if (reply.statusCode) {
-			return reply.send(error);
+			reply.send(error);
+			return;
 		}
 		if (production) {
 			Sentry.captureException(error);

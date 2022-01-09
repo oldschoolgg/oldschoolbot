@@ -13,13 +13,14 @@ function getRealHealAmount(user: KlasaUser, healAmount: ((user: KlasaUser) => nu
 export default function getUserFoodFromBank(
 	user: KlasaUser,
 	totalHealingNeeded: number,
-	favoriteFood: readonly number[]
+	favoriteFood: readonly number[],
+	minimumHealAmount?: number
 ): false | Bank {
 	const userBank = user.bank();
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove = new Bank();
 
-	const sorted = [...Eatables]
+	let sorted = [...Eatables]
 		.sort((i, j) => (getRealHealAmount(user, i.healAmount) > getRealHealAmount(user, j.healAmount) ? 1 : -1))
 		.sort((a, b) => {
 			if (!userBank.has(a.id)) return 1;
@@ -31,6 +32,10 @@ export default function getUserFoodFromBank(
 			if (!aIsFav && bIsFav) return 1;
 			return 0;
 		});
+
+	if (minimumHealAmount) {
+		sorted = sorted.filter(i => i.healAmount >= minimumHealAmount);
+	}
 
 	// Gets all the eatables in the user bank
 	for (const eatable of sorted) {
