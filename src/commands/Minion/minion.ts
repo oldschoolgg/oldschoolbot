@@ -181,7 +181,7 @@ export default class MinionCommand extends BotCommand {
 		if ('bank' in result) {
 			return msg.channel.sendBankImage({
 				title: result.title,
-				bank: result.bank.bank,
+				bank: result.bank,
 				content: result.content
 			});
 		}
@@ -408,9 +408,9 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
 				await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
 				await prisma.minigame.delete({ where: { user_id: msg.author.id } });
-				await prisma.xPGain.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 				await prisma.newUser.delete({ where: { id: msg.author.id } });
-				await prisma.activity.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 			} catch (_) {}
 
 			await msg.author.settings.update([

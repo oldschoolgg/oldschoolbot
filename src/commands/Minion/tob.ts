@@ -19,13 +19,14 @@ import {
 	TOBRooms
 } from '../../lib/data/tob';
 import { degradeItem } from '../../lib/degradeableItems';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../lib/types/minions';
-import { calcDropRatesFromBank, formatDuration, randomVariation, toKMB, updateBankSetting } from '../../lib/util';
+import { calcDropRatesFromBank, formatDuration, toKMB, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { generateChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
@@ -243,9 +244,9 @@ export default class extends BotCommand {
 
 		if (isHardMode) {
 			const normalKC = await msg.author.getMinigameScore('tob');
-			if (normalKC < 200) {
+			if (normalKC < 250) {
 				return msg.channel.send(
-					'You need atleast 200 completions of the Theatre of Blood before you can attempt Hard Mode.'
+					'You need atleast 250 completions of the Theatre of Blood before you can attempt Hard Mode.'
 				);
 			}
 		}
@@ -269,7 +270,7 @@ export default class extends BotCommand {
 			customDenier: user => checkTOBUser(user, isHardMode)
 		};
 
-		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
+		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 		const teamCheckFailure = await checkTOBTeam(users, isHardMode);
 		if (teamCheckFailure) {
@@ -304,10 +305,7 @@ export default class extends BotCommand {
 					supplies
 						.clone()
 						.add('Coins', 100_000)
-						.add(
-							blowpipeData.dartID!,
-							Math.floor(Math.min(blowpipeData.dartQuantity, randomVariation(110, 10)))
-						)
+						.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
 						.add(u.getGear('range').ammo!.item, 100)
 				);
 				await updateBankSetting(u, UserSettings.TOBCost, realCost);
@@ -326,6 +324,12 @@ export default class extends BotCommand {
 		);
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBCost, totalCost);
+		await trackLoot({
+			cost: totalCost,
+			id: isHardMode ? 'tob_hard' : 'tob',
+			type: 'Minigame',
+			changeType: 'cost'
+		});
 
 		await addSubTaskToActivityTask<TheatreOfBloodTaskOptions>({
 			userID: msg.author.id,

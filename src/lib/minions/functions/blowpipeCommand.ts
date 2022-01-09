@@ -28,6 +28,8 @@ export function validateBlowpipeData(data: BlowpipeData) {
 }
 
 export async function blowpipeCommand(msg: KlasaMessage, input: string) {
+	if (typeof input !== 'string') input = '';
+
 	if (input === 'removedarts') {
 		return removeDarts(msg);
 	}
@@ -99,7 +101,7 @@ async function add(msg: KlasaMessage, _items: string) {
 
 	if (itemsToRemove.length === 0) {
 		return msg.channel.send(
-			`You didn't specify what items to add to your blowpipe, for example: \`${msg.cmdPrefix}bp add 10 Dragon dart, 10 Zulrah's scales\``
+			`You didn't specify what items to add to your blowpipe, for example: \`${msg.cmdPrefix}m bp add 10 Dragon dart, 10 Zulrah's scales\``
 		);
 	}
 
@@ -115,7 +117,7 @@ async function add(msg: KlasaMessage, _items: string) {
 		return msg.channel.send(
 			`You already have ${getOSItem(rawBlowpipeData.dartID).name}'s in your Blowpipe, do \`${
 				msg.cmdPrefix
-			}blowpipe removedarts\` to remove the darts from it.`
+			}m blowpipe removedarts\` to remove the darts from it.`
 		);
 	}
 

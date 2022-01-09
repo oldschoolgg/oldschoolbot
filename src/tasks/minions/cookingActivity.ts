@@ -55,7 +55,7 @@ export default class extends Task {
 			['cook', [quantity, cookable.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

@@ -5,7 +5,7 @@ import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants'
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { prisma } from '../../lib/settings/prisma';
+import { prisma, trackLoot } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -138,6 +138,15 @@ export default class extends Task {
 		}
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+
+		await trackLoot({
+			loot: itemsAdded,
+			id: monster.name.toString(),
+			type: 'Monster',
+			changeType: 'loot',
+			kc: quantity,
+			duration
+		});
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
