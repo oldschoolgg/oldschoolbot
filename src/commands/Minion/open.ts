@@ -131,7 +131,6 @@ export default class extends BotCommand {
 		if (msg.flagArgs.master !== undefined) {
 			for (let i = 0; i < quantity; i++) {
 				loot.add(clueTier.table.open());
-
 				// Master scroll ID
 				if (loot.has(19_835)) {
 					actualQuantity = i + 1;
@@ -154,12 +153,12 @@ export default class extends BotCommand {
 		const cost = new Bank().add(clueTier.id, actualQuantity);
 		await msg.author.removeItemsFromBank(cost);
 
-		const opened = `You opened ${actualQuantity} ${clueTier.name} Clue Casket${
-			actualQuantity > 1 ? 's' : ''
-		} ${mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''}`;
+		const opened = `You opened ${actualQuantity} ${clueTier.name} Clue Casket${actualQuantity > 1 ? 's' : ''} ${
+			mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
+		}`;
 
 		if (Object.keys(loot.bank).length === 0) {
-			return msg.channel.send(`${openedString} and got nothing :(`);
+			return msg.channel.send(`${opened} and got nothing :(`);
 		}
 
 		const nthCasket = (msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + actualQuantity;
