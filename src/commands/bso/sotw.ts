@@ -41,6 +41,7 @@ INNER JOIN "users" "u" ON (xp_gains.user_id)::text = "u"."id"
 WHERE date > ${startSQL}
 AND date < ${endSQL}
 AND skill = '${sotwConfig.skill}'
+AND artificial IS NULL
 ${msg.flagArgs.im ? 'AND u."minion.ironman" = true' : ''}
 GROUP BY "u".id
 ORDER BY total_xp DESC
