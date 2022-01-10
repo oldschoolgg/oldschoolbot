@@ -855,7 +855,7 @@ export default class extends Extendable {
 			: undefined;
 
 		// When SOTW is active, don't give extra boosts to it
-		const isSkillThatShouldntGetExtraBoost = sotwIsActive && sotwConfig.skill === params.skillName;
+		const isSkillThatShouldntGetExtraBoost = sotwIsActive() && sotwConfig.skill === params.skillName;
 
 		if (masterCape && !isSkillThatShouldntGetExtraBoost) {
 			params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);

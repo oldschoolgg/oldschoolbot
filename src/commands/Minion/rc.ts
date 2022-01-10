@@ -89,7 +89,7 @@ export default class extends BotCommand {
 			boosts.push('2x from Obis (3x more essence)');
 		}
 
-		if (!sotwIsActive && msg.author.hasItemEquippedAnywhere('Runecraft master cape')) {
+		if (!sotwIsActive() && msg.author.hasItemEquippedAnywhere('Runecraft master cape')) {
 			tripLength /= 2;
 			boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 		}

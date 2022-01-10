@@ -16,11 +16,11 @@ export const sotwConfig = {
 } as const;
 const { start, finish, skill, notes } = sotwConfig;
 
-export const sotwIsActive = start.getTime() <= Date.now();
+export const sotwIsActive = () => start.getTime() <= Date.now();
 
 export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
-		if (!sotwIsActive) {
+		if (!sotwIsActive()) {
 			return msg.channel.send(
 				`The SOTW starts in: ${formatTimestamp(start, true)}.
 
