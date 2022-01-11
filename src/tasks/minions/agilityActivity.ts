@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
+import { runCommand } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -82,7 +83,7 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
 		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
-			diaryBonus ? '(2x bonus Marks for Ardougne Elite diary)' : ''
+			diaryBonus ? '(25% bonus Marks for Ardougne Elite diary)' : ''
 		}.\n${xpRes}`;
 
 		if (course.id === 6) {
@@ -123,11 +124,11 @@ export default class extends Task {
 				res.prompter.flags = flags;
 
 				user.log(`continued trip of ${quantity}x ${course.name} laps`);
-				return this.client.commands.get('laps')!.run(res, [quantity, course.aliases[0]]);
+				return runCommand(res, 'laps', [quantity, course.aliases[0], true]);
 			},
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

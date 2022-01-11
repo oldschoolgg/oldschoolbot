@@ -65,7 +65,7 @@ export default class extends BotCommand {
 			)}, the winner will receive these items.
 			
 React to this messsage with ${reaction} to enter.`,
-			bank: bank.bank,
+			bank,
 			title: `${msg.author.username}'s Giveaway`
 		});
 

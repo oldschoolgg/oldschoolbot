@@ -34,10 +34,10 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
+		await msg.author.settings.sync(true);
 		const fish = Fishing.Fishes.find(
-			fish => stringMatches(fish.name, name) || stringMatches(fish.name.split(' ')[0], name)
+			fish => stringMatches(fish.name, name) || fish.alias?.some(alias => stringMatches(alias, name))
 		);
-
 		if (!fish) {
 			return msg.channel.send(
 				`Thats not a valid fish to catch. Valid fishes are ${Fishing.Fishes.map(fish => fish.name).join(', ')}.`
@@ -65,6 +65,11 @@ export default class extends BotCommand {
 			(msg.author.skillLevel(SkillsEnum.Agility) < 15 || msg.author.skillLevel(SkillsEnum.Strength) < 15)
 		) {
 			return msg.channel.send('You need at least 15 Agility and Strength to do Barbarian Fishing.');
+		}
+
+		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(parseInt(i)));
+		if (fish.name === 'Minnow' && anglerOutfit.some(test => !msg.author.hasItemEquippedOrInBank(test!))) {
+			return msg.channel.send('You need to own the Angler Outfit to fish for Minnows.');
 		}
 
 		// If no quantity provided, set it to the max.
@@ -100,6 +105,15 @@ export default class extends BotCommand {
 					boosts.push('5% for Crystal harpoon');
 				}
 				break;
+		}
+
+		if (fish.id === itemID('Minnow')) {
+			scaledTimePerFish *= Math.max(
+				0.83,
+				-0.000_541_351 * msg.author.skillLevel(SkillsEnum.Fishing) ** 2 +
+					0.089_066_3 * msg.author.skillLevel(SkillsEnum.Fishing) -
+					2.681_53
+			);
 		}
 
 		const maxTripLength = msg.author.maxTripLength('Fishing');

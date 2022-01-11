@@ -17,7 +17,7 @@ export default class extends Task {
 		let burnedAmount = 0;
 		let stopBurningLvl = 0;
 
-		if (cookable.stopBurnAtCG > 1 && user.hasItemEquippedAnywhere('Cooking gauntlets')) {
+		if (cookable.stopBurnAtCG && user.hasItemEquippedAnywhere('Cooking gauntlets')) {
 			stopBurningLvl = cookable.stopBurnAtCG;
 		} else {
 			stopBurningLvl = cookable.stopBurnAt;
@@ -52,13 +52,10 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${cookable.name}[${cookable.id}]`);
-				return this.client.commands.get('cook')!.run(res, [quantity, cookable.name]);
-			},
+			['cook', [quantity, cookable.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

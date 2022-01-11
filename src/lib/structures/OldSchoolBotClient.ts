@@ -1,7 +1,9 @@
 import { Client, KlasaClientOptions } from 'klasa';
 
 import { clientOptions } from '../config';
+import { prisma } from '../settings/prisma';
 import { getGuildSettings, syncActivityCache } from '../settings/settings';
+import { startupScripts } from '../startupScripts';
 import { piscinaPool } from '../workers';
 
 const { production } = clientOptions;
@@ -41,7 +43,16 @@ export class OldSchoolBotClient extends Client {
 			getGuildSettings(guild);
 		}
 
-		await syncActivityCache();
+		let promises = [];
+		promises.push(syncActivityCache());
+		promises.push(
+			...startupScripts.map(query =>
+				prisma
+					.$queryRawUnsafe(query)
+					.catch(err => console.error(`Startup script failed: ${err.message} ${query}`))
+			)
+		);
+		await Promise.all(promises);
 		return super.login(token);
 	}
 

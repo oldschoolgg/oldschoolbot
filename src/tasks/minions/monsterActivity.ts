@@ -5,13 +5,14 @@ import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants'
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-import { prisma } from '../../lib/settings/prisma';
+import { prisma, trackLoot } from '../../lib/settings/prisma';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { roll, runCommand } from '../../lib/util';
+import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -113,7 +114,7 @@ export default class extends Task {
 			if (thisTripFinishesTask) {
 				const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
 				await user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-				const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+				const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 				const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 				await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 				str += `\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
@@ -138,6 +139,15 @@ export default class extends Task {
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 
+		await trackLoot({
+			loot: itemsAdded,
+			id: monster.name.toString(),
+			type: 'Monster',
+			changeType: 'loot',
+			kc: quantity,
+			duration
+		});
+
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
@@ -158,11 +168,11 @@ export default class extends Task {
 				? undefined
 				: res => {
 						user.log(`continued trip of killing ${monster.name}`);
-						let method = 'none';
-						if (usingCannon) method = 'cannon';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
-						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
-						return runCommand(res, 'k', [quantity, monster.name, method]);
+						let args = [quantity, monster.name];
+						if (usingCannon) args.push('cannon');
+						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
+						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
+						return runCommand(res, 'k', args, true);
 				  },
 			image!,
 			data,

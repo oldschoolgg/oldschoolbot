@@ -1,5 +1,5 @@
 import { MessageButton } from 'discord.js';
-import { KlasaMessage } from 'klasa';
+import { Command, KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
@@ -219,7 +219,8 @@ export const enum Tasks {
 	PestControl = 'pestControlActivity',
 	VolcanicMine = 'volcanicMineActivity',
 	KourendFavour = 'kourendFavourActivity',
-	Inferno = 'infernoActivity'
+	Inferno = 'infernoActivity',
+	ToB = 'tobActivity'
 }
 
 export enum ActivityGroup {
@@ -368,7 +369,7 @@ export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
-export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
+export const continuationChars = 'abdefghjknoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
@@ -438,7 +439,11 @@ export const informationalButtons = [
 		.setEmoji('778418736180494347')
 		.setURL('https://www.discord.gg/ob')
 		.setStyle('LINK'),
-	new MessageButton().setLabel('Bot Invite').setEmoji('🤖').setURL('http://invite.oldschool.gg/').setStyle('LINK')
+	new MessageButton()
+		.setLabel('Bot Invite')
+		.setEmoji('🤖')
+		.setURL('http://www.oldschool.gg/invite/osb')
+		.setStyle('LINK')
 ];
 
 export const lastTripCache = new Map<
@@ -457,3 +462,18 @@ export const projectiles: Record<ProjectileType, number[]> = {
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
+export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
+export function shouldTrackCommand(command: Command, args: any[]) {
+	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
+		if (command.name === name && subs.includes(args[0])) {
+			return false;
+		}
+	}
+	return true;
+}
+export function getCommandArgs(command: Command, args: any[]) {
+	if (args.length === 0) return undefined;
+	if (command.name === 'bank') return undefined;
+	if (command.name === 'rp' && args[0] === 'c') return undefined;
+	return args;
+}

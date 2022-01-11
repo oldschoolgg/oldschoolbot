@@ -6,6 +6,7 @@ import { Bank } from 'oldschooljs';
 import { Color } from '../../lib/constants';
 import { defaultGear, gearPresetToString, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -112,18 +113,16 @@ export default class extends BotCommand {
 			);
 		}
 
-		try {
-			const unequipAllMessage = await this.client.commands.get('unequipall')!.run(msg, [setup]);
-			if (
-				!(unequipAllMessage instanceof KlasaMessage) ||
-				(!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you unequipped all items') &&
-					!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you have no items in your'))
-			) {
-				return msg.channel.send(
-					`It was not possible to equip your **${preset.name}** on your ${setup} gear setup.`
-				);
-			}
-		} catch (_) {}
+		const unequipAllMessage = await unEquipAllCommand(msg, setup);
+		if (
+			!(unequipAllMessage instanceof KlasaMessage) ||
+			(!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you unequipped all items') &&
+				!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you have no items in your'))
+		) {
+			return msg.channel.send(
+				`It was not possible to equip your **${preset.name}** preset on your ${setup} gear setup.`
+			);
+		}
 
 		await msg.author.removeItemsFromBank(toRemove.bank);
 
@@ -190,21 +189,32 @@ export default class extends BotCommand {
 
 		let gearSetup = msg.author.rawGear()[setup];
 
-		const preset = await prisma.gearPreset.create({
-			data: {
-				head: gearSetup.head?.item ?? null,
-				neck: gearSetup.neck?.item ?? null,
-				body: gearSetup.body?.item ?? null,
-				legs: gearSetup.legs?.item ?? null,
-				cape: gearSetup.cape?.item ?? null,
-				two_handed: gearSetup['2h']?.item ?? null,
-				hands: gearSetup.hands?.item ?? null,
-				feet: gearSetup.feet?.item ?? null,
-				shield: gearSetup.shield?.item ?? null,
-				weapon: gearSetup.weapon?.item ?? null,
-				ring: gearSetup.ring?.item ?? null,
-				ammo: gearSetup.ammo?.item ?? null,
-				ammo_qty: gearSetup.ammo?.quantity ?? null,
+		const gearData = {
+			head: gearSetup.head?.item ?? null,
+			neck: gearSetup.neck?.item ?? null,
+			body: gearSetup.body?.item ?? null,
+			legs: gearSetup.legs?.item ?? null,
+			cape: gearSetup.cape?.item ?? null,
+			two_handed: gearSetup['2h']?.item ?? null,
+			hands: gearSetup.hands?.item ?? null,
+			feet: gearSetup.feet?.item ?? null,
+			shield: gearSetup.shield?.item ?? null,
+			weapon: gearSetup.weapon?.item ?? null,
+			ring: gearSetup.ring?.item ?? null,
+			ammo: gearSetup.ammo?.item ?? null,
+			ammo_qty: gearSetup.ammo?.quantity ?? null
+		};
+
+		const preset = await prisma.gearPreset.upsert({
+			where: {
+				user_id_name: {
+					user_id: msg.author.id,
+					name
+				}
+			},
+			update: gearData,
+			create: {
+				...gearData,
 				name,
 				user_id: msg.author.id
 			}

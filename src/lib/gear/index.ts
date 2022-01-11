@@ -1,8 +1,8 @@
+import { GearPreset } from '@prisma/client';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { itemID } from '../util';
 import { DefenceGearStat, GearSetup, GearStat, OffenceGearStat, OtherGearStat } from './types';
-import { GearPreset } from '.prisma/client';
 
 export * from './types';
 export * from './util';

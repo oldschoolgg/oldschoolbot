@@ -5,9 +5,9 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { O } from 'ts-toolbelt';
 
-import { blowpipeDarts, validateBlowpipeData } from '../../commands/Minion/blowpipe';
 import { projectiles } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
+import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions/blowpipeCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
@@ -86,12 +86,12 @@ export default class extends Extendable {
 		inputItems: ItemBank | Bank,
 		collectionLog: boolean = false,
 		filterLoot: boolean = true
-	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
+	): Promise<{ previousCL: Bank; itemsAdded: Bank }> {
 		return this.queueFn(async user => {
 			const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
 			await this.settings.sync(true);
 
-			const previousCL = user.settings.get(UserSettings.CollectionLogBank);
+			const previousCL = user.cl();
 
 			for (const { scrollID } of clueTiers) {
 				// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
@@ -145,7 +145,7 @@ export default class extends Extendable {
 
 			return {
 				previousCL,
-				itemsAdded: items.bank
+				itemsAdded: items
 			};
 		});
 	}
@@ -240,7 +240,8 @@ export default class extends Extendable {
 
 		if (dart) {
 			if (hasAvas) {
-				for (let i = 0; i < dart![1]; i++) {
+				let copyDarts = dart![1];
+				for (let i = 0; i < copyDarts; i++) {
 					if (percentChance(80)) {
 						realCost.remove(dart[0].id, 1);
 						dart![1]--;

@@ -119,13 +119,10 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
-				return this.client.commands.get('mine')!.run(res, [quantity, ore.name]);
-			},
+			['mine', [quantity, ore.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

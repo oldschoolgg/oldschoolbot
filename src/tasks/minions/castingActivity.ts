@@ -1,6 +1,5 @@
 import { Task } from 'klasa';
 
-// import craft from '../../commands/Minion/craft';
 import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
@@ -37,7 +36,7 @@ export default class extends Task {
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
-			await user.addItemsToBank(loot.bank, true);
+			await user.addItemsToBank(loot, true);
 		}
 
 		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
@@ -49,13 +48,10 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${spell.name}[${spell.id}]`);
-				return this.client.commands.get('cast')!.run(res, [quantity, spell.name]);
-			},
+			['cast', [quantity, spell.name], true],
 			undefined,
 			data,
-			loot?.bank ?? null
+			loot ?? null
 		);
 	}
 }

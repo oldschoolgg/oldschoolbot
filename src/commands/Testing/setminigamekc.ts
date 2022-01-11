@@ -2,6 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { prisma } from '../../lib/settings/prisma';
 import { Minigames } from '../../lib/settings/settings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
@@ -23,9 +24,16 @@ export default class extends BotCommand {
 			);
 		}
 
+		if (minigame.column === 'tob') {
+			await msg.author.settings.update(UserSettings.Stats.TobAttempts, kc);
+		}
+		if (minigame.column === 'tob_hard') {
+			await msg.author.settings.update(UserSettings.Stats.TobHardModeAttempts, kc);
+		}
+
 		await prisma.minigame.update({
 			where: { user_id: msg.author.id },
-			data: { [minigame.column]: { increment: kc } }
+			data: { [minigame.column]: kc }
 		});
 
 		return msg.channel.send(`Set your ${minigame.name} kc to ${kc}.`);

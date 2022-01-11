@@ -48,19 +48,7 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank(loot.bank, true);
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log(`continued trip of charging ${quantity}x glories`);
-				return this.client.commands.get('chargeglories')!.run(res, [quantity]);
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		await user.addItemsToBank(loot, true);
+		handleTripFinish(this.client, user, channelID, str, ['chargeglories', [quantity], true], undefined, data, loot);
 	}
 }

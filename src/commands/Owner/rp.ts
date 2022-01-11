@@ -1,22 +1,33 @@
 import { Duration, Time } from '@sapphire/time-utilities';
 import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import fetch from 'node-fetch';
-import { Items } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../../lib/constants';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { evalMathExpression } from '../../lib/expressionParser';
+import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { asyncExec, cleanString, formatDuration, getSupportGuild, getUsername, itemNameFromID } from '../../lib/util';
+import {
+	asyncExec,
+	channelIsSendable,
+	cleanString,
+	convertBankToPerHourStats,
+	formatDuration,
+	getSupportGuild,
+	getUsername,
+	itemNameFromID
+} from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../../lib/util/webhook';
+import BankImageTask from '../../tasks/bankImage';
 import PatreonTask from '../../tasks/patreon';
 
 function itemSearch(msg: KlasaMessage, name: string) {
@@ -242,6 +253,31 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'blacklist':
+			case 'bl': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				if (str instanceof KlasaUser) return;
+				const reason = str;
+				const entry = this.client.settings.get(ClientSettings.UserBlacklist);
+
+				const alreadyBlacklisted = entry.includes(input.id);
+
+				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
+					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
+				});
+				const emoji = getSupportGuild(this.client).emojis.cache.random().toString();
+				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
+
+				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
+				if (channelIsSendable(channel)) {
+					channel.send(
+						`\`${input.username}\` was ${newStatus} by ${msg.author.username} for \`${
+							reason ?? 'no reason'
+						}\`.`
+					);
+				}
+				return msg.channel.send(`${emoji} Successfully ${newStatus} ${input.username}.`);
+			}
 			case 'addimalt': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				if (!str || !(str instanceof KlasaUser)) return;
@@ -355,7 +391,7 @@ ${
 					return sendToChannelID(this.client, msg.channel.id, {
 						content: result.slice(0, 2500)
 					});
-				} catch (err) {
+				} catch (err: any) {
 					console.error(err);
 					return msg.channel.send(`Failed to run roles task. ${err.message}`);
 				}
@@ -497,7 +533,7 @@ ${
 				const res = await this.client.query<{ num: number; username: string }[]>(`
 SELECT sum(duration) as num, "new_user"."username", user_id
 FROM activity
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "activity"."user_id"::text
 WHERE start_date > now() - interval '2 days'
 GROUP BY user_id, "new_user"."username"
 ORDER BY num DESC
@@ -511,7 +547,9 @@ LIMIT 10;
 			}
 			case 'bank': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				return msg.channel.sendBankImage({ bank: input.allItemsOwned().bank });
+				return msg.channel.sendBankImage({
+					bank: input.allItemsOwned()
+				});
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;
@@ -584,6 +622,61 @@ LIMIT 10;
 				if (typeof input !== 'string') return;
 				const bank = JSON.parse(input.replace(/'/g, '"'));
 				return msg.channel.sendBankImage({ bank });
+			}
+			case 'reboot': {
+				await msg.channel.send('Rebooting...');
+				await Promise.all(this.client.providers.map(provider => provider.shutdown()));
+				process.exit();
+			}
+			case 'owned': {
+				if (typeof input !== 'string') return;
+				const item = getOSItem(input);
+				const result: any = await prisma.$queryRawUnsafe(`SELECT SUM((bank->>'${item.id}')::int) as qty
+FROM users
+WHERE bank->>'${item.id}' IS NOT NULL;`);
+				return msg.channel.send(`There are ${result[0].qty.toLocaleString()} ${item.name} owned by everyone.`);
+			}
+			case 'incl': {
+				if (typeof input !== 'string') return;
+				const item = getOSItem(input);
+				const isIron = Boolean(msg.flagArgs.iron);
+				return msg.channel.send(
+					`There are ${await countUsersWithItemInCl(item.id, isIron)} ${
+						isIron ? 'ironmen' : 'people'
+					} with atleast 1 ${item.name} in their collection log.`
+				);
+			}
+			case 'loottrack': {
+				if (typeof input !== 'string') {
+					const tracks = await prisma.lootTrack.findMany();
+					return msg.channel.send(tracks.map(t => t.id).join(', '));
+				}
+				const loot = await prisma.lootTrack.findFirst({
+					where: {
+						id: input
+					}
+				});
+				if (!loot) return msg.channel.send('Invalid');
+
+				const durationMillis = loot.total_duration * Time.Minute;
+
+				const arr = [
+					['Cost', new Bank(loot.cost as any)],
+					['Loot', new Bank(loot.loot as any)]
+				] as const;
+
+				const task = this.client.tasks.get('bankImage') as BankImageTask;
+
+				for (const [name, bank] of arr) {
+					msg.channel.send({
+						content: convertBankToPerHourStats(bank, durationMillis).join(', '),
+						files: [new MessageAttachment((await task.generateBankImage(bank, name)).image!)]
+					});
+				}
+
+				return msg.channel.send({
+					content: `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`
+				});
 			}
 		}
 	}

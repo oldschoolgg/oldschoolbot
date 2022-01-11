@@ -5,6 +5,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
+import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import {
@@ -181,19 +182,24 @@ export default class extends Task {
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.HunterLoot, loot);
+		await trackLoot({
+			id: creature.name,
+			changeType: 'loot',
+			duration,
+			kc: quantity,
+			loot,
+			type: 'Skilling'
+		});
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${creatureName}[${creatureName}]`);
-				return this.client.commands.get('hunt')!.run(res, [quantity, creatureName]);
-			},
+			['hunt', [quantity, creatureName], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

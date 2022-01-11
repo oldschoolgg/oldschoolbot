@@ -16,7 +16,7 @@ ${ironman ? 'AND "minion.ironman" = true' : ''};`;
 
 async function howManyMaxed() {
 	const [normies, irons] = (
-		(await Promise.all([prisma.$queryRaw`${makeQuery(false)}`, prisma.$queryRaw`${makeQuery(true)}`])) as any
+		(await Promise.all([prisma.$queryRawUnsafe(makeQuery(false)), prisma.$queryRawUnsafe(makeQuery(true))])) as any
 	)
 		.map((i: any) => i[0].count)
 		.map((i: any) => parseInt(i));

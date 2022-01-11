@@ -49,10 +49,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${burnable.name}`);
-				return this.client.commands.get('light')!.run(res, [quantity, burnable.name]);
-			},
+			['light', [quantity, burnable.name], true],
 			undefined,
 			data,
 			null

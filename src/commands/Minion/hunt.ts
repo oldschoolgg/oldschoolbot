@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcLootXPHunting } from '../../lib/skilling/functions/calcsHunter';
@@ -269,8 +270,15 @@ export default class extends BotCommand {
 				wildyPeak!.peakTier
 			} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions. If you feel unsure \`${
 				msg.cmdPrefix
-			}cancel\` the activity.`;
+			}m cancel\` the activity.`;
 		}
+
+		await trackLoot({
+			id: creature.name,
+			cost: removeBank,
+			type: 'Skilling',
+			changeType: 'cost'
+		});
 
 		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
 			creatureName: creature.name,

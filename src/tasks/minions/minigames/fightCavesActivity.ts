@@ -75,16 +75,13 @@ export default class extends Task {
 				`${user} You died ${formatDuration(
 					preJadDeathTime
 				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
-				res => {
-					user.log('continued trip of fightcaves');
-					return this.client.commands.get('fightcaves')!.run(res, []);
-				},
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
 				}),
 				data,
-				itemLootBank.bank
+				itemLootBank
 			);
 		}
 
@@ -116,16 +113,13 @@ export default class extends Task {
 				user,
 				channelID,
 				`${user} ${msg}`,
-				res => {
-					user.log('continued trip of fightcaves');
-					return this.client.commands.get('fightcaves')!.run(res, []);
-				},
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
 				}),
 				data,
-				failBank.bank
+				failBank
 			);
 		}
 
@@ -161,7 +155,7 @@ export default class extends Task {
 			const slayerXP = 37_010;
 			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
 			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-			const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
@@ -186,10 +180,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`${user} ${msg}`,
-			res => {
-				user.log('continued trip of fightcaves');
-				return this.client.commands.get('fightcaves')!.run(res, []);
-			},
+			['fightcaves', [], true],
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
@@ -197,7 +188,7 @@ export default class extends Task {
 				head: 'mejJal'
 			}),
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

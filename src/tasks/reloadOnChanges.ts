@@ -1,4 +1,5 @@
 import { watch } from 'chokidar';
+import { debounce } from 'e';
 import { Piece, Stopwatch, Task, TaskStore } from 'klasa';
 import { basename, extname, join, sep } from 'path';
 
@@ -71,7 +72,7 @@ export default class extends Task {
 
 		for (const event of ['add', 'change', 'unlink']) {
 			if (this.client._fileChangeWatcher) {
-				this.client._fileChangeWatcher.on(event, reloadStore);
+				this.client._fileChangeWatcher.on(event, debounce(reloadStore, 1000));
 			}
 		}
 	}

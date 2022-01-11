@@ -20,7 +20,7 @@ export default class extends Task {
 		});
 
 		const loot = enchantable.output.clone().multiply(quantity);
-		await user.addItemsToBank(loot.bank, true);
+		await user.addItemsToBank(loot, true);
 
 		let str = `${user}, ${user.minionName} finished enchanting ${quantity}x ${enchantable.name}, you received ${loot}. ${xpRes}`;
 
@@ -29,13 +29,10 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${enchantable.name}[${enchantable.id}]`);
-				return this.client.commands.get('enchant')!.run(res, [quantity, enchantable.name]);
-			},
+			['enchant', [quantity, enchantable.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }
