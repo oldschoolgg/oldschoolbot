@@ -61,6 +61,6 @@ export default class extends Task {
 
 		await user.addItemsToBank(loot, true);
 
-		handleTripFinish(this.client, user, channelID, str, ['darkaltar', [rune], true], undefined, data, loot.bank);
+		handleTripFinish(this.client, user, channelID, str, ['darkaltar', [rune], true], undefined, data, loot);
 	}
 }

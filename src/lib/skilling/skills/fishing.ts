@@ -185,6 +185,17 @@ const fishes: Fish[] = [
 		clueScrollChance: 78_649
 	},
 	{
+		level: 82,
+		xp: 26.1,
+		id: itemID('Minnow'),
+		name: 'Minnow',
+		alias: ['minnows'],
+		petChance: 977_778,
+		qpRequired: 1,
+		timePerFish: 2.14,
+		clueScrollChance: 977_778
+	},
+	{
 		level: 85,
 		xp: 130,
 		id: itemID('Raw dark crab'),

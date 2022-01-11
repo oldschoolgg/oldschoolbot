@@ -6,18 +6,18 @@ import { formatDuration } from '../lib/util';
 
 const totalActivitiesQuery = (id: string) => `SELECT count(id)
 FROM activity
-WHERE user_id = '${id}';`;
+WHERE user_id = ${id};`;
 
 const firstActivityQuery = (id: string) => `SELECT id, start_date, type
 FROM activity
-WHERE user_id = '${id}'
+WHERE user_id = ${id}
 ORDER BY id ASC
 LIMIT 1;`;
 
 const countsPerActivityQuery = (id: string) => `
 SELECT type, count(type) as qty
 FROM activity
-WHERE user_id = '${id}'
+WHERE user_id = ${id}
 GROUP BY type
 ORDER BY qty DESC
 LIMIT 15;`;
@@ -25,7 +25,7 @@ LIMIT 15;`;
 const totalDurationQuery = (id: string) => `
 SELECT sum(duration)
 FROM activity
-WHERE user_id = '${id}';`;
+WHERE user_id = ${id};`;
 
 function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
