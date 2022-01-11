@@ -42,7 +42,7 @@ export default class extends Task {
 			['blastfurnace', [quantity, bar.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

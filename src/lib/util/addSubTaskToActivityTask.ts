@@ -41,14 +41,14 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 
 	const createdActivity = await prisma.activity.create({
 		data: {
-			user_id: taskToAdd.userID,
+			user_id: BigInt(taskToAdd.userID),
 			start_date: new Date(),
 			finish_date: finishDate,
 			completed: false,
 			type: taskToAdd.type,
 			data: newData,
 			group_activity: isGroupActivity(taskToAdd),
-			channel_id: taskToAdd.channelID,
+			channel_id: BigInt(taskToAdd.channelID),
 			duration
 		}
 	});

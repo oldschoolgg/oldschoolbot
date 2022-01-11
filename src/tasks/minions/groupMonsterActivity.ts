@@ -67,6 +67,6 @@ export default class extends Task {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		handleTripFinish(this.client, leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot.bank);
+		handleTripFinish(this.client, leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot);
 	}
 }

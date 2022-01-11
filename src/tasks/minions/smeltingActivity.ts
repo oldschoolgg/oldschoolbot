@@ -59,7 +59,7 @@ export default class extends Task {
 			['smelt', [oldQuantity, bar.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

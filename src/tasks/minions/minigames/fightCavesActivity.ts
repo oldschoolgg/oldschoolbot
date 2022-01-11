@@ -81,7 +81,7 @@ export default class extends Task {
 					head: 'mejJal'
 				}),
 				data,
-				itemLootBank.bank
+				itemLootBank
 			);
 		}
 
@@ -119,7 +119,7 @@ export default class extends Task {
 					head: 'mejJal'
 				}),
 				data,
-				failBank.bank
+				failBank
 			);
 		}
 
@@ -155,7 +155,7 @@ export default class extends Task {
 			const slayerXP = 37_010;
 			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
 			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-			const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
@@ -188,7 +188,7 @@ export default class extends Task {
 				head: 'mejJal'
 			}),
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

@@ -48,16 +48,7 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank(loot.bank, true);
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['chargeglories', [quantity], true],
-			undefined,
-			data,
-			loot.bank
-		);
+		await user.addItemsToBank(loot, true);
+		handleTripFinish(this.client, user, channelID, str, ['chargeglories', [quantity], true], undefined, data, loot);
 	}
 }

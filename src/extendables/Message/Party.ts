@@ -70,7 +70,7 @@ async function _setup(
 					}
 
 					if (options.customDenier && reaction.emoji.id === ReactionEmoji.Join) {
-						const [customDenied, reason] = options.customDenier(user);
+						const [customDenied, reason] = await options.customDenier(user);
 						if (customDenied) {
 							user.send(`You couldn't join this mass, for this reason: ${reason}`);
 							reaction.users.remove(user);

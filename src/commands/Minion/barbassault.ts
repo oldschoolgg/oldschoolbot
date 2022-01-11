@@ -224,9 +224,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`You spent ${(
 				cost * qty
-			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${new Bank(
-				itemsAdded
-			)}.`
+			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${itemsAdded}.`
 		);
 	}
 
@@ -243,7 +241,7 @@ export default class extends BotCommand {
 			}! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. There must be 2+ users in the party.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}

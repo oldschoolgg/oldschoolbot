@@ -7,7 +7,7 @@ import { incrementMinigameScore, MinigameName } from '../../../lib/settings/sett
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import { GauntletOptions } from '../../../lib/types/minions';
-import { addBanks } from '../../../lib/util';
+import { updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -43,7 +43,7 @@ export default class extends Task {
 
 		await incrementMinigameScore(userID, key, quantity - deaths);
 
-		const { previousCL } = await user.addItemsToBank(loot.bank, true);
+		const { previousCL } = await user.addItemsToBank(loot, true);
 		const name = `${corrupted ? 'Corrupted' : 'Normal'} Gauntlet`;
 
 		const newKc = await user.getMinigameScore(key);
@@ -62,15 +62,12 @@ export default class extends Task {
 			);
 		}
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.GauntletLoot,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.GauntletLoot), loot.bank])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.GauntletLoot, loot);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				loot.bank,
+				loot,
 				`Loot From ${quantity - deaths}x ${name}`,
 				true,
 				{ showNewCL: 1 },
@@ -86,7 +83,7 @@ export default class extends Task {
 			['gauntlet', [corrupted ? 'corrupted' : 'normal', quantity], true],
 			image!,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }
