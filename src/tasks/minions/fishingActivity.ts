@@ -67,6 +67,7 @@ export default class extends Task {
 			xpReceived = quantity * fish.xp;
 		}
 		let bonusXP = 0;
+		let reducedXP = 0;
 
 		// If they have the entire angler outfit, give an extra 0.5% xp bonus
 		if (
@@ -87,6 +88,12 @@ export default class extends Task {
 					bonusXP += amountToAdd;
 				}
 			}
+		}
+
+		if (user.getGear('skilling').hasEquipped(itemID("Rada's Blessing 4"))) {
+			const amountToSubtract = Math.floor(xpReceived * 0.08);
+			xpReceived -= amountToSubtract;
+			reducedXP -= amountToSubtract;
 		}
 
 		let xpRes = await user.addXP({
@@ -130,6 +137,10 @@ export default class extends Task {
 			lootQuantity = minnowQty;
 		}
 
+		if (user.getGear('skilling').hasEquipped(itemID("Rada's Blessing 4"))) {
+			lootQuantity = Math.round(lootQuantity * 1.08);
+		}
+
 		let loot = new Bank({
 			[fish.id]: lootQuantity
 		});
@@ -154,6 +165,10 @@ export default class extends Task {
 
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
+		}
+		if (user.getGear('skilling').hasEquipped(itemID("Rada's Blessing 4"))) {
+			reducedXP -= Math.round(0.08 * xpReceived);
+			str += `\n\n**Reduced XP from Rada's Blessing:** ${reducedXP.toLocaleString()}`;
 		}
 
 		// Roll for pet
@@ -182,6 +197,10 @@ export default class extends Task {
 		await user.addItemsToBank(loot, true);
 
 		str += `\n\nYou received: ${loot}.`;
+
+		if (user.getGear('skilling').hasEquipped(itemID("Rada's Blessing 4"))) {
+			str += "\n\n8% increase of fish for Rada's Blessing 4.";
+		}
 
 		handleTripFinish(
 			this.client,
