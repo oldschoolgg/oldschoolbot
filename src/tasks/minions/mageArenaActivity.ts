@@ -18,7 +18,7 @@ export default class extends Task {
 			undefined,
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

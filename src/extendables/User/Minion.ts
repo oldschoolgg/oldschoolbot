@@ -78,6 +78,7 @@ import {
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
 	SoulWarsOptions,
+	TheatreOfBloodTaskOptions,
 	VolcanicMineActivityTaskOptions,
 	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
@@ -586,6 +587,16 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
+			case 'TheatreOfBlood': {
+				const data = currentTask as TheatreOfBloodTaskOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+
+				return `${
+					this.minionName
+				} is currently attempting the Theatre of Blood, if your team is successful and doesn't die, the trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 		}
 	}
 
@@ -719,7 +730,7 @@ export default class extends Extendable {
 			preMax = totalXPAdded;
 			await prisma.xPGain.create({
 				data: {
-					user_id: this.id,
+					user_id: BigInt(this.id),
 					skill: params.skillName,
 					xp: Math.floor(totalXPAdded),
 					artificial: params.artificial ? true : null
@@ -731,7 +742,7 @@ export default class extends Extendable {
 		if (params.amount - totalXPAdded > 0) {
 			await prisma.xPGain.create({
 				data: {
-					user_id: this.id,
+					user_id: BigInt(this.id),
 					skill: params.skillName,
 					xp: Math.floor(params.amount - totalXPAdded),
 					artificial: params.artificial ? true : null,

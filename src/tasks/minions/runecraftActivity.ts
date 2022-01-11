@@ -63,7 +63,7 @@ export default class extends Task {
 			['rc', [essenceQuantity, rune.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

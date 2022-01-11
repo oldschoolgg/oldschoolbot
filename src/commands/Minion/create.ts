@@ -151,6 +151,16 @@ export default class extends BotCommand {
 				return msg.channel.send(`You can only ${cmd} this item once!`);
 			}
 		}
+		if (createableItem.maxCanOwn) {
+			const allItems = msg.author.allItemsOwned();
+			const amountOwned = allItems.amount(createableItem.name);
+			if (amountOwned >= createableItem.maxCanOwn) {
+				return msg.channel.send(
+					`You already have ${amountOwned}x ${createableItem.name}, you can't create another.`
+				);
+			}
+			quantity = createableItem.maxCanOwn - amountOwned;
+		}
 
 		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
 		const inItems = new Bank(createableItem.inputItems).multiply(quantity);

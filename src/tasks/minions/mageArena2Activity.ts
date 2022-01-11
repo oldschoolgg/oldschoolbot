@@ -29,6 +29,6 @@ export default class extends Task {
 			str = `${user}, ${user.minionName} finished the Mage Arena II, you received: ${loot}.`;
 		}
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot?.bank ?? null);
+		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot ?? null);
 	}
 }

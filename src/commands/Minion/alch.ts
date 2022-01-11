@@ -93,11 +93,12 @@ export default class extends BotCommand {
 		if (!msg.author.owns(consumedItems)) {
 			return msg.channel.send(`You don't have the required items, you need ${consumedItems}`);
 		}
-
 		await msg.confirm(
 			`${msg.author}, please confirm you want to alch ${quantity} ${osItem.name} (${Util.toKMB(
 				alchValue
-			)}). This will take approximately ${formatDuration(duration)}, and consume ${quantity}x Nature runes.`
+			)}). This will take approximately ${formatDuration(duration)}, and consume ${
+				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
+			} ${quantity}x Nature runes.`
 		);
 
 		await msg.author.removeItemsFromBank(consumedItems);

@@ -135,5 +135,7 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.Inferno;
 		case 'TearsOfGuthix':
 			return Tasks.TearsOfGuthix;
+		case 'TheatreOfBlood':
+			return Tasks.ToB;
 	}
 }

@@ -260,6 +260,15 @@ const backgroundImages: BankBackground[] = [
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 20_000_000,
 		transparent: true
+	},
+	{
+		id: 21,
+		name: 'Smokey',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
 	}
 ];
 

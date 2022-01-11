@@ -1,6 +1,6 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
 import { MessageAttachment, MessageOptions } from 'discord.js';
-import { objectEntries, objectKeys } from 'e';
+import { objectEntries } from 'e';
 import fs from 'fs';
 import { KlasaUser, Task } from 'klasa';
 
@@ -209,9 +209,12 @@ export default class CollectionLogTask extends Task {
 	async generateLogImage(options: {
 		user: KlasaUser;
 		collection: string;
-		type: 'collection' | 'sacrifice' | 'bank';
+		type: 'collection' | 'sacrifice' | 'bank' | 'temp';
 		flags: { [key: string]: string | number };
 	}): Promise<MessageOptions | MessageAttachment> {
+		if (options.flags.temp) {
+			options.type = 'temp';
+		}
 		let { collection, type, user, flags } = options;
 
 		await user.settings.sync(true);
@@ -438,7 +441,11 @@ export default class CollectionLogTask extends Task {
 		// Collection title
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.fillStyle = '#FF981F';
-		this.drawText(ctx, collectionLog.name, 0, 0);
+		let effectiveName = collectionLog.name;
+		if (!collectionLog.counts) {
+			effectiveName = `${effectiveName} (Uncounted CL)`;
+		}
+		this.drawText(ctx, effectiveName, 0, 0);
 
 		// Collection obtained items
 		ctx.font = '16px OSRSFontCompact';
@@ -502,7 +509,7 @@ export default class CollectionLogTask extends Task {
 			if (!Boolean(flags.tall)) {
 				let selectedPos = 8;
 				const listItemSize = 15;
-				for (const name of objectKeys(collectionLog.leftList!)) {
+				for (const name of Object.keys(collectionLog.leftList!)) {
 					if (name === collectionLog.name) break;
 					selectedPos += listItemSize;
 				}
@@ -556,6 +563,7 @@ export default class CollectionLogTask extends Task {
 				ctx.drawImage(leftListCanvas, 12, 62);
 			}
 		}
+
 		return new MessageAttachment(canvas.toBuffer('image/png'), `${type}_log_${new Date().valueOf()}.png`);
 	}
 }
