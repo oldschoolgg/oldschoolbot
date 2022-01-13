@@ -242,6 +242,7 @@ model User {
   favorite_alchables         Int[]
   favorite_food              Int[]
   lastDailyTimestamp         BigInt   @default(1)
+  lastTearsOfGuthixTimestamp BigInt   @default(1)
   sacrificedValue            BigInt   @default(0)
   bank                       Json     @default("{}") @db.Json
   collectionLogBank          Json     @default("{}") @db.JsonB
@@ -434,6 +435,7 @@ model Minigame {
   pest_control            Int    @default(0)
   inferno                 Int    @default(0)
   volcanic_mine           Int    @default(0)
+  tears_of_guthix         Int    @default(0)
   tob                     Int    @default(0)
   tob_hard                Int    @default(0)
 
@@ -549,6 +551,7 @@ enum activity_type_enum {
   VolcanicMine
   KourendFavour
   Inferno
+  TearsOfGuthix
   TheatreOfBlood
 }
 
