@@ -107,6 +107,9 @@ export namespace ClientSettings {
 		export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
 		export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');
 
+		export const FishingContestCost = T<O.Readonly<ItemBank>>('fc_cost');
+		export const FishingContestLoot = T<O.Readonly<ItemBank>>('fc_loot');
+
 		export const DegradedItemsCost = T<O.Readonly<ItemBank>>('degraded_items_cost');
 
 		export const GPSourceSellingItems = T<number>('gp_sell');

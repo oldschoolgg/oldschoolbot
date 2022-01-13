@@ -732,6 +732,16 @@ const bsoItems: Createable[] = [
 		outputItems: {
 			[itemID('Golden partyhat')]: 1
 		}
+	},
+	{
+		name: 'Crystal fishing rod',
+		inputItems: {
+			[itemID('Contest rod')]: 1,
+			[itemID('Crystal tool seed')]: 1
+		},
+		outputItems: {
+			[itemID('Crystal fishing rod')]: 1
+		}
 	}
 ];
 

@@ -864,6 +864,22 @@ export const allCollectionLogs: ICollection = {
 					'Expert ninja rumble greegree',
 					'Elder rumble greegree'
 				])
+			},
+			'Fishing Contest': {
+				alias: ['fc'],
+				items: resolveItems([
+					'Fishing hat',
+					'Fishing jacket',
+					'Fishing waders',
+					'Fishing boots',
+					'Contest rod',
+					'Beginner tackle box',
+					'Basic tackle box',
+					'Standard tackle box',
+					'Professional tackle box',
+					"Champion's tackle box",
+					'Golden fishing trophy'
+				])
 			}
 		}
 	},

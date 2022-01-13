@@ -18,7 +18,16 @@ import { sotwConfig, sotwIsActive } from '../../commands/bso/sotw';
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { bossEvents } from '../../lib/bossEvents';
-import { Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, PerkTier, skillEmoji } from '../../lib/constants';
+import {
+	Emoji,
+	Events,
+	GLOBAL_BSO_XP_MULTIPLIER,
+	MAX_QP,
+	MAX_TOTAL_LEVEL,
+	MAX_XP,
+	PerkTier,
+	skillEmoji
+} from '../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
@@ -826,7 +835,7 @@ export default class extends Extendable {
 		const currentTotalLevel = this.totalLevel();
 
 		if (multiplier) {
-			params.amount *= 5;
+			params.amount *= GLOBAL_BSO_XP_MULTIPLIER;
 		}
 
 		const rawGear = this.rawGear();

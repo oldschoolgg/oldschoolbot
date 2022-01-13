@@ -163,3 +163,12 @@ export const GrimyHerbTable = new LootTable()
 	.add('Grimy lantadyme', [1, 5])
 	.add('Grimy toadflax', [1, 5])
 	.add('Grimy snapdragon', [1, 3]);
+
+export const ClueTable = new LootTable()
+	.add('Clue scroll (beginner)', 7)
+	.add('Clue scroll (easy)', 6)
+	.add('Clue scroll (medium)', 5)
+	.add('Clue scroll (hard)', 4)
+	.add('Clue scroll (elite)', 3)
+	.add('Clue scroll (master)', 2)
+	.add('Clue scroll (Grandmaster)', 1);

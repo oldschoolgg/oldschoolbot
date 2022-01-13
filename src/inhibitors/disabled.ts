@@ -5,6 +5,7 @@ import { GuildSettings } from '../lib/settings/types/GuildSettings';
 
 export default class extends Inhibitor {
 	async run(message: KlasaMessage, command: Command) {
+		if (!message.guild) return true;
 		if (!command.enabled) throw message.language.get('INHIBITOR_DISABLED_GLOBAL');
 		if (!message.guild) return false;
 		const settings = await getGuildSettings(message.guild);

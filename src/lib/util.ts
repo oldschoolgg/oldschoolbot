@@ -2,7 +2,7 @@ import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
-import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
+import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, sumArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import murmurHash from 'murmurhash';
 import { Bank, Monsters } from 'oldschooljs';
@@ -667,6 +667,12 @@ export function murMurHashChance(input: string, percent: number) {
 	return hash < percent * 100;
 }
 
+const getMurKey = (input: string | number, sortHash: string) => `${input.toString()}-${sortHash}`;
+
+export function murMurSort<T extends string | number>(arr: T[], sortHash: string) {
+	return [...arr].sort((a, b) => murmurHash.v3(getMurKey(b, sortHash)) - murmurHash.v3(getMurKey(a, sortHash)));
+}
+
 export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
 	let setup: GearSetupType = 'melee';
 
@@ -698,4 +704,12 @@ export function formatTimestamp(date: Date, relative = false) {
 		return `<t:${unixTime}:R>`;
 	}
 	return `<t:${unixTime}>`;
+}
+
+export function ISODateString(date?: Date) {
+	return (date ?? new Date()).toISOString().slice(0, 10);
+}
+
+export function averageArr(arr: number[]) {
+	return sumArr(arr) / arr.length;
 }

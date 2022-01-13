@@ -390,6 +390,11 @@ export interface MonkeyRumbleOptions extends MinigameActivityTaskOptions {
 	monkeys: Monkey[];
 }
 
+export interface FishingContestOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+	location: number;
+}
+
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	favour: KourendFavour;
 	quantity: number;
