@@ -42,7 +42,7 @@ const uniques = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '[mass|solo|gear]',
+			usage: '[mass|solo]',
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(normalTable), 'cox-sim.txt')] });
 		}
 
-		if (!type || type === 'gear') {
+		if (!type) {
 			const [normal, cm] = await Promise.all([
 				msg.author.getMinigameScore('raids'),
 				msg.author.getMinigameScore('raids_challenge_mode')
