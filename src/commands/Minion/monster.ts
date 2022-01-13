@@ -198,7 +198,7 @@ export default class MinionCommand extends BotCommand {
 		}
 		if (totalBoost.length > 0) {
 			str.push(
-				`**Boosts**\nAvalible Boosts: ${totalBoost.join(',')}\n${
+				`**Boosts**\nAvailable Boosts: ${totalBoost.join(',')}\n${
 					ownedBoostItems.length > 0
 						? `Your boosts: ${ownedBoostItems.join(', ')} for ${totalItemBoost}%`
 						: ''
