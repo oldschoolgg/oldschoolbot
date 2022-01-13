@@ -56,22 +56,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		// Skills required for quest
-		if (!msg.author.hasSkillReqs(skillReqs)[0]) {
-			return msg.channel.send(
-				`You are not skilled enough to participate in Tears of Guthix. You need the following requirements: ${objectEntries(
-					skillReqs
-				)
-					.map(s => {
-						return msg.author.skillLevel(s[0]) < s[1]
-							? formatSkillRequirements({ [s[0]]: s[1] }, true)
-							: undefined;
-					})
-					.filter(notEmpty)
-					.join(', ')}`
-			);
-		}
-
+		let missingIronmanSkills = false;
 		// Extra requirements if Ironman
 		if (msg.author.isIronman) {
 			let skillsMatch = 0;
@@ -79,13 +64,34 @@ export default class extends BotCommand {
 				if (msg.author.skillLevel(skill as SkillsEnum) >= level) skillsMatch += 1;
 			});
 			if (skillsMatch === 0) {
-				return msg.channel.send(
-					`You are not skilled enough to participate in Tears of Guthix. As an Ironman, you need one of the following requirements:${formatSkillRequirements(
-						ironmanExtraReqs,
-						true
-					)}`
-				);
+				missingIronmanSkills = true;
 			}
+		}
+
+		const missingIronmanSkillMessage = `As an Ironman, you also need one of the following requirements:${formatSkillRequirements(
+			ironmanExtraReqs,
+			true
+		)}`;
+		// Skills required for quest
+		if (!msg.author.hasSkillReqs(skillReqs)[0]) {
+			const missingSkillsMessage = objectEntries(skillReqs)
+				.map(s => {
+					return msg.author.skillLevel(s[0]) < s[1]
+						? formatSkillRequirements({ [s[0]]: s[1] }, true)
+						: undefined;
+				})
+				.filter(notEmpty)
+				.join(', ');
+
+			return msg.channel.send(
+				`You are not skilled enough to participate in Tears of Guthix. You need the following requirements: ${missingSkillsMessage}. ${
+					missingIronmanSkills ? missingIronmanSkillMessage : ''
+				}`
+			);
+		} else if (missingIronmanSkills) {
+			return msg.channel.send(
+				`You are not skilled enough to participate in Tears of Guthix. ${missingIronmanSkillMessage}`
+			);
 		}
 
 		const duration = Time.Minute * 8;
