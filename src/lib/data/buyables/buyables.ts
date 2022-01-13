@@ -270,19 +270,19 @@ const questBuyables: Buyable[] = [
 		name: 'Black gloves',
 		qpRequired: 35,
 		gpCost: 400_000,
-		ironmanPrice: 1_000
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Mithril gloves',
 		qpRequired: 50,
 		gpCost: 500_000,
-		ironmanPrice: 2_000
+		ironmanPrice: 2000
 	},
 	{
 		name: 'Adamant gloves',
 		qpRequired: 65,
 		gpCost: 600_000,
-		ironmanPrice: 3_250
+		ironmanPrice: 3250
 	},
 	{
 		name: 'Rune gloves',
@@ -291,7 +291,7 @@ const questBuyables: Buyable[] = [
 		},
 		qpRequired: 85,
 		gpCost: 700_000,
-		ironmanPrice: 6_500
+		ironmanPrice: 6500
 	},
 	{
 		name: 'Dragon gloves',
@@ -609,7 +609,7 @@ const questBuyables: Buyable[] = [
 		name: 'Elemental shield',
 		gpCost: 2_500_000,
 		qpRequired: 25,
-		ironmanPrice: 2_000
+		ironmanPrice: 2000
 	}
 ];
 
