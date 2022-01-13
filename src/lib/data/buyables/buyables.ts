@@ -270,13 +270,13 @@ const questBuyables: Buyable[] = [
 		name: 'Black gloves',
 		qpRequired: 35,
 		gpCost: 400_000,
-		ironmanPrice: 1_300
+		ironmanPrice: 1_000
 	},
 	{
 		name: 'Mithril gloves',
 		qpRequired: 50,
 		gpCost: 500_000,
-		ironmanPrice: 1_950
+		ironmanPrice: 2_000
 	},
 	{
 		name: 'Adamant gloves',
