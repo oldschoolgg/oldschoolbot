@@ -26,9 +26,9 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			oneAtTime: true,
 			altProtection: true,
-			categoryFlags: ['minion', 'pvm', 'minigame'],
-			description: 'Sends your minion to do the Monkey Rumble minigame.',
-			examples: ['=fc [fish|buy]'],
+			categoryFlags: ['minion', 'minigame'],
+			description: 'Sends your minion to do the Fishing Contest minigame.',
+			examples: ['=fishingcontest [fish]'],
 			subcommands: true,
 			usage: '[fish] [input:...string]',
 			usageDelim: ' '
@@ -164,6 +164,7 @@ export default class extends BotCommand {
 			if (msg.author.hasItemEquippedOrInBank(tackleBoxes[i])) {
 				let num = i + 1;
 				quantityBoosts.push(`${num} for ${tackleBoxes[i]}`);
+				break;
 			}
 		}
 
@@ -171,8 +172,6 @@ export default class extends BotCommand {
 			quantity++;
 			quantityBoosts.push('1 for Crystal fishing rod');
 		}
-
-		// increase qty here
 
 		const result = await getUsersFishingContestDetails(msg.author);
 		if (result.catchesFromToday.length > 0) {

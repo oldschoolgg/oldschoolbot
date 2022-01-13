@@ -44,7 +44,7 @@ export default class extends Task {
 		});
 
 		const loot = new Bank();
-		let tackleBoxChance = user.hasItemEquippedAnywhere('Fishing master cape') ? 3 : 4;
+		let tackleBoxChance = user.hasItemEquippedAnywhere('Fishing master cape') ? 2 : 3;
 		if (roll(tackleBoxChance)) {
 			for (const [tackleBox, fishLevel] of [
 				['Basic tackle box', 75],

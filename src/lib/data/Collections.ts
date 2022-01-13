@@ -873,7 +873,7 @@ export const allCollectionLogs: ICollection = {
 					'Fishing waders',
 					'Fishing boots',
 					'Contest rod',
-					'Beginner tackle box',
+					"Beginner's tackle box",
 					'Basic tackle box',
 					'Standard tackle box',
 					'Professional tackle box',
