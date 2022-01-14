@@ -1,10 +1,13 @@
+import { MessageAttachment } from 'discord.js';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { table } from 'table';
 
+import {} from '../../arguments/item';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { Castables } from '../../lib/skilling/skills/magic/castables';
+import { Castables } from '../../lib/skilling/skills/magic/index';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
@@ -37,21 +40,35 @@ export default class extends BotCommand {
 		const spell = Castables.find(spell => stringMatches(spell.name, name));
 
 		if (!spell) {
-			return msg.channel.send(
-				`That is not a valid spell to cast, the spells you can cast are: ${Castables.map(i => i.name).join(
-					', '
-				)}.`
-			);
+			const spellsTable = table([
+				['Name', 'Requirements', 'Cost', 'Output', 'XP Gain'],
+				...Castables.map(i => {
+					const requirements = Object.entries(i.levels)
+						.map(i => i.join(': '))
+						.join(', ');
+					const xp = Object.entries(i.xp)
+						.map(i => i.join(': '))
+						.join(', ');
+
+					return [
+						i.name,
+						requirements,
+						i.input ? i.input.toString() : 'None',
+						i.output ? i.output.toString() : 'None',
+						xp
+					];
+				})
+			]);
+			return msg.channel.send({
+				content: 'Here is a table of all castable spells.',
+				files: [new MessageAttachment(Buffer.from(spellsTable), 'Buyables.txt')]
+			});
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Magic) < spell.level) {
-			return msg.channel.send(`${msg.author.minionName} needs ${spell.level} Magic to cast ${spell.name}.`);
-		}
-
-		if (spell.craftLevel && msg.author.skillLevel(SkillsEnum.Crafting) < spell.craftLevel) {
-			return msg.channel.send(
-				`${msg.author.minionName} needs ${spell.craftLevel} Crafting to cast ${spell.name}.`
-			);
+		for (const [skill, level] of Object.entries(spell.levels)) {
+			if (msg.author.skillLevel(skill.toLowerCase() as SkillsEnum) < level) {
+				return msg.channel.send(`${msg.author.minionName} needs ${level} ${skill} to cast ${spell.name}`);
+			}
 		}
 
 		if (spell.qpRequired && msg.author.settings.get(UserSettings.QP) < spell.qpRequired) {
@@ -61,28 +78,29 @@ export default class extends BotCommand {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.bank();
 
-		let timeToEnchantTen = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
+		let timeToCast = spell.ticks * (Time.Second * 0.6) + Time.Second / 4; // Extra 0.25 seconds for banking etc.
 
 		const maxTripLength = msg.author.maxTripLength('Casting');
 
 		if (quantity === null) {
-			quantity = Math.floor(maxTripLength / timeToEnchantTen);
+			quantity = Math.floor(maxTripLength / timeToCast);
 			const spellRunes = determineRunes(msg.author, spell.input.clone());
 			const max = userBank.fits(spellRunes);
 			if (max < quantity && max !== 0) quantity = max;
 		}
 
-		const duration = quantity * timeToEnchantTen;
+		const duration = quantity * timeToCast;
 
 		if (duration > maxTripLength) {
 			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
 				)}, try a lower quantity. The highest amount of ${spell.name}s you can cast is ${Math.floor(
-					maxTripLength / timeToEnchantTen
+					maxTripLength / timeToCast
 				)}.`
 			);
 		}
+
 		const cost = determineRunes(msg.author, spell.input.clone().multiply(quantity));
 		if (!userBank.has(cost.bank)) {
 			return msg.channel.send(
@@ -110,7 +128,7 @@ export default class extends BotCommand {
 		);
 
 		await addSubTaskToActivityTask<CastingActivityTaskOptions>({
-			spellID: spell.id,
+			spellID: spell.name,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
@@ -118,23 +136,18 @@ export default class extends BotCommand {
 			type: 'Casting'
 		});
 
-		const magicXpHr = `${Math.round(
-			((spell.xp * quantity) / (duration / Time.Minute)) * 60
-		).toLocaleString()} Magic XP/Hr`;
-
-		let craftXpHr = '';
-		if (spell.craftXp) {
-			craftXpHr = `and** ${Math.round(
-				((spell.craftXp * quantity) / (duration / Time.Minute)) * 60
-			).toLocaleString()} Crafting XP/Hr**`;
+		let xpPerHr = '';
+		for (const [skill, xp] of Object.entries(spell.xp)) {
+			if (xpPerHr !== '') xpPerHr += ', ';
+			xpPerHr += `${Math.round(
+				((xp * quantity) / (duration / Time.Minute)) * 60
+			).toLocaleString()} ${skill} XP/Hr`;
 		}
 
 		return msg.channel.send(
 			`${msg.author.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
 				duration
-			)} to finish. Removed ${cost}${
-				spell.gpCost ? ` and ${gpCost} Coins` : ''
-			} from your bank. **${magicXpHr}** ${craftXpHr}`
+			)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${xpPerHr}**`
 		);
 	}
 }
