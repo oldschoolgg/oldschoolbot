@@ -27,8 +27,7 @@ import Fishing from '../../lib/skilling/skills/fishing';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import Creatures from '../../lib/skilling/skills/hunter/creatures';
 import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { Castables } from '../../lib/skilling/skills/magic/castables';
-import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
+import { Castables } from '../../lib/skilling/skills/magic/index';
 import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Runecraft from '../../lib/skilling/skills/runecraft';
@@ -50,7 +49,6 @@ import {
 	CookingActivityTaskOptions,
 	CraftingActivityTaskOptions,
 	DarkAltarOptions,
-	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
@@ -454,17 +452,9 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing Mahogany Homes. ${formattedDuration}`;
 			}
 
-			case 'Enchanting': {
-				const data = currentTask as EnchantingActivityTaskOptions;
-				const enchantable = Enchantables.find(i => i.id === data.itemID);
-				return `${this.minionName} is currently enchanting ${data.quantity}x ${
-					enchantable!.name
-				}. ${formattedDuration}`;
-			}
-
 			case 'Casting': {
 				const data = currentTask as CastingActivityTaskOptions;
-				const spell = Castables.find(i => i.id === data.spellID);
+				const spell = Castables.find(i => i.name === data.spellID);
 				return `${this.minionName} is currently casting ${data.quantity}x ${spell!.name}. ${formattedDuration}`;
 			}
 
