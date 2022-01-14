@@ -23,7 +23,7 @@ export const TormentedDemon: CustomMonster = {
 				.add('Ruined dragon armour lump')
 				.add('Ruined dragon armour shard')
 		)
-		.tertiary(29, 'Clue scroll (grandmaster)')
+		.tertiary(60, 'Clue scroll (grandmaster)')
 		.tertiary(32, RareDropTable)
 		.add(GrimyHerbTable)
 		.add(runeAlchablesTable)

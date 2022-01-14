@@ -37,7 +37,7 @@ export const KingGoldemarLootTable = new LootTable()
 	.add('Athelas seed')
 	.add('Dwarven rock cake')
 	.add('Dwarven stout')
-	.tertiary(12, 'Clue scroll (grandmaster)')
+	.tertiary(4, 'Clue scroll (grandmaster)')
 	.tertiary(20, MysteryBoxes)
 	.tertiary(60, 'Blacksmith crate');
 
