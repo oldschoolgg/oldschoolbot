@@ -59,6 +59,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 			await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 			await prisma.tameActivity.deleteMany({ where: { user_id: msg.author.id } });
 			await prisma.tame.deleteMany({ where: { user_id: msg.author.id } });
+			await prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 		} catch (err) {
 			console.log(err);
 		}

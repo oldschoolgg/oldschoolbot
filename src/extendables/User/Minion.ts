@@ -18,10 +18,20 @@ import { sotwConfig, sotwIsActive } from '../../commands/bso/sotw';
 import { collectables } from '../../commands/Minion/collect';
 import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { bossEvents } from '../../lib/bossEvents';
-import { Emoji, Events, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, PerkTier, skillEmoji } from '../../lib/constants';
+import {
+	Emoji,
+	Events,
+	GLOBAL_BSO_XP_MULTIPLIER,
+	MAX_QP,
+	MAX_TOTAL_LEVEL,
+	MAX_XP,
+	PerkTier,
+	skillEmoji
+} from '../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
+import { fishingLocations } from '../../lib/fishingContest';
 import { hasGracefulEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -70,6 +80,7 @@ import {
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
+	FishingContestOptions,
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
@@ -669,6 +680,13 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
+			case 'FishingContest': {
+				const data = currentTask as FishingContestOptions;
+
+				return `${this.minionName} is currently fishing for the fishing contest at ${
+					fishingLocations.find(i => i.id === data.location)!.name
+				}. ${formattedDuration}`;
+			}
 		}
 	}
 
@@ -826,7 +844,7 @@ export default class extends Extendable {
 		const currentTotalLevel = this.totalLevel();
 
 		if (multiplier) {
-			params.amount *= 5;
+			params.amount *= GLOBAL_BSO_XP_MULTIPLIER;
 		}
 
 		const rawGear = this.rawGear();

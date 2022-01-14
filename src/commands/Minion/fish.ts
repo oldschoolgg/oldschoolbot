@@ -122,7 +122,21 @@ export default class extends BotCommand {
 			);
 		}
 
-		const maxTripLength = msg.author.maxTripLength('Fishing');
+		let maxTripLength = msg.author.maxTripLength('Fishing');
+		const tackleBoxes = [
+			"Champion's tackle box",
+			'Professional tackle box',
+			'Standard tackle box',
+			'Basic tackle box'
+		];
+		for (let i = 0; i < tackleBoxes.length; i++) {
+			if (msg.author.hasItemEquippedOrInBank(tackleBoxes[i])) {
+				let num = Time.Minute * (tackleBoxes.length - i);
+				maxTripLength += num;
+				boosts.push(`${formatDuration(num)} for ${tackleBoxes[i]}`);
+				break;
+			}
+		}
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / scaledTimePerFish);

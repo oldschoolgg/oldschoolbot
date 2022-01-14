@@ -58,6 +58,8 @@ Client.defaultClientSchema
 	.add('tob_cost', 'any', { default: {} })
 	.add('tob_loot', 'any', { default: {} })
 	.add('degraded_items_cost', 'any', { default: {} })
+	.add('fc_cost', 'any', { default: {} })
+	.add('fc_loot', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })

@@ -34,5 +34,25 @@ export const bsoBuyables: Buyable[] = [
 		},
 		qpRequired: 85,
 		gpCost: 500_000
+	},
+	{
+		name: "Beginner's tackle box",
+		outputItems: {
+			[itemID("Beginner's tackle box")]: 1
+		},
+		gpCost: 500_000,
+		skillsNeeded: {
+			fishing: 50
+		}
+	},
+	{
+		name: 'Contest rod',
+		outputItems: {
+			[itemID('Contest rod')]: 1
+		},
+		gpCost: 500_000,
+		skillsNeeded: {
+			fishing: 50
+		}
 	}
 ];

@@ -247,7 +247,8 @@ export const enum Tasks {
 	BossEvent = 'bossEventActivity',
 	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity',
-	ToB = 'tobActivity'
+	ToB = 'tobActivity',
+	FishingContest = 'fishingContestActivity'
 }
 
 export enum ActivityGroup {
@@ -614,3 +615,5 @@ export function getCommandArgs(command: Command, args: any[]) {
 	if (command.name === 'rp' && args[0] === 'c') return undefined;
 	return args;
 }
+
+export const GLOBAL_BSO_XP_MULTIPLIER = 5;

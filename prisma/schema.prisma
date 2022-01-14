@@ -144,6 +144,8 @@ model ClientStorage {
   ods_loot                Json   @default("{}") @db.Json
   tame_merging_cost       Json   @default("{}") @db.Json
   trip_doubling_loot      Json   @default("{}") @db.Json
+  fc_cost                 Json   @default("{}") @db.Json
+  fc_loot                 Json   @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -492,6 +494,7 @@ model Minigame {
   volcanic_mine           Int    @default(0)
   tob                     Int    @default(0)
   tob_hard                Int    @default(0)
+  fishing_contest         Int    @default(0)
 
   // BSO
   ourania_delivery_service Int @default(0)
@@ -565,6 +568,16 @@ model CommandUsage {
   guild_id   String? @db.VarChar(19)
 
   @@map("command_usage")
+}
+
+model FishingContestCatch {
+  id        Int      @id @default(autoincrement())
+  user_id   BigInt
+  name      String   @db.VarChar(64)
+  date      DateTime @default(now()) @db.Timestamp(6)
+  length_cm Int      @db.SmallInt
+
+  @@map("fishing_contest_catch")
 }
 
 enum loot_track_type {
@@ -671,6 +684,7 @@ enum activity_type_enum {
   KourendFavour
   Inferno
   TheatreOfBlood
+  FishingContest
 }
 
 enum xp_gains_skill_enum {

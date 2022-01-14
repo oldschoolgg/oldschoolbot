@@ -285,10 +285,10 @@ const source: [string, (string | number)[]][] = [
 	['Pernix boots', ['Gorajan archer boots']],
 	['Abyssal cape', ['Vasa cloak', 'TzKal cape']],
 	['Ivandis flail', ['Blisterwood flail']],
-	['Angler hat', ['Spirit angler headband']],
-	['Angler top', ['Spirit angler top']],
-	['Angler waders', ['Spirit angler waders']],
-	['Angler boots', ['Spirit angler boots']],
+	['Angler hat', ['Spirit angler headband', 'Fishing hat']],
+	['Angler top', ['Spirit angler top', 'Fishing jacket']],
+	['Angler waders', ['Spirit angler waders', 'Fishing waders']],
+	['Angler boots', ['Spirit angler boots', 'Fishing boots']],
 	['Flippers', ['Dark flippers']],
 	[
 		'Merfolk trident',
@@ -323,7 +323,12 @@ const source: [string, (string | number)[]][] = [
 	['Scythe of vitur', [...scytheChargedSimilar, ...scytheUnchargedSimilar]],
 	['Scythe of vitur (uncharged)', [...scytheUnchargedSimilar]],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
-	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']]
+	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
+	['Contest rod', ['Crystal fishing rod']],
+	[
+		"Beginner's tackle box",
+		['Basic tackle box', 'Standard tackle box', 'Professional tackle box', "Champion's tackle box"]
+	]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

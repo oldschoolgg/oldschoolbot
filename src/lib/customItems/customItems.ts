@@ -1,6 +1,7 @@
 import './customItemsFancy';
 import './farming';
 import './pets';
+import './fishing';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
