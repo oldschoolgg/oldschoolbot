@@ -75,7 +75,7 @@ export default class extends Task {
 		// and they don't have one, give them the Golden fishing trophy
 		if (
 			!user.owns('Golden fishing trophy') &&
-			(caughtFish.some(fi => fi.lengthCentimetres >= calcPercentOfNum(80, fi.lengthCentimetres)) ||
+			(caughtFish.some(fi => fi.lengthCentimetres >= calcPercentOfNum(80, fi.maxLength)) ||
 				newScore === 100 ||
 				roll(50))
 		) {
