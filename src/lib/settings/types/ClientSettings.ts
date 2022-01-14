@@ -112,6 +112,8 @@ export namespace ClientSettings {
 
 		export const DegradedItemsCost = T<O.Readonly<ItemBank>>('degraded_items_cost');
 
+		export const ZippyLoot = T<O.Readonly<ItemBank>>('zippy_loot');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');
