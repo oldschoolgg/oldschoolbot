@@ -1122,7 +1122,8 @@ export const allCollectionLogs: ICollection = {
 	Discontinued: {
 		activities: {
 			'Thanksgiving 2021': {
-				items: resolveItems(['Raw turkey', 'Turkey', 'Turkey drumstick', 'Burnt turkey', 'Cornucopia'])
+				items: resolveItems(['Raw turkey', 'Turkey', 'Turkey drumstick', 'Burnt turkey', 'Cornucopia']),
+				counts: false
 			},
 			'Custom Pets (Discontinued)': {
 				alias: ['dcpets', 'disc custom pet', 'dcpet', 'dcp', 'discontinued custom pet'],
