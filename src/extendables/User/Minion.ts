@@ -687,6 +687,9 @@ export default class extends Extendable {
 					fishingLocations.find(i => i.id === data.location)!.name
 				}. ${formattedDuration}`;
 			}
+			case 'TearsOfGuthix': {
+				return `${this.minionName} is currently doing Tears Of Guthix. ${formattedDuration}`;
+			}
 		}
 	}
 

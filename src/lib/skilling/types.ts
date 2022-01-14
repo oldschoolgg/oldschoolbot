@@ -144,6 +144,7 @@ export interface SmithedItem {
 	timeToUse: number;
 	outputMultiple: number;
 	requiresBlacksmith?: boolean;
+	qpRequired?: number;
 }
 
 export interface Craftable {

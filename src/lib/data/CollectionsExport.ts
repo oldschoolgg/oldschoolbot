@@ -1897,7 +1897,12 @@ export const capesCL = resolveItems([
 	"Xeric's warrior",
 	"Xeric's sentinel",
 	"Xeric's general",
-	"Xeric's champion"
+	"Xeric's champion",
+	'Sinhaza shroud tier 1',
+	'Sinhaza shroud tier 2',
+	'Sinhaza shroud tier 3',
+	'Sinhaza shroud tier 4',
+	'Sinhaza shroud tier 5'
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',

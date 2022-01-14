@@ -394,6 +394,7 @@ export interface FishingContestOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 	location: number;
 }
+export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	favour: KourendFavour;
@@ -430,4 +431,5 @@ export type ActivityTaskData =
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
 	| VolcanicMineActivityTaskOptions
+	| TearsOfGuthixActivityTaskOptions
 	| KourendFavourActivityTaskOptions;

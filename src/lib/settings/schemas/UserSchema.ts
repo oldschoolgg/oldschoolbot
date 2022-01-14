@@ -24,6 +24,7 @@ Client.defaultUserSchema
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
 	.add('lastGivenBoxx', 'integer', { default: 1, maximum: Number.MAX_SAFE_INTEGER })
 	.add('lastSpawnLamp', 'integer', { default: 1, maximum: Number.MAX_SAFE_INTEGER })
+	.add('lastTearsOfGuthixTimestamp', 'integer', { default: 1 })
 	.add('sacrificedValue', 'integer', { default: 0, minimum: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
@@ -188,4 +189,7 @@ Client.defaultUserSchema
 	.add('gp_slots', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('monkeys_fought', 'string', { array: true, default: [] })
 	.add('tob_cost', 'any', { default: {} })
-	.add('tob_loot', 'any', { default: {} });
+	.add('tob_loot', 'any', { default: {} })
+
+	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });

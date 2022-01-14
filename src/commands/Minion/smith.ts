@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -83,6 +84,14 @@ export default class extends BotCommand {
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {
 			return msg.channel.send(
 				`${msg.author.minionName} needs ${smithedItem.level} Smithing to smith ${smithedItem.name}s.`
+			);
+		}
+
+		const userQP = msg.author.settings.get(UserSettings.QP);
+
+		if (smithedItem.qpRequired && userQP < smithedItem.qpRequired) {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}`
 			);
 		}
 

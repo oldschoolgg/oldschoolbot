@@ -6,7 +6,6 @@ const arrayColumns = [
 	['clientStorage', 'locked_skills'],
 	['guilds', 'disabledCommands'],
 	['guilds', 'staffOnlyChannels'],
-	['guilds', 'tags'],
 	['users', 'badges'],
 	['users', 'bitfield'],
 	['users', 'favoriteItems'],
