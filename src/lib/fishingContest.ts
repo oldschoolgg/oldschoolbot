@@ -325,6 +325,7 @@ export async function catchFishAtLocation({ user, location }: { user: KlasaUser;
 		weightGrams,
 		lengthMetres: lengthCentimetres / 100,
 		weightKG: weightGrams / 1000,
-		boosts
+		boosts,
+		maxLength
 	};
 }

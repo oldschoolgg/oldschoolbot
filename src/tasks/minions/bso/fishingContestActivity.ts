@@ -1,4 +1,4 @@
-import { roll } from 'e';
+import { calcPercentOfNum, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -26,7 +26,7 @@ export default class extends Task {
 		const { channelID, quantity, userID, location, duration } = data;
 		const user = await this.client.fetchUser(userID);
 
-		await incrementMinigameScore(userID, 'fishing_contest', 1);
+		const { newScore } = await incrementMinigameScore(userID, 'fishing_contest', 1);
 		const fishLocation = fishingLocations.find(i => i.id === location)!;
 
 		let caughtFish = [];
@@ -67,6 +67,19 @@ export default class extends Task {
 					break;
 				}
 			}
+		}
+
+		// If they have a fish thats in the top 20% biggest they can catch,
+		// or if this is their 100th Fishing Trip,
+		// or if they have a 1 in 50 roll,
+		// and they don't have one, give them the Golden fishing trophy
+		if (
+			!user.owns('Golden fishing trophy') &&
+			(caughtFish.some(fi => fi.lengthCentimetres >= calcPercentOfNum(80, fi.lengthCentimetres)) ||
+				newScore === 100 ||
+				roll(50))
+		) {
+			loot.add('Golden fishing trophy');
 		}
 
 		loot.add(roll(2) ? ClueTable.roll() : MysteryBoxes.roll());
