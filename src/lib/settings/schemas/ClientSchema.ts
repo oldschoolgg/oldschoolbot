@@ -89,4 +89,5 @@ Client.defaultClientSchema
 
 	.add('double_loot_finish_time', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('locked_skills', 'any', { array: true, default: [] })
-	.add('custom_prices', 'any', { default: {} });
+	.add('custom_prices', 'any', { default: {} })
+	.add('zippy_loot', 'any', { default: {} });

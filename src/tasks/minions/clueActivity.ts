@@ -5,8 +5,9 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Events } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, itemID, rand, roll } from '../../lib/util';
+import { addItemToBank, itemID, rand, roll, updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 const possibleFound = new LootTable()
@@ -55,9 +56,12 @@ export default class extends Task {
 				bonusLoot = addItemToBank(bonusLoot, item);
 			}
 
+			await updateBankSetting(this.client, ClientSettings.EconomyStats.ZippyLoot, bonusLoot);
+
 			loot.add(bonusLoot);
 
 			if (roll(15)) {
+				await updateBankSetting(this.client, ClientSettings.EconomyStats.ZippyLoot, loot);
 				loot.multiply(2);
 				str += '\nZippy has **doubled** your loot.';
 			}
