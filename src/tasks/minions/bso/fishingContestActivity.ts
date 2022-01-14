@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../lib/data/openables';
 import { catchFishAtLocation, fishingLocations } from '../../../lib/fishingContest';
-import { prisma } from '../../../lib/settings/prisma';
+import { prisma, trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { ClueTable } from '../../../lib/simulation/sharedTables';
@@ -98,6 +98,15 @@ export default class extends Task {
 		});
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.FishingContestLoot, loot);
+
+		await trackLoot({
+			loot,
+			id: 'fishing_contest',
+			type: 'Minigame',
+			changeType: 'loot',
+			duration,
+			kc: 1
+		});
 
 		handleTripFinish(
 			this.client,

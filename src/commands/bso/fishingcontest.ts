@@ -14,7 +14,7 @@ import {
 } from '../../lib/fishingContest';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { getMinigameScore } from '../../lib/settings/minigames';
-import { prisma } from '../../lib/settings/prisma';
+import { prisma, trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -206,6 +206,13 @@ You can participate using \`${msg.cmdPrefix}fishingcontest fish [location]\`
 			type: 'FishingContest',
 			minigameID: 'fishing_contest',
 			location: fishingLocation.id
+		});
+
+		await trackLoot({
+			cost,
+			id: 'fishing_contest',
+			type: 'Minigame',
+			changeType: 'cost'
 		});
 
 		return msg.channel.send({
