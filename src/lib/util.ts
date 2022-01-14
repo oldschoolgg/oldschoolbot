@@ -444,7 +444,8 @@ export function updateBankSetting(client: KlasaClient | KlasaUser, setting: stri
 	return client.settings.update(setting, newBank.bank);
 }
 
-export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {
+export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: string, amount: number) {
+	console.log(amount);
 	const current = client.settings.get(setting) as number;
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
