@@ -94,6 +94,11 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			const userDeaths = deaths[users.indexOf(user.id)];
 
 			const userLoot = new Bank(_userLoot);
+
+			if (roll(100)) {
+				userLoot.add('Clue scroll (grandmaster)');
+			}
+
 			const bank = user.allItemsOwned();
 
 			const cl = user.cl();
