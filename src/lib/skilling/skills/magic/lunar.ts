@@ -1,17 +1,14 @@
-import { Castable } from './index';
 import { Bank } from 'oldschooljs';
+
 import { MagicTypes } from '../../types';
+import { Castable } from './index';
 
 const Lunar: Castable[] = [
 	{
 		name: 'Bake redberry pie',
 		levels: { Magic: 65, Cooking: 10 },
 		xp: { Magic: 60, Cooking: 78 },
-		input: new Bank()
-			.add('Uncooked berry pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Uncooked berry pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Redberry pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -21,11 +18,7 @@ const Lunar: Castable[] = [
 		name: 'Bake meat pie',
 		levels: { Magic: 65, Cooking: 20 },
 		xp: { Magic: 60, Cooking: 110 },
-		input: new Bank()
-			.add('Uncooked meat pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Uncooked meat pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Meat pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -35,11 +28,7 @@ const Lunar: Castable[] = [
 		name: 'Bake mud pie',
 		levels: { Magic: 65, Cooking: 29 },
 		xp: { Magic: 60, Cooking: 128 },
-		input: new Bank()
-			.add('Raw mud pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Raw mud pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Mud pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -49,11 +38,7 @@ const Lunar: Castable[] = [
 		name: 'Bake apple pie',
 		levels: { Magic: 65, Cooking: 30 },
 		xp: { Magic: 60, Cooking: 130 },
-		input: new Bank()
-			.add('Uncooked apple pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Uncooked apple pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Apple pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -63,11 +48,7 @@ const Lunar: Castable[] = [
 		name: 'Bake garden pie',
 		levels: { Magic: 65, Cooking: 34 },
 		xp: { Magic: 60, Cooking: 138 },
-		input: new Bank()
-			.add('Raw garden pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Raw garden pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Garden pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -77,11 +58,7 @@ const Lunar: Castable[] = [
 		name: 'Bake fish pie',
 		levels: { Magic: 65, Cooking: 47 },
 		xp: { Magic: 60, Cooking: 164 },
-		input: new Bank()
-			.add('Raw fish pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Raw fish pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Fish pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -119,11 +96,7 @@ const Lunar: Castable[] = [
 		name: 'Bake admiral pie',
 		levels: { Magic: 65, Cooking: 70 },
 		xp: { Magic: 60, Cooking: 210 },
-		input: new Bank()
-			.add('Raw admiral pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Raw admiral pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Admiral pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -147,11 +120,7 @@ const Lunar: Castable[] = [
 		name: 'Bake wild pie',
 		levels: { Magic: 65, Cooking: 85 },
 		xp: { Magic: 60, Cooking: 240 },
-		input: new Bank()
-			.add('Raw wild pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Raw wild pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Wild pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -161,11 +130,7 @@ const Lunar: Castable[] = [
 		name: 'Bake summer pie',
 		levels: { Magic: 65, Cooking: 95 },
 		xp: { Magic: 60, Cooking: 260 },
-		input: new Bank()
-			.add('Raw summer pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Raw summer pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Summer pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -175,11 +140,7 @@ const Lunar: Castable[] = [
 		name: 'Bake redberry pie',
 		levels: { Magic: 65, Cooking: 10 },
 		xp: { Magic: 60, Cooking: 78 },
-		input: new Bank()
-			.add('Uncooked berry pie', 1)
-			.add('Fire rune', 5)
-			.add('Water rune', 4)
-			.add('Astral rune', 1),
+		input: new Bank().add('Uncooked berry pie', 1).add('Fire rune', 5).add('Water rune', 4).add('Astral rune', 1),
 		output: new Bank().add('Redberry pie'),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -208,7 +169,7 @@ const Lunar: Castable[] = [
 	// 	qpRequired: 50
 	// },
 
-  // No implemented use
+	// No implemented use
 	// {
 	// 	// Gives monster info similar to +monster monstername
 	// 	name: 'Monster examine',
@@ -232,11 +193,7 @@ const Lunar: Castable[] = [
 		name: 'Humidify bowl',
 		levels: { Magic: 68 },
 		xp: { Magic: 65 },
-		input: new Bank()
-			.add('Bowl', 28)
-			.add('Fire rune', 1)
-			.add('Water rune', 3)
-			.add('Astral rune', 1),
+		input: new Bank().add('Bowl', 28).add('Fire rune', 1).add('Water rune', 3).add('Astral rune', 1),
 		output: new Bank().add('Bowl of water', 28),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -246,11 +203,7 @@ const Lunar: Castable[] = [
 		name: 'Humidify bucket',
 		levels: { Magic: 68 },
 		xp: { Magic: 65 },
-		input: new Bank()
-			.add('Bucket', 28)
-			.add('Fire rune', 1)
-			.add('Water rune', 3)
-			.add('Astral rune', 1),
+		input: new Bank().add('Bucket', 28).add('Fire rune', 1).add('Water rune', 3).add('Astral rune', 1),
 		output: new Bank().add('Bucket of water', 28),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -260,11 +213,7 @@ const Lunar: Castable[] = [
 		name: 'Humidify clay',
 		levels: { Magic: 68 },
 		xp: { Magic: 65 },
-		input: new Bank()
-			.add('Clay', 28)
-			.add('Fire rune', 1)
-			.add('Water rune', 3)
-			.add('Astral rune', 1),
+		input: new Bank().add('Clay', 28).add('Fire rune', 1).add('Water rune', 3).add('Astral rune', 1),
 		output: new Bank().add('Soft clay', 28),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -274,11 +223,7 @@ const Lunar: Castable[] = [
 		name: 'Humidify jug',
 		levels: { Magic: 68 },
 		xp: { Magic: 65 },
-		input: new Bank()
-			.add('Jug', 28)
-			.add('Fire rune', 1)
-			.add('Water rune', 3)
-			.add('Astral rune', 1),
+		input: new Bank().add('Jug', 28).add('Fire rune', 1).add('Water rune', 3).add('Astral rune', 1),
 		output: new Bank().add('Jug of water', 28),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -288,11 +233,7 @@ const Lunar: Castable[] = [
 		name: 'Humidify vial',
 		levels: { Magic: 68 },
 		xp: { Magic: 65 },
-		input: new Bank()
-			.add('Vial', 28)
-			.add('Fire rune', 1)
-			.add('Water rune', 3)
-			.add('Astral rune', 1),
+		input: new Bank().add('Vial', 28).add('Fire rune', 1).add('Water rune', 3).add('Astral rune', 1),
 		output: new Bank().add('Vial of water', 28),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -302,11 +243,7 @@ const Lunar: Castable[] = [
 		name: 'Humidify waterskin',
 		levels: { Magic: 68 },
 		xp: { Magic: 65 },
-		input: new Bank()
-			.add('Waterskin(0)', 28)
-			.add('Fire rune', 1)
-			.add('Water rune', 3)
-			.add('Astral rune', 1),
+		input: new Bank().add('Waterskin(0)', 28).add('Fire rune', 1).add('Water rune', 3).add('Astral rune', 1),
 		output: new Bank().add('Waterskin(4)', 28),
 		category: MagicTypes.Skilling,
 		ticks: 3,
@@ -330,7 +267,7 @@ const Lunar: Castable[] = [
 		ticks: 100,
 		qpRequired: 50
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Stat spy',
 	// 	levels: { Magic: 75 },
@@ -435,7 +372,7 @@ const Lunar: Castable[] = [
 		ticks: 3.5,
 		qpRequired: 50
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Dream',
 	// 	levels: { Magic: 79 },
@@ -477,7 +414,7 @@ const Lunar: Castable[] = [
 		output: new Bank().add('Emerald amulet', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3,
-		qpRequired: 50,
+		qpRequired: 50
 	},
 	{
 		name: 'String Ruby',
@@ -523,7 +460,7 @@ const Lunar: Castable[] = [
 		ticks: 3,
 		qpRequired: 50
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Magic Imbue',
 	// 	levels: { Magic: 82 },
@@ -617,7 +554,7 @@ const Lunar: Castable[] = [
 		ticks: 3,
 		qpRequired: 50
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Spellbook swap',
 	// 	levels: { Magic: 96 },
@@ -722,7 +659,7 @@ const Lunar: Castable[] = [
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Tele group moonclan',
 	// 	levels: { Magic: 70 },
@@ -747,7 +684,7 @@ const Lunar: Castable[] = [
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Tele group waterbirth',
 	// 	levels: { Magic: 73 },
@@ -764,7 +701,7 @@ const Lunar: Castable[] = [
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Tele group barbarian',
 	// 	levels: { Magic: 76 },
@@ -781,7 +718,7 @@ const Lunar: Castable[] = [
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Tele group khazard',
 	// 	levels: { Magic: 79 },
@@ -798,7 +735,7 @@ const Lunar: Castable[] = [
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Teleport to Target',
 	// 	levels: { Magic: 85 },
@@ -823,7 +760,7 @@ const Lunar: Castable[] = [
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Tele group catherby',
 	// 	levels: { Magic: 88 },
@@ -839,8 +776,8 @@ const Lunar: Castable[] = [
 		input: new Bank().add('Water rune', 8).add('Law rune', 3).add('Astral rune', 3),
 		category: MagicTypes.Teleport,
 		ticks: 4
-	},
-  // No implemented use
+	}
+	// No implemented use
 	// {
 	// 	name: 'Tele group ice plateau',
 	// 	levels: { Magic: 90 },

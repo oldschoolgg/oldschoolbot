@@ -32,13 +32,13 @@ export enum SkillsEnum {
 }
 
 export enum MagicTypes {
-	Combat = "Combat", 
-	Curse = "Curse",
-	Enchant = "Enchant",
-	Alchemy = "Alchemy", 
-	Skilling = "Skilling", 
-	Teleport = "Teleport", 
-	Reanimation = "Reanimation"
+	Combat = 'Combat',
+	Curse = 'Curse',
+	Enchant = 'Enchant',
+	Alchemy = 'Alchemy',
+	Skilling = 'Skilling',
+	Teleport = 'Teleport',
+	Reanimation = 'Reanimation'
 }
 
 export interface Ore {

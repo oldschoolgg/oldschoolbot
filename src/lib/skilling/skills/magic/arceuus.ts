@@ -1,6 +1,7 @@
-import { Castable } from './index';
 import { Bank } from 'oldschooljs';
+
 import { MagicTypes } from '../../types';
+import { Castable } from './index';
 
 const Arceuus: Castable[] = [
 	{
@@ -107,7 +108,7 @@ const Arceuus: Castable[] = [
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Ghostly grasp',
 	// 	levels: { Magic: 35 },
@@ -160,7 +161,11 @@ const Arceuus: Castable[] = [
 		name: 'Reanimate chaos druid',
 		levels: { Magic: 41 },
 		xp: { Magic: 80, Prayer: 584 },
-		input: new Bank().add('Ensouled chaos druid head', 1).add('Body rune', 4).add('Nature rune', 3).add('Soul rune', 1),
+		input: new Bank()
+			.add('Ensouled chaos druid head', 1)
+			.add('Body rune', 4)
+			.add('Nature rune', 3)
+			.add('Soul rune', 1),
 		category: MagicTypes.Reanimation,
 		ticks: 10
 	},
@@ -212,7 +217,7 @@ const Arceuus: Castable[] = [
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Shadow veil',
 	// 	levels: { Magic: 47 },
@@ -229,7 +234,7 @@ const Arceuus: Castable[] = [
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Dark lure',
 	// 	levels: { Magic: 50 },
@@ -294,7 +299,7 @@ const Arceuus: Castable[] = [
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Lesser corruption',
 	// 	levels: { Magic: 64 },
@@ -311,7 +316,7 @@ const Arceuus: Castable[] = [
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Vile vigour',
 	// 	levels: { Magic: 66 },
@@ -458,7 +463,11 @@ const Arceuus: Castable[] = [
 		name: 'Reanimate kalphite',
 		levels: { Magic: 72 },
 		xp: { Magic: 138, Prayer: 884 },
-		input: new Bank().add('Ensouled kalphite head', 1).add('Nature rune', 3).add('Blood rune', 1).add('Soul rune', 2),
+		input: new Bank()
+			.add('Ensouled kalphite head', 1)
+			.add('Nature rune', 3)
+			.add('Blood rune', 1)
+			.add('Soul rune', 2),
 		category: MagicTypes.Reanimation,
 		ticks: 10
 	},
@@ -466,7 +475,11 @@ const Arceuus: Castable[] = [
 		name: 'Reanimate dagannoth',
 		levels: { Magic: 72 },
 		xp: { Magic: 138, Prayer: 936 },
-		input: new Bank().add('Ensouled dagannoth head', 1).add('Nature rune', 3).add('Blood rune', 1).add('Soul rune', 2),
+		input: new Bank()
+			.add('Ensouled dagannoth head', 1)
+			.add('Nature rune', 3)
+			.add('Blood rune', 1)
+			.add('Soul rune', 2),
 		category: MagicTypes.Reanimation,
 		ticks: 10
 	},
@@ -474,7 +487,11 @@ const Arceuus: Castable[] = [
 		name: 'Reanimate bloodveld',
 		levels: { Magic: 72 },
 		xp: { Magic: 138, Prayer: 1040 },
-		input: new Bank().add('Ensouled bloodveld head', 1).add('Nature rune', 3).add('Blood rune', 1).add('Soul rune', 2),
+		input: new Bank()
+			.add('Ensouled bloodveld head', 1)
+			.add('Nature rune', 3)
+			.add('Blood rune', 1)
+			.add('Soul rune', 2),
 		category: MagicTypes.Reanimation,
 		ticks: 10
 	},
@@ -502,7 +519,7 @@ const Arceuus: Castable[] = [
 		category: MagicTypes.Curse,
 		ticks: 50
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Resurrect greater ghost',
 	// 	levels: { Magic: 76 },
@@ -608,7 +625,7 @@ const Arceuus: Castable[] = [
 		category: MagicTypes.Skilling,
 		ticks: 8
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Greater corruption',
 	// 	levels: { Magic: 85 },
@@ -621,7 +638,11 @@ const Arceuus: Castable[] = [
 		name: 'Reanimate aviansie',
 		levels: { Magic: 90 },
 		xp: { Magic: 170, Prayer: 1234 },
-		input: new Bank().add('Ensouled aviansie head', 1).add('Nature rune', 4).add('Blood rune', 2).add('Soul rune', 4),
+		input: new Bank()
+			.add('Ensouled aviansie head', 1)
+			.add('Nature rune', 4)
+			.add('Blood rune', 2)
+			.add('Soul rune', 4),
 		category: MagicTypes.Reanimation,
 		ticks: 10
 	},
@@ -629,7 +650,11 @@ const Arceuus: Castable[] = [
 		name: 'Reanimate abyssal',
 		levels: { Magic: 90 },
 		xp: { Magic: 170, Prayer: 1300 },
-		input: new Bank().add('Ensouled abyssal head', 1).add('Nature rune', 4).add('Blood rune', 2).add('Soul rune', 4),
+		input: new Bank()
+			.add('Ensouled abyssal head', 1)
+			.add('Nature rune', 4)
+			.add('Blood rune', 2)
+			.add('Soul rune', 4),
 		category: MagicTypes.Reanimation,
 		ticks: 10
 	},
@@ -800,9 +825,7 @@ const Arceuus: Castable[] = [
 		input: new Bank().add('Superior dragon bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
-	},
-
-
+	}
 ];
 
 export default Arceuus;

@@ -1,14 +1,15 @@
-import { Castable } from './index';
-import { MagicTypes } from '../../types';
 import { Bank } from 'oldschooljs';
 
+import { MagicTypes } from '../../types';
+import { Castable } from './index';
+
 const Standard: Castable[] = [
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Lumbridge home teleport',
 	// 	levels: { Magic: 1 },
 	// 	xp: { Magic: 0 },
-  //   input: new Bank(),
+	//   input: new Bank(),
 	// 	category: MagicTypes.Teleport,
 	// 	ticks: 22
 	// },
@@ -34,8 +35,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 9 },
 		input: new Bank().add('Opal bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Opal bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Enchant 10x opal dragon bolts',
@@ -43,8 +44,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 9 },
 		input: new Bank().add('Opal dragon bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Opal dragon bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Water strike',
@@ -61,8 +62,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire necklace').add('Cosmic rune', 1).add('Water rune', 1),
 		output: new Bank().add('Games necklace(8)'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant sapphire amulet',
@@ -70,8 +71,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire amulet').add('Cosmic rune', 1).add('Water rune', 1),
 		output: new Bank().add('Amulet of magic'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant sapphire ring',
@@ -79,8 +80,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire ring').add('Cosmic rune', 1).add('Water rune', 1),
 		output: new Bank().add('Ring of recoil'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant sapphire bracelet',
@@ -88,8 +89,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire bracelet').add('Cosmic rune', 1).add('Water rune', 1),
 		output: new Bank().add('Bracelet of clay'),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Enchant 10x sapphire dragon bolts',
@@ -97,8 +98,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire dragon bolts', 10).add('Water rune').add('Mind rune').add('Cosmic rune', 1),
 		output: new Bank().add('Sapphire dragon bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	// Opal
 	{
@@ -107,8 +108,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Opal necklace').add('Cosmic rune', 1).add('Water rune', 1),
 		output: new Bank().add('Dodgy necklace'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant opal amulet',
@@ -116,8 +117,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Opal amulet').add('Cosmic rune', 1).add('Water rune', 1),
 		output: new Bank().add('Amulet of bounty'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant opal ring',
@@ -125,8 +126,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Opal ring').add('Cosmic rune', 1).add('Water rune', 1),
 		output: new Bank().add('Ring of pursuit'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant opal bracelet',
@@ -134,8 +135,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Opal bracelet').add('Cosmic rune', 1).add('Water rune', 1),
 		output: new Bank().add('Expeditious bracelet'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Earth strike',
@@ -167,8 +168,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 19 },
 		input: new Bank().add('Jade bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Jade bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Enchant 10x jade dragon bolts',
@@ -176,15 +177,15 @@ const Standard: Castable[] = [
 		xp: { Magic: 19 },
 		input: new Bank().add('Jade dragon bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Jade dragon bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Bones to bananas',
 		levels: { Magic: 15 },
 		xp: { Magic: 25 },
 		input: new Bank().add('Bones', 28).add('Earth rune', 2).add('Water rune', 2).add('Nature rune', 1),
-    output: new Bank().add('Banana', 28),
+		output: new Bank().add('Banana', 28),
 		category: MagicTypes.Skilling,
 		ticks: 1
 	},
@@ -200,7 +201,7 @@ const Standard: Castable[] = [
 		name: 'Curse',
 		levels: { Magic: 19 },
 		xp: { Magic: 29 },
-    input: new Bank().add('Earth rune', 3).add('Water rune', 2).add('Body rune', 1),
+		input: new Bank().add('Earth rune', 3).add('Water rune', 2).add('Body rune', 1),
 		category: MagicTypes.Curse,
 		ticks: 5
 	},
@@ -208,7 +209,7 @@ const Standard: Castable[] = [
 		name: 'Bind',
 		levels: { Magic: 20 },
 		xp: { Magic: 30 },
-    input: new Bank().add('Earth rune', 3).add('Water rune', 3).add('Nature rune', 1),
+		input: new Bank().add('Earth rune', 3).add('Water rune', 3).add('Nature rune', 1),
 		category: MagicTypes.Curse,
 		ticks: 5
 	},
@@ -216,7 +217,7 @@ const Standard: Castable[] = [
 		name: 'Water bolt',
 		levels: { Magic: 23 },
 		xp: { Magic: 16.5 },
-    input: new Bank().add('Air rune', 2).add('Water rune', 2).add('Chaos rune', 1),
+		input: new Bank().add('Air rune', 2).add('Water rune', 2).add('Chaos rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -226,8 +227,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 29 },
 		input: new Bank().add('Pearl bolts', 10).add('Water rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Pearl bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Enchant 10x pearl dragon bolts',
@@ -235,14 +236,14 @@ const Standard: Castable[] = [
 		xp: { Magic: 29 },
 		input: new Bank().add('Pearl dragon bolts', 10).add('Water rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Pearl dragon bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Varrock teleport',
 		levels: { Magic: 25 },
 		xp: { Magic: 35 },
-    input: new Bank().add('Air rune', 3).add('Fire rune', 1).add('Law rune', 1),
+		input: new Bank().add('Air rune', 3).add('Fire rune', 1).add('Law rune', 1),
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
@@ -253,8 +254,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald necklace').add('Cosmic rune', 1).add('Air rune', 3),
 		output: new Bank().add('Binding necklace'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant emerald amulet',
@@ -262,8 +263,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald amulet').add('Cosmic rune', 1).add('Air rune', 3),
 		output: new Bank().add('Amulet of defence'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant emerald ring',
@@ -271,8 +272,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald ring').add('Cosmic rune', 1).add('Air rune', 3),
 		output: new Bank().add('Ring of dueling(8)'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant emerald bracelet',
@@ -280,8 +281,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald bracelet').add('Cosmic rune', 1).add('Air rune', 3),
 		output: new Bank().add('Castle wars bracelet(3)'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	// Jade
 	{
@@ -290,8 +291,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Jade necklace').add('Cosmic rune', 1).add('Air rune', 3),
 		output: new Bank().add('Necklace of passage(5)'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant jade amulet',
@@ -299,8 +300,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Jade amulet').add('Cosmic rune', 1).add('Air rune', 3),
 		output: new Bank().add('Amulet of chemistry'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant jade ring',
@@ -308,8 +309,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Jade ring').add('Cosmic rune', 1).add('Air rune', 3),
 		output: new Bank().add('Ring of returning(5)'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant jade bracelet',
@@ -317,8 +318,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Jade bracelet').add('Cosmic rune', 1).add('Air rune', 3),
 		output: new Bank().add('Flamtaer bracelet'),
-    category: MagicTypes.Enchant,
-    ticks: 3
+		category: MagicTypes.Enchant,
+		ticks: 3
 	},
 	{
 		name: 'Enchant 10x emerald dragon bolts',
@@ -326,8 +327,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald dragon bolts', 10).add('Air rune', 3).add('Nature rune').add('Cosmic rune', 1),
 		output: new Bank().add('Emerald dragon bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Enchant 10x emerald bolts',
@@ -335,14 +336,14 @@ const Standard: Castable[] = [
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald bolts', 10).add('Air rune', 3).add('Cosmic rune', 1).add('Nature rune'),
 		output: new Bank().add('Emerald bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Earth bolt',
 		levels: { Magic: 29 },
 		xp: { Magic: 19.5 },
-    input: new Bank().add('Air rune', 2).add('Earth rune', 3).add('Chaos rune', 1),
+		input: new Bank().add('Air rune', 2).add('Earth rune', 3).add('Chaos rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -352,8 +353,8 @@ const Standard: Castable[] = [
 		xp: { Magic: 33 },
 		input: new Bank().add('Topaz bolts', 10).add('Fire rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Topaz bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Enchant 10x topaz dragon bolts',
@@ -361,23 +362,23 @@ const Standard: Castable[] = [
 		xp: { Magic: 33 },
 		input: new Bank().add('Topaz dragon bolts', 10).add('Fire rune', 2).add('Cosmic rune', 1),
 		output: new Bank().add('Topaz dragon bolts (e)', 10),
-    category: MagicTypes.Enchant,
-    ticks: 1
+		category: MagicTypes.Enchant,
+		ticks: 1
 	},
 	{
 		name: 'Lumbridge teleport',
 		levels: { Magic: 31 },
 		xp: { Magic: 41 },
-    input: new Bank().add('Air rune', 3).add('Earth rune', 1).add('Law rune', 1),
+		input: new Bank().add('Air rune', 3).add('Earth rune', 1).add('Law rune', 1),
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Telekinetic grab',
 	// 	levels: { Magic: 33 },
 	// 	xp: { Magic: 43 },
-  //   input: new Bank().add('Air rune', 1).add('Law rune', 1),
+	//   input: new Bank().add('Air rune', 1).add('Law rune', 1),
 	// 	category: MagicTypes.Skilling,
 	// 	ticks: 5
 	// },
@@ -385,7 +386,7 @@ const Standard: Castable[] = [
 		name: 'Fire bolt',
 		levels: { Magic: 35 },
 		xp: { Magic: 22.5 },
-    input: new Bank().add('Air rune', 3).add('Fire rune', 4).add('Chaos rune', 1),
+		input: new Bank().add('Air rune', 3).add('Fire rune', 4).add('Chaos rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -393,7 +394,7 @@ const Standard: Castable[] = [
 		name: 'Falador teleport',
 		levels: { Magic: 37 },
 		xp: { Magic: 48 },
-    input: new Bank().add('Air rune', 3).add('Water rune', 1).add('Law rune', 1),
+		input: new Bank().add('Air rune', 3).add('Water rune', 1).add('Law rune', 1),
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
@@ -401,7 +402,7 @@ const Standard: Castable[] = [
 		name: 'Crumble undead',
 		levels: { Magic: 39 },
 		xp: { Magic: 24.5 },
-    input: new Bank().add('Air rune', 2).add('Earth rune', 2).add('Chaos rune', 1),
+		input: new Bank().add('Air rune', 2).add('Earth rune', 2).add('Chaos rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -409,7 +410,7 @@ const Standard: Castable[] = [
 		name: 'Teleport to house',
 		levels: { Magic: 40 },
 		xp: { Magic: 30 },
-    input: new Bank().add('Air rune', 1).add('Earth rune', 1).add('Law rune', 1),
+		input: new Bank().add('Air rune', 1).add('Earth rune', 1).add('Law rune', 1),
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
@@ -417,7 +418,7 @@ const Standard: Castable[] = [
 		name: 'Wind blast',
 		levels: { Magic: 41 },
 		xp: { Magic: 25.5 },
-    input: new Bank().add('Air rune', 3).add('Death rune', 1),
+		input: new Bank().add('Air rune', 3).add('Death rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -425,8 +426,8 @@ const Standard: Castable[] = [
 		name: 'Superheat bronze',
 		levels: { Magic: 43, Smithing: 1 },
 		xp: { Magic: 53, Smithing: 6.2 },
-    input: new Bank().add('Copper ore', 1).add('Tin ore', 1).add('Fire rune', 4).add('Nature rune', 1),
-    output: new Bank().add('Bronze bar', 1),
+		input: new Bank().add('Copper ore', 1).add('Tin ore', 1).add('Fire rune', 4).add('Nature rune', 1),
+		output: new Bank().add('Bronze bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
 	},
@@ -434,8 +435,8 @@ const Standard: Castable[] = [
 		name: 'Superheat iron',
 		levels: { Magic: 43, Smithing: 15 },
 		xp: { Magic: 53, Smithing: 12.5 },
-    input: new Bank().add('Iron ore', 1).add('Fire rune', 4).add('Nature rune', 1),
-    output: new Bank().add('Iron bar', 1),
+		input: new Bank().add('Iron ore', 1).add('Fire rune', 4).add('Nature rune', 1),
+		output: new Bank().add('Iron bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
 	},
@@ -443,8 +444,8 @@ const Standard: Castable[] = [
 		name: 'Superheat silver',
 		levels: { Magic: 43, Smithing: 20 },
 		xp: { Magic: 53, Smithing: 13.7 },
-    input: new Bank().add('Silver ore', 1).add('Fire rune', 4).add('Nature rune', 1),
-    output: new Bank().add('Silver bar', 1),
+		input: new Bank().add('Silver ore', 1).add('Fire rune', 4).add('Nature rune', 1),
+		output: new Bank().add('Silver bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
 	},
@@ -452,8 +453,8 @@ const Standard: Castable[] = [
 		name: 'Superheat steel',
 		levels: { Magic: 43, Smithing: 30 },
 		xp: { Magic: 53, Smithing: 17.5 },
-    input: new Bank().add('Iron ore', 1).add('Coal', 2).add('Fire rune', 4).add('Nature rune', 1),
-    output: new Bank().add('Steel bar', 1),
+		input: new Bank().add('Iron ore', 1).add('Coal', 2).add('Fire rune', 4).add('Nature rune', 1),
+		output: new Bank().add('Steel bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
 	},
@@ -461,8 +462,8 @@ const Standard: Castable[] = [
 		name: 'Superheat gold',
 		levels: { Magic: 43, Smithing: 40 },
 		xp: { Magic: 53, Smithing: 22.5 },
-    input: new Bank().add('Gold ore', 1).add('Fire rune', 4).add('Nature rune', 1),
-    output: new Bank().add('Gold bar', 1),
+		input: new Bank().add('Gold ore', 1).add('Fire rune', 4).add('Nature rune', 1),
+		output: new Bank().add('Gold bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
 	},
@@ -470,8 +471,8 @@ const Standard: Castable[] = [
 		name: 'Superheat lovakite',
 		levels: { Magic: 43, Smithing: 45 },
 		xp: { Magic: 53, Smithing: 20 },
-    input: new Bank().add('Lovakite ore', 1).add('Coal', 2).add('Fire rune', 4).add('Nature rune', 1),
-    output: new Bank().add('Lovakite bar', 1),
+		input: new Bank().add('Lovakite ore', 1).add('Coal', 2).add('Fire rune', 4).add('Nature rune', 1),
+		output: new Bank().add('Lovakite bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
 	},
@@ -479,8 +480,8 @@ const Standard: Castable[] = [
 		name: 'Superheat mithril',
 		levels: { Magic: 43, Smithing: 50 },
 		xp: { Magic: 53, Smithing: 30 },
-    input: new Bank().add('Mithril ore', 1).add('Coal', 4).add('Fire rune', 4).add('Nature rune', 1),
-    output: new Bank().add('Mithril bar', 1),
+		input: new Bank().add('Mithril ore', 1).add('Coal', 4).add('Fire rune', 4).add('Nature rune', 1),
+		output: new Bank().add('Mithril bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
 	},
@@ -488,8 +489,8 @@ const Standard: Castable[] = [
 		name: 'Superheat adamantite',
 		levels: { Magic: 43, Smithing: 70 },
 		xp: { Magic: 53, Smithing: 37.5 },
-    input: new Bank().add('Adamantite ore', 1).add('Coal', 6).add('Fire rune', 4).add('Nature rune', 1),
-    output: new Bank().add('Adamantite bar', 1),
+		input: new Bank().add('Adamantite ore', 1).add('Coal', 6).add('Fire rune', 4).add('Nature rune', 1),
+		output: new Bank().add('Adamantite bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
 	},
@@ -497,8 +498,8 @@ const Standard: Castable[] = [
 		name: 'Superheat runite',
 		levels: { Magic: 43, Smithing: 85 },
 		xp: { Magic: 53, Smithing: 50 },
-    input: new Bank().add('Runite ore', 1).add('Coal', 8).add('Fire rune', 4).add('Nature rune', 1),
-    output: new Bank().add('Runite bar', 1),
+		input: new Bank().add('Runite ore', 1).add('Coal', 8).add('Fire rune', 4).add('Nature rune', 1),
+		output: new Bank().add('Runite bar', 1),
 		category: MagicTypes.Skilling,
 		ticks: 3
 	},
@@ -506,7 +507,7 @@ const Standard: Castable[] = [
 		name: 'Camelot teleport',
 		levels: { Magic: 45 },
 		xp: { Magic: 55.5 },
-    input: new Bank().add('Air rune', 5).add('Law rune', 1),
+		input: new Bank().add('Air rune', 5).add('Law rune', 1),
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
@@ -514,7 +515,7 @@ const Standard: Castable[] = [
 		name: 'Water blast',
 		levels: { Magic: 47 },
 		xp: { Magic: 28.5 },
-    input: new Bank().add('Air rune', 3).add('Water rune', 3).add('Death rune', 1),
+		input: new Bank().add('Air rune', 3).add('Water rune', 3).add('Death rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -614,7 +615,7 @@ const Standard: Castable[] = [
 		name: 'Iban blast',
 		levels: { Magic: 50 },
 		xp: { Magic: 30 },
-    input: new Bank().add('Fire rune', 5).add('Death rune', 1),
+		input: new Bank().add('Fire rune', 5).add('Death rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -622,7 +623,7 @@ const Standard: Castable[] = [
 		name: 'Snare',
 		levels: { Magic: 50 },
 		xp: { Magic: 60 },
-    input: new Bank().add('Earth rune', 4).add('Water rune', 4).add('Nature rune', 3),
+		input: new Bank().add('Earth rune', 4).add('Water rune', 4).add('Nature rune', 3),
 		category: MagicTypes.Curse,
 		ticks: 5
 	},
@@ -630,7 +631,7 @@ const Standard: Castable[] = [
 		name: 'Magic Dart',
 		levels: { Magic: 50 },
 		xp: { Magic: 30 },
-    input: new Bank().add('Mind rune', 4).add('Death rune', 1),
+		input: new Bank().add('Mind rune', 4).add('Death rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -638,7 +639,7 @@ const Standard: Castable[] = [
 		name: 'Ardougne teleport',
 		levels: { Magic: 51 },
 		xp: { Magic: 61 },
-    input: new Bank().add('Water rune', 2).add('Law rune', 2),
+		input: new Bank().add('Water rune', 2).add('Law rune', 2),
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
@@ -646,16 +647,16 @@ const Standard: Castable[] = [
 		name: 'Earth blast',
 		levels: { Magic: 53 },
 		xp: { Magic: 31.5 },
-    input: new Bank().add('Air rune', 3).add('Earth rune', 4).add('Death rune', 1),
+		input: new Bank().add('Air rune', 3).add('Earth rune', 4).add('Death rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Charge water orb',
 	// 	levels: { Magic: 56 },
 	// 	xp: { Magic: 66 },
-  //   input: new Bank().add('Unpowered orb', 1).add('Water rune', 30).add('Cosmic rune', 3),
+	//   input: new Bank().add('Unpowered orb', 1).add('Water rune', 30).add('Cosmic rune', 3),
 	// 	category: MagicTypes.Enchant,
 	// 	ticks: 3
 	// },
@@ -722,7 +723,7 @@ const Standard: Castable[] = [
 		name: 'Watchtower teleport',
 		levels: { Magic: 58 },
 		xp: { Magic: 68 },
-    input: new Bank().add('Earth rune', 2).add('Law rune', 2),
+		input: new Bank().add('Earth rune', 2).add('Law rune', 2),
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
@@ -730,16 +731,16 @@ const Standard: Castable[] = [
 		name: 'Fire blast',
 		levels: { Magic: 59 },
 		xp: { Magic: 34.5 },
-    input: new Bank().add('Air rune', 4).add('Fire rune', 5).add('Death rune', 1),
+		input: new Bank().add('Air rune', 4).add('Fire rune', 5).add('Death rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Charge earth orb',
 	// 	levels: { Magic: 60 },
 	// 	xp: { Magic: 70 },
-  //   input: new Bank().add('Unpowered orb', 1).add('Earth rune', 30).add('Cosmic rune', 3),
+	//   input: new Bank().add('Unpowered orb', 1).add('Earth rune', 30).add('Cosmic rune', 3),
 	// 	category: MagicTypes.Enchant,
 	// 	ticks: 3
 	// },
@@ -748,16 +749,16 @@ const Standard: Castable[] = [
 		name: 'Bones to peaches',
 		levels: { Magic: 60 },
 		xp: { Magic: 35.5 },
-    input: new Bank().add('Bones', 28).add('Earth rune', 4).add('Water rune', 4).add('Nature rune', 2),
+		input: new Bank().add('Bones', 28).add('Earth rune', 4).add('Water rune', 4).add('Nature rune', 2),
 		output: new Bank().add('Peach', 28),
-    category: MagicTypes.Skilling,
-		ticks: 1,
+		category: MagicTypes.Skilling,
+		ticks: 1
 	},
 	{
 		name: 'Saradomin strike',
 		levels: { Magic: 60 },
 		xp: { Magic: 61 },
-    input: new Bank().add('Air rune', 4).add('Fire rune', 2).add('Blood rune', 2),
+		input: new Bank().add('Air rune', 4).add('Fire rune', 2).add('Blood rune', 2),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -765,7 +766,7 @@ const Standard: Castable[] = [
 		name: 'Claws of guthix',
 		levels: { Magic: 60 },
 		xp: { Magic: 61 },
-    input: new Bank().add('Air rune', 4).add('Fire rune', 1).add('Blood rune', 2),
+		input: new Bank().add('Air rune', 4).add('Fire rune', 1).add('Blood rune', 2),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -773,7 +774,7 @@ const Standard: Castable[] = [
 		name: 'Flames of zamorak',
 		levels: { Magic: 60 },
 		xp: { Magic: 61 },
-    input: new Bank().add('Air rune', 1).add('Fire rune', 4).add('Blood rune', 2),
+		input: new Bank().add('Air rune', 1).add('Fire rune', 4).add('Blood rune', 2),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -781,7 +782,7 @@ const Standard: Castable[] = [
 		name: 'Trollheim teleport',
 		levels: { Magic: 61 },
 		xp: { Magic: 68 },
-    input: new Bank().add('Fire rune', 2).add('Law rune', 2),
+		input: new Bank().add('Fire rune', 2).add('Law rune', 2),
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
@@ -789,16 +790,16 @@ const Standard: Castable[] = [
 		name: 'Wind wave',
 		levels: { Magic: 62 },
 		xp: { Magic: 36 },
-    input: new Bank().add('Air rune', 5).add('Blood rune', 1),
+		input: new Bank().add('Air rune', 5).add('Blood rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Charge fire orb',
 	// 	levels: { Magic: 63 },
 	// 	xp: { Magic: 73 },
-  //   input: new Bank().add('Unpowered orb', 1).add('Fire rune', 30).add('Cosmic rune', 3),
+	//   input: new Bank().add('Unpowered orb', 1).add('Fire rune', 30).add('Cosmic rune', 3),
 	// 	category: MagicTypes.Enchant,
 	// 	ticks: 3
 	// },
@@ -806,7 +807,7 @@ const Standard: Castable[] = [
 		name: 'Ape atoll teleport',
 		levels: { Magic: 64 },
 		xp: { Magic: 74 },
-    input: new Bank().add('Fire rune', 2).add('Water rune', 2).add('Law rune', 2).add('Banana', 1),
+		input: new Bank().add('Fire rune', 2).add('Water rune', 2).add('Law rune', 2).add('Banana', 1),
 		category: MagicTypes.Teleport,
 		ticks: 4
 	},
@@ -814,16 +815,16 @@ const Standard: Castable[] = [
 		name: 'Water wave',
 		levels: { Magic: 65 },
 		xp: { Magic: 37.5 },
-    input: new Bank().add('Air rune', 5).add('Water rune', 7).add('Blood rune', 1),
+		input: new Bank().add('Air rune', 5).add('Water rune', 7).add('Blood rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Charge air orb',
 	// 	levels: { Magic: 66 },
 	// 	xp: { Magic: 76 },
-  //   input: new Bank().add('Unpowered orb', 1).add('Air rune', 30).add('Cosmic rune', 3),
+	//   input: new Bank().add('Unpowered orb', 1).add('Air rune', 30).add('Cosmic rune', 3),
 	// 	category: MagicTypes.Enchant,
 	// 	ticks: 3
 	// },
@@ -831,7 +832,7 @@ const Standard: Castable[] = [
 		name: 'Vulnerability',
 		levels: { Magic: 66 },
 		xp: { Magic: 76 },
-    input: new Bank().add('Earth rune', 5).add('Water rune', 5).add('Soul rune', 1),
+		input: new Bank().add('Earth rune', 5).add('Water rune', 5).add('Soul rune', 1),
 		category: MagicTypes.Curse,
 		ticks: 5
 	},
@@ -899,15 +900,15 @@ const Standard: Castable[] = [
 		name: 'Kourend Castle teleport',
 		levels: { Magic: 69 },
 		xp: { Magic: 82 },
-    input: new Bank().add('Fire rune', 5).add('Water rune', 4).add('Law rune', 2).add('Soul rune', 2),
-    category: MagicTypes.Teleport,
-    ticks: 4
+		input: new Bank().add('Fire rune', 5).add('Water rune', 4).add('Law rune', 2).add('Soul rune', 2),
+		category: MagicTypes.Teleport,
+		ticks: 4
 	},
 	{
 		name: 'Earth wave',
 		levels: { Magic: 70 },
 		xp: { Magic: 40 },
-    input: new Bank().add('Air rune', 5).add('Earth rune', 7).add('Blood rune', 1),
+		input: new Bank().add('Air rune', 5).add('Earth rune', 7).add('Blood rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -915,16 +916,16 @@ const Standard: Castable[] = [
 		name: 'Enfeeble',
 		levels: { Magic: 73 },
 		xp: { Magic: 83 },
-    input: new Bank().add('Earth rune', 8).add('Water rune', 8).add('Soul rune', 1),
+		input: new Bank().add('Earth rune', 8).add('Water rune', 8).add('Soul rune', 1),
 		category: MagicTypes.Curse,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Teleother lumbridge',
 	// 	levels: { Magic: 74 },
 	// 	xp: { Magic: 84 },
-  //   input: new Bank().add('Earth rune', 1).add('Law rune', 1).add('Soul rune', 1),
+	//   input: new Bank().add('Earth rune', 1).add('Law rune', 1).add('Soul rune', 1),
 	// 	category: MagicTypes.Teleport,
 	// 	ticks: 10
 	// },
@@ -932,7 +933,7 @@ const Standard: Castable[] = [
 		name: 'Fire wave',
 		levels: { Magic: 75 },
 		xp: { Magic: 42.5 },
-    input: new Bank().add('Air rune', 5).add('Fire rune', 7).add('Blood rune', 1),
+		input: new Bank().add('Air rune', 5).add('Fire rune', 7).add('Blood rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -940,7 +941,7 @@ const Standard: Castable[] = [
 		name: 'Entangle',
 		levels: { Magic: 79 },
 		xp: { Magic: 70 },
-    input: new Bank().add('Earth rune', 5).add('Water rune', 5).add('Nature rune', 4),
+		input: new Bank().add('Earth rune', 5).add('Water rune', 5).add('Nature rune', 4),
 		category: MagicTypes.Curse,
 		ticks: 5
 	},
@@ -948,16 +949,16 @@ const Standard: Castable[] = [
 		name: 'Stun',
 		levels: { Magic: 80 },
 		xp: { Magic: 90 },
-    input: new Bank().add('Earth rune', 12).add('Water rune', 12).add('Soul rune', 1),
+		input: new Bank().add('Earth rune', 12).add('Water rune', 12).add('Soul rune', 1),
 		category: MagicTypes.Curse,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Charge',
 	// 	levels: { Magic: 80 },
 	// 	xp: { Magic: 180 },
-  //   input: new Bank().add('Air rune', 3).add('Fire rune', 3).add('Blood rune', 3),
+	//   input: new Bank().add('Air rune', 3).add('Fire rune', 3).add('Blood rune', 3),
 	// 	category: MagicTypes.Combat,
 	// 	ticks: 175
 	// },
@@ -965,16 +966,16 @@ const Standard: Castable[] = [
 		name: 'Wind surge',
 		levels: { Magic: 81 },
 		xp: { Magic: 44.5 },
-    input: new Bank().add('Air rune', 7).add('Wrath rune', 1),
+		input: new Bank().add('Air rune', 7).add('Wrath rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Teleother falador',
 	// 	levels: { Magic: 82 },
 	// 	xp: { Magic: 92 },
-  //   input: new Bank().add('Water rune', 1).add('Law rune', 1).add('Soul rune', 1),
+	//   input: new Bank().add('Water rune', 1).add('Law rune', 1).add('Soul rune', 1),
 	// 	category: MagicTypes.Teleport,
 	// 	ticks: 10
 	// },
@@ -982,16 +983,16 @@ const Standard: Castable[] = [
 		name: 'Water surge',
 		levels: { Magic: 85 },
 		xp: { Magic: 46.5 },
-    input: new Bank().add('Air rune', 7).add('Water rune', 10).add('Wrath rune', 1),
+		input: new Bank().add('Air rune', 7).add('Water rune', 10).add('Wrath rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Tele block',
 	// 	levels: { Magic: 85 },
 	// 	xp: { Magic: 90 },
-  //   input: new Bank().add('Chaos rune', 1).add('Death rune', 1).add('Law rune', 1),
+	//   input: new Bank().add('Chaos rune', 1).add('Death rune', 1).add('Law rune', 1),
 	// 	category: MagicTypes.Curse,
 	// 	ticks: 5
 	// },
@@ -999,7 +1000,7 @@ const Standard: Castable[] = [
 	// 	name: 'Teleport to bounty target',
 	// 	levels: { Magic: 85 },
 	// 	xp: { Magic: 45 },
-  //   input: new Bank().add('Chaos rune', 1).add('Death rune', 1).add('Law rune', 1),
+	//   input: new Bank().add('Chaos rune', 1).add('Death rune', 1).add('Law rune', 1),
 	// 	category: MagicTypes.Teleport,
 	// 	ticks: 4
 	// },
@@ -1058,12 +1059,12 @@ const Standard: Castable[] = [
 		category: MagicTypes.Enchant,
 		ticks: 1
 	},
-  // No implemented use
+	// No implemented use
 	// {
 	// 	name: 'Teleother camelot',
 	// 	levels: { Magic: 90 },
 	// 	xp: { Magic: 100 },
-  //   input: new Bank().add('Law rune', 1).add('Soul rune', 2),
+	//   input: new Bank().add('Law rune', 1).add('Soul rune', 2),
 	// 	category: MagicTypes.Teleport,
 	// 	ticks: 10
 	// },
@@ -1071,7 +1072,7 @@ const Standard: Castable[] = [
 		name: 'Earth surge',
 		levels: { Magic: 90 },
 		xp: { Magic: 48.5 },
-    input: new Bank().add('Air rune', 7).add('Earth rune', 10).add('Wrath rune', 1),
+		input: new Bank().add('Air rune', 7).add('Earth rune', 10).add('Wrath rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
@@ -1116,7 +1117,7 @@ const Standard: Castable[] = [
 		name: 'Fire surge',
 		levels: { Magic: 95 },
 		xp: { Magic: 50.5 },
-    input: new Bank().add('Air rune', 7).add('Fire rune', 10).add('Wrath rune', 1),
+		input: new Bank().add('Air rune', 7).add('Fire rune', 10).add('Wrath rune', 1),
 		category: MagicTypes.Combat,
 		ticks: 5
 	}

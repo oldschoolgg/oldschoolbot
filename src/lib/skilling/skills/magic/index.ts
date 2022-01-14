@@ -1,13 +1,14 @@
-import { Emoji } from '../../../constants';
-import { SkillsEnum, MagicTypes } from '../../types';
 import { Bank } from 'oldschooljs';
-import Standard from './standard';
+
+import { Emoji } from '../../../constants';
+import { MagicTypes, SkillsEnum } from '../../types';
+import Ancients from './ancients';
 import Arceuus from './arceuus';
 import Lunar from './lunar';
-import Ancients from './ancients';
+import Standard from './standard';
 
 type EnumKeys = keyof typeof SkillsEnum;
-type EnumKeyFields = {[key in EnumKeys]?: number};
+type EnumKeyFields = { [key in EnumKeys]?: number };
 
 export interface Castable {
 	alias?: string[];
