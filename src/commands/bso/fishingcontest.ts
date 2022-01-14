@@ -3,6 +3,7 @@ import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { production } from '../../config';
 import { GLOBAL_BSO_XP_MULTIPLIER } from '../../lib/constants';
 import {
 	catchFishAtLocation,
@@ -43,7 +44,11 @@ export default class extends BotCommand {
 		const validLocs = getValidLocationsForFishType(currentFishType);
 		const minigameScore = await getMinigameScore(msg.author.id, 'fishing_contest');
 		return msg.channel.send(
-			`**Todays Catch:** A fish from a ${currentFishType.temperature} ${currentFishType.water} (${validLocs
+			`**Fishing Contest**
+
+You can participate using \`${msg.cmdPrefix}fishingcontest fish [location]\`
+
+**Todays Catch:** A fish from a ${currentFishType.temperature} ${currentFishType.water} (${validLocs
 				.map(i => i.name)
 				.join(', ')})
 **Todays Catches:** ${userDetails.catchesFromToday
@@ -84,7 +89,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (msg.flagArgs.reset) {
+		if (!production && msg.flagArgs.reset) {
 			await prisma.fishingContestCatch.deleteMany({
 				where: {
 					user_id: BigInt(msg.author.id)
@@ -94,7 +99,7 @@ export default class extends BotCommand {
 			return msg.channel.send('Deleted all your caught fish and reset your CL.');
 		}
 
-		if (msg.flagArgs.debugtime) {
+		if (!production && msg.flagArgs.debugtime) {
 			let str = 'Rotations\n\n';
 			let counter = {
 				cold: 0,
@@ -116,7 +121,7 @@ export default class extends BotCommand {
 			});
 		}
 
-		if (msg.flagArgs.xphr) {
+		if (!production && msg.flagArgs.xphr) {
 			let str = 'Fishing XP Based On Level at Fishing Contest\n\n\n';
 			for (const lvl of [1, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]) {
 				const low = (
@@ -132,7 +137,7 @@ export default class extends BotCommand {
 			});
 		}
 
-		if (msg.flagArgs.debug) {
+		if (!production && msg.flagArgs.debug) {
 			let arr = [];
 			for (let i = 0; i < 1000; i++) {
 				arr.push(await catchFishAtLocation({ user: msg.author, location: fishingLocation }));
@@ -165,8 +170,9 @@ export default class extends BotCommand {
 		];
 		for (let i = 0; i < tackleBoxes.length; i++) {
 			if (msg.author.hasItemEquippedOrInBank(tackleBoxes[i])) {
-				let num = i + 1;
+				let num = tackleBoxes.length - i;
 				quantityBoosts.push(`${num} for ${tackleBoxes[i]}`);
+				quantity += num;
 				break;
 			}
 		}

@@ -243,9 +243,6 @@ interface FishType {
 	water: Water;
 }
 
-// const allVerbs = [...fishingLocations.map(i => i.specialtyVerb), ...coldVerbs, ...warmVerbs];
-// const allNouns = [...lakeNouns, ...riverNouns, ...oceanNouns];
-
 export function getCurrentFishType(dateOverride?: Date): FishType {
 	const day = (dateOverride ?? new Date()).toLocaleDateString();
 
@@ -270,7 +267,7 @@ LIMIT 10;`);
 			user_id: BigInt(user.id)
 		}
 	});
-	const totalLength: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT COALESCE(SUM(length_cm), 0) AS sum
+	const totalLength: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(COALESCE(length_cm, 0)) as sum
 FROM fishing_contest_catch
 WHERE user_id = ${user.id}::bigint;`);
 	const totalUniqueCatches: [{ uniq: number }] = await prisma.$queryRawUnsafe(`SELECT COUNT(DISTINCT(name)) AS uniq
