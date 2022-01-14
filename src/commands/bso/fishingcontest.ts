@@ -12,6 +12,7 @@ import {
 	getValidLocationsForFishType
 } from '../../lib/fishingContest';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { getMinigameScore } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -40,6 +41,7 @@ export default class extends BotCommand {
 		const currentFishType = getCurrentFishType();
 		const userDetails = await getUsersFishingContestDetails(msg.author);
 		const validLocs = getValidLocationsForFishType(currentFishType);
+		const minigameScore = await getMinigameScore(msg.author.id, 'fishing_contest');
 		return msg.channel.send(
 			`**Todays Catch:** A fish from a ${currentFishType.temperature} ${currentFishType.water} (${validLocs
 				.map(i => i.name)
@@ -48,6 +50,7 @@ export default class extends BotCommand {
 				.sort((a, b) => b.length_cm - a.length_cm)
 				.map(i => `${i.name}(${i.length_cm / 100}m)`)
 				.join(', ')}
+**Total Daily Contests:** ${minigameScore}
 **All-time catches:** ${userDetails.catchesAllTime}
 **Total Unique Catches:** ${userDetails.totalUniqueCatches}
 **Total Length of Fish:** ${userDetails.totalLength / 100}m`
@@ -200,12 +203,12 @@ export default class extends BotCommand {
 		});
 
 		return msg.channel.send({
-			content: `${msg.author.minionName} is now off to catch a fish at ${
+			content: `${msg.author.minionName} is now off to catch ${quantity === 1 ? 'a' : quantity} fish at ${
 				fishingLocation.name
 			}, they will return in ${formatDuration(duration)}. Removed ${cost} from your bank.${
 				quantity > 1
 					? `
-You're fishing ${quantity - 1} extra fish because `
+You're fishing ${quantity - 1} extra fish: ${quantityBoosts.join(', ')}`
 					: ''
 			}`
 		});

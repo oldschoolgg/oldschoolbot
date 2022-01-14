@@ -144,6 +144,8 @@ model ClientStorage {
   ods_loot                Json   @default("{}") @db.Json
   tame_merging_cost       Json   @default("{}") @db.Json
   trip_doubling_loot      Json   @default("{}") @db.Json
+  fc_cost                 Json   @default("{}") @db.Json
+  fc_loot                 Json   @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -569,12 +571,12 @@ model CommandUsage {
 }
 
 model FishingContestCatch {
+  id        Int      @id @default(autoincrement())
   user_id   BigInt
   name      String   @db.VarChar(64)
   date      DateTime @default(now()) @db.Timestamp(6)
   length_cm Int      @db.SmallInt
 
-  @@id([user_id, name, date])
   @@map("fishing_contest_catch")
 }
 

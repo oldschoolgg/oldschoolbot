@@ -26,7 +26,7 @@ export default class extends Task {
 		const { channelID, quantity, userID, location, duration } = data;
 		const user = await this.client.fetchUser(userID);
 
-		await incrementMinigameScore(userID, 'fishing_contest', quantity);
+		await incrementMinigameScore(userID, 'fishing_contest', 1);
 		const fishLocation = fishingLocations.find(i => i.id === location)!;
 
 		let caughtFish = [];
@@ -58,6 +58,14 @@ export default class extends Task {
 
 				loot.add(tackleBox);
 				break;
+			}
+		}
+		if (roll(tackleBoxChance)) {
+			for (const piece of ['Fishing hat', 'Fishing jacket', 'Fishing waders', 'Fishing boots']) {
+				if (!user.hasItemEquippedOrInBank(piece)) {
+					loot.add(piece);
+					break;
+				}
 			}
 		}
 

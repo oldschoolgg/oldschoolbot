@@ -109,7 +109,7 @@ export const fishingLocations: FishingLocation[] = [
 				percentAddedToMin: 5
 			}
 		],
-		bait: getOSItem('Black salamander')
+		bait: getOSItem('Red salamander')
 	},
 	{
 		id: 4,
