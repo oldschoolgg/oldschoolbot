@@ -29,7 +29,7 @@ const Standard: Castable[] = [
 		ticks: 5
 	},
 	{
-		name: '10x Opal bolts',
+		name: 'Enchant 10x opal bolts',
 		levels: { Magic: 4 },
 		xp: { Magic: 9 },
 		input: new Bank().add('Opal bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
@@ -38,7 +38,7 @@ const Standard: Castable[] = [
     ticks: 1
 	},
 	{
-		name: '10x Opal dragon bolts',
+		name: 'Enchant 10x opal dragon bolts',
 		levels: { Magic: 4 },
 		xp: { Magic: 9 },
 		input: new Bank().add('Opal dragon bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
@@ -56,7 +56,7 @@ const Standard: Castable[] = [
 	},
 	// Sapphire
 	{
-		name: 'Sapphire necklace',
+		name: 'Enchant sapphire necklace',
 		levels: { Magic: 7 },
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire necklace').add('Cosmic rune', 1).add('Water rune', 1),
@@ -65,7 +65,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Sapphire amulet',
+		name: 'Enchant sapphire amulet',
 		levels: { Magic: 7 },
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire amulet').add('Cosmic rune', 1).add('Water rune', 1),
@@ -74,7 +74,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Sapphire ring',
+		name: 'Enchant sapphire ring',
 		levels: { Magic: 7 },
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire ring').add('Cosmic rune', 1).add('Water rune', 1),
@@ -83,7 +83,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Sapphire bracelet',
+		name: 'Enchant sapphire bracelet',
 		levels: { Magic: 7 },
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire bracelet').add('Cosmic rune', 1).add('Water rune', 1),
@@ -92,7 +92,7 @@ const Standard: Castable[] = [
     ticks: 1
 	},
 	{
-		name: '10x Sapphire dragon bolts',
+		name: 'Enchant 10x sapphire dragon bolts',
 		levels: { Magic: 7 },
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Sapphire dragon bolts', 10).add('Water rune').add('Mind rune').add('Cosmic rune', 1),
@@ -102,7 +102,7 @@ const Standard: Castable[] = [
 	},
 	// Opal
 	{
-		name: 'Opal necklace',
+		name: 'Enchant opal necklace',
 		levels: { Magic: 7 },
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Opal necklace').add('Cosmic rune', 1).add('Water rune', 1),
@@ -111,7 +111,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Opal amulet',
+		name: 'Enchant opal amulet',
 		levels: { Magic: 7 },
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Opal amulet').add('Cosmic rune', 1).add('Water rune', 1),
@@ -120,7 +120,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Opal ring',
+		name: 'Enchant opal ring',
 		levels: { Magic: 7 },
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Opal ring').add('Cosmic rune', 1).add('Water rune', 1),
@@ -129,7 +129,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Opal bracelet',
+		name: 'Enchant opal bracelet',
 		levels: { Magic: 7 },
 		xp: { Magic: 17.5 },
 		input: new Bank().add('Opal bracelet').add('Cosmic rune', 1).add('Water rune', 1),
@@ -162,7 +162,7 @@ const Standard: Castable[] = [
 		ticks: 5
 	},
 	{
-		name: '10x Jade bolts',
+		name: 'Enchant 10x jade bolts',
 		levels: { Magic: 14 },
 		xp: { Magic: 19 },
 		input: new Bank().add('Jade bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
@@ -171,7 +171,7 @@ const Standard: Castable[] = [
     ticks: 1
 	},
 	{
-		name: '10x Jade dragon bolts',
+		name: 'Enchant 10x jade dragon bolts',
 		levels: { Magic: 14 },
 		xp: { Magic: 19 },
 		input: new Bank().add('Jade dragon bolts', 10).add('Air rune', 2).add('Cosmic rune', 1),
@@ -221,7 +221,7 @@ const Standard: Castable[] = [
 		ticks: 5
 	},
 	{
-		name: '10x Pearl bolts',
+		name: 'Enchant 10x pearl bolts',
 		levels: { Magic: 24 },
 		xp: { Magic: 29 },
 		input: new Bank().add('Pearl bolts', 10).add('Water rune', 2).add('Cosmic rune', 1),
@@ -230,7 +230,7 @@ const Standard: Castable[] = [
     ticks: 1
 	},
 	{
-		name: '10x Pearl dragon bolts',
+		name: 'Enchant 10x pearl dragon bolts',
 		levels: { Magic: 24 },
 		xp: { Magic: 29 },
 		input: new Bank().add('Pearl dragon bolts', 10).add('Water rune', 2).add('Cosmic rune', 1),
@@ -248,7 +248,7 @@ const Standard: Castable[] = [
 	},
 	// Emerald
 	{
-		name: 'Emerald necklace',
+		name: 'Enchant emerald necklace',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald necklace').add('Cosmic rune', 1).add('Air rune', 3),
@@ -257,7 +257,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Emerald amulet',
+		name: 'Enchant emerald amulet',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald amulet').add('Cosmic rune', 1).add('Air rune', 3),
@@ -266,7 +266,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Emerald ring',
+		name: 'Enchant emerald ring',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald ring').add('Cosmic rune', 1).add('Air rune', 3),
@@ -275,7 +275,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Emerald bracelet',
+		name: 'Enchant emerald bracelet',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald bracelet').add('Cosmic rune', 1).add('Air rune', 3),
@@ -285,7 +285,7 @@ const Standard: Castable[] = [
 	},
 	// Jade
 	{
-		name: 'Jade necklace',
+		name: 'Enchant jade necklace',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Jade necklace').add('Cosmic rune', 1).add('Air rune', 3),
@@ -294,7 +294,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Jade amulet',
+		name: 'Enchant jade amulet',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Jade amulet').add('Cosmic rune', 1).add('Air rune', 3),
@@ -303,7 +303,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Jade ring',
+		name: 'Enchant jade ring',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Jade ring').add('Cosmic rune', 1).add('Air rune', 3),
@@ -312,7 +312,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: 'Jade bracelet',
+		name: 'Enchant jade bracelet',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Jade bracelet').add('Cosmic rune', 1).add('Air rune', 3),
@@ -321,7 +321,7 @@ const Standard: Castable[] = [
     ticks: 3
 	},
 	{
-		name: '10x Emerald dragon bolts',
+		name: 'Enchant 10x emerald dragon bolts',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald dragon bolts', 10).add('Air rune', 3).add('Nature rune').add('Cosmic rune', 1),
@@ -330,7 +330,7 @@ const Standard: Castable[] = [
     ticks: 1
 	},
 	{
-		name: '10x Emerald bolts',
+		name: 'Enchant 10x emerald bolts',
 		levels: { Magic: 27 },
 		xp: { Magic: 37 },
 		input: new Bank().add('Emerald bolts', 10).add('Air rune', 3).add('Cosmic rune', 1).add('Nature rune'),
@@ -347,7 +347,7 @@ const Standard: Castable[] = [
 		ticks: 5
 	},
 	{
-		name: '10x Topaz bolts',
+		name: 'Enchant 10x topaz bolts',
 		levels: { Magic: 29 },
 		xp: { Magic: 33 },
 		input: new Bank().add('Topaz bolts', 10).add('Fire rune', 2).add('Cosmic rune', 1),
@@ -356,7 +356,7 @@ const Standard: Castable[] = [
     ticks: 1
 	},
 	{
-		name: '10x Topaz dragon bolts',
+		name: 'Enchant 10x topaz dragon bolts',
 		levels: { Magic: 29 },
 		xp: { Magic: 33 },
 		input: new Bank().add('Topaz dragon bolts', 10).add('Fire rune', 2).add('Cosmic rune', 1),
@@ -519,7 +519,7 @@ const Standard: Castable[] = [
 		ticks: 5
 	},
 	{
-		name: '10x Ruby bolts',
+		name: 'Enchant 10x ruby bolts',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Ruby bolts', 10).add('Blood rune', 1).add('Cosmic rune', 1).add('Fire rune', 5),
@@ -528,7 +528,7 @@ const Standard: Castable[] = [
 		ticks: 1
 	},
 	{
-		name: '10x Ruby dragon bolts',
+		name: 'Enchant 10x ruby dragon bolts',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Ruby dragon bolts', 10).add('Fire rune', 5).add('Blood rune').add('Cosmic rune', 1),
@@ -538,7 +538,7 @@ const Standard: Castable[] = [
 	},
 	// Ruby
 	{
-		name: 'Ruby necklace',
+		name: 'Enchant ruby necklace',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Ruby necklace').add('Cosmic rune', 1).add('Fire rune', 5),
@@ -547,7 +547,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Ruby amulet',
+		name: 'Enchant ruby amulet',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Ruby amulet').add('Cosmic rune', 1).add('Fire rune', 5),
@@ -556,7 +556,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Ruby ring',
+		name: 'Enchant ruby ring',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Ruby ring').add('Cosmic rune', 1).add('Fire rune', 5),
@@ -565,7 +565,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Ruby bracelet',
+		name: 'Enchant ruby bracelet',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Ruby bracelet').add('Cosmic rune', 1).add('Fire rune', 5),
@@ -575,7 +575,7 @@ const Standard: Castable[] = [
 	},
 	// Topaz
 	{
-		name: 'Topaz bracelet',
+		name: 'Enchant topaz bracelet',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Topaz bracelet').add('Cosmic rune', 1).add('Fire rune', 5),
@@ -584,7 +584,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Topaz necklace',
+		name: 'Enchant topaz necklace',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Topaz necklace').add('Cosmic rune', 1).add('Fire rune', 5),
@@ -593,7 +593,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Topaz amulet',
+		name: 'Enchant topaz amulet',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Topaz amulet').add('Cosmic rune', 1).add('Fire rune', 5),
@@ -602,7 +602,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Topaz ring',
+		name: 'Enchant topaz ring',
 		levels: { Magic: 49 },
 		xp: { Magic: 59 },
 		input: new Bank().add('Topaz ring').add('Cosmic rune', 1).add('Fire rune', 5),
@@ -661,7 +661,7 @@ const Standard: Castable[] = [
 	// },
 	// Diamond
 	{
-		name: 'Diamond necklace',
+		name: 'Enchant diamond necklace',
 		levels: { Magic: 57 },
 		xp: { Magic: 67 },
 		input: new Bank().add('Diamond necklace').add('Cosmic rune', 1).add('Earth rune', 10),
@@ -670,7 +670,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Diamond amulet',
+		name: 'Enchant diamond amulet',
 		levels: { Magic: 57 },
 		xp: { Magic: 67 },
 		input: new Bank().add('Diamond amulet').add('Cosmic rune', 1).add('Earth rune', 10),
@@ -679,7 +679,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Diamond ring',
+		name: 'Enchant diamond ring',
 		levels: { Magic: 57 },
 		xp: { Magic: 67 },
 		input: new Bank().add('Diamond ring').add('Cosmic rune', 1).add('Earth rune', 10),
@@ -688,7 +688,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Diamond bracelet',
+		name: 'Enchant diamond bracelet',
 		levels: { Magic: 57 },
 		xp: { Magic: 67 },
 		input: new Bank().add('Diamond bracelet').add('Cosmic rune', 1).add('Earth rune', 10),
@@ -697,7 +697,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: '10x Diamond bolts',
+		name: 'Enchant 10x diamond bolts',
 		levels: { Magic: 57 },
 		xp: { Magic: 67 },
 		input: new Bank().add('Diamond bolts', 10).add('Law rune', 2).add('Cosmic rune', 1).add('Earth rune', 10),
@@ -706,7 +706,7 @@ const Standard: Castable[] = [
 		ticks: 1
 	},
 	{
-		name: '10x Diamond dragon bolts',
+		name: 'Enchant 10x diamond dragon bolts',
 		levels: { Magic: 57 },
 		xp: { Magic: 67 },
 		input: new Bank()
@@ -837,7 +837,7 @@ const Standard: Castable[] = [
 	},
 	// Dragonstone
 	{
-		name: 'Dragon necklace',
+		name: 'Enchant dragon necklace',
 		alias: ['Dragonstone necklace'],
 		levels: { Magic: 68 },
 		xp: { Magic: 78 },
@@ -847,7 +847,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Dragonstone amulet',
+		name: 'Enchant dragonstone amulet',
 		levels: { Magic: 68 },
 		xp: { Magic: 78 },
 		input: new Bank().add('Dragonstone amulet').add('Cosmic rune', 1).add('Earth rune', 15).add('Water rune', 15),
@@ -856,7 +856,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Dragonstone ring',
+		name: 'Enchant dragonstone ring',
 		levels: { Magic: 68 },
 		xp: { Magic: 78 },
 		input: new Bank().add('Dragonstone ring').add('Cosmic rune', 1).add('Earth rune', 15).add('Water rune', 15),
@@ -865,7 +865,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Dragonstone bracelet',
+		name: 'Enchant dragonstone bracelet',
 		levels: { Magic: 68 },
 		xp: { Magic: 78 },
 		input: new Bank().add('Dragonstone bracelet').add('Cosmic rune', 1).add('Earth rune', 15).add('Water rune', 15),
@@ -874,7 +874,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: '10x Dragonstone bolts',
+		name: 'Enchant 10x dragonstone bolts',
 		levels: { Magic: 68 },
 		xp: { Magic: 78 },
 		input: new Bank().add('Dragonstone bolts', 10).add('Soul rune', 1).add('Cosmic rune', 1).add('Earth rune', 15),
@@ -883,7 +883,7 @@ const Standard: Castable[] = [
 		ticks: 1
 	},
 	{
-		name: '10x Dragonstone dragon bolts',
+		name: 'Enchant 10x dragonstone dragon bolts',
 		levels: { Magic: 68 },
 		xp: { Magic: 78 },
 		input: new Bank()
@@ -1005,7 +1005,7 @@ const Standard: Castable[] = [
 	// },
 	// Onyx
 	{
-		name: 'Onyx necklace',
+		name: 'Enchant onyx necklace',
 		levels: { Magic: 87 },
 		xp: { Magic: 97 },
 		input: new Bank().add('Onyx necklace').add('Cosmic rune', 1).add('Earth rune', 20).add('Fire rune', 20),
@@ -1014,7 +1014,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Onyx amulet',
+		name: 'Enchant onyx amulet',
 		levels: { Magic: 87 },
 		xp: { Magic: 97 },
 		input: new Bank().add('Onyx amulet').add('Cosmic rune', 1).add('Earth rune', 20).add('Fire rune', 20),
@@ -1023,7 +1023,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Onyx ring',
+		name: 'Enchant onyx ring',
 		levels: { Magic: 87 },
 		xp: { Magic: 97 },
 		input: new Bank().add('Onyx ring').add('Cosmic rune', 1).add('Earth rune', 20).add('Fire rune', 20),
@@ -1032,7 +1032,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Onyx bracelet',
+		name: 'Enchant onyx bracelet',
 		levels: { Magic: 87 },
 		xp: { Magic: 97 },
 		input: new Bank().add('Onyx bracelet').add('Cosmic rune', 1).add('Earth rune', 20).add('Fire rune', 20),
@@ -1041,7 +1041,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: '10x Onyx bolts',
+		name: 'Enchant 10x onyx bolts',
 		levels: { Magic: 87 },
 		xp: { Magic: 97 },
 		input: new Bank().add('Onyx bolts', 10).add('Fire rune', 20).add('Cosmic rune', 1).add('Death rune', 1),
@@ -1050,7 +1050,7 @@ const Standard: Castable[] = [
 		ticks: 1
 	},
 	{
-		name: '10x Onyx dragon bolts',
+		name: 'Enchant 10x onyx dragon bolts',
 		levels: { Magic: 87 },
 		xp: { Magic: 97 },
 		input: new Bank().add('Onyx dragon bolts', 10).add('Fire rune', 20).add('Death rune', 20).add('Cosmic rune', 1),
@@ -1077,7 +1077,7 @@ const Standard: Castable[] = [
 	},
 	// Zenyte
 	{
-		name: 'Zenyte ring',
+		name: 'Enchant zenyte ring',
 		levels: { Magic: 93 },
 		xp: { Magic: 110 },
 		input: new Bank().add('Zenyte ring').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
@@ -1086,7 +1086,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Zenyte amulet',
+		name: 'Enchant zenyte amulet',
 		levels: { Magic: 93 },
 		xp: { Magic: 110 },
 		input: new Bank().add('Zenyte amulet').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
@@ -1095,7 +1095,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Zenyte necklace',
+		name: 'Enchant zenyte necklace',
 		levels: { Magic: 93 },
 		xp: { Magic: 110 },
 		input: new Bank().add('Zenyte necklace').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),
@@ -1104,7 +1104,7 @@ const Standard: Castable[] = [
 		ticks: 3
 	},
 	{
-		name: 'Zenyte bracelet',
+		name: 'Enchant zenyte bracelet',
 		levels: { Magic: 93 },
 		xp: { Magic: 110 },
 		input: new Bank().add('Zenyte bracelet').add('Cosmic rune', 1).add('Soul rune', 20).add('Blood rune', 20),

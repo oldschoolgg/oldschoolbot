@@ -23,7 +23,6 @@ export interface Castable {
 }
 
 export const Castables: Castable[] = [...Standard, ...Arceuus, ...Lunar, ...Ancients];
-export const Spellbooks = { Standard, Lunar, Arceuus, Ancients };
 
 const Magic = {
 	aliases: ['mage', 'magic'],
