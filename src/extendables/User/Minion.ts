@@ -31,6 +31,7 @@ import {
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
+import { fishingLocations } from '../../lib/fishingContest';
 import { hasGracefulEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -79,6 +80,7 @@ import {
 	FarmingActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
+	FishingContestOptions,
 	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
@@ -677,6 +679,13 @@ export default class extends Extendable {
 				} is currently attempting the Theatre of Blood, if your team is successful and doesn't die, the trip should take ${formatDuration(
 					durationRemaining
 				)}.`;
+			}
+			case 'FishingContest': {
+				const data = currentTask as FishingContestOptions;
+
+				return `${this.minionName} is currently fishing for the fishing contest at ${
+					fishingLocations.find(i => i.id === data.location)!.name
+				}. ${formattedDuration}`;
 			}
 		}
 	}
