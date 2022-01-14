@@ -30,7 +30,6 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'Hunter':
 		case 'Birdhouse':
 		case 'Construction':
-		case 'Enchanting':
 		case 'Casting':
 		case 'GloryCharging':
 		case 'WealthCharging':

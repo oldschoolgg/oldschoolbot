@@ -190,7 +190,6 @@ export const enum Tasks {
 	ZalcanoActivity = 'zalcanoActivity',
 	SawmillActivity = 'sawmillActivity',
 	PickpocketActivity = 'pickpocketActivity',
-	Enchanting = 'enchantingActivity',
 	Casting = 'castingActivity',
 	GloryCharging = 'gloryChargingActivity',
 	WealthCharging = 'wealthChargingActivity',

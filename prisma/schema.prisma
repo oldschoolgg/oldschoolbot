@@ -526,7 +526,6 @@ enum activity_type_enum {
   Zalcano
   Farming
   Construction
-  Enchanting
   Casting
   GloryCharging
   WealthCharging

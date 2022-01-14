@@ -87,8 +87,6 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.ConstructionActivity;
 		case 'MahoganyHomes':
 			return Tasks.MahoganyHomes;
-		case 'Enchanting':
-			return Tasks.Enchanting;
 		case 'Casting':
 			return Tasks.Casting;
 		case 'GloryCharging':

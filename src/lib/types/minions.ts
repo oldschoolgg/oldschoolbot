@@ -115,13 +115,8 @@ export interface FletchingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface EnchantingActivityTaskOptions extends ActivityTaskOptions {
-	itemID: number;
-	quantity: number;
-}
-
 export interface CastingActivityTaskOptions extends ActivityTaskOptions {
-	spellID: number;
+	spellID: string;
 	quantity: number;
 }
 export interface PickpocketActivityTaskOptions extends ActivityTaskOptions {
@@ -361,7 +356,6 @@ export type ActivityTaskData =
 	| GauntletOptions
 	| SoulWarsOptions
 	| CastingActivityTaskOptions
-	| EnchantingActivityTaskOptions
 	| ConstructionActivityTaskOptions
 	| HunterActivityTaskOptions
 	| ZalcanoActivityTaskOptions
