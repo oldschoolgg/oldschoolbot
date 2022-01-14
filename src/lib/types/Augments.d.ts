@@ -22,13 +22,13 @@ import { chatHeads } from '../util/chatHeadImage';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 type SendBankImageFn = (options: {
-	bank: ItemBank;
+	bank: Bank;
 	content?: string;
 	title?: string;
 	background?: number;
 	flags?: Record<string, string | number>;
 	user?: KlasaUser;
-	cl?: ItemBank;
+	cl?: Bank;
 	gearPlaceholder?: Record<GearSetupType, GearSetup>;
 }) => Promise<KlasaMessage>;
 
@@ -68,12 +68,12 @@ declare module 'klasa' {
 
 	interface Task {
 		generateBankImage(
-			bank: ItemBank,
+			bank: Bank,
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
 			user?: KlasaUser,
-			cl?: ItemBank
+			cl?: Bank
 		): Promise<BankImageResult>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
 		generateLogImage(options: {
@@ -140,7 +140,7 @@ declare module 'discord.js' {
 			items: ItemBank | Bank,
 			collectionLog?: boolean,
 			filterLoot?: boolean
-		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
+		): Promise<{ previousCL: Bank; itemsAdded: Bank }>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
@@ -272,14 +272,7 @@ declare module 'discord.js' {
 	}
 
 	interface NewsChannel {
-		sendBankImage(options: {
-			bank: ItemBank;
-			content?: string;
-			title?: string;
-			background?: number;
-			flags?: Record<string, string | number>;
-			user?: KlasaUser;
-		}): Promise<KlasaMessage>;
+		sendBankImage: SendBankImageFn;
 		__triviaQuestionsDone: any;
 	}
 }

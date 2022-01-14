@@ -1,7 +1,7 @@
 import { command_usage_status, Prisma } from '@prisma/client';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
+import { getCommandArgs, PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
@@ -93,7 +93,7 @@ export default class extends Monitor {
 			user_id: message.author.id,
 			command_name: command.name,
 			status: command_usage_status.Unknown,
-			args: message.args,
+			args: getCommandArgs(command, message.args),
 			channel_id: message.channel.id,
 			guild_id: message.guild?.id ?? null,
 			flags: Object.keys(message.flagArgs).length > 0 ? message.flagArgs : undefined

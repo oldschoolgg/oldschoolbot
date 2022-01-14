@@ -11,6 +11,7 @@ import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
+import { tobCreatables } from './creatables/tob';
 
 export interface Createable {
 	name: string;
@@ -24,6 +25,7 @@ export interface Createable {
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	requiredFavour?: Favours;
+	maxCanOwn?: number;
 }
 
 const revWeapons: Createable[] = [
@@ -299,6 +301,19 @@ const crystalTools: Createable[] = [
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
 		QPRequired: 150
+	},
+	{
+		name: 'Crystal halberd',
+		inputItems: resolveNameBank({
+			'Crystal weapon seed': 1,
+			'Crystal shard': 40
+		}),
+		outputItems: {
+			[itemID('Crystal halberd')]: 1
+		},
+		requiredSkills: { smithing: 78, crafting: 78 },
+		QPRequired: 150,
+		noCl: true
 	}
 ];
 
@@ -366,6 +381,56 @@ const hunterClothing: Createable[] = [
 ];
 
 const Reverteables: Createable[] = [
+	{
+		name: 'Revert tanzanite fang',
+		inputItems: {
+			[itemID('Tanzanite fang')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert toxic blowpipe (empty)',
+		inputItems: {
+			[itemID('Toxic blowpipe (empty)')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert magic fang',
+		inputItems: {
+			[itemID('Magic fang')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert serpentine visage',
+		inputItems: {
+			[itemID('Serpentine visage')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert serpentine helm (uncharged)',
+		inputItems: {
+			[itemID('Serpentine helm (uncharged)')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
 	{
 		name: 'Revert volatile nightmare staff',
 		outputItems: resolveNameBank({
@@ -1679,7 +1744,8 @@ const Createables: Createable[] = [
 	...dragonFireShieldCreatables,
 	...revWeapons,
 	...armorAndItemPacks,
-	...gracefulOutfitCreatables
+	...gracefulOutfitCreatables,
+	...tobCreatables
 ];
 
 export default Createables;

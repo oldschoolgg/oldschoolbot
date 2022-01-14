@@ -2,7 +2,7 @@ import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
-import { objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
+import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
@@ -12,10 +12,11 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
-import { GearSetupType, GearSetupTypes } from './gear/types';
+import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
+import { POHBoosts } from './poh';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions, RaidsOptions } from './types/minions';
+import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -259,6 +260,10 @@ export function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;
 }
 
+export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
+	return 'wipedRoom' in data;
+}
+
 export function sha256Hash(x: string) {
 	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }
@@ -416,34 +421,30 @@ export function formatItemBoosts(items: ItemBank[]) {
 	return str.join(', ');
 }
 
-/**
- * Given a list of items, and a bank, it will return a new bank with all items not
- * in the filter removed from the bank.
- * @param itemFilter The array of item IDs to use as the filter.
- * @param bank The bank to filter items from.
- */
-export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
-	const returnBank: ItemBank = {};
-	const bankKeys = Object.keys(bank);
+export function formatPohBoosts(boosts: POHBoosts) {
+	const bonusStr = [];
+	const slotStr = [];
 
-	// If there are no items in the filter or bank, just return an empty bank.
-	if (itemFilter.length === 0 || bankKeys.length === 0) return returnBank;
+	for (const [slot, objBoosts] of objectEntries(boosts)) {
+		if (objBoosts === undefined) continue;
+		for (const [name, boostPercent] of objectEntries(objBoosts)) {
+			bonusStr.push(`${boostPercent}% for ${name}`);
+		}
 
-	// For every item in the filter, if its in the bank, add it to the return bank.
-	for (const itemID of itemFilter) {
-		if (bank[itemID]) returnBank[itemID] = bank[itemID];
+		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${bonusStr.join(' or ')})\n`);
 	}
 
-	return returnBank;
+	return slotStr.join(', ');
 }
 
-export function updateBankSetting(client: KlasaClient, setting: string, bankToAdd: Bank | ItemBank) {
+export function updateBankSetting(client: KlasaClient | KlasaUser, setting: string, bankToAdd: Bank | ItemBank) {
+	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);
 }
 
-export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {
+export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: string, amount: number) {
 	const current = client.settings.get(setting) as number;
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
@@ -547,7 +548,58 @@ export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
 }
 
+export function assert(condition: boolean, desc?: string) {
+	if (!condition) throw new Error(desc);
+}
+
+export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
+	let result = [];
+	let uniquesReceived = 0;
+	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
+		if (uniques.includes(item.id)) {
+			uniquesReceived += qty;
+		}
+		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
+	}
+	result.push(
+		`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived} which is ${calcWhatPercent(
+			uniquesReceived,
+			iterations
+		)}%)`
+	);
+	return result.join(', ');
+}
+
+export function convertPercentChance(percent: number) {
+	return (1 / (percent / 100)).toFixed(1);
+}
+
 export function murMurHashChance(input: string, percent: number) {
 	const hash = murmurHash.v3(input) % 1e4;
 	return hash < percent * 100;
+}
+
+export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
+	let setup: GearSetupType = 'melee';
+
+	switch (style) {
+		case GearStat.AttackMagic:
+			setup = 'mage';
+			break;
+		case GearStat.AttackRanged:
+			setup = 'range';
+			break;
+		default:
+			break;
+	}
+
+	return setup;
+}
+
+export function convertBankToPerHourStats(bank: Bank, time: number) {
+	let result = [];
+	for (const [item, qty] of bank.items()) {
+		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
+	}
+	return result;
 }

@@ -92,7 +92,7 @@ export default class extends Task {
 			},
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

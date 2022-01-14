@@ -16,13 +16,12 @@ export interface IToReturnCollection {
 	collectionTotal: number;
 	leftList?: ILeftListStatus;
 	userItems: Bank;
+	counts: boolean;
 }
 
 export interface ILeftListStatus {
 	[key: string]: 'not_started' | 'started' | 'completed';
 }
-
-export type TRoleCategories = 'bosses' | 'slayer' | 'clues' | 'minigames' | 'skilling' | 'raids' | 'pets';
 
 interface IKCActivity {
 	[key: string]: string | string[] | ((user: KlasaUser) => Promise<number>);
@@ -30,10 +29,6 @@ interface IKCActivity {
 
 export interface ICollectionActivity {
 	[key: string]: {
-		// If the collection is enabled (ca not be accesed if set to false)
-		enabled?: false;
-		// If the collection should be hidden from the list
-		hidden?: true;
 		// If the collection will count towards the collection log counter
 		counts?: false;
 		alias?: string[];
@@ -41,7 +36,6 @@ export interface ICollectionActivity {
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
-		roleCategory?: TRoleCategories[];
 	};
 }
 
@@ -307,6 +301,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vasa minirio',
 	'Vespina'
 ]);
+export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
 export const chambersOfXericCL = resolveItems([
 	'Olmlet',
 	'Metamorphic dust',
@@ -346,11 +341,10 @@ export const theatreOfBLoodCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5'
-	// Missing items on the Items object
-	// 'Sanguine dust',
-	// 'Holy ornament kit',
-	// 'Sanguine ornament kit'
+	'Sinhaza shroud tier 5',
+	'Sanguine dust',
+	'Holy ornament kit',
+	'Sanguine ornament kit'
 ]);
 
 export const cluesBeginnerCL = resolveItems([
@@ -1863,7 +1857,12 @@ export const capesCL = resolveItems([
 	"Xeric's warrior",
 	"Xeric's sentinel",
 	"Xeric's general",
-	"Xeric's champion"
+	"Xeric's champion",
+	'Sinhaza shroud tier 1',
+	'Sinhaza shroud tier 2',
+	'Sinhaza shroud tier 3',
+	'Sinhaza shroud tier 4',
+	'Sinhaza shroud tier 5'
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
@@ -1973,6 +1972,7 @@ export const gracefulCL = resolveItems([
 export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
+	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
 	...resolveItems(['Little parasite', 'Dark squirrel'])
 ];
@@ -1984,3 +1984,16 @@ export const antiSantaOutfit = new Bank({
 	'Antisanta gloves': 1,
 	'Antisanta boots': 1
 });
+
+export const allClueItems = [
+	...cluesBeginnerCL,
+	...cluesEasyCL,
+	...cluesEliteCL,
+	...cluesEliteRareCL,
+	...cluesHardCL,
+	...cluesHardRareCL,
+	...cluesMasterCL,
+	...cluesMasterRareCL,
+	...cluesMediumCL,
+	...cluesSharedCL
+];

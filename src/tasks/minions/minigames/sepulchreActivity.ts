@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallowedCoffin';
 
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
+import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
@@ -39,8 +40,17 @@ export default class extends Task {
 			}
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
+
+		await trackLoot({
+			loot: itemsAdded,
+			id: 'sepulchre',
+			type: 'Minigame',
+			changeType: 'loot',
+			duration: data.duration,
+			kc: quantity
+		});
 
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]

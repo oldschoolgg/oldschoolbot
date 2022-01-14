@@ -35,6 +35,9 @@ Client.defaultClientSchema
 	.add('nightmare_cost', 'any', { default: {} })
 	.add('create_cost', 'any', { default: {} })
 	.add('create_loot', 'any', { default: {} })
+	.add('tob_cost', 'any', { default: {} })
+	.add('tob_loot', 'any', { default: {} })
+	.add('degraded_items_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
 			.add('dicingBank', 'number', { default: 0 })
@@ -57,6 +60,7 @@ Client.defaultClientSchema
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_open', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_daily', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 
 	.add('locked_skills', 'any', { array: true, default: [] })
 	.add('custom_prices', 'any', { default: {} });

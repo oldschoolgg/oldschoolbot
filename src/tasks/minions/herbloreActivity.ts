@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -26,9 +27,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished making ${quantity}x ${mixableItem.name}. ${xpRes}`;
 
-		const loot = {
-			[mixableItem.id]: quantity
-		};
+		const loot = new Bank().add(mixableItem.id, quantity);
 
 		await user.addItemsToBank(loot, true);
 

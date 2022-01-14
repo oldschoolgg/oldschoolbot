@@ -10,7 +10,6 @@ export const Cookables: Cookable[] = [
 		name: 'Beef',
 		inputCookables: { [itemID('Raw beef')]: 1 },
 		stopBurnAt: 31,
-		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt meat')
 	},
 	{
@@ -20,7 +19,6 @@ export const Cookables: Cookable[] = [
 		name: 'Sinew',
 		inputCookables: { [itemID('Raw beef')]: 1 },
 		stopBurnAt: 1,
-		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt meat')
 	},
 	{
@@ -30,7 +28,6 @@ export const Cookables: Cookable[] = [
 		name: 'Shrimps',
 		inputCookables: { [itemID('Raw shrimps')]: 1 },
 		stopBurnAt: 34,
-		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt shrimp')
 	},
 	{
@@ -40,7 +37,6 @@ export const Cookables: Cookable[] = [
 		name: 'Chicken',
 		inputCookables: { [itemID('Raw chicken')]: 1 },
 		stopBurnAt: 34,
-		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt chicken')
 	},
 	{
@@ -50,7 +46,6 @@ export const Cookables: Cookable[] = [
 		name: 'Anchovies',
 		inputCookables: { [itemID('Raw anchovies')]: 1 },
 		stopBurnAt: 34,
-		stopBurnAtCG: 1,
 		burntCookable: 323
 	},
 	{
@@ -60,7 +55,6 @@ export const Cookables: Cookable[] = [
 		name: 'Sardine',
 		inputCookables: { [itemID('Raw sardine')]: 1 },
 		stopBurnAt: 37,
-		stopBurnAtCG: 1,
 		burntCookable: 369
 	},
 	{
@@ -70,7 +64,6 @@ export const Cookables: Cookable[] = [
 		name: 'Herring',
 		inputCookables: { [itemID('Raw herring')]: 1 },
 		stopBurnAt: 41,
-		stopBurnAtCG: 1,
 		burntCookable: 357
 	},
 	{
@@ -80,7 +73,6 @@ export const Cookables: Cookable[] = [
 		name: 'Mackerel',
 		inputCookables: { [itemID('Raw mackerel')]: 1 },
 		stopBurnAt: 45,
-		stopBurnAtCG: 1,
 		burntCookable: 357
 	},
 	{
@@ -90,7 +82,6 @@ export const Cookables: Cookable[] = [
 		name: 'Trout',
 		inputCookables: { [itemID('Raw trout')]: 1 },
 		stopBurnAt: 49,
-		stopBurnAtCG: 1,
 		burntCookable: 343
 	},
 	{
@@ -100,7 +91,6 @@ export const Cookables: Cookable[] = [
 		name: 'Cod',
 		inputCookables: { [itemID('Raw cod')]: 1 },
 		stopBurnAt: 52,
-		stopBurnAtCG: 1,
 		burntCookable: 343
 	},
 	{
@@ -110,7 +100,6 @@ export const Cookables: Cookable[] = [
 		name: 'Pike',
 		inputCookables: { [itemID('Raw pike')]: 1 },
 		stopBurnAt: 64,
-		stopBurnAtCG: 1,
 		burntCookable: 343
 	},
 	{
@@ -120,7 +109,6 @@ export const Cookables: Cookable[] = [
 		name: 'Salmon',
 		inputCookables: { [itemID('Raw salmon')]: 1 },
 		stopBurnAt: 58,
-		stopBurnAtCG: 1,
 		burntCookable: 343
 	},
 	{
@@ -130,7 +118,6 @@ export const Cookables: Cookable[] = [
 		name: 'Tuna',
 		inputCookables: { [itemID('Raw tuna')]: 1 },
 		stopBurnAt: 63,
-		stopBurnAtCG: 1,
 		burntCookable: 367
 	},
 	{
@@ -140,7 +127,6 @@ export const Cookables: Cookable[] = [
 		name: 'Karambwan',
 		inputCookables: { [itemID('Raw karambwan')]: 1 },
 		stopBurnAt: 99,
-		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt karambwan')
 	},
 	{
@@ -151,7 +137,6 @@ export const Cookables: Cookable[] = [
 		alias: ['wine'],
 		inputCookables: { [itemID('Grapes')]: 1, [itemID('Jug of water')]: 1 },
 		stopBurnAt: 68,
-		stopBurnAtCG: 1,
 		burntCookable: itemID('Jug of bad wine')
 	},
 	{
@@ -171,7 +156,6 @@ export const Cookables: Cookable[] = [
 		name: 'Bass',
 		inputCookables: { [itemID('Raw bass')]: 1 },
 		stopBurnAt: 80,
-		stopBurnAtCG: 1,
 		burntCookable: 367
 	},
 	{
@@ -191,7 +175,7 @@ export const Cookables: Cookable[] = [
 		name: 'Monkfish',
 		inputCookables: { [itemID('Raw monkfish')]: 1 },
 		stopBurnAt: 90,
-		stopBurnAtCG: 88,
+		stopBurnAtCG: 87,
 		burntCookable: itemID('Burnt monkfish')
 	},
 	{
@@ -202,7 +186,6 @@ export const Cookables: Cookable[] = [
 		alias: ['zammy wine'],
 		inputCookables: { [itemID("Zamorak's grapes")]: 1, [itemID('Jug of water')]: 1 },
 		stopBurnAt: 125,
-		stopBurnAtCG: 125,
 		burntCookable: itemID('Jug of bad wine')
 	},
 	{
@@ -223,7 +206,6 @@ export const Cookables: Cookable[] = [
 		alias: ['sea'],
 		inputCookables: { [itemID('Raw sea turtle')]: 1 },
 		stopBurnAt: 99,
-		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt sea turtle')
 	},
 	{
@@ -244,7 +226,6 @@ export const Cookables: Cookable[] = [
 		alias: ['dark'],
 		inputCookables: { [itemID('Raw dark crab')]: 1 },
 		stopBurnAt: 99,
-		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt dark crab')
 	},
 	{
@@ -255,7 +236,6 @@ export const Cookables: Cookable[] = [
 		alias: ['manta'],
 		inputCookables: { [itemID('Raw manta ray')]: 1 },
 		stopBurnAt: 99,
-		stopBurnAtCG: 1,
 		burntCookable: itemID('Burnt manta ray')
 	}
 ];
