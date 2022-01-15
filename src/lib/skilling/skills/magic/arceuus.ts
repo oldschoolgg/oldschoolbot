@@ -26,7 +26,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 32, Prayer: 130 },
 		input: new Bank().add('Ensouled goblin head', 1).add('Body rune', 4).add('Nature rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate monkey',
@@ -34,7 +34,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 32, Prayer: 182 },
 		input: new Bank().add('Ensouled monkey head', 1).add('Body rune', 4).add('Nature rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate imp',
