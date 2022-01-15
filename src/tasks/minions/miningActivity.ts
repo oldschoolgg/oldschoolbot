@@ -112,7 +112,7 @@ export default class extends Task {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,

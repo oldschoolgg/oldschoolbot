@@ -75,7 +75,7 @@ export default class extends Task {
 				userLoot.add('Onyx');
 			}
 
-			const { itemsAdded } = await user.addItemsToBank(userLoot, true);
+			const { itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
 			totalLoot.add(itemsAdded);
 
 			const items = itemsAdded.items();

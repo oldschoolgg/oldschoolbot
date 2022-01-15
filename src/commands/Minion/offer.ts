@@ -91,7 +91,7 @@ export default class extends BotCommand {
 			loot.add(whichOfferable.table.roll(quantity));
 
 			let score = 0;
-			const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot.values(), true);
+			const { previousCL, itemsAdded } = await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 			if (whichOfferable.economyCounter) {
 				score = msg.author.settings.get(whichOfferable.economyCounter) as number;
 				if (typeof quantity !== 'number') quantity = parseInt(quantity);
@@ -141,7 +141,7 @@ export default class extends BotCommand {
 				amount: quantity * 100
 			});
 
-			const { previousCL, itemsAdded } = await msg.author.addItemsToBank(loot, true);
+			const { previousCL, itemsAdded } = await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 
 			this.notifyUniques(msg.author, egg.name, evilChickenOutfit, loot, quantity);
 

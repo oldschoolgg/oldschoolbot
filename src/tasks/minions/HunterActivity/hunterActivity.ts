@@ -146,7 +146,7 @@ export default class extends Task {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await user.addItemsToBank(loot.values(), true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		xpStr += await user.addXP({
 			skillName: SkillsEnum.Hunter,
 			amount: xpReceived,
