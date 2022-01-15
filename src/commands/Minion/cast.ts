@@ -24,7 +24,12 @@ export default class extends BotCommand {
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			description: 'Sends your minion to enchant items.',
-			examples: ['+enchant 100 opal bolts', '+enchant ruby bolts'],
+			examples: [
+				'+cast varrock teleport',
+				'+cast wind strike',
+				'+cast enchant sapphire ring',
+				'+cast enchant 10x ruby bolts'
+			],
 			categoryFlags: ['minion', 'skilling']
 		});
 	}
