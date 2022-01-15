@@ -171,7 +171,7 @@ export default class DailyCommand extends BotCommand {
 			delete loot[COINS_ID];
 		}
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		return msg.channel.sendBankImage({
 			bank: itemsAdded,

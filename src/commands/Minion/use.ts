@@ -14,7 +14,7 @@ const combinedUsables = [
 		items: ['Knife', 'Turkey'].map(getOSItem),
 		run: async (msg: KlasaMessage) => {
 			await msg.author.removeItemsFromBank(new Bank().add('Turkey'));
-			await msg.author.addItemsToBank(new Bank().add('Turkey drumstick', 3));
+			await msg.author.addItemsToBank({ items: new Bank().add('Turkey drumstick', 3), collectionLog: true });
 			return msg.channel.send('You cut your Turkey into 3 drumsticks!');
 		}
 	},
@@ -22,7 +22,7 @@ const combinedUsables = [
 		items: ['Shiny mango', 'Magus scroll'].map(getOSItem),
 		run: async (msg: KlasaMessage) => {
 			await msg.author.removeItemsFromBank(new Bank().add('Shiny mango').add('Magus scroll'));
-			await msg.author.addItemsToBank(new Bank().add('Magical mango'));
+			await msg.author.addItemsToBank({ items: new Bank().add('Magical mango'), collectionLog: true });
 			return msg.channel.send('You enchanted your Shiny mango into a Magical mango!');
 		}
 	},
@@ -50,7 +50,7 @@ const combinedUsables = [
 				return msg.channel.send("Blabberbeak doesn't trust you, they won't eat it.");
 			}
 			await msg.author.removeItemsFromBank(new Bank().add('Magical mango').add('Blabberbeak'));
-			await msg.author.addItemsToBank(new Bank().add('Mangobeak'), true);
+			await msg.author.addItemsToBank({ items: new Bank().add('Mangobeak'), collectionLog: true });
 			return msg.channel.send(
 				'You fed a Magical mango to Blabberbeak, and he transformed into a weird-looking mango bird, oops.'
 			);
@@ -227,7 +227,7 @@ export default class extends BotCommand {
 					return msg.channel.send("You don't own that.");
 				}
 				await msg.author.removeItemsFromBank(cost);
-				await msg.author.addItemsToBank(new Bank().add(dyeToApply.item.id));
+				await msg.author.addItemsToBank({ items: new Bank().add(dyeToApply.item.id), collectionLog: false });
 				return msg.channel.send(
 					`You redyed your ${dyedVariantTheyHave.item.name} into a ${dyeToApply.item.name} using a ${dyeToApply.dye.name}.`
 				);

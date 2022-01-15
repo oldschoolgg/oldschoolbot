@@ -42,7 +42,7 @@ export default class extends BotCommand {
 
 		const boxToReceive = new Bank().add(roll(10) ? getRandomMysteryBox() : itemID('Mystery box'));
 
-		await user.addItemsToBank(boxToReceive);
+		await user.addItemsToBank({ items: boxToReceive, collectionLog: false });
 
 		return msg.channel.send(`Gave **${boxToReceive}** to ${user.username}.`);
 	}

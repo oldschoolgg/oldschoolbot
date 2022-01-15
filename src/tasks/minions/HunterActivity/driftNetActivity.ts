@@ -94,7 +94,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished drift net fishing and caught ${quantity}x ${fishShoal.name}.${xpRes}${shelldonStr}\n${user.minionName} asks if you'd like them to do another of the same trip.`;
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		str += `\n\nYou received: ${loot}.`;
 
 		handleTripFinish(

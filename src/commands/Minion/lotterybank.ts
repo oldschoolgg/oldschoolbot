@@ -207,7 +207,10 @@ WHERE bank->>'5021' IS NOT NULL;`
 - This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.`
 		);
 
-		await msg.author.addItemsToBank({ [itemID('Bank lottery ticket')]: amountOfTickets }, true);
+		await msg.author.addItemsToBank({
+			items: { [itemID('Bank lottery ticket')]: amountOfTickets },
+			collectionLog: true
+		});
 		await msg.author.removeItemsFromBank(bankToSell);
 
 		await this.client.settings.update(

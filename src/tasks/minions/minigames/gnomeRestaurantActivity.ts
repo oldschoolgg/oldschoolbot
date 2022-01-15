@@ -84,7 +84,7 @@ export default class extends Task {
 			loot.multiply(2);
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Cooking,
 			amount: totalXP,

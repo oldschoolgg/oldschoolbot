@@ -43,7 +43,7 @@ export default class extends Task {
 
 			for (const brokenGear of objectEntries(calc.brokenGear)) {
 				const brokenItem = getOSItem(brokenGear[0]);
-				await user.addItemsToBank(new Bank().add(brokenGear[1]));
+				await user.addItemsToBank({ items: new Bank().add(brokenGear[1]), collectionLog: false });
 				extraMsg += `\nYour ${brokenItem.name} broke and was sent to your bank as a ${brokenGear[1]}.`;
 			}
 
@@ -90,7 +90,7 @@ export default class extends Task {
 
 		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, false);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 		await user.addItemsToCollectionLog(clLoot.bank);
 
 		const { image } = await this.client.tasks

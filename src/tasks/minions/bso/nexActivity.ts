@@ -108,7 +108,7 @@ export default class extends Task {
 				});
 			}
 			totalLoot.add(loot);
-			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 			if (user.id === userID) {
 				soloXP = xpStr;

@@ -62,7 +62,7 @@ export default class extends Task {
 			);
 		}
 		if (loot) {
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 		}
 
 		let str = `${user}, ${user.minionName} finished gaining ${favour.name} Favour, adding ${favourPoints}%.${

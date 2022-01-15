@@ -136,7 +136,9 @@ export default class extends BotCommand {
 			newGear[slot] = null;
 
 			await msg.author.addItemsToBank({
-				[equippedInThisSlot.item]: equippedInThisSlot.quantity
+				items: {
+					[equippedInThisSlot.item]: equippedInThisSlot.quantity
+				}
 			});
 			await msg.author.settings.update(gearTypeSetting, newGear);
 			msg.flagArgs.cf = '1';

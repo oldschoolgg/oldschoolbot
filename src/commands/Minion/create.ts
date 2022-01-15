@@ -223,7 +223,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(inItems);
-		await msg.author.addItemsToBank(outItems);
+		await msg.author.addItemsToBank({ items: outItems });
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateCost, inItems);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateLoot, outItems);

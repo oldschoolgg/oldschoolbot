@@ -94,7 +94,7 @@ export default class extends Task {
 			boxScrollChance += Math.floor(differenceFromMax * 11.5);
 			for (let i = 0; i < quantity; i++) {
 				if (u.bank().has('Scroll of mystery') && roll(boxScrollChance)) {
-					await u.addItemsToBank({ [getRandomMysteryBox()]: 1 });
+					await u.addItemsToBank({ items: new Bank().add(getRandomMysteryBox(), 1), collectionLog: true });
 					if (!gotMysteryBox) gotMysteryBox = true;
 				}
 			}
@@ -115,11 +115,11 @@ export default class extends Task {
 				if (isDoubleLootActive(this.client, duration)) {
 					quantity *= 2;
 				}
-				await u.addItemsToBank(new Bank().add('Gorajan shards', quantity), true);
+				await u.addItemsToBank({ items: new Bank().add('Gorajan shards', quantity), collectionLog: true });
 			}
 			if (floor === 7 && roll(Math.floor(20_000 / minutes))) {
 				str += ' **1x Gorajan bonecrusher (u)**';
-				await u.addItemsToBank(new Bank().add('Gorajan bonecrusher (u)'), true);
+				await u.addItemsToBank({ items: new Bank().add('Gorajan bonecrusher (u)'), collectionLog: true });
 			}
 			str += '\n';
 		}

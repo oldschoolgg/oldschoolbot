@@ -66,7 +66,7 @@ export default class extends Task {
 				}
 			}
 
-			await user.addItemsToBank(itemLootBank);
+			await user.addItemsToBank({ items: itemLootBank, collectionLog: false });
 
 			return handleTripFinish(
 				this.client,
@@ -87,7 +87,7 @@ export default class extends Task {
 
 		if (diedToJad) {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
-			await user.addItemsToBank(failBank, true);
+			await user.addItemsToBank({ items: failBank, collectionLog: true });
 
 			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
 			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
@@ -148,7 +148,7 @@ export default class extends Task {
 			loot.multiply(2);
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration });
 		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration });

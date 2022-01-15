@@ -38,7 +38,7 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 
 		if (users.length === 0 || !channel || !message) {
 			console.error('Giveaway failed');
-			await creator.addItemsToBank(loot);
+			await creator.addItemsToBank({ items: loot });
 			creator.send(`Your giveaway failed to finish, you were refunded the items: ${new Bank(loot)}.`).catch(noOp);
 
 			if (message && channel) {
@@ -48,7 +48,7 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 		}
 
 		const winner = randArrItem(users);
-		await winner.addItemsToBank(loot);
+		await winner.addItemsToBank({ items: loot });
 
 		const osBank = new Bank(loot);
 		client.emit(

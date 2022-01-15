@@ -253,7 +253,7 @@ export default class DailyCommand extends BotCommand {
 				addBanks([msg.author.settings.get(UserSettings.ItemContractBank), cost.bank])
 			),
 			msg.author.removeItemsFromBank(cost),
-			msg.author.addItemsToBank(loot),
+			msg.author.addItemsToBank({ items: loot, collectionLog: false }),
 			msg.author.settings.update(UserSettings.ItemContractStreak, newStreak)
 		]);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.ItemContractCost, cost);

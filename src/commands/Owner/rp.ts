@@ -199,7 +199,7 @@ export default class extends BotCommand {
 				if (input.id === msg.author.id) {
 					return msg.channel.send("You can't give boxes to yourself!");
 				}
-				await input.addItemsToBank(new Bank().add('Tester gift box'));
+				await input.addItemsToBank({ items: new Bank().add('Tester gift box'), collectionLog: true });
 				return msg.channel.send(`Gave 1x Tester gift box to ${input.username}.`);
 			}
 			case 'pingmass':

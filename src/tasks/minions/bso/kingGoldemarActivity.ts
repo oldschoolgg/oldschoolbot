@@ -93,7 +93,7 @@ export default class extends Task {
 				isOnTask: false,
 				taskQuantity: null
 			});
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 			resultStr += `\n${user} received ${loot}.`;
 		}
 		updateBankSetting(this.client, ClientSettings.EconomyStats.KingGoldemarLoot, totalLoot);

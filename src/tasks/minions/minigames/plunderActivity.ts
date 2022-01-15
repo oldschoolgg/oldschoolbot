@@ -37,7 +37,7 @@ export default class extends Task {
 			loot.multiply(2);
 		}
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: thievingXP });
 
 		let str = `${user}, ${

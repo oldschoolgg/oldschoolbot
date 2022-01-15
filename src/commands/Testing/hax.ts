@@ -44,7 +44,7 @@ export default class extends BotCommand {
 				.add('Vial of blood', 10_000)
 				.add('Rune pouch', 1)
 				.add('Toxic blowpipe');
-			await msg.author.addItemsToBank(loot);
+			await msg.author.addItemsToBank({ items: loot, collectionLog: false });
 			await msg.author.settings.update(UserSettings.Blowpipe, {
 				scales: 100_000,
 				dartQuantity: 100_000,
@@ -74,7 +74,7 @@ export default class extends BotCommand {
 				pool: 29_241
 			}
 		});
-		msg.author.addItemsToBank(bank.bank);
+		msg.author.addItemsToBank({ items: bank });
 
 		if (msg.flagArgs.gora) {
 			await msg.author.settings.update(UserSettings.Gear.Melee, {

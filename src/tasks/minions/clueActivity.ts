@@ -68,7 +68,7 @@ export default class extends Task {
 
 			str += `\n\nZippy has found these items for you: ${new Bank(bonusLoot)}`;
 		}
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		this.client.emit(
 			Events.Log,

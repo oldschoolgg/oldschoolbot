@@ -47,7 +47,7 @@ export default class extends BotCommand {
 			);
 
 			await msg.author.removeGP(cost);
-			await msg.author.addItemsToBank({ [masterCape.item.id]: 1 }, true);
+			await msg.author.addItemsToBank({ items: { [masterCape.item.id]: 1 }, collectionLog: true });
 			await this.client.settings.update(
 				ClientSettings.EconomyStats.BuyCostBank,
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add('Coins', cost).bank
@@ -85,7 +85,7 @@ export default class extends BotCommand {
 		);
 
 		await msg.author.removeGP(skillCapeCost);
-		await msg.author.addItemsToBank(itemsToPurchase, true);
+		await msg.author.addItemsToBank({ items: itemsToPurchase, collectionLog: true });
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.BuyCostBank,
 			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add('Coins', skillCapeCost).bank

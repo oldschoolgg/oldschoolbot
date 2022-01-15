@@ -225,7 +225,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			for (const [id] of entries) {
 				try {
 					const user = await this.client.fetchUser(id);
-					await user.addItemsToBank(loot, true);
+					await user.addItemsToBank({ items: loot, collectionLog: true });
 				} catch {}
 			}
 			const newT: MegaDuckLocation = {

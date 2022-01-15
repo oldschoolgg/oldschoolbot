@@ -84,7 +84,7 @@ export default class extends Task {
 
 		loot.add(roll(2) ? ClueTable.roll() : MysteryBoxes.roll());
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		let fishingXP = calculateFishingContestXP({
 			fishSizeCM: caughtFish[0].lengthCentimetres,

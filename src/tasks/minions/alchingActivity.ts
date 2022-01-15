@@ -42,7 +42,7 @@ export default class extends Task {
 			loot.add('Lil lamb');
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchValue);
 
 		const xpReceived = quantity * 65;

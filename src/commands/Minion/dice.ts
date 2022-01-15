@@ -54,7 +54,7 @@ export default class extends BotCommand {
 			}
 
 			if (amount >= 100_000_000 && won && percentChance(3)) {
-				await msg.author.addItemsToBank(new Bank().add('Gamblers bag'), true);
+				await msg.author.addItemsToBank({ items: new Bank().add('Gamblers bag'), collectionLog: true });
 				return msg.channel.send(
 					`${msg.author.username} rolled **${roll}** on the percentile dice, and you won ${Util.toKMB(
 						amountToAdd

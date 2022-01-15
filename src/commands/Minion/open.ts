@@ -157,7 +157,7 @@ export default class extends BotCommand {
 		);
 
 		const previousCL = msg.author.cl();
-		await msg.author.addItemsToBank(loot, true);
+		await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 		if (loot.has(COINS_ID)) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount(COINS_ID));
 		}
@@ -207,7 +207,7 @@ export default class extends BotCommand {
 
 		msg.author.incrementOpenableScore(osjsOpenable.id, quantity);
 		const previousCL = msg.author.cl();
-		await msg.author.addItemsToBank(loot, true);
+		await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 		if (loot.has(COINS_ID)) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount(COINS_ID));
 		}
@@ -281,7 +281,7 @@ export default class extends BotCommand {
 
 		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
 		const previousCL = msg.author.cl();
-		await msg.author.addItemsToBank(loot.values(), true, false);
+		await msg.author.addItemsToBank({ items: loot, collectionLog: true, filterLoot: false });
 		if (loot.amount('Coins') > 0) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
 		}

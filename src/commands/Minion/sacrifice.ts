@@ -66,7 +66,7 @@ export default class extends BotCommand {
 
 			const loot = new Bank().add('Death rune', deathRunes);
 			await msg.author.removeItemsFromBank(bankToSac);
-			await msg.author.addItemsToBank(loot);
+			await msg.author.addItemsToBank({ items: loot, collectionLog: false });
 			const sacBank = await trackSacBank(msg.author, bankToSac);
 			let totalCatsSacrificed = 0;
 			for (const cat of cats) {
@@ -101,7 +101,7 @@ export default class extends BotCommand {
 
 		if (totalPrice >= 30_000_000 && roll(10)) {
 			str += 'You received a *Hunk of crystal*.';
-			await msg.author.addItemsToBank({ 742: 1 }, true);
+			await msg.author.addItemsToBank({ items: { 742: 1 }, collectionLog: true });
 		}
 
 		let gotHammy = false;
@@ -112,7 +112,7 @@ export default class extends BotCommand {
 			}
 		}
 		if (gotHammy) {
-			await msg.author.addItemsToBank(new Bank().add('Hammy'), true);
+			await msg.author.addItemsToBank({ items: new Bank().add('Hammy'), collectionLog: true });
 		}
 
 		const newValue = sacVal + totalPrice;

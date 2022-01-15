@@ -52,7 +52,7 @@ export default class extends BotCommand {
 		}
 		if (!item) return msg.channel.send('You have no items!');
 		await msg.author.removeItemsFromBank(new Bank().add(item.id, item.qty));
-		await user.addItemsToBank({ [item.id]: item.qty }, false, false);
+		await user.addItemsToBank({ items: { [item.id]: item.qty }, collectionLog: false, filterLoot: false });
 
 		return msg.channel.send(
 			`You gave ${item.qty.toLocaleString()}x ${itemNameFromID(item.id)} to ${user.username}.`

@@ -115,7 +115,7 @@ export default class extends Task {
 			loot = multiplyBank(loot, 2);
 		}
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(

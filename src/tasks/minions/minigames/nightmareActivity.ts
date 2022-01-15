@@ -99,7 +99,7 @@ export default class extends Task {
 			});
 
 			// Fix purple items on solo kills
-			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 			totalLoot.add(itemsAdded);
 

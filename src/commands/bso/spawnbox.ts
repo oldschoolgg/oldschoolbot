@@ -35,7 +35,7 @@ export default class extends BotCommand {
 		const winner = await item(msg);
 		if (winner) {
 			const loot = new Bank().add(getRandomMysteryBox());
-			await winner.addItemsToBank(loot);
+			await winner.addItemsToBank({ items: loot, collectionLog: false });
 			return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**.`);
 		}
 	}

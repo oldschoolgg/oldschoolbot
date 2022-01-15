@@ -95,7 +95,7 @@ export default class extends Task {
 			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
 			totalLoot.add(loot);
-			const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+			const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementMonsterScore(KalphiteKingMonster.id, kcToAdd);
 			const purple = Object.keys(loot).some(id => kalphiteKingCL.includes(parseInt(id)));

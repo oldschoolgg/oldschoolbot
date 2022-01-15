@@ -92,7 +92,7 @@ export default class extends Task {
 			for (let i = 0; i < birdHouses; i++) {
 				loot.add(birdhouseToCollect.table.roll());
 			}
-			await user.addItemsToBank(loot.values(), true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 			await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
 			const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 

@@ -102,7 +102,7 @@ export default class extends Task {
 			);
 		}
 
-		const { itemsAdded } = await user.addItemsToBank(loot, true);
+		const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,

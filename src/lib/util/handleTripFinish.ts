@@ -68,7 +68,7 @@ export async function handleTripFinish(
 		const otherLoot = new Bank().add(getRandomMysteryBox());
 		const bonusLoot = new Bank().add(loot).add(otherLoot);
 		message += `\n<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`;
-		await user.addItemsToBank(bonusLoot, true);
+		await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
 		updateBankSetting(client, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
 	}
 
@@ -128,7 +128,7 @@ export async function handleTripFinish(
 		if (bonusLoot.has('Coins')) {
 			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePet, bonusLoot.amount('Coins'));
 		}
-		await user.addItemsToBank(bonusLoot.bank, true);
+		await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
 	}
 	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 		const GP = loot.amount(COINS_ID);
@@ -192,7 +192,7 @@ export async function handleTripFinish(
 			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${
 				imp.bank
 			}.`;
-			await user.addItemsToBank(imp.bank, true);
+			await user.addItemsToBank({ items: imp.bank, collectionLog: true });
 		}
 
 		if (imp.missed.length > 0) {

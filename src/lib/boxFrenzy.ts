@@ -29,7 +29,7 @@ export async function boxFrenzy(channel: TextChannel, content: string, quantity:
 				if (isRight) {
 					const item = isRight[0];
 					const box = getRandomMysteryBox();
-					_msg.author.addItemsToBank({ [box]: 1 });
+					_msg.author.addItemsToBank({ items: { [box]: 1 }, collectionLog: true });
 					guessed.add(item.id);
 					_msg.channel.send(
 						`${_msg.author}, you guessed one of the items correctly and received 1x ${itemNameFromID(box)}.`

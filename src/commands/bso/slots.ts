@@ -157,7 +157,7 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`);
 		await sleep(2000);
 		sentMessage?.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [] }) }).catch(noOp);
 
-		await msg.author.addItemsToBank(new Bank().add('Coins', amountReceived));
+		await msg.author.addItemsToBank({ items: new Bank().add('Coins', amountReceived), collectionLog: false });
 		await updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceSlots, amountReceived - amount);
 		await updateGPTrackSetting(msg.author, UserSettings.GPSlots, amountReceived - amount);
 

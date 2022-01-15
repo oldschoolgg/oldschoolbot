@@ -109,7 +109,10 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 				}
 			}
 
-			const { itemsAdded } = await user.addItemsToBank(userLoot.clone().add('Coins', 100_000), true);
+			const { itemsAdded } = await user.addItemsToBank({
+				items: userLoot.clone().add('Coins', 100_000),
+				collectionLog: true
+			});
 			totalLoot.add(itemsAdded);
 
 			const items = itemsAdded.items();

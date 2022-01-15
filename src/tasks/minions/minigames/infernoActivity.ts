@@ -146,7 +146,7 @@ export default class extends Task {
 		}
 
 		if (unusedItems.length > 0) {
-			await user.addItemsToBank(unusedItems, false);
+			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
 
 			const current = new Bank(this.client.settings.get(ClientSettings.EconomyStats.InfernoCost));
 			const newBank = current.remove(unusedItems);
@@ -245,7 +245,7 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(baseBank, true);
+		await user.addItemsToBank({ items: baseBank, collectionLog: true });
 
 		handleTripFinish(
 			this.client,

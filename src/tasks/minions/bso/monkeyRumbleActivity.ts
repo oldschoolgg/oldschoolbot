@@ -81,7 +81,7 @@ export default class extends Task {
 			loot.add(baseTable.roll());
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		updateBankSetting(this.client, ClientSettings.EconomyStats.MonkeyRumbleLoot, loot);
 
 		const rumbleTokensPerHour = `${Math.round((tokens / (duration / Time.Minute)) * 60).toLocaleString()}`;

@@ -79,7 +79,7 @@ export default class extends Task {
 			isOnTask: false,
 			taskQuantity: null
 		});
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		await trackLoot({
 			duration,
 			teamSize: 1,

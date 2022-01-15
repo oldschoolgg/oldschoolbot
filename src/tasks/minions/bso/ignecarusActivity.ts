@@ -102,7 +102,7 @@ export default class extends Task {
 				isOnTask,
 				taskQuantity: quantity
 			});
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 			const purple = Object.keys(loot.bank).some(itemID => IgnecarusNotifyDrops.includes(parseInt(itemID)));
 			resultStr += `\n${purple ? Emoji.Purple : ''}${user} received ${loot}.`;
 

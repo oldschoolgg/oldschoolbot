@@ -86,7 +86,7 @@ export default class extends Task {
 			loot.multiply(2);
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		let str = `${user}, ${
 			user.minionName

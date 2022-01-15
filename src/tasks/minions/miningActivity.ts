@@ -166,7 +166,7 @@ export default class extends Task {
 			str += '\n2x minerals/nuggets for Mining master cape.';
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,

@@ -46,7 +46,7 @@ export default class extends Task {
 
 		const loot = new Bank().add(mixableItem.id, quantity);
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,

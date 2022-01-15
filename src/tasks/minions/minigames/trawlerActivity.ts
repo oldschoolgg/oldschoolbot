@@ -64,7 +64,7 @@ export default class extends Task {
 			str += '\nYou received **2x** extra fish from Shelldon helping you.';
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });

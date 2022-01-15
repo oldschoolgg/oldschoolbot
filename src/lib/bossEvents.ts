@@ -118,7 +118,7 @@ export const bossEvents: BossEvent[] = [
 
 			for (const [id, bank] of Object.entries(userLoot)) {
 				const user = bossUsers.find(u => u.user.id === id)!;
-				await user.user.addItemsToBank(bank, true);
+				await user.user.addItemsToBank({ items: bank, collectionLog: true });
 			}
 
 			sendToChannelID(client, data.channelID, {

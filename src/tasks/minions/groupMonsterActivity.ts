@@ -48,12 +48,11 @@ export default class extends Task {
 				taskQuantity: null
 			});
 			totalLoot.add(loot);
-			await user.addItemsToBank(loot, true);
 			const kcToAdd = kcAmounts[user.id];
 			if (user.equippedPet() === itemID('Ori') && duration > Time.Minute * 5) {
 				loot.bank = addBanks([monster.table.kill(Math.ceil(kcToAdd * 0.25), {}).bank ?? {}, loot.bank]);
 			}
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 			totalLoot.add(loot);
 
 			if (kcToAdd) await user.incrementMonsterScore(monsterID, kcToAdd);

@@ -47,7 +47,7 @@ export default class extends Task {
 		if (roll(350)) {
 			str +=
 				'\n<:zippy:749240799090180196> While you walk through the forest north of falador, a small ferret jumps onto your back and joins you on your adventures!';
-			await user.addItemsToBank(new Bank().add('Zippy'), true);
+			await user.addItemsToBank({ items: new Bank().add('Zippy'), collectionLog: true });
 		}
 
 		const magicXP = user.settings.get(UserSettings.Skills.Magic);

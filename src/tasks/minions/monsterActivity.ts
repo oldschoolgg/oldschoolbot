@@ -274,7 +274,7 @@ export default class extends Task {
 			});
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		await trackLoot({
 			loot: itemsAdded,

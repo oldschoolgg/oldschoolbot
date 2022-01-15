@@ -91,7 +91,7 @@ export default class ODSCommand extends BotCommand {
 		}
 
 		await msg.author.settings.update(UserSettings.OuraniaTokens, balance - cost);
-		await msg.author.addItemsToBank({ [item.id]: qty }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
 
 		return msg.channel.send(
 			`Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${cost.toLocaleString()} Ourania Tokens.`

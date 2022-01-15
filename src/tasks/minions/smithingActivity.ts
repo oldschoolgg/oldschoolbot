@@ -37,7 +37,7 @@ export default class extends Task {
 			str += '\n**10%** Bonus XP For Blacksmith Outfit';
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,

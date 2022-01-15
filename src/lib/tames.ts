@@ -305,7 +305,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			if (boosts.length > 0) {
 				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 			}
-			const { itemsAdded } = await user.addItemsToBank(loot);
+			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			await trackLoot({
 				duration: activity.duration,
 				kc: activityData.quantity,
@@ -331,7 +331,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
-			const { itemsAdded } = await user.addItemsToBank(loot);
+			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,
 				message: str,

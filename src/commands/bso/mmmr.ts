@@ -125,7 +125,7 @@ Here are the items you can buy: \n\n${buyables
 			if (msg.author.hasItemEquippedOrInBank('Beginner rumble greegree')) {
 				return msg.channel.send('You already have one.');
 			}
-			await msg.author.addItemsToBank({ [beginnerGreegree.id]: qty }, true);
+			await msg.author.addItemsToBank({ items: { [beginnerGreegree.id]: qty }, collectionLog: true });
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({
@@ -157,7 +157,7 @@ Here are the items you can buy: \n\n${buyables
 		}
 
 		await msg.author.removeItemsFromBank(new Bank().add('Rumble token', cost * qty));
-		await msg.author.addItemsToBank({ [item.id]: qty }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
 
 		return msg.channel.send(`Successfully purchased ${qty}x ${item.name} for ${qty * cost} Rumble tokens.`);
 	}

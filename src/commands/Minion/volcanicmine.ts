@@ -130,7 +130,10 @@ export default class extends BotCommand {
 		if (shopItem.clOnly) {
 			await msg.author.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity).bank);
 		} else {
-			await msg.author.addItemsToBank(new Bank().add(shopItem.output).multiply(quantity), true);
+			await msg.author.addItemsToBank({
+				items: new Bank().add(shopItem.output).multiply(quantity),
+				collectionLog: true
+			});
 		}
 		await msg.author.settings.update(UserSettings.VolcanicMinePoints, currentUserPoints - shopItem.cost * quantity);
 

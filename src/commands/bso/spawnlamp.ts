@@ -72,7 +72,7 @@ export default class extends BotCommand {
 			if (!col) return;
 			const winner = col.author!;
 			const box = LampTable.roll();
-			await winner.addItemsToBank(box);
+			await winner.addItemsToBank({ items: box, collectionLog: false });
 			return msg.channel.send(
 				`Congratulations, ${winner}! You got it! It was: ${level}. I've given you: **${box}**.`
 			);

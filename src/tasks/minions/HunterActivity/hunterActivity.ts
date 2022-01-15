@@ -183,7 +183,7 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(loot.values(), true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 

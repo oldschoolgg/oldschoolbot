@@ -394,7 +394,7 @@ export default class MinionCommand extends BotCommand {
 			: null;
 
 		if (starter) {
-			await msg.author.addItemsToBank(starter);
+			await msg.author.addItemsToBank({ items: starter, collectionLog: false });
 		}
 
 		return msg.channel.send({
