@@ -588,7 +588,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Demonic offering fiendish',
 		levels: { Magic: 84 },
-		xp: { Magic: 175, Prayer: 270 },
+		xp: { Magic: 175, Prayer: 90 },
 		input: new Bank().add('Fiendish ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -596,7 +596,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Demonic offering vile',
 		levels: { Magic: 84 },
-		xp: { Magic: 175, Prayer: 675 },
+		xp: { Magic: 175, Prayer: 225 },
 		input: new Bank().add('Vile ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -604,7 +604,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Demonic offering malicious',
 		levels: { Magic: 84 },
-		xp: { Magic: 175, Prayer: 1755 },
+		xp: { Magic: 175, Prayer: 585 },
 		input: new Bank().add('Malicious ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -612,7 +612,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Demonic offering abyssal',
 		levels: { Magic: 84 },
-		xp: { Magic: 175, Prayer: 2295 },
+		xp: { Magic: 175, Prayer: 765 },
 		input: new Bank().add('Abyssal ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -620,7 +620,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Demonic offering infernal',
 		levels: { Magic: 84 },
-		xp: { Magic: 175, Prayer: 2970 },
+		xp: { Magic: 175, Prayer: 990 },
 		input: new Bank().add('Infernal ashes', 3).add('Soul rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -677,7 +677,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 121.5 },
+		xp: { Magic: 180, Prayer: 40.5 },
 		input: new Bank().add('Bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -685,7 +685,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering monkey bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 135 },
+		xp: { Magic: 180, Prayer: 45 },
 		input: new Bank().add('Monkey bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -693,7 +693,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering bat bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 143.1 },
+		xp: { Magic: 180, Prayer: 47.7 },
 		input: new Bank().add('Bat bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -701,7 +701,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering big bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 405 },
+		xp: { Magic: 180, Prayer: 135 },
 		input: new Bank().add('Big bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -709,7 +709,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering jogre bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 405 },
+		xp: { Magic: 180, Prayer: 135 },
 		input: new Bank().add('Jogre bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -717,7 +717,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering zogre bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 607.5 },
+		xp: { Magic: 180, Prayer: 202.5 },
 		input: new Bank().add('Zogre bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -725,7 +725,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering shaikahan bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 675 },
+		xp: { Magic: 180, Prayer: 225 },
 		input: new Bank().add('Shaikahan bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -733,7 +733,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering babydragon bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 810 },
+		xp: { Magic: 180, Prayer: 270 },
 		input: new Bank().add('Babydragon bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -741,7 +741,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering wyrm bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 1350 },
+		xp: { Magic: 180, Prayer: 450 },
 		input: new Bank().add('Wyrm bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -749,7 +749,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering dragon bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 1944 },
+		xp: { Magic: 180, Prayer: 648 },
 		input: new Bank().add('Dragon bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -757,7 +757,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering wyvern bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 1944 },
+		xp: { Magic: 180, Prayer: 648 },
 		input: new Bank().add('Wyvern bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -765,7 +765,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering drake bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 2160 },
+		xp: { Magic: 180, Prayer: 720 },
 		input: new Bank().add('Drake bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -773,7 +773,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering fayrg bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 2268 },
+		xp: { Magic: 180, Prayer: 756 },
 		input: new Bank().add('Fayrg bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -781,7 +781,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering lava dragon bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 2295 },
+		xp: { Magic: 180, Prayer: 765 },
 		input: new Bank().add('Lava dragon bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -789,7 +789,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering raurg bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 2592 },
+		xp: { Magic: 180, Prayer: 864 },
 		input: new Bank().add('Raurg bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -797,7 +797,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering hydra bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 2970 },
+		xp: { Magic: 180, Prayer: 990 },
 		input: new Bank().add('Hydra bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -805,7 +805,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering dagannoth bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 3375 },
+		xp: { Magic: 180, Prayer: 1125 },
 		input: new Bank().add('Dagannoth bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -813,7 +813,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering ourg bones',
 		levels: { Magic: 92 },
-		xp: { Magic: 180, Prayer: 3780 },
+		xp: { Magic: 180, Prayer: 1260 },
 		input: new Bank().add('Ourg bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
@@ -821,7 +821,7 @@ const Arceuus: Castable[] = [
 	{
 		name: 'Sinister offering superior dragon bones',
 		levels: { Magic: 92, Prayer: 70 },
-		xp: { Magic: 180, Prayer: 4050 },
+		xp: { Magic: 180, Prayer: 1350 },
 		input: new Bank().add('Superior dragon bones', 3).add('Blood rune', 1).add('Wrath rune', 1),
 		category: MagicTypes.Skilling,
 		ticks: 8
