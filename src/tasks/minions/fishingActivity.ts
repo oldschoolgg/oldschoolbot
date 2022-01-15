@@ -205,10 +205,8 @@ export default class extends Task {
 		str += `\n\nYou received: ${loot}.`;
 
 		if (blessingEquipped) {
-			str += 
-			`\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`
+			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
 		}
-
 
 		handleTripFinish(
 			this.client,
