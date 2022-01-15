@@ -12,15 +12,17 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
 function radasBlessing(user: KlasaUser) {
-	const skillingGear = user.getGear('skilling');
-	if (skillingGear.hasEquipped(itemID("Rada's Blessing 4"))) {
-		return { blessingEquipped: true, blessingChance: 8 };
-	} else if (skillingGear.hasEquipped(itemID("Rada's Blessing 3"))) {
-		return { blessingEquipped: true, blessingChance: 6 };
-	} else if (skillingGear.hasEquipped(itemID("Rada's Blessing 2"))) {
-		return { blessingEquipped: true, blessingChance: 4 };
-	} else if (skillingGear.hasEquipped(itemID("Rada's Blessing 1"))) {
-		return { blessingEquipped: true, blessingChance: 2 };
+	const blessingBoosts = [
+		["Rada's blessing 4", 8],
+		["Rada's blessing 3", 6],
+		["Rada's blessing 2", 4],
+		["Rada's blessing 1", 2]
+	];
+
+	for (const [itemName, boostPercent] of blessingBoosts) {
+		if (user.hasItemEquippedAnywhere(itemName)) {
+			return { blessingEquipped: true, blessingChance: boostPercent as number };
+		}
 	}
 	return { blessingEquipped: false, blessingChance: 0 };
 }
