@@ -1,6 +1,7 @@
 import { Bank, Misc, Monsters } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
+import { gauntlet } from '../simulation/gauntlet';
 import { KillWorkerArgs } from '.';
 
 export function cleanString(str: string) {
@@ -38,6 +39,28 @@ export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs
 			]);
 		}
 		return new Bank(bank);
+	}
+	
+	if (['gauntlet', 'the gauntlet'].some(alias => stringMatches(alias, bossName))) {
+		let bank = new Bank();
+		if (quantity > 2_000) {
+			return 'I can only do a maximum of 2k gauntlet kills at a time!';
+		}
+		for (let i = 0; i < quantity; i++) {
+			bank.add(gauntlet({ died: false, type: 'normal' }));
+		}
+		return bank;
+	}
+	
+	if (['corrupted gauntlet', 'cgaunt', 'cg'].some(alias => stringMatches(alias, bossName))) {
+		let bank = new Bank();
+		if (quantity > 2_000) {
+			return 'I can only do a maximum of 2k corrupted gauntlet kills at a time!';
+		}
+		for (let i = 0; i < quantity; i++) {
+			bank.add(gauntlet({ died: false, type: 'corrupted' }));
+		}
+		return bank;
 	}
 
 	return "I don't have that monster!";
