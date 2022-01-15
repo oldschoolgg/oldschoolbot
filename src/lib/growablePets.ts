@@ -79,7 +79,7 @@ export async function handleGrowablePetGrowth(
 			nextPet = equippedGrowablePet.shinyVersion;
 		}
 		await user.settings.update(UserSettings.Minion.EquippedPet, nextPet);
-		await user.addItemsToCollectionLog(new Bank().add(nextPet).bank);
+		await user.addItemsToCollectionLog({ items: new Bank().add(nextPet) });
 		return `${message}\n\nYour ${itemNameFromID(equippedPet)} grew into a ${itemNameFromID(nextPet)}!`;
 	}
 	return message;

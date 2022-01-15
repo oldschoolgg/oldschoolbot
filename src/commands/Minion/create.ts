@@ -229,7 +229,7 @@ export default class extends BotCommand {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateLoot, outItems);
 
 		// Only allow +create to add items to CL
-		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog(outItems.bank);
+		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog({ items: outItems });
 
 		if (cmd === 'revert') {
 			return msg.channel.send(`You reverted ${inputItemsString} into ${outputItemsString}.`);

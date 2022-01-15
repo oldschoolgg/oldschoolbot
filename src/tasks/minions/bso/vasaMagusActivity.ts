@@ -66,7 +66,7 @@ export default class extends Task {
 		let pet = user.settings.get(UserSettings.Minion.EquippedPet);
 		if (pet && kittens.includes(pet) && roll(1)) {
 			await user.settings.update(UserSettings.Minion.EquippedPet, getOSItem('Magic kitten').id);
-			await user.addItemsToCollectionLog(new Bank().add('Magic kitten').bank);
+			await user.addItemsToCollectionLog({ items: new Bank().add('Magic kitten') });
 			resultStr += `\n**Vasa cast a spell on you, but your ${itemNameFromID(
 				pet
 			)} jumped in the way to save you! Strangely, it didn't hurt them at all.**\n`;
