@@ -56,7 +56,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints - titheFarmPointsCost);
 
-		await msg.author.addItemsToBank(outItems, true);
+		await msg.author.addItemsToBank({ items: outItems, collectionLog: true });
 
 		return msg.channel.send(`You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points.`);
 	}

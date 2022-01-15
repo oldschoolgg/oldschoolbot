@@ -13,7 +13,8 @@ export default class extends Task {
 
 		const loot = new Bank({ "Champion's cape": 1 });
 
-		user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
+
 		handleTripFinish(
 			this.client,
 			user,

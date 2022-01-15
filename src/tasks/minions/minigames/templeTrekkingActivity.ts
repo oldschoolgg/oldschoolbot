@@ -82,7 +82,7 @@ export default class extends Task {
 			loot.add(rewardToken.id);
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		let str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated.`;
 

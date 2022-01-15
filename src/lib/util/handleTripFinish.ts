@@ -73,7 +73,7 @@ export async function handleTripFinish(
 			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${
 				imp.bank
 			}.`;
-			await user.addItemsToBank(imp.bank, true);
+			await user.addItemsToBank({ items: imp.bank, collectionLog: true });
 		}
 
 		if (imp.missed.length > 0) {

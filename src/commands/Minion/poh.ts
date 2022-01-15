@@ -172,7 +172,7 @@ export default class POHCommand extends BotCommand {
 					msg.channel.send(
 						`You were refunded: ${itemsToRefund}, from the ${inPlaceObj.name} you already had built here.`
 					);
-					await msg.author.addItemsToBank(itemsToRefund.bank);
+					await msg.author.addItemsToBank({ items: itemsToRefund, collectionLog: false });
 				}
 			}
 		}
@@ -259,7 +259,7 @@ export default class POHCommand extends BotCommand {
 					[obj.slot]: null
 				}
 			});
-			await msg.author.addItemsToBank({ [inPlace!]: 1 });
+			await msg.author.addItemsToBank({ items: { [inPlace!]: 1 }, collectionLog: false });
 			return msg.channel.send({
 				content: `You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(inPlace!)}.`,
 				files: [await this.genImage(poh)]
@@ -274,7 +274,7 @@ export default class POHCommand extends BotCommand {
 			const itemsToRefund = new Bank(obj.itemCost.bank).remove(itemsNotRefundable);
 			if (itemsToRefund.length > 0) {
 				str += `\n\nYou were refunded: ${itemsToRefund}.`;
-				await msg.author.addItemsToBank(itemsToRefund.bank);
+				await msg.author.addItemsToBank({ items: itemsToRefund, collectionLog: false });
 			}
 		}
 

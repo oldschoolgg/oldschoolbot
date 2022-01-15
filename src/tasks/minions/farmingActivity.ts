@@ -153,7 +153,7 @@ export default class extends Task {
 				ClientSettings.EconomyStats.FarmingLootBank,
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
 			);
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 			const updatePatches: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
@@ -441,7 +441,7 @@ export default class extends Task {
 				ClientSettings.EconomyStats.FarmingLootBank,
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
 			);
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 
 			handleTripFinish(
 				this.client,

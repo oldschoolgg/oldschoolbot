@@ -49,7 +49,7 @@ export default class extends Task {
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });

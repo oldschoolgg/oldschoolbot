@@ -73,7 +73,7 @@ export default class extends BotCommand {
 			loot.add(NestBoxes.roll());
 		}
 
-		await msg.author.addItemsToBank(loot.values(), true);
+		await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 
 		return msg.channel.send(`You exchanged ${quantity}x ${moleItem.name} and received: ${loot}.`);
 	}

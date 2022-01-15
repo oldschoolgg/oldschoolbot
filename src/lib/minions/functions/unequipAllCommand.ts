@@ -25,6 +25,6 @@ export async function unEquipAllCommand(msg: KlasaMessage, gearType: GearSetupTy
 
 	await msg.author.settings.update(gearTypeSetting, defaultGear);
 
-	await msg.author.addItemsToBank(refund.bank);
+	await msg.author.addItemsToBank({ items: refund, collectionLog: false });
 	return msg.channel.send(`You unequipped all items (${refund}) from your ${toTitleCase(gearType)} setup.`);
 }
