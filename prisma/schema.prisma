@@ -48,6 +48,7 @@ model Analytic {
   gpDice             BigInt?
   gpOpen             BigInt?
   gpDaily            BigInt?
+  gpLuckypick        BigInt?
 
   @@map("analytics_table")
 }
