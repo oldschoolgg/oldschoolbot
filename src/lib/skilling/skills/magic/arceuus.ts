@@ -42,7 +42,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 32, Prayer: 286 },
 		input: new Bank().add('Ensouled imp head', 1).add('Body rune', 4).add('Nature rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate minotaur',
@@ -50,7 +50,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 32, Prayer: 364 },
 		input: new Bank().add('Ensouled minotaur head', 1).add('Body rune', 4).add('Nature rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate scorpion',
@@ -58,7 +58,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 32, Prayer: 454 },
 		input: new Bank().add('Ensouled scorpion head', 1).add('Body rune', 4).add('Nature rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate bear',
@@ -66,7 +66,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 32, Prayer: 480 },
 		input: new Bank().add('Ensouled bear head', 1).add('Body rune', 4).add('Nature rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate unicorn',
@@ -74,7 +74,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 32, Prayer: 494 },
 		input: new Bank().add('Ensouled unicorn head', 1).add('Body rune', 4).add('Nature rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Draynor manor teleport',
@@ -155,7 +155,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 80, Prayer: 520 },
 		input: new Bank().add('Ensouled dog head', 1).add('Body rune', 4).add('Nature rune', 3).add('Soul rune', 1),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate chaos druid',
@@ -167,7 +167,7 @@ const Arceuus: Castable[] = [
 			.add('Nature rune', 3)
 			.add('Soul rune', 1),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate giant',
@@ -175,7 +175,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 80, Prayer: 650 },
 		input: new Bank().add('Ensouled giant head', 1).add('Body rune', 4).add('Nature rune', 3).add('Soul rune', 1),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate ogre',
@@ -183,7 +183,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 80, Prayer: 716 },
 		input: new Bank().add('Ensouled ogre head', 1).add('Body rune', 4).add('Nature rune', 3).add('Soul rune', 1),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate elf',
@@ -191,7 +191,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 80, Prayer: 754 },
 		input: new Bank().add('Ensouled elf head', 1).add('Body rune', 4).add('Nature rune', 3).add('Soul rune', 1),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate troll',
@@ -199,7 +199,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 80, Prayer: 780 },
 		input: new Bank().add('Ensouled troll head', 1).add('Body rune', 4).add('Nature rune', 3).add('Soul rune', 1),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate horror',
@@ -207,7 +207,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 80, Prayer: 832 },
 		input: new Bank().add('Ensouled horror head', 1).add('Body rune', 4).add('Nature rune', 3).add('Soul rune', 1),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Inferior demonbane',
@@ -469,7 +469,7 @@ const Arceuus: Castable[] = [
 			.add('Blood rune', 1)
 			.add('Soul rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate dagannoth',
@@ -481,7 +481,7 @@ const Arceuus: Castable[] = [
 			.add('Blood rune', 1)
 			.add('Soul rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate bloodveld',
@@ -493,7 +493,7 @@ const Arceuus: Castable[] = [
 			.add('Blood rune', 1)
 			.add('Soul rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate tzhaar',
@@ -501,7 +501,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 138, Prayer: 1104 },
 		input: new Bank().add('Ensouled tzhaar head', 1).add('Nature rune', 3).add('Blood rune', 1).add('Soul rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate demon',
@@ -509,7 +509,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 138, Prayer: 1170 },
 		input: new Bank().add('Ensouled demon head', 1).add('Nature rune', 3).add('Blood rune', 1).add('Soul rune', 2),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Ward of Arceuus',
@@ -644,7 +644,7 @@ const Arceuus: Castable[] = [
 			.add('Blood rune', 2)
 			.add('Soul rune', 4),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate abyssal',
@@ -656,7 +656,7 @@ const Arceuus: Castable[] = [
 			.add('Blood rune', 2)
 			.add('Soul rune', 4),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Reanimate dragon',
@@ -664,7 +664,7 @@ const Arceuus: Castable[] = [
 		xp: { Magic: 170, Prayer: 1560 },
 		input: new Bank().add('Ensouled dragon head', 1).add('Nature rune', 4).add('Blood rune', 2).add('Soul rune', 4),
 		category: MagicTypes.Reanimation,
-		ticks: 27
+		ticks: 20
 	},
 	{
 		name: 'Ape atoll teleport',
