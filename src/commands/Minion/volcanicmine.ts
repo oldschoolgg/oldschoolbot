@@ -128,7 +128,7 @@ export default class extends BotCommand {
 		);
 
 		if (shopItem.clOnly) {
-			await msg.author.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity).bank);
+			await msg.author.addItemsToCollectionLog({ items: new Bank().add(shopItem.output).multiply(quantity) });
 		} else {
 			await msg.author.addItemsToBank({
 				items: new Bank().add(shopItem.output).multiply(quantity),

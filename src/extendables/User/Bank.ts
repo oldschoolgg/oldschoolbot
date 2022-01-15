@@ -116,7 +116,7 @@ export default class extends Extendable {
 				: { bankLoot: items, clLoot: items };
 			items = bankLoot;
 			if (collectionLog) {
-				await user.addItemsToCollectionLog(clLoot.bank);
+				await user.addItemsToCollectionLog({ items: clLoot });
 			}
 
 			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank

@@ -47,7 +47,7 @@ const plainGraceful = resolveNameBank({
 	'Graceful cape': 1
 });
 
-const brimhavenGraceful = resolveNameBank({
+const brimhavenGraceful = new Bank({
 	'Brimhaven graceful hood': 1,
 	'Brimhaven graceful top': 1,
 	'Brimhaven graceful legs': 1,
@@ -220,9 +220,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			bank.remove(plainGraceful);
 			bank.add(brimhavenGraceful);
 			await msg.author.settings.update(UserSettings.Bank, bank.bank);
-			await msg.author.addItemsToCollectionLog({
-				...brimhavenGraceful
-			});
+			await msg.author.addItemsToCollectionLog({ items: brimhavenGraceful });
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({
