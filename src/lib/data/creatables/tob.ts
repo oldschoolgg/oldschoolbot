@@ -166,11 +166,11 @@ export const tobCreatables: Createable[] = [
 	{
 		name: 'Revert holy ghrazi rapier',
 		inputItems: resolveNameBank({
-			'Holy ghrazi rapier': 1,
-			'Holy ornament kit': 1
+			'Holy ghrazi rapier': 1
 		}),
 		outputItems: resolveNameBank({
-			'Ghrazi rapier': 1
+			'Ghrazi rapier': 1,
+			'Holy ornament kit': 1
 		})
 	}
 ];
