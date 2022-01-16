@@ -323,6 +323,16 @@ const Openables: Openable[] = [
 		emoji: Emoji.Casket
 	},
 	{
+		name: 'Infernal eel',
+		itemID: 21_293,
+		aliases: ['infernal eel'],
+		table: new LootTable()
+			.add('Tokkul', [14, 20], 86)
+			.add('Lava scale shard', [1, 5], 8)
+			.add('Onyx bolt tips', 1, 6),
+		emoji: Emoji.Casket
+	},
+	{
 		name: 'Birthday pack',
 		itemID: itemID('Birthday pack'),
 		aliases: ['bp', 'birthday pack'],
