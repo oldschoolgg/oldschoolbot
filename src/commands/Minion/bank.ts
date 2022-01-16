@@ -59,7 +59,7 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.BitField, BitField.AlwaysSmallBank);
 			return msg.channel.send(
 				`Small Banks are now ${currentStatus ? 'disabled' : 'enabled'} for you.${
-					uniqueSprite ? ' You current BG will always draw the bank as small.' : ''
+					uniqueSprite ? ' Your current BG will always draw the bank as small.' : ''
 				}`
 			);
 		}
@@ -130,7 +130,7 @@ export default class extends BotCommand {
 		}
 
 		return msg.channel.sendBankImage({
-			bank: bank.bank,
+			bank,
 			title: `${msg.author.username}'s Bank`,
 			flags: {
 				...msg.flagArgs,

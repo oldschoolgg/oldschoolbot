@@ -3,9 +3,9 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -69,10 +69,18 @@ export default class extends BotCommand {
 			);
 		}
 
+		const userQP = msg.author.settings.get(UserSettings.QP);
+
+		if (smithedItem.qpRequired && userQP < smithedItem.qpRequired) {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${smithedItem.qpRequired} QP to smith ${smithedItem.name}`
+			);
+		}
+
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		const timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
 
-		let maxTripLength = msg.author.maxTripLength(Activity.Smithing);
+		let maxTripLength = msg.author.maxTripLength('Smithing');
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;
 		}
@@ -116,7 +124,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Smithing
+			type: 'Smithing'
 		});
 
 		return msg.channel.send(

@@ -33,19 +33,7 @@ export default class extends Task {
 			str += ` They died ${deaths}x times, causing the loss of ${wealthInventorySize * deaths} rings of wealth.`;
 		}
 
-		await user.addItemsToBank(loot.bank, true);
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log(`continued trip of charging ${quantity}x ring of wealth`);
-				return this.client.commands.get('chargewealth')!.run(res, [quantity]);
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
+		handleTripFinish(this.client, user, channelID, str, ['chargewealth', [quantity], true], undefined, data, loot);
 	}
 }

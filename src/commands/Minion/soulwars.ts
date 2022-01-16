@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -142,7 +142,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [input]: [string]) {
 		const perDuration = randomVariation(Time.Minute * 7, 5);
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.SoulWars) / perDuration);
+		const quantity = Math.floor(msg.author.maxTripLength('SoulWars') / perDuration);
 		const duration = quantity * perDuration;
 
 		if (input === 'solo') {
@@ -151,9 +151,10 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.SoulWars,
+				type: 'SoulWars',
 				leader: msg.author.id,
-				users: [msg.author.id]
+				users: [msg.author.id],
+				minigameID: 'soul_wars'
 			});
 
 			const str = `${
@@ -168,7 +169,7 @@ export default class extends BotCommand {
 				maxSize: 99,
 				ironmanAllowed: true,
 				message: `${msg.author.username} is starting a Soul Wars mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-				customDenier: user => {
+				customDenier: async user => {
 					if (!user.hasMinion) {
 						return [true, "you don't have a minion."];
 					}
@@ -190,9 +191,10 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.SoulWars,
+				type: 'SoulWars',
 				leader: msg.author.id,
-				users: users.map(u => u.id)
+				users: users.map(u => u.id),
+				minigameID: 'soul_wars'
 			});
 
 			const str = `${partyOptions.leader.username}'s party (${users
@@ -238,7 +240,7 @@ export default class extends BotCommand {
 			);
 		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens * quantity);
-		await msg.author.addItemsToBank({ [item.item.id]: quantity }, true);
+		await msg.author.addItemsToBank({ items: { [item.item.id]: quantity }, collectionLog: true });
 		return msg.channel.send(
 			`Added ${quantity}x ${item.item.name} to your bank, removed ${item.tokens * quantity}x Zeal Tokens.`
 		);
@@ -265,7 +267,7 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens);
 		await msg.author.removeItemsFromBank({ [item.input.id]: 1 });
-		await msg.author.addItemsToBank({ [item.output.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [item.output.id]: 1 }, collectionLog: true });
 		return msg.channel.send(
 			`Added 1x ${item.output.name} to your bank, removed ${item.tokens}x Zeal Tokens and 1x ${item.input.name}.`
 		);

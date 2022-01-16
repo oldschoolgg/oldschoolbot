@@ -1,8 +1,7 @@
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import CastleWarsCommand from '../../../commands/Minion/castlewars';
 import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
@@ -13,7 +12,7 @@ export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
 
-		incrementMinigameScore(userID, 'CastleWars', quantity);
+		incrementMinigameScore(userID, 'castle_wars', quantity);
 
 		const minionName = await getMinionName(userID);
 
@@ -22,22 +21,17 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.roll().item);
 		}
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
 			`<@${userID}>, ${minionName} finished ${quantity}x Castle Wars games and received ${loot}.`,
-			res => {
-				user.log('continued castle wars');
-				return (this.client.commands.get('castlewars') as unknown as CastleWarsCommand)!.play(
-					res
-				) as Promise<KlasaMessage>;
-			},
+			['castlewars', [], true, 'play'],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

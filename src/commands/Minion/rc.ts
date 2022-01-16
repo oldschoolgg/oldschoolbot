@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -83,16 +82,9 @@ export default class extends BotCommand {
 		if (msg.flagArgs.ns) {
 			tripLength *= 3;
 			boosts.push('**3x slower** for no Stamina potion(4)s');
-		} else if (
-			msg.author.hasItemEquippedOrInBank('Ring of endurance (uncharged)') ||
-			msg.author.hasItemEquippedOrInBank('Ring of endurance')
-		) {
+		} else if (msg.author.hasItemEquippedOrInBank('Ring of endurance')) {
 			tripLength *= 0.99;
-			const ringStr = `1% boost for ${
-				msg.author.hasItemEquippedOrInBank('Ring of endurance (uncharged)')
-					? 'Ring of endurance (uncharged)'
-					: 'Ring of endurance'
-			}`;
+			const ringStr = '1% boost for Ring of endurance';
 			boosts.push(ringStr);
 		}
 
@@ -119,7 +111,7 @@ export default class extends BotCommand {
 			tripLength *= 0.97;
 			boosts.push('3% for Runecraft cape');
 		}
-		const maxTripLength = msg.author.maxTripLength(Activity.Runecraft);
+		const maxTripLength = msg.author.maxTripLength('Runecraft');
 
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
@@ -244,7 +236,7 @@ export default class extends BotCommand {
 			essenceQuantity: quantity,
 			duration,
 			imbueCasts,
-			type: Activity.Runecraft
+			type: 'Runecraft'
 		});
 
 		let response = `${msg.author.minionName} is now turning ${quantity}x Essence into ${

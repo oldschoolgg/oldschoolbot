@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -62,7 +61,7 @@ export default class extends BotCommand {
 
 		// 5 tick action
 		const timePerAlch = Time.Second * 3;
-		const maxTripLength = msg.author.maxTripLength(Activity.Alching);
+		const maxTripLength = msg.author.maxTripLength('Alching');
 
 		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));
 
@@ -94,11 +93,12 @@ export default class extends BotCommand {
 		if (!msg.author.owns(consumedItems)) {
 			return msg.channel.send(`You don't have the required items, you need ${consumedItems}`);
 		}
-
 		await msg.confirm(
 			`${msg.author}, please confirm you want to alch ${quantity} ${osItem.name} (${Util.toKMB(
 				alchValue
-			)}). This will take approximately ${formatDuration(duration)}, and consume ${quantity}x Nature runes.`
+			)}). This will take approximately ${formatDuration(duration)}, and consume ${
+				fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
+			} ${quantity}x Nature runes.`
 		);
 
 		await msg.author.removeItemsFromBank(consumedItems);
@@ -111,7 +111,7 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			alchValue,
-			type: Activity.Alching
+			type: 'Alching'
 		});
 
 		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);

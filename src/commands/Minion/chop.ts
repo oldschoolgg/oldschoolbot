@@ -1,7 +1,6 @@
 import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -102,7 +101,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Woodcutting);
+		const maxTripLength = msg.author.maxTripLength('Woodcutting');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -127,7 +126,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Woodcutting
+			type: 'Woodcutting'
 		});
 
 		let response = `${msg.author.minionName} is now chopping ${quantity}x ${

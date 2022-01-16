@@ -1035,7 +1035,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 40
 		},
-		itemsRequired: resolveItems(['Antidote++(4)']),
+		itemsRequired: resolveItems(['Antipoison(4)']),
 		qpRequired: 57,
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -1054,7 +1054,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 40
 		},
-		itemsRequired: resolveItems(['Antidote++(4)']),
+		itemsRequired: resolveItems(['Antipoison(4)']),
 		qpRequired: 57,
 		healAmountNeeded: 30,
 		attackStyleToUse: GearStat.AttackSlash,

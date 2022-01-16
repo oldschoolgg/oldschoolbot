@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
-import { createQueryBuilder } from 'typeorm';
 
-import { GiveawayTable } from '../lib/typeorm/GiveawayTable.entity';
+import { prisma } from '../lib/settings/prisma';
+import { handleGiveawayCompletion } from '../lib/util/giveaway';
 
 export default class extends Task {
 	async init() {
@@ -10,12 +10,16 @@ export default class extends Task {
 		}
 		const ticker = async () => {
 			try {
-				const query = createQueryBuilder(GiveawayTable)
-					.select()
-					.where('completed = false')
-					.andWhere('finish_date < now()');
-				const result = await query.getMany();
-				await Promise.all(result.map(t => t.complete()));
+				const result = await prisma.giveaway.findMany({
+					where: {
+						completed: false,
+						finish_date: {
+							lt: new Date()
+						}
+					}
+				});
+
+				await Promise.all(result.map(t => handleGiveawayCompletion(this.client, t)));
 			} catch (err) {
 				console.error(err);
 			} finally {

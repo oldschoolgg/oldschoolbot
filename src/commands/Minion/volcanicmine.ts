@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -129,9 +128,12 @@ export default class extends BotCommand {
 		);
 
 		if (shopItem.clOnly) {
-			await msg.author.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity).bank);
+			await msg.author.addItemsToCollectionLog({ items: new Bank().add(shopItem.output).multiply(quantity) });
 		} else {
-			await msg.author.addItemsToBank(new Bank().add(shopItem.output).multiply(quantity), true);
+			await msg.author.addItemsToBank({
+				items: new Bank().add(shopItem.output).multiply(quantity),
+				collectionLog: true
+			});
 		}
 		await msg.author.settings.update(UserSettings.VolcanicMinePoints, currentUserPoints - shopItem.cost * quantity);
 
@@ -236,7 +238,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity: numberOfGames,
 			duration,
-			type: Activity.VolcanicMine
+			type: 'VolcanicMine'
 		});
 
 		return msg.channel.send(str);

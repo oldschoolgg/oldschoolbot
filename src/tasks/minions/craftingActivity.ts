@@ -39,20 +39,8 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}.${xpRes}`;
 
-		await user.addItemsToBank(loot.values(), true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log(`continued trip of ${item.name}`);
-				return this.client.commands.get('craft')!.run(res, [quantity, item.name]);
-			},
-			undefined,
-			data,
-			loot.bank
-		);
+		handleTripFinish(this.client, user, channelID, str, ['craft', [quantity, item.name]], undefined, data, loot);
 	}
 }

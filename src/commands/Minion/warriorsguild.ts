@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -67,7 +66,7 @@ export default class extends BotCommand {
 		const userBank = new Bank(msg.author.settings.get(UserSettings.Bank));
 
 		if (minigame === 'tokens') {
-			const maxTripLength = msg.author.maxTripLength(Activity.AnimatedArmour);
+			const maxTripLength = msg.author.maxTripLength('AnimatedArmour');
 
 			const armorSet = Armours.find(set => userBank.has(set.items));
 			if (!armorSet) {
@@ -100,7 +99,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.AnimatedArmour
+				type: 'AnimatedArmour'
 			});
 
 			const response = `${msg.author.minionName} is now killing ${quantity}x animated ${
@@ -112,7 +111,7 @@ export default class extends BotCommand {
 
 		if (minigame === 'cyclops') {
 			const hasAttackCape = msg.author.getGear('melee').hasEquipped('Attack cape');
-			const maxTripLength = msg.author.maxTripLength(Activity.Cyclops);
+			const maxTripLength = msg.author.maxTripLength('Cyclops');
 			// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 			const amountTokens = userBank.amount('Warrior guild token');
 			if (!hasAttackCape && amountTokens < 100) {
@@ -156,7 +155,7 @@ export default class extends BotCommand {
 				channelID: msg.channel.id,
 				quantity,
 				duration,
-				type: Activity.Cyclops
+				type: 'Cyclops'
 			});
 
 			let response = `${

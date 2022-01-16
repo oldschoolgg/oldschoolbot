@@ -3,8 +3,9 @@ import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import resolveItems from '../util/resolveItems';
-import { collectionLogRoleCategories } from './Collections';
+import { allCollectionLogs } from './Collections';
 import {
+	allClueItems,
 	cluesBeginnerCL,
 	cluesEasyCL,
 	cluesEliteCL,
@@ -1058,7 +1059,7 @@ export const filterableTypes: Filterable[] = [
 	{
 		name: 'All Clues',
 		aliases: ['clues all', 'all clues', 'clue all', 'all clue'],
-		items: collectionLogRoleCategories.clues
+		items: allClueItems
 	},
 	{
 		name: 'Clues Shared',
@@ -1071,3 +1072,17 @@ export const filterableTypes: Filterable[] = [
 		items: [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
 	}
 ];
+
+for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
+	for (const [name, cl] of Object.entries(clGroup)) {
+		const aliasesForThisCL: string[] = [name, ...(cl.alias ?? [])].map(i => i.toLowerCase());
+		const already = filterableTypes.some(t => [...t.aliases, t.name].some(i => aliasesForThisCL.includes(i)));
+		if (!already) {
+			filterableTypes.push({
+				name,
+				aliases: aliasesForThisCL,
+				items: cl.items
+			});
+		}
+	}
+}

@@ -10,7 +10,7 @@ export default class extends BotCommand {
 			description: 'Shows some informational links relating to the bot.',
 			examples: ['+info'],
 			categoryFlags: ['utility'],
-			aliases: ['help']
+			aliases: ['help', 'support']
 		});
 	}
 

@@ -2,13 +2,12 @@ import { calcWhatPercent, percentChance } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MinigameKey } from '../../../extendables/User/Minigame';
 import { Events } from '../../../lib/constants';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore, MinigameName } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { gauntlet } from '../../../lib/simulation/gauntlet';
 import { GauntletOptions } from '../../../lib/types/minions';
-import { addBanks } from '../../../lib/util';
+import { updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
@@ -16,7 +15,7 @@ export default class extends Task {
 	async run(data: GauntletOptions) {
 		const { channelID, quantity, userID, corrupted } = data;
 		const user = await this.client.fetchUser(userID);
-		const key: MinigameKey = corrupted ? 'CorruptedGauntlet' : 'Gauntlet';
+		const key: MinigameName = corrupted ? 'corrupted_gauntlet' : 'gauntlet';
 
 		const kc = await user.getMinigameScore(key);
 
@@ -44,7 +43,7 @@ export default class extends Task {
 
 		await incrementMinigameScore(userID, key, quantity - deaths);
 
-		const { previousCL } = await user.addItemsToBank(loot.bank, true);
+		const { previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		const name = `${corrupted ? 'Corrupted' : 'Normal'} Gauntlet`;
 
 		const newKc = await user.getMinigameScore(key);
@@ -63,15 +62,12 @@ export default class extends Task {
 			);
 		}
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.GauntletLoot,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.GauntletLoot), loot.bank])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.GauntletLoot, loot);
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				loot.bank,
+				loot,
 				`Loot From ${quantity - deaths}x ${name}`,
 				true,
 				{ showNewCL: 1 },
@@ -84,13 +80,10 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued gauntlet');
-				return this.client.commands.get('gauntlet')!.run(res, [corrupted ? 'corrupted' : 'normal', quantity]);
-			},
+			['gauntlet', [corrupted ? 'corrupted' : 'normal', quantity], true],
 			image!,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

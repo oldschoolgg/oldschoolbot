@@ -1,7 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Minigames } from '../../extendables/User/Minigame';
-import { getMinigameEntity } from '../../lib/settings/settings';
+import { prisma } from '../../lib/settings/prisma';
+import { Minigames } from '../../lib/settings/settings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
@@ -16,15 +17,24 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [name, kc]: [string, number]) {
-		const minigame = Minigames.find(m => stringMatches(m.key, name));
+		const minigame = Minigames.find(m => stringMatches(m.column, name));
 		if (!minigame) {
 			return msg.channel.send(
-				`That's not a valid minigame. The valid minigames are: ${Minigames.map(m => m.key).join(', ')}.`
+				`That's not a valid minigame. The valid minigames are: ${Minigames.map(m => m.column).join(', ')}.`
 			);
 		}
-		const entity = await getMinigameEntity(msg.author.id);
-		entity[minigame.key] = kc;
-		await entity.save();
+
+		if (minigame.column === 'tob') {
+			await msg.author.settings.update(UserSettings.Stats.TobAttempts, kc);
+		}
+		if (minigame.column === 'tob_hard') {
+			await msg.author.settings.update(UserSettings.Stats.TobHardModeAttempts, kc);
+		}
+
+		await prisma.minigame.update({
+			where: { user_id: msg.author.id },
+			data: { [minigame.column]: kc }
+		});
 
 		return msg.channel.send(`Set your ${minigame.name} kc to ${kc}.`);
 	}

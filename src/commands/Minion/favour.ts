@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -43,7 +42,7 @@ export default class extends BotCommand {
 				)}.`
 			);
 		}
-		const maxTripLength = msg.author.maxTripLength(Activity.KourendFavour);
+		const maxTripLength = msg.author.maxTripLength('KourendFavour');
 		let currentPoints = 0;
 		for (const [key, value] of Object.entries(currentUserFavour)) {
 			if (key.toLowerCase() === favour.name.toLowerCase()) {
@@ -92,7 +91,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.KourendFavour
+			type: 'KourendFavour'
 		});
 
 		return msg.channel.send(

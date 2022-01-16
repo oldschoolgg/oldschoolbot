@@ -72,7 +72,7 @@ export default class extends Task {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourcePickpocket, loot.amount('Coins'));
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived });
 
 		let str = `${user}, ${user.minionName} finished pickpocketing a ${
@@ -100,13 +100,10 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of pickpocketing ${quantity}x ${npc.name}[${npc.id}]`);
-				return this.client.commands.get('pickpocket')!.run(res, [quantity, npc.name]);
-			},
+			['pickpocket', [quantity, npc.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

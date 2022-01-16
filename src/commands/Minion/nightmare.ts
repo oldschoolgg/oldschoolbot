@@ -2,12 +2,13 @@ import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity, BitField, Emoji, PHOSANI_NIGHTMARE_ID } from '../../lib/constants';
+import { BitField, Emoji, PHOSANI_NIGHTMARE_ID } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
@@ -55,7 +56,7 @@ export const phosaniBISGear = new Gear({
 	feet: 'Primordial boots',
 	ring: 'Berserker ring(i)',
 	weapon: "Inquisitor's mace",
-	shield: 'Dragon defender',
+	shield: 'Avernic defender',
 	ammo: "Rada's blessing 4"
 });
 
@@ -105,17 +106,16 @@ export default class extends BotCommand {
 			}
 
 			if (isPhosani) {
-				if (
-					!user.hasSkillReqs({
-						prayer: 70,
-						attack: 90,
-						strength: 90,
-						defence: 90,
-						magic: 90,
-						hitpoints: 90
-					})[0]
-				) {
-					throw `${user.username} doesn't have 70 Prayer`;
+				const requirements = user.hasSkillReqs({
+					prayer: 70,
+					attack: 90,
+					strength: 90,
+					defence: 90,
+					magic: 90,
+					hitpoints: 90
+				});
+				if (!requirements[0]) {
+					throw `${user.username} doesn't meet the requirements: ${requirements[1]}`;
 				}
 				if (user.getKC(NightmareMonster.id) < 50) {
 					throw "You need to have killed The Nightmare atleast 50 times before you can face the Phosani's Nightmare.";
@@ -156,7 +156,7 @@ export default class extends BotCommand {
 			maxSize: maximumSize - 1,
 			ironmanAllowed: true,
 			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. The maximum size for this mass is ${maximumSize}.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}
@@ -171,7 +171,7 @@ export default class extends BotCommand {
 				if (NightmareMonster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(NightmareMonster, user);
-					} catch (err) {
+					} catch (err: any) {
 						return [true, err];
 					}
 
@@ -307,13 +307,19 @@ export default class extends BotCommand {
 		}
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.NightmareCost, totalCost);
+		await trackLoot({
+			id: 'nightmare',
+			cost: totalCost,
+			type: 'Monster',
+			changeType: 'cost'
+		});
 
 		await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Nightmare,
+			type: 'Nightmare',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
 			isPhosani

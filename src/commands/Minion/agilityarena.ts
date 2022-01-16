@@ -1,7 +1,6 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -48,7 +47,7 @@ const plainGraceful = resolveNameBank({
 	'Graceful cape': 1
 });
 
-const brimhavenGraceful = resolveNameBank({
+const brimhavenGraceful = new Bank({
 	'Brimhaven graceful hood': 1,
 	'Brimhaven graceful top': 1,
 	'Brimhaven graceful legs': 1,
@@ -85,7 +84,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	@minionNotBusy
 	async run(msg: KlasaMessage) {
-		const duration = msg.author.maxTripLength(Activity.AgilityArena);
+		const duration = msg.author.maxTripLength('AgilityArena');
 
 		if (!msg.author.hasGracefulEquipped()) {
 			return msg.channel.send({
@@ -109,9 +108,9 @@ export default class extends BotCommand {
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,
-			type: Activity.AgilityArena,
+			type: 'AgilityArena',
 			quantity: 1,
-			minigameID: 'AgilityArena'
+			minigameID: 'agility_arena'
 		});
 
 		let str = `${msg.author.minionName} is now doing the Brimhaven Agility Arena for ${formatDuration(duration)}.`;
@@ -135,9 +134,9 @@ export default class extends BotCommand {
 
 Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) using \`${
 					msg.cmdPrefix
-				}agilityarena buy xp 5\`, or recolor a set of plain Graceful using \`${
-					msg.cmdPrefix
-				}agilityarena buy recolor\`.`
+				}agilityarena buy xp ${Object.keys(ticketQuantities).join(
+					'|'
+				)}\`, or recolor a set of plain Graceful using \`${msg.cmdPrefix}agilityarena buy recolor\`.`
 			);
 		}
 
@@ -161,7 +160,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 				return msg.channel.send("You don't have enough Agility arena tickets.");
 			}
 			await msg.author.removeItemsFromBank(new Bank().add('Agility arena ticket', cost));
-			await msg.author.addItemsToBank({ [buyable.item.id]: qty }, true);
+			await msg.author.addItemsToBank({ items: { [buyable.item.id]: qty }, collectionLog: true });
 			return msg.channel.send(
 				`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`
 			);
@@ -221,9 +220,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			bank.remove(plainGraceful);
 			bank.add(brimhavenGraceful);
 			await msg.author.settings.update(UserSettings.Bank, bank.bank);
-			await msg.author.addItemsToCollectionLog({
-				...brimhavenGraceful
-			});
+			await msg.author.addItemsToCollectionLog({ items: brimhavenGraceful });
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({

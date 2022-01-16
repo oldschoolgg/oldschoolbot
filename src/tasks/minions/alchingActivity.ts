@@ -36,7 +36,7 @@ export default class extends Task {
 				loot.add(returnedRunes);
 			}
 		}
-		await user.addItemsToBank(loot);
+		await user.addItemsToBank({ items: loot });
 		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchValue);
 
 		const xpReceived = quantity * 65;
@@ -56,13 +56,10 @@ export default class extends Task {
 			user,
 			channelID,
 			responses,
-			res => {
-				user.log(`continued trip of alching ${quantity}x ${item.name}`);
-				return this.client.commands.get('alch')!.run(res, [quantity, [item]]);
-			},
+			['alch', [quantity, [item]], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

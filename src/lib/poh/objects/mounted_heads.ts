@@ -8,14 +8,14 @@ export const MountedHeads: PoHObject[] = [
 	{
 		id: 13_486,
 		name: 'Mounted Kbd head',
-		slot: 'mountedHead',
+		slot: 'mounted_head',
 		level: 78,
 		itemCost: baseBank().add('Mahogany plank', 2).add('Gold leaf', 2).add('Kbd heads')
 	},
 	{
 		id: 31_977,
 		name: "Mounted Vorkath's head",
-		slot: 'mountedHead',
+		slot: 'mounted_head',
 		level: 82,
 		itemCost: baseBank().add('Mahogany plank', 2).add('Gold leaf', 2).add("Vorkath's head")
 	}

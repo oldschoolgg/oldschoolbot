@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Roles, SupportServer } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { PingableRolesTable } from '../../lib/typeorm/PingableRoles.entity';
 import { stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
@@ -14,7 +14,7 @@ export default class extends BotCommand {
 
 	async run(message: KlasaMessage, [str]: [string]) {
 		if (!message.guild || message.guild.id !== SupportServer) return;
-		const roles = await PingableRolesTable.find();
+		const roles = await prisma.pingableRole.findMany();
 		const roleToPing = roles.find(i => i.id === Number(str) || stringMatches(i.name, str));
 		if (!roleToPing) {
 			return message.channel.send('No role with that name found.');
@@ -24,7 +24,7 @@ export default class extends BotCommand {
 			return;
 		}
 		return message.channel.send(
-			`<@&${roleToPing.roleID}> You were pinged because you have this role, you can remove it using \`+role ${roleToPing.name}\`.`
+			`<@&${roleToPing.role_id}> You were pinged because you have this role, you can remove it using \`+roles ${roleToPing.name}\`.`
 		);
 	}
 }

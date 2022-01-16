@@ -1,7 +1,7 @@
 import { calcPercentOfNum } from 'e';
-import { KlasaMessage, Task } from 'klasa';
+import { Task } from 'klasa';
 
-import MahoganyHomesCommand from '../../../commands/Minion/mahoganyhomes';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MahoganyHomesActivityTaskOptions } from '../../../lib/types/minions';
@@ -12,7 +12,7 @@ export default class extends Task {
 	async run(data: MahoganyHomesActivityTaskOptions) {
 		const { channelID, quantity, xp, duration, userID, points } = data;
 		const user = await this.client.fetchUser(userID);
-		user.incrementMinigameScore('MahoganyHomes', quantity);
+		await incrementMinigameScore(userID, 'mahogany_homes', quantity);
 
 		let bonusXP = 0;
 		const outfitMultiplier = calcConBonusXP(user.getGear('skilling'));
@@ -35,20 +35,6 @@ export default class extends Task {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued trip of mahogany homes');
-				return (this.client.commands.get('mh') as unknown as MahoganyHomesCommand).build(
-					res
-				) as Promise<KlasaMessage>;
-			},
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(this.client, user, channelID, str, ['mh', [], true, 'build'], undefined, data, null);
 	}
 }

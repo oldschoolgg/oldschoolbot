@@ -5,12 +5,13 @@ import { table } from 'table';
 
 import Createables from '../../lib/data/createables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID, stringMatches, toTitleCase } from '../../lib/util';
+import { itemNameFromID, stringMatches, toTitleCase, updateBankSetting } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -150,6 +151,16 @@ export default class extends BotCommand {
 				return msg.channel.send(`You can only ${cmd} this item once!`);
 			}
 		}
+		if (createableItem.maxCanOwn) {
+			const allItems = msg.author.allItemsOwned();
+			const amountOwned = allItems.amount(createableItem.name);
+			if (amountOwned >= createableItem.maxCanOwn) {
+				return msg.channel.send(
+					`You already have ${amountOwned}x ${createableItem.name}, you can't create another.`
+				);
+			}
+			quantity = createableItem.maxCanOwn - amountOwned;
+		}
 
 		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
 		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
@@ -198,15 +209,18 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemsFromBank(inItems);
-		await msg.author.addItemsToBank(outItems);
-
 		if (createableItem.GPCost) {
-			await msg.author.removeGP(createableItem.GPCost);
+			inItems.add('Coins', createableItem.GPCost);
 		}
 
+		await msg.author.removeItemsFromBank(inItems);
+		await msg.author.addItemsToBank({ items: outItems });
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateCost, inItems);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateLoot, outItems);
+
 		// Only allow +create to add items to CL
-		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog(outItems.bank);
+		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog({ items: outItems });
 
 		if (cmd === 'revert') {
 			return msg.channel.send(`You reverted ${inputItemsString} into ${outputItemsString}.`);

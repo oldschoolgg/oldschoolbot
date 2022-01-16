@@ -1,5 +1,5 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
-import { MessageButton, MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageButton, MessageEmbed } from 'discord.js';
 import { chunk, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
@@ -14,21 +14,29 @@ import {
 	MIMIC_MONSTER_ID,
 	PerkTier
 } from '../../lib/constants';
+import { GearSetupType } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { getNewUser } from '../../lib/settings/settings';
+import { autoFarm } from '../../lib/minions/functions/autoFarm';
+import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
+import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
+import { dataCommand } from '../../lib/minions/functions/dataCommand';
+import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
+import { equipPet } from '../../lib/minions/functions/equipPet';
+import { pastActivities } from '../../lib/minions/functions/pastActivities';
+import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
+import { trainCommand } from '../../lib/minions/functions/trainCommand';
+import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
+import { unequipPet } from '../../lib/minions/functions/unequipPet';
+import { prisma } from '../../lib/settings/prisma';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
+import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { GiveawayTable } from '../../lib/typeorm/GiveawayTable.entity';
-import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
-import { NewUserTable } from '../../lib/typeorm/NewUserTable.entity';
-import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
-import { SlayerTaskTable } from '../../lib/typeorm/SlayerTaskTable.entity';
-import { XPGainsTable } from '../../lib/typeorm/XPGainsTable.entity';
-import { convertLVLtoXP, isValidNickname, runCommand, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -44,6 +52,39 @@ const randomPatMessage = (minionName: string) => randArrItem(patMessages).replac
 
 const ironmanArmor = new Bank({ 'Ironman helm': 1, 'Ironman platebody': 1, 'Ironman platelegs': 1 });
 
+const subCommands = [
+	'lvl',
+	'seticon',
+	'clues',
+	'k',
+	'kill',
+	'setname',
+	'buy',
+	'clue',
+	'kc',
+	'pat',
+	'stats',
+	'ironman',
+	'opens',
+	'info',
+	'equippet',
+	'unequippet',
+	'autofarm',
+	'activities',
+	'af',
+	'ep',
+	'uep',
+	'lapcounts',
+	'cancel',
+	'train',
+	'unequipall',
+	'tempcl',
+	'blowpipe',
+	'bp',
+	'charge',
+	'data'
+];
+
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -51,7 +92,7 @@ export default class MinionCommand extends BotCommand {
 			oneAtTime: true,
 			cooldown: 1,
 			aliases: ['m'],
-			usage: '[lvl|seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|ironman|opens|info] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
+			usage: `[${subCommands.join('|')}] [quantity:int{1}|name:...string] [name:...string] [name:...string]`,
 			usageDelim: ' ',
 			subcommands: true,
 			requiredPermissions: ['EMBED_LINKS']
@@ -115,7 +156,7 @@ export default class MinionCommand extends BotCommand {
 					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
 						return lastTrip.continue(msg);
 					}
-					await this.client.commands.get('mclue')?.run(msg, [selection.customID]);
+					await runCommand(msg, 'mclue', [selection.customID]);
 				} catch {
 					await sentMessage.edit({ components: [] });
 				}
@@ -124,8 +165,91 @@ export default class MinionCommand extends BotCommand {
 		}
 	}
 
+	async cancel(msg: KlasaMessage) {
+		return cancelTaskCommand(msg);
+	}
+
+	async train(msg: KlasaMessage, [input]: [string | undefined]) {
+		return trainCommand(msg, input);
+	}
+
+	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		if (msg.author.perkTier < PerkTier.Four) {
+			return msg.channel.send('Sorry, you need to be a Tier 3 Patron to use this command.');
+		}
+		const result = await dataCommand(msg, input);
+		if ('bank' in result) {
+			return msg.channel.sendBankImage({
+				title: result.title,
+				bank: result.bank,
+				content: result.content
+			});
+		}
+		const output = Buffer.isBuffer(result) ? { files: [new MessageAttachment(result)] } : result;
+		return msg.channel.send(output);
+	}
+
+	async lapcounts(msg: KlasaMessage) {
+		const entries = Object.entries(msg.author.settings.get(UserSettings.LapsScores)).map(arr => [
+			parseInt(arr[0]),
+			arr[1]
+		]);
+		const sepulchreCount = await msg.author.getMinigameScore('sepulchre');
+		if (sepulchreCount === 0 && entries.length === 0) {
+			return msg.channel.send("You haven't done any laps yet! Sad.");
+		}
+		const data = `${entries
+			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
+			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
+		return msg.channel.send(data);
+	}
+
+	async charge(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return degradeableItemsCommand(msg, input);
+	}
+
+	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return this.blowpipe(msg, [input]);
+	}
+
+	async blowpipe(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return blowpipeCommand(msg, input);
+	}
+
 	async info(msg: KlasaMessage) {
 		return runCommand(msg, 'rp', ['c', msg.author]);
+	}
+
+	async tempcl(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return tempCLCommand(msg, input);
+	}
+
+	async unequippet(msg: KlasaMessage) {
+		return unequipPet(msg);
+	}
+
+	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return equipPet(msg, input);
+	}
+
+	async uep(msg: KlasaMessage) {
+		return unequipPet(msg);
+	}
+
+	async ep(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return equipPet(msg, input);
+	}
+
+	async af(msg: KlasaMessage) {
+		return autoFarm(msg);
+	}
+
+	async autofarm(msg: KlasaMessage) {
+		return autoFarm(msg);
+	}
+
+	async activities(msg: KlasaMessage) {
+		return pastActivities(msg);
 	}
 
 	@requiresMinion
@@ -193,7 +317,7 @@ export default class MinionCommand extends BotCommand {
 					if (msg.author.owns(ironmanArmor)) {
 						return msg.channel.send('You already own a set of ironman armor.');
 					}
-					await msg.author.addItemsToBank(ironmanArmor);
+					await msg.author.addItemsToBank({ items: ironmanArmor, collectionLog: false });
 					return msg.channel.send('Gave you a set of ironman armor.');
 				}
 				return msg.channel.send("You're a **permanent** ironman and you cannot de-iron.");
@@ -212,7 +336,7 @@ Please say \`permanent\` to confirm.`
 							answer.author.id === msg.author.id && answer.content.toLowerCase() === 'permanent'
 					});
 					await msg.author.settings.update(UserSettings.BitField, BitField.PermanentIronman);
-					await msg.author.addItemsToBank(ironmanArmor);
+					await msg.author.addItemsToBank({ items: ironmanArmor });
 					return msg.channel.send(
 						'You are now a **permanent** Ironman. You also received a set of ironmen armor. Enjoy!'
 					);
@@ -238,9 +362,11 @@ Please say \`permanent\` to confirm.`
 			}
 		}
 
-		const existingGiveaways = await GiveawayTable.find({
-			userID: msg.author.id,
-			completed: false
+		const existingGiveaways = await prisma.giveaway.findMany({
+			where: {
+				user_id: msg.author.id,
+				completed: false
+			}
 		});
 
 		if (existingGiveaways.length !== 0) {
@@ -279,11 +405,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			await msg.author.settings.reset([...keysToReset]);
 
 			try {
-				await SlayerTaskTable.delete({ user: await getNewUser(msg.author.id) });
-				await PoHTable.delete({ userID: msg.author.id });
-				await MinigameTable.delete({ userID: msg.author.id });
-				await XPGainsTable.delete({ userID: msg.author.id });
-				await NewUserTable.delete({ id: msg.author.id });
+				await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
+				await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
+				await prisma.minigame.delete({ where: { user_id: msg.author.id } });
+				await prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
+				await prisma.newUser.delete({ where: { id: msg.author.id } });
+				await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 			} catch (_) {}
 
 			await msg.author.settings.update([
@@ -396,10 +523,10 @@ Please click the buttons below for important links.`
 		runCommand(msg, 'mclue', [quantity, tierName]);
 	}
 
+	@requiresMinion
+	@minionNotBusy
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		await this.kill(msg, [quantity, name]).catch(err => {
-			throw err;
-		});
+		runCommand(msg, 'k', [quantity, name]);
 	}
 
 	@requiresMinion
@@ -411,5 +538,11 @@ Please click the buttons below for important links.`
 	async opens(msg: KlasaMessage) {
 		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
 		return msg.channel.send(`You've opened... ${openableScores}`);
+	}
+
+	@requiresMinion
+	@minionNotBusy
+	async unequipall(msg: KlasaMessage, [gearType]: [string]) {
+		return unEquipAllCommand(msg, gearType as GearSetupType);
 	}
 }

@@ -1,5 +1,5 @@
 import { MessageButton } from 'discord.js';
-import { KlasaMessage } from 'klasa';
+import { Command, KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
@@ -130,6 +130,7 @@ export const enum Emoji {
 	Bug = '<:bug:778418736330833951>',
 	Trophy = '<:goldTrophy:778418736561782794>',
 	Crab = '<:crab:778418736432021505>',
+	Snake = '🐍',
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
@@ -219,75 +220,9 @@ export const enum Tasks {
 	PestControl = 'pestControlActivity',
 	VolcanicMine = 'volcanicMineActivity',
 	KourendFavour = 'kourendFavourActivity',
-	Inferno = 'infernoActivity'
-}
-
-export enum Activity {
-	Agility = 'Agility',
-	Cooking = 'Cooking',
-	MonsterKilling = 'MonsterKilling',
-	GroupMonsterKilling = 'GroupMonsterKilling',
-	ClueCompletion = 'ClueCompletion',
-	Fishing = 'Fishing',
-	Mining = 'Mining',
-	Smithing = 'Smithing',
-	Woodcutting = 'Woodcutting',
-	Questing = 'Questing',
-	Firemaking = 'Firemaking',
-	Runecraft = 'Runecraft',
-	Smelting = 'Smelting',
-	Crafting = 'Crafting',
-	Burying = 'Burying',
-	Offering = 'Offering',
-	FightCaves = 'FightCaves',
-	Wintertodt = 'Wintertodt',
-	Tempoross = 'Tempoross',
-	TitheFarm = 'TitheFarm',
-	Fletching = 'Fletching',
-	Pickpocket = 'Pickpocket',
-	Herblore = 'Herblore',
-	Hunter = 'Hunter',
-	Birdhouse = 'Birdhouse',
-	Alching = 'Alching',
-	AnimatedArmour = 'AnimatedArmour',
-	Cyclops = 'Cyclops',
-	Sawmill = 'Sawmill',
-	Nightmare = 'Nightmare',
-	Sepulchre = 'Sepulchre',
-	Plunder = 'Plunder',
-	FishingTrawler = 'FishingTrawler',
-	Zalcano = 'Zalcano',
-	Farming = 'Farming',
-	Construction = 'Construction',
-	Enchanting = 'Enchanting',
-	Casting = 'Casting',
-	GloryCharging = 'GloryCharging',
-	WealthCharging = 'WealthCharging',
-	BarbarianAssault = 'BarbarianAssault',
-	AgilityArena = 'AgilityArena',
-	ChampionsChallenge = 'ChampionsChallenge',
-	AerialFishing = 'AerialFishing',
-	DriftNet = 'DriftNet',
-	MahoganyHomes = 'MahoganyHomes',
-	GnomeRestaurant = 'GnomeRestaurant',
-	SoulWars = 'SoulWars',
-	RoguesDenMaze = 'RoguesDenMaze',
-	Gauntlet = 'Gauntlet',
-	CastleWars = 'CastleWars',
-	MageArena = 'MageArena',
-	Raids = 'Raids',
-	Collecting = 'Collecting',
-	MageTrainingArena = 'MageTrainingArena',
-	BlastFurnace = 'BlastFurnace',
-	MageArena2 = 'MageArena2',
-	BigChompyBirdHunting = 'BigChompyBirdHunting',
-	DarkAltar = 'DarkAltar',
-	Trekking = 'Trekking',
-	Revenants = 'Revenants',
-	PestControl = 'PestControl',
-	VolcanicMine = 'VolcanicMine',
-	KourendFavour = 'KourendFavour',
-	Inferno = 'Inferno'
+	Inferno = 'infernoActivity',
+	TearsOfGuthix = 'tearsOfGuthixActivity',
+	ToB = 'tobActivity'
 }
 
 export enum ActivityGroup {
@@ -436,7 +371,7 @@ export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
-export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
+export const continuationChars = 'abdefghjknoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
@@ -506,7 +441,11 @@ export const informationalButtons = [
 		.setEmoji('778418736180494347')
 		.setURL('https://www.discord.gg/ob')
 		.setStyle('LINK'),
-	new MessageButton().setLabel('Bot Invite').setEmoji('🤖').setURL('http://invite.oldschool.gg/').setStyle('LINK')
+	new MessageButton()
+		.setLabel('Bot Invite')
+		.setEmoji('🤖')
+		.setURL('http://www.oldschool.gg/invite/osb')
+		.setStyle('LINK')
 ];
 
 export const lastTripCache = new Map<
@@ -525,3 +464,18 @@ export const projectiles: Record<ProjectileType, number[]> = {
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
+export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
+export function shouldTrackCommand(command: Command, args: any[]) {
+	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
+		if (command.name === name && subs.includes(args[0])) {
+			return false;
+		}
+	}
+	return true;
+}
+export function getCommandArgs(command: Command, args: any[]) {
+	if (args.length === 0) return undefined;
+	if (command.name === 'bank') return undefined;
+	if (command.name === 'rp' && args[0] === 'c') return undefined;
+	return args;
+}

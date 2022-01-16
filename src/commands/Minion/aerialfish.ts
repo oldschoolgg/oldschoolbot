@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -11,7 +10,6 @@ import { formatDuration, randFloat, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
-import itemID from '../../lib/util/itemID';
 
 const buyables = [
 	{
@@ -83,7 +81,7 @@ export default class extends BotCommand {
 	@minionNotBusy
 	@requiresMinion
 	async run(msg: KlasaMessage, [tripTime]: [number | string | undefined]) {
-		const maxTripLength = msg.author.maxTripLength(Activity.AerialFishing);
+		const maxTripLength = msg.author.maxTripLength('AerialFishing');
 
 		if (typeof tripTime !== 'number') {
 			tripTime = Math.floor(maxTripLength / Time.Minute);
@@ -121,7 +119,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.AerialFishing
+			type: 'AerialFishing'
 		});
 
 		return msg.channel.send(
@@ -169,7 +167,7 @@ export default class extends BotCommand {
 			});
 		}
 		await msg.author.removeItemsFromBank(new Bank().add('Molch pearl', buyable.cost));
-		await msg.author.addItemsToBank({ [buyable.item.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [buyable.item.id]: 1 }, collectionLog: true });
 		return msg.channel.send(`Successfully purchased 1x ${buyable.item.name} for ${buyable.cost}x Molch pearls.`);
 	}
 
@@ -200,7 +198,7 @@ export default class extends BotCommand {
 			});
 		}
 		await msg.author.removeItemsFromBank(new Bank().add(sellable.item.id, 1));
-		await msg.author.addItemsToBank({ [itemID('Molch pearl')]: sellable.cost }, true);
+		await msg.author.addItemsToBank({ items: new Bank().add('Molch pearl', sellable.cost), collectionLog: true });
 		return msg.channel.send(`Successfully sold 1x ${sellable.item.name} for ${sellable.cost}x Molch pearls.`);
 	}
 }

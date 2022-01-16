@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { FarmingPatchTypes } from '../../lib/minions/farming/types';
@@ -110,7 +109,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Farming);
+		const maxTripLength = msg.author.maxTripLength('Farming');
 
 		if (duration > maxTripLength) {
 			throw `${msg.author.minionName} can't go on trips longer than ${formatDuration(
@@ -165,7 +164,7 @@ export default class extends BotCommand {
 			quantity: patchType.lastQuantity,
 			planting: false,
 			currentDate,
-			type: Activity.Farming,
+			type: 'Farming',
 			autoFarmed: false
 		});
 

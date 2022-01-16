@@ -38,6 +38,13 @@ export default async function removeFoodFromUser({
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 17.5);
 		reductions.push(`-17.5% for Ely ${Emoji.Ely}`);
 	}
+	if (
+		gearSetupsUsed.some(i => i[0] === 'melee') &&
+		rawGear.melee.hasEquipped(['Justiciar faceguard', 'Justiciar chestguard', 'Justiciar legguards'], true, true)
+	) {
+		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 6.5);
+		reductions.push('-6.5% for Justiciar');
+	}
 
 	if (learningPercentage && learningPercentage > 1) {
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, learningPercentage);

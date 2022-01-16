@@ -36,7 +36,9 @@ jobs:
                   pushd src &&
                   cp config.example.ts config.ts &&
                   popd
+            - name: Generate Prisma Client
+              run: npx prisma generate
             - name: Test
-              run: yarn test
+              run: yarn test:unit
             - name: Upload coverage data to Codecov
               uses: codecov/codecov-action@v1

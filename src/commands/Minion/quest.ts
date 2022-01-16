@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, MAX_QP } from '../../lib/constants';
+import { MAX_QP } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -40,7 +40,7 @@ export default class extends BotCommand {
 		}
 
 		await addSubTaskToActivityTask<QuestingActivityTaskOptions>({
-			type: Activity.Questing,
+			type: 'Questing',
 			duration,
 			userID: msg.author.id,
 			channelID: msg.channel.id

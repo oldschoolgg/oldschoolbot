@@ -3,9 +3,9 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcLootXPHunting } from '../../lib/skilling/functions/calcsHunter';
@@ -191,7 +191,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Hunter);
+		const maxTripLength = msg.author.maxTripLength('Hunter');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -270,8 +270,15 @@ export default class extends BotCommand {
 				wildyPeak!.peakTier
 			} peak time and potentially risking your equipped body and legs in the wildy setup with a score ${wildyScore} and also risking Saradomin brews and Super restore potions. If you feel unsure \`${
 				msg.cmdPrefix
-			}cancel\` the activity.`;
+			}m cancel\` the activity.`;
 		}
+
+		await trackLoot({
+			id: creature.name,
+			cost: removeBank,
+			type: 'Skilling',
+			changeType: 'cost'
+		});
 
 		await addSubTaskToActivityTask<HunterActivityTaskOptions>({
 			creatureName: creature.name,
@@ -281,7 +288,7 @@ export default class extends BotCommand {
 			duration,
 			usingHuntPotion,
 			wildyPeak,
-			type: Activity.Hunter
+			type: 'Hunter'
 		});
 
 		let response = `${msg.author.minionName} is now ${creature.huntTechnique} ${quantity}x ${

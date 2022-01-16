@@ -37,7 +37,10 @@ export default class extends Task {
 			user.hasItemEquippedAnywhere('Iron med helm') &&
 			!user.hasItemEquippedOrInBank('Clue hunter garb')
 		) {
-			await user.addItemsToBank(new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }), true);
+			await user.addItemsToBank({
+				items: new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
+				collectionLog: true
+			});
 			str += '\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.';
 		}
 
@@ -46,10 +49,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${bone.name}[${bone.inputId}]`);
-				return this.client.commands.get('bury')!.run(res, [quantity, bone.name]);
-			},
+			['bury', [quantity, bone.name], true],
 			undefined,
 			data,
 			null

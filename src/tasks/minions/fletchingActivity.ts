@@ -26,20 +26,17 @@ export default class extends Task {
 		let quantityToGive = fletchableItem.outputMultiple ? quantity * fletchableItem.outputMultiple : quantity;
 
 		const loot = new Bank({ [fletchableItem.id]: quantityToGive });
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
-			res => {
-				user.log('continued fletching trip');
-				return this.client.commands.get('fletch')!.run(res, [quantity, fletchableItem.name]);
-			},
+			['fletch', [quantity, fletchableItem.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

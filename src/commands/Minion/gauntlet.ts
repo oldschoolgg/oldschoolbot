@@ -1,7 +1,7 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, BitField } from '../../lib/constants';
+import { BitField } from '../../lib/constants';
 import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -75,8 +75,8 @@ export default class extends BotCommand {
 		}
 
 		const [corruptedKC, normalKC] = await Promise.all([
-			msg.author.getMinigameScore('CorruptedGauntlet'),
-			msg.author.getMinigameScore('Gauntlet')
+			msg.author.getMinigameScore('corrupted_gauntlet'),
+			msg.author.getMinigameScore('gauntlet')
 		]);
 
 		if (type === 'corrupted' && normalKC < 50) {
@@ -108,7 +108,7 @@ export default class extends BotCommand {
 		let gauntletLength = baseLength;
 		if (type === 'corrupted') gauntletLength *= 1.3;
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Gauntlet);
+		const maxTripLength = msg.author.maxTripLength('Gauntlet');
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / gauntletLength);
@@ -130,7 +130,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Gauntlet,
+			type: 'Gauntlet',
 			corrupted: type === 'corrupted'
 		});
 

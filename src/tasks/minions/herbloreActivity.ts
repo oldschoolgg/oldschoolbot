@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -24,23 +25,18 @@ export default class extends Task {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished making ${quantity} ${mixableItem.name}s. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished making ${quantity}x ${mixableItem.name}. ${xpRes}`;
 
-		const loot = {
-			[mixableItem.id]: quantity
-		};
+		const loot = new Bank().add(mixableItem.id, quantity);
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${mixableItem.name}[${mixableItem.id}]`);
-				return this.client.commands.get('mix')!.run(res, [quantity, mixableItem.name]);
-			},
+			['mix', [quantity, mixableItem.name], true],
 			undefined,
 			data,
 			loot

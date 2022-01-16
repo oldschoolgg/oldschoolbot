@@ -55,7 +55,7 @@ export default class extends Task {
 			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, log.clueScrollChance, loot);
 		}
 
-		let str = `${user}, ${user.minionName} finished woodcutting, you received ${loot}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}`;
 
 		if (bonusXP > 0) {
 			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
@@ -64,7 +64,7 @@ export default class extends Task {
 		// Roll for pet
 		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
 			loot.add('Beaver');
-			str += "\nYou have a funny feeling you're being followed...";
+			str += "\n**You have a funny feeling you're being followed...**";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Woodcutting} **${user.username}'s** minion, ${
@@ -75,20 +75,19 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank(loot, true);
+		str += `\nYou received ${loot}.`;
+
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${log.name}[${log.id}]`);
-				return this.client.commands.get('chop')!.run(res, [quantity, log.name]);
-			},
+			['chop', [quantity, log.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }
