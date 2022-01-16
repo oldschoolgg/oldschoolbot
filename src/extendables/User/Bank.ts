@@ -113,7 +113,6 @@ export default class extends Extendable {
 			if (collectionLog) {
 				await user.addItemsToCollectionLog({ items: clLoot, dontAddToTempCL });
 			}
-			console.log(loot);
 
 			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
 			const coinsInLoot = loot.amount('Coins');
