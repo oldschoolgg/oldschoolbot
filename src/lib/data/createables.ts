@@ -1,3 +1,4 @@
+import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -7,8 +8,10 @@ import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
+import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
+import { tobCreatables } from './creatables/tob';
 
 export interface Createable {
 	name: string;
@@ -21,6 +24,8 @@ export interface Createable {
 	GPCost?: number;
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
+	requiredFavour?: Favours;
+	maxCanOwn?: number;
 }
 
 const revWeapons: Createable[] = [
@@ -296,6 +301,19 @@ const crystalTools: Createable[] = [
 		},
 		requiredSkills: { smithing: 82, crafting: 82 },
 		QPRequired: 150
+	},
+	{
+		name: 'Crystal halberd',
+		inputItems: resolveNameBank({
+			'Crystal weapon seed': 1,
+			'Crystal shard': 40
+		}),
+		outputItems: {
+			[itemID('Crystal halberd')]: 1
+		},
+		requiredSkills: { smithing: 78, crafting: 78 },
+		QPRequired: 150,
+		noCl: true
 	}
 ];
 
@@ -363,6 +381,56 @@ const hunterClothing: Createable[] = [
 ];
 
 const Reverteables: Createable[] = [
+	{
+		name: 'Revert tanzanite fang',
+		inputItems: {
+			[itemID('Tanzanite fang')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert toxic blowpipe (empty)',
+		inputItems: {
+			[itemID('Toxic blowpipe (empty)')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert magic fang',
+		inputItems: {
+			[itemID('Magic fang')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert serpentine visage',
+		inputItems: {
+			[itemID('Serpentine visage')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert serpentine helm (uncharged)',
+		inputItems: {
+			[itemID('Serpentine helm (uncharged)')]: 1
+		},
+		outputItems: {
+			[itemID("Zulrah's scales")]: 20_000
+		},
+		noCl: true
+	},
 	{
 		name: 'Revert volatile nightmare staff',
 		outputItems: resolveNameBank({
@@ -984,74 +1052,6 @@ const Createables: Createable[] = [
 			[itemID('Infernal harpoon')]: 1
 		},
 		requiredSkills: { cooking: 85, fishing: 75 }
-	},
-	{
-		name: 'Graceful',
-		inputItems: {
-			[itemID('Mark of grace')]: 260
-		},
-		outputItems: {
-			[itemID('Graceful hood')]: 1,
-			[itemID('Graceful top')]: 1,
-			[itemID('Graceful legs')]: 1,
-			[itemID('Graceful gloves')]: 1,
-			[itemID('Graceful boots')]: 1,
-			[itemID('Graceful cape')]: 1
-		}
-	},
-	{
-		name: 'Graceful hood',
-		inputItems: {
-			[itemID('Mark of grace')]: 35
-		},
-		outputItems: {
-			[itemID('Graceful hood')]: 1
-		}
-	},
-	{
-		name: 'Graceful top',
-		inputItems: {
-			[itemID('Mark of grace')]: 55
-		},
-		outputItems: {
-			[itemID('Graceful top')]: 1
-		}
-	},
-	{
-		name: 'Graceful legs',
-		inputItems: {
-			[itemID('Mark of grace')]: 60
-		},
-		outputItems: {
-			[itemID('Graceful legs')]: 1
-		}
-	},
-	{
-		name: 'Graceful gloves',
-		inputItems: {
-			[itemID('Mark of grace')]: 30
-		},
-		outputItems: {
-			[itemID('Graceful gloves')]: 1
-		}
-	},
-	{
-		name: 'Graceful boots',
-		inputItems: {
-			[itemID('Mark of grace')]: 40
-		},
-		outputItems: {
-			[itemID('Graceful boots')]: 1
-		}
-	},
-	{
-		name: 'Graceful cape',
-		inputItems: {
-			[itemID('Mark of grace')]: 40
-		},
-		outputItems: {
-			[itemID('Graceful cape')]: 1
-		}
 	},
 	{
 		name: 'Hell cat ears',
@@ -1723,6 +1723,16 @@ const Createables: Createable[] = [
 			[itemID("Tarn's diary")]: 1
 		}
 	},
+	{
+		name: 'Little parasite',
+		inputItems: resolveNameBank({
+			'Parasitic egg': 1,
+			'Little nightmare': 1
+		}),
+		outputItems: {
+			[itemID('Little parasite')]: 1
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
@@ -1733,7 +1743,9 @@ const Createables: Createable[] = [
 	...capeCreatables,
 	...dragonFireShieldCreatables,
 	...revWeapons,
-	...armorAndItemPacks
+	...armorAndItemPacks,
+	...gracefulOutfitCreatables,
+	...tobCreatables
 ];
 
 export default Createables;

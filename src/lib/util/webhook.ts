@@ -11,7 +11,7 @@ import {
 import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
 
-import { WebhookTable } from '../typeorm/WebhookTable.entity';
+import { prisma } from '../settings/prisma';
 import { channelIsSendable } from '../util';
 
 const webhookCache: Map<string, WebhookClient> = new Map();
@@ -30,11 +30,11 @@ export async function resolveChannel(
 	const cached = webhookCache.get(channelID);
 	if (cached) return cached;
 
-	const db = await WebhookTable.findOne({ channelID });
+	const db = await prisma.webhook.findFirst({ where: { channel_id: channelID } });
 	if (db) {
 		client.emit('log', 'Restoring webhook from DB.');
-		webhookCache.set(db.channelID, new WebhookClient(db.webhookID, db.webhookToken));
-		return webhookCache.get(db.channelID);
+		webhookCache.set(db.channel_id, new WebhookClient(db.webhook_id, db.webhook_token));
+		return webhookCache.get(db.channel_id);
 	}
 
 	if (!channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.MANAGE_WEBHOOKS)) {
@@ -46,10 +46,12 @@ export async function resolveChannel(
 		const createdWebhook = await channel.createWebhook(client.user!.username, {
 			avatar: client.user!.displayAvatarURL({})
 		});
-		await WebhookTable.insert({
-			channelID,
-			webhookID: createdWebhook.id,
-			webhookToken: createdWebhook.token!
+		await prisma.webhook.create({
+			data: {
+				channel_id: channelID,
+				webhook_id: createdWebhook.id,
+				webhook_token: createdWebhook.token!
+			}
 		});
 		const webhook = new WebhookClient(createdWebhook.id, createdWebhook.token!);
 		webhookCache.set(channelID, webhook);
@@ -62,7 +64,7 @@ export async function resolveChannel(
 
 async function deleteWebhook(channelID: string) {
 	webhookCache.delete(channelID);
-	await WebhookTable.delete({ channelID });
+	await prisma.webhook.delete({ where: { channel_id: channelID } });
 }
 
 const queue = new PQueue({ concurrency: 10 });

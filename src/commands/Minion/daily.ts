@@ -46,6 +46,7 @@ export default class DailyCommand extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		if (msg.channel.id === '342983479501389826') return;
 		await msg.author.settings.sync();
 		const currentDate = new Date().getTime();
 		const lastVoteDate = msg.author.settings.get(UserSettings.LastDailyTimestamp);
@@ -157,7 +158,7 @@ export default class DailyCommand extends BotCommand {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDaily, loot[COINS_ID]);
 		}
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		return msg.channel.sendBankImage({
 			bank: itemsAdded,

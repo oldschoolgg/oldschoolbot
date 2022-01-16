@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { corporealBeastCL } from '../../../../data/CollectionsExport';
 import { GearStat } from '../../../../gear';
@@ -17,7 +17,6 @@ const killableBosses: KillableMonster[] = [
 		table: Monsters.GiantMole,
 		emoji: '<:Baby_mole:324127375858204672>',
 		wildy: false,
-
 		difficultyRating: 3,
 		itemsRequired: resolveItems(["Dharok's helm", "Dharok's platebody", "Dharok's platelegs", "Dharok's greataxe"]),
 		notifyDrops: resolveItems(['Baby mole']),
@@ -36,13 +35,17 @@ const killableBosses: KillableMonster[] = [
 			prayer: 43
 		},
 		defaultAttackStyles: [SkillsEnum.Attack],
-		combatXpMultiplier: 1.075
+		combatXpMultiplier: 1.075,
+		itemCost: {
+			itemCost: new Bank().add('Prayer potion(4)'),
+			qtyPerKill: 0.1
+		}
 	},
 	{
 		id: Monsters.Vorkath.id,
 		name: Monsters.Vorkath.name,
 		aliases: Monsters.Vorkath.aliases,
-		timeToFinish: Time.Minute * 3.5,
+		timeToFinish: Time.Minute * 3.85,
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
@@ -62,8 +65,8 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Dragon hunter crossbow')]: 25
 			},
 			{
-				[itemID('Salve amulet(ei)')]: 11,
-				[itemID('Salve amulet(i)')]: 8
+				[itemID('Salve amulet(ei)')]: 20,
+				[itemID('Salve amulet(i)')]: 16
 			}
 		],
 		levelRequirements: {

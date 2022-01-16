@@ -1,3 +1,4 @@
+import { notEmpty } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -22,16 +23,16 @@ const runeItems: [number[], number[]][] = [
 ];
 
 export function determineRunes(user: KlasaUser, runeBank: Bank): Bank {
-	const gear = user.rawGear();
-	const mainhand = gear.skilling.weapon;
-	const offhand = gear.skilling.shield;
+	const allWeaponsAndShields = Object.values(user.rawGear())
+		.map(g => [g.weapon, g.shield])
+		.flat(2)
+		.filter(notEmpty)
+		.map(i => i.item);
 
 	const bank = new Bank(runeBank.bank);
 
-	if (!mainhand && !offhand) return bank;
-
 	for (const [itemSet, runes] of runeItems) {
-		if ((mainhand && itemSet.includes(mainhand.item)) || (offhand && itemSet.includes(offhand.item))) {
+		if (itemSet.some(i => allWeaponsAndShields.includes(i))) {
 			for (const rune of runes) {
 				if (bank.has(rune)) bank.remove(rune, bank.amount(rune));
 			}

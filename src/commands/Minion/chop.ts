@@ -1,7 +1,7 @@
 import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity } from '../../lib/constants';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
@@ -74,6 +74,13 @@ export default class extends BotCommand {
 			return msg.channel.send(`${msg.author.minionName} needs ${log.qpRequired} QP to cut ${log.name}.`);
 		}
 
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 75);
+		if (!hasFavour && log.name === 'Redwood Logs') {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to chop Redwood at the Woodcutting Guild!`
+			);
+		}
+
 		// Calculate the time it takes to chop a single log of this type, at this persons level.
 		let timetoChop = determineScaledLogTime(
 			log!.xp,
@@ -94,7 +101,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Woodcutting);
+		const maxTripLength = msg.author.maxTripLength('Woodcutting');
 
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
@@ -119,7 +126,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Woodcutting
+			type: 'Woodcutting'
 		});
 
 		let response = `${msg.author.minionName} is now chopping ${quantity}x ${

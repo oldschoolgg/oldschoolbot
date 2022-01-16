@@ -1,6 +1,5 @@
 import { Monsters } from 'oldschooljs';
 
-import { Activity } from '../constants';
 import {
 	ActivityTaskOptions,
 	AgilityActivityTaskOptions,
@@ -17,9 +16,9 @@ const WorldLocationsChecker = [
 	{
 		area: WorldLocations.Priffdinas,
 		checker: (activity: ActivityTaskOptions) => {
-			if ([Activity.Gauntlet, Activity.Zalcano].includes(activity.type)) return true;
+			if (['Gauntlet', 'Zalcano'].includes(activity.type)) return true;
 			if (
-				activity.type === Activity.MonsterKilling &&
+				activity.type === 'MonsterKilling' &&
 				[Monsters.DarkBeast.id, Monsters.PrifddinasElf.id].includes(
 					(activity as MonsterActivityTaskOptions).monsterID
 				)
@@ -27,13 +26,13 @@ const WorldLocationsChecker = [
 				return true;
 			}
 			if (
-				activity.type === Activity.Pickpocket &&
+				activity.type === 'Pickpocket' &&
 				(activity as PickpocketActivityTaskOptions).monsterID === Monsters.PrifddinasElf.id
 			) {
 				return true;
 			}
 			if (
-				activity.type === Activity.Agility &&
+				activity.type === 'Agility' &&
 				(activity as AgilityActivityTaskOptions).courseID === 'Prifddinas Rooftop Course'
 			) {
 				return true;

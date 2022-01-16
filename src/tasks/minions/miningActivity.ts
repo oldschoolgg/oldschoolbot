@@ -112,20 +112,17 @@ export default class extends Task {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${ore.name}[${ore.id}]`);
-				return this.client.commands.get('mine')!.run(res, [quantity, ore.name]);
-			},
+			['mine', [quantity, ore.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

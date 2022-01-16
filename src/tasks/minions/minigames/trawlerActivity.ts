@@ -3,10 +3,11 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, anglerBoostPercent } from '../../../lib/util';
+import { anglerBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -14,7 +15,7 @@ export default class extends Task {
 		const { channelID, quantity, userID } = data;
 		const user = await this.client.fetchUser(userID);
 
-		user.incrementMinigameScore('FishingTrawler', quantity);
+		await incrementMinigameScore(userID, 'fishing_trawler', quantity);
 
 		const fishingLevel = user.skillLevel(SkillsEnum.Fishing);
 
@@ -24,11 +25,7 @@ export default class extends Task {
 		let totalXP = 0;
 		const [hasEliteArdy] = await userhasDiaryTier(user, ArdougneDiary.elite);
 		for (let i = 0; i < quantity; i++) {
-			const { loot: _loot, xp } = fishingTrawlerLoot(
-				fishingLevel,
-				hasEliteArdy,
-				addBanks([loot.bank, allItemsOwned])
-			);
+			const { loot: _loot, xp } = fishingTrawlerLoot(fishingLevel, hasEliteArdy, loot.clone().add(allItemsOwned));
 			totalXP += xp;
 			loot.add(_loot);
 		}
@@ -52,7 +49,7 @@ export default class extends Task {
 
 		if (hasEliteArdy) str += '\n\n50% Extra fish for Ardougne Elite diary';
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
 		await user.addXP({ skillName: SkillsEnum.Fishing, amount: totalXP });
@@ -72,18 +69,6 @@ export default class extends Task {
 				previousCL
 			);
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log('continued fishing trawler');
-				return this.client.commands.get('fishingtrawler')!.run(res, []);
-			},
-			image!,
-			data,
-			itemsAdded
-		);
+		handleTripFinish(this.client, user, channelID, str, ['fishingtrawler', [], true], image!, data, itemsAdded);
 	}
 }

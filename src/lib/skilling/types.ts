@@ -74,6 +74,7 @@ export interface Fish {
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
+	alias?: string[];
 }
 
 export interface Course {
@@ -106,8 +107,9 @@ export interface Cookable {
 	name: string;
 	inputCookables: ItemBank;
 	stopBurnAt: number;
-	stopBurnAtCG: number;
+	stopBurnAtCG?: number;
 	burntCookable: number;
+	alias?: string[];
 }
 
 export interface Bar {
@@ -139,6 +141,7 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
+	qpRequired?: number;
 }
 
 export interface Craftable {
@@ -187,11 +190,9 @@ export interface Bone {
 	inputId: number;
 }
 
-export type LevelRequirements = Partial<
-	{
-		[key in SkillsEnum]: number;
-	}
->;
+export type LevelRequirements = Partial<{
+	[key in SkillsEnum]: number;
+}>;
 
 export interface Skill {
 	aliases: string[];
@@ -241,6 +242,7 @@ export interface Plant {
 	canCompostandPay: boolean;
 	additionalPatchesByQP: number[][];
 	additionalPatchesByFarmLvl: number[][];
+	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
 }

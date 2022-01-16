@@ -1,9 +1,8 @@
 import { MessageAttachment } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, objectEntries, randArrItem, randInt, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -138,7 +137,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		}
 
 		await msg.author.settings.update(UserSettings.CarpenterPoints, balance - cost);
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
 
 		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Carpenter Points.`);
 	}
@@ -161,7 +160,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 						itemsNeeded.add(items);
 					}
 					let avgXP = addArrayOfNumbers(xpArr) / xpArr.length;
-					for (const [key, val] of objectEntries(itemsNeeded.bank)) {
+					for (const [key, val] of Object.entries(itemsNeeded.bank)) {
 						itemsNeeded.bank[key] = Math.round(val / xpArr.length);
 					}
 					str += `${bool ? 'With' : 'NO'} Plank sack ${avgXP.toLocaleString()} XP/HR
@@ -173,13 +172,13 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		}
 
 		const conLevel = msg.author.skillLevel(SkillsEnum.Construction);
-		const kc = await msg.author.getMinigameScore('MahoganyHomes');
+		const kc = await msg.author.getMinigameScore('mahogany_homes');
 
 		const hasSack = msg.author.hasItemEquippedOrInBank('Plank sack');
 		const [quantity, itemsNeeded, xp, duration, points] = calcTrip(
 			conLevel,
 			kc,
-			msg.author.maxTripLength(Activity.MahoganyHomes),
+			msg.author.maxTripLength('MahoganyHomes'),
 			hasSack
 		);
 
@@ -193,8 +192,8 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			type: Activity.MahoganyHomes,
-			minigameID: 'MahoganyHomes',
+			type: 'MahoganyHomes',
+			minigameID: 'mahogany_homes',
 			quantity,
 			duration,
 			points,

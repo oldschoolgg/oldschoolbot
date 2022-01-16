@@ -15,7 +15,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: "Show's who has the highest KC gains for a given time period.",
 			categoryFlags: ['minion', 'utility'],
-			examples: ['+kcgains day fire giant', '+kcgains week nightmare'],
+			examples: ['+kcgains day fire giant', '+kcgains week cow'],
 			aliases: ['log'],
 			usage: '<day|week> <monster:...str>',
 			usageDelim: ' ',
@@ -35,7 +35,7 @@ export default class extends BotCommand {
 
 		const query = `SELECT user_id AS user, SUM(("data"->>'quantity')::int) AS qty, MAX(finish_date) AS lastDate FROM activity
 WHERE type = 'MonsterKilling' AND ("data"->>'monsterID')::int = ${monster.id}
-AND finish_date >= current_date - interval '${interval === 'day' ? 1 : 7}' day AND completed = true
+AND finish_date >= now() - interval '${interval === 'day' ? 1 : 7}' day AND completed = true
 GROUP BY 1
 ORDER BY qty DESC, lastDate ASC
 LIMIT 10`;

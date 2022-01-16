@@ -1,7 +1,8 @@
+import { codeBlock } from '@sapphire/utilities';
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PerkTier } from '../../lib/constants';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
@@ -18,8 +19,16 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
+		const clBank = msg.author.cl();
+		if (msg.flagArgs.json) {
+			const json = JSON.stringify(clBank);
+			if (json.length > 1900) {
+				return msg.channel.send({ files: [new MessageAttachment(Buffer.from(json), 'clbank.json')] });
+			}
+			return msg.channel.send(`${codeBlock('json', json)}`);
+		}
 		return msg.channel.sendBankImage({
-			bank: msg.author.settings.get(UserSettings.CollectionLogBank),
+			bank: clBank,
 			title: `${msg.author.username}'s Entire Collection Log`
 		});
 	}

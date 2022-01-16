@@ -19,7 +19,7 @@ export default class extends BotCommand {
 		try {
 			const player = await Hiscores.fetch(username);
 			return msg.channel.send(`${username}'s Combat Level is **${player.combatLevel}**.`);
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

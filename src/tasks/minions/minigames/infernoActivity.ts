@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { Events } from '../../../lib/constants';
 import { diariesObject, userhasDiaryTier } from '../../../lib/diaries';
+import { countUsersWithItemInCl, prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -20,15 +21,15 @@ export default class extends Task {
 	async run(data: InfernoOptions) {
 		const { userID, channelID, diedZuk, diedPreZuk, duration, deathTime, fakeDuration } = data;
 		const user = await this.client.users.fetch(userID);
-		const score = await user.getMinigameScore('Inferno');
+		const score = await user.getMinigameScore('inferno');
 
 		const usersTask = await getUsersCurrentSlayerInfo(user.id);
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
 			score > 0 &&
-			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 		const unusedItems = new Bank();
 		const cost = new Bank(data.cost);
@@ -71,12 +72,12 @@ export default class extends Task {
 		}
 
 		if (!deathTime) {
-			await incrementMinigameScore(userID, 'Inferno', 1);
+			await incrementMinigameScore(userID, 'inferno', 1);
 		}
 
 		let text = '';
 		let chatText = `You are very impressive for a JalYt. You managed to defeat TzKal-Zuk for the ${formatOrdinal(
-			await user.getMinigameScore('Inferno')
+			await user.getMinigameScore('inferno')
 		)} time! Please accept this cape as a token of appreciation.`;
 
 		const percSuppliesRefunded = Math.max(0, Math.min(100, 100 - percentMadeItThrough));
@@ -89,30 +90,40 @@ export default class extends Task {
 				}
 			}
 			if (isOnTask) {
-				usersTask.currentTask!.quantityRemaining = 0;
-				usersTask.currentTask!.skipped = true;
-				await usersTask.currentTask!.save();
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: 0,
+						skipped: true
+					}
+				});
 			}
 		}
 
 		if (isOnTask) {
 			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
 			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-			const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-			usersTask.currentTask!.quantityRemaining = 0;
-			if (deathTime) {
-				usersTask.currentTask!.skipped = true;
-			}
-			await usersTask.currentTask!.save();
+			await prisma.slayerTask.update({
+				where: {
+					id: usersTask.currentTask!.id
+				},
+				data: {
+					quantity_remaining: 0,
+					skipped: deathTime ? true : false
+				}
+			});
 
 			text += `\n\n**You've completed ${currentStreak} tasks and received ${points} points; giving you a total of ${newPoints}; return to a Slayer master.**`;
 		}
 
 		if (unusedItems.length > 0) {
-			await user.addItemsToBank(unusedItems, false);
+			await user.addItemsToBank({ items: unusedItems, collectionLog: false });
 
 			const current = new Bank(this.client.settings.get(ClientSettings.EconomyStats.InfernoCost));
 			const newBank = current.remove(unusedItems);
@@ -138,9 +149,9 @@ export default class extends Task {
 				this.client.emit(
 					Events.ServerNotification,
 					`**${user.username}** just received their ${formatOrdinal(
-						user.cl().amount('Jal-nib-rek')
+						user.cl().amount('Jal-nib-rek') + 1
 					)} Jal-nib-rek pet by killing TzKal-Zuk, on their ${formatOrdinal(
-						await user.getMinigameScore('Inferno')
+						await user.getMinigameScore('inferno')
 					)} kill!`
 				);
 			}
@@ -148,25 +159,19 @@ export default class extends Task {
 			const cl = user.cl();
 
 			if (baseBank.has('Infernal cape') && cl.amount('Infernal cape') === 0) {
-				const usersWithInfernalCape = parseInt(
-					(
-						await this.client.query<any>(
-							`SELECT count(id) FROM users WHERE "collectionLogBank"->>'${itemID(
-								'Infernal cape'
-							)}' IS NOT NULL;`
-						)
-					)[0].count
-				);
+				const usersWithInfernalCape = await countUsersWithItemInCl(itemID('Infernal cape'), false);
 				this.client.emit(
 					Events.ServerNotification,
 					`**${user.username}** just received their first Infernal cape on their ${formatOrdinal(
 						attempts
-					)} attempt! They are the ${formatOrdinal(usersWithInfernalCape)} person to get an Infernal cape.`
+					)} attempt! They are the ${formatOrdinal(
+						usersWithInfernalCape + 1
+					)} person to get an Infernal cape.`
 				);
 			}
 		}
 
-		await user.addItemsToBank(baseBank, true);
+		await user.addItemsToBank({ items: baseBank, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
@@ -184,16 +189,13 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 					: '.'
 			}
 `,
-			res => {
-				user.log('continued trip of inferno');
-				return (this.client.commands.get('inferno') as any).start(res, []);
-			},
+			['inferno', [], true, 'start'],
 			await chatHeadImage({
 				content: chatText,
 				head: 'ketKeh'
 			}),
 			data,
-			baseBank.bank
+			baseBank
 		);
 	}
 }

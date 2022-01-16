@@ -5,13 +5,14 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { O } from 'ts-toolbelt';
 
-import { blowpipeDarts, validateBlowpipeData } from '../../commands/Minion/blowpipe';
 import { projectiles } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
+import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions/blowpipeCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
 import { bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank } from '../../lib/util';
+import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
 
 export interface GetUserBankOptions {
@@ -82,15 +83,17 @@ export default class extends Extendable {
 
 	public async addItemsToBank(
 		this: User,
-		inputItems: ItemBank | Bank,
-		collectionLog: boolean = false,
-		filterLoot: boolean = true
-	): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }> {
+		{
+			inputItems,
+			collectionLog = false,
+			filterLoot = true
+		}: { inputItems: ItemBank | Bank; collectionLog?: boolean; filterLoot?: boolean }
+	): Promise<{ previousCL: Bank; itemsAdded: Bank }> {
 		return this.queueFn(async user => {
 			const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
 			await this.settings.sync(true);
 
-			const previousCL = user.settings.get(UserSettings.CollectionLogBank);
+			const previousCL = user.cl();
 
 			for (const { scrollID } of clueTiers) {
 				// If they didnt get any of this clue scroll in their loot, continue to next clue tier.
@@ -113,7 +116,7 @@ export default class extends Extendable {
 				: { bankLoot: items, clLoot: items };
 			items = bankLoot;
 			if (collectionLog) {
-				await user.addItemsToCollectionLog(clLoot.bank);
+				await user.addItemsToCollectionLog({ items: clLoot });
 			}
 
 			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
@@ -144,7 +147,7 @@ export default class extends Extendable {
 
 			return {
 				previousCL,
-				itemsAdded: items.bank
+				itemsAdded: items
 			};
 		});
 	}
@@ -179,7 +182,8 @@ export default class extends Extendable {
 		});
 	}
 
-	public async specialRemoveItems(this: User, bank: Bank) {
+	public async specialRemoveItems(this: User, _bank: Bank) {
+		const bank = determineRunes(this, _bank);
 		const bankRemove = new Bank();
 		let dart: [Item, number] | null = null;
 		let ammoRemove: [Item, number] | null = null;
@@ -238,7 +242,8 @@ export default class extends Extendable {
 
 		if (dart) {
 			if (hasAvas) {
-				for (let i = 0; i < dart![1]; i++) {
+				let copyDarts = dart![1];
+				for (let i = 0; i < copyDarts; i++) {
 					if (percentChance(80)) {
 						realCost.remove(dart[0].id, 1);
 						dart![1]--;

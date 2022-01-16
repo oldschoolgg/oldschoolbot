@@ -327,6 +327,19 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.45
 	},
 	{
+		name: 'Cadantine blood potion (unf)',
+		aliases: ['cadantine blood potion', 'cadantine blood'],
+		id: itemID('Cadantine blood potion (unf)'),
+		level: 80,
+		xp: 0,
+		inputItems: resolveNameBank({
+			'Vial of blood': 1,
+			Cadantine: 1
+		}),
+		tickRate: 1,
+		bankTimePerPotion: 0.3
+	},
+	{
 		name: 'Bastion potion (3)',
 		aliases: ['bastion potion (3)', 'bastion potion', 'bastion'],
 		id: itemID('Bastion potion (3)'),
@@ -451,6 +464,21 @@ const Potions: Mixable[] = [
 		tickRate: 2,
 		qpRequired: 205,
 		bankTimePerPotion: 0.3
+	},
+	{
+		name: 'Sanfew serum(4)',
+		aliases: ['sanfew', 'sanfew serum'],
+		id: itemID('Sanfew serum(4)'),
+		level: 65,
+		xp: 192,
+		inputItems: resolveNameBank({
+			'Super restore(4)': 1,
+			'Unicorn horn dust': 1,
+			'Snake weed': 1,
+			'Nail beast nails': 1
+		}),
+		tickRate: 10,
+		bankTimePerPotion: 0.5
 	}
 ];
 

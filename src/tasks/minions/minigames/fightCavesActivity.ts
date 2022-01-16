@@ -5,6 +5,7 @@ import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
 import { fightCavesCost } from '../../../commands/Minion/fightcaves';
 import { Emoji, Events } from '../../../lib/constants';
+import { prisma } from '../../../lib/settings/prisma';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { calculateSlayerPoints, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
@@ -35,16 +36,23 @@ export default class extends Task {
 		const isOnTask =
 			usersTask.currentTask !== null &&
 			usersTask.currentTask !== undefined &&
-			usersTask.currentTask!.monsterID === Monsters.TzHaarKet.id &&
-			usersTask.currentTask!.quantityRemaining === usersTask.currentTask!.quantity;
+			usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
+			usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 		if (preJadDeathTime) {
 			let slayerMsg = '';
 			if (isOnTask) {
 				slayerMsg = ' **Task cancelled.**';
-				usersTask.currentTask!.quantityRemaining = 0;
-				usersTask.currentTask!.skipped = true;
-				await usersTask.currentTask!.save();
+
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: 0,
+						skipped: true
+					}
+				});
 			}
 			// Give back supplies based on how far in they died, for example if they
 			// died 80% of the way through, give back approximately 20% of their supplies.
@@ -58,7 +66,7 @@ export default class extends Task {
 				}
 			}
 
-			await user.addItemsToBank(itemLootBank);
+			await user.addItemsToBank({ items: itemLootBank, collectionLog: false });
 
 			return handleTripFinish(
 				this.client,
@@ -67,22 +75,19 @@ export default class extends Task {
 				`${user} You died ${formatDuration(
 					preJadDeathTime
 				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
-				res => {
-					user.log('continued trip of fightcaves');
-					return this.client.commands.get('fightcaves')!.run(res, []);
-				},
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
 				}),
 				data,
-				itemLootBank.bank
+				itemLootBank
 			);
 		}
 
 		if (diedToJad) {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
-			await user.addItemsToBank(failBank, true);
+			await user.addItemsToBank({ items: failBank, collectionLog: true });
 
 			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
 			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
@@ -91,9 +96,16 @@ export default class extends Task {
 			if (isOnTask) {
 				const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: 11_760, duration });
 				msg = `**Task cancelled.** \n${msg} ${slayXP}.`;
-				usersTask.currentTask!.quantityRemaining = 0;
-				usersTask.currentTask!.skipped = true;
-				await usersTask.currentTask!.save();
+
+				await prisma.slayerTask.update({
+					where: {
+						id: usersTask.currentTask!.id
+					},
+					data: {
+						quantity_remaining: 0,
+						skipped: true
+					}
+				});
 			}
 
 			return handleTripFinish(
@@ -101,16 +113,13 @@ export default class extends Task {
 				user,
 				channelID,
 				`${user} ${msg}`,
-				res => {
-					user.log('continued trip of fightcaves');
-					return this.client.commands.get('fightcaves')!.run(res, []);
-				},
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
 				}),
 				data,
-				failBank.bank
+				failBank
 			);
 		}
 
@@ -135,7 +144,7 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration });
 		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration });
@@ -146,12 +155,19 @@ export default class extends Task {
 			const slayerXP = 37_010;
 			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
 			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-			const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
-			usersTask.currentTask!.quantityRemaining = 0;
-			await usersTask.currentTask!.save();
+			await prisma.slayerTask.update({
+				where: {
+					id: usersTask.currentTask!.id
+				},
+				data: {
+					quantity_remaining: 0
+				}
+			});
+
 			const slayXP = await user.addXP({ skillName: SkillsEnum.Slayer, amount: slayerXP, duration });
 			const xpMessage = `${msg} ${slayXP}`;
 
@@ -164,10 +180,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`${user} ${msg}`,
-			res => {
-				user.log('continued trip of fightcaves');
-				return this.client.commands.get('fightcaves')!.run(res, []);
-			},
+			['fightcaves', [], true],
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
@@ -175,7 +188,7 @@ export default class extends Task {
 				head: 'mejJal'
 			}),
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

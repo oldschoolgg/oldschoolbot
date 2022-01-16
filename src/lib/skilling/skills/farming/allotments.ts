@@ -35,8 +35,9 @@ const allotmentPlants: Plant[] = [
 			[33, 5] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[45, 2] // Farming Guide Low (2)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 2] // Farming Guild Low (2)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
@@ -73,8 +74,9 @@ const allotmentPlants: Plant[] = [
 			[33, 5] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[45, 2] // Farming Guide Low (2)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 2] // Farming Guild Low (2)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
@@ -111,8 +113,9 @@ const allotmentPlants: Plant[] = [
 			[33, 5] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[45, 2] // Farming Guide Low (2)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 2] // Farming Guild Low (2)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
@@ -149,8 +152,9 @@ const allotmentPlants: Plant[] = [
 			[33, 5] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[45, 2] // Farming Guide Low (2)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 2] // Farming Guild Low (2)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
@@ -187,8 +191,9 @@ const allotmentPlants: Plant[] = [
 			[33, 5] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[45, 2] // Farming Guide Low (2)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 2] // Farming Guild Low (2)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
@@ -225,8 +230,9 @@ const allotmentPlants: Plant[] = [
 			[33, 5] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[45, 2] // Farming Guide Low (2)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 2] // Farming Guild Low (2)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
@@ -263,8 +269,9 @@ const allotmentPlants: Plant[] = [
 			[33, 5] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[45, 2] // Farming Guide Low (2)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 2] // Farming Guild Low (2)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20
@@ -301,8 +308,9 @@ const allotmentPlants: Plant[] = [
 			[33, 5] // Prifddinas (2)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[45, 2] // Farming Guide Low (2)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 2] // Farming Guild Low (2)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 20

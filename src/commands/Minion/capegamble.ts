@@ -50,7 +50,7 @@ export default class extends BotCommand {
 		const pet = getOSItem(type === 'fire' ? 'Tzrek-Jad' : 'Jal-nib-rek');
 
 		if (roll(chance)) {
-			await msg.author.addItemsToBank(new Bank().add(pet.id), true);
+			await msg.author.addItemsToBank({ items: new Bank().add(pet.id), collectionLog: true });
 			this.client.emit(
 				Events.ServerNotification,
 				`**${msg.author.username}'s** just received their ${formatOrdinal(msg.author.cl().amount(pet.id))} ${
@@ -63,7 +63,7 @@ export default class extends BotCommand {
 						content:
 							type === 'fire'
 								? 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
-								: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours."',
+								: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours.',
 						head: type === 'fire' ? 'mejJal' : 'ketKeh'
 					})
 				]

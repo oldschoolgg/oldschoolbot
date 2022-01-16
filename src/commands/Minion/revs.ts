@@ -3,7 +3,7 @@ import { calcWhatPercent, deepClone, percentChance, randInt, reduceNumByPercent,
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { maxOffenceStats } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -265,7 +265,7 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 
 		let skulled = Boolean(msg.flagArgs.skull);
 
-		const quantity = Math.floor(msg.author.maxTripLength(Activity.Revenants) / timePerMonster);
+		const quantity = Math.floor(msg.author.maxTripLength('Revenants') / timePerMonster);
 		let duration = quantity * timePerMonster;
 
 		const cost = new Bank();
@@ -300,7 +300,7 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 			channelID: msg.channel.id,
 			quantity,
 			duration: died ? randInt(Math.min(Time.Minute * 3, duration), duration) : duration,
-			type: Activity.Revenants,
+			type: 'Revenants',
 			died,
 			skulled,
 			style,

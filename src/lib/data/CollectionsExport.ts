@@ -2,6 +2,7 @@ import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import resolveItems from '../util/resolveItems';
 
@@ -15,13 +16,12 @@ export interface IToReturnCollection {
 	collectionTotal: number;
 	leftList?: ILeftListStatus;
 	userItems: Bank;
+	counts: boolean;
 }
 
 export interface ILeftListStatus {
 	[key: string]: 'not_started' | 'started' | 'completed';
 }
-
-export type TRoleCategories = 'bosses' | 'slayer' | 'clues' | 'minigames' | 'skilling' | 'raids' | 'pets';
 
 interface IKCActivity {
 	[key: string]: string | string[] | ((user: KlasaUser) => Promise<number>);
@@ -29,10 +29,6 @@ interface IKCActivity {
 
 export interface ICollectionActivity {
 	[key: string]: {
-		// If the collection is enabled (ca not be accesed if set to false)
-		enabled?: false;
-		// If the collection should be hidden from the list
-		hidden?: true;
 		// If the collection will count towards the collection log counter
 		counts?: false;
 		alias?: string[];
@@ -40,7 +36,6 @@ export interface ICollectionActivity {
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
-		roleCategory?: TRoleCategories[];
 	};
 }
 
@@ -219,8 +214,9 @@ export const theNightmareCL = resolveItems([
 	'Volatile orb',
 	'Harmonised orb',
 	'Eldritch orb',
-	'Jar of dreams'
-	// TODO - Add Slepey tablet	and Parasitic egg when Phosani's Nightmare is added
+	'Jar of dreams',
+	'Slepey tablet',
+	'Parasitic egg'
 ]);
 export const oborCL = resolveItems(['Hill giant club']);
 export const sarachnisCL = resolveItems(['Sraracha', 'Jar of eyes', 'Giant egg sac(full)', 'Sarachnis cudgel']);
@@ -305,6 +301,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vasa minirio',
 	'Vespina'
 ]);
+export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
 export const chambersOfXericCL = resolveItems([
 	'Olmlet',
 	'Metamorphic dust',
@@ -344,11 +341,10 @@ export const theatreOfBLoodCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5'
-	// Missing items on the Items object
-	// 'Sanguine dust',
-	// 'Holy ornament kit',
-	// 'Sanguine ornament kit'
+	'Sinhaza shroud tier 5',
+	'Sanguine dust',
+	'Holy ornament kit',
+	'Sanguine ornament kit'
 ]);
 
 export const cluesBeginnerCL = resolveItems([
@@ -1607,11 +1603,10 @@ export const tzHaarCL = resolveItems([
 	'Obsidian cape',
 	'Toktz-ket-xil',
 	'Tzhaar-ket-om',
-	// Not possible to obtain at the moment
-	// 'Toktz-xil-ak',
-	// 'Toktz-xil-ek',
-	// 'Toktz-mej-tal',
-	// 'Toktz-xil-ul',
+	'Toktz-xil-ak',
+	'Toktz-xil-ek',
+	'Toktz-mej-tal',
+	'Toktz-xil-ul',
 	'Obsidian helmet',
 	'Obsidian platebody',
 	'Obsidian platelegs'
@@ -1709,7 +1704,19 @@ export const holidayCL = resolveItems([
 	'Chicken head',
 	'Chicken wings',
 	'Chicken legs',
-	'Chicken feet'
+	'Chicken feet',
+	'Banshee mask',
+	'Banshee top',
+	'Banshee robe',
+	'Hunting knife',
+	'Yo-yo',
+	'Candy cane',
+	'Snow globe',
+	'Antisanta mask',
+	'Antisanta jacket',
+	'Antisanta pantaloons',
+	'Antisanta gloves',
+	'Antisanta boots'
 ]);
 export const dailyCL = resolveItems([
 	'Event rpg',
@@ -1828,6 +1835,14 @@ export const capesCL = resolveItems([
 	'Obsidian cape (r)',
 	'Team cape x',
 	'Graceful cape',
+	'Arceuus graceful cape',
+	'Piscarilius graceful cape',
+	'Lovakengj graceful cape',
+	'Shayzien graceful cape',
+	'Hosidius graceful cape',
+	'Kourend graceful cape',
+	'Brimhaven graceful cape',
+	'Dark graceful cape',
 	'3rd age druidic cloak',
 	'3rd age cloak',
 	'Ancient cloak',
@@ -1842,7 +1857,12 @@ export const capesCL = resolveItems([
 	"Xeric's warrior",
 	"Xeric's sentinel",
 	"Xeric's general",
-	"Xeric's champion"
+	"Xeric's champion",
+	'Sinhaza shroud tier 1',
+	'Sinhaza shroud tier 2',
+	'Sinhaza shroud tier 3',
+	'Sinhaza shroud tier 4',
+	'Sinhaza shroud tier 5'
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
@@ -1865,3 +1885,115 @@ export const questCL = resolveItems([
 ]);
 
 export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
+export const gracefulHoods = [
+	'Graceful hood',
+	'Arceuus graceful hood',
+	'Piscarilius graceful hood',
+	'Lovakengj graceful hood',
+	'Shayzien graceful hood',
+	'Hosidius graceful hood',
+	'Kourend graceful hood',
+	'Brimhaven graceful hood',
+	'Dark graceful hood'
+];
+
+export const gracefulTops = [
+	'Graceful top',
+	'Arceuus graceful top',
+	'Piscarilius graceful top',
+	'Lovakengj graceful top',
+	'Shayzien graceful top',
+	'Hosidius graceful top',
+	'Kourend graceful top',
+	'Brimhaven graceful top',
+	'Dark graceful top'
+];
+
+export const gracefulLegs = [
+	'Graceful legs',
+	'Arceuus graceful legs',
+	'Piscarilius graceful legs',
+	'Lovakengj graceful legs',
+	'Shayzien graceful legs',
+	'Hosidius graceful legs',
+	'Kourend graceful legs',
+	'Brimhaven graceful legs',
+	'Dark graceful legs'
+];
+
+export const gracefulFeet = [
+	'Graceful boots',
+	'Arceuus graceful boots',
+	'Piscarilius graceful boots',
+	'Lovakengj graceful boots',
+	'Shayzien graceful boots',
+	'Hosidius graceful boots',
+	'Kourend graceful boots',
+	'Brimhaven graceful boots',
+	'Dark graceful boots'
+];
+
+export const gracefulHands = [
+	'Graceful gloves',
+	'Arceuus graceful gloves',
+	'Piscarilius graceful gloves',
+	'Lovakengj graceful gloves',
+	'Shayzien graceful gloves',
+	'Hosidius graceful gloves',
+	'Kourend graceful gloves',
+	'Brimhaven graceful gloves',
+	'Dark graceful gloves'
+];
+
+export const gracefulCapes = [
+	'Graceful cape',
+	'Arceuus graceful cape',
+	'Piscarilius graceful cape',
+	'Lovakengj graceful cape',
+	'Shayzien graceful cape',
+	'Hosidius graceful cape',
+	'Kourend graceful cape',
+	'Brimhaven graceful cape',
+	'Dark graceful cape',
+	'Agility cape',
+	'Agility cape (t)',
+	'Max cape'
+];
+
+export const gracefulCL = resolveItems([
+	...gracefulHoods,
+	...gracefulTops,
+	...gracefulLegs,
+	...gracefulFeet,
+	...gracefulHands,
+	...gracefulCapes
+]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)']).includes(id));
+
+export const allPetIDs = [
+	...allPetsCL,
+	...chambersOfXericMetamorphPets,
+	...tobMetamorphPets,
+	...growablePets.map(petSeries => petSeries.stages).flat(1),
+	...resolveItems(['Little parasite', 'Dark squirrel'])
+];
+
+export const antiSantaOutfit = new Bank({
+	'Antisanta mask': 1,
+	'Antisanta jacket': 1,
+	'Antisanta pantaloons': 1,
+	'Antisanta gloves': 1,
+	'Antisanta boots': 1
+});
+
+export const allClueItems = [
+	...cluesBeginnerCL,
+	...cluesEasyCL,
+	...cluesEliteCL,
+	...cluesEliteRareCL,
+	...cluesHardCL,
+	...cluesHardRareCL,
+	...cluesMasterCL,
+	...cluesMasterRareCL,
+	...cluesMediumCL,
+	...cluesSharedCL
+];

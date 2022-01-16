@@ -2,14 +2,14 @@ import { randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { MoreThan } from 'typeorm';
 
+import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
 import { DetermineBoostParams } from '../minions/types';
+import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { SlayerTaskTable } from '../typeorm/SlayerTaskTable.entity';
 import { addBanks, bankHasItem, roll, skillsMeetRequirements } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
@@ -62,19 +62,29 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 	return boostChoice;
 }
 
-export function calculateSlayerPoints(currentStreak: number, master: SlayerMaster) {
+export async function calculateSlayerPoints(currentStreak: number, master: SlayerMaster, user: KlasaUser) {
 	const streaks = [1000, 250, 100, 50, 10];
 	const multiplier = [50, 35, 25, 15, 5];
 
 	if (currentStreak < 5) {
 		return 0;
 	}
-	for (let i = 0; i < streaks.length; i++) {
-		if (currentStreak >= streaks[i] && currentStreak % streaks[i] === 0) {
-			return master.basePoints * multiplier[i];
+
+	let { basePoints } = master;
+
+	// Boost points to 20 for Konar + Kourend Elites
+	if (master.name === 'Konar quo Maten') {
+		const [hasKourendElite] = await userhasDiaryTier(user, KourendKebosDiary.elite);
+		if (hasKourendElite) {
+			basePoints = 20;
 		}
 	}
-	return master.basePoints;
+	for (let i = 0; i < streaks.length; i++) {
+		if (currentStreak >= streaks[i] && currentStreak % streaks[i] === 0) {
+			return basePoints * multiplier[i];
+		}
+	}
+	return basePoints;
 }
 
 export function weightedPick(filteredTasks: AssignableSlayerTask[]) {
@@ -179,14 +189,17 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 
 	const newUser = await getNewUser(_user.id);
 
-	const currentTask = new SlayerTaskTable();
-	currentTask.user = newUser;
-	currentTask.quantity = randInt(assignedTask!.amount[0], assignedTask!.amount[1]);
-	currentTask.quantityRemaining = currentTask.quantity;
-	currentTask.slayerMasterID = master.id;
-	currentTask.monsterID = assignedTask!.monster.id;
-	currentTask.skipped = false;
-	await currentTask.save();
+	const quantity = randInt(assignedTask!.amount[0], assignedTask!.amount[1]);
+	const currentTask = await prisma.slayerTask.create({
+		data: {
+			user_id: newUser.id,
+			quantity,
+			quantity_remaining: quantity,
+			slayer_master_id: master.id,
+			monster_id: assignedTask!.monster.id,
+			skipped: false
+		}
+	});
 	await _user.settings.update(UserSettings.Slayer.LastTask, assignedTask!.monster.id);
 
 	return { currentTask, assignedTask };
@@ -235,23 +248,21 @@ export function getCommonTaskName(task: Monster) {
 }
 
 export async function getUsersCurrentSlayerInfo(id: string) {
-	const [currentTask, totalTasksDone] = await Promise.all([
-		SlayerTaskTable.findOne({
-			where: {
-				user: id,
-				quantityRemaining: MoreThan(0),
-				skipped: false
-			}
-		}),
-		SlayerTaskTable.count({ where: { user: id, quantityRemaining: 0, skipped: false } })
-	]);
+	const currentTask = await prisma.slayerTask.findFirst({
+		where: {
+			user_id: id,
+			quantity_remaining: {
+				gt: 0
+			},
+			skipped: false
+		}
+	});
 
-	const slayerMaster = currentTask ? slayerMasters.find(master => master.id === currentTask.slayerMasterID) : null;
+	const slayerMaster = currentTask ? slayerMasters.find(master => master.id === currentTask.slayer_master_id) : null;
 
 	return {
 		currentTask: currentTask ?? null,
-		assignedTask: currentTask ? slayerMaster!.tasks.find(m => m.monster.id === currentTask.monsterID)! : null,
-		totalTasksDone,
+		assignedTask: currentTask ? slayerMaster!.tasks.find(m => m.monster.id === currentTask.monster_id)! : null,
 		slayerMaster
 	};
 }

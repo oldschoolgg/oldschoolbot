@@ -4,12 +4,14 @@ import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
 import Createables from '../../lib/data/createables';
+import { gotFavour } from '../../lib/minions/data/kourendFavour';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID, stringMatches, toTitleCase } from '../../lib/util';
+import { itemNameFromID, stringMatches, toTitleCase, updateBankSetting } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -119,6 +121,25 @@ export default class extends BotCommand {
 				);
 			}
 		}
+		if (createableItem.requiredFavour) {
+			const [success, points] = gotFavour(msg.author, createableItem.requiredFavour, 100);
+			if (!success) {
+				return msg.channel.send(
+					`You don't have the required amount of Favour to ${cmd} this item.\n\nRequired: ${points}% ${createableItem.requiredFavour.toString()} Favour.`
+				);
+			}
+		}
+
+		if (createableItem.name.toLowerCase().includes('kourend')) {
+			const currentUserFavour = msg.author.settings.get(UserSettings.KourendFavour);
+			for (const [key, value] of Object.entries(currentUserFavour)) {
+				if (value < 100) {
+					return msg.channel.send(
+						`You don't have the required amount of Favour to ${cmd} this item.\n\nRequired: 100% ${key} Favour.`
+					);
+				}
+			}
+		}
 
 		if (createableItem.GPCost && msg.author.settings.get(UserSettings.GP) < createableItem.GPCost * quantity) {
 			return msg.channel.send(`You need ${createableItem.GPCost.toLocaleString()} coins to ${cmd} this item.`);
@@ -129,6 +150,16 @@ export default class extends BotCommand {
 			if (Object.keys(createableItem.outputItems).some(itemID => cl.amount(Number(itemID)) > 0)) {
 				return msg.channel.send(`You can only ${cmd} this item once!`);
 			}
+		}
+		if (createableItem.maxCanOwn) {
+			const allItems = msg.author.allItemsOwned();
+			const amountOwned = allItems.amount(createableItem.name);
+			if (amountOwned >= createableItem.maxCanOwn) {
+				return msg.channel.send(
+					`You already have ${amountOwned}x ${createableItem.name}, you can't create another.`
+				);
+			}
+			quantity = createableItem.maxCanOwn - amountOwned;
 		}
 
 		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
@@ -178,15 +209,18 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeItemsFromBank(inItems);
-		await msg.author.addItemsToBank(outItems);
-
 		if (createableItem.GPCost) {
-			await msg.author.removeGP(createableItem.GPCost);
+			inItems.add('Coins', createableItem.GPCost);
 		}
 
+		await msg.author.removeItemsFromBank(inItems);
+		await msg.author.addItemsToBank({ items: outItems });
+
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateCost, inItems);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateLoot, outItems);
+
 		// Only allow +create to add items to CL
-		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog(outItems.bank);
+		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog({ items: outItems });
 
 		if (cmd === 'revert') {
 			return msg.channel.send(`You reverted ${inputItemsString} into ${outputItemsString}.`);

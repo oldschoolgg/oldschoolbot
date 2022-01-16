@@ -291,4 +291,87 @@ describe('getUserBestGearFromBank', () => {
 			}).bank
 		});
 	});
+	test('autoequip stackable items equipped', async () => {
+		// Crucially, we must test that a stackable item is equipped, must have quantity, and
+		// must be replaced by the same item, in addition to a different item.
+		const userBankStackables = new Bank({
+			'Armadyl chestplate': 4,
+			'Armadyl chainskirt': 1,
+			'Armadyl coif': 2,
+			'Justiciar faceguard': 1,
+			'Dragon scimitar': 1,
+			'Necklace of anguish': 1,
+			'Occult necklace': 1,
+			'Ancestral robe top': 1,
+			'Ancestral robe bottom': 1,
+			'Dragonfire shield': 1,
+			'Amulet of glory': 1,
+			'Dragon arrow': 100,
+			'Twisted bow': 1,
+			"Ava's assembler": 1
+		});
+
+		const userGearStackables1 = new Gear({
+			...nullGear,
+			weapon: { item: itemID('Dragon dart'), quantity: 300 },
+			body: { item: itemID('Dragon chainbody'), quantity: 1 },
+			cape: { item: itemID('Cape of legends'), quantity: 1 },
+			hands: { item: itemID('Leather gloves'), quantity: 1 },
+			neck: { item: itemID('Amulet of strength'), quantity: 1 },
+			ammo: { item: itemID('Dragon arrow'), quantity: 201 }
+		});
+		expect(
+			getUserBestGearFromBank(
+				userBankStackables.bank,
+				userGearStackables1,
+				'range',
+				{ ...maxCombat, hitpoints: convertLVLtoXP(99) },
+				'attack',
+				'ranged'
+			)
+		).toStrictEqual({
+			gearToEquip: {
+				...nullGear,
+				'2h': { item: itemID('Twisted bow'), quantity: 1 },
+				body: { item: itemID('Armadyl chestplate'), quantity: 1 },
+				legs: { item: itemID('Armadyl chainskirt'), quantity: 1 },
+				cape: { item: itemID("Ava's assembler"), quantity: 1 },
+				hands: { item: itemID('Leather gloves'), quantity: 1 },
+				neck: { item: itemID('Necklace of anguish'), quantity: 1 },
+				ammo: { item: itemID('Dragon arrow'), quantity: 1 },
+				head: { item: itemID('Armadyl coif'), quantity: 1 }
+			},
+			toRemoveFromGear: new Bank({
+				'Dragon arrow': 200,
+				'Dragon dart': 300,
+				'Amulet of strength': 1,
+				'Cape of legends': 1,
+				'Dragon chainbody': 1
+			}).bank,
+			toRemoveFromBank: new Bank({
+				'Twisted bow': 1,
+				'Armadyl chestplate': 1,
+				'Armadyl chainskirt': 1,
+				'Armadyl coif': 1,
+				'Necklace of anguish': 1,
+				"Ava's assembler": 1
+			}).bank,
+			userFinalBank: new Bank({
+				'Armadyl chestplate': 3,
+				'Armadyl coif': 1,
+				'Justiciar faceguard': 1,
+				'Dragon scimitar': 1,
+				'Occult necklace': 1,
+				'Ancestral robe top': 1,
+				'Ancestral robe bottom': 1,
+				'Dragonfire shield': 1,
+				'Amulet of glory': 1,
+				'Dragon arrow': 300,
+				'Dragon dart': 300,
+				'Cape of legends': 1,
+				'Dragon chainbody': 1,
+				'Amulet of strength': 1
+			}).bank
+		});
+	});
 });

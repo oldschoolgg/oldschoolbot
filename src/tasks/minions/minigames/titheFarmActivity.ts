@@ -117,7 +117,7 @@ export default class extends Task {
 				} run!`
 			);
 
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 		}
 
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
@@ -127,13 +127,10 @@ export default class extends Task {
 			user,
 			channelID,
 			returnStr,
-			res => {
-				user.log('attemped another run of the Tithe Farm.');
-				return this.client.commands.get('tithefarm')!.run(res, []);
-			},
+			['tithefarm', [], true],
 			undefined,
 			data,
-			loot.length > 0 ? loot.bank : null
+			loot.length > 0 ? loot : null
 		);
 	}
 }

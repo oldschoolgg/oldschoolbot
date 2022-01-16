@@ -6,7 +6,7 @@ export const SpellbookAltars: PoHObject[] = [
 	{
 		id: 29_147,
 		name: 'Ancient altar',
-		slot: 'spellbookAltar',
+		slot: 'spellbook_altar',
 		level: 80,
 		itemCost: new Bank()
 			.add('Limestone brick', 10)
@@ -17,7 +17,7 @@ export const SpellbookAltars: PoHObject[] = [
 	{
 		id: 29_148,
 		name: 'Lunar altar',
-		slot: 'spellbookAltar',
+		slot: 'spellbook_altar',
 		level: 80,
 		itemCost: new Bank()
 			.add('Limestone brick', 10)
@@ -28,7 +28,7 @@ export const SpellbookAltars: PoHObject[] = [
 	{
 		id: 29_149,
 		name: 'Dark altar',
-		slot: 'spellbookAltar',
+		slot: 'spellbook_altar',
 		level: 80,
 		itemCost: new Bank()
 			.add('Limestone brick', 10)
@@ -40,7 +40,7 @@ export const SpellbookAltars: PoHObject[] = [
 	{
 		id: 31_858,
 		name: 'Occult altar',
-		slot: 'spellbookAltar',
+		slot: 'spellbook_altar',
 		level: 90,
 		itemCost: new Bank()
 			.add('Limestone brick', 10)

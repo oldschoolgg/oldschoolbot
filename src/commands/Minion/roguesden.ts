@@ -3,7 +3,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
-import { Activity } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -48,13 +47,13 @@ export default class extends BotCommand {
 
 		baseTime = reduceNumByPercent(baseTime, skillPercentage);
 
-		let quantity = Math.floor(msg.author.maxTripLength(Activity.RoguesDenMaze) / baseTime);
+		let quantity = Math.floor(msg.author.maxTripLength('RoguesDenMaze') / baseTime);
 
 		if (msg.author.hasItemEquippedOrInBank('Stamina potion(4)')) {
 			baseTime = reduceNumByPercent(baseTime, 50);
 
 			const potionsInBank = await msg.author.numberOfItemInBank(itemID('Stamina potion(4)'));
-			const maxPossibleLaps = Math.floor(msg.author.maxTripLength(Activity.RoguesDenMaze) / baseTime);
+			const maxPossibleLaps = Math.floor(msg.author.maxTripLength('RoguesDenMaze') / baseTime);
 
 			// do as many laps as possible with the current stamina potion supply
 			quantity = Math.min(potionsInBank * 4, maxPossibleLaps);
@@ -81,8 +80,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			minigameID: 'RoguesDenMaze',
-			type: Activity.RoguesDenMaze
+			minigameID: 'rogues_den',
+			type: 'RoguesDenMaze'
 		});
 
 		let str = `${

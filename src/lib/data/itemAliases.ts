@@ -184,3 +184,38 @@ setItemAlias(21_633, 'Ancient wyvern shield');
 
 setItemAlias(22_003, 'Uncharged dragonfire ward');
 setItemAlias(22_002, 'Dragonfire ward');
+
+// Metamorphs
+setItemAlias(24_555, 'Crystal tangleroot');
+setItemAlias(24_557, 'Dragonfruit tangleroot');
+setItemAlias(24_559, 'Herb tangleroot');
+setItemAlias(24_561, 'White lily tangleroot');
+setItemAlias(24_563, 'Redwood tangleroot');
+setItemAlias(13_324, 'Grey baby chinchompa');
+setItemAlias(13_325, 'Black baby chinchompa');
+setItemAlias(13_326, 'Gold baby chinchompa');
+setItemAlias(24_483, 'Green phoenix');
+setItemAlias(24_484, 'Blue phoenix');
+setItemAlias(24_485, 'White phoenix');
+setItemAlias(24_486, 'Purple phoenix');
+setItemAlias(12_939, 'Magma pet snakeling');
+setItemAlias(12_940, 'Tanzanite pet snakeling');
+setItemAlias(25_842, 'Orange sraracha');
+setItemAlias(25_843, 'Blue sraracha');
+setItemAlias(12_654, 'Airborne kalphite princess');
+
+// Kittens
+setItemAlias(1555, 'Grey and black kitten');
+setItemAlias(1556, 'White kitten');
+setItemAlias(1557, 'Brown kitten');
+setItemAlias(1558, 'Black kitten');
+setItemAlias(1559, 'Grey and brown kitten');
+setItemAlias(1560, 'Grey and blue kitten');
+
+// Cats
+setItemAlias(1561, 'Grey and black cat');
+setItemAlias(1562, 'White cat');
+setItemAlias(1563, 'Brown cat');
+setItemAlias(1564, 'Black cat');
+setItemAlias(1565, 'Grey and brown cat');
+setItemAlias(1566, 'Grey and blue cat');

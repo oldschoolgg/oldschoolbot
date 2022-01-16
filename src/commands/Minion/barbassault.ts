@@ -3,9 +3,11 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
-import { Activity, Emoji, Events } from '../../lib/constants';
+import { Emoji, Events } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { countUsersWithItemInCl } from '../../lib/settings/prisma';
+import { getMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/simulation/baGamble';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -15,6 +17,7 @@ import { formatDuration, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
 
 const BarbBuyables = [
 	{
@@ -167,7 +170,7 @@ export default class extends BotCommand {
 			).toLocaleString()} honour points?`
 		);
 		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost * qty);
-		await msg.author.addItemsToBank({ [item.id]: qty }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
 
 		return msg.channel.send(
 			`Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${(
@@ -201,24 +204,19 @@ export default class extends BotCommand {
 		const loot = new Bank().add(table.roll(qty));
 		if (loot.has('Pet penance queen')) {
 			const gamblesDone = msg.author.settings.get(UserSettings.HighGambles) + 1;
-			const countUsersHas =
-				parseInt(
-					(
-						await this.client.query<[{ count: string }]>(
-							'SELECT COUNT(*) FROM users WHERE "collectionLogBank"->>\'12703\' IS NOT NULL;'
-						)
-					)[0].count
-				) + 1;
+
+			const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
+
 			this.client.emit(
 				Events.ServerNotification,
 				`<:Pet_penance_queen:324127377649303553> **${msg.author.username}'s** minion, ${
 					msg.author.minionName
 				}, just received a Pet penance queen from their ${formatOrdinal(
 					gamblesDone
-				)} High gamble! They are the ${formatOrdinal(countUsersHas)} to it.`
+				)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 			);
 		}
-		const { itemsAdded } = await msg.author.addItemsToBank(loot.bank, true);
+		const { itemsAdded } = await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 		await msg.author.settings.update(
 			UserSettings.HighGambles,
 			msg.author.settings.get(UserSettings.HighGambles) + qty
@@ -226,9 +224,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`You spent ${(
 				cost * qty
-			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${new Bank(
-				itemsAdded
-			)}.`
+			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${itemsAdded}.`
 		);
 	}
 
@@ -245,7 +241,7 @@ export default class extends BotCommand {
 			}! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. There must be 2+ users in the party.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}
@@ -284,15 +280,14 @@ export default class extends BotCommand {
 			waveTime = increaseNumByPercent(waveTime, 10);
 			boosts.push('10% slower for solo');
 		}
-
 		// Up to 10%, at 200 kc, speed boost for team average kc
 		const averageKC =
-			addArrayOfNumbers(await Promise.all(users.map(u => u.getMinigameScore('BarbarianAssault')))) / users.length;
+			addArrayOfNumbers(await Promise.all(users.map(u => getMinigameScore(u.id, 'barb_assault')))) / users.length;
 		const kcPercent = round(Math.min(100, calcWhatPercent(averageKC, 200)) / 5, 2);
 		boosts.push(`${kcPercent}% for average KC`);
 		waveTime = reduceNumByPercent(waveTime, kcPercent);
 
-		let quantity = Math.floor(msg.author.maxTripLength(Activity.BarbarianAssault) / waveTime);
+		let quantity = Math.floor(msg.author.maxTripLength('BarbarianAssault') / waveTime);
 		if (qty > 0 && quantity > qty) quantity = qty;
 		const duration = quantity * waveTime;
 
@@ -311,10 +306,10 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.BarbarianAssault,
+			type: 'BarbarianAssault',
 			leader: msg.author.id,
 			users: users.map(u => u.id),
-			minigameID: 'BarbarianAssault',
+			minigameID: 'barb_assault',
 			totalLevel
 		});
 

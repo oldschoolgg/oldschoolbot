@@ -2,9 +2,9 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { chompyHats } from '../../../commands/Minion/chompyhunt';
-import { MinigameKey } from '../../../extendables/User/Minigame';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
+import { MinigameName } from '../../settings/settings';
 import { ItemBank, Skills } from '../../types';
 import { resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
@@ -26,7 +26,7 @@ export interface Buyable {
 	aliases?: string[];
 	skillsNeeded?: Skills;
 	restockTime?: number;
-	minigameScoreReq?: [MinigameKey, number];
+	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
 	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
@@ -63,31 +63,59 @@ const randomEventBuyables: Buyable[] = [
 	}
 ];
 
+const tobCapes: Buyable[] = [
+	{
+		name: 'Sinhaza shroud tier 1',
+		gpCost: 100_000,
+		minigameScoreReq: ['tob', 100]
+	},
+	{
+		name: 'Sinhaza shroud tier 2',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 500]
+	},
+	{
+		name: 'Sinhaza shroud tier 3',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 1000]
+	},
+	{
+		name: 'Sinhaza shroud tier 4',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 1500]
+	},
+	{
+		name: 'Sinhaza shroud tier 5',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 2000]
+	}
+];
+
 const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
 		gpCost: 100_000,
-		minigameScoreReq: ['RaidsChallengeMode', 100]
+		minigameScoreReq: ['raids_challenge_mode', 100]
 	},
 	{
 		name: "Xeric's warrior",
 		gpCost: 500_000,
-		minigameScoreReq: ['RaidsChallengeMode', 500]
+		minigameScoreReq: ['raids_challenge_mode', 500]
 	},
 	{
 		name: "Xeric's sentinel",
 		gpCost: 1_000_000,
-		minigameScoreReq: ['RaidsChallengeMode', 1000]
+		minigameScoreReq: ['raids_challenge_mode', 1000]
 	},
 	{
 		name: "Xeric's general",
 		gpCost: 1_500_000,
-		minigameScoreReq: ['RaidsChallengeMode', 1500]
+		minigameScoreReq: ['raids_challenge_mode', 1500]
 	},
 	{
 		name: "Xeric's champion",
 		gpCost: 2_000_000,
-		minigameScoreReq: ['RaidsChallengeMode', 2000]
+		minigameScoreReq: ['raids_challenge_mode', 2000]
 	}
 ];
 
@@ -177,30 +205,6 @@ const sepulchreBuyables: Buyable[] = [
 		itemCost: resolveNameBank({ 'Hallowed mark': 3000 })
 	},
 	{
-		name: 'Dark graceful hood',
-		itemCost: resolveNameBank({ 'Graceful hood': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful top',
-		itemCost: resolveNameBank({ 'Graceful top': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful legs',
-		itemCost: resolveNameBank({ 'Graceful legs': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful gloves',
-		itemCost: resolveNameBank({ 'Graceful gloves': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful boots',
-		itemCost: resolveNameBank({ 'Graceful boots': 1, 'Dark dye': 1 })
-	},
-	{
-		name: 'Dark graceful cape',
-		itemCost: resolveNameBank({ 'Graceful cape': 1, 'Dark dye': 1 })
-	},
-	{
 		name: 'Dark squirrel',
 		itemCost: resolveNameBank({ 'Dark acorn': 1, 'Giant squirrel': 1 })
 	}
@@ -224,12 +228,14 @@ const questBuyables: Buyable[] = [
 			[itemID('Goldsmith gauntlets')]: 1
 		},
 		qpRequired: 25,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 25_000
 	},
 	{
 		name: 'Cooking gauntlets',
 		qpRequired: 25,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 25_000
 	},
 	{
 		name: 'Anti-dragon shield',
@@ -239,37 +245,44 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Hardleather gloves',
 		qpRequired: 5,
-		gpCost: 50_000
+		gpCost: 50_000,
+		ironmanPrice: 65
 	},
 	{
 		name: 'Bronze gloves',
 		qpRequired: 10,
-		gpCost: 100_000
+		gpCost: 100_000,
+		ironmanPrice: 130
 	},
 	{
 		name: 'Iron gloves',
 		qpRequired: 20,
-		gpCost: 200_000
+		gpCost: 200_000,
+		ironmanPrice: 325
 	},
 	{
 		name: 'Steel gloves',
 		qpRequired: 25,
-		gpCost: 300_000
+		gpCost: 300_000,
+		ironmanPrice: 650
 	},
 	{
 		name: 'Black gloves',
 		qpRequired: 35,
-		gpCost: 400_000
+		gpCost: 400_000,
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Mithril gloves',
 		qpRequired: 50,
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 2000
 	},
 	{
 		name: 'Adamant gloves',
 		qpRequired: 65,
-		gpCost: 600_000
+		gpCost: 600_000,
+		ironmanPrice: 3250
 	},
 	{
 		name: 'Rune gloves',
@@ -277,27 +290,32 @@ const questBuyables: Buyable[] = [
 			[itemID('Rune gloves')]: 1
 		},
 		qpRequired: 85,
-		gpCost: 700_000
+		gpCost: 700_000,
+		ironmanPrice: 6500
 	},
 	{
 		name: 'Dragon gloves',
 		qpRequired: 107,
-		gpCost: 850_000
+		gpCost: 850_000,
+		ironmanPrice: 130_000
 	},
 	{
 		name: 'Barrows gloves',
 		qpRequired: 175,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 130_000
 	},
 	{
 		name: 'Helm of neitiznot',
 		qpRequired: 75,
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 50_000
 	},
 	{
 		name: 'Magic secateurs',
 		qpRequired: 40,
-		gpCost: 2_500_000
+		gpCost: 2_500_000,
+		ironmanPrice: 40_000
 	},
 	{
 		name: "Iban's staff",
@@ -314,7 +332,8 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Mythical cape',
 		gpCost: 1_000_000,
-		qpRequired: 205
+		qpRequired: 205,
+		ironmanPrice: 10_000
 	},
 	{
 		name: 'Mind shield',
@@ -468,22 +487,26 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Warrior helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: 'Berserker helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: 'Archer helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: 'Farseer helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: "Doctor's hat",
@@ -555,32 +578,38 @@ const questBuyables: Buyable[] = [
 		name: 'Dwarf multicannon',
 		outputItems: CombatCannonItemBank,
 		gpCost: 10_000_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 750_000
 	},
 	{
 		name: 'Cannon barrels',
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon base',
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon furnace',
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon stand',
 		gpCost: 2_500_000,
-		qpRequired: 5
+		qpRequired: 5,
+		ironmanPrice: 200_625
 	},
 	{
 		name: 'Elemental shield',
 		gpCost: 2_500_000,
-		qpRequired: 25
+		qpRequired: 25,
+		ironmanPrice: 2000
 	}
 ];
 
@@ -719,6 +748,25 @@ const Buyables: Buyable[] = [
 		},
 		qpRequired: 58
 	},
+	{
+		name: 'Sandworms',
+		gpCost: 500
+	},
+	{
+		name: 'Granite Body',
+		gpCost: 95_000,
+		minigameScoreReq: ['barb_assault', 10]
+	},
+	{
+		name: 'Raw shark',
+		itemCost: resolveNameBank({
+			Minnow: 40
+		}),
+		outputItems: resolveNameBank({
+			'Raw shark': 1
+		})
+	},
+
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -733,7 +781,8 @@ const Buyables: Buyable[] = [
 	...capeBuyables,
 	...miningBuyables,
 	...runeBuyables,
-	...randomEventBuyables
+	...randomEventBuyables,
+	...tobCapes
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
@@ -741,7 +790,7 @@ for (const [chompyHat, qty] of chompyHats) {
 		name: chompyHat.name,
 		outputItems: new Bank().add(chompyHat.id).bank,
 		gpCost: qty * 44,
-		minigameScoreReq: ['BigChompyBirdHunting', qty]
+		minigameScoreReq: ['big_chompy_bird_hunting', qty]
 	});
 }
 

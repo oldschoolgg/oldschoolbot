@@ -60,12 +60,12 @@ export interface KillableMonster {
 		kill(quantity: number, options: MonsterKillOptions): Bank;
 	};
 	emoji?: string;
-	wildy: boolean;
-	difficultyRating: number;
+	wildy?: boolean;
+	difficultyRating?: number;
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
 	existsInCatacombs?: boolean;
-	qpRequired: number;
+	qpRequired?: number;
 
 	/**
 	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
@@ -98,7 +98,7 @@ export interface KillableMonster {
 	disallowedAttackStyles?: AttackStyles[];
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
-	itemCost?: Bank;
+	itemCost?: Consumable;
 	superior?: SimpleMonster;
 	slayerOnly?: boolean;
 	canBarrage?: boolean;
@@ -116,6 +116,7 @@ export interface Consumable {
 	qtyPerKill?: number;
 	// For staff of the dead / kodai
 	isRuneCost?: boolean;
+	alternativeConsumables?: Consumable[];
 }
 
 export interface AddXpParams {

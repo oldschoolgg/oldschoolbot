@@ -18,6 +18,37 @@ for (const [char, amount] of kmbTokens) {
 	]);
 }
 
+mathExpressionParser.addToken([
+	{
+		type: 2,
+		token: '!',
+		show: '!',
+		value(a) {
+			return a;
+		}
+	}
+]);
+mathExpressionParser.addToken([
+	{
+		type: 2,
+		token: 'P',
+		show: 'P',
+		value(a) {
+			return a;
+		}
+	}
+]);
+mathExpressionParser.addToken([
+	{
+		type: 2,
+		token: 'Sigma',
+		show: 'Sigma',
+		value(a) {
+			return a;
+		}
+	}
+]);
+
 export function evalMathExpression(str: string): number | null {
 	try {
 		const result = mathExpressionParser.eval(str);

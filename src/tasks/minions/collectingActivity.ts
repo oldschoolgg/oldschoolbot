@@ -6,7 +6,7 @@ import { collectables } from '../../commands/Minion/collect';
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CollectingOptions } from '../../lib/types/minions';
-import { addBanks } from '../../lib/util';
+import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -23,7 +23,7 @@ export default class extends Task {
 		}
 		const totalQuantity = quantity * colQuantity;
 		const loot = new Bank().add(collectable.item.id, totalQuantity);
-		await user.addItemsToBank(loot.bank, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		let str = `${user}, ${user.minionName} finished collecting ${totalQuantity}x ${
 			collectable.item.name
@@ -32,23 +32,17 @@ export default class extends Task {
 			str += '\n\n**Boosts:** 2x for Morytania Hard diary';
 		}
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CollectingLoot,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingLoot), loot.bank])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.CollectingLoot, loot);
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of collecting ${collectable.item.name}`);
-				return this.client.commands.get('collect')!.run(res, [quantity, collectable.item.name]);
-			},
+			['collect', [quantity, collectable.item.name]],
 			undefined,
 			data,
-			loot.bank ?? null
+			loot ?? null
 		);
 	}
 }

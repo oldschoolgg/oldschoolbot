@@ -129,7 +129,9 @@ const backgroundImages: BankBackground[] = [
 			"Inquisitor's mace": 1,
 			'Eldritch orb': 1,
 			'Harmonised orb': 1,
-			'Volatile orb': 1
+			'Volatile orb': 1,
+			'Slepey tablet': 1,
+			'Parasitic egg': 1
 		}),
 		itemCost: resolveNameBank({
 			'Eldritch orb': 1,
@@ -253,6 +255,15 @@ const backgroundImages: BankBackground[] = [
 	{
 		id: 20,
 		name: 'Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
+	},
+	{
+		id: 21,
+		name: 'Smokey',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,

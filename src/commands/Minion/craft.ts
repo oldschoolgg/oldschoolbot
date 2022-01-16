@@ -1,8 +1,8 @@
 import { MessageAttachment } from 'discord.js';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { table } from 'table';
 
-import { Activity } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -10,7 +10,7 @@ import Crafting from '../../lib/skilling/skills/crafting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
 export default class extends BotCommand {
@@ -32,21 +32,11 @@ export default class extends BotCommand {
 	@minionNotBusy
 	async run(msg: KlasaMessage, [quantity, craftName = '']: [null | number | string, string]) {
 		if (msg.flagArgs.items) {
-			return msg.channel.send({
-				files: [
-					new MessageAttachment(
-						Buffer.from(
-							Crafting.Craftables.map(
-								item =>
-									`${item.name} - lvl ${item.level} : ${Object.entries(item.inputItems)
-										.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-										.join(', ')}`
-							).join('\n')
-						),
-						'Available crafting items.txt'
-					)
-				]
-			});
+			const normalTable = table([
+				['Item Name', 'Lvl', 'XP', 'Items Required'],
+				...Crafting.Craftables.map(i => [i.name, `${i.level}`, `${i.xp}`, `${i.inputItems}`])
+			]);
+			return msg.channel.send({ files: [new MessageAttachment(Buffer.from(normalTable), 'craftables.txt')] });
 		}
 
 		if (typeof quantity === 'string') {
@@ -86,7 +76,7 @@ export default class extends BotCommand {
 			timeToCraftSingleItem /= 3.25;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Crafting);
+		const maxTripLength = msg.author.maxTripLength('Crafting');
 
 		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
 		if (quantity === null) {
@@ -127,7 +117,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Crafting
+			type: 'Crafting'
 		});
 
 		return msg.channel.send(

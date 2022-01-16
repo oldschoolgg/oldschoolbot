@@ -1,7 +1,7 @@
 import { objectKeys, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { Activity, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { ironsCantUse, minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			} reaction to join, click it again to leave. The maximum size for this mass is ${
 				maximumSizeForParty ?? maximumSize
 			}.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}
@@ -98,7 +98,7 @@ export default class extends BotCommand {
 				if (1 > 2 && monster.healAmountNeeded) {
 					try {
 						calculateMonsterFood(monster, user);
-					} catch (err) {
+					} catch (err: any) {
 						return [true, err];
 					}
 
@@ -144,7 +144,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.GroupMonsterKilling,
+			type: 'GroupMonsterKilling',
 			leader: msg.author.id,
 			users: users.map(u => u.id)
 		});

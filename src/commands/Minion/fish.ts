@@ -3,7 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
-import { Activity } from '../../lib/constants';
+import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -35,10 +35,10 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
+		await msg.author.settings.sync(true);
 		const fish = Fishing.Fishes.find(
-			fish => stringMatches(fish.name, name) || stringMatches(fish.name.split(' ')[0], name)
+			fish => stringMatches(fish.name, name) || fish.alias?.some(alias => stringMatches(alias, name))
 		);
-
 		if (!fish) {
 			return msg.channel.send(
 				`Thats not a valid fish to catch. Valid fishes are ${Fishing.Fishes.map(fish => fish.name).join(', ')}.`
@@ -54,6 +54,12 @@ export default class extends BotCommand {
 				return msg.channel.send(`You need ${fish.qpRequired} qp to catch those!`);
 			}
 		}
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Piscarilius, 100);
+		if (!hasFavour && fish.name === 'Anglerfish') {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Piscarilius Favour to fish Anglerfish!`
+			);
+		}
 
 		if (
 			fish.name === 'Barbarian fishing' &&
@@ -66,6 +72,10 @@ export default class extends BotCommand {
 			return msg.channel.send(
 				'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!'
 			);
+      
+		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(parseInt(i)));
+		if (fish.name === 'Minnow' && anglerOutfit.some(test => !msg.author.hasItemEquippedOrInBank(test!))) {
+			return msg.channel.send('You need to own the Angler Outfit to fish for Minnows.');
 		}
 
 		// If no quantity provided, set it to the max.
@@ -108,7 +118,16 @@ export default class extends BotCommand {
 				break;
 		}
 
-		const maxTripLength = msg.author.maxTripLength(Activity.Fishing);
+		if (fish.id === itemID('Minnow')) {
+			scaledTimePerFish *= Math.max(
+				0.83,
+				-0.000_541_351 * msg.author.skillLevel(SkillsEnum.Fishing) ** 2 +
+					0.089_066_3 * msg.author.skillLevel(SkillsEnum.Fishing) -
+					2.681_53
+			);
+		}
+
+		const maxTripLength = msg.author.maxTripLength('Fishing');
 
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / scaledTimePerFish);
@@ -147,7 +166,7 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: Activity.Fishing
+			type: 'Fishing'
 		});
 
 		let response = `${msg.author.minionName} is now fishing ${quantity}x ${
