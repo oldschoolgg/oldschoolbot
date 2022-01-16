@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { stripEmojis } from '../src/lib/util';
+import { sanitizeBank, stripEmojis } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 
 describe('util', () => {
@@ -54,5 +54,13 @@ describe('util', () => {
 			seen[eatable.name] = true;
 		}
 		expect(duplicates).toBeFalsy();
+	});
+
+	test('sanitizeBank', () => {
+		let buggyBank = new Bank();
+		buggyBank.bank[1] = -1;
+		buggyBank.bank[2] = 0;
+		sanitizeBank(buggyBank);
+		expect(buggyBank.bank).toEqual({});
 	});
 });

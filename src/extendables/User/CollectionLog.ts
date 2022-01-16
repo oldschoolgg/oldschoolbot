@@ -2,6 +2,7 @@ import { User } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { allCLItemsFiltered, convertCLtoBank } from '../../lib/data/Collections';
@@ -46,12 +47,12 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
-		let updates: [string, Bank][] = [
-			[UserSettings.CollectionLogBank, items.clone().add(this.settings.get(UserSettings.CollectionLogBank))]
+		let updates: [string, ItemBank][] = [
+			[UserSettings.CollectionLogBank, items.clone().add(this.settings.get(UserSettings.CollectionLogBank)).bank]
 		];
 
 		if (!dontAddToTempCL) {
-			updates.push([UserSettings.TempCL, items.clone().add(this.settings.get(UserSettings.TempCL))]);
+			updates.push([UserSettings.TempCL, items.clone().add(this.settings.get(UserSettings.TempCL)).bank]);
 		}
 
 		return this.settings.update(updates);

@@ -10,7 +10,7 @@ import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
-import { bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank } from '../../lib/util';
+import { bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank, sanitizeBank } from '../../lib/util';
 import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
 
@@ -83,57 +83,45 @@ export default class extends Extendable {
 	public async addItemsToBank(
 		this: User,
 		{
-			inputItems,
+			items,
 			collectionLog = false,
-			filterLoot = true
-		}: { inputItems: ItemBank | Bank; collectionLog?: boolean; filterLoot?: boolean }
+			filterLoot = true,
+			dontAddToTempCL = false
+		}: { items: ItemBank | Bank; collectionLog?: boolean; filterLoot?: boolean; dontAddToTempCL?: boolean }
 	): Promise<{ previousCL: Bank; itemsAdded: Bank }> {
 		return this.queueFn(async user => {
-			const _items = inputItems instanceof Bank ? { ...inputItems.bank } : inputItems;
 			await this.settings.sync(true);
+			let loot = items instanceof Bank ? items.clone() : new Bank(items);
+
+			sanitizeBank(loot);
 
 			const previousCL = user.cl();
 
-			let items = new Bank({
-				..._items
-			});
 			const { bankLoot, clLoot } = filterLoot
-				? filterLootReplace(user.allItemsOwned(), items)
-				: { bankLoot: items, clLoot: items };
-			items = bankLoot;
+				? filterLootReplace(user.allItemsOwned(), loot)
+				: { bankLoot: loot, clLoot: loot };
+			loot = bankLoot;
 			if (collectionLog) {
-				await user.addItemsToCollectionLog({ items: clLoot });
+				await user.addItemsToCollectionLog({ items: clLoot, dontAddToTempCL });
 			}
 
 			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
-			const coinsInLoot = items.amount(995);
+			const coinsInLoot = loot.amount('Coins');
 			if (coinsInLoot > 0) {
-				await user.addGP(items.amount(995));
-				items.remove(995, items.amount(995));
+				await user.addGP(loot.amount('Coins'));
+				loot.remove('Coins', loot.amount('Coins'));
 			}
 
-			this.log(`Had items added to bank - ${JSON.stringify(items)}`);
-			const newBank = user.bank().add(items).bank;
-
-			let deleted = [];
-			for (const [key, value] of Object.entries(newBank)) {
-				if (value === 0 || value < 1) {
-					delete newBank[key];
-					deleted.push([key, value]);
-				}
-			}
-			if (deleted.length > 0) {
-				console.error(`Deleted ${JSON.stringify(deleted)} from ${this.username}`);
-			}
+			const newBank = user.bank().add(loot).bank;
 
 			await this.settings.update(UserSettings.Bank, newBank);
 
 			// Re-add the coins to the loot
-			if (coinsInLoot > 0) items.add(995, coinsInLoot);
+			if (coinsInLoot > 0) loot.add('Coins', coinsInLoot);
 
 			return {
 				previousCL,
-				itemsAdded: items
+				itemsAdded: loot
 			};
 		});
 	}
