@@ -13,6 +13,7 @@ import { promisify } from 'util';
 
 import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
+import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
 import { ArrayItemsResolved, Skills } from './types';
@@ -602,4 +603,31 @@ export function convertBankToPerHourStats(bank: Bank, time: number) {
 		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
 	}
 	return result;
+}
+
+/**
+ * Removes extra clue scrolls from loot, if they got more than 1 or if they already own 1.
+ */
+export function deduplicateClueScrolls({ loot, currentBank }: { loot: Bank; currentBank: Bank }) {
+	const newLoot = loot.clone();
+	for (const { scrollID } of clueTiers) {
+		if (!newLoot.has(scrollID)) continue;
+		if (currentBank.has(scrollID)) {
+			newLoot.remove(scrollID, newLoot.amount(scrollID));
+		} else {
+			newLoot.bank[scrollID] = 1;
+		}
+	}
+	return newLoot;
+}
+
+/**
+ * Removes items with 0 or less quantity
+ */
+export function sanitizeBank(bank: Bank) {
+	for (const [key, value] of Object.entries(bank.bank)) {
+		if (value === 0 || value < 1) {
+			delete bank.bank[key];
+		}
+	}
 }
