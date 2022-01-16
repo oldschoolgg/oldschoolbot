@@ -66,7 +66,7 @@ export default class extends BotCommand {
 			]);
 			return msg.channel.send({
 				content: 'Here is a table of all castable spells.',
-				files: [new MessageAttachment(Buffer.from(spellsTable), 'Buyables.txt')]
+				files: [new MessageAttachment(Buffer.from(spellsTable), 'Castables.txt')]
 			});
 		}
 
