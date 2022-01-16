@@ -584,9 +584,11 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			} else if (roll(1000)) {
 				str += ` You made it to TzKal-Zuk ${timesMadeToZuk} times, but never killed him, maybe just buy the cape JalYt?`;
 			} else {
-				str += ` You made it to TzKal-Zuk ${timesMadeToZuk} times, but never killed him, sad. `;
+				str += ` You made it to TzKal-Zuk ${timesMadeToZuk} times, but never killed him, sad.`;
 			}
 		}
+
+		str += ` To find your current chances use ${msg.cmdPrefix}inferno --chance.`
 
 		return msg.channel.send({
 			files: [
