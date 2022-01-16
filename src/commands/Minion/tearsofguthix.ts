@@ -50,7 +50,8 @@ export default class extends BotCommand {
 		}
 
 		// 43 QP for the quest
-		if (msg.author.settings.get(UserSettings.QP) < 43) {
+		const userQP = msg.author.settings.get(UserSettings.QP);
+		if (userQP < 43) {
 			return msg.channel.send(
 				`**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix when you have 43+ QP.`
 			);
@@ -94,7 +95,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		const duration = Time.Minute * 8;
+		let duration = Time.Minute * 2;
+		duration += Time.Second * 0.6 * userQP;
+		if (duration > Time.Minute * 30) duration = Time.Minute * 30;
+
 		await addSubTaskToActivityTask<TearsOfGuthixActivityTaskOptions>({
 			minigameID: 'tears_of_guthix',
 			userID: msg.author.id,
