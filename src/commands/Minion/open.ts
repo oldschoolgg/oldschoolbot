@@ -35,6 +35,16 @@ export const allOpenables = [
 	...Openables.map(i => i.id)
 ];
 
+const itemsThatDontAddToTempCL = resolveItems([
+	'Clothing Mystery Box',
+	'Equippable mystery box',
+	'Tester Gift box',
+	'Untradeables Mystery box',
+	'Pet Mystery box',
+	'Holiday Mystery box',
+	'Tradeables Mystery box'
+]);
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -247,9 +257,10 @@ export default class extends BotCommand {
 		const hasSmokey = msg.author.allItemsOwned().has('Smokey');
 		const loot = new Bank();
 		let smokeyBonus = 0;
-		if (botOpenable.name.toLowerCase().includes('mystery')) {
+		const isMysteryBox = itemsThatDontAddToTempCL.includes(botOpenable.itemID);
+		if (isMysteryBox) {
 			// Force names to TMBs/UMBs
-			if (botOpenable.name.toLowerCase().includes('mystery') && !Boolean(msg.flagArgs.id)) {
+			if (isMysteryBox && !Boolean(msg.flagArgs.id)) {
 				msg.flagArgs.names = 'yes';
 			}
 			if (hasSmokey) {
@@ -281,7 +292,12 @@ export default class extends BotCommand {
 
 		msg.author.incrementOpenableScore(botOpenable.itemID, quantity);
 		const previousCL = msg.author.cl();
-		await msg.author.addItemsToBank({ items: loot, collectionLog: true, filterLoot: false });
+		await msg.author.addItemsToBank({
+			items: loot,
+			collectionLog: true,
+			filterLoot: false,
+			dontAddToTempCL: isMysteryBox
+		});
 		if (loot.amount('Coins') > 0) {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
 		}
