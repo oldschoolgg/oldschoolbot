@@ -146,6 +146,7 @@ model ClientStorage {
   trip_doubling_loot      Json   @default("{}") @db.Json
   fc_cost                 Json   @default("{}") @db.Json
   fc_loot                 Json   @default("{}") @db.Json
+  zippy_loot              Json   @default("{}") @db.Json
 
   @@map("clientStorage")
 }
