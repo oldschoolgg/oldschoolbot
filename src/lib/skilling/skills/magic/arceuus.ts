@@ -4,14 +4,15 @@ import { MagicTypes } from '../../types';
 import { Castable } from './index';
 
 const Arceuus: Castable[] = [
-	{
-		name: 'Arceuus home teleport',
-		levels: { Magic: 1 },
-		xp: { Magic: 0 },
-		input: new Bank(),
-		category: MagicTypes.Teleport,
-		ticks: 22
-	},
+	// No implemented use
+	// {
+	// 	name: 'Arceuus home teleport',
+	// 	levels: { Magic: 1 },
+	// 	xp: { Magic: 0 },
+	// 	input: new Bank(),
+	// 	category: MagicTypes.Teleport,
+	// 	ticks: 22
+	// },
 	{
 		name: 'Arceuus library teleport',
 		levels: { Magic: 6 },
