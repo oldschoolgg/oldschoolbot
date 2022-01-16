@@ -343,9 +343,9 @@ export async function checkTOBUser(
 	const meleeGear = user.getGear('melee');
 	if (
 		!meleeGear.hasEquipped([
-			'Abyssal tentacle', 
-			'Blade of saeldor (c)', 
-			'Scythe of vitur (uncharged)', 
+			'Abyssal tentacle',
+			'Blade of saeldor (c)',
+			'Scythe of vitur (uncharged)',
 			'Scythe of vitur'
 		]) ||
 		!meleeGear.hasEquipped(['Fire cape', 'Infernal cape'])
