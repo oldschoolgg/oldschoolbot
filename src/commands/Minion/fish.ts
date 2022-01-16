@@ -73,7 +73,6 @@ export default class extends BotCommand {
 				'You are not worthy JalYt. Before you can fish Infernal Eels, you need to have defeated the mighty TzTok-Jad!'
 			);
 		}
-		
 		const anglerOutfit = Object.keys(Fishing.anglerItems).map(i => itemNameFromID(parseInt(i)));
 		if (fish.name === 'Minnow' && anglerOutfit.some(test => !msg.author.hasItemEquippedOrInBank(test!))) {
 			return msg.channel.send('You need to own the Angler Outfit to fish for Minnows.');
