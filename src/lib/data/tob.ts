@@ -342,7 +342,7 @@ export async function checkTOBUser(
 	// Melee
 	const meleeGear = user.getGear('melee');
 	if (
-		!meleeGear.hasEquipped(['Abyssal tentacle', 'Blade of saeldor (c)', 'Scythe of vitur']) ||
+		!meleeGear.hasEquipped(['Abyssal tentacle', 'Blade of saeldor (c)', 'Scythe of vitur (uncharged)', 'Scythe of vitur']) ||
 		!meleeGear.hasEquipped(['Fire cape', 'Infernal cape'])
 	) {
 		return [
@@ -533,6 +533,7 @@ export function createTOBTeam({
 		 */
 		const meleeWeaponBoosts = [
 			['Scythe of vitur', 15],
+			['Scythe of vitur (uncharged)', 6],
 			['Blade of saeldor (c)', 6],
 			['Abyssal tentacle', 5.5]
 		] as const;
