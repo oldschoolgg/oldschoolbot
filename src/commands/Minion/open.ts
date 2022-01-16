@@ -39,10 +39,10 @@ const itemsThatDontAddToTempCL = resolveItems([
 	'Clothing Mystery Box',
 	'Equippable mystery box',
 	'Tester Gift box',
-	'Untradeables Mystery box',
+	'Untradeable Mystery box',
 	'Pet Mystery box',
 	'Holiday Mystery box',
-	'Tradeables Mystery box'
+	'Tradeable Mystery box'
 ]);
 
 export default class extends BotCommand {
