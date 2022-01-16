@@ -226,7 +226,7 @@ export const fishingLocations: FishingLocation[] = [
 				percentAddedToMin: 5
 			}
 		],
-		bait: getOSItem('Raw lava eel')
+		bait: getOSItem('Infernal eel')
 	}
 ];
 
