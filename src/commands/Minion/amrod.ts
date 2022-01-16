@@ -96,7 +96,7 @@ export default class extends BotCommand {
 		await msg.confirm(`Do you want to trade **${toTradeBank}** for **${toReceiveBank}**?`);
 
 		await msg.author.removeItemsFromBank(toTradeBank);
-		await msg.author.addItemsToBank(toReceiveBank);
+		await msg.author.addItemsToBank({ items: toReceiveBank, collectionLog: false });
 
 		return msg.channel.send(`You traded **${toTradeBank}** for **${toReceiveBank}**.`);
 	}

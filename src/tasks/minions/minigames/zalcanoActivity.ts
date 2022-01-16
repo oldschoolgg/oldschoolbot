@@ -48,7 +48,7 @@ export default class extends Task {
 			);
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!

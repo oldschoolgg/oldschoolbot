@@ -9,7 +9,7 @@ export default class extends Task {
 		let { userID, channelID } = data;
 		const user = await this.client.fetchUser(userID);
 		const loot = new Bank().add('Saradomin cape').add('Zamorak cape').add('Guthix cape');
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		handleTripFinish(
 			this.client,
 			user,
@@ -18,7 +18,7 @@ export default class extends Task {
 			undefined,
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

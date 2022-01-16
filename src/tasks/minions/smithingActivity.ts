@@ -26,7 +26,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished smithing, you received ${loot}. ${xpRes}`;
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
@@ -36,7 +36,7 @@ export default class extends Task {
 			['smith', [quantity, smithedItem.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

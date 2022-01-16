@@ -89,7 +89,7 @@ export default class extends Task {
 			for (let i = 0; i < 4; i++) {
 				loot.add(birdhouseToCollect.table.roll());
 			}
-			await user.addItemsToBank(loot.values(), true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 			await user.addXP({ skillName: SkillsEnum.Hunter, amount: hunterXP });
 			const newHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 
@@ -133,7 +133,7 @@ export default class extends Task {
 				str += `\n${user.minionName} tells you to come back after your birdhouses are full!`;
 			}
 
-			handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot.bank);
+			handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot);
 		}
 	}
 }

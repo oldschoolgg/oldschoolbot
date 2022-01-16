@@ -37,12 +37,14 @@ export default class extends BotCommand {
 				.add('Cooked karambwan', 1000)
 				.add('Ranging potion(4)', 1000)
 				.add('Death rune', 10_000)
-				.add('Blood rune', 10_000)
+				.add('Blood rune', 100_000)
 				.add('Water rune', 10_000)
 				.add('Coins', 5_000_000)
 				.add('Shark', 5000)
+				.add('Vial of blood', 10_000)
+				.add('Rune pouch', 1)
 				.add('Toxic blowpipe');
-			await msg.author.addItemsToBank(loot);
+			await msg.author.addItemsToBank({ items: loot, collectionLog: false });
 			await msg.author.settings.update(UserSettings.Blowpipe, {
 				scales: 100_000,
 				dartQuantity: 100_000,
@@ -72,7 +74,7 @@ export default class extends BotCommand {
 				pool: 29_241
 			}
 		});
-		msg.author.addItemsToBank(bank.bank);
+		msg.author.addItemsToBank({ items: bank });
 
 		return msg.channel.send(
 			`Gave you 99 in all skills, 1b GP, ${MAX_QP} QP, and 1k of all eatable foods. **Gave your POH an ornate rejuve pool**`

@@ -140,11 +140,11 @@ export default class extends BotCommand {
 			}
 			if (price > 0) {
 				await buyerMember.user.removeItemsFromBank(new Bank().add('Coins', price));
-				await msg.author.addItemsToBank(new Bank().add('Coins', price));
+				await msg.author.addItemsToBank({ items: new Bank().add('Coins', price), collectionLog: false });
 			}
 
 			await msg.author.removeItemsFromBank(bankToSell.bank);
-			await buyerMember.user.addItemsToBank(bankToSell.bank, false, false);
+			await buyerMember.user.addItemsToBank({ items: bankToSell, collectionLog: false, filterLoot: false });
 		} catch (err) {
 			this.client.emit(Events.Wtf, err);
 			return msg.channel.send('Fatal error occurred. Please seek help in the support server.');

@@ -141,6 +141,7 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
+	qpRequired?: number;
 }
 
 export interface Craftable {

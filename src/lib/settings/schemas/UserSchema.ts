@@ -22,6 +22,7 @@ Client.defaultUserSchema
 	.add('favorite_alchables', 'integer', { array: true, default: [] })
 	.add('favorite_food', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
+	.add('lastTearsOfGuthixTimestamp', 'integer', { default: 1 })
 	.add('sacrificedValue', 'integer', { default: 0, minimum: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
@@ -167,4 +168,7 @@ Client.defaultUserSchema
 			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
 	)
 	.add('tob_cost', 'any', { default: {} })
-	.add('tob_loot', 'any', { default: {} });
+	.add('tob_loot', 'any', { default: {} })
+
+	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });

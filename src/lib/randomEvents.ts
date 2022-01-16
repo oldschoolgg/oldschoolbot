@@ -159,7 +159,7 @@ async function finalizeEvent(event: RandomEvent, user: KlasaUser, ch: TextChanne
 		}
 	}
 	loot.add(event.loot.roll());
-	await user.addItemsToBank(loot.bank, true);
+	await user.addItemsToBank({ items: loot, collectionLog: true });
 	ch.send(`You finished the ${event.name} event, and received... ${loot}.`);
 }
 

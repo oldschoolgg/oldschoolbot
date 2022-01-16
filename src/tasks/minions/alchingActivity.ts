@@ -36,7 +36,7 @@ export default class extends Task {
 				loot.add(returnedRunes);
 			}
 		}
-		await user.addItemsToBank(loot);
+		await user.addItemsToBank({ items: loot });
 		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchValue);
 
 		const xpReceived = quantity * 65;
@@ -59,7 +59,7 @@ export default class extends Task {
 			['alch', [quantity, [item]], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

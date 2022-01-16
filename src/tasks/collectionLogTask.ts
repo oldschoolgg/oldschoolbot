@@ -441,7 +441,11 @@ export default class CollectionLogTask extends Task {
 		// Collection title
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.fillStyle = '#FF981F';
-		this.drawText(ctx, collectionLog.name, 0, 0);
+		let effectiveName = collectionLog.name;
+		if (!collectionLog.counts) {
+			effectiveName = `${effectiveName} (Uncounted CL)`;
+		}
+		this.drawText(ctx, effectiveName, 0, 0);
 
 		// Collection obtained items
 		ctx.font = '16px OSRSFontCompact';
@@ -559,6 +563,7 @@ export default class CollectionLogTask extends Task {
 				ctx.drawImage(leftListCanvas, 12, 62);
 			}
 		}
+
 		return new MessageAttachment(canvas.toBuffer('image/png'), `${type}_log_${new Date().valueOf()}.png`);
 	}
 }
