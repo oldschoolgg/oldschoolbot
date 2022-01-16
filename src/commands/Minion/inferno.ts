@@ -588,7 +588,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			}
 		}
 
-		str += ` To find your current chances use ${msg.cmdPrefix}inferno --chance.`
+		str += ` To find your current chances use ${msg.cmdPrefix}inferno --chance.`;
 
 		return msg.channel.send({
 			files: [
