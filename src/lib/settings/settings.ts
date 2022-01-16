@@ -1,4 +1,5 @@
 import { command_usage_status, NewUser, Prisma } from '@prisma/client';
+import { captureException } from '@sentry/node';
 import { Guild, Util } from 'discord.js';
 import { Gateway, KlasaMessage, Settings } from 'klasa';
 
@@ -162,9 +163,11 @@ export async function runCommand(
 		message.client.emit('commandError', message, command, args, err);
 	} finally {
 		if (shouldTrackCommand(command, args)) {
-			await prisma.commandUsage.create({
-				data: commandUsage
-			});
+			await prisma.commandUsage
+				.create({
+					data: commandUsage
+				})
+				.catch(captureException);
 		}
 	}
 
