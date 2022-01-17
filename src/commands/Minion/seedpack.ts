@@ -169,7 +169,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(new Bank().add('Seed pack', realQty));
-		await msg.author.addItemsToBank(loot.bank, true);
+		await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 
 		return msg.channel.send(`You opened ${realQty} Seed pack${realQty > 1 ? 's' : ''} and received: ${loot}.`);
 	}

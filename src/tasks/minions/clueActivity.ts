@@ -26,7 +26,7 @@ export default class extends Task {
 		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
 
 		const loot = new Bank().add(clueTier.id, quantity);
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		this.client.emit(
 			Events.Log,

@@ -63,6 +63,7 @@ export function taskGroupFromActivity(type: activity_type_enum): ActivityGroup {
 		case 'MageTrainingArena':
 		case 'MageArena2':
 		case 'BigChompyBirdHunting':
+		case 'TearsOfGuthix':
 			return ActivityGroup.Minigame;
 		default: {
 			return ActivityGroup.Skilling;

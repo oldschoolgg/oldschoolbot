@@ -133,7 +133,10 @@ export default class extends BotCommand {
 				}
 				loot.add(diaryTier.item.id);
 
-				await msg.author.addItemsToBank(loot, true);
+				await msg.author.addItemsToBank({
+					items: loot,
+					collectionLog: true
+				});
 
 				return msg.channel.send(`You successfully completed the ${name} and received ${loot}.`);
 			}

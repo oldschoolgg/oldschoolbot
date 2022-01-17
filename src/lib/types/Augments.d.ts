@@ -136,14 +136,15 @@ declare module 'discord.js' {
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
-		addItemsToBank(
-			items: ItemBank | Bank,
-			collectionLog?: boolean,
-			filterLoot?: boolean
-		): Promise<{ previousCL: Bank; itemsAdded: Bank }>;
+		addItemsToBank(options: {
+			items: ItemBank | Bank;
+			collectionLog?: boolean;
+			filterLoot?: boolean;
+			dontAddToTempCL?: boolean;
+		}): Promise<{ previousCL: Bank; itemsAdded: Bank }>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
-		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
+		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;

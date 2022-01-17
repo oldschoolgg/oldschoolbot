@@ -137,7 +137,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		}
 
 		await msg.author.settings.update(UserSettings.CarpenterPoints, balance - cost);
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
 
 		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Carpenter Points.`);
 	}
