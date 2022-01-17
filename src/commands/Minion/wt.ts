@@ -52,7 +52,7 @@ export default class extends BotCommand {
 			if (msg.author.getGear('skilling').hasEquipped([piece])) {
 				warmGearAmount++;
 			}
-			if (warmGearAmount > 4) break;
+			if (warmGearAmount > = 4) break;
 		}
 
 		healAmountNeeded -= warmGearAmount * 15;
