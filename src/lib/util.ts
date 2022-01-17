@@ -1,7 +1,22 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
+import {
+	Channel,
+	Client,
+	DMChannel,
+	Guild,
+	MessageActionRow,
+	MessageActionRowOptions,
+	MessageButton,
+	MessageButtonStyleResolvable,
+	MessageComponentType,
+	MessageEmbed,
+	MessageEmbedOptions,
+	MessageOptions,
+	TextChannel
+} from 'discord.js';
+import { APIActionRowComponent, APIEmbed, ComponentType } from 'discord-api-types';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import murmurHash from 'murmurhash';
@@ -630,4 +645,38 @@ export function sanitizeBank(bank: Bank) {
 			delete bank.bank[key];
 		}
 	}
+}
+
+export function convertAPIEmbedToDJSEmbed(embed: APIEmbed) {
+	const data: MessageEmbedOptions = { ...embed, timestamp: embed.timestamp ? Number(embed.timestamp) : undefined };
+	return new MessageEmbed(data);
+}
+
+export function convertComponentDJSComponent(component: APIActionRowComponent): MessageActionRow {
+	const data: MessageActionRowOptions = {
+		components: component.components.map(cp => {
+			if (cp.type === ComponentType.Button) {
+				return {
+					...cp,
+					emoji: cp.emoji?.id,
+					style: cp.style as unknown as MessageButtonStyleResolvable,
+					type: cp.type as unknown as MessageComponentType
+				};
+			}
+			return {
+				...cp,
+				options: cp.options.map(opt => ({
+					...opt,
+					emoji: opt.emoji?.id
+				})),
+				type: cp.type as unknown as MessageComponentType
+			};
+		})
+	};
+	return new MessageActionRow(data);
+}
+
+export function truncateString(str: string, maxLen: number) {
+	if (str.length < maxLen) return str;
+	return `${str.slice(0, maxLen - 3)}...`;
 }

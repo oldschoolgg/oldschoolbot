@@ -92,7 +92,9 @@ export function parseBankFromFlags({
 
 	// Add filterables
 	const flagsKeys = Object.keys(flags);
-	const filter = filterableTypes.find(type => type.aliases.some(alias => flagsKeys.includes(alias)));
+	const filter = filterableTypes.find(type =>
+		type.aliases.some(alias => flagsKeys.some(i => stringMatches(i, alias)))
+	);
 
 	for (const [item, quantity] of bank.items()) {
 		if (flagsKeys.includes('tradeables') && !itemIsTradeable(item.id)) continue;
@@ -117,9 +119,18 @@ interface ParseBankOptions {
 	flags?: Record<string, string>;
 	inputStr?: string;
 	excludeItems?: number[];
+	filters?: string[];
+	search?: string;
 }
 
-export function parseBank({ inputBank, inputStr, flags = {}, excludeItems = [] }: ParseBankOptions): Bank {
+export function parseBank({
+	inputBank,
+	inputStr,
+	flags = {},
+	excludeItems = [],
+	filters,
+	search
+}: ParseBankOptions): Bank {
 	if (inputStr) {
 		let _bank = new Bank();
 		const strItems = parseStringBank(inputStr, inputBank);
@@ -130,6 +141,16 @@ export function parseBank({ inputBank, inputStr, flags = {}, excludeItems = [] }
 			);
 		}
 		return _bank;
+	}
+
+	if (filters) {
+		for (const filter of filters) {
+			flags[filter] = filter;
+		}
+	}
+
+	if (search) {
+		flags.search = search;
 	}
 
 	return parseBankFromFlags({ bank: inputBank, flags, excludeItems });

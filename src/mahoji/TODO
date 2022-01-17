@@ -1,1 +1,2 @@
-bank filters? e.g. +sell --search=dragon or --cl
+how do we handle responses with over 2k chars, cant split it into several messages can we?
+msg.confirm?

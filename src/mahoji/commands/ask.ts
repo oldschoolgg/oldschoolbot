@@ -1,7 +1,7 @@
 import { randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions, ICommand } from 'mahoji';
 
-export const command: ICommand = {
+export const askCommand: ICommand = {
 	name: 'ask',
 	description: 'Ask a yes/no question to the bot and receive an answer.',
 	options: [

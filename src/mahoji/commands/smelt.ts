@@ -10,7 +10,7 @@ import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
-export const command: ICommand = {
+export const smeltingCommand: ICommand = {
 	name: 'smelt',
 	description: 'Smelt ores/items.',
 	options: [
@@ -19,7 +19,7 @@ export const command: ICommand = {
 			name: 'name',
 			description: 'The name of the thing you want to smelt.',
 			required: true,
-			autocomplete: async value => {
+			autocomplete: async (value: string) => {
 				return Smithing.Bars.filter(bar => bar.name.toLowerCase().includes(value.toLowerCase()))
 					.slice(0, 10)
 					.map(i => ({ name: i.name, value: i.name }));
@@ -31,7 +31,7 @@ export const command: ICommand = {
 			description: 'The quantity you want to smelt.',
 			required: false,
 			min_value: 1,
-			max_value: 20_000
+			max_value: 100_000
 		}
 	],
 	run: async ({ member, options, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
@@ -89,7 +89,7 @@ export const command: ICommand = {
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({
 			barID: bar.id,
 			userID: user.id,
-			channelID,
+			channelID: channelID.toString(),
 			quantity,
 			duration,
 			type: 'Smelting'

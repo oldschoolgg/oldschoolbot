@@ -3,10 +3,10 @@ import { captureException } from '@sentry/node';
 import { Guild, Util } from 'discord.js';
 import { Gateway, KlasaMessage, Settings } from 'klasa';
 
-import { client } from '../..';
+import { client, mahojiClient } from '../..';
 import { Emoji, getCommandArgs, shouldTrackCommand } from '../constants';
 import { ActivityTaskData } from '../types/minions';
-import { isGroupActivity } from '../util';
+import { channelIsSendable, convertAPIEmbedToDJSEmbed, convertComponentDJSComponent, isGroupActivity } from '../util';
 import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
@@ -116,13 +116,66 @@ export function settingsUpdate(type: Prisma.ModelName, id: string, newData: any)
 	return prisma[type].update({ where: { id }, data: newData });
 }
 
+export async function runMahojiCommand({
+	msg,
+	commandName,
+	options
+}: {
+	msg: KlasaMessage;
+	commandName: string;
+	options: Record<string, unknown>;
+}) {
+	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
+	if (!mahojiCommand) {
+		throw new Error(`No mahoji command found for ${commandName}`);
+	}
+	return mahojiCommand.run({
+		userID: BigInt(msg.author.id),
+		guildID: msg.guild ? BigInt(msg.guild.id) : (null as any),
+		channelID: BigInt(msg.channel.id),
+		options,
+		member: msg.member as any,
+		client: mahojiClient,
+		interaction: {} as any
+	});
+}
+
 export async function runCommand(
 	message: KlasaMessage,
 	commandName: string,
-	args: unknown[],
+	args: unknown[] | Record<string, unknown>,
 	isContinue = false,
 	method = 'run'
 ) {
+	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
+	if (mahojiCommand) {
+		if (Array.isArray(args)) {
+			throw new Error(`Had array of args for mahoji command called ${commandName}`);
+		}
+		const result = await runMahojiCommand({
+			msg: message,
+			options: args,
+			commandName
+		});
+		const channel = client.channels.cache.get(message.channel.id);
+		if (channelIsSendable(channel)) {
+			if (typeof result === 'string') {
+				await channel.send(result);
+			} else {
+				await channel.send({
+					...result,
+					embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
+					components: result.components?.map(convertComponentDJSComponent)
+				});
+			}
+		}
+		return;
+	}
+
+	if (!Array.isArray(args)) {
+		throw new Error('Had object args for non-mahoji command');
+	}
+
 	const command = message.client.commands.get(commandName);
 	if (!command) {
 		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);

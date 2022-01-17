@@ -2,28 +2,36 @@ import { ApplicationCommandOptionType, CommandRunOptions, ICommand } from 'mahoj
 
 import { client } from '../..';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { toKMB, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { toKMB, truncateString, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { filterOption, searchOption } from '../mahojiSettings';
 
-export const command: ICommand = {
+export const sellCommand: ICommand = {
 	name: 'sell',
 	description: 'Sell an item from your bank',
 	options: [
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'items',
-			description: 'The items you want to sell',
-			required: true
-		}
+			description: 'The items you want to sell.'
+		},
+		filterOption,
+		searchOption
 	],
-	run: async ({ member, options }: CommandRunOptions<{ items: string }>) => {
+	run: async ({ member, options }: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
 		const user = await client.fetchUser(member.user.id);
 		if (user.isIronman) return "Iron players can't sell items.";
 
 		const bankToSell = parseBank({
 			inputBank: user.bank(),
-			inputStr: options.items
+			inputStr: options.items,
+			filters: options.filter ? [options.filter] : undefined,
+			search: options.search
 		});
+
+		if (bankToSell.length === 0) {
+			return 'No valid items to sell were given.';
+		}
 
 		let totalPrice = 0;
 		const customPrices = client.settings.get(ClientSettings.CustomPrices);
@@ -34,11 +42,15 @@ export const command: ICommand = {
 		totalPrice = Math.floor(totalPrice * 0.8);
 		const tax = Math.ceil((totalPrice / 0.8) * 0.2);
 
-		await Promise.all([user.removeItemsFromBank(bankToSell.bank), user.addGP(totalPrice)]);
+		await Promise.all([
+			user.removeItemsFromBank(bankToSell.bank),
+			user.addGP(totalPrice),
+			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceSellingItems, totalPrice),
+			updateBankSetting(client, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank)
+		]);
 
-		updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceSellingItems, totalPrice);
-		updateBankSetting(client, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
-
-		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**. Tax: ${toKMB(tax)}`;
+		return `Sold ${truncateString(bankToSell.toString(), 1300)} for **${totalPrice.toLocaleString()}gp (${toKMB(
+			totalPrice
+		)})**. Tax: ${toKMB(tax)}`;
 	}
 };

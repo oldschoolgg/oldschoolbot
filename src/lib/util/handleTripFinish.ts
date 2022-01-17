@@ -1,3 +1,4 @@
+import { activity_type_enum } from '@prisma/client';
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
@@ -14,7 +15,6 @@ import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { sendToChannelID } from './webhook';
-import { activity_type_enum } from '.prisma/client';
 
 export const collectors = new Map<string, MessageCollector>();
 
@@ -32,7 +32,7 @@ export async function handleTripFinish(
 	message: string,
 	onContinue:
 		| undefined
-		| [string, unknown[], boolean?, string?]
+		| [string, unknown[] | Record<string, unknown>, boolean?, string?]
 		| ((message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
