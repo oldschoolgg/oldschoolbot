@@ -47,7 +47,7 @@ export default class extends Task {
 			str += `\n**${user.minionName} failed to find any Rogue outfit pieces!**`;
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
 			itemsAdded,

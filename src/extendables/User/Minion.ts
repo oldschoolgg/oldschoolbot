@@ -571,6 +571,9 @@ export default class extends Extendable {
 				const data = currentTask as VolcanicMineActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
+			case 'TearsOfGuthix': {
+				return `${this.minionName} is currently doing Tears Of Guthix. ${formattedDuration}`;
+			}
 			case 'KourendFavour': {
 				const data = currentTask as KourendFavourActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.favour.name} Favour tasks. ${formattedDuration}`;
@@ -727,7 +730,7 @@ export default class extends Extendable {
 			preMax = totalXPAdded;
 			await prisma.xPGain.create({
 				data: {
-					user_id: this.id,
+					user_id: BigInt(this.id),
 					skill: params.skillName,
 					xp: Math.floor(totalXPAdded),
 					artificial: params.artificial ? true : null
@@ -739,7 +742,7 @@ export default class extends Extendable {
 		if (params.amount - totalXPAdded > 0) {
 			await prisma.xPGain.create({
 				data: {
-					user_id: this.id,
+					user_id: BigInt(this.id),
 					skill: params.skillName,
 					xp: Math.floor(params.amount - totalXPAdded),
 					artificial: params.artificial ? true : null,

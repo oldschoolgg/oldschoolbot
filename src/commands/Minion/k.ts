@@ -40,6 +40,7 @@ import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../lib/minions/types';
 import { calcPOHBoosts } from '../../lib/poh';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -353,6 +354,7 @@ export default class extends BotCommand {
 			);
 		}
 
+		const totalCost = new Bank();
 		const lootToRemove = new Bank();
 		let pvmCost = false;
 
@@ -473,6 +475,7 @@ export default class extends BotCommand {
 				}
 			}
 
+			totalCost.add(foodRemoved);
 			if (reductions.length > 0) {
 				foodStr += `, ${reductions.join(', ')}`;
 			}
@@ -501,6 +504,16 @@ export default class extends BotCommand {
 		if (lootToRemove.length > 0) {
 			updateBankSetting(this.client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 			await msg.author.removeItemsFromBank(lootToRemove);
+			totalCost.add(lootToRemove);
+		}
+
+		if (totalCost.length > 0) {
+			await trackLoot({
+				id: monster.name,
+				cost: totalCost,
+				type: 'Monster',
+				changeType: 'cost'
+			});
 		}
 
 		await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
@@ -510,9 +523,9 @@ export default class extends BotCommand {
 			quantity,
 			duration,
 			type: 'MonsterKilling',
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage
+			usingCannon: !usingCannon ? undefined : usingCannon,
+			cannonMulti: !cannonMulti ? undefined : cannonMulti,
+			burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
 		});
 		let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 			duration

@@ -130,6 +130,7 @@ export const enum Emoji {
 	Bug = '<:bug:778418736330833951>',
 	Trophy = '<:goldTrophy:778418736561782794>',
 	Crab = '<:crab:778418736432021505>',
+	Snake = '🐍',
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
@@ -216,6 +217,7 @@ export const enum Tasks {
 	VolcanicMine = 'volcanicMineActivity',
 	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity',
+	TearsOfGuthix = 'tearsOfGuthixActivity',
 	ToB = 'tobActivity'
 }
 
@@ -365,7 +367,7 @@ export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
-export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
+export const continuationChars = 'abdefghjknoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;

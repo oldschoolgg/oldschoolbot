@@ -45,7 +45,7 @@ export default class extends Task {
 
 		str += `\nYou received: ${loot}.`;
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
@@ -55,7 +55,7 @@ export default class extends Task {
 			['cook', [quantity, cookable.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }
