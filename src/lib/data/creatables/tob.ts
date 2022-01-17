@@ -21,6 +21,15 @@ export const tobCreatables: Createable[] = [
 		})
 	},
 	{
+		name: 'Holy sanguinesti staff',
+		inputItems: resolveNameBank({
+			'Holy sanguinesti staff (uncharged)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Holy sanguinesti staff': 1
+		})
+	},
+	{
 		name: 'Revert sanguinesti staff',
 		inputItems: resolveNameBank({
 			'Sanguinesti staff': 1
