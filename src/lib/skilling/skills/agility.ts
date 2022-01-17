@@ -54,7 +54,7 @@ export const courses: Course[] = [
 	{
 		id: 6,
 		name: 'Ape Atoll Agility Course',
-		aliases: ['ape atoll', 'ape atoll agility course', 'ape atoll course', 'monky', 'ape'],
+		aliases: ['ape atoll', 'ape atoll agility course', 'ape atoll course', 'monky', 'ape','monkey'],
 		level: 48,
 		xp: 580,
 		marksPer60: 0,
@@ -65,7 +65,7 @@ export const courses: Course[] = [
 	{
 		id: 7,
 		name: 'Falador Rooftop Course',
-		aliases: ['fally', 'falador', 'fally rooftop', 'falador rooftop', 'falador rooftop course'],
+		aliases: ['fally', 'falador', 'fally rooftop', 'falador rooftop', 'falador rooftop course', 'faly'],
 		level: 50,
 		xp: 440,
 		marksPer60: 13,
@@ -75,7 +75,7 @@ export const courses: Course[] = [
 	{
 		id: 8,
 		name: "Seers' Village Rooftop Course",
-		aliases: ['seers', 'seers village', 'seers village rooftop', 'seers village rooftop course'],
+		aliases: ['seers', 'seers village', 'seers village rooftop', 'seers village rooftop course', 'seer', 'cammy','camelot'],
 		level: 60,
 		xp: 570,
 		marksPer60: 12,
@@ -85,7 +85,7 @@ export const courses: Course[] = [
 	{
 		id: 9,
 		name: 'Pollnivneach Rooftop Course',
-		aliases: ['pol', 'pollnivneach', 'pollnivneach rooftop', 'pollnivneach rooftop course'],
+		aliases: ['pol', 'pollnivneach', 'pollnivneach rooftop', 'pollnivneach rooftop course', 'poll', 'polly','poly'],
 		level: 70,
 		xp: 890,
 		marksPer60: 9,
@@ -95,7 +95,7 @@ export const courses: Course[] = [
 	{
 		id: 10,
 		name: 'Rellekka Rooftop Course',
-		aliases: ['rel', 'rellekka', 'rellekka rooftop', 'rellekka rooftop course'],
+		aliases: ['rel', 'rellekka', 'rellekka rooftop', 'rellekka rooftop course','fremmy','frem','fremennik','fremmennik','fremy'],
 		level: 80,
 		xp: 780,
 		marksPer60: 14,
