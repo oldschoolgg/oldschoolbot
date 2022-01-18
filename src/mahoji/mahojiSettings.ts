@@ -1,4 +1,7 @@
+import { MessageButton, TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { ApplicationCommandOptionType } from 'mahoji';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { CommandOption } from 'mahoji/dist/lib/types';
 
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
@@ -35,3 +38,60 @@ export const searchOption: CommandOption = {
 	description: 'An item name search query.',
 	required: false
 };
+
+export async function handleMahojiConfirmation(
+	channel: TextChannel,
+	userID: bigint,
+	interaction: SlashCommandInteraction,
+	str: string
+) {
+	await interaction.deferReply();
+
+	const confirmMessage = await channel.send({
+		content: str,
+		components: [
+			[
+				new MessageButton({
+					label: 'Confirm',
+					style: 'PRIMARY',
+					customID: 'CONFIRM'
+				}),
+				new MessageButton({
+					label: 'Cancel',
+					style: 'SECONDARY',
+					customID: 'CANCEL'
+				})
+			]
+		]
+	});
+
+	// TODO: we need to edit/reply to the original interaction here if they dont confirm, or handle it in the command?
+	const cancel = async () => {
+		await confirmMessage.delete();
+	};
+
+	async function confirm() {
+		await confirmMessage.delete();
+	}
+
+	try {
+		const selection = await confirmMessage.awaitMessageComponentInteraction({
+			filter: i => {
+				if (i.user.id !== userID.toString()) {
+					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+					return false;
+				}
+				return true;
+			},
+			time: Time.Second * 15
+		});
+		if (selection.customID === 'CANCEL') {
+			return cancel();
+		}
+		if (selection.customID === 'CONFIRM') {
+			return confirm();
+		}
+	} catch {
+		return cancel();
+	}
+}

@@ -16,9 +16,9 @@ import {
 	MessageOptions,
 	TextChannel
 } from 'discord.js';
-import { APIActionRowComponent, APIEmbed, ComponentType } from 'discord-api-types';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { APIActionRowComponent, APIEmbed, ComponentType } from 'mahoji';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';

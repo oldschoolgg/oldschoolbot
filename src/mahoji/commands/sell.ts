@@ -1,10 +1,11 @@
+import { TextChannel } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions, ICommand } from 'mahoji';
 
 import { client } from '../..';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { toKMB, truncateString, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
-import { filterOption, searchOption } from '../mahojiSettings';
+import { filterOption, handleMahojiConfirmation, searchOption } from '../mahojiSettings';
 
 export const sellCommand: ICommand = {
 	name: 'sell',
@@ -18,7 +19,13 @@ export const sellCommand: ICommand = {
 		filterOption,
 		searchOption
 	],
-	run: async ({ member, options }: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
+	run: async ({
+		member,
+		options,
+		interaction,
+		channelID,
+		userID
+	}: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
 		const user = await client.fetchUser(member.user.id);
 		if (user.isIronman) return "Iron players can't sell items.";
 
@@ -42,6 +49,15 @@ export const sellCommand: ICommand = {
 		totalPrice = Math.floor(totalPrice * 0.8);
 		const tax = Math.ceil((totalPrice / 0.8) * 0.2);
 
+		const sellStr = `**${truncateString(bankToSell.toString(), 1300)}**`;
+
+		await handleMahojiConfirmation(
+			client.channels.cache.get(channelID.toString()) as TextChannel,
+			userID,
+			interaction,
+			`Are you sure you want to sell ${sellStr}?`
+		);
+
 		await Promise.all([
 			user.removeItemsFromBank(bankToSell.bank),
 			user.addGP(totalPrice),
@@ -49,8 +65,6 @@ export const sellCommand: ICommand = {
 			updateBankSetting(client, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank)
 		]);
 
-		return `Sold ${truncateString(bankToSell.toString(), 1300)} for **${totalPrice.toLocaleString()}gp (${toKMB(
-			totalPrice
-		)})**. Tax: ${toKMB(tax)}`;
+		return `Sold ${sellStr} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**. Tax: ${toKMB(tax)}`;
 	}
 };
