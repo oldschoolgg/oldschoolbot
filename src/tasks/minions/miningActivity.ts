@@ -23,13 +23,13 @@ export default class extends Task {
 		if (ore.name === 'Sandstone') {
 			xpReceived = 0;
 			for (let i = 0; i < quantity; i++) {
-				if (roll(100 / (1.2889 + Math.floor(0.18456 * user.skillLevel(SkillsEnum.Mining))))) {
+				if (roll(100 / (1.2889 + Math.floor(0.184_56 * user.skillLevel(SkillsEnum.Mining))))) {
 					xpReceived += 60;
 					loot.add('Sandstone (10kg)');
-				} else if (roll(100 / (4.88931 + Math.floor(0.191377 * user.skillLevel(SkillsEnum.Mining))))) {
+				} else if (roll(100 / (4.889_31 + Math.floor(0.191_377 * user.skillLevel(SkillsEnum.Mining))))) {
 					xpReceived += 50;
 					loot.add('Sandstone (5kg)');
-				} else if (roll(100 / (10.6549 + Math.floor(0.122311 * user.skillLevel(SkillsEnum.Mining))))) {
+				} else if (roll(100 / (10.6549 + Math.floor(0.122_311 * user.skillLevel(SkillsEnum.Mining))))) {
 					xpReceived += 40;
 					loot.add('Sandstone (2kg)');
 				} else {
