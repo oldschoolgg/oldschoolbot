@@ -15,6 +15,7 @@ import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { miningBuyables } from './mining';
 import { runeBuyables } from './runes';
+import { sandStone } from './sandStone';
 import { slayerBuyables } from './slayerBuyables';
 
 export interface Buyable {
@@ -777,6 +778,7 @@ const Buyables: Buyable[] = [
 	...canifisClothes,
 	...castleWarsBuyables,
 	...cmCapes,
+	...sandStone,
 	...slayerBuyables,
 	...capeBuyables,
 	...miningBuyables,

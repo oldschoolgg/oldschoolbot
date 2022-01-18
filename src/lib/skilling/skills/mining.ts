@@ -19,6 +19,7 @@ const ores: Ore[] = [
 		xp: 5,
 		id: 1436,
 		name: 'Rune essence',
+		aliases: ['rune ess'],
 		respawnTime: 0.5
 	},
 	{
@@ -26,6 +27,7 @@ const ores: Ore[] = [
 		xp: 17.5,
 		id: 436,
 		name: 'Copper ore',
+		aliases: ['copper', 'cu'],
 		respawnTime: 0.5,
 		petChance: 750_000,
 		clueScrollChance: 741_600
@@ -35,6 +37,7 @@ const ores: Ore[] = [
 		xp: 17.5,
 		id: 438,
 		name: 'Tin ore',
+		aliases: ['tin', 'sn'],
 		respawnTime: 0.5,
 		petChance: 750_000,
 		clueScrollChance: 741_600
@@ -44,6 +47,7 @@ const ores: Ore[] = [
 		xp: 0,
 		id: 13_421,
 		name: 'Saltpetre',
+		aliases: ['salt'],
 		respawnTime: 1
 	},
 	{
@@ -51,6 +55,7 @@ const ores: Ore[] = [
 		xp: 35,
 		id: 440,
 		name: 'Iron ore',
+		aliases: ['iron', 'fe'],
 		respawnTime: -0.2,
 		petChance: 750_000,
 		minerals: 100,
@@ -61,6 +66,7 @@ const ores: Ore[] = [
 		xp: 40,
 		id: 442,
 		name: 'Silver ore',
+		aliases: ['silver', 'ag'],
 		respawnTime: 3,
 		petChance: 750_000,
 		clueScrollChance: 741_600
@@ -70,6 +76,7 @@ const ores: Ore[] = [
 		xp: 10,
 		id: 21_622,
 		name: 'Volcanic ash',
+		aliases: ['ash', 'volcanic'],
 		respawnTime: 1.9,
 		petChance: 741_600
 	},
@@ -78,6 +85,7 @@ const ores: Ore[] = [
 		xp: 5,
 		id: 7936,
 		name: 'Pure essence',
+		aliases: ['pure', 'pure ess'],
 		respawnTime: 0.5
 	},
 	{
@@ -91,10 +99,21 @@ const ores: Ore[] = [
 		clueScrollChance: 296_640
 	},
 	{
+		level: 35,
+		xp: 0,
+		id: 6971,
+		name: 'Sandstone',
+		aliases: ['sand'],
+		respawnTime: 1.4,
+		petChance: 750_000,
+		clueScrollChance: 741_600
+	},
+	{
 		level: 40,
 		xp: 65,
 		id: 444,
 		name: 'Gold ore',
+		aliases: ['au', 'gold'],
 		respawnTime: 4,
 		petChance: 300_000,
 		nuggets: true,
@@ -105,6 +124,7 @@ const ores: Ore[] = [
 		xp: 65,
 		id: 1625,
 		name: 'Gem rock',
+		aliases: ['gem', 'gems'],
 		respawnTime: 6,
 		petChance: 211_886,
 		clueScrollChance: 211_886
@@ -114,6 +134,7 @@ const ores: Ore[] = [
 		xp: 80,
 		id: 447,
 		name: 'Mithril ore',
+		aliases: ['mith', 'mithril'],
 		respawnTime: 10,
 		petChance: 150_000,
 		nuggets: true,
@@ -124,6 +145,7 @@ const ores: Ore[] = [
 		xp: 95,
 		id: 449,
 		name: 'Adamantite ore',
+		aliases: ['addy', 'adamantite'],
 		respawnTime: 18,
 		petChance: 60_000,
 		nuggets: true,
@@ -134,6 +156,7 @@ const ores: Ore[] = [
 		xp: 125,
 		id: 451,
 		name: 'Runite ore',
+		aliases: ['runite', 'runeite', 'rune'],
 		respawnTime: 50,
 		petChance: 45_000,
 		nuggets: true,

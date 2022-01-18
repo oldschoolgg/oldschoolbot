@@ -61,7 +61,7 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [quantity = null, name = '']: [null | number, string]) {
 		const ore = Mining.Ores.find(
-			ore => stringMatches(ore.name, name) || stringMatches(ore.name.split(' ')[0], name)
+			ore => stringMatches(ore.name, name) || ore.aliases?.some(aliases => stringMatches(aliases, name))
 		);
 
 		if (!ore) {

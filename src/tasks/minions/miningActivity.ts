@@ -17,7 +17,51 @@ export default class extends Task {
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
 
+		const loot = new Bank();
+
 		let xpReceived = quantity * ore.xp;
+		if (ore.name === 'Sandstone') {
+			xpReceived = 0;
+			for (let i = 0; i < quantity; i++) {
+				if (roll(100 / (1.2889 + Math.floor(0.18456 * user.skillLevel(SkillsEnum.Mining))))) {
+					xpReceived += 60;
+					loot.add('Sandstone (10kg)');
+				} else if (roll(100 / (4.88931 + Math.floor(0.191377 * user.skillLevel(SkillsEnum.Mining))))) {
+					xpReceived += 50;
+					loot.add('Sandstone (5kg)');
+				} else if (roll(100 / (10.6549 + Math.floor(0.122311 * user.skillLevel(SkillsEnum.Mining))))) {
+					xpReceived += 40;
+					loot.add('Sandstone (2kg)');
+				} else {
+					xpReceived += 30;
+					loot.add('Sandstone (1kg)');
+				}
+			}
+		} else if (ore.id === 1625) {
+			// Gem rocks roll off the GemRockTable
+			for (let i = 0; i < quantity; i++) {
+				loot.add(Mining.GemRockTable.roll());
+			}
+		} else if (ore.id === 21_622) {
+			// Volcanic ash
+			const userLevel = user.skillLevel(SkillsEnum.Mining);
+			const tiers = [
+				[22, 1],
+				[37, 2],
+				[52, 3],
+				[67, 4],
+				[82, 5],
+				[97, 6]
+			];
+			for (const [lvl, multiplier] of tiers.reverse()) {
+				if (userLevel >= lvl) {
+					loot.add(ore.id, quantity * multiplier);
+					break;
+				}
+			}
+		} else {
+			loot.add(ore.id, quantity);
+		}
 		let bonusXP = 0;
 
 		// If they have the entire prospector outfit, give an extra 0.5% xp bonus
@@ -48,8 +92,6 @@ export default class extends Task {
 		});
 
 		let str = `${user}, ${user.minionName} finished mining ${quantity} ${ore.name}. ${xpRes}`;
-
-		const loot = new Bank();
 
 		// Add clue scrolls
 		if (ore.clueScrollChance) {
@@ -82,31 +124,6 @@ export default class extends Task {
 			}
 		}
 
-		// Gem rocks roll off the GemRockTable
-		if (ore.id === 1625) {
-			for (let i = 0; i < quantity; i++) {
-				loot.add(Mining.GemRockTable.roll());
-			}
-		} else if (ore.id === 21_622) {
-			// Volcanic ash
-			const userLevel = user.skillLevel(SkillsEnum.Mining);
-			const tiers = [
-				[22, 1],
-				[37, 2],
-				[52, 3],
-				[67, 4],
-				[82, 5],
-				[97, 6]
-			];
-			for (const [lvl, multiplier] of tiers.reverse()) {
-				if (userLevel >= lvl) {
-					loot.add(ore.id, quantity * multiplier);
-					break;
-				}
-			}
-		} else {
-			loot.add(ore.id, quantity);
-		}
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
