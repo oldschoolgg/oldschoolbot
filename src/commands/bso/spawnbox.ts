@@ -29,7 +29,7 @@ export default class extends BotCommand {
 		}
 
 		if (!this.client.owners.has(msg.author) && msg.channel.id !== Channel.BSOChannel) {
-			return msg.channel.send('You can only use this in #bso-general or #bot-channel-bso');
+			return msg.channel.send('You can only spawn boxes in #bot-channel-bso in the Oldschool.gg support server.');
 		}
 		const item = randArrItem([
 			itemChallenge,
