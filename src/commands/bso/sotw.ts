@@ -16,7 +16,7 @@ export const sotwConfig = {
 } as const;
 const { start, finish, skill, notes } = sotwConfig;
 
-export const sotwIsActive = () => start.getTime() <= Date.now();
+export const sotwIsActive = () => false && start.getTime() <= Date.now() && finish.getTime() >= Date.now();
 
 export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
