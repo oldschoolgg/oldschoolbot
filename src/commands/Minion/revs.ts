@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
-import { maxOffenceStats } from '../../lib/gear';
+import { maxDefenceStats, maxOffenceStats } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { KillableMonster } from '../../lib/minions/types';
@@ -251,8 +251,6 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 			return msg.channel.send("Your weapon is terrible, you can't kill revenants.");
 		}
 
-		debug.push(`${gearStat} ${key} out of max ${maxOffenceStats[key]}`);
-
 		let timePerMonster = monster.timeToFinish;
 		timePerMonster = reduceNumByPercent(timePerMonster, gearPercent / 4);
 		boosts.push(`${(gearPercent / 4).toFixed(2)}% (out of a possible 25%) for ${key}`);
@@ -288,7 +286,7 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		let deathChanceFromDefenceLevel = (100 - (defLvl === 99 ? 100 : defLvl)) / 4;
 		deathChance += deathChanceFromDefenceLevel;
 
-		const defensiveGearPercent = Math.max(0, calcWhatPercent(gear.getStats().defence_magic, maxOffenceStats[key]));
+		const defensiveGearPercent = Math.max(0, calcWhatPercent(gear.getStats().defence_magic, maxDefenceStats["defence_magic"]));
 		let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 		deathChance += deathChanceFromGear;
 
@@ -309,7 +307,7 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish. ${debug.join(', ')}
+		}, it'll take around ${formatDuration(duration)} to finish.
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
 **Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(2)}% from magic def${
 			deathChanceFromDefenceLevel > 0 ? `, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level` : ''

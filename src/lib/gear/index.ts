@@ -10,7 +10,7 @@ export * from './util';
 // https://oldschool.runescape.wiki/w/Armour/Highest_bonuses
 export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
 	[GearStat.DefenceCrush]: 505,
-	[GearStat.DefenceMagic]: 253,
+	[GearStat.DefenceMagic]: 238,
 	[GearStat.DefenceRanged]: 542,
 	[GearStat.DefenceSlash]: 521,
 	[GearStat.DefenceStab]: 519
