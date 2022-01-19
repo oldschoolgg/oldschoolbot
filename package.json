@@ -40,7 +40,7 @@
 		"math-expression-evaluator": "^1.3.8",
 		"murmurhash": "^2.0.0",
 		"node-fetch": "^2.6.6",
-		"oldschooljs": "^2.0.76",
+		"oldschooljs": "^2.0.77",
 		"p-queue": "^6.6.2",
 		"pg": "^8.7.1",
 		"piscina": "^3.2.0",
