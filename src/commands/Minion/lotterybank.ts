@@ -26,7 +26,7 @@ const specialPrices = new Bank()
 	// .add('Reward casket(grandmaster)', 50_000_000)
 	// .add('Reward casket(grandmaster)', 50_000_000)
 	.add('Clue scroll(grandmaster)', 150_000_000)
-	.add('Reward casket(grandmaster)', 300_000_000)
+	.add('Reward casket(grandmaster)', 500_000_000)
 	// Drygores
 	.add('Drygore longsword', 3_000_000_000)
 	.add('Offhand drygore longsword', 3_000_000_000)
@@ -80,6 +80,9 @@ const specialPrices = new Bank()
 	.add('Saradomin brew(4)', 150_000)
 	.add('Heat res. brew', 750_000)
 	.add('Ignis ring', 300_000_000)
+	.add('Saradomin brew(4)', 500_000)
+	.add('Super restore(4)', 250_000)
+	.add('Prayer potion(4)', 250_000)
 
 	// Pets
 	.add('Voidling', 800_000_000)
