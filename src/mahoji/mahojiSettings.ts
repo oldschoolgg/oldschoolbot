@@ -1,9 +1,11 @@
 import { MessageButton, TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { ApplicationCommandOptionType } from 'mahoji';
+import { ApplicationCommandOptionType, InteractionResponseType, Routes } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
-import { CommandOption } from 'mahoji/dist/lib/types';
+import { CommandOption, InteractionResponse } from 'mahoji/dist/lib/types';
 
+import { mahojiClient } from '..';
+import { SILENT_ERROR } from '../lib/constants';
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
 
@@ -65,9 +67,18 @@ export async function handleMahojiConfirmation(
 		]
 	});
 
-	// TODO: we need to edit/reply to the original interaction here if they dont confirm, or handle it in the command?
 	const cancel = async () => {
 		await confirmMessage.delete();
+		await handleMahojiInteractionResponse({
+			response: {
+				type: InteractionResponseType.ChannelMessageWithSource,
+				data: {
+					content: 'You did not confirm in time.'
+				}
+			},
+			interaction
+		});
+		throw new Error(SILENT_ERROR);
 	};
 
 	async function confirm() {
@@ -83,7 +94,7 @@ export async function handleMahojiConfirmation(
 				}
 				return true;
 			},
-			time: Time.Second * 15
+			time: Time.Second * 10
 		});
 		if (selection.customID === 'CANCEL') {
 			return cancel();
@@ -93,5 +104,45 @@ export async function handleMahojiConfirmation(
 		}
 	} catch {
 		return cancel();
+	}
+}
+
+export async function handleMahojiInteractionResponse(result: InteractionResponse | null) {
+	if (!result) return;
+	if (
+		result.interaction instanceof SlashCommandInteraction &&
+		result.response.type === InteractionResponseType.ChannelMessageWithSource
+	) {
+		// If this response is for a deferred interaction, we have to use a different route/method/body.
+		if (result.interaction.deferred) {
+			await mahojiClient.restManager.patch(
+				Routes.webhookMessage(mahojiClient.applicationID, result.interaction.token),
+				{
+					body: { ...result.response.data, attachments: undefined },
+					attachments:
+						result.response.data && 'attachments' in result.response.data
+							? result.response.data.attachments?.map(a => ({
+									fileName: a.fileName,
+									rawBuffer: a.buffer
+							  }))
+							: undefined
+				}
+			);
+			return;
+		}
+
+		await mahojiClient.restManager.post(
+			Routes.interactionCallback(result.interaction.id, result.interaction.token),
+			{
+				body: { ...result.response, attachments: undefined },
+				attachments:
+					result.response.data && 'attachments' in result.response.data
+						? result.response.data.attachments?.map(a => ({
+								fileName: a.fileName,
+								rawBuffer: a.buffer
+						  }))
+						: undefined
+			}
+		);
 	}
 }

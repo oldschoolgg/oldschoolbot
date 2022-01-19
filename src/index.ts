@@ -3,13 +3,13 @@ import './lib/data/itemAliases';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { APIInteraction, GatewayDispatchEvents, InteractionResponseType, MahojiClient, Routes } from 'mahoji';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { APIInteraction, GatewayDispatchEvents, MahojiClient } from 'mahoji';
 import { join } from 'path';
 
 import { botToken, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
+import { handleMahojiInteractionResponse } from './mahoji/mahojiSettings';
 
 Chart.register(ChartDataLabels);
 
@@ -32,39 +32,7 @@ client.on('raw', async event => {
 	const data = event.d as APIInteraction;
 	const result = await mahojiClient.parseInteraction(data);
 	if (result) {
-		if (
-			result.interaction instanceof SlashCommandInteraction &&
-			result.response.type === InteractionResponseType.ChannelMessageWithSource
-		) {
-			// If this response is for a deferred interaction, we have to use a different route/method/body.
-			if (result.interaction.deferred) {
-				await mahojiClient.restManager.patch(
-					Routes.webhookMessage(mahojiClient.applicationID, result.interaction.token),
-					{
-						body: { ...result.response.data, attachments: undefined },
-						attachments:
-							result.response.data && 'attachments' in result.response.data
-								? result.response.data.attachments?.map(a => ({
-										fileName: a.fileName,
-										rawBuffer: a.buffer
-								  }))
-								: undefined
-					}
-				);
-				return;
-			}
-
-			await mahojiClient.restManager.post(Routes.interactionCallback(data.id, data.token), {
-				body: { ...result.response, attachments: undefined },
-				attachments:
-					result.response.data && 'attachments' in result.response.data
-						? result.response.data.attachments?.map(a => ({
-								fileName: a.fileName,
-								rawBuffer: a.buffer
-						  }))
-						: undefined
-			});
-		}
+		handleMahojiInteractionResponse(result);
 	}
 });
 client.on('ready', client.init);

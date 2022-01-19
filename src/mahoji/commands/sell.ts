@@ -36,6 +36,8 @@ export const sellCommand: ICommand = {
 			search: options.search
 		});
 
+		bankToSell.filter(i => i.tradeable, true);
+
 		if (bankToSell.length === 0) {
 			return 'No valid items to sell were given.';
 		}

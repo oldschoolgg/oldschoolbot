@@ -2,6 +2,7 @@ import { command_usage_status, Prisma } from '@prisma/client';
 import { captureException } from '@sentry/node';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
+import { runInhibitors } from '../lib/commandInhibitors/inhibitors';
 import { getCommandArgs, PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 import { getGuildSettings } from '../lib/settings/settings';
@@ -104,6 +105,7 @@ export default class extends Monitor {
 
 		try {
 			await this.client.inhibitors.run(message, command);
+			const test = runInhibitors({ user: message.author, guild: message.guild, member: message.member, command });
 			if (command.oneAtTime) {
 				this.client.oneCommandAtATimeCache.add(message.author.id);
 			}
