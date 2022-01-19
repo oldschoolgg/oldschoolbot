@@ -83,6 +83,10 @@ const specialPrices = new Bank()
 	.add('Saradomin brew(4)', 500_000)
 	.add('Super restore(4)', 250_000)
 	.add('Prayer potion(4)', 250_000)
+	.add('Heat res. brew', 1_100_000)
+	.add('Heat res. restore', 1_100_000)
+	.add('Hellfire arrow', 400_000)
+	.add('Mysterious seed', 25_000_000)
 
 	// Pets
 	.add('Voidling', 800_000_000)
@@ -100,7 +104,8 @@ const specialPrices = new Bank()
 	.add('Shelldon', 900_000_000)
 	.add('Klik', 35_000_000)
 	.add('Peky', 500_000_000)
-	.add('Doug', 1_500_000_000);
+	.add('Doug', 1_500_000_000)
+	.add('Obis', 2_000_000_000);
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
