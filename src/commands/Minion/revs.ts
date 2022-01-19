@@ -285,7 +285,10 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		let deathChanceFromDefenceLevel = (100 - (defLvl === 99 ? 100 : defLvl)) / 4;
 		deathChance += deathChanceFromDefenceLevel;
 
-		const defensiveGearPercent = Math.max(0, calcWhatPercent(gear.getStats().defence_magic, maxDefenceStats["defence_magic"]));
+		const defensiveGearPercent = Math.max(
+			0,
+			calcWhatPercent(gear.getStats().defence_magic, maxDefenceStats['defence_magic'])
+		);
 		let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 		deathChance += deathChanceFromGear;
 
