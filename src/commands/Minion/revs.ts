@@ -235,7 +235,6 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 				`That's not a valid revenant. The valid revenants are: ${revenantMonsters.map(m => m.name).join(', ')}.`
 			);
 		}
-		let debug = [];
 
 		const gear = msg.author.getGear('wildy');
 		const key = ({ melee: 'attack_crush', mage: 'attack_magic', range: 'attack_ranged' } as const)[style];
