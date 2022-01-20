@@ -128,10 +128,6 @@ export function formatDuration(ms: number, short = false) {
 		.join(short ? '' : ', ');
 }
 
-export function inlineCodeblock(input: string) {
-	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
-}
-
 export function isWeekend() {
 	const currentDate = new Date(Date.now() - Time.Hour * 6);
 	return [6, 0].includes(currentDate.getDay());

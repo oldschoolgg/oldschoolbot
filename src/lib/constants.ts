@@ -244,13 +244,6 @@ export const enum Events {
 	EconomyLog = 'economyLog'
 }
 
-export const enum PermissionLevelsEnum {
-	Zero = 0,
-	Moderator = 6,
-	Admin = 7,
-	Owner = 10
-}
-
 export const rootFolder = join(__dirname, '..', '..', '..');
 
 export const COINS_ID = 995;

@@ -11,7 +11,7 @@ export default class extends BotCommand {
 			aliases: ['iron', 'im'],
 			description: 'Shows the stats of an Ironman account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+ironman Faux', '+im Lajnux'],
 			categoryFlags: ['utility']
 		});

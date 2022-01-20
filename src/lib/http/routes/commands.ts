@@ -16,12 +16,11 @@ export const commandsRoute = (server: FastifyServer) =>
 			);
 			reply.send(
 				commands
-					.filter(c => typeof c.description === 'string' && c.description.length > 1 && c.permissionLevel < 9)
+					.filter(c => typeof c.description === 'string' && c.description.length > 1)
 					.map((cmd: BotCommand) => ({
 						name: cmd.name,
 						desc: cmd.description,
 						examples: cmd.examples,
-						permissionLevel: cmd.permissionLevel,
 						aliases: cmd.aliases,
 						perkTier: cmd.perkTier,
 						flags: cmd.categoryFlags

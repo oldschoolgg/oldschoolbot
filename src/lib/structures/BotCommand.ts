@@ -13,7 +13,8 @@ export abstract class BotCommand extends Command {
 	public examples: string[];
 	public categoryFlags: CategoryFlag[];
 	public cooldown?: number;
-	public requiredPermissions: PermissionResolvable[];
+	public requiredPermissionsForBot: PermissionResolvable[];
+	public requiredPermissionsForUser: PermissionResolvable[];
 
 	public constructor(store: CommandStore, file: string[], directory: string, options: BotCommandOptions = {}) {
 		super(
@@ -39,7 +40,8 @@ export abstract class BotCommand extends Command {
 		this.categoryFlags = options.categoryFlags || [];
 		this.bitfieldsRequired = options.bitfieldsRequired || [];
 		this.cooldown = options.cooldown;
-		this.requiredPermissions = options.requiredPermissions || [];
+		this.requiredPermissionsForBot = options.requiredPermissionsForBot || [];
+		this.requiredPermissionsForUser = options.requiredPermissionsForUser || [];
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -65,5 +67,6 @@ export interface BotCommandOptions extends CommandOptions {
 	categoryFlags?: CategoryFlag[];
 	bitfieldsRequired?: BitField[];
 	cooldown?: number;
-	requiredPermissions?: PermissionResolvable[];
+	requiredPermissionsForBot?: PermissionResolvable[];
+	requiredPermissionsForUser?: PermissionResolvable[];
 }

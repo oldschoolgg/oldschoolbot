@@ -10,7 +10,7 @@ export default class extends BotCommand {
 			cooldown: 2,
 			description: 'Shows the stats of a DMM account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+dmm d3adscene'],
 			categoryFlags: ['utility']
 		});

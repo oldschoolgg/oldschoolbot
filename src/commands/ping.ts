@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Roles, SupportServer } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
-import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
+import { Roles, SupportServer } from '../lib/constants';
+import { prisma } from '../lib/settings/prisma';
+import { BotCommand } from '../lib/structures/BotCommand';
+import { stringMatches } from '../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

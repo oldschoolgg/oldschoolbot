@@ -1,13 +1,16 @@
 import { command_usage_status, Prisma } from '@prisma/client';
 import { captureException } from '@sentry/node';
+import { Permissions, TextChannel } from 'discord.js';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { runInhibitors } from '../lib/commandInhibitors/inhibitors';
-import { getCommandArgs, PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
+import { getCommandArgs, shouldTrackCommand } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
+import { BotCommand } from '../lib/structures/BotCommand';
 import { floatPromise } from '../lib/util';
+import { runInhibitors } from '../mahoji/lib/inhibitors';
+import { convertKlasaCommandToAbstractCommand } from '../mahoji/lib/util';
 
 const whitelistedBots = [
 	'798308589373489172', // BIRDIE#1963
@@ -58,8 +61,9 @@ export default class extends Monitor {
 		if (message.guild !== null) {
 			const staffOnlyChannels = settings.get(GuildSettings.StaffOnlyChannels);
 			if (
-				staffOnlyChannels.includes(message.channel.id) &&
-				!(await message.hasAtLeastPermissionLevel(PermissionLevelsEnum.Moderator))
+				!message.member ||
+				(staffOnlyChannels.includes(message.channel.id) &&
+					!message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
 			) {
 				return;
 			}
@@ -76,7 +80,7 @@ export default class extends Monitor {
 	}
 
 	public async runCommand(message: KlasaMessage) {
-		const command = message.command!;
+		const command = message.command! as BotCommand;
 		const { params } = message;
 
 		const timer = new Stopwatch();
@@ -104,8 +108,17 @@ export default class extends Monitor {
 		let response: KlasaMessage | null = null;
 
 		try {
-			await this.client.inhibitors.run(message, command);
-			const test = runInhibitors({ user: message.author, guild: message.guild, member: message.member, command });
+			const inhibitResult = await runInhibitors({
+				user: message.author,
+				guild: message.guild,
+				member: message.member,
+				command: convertKlasaCommandToAbstractCommand(command),
+				channel: message.channel as TextChannel
+			});
+			if (typeof inhibitResult === 'string') {
+				return message.channel.send(inhibitResult);
+			}
+
 			if (command.oneAtTime) {
 				this.client.oneCommandAtATimeCache.add(message.author.id);
 			}

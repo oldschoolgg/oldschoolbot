@@ -1,19 +1,24 @@
+import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
-import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
+import { Type } from '@sapphire/type';
+import { captureException } from '@sentry/node';
+import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
+import { inspect } from 'node:util';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../../lib/constants';
-import { getSimilarItems } from '../../lib/data/similarItems';
-import { evalMathExpression } from '../../lib/expressionParser';
-import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
-import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { BotCommand } from '../../lib/structures/BotCommand';
+import { client } from '..';
+import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../lib/constants';
+import { getSimilarItems } from '../lib/data/similarItems';
+import { evalMathExpression } from '../lib/expressionParser';
+import { countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
+import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
+import { ClientSettings } from '../lib/settings/types/ClientSettings';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { BotCommand } from '../lib/structures/BotCommand';
 import {
 	asyncExec,
 	channelIsSendable,
@@ -23,12 +28,12 @@ import {
 	getSupportGuild,
 	getUsername,
 	itemNameFromID
-} from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { sendToChannelID } from '../../lib/util/webhook';
-import BankImageTask from '../../tasks/bankImage';
-import PatreonTask from '../../tasks/patreon';
+} from '../lib/util';
+import getOSItem from '../lib/util/getOSItem';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { sendToChannelID } from '../lib/util/webhook';
+import BankImageTask from '../tasks/bankImage';
+import PatreonTask from '../tasks/patreon';
 
 function itemSearch(msg: KlasaMessage, name: string) {
 	const items = Items.filter(i => {
@@ -62,6 +67,88 @@ ${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
 	}
 
 	return msg.channel.send(str);
+}
+
+async function unsafeEval({ code, flags }: { code: string; flags: Record<string, string> }): Promise<MessageOptions> {
+	code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
+	const stopwatch = new Stopwatch();
+	let syncTime = '?';
+	let asyncTime = '?';
+	let result = null;
+	let thenable = false;
+	// eslint-disable-next-line @typescript-eslint/init-declarations
+	let type!: Type;
+	try {
+		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
+		if (flags.async) code = `(async () => {\n${code}\n})();`;
+		else if (flags.bk) code = `(async () => {\nreturn ${code}\n})();`;
+		// eslint-disable-next-line no-eval
+		result = eval(code);
+		syncTime = stopwatch.toString();
+		type = new Type(result);
+		if (util.isThenable(result)) {
+			thenable = true;
+			stopwatch.restart();
+			result = await result;
+			asyncTime = stopwatch.toString();
+		}
+	} catch (error: any) {
+		if (!syncTime) syncTime = stopwatch.toString();
+		if (!type) type = new Type(error);
+		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
+		if (error && error.stack) captureException(error);
+		result = error;
+	}
+
+	stopwatch.stop();
+	if (flags.bk || result instanceof Bank) {
+		const image = await client.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
+		return { files: [new MessageAttachment(image.image!)] };
+	}
+
+	if (Buffer.isBuffer(result)) {
+		return {
+			content: 'The result was a buffer.'
+		};
+	}
+
+	if (typeof result !== 'string') {
+		result = inspect(result, {
+			depth: flags.depth ? parseInt(flags.depth) || 1 : 1,
+			showHidden: false
+		});
+	}
+
+	return {
+		content: `${codeBlock(Util.escapeCodeBlock(result))}
+**Type:** ${inlineCode(type.toString())}
+**Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
+`
+	};
+}
+
+async function evalCommand(msg: KlasaMessage, code: string) {
+	try {
+		if (!client.owners.has(msg.author)) {
+			return "You don't have permission to use this command.";
+		}
+		const res = await unsafeEval({ code, flags: msg.flagArgs });
+		if (res === undefined) return;
+
+		if ('silent' in msg.flagArgs) return null;
+
+		// Handle too-long-messages
+		if (res.content && res.content.length > 2000) {
+			return {
+				files: [new MessageAttachment(Buffer.from(res.content), 'output.txt')]
+			};
+		}
+
+		// If it's a message that can be sent correctly, send it
+		return msg.channel.send(res);
+	} catch (err) {
+		console.error(err);
+	}
 }
 
 export const emoji = (client: KlasaClient) => getSupportGuild(client).emojis.cache.random().toString();
@@ -677,6 +764,10 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				return msg.channel.send({
 					content: `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`
 				});
+			}
+			case 'eval': {
+				if (!input || typeof input !== 'string') return;
+				return evalCommand(msg, input);
 			}
 		}
 	}

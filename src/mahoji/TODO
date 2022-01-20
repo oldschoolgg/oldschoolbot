@@ -4,29 +4,21 @@ storing slash commands in command_usage, maybe distinguish them
 
 
 
+logging commands/const shard = message.guild ? message.guild.shardID : 0;
+		this.client.emit(
+			'log',
+			[
+				`[${shard}]`,
+				`${command.name}(${message.args ? message.args.join(', ') : ''})`,
+				`${message.author.username}[${message.author.id}]`,
+				message.guild ? `${message.guild.name}[${message.guild.id}]` : 'Direct Messages'
+			].join(' ')
+		);
+
+
 remove permissionlevels completely
-new PermissionLevels()
-		.add(0, () => true)
-		.add(
-			PermissionLevelsEnum.Moderator,
-			(message: KlasaMessage) =>
-				message.member ? message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS) : false,
-			{
-				fetch: true
-			}
-		)
-		.add(
-			PermissionLevelsEnum.Admin,
-			(message: KlasaMessage) =>
-				message.member ? message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) : false,
-			{
-				fetch: true
-			}
-		)
-		.add(9, (message: KlasaMessage) => message.client.owners.has(message.author), { break: true })
-		.add(PermissionLevelsEnum.Owner, (message: KlasaMessage) => message.client.owners.has(message.author))
 
 0: nothing
-moderator: ban members
-admin: admin
+6: moderator: ban members
+7: admin: admin
 9/10: owner

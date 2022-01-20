@@ -16,7 +16,8 @@ export function convertKlasaCommandToAbstractCommand(command: BotCommand): Abstr
 			enabled: command.enabled,
 			testingCommand: command.testingCommand,
 			cooldown: command.cooldown,
-			requiredPermissions: command.requiredPermissions,
+			requiredPermissionsForBot: command.requiredPermissionsForBot,
+			requiredPermissionsForUser: command.requiredPermissionsForUser,
 			runIn: command.runIn
 		}
 	};

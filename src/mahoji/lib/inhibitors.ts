@@ -25,7 +25,8 @@ interface AbstractCommandAttributes {
 	enabled?: boolean;
 	testingCommand?: boolean;
 	cooldown?: number;
-	requiredPermissions: PermissionResolvable[];
+	requiredPermissionsForBot: PermissionResolvable[];
+	requiredPermissionsForUser: PermissionResolvable[];
 	runIn: string[];
 }
 
@@ -136,7 +137,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'onlyStaffCanUseCommands',
 		run: async ({ channel, guild, user, member }) => {
-			if (!guild) return false;
+			if (!guild || !member) return false;
 			// Allow green gem badge holders to run commands in support channel:
 			if (
 				channel.id === Channel.HelpAndSupport &&
@@ -207,13 +208,29 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'missingBotPermissions',
 		run: async ({ command, channel }) => {
-			if (!command.attributes.requiredPermissions) return false;
+			if (!command.attributes.requiredPermissionsForBot) return false;
 			const missing =
 				channel.type === 'text'
-					? channel.permissionsFor(client.user!)!.missing(command.attributes.requiredPermissions)
+					? channel.permissionsFor(client.user!)!.missing(command.attributes.requiredPermissionsForBot)
 					: [];
 			if (missing.length > 0) {
 				return `I'm missing some permissions that I need, please give me: ${missing.join(', ')}.`;
+			}
+			return false;
+		}
+	},
+	{
+		name: 'missingUserPermissions',
+		run: async ({ command, channel, user }) => {
+			if (!command.attributes.requiredPermissionsForUser) return false;
+			const missing =
+				channel.type === 'text'
+					? channel.permissionsFor(user)!.missing(command.attributes.requiredPermissionsForUser)
+					: [];
+			if (missing.length > 0) {
+				return `You can't run this command, unless you have these permissions in the server: ${missing.join(
+					', '
+				)}.`;
 			}
 			return false;
 		}

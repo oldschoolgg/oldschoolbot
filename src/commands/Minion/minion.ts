@@ -95,7 +95,7 @@ export default class MinionCommand extends BotCommand {
 			usage: `[${subCommands.join('|')}] [quantity:int{1}|name:...string] [name:...string] [name:...string]`,
 			usageDelim: ' ',
 			subcommands: true,
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissionsForBot: ['EMBED_LINKS']
 		});
 	}
 

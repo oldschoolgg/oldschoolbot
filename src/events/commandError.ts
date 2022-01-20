@@ -1,9 +1,10 @@
+import { inlineCode } from '@discordjs/builders';
 import * as Sentry from '@sentry/node';
 import { DiscordAPIError, HTTPError, MessageEmbed, User } from 'discord.js';
 import { Command, Event, KlasaMessage, util } from 'klasa';
 
 import { Emoji, rootFolder, SILENT_ERROR } from '../lib/constants';
-import { cleanMentions, inlineCodeblock } from '../lib/util';
+import { cleanMentions } from '../lib/util';
 
 export default class extends Event {
 	public async run(msg: KlasaMessage, command: Command, _: string[], error: string | Error) {
@@ -42,21 +43,21 @@ export default class extends Event {
 
 		if (error instanceof DiscordAPIError || error instanceof HTTPError) {
 			output = [
-				`${inlineCodeblock('Command   ::')} ${command.path.slice(rootFolder.length)}`,
-				`${inlineCodeblock('Path      ::')} ${error.path}`,
-				`${inlineCodeblock('Code      ::')} ${error.code}`,
-				`${inlineCodeblock('Arguments ::')} ${
+				`${inlineCode('Command   ::')} ${command.path.slice(rootFolder.length)}`,
+				`${inlineCode('Path      ::')} ${error.path}`,
+				`${inlineCode('Code      ::')} ${error.code}`,
+				`${inlineCode('Arguments ::')} ${
 					message.params.length ? `[\`${message.params.join('`, `')}\`]` : 'Not Supplied'
 				}`,
-				`${inlineCodeblock('Error     ::')} ${util.codeBlock('js', error.stack || error)}`
+				`${inlineCode('Error     ::')} ${util.codeBlock('js', error.stack || error)}`
 			].join('\n');
 		} else {
 			output = [
-				`${inlineCodeblock('Command   ::')} ${command.path.slice(rootFolder.length)}`,
-				`${inlineCodeblock('Arguments ::')} ${
+				`${inlineCode('Command   ::')} ${command.path.slice(rootFolder.length)}`,
+				`${inlineCode('Arguments ::')} ${
 					message.params.length ? `[\`${message.params.join('`, `')}\`]` : 'Not Supplied'
 				}`,
-				`${inlineCodeblock('Error     ::')} ${util.codeBlock('js', error.stack || error)}`
+				`${inlineCode('Error     ::')} ${util.codeBlock('js', error.stack || error)}`
 			].join('\n');
 		}
 
