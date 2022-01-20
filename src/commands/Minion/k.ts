@@ -580,6 +580,8 @@ export default class extends BotCommand {
 			if (reductions.length > 0) {
 				foodStr += `, ${reductions.join(', ')}`;
 			}
+			totalEconomyCost.add(foodRemoved);
+
 			foodStr += `, **Removed ${foodRemoved}**`;
 		}
 
