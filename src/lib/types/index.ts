@@ -18,6 +18,7 @@ export interface SettingsEntry {
 	collectionLogBank?: ItemBank;
 	pets?: number[];
 	lastDailyTimestamp?: number;
+	lastTearsOfGuthixTimestamp?: number;
 	bitfield?: number[];
 	minion?: {
 		name?: string;
@@ -98,7 +99,7 @@ export interface MakePartyOptions {
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	party?: boolean;
-	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
+	customDenier?(user: KlasaUser): Promise<[boolean, string] | [boolean]>;
 }
 
 export type Skills = Partial<{

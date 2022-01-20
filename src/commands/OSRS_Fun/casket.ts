@@ -1,5 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
@@ -76,7 +77,7 @@ export default class extends BotCommand {
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
-			.generateBankImage(loot.bank, title, true, {}, msg.author);
+			.generateBankImage(new Bank(loot.bank), title, true, {}, msg.author);
 
 		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });
 	}

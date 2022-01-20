@@ -32,6 +32,7 @@ export namespace UserSettings {
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
 	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
+	export const LastTearsOfGuthixTimestamp = T<number>('lastTearsOfGuthixTimestamp');
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
 	export const Badges = T<readonly number[]>('badges');
@@ -68,8 +69,11 @@ export namespace UserSettings {
 	export const PremiumBalanceTier = T<number | null>('premium_balance_tier');
 	export const PremiumBalanceExpiryDate = T<number | null>('premium_balance_expiry_date');
 
-	export const PresentsStolen = T<number>('presents_stolen');
-	export const PresentsDelivered = T<number>('presents_delivered');
+	export const TentacleCharges = T<number>('tentacle_charges');
+	export const SangCharges = T<number>('sang_charges');
+
+	export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
+	export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
@@ -101,6 +105,9 @@ export namespace UserSettings {
 
 		export const InfernoAttempts = T<number>('inferno_attempts');
 		export const InfernalCapesSacrificed = T<number>('infernal_cape_sacrifices');
+
+		export const TobAttempts = T<number>('tob_attempts');
+		export const TobHardModeAttempts = T<number>('tob_hard_attempts');
 	}
 
 	export namespace Minion {
@@ -173,4 +180,7 @@ export namespace UserSettings {
 		export const Mushroom = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Mushroom}`);
 		export const Belladonna = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Belladonna}`);
 	}
+
+	export const GPLuckyPick = T<number>('gp_luckypick');
+	export const GPDice = T<number>('gp_dice');
 }

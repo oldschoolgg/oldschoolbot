@@ -24,7 +24,7 @@ export default class extends BotCommand {
 			const { percent, notOwned, owned, debugBank } = msg.author.completion();
 			if (msg.flagArgs.debug) {
 				return msg.channel.sendBankImage({
-					bank: debugBank.bank,
+					bank: debugBank,
 					title: 'All Items That Count Towards CL %',
 					flags: { debug: 1 }
 				});

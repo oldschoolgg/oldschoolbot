@@ -2,7 +2,6 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { ItemBank } from '../types';
 import { randomVariation, roll } from '../util';
 import resolveItems from '../util/resolveItems';
 
@@ -69,7 +68,7 @@ const JunkTable = new LootTable().add(RawJunkTable, [0, 1]).add(RawJunkTable, [0
 
 const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 
-export function fishingTrawlerLoot(fishingLevel: number, hasEliteArd: boolean, bank: ItemBank) {
+export function fishingTrawlerLoot(fishingLevel: number, hasEliteArd: boolean, bank: Bank) {
 	const loot = new Bank();
 	if (roll(5000)) {
 		loot.add('Heron');
@@ -77,7 +76,7 @@ export function fishingTrawlerLoot(fishingLevel: number, hasEliteArd: boolean, b
 
 	if (roll(8)) {
 		for (const item of anglerOutfit) {
-			if (!bank[item]) {
+			if (!bank.has(item)) {
 				loot.add(item);
 				break;
 			}

@@ -306,7 +306,9 @@ const pets: Pet[] = [
 		type: 'SPECIAL',
 		altNames: ['PHOENIX', 'PHEONIX', 'WINTERTODT', 'FM'],
 		formatFinish: (num: number) =>
-			`You had to open ${fm(num)} Wintertodt Supply Crates to get the Phoenix Pet! <:Phoenix:324127378223792129>`,
+			`It took you ${fm(
+				num
+			)} Wintertodt Supply Crate rolls to get the Phoenix Pet! <:Phoenix:324127378223792129>`,
 		bossKeys: ['wintertodt']
 	},
 	{
@@ -596,6 +598,16 @@ const pets: Pet[] = [
 		formatFinish: (num: number) =>
 			`You had to spend ${fm(num)} Permits to get the Tiny Tempor! <:TinyTempor:824483631694217277>`,
 		bossKeys: ['tempoross']
+	},
+	{
+		id: 49,
+		emoji: '<:Nexling:931565564151869460>',
+		chance: 500,
+		name: 'Nexling',
+		type: 'SPECIAL',
+		altNames: ['NEXLING'],
+		formatFinish: (num: number) =>
+			`You had to kill Nex ${fm(num)} times to get Nexling! <:Nexling:931565564151869460>`
 	}
 ];
 

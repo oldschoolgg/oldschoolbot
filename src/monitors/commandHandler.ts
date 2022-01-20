@@ -1,7 +1,8 @@
 import { command_usage_status, Prisma } from '@prisma/client';
+import { captureException } from '@sentry/node';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
+import { getCommandArgs, PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
@@ -93,7 +94,7 @@ export default class extends Monitor {
 			user_id: message.author.id,
 			command_name: command.name,
 			status: command_usage_status.Unknown,
-			args: message.args,
+			args: getCommandArgs(command, message.args),
 			channel_id: message.channel.id,
 			guild_id: message.guild?.id ?? null,
 			flags: Object.keys(message.flagArgs).length > 0 ? message.flagArgs : undefined
@@ -121,6 +122,9 @@ export default class extends Monitor {
 					floatPromise(this, this.client.finalizers.run(message, command, response!, timer));
 					this.client.emit('commandSuccess', message, command, params, response);
 					commandUsage.status = command_usage_status.Success;
+					if (commandUsage && shouldTrackCommand(command, message.args)) {
+						await prisma.commandUsage.create({ data: commandUsage }).catch(captureException);
+					}
 				} catch (error) {
 					this.client.emit('commandError', message, command, params, error);
 					commandUsage.status = command_usage_status.Error;
@@ -138,10 +142,6 @@ export default class extends Monitor {
 				commandUsage.status = command_usage_status.Inhibited;
 			}
 			this.client.emit('commandInhibited', message, command, res);
-		}
-
-		if (commandUsage && shouldTrackCommand(command, message.args)) {
-			await prisma.commandUsage.create({ data: commandUsage });
 		}
 
 		return response;

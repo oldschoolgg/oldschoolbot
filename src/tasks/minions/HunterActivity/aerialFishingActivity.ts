@@ -145,7 +145,7 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank(loot.values(), true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		str += `\n\nYou received: ${loot}.`;
 
 		if (loot.amount('Golden tench') > 0) {
@@ -171,7 +171,7 @@ export default class extends Task {
 			},
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

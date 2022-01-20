@@ -8,6 +8,7 @@ import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFo
 import hasEnoughFoodForMonster from '../../lib/minions/functions/hasEnoughFoodForMonster';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
 import { KillableMonster } from '../../lib/minions/types';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
@@ -55,7 +56,7 @@ export const phosaniBISGear = new Gear({
 	feet: 'Primordial boots',
 	ring: 'Berserker ring(i)',
 	weapon: "Inquisitor's mace",
-	shield: 'Dragon defender',
+	shield: 'Avernic defender',
 	ammo: "Rada's blessing 4"
 });
 
@@ -155,7 +156,7 @@ export default class extends BotCommand {
 			maxSize: maximumSize - 1,
 			ironmanAllowed: true,
 			message: `${msg.author.username} is doing a ${NightmareMonster.name} mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave. The maximum size for this mass is ${maximumSize}.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}
@@ -306,6 +307,12 @@ export default class extends BotCommand {
 		}
 
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.NightmareCost, totalCost);
+		await trackLoot({
+			id: 'nightmare',
+			cost: totalCost,
+			type: 'Monster',
+			changeType: 'cost'
+		});
 
 		await addSubTaskToActivityTask<NightmareActivityTaskOptions>({
 			userID: msg.author.id,

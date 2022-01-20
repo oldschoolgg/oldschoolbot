@@ -130,6 +130,7 @@ export const enum Emoji {
 	Bug = '<:bug:778418736330833951>',
 	Trophy = '<:goldTrophy:778418736561782794>',
 	Crab = '<:crab:778418736432021505>',
+	Snake = '🐍',
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
@@ -220,7 +221,8 @@ export const enum Tasks {
 	VolcanicMine = 'volcanicMineActivity',
 	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity',
-	Christmas = 'christmasActivity'
+	TearsOfGuthix = 'tearsOfGuthixActivity',
+	ToB = 'tobActivity'
 }
 
 export enum ActivityGroup {
@@ -369,7 +371,7 @@ export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
-export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
+export const continuationChars = 'abdefghjknoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
@@ -470,4 +472,10 @@ export function shouldTrackCommand(command: Command, args: any[]) {
 		}
 	}
 	return true;
+}
+export function getCommandArgs(command: Command, args: any[]) {
+	if (args.length === 0) return undefined;
+	if (command.name === 'bank') return undefined;
+	if (command.name === 'rp' && args[0] === 'c') return undefined;
+	return args;
 }

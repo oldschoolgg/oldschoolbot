@@ -171,7 +171,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 			}
 		});
 
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
 
 		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`);
 	}

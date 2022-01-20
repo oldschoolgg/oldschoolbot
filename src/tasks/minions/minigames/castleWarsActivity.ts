@@ -21,7 +21,7 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			loot.add('Castle wars ticket', ticketTable.roll().item);
 		}
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
@@ -31,7 +31,7 @@ export default class extends Task {
 			['castlewars', [], true, 'play'],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

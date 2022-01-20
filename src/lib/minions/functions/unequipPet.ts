@@ -13,7 +13,7 @@ export async function unequipPet(msg: KlasaMessage) {
 	const loot = new Bank().add(equippedPet);
 
 	await msg.author.settings.update(UserSettings.Minion.EquippedPet, null);
-	await msg.author.addItemsToBank(loot);
+	await msg.author.addItemsToBank({ items: loot, collectionLog: false });
 
 	return msg.channel.send(
 		`${msg.author.minionName} picks up their ${itemNameFromID(equippedPet)} pet and places it back in their bank.`

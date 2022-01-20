@@ -16,7 +16,6 @@ import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethods, sorts } from '../lib/sorts';
-import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
 	cleanString,
@@ -272,12 +271,12 @@ export default class BankImageTask extends Task {
 	}
 
 	async generateBankImage(
-		_bank: Bank | ItemBank,
+		_bank: Bank,
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
 		user?: KlasaUser,
-		collectionLog?: ItemBank
+		collectionLog?: Bank
 	): Promise<BankImageResult> {
 		const bank = _bank instanceof Bank ? _bank : new Bank(_bank);
 		let compact = Boolean(flags.compact);
@@ -289,7 +288,8 @@ export default class BankImageTask extends Task {
 		const favorites = settings?.get(UserSettings.FavoriteItems);
 
 		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1);
-		const currentCL = collectionLog ?? settings?.get(UserSettings.CollectionLogBank);
+		const rawCL = settings?.get(UserSettings.CollectionLogBank);
+		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
 		let partial = false;
 
 		// Used for flags placeholder and ph
@@ -394,7 +394,7 @@ export default class BankImageTask extends Task {
 		const isPurple: boolean =
 			flags.showNewCL !== undefined &&
 			currentCL !== undefined &&
-			Object.keys(bank.bank).some(i => !currentCL[i] && allCLItems.includes(parseInt(i)));
+			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
 		if (isPurple && bgImage.name === 'CoX') {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
@@ -520,7 +520,7 @@ export default class BankImageTask extends Task {
 				ctx.globalAlpha = 0.3;
 			}
 
-			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
+			const isNewCLItem = flags.showNewCL && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 
 			if (isNewCLItem) {
 				drawImageWithOutline(

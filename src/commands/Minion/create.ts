@@ -151,6 +151,16 @@ export default class extends BotCommand {
 				return msg.channel.send(`You can only ${cmd} this item once!`);
 			}
 		}
+		if (createableItem.maxCanOwn) {
+			const allItems = msg.author.allItemsOwned();
+			const amountOwned = allItems.amount(createableItem.name);
+			if (amountOwned >= createableItem.maxCanOwn) {
+				return msg.channel.send(
+					`You already have ${amountOwned}x ${createableItem.name}, you can't create another.`
+				);
+			}
+			quantity = createableItem.maxCanOwn - amountOwned;
+		}
 
 		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
 		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
@@ -204,13 +214,13 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(inItems);
-		await msg.author.addItemsToBank(outItems);
+		await msg.author.addItemsToBank({ items: outItems });
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateCost, inItems);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.CreateLoot, outItems);
 
 		// Only allow +create to add items to CL
-		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog(outItems.bank);
+		if (!createableItem.noCl && cmd === 'create') await msg.author.addItemsToCollectionLog({ items: outItems });
 
 		if (cmd === 'revert') {
 			return msg.channel.send(`You reverted ${inputItemsString} into ${outputItemsString}.`);
