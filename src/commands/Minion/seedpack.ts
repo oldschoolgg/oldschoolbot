@@ -156,6 +156,11 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage, [action, quantity]: [string | undefined, number | undefined]) {
 		await msg.author.settings.sync(true);
+		if (action && !quantity) {
+			quantity = Number(action) ?? 1;
+		}
+
+		const realQty = quantity ?? 1;
 		if (action === 'buy') {
 			const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 60);
 			const farmingLevel = msg.author.skillLevel(SkillsEnum.Farming);
@@ -168,14 +173,8 @@ export default class extends BotCommand {
 				return msg.channel.send('You require atleast 45 farming to trade in spirit seeds');
 			}
 
-			return this.buy(msg, [quantity]);
+			return this.buy(msg, realQty);
 		}
-
-		if (action && !quantity) {
-			quantity = Number(action) || 1;
-		}
-
-		const realQty = quantity ?? 1;
 
 		const userBank = msg.author.bank().bank;
 		const { plantTier } = msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
@@ -190,38 +189,37 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(new Bank().add('Seed pack', realQty));
-		await msg.author.addItemsToBank(loot.bank, true);
+		await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 
 		return msg.channel.send(`You opened ${realQty} Seed pack${realQty > 1 ? 's' : ''} and received: ${loot}.`);
 	}
 
-	async buy(msg: KlasaMessage, [quantity]: [number | undefined]) {
+	async buy(msg: KlasaMessage, quantity: number) {
 		await msg.author.settings.sync(true);
-		const realQty = quantity ?? 1;
 		const loot = new Bank();
 		const userBank = msg.author.bank().bank;
-		if (bankHasItem(userBank, itemID('Spirit seed'), realQty)) {
-			for (let i = 0; i < realQty; i++) {
+		if (bankHasItem(userBank, itemID('Spirit seed'), quantity)) {
+			for (let i = 0; i < quantity; i++) {
 				loot.add(openSeedPack(5));
 			}
 		} else {
-			return msg.channel.send(`You don't have ${realQty} Spirit seed${realQty > 1 ? 's' : ''} to open.`);
+			return msg.channel.send(`You don't have ${quantity} Spirit seed${quantity > 1 ? 's' : ''} to open.`);
 		}
-		await msg.author.removeItemsFromBank(new Bank().add('Spirit seed', realQty));
-		await msg.author.addItemsToBank(loot.bank, true);
-		if (realQty < 5) {
+		await msg.author.removeItemsFromBank(new Bank().add('Spirit seed', quantity));
+		await msg.author.addItemsToBank({ items: loot, collectionLog: true });
+		if (quantity < 5) {
 			return msg.channel.send(
-				`You've exchanged ${realQty} Spirit seed${realQty > 1 ? 's' : ''} for ${
-					realQty > 1 ? 'seed packs' : 'a seed pack'
-				}\nYou opened ${realQty} Seed pack${realQty > 1 ? 's' : ''} and received:\n${loot}.`
+				`You've exchanged ${quantity} Spirit seed${quantity > 1 ? 's' : ''} for ${
+					quantity > 1 ? 'seed packs' : 'a seed pack'
+				}\nYou opened ${quantity} Seed pack${quantity > 1 ? 's' : ''} and received:\n${loot}.`
 			);
 		}
 		return msg.channel.sendBankImage({
-			bank: loot.values(),
-			content: `You've exchanged ${realQty} Spirit seed${realQty > 1 ? 's' : ''} for ${
-				realQty > 1 ? 'seed packs' : 'a seed pack'
+			bank: loot,
+			content: `You've exchanged ${quantity} Spirit seed${quantity > 1 ? 's' : ''} for ${
+				quantity > 1 ? 'seed packs' : 'a seed pack'
 			}`,
-			title: `You opened ${realQty} Seed pack${realQty > 1 ? 's' : ''}`,
+			title: `You opened ${quantity} Seed pack${quantity > 1 ? 's' : ''}`,
 			flags: { names: 1 }
 		});
 	}
