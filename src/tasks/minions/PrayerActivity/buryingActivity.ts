@@ -37,7 +37,10 @@ export default class extends Task {
 			user.hasItemEquippedAnywhere('Iron med helm') &&
 			!user.hasItemEquippedOrInBank('Clue hunter garb')
 		) {
-			await user.addItemsToBank(new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }), true);
+			await user.addItemsToBank({
+				items: new Bank({ 'Clue hunter garb': 1, 'Clue hunter trousers': 1 }),
+				collectionLog: true
+			});
 			str += '\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.';
 		}
 

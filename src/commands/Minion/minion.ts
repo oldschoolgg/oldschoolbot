@@ -317,7 +317,7 @@ export default class MinionCommand extends BotCommand {
 					if (msg.author.owns(ironmanArmor)) {
 						return msg.channel.send('You already own a set of ironman armor.');
 					}
-					await msg.author.addItemsToBank(ironmanArmor);
+					await msg.author.addItemsToBank({ items: ironmanArmor, collectionLog: false });
 					return msg.channel.send('Gave you a set of ironman armor.');
 				}
 				return msg.channel.send("You're a **permanent** ironman and you cannot de-iron.");
@@ -336,7 +336,7 @@ Please say \`permanent\` to confirm.`
 							answer.author.id === msg.author.id && answer.content.toLowerCase() === 'permanent'
 					});
 					await msg.author.settings.update(UserSettings.BitField, BitField.PermanentIronman);
-					await msg.author.addItemsToBank(ironmanArmor);
+					await msg.author.addItemsToBank({ items: ironmanArmor });
 					return msg.channel.send(
 						'You are now a **permanent** Ironman. You also received a set of ironmen armor. Enjoy!'
 					);

@@ -66,7 +66,7 @@ export default class extends BotCommand {
 
 			const loot = new Bank().add('Death rune', deathRunes);
 			await msg.author.removeItemsFromBank(bankToSac);
-			await msg.author.addItemsToBank(loot);
+			await msg.author.addItemsToBank({ items: loot, collectionLog: false });
 			const sacBank = await trackSacBank(msg.author, bankToSac);
 			let totalCatsSacrificed = 0;
 			for (const cat of cats) {

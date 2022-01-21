@@ -40,7 +40,7 @@ export default class extends Task {
 			}
 		}
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		const xpStr = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 
 		await trackLoot({

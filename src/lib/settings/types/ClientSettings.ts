@@ -86,6 +86,7 @@ export namespace ClientSettings {
 		export const GPSourceDice = T<number>('gp_dice');
 		export const GPSourceOpen = T<number>('gp_open');
 		export const GPSourceDaily = T<number>('gp_daily');
+		export const GPSourceLuckyPick = T<number>('gp_luckypick');
 	}
 
 	export const LockedSkills = T<readonly SkillsEnum[]>('locked_skills');

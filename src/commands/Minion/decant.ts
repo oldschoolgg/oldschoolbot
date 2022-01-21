@@ -28,13 +28,13 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't own ${potionsToRemove}.`);
 		}
 		await msg.author.removeItemsFromBank(potionsToRemove);
-		await msg.author.addItemsToBank(potionsToAdd);
+		await msg.author.addItemsToBank({ items: potionsToAdd });
 
 		if (
 			msg.author.hasItemEquippedAnywhere(['Iron dagger', 'Bronze arrow'], true) &&
 			!msg.author.hasItemEquippedOrInBank('Clue hunter gloves')
 		) {
-			await msg.author.addItemsToBank(new Bank({ 'Clue hunter gloves': 1 }), true);
+			await msg.author.addItemsToBank({ items: new Bank({ 'Clue hunter gloves': 1 }), collectionLog: true });
 			msg.channel.send(
 				'\n\nWhile decanting some potions, you find a pair of gloves on the floor and pick them up.'
 			);

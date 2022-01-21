@@ -85,7 +85,7 @@ export default class extends BotCommand {
 		);
 
 		await msg.author.removeGP(totalPrice);
-		await msg.author.addItemsToBank(missingHatsBank, true);
+		await msg.author.addItemsToBank({ items: missingHatsBank, collectionLog: true });
 
 		return msg.channel.send(`Added the following hats to your bank: ${missingHatsBank}`);
 	}

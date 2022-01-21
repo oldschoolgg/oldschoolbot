@@ -39,7 +39,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished crafting ${quantity}${sets} ${item.name}, and received ${loot}.${xpRes}`;
 
-		await user.addItemsToBank(loot.values(), true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(this.client, user, channelID, str, ['craft', [quantity, item.name]], undefined, data, loot);
 	}

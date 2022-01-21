@@ -258,7 +258,7 @@ ${xpRes}`);
 		}
 		await msg.author.settings.update(UserSettings.PestControlPoints, balance - cost);
 
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
 
 		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Void knight commendation points.`);
 	}
