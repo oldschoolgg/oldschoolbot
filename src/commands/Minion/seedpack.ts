@@ -157,7 +157,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [action, quantity]: [string | undefined, number | undefined]) {
 		await msg.author.settings.sync(true);
 		if (action && !quantity) {
-			quantity = Number(action) ?? 1;
+			quantity = Number(action) || 1;
 		}
 
 		const realQty = quantity ?? 1;
