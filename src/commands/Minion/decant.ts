@@ -50,7 +50,7 @@ export default class extends BotCommand {
 		);
 	}
 
-		async all(msg: KlasaMessage, [dose = 4]: [1 | 2 | 3 | 4]) {
+	async all(msg: KlasaMessage, [dose = 4]: [1 | 2 | 3 | 4]) {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const potsAdd = [];
