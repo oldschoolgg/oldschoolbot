@@ -20,31 +20,35 @@ interface DataPiece {
 	run: (user: KlasaUser) => Promise<MessageOptions | Buffer | { bank: Bank; title: string; content?: string }>;
 }
 
+function wrap(str: string) {
+	return `'"${str}"'`;
+}
+
 const dataPoints: DataPiece[] = [
 	{
 		name: 'Personal Activity Types',
 		run: async (user: KlasaUser) => {
 			const result: { type: activity_type_enum; qty: number }[] =
-				await prisma.$queryRaw`SELECT type, count(type) AS qty
+				await prisma.$queryRawUnsafe(`SELECT type, count(type) AS qty
 FROM activity
 WHERE completed = true	
-AND user_id = ${user.id}
-OR (data->>'users')::jsonb @> ${user.id}::jsonb
-GROUP BY type;`;
+AND user_id = ${BigInt(user.id)}
+OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
+GROUP BY type;`);
 			const dataPoints: [string, number][] = result.filter(i => i.qty >= 5).map(i => [i.type, i.qty]);
-			return barChart(`${user.username}'s Activity Counts`, val => `${val} Trips`, dataPoints);
+			return barChart(`${user.username}'s Activity Types`, val => `${val} Trips`, dataPoints);
 		}
 	},
 	{
 		name: 'Personal Activity Durations',
 		run: async (user: KlasaUser) => {
 			const result: { type: activity_type_enum; hours: number }[] =
-				await prisma.$queryRaw`SELECT type, sum(duration) / ${Time.Hour} AS hours
+				await prisma.$queryRawUnsafe(`SELECT type, sum(duration) / ${Time.Hour} AS hours
 FROM activity
 WHERE completed = true
-AND user_id = ${user.id}
-OR (data->>'users')::jsonb @> ${user.id}::jsonb
-GROUP BY type;`;
+AND user_id = ${BigInt(user.id)}
+OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
+GROUP BY type;`);
 			const dataPoints: [string, number][] = result.filter(i => i.hours >= 1).map(i => [i.type, i.hours]);
 			return barChart(`${user.username}'s Activity Durations`, val => `${val} Hours`, dataPoints);
 		}
@@ -56,7 +60,7 @@ GROUP BY type;`;
 				await prisma.$queryRaw`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int) AS kc
 FROM activity
 WHERE completed = true
-AND user_id = ${user.id}
+AND user_id = ${BigInt(user.id)}
 AND type = 'MonsterKilling'
 AND data IS NOT NULL
 AND data::text != '{}'
@@ -90,7 +94,7 @@ GROUP BY data->>'monsterID';`;
 			return {
 				files: [
 					new MessageAttachment(
-						await pieChart(`${user.username}'s Top Bank Value Items`, val => `${toKMB(val)}%`, [
+						await pieChart(`${user.username}'s Personal Collection Log Progress`, val => `${toKMB(val)}%`, [
 							['Complete Collection Log Items', percent, '#9fdfb2'],
 							['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
 						])
@@ -101,7 +105,7 @@ GROUP BY data->>'monsterID';`;
 	},
 	{
 		name: 'Global Inferno Death Times',
-		run: async (_user: KlasaUser) => {
+		run: async () => {
 			const result: { mins: number; count: number }[] =
 				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
@@ -122,7 +126,7 @@ GROUP BY mins;`;
 				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
 WHERE type = 'Inferno'
-AND user_id = ${user.id}
+AND user_id = ${BigInt(user.id)}
 AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`;
 			return lineChart(
@@ -137,7 +141,7 @@ GROUP BY mins;`;
 		run: async (user: KlasaUser) => {
 			const activities = await prisma.activity.findMany({
 				where: {
-					user_id: user.id,
+					user_id: BigInt(user.id),
 					type: 'Inferno'
 				},
 				orderBy: {
@@ -161,7 +165,7 @@ GROUP BY mins;`;
 **Extra Capes:** ${postFirstCapeCompletions}
 **Total Time Spent in Inferno:** ${formatDuration(sumArr(activities.map(i => i.duration)))}`,
 				bank: totalCost,
-				title: `${user.username}'s Total Inferno Cost`
+				title: `${user.username}'s Personal Inferno`
 			};
 		}
 	},
@@ -169,14 +173,17 @@ GROUP BY mins;`;
 		name: 'Personal TOB Wipes',
 		run: async (user: KlasaUser) => {
 			const result: { wiped_room: number; count: number }[] =
-				await prisma.$queryRaw`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
+				await prisma.$queryRawUnsafe(`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
 FROM activity
 WHERE type = 'TheatreOfBlood'
 AND completed = true
 AND data->>'wipedRoom' IS NOT NULL
-AND user_id = ${user.id}
-OR (data->>'users')::jsonb @> ${user.id}::jsonb
-GROUP BY 1;`;
+AND user_id = ${BigInt(user.id)}
+OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
+GROUP BY 1;`);
+			if (result.length === 0) {
+				return { content: "You haven't wiped in any Theatre of Blood raids yet." };
+			}
 			return barChart(
 				'Personal TOB Deaths',
 				val => `${val} Deaths`,
@@ -186,7 +193,7 @@ GROUP BY 1;`;
 	},
 	{
 		name: 'Global TOB Wipes',
-		run: async (_user: KlasaUser) => {
+		run: async () => {
 			const result: { wiped_room: number; count: number }[] =
 				await prisma.$queryRaw`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
 FROM activity
@@ -203,7 +210,7 @@ GROUP BY 1;`;
 	},
 	{
 		name: 'Global 200ms',
-		run: async (_user: KlasaUser) => {
+		run: async () => {
 			const result = (
 				await Promise.all(
 					Object.values(SkillsEnum).map(
@@ -231,7 +238,7 @@ WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name:
 FROM activity
 WHERE type = 'Farming'
 AND data->>'plantsName' IS NOT NULL
-AND user_id = ${user.id}
+AND user_id = ${BigInt(user.id)}
 GROUP BY data->>'plantsName'`;
 			result.sort((a, b) => b.qty - a.qty);
 			return barChart(
@@ -243,7 +250,7 @@ GROUP BY data->>'plantsName'`;
 	},
 	{
 		name: 'Global Farmed Crops',
-		run: async (_user: KlasaUser) => {
+		run: async () => {
 			const result: { plant: string; qty: number }[] =
 				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
 FROM activity

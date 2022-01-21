@@ -117,7 +117,7 @@ export default class extends Task {
 				} run!`
 			);
 
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 		}
 
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
@@ -130,7 +130,7 @@ export default class extends Task {
 			['tithefarm', [], true],
 			undefined,
 			data,
-			loot.length > 0 ? loot.bank : null
+			loot.length > 0 ? loot : null
 		);
 	}
 }

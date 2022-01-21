@@ -1,4 +1,5 @@
 import { command_usage_status, NewUser, Prisma } from '@prisma/client';
+import { captureException } from '@sentry/node';
 import { Guild, Util } from 'discord.js';
 import { Gateway, KlasaMessage, Settings } from 'klasa';
 
@@ -96,7 +97,7 @@ export function minionActivityCacheDelete(userID: string) {
 }
 
 export async function cancelTask(userID: string) {
-	await prisma.activity.deleteMany({ where: { user_id: userID, completed: false } });
+	await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
 	minionActivityCache.delete(userID);
 }
 
@@ -162,9 +163,11 @@ export async function runCommand(
 		message.client.emit('commandError', message, command, args, err);
 	} finally {
 		if (shouldTrackCommand(command, args)) {
-			await prisma.commandUsage.create({
-				data: commandUsage
-			});
+			await prisma.commandUsage
+				.create({
+					data: commandUsage
+				})
+				.catch(captureException);
 		}
 	}
 

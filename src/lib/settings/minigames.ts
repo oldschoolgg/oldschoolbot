@@ -137,6 +137,11 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'inferno'
 	},
 	{
+		name: 'Tears Of Guthix',
+		aliases: ['tog'],
+		column: 'tears_of_guthix'
+	},
+	{
 		name: 'Theatre of Blood',
 		aliases: ['tob', 'theatre of blood'],
 		column: 'tob'

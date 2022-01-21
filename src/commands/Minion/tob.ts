@@ -19,13 +19,14 @@ import {
 	TOBRooms
 } from '../../lib/data/tob';
 import { degradeItem } from '../../lib/degradeableItems';
+import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../lib/types/minions';
-import { calcDropRatesFromBank, formatDuration, randomVariation, toKMB, updateBankSetting } from '../../lib/util';
+import { calcDropRatesFromBank, formatDuration, toKMB, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { generateChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
@@ -76,7 +77,7 @@ export default class extends BotCommand {
 			});
 
 			let wins = 0;
-			const winRateSampleSize = 50;
+			const winRateSampleSize = 25;
 			for (let o = 0; o < winRateSampleSize; o++) {
 				const sim = createTOBTeam({
 					team: users.map(u => ({
@@ -243,9 +244,9 @@ export default class extends BotCommand {
 
 		if (isHardMode) {
 			const normalKC = await msg.author.getMinigameScore('tob');
-			if (normalKC < 200) {
+			if (normalKC < 250) {
 				return msg.channel.send(
-					'You need atleast 200 completions of the Theatre of Blood before you can attempt Hard Mode.'
+					'You need atleast 250 completions of the Theatre of Blood before you can attempt Hard Mode.'
 				);
 			}
 		}
@@ -269,7 +270,7 @@ export default class extends BotCommand {
 			customDenier: user => checkTOBUser(user, isHardMode)
 		};
 
-		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy);
+		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy).slice(0, maxSize);
 
 		const teamCheckFailure = await checkTOBTeam(users, isHardMode);
 		if (teamCheckFailure) {
@@ -298,18 +299,17 @@ export default class extends BotCommand {
 		await Promise.all(
 			users.map(async u => {
 				const supplies = await calcTOBInput(u);
+				const { total } = calculateTOBUserGearPercents(u);
 				const blowpipeData = u.settings.get(UserSettings.Blowpipe);
 				const { realCost } = await u.specialRemoveItems(
 					supplies
 						.clone()
 						.add('Coins', 100_000)
-						.add(
-							blowpipeData.dartID!,
-							Math.floor(Math.min(blowpipeData.dartQuantity, randomVariation(110, 10)))
-						)
+						.add(blowpipeData.dartID!, Math.floor(Math.min(blowpipeData.dartQuantity, 156)))
 						.add(u.getGear('range').ammo!.item, 100)
 				);
 				await updateBankSetting(u, UserSettings.TOBCost, realCost);
+				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
 				if (u.getGear('melee').hasEquipped('Abyssal tentacle')) {
 					await degradeItem({
 						item: getOSItem('Abyssal tentacle'),
@@ -317,8 +317,6 @@ export default class extends BotCommand {
 						chargesToDegrade: TENTACLE_CHARGES_PER_RAID
 					});
 				}
-				totalCost.add(realCost.clone().remove('Coins', realCost.amount('Coins')));
-				const { total } = calculateTOBUserGearPercents(u);
 				debugStr += `**- ${u.username}** (${Emoji.Gear}${total.toFixed(1)}% ${
 					Emoji.CombatSword
 				} ${calcWhatPercent(reductions[u.id], totalReduction).toFixed(1)}%) used ${realCost}\n\n`;
@@ -326,6 +324,12 @@ export default class extends BotCommand {
 		);
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.TOBCost, totalCost);
+		await trackLoot({
+			cost: totalCost,
+			id: isHardMode ? 'tob_hard' : 'tob',
+			type: 'Minigame',
+			changeType: 'cost'
+		});
 
 		await addSubTaskToActivityTask<TheatreOfBloodTaskOptions>({
 			userID: msg.author.id,
@@ -373,7 +377,11 @@ export default class extends BotCommand {
 **Mage:** <:Kodai_insignia:403018312264712193> ${gear.mage.toFixed(1)}%
 **Total Gear Score:** ${Emoji.Gear} ${gear.total.toFixed(1)}%\n
 **Death Chances:** ${deathChances.deathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
+**Wipe Chances:** ${deathChances.wipeDeathChances.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`).join(', ')}
 **Hard Mode Death Chances:** ${hardDeathChances.deathChances
+			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
+			.join(', ')}
+**Hard Mode Wipe Chances:** ${hardDeathChances.wipeDeathChances
 			.map(i => `${i.name} ${i.deathChance.toFixed(2)}%`)
 			.join(', ')}`);
 	}

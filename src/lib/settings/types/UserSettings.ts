@@ -32,6 +32,7 @@ export namespace UserSettings {
 	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
 	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
+	export const LastTearsOfGuthixTimestamp = T<number>('lastTearsOfGuthixTimestamp');
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
 	export const Badges = T<readonly number[]>('badges');
@@ -179,4 +180,7 @@ export namespace UserSettings {
 		export const Mushroom = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Mushroom}`);
 		export const Belladonna = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Belladonna}`);
 	}
+
+	export const GPLuckyPick = T<number>('gp_luckypick');
+	export const GPDice = T<number>('gp_dice');
 }

@@ -93,7 +93,7 @@ export default class extends BotCommand {
 		);
 
 		await msg.author.removeItemsFromBank(new Bank().add(superCompostableCrop, quantity));
-		await msg.author.addItemsToBank(new Bank().add('Supercompost', quantity));
+		await msg.author.addItemsToBank({ items: new Bank().add('Supercompost', quantity) });
 
 		return msg.channel.send(`You've composted ${cost} and received ${quantity}x Supercompost in return.`);
 	}
