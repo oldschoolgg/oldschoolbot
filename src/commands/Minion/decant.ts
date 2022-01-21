@@ -50,7 +50,7 @@ export default class extends BotCommand {
 		);
 	}
 
-	async all(msg: KlasaMessage, [dose = 4]: [1 | 2 | 3 | 4]) {
+		async all(msg: KlasaMessage, [dose = 4]: [1 | 2 | 3 | 4]) {
 		await msg.author.settings.sync(true);
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const potsAdd = [];
@@ -64,7 +64,7 @@ export default class extends BotCommand {
 					dose
 				);
 				await msg.author.removeItemsFromBank(potionsToRemove);
-				await msg.author.addItemsToBank(potionsToAdd);
+				await msg.author.addItemsToBank({ items: potionsToAdd });
 				potsAdd.push(` ${potionsToAdd}`);
 				potsRemove.push(` ${sumOfPots.toLocaleString()}x ${potionName}${sumOfPots > 0 ? 's' : ' '}`);
 			}
@@ -74,7 +74,7 @@ export default class extends BotCommand {
 			msg.author.hasItemEquippedAnywhere(['Iron dagger', 'Bronze arrow'], true) &&
 			!msg.author.hasItemEquippedOrInBank('Clue hunter gloves')
 		) {
-			await msg.author.addItemsToBank(new Bank({ 'Clue hunter gloves': 1 }), true);
+			await msg.author.addItemsToBank({ items: new Bank({ 'Clue hunter gloves': 1 }), collectionLog: true });
 			msg.channel.send(
 				'\n\nWhile decanting some potions, you find a pair of gloves on the floor and pick them up.'
 			);
