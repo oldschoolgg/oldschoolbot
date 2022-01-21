@@ -4,6 +4,14 @@ storing slash commands in command_usage, maybe distinguish them
 
 
 
+Commands are run in 3 ways:
+commandHandler (normal commands)
+runCommand fn (For continuing mostly)
+slash commands
+
+let users see their own command usage for testing
+
+
 logging commands/const shard = message.guild ? message.guild.shardID : 0;
 		this.client.emit(
 			'log',

@@ -13,26 +13,26 @@ import { formatDuration } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { Cooldowns } from './Cooldowns';
 
-interface AbstractCommandAttributes {
-	altProtection: boolean;
-	oneAtTime: boolean;
-	guildOnly: boolean;
+export interface AbstractCommandAttributes {
+	altProtection?: boolean;
+	oneAtTime?: boolean;
+	guildOnly?: boolean;
 	perkTier?: PerkTier;
 	ironCantUse?: boolean;
-	examples: string[];
-	categoryFlags: CategoryFlag[];
+	examples?: string[];
+	categoryFlags?: CategoryFlag[];
 	bitfieldsRequired?: BitField[];
 	enabled?: boolean;
 	testingCommand?: boolean;
 	cooldown?: number;
-	requiredPermissionsForBot: PermissionResolvable[];
-	requiredPermissionsForUser: PermissionResolvable[];
-	runIn: string[];
+	requiredPermissionsForBot?: PermissionResolvable[];
+	requiredPermissionsForUser?: PermissionResolvable[];
+	runIn?: string[];
 }
 
 export interface AbstractCommand {
 	name: string;
-	attributes: AbstractCommandAttributes;
+	attributes?: AbstractCommandAttributes;
 }
 
 interface Inhibitor {
@@ -58,7 +58,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'altProtection',
 		run: async ({ user, command }) => {
-			if (!command.attributes.altProtection) return false;
+			if (!command.attributes?.altProtection) return false;
 			if (getUsersPerkTier(user) >= PerkTier.Four) return false;
 
 			if (
@@ -74,7 +74,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'bitfieldsRequired',
 		run: async ({ user, command }) => {
-			if (!command.attributes.bitfieldsRequired) return false;
+			if (!command.attributes?.bitfieldsRequired) return false;
 
 			const usersBitfields = user.settings.get(UserSettings.BitField);
 			if (command.attributes.bitfieldsRequired.some(bit => !usersBitfields.includes(bit))) {
@@ -87,14 +87,14 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'oneAtTime',
 		run: async ({ user, command }) => {
-			if (!command.attributes.oneAtTime) return false;
+			if (!command.attributes?.oneAtTime) return false;
 			return user.isBusy;
 		}
 	},
 	{
 		name: 'ironCantUse',
 		run: async ({ user, command }) => {
-			if (command.attributes.ironCantUse && user.settings.get(UserSettings.Minion.Ironman)) {
+			if (command.attributes?.ironCantUse && user.settings.get(UserSettings.Minion.Ironman)) {
 				return "Ironman players can't use this command.";
 			}
 			return false;
@@ -103,7 +103,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'disabled',
 		run: async ({ command, guild }) => {
-			if (!command.attributes.enabled) return 'This command is globally disabled.';
+			if (command.attributes?.enabled === false) return 'This command is globally disabled.';
 			if (!guild) return false;
 			const settings = await getGuildSettings(guild);
 			if (settings.get(GuildSettings.DisabledCommands).includes(command.name)) {
@@ -130,7 +130,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'guildOnly',
 		run: async ({ command, guild }) => {
-			if (!command.attributes.guildOnly) return false;
+			if (!command.attributes?.guildOnly) return false;
 			return !guild;
 		}
 	},
@@ -167,7 +167,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'perkTierCommands',
 		run: async ({ command, user, channel }) => {
-			if (!command.attributes.perkTier) return false;
+			if (!command.attributes?.perkTier) return false;
 
 			if (getUsersPerkTier(user) < command.attributes.perkTier) {
 				await channel.send(
@@ -186,7 +186,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'testingCommands',
 		run: async ({ command }) => {
-			if (command.attributes.testingCommand) {
+			if (command.attributes?.testingCommand) {
 				if (production || !client.user || client.user.id === BotID) {
 					return true;
 				}
@@ -197,7 +197,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'cooldown',
 		run: async ({ user, command }) => {
-			if (client.owners.has(user) || !command.attributes.cooldown) return false;
+			if (client.owners.has(user) || !command.attributes?.cooldown) return false;
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis)}`;
@@ -208,7 +208,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'missingBotPermissions',
 		run: async ({ command, channel }) => {
-			if (!command.attributes.requiredPermissionsForBot) return false;
+			if (!command.attributes?.requiredPermissionsForBot) return false;
 			const missing =
 				channel.type === 'text'
 					? channel.permissionsFor(client.user!)!.missing(command.attributes.requiredPermissionsForBot)
@@ -222,7 +222,7 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'missingUserPermissions',
 		run: async ({ command, channel, user }) => {
-			if (!command.attributes.requiredPermissionsForUser) return false;
+			if (!command.attributes?.requiredPermissionsForUser) return false;
 			const missing =
 				channel.type === 'text'
 					? channel.permissionsFor(user)!.missing(command.attributes.requiredPermissionsForUser)
@@ -238,8 +238,8 @@ const inhibitors: Inhibitor[] = [
 	{
 		name: 'runIn',
 		run: async ({ command, channel }) => {
-			if (!command.attributes.runIn.length) return false;
-			if (!command.attributes.runIn.includes(channel.type)) return true;
+			if (!command.attributes?.runIn?.length) return false;
+			if (!command.attributes?.runIn?.includes(channel.type)) return true;
 			return false;
 		}
 	}

@@ -1,13 +1,14 @@
 import { TextChannel } from 'discord.js';
-import { ApplicationCommandOptionType, CommandRunOptions, ICommand } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { toKMB, truncateString, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { OSBMahojiCommand } from '../lib/util';
 import { filterOption, handleMahojiConfirmation, searchOption } from '../mahojiSettings';
 
-export const sellCommand: ICommand = {
+export const sellCommand: OSBMahojiCommand = {
 	name: 'sell',
 	description: 'Sell an item from your bank',
 	options: [

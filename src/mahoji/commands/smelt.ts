@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, ICommand } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
@@ -9,8 +9,9 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { OSBMahojiCommand } from '../lib/util';
 
-export const smeltingCommand: ICommand = {
+export const smeltingCommand: OSBMahojiCommand = {
 	name: 'smelt',
 	description: 'Smelt ores/items.',
 	options: [

@@ -9,6 +9,8 @@ import { join } from 'path';
 import { botToken, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
+import { postCommand } from './mahoji/lib/postCommand';
+import { preCommand } from './mahoji/lib/preCommand';
 import { handleMahojiInteractionResponse } from './mahoji/mahojiSettings';
 
 Chart.register(ChartDataLabels);
@@ -23,7 +25,11 @@ export const mahojiClient = new MahojiClient({
 	discordToken: botToken,
 	developmentServerID: '342983479501389826',
 	applicationID: '829398443821891634',
-	storeDirs: [join('dist', 'mahoji')]
+	storeDirs: [join('dist', 'mahoji')],
+	handlers: {
+		preCommand,
+		postCommand
+	}
 });
 
 export const client = new OldSchoolBotClient(clientOptions);

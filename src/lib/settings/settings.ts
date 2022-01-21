@@ -1,12 +1,13 @@
-import { command_usage_status, NewUser, Prisma } from '@prisma/client';
+import { command_usage_status, NewUser } from '@prisma/client';
 import { captureException } from '@sentry/node';
 import { Guild, Util } from 'discord.js';
 import { Gateway, KlasaMessage, Settings } from 'klasa';
 
 import { client, mahojiClient } from '../..';
-import { Emoji, getCommandArgs, shouldTrackCommand } from '../constants';
+import { Emoji, shouldTrackCommand } from '../constants';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, convertAPIEmbedToDJSEmbed, convertComponentDJSComponent, isGroupActivity } from '../util';
+import { makeCommandUsage } from '../util/commandUsage';
 import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
@@ -110,12 +111,6 @@ export async function syncActivityCache() {
 	}
 }
 
-export function settingsUpdate(type: Prisma.ModelName, id: string, newData: any) {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	return prisma[type].update({ where: { id }, data: newData });
-}
-
 export async function runMahojiCommand({
 	msg,
 	commandName,
@@ -184,27 +179,15 @@ export async function runCommand(
 		throw new Error(`The ${command.name} command is disabled.`);
 	}
 
-	let commandUsage: {
-		date: Date;
-		user_id: string;
-		command_name: string;
-		status: command_usage_status;
-		args: null | any;
-		channel_id: string;
-		is_continue: boolean;
-		guild_id: string | null;
-		flags: Prisma.InputJsonObject | undefined;
-	} | null = {
-		date: message.createdAt,
-		user_id: message.author.id,
-		command_name: command.name,
-		status: command_usage_status.Unknown,
-		args: getCommandArgs(command, args),
-		channel_id: message.channel.id,
-		is_continue: isContinue,
-		guild_id: message.guild?.id ?? null,
-		flags: Object.keys(message.flagArgs).length > 0 ? message.flagArgs : undefined
-	};
+	let commandUsage = makeCommandUsage({
+		userID: message.author.id,
+		channelID: message.channel.id,
+		guildID: message.guild?.id ?? null,
+		flags: message.flagArgs,
+		commandName: command.name,
+		args: message.args,
+		isContinue
+	});
 
 	try {
 		// @ts-ignore Cant be typechecked

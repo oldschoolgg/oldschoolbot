@@ -3,12 +3,13 @@ import { captureException } from '@sentry/node';
 import { Permissions, TextChannel } from 'discord.js';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { getCommandArgs, shouldTrackCommand } from '../lib/constants';
+import { shouldTrackCommand } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
 import { getGuildSettings } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import { floatPromise } from '../lib/util';
+import { makeCommandUsage } from '../lib/util/commandUsage';
 import { runInhibitors } from '../mahoji/lib/inhibitors';
 import { convertKlasaCommandToAbstractCommand } from '../mahoji/lib/util';
 
@@ -85,26 +86,14 @@ export default class extends Monitor {
 
 		const timer = new Stopwatch();
 
-		let commandUsage: {
-			date: Date;
-			user_id: string;
-			command_name: string;
-			status: command_usage_status;
-			args: null | any;
-			channel_id: string;
-			guild_id: string | null;
-			flags: Prisma.InputJsonObject | undefined;
-		} | null = {
-			date: message.createdAt,
-			user_id: message.author.id,
-			command_name: command.name,
-			status: command_usage_status.Unknown,
-			args: getCommandArgs(command, message.args),
-			channel_id: message.channel.id,
-			guild_id: message.guild?.id ?? null,
-			flags: Object.keys(message.flagArgs).length > 0 ? message.flagArgs : undefined
-		};
-
+		let commandUsage: Prisma.CommandUsageCreateInput | null = makeCommandUsage({
+			userID: message.author.id,
+			channelID: message.channel.id,
+			guildID: message.guild?.id ?? null,
+			flags: message.flagArgs,
+			commandName: command.name,
+			args: message.args
+		});
 		let response: KlasaMessage | null = null;
 
 		try {
