@@ -39,7 +39,6 @@ export default class extends BotCommand {
 			);
 		}
 		const gearTypeSetting = resolveGearTypeSetting(gearType);
-		let itemToBank = new Bank();
 		const userBank = msg.author.settings.get(UserSettings.Bank);
 		const itemToEquip = itemArray.find(i => userBank[i.id] >= quantity && i.equipable_by_player && i.equipment);
 
@@ -87,7 +86,7 @@ export default class extends BotCommand {
 				);
 				// if you have a weapon, set the slot to null and add the last equipped item to bank array
 				newGear[EquipmentSlot.Weapon] = null;
-				itemToBank.add(currWep.item, currWep.quantity);
+				await msg.author.addItemsToBank({ items: { [currWep.item]: currWep.quantity } });
 			}
 
 			const currShield = currentEquippedGear[EquipmentSlot.Shield];
@@ -99,11 +98,10 @@ export default class extends BotCommand {
 					}`
 				);
 				// if you have a shield, set the slot to null and add the last equipped item to bank array
-				itemToBank.add(currShield.item, currShield.quantity);
+				await msg.author.addItemsToBank({ items: { [currShield.item]: currShield.quantity } });
 			}
 			// Update gear and add both weapon and shield to bank, dont add it to respective CL
 			await msg.author.settings.update(gearTypeSetting, newGear);
-			await msg.author.addItemsToBank(itemToBank.bank, false);
 
 			currentEquippedGear = newGear;
 		}
@@ -119,7 +117,7 @@ export default class extends BotCommand {
 			const newGear = { ...currentEquippedGear };
 			newGear[EquipmentSlot.TwoHanded] = null;
 			await msg.author.settings.update(gearTypeSetting, newGear);
-			await msg.author.addItemsToBank({ [curr2h.item]: curr2h.quantity });
+			await msg.author.addItemsToBank({ items: { [curr2h.item]: curr2h.quantity } });
 			currentEquippedGear = newGear;
 		}
 
