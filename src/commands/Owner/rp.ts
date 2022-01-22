@@ -119,6 +119,8 @@ export default class extends BotCommand {
 					u = msg.author;
 				}
 				if (!(u instanceof KlasaUser)) return;
+				await u.settings.sync(true);
+
 				const bitfields = `${u.settings
 					.get(UserSettings.BitField)
 					.map(i => BitFieldData[i])
