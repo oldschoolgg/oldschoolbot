@@ -11,6 +11,7 @@ import { clientOptions } from './lib/config';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
+import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
 import { handleMahojiInteractionResponse } from './mahoji/mahojiSettings';
 
 Chart.register(ChartDataLabels);
@@ -27,8 +28,25 @@ export const mahojiClient = new MahojiClient({
 	applicationID: '829398443821891634',
 	storeDirs: [join('dist', 'mahoji')],
 	handlers: {
-		preCommand,
-		postCommand
+		preCommand: ({ command, interaction }) =>
+			preCommand({
+				abstractCommand: convertMahojiCommandToAbstractCommand(command),
+				userID: interaction.userID.toString(),
+				guildID: interaction.guildID.toString(),
+				channelID: interaction.channelID.toString()
+			}),
+		postCommand: ({ command, interaction, error, response, inhibited }) =>
+			postCommand({
+				abstractCommand: convertMahojiCommandToAbstractCommand(command),
+				userID: interaction.userID.toString(),
+				guildID: interaction.guildID.toString(),
+				channelID: interaction.channelID.toString(),
+				args: interaction.options,
+				error,
+				response,
+				msg: null,
+				inhibited
+			})
 	}
 });
 

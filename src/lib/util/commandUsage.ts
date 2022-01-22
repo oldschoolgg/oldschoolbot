@@ -15,10 +15,10 @@ export function makeCommandUsage({
 	userID: string;
 	channelID: string;
 	guildID: string | null;
-	flags?: Record<string, string>;
+	flags: null | Record<string, string>;
 	commandName: string;
 	args: CommandOptions | string[];
-	isContinue?: boolean;
+	isContinue: null | boolean;
 }): Prisma.CommandUsageCreateInput {
 	return {
 		date: new Date(),

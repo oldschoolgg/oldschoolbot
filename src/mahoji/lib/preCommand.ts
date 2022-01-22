@@ -1,26 +1,32 @@
 import { TextChannel } from 'discord.js';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
 import { client } from '../..';
-import { runInhibitors } from './inhibitors';
-import { convertMahojiCommandToAbstractCommand, OSBMahojiCommand } from './util';
+import { AbstractCommand, runInhibitors } from './inhibitors';
 
 export async function preCommand({
-	command,
-	interaction
+	abstractCommand,
+	userID,
+	guildID,
+	channelID
 }: {
-	command: OSBMahojiCommand;
-	interaction: SlashCommandInteraction;
+	abstractCommand: AbstractCommand;
+	userID: string;
+	guildID: string | null;
+	channelID: string;
 }): Promise<string | undefined> {
-	const user = await client.fetchUser(interaction.userID.toString());
-	const guild = client.guilds.cache.get(interaction.guildID.toString());
-	const member = guild?.members.cache.get(interaction.userID.toString());
-	const channel = client.channels.cache.get(interaction.channelID.toString()) as TextChannel;
+	if (abstractCommand.attributes?.oneAtTime) {
+		client.oneCommandAtATimeCache.add(userID);
+	}
+
+	const user = await client.fetchUser(userID);
+	const guild = guildID ? client.guilds.cache.get(guildID) : null;
+	const member = guild?.members.cache.get(userID);
+	const channel = client.channels.cache.get(channelID) as TextChannel;
 	const inhibitResult = await runInhibitors({
 		user,
 		guild: guild ?? null,
 		member: member ?? null,
-		command: convertMahojiCommandToAbstractCommand(command),
+		command: abstractCommand,
 		channel: channel ?? null
 	});
 	if (typeof inhibitResult === 'string') {

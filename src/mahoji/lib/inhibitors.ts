@@ -56,6 +56,16 @@ const inhibitors: Inhibitor[] = [
 		}
 	},
 	{
+		name: 'bots',
+		run: async ({ user }) => {
+			if (!user.bot) return false;
+			return ![
+				'798308589373489172', // BIRDIE#1963
+				'902745429685469264' // Randy#0008
+			].includes(user.id);
+		}
+	},
+	{
 		name: 'altProtection',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.altProtection) return false;
