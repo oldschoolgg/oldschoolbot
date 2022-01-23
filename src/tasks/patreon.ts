@@ -296,7 +296,7 @@ export default class PatreonTask extends Task {
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {
 		const users: Patron[] = [];
-		const result: any = await fetch(url || patreonApiURL, {
+		const result: any = await fetch(url ?? patreonApiURL.toString(), {
 			headers: { Authorization: `Bearer ${patreonConfig!.token}` }
 		}).then(res => res.json());
 

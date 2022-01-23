@@ -229,7 +229,7 @@ ${
 				searchURL.search = new URLSearchParams([
 					['q', ['repo:oldschoolgg/oldschoolbot', 'is:issue', 'is:open', query].join(' ')]
 				]).toString();
-				const { items } = await fetch(searchURL).then(res => res.json());
+				const { items } = (await fetch(searchURL.toString()).then(res => res.json())) as Record<string, any>;
 				if (items.length === 0) return msg.channel.send('No results found.');
 				return msg.channel.send({
 					embeds: [
@@ -410,9 +410,9 @@ ${
 			case 'setgh': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				if (!str || typeof str !== 'string') return;
-				const res = await fetch(`https://api.github.com/users/${encodeURIComponent(str)}`)
+				const res = (await fetch(`https://api.github.com/users/${encodeURIComponent(str)}`)
 					.then(res => res.json())
-					.catch(() => null);
+					.catch(() => null)) as Record<string, string> | null;
 				if (!res || !res.id) {
 					return msg.channel.send('Could not find user in github API. Is the username written properly?');
 				}
