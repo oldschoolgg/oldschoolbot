@@ -13,6 +13,8 @@ import { formatDuration } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { Cooldowns } from './Cooldowns';
 
+export type CommandArgs = (string | number | boolean | unknown)[] | Record<string, unknown>;
+
 export interface AbstractCommandAttributes {
 	altProtection?: boolean;
 	oneAtTime?: boolean;

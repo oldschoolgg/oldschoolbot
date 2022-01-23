@@ -4,6 +4,7 @@ import { Guild, Util } from 'discord.js';
 import { Gateway, KlasaMessage, Settings } from 'klasa';
 
 import { client, mahojiClient } from '../..';
+import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { Emoji, shouldTrackCommand } from '../constants';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, convertAPIEmbedToDJSEmbed, convertComponentDJSComponent, isGroupActivity } from '../util';
@@ -138,7 +139,7 @@ export async function runMahojiCommand({
 export async function runCommand(
 	message: KlasaMessage,
 	commandName: string,
-	args: unknown[] | Record<string, unknown>,
+	args: CommandArgs,
 	isContinue = false,
 	method = 'run'
 ) {

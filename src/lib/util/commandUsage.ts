@@ -29,6 +29,6 @@ export function makeCommandUsage({
 		channel_id: channelID,
 		guild_id: guildID,
 		flags: flags ? (Object.keys(flags).length > 0 ? flags : undefined) : undefined,
-		is_continue: isContinue
+		is_continue: isContinue ?? undefined
 	};
 }
