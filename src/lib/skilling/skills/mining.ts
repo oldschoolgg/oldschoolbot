@@ -148,6 +148,26 @@ const ores: Ore[] = [
 		petChance: 50_000,
 		minerals: 20,
 		clueScrollChance: 46_350
+	},
+	{
+		level: 92,
+		xp: 240,
+		id: 21_347,
+		name: 'Amethyst',
+		respawnTime: 40,
+		petChance: 50_000,
+		minerals: 20,
+		clueScrollChance: 46_350
+	},
+	{
+		level: 99,
+		xp: 275,
+		id: 21_347,
+		name: 'Dark Animica',
+		respawnTime: 35,
+		petChance: 50_000,
+		minerals: 20,
+		clueScrollChance: 46_350
 	}
 ];
 
