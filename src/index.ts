@@ -3,7 +3,7 @@ import './lib/data/itemAliases';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { APIInteraction, GatewayDispatchEvents, MahojiClient } from 'mahoji';
+import { APIInteraction, GatewayDispatchEvents, InteractionType, MahojiClient } from 'mahoji';
 import { join } from 'path';
 
 import { botToken, SENTRY_DSN } from './config';
@@ -12,7 +12,6 @@ import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
-import { handleMahojiInteractionResponse } from './mahoji/mahojiSettings';
 
 Chart.register(ChartDataLabels);
 
@@ -55,8 +54,9 @@ client.on('raw', async event => {
 	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
 	const data = event.d as APIInteraction;
 	const result = await mahojiClient.parseInteraction(data);
-	if (result) {
-		handleMahojiInteractionResponse(result);
+	if (result !== null && result.type === InteractionType.ApplicationCommand) {
+		result.interaction;
+		result.interaction.respond(result.response);
 	}
 });
 client.on('ready', client.init);

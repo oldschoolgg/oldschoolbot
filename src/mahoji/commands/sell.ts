@@ -11,6 +11,9 @@ import { filterOption, handleMahojiConfirmation, searchOption } from '../mahojiS
 export const sellCommand: OSBMahojiCommand = {
 	name: 'sell',
 	description: 'Sell an item from your bank',
+	attributes: {
+		ironCantUse: true
+	},
 	options: [
 		{
 			type: ApplicationCommandOptionType.String,

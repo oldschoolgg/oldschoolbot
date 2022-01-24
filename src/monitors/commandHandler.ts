@@ -77,12 +77,12 @@ export default class extends Monitor {
 
 		try {
 			// @ts-ignore 2341
-			await message.prompter!.run();
+			await msg.prompter!.run();
 			const subcommand = command.subcommands ? params.shift() : undefined;
 
 			const commandRun = subcommand
 				? // @ts-ignore 7053
-				  command[subcommand](message, params)
+				  command[subcommand](msg, params)
 				: command.run(msg, params);
 			timer.stop();
 			response = await commandRun;

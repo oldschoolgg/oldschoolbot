@@ -69,7 +69,17 @@ ${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
 	return msg.channel.send(str);
 }
 
-async function unsafeEval({ code, flags }: { code: string; flags: Record<string, string> }): Promise<MessageOptions> {
+async function unsafeEval({
+	code,
+	flags,
+	// @ts-ignore Makes it accessible in eval
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	msg
+}: {
+	code: string;
+	flags: Record<string, string>;
+	msg: KlasaMessage;
+}): Promise<MessageOptions> {
 	code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 	const stopwatch = new Stopwatch();
 	let syncTime = '?';
@@ -132,7 +142,7 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 		if (!client.owners.has(msg.author)) {
 			return "You don't have permission to use this command.";
 		}
-		const res = await unsafeEval({ code, flags: msg.flagArgs });
+		const res = await unsafeEval({ code, flags: msg.flagArgs, msg });
 		if (res === undefined) return;
 
 		if ('silent' in msg.flagArgs) return null;
