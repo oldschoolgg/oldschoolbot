@@ -3141,7 +3141,7 @@ setCustomItem(70_007, 'Dark Crystal', 'Onyx', {
 		cantDropFromMysteryBoxes: true,
 		isSuperUntradeable: true
 	  }, 50_000_000);
-setCustomItem(70_008, 'Void Staff (U)', 'Battlestaff', {customItemData: {
+setCustomItem(70_008, 'Void Staff (u)', 'Battlestaff', {customItemData: {
 	cantDropFromMysteryBoxes: true,
 	isSuperUntradeable: true
   },
