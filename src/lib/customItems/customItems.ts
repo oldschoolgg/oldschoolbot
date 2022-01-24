@@ -3129,3 +3129,170 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(70_001, 'Grimy Korulsi', 'Magic seed', {}, 500_000);
+setCustomItem(70_002, 'Korulsi', 'Magic seed', {}, 500_000);
+setCustomItem(70_003, 'Enhanced Saradomin Brew', 'Vial of Water', {}, 10_000);
+setCustomItem(70_004, 'Enhanced Super Restore', 'Vial of Water', {}, 10_000);
+setCustomItem(70_005, 'Enhanced Stamina Potion', 'Vial of Water', {}, 10_000);
+setCustomItem(70_006, 'Enhanced Divine Water', 'Vial of Water', {}, 10_000);
+setCustomItem(70_007, 'Dark Crystal', 'Onyx', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	  }, 50_000_000);
+setCustomItem(70_008, 'Void Staff (U)', 'Battlestaff', {customItemData: {
+	cantDropFromMysteryBoxes: true,
+	isSuperUntradeable: true
+  },
+  equipable: false}, 50_000_000);
+setCustomItem(70_009, 'Void Staff', 'Battlestaff', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	  },
+	equipment: {
+	  attack_stab: 0,
+	  attack_slash: 0,
+	  attack_crush: 0,
+	  attack_magic: 250,
+	  attack_ranged: 0,
+  
+	  defence_stab: 0,
+	  defence_slash: 0,
+	  defence_crush: 0,
+	  defence_magic: 50,
+	  defence_ranged: 0,
+  
+	  melee_strength: 0,
+	  ranged_strength: 0,
+	  magic_damage: 17.5,
+	  prayer: 0,
+	  slot: EquipmentSlot.Hands,
+	  requirements: {magic: 90}
+	},
+	highalch: 50_000_000
+  }, 50_000_000);
+setCustomItem(70_010, 'Dark Animica', 'Runite Ore', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: false
+	  }, 25_000);
+setCustomItem(70_011, 'Tattered Tome', 'Magic Seed', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	  }, 25_000_000);
+setCustomItem(70_012, 'Abyssal Tome', 'Book of law', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	  },
+	equipment: {
+	  attack_stab: 0,
+	  attack_slash: 0,
+	  attack_crush: 0,
+	  attack_magic: 45,
+	  attack_ranged: 0,
+  
+	  defence_stab: 0,
+	  defence_slash: 0,
+	  defence_crush: 0,
+	  defence_magic: 35,
+	  defence_ranged: 0,
+  
+	  melee_strength: 0,
+	  ranged_strength: 0,
+	  magic_damage: 2.5,
+	  prayer: 0,
+	  slot: EquipmentSlot.Shield,
+	  requirements: {magic: 90}
+	},
+	highalch: 50_000_000
+  }, 50_000_000);
+setCustomItem(70_013, 'Abyssal Gem', 'Zenyte', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	  },, 10_000_000);
+setCustomItem(70_014, 'Abyssal Amulet', 'Amulet of Torture', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	  },
+	equipment: {
+	  attack_stab: 0,
+	  attack_slash: 0,
+	  attack_crush: 0,
+	  attack_magic: 0,
+	  attack_ranged: 0,
+  
+	  defence_stab: 0,
+	  defence_slash: 0,
+	  defence_crush: 0,
+	  defence_magic: 0,
+	  defence_ranged: 0,
+  
+	  melee_strength: 0,
+	  ranged_strength: 0,
+	  magic_damage: 0,
+	  prayer: 0,
+	  slot: EquipmentSlot.Necklace,
+	  requirements: null
+	},
+	highalch: 10_000_000
+  }, 10_000_000);
+setCustomItem(70_015, 'Spellbound Ring', 'Seers Ring', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	  },
+	equipment: {
+	  attack_stab: 0,
+	  attack_slash: 0,
+	  attack_crush: 0,
+	  attack_magic: 20,
+	  attack_ranged: 0,
+  
+	  defence_stab: 0,
+	  defence_slash: 0,
+	  defence_crush: 0,
+	  defence_magic: 20,
+	  defence_ranged: 0,
+  
+	  melee_strength: 0,
+	  ranged_strength: 0,
+	  magic_damage: 0,
+	  prayer: 0,
+	  slot: EquipmentSlot.Ring,
+	  requirements: {magic: 90}
+	},
+	highalch: 10_000_000
+  }, 10_000_000);
+setCustomItem(70_016, 'Spellbound Ring (i)', 'Seers Ring', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true,
+		isSuperUntradeable: true
+	  },
+	equipment: {
+	  attack_stab: 0,
+	  attack_slash: 0,
+	  attack_crush: 0,
+	  attack_magic: 25,
+	  attack_ranged: 0,
+  
+	  defence_stab: 0,
+	  defence_slash: 0,
+	  defence_crush: 0,
+	  defence_magic: 25,
+	  defence_ranged: 0,
+  
+	  melee_strength: 0,
+	  ranged_strength: 0,
+	  magic_damage: 0,
+	  prayer: 0,
+	  slot: EquipmentSlot.Ring,
+	  requirements: {magic: 90}
+	},
+	highalch: 10_000_000
+  }, 10_000_000);

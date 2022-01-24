@@ -156,7 +156,18 @@ const Grimy: Mixable[] = [
 		tickRate: 0.5,
 		bankTimePerPotion: 0.15,
 		zahur: true
-	}
+	},
+	{
+		name: 'Korulsi',
+		aliases: ['grimy korulsi'],
+		id: itemID('Korulsi'),
+		level: 110,
+		xp: 25,
+		inputItems: resolveNameBank({ 'Grimy korulsi': 1 }),
+		tickRate: 0.5,
+		bankTimePerPotion: 0.15,
+		zahur: true
+	},
 ];
 
 export default Grimy;
