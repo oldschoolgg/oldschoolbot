@@ -52,8 +52,8 @@ function itemSearch(msg: KlasaMessage, name: string) {
 ${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
 				item.tradeable_on_ge ? 'GE_Tradeable' : 'Not_GE_Tradeable'
 			} ${item.tradeable ? 'Tradeable' : 'Not_Tradeable'} ${item.incomplete ? 'Incomplete' : 'Not_Incomplete'} ${
-				item.duplicate ? 'Duplicate' : 'Not_Duplicate'
-			}${gettedItem!.id === item.id ? '**' : ''} <${item.wiki_url}>`
+				gettedItem!.id === item.id ? '**' : ''
+			} <${item.wiki_url}>`
 		)
 		.join('\n')}`;
 
