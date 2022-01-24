@@ -44,6 +44,20 @@ const killableMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
+		id: Monsters.Goat.id,
+		name: Monsters.Goat.name,
+		aliases: Monsters.Goat.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.Goat,
+		wildy: false,
+		difficultyRating: 1,
+		qpRequired: 0,
+		respawnTime: Time.Second * 30,
+		healAmountNeeded: 8,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
 		id: Monsters.TzHaarXil.id,
 		name: Monsters.TzHaarXil.name,
 		aliases: Monsters.TzHaarXil.aliases,
