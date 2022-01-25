@@ -3168,7 +3168,7 @@ setCustomItem(70_009, 'Void Staff', 'Battlestaff', {
 	  ranged_strength: 0,
 	  magic_damage: 17.5,
 	  prayer: 0,
-	  slot: EquipmentSlot.Hands,
+	  slot: EquipmentSlot.Weapon,
 	  requirements: {magic: 90}
 	},
 	highalch: 50_000_000
