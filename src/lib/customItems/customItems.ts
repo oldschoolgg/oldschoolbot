@@ -3289,7 +3289,7 @@ setCustomItem(
 			ranged_strength: 0,
 			magic_damage: 0,
 			prayer: 0,
-			slot: EquipmentSlot.Necklace,
+			slot: EquipmentSlot.Neck,
 			requirements: null
 		},
 		highalch: 10_000_000
