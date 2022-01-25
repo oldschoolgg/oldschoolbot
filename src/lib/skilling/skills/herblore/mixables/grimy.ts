@@ -167,7 +167,7 @@ const Grimy: Mixable[] = [
 		tickRate: 0.5,
 		bankTimePerPotion: 0.15,
 		zahur: true
-	},
+	}
 ];
 
 export default Grimy;

@@ -744,39 +744,37 @@ const bsoItems: Createable[] = [
 		}
 	},
 	{
-        name: 'Void Staff (u)',
-        inputItems: resolveNameBank({
-            'Kodai Wand': 1,
-            'Virtus Wand': 1,
-            'Dark Crystal': 1,
-            'Dark Animica': 75
-        }),
-        outputItems: resolveNameBank({
-            'Void Staff (u)': 1
-        })
+		name: 'Void Staff (u)',
+		inputItems: resolveNameBank({
+			'Kodai Wand': 1,
+			'Virtus Wand': 1,
+			'Dark Crystal': 1,
+			'Dark Animica': 75
+		}),
+		outputItems: resolveNameBank({
+			'Void Staff (u)': 1
+		})
 	},
 	{
-        name: 'Abyssal Tome',
-        inputItems: resolveNameBank({
-            'Tattered Tome': 1,
-            'Virtus Book': 1,
-        }),
-        outputItems: resolveNameBank({
-            'Abyssal Tome': 1
-        })
+		name: 'Abyssal Tome',
+		inputItems: resolveNameBank({
+			'Tattered Tome': 1,
+			'Virtus Book': 1
+		}),
+		outputItems: resolveNameBank({
+			'Abyssal Tome': 1
+		})
 	},
 	{
-        name: 'Spellbound Ring (i)',
-        inputItems: resolveNameBank({
-            'Spellbound Ring': 1,
-            'Magus Scroll': 1,
-        }),
-        outputItems: resolveNameBank({
-            'Spellbound Ring (i)': 1
-        })
+		name: 'Spellbound Ring (i)',
+		inputItems: resolveNameBank({
+			'Spellbound Ring': 1,
+			'Magus Scroll': 1
+		}),
+		outputItems: resolveNameBank({
+			'Spellbound Ring (i)': 1
+		})
 	}
-	
-	
 ];
 
 const ganodermic: Createable[] = [
