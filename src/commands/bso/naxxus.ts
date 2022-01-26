@@ -7,9 +7,9 @@ import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-// import { NaxxusActivityTaskOptions } from '../../lib/types/minions';
+import { NaxxusActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, updateBankSetting } from '../../lib/util';
-// import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { Gear } from '../../lib/structures/Gear';
 import { GearStats } from '../../lib/gear';
@@ -168,13 +168,13 @@ export default class extends BotCommand {
 
 
 		const duration = effectiveTime * quantity;
-		// await addSubTaskToActivityTask<NaxxusActivityTaskOptions>({
-		// 	userID: msg.author.id,
-		// 	channelID: msg.channel.id,
-		// 	quantity,
-		// 	duration,
-		// 	type: 'Naxxus',
-		// });
+		await addSubTaskToActivityTask<NaxxusActivityTaskOptions>({
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: 'Naxxus',
+		});
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.NaxxusCost, foodBank);
 
