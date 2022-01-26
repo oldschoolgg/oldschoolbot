@@ -38,7 +38,7 @@ const VolcanicMineShop: { name: string; output: ItemBank; cost: number; clOnly?:
 	{
 		name: 'Mithril ore',
 		output: resolveNameBank({ 'Mithril ore': 1 }),
-		cost: 30
+		cost: 150
 	},
 	{
 		name: 'Adamantite ore',
