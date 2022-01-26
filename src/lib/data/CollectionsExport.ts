@@ -2047,6 +2047,7 @@ export const treeBeardCL = resolveItems([
 	24_561,
 	24_563,
 	'Mysterious seed',
+	'Korulsi seed',
 	'Ent hide'
 ]);
 
