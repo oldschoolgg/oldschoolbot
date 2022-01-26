@@ -30,6 +30,8 @@ Client.defaultClientSchema
 	.add('kg_loot', 'any', { default: {} })
 	.add('nex_cost', 'any', { default: {} })
 	.add('nex_loot', 'any', { default: {} })
+	.add('naxxus_cost', 'any', { default: {} })
+	.add('naxxus_loot', 'any', { default: {} })
 	.add('kk_cost', 'any', { default: {} })
 	.add('kk_loot', 'any', { default: {} })
 	.add('vasa_cost', 'any', { default: {} })
