@@ -15,6 +15,7 @@ import { Ignecarus } from './custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from './custom/bosses/KalphiteKing';
 import KingGoldemar from './custom/bosses/KingGoldemar';
 import { VasaMagus } from './custom/bosses/VasaMagus';
+import { Naxxus } from './custom/bosses/Naxxus';
 import { customKillableMonsters } from './custom/customMonsters';
 import { konarMonsters } from './konarMonsters';
 import { krystiliaMonsters } from './krystiliaMonsters';
@@ -359,6 +360,11 @@ export const effectiveMonsters = [
 		id: VasaMagus.id,
 		name: 'Vasa Magus',
 		aliases: ['vasa', 'vasa magus', 'vm']
+	},
+	{
+		id: Naxxus.id,
+		name: 'Naxxus',
+		aliases: ['naxx', 'nax']
 	},
 	{
 		id: Ignecarus.id,

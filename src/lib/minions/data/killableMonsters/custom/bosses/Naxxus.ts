@@ -31,7 +31,7 @@ export const Naxxus: KillableMonster = {
 	id: 294_820,
 	name: 'Naxxus',
 	aliases: ['nax'],
-	timeToFinish: Time.Minute * 25,
+	timeToFinish: Time.Minute * 30,
 	// notifyDrops: nexCL,
 	table: makeKillTable(NaxxusLootTable),
 	emoji: '',
