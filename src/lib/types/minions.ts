@@ -251,6 +251,10 @@ export interface BossActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface NaxxusActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
 interface StoredBossUser extends Omit<BossUser, 'user' | 'itemsToRemove'> {
 	user: string;
 	itemsToRemove: ItemBank;

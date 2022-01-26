@@ -94,6 +94,7 @@ import {
 	MiningActivityTaskOptions,
 	MonkeyRumbleOptions,
 	MonsterActivityTaskOptions,
+	NaxxusActivityTaskOptions,
 	NewBossOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
@@ -493,6 +494,11 @@ export default class extends Extendable {
 				const data = currentTask as BossActivityTaskOptions;
 
 				return `${this.minionName} is currently killing ${data.quantity} Nex, with a party of ${data.users.length}. ${formattedDuration}`;
+			}
+			case 'Naxxus': {
+				const data = currentTask as NaxxusActivityTaskOptions;
+
+				return `${this.minionName} is currently killing ${data.quantity} Naxxus. ${formattedDuration}`;
 			}
 			case 'KingGoldemar': {
 				const data = currentTask as BossActivityTaskOptions;
