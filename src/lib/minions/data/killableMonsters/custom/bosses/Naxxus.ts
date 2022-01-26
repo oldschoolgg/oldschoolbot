@@ -1,11 +1,9 @@
 import { Time } from 'e';
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { GearStat } from '../../../../../gear';
 import { KillableMonster } from '../../../../../minions/types';
 import { makeKillTable } from '../../../../../util/setCustomMonster';
 
-import { MysteryBoxes } from '../../../../../data/openables';
 import { naxxusCL } from '../../../../../data/CollectionsExport';
 
 const runes = new LootTable()
@@ -63,11 +61,14 @@ const orbs = new LootTable()
 	.add('Fire orb', 100)
 	.add('Water orb', 100)
 
-export const NaxxusLootTable = new LootTable()
+const naxxusLoot = new LootTable()
 	.add(runes, 3)
 	.add(talismans, 3)
 	.add(herbs, 3)
 	.add(orbs, 3)
+
+export const NaxxusLootTable = new LootTable()
+	.add(naxxusLoot, 2)
 	.tertiary(750, 'Dark Crystal')
 	.tertiary(500, 'Abyssal Gem')
 	.tertiary(750, 'Tattered Tome')
