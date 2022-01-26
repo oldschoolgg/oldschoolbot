@@ -3132,12 +3132,13 @@ setCustomItem(
 
 setCustomItem(70_001, 'Grimy Korulsi', 'Magic seed', {}, 500_000);
 setCustomItem(70_002, 'Korulsi', 'Magic seed', {}, 500_000);
-setCustomItem(70_003, 'Enhanced Saradomin Brew', 'Vial of Water', {}, 10_000);
-setCustomItem(70_004, 'Enhanced Super Restore', 'Vial of Water', {}, 10_000);
-setCustomItem(70_005, 'Enhanced Stamina Potion', 'Vial of Water', {}, 10_000);
-setCustomItem(70_006, 'Enhanced Divine Water', 'Vial of Water', {}, 10_000);
+setCustomItem(70_003, 'Korulsi Seed', 'Magic seed', {}, 500_000);
+setCustomItem(70_004, 'Enhanced Saradomin Brew', 'Vial of Water', {}, 10_000);
+setCustomItem(70_005, 'Enhanced Super Restore', 'Vial of Water', {}, 10_000);
+setCustomItem(70_006, 'Enhanced Stamina Potion', 'Vial of Water', {}, 10_000);
+setCustomItem(70_007, 'Enhanced Divine Water', 'Vial of Water', {}, 10_000);
 setCustomItem(
-	70_007,
+	70_008,
 	'Dark Crystal',
 	'Onyx',
 	{
@@ -3149,7 +3150,7 @@ setCustomItem(
 	50_000_000
 );
 setCustomItem(
-	70_008,
+	70_009,
 	'Void Staff (u)',
 	'Battlestaff',
 	{
@@ -3162,7 +3163,7 @@ setCustomItem(
 	50_000_000
 );
 setCustomItem(
-	70_009,
+	70_010,
 	'Void Staff',
 	'Battlestaff',
 	{
@@ -3195,7 +3196,7 @@ setCustomItem(
 	50_000_000
 );
 setCustomItem(
-	70_010,
+	70_011,
 	'Dark Animica',
 	'Runite Ore',
 	{
@@ -3207,7 +3208,7 @@ setCustomItem(
 	25_000
 );
 setCustomItem(
-	70_011,
+	70_012,
 	'Tattered Tome',
 	'Magic Seed',
 	{
@@ -3219,7 +3220,7 @@ setCustomItem(
 	25_000_000
 );
 setCustomItem(
-	70_012,
+	70_013,
 	'Abyssal Tome',
 	'Book of law',
 	{
@@ -3252,7 +3253,7 @@ setCustomItem(
 	50_000_000
 );
 setCustomItem(
-	70_013,
+	70_014,
 	'Abyssal Gem',
 	'Zenyte',
 	{
@@ -3264,7 +3265,7 @@ setCustomItem(
 	10_000_000
 );
 setCustomItem(
-	70_014,
+	70_015,
 	'Abyssal Amulet',
 	'Amulet of Torture',
 	{
@@ -3297,7 +3298,7 @@ setCustomItem(
 	10_000_000
 );
 setCustomItem(
-	70_015,
+	70_016,
 	'Spellbound Ring',
 	'Seers Ring',
 	{
@@ -3330,7 +3331,7 @@ setCustomItem(
 	10_000_000
 );
 setCustomItem(
-	70_016,
+	70_017,
 	'Spellbound Ring(i)',
 	'Seers Ring',
 	{
