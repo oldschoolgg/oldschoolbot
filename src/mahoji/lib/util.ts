@@ -73,6 +73,6 @@ export function getCommandArgs(
 	if (args.length === 0) return undefined;
 	if (!Array.isArray(args) && Object.keys(args).length === 0) return undefined;
 	if (commandName === 'bank') return undefined;
-	if (commandName === 'rp' && Array.isArray(args) && args[0] === 'c') return undefined;
+	if (commandName === 'rp' && Array.isArray(args) && ['c', 'eval'].includes(args[0])) return undefined;
 	return (Array.isArray(args) ? args : compressMahojiArgs(args)) as Prisma.InputJsonObject | Prisma.InputJsonArray;
 }
