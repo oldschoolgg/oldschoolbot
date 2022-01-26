@@ -250,7 +250,8 @@ export const enum Tasks {
 	Inferno = 'infernoActivity',
 	ToB = 'tobActivity',
 	FishingContest = 'fishingContestActivity',
-	TearsOfGuthix = 'tearsOfGuthixActivity'
+	TearsOfGuthix = 'tearsOfGuthixActivity',
+	Naxxus = 'naxxusActivity'
 }
 
 export enum ActivityGroup {
