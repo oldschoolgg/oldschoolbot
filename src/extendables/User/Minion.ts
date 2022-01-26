@@ -775,6 +775,7 @@ export default class extends Extendable {
 			case 'KalphiteKing':
 			case 'Nex':
 			case 'VasaMagus':
+			case 'Naxxus':
 			case 'Ignecarus':
 			case 'KingGoldemar':
 			case 'Dungeoneering': {
