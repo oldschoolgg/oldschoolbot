@@ -134,5 +134,13 @@ describe('Sanity', () => {
 		expect(resolveItems(['Nexterminator', 'Herbi', 'Smokey', 'Craig']).every(id => allPetIDs.includes(id))).toEqual(
 			true
 		);
+		expect(itemID('Red chinchompa')).toEqual(10_034);
+		expect(itemID('Broad arrows')).toEqual(4160);
+
+		for (const item of ['Hellfire bow (broken)', 'Hellfire bownana (broken)'].map(getOSItem)) {
+			expect(item.equipable).toEqual(undefined);
+			expect(item.equipable_by_player).toEqual(undefined);
+			expect(item.equipment).toEqual(undefined);
+		}
 	});
 });

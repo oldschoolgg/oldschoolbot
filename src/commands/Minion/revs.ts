@@ -237,7 +237,6 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 				`That's not a valid revenant. The valid revenants are: ${revenantMonsters.map(m => m.name).join(', ')}.`
 			);
 		}
-		let debug = [];
 
 		const gear = msg.author.getGear('wildy');
 		const key = ({ melee: 'attack_crush', mage: 'attack_magic', range: 'attack_ranged' } as const)[style];
@@ -252,8 +251,6 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		if (weapon.equipment![key] < 10) {
 			return msg.channel.send("Your weapon is terrible, you can't kill revenants.");
 		}
-
-		debug.push(`${gearStat} ${key} out of max ${maxOffenceStats[key]}`);
 
 		let timePerMonster = monster.timeToFinish;
 		timePerMonster = reduceNumByPercent(timePerMonster, gearPercent / 4);
@@ -335,7 +332,7 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish. ${debug.join(', ')}
+		}, it'll take around ${formatDuration(duration)} to finish.
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
 **Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(2)}% from magic def${
 			deathChanceFromDefenceLevel > 0 ? `, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level` : ''

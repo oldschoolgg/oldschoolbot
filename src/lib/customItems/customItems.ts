@@ -6,7 +6,7 @@ import './fishing';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../util/getOSItem';
-import { setCustomItem } from './util';
+import { setCustomItem, UN_EQUIPPABLE } from './util';
 
 setCustomItem(19_939, 'Untradeable Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(6199, 'Tradeable Mystery Box', 'Mystery box', {}, 100_000);
@@ -109,7 +109,6 @@ setCustomItem(
 	'Abyssal cape',
 	'Infernal cape',
 	{
-		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
 		wiki_name: 'Abyssal cape',
@@ -907,8 +906,7 @@ setCustomItem(
 	'Hellfire bownana (broken)',
 	'Twisted bow',
 	{
-		equipable: false,
-		equipment: null
+		...UN_EQUIPPABLE
 	},
 	0
 );
@@ -1202,7 +1200,6 @@ setCustomItem(
 	'Vasa cloak',
 	'Infernal cape',
 	{
-		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
 		wiki_name: 'Abyssal cape',
@@ -1704,8 +1701,7 @@ setCustomItem(
 	'Hellfire bow (broken)',
 	'Twisted bow',
 	{
-		equipable: false,
-		equipment: null
+		...UN_EQUIPPABLE
 	},
 	0
 );

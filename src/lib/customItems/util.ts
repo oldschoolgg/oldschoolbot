@@ -47,3 +47,9 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	customItems.push(id);
 	hasSet.push(data);
 }
+
+export const UN_EQUIPPABLE = {
+	equipable: undefined,
+	equipment: undefined,
+	equipable_by_player: undefined
+};

@@ -528,12 +528,7 @@ for (const item of Items.values()) {
 		continue;
 	}
 
-	if (
-		(item.id >= 40_000 && item.id <= 50_000) ||
-		allItemsIDs.includes(item.id) ||
-		cantBeDropped.includes(item.id) ||
-		item.duplicate
-	) {
+	if ((item.id >= 40_000 && item.id <= 50_000) || allItemsIDs.includes(item.id) || cantBeDropped.includes(item.id)) {
 		continue;
 	}
 
