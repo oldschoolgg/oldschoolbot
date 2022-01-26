@@ -136,6 +136,8 @@ model ClientStorage {
   kg_loot                 Json   @default("{}") @db.Json
   nex_cost                Json   @default("{}") @db.Json
   nex_loot                Json   @default("{}") @db.Json
+  naxxus_cost             Json   @default("{}") @db.Json
+  naxxus_loot             Json   @default("{}") @db.Json
   kk_cost                 Json   @default("{}") @db.Json
   kk_loot                 Json   @default("{}") @db.Json
   vasa_cost               Json   @default("{}") @db.Json
