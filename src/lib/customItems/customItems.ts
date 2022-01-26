@@ -3331,7 +3331,7 @@ setCustomItem(
 );
 setCustomItem(
 	70_016,
-	'Spellbound Ring (i)',
+	'Spellbound Ring(i)',
 	'Seers Ring',
 	{
 		customItemData: {

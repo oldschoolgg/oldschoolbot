@@ -766,13 +766,13 @@ const bsoItems: Createable[] = [
 		})
 	},
 	{
-		name: 'Spellbound Ring (i)',
+		name: 'Spellbound Ring(i)',
 		inputItems: resolveNameBank({
 			'Spellbound Ring': 1,
 			'Magus Scroll': 1
 		}),
 		outputItems: resolveNameBank({
-			'Spellbound Ring (i)': 1
+			'Spellbound Ring(i)': 1
 		})
 	}
 ];
