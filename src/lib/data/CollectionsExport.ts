@@ -2021,9 +2021,7 @@ export const nexCL = [
 	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem'])
 ];
 
-export const naxxusCL = [
-	resolveItems(['Dark Crystal', 'Abyssal Gem', 'Tattered Tome', 'Spellbound Ring', 'Korulsi Seed'])
-];
+export const naxxusCL =	resolveItems(['Dark Crystal', 'Abyssal Gem', 'Tattered Tome', 'Spellbound Ring', 'Korulsi Seed']);
 
 export const kalphiteKingCL = resolveItems([
 	'Drygore mace',
