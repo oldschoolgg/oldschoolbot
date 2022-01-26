@@ -44,7 +44,6 @@ export const Naxxus: KillableMonster = {
 		slayer: 110,
 		magic: 120
 	},
-	healAmountNeeded: 100 * 20,
 	minimumGearRequirements: {
 		mage: {
 			[GearStat.AttackMagic]: 250,
