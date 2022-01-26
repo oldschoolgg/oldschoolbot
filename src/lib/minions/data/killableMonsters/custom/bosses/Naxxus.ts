@@ -1,19 +1,19 @@
 import { Time } from 'e';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
+
+import { naxxusCL } from '../../../../../data/CollectionsExport';
 import { GearStat } from '../../../../../gear';
 import { KillableMonster } from '../../../../../minions/types';
 import { makeKillTable } from '../../../../../util/setCustomMonster';
 
-import { naxxusCL } from '../../../../../data/CollectionsExport';
-
 const runes = new LootTable()
-	.add('Air rune', [5000, 15000])
-	.add('Earth rune', [5000, 15000])
-	.add('Fire rune', [5000, 15000])
-	.add('Water rune', [5000, 15000])
-	.add('Mind rune', [5000, 15000])
-	.add('Body rune', [5000, 15000])
-	.add('Cosmic rune', [5000, 15000])
+	.add('Air rune', [5000, 15_000])
+	.add('Earth rune', [5000, 15_000])
+	.add('Fire rune', [5000, 15_000])
+	.add('Water rune', [5000, 15_000])
+	.add('Mind rune', [5000, 15_000])
+	.add('Body rune', [5000, 15_000])
+	.add('Cosmic rune', [5000, 15_000])
 	.add('Chaos rune', [2500, 6000])
 	.add('Nature rune', [1250, 3000])
 	.add('Law rune', [1250, 3000])
@@ -22,7 +22,7 @@ const runes = new LootTable()
 	.add('Soul rune', [1250, 3000])
 	.add('Wrath rune', [1250, 3000])
 	.add('Elder rune', [25, 150])
-	.add('Pure essence', [1000, 2000])
+	.add('Pure essence', [1000, 2000]);
 
 const talismans = new LootTable()
 	.add('Cosmic talisman', [10, 25])
@@ -35,7 +35,7 @@ const talismans = new LootTable()
 	.add('Water talisman', [10, 25])
 	.add('Earth talisman', [10, 25])
 	.add('Fire talisman', [10, 25])
-	.add('Body talisman', [10, 25])
+	.add('Body talisman', [10, 25]);
 
 const herbs = new LootTable()
 	.add('Guam leaf', [100, 500])
@@ -53,19 +53,11 @@ const herbs = new LootTable()
 	.add('Dwarf weed', [100, 250])
 	.add('Torstol', [20, 30])
 	.add('Athelas', [10, 15])
-	.add('Korulsi', [10, 15])
+	.add('Korulsi', [10, 15]);
 
-const orbs = new LootTable()
-	.add('Air orb', 100)
-	.add('Earth orb', 100)
-	.add('Fire orb', 100)
-	.add('Water orb', 100)
+const orbs = new LootTable().add('Air orb', 100).add('Earth orb', 100).add('Fire orb', 100).add('Water orb', 100);
 
-const naxxusLoot = new LootTable()
-	.add(runes, 3)
-	.add(talismans, 3)
-	.add(herbs, 3)
-	.add(orbs, 3)
+const naxxusLoot = new LootTable().add(runes, 3).add(talismans, 3).add(herbs, 3).add(orbs, 3);
 
 export const NaxxusLootTable = new LootTable()
 	.add(naxxusLoot, 2)

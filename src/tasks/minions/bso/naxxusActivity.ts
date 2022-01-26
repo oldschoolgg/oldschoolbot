@@ -1,8 +1,9 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
+
+import { Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import { Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -15,13 +16,12 @@ export default class extends Task {
 		const { channelID, userID, quantity, duration } = data;
 		const user = await this.client.fetchUser(userID);
 
-
 		const loot = new Bank();
 		loot.add(Naxxus.table.kill(quantity, {}));
 
 		const xpStr = await addMonsterXP(user, {
 			monsterID: 294_820,
-			quantity: quantity,
+			quantity,
 			duration,
 			isOnTask: false,
 			taskQuantity: null
@@ -32,43 +32,40 @@ export default class extends Task {
 		await user.incrementMonsterScore(Naxxus.id, quantity);
 
 		announceLoot({
-			user: user,
+			user,
 			monsterID: Naxxus.id,
-			loot: loot,
+			loot,
 			notifyDrops: Naxxus.notifyDrops
 		});
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.NaxxusLoot, loot);
 		await trackLoot({
 			duration,
-			loot: loot,
+			loot,
 			type: 'Monster',
 			changeType: 'loot',
 			id: Naxxus.name,
 			kc: quantity
 		});
 
-		const image = (await this.client.tasks
+		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-						itemsAdded,
-						`Loot From ${quantity} ${Naxxus.name}:`,
-						true,
-						{ showNewCL: 1 },
-						user,
-						previousCL
-					)
-				).image;
+				itemsAdded,
+				`Loot From ${quantity} ${Naxxus.name}:`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished killing ${quantity} ${
-						Naxxus.name
-					}. Your Naxxus KC is now ${
-						user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0
-					}.\n\n${xpStr}`,
+			`${user}, ${user.minionName} finished killing ${quantity} ${Naxxus.name}. Your Naxxus KC is now ${
+				user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0
+			}.\n\n${xpStr}`,
 			['naxxus', [], true],
 			image!,
 			data,

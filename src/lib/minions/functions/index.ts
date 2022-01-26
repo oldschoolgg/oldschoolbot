@@ -11,8 +11,8 @@ import killableMonsters from '../data/killableMonsters';
 import { Ignecarus } from '../data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../data/killableMonsters/custom/bosses/KalphiteKing';
 import KingGoldemar from '../data/killableMonsters/custom/bosses/KingGoldemar';
-import { VasaMagus } from '../data/killableMonsters/custom/bosses/VasaMagus';
 import { Naxxus } from '../data/killableMonsters/custom/bosses/Naxxus';
+import { VasaMagus } from '../data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../data/killableMonsters/custom/customMonsters';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
 

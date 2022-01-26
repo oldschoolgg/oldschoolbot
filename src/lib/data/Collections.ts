@@ -13,8 +13,8 @@ import {
 	KalphiteKingMonster
 } from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import KingGoldemar from '../minions/data/killableMonsters/custom/bosses/KingGoldemar';
-import { VasaMagus } from '../minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { Naxxus, NaxxusLootTable } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
+import { VasaMagus } from '../minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { sepulchreFloors } from '../minions/data/sepulchre';
 import {
@@ -113,8 +113,8 @@ import {
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
-	nexCL,
 	naxxusCL,
+	nexCL,
 	oborCL,
 	pestControlCL,
 	queenBlackDragonCL,
