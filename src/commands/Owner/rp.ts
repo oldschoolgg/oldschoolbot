@@ -87,7 +87,7 @@ async function checkBank(msg: KlasaMessage) {
 		[
 			`You have ${brokenBank.length} broken items in your bank. `,
 			`You have ${brokenBank.length} broken items in your favorites. `,
-			'You can use `=checkbank --fix` to try to automatically remove the broken items.',
+			'You can use `=rp checkbank --fix` to try to automatically remove the broken items.',
 			`Check here to potentially see what they are: <https://chisel.weirdgloop.org/moid/item_id.html#${[
 				...brokenBank,
 				...brokenFavorites
