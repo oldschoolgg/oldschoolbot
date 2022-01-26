@@ -476,6 +476,7 @@ export function shouldTrackCommand(command: Command, args: any[]) {
 export function getCommandArgs(command: Command, args: any[]) {
 	if (args.length === 0) return undefined;
 	if (command.name === 'bank') return undefined;
-	if (command.name === 'rp' && args[0] === 'c') return undefined;
+	if (command.name === 'rp' && ['c'].includes(args[0])) return undefined;
+	if (command.name === 'eval') return undefined;
 	return args;
 }
