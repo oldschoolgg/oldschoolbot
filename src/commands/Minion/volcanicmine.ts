@@ -38,7 +38,7 @@ const VolcanicMineShop: { name: string; output: ItemBank; cost: number; clOnly?:
 	{
 		name: 'Mithril ore',
 		output: resolveNameBank({ 'Mithril ore': 1 }),
-		cost: 30
+		cost: 150
 	},
 	{
 		name: 'Adamantite ore',
@@ -128,9 +128,12 @@ export default class extends BotCommand {
 		);
 
 		if (shopItem.clOnly) {
-			await msg.author.addItemsToCollectionLog(new Bank().add(shopItem.output).multiply(quantity).bank);
+			await msg.author.addItemsToCollectionLog({ items: new Bank().add(shopItem.output).multiply(quantity) });
 		} else {
-			await msg.author.addItemsToBank(new Bank().add(shopItem.output).multiply(quantity), true);
+			await msg.author.addItemsToBank({
+				items: new Bank().add(shopItem.output).multiply(quantity),
+				collectionLog: true
+			});
 		}
 		await msg.author.settings.update(UserSettings.VolcanicMinePoints, currentUserPoints - shopItem.cost * quantity);
 

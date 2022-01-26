@@ -42,7 +42,7 @@ export default class extends Task {
 				taskQuantity: null
 			});
 			totalLoot.add(loot);
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 			const kcToAdd = kcAmounts[user.id];
 			if (kcToAdd) await user.incrementMonsterScore(monsterID, kcToAdd);
 			const purple = Object.keys(loot).some(itemID => isImportantItemForMonster(parseInt(itemID), monster));

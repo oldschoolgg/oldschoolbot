@@ -1,4 +1,5 @@
 import { command_usage_status, Prisma } from '@prisma/client';
+import { captureException } from '@sentry/node';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
 import { getCommandArgs, PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
@@ -121,6 +122,9 @@ export default class extends Monitor {
 					floatPromise(this, this.client.finalizers.run(message, command, response!, timer));
 					this.client.emit('commandSuccess', message, command, params, response);
 					commandUsage.status = command_usage_status.Success;
+					if (commandUsage && shouldTrackCommand(command, message.args)) {
+						await prisma.commandUsage.create({ data: commandUsage }).catch(captureException);
+					}
 				} catch (error) {
 					this.client.emit('commandError', message, command, params, error);
 					commandUsage.status = command_usage_status.Error;
@@ -138,10 +142,6 @@ export default class extends Monitor {
 				commandUsage.status = command_usage_status.Inhibited;
 			}
 			this.client.emit('commandInhibited', message, command, res);
-		}
-
-		if (commandUsage && shouldTrackCommand(command, message.args)) {
-			await prisma.commandUsage.create({ data: commandUsage });
 		}
 
 		return response;

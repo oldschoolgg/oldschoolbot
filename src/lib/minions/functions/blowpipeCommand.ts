@@ -78,7 +78,7 @@ async function add(msg: KlasaMessage, _items: string) {
 	}
 	if (!msg.author.owns('Toxic blowpipe') && msg.author.owns('Toxic blowpipe (empty)')) {
 		await msg.author.removeItemsFromBank(new Bank().add('Toxic blowpipe (empty)'));
-		await msg.author.addItemsToBank(new Bank().add('Toxic blowpipe'));
+		await msg.author.addItemsToBank({ items: new Bank().add('Toxic blowpipe'), collectionLog: false });
 	}
 
 	const hasBlowpipe = msg.author.owns('Toxic blowpipe');
@@ -159,7 +159,7 @@ async function removeDarts(msg: KlasaMessage) {
 	const returnedBank = new Bank().add(rawBlowpipeData.dartID, rawBlowpipeData.dartQuantity);
 	rawBlowpipeData.dartID = null;
 	rawBlowpipeData.dartQuantity = 0;
-	await msg.author.addItemsToBank(returnedBank);
+	await msg.author.addItemsToBank({ items: returnedBank, collectionLog: false });
 	await msg.author.settings.update(UserSettings.Blowpipe, rawBlowpipeData);
 	validateBlowpipeData(rawBlowpipeData);
 	return msg.channel.send(`You removed ${returnedBank} from your Toxic blowpipe.`);
@@ -187,7 +187,7 @@ async function uncharge(msg: KlasaMessage) {
 		return msg.channel.send('You have no darts or scales in your Blowpipe.');
 	}
 
-	await msg.author.addItemsToBank(returnedBank);
+	await msg.author.addItemsToBank({ items: returnedBank, collectionLog: false });
 	await msg.author.settings.update(UserSettings.Blowpipe, { scales: 0, dartID: null, dartQuantity: 0 });
 
 	return msg.channel.send(`You removed ${returnedBank} from your Toxic blowpipe.`);

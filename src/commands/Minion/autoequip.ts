@@ -60,7 +60,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(toRemoveFromBank);
-		await msg.author.addItemsToBank(toRemoveFromGear);
+		await msg.author.addItemsToBank({ items: toRemoveFromGear, collectionLog: false });
 		await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
 
 		const image = await generateGearImage(

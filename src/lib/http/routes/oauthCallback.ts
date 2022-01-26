@@ -56,7 +56,7 @@ const oauthCallbackRoute = (server: FastifyInstance) =>
 				return reply.badRequest();
 			}
 
-			const body = await authFetch.json();
+			const body = (await authFetch.json()) as Record<string, string>;
 			const user = await fetchUser(body.access_token);
 
 			return reply.send({

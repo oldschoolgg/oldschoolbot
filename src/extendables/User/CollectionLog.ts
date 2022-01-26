@@ -2,12 +2,11 @@ import { User } from 'discord.js';
 import { calcWhatPercent } from 'e';
 import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
 import { allCLItemsFiltered, convertCLtoBank } from '../../lib/data/Collections';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { ItemBank } from '../../lib/types';
-import { addBanks } from '../../lib/util';
 
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
@@ -41,29 +40,21 @@ export default class extends Extendable {
 		};
 	}
 
-	public async addItemsToCollectionLog(this: User, items: ItemBank) {
+	public async addItemsToCollectionLog(
+		this: User,
+		{ items, dontAddToTempCL = false }: { items: Bank; dontAddToTempCL?: boolean }
+	) {
 		await this.settings.sync(true);
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
-		return this.settings.update([
-			[
-				UserSettings.CollectionLogBank,
-				addBanks([
-					items,
-					{
-						...this.settings.get(UserSettings.CollectionLogBank)
-					}
-				])
-			],
-			[
-				UserSettings.TempCL,
-				addBanks([
-					items,
-					{
-						...this.settings.get(UserSettings.TempCL)
-					}
-				])
-			]
-		]);
+		let updates: [string, ItemBank][] = [
+			[UserSettings.CollectionLogBank, items.clone().add(this.settings.get(UserSettings.CollectionLogBank)).bank]
+		];
+
+		if (!dontAddToTempCL) {
+			updates.push([UserSettings.TempCL, items.clone().add(this.settings.get(UserSettings.TempCL)).bank]);
+		}
+
+		return this.settings.update(updates);
 	}
 }

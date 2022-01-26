@@ -25,7 +25,7 @@ export default class extends Task {
 		} else {
 			loot = new Bank().add('Imbued saradomin cape').add('Imbued zamorak cape').add('Imbued guthix cape');
 
-			await user.addItemsToBank(loot, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 			str = `${user}, ${user.minionName} finished the Mage Arena II, you received: ${loot}.`;
 		}
 

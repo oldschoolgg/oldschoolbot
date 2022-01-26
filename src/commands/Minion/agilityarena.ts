@@ -47,7 +47,7 @@ const plainGraceful = resolveNameBank({
 	'Graceful cape': 1
 });
 
-const brimhavenGraceful = resolveNameBank({
+const brimhavenGraceful = new Bank({
 	'Brimhaven graceful hood': 1,
 	'Brimhaven graceful top': 1,
 	'Brimhaven graceful legs': 1,
@@ -160,7 +160,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 				return msg.channel.send("You don't have enough Agility arena tickets.");
 			}
 			await msg.author.removeItemsFromBank(new Bank().add('Agility arena ticket', cost));
-			await msg.author.addItemsToBank({ [buyable.item.id]: qty }, true);
+			await msg.author.addItemsToBank({ items: { [buyable.item.id]: qty }, collectionLog: true });
 			return msg.channel.send(
 				`Successfully purchased ${qty}x ${buyable.item.name} for ${cost}x Agility arena tickets.`
 			);
@@ -220,9 +220,7 @@ Alternatively, you can convert tickets to XP (+10% XP for Karamja Medium Diary) 
 			bank.remove(plainGraceful);
 			bank.add(brimhavenGraceful);
 			await msg.author.settings.update(UserSettings.Bank, bank.bank);
-			await msg.author.addItemsToCollectionLog({
-				...brimhavenGraceful
-			});
+			await msg.author.addItemsToCollectionLog({ items: brimhavenGraceful });
 			return msg.channel.send({
 				files: [
 					await chatHeadImage({

@@ -20,7 +20,7 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage) {
-		const randomItem = Items.filter(i => (i as Item).tradeable_on_ge).random() as Item;
+		const randomItem = Items.filter(i => Boolean((i as Item).tradeable_on_ge)).random() as Item;
 
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)

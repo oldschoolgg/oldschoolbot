@@ -55,7 +55,7 @@ export default class extends BotCommand {
 			const loot = new Bank().add(kitten.id);
 
 			await msg.author.removeItemsFromBank(cost);
-			await msg.author.addItemsToBank(loot, true);
+			await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 			return msg.chatHeadImage(
 				'gertrude',
 				`Here's a ${kitten.name}, raise it well and take care of it, please!`,
@@ -183,7 +183,7 @@ export default class extends BotCommand {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyLootBank, outItems);
 
-		await msg.author.addItemsToBank(outItems, true);
+		await msg.author.addItemsToBank({ items: outItems, collectionLog: true });
 
 		return msg.channel.send(`You purchased ${quantity > 1 ? `${quantity}x` : '1x'} ${buyable.name}.`);
 	}

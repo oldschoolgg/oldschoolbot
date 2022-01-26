@@ -56,7 +56,7 @@ export async function handleGrowablePetGrowth(
 			throw new Error(`${user.username}'s pet[${equippedPet}] has no index in growable pet stages.`);
 		}
 		await user.settings.update(UserSettings.Minion.EquippedPet, nextPet);
-		await user.addItemsToCollectionLog(new Bank().add(nextPet).bank);
+		await user.addItemsToCollectionLog({ items: new Bank().add(nextPet) });
 		return `${message}\n\nYour ${itemNameFromID(equippedPet)} grew into a ${itemNameFromID(nextPet)}!`;
 	}
 	return message;

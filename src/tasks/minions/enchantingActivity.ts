@@ -20,7 +20,7 @@ export default class extends Task {
 		});
 
 		const loot = enchantable.output.clone().multiply(quantity);
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		let str = `${user}, ${user.minionName} finished enchanting ${quantity}x ${enchantable.name}, you received ${loot}. ${xpRes}`;
 

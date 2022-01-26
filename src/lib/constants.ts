@@ -130,6 +130,7 @@ export const enum Emoji {
 	Bug = '<:bug:778418736330833951>',
 	Trophy = '<:goldTrophy:778418736561782794>',
 	Crab = '<:crab:778418736432021505>',
+	Snake = '🐍',
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
@@ -220,6 +221,7 @@ export const enum Tasks {
 	VolcanicMine = 'volcanicMineActivity',
 	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity',
+	TearsOfGuthix = 'tearsOfGuthixActivity',
 	ToB = 'tobActivity'
 }
 
@@ -474,6 +476,7 @@ export function shouldTrackCommand(command: Command, args: any[]) {
 export function getCommandArgs(command: Command, args: any[]) {
 	if (args.length === 0) return undefined;
 	if (command.name === 'bank') return undefined;
-	if (command.name === 'rp' && args[0] === 'c') return undefined;
+	if (command.name === 'rp' && ['c'].includes(args[0])) return undefined;
+	if (command.name === 'eval') return undefined;
 	return args;
 }
