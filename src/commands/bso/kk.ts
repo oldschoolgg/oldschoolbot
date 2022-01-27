@@ -19,6 +19,7 @@ import { formatDuration, isWeekend, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../lib/util/getKalphiteKingGearStats';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 const minimumSoloGear = new Gear({
 	body: 'Torva platebody',
@@ -39,11 +40,12 @@ function calcFood(user: KlasaUser, teamSize: number, quantity: number) {
 	let brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
 	if (teamSize === 1) brewsNeeded += 2;
 	const restoresNeeded = Math.ceil(brewsNeeded / 3);
+	const { foodBank, hasEnough } = brewRestoreSupplyCalc(user, brewsNeeded);
 	const items = new Bank({
 		'Saradomin brew(4)': brewsNeeded,
 		'Super restore(4)': restoresNeeded
 	});
-	return items;
+	return hasEnough ? foodBank : items;
 }
 
 export default class extends BotCommand {
