@@ -12,12 +12,11 @@ import {
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { Eatables } from '../../lib/data/eatables';
 import { getSimilarItems } from '../../lib/data/similarItems';
-import { checkUserCanUseDegradeableItem, degradeItem } from '../../lib/degradeableItems';
+import { checkUserCanUseDegradeableItem, degradeableItems, degradeItem } from '../../lib/degradeableItems';
 import { GearSetupType, GearStat } from '../../lib/gear';
 import {
 	boostCannon,
@@ -40,7 +39,7 @@ import { AttackStyles, resolveAttackStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../lib/minions/functions/removeFoodFromUser';
-import { Consumable, KillableMonster } from '../../lib/minions/types';
+import { Consumable } from '../../lib/minions/types';
 import { calcPOHBoosts } from '../../lib/poh';
 import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -82,14 +81,17 @@ const degradeableItemsCanUse = [
 	{
 		item: getOSItem('Sanguinesti staff'),
 		attackStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 25,
 		boost: 6
 	},
 	{
 		item: getOSItem('Abyssal tentacle'),
 		attackStyle: 'melee',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
 		boost: 3
+	},
+	{
+		item: getOSItem('Void staff'),
+		attackStyle: 'mage',
+		boost: 8
 	}
 ];
 
@@ -241,19 +243,23 @@ export default class extends BotCommand {
 		 *
 		 */
 		const degItemBeingUsed = [];
-		for (const degItem of degradeableItemsCanUse) {
+		for (const degItemCanUse of degradeableItemsCanUse) {
 			const isUsing =
 				monster.attackStyleToUse &&
-				convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItem.attackStyle &&
-				msg.author.getGear(degItem.attackStyle).hasEquipped(degItem.item.id);
+				convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItemCanUse.attackStyle &&
+				msg.author.getGear(degItemCanUse.attackStyle).hasEquipped(degItemCanUse.item.id);
 			if (isUsing) {
-				const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
-				await checkUserCanUseDegradeableItem({
-					item: degItem.item,
+				const degradeableItem = degradeableItems.find(item => item.item.name === degItemCanUse.item.name);
+				const estimatedChargesNeeded = degradeableItem!.charges(totalMonsterHP, estimatedQuantity * timeToFinish, msg.author);
+				const res = checkUserCanUseDegradeableItem({
+					item: degItemCanUse.item,
 					chargesToDegrade: estimatedChargesNeeded,
 					user: msg.author
 				});
-				degItemBeingUsed.push(degItem);
+				if ( !res.hasEnough ) {
+					return msg.channel.send(res.userMessage!);
+				}
+				degItemBeingUsed.push(degItemCanUse);
 			}
 		}
 
@@ -601,17 +607,6 @@ export default class extends BotCommand {
 		// Boosts that don't affect quantity:
 		duration = randomVariation(duration, 3);
 
-		for (const degItem of degItemBeingUsed) {
-			const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
-			await degradeItem({
-				item: degItem.item,
-				chargesToDegrade: chargesNeeded,
-				user: msg.author
-			});
-			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-			duration = reduceNumByPercent(duration, degItem.boost);
-		}
-
 		if (isWeekend()) {
 			boosts.push('10% for Weekend');
 			duration *= 0.9;
@@ -626,6 +621,20 @@ export default class extends BotCommand {
 		} else if (msg.author.hasItemEquippedAnywhere('Attack master cape')) {
 			duration *= 0.85;
 			boosts.push('15% for Attack master cape');
+		}
+
+		// Some degrading items use charges based on DURATION
+		// It is important this is after duration modifiers so that the item isn't over-charged
+		for (const degItem of degItemBeingUsed) {
+			const degradeableItem = degradeableItems.find(item => item.item.name === degItem.item.name);
+			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+			duration = reduceNumByPercent(duration, degItem.boost);
+			const chargesNeeded = degradeableItem!.charges(monsterHP * quantity, duration, msg.author);
+			await degradeItem({
+				item: degItem.item,
+				chargesToDegrade: chargesNeeded,
+				user: msg.author
+			});
 		}
 
 		if (hasBlessing && prayerPotsNeeded) {
