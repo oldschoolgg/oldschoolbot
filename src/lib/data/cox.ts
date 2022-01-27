@@ -33,6 +33,7 @@ export const bareMinStats: Skills = {
 
 export const SANGUINESTI_CHARGES_PER_COX = 150;
 export const TENTACLE_CHARGES_PER_COX = 200;
+export const VOID_STAFF_CHARGES_PER_COX = 15;
 
 export function hasMinRaidsRequirements(user: KlasaUser) {
 	return skillsMeetRequirements(user.rawSkills, bareMinStats);
@@ -297,6 +298,16 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 				return sangResult.userMessage;
 			}
 		}
+		if (user.getGear('mage').hasEquipped('Void staff')) {
+			const voidStaffResult = checkUserCanUseDegradeableItem({
+				item: getOSItem('Void staff'),
+				chargesToDegrade: VOID_STAFF_CHARGES_PER_COX,
+				user
+			});
+			if (!voidStaffResult.hasEnough) {
+				return voidStaffResult.userMessage;
+			}
+		}
 	}
 
 	return null;
@@ -417,6 +428,14 @@ const itemBoosts: ItemBoost[][] = [
 			setup: 'mage',
 			mustBeCharged: true,
 			requiredCharges: SANGUINESTI_CHARGES_PER_COX
+		},
+		{
+			item: getOSItem('Void staff'),
+			boost: 8,
+			mustBeEquipped: true,
+			setup: 'mage',
+			mustBeCharged: true,
+			requiredCharges: VOID_STAFF_CHARGES_PER_COX
 		}
 	],
 	[
