@@ -14,10 +14,11 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { BossActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, isWeekend, itemID, resolveNameBank, updateBankSetting } from '../../lib/util';
+import { formatDuration, isWeekend, itemID, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../lib/util/getNexGearStats';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -264,16 +265,9 @@ export default class extends BotCommand {
 			}
 
 			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-			const restoresNeeded = Math.ceil(brewsNeeded / 3);
-			if (
-				!user.bank().has(
-					resolveNameBank({
-						'Saradomin brew(4)': brewsNeeded,
-						'Super restore(4)': restoresNeeded
-					})
-				)
-			) {
-				throw `${user.username} doesn't have enough brews or restores.`;
+			const { hasEnough, foodReason } = brewRestoreSupplyCalc(user, brewsNeeded);
+			if ( !hasEnough ) {
+				throw foodReason;
 			}
 		}
 		const totalCost = new Bank();
@@ -291,14 +285,11 @@ export default class extends BotCommand {
 			}
 
 			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-			const restoresNeeded = Math.ceil(brewsNeeded / 3);
-			const items = new Bank({
-				'Saradomin brew(4)': brewsNeeded,
-				'Super restore(4)': restoresNeeded
-			});
-			totalCost.add(items);
-			await user.removeItemsFromBank(items);
-			foodRemoved.push(`${brewsNeeded}/${restoresNeeded} from ${user.username}`);
+			const { foodBank } = brewRestoreSupplyCalc(user, brewsNeeded);
+			
+			totalCost.add(foodBank);
+			await user.removeItemsFromBank(foodBank);
+			foodRemoved.push(`${foodBank.toString()} from ${user.username}`);
 		}
 
 		await trackLoot({
