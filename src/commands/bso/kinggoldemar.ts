@@ -10,6 +10,7 @@ import { BossInstance, gpCostPerKill } from '../../lib/structures/Boss';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { formatDuration, toKMB } from '../../lib/util';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export const kgBaseTime = Time.Minute * 45;
 
@@ -63,8 +64,14 @@ export default class extends BotCommand {
 				neck: "Brawler's hook necklace"
 			}),
 			gearSetup: 'melee',
-			itemCost: async data =>
-				data.baseFood.multiply(data.kills).add('Coins', gpCostPerKill(data.user) * data.kills),
+			itemCost: async data => {
+				const brewsNeeded = (data.baseFood.multiply(data.kills).items().find(([item]) => item.name === "Saradomin brew(4)"))![1];
+
+				const { foodBank, hasEnough } = brewRestoreSupplyCalc(data.user, brewsNeeded);
+				const defaultBank = data.baseFood.multiply(data.kills).add('Coins', gpCostPerKill(data.user) * data.kills)
+				
+				return hasEnough ? foodBank.add('Coins', gpCostPerKill(data.user) * data.kills) : defaultBank;
+			},
 			mostImportantStat: 'attack_slash',
 			food: () => new Bank(),
 			settingsKeys: [ClientSettings.EconomyStats.KingGoldemarCost, ClientSettings.EconomyStats.KingGoldemarLoot],
