@@ -21,6 +21,7 @@ import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -531,16 +532,15 @@ export async function calcCoxDuration(
 }
 
 export async function calcCoxInput(u: KlasaUser, solo: boolean) {
-	const items = new Bank();
 	const kc = await u.getMinigameScore('raids');
-	items.add('Stamina potion(4)', solo ? 2 : 1);
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
 	if (solo) brewsNeeded++;
 	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 
-	items.add('Saradomin brew(4)', brewsNeeded);
-	items.add('Super restore(4)', restoresNeeded);
+	const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, brewsNeeded, restoresNeeded);
+	
+	const defaultBank = new Bank().add('Saradomin brew(4)', brewsNeeded).add('Super restore(4)', restoresNeeded).add('Stamina potion(4)', solo ? 2 : 1);
 
-	return items;
+	return hasEnough ? foodBank.add('Stamina potion(4)', solo ? 2 : 1) : defaultBank;
 }
