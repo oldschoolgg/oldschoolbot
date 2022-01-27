@@ -21,6 +21,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 import { PeakTier } from './../../WildernessPeakInterval';
+import brewRestoreSupplyCalc from '../../../lib/util/brewRestoreSupplyCalc';
 
 const riskDeathNumbers = [
 	{
@@ -83,9 +84,9 @@ export default class extends Task {
 			}
 			if (gotPked && roll(riskDeathChance)) {
 				died = true;
-				const cost = new Bank().add('Saradomin brew(4)', 10).add('Super restore(4)', 5);
-				if (userBank.has(cost)) {
-					await user.removeItemsFromBank(cost);
+				const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, 10, 5);
+				if ( hasEnough ) {
+					await user.removeItemsFromBank(foodBank);
 				}
 				const newGear = { ...user.settings.get(UserSettings.Gear.Wildy) };
 				newGear[EquipmentSlot.Body] = null;
@@ -100,10 +101,11 @@ export default class extends Task {
 				if (userBank.amount('Saradomin brew(4)') >= 10 && userBank.amount('Super restore(4)') >= 5) {
 					let lostBrew = rand(1, 10);
 					let lostRestore = rand(1, 5);
-					const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
-					await user.removeItemsFromBank(cost);
-
-					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, and ${cost}.`;
+					const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, lostBrew, lostRestore);
+					if ( hasEnough ) {
+						await user.removeItemsFromBank(foodBank);
+					}
+					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, and ${foodBank}.`;
 					pkedQuantity = 0.1 * successfulQuantity;
 					xpReceived *= 0.9;
 				}

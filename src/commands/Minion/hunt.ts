@@ -18,6 +18,7 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from './../../lib/constants';
 import { Peak } from './../../tasks/WildernessPeakInterval';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -199,7 +200,8 @@ export default class extends BotCommand {
 					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason} To check current equipped gear in wildy, write \`${msg.cmdPrefix}gear wildy\`.`
 				);
 			}
-			if (userBank.amount(itemID('Saradomin brew(4)')) < 10 || userBank.amount(itemID('Super restore(4)')) < 5) {
+			const { hasEnough } = brewRestoreSupplyCalc(msg.author, 10, 5);
+			if ( !hasEnough ) {
 				return msg.channel.send(
 					`To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`
 				);
