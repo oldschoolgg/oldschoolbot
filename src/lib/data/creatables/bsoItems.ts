@@ -753,7 +753,12 @@ const bsoItems: Createable[] = [
 		}),
 		outputItems: resolveNameBank({
 			'Void Staff (u)': 1
-		})
+		}),
+		requiredSkills: {
+			magic: 110,
+			runecrafting: 110,
+			crafting: 110
+		}
 	},
 	{
 		name: 'Abyssal Tome',
