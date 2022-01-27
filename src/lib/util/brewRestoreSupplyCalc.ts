@@ -24,7 +24,7 @@ export default function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: numb
 			return {
 				hasEnough: false,
 				foodBank: itemBank,
-				foodReason: `Not enough saradomin brews. ${enhancedBrews[1]} enhanced & ${brews[1]} normal found, ${brewsNeeded} required (enhanced count for 2).`
+				foodReason: `${user.username} does not enough saradomin brews. ${enhancedBrews[1]} enhanced & ${brews[1]} normal found, ${brewsNeeded} required (enhanced count for 2).`
       };
 		}
 	}
@@ -48,7 +48,7 @@ export default function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: numb
 			return {
 				hasEnough: false,
 				foodBank: itemBank,
-				foodReason: `Not enough super restores. ${enhancedRestores[1]} enhanced & ${restores[1]} normal found, ${restoresNeeded} required (enhanced count for 2).`
+				foodReason: `${user.username} does not enough super restores. ${enhancedRestores[1]} enhanced & ${restores[1]} normal found, ${restoresNeeded} required (enhanced count for 2).`
       };
 		}
 	}
