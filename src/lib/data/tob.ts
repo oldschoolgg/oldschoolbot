@@ -14,6 +14,7 @@ import { Skills } from '../types';
 import { assert, formatSkillRequirements, randFloat, randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export const bareMinStats: Skills = {
 	attack: 90,
@@ -314,10 +315,11 @@ export async function checkTOBUser(
 		];
 	}
 
-	if (!user.owns(minimumTOBSuppliesNeeded)) {
+	const { hasEnough, foodReason } = brewRestoreSupplyCalc(user, 10, 5);
+	if (!hasEnough) {
 		return [
 			true,
-			`${user.username} doesn't have enough items, you need a minimum of this amount of items: ${minimumTOBSuppliesNeeded}.`
+			`${foodReason}`
 		];
 	}
 	const { total } = calculateTOBUserGearPercents(user);
@@ -665,8 +667,12 @@ export async function calcTOBInput(u: KlasaUser) {
 			new Bank().add('Shark', 5)
 	);
 
-	items.add('Saradomin brew(4)', brewsNeeded);
-	items.add('Super restore(4)', restoresNeeded);
+	const { hasEnough, foodBank, foodReason } = brewRestoreSupplyCalc(u, brewsNeeded, restoresNeeded);
+	console.log(foodReason)
+	const defaultBank = new Bank().add('Saradomin brew(4)', brewsNeeded).add('Super restore(4)', restoresNeeded);
+
+	if ( !hasEnough ) items.add(defaultBank);
+	else items.add(foodBank);
 
 	items.add('Blood rune', 110);
 	items.add('Death rune', 100);
