@@ -71,6 +71,83 @@ const itemBoosts: ItemBoost[] = [
 	}
 ];
 
+
+function calcSetupPercent(
+	maxStats: GearStats,
+	userStats: GearStats,
+	heavyPenalizeStat: keyof GearStats,
+	ignoreStats: (keyof GearStats)[]
+) {
+	let numKeys = 0;
+	let totalPercent = 0;
+	for (const [key, val] of Object.entries(maxStats) as [keyof GearStats, number][]) {
+		if (val <= 0 || ignoreStats.includes(key)) continue;
+		const rawPercent = Math.min(100, calcWhatPercent(userStats[key], val));
+		totalPercent += rawPercent;
+		numKeys++;
+	}
+	totalPercent /= numKeys;
+	// Heavy penalize for having less than 50% in the main stat of this setup.
+	if (userStats[heavyPenalizeStat] < maxStats[heavyPenalizeStat] / 2) {
+		totalPercent = Math.floor(Math.max(0, totalPercent / 2));
+	}
+	return totalPercent;
+}
+
+function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: number) {
+	const userItems = user.bank().items();
+	const itemBank = new Bank();
+
+	let totalBrews = 0;
+	const enhancedBrews = userItems.filter(([item]) => item.name.toLowerCase() === 'enhanced saradomin brew')[0] ?? [
+		'',
+		0
+	];
+	const brews = userItems.filter(([item]) => item.name.toLowerCase() === 'saradomin brew(4)')[0] ?? ['', 0];
+
+	totalBrews += enhancedBrews[1] * 2;
+	if (totalBrews >= brewsNeeded) itemBank.add('Enhanced Saradomin Brew', Math.ceil(brewsNeeded / 2));
+	else {
+		itemBank.add('Enhanced Saradomin Brew', enhancedBrews[1]);
+		totalBrews += brews[1];
+		if (totalBrews >= brewsNeeded) {
+			itemBank.add('Saradomin Brew (4)', brewsNeeded - enhancedBrews[1] * 2);
+		} else {
+			return [
+				false,
+				itemBank,
+				`Not enough saradomin brews. ${enhancedBrews[1]} enhanced & ${brews[1]} normal found, ${brewsNeeded} required (enhanced count for 2).`
+			];
+		}
+	}
+
+	const restoresNeeded = Math.floor(brewsNeeded / 3);
+	let totalRestores = 0;
+	const enhancedRestores = userItems.filter(([item]) => item.name.toLowerCase() === 'enhanced super restore')[0] ?? [
+		'',
+		0
+	];
+	const restores = userItems.filter(([item]) => item.name.toLowerCase() === 'super restore(4)')[0] ?? ['', 0];
+
+	totalRestores += enhancedRestores[1] * 2;
+	if (totalRestores >= restoresNeeded) itemBank.add('Enhanced Super Restore', Math.ceil(restoresNeeded / 2));
+	else {
+		itemBank.add('Enhanced Super Restore', enhancedRestores[1]);
+		totalRestores += restores[1];
+		if (totalRestores >= restoresNeeded) {
+			itemBank.add('Super Restore (4)', restoresNeeded - enhancedRestores[1] * 2);
+		} else {
+			return [
+				false,
+				itemBank,
+				`Not enough super restores. ${enhancedRestores[1]} enhanced & ${restores[1]} normal found, ${restoresNeeded} required (enhanced count for 2).`
+			];
+		}
+	}
+
+	return [true, itemBank, ''];
+}
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -139,7 +216,7 @@ export default class extends BotCommand {
 			`${calcPercentOfNum(
 				Math.ceil(totalGearPercent),
 				speedReductionMaxPercent
-			)}% gear stats [${melee}% of max melee, ${mage}% of max mage]`
+			)}% gear stats [${Math.ceil(melee)}% of max melee, ${Math.ceil(mage)}% of max mage]`
 		);
 
 		itemBoosts.forEach(itemBoost => {
@@ -196,9 +273,11 @@ export default class extends BotCommand {
 
 		const embed = new MessageEmbed()
 			.setDescription(
-				`Your minion is now attempting to kill ${quantity}x Naxxus. ${foodBank.toString()}. The trip will take ${formatDuration(
+				`Your minion is now attempting to kill ${quantity}x Naxxus. The trip will take ${formatDuration(
 					duration
-				)}. ${boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : ''}`
+				)}.
+				**Supplies**: ${foodBank.toString()}.
+				${boosts.length > 0 ? `**Boosts:** ${boosts.join(', ')}` : ''}`
 			)
 			.setImage(
 				'https://cdn.discordapp.com/attachments/920771763976167455/935659463434698783/179ad8548cf42d494bfb473171a1124b.jpg'
@@ -208,80 +287,4 @@ export default class extends BotCommand {
 			embeds: [embed]
 		});
 	}
-}
-
-function calcSetupPercent(
-	maxStats: GearStats,
-	userStats: GearStats,
-	heavyPenalizeStat: keyof GearStats,
-	ignoreStats: (keyof GearStats)[]
-) {
-	let numKeys = 0;
-	let totalPercent = 0;
-	for (const [key, val] of Object.entries(maxStats) as [keyof GearStats, number][]) {
-		if (val <= 0 || ignoreStats.includes(key)) continue;
-		const rawPercent = Math.min(100, calcWhatPercent(userStats[key], val));
-		totalPercent += rawPercent;
-		numKeys++;
-	}
-	totalPercent /= numKeys;
-	// Heavy penalize for having less than 50% in the main stat of this setup.
-	if (userStats[heavyPenalizeStat] < maxStats[heavyPenalizeStat] / 2) {
-		totalPercent = Math.floor(Math.max(0, totalPercent / 2));
-	}
-	return totalPercent;
-}
-
-function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: number) {
-	const userItems = user.bank().items();
-	const itemBank = new Bank();
-
-	let totalBrews = 0;
-	const enhancedBrews = userItems.filter(([item]) => item.name.toLowerCase() === 'enhanced saradomin brew')[0] ?? [
-		'',
-		0
-	];
-	const brews = userItems.filter(([item]) => item.name.toLowerCase() === 'saradomin brew(4)')[0] ?? ['', 0];
-
-	totalBrews += enhancedBrews[1] * 2;
-	if (totalBrews >= brewsNeeded) itemBank.add('Enhanced Saradomin Brew', Math.ceil(brewsNeeded / 2));
-	else {
-		itemBank.add('Enhanced Saradomin Brew', enhancedBrews[1]);
-		totalBrews += brews[1];
-		if (totalBrews >= brewsNeeded) {
-			itemBank.add('Saradomin Brew (4)', totalBrews - enhancedBrews[1] * 2);
-		} else {
-			return [
-				false,
-				itemBank,
-				`Not enough saradomin brews. ${enhancedBrews[1]} enhanced & ${brews[1]} normal found, ${brewsNeeded} required (enhanced count for 2).`
-			];
-		}
-	}
-
-	const restoresNeeded = Math.floor(brewsNeeded / 3);
-	let totalRestores = 0;
-	const enhancedRestores = userItems.filter(([item]) => item.name.toLowerCase() === 'enhanced super restore')[0] ?? [
-		'',
-		0
-	];
-	const restores = userItems.filter(([item]) => item.name.toLowerCase() === 'super restore(4)')[0] ?? ['', 0];
-
-	totalRestores += enhancedRestores[1] * 2;
-	if (totalRestores >= restoresNeeded) itemBank.add('Enhanced Super Restore', Math.ceil(restoresNeeded / 2));
-	else {
-		itemBank.add('Enhanced Super Restore', enhancedRestores[1]);
-		totalRestores += restores[1];
-		if (totalRestores >= restoresNeeded) {
-			itemBank.add('Super Restore (4)', totalRestores - enhancedRestores[1] * 2);
-		} else {
-			return [
-				false,
-				itemBank,
-				`Not enough super restores. ${enhancedRestores[1]} enhanced & ${restores[1]} normal found, ${restoresNeeded} required (enhanced count for 2).`
-			];
-		}
-	}
-
-	return [true, itemBank, ''];
 }
