@@ -10,6 +10,7 @@ import { BossInstance } from '../../lib/structures/Boss';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { formatDuration } from '../../lib/util';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -64,11 +65,14 @@ export default class extends BotCommand {
 					.add('Heat res. brew', brewsNeeded)
 					.add('Heat res. restore', restoresNeeded)
 					.multiply(data.kills);
-				const normalBank = new Bank()
+
+				const { foodBank, hasEnough } = brewRestoreSupplyCalc(data.user, brewsNeeded);
+				const defaultBank = new Bank()
 					.add('Saradomin brew(4)', brewsNeeded)
 					.add('Super restore(4)', restoresNeeded)
 					.multiply(data.kills);
-				return userBank.has(heatResBank.bank) ? heatResBank : normalBank;
+					
+				return userBank.has(heatResBank.bank) ? heatResBank : hasEnough ? foodBank : defaultBank;
 			},
 			mostImportantStat: 'attack_crush',
 			food: () => new Bank(),
