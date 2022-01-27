@@ -761,6 +761,15 @@ const bsoItems: Createable[] = [
 		}
 	},
 	{
+		name: 'Void Staff',
+		inputItems: resolveNameBank({
+			'Void Staff (u)': 1
+		}),
+		outputItems: resolveNameBank({
+			'Void Staff': 1
+		})
+	},
+	{
 		name: 'Abyssal Tome',
 		inputItems: resolveNameBank({
 			'Tattered Tome': 1,
