@@ -35,7 +35,7 @@ export const degradeableItems: DegradeableItem[] = [
 		item: getOSItem('Sanguinesti staff'),
 		settingsKey: 'sang_charges',
 		itemsToRefundOnBreak: new Bank().add('Sanguinesti staff (uncharged)'),
-		setup: 'melee',
+		setup: 'mage',
 		aliases: ['sang', 'sang staff', 'sanguinesti staff', 'sanguinesti'],
 		chargeInput: {
 			cost: new Bank().add('Blood rune', 3),
