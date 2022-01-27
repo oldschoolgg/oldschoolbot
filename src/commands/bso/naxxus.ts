@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPercent } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -15,6 +15,7 @@ import { Gear } from '../../lib/structures/Gear';
 import { NaxxusActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import getOSItem from '../../lib/util/getOSItem';
 
 const bisMageGear = new Gear({
@@ -91,60 +92,6 @@ function calcSetupPercent(
 		totalPercent = Math.floor(Math.max(0, totalPercent / 2));
 	}
 	return totalPercent;
-}
-
-function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: number) {
-	const userItems = user.bank().items();
-	const itemBank = new Bank();
-
-	let totalBrews = 0;
-	const enhancedBrews = userItems.filter(([item]) => item.name.toLowerCase() === 'enhanced saradomin brew')[0] ?? [
-		'',
-		0
-	];
-	const brews = userItems.filter(([item]) => item.name.toLowerCase() === 'saradomin brew(4)')[0] ?? ['', 0];
-
-	totalBrews += enhancedBrews[1] * 2;
-	if (totalBrews >= brewsNeeded) itemBank.add('Enhanced Saradomin Brew', Math.ceil(brewsNeeded / 2));
-	else {
-		itemBank.add('Enhanced Saradomin Brew', enhancedBrews[1]);
-		totalBrews += brews[1];
-		if (totalBrews >= brewsNeeded) {
-			itemBank.add('Saradomin Brew (4)', brewsNeeded - enhancedBrews[1] * 2);
-		} else {
-			return [
-				false,
-				itemBank,
-				`Not enough saradomin brews. ${enhancedBrews[1]} enhanced & ${brews[1]} normal found, ${brewsNeeded} required (enhanced count for 2).`
-			];
-		}
-	}
-
-	const restoresNeeded = Math.floor(brewsNeeded / 3);
-	let totalRestores = 0;
-	const enhancedRestores = userItems.filter(([item]) => item.name.toLowerCase() === 'enhanced super restore')[0] ?? [
-		'',
-		0
-	];
-	const restores = userItems.filter(([item]) => item.name.toLowerCase() === 'super restore(4)')[0] ?? ['', 0];
-
-	totalRestores += enhancedRestores[1] * 2;
-	if (totalRestores >= restoresNeeded) itemBank.add('Enhanced Super Restore', Math.ceil(restoresNeeded / 2));
-	else {
-		itemBank.add('Enhanced Super Restore', enhancedRestores[1]);
-		totalRestores += restores[1];
-		if (totalRestores >= restoresNeeded) {
-			itemBank.add('Super Restore (4)', restoresNeeded - enhancedRestores[1] * 2);
-		} else {
-			return [
-				false,
-				itemBank,
-				`Not enough super restores. ${enhancedRestores[1]} enhanced & ${restores[1]} normal found, ${restoresNeeded} required (enhanced count for 2).`
-			];
-		}
-	}
-
-	return [true, itemBank, ''];
 }
 
 export default class extends BotCommand {
@@ -234,8 +181,7 @@ export default class extends BotCommand {
 
 		brewsNeeded *= quantity;
 
-		let [hasEnough, foodBank, foodReason] = brewRestoreSupplyCalc(user, brewsNeeded);
-		foodBank = foodBank as Bank;
+		let { hasEnough, foodBank, foodReason } = brewRestoreSupplyCalc(user, brewsNeeded);
 
 		if (!hasEnough) {
 			return msg.channel.send(
