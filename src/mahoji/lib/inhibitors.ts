@@ -48,7 +48,7 @@ interface Inhibitor {
 	}) => Promise<boolean | string>;
 }
 
-// only accept string return when inhibiting to use as ephemeral error msgs?
+// TODO only accept string return when inhibiting to use as ephemeral error msgs?
 const inhibitors: Inhibitor[] = [
 	{
 		name: 'settingSyncer',

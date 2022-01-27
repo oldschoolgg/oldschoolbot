@@ -1,6 +1,6 @@
 import { MessageButton, TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { ApplicationCommandOptionType, InteractionResponseType } from 'mahoji';
+import { ApplicationCommandOptionType, InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { CommandOption } from 'mahoji/dist/lib/types';
 
@@ -69,10 +69,15 @@ export async function handleMahojiConfirmation(
 	const cancel = async () => {
 		await confirmMessage.delete();
 		await interaction.respond({
-			type: InteractionResponseType.ChannelMessageWithSource,
-			data: {
-				content: 'You did not confirm in time.'
-			}
+			type: InteractionType.ApplicationCommand,
+			response: {
+				type: InteractionResponseType.ChannelMessageWithSource,
+				data: {
+					content: 'You did not confirm in time.',
+					flags: MessageFlags.Ephemeral
+				}
+			},
+			interaction
 		});
 		throw new Error(SILENT_ERROR);
 	};

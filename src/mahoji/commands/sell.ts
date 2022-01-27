@@ -40,7 +40,7 @@ export const sellCommand: OSBMahojiCommand = {
 			search: options.search
 		});
 
-		bankToSell.filter(i => i.tradeable, true);
+		bankToSell.filter(i => Boolean(i.tradeable), true);
 
 		if (bankToSell.length === 0) {
 			return 'No valid items to sell were given.';

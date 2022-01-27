@@ -66,7 +66,7 @@ export default class extends Monitor {
 		const guildID = msg.guild?.id ?? null;
 		const abstractCommand = convertKlasaCommandToAbstractCommand(command);
 
-		const inhibitedReason = preCommand({
+		const inhibitedReason = await preCommand({
 			abstractCommand,
 			userID,
 			channelID,
@@ -89,7 +89,7 @@ export default class extends Monitor {
 		} catch (err) {
 			error = err as Error | string;
 		} finally {
-			postCommand({
+			await postCommand({
 				abstractCommand,
 				userID,
 				guildID,
@@ -98,7 +98,7 @@ export default class extends Monitor {
 				response: null,
 				args: msg.args,
 				msg,
-				inhibited: Boolean(inhibitedReason)
+				inhibited: inhibitedReason !== undefined
 			});
 		}
 
