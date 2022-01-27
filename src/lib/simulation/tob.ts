@@ -104,6 +104,11 @@ export class TheatreOfBloodClass {
 		}
 
 		if (isHardMode) {
+			// Add 15% extra regular loot for hard mode:
+			for (const [itemID] of Object.entries(loot.bank)) {
+				loot.bank[parseInt(itemID)] = Math.ceil(loot.bank[parseInt(itemID)] * 1.15);
+			}
+			// Add HM Tertiary drops: dust / kits
 			loot.add(HardModeExtraTable.roll());
 		}
 
