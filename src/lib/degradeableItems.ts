@@ -1,3 +1,4 @@
+import { Time } from '@sapphire/time-utilities';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -16,7 +17,8 @@ interface DegradeableItem {
 	chargeInput: {
 		cost: Bank;
 		charges: number;
-	};
+	},
+	charges: (totalHP: number, duration: number, user: KlasaUser) => number;
 }
 
 export const degradeableItems: DegradeableItem[] = [
@@ -29,7 +31,8 @@ export const degradeableItems: DegradeableItem[] = [
 		chargeInput: {
 			cost: new Bank().add('Abyssal whip'),
 			charges: 10_000
-		}
+		},
+		charges: (totalHP: number) => totalHP / 20
 	},
 	{
 		item: getOSItem('Sanguinesti staff'),
@@ -40,7 +43,8 @@ export const degradeableItems: DegradeableItem[] = [
 		chargeInput: {
 			cost: new Bank().add('Blood rune', 3),
 			charges: 1
-		}
+		},
+		charges: (totalHP: number) => totalHP / 25
 	},
 	{
 		item: getOSItem('Void staff'),
@@ -51,6 +55,17 @@ export const degradeableItems: DegradeableItem[] = [
 		chargeInput: {
 			cost: new Bank().add('Elder rune', 5),
 			charges: 1
+		},
+		charges: (totalHP: number, duration: number, user: KlasaUser) => {
+			totalHP = totalHP;
+			const mageGear = user.getGear('mage');
+			const minutesDuration = Math.ceil(duration / Time.Minute);
+			if ( mageGear.hasEquipped('Vasa cloak') ) {
+				return Math.ceil(minutesDuration / 2);
+			} else if ( mageGear.hasEquipped('Magic master cape') ) {
+				return Math.ceil(minutesDuration / 3);
+			}
+			return minutesDuration;
 		}
 	}
 ];
@@ -68,14 +83,6 @@ export function checkUserCanUseDegradeableItem({
 	if (!degItem) throw new Error('Invalid degradeable item');
 	const currentCharges = user.settings.get(degItem.settingsKey) as number;
 	assert(typeof currentCharges === 'number');
-	if ( item.name === 'Void Staff' ) {
-		const mageGear = user.getGear('mage');
-		if ( mageGear.hasEquipped('Vasa cloak') ) {
-			chargesToDegrade = Math.ceil(chargesToDegrade / 2);
-		} else if ( mageGear.hasEquipped('Magic master cape') ) {
-			chargesToDegrade = Math.ceil(chargesToDegrade / 3);
-		}
-	}
 	const newCharges = currentCharges - chargesToDegrade;
 	if (newCharges < 0) {
 		return {
