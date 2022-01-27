@@ -43,12 +43,11 @@ const bisMeleeGear = new Gear({
 	ring: 'Ignis ring(i)'
 });
 
-interface ItemBoost {
+const itemBoosts: {
 	item: Item;
 	boost: number;
-	setup: 'mage' | 'melee';
-}
-const itemBoosts: ItemBoost[] = [
+	setup: 'mage' | 'melee'
+}[] = [
 	{
 		item: getOSItem('Void Staff'),
 		boost: 10,
