@@ -523,7 +523,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Enhanced Saradomin Brew',
-		aliases: ['enhanced brew'],
+		aliases: ['enhanced saradomin brew', 'enhanced brew'],
 		id: itemID('Enhanced Saradomin Brew'),
 		level: 110,
 		xp: 240,
@@ -537,7 +537,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Enhanced Super Restore',
-		aliases: ['enhanced restore'],
+		aliases: ['enhanced super restore', 'enhanced restore'],
 		id: itemID('Enhanced Super Restore'),
 		level: 110,
 		xp: 240,
@@ -551,7 +551,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Enhanced Stamina Potion',
-		aliases: ['enhanced stam', 'enhanced stamina'],
+		aliases: ['enhanced stamina potion', 'enhanced stam', 'enhanced stamina'],
 		id: itemID('Enhanced Stamina Potion'),
 		level: 110,
 		xp: 240,
@@ -565,7 +565,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Enhanced Divine Water',
-		aliases: ['enhanced div', 'enhanced water', 'enhanced div water'],
+		aliases: ['enhanced divine water', 'enhanced div', 'enhanced water', 'enhanced div water'],
 		id: itemID('Enhanced Divine Water'),
 		level: 110,
 		xp: 240,
