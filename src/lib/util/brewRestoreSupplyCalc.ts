@@ -2,7 +2,7 @@ import { KlasaUser } from "klasa";
 import { Bank } from "oldschooljs";
 
 
-export default function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: number): {foodBank: Bank, foodReason: string, hasEnough: boolean} {
+export default function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: number, restoresNeeded?: number): {foodBank: Bank, foodReason: string, hasEnough: boolean} {
 	const userItems = user.bank().items();
 	const itemBank = new Bank();
 
@@ -29,7 +29,7 @@ export default function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: numb
 		}
 	}
 
-	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
+	if ( !restoresNeeded ) restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 	let totalRestores = 0;
 	const enhancedRestores = userItems.filter(([item]) => item.name.toLowerCase() === 'enhanced super restore')[0] ?? [
 		'',
