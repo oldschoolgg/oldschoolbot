@@ -84,6 +84,7 @@ export namespace UserSettings {
 
 	export const TentacleCharges = T<number>('tentacle_charges');
 	export const SangCharges = T<number>('sang_charges');
+	export const VoidStaffCharges = T<number>('void_staff_charges');
 
 	export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
 	export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');

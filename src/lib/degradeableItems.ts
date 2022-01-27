@@ -9,7 +9,7 @@ import getOSItem from './util/getOSItem';
 
 interface DegradeableItem {
 	item: Item;
-	settingsKey: 'tentacle_charges' | 'sang_charges';
+	settingsKey: 'tentacle_charges' | 'sang_charges' | 'void_staff_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -41,6 +41,17 @@ export const degradeableItems: DegradeableItem[] = [
 			cost: new Bank().add('Blood rune', 3),
 			charges: 1
 		}
+	},
+	{
+		item: getOSItem('Void staff'),
+		settingsKey: 'void_staff_charges',
+		itemsToRefundOnBreak: new Bank().add('Void staff (u)'),
+		setup: 'mage',
+		aliases: ['void staff'],
+		chargeInput: {
+			cost: new Bank().add('Elder rune', 5),
+			charges: 1
+		}
 	}
 ];
 
@@ -57,6 +68,14 @@ export function checkUserCanUseDegradeableItem({
 	if (!degItem) throw new Error('Invalid degradeable item');
 	const currentCharges = user.settings.get(degItem.settingsKey) as number;
 	assert(typeof currentCharges === 'number');
+	if ( item.name === 'Void Staff' ) {
+		const mageGear = user.getGear('mage');
+		if ( mageGear.hasEquipped('Vasa cloak') ) {
+			chargesToDegrade = Math.ceil(chargesToDegrade / 2);
+		} else if ( mageGear.hasEquipped('Magic master cape') ) {
+			chargesToDegrade = Math.ceil(chargesToDegrade / 3);
+		}
+	}
 	const newCharges = currentCharges - chargesToDegrade;
 	if (newCharges < 0) {
 		return {
@@ -84,6 +103,15 @@ export async function degradeItem({
 	const currentCharges = user.settings.get(degItem.settingsKey) as number;
 	assert(typeof currentCharges === 'number');
 	const newCharges = currentCharges - chargesToDegrade;
+
+	if ( item.name === 'Void Staff' ) {
+		const mageGear = user.getGear('mage');
+		if ( mageGear.hasEquipped('Vasa cloak') ) {
+			chargesToDegrade = Math.ceil(chargesToDegrade / 2);
+		} else if ( mageGear.hasEquipped('Magic master cape') ) {
+			chargesToDegrade = Math.ceil(chargesToDegrade / 3);
+		}
+	}
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
