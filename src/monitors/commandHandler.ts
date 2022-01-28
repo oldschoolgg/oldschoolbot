@@ -73,6 +73,10 @@ export default class extends Monitor {
 			guildID
 		});
 
+		if (inhibitedReason) {
+			return msg.channel.send(inhibitedReason);
+		}
+
 		let error: Error | string | null = null;
 
 		try {

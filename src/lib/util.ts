@@ -26,11 +26,15 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
+import { mahojiClient } from '..';
+import { AbstractCommand } from '../mahoji/lib/inhibitors';
+import { convertKlasaCommandToAbstractCommand, convertMahojiCommandToAbstractCommand } from '../mahoji/lib/util';
 import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
+import { BotCommand } from './structures/BotCommand';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
@@ -671,4 +675,11 @@ export function convertComponentDJSComponent(component: APIActionRowComponent): 
 export function truncateString(str: string, maxLen: number) {
 	if (str.length < maxLen) return str;
 	return `${str.slice(0, maxLen - 3)}...`;
+}
+
+export function allAbstractCommands(client: KlasaClient): AbstractCommand[] {
+	return [
+		...(client.commands.array() as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
+		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
+	];
 }

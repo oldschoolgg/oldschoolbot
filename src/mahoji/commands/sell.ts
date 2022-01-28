@@ -12,7 +12,8 @@ export const sellCommand: OSBMahojiCommand = {
 	name: 'sell',
 	description: 'Sell an item from your bank',
 	attributes: {
-		ironCantUse: true
+		ironCantUse: true,
+		oneAtTime: true
 	},
 	options: [
 		{

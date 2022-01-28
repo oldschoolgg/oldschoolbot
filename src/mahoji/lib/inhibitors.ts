@@ -45,7 +45,7 @@ interface Inhibitor {
 		guild: Guild | null;
 		channel: TextChannel | DMChannel;
 		member: GuildMember | null;
-	}) => Promise<boolean | string>;
+	}) => Promise<false | string>;
 }
 
 // TODO only accept string return when inhibiting to use as ephemeral error msgs?
@@ -61,10 +61,15 @@ const inhibitors: Inhibitor[] = [
 		name: 'bots',
 		run: async ({ user }) => {
 			if (!user.bot) return false;
-			return ![
-				'798308589373489172', // BIRDIE#1963
-				'902745429685469264' // Randy#0008
-			].includes(user.id);
+			if (
+				![
+					'798308589373489172', // BIRDIE#1963
+					'902745429685469264' // Randy#0008
+				].includes(user.id)
+			) {
+				return 'Bots cannot use commands.';
+			}
+			return false;
 		}
 	},
 	{
@@ -97,13 +102,18 @@ const inhibitors: Inhibitor[] = [
 		}
 	},
 	{
+		// verified
 		name: 'oneAtTime',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.oneAtTime) return false;
-			return user.isBusy;
+			if (user.isBusy) {
+				return 'You just used a command and need to wait a second.';
+			}
+			return false;
 		}
 	},
 	{
+		// verified
 		name: 'ironCantUse',
 		run: async ({ user, command }) => {
 			if (command.attributes?.ironCantUse && user.settings.get(UserSettings.Minion.Ironman)) {
@@ -136,14 +146,17 @@ const inhibitors: Inhibitor[] = [
 				return false;
 			}
 
-			return true;
+			return "You cannot use commands in the general channel unless you're a patron";
 		}
 	},
 	{
 		name: 'guildOnly',
 		run: async ({ command, guild }) => {
 			if (!command.attributes?.guildOnly) return false;
-			return !guild;
+			if (!guild) {
+				return 'You can only use this command in servers.';
+			}
+			return false;
 		}
 	},
 	{
@@ -170,7 +183,7 @@ const inhibitors: Inhibitor[] = [
 			const settings = await getGuildSettings(guild!);
 			if (settings.get(GuildSettings.StaffOnlyChannels).includes(channel.id)) {
 				const hasPerm = await member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
-				if (!hasPerm) return true;
+				if (!hasPerm) return "You need the 'Ban Members' permission to use commands in disabled channels.";
 			}
 
 			return false;
@@ -178,18 +191,15 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'perkTierCommands',
-		run: async ({ command, user, channel }) => {
+		run: async ({ command, user }) => {
 			if (!command.attributes?.perkTier) return false;
 
 			if (getUsersPerkTier(user) < command.attributes.perkTier) {
-				await channel.send(
-					`You need to be a ${
-						command.attributes.perkTier - 1 > 0
-							? `tier ${command.attributes.perkTier - 1} patron`
-							: `tier ${command.attributes.perkTier} patron or server booster`
-					} to use this command. You can become this patron tier at https://www.patreon.com/oldschoolbot`
-				);
-				return true;
+				return `You need to be a ${
+					command.attributes.perkTier - 1 > 0
+						? `tier ${command.attributes.perkTier - 1} patron`
+						: `tier ${command.attributes.perkTier} patron or server booster`
+				} to use this command. You can become this patron tier at https://www.patreon.com/oldschoolbot`;
 			}
 
 			return false;
@@ -200,7 +210,7 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ command }) => {
 			if (command.attributes?.testingCommand) {
 				if (production || !client.user || client.user.id === BotID) {
-					return true;
+					return 'This is a testing command and cannot be used.';
 				}
 			}
 			return false;
@@ -218,6 +228,7 @@ const inhibitors: Inhibitor[] = [
 		}
 	},
 	{
+		// verified
 		name: 'missingBotPermissions',
 		run: async ({ command, channel }) => {
 			if (!command.attributes?.requiredPermissionsForBot) return false;
@@ -226,19 +237,18 @@ const inhibitors: Inhibitor[] = [
 					? channel.permissionsFor(client.user!)!.missing(command.attributes.requiredPermissionsForBot)
 					: [];
 			if (missing.length > 0) {
-				return `I'm missing some permissions that I need, please give me: ${missing.join(', ')}.`;
+				return `To run this command, I need these permissions: ${missing.join(', ')}.`;
 			}
 			return false;
 		}
 	},
 	{
+		// verified
 		name: 'missingUserPermissions',
 		run: async ({ command, channel, user }) => {
 			if (!command.attributes?.requiredPermissionsForUser) return false;
-			const missing =
-				channel.type === 'text'
-					? channel.permissionsFor(user)!.missing(command.attributes.requiredPermissionsForUser)
-					: [];
+			if (channel.type === 'dm') return false;
+			const missing = channel.permissionsFor(user)!.missing(command.attributes.requiredPermissionsForUser);
 			if (missing.length > 0) {
 				return `You can't run this command, unless you have these permissions in the server: ${missing.join(
 					', '
@@ -251,7 +261,9 @@ const inhibitors: Inhibitor[] = [
 		name: 'runIn',
 		run: async ({ command, channel }) => {
 			if (!command.attributes?.runIn?.length) return false;
-			if (!command.attributes?.runIn?.includes(channel.type)) return true;
+			if (!command.attributes?.runIn?.includes(channel.type)) {
+				return 'You cannot use this command in this type of channel.';
+			}
 			return false;
 		}
 	}

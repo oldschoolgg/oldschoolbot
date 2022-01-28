@@ -14,10 +14,6 @@ export async function preCommand({
 	guildID: string | null;
 	channelID: string;
 }): Promise<string | undefined> {
-	if (abstractCommand.attributes?.oneAtTime) {
-		client.oneCommandAtATimeCache.add(userID);
-	}
-
 	const user = await client.fetchUser(userID);
 	const guild = guildID ? client.guilds.cache.get(guildID) : null;
 	const member = guild?.members.cache.get(userID);
@@ -29,7 +25,12 @@ export async function preCommand({
 		command: abstractCommand,
 		channel: channel ?? null
 	});
+
 	if (typeof inhibitResult === 'string') {
 		return inhibitResult;
+	}
+
+	if (abstractCommand.attributes?.oneAtTime) {
+		client.oneCommandAtATimeCache.add(userID);
 	}
 }

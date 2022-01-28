@@ -5,7 +5,10 @@ import { Gateway, KlasaMessage, Settings } from 'klasa';
 
 import { client, mahojiClient } from '../..';
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
+import { preCommand } from '../../mahoji/lib/preCommand';
+import { convertKlasaCommandToAbstractCommand, convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
 import { Emoji, shouldTrackCommand } from '../constants';
+import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, convertAPIEmbedToDJSEmbed, convertComponentDJSComponent, isGroupActivity } from '../util';
 import { makeCommandUsage } from '../util/commandUsage';
@@ -144,6 +147,24 @@ export async function runCommand(
 	method = 'run'
 ) {
 	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
+	const command = message.client.commands.get(commandName);
+	const actualCommand = mahojiCommand ?? command;
+	if (!actualCommand) throw new Error('No command found');
+	const abstractCommand =
+		actualCommand instanceof BotCommand
+			? convertKlasaCommandToAbstractCommand(actualCommand)
+			: convertMahojiCommandToAbstractCommand(actualCommand);
+
+	const inhibitedReason = await preCommand({
+		abstractCommand,
+		userID: message.author.id,
+		channelID: message.channel.id,
+		guildID: message.guild?.id ?? null
+	});
+
+	if (inhibitedReason) {
+		return msg.channel.send(inhibitedReason);
+	}
 	if (mahojiCommand) {
 		if (Array.isArray(args)) {
 			throw new Error(`Had array of args for mahoji command called ${commandName}`);
@@ -172,7 +193,6 @@ export async function runCommand(
 		throw new Error('Had object args for non-mahoji command');
 	}
 
-	const command = message.client.commands.get(commandName);
 	if (!command) {
 		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
 	}

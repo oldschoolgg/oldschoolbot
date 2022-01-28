@@ -11,7 +11,16 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client } from '..';
-import { badges, BitField, BitFieldData, Channel, Emoji, Roles, SupportServer } from '../lib/constants';
+import {
+	badges,
+	BitField,
+	BitFieldData,
+	Channel,
+	DISABLED_COMMANDS,
+	Emoji,
+	Roles,
+	SupportServer
+} from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { evalMathExpression } from '../lib/expressionParser';
 import { countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
@@ -20,6 +29,7 @@ import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import {
+	allAbstractCommands,
 	asyncExec,
 	channelIsSendable,
 	cleanString,
@@ -27,7 +37,8 @@ import {
 	formatDuration,
 	getSupportGuild,
 	getUsername,
-	itemNameFromID
+	itemNameFromID,
+	stringMatches
 } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -652,18 +663,18 @@ LIMIT 10;
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
-				command.disable();
-				return msg.channel.send(`${emoji(this.client)} Disabled \`+${command}\`.`);
+				DISABLED_COMMANDS.add(command.name);
+				return msg.channel.send(` Disabled \`${command}\`.`);
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
-				if (command.enabled) return msg.channel.send('That command is already enabled.');
-				command.enable();
-				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
+				if (!DISABLED_COMMANDS.has(command.name)) return msg.channel.send('That command is not disabled.');
+				DISABLED_COMMANDS.delete(command.name);
+				return msg.channel.send(`Enabled \`${command}\`.`);
 			}
 			case 'addptime': {
 				if (!input || !(input instanceof KlasaUser)) return;
