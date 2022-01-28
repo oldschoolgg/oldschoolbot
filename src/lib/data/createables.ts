@@ -1676,9 +1676,6 @@ const Createables: Createable[] = [
 		}),
 		outputItems: {
 			[itemID('Bottled dragonbreath')]: 1
-		},
-		requiredSkills: {
-			slayer: 62
 		}
 	},
 	{
