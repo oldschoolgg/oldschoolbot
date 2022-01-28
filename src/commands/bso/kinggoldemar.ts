@@ -67,6 +67,8 @@ export default class extends BotCommand {
 			itemCost: async data => {
 				const brewsNeeded = (data.baseFood.multiply(data.kills).items().find(([item]) => item.name === "Saradomin brew(4)"))![1];
 
+				// Find if the user has enough brews&restores with enhanced ones
+				// If they do not, default back to just normals 
 				const { foodBank, hasEnough } = brewRestoreSupplyCalc(data.user, brewsNeeded);
 				const defaultBank = data.baseFood.multiply(data.kills).add('Coins', gpCostPerKill(data.user) * data.kills)
 				

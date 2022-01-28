@@ -66,6 +66,8 @@ export default class extends BotCommand {
 					.add('Heat res. restore', restoresNeeded)
 					.multiply(data.kills);
 
+				// Find if the user has enough brews&restores with enhanced ones
+				// If they do not, default back to just normals 
 				const { foodBank, hasEnough } = brewRestoreSupplyCalc(data.user, brewsNeeded);
 				const defaultBank = new Bank()
 					.add('Saradomin brew(4)', brewsNeeded)

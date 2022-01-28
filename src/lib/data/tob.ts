@@ -667,8 +667,9 @@ export async function calcTOBInput(u: KlasaUser) {
 			new Bank().add('Shark', 5)
 	);
 
-	const { hasEnough, foodBank, foodReason } = brewRestoreSupplyCalc(u, brewsNeeded, restoresNeeded);
-	console.log(foodReason)
+	// Find if the user has enough brews&restores with enhanced ones
+	// If they do not, default back to just normals 
+	const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, brewsNeeded, restoresNeeded);
 	const defaultBank = new Bank().add('Saradomin brew(4)', brewsNeeded).add('Super restore(4)', restoresNeeded);
 
 	if ( !hasEnough ) items.add(defaultBank);

@@ -543,8 +543,9 @@ export async function calcCoxInput(u: KlasaUser, solo: boolean) {
 	if (solo) brewsNeeded++;
 	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 
+	// Find if the user has enough brews&restores with enhanced ones
+	// If they do not, default back to just normals 
 	const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, brewsNeeded, restoresNeeded);
-	
 	const defaultBank = new Bank().add('Saradomin brew(4)', brewsNeeded).add('Super restore(4)', restoresNeeded).add('Stamina potion(4)', solo ? 2 : 1);
 
 	return hasEnough ? foodBank.add('Stamina potion(4)', solo ? 2 : 1) : defaultBank;
