@@ -244,36 +244,36 @@ const TokkulShopItems: TokkulShopItem[] = [
 	{
 		name: 'Fire rune',
 		inputItem: itemID('Fire rune'),
-		tokkulReturn: 1,
+		tokkulReturn: 0,
 		tokkulCost: 6,
-		diaryTokkulReturn: 1,
+		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
 		aliases: ['fire']
 	},
 	{
 		name: 'Water rune',
 		inputItem: itemID('Water rune'),
-		tokkulReturn: 1,
+		tokkulReturn: 0,
 		tokkulCost: 6,
-		diaryTokkulReturn: 1,
+		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
 		aliases: ['water']
 	},
 	{
 		name: 'Air rune',
 		inputItem: itemID('Air rune'),
-		tokkulReturn: 1,
+		tokkulReturn: 0,
 		tokkulCost: 6,
-		diaryTokkulReturn: 1,
+		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
 		aliases: ['air']
 	},
 	{
 		name: 'Earth rune',
 		inputItem: itemID('Earth rune'),
-		tokkulReturn: 1,
+		tokkulReturn: 0,
 		tokkulCost: 6,
-		diaryTokkulReturn: 1,
+		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
 		aliases: ['earth']
 	},
