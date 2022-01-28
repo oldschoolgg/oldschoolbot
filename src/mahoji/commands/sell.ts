@@ -33,6 +33,10 @@ export const sellCommand: OSBMahojiCommand = {
 		const user = await client.fetchUser(member.user.id);
 		if (user.isIronman) return "Iron players can't sell items.";
 
+		if (!options.filter && !options.items && !options.search) {
+			return 'You need to provide a filter, search or list of items.';
+		}
+
 		const bankToSell = parseBank({
 			inputBank: user.bank(),
 			inputStr: options.items,
