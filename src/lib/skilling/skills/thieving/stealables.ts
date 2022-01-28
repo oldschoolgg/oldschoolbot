@@ -40,6 +40,7 @@ export interface Stall extends Stealable {
 }
 
 export interface Pickpockable extends Stealable {
+	alias?: string[];
 	stunTime: number;
 	stunDamage: number;
 	slope: number;
@@ -178,6 +179,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Female H.A.M. member',
 		level: 15,
 		xp: 18.5,
+		alias: ['female ham'],
 		table: HamMember.pickpocketTable!,
 		id: HamMember.id,
 		stunTime: 4,
@@ -189,6 +191,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Male H.A.M. member',
 		level: 20,
 		xp: 22.5,
+		alias: ['male ham'],
 		table: HamMember.pickpocketTable!,
 		id: HamMember.id,
 		stunTime: 4,
@@ -223,6 +226,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Cave goblin',
 		level: 36,
 		xp: 40,
+		alias: ['goblin'],
 		table: CaveGoblin.pickpocketTable!,
 		id: CaveGoblin.id,
 		stunTime: 5,
@@ -235,6 +239,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Master Farmer',
 		level: 38,
 		xp: 43,
+		alias: ['mf', 'master'],
 		table: MasterFarmer.pickpocketTable!,
 		id: MasterFarmer.id,
 		stunTime: 5,
@@ -257,6 +262,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Fremennik Citizen',
 		level: 45,
 		xp: 65,
+		alias: ['fremmy', 'fremennik'],
 		table: FremennikCitizen.pickpocketTable!,
 		id: FremennikCitizen.id,
 		stunTime: 5,
@@ -269,6 +275,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Bearded Pollnivnian Bandit',
 		level: 45,
 		xp: 65,
+		alias: ['bearded bandit', 'beard', 'beard bandit'],
 		table: BeardedBandit.pickpocketTable!,
 		id: BeardedBandit.id,
 		stunTime: 5,
@@ -293,6 +300,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Knight of Ardougne',
 		level: 55,
 		xp: 84.3,
+		alias: ['knight', 'ardy knight'],
 		table: KnightOfArdougne.pickpocketTable!,
 		id: KnightOfArdougne.id,
 		stunTime: 5,
@@ -304,6 +312,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Pollnivnian Bandit',
 		level: 55,
 		xp: 84.3,
+		alias: ['bandit'],
 		table: PollnivnianBandit.pickpocketTable!,
 		id: PollnivnianBandit.id,
 		stunTime: 5,
@@ -317,6 +326,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Yanille Watchman',
 		level: 65,
 		xp: 137.5,
+		alias: ['yanille'],
 		table: YanilleWatchman.pickpocketTable!,
 		id: YanilleWatchman.id,
 		stunTime: 5,
@@ -328,6 +338,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Menaphite Thug',
 		level: 65,
 		xp: 137.5,
+		alias: ['thug'],
 		table: MenaphiteThug.pickpocketTable!,
 		id: MenaphiteThug.id,
 		stunTime: 5,
@@ -396,6 +407,7 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'TzHaar-Hur',
 		level: 90,
 		xp: 103.4,
+		alias: ['tzhaar'],
 		table: TzHaarHur.pickpocketTable!,
 		id: TzHaarHur.id,
 		stunTime: 5,
