@@ -247,9 +247,14 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 	if (!hasFarmer) {
 		return 'nobody with atleast level 55 Farming';
 	}
-	const userWithoutSupplies = users.find(u => !u.owns(minimumCoxSuppliesNeeded));
+	
+	const userWithoutSupplies = users.find(u => {
+		const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, 10, 5);
+		foodBank.add('Stamina potion(4)', 3);
+		return hasEnough ? !u.owns(foodBank) : !u.owns(minimumCoxSuppliesNeeded)
+	});
 	if (userWithoutSupplies) {
-		return `${userWithoutSupplies.username} doesn't have enough supplies`;
+		return `${userWithoutSupplies.username} doesn't have enough supplies - ${minimumCoxSuppliesNeeded}`;
 	}
 
 	for (const user of users) {
