@@ -34,6 +34,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
 import { calculateInfernoItemRefund } from '../../tasks/minions/minigames/infernoActivity';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -83,13 +84,15 @@ export default class extends BotCommand {
 		dart,
 		fakeDuration,
 		hasKodai,
-		isEmergedZuk
+		isEmergedZuk,
+		user
 	}: {
 		projectile: number;
 		dart: number;
 		fakeDuration: number;
 		hasKodai: boolean;
 		isEmergedZuk: boolean;
+		user: KlasaUser;
 	}) {
 		const projectilesPerHour = 150;
 		const dartsPerHour = 300;
@@ -121,8 +124,14 @@ export default class extends BotCommand {
 			cost.add('Super combat potion(4)');
 		}
 
-		cost.add('Saradomin brew(4)', 8);
-		cost.add('Super restore(4)', 12);
+		// Find if the user has enough brews&restores with enhanced ones
+		// If they do not, default back to just normals 
+		const defaultBank = new Bank().add('Saradomin brew(4)', 8).add('Super restore(4)', 12);
+		const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, 8, 12);
+
+		if ( hasEnough ) cost.add(foodBank);
+		else cost.add(defaultBank);
+
 		if (isEmergedZuk) {
 			cost.add('Heat res. brew', 7);
 			cost.add('Heat res. restore', 4);
@@ -728,7 +737,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			dart: blowpipeData.dartID,
 			fakeDuration,
 			hasKodai: mageGear.hasEquipped('Kodai wand', true, true),
-			isEmergedZuk
+			isEmergedZuk,
+			user
 		});
 
 		return {
