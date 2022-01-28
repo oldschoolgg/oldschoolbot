@@ -89,7 +89,7 @@ export async function isElligibleForPresent(user: KlasaUser) {
 	if (user.totalLevel() >= 2000) return true;
 	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRaw`SELECT SUM(duration)
 FROM activity
-WHERE user_id = ${user.id};`;
+WHERE user_id = ${BigInt(user.id)};`;
 	if (totalActivityDuration[0].sum >= Time.Hour * 80) return true;
 	return false;
 }
