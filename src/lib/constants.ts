@@ -472,14 +472,14 @@ export const SILENT_ERROR = 'SILENT_ERROR';
 export const informationalButtons = [
 	new MessageButton().setLabel('Wiki').setEmoji('📰').setURL('https://wiki.oldschool.gg/').setStyle('LINK'),
 	new MessageButton()
+		.setLabel('Wiki')
+		.setEmoji('863823820435619890')
+		.setURL('https://bso-wiki.oldschool.gg/')
+		.setStyle('LINK'),
+	new MessageButton()
 		.setLabel('Patreon')
 		.setEmoji('679334888792391703')
 		.setURL('https://www.patreon.com/oldschoolbot')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Support Server')
-		.setEmoji('778418736180494347')
-		.setURL('https://www.discord.gg/ob')
 		.setStyle('LINK'),
 	new MessageButton()
 		.setLabel('Bot Invite')
