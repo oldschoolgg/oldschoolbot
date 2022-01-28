@@ -21,6 +21,7 @@ export const prisma = global.prisma || new PrismaClient();
 if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
+	if (typeof activity.finish_date === 'string') activity.finish_date = new Date(activity.finish_date);
 	return {
 		...(activity.data as Prisma.JsonObject),
 		type: activity.type as activity_type_enum,
