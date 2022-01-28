@@ -3,6 +3,7 @@ import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPer
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { degradeableItems, degradeItem } from '../../lib/degradeableItems';
 
 import { GearStats } from '../../lib/gear';
 import { Naxxus } from '../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
@@ -71,6 +72,7 @@ const itemBoosts: {
 	}
 ];
 
+const NAXXUS_HP = 3900;
 
 function calcSetupPercent(
 	maxStats: GearStats,
@@ -196,6 +198,20 @@ export default class extends BotCommand {
 		}
 		foodBank.add('Enhanced Divine Water', 2);
 
+		const duration = effectiveTime * quantity;
+		// Some degrading items use charges based on DURATION
+		// It is important this is after duration modifiers so that the item isn't over-charged
+		for (const degItem of degradeableItems) {
+			if ( user.getGear(degItem.setup).hasEquipped(degItem.item.name) && ['melee', 'mage'].includes(degItem.setup) ) {
+				const chargesNeeded = degItem.charges(NAXXUS_HP * quantity, duration, msg.author);
+				await degradeItem({
+					item: degItem.item,
+					chargesToDegrade: chargesNeeded,
+					user: user
+				});
+			}
+		}
+		
 		await user.removeItemsFromBank(foodBank);
 
 		await trackLoot({
@@ -205,7 +221,6 @@ export default class extends BotCommand {
 			type: 'Monster'
 		});
 
-		const duration = effectiveTime * quantity;
 		await addSubTaskToActivityTask<NaxxusActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
