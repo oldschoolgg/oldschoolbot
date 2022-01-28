@@ -39,6 +39,15 @@ const UniqueTable = new LootTable()
 	.add('Justiciar legguards', 1, 2)
 	.add('Avernic defender hilt', 1, 8);
 
+const HardModeUniqueTable = new LootTable()
+	.add('Scythe of vitur (uncharged)')
+	.add('Ghrazi rapier', 1, 2)
+	.add('Sanguinesti staff (uncharged)', 1, 2)
+	.add('Justiciar faceguard', 1, 2)
+	.add('Justiciar chestguard', 1, 2)
+	.add('Justiciar legguards', 1, 2)
+	.add('Avernic defender hilt', 1, 7);
+
 const NonUniqueTable = new LootTable()
 	.tertiary(25, 'Clue scroll (elite)')
 	.add('Vial of blood', [50, 60], 2)
@@ -71,8 +80,8 @@ const NonUniqueTable = new LootTable()
 	.add('Yew seed', 3)
 	.add('Magic seed', 3);
 
-const HardModeUniqueTable = new LootTable()
-	.tertiary(300, 'Sanguine dust')
+const HardModeExtraTable = new LootTable()
+	.tertiary(275, 'Sanguine dust')
 	.tertiary(150, 'Sanguine ornament kit')
 	.tertiary(100, 'Holy ornament kit');
 
@@ -86,7 +95,7 @@ export class TheatreOfBloodClass {
 			loot.add(NonUniqueTable.roll());
 		}
 
-		let petChance = 650;
+		let petChance = isHardMode ? 500 : 650;
 		if (member.numDeaths > 0) {
 			petChance *= member.numDeaths;
 		}
@@ -95,7 +104,12 @@ export class TheatreOfBloodClass {
 		}
 
 		if (isHardMode) {
-			loot.add(HardModeUniqueTable.roll());
+			// Add 15% extra regular loot for hard mode:
+			for (const [itemID] of Object.entries(loot.bank)) {
+				loot.bank[parseInt(itemID)] = Math.ceil(loot.bank[parseInt(itemID)] * 1.15);
+			}
+			// Add HM Tertiary drops: dust / kits
+			loot.add(HardModeExtraTable.roll());
 		}
 
 		return loot;
@@ -130,7 +144,7 @@ export class TheatreOfBloodClass {
 
 		const totalDeaths = sumArr(parsedTeam.map(i => i.numDeaths));
 
-		let percentBaseChanceOfUnique = 11 * (teamPoints / maxPointsTeamCanGet);
+		let percentBaseChanceOfUnique = (options.hardMode ? 13 : 11) * (teamPoints / maxPointsTeamCanGet);
 
 		const purpleReceived = percentChance(percentBaseChanceOfUnique);
 		const purpleRecipient = purpleReceived ? this.uniqueDecide(parsedTeam) : null;
@@ -139,7 +153,9 @@ export class TheatreOfBloodClass {
 
 		for (const member of parsedTeam) {
 			if (member === purpleRecipient) {
-				lootResult[member.id] = new Bank().add(UniqueTable.roll());
+				lootResult[member.id] = new Bank().add(
+					options.hardMode ? HardModeUniqueTable.roll() : UniqueTable.roll()
+				);
 			} else {
 				lootResult[member.id] = this.nonUniqueLoot(member, options.hardMode, member.deaths);
 			}
