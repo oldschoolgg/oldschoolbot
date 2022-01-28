@@ -189,6 +189,7 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	preJadDeathChance: number;
 	preJadDeathTime: number | null;
 	quantity: number;
+	cost: ItemBank;
 }
 export interface InfernoOptions extends ActivityTaskOptions {
 	zukDeathChance: number;

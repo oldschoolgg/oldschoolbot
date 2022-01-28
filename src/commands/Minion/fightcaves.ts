@@ -13,6 +13,7 @@ import { formatDuration, percentChance, rand, updateBankSetting } from '../../li
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import itemID from '../../lib/util/itemID';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 const { TzTokJad } = Monsters;
 
@@ -99,7 +100,8 @@ export default class extends BotCommand {
 			throw 'JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.';
 		}
 
-		if (!user.owns(fightCavesCost)) {
+		const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, 6, 4);
+		if ( !hasEnough || !user.owns(foodBank.add('Prayer potion(4)', 10)) ) {
 			throw `JalYt, you need supplies to have a chance in the caves...come back with ${fightCavesCost}.`;
 		}
 
@@ -140,7 +142,8 @@ export default class extends BotCommand {
 		const diedPreJad = percentChance(preJadDeathChance);
 		const preJadDeathTime = diedPreJad ? rand(Time.Minute * 20, duration) : null;
 
-		await msg.author.removeItemsFromBank(fightCavesCost);
+		const { foodBank } = brewRestoreSupplyCalc(msg.author, 6, 4);
+		await msg.author.removeItemsFromBank(foodBank);
 
 		// Add slayer
 		const usersTask = await getUsersCurrentSlayerInfo(msg.author.id);
@@ -164,10 +167,11 @@ export default class extends BotCommand {
 			type: 'FightCaves',
 			jadDeathChance,
 			preJadDeathChance,
-			preJadDeathTime
+			preJadDeathTime,
+			cost: foodBank.bank
 		});
 
-		updateBankSetting(this.client, ClientSettings.EconomyStats.FightCavesCost, fightCavesCost);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.FightCavesCost, foodBank);
 
 		const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
@@ -183,7 +187,7 @@ ${
 		: ''
 }
 
-**Removed from your bank:** ${fightCavesCost}`,
+**Removed from your bank:** ${foodBank}`,
 			files: [
 				await chatHeadImage({
 					content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,

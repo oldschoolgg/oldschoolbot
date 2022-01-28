@@ -3,7 +3,6 @@ import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
-import { fightCavesCost } from '../../../commands/Minion/fightcaves';
 import { Emoji, Events } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -20,7 +19,7 @@ const TokkulID = itemID('Tokkul');
 
 export default class extends Task {
 	async run(data: FightCavesActivityTaskOptions) {
-		const { userID, channelID, jadDeathChance, preJadDeathTime, duration } = data;
+		const { userID, channelID, jadDeathChance, preJadDeathTime, duration, cost } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const tokkulReward = rand(2000, 6000);
@@ -59,7 +58,7 @@ export default class extends Task {
 			const percSuppliesToRefund = 100 - calcWhatPercent(preJadDeathTime, duration);
 			const itemLootBank = new Bank();
 
-			for (const [item, qty] of fightCavesCost.items()) {
+			for (const [item, qty] of new Bank(cost).items()) {
 				const amount = Math.floor(calcPercentOfNum(percSuppliesToRefund, qty));
 				if (amount > 0) {
 					itemLootBank.add(item.id, amount);
