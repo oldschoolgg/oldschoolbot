@@ -724,3 +724,8 @@ export function sanitizeBank(bank: Bank) {
 		}
 	}
 }
+
+export function isAtleastThisOld(date: Date | number, age: number) {
+	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
+	return difference >= age;
+}

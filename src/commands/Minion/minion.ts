@@ -35,7 +35,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, isAtleastThisOld, isValidNickname, stringMatches } from '../../lib/util';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
@@ -373,9 +373,8 @@ export default class MinionCommand extends BotCommand {
 		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
 
 		await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-		const accountIsTwoYearsOld = Date.now() - msg.author.createdTimestamp < Time.Year * 2;
 
-		const starter = accountIsTwoYearsOld
+		const starter = isAtleastThisOld(msg.author.createdTimestamp, Time.Year * 2)
 			? new Bank({
 					Shark: 300,
 					'Saradomin brew(4)': 50,
@@ -402,7 +401,7 @@ export default class MinionCommand extends BotCommand {
 				new MessageEmbed().setTitle('Your minion is now ready to use!').setDescription(
 					`You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
 
-${starter !== null ? `You received these starter items: ${starter}` : ''}.
+${starter !== null ? `**You received these starter items:** ${starter}.` : ''}
 
 🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://wiki.oldschool.gg/rules>
 
