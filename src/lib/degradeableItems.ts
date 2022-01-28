@@ -111,15 +111,6 @@ export async function degradeItem({
 	assert(typeof currentCharges === 'number');
 	const newCharges = currentCharges - chargesToDegrade;
 
-	if ( item.name === 'Void Staff' ) {
-		const mageGear = user.getGear('mage');
-		if ( mageGear.hasEquipped('Vasa cloak') ) {
-			chargesToDegrade = Math.ceil(chargesToDegrade / 2);
-		} else if ( mageGear.hasEquipped('Magic master cape') ) {
-			chargesToDegrade = Math.ceil(chargesToDegrade / 3);
-		}
-	}
-
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
 		const hasEquipped = user.getGear(degItem.setup).equippedWeapon() === item;
