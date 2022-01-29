@@ -1,4 +1,3 @@
-import { Activity } from '@prisma/client';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
@@ -20,16 +19,16 @@ export default class extends BotCommand {
 		const channelIDs = msg.guild.channels.cache.filter(c => c.type === 'text').map(c => BigInt(c.id));
 
 		const masses = (
-			(await prisma.$queryRawUnsafe(`
-select id, user_id::text, start_date, finish_date, duration, completed, group_activity, type, channel_id::text, data,
-	extract (epoch from finish_date) * 1000 + (coalesce((data->>'fakeDuration')::int, 0) -
-		(case when (data->>'fakeDuration')::int is null then 0 else duration end)) as fake_end
-from activity
-where 
-    completed = false 
-	and group_activity = true
-	and channel_id IN (${channelIDs.join(',')})
-order by fake_end`)) as Activity[]
+			await prisma.activity.findMany({
+				where: {
+					completed: false,
+					group_activity: true,
+					channel_id: { in: channelIDs }
+				},
+				orderBy: {
+					finish_date: 'asc'
+				}
+			})
 		)
 			.map(convertStoredActivityToFlatActivity)
 			.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
