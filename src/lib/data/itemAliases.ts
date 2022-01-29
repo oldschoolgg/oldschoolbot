@@ -203,7 +203,6 @@ setItemAlias(20_593, 'Armadyl godsword (LMS)');
 setItemAlias(20_408, 'Dark bow (LMS)');
 setItemAlias(20_389, 'Dragon arrow (LMS)');
 setItemAlias(20_784, 'Dragon claws (LMS)');
-setItemAlias(21_205, 'Elder maul (LMS)');
 setItemAlias(23_628, 'Ghrazi rapier (LMS)');
 setItemAlias(20_557, 'Granite maul (LMS)');
 setItemAlias(23_630, 'Heavy ballista (LMS)');
