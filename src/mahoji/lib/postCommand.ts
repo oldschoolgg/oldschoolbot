@@ -1,8 +1,6 @@
 import { captureException } from '@sentry/node';
 import { MessageEmbed, User } from 'discord.js';
 import { KlasaMessage } from 'klasa';
-import { InteractionResponseWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
-import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { client } from '../..';
 import { production } from '../../config';
@@ -10,7 +8,7 @@ import { Emoji, shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { cleanMentions } from '../../lib/util';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
-import { AbstractCommand } from './inhibitors';
+import { AbstractCommand, CommandArgs } from './inhibitors';
 
 export async function handleCommandError({
 	args,
@@ -19,7 +17,7 @@ export async function handleCommandError({
 	userID,
 	msg
 }: {
-	args: CommandOptions | string[];
+	args: CommandArgs;
 	commandName: string;
 	error: string | Error;
 	userID: string;
@@ -82,26 +80,25 @@ export async function postCommand({
 	args,
 	error,
 	msg,
-	inhibited
+	isContinue
 }: {
 	abstractCommand: AbstractCommand;
 	userID: string;
 	guildID: string | null;
 	channelID: string;
 	error: Error | string | null;
-	response: InteractionResponseWithBufferAttachments | null;
-	args: CommandOptions | string[];
+	args: CommandArgs;
 	msg: KlasaMessage | null;
-	inhibited: boolean;
+	isContinue: boolean;
 }): Promise<string | undefined> {
-	if (!inhibited && shouldTrackCommand(abstractCommand, args)) {
+	if (shouldTrackCommand(abstractCommand, args)) {
 		const commandUsage = makeCommandUsage({
 			userID,
 			channelID,
 			guildID,
 			commandName: abstractCommand.name,
 			args,
-			isContinue: null,
+			isContinue,
 			flags: null
 		});
 		await prisma.commandUsage.create({
@@ -114,7 +111,6 @@ export async function postCommand({
 	}
 
 	if (abstractCommand.attributes?.oneAtTime) {
-		console.log(`Deleting ${userID} from onecommandcache`);
 		setTimeout(() => client.oneCommandAtATimeCache.delete(userID), 1500);
 	}
 

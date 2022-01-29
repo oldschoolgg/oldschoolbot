@@ -1,13 +1,13 @@
-import { command_usage_status, NewUser } from '@prisma/client';
-import { captureException } from '@sentry/node';
+import { NewUser } from '@prisma/client';
 import { Guild, Util } from 'discord.js';
 import { Gateway, KlasaMessage, Settings } from 'klasa';
 
 import { client, mahojiClient } from '../..';
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
+import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import { convertKlasaCommandToAbstractCommand, convertMahojiCommandToAbstractCommand } from '../../mahoji/lib/util';
-import { Emoji, shouldTrackCommand } from '../constants';
+import { Emoji } from '../constants';
 import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
 import {
@@ -17,7 +17,6 @@ import {
 	convertComponentDJSComponent,
 	isGroupActivity
 } from '../util';
-import { makeCommandUsage } from '../util/commandUsage';
 import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
@@ -152,9 +151,11 @@ export async function runCommand(
 	message: KlasaMessage,
 	commandName: string,
 	args: CommandArgs,
-	isContinue = false,
+	isContinue?: boolean,
 	method = 'run'
 ) {
+	const channel = client.channels.cache.get(message.channel.id);
+
 	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
 	const command = message.client.commands.get(commandName) as BotCommand | undefined;
 	const actualCommand = mahojiCommand ?? command;
@@ -172,69 +173,61 @@ export async function runCommand(
 	});
 
 	if (inhibitedReason) {
-		return msg.channel.send(inhibitedReason);
-	}
-	if (mahojiCommand) {
-		if (Array.isArray(args)) {
-			throw new Error(`Had array of args for mahoji command called ${commandName}`);
-		}
-		const result = await runMahojiCommand({
-			msg: message,
-			options: args,
-			commandName
-		});
-		const channel = client.channels.cache.get(message.channel.id);
-		if (channelIsSendable(channel)) {
-			if (typeof result === 'string') {
-				await channel.send(result);
-			} else {
-				await channel.send({
-					...result,
-					embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
-					components: result.components?.map(convertComponentDJSComponent)
-				});
-			}
-		}
-		return;
+		return message.channel.send(inhibitedReason);
 	}
 
-	if (!Array.isArray(args)) {
-		throw new Error('Had object args for non-mahoji command');
-	}
-
-	if (!command) {
-		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
-	}
-	if (!command.enabled) {
-		throw new Error(`The ${command.name} command is disabled.`);
-	}
-
-	let commandUsage = makeCommandUsage({
-		userID: message.author.id,
-		channelID: message.channel.id,
-		guildID: message.guild?.id ?? null,
-		flags: message.flagArgs,
-		commandName: command.name,
-		args: message.args,
-		isContinue
-	});
+	let error: Error | null = null;
 
 	try {
-		// @ts-ignore Cant be typechecked
-		const result = await command[method](message, args);
-		commandUsage.status = command_usage_status.Success;
-		return result;
-	} catch (err) {
-		commandUsage.status = command_usage_status.Error;
-		message.client.emit('commandError', message, command, args, err);
-	} finally {
-		if (shouldTrackCommand(command, args)) {
-			await prisma.commandUsage
-				.create({
-					data: commandUsage
-				})
-				.catch(captureException);
+		if (mahojiCommand) {
+			if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
+			const result = await runMahojiCommand({
+				msg: message,
+				options: args,
+				commandName
+			});
+			if (channelIsSendable(channel)) {
+				if (typeof result === 'string') {
+					await channel.send(result);
+				} else {
+					await channel.send({
+						...result,
+						embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
+						components: result.components?.map(convertComponentDJSComponent)
+					});
+				}
+			}
+		} else {
+			if (!Array.isArray(args)) throw new Error('Had object args for non-mahoji command');
+			if (!command) throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
+			if (!command.enabled) throw new Error(`The ${command.name} command is disabled.`);
+
+			try {
+				// @ts-ignore Cant be typechecked
+				const result = await command[method](message, args);
+				return result;
+			} catch (err) {
+				message.client.emit('commandError', message, command, args, err);
+			}
 		}
+	} catch (err: any) {
+		if (typeof error === 'string') {
+			if (channelIsSendable(channel)) {
+				return channel.send(error);
+			}
+		}
+		error = err as Error;
+	} finally {
+		postCommand({
+			abstractCommand,
+			userID: message.author.id,
+			guildID: message.guild?.id ?? null,
+			channelID: message.channel.id,
+			args,
+			error,
+			msg: message,
+			isContinue: isContinue ?? false
+		});
 	}
 
 	return null;

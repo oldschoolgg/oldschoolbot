@@ -1,6 +1,6 @@
 import { command_usage_status, Prisma } from '@prisma/client';
-import { CommandOptions } from 'mahoji/dist/lib/types';
 
+import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { getCommandArgs } from '../../mahoji/lib/util';
 
 export function makeCommandUsage({
@@ -17,7 +17,7 @@ export function makeCommandUsage({
 	guildID: string | null;
 	flags: null | Record<string, string>;
 	commandName: string;
-	args: CommandOptions | string[];
+	args: CommandArgs;
 	isContinue: null | boolean;
 }): Prisma.CommandUsageCreateInput {
 	return {

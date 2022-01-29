@@ -101,10 +101,9 @@ export default class extends Monitor {
 				guildID,
 				channelID,
 				error,
-				response: null,
 				args: msg.args,
 				msg,
-				inhibited: inhibitedReason !== undefined
+				isContinue: false
 			});
 		}
 

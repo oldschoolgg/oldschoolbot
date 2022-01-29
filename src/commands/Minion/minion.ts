@@ -190,7 +190,7 @@ export default class MinionCommand extends BotCommand {
 					(c, inde) =>
 						`${inde + 1}. \`+${c.command_name}\` Args[${JSON.stringify(c.args)}] Date[<t:${Math.round(
 							c.date.getTime() / 1000
-						)}:R>]`
+						)}:R>] isContinue[${c.is_continue ? 'Yes' : 'No'}]`
 				)
 				.join('\n')
 		);

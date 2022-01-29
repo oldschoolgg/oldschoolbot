@@ -3,7 +3,7 @@ import { APIInteractionDataResolvedChannel, APIRole, APIUser, ICommand } from 'm
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { AbstractCommand, AbstractCommandAttributes } from './inhibitors';
+import { AbstractCommand, AbstractCommandAttributes, CommandArgs } from './inhibitors';
 
 export function convertKlasaCommandToAbstractCommand(command: BotCommand): AbstractCommand {
 	return {
@@ -41,7 +41,7 @@ export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand)
 /**
  * Options/Args in mahoji can be full/big objects for users/roles/etc, this replaces them with just an ID.
  */
-function compressMahojiArgs(options: CommandOptions) {
+function compressMahojiArgs(options: CommandArgs) {
 	let newOptions: Record<string, string | number | boolean> = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
@@ -64,15 +64,16 @@ function compressMahojiArgs(options: CommandOptions) {
 
 		newOptions.key = 'unknown?';
 	}
+	return newOptions;
 }
 
 export function getCommandArgs(
 	commandName: string,
-	args: any[] | CommandOptions
+	args: CommandArgs
 ): Prisma.InputJsonObject | Prisma.InputJsonArray | undefined {
-	if (args.length === 0) return undefined;
+	if (Array.isArray(args) && args.length === 0) return undefined;
 	if (!Array.isArray(args) && Object.keys(args).length === 0) return undefined;
 	if (commandName === 'bank') return undefined;
-	if (commandName === 'rp' && Array.isArray(args) && ['c', 'eval'].includes(args[0])) return undefined;
+	if (commandName === 'rp' && Array.isArray(args) && ['c', 'eval'].includes(args[0] as string)) return undefined;
 	return (Array.isArray(args) ? args : compressMahojiArgs(args)) as Prisma.InputJsonObject | Prisma.InputJsonArray;
 }
