@@ -65,7 +65,6 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		await msg.author.settings.sync(true);
 		const pickpocketable = Pickpocketables.find(
 			npc => stringMatches(npc.name, name) || npc.alias?.some(alias => stringMatches(alias, name))
 		);
