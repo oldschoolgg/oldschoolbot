@@ -6,6 +6,10 @@ export function cleanString(str: string): string {
 }
 
 function setItemAlias(id: number, name: string | string[], rename = true) {
+	const existingItem = Items.get(id);
+	if (!existingItem) {
+		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
+	}
 	let firstName: string | null = null;
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
