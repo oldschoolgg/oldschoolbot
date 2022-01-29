@@ -65,7 +65,9 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const pickpocketable = Pickpocketables.find(npc => stringMatches(npc.name, name));
+		const pickpocketable = Pickpocketables.find(
+			npc => stringMatches(npc.name, name) || npc.alias?.some(alias => stringMatches(alias, name))
+		);
 
 		if (!pickpocketable) {
 			return msg.channel.send(
