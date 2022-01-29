@@ -114,6 +114,7 @@ export async function postCommand({
 	}
 
 	if (abstractCommand.attributes?.oneAtTime) {
+		console.log(`Deleting ${userID} from onecommandcache`);
 		setTimeout(() => client.oneCommandAtATimeCache.delete(userID), 1500);
 	}
 

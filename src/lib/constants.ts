@@ -477,3 +477,5 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 - Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used too though.
 - You no longer use this command using \`${msg.cmdPrefix}${msg.command?.name}\`, now you use: \`/${msg.command?.name}\`
 `;
+
+export const DISABLED_COMMANDS = new Set<string>();

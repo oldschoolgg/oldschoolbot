@@ -147,7 +147,7 @@ export async function runCommand(
 	method = 'run'
 ) {
 	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
-	const command = message.client.commands.get(commandName);
+	const command = message.client.commands.get(commandName) as BotCommand | undefined;
 	const actualCommand = mahojiCommand ?? command;
 	if (!actualCommand) throw new Error('No command found');
 	const abstractCommand =
