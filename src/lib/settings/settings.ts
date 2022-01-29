@@ -175,7 +175,7 @@ export async function runCommand(
 	return null;
 }
 
-export async function getBuyLimit(user: KlasaUser) {
+export async function getBuyLimitBank(user: KlasaUser) {
 	const boughtBank = await prisma.user.findFirst({
 		where: {
 			id: user.id
@@ -188,4 +188,19 @@ export async function getBuyLimit(user: KlasaUser) {
 		throw new Error(`Found no weekly_buy_bank for ${user.sanitizedName}`);
 	}
 	return new Bank(boughtBank.weekly_buy_bank as any);
+}
+
+export async function setBuyLimitBank(user: KlasaUser, newBank: Bank) {
+	const result = await prisma.user.update({
+		where: {
+			id: user.id
+		},
+		data: {
+			weekly_buy_bank: newBank.bank
+		}
+	});
+	if (!result) {
+		throw new Error('Error storing updated weekly_buy_bank');
+	}
+	return true;
 }
