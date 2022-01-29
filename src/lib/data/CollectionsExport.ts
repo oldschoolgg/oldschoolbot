@@ -1111,22 +1111,12 @@ export const hallowedSepulchreCL = resolveItems([
 	'Dark dye',
 	'Dark acorn',
 	'Strange old lockpick',
-	'Ring of endurance (uncharged)'
-	// Not coded in the bot
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// None of the items below are in the official log
-	// 'Dark graceful hood',
-	// 'Dark graceful top',
-	// 'Dark graceful legs',
-	// 'Dark graceful boots',
-	// 'Dark graceful gloves',
-	// 'Dark graceful cape',
-	// 'Giant squirrel',
-	// 'Dark squirrel'
+	'Ring of endurance (uncharged)',
+	'Mysterious page',
+	'Mysterious page',
+	'Mysterious page',
+	'Mysterious page',
+	'Mysterious page'
 ]);
 export const lastManStandingCL = resolveItems([
 	"Deadman's chest",
