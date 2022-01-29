@@ -1,7 +1,7 @@
 import { Permissions } from 'discord.js';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { getGuildSettings } from '../lib/settings/settings';
+import { getGuildSettings, syncNewUserUsername } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import { postCommand } from '../mahoji/lib/postCommand';
@@ -54,6 +54,8 @@ export default class extends Monitor {
 	}
 
 	public async runCommand(msg: KlasaMessage) {
+		syncNewUserUsername(msg);
+
 		const command = msg.command! as BotCommand;
 		const { params } = msg;
 

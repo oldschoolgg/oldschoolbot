@@ -10,7 +10,13 @@ import { convertKlasaCommandToAbstractCommand, convertMahojiCommandToAbstractCom
 import { Emoji, shouldTrackCommand } from '../constants';
 import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
-import { channelIsSendable, convertAPIEmbedToDJSEmbed, convertComponentDJSComponent, isGroupActivity } from '../util';
+import {
+	channelIsSendable,
+	cleanUsername,
+	convertAPIEmbedToDJSEmbed,
+	convertComponentDJSComponent,
+	isGroupActivity
+} from '../util';
 import { makeCommandUsage } from '../util/commandUsage';
 import { activitySync, prisma } from './prisma';
 
@@ -53,8 +59,11 @@ export async function getNewUser(id: string): Promise<NewUser> {
 	return value;
 }
 
-export async function syncNewUserUsername(id: string, username: string) {
-	return prisma.newUser.update({ where: { id }, data: { username } });
+export async function syncNewUserUsername(message: KlasaMessage) {
+	await prisma.$queryRaw`UPDATE new_users
+SET username = ${cleanUsername(message.author.username)}
+WHERE id = ${message.author.id}
+AND ((username IS NULL) OR (username <> ${cleanUsername(message.author.username)}));`;
 }
 
 export async function getMinionName(userID: string): Promise<string> {

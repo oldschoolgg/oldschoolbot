@@ -14,7 +14,8 @@ import {
 	MessageEmbed,
 	MessageEmbedOptions,
 	MessageOptions,
-	TextChannel
+	TextChannel,
+	Util
 } from 'discord.js';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
@@ -682,4 +683,8 @@ export function allAbstractCommands(client: KlasaClient): AbstractCommand[] {
 		...(client.commands.array() as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
 		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
 	];
+}
+
+export function cleanUsername(str: string) {
+	return Util.escapeMarkdown(stripEmojis(str));
 }
