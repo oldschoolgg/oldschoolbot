@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 
-import getOSItem from '../dist/lib/util/getOSItem';
 import { buyLimit } from '../src/lib/util/buyLimit';
+import getOSItem from '../src/lib/util/getOSItem';
 
 describe('buyLimit.test', () => {
 	test('buyLimit', () => {
