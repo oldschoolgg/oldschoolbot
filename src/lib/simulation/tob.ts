@@ -95,14 +95,6 @@ export class TheatreOfBloodClass {
 			loot.add(NonUniqueTable.roll());
 		}
 
-		let petChance = isHardMode ? 500 : 650;
-		if (member.numDeaths > 0) {
-			petChance *= member.numDeaths;
-		}
-		if (roll(petChance)) {
-			loot.add("Lil' zik");
-		}
-
 		if (isHardMode) {
 			// Add 15% extra regular loot for hard mode:
 			for (const [itemID] of Object.entries(loot.bank)) {
@@ -110,6 +102,13 @@ export class TheatreOfBloodClass {
 			}
 			// Add HM Tertiary drops: dust / kits
 			loot.add(HardModeExtraTable.roll());
+		}
+		let petChance = isHardMode ? 500 : 650;
+		if (member.numDeaths > 0) {
+			petChance *= member.numDeaths;
+		}
+		if (roll(petChance)) {
+			loot.add("Lil' zik");
 		}
 
 		return loot;

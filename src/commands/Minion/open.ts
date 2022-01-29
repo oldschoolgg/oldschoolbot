@@ -237,9 +237,9 @@ export default class extends BotCommand {
 
 		if (!botOpenable) {
 			return msg.channel.send(
-				`That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
+				`That's not a valid item you can open, you can open a clue casket (${ClueTiers.map(
 					tier => tier.name
-				).join(', ')}), or another non-clue thing (${botOpenables
+				).join(', ')}), or a non-clue item (${botOpenables
 					.map(thing => thing.name)
 					.concat(Openables.map(thing => thing.name))
 					.join(', ')})`
