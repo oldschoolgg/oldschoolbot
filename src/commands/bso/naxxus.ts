@@ -217,7 +217,7 @@ export default class extends BotCommand {
 				user.getGear(degItem.setup).hasEquipped(degItem.item.name) &&
 				['melee', 'mage'].includes(degItem.setup)
 			) {
-				const chargesNeeded = degItem.charges({totalHP: NAXXUS_HP * quantity, duration, user: msg.author});
+				const chargesNeeded = degItem.charges(NAXXUS_HP * quantity, duration, msg.author);
 				const res = checkUserCanUseDegradeableItem({
 					item: degItem.item,
 					chargesToDegrade: chargesNeeded,
