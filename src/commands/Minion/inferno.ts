@@ -29,12 +29,12 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
 import { calculateInfernoItemRefund } from '../../tasks/minions/minigames/infernoActivity';
-import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -125,11 +125,11 @@ export default class extends BotCommand {
 		}
 
 		// Find if the user has enough brews&restores with enhanced ones
-		// If they do not, default back to just normals 
+		// If they do not, default back to just normals
 		const defaultBank = new Bank().add('Saradomin brew(4)', 8).add('Super restore(4)', 12);
 		const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, 8, 12);
 
-		if ( hasEnough ) cost.add(foodBank);
+		if (hasEnough) cost.add(foodBank);
 		else cost.add(defaultBank);
 
 		if (isEmergedZuk) {

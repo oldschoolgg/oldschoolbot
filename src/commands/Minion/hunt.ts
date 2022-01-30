@@ -15,10 +15,10 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import itemID from '../../lib/util/itemID';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from './../../lib/constants';
 import { Peak } from './../../tasks/WildernessPeakInterval';
-import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -201,7 +201,7 @@ export default class extends BotCommand {
 				);
 			}
 			const { hasEnough } = brewRestoreSupplyCalc(msg.author, 10, 5);
-			if ( !hasEnough ) {
+			if (!hasEnough) {
 				return msg.channel.send(
 					`To hunt ${creature.name} in the wilderness you need to have 10x Saradomin brew(4) and 5x Super restore(4) for safety.`
 				);

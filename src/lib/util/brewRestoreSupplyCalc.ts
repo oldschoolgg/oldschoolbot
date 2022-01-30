@@ -1,8 +1,11 @@
-import { KlasaUser } from "klasa";
-import { Bank } from "oldschooljs";
+import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-
-export default function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: number, restoresNeeded?: number): {foodBank: Bank, foodReason: string, hasEnough: boolean} {
+export default function brewRestoreSupplyCalc(
+	user: KlasaUser,
+	brewsNeeded: number,
+	restoresNeeded?: number
+): { foodBank: Bank; foodReason: string; hasEnough: boolean } {
 	const userItems = user.bank().items();
 	const itemBank = new Bank();
 
@@ -25,11 +28,11 @@ export default function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: numb
 				hasEnough: false,
 				foodBank: itemBank,
 				foodReason: `${user.username} does not have enough saradomin brews. ${enhancedBrews[1]} enhanced & ${brews[1]} normal found, ${brewsNeeded} required (enhanced count for 2).`
-      };
+			};
 		}
 	}
 
-	if ( !restoresNeeded ) restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
+	if (!restoresNeeded) restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 	let totalRestores = 0;
 	const enhancedRestores = userItems.filter(([item]) => item.name.toLowerCase() === 'enhanced super restore')[0] ?? [
 		'',
@@ -49,13 +52,13 @@ export default function brewRestoreSupplyCalc(user: KlasaUser, brewsNeeded: numb
 				hasEnough: false,
 				foodBank: itemBank,
 				foodReason: `${user.username} does not have enough super restores. ${enhancedRestores[1]} enhanced & ${restores[1]} normal found, ${restoresNeeded} required (enhanced count for 2).`
-      };
+			};
 		}
 	}
 
 	return {
-    hasEnough: true, 
-    foodBank: itemBank, 
-    foodReason: ''
-  };
+		hasEnough: true,
+		foodBank: itemBank,
+		foodReason: ''
+	};
 }

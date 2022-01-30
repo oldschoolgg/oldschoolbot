@@ -17,9 +17,9 @@ import { MakePartyOptions } from '../../lib/types';
 import { BossActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getKalphiteKingGearStats } from '../../lib/util/getKalphiteKingGearStats';
-import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 const minimumSoloGear = new Gear({
 	body: 'Torva platebody',

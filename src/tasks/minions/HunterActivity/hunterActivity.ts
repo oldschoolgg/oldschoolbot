@@ -17,11 +17,11 @@ import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll, stringMatches, updateBankSetting } from '../../../lib/util';
+import brewRestoreSupplyCalc from '../../../lib/util/brewRestoreSupplyCalc';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
 import { PeakTier } from './../../WildernessPeakInterval';
-import brewRestoreSupplyCalc from '../../../lib/util/brewRestoreSupplyCalc';
 
 const riskDeathNumbers = [
 	{
@@ -85,7 +85,7 @@ export default class extends Task {
 			if (gotPked && roll(riskDeathChance)) {
 				died = true;
 				const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, 10, 5);
-				if ( hasEnough ) {
+				if (hasEnough) {
 					await user.removeItemsFromBank(foodBank);
 				}
 				const newGear = { ...user.settings.get(UserSettings.Gear.Wildy) };
@@ -102,7 +102,7 @@ export default class extends Task {
 					let lostBrew = rand(1, 10);
 					let lostRestore = rand(1, 5);
 					const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, lostBrew, lostRestore);
-					if ( hasEnough ) {
+					if (hasEnough) {
 						await user.removeItemsFromBank(foodBank);
 					}
 					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, and ${foodBank}.`;

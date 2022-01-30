@@ -16,9 +16,9 @@ import { MakePartyOptions } from '../../lib/types';
 import { BossActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, itemID, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import calcDurQty from '../../lib/util/calcMassDurationQuantity';
 import { getNexGearStats } from '../../lib/util/getNexGearStats';
-import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -266,7 +266,7 @@ export default class extends BotCommand {
 
 			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
 			const { hasEnough, foodReason } = brewRestoreSupplyCalc(user, brewsNeeded);
-			if ( !hasEnough ) {
+			if (!hasEnough) {
 				throw foodReason;
 			}
 		}
@@ -286,7 +286,7 @@ export default class extends BotCommand {
 
 			const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
 			const { foodBank } = brewRestoreSupplyCalc(user, brewsNeeded);
-			
+
 			totalCost.add(foodBank);
 			await user.removeItemsFromBank(foodBank);
 			foodRemoved.push(`${foodBank.toString()} from ${user.username}`);

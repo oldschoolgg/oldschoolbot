@@ -14,6 +14,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { SkillsEnum } from '../skilling/types';
@@ -21,7 +22,6 @@ import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
-import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -247,11 +247,11 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 	if (!hasFarmer) {
 		return 'nobody with atleast level 55 Farming';
 	}
-	
+
 	const userWithoutSupplies = users.find(u => {
 		const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, 10, 5);
 		foodBank.add('Stamina potion(4)', 3);
-		return hasEnough ? !u.owns(foodBank) : !u.owns(minimumCoxSuppliesNeeded)
+		return hasEnough ? !u.owns(foodBank) : !u.owns(minimumCoxSuppliesNeeded);
 	});
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.username} doesn't have enough supplies - ${minimumCoxSuppliesNeeded}`;
@@ -544,9 +544,12 @@ export async function calcCoxInput(u: KlasaUser, solo: boolean) {
 	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 
 	// Find if the user has enough brews&restores with enhanced ones
-	// If they do not, default back to just normals 
+	// If they do not, default back to just normals
 	const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, brewsNeeded, restoresNeeded);
-	const defaultBank = new Bank().add('Saradomin brew(4)', brewsNeeded).add('Super restore(4)', restoresNeeded).add('Stamina potion(4)', solo ? 2 : 1);
+	const defaultBank = new Bank()
+		.add('Saradomin brew(4)', brewsNeeded)
+		.add('Super restore(4)', restoresNeeded)
+		.add('Stamina potion(4)', solo ? 2 : 1);
 
 	return hasEnough ? foodBank.add('Stamina potion(4)', solo ? 2 : 1) : defaultBank;
 }

@@ -11,9 +11,9 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { FightCavesActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, percentChance, rand, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import itemID from '../../lib/util/itemID';
-import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 const { TzTokJad } = Monsters;
 
@@ -101,7 +101,7 @@ export default class extends BotCommand {
 		}
 
 		const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, 6, 4);
-		if ( !hasEnough || !user.owns(foodBank.add('Prayer potion(4)', 10)) ) {
+		if (!hasEnough || !user.owns(foodBank.add('Prayer potion(4)', 10))) {
 			throw `JalYt, you need supplies to have a chance in the caves...come back with ${fightCavesCost}.`;
 		}
 

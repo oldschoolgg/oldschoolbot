@@ -67,13 +67,13 @@ export default class extends BotCommand {
 					.multiply(data.kills);
 
 				// Find if the user has enough brews&restores with enhanced ones
-				// If they do not, default back to just normals 
+				// If they do not, default back to just normals
 				const { foodBank, hasEnough } = brewRestoreSupplyCalc(data.user, brewsNeeded);
 				const defaultBank = new Bank()
 					.add('Saradomin brew(4)', brewsNeeded)
 					.add('Super restore(4)', restoresNeeded)
 					.multiply(data.kills);
-					
+
 				return userBank.has(heatResBank.bank) ? heatResBank : hasEnough ? foodBank : defaultBank;
 			},
 			mostImportantStat: 'attack_crush',

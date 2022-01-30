@@ -3,6 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
@@ -14,7 +15,6 @@ import { Skills } from '../types';
 import { assert, formatSkillRequirements, randFloat, randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
-import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 
 export const bareMinStats: Skills = {
 	attack: 90,
@@ -317,10 +317,7 @@ export async function checkTOBUser(
 
 	const { hasEnough, foodReason } = brewRestoreSupplyCalc(user, 10, 5);
 	if (!hasEnough) {
-		return [
-			true,
-			`${foodReason}`
-		];
+		return [true, `${foodReason}`];
 	}
 	const { total } = calculateTOBUserGearPercents(user);
 	if (total < 20) {
@@ -668,11 +665,11 @@ export async function calcTOBInput(u: KlasaUser) {
 	);
 
 	// Find if the user has enough brews&restores with enhanced ones
-	// If they do not, default back to just normals 
+	// If they do not, default back to just normals
 	const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, brewsNeeded, restoresNeeded);
 	const defaultBank = new Bank().add('Saradomin brew(4)', brewsNeeded).add('Super restore(4)', restoresNeeded);
 
-	if ( !hasEnough ) items.add(defaultBank);
+	if (!hasEnough) items.add(defaultBank);
 	else items.add(foodBank);
 
 	items.add('Blood rune', 110);
