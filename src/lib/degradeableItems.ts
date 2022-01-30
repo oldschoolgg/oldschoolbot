@@ -60,11 +60,11 @@ export const degradeableItems: DegradeableItem[] = [
 			totalHP = totalHP;
 			const mageGear = user.getGear('mage');
 			const minutesDuration = Math.ceil(duration / Time.Minute);
-			if ( mageGear.hasEquipped('Vasa cloak') ) {
-				return Math.ceil(minutesDuration / 2);
-			} else if ( mageGear.hasEquipped('Magic master cape') ) {
+			if ( user.hasItemEquippedAnywhere('Magic master cape') ) {
 				return Math.ceil(minutesDuration / 3);
-			}
+			} else if ( mageGear.hasEquipped('Vasa cloak') ) {
+				return Math.ceil(minutesDuration / 2);
+			};
 			return minutesDuration;
 		}
 	}
