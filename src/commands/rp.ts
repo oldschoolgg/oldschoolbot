@@ -11,6 +11,7 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client } from '..';
+import { CLIENT_ID } from '../config';
 import {
 	badges,
 	BitField,
@@ -665,16 +666,48 @@ LIMIT 10;
 				if (!input || input instanceof KlasaUser) return;
 				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
+				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
+					where: { id: CLIENT_ID },
+					select: { disabled_commands: true }
+				}))!.disabled_commands;
+				if (currentDisabledCommands.includes(command.name)) {
+					return msg.channel.send('That command is already disabled.');
+				}
+				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
+				await prisma.clientStorage.update({
+					where: {
+						id: CLIENT_ID
+					},
+					data: {
+						disabled_commands: newDisabled
+					}
+				});
 				DISABLED_COMMANDS.add(command.name);
-				return msg.channel.send(` Disabled \`${command}\`.`);
+				return msg.channel.send(`Disabled \`${command.name}\`.`);
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
 				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
-				if (!DISABLED_COMMANDS.has(command.name)) return msg.channel.send('That command is not disabled.');
+
+				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
+					where: { id: CLIENT_ID },
+					select: { disabled_commands: true }
+				}))!.disabled_commands;
+				if (!currentDisabledCommands.includes(command.name)) {
+					return msg.channel.send('That command is not disabled.');
+				}
+
+				await prisma.clientStorage.update({
+					where: {
+						id: CLIENT_ID
+					},
+					data: {
+						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
+					}
+				});
 				DISABLED_COMMANDS.delete(command.name);
-				return msg.channel.send(`Enabled \`${command}\`.`);
+				return msg.channel.send(`Enabled \`${command.name}\`.`);
 			}
 			case 'addptime': {
 				if (!input || !(input instanceof KlasaUser)) return;

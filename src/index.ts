@@ -11,6 +11,7 @@ import { botToken, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
+import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
 import { convertMahojiCommandToAbstractCommand } from './mahoji/lib/util';
@@ -82,5 +83,6 @@ client.on('raw', async event => {
 	}
 });
 client.on('ready', client.init);
+client.on('ready', onStartup);
 mahojiClient.start();
 client.login(botToken);

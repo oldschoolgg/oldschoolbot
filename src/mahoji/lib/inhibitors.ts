@@ -4,7 +4,7 @@ import { KlasaUser } from 'klasa';
 
 import { client } from '../..';
 import { production } from '../../config';
-import { BadgesEnum, BitField, BotID, Channel, PerkTier, SupportServer } from '../../lib/constants';
+import { BadgesEnum, BitField, BotID, Channel, DISABLED_COMMANDS, PerkTier, SupportServer } from '../../lib/constants';
 import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -48,7 +48,6 @@ interface Inhibitor {
 	}) => Promise<false | string>;
 }
 
-// TODO only accept string return when inhibiting to use as ephemeral error msgs?
 const inhibitors: Inhibitor[] = [
 	{
 		name: 'settingSyncer',
@@ -102,7 +101,6 @@ const inhibitors: Inhibitor[] = [
 		}
 	},
 	{
-		// verified
 		name: 'oneAtTime',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.oneAtTime) return false;
@@ -113,7 +111,6 @@ const inhibitors: Inhibitor[] = [
 		}
 	},
 	{
-		// verified
 		name: 'ironCantUse',
 		run: async ({ user, command }) => {
 			if (command.attributes?.ironCantUse && user.settings.get(UserSettings.Minion.Ironman)) {
@@ -124,8 +121,13 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: async ({ command, guild }) => {
-			if (command.attributes?.enabled === false) return 'This command is globally disabled.';
+		run: async ({ command, guild, user }) => {
+			if (
+				!client.owners.has(user) &&
+				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
+			) {
+				return 'This command is globally disabled.';
+			}
 			if (!guild) return false;
 			const settings = await getGuildSettings(guild);
 			if (settings.get(GuildSettings.DisabledCommands).includes(command.name)) {

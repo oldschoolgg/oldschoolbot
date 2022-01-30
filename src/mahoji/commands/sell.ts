@@ -42,7 +42,8 @@ export const sellCommand: OSBMahojiCommand = {
 			inputBank: user.bank(),
 			inputStr: options.items,
 			filters: options.filter ? [options.filter] : undefined,
-			search: options.search
+			search: options.search,
+			maxSize: 50
 		});
 
 		bankToSell.filter(i => Boolean(i.tradeable), true);
