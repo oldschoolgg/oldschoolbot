@@ -193,13 +193,14 @@ export async function getBuyLimitBank(user: KlasaUser) {
 	return new Bank(boughtBank.weekly_buy_bank as any);
 }
 
-export async function setBuyLimitBank(user: KlasaUser, newBank: Bank) {
+export async function addToBuyLimitBank(user: KlasaUser, newBank: Bank) {
+	const current = await getBuyLimitBank(user);
 	const result = await prisma.user.update({
 		where: {
 			id: user.id
 		},
 		data: {
-			weekly_buy_bank: newBank.bank
+			weekly_buy_bank: current.add(newBank).bank
 		}
 	});
 	if (!result) {
