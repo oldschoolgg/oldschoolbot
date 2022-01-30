@@ -4197,10 +4197,10 @@ lru_map@^0.3.3:
   resolved "https://registry.yarnpkg.com/lru_map/-/lru_map-0.3.3.tgz#b5c8351b9464cbd750335a79650a0ec0e56118dd"
   integrity sha1-tcg1G5Rky9dQM1p5ZQoOwOVhGN0=
 
-mahoji@^0.0.21:
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.21.tgz#1c2ac68a98f9668d29eb3c703806ebd2f99fcd29"
-  integrity sha512-HMZUdR8s5T6WV2VUoX/J51MgRQvAu92IntwuMzLfsR7zPLTmK19iscKJUue7UjguebjtP7j5lrOopD4nhgVduA==
+mahoji@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.3.tgz#bcd8c2d14d1b3a29bc46d7178d7cb0e317da7e71"
+  integrity sha512-AwK+MNwjutbbw9U1mmg0DX2LgeYt76AuBixiSEVDesvs8YFAxPbzYJ39caDrRRIXx0yRn4Z5rsfbnTqN+U+GfA==
   dependencies:
     "@discordjs/rest" "^0.2.0-canary.0"
     fastify "^3.21.0"
