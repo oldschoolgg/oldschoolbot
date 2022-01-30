@@ -1,25 +1,9 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
-import {
-	Channel,
-	Client,
-	DMChannel,
-	Guild,
-	MessageActionRow,
-	MessageActionRowOptions,
-	MessageButton,
-	MessageButtonStyleResolvable,
-	MessageComponentType,
-	MessageEmbed,
-	MessageEmbedOptions,
-	MessageOptions,
-	TextChannel,
-	Util
-} from 'discord.js';
+import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
-import { APIActionRowComponent, APIEmbed, ComponentType } from 'mahoji';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -27,15 +11,11 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
-import { mahojiClient } from '..';
-import { AbstractCommand } from '../mahoji/lib/inhibitors';
-import { convertKlasaCommandToAbstractCommand, convertMahojiCommandToAbstractCommand } from '../mahoji/lib/util';
 import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
-import { BotCommand } from './structures/BotCommand';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
@@ -644,45 +624,9 @@ export function sanitizeBank(bank: Bank) {
 	}
 }
 
-export function convertAPIEmbedToDJSEmbed(embed: APIEmbed) {
-	const data: MessageEmbedOptions = { ...embed, timestamp: embed.timestamp ? Number(embed.timestamp) : undefined };
-	return new MessageEmbed(data);
-}
-
-export function convertComponentDJSComponent(component: APIActionRowComponent): MessageActionRow {
-	const data: MessageActionRowOptions = {
-		components: component.components.map(cp => {
-			if (cp.type === ComponentType.Button) {
-				return {
-					...cp,
-					emoji: cp.emoji?.id,
-					style: cp.style as unknown as MessageButtonStyleResolvable,
-					type: cp.type as unknown as MessageComponentType
-				};
-			}
-			return {
-				...cp,
-				options: cp.options.map(opt => ({
-					...opt,
-					emoji: opt.emoji?.id
-				})),
-				type: cp.type as unknown as MessageComponentType
-			};
-		})
-	};
-	return new MessageActionRow(data);
-}
-
 export function truncateString(str: string, maxLen: number) {
 	if (str.length < maxLen) return str;
 	return `${str.slice(0, maxLen - 3)}...`;
-}
-
-export function allAbstractCommands(client: KlasaClient): AbstractCommand[] {
-	return [
-		...(client.commands.array() as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
-		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
-	];
 }
 
 export function cleanUsername(str: string) {

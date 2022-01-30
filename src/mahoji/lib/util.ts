@@ -1,7 +1,25 @@
 import { Prisma } from '@prisma/client';
-import { APIInteractionDataResolvedChannel, APIRole, APIUser, ICommand } from 'mahoji';
+import {
+	MessageActionRow,
+	MessageActionRowOptions,
+	MessageButtonStyleResolvable,
+	MessageComponentType,
+	MessageEmbed,
+	MessageEmbedOptions
+} from 'discord.js';
+import { KlasaClient } from 'klasa';
+import {
+	APIActionRowComponent,
+	APIEmbed,
+	APIInteractionDataResolvedChannel,
+	APIRole,
+	APIUser,
+	ComponentType,
+	ICommand
+} from 'mahoji';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
+import { mahojiClient } from '../..';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AbstractCommand, AbstractCommandAttributes, CommandArgs } from './inhibitors';
 
@@ -76,4 +94,39 @@ export function getCommandArgs(
 	if (commandName === 'bank') return undefined;
 	if (commandName === 'rp' && Array.isArray(args) && ['c', 'eval'].includes(args[0] as string)) return undefined;
 	return (Array.isArray(args) ? args : compressMahojiArgs(args)) as Prisma.InputJsonObject | Prisma.InputJsonArray;
+}
+
+export function convertAPIEmbedToDJSEmbed(embed: APIEmbed) {
+	const data: MessageEmbedOptions = { ...embed, timestamp: embed.timestamp ? Number(embed.timestamp) : undefined };
+	return new MessageEmbed(data);
+}
+
+export function convertComponentDJSComponent(component: APIActionRowComponent): MessageActionRow {
+	const data: MessageActionRowOptions = {
+		components: component.components.map(cp => {
+			if (cp.type === ComponentType.Button) {
+				return {
+					...cp,
+					emoji: cp.emoji?.id,
+					style: cp.style as unknown as MessageButtonStyleResolvable,
+					type: cp.type as unknown as MessageComponentType
+				};
+			}
+			return {
+				...cp,
+				options: cp.options.map(opt => ({
+					...opt,
+					emoji: opt.emoji?.id
+				})),
+				type: cp.type as unknown as MessageComponentType
+			};
+		})
+	};
+	return new MessageActionRow(data);
+}
+export function allAbstractCommands(client: KlasaClient): AbstractCommand[] {
+	return [
+		...(client.commands.array() as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
+		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
+	];
 }

@@ -30,7 +30,6 @@ import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import {
-	allAbstractCommands,
 	asyncExec,
 	channelIsSendable,
 	cleanString,
@@ -44,6 +43,7 @@ import {
 import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../lib/util/webhook';
+import { allAbstractCommands } from '../mahoji/lib/util';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
