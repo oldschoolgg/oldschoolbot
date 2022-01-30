@@ -1,7 +1,8 @@
 import { command_usage_status, NewUser, Prisma } from '@prisma/client';
 import { captureException } from '@sentry/node';
 import { Guild, Util } from 'discord.js';
-import { Gateway, KlasaMessage, Settings } from 'klasa';
+import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
 import { Emoji, getCommandArgs, shouldTrackCommand } from '../constants';
@@ -175,4 +176,34 @@ export async function runCommand(
 	}
 
 	return null;
+}
+
+export async function getBuyLimitBank(user: KlasaUser) {
+	const boughtBank = await prisma.user.findFirst({
+		where: {
+			id: user.id
+		},
+		select: {
+			weekly_buy_bank: true
+		}
+	});
+	if (!boughtBank) {
+		throw new Error(`Found no weekly_buy_bank for ${user.sanitizedName}`);
+	}
+	return new Bank(boughtBank.weekly_buy_bank as any);
+}
+
+export async function setBuyLimitBank(user: KlasaUser, newBank: Bank) {
+	const result = await prisma.user.update({
+		where: {
+			id: user.id
+		},
+		data: {
+			weekly_buy_bank: newBank.bank
+		}
+	});
+	if (!result) {
+		throw new Error('Error storing updated weekly_buy_bank');
+	}
+	return true;
 }
