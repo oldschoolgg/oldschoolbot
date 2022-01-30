@@ -3,7 +3,7 @@ import { calcPercentOfNum, calcWhatPercent, increaseNumByPercent, reduceNumByPer
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { degradeableItems, degradeItem } from '../../lib/degradeableItems';
+import { checkUserCanUseDegradeableItem, degradeableItems, degradeItem } from '../../lib/degradeableItems';
 
 import { GearStats } from '../../lib/gear';
 import { Naxxus } from '../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
@@ -99,6 +99,8 @@ function calcSetupPercent(
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
+			usage: '[quantity:int{1,100}]',
+			usageDelim: ' ',
 			oneAtTime: true,
 			aliases: ['naxx'],
 			altProtection: true,
@@ -108,11 +110,11 @@ export default class extends BotCommand {
 
 	@requiresMinion
 	@minionNotBusy
-	async run(msg: KlasaMessage) {
-		const quantity = 1;
-
+	async run(msg: KlasaMessage, [quantity]: [number | null]) {
 		const user = msg.author;
-
+		if (typeof quantity === 'string') {
+			quantity = null;
+		}
 		const [hasReqs, rejectReason] = user.hasMonsterRequirements(Naxxus);
 		if (!hasReqs) {
 			return msg.channel.send(`${user.username} doesn't have the requirements for this monster: ${rejectReason}`);
@@ -174,6 +176,16 @@ export default class extends BotCommand {
 			}
 		});
 
+		const maxTripLength = msg.author.maxTripLength('Naxxus');
+		console.log(Math.floor(maxTripLength / effectiveTime), quantity)
+		// If no quantity provided, set it to the max.
+		if (quantity == null) {
+			quantity = Math.floor(maxTripLength / effectiveTime);
+		}
+		if ( quantity * effectiveTime > maxTripLength ) {
+			return msg.channel.send(`The max number of Naxxus you can do is ${Math.floor(maxTripLength / effectiveTime)}!`);
+		};
+
 		const kc = user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0;
 		let brewsNeeded = 20;
 		if (kc > 500) brewsNeeded *= 0.2;
@@ -182,7 +194,7 @@ export default class extends BotCommand {
 		else if (kc > 200) brewsNeeded *= 0.8;
 
 		brewsNeeded *= quantity;
-
+		console.log(brewsNeeded, quantity)
 		let { hasEnough, foodBank, foodReason } = brewRestoreSupplyCalc(user, brewsNeeded);
 
 		if (!hasEnough) {
@@ -204,6 +216,14 @@ export default class extends BotCommand {
 		for (const degItem of degradeableItems) {
 			if ( user.getGear(degItem.setup).hasEquipped(degItem.item.name) && ['melee', 'mage'].includes(degItem.setup) ) {
 				const chargesNeeded = degItem.charges(NAXXUS_HP * quantity, duration, msg.author);
+				const res = checkUserCanUseDegradeableItem({
+					item: degItem.item,
+					chargesToDegrade: chargesNeeded,
+					user: msg.author
+				});
+				if ( !res.hasEnough ) {
+					return msg.channel.send(res.userMessage!);
+				}
 				await degradeItem({
 					item: degItem.item,
 					chargesToDegrade: chargesNeeded,
