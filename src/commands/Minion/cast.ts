@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { table } from 'table';
 
@@ -43,6 +43,8 @@ export default class extends BotCommand {
 		}
 
 		const spell = Castables.find(spell => stringMatches(spell.name, name));
+		const boosts = [];
+		const missedBoosts = [];
 
 		if (!spell) {
 			const spellsTable = table([
@@ -85,6 +87,41 @@ export default class extends BotCommand {
 
 		let timeToCast = spell.ticks * (Time.Second * 0.6) + Time.Second / 4; // Extra 0.25 seconds for banking etc.
 
+		if (spell.travelTime) {
+			timeToCast += spell.travelTime / 27; // Cast 27 at a time, scale down to per cast
+			if (msg.author.hasGracefulEquipped()) {
+				timeToCast = reduceNumByPercent(timeToCast, 20); // 20% boost for having graceful
+				boosts.push('20% for Graceful outfit');
+			}
+		}
+
+		if (spell.skillBoosts) {
+			let skill: keyof typeof spell.skillBoosts = 'Agility';
+			for (skill in spell.skillBoosts) {
+				if (!spell.hasOwnProperty(skill)) continue;
+				const boostLevels = spell.skillBoosts[skill]!.map(boost => boost[0]);
+				const boostPercentages = spell.skillBoosts[skill]!.map(boost => boost[1]);
+
+				const availableBoost = boostLevels.find(
+					boost => msg.author.skillLevel(skill.toLowerCase() as SkillsEnum) >= boost
+				);
+				if (availableBoost) {
+					const boostIndex = boostLevels.indexOf(availableBoost);
+
+					timeToCast = reduceNumByPercent(timeToCast, boostPercentages[boostIndex]); // Apply a skill boost based on tier
+					boosts.push(`${boostPercentages[boostIndex]}% for ${availableBoost}+ ${skill}`);
+
+					if (boostIndex > 0) {
+						missedBoosts.push(
+							`${boostPercentages[boostIndex - 1]}% for ${boostLevels[boostIndex - 1]}+ ${skill}`
+						);
+					}
+				} else {
+					const worstBoost = spell.skillBoosts[skill]![spell.skillBoosts[skill]!.length - 1];
+					missedBoosts.push(`${worstBoost[1]}% for ${worstBoost[0]}+ ${skill}`);
+				}
+			}
+		}
 		const maxTripLength = msg.author.maxTripLength('Casting');
 
 		if (quantity === null) {
@@ -94,7 +131,7 @@ export default class extends BotCommand {
 			if (max < quantity && max !== 0) quantity = max;
 		}
 
-		const duration = quantity * timeToCast;
+		let duration = quantity * timeToCast;
 
 		if (duration > maxTripLength) {
 			return msg.channel.send(
@@ -152,7 +189,9 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
 				duration
-			)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${xpPerHr}**`
+			)} to finish.\nRemoved ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${xpPerHr}**${
+				boosts.length > 0 ? `\n**Boosts**: ${boosts.join(', ')}` : ''
+			}${missedBoosts.length > 0 ? `\n**Missed**: ${missedBoosts.join(', ')}` : ''}`
 		);
 	}
 }

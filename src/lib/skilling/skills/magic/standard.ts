@@ -651,15 +651,22 @@ const Standard: Castable[] = [
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-	// No implemented use
-	// {
-	// 	name: 'Charge water orb',
-	// 	levels: { Magic: 56 },
-	// 	xp: { Magic: 66 },
-	//   input: new Bank().add('Unpowered orb', 1).add('Water rune', 30).add('Cosmic rune', 3),
-	// 	category: MagicTypes.Enchant,
-	// 	ticks: 3
-	// },
+	{
+		name: 'Charge water orb',
+		levels: { Magic: 56 },
+		xp: { Magic: 66 },
+		input: new Bank().add('Unpowered orb', 1).add('Water rune', 30).add('Cosmic rune', 3),
+		output: new Bank().add('Water orb', 1),
+		category: MagicTypes.Enchant,
+		ticks: 3,
+		travelTime: 375_000,
+		skillBoosts: {
+			Agility: [
+				[80, 44],
+				[70, 38]
+			]
+		}
+	},
 	// Diamond
 	{
 		name: 'Enchant diamond necklace',
@@ -735,15 +742,16 @@ const Standard: Castable[] = [
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-	// No implemented use
-	// {
-	// 	name: 'Charge earth orb',
-	// 	levels: { Magic: 60 },
-	// 	xp: { Magic: 70 },
-	//   input: new Bank().add('Unpowered orb', 1).add('Earth rune', 30).add('Cosmic rune', 3),
-	// 	category: MagicTypes.Enchant,
-	// 	ticks: 3
-	// },
+	{
+		name: 'Charge earth orb',
+		levels: { Magic: 60 },
+		xp: { Magic: 70 },
+		input: new Bank().add('Unpowered orb', 1).add('Earth rune', 30).add('Cosmic rune', 3),
+		output: new Bank().add('Earth orb', 1),
+		category: MagicTypes.Enchant,
+		ticks: 3,
+		travelTime: 200_000
+	},
 	{
 		// Double check xp gains
 		name: 'Bones to peaches',
@@ -794,15 +802,22 @@ const Standard: Castable[] = [
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-	// No implemented use
-	// {
-	// 	name: 'Charge fire orb',
-	// 	levels: { Magic: 63 },
-	// 	xp: { Magic: 73 },
-	//   input: new Bank().add('Unpowered orb', 1).add('Fire rune', 30).add('Cosmic rune', 3),
-	// 	category: MagicTypes.Enchant,
-	// 	ticks: 3
-	// },
+	{
+		name: 'Charge fire orb',
+		levels: { Magic: 63 },
+		xp: { Magic: 73 },
+		input: new Bank().add('Unpowered orb', 1).add('Fire rune', 30).add('Cosmic rune', 3),
+		output: new Bank().add('Fire orb', 1),
+		category: MagicTypes.Enchant,
+		ticks: 3,
+		travelTime: 380_000,
+		skillBoosts: {
+			Agility: [
+				[80, 45],
+				[70, 38]
+			]
+		}
+	},
 	{
 		name: 'Ape atoll teleport',
 		levels: { Magic: 64 },
@@ -819,15 +834,16 @@ const Standard: Castable[] = [
 		category: MagicTypes.Combat,
 		ticks: 5
 	},
-	// No implemented use
-	// {
-	// 	name: 'Charge air orb',
-	// 	levels: { Magic: 66 },
-	// 	xp: { Magic: 76 },
-	//   input: new Bank().add('Unpowered orb', 1).add('Air rune', 30).add('Cosmic rune', 3),
-	// 	category: MagicTypes.Enchant,
-	// 	ticks: 3
-	// },
+	{
+		name: 'Charge air orb',
+		levels: { Magic: 66 },
+		xp: { Magic: 76 },
+		input: new Bank().add('Unpowered orb', 1).add('Air rune', 30).add('Cosmic rune', 3),
+		output: new Bank().add('Air orb', 1),
+		category: MagicTypes.Enchant,
+		ticks: 3,
+		travelTime: 200_000
+	},
 	{
 		name: 'Vulnerability',
 		levels: { Magic: 66 },

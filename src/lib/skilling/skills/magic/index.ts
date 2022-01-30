@@ -21,6 +21,8 @@ export interface Castable {
 	ticks: number;
 	qpRequired?: number;
 	gpCost?: number;
+	travelTime?: number;
+	skillBoosts?: { [key in EnumKeys]?: number[][] };
 }
 
 export const Castables: Castable[] = [...Standard, ...Arceuus, ...Lunar, ...Ancients];
