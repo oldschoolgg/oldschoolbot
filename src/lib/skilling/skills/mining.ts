@@ -150,7 +150,7 @@ const ores: Ore[] = [
 		clueScrollChance: 46_350
 	},
 	{
-		level: 99,
+		level: 105,
 		xp: 275,
 		id: 70_011,
 		name: 'Dark Animica',
