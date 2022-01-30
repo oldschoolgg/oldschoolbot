@@ -155,6 +155,12 @@ const Skillcapes: Skillcape[] = [
 		hood: itemID('Slayer hood'),
 		untrimmed: itemID('Slayer cape'),
 		trimmed: itemID('Slayer cape(t)')
+	},
+	{
+		skill: SkillsEnum.Invention,
+		hood: itemID('Invention hood'),
+		untrimmed: itemID('Invention cape'),
+		trimmed: itemID('Invention cape(t)')
 	}
 ];
 
@@ -259,6 +265,10 @@ export const MasterSkillcapes: MasterSkillcape[] = [
 	{
 		skill: SkillsEnum.Slayer,
 		item: getOSItem('Slayer master cape')
+	},
+	{
+		skill: SkillsEnum.Invention,
+		item: getOSItem('Invention master cape')
 	}
 ];
 

@@ -460,7 +460,8 @@ export const skillEmoji = {
 	cml: '<:CrystalMathLabs:364657225249062912>',
 	clock: '<:ehpclock:352323705210142721>',
 	combat: '<:combat:802136963956080650>',
-	dungeoneering: '<:dungeoneering:828683755198873623>'
+	dungeoneering: '<:dungeoneering:828683755198873623>',
+	invention: '<:Invention:936219232146980874>'
 };
 
 export const LEVEL_99_XP = convertLVLtoXP(99);

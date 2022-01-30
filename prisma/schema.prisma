@@ -717,6 +717,7 @@ enum xp_gains_skill_enum {
   hitpoints
   dungeoneering
   slayer
+  invention
 }
 
 enum tame_growth {
