@@ -250,11 +250,11 @@ export default class extends BotCommand {
 				msg.author.getGear(degItemCanUse.attackStyle).hasEquipped(degItemCanUse.item.id);
 			if (isUsing) {
 				const degradeableItem = degradeableItems.find(item => item.item.name === degItemCanUse.item.name);
-				const estimatedChargesNeeded = degradeableItem!.charges({
-					totalHP: totalMonsterHP,
-					duration: estimatedQuantity * timeToFinish,
-					user: msg.author
-				});
+				const estimatedChargesNeeded = degradeableItem!.charges(
+					totalMonsterHP,
+					estimatedQuantity * timeToFinish,
+					msg.author
+				);
 				const res = checkUserCanUseDegradeableItem({
 					item: degItemCanUse.item,
 					chargesToDegrade: estimatedChargesNeeded,
@@ -633,7 +633,7 @@ export default class extends BotCommand {
 			const degradeableItem = degradeableItems.find(item => item.item.name === degItem.item.name);
 			boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
 			duration = reduceNumByPercent(duration, degItem.boost);
-			const chargesNeeded = degradeableItem!.charges({totalHP: monsterHP * quantity, duration, user: msg.author});
+			const chargesNeeded = degradeableItem!.charges(monsterHP * quantity, duration, msg.author);
 			await degradeItem({
 				item: degItem.item,
 				chargesToDegrade: chargesNeeded,
