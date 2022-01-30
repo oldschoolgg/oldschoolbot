@@ -159,7 +159,7 @@ const Grimy: Mixable[] = [
 	},
 	{
 		name: 'Korulsi',
-		aliases: ['grimy korulsi'],
+		aliases: ['grimy korulsi', 'korulsi'],
 		id: itemID('Korulsi'),
 		level: 110,
 		xp: 25,
