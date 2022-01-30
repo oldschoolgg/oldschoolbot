@@ -364,7 +364,7 @@ export const effectiveMonsters = [
 	{
 		id: Naxxus.id,
 		name: 'Naxxus',
-		aliases: ['naxx', 'nax']
+		aliases: ['naxx', 'nax', 'naxxus']
 	},
 	{
 		id: Ignecarus.id,

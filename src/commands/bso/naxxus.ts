@@ -177,7 +177,6 @@ export default class extends BotCommand {
 		});
 
 		const maxTripLength = msg.author.maxTripLength('Naxxus');
-		console.log(Math.floor(maxTripLength / effectiveTime), quantity)
 		// If no quantity provided, set it to the max.
 		if (quantity == null) {
 			quantity = Math.floor(maxTripLength / effectiveTime);
@@ -194,7 +193,6 @@ export default class extends BotCommand {
 		else if (kc > 200) brewsNeeded *= 0.8;
 
 		brewsNeeded *= quantity;
-		console.log(brewsNeeded, quantity)
 		let { hasEnough, foodBank, foodReason } = brewRestoreSupplyCalc(user, brewsNeeded);
 
 		if (!hasEnough) {
@@ -203,12 +201,12 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (!user.bank().has(new Bank().add('Enhanced Divine Water', 2))) {
+		if (!user.bank().has(new Bank().add('Enhanced Divine Water', 2 * quantity))) {
 			return msg.channel.send(
 				`${user.username} doesn't have the food requirements for this monster: Requires 2 Enhanced Divine Water`
 			);
 		}
-		foodBank.add('Enhanced Divine Water', 2);
+		foodBank.add('Enhanced Divine Water', 2 * quantity);
 
 		const duration = effectiveTime * quantity;
 		// Some degrading items use charges based on DURATION
