@@ -11,7 +11,7 @@ export function buyLimit({
 }: {
 	buyLimitBank: Bank;
 	/**
-	 * The price multiplier increases by 1 for each multiple of this amount they have bought. (1x, 2x, 3x, etc)
+	 * The price multiplier doubles for every multiple of this amount they have bought
 	 */
 	increaseFactor: number;
 	/**
@@ -34,8 +34,6 @@ export function buyLimit({
 
 	const maxCanBuy = absoluteLimit - amountBought;
 	const allowedBuyAmount = quantityBeingBought > maxCanBuy ? maxCanBuy : quantityBeingBought;
-	// CHANGE THIS TO MATCH currentMultiplier
-	// let currentMultiplier = Math.floor(amountBought / increaseFactor) + 1;
 	let currentMultiplier = Math.pow(2, Math.floor(amountBought / increaseFactor));
 	const leftOvers = amountBought % increaseFactor;
 

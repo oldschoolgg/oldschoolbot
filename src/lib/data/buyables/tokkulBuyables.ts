@@ -57,7 +57,7 @@ const TokkulShopItems: TokkulShopItem[] = [
 		inputItem: itemID('Coal'),
 		tokkulReturn: 4,
 		diaryTokkulReturn: 9,
-		buyLimitFactor: 800
+		buyLimitFactor: 1300
 	},
 	{
 		name: 'Gold ore',
