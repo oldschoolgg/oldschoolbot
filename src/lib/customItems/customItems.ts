@@ -3125,3 +3125,16 @@ setCustomItem(
 	},
 	100_000
 );
+
+setCustomItem(
+	52_616,
+	'Double loot token',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000_000
+);

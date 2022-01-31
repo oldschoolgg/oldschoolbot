@@ -1,8 +1,10 @@
+import { randInt, Time } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { bossActiveIsActiveOrSoonActive, bossEvents, startBossEvent } from '../../lib/bossEvents';
 import { BitField } from '../../lib/constants';
+import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { dyedItems } from '../../lib/dyedItems';
 import { monkeyTiers } from '../../lib/monkeyRumble';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -189,6 +191,18 @@ const usables = [
 			await msg.author.removeItemsFromBank(new Bank().add('Slepey tablet'));
 			await msg.author.settings.update(UserSettings.BitField, BitField.HasSlepeyTablet);
 			return msg.channel.send('You used your Slepey tablet, and unlocked the Slepe teleport.');
+		}
+	},
+	{
+		item: getOSItem('Double loot token'),
+		run: async (msg: KlasaMessage) => {
+			await addToDoubleLootTimer(
+				msg.client as KlasaClient,
+				Time.Minute * randInt(6, 36),
+				`${msg.author} used a Double Loot token!`
+			);
+			await msg.author.removeItemsFromBank(new Bank().add('Double loot token'));
+			return msg.channel.send('You used your Double Loot Token!');
 		}
 	}
 ];
