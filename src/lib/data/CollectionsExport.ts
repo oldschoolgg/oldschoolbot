@@ -1112,11 +1112,11 @@ export const hallowedSepulchreCL = resolveItems([
 	'Dark acorn',
 	'Strange old lockpick',
 	'Ring of endurance (uncharged)',
-	'Mysterious page',
-	'Mysterious page',
-	'Mysterious page',
-	'Mysterious page',
-	'Mysterious page'
+	'Mysterious page 1',
+	'Mysterious page 2',
+	'Mysterious page 3',
+	'Mysterious page 4',
+	'Mysterious page 5'
 ]);
 export const lastManStandingCL = resolveItems([
 	"Deadman's chest",
