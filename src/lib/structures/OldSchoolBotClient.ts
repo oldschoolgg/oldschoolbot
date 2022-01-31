@@ -1,6 +1,7 @@
 import { Client, KlasaClientOptions } from 'klasa';
 
 import { clientOptions } from '../config';
+import { initCrons } from '../crons';
 import { prisma } from '../settings/prisma';
 import { getGuildSettings, syncActivityCache } from '../settings/settings';
 import { startupScripts } from '../startupScripts';
@@ -63,6 +64,7 @@ export class OldSchoolBotClient extends Client {
 	}
 
 	init = () => {
+		initCrons();
 		this.refreshEmojis();
 	};
 }

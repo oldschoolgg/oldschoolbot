@@ -371,6 +371,8 @@ model User {
   tob_cost Json @default("{}") @db.Json
   tob_loot Json @default("{}") @db.Json
 
+  weekly_buy_bank Json @default("{}") @db.Json
+
 
   @@map("users")
 }
