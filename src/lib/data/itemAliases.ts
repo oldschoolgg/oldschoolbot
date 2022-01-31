@@ -223,3 +223,10 @@ setItemAlias(1563, 'Brown cat');
 setItemAlias(1564, 'Black cat');
 setItemAlias(1565, 'Grey and brown cat');
 setItemAlias(1566, 'Grey and blue cat');
+
+// Sepulchre pages
+setItemAlias(24_763, 'Mysterious page 1');
+setItemAlias(24_765, 'Mysterious page 2');
+setItemAlias(24_767, 'Mysterious page 3');
+setItemAlias(24_769, 'Mysterious page 4');
+setItemAlias(24_771, 'Mysterious page 5');

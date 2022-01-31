@@ -5,6 +5,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { ItemBank } from '../../types';
 import { roll } from '../../util';
+import resolveItems from '../../util/resolveItems';
 
 const LowTierCoffin = new LootTable()
 	.add("Monk's robe top")
@@ -108,7 +109,15 @@ export const sepulchreBoosts = resolveNameBank({
 	'Hallowed hammer': 4
 });
 
-export function openCoffin(floor: number): ItemBank {
+const pages = resolveItems([
+	'Mysterious page 1',
+	'Mysterious page 2',
+	'Mysterious page 3',
+	'Mysterious page 4',
+	'Mysterious page 5'
+]);
+
+export function openCoffin(floor: number, cl: Bank): ItemBank {
 	const loot = new Bank();
 	const floorObj = sepulchreFloors[floor - 1];
 	if (roll(floorObj.lockpickCoffinChance)) {
@@ -116,5 +125,10 @@ export function openCoffin(floor: number): ItemBank {
 	}
 	loot.add(floorObj.coffinTable.roll());
 	loot.add('Hallowed mark', randInt(floorObj.marksRange[0], floorObj.marksRange[1]));
+
+	const page = pages[floor - 1];
+	if (!cl.has(page) && roll(10)) {
+		loot.add(page);
+	}
 	return loot.bank;
 }
