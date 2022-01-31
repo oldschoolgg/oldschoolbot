@@ -29,7 +29,7 @@ export default class extends BotCommand {
 			examples: ['+tearsofguthix'],
 			aliases: ['tog'],
 			description:
-				'Allows you to visit Juna and drink from the Tears of Guthix for some XP in your lowest xp skill.'
+				'Allows you to tell Juna a story and drink from the Tears of Guthix for some XP in your lowest xp skill.'
 		});
 	}
 
@@ -53,7 +53,7 @@ export default class extends BotCommand {
 		const userQP = msg.author.settings.get(UserSettings.QP);
 		if (userQP < 43) {
 			return msg.channel.send(
-				`**${Emoji.Snake} Juna says...** You may drink from the Tears of Guthix when you have a story to tell Juna |43+ QP|.`
+				`**${Emoji.Snake} Juna says...** You may drink from the Tears of Guthix when you have a story to tell me |43+ QP|.`
 			);
 		}
 
