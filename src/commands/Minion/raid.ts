@@ -186,11 +186,12 @@ export default class extends BotCommand {
 				if (
 					isChallengeMode &&
 					!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
+					!user.hasItemEquippedOrInBank('Bow of faerdhinen (c)') &&
 					!user.hasItemEquippedOrInBank('Twisted bow')
 				) {
 					return [
 						true,
-						'You need either a Dragon hunter crossbow or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
+						'You need either a Twisted bow, Bow of faerdhinen (c) or Dragon hunter crossbow to attempt Challenge Mode Chambers of Xeric.'
 					];
 				}
 
