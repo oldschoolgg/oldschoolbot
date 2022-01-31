@@ -64,7 +64,6 @@ import {
 	generalGraardorCL,
 	giantMoleCL,
 	gnomeRestaurantCL,
-	godWarsDungeonCL,
 	gracefulCL,
 	grotesqueGuardiansCL,
 	hallowedSepulchreCL,
@@ -233,30 +232,6 @@ export const allCollectionLogs: ICollection = {
 				alias: Monsters.GiantMole.aliases,
 				allItems: Monsters.GiantMole.allItems,
 				items: giantMoleCL
-			},
-			'God Wars Dungeon': {
-				alias: ['gwd', 'god wars'],
-				kcActivity: {
-					Default: [
-						Monsters.CommanderZilyana.name,
-						Monsters.KrilTsutsaroth.name,
-						Monsters.Kreearra.name,
-						Monsters.GeneralGraardor.name
-					]
-				},
-				allItems: (() => {
-					return [
-						...new Set(
-							...[
-								Monsters.CommanderZilyana.allItems,
-								Monsters.KrilTsutsaroth.allItems,
-								Monsters.Kreearra.allItems,
-								Monsters.GeneralGraardor.allItems
-							]
-						)
-					];
-				})(),
-				items: godWarsDungeonCL
 			},
 			'Grotesque Guardians': {
 				alias: Monsters.GrotesqueGuardians.aliases,

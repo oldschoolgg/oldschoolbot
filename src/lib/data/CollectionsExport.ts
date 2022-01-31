@@ -179,29 +179,6 @@ export const theGauntletCL = resolveItems([
 	'Gauntlet cape'
 ]);
 export const giantMoleCL = resolveItems(['Baby mole', 'Mole skin', 'Mole claw']);
-export const godWarsDungeonCL = resolveItems([
-	'Pet zilyana',
-	'Armadyl crossbow',
-	'Saradomin hilt',
-	'Saradomin sword',
-	"Saradomin's light",
-	"Pet k'ril tsutsaroth",
-	'Staff of the dead',
-	'Zamorakian spear',
-	'Steam battlestaff',
-	'Zamorak hilt',
-	"Pet kree'arra",
-	'Armadyl helmet',
-	'Armadyl chestplate',
-	'Armadyl chainskirt',
-	'Armadyl hilt',
-	'Pet general graardor',
-	'Bandos chestplate',
-	'Bandos tassets',
-	'Bandos boots',
-	'Bandos hilt',
-	...godWarsDungeonGodswordShards
-]);
 export const grotesqueGuardiansCL = resolveItems([
 	'Noon',
 	'Black tourmaline core',
