@@ -45,7 +45,7 @@ export default class extends BotCommand {
 		if (difference < Time.Day * 7) {
 			const duration = formatDuration(Date.now() - (lastPlayedDate + Time.Day * 7));
 			return msg.channel.send(
-				`**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix in ${duration}.`
+				`**${Emoji.Snake} Juna says...** You may drink from the Tears of Guthix in ${duration}.`
 			);
 		}
 
@@ -53,7 +53,7 @@ export default class extends BotCommand {
 		const userQP = msg.author.settings.get(UserSettings.QP);
 		if (userQP < 43) {
 			return msg.channel.send(
-				`**${Emoji.Snake} Juna says...** You can drink from the Tears of Guthix when you have 43+ QP.`
+				`**${Emoji.Snake} Juna says...** You may drink from the Tears of Guthix when you have a story to tell Juna |43+ QP|.`
 			);
 		}
 
@@ -85,13 +85,13 @@ export default class extends BotCommand {
 				.join(', ');
 
 			return msg.channel.send(
-				`You are not skilled enough to participate in Tears of Guthix. You need the following requirements: ${missingSkillsMessage}. ${
+				`**${Emoji.Snake} Juna says...** I'm afraid you don't have any stories I'd like to hear. You need the following requirements: ${missingSkillsMessage}. ${
 					missingIronmanSkills ? missingIronmanSkillMessage : ''
 				}`
 			);
 		} else if (missingIronmanSkills) {
 			return msg.channel.send(
-				`You are not skilled enough to participate in Tears of Guthix. ${missingIronmanSkillMessage}`
+				`**${Emoji.Snake} Juna says...** I'm afraid you don't have any stories I'd like to hear. ${missingIronmanSkillMessage}`
 			);
 		}
 
@@ -111,7 +111,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${
 				msg.author.minionName
-			} is now off to visit Juna and drink from the Tears of Guthix, their trip will take ${formatDuration(
+			} is now off to tell Juna a story and drink from the Tears of Guthix, their trip will take ${formatDuration(
 				duration
 			)}.`
 		);
