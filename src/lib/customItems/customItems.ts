@@ -3138,3 +3138,16 @@ setCustomItem(
 	},
 	100_000_000
 );
+
+setCustomItem(
+	152_616,
+	'Tormented skull',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		examine: "Almost sounds like there's screaming coming from inside it..."
+	},
+	100_000_000
+);
