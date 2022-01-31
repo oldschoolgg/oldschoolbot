@@ -501,7 +501,7 @@ export function createTOBTeam({
 	const maxScaling = 350;
 	assert(teamSize > 1 && teamSize < 6, 'TOB team must be 2-5 users');
 
-	let totalReduction = 0;
+	let individualReductions = [];
 
 	let reductions: Record<string, number> = {};
 
@@ -601,11 +601,21 @@ export function createTOBTeam({
 
 		let reduction = round(userPercentChange / teamSize, 1);
 
-		totalReduction += reduction;
+		individualReductions.push(userPercentChange);
 		reductions[u.user.id] = reduction;
 	}
 	let duration = baseDuration;
 
+	// Get the sum of individualReductions array
+	let totalReduction = individualReductions.reduce((a, c) => a + c);
+
+	// Remove the worst player from speed calculation if team size > 2:
+	if (teamSize > 2) {
+		totalReduction -= Math.min(...individualReductions);
+		totalReduction = round(totalReduction / (teamSize - 1), 2);
+	} else {
+		totalReduction = round(totalReduction / teamSize, 2);
+	}
 	if (hardMode) {
 		duration = baseCmDuration;
 		duration = reduceNumByPercent(duration, totalReduction / 1.3);

@@ -1,12 +1,13 @@
 import { command_usage_status, NewUser, Prisma } from '@prisma/client';
 import { captureException } from '@sentry/node';
 import { Guild, Util } from 'discord.js';
-import { Gateway, KlasaMessage, Settings } from 'klasa';
+import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
 import { Emoji, getCommandArgs, shouldTrackCommand } from '../constants';
 import { ActivityTaskData } from '../types/minions';
-import { isGroupActivity } from '../util';
+import { cleanUsername, isGroupActivity } from '../util';
 import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
@@ -48,8 +49,11 @@ export async function getNewUser(id: string): Promise<NewUser> {
 	return value;
 }
 
-export async function syncNewUserUsername(id: string, username: string) {
-	return prisma.newUser.update({ where: { id }, data: { username } });
+export async function syncNewUserUsername(message: KlasaMessage) {
+	await prisma.$queryRaw`UPDATE new_users
+SET username = ${cleanUsername(message.author.username)}
+WHERE id = ${message.author.id}
+AND ((username IS NULL) OR (username <> ${cleanUsername(message.author.username)}));`;
 }
 
 export async function getMinionName(userID: string): Promise<string> {
@@ -172,4 +176,35 @@ export async function runCommand(
 	}
 
 	return null;
+}
+
+export async function getBuyLimitBank(user: KlasaUser) {
+	const boughtBank = await prisma.user.findFirst({
+		where: {
+			id: user.id
+		},
+		select: {
+			weekly_buy_bank: true
+		}
+	});
+	if (!boughtBank) {
+		throw new Error(`Found no weekly_buy_bank for ${user.sanitizedName}`);
+	}
+	return new Bank(boughtBank.weekly_buy_bank as any);
+}
+
+export async function addToBuyLimitBank(user: KlasaUser, newBank: Bank) {
+	const current = await getBuyLimitBank(user);
+	const result = await prisma.user.update({
+		where: {
+			id: user.id
+		},
+		data: {
+			weekly_buy_bank: current.add(newBank).bank
+		}
+	});
+	if (!result) {
+		throw new Error('Error storing updated weekly_buy_bank');
+	}
+	return true;
 }

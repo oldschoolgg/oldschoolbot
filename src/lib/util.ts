@@ -1,7 +1,7 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
+import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, sumArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
 import murmurHash from 'murmurhash';
@@ -728,4 +728,8 @@ export function sanitizeBank(bank: Bank) {
 export function isAtleastThisOld(date: Date | number, age: number) {
 	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
 	return difference >= age;
+}
+
+export function cleanUsername(str: string) {
+	return Util.escapeMarkdown(stripEmojis(str));
 }
