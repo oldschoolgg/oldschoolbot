@@ -1,5 +1,5 @@
 import { captureException } from '@sentry/minimal';
-import { GuildMember } from 'discord.js';
+import { GuildMember, MessageButton } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -118,20 +118,37 @@ export default class extends BotCommand {
 		await msg.confirm(sellStr);
 
 		// Confirm the buyer wants to buy
-		const buyerConfirmationMsg = await msg.channel.send(
-			`${buyerMember}, do you wish to buy ${bankStr} from \`${msg.author.username}#${
+		const buyerConfirmationMsg = await msg.channel.send({
+			content: `${buyerMember}, do you wish to buy ${bankStr} from \`${msg.author.username}#${
 				msg.author.discriminator
-			}\` for ${price.toLocaleString()} GP? Say \`buy\` to confirm.`
-		);
+			}\` for ${price.toLocaleString()} GP? Click \`buy\` to confirm.`,
+			components: [
+				[
+					new MessageButton({
+						label: 'Buy',
+						style: 'PRIMARY',
+						customID: 'BUY'
+					})
+				]
+			]
+		});
 
 		try {
-			await msg.channel.awaitMessages({
+			const selection = await buyerConfirmationMsg.awaitMessageComponentInteraction({
 				...options,
-				filter: _msg => _msg.author.id === buyerMember.user.id && _msg.content.toLowerCase() === 'buy'
+				filter: i => {
+					if (i.user.id !== buyerMember.user.id) {
+						i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+						return false;
+					}
+					return true;
+				}
 			});
-		} catch (err) {
-			buyerConfirmationMsg.edit(`Cancelling sale of ${bankStr}.`);
-			return msg.channel.send(`Cancelling sale of ${bankStr}.`);
+			if (selection.customID === 'BUY') {
+				buyerConfirmationMsg.delete();
+			}
+		} catch {
+			return buyerConfirmationMsg.edit({ content: `Cancelling sale of ${bankStr}.`, components: [] });
 		}
 
 		try {
