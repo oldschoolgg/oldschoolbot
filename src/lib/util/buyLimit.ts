@@ -34,7 +34,8 @@ export function buyLimit({
 
 	const maxCanBuy = absoluteLimit - amountBought;
 	const allowedBuyAmount = quantityBeingBought > maxCanBuy ? maxCanBuy : quantityBeingBought;
-	let currentMultiplier = Math.pow(2, Math.min(5, Math.floor(amountBought / increaseFactor)));
+	let currentMultiplier = Math.pow(2, Math.min(4, Math.floor(amountBought / increaseFactor)));
+	const maxMultiplier = Math.pow(2, 4);
 	const leftOvers = amountBought % increaseFactor;
 
 	if (allowedBuyAmount + leftOvers <= increaseFactor) {
@@ -48,7 +49,9 @@ export function buyLimit({
 		finalCost += remainingTilLevel * currentMultiplier * baseCost;
 		// Sell 'increaseFactor' at a time until they only need a few left.
 		for (let remaining = allowedBuyAmount - remainingTilLevel; remaining > 0; remaining -= increaseFactor) {
-			currentMultiplier *= 2;
+			if (currentMultiplier < maxMultiplier) {
+				currentMultiplier *= 2;
+			}
 			if (remaining > increaseFactor) {
 				finalCost += increaseFactor * currentMultiplier * baseCost;
 				amountToBuy += increaseFactor;

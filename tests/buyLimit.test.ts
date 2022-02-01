@@ -49,7 +49,7 @@ describe('buyLimit.test', () => {
 				absoluteLimit: 10_000,
 				baseCost: 25
 			})
-		).toEqual({ amountToBuy: 445, finalCost: 356_000 });
+		).toEqual({ amountToBuy: 445, finalCost: 178_000 });
 
 		// Test absolute limit and multiple increase tiers:
 		expect(
@@ -61,6 +61,6 @@ describe('buyLimit.test', () => {
 				absoluteLimit: 10_000,
 				baseCost: 25
 			})
-		).toEqual({ amountToBuy: 1778, finalCost: 17_779_200 });
+		).toEqual({ amountToBuy: 1778, finalCost: 711_200 });
 	});
 });
