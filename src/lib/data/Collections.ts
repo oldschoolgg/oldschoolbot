@@ -53,9 +53,6 @@ import {
 	creatureCreationCL,
 	cyclopsCL,
 	dagannothKingsCL,
-	dagannothPrimeCL,
-	dagannothRexCL,
-	dagannothSupremeCL,
 	dailyCL,
 	demonicGorillaCL,
 	fightCavesCL,
@@ -179,7 +176,18 @@ export const allCollectionLogs: ICollection = {
 				items: crazyArchaeologistCL
 			},
 			'Dagannoth Kings': {
-				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
+				alias: [
+					'dagannoth kings',
+					'kings',
+					'dagga',
+					'dks',
+					'rex',
+					'prime',
+					'supreme',
+					'dagannoth rex',
+					'dagannoth prime',
+					'dagannoth supreme'
+				],
 				kcActivity: {
 					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name]
 				},
@@ -195,21 +203,6 @@ export const allCollectionLogs: ICollection = {
 					];
 				})(),
 				items: dagannothKingsCL
-			},
-			'Dagannoth Rex': {
-				alias: Monsters.DagannothRex.aliases,
-				allItems: Monsters.DagannothRex.allItems,
-				items: dagannothRexCL
-			},
-			'Dagannoth Prime': {
-				alias: Monsters.DagannothPrime.aliases,
-				allItems: Monsters.DagannothPrime.allItems,
-				items: dagannothPrimeCL
-			},
-			'Dagannoth Supreme': {
-				alias: Monsters.DagannothSupreme.aliases,
-				allItems: Monsters.DagannothSupreme.allItems,
-				items: dagannothSupremeCL
 			},
 			'The Fight Caves': {
 				kcActivity: Monsters.TzTokJad.name,
