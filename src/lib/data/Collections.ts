@@ -189,17 +189,18 @@ export const allCollectionLogs: ICollection = {
 					'dagannoth supreme'
 				],
 				kcActivity: {
-					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name]
+					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name],
+					Rex: [Monsters.DagannothRex.name],
+					Prime: [Monsters.DagannothPrime.name],
+					Supreme: [Monsters.DagannothSupreme.name]
 				},
 				allItems: (() => {
 					return [
-						...new Set(
-							...[
-								Monsters.DagannothPrime.allItems,
-								Monsters.DagannothSupreme.allItems,
-								Monsters.DagannothRex.allItems
-							]
-						)
+						...new Set([
+							...Monsters.DagannothPrime.allItems,
+							...Monsters.DagannothSupreme.allItems,
+							...Monsters.DagannothRex.allItems
+						])
 					];
 				})(),
 				items: dagannothKingsCL
@@ -691,21 +692,19 @@ export const allCollectionLogs: ICollection = {
 				},
 				allItems: (() => {
 					return [
-						...new Set(
-							...[
-								Monsters.RevenantImp.allItems,
-								Monsters.RevenantGoblin.allItems,
-								Monsters.RevenantPyrefiend.allItems,
-								Monsters.RevenantHobgoblin.allItems,
-								Monsters.RevenantCyclops.allItems,
-								Monsters.RevenantHellhound.allItems,
-								Monsters.RevenantDemon.allItems,
-								Monsters.RevenantOrk.allItems,
-								Monsters.RevenantDarkBeast.allItems,
-								Monsters.RevenantKnight.allItems,
-								Monsters.RevenantDragon.allItems
-							]
-						)
+						...new Set([
+							...Monsters.RevenantImp.allItems,
+							...Monsters.RevenantGoblin.allItems,
+							...Monsters.RevenantPyrefiend.allItems,
+							...Monsters.RevenantHobgoblin.allItems,
+							...Monsters.RevenantCyclops.allItems,
+							...Monsters.RevenantHellhound.allItems,
+							...Monsters.RevenantDemon.allItems,
+							...Monsters.RevenantOrk.allItems,
+							...Monsters.RevenantDarkBeast.allItems,
+							...Monsters.RevenantKnight.allItems,
+							...Monsters.RevenantDragon.allItems
+						])
 					];
 				})(),
 				items: revenantsCL
@@ -823,14 +822,12 @@ export const allCollectionLogs: ICollection = {
 				},
 				allItems: (() => {
 					return [
-						...new Set(
-							...[
-								Monsters.CommanderZilyana.allItems,
-								Monsters.KrilTsutsaroth.allItems,
-								Monsters.Kreearra.allItems,
-								Monsters.GeneralGraardor.allItems
-							]
-						)
+						...new Set([
+							...Monsters.CommanderZilyana.allItems,
+							...Monsters.KrilTsutsaroth.allItems,
+							...Monsters.Kreearra.allItems,
+							...Monsters.GeneralGraardor.allItems
+						])
 					];
 				})(),
 				items: godWarsDungeonCL
