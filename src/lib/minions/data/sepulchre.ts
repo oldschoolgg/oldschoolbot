@@ -126,9 +126,11 @@ export function openCoffin(floor: number, cl: Bank): ItemBank {
 	loot.add(floorObj.coffinTable.roll());
 	loot.add('Hallowed mark', randInt(floorObj.marksRange[0], floorObj.marksRange[1]));
 
-	const page = pages[floor - 1];
-	if (!cl.has(page) && roll(10)) {
-		loot.add(page);
+	if (floor <= 5) {
+		const page = pages[floor - 1];
+		if (!cl.has(page) && roll(10)) {
+			loot.add(page);
+		}
 	}
 	return loot.bank;
 }
