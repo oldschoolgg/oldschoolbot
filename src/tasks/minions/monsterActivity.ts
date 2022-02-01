@@ -1,4 +1,4 @@
-import { calcWhatPercent, randArrItem, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, randArrItem, reduceNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -45,7 +45,7 @@ export default class extends Task {
 			oriBoost = true;
 			if (duration > Time.Minute * 5) {
 				// Original boost for 5+ minute task:
-				boostedQuantity = Math.ceil(quantity * 1.25);
+				boostedQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
 			} else {
 				// 25% chance at extra kill otherwise:
 				for (let i = 0; i < quantity; i++) {
