@@ -234,30 +234,6 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.GiantMole.allItems,
 				items: giantMoleCL
 			},
-			'God Wars Dungeon': {
-				alias: ['gwd', 'god wars'],
-				kcActivity: {
-					Default: [
-						Monsters.CommanderZilyana.name,
-						Monsters.KrilTsutsaroth.name,
-						Monsters.Kreearra.name,
-						Monsters.GeneralGraardor.name
-					]
-				},
-				allItems: (() => {
-					return [
-						...new Set(
-							...[
-								Monsters.CommanderZilyana.allItems,
-								Monsters.KrilTsutsaroth.allItems,
-								Monsters.Kreearra.allItems,
-								Monsters.GeneralGraardor.allItems
-							]
-						)
-					];
-				})(),
-				items: godWarsDungeonCL
-			},
 			'Grotesque Guardians': {
 				alias: Monsters.GrotesqueGuardians.aliases,
 				allItems: Monsters.GrotesqueGuardians.allItems,
@@ -840,6 +816,31 @@ export const allCollectionLogs: ICollection = {
 			Graceful: {
 				counts: false,
 				items: gracefulCL
+			},
+			'God Wars Dungeon': {
+				counts: false,
+				alias: ['gwd', 'god wars'],
+				kcActivity: {
+					Default: [
+						Monsters.CommanderZilyana.name,
+						Monsters.KrilTsutsaroth.name,
+						Monsters.Kreearra.name,
+						Monsters.GeneralGraardor.name
+					]
+				},
+				allItems: (() => {
+					return [
+						...new Set(
+							...[
+								Monsters.CommanderZilyana.allItems,
+								Monsters.KrilTsutsaroth.allItems,
+								Monsters.Kreearra.allItems,
+								Monsters.GeneralGraardor.allItems
+							]
+						)
+					];
+				})(),
+				items: godWarsDungeonCL
 			}
 		}
 	}
