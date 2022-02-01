@@ -6,6 +6,10 @@ export function cleanString(str: string): string {
 }
 
 function setItemAlias(id: number, name: string | string[], rename = true) {
+	const existingItem = Items.get(id);
+	if (!existingItem) {
+		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
+	}
 	let firstName: string | null = null;
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
@@ -219,3 +223,10 @@ setItemAlias(1563, 'Brown cat');
 setItemAlias(1564, 'Black cat');
 setItemAlias(1565, 'Grey and brown cat');
 setItemAlias(1566, 'Grey and blue cat');
+
+// Sepulchre pages
+setItemAlias(24_763, 'Mysterious page 1');
+setItemAlias(24_765, 'Mysterious page 2');
+setItemAlias(24_767, 'Mysterious page 3');
+setItemAlias(24_769, 'Mysterious page 4');
+setItemAlias(24_771, 'Mysterious page 5');

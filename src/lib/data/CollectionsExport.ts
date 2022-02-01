@@ -179,6 +179,29 @@ export const theGauntletCL = resolveItems([
 	'Gauntlet cape'
 ]);
 export const giantMoleCL = resolveItems(['Baby mole', 'Mole skin', 'Mole claw']);
+export const godWarsDungeonCL = resolveItems([
+	'Pet zilyana',
+	'Armadyl crossbow',
+	'Saradomin hilt',
+	'Saradomin sword',
+	"Saradomin's light",
+	"Pet k'ril tsutsaroth",
+	'Staff of the dead',
+	'Zamorakian spear',
+	'Steam battlestaff',
+	'Zamorak hilt',
+	"Pet kree'arra",
+	'Armadyl helmet',
+	'Armadyl chestplate',
+	'Armadyl chainskirt',
+	'Armadyl hilt',
+	'Pet general graardor',
+	'Bandos chestplate',
+	'Bandos tassets',
+	'Bandos boots',
+	'Bandos hilt',
+	...godWarsDungeonGodswordShards
+]);
 export const grotesqueGuardiansCL = resolveItems([
 	'Noon',
 	'Black tourmaline core',
@@ -1111,22 +1134,12 @@ export const hallowedSepulchreCL = resolveItems([
 	'Dark dye',
 	'Dark acorn',
 	'Strange old lockpick',
-	'Ring of endurance (uncharged)'
-	// Not coded in the bot
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// None of the items below are in the official log
-	// 'Dark graceful hood',
-	// 'Dark graceful top',
-	// 'Dark graceful legs',
-	// 'Dark graceful boots',
-	// 'Dark graceful gloves',
-	// 'Dark graceful cape',
-	// 'Giant squirrel',
-	// 'Dark squirrel'
+	'Ring of endurance (uncharged)',
+	'Mysterious page 1',
+	'Mysterious page 2',
+	'Mysterious page 3',
+	'Mysterious page 4',
+	'Mysterious page 5'
 ]);
 export const lastManStandingCL = resolveItems([
 	"Deadman's chest",

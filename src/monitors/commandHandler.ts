@@ -4,7 +4,7 @@ import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
 import { getCommandArgs, PermissionLevelsEnum, shouldTrackCommand } from '../lib/constants';
 import { prisma } from '../lib/settings/prisma';
-import { getGuildSettings } from '../lib/settings/settings';
+import { getGuildSettings, syncNewUserUsername } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { floatPromise } from '../lib/util';
 
@@ -75,6 +75,8 @@ export default class extends Monitor {
 	}
 
 	public async runCommand(message: KlasaMessage) {
+		syncNewUserUsername(message);
+
 		const command = message.command!;
 		const { params } = message;
 
