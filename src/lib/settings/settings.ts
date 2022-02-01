@@ -211,9 +211,9 @@ export async function runCommand(
 			}
 		}
 	} catch (err: any) {
-		if (typeof error === 'string') {
+		if (typeof err === 'string') {
 			if (channelIsSendable(channel)) {
-				return channel.send(error);
+				return channel.send(err);
 			}
 		}
 		error = err as Error;

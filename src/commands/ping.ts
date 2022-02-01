@@ -20,7 +20,7 @@ export default class extends BotCommand {
 			return message.channel.send('No role with that name found.');
 		}
 		if (!message.member) return;
-		if (!message.member?.roles.cache.has(Roles.MassHoster)) {
+		if (!message.member.roles.cache.has(Roles.MassHoster)) {
 			return;
 		}
 		return message.channel.send(

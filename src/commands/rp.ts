@@ -155,7 +155,6 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 			return "You don't have permission to use this command.";
 		}
 		const res = await unsafeEval({ code, flags: msg.flagArgs, msg });
-		if (res === undefined) return;
 
 		if ('silent' in msg.flagArgs) return null;
 
