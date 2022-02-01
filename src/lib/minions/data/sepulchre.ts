@@ -183,5 +183,6 @@ export function openCoffin(floor: number, cl: Bank): ItemBank {
 		if (!cl.has(page) && roll(10)) {
 			loot.add(page);
 		}
+	}
 	return loot.bank;
 }
