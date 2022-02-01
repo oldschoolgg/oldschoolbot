@@ -34,7 +34,7 @@ export function buyLimit({
 
 	const maxCanBuy = absoluteLimit - amountBought;
 	const allowedBuyAmount = quantityBeingBought > maxCanBuy ? maxCanBuy : quantityBeingBought;
-	let currentMultiplier = Math.pow(2, Math.floor(amountBought / increaseFactor));
+	let currentMultiplier = Math.pow(2, Math.min(5, Math.floor(amountBought / increaseFactor)));
 	const leftOvers = amountBought % increaseFactor;
 
 	if (allowedBuyAmount + leftOvers <= increaseFactor) {
