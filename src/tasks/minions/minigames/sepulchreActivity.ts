@@ -30,7 +30,7 @@ export default class extends Task {
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
-					loot.add(openCoffin(floor.number));
+					loot.add(openCoffin(floor.number, user.cl()));
 				}
 
 				agilityXP += floor.xp;

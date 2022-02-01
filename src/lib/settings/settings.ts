@@ -1,6 +1,7 @@
 import { NewUser } from '@prisma/client';
 import { Guild, Util } from 'discord.js';
-import { Gateway, KlasaMessage, Settings } from 'klasa';
+import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { client, mahojiClient } from '../..';
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
@@ -230,4 +231,35 @@ export async function runCommand(
 	}
 
 	return null;
+}
+
+export async function getBuyLimitBank(user: KlasaUser) {
+	const boughtBank = await prisma.user.findFirst({
+		where: {
+			id: user.id
+		},
+		select: {
+			weekly_buy_bank: true
+		}
+	});
+	if (!boughtBank) {
+		throw new Error(`Found no weekly_buy_bank for ${user.sanitizedName}`);
+	}
+	return new Bank(boughtBank.weekly_buy_bank as any);
+}
+
+export async function addToBuyLimitBank(user: KlasaUser, newBank: Bank) {
+	const current = await getBuyLimitBank(user);
+	const result = await prisma.user.update({
+		where: {
+			id: user.id
+		},
+		data: {
+			weekly_buy_bank: current.add(newBank).bank
+		}
+	});
+	if (!result) {
+		throw new Error('Error storing updated weekly_buy_bank');
+	}
+	return true;
 }

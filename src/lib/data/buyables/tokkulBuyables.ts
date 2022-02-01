@@ -9,6 +9,7 @@ interface TokkulShopItem {
 	diaryTokkulReturn?: number;
 	aliases?: string[];
 	requireFireCape?: boolean;
+	buyLimitFactor?: number;
 }
 
 const TokkulShopItems: TokkulShopItem[] = [
@@ -20,7 +21,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 4,
 		diaryTokkulReturn: 1,
 		diaryTokkulCost: 3,
-		aliases: ['tin']
+		aliases: ['tin'],
+		buyLimitFactor: 500
 	},
 	{
 		name: 'Copper ore',
@@ -29,7 +31,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 4,
 		diaryTokkulReturn: 1,
 		diaryTokkulCost: 3,
-		aliases: ['copper']
+		aliases: ['copper'],
+		buyLimitFactor: 500
 	},
 	{
 		name: 'Iron ore',
@@ -38,48 +41,55 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 25,
 		diaryTokkulReturn: 3,
 		diaryTokkulCost: 22,
-		aliases: ['iron']
+		aliases: ['iron'],
+		buyLimitFactor: 500
 	},
 	{
 		name: 'Silver ore',
 		inputItem: itemID('Silver ore'),
 		tokkulReturn: 7,
 		diaryTokkulReturn: 15,
-		aliases: ['silver']
+		aliases: ['silver'],
+		buyLimitFactor: 500
 	},
 	{
 		name: 'Coal',
 		inputItem: itemID('Coal'),
 		tokkulReturn: 4,
-		diaryTokkulReturn: 9
+		diaryTokkulReturn: 9,
+		buyLimitFactor: 1300
 	},
 	{
 		name: 'Gold ore',
 		inputItem: itemID('Gold ore'),
 		tokkulReturn: 15,
 		diaryTokkulReturn: 34,
-		aliases: ['gold']
+		aliases: ['gold'],
+		buyLimitFactor: 600
 	},
 	{
 		name: 'Mithril ore',
 		inputItem: itemID('Mithril ore'),
 		tokkulReturn: 16,
 		diaryTokkulReturn: 37,
-		aliases: ['mithril']
+		aliases: ['mithril'],
+		buyLimitFactor: 500
 	},
 	{
 		name: 'Adamantite ore',
 		inputItem: itemID('Adamantite ore'),
 		tokkulReturn: 40,
 		diaryTokkulReturn: 93,
-		aliases: ['adamantite', 'adamant', 'addy']
+		aliases: ['adamantite', 'adamant', 'addy'],
+		buyLimitFactor: 300
 	},
 	{
 		name: 'Runite ore',
 		inputItem: itemID('Runite ore'),
 		tokkulReturn: 320,
 		diaryTokkulReturn: 746,
-		aliases: ['runite', 'rune ore', 'rune']
+		aliases: ['runite', 'rune ore', 'rune'],
+		buyLimitFactor: 200
 	},
 	{
 		name: 'Uncut sapphire',
@@ -88,7 +98,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 37,
 		diaryTokkulReturn: 5,
 		diaryTokkulCost: 32,
-		aliases: ['sapphire']
+		aliases: ['sapphire'],
+		buyLimitFactor: 30
 	},
 	{
 		name: 'Uncut emerald',
@@ -97,27 +108,31 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 75,
 		diaryTokkulReturn: 11,
 		diaryTokkulCost: 65,
-		aliases: ['emerald']
+		aliases: ['emerald'],
+		buyLimitFactor: 30
 	},
 	{
 		name: 'Uncut ruby',
 		inputItem: itemID('Uncut ruby'),
 		tokkulReturn: 10,
 		diaryTokkulReturn: 23,
-		aliases: ['ruby']
+		aliases: ['ruby'],
+		buyLimitFactor: 30
 	},
 	{
 		name: 'Uncut diamond',
 		inputItem: itemID('Uncut diamond'),
 		tokkulReturn: 20,
 		diaryTokkulReturn: 46,
-		aliases: ['diamond']
+		aliases: ['diamond'],
+		buyLimitFactor: 20
 	},
 	{
 		name: 'Uncut dragonstone',
 		inputItem: itemID('Uncut dragonstone'),
 		tokkulReturn: 100,
-		diaryTokkulReturn: 233
+		diaryTokkulReturn: 233,
+		buyLimitFactor: 10
 	},
 	{
 		name: 'Uncut onyx',
@@ -126,7 +141,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 300_000,
 		diaryTokkulReturn: 46_662,
 		diaryTokkulCost: 260_000,
-		aliases: ['onyx']
+		aliases: ['onyx'],
+		buyLimitFactor: 3
 	},
 	{
 		name: 'Onyx bolt tips',
@@ -135,7 +151,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 1500,
 		diaryTokkulReturn: 233,
 		diaryTokkulCost: 1300,
-		aliases: ['onyx tips', 'onix bolts']
+		aliases: ['onyx tips', 'onix bolts'],
+		buyLimitFactor: 100
 	},
 	// Equipment Store
 	{
@@ -248,7 +265,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 6,
 		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
-		aliases: ['fire']
+		aliases: ['fire'],
+		buyLimitFactor: 5000
 	},
 	{
 		name: 'Water rune',
@@ -257,7 +275,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 6,
 		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
-		aliases: ['water']
+		aliases: ['water'],
+		buyLimitFactor: 5000
 	},
 	{
 		name: 'Air rune',
@@ -266,7 +285,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 6,
 		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
-		aliases: ['air']
+		aliases: ['air'],
+		buyLimitFactor: 5000
 	},
 	{
 		name: 'Earth rune',
@@ -275,7 +295,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 6,
 		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
-		aliases: ['earth']
+		aliases: ['earth'],
+		buyLimitFactor: 5000
 	},
 	{
 		name: 'Mind rune',
@@ -284,7 +305,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 4,
 		diaryTokkulReturn: 1,
 		diaryTokkulCost: 3,
-		aliases: ['mind']
+		aliases: ['mind'],
+		buyLimitFactor: 5000
 	},
 	{
 		name: 'Body rune',
@@ -293,7 +315,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 4,
 		diaryTokkulReturn: 1,
 		diaryTokkulCost: 3,
-		aliases: ['body']
+		aliases: ['body'],
+		buyLimitFactor: 5000
 	},
 	{
 		name: 'Chaos rune',
@@ -302,7 +325,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 135,
 		diaryTokkulReturn: 20,
 		diaryTokkulCost: 117,
-		aliases: ['chaos']
+		aliases: ['chaos'],
+		buyLimitFactor: 5000
 	},
 	{
 		name: 'Death rune',
@@ -311,7 +335,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 		tokkulCost: 270,
 		diaryTokkulReturn: 42,
 		diaryTokkulCost: 234,
-		aliases: ['death']
+		aliases: ['death'],
+		buyLimitFactor: 5000
 	}
 ];
 

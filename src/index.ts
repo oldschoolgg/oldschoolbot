@@ -1,4 +1,5 @@
 import './lib/data/itemAliases';
+import './lib/crons';
 
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
