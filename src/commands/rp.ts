@@ -5,12 +5,13 @@ import { captureException } from '@sentry/node';
 import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
+import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { client } from '..';
+import { client, mahojiClient } from '..';
 import { CLIENT_ID } from '../config';
 import {
 	badges,
@@ -823,6 +824,24 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 			case 'eval': {
 				if (!input || typeof input !== 'string') return;
 				return evalCommand(msg, input);
+			}
+			case 'localmahojisync': {
+				await msg.channel.send('Syncing commands locally...');
+				await bulkUpdateCommands({
+					client: mahojiClient,
+					commands: mahojiClient.commands.values,
+					guildID: msg.guild!.id
+				});
+				return msg.channel.send('Locally synced slash commands.');
+			}
+			case 'globalmahojisync': {
+				await msg.channel.send('Syncing commands...');
+				await bulkUpdateCommands({
+					client: mahojiClient,
+					commands: mahojiClient.commands.values,
+					guildID: null
+				});
+				return msg.channel.send('Globally synced slash commands.');
 			}
 		}
 	}

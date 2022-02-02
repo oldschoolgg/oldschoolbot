@@ -218,7 +218,7 @@ export async function runCommand(
 		}
 		error = err as Error;
 	} finally {
-		postCommand({
+		await postCommand({
 			abstractCommand,
 			userID: message.author.id,
 			guildID: message.guild?.id ?? null,

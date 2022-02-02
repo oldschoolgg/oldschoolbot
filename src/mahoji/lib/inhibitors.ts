@@ -30,6 +30,7 @@ export interface AbstractCommandAttributes {
 	requiredPermissionsForBot?: PermissionResolvable[];
 	requiredPermissionsForUser?: PermissionResolvable[];
 	runIn?: string[];
+	description: string;
 }
 
 export interface AbstractCommand {

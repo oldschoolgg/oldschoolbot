@@ -136,7 +136,6 @@ export async function handleTripFinish(
 			collectors.delete(user.id);
 			return;
 		}
-		client.oneCommandAtATimeCache.add(mes.author.id);
 		try {
 			if (mes.content.toLowerCase() === 'c' && clueReceived && perkTier > PerkTier.One) {
 				runCommand(mes, 'mclue', [1, clueReceived.name]);
@@ -149,8 +148,6 @@ export async function handleTripFinish(
 		} catch (err: any) {
 			console.log({ err });
 			channel.send(err);
-		} finally {
-			setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);
 		}
 	});
 }

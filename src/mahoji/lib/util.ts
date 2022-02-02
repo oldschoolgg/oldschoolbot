@@ -40,7 +40,8 @@ export function convertKlasaCommandToAbstractCommand(command: BotCommand): Abstr
 			cooldown: command.cooldown,
 			requiredPermissionsForBot: command.requiredPermissionsForBot,
 			requiredPermissionsForUser: command.requiredPermissionsForUser,
-			runIn: command.runIn
+			runIn: command.runIn,
+			description: command.description
 		}
 	};
 }
