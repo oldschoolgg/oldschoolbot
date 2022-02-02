@@ -47,10 +47,7 @@ export const dragonFireShieldCreatables: Createable[] = [
 		}).bank,
 		outputItems: resolveNameBank({
 			'Dragonfire shield': 1
-		}),
-		requiredSkills: {
-			slayer: 62
-		}
+		})
 	},
 	{
 		name: 'Dragonfire ward',
