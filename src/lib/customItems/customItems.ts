@@ -1,3 +1,4 @@
+import '../deletedItems';
 import './customItemsFancy';
 import './farming';
 import './pets';
