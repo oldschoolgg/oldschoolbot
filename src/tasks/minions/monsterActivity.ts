@@ -54,6 +54,9 @@ export default class extends Task {
 		}
 		// Regular loot
 		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
+		if (monster.specialLoot) {
+			monster.specialLoot(loot, user, data);
+		}
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
