@@ -524,9 +524,7 @@ const cantBeDropped = resolveItems([
 	'Ancient hilt',
 	'Nihil horn',
 	'Zaryte crossbow',
-	'Torva full helm (damaged)',
-	'Torva platebody (damaged)',
-	'Torva platelegs (damaged)'
+	'Zaryte vambraces'
 ]);
 
 export const tmbTable: number[] = [];

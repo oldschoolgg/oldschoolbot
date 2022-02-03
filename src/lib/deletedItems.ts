@@ -13,7 +13,11 @@ export const itemsToDelete = [
 	[26_348, 'Nexling'],
 	[26_382, 'Torva full helm'],
 	[26_384, 'Torva platebody'],
-	[26_386, 'Torva platelegs']
+	[26_386, 'Torva platelegs'],
+
+	[26_376, 'Torva full helm (damaged)'],
+	[26_378, 'Torva platebody (damaged)'],
+	[26_380, 'Torva platelegs (damaged)']
 ] as const;
 
 export function deleteItem(itemID: number, itemName: string) {

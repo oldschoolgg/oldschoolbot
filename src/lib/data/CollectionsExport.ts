@@ -2057,7 +2057,7 @@ export const nexUniqueDrops = [
 export const nexCL = [
 	...nexUniqueDrops,
 	...frozenKeyPieces,
-	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem'])
+	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem', 'Ancient hilt'])
 ];
 
 export const kalphiteKingCL = resolveItems([

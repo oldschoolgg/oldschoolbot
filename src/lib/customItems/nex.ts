@@ -665,3 +665,27 @@ setCustomItem(
 	},
 	10_000_000
 );
+
+setCustomItem(
+	51_016,
+	'Armadylean components',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000_000
+);
+
+setCustomItem(
+	51_017,
+	'Ancestral components',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000_000
+);
