@@ -6,6 +6,7 @@ import { dyedItems } from '../../dyedItems';
 import { bones } from '../../skilling/skills/prayer';
 import { assert, resolveNameBank } from '../../util';
 import itemID from '../../util/itemID';
+import resolveItems from '../../util/resolveItems';
 import { Createable } from '../createables';
 
 const dyeCreatables: Createable[] = [];
@@ -555,10 +556,17 @@ const bsoItems: Createable[] = [
 	},
 	{
 		name: 'Vasa cloak',
-		inputItems: resolveNameBank({
-			'Tattered robes of Vasa': 1,
-			'Abyssal cape': 1
-		}),
+		inputItems: user => {
+			const cost = new Bank({ 'Tattered robes of Vasa': 1, 'Abyssal cape': 1 });
+			const capes = resolveItems(['Imbued saradomin cape', 'Imbued zamorak cape', 'Imbued guthix cape']);
+			const capeToUse =
+				user
+					.bank()
+					.items()
+					.filter(i => capes.includes(i?.[0]?.id))?.[0]?.[0]?.id ?? itemID('Imbued saradomin cape');
+			cost.add(capeToUse);
+			return cost;
+		},
 		outputItems: {
 			[itemID('Vasa cloak')]: 1
 		},
