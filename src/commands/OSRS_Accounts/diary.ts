@@ -29,7 +29,7 @@ export default class extends BotCommand {
 			aliases: ['d'],
 			description: 'Check which diaries your account has the required stats to complete (BOLD = boostable)',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissionsForBot: ['EMBED_LINKS']
 		});
 	}
 

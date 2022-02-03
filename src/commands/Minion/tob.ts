@@ -38,7 +38,7 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			description: 'Sends your minion to do the Theatre of Blood.',
 			examples: ['+raid solo', '+raid mass'],
 			subcommands: true

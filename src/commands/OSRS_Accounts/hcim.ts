@@ -11,7 +11,7 @@ export default class extends BotCommand {
 			aliases: ['hc'],
 			description: 'Shows the stats of a HCIM account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+hcim Faux'],
 			categoryFlags: ['utility']
 		});

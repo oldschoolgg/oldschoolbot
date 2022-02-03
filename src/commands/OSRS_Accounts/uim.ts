@@ -11,7 +11,7 @@ export default class extends BotCommand {
 			aliases: [],
 			description: 'Shows the stats of a UIM account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			categoryFlags: ['utility'],
 			examples: ['+uim Lajnux']
 		});

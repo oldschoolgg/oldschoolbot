@@ -94,7 +94,7 @@ export default class extends BotCommand {
 			cooldown: 2,
 			description: 'Shows the stats of a leagues account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+leagues Magnaboy'],
 			categoryFlags: ['utility']
 		});
