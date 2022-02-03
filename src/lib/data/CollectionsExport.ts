@@ -2001,6 +2001,27 @@ export const vasaMagusCL = resolveItems([
 	'Magical artifact'
 ]);
 
+export const brokenTorvaOutfit = resolveItems([
+	'Torva full helm (broken)',
+	'Torva platebody (broken)',
+	'Torva platelegs (broken)',
+	'Torva boots (broken)',
+	'Torva gloves (broken)'
+]);
+export const brokenPernixOutfit = resolveItems([
+	'Pernix cowl (broken)',
+	'Pernix body (broken)',
+	'Pernix chaps (broken)',
+	'Pernix boots (broken)',
+	'Pernix gloves (broken)'
+]);
+export const brokenVirtusOutfit = resolveItems([
+	'Virtus mask (broken)',
+	'Virtus robe top (broken)',
+	'Virtus robe legs (broken)',
+	'Virtus boots (broken)',
+	'Virtus gloves (broken)'
+]);
 export const torvaOutfit = resolveItems([
 	'Torva full helm',
 	'Torva platebody',
@@ -2022,11 +2043,16 @@ export const virtusOutfit = resolveItems([
 	'Virtus boots',
 	'Virtus gloves'
 ]);
-export const nexAncientWeapons = resolveItems(['Virtus wand', 'Virtus book', 'Zaryte bow']);
+export const nexAncientWeapons = resolveItems(['Virtus crystal', 'Zaryte bow']);
 
 export const frozenKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
 
-export const nexUniqueDrops = [...torvaOutfit, ...pernixOutfit, ...virtusOutfit, ...nexAncientWeapons];
+export const nexUniqueDrops = [
+	...brokenTorvaOutfit,
+	...brokenPernixOutfit,
+	...brokenVirtusOutfit,
+	...nexAncientWeapons
+];
 
 export const nexCL = [
 	...nexUniqueDrops,

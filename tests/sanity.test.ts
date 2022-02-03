@@ -147,11 +147,15 @@ describe('Sanity', () => {
 	test('expected IDs', () => {
 		const expectedIDs = [
 			['Torva full helm', 432],
+			['Torva full helm (broken)', 51_000],
 			['Torva platebody', 709],
 			['Torva platelegs', 2404],
 			['Torva boots', 2838],
 			['Torva gloves', 4273],
-			['Pernix cowl', 601],
+			['Torva gloves', 4273],
+			['Virtus boots (broken)', 51_014],
+			['Pernix boots (broken)', 51_009],
+			['Torva boots (broken)', 51_004],
 			['Bandosian components', 26_394],
 			['Masori headdress', 26_217],
 			["Osmumten's fang", 26_219]
