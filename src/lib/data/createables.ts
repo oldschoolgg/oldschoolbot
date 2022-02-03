@@ -978,6 +978,16 @@ const Createables: Createable[] = [
 		}
 	},
 	{
+		name: 'Ancient godsword',
+		inputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Ancient hilt')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient godsword')]: 1
+		}
+	},
+	{
 		name: 'Infernal pickaxe',
 		inputItems: {
 			[itemID('Dragon pickaxe')]: 1,

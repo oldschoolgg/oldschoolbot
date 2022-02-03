@@ -3,8 +3,10 @@ import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
 import { dyedItems } from '../../dyedItems';
+import { nexBrokenArmorDetails } from '../../nex';
 import { bones } from '../../skilling/skills/prayer';
 import { assert, resolveNameBank } from '../../util';
+import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
 import { Createable } from '../createables';
@@ -19,6 +21,122 @@ for (const { baseItem, dyedVersions } of dyedItems) {
 		});
 	}
 }
+
+const nexCreatables: Createable[] = [
+	{
+		name: 'Virtus wand',
+		inputItems: {
+			[itemID('Kodai wand')]: 1,
+			[itemID('Virtus crystal')]: 1
+		},
+		outputItems: {
+			[itemID('Virtus wand')]: 1
+		},
+		requiredSkills: { smithing: 80, crafting: 80 }
+	},
+	{
+		name: 'Virtus book',
+		inputItems: {
+			[itemID("Mage's book")]: 1,
+			[itemID('Virtus crystal')]: 1
+		},
+		outputItems: {
+			[itemID('Virtus book')]: 1
+		},
+		requiredSkills: { smithing: 80, crafting: 80 }
+	}
+];
+
+for (const [component, brokenOutfit, repairedOutfit] of nexBrokenArmorDetails) {
+	for (let i = 0; i < brokenOutfit.length; i++) {
+		nexCreatables.push({
+			name: getOSItem(repairedOutfit[i]).name,
+			inputItems: {
+				[component.id]: 1,
+				[brokenOutfit[i]]: 1
+			},
+			outputItems: {
+				[repairedOutfit[i]]: 1
+			},
+			requiredSkills: { smithing: 80, crafting: 80 }
+		});
+	}
+}
+
+const componentRevertables: Createable[] = [
+	{
+		name: 'Revert bandos chestplate',
+		inputItems: {
+			[itemID('Bandos chestplate')]: 1
+		},
+		outputItems: {
+			[itemID('Bandosian components')]: 3
+		}
+	},
+	{
+		name: 'Revert bandos tassets',
+		inputItems: {
+			[itemID('Bandos tassets')]: 1
+		},
+		outputItems: {
+			[itemID('Bandosian components')]: 2
+		}
+	},
+	{
+		name: 'Revert armadyl helmet',
+		inputItems: {
+			[itemID('Armadyl helmet')]: 1
+		},
+		outputItems: {
+			[itemID('Armadylean components')]: 1
+		}
+	},
+	{
+		name: 'Revert armadyl chestplate',
+		inputItems: {
+			[itemID('Armadyl chestplate')]: 1
+		},
+		outputItems: {
+			[itemID('Armadylean components')]: 2
+		}
+	},
+	{
+		name: 'Revert armadyl chainskirt',
+		inputItems: {
+			[itemID('Armadyl chainskirt')]: 1
+		},
+		outputItems: {
+			[itemID('Armadylean components')]: 2
+		}
+	},
+	{
+		name: 'Revert ancestral hat',
+		inputItems: {
+			[itemID('Ancestral hat')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral components')]: 2
+		}
+	},
+	{
+		name: 'Revert ancestral robe top',
+		inputItems: {
+			[itemID('Ancestral robe top')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral components')]: 3
+		}
+	},
+	{
+		name: 'Revert ancestral robe bottom',
+		inputItems: {
+			[itemID('Ancestral robe bottom')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral components')]: 3
+		}
+	}
+];
 
 const chaoticCreatables: Createable[] = [
 	{
@@ -981,5 +1099,7 @@ export const BsoCreateables: Createable[] = [
 	...dyeCreatables,
 	...ganodermic,
 	...grifolic,
-	...dragonBoneCreatables
+	...dragonBoneCreatables,
+	...nexCreatables,
+	...componentRevertables
 ];

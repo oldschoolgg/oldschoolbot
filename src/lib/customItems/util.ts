@@ -3,11 +3,9 @@ import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
+import { cleanString } from '../util/cleanString';
 import getOSItem from '../util/getOSItem';
 
-function cleanString(str: string): string {
-	return str.replace(/\s/g, '').toUpperCase();
-}
 export const customPrices: Record<number, number> = [];
 
 export const customItems: number[] = [];
