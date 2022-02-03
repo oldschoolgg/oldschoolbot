@@ -68,76 +68,12 @@ setCustomItem(
 
 /**
  *
- *  Broken Pernix
- *
- */
-
-setCustomItem(
-	51_005,
-	'Pernix cowl (broken)',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000_000
-);
-setCustomItem(
-	51_006,
-	'Pernix body (broken)',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000_000
-);
-setCustomItem(
-	51_007,
-	'Pernix chaps (broken)',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000_000
-);
-
-setCustomItem(
-	51_008,
-	'Pernix gloves (broken)',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000_000
-);
-
-setCustomItem(
-	51_009,
-	'Pernix boots (broken)',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000_000
-);
-
-/**
- *
  *  Broken Virtus
  *
  */
 
 setCustomItem(
-	51_010,
+	51_005,
 	'Virtus mask (broken)',
 	'Coal',
 	{
@@ -148,7 +84,7 @@ setCustomItem(
 	10_000_000
 );
 setCustomItem(
-	51_011,
+	51_006,
 	'Virtus robe top (broken)',
 	'Coal',
 	{
@@ -159,7 +95,7 @@ setCustomItem(
 	10_000_000
 );
 setCustomItem(
-	51_012,
+	51_007,
 	'Virtus robe legs (broken)',
 	'Coal',
 	{
@@ -171,7 +107,7 @@ setCustomItem(
 );
 
 setCustomItem(
-	51_013,
+	51_008,
 	'Virtus gloves (broken)',
 	'Coal',
 	{
@@ -183,8 +119,72 @@ setCustomItem(
 );
 
 setCustomItem(
-	51_014,
+	51_009,
 	'Virtus boots (broken)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000_000
+);
+
+/**
+ *
+ *  Broken Pernix
+ *
+ */
+
+setCustomItem(
+	51_010,
+	'Pernix cowl (broken)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	51_011,
+	'Pernix body (broken)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000_000
+);
+setCustomItem(
+	51_012,
+	'Pernix chaps (broken)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000_000
+);
+
+setCustomItem(
+	51_013,
+	'Pernix gloves (broken)',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000_000
+);
+
+setCustomItem(
+	51_014,
+	'Pernix boots (broken)',
 	'Coal',
 	{
 		customItemData: {
