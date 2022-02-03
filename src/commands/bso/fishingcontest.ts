@@ -9,6 +9,7 @@ import {
 	catchFishAtLocation,
 	fishingLocations,
 	getCurrentFishType,
+	getTopDailyFishingCatch,
 	getUsersFishingContestDetails,
 	getValidLocationsForFishType
 } from '../../lib/fishingContest';
@@ -40,9 +41,12 @@ export default class extends BotCommand {
 	@requiresMinion
 	async run(msg: KlasaMessage) {
 		const currentFishType = getCurrentFishType();
-		const userDetails = await getUsersFishingContestDetails(msg.author);
+		const [userDetails, topCatches, minigameScore] = await Promise.all([
+			getUsersFishingContestDetails(msg.author),
+			getTopDailyFishingCatch(),
+			getMinigameScore(msg.author.id, 'fishing_contest')
+		]);
 		const validLocs = getValidLocationsForFishType(currentFishType);
-		const minigameScore = await getMinigameScore(msg.author.id, 'fishing_contest');
 		return msg.channel.send(
 			`**Fishing Contest**
 
@@ -58,7 +62,8 @@ You can participate using \`${msg.cmdPrefix}fishingcontest fish [location]\`
 **Total Daily Contests:** ${minigameScore}
 **All-time catches:** ${userDetails.catchesAllTime}
 **Total Unique Catches:** ${userDetails.totalUniqueCatches}
-**Total Length of Fish:** ${userDetails.totalLength / 100}m`
+**Total Length of Fish:** ${userDetails.totalLength / 100}m
+**Daily Catch Leaderboard:** ${topCatches.map(i => `${i.name}(${i.length_cm / 100}m)`).join(', ')}`
 		);
 	}
 
