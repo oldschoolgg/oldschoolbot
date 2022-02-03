@@ -53,9 +53,6 @@ import {
 	creatureCreationCL,
 	cyclopsCL,
 	dagannothKingsCL,
-	dagannothPrimeCL,
-	dagannothRexCL,
-	dagannothSupremeCL,
 	dailyCL,
 	demonicGorillaCL,
 	fightCavesCL,
@@ -179,37 +176,30 @@ export const allCollectionLogs: ICollection = {
 				items: crazyArchaeologistCL
 			},
 			'Dagannoth Kings': {
-				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
+				alias: [
+					'dagannoth kings',
+					'kings',
+					'dagga',
+					'dks',
+					'prime',
+					'rex',
+					'supreme',
+					'dagannoth rex',
+					'dagannoth supreme',
+					'dagannoth prime'
+				],
 				kcActivity: {
-					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name]
+					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name],
+					Rex: Monsters.DagannothRex.name,
+					Prime: Monsters.DagannothPrime.name,
+					Supreme: Monsters.DagannothSupreme.name
 				},
-				allItems: (() => {
-					return [
-						...new Set(
-							...[
-								Monsters.DagannothPrime.allItems,
-								Monsters.DagannothSupreme.allItems,
-								Monsters.DagannothRex.allItems
-							]
-						)
-					];
-				})(),
+				allItems: [
+					...Monsters.DagannothPrime.allItems,
+					...Monsters.DagannothSupreme.allItems,
+					...Monsters.DagannothRex.allItems
+				],
 				items: dagannothKingsCL
-			},
-			'Dagannoth Rex': {
-				alias: Monsters.DagannothRex.aliases,
-				allItems: Monsters.DagannothRex.allItems,
-				items: dagannothRexCL
-			},
-			'Dagannoth Prime': {
-				alias: Monsters.DagannothPrime.aliases,
-				allItems: Monsters.DagannothPrime.allItems,
-				items: dagannothPrimeCL
-			},
-			'Dagannoth Supreme': {
-				alias: Monsters.DagannothSupreme.aliases,
-				allItems: Monsters.DagannothSupreme.allItems,
-				items: dagannothSupremeCL
 			},
 			'The Fight Caves': {
 				kcActivity: Monsters.TzTokJad.name,
@@ -696,25 +686,19 @@ export const allCollectionLogs: ICollection = {
 						);
 					}
 				},
-				allItems: (() => {
-					return [
-						...new Set(
-							...[
-								Monsters.RevenantImp.allItems,
-								Monsters.RevenantGoblin.allItems,
-								Monsters.RevenantPyrefiend.allItems,
-								Monsters.RevenantHobgoblin.allItems,
-								Monsters.RevenantCyclops.allItems,
-								Monsters.RevenantHellhound.allItems,
-								Monsters.RevenantDemon.allItems,
-								Monsters.RevenantOrk.allItems,
-								Monsters.RevenantDarkBeast.allItems,
-								Monsters.RevenantKnight.allItems,
-								Monsters.RevenantDragon.allItems
-							]
-						)
-					];
-				})(),
+				allItems: [
+					...Monsters.RevenantImp.allItems,
+					...Monsters.RevenantGoblin.allItems,
+					...Monsters.RevenantPyrefiend.allItems,
+					...Monsters.RevenantHobgoblin.allItems,
+					...Monsters.RevenantCyclops.allItems,
+					...Monsters.RevenantHellhound.allItems,
+					...Monsters.RevenantDemon.allItems,
+					...Monsters.RevenantOrk.allItems,
+					...Monsters.RevenantDarkBeast.allItems,
+					...Monsters.RevenantKnight.allItems,
+					...Monsters.RevenantDragon.allItems
+				],
 				items: revenantsCL
 			},
 			'Rooftop Agility': {
@@ -828,18 +812,12 @@ export const allCollectionLogs: ICollection = {
 						Monsters.GeneralGraardor.name
 					]
 				},
-				allItems: (() => {
-					return [
-						...new Set(
-							...[
-								Monsters.CommanderZilyana.allItems,
-								Monsters.KrilTsutsaroth.allItems,
-								Monsters.Kreearra.allItems,
-								Monsters.GeneralGraardor.allItems
-							]
-						)
-					];
-				})(),
+				allItems: [
+					...Monsters.CommanderZilyana.allItems,
+					...Monsters.KrilTsutsaroth.allItems,
+					...Monsters.Kreearra.allItems,
+					...Monsters.GeneralGraardor.allItems
+				],
 				items: godWarsDungeonCL
 			}
 		}
