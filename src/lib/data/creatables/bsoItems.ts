@@ -124,7 +124,7 @@ const componentRevertables: Createable[] = [
 			[itemID('Ancestral robe top')]: 1
 		},
 		outputItems: {
-			[itemID('Ancestral components')]: 2
+			[itemID('Ancestral components')]: 3
 		}
 	},
 	{
@@ -133,7 +133,7 @@ const componentRevertables: Createable[] = [
 			[itemID('Ancestral robe bottom')]: 1
 		},
 		outputItems: {
-			[itemID('Ancestral components')]: 2
+			[itemID('Ancestral components')]: 3
 		}
 	}
 ];
