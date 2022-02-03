@@ -69,7 +69,7 @@ const componentRevertables: Createable[] = [
 			[itemID('Bandos chestplate')]: 1
 		},
 		outputItems: {
-			[itemID('Bandosian components')]: 2
+			[itemID('Bandosian components')]: 3
 		}
 	},
 	{
