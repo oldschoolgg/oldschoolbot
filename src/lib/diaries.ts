@@ -485,7 +485,7 @@ export const FaladorDiary: Diary = {
 					return [true];
 				}
 			}
-			return [false, 'you need a Quest point or Skill cape'];
+			return [false, 'you need a Quest point cape or Skill cape'];
 		}
 	}
 };
