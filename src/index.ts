@@ -8,7 +8,7 @@ import { APIInteraction, GatewayDispatchEvents, InteractionResponseType, Interac
 import { SlashCommandResponse } from 'mahoji/dist/lib/types';
 import { join } from 'path';
 
-import { botToken, SENTRY_DSN } from './config';
+import { botToken, CLIENT_ID, DEV_SERVER_ID, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
@@ -27,8 +27,8 @@ if (SENTRY_DSN) {
 
 export const mahojiClient = new MahojiClient({
 	discordToken: botToken,
-	developmentServerID: '342983479501389826',
-	applicationID: '829398443821891634',
+	developmentServerID: DEV_SERVER_ID,
+	applicationID: CLIENT_ID,
 	storeDirs: [join('dist', 'mahoji')],
 	handlers: {
 		preCommand: ({ command, interaction }) =>
