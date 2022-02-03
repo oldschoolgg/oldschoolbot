@@ -6,6 +6,7 @@ import { dyedItems } from '../../dyedItems';
 import { nexBrokenArmorDetails } from '../../nex';
 import { bones } from '../../skilling/skills/prayer';
 import { assert, resolveNameBank } from '../../util';
+import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
 import { Createable } from '../createables';
 
@@ -48,7 +49,7 @@ const nexCreatables: Createable[] = [
 for (const [component, brokenOutfit, repairedOutfit] of nexBrokenArmorDetails) {
 	for (let i = 0; i < brokenOutfit.length; i++) {
 		nexCreatables.push({
-			name: 'Virtus wand',
+			name: getOSItem(repairedOutfit[i]).name,
 			inputItems: {
 				[component.id]: 1,
 				[brokenOutfit[i]]: 1
