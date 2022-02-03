@@ -256,6 +256,15 @@ export function getValidLocationsForFishType(type: FishType) {
 	return fishingLocations.filter(loc => loc.temperature === type.temperature && loc.water === type.water);
 }
 
+export async function getTopDailyFishingCatch() {
+	const topThreeCatches: FishingContestCatch[] = await prisma.$queryRawUnsafe(`SELECT *
+FROM fishing_contest_catch
+WHERE date::date = '${ISODateString()}'
+ORDER BY length_cm DESC
+LIMIT 3;`);
+	return topThreeCatches;
+}
+
 export async function getUsersFishingContestDetails(user: KlasaUser) {
 	const catchesFromToday: FishingContestCatch[] = await prisma.$queryRawUnsafe(`SELECT *
 FROM fishing_contest_catch
