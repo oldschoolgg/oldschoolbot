@@ -96,9 +96,9 @@ export default class extends Task {
 			const str = isPurple ? `${emote} ||${itemsAdded}||` : itemsAdded.toString();
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 			const clue = items.some(([item]) => item.name.toLowerCase().includes('clue scroll'));
-			resultMessage += `\n${
+			resultMessage += `\n${deathStr}${
 				clue ? Emoji.Clue : ''
-			}${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
+			} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
 				Emoji.Skull
 			}${deathChance.toFixed(0)}%)`;
 		}
