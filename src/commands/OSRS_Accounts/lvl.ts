@@ -23,7 +23,7 @@ export default class extends BotCommand {
 				'crafting|smithing|mining|herblore|agility|thieving|slayer|' +
 				'farming|runecraft|hunter|construction> (username:...rsn)',
 			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+lvl attack Woox', '+lvl strength'],
 			categoryFlags: ['utility']
 		});

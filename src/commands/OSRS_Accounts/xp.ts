@@ -9,7 +9,7 @@ export default class extends BotCommand {
 			cooldown: 2,
 			description: 'Shows your XP in all skills.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+xp Magnaby'],
 			categoryFlags: ['utility']
 		});

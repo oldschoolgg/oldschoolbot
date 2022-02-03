@@ -14,7 +14,7 @@ export default class extends BotCommand {
 			cooldown: 2,
 			description: 'Shows the BH & LMS scores of an account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+pvp d3adscene'],
 			categoryFlags: ['utility']
 		});

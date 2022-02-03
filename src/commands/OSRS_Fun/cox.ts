@@ -14,7 +14,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<amount:int{1,30}> [points:int{1,100000}] [names:...str]',
 			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			description: 'Simulates a Cox raid.',
 			examples: ['+cox 30 30k', '+cox 5 30k Magnaboy, Woox'],
 			categoryFlags: ['fun', 'simulation']

@@ -1,3 +1,4 @@
+import { PermissionResolvable } from 'discord.js';
 import { Command, CommandOptions, CommandStore, KlasaMessage, util } from 'klasa';
 
 import { BitField } from '../constants';
@@ -11,6 +12,9 @@ export abstract class BotCommand extends Command {
 	public ironCantUse?: boolean;
 	public examples: string[];
 	public categoryFlags: CategoryFlag[];
+	public cooldown?: number;
+	public requiredPermissionsForBot: PermissionResolvable[];
+	public requiredPermissionsForUser: PermissionResolvable[];
 
 	public constructor(store: CommandStore, file: string[], directory: string, options: BotCommandOptions = {}) {
 		super(
@@ -35,6 +39,9 @@ export abstract class BotCommand extends Command {
 		this.examples = options.examples || [];
 		this.categoryFlags = options.categoryFlags || [];
 		this.bitfieldsRequired = options.bitfieldsRequired || [];
+		this.cooldown = options.cooldown;
+		this.requiredPermissionsForBot = options.requiredPermissionsForBot || [];
+		this.requiredPermissionsForUser = options.requiredPermissionsForUser || [];
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -59,4 +66,7 @@ export interface BotCommandOptions extends CommandOptions {
 	description?: string;
 	categoryFlags?: CategoryFlag[];
 	bitfieldsRequired?: BitField[];
+	cooldown?: number;
+	requiredPermissionsForBot?: PermissionResolvable[];
+	requiredPermissionsForUser?: PermissionResolvable[];
 }

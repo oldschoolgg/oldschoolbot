@@ -12,7 +12,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 30,
 			description: 'Shows the latest OSRS News Posts.',
-			requiredPermissions: ['MANAGE_MESSAGES', 'ADD_REACTIONS', 'READ_MESSAGE_HISTORY'],
+			requiredPermissionsForBot: ['MANAGE_MESSAGES', 'ADD_REACTIONS', 'READ_MESSAGE_HISTORY'],
 			examples: ['+news']
 		});
 	}

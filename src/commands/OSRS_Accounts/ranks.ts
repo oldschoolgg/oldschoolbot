@@ -9,7 +9,7 @@ export default class extends BotCommand {
 			cooldown: 3,
 			description: 'Shows the ranks of an account',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+ranks Magnaboy', '+ranks'],
 			categoryFlags: ['utility']
 		});
