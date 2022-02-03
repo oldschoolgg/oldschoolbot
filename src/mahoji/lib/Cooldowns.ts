@@ -19,6 +19,10 @@ class CooldownsSingleton {
 		assert(value > now);
 		return value - now;
 	}
+
+	delete(userID: string) {
+		this.cooldownMap.delete(userID);
+	}
 }
 
 export const Cooldowns = new CooldownsSingleton();

@@ -44,6 +44,7 @@ import {
 import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { sendToChannelID } from '../lib/util/webhook';
+import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
@@ -512,6 +513,7 @@ ${
 				await cancelTask(input.id);
 				this.client.oneCommandAtATimeCache.delete(input.id);
 				this.client.secondaryUserBusyCache.delete(input.id);
+				Cooldowns.delete(input.id);
 				minionActivityCacheDelete(input.id);
 
 				return msg.react(Emoji.Tick);
