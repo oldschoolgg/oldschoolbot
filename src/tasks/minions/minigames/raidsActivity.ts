@@ -97,7 +97,7 @@ export default class extends Task {
 			const deathStr = deaths === 0 ? '' : new Array(deaths).fill(Emoji.Skull).join(' ');
 			const clue = items.some(([item]) => item.name.toLowerCase().includes('clue scroll'));
 			if (clue) {
-				resultMessage += `${Emoji.Clue} You have received a clue scroll!`;
+				resultMessage += `${Emoji.Clue}`;
 			}
 			resultMessage += `\n${deathStr} **${user}** received: ${str} (${personalPoints?.toLocaleString()} pts, ${
 				Emoji.Skull
