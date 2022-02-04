@@ -1,5 +1,5 @@
 import { MessageCollector } from 'discord.js';
-import { round, Time } from 'e';
+import { increaseNumByPercent, round, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -287,7 +287,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			// If less than 8 kills, roll 25% chance per kill
 			if (hasOri) {
 				if (killQty >= 8) {
-					killQty = Math.ceil(killQty * 1.25);
+					killQty = Math.ceil(increaseNumByPercent(killQty, 25));
 				} else {
 					for (let i = 0; i < quantity; i++) {
 						if (roll(4)) killQty++;

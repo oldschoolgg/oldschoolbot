@@ -1,9 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Roles, SupportServer } from '../../lib/constants';
-import { prisma } from '../../lib/settings/prisma';
-import { BotCommand } from '../../lib/structures/BotCommand';
-import { stringMatches } from '../../lib/util';
+import { Roles, SupportServer } from '../lib/constants';
+import { prisma } from '../lib/settings/prisma';
+import { BotCommand } from '../lib/structures/BotCommand';
+import { stringMatches } from '../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -20,7 +20,7 @@ export default class extends BotCommand {
 			return message.channel.send('No role with that name found.');
 		}
 		if (!message.member) return;
-		if (!message.member?.roles.cache.has(Roles.BSOMassHoster)) {
+		if (!message.member.roles.cache.has(Roles.BSOMassHoster)) {
 			return;
 		}
 		return message.channel.send(

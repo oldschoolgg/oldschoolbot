@@ -1,4 +1,4 @@
-import { Client, KlasaClientOptions } from 'klasa';
+import { Client, KlasaClientOptions, KlasaUser } from 'klasa';
 
 import { clientOptions } from '../config';
 import { initCrons } from '../crons';
@@ -57,7 +57,7 @@ export class OldSchoolBotClient extends Client {
 		return super.login(token);
 	}
 
-	async fetchUser(id: string) {
+	async fetchUser(id: string): Promise<KlasaUser> {
 		const user = await this.users.fetch(id);
 		await user.settings.sync();
 		return user;

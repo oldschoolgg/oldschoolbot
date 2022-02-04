@@ -3,7 +3,6 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { production } from '../../../config';
 import { Emoji } from '../../../lib/constants';
 import { nexCL, nexUniqueDrops } from '../../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
@@ -158,17 +157,13 @@ export default class extends Task {
 			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
 		}
 
-		let debug = production ? '' : `\`\`\`\n${JSON.stringify([parsedUsers, deaths], null, 4)}\n\`\`\``;
-
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
 				sendToChannelID(this.client, channelID, {
-					content: `${users
-						.map(id => `<@${id}>`)
-						.join(' ')} Your team all died, and failed to defeat Nex. ${debug}`
+					content: `${users.map(id => `<@${id}>`).join(' ')} Your team all died, and failed to defeat Nex.`
 				});
 			} else {
-				sendToChannelID(this.client, channelID, { content: resultStr + debug });
+				sendToChannelID(this.client, channelID, { content: resultStr });
 			}
 		} else {
 			const image = !kcAmounts[userID]

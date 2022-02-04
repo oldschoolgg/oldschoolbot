@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, sumArr, Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import murmurHash from 'murmurhash';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -17,7 +17,6 @@ import {
 	BitField,
 	CENA_CHARS,
 	continuationChars,
-	Events,
 	PerkTier,
 	ProjectileType,
 	skillEmoji,
@@ -192,10 +191,6 @@ export function roll(max: number) {
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
-}
-
-export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>) {
-	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
@@ -728,6 +723,11 @@ export function sanitizeBank(bank: Bank) {
 export function isAtleastThisOld(date: Date | number, age: number) {
 	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
 	return difference >= age;
+}
+
+export function truncateString(str: string, maxLen: number) {
+	if (str.length < maxLen) return str;
+	return `${str.slice(0, maxLen - 3)}...`;
 }
 
 export function cleanUsername(str: string) {

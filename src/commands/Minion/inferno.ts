@@ -68,7 +68,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ATTACH_FILES'],
+			requiredPermissionsForBot: ['ATTACH_FILES'],
 			description: 'Sends your minion to complete the Inferno.',
 			examples: ['+inferno start', '+i'],
 			categoryFlags: ['minion', 'minigame'],

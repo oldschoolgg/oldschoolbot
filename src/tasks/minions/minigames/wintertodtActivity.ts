@@ -153,6 +153,6 @@ export default class extends Task {
 			kc: quantity
 		});
 
-		handleTripFinish(this.client, user, channelID, output, ['wintertodt', [], true], image!, data, itemsAdded);
+		handleTripFinish(this.client, user, channelID, output, ['wintertodt', {}, true], image!, data, itemsAdded);
 	}
 }

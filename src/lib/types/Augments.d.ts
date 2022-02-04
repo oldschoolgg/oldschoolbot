@@ -104,10 +104,9 @@ declare module 'klasa' {
 	}
 }
 
-declare module 'discord-api-types/v8' {
+declare module 'discord.js/node_modules/discord-api-types/v8' {
 	type Snowflake = string;
 }
-
 type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
 
 declare module 'discord.js' {

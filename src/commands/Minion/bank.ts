@@ -19,7 +19,7 @@ export default class extends BotCommand {
 			oneAtTime: true,
 			usage: '[page:int{1}] [name:...string]',
 			usageDelim: ' ',
-			requiredPermissions: ['ATTACH_FILES'],
+			requiredPermissionsForBot: ['ATTACH_FILES'],
 			aliases: ['b', 'bs'],
 			examples: ['+b'],
 			categoryFlags: ['minion']

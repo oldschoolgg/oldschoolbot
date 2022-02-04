@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { sanitizeBank, stripEmojis } from '../src/lib/util';
+import { sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 
 describe('util', () => {
@@ -62,5 +62,9 @@ describe('util', () => {
 		buggyBank.bank[2] = 0;
 		sanitizeBank(buggyBank);
 		expect(buggyBank.bank).toEqual({});
+	});
+
+	test('truncateString', () => {
+		expect(truncateString('testtttttt', 5)).toEqual('te...');
 	});
 });

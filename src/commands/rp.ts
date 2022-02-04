@@ -1,30 +1,38 @@
+import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
-import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
+import { Type } from '@sapphire/type';
+import { captureException } from '@sentry/node';
+import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
+import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
+import { inspect } from 'node:util';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { client, mahojiClient } from '..';
+import { CLIENT_ID } from '../config';
 import {
 	badges,
 	BitField,
 	BitFieldData,
 	Channel,
 	DefaultPingableRoles,
+	DISABLED_COMMANDS,
 	Emoji,
 	Roles,
 	SupportServer,
 	userTimers
-} from '../../lib/constants';
-import { getSimilarItems } from '../../lib/data/similarItems';
-import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
-import { evalMathExpression } from '../../lib/expressionParser';
-import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
-import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { BotCommand } from '../../lib/structures/BotCommand';
+} from '../lib/constants';
+import { getSimilarItems } from '../lib/data/similarItems';
+import { addPatronLootTime, addToDoubleLootTimer } from '../lib/doubleLoot';
+import { evalMathExpression } from '../lib/expressionParser';
+import { countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
+import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
+import { ClientSettings } from '../lib/settings/types/ClientSettings';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { BotCommand } from '../lib/structures/BotCommand';
 import {
 	asyncExec,
 	channelIsSendable,
@@ -34,13 +42,16 @@ import {
 	getSupportGuild,
 	getUsername,
 	isSuperUntradeable,
-	itemNameFromID
-} from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { sendToChannelID } from '../../lib/util/webhook';
-import BankImageTask from '../../tasks/bankImage';
-import PatreonTask from '../../tasks/patreon';
+	itemNameFromID,
+	stringMatches
+} from '../lib/util';
+import getOSItem from '../lib/util/getOSItem';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { sendToChannelID } from '../lib/util/webhook';
+import { Cooldowns } from '../mahoji/lib/Cooldowns';
+import { allAbstractCommands } from '../mahoji/lib/util';
+import BankImageTask from '../tasks/bankImage';
+import PatreonTask from '../tasks/patreon';
 
 async function checkBank(msg: KlasaMessage) {
 	const bank = msg.author.settings.get(UserSettings.Bank);
@@ -143,6 +154,97 @@ ${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
 	}
 
 	return msg.channel.send(str);
+}
+
+async function unsafeEval({
+	code,
+	flags,
+	// @ts-ignore Makes it accessible in eval
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	msg
+}: {
+	code: string;
+	flags: Record<string, string>;
+	msg: KlasaMessage;
+}): Promise<MessageOptions> {
+	code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
+	const stopwatch = new Stopwatch();
+	let syncTime = '?';
+	let asyncTime = '?';
+	let result = null;
+	let thenable = false;
+	// eslint-disable-next-line @typescript-eslint/init-declarations
+	let type!: Type;
+	try {
+		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
+		if (flags.async) code = `(async () => {\n${code}\n})();`;
+		else if (flags.bk) code = `(async () => {\nreturn ${code}\n})();`;
+		// eslint-disable-next-line no-eval
+		result = eval(code);
+		syncTime = stopwatch.toString();
+		type = new Type(result);
+		if (util.isThenable(result)) {
+			thenable = true;
+			stopwatch.restart();
+			result = await result;
+			asyncTime = stopwatch.toString();
+		}
+	} catch (error: any) {
+		if (!syncTime) syncTime = stopwatch.toString();
+		if (!type) type = new Type(error);
+		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
+		if (error && error.stack) captureException(error);
+		result = error;
+	}
+
+	stopwatch.stop();
+	if (flags.bk || result instanceof Bank) {
+		const image = await client.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
+		return { files: [new MessageAttachment(image.image!)] };
+	}
+
+	if (Buffer.isBuffer(result)) {
+		return {
+			content: 'The result was a buffer.'
+		};
+	}
+
+	if (typeof result !== 'string') {
+		result = inspect(result, {
+			depth: flags.depth ? parseInt(flags.depth) || 1 : 1,
+			showHidden: false
+		});
+	}
+
+	return {
+		content: `${codeBlock(Util.escapeCodeBlock(result))}
+**Type:** ${inlineCode(type.toString())}
+**Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
+`
+	};
+}
+
+async function evalCommand(msg: KlasaMessage, code: string) {
+	try {
+		if (!client.owners.has(msg.author)) {
+			return "You don't have permission to use this command.";
+		}
+		const res = await unsafeEval({ code, flags: msg.flagArgs, msg });
+
+		if ('silent' in msg.flagArgs) return null;
+
+		// Handle too-long-messages
+		if (res.content && res.content.length > 2000) {
+			return {
+				files: [new MessageAttachment(Buffer.from(res.content), 'output.txt')]
+			};
+		}
+
+		// If it's a message that can be sent correctly, send it
+		return msg.channel.send(res);
+	} catch (err) {
+		console.error(err);
+	}
 }
 
 export const emoji = (client: KlasaClient) => getSupportGuild(client).emojis.cache.random().toString();
@@ -498,6 +600,7 @@ ${
 				await cancelTask(input.id);
 				this.client.oneCommandAtATimeCache.delete(input.id);
 				this.client.secondaryUserBusyCache.delete(input.id);
+				Cooldowns.delete(input.id);
 				minionActivityCacheDelete(input.id);
 
 				return msg.react(Emoji.Tick);
@@ -650,18 +753,50 @@ LIMIT 10;
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
-				command.disable();
-				return msg.channel.send(`${emoji(this.client)} Disabled \`+${command}\`.`);
+				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
+					where: { id: CLIENT_ID },
+					select: { disabled_commands: true }
+				}))!.disabled_commands;
+				if (currentDisabledCommands.includes(command.name)) {
+					return msg.channel.send('That command is already disabled.');
+				}
+				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
+				await prisma.clientStorage.update({
+					where: {
+						id: CLIENT_ID
+					},
+					data: {
+						disabled_commands: newDisabled
+					}
+				});
+				DISABLED_COMMANDS.add(command.name);
+				return msg.channel.send(`Disabled \`${command.name}\`.`);
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
-				if (command.enabled) return msg.channel.send('That command is already enabled.');
-				command.enable();
-				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
+
+				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
+					where: { id: CLIENT_ID },
+					select: { disabled_commands: true }
+				}))!.disabled_commands;
+				if (!currentDisabledCommands.includes(command.name)) {
+					return msg.channel.send('That command is not disabled.');
+				}
+
+				await prisma.clientStorage.update({
+					where: {
+						id: CLIENT_ID
+					},
+					data: {
+						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
+					}
+				});
+				DISABLED_COMMANDS.delete(command.name);
+				return msg.channel.send(`Enabled \`${command.name}\`.`);
 			}
 			case 'dtp': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -790,6 +925,28 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				return msg.channel.send({
 					content: `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`
 				});
+			}
+			case 'eval': {
+				if (!input || typeof input !== 'string') return;
+				return evalCommand(msg, input);
+			}
+			case 'localmahojisync': {
+				await msg.channel.send('Syncing commands locally...');
+				await bulkUpdateCommands({
+					client: mahojiClient,
+					commands: mahojiClient.commands.values,
+					guildID: msg.guild!.id
+				});
+				return msg.channel.send('Locally synced slash commands.');
+			}
+			case 'globalmahojisync': {
+				await msg.channel.send('Syncing commands...');
+				await bulkUpdateCommands({
+					client: mahojiClient,
+					commands: mahojiClient.commands.values,
+					guildID: null
+				});
+				return msg.channel.send('Globally synced slash commands.');
 			}
 		}
 	}
