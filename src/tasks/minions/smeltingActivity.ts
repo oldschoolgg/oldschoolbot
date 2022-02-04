@@ -56,7 +56,14 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['smelt', [oldQuantity, bar.name], true],
+			[
+				'smelt',
+				{
+					name: bar.name,
+					quantity: oldQuantity
+				},
+				true
+			],
 			undefined,
 			data,
 			loot

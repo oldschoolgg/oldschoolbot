@@ -82,7 +82,8 @@ const subCommands = [
 	'blowpipe',
 	'bp',
 	'charge',
-	'data'
+	'data',
+	'commands'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -95,7 +96,7 @@ export default class MinionCommand extends BotCommand {
 			usage: `[${subCommands.join('|')}] [quantity:int{1}|name:...string] [name:...string] [name:...string]`,
 			usageDelim: ' ',
 			subcommands: true,
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissionsForBot: ['EMBED_LINKS']
 		});
 	}
 
@@ -171,6 +172,28 @@ export default class MinionCommand extends BotCommand {
 
 	async train(msg: KlasaMessage, [input]: [string | undefined]) {
 		return trainCommand(msg, input);
+	}
+
+	async commands(msg: KlasaMessage) {
+		const commands = await prisma.commandUsage.findMany({
+			where: {
+				user_id: msg.author.id
+			},
+			orderBy: {
+				date: 'desc'
+			},
+			take: 15
+		});
+		return msg.channel.send(
+			commands
+				.map(
+					(c, inde) =>
+						`${inde + 1}. \`+${c.command_name}\` Args[${JSON.stringify(c.args)}] Date[<t:${Math.round(
+							c.date.getTime() / 1000
+						)}:R>] isContinue[${c.is_continue ? 'Yes' : 'No'}]`
+				)
+				.join('\n')
+		);
 	}
 
 	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {

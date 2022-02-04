@@ -12,8 +12,8 @@ export default class extends BotCommand {
 			subcommands: true,
 			runIn: ['text'],
 			usage: '<on|off>',
-			permissionLevel: 7,
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForUser: ['BAN_MEMBERS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			description: 'Allows you to receive tweets from all JMods and the OSRS Twitter to your channel.',
 			examples: ['+tweets on', '+tweets off'],
 			categoryFlags: ['settings']

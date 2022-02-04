@@ -17,7 +17,7 @@ export default class extends BotCommand {
 			description: 'Simulate killing OSRS monsters and shows the loot.',
 			usage: '<quantity:int{1}> <BossName:...str>',
 			usageDelim: ' ',
-			requiredPermissions: ['ATTACH_FILES'],
+			requiredPermissionsForBot: ['ATTACH_FILES'],
 			examples: ['+kill 100 vorkath', 'kill 100k bandos'],
 			categoryFlags: ['fun', 'simulation']
 		});

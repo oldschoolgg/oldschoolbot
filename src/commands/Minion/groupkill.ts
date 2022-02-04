@@ -23,7 +23,7 @@ export default class extends BotCommand {
 			cooldown: 5,
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			aliases: ['mass'],
 			description: 'Allows you to mass/groupkill bosses with other people.',
 			examples: ['+mass corp', '+mass bandos'],
