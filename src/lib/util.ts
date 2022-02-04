@@ -733,3 +733,7 @@ export function truncateString(str: string, maxLen: number) {
 export function cleanUsername(str: string) {
 	return Util.escapeMarkdown(stripEmojis(str));
 }
+
+export function moidLink(items: number[]) {
+	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
+}

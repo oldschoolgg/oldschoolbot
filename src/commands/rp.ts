@@ -28,6 +28,7 @@ import {
 import { getSimilarItems } from '../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../lib/doubleLoot';
 import { evalMathExpression } from '../lib/expressionParser';
+import { GearSetup, GearSetupTypes } from '../lib/gear';
 import { countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
@@ -43,6 +44,7 @@ import {
 	getUsername,
 	isSuperUntradeable,
 	itemNameFromID,
+	moidLink,
 	stringMatches
 } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
@@ -54,57 +56,79 @@ import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
 async function checkBank(msg: KlasaMessage) {
-	const bank = msg.author.settings.get(UserSettings.Bank);
-	const CLBank = msg.author.settings.get(UserSettings.CollectionLogBank);
+	const rawBank = msg.author.settings.get(UserSettings.Bank);
+	const rawCL = msg.author.settings.get(UserSettings.CollectionLogBank);
+	const rawSB = msg.author.settings.get(UserSettings.SacrificedBank);
+	const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
 
-	const brokenBank = [];
-	for (const id of [...Object.keys(bank), ...Object.keys(CLBank)].map(key => parseInt(key))) {
+	const rawAllGear = GearSetupTypes.map(i => msg.author.settings.get(`gear.${i}`));
+	const allGearItemIDs = rawAllGear
+		.filter(notEmpty)
+		.map((b: any) =>
+			Object.values(b)
+				.filter(notEmpty)
+				.map((i: any) => i.item)
+		)
+		.flat(Infinity);
+
+	const brokenBank: number[] = [];
+	const allItemsToCheck = [
+		...Object.keys(rawBank),
+		...Object.keys(rawCL),
+		...Object.keys(rawSB),
+		...favorites,
+		...allGearItemIDs
+	];
+
+	for (const id of allItemsToCheck.map(i => Number(i))) {
 		const item = Items.get(id);
 		if (!item) {
 			brokenBank.push(id);
 		}
 	}
 
-	const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
-	const brokenFavorites: number[] = [];
-	for (const id of favorites) {
-		const item = Items.get(id);
-		if (!item) {
-			brokenFavorites.push(id);
-		}
+	const newFavs = favorites.filter(i => !brokenBank.includes(i));
+
+	const newBank = { ...rawBank };
+	const newCL = { ...rawCL };
+	const newSB = { ...rawSB };
+	for (const id of brokenBank) {
+		delete newBank[id];
+		delete newCL[id];
+		delete rawSB[id];
 	}
 
-	if (msg.flagArgs.fix) {
-		let str = '';
-		const newFavs = favorites.filter(i => !brokenFavorites.includes(i));
+	for (const setupType of GearSetupTypes) {
+		const _gear = msg.author.settings.get(`gear.${setupType}`) as GearSetup | null;
+		if (_gear === null) continue;
+		const gear = { ..._gear };
+		for (const [key, value] of Object.entries(gear)) {
+			if (value === null) continue;
+			if (brokenBank.includes(value.item)) {
+				delete gear[key as keyof GearSetup];
+			}
+		}
+		await msg.author.settings.update(`gear.${setupType}`, gear);
+	}
+
+	if (brokenBank.length > 0) {
 		await msg.author.settings.update(UserSettings.FavoriteItems, newFavs, {
 			arrayAction: 'overwrite'
 		});
-		str += `Removed ${favorites.length - newFavs.length} from favorites\n`;
-
-		const newBank = { ...bank };
-		const newCL = { ...CLBank };
-		for (const id of brokenBank) {
-			str += `Removed ${newBank[id]}x of item ID ${id} from bank\n`;
-			delete newBank[id];
-			delete newCL[id];
-		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 		await msg.author.settings.update(UserSettings.CollectionLogBank, newCL);
-		return msg.channel.send(str);
+		await msg.author.settings.update(UserSettings.SacrificedBank, newSB);
+
+		return msg.channel.send(
+			`You had ${
+				brokenBank.length
+			} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
+				brokenBank
+			)}`
+		);
 	}
 
-	return msg.channel.send(
-		[
-			`You have ${brokenBank.length} broken items in your bank. `,
-			`You have ${brokenBank.length} broken items in your favorites. `,
-			'You can use `=rp checkbank --fix` to try to automatically remove the broken items.',
-			`Check here to potentially see what they are: <https://chisel.weirdgloop.org/moid/item_id.html#${[
-				...brokenBank,
-				...brokenFavorites
-			].join(',`')}`
-		].join('\n')
-	);
+	return msg.channel.send('You have no broken items on your account!');
 }
 
 function generateReadyThings(user: KlasaUser) {
