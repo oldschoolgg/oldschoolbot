@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -11,7 +11,7 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
-import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
+import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
@@ -113,10 +113,6 @@ export function formatDuration(ms: number, short = false) {
 		.join(short ? '' : ', ');
 }
 
-export function inlineCodeblock(input: string) {
-	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
-}
-
 export function isWeekend() {
 	const currentDate = new Date(Date.now() - Time.Hour * 6);
 	return [6, 0].includes(currentDate.getDay());
@@ -168,10 +164,6 @@ export function roll(max: number) {
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
-}
-
-export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>) {
-	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
@@ -630,6 +622,11 @@ export function sanitizeBank(bank: Bank) {
 			delete bank.bank[key];
 		}
 	}
+}
+
+export function truncateString(str: string, maxLen: number) {
+	if (str.length < maxLen) return str;
+	return `${str.slice(0, maxLen - 3)}...`;
 }
 
 export function cleanUsername(str: string) {

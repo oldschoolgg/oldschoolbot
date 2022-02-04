@@ -11,7 +11,7 @@ export default class extends BotCommand {
 			cooldown: 2,
 			description: 'Shows the Clue Highscores of an account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			categoryFlags: ['utility']
 		});
 	}

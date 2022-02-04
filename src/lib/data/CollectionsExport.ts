@@ -167,9 +167,6 @@ export const dagannothKingsCL = resolveItems([
 	'Seercull',
 	'Mud battlestaff'
 ]);
-export const dagannothRexCL = resolveItems(['Dragon axe', 'Berserker ring', 'Warrior ring', 'Pet dagannoth rex']);
-export const dagannothPrimeCL = resolveItems(['Mud battlestaff', 'Dragon axe', 'Seers ring', 'Pet dagannoth prime']);
-export const dagannothSupremeCL = resolveItems(['Dragon axe', 'Seercull', 'Archers ring', 'Pet dagannoth supreme']);
 export const fightCavesCL = resolveItems(['Tzrek-jad', 'Fire cape']);
 export const theGauntletCL = resolveItems([
 	'Youngllef',
@@ -179,6 +176,29 @@ export const theGauntletCL = resolveItems([
 	'Gauntlet cape'
 ]);
 export const giantMoleCL = resolveItems(['Baby mole', 'Mole skin', 'Mole claw']);
+export const godWarsDungeonCL = resolveItems([
+	'Pet zilyana',
+	'Armadyl crossbow',
+	'Saradomin hilt',
+	'Saradomin sword',
+	"Saradomin's light",
+	"Pet k'ril tsutsaroth",
+	'Staff of the dead',
+	'Zamorakian spear',
+	'Steam battlestaff',
+	'Zamorak hilt',
+	"Pet kree'arra",
+	'Armadyl helmet',
+	'Armadyl chestplate',
+	'Armadyl chainskirt',
+	'Armadyl hilt',
+	'Pet general graardor',
+	'Bandos chestplate',
+	'Bandos tassets',
+	'Bandos boots',
+	'Bandos hilt',
+	...godWarsDungeonGodswordShards
+]);
 export const grotesqueGuardiansCL = resolveItems([
 	'Noon',
 	'Black tourmaline core',

@@ -1,38 +1,36 @@
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { client } from '../..';
 import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { BotCommand } from '../../lib/structures/BotCommand';
 import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, bankHasItem, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { OSBMahojiCommand } from '../lib/util';
 
-export default class extends BotCommand {
-	public constructor(store: CommandStore, file: string[], directory: string) {
-		super(store, file, directory, {
-			aliases: ['wintertodt'],
-			oneAtTime: true,
-			altProtection: true,
-			requiredPermissions: ['ATTACH_FILES'],
-			categoryFlags: ['minion', 'skilling', 'minigame'],
-			description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
-			examples: ['+wt']
-		});
-	}
-
-	@minionNotBusy
-	@requiresMinion
-	async run(msg: KlasaMessage) {
-		const fmLevel = msg.author.skillLevel(SkillsEnum.Firemaking);
-		const wcLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
+export const sellCommand: OSBMahojiCommand = {
+	name: 'wintertodt',
+	description: 'Sends your minion to do Wintertodt.',
+	attributes: {
+		oneAtTime: true,
+		altProtection: true,
+		requiredPermissionsForBot: ['ATTACH_FILES'],
+		categoryFlags: ['minion', 'skilling', 'minigame'],
+		description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
+		examples: ['/wintertodt']
+	},
+	options: [],
+	run: async ({ member, channelID }: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
+		const user = await client.fetchUser(member.user.id);
+		const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
+		const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		if (fmLevel < 50) {
-			return msg.channel.send('You need 50 Firemaking to have a chance at defeating the Wintertodt.');
+			return 'You need 50 Firemaking to have a chance at defeating the Wintertodt.';
 		}
 
 		const messages = [];
@@ -49,7 +47,7 @@ export default class extends BotCommand {
 		let warmGearAmount = 0;
 
 		for (const piece of warmGear) {
-			if (msg.author.getGear('skilling').hasEquipped([piece])) {
+			if (user.getGear('skilling').hasEquipped([piece])) {
 				warmGearAmount++;
 			}
 			if (warmGearAmount >= 4) break;
@@ -67,34 +65,28 @@ export default class extends BotCommand {
 			);
 		}
 
-		const quantity = Math.floor(msg.author.maxTripLength('Wintertodt') / durationPerTodt);
+		const quantity = Math.floor(user.maxTripLength('Wintertodt') / durationPerTodt);
 
-		const bank = msg.author.settings.get(UserSettings.Bank);
+		const bank = user.settings.get(UserSettings.Bank);
 		for (const food of Eatables) {
-			const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(msg.author);
+			const healAmount = typeof food.healAmount === 'number' ? food.healAmount : food.healAmount(user);
 			const amountNeeded = Math.ceil(healAmountNeeded / healAmount) * quantity;
 			if (!bankHasItem(bank, food.id, amountNeeded)) {
 				if (Eatables.indexOf(food) === Eatables.length - 1) {
-					return msg.channel.send(
-						`You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
-							i => i.name
-						).join(', ')}.`
-					);
+					return `You don't have enough food to do Wintertodt! You can use these food items: ${Eatables.map(
+						i => i.name
+					).join(', ')}.`;
 				}
 				continue;
 			}
 
 			messages.push(`Removed ${amountNeeded}x ${food.name}'s from your bank`);
-			await msg.author.removeItemsFromBank(new Bank().add(food.id, amountNeeded));
+			await user.removeItemsFromBank(new Bank().add(food.id, amountNeeded));
 
 			// Track this food cost in Economy Stats
-			await this.client.settings.update(
+			await client.settings.update(
 				ClientSettings.EconomyStats.WintertodtCost,
-				addItemToBank(
-					this.client.settings.get(ClientSettings.EconomyStats.WintertodtCost),
-					food.id,
-					amountNeeded
-				)
+				addItemToBank(client.settings.get(ClientSettings.EconomyStats.WintertodtCost), food.id, amountNeeded)
 			);
 
 			break;
@@ -104,19 +96,17 @@ export default class extends BotCommand {
 
 		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>({
 			minigameID: 'wintertodt',
-			userID: msg.author.id,
-			channelID: msg.channel.id,
+			userID: user.id,
+			channelID: channelID.toString(),
 			quantity,
 			duration,
 			type: 'Wintertodt'
 		});
 
-		return msg.channel.send(
-			`${
-				msg.author.minionName
-			} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
-				durationPerTodt * quantity
-			)}. (${formatDuration(durationPerTodt)} per todt)\n\n${messages.join(', ')}.`
-		);
+		return `${
+			user.minionName
+		} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
+			durationPerTodt * quantity
+		)}. (${formatDuration(durationPerTodt)} per todt)\n\n${messages.join(', ')}.`;
 	}
-}
+};

@@ -10,7 +10,7 @@ export default class extends BotCommand {
 			description: 'Get information on a mentioned user, or yourself.',
 			examples: ['+user', '+user @Magnaboy'],
 			usage: '[Member:member]',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			runIn: ['text'],
 			categoryFlags: ['utility']
 		});

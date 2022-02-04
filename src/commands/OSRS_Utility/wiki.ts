@@ -13,7 +13,7 @@ export default class extends BotCommand {
 			description: 'Search the OSRS Wikipedia for an article.',
 			examples: ['+wiki tbow'],
 			usage: '[query:str]',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissionsForBot: ['EMBED_LINKS']
 		});
 	}
 

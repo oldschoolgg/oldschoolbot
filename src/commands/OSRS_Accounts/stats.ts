@@ -10,7 +10,7 @@ export default class extends BotCommand {
 			aliases: ['s'],
 			description: 'Shows the stats of a OSRS account',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+s Magnaboy', '+s'],
 			categoryFlags: ['utility']
 		});
