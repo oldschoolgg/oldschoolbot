@@ -85,7 +85,6 @@ export async function createdChallenge(msg: KlasaMessage): Promise<KlasaUser | n
 			) && Object.keys(i.outputItems).length === 1
 	);
 	const randomCreatable = randArrItem(all);
-	console.log(all.map(i => i.name));
 
 	const embed = new MessageEmbed()
 		.setColor(Color.Orange)
