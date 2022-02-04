@@ -225,7 +225,10 @@ setCustomItem(
 			slot: EquipmentSlot.Head,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -254,7 +257,10 @@ setCustomItem(
 			slot: EquipmentSlot.Body,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -283,7 +289,10 @@ setCustomItem(
 			slot: EquipmentSlot.Legs,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -312,7 +321,10 @@ setCustomItem(
 			slot: EquipmentSlot.Feet,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -342,7 +354,10 @@ setCustomItem(
 			requirements: null
 		},
 		highalch: 50_000_000,
-		tradeable: true
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -378,7 +393,10 @@ setCustomItem(
 			slot: EquipmentSlot.Head,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -405,7 +423,10 @@ setCustomItem(
 			slot: EquipmentSlot.Body,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -433,7 +454,10 @@ setCustomItem(
 			slot: EquipmentSlot.Legs,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -462,7 +486,10 @@ setCustomItem(
 			slot: EquipmentSlot.Feet,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -490,7 +517,10 @@ setCustomItem(
 			requirements: null
 		},
 		highalch: 50_000_000,
-		tradeable: true
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -526,7 +556,10 @@ setCustomItem(
 			slot: EquipmentSlot.Head,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -555,7 +588,10 @@ setCustomItem(
 			slot: EquipmentSlot.Body,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -584,7 +620,10 @@ setCustomItem(
 			slot: EquipmentSlot.Legs,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -613,7 +652,10 @@ setCustomItem(
 			slot: EquipmentSlot.Feet,
 			requirements: null
 		},
-		highalch: 50_000_000
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -643,7 +685,10 @@ setCustomItem(
 			requirements: null
 		},
 		highalch: 50_000_000,
-		tradeable: true
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
 	},
 	50_000_000
 );
@@ -689,3 +734,139 @@ setCustomItem(
 	},
 	1000
 );
+
+setCustomItem(3741, 'Frozen key', 'Key', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+setCustomItem(11_039, 'Key piece 1', 'Key', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+setCustomItem(11_040, 'Key piece 2', 'Key', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+setCustomItem(11_041, 'Key piece 3', 'Key', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+setCustomItem(11_042, 'Key piece 4', 'Key', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+
+setCustomItem(
+	2832,
+	'Zaryte bow',
+	'Twisted bow',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 0,
+			attack_ranged: 190,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 0,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 2,
+			magic_damage: 0,
+			prayer: 6,
+			slot: EquipmentSlot.TwoHanded,
+			requirements: null
+		},
+		highalch: 50_000_000,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	2834,
+	'Virtus wand',
+	'Master wand',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 200,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 20,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 15,
+			prayer: 0,
+			slot: EquipmentSlot.Weapon,
+			requirements: null
+		},
+		highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+setCustomItem(
+	2836,
+	'Virtus book',
+	'Holy book',
+	{
+		equipment: {
+			attack_stab: 0,
+			attack_slash: 0,
+			attack_crush: 0,
+			attack_magic: 35,
+			attack_ranged: 0,
+
+			defence_stab: 0,
+			defence_slash: 0,
+			defence_crush: 0,
+			defence_magic: 25,
+			defence_ranged: 0,
+
+			melee_strength: 0,
+			ranged_strength: 0,
+			magic_damage: 0,
+			prayer: 5,
+			slot: EquipmentSlot.Shield,
+			requirements: null
+		},
+		highalch: 50_000_000,
+		tradeable: true,
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	50_000_000
+);
+
+setCustomItem(21_807, 'Ancient emblem', 'Ancient emblem', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
+setCustomItem(11_196, 'Bloodsoaked feather', 'Feather', {
+	customItemData: {
+		cantDropFromMysteryBoxes: true
+	}
+});
