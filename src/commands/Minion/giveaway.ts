@@ -20,7 +20,7 @@ export default class extends BotCommand {
 			categoryFlags: ['minion', 'utility'],
 			oneAtTime: true,
 			aliases: ['gstart', 'g'],
-			requiredPermissions: ['ADD_REACTIONS']
+			requiredPermissionsForBot: ['ADD_REACTIONS']
 		});
 	}
 

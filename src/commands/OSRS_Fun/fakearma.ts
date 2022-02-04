@@ -22,7 +22,7 @@ export default class extends BotCommand {
 			description: 'Generates a fake image of someone getting a armadyl pet.',
 			examples: ['+fakearma Woox 50'],
 			cooldown: 3,
-			requiredPermissions: ['ATTACH_FILES'],
+			requiredPermissionsForBot: ['ATTACH_FILES'],
 			usage: '(username:string) [kc:int{1,999999}]',
 			usageDelim: ',',
 			categoryFlags: ['fun']

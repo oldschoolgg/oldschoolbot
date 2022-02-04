@@ -18,7 +18,7 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES']
 		});
 	}
 

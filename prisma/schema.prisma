@@ -117,6 +117,7 @@ model ClientStorage {
   tob_cost                     Json     @default("{}") @db.Json
   tob_loot                     Json     @default("{}") @db.Json
   degraded_items_cost          Json     @default("{}") @db.Json
+  disabled_commands            String[] @db.VarChar(32)
 
 
   // BSO

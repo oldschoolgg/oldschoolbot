@@ -12,7 +12,7 @@ export default class extends BotCommand {
 			subcommands: true,
 			usage: '<enable|disable> <command:cmd>',
 			usageDelim: ' ',
-			permissionLevel: 7,
+			requiredPermissionsForUser: ['BAN_MEMBERS'],
 			description: 'Allows you to enable or disable commands in your server.',
 			examples: ['+cmd enable casket', '+cmd disable casket'],
 			categoryFlags: ['settings']
