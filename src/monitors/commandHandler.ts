@@ -72,10 +72,12 @@ export default class extends Monitor {
 			abstractCommand,
 			userID,
 			channelID,
-			guildID
+			guildID,
+			bypassInhibitors: false
 		});
 
 		if (inhibitedReason) {
+			if (inhibitedReason === 'NO_RESPONSE') return;
 			return msg.channel.send(inhibitedReason);
 		}
 

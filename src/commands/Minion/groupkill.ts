@@ -20,8 +20,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<monster:string> [quantity:int{2,50}]',
 			usageDelim: ' ',
-			cooldown: 5,
-			oneAtTime: true,
 			altProtection: true,
 			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			aliases: ['mass'],

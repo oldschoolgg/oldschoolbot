@@ -36,7 +36,8 @@ export const mahojiClient = new MahojiClient({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.userID.toString(),
 				guildID: interaction.guildID.toString(),
-				channelID: interaction.channelID.toString()
+				channelID: interaction.channelID.toString(),
+				bypassInhibitors: false
 			}),
 		postCommand: ({ command, interaction, error }) =>
 			postCommand({

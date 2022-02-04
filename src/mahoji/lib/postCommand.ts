@@ -110,9 +110,7 @@ export async function postCommand({
 		handleCommandError({ error, userID, args, commandName: abstractCommand.name, msg });
 	}
 
-	if (abstractCommand.attributes?.oneAtTime) {
-		setTimeout(() => client.oneCommandAtATimeCache.delete(userID), 1500);
-	}
+	setTimeout(() => client.oneCommandAtATimeCache.delete(userID), 1000);
 
 	return undefined;
 }

@@ -27,7 +27,6 @@ const aliasNameMap: Record<string, string> = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			usage: '<boss:string> (username:rsn)',
 			usageDelim: ',',
 			requiredPermissionsForBot: ['EMBED_LINKS'],

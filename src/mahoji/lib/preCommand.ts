@@ -7,14 +7,19 @@ export async function preCommand({
 	abstractCommand,
 	userID,
 	guildID,
-	channelID
+	channelID,
+	bypassInhibitors
 }: {
 	abstractCommand: AbstractCommand;
 	userID: string;
 	guildID: string | null;
 	channelID: string;
+	bypassInhibitors: boolean;
 }): Promise<string | undefined> {
 	const user = await client.fetchUser(userID);
+	if (user.isBusy && !bypassInhibitors) return 'NO_RESPONSE';
+	console.log(`Adding ${userID} to cache`);
+	client.oneCommandAtATimeCache.add(userID);
 	const guild = guildID ? client.guilds.cache.get(guildID) : null;
 	const member = guild?.members.cache.get(userID);
 	const channel = client.channels.cache.get(channelID) as TextChannel;
@@ -23,14 +28,11 @@ export async function preCommand({
 		guild: guild ?? null,
 		member: member ?? null,
 		command: abstractCommand,
-		channel: channel ?? null
+		channel: channel ?? null,
+		bypassInhibitors
 	});
 
 	if (typeof inhibitResult === 'string') {
 		return inhibitResult;
-	}
-
-	if (abstractCommand.attributes?.oneAtTime) {
-		client.oneCommandAtATimeCache.add(userID);
 	}
 }

@@ -11,7 +11,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			perkTier: PerkTier.Four,
 			usage: '<itemName:str>',
-			oneAtTime: true,
 			cooldown: 120,
 			description: 'Shows which players have received the most drops of an item, based on their collection log.',
 			examples: ['+mostdrops elysian sigil'],

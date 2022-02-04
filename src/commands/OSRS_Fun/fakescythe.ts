@@ -19,7 +19,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: 'Generates a fake image of someone getting a scythe of vitur.',
 			examples: ['+fakescythe Woox 50'],
-			cooldown: 3,
 			requiredPermissionsForBot: ['ATTACH_FILES'],
 			usage: '(username:string) [kc:int{1,999999}]',
 			usageDelim: ',',

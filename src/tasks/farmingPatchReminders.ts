@@ -97,7 +97,12 @@ export default class extends Task {
 							}
 							if (selection.customID === 'HARVEST') {
 								message.author = user;
-								runCommand(message as KlasaMessage, 'farm', [planted.name]);
+								runCommand({
+									message: message as KlasaMessage,
+									commandName: 'farm',
+									args: [planted.name],
+									bypassInhibitors: true
+								});
 							}
 						} catch {
 							message.edit({ components: [] });

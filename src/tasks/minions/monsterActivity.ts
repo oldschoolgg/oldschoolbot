@@ -172,7 +172,7 @@ export default class extends Task {
 						if (usingCannon) args.push('cannon');
 						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
 						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
-						return runCommand(res, 'k', args, true);
+						return runCommand({ message: res, commandName: 'k', args, isContinue: true });
 				  },
 			image!,
 			data,
