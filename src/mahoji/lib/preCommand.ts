@@ -17,8 +17,7 @@ export async function preCommand({
 	bypassInhibitors: boolean;
 }): Promise<string | undefined> {
 	const user = await client.fetchUser(userID);
-	if (user.isBusy && !bypassInhibitors) return 'NO_RESPONSE';
-	console.log(`Adding ${userID} to cache`);
+	if (user.isBusy && !bypassInhibitors && !client.owners.has(user)) return 'NO_RESPONSE';
 	client.oneCommandAtATimeCache.add(userID);
 	const guild = guildID ? client.guilds.cache.get(guildID) : null;
 	const member = guild?.members.cache.get(userID);
