@@ -93,7 +93,6 @@ export default class extends BotCommand {
 			subcommands: true,
 			aliases: ['lb'],
 			requiredPermissionsForBot: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
-			oneAtTime: true,
 			categoryFlags: ['minion', 'utility'],
 			examples: [
 				'+lb gp',

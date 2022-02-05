@@ -11,7 +11,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			cooldown: 1,
 			usage: '<items:...str>',
 			usageDelim: ',',
 			description: 'Shows stats for a set of gear.',

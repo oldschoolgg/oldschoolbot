@@ -15,8 +15,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows your bank, with all your items and GP.',
-			cooldown: 3,
-			oneAtTime: true,
 			usage: '[page:int{1}] [name:...string]',
 			usageDelim: ' ',
 			requiredPermissionsForBot: ['ATTACH_FILES'],

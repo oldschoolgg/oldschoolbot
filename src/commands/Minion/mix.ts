@@ -18,8 +18,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['crush', 'clean'],
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' '
 		});
