@@ -48,7 +48,6 @@ const OuraniaBuyables = [
 export default class ODSCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'minigame'],
 			description: 'Sends your minion to complete Ourania Delivery Service trips, or buy rewards.',

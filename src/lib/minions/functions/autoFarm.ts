@@ -40,5 +40,5 @@ export async function autoFarm(msg: KlasaMessage) {
 	if (!toPlant) {
 		return msg.channel.send("There's no Farming crops that you have the requirements to plant.");
 	}
-	return runCommand(msg, 'farm', [toPlant.name, true]);
+	return runCommand({ message: msg, commandName: 'farm', args: [toPlant.name, true], bypassInhibitors: true });
 }

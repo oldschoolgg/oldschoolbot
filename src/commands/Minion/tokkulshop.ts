@@ -18,8 +18,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<buy|sell> [quantity:integer{1,100000}] <item:...string>',
 			usageDelim: ' ',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			aliases: ['tks'],
 			categoryFlags: ['minion'],

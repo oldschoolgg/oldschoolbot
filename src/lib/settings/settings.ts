@@ -147,13 +147,21 @@ export async function runMahojiCommand({
 	});
 }
 
-export async function runCommand(
-	message: KlasaMessage,
-	commandName: string,
-	args: CommandArgs,
-	isContinue?: boolean,
-	method = 'run'
-) {
+export async function runCommand({
+	message,
+	commandName,
+	args,
+	isContinue,
+	method = 'run',
+	bypassInhibitors
+}: {
+	message: KlasaMessage;
+	commandName: string;
+	args: CommandArgs;
+	isContinue?: boolean;
+	method?: string;
+	bypassInhibitors?: true;
+}) {
 	const channel = client.channels.cache.get(message.channel.id);
 
 	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
@@ -169,10 +177,12 @@ export async function runCommand(
 		abstractCommand,
 		userID: message.author.id,
 		channelID: message.channel.id,
-		guildID: message.guild?.id ?? null
+		guildID: message.guild?.id ?? null,
+		bypassInhibitors: bypassInhibitors ?? false
 	});
 
 	if (inhibitedReason) {
+		if (inhibitedReason === 'NO_RESPONSE') return;
 		return message.channel.send(inhibitedReason);
 	}
 
@@ -218,16 +228,18 @@ export async function runCommand(
 		}
 		error = err as Error;
 	} finally {
-		await postCommand({
-			abstractCommand,
-			userID: message.author.id,
-			guildID: message.guild?.id ?? null,
-			channelID: message.channel.id,
-			args,
-			error,
-			msg: message,
-			isContinue: isContinue ?? false
-		});
+		if (!bypassInhibitors) {
+			await postCommand({
+				abstractCommand,
+				userID: message.author.id,
+				guildID: message.guild?.id ?? null,
+				channelID: message.channel.id,
+				args,
+				error,
+				msg: message,
+				isContinue: isContinue ?? false
+			});
+		}
 	}
 
 	return null;

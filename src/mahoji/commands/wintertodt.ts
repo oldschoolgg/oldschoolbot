@@ -17,7 +17,6 @@ export const sellCommand: OSBMahojiCommand = {
 	name: 'wintertodt',
 	description: 'Sends your minion to do Wintertodt.',
 	attributes: {
-		oneAtTime: true,
 		altProtection: true,
 		requiredPermissionsForBot: ['ATTACH_FILES'],
 		categoryFlags: ['minion', 'skilling', 'minigame'],

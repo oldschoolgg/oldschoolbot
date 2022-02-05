@@ -7,6 +7,7 @@ import {
 	MessageEmbed,
 	MessageEmbedOptions
 } from 'discord.js';
+import { Time } from 'e';
 import { KlasaClient } from 'klasa';
 import {
 	APIActionRowComponent,
@@ -28,7 +29,6 @@ export function convertKlasaCommandToAbstractCommand(command: BotCommand): Abstr
 		name: command.name,
 		attributes: {
 			altProtection: command.altProtection,
-			oneAtTime: command.oneAtTime,
 			guildOnly: command.guildOnly,
 			perkTier: command.perkTier,
 			ironCantUse: command.ironCantUse,
@@ -37,7 +37,8 @@ export function convertKlasaCommandToAbstractCommand(command: BotCommand): Abstr
 			bitfieldsRequired: command.bitfieldsRequired,
 			enabled: command.enabled,
 			testingCommand: command.testingCommand,
-			cooldown: command.cooldown,
+			// cooldowns in klasa are defined in seconds, convert them to milliseconds
+			cooldown: command.cooldown ? command.cooldown * Time.Second : undefined,
 			requiredPermissionsForBot: command.requiredPermissionsForBot,
 			requiredPermissionsForUser: command.requiredPermissionsForUser,
 			runIn: command.runIn,

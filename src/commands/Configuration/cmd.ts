@@ -8,7 +8,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			runIn: ['text'],
-			cooldown: 2,
 			subcommands: true,
 			usage: '<enable|disable> <command:cmd>',
 			usageDelim: ' ',

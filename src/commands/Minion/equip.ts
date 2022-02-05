@@ -40,8 +40,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: `<${GearSetupTypes.join('|')}> [quantity:integer{1}] (item:...item)`,
 			usageDelim: ' ',
 			description: 'Equips an item to one of your gear setups. (melee/range/range/skilling/misc)',

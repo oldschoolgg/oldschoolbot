@@ -66,7 +66,6 @@ const itemRequirements = new Bank().add('Rune pouch');
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			requiredPermissionsForBot: ['ATTACH_FILES'],
 			description: 'Sends your minion to complete the Inferno.',

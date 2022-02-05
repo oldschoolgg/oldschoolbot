@@ -171,8 +171,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[style:string] [name:...string]',
 			usageDelim: ' ',
 			description: 'Sends your minion to kill revs. You can add --skull to your message to kill them skulled.'

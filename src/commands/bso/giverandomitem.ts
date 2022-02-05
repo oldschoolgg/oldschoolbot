@@ -16,7 +16,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 10,
 			usage: '<user:user>',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			aliases: ['gri'],
 			restrictedChannels: [Channel.General, Channel.BSOChannel, Channel.BSOGeneral, Channel.BSOGambling]

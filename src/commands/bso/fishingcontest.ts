@@ -27,7 +27,6 @@ import { calculateFishingContestXP } from '../../tasks/minions/bso/fishingContes
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'minigame'],
 			description: 'Sends your minion to do the Fishing Contest minigame.',

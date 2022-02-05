@@ -90,7 +90,6 @@ export default class extends BotCommand {
 			usage: '[shop] [numberOfGames|quantity:int] [item:...string]',
 			subcommands: true,
 			usageDelim: ' ',
-			cooldown: 3,
 			categoryFlags: ['minion'],
 			aliases: ['vm'],
 			description: 'Participate in games on the Volcanic Mine.',

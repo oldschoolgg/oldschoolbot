@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import { randInt, Time } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { KlasaMessage } from 'klasa';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
 import { BitField, Channel, Color, PerkTier, spawnLampResetTime, SupportServer } from '../../lib/constants';
@@ -11,12 +11,6 @@ import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { LampTable } from '../../lib/xpLamps';
 
 export default class extends BotCommand {
-	public constructor(store: CommandStore, file: string[], directory: string) {
-		super(store, file, directory, {
-			oneAtTime: true
-		});
-	}
-
 	async run(msg: KlasaMessage) {
 		if (
 			!isPrimaryPatron(msg.author) &&

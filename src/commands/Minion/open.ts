@@ -48,11 +48,9 @@ const itemsThatDontAddToTempCL = resolveItems([
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			aliases: ['clue'],
 			usage: '[quantity:int{1,1000000}] [name:...string]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Opens openable items, like clue caskets, mystery boxes and crystal keys.',
 			examples: ['+open easy', '+open crystal key']

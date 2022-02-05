@@ -70,7 +70,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 120,
-			oneAtTime: true,
 			description: 'Looks up the price of an item using the OSBuddy API.',
 			usage: '[up|down|left|right]',
 			runIn: ['text'],

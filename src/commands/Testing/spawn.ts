@@ -2,6 +2,7 @@ import { tame_growth } from '@prisma/client';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Items, Openables } from 'oldschooljs';
 
+import { production } from '../../config';
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { GearSetupTypes } from '../../lib/gear';
 import { prisma } from '../../lib/settings/prisma';
@@ -56,11 +57,10 @@ for (const i of Openables.values()) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[str:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
-			testingCommand: true
+			testingCommand: true,
+			enabled: !production
 		});
 	}
 
@@ -131,7 +131,12 @@ export default class extends BotCommand {
 				if (msg.flagArgs[setup]) {
 					if (!item.equipment) continue;
 					try {
-						await runCommand(msg, 'equip', [setup, 1, [item.name]]);
+						await runCommand({
+							message: msg,
+							commandName: 'equip',
+							args: [setup, 1, [item.name]],
+							bypassInhibitors: true
+						});
 					} catch (err) {}
 				}
 			}

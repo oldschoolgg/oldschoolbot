@@ -110,10 +110,8 @@ const specialPrices = new Bank()
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[str:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
 			examples: ['+sacrifice 1 Elysian sigil'],
