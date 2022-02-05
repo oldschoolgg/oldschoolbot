@@ -28,10 +28,8 @@ const unlimitedFireRuneProviders = resolveItems([
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[quantity:int{1}] [item:...item]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			description: 'Allows you to send your minion to alch items from your bank',
 			examples: ['+alch 12 dragon scimitar', '+alch pumpkin'],
 			categoryFlags: ['minion', 'skilling']

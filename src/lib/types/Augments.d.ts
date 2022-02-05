@@ -60,7 +60,6 @@ declare module 'klasa' {
 
 	interface Command {
 		altProtection?: boolean;
-		oneAtTime?: boolean;
 		guildOnly?: boolean;
 		perkTier?: number;
 		ironCantUse?: boolean;

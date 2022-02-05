@@ -15,7 +15,6 @@ export default class extends BotCommand {
 			description: 'Allows you to simulate dice rolls, or dice your bot GP.',
 			usage: '[amount:int{1}]',
 			requiredPermissionsForBot: ['EMBED_LINKS'],
-			oneAtTime: true,
 			categoryFlags: ['minion', 'utility'],
 			examples: ['+dice', '+dice 1m']
 		});

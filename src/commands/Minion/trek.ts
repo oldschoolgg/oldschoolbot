@@ -16,7 +16,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			usage: '<quantity:int{1}|difficulty:...string> [name:...string]',
 			usageDelim: ' ',
 			categoryFlags: ['minion', 'minigame'],

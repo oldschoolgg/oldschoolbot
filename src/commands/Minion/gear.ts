@@ -16,7 +16,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			cooldown: 1,
 			usage: `[swap|unequipall] [${GearSetupTypes.join('|')}] [${GearSetupTypes.join('|')}]`,
 			usageDelim: ' ',
 			subcommands: true,

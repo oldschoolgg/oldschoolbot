@@ -65,7 +65,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<mass|solo|phosani>',
 			usageDelim: ' ',
-			oneAtTime: true,
 			altProtection: true,
 			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			categoryFlags: ['minion', 'pvm', 'minigame'],

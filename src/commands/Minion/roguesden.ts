@@ -15,7 +15,6 @@ import itemID from '../../lib/util/itemID';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			aliases: ['rd', 'rogues'],
 			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],

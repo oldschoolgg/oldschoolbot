@@ -21,10 +21,8 @@ const CompostTiers = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[tier|pay] [CompostTierOrEnable:...string]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			subcommands: true,
 			description:
 				'Changes which compost tier to automatically use while farming and whether or not to autopay for crops.',

@@ -67,7 +67,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<amount:int{1000000,3000000000}>',
-			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
 			aliases: ['lp']

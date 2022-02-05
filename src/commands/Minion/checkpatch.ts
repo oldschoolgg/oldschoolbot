@@ -13,8 +13,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			aliases: ['cp', 'checkpatches'],
 			description: 'Allows a player to check the growth status of all patches at once.',
 			examples: ['+checkpatch', '+cp', '+checkpatches'],

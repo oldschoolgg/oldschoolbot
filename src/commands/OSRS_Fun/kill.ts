@@ -12,8 +12,6 @@ import { Workers } from '../../lib/workers';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
-			oneAtTime: true,
 			description: 'Simulate killing OSRS monsters and shows the loot.',
 			usage: '<quantity:int{1}> <BossName:...str>',
 			usageDelim: ' ',

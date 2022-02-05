@@ -14,8 +14,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[unlock|lock|buy] [name:...string]',
 			usageDelim: ' ',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			subcommands: true,
 			aliases: ['sls', 'slshop'],

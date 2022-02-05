@@ -21,7 +21,6 @@ export default class extends BotCommand {
 			cooldown: 3,
 			usage: '<member:member> [strBankWithPrice:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			ironCantUse: true,
 			categoryFlags: ['minion'],
 			description: 'Sells items to other players for GP.',

@@ -7,7 +7,6 @@ import { CategoryFlag } from '../types';
 export abstract class BotCommand extends Command {
 	public altProtection: boolean;
 	public guildOnly: boolean;
-	public oneAtTime: boolean;
 	public perkTier?: number;
 	public ironCantUse?: boolean;
 	public examples: string[];
@@ -25,7 +24,6 @@ export abstract class BotCommand extends Command {
 			util.mergeDefault(
 				{
 					altProtection: false,
-					oneAtTime: false,
 					guildOnly: false,
 					ironCantUse: false,
 					restrictedChannels: []
@@ -34,7 +32,6 @@ export abstract class BotCommand extends Command {
 			)
 		);
 		this.altProtection = options.altProtection!;
-		this.oneAtTime = options.oneAtTime!;
 		this.guildOnly = options.guildOnly!;
 		this.perkTier = options.perkTier;
 		this.ironCantUse = options.ironCantUse;
@@ -45,6 +42,7 @@ export abstract class BotCommand extends Command {
 		this.cooldown = options.cooldown;
 		this.requiredPermissionsForBot = options.requiredPermissionsForBot || [];
 		this.requiredPermissionsForUser = options.requiredPermissionsForUser || [];
+		this.testingCommand = options.testingCommand;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -60,7 +58,6 @@ export abstract class BotCommand extends Command {
 
 export interface BotCommandOptions extends CommandOptions {
 	altProtection?: boolean;
-	oneAtTime?: boolean;
 	guildOnly?: boolean;
 	perkTier?: number;
 	ironCantUse?: boolean;

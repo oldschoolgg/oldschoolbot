@@ -12,8 +12,7 @@ import { createdChallenge, itemChallenge, reactChallenge, triviaChallenge } from
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 60 * 45,
-			oneAtTime: true
+			cooldown: 60 * 45
 		});
 	}
 

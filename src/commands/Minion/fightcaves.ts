@@ -25,7 +25,6 @@ export const fightCavesCost = new Bank({
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			requiredPermissionsForBot: ['ATTACH_FILES'],
 			description:

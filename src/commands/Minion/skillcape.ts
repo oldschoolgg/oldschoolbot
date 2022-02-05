@@ -16,8 +16,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<skillname:string>',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			categoryFlags: ['minion'],
 			description: 'Purchases skillcapes from the bot, you can buy untrimmed capes if its your first 99.',

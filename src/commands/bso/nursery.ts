@@ -50,7 +50,6 @@ export async function generateNewTame(user: KlasaUser, species: Species) {
 export default class POHCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion'],
 			description: 'Allows you to access and build in your POH.',
