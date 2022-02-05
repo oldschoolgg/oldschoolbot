@@ -39,6 +39,7 @@ export abstract class BotCommand extends Command {
 		this.cooldown = options.cooldown;
 		this.requiredPermissionsForBot = options.requiredPermissionsForBot || [];
 		this.requiredPermissionsForUser = options.requiredPermissionsForUser || [];
+		this.testingCommand = options.testingCommand;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
