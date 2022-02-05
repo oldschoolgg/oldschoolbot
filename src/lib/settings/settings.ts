@@ -173,22 +173,22 @@ export async function runCommand({
 			? convertKlasaCommandToAbstractCommand(actualCommand)
 			: convertMahojiCommandToAbstractCommand(actualCommand);
 
-	const inhibitedReason = await preCommand({
-		abstractCommand,
-		userID: message.author.id,
-		channelID: message.channel.id,
-		guildID: message.guild?.id ?? null,
-		bypassInhibitors: bypassInhibitors ?? false
-	});
-
-	if (inhibitedReason) {
-		if (inhibitedReason === 'NO_RESPONSE') return;
-		return message.channel.send(inhibitedReason);
-	}
-
 	let error: Error | null = null;
 
 	try {
+		const inhibitedReason = await preCommand({
+			abstractCommand,
+			userID: message.author.id,
+			channelID: message.channel.id,
+			guildID: message.guild?.id ?? null,
+			bypassInhibitors: bypassInhibitors ?? false
+		});
+
+		if (inhibitedReason) {
+			if (inhibitedReason === 'NO_RESPONSE') return;
+			return message.channel.send(inhibitedReason);
+		}
+
 		if (mahojiCommand) {
 			if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
 			const result = await runMahojiCommand({
@@ -228,18 +228,16 @@ export async function runCommand({
 		}
 		error = err as Error;
 	} finally {
-		if (!bypassInhibitors) {
-			await postCommand({
-				abstractCommand,
-				userID: message.author.id,
-				guildID: message.guild?.id ?? null,
-				channelID: message.channel.id,
-				args,
-				error,
-				msg: message,
-				isContinue: isContinue ?? false
-			});
-		}
+		await postCommand({
+			abstractCommand,
+			userID: message.author.id,
+			guildID: message.guild?.id ?? null,
+			channelID: message.channel.id,
+			args,
+			error,
+			msg: message,
+			isContinue: isContinue ?? false
+		});
 	}
 
 	return null;
