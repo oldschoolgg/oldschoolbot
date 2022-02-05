@@ -13,7 +13,6 @@ export default class extends BotCommand {
 			cooldown: 3,
 			usage: '[bank:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Drops an item from your bank.',
 			examples: ['+drop 1 elysian sigil', '+drop bronze dagger']

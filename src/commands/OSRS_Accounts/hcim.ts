@@ -7,7 +7,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: ['hc'],
 			description: 'Shows the stats of a HCIM account.',
 			usage: '(username:rsn)',

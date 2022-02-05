@@ -10,7 +10,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['sbank'],
 			perkTier: PerkTier.Two,
-			oneAtTime: true,
 			description: 'Shows a bank containing all your sacrificed items.',
 			examples: ['+sbank'],
 			categoryFlags: ['patron', 'minion']

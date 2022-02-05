@@ -17,7 +17,6 @@ export type CommandArgs = (string | number | boolean | unknown)[] | Record<strin
 
 export interface AbstractCommandAttributes {
 	altProtection?: boolean;
-	oneAtTime?: boolean;
 	guildOnly?: boolean;
 	perkTier?: PerkTier;
 	ironCantUse?: boolean;
@@ -47,6 +46,7 @@ interface Inhibitor {
 		channel: TextChannel | DMChannel;
 		member: GuildMember | null;
 	}) => Promise<false | string>;
+	canBeDisabled: boolean;
 }
 
 const inhibitors: Inhibitor[] = [
@@ -55,7 +55,8 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ user }) => {
 			await user.settings.sync();
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'bots',
@@ -70,7 +71,8 @@ const inhibitors: Inhibitor[] = [
 				return 'Bots cannot use commands.';
 			}
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'altProtection',
@@ -86,7 +88,8 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'bitfieldsRequired',
@@ -99,17 +102,8 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return false;
-		}
-	},
-	{
-		name: 'oneAtTime',
-		run: async ({ user, command }) => {
-			if (!command.attributes?.oneAtTime) return false;
-			if (user.isBusy) {
-				return 'You just used a command and need to wait a second.';
-			}
-			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'ironCantUse',
@@ -118,7 +112,8 @@ const inhibitors: Inhibitor[] = [
 				return "Ironman players can't use this command.";
 			}
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'disabled',
@@ -135,7 +130,8 @@ const inhibitors: Inhibitor[] = [
 				return 'This command is disabled in this server.';
 			}
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'commandRoleLimit',
@@ -150,7 +146,8 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return "You cannot use commands in the general channel unless you're a patron";
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'guildOnly',
@@ -160,7 +157,8 @@ const inhibitors: Inhibitor[] = [
 				return 'You can only use this command in servers.';
 			}
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'onlyStaffCanUseCommands',
@@ -190,7 +188,8 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'perkTierCommands',
@@ -206,7 +205,8 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'testingCommands',
@@ -217,21 +217,22 @@ const inhibitors: Inhibitor[] = [
 				}
 			}
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'cooldown',
 		run: async ({ user, command }) => {
-			if (client.owners.has(user) || !command.attributes?.cooldown) return false;
+			if (!command.attributes?.cooldown) return false;
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis)}`;
 			}
 			return false;
-		}
+		},
+		canBeDisabled: true
 	},
 	{
-		// verified
 		name: 'missingBotPermissions',
 		run: async ({ command, channel }) => {
 			if (!command.attributes?.requiredPermissionsForBot) return false;
@@ -243,10 +244,10 @@ const inhibitors: Inhibitor[] = [
 				return `To run this command, I need these permissions: ${missing.join(', ')}.`;
 			}
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
-		// verified
 		name: 'missingUserPermissions',
 		run: async ({ command, channel, user }) => {
 			if (!command.attributes?.requiredPermissionsForUser) return false;
@@ -258,7 +259,8 @@ const inhibitors: Inhibitor[] = [
 				)}.`;
 			}
 			return false;
-		}
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'runIn',
@@ -268,7 +270,8 @@ const inhibitors: Inhibitor[] = [
 				return 'You cannot use this command in this type of channel.';
 			}
 			return false;
-		}
+		},
+		canBeDisabled: false
 	}
 ];
 
@@ -277,15 +280,18 @@ export async function runInhibitors({
 	channel,
 	member,
 	command,
-	guild
+	guild,
+	bypassInhibitors
 }: {
 	user: KlasaUser;
 	channel: TextChannel | DMChannel;
 	member: GuildMember | null;
 	command: AbstractCommand;
 	guild: Guild | null;
+	bypassInhibitors: boolean;
 }) {
-	for (const { run } of inhibitors) {
+	for (const { run, canBeDisabled } of inhibitors) {
+		if (bypassInhibitors && canBeDisabled) continue;
 		const result = await run({ user, channel, member, command, guild });
 		if (typeof result === 'string') {
 			return result;

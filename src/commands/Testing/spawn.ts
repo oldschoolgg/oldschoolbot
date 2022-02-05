@@ -53,10 +53,8 @@ for (const i of Openables.values()) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[str:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			testingCommand: true
 		});
 		this.enabled = !this.client.production;
@@ -120,7 +118,12 @@ export default class extends BotCommand {
 				if (msg.flagArgs[setup]) {
 					if (!item.equipment) continue;
 					try {
-						await runCommand(msg, 'equip', [setup, 1, [item.name]]);
+						await runCommand({
+							message: msg,
+							commandName: 'equip',
+							args: [setup, 1, [item.name]],
+							bypassInhibitors: true
+						});
 					} catch (err) {}
 				}
 			}

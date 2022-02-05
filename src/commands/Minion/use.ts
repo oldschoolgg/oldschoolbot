@@ -40,7 +40,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<item:...string>',
-			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true
 		});

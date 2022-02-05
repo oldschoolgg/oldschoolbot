@@ -19,7 +19,6 @@ export default class extends BotCommand {
 			usage: '[quantity:int{1}] [itemName:...string]',
 			aliases: ['revert', 'fix', 'unpack'],
 			usageDelim: ' ',
-			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
 			description: 'Allows you to create items, like godswords or spirit shields - and pack barrows armor sets.',

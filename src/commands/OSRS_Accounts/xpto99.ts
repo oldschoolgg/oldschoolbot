@@ -7,7 +7,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			description: 'Shows how much XP you have left until 99 in all skills.',
 			usage: '(username:rsn)',
 			requiredPermissionsForBot: ['EMBED_LINKS'],

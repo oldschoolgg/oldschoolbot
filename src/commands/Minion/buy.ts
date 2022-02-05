@@ -26,7 +26,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[quantity:int{1,250000}] <name:...string>',
 			usageDelim: ' ',
-			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
 			categoryFlags: ['minion'],

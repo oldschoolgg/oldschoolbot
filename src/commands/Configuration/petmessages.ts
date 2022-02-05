@@ -7,7 +7,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 5,
 			subcommands: true,
 			runIn: ['text'],
 			usage: '<on|off>',
