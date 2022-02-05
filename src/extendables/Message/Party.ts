@@ -3,7 +3,7 @@ import { Message, MessageReaction } from 'discord.js';
 import { debounce, sleep } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { ReactionEmoji } from '../../lib/constants';
+import { ReactionEmoji, SILENT_ERROR } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
@@ -99,7 +99,10 @@ async function _setup(
 
 			function startTrip() {
 				if (usersWhoConfirmed.length < options.minSize) {
-					reject(`${msg.author} Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
+					msg.channel.send(
+						`${msg.author} Not enough people joined your ${options.party ? 'party' : 'mass'}!`
+					);
+					reject(new Error(SILENT_ERROR));
 					return;
 				}
 
