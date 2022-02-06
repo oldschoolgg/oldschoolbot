@@ -52,7 +52,6 @@
 		"snoostorm": "^1.5.2",
 		"snoowrap": "github:gc/snoowrap#master",
 		"table": "^6.8.0",
-		"ts-toolbelt": "^9.6.0",
 		"twit": "^2.2.9",
 		"utf-8-validate": "^5.0.8",
 		"zlib-sync": "^0.1.7"
