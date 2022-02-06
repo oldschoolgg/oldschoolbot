@@ -6,6 +6,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { MAX_QP } from './constants';
 import { getAllMinigameScores, MinigameName } from './settings/settings';
 import { UserSettings } from './settings/types/UserSettings';
+import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
 import { Skills } from './types';
 import { formatSkillRequirements, itemNameFromID } from './util';
@@ -475,8 +476,17 @@ export const FaladorDiary: Diary = {
 			thieving: 13,
 			woodcutting: 75
 		},
-		qp: MAX_QP,
-		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)'])
+		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)']),
+		customReq: async user => {
+			const userBank = user.bank();
+			if (userBank.has('Quest point cape') && user.settings.get(UserSettings.QP) >= MAX_QP) return [true];
+			for (const cape of Skillcapes) {
+				if ((userBank.has(cape.trimmed) || userBank.has(cape.untrimmed)) && user.skillLevel(cape.skill) >= 99) {
+					return [true];
+				}
+			}
+			return [false, 'you need a Quest point cape or Skill cape'];
+		}
 	}
 };
 

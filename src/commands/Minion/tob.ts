@@ -36,9 +36,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[start|sim|graph|check] [input:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			description: 'Sends your minion to do the Theatre of Blood.',
 			examples: ['+raid solo', '+raid mass'],
 			subcommands: true

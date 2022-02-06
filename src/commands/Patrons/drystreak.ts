@@ -12,7 +12,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			perkTier: PerkTier.Four,
 			usage: '<monsterName:str> <itemName:str>',
-			oneAtTime: true,
 			cooldown: 120,
 			usageDelim: ',',
 			description: 'Shows the highest drystreaks for an item from a monster.',

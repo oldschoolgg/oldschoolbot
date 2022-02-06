@@ -21,7 +21,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			cooldown: 1,
 			description: 'Allows you to manage your gear presets.',
 			aliases: ['gps'],
 			usageDelim: ' ',

@@ -9,7 +9,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			perkTier: PerkTier.Two,
-			oneAtTime: true,
 			cooldown: 120,
 			description:
 				'Allows you to see your entire collection log, which is all items ever recorded in your collection log, viewed in the form of a bank.',

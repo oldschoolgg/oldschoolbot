@@ -1,7 +1,8 @@
 import { Time } from 'e';
 
 import { client } from '../../..';
-import { BotCommand } from '../../structures/BotCommand';
+import { AbstractCommand } from '../../../mahoji/lib/inhibitors';
+import { allAbstractCommands } from '../../../mahoji/lib/util';
 import { FastifyServer } from '../types';
 
 export const commandsRoute = (server: FastifyServer) =>
@@ -9,23 +10,24 @@ export const commandsRoute = (server: FastifyServer) =>
 		method: 'GET',
 		url: '/commands',
 		async handler(_, reply) {
-			const commands = client.commands.array() as BotCommand[];
 			reply.header(
 				'Cache-Control',
 				`public, max-age=${(Time.Minute * 5) / 1000}, s-maxage=${(Time.Minute * 5) / 1000}`
 			);
 			reply.send(
-				commands
-					.filter(c => typeof c.description === 'string' && c.description.length > 1 && c.permissionLevel < 9)
-					.map((cmd: BotCommand) => ({
-						name: cmd.name,
-						desc: cmd.description,
-						examples: cmd.examples,
-						permissionLevel: cmd.permissionLevel,
-						aliases: cmd.aliases,
-						perkTier: cmd.perkTier,
-						flags: cmd.categoryFlags
-					}))
+				allAbstractCommands(client)
+					.filter(c => typeof c.attributes?.description === 'string' && c.attributes.description.length > 1)
+					.map((cmd: AbstractCommand) => {
+						const botCommand = client.commands.get(cmd.name);
+						return {
+							name: cmd.name,
+							desc: cmd.attributes?.description,
+							examples: cmd.attributes?.examples,
+							aliases: botCommand?.aliases ?? [],
+							perkTier: cmd.attributes?.perkTier,
+							flags: cmd.attributes?.categoryFlags
+						};
+					})
 					.sort((a, b) => a.name.localeCompare(b.name))
 			);
 		}

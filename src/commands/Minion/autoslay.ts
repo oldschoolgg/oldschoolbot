@@ -242,8 +242,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[_mode:...string]',
 			aliases: ['as', 'slay'],
 			usageDelim: ' ',
@@ -297,7 +295,12 @@ export default class extends BotCommand {
 			if (currentMonID === 0) {
 				return msg.channel.send('Error: Could not get Monster data to find a task.');
 			}
-			return runCommand(msg, 'k', [null, Monsters.get(currentMonID)!.name]);
+			return runCommand({
+				message: msg,
+				commandName: 'k',
+				args: [null, Monsters.get(currentMonID)!.name],
+				bypassInhibitors: true
+			});
 		}
 		if (method === 'ehp') {
 			// Save as default if user --save's
@@ -321,14 +324,29 @@ export default class extends BotCommand {
 				ehpKillable?.levelRequirements !== undefined &&
 				!msg.author.hasSkillReqs(ehpKillable.levelRequirements)[0]
 			) {
-				return runCommand(msg, 'k', [null, usersTask.assignedTask!.monster.name]);
+				return runCommand({
+					message: msg,
+					commandName: 'k',
+					args: [null, usersTask.assignedTask!.monster.name],
+					bypassInhibitors: true
+				});
 			}
 
 			if (ehpMonster && ehpMonster.efficientName) {
 				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'force';
-				return runCommand(msg, 'k', [null, ehpMonster.efficientName, ehpMonster.efficientMethod]);
+				return runCommand({
+					message: msg,
+					commandName: 'k',
+					args: [null, ehpMonster.efficientName, ehpMonster.efficientMethod],
+					bypassInhibitors: true
+				});
 			}
-			return runCommand(msg, 'k', [null, usersTask.assignedTask!.monster.name]);
+			return runCommand({
+				message: msg,
+				commandName: 'k',
+				args: [null, usersTask.assignedTask!.monster.name],
+				bypassInhibitors: true
+			});
 		}
 		if (method === 'boss') {
 			// This code handles the 'highest/boss' setting of autoslay.
@@ -345,7 +363,7 @@ export default class extends BotCommand {
 
 			let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 			if (commonName === 'TzHaar') {
-				return runCommand(msg, 'fightcaves', []);
+				return runCommand({ message: msg, commandName: 'fightcaves', args: [], bypassInhibitors: true });
 			}
 
 			const allMonsters = killableMonsters.filter(m => {
@@ -368,7 +386,7 @@ export default class extends BotCommand {
 				}
 			});
 			if (maxMobName !== '') {
-				return runCommand(msg, 'k', [null, maxMobName]);
+				return runCommand({ message: msg, commandName: 'k', args: [null, maxMobName], bypassInhibitors: true });
 			}
 			return msg.channel.send("Can't find any monsters you have the requirements to kill!");
 		} else if (method === 'default') {
@@ -377,7 +395,12 @@ export default class extends BotCommand {
 				// Lowest / default = none
 				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
 			}
-			return runCommand(msg, 'k', [null, usersTask.assignedTask!.monster.name]);
+			return runCommand({
+				message: msg,
+				commandName: 'k',
+				args: [null, usersTask.assignedTask!.monster.name],
+				bypassInhibitors: true
+			});
 		}
 		return msg.channel.send(`Unrecognized mode. Please use:\n\`${msg.cmdPrefix}as [default|highest|efficient]\``);
 	}
