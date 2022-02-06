@@ -1007,7 +1007,7 @@ WHERE "collectionLogBank"::jsonb ?| array['601', '605', '4272', '758', '759', '4
 						if (cl.has(normalItem)) {
 							const quantityToAdd = cl.amount(normalItem) - cl.amount(brokenItem);
 							if (quantityToAdd > 0) {
-								itemsToAddToTheirCL.add(brokenItem);
+								itemsToAddToTheirCL.add(brokenItem, quantityToAdd);
 							}
 						}
 					}
