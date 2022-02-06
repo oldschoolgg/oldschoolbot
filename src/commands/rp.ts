@@ -95,7 +95,7 @@ async function checkBank(msg: KlasaMessage) {
 	for (const id of brokenBank) {
 		delete newBank[id];
 		delete newCL[id];
-		delete rawSB[id];
+		delete newSB[id];
 	}
 
 	for (const setupType of GearSetupTypes) {
