@@ -1,9 +1,6 @@
 import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-
-export function cleanString(str: string): string {
-	return str.replace(/\s/g, '').toUpperCase();
-}
+import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
 function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
@@ -230,6 +227,3 @@ setItemAlias(24_765, 'Mysterious page 2');
 setItemAlias(24_767, 'Mysterious page 3');
 setItemAlias(24_769, 'Mysterious page 4');
 setItemAlias(24_771, 'Mysterious page 5');
-
-// Frozen key from quest
-setItemAlias(3741, 'Frozen key (quest)');
