@@ -13,7 +13,7 @@ import { addItemToBank, bankHasItem, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { OSBMahojiCommand } from '../lib/util';
 
-export const sellCommand: OSBMahojiCommand = {
+export const wintertodtCommand: OSBMahojiCommand = {
 	name: 'wintertodt',
 	description: 'Sends your minion to do Wintertodt.',
 	attributes: {
@@ -24,7 +24,7 @@ export const sellCommand: OSBMahojiCommand = {
 		examples: ['/wintertodt']
 	},
 	options: [],
-	run: async ({ member, channelID }: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
+	run: async ({ member, channelID }: CommandRunOptions) => {
 		const user = await client.fetchUser(member.user.id);
 		const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);

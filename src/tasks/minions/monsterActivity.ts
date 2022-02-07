@@ -1,10 +1,9 @@
-import { calcWhatPercent, increaseNumByPercent, randArrItem, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Emoji } from '../../lib/constants';
-import { frozenKeyPieces } from '../../lib/data/CollectionsExport';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
@@ -93,6 +92,10 @@ export default class extends Task {
 		let masterCapeRolls = user.hasItemEquippedAnywhere('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
+		if (monster.specialLoot) {
+			monster.specialLoot(loot, user, data);
+		}
+
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
@@ -119,14 +122,6 @@ export default class extends Task {
 
 		if (masterCapeRolls > 0) {
 			str += `${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls `;
-		}
-
-		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
-			for (let i = 0; i < quantity; i++) {
-				if (roll(20)) {
-					loot.add(randArrItem(frozenKeyPieces));
-				}
-			}
 		}
 
 		if (monster.id === Monsters.Vorkath.id && roll(6000)) {

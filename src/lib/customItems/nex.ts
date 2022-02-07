@@ -735,32 +735,6 @@ setCustomItem(
 	1000
 );
 
-setCustomItem(3741, 'Frozen key', 'Key', {
-	customItemData: {
-		cantDropFromMysteryBoxes: true
-	}
-});
-setCustomItem(11_039, 'Key piece 1', 'Key', {
-	customItemData: {
-		cantDropFromMysteryBoxes: true
-	}
-});
-setCustomItem(11_040, 'Key piece 2', 'Key', {
-	customItemData: {
-		cantDropFromMysteryBoxes: true
-	}
-});
-setCustomItem(11_041, 'Key piece 3', 'Key', {
-	customItemData: {
-		cantDropFromMysteryBoxes: true
-	}
-});
-setCustomItem(11_042, 'Key piece 4', 'Key', {
-	customItemData: {
-		cantDropFromMysteryBoxes: true
-	}
-});
-
 setCustomItem(
 	2832,
 	'Zaryte bow',

@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/node';
 import { MessageEmbed, User } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 
@@ -8,6 +7,7 @@ import { Emoji, shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { cleanMentions } from '../../lib/util';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
+import { logError } from '../../lib/util/logError';
 import { AbstractCommand, CommandArgs } from './inhibitors';
 
 export async function handleCommandError({
@@ -37,22 +37,18 @@ export async function handleCommandError({
 		return;
 	}
 
-	captureException(error, {
-		user: {
-			id: userID
-		},
-		tags: {
-			command: commandName,
-			args: Array.isArray(args)
-				? args.join(', ')
-				: Object.entries(args)
-						.map(arg => `${arg[0]}[${arg[1]}]`)
-						.join(', ')
-		}
+	logError(error, {
+		user_id: userID,
+		command: commandName,
+		args: Array.isArray(args)
+			? args.join(', ')
+			: Object.entries(args)
+					.map(arg => `${arg[0]}[${arg[1]}]`)
+					.join(', ')
 	});
 
 	if (!production) {
-		console.error(error);
+		logError(error);
 		const channel = await (client.owners.values().next().value as User).createDM();
 
 		channel.send({

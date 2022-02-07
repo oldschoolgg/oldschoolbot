@@ -202,7 +202,11 @@ export const godWarsDungeonCL = resolveItems([
 	'Bandos tassets',
 	'Bandos boots',
 	'Bandos hilt',
-	...godWarsDungeonGodswordShards
+	...godWarsDungeonGodswordShards,
+	'Frozen key piece (bandos)',
+	'Frozen key piece (saradomin)',
+	'Frozen key piece (zamorak)',
+	'Frozen key piece (armadyl)'
 ]);
 export const grotesqueGuardiansCL = resolveItems([
 	'Noon',
@@ -2042,8 +2046,6 @@ export const virtusOutfit = resolveItems([
 ]);
 export const nexAncientWeapons = resolveItems(['Virtus crystal', 'Zaryte bow']);
 
-export const frozenKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
-
 export const nexUniqueDrops = [
 	...brokenTorvaOutfit,
 	...brokenPernixOutfit,
@@ -2053,7 +2055,6 @@ export const nexUniqueDrops = [
 
 export const nexCL = [
 	...nexUniqueDrops,
-	...frozenKeyPieces,
 	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem', 'Ancient hilt'])
 ];
 

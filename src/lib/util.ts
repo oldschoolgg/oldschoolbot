@@ -94,14 +94,6 @@ export function toTitleCase(str: string) {
 	return splitStr.join(' ');
 }
 
-export function cleanString(str: string) {
-	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
-}
-
-export function stringMatches(str: string, str2: string) {
-	return cleanString(str) === cleanString(str2);
-}
-
 export function formatDuration(ms: number, short = false) {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -737,3 +729,4 @@ export function cleanUsername(str: string) {
 export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
+export { cleanString, stringMatches } from './util/cleanString';

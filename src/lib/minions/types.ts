@@ -1,5 +1,5 @@
 import { Image } from 'canvas';
-import { KlasaMessage } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
@@ -8,13 +8,13 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
-import { O } from 'ts-toolbelt';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
+import { MonsterActivityTaskOptions } from '../types/minions';
 import { CombatOptionsEnum } from './data/combatConstants';
 import { AttackStyles } from './functions';
 
@@ -107,6 +107,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
+	specialLoot?: (loot: Bank, user: KlasaUser, data: MonsterActivityTaskOptions) => Promise<void>;
 }
 /*
  * Monsters will have an array of Consumables
@@ -171,7 +172,7 @@ export interface MegaDuckLocation {
 	steps: [number, number][];
 }
 
-export const defaultMegaDuckLocation: O.Readonly<MegaDuckLocation> = {
+export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
 	x: 1356,
 	y: 209,
 	usersParticipated: {},

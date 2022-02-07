@@ -11,6 +11,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { tameSpecies } from '../../lib/tames';
 import { itemNameFromID } from '../../lib/util';
+import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { generateNewTame } from '../bso/nursery';
 import { phosaniBISGear } from '../Minion/nightmare';
@@ -80,7 +81,7 @@ export default class extends BotCommand {
 					}
 					return msg.channel.send(str);
 				} catch (err) {
-					console.error(err);
+					logError(err);
 				}
 			}
 		}

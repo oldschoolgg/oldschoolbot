@@ -43,7 +43,12 @@ const killableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.126,
 		healAmountNeeded: 20 * 5,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],
+		specialLoot: async (loot, user) => {
+			if (!user.cl().has('Frozen key') && !user.owns('Frozen key piece (bandos)')) {
+				loot.add('Frozen key piece (bandos)');
+			}
+		}
 	},
 	{
 		id: Monsters.CommanderZilyana.id,
@@ -83,7 +88,12 @@ const killableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.132,
 		healAmountNeeded: 18 * 4,
 		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic],
+		specialLoot: async (loot, user) => {
+			if (!user.cl().has('Frozen key') && !user.owns('Frozen key piece (saradomin)')) {
+				loot.add('Frozen key piece (saradomin)');
+			}
+		}
 	},
 	{
 		id: Monsters.Kreearra.id,
@@ -120,7 +130,12 @@ const killableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.159,
 		healAmountNeeded: 18 * 4,
 		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackMagic],
+		specialLoot: async (loot, user) => {
+			if (!user.cl().has('Frozen key') && !user.owns('Frozen key piece (armadyl)')) {
+				loot.add('Frozen key piece (armadyl)');
+			}
+		}
 	},
 	{
 		id: Monsters.KrilTsutsaroth.id,
@@ -160,7 +175,12 @@ const killableBosses: KillableMonster[] = [
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 20 * 3,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackMagic],
+		specialLoot: async (loot, user) => {
+			if (!user.cl().has('Frozen key') && !user.owns('Frozen key piece (zamorak)')) {
+				loot.add('Frozen key piece (zamorak)');
+			}
+		}
 	}
 ];
 
