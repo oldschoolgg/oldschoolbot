@@ -8,7 +8,7 @@ export function initCrons() {
 SET weekly_buy_bank = '{}'::json
 WHERE weekly_buy_bank::text <> '{}'::text;`);
 	});
-	schedule('0 */12 * * *', async () => {
+	schedule('0 */6 * * *', async () => {
 		await prisma.$queryRawUnsafe(`INSERT INTO economy_item
 SELECT item_id::integer, SUM(qty)::bigint FROM 
 (
