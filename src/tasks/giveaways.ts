@@ -2,6 +2,7 @@ import { Task } from 'klasa';
 
 import { prisma } from '../lib/settings/prisma';
 import { handleGiveawayCompletion } from '../lib/util/giveaway';
+import { logError } from '../lib/util/logError';
 
 export default class extends Task {
 	async init() {
@@ -21,7 +22,7 @@ export default class extends Task {
 
 				await Promise.all(result.map(t => handleGiveawayCompletion(this.client, t)));
 			} catch (err) {
-				console.error(err);
+				logError(err);
 			} finally {
 				this.client.giveawayTicker = setTimeout(ticker, 5000);
 			}

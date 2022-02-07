@@ -1,7 +1,6 @@
 import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
-import { captureException } from '@sentry/node';
 import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
@@ -43,6 +42,7 @@ import {
 } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
@@ -120,7 +120,7 @@ async function unsafeEval({
 		if (!syncTime) syncTime = stopwatch.toString();
 		if (!type) type = new Type(error);
 		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
-		if (error && error.stack) captureException(error);
+		if (error && error.stack) logError(error);
 		result = error;
 	}
 
@@ -170,7 +170,7 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 		// If it's a message that can be sent correctly, send it
 		return msg.channel.send(res);
 	} catch (err) {
-		console.error(err);
+		logError(err);
 	}
 }
 
@@ -504,7 +504,7 @@ ${
 						content: result.slice(0, 2500)
 					});
 				} catch (err: any) {
-					console.error(err);
+					logError(err);
 					return msg.channel.send(`Failed to run roles task. ${err.message}`);
 				}
 			}
