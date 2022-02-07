@@ -1,4 +1,4 @@
-import { calcWhatPercent, increaseNumByPercent, randArrItem, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
