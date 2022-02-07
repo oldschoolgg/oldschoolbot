@@ -4537,10 +4537,10 @@ object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
-oldschooljs@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.2.tgz#92fc904148fa0c9a5317ea9e44ab9b3a83907340"
-  integrity sha512-2hoZ9AJune1Y7rBhp9ajhz3veU/q2SPRLrIqp9ya6mUKDUg01QwlJ92A5Lxry7NpSA+vr0yC3QPmqWSOn3Ldjg==
+oldschooljs@^2.1.21:
+  version "2.1.21"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.21.tgz#f7990b3c3676d008f136a0ff03ad8fe91d3a6a45"
+  integrity sha512-GubPFtOU8MvHWLDEOR0Ma0nsqSSzKRBRmza/zkB+FZRAwzkdgw12oDS3zGqAn/PnV4/nL4+Do3LnctlPuzymoA==
   dependencies:
     e "^0.2.1"
     jsdom "^16.7.0"

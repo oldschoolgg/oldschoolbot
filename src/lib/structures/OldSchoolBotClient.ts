@@ -5,6 +5,7 @@ import { initCrons } from '../crons';
 import { prisma } from '../settings/prisma';
 import { getGuildSettings, syncActivityCache } from '../settings/settings';
 import { startupScripts } from '../startupScripts';
+import { logError } from '../util/logError';
 import { piscinaPool } from '../workers';
 
 const { production } = clientOptions;
@@ -48,9 +49,7 @@ export class OldSchoolBotClient extends Client {
 		promises.push(syncActivityCache());
 		promises.push(
 			...startupScripts.map(query =>
-				prisma
-					.$queryRawUnsafe(query)
-					.catch(err => console.error(`Startup script failed: ${err.message} ${query}`))
+				prisma.$queryRawUnsafe(query).catch(err => logError(`Startup script failed: ${err.message} ${query}`))
 			)
 		);
 		await Promise.all(promises);
