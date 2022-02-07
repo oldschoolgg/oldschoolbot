@@ -6,6 +6,7 @@ import { cats } from '../../lib/growablePets';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { filterSacReplace } from '../../lib/slayer/slayerUtil';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { updateBankSetting } from '../../lib/util';
 import { parseInputCostBank } from '../../lib/util/parseStringBank';
@@ -95,6 +96,7 @@ export default class extends BotCommand {
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
 		await msg.author.removeItemsFromBank(bankToSac.bank);
 
+		filterSacReplace(bankToSac);
 		await trackSacBank(msg.author, bankToSac);
 
 		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
