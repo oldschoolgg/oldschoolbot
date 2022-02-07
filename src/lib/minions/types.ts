@@ -8,7 +8,6 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
-import { O } from 'ts-toolbelt';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
@@ -173,7 +172,7 @@ export interface MegaDuckLocation {
 	steps: [number, number][];
 }
 
-export const defaultMegaDuckLocation: O.Readonly<MegaDuckLocation> = {
+export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
 	x: 1356,
 	y: 209,
 	usersParticipated: {},

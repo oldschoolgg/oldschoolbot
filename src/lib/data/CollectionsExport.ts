@@ -2046,8 +2046,6 @@ export const virtusOutfit = resolveItems([
 ]);
 export const nexAncientWeapons = resolveItems(['Virtus crystal', 'Zaryte bow']);
 
-export const frozenKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
-
 export const nexUniqueDrops = [
 	...brokenTorvaOutfit,
 	...brokenPernixOutfit,
@@ -2057,7 +2055,6 @@ export const nexUniqueDrops = [
 
 export const nexCL = [
 	...nexUniqueDrops,
-	...frozenKeyPieces,
 	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem', 'Ancient hilt'])
 ];
 

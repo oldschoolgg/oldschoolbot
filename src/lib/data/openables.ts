@@ -13,13 +13,7 @@ import { ExoticSeedsTable } from '../simulation/sharedTables';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import {
-	allPetIDs,
-	chambersOfXericCL,
-	cmbClothes,
-	customBossesDropsThatCantBeDroppedInMBs,
-	frozenKeyPieces
-} from './CollectionsExport';
+import { allPetIDs, chambersOfXericCL, cmbClothes, customBossesDropsThatCantBeDroppedInMBs } from './CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './holidayItems';
 
 interface Openable {
@@ -514,7 +508,6 @@ const cantBeDropped = resolveItems([
 	'Ancient emblem',
 	'Bloodsoaked feather',
 	...allPetIDs,
-	...frozenKeyPieces,
 	'Bandosian components',
 	'Masori headdress',
 	"Osmumten's fang",

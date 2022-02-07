@@ -661,18 +661,6 @@ const bsoItems: Createable[] = [
 		}
 	},
 	{
-		name: 'Frozen key',
-		inputItems: resolveNameBank({
-			'Key piece 1': 1,
-			'Key piece 2': 1,
-			'Key piece 3': 1,
-			'Key piece 4': 1
-		}),
-		outputItems: {
-			[itemID('Frozen key')]: 1
-		}
-	},
-	{
 		name: 'Vasa cloak',
 		inputItems: user => {
 			const cost = new Bank({ 'Tattered robes of Vasa': 1, 'Abyssal cape': 1 });
