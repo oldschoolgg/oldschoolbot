@@ -1,5 +1,4 @@
 import { KlasaUser } from 'klasa';
-import { O } from 'ts-toolbelt';
 
 import { UserSettings } from '../../settings/types/UserSettings';
 import { KillableMonster } from '../types';
@@ -7,8 +6,8 @@ import calculateMonsterFood from './calculateMonsterFood';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default function hasEnoughFoodForMonster(
-	monster: O.Readonly<KillableMonster>,
-	user: O.Readonly<KlasaUser>,
+	monster: Readonly<KillableMonster>,
+	user: Readonly<KlasaUser>,
 	quantity: number,
 	totalPartySize = 1
 ) {

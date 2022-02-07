@@ -93,6 +93,10 @@ export default class extends Task {
 		let masterCapeRolls = user.hasItemEquippedAnywhere('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
+		if (monster.specialLoot) {
+			monster.specialLoot(loot, user, data);
+		}
+
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));

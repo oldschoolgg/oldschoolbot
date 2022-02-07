@@ -608,6 +608,15 @@ model LootTrack {
   @@map("loot_track")
 }
 
+model EconomyItem {
+  item_id  Int
+  quantity BigInt
+  date     DateTime @default(now())
+
+  @@id([item_id, date])
+  @@map("economy_item")
+}
+
 enum command_usage_status {
   Unknown
   Success

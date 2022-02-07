@@ -1756,6 +1756,18 @@ const Createables: Createable[] = [
 			[itemID('Strange hallowed tome')]: 1
 		}
 	},
+	{
+		name: 'Frozen key',
+		inputItems: resolveNameBank({
+			'Frozen key piece (bandos)': 1,
+			'Frozen key piece (saradomin)': 1,
+			'Frozen key piece (zamorak)': 1,
+			'Frozen key piece (armadyl)': 1
+		}),
+		outputItems: {
+			[itemID('Frozen key')]: 1
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

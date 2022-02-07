@@ -5,15 +5,8 @@ import { Bank, Misc, Monsters } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
 import killableMonsters from '../minions/data/killableMonsters';
+import { stringMatches } from '../util/cleanString';
 import { KillWorkerArgs } from '.';
-
-export function cleanString(str: string) {
-	return str.replace(/[^0-9a-zA-Z]/gi, '').toUpperCase();
-}
-
-export function stringMatches(str: string, str2: string) {
-	return cleanString(str) === cleanString(str2);
-}
 
 export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs): Bank | string => {
 	const osjsMonster = [...Monsters.values(), ...killableMonsters].find(mon =>

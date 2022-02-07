@@ -13,6 +13,7 @@ import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
 import { Skills } from '../types';
 import { addArrayOfNumbers, toTitleCase } from '../util';
+import { logError } from './logError';
 
 export async function minionStatsEmbed(user: KlasaUser) {
 	const { rawSkills } = user;
@@ -97,7 +98,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 				.map(([id, qty]) => {
 					const clueTier = ClueTiers.find(t => t.id === parseInt(id));
 					if (!clueTier) {
-						console.error(`No clueTier: ${id}`);
+						logError(`No clueTier: ${id}`);
 						return;
 					}
 					return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
@@ -148,7 +149,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		const [id, score] = monsterScores[0];
 		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;
 		if (!res) {
-			console.error(`No monster found with id ${id} for stats embed`);
+			logError(`No monster found with id ${id} for stats embed`);
 		} else {
 			otherStats.push([`${res.name} KC`, score]);
 		}
@@ -159,7 +160,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		const [id, score] = hunterScores[0];
 		const res = creatures.find(c => c.id === parseInt(id))!;
 		if (!res) {
-			console.error(`No creature found with id ${id} for stats embed`);
+			logError(`No creature found with id ${id} for stats embed`);
 		} else {
 			otherStats.push([`${res.name}'s Caught`, score]);
 		}

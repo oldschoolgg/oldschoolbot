@@ -1,7 +1,6 @@
 import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-
-import { cleanString } from '../util/cleanString';
+import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
 function setItemAlias(id: number, name: string | string[], rename = true) {
 	const existingItem = Items.get(id);
