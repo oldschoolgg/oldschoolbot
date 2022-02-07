@@ -12,6 +12,7 @@ import { botToken, CLIENT_ID, DEV_SERVER_ID, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
+import { logError } from './lib/util/logError';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
@@ -63,7 +64,10 @@ client.on('raw', async event => {
 
 	if ('error' in result) {
 		if (result.error.message === SILENT_ERROR) return;
-
+		logError(result.error, {
+			user_id: result.interaction.userID.toString(),
+			name: result.interaction.data.interaction.data?.name ?? 'None'
+		});
 		if (result.type === InteractionType.ApplicationCommand) {
 			const ERROR_RESPONSE: SlashCommandResponse = {
 				response: {
