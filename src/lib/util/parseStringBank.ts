@@ -1,4 +1,5 @@
 import { notEmpty } from 'e';
+import { KlasaUser } from 'klasa';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
@@ -82,12 +83,14 @@ export function parseBankFromFlags({
 	bank,
 	flags,
 	excludeItems,
-	maxSize
+	maxSize,
+	user
 }: {
 	bank: Bank;
 	flags: Record<string, string>;
 	excludeItems: readonly number[];
 	maxSize?: number;
+	user?: KlasaUser;
 }): Bank {
 	const newBank = new Bank();
 	const maxQuantity = Number(flags.qty) || Infinity;
@@ -108,7 +111,7 @@ export function parseBankFromFlags({
 		}
 
 		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
-		if (filter && !filter.items.includes(item.id)) continue;
+		if (filter && !filter.items(user).includes(item.id)) continue;
 		if ((filter || flagsKeys.length) && excludeItems.includes(item.id)) continue;
 
 		newBank.add(item.id, qty);
@@ -125,6 +128,7 @@ interface ParseBankOptions {
 	filters?: string[];
 	search?: string;
 	maxSize?: number;
+	user?: KlasaUser;
 }
 
 export function parseBank({
@@ -134,7 +138,8 @@ export function parseBank({
 	excludeItems = [],
 	filters,
 	search,
-	maxSize
+	maxSize,
+	user
 }: ParseBankOptions): Bank {
 	if (inputStr) {
 		let _bank = new Bank();
@@ -159,7 +164,7 @@ export function parseBank({
 		flags.search = search;
 	}
 
-	return parseBankFromFlags({ bank: inputBank, flags, excludeItems, maxSize });
+	return parseBankFromFlags({ bank: inputBank, flags, excludeItems, maxSize, user });
 }
 
 function truncateBankToSize(bank: Bank, size: number) {
@@ -178,13 +183,20 @@ interface ParseInputCostBankOptions {
 	flags?: Record<string, string>;
 	inputStr?: string;
 	excludeItems: readonly number[];
+	user?: KlasaUser;
 }
-export function parseInputCostBank({ usersBank, inputStr, flags = {}, excludeItems }: ParseInputCostBankOptions): Bank {
+export function parseInputCostBank({
+	usersBank,
+	inputStr,
+	flags = {},
+	excludeItems,
+	user
+}: ParseInputCostBankOptions): Bank {
 	if (!inputStr && Object.keys(flags).length > 0) {
-		return truncateBankToSize(parseBankFromFlags({ bank: usersBank, flags, excludeItems }), 60);
+		return truncateBankToSize(parseBankFromFlags({ bank: usersBank, flags, excludeItems, user }), 60);
 	}
 
-	const baseBank = parseBankFromFlags({ bank: usersBank, flags, excludeItems });
+	const baseBank = parseBankFromFlags({ bank: usersBank, flags, excludeItems, user });
 	const stringInputBank = Boolean(inputStr) ? parseStringBank(inputStr, baseBank, true) : [];
 
 	const bank = new Bank();
@@ -201,12 +213,14 @@ export function parseInputBankWithPrice({
 	usersBank,
 	str,
 	flags,
-	excludeItems
+	excludeItems,
+	user
 }: {
 	usersBank: Bank;
 	str: string;
 	flags: Record<string, string>;
 	excludeItems: readonly number[];
+	user?: KlasaUser;
 }) {
 	const split = str.split(' ');
 	const firstAsNumber = evalMathExpression(split[0]);
@@ -214,11 +228,11 @@ export function parseInputBankWithPrice({
 	if (!firstAsNumber) {
 		return {
 			price: 0,
-			bank: parseInputCostBank({ usersBank, inputStr: str, flags, excludeItems })
+			bank: parseInputCostBank({ usersBank, inputStr: str, flags, excludeItems, user })
 		};
 	}
 
-	const bankParsedFromFlags = parseBankFromFlags({ bank: usersBank, flags, excludeItems });
+	const bankParsedFromFlags = parseBankFromFlags({ bank: usersBank, flags, excludeItems, user });
 	const flagsHaveAnEffectOnBank = bankParsedFromFlags.length !== usersBank.length;
 
 	if (split.length === 1) {
@@ -231,12 +245,12 @@ export function parseInputBankWithPrice({
 		}
 		return {
 			price: 0,
-			bank: parseInputCostBank({ usersBank, flags, inputStr: potentialItem.name, excludeItems })
+			bank: parseInputCostBank({ usersBank, flags, inputStr: potentialItem.name, excludeItems, user })
 		};
 	}
 
 	return {
 		price: firstAsNumber,
-		bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags, excludeItems })
+		bank: parseInputCostBank({ usersBank, inputStr: str.split(' ').slice(1).join(' '), flags, excludeItems, user })
 	};
 }

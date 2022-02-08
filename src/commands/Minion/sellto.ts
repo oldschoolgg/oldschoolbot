@@ -35,7 +35,8 @@ export default class extends BotCommand {
 			usersBank: msg.author.bank(),
 			str: strBankWithPrice ?? '',
 			flags: { ...msg.flagArgs, tradeables: 'tradeables' },
-			excludeItems: []
+			excludeItems: [],
+			user: msg.author
 		});
 		if (bankToSell.items().some(i => !itemIsTradeable(i[0].id))) {
 			logError(new Error('Trying to sell untradeable item'), {
