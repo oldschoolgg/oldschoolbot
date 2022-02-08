@@ -1082,7 +1082,6 @@ export const baseFilters: Filterable[] = [
 		name: 'Not Sacrificed',
 		aliases: ['not sacrificed', 'not sac'],
 		items: user => {
-			console.trace();
 			if (!user) return [];
 			const sacBank = new Bank(user.settings.get(UserSettings.SacrificedBank));
 			return user
