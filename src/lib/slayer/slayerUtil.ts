@@ -327,8 +327,8 @@ export function hasSlayerUnlock(
 }
 
 export function filterSacReplace(sacBank: Bank, mutate: boolean = true) {
-	let bankToSac: Bank | undefined = undefined;
-	bankToSac = mutate ? sacBank : new Bank(sacBank.bank);
+	const bankToSac = mutate ? sacBank : new Bank(sacBank.bank);
+
 	if (bankToSac.has('Black mask')) {
 		const numBlackMask = bankToSac.amount('Black mask');
 		bankToSac.remove('Black mask', numBlackMask);
