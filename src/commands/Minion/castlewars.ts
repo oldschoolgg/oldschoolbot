@@ -12,8 +12,6 @@ export default class CastleWarsCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			description: 'Sends your minion to play Castle Wars.',
 			usage: '[play] [name:str]',
 			examples: ['+cw'],

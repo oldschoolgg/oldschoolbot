@@ -8,7 +8,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: 'Get information on the current server.',
 			examples: ['+server'],
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			runIn: ['text'],
 			categoryFlags: ['utility']
 		});

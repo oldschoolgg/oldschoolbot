@@ -885,7 +885,7 @@ interface Filterable {
 	items: number[];
 }
 
-export const filterableTypes: Filterable[] = [
+export const baseFilters: Filterable[] = [
 	{
 		name: 'Smithing',
 		aliases: ['smithing', 'smith', 'sm'],
@@ -923,17 +923,17 @@ export const filterableTypes: Filterable[] = [
 	},
 	{
 		name: 'Clues and Caskets',
-		aliases: ['clues', 'caskets', 'cl', 'clue', 'casket', 'tt'],
+		aliases: ['clues and caskets', 'clues', 'caskets', 'cl', 'clue', 'casket', 'tt'],
 		items: cluesAndCaskets
 	},
 	{
 		name: 'God wars',
-		aliases: ['gwd', 'godwars', 'gw'],
+		aliases: ['god wars', 'gwd', 'godwars', 'gw'],
 		items: godwars
 	},
 	{
 		name: 'Dagannoth kings',
-		aliases: ['dks', 'dk', 'dagannoth', 'kings'],
+		aliases: ['dagannoth kings', 'dks', 'dk', 'dagannoth', 'kings'],
 		items: dagannothkings
 	},
 	{
@@ -948,12 +948,12 @@ export const filterableTypes: Filterable[] = [
 	},
 	{
 		name: 'Corporeal beast',
-		aliases: ['corp', 'co', 'corporeal'],
+		aliases: ['corporeal beast', 'corp', 'co', 'corporeal'],
 		items: corporealBeast
 	},
 	{
 		name: 'Kalphite queen',
-		aliases: ['kq', 'ka', 'kalphite', 'queen'],
+		aliases: ['kalphite queen', 'kq', 'ka', 'kalphite', 'queen'],
 		items: kalphitequeen
 	},
 	{
@@ -1068,10 +1068,12 @@ export const filterableTypes: Filterable[] = [
 	},
 	{
 		name: 'Clues Rares',
-		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
+		aliases: ['clues rares', 'clues rare', 'rare clues', 'clue rare', 'rare clue'],
 		items: [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
 	}
 ];
+
+export const filterableTypes = [...baseFilters];
 
 for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 	for (const [name, cl] of Object.entries(clGroup)) {

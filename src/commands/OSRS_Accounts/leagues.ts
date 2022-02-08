@@ -91,10 +91,9 @@ const allTasks = Object.values(map).flat(1);
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			description: 'Shows the stats of a leagues account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+leagues Magnaboy'],
 			categoryFlags: ['utility']
 		});

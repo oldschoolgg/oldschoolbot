@@ -125,9 +125,8 @@ const imbueables = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			categoryFlags: ['minion', 'minigame'],
 			description: 'Sends your minion to do the Soul Wars minigame.',
 			examples: ['+soulwars'],

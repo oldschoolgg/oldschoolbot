@@ -21,7 +21,6 @@ export default class extends BotCommand {
 			usage: '<user:user|user:str> [amount:int{10000}]',
 			usageDelim: ' ',
 			cooldown: 5,
-			oneAtTime: true,
 			altProtection: true,
 			ironCantUse: true,
 			examples: ['+duel @Magnaboy', '+duel @Magnaboy 1m'],

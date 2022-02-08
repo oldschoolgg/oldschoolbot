@@ -13,10 +13,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			usage: '[tripTime:int{1}]',
 			usageDelim: ' ',
-			cooldown: 1,
 			aliases: ['drift', 'dn'],
 			description: 'Sends your minion to driftnet fishing.',
 			examples: ['+driftnet 30', '+dn'],

@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 import crypto from 'crypto';
 import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -11,7 +11,7 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
-import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
+import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
@@ -84,14 +84,6 @@ export function toTitleCase(str: string) {
 	return splitStr.join(' ');
 }
 
-export function cleanString(str: string) {
-	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
-}
-
-export function stringMatches(str: string, str2: string) {
-	return cleanString(str) === cleanString(str2);
-}
-
 export function formatDuration(ms: number, short = false) {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -111,10 +103,6 @@ export function formatDuration(ms: number, short = false) {
 	return nums
 		.map(([key, val]) => `${val}${short ? '' : ' '}${key}${val === 1 || short ? '' : 's'}`)
 		.join(short ? '' : ', ');
-}
-
-export function inlineCodeblock(input: string) {
-	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }
 
 export function isWeekend() {
@@ -168,10 +156,6 @@ export function roll(max: number) {
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
-}
-
-export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>) {
-	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
@@ -632,6 +616,12 @@ export function sanitizeBank(bank: Bank) {
 	}
 }
 
+export function truncateString(str: string, maxLen: number) {
+	if (str.length < maxLen) return str;
+	return `${str.slice(0, maxLen - 3)}...`;
+}
+
 export function cleanUsername(str: string) {
 	return Util.escapeMarkdown(stripEmojis(str));
 }
+export { cleanString, stringMatches } from './util/cleanString';

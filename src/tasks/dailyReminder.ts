@@ -4,6 +4,7 @@ import { Task, TaskStore } from 'klasa';
 import { production } from '../config';
 import { client } from '../index';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { logError } from '../lib/util/logError';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -35,7 +36,7 @@ export default class extends Task {
 					await user.send('Your daily is ready!').catch(noOp);
 				}
 			} catch (err) {
-				console.error(err);
+				logError(err);
 			} finally {
 				this.client.__dailyReminderInterval = setTimeout(ticker, Number(Time.Minute));
 			}

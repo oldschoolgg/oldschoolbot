@@ -8,6 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { phosaniBISGear } from '../Minion/nightmare';
 
@@ -53,10 +54,8 @@ for (const i of Openables.values()) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[str:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			testingCommand: true
 		});
 		this.enabled = !this.client.production;
@@ -78,7 +77,7 @@ export default class extends BotCommand {
 					}
 					return msg.channel.send(str);
 				} catch (err) {
-					console.error(err);
+					logError(err);
 				}
 			}
 		}
@@ -120,7 +119,12 @@ export default class extends BotCommand {
 				if (msg.flagArgs[setup]) {
 					if (!item.equipment) continue;
 					try {
-						await runCommand(msg, 'equip', [setup, 1, [item.name]]);
+						await runCommand({
+							message: msg,
+							commandName: 'equip',
+							args: [setup, 1, [item.name]],
+							bypassInhibitors: true
+						});
 					} catch (err) {}
 				}
 			}

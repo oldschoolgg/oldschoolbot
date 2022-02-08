@@ -15,10 +15,9 @@ import itemID from '../../lib/util/itemID';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			aliases: ['rd', 'rogues'],
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			categoryFlags: ['minion', 'skilling', 'minigame'],
 			description: "Sends your minion to run laps of the Rogues' Den maze. Requires 50 Agility and Thieving.",
 			examples: ['+roguesden']

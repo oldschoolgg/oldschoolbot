@@ -24,7 +24,6 @@ const ironmanExtraReqs = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 3,
 			categoryFlags: ['minion'],
 			examples: ['+tearsofguthix'],
 			aliases: ['tog'],

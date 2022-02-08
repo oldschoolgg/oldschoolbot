@@ -13,8 +13,6 @@ import itemID from '../../lib/util/itemID';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
-			oneAtTime: true,
 			testingCommand: true
 		});
 		this.enabled = !this.client.production;

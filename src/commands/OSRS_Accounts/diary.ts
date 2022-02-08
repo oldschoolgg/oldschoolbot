@@ -25,11 +25,10 @@ const titles: Record<keyof typeof diaryRequirements, string> = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: ['d'],
 			description: 'Check which diaries your account has the required stats to complete (BOLD = boostable)',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissionsForBot: ['EMBED_LINKS']
 		});
 	}
 

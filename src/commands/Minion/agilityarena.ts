@@ -69,8 +69,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[buy] [name:string] [quantity:int{1}]',
 			usageDelim: ' ',
 			description: 'Sends your minion to complete the Brimhaven Agility Arena.',
