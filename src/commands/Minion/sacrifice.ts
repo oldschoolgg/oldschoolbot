@@ -33,7 +33,8 @@ export default class extends BotCommand {
 			inputStr: bankStr,
 			usersBank: msg.author.bank(),
 			flags: msg.flagArgs,
-			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
+			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems),
+			user: msg.author
 		});
 
 		const sacVal = msg.author.settings.get(UserSettings.SacrificedValue);
