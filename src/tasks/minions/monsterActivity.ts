@@ -54,6 +54,9 @@ export default class extends Task {
 		}
 		// Regular loot
 		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
+		if (monster.specialLoot) {
+			monster.specialLoot(loot, user, data);
+		}
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
@@ -172,7 +175,7 @@ export default class extends Task {
 						if (usingCannon) args.push('cannon');
 						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
 						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
-						return runCommand(res, 'k', args, true);
+						return runCommand({ message: res, commandName: 'k', args, isContinue: true });
 				  },
 			image!,
 			data,

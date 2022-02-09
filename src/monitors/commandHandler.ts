@@ -68,20 +68,22 @@ export default class extends Monitor {
 		const guildID = msg.guild?.id ?? null;
 		const abstractCommand = convertKlasaCommandToAbstractCommand(command);
 
-		const inhibitedReason = await preCommand({
-			abstractCommand,
-			userID,
-			channelID,
-			guildID
-		});
-
-		if (inhibitedReason) {
-			return msg.channel.send(inhibitedReason);
-		}
-
 		let error: Error | string | null = null;
 
 		try {
+			const inhibitedReason = await preCommand({
+				abstractCommand,
+				userID,
+				channelID,
+				guildID,
+				bypassInhibitors: false
+			});
+
+			if (inhibitedReason) {
+				if (inhibitedReason === 'NO_RESPONSE') return;
+				return msg.channel.send(inhibitedReason);
+			}
+
 			// @ts-ignore 2341
 			await msg.prompter!.run();
 			const subcommand = command.subcommands ? params.shift() : undefined;

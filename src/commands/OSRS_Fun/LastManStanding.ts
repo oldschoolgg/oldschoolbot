@@ -12,7 +12,6 @@ export default class extends BotCommand {
 			aliases: ['lms'],
 			requiredPermissionsForBot: ['READ_MESSAGE_HISTORY'],
 			cooldown: 5,
-			oneAtTime: true,
 			description: 'Simulates a game of last man standing',
 			usage: '[contestants:string]',
 			usageDelim: '',

@@ -13,7 +13,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			examples: ['+capegamble infernal', '+capegamble infernal'],
 			usage: '[fire|infernal]',

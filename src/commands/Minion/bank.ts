@@ -15,8 +15,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows your bank, with all your items and GP.',
-			cooldown: 3,
-			oneAtTime: true,
 			usage: '[page:int{1}] [name:...string]',
 			usageDelim: ' ',
 			requiredPermissionsForBot: ['ATTACH_FILES'],
@@ -73,7 +71,8 @@ export default class extends BotCommand {
 		const bank = parseBank({
 			inputBank: baseBank,
 			flags: msg.flagArgs,
-			inputStr: itemNameOrID
+			inputStr: itemNameOrID,
+			user: msg.author
 		});
 
 		if (bank.length === 0) {
@@ -89,7 +88,7 @@ export default class extends BotCommand {
 				const filter = msg.flagArgs.filter
 					? filterableTypes.find(type => type.aliases.some(alias => msg.flagArgs.filter === alias)) ?? null
 					: null;
-				if (filter && !filter.items.includes(item.id)) {
+				if (filter && !filter.items(msg.author).includes(item.id)) {
 					continue;
 				}
 

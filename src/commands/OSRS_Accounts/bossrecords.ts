@@ -23,7 +23,6 @@ type MiscEmojisKeys = keyof typeof miscEmojis;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: ['br'],
 			usage: '(username:rsn)',
 			requiredPermissionsForBot: ['EMBED_LINKS'],

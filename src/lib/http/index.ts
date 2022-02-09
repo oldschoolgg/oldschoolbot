@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/node';
 import fastify from 'fastify';
 import fastifyCors from 'fastify-cors';
 import fastifyHelmet from 'fastify-helmet';
@@ -6,6 +5,7 @@ import fastifyRateLimit from 'fastify-rate-limit';
 import fastifySensible from 'fastify-sensible';
 
 import { HTTP_PORT, production } from '../../config';
+import { logError } from '../util/logError';
 import { initHooks } from './hooks';
 import { initRoutes } from './routes';
 
@@ -21,7 +21,7 @@ export function makeServer() {
 			return;
 		}
 		if (production) {
-			Sentry.captureException(error);
+			logError(error);
 			reply.internalServerError();
 		} else {
 			console.error(error);

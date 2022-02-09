@@ -25,7 +25,6 @@ async function howManyOfTierCompleted(user: KlasaUser, tiers: DiaryTier[]) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			description: 'See your minions achievement diary, and claim the rewards.',

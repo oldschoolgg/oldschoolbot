@@ -17,7 +17,6 @@ export default class extends BotCommand {
 			perkTier: PerkTier.Four,
 			subcommands: true,
 			usage: '<servers|minions|ironmen|sacrificed|bankbg|monsters|clues|icons>',
-			oneAtTime: true,
 			cooldown: 60,
 			description: 'Allows you to see various statistics about the bot.',
 			examples: [

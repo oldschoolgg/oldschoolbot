@@ -630,11 +630,12 @@ const noveltyFood: Buyable[] = [
 
 const Buyables: Buyable[] = [
 	{
-		name: 'Quest Cape',
+		name: 'Quest point cape',
 		outputItems: {
 			[itemID('Quest point cape')]: 1,
 			[itemID('Quest point hood')]: 1
 		},
+		aliases: ['quest cape'],
 		qpRequired: MAX_QP,
 		gpCost: 99_000
 	},

@@ -15,8 +15,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			description: 'Sends your minion to do the Mage Arena 2',
 			examples: ['+magearena2'],
 			categoryFlags: ['minion', 'minigame'],

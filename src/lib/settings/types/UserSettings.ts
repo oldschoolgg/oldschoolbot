@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { HexColorString } from 'discord.js';
-import { O } from 'ts-toolbelt';
 
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
@@ -23,14 +22,14 @@ export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 export namespace UserSettings {
 	export const GP = T<number>('GP');
 	export const QP = T<number>('QP');
-	export const Bank = T<O.Readonly<ItemBank>>('bank');
+	export const Bank = T<Readonly<ItemBank>>('bank');
 	export const BankBackground = T<number>('bankBackground');
-	export const Pets = T<O.Readonly<ItemBank>>('pets');
-	export const CollectionLogBank = T<O.Readonly<ItemBank>>('collectionLogBank');
-	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');
-	export const CreatureScores = T<O.Readonly<ItemBank>>('creatureScores');
-	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
-	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
+	export const Pets = T<Readonly<ItemBank>>('pets');
+	export const CollectionLogBank = T<Readonly<ItemBank>>('collectionLogBank');
+	export const MonsterScores = T<Readonly<ItemBank>>('monsterScores');
+	export const CreatureScores = T<Readonly<ItemBank>>('creatureScores');
+	export const ClueScores = T<Readonly<ItemBank>>('clueScores');
+	export const LapsScores = T<Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const LastTearsOfGuthixTimestamp = T<number>('lastTearsOfGuthixTimestamp');
 	export const BitField = T<readonly BitField[]>('bitfield');
@@ -38,7 +37,7 @@ export namespace UserSettings {
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
 	export const SacrificedValue = T<number>('sacrificedValue');
-	export const SacrificedBank = T<O.Readonly<ItemBank>>('sacrificedBank');
+	export const SacrificedBank = T<Readonly<ItemBank>>('sacrificedBank');
 	export const HonourLevel = T<number>('honour_level');
 	export const HonourPoints = T<number>('honour_points');
 	export const HighGambles = T<number>('high_gambles');
@@ -46,7 +45,7 @@ export namespace UserSettings {
 	export const GithubID = T<number | null>('github_id');
 	export const CarpenterPoints = T<number>('carpenter_points');
 	export const ZealTokens = T<number>('zeal_tokens');
-	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
+	export const OpenableScores = T<Readonly<ItemBank>>('openable_scores');
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
 	export const TotalCoxPoints = T<number>('total_cox_points');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
@@ -59,12 +58,12 @@ export namespace UserSettings {
 	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
-	export const TempCL = T<O.Readonly<ItemBank>>('temp_cl');
+	export const TempCL = T<Readonly<ItemBank>>('temp_cl');
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
 
-	export const Blowpipe = T<O.Readonly<BlowpipeData>>('blowpipe');
+	export const Blowpipe = T<Readonly<BlowpipeData>>('blowpipe');
 
 	export const PremiumBalanceTier = T<number | null>('premium_balance_tier');
 	export const PremiumBalanceExpiryDate = T<number | null>('premium_balance_expiry_date');
@@ -72,8 +71,8 @@ export namespace UserSettings {
 	export const TentacleCharges = T<number>('tentacle_charges');
 	export const SangCharges = T<number>('sang_charges');
 
-	export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
-	export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');
+	export const TOBCost = T<Readonly<ItemBank>>('tob_cost');
+	export const TOBLoot = T<Readonly<ItemBank>>('tob_loot');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');

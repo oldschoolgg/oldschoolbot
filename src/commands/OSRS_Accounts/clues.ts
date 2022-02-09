@@ -8,7 +8,6 @@ import { toTitleCase } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			description: 'Shows the Clue Highscores of an account.',
 			usage: '(username:rsn)',
 			requiredPermissionsForBot: ['EMBED_LINKS'],

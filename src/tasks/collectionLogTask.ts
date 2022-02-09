@@ -12,6 +12,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
+import { logError } from '../lib/util/logError';
 import BankImageTask from './bankImage';
 
 interface ISprite {
@@ -383,7 +384,7 @@ export default class CollectionLogTask extends Task {
 			const itemImage = await (this.client.tasks.get('bankImage') as BankImageTask)
 				.getItemImage(item, 1)
 				.catch(() => {
-					console.error(`Failed to load item image for item with id: ${item}`);
+					logError(`Failed to load item image for item with id: ${item}`);
 				});
 			if (!itemImage) {
 				this.client.emit(Events.Warn, `Item with ID[${item}] has no item image.`);
