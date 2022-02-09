@@ -51,7 +51,11 @@ export default class extends BotCommand {
 					];
 				}
 			})
-			.sort()
+			.sort((a, b) => {
+				const i = a![0];
+				const j = b![0];
+				return i < j ? -1 : i > j ? 1 : 0;
+			})
 			.map(m => m![1])
 			.join('\n');
 		return msg.channel.send(`**Masses in this server:**
