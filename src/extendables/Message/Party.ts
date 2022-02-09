@@ -47,9 +47,9 @@ async function _setup(
 		}
 	};
 
-	let partyCancelled = false;
 	const reactionAwaiter = () =>
 		new Promise<KlasaUser[]>(async (resolve, reject) => {
+			let partyCancelled = false;
 			const collector = new CustomReactionCollector(confirmMessage, {
 				time: 120_000,
 				max: options.usersAllowed?.length ?? options.maxSize,
