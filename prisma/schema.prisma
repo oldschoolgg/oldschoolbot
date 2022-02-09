@@ -374,6 +374,7 @@ model User {
 
   weekly_buy_bank Json @default("{}") @db.Json
 
+  lms_points Int @default(0)
 
   @@map("users")
 }
@@ -446,6 +447,7 @@ model Minigame {
   tears_of_guthix         Int    @default(0)
   tob                     Int    @default(0)
   tob_hard                Int    @default(0)
+  lms                     Int    @default(0)
 
   new_user NewUser?
   @@map("minigames")
@@ -493,6 +495,14 @@ model EconomyItem {
 
   @@id([item_id, date])
   @@map("economy_item")
+}
+
+model LastManStandingGame {
+  id       Int      @id @default(autoincrement())
+  user_id  BigInt
+  date     DateTime @default(now())
+  position Int      @db.SmallInt
+  kills    Int      @db.SmallInt
 }
 
 enum command_usage_status {
@@ -570,6 +580,7 @@ enum activity_type_enum {
   Inferno
   TearsOfGuthix
   TheatreOfBlood
+  LastManStanding
 }
 
 enum xp_gains_skill_enum {

@@ -150,6 +150,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Theatre of Blood - Hard Mode',
 		aliases: ['tob hard', 'tob hard mode'],
 		column: 'tob_hard'
+	},
+	{
+		name: 'Last Man Standing',
+		aliases: ['last man standing', 'lms'],
+		column: 'lms'
 	}
 ];
 

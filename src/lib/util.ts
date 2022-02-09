@@ -449,6 +449,18 @@ export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<Se
 	return user.settings.update(key, active);
 }
 
+function gaussianRand(rolls: number = 3) {
+	let rand = 0;
+	for (let i = 0; i < rolls; i += 1) {
+		rand += Math.random();
+	}
+	return rand / rolls;
+}
+
+export function gaussianRandom(min: number, max: number, rolls?: number) {
+	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
+}
+
 export function isValidNickname(str?: string) {
 	return (
 		str &&
@@ -625,3 +637,7 @@ export function cleanUsername(str: string) {
 	return Util.escapeMarkdown(stripEmojis(str));
 }
 export { cleanString, stringMatches } from './util/cleanString';
+
+export function clamp(val: number, min: number, max: number) {
+	return Math.min(max, Math.max(min, val));
+}
