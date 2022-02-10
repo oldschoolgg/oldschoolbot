@@ -531,6 +531,13 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 100_000_000,
 		perkTierNeeded: PerkTier.Four,
 		transparent: true
+	},
+	{
+		id: 93,
+		name: 'Purrincess CustomBG',
+		image: null,
+		available: false,
+		owners: ['538600275221413900']
 	}
 ];
 

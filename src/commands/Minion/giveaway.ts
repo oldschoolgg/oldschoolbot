@@ -12,15 +12,13 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			cooldown: 1,
 			usage: '<duration:str> (items:...TradeableBank)',
 			usageDelim: ' ',
 			description: 'Allows you to do a giveaway of items.',
 			examples: ['+giveaway 5m Twisted bow, 20 Shark'],
 			categoryFlags: ['minion', 'utility'],
-			oneAtTime: true,
 			aliases: ['gstart', 'g'],
-			requiredPermissions: ['ADD_REACTIONS']
+			requiredPermissionsForBot: ['ADD_REACTIONS']
 		});
 	}
 

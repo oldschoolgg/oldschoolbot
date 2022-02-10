@@ -7,6 +7,7 @@ import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS } from '../config';
+import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
@@ -272,13 +273,6 @@ export const enum Events {
 	EconomyLog = 'economyLog'
 }
 
-export const enum PermissionLevelsEnum {
-	Zero = 0,
-	Moderator = 6,
-	Admin = 7,
-	Owner = 10
-}
-
 export const rootFolder = join(__dirname, '..', '..', '..');
 
 export const COINS_ID = 995;
@@ -473,14 +467,14 @@ export const SILENT_ERROR = 'SILENT_ERROR';
 export const informationalButtons = [
 	new MessageButton().setLabel('Wiki').setEmoji('📰').setURL('https://wiki.oldschool.gg/').setStyle('LINK'),
 	new MessageButton()
+		.setLabel('Wiki')
+		.setEmoji('863823820435619890')
+		.setURL('https://bso-wiki.oldschool.gg/')
+		.setStyle('LINK'),
+	new MessageButton()
 		.setLabel('Patreon')
 		.setEmoji('679334888792391703')
 		.setURL('https://www.patreon.com/oldschoolbot')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Support Server')
-		.setEmoji('778418736180494347')
-		.setURL('https://www.discord.gg/ob')
 		.setStyle('LINK'),
 	new MessageButton()
 		.setLabel('Bot Invite')
@@ -604,9 +598,10 @@ export const userTimers = [
 	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
 ] as const;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: Command, args: any[]) {
+export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
+	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && subs.includes(args[0])) {
+		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
 			return false;
 		}
 	}
@@ -621,3 +616,14 @@ export function getCommandArgs(command: Command, args: any[]) {
 }
 
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
+
+export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
+	msg: KlasaMessage
+) => `This command you're trying to use, has been changed to a 'slash command'.
+
+- Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
+- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used too though.
+- You no longer use this command using \`${msg.cmdPrefix}${msg.command?.name}\`, now you use: \`/${msg.command?.name}\`
+`;
+
+export const DISABLED_COMMANDS = new Set<string>();

@@ -342,7 +342,12 @@ export async function checkTOBUser(
 	// Melee
 	const meleeGear = user.getGear('melee');
 	if (
-		!meleeGear.hasEquipped(['Abyssal tentacle', 'Blade of saeldor (c)', 'Scythe of vitur']) ||
+		!meleeGear.hasEquipped([
+			'Abyssal tentacle',
+			'Blade of saeldor (c)',
+			'Scythe of vitur (uncharged)',
+			'Scythe of vitur'
+		]) ||
 		!meleeGear.hasEquipped(['Fire cape', 'Infernal cape'])
 	) {
 		return [
@@ -496,7 +501,7 @@ export function createTOBTeam({
 	const maxScaling = 350;
 	assert(teamSize > 1 && teamSize < 6, 'TOB team must be 2-5 users');
 
-	let totalReduction = 0;
+	let individualReductions = [];
 
 	let reductions: Record<string, number> = {};
 
@@ -533,6 +538,7 @@ export function createTOBTeam({
 		 */
 		const meleeWeaponBoosts = [
 			['Scythe of vitur', 15],
+			['Scythe of vitur (uncharged)', 6],
 			['Blade of saeldor (c)', 6],
 			['Abyssal tentacle', 5.5]
 		] as const;
@@ -595,11 +601,21 @@ export function createTOBTeam({
 
 		let reduction = round(userPercentChange / teamSize, 1);
 
-		totalReduction += reduction;
+		individualReductions.push(userPercentChange);
 		reductions[u.user.id] = reduction;
 	}
 	let duration = baseDuration;
 
+	// Get the sum of individualReductions array
+	let totalReduction = individualReductions.reduce((a, c) => a + c);
+
+	// Remove the worst player from speed calculation if team size > 2:
+	if (teamSize > 2) {
+		totalReduction -= Math.min(...individualReductions);
+		totalReduction = round(totalReduction / (teamSize - 1), 2);
+	} else {
+		totalReduction = round(totalReduction / teamSize, 2);
+	}
 	if (hardMode) {
 		duration = baseCmDuration;
 		duration = reduceNumByPercent(duration, totalReduction / 1.3);

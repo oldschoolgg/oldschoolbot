@@ -55,7 +55,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<item:string>',
 			usageDelim: ',',
-			oneAtTime: true,
 			aliases: ['feed', 'feedhammy'],
 			cooldown: 5,
 			altProtection: true

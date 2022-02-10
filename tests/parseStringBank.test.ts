@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { randInt } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import getOSItem from '../src/lib/util/getOSItem';
@@ -203,6 +204,12 @@ describe('Bank Parsers', () => {
 		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top, 5 tmb' }).toString()).toEqual(
 			'30x Arceuus graceful top, 1x Tradeable Mystery Box'
 		);
+	});
+
+	test('parseBank - max size', async () => {
+		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones');
+		for (let i = 0; i < 500; i++) bank.add(Items.random().id, randInt(1, 20));
+		expect(parseBank({ inputBank: bank, flags: { all: 'all' }, maxSize: 23 }).length).toEqual(23);
 	});
 
 	test('parseQuantityAndItem', () => {

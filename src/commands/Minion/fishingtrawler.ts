@@ -12,8 +12,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			aliases: ['trawler'],
 			description: 'Sends your minion to complete the fishing trawler, allowing you to get the angler outfit.',
 			examples: ['+trawler'],

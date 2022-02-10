@@ -8,6 +8,7 @@ import { PerkTier } from '../constants';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
 import { cleanString, isGroupActivity } from '../util';
+import { logError } from '../util/logError';
 import { taskNameFromType } from '../util/taskNameFromType';
 import { minionActivityCache, minionActivityCacheDelete } from './settings';
 
@@ -60,7 +61,7 @@ export async function completeActivity(_activity: Activity) {
 	try {
 		await task.run(activity);
 	} catch (err) {
-		console.error(err);
+		logError(err);
 	} finally {
 		client.oneCommandAtATimeCache.delete(activity.userID);
 		minionActivityCacheDelete(activity.userID);
@@ -89,7 +90,7 @@ export async function isElligibleForPresent(user: KlasaUser) {
 	if (user.totalLevel() >= 2000) return true;
 	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRaw`SELECT SUM(duration)
 FROM activity
-WHERE user_id = ${user.id};`;
+WHERE user_id = ${BigInt(user.id)};`;
 	if (totalActivityDuration[0].sum >= Time.Hour * 80) return true;
 	return false;
 }

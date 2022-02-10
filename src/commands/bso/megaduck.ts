@@ -6,7 +6,6 @@ import { readFileSync } from 'fs';
 import jimp from 'jimp';
 import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { O } from 'ts-toolbelt';
 
 import { Events, PerkTier } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
@@ -70,7 +69,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 120,
-			oneAtTime: true,
 			description: 'Looks up the price of an item using the OSBuddy API.',
 			usage: '[up|down|left|right]',
 			runIn: ['text'],
@@ -154,7 +152,9 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 
 	async run(msg: KlasaMessage, [direction]: ['up' | 'down' | 'left' | 'right' | undefined]) {
 		const settings = await getGuildSettings(msg.guild!);
-		const location: O.Readonly<MegaDuckLocation> = { ...settings.get(GuildSettings.MegaDuckLocation) };
+		const location: Readonly<MegaDuckLocation> = {
+			...(settings.get(GuildSettings.MegaDuckLocation) ?? defaultMegaDuckLocation)
+		};
 		if (msg.flagArgs.reset && msg.member && msg.member.permissions.has('ADMINISTRATOR')) {
 			await msg.confirm(
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'

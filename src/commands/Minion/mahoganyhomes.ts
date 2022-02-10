@@ -97,8 +97,6 @@ export default class MahoganyHomesCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[build|buy] [action:...string]',
 			usageDelim: ' ',
 			aliases: ['mh'],

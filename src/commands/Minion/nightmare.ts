@@ -65,9 +65,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<mass|solo|phosani>',
 			usageDelim: ' ',
-			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			description:
 				'Sends your minion to kill the nightmare. Requires food and melee gear. Your minion gets better at it over time.',

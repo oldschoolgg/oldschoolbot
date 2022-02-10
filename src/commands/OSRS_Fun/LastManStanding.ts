@@ -10,9 +10,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['lms'],
-			requiredPermissions: ['READ_MESSAGE_HISTORY'],
+			requiredPermissionsForBot: ['READ_MESSAGE_HISTORY'],
 			cooldown: 5,
-			oneAtTime: true,
 			description: 'Simulates a game of last man standing',
 			usage: '[contestants:string]',
 			usageDelim: '',

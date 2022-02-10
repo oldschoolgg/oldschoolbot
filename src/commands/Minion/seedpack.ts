@@ -148,11 +148,9 @@ function openSeedPack(seedTier: number): ItemBank {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			aliases: ['sp'],
 			usage: '[quantity:int]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Opens seed packs.',
 			examples: ['+seedpack']

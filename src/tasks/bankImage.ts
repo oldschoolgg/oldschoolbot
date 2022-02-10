@@ -30,6 +30,7 @@ import {
 	drawImageWithOutline,
 	fillTextXTimesInCtx
 } from '../lib/util/canvasUtil';
+import { logError } from '../lib/util/logError';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -185,7 +186,7 @@ export default class BankImageTask extends Task {
 				this.itemIconImagesCache.set(itemID, image);
 				return this.getItemImage(itemID, quantity);
 			} catch (err) {
-				console.error(`Failed to load item icon with id: ${itemID}`);
+				logError(`Failed to load item icon with id: ${itemID}`);
 				return this.getItemImage(1, 1);
 			}
 		}
@@ -549,7 +550,7 @@ export default class BankImageTask extends Task {
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
 			const itemImage = await this.getItemImage(item.id, quantity).catch(() => {
-				console.error(`Failed to load item image for item with id: ${item.id}`);
+				logError(`Failed to load item image for item with id: ${item.id}`);
 			});
 			if (!itemImage) {
 				this.client.emit(Events.Warn, `Item with ID[${item.id}] has no item image.`);

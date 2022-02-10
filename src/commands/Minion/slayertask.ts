@@ -67,8 +67,6 @@ const returnSuccessButtons = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
-			cooldown: 2,
 			altProtection: true,
 			categoryFlags: ['minion'],
 			aliases: ['st'],
@@ -104,7 +102,7 @@ export default class extends BotCommand {
 	public async returnSuccess(msg: KlasaMessage, message: string, autoslay: boolean) {
 		if (autoslay) {
 			await msg.channel.send(message);
-			return runCommand(msg, 'autoslay', ['']);
+			return runCommand({ message: msg, commandName: 'autoslay', args: [''], bypassInhibitors: true });
 		}
 		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
 		try {
@@ -120,29 +118,44 @@ export default class extends BotCommand {
 			});
 			switch (selection.customID) {
 				case 'assaved': {
-					await runCommand(msg, 'autoslay', ['']);
+					await runCommand({ message: msg, commandName: 'autoslay', args: [''], bypassInhibitors: true });
 					return;
 				}
 				case 'asdef': {
-					await runCommand(msg, 'autoslay', ['default']);
+					await runCommand({
+						message: msg,
+						commandName: 'autoslay',
+						args: ['default'],
+						bypassInhibitors: true
+					});
 					return;
 				}
 				case 'asehp': {
-					await runCommand(msg, 'autoslay', ['ehp']);
+					await runCommand({ message: msg, commandName: 'autoslay', args: ['ehp'], bypassInhibitors: true });
 					return;
 				}
 				case 'asboss': {
-					await runCommand(msg, 'autoslay', ['boss']);
+					await runCommand({ message: msg, commandName: 'autoslay', args: ['boss'], bypassInhibitors: true });
 					return;
 				}
 				case 'skip': {
 					msg.flagArgs.new = 'yes';
-					await runCommand(msg, 'slayertask', ['skip']);
+					await runCommand({
+						message: msg,
+						commandName: 'slayertask',
+						args: ['skip'],
+						bypassInhibitors: true
+					});
 					return;
 				}
 				case 'block': {
 					msg.flagArgs.new = 'yes';
-					await runCommand(msg, 'slayertask', ['block']);
+					await runCommand({
+						message: msg,
+						commandName: 'slayertask',
+						args: ['block'],
+						bypassInhibitors: true
+					});
 					return;
 				}
 			}
@@ -272,7 +285,7 @@ export default class extends BotCommand {
 				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
 			if (Boolean(msg.flagArgs.new)) {
-				return runCommand(msg, 'slayertask', []);
+				return runCommand({ message: msg, commandName: 'slayertask', args: [], bypassInhibitors: true });
 			}
 			return;
 		}

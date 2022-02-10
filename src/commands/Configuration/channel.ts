@@ -8,7 +8,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			runIn: ['text'],
-			permissionLevel: 6,
+			requiredPermissionsForUser: ['BAN_MEMBERS'],
 			usage: '<disable|enable>',
 			description:
 				'Allows you to disable/enable the bot in a channel. If a channel is disabled, only staff of your server can use it in the channel.',

@@ -1,5 +1,5 @@
-import { calcPercentOfNum } from 'e';
-import { Task } from 'klasa';
+import { calcPercentOfNum, percentChance } from 'e';
+import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
@@ -12,11 +12,28 @@ import { anglerBoostPercent, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
+function radasBlessing(user: KlasaUser) {
+	const blessingBoosts = [
+		["Rada's blessing 4", 8],
+		["Rada's blessing 3", 6],
+		["Rada's blessing 2", 4],
+		["Rada's blessing 1", 2]
+	];
+
+	for (const [itemName, boostPercent] of blessingBoosts) {
+		if (user.hasItemEquippedAnywhere(itemName)) {
+			return { blessingEquipped: true, blessingChance: boostPercent as number };
+		}
+	}
+	return { blessingEquipped: false, blessingChance: 0 };
+}
+
 export default class extends Task {
 	async run(data: FishingActivityTaskOptions) {
 		let { fishID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
+		const { blessingEquipped, blessingChance } = radasBlessing(user);
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
 
@@ -32,7 +49,6 @@ export default class extends Task {
 		let leapingSturgeon = 0;
 		let leapingSalmon = 0;
 		let leapingTrout = 0;
-		let minnowQty = 0;
 		let agilityXpReceived = 0;
 		let strengthXpReceived = 0;
 		if (fish.name === 'Barbarian fishing') {
@@ -44,7 +60,7 @@ export default class extends Task {
 					user.skillLevel(SkillsEnum.Strength) >= 45
 				) {
 					xpReceived += 80;
-					leapingSturgeon += 1;
+					leapingSturgeon += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 					agilityXpReceived += 7;
 					strengthXpReceived += 7;
 				} else if (
@@ -54,12 +70,12 @@ export default class extends Task {
 					user.skillLevel(SkillsEnum.Strength) >= 30
 				) {
 					xpReceived += 70;
-					leapingSalmon += 1;
+					leapingSalmon += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 					agilityXpReceived += 6;
 					strengthXpReceived += 6;
 				} else if (roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))) {
 					xpReceived += 50;
-					leapingTrout += 1;
+					leapingTrout += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 					agilityXpReceived += 5;
 					strengthXpReceived += 5;
 				}
@@ -114,21 +130,28 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
 
-		let lootQuantity = quantity;
-
-		if (fish.id === itemID('Raw karambwanji')) {
-			lootQuantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
-		}
-		if (fish.id === itemID('Minnow')) {
-			for (const [level, quantities] of Object.entries(minnowQuantity).reverse()) {
-				if (user.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
-					for (let i = 0; i < quantity; i++) {
-						minnowQty += rand(quantities[0], quantities[1]);
-					}
-					break;
-				}
+		let lootQuantity = 0;
+		const baseKarambwanji = 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
+		let baseMinnow = [10, 10];
+		for (const [level, quantities] of Object.entries(minnowQuantity).reverse()) {
+			if (user.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
+				baseMinnow = quantities;
+				break;
 			}
-			lootQuantity = minnowQty;
+		}
+
+		for (let i = 0; i < quantity; i++) {
+			if (fish.id === itemID('Raw karambwanji')) {
+				lootQuantity +=
+					blessingEquipped && percentChance(blessingChance) ? baseKarambwanji * 2 : baseKarambwanji;
+			} else if (fish.id === itemID('Minnow')) {
+				lootQuantity +=
+					blessingEquipped && percentChance(blessingChance)
+						? rand(baseMinnow[0], baseMinnow[1]) * 2
+						: rand(baseMinnow[0], baseMinnow[1]);
+			} else {
+				lootQuantity += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
+			}
 		}
 
 		let loot = new Bank({
@@ -204,6 +227,10 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		str += `\n\nYou received: ${loot}.`;
+
+		if (blessingEquipped) {
+			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
+		}
 
 		handleTripFinish(
 			this.client,

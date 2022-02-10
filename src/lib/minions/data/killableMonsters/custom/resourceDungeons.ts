@@ -198,7 +198,7 @@ const Grifolaroo: CustomMonster = {
 	table: new LootTable()
 		.every('Neem drupe', [1, 3])
 		.every('Bones')
-		.tertiary(150, 'Clue scroll (master)')
+		.tertiary(200, 'Clue scroll (master)')
 		.tertiary(230, new LootTable().add('Grifolic gloves').add('Grifolic orb'))
 		.oneIn(64, 'Morchella mushroom spore')
 		.add([
@@ -230,7 +230,7 @@ const Grifolapine: CustomMonster = {
 	timeToFinish: Time.Minute * 4,
 	hp: 195,
 	table: new LootTable()
-		.tertiary(290, 'Clue scroll (grandmaster)')
+		.tertiary(450, 'Clue scroll (grandmaster)')
 		.tertiary(80, 'Mycelium leggings web')
 		.every('Neem drupe', [1, 3])
 		.every('Bones')
@@ -297,7 +297,7 @@ const GanodermicBeast: CustomMonster = {
 		.every('Bones')
 		.tertiary(5000, 'Curved bone')
 		.tertiary(400, 'Long bone')
-		.tertiary(250, 'Clue scroll (grandmaster)')
+		.tertiary(380, 'Clue scroll (grandmaster)')
 		.tertiary(230, new LootTable().add('Ganodermic gloves').add('Ganodermic boots').add('Polypore stick'))
 		.add([
 			['Blood rune', [5, 60]],

@@ -13,13 +13,7 @@ import { ExoticSeedsTable } from '../simulation/sharedTables';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import {
-	allPetIDs,
-	chambersOfXericCL,
-	cmbClothes,
-	customBossesDropsThatCantBeDroppedInMBs,
-	frozenKeyPieces
-} from './CollectionsExport';
+import { allPetIDs, chambersOfXericCL, cmbClothes, customBossesDropsThatCantBeDroppedInMBs } from './CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './holidayItems';
 
 interface Openable {
@@ -470,54 +464,61 @@ let allItemsIDs = Openables.filter(o => o.excludeFromBoxes)
 	.map(i => (typeof i.table !== 'function' && i.table.allItems) || [])
 	.flat(Infinity) as number[];
 allItemsIDs = uniqueArr(allItemsIDs);
-const cantBeDropped = [
+const cantBeDropped = resolveItems([
 	...chambersOfXericCL,
 	...customBossesDropsThatCantBeDroppedInMBs,
-	itemID('Abyssal pouch'),
-	itemID('Dwarven crate'),
-	itemID('Halloween mask set'),
-	itemID('Partyhat set'),
-	itemID('Ancestral robes set'),
-	itemID('Kodai wand'),
-	itemID('Twisted ancestral hat'),
-	itemID('Twisted ancestral robe top'),
-	itemID('Twisted ancestral robe bottom'),
-	itemID('Partyhat & specs'),
-	itemID('Dwarven warhammer'),
-	itemID('Dwarven ore'),
-	itemID('Dwarven bar'),
-	itemID('Dwarven pickaxe'),
-	itemID('Dwarven greataxe'),
-	itemID('Dwarven greathammer'),
-	itemID('Dwarven gauntlets'),
-	itemID('Dwarven knife'),
-	itemID('Dwarven blessing'),
-	itemID('Helm of raedwald'),
-	itemID('Clue hunter garb'),
-	itemID('Clue hunter gloves'),
-	itemID('Clue hunter trousers'),
-	itemID('Clue hunter boots'),
-	itemID('Clue hunter cloak'),
-	itemID('Cob'),
-	itemID('Bank lottery ticket'),
-	itemID('Tester gift box'),
-	itemID('Coins'),
+	'Abyssal pouch',
+	'Dwarven crate',
+	'Halloween mask set',
+	'Partyhat set',
+	'Ancestral robes set',
+	'Kodai wand',
+	'Twisted ancestral hat',
+	'Twisted ancestral robe top',
+	'Twisted ancestral robe bottom',
+	'Partyhat & specs',
+	'Dwarven warhammer',
+	'Dwarven ore',
+	'Dwarven bar',
+	'Dwarven pickaxe',
+	'Dwarven greataxe',
+	'Dwarven greathammer',
+	'Dwarven gauntlets',
+	'Dwarven knife',
+	'Dwarven blessing',
+	'Helm of raedwald',
+	'Clue hunter garb',
+	'Clue hunter gloves',
+	'Clue hunter trousers',
+	'Clue hunter boots',
+	'Clue hunter cloak',
+	'Cob',
+	'Bank lottery ticket',
+	'Tester gift box',
+	'Coins',
 	22_664, // JMOD Scythe of Vitur,
-	...resolveItems([
-		'Red Partyhat',
-		'Yellow partyhat',
-		'Blue partyhat',
-		'Purple partyhat',
-		'Green partyhat',
-		'White partyhat',
-		'Christmas cracker',
-		'Santa hat',
-		'Ancient emblem',
-		'Bloodsoaked feather'
-	]),
+	'Red Partyhat',
+	'Yellow partyhat',
+	'Blue partyhat',
+	'Purple partyhat',
+	'Green partyhat',
+	'White partyhat',
+	'Christmas cracker',
+	'Santa hat',
+	'Ancient emblem',
+	'Bloodsoaked feather',
 	...allPetIDs,
-	...frozenKeyPieces
-] as number[];
+	'Bandosian components',
+	'Masori headdress',
+	"Osmumten's fang",
+	'Nihil shard',
+	'Ancient godsword',
+	'Nihil dust',
+	'Ancient hilt',
+	'Nihil horn',
+	'Zaryte crossbow',
+	'Zaryte vambraces'
+]);
 
 export const tmbTable: number[] = [];
 export const umbTable: number[] = [];

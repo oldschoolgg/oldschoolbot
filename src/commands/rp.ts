@@ -1,30 +1,38 @@
+import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
-import { MessageAttachment, MessageEmbed, TextChannel } from 'discord.js';
-import { notEmpty, uniqueArr } from 'e';
-import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { Type } from '@sapphire/type';
+import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
+import { noOp, notEmpty, uniqueArr } from 'e';
+import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
+import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
+import { inspect } from 'node:util';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { client, mahojiClient } from '..';
+import { CLIENT_ID } from '../config';
 import {
 	badges,
 	BitField,
 	BitFieldData,
 	Channel,
 	DefaultPingableRoles,
+	DISABLED_COMMANDS,
 	Emoji,
 	Roles,
 	SupportServer,
 	userTimers
-} from '../../lib/constants';
-import { getSimilarItems } from '../../lib/data/similarItems';
-import { addPatronLootTime, addToDoubleLootTimer } from '../../lib/doubleLoot';
-import { evalMathExpression } from '../../lib/expressionParser';
-import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
-import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { BotCommand } from '../../lib/structures/BotCommand';
+} from '../lib/constants';
+import { getSimilarItems } from '../lib/data/similarItems';
+import { addPatronLootTime, addToDoubleLootTimer } from '../lib/doubleLoot';
+import { evalMathExpression } from '../lib/expressionParser';
+import { GearSetup, GearSetupTypes } from '../lib/gear';
+import { countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
+import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
+import { ClientSettings } from '../lib/settings/types/ClientSettings';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { BotCommand } from '../lib/structures/BotCommand';
 import {
 	asyncExec,
 	channelIsSendable,
@@ -34,66 +42,93 @@ import {
 	getSupportGuild,
 	getUsername,
 	isSuperUntradeable,
-	itemNameFromID
-} from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { sendToChannelID } from '../../lib/util/webhook';
-import BankImageTask from '../../tasks/bankImage';
-import PatreonTask from '../../tasks/patreon';
+	itemNameFromID,
+	moidLink,
+	stringMatches
+} from '../lib/util';
+import getOSItem from '../lib/util/getOSItem';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { logError } from '../lib/util/logError';
+import { sendToChannelID } from '../lib/util/webhook';
+import { Cooldowns } from '../mahoji/lib/Cooldowns';
+import { allAbstractCommands } from '../mahoji/lib/util';
+import BankImageTask from '../tasks/bankImage';
+import PatreonTask from '../tasks/patreon';
 
 async function checkBank(msg: KlasaMessage) {
-	const bank = msg.author.settings.get(UserSettings.Bank);
-	const CLBank = msg.author.settings.get(UserSettings.CollectionLogBank);
+	const rawBank = msg.author.settings.get(UserSettings.Bank);
+	const rawCL = msg.author.settings.get(UserSettings.CollectionLogBank);
+	const rawSB = msg.author.settings.get(UserSettings.SacrificedBank);
+	const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
 
-	const brokenBank = [];
-	for (const id of [...Object.keys(bank), ...Object.keys(CLBank)].map(key => parseInt(key))) {
+	const rawAllGear = GearSetupTypes.map(i => msg.author.settings.get(`gear.${i}`));
+	const allGearItemIDs = rawAllGear
+		.filter(notEmpty)
+		.map((b: any) =>
+			Object.values(b)
+				.filter(notEmpty)
+				.map((i: any) => i.item)
+		)
+		.flat(Infinity);
+
+	const brokenBank: number[] = [];
+	const allItemsToCheck = [
+		...Object.keys(rawBank),
+		...Object.keys(rawCL),
+		...Object.keys(rawSB),
+		...favorites,
+		...allGearItemIDs
+	];
+
+	for (const id of allItemsToCheck.map(i => Number(i))) {
 		const item = Items.get(id);
 		if (!item) {
 			brokenBank.push(id);
 		}
 	}
 
-	const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
-	const brokenFavorites: number[] = [];
-	for (const id of favorites) {
-		const item = Items.get(id);
-		if (!item) {
-			brokenFavorites.push(id);
-		}
+	const newFavs = favorites.filter(i => !brokenBank.includes(i));
+
+	const newBank = { ...rawBank };
+	const newCL = { ...rawCL };
+	const newSB = { ...rawSB };
+	for (const id of brokenBank) {
+		delete newBank[id];
+		delete newCL[id];
+		delete newSB[id];
 	}
 
-	if (msg.flagArgs.fix) {
-		let str = '';
-		const newFavs = favorites.filter(i => !brokenFavorites.includes(i));
+	for (const setupType of GearSetupTypes) {
+		const _gear = msg.author.settings.get(`gear.${setupType}`) as GearSetup | null;
+		if (_gear === null) continue;
+		const gear = { ..._gear };
+		for (const [key, value] of Object.entries(gear)) {
+			if (value === null) continue;
+			if (brokenBank.includes(value.item)) {
+				delete gear[key as keyof GearSetup];
+			}
+		}
+		await msg.author.settings.update(`gear.${setupType}`, gear);
+	}
+
+	if (brokenBank.length > 0) {
 		await msg.author.settings.update(UserSettings.FavoriteItems, newFavs, {
 			arrayAction: 'overwrite'
 		});
-		str += `Removed ${favorites.length - newFavs.length} from favorites\n`;
-
-		const newBank = { ...bank };
-		const newCL = { ...CLBank };
-		for (const id of brokenBank) {
-			str += `Removed ${newBank[id]}x of item ID ${id} from bank\n`;
-			delete newBank[id];
-			delete newCL[id];
-		}
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 		await msg.author.settings.update(UserSettings.CollectionLogBank, newCL);
-		return msg.channel.send(str);
+		await msg.author.settings.update(UserSettings.SacrificedBank, newSB);
+
+		return msg.channel.send(
+			`You had ${
+				brokenBank.length
+			} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
+				brokenBank
+			)}`
+		);
 	}
 
-	return msg.channel.send(
-		[
-			`You have ${brokenBank.length} broken items in your bank. `,
-			`You have ${brokenBank.length} broken items in your favorites. `,
-			'You can use `=checkbank --fix` to try to automatically remove the broken items.',
-			`Check here to potentially see what they are: <https://chisel.weirdgloop.org/moid/item_id.html#${[
-				...brokenBank,
-				...brokenFavorites
-			].join(',`')}`
-		].join('\n')
-	);
+	return msg.channel.send('You have no broken items on your account!');
 }
 
 function generateReadyThings(user: KlasaUser) {
@@ -143,6 +178,97 @@ ${index + 1}. ${item.name}[${item.id}] Price[${item.price}] ${
 	}
 
 	return msg.channel.send(str);
+}
+
+async function unsafeEval({
+	code,
+	flags,
+	// @ts-ignore Makes it accessible in eval
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	msg
+}: {
+	code: string;
+	flags: Record<string, string>;
+	msg: KlasaMessage;
+}): Promise<MessageOptions> {
+	code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
+	const stopwatch = new Stopwatch();
+	let syncTime = '?';
+	let asyncTime = '?';
+	let result = null;
+	let thenable = false;
+	// eslint-disable-next-line @typescript-eslint/init-declarations
+	let type!: Type;
+	try {
+		code = `\nconst {Bank} = require('oldschooljs');\n${code}`;
+		if (flags.async) code = `(async () => {\n${code}\n})();`;
+		else if (flags.bk) code = `(async () => {\nreturn ${code}\n})();`;
+		// eslint-disable-next-line no-eval
+		result = eval(code);
+		syncTime = stopwatch.toString();
+		type = new Type(result);
+		if (util.isThenable(result)) {
+			thenable = true;
+			stopwatch.restart();
+			result = await result;
+			asyncTime = stopwatch.toString();
+		}
+	} catch (error: any) {
+		if (!syncTime) syncTime = stopwatch.toString();
+		if (!type) type = new Type(error);
+		if (thenable && !asyncTime) asyncTime = stopwatch.toString();
+		if (error && error.stack) logError(error);
+		result = error;
+	}
+
+	stopwatch.stop();
+	if (flags.bk || result instanceof Bank) {
+		const image = await client.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
+		return { files: [new MessageAttachment(image.image!)] };
+	}
+
+	if (Buffer.isBuffer(result)) {
+		return {
+			content: 'The result was a buffer.'
+		};
+	}
+
+	if (typeof result !== 'string') {
+		result = inspect(result, {
+			depth: flags.depth ? parseInt(flags.depth) || 1 : 1,
+			showHidden: false
+		});
+	}
+
+	return {
+		content: `${codeBlock(Util.escapeCodeBlock(result))}
+**Type:** ${inlineCode(type.toString())}
+**Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
+`
+	};
+}
+
+async function evalCommand(msg: KlasaMessage, code: string) {
+	try {
+		if (!client.owners.has(msg.author)) {
+			return "You don't have permission to use this command.";
+		}
+		const res = await unsafeEval({ code, flags: msg.flagArgs, msg });
+
+		if ('silent' in msg.flagArgs) return null;
+
+		// Handle too-long-messages
+		if (res.content && res.content.length > 2000) {
+			return {
+				files: [new MessageAttachment(Buffer.from(res.content), 'output.txt')]
+			};
+		}
+
+		// If it's a message that can be sent correctly, send it
+		return msg.channel.send(res);
+	} catch (err) {
+		logError(err);
+	}
 }
 
 export const emoji = (client: KlasaClient) => getSupportGuild(client).emojis.cache.random().toString();
@@ -489,7 +615,7 @@ ${
 						content: result.slice(0, 2500)
 					});
 				} catch (err: any) {
-					console.error(err);
+					logError(err);
 					return msg.channel.send(`Failed to run roles task. ${err.message}`);
 				}
 			}
@@ -498,6 +624,7 @@ ${
 				await cancelTask(input.id);
 				this.client.oneCommandAtATimeCache.delete(input.id);
 				this.client.secondaryUserBusyCache.delete(input.id);
+				Cooldowns.delete(input.id);
 				minionActivityCacheDelete(input.id);
 
 				return msg.react(Emoji.Tick);
@@ -650,18 +777,50 @@ LIMIT 10;
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
-				command.disable();
-				return msg.channel.send(`${emoji(this.client)} Disabled \`+${command}\`.`);
+				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
+					where: { id: CLIENT_ID },
+					select: { disabled_commands: true }
+				}))!.disabled_commands;
+				if (currentDisabledCommands.includes(command.name)) {
+					return msg.channel.send('That command is already disabled.');
+				}
+				const newDisabled = [...currentDisabledCommands, command.name.toLowerCase()];
+				await prisma.clientStorage.update({
+					where: {
+						id: CLIENT_ID
+					},
+					data: {
+						disabled_commands: newDisabled
+					}
+				});
+				DISABLED_COMMANDS.add(command.name);
+				return msg.channel.send(`Disabled \`${command.name}\`.`);
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = this.client.commands.find(c => c.name.toLowerCase() === input.toLowerCase());
+				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
-				if (command.enabled) return msg.channel.send('That command is already enabled.');
-				command.enable();
-				return msg.channel.send(`${emoji(this.client)} Enabled \`+${command}\`.`);
+
+				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
+					where: { id: CLIENT_ID },
+					select: { disabled_commands: true }
+				}))!.disabled_commands;
+				if (!currentDisabledCommands.includes(command.name)) {
+					return msg.channel.send('That command is not disabled.');
+				}
+
+				await prisma.clientStorage.update({
+					where: {
+						id: CLIENT_ID
+					},
+					data: {
+						disabled_commands: currentDisabledCommands.filter(i => i !== command.name)
+					}
+				});
+				DISABLED_COMMANDS.delete(command.name);
+				return msg.channel.send(`Enabled \`${command.name}\`.`);
 			}
 			case 'dtp': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -790,6 +949,71 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				return msg.channel.send({
 					content: `${loot.id} ${formatDuration(loot.total_duration * Time.Minute)} KC${loot.total_kc}`
 				});
+			}
+			case 'eval': {
+				if (!input || typeof input !== 'string') return;
+				return evalCommand(msg, input);
+			}
+			case 'localmahojisync': {
+				await msg.channel.send('Syncing commands locally...');
+				await bulkUpdateCommands({
+					client: mahojiClient,
+					commands: mahojiClient.commands.values,
+					guildID: msg.guild!.id
+				});
+				return msg.channel.send('Locally synced slash commands.');
+			}
+			case 'globalmahojisync': {
+				await msg.channel.send('Syncing commands...');
+				await bulkUpdateCommands({
+					client: mahojiClient,
+					commands: mahojiClient.commands.values,
+					guildID: null
+				});
+				return msg.channel.send('Globally synced slash commands.');
+			}
+			case 'migratenex': {
+				const nexItems = [
+					['Torva full helm (broken)', 'Torva full helm'],
+					['Torva platebody (broken)', 'Torva platebody'],
+					['Torva platelegs (broken)', 'Torva platelegs'],
+					['Torva boots (broken)', 'Torva boots'],
+					['Torva gloves (broken)', 'Torva gloves'],
+					['Pernix cowl (broken)', 'Pernix cowl'],
+					['Pernix body (broken)', 'Pernix body'],
+					['Pernix chaps (broken)', 'Pernix chaps'],
+					['Pernix boots (broken)', 'Pernix boots'],
+					['Pernix gloves (broken)', 'Pernix gloves'],
+					['Virtus mask (broken)', 'Virtus mask'],
+					['Virtus robe top (broken)', 'Virtus robe top'],
+					['Virtus robe legs (broken)', 'Virtus robe legs'],
+					['Virtus boots (broken)', 'Virtus boots'],
+					['Virtus gloves (broken)', 'Virtus gloves']
+				];
+				const res: any[] = await prisma.$queryRawUnsafe(`SELECT id
+FROM users
+WHERE "collectionLogBank"::jsonb ?| array['601', '605', '4272', '758', '759', '432', '709', '2404', '2838', '4273', '788', '983', '2409', '9654', '2423'];`);
+				let IDs = res.map(i => i.id);
+
+				for (const id of IDs) {
+					const user = await client.fetchUser(id).catch(noOp);
+					if (!user) continue;
+					const itemsToAddToTheirCL = new Bank();
+					const cl = user.cl();
+					if (!cl.has('Virtus crystal') && (cl.has('Virtus wand') || cl.has('Virtus book'))) {
+						itemsToAddToTheirCL.add('Virtus crystal', cl.amount('Virtus wand') + cl.amount('Virtus book'));
+					}
+					for (const [brokenItem, normalItem] of nexItems) {
+						if (cl.has(normalItem)) {
+							const quantityToAdd = cl.amount(normalItem) - cl.amount(brokenItem);
+							if (quantityToAdd > 0) {
+								itemsToAddToTheirCL.add(brokenItem, quantityToAdd);
+							}
+						}
+					}
+					console.log(`Adding ${itemsToAddToTheirCL} to ${user.username}`);
+					await user.addItemsToCollectionLog({ items: itemsToAddToTheirCL });
+				}
 			}
 		}
 	}

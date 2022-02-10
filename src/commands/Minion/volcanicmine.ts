@@ -38,7 +38,7 @@ const VolcanicMineShop: { name: string; output: ItemBank; cost: number; clOnly?:
 	{
 		name: 'Mithril ore',
 		output: resolveNameBank({ 'Mithril ore': 1 }),
-		cost: 30
+		cost: 150
 	},
 	{
 		name: 'Adamantite ore',
@@ -90,7 +90,6 @@ export default class extends BotCommand {
 			usage: '[shop] [numberOfGames|quantity:int] [item:...string]',
 			subcommands: true,
 			usageDelim: ' ',
-			cooldown: 3,
 			categoryFlags: ['minion'],
 			aliases: ['vm'],
 			description: 'Participate in games on the Volcanic Mine.',

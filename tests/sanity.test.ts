@@ -1,8 +1,9 @@
-import { Monsters } from 'oldschooljs';
+import { Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import { allPetIDs, masterCapesCL } from '../src/lib/data/CollectionsExport';
 import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../src/lib/data/openables';
+import { itemsToDelete } from '../src/lib/deletedItems';
 import { growablePets } from '../src/lib/growablePets';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';
 import { Ignecarus } from '../src/lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
@@ -91,7 +92,11 @@ describe('Sanity', () => {
 			'Liber tea',
 			'Party music box',
 			'6 sided die',
-			'Huge lamp'
+			'Huge lamp',
+			'Ancient hilt',
+			'Nihil horn',
+			'Zaryte vambraces',
+			'Ancient godsword'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {
@@ -136,11 +141,43 @@ describe('Sanity', () => {
 		);
 		expect(itemID('Red chinchompa')).toEqual(10_034);
 		expect(itemID('Broad arrows')).toEqual(4160);
-
+		expect(itemID('Frozen key')).toEqual(26_356);
 		for (const item of ['Hellfire bow (broken)', 'Hellfire bownana (broken)'].map(getOSItem)) {
 			expect(item.equipable).toEqual(undefined);
 			expect(item.equipable_by_player).toEqual(undefined);
 			expect(item.equipment).toEqual(undefined);
+		}
+	});
+	test('expected IDs', () => {
+		const expectedIDs = [
+			['Torva full helm', 432],
+			['Torva full helm (broken)', 51_000],
+			['Torva platebody', 709],
+			['Torva platelegs', 2404],
+			['Torva boots', 2838],
+			['Torva gloves', 4273],
+			['Torva gloves', 4273],
+			['Pernix boots (broken)', 51_014],
+			['Virtus boots (broken)', 51_009],
+			['Torva boots (broken)', 51_004],
+			['Bandosian components', 26_394],
+			['Masori headdress', 26_217],
+			["Osmumten's fang", 26_219]
+		];
+		for (const [name, id] of expectedIDs) {
+			const idForName = Items.get(name)!.id;
+			const nameForId = Items.get(id)!.name;
+			if (nameForId !== name || idForName !== id) {
+				throw new Error(`Expected ${name}[${id}] to match, instead received: ${nameForId} ${idForName}`);
+			}
+		}
+	});
+	test('deleted items', () => {
+		for (const [id, name] of itemsToDelete) {
+			if (Items.get(name)?.id === id || Items.get(id)) {
+				throw new Error(`Item ${id} ${name} shouldve been deleted.`);
+			}
+			if (allMbTables.includes(id)) throw new Error(`${name} is in box tables`);
 		}
 	});
 });

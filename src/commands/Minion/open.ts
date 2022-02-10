@@ -48,11 +48,9 @@ const itemsThatDontAddToTempCL = resolveItems([
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			aliases: ['clue'],
 			usage: '[quantity:int{1,1000000}] [name:...string]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Opens openable items, like clue caskets, mystery boxes and crystal keys.',
 			examples: ['+open easy', '+open crystal key']
@@ -237,9 +235,9 @@ export default class extends BotCommand {
 
 		if (!botOpenable) {
 			return msg.channel.send(
-				`That's not a valid thing you can open. You can open a clue tier (${ClueTiers.map(
+				`That's not a valid item you can open, you can open a clue casket (${ClueTiers.map(
 					tier => tier.name
-				).join(', ')}), or another non-clue thing (${botOpenables
+				).join(', ')}), or a non-clue item (${botOpenables
 					.map(thing => thing.name)
 					.concat(Openables.map(thing => thing.name))
 					.join(', ')})`

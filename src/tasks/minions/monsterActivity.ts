@@ -1,10 +1,9 @@
-import { calcWhatPercent, randArrItem, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { Emoji } from '../../lib/constants';
-import { frozenKeyPieces } from '../../lib/data/CollectionsExport';
 import { getRandomMysteryBox } from '../../lib/data/openables';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
@@ -45,7 +44,7 @@ export default class extends Task {
 			oriBoost = true;
 			if (duration > Time.Minute * 5) {
 				// Original boost for 5+ minute task:
-				boostedQuantity = Math.ceil(quantity * 1.25);
+				boostedQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
 			} else {
 				// 25% chance at extra kill otherwise:
 				for (let i = 0; i < quantity; i++) {
@@ -93,6 +92,10 @@ export default class extends Task {
 		let masterCapeRolls = user.hasItemEquippedAnywhere('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
+		if (monster.specialLoot) {
+			monster.specialLoot(loot, user, data);
+		}
+
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
@@ -119,14 +122,6 @@ export default class extends Task {
 
 		if (masterCapeRolls > 0) {
 			str += `${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls `;
-		}
-
-		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
-			for (let i = 0; i < quantity; i++) {
-				if (roll(20)) {
-					loot.add(randArrItem(frozenKeyPieces));
-				}
-			}
 		}
 
 		if (monster.id === Monsters.Vorkath.id && roll(6000)) {
@@ -309,7 +304,7 @@ export default class extends Task {
 						if (usingCannon) args.push('cannon');
 						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
 						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
-						return runCommand(res, 'k', args, true);
+						return runCommand({ message: res, commandName: 'k', args, isContinue: true });
 				  },
 			image!,
 			data,

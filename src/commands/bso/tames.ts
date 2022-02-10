@@ -260,7 +260,6 @@ export default class extends BotCommand {
 
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion'],
 			description: 'Use to control and manage your tames.',

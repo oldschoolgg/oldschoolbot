@@ -19,9 +19,7 @@ export function sellPriceOfItem(client: KlasaClient, item: Item) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 3,
 			usage: '(items:TradeableBank)',
-			oneAtTime: true,
 			ironCantUse: true,
 			categoryFlags: ['minion'],
 			description: 'Sells an item to the bot.',

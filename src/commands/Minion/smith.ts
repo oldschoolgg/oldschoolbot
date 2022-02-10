@@ -28,7 +28,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			categoryFlags: ['minion', 'skilling'],
@@ -97,10 +96,10 @@ export default class extends BotCommand {
 
 		// Time to smith an item, add on quarter of a second to account for banking/etc.
 		let timeToSmithSingleBar = smithedItem.timeToUse + Time.Second / 4;
-		if (msg.author.hasItemEquippedAnywhere('Dwarven greathammer')) {
-			timeToSmithSingleBar /= 2;
-		} else if (msg.author.usingPet('Takon')) {
+		if (msg.author.usingPet('Takon')) {
 			timeToSmithSingleBar /= 4;
+		} else if (msg.author.hasItemEquippedAnywhere('Dwarven greathammer')) {
+			timeToSmithSingleBar /= 2;
 		}
 
 		let maxTripLength = msg.author.maxTripLength('Smithing');

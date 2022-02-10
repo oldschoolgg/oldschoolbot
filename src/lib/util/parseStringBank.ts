@@ -80,20 +80,25 @@ export function parseStringBank(str = '', inputBank?: Bank, noDuplicateItems?: t
 export function parseBankFromFlags({
 	bank,
 	flags,
-	excludeItems
+	excludeItems,
+	maxSize
 }: {
 	bank: Bank;
 	flags: Record<string, string>;
 	excludeItems: readonly number[];
+	maxSize?: number;
 }): Bank {
 	const newBank = new Bank();
 	const maxQuantity = Number(flags.qty) || Infinity;
 
 	// Add filterables
 	const flagsKeys = Object.keys(flags);
-	const filter = filterableTypes.find(type => type.aliases.some(alias => flagsKeys.includes(alias)));
+	const filter = filterableTypes.find(type =>
+		type.aliases.some(alias => flagsKeys.some(i => stringMatches(i, alias)))
+	);
 
 	for (const [item, quantity] of bank.items()) {
+		if (maxSize && newBank.length >= maxSize) break;
 		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
 		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
@@ -116,13 +121,25 @@ interface ParseBankOptions {
 	flags?: Record<string, string>;
 	inputStr?: string;
 	excludeItems?: number[];
+	filters?: string[];
+	search?: string;
+	maxSize?: number;
 }
 
-export function parseBank({ inputBank, inputStr, flags = {}, excludeItems = [] }: ParseBankOptions): Bank {
+export function parseBank({
+	inputBank,
+	inputStr,
+	flags = {},
+	excludeItems = [],
+	filters,
+	search,
+	maxSize
+}: ParseBankOptions): Bank {
 	if (inputStr) {
 		let _bank = new Bank();
 		const strItems = parseStringBank(inputStr, inputBank);
 		for (const [item, quantity] of strItems) {
+			if (maxSize && _bank.length >= maxSize) break;
 			_bank.add(
 				item.id,
 				!quantity ? inputBank.amount(item.id) : Math.max(0, Math.min(quantity, inputBank.amount(item.id)))
@@ -131,7 +148,17 @@ export function parseBank({ inputBank, inputStr, flags = {}, excludeItems = [] }
 		return _bank;
 	}
 
-	return parseBankFromFlags({ bank: inputBank, flags, excludeItems });
+	if (filters) {
+		for (const filter of filters) {
+			flags[filter] = filter;
+		}
+	}
+
+	if (search) {
+		flags.search = search;
+	}
+
+	return parseBankFromFlags({ bank: inputBank, flags, excludeItems, maxSize });
 }
 
 function truncateBankToSize(bank: Bank, size: number) {

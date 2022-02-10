@@ -27,8 +27,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' '
 		});
@@ -67,7 +65,9 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const pickpocketable = Pickpocketables.find(npc => stringMatches(npc.name, name));
+		const pickpocketable = Pickpocketables.find(
+			npc => stringMatches(npc.name, name) || npc.alias?.some(alias => stringMatches(alias, name))
+		);
 
 		if (!pickpocketable) {
 			return msg.channel.send(

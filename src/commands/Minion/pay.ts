@@ -10,7 +10,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<user:user> <amount:int{1}>',
 			usageDelim: ' ',
-			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
 			ironCantUse: true,

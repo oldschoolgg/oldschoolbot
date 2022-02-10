@@ -172,9 +172,6 @@ export const dagannothKingsCL = resolveItems([
 	'Seercull',
 	'Mud battlestaff'
 ]);
-export const dagannothRexCL = resolveItems(['Dragon axe', 'Berserker ring', 'Warrior ring', 'Pet dagannoth rex']);
-export const dagannothPrimeCL = resolveItems(['Mud battlestaff', 'Dragon axe', 'Seers ring', 'Pet dagannoth prime']);
-export const dagannothSupremeCL = resolveItems(['Dragon axe', 'Seercull', 'Archers ring', 'Pet dagannoth supreme']);
 export const fightCavesCL = resolveItems(['Tzrek-jad', 'Fire cape']);
 export const theGauntletCL = resolveItems([
 	'Youngllef',
@@ -184,6 +181,33 @@ export const theGauntletCL = resolveItems([
 	'Gauntlet cape'
 ]);
 export const giantMoleCL = resolveItems(['Baby mole', 'Mole skin', 'Mole claw']);
+export const godWarsDungeonCL = resolveItems([
+	'Pet zilyana',
+	'Armadyl crossbow',
+	'Saradomin hilt',
+	'Saradomin sword',
+	"Saradomin's light",
+	"Pet k'ril tsutsaroth",
+	'Staff of the dead',
+	'Zamorakian spear',
+	'Steam battlestaff',
+	'Zamorak hilt',
+	"Pet kree'arra",
+	'Armadyl helmet',
+	'Armadyl chestplate',
+	'Armadyl chainskirt',
+	'Armadyl hilt',
+	'Pet general graardor',
+	'Bandos chestplate',
+	'Bandos tassets',
+	'Bandos boots',
+	'Bandos hilt',
+	...godWarsDungeonGodswordShards,
+	'Frozen key piece (bandos)',
+	'Frozen key piece (saradomin)',
+	'Frozen key piece (zamorak)',
+	'Frozen key piece (armadyl)'
+]);
 export const grotesqueGuardiansCL = resolveItems([
 	'Noon',
 	'Black tourmaline core',
@@ -1158,22 +1182,12 @@ export const hallowedSepulchreCL = resolveItems([
 	'Dark dye',
 	'Dark acorn',
 	'Strange old lockpick',
-	'Ring of endurance (uncharged)'
-	// Not coded in the bot
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// None of the items below are in the official log
-	// 'Dark graceful hood',
-	// 'Dark graceful top',
-	// 'Dark graceful legs',
-	// 'Dark graceful boots',
-	// 'Dark graceful gloves',
-	// 'Dark graceful cape',
-	// 'Giant squirrel',
-	// 'Dark squirrel'
+	'Ring of endurance (uncharged)',
+	'Mysterious page 1',
+	'Mysterious page 2',
+	'Mysterious page 3',
+	'Mysterious page 4',
+	'Mysterious page 5'
 ]);
 export const lastManStandingCL = resolveItems([
 	"Deadman's chest",
@@ -1988,6 +2002,27 @@ export const vasaMagusCL = resolveItems([
 	'Magical artifact'
 ]);
 
+export const brokenTorvaOutfit = resolveItems([
+	'Torva full helm (broken)',
+	'Torva platebody (broken)',
+	'Torva platelegs (broken)',
+	'Torva boots (broken)',
+	'Torva gloves (broken)'
+]);
+export const brokenPernixOutfit = resolveItems([
+	'Pernix cowl (broken)',
+	'Pernix body (broken)',
+	'Pernix chaps (broken)',
+	'Pernix boots (broken)',
+	'Pernix gloves (broken)'
+]);
+export const brokenVirtusOutfit = resolveItems([
+	'Virtus mask (broken)',
+	'Virtus robe top (broken)',
+	'Virtus robe legs (broken)',
+	'Virtus boots (broken)',
+	'Virtus gloves (broken)'
+]);
 export const torvaOutfit = resolveItems([
 	'Torva full helm',
 	'Torva platebody',
@@ -2009,16 +2044,18 @@ export const virtusOutfit = resolveItems([
 	'Virtus boots',
 	'Virtus gloves'
 ]);
-export const nexAncientWeapons = resolveItems(['Virtus wand', 'Virtus book', 'Zaryte bow']);
+export const nexAncientWeapons = resolveItems(['Virtus crystal', 'Zaryte bow']);
 
-export const frozenKeyPieces = resolveItems(['Key piece 1', 'Key piece 2', 'Key piece 3', 'Key piece 4']);
-
-export const nexUniqueDrops = [...torvaOutfit, ...pernixOutfit, ...virtusOutfit, ...nexAncientWeapons];
+export const nexUniqueDrops = [
+	...brokenTorvaOutfit,
+	...brokenPernixOutfit,
+	...brokenVirtusOutfit,
+	...nexAncientWeapons
+];
 
 export const nexCL = [
 	...nexUniqueDrops,
-	...frozenKeyPieces,
-	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem'])
+	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem', 'Ancient hilt'])
 ];
 
 export const kalphiteKingCL = resolveItems([
