@@ -161,8 +161,7 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			usage: '[qty:int] [cmd:...string]',
 			examples: ['+lamp 1 dark relic', '+lamp 1 antique lamp 3 agility'],
-			categoryFlags: ['minion'],
-			oneAtTime: true
+			categoryFlags: ['minion']
 		});
 	}
 

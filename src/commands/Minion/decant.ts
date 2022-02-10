@@ -11,10 +11,8 @@ const potions = [...Potions.map(i => i.name)];
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[dose:int{1,4}] <itemname:...string>',
 			usageDelim: ' ',
-			oneAtTime: true,
 			description: 'Allows you to decant potions into 4-doses, or any dosage.',
 			examples: ['+decant prayer potion'],
 			categoryFlags: ['minion']

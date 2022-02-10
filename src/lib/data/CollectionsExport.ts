@@ -167,9 +167,6 @@ export const dagannothKingsCL = resolveItems([
 	'Seercull',
 	'Mud battlestaff'
 ]);
-export const dagannothRexCL = resolveItems(['Dragon axe', 'Berserker ring', 'Warrior ring', 'Pet dagannoth rex']);
-export const dagannothPrimeCL = resolveItems(['Mud battlestaff', 'Dragon axe', 'Seers ring', 'Pet dagannoth prime']);
-export const dagannothSupremeCL = resolveItems(['Dragon axe', 'Seercull', 'Archers ring', 'Pet dagannoth supreme']);
 export const fightCavesCL = resolveItems(['Tzrek-jad', 'Fire cape']);
 export const theGauntletCL = resolveItems([
 	'Youngllef',
@@ -179,6 +176,33 @@ export const theGauntletCL = resolveItems([
 	'Gauntlet cape'
 ]);
 export const giantMoleCL = resolveItems(['Baby mole', 'Mole skin', 'Mole claw']);
+export const godWarsDungeonCL = resolveItems([
+	'Pet zilyana',
+	'Armadyl crossbow',
+	'Saradomin hilt',
+	'Saradomin sword',
+	"Saradomin's light",
+	"Pet k'ril tsutsaroth",
+	'Staff of the dead',
+	'Zamorakian spear',
+	'Steam battlestaff',
+	'Zamorak hilt',
+	"Pet kree'arra",
+	'Armadyl helmet',
+	'Armadyl chestplate',
+	'Armadyl chainskirt',
+	'Armadyl hilt',
+	'Pet general graardor',
+	'Bandos chestplate',
+	'Bandos tassets',
+	'Bandos boots',
+	'Bandos hilt',
+	...godWarsDungeonGodswordShards,
+	'Frozen key piece (bandos)',
+	'Frozen key piece (saradomin)',
+	'Frozen key piece (zamorak)',
+	'Frozen key piece (armadyl)'
+]);
 export const grotesqueGuardiansCL = resolveItems([
 	'Noon',
 	'Black tourmaline core',
@@ -1111,22 +1135,12 @@ export const hallowedSepulchreCL = resolveItems([
 	'Dark dye',
 	'Dark acorn',
 	'Strange old lockpick',
-	'Ring of endurance (uncharged)'
-	// Not coded in the bot
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// None of the items below are in the official log
-	// 'Dark graceful hood',
-	// 'Dark graceful top',
-	// 'Dark graceful legs',
-	// 'Dark graceful boots',
-	// 'Dark graceful gloves',
-	// 'Dark graceful cape',
-	// 'Giant squirrel',
-	// 'Dark squirrel'
+	'Ring of endurance (uncharged)',
+	'Mysterious page 1',
+	'Mysterious page 2',
+	'Mysterious page 3',
+	'Mysterious page 4',
+	'Mysterious page 5'
 ]);
 export const lastManStandingCL = resolveItems([
 	"Deadman's chest",

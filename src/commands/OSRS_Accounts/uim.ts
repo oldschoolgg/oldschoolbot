@@ -7,11 +7,10 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: [],
 			description: 'Shows the stats of a UIM account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			categoryFlags: ['utility'],
 			examples: ['+uim Lajnux']
 		});

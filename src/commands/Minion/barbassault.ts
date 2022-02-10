@@ -94,7 +94,6 @@ const GambleTiers = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',

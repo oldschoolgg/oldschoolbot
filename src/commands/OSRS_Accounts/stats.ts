@@ -6,11 +6,10 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: ['s'],
 			description: 'Shows the stats of a OSRS account',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+s Magnaboy', '+s'],
 			categoryFlags: ['utility']
 		});

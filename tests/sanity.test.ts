@@ -11,5 +11,8 @@ describe('Sanity', () => {
 		expect(itemID('Phoenix')).toEqual(20_693);
 		expect(itemID('Kalphite princess')).toEqual(12_647);
 		expect(itemID('Green phoenix')).toEqual(24_483);
+		expect(itemID('Red chinchompa')).toEqual(10_034);
+		expect(itemID('Broad arrows')).toEqual(4160);
+		expect(itemID('Frozen key')).toEqual(26_356);
 	});
 });

@@ -3,7 +3,6 @@ import { percentChance } from 'e';
 import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { O } from 'ts-toolbelt';
 
 import { projectiles } from '../../lib/constants';
 import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions/blowpipeCommand';
@@ -135,7 +134,7 @@ export default class extends Extendable {
 		});
 	}
 
-	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {
+	public async removeItemsFromBank(this: User, _itemBank: Readonly<ItemBank>) {
 		return this.queueFn(async user => {
 			const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
 

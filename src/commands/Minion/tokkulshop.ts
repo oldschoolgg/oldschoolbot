@@ -4,19 +4,20 @@ import { addBanks, bankHasAllItemsFromBank, removeBankFromBank } from 'oldschool
 
 import TokkulShopItem from '../../lib/data/buyables/tokkulBuyables';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
+import { addToBuyLimitBank, getBuyLimitBank } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
+import { buyLimit } from '../../lib/util/buyLimit';
+import getOSItem from '../../lib/util/getOSItem';
 
 const { TzTokJad } = Monsters;
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			usage: '<buy|sell> [quantity:integer{1,2147483647}] <item:...string>',
+			usage: '<buy|sell> [quantity:integer{1,100000}] <item:...string>',
 			usageDelim: ' ',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			aliases: ['tks'],
 			categoryFlags: ['minion'],
@@ -66,6 +67,7 @@ export default class extends BotCommand {
 
 		if (quantity === undefined) {
 			quantity = type === 'sell' ? userBank[shopInventory.inputItem] : 1;
+			quantity = Math.min(10_000, quantity);
 		}
 
 		let outItems = new Bank();
@@ -76,8 +78,22 @@ export default class extends BotCommand {
 		const tokkulReturn = hasKaramjaDiary ? shopInventory.diaryTokkulReturn : shopInventory.tokkulReturn;
 
 		if (type === 'buy') {
-			inItems.add({ Tokkul: quantity * tokkulCost! });
-			outItems.add({ [shopInventory.inputItem]: quantity });
+			let qty = quantity;
+			let cost = quantity * tokkulCost!;
+			if (shopInventory.buyLimitFactor && shopInventory.tokkulCost) {
+				const { amountToBuy, finalCost } = buyLimit({
+					buyLimitBank: await getBuyLimitBank(msg.author),
+					increaseFactor: shopInventory.buyLimitFactor,
+					itemBeingBought: getOSItem(shopInventory.inputItem),
+					quantityBeingBought: quantity,
+					baseCost: shopInventory.tokkulCost,
+					absoluteLimit: Infinity
+				});
+				qty = amountToBuy;
+				cost = finalCost;
+			}
+			inItems.add({ Tokkul: cost });
+			outItems.add({ [shopInventory.inputItem]: qty });
 		} else {
 			inItems.add({ [shopInventory.inputItem]: quantity });
 			outItems.add({ Tokkul: quantity * tokkulReturn! });
@@ -100,6 +116,8 @@ export default class extends BotCommand {
 			);
 		}
 
+		delete msg.flagArgs.cf;
+		delete msg.flagArgs.confirm;
 		await msg.confirm(
 			`${msg.author}, JalYt, please confirm that you want to ${
 				type === 'buy' ? 'buy' : 'sell'
@@ -110,6 +128,10 @@ export default class extends BotCommand {
 			UserSettings.Bank,
 			addBanks([outItems.bank, removeBankFromBank(userBank, inItems.bank)])
 		);
+
+		if (type === 'buy' && shopInventory.buyLimitFactor && shopInventory.tokkulCost) {
+			await addToBuyLimitBank(msg.author, outItems);
+		}
 
 		return msg.channel.send(`You ${type === 'buy' ? 'bought' : 'sold'} **${items}** for **${tokkul}**.`);
 	}
