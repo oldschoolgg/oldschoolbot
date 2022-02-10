@@ -480,9 +480,14 @@ export default class CollectionLogTask extends Task {
 			this.drawText(ctx, (drawnSoFar = collectionLog.isActivity ? 'Completions: ' : 'Kills: '), 0, 25);
 			let pixelLevel = 25;
 			for (let [type, value] of objectEntries(collectionLog.completions)) {
-				if ( ctx.measureText(drawnSoFar).width + ctx.measureText(` / ${type}: `).width + ctx.measureText(value.toLocaleString()).width >= 225) {
+				if (
+					ctx.measureText(drawnSoFar).width +
+						ctx.measureText(` / ${type}: `).width +
+						ctx.measureText(value.toLocaleString()).width >=
+					225
+				) {
 					pixelLevel += 10;
-					drawnSoFar = "";
+					drawnSoFar = '';
 				}
 				if (type !== 'Default') {
 					if (value === 0) continue;
