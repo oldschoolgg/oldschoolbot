@@ -5,10 +5,12 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { clamp, gaussianRandom } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
 interface LMSGameSimulated {
 	position: number;
@@ -44,7 +46,8 @@ export async function getUsersLMSStats(user: KlasaUser) {
 		averagePosition: aggregations._avg.position ?? 0,
 		highestKillInGame: aggregations._max.kills ?? 0,
 		totalGames: aggregations._count.user_id,
-		gamesWon
+		gamesWon,
+		points: user.settings.get(UserSettings.LMSPoints)
 	};
 }
 
@@ -106,17 +109,9 @@ export default class extends Task {
 			else if (kills >= 3) points += 1;
 		}
 
-		const newUser = await prisma.user.update({
-			data: {
-				lms_points: {
-					increment: points
-				}
-			},
-			where: {
-				id: user.id
-			},
-			select: {
-				lms_points: true
+		const { newUser } = await mahojiUserSettingsUpdate(user, {
+			lms_points: {
+				increment: points
 			}
 		});
 

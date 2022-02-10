@@ -1,9 +1,10 @@
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client } from '../..';
+import { lmsSimCommand } from '../../lib/minions/functions/lmsSimCommand';
 import { MinigameActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -17,6 +18,7 @@ interface LMSBuyable {
 	cost: number | null;
 	quantity?: number;
 	onlyCL?: true;
+	wins?: number;
 }
 
 const LMSBuyables: LMSBuyable[] = [
@@ -81,12 +83,12 @@ const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Lassar teleport'), quantity: 2, cost: 1 },
 	{ item: getOSItem('Target teleport'), cost: 1 },
 	// Capes
-	{ item: getOSItem("Victor's cape (1)"), cost: null },
-	{ item: getOSItem("Victor's cape (10)"), cost: null },
-	{ item: getOSItem("Victor's cape (50)"), cost: null },
-	{ item: getOSItem("Victor's cape (100)"), cost: null },
-	{ item: getOSItem("Victor's cape (500)"), cost: null },
-	{ item: getOSItem("Victor's cape (1000)"), cost: null },
+	{ item: getOSItem("Victor's cape (1)"), cost: null, wins: 1 },
+	{ item: getOSItem("Victor's cape (10)"), cost: null, wins: 10 },
+	{ item: getOSItem("Victor's cape (50)"), cost: null, wins: 50 },
+	{ item: getOSItem("Victor's cape (100)"), cost: null, wins: 100 },
+	{ item: getOSItem("Victor's cape (500)"), cost: null, wins: 500 },
+	{ item: getOSItem("Victor's cape (1000)"), cost: null, wins: 1000 },
 	// Special attacks
 	{ item: getOSItem('Golden armadyl special attack'), cost: 75, onlyCL: true },
 	{ item: getOSItem('Golden saradomin special attack'), cost: 75, onlyCL: true },
@@ -124,10 +126,31 @@ export const lmsCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					required: true,
 					autocomplete: async (value: string) => {
-						return LMSBuyables.filter(i => i.item.name.toLowerCase().includes(value.toLowerCase())).map(
-							i => ({ name: i.item.name, value: i.item.name })
-						);
+						return LMSBuyables.filter(i =>
+							!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({ name: i.item.name, value: i.item.name }));
 					}
+				},
+				{
+					name: 'quantity',
+					description: 'The quantity you want to purchase.',
+					type: ApplicationCommandOptionType.Integer,
+					required: false,
+					min_value: 1,
+					max_value: 1000
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'simulate',
+			description: 'Simulate a Last Man Standing game with your Discord friends.',
+			options: [
+				{
+					name: 'names',
+					description: 'Names. e.g. Magnaboy, Kyra, Alex',
+					required: false,
+					type: ApplicationCommandOptionType.String
 				}
 			]
 		}
@@ -137,18 +160,32 @@ export const lmsCommand: OSBMahojiCommand = {
 		options,
 		interaction,
 		userID
-	}: CommandRunOptions<{ stats?: {}; start?: {}; buy?: { name?: string } }>) => {
+	}: CommandRunOptions<{
+		stats?: {};
+		start?: {};
+		buy?: { name?: string; quantity?: number };
+		simulate?: { names?: string };
+	}>) => {
 		const user = await client.fetchUser(userID.toString());
+		const stats = await getUsersLMSStats(user);
 
 		if (options.stats) {
-			const stats = await getUsersLMSStats(user);
 			return `**Last Man Standing**
 
 **Wins:** ${stats.gamesWon}
-**Average Kills Per Game:** ${stats.averageKills}
-**Average Position:** ${stats.averagePosition}
+**Reward Points:** ${stats.points}
+**Average Kills Per Game:** ${stats.averageKills.toFixed(2)}
+**Average Position:** ${stats.averagePosition.toFixed(2)}
 **Highest Kill Match:** ${stats.highestKillInGame} kills
 **Total Matches:** ${stats.totalGames}`;
+		}
+
+		if (options.simulate) {
+			lmsSimCommand(client.channels.cache.get(channelID.toString()), options.simulate.names);
+			return {
+				content: 'Starting simulation...',
+				flags: MessageFlags.Ephemeral
+			};
 		}
 
 		if (options.buy) {
@@ -156,18 +193,29 @@ export const lmsCommand: OSBMahojiCommand = {
 			if (!itemToBuy) {
 				return "That's not a valid item you can buy.";
 			}
-			const loot = new Bank().add(itemToBuy.item.id, itemToBuy.quantity ?? 1);
+			const quantity = options.buy.quantity ?? 1;
+			const cost = itemToBuy.cost ? itemToBuy.cost * quantity : itemToBuy.cost;
+			if (cost && stats.points < cost) {
+				return `You don't have enough points. ${quantity}x ${itemToBuy.item.name} costs ${cost}, but you have ${stats.points}.`;
+			}
+			if (itemToBuy.wins && stats.gamesWon < itemToBuy.wins) {
+				return `You are not worthy! You need to have won atleast ${itemToBuy.wins} games to buy the ${itemToBuy.item.name}.`;
+			}
+			const loot = new Bank().add(itemToBuy.item.id, quantity * (itemToBuy.quantity ?? 1));
 			await handleMahojiConfirmation(
 				channelID.toString(),
 				userID,
 				interaction,
-				`Are you sure you want to spend ${itemToBuy.cost} points on buying ${loot}.`
+				`Are you sure you want to spend ${cost} points on buying ${loot}?`
 			);
-			if (!itemToBuy.cost) {
+			if (!cost) {
+				await user.addItemsToBank({ items: loot, collectionLog: true });
+				return `You received ${loot}.`;
 			}
-			await mahojiUserSettingsUpdate(user, {
+
+			const { newUser } = await mahojiUserSettingsUpdate(user, {
 				lms_points: {
-					decrement: itemToBuy.cost
+					decrement: cost
 				}
 			});
 			if (itemToBuy.onlyCL) {
@@ -175,7 +223,7 @@ export const lmsCommand: OSBMahojiCommand = {
 			} else {
 				await user.addItemsToBank({ items: loot, collectionLog: true });
 			}
-			return `You spent ${itemToBuy.cost} points to buy ${loot}.`;
+			return `You spent ${cost} points to buy ${loot}. You now have ${newUser.lms_points} LMS points.`;
 		}
 
 		const durationPerGame = Time.Minute * 8;

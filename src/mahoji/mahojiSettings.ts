@@ -11,6 +11,8 @@ import { SILENT_ERROR } from '../lib/constants';
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
 import { prisma } from '../lib/settings/prisma';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { assert } from '../lib/util';
 
 export function mahojiParseNumber({ input }: { input: string | undefined | null }): number | null {
 	if (input === undefined || input === null) return null;
@@ -124,7 +126,9 @@ export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: P
 		}
 	});
 
+	// Patch instead of syncing to avoid another database read.
 	await klasaUser.settings.sync(true);
+	assert(klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points, 'Patched user should match');
 
 	return { newUser };
 }
