@@ -13,7 +13,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			categoryFlags: ['minion', 'skilling', 'minigame'],
 			description: 'Sends your minion to complete the Hallowed Sepulchre.',
 			examples: ['+sepulchre']

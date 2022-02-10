@@ -18,8 +18,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: 'Generates a fake private message from someone.',
 			examples: ['+fakeely Woox Hello'],
-			cooldown: 3,
-			requiredPermissions: ['ATTACH_FILES'],
+			requiredPermissionsForBot: ['ATTACH_FILES'],
 			usage: '(username:string) <message:...str>',
 			usageDelim: ',',
 			categoryFlags: ['fun']

@@ -33,7 +33,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 3,
 			usage: '<member:member>',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Uses a christmas cracker on another player.',
 			examples: ['+cracker @Magnaboy'],

@@ -43,11 +43,16 @@ export default class extends BotCommand {
 					? m.finishDate - m.duration + m.fakeDuration - now
 					: m.finishDate - now;
 				if (isGroupActivity(m)) {
-					return `${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
-						m.users.length
-					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`;
+					return [
+						remainingTime,
+						`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
+							m.users.length
+						} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`
+					];
 				}
 			})
+			.sort((a, b) => (a![0] < b![0] ? -1 : a![0] > b![0] ? 1 : 0))
+			.map(m => m![1])
 			.join('\n');
 		return msg.channel.send(`**Masses in this server:**
 ${massStr}`);

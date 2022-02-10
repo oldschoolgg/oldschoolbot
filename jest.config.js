@@ -13,7 +13,8 @@ module.exports = {
 	setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
 	collectCoverageFrom: [
 		"./src/lib/structures/Gear.ts",
-		"./src/lib/util/parseStringBank.ts"
+		"./src/lib/util/parseStringBank.ts",
+		"./src/lib/util/buyLimit.ts"
 	],
 	coverageThreshold: {
     	global: {

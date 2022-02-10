@@ -8,6 +8,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { updateGPTrackSetting } from '../../lib/util';
+import { logError } from '../../lib/util/logError';
 
 interface Button {
 	name: string;
@@ -67,7 +68,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<amount:int{1000000,3000000000}>',
-			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true,
 			aliases: ['lp']
@@ -170,7 +170,7 @@ export default class extends BotCommand {
 			try {
 				await finalize({ button: pickedButton, interaction });
 			} catch (err) {
-				console.error(err);
+				logError(err);
 			}
 		});
 

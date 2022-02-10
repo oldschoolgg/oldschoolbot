@@ -1676,9 +1676,6 @@ const Createables: Createable[] = [
 		}),
 		outputItems: {
 			[itemID('Bottled dragonbreath')]: 1
-		},
-		requiredSkills: {
-			slayer: 62
 		}
 	},
 	{
@@ -1731,6 +1728,31 @@ const Createables: Createable[] = [
 		}),
 		outputItems: {
 			[itemID('Little parasite')]: 1
+		}
+	},
+	{
+		name: 'Strange hallowed tome',
+		inputItems: resolveNameBank({
+			'Mysterious page 1': 1,
+			'Mysterious page 2': 1,
+			'Mysterious page 3': 1,
+			'Mysterious page 4': 1,
+			'Mysterious page 5': 1
+		}),
+		outputItems: {
+			[itemID('Strange hallowed tome')]: 1
+		}
+	},
+	{
+		name: 'Frozen key',
+		inputItems: resolveNameBank({
+			'Frozen key piece (bandos)': 1,
+			'Frozen key piece (saradomin)': 1,
+			'Frozen key piece (zamorak)': 1,
+			'Frozen key piece (armadyl)': 1
+		}),
+		outputItems: {
+			[itemID('Frozen key')]: 1
 		}
 	},
 	...Reverteables,

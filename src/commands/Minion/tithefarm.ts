@@ -14,7 +14,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true
 		});
 	}

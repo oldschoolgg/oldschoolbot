@@ -9,7 +9,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '[hex:string]',
-			cooldown: 3,
 			categoryFlags: ['minion'],
 			description: 'Allows you to set a custom bank background color.',
 			examples: ['+bgcolor #FF0000', '+bgcolor reset'],

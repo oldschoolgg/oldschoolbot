@@ -1,6 +1,5 @@
 import { calcWhatPercent, reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
-import { O } from 'ts-toolbelt';
 
 import { GearSetupType, GearStat, maxDefenceStats, maxOffenceStats, readableStatName } from '../../gear';
 import { inverseOfOffenceStat } from '../../gear/functions/inverseOfStat';
@@ -9,8 +8,8 @@ import { KillableMonster } from '../types';
 const { floor, max } = Math;
 
 export default function calculateMonsterFood(
-	monster: O.Readonly<KillableMonster>,
-	user: O.Readonly<KlasaUser>
+	monster: Readonly<KillableMonster>,
+	user: Readonly<KlasaUser>
 ): [number, string] {
 	let { healAmountNeeded, attackStyleToUse, attackStylesUsed } = monster;
 

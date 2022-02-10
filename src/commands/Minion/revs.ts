@@ -4,7 +4,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { Emoji } from '../../lib/constants';
-import { maxOffenceStats } from '../../lib/gear';
+import { maxDefenceStats, maxOffenceStats } from '../../lib/gear';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { KillableMonster } from '../../lib/minions/types';
@@ -169,8 +169,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[style:string] [name:...string]',
 			usageDelim: ' ',
 			description: 'Sends your minion to kill revs. You can add --skull to your message to kill them skulled.'
@@ -235,7 +233,6 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 				`That's not a valid revenant. The valid revenants are: ${revenantMonsters.map(m => m.name).join(', ')}.`
 			);
 		}
-		let debug = [];
 
 		const gear = msg.author.getGear('wildy');
 		const key = ({ melee: 'attack_crush', mage: 'attack_magic', range: 'attack_ranged' } as const)[style];
@@ -250,8 +247,6 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		if (weapon.equipment![key] < 10) {
 			return msg.channel.send("Your weapon is terrible, you can't kill revenants.");
 		}
-
-		debug.push(`${gearStat} ${key} out of max ${maxOffenceStats[key]}`);
 
 		let timePerMonster = monster.timeToFinish;
 		timePerMonster = reduceNumByPercent(timePerMonster, gearPercent / 4);
@@ -288,7 +283,10 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 		let deathChanceFromDefenceLevel = (100 - (defLvl === 99 ? 100 : defLvl)) / 4;
 		deathChance += deathChanceFromDefenceLevel;
 
-		const defensiveGearPercent = Math.max(0, calcWhatPercent(gear.getStats().defence_magic, maxOffenceStats[key]));
+		const defensiveGearPercent = Math.max(
+			0,
+			calcWhatPercent(gear.getStats().defence_magic, maxDefenceStats['defence_magic'])
+		);
 		let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 		deathChance += deathChanceFromGear;
 
@@ -309,7 +307,7 @@ Skulled: \`${skulled}\` - You can choose to go skulled into the Revenants cave. 
 
 		let response = `${msg.author.minionName} is now killing ${quantity}x ${
 			monster.name
-		}, it'll take around ${formatDuration(duration)} to finish. ${debug.join(', ')}
+		}, it'll take around ${formatDuration(duration)} to finish.
 ${Emoji.OSRSSkull} ${skulled ? 'Skulled' : 'Unskulled'}
 **Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(2)}% from magic def${
 			deathChanceFromDefenceLevel > 0 ? `, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level` : ''

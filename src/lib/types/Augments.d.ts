@@ -1,4 +1,4 @@
-import { ActivityTypeEnum, PlayerOwnedHouse } from '@prisma/client';
+import { activity_type_enum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
@@ -58,7 +58,6 @@ declare module 'klasa' {
 
 	interface Command {
 		altProtection?: boolean;
-		oneAtTime?: boolean;
 		guildOnly?: boolean;
 		perkTier?: number;
 		ironCantUse?: boolean;
@@ -101,10 +100,9 @@ declare module 'klasa' {
 	}
 }
 
-declare module 'discord-api-types/v8' {
+declare module 'discord.js/node_modules/discord-api-types/v8' {
 	type Snowflake = string;
 }
-
 type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
 
 declare module 'discord.js' {
@@ -247,7 +245,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: ActivityTypeEnum): number;
+		maxTripLength(activity?: activity_type_enum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;

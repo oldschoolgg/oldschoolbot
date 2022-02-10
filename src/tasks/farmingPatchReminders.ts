@@ -10,6 +10,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import Farming from '../lib/skilling/skills/farming';
 import { stringMatches } from '../lib/util';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { logError } from '../lib/util/logError';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -97,7 +98,12 @@ export default class extends Task {
 							}
 							if (selection.customID === 'HARVEST') {
 								message.author = user;
-								runCommand(message as KlasaMessage, 'farm', [planted.name]);
+								runCommand({
+									message: message as KlasaMessage,
+									commandName: 'farm',
+									args: [planted.name],
+									bypassInhibitors: true
+								});
 							}
 						} catch {
 							message.edit({ components: [] });
@@ -105,7 +111,7 @@ export default class extends Task {
 					}
 				}
 			} catch (err) {
-				console.error(err);
+				logError(err);
 			} finally {
 				this.client.__farmingPatchReminders = setTimeout(ticker, Number(Time.Minute));
 			}

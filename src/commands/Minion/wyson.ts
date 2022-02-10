@@ -30,8 +30,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[quantity:int{1}] <itemName:...string>',
 			usageDelim: ' ',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			description: 'Allows you to exchange mole parts for Nest boxes.',
 			examples: ['+wyson mole skin', '+wyson 100 mole claw'],
