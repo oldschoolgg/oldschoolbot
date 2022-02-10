@@ -1,9 +1,10 @@
 import { MessageButton } from 'discord.js';
-import { Command, KlasaMessage } from 'klasa';
+import { KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS } from '../config';
+import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
@@ -244,13 +245,6 @@ export const enum Events {
 	EconomyLog = 'economyLog'
 }
 
-export const enum PermissionLevelsEnum {
-	Zero = 0,
-	Moderator = 6,
-	Admin = 7,
-	Owner = 10
-}
-
 export const rootFolder = join(__dirname, '..', '..', '..');
 
 export const COINS_ID = 995;
@@ -465,18 +459,23 @@ export const projectiles: Record<ProjectileType, number[]> = {
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: Command, args: any[]) {
+export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
+	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && subs.includes(args[0])) {
+		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
 			return false;
 		}
 	}
 	return true;
 }
-export function getCommandArgs(command: Command, args: any[]) {
-	if (args.length === 0) return undefined;
-	if (command.name === 'bank') return undefined;
-	if (command.name === 'rp' && ['c'].includes(args[0])) return undefined;
-	if (command.name === 'eval') return undefined;
-	return args;
-}
+
+export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
+	msg: KlasaMessage
+) => `This command you're trying to use, has been changed to a 'slash command'.
+
+- Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
+- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used too though.
+- You no longer use this command using \`${msg.cmdPrefix}${msg.command?.name}\`, now you use: \`/${msg.command?.name}\`
+`;
+
+export const DISABLED_COMMANDS = new Set<string>();

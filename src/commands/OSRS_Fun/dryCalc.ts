@@ -6,7 +6,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			description: 'Calculates the drop chance of getting an item within a set amount of rolls.',
 			usage: '<dropRate:int{1,10000000}> <rolls:int{1,1000000}>',
 			usageDelim: ' ',

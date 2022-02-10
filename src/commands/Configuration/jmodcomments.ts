@@ -13,7 +13,7 @@ export default class extends BotCommand {
 			enabled: true,
 			runIn: ['text'],
 			usage: '<on|off>',
-			permissionLevel: 7,
+			requiredPermissionsForUser: ['BAN_MEMBERS'],
 			description: 'Sends all reddit comments and posts made by OSRS Jmods to your channel.',
 			examples: ['+jmodcomments on', '+jmodcomments off'],
 			categoryFlags: ['settings']

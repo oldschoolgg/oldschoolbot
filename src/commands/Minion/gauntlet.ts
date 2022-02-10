@@ -51,8 +51,6 @@ const corruptedRequirements = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 3,
-			oneAtTime: true,
 			usage: '<corrupted|normal> [quantity:int{1,100}]',
 			usageDelim: ' '
 		});

@@ -13,5 +13,6 @@ describe('Sanity', () => {
 		expect(itemID('Green phoenix')).toEqual(24_483);
 		expect(itemID('Red chinchompa')).toEqual(10_034);
 		expect(itemID('Broad arrows')).toEqual(4160);
+		expect(itemID('Frozen key')).toEqual(26_356);
 	});
 });

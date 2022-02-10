@@ -115,6 +115,7 @@ model ClientStorage {
   tob_cost                     Json     @default("{}") @db.Json
   tob_loot                     Json     @default("{}") @db.Json
   degraded_items_cost          Json     @default("{}") @db.Json
+  disabled_commands            String[] @db.VarChar(32)
 
   @@map("clientStorage")
 }
@@ -483,6 +484,15 @@ model LootTrack {
 
   @@id([id, type])
   @@map("loot_track")
+}
+
+model EconomyItem {
+  item_id  Int
+  quantity BigInt
+  date     DateTime @default(now())
+
+  @@id([item_id, date])
+  @@map("economy_item")
 }
 
 enum command_usage_status {

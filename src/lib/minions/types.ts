@@ -1,5 +1,5 @@
 import { Image } from 'canvas';
-import { KlasaMessage } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
@@ -14,6 +14,7 @@ import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
+import { MonsterActivityTaskOptions } from '../types/minions';
 import { CombatOptionsEnum } from './data/combatConstants';
 import { AttackStyles } from './functions';
 
@@ -104,6 +105,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
+	specialLoot?: (loot: Bank, user: KlasaUser, data: MonsterActivityTaskOptions) => Promise<void>;
 }
 /*
  * Monsters will have an array of Consumables
