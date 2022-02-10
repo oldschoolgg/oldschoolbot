@@ -180,13 +180,7 @@ export const allCollectionLogs: ICollection = {
 					'dagannoth kings',
 					'kings',
 					'dagga',
-					'dks',
-					'prime',
-					'rex',
-					'supreme',
-					'dagannoth rex',
-					'dagannoth supreme',
-					'dagannoth prime'
+					'dks'
 				],
 				kcActivity: {
 					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name],
