@@ -185,8 +185,8 @@ export async function runCommand({
 		});
 
 		if (inhibitedReason) {
-			if (inhibitedReason === 'NO_RESPONSE') return;
-			return message.channel.send(inhibitedReason);
+			if (inhibitedReason.silent) return;
+			return message.channel.send(inhibitedReason.reason);
 		}
 
 		if (mahojiCommand) {
