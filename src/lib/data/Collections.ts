@@ -176,18 +176,7 @@ export const allCollectionLogs: ICollection = {
 				items: crazyArchaeologistCL
 			},
 			'Dagannoth Kings': {
-				alias: [
-					'dagannoth kings',
-					'kings',
-					'dagga',
-					'dks',
-					'prime',
-					'rex',
-					'supreme',
-					'dagannoth rex',
-					'dagannoth supreme',
-					'dagannoth prime'
-				],
+				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
 				kcActivity: {
 					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name],
 					Rex: Monsters.DagannothRex.name,
