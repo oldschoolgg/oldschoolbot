@@ -305,4 +305,3 @@ export const lmsCreatables: Createable[] = [
 		outputItems: resolveNameBank({ 'Rune pouch': 1 })
 	}
 ];
-console.log(lmsCreatables.map(i => i.name).join(', '));
