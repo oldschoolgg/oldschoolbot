@@ -47,6 +47,7 @@ interface Inhibitor {
 		member: GuildMember | null;
 	}) => Promise<false | string>;
 	canBeDisabled: boolean;
+	silent?: true;
 }
 
 const inhibitors: Inhibitor[] = [
@@ -72,7 +73,8 @@ const inhibitors: Inhibitor[] = [
 			}
 			return false;
 		},
-		canBeDisabled: false
+		canBeDisabled: false,
+		silent: true
 	},
 	{
 		name: 'altProtection',
@@ -147,7 +149,8 @@ const inhibitors: Inhibitor[] = [
 
 			return "You cannot use commands in the general channel unless you're a patron";
 		},
-		canBeDisabled: false
+		canBeDisabled: false,
+		silent: true
 	},
 	{
 		name: 'guildOnly',
@@ -189,7 +192,8 @@ const inhibitors: Inhibitor[] = [
 
 			return false;
 		},
-		canBeDisabled: false
+		canBeDisabled: false,
+		silent: true
 	},
 	{
 		name: 'perkTierCommands',
@@ -218,7 +222,8 @@ const inhibitors: Inhibitor[] = [
 			}
 			return false;
 		},
-		canBeDisabled: false
+		canBeDisabled: false,
+		silent: true
 	},
 	{
 		name: 'cooldown',
@@ -289,12 +294,12 @@ export async function runInhibitors({
 	command: AbstractCommand;
 	guild: Guild | null;
 	bypassInhibitors: boolean;
-}) {
-	for (const { run, canBeDisabled } of inhibitors) {
+}): Promise<undefined | { reason: string; silent: boolean }> {
+	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
 		const result = await run({ user, channel, member, command, guild });
 		if (typeof result === 'string') {
-			return result;
+			return { reason: result, silent: Boolean(silent) };
 		}
 	}
 }
