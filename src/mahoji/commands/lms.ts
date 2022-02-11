@@ -226,7 +226,7 @@ export const lmsCommand: OSBMahojiCommand = {
 			return `You spent ${cost} points to buy ${loot}. You now have ${newUser.lms_points} LMS points.`;
 		}
 
-		const durationPerGame = Time.Minute * 8;
+		const durationPerGame = Time.Minute * 5.5;
 		const quantity = Math.floor(user.maxTripLength('LastManStanding') / durationPerGame);
 		const duration = randomVariation(quantity * durationPerGame, 5);
 

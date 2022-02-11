@@ -641,3 +641,7 @@ export { cleanString, stringMatches } from './util/cleanString';
 export function clamp(val: number, min: number, max: number) {
 	return Math.min(max, Math.max(min, val));
 }
+
+export function calcPerHour(value: number, duration: number) {
+	return (value / (duration / Time.Minute)) * 60;
+}
