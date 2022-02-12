@@ -38,10 +38,8 @@ export default class extends BotCommand {
 		if (name.toLowerCase() !== 'chaos') {
 			if (name.endsWith('s') || name.endsWith('S')) name = name.slice(0, name.length - 1);
 		}
-		if ( name.toLowerCase().includes('blood') || name.toLowerCase().includes('soul')) {
-			return msg.channel.send(
-				`Blood/Soul runes can be crafted using \`${msg.cmdPrefix}darkaltar blood|soul\`.`
-			);
+		if (name.toLowerCase().includes('blood') || name.toLowerCase().includes('soul')) {
+			return msg.channel.send(`Blood/Soul runes can be crafted using \`${msg.cmdPrefix}darkaltar blood|soul\`.`);
 		}
 		const rune = Runecraft.Runes.find(
 			_rune => stringMatches(_rune.name, name) || stringMatches(_rune.name.split(' ')[0], name)
