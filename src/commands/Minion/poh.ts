@@ -191,9 +191,6 @@ export default class POHCommand extends BotCommand {
 	}
 
 	async mountItem(msg: KlasaMessage, [name]: [string]) {
-		if (1 < 2) {
-			return msg.channel.send('Item mounting is currently disabled.');
-		}
 		const poh = await msg.author.getPOH();
 		if (!name) {
 			return msg.channel.send({ files: [await this.genImage(poh, true)] });
@@ -217,11 +214,10 @@ export default class POHCommand extends BotCommand {
 		}
 		const currItem = poh.mounted_item === 1112 ? null : poh.mounted_item;
 
-		userBank.remove(item.id);
 		if (currItem) {
-			userBank.add(item.id);
+			await msg.author.addItemsToBank({ items: { [currItem]: 1 }, collectionLog: false });
 		}
-		await msg.author.settings.update(UserSettings.Bank, userBank.bank);
+		await msg.author.removeItemsFromBank({ [item.id]: 1, 8788: 2 });
 
 		await prisma.playerOwnedHouse.update({
 			where: {
