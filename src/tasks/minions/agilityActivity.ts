@@ -65,13 +65,13 @@ export default class extends Task {
 		});
 
 		const loot = new Bank();
-		if ( course.marksPer60 ) loot.add('Mark of grace', totalMarks);
+		if (course.marksPer60) loot.add('Mark of grace', totalMarks);
 
 		// Calculate Crystal Shards for Priff
-		if ( course.name === 'Prifddinas Rooftop Course' ) {
+		if (course.name === 'Prifddinas Rooftop Course') {
 			// 15 Shards per hour
-			loot.add('Crystal shard', Math.floor((duration/Time.Hour) * 15))
-		};
+			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		}
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
