@@ -159,7 +159,7 @@ export default class extends BotCommand {
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
-		if (!hasReqs) throw reason;
+		if (!hasReqs) return msg.channel.send(reason ?? "You don't have the requirements to fight this monster");
 
 		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Shayzien, 100);
 		if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
