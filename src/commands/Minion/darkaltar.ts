@@ -56,7 +56,7 @@ export default class extends BotCommand {
 		const [hasSkillReqs, neededReqs] = msg.author.hasSkillReqs(skillReqs);
 		if (!hasSkillReqs) {
 			return msg.channel.send(
-				`You can't craft Blood runes at the Dark Altar, because you don't have these required stats: ${neededReqs}.`
+				`You can't craft runes at the Dark Altar, because you don't have these required stats: ${neededReqs}.`
 			);
 		}
 		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Arceuus, 100);
