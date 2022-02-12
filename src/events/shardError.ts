@@ -1,7 +1,7 @@
-import * as Sentry from '@sentry/node';
 import { Event, EventStore } from 'klasa';
 
 import { Events } from '../lib/constants';
+import { logError } from '../lib/util/logError';
 
 export default class extends Event {
 	public constructor(store: EventStore, file: string[], directory: string) {
@@ -11,7 +11,7 @@ export default class extends Event {
 	}
 
 	async run(error: Error) {
-		Sentry.captureException(error);
+		logError(error);
 		this.client.emit(Events.Log, `Shard Error: ${error.stack ?? error.name}`);
 	}
 }

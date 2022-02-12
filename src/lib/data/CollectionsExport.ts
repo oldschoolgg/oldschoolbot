@@ -197,7 +197,11 @@ export const godWarsDungeonCL = resolveItems([
 	'Bandos tassets',
 	'Bandos boots',
 	'Bandos hilt',
-	...godWarsDungeonGodswordShards
+	...godWarsDungeonGodswordShards,
+	'Frozen key piece (bandos)',
+	'Frozen key piece (saradomin)',
+	'Frozen key piece (zamorak)',
+	'Frozen key piece (armadyl)'
 ]);
 export const grotesqueGuardiansCL = resolveItems([
 	'Noon',

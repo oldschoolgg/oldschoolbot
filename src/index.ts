@@ -12,6 +12,7 @@ import { botToken, CLIENT_ID, DEV_SERVER_ID, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
+import { logError } from './lib/util/logError';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
 import { preCommand } from './mahoji/lib/preCommand';
@@ -31,14 +32,16 @@ export const mahojiClient = new MahojiClient({
 	applicationID: CLIENT_ID,
 	storeDirs: [join('dist', 'mahoji')],
 	handlers: {
-		preCommand: ({ command, interaction }) =>
-			preCommand({
+		preCommand: async ({ command, interaction }) => {
+			const result = await preCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.userID.toString(),
 				guildID: interaction.guildID.toString(),
 				channelID: interaction.channelID.toString(),
 				bypassInhibitors: false
-			}),
+			});
+			return result?.reason;
+		},
 		postCommand: ({ command, interaction, error }) =>
 			postCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
@@ -63,7 +66,10 @@ client.on('raw', async event => {
 
 	if ('error' in result) {
 		if (result.error.message === SILENT_ERROR) return;
-
+		logError(result.error, {
+			user_id: result.interaction.userID.toString(),
+			name: result.interaction.data.interaction.data?.name ?? 'None'
+		});
 		if (result.type === InteractionType.ApplicationCommand) {
 			const ERROR_RESPONSE: SlashCommandResponse = {
 				response: {

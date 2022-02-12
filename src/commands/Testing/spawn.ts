@@ -8,6 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { phosaniBISGear } from '../Minion/nightmare';
 
@@ -76,7 +77,7 @@ export default class extends BotCommand {
 					}
 					return msg.channel.send(str);
 				} catch (err) {
-					console.error(err);
+					logError(err);
 				}
 			}
 		}

@@ -84,14 +84,6 @@ export function toTitleCase(str: string) {
 	return splitStr.join(' ');
 }
 
-export function cleanString(str: string) {
-	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
-}
-
-export function stringMatches(str: string, str2: string) {
-	return cleanString(str) === cleanString(str2);
-}
-
 export function formatDuration(ms: number, short = false) {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -266,9 +258,9 @@ export function countSkillsAtleast99(user: KlasaUser) {
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
-export function getSupportGuild(client: Client) {
+export function getSupportGuild(client: Client): Guild | null {
 	const guild = client.guilds.cache.get(SupportServer);
-	if (!guild) throw "Can't find support guild.";
+	if (!guild) return null;
 	return guild;
 }
 
@@ -632,3 +624,4 @@ export function truncateString(str: string, maxLen: number) {
 export function cleanUsername(str: string) {
 	return Util.escapeMarkdown(stripEmojis(str));
 }
+export { cleanString, stringMatches } from './util/cleanString';

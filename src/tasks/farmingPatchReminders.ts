@@ -10,6 +10,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import Farming from '../lib/skilling/skills/farming';
 import { stringMatches } from '../lib/util';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { logError } from '../lib/util/logError';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -110,7 +111,7 @@ export default class extends Task {
 					}
 				}
 			} catch (err) {
-				console.error(err);
+				logError(err);
 			} finally {
 				this.client.__farmingPatchReminders = setTimeout(ticker, Number(Time.Minute));
 			}
