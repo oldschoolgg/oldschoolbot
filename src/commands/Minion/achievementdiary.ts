@@ -97,6 +97,13 @@ export default class extends BotCommand {
 					thisStr += `- Must Have **${score}** KC of ${mon.name}\n`;
 				}
 			}
+		
+			if (tier.customReq) {
+				const [hasCustomReq, reason] = await tier.customReq(msg.author, true);
+				if (!hasCustomReq) {
+					thisStr += `- Extra Requirements: ${reason}\n`
+				}
+			}
 
 			str += `${thisStr}\n`;
 		}
