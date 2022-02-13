@@ -636,7 +636,11 @@ export default class extends BotCommand {
 		let usedDart = false;
 		if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
 			duration = 1;
-			rangeSetup.weapon = null;
+			if (rangeSetup.weapon.quantity > 1) {
+				rangeSetup.weapon.quantity--;
+			} else {
+				rangeSetup.weapon = null;
+			}
 			await msg.author.settings.update(UserSettings.Gear.Range, rangeSetup);
 			if (monster.name === 'Koschei the deathless') {
 				return msg.channel.send(

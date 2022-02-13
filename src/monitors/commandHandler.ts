@@ -80,8 +80,8 @@ export default class extends Monitor {
 			});
 
 			if (inhibitedReason) {
-				if (inhibitedReason === 'NO_RESPONSE') return;
-				return msg.channel.send(inhibitedReason);
+				if (inhibitedReason.silent) return;
+				return msg.channel.send(inhibitedReason.reason);
 			}
 
 			// @ts-ignore 2341

@@ -281,9 +281,9 @@ export function countSkillsAtleast99(user: KlasaUser) {
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
-export function getSupportGuild(client: Client) {
+export function getSupportGuild(client: Client): Guild | null {
 	const guild = client.guilds.cache.get(SupportServer);
-	if (!guild) throw "Can't find support guild.";
+	if (!guild) return null;
 	return guild;
 }
 
@@ -730,3 +730,11 @@ export function moidLink(items: number[]) {
 	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
 }
 export { cleanString, stringMatches } from './util/cleanString';
+
+export function clamp(val: number, min: number, max: number) {
+	return Math.min(max, Math.max(min, val));
+}
+
+export function calcPerHour(value: number, duration: number) {
+	return (value / (duration / Time.Minute)) * 60;
+}
