@@ -502,6 +502,8 @@ model LastManStandingGame {
   date     DateTime @default(now())
   position Int      @db.SmallInt
   kills    Int      @db.SmallInt
+
+  @@map("lms_games")
 }
 
 enum command_usage_status {
