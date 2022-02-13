@@ -15,9 +15,11 @@ export async function preCommand({
 	guildID: string | null;
 	channelID: string;
 	bypassInhibitors: boolean;
-}): Promise<string | undefined> {
+}): Promise<{ silent: boolean; reason: string } | undefined> {
 	const user = await client.fetchUser(userID);
-	if (user.isBusy && !bypassInhibitors && !client.owners.has(user)) return 'NO_RESPONSE';
+	if (user.isBusy && !bypassInhibitors && !client.owners.has(user)) {
+		return { silent: true, reason: 'You cannot use a command right now.' };
+	}
 	client.oneCommandAtATimeCache.add(userID);
 	const guild = guildID ? client.guilds.cache.get(guildID) : null;
 	const member = guild?.members.cache.get(userID);
@@ -31,7 +33,7 @@ export async function preCommand({
 		bypassInhibitors
 	});
 
-	if (typeof inhibitResult === 'string') {
+	if (inhibitResult !== undefined) {
 		return inhibitResult;
 	}
 }
