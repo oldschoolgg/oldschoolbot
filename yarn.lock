@@ -535,10 +535,10 @@
   resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.1.6.tgz#9e9a7637f4e4e0688fd8b2b5c63133c91607682c"
   integrity sha512-utRNxnd9kSS2qhyivo9lMlt5qgAUasH2gb7BEOn6p0efFh24gjGomHzWKMAPn2hEReOPQZCJaRKoURwRotKucQ==
 
-"@discordjs/collection@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.3.2.tgz#3c271dd8a93dad89b186d330e24dbceaab58424a"
-  integrity sha512-dMjLl60b2DMqObbH1MQZKePgWhsNe49XkKBZ0W5Acl5uVV43SN414i2QfZwRI7dXAqIn8pEWD2+XXQFn9KWxqg==
+"@discordjs/collection@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@discordjs/collection/-/collection-0.4.0.tgz#b6488286a1cc7b41b644d7e6086f25a1c1e6f837"
+  integrity sha512-zmjq+l/rV35kE6zRrwe8BHqV78JvIh2ybJeZavBi5NySjWXqN3hmmAKg7kYMMXSeiWtSsMoZ/+MQi0DiQWy2lw==
 
 "@discordjs/form-data@^3.0.1":
   version "3.0.1"
@@ -564,15 +564,15 @@
     semver "^7.3.5"
     tar "^6.1.8"
 
-"@discordjs/rest@^0.2.0-canary.0":
-  version "0.2.0-canary.0"
-  resolved "https://registry.yarnpkg.com/@discordjs/rest/-/rest-0.2.0-canary.0.tgz#5ac955614453d02808c4df35a5cfb28d146566b2"
-  integrity sha512-jOxz1aqTEzn9N0qaJcZbHz6FbA0oq+vjpXUKkQzgfMihO6gC+kLlpRnFqG25T/aPYbjaR1UM/lGhrGBB1dutqg==
+"@discordjs/rest@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@discordjs/rest/-/rest-0.3.0.tgz#89e06a42b168c91598891d6bf860353e28fba5d2"
+  integrity sha512-F9aeP3odlAlllM1ciBZLdd+adiAyBj4VaZBejj4UMj4afE2wfCkNTGvYYiRxrXUE9fN7e/BuDP2ePl0tVA2m7Q==
   dependencies:
-    "@discordjs/collection" "^0.3.2"
+    "@discordjs/collection" "^0.4.0"
     "@sapphire/async-queue" "^1.1.9"
-    "@sapphire/snowflake" "^3.0.0"
-    discord-api-types "^0.25.2"
+    "@sapphire/snowflake" "^3.0.1"
+    discord-api-types "^0.26.1"
     form-data "^4.0.0"
     node-fetch "^2.6.5"
     tslib "^2.3.1"
@@ -1003,10 +1003,10 @@
     "@sapphire/time-utilities" "^1.4.4"
     "@sapphire/utilities" "^3.0.4"
 
-"@sapphire/snowflake@^3.0.0":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@sapphire/snowflake/-/snowflake-3.0.1.tgz#400602940d1c5dc12f71e104972a1ace7c6c6b74"
-  integrity sha512-v+wCC2q9DK3OhG7Vcdt/8A/INAYiyhlMD5snakmXGBN1usLBwSGJVJBjDHv4VGI5C9YYl4UdW5Ovr3arvYsJXQ==
+"@sapphire/snowflake@^3.0.1":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@sapphire/snowflake/-/snowflake-3.1.0.tgz#1c2d9781d3b1de0bcb02b7079898947ce754d394"
+  integrity sha512-K+OiqXSx4clIaXcoaghrCV56zsm3bZZ5SBpgJkgvAKegFFdETMntHviUfypjt8xVleIuDaNyQA4APOIl3BMcxg==
 
 "@sapphire/time-utilities@^1.4.4":
   version "1.4.4"
@@ -2206,7 +2206,7 @@ discord-api-types@^0.25.2:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.25.2.tgz#e50ed152e6d48fe7963f5de1002ca6f2df57c61b"
   integrity sha512-O243LXxb5gLLxubu5zgoppYQuolapGVWPw3ll0acN0+O8TnPUE2kFp9Bt3sTRYodw8xFIknOVxjSeyWYBpVcEQ==
 
-discord-api-types@^0.26.0:
+discord-api-types@^0.26.0, discord-api-types@^0.26.1:
   version "0.26.1"
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.26.1.tgz#726f766ddc37d60da95740991d22cb6ef2ed787b"
   integrity sha512-T5PdMQ+Y1MEECYMV5wmyi9VEYPagEDEi4S0amgsszpWY0VB9JJ/hEvM6BgLhbdnKky4gfmZEXtEEtojN8ZKJQQ==
@@ -4192,12 +4192,12 @@ lru_map@^0.3.3:
   resolved "https://registry.yarnpkg.com/lru_map/-/lru_map-0.3.3.tgz#b5c8351b9464cbd750335a79650a0ec0e56118dd"
   integrity sha1-tcg1G5Rky9dQM1p5ZQoOwOVhGN0=
 
-mahoji@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.3.tgz#bcd8c2d14d1b3a29bc46d7178d7cb0e317da7e71"
-  integrity sha512-AwK+MNwjutbbw9U1mmg0DX2LgeYt76AuBixiSEVDesvs8YFAxPbzYJ39caDrRRIXx0yRn4Z5rsfbnTqN+U+GfA==
+mahoji@^0.0.42:
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.42.tgz#9aa1fbd287e2234d69b9eeba4029dd135ef42b8e"
+  integrity sha512-by09W0LLXjL3sCreC6kUc+8HBg2/zpjaphxrbdxiRsqF3A1sKFSd5i/xPnM9b/BiRf3vcaTKfPMDtg3LMDAz4A==
   dependencies:
-    "@discordjs/rest" "^0.2.0-canary.0"
+    "@discordjs/rest" "^0.3.0"
     fastify "^3.21.0"
     form-data "^4.0.0"
     node-fetch "^2.6.3"
