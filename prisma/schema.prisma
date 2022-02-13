@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Activity {
-  id             Int                @default(autoincrement())
+  id             Int                @id @unique @default(autoincrement())
   user_id        BigInt
   start_date     DateTime           @db.Timestamp(6)
   finish_date    DateTime           @db.Timestamp(6)
@@ -20,7 +20,6 @@ model Activity {
   data           Json               @db.Json
 
 
-  @@id([id, user_id, channel_id], map: "PK_2c70277d97a802ada5b408873b6")
   @@index([group_activity], map: "IDX_73e0d6954aecafe0383b77d390")
   @@index([completed], map: "IDX_d71ac68a9d4b4245287caab788")
   @@map("activity")
