@@ -4,6 +4,7 @@ import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 import { getGuildSettings, syncNewUserUsername } from '../lib/settings/settings';
 import { GuildSettings } from '../lib/settings/types/GuildSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
+import { logError } from '../lib/util/logError';
 import { postCommand } from '../mahoji/lib/postCommand';
 import { preCommand } from '../mahoji/lib/preCommand';
 import { convertKlasaCommandToAbstractCommand } from '../mahoji/lib/util';
@@ -97,16 +98,20 @@ export default class extends Monitor {
 		} catch (err) {
 			error = err as Error | string;
 		} finally {
-			await postCommand({
-				abstractCommand,
-				userID,
-				guildID,
-				channelID,
-				error,
-				args: msg.args,
-				msg,
-				isContinue: false
-			});
+			try {
+				await postCommand({
+					abstractCommand,
+					userID,
+					guildID,
+					channelID,
+					error,
+					args: msg.args,
+					msg,
+					isContinue: false
+				});
+			} catch (err) {
+				logError(err);
+			}
 		}
 
 		return response;
