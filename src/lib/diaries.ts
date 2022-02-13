@@ -478,7 +478,7 @@ export const FaladorDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)']),
 		customReq: async (user, summary) => {
-			if ( summary ) return [false, 'Quest point cape or Skill cape.']
+			if (summary) return [false, 'Quest point cape or Skill cape.'];
 			const userBank = user.bank();
 			if (userBank.has('Quest point cape') && user.settings.get(UserSettings.QP) >= MAX_QP) return [true];
 			for (const cape of Skillcapes) {
@@ -650,7 +650,7 @@ export const KandarinDiary: Diary = {
 		},
 		collectionLogReqs: resolveItems(['Grimy dwarf weed', 'Shark']),
 		customReq: async (user, summary) => {
-			if ( summary ) return [false, 'Barbarian Assault Honour Level of 5.']
+			if (summary) return [false, 'Barbarian Assault Honour Level of 5.'];
 			const honourLevel = user.settings.get(UserSettings.HonourLevel);
 			if (honourLevel < 5) {
 				return [false, 'your Barbarian Assault Honour Level is less than 5'];
