@@ -87,7 +87,7 @@ GROUP BY item_id;`);
 		for (const type of ['comment', 'submission'] as const) {
 			const utcTime = Math.floor((Date.now() - Time.Minute * redditGranularity) / 1000);
 
-			const url = `https://api.pushshift.io/reddit/search/${type}/?subreddit=test&size=10&author=Magnaboy&after=${utcTime}`; // `https://api.pushshift.io/reddit/search/${type}/?subreddit=2007scape&size=10&author_flair_text=:jagexmod:&after=${utcTime}`;
+			const url = `https://api.pushshift.io/reddit/search/${type}/?subreddit=2007scape&size=10&author_flair_text=:jagexmod:&after=${utcTime}`;
 			try {
 				const _result = await fetch(url).then(res => res.json());
 				if (!_result || !_result.data || !Array.isArray(_result.data)) continue;
