@@ -64,6 +64,7 @@ export default class extends BotCommand {
 		bank.add('Zamorakian spear');
 		bank.add('Dragon warhammer');
 		bank.add('Bandos godsword');
+		await msg.author.getPOH();
 		await prisma.playerOwnedHouse.update({
 			where: {
 				user_id: msg.author.id

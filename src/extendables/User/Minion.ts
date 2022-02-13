@@ -690,6 +690,13 @@ export default class extends Extendable {
 			case 'TearsOfGuthix': {
 				return `${this.minionName} is currently doing Tears Of Guthix. ${formattedDuration}`;
 			}
+			case 'LastManStanding': {
+				const data = currentTask as MinigameActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				} Last Man Standing matches, the trip should take ${formatDuration(durationRemaining)}.`;
+			}
 		}
 	}
 

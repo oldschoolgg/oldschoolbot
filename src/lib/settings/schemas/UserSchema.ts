@@ -190,6 +190,7 @@ Client.defaultUserSchema
 	.add('monkeys_fought', 'string', { array: true, default: [] })
 	.add('tob_cost', 'any', { default: {} })
 	.add('tob_loot', 'any', { default: {} })
+	.add('lms_points', 'integer', { default: 0 })
 
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });

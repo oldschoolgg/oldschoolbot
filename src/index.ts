@@ -33,14 +33,16 @@ export const mahojiClient = new MahojiClient({
 	applicationID: CLIENT_ID,
 	storeDirs: [join('dist', 'mahoji')],
 	handlers: {
-		preCommand: ({ command, interaction }) =>
-			preCommand({
+		preCommand: async ({ command, interaction }) => {
+			const result = await preCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.userID.toString(),
 				guildID: interaction.guildID.toString(),
 				channelID: interaction.channelID.toString(),
 				bypassInhibitors: false
-			}),
+			});
+			return result?.reason;
+		},
 		postCommand: ({ command, interaction, error }) =>
 			postCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),

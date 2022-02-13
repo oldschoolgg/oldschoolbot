@@ -49,7 +49,11 @@ export class OldSchoolBotClient extends Client {
 		promises.push(syncActivityCache());
 		promises.push(
 			...startupScripts.map(query =>
-				prisma.$queryRawUnsafe(query).catch(err => logError(`Startup script failed: ${err.message} ${query}`))
+				prisma
+					.$queryRawUnsafe(query.sql)
+					.catch(err =>
+						query.ignoreErrors ? null : logError(`Startup script failed: ${err.message} ${query}`)
+					)
 			)
 		);
 		await Promise.all(promises);

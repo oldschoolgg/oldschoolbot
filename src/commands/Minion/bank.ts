@@ -71,7 +71,8 @@ export default class extends BotCommand {
 		const bank = parseBank({
 			inputBank: baseBank,
 			flags: msg.flagArgs,
-			inputStr: itemNameOrID
+			inputStr: itemNameOrID,
+			user: msg.author
 		});
 
 		if (bank.length === 0) {
@@ -87,7 +88,7 @@ export default class extends BotCommand {
 				const filter = msg.flagArgs.filter
 					? filterableTypes.find(type => type.aliases.some(alias => msg.flagArgs.filter === alias)) ?? null
 					: null;
-				if (filter && !filter.items.includes(item.id)) {
+				if (filter && !filter.items(msg.author).includes(item.id)) {
 					continue;
 				}
 

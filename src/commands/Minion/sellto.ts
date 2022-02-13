@@ -34,7 +34,8 @@ export default class extends BotCommand {
 			usersBank: msg.author.bank(),
 			str: strBankWithPrice ?? '',
 			flags: { ...msg.flagArgs },
-			excludeItems: []
+			excludeItems: [],
+			user: msg.author
 		});
 		bankToSell.filter(i => !isSuperUntradeable(i), true);
 

@@ -49,6 +49,7 @@ async function _setup(
 
 	const reactionAwaiter = () =>
 		new Promise<KlasaUser[]>(async (resolve, reject) => {
+			let partyCancelled = false;
 			const collector = new CustomReactionCollector(confirmMessage, {
 				time: 120_000,
 				max: options.maxSize,
@@ -94,7 +95,7 @@ async function _setup(
 			});
 
 			function startTrip() {
-				if (usersWhoConfirmed.length < options.minSize) {
+				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
 					msg.channel.send(
 						`${msg.author} Not enough people joined your ${options.party ? 'party' : 'mass'}!`
 					);
@@ -126,7 +127,12 @@ async function _setup(
 
 					case ReactionEmoji.Stop: {
 						if (user === options.leader) {
-							reject(`The leader (${options.leader.username}) cancelled this mass!`);
+							partyCancelled = true;
+							reject(
+								`The leader (${options.leader.username}) cancelled this ${
+									options.party ? 'party' : 'mass'
+								}!`
+							);
 							collector.stop('partyCreatorEnd');
 						}
 						break;
