@@ -532,8 +532,8 @@ const Potions: Mixable[] = [
 			'Crystal Dust': 10,
 			'Saradomin Brew (4)': 1
 		}),
-		tickRate: 10,
-		bankTimePerPotion: 0.5
+		tickRate: 2,
+		bankTimePerPotion: 0.3
 	},
 	{
 		name: 'Enhanced Super Restore',
@@ -546,8 +546,8 @@ const Potions: Mixable[] = [
 			'Crystal Dust': 10,
 			'Super Restore (4)': 1
 		}),
-		tickRate: 10,
-		bankTimePerPotion: 0.5
+		tickRate: 2,
+		bankTimePerPotion: 0.3
 	},
 	{
 		name: 'Enhanced Stamina Potion',
@@ -560,8 +560,8 @@ const Potions: Mixable[] = [
 			'Crystal Dust': 10,
 			'Stamina Potion (4)': 1
 		}),
-		tickRate: 10,
-		bankTimePerPotion: 0.5
+		tickRate: 2,
+		bankTimePerPotion: 0.3
 	},
 	{
 		name: 'Enhanced Divine Water',
@@ -574,8 +574,8 @@ const Potions: Mixable[] = [
 			'Crystal Dust': 10,
 			'Divine Water': 1
 		}),
-		tickRate: 10,
-		bankTimePerPotion: 0.5
+		tickRate: 2,
+		bankTimePerPotion: 0.3
 	}
 ];
 
