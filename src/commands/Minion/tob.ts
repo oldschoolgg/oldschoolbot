@@ -26,7 +26,7 @@ import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob'
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MakePartyOptions } from '../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../lib/types/minions';
-import { calcDropRatesFromBank, formatDuration, toKMB, updateBankSetting } from '../../lib/util';
+import { calcDropRatesFromBank, clamp, formatDuration, toKMB, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { generateChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
@@ -255,8 +255,8 @@ export default class extends BotCommand {
 
 		let maxSize = 5;
 		let maxSizeInput = input ? parseInt(input) : null;
-		if (maxSizeInput && maxSizeInput > 1 && maxSizeInput <= 5) {
-			maxSize = maxSizeInput;
+		if (maxSizeInput) {
+			maxSize = clamp(maxSizeInput, 2, 5);
 		}
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
