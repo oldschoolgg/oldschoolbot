@@ -52,6 +52,7 @@
 		"table": "^6.8.0",
 		"twit": "^2.2.9",
 		"utf-8-validate": "^5.0.8",
+		"v8-profiler-next": "^1.5.1",
 		"zlib-sync": "^0.1.7"
 	},
 	"devDependencies": {

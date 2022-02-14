@@ -5,10 +5,12 @@ import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } fr
 import { notEmpty, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
+import { writeFile } from 'node:fs/promises';
 import { inspect } from 'node:util';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+import v8Profiler from 'v8-profiler-next';
 
 import { client, mahojiClient } from '..';
 import { CLIENT_ID } from '../config';
@@ -49,6 +51,7 @@ import { allAbstractCommands } from '../mahoji/lib/util';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
+v8Profiler.setGenerateType(1);
 function itemSearch(msg: KlasaMessage, name: string) {
 	const items = Items.filter(i => {
 		if (msg.flagArgs.includes) {
@@ -843,6 +846,31 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
+			}
+			case 'cpuprofile': {
+				if (!input || typeof input !== 'string' || input.length < 2) {
+					return msg.channel.send('Invalid input');
+				}
+				const duration = new Duration(input);
+				if (!duration || duration.offset < Time.Second || duration.offset > Time.Month) {
+					return msg.channel.send('Invalid time');
+				}
+				const title = `${Date.now()}`;
+
+				v8Profiler.startProfiling(title, true);
+				await msg.channel.send(`Profiling for ${formatDuration(duration.offset)}`);
+				setTimeout(() => {
+					const profile = v8Profiler.stopProfiling(title);
+					profile.export(async function (error, result) {
+						if (error) {
+							logError(error);
+							return;
+						}
+						await writeFile(`${title}.cpuprofile`, result!);
+						profile.delete();
+						msg.channel.send('Finished profiling.');
+					});
+				}, duration.offset);
 			}
 		}
 	}

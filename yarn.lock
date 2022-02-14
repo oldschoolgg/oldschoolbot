@@ -4355,7 +4355,7 @@ nan@^2.14.0:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.2.tgz#f5376400695168f4cc694ac9393d0c9585eeea19"
   integrity sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==
 
-nan@^2.15.0:
+nan@^2.14.1, nan@^2.15.0:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
   integrity sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==
@@ -5833,6 +5833,13 @@ v8-compile-cache@^2.0.3:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.3.0.tgz#2de19618c66dc247dcfb6f99338035d8245a2cee"
   integrity sha512-l8lCEmLcLYZh4nbunNZvQCJc5pv7+RCwa8q/LdUx8u7lsWvPDKmpodJAJNwkAhJC//dFY48KuIEmjtd4RViDrA==
+
+v8-profiler-next@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/v8-profiler-next/-/v8-profiler-next-1.5.1.tgz#1238ff00f7c2aebdb971a4fa19e0e933c4282cbb"
+  integrity sha512-7gnfJ3x7zN3gzmVs69OvJBNze5dLCIeY2Necy+IzomWmprSCRsBbCn5GfwAJHkWJxzoex3gyRexxvYGlgR93yg==
+  dependencies:
+    nan "^2.14.1"
 
 v8-to-istanbul@^8.1.0:
   version "8.1.0"
