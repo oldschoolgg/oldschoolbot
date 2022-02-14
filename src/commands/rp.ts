@@ -852,7 +852,7 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					return msg.channel.send('Invalid input');
 				}
 				const duration = new Duration(input);
-				if (!duration || duration.offset < Time.Second || duration.offset > Time.Month) {
+				if (duration.offset < Time.Second || duration.offset > Time.Month) {
 					return msg.channel.send('Invalid time');
 				}
 				const title = `${Date.now()}`;
@@ -861,7 +861,7 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				await msg.channel.send(`Profiling for ${formatDuration(duration.offset)}`);
 				setTimeout(() => {
 					const profile = v8Profiler.stopProfiling(title);
-					profile.export(async function (error, result) {
+					profile.export(async (error, result) => {
 						if (error) {
 							logError(error);
 							return;
