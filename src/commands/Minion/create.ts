@@ -171,8 +171,9 @@ export default class extends BotCommand {
 
 		// Check for any items they cant have 2 of.
 		if (createableItem.cantHaveItems) {
+			const allItemsOwned = msg.author.allItemsOwned();
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
-				const numOwned = msg.author.numOfItemsOwned(parseInt(itemID));
+				const numOwned = allItemsOwned.amount(itemID);
 				if (numOwned >= qty) {
 					return msg.channel.send(
 						`You can't ${cmd} this item, because you have ${new Bank(

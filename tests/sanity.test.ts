@@ -16,4 +16,12 @@ describe('Sanity', () => {
 		expect(itemID('Frozen key')).toEqual(26_356);
 		expect(itemID('Clue box')).toEqual(12_789);
 	});
+	test('casket names', () => {
+		expect(itemID('Reward casket (beginner)')).toEqual(23_245);
+		expect(itemID('Reward casket (easy)')).toEqual(20_546);
+		expect(itemID('Reward casket (medium)')).toEqual(20_545);
+		expect(itemID('Reward casket (hard)')).toEqual(20_544);
+		expect(itemID('Reward casket (elite)')).toEqual(20_543);
+		expect(itemID('Reward casket (master)')).toEqual(19_836);
+	});
 });

@@ -34,23 +34,6 @@ export default class extends Extendable {
 		return bank;
 	}
 
-	public numOfItemsOwned(this: User, itemID: number) {
-		const bank = this.settings.get(UserSettings.Bank);
-
-		let numOwned = 0;
-
-		if (typeof bank[itemID] !== 'undefined') {
-			numOwned += bank[itemID];
-		}
-
-		for (const setup of Object.values(this.rawGear())) {
-			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === itemID);
-			if (thisItemEquipped) numOwned += thisItemEquipped.quantity;
-		}
-
-		return numOwned;
-	}
-
 	public allItemsOwned(this: User): Bank {
 		let totalBank = this.bank({ withGP: true });
 

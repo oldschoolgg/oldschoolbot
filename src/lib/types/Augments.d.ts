@@ -158,11 +158,6 @@ declare module 'discord.js' {
 		totalLevel(returnXP = false): number;
 		toggleBusy(busy: boolean): void;
 		/**
-		 * Returns how many of an item a user owns, checking their bank and all equipped gear.
-		 * @param itemID The item ID.
-		 */
-		numOfItemsOwned(itemID: number): number;
-		/**
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
 		 */

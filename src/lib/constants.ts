@@ -83,7 +83,6 @@ export const enum Emoji {
 	Prayer = '<:prayer:630911040426868746>',
 	Construction = '<:construction:630911040493715476>',
 	Diango = '<:diangoChatHead:678146375300415508>',
-	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
 	QuestIcon = '<:questIcon:690191385907036179>',
 	MinigameIcon = '<:minigameIcon:630400565070921761>',
