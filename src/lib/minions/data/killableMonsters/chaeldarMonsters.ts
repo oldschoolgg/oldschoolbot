@@ -441,6 +441,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
+		itemsRequired: resolveItems(['Boots of stone']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 62
