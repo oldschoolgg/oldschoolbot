@@ -176,7 +176,7 @@ export default class extends BotCommand {
 
 		// Check requirements
 		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
-		if (!hasReqs) throw reason;
+		if (!hasReqs) return msg.channel.send(reason ?? "You don't have the requirements to fight this monster");
 
 		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Shayzien, 100);
 		if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
@@ -537,50 +537,61 @@ export default class extends BotCommand {
 			let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
 			if (monster.wildy) gearToCheck = 'wildy';
 
-			const { foodRemoved, reductions } = await removeFoodFromUser({
-				client: this.client,
-				user: msg.author,
-				totalHealingNeeded: healAmountNeeded * quantity,
-				healPerAction: Math.ceil(healAmountNeeded / quantity),
-				activityName: monster.name,
-				attackStylesUsed: monster.wildy
-					? ['wildy']
-					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced
-			});
+			try {
+				const { foodRemoved, reductions } = await removeFoodFromUser({
+					client: this.client,
+					user: msg.author,
+					totalHealingNeeded: healAmountNeeded * quantity,
+					healPerAction: Math.ceil(healAmountNeeded / quantity),
+					activityName: monster.name,
+					attackStylesUsed: monster.wildy
+						? ['wildy']
+						: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
+					learningPercentage: percentReduced
+				});
 
-			if (foodRemoved.length === 0) {
-				boosts.push('4% for no food');
-				duration = reduceNumByPercent(duration, 4);
-			} else {
-				for (const [item, qty] of foodRemoved.items()) {
-					const eatable = Eatables.find(e => e.id === item.id);
-					if (!eatable) continue;
+				if (foodRemoved.length === 0) {
+					boosts.push('4% for no food');
+					duration = reduceNumByPercent(duration, 4);
+				} else {
+					for (const [item, qty] of foodRemoved.items()) {
+						const eatable = Eatables.find(e => e.id === item.id);
+						if (!eatable) continue;
 
-					const healAmount =
-						typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(msg.author);
-					const amountHealed = qty * healAmount;
-					if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
-					const boost = eatable.pvmBoost;
-					if (boost) {
-						if (boost < 0) {
-							boosts.push(`${boost}% for ${eatable.name}`);
-							duration = increaseNumByPercent(duration, Math.abs(boost));
-						} else {
-							boosts.push(`${boost}% for ${eatable.name}`);
-							duration = reduceNumByPercent(duration, boost);
+						const healAmount =
+							typeof eatable.healAmount === 'number'
+								? eatable.healAmount
+								: eatable.healAmount(msg.author);
+						const amountHealed = qty * healAmount;
+						if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
+						const boost = eatable.pvmBoost;
+						if (boost) {
+							if (boost < 0) {
+								boosts.push(`${boost}% for ${eatable.name}`);
+								duration = increaseNumByPercent(duration, Math.abs(boost));
+							} else {
+								boosts.push(`${boost}% for ${eatable.name}`);
+								duration = reduceNumByPercent(duration, boost);
+							}
 						}
+						break;
 					}
-					break;
+				}
+
+				if (reductions.length > 0) {
+					foodStr += `, ${reductions.join(', ')}`;
+				}
+				totalEconomyCost.add(foodRemoved);
+
+				foodStr += `, **Removed ${foodRemoved}**`;
+			} catch (e: any) {
+				if (typeof e === 'string') {
+					return msg.channel.send(e);
+				}
+				if (e.message) {
+					return msg.channel.send(e.message);
 				}
 			}
-
-			if (reductions.length > 0) {
-				foodStr += `, ${reductions.join(', ')}`;
-			}
-			totalEconomyCost.add(foodRemoved);
-
-			foodStr += `, **Removed ${foodRemoved}**`;
 		}
 
 		const {
