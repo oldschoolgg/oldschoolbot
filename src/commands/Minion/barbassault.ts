@@ -113,7 +113,7 @@ export default class extends BotCommand {
 			)} **Honour Level:** ${msg.author.settings.get(
 				UserSettings.HonourLevel
 			)} **High Gambles:** ${msg.author.settings.get(UserSettings.HighGambles)}\n\n` +
-				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\`, you'll need 2+ people to join to start.` +
+				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\` which needs 2+ people to join to start or use \`${msg.cmdPrefix}ba start solo\` to go alone.` +
 				' We have a BA channel in our server for finding teams: (discord.gg/ob). \n' +
 				"Barbarian Assault works differently in the bot than ingame, there's only 1 role, no waves, and 1 balance of honour points." +
 				`\n\nYou can buy rewards with \`${msg.cmdPrefix}ba buy\`, level up your Honour Level with \`${msg.cmdPrefix}ba level\`.` +
@@ -232,7 +232,7 @@ export default class extends BotCommand {
 	async start(msg: KlasaMessage, [qty = 0, input]: [number, string]) {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 1,
+			minSize: 2,
 			maxSize: 4,
 			ironmanAllowed: true,
 			message: `${msg.author.username} has created a Barbarian Assault party${
