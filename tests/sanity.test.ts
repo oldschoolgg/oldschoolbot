@@ -1,3 +1,5 @@
+import { allOpenables } from '../src/lib/openables';
+import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';
 import itemIsTradeable from '../src/lib/util/itemIsTradeable';
 
@@ -23,5 +25,17 @@ describe('Sanity', () => {
 		expect(itemID('Reward casket (hard)')).toEqual(20_544);
 		expect(itemID('Reward casket (elite)')).toEqual(20_543);
 		expect(itemID('Reward casket (master)')).toEqual(19_836);
+	});
+	test('openables', () => {
+		let ids = new Set();
+		for (const openable of allOpenables) {
+			if (getOSItem(openable.id) !== openable.openedItem) {
+				throw new Error(`${openable.name} doesnt match`);
+			}
+			if (ids.has(openable.id)) {
+				throw new Error(`duplicate id: ${openable.id}`);
+			}
+			ids.add(openable.id);
+		}
 	});
 });
