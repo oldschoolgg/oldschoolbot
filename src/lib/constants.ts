@@ -223,7 +223,8 @@ export const enum Tasks {
 	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity',
 	TearsOfGuthix = 'tearsOfGuthixActivity',
-	ToB = 'tobActivity'
+	ToB = 'tobActivity',
+	LastManStanding = 'lmsActivity'
 }
 
 export enum ActivityGroup {

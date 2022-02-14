@@ -107,11 +107,8 @@ export default class extends BotCommand {
 
 		const storeHarvestablePlant = patchType.lastPlanted;
 		const planted = storeHarvestablePlant
-			? Farming.Plants.find(
-					plants =>
-						stringMatches(plants.name, storeHarvestablePlant) ||
-						stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-			  )
+			? Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
+			  Farming.Plants.find(plants => stringMatches(plants.name.split(' ')[0], storeHarvestablePlant))
 			: null;
 
 		const lastPlantTime: number = patchType.plantTime;

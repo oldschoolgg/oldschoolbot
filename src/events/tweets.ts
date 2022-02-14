@@ -98,28 +98,6 @@ const JMOD_TWITTERS = [
 	'1275458567412150272'
 ];
 
-const STREAMER_TWITTERS = [
-	'3589736181',
-	'1894180640',
-	'184349515',
-	'2307540361',
-	'525302599',
-	'3187663593',
-	'2169865003',
-	'940563176',
-	'1569065179',
-	'2411777869',
-	'3256936132',
-	'3318825773',
-	'2462052530',
-	'803844588100325376',
-	'1634264438',
-	'709141790503211008',
-	'702224459491647488',
-	'868269438394675201',
-	'1307366604'
-];
-
 const HCIM_DEATHS = ['797859891373371392'];
 const HEXIS = ['760605320108310528'];
 const HEXIS_CHANNEL = '626168717004242953';
@@ -197,7 +175,6 @@ export default class extends Event {
 
 		let key: string = '';
 		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
-		else if (STREAMER_TWITTERS.includes(id)) key = 'streamertweets';
 		else if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
 		else if (HEXIS.includes(id)) key = 'hexis';
 		else return;

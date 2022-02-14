@@ -17,6 +17,7 @@ import { Emoji } from '../constants';
 import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
+import { logError } from '../util/logError';
 import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
@@ -185,8 +186,8 @@ export async function runCommand({
 		});
 
 		if (inhibitedReason) {
-			if (inhibitedReason === 'NO_RESPONSE') return;
-			return message.channel.send(inhibitedReason);
+			if (inhibitedReason.silent) return;
+			return message.channel.send(inhibitedReason.reason);
 		}
 
 		if (mahojiCommand) {
@@ -228,16 +229,20 @@ export async function runCommand({
 		}
 		error = err as Error;
 	} finally {
-		await postCommand({
-			abstractCommand,
-			userID: message.author.id,
-			guildID: message.guild?.id ?? null,
-			channelID: message.channel.id,
-			args,
-			error,
-			msg: message,
-			isContinue: isContinue ?? false
-		});
+		try {
+			await postCommand({
+				abstractCommand,
+				userID: message.author.id,
+				guildID: message.guild?.id ?? null,
+				channelID: message.channel.id,
+				args,
+				error,
+				msg: message,
+				isContinue: isContinue ?? false
+			});
+		} catch (err) {
+			logError(err);
+		}
 	}
 
 	return null;

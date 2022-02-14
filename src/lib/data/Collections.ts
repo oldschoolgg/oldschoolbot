@@ -176,18 +176,7 @@ export const allCollectionLogs: ICollection = {
 				items: crazyArchaeologistCL
 			},
 			'Dagannoth Kings': {
-				alias: [
-					'dagannoth kings',
-					'kings',
-					'dagga',
-					'dks',
-					'prime',
-					'rex',
-					'supreme',
-					'dagannoth rex',
-					'dagannoth supreme',
-					'dagannoth prime'
-				],
+				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
 				kcActivity: {
 					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name],
 					Rex: Monsters.DagannothRex.name,
@@ -542,7 +531,11 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Last Man Standing': {
 				items: lastManStandingCL,
-				isActivity: true
+				isActivity: true,
+				kcActivity: {
+					Default: user => user.getMinigameScore('lms')
+				},
+				alias: ['lms']
 			},
 			'Magic Training Arena': {
 				alias: ['mta'],

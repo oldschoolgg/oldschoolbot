@@ -1,12 +1,18 @@
+import { Prisma } from '@prisma/client';
 import { MessageButton, TextChannel } from 'discord.js';
 import { Time } from 'e';
+import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { CommandOption } from 'mahoji/dist/lib/types';
 
+import { client } from '..';
 import { SILENT_ERROR } from '../lib/constants';
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
+import { prisma } from '../lib/settings/prisma';
+import { UserSettings } from '../lib/settings/types/UserSettings';
+import { assert } from '../lib/util';
 
 export function mahojiParseNumber({ input }: { input: string | undefined | null }): number | null {
 	if (input === undefined || input === null) return null;
@@ -41,11 +47,13 @@ export const searchOption: CommandOption = {
 };
 
 export async function handleMahojiConfirmation(
-	channel: TextChannel,
+	channelID: string,
 	userID: bigint,
 	interaction: SlashCommandInteraction,
 	str: string
 ) {
+	const channel = client.channels.cache.get(channelID);
+	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
 	await interaction.deferReply();
 
 	const confirmMessage = await channel.send({
@@ -106,4 +114,21 @@ export async function handleMahojiConfirmation(
 	} catch {
 		return cancel();
 	}
+}
+
+export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
+	const klasaUser = typeof user === 'string' ? await client.fetchUser(user) : user;
+
+	const newUser = await prisma.user.update({
+		data,
+		where: {
+			id: klasaUser.id
+		}
+	});
+
+	// Patch instead of syncing to avoid another database read.
+	await klasaUser.settings.sync(true);
+	assert(klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points, 'Patched user should match');
+
+	return { newUser };
 }
