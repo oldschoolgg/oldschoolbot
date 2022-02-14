@@ -1,8 +1,6 @@
-import { MessageEmbed, User } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 
 import { client } from '../..';
-import { production } from '../../config';
 import { Emoji, shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { cleanMentions } from '../../lib/util';
@@ -46,24 +44,6 @@ export async function handleCommandError({
 					.map(arg => `${arg[0]}[${arg[1]}]`)
 					.join(', ')
 	});
-
-	if (!production) {
-		logError(error);
-		const channel = await (client.owners.values().next().value as User).createDM();
-
-		channel.send({
-			embeds: [
-				new MessageEmbed()
-					.setDescription(
-						`${error.message}
-            
-${error.stack}`
-					)
-					.setColor(0xfc_10_20)
-					.setTimestamp()
-			]
-		});
-	}
 
 	await msg?.channel.send(`An unexpected error occurred ${Emoji.Sad}`);
 }
