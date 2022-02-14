@@ -240,7 +240,7 @@ const RCPouches = [
 ];
 
 const Runecraft = {
-	aliases: ['runecraft', 'runecrafting'],
+	aliases: ['runecraft', 'runecrafting', 'rc'],
 	Runes,
 	id: SkillsEnum.Runecraft,
 	emoji: Emoji.Runecraft,
