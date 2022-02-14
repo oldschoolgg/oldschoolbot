@@ -52,7 +52,7 @@ export class OldSchoolBotClient extends Client {
 				prisma
 					.$queryRawUnsafe(query.sql)
 					.catch(err =>
-						query.ignoreErrors ? null : logError(`Startup script failed: ${err.message} ${query}`)
+						query.ignoreErrors ? null : logError(`Startup script failed: ${err.message} ${query.sql}`)
 					)
 			)
 		);
