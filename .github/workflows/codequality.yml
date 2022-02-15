@@ -42,11 +42,6 @@ jobs:
               with:
                   node-version: 16.14.0
                   cache: yarn
-            - name: Restore CI Cache
-              uses: actions/cache@v1
-              with:
-                  path: node_modules
-                  key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn --frozen-lockfile
             - name: Copy Configuration
