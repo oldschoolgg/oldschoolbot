@@ -82,10 +82,7 @@ declare module 'klasa' {
 			flags: { [key: string]: string | number };
 		}): Promise<MessageOptions | MessageAttachment>;
 	}
-	interface Command {
-		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
-		getStatsEmbed(username: string, color: number, player: Player, key = 'level', showExtra = true): MessageEmbed;
-	}
+
 	interface KlasaMessage {
 		cmdPrefix: string;
 

@@ -45,7 +45,7 @@ export const openCommand: OSBMahojiCommand = {
 		const { openedItem, output } = openable;
 		const user = await client.fetchUser(member.user.id);
 		const bank = user.bank();
-		const quantity = options.quantity ?? bank.amount(openedItem.id);
+		const quantity = options.quantity ?? 1;
 		const cost = new Bank().add(openedItem.id, quantity);
 		if (!bank.has(cost)) return `You don't have ${cost}.`;
 
