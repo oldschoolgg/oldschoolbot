@@ -98,6 +98,13 @@ export default class extends BotCommand {
 				}
 			}
 
+			if (tier.customReq) {
+				const [hasCustomReq, reason] = await tier.customReq(msg.author, true);
+				if (!hasCustomReq) {
+					thisStr += `- Extra Requirements: ${reason}\n`;
+				}
+			}
+
 			str += `${thisStr}\n`;
 		}
 		return msg.channel.send(str);

@@ -354,7 +354,7 @@ export default class BankImageTask extends Task {
 			partial = true;
 			bank.filter(item => {
 				if (searchQuery) return cleanString(item.name).includes(cleanString(searchQuery));
-				return filter!.items.includes(item.id);
+				return filter!.items(user!).includes(item.id);
 			}, true);
 		}
 

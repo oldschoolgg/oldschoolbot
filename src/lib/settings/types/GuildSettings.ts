@@ -13,7 +13,6 @@ export namespace GuildSettings {
 	export const DisabledCommands = T<readonly string[]>('disabledCommands');
 	export const HCIMDeaths = T<string>('hcimdeaths');
 	export const JMODComments = T<string>('jmodComments');
-	export const StreamerTweets = T<string>('streamertweets');
 	export const PetChannel = T<string>('petchannel');
 	export const JModTweets = T<string>('tweetchannel');
 	export const MegaDuckLocation = T<MegaDuckLocation>('mega_duck_location');

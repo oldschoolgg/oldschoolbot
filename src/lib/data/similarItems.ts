@@ -328,7 +328,8 @@ const source: [string, (string | number)[]][] = [
 	[
 		"Beginner's tackle box",
 		['Basic tackle box', 'Standard tackle box', 'Professional tackle box', "Champion's tackle box"]
-	]
+	],
+	['Magic shortbow', ['Magic shortbow (i)']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

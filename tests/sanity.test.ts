@@ -179,5 +179,6 @@ describe('Sanity', () => {
 			}
 			if (allMbTables.includes(id)) throw new Error(`${name} is in box tables`);
 		}
+		expect(itemID('Clue box')).toEqual(12_789);
 	});
 });

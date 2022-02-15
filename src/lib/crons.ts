@@ -3,11 +3,17 @@ import { schedule } from 'node-cron';
 import { prisma } from './settings/prisma';
 
 export function initCrons() {
+	/**
+	 * Reset weekly buy banks
+	 */
 	schedule('0 0 * * 0', async () => {
 		await prisma.$queryRawUnsafe(`UPDATE users
 SET weekly_buy_bank = '{}'::json
 WHERE weekly_buy_bank::text <> '{}'::text;`);
 	});
+	/**
+	 * Capture economy item data
+	 */
 	schedule('0 */6 * * *', async () => {
 		await prisma.$queryRawUnsafe(`INSERT INTO economy_item
 SELECT item_id::integer, SUM(qty)::bigint FROM 
