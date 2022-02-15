@@ -141,6 +141,7 @@ export default class extends Extendable {
 				await user.removeGP(items[995]);
 				delete items[995];
 			}
+			if (Object.keys(items).length === 0) return;
 
 			user.log(`Had items removed from bank - ${JSON.stringify(items)}`);
 			return user.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items));
