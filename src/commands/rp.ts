@@ -96,7 +96,7 @@ async function unsafeEval({
 	code: string;
 	flags: Record<string, string>;
 	msg: KlasaMessage;
-}): Promise<MessageOptions> {
+}): Promise<MessageOptions & { rawOutput: string }> {
 	code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 	const stopwatch = new Stopwatch();
 	let syncTime = '?';
@@ -130,12 +130,13 @@ async function unsafeEval({
 	stopwatch.stop();
 	if (flags.bk || result instanceof Bank) {
 		const image = await client.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
-		return { files: [new MessageAttachment(image.image!)] };
+		return { files: [new MessageAttachment(image.image!)], rawOutput: result };
 	}
 
 	if (Buffer.isBuffer(result)) {
 		return {
-			content: 'The result was a buffer.'
+			content: 'The result was a buffer.',
+			rawOutput: 'Buffer'
 		};
 	}
 
@@ -150,7 +151,8 @@ async function unsafeEval({
 		content: `${codeBlock(Util.escapeCodeBlock(result))}
 **Type:** ${inlineCode(type.toString())}
 **Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
-`
+`,
+		rawOutput: result
 	};
 }
 
@@ -160,14 +162,13 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 			return "You don't have permission to use this command.";
 		}
 		const res = await unsafeEval({ code, flags: msg.flagArgs, msg });
-
 		if ('silent' in msg.flagArgs) return null;
 
 		// Handle too-long-messages
 		if (res.content && res.content.length > 2000) {
-			return {
-				files: [new MessageAttachment(Buffer.from(res.content), 'output.txt')]
-			};
+			return msg.channel.send({
+				files: [new MessageAttachment(Buffer.from(res.rawOutput), 'output.txt')]
+			});
 		}
 
 		// If it's a message that can be sent correctly, send it
