@@ -66,7 +66,7 @@ export default class extends Task {
 				}
 			}
 
-			await user.addItemsToBank(itemLootBank);
+			await user.addItemsToBank({ items: itemLootBank, collectionLog: false });
 
 			return handleTripFinish(
 				this.client,
@@ -81,13 +81,13 @@ export default class extends Task {
 					head: 'mejJal'
 				}),
 				data,
-				itemLootBank.bank
+				itemLootBank
 			);
 		}
 
 		if (diedToJad) {
 			const failBank = new Bank({ [TokkulID]: tokkulReward });
-			await user.addItemsToBank(failBank, true);
+			await user.addItemsToBank({ items: failBank, collectionLog: true });
 
 			const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 46_080, duration });
 			const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_322, duration });
@@ -119,7 +119,7 @@ export default class extends Task {
 					head: 'mejJal'
 				}),
 				data,
-				failBank.bank
+				failBank
 			);
 		}
 
@@ -144,7 +144,7 @@ export default class extends Task {
 			);
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		const rangeXP = await user.addXP({ skillName: SkillsEnum.Ranged, amount: 47_580, duration });
 		const hpXP = await user.addXP({ skillName: SkillsEnum.Hitpoints, amount: 15_860, duration });
@@ -155,7 +155,7 @@ export default class extends Task {
 			const slayerXP = 37_010;
 			const currentStreak = user.settings.get(UserSettings.Slayer.TaskStreak) + 1;
 			user.settings.update(UserSettings.Slayer.TaskStreak, currentStreak);
-			const points = calculateSlayerPoints(currentStreak, usersTask.slayerMaster!);
+			const points = await calculateSlayerPoints(currentStreak, usersTask.slayerMaster!, user);
 			const newPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) + points;
 			await user.settings.update(UserSettings.Slayer.SlayerPoints, newPoints);
 
@@ -188,7 +188,7 @@ export default class extends Task {
 				head: 'mejJal'
 			}),
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

@@ -62,7 +62,12 @@ export default class extends Task {
 					// @ts-ignore
 					res.prompter.flags = flags;
 					user.log(`continued trip of killing ${monster.name}`);
-					return runCommand(res, 'revs', [style, monster.name], true);
+					return runCommand({
+						message: res,
+						commandName: 'revs',
+						args: [style, monster.name],
+						isContinue: true
+					});
 				},
 				image,
 				data,
@@ -82,8 +87,8 @@ export default class extends Task {
 
 		const { clLoot } = filterLootReplace(user.allItemsOwned(), loot);
 
-		const { previousCL, itemsAdded } = await user.addItemsToBank(loot, false);
-		await user.addItemsToCollectionLog(clLoot.bank);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
+		await user.addItemsToCollectionLog({ items: clLoot });
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
@@ -110,7 +115,7 @@ export default class extends Task {
 				// @ts-ignore
 				res.prompter.flags = flags;
 				user.log(`continued trip of killing ${monster.name}`);
-				return runCommand(res, 'revs', [style, monster.name], true);
+				return runCommand({ message: res, commandName: 'revs', args: [style, monster.name], isContinue: true });
 			},
 			image!,
 			data,

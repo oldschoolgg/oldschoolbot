@@ -107,7 +107,7 @@ export interface Cookable {
 	name: string;
 	inputCookables: ItemBank;
 	stopBurnAt: number;
-	stopBurnAtCG: number;
+	stopBurnAtCG?: number;
 	burntCookable: number;
 	alias?: string[];
 }
@@ -141,6 +141,7 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
+	qpRequired?: number;
 }
 
 export interface Craftable {
@@ -189,11 +190,9 @@ export interface Bone {
 	inputId: number;
 }
 
-export type LevelRequirements = Partial<
-	{
-		[key in SkillsEnum]: number;
-	}
->;
+export type LevelRequirements = Partial<{
+	[key in SkillsEnum]: number;
+}>;
 
 export interface Skill {
 	aliases: string[];

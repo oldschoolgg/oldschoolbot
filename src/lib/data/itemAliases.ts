@@ -1,11 +1,12 @@
 import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-
-export function cleanString(str: string): string {
-	return str.replace(/\s/g, '').toUpperCase();
-}
+import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
 function setItemAlias(id: number, name: string | string[], rename = true) {
+	const existingItem = Items.get(id);
+	if (!existingItem) {
+		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
+	}
 	let firstName: string | null = null;
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
@@ -185,6 +186,25 @@ setItemAlias(21_633, 'Ancient wyvern shield');
 setItemAlias(22_003, 'Uncharged dragonfire ward');
 setItemAlias(22_002, 'Dragonfire ward');
 
+// Metamorphs
+setItemAlias(24_555, 'Crystal tangleroot');
+setItemAlias(24_557, 'Dragonfruit tangleroot');
+setItemAlias(24_559, 'Herb tangleroot');
+setItemAlias(24_561, 'White lily tangleroot');
+setItemAlias(24_563, 'Redwood tangleroot');
+setItemAlias(13_324, 'Grey baby chinchompa');
+setItemAlias(13_325, 'Black baby chinchompa');
+setItemAlias(13_326, 'Gold baby chinchompa');
+setItemAlias(24_483, 'Green phoenix');
+setItemAlias(24_484, 'Blue phoenix');
+setItemAlias(24_485, 'White phoenix');
+setItemAlias(24_486, 'Purple phoenix');
+setItemAlias(12_939, 'Magma pet snakeling');
+setItemAlias(12_940, 'Tanzanite pet snakeling');
+setItemAlias(25_842, 'Orange sraracha');
+setItemAlias(25_843, 'Blue sraracha');
+setItemAlias(12_654, 'Airborne kalphite princess');
+
 // Kittens
 setItemAlias(1555, 'Grey and black kitten');
 setItemAlias(1556, 'White kitten');
@@ -200,3 +220,26 @@ setItemAlias(1563, 'Brown cat');
 setItemAlias(1564, 'Black cat');
 setItemAlias(1565, 'Grey and brown cat');
 setItemAlias(1566, 'Grey and blue cat');
+
+// Sepulchre pages
+setItemAlias(24_763, 'Mysterious page 1');
+setItemAlias(24_765, 'Mysterious page 2');
+setItemAlias(24_767, 'Mysterious page 3');
+setItemAlias(24_769, 'Mysterious page 4');
+setItemAlias(24_771, 'Mysterious page 5');
+
+// LMS ornaments
+setItemAlias(24_225, 'Granite maul (ornate handle)');
+setItemAlias(12_848, 'Granite maul (or)');
+setItemAlias(24_227, 'Granite maul (or) (ornate handle)');
+setItemAlias(12_797, 'Dragon pickaxe (upgraded)');
+setItemAlias(12_806, 'Malediction ward (or)');
+setItemAlias(12_807, 'Odium ward (or)');
+setItemAlias(12_765, 'Dark bow (green)');
+setItemAlias(12_766, 'Dark bow (blue)');
+setItemAlias(12_767, 'Dark bow (yellow)');
+setItemAlias(12_768, 'Dark bow (white)');
+setItemAlias(12_796, 'Mystic steam staff (or)');
+setItemAlias(12_795, 'Steam battlestaff (or)');
+setItemAlias(21_200, 'Mystic lava staff (or)');
+setItemAlias(21_198, 'Lava battlestaff (or)');

@@ -65,6 +65,34 @@ const randomEventBuyables: Buyable[] = [
 	}
 ];
 
+const tobCapes: Buyable[] = [
+	{
+		name: 'Sinhaza shroud tier 1',
+		gpCost: 100_000,
+		minigameScoreReq: ['tob', 100]
+	},
+	{
+		name: 'Sinhaza shroud tier 2',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 500]
+	},
+	{
+		name: 'Sinhaza shroud tier 3',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 1000]
+	},
+	{
+		name: 'Sinhaza shroud tier 4',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 1500]
+	},
+	{
+		name: 'Sinhaza shroud tier 5',
+		gpCost: 500_000,
+		minigameScoreReq: ['tob', 2000]
+	}
+];
+
 const cmCapes: Buyable[] = [
 	{
 		name: "Xeric's guard",
@@ -207,12 +235,14 @@ const questBuyables: Buyable[] = [
 			[itemID('Goldsmith gauntlets')]: 1
 		},
 		qpRequired: 25,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 25_000
 	},
 	{
 		name: 'Cooking gauntlets',
 		qpRequired: 25,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 25_000
 	},
 	{
 		name: 'Anti-dragon shield',
@@ -222,37 +252,44 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Hardleather gloves',
 		qpRequired: 5,
-		gpCost: 50_000
+		gpCost: 50_000,
+		ironmanPrice: 65
 	},
 	{
 		name: 'Bronze gloves',
 		qpRequired: 10,
-		gpCost: 100_000
+		gpCost: 100_000,
+		ironmanPrice: 130
 	},
 	{
 		name: 'Iron gloves',
 		qpRequired: 20,
-		gpCost: 200_000
+		gpCost: 200_000,
+		ironmanPrice: 325
 	},
 	{
 		name: 'Steel gloves',
 		qpRequired: 25,
-		gpCost: 300_000
+		gpCost: 300_000,
+		ironmanPrice: 650
 	},
 	{
 		name: 'Black gloves',
 		qpRequired: 35,
-		gpCost: 400_000
+		gpCost: 400_000,
+		ironmanPrice: 1000
 	},
 	{
 		name: 'Mithril gloves',
 		qpRequired: 50,
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 2000
 	},
 	{
 		name: 'Adamant gloves',
 		qpRequired: 65,
-		gpCost: 600_000
+		gpCost: 600_000,
+		ironmanPrice: 3250
 	},
 	{
 		name: 'Rune gloves',
@@ -260,27 +297,32 @@ const questBuyables: Buyable[] = [
 			[itemID('Rune gloves')]: 1
 		},
 		qpRequired: 85,
-		gpCost: 700_000
+		gpCost: 700_000,
+		ironmanPrice: 6500
 	},
 	{
 		name: 'Dragon gloves',
 		qpRequired: 107,
-		gpCost: 850_000
+		gpCost: 850_000,
+		ironmanPrice: 130_000
 	},
 	{
 		name: 'Barrows gloves',
 		qpRequired: 175,
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 130_000
 	},
 	{
 		name: 'Helm of neitiznot',
 		qpRequired: 75,
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 50_000
 	},
 	{
 		name: 'Magic secateurs',
 		qpRequired: 40,
-		gpCost: 2_500_000
+		gpCost: 2_500_000,
+		ironmanPrice: 40_000
 	},
 	{
 		name: "Iban's staff",
@@ -297,7 +339,8 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Mythical cape',
 		gpCost: 1_000_000,
-		qpRequired: 205
+		qpRequired: 205,
+		ironmanPrice: 10_000
 	},
 	{
 		name: 'Mind shield',
@@ -451,22 +494,26 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Warrior helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: 'Berserker helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: 'Archer helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: 'Farseer helm',
 		gpCost: 780_000,
-		qpRequired: 60
+		qpRequired: 60,
+		ironmanPrice: 78_000
 	},
 	{
 		name: "Doctor's hat",
@@ -568,7 +615,8 @@ const questBuyables: Buyable[] = [
 	{
 		name: 'Elemental shield',
 		gpCost: 2_500_000,
-		qpRequired: 25
+		qpRequired: 25,
+		ironmanPrice: 2000
 	}
 ];
 
@@ -589,11 +637,12 @@ const noveltyFood: Buyable[] = [
 
 const Buyables: Buyable[] = [
 	{
-		name: 'Quest Cape',
+		name: 'Quest point cape',
 		outputItems: {
 			[itemID('Quest point cape')]: 1,
 			[itemID('Quest point hood')]: 1
 		},
+		aliases: ['quest cape'],
 		qpRequired: MAX_QP,
 		gpCost: 99_000
 	},
@@ -711,6 +760,20 @@ const Buyables: Buyable[] = [
 		name: 'Sandworms',
 		gpCost: 500
 	},
+	{
+		name: 'Granite Body',
+		gpCost: 95_000,
+		minigameScoreReq: ['barb_assault', 10]
+	},
+	{
+		name: 'Raw shark',
+		itemCost: resolveNameBank({
+			Minnow: 40
+		}),
+		outputItems: resolveNameBank({
+			'Raw shark': 1
+		})
+	},
 
 	...sepulchreBuyables,
 	...constructionBuyables,
@@ -726,7 +789,8 @@ const Buyables: Buyable[] = [
 	...capeBuyables,
 	...miningBuyables,
 	...runeBuyables,
-	...randomEventBuyables
+	...randomEventBuyables,
+	...tobCapes
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

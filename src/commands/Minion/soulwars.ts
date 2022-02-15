@@ -125,9 +125,8 @@ const imbueables = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			categoryFlags: ['minion', 'minigame'],
 			description: 'Sends your minion to do the Soul Wars minigame.',
 			examples: ['+soulwars'],
@@ -169,7 +168,7 @@ export default class extends BotCommand {
 				maxSize: 99,
 				ironmanAllowed: true,
 				message: `${msg.author.username} is starting a Soul Wars mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-				customDenier: user => {
+				customDenier: async user => {
 					if (!user.hasMinion) {
 						return [true, "you don't have a minion."];
 					}
@@ -240,7 +239,7 @@ export default class extends BotCommand {
 			);
 		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens * quantity);
-		await msg.author.addItemsToBank({ [item.item.id]: quantity }, true);
+		await msg.author.addItemsToBank({ items: { [item.item.id]: quantity }, collectionLog: true });
 		return msg.channel.send(
 			`Added ${quantity}x ${item.item.name} to your bank, removed ${item.tokens * quantity}x Zeal Tokens.`
 		);
@@ -267,7 +266,7 @@ export default class extends BotCommand {
 		}
 		await msg.author.settings.update(UserSettings.ZealTokens, bal - item.tokens);
 		await msg.author.removeItemsFromBank({ [item.input.id]: 1 });
-		await msg.author.addItemsToBank({ [item.output.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [item.output.id]: 1 }, collectionLog: true });
 		return msg.channel.send(
 			`Added 1x ${item.output.name} to your bank, removed ${item.tokens}x Zeal Tokens and 1x ${item.input.name}.`
 		);

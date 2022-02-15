@@ -10,7 +10,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			runIn: ['text'],
-			cooldown: 2,
 			subcommands: true,
 			usage: '[add|remove] [role:role|str:...string]',
 			usageDelim: ' '

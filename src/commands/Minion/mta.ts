@@ -71,8 +71,6 @@ export default class CastleWarsCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			description: 'Sends your minion to train the Mage Training Arena.',
 			usage: '[train|buy] [name:...str]',
 			usageDelim: ' ',
@@ -171,7 +169,7 @@ Hint: Magic Training Arena is combined into 1 room, and 1 set of points - reward
 			}
 		});
 
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
 
 		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`);
 	}

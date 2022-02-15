@@ -76,8 +76,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		itemsRequired: deepResolveItems([
-			["Karil's leathertop", 'Armadyl chestplate'],
-			["Karil's leatherskirt", 'Armadyl chainskirt']
+			["Karil's leathertop", 'Armadyl chestplate', "Black d'hide body"],
+			["Karil's leatherskirt", 'Armadyl chainskirt', "Black d'hide chaps"]
 		]),
 		qpRequired: 20,
 		levelRequirements: {
@@ -441,6 +441,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 3,
+		itemsRequired: resolveItems(['Boots of stone']),
 		qpRequired: 0,
 		levelRequirements: {
 			slayer: 62

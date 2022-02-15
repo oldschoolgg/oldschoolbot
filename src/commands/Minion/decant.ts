@@ -8,10 +8,8 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[dose:int{1,4}] <itemname:...string>',
 			usageDelim: ' ',
-			oneAtTime: true,
 			description: 'Allows you to decant potions into 4-doses, or any dosage.',
 			examples: ['+decant prayer potion'],
 			categoryFlags: ['minion']
@@ -28,13 +26,13 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't own ${potionsToRemove}.`);
 		}
 		await msg.author.removeItemsFromBank(potionsToRemove);
-		await msg.author.addItemsToBank(potionsToAdd);
+		await msg.author.addItemsToBank({ items: potionsToAdd });
 
 		if (
 			msg.author.hasItemEquippedAnywhere(['Iron dagger', 'Bronze arrow'], true) &&
 			!msg.author.hasItemEquippedOrInBank('Clue hunter gloves')
 		) {
-			await msg.author.addItemsToBank(new Bank({ 'Clue hunter gloves': 1 }), true);
+			await msg.author.addItemsToBank({ items: new Bank({ 'Clue hunter gloves': 1 }), collectionLog: true });
 			msg.channel.send(
 				'\n\nWhile decanting some potions, you find a pair of gloves on the floor and pick them up.'
 			);

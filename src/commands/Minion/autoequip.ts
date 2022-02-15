@@ -15,8 +15,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '<melee|mage|range|wildy> <attack|defence> <crush|slash|stab|ranged|magic> [prayer|strength]',
 			usageDelim: ' ',
 			aliases: ['aep', 'aequip'],
@@ -60,7 +58,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(toRemoveFromBank);
-		await msg.author.addItemsToBank(toRemoveFromGear);
+		await msg.author.addItemsToBank({ items: toRemoveFromGear, collectionLog: false });
 		await msg.author.settings.update(resolveGearTypeSetting(gearType), gearToEquip);
 
 		const image = await generateGearImage(

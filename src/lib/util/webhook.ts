@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/node';
 import {
 	MessageAttachment,
 	MessageEmbed,
@@ -13,6 +12,7 @@ import PQueue from 'p-queue';
 
 import { prisma } from '../settings/prisma';
 import { channelIsSendable } from '../util';
+import { logError } from './logError';
 
 const webhookCache: Map<string, WebhookClient> = new Map();
 
@@ -99,11 +99,9 @@ export async function sendToChannelID(
 					await deleteWebhook(channelID);
 					await sendToChannelID(client, channelID, data);
 				} else {
-					captureException(error, {
-						tags: {
-							content: data.content,
-							channelID
-						}
+					logError(error, {
+						content: data.content ?? 'None',
+						channelID
 					});
 				}
 			}

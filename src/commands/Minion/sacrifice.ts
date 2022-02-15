@@ -21,9 +21,7 @@ async function trackSacBank(user: KlasaUser, bank: Bank) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[bank:...str]',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
 			examples: ['+sacrifice 1 Elysian sigil']
@@ -35,15 +33,22 @@ export default class extends BotCommand {
 			inputStr: bankStr,
 			usersBank: msg.author.bank(),
 			flags: msg.flagArgs,
-			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
+			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems),
+			user: msg.author
 		});
+
+		const sacVal = msg.author.settings.get(UserSettings.SacrificedValue);
 
 		if (!msg.author.owns(bankToSac)) {
 			return msg.channel.send(`You don't own ${bankToSac}.`);
 		}
 
 		if (bankToSac.length === 0) {
-			return msg.channel.send('No items found.');
+			return msg.channel.send(
+				`No items were provided.\nYour current sacrificed value is: ${sacVal.toLocaleString()} (${Util.toKMB(
+					sacVal
+				)})`
+			);
 		}
 
 		// Handle sacrificing cats
@@ -60,7 +65,7 @@ export default class extends BotCommand {
 
 			const loot = new Bank().add('Death rune', deathRunes);
 			await msg.author.removeItemsFromBank(bankToSac);
-			await msg.author.addItemsToBank(loot);
+			await msg.author.addItemsToBank({ items: loot, collectionLog: false });
 			const sacBank = await trackSacBank(msg.author, bankToSac);
 			let totalCatsSacrificed = 0;
 			for (const cat of cats) {
@@ -86,7 +91,7 @@ export default class extends BotCommand {
 			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${bankToSac}!`);
 		}
 
-		const newValue = msg.author.settings.get(UserSettings.SacrificedValue) + totalPrice;
+		const newValue = sacVal + totalPrice;
 
 		await msg.author.settings.update(UserSettings.SacrificedValue, newValue);
 		await msg.author.removeItemsFromBank(bankToSac.bank);

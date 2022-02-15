@@ -5,7 +5,7 @@ import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXer
 
 import { chambersOfXericCL } from '../../lib/data/CollectionsExport';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, filterBankFromArrayOfItems } from '../../lib/util';
+import { addBanks } from '../../lib/util';
 
 const itemsToShow = chambersOfXericCL;
 
@@ -14,7 +14,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<amount:int{1,30}> [points:int{1,100000}] [names:...str]',
 			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			description: 'Simulates a Cox raid.',
 			examples: ['+cox 30 30k', '+cox 5 30k Magnaboy, Woox'],
 			categoryFlags: ['fun', 'simulation']
@@ -40,7 +40,7 @@ export default class extends BotCommand {
 				}
 			];
 
-			let loot = {};
+			let loot = new Bank();
 			for (let i = 0; i < amount; i++) {
 				const singleRaidLoot = ChambersOfXeric.complete({
 					team,
@@ -49,7 +49,7 @@ export default class extends BotCommand {
 				});
 
 				for (const lootBank of Object.values(singleRaidLoot)) {
-					loot = addBanks([loot, lootBank]);
+					loot.add(lootBank);
 				}
 			}
 
@@ -92,7 +92,10 @@ export default class extends BotCommand {
 
 		let result = `In a group raid with ${team.length} users with ${Util.toKMB(points)} points each...\n`;
 		for (const [memberID, lootBank] of Object.entries(loot)) {
-			result += `**${memberID}** received: ${new Bank(filterBankFromArrayOfItems(itemsToShow, lootBank))}\n`;
+			result += `**${memberID}** received: ${new Bank(lootBank).filter(
+				item => itemsToShow.includes(item.id),
+				false
+			)}\n`;
 		}
 
 		return msg.channel.send(result);

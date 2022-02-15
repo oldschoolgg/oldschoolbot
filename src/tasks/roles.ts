@@ -11,6 +11,7 @@ import { Minigames } from '../lib/settings/minigames';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
+import { logError } from '../lib/util/logError';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -19,18 +20,7 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const collections = [
-	'overall',
-	'pets',
-	'skilling',
-	'clues',
-	'bosses',
-	'minigames',
-	'raids',
-	'slayer',
-	'other',
-	'custom'
-];
+const collections = ['pets', 'skilling', 'clues', 'bosses', 'minigames', 'cox', 'tob', 'slayer', 'other', 'custom'];
 
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
@@ -44,7 +34,7 @@ WHERE "slayer.task_streak" > 20
 ORDER BY "slayer.task_streak" DESC
 LIMIT 1;`;
 
-const mostSlayerTasksDoneQuery = `SELECT user_id as id, 'Most Tasks' as desc
+const mostSlayerTasksDoneQuery = `SELECT user_id::text as id, 'Most Tasks' as desc
 FROM slayer_tasks
 GROUP BY user_id
 ORDER BY count(user_id) DESC
@@ -71,7 +61,7 @@ async function addRoles({
 		try {
 			await g.members.fetch(u);
 		} catch {
-			console.error(`Failed to fetch \`${u}\` member.`);
+			logError(`Failed to fetch \`${u}\` member.`);
 		}
 	}
 	const roleName = _role.name!;
@@ -142,7 +132,7 @@ export default class extends Task {
 		// eslint-disable-next-line @typescript-eslint/unbound-method
 		const q = async <T>(str: string) => {
 			const result = await this.client.query<T>(str).catch(err => {
-				console.error(`This query failed: ${str}`, err);
+				logError(`This query failed: ${str}`, err);
 				return [];
 			});
 			return result;
@@ -224,13 +214,23 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 				await Promise.all(
 					collections.map(async clName => {
 						const items = getCollectionItems(clName);
-						if (!items) {
-							console.error(`${clName} collection log doesnt exist`);
+						if (!items || items.length === 0) {
+							logError(`${clName} collection log doesnt exist`);
+							return [];
+						}
+
+						function handleErr(): CLUser[] {
+							logError(`Failed to select top collectors for ${clName}`);
+							return [];
 						}
 
 						const [users, ironUsers] = await Promise.all([
-							(await q<any>(generateQuery(items, false, 1))).filter((i: any) => i.qty > 0) as CLUser[],
-							(await q<any>(generateQuery(items, true, 1))).filter((i: any) => i.qty > 0) as CLUser[]
+							q<any>(generateQuery(items, false, 1))
+								.then(i => i.filter((i: any) => i.qty > 0) as CLUser[])
+								.catch(handleErr),
+							q<any>(generateQuery(items, true, 1))
+								.then(i => i.filter((i: any) => i.qty > 0) as CLUser[])
+								.catch(handleErr)
 						]);
 
 						let result = [];
@@ -358,7 +358,7 @@ FROM users
 WHERE "minion.farmingContract" IS NOT NULL
 ORDER BY ("minion.farmingContract"->>'contractsCompleted')::int DESC
 LIMIT 2;`,
-				`SELECT user_id as id, 'Top 2 Most Farming Trips' as desc
+				`SELECT user_id::text as id, 'Top 2 Most Farming Trips' as desc
 FROM activity
 WHERE type = 'Farming'
 GROUP BY user_id
@@ -427,7 +427,7 @@ LIMIT 2;`
 					await fn();
 				} catch (err: any) {
 					failed.push(`${name} (${err.message})`);
-					console.error(err);
+					logError(err);
 				}
 			})
 		);

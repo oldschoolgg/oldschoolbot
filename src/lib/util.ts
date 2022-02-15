@@ -1,21 +1,23 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
-import { objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
+import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
+import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
+import murmurHash from 'murmurhash';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
-import { CENA_CHARS, continuationChars, Events, PerkTier, skillEmoji, SupportServer } from './constants';
-import { GearSetupType, GearSetupTypes } from './gear/types';
+import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
+import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
+import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
+import { POHBoosts } from './poh';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions, RaidsOptions } from './types/minions';
-import getOSItem from './util/getOSItem';
+import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -82,14 +84,6 @@ export function toTitleCase(str: string) {
 	return splitStr.join(' ');
 }
 
-export function cleanString(str: string) {
-	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
-}
-
-export function stringMatches(str: string, str2: string) {
-	return cleanString(str) === cleanString(str2);
-}
-
 export function formatDuration(ms: number, short = false) {
 	if (ms < 0) ms = -ms;
 	const time = {
@@ -109,10 +103,6 @@ export function formatDuration(ms: number, short = false) {
 	return nums
 		.map(([key, val]) => `${val}${short ? '' : ' '}${key}${val === 1 || short ? '' : 's'}`)
 		.join(short ? '' : ', ');
-}
-
-export function inlineCodeblock(input: string) {
-	return `\`${input.replace(/ /g, '\u00A0').replace(/`/g, '`\u200B')}\``;
 }
 
 export function isWeekend() {
@@ -166,10 +156,6 @@ export function roll(max: number) {
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
-}
-
-export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>) {
-	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
@@ -259,6 +245,10 @@ export function isRaidsActivity(data: any): data is RaidsOptions {
 	return 'challengeMode' in data;
 }
 
+export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
+	return 'wipedRoom' in data;
+}
+
 export function sha256Hash(x: string) {
 	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }
@@ -268,9 +258,9 @@ export function countSkillsAtleast99(user: KlasaUser) {
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
-export function getSupportGuild(client: Client) {
+export function getSupportGuild(client: Client): Guild | null {
 	const guild = client.guilds.cache.get(SupportServer);
-	if (!guild) throw "Can't find support guild.";
+	if (!guild) return null;
 	return guild;
 }
 
@@ -416,34 +406,30 @@ export function formatItemBoosts(items: ItemBank[]) {
 	return str.join(', ');
 }
 
-/**
- * Given a list of items, and a bank, it will return a new bank with all items not
- * in the filter removed from the bank.
- * @param itemFilter The array of item IDs to use as the filter.
- * @param bank The bank to filter items from.
- */
-export function filterBankFromArrayOfItems(itemFilter: number[], bank: ItemBank): ItemBank {
-	const returnBank: ItemBank = {};
-	const bankKeys = Object.keys(bank);
+export function formatPohBoosts(boosts: POHBoosts) {
+	const bonusStr = [];
+	const slotStr = [];
 
-	// If there are no items in the filter or bank, just return an empty bank.
-	if (itemFilter.length === 0 || bankKeys.length === 0) return returnBank;
+	for (const [slot, objBoosts] of objectEntries(boosts)) {
+		if (objBoosts === undefined) continue;
+		for (const [name, boostPercent] of objectEntries(objBoosts)) {
+			bonusStr.push(`${boostPercent}% for ${name}`);
+		}
 
-	// For every item in the filter, if its in the bank, add it to the return bank.
-	for (const itemID of itemFilter) {
-		if (bank[itemID]) returnBank[itemID] = bank[itemID];
+		slotStr.push(`${slot.replace(/\b\S/g, t => t.toUpperCase())}: (${bonusStr.join(' or ')})\n`);
 	}
 
-	return returnBank;
+	return slotStr.join(', ');
 }
 
-export function updateBankSetting(client: KlasaClient, setting: string, bankToAdd: Bank | ItemBank) {
+export function updateBankSetting(client: KlasaClient | KlasaUser, setting: string, bankToAdd: Bank | ItemBank) {
+	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);
 }
 
-export function updateGPTrackSetting(client: KlasaClient, setting: string, amount: number) {
+export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: string, amount: number) {
 	const current = client.settings.get(setting) as number;
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
@@ -461,6 +447,18 @@ export function textEffect(str: string, effect: 'none' | 'strikethrough') {
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
+}
+
+function gaussianRand(rolls: number = 3) {
+	let rand = 0;
+	for (let i = 0; i < rolls; i += 1) {
+		rand += Math.random();
+	}
+	return rand / rolls;
+}
+
+export function gaussianRandom(min: number, max: number, rolls?: number) {
+	return Math.floor(min + gaussianRand(rolls) * (max - min + 1));
 }
 
 export function isValidNickname(str?: string) {
@@ -543,12 +541,107 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 
 export const asyncExec = promisify(exec);
 
-export function countUsersWithItemInCl(client: KlasaClient, _item: string) {
-	const item = getOSItem(_item);
-	const query = `SELECT COUNT(id) FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL AND "collectionLogBank"->>'${item.id}'::int >= 1;`;
-	return client.query(query);
-}
-
 export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
+}
+
+export function assert(condition: boolean, desc?: string) {
+	if (!condition) throw new Error(desc);
+}
+
+export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
+	let result = [];
+	let uniquesReceived = 0;
+	for (const [item, qty] of bank.items().sort((a, b) => a[1] - b[1])) {
+		if (uniques.includes(item.id)) {
+			uniquesReceived += qty;
+		}
+		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
+	}
+	result.push(
+		`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived} which is ${calcWhatPercent(
+			uniquesReceived,
+			iterations
+		)}%)`
+	);
+	return result.join(', ');
+}
+
+export function convertPercentChance(percent: number) {
+	return (1 / (percent / 100)).toFixed(1);
+}
+
+export function murMurHashChance(input: string, percent: number) {
+	const hash = murmurHash.v3(input) % 1e4;
+	return hash < percent * 100;
+}
+
+export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
+	let setup: GearSetupType = 'melee';
+
+	switch (style) {
+		case GearStat.AttackMagic:
+			setup = 'mage';
+			break;
+		case GearStat.AttackRanged:
+			setup = 'range';
+			break;
+		default:
+			break;
+	}
+
+	return setup;
+}
+
+export function convertBankToPerHourStats(bank: Bank, time: number) {
+	let result = [];
+	for (const [item, qty] of bank.items()) {
+		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
+	}
+	return result;
+}
+
+/**
+ * Removes extra clue scrolls from loot, if they got more than 1 or if they already own 1.
+ */
+export function deduplicateClueScrolls({ loot, currentBank }: { loot: Bank; currentBank: Bank }) {
+	const newLoot = loot.clone();
+	for (const { scrollID } of clueTiers) {
+		if (!newLoot.has(scrollID)) continue;
+		if (currentBank.has(scrollID)) {
+			newLoot.remove(scrollID, newLoot.amount(scrollID));
+		} else {
+			newLoot.bank[scrollID] = 1;
+		}
+	}
+	return newLoot;
+}
+
+/**
+ * Removes items with 0 or less quantity
+ */
+export function sanitizeBank(bank: Bank) {
+	for (const [key, value] of Object.entries(bank.bank)) {
+		if (value === 0 || value < 1) {
+			delete bank.bank[key];
+		}
+	}
+}
+
+export function truncateString(str: string, maxLen: number) {
+	if (str.length < maxLen) return str;
+	return `${str.slice(0, maxLen - 3)}...`;
+}
+
+export function cleanUsername(str: string) {
+	return Util.escapeMarkdown(stripEmojis(str));
+}
+export { cleanString, stringMatches } from './util/cleanString';
+
+export function clamp(val: number, min: number, max: number) {
+	return Math.min(max, Math.max(min, val));
+}
+
+export function calcPerHour(value: number, duration: number) {
+	return (value / (duration / Time.Minute)) * 60;
 }

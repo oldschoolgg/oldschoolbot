@@ -25,7 +25,6 @@ async function howManyOfTierCompleted(user: KlasaUser, tiers: DiaryTier[]) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			description: 'See your minions achievement diary, and claim the rewards.',
@@ -99,6 +98,13 @@ export default class extends BotCommand {
 				}
 			}
 
+			if (tier.customReq) {
+				const [hasCustomReq, reason] = await tier.customReq(msg.author, true);
+				if (!hasCustomReq) {
+					thisStr += `- Extra Requirements: ${reason}\n`;
+				}
+			}
+
 			str += `${thisStr}\n`;
 		}
 		return msg.channel.send(str);
@@ -133,7 +139,10 @@ export default class extends BotCommand {
 				}
 				loot.add(diaryTier.item.id);
 
-				await msg.author.addItemsToBank(loot, true);
+				await msg.author.addItemsToBank({
+					items: loot,
+					collectionLog: true
+				});
 
 				return msg.channel.send(`You successfully completed the ${name} and received ${loot}.`);
 			}

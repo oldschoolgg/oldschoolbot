@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/minimal';
 import { GuildMember } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -9,6 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import { logError } from '../../lib/util/logError';
 import { parseInputBankWithPrice } from '../../lib/util/parseStringBank';
 
 const options = {
@@ -23,7 +23,6 @@ export default class extends BotCommand {
 			cooldown: 3,
 			usage: '<member:member> [strBankWithPrice:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			ironCantUse: true,
 			categoryFlags: ['minion'],
 			description: 'Sells items to other players for GP.',
@@ -36,17 +35,14 @@ export default class extends BotCommand {
 			usersBank: msg.author.bank(),
 			str: strBankWithPrice ?? '',
 			flags: { ...msg.flagArgs, tradeables: 'tradeables' },
-			excludeItems: []
+			excludeItems: [],
+			user: msg.author
 		});
 		if (bankToSell.items().some(i => !itemIsTradeable(i[0].id))) {
-			captureException(new Error('Trying to sell untradeable item'), {
-				user: {
-					id: msg.author.id
-				},
-				extra: {
-					inputItems: strBankWithPrice ?? '',
-					resultItems: bankToSell.toString()
-				}
+			logError(new Error('Trying to sell untradeable item'), {
+				userID: msg.author.id,
+				inputItems: strBankWithPrice ?? '',
+				resultItems: bankToSell.toString()
 			});
 			return msg.channel.send('You are trying to sell untradeable items.');
 		}
@@ -140,11 +136,11 @@ export default class extends BotCommand {
 			}
 			if (price > 0) {
 				await buyerMember.user.removeItemsFromBank(new Bank().add('Coins', price));
-				await msg.author.addItemsToBank(new Bank().add('Coins', price));
+				await msg.author.addItemsToBank({ items: new Bank().add('Coins', price), collectionLog: false });
 			}
 
 			await msg.author.removeItemsFromBank(bankToSell.bank);
-			await buyerMember.user.addItemsToBank(bankToSell.bank, false, false);
+			await buyerMember.user.addItemsToBank({ items: bankToSell, collectionLog: false, filterLoot: false });
 		} catch (err) {
 			this.client.emit(Events.Wtf, err);
 			return msg.channel.send('Fatal error occurred. Please seek help in the support server.');

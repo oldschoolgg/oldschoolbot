@@ -7,11 +7,10 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 5,
 			subcommands: true,
 			runIn: ['text'],
 			usage: '<on|off>',
-			permissionLevel: 7,
+			requiredPermissionsForUser: ['BAN_MEMBERS'],
 			description:
 				'Enables a system for your server where talking allows you to get pets, separate to minion pets and your bank.',
 			examples: ['+petmessages on', '+petmessages off'],

@@ -36,7 +36,6 @@ export default class DailyCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			cooldown: 5,
 			categoryFlags: ['minion'],
 			examples: ['+daily'],
@@ -158,7 +157,7 @@ export default class DailyCommand extends BotCommand {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDaily, loot[COINS_ID]);
 		}
 
-		const { itemsAdded, previousCL } = await user.addItemsToBank(loot, true);
+		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		return msg.channel.sendBankImage({
 			bank: itemsAdded,

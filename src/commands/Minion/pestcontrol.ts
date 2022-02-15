@@ -15,8 +15,8 @@ import getOSItem from '../../lib/util/getOSItem';
 let itemBoosts = [
 	[['Abyssal whip', 'Abyssal tentacle'].map(getOSItem), 12],
 	[['Barrows gloves', 'Ferocious gloves'].map(getOSItem), 4],
-	[['Amulet of fury', 'Amulet of torture'].map(getOSItem), 5],
-	[['Fire cape', 'Infernal cape'].map(getOSItem), 6],
+	[['Amulet of fury', 'Amulet of torture', 'Amulet of fury (or)', 'Amulet of torture (or)'].map(getOSItem), 5],
+	[['Fire cape', 'Infernal cape', 'Fire max cape', 'Infernal max cape'].map(getOSItem), 6],
 	[['Dragon claws'].map(getOSItem), 5]
 ] as const;
 
@@ -107,8 +107,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			description: 'Sends your minion to do pest control.',
 			examples: ['+pestcontrol', '+pc'],
 			categoryFlags: ['minion', 'minigame'],
@@ -258,7 +256,7 @@ ${xpRes}`);
 		}
 		await msg.author.settings.update(UserSettings.PestControlPoints, balance - cost);
 
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
 
 		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Void knight commendation points.`);
 	}

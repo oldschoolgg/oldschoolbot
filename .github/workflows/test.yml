@@ -13,7 +13,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                node_version: [16.8.0]
+                node_version: [16.14.0]
                 os: [ubuntu-latest, windows-latest]
 
         steps:
@@ -39,6 +39,6 @@ jobs:
             - name: Generate Prisma Client
               run: npx prisma generate
             - name: Test
-              run: yarn test
+              run: yarn test:unit
             - name: Upload coverage data to Codecov
               uses: codecov/codecov-action@v1

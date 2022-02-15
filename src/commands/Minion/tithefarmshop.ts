@@ -12,8 +12,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[quantity:int{1,250000}] <name:...string>',
 			usageDelim: ' ',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			aliases: ['tfs', 'tfshop'],
 			description: "Allows a player to purchase farmer's items from the tithefarm shop.",
@@ -56,7 +54,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Stats.TitheFarmPoints, titheFarmPoints - titheFarmPointsCost);
 
-		await msg.author.addItemsToBank(outItems, true);
+		await msg.author.addItemsToBank({ items: outItems, collectionLog: true });
 
 		return msg.channel.send(`You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points.`);
 	}

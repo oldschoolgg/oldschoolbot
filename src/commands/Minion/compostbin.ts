@@ -38,10 +38,8 @@ export const superCompostables = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[quantity:int{1}|cropToCompost:...string] [cropToCompost:...string]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			description: 'Composts crops into supercompost.',
 			examples: ['+compostbin watermelon']
 		});
@@ -93,7 +91,7 @@ export default class extends BotCommand {
 		);
 
 		await msg.author.removeItemsFromBank(new Bank().add(superCompostableCrop, quantity));
-		await msg.author.addItemsToBank(new Bank().add('Supercompost', quantity));
+		await msg.author.addItemsToBank({ items: new Bank().add('Supercompost', quantity) });
 
 		return msg.channel.send(`You've composted ${cost} and received ${quantity}x Supercompost in return.`);
 	}

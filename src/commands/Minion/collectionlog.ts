@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { allCLItems } from '../../lib/data/Collections';
+import { allCLItemsFiltered } from '../../lib/data/Collections';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
 
@@ -24,13 +24,15 @@ export default class extends BotCommand {
 			const { percent, notOwned, owned, debugBank } = msg.author.completion();
 			if (msg.flagArgs.debug) {
 				return msg.channel.sendBankImage({
-					bank: debugBank.bank,
+					bank: debugBank,
 					title: 'All Items That Count Towards CL %',
 					flags: { debug: 1 }
 				});
 			}
 			return msg.channel.send(
-				`You have ${owned.length}/${allCLItems.length} (${percent.toFixed(2)}%) Collection Log Completion.
+				`You have ${owned.length}/${allCLItemsFiltered.length} (${percent.toFixed(
+					2
+				)}%) Collection Log Completion.
 
 Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 			);

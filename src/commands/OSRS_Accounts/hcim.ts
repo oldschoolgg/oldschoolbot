@@ -7,11 +7,10 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: ['hc'],
 			description: 'Shows the stats of a HCIM account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+hcim Faux'],
 			categoryFlags: ['utility']
 		});
@@ -21,7 +20,7 @@ export default class extends BotCommand {
 		try {
 			const player = await Hiscores.fetch(username, { type: AccountType.Hardcore });
 			return msg.channel.send({ embeds: [this.getStatsEmbed(username, 11_995_146, player)] });
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

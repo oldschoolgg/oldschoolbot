@@ -49,17 +49,24 @@ export default class extends Task {
 			[bar.id]: quantity
 		});
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
 			str,
-			['smelt', [oldQuantity, bar.name], true],
+			[
+				'smelt',
+				{
+					name: bar.name,
+					quantity: oldQuantity
+				},
+				true
+			],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

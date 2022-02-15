@@ -6,7 +6,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 10,
 			aliases: ['bl'],
 			usage: '[collection:string]',
 			examples: ['+inbank bosses'],

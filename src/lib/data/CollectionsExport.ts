@@ -16,13 +16,12 @@ export interface IToReturnCollection {
 	collectionTotal: number;
 	leftList?: ILeftListStatus;
 	userItems: Bank;
+	counts: boolean;
 }
 
 export interface ILeftListStatus {
 	[key: string]: 'not_started' | 'started' | 'completed';
 }
-
-export type TRoleCategories = 'bosses' | 'slayer' | 'clues' | 'minigames' | 'skilling' | 'raids' | 'pets';
 
 interface IKCActivity {
 	[key: string]: string | string[] | ((user: KlasaUser) => Promise<number>);
@@ -30,10 +29,6 @@ interface IKCActivity {
 
 export interface ICollectionActivity {
 	[key: string]: {
-		// If the collection is enabled (ca not be accesed if set to false)
-		enabled?: false;
-		// If the collection should be hidden from the list
-		hidden?: true;
 		// If the collection will count towards the collection log counter
 		counts?: false;
 		alias?: string[];
@@ -41,7 +36,6 @@ export interface ICollectionActivity {
 		allItems?: number[];
 		kcActivity?: string | IKCActivity;
 		isActivity?: boolean;
-		roleCategory?: TRoleCategories[];
 	};
 }
 
@@ -173,9 +167,6 @@ export const dagannothKingsCL = resolveItems([
 	'Seercull',
 	'Mud battlestaff'
 ]);
-export const dagannothRexCL = resolveItems(['Dragon axe', 'Berserker ring', 'Warrior ring', 'Pet dagannoth rex']);
-export const dagannothPrimeCL = resolveItems(['Mud battlestaff', 'Dragon axe', 'Seers ring', 'Pet dagannoth prime']);
-export const dagannothSupremeCL = resolveItems(['Dragon axe', 'Seercull', 'Archers ring', 'Pet dagannoth supreme']);
 export const fightCavesCL = resolveItems(['Tzrek-jad', 'Fire cape']);
 export const theGauntletCL = resolveItems([
 	'Youngllef',
@@ -185,6 +176,33 @@ export const theGauntletCL = resolveItems([
 	'Gauntlet cape'
 ]);
 export const giantMoleCL = resolveItems(['Baby mole', 'Mole skin', 'Mole claw']);
+export const godWarsDungeonCL = resolveItems([
+	'Pet zilyana',
+	'Armadyl crossbow',
+	'Saradomin hilt',
+	'Saradomin sword',
+	"Saradomin's light",
+	"Pet k'ril tsutsaroth",
+	'Staff of the dead',
+	'Zamorakian spear',
+	'Steam battlestaff',
+	'Zamorak hilt',
+	"Pet kree'arra",
+	'Armadyl helmet',
+	'Armadyl chestplate',
+	'Armadyl chainskirt',
+	'Armadyl hilt',
+	'Pet general graardor',
+	'Bandos chestplate',
+	'Bandos tassets',
+	'Bandos boots',
+	'Bandos hilt',
+	...godWarsDungeonGodswordShards,
+	'Frozen key piece (bandos)',
+	'Frozen key piece (saradomin)',
+	'Frozen key piece (zamorak)',
+	'Frozen key piece (armadyl)'
+]);
 export const grotesqueGuardiansCL = resolveItems([
 	'Noon',
 	'Black tourmaline core',
@@ -307,6 +325,7 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vasa minirio',
 	'Vespina'
 ]);
+export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
 export const chambersOfXericCL = resolveItems([
 	'Olmlet',
 	'Metamorphic dust',
@@ -346,11 +365,10 @@ export const theatreOfBLoodCL = resolveItems([
 	'Sinhaza shroud tier 2',
 	'Sinhaza shroud tier 3',
 	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5'
-	// Missing items on the Items object
-	// 'Sanguine dust',
-	// 'Holy ornament kit',
-	// 'Sanguine ornament kit'
+	'Sinhaza shroud tier 5',
+	'Sanguine dust',
+	'Holy ornament kit',
+	'Sanguine ornament kit'
 ]);
 
 export const cluesBeginnerCL = resolveItems([
@@ -1117,22 +1135,12 @@ export const hallowedSepulchreCL = resolveItems([
 	'Dark dye',
 	'Dark acorn',
 	'Strange old lockpick',
-	'Ring of endurance (uncharged)'
-	// Not coded in the bot
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// 'Mysterious page',
-	// None of the items below are in the official log
-	// 'Dark graceful hood',
-	// 'Dark graceful top',
-	// 'Dark graceful legs',
-	// 'Dark graceful boots',
-	// 'Dark graceful gloves',
-	// 'Dark graceful cape',
-	// 'Giant squirrel',
-	// 'Dark squirrel'
+	'Ring of endurance (uncharged)',
+	'Mysterious page 1',
+	'Mysterious page 2',
+	'Mysterious page 3',
+	'Mysterious page 4',
+	'Mysterious page 5'
 ]);
 export const lastManStandingCL = resolveItems([
 	"Deadman's chest",
@@ -1714,7 +1722,15 @@ export const holidayCL = resolveItems([
 	'Banshee mask',
 	'Banshee top',
 	'Banshee robe',
-	'Hunting knife'
+	'Hunting knife',
+	'Yo-yo',
+	'Candy cane',
+	'Snow globe',
+	'Antisanta mask',
+	'Antisanta jacket',
+	'Antisanta pantaloons',
+	'Antisanta gloves',
+	'Antisanta boots'
 ]);
 export const dailyCL = resolveItems([
 	'Event rpg',
@@ -1855,7 +1871,12 @@ export const capesCL = resolveItems([
 	"Xeric's warrior",
 	"Xeric's sentinel",
 	"Xeric's general",
-	"Xeric's champion"
+	"Xeric's champion",
+	'Sinhaza shroud tier 1',
+	'Sinhaza shroud tier 2',
+	'Sinhaza shroud tier 3',
+	'Sinhaza shroud tier 4',
+	'Sinhaza shroud tier 5'
 ]);
 export const questCL = resolveItems([
 	'Quest point hood',
@@ -1965,6 +1986,28 @@ export const gracefulCL = resolveItems([
 export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
+	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
 	...resolveItems(['Little parasite', 'Dark squirrel'])
+];
+
+export const antiSantaOutfit = new Bank({
+	'Antisanta mask': 1,
+	'Antisanta jacket': 1,
+	'Antisanta pantaloons': 1,
+	'Antisanta gloves': 1,
+	'Antisanta boots': 1
+});
+
+export const allClueItems = [
+	...cluesBeginnerCL,
+	...cluesEasyCL,
+	...cluesEliteCL,
+	...cluesEliteRareCL,
+	...cluesHardCL,
+	...cluesHardRareCL,
+	...cluesMasterCL,
+	...cluesMasterRareCL,
+	...cluesMediumCL,
+	...cluesSharedCL
 ];

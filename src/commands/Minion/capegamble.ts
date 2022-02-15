@@ -13,7 +13,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			examples: ['+capegamble infernal', '+capegamble infernal'],
 			usage: '[fire|infernal]',
@@ -50,7 +49,7 @@ export default class extends BotCommand {
 		const pet = getOSItem(type === 'fire' ? 'Tzrek-Jad' : 'Jal-nib-rek');
 
 		if (roll(chance)) {
-			await msg.author.addItemsToBank(new Bank().add(pet.id), true);
+			await msg.author.addItemsToBank({ items: new Bank().add(pet.id), collectionLog: true });
 			this.client.emit(
 				Events.ServerNotification,
 				`**${msg.author.username}'s** just received their ${formatOrdinal(msg.author.cl().amount(pet.id))} ${

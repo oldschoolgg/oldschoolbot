@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -9,7 +10,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['sbank'],
 			perkTier: PerkTier.Two,
-			oneAtTime: true,
 			description: 'Shows a bank containing all your sacrificed items.',
 			examples: ['+sbank'],
 			categoryFlags: ['patron', 'minion']
@@ -18,7 +18,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		return msg.channel.sendBankImage({
-			bank: msg.author.settings.get(UserSettings.SacrificedBank),
+			bank: new Bank(msg.author.settings.get(UserSettings.SacrificedBank)),
 			title: 'Your Sacrificed Items'
 		});
 	}

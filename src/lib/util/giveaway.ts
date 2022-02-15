@@ -6,6 +6,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../constants';
 import { prisma } from '../settings/prisma';
+import { logError } from './logError';
 import { Giveaway } from '.prisma/client';
 
 export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Giveaway) {
@@ -37,8 +38,8 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 		const creator = await client.fetchUser(giveaway.user_id);
 
 		if (users.length === 0 || !channel || !message) {
-			console.error('Giveaway failed');
-			await creator.addItemsToBank(loot);
+			logError('Giveaway failed');
+			await creator.addItemsToBank({ items: loot });
 			creator.send(`Your giveaway failed to finish, you were refunded the items: ${new Bank(loot)}.`).catch(noOp);
 
 			if (message && channel) {
@@ -48,7 +49,7 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 		}
 
 		const winner = randArrItem(users);
-		await winner.addItemsToBank(loot);
+		await winner.addItemsToBank({ items: loot });
 
 		const osBank = new Bank(loot);
 		client.emit(
@@ -67,6 +68,6 @@ They received these items: ${osBank}`;
 			}`
 		);
 	} catch (err) {
-		console.error(err);
+		logError(err);
 	}
 }

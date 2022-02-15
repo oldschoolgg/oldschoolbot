@@ -27,10 +27,9 @@ const aliasNameMap: Record<string, string> = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			usage: '<boss:string> (username:rsn)',
 			usageDelim: ',',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+osrskc giant mole, Magnaboy', '+osrskc giant mole'],
 			categoryFlags: ['utility'],
 			description: 'Shows the KC for a boss for an OSRS account.'
@@ -59,7 +58,7 @@ export default class extends BotCommand {
 			}
 
 			return msg.channel.send(`${toTitleCase(username)} doesn't have any recorded kills for that boss.`);
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

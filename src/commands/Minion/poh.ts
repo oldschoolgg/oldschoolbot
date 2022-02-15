@@ -31,7 +31,6 @@ const wallkits = [
 export default class POHCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion'],
 			description: 'Allows you to access and build in your POH.',
@@ -49,7 +48,7 @@ export default class POHCommand extends BotCommand {
 	}
 
 	@requiresMinion
-	async wallkit(msg: KlasaMessage, [input]: [string]) {
+	async wallkit(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		const poh = await msg.author.getPOH();
 		const currentWallkit = wallkits.find(i => i.imageID === poh.background_id)!;
 		const selectedKit = wallkits.find(i => stringMatches(i.name, input));
@@ -172,7 +171,7 @@ export default class POHCommand extends BotCommand {
 					msg.channel.send(
 						`You were refunded: ${itemsToRefund}, from the ${inPlaceObj.name} you already had built here.`
 					);
-					await msg.author.addItemsToBank(itemsToRefund.bank);
+					await msg.author.addItemsToBank({ items: itemsToRefund, collectionLog: false });
 				}
 			}
 		}
@@ -259,7 +258,7 @@ export default class POHCommand extends BotCommand {
 					[obj.slot]: null
 				}
 			});
-			await msg.author.addItemsToBank({ [inPlace!]: 1 });
+			await msg.author.addItemsToBank({ items: { [inPlace!]: 1 }, collectionLog: false });
 			return msg.channel.send({
 				content: `You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(inPlace!)}.`,
 				files: [await this.genImage(poh)]
@@ -274,7 +273,7 @@ export default class POHCommand extends BotCommand {
 			const itemsToRefund = new Bank(obj.itemCost.bank).remove(itemsNotRefundable);
 			if (itemsToRefund.length > 0) {
 				str += `\n\nYou were refunded: ${itemsToRefund}.`;
-				await msg.author.addItemsToBank(itemsToRefund.bank);
+				await msg.author.addItemsToBank({ items: itemsToRefund, collectionLog: false });
 			}
 		}
 

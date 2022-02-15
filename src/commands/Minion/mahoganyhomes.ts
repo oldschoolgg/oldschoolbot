@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, objectEntries, randArrItem, randInt, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randArrItem, randInt, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -97,8 +97,6 @@ export default class MahoganyHomesCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[build|buy] [action:...string]',
 			usageDelim: ' ',
 			aliases: ['mh'],
@@ -137,7 +135,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 		}
 
 		await msg.author.settings.update(UserSettings.CarpenterPoints, balance - cost);
-		await msg.author.addItemsToBank({ [item.id]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
 
 		return msg.channel.send(`Successfully purchased 1x ${item.name} for ${cost} Carpenter Points.`);
 	}
@@ -160,7 +158,7 @@ To buy rewards with your Carpenter points, use \`${msg.cmdPrefix}mh buy\``
 						itemsNeeded.add(items);
 					}
 					let avgXP = addArrayOfNumbers(xpArr) / xpArr.length;
-					for (const [key, val] of objectEntries(itemsNeeded.bank)) {
+					for (const [key, val] of Object.entries(itemsNeeded.bank)) {
 						itemsNeeded.bank[key] = Math.round(val / xpArr.length);
 					}
 					str += `${bool ? 'With' : 'NO'} Plank sack ${avgXP.toLocaleString()} XP/HR

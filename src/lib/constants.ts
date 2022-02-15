@@ -1,9 +1,10 @@
 import { MessageButton } from 'discord.js';
-import { Command, KlasaMessage } from 'klasa';
+import { KlasaMessage } from 'klasa';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS } from '../config';
+import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
@@ -130,6 +131,7 @@ export const enum Emoji {
 	Bug = '<:bug:778418736330833951>',
 	Trophy = '<:goldTrophy:778418736561782794>',
 	Crab = '<:crab:778418736432021505>',
+	Snake = '🐍',
 	Skiller = '<:skiller:802136963775463435>',
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
@@ -219,7 +221,10 @@ export const enum Tasks {
 	PestControl = 'pestControlActivity',
 	VolcanicMine = 'volcanicMineActivity',
 	KourendFavour = 'kourendFavourActivity',
-	Inferno = 'infernoActivity'
+	Inferno = 'infernoActivity',
+	TearsOfGuthix = 'tearsOfGuthixActivity',
+	ToB = 'tobActivity',
+	LastManStanding = 'lmsActivity'
 }
 
 export enum ActivityGroup {
@@ -239,13 +244,6 @@ export const enum Events {
 	ServerNotification = 'serverNotification',
 	SkillLevelUp = 'skillLevelUp',
 	EconomyLog = 'economyLog'
-}
-
-export const enum PermissionLevelsEnum {
-	Zero = 0,
-	Moderator = 6,
-	Admin = 7,
-	Owner = 10
 }
 
 export const rootFolder = join(__dirname, '..', '..', '..');
@@ -368,7 +366,7 @@ export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
-export const continuationChars = 'abdefghjkmnoprstuvwxyz123456789'.split('');
+export const continuationChars = 'abdefghjknoprstuvwxyz123456789'.split('');
 export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
@@ -438,7 +436,11 @@ export const informationalButtons = [
 		.setEmoji('778418736180494347')
 		.setURL('https://www.discord.gg/ob')
 		.setStyle('LINK'),
-	new MessageButton().setLabel('Bot Invite').setEmoji('🤖').setURL('http://invite.oldschool.gg/').setStyle('LINK')
+	new MessageButton()
+		.setLabel('Bot Invite')
+		.setEmoji('🤖')
+		.setURL('http://www.oldschool.gg/invite/osb')
+		.setStyle('LINK')
 ];
 
 export const lastTripCache = new Map<
@@ -458,11 +460,23 @@ export const projectiles: Record<ProjectileType, number[]> = {
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
 export const PHOSANI_NIGHTMARE_ID = 9416;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: Command, args: any[]) {
+export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
+	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && subs.includes(args[0])) {
+		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
 			return false;
 		}
 	}
 	return true;
 }
+
+export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
+	msg: KlasaMessage
+) => `This command you're trying to use, has been changed to a 'slash command'.
+
+- Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
+- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used too though.
+- You no longer use this command using \`${msg.cmdPrefix}${msg.command?.name}\`, now you use: \`/${msg.command?.name}\`
+`;
+
+export const DISABLED_COMMANDS = new Set<string>();

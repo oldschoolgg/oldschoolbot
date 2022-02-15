@@ -16,7 +16,6 @@ import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethods, sorts } from '../lib/sorts';
-import { ItemBank } from '../lib/types';
 import {
 	addArrayOfNumbers,
 	cleanString,
@@ -30,6 +29,7 @@ import {
 	drawImageWithOutline,
 	fillTextXTimesInCtx
 } from '../lib/util/canvasUtil';
+import { logError } from '../lib/util/logError';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
@@ -176,7 +176,7 @@ export default class BankImageTask extends Task {
 				this.itemIconImagesCache.set(itemID, image);
 				return this.getItemImage(itemID, quantity);
 			} catch (err) {
-				console.error(`Failed to load item icon with id: ${itemID}`);
+				logError(`Failed to load item icon with id: ${itemID}`);
 				return this.getItemImage(1, 1);
 			}
 		}
@@ -272,12 +272,12 @@ export default class BankImageTask extends Task {
 	}
 
 	async generateBankImage(
-		_bank: Bank | ItemBank,
+		_bank: Bank,
 		title = '',
 		showValue = true,
 		flags: { [key: string]: string | number } = {},
 		user?: KlasaUser,
-		collectionLog?: ItemBank
+		collectionLog?: Bank
 	): Promise<BankImageResult> {
 		const bank = _bank instanceof Bank ? _bank : new Bank(_bank);
 		let compact = Boolean(flags.compact);
@@ -289,7 +289,8 @@ export default class BankImageTask extends Task {
 		const favorites = settings?.get(UserSettings.FavoriteItems);
 
 		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1);
-		const currentCL = collectionLog ?? settings?.get(UserSettings.CollectionLogBank);
+		const rawCL = settings?.get(UserSettings.CollectionLogBank);
+		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
 		let partial = false;
 
 		// Used for flags placeholder and ph
@@ -322,7 +323,7 @@ export default class BankImageTask extends Task {
 			partial = true;
 			bank.filter(item => {
 				if (searchQuery) return cleanString(item.name).includes(cleanString(searchQuery));
-				return filter!.items.includes(item.id);
+				return filter!.items(user!).includes(item.id);
 			}, true);
 		}
 
@@ -394,7 +395,7 @@ export default class BankImageTask extends Task {
 		const isPurple: boolean =
 			flags.showNewCL !== undefined &&
 			currentCL !== undefined &&
-			Object.keys(bank.bank).some(i => !currentCL[i] && allCLItems.includes(parseInt(i)));
+			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
 		if (isPurple && bgImage.name === 'CoX') {
 			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
@@ -504,7 +505,7 @@ export default class BankImageTask extends Task {
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
 			const itemImage = await this.getItemImage(item.id, quantity).catch(() => {
-				console.error(`Failed to load item image for item with id: ${item.id}`);
+				logError(`Failed to load item image for item with id: ${item.id}`);
 			});
 			if (!itemImage) {
 				this.client.emit(Events.Warn, `Item with ID[${item.id}] has no item image.`);
@@ -520,7 +521,7 @@ export default class BankImageTask extends Task {
 				ctx.globalAlpha = 0.3;
 			}
 
-			const isNewCLItem = flags.showNewCL && currentCL && !currentCL[item.id] && allCLItems.includes(item.id);
+			const isNewCLItem = flags.showNewCL && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
 
 			if (isNewCLItem) {
 				drawImageWithOutline(

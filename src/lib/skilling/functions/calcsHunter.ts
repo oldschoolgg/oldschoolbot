@@ -2,7 +2,6 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { percentChance } from '../../util';
 import { Creature } from '../types';
-import { petRates } from './../../../commands/OSRS_Utility/petrate';
 
 export function calcLootXPHunting(
 	currentLevel: number,
@@ -28,11 +27,7 @@ export function calcLootXPHunting(
 
 export function calcBabyChinchompaChance(currentLevel: number, creature: Creature): number {
 	const baseRate =
-		creature.name === 'Chinchompa'
-			? petRates.hunter['Grey chinchompas']
-			: creature.name === 'Carnivorous chinchompa'
-			? petRates.hunter['Red chinchompas']
-			: petRates.hunter['Black chinchompas'];
+		creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
 	return baseRate - currentLevel * 25;
 }
 

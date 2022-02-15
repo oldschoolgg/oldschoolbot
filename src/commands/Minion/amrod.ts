@@ -46,8 +46,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[quantity:int{1,250000}] [name:...string]',
 			usageDelim: ' ',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			categoryFlags: ['minion'],
 			description: 'Allows you to exchange certain crystal items with Amrod for crystal shards.',
@@ -96,7 +94,7 @@ export default class extends BotCommand {
 		await msg.confirm(`Do you want to trade **${toTradeBank}** for **${toReceiveBank}**?`);
 
 		await msg.author.removeItemsFromBank(toTradeBank);
-		await msg.author.addItemsToBank(toReceiveBank);
+		await msg.author.addItemsToBank({ items: toReceiveBank, collectionLog: false });
 
 		return msg.channel.send(`You traded **${toTradeBank}** for **${toReceiveBank}**.`);
 	}

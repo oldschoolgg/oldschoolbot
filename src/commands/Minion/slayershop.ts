@@ -14,8 +14,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[unlock|lock|buy] [name:...string]',
 			usageDelim: ' ',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			subcommands: true,
 			aliases: ['sls', 'slshop'],
@@ -117,7 +115,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.Slayer.SlayerPoints, curSlayerPoints - slayerPointCost);
 
-		await msg.author.addItemsToBank({ [buyable.item!]: 1 }, true);
+		await msg.author.addItemsToBank({ items: { [buyable.item!]: 1 }, collectionLog: true });
 
 		return msg.channel.send(`You bought ${toTitleCase(buyable.name)} for ${slayerPointCost} Slayer points.`);
 	}

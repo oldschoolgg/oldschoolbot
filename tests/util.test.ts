@@ -2,7 +2,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { stripEmojis } from '../src/lib/util';
+import { deduplicateClueScrolls, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 
 describe('util', () => {
@@ -39,5 +39,25 @@ describe('util', () => {
 				[]
 			)
 		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));
+	});
+
+	test('deduplicateClueScrolls', () => {
+		const currentBank = new Bank().add('Clue scroll(easy)');
+		const loot = new Bank().add('Clue scroll(easy)').add('Clue scroll(hard)', 10).add('Clue scroll(master)');
+		expect(deduplicateClueScrolls({ loot, currentBank }).bank).toEqual(
+			new Bank().add('Clue scroll(hard)').add('Clue scroll(master)').bank
+		);
+	});
+
+	test('sanitizeBank', () => {
+		let buggyBank = new Bank();
+		buggyBank.bank[1] = -1;
+		buggyBank.bank[2] = 0;
+		sanitizeBank(buggyBank);
+		expect(buggyBank.bank).toEqual({});
+	});
+
+	test('truncateString', () => {
+		expect(truncateString('testtttttt', 5)).toEqual('te...');
 	});
 });

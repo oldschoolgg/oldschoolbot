@@ -8,6 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { phosaniBISGear } from '../Minion/nightmare';
 
@@ -53,10 +54,8 @@ for (const i of Openables.values()) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[str:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			testingCommand: true
 		});
 		this.enabled = !this.client.production;
@@ -73,12 +72,12 @@ export default class extends BotCommand {
 						.map(itemNameFromID)
 						.join(', ')}.`;
 					if (i.otherItems) {
-						await msg.author.addItemsToBank(i.otherItems);
+						await msg.author.addItemsToBank({ items: i.otherItems });
 						str += `\n\n**Added to your bank:** ${i.otherItems}`;
 					}
 					return msg.channel.send(str);
 				} catch (err) {
-					console.error(err);
+					logError(err);
 				}
 			}
 		}
@@ -88,12 +87,12 @@ export default class extends BotCommand {
 			for (let i = 0; i < 50; i++) {
 				t.add(Items.random().id);
 			}
-			await msg.author.addItemsToBank(t);
+			await msg.author.addItemsToBank({ items: t });
 			return msg.channel.send('Added 50 random items to your bank.');
 		}
 
 		if (msg.flagArgs.openables) {
-			await msg.author.addItemsToBank(openablesBank);
+			await msg.author.addItemsToBank({ items: openablesBank });
 			return msg.channel.send(
 				`Gave you 100x of every openable item, which is: ${Openables.map(i => i.id)
 					.map(itemNameFromID)
@@ -103,7 +102,7 @@ export default class extends BotCommand {
 
 		if (msg.flagArgs.id) {
 			const item = getOSItem(Number(msg.flagArgs.id));
-			await msg.author.addItemsToBank({ [item.id]: 1 });
+			await msg.author.addItemsToBank({ items: { [item.id]: 1 } });
 			return msg.channel.send(`Gave you the item with the id of ${item.id} (${item.name})`);
 		}
 
@@ -113,14 +112,19 @@ export default class extends BotCommand {
 		for (const [item, qty] of items) {
 			bank.add(item.id, qty || 1);
 		}
-		await msg.author.addItemsToBank(bank, Boolean(msg.flagArgs.cl), false);
+		await msg.author.addItemsToBank({ items: bank, collectionLog: Boolean(msg.flagArgs.cl), filterLoot: false });
 
 		for (const [item] of bank.items()) {
 			for (const setup of GearSetupTypes) {
 				if (msg.flagArgs[setup]) {
 					if (!item.equipment) continue;
 					try {
-						await runCommand(msg, 'equip', [setup, 1, [item.name]]);
+						await runCommand({
+							message: msg,
+							commandName: 'equip',
+							args: [setup, 1, [item.name]],
+							bypassInhibitors: true
+						});
 					} catch (err) {}
 				}
 			}

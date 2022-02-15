@@ -6,11 +6,10 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: ['s'],
 			description: 'Shows the stats of a OSRS account',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+s Magnaboy', '+s'],
 			categoryFlags: ['utility']
 		});
@@ -20,7 +19,7 @@ export default class extends BotCommand {
 		try {
 			const player = await Hiscores.fetch(username);
 			return msg.channel.send({ embeds: [this.getStatsEmbed(username, 7_981_338, player)] });
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

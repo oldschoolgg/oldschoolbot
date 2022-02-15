@@ -15,7 +15,6 @@ const xpLeft = (xp: number) => {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			description: 'Shows the level of a single stat, and the XP remaining.',
 			usage:
 				'<attack|defence|strength|hitpoints|ranged|prayer|' +
@@ -23,7 +22,7 @@ export default class extends BotCommand {
 				'crafting|smithing|mining|herblore|agility|thieving|slayer|' +
 				'farming|runecraft|hunter|construction> (username:...rsn)',
 			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+lvl attack Woox', '+lvl strength'],
 			categoryFlags: ['utility']
 		});
@@ -42,7 +41,7 @@ export default class extends BotCommand {
 			}
 
 			return msg.channel.send(str);
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

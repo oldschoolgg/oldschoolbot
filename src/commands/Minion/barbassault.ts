@@ -6,6 +6,7 @@ import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 import { Emoji, Events } from '../../lib/constants';
 import { maxOtherStats } from '../../lib/gear';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { countUsersWithItemInCl } from '../../lib/settings/prisma';
 import { getMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../lib/simulation/baGamble';
@@ -16,6 +17,7 @@ import { formatDuration, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
+import itemID from '../../lib/util/itemID';
 
 const BarbBuyables = [
 	{
@@ -92,7 +94,6 @@ const GambleTiers = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			description: 'Sends your minion to do barbarian assault, or buy rewards and gamble.',
@@ -112,7 +113,7 @@ export default class extends BotCommand {
 			)} **Honour Level:** ${msg.author.settings.get(
 				UserSettings.HonourLevel
 			)} **High Gambles:** ${msg.author.settings.get(UserSettings.HighGambles)}\n\n` +
-				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\`, you'll need 2+ people to join to start.` +
+				`You can start a Barbarian Assault party using \`${msg.cmdPrefix}ba start\` which needs 2+ people to join to start or use \`${msg.cmdPrefix}ba start solo\` to go alone.` +
 				' We have a BA channel in our server for finding teams: (discord.gg/ob). \n' +
 				"Barbarian Assault works differently in the bot than ingame, there's only 1 role, no waves, and 1 balance of honour points." +
 				`\n\nYou can buy rewards with \`${msg.cmdPrefix}ba buy\`, level up your Honour Level with \`${msg.cmdPrefix}ba level\`.` +
@@ -168,7 +169,7 @@ export default class extends BotCommand {
 			).toLocaleString()} honour points?`
 		);
 		await msg.author.settings.update(UserSettings.HonourPoints, balance - cost * qty);
-		await msg.author.addItemsToBank({ [item.id]: qty }, true);
+		await msg.author.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
 
 		return msg.channel.send(
 			`Successfully purchased ${qty.toLocaleString()}x ${item.name} for ${(
@@ -202,24 +203,19 @@ export default class extends BotCommand {
 		const loot = new Bank().add(table.roll(qty));
 		if (loot.has('Pet penance queen')) {
 			const gamblesDone = msg.author.settings.get(UserSettings.HighGambles) + 1;
-			const countUsersHas =
-				parseInt(
-					(
-						await this.client.query<[{ count: string }]>(
-							'SELECT COUNT(*) FROM users WHERE "collectionLogBank"->>\'12703\' IS NOT NULL;'
-						)
-					)[0].count
-				) + 1;
+
+			const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
+
 			this.client.emit(
 				Events.ServerNotification,
 				`<:Pet_penance_queen:324127377649303553> **${msg.author.username}'s** minion, ${
 					msg.author.minionName
 				}, just received a Pet penance queen from their ${formatOrdinal(
 					gamblesDone
-				)} High gamble! They are the ${formatOrdinal(countUsersHas)} to it.`
+				)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 			);
 		}
-		const { itemsAdded } = await msg.author.addItemsToBank(loot.bank, true);
+		const { itemsAdded } = await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 		await msg.author.settings.update(
 			UserSettings.HighGambles,
 			msg.author.settings.get(UserSettings.HighGambles) + qty
@@ -227,9 +223,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`You spent ${(
 				cost * qty
-			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${new Bank(
-				itemsAdded
-			)}.`
+			).toLocaleString()} Honour Points for ${qty.toLocaleString()}x ${name} Gamble, and received... ${itemsAdded}.`
 		);
 	}
 
@@ -238,7 +232,7 @@ export default class extends BotCommand {
 	async start(msg: KlasaMessage, [qty = 0, input]: [number, string]) {
 		const partyOptions: MakePartyOptions = {
 			leader: msg.author,
-			minSize: 1,
+			minSize: 2,
 			maxSize: 4,
 			ironmanAllowed: true,
 			message: `${msg.author.username} has created a Barbarian Assault party${
@@ -246,7 +240,7 @@ export default class extends BotCommand {
 			}! Anyone can click the ${
 				Emoji.Join
 			} reaction to join, click it again to leave. There must be 2+ users in the party.`,
-			customDenier: user => {
+			customDenier: async user => {
 				if (!user.hasMinion) {
 					return [true, "you don't have a minion."];
 				}

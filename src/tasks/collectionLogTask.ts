@@ -1,6 +1,6 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
 import { MessageAttachment, MessageOptions } from 'discord.js';
-import { objectEntries, objectKeys } from 'e';
+import { objectEntries } from 'e';
 import fs from 'fs';
 import { KlasaUser, Task } from 'klasa';
 
@@ -12,6 +12,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
+import { logError } from '../lib/util/logError';
 import BankImageTask from './bankImage';
 
 interface ISprite {
@@ -209,9 +210,12 @@ export default class CollectionLogTask extends Task {
 	async generateLogImage(options: {
 		user: KlasaUser;
 		collection: string;
-		type: 'collection' | 'sacrifice' | 'bank';
+		type: 'collection' | 'sacrifice' | 'bank' | 'temp';
 		flags: { [key: string]: string | number };
 	}): Promise<MessageOptions | MessageAttachment> {
+		if (options.flags.temp) {
+			options.type = 'temp';
+		}
 		let { collection, type, user, flags } = options;
 
 		await user.settings.sync(true);
@@ -380,7 +384,7 @@ export default class CollectionLogTask extends Task {
 			const itemImage = await (this.client.tasks.get('bankImage') as BankImageTask)
 				.getItemImage(item, 1)
 				.catch(() => {
-					console.error(`Failed to load item image for item with id: ${item}`);
+					logError(`Failed to load item image for item with id: ${item}`);
 				});
 			if (!itemImage) {
 				this.client.emit(Events.Warn, `Item with ID[${item}] has no item image.`);
@@ -438,7 +442,11 @@ export default class CollectionLogTask extends Task {
 		// Collection title
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.fillStyle = '#FF981F';
-		this.drawText(ctx, collectionLog.name, 0, 0);
+		let effectiveName = collectionLog.name;
+		if (!collectionLog.counts) {
+			effectiveName = `${effectiveName} (Uncounted CL)`;
+		}
+		this.drawText(ctx, effectiveName, 0, 0);
 
 		// Collection obtained items
 		ctx.font = '16px OSRSFontCompact';
@@ -470,15 +478,25 @@ export default class CollectionLogTask extends Task {
 			ctx.textAlign = 'left';
 			ctx.fillStyle = '#FF981F';
 			this.drawText(ctx, (drawnSoFar = collectionLog.isActivity ? 'Completions: ' : 'Kills: '), 0, 25);
+			let pixelLevel = 25;
 			for (let [type, value] of objectEntries(collectionLog.completions)) {
+				if (
+					ctx.measureText(drawnSoFar).width +
+						ctx.measureText(` / ${type}: `).width +
+						ctx.measureText(value.toLocaleString()).width >=
+					225
+				) {
+					pixelLevel += 10;
+					drawnSoFar = '';
+				}
 				if (type !== 'Default') {
 					if (value === 0) continue;
 					ctx.fillStyle = '#FF981F';
-					this.drawText(ctx, ` / ${type}: `, ctx.measureText(drawnSoFar).width, 25);
+					this.drawText(ctx, ` / ${type}: `, ctx.measureText(drawnSoFar).width, pixelLevel);
 					drawnSoFar += ` / ${type}: `;
 				}
 				ctx.fillStyle = '#FFFFFF';
-				this.drawText(ctx, value.toLocaleString(), ctx.measureText(drawnSoFar).width, 25);
+				this.drawText(ctx, value.toLocaleString(), ctx.measureText(drawnSoFar).width, pixelLevel);
 				drawnSoFar += value.toLocaleString();
 			}
 		}
@@ -502,7 +520,7 @@ export default class CollectionLogTask extends Task {
 			if (!Boolean(flags.tall)) {
 				let selectedPos = 8;
 				const listItemSize = 15;
-				for (const name of objectKeys(collectionLog.leftList!)) {
+				for (const name of Object.keys(collectionLog.leftList!)) {
 					if (name === collectionLog.name) break;
 					selectedPos += listItemSize;
 				}
@@ -556,6 +574,7 @@ export default class CollectionLogTask extends Task {
 				ctx.drawImage(leftListCanvas, 12, 62);
 			}
 		}
+
 		return new MessageAttachment(canvas.toBuffer('image/png'), `${type}_log_${new Date().valueOf()}.png`);
 	}
 }

@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -11,7 +12,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['ebank'],
 			perkTier: PerkTier.Six,
-			oneAtTime: true,
 			cooldown: 60 * 60 * 3,
 			description:
 				'Shows a huge image containing everyones banks combined into one bank. Takes a while to complete.',
@@ -32,7 +32,7 @@ export default class extends BotCommand {
 			 ) s where itemQTY >= ${IGNORE_LESS_THEN};`;
 		const queryBank = await this.client.query<{ banks: ItemBank }[]>(query);
 		return msg.channel.sendBankImage({
-			bank: queryBank[0].banks,
+			bank: new Bank(queryBank[0].banks),
 			title: 'Entire Economy Bank'
 		});
 	}

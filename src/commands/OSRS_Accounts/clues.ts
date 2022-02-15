@@ -8,10 +8,9 @@ import { toTitleCase } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			description: 'Shows the Clue Highscores of an account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			categoryFlags: ['utility']
 		});
 	}
@@ -36,7 +35,7 @@ export default class extends BotCommand {
 			}
 
 			return msg.channel.send({ embeds: [embed] });
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

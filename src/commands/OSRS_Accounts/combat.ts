@@ -6,7 +6,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: ['cb'],
 			description: 'Shows the Combat level for an OSRS account.',
 			usage: '(username:rsn)',
@@ -19,7 +18,7 @@ export default class extends BotCommand {
 		try {
 			const player = await Hiscores.fetch(username);
 			return msg.channel.send(`${username}'s Combat Level is **${player.combatLevel}**.`);
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

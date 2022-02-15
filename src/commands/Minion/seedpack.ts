@@ -140,11 +140,9 @@ function openSeedPack(seedTier: number): ItemBank {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			aliases: ['sp'],
 			usage: '[quantity:int]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Opens seed packs.',
 			examples: ['+seedpack']
@@ -169,7 +167,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(new Bank().add('Seed pack', realQty));
-		await msg.author.addItemsToBank(loot.bank, true);
+		await msg.author.addItemsToBank({ items: loot, collectionLog: true });
 
 		return msg.channel.send(`You opened ${realQty} Seed pack${realQty > 1 ? 's' : ''} and received: ${loot}.`);
 	}

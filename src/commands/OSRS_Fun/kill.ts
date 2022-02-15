@@ -1,6 +1,6 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Monsters } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { PerkTier } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
@@ -12,12 +12,10 @@ import { Workers } from '../../lib/workers';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
-			oneAtTime: true,
 			description: 'Simulate killing OSRS monsters and shows the loot.',
 			usage: '<quantity:int{1}> <BossName:...str>',
 			usageDelim: ' ',
-			requiredPermissions: ['ATTACH_FILES'],
+			requiredPermissionsForBot: ['ATTACH_FILES'],
 			examples: ['+kill 100 vorkath', 'kill 100k bandos'],
 			categoryFlags: ['fun', 'simulation']
 		});
@@ -77,8 +75,8 @@ export default class extends BotCommand {
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				result.bank,
-				`Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster!.name)}`,
+				new Bank(result.bank),
+				`Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster?.name ?? bossName)}`,
 				true,
 				msg.flagArgs,
 				msg.author

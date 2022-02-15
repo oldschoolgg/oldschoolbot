@@ -13,8 +13,7 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: 'Allows you to simulate dice rolls, or dice your bot GP.',
 			usage: '[amount:int{1}]',
-			requiredPermissions: ['EMBED_LINKS'],
-			oneAtTime: true,
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			categoryFlags: ['minion', 'utility'],
 			examples: ['+dice', '+dice 1m']
 		});
@@ -45,7 +44,8 @@ export default class extends BotCommand {
 			let amountToAdd = won ? amount : -amount;
 
 			await msg.author.addGP(amountToAdd);
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
+			await updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
+			await updateGPTrackSetting(msg.author, UserSettings.GPDice, amountToAdd);
 
 			if (won) {
 				const wins = msg.author.settings.get(UserSettings.Stats.DiceWins);

@@ -320,6 +320,15 @@ export interface RaidsOptions extends ActivityTaskOptions {
 	challengeMode: boolean;
 }
 
+export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
+	leader: string;
+	users: string[];
+	hardMode: boolean;
+	fakeDuration: number;
+	wipedRoom: null | number;
+	deaths: number[][];
+}
+
 export interface CollectingOptions extends ActivityTaskOptions {
 	collectableID: number;
 	quantity: number;
@@ -333,6 +342,8 @@ export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
 export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
+
+export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	favour: KourendFavour;
@@ -362,4 +373,5 @@ export type ActivityTaskData =
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
 	| VolcanicMineActivityTaskOptions
+	| TearsOfGuthixActivityTaskOptions
 	| KourendFavourActivityTaskOptions;

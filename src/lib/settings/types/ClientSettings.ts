@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { O } from 'ts-toolbelt';
 
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank, ItemPriceCache } from '../../types';
@@ -22,56 +21,62 @@ export namespace ClientSettings {
 		export const DuelTaxBank = T<number>('economyStats.duelTaxBank');
 		export const DailiesAmount = T<number>('economyStats.dailiesAmount');
 		export const ItemSellTaxBank = T<number>('economyStats.itemSellTaxBank');
-		export const BankBgCostBank = T<O.Readonly<ItemBank>>('economyStats.bankBgCostBank');
-		export const SacrificedBank = T<O.Readonly<ItemBank>>('economyStats.sacrificedBank');
+		export const BankBgCostBank = T<Readonly<ItemBank>>('economyStats.bankBgCostBank');
+		export const SacrificedBank = T<Readonly<ItemBank>>('economyStats.sacrificedBank');
 
-		export const WintertodtCost = T<O.Readonly<ItemBank>>('economyStats.wintertodtCost');
-		export const WintertodtLoot = T<O.Readonly<ItemBank>>('economyStats.wintertodtLoot');
-		export const FightCavesCost = T<O.Readonly<ItemBank>>('economyStats.fightCavesCost');
-		export const PVMCost = T<O.Readonly<ItemBank>>('economyStats.PVMCost');
-		export const ThievingCost = T<O.Readonly<ItemBank>>('economyStats.thievingCost');
-		export const SoldItemsBank = T<O.Readonly<ItemBank>>('sold_items_bank');
-		export const HerbloreCostBank = T<O.Readonly<ItemBank>>('herblore_cost_bank');
-		export const ConstructCostBank = T<O.Readonly<ItemBank>>('construction_cost_bank');
-		export const FarmingCostBank = T<O.Readonly<ItemBank>>('farming_cost_bank');
-		export const FarmingLootBank = T<O.Readonly<ItemBank>>('farming_loot_bank');
-		export const BuyCostBank = T<O.Readonly<ItemBank>>('buy_cost_bank');
-		export const MagicCostBank = T<O.Readonly<ItemBank>>('magic_cost_bank');
-		export const CraftingCost = T<O.Readonly<ItemBank>>('crafting_cost');
+		export const WintertodtCost = T<Readonly<ItemBank>>('economyStats.wintertodtCost');
+		export const WintertodtLoot = T<Readonly<ItemBank>>('economyStats.wintertodtLoot');
+		export const FightCavesCost = T<Readonly<ItemBank>>('economyStats.fightCavesCost');
+		export const PVMCost = T<Readonly<ItemBank>>('economyStats.PVMCost');
+		export const ThievingCost = T<Readonly<ItemBank>>('economyStats.thievingCost');
+		export const SoldItemsBank = T<Readonly<ItemBank>>('sold_items_bank');
+		export const HerbloreCostBank = T<Readonly<ItemBank>>('herblore_cost_bank');
+		export const ConstructCostBank = T<Readonly<ItemBank>>('construction_cost_bank');
+		export const FarmingCostBank = T<Readonly<ItemBank>>('farming_cost_bank');
+		export const FarmingLootBank = T<Readonly<ItemBank>>('farming_loot_bank');
+		export const BuyCostBank = T<Readonly<ItemBank>>('buy_cost_bank');
+		export const BuyLootBank = T<Readonly<ItemBank>>('buy_loot_bank');
+		export const MagicCostBank = T<Readonly<ItemBank>>('magic_cost_bank');
+		export const CraftingCost = T<Readonly<ItemBank>>('crafting_cost');
 
-		export const GnomeRestaurantCostBank = T<O.Readonly<ItemBank>>('gnome_res_cost');
-		export const GnomeRestaurantLootBank = T<O.Readonly<ItemBank>>('gnome_res_loot');
+		export const GnomeRestaurantCostBank = T<Readonly<ItemBank>>('gnome_res_cost');
+		export const GnomeRestaurantLootBank = T<Readonly<ItemBank>>('gnome_res_loot');
 
-		export const RoguesDenStaminas = T<O.Readonly<ItemBank>>('rogues_den_cost');
-		export const GauntletLoot = T<O.Readonly<ItemBank>>('gauntlet_loot');
+		export const RoguesDenStaminas = T<Readonly<ItemBank>>('rogues_den_cost');
+		export const GauntletLoot = T<Readonly<ItemBank>>('gauntlet_loot');
 
-		export const CoxCost = T<O.Readonly<ItemBank>>('cox_cost');
-		export const CoxLoot = T<O.Readonly<ItemBank>>('cox_loot');
+		export const CoxCost = T<Readonly<ItemBank>>('cox_cost');
+		export const CoxLoot = T<Readonly<ItemBank>>('cox_loot');
 
-		export const CollectingCost = T<O.Readonly<ItemBank>>('collecting_cost');
-		export const CollectingLoot = T<O.Readonly<ItemBank>>('collecting_loot');
+		export const CollectingCost = T<Readonly<ItemBank>>('collecting_cost');
+		export const CollectingLoot = T<Readonly<ItemBank>>('collecting_loot');
 
-		export const MTACostBank = T<O.Readonly<ItemBank>>('mta_cost');
-		export const BlastFurnaceCostBank = T<O.Readonly<ItemBank>>('bf_cost');
+		export const MTACostBank = T<Readonly<ItemBank>>('mta_cost');
+		export const BlastFurnaceCostBank = T<Readonly<ItemBank>>('bf_cost');
 
-		export const MageArenaCost = T<O.Readonly<ItemBank>>('mage_arena_cost');
+		export const MageArenaCost = T<Readonly<ItemBank>>('mage_arena_cost');
 
-		export const HunterCost = T<O.Readonly<ItemBank>>('hunter_cost');
-		export const HunterLoot = T<O.Readonly<ItemBank>>('hunter_loot');
+		export const HunterCost = T<Readonly<ItemBank>>('hunter_cost');
+		export const HunterLoot = T<Readonly<ItemBank>>('hunter_loot');
 
-		export const RevsCost = T<O.Readonly<ItemBank>>('revs_cost');
-		export const RevsLoot = T<O.Readonly<ItemBank>>('revs_loot');
+		export const RevsCost = T<Readonly<ItemBank>>('revs_cost');
+		export const RevsLoot = T<Readonly<ItemBank>>('revs_loot');
 
-		export const InfernoCost = T<O.Readonly<ItemBank>>('inferno_cost');
-		export const DroppedItems = T<O.Readonly<ItemBank>>('dropped_items');
+		export const InfernoCost = T<Readonly<ItemBank>>('inferno_cost');
+		export const DroppedItems = T<Readonly<ItemBank>>('dropped_items');
 
-		export const RunecraftCost = T<O.Readonly<ItemBank>>('runecraft_cost');
+		export const RunecraftCost = T<Readonly<ItemBank>>('runecraft_cost');
 
-		export const SmithingCost = T<O.Readonly<ItemBank>>('smithing_cost');
-		export const NightmareCost = T<O.Readonly<ItemBank>>('nightmare_cost');
+		export const SmithingCost = T<Readonly<ItemBank>>('smithing_cost');
+		export const NightmareCost = T<Readonly<ItemBank>>('nightmare_cost');
 
-		export const CreateCost = T<O.Readonly<ItemBank>>('create_cost');
-		export const CreateLoot = T<O.Readonly<ItemBank>>('create_loot');
+		export const CreateCost = T<Readonly<ItemBank>>('create_cost');
+		export const CreateLoot = T<Readonly<ItemBank>>('create_loot');
+
+		export const TOBCost = T<Readonly<ItemBank>>('tob_cost');
+		export const TOBLoot = T<Readonly<ItemBank>>('tob_loot');
+
+		export const DegradedItemsCost = T<Readonly<ItemBank>>('degraded_items_cost');
 
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
@@ -80,8 +85,9 @@ export namespace ClientSettings {
 		export const GPSourceDice = T<number>('gp_dice');
 		export const GPSourceOpen = T<number>('gp_open');
 		export const GPSourceDaily = T<number>('gp_daily');
+		export const GPSourceLuckyPick = T<number>('gp_luckypick');
 	}
 
 	export const LockedSkills = T<readonly SkillsEnum[]>('locked_skills');
-	export const CustomPrices = T<O.Readonly<ItemBank>>('custom_prices');
+	export const CustomPrices = T<Readonly<ItemBank>>('custom_prices');
 }

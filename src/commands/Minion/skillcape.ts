@@ -14,8 +14,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<skillname:string>',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			categoryFlags: ['minion'],
 			description: 'Purchases skillcapes from the bot, you can buy untrimmed capes if its your first 99.',
@@ -53,7 +51,7 @@ export default class extends BotCommand {
 		);
 
 		await msg.author.removeGP(skillCapeCost);
-		await msg.author.addItemsToBank(itemsToPurchase, true);
+		await msg.author.addItemsToBank({ items: itemsToPurchase, collectionLog: true });
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.BuyCostBank,
 			new Bank(this.client.settings.get(ClientSettings.EconomyStats.BuyCostBank)).add('Coins', skillCapeCost).bank

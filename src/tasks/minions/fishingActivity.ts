@@ -1,5 +1,5 @@
-import { calcPercentOfNum } from 'e';
-import { Task } from 'klasa';
+import { calcPercentOfNum, percentChance } from 'e';
+import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
@@ -7,17 +7,42 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, roll } from '../../lib/util';
+import { anglerBoostPercent, rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
+
+function radasBlessing(user: KlasaUser) {
+	const blessingBoosts = [
+		["Rada's blessing 4", 8],
+		["Rada's blessing 3", 6],
+		["Rada's blessing 2", 4],
+		["Rada's blessing 1", 2]
+	];
+
+	for (const [itemName, boostPercent] of blessingBoosts) {
+		if (user.hasItemEquippedAnywhere(itemName)) {
+			return { blessingEquipped: true, blessingChance: boostPercent as number };
+		}
+	}
+	return { blessingEquipped: false, blessingChance: 0 };
+}
 
 export default class extends Task {
 	async run(data: FishingActivityTaskOptions) {
 		let { fishID, quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Fishing);
+		const { blessingEquipped, blessingChance } = radasBlessing(user);
 
 		const fish = Fishing.Fishes.find(fish => fish.id === fishID)!;
+
+		const minnowQuantity: { [key: number]: number[] } = {
+			99: [10, 14],
+			95: [11, 13],
+			90: [10, 13],
+			85: [10, 11],
+			1: [10, 10]
+		};
 
 		let xpReceived = 0;
 		let leapingSturgeon = 0;
@@ -34,7 +59,7 @@ export default class extends Task {
 					user.skillLevel(SkillsEnum.Strength) >= 45
 				) {
 					xpReceived += 80;
-					leapingSturgeon += 1;
+					leapingSturgeon += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 					agilityXpReceived += 7;
 					strengthXpReceived += 7;
 				} else if (
@@ -44,12 +69,12 @@ export default class extends Task {
 					user.skillLevel(SkillsEnum.Strength) >= 30
 				) {
 					xpReceived += 70;
-					leapingSalmon += 1;
+					leapingSalmon += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 					agilityXpReceived += 6;
 					strengthXpReceived += 6;
 				} else if (roll(255 / (32 + Math.floor(1.632 * user.skillLevel(SkillsEnum.Fishing))))) {
 					xpReceived += 50;
-					leapingTrout += 1;
+					leapingTrout += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
 					agilityXpReceived += 5;
 					strengthXpReceived += 5;
 				}
@@ -104,11 +129,30 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished fishing ${quantity} ${fish.name}. ${xpRes}`;
 
-		let lootQuantity = quantity;
-
-		if (fish.id === itemID('Raw karambwanji')) {
-			lootQuantity *= 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
+		let lootQuantity = 0;
+		const baseKarambwanji = 1 + Math.floor(user.skillLevel(SkillsEnum.Fishing) / 5);
+		let baseMinnow = [10, 10];
+		for (const [level, quantities] of Object.entries(minnowQuantity).reverse()) {
+			if (user.skillLevel(SkillsEnum.Fishing) >= parseInt(level)) {
+				baseMinnow = quantities;
+				break;
+			}
 		}
+
+		for (let i = 0; i < quantity; i++) {
+			if (fish.id === itemID('Raw karambwanji')) {
+				lootQuantity +=
+					blessingEquipped && percentChance(blessingChance) ? baseKarambwanji * 2 : baseKarambwanji;
+			} else if (fish.id === itemID('Minnow')) {
+				lootQuantity +=
+					blessingEquipped && percentChance(blessingChance)
+						? rand(baseMinnow[0], baseMinnow[1]) * 2
+						: rand(baseMinnow[0], baseMinnow[1]);
+			} else {
+				lootQuantity += blessingEquipped && percentChance(blessingChance) ? 2 : 1;
+			}
+		}
+
 		let loot = new Bank({
 			[fish.id]: lootQuantity
 		});
@@ -120,7 +164,7 @@ export default class extends Task {
 
 		// Add barbarian fish to loot
 		if (fish.name === 'Barbarian fishing') {
-			loot.bank[fish.id] = 0;
+			loot.remove(fish.id, loot.amount(fish.id));
 			loot.add('Leaping sturgeon', leapingSturgeon);
 			loot.add('Leaping salmon', leapingSalmon);
 			loot.add('Leaping trout', leapingTrout);
@@ -158,9 +202,13 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		str += `\n\nYou received: ${loot}.`;
+
+		if (blessingEquipped) {
+			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
+		}
 
 		handleTripFinish(
 			this.client,
@@ -170,7 +218,7 @@ export default class extends Task {
 			['fish', [quantity, fish.name], true],
 			undefined,
 			data,
-			loot.bank
+			loot
 		);
 	}
 }

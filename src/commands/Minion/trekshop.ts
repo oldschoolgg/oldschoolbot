@@ -14,8 +14,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<easy|medium|hard> [quantity:integer{1,2147483647}] [item:...string]',
 			usageDelim: ' ',
-			oneAtTime: true,
-			cooldown: 5,
 			altProtection: true,
 			aliases: ['ts'],
 			categoryFlags: ['minion'],
@@ -151,7 +149,7 @@ export default class extends BotCommand {
 			`${user}, please confirm that you want to use ${quantity} ${type} reward tokens to buy sets of ${specifiedItem.name}.`
 		);
 
-		if (outItems.length > 0) await user.addItemsToBank(outItems);
+		if (outItems.length > 0) await user.addItemsToBank({ items: outItems, collectionLog: false });
 		await user.removeItemsFromBank(inItems);
 
 		let ret = `You redeemed **${inItems}** for `;

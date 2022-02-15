@@ -1,4 +1,4 @@
-import { ActivityTypeEnum, PlayerOwnedHouse } from '@prisma/client';
+import { activity_type_enum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
@@ -22,13 +22,13 @@ import { chatHeads } from '../util/chatHeadImage';
 import { ItemBank, MakePartyOptions, Skills } from '.';
 
 type SendBankImageFn = (options: {
-	bank: ItemBank;
+	bank: Bank;
 	content?: string;
 	title?: string;
 	background?: number;
 	flags?: Record<string, string | number>;
 	user?: KlasaUser;
-	cl?: ItemBank;
+	cl?: Bank;
 	gearPlaceholder?: Record<GearSetupType, GearSetup>;
 }) => Promise<KlasaMessage>;
 
@@ -58,7 +58,6 @@ declare module 'klasa' {
 
 	interface Command {
 		altProtection?: boolean;
-		oneAtTime?: boolean;
 		guildOnly?: boolean;
 		perkTier?: number;
 		ironCantUse?: boolean;
@@ -68,12 +67,12 @@ declare module 'klasa' {
 
 	interface Task {
 		generateBankImage(
-			bank: ItemBank,
+			bank: Bank,
 			title?: string,
 			showValue?: boolean,
 			flags?: { [key: string]: string | number },
 			user?: KlasaUser,
-			cl?: ItemBank
+			cl?: Bank
 		): Promise<BankImageResult>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
 		generateLogImage(options: {
@@ -101,10 +100,9 @@ declare module 'klasa' {
 	}
 }
 
-declare module 'discord-api-types/v8' {
+declare module 'discord.js/node_modules/discord-api-types/v8' {
 	type Snowflake = string;
 }
-
 type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
 
 declare module 'discord.js' {
@@ -136,14 +134,15 @@ declare module 'discord.js' {
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
-		addItemsToBank(
-			items: ItemBank | Bank,
-			collectionLog?: boolean,
-			filterLoot?: boolean
-		): Promise<{ previousCL: ItemBank; itemsAdded: ItemBank }>;
+		addItemsToBank(options: {
+			items: ItemBank | Bank;
+			collectionLog?: boolean;
+			filterLoot?: boolean;
+			dontAddToTempCL?: boolean;
+		}): Promise<{ previousCL: Bank; itemsAdded: Bank }>;
 		removeItemsFromBank(items: ItemBank | Bank, collectionLog?: boolean): Promise<SettingsUpdateResult>;
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
-		addItemsToCollectionLog(items: ItemBank): Promise<SettingsUpdateResult>;
+		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
@@ -246,7 +245,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: ActivityTypeEnum): number;
+		maxTripLength(activity?: activity_type_enum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;
@@ -272,14 +271,7 @@ declare module 'discord.js' {
 	}
 
 	interface NewsChannel {
-		sendBankImage(options: {
-			bank: ItemBank;
-			content?: string;
-			title?: string;
-			background?: number;
-			flags?: Record<string, string | number>;
-			user?: KlasaUser;
-		}): Promise<KlasaMessage>;
+		sendBankImage: SendBankImageFn;
 		__triviaQuestionsDone: any;
 	}
 }

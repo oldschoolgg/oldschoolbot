@@ -13,8 +13,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: `<${GearSetupTypes.join('|')}> (item:...item)`,
 			usageDelim: ' ',
 			categoryFlags: ['minion'],
@@ -47,7 +45,10 @@ export default class extends BotCommand {
 		newGear[slot] = null;
 
 		await msg.author.addItemsToBank({
-			[equippedInThisSlot!.item]: equippedInThisSlot!.quantity
+			items: {
+				[equippedInThisSlot!.item]: equippedInThisSlot!.quantity
+			},
+			collectionLog: false
 		});
 		await msg.author.settings.update(gearTypeSetting, newGear);
 

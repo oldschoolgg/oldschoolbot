@@ -88,12 +88,11 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows the bots leaderboards.',
-			usage: '[pets|gp|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open|inferno] [name:...string]',
+			usage: '[pets|gp|kc|cl|qp|skills|sacrifice|laps|creatures|minigame|farmingcontracts|xp|open|inferno|uniquesac] [name:...string]',
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
-			requiredPermissions: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
-			oneAtTime: true,
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
 			categoryFlags: ['minion', 'utility'],
 			examples: [
 				'+lb gp',
@@ -131,22 +130,22 @@ export default class extends BotCommand {
 			}
 		});
 
-		for (const user of allNewUsers) {
-			this.usernameCache.map.set(user.id, stripEmojis(user.username!));
-		}
-
-		const arrayOfUsers: { badges: number[]; id: string; ironman: boolean }[] = await this.query(
+		const arrayOfIronmenAndBadges: { badges: number[]; id: string; ironman: boolean }[] = await this.query(
 			'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;',
 			false
 		);
 
-		for (const user of arrayOfUsers) {
-			const rawName = this.usernameCache.map.get(user.id) ?? '(Unknown)';
-			const rawBadges = user.badges.map(num => badges[num]);
-			if (user.ironman) {
-				rawBadges.push(Emoji.Ironman);
+		for (const user of allNewUsers) {
+			const badgeUser = arrayOfIronmenAndBadges.find(i => i.id === user.id);
+			let name = stripEmojis(user.username!);
+			if (badgeUser) {
+				const rawBadges = badgeUser.badges.map(num => badges[num]);
+				if (badgeUser.ironman) {
+					rawBadges.push(Emoji.Ironman);
+				}
+				name = `${rawBadges.join(' ')} ${name}`;
 			}
-			this.usernameCache.map.set(user.id, `${rawBadges.join(' ')} ${rawName}`);
+			this.usernameCache.map.set(user.id, name);
 		}
 	}
 
@@ -212,6 +211,30 @@ LIMIT 10;`);
 						.join('\n')
 				),
 			'GP Leaderboard'
+		);
+	}
+
+	async uniquesac(msg: KlasaMessage) {
+		const mostUniques: { id: string; sacbanklength: number }[] =
+			await prisma.$queryRaw`SELECT u.id, u.sacbanklength FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
+) u
+ORDER BY u.sacbanklength DESC LIMIT 10;`;
+		this.doMenu(
+			msg,
+			util
+				.chunk(mostUniques, LB_PAGE_SIZE)
+				.map((subList, i) =>
+					subList
+						.map(
+							({ id, sacbanklength }, j) =>
+								`${this.getPos(i, j)}**${this.getUsername(
+									id
+								)}:** ${sacbanklength.toLocaleString()} Unique Sac's`
+						)
+						.join('\n')
+				),
+			'Unique Sacrifice Leaderboard'
 		);
 	}
 
@@ -605,7 +628,7 @@ LIMIT 50;
 						)
 						.join('\n')
 				),
-			`${toTitleCase(inputType.toLowerCase())} Collection Log Leaderboard`
+			`${toTitleCase(inputType.toLowerCase())} Collection Log Leaderboard (${items.length} slots)`
 		);
 	}
 

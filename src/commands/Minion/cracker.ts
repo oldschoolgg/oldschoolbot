@@ -33,7 +33,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			cooldown: 3,
 			usage: '<member:member>',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Uses a christmas cracker on another player.',
 			examples: ['+cracker @Magnaboy'],
@@ -67,8 +66,8 @@ export default class extends BotCommand {
 		const winnerLoot = HatTable.roll();
 		const loserLoot = JunkTable.roll();
 		const [winner, loser] = shuffleArr([buyerMember.user, msg.author]);
-		await winner.addItemsToBank(winnerLoot, true);
-		await loser.addItemsToBank(loserLoot, true);
+		await winner.addItemsToBank({ items: winnerLoot, collectionLog: true });
+		await loser.addItemsToBank({ items: loserLoot, collectionLog: true });
 
 		return msg.channel.send(
 			cleanMentions(

@@ -8,6 +8,7 @@ import { table } from 'table';
 import { production } from '../../config';
 import { BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
@@ -20,7 +21,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
-import { blowpipeDarts } from './blowpipe';
 
 const minimumRangeItems = [
 	'Amulet of fury',
@@ -53,9 +53,8 @@ const itemRequirements = new Bank().add('Rune pouch');
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ATTACH_FILES'],
+			requiredPermissionsForBot: ['ATTACH_FILES'],
 			description: 'Sends your minion to complete the Inferno.',
 			examples: ['+inferno start', '+i'],
 			categoryFlags: ['minion', 'minigame'],
@@ -272,7 +271,7 @@ export default class extends BotCommand {
 				await this.client.query<any>(`SELECT COUNT(*)
 FROM activity
 WHERE type = 'Inferno'
-AND user_id = '${userID}'
+AND user_id = ${userID}
 AND completed = true
 AND (data->>'diedPreZuk')::boolean = false;`)
 			)[0].count
@@ -373,6 +372,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			-5,
 			'Ely'
 		);
+
+		preZukDeathChance.add(rangeGear.hasEquipped('Justiciar faceguard'), -5, 'Just. faceguard');
 
 		const hasSuffering =
 			rangeGear.hasEquipped('Ring of suffering (i)') || mageGear.hasEquipped('Ring of suffering (i)');

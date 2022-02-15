@@ -11,10 +11,9 @@ function renderVal(num: number) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			description: 'Shows the BH & LMS scores of an account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+pvp d3adscene'],
 			categoryFlags: ['utility']
 		});
@@ -45,7 +44,7 @@ export default class extends BotCommand {
 					true
 				);
 			return msg.channel.send({ embeds: [embed] });
-		} catch (err) {
+		} catch (err: any) {
 			return msg.channel.send(err.message);
 		}
 	}

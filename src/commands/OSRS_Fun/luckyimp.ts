@@ -1,13 +1,11 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Openables } from 'oldschooljs';
+import { Bank, Openables } from 'oldschooljs';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 5,
-			oneAtTime: true,
 			usage: '[quantity:int{1,5000}]',
 			usageDelim: ' ',
 			examples: ['+luckyimp 5'],
@@ -21,7 +19,7 @@ export default class extends BotCommand {
 			return msg.channel.send('I can only catch 10 Lucky Imps at a time!');
 		}
 
-		const loot = Openables.LuckyImpling.open(qty);
+		const loot = new Bank(Openables.LuckyImpling.open(qty));
 
 		const opened = `You caught ${qty} Lucky Imp${qty > 1 ? 's' : ''}`;
 
