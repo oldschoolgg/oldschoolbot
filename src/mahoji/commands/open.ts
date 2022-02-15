@@ -10,7 +10,7 @@ import { itemID, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { OSBMahojiCommand } from '../lib/util';
 
-export const askCommand: OSBMahojiCommand = {
+export const openCommand: OSBMahojiCommand = {
 	name: 'open',
 	description: 'Open an item (caskets, keys, boxes, etc).',
 	options: [

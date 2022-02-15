@@ -7,7 +7,7 @@ import { toKMB } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, MahojiUserOption } from '../mahojiSettings';
 
-export const askCommand: OSBMahojiCommand = {
+export const payCommand: OSBMahojiCommand = {
 	name: 'pay',
 	description: 'Send GP to another user.',
 	options: [
