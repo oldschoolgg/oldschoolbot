@@ -78,6 +78,12 @@ const gorajanBoosts = [
 	[gorajanWarriorOutfit, 'melee'],
 	[gorajanOccultOutfit, 'mage']
 ] as const;
+const gearstatToSetup = new Map()
+	.set('attack_stab', 'melee')
+	.set('attack_slash', 'melee')
+	.set('attack_crush', 'melee')
+	.set('attack_magic', 'mage')
+	.set('attack_ranged', 'range');
 const degradeableItemsCanUse = [
 	{
 		item: getOSItem('Sanguinesti staff'),
@@ -376,7 +382,8 @@ export default class extends BotCommand {
 		for (const [outfit, setup] of gorajanBoosts) {
 			if (
 				allGorajan ||
-				(monster.attackStyleToUse?.includes(setup) && msg.author.getGear(setup).hasEquipped(outfit, true))
+				(gearstatToSetup.get(monster.attackStyleToUse) === setup &&
+					msg.author.getGear(setup).hasEquipped(outfit, true))
 			) {
 				boosts.push('10% for gorajan');
 				timeToFinish *= 0.9;
