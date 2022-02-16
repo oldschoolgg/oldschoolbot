@@ -430,6 +430,10 @@ model User {
   item_contract_bank       Json     @default("{}") @db.Json
   got_free_festive_present Boolean  @default(false)
 
+  // Invention
+  materials_total         Json @default("{}") @db.Json
+  materials_owned         Json @default("{}") @db.Json
+  disassembled_items_bank Json @default("{}") @db.Json
 
   @@map("users")
 }
