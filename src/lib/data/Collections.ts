@@ -253,7 +253,11 @@ export const allCollectionLogs: ICollection = {
 				items: krilTsutsarothCL
 			},
 			'The Nightmare': {
-				alias: NightmareMonster.aliases,
+				alias: [...NightmareMonster.aliases, 'phosani'],
+					kcActivity: {
+					Default: 'Nightmare',
+					Phosani: "Phosani's Nightmare"
+				},
 				items: theNightmareCL
 			},
 			Obor: {
