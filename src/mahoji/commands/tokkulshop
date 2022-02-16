@@ -16,8 +16,8 @@ import { handleMahojiConfirmation } from '../mahojiSettings';
 const { TzTokJad } = Monsters;
 
 export const tksCommand: OSBMahojiCommand = {
-	name: 'tks',
-	description: 'Buy items from the Tzhaar shops.',
+	name: 'tokkulshop',
+	description: 'Buy or sell items from the Tzhaar shops.',
 	attributes: {
 		categoryFlags: ['minion'],
 		description: 'Purchase items from the Tzhaar shops using tokkul.',
