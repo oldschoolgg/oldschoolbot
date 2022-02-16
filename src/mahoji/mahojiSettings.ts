@@ -26,15 +26,16 @@ export function mahojiParseNumber({
 	min,
 	max
 }: {
-	input: string | undefined | null;
+	input: number | string | undefined | null;
 	min?: number;
 	max?: number;
 }): number | null {
 	if (input === undefined || input === null) return null;
-	const parsed = evalMathExpression(input);
+	const parsed = typeof input === 'number' ? input : evalMathExpression(input);
 	if (parsed === null) return null;
 	if (min && parsed < min) return null;
 	if (max && parsed > max) return null;
+	if (Number.isNaN(parsed)) return null;
 	return parsed;
 }
 
