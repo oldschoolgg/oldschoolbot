@@ -254,7 +254,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'The Nightmare': {
 				alias: [...NightmareMonster.aliases, 'phosani'],
-					kcActivity: {
+				kcActivity: {
 					Default: 'Nightmare',
 					Phosani: "Phosani's Nightmare"
 				},
