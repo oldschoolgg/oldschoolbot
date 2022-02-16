@@ -101,7 +101,7 @@ export const lmsCommand: OSBMahojiCommand = {
 	description: 'Sends your minion to do the Last Man Standing minigame.',
 	attributes: {
 		categoryFlags: ['minion', 'minigame'],
-		description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
+		description: 'Sends your minion to do the Last Man Standing minigame.',
 		examples: ['/lms']
 	},
 	options: [
