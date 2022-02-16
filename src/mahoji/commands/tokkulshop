@@ -46,7 +46,7 @@ export const tksCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Integer,
 					required: false,
 					min_value: 1,
-					max_value: 1000
+					max_value: 10000
 				}
 			]
 		},
@@ -72,7 +72,7 @@ export const tksCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Integer,
 					required: false,
 					min_value: 1,
-					max_value: 1000
+					max_value: 10000
 				}
 			]
 		}
