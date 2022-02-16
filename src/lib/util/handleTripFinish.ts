@@ -120,7 +120,8 @@ export async function handleTripFinish(
 					commandName: onContinue[0],
 					args: onContinue[1],
 					isContinue: onContinue[2],
-					method: onContinue[3]
+					method: onContinue[3],
+					bypassInhibitors: true
 				})
 		: onContinue;
 
