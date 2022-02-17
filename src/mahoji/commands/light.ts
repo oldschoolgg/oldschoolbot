@@ -15,8 +15,7 @@ export const lightCommand: OSBMahojiCommand = {
 	description: 'Sends your minion to light logs to train firemaking.',
 	attributes: {
 		categoryFlags: ['minion', 'skilling'],
-		description: 'Sends your minion to light logs to train firemaking.',
-		examples: ['+light 5 logs', '+light magic logs']
+		description: 'Sends your minion to light logs to train firemaking.'
 	},
 	options: [
 		{
