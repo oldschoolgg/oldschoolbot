@@ -127,7 +127,7 @@ export default class extends Task {
 			user,
 			channelID,
 			returnStr,
-			['tithefarm', [], true],
+			['tithefarm', {}, true],
 			undefined,
 			data,
 			loot.length > 0 ? loot : null
