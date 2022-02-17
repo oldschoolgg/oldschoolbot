@@ -72,11 +72,11 @@ export const lightCommand: OSBMahojiCommand = {
 			quantity = Math.floor(maxTripLength / timeToLightSingleLog);
 		}
 
-		const baseCost = new Bank(logOpt.inputLogs);
+		const baseCost = new Bank().add(logOpt.name);
 
 		const maxCanDo = user.bank().fits(baseCost);
 		if (maxCanDo === 0) {
-			return `You don't have enough logs to light even one!`;
+			return "You don't have enough logs to light even one!";
 		}
 		if (maxCanDo < quantity) {
 			quantity = maxCanDo;
@@ -84,9 +84,8 @@ export const lightCommand: OSBMahojiCommand = {
 
 		const cost = new Bank();
 		cost.add(baseCost.multiply(quantity));
-		
-		const duration = quantity * timeToLightSingleLog;
 
+		const duration = quantity * timeToLightSingleLog;
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength

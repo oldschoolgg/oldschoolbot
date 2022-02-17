@@ -52,7 +52,7 @@ export default class extends Task {
 			[
 				'light',
 				{
-					log: burnable.name,
+					name: burnable.name,
 					quantity
 				},
 				true
