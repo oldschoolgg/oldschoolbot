@@ -71,7 +71,7 @@ export const lightCommand: OSBMahojiCommand = {
 		// If no quantity provided, set it to the max.
 		if (quantity === undefined) {
 			const amountOfLogsOwned = user.settings.get(UserSettings.Bank)[logOpt.inputLogs];
-			if (!amountOfLogsOwned || amountOfLogsOwned === 0) {
+			if (!amountOfLogsOwned) {
 				return `You have no ${logOpt.name}`;
 			}
 			quantity = Math.min(Math.floor(maxTripLength / timeToLightSingleLog), amountOfLogsOwned);
