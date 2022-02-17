@@ -87,7 +87,7 @@ export default class extends Task {
 			[
 				'chop',
 				{
-					name: Woodcutting.name,
+					name: log.name,
 					quantity
 				},
 				true
