@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
@@ -22,8 +21,8 @@ export const lightCommand: OSBMahojiCommand = {
 	options: [
 		{
 			type: ApplicationCommandOptionType.String,
-			name: 'log',
-			description: 'The log you wish to burn',
+			name: 'name',
+			description: 'The name of the log you wish to burn',
 			required: true,
 			autocomplete: async (value: string) => {
 				return Firemaking.Burnables.filter(i =>
@@ -45,13 +44,13 @@ export const lightCommand: OSBMahojiCommand = {
 		options,
 		userID
 	}: CommandRunOptions<{
-		log: string;
+		name: string;
 		quantity?: number;
 	}>) => {
 		const user = await client.fetchUser(userID.toString());
-		let { log, quantity } = options;
+		let { name, quantity } = options;
 
-		const logOpt = Firemaking.Burnables.find(_burnable => stringMatches(_burnable.name, log));
+		const logOpt = Firemaking.Burnables.find(_burnable => stringMatches(_burnable.name, name));
 
 		if (!logOpt) {
 			return `That's not a valid log to light. Valid logs are ${Firemaking.Burnables.map(log => log.name).join(
@@ -63,27 +62,29 @@ export const lightCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${logOpt.level} Firemaking to light ${logOpt.name}`;
 		}
 
-		const maxTripLength = user.maxTripLength('Firemaking');
-
 		// All logs take 2.4s to light, add on quarter of a second to account for banking/etc.
 		const timeToLightSingleLog = Time.Second * 2.4 + Time.Second / 4;
 
+		const maxTripLength = user.maxTripLength('Firemaking');
+
 		// If no quantity provided, set it to the max.
-		if (quantity === undefined) {
-			const amountOfLogsOwned = user.settings.get(UserSettings.Bank)[logOpt.inputLogs];
-			if (!amountOfLogsOwned) {
-				return `You have no ${logOpt.name}`;
-			}
-			quantity = Math.min(Math.floor(maxTripLength / timeToLightSingleLog), amountOfLogsOwned);
+		if (!quantity) {
+			quantity = Math.floor(maxTripLength / timeToLightSingleLog);
 		}
 
-		// Check the user has the required logs to light.
-		// Multiplying the logs required by the quantity of ashes.
-		const hasRequiredLogs = user.hasItem(logOpt.inputLogs, quantity);
-		if (!hasRequiredLogs) {
-			return `You dont have ${quantity}x ${logOpt.name}.`;
+		const baseCost = new Bank(logOpt.inputLogs);
+
+		const maxCanDo = user.bank().fits(baseCost);
+		if (maxCanDo === 0) {
+			return `You don't have enough logs to light even one!`;
+		}
+		if (maxCanDo < quantity) {
+			quantity = maxCanDo;
 		}
 
+		const cost = new Bank();
+		cost.add(baseCost.multiply(quantity));
+		
 		const duration = quantity * timeToLightSingleLog;
 
 		if (duration > maxTripLength) {
@@ -94,7 +95,7 @@ export const lightCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await user.removeItemsFromBank(new Bank().add(logOpt.inputLogs, quantity));
+		await user.removeItemsFromBank(cost);
 
 		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: logOpt.inputLogs,

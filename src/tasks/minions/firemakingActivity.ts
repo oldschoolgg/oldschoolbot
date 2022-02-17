@@ -49,7 +49,14 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['light', [quantity, burnable.name], true],
+			[
+				'light',
+				{
+					log: burnable.name,
+					quantity
+				},
+				true
+			],
 			undefined,
 			data,
 			null
