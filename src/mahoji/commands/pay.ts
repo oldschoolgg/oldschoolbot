@@ -47,7 +47,7 @@ export const payCommand: OSBMahojiCommand = {
 
 		if (amount > 500_000_000) {
 			await handleMahojiConfirmation(
-				channelID.toString(),
+				channelID,
 				userID,
 				interaction,
 				`Are you sure you want to pay ${user.username}#${user.discriminator} (ID: ${user.id}) ${toKMB(amount)}?`

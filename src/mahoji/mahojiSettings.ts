@@ -66,12 +66,12 @@ export const searchOption: CommandOption = {
 };
 
 export async function handleMahojiConfirmation(
-	channelID: string,
+	channelID: bigint,
 	userID: bigint,
 	interaction: SlashCommandInteraction,
 	str: string
 ) {
-	const channel = client.channels.cache.get(channelID);
+	const channel = client.channels.cache.get(channelID.toString());
 	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
 	await interaction.deferReply();
 

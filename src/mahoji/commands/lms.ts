@@ -203,7 +203,7 @@ export const lmsCommand: OSBMahojiCommand = {
 			}
 			const loot = new Bank().add(itemToBuy.item.id, quantity * (itemToBuy.quantity ?? 1));
 			await handleMahojiConfirmation(
-				channelID.toString(),
+				channelID,
 				userID,
 				interaction,
 				`Are you sure you want to spend ${cost} points on buying ${loot}?`
