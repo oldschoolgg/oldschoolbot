@@ -84,7 +84,14 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['chop', [quantity, log.name], true],
+			[
+				'chop',
+				{
+					name: Woodcutting.name,
+					quantity
+				},
+				true
+			],
 			undefined,
 			data,
 			loot
