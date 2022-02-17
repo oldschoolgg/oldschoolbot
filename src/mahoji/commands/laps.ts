@@ -75,7 +75,7 @@ export const lapsCommand: OSBMahojiCommand = {
 	attributes: {
 		categoryFlags: ['minion', 'skilling'],
 		description: 'Send your minion to train on an agility course.',
-		examples: ['/laps Ape Atoll Course', '/laps course:Draynor Rooftop Course quantity:5 alch:True']
+		examples: ['/laps ape atoll', '/laps draynor 5']
 	},
 	options: [
 		{
@@ -146,7 +146,10 @@ export const lapsCommand: OSBMahojiCommand = {
 			courseObj.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
-		const alchResult = courseObj.name === 'Ape Atoll Agility Course' || 'Penguin Agility Course' ? null : alching(user, duration, alch);
+		const alchResult =
+			courseObj.name === 'Ape Atoll Agility Course' || courseObj.name === 'Penguin Agility Course'
+				? null
+				: alching(user, duration, alch);
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {
 				return `You don't own ${alchResult.bankToRemove}.`;
