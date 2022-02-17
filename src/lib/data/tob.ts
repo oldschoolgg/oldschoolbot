@@ -576,15 +576,15 @@ export function createTOBTeam({
 			}
 		}
 		const nyloWeaponBoosts = [
-            ['Ham joint', 1],
-            ['Swift blade', 1]
-        ] as const;
-        for (const [name, percent] of nyloWeaponBoosts) {
-            if (u.user.hasItemEquippedOrInBank(name)) {
-                userPercentChange += percent;
-                break;
-            }
-        }
+			['Ham joint', 1],
+			['Swift blade', 1]
+		] as const;
+		for (const [name, percent] of nyloWeaponBoosts) {
+			if (u.user.hasItemEquippedOrInBank(name)) {
+				userPercentChange += percent;
+				break;
+			}
+		}
 
 		const regularVoid = resolveItems([
 			'Void knight top',
