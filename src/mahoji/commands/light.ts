@@ -37,7 +37,7 @@ export const lightCommand: OSBMahojiCommand = {
 			description: 'The amount of logs you want to burn.',
 			required: false,
 			min_value: 1,
-			max_value: 200
+			max_value: 2000
 		}
 	],
 	run: async ({
@@ -45,13 +45,13 @@ export const lightCommand: OSBMahojiCommand = {
 		options,
 		userID
 	}: CommandRunOptions<{
-		burnables: string;
+		log: string;
 		quantity?: number;
 	}>) => {
 		const user = await client.fetchUser(userID.toString());
-		let { burnables, quantity } = options;
+		let { log, quantity } = options;
 
-		const logOpt = Firemaking.Burnables.find(_burnable => stringMatches(_burnable.name, burnables));
+		const logOpt = Firemaking.Burnables.find(_burnable => stringMatches(_burnable.name, log));
 
 		if (!logOpt) {
 			return `That's not a valid log to light. Valid logs are ${Firemaking.Burnables.map(log => log.name).join(
