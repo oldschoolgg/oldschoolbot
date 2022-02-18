@@ -582,6 +582,7 @@ enum activity_type_enum {
   TheatreOfBlood
   LastManStanding
   BirthdayEvent
+  TokkulShop
 }
 
 enum xp_gains_skill_enum {
