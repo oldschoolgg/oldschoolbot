@@ -253,7 +253,8 @@ export const enum Tasks {
 	FishingContest = 'fishingContestActivity',
 	TearsOfGuthix = 'tearsOfGuthixActivity',
 	LastManStanding = 'lmsActivity',
-	BirthdayEvent = 'birthdayEventActivity'
+	BirthdayEvent = 'birthdayEventActivity',
+	TokkulShop = 'tokkulShopActivity'
 }
 
 export enum ActivityGroup {
