@@ -9,7 +9,7 @@ export default class extends Task {
 		const { userID, channelID } = data;
 		const user = await this.client.fetchUser(userID);
 		const items = new Bank()
-			.add('Slice of birthday cake')
+			.add('Celebratory cake')
 			.add('Banana hat')
 			.add('Prop sword')
 			.add('Birthday balloons')

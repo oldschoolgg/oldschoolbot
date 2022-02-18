@@ -2610,3 +2610,48 @@ setCustomItem(
 	},
 	100_000_000
 );
+
+setCustomItem(
+	52_620,
+	'Celebratory cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	121_234,
+	'Burnt celebratory cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	121_521,
+	'Celebratory cake with candle',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	122_001,
+	'Lit celebratory cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
