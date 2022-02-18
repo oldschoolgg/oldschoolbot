@@ -100,10 +100,16 @@ export const tksCommand: OSBMahojiCommand = {
 			return `You are not worthy JalYt. Before you can buy/sell ${item.name}, you need to have defeated the might TzTok-Jad!`;
 		}
 		const bank = user.bank();
-
+		const maxTripLength = user.maxTripLength(activity_type_enum.TokkulShop);
 		let quantity = options.buy?.quantity ?? options.sell?.quantity ?? 1;
 		const cost = new Bank();
 		const loot = new Bank();
+
+		const amountOfRestocksNeededToBuy = item.stock ? Math.ceil(quantity / item.stock) : null;
+		const duration =
+			options.buy && amountOfRestocksNeededToBuy
+				? amountOfRestocksNeededToBuy * Time.Minute
+				: quantity * TIME_PER_1;
 
 		if (options.buy) {
 			if (!item.diaryTokkulCost || !item.tokkulCost) return "You can't buy this item.";
@@ -121,14 +127,9 @@ export const tksCommand: OSBMahojiCommand = {
 		if (!bank.has(cost)) return `You don't own ${cost}.`;
 		const action = Boolean(options.buy) ? 'buy' : 'sell';
 
-		const amountOfRestocksNeededToBuy = item.stock ? Math.ceil(quantity / item.stock) : null;
-		const duration =
-			options.buy && amountOfRestocksNeededToBuy
-				? amountOfRestocksNeededToBuy * Time.Minute
-				: quantity * TIME_PER_1;
-		if (duration > user.maxTripLength(activity_type_enum.TokkulShop)) {
+		if (duration > maxTripLength) {
 			return `This trip is too long. You need to ${action} less at a time, to fit your max trip length of ${formatDuration(
-				user.maxTripLength(activity_type_enum.TokkulShop)
+				maxTripLength
 			)}.`;
 		}
 

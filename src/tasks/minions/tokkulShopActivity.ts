@@ -17,7 +17,7 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished buying from the Tzhaar Shops and received ${loot}.`,
+			`${user}, ${user.minionName} finished shopping in Tzhaar City and received ${loot}.`,
 			undefined,
 			undefined,
 			data,
