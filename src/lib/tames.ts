@@ -179,6 +179,17 @@ export async function addDurationToTame(tame: Tame, duration: number) {
 	return `Your tame has grown ${percentToAdd.toFixed(2)}%!`;
 }
 
+function doubleLootCheck(tame: Tame, loot: Bank) {
+	const hasMrE = tameHasBeenFed(tame, 'Mr. E');
+	let doubleLootMsg = '';
+	if (hasMrE && roll(12)) {
+		loot.multiply(2);
+		doubleLootMsg = '\n**2x Loot from Mr. E**';
+	}
+
+	return { loot, doubleLootMsg };
+}
+
 export interface Species {
 	id: number;
 	type: TameType;
@@ -305,6 +316,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			if (boosts.length > 0) {
 				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 			}
+			const { doubleLootMsg } = doubleLootCheck(tame, loot);
+			str += doubleLootMsg;
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			await trackLoot({
 				duration: activity.duration,
@@ -331,6 +344,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
+			const { doubleLootMsg } = doubleLootCheck(tame, loot);
+			str += doubleLootMsg;
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,
