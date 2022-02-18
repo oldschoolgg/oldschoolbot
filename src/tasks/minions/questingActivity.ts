@@ -63,7 +63,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			hasMaxQP ? undefined : ['quest', [], true],
+			hasMaxQP ? undefined : ['quest', {}, true],
 			undefined,
 			data,
 			null
