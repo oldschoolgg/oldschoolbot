@@ -609,6 +609,11 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
+			case 'TokkulShop': {
+				return `${
+					this.minionName
+				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
 		}
 	}
 

@@ -37,6 +37,8 @@ Client.defaultClientSchema
 	.add('create_loot', 'any', { default: {} })
 	.add('tob_cost', 'any', { default: {} })
 	.add('tob_loot', 'any', { default: {} })
+	.add('tks_cost', 'any', { default: {} })
+	.add('tks_loot', 'any', { default: {} })
 	.add('degraded_items_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
