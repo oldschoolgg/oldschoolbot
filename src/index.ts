@@ -73,7 +73,7 @@ client.on('raw', async event => {
 		if (result.type === InteractionType.ApplicationCommand) {
 			const ERROR_RESPONSE: SlashCommandResponse = {
 				response: {
-					data: { content: 'Sorry, an errored occured while trying to run this command.' },
+					data: { content: 'Sorry, an error occured while trying to run this command.' },
 					type: InteractionResponseType.ChannelMessageWithSource
 				},
 				interaction: result.interaction,
