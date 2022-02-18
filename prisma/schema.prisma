@@ -715,6 +715,7 @@ enum activity_type_enum {
   TheatreOfBlood
   LastManStanding
   FishingContest
+  BirthdayEvent
 }
 
 enum xp_gains_skill_enum {

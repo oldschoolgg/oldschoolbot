@@ -20,7 +20,18 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const collections = ['rolepets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'Dyed Items', 'other', 'custom'];
+const collections = [
+	'rolepets',
+	'skilling',
+	'clues',
+	'bosses',
+	'minigames',
+	'raids',
+	'Dyed Items',
+	'slayer',
+	'other',
+	'custom'
+];
 
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
@@ -257,6 +268,14 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			for (let i = 0; i < topIronUsers.length; i++) {
 				const id = topIronUsers[i]?.id;
 				addToUserMap(userMap, id, `Rank ${i + 1} Ironman Collector`);
+				topCollectors.push(id);
+			}
+			const topNormieUsers = (await q<any>(generateQuery(getCollectionItems('overall'), false, 3))).filter(
+				(i: any) => i.qty > 0
+			) as CLUser[];
+			for (let i = 0; i < topNormieUsers.length; i++) {
+				const id = topNormieUsers[i]?.id;
+				addToUserMap(userMap, id, `Rank ${i + 1} Collector`);
 				topCollectors.push(id);
 			}
 
