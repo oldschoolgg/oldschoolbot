@@ -6,6 +6,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import {
 	Color,
+	COMMAND_BECAME_SLASH_COMMAND_MESSAGE,
 	Emoji,
 	informationalButtons,
 	lastTripCache,
@@ -37,7 +38,6 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertLVLtoXP, isAtleastThisOld, isValidNickname, stringMatches } from '../../lib/util';
-import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -338,9 +338,8 @@ export default class MinionCommand extends BotCommand {
 		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
 
-	@requiresMinion
 	async stats(msg: KlasaMessage) {
-		return msg.channel.send({ embeds: [await minionStatsEmbed(msg.author)] });
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion stats'));
 	}
 
 	@requiresMinion

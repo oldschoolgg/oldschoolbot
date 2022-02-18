@@ -697,6 +697,16 @@ export default class extends Extendable {
 					data.quantity
 				} Last Man Standing matches, the trip should take ${formatDuration(durationRemaining)}.`;
 			}
+			case 'BirthdayEvent': {
+				return `${this.minionName} is currently doing the Birthday Event! The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case 'TokkulShop': {
+				return `${
+					this.minionName
+				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
 		}
 	}
 
