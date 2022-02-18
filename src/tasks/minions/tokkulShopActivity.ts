@@ -1,29 +1,23 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { ActivityTaskOptions } from '../../lib/types/minions';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { TokkulShopOptions } from '../../lib/types/minions';
+import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run(data: ActivityTaskOptions) {
-		const { userID, channelID } = data;
+	async run(data: TokkulShopOptions) {
+		const { userID, channelID, itemID, quantity } = data;
 		const user = await this.client.fetchUser(userID);
-		const items = new Bank()
-			.add('Slice of birthday cake')
-			.add('Banana hat')
-			.add('Prop sword')
-			.add('Birthday balloons')
-			.remove(user.allItemsOwned());
-
-		if (items.length > 0) {
-			await user.addItemsToBank({ items, collectionLog: true });
-		}
-
+		const loot = new Bank().add(itemID, quantity);
+		await user.addItemsToBank({ items: loot, collectionLog: false });
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.TKSLoot, loot);
 		handleTripFinish(
 			this.client,
 			user,
 			channelID,
-			`${user}, ${user.minionName} finished doing the Birthday Event and received: ${items}.`,
+			`${user}, ${user.minionName} finished buying from the Tzhaar Shops and received ${loot}.`,
 			undefined,
 			undefined,
 			data,

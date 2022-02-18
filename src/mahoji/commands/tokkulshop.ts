@@ -1,3 +1,4 @@
+import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
@@ -5,8 +6,9 @@ import { Bank, Monsters } from 'oldschooljs';
 import { client } from '../..';
 import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { TokkulShopOptions } from '../../lib/types/minions';
-import { assert, formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation } from '../mahojiSettings';
@@ -117,17 +119,18 @@ export const tksCommand: OSBMahojiCommand = {
 		}
 
 		if (!bank.has(cost)) return `You don't own ${cost}.`;
+		const action = Boolean(options.buy) ? 'buy' : 'sell';
 
 		const amountOfRestocksNeededToBuy = item.stock ? Math.ceil(quantity / item.stock) : null;
 		const duration =
 			options.buy && amountOfRestocksNeededToBuy
 				? amountOfRestocksNeededToBuy * Time.Minute
 				: quantity * TIME_PER_1;
-
-		const action = Boolean(options.buy) ? 'buy' : 'sell';
-
-		assert(cost.length === 1);
-		assert(loot.length === 1);
+		if (duration > user.maxTripLength(activity_type_enum.TokkulShop)) {
+			return `This trip is too long. You need to ${action} less at a time, to fit your max trip length of ${formatDuration(
+				user.maxTripLength(activity_type_enum.TokkulShop)
+			)}.`;
+		}
 
 		await handleMahojiConfirmation(
 			channelID.toString(),
@@ -139,6 +142,7 @@ export const tksCommand: OSBMahojiCommand = {
 		);
 
 		await user.removeItemsFromBank(cost);
+		await updateBankSetting(client, ClientSettings.EconomyStats.TKSCost, cost);
 
 		await addSubTaskToActivityTask<TokkulShopOptions>({
 			userID: user.id,
