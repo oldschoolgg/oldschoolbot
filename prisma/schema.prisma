@@ -581,6 +581,7 @@ enum activity_type_enum {
   TearsOfGuthix
   TheatreOfBlood
   LastManStanding
+  BirthdayEvent
 }
 
 enum xp_gains_skill_enum {
