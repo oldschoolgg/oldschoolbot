@@ -24,7 +24,7 @@ import {
 } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { evalMathExpression } from '../lib/expressionParser';
-import { countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
+import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -37,6 +37,9 @@ import {
 	formatDuration,
 	getSupportGuild,
 	getUsername,
+	isGroupActivity,
+	isRaidsActivity,
+	isTobActivity,
 	itemNameFromID,
 	stringMatches
 } from '../lib/util';
@@ -49,7 +52,7 @@ import { allAbstractCommands } from '../mahoji/lib/util';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
-function checkMassesCommand(msg: KlasaMessage) {
+async function checkMassesCommand(msg: KlasaMessage) {
 	if (!msg.guild) return null;
 	const channelIDs = msg.guild.channels.cache.filter(c => c.type === 'text').map(c => BigInt(c.id));
 
