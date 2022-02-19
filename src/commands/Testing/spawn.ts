@@ -1,8 +1,9 @@
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank, Items, Openables } from 'oldschooljs';
+import { Bank, Items } from 'oldschooljs';
 
 import { maxMageGear, maxMeleeGear, maxRangeGear } from '../../lib/data/cox';
 import { GearSetupTypes } from '../../lib/gear';
+import { allOpenables } from '../../lib/openables';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -47,7 +48,7 @@ const gearSpawns = [
 ];
 
 const openablesBank = new Bank();
-for (const i of Openables.values()) {
+for (const i of allOpenables.values()) {
 	openablesBank.add(i.id, 100);
 }
 
@@ -93,11 +94,7 @@ export default class extends BotCommand {
 
 		if (msg.flagArgs.openables) {
 			await msg.author.addItemsToBank({ items: openablesBank });
-			return msg.channel.send(
-				`Gave you 100x of every openable item, which is: ${Openables.map(i => i.id)
-					.map(itemNameFromID)
-					.join(', ')}.`
-			);
+			return msg.channel.send('Gave you 100x of every openable item');
 		}
 
 		if (msg.flagArgs.id) {

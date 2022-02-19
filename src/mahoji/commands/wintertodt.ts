@@ -18,6 +18,7 @@ export const wintertodtCommand: OSBMahojiCommand = {
 	description: 'Sends your minion to do Wintertodt.',
 	attributes: {
 		altProtection: true,
+		requiresMinionNotBusy: true,
 		requiredPermissionsForBot: ['ATTACH_FILES'],
 		categoryFlags: ['minion', 'skilling', 'minigame'],
 		description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',

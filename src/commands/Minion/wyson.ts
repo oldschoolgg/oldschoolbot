@@ -2,7 +2,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { NestBoxes } from '../../lib/data/openables';
+import { NestBoxesTable } from '../../lib/simulation/misc';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches } from '../../lib/util';
 
@@ -68,7 +68,7 @@ export default class extends BotCommand {
 
 		const loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
-			loot.add(NestBoxes.roll());
+			loot.add(NestBoxesTable.roll());
 		}
 
 		await msg.author.addItemsToBank({ items: loot, collectionLog: true });

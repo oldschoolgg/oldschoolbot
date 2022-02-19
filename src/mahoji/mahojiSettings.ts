@@ -2,7 +2,14 @@ import { Prisma } from '@prisma/client';
 import { MessageButton, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { ApplicationCommandOptionType, InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
+import {
+	APIInteractionDataResolvedGuildMember,
+	APIUser,
+	ApplicationCommandOptionType,
+	InteractionResponseType,
+	InteractionType,
+	MessageFlags
+} from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { CommandOption } from 'mahoji/dist/lib/types';
 
@@ -14,9 +21,21 @@ import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { assert } from '../lib/util';
 
-export function mahojiParseNumber({ input }: { input: string | undefined | null }): number | null {
+export function mahojiParseNumber({
+	input,
+	min,
+	max
+}: {
+	input: number | string | undefined | null;
+	min?: number;
+	max?: number;
+}): number | null {
 	if (input === undefined || input === null) return null;
-	const parsed = evalMathExpression(input);
+	const parsed = typeof input === 'number' ? input : evalMathExpression(input);
+	if (parsed === null) return null;
+	if (min && parsed < min) return null;
+	if (max && parsed > max) return null;
+	if (Number.isNaN(parsed)) return null;
 	return parsed;
 }
 
@@ -47,12 +66,12 @@ export const searchOption: CommandOption = {
 };
 
 export async function handleMahojiConfirmation(
-	channelID: string,
+	channelID: bigint,
 	userID: bigint,
 	interaction: SlashCommandInteraction,
 	str: string
 ) {
-	const channel = client.channels.cache.get(channelID);
+	const channel = client.channels.cache.get(channelID.toString());
 	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
 	await interaction.deferReply();
 
@@ -131,4 +150,9 @@ export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: P
 	assert(klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points, 'Patched user should match');
 
 	return { newUser };
+}
+
+export interface MahojiUserOption {
+	user: APIUser;
+	member: APIInteractionDataResolvedGuildMember;
 }
