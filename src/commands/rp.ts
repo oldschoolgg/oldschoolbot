@@ -49,6 +49,50 @@ import { allAbstractCommands } from '../mahoji/lib/util';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
+function checkMassesCommand(msg: KlasaMessage) {
+	if (!msg.guild) return null;
+	const channelIDs = msg.guild.channels.cache.filter(c => c.type === 'text').map(c => BigInt(c.id));
+
+	const masses = (
+		await prisma.activity.findMany({
+			where: {
+				completed: false,
+				group_activity: true,
+				channel_id: { in: channelIDs }
+			},
+			orderBy: {
+				finish_date: 'asc'
+			}
+		})
+	)
+		.map(convertStoredActivityToFlatActivity)
+		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
+
+	if (masses.length === 0) {
+		return msg.channel.send('There are no active masses in this server.');
+	}
+	const now = Date.now();
+	const massStr = masses
+		.map(m => {
+			const remainingTime = isTobActivity(m)
+				? m.finishDate - m.duration + m.fakeDuration - now
+				: m.finishDate - now;
+			if (isGroupActivity(m)) {
+				return [
+					remainingTime,
+					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
+						m.users.length
+					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`
+				];
+			}
+		})
+		.sort((a, b) => (a![0] < b![0] ? -1 : a![0] > b![0] ? 1 : 0))
+		.map(m => m![1])
+		.join('\n');
+	return msg.channel.send(`**Masses in this server:**
+${massStr}`);
+}
+
 function itemSearch(msg: KlasaMessage, name: string) {
 	const items = Items.filter(i => {
 		if (msg.flagArgs.includes) {
@@ -207,6 +251,9 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'checkmasses': {
+				return checkMassesCommand(msg);
+			}
 			case 'pingmass':
 			case 'pm': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
