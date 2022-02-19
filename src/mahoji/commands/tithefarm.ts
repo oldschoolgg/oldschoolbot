@@ -133,6 +133,9 @@ export const tithefarmCommand: OSBMahojiCommand = {
 			const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
 			return `You have ${titheFarmPoints} Tithe Farm points.`;
 		}
+		if (user.minionIsBusy) {
+			return 'Your minion must not be busy to do an tithefarm trip';
+		}
 		if (user.skillLevel(SkillsEnum.Farming) < 34) {
 			return `${user.minionName} needs 34 Farming to use the Tithe Farm!`;
 		}
