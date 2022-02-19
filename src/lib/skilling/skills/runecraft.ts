@@ -3,7 +3,18 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
-import { Rune, SkillsEnum } from '../types';
+import { SkillsEnum } from '../types';
+
+export interface Rune {
+	levels: number[][];
+	xp: number;
+	id: number;
+	name: string;
+	qpRequired?: number;
+	tripLength: number;
+	inputRune?: Bank;
+	inputTalisman?: Bank;
+}
 
 const Runes: Rune[] = [
 	{

@@ -1,4 +1,4 @@
-import { resolveNameBank } from 'oldschooljs/dist/util';
+import { Bank } from 'oldschooljs';
 
 import { Favours } from '../../minions/data/kourendFavour';
 import itemID from '../../util/itemID';
@@ -165,7 +165,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 	},
 	{
 		name: 'Dark Graceful hood',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Graceful hood': 1,
 			'Dark dye': 1
 		}),
@@ -175,7 +175,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 	},
 	{
 		name: 'Dark graceful top',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Graceful top': 1,
 			'Dark dye': 1
 		}),
@@ -185,7 +185,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 	},
 	{
 		name: 'Dark graceful legs',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Graceful legs': 1,
 			'Dark dye': 1
 		}),
@@ -195,7 +195,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 	},
 	{
 		name: 'Dark graceful gloves',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Graceful gloves': 1,
 			'Dark dye': 1
 		}),
@@ -205,7 +205,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 	},
 	{
 		name: 'Dark graceful boots',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Graceful boots': 1,
 			'Dark dye': 1
 		}),
@@ -215,7 +215,7 @@ export const gracefulOutfitCreatables: Createable[] = [
 	},
 	{
 		name: 'Dark graceful cape',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Graceful cape': 1,
 			'Dark dye': 1
 		}),
