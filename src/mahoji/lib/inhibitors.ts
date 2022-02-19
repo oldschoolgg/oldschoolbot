@@ -29,6 +29,7 @@ export interface AbstractCommandAttributes {
 	requiredPermissionsForBot?: PermissionResolvable[];
 	requiredPermissionsForUser?: PermissionResolvable[];
 	runIn?: string[];
+	requiresMinionNotBusy?: boolean;
 	description: string;
 }
 
@@ -75,6 +76,19 @@ const inhibitors: Inhibitor[] = [
 		},
 		canBeDisabled: false,
 		silent: true
+	},
+	{
+		name: 'minionNotBusy',
+		run: async ({ user, command }) => {
+			if (!command.attributes?.requiresMinionNotBusy) return false;
+
+			if (user.minionIsBusy) {
+				return 'Your minion must not be busy to use this command.';
+			}
+
+			return false;
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'altProtection',

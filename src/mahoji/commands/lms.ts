@@ -101,7 +101,7 @@ export const lmsCommand: OSBMahojiCommand = {
 	description: 'Sends your minion to do the Last Man Standing minigame.',
 	attributes: {
 		categoryFlags: ['minion', 'minigame'],
-		description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
+		description: 'Sends your minion to do the Last Man Standing minigame.',
 		examples: ['/lms']
 	},
 	options: [
@@ -226,6 +226,9 @@ export const lmsCommand: OSBMahojiCommand = {
 			return `You spent ${cost} points to buy ${loot}. You now have ${newUser.lms_points} LMS points.`;
 		}
 
+		if (user.minionIsBusy) {
+			return 'Your minion must not be busy to do an LMS trip';
+		}
 		const durationPerGame = Time.Minute * 5.5;
 		const quantity = Math.floor(user.maxTripLength('LastManStanding') / durationPerGame);
 		const duration = randomVariation(quantity * durationPerGame, 5);
