@@ -62,7 +62,7 @@ export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand)
  * Options/Args in mahoji can be full/big objects for users/roles/etc, this replaces them with just an ID.
  */
 function compressMahojiArgs(options: CommandArgs) {
-	let newOptions: Record<string, string | number | boolean> = {};
+	let newOptions: Record<string, string | number | boolean | null> = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
 		CommandOptions[keyof CommandOptions]
@@ -82,7 +82,7 @@ function compressMahojiArgs(options: CommandArgs) {
 			continue;
 		}
 
-		newOptions.key = 'unknown?';
+		newOptions[key] = null;
 	}
 	return newOptions;
 }

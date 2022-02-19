@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 
 import { client } from '../..';
-import { production } from '../../config';
+import { OWNER_ID, production } from '../../config';
 import { BadgesEnum, BitField, BotID, Channel, DISABLED_COMMANDS, PerkTier, SupportServer } from '../../lib/constants';
 import { getGuildSettings } from '../../lib/settings/settings';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
@@ -29,6 +29,7 @@ export interface AbstractCommandAttributes {
 	requiredPermissionsForBot?: PermissionResolvable[];
 	requiredPermissionsForUser?: PermissionResolvable[];
 	runIn?: string[];
+	requiresMinionNotBusy?: boolean;
 	description: string;
 }
 
@@ -75,6 +76,19 @@ const inhibitors: Inhibitor[] = [
 		},
 		canBeDisabled: false,
 		silent: true
+	},
+	{
+		name: 'minionNotBusy',
+		run: async ({ user, command }) => {
+			if (!command.attributes?.requiresMinionNotBusy) return false;
+
+			if (user.minionIsBusy) {
+				return 'Your minion must not be busy to use this command.';
+			}
+
+			return false;
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'altProtection',
@@ -229,6 +243,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'cooldown',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.cooldown) return false;
+			if (OWNER_ID === user.id) return false;
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis)}`;

@@ -16,6 +16,8 @@ import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearSt
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
+import { Rune } from './skilling/skills/runecraft';
+import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
@@ -644,4 +646,14 @@ export function clamp(val: number, min: number, max: number) {
 
 export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
+}
+
+export function calcMaxRCQuantity(rune: Rune, user: KlasaUser) {
+	const level = user.skillLevel(SkillsEnum.Runecraft);
+	for (let i = rune.levels.length; i > 0; i--) {
+		const [levelReq, qty] = rune.levels[i - 1];
+		if (level >= levelReq) return qty;
+	}
+
+	return 0;
 }
