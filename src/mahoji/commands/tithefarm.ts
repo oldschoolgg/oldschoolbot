@@ -117,7 +117,7 @@ export const tithefarmCommand: OSBMahojiCommand = {
 
 			let purchaseMsg = `${itemString} for ${titheFarmPointsCost} Tithe Farm points`;
 			await handleMahojiConfirmation(
-				channelID.toString(),
+				channelID,
 				userID,
 				interaction,
 				`${user}, please confirm you want to purchase ${purchaseMsg}.`
