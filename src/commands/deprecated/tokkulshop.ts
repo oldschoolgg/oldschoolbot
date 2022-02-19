@@ -1,17 +1,16 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { COMMAND_BECAME_SLASH_COMMAND_MESSAGE } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Shows the link for the official OSRS hiscores.',
-			aliases: ['hs'],
-			examples: ['+hs']
+			aliases: ['tks']
 		});
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.channel.send('https://secure.runescape.com/m=hiscore_oldschool/overall.ws');
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg));
 	}
 }
