@@ -267,7 +267,9 @@ const source: [string, (string | number)[]][] = [
 	['Scythe of vitur', [...scytheChargedSimilar]],
 	['Scythe of vitur (uncharged)', [...scytheUnchargedSimilar]],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
-	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']]
+	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
+	['Magic shortbow', ['Magic shortbow (i)']],
+	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

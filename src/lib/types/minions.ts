@@ -350,6 +350,11 @@ export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface TokkulShopOptions extends ActivityTaskOptions {
+	itemID: number;
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions

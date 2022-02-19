@@ -34,18 +34,24 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 		...__newData
 	};
 
-	const createdActivity = await prisma.activity.create({
-		data: {
-			user_id: BigInt(taskToAdd.userID),
-			start_date: new Date(),
-			finish_date: finishDate,
-			completed: false,
-			type: taskToAdd.type,
-			data: newData,
-			group_activity: isGroupActivity(taskToAdd),
-			channel_id: BigInt(taskToAdd.channelID),
-			duration
-		}
-	});
-	activitySync(createdActivity);
+	try {
+		const createdActivity = await prisma.activity.create({
+			data: {
+				user_id: BigInt(taskToAdd.userID),
+				start_date: new Date(),
+				finish_date: finishDate,
+				completed: false,
+				type: taskToAdd.type,
+				data: newData,
+				group_activity: isGroupActivity(taskToAdd),
+				channel_id: BigInt(taskToAdd.channelID),
+				duration
+			}
+		});
+		activitySync(createdActivity);
+		return createdActivity;
+	} catch (err: any) {
+		logError(err);
+		throw 'There was an error starting your activity.';
+	}
 }

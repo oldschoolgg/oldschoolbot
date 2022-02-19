@@ -597,6 +597,23 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
+			case 'LastManStanding': {
+				const data = currentTask as MinigameActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				} Last Man Standing matches, the trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'BirthdayEvent': {
+				return `${this.minionName} is currently doing the Birthday Event! The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case 'TokkulShop': {
+				return `${
+					this.minionName
+				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
 		}
 	}
 

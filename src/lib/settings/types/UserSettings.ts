@@ -180,6 +180,7 @@ export namespace UserSettings {
 		export const Belladonna = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Belladonna}`);
 	}
 
+	export const LMSPoints = T<number>('lms_points');
 	export const GPLuckyPick = T<number>('gp_luckypick');
 	export const GPDice = T<number>('gp_dice');
 }
