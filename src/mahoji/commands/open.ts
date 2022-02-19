@@ -25,7 +25,14 @@ export const openCommand: OSBMahojiCommand = {
 					.bank()
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
-					.filter(i => i[0].name.toLowerCase().includes(value))
+					.filter(i => {
+						if (!value) return true;
+						const openable = allOpenables.find(o => o.id === i[0].id);
+						if (!openable) return false;
+						return [i[0].name.toLowerCase(), ...openable.aliases].some(val =>
+							val.toLowerCase().includes(value.toLowerCase())
+						);
+					})
 					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].id.toString() }));
 			}
 		},

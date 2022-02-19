@@ -36,9 +36,6 @@ interface UnifiedOpenable {
 		| ((args: OpenArgs) => Promise<{
 				bank: Bank;
 				message?: string;
-				// imageOptions: {
-				// 	flags: Record<string, string>;
-				// };
 		  }>);
 	emoji?: string;
 	aliases: string[];
@@ -152,7 +149,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		name: 'Bronze HAM chest',
 		id: 8867,
 		openedItem: getOSItem(8867),
-		aliases: ['Bronze', 'bronze ham chest', 'bronze chest'],
+		aliases: ['bronze', 'bronze ham chest', 'bronze chest'],
 		output: Openables.BronzeHAMChest.table,
 		allItems: Openables.BronzeHAMChest.table.allItems
 	},
@@ -188,7 +185,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 			'larran big chest',
 			'larrans big chest',
 			"larran's big chest",
-			"Larran's small chest",
+			"larran's small chest",
 			'larran small chest',
 			'larrans small chest',
 			"larran's small chest"
@@ -208,7 +205,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		name: 'Mystery box',
 		id: 6199,
 		openedItem: getOSItem(6199),
-		aliases: ['mystery box', 'mystery'],
+		aliases: ['mystery box', 'mystery', 'mbox'],
 		output: Openables.MysteryBox.table,
 		allItems: Openables.MysteryBox.table.allItems
 	},

@@ -134,7 +134,7 @@ export const tksCommand: OSBMahojiCommand = {
 		}
 
 		await handleMahojiConfirmation(
-			channelID.toString(),
+			channelID,
 			userID,
 			interaction,
 			`Are you sure you want to spend ${cost} to get ${loot}? The trip to ${action} them will take ${formatDuration(
