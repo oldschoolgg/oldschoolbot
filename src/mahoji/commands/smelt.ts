@@ -14,6 +14,11 @@ import { OSBMahojiCommand } from '../lib/util';
 export const smeltingCommand: OSBMahojiCommand = {
 	name: 'smelt',
 	description: 'Smelt ores/items.',
+	attributes: {
+		requiresMinionNotBusy: true,
+		description: 'Smelt ores/items',
+		examples: ['/smelt runite bar', '/smelt runite bar [quantity: 1]']
+	},
 	options: [
 		{
 			type: ApplicationCommandOptionType.String,
