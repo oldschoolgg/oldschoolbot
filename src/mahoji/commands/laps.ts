@@ -73,6 +73,7 @@ export const lapsCommand: OSBMahojiCommand = {
 	name: 'laps',
 	description: 'Send your minion to train on an agility course.',
 	attributes: {
+		requiresMinionNotBusy: true,
 		categoryFlags: ['minion', 'skilling'],
 		description: 'Send your minion to train on an agility course.',
 		examples: ['/laps ape atoll', '/laps draynor 5']
@@ -115,9 +116,9 @@ export const lapsCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await client.fetchUser(userID.toString());
 		let { course, quantity, alch } = options;
-		if (alch === undefined) alch = true;
+		if (alch === undefined) alch = false;
 
-		const courseObj = Agility.Courses.find(_course => stringMatches(_course.name, course));
+		const courseObj = Agility.Courses.find(_course => _course.aliases.some(alias => stringMatches(alias, course)));
 
 		if (!courseObj) {
 			return `Thats not a valid course. Valid courses are ${Agility.Courses.map(course => course.name).join(
