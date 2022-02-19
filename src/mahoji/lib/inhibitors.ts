@@ -30,6 +30,7 @@ export interface AbstractCommandAttributes {
 	requiredPermissionsForUser?: PermissionResolvable[];
 	runIn?: string[];
 	requiresMinionNotBusy?: boolean;
+	requiresMinion?: boolean;
 	description: string;
 }
 
@@ -76,6 +77,19 @@ const inhibitors: Inhibitor[] = [
 		},
 		canBeDisabled: false,
 		silent: true
+	},
+	{
+		name: 'hasMinion',
+		run: async ({ user, command }) => {
+			if (!command.attributes?.requiresMinion) return false;
+
+			if (!user.hasMinion) {
+				return 'You need a minion to use this command.';
+			}
+
+			return false;
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'minionNotBusy',
