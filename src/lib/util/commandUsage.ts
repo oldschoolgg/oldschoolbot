@@ -14,7 +14,7 @@ export function makeCommandUsage({
 }: {
 	userID: string;
 	channelID: string;
-	guildID: string | null;
+	guildID?: string | null;
 	flags: null | Record<string, string>;
 	commandName: string;
 	args: CommandArgs;
