@@ -12,12 +12,27 @@ import {
 	claimAchievementDiaryCommand
 } from '../lib/abstracted_commands/achievementDiaryCommand';
 import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
+import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
 import { OSBMahojiCommand } from '../lib/util';
+import { MahojiUserOption } from '../mahojiSettings';
 
 export const minionCommand: OSBMahojiCommand = {
 	name: 'minion',
 	description: 'Manage and control your minion.',
 	options: [
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'cracker',
+			description: 'Use a Christmas Cracker on someone.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.User,
+					name: 'user',
+					description: 'The user you want to use the cracker on.',
+					required: true
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'birthdayevent',
@@ -82,6 +97,7 @@ export const minionCommand: OSBMahojiCommand = {
 		stats?: {};
 		achievementdiary?: { diary?: string; claim?: boolean };
 		bankbg?: { name?: string };
+		cracker?: { user: MahojiUserOption };
 	}>) => {
 		const user = await client.fetchUser(userID.toString());
 
@@ -109,6 +125,10 @@ export const minionCommand: OSBMahojiCommand = {
 
 		if (options.bankbg) {
 			return bankBgCommand(interaction, user, options.bankbg.name ?? '');
+		}
+		if (options.cracker) {
+			const otherUser = await client.fetchUser(options.cracker.user.user.id);
+			return crackerCommand({ owner: user, otherPerson: otherUser, interaction });
 		}
 
 		return 'Unknown command';
