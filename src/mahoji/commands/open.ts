@@ -19,8 +19,8 @@ export const openCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to open.',
 			required: true,
-			autocomplete: async (value, member) => {
-				const user = await client.fetchUser(member.user.id);
+			autocomplete: async (value, apiUser) => {
+				const user = await client.fetchUser(apiUser.id);
 				return user
 					.bank()
 					.items()
@@ -33,7 +33,10 @@ export const openCommand: OSBMahojiCommand = {
 							val.toLowerCase().includes(value.toLowerCase())
 						);
 					})
-					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].id.toString() }));
+					.map(i => ({
+						name: `${i[0].name} (${i[1]}x Owned)`,
+						value: i[0].id.toString()
+					}));
 			}
 		},
 		{
@@ -45,12 +48,12 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		}
 	],
-	run: async ({ member, options }: CommandRunOptions<{ name: string; quantity?: number }>) => {
+	run: async ({ userID, options }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		const openable = allOpenables.find(o => o.id.toString() === options.name);
 		if (!openable) return "That's not a valid item.";
 
 		const { openedItem, output } = openable;
-		const user = await client.fetchUser(member.user.id);
+		const user = await client.fetchUser(userID.toString());
 		const bank = user.bank();
 		const quantity = options.quantity ?? 1;
 		const cost = new Bank().add(openedItem.id, quantity);
@@ -64,7 +67,11 @@ export const openCommand: OSBMahojiCommand = {
 			output instanceof LootTable
 				? { bank: output.roll(quantity) }
 				: await output({ user, self: openable, quantity });
-		const { previousCL } = await user.addItemsToBank({ items: loot.bank, collectionLog: true, filterLoot: false });
+		const { previousCL } = await user.addItemsToBank({
+			items: loot.bank,
+			collectionLog: true,
+			filterLoot: false
+		});
 		const image = await client.tasks.get('bankImage')!.generateBankImage(
 			loot.bank,
 			`Loot from ${quantity}x ${openedItem.name}`,
@@ -101,7 +108,12 @@ export const openCommand: OSBMahojiCommand = {
 		}
 
 		return {
-			attachments: [{ fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`, buffer: image.image! }],
+			attachments: [
+				{
+					fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`,
+					buffer: image.image!
+				}
+			],
 			content:
 				loot.message ??
 				`You have opened the ${openedItem.name} ${user.getOpenableScore(openedItem.id).toLocaleString()} times.`
