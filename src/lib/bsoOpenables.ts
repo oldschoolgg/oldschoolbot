@@ -12,6 +12,7 @@ import {
 import { baseHolidayItems, PartyhatTable } from './data/holidayItems';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
 import { OpenArgs, UnifiedOpenable } from './openables';
+import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
 import getOSItem from './util/getOSItem';
@@ -513,6 +514,38 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: ['festive present'],
 		output: FestivePresentTable,
 		allItems: FestivePresentTable.allItems
+	},
+	{
+		name: 'Chimpling jar',
+		id: itemID('Chimpling jar'),
+		openedItem: getOSItem('Chimpling jar'),
+		aliases: ChimplingImpling.aliases,
+		output: ChimplingImpling.table,
+		allItems: ChimplingImpling.table.allItems
+	},
+	{
+		name: 'Mystery impling jar',
+		id: itemID('Mystery impling jar'),
+		openedItem: getOSItem('Mystery impling jar'),
+		aliases: MysteryImpling.aliases,
+		output: MysteryImpling.table,
+		allItems: MysteryImpling.table.allItems
+	},
+	{
+		name: 'Eternal impling jar',
+		id: itemID('Eternal impling jar'),
+		openedItem: getOSItem('Eternal impling jar'),
+		aliases: EternalImpling.aliases,
+		output: EternalImpling.table,
+		allItems: EternalImpling.table.allItems
+	},
+	{
+		name: 'Infernal impling jar',
+		id: itemID('Infernal impling jar'),
+		openedItem: getOSItem('Infernal impling jar'),
+		aliases: InfernalImpling.aliases,
+		output: InfernalImpling.table,
+		allItems: InfernalImpling.table.allItems
 	}
 ];
 
