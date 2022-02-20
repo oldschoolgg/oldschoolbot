@@ -36,7 +36,7 @@ export const mahojiClient = new MahojiClient({
 			const result = await preCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.userID.toString(),
-				guildID: interaction?.guildID?.toString(),
+				guildID: interaction.guildID?.toString(),
 				channelID: interaction.channelID.toString(),
 				bypassInhibitors: false
 			});
@@ -46,7 +46,7 @@ export const mahojiClient = new MahojiClient({
 			postCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.userID.toString(),
-				guildID: interaction?.guildID?.toString(),
+				guildID: interaction.guildID?.toString(),
 				channelID: interaction.channelID.toString(),
 				args: interaction.options,
 				error,
