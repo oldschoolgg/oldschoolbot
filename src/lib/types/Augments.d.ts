@@ -1,9 +1,9 @@
 import { activity_type_enum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
+import { MessageAttachment, MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
-import { Bank, Player } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 
@@ -82,10 +82,7 @@ declare module 'klasa' {
 			flags: { [key: string]: string | number };
 		}): Promise<MessageOptions | MessageAttachment>;
 	}
-	interface Command {
-		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
-		getStatsEmbed(username: string, color: number, player: Player, key = 'level', showExtra = true): MessageEmbed;
-	}
+
 	interface KlasaMessage {
 		cmdPrefix: string;
 
@@ -157,11 +154,6 @@ declare module 'discord.js' {
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
 		toggleBusy(busy: boolean): void;
-		/**
-		 * Returns how many of an item a user owns, checking their bank and all equipped gear.
-		 * @param itemID The item ID.
-		 */
-		numOfItemsOwned(itemID: number): number;
 		/**
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.

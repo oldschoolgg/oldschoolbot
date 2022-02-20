@@ -3,6 +3,7 @@ import { Hiscores } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { statsEmbed } from '../../lib/util/statsEmbed';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -32,7 +33,7 @@ export default class extends BotCommand {
 			}
 
 			player.skills.overall.xp = 299_791_913 - totalXP;
-			const embed = this.getStatsEmbed(username, 7_981_338, player, 'xp', false);
+			const embed = statsEmbed({ username, color: 7_981_338, player, key: 'xp', showExtra: false });
 			return msg.channel.send({ embeds: [embed] });
 		} catch (err: any) {
 			return msg.channel.send(err.message);

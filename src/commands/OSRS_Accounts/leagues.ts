@@ -6,6 +6,7 @@ import { AccountType } from 'oldschooljs/dist/meta/types';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { toTitleCase } from '../../lib/util';
+import { statsEmbed } from '../../lib/util/statsEmbed';
 
 const map = {
 	beginner: [
@@ -140,7 +141,7 @@ You have completed ${Object.values(leaguesData.quests).filter(i => i === 2).leng
 
 			return msg.channel.send({
 				content: str,
-				embeds: [this.getStatsEmbed(`${username} (Shattered relics league)`, 11_995_146, player)]
+				embeds: [statsEmbed({ username: `${username} (Shattered relics league)`, color: 11_995_146, player })]
 			});
 		} catch (err: any) {
 			return msg.channel.send(err.message);
