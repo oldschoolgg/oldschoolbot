@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
-import { mageArena, mageArena2 } from '../../mahoji/commands/subcommands/magearena';
+import { mageArena, mageArena2 } from '../../mahoji/lib/abstracted_commands/magearena';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const magearenaCommand: OSBMahojiCommand = {
