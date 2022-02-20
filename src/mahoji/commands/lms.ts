@@ -100,6 +100,7 @@ export const lmsCommand: OSBMahojiCommand = {
 	name: 'lms',
 	description: 'Sends your minion to do the Last Man Standing minigame.',
 	attributes: {
+		requiresMinion: true,
 		categoryFlags: ['minion', 'minigame'],
 		description: 'Sends your minion to do the Last Man Standing minigame.',
 		examples: ['/lms']
