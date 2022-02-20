@@ -1,5 +1,5 @@
 import { Time } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -184,8 +184,7 @@ export const lmsCommand: OSBMahojiCommand = {
 		if (options.simulate) {
 			lmsSimCommand(client.channels.cache.get(channelID.toString()), options.simulate.names);
 			return {
-				content: 'Starting simulation...',
-				flags: MessageFlags.Ephemeral
+				content: 'Starting simulation...'
 			};
 		}
 
