@@ -290,11 +290,10 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				patron?: { tier: string };
 				gear?: {};
 				reset?: {};
-				setminigamekc?: { minigame: string; quantity: number };
+				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
 				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
 			}>) => {
-				console.log(options);
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
@@ -313,7 +312,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return resetAccount(user);
 				}
 				if (options.setminigamekc) {
-					return setMinigameKC(user, options.setminigamekc.minigame, options.setminigamekc.quantity);
+					return setMinigameKC(user, options.setminigamekc.minigame, options.setminigamekc.kc);
 				}
 				if (options.setxp) {
 					return setXP(user, options.setxp.skill, options.setxp.xp);
