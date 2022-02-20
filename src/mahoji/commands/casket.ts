@@ -11,12 +11,12 @@ import { OSBMahojiCommand } from '../lib/util';
 
 function determineLimit(user: KlasaUser) {
 	const perkTier = getUsersPerkTier(user);
-	if (perkTier >= PerkTier.Six) 100_000;
-	if (perkTier >= PerkTier.Five) 80_000;
-	if (perkTier >= PerkTier.Four) 60_000;
-	if (perkTier === PerkTier.Three) 40_000;
-	if (perkTier === PerkTier.Two) 20_000;
-	if (perkTier === PerkTier.One) 1000;
+	if (perkTier >= PerkTier.Six) return 100_000;
+	if (perkTier >= PerkTier.Five) return 80_000;
+	if (perkTier >= PerkTier.Four) return 60_000;
+	if (perkTier === PerkTier.Three) return 40_000;
+	if (perkTier === PerkTier.Two) return 20_000;
+	if (perkTier === PerkTier.One) return 1000;
 
 	return 50;
 }
