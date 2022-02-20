@@ -22,6 +22,7 @@ export const tksCommand: OSBMahojiCommand = {
 	name: 'tokkulshop',
 	description: 'Buy or sell items from the Tzhaar shops.',
 	attributes: {
+		requiresMinion: true,
 		categoryFlags: ['minion'],
 		description: 'Purchase items from the Tzhaar shops using tokkul.',
 		examples: ['/tokkulshop buy Obsidian platebody', '/tokkulshop sell Chaos rune 5000']
