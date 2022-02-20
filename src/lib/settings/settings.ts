@@ -137,11 +137,13 @@ export async function runMahojiCommand({
 	if (!mahojiCommand) {
 		throw new Error(`No mahoji command found for ${commandName}`);
 	}
+
 	return mahojiCommand.run({
 		userID: BigInt(msg.author.id),
 		guildID: msg.guild ? BigInt(msg.guild.id) : (null as any),
 		channelID: BigInt(msg.channel.id),
 		options,
+		user: msg.author as any, // kinda dirty
 		member: msg.member as any,
 		client: mahojiClient,
 		interaction: {} as any
