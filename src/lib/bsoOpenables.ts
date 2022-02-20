@@ -427,14 +427,6 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		allItems: testerGiftTable.allItems
 	},
 	{
-		name: 'Christmas cracker',
-		id: itemID('Christmas cracker'),
-		openedItem: getOSItem('Christmas cracker'),
-		aliases: ['cracker', 'christmas cracker'],
-		output: PartyhatTable,
-		allItems: PartyhatTable.allItems
-	},
-	{
 		name: 'Dwarven crate',
 		id: itemID('Dwarven crate'),
 		openedItem: getOSItem('Dwarven crate'),

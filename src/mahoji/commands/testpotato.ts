@@ -325,7 +325,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						if (actualPreset) bankToGive.add(actualPreset[1]);
 					}
 					if (item) {
-						bankToGive.add(getOSItem(item).id);
+						try {
+							bankToGive.add(getOSItem(item).id);
+						} catch (err) {
+							return err as string;
+						}
 					}
 					if (items) {
 						for (const [i, qty] of parseStringBank(items, undefined, true)) {

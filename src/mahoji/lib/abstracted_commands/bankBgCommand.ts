@@ -108,7 +108,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 		if (selectedImage.itemCost && !userBank.has(selectedImage.itemCost)) {
 			return `You don't have the required items to purchase this background. You need: ${new Bank(
 				selectedImage.itemCost
-			)}.`;
+			)}, you're missing: ${new Bank(selectedImage.itemCost).remove(userBank)}.`;
 		}
 
 		// Ensure they have the required GP.
