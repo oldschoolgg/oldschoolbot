@@ -309,7 +309,7 @@ interface BitFieldData {
 	userConfigurable: boolean;
 }
 
-export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
+export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.IsWikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
 	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
 	[BitField.isContributor]: { name: 'Contributor', protected: true, userConfigurable: false },
