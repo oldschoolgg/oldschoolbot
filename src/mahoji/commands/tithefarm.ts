@@ -44,6 +44,7 @@ export const tithefarmCommand: OSBMahojiCommand = {
 	name: 'tithefarm',
 	description: 'Send your minion to complete the tithe farm minigame',
 	attributes: {
+		requiresMinion: true,
 		categoryFlags: ['minion', 'skilling', 'minigame'],
 		description: 'Send your minion to complete the tithe farm minigame.',
 		examples: ['/tithefarm start', '/tithefarm buy']
@@ -134,7 +135,7 @@ export const tithefarmCommand: OSBMahojiCommand = {
 			return `You have ${titheFarmPoints} Tithe Farm points.`;
 		}
 		if (user.minionIsBusy) {
-			return 'Your minion must not be busy to do an tithefarm trip';
+			return 'Your minion must not be busy to do a tithefarm trip';
 		}
 		if (user.skillLevel(SkillsEnum.Farming) < 34) {
 			return `${user.minionName} needs 34 Farming to use the Tithe Farm!`;
