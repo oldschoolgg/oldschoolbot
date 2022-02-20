@@ -73,6 +73,7 @@ export const lapsCommand: OSBMahojiCommand = {
 	name: 'laps',
 	description: 'Send your minion to train on an agility course.',
 	attributes: {
+		requiresMinion: true,
 		requiresMinionNotBusy: true,
 		categoryFlags: ['minion', 'skilling'],
 		description: 'Send your minion to train on an agility course.',
