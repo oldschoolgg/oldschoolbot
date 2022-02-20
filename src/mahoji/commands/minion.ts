@@ -13,6 +13,7 @@ import {
 } from '../lib/abstracted_commands/achievementDiaryCommand';
 import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
+import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { MahojiUserOption } from '../mahojiSettings';
 
@@ -85,6 +86,11 @@ export const minionCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'quest',
+			description: 'Send your minion to do quests.'
 		}
 	],
 	run: async ({
@@ -98,6 +104,7 @@ export const minionCommand: OSBMahojiCommand = {
 		achievementdiary?: { diary?: string; claim?: boolean };
 		bankbg?: { name?: string };
 		cracker?: { user: MahojiUserOption };
+		quest?: {};
 	}>) => {
 		const user = await client.fetchUser(userID.toString());
 
@@ -129,6 +136,9 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.cracker) {
 			const otherUser = await client.fetchUser(options.cracker.user.user.id);
 			return crackerCommand({ owner: user, otherPerson: otherUser, interaction });
+		}
+		if (options.quest) {
+			return questCommand(user, channelID);
 		}
 
 		return 'Unknown command';
