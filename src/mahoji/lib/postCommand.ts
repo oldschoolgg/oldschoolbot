@@ -60,7 +60,7 @@ export async function postCommand({
 }: {
 	abstractCommand: AbstractCommand;
 	userID: string;
-	guildID: string | null;
+	guildID?: string | null;
 	channelID: string;
 	error: Error | string | null;
 	args: CommandArgs;
