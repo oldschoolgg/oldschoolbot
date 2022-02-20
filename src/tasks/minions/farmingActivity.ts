@@ -3,8 +3,8 @@ import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { production } from '../../config';
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -157,7 +157,7 @@ export default class extends Task {
 				for (let j = 0; j < quantity; j++) {
 					let upper = randInt(1, 4);
 					for (let i = 0; i < upper; i++) {
-						loot.add(getRandomMysteryBox());
+						loot.add(MysteryBoxes.roll());
 					}
 				}
 			}
@@ -378,7 +378,7 @@ export default class extends Task {
 
 			if (duration > Time.Minute * 20 && roll(10)) {
 				loot.multiply(2);
-				loot.add(getRandomMysteryBox());
+				loot.add(MysteryBoxes.roll());
 			}
 
 			let tangleroot = false;
@@ -494,7 +494,7 @@ export default class extends Task {
 			if (user.hasItemEquippedOrInBank(itemID('Farming master cape'))) {
 				for (let j = 0; j < alivePlants; j++) {
 					if (roll(10)) {
-						loot.add(getRandomMysteryBox());
+						loot.add(MysteryBoxes.roll());
 					}
 				}
 			}
@@ -503,7 +503,7 @@ export default class extends Task {
 				for (let j = 0; j < quantity; j++) {
 					let upper = randInt(1, 4);
 					for (let i = 0; i < upper; i++) {
-						loot.add(getRandomMysteryBox());
+						loot.add(MysteryBoxes.roll());
 					}
 				}
 			}
@@ -512,7 +512,7 @@ export default class extends Task {
 				for (let j = 0; j < alivePlants; j++) {
 					let upper = randInt(1, 6);
 					for (let i = 0; i < upper; i++) {
-						loot.add(getRandomMysteryBox());
+						loot.add(MysteryBoxes.roll());
 					}
 				}
 			}

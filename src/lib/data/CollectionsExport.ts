@@ -2394,6 +2394,7 @@ export const cmbClothes = resolveItems([
 	'Evening masquerade mask'
 ]);
 assert(cmbClothes.length === new Set(cmbClothes).size, 'Should be no duplicates in CMB clothes');
+
 export const allClueItems = [
 	...cluesBeginnerCL,
 	...cluesEasyCL,

@@ -3,9 +3,9 @@ import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { DungeoneeringOptions, maxFloorUserCanDo } from '../../commands/Minion/dung';
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji } from '../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -94,7 +94,7 @@ export default class extends Task {
 			boxScrollChance += Math.floor(differenceFromMax * 11.5);
 			for (let i = 0; i < quantity; i++) {
 				if (u.bank().has('Scroll of mystery') && roll(boxScrollChance)) {
-					await u.addItemsToBank({ items: new Bank().add(getRandomMysteryBox(), 1), collectionLog: true });
+					await u.addItemsToBank({ items: new Bank().add(MysteryBoxes.roll()), collectionLog: true });
 					if (!gotMysteryBox) gotMysteryBox = true;
 				}
 			}

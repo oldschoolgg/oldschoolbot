@@ -2,7 +2,7 @@ import { calcPercentOfNum, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { getRandomMysteryBox } from '../../../lib/data/openables';
+import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
@@ -53,7 +53,7 @@ export default class extends Task {
 		if (user.hasItemEquippedAnywhere(itemID('Fishing master cape'))) {
 			loot.multiply(4);
 			for (let i = 0; i < quantity; i++) {
-				if (roll(2)) loot.add(getRandomMysteryBox());
+				if (roll(2)) loot.add(MysteryBoxes.roll());
 			}
 			str += '\n\nYou received **4x** extra fish because you are a master at Fishing.';
 		}

@@ -2,8 +2,8 @@ import { increaseNumByPercent, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { darkAltarRunes } from '../../commands/Minion/darkaltar';
 import { Events } from '../../lib/constants';
+import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -61,6 +61,6 @@ export default class extends Task {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(this.client, user, channelID, str, ['darkaltar', [rune], true], undefined, data, loot);
+		handleTripFinish(this.client, user, channelID, str, ['runecraft', { rune }, true], undefined, data, loot);
 	}
 }
