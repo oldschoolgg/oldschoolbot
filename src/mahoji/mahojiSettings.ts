@@ -40,8 +40,6 @@ export function mahojiParseNumber({
 }
 
 export const filterOption: CommandOption = {
-	// what if we allow this
-	// autoComplete: [filters.map(i => i.name)]
 	type: ApplicationCommandOptionType.String,
 	name: 'filter',
 	description: 'The filter you want to use.',
