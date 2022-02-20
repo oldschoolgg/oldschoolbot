@@ -146,9 +146,7 @@ export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
 	if (hunterScores.length > 0) {
 		const [id, score] = hunterScores[0];
 		const res = creatures.find(c => c.id === parseInt(id))!;
-		if (!res) {
-			logError(`No creature found with id ${id} for stats embed`);
-		} else {
+		if (res) {
 			otherStats.push([`${res.name}'s Caught`, score]);
 		}
 	}
