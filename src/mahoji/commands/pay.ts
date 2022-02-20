@@ -27,7 +27,6 @@ export const payCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID,
-		channelID,
 		interaction
 	}: CommandRunOptions<{
 		user: MahojiUserOption;
@@ -48,10 +47,10 @@ export const payCommand: OSBMahojiCommand = {
 
 		if (amount > 500_000_000) {
 			await handleMahojiConfirmation(
-				channelID,
-				userID,
 				interaction,
-				`Are you sure you want to pay ${user.username}#${user.discriminator} (ID: ${user.id}) ${toKMB(amount)}?`
+				`Are you sure you want to pay ${recipient.username}#${recipient.discriminator} (ID: ${
+					recipient.id
+				}) ${toKMB(amount)}?`
 			);
 		}
 
@@ -60,6 +59,6 @@ export const payCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bank);
 		await recipient.addItemsToBank({ items: bank, collectionLog: false });
 
-		return `You sent ${amount.toLocaleString()} GP to ${user}.`;
+		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;
 	}
 };

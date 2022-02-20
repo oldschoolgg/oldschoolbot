@@ -95,7 +95,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 		if (selectedImage.itemCost && !userBank.has(selectedImage.itemCost)) {
 			return `You don't have the required items to purchase this background. You need: ${new Bank(
 				selectedImage.itemCost
-			)}.`;
+			)}, you're missing: ${new Bank(selectedImage.itemCost).remove(userBank)}.`;
 		}
 
 		// Ensure they have the required GP.
@@ -119,7 +119,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 		str +=
 			" **Note:** You'll have to pay this cost again if you switch to another background and want this one again.";
 
-		await handleMahojiConfirmation(interaction.channelID, interaction.userID, interaction, str);
+		await handleMahojiConfirmation(interaction, str);
 
 		if (selectedImage.itemCost) {
 			economyCost.add(selectedImage.itemCost);
