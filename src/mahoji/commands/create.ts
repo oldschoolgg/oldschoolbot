@@ -80,11 +80,10 @@ export const createCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		member,
 		options,
 		interaction
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
-		const user = await client.fetchUser(member.user.id);
+		const user = await client.fetchUser(userID.toString());
 
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
