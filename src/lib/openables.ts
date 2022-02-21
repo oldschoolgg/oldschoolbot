@@ -264,7 +264,7 @@ for (const impling of Implings) {
 		name: impling.name,
 		id: impling.id,
 		openedItem: getOSItem(impling.id),
-		aliases: impling.aliases,
+		aliases: [...impling.aliases, `${impling.name} jar`],
 		output: impling.table,
 		allItems: impling.table.allItems
 	});
@@ -336,5 +336,10 @@ export const allOpenables: UnifiedOpenable[] = [
 	...clueOpenables,
 	...osjsOpenables
 ];
+
+for (const openable of allOpenables) {
+	openable.aliases.push(openable.openedItem.name);
+	openable.aliases.push(openable.id.toString());
+}
 
 export const allOpenablesIDs = new Set(allOpenables.map(i => i.id));

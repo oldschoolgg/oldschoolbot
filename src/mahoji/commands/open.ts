@@ -6,9 +6,11 @@ import { client } from '../..';
 import { Events } from '../../lib/constants';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { itemID, stringMatches, updateGPTrackSetting } from '../../lib/util';
+import { itemID, stringMatches, truncateString, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { OSBMahojiCommand } from '../lib/util';
+
+const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',
@@ -18,7 +20,7 @@ export const openCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.String,
 			name: 'name',
 			description: 'The thing you want to open.',
-			required: true,
+			required: false,
 			autocomplete: async (value, member) => {
 				const user = await client.fetchUser(member.user.id);
 				return user
@@ -45,12 +47,22 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		}
 	],
-	run: async ({ member, options }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const openable = allOpenables.find(o => stringMatches(o.name, options.name));
+	run: async ({ member, options }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
+		const user = await client.fetchUser(member.user.id);
+		if (!options.name) {
+			return `You have... ${truncateString(
+				user
+					.bank()
+					.filter(item => allOpenablesIDs.has(item.id), false)
+					.toString(),
+				1950
+			)}.`;
+		}
+		const name = options.name.replace(regex, '$1');
+		const openable = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 		if (!openable) return "That's not a valid item.";
 
 		const { openedItem, output } = openable;
-		const user = await client.fetchUser(member.user.id);
 		const bank = user.bank();
 		const quantity = options.quantity ?? 1;
 		const cost = new Bank().add(openedItem.id, quantity);
