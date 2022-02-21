@@ -2407,3 +2407,12 @@ export const allClueItems = [
 	...cluesMediumCL,
 	...cluesSharedCL
 ];
+
+export const clueHunterOutfit = resolveItems([
+	'Helm of raedwald',
+	'Clue hunter garb',
+	'Clue hunter trousers',
+	'Clue hunter boots',
+	'Clue hunter gloves',
+	'Clue hunter cloak'
+]);

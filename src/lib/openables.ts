@@ -6,10 +6,9 @@ import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
-import { clueHunterOutfit } from '../commands/Minion/mclue';
 import { bsoOpenables } from './bsoOpenables';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
-import { cluesRaresCL } from './data/CollectionsExport';
+import { clueHunterOutfit, cluesRaresCL } from './data/CollectionsExport';
 import ClueTiers from './minions/data/clueTiers';
 import { UserSettings } from './settings/types/UserSettings';
 import {
@@ -231,14 +230,6 @@ const osjsOpenables: UnifiedOpenable[] = [
 		aliases: ['muddy chest', 'muddy'],
 		output: Openables.MuddyChest.table,
 		allItems: Openables.MuddyChest.table.allItems
-	},
-	{
-		name: 'Mystery box',
-		id: 6199,
-		openedItem: getOSItem(6199),
-		aliases: ['mystery box', 'mystery', 'mbox'],
-		output: Openables.MysteryBox.table,
-		allItems: Openables.MysteryBox.table.allItems
 	},
 	{
 		name: 'Nest box (empty)',
