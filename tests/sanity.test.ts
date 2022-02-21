@@ -1,8 +1,8 @@
 import { Items, Monsters } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
+import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../src/lib/bsoOpenables';
 import { allPetIDs, masterCapesCL } from '../src/lib/data/CollectionsExport';
-import { allMbTables, embTable, PMBTable, tmbTable, umbTable } from '../src/lib/data/openables';
 import { itemsToDelete } from '../src/lib/deletedItems';
 import { growablePets } from '../src/lib/growablePets';
 import killableMonsters from '../src/lib/minions/data/killableMonsters';

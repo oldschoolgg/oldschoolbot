@@ -1,5 +1,5 @@
 import { isFunction } from '@sapphire/utilities';
-import { MessageAttachment } from 'discord.js';
+import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
@@ -12,23 +12,19 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import { itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
+import { stringMatches, updateBankSetting } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation } from '../mahojiSettings';
 
-function showAllCreatables() {
+function showAllCreatables(user: KlasaUser) {
 	let content = 'This are the items that you can create:';
 	const creatableTable = table([
 		['Item Name', 'Input Items', 'Output Items', 'GP Cost', 'Skills Required', 'QP Required'],
 		...Createables.map(i => {
 			return [
 				i.name,
-				`${Object.entries(i.inputItems)
-					.map(entry => `${entry[1]}x ${itemNameFromID(parseInt(entry[0]))}`)
-					.join('\n')}`,
-				`${Object.entries(i.outputItems)
-					.map(entry => `${entry[1]}x ${itemNameFromID(parseInt(entry[0]))}`)
-					.join('\n')}`,
+				`${isFunction(i.inputItems) ? i.inputItems(user) : new Bank(i.inputItems)}`,
+				`${new Bank(i.outputItems)}`,
 				`${i.GPCost ?? 0}`,
 				`${
 					i.requiredSkills === undefined
@@ -43,7 +39,7 @@ function showAllCreatables() {
 	]);
 	return {
 		content,
-		files: [new MessageAttachment(Buffer.from(creatableTable), 'Creatables.txt')]
+		attachments: [{ buffer: Buffer.from(creatableTable), fileName: 'Creatables.txt' }]
 	};
 }
 
@@ -89,7 +85,10 @@ export const createCommand: OSBMahojiCommand = {
 
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
-		if (options.showall) return showAllCreatables();
+		if (options.showall) {
+			await interaction.deferReply();
+			return showAllCreatables(user);
+		}
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
 		if (!createableItem) return "That's not a valid item.";
