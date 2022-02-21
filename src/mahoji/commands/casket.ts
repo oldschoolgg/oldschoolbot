@@ -41,7 +41,7 @@ export const casketCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string; quantity: number }>) => {
+	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
 		const user = await client.fetchUser(userID.toString());
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
@@ -53,6 +53,8 @@ export const casketCommand: OSBMahojiCommand = {
 		if (!clueTier) {
 			return `Not a valid clue tier. The valid tiers are: ${ClueTiers.map(_tier => _tier.name).join(', ')}`;
 		}
+
+		await interaction.deferReply();
 
 		const [loot, title] = await Workers.casketOpen({ quantity: options.quantity, clueTierID: clueTier.id });
 

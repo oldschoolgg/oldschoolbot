@@ -1838,22 +1838,13 @@ canvas-constructor@^1.1.2:
   resolved "https://registry.yarnpkg.com/canvas-constructor/-/canvas-constructor-1.1.2.tgz#e36d05a318b7e205eb3cb900a37106770c0014cf"
   integrity sha512-KNkdUmDvl1pJC/5rGRhhOAqmgZgD/4b8Z3u8ihNCXCFWZA4O8tNbXOMzvhH+TrteKUPBEQk5gWR/bhTH+WSz2g==
 
-canvas@^2.8.0:
+canvas@2.8.0, canvas@^2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.8.0.tgz#f99ca7f25e6e26686661ffa4fec1239bbef74461"
   integrity sha512-gLTi17X8WY9Cf5GZ2Yns8T5lfBOcGgFehDFb+JQwDqdOoBOcECS9ZWMEAqMSVcMYwXD659J8NyzjRY/2aE+C2Q==
   dependencies:
     "@mapbox/node-pre-gyp" "^1.0.0"
     nan "^2.14.0"
-    simple-get "^3.0.3"
-
-canvas@^2.9.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.9.0.tgz#7df0400b141a7e42e597824f377935ba96880f2a"
-  integrity sha512-0l93g7uxp7rMyr7H+XRQ28A3ud0dKIUTIEkUe1Dxh4rjUYN7B93+SjC3r1PDKA18xcQN87OFGgUnyw7LSgNLSQ==
-  dependencies:
-    "@mapbox/node-pre-gyp" "^1.0.0"
-    nan "^2.15.0"
     simple-get "^3.0.3"
 
 caseless@~0.12.0:
@@ -1883,7 +1874,7 @@ char-regex@^1.0.2:
   resolved "https://registry.yarnpkg.com/char-regex/-/char-regex-1.0.2.tgz#d744358226217f981ed58f479b1d6bcc29545dcf"
   integrity sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==
 
-chart.js@^3.7.1:
+chart.js@^3.7.0:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/chart.js/-/chart.js-3.7.1.tgz#0516f690c6a8680c6c707e31a4c1807a6f400ada"
   integrity sha512-8knRegQLFnPQAheZV8MjxIXc5gQEfDFD897BJgv/klO/vtIyFFmgMXrNfgrXpbTr/XbTturxRgxIXx/Y+ASJBA==
