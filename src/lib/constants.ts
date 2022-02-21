@@ -95,7 +95,6 @@ export const enum Emoji {
 	Prayer = '<:prayer:630911040426868746>',
 	Construction = '<:construction:630911040493715476>',
 	Diango = '<:diangoChatHead:678146375300415508>',
-	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
 	QuestIcon = '<:questIcon:690191385907036179>',
 	MinigameIcon = '<:minigameIcon:630400565070921761>',
@@ -252,7 +251,9 @@ export const enum Tasks {
 	ToB = 'tobActivity',
 	FishingContest = 'fishingContestActivity',
 	TearsOfGuthix = 'tearsOfGuthixActivity',
-	LastManStanding = 'lmsActivity'
+	LastManStanding = 'lmsActivity',
+	BirthdayEvent = 'birthdayEventActivity',
+	TokkulShop = 'tokkulShopActivity'
 }
 
 export enum ActivityGroup {
@@ -306,7 +307,6 @@ export const enum PerkTier {
 }
 
 export const enum BitField {
-	HasGivenBirthdayPresent = 1,
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
@@ -337,24 +337,56 @@ export const enum BitField {
 
 interface BitFieldData {
 	name: string;
+	/**
+	 * Users can never 'choose' to get this, even in testing.
+	 */
+	protected: boolean;
+	userConfigurable: boolean;
 }
 
-export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
-	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron' },
-	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron' },
-	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron' },
-	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron' },
-	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron' },
-	[BitField.isModerator]: { name: 'Moderator' },
-	[BitField.isContributor]: { name: 'Contributor' },
-	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
-	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
-	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
-	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
-	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' },
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
-	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' },
-	[BitField.IsWikiContributor]: { name: 'Wiki Contributor' }
+export const BitFieldData: Record<BitField, BitFieldData> = {
+	[BitField.IsWikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
+	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
+	[BitField.isContributor]: { name: 'Contributor', protected: true, userConfigurable: false },
+
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
+	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
+
+	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
+	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasArcaneScroll]: { name: 'Arcane Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasSlepeyTablet]: { name: 'Slepey Tablet Used', protected: false, userConfigurable: false },
+	[BitField.HasScrollOfFarming]: { name: 'Scroll of Farming Used', protected: false, userConfigurable: false },
+	[BitField.HasScrollOfLongevity]: { name: 'Scroll of Longevity Used', protected: false, userConfigurable: false },
+	[BitField.HasScrollOfTheHunt]: { name: 'Scroll of the Hunt Used', protected: false, userConfigurable: false },
+	[BitField.HasBananaEnchantmentScroll]: {
+		name: 'Banana Enchantment Scroll Used',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasDaemonheimAgilityPass]: {
+		name: 'Daemonheim Agility Pass Used',
+		protected: false,
+		userConfigurable: false
+	},
+
+	[BitField.HasGivenBirthdayPack]: { name: 'Has Given Birthday Pack', protected: false, userConfigurable: false },
+	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
+	[BitField.HasPermanentEventBackgrounds]: {
+		name: 'Permanent Event Backgrounds',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
+
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
+	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true }
 } as const;
 
 export const enum PatronTierID {
@@ -619,12 +651,15 @@ export function getCommandArgs(command: Command, args: any[]) {
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
 
 export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage
+	msg: KlasaMessage,
+	commandName?: string
 ) => `This command you're trying to use, has been changed to a 'slash command'.
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
 - Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used too though.
-- You no longer use this command using \`${msg.cmdPrefix}${msg.command?.name}\`, now you use: \`/${msg.command?.name}\`
+- You no longer use this command using \`${msg.cmdPrefix}${commandName ?? msg.command?.name}\`, now you use: \`/${
+	commandName ?? msg.command?.name
+}\`
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();

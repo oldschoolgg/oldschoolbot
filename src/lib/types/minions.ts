@@ -408,6 +408,11 @@ export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
 	isPhosani?: boolean;
 }
 
+export interface TokkulShopOptions extends ActivityTaskOptions {
+	itemID: number;
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions

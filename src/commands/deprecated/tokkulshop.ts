@@ -1,18 +1,16 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { COMMAND_BECAME_SLASH_COMMAND_MESSAGE } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			testingCommand: true
+			aliases: ['tks']
 		});
-		this.enabled = !this.client.production;
 	}
 
 	async run(msg: KlasaMessage) {
-		await msg.author.settings.reset();
-		await msg.author.settings.update('minion.hasBought', true);
-		return msg.channel.send('Resetteded all your data.');
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg));
 	}
 }

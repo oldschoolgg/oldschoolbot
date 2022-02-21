@@ -4,8 +4,8 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/bsoOpenables';
 import { itemContractResetTime } from '../../lib/constants';
-import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/data/openables';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';

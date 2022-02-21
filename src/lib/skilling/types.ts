@@ -92,17 +92,6 @@ export interface Course {
 	qpRequired?: number;
 }
 
-export interface Rune {
-	levels: number[][];
-	xp: number;
-	id: number;
-	name: string;
-	qpRequired?: number;
-	tripLength: number;
-	inputRune?: Bank;
-	inputTalisman?: Bank;
-}
-
 export interface Cookable {
 	level: number;
 	xp: number;

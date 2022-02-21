@@ -2394,6 +2394,7 @@ export const cmbClothes = resolveItems([
 	'Evening masquerade mask'
 ]);
 assert(cmbClothes.length === new Set(cmbClothes).size, 'Should be no duplicates in CMB clothes');
+
 export const allClueItems = [
 	...cluesBeginnerCL,
 	...cluesEasyCL,
@@ -2406,3 +2407,12 @@ export const allClueItems = [
 	...cluesMediumCL,
 	...cluesSharedCL
 ];
+
+export const clueHunterOutfit = resolveItems([
+	'Helm of raedwald',
+	'Clue hunter garb',
+	'Clue hunter trousers',
+	'Clue hunter boots',
+	'Clue hunter gloves',
+	'Clue hunter cloak'
+]);

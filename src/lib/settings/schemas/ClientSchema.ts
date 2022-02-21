@@ -57,6 +57,8 @@ Client.defaultClientSchema
 	.add('trip_doubling_loot', 'any', { default: {} })
 	.add('tob_cost', 'any', { default: {} })
 	.add('tob_loot', 'any', { default: {} })
+	.add('tks_cost', 'any', { default: {} })
+	.add('tks_loot', 'any', { default: {} })
 	.add('degraded_items_cost', 'any', { default: {} })
 	.add('fc_cost', 'any', { default: {} })
 	.add('fc_loot', 'any', { default: {} })

@@ -22,9 +22,13 @@ const arrayColumns = [
 
 for (const [table, column] of arrayColumns) {
 	startupScripts.push({
-		sql: `ALTER TABLE "${table}"
-                             ALTER COLUMN "${column}" SET DEFAULT '{}',
-                             ALTER COLUMN "${column}" SET NOT NULL;`
+		sql: `UPDATE "${table}" SET "${column}" = '{}' WHERE "${column}" IS NULL;`
+	});
+	startupScripts.push({
+		sql: `
+ALTER TABLE "${table}"
+	ALTER COLUMN "${column}" SET DEFAULT '{}',
+	ALTER COLUMN "${column}" SET NOT NULL;`
 	});
 }
 
