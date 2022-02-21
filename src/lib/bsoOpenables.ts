@@ -373,7 +373,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		output: makeOutputFromArrayOfItemIDs(() => getMysteryBoxItem(true)),
 		emoji: Emoji.MysteryBox,
 		allItems: [],
-		isMysteryBox: true
+		isMysteryBox: true,
+		smokeyApplies: true
 	},
 	{
 		name: 'Untradeables Mystery box',
@@ -382,7 +383,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: ['untradeables mystery box', 'umb'],
 		output: makeOutputFromArrayOfItemIDs(() => getMysteryBoxItem(false)),
 		allItems: [],
-		isMysteryBox: true
+		isMysteryBox: true,
+		smokeyApplies: true
 	},
 	{
 		name: 'Equippable mystery box',
@@ -390,7 +392,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Equippable mystery box'),
 		aliases: ['equippable mystery box', 'emb'],
 		output: makeOutputFromArrayOfItemIDs(randomEquippable),
-		allItems: []
+		allItems: [],
+		smokeyApplies: true
 	},
 	{
 		name: 'Clothing Mystery Box',
@@ -398,7 +401,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem(50_421),
 		aliases: ['cmb', 'clothing mystery box'],
 		output: ClothingMysteryBoxTable,
-		allItems: ClothingMysteryBoxTable.allItems
+		allItems: ClothingMysteryBoxTable.allItems,
+		smokeyApplies: true
 	},
 	{
 		name: 'Holiday Mystery box',
@@ -406,7 +410,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem(3713),
 		aliases: ['holiday mystery box', 'hmb', 'holiday', 'holiday item mystery box', 'himb'],
 		output: baseHolidayItems,
-		allItems: baseHolidayItems.allItems
+		allItems: baseHolidayItems.allItems,
+		smokeyApplies: true
 	},
 	{
 		name: 'Pet Mystery box',
@@ -416,7 +421,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		output: async ({ user, quantity }) => ({
 			bank: user.isIronman ? IronmanPMBTable.roll(quantity) : PMBTable.roll(quantity)
 		}),
-		allItems: PMBTable.allItems
+		allItems: PMBTable.allItems,
+		smokeyApplies: true
 	},
 	{
 		name: 'Tester Gift box',
@@ -456,7 +462,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Gamblers bag'),
 		aliases: ['gamblers bag', 'gb'],
 		output: GamblersBagTable,
-		allItems: GamblersBagTable.allItems
+		allItems: GamblersBagTable.allItems,
+		smokeyApplies: true
 	},
 	{
 		name: 'Royal mystery box',
@@ -488,7 +495,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Magic crate'),
 		aliases: ['magic crate'],
 		output: magicCreateCrate,
-		allItems: magicCreateCrate.allItems
+		allItems: magicCreateCrate.allItems,
+		smokeyApplies: true
 	},
 	{
 		name: 'Monkey crate',
@@ -497,7 +505,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: ['monkey crate'],
 		output: MonkeyCrateTable,
 		emoji: '<:Monkey_crate:885774318041202708>',
-		allItems: MonkeyCrateTable.allItems
+		allItems: MonkeyCrateTable.allItems,
+		smokeyApplies: true
 	},
 	{
 		name: 'Festive present',

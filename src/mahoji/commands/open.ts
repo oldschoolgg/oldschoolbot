@@ -83,7 +83,8 @@ export const openCommand: OSBMahojiCommand = {
 
 		let quantityToRoll = quantity;
 		let smokeyBonus = 0;
-		if (openable.smokeyApplies && user.allItemsOwned().has('Smokey')) {
+		const hasSmokey = openable.smokeyApplies && user.allItemsOwned().has('Smokey');
+		if (hasSmokey) {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(10)) smokeyBonus++;
 			}
@@ -161,7 +162,7 @@ export const openCommand: OSBMahojiCommand = {
 			loot.message ??
 			`You have opened the ${openedItem.name} ${user.getOpenableScore(openedItem.id).toLocaleString()} times.`;
 
-		if (smokeyBonus > 0) resultStr += `\n${smokeyBonus}x bonus rolls from Smokey`;
+		if (hasSmokey) resultStr += `\n${smokeyBonus}x bonus rolls from Smokey`;
 
 		return {
 			attachments: [{ fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`, buffer: image.image! }],
