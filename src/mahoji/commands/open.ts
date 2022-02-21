@@ -1,6 +1,6 @@
 import { randInt, roll } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank, Items, LootTable } from 'oldschooljs';
 
 import { client } from '../..';
 import { Events } from '../../lib/constants';
@@ -146,11 +146,15 @@ export const openCommand: OSBMahojiCommand = {
 			);
 		}
 
+		let resultStr =
+			loot.message ??
+			`You have opened the ${openedItem.name} ${user.getOpenableScore(openedItem.id).toLocaleString()} times.`;
+
+		if (smokeyBonus > 0) resultStr += `\n${smokeyBonus}x bonus rolls from Smokey`;
+
 		return {
 			attachments: [{ fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`, buffer: image.image! }],
-			content:
-				loot.message ??
-				`You have opened the ${openedItem.name} ${user.getOpenableScore(openedItem.id).toLocaleString()} times.`
+			content: resultStr
 		};
 	}
 };
