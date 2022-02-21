@@ -29,6 +29,6 @@ export const wikiCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options }: CommandRunOptions<{ query: string }>) => {
-		return `https://oldschool.runescape.wiki/${options.query}`;
+		return `https://oldschool.runescape.wiki/${encodeURIComponent(options.query)}`;
 	}
 };
