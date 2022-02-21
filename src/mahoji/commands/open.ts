@@ -99,8 +99,9 @@ export const openCommand: OSBMahojiCommand = {
 				: await output({ user, self: openable, quantity: quantityToRoll });
 		const { previousCL } = await user.addItemsToBank({
 			items: loot.bank,
-			collectionLog: !itemsThatDontAddToTempCL.includes(openable.id),
-			filterLoot: false
+			collectionLog: true,
+			filterLoot: false,
+			dontAddToTempCL: !itemsThatDontAddToTempCL.includes(openable.id)
 		});
 
 		const image = await client.tasks.get('bankImage')!.generateBankImage(
