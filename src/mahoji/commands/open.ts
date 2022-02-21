@@ -6,7 +6,7 @@ import { client } from '../..';
 import { Events } from '../../lib/constants';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { itemID, updateGPTrackSetting } from '../../lib/util';
+import { itemID, stringMatches, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -33,7 +33,7 @@ export const openCommand: OSBMahojiCommand = {
 							val.toLowerCase().includes(value.toLowerCase())
 						);
 					})
-					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].id.toString() }));
+					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
 			}
 		},
 		{
@@ -46,7 +46,7 @@ export const openCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ member, options }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		const openable = allOpenables.find(o => o.id.toString() === options.name);
+		const openable = allOpenables.find(o => stringMatches(o.name, options.name));
 		if (!openable) return "That's not a valid item.";
 
 		const { openedItem, output } = openable;
