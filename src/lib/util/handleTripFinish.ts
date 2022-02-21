@@ -6,8 +6,8 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { alching } from '../../commands/Minion/laps';
+import { MysteryBoxes } from '../bsoOpenables';
 import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
-import { getRandomMysteryBox } from '../data/openables';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
@@ -65,7 +65,7 @@ export async function handleTripFinish(
 		data.duration > Time.Minute * 20 &&
 		roll(pet === itemID('Mr. E') ? 12 : 15)
 	) {
-		const otherLoot = new Bank().add(getRandomMysteryBox());
+		const otherLoot = new Bank().add(MysteryBoxes.roll());
 		const bonusLoot = new Bank().add(loot).add(otherLoot);
 		message += `\n<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`;
 		await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
@@ -104,7 +104,7 @@ export async function handleTripFinish(
 	} else if (pet === itemID('Smokey')) {
 		for (let i = 0; i < minutes; i++) {
 			if (roll(450)) {
-				bonusLoot.add(getRandomMysteryBox());
+				bonusLoot.add(MysteryBoxes.roll());
 			}
 		}
 		if (bonusLoot.length > 0) {

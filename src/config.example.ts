@@ -32,3 +32,4 @@ export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {
 	// Your bot unique ID goes here
 	BotID: '729244028989603850'
 };
+export const OWNER_ID = '157797566833098752';
