@@ -163,10 +163,14 @@ export const createCommand: OSBMahojiCommand = {
 			createableItem.outputItems instanceof Bank
 				? createableItem.outputItems
 				: new Bank(createableItem.outputItems)
-		).multiply(quantity);
+		)
+			.clone()
+			.multiply(quantity);
 		const inItems = (
 			createableItem.inputItems instanceof Bank ? createableItem.inputItems : new Bank(createableItem.inputItems)
-		).multiply(quantity);
+		)
+			.clone()
+			.multiply(quantity);
 
 		if (createableItem.GPCost) {
 			inItems.add('Coins', createableItem.GPCost);
