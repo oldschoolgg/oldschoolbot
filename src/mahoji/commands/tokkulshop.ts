@@ -22,6 +22,7 @@ export const tksCommand: OSBMahojiCommand = {
 	name: 'tokkulshop',
 	description: 'Buy or sell items from the Tzhaar shops.',
 	attributes: {
+		requiresMinion: true,
 		categoryFlags: ['minion'],
 		description: 'Purchase items from the Tzhaar shops using tokkul.',
 		examples: ['/tokkulshop buy Obsidian platebody', '/tokkulshop sell Chaos rune 5000']
@@ -134,8 +135,6 @@ export const tksCommand: OSBMahojiCommand = {
 		}
 
 		await handleMahojiConfirmation(
-			channelID,
-			userID,
 			interaction,
 			`Are you sure you want to spend ${cost} to get ${loot}? The trip to ${action} them will take ${formatDuration(
 				duration

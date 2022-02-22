@@ -40,8 +40,6 @@ export function mahojiParseNumber({
 }
 
 export const filterOption: CommandOption = {
-	// what if we allow this
-	// autoComplete: [filters.map(i => i.name)]
 	type: ApplicationCommandOptionType.String,
 	name: 'filter',
 	description: 'The filter you want to use.',
@@ -65,13 +63,8 @@ export const searchOption: CommandOption = {
 	required: false
 };
 
-export async function handleMahojiConfirmation(
-	channelID: bigint,
-	userID: bigint,
-	interaction: SlashCommandInteraction,
-	str: string
-) {
-	const channel = client.channels.cache.get(channelID.toString());
+export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {
+	const channel = client.channels.cache.get(interaction.channelID.toString());
 	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
 	await interaction.deferReply();
 
@@ -116,7 +109,7 @@ export async function handleMahojiConfirmation(
 	try {
 		const selection = await confirmMessage.awaitMessageComponentInteraction({
 			filter: i => {
-				if (i.user.id !== userID.toString()) {
+				if (i.user.id !== (userID ?? interaction.userID).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}

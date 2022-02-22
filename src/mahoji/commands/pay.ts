@@ -27,7 +27,6 @@ export const payCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID,
-		channelID,
 		interaction
 	}: CommandRunOptions<{
 		user: MahojiUserOption;
@@ -38,19 +37,20 @@ export const payCommand: OSBMahojiCommand = {
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
 		if (!amount) return "That's not a valid amount.";
 		const GP = user.settings.get(UserSettings.GP);
+
+		if (recipient.id === user.id) return "You can't send money to yourself.";
 		if (user.isIronman) return "Iron players can't send money.";
 		if (recipient.isIronman) return "Iron players can't receive money.";
 		if (GP < amount) return "You don't have enough GP.";
-		if (client.oneCommandAtATimeCache.has(recipient.id)) return 'That user is busy right now.';
-		if (recipient.id === user.id) return "You can't send money to yourself.";
 		if (user.bot) return "You can't send money to a bot.";
+		if (client.oneCommandAtATimeCache.has(recipient.id)) return 'That user is busy right now.';
 
 		if (amount > 500_000_000) {
 			await handleMahojiConfirmation(
-				channelID,
-				userID,
 				interaction,
-				`Are you sure you want to pay ${user.username}#${user.discriminator} (ID: ${user.id}) ${toKMB(amount)}?`
+				`Are you sure you want to pay ${recipient.username}#${recipient.discriminator} (ID: ${
+					recipient.id
+				}) ${toKMB(amount)}?`
 			);
 		}
 
@@ -59,6 +59,6 @@ export const payCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bank);
 		await recipient.addItemsToBank({ items: bank, collectionLog: false });
 
-		return `You sent ${amount.toLocaleString()} GP to ${user}.`;
+		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;
 	}
 };

@@ -15,6 +15,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 	name: 'smelt',
 	description: 'Smelt ores/items.',
 	attributes: {
+		requiresMinion: true,
 		requiresMinionNotBusy: true,
 		description: 'Smelt ores/items',
 		examples: ['/smelt runite bar', '/smelt runite bar [quantity: 1]']

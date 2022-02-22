@@ -81,8 +81,6 @@ export const createCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		channelID,
-		userID,
 		interaction
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
 		const user = await client.fetchUser(userID.toString());
@@ -192,8 +190,6 @@ export const createCommand: OSBMahojiCommand = {
 
 		if (action === 'revert') {
 			await handleMahojiConfirmation(
-				channelID,
-				userID,
 				interaction,
 				`${user}, please confirm that you want to revert **${inItems}${
 					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
@@ -201,8 +197,6 @@ export const createCommand: OSBMahojiCommand = {
 			);
 		} else {
 			await handleMahojiConfirmation(
-				channelID,
-				userID,
 				interaction,
 				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}${
 					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
