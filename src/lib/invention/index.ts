@@ -92,16 +92,16 @@ export interface SingleMaterial {
 
 export interface DissassemblySourceGroup {
 	name: string;
-	items: { item: Item; lvl: number; junkModifier?: number }[];
+	items: { item: Item; lvl: number; junkChance?: number }[];
 	parts: IMaterialBank;
 }
 
 const Misc: DissassemblySourceGroup = {
 	name: 'Misc',
 	items: [
-		{ item: i('Rune essence'), lvl: 1, junkModifier: 3 },
-		{ item: i('Pure essence'), lvl: 20, junkModifier: 3 },
-		{ item: i('Soft clay'), lvl: 20, junkModifier: 3 }
+		{ item: i('Rune essence'), lvl: 1, junkChance: 99 },
+		{ item: i('Pure essence'), lvl: 20, junkChance: 80 },
+		{ item: i('Soft clay'), lvl: 20 }
 	],
 	parts: {
 		simple: 99,
@@ -120,9 +120,7 @@ const Ores: DissassemblySourceGroup = {
 		{ item: i('Gold ore'), lvl: 40 },
 		{ item: i('Mithril ore'), lvl: 55 },
 		{ item: i('Adamantite ore'), lvl: 70 },
-		{ item: i('Runite ore'), lvl: 85 },
-		{ item: i('Amethyst'), lvl: 92 },
-		{ item: i('Dwarven ore'), lvl: 120 }
+		{ item: i('Runite ore'), lvl: 85 }
 	],
 	parts: {
 		rocky: 70,

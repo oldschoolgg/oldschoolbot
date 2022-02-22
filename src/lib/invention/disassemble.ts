@@ -1,3 +1,5 @@
+import { assert } from 'console';
+import { calcWhatPercent, percentChance } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -28,13 +30,13 @@ async function calculateDisXP(user: KlasaUser, quantity: number, item: Dissassem
 	if (!prismaUser) throw new Error("This isn't possible. Trust me.");
 	const disassembledItemsBank = new Bank(prismaUser.disassembled_items_bank as ItemBank);
 
-	let baseXPPerItem = item.lvl / 100;
+	let baseXPPerItem = item.lvl / 4.5;
 	const amountAlreadyDisassembled = disassembledItemsBank.amount(item.item.id);
 	if (amountAlreadyDisassembled > 0) {
 		// do something here
 	}
 	return {
-		xp: quantity * baseXPPerItem
+		xp: Math.floor(quantity * baseXPPerItem)
 	};
 }
 
@@ -60,8 +62,15 @@ export async function handleDisassembly({
 	const materialLoot = new MaterialBank();
 	const table = new MaterialLootTable(group.parts);
 
+	const junkChance = 100 - calcWhatPercent(data.lvl, 120);
+	assert(data.lvl >= 1 && data.lvl <= 120, 'Disassemble item level must be between 1-120');
+	console.log(`${data.item.name} has a ${junkChance}% chance of becoming junk`);
 	for (let i = 0; i < quantity; i++) {
-		materialLoot.add(table.roll());
+		if (percentChance(junkChance)) {
+			materialLoot.add('junk');
+		} else {
+			materialLoot.add(table.roll());
+		}
 	}
 
 	return {

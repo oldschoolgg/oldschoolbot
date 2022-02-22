@@ -1,9 +1,10 @@
+import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import { allItemsThatCanBeDisassembledIDs, DissassemblySourceGroups } from '../../lib/invention';
 import { handleDisassembly } from '../../lib/invention/disassemble';
-import { clamp } from '../../lib/util';
+import { calcPerHour, clamp, formatDuration, toKMB } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -51,9 +52,14 @@ export const askCommand: OSBMahojiCommand = {
 			const group = DissassemblySourceGroups.find(g => g.items.some(i => i.item.name === item.name));
 			if (!group) return 'This item cannot be disassembled.';
 			const bank = user.bank();
-			const quantity = clamp(options.disassemble.quantity ?? bank.amount(item.id), 1, 1_000_000_000);
+			const timePer = Time.Second * 0.33;
+			const maxCanDo = Math.floor(user.maxTripLength() / timePer);
+			const quantity = clamp(options.disassemble.quantity ?? bank.amount(item.id), 1, maxCanDo);
+			const duration = quantity * timePer;
 			const result = await handleDisassembly({ user, quantity, item, group });
-			return `You disassembled ${quantity}x ${item.name}, and received ${result.xp} XP and ${result.materials}.`;
+			return `You disassembled ${quantity}x ${item.name}, and received ${result.xp} XP and these materials: \`${
+				result.materials
+			}\`. It took ${formatDuration(duration)}, giving ${toKMB(calcPerHour(result.xp, duration))}XP/hr`;
 		}
 		return 'Wut da hell';
 	}
