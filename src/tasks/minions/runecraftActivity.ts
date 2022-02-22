@@ -3,11 +3,10 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
-import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { calcMaxRCQuantity, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -85,7 +84,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['rc', [essenceQuantity, rune.name], true],
+			['runecraft', { quantity: essenceQuantity, rune: rune.name }, true],
 			undefined,
 			data,
 			loot

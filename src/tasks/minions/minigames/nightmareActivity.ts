@@ -2,8 +2,8 @@ import { noOp, percentChance, roll, Time } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank, Misc } from 'oldschooljs';
 
+import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { BitField, Emoji, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
-import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
 import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
@@ -88,7 +88,7 @@ export default class extends Task {
 			if (!user) continue;
 			if (duration > Time.Minute * 20 && roll(10)) {
 				loot.bank = multiplyBank(loot.bank, 2);
-				loot.add(getRandomMysteryBox());
+				loot.add(MysteryBoxes.roll());
 			}
 			await addMonsterXP(user, {
 				monsterID: NIGHTMARE_ID,

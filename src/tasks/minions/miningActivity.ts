@@ -2,8 +2,8 @@ import { roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../lib/skilling/skills/mining';
@@ -59,7 +59,7 @@ export default class extends Task {
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot.bank = multiplyBank(loot.values(), 2);
-				loot.add(getRandomMysteryBox(), 1);
+				loot.add(MysteryBoxes.roll());
 			}
 		}
 

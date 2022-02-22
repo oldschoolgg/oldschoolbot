@@ -31,7 +31,7 @@ patreonApiURL.search = new URLSearchParams([
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
 
-const tiers: [PatronTierID, BitField][] = [
+export const tiers: [PatronTierID, BitField][] = [
 	[PatronTierID.Five, BitField.IsPatronTier5],
 	[PatronTierID.Four, BitField.IsPatronTier4],
 	[PatronTierID.Three, BitField.IsPatronTier3],

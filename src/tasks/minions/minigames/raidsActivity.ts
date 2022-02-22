@@ -3,10 +3,10 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
 
+import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
-import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore, runCommand } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -66,7 +66,7 @@ export default class extends Task {
 			const userLoot = new Bank(_userLoot);
 			if (roll(10)) {
 				userLoot.multiply(2);
-				userLoot.add(getRandomMysteryBox());
+				userLoot.add(MysteryBoxes.roll());
 			} else if (user.usingPet('Flappy')) {
 				userLoot.multiply(2);
 			}

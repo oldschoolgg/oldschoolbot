@@ -5,11 +5,12 @@ import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
 import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { superCompostables } from '../../commands/Minion/compostbin';
+import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
 import { monkeyEatables } from '../monkeyRumble';
+import { allOpenables } from '../openables';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
@@ -34,7 +35,6 @@ import {
 	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
-import Openables, { tmbTable, umbTable } from './openables';
 
 export const warmGear = resolveItems([
 	'Staff of fire',
@@ -1119,8 +1119,8 @@ export const baseFilters: Filterable[] = [
 		name: 'Holiday',
 		aliases: ['holiday', 'hmb', 'rare', 'rares'],
 		items: () => [
-			...(Openables.find(o => o.name === 'Holiday Mystery box')!.table as LootTable).allItems,
-			...(Openables.find(o => o.name === 'Christmas cracker')!.table as LootTable).allItems
+			...allOpenables.find(o => o.name === 'Holiday Mystery box')!.allItems,
+			...allOpenables.find(o => o.name === 'Christmas cracker')!.allItems
 		]
 	},
 	{

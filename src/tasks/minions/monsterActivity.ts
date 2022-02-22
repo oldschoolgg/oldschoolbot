@@ -3,8 +3,8 @@ import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -255,7 +255,7 @@ export default class extends Task {
 				mysteryBoxChance = Math.max(1, mysteryBoxChance);
 
 				if (roll(mysteryBoxChance)) {
-					loot.add(getRandomMysteryBox());
+					loot.add(MysteryBoxes.roll());
 				}
 			}
 

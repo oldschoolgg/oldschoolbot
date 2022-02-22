@@ -2,7 +2,7 @@ import { Monsters } from 'oldschooljs';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { MysteryBoxes } from '../../../../../data/openables';
+import { MysteryBoxes } from '../../../../../bsoOpenables';
 import setCustomMonster from '../../../../../util/setCustomMonster';
 
 export const VasaMagusLootTable = new LootTable()
