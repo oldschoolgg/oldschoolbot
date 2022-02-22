@@ -161,11 +161,7 @@ export const createCommand: OSBMahojiCommand = {
 			quantity = createableItem.maxCanOwn - amountOwned;
 		}
 
-		const outItems = (
-			createableItem.outputItems instanceof Bank
-				? createableItem.outputItems
-				: new Bank(createableItem.outputItems)
-		).multiply(quantity);
+		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
 		const inItems = (
 			isFunction(createableItem.inputItems)
 				? createableItem.inputItems(user)
