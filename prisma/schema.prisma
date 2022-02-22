@@ -165,7 +165,6 @@ model Guild {
   language          String   @default("en-US") @db.VarChar(5)
   disabledCommands  String[]
   jmodComments      String?  @db.VarChar(19)
-  hcimdeaths        String?  @db.VarChar(19)
   petchannel        String?  @db.VarChar(19)
   tweetchannel      String?  @db.VarChar(19)
   levelUpMessages   String?  @db.VarChar(19)

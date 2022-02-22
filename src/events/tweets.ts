@@ -98,7 +98,6 @@ const JMOD_TWITTERS = [
 	'1275458567412150272'
 ];
 
-const HCIM_DEATHS = ['797859891373371392'];
 const HEXIS = ['760605320108310528'];
 const HEXIS_CHANNEL = '626168717004242953';
 
@@ -175,7 +174,6 @@ export default class extends Event {
 
 		let key: string = '';
 		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
-		else if (HCIM_DEATHS.includes(id)) key = 'hcimdeaths';
 		else if (HEXIS.includes(id)) key = 'hexis';
 		else return;
 
