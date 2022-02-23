@@ -7,26 +7,6 @@ import { twitterAppConfig } from '../config';
 import { sendToChannelID } from '../lib/util/webhook';
 
 const ALL_TWITTERS = [
-	/* OSRS Streamers/Youtubers */
-	'940563176', // SoupRS
-	'184349515', // MmorpgCP
-	'525302599', // Sick_Nerd
-	'3187663593', // WooxSolo
-	'2169865003', // RSAlfierules
-	'1894180640', // B0atyOSRS
-	'2462052530', // afriendrs
-	'1634264438', // Hey_Jase
-	'1569065179', // monnixxx
-	'3589736181', // Kacy
-	'2307540361', // Faux_Freedom
-	'2411777869', // Mr_Mammal
-	'3256936132', // Dalek_Cookie
-	'3318825773', // Knightenator
-	'1307366604', // MatK
-	'702224459491647488', // rsnRRobert
-	'803844588100325376', // ZuluOnly
-	'709141790503211008', // LakeOSRS,
-	'868269438394675201', // SettledRS
 	/* OSRS Jagex Mods */
 	'2726160938', // JagexCurse
 	'3362141061', // JagexKieren
@@ -167,17 +147,6 @@ export default class extends Event {
 			.setThumbnail(avatar)
 			.setAuthor(name, undefined, authorURL)
 			.setImage(image);
-
-		let key: 'tweetchannel' | 'hexis' | null = null;
-		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
-		else if (HEXIS.includes(id)) key = 'hexis';
-		else return;
-
-		if (key === 'hexis') {
-			return (this.client.channels.cache.get(HEXIS_CHANNEL) as TextChannel)!
-				.send({ content: `<${url}>`, embeds: [embed] })
-				.catch(() => null);
-		}
 
 		for (const guild of this.client.guilds.cache.values()) {
 			const settings = getGuildSettingsCached(guild);
