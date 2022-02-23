@@ -4,7 +4,6 @@ import { Event, EventStore } from 'klasa';
 import Twit from 'twit';
 
 import { twitterAppConfig } from '../config';
-import { getGuildSettingsCached } from '../lib/settings/settings';
 import { sendToChannelID } from '../lib/util/webhook';
 
 const ALL_TWITTERS = [
@@ -98,9 +97,6 @@ const JMOD_TWITTERS = [
 	'1275458567412150272'
 ];
 
-const HEXIS = ['760605320108310528'];
-const HEXIS_CHANNEL = '626168717004242953';
-
 interface Tweet {
 	text: string;
 	url: string;
@@ -145,7 +141,7 @@ export default class extends Event {
 			return;
 		}
 
-		if (tweet.retweeted_status && !HEXIS.includes(tweet.user.id_str)) {
+		if (tweet.retweeted_status) {
 			return;
 		}
 
@@ -172,7 +168,7 @@ export default class extends Event {
 			.setAuthor(name, undefined, authorURL)
 			.setImage(image);
 
-		let key: string = '';
+		let key: 'tweetchannel' | 'hexis' | null = null;
 		if (JMOD_TWITTERS.includes(id)) key = 'tweetchannel';
 		else if (HEXIS.includes(id)) key = 'hexis';
 		else return;

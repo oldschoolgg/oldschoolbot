@@ -1,5 +1,5 @@
 import { NewUser } from '@prisma/client';
-import { Guild, Util } from 'discord.js';
+import { Util } from 'discord.js';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -22,21 +22,19 @@ import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
 
-const guildSettingsCache = new Map<string, Settings>();
+// export async function getGuildSettings(guild: Guild) {
+// 	const cached = guildSettingsCache.get(guild.id);
+// 	if (cached) return cached;
+// 	const gateway = (guild.client.gateways.get('guilds') as Gateway)!;
+// 	const settings = await gateway.acquire(guild);
+// 	gateway.cache.set(guild.id, { settings });
+// 	guildSettingsCache.set(guild.id, settings);
+// 	return settings;
+// }
 
-export async function getGuildSettings(guild: Guild) {
-	const cached = guildSettingsCache.get(guild.id);
-	if (cached) return cached;
-	const gateway = (guild.client.gateways.get('guilds') as Gateway)!;
-	const settings = await gateway.acquire(guild);
-	gateway.cache.set(guild.id, { settings });
-	guildSettingsCache.set(guild.id, settings);
-	return settings;
-}
-
-export function getGuildSettingsCached(guild: Guild) {
-	return guildSettingsCache.get(guild.id);
-}
+// export function getGuildSettingsCached(guild: Guild) {
+// 	return guildSettingsCache.get(guild.id);
+// }
 
 export async function getUserSettings(userID: string): Promise<Settings> {
 	return (client.gateways.get('users') as Gateway)!

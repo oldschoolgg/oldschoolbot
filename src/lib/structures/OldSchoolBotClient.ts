@@ -3,7 +3,7 @@ import { Client, KlasaClientOptions, KlasaUser } from 'klasa';
 import { clientOptions } from '../config';
 import { initCrons } from '../crons';
 import { prisma } from '../settings/prisma';
-import { getGuildSettings, syncActivityCache } from '../settings/settings';
+import { syncActivityCache } from '../settings/settings';
 import { startupScripts } from '../startupScripts';
 import { logError } from '../util/logError';
 import { piscinaPool } from '../workers';
@@ -41,10 +41,6 @@ export class OldSchoolBotClient extends Client {
 	}
 
 	public async login(token?: string) {
-		for (const guild of this.guilds.cache.values()) {
-			getGuildSettings(guild);
-		}
-
 		let promises = [];
 		promises.push(syncActivityCache());
 		promises.push(
