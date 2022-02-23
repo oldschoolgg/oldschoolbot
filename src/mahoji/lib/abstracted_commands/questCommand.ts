@@ -12,7 +12,7 @@ export async function questCommand(user: KlasaUser, channelID: bigint) {
 		return 'You need a minion to do a questing trip';
 	}
 	if (user.minionIsBusy) {
-		return 'Your minion must not be busy to do an questing trip';
+		return 'Your minion must not be busy to do a questing trip';
 	}
 	const currentQP = user.settings.get(UserSettings.QP);
 	if (currentQP >= MAX_QP) {
