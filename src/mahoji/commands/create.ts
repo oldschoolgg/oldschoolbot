@@ -187,6 +187,8 @@ export const createCommand: OSBMahojiCommand = {
 			}
 		}
 
+		const isDyeing = inItems.items().some(i => i[0].name.toLowerCase().includes('dye'));
+
 		if (action === 'revert') {
 			await handleMahojiConfirmation(
 				interaction,
@@ -199,14 +201,11 @@ export const createCommand: OSBMahojiCommand = {
 				interaction,
 				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}${
 					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
-				}.`
-			);
-		}
-
-		if (inItems.items().some(i => i[0].name.toLowerCase().includes('dye'))) {
-			await handleMahojiConfirmation(
-				interaction,
-				'If you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
+				}.${
+					isDyeing
+						? '\n\nIf you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
+						: ''
+				}`
 			);
 		}
 
