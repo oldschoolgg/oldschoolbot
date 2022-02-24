@@ -474,8 +474,8 @@ export const configCommand: OSBMahojiCommand = {
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 		};
 	}>) => {
-		const user = await client.fetchUser(userID.toString());
-		const guild = client.guilds.cache.get(guildID.toString()) ?? null;
+		const user = await client.fetchUser(userID);
+		const guild = guildID ? client.guilds.cache.get(guildID.toString()) ?? null : null;
 		if (options.server) {
 			if (options.server.channel) {
 				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);
