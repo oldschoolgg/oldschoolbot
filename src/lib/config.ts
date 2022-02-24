@@ -1,7 +1,9 @@
 import { Intents } from 'discord.js';
+import { Time } from 'e';
 import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import { customClientOptions, production, providerConfig } from '../config';
+import { formatDuration } from './util';
 
 export const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
@@ -26,7 +28,22 @@ export const clientOptions: KlasaClientOptions = {
 	prefix: '+',
 	providers: providerConfig ?? undefined,
 	pieceDefaults: { commands: { deletable: true } },
-	readyMessage: (client: KlasaClient) => `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds.`,
+	readyMessage: (client: KlasaClient) => {
+		const deprecatedCommands = client.commands.filter(c => c.path.toLowerCase().includes('deprecated')).size;
+		const totalCmds = client.commands.size;
+		const commandsLeft = totalCmds - deprecatedCommands;
+		const endOfTheWorld = new Date('2022-04-22');
+		const diff = endOfTheWorld.getTime() - Date.now();
+		const daysUntil = diff / Time.Day;
+		const migrationStr = `There are ${
+			totalCmds - deprecatedCommands
+		} commands left (${deprecatedCommands} deprecated) to become Slash Commands within ${formatDuration(diff)
+			.split(' ')
+			.slice(0, 2)
+			.join(' ')
+			.replace(',', '')} (${(commandsLeft / daysUntil).toFixed(2)} per day)`;
+		return `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds. ${migrationStr}`;
+	},
 	partials: ['USER', 'CHANNEL'],
 	production,
 	...customClientOptions

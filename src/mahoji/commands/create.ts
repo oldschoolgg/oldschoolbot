@@ -1,4 +1,3 @@
-import { MessageAttachment } from 'discord.js';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
@@ -11,7 +10,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
-import { itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
+import { stringMatches, updateBankSetting } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation } from '../mahojiSettings';
 
@@ -22,12 +21,8 @@ function showAllCreatables() {
 		...Createables.map(i => {
 			return [
 				i.name,
-				`${Object.entries(i.inputItems)
-					.map(entry => `${entry[1]}x ${itemNameFromID(parseInt(entry[0]))}`)
-					.join('\n')}`,
-				`${Object.entries(i.outputItems)
-					.map(entry => `${entry[1]}x ${itemNameFromID(parseInt(entry[0]))}`)
-					.join('\n')}`,
+				`${new Bank(i.inputItems)}`,
+				`${new Bank(i.outputItems)}`,
 				`${i.GPCost ?? 0}`,
 				`${
 					i.requiredSkills === undefined
@@ -42,7 +37,7 @@ function showAllCreatables() {
 	]);
 	return {
 		content,
-		files: [new MessageAttachment(Buffer.from(creatableTable), 'Creatables.txt')]
+		attachments: [{ buffer: Buffer.from(creatableTable), fileName: 'Creatables.txt' }]
 	};
 }
 
@@ -88,7 +83,10 @@ export const createCommand: OSBMahojiCommand = {
 
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
-		if (options.showall) return showAllCreatables();
+		if (options.showall) {
+			await interaction.deferReply();
+			return showAllCreatables();
+		}
 
 		const createableItem = Createables.find(item => stringMatches(item.name, itemName));
 		if (!createableItem) return "That's not a valid item.";
@@ -161,14 +159,8 @@ export const createCommand: OSBMahojiCommand = {
 			quantity = createableItem.maxCanOwn - amountOwned;
 		}
 
-		const outItems = (
-			createableItem.outputItems instanceof Bank
-				? createableItem.outputItems
-				: new Bank(createableItem.outputItems)
-		).multiply(quantity);
-		const inItems = (
-			createableItem.inputItems instanceof Bank ? createableItem.inputItems : new Bank(createableItem.inputItems)
-		).multiply(quantity);
+		const outItems = new Bank(createableItem.outputItems).multiply(quantity);
+		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
 
 		if (createableItem.GPCost) {
 			inItems.add('Coins', createableItem.GPCost);
@@ -180,7 +172,7 @@ export const createCommand: OSBMahojiCommand = {
 		if (createableItem.cantHaveItems) {
 			const allItemsOwned = user.allItemsOwned();
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
-				const numOwned = allItemsOwned.amount(itemID);
+				const numOwned = allItemsOwned.amount(Number(itemID));
 				if (numOwned >= qty) {
 					return `You can't ${action} this item, because you have ${new Bank(
 						createableItem.cantHaveItems

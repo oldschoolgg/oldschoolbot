@@ -6,9 +6,11 @@ import { client } from '../..';
 import { Events } from '../../lib/constants';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { itemID, updateGPTrackSetting } from '../../lib/util';
+import { itemID, stringMatches, truncateString, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { OSBMahojiCommand } from '../lib/util';
+
+const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',
@@ -33,10 +35,7 @@ export const openCommand: OSBMahojiCommand = {
 							val.toLowerCase().includes(value.toLowerCase())
 						);
 					})
-					.map(i => ({
-						name: `${i[0].name} (${i[1]}x Owned)`,
-						value: i[0].id.toString()
-					}));
+					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
 			}
 		},
 		{

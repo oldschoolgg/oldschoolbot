@@ -34,7 +34,7 @@ export async function crackerCommand({
 	otherPerson: KlasaUser;
 	interaction: SlashCommandInteraction;
 }) {
-	if (otherPerson.isIronman) 'That person is an ironman, they stand alone.';
+	if (otherPerson.isIronman) return 'That person is an ironman, they stand alone.';
 	if (otherPerson.bot) return "Bot's don't have hands.";
 	if (otherPerson.id === owner.id) return 'Nice try.';
 	if (otherPerson.isBusy) return 'That user is busy right now.';
