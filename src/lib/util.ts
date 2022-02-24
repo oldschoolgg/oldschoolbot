@@ -1,7 +1,19 @@
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
+import {
+	Channel,
+	Client,
+	DMChannel,
+	Guild,
+	GuildMember,
+	MessageButton,
+	MessageOptions,
+	TextChannel,
+	User,
+	Util
+} from 'discord.js';
+import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import murmurHash from 'murmurhash';
@@ -656,4 +668,37 @@ export function calcMaxRCQuantity(rune: Rune, user: KlasaUser) {
 	}
 
 	return 0;
+}
+
+export function convertDJSUserToAPIUser(user: User | KlasaUser): APIUser {
+	const apiUser: APIUser = {
+		id: user.id,
+		username: user.username,
+		discriminator: user.discriminator,
+		avatar: user.avatar,
+		bot: user.bot,
+		system: user.system,
+		flags: undefined,
+		mfa_enabled: undefined,
+		banner: undefined,
+		accent_color: undefined,
+		locale: undefined,
+		verified: undefined,
+		email: undefined,
+		premium_type: undefined,
+		public_flags: undefined
+	};
+
+	return apiUser;
+}
+
+export function convertDJSMemberToAPIMember(member: GuildMember): APIInteractionGuildMember {
+	return {
+		permissions: member.permissions.bitfield.toString(),
+		user: convertDJSUserToAPIUser(member.user),
+		roles: Array.from(member.roles.cache.keys()),
+		joined_at: member.joinedTimestamp!.toString(),
+		deaf: false,
+		mute: false
+	};
 }

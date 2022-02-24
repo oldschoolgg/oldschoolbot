@@ -26,8 +26,8 @@ export const wintertodtCommand: OSBMahojiCommand = {
 		examples: ['/wintertodt']
 	},
 	options: [],
-	run: async ({ member, channelID }: CommandRunOptions) => {
-		const user = await client.fetchUser(member.user.id);
+	run: async ({ userID, channelID }: CommandRunOptions) => {
+		const user = await client.fetchUser(userID.toString());
 		const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		if (fmLevel < 50) {

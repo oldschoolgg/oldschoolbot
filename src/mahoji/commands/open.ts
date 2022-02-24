@@ -21,9 +21,9 @@ export const openCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to open.',
 			required: false,
-			autocomplete: async (value, member) => {
-				const user = await client.fetchUser(member.user.id);
-				return user
+			autocomplete: async (value, user) => {
+				const botUser = await client.fetchUser(user.id);
+				return botUser
 					.bank()
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
@@ -47,8 +47,8 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		}
 	],
-	run: async ({ member, options }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
-		const user = await client.fetchUser(member.user.id);
+	run: async ({ userID, options }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
+		const user = await client.fetchUser(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
 				user
@@ -76,7 +76,11 @@ export const openCommand: OSBMahojiCommand = {
 			output instanceof LootTable
 				? { bank: output.roll(quantity) }
 				: await output({ user, self: openable, quantity });
-		const { previousCL } = await user.addItemsToBank({ items: loot.bank, collectionLog: true, filterLoot: false });
+		const { previousCL } = await user.addItemsToBank({
+			items: loot.bank,
+			collectionLog: true,
+			filterLoot: false
+		});
 		const image = await client.tasks.get('bankImage')!.generateBankImage(
 			loot.bank,
 			`Loot from ${quantity}x ${openedItem.name}`,
@@ -113,7 +117,12 @@ export const openCommand: OSBMahojiCommand = {
 		}
 
 		return {
-			attachments: [{ fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`, buffer: image.image! }],
+			attachments: [
+				{
+					fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`,
+					buffer: image.image!
+				}
+			],
 			content:
 				loot.message ??
 				`You have opened the ${openedItem.name} ${user.getOpenableScore(openedItem.id).toLocaleString()} times.`
