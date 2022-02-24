@@ -279,6 +279,35 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
 }
 
+async function handleRSN(user: KlasaUser, newRSN: string) {
+	const settings = await mahojiUsersSettingsFetch(user.id);
+	const { RSN } = settings;
+	if (!newRSN && RSN) {
+		return `Your current RSN is: \`${RSN}\``;
+	}
+
+	if (!newRSN && !RSN) {
+		return "You don't have an RSN set. You can set one like this: `/config user set_rsn <username>`";
+	}
+
+	newRSN = newRSN.toLowerCase();
+	if (!newRSN.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$')) {
+		return 'That username is not valid.';
+	}
+
+	if (RSN === newRSN) {
+		return `Your RSN is already set to \`${RSN}\``;
+	}
+
+	await mahojiUserSettingsUpdate(user.id, {
+		RSN: newRSN
+	});
+	if (RSN !== null) {
+		return `Changed your RSN from \`${RSN}\` to \`${newRSN}\``;
+	}
+	return `Your RSN has been set to: \`${newRSN}\`.`;
+}
+
 export const configCommand: OSBMahojiCommand = {
 	name: 'config',
 	description: 'Commands configuring settings and options.',
@@ -451,6 +480,19 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'set_rsn',
+					description: 'Set your RuneScape username in the bot.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'username',
+							description: 'Your RuneScape username.',
+							required: true
+						}
+					]
 				}
 			]
 		}
@@ -472,6 +514,7 @@ export const configCommand: OSBMahojiCommand = {
 		user?: {
 			random_events?: { choice: 'enable' | 'disable' };
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
+			set_rsn?: { username: string };
 		};
 	}>) => {
 		const user = await client.fetchUser(userID);
@@ -502,6 +545,9 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (options.user.combat_options) {
 				return handleCombatOptions(user, options.user.combat_options.action, options.user.combat_options.input);
+			}
+			if (options.user.set_rsn) {
+				return handleRSN(user, options.user.set_rsn.username);
 			}
 		}
 		return 'wut da';
