@@ -56,8 +56,8 @@ export class OldSchoolBotClient extends Client {
 		return super.login(token);
 	}
 
-	async fetchUser(id: string): Promise<KlasaUser> {
-		const user = await this.users.fetch(id);
+	async fetchUser(id: string | bigint): Promise<KlasaUser> {
+		const user = await this.users.fetch(typeof id === 'string' ? id : id.toString());
 		await user.settings.sync();
 		return user;
 	}

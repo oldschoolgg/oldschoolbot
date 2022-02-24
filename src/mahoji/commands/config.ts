@@ -5,7 +5,9 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import { BitField, PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
+import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { GuildSettings } from '../../lib/settings/types/GuildSettings';
+import { removeFromArr, stringMatches } from '../../lib/util';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
 import {
 	mahojiGuildSettingsFetch,
@@ -205,6 +207,77 @@ async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefi
 	});
 	return `Changed Command Prefix for this server to \`${newPrefix}\``;
 }
+const priorityWarningMsg =
+	"\n\n**Important: By default, 'Always barrage/burst' will take priority if 'Always cannon' is also enabled.**";
+async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 'list' | 'help', option?: string) {
+	const settings = await mahojiUsersSettingsFetch(user.id);
+	if (!command || (command && command === 'list')) {
+		// List enabled combat options:
+		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa!.id === o)!.name);
+		return `Your current combat options are:\n${cbOpts.join('\n')}\n\nTry: \`/config user command_options help\``;
+	}
+
+	if (command === 'help' || !option || !['add', 'remove'].includes(command)) {
+		return (
+			'Changes your Combat Options. Usage: `/config user combat_options [add/remove/list] always cannon`' +
+			`\n\nList of possible options:\n${CombatOptionsArray.map(coa => `**${coa!.name}**: ${coa!.desc}`).join(
+				'\n'
+			)}`
+		);
+	}
+
+	const newcbopt = CombatOptionsArray.find(
+		item =>
+			stringMatches(option, item.name) ||
+			(item.aliases && item.aliases.some(alias => stringMatches(alias, option)))
+	);
+	if (!newcbopt) return 'Cannot find matching option. Try: `/config user combat_options help`';
+
+	const currentStatus = settings.combat_options.includes(newcbopt.id);
+
+	const nextBool = command !== 'remove';
+
+	if (currentStatus === nextBool) {
+		return `"${newcbopt.name}" is already ${currentStatus ? 'enabled' : 'disabled'} for you.`;
+	}
+
+	let warningMsg = '';
+	const hasCannon = settings.combat_options.includes(CombatOptionsEnum.AlwaysCannon);
+	const hasBurstB =
+		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst) ||
+		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage);
+	// If enabling Ice Barrage, make sure burst isn't also enabled:
+	if (
+		nextBool &&
+		newcbopt.id === CombatOptionsEnum.AlwaysIceBarrage &&
+		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst)
+	) {
+		if (hasCannon) warningMsg = priorityWarningMsg;
+		await mahojiUserSettingsUpdate(user.id, {
+			combat_options: removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst)
+		});
+	}
+	// If enabling Ice Burst, make sure barrage isn't also enabled:
+	if (
+		nextBool &&
+		newcbopt.id === CombatOptionsEnum.AlwaysIceBurst &&
+		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage)
+	) {
+		if (warningMsg === '' && hasCannon) warningMsg = priorityWarningMsg;
+		await mahojiUserSettingsUpdate(user.id, {
+			combat_options: removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage)
+		});
+	}
+	// Warn if enabling cannon with ice burst/barrage:
+	if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB) {
+		warningMsg = priorityWarningMsg;
+	}
+	await mahojiUserSettingsUpdate(user.id, {
+		combat_options: [...settings.combat_options, newcbopt.id]
+	});
+
+	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
+}
 
 export const configCommand: OSBMahojiCommand = {
 	name: 'config',
@@ -347,6 +420,37 @@ export const configCommand: OSBMahojiCommand = {
 							]
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'combat_options',
+					description: 'Change combat options.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'action',
+							description: 'The action you want to perform.',
+							required: true,
+							choices: [
+								{ name: 'Add', value: 'add' },
+								{ name: 'Remove', value: 'remove' },
+								{ name: 'List', value: 'list' },
+								{ name: 'Help', value: 'help' }
+							]
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'input',
+							description: 'The option you want to add/remove.',
+							required: false,
+							autocomplete: async value => {
+								console.log(value);
+								return CombatOptionsArray.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.name, value: i.name }));
+							}
+						}
+					]
 				}
 			]
 		}
@@ -367,6 +471,7 @@ export const configCommand: OSBMahojiCommand = {
 		};
 		user?: {
 			random_events?: { choice: 'enable' | 'disable' };
+			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 		};
 	}>) => {
 		const user = await client.fetchUser(userID.toString());
@@ -394,6 +499,9 @@ export const configCommand: OSBMahojiCommand = {
 		if (options.user) {
 			if (options.user.random_events) {
 				return handleRandomEventsEnable(user, options.user.random_events.choice);
+			}
+			if (options.user.combat_options) {
+				return handleCombatOptions(user, options.user.combat_options.action, options.user.combat_options.input);
 			}
 		}
 		return 'wut da';

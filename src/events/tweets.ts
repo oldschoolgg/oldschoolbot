@@ -105,7 +105,7 @@ export default class extends Event {
 		this.sendTweet(formattedTweet);
 	}
 
-	async sendTweet({ text, url, name, avatar, image, id, authorURL }: Tweet) {
+	async sendTweet({ text, url, name, avatar, image, authorURL }: Tweet) {
 		const embed = new MessageEmbed()
 			.setDescription(`\n ${text}`)
 			.setColor(1_942_002)

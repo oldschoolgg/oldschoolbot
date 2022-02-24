@@ -702,3 +702,7 @@ export function convertDJSMemberToAPIMember(member: GuildMember): APIInteraction
 		mute: false
 	};
 }
+
+export function removeFromArr<T>(arr: T[], item: T) {
+	return arr.filter(i => i !== item);
+}
