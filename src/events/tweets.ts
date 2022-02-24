@@ -1,9 +1,13 @@
 import { MessageEmbed, Permissions, TextChannel } from 'discord.js';
+import { notEmpty } from 'e';
 import he from 'he';
 import { Event, EventStore } from 'klasa';
 import Twit from 'twit';
 
+import { client } from '..';
 import { twitterAppConfig } from '../config';
+import { prisma } from '../lib/settings/prisma';
+import { assert } from '../lib/util';
 import { sendToChannelID } from '../lib/util/webhook';
 
 const ALL_TWITTERS = [
@@ -37,44 +41,7 @@ const ALL_TWITTERS = [
 	'1265387982942601218', // JagexMack
 	'1179378854848270336', // JagexHalo
 	'1264954264528605184', // JagexElena
-	'1275458567412150272', // JagexSquid
-	/* HCIM Deaths */
-	'797859891373371392', // HCIM_Deaths
-	/* Hexis */
-	'760605320108310528'
-];
-
-const JMOD_TWITTERS = [
-	'1205666185',
-	'3362141061',
-	'3870174875',
-	'2818884683',
-	'1858363524',
-	'2279036881',
-	'1712662364',
-	'2726160938',
-	'1463868458',
-	'824932930787094528',
-	'740546260533383168',
-	'998580261137911808',
-	'794223611297091584',
-	'734716002831900672',
-	'732227342144307200',
-	'849322141002727425',
-	'889399884788453376',
-	'1090608917560901632',
-	'1067444118765412352',
-	'1088015657982152706',
-	'1008655742428221440',
-	'1102924576449880064',
-	'1158375416467509248',
-	'1178684006352719873',
-	'1230792862981410816',
-	'1247105690008793089',
-	'1265387982942601218',
-	'1179378854848270336',
-	'1264954264528605184',
-	'1275458567412150272'
+	'1275458567412150272' // JagexSquid
 ];
 
 interface Tweet {
@@ -108,20 +75,18 @@ export default class extends Event {
 		const stream = twitter.stream('statuses/filter', { follow: ALL_TWITTERS });
 
 		stream.on('tweet', this.handleTweet.bind(this));
+		stream.on('error', console.error);
 	}
 
 	handleTweet(tweet: any) {
 		// If its a retweet, return.
-		if (tweet.retweeted || tweet.delete) {
-			return;
-		}
-
-		// If it's a reply, return.
-		if (tweet.in_reply_to_status_id_str || tweet.in_reply_to_user_id_str) {
-			return;
-		}
-
-		if (tweet.retweeted_status) {
+		if (
+			tweet.retweeted ||
+			tweet.retweeted_status ||
+			tweet.delete ||
+			tweet.in_reply_to_status_id_str ||
+			tweet.in_reply_to_user_id_str
+		) {
 			return;
 		}
 
@@ -148,12 +113,24 @@ export default class extends Event {
 			.setAuthor(name, undefined, authorURL)
 			.setImage(image);
 
-		for (const guild of this.client.guilds.cache.values()) {
-			const settings = getGuildSettingsCached(guild);
-			if (!settings) continue;
-			if (!settings.get(key as string)) continue;
+		const tweetChannels = (
+			await prisma.guild.findMany({
+				where: {
+					tweetchannel: {
+						not: null
+					}
+				},
+				select: {
+					tweetchannel: true
+				}
+			})
+		)
+			.map(i => i.tweetchannel)
+			.filter(notEmpty);
+		assert(tweetChannels.length < 500, 'Should be less than 500 tweetchannels');
 
-			const channel = guild.channels.cache.get(settings.get(key) as string);
+		for (const id of tweetChannels) {
+			const channel = client.channels.cache.get(id);
 			if (
 				channel &&
 				channel instanceof TextChannel &&
