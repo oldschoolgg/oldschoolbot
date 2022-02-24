@@ -44,7 +44,7 @@ export default class extends Monitor {
 			}
 		}
 
-		return message.channel.send(`The prefix in this guild is set to: \`${settings.prefix}\`}`);
+		return message.channel.send(`The prefix in this guild is set to: \`${settings.prefix}\``);
 	}
 
 	public async runCommand(msg: KlasaMessage) {
