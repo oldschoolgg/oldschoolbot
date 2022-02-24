@@ -172,7 +172,7 @@ export const createCommand: OSBMahojiCommand = {
 		if (createableItem.cantHaveItems) {
 			const allItemsOwned = user.allItemsOwned();
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
-				const numOwned = allItemsOwned.amount(itemID);
+				const numOwned = allItemsOwned.amount(Number(itemID));
 				if (numOwned >= qty) {
 					return `You can't ${action} this item, because you have ${new Bank(
 						createableItem.cantHaveItems
