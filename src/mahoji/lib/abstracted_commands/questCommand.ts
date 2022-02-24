@@ -9,7 +9,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 
 export async function questCommand(user: KlasaUser, channelID: bigint) {
 	const currentQP = user.settings.get(UserSettings.QP);
-	if (currentQP >= MAX_QP) {
+	if (currentQP >= MAX_QP && !user.isIronman) {
 		return 'You already have the maximum amount of Quest Points.';
 	}
 
