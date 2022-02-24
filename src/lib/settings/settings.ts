@@ -22,20 +22,6 @@ import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
 
-// export async function getGuildSettings(guild: Guild) {
-// 	const cached = guildSettingsCache.get(guild.id);
-// 	if (cached) return cached;
-// 	const gateway = (guild.client.gateways.get('guilds') as Gateway)!;
-// 	const settings = await gateway.acquire(guild);
-// 	gateway.cache.set(guild.id, { settings });
-// 	guildSettingsCache.set(guild.id, settings);
-// 	return settings;
-// }
-
-// export function getGuildSettingsCached(guild: Guild) {
-// 	return guildSettingsCache.get(guild.id);
-// }
-
 export async function getUserSettings(userID: string): Promise<Settings> {
 	return (client.gateways.get('users') as Gateway)!
 		.acquire({
