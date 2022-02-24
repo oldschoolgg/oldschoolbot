@@ -6,11 +6,9 @@ import { client } from '../..';
 import { Events } from '../../lib/constants';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { itemID, stringMatches, truncateString, updateGPTrackSetting } from '../../lib/util';
+import { itemID, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { OSBMahojiCommand } from '../lib/util';
-
-const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',
