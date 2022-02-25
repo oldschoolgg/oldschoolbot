@@ -5,9 +5,11 @@ import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
+import { openSeedPack } from '../commands/Minion/seedpack';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import ClueTiers from './minions/data/clueTiers';
+import { defaultFarmingContract } from './minions/farming';
 import { UserSettings } from './settings/types/UserSettings';
 import {
 	BagFullOfGemsTable,
@@ -246,7 +248,20 @@ const osjsOpenables: UnifiedOpenable[] = [
 		id: 22_993,
 		openedItem: getOSItem(22_993),
 		aliases: ['seed pack'],
-		output: Openables.SeedPack.table,
+		output: async (
+			args: OpenArgs
+		): Promise<{
+			bank: Bank;
+			message?: string;
+		}> => {
+			const { plantTier } = args.user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+			const realQty = args.quantity ?? 1;
+			const openLoot = new Bank();
+			for (let i = 0; i < realQty; i++) {
+				openLoot.add(openSeedPack(plantTier));
+			}
+			return { bank: openLoot };
+		},
 		allItems: Openables.SeedPack.table.allItems
 	},
 	{
