@@ -5,9 +5,8 @@ import { schedule } from 'node-cron';
 import fetch from 'node-fetch';
 
 import { client } from '..';
+import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { prisma } from './settings/prisma';
-import { getGuildSettings } from './settings/settings';
-import { GuildSettings } from './settings/types/GuildSettings';
 import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 
@@ -67,10 +66,10 @@ GROUP BY item_id;`);
 			for (const { id } of guildsToSendToo) {
 				const guild = client.guilds.cache.get(id);
 				if (!guild) continue;
-				const settings = await getGuildSettings(guild);
-				if (!settings.get(GuildSettings.JMODComments)) continue;
+				const settings = untrustedGuildSettingsCache.get(guild.id);
+				if (!settings?.jmodComments) continue;
 
-				const channel = guild.channels.cache.get(settings.get(GuildSettings.JMODComments) as string);
+				const channel = guild.channels.cache.get(settings.jmodComments);
 
 				if (
 					channel &&

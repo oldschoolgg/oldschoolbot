@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import {
+	Guild,
 	MessageActionRow,
 	MessageActionRowOptions,
 	MessageButtonStyleResolvable,
@@ -8,7 +9,7 @@ import {
 	MessageEmbedOptions
 } from 'discord.js';
 import { Time } from 'e';
-import { KlasaClient } from 'klasa';
+import { KlasaClient, KlasaUser } from 'klasa';
 import {
 	APIActionRowComponent,
 	APIEmbed,
@@ -131,4 +132,10 @@ export function allAbstractCommands(client: KlasaClient): AbstractCommand[] {
 		...(client.commands.array() as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
 		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
 	];
+}
+
+export async function hasBanMemberPerms(user: KlasaUser, guild: Guild) {
+	const member = await guild.members.fetch(user).catch(() => null);
+	if (!member) return false;
+	return member.permissions.has('BAN_MEMBERS');
 }
