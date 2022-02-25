@@ -161,7 +161,7 @@ export async function runCommand({
 			: convertMahojiCommandToAbstractCommand(actualCommand);
 
 	let error: Error | null = null;
-
+	let inhibited = false;
 	try {
 		const inhibitedReason = await preCommand({
 			abstractCommand,
@@ -172,6 +172,7 @@ export async function runCommand({
 		});
 
 		if (inhibitedReason) {
+			inhibited = true;
 			if (inhibitedReason.silent) return;
 			return message.channel.send(inhibitedReason.reason);
 		}
@@ -224,7 +225,8 @@ export async function runCommand({
 				args,
 				error,
 				msg: message,
-				isContinue: isContinue ?? false
+				isContinue: isContinue ?? false,
+				inhibited
 			});
 		} catch (err) {
 			logError(err);

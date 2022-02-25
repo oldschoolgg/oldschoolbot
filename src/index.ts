@@ -42,7 +42,7 @@ export const mahojiClient = new MahojiClient({
 			});
 			return result?.reason;
 		},
-		postCommand: ({ command, interaction, error }) =>
+		postCommand: ({ command, interaction, error, inhibited }) =>
 			postCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.userID.toString(),
@@ -51,7 +51,8 @@ export const mahojiClient = new MahojiClient({
 				args: interaction.options,
 				error,
 				msg: null,
-				isContinue: false
+				isContinue: false,
+				inhibited
 			})
 	}
 });

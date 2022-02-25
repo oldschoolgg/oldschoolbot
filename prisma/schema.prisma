@@ -460,6 +460,7 @@ model CommandUsage {
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
   flags        Json?
+  inhibited    Boolean?             @default(false)
 
   args       Json?   @db.Json
   channel_id String? @db.VarChar(19)
