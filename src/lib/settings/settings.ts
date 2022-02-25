@@ -1,5 +1,5 @@
 import { NewUser } from '@prisma/client';
-import { Guild, Util } from 'discord.js';
+import { Util } from 'discord.js';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -21,22 +21,6 @@ import { logError } from '../util/logError';
 import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
-
-const guildSettingsCache = new Map<string, Settings>();
-
-export async function getGuildSettings(guild: Guild) {
-	const cached = guildSettingsCache.get(guild.id);
-	if (cached) return cached;
-	const gateway = (guild.client.gateways.get('guilds') as Gateway)!;
-	const settings = await gateway.acquire(guild);
-	gateway.cache.set(guild.id, { settings });
-	guildSettingsCache.set(guild.id, settings);
-	return settings;
-}
-
-export function getGuildSettingsCached(guild: Guild) {
-	return guildSettingsCache.get(guild.id);
-}
 
 export async function getUserSettings(userID: string): Promise<Settings> {
 	return (client.gateways.get('users') as Gateway)!
@@ -137,11 +121,13 @@ export async function runMahojiCommand({
 	if (!mahojiCommand) {
 		throw new Error(`No mahoji command found for ${commandName}`);
 	}
+
 	return mahojiCommand.run({
 		userID: BigInt(msg.author.id),
 		guildID: msg.guild ? BigInt(msg.guild.id) : (null as any),
 		channelID: BigInt(msg.channel.id),
 		options,
+		user: msg.author as any, // kinda dirty
 		member: msg.member as any,
 		client: mahojiClient,
 		interaction: {} as any
@@ -175,7 +161,7 @@ export async function runCommand({
 			: convertMahojiCommandToAbstractCommand(actualCommand);
 
 	let error: Error | null = null;
-
+	let inhibited = false;
 	try {
 		const inhibitedReason = await preCommand({
 			abstractCommand,
@@ -186,6 +172,7 @@ export async function runCommand({
 		});
 
 		if (inhibitedReason) {
+			inhibited = true;
 			if (inhibitedReason.silent) return;
 			return message.channel.send(inhibitedReason.reason);
 		}
@@ -238,7 +225,8 @@ export async function runCommand({
 				args,
 				error,
 				msg: message,
-				isContinue: isContinue ?? false
+				isContinue: isContinue ?? false,
+				inhibited
 			});
 		} catch (err) {
 			logError(err);

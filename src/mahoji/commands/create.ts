@@ -77,11 +77,11 @@ export const createCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		member,
 		options,
-		interaction
+		interaction,
+		userID
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
-		const user = await client.fetchUser(member.user.id);
+		const user = await client.fetchUser(userID.toString());
 
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
@@ -178,7 +178,7 @@ export const createCommand: OSBMahojiCommand = {
 		if (createableItem.cantHaveItems) {
 			const allItemsOwned = user.allItemsOwned();
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
-				const numOwned = allItemsOwned.amount(itemID);
+				const numOwned = allItemsOwned.amount(Number(itemID));
 				if (numOwned >= qty) {
 					return `You can't ${action} this item, because you have ${new Bank(
 						createableItem.cantHaveItems

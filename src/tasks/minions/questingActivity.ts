@@ -67,7 +67,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			hasMaxQP ? undefined : ['quest', [], true],
+			hasMaxQP ? undefined : ['minion', { quest: { userID, channelID } }, true],
 			undefined,
 			data,
 			null

@@ -37,22 +37,23 @@ export const mahojiClient = new MahojiClient({
 			const result = await preCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.userID.toString(),
-				guildID: interaction.guildID.toString(),
+				guildID: interaction.guildID?.toString(),
 				channelID: interaction.channelID.toString(),
 				bypassInhibitors: false
 			});
 			return result?.reason;
 		},
-		postCommand: ({ command, interaction, error }) =>
+		postCommand: ({ command, interaction, error, inhibited }) =>
 			postCommand({
 				abstractCommand: convertMahojiCommandToAbstractCommand(command),
 				userID: interaction.userID.toString(),
-				guildID: interaction.guildID.toString(),
+				guildID: interaction.guildID?.toString(),
 				channelID: interaction.channelID.toString(),
 				args: interaction.options,
 				error,
 				msg: null,
-				isContinue: false
+				isContinue: false,
+				inhibited
 			})
 	}
 });
@@ -74,7 +75,7 @@ client.on('raw', async event => {
 		if (result.type === InteractionType.ApplicationCommand) {
 			const ERROR_RESPONSE: SlashCommandResponse = {
 				response: {
-					data: { content: 'Sorry, an errored occured while trying to run this command.' },
+					data: { content: 'Sorry, an error occured while trying to run this command.' },
 					type: InteractionResponseType.ChannelMessageWithSource
 				},
 				interaction: result.interaction,

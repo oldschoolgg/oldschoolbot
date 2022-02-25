@@ -8,6 +8,12 @@ import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function questCommand(user: KlasaUser, channelID: bigint) {
+	if (!user.hasMinion) {
+		return 'You need a minion to do a questing trip';
+	}
+	if (user.minionIsBusy) {
+		return 'Your minion must not be busy to do a questing trip';
+	}
 	const currentQP = user.settings.get(UserSettings.QP);
 	if (currentQP >= MAX_QP) {
 		return 'You already have the maximum amount of Quest Points.';
