@@ -6,8 +6,6 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { BitField } from './constants';
-import { getGuildSettings } from './settings/settings';
-import { GuildSettings } from './settings/types/GuildSettings';
 import { UserSettings } from './settings/types/UserSettings';
 import resolveItems from './util/resolveItems';
 
@@ -186,10 +184,7 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 	const roll = randInt(1, 4);
 	user.log(`getting ${event.name} random event.`);
 
-	const settings = await getGuildSettings(ch.guild!);
-	const embed = new MessageEmbed().setFooter(
-		`Use \`${settings.get(GuildSettings.Prefix)}randomevents disable\` to disable random events.`
-	);
+	const embed = new MessageEmbed().setFooter('Use `/minion user randomevents disable` to disable random events.');
 
 	switch (roll) {
 		case 1: {

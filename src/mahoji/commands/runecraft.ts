@@ -53,11 +53,11 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		member,
+		userID,
 		options,
 		channelID
 	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean }>) => {
-		const user = await client.fetchUser(member.user.id);
+		const user = await client.fetchUser(userID.toString());
 		let { rune, quantity, usestams } = options;
 		if (usestams === undefined) usestams = true;
 		rune = rune.toLowerCase().replace('rune', '').trim();

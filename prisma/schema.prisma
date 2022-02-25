@@ -165,7 +165,6 @@ model Guild {
   language          String   @default("en-US") @db.VarChar(5)
   disabledCommands  String[]
   jmodComments      String?  @db.VarChar(19)
-  hcimdeaths        String?  @db.VarChar(19)
   petchannel        String?  @db.VarChar(19)
   tweetchannel      String?  @db.VarChar(19)
   levelUpMessages   String?  @db.VarChar(19)
@@ -461,6 +460,7 @@ model CommandUsage {
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
   flags        Json?
+  inhibited    Boolean?             @default(false)
 
   args       Json?   @db.Json
   channel_id String? @db.VarChar(19)
