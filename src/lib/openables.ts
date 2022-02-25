@@ -255,9 +255,8 @@ const osjsOpenables: UnifiedOpenable[] = [
 			message?: string;
 		}> => {
 			const { plantTier } = args.user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
-			const realQty = args.quantity;
 			const openLoot = new Bank();
-			for (let i = 0; i < realQty; i++) {
+			for (let i = 0; i < args.quantity; i++) {
 				openLoot.add(openSeedPack(plantTier));
 			}
 			return { bank: openLoot };
