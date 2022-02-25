@@ -157,7 +157,13 @@ export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: P
 
 	// Patch instead of syncing to avoid another database read.
 	await klasaUser.settings.sync(true);
+	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match');
 	assert(klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points, 'Patched user should match');
+	const klasaBank = klasaUser.settings.get(UserSettings.Bank);
+	const newBank = newUser.bank;
+	for (const [key, value] of Object.entries(klasaBank)) {
+		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`);
+	}
 
 	return { newUser };
 }
