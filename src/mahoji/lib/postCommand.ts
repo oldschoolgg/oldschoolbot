@@ -56,7 +56,8 @@ export async function postCommand({
 	args,
 	error,
 	msg,
-	isContinue
+	isContinue,
+	inhibited
 }: {
 	abstractCommand: AbstractCommand;
 	userID: string;
@@ -66,8 +67,9 @@ export async function postCommand({
 	args: CommandArgs;
 	msg: KlasaMessage | null;
 	isContinue: boolean;
+	inhibited: boolean;
 }): Promise<string | undefined> {
-	if (shouldTrackCommand(abstractCommand, args)) {
+	if (!inhibited && shouldTrackCommand(abstractCommand, args)) {
 		const commandUsage = makeCommandUsage({
 			userID,
 			channelID,
@@ -75,7 +77,8 @@ export async function postCommand({
 			commandName: abstractCommand.name,
 			args,
 			isContinue,
-			flags: null
+			flags: null,
+			inhibited
 		});
 		await prisma.commandUsage.create({
 			data: commandUsage

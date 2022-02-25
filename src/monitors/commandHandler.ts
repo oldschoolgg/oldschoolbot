@@ -63,7 +63,7 @@ export default class extends Monitor {
 		const abstractCommand = convertKlasaCommandToAbstractCommand(command);
 
 		let error: Error | string | null = null;
-
+		let inhibited = false;
 		try {
 			const inhibitedReason = await preCommand({
 				abstractCommand,
@@ -74,6 +74,7 @@ export default class extends Monitor {
 			});
 
 			if (inhibitedReason) {
+				inhibited = true;
 				if (inhibitedReason.silent) return;
 				return msg.channel.send(inhibitedReason.reason);
 			}
@@ -100,7 +101,8 @@ export default class extends Monitor {
 					error,
 					args: msg.args,
 					msg,
-					isContinue: false
+					isContinue: false,
+					inhibited
 				});
 			} catch (err) {
 				logError(err);
