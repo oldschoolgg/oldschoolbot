@@ -10,7 +10,12 @@ import {
 	GambleTiers
 } from '../lib/abstracted_commands/barbAssault';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
+import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
+import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
+import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
 import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
+import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
+import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
 import {
 	pestControlBuyables,
 	pestControlBuyCommand,
@@ -18,6 +23,7 @@ import {
 	pestControlStatsCommand,
 	pestControlXPCommand
 } from '../lib/abstracted_commands/pestControlCommand';
+import { sepulchreCommand } from '../lib/abstracted_commands/sepulchreCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -219,6 +225,115 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		/**
+		 *
+		 * Fishing Trawler
+		 *
+		 */ {
+			name: 'fishing_trawler',
+			description: 'Sends your minion to do the Fishing Trawler minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Fishing Trawler trip.'
+				}
+			]
+		},
+		/**
+		 *
+		 * Mage Arena 1
+		 *
+		 */
+		{
+			name: 'mage_arena',
+			description: 'Sends your minion to do the Mage Arena 1 minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Mage Arena 1 trip.'
+				}
+			]
+		},
+		/**
+		 *
+		 * Mage Arena 2
+		 *
+		 */
+		{
+			name: 'mage_arena_2',
+			description: 'Sends your minion to do the Mage Arena 2 minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Mage Arena 2 trip.'
+				}
+			]
+		},
+		/**
+		 *
+		 * Gnome Restaurant
+		 *
+		 */
+		{
+			name: 'gnome_restaurant',
+			description: 'Sends your minion to do the Gnome Restaurant minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Gnome Restaurant trip.'
+				}
+			]
+		},
+		/**
+		 *
+		 * Sepulchre
+		 *
+		 */
+		{
+			name: 'sepulchre',
+			description: 'Sends your minion to do the Hallowed Sepulchre minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Hallowed Sepulchre trip.'
+				}
+			]
+		},
+		/**
+		 *
+		 * Gauntlet
+		 *
+		 */
+		{
+			name: 'gauntlet',
+			description: 'Sends your minion to do the Gauntlet minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Gauntlet trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'corrupted',
+							description: 'If you want to do Corrupted Gauntlet.',
+							required: false
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -246,6 +361,12 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: {};
 			buy?: { name: string };
 		};
+		fishing_trawler?: { start?: {} };
+		mage_arena?: { start?: {} };
+		mage_arena_2?: { start?: {} };
+		gnome_restaurant?: { start?: {} };
+		sepulchre?: { start?: {} };
+		gauntlet?: { start?: { corrupted?: boolean } };
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
@@ -295,7 +416,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 
 		/**
 		 *
-		 * LMS
+		 * Pest Control
 		 *
 		 */
 		if (options.pest_control?.stats) return pestControlStatsCommand(user);
@@ -314,6 +435,49 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.pest_control?.buy) {
 			return pestControlBuyCommand(klasaUser, user, options.pest_control.buy.name);
 		}
+
+		/**
+		 *
+		 * Fishing Trawler
+		 *
+		 */
+		if (options.fishing_trawler?.start) return fishingTrawlerCommand(klasaUser, channelID);
+
+		/**
+		 *
+		 * Mage Arena
+		 *
+		 */
+		if (options.mage_arena?.start) return mageArenaCommand(klasaUser, channelID);
+
+		/**
+		 *
+		 * Mage Arena 2
+		 *
+		 */
+		if (options.mage_arena_2?.start) return mageArena2Command(klasaUser, channelID);
+
+		/**
+		 *
+		 * Gnome Restaurant
+		 *
+		 */
+		if (options.gnome_restaurant?.start) return gnomeRestaurantCommand(klasaUser, channelID);
+
+		/**
+		 *
+		 * Sepulchre
+		 *
+		 */
+		if (options.sepulchre?.start) return sepulchreCommand(klasaUser, channelID);
+
+		/**
+		 *
+		 * Gauntlet
+		 *
+		 */
+		if (options.gauntlet?.start)
+			return gauntletCommand(klasaUser, channelID, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
 		return 'Invalid command.';
 	}
 };
