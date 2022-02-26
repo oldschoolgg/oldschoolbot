@@ -1,3 +1,4 @@
+import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
@@ -56,7 +57,17 @@ const implingTableByWorldLocation = {
 };
 
 export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
-	if (['FightCaves', 'Inferno', 'Christmas', 'TheatreOfBlood', 'LastManStanding'].includes(data.type)) return null;
+	if (
+		[
+			'FightCaves',
+			'Inferno',
+			'Christmas',
+			'TheatreOfBlood',
+			'LastManStanding',
+			activity_type_enum.BarbarianAssault
+		].includes(data.type)
+	)
+		return null;
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;
