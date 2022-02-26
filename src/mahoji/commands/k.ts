@@ -17,7 +17,11 @@ export const killCommand: OSBMahojiCommand = {
 			required: true,
 			autocomplete: async value => {
 				return killableMonsters
-					.filter(m => (!value ? true : m.name.toLowerCase().includes(value.toLowerCase())))
+					.filter(m =>
+						!value
+							? true
+							: [m.name.toLowerCase(), ...m.aliases].some(str => str.includes(value.toLowerCase()))
+					)
 					.map(i => ({ name: i.name, value: i.name }));
 			}
 		},
