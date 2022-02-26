@@ -63,8 +63,10 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 			'Inferno',
 			'Christmas',
 			'TheatreOfBlood',
-			'LastManStanding',
-			activity_type_enum.BarbarianAssault
+			activity_type_enum.BarbarianAssault,
+			activity_type_enum.CastleWars,
+			activity_type_enum.LastManStanding,
+			activity_type_enum.PestControl
 		].includes(data.type)
 	)
 		return null;

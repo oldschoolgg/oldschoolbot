@@ -80,7 +80,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['gauntlet', [corrupted ? 'corrupted' : 'normal', quantity], true],
+			['minigames', { gauntlet: { start: { corrupted } } }, true],
 			image!,
 			data,
 			loot

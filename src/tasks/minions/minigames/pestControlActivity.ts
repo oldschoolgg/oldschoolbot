@@ -2,11 +2,11 @@ import { Time } from 'e';
 import { Task } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { getBoatType } from '../../../commands/Minion/pestcontrol';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
@@ -35,7 +35,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['pestcontrol', [quantity], true, 'start'],
+			['minigames', { pest_control: { start: {} } }, true, 'start'],
 			undefined,
 			data,
 			null
