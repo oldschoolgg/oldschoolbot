@@ -93,6 +93,12 @@ const feedableItems: FeedableItem[] = [
 		description: '30% faster PvM',
 		tameSpeciesCanBeFedThis: [TameType.Combat],
 		announcementString: "Your tame can now kill 30% faster! It's holding the Dwarven warhammer in its claws..."
+	},
+	{
+		item: getOSItem('Mr. E'),
+		description: 'Chance to get 2x loot',
+		tameSpeciesCanBeFedThis: [TameType.Combat, TameType.Gatherer, TameType.Artisan, TameType.Support],
+		announcementString: "With Mr. E's energy absorbed, your tame now has a chance at 2x loot!"
 	}
 ];
 
