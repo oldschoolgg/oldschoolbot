@@ -110,11 +110,6 @@ export async function minionKillCommand(
 	const boosts = [];
 	let messages: string[] = [];
 
-	if (typeof quantity === 'string') {
-		name = quantity;
-		quantity = undefined;
-	}
-
 	if (!name) return invalidMonsterMsg;
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
