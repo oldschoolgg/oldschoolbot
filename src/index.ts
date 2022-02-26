@@ -85,7 +85,15 @@ client.on('raw', async event => {
 		return;
 	}
 	if (result.type === InteractionType.ApplicationCommand) {
-		return result.interaction.respond(result);
+		try {
+			await result.interaction.respond(result);
+		} catch (err: unknown) {
+			logError(err, {
+				user_id: result.interaction.userID.toString(),
+				name: result.interaction.data.interaction.data?.name ?? 'None',
+				command: result.interaction.command.name
+			});
+		}
 	}
 	if (result.type === InteractionType.ApplicationCommandAutocomplete) {
 		return result.interaction.respond(result);
