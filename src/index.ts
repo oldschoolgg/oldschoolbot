@@ -60,7 +60,13 @@ export const mahojiClient = new MahojiClient({
 export const client = new OldSchoolBotClient(clientOptions);
 client.on('raw', async event => {
 	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
+	// TODO: Ignore interactions if client not ready, they will error and fail to execute
+	// if they use things depending on the client being ready. For now, we have to
+	// just have them fail/error for the user.
+	if (!client.ready) return;
+
 	const data = event.d as APIInteraction;
+
 	const result = await mahojiClient.parseInteraction(data);
 
 	if (result === null) return;
