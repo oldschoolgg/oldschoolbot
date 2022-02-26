@@ -662,3 +662,5 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export type PvMMethod = typeof PVM_METHODS[number];

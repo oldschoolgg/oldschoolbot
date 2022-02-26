@@ -6,7 +6,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { client } from '../..';
 import { BitField } from '../../lib/constants';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { removeFromArr, stringMatches } from '../../lib/util';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
 import {
@@ -61,7 +60,7 @@ async function handlePetMessagesEnable(
 		if (settings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await mahojiGuildSettingsUpdate(GuildSettings.PetChannel, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			petchannel: cID
 		});
 		return 'Enabled Pet Messages in this guild.';
@@ -69,7 +68,7 @@ async function handlePetMessagesEnable(
 	if (settings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(GuildSettings.PetChannel, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';

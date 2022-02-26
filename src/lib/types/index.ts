@@ -6,27 +6,6 @@ export interface ItemBank {
 	[key: string]: number;
 }
 
-export interface SettingsEntry {
-	id: string;
-	RSN?: string;
-	GP?: number;
-	badges?: string[];
-	bank?: ItemBank;
-	clueScores?: ItemBank;
-	monsterScores?: ItemBank;
-	collectionLog?: number[];
-	collectionLogBank?: ItemBank;
-	pets?: number[];
-	lastDailyTimestamp?: number;
-	lastTearsOfGuthixTimestamp?: number;
-	bitfield?: number[];
-	minion?: {
-		name?: string;
-		hasBought: boolean;
-		ironman: boolean;
-	};
-}
-
 export interface CachedItemPrice {
 	price: number;
 	fetchedAt: number;
@@ -34,11 +13,6 @@ export interface CachedItemPrice {
 
 export interface ItemPriceCache {
 	[key: string]: CachedItemPrice;
-}
-
-export interface JMod {
-	redditUsername: string;
-	formattedName: string;
 }
 
 export type AnyObject = Record<PropertyKey, unknown> | {};
