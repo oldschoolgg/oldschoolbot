@@ -1,4 +1,4 @@
-import { Guild, Prisma } from '@prisma/client';
+import { Guild, Prisma, User } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
@@ -19,6 +19,7 @@ import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { Skills } from '../lib/types';
 import { assert } from '../lib/util';
 
 export function mahojiParseNumber({
@@ -134,8 +135,8 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
  *
  */
 
-export async function mahojiUsersSettingsFetch(user: string | KlasaUser) {
-	const { id } = typeof user === 'string' ? await client.fetchUser(user) : user;
+export async function mahojiUsersSettingsFetch(user: bigint | string | KlasaUser) {
+	const { id } = typeof user === 'string' || typeof user === 'bigint' ? await client.fetchUser(user) : user;
 	const result = await prisma.user.findFirst({
 		where: {
 			id
@@ -164,6 +165,8 @@ export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: P
 	for (const [key, value] of Object.entries(klasaBank)) {
 		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`);
 	}
+	assert(klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level);
+	assert(klasaUser.settings.get(UserSettings.HonourPoints) === newUser.honour_points);
 
 	return { newUser };
 }
@@ -205,4 +208,32 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 export interface MahojiUserOption {
 	user: APIUser;
 	member: APIInteractionDataResolvedGuildMember;
+}
+
+export function getSkillsOfMahojiUser(user: User): Skills {
+	return {
+		agility: Number(user.skills_agility),
+		cooking: Number(user.skills_cooking),
+		fishing: Number(user.skills_fishing),
+		mining: Number(user.skills_mining),
+		smithing: Number(user.skills_smithing),
+		woodcutting: Number(user.skills_woodcutting),
+		firemaking: Number(user.skills_firemaking),
+		runecraft: Number(user.skills_runecraft),
+		crafting: Number(user.skills_crafting),
+		prayer: Number(user.skills_prayer),
+		fletching: Number(user.skills_fletching),
+		farming: Number(user.skills_farming),
+		herblore: Number(user.skills_herblore),
+		thieving: Number(user.skills_thieving),
+		hunter: Number(user.skills_hunter),
+		construction: Number(user.skills_construction),
+		magic: Number(user.skills_magic),
+		attack: Number(user.skills_attack),
+		strength: Number(user.skills_strength),
+		defence: Number(user.skills_defence),
+		ranged: Number(user.skills_ranged),
+		hitpoints: Number(user.skills_hitpoints),
+		slayer: Number(user.skills_slayer)
+	};
 }

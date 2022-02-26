@@ -261,12 +261,6 @@ export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTaskOptions {
-	leader: string;
-	users: string[];
-	totalLevel: number;
-}
-
 export interface AgilityArenaActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface TempleTrekkingActivityTaskOptions extends MinigameActivityTaskOptions {
