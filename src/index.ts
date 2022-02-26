@@ -86,7 +86,15 @@ client.on('raw', async event => {
 				interaction: result.interaction,
 				type: InteractionType.ApplicationCommand
 			};
-			result.interaction.respond(ERROR_RESPONSE);
+			try {
+				await result.interaction.respond(ERROR_RESPONSE);
+			} catch (err: unknown) {
+				logError(err, {
+					user_id: result.interaction.userID.toString(),
+					name: result.interaction.data.interaction.data?.name ?? 'None',
+					command: result.interaction.command.name
+				});
+			}
 		}
 		return;
 	}
