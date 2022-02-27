@@ -5,7 +5,7 @@ import { addArrayOfNumbers } from 'oldschooljs/dist/util';
 
 import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemNameFromID } from '../../../lib/util';
+import { formatDuration, itemID, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
@@ -33,6 +33,13 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 	boosts.push(`${percentReduced.toFixed(1)}% for minion learning`);
 
 	lapLength = reduceNumByPercent(lapLength, percentReduced);
+
+	const hasCob = user.equippedPet() === itemID('Cob');
+
+	if (hasCob) {
+		lapLength /= 2;
+		boosts.push("2x boost with Cob's help");
+	}
 
 	for (const [id, percent] of objectEntries(sepulchreBoosts)) {
 		if (user.hasItemEquippedOrInBank(Number(id))) {
