@@ -98,7 +98,7 @@ export interface SingleMaterial {
 	quantity: number;
 }
 
-interface SpecialDisassemblyGroup {
+export interface SpecialDisassemblyGroup {
 	type: MaterialType;
 	chance: number;
 	amount: number;
