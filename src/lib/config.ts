@@ -9,7 +9,7 @@ export const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
 	messageCacheMaxSize: 200,
 	messageCacheLifetime: 120,
-	messageSweepInterval: 120,
+	messageSweepInterval: 5000,
 	owners: ['157797566833098752'],
 	shards: 'auto',
 	http: {
