@@ -1,0 +1,12 @@
+import { DisassemblySourceGroup } from "..";
+import getOSItem from '../../util/getOSItem';
+const i = getOSItem;
+
+export const Ores: DisassemblySourceGroup = {
+	name: 'Ores',
+	items: [{ item: i("Blurite ore"), lvl: 1 },{ item: i("Clay"), lvl: 1 },{ item: i("Copper ore"), lvl: 1 },{ item: i("Tin ore"), lvl: 1 },{ item: i("Iron ore"), lvl: 5 },{ item: i("Coal"), lvl: 10 },{ item: i("Silver ore"), lvl: 10 },{ item: i("Mithril ore"), lvl: 15 },{ item: i("Gold ore"), lvl: 20 },{ item: i("Runite ore"), lvl: 25 },],
+	parts: {simple: 1},
+  partQuantity: 1
+};
+
+export default Ores;
