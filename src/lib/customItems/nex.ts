@@ -15,9 +15,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 setCustomItem(
 	51_001,
@@ -26,9 +27,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 setCustomItem(
 	51_002,
@@ -37,9 +39,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 
 setCustomItem(
@@ -49,7 +52,8 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
 	10_000_000
 );
@@ -61,9 +65,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 
 /**
@@ -79,9 +84,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 setCustomItem(
 	51_006,
@@ -90,9 +96,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 setCustomItem(
 	51_007,
@@ -101,9 +108,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 
 setCustomItem(
@@ -113,9 +121,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 
 setCustomItem(
@@ -125,9 +134,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 
 /**
@@ -143,9 +153,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 setCustomItem(
 	51_011,
@@ -154,9 +165,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 setCustomItem(
 	51_012,
@@ -165,9 +177,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 
 setCustomItem(
@@ -177,9 +190,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 
 setCustomItem(
@@ -189,9 +203,10 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
-		}
+		},
+		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 
 /**
