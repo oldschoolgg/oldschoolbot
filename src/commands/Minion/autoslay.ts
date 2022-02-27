@@ -293,7 +293,9 @@ export default class extends BotCommand {
 			return runCommand({
 				message: msg,
 				commandName: 'k',
-				args: [null, Monsters.get(currentMonID)!.name],
+				args: {
+					name: Monsters.get(currentMonID)!.name
+				},
 				bypassInhibitors: true
 			});
 		}
@@ -322,7 +324,9 @@ export default class extends BotCommand {
 				return runCommand({
 					message: msg,
 					commandName: 'k',
-					args: [null, usersTask.assignedTask!.monster.name],
+					args: {
+						name: usersTask.assignedTask!.monster.name
+					},
 					bypassInhibitors: true
 				});
 			}
@@ -332,14 +336,19 @@ export default class extends BotCommand {
 				return runCommand({
 					message: msg,
 					commandName: 'k',
-					args: [null, ehpMonster.efficientName, ehpMonster.efficientMethod],
+					args: {
+						name: ehpMonster.efficientName,
+						method: ehpMonster.efficientMethod
+					},
 					bypassInhibitors: true
 				});
 			}
 			return runCommand({
 				message: msg,
 				commandName: 'k',
-				args: [null, usersTask.assignedTask!.monster.name],
+				args: {
+					name: usersTask.assignedTask!.monster.name
+				},
 				bypassInhibitors: true
 			});
 		}
@@ -381,7 +390,12 @@ export default class extends BotCommand {
 				}
 			});
 			if (maxMobName !== '') {
-				return runCommand({ message: msg, commandName: 'k', args: [null, maxMobName], bypassInhibitors: true });
+				return runCommand({
+					message: msg,
+					commandName: 'k',
+					args: { name: maxMobName },
+					bypassInhibitors: true
+				});
 			}
 			return msg.channel.send("Can't find any monsters you have the requirements to kill!");
 		} else if (method === 'default') {
@@ -393,7 +407,7 @@ export default class extends BotCommand {
 			return runCommand({
 				message: msg,
 				commandName: 'k',
-				args: [null, usersTask.assignedTask!.monster.name],
+				args: { name: usersTask.assignedTask!.monster.name },
 				bypassInhibitors: true
 			});
 		}
