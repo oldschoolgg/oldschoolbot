@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { prisma } from '../settings/prisma';
-import { DissassemblySourceGroup } from '.';
+import { DisassemblySourceGroup } from '.';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 
@@ -16,7 +16,7 @@ import MaterialLootTable from './MaterialLootTable';
  * you receive less XP from certain *items* based on how many of those you have already disassembled.
  *
  */
-async function calculateDisXP(user: KlasaUser, quantity: number, item: DissassemblySourceGroup['items'][number]) {
+async function calculateDisXP(user: KlasaUser, quantity: number, item: DisassemblySourceGroup['items'][number]) {
 	const prismaUser = await prisma.user.findFirst({
 		where: {
 			id: user.id
@@ -54,7 +54,7 @@ export async function handleDisassembly({
 	user: KlasaUser;
 	quantity: number;
 	item: Item;
-	group: DissassemblySourceGroup;
+	group: DisassemblySourceGroup;
 }): Promise<DisassemblyResult> {
 	const data = group.items.find(i => i.item === item);
 	if (!data) throw new Error(`No data for ${item.name}`);

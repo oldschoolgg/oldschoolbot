@@ -742,7 +742,7 @@
             {
                 "id": 4718,
                 "level": 70,
-                "alwaysSpecial": "No",
+                "alwaysSpecial": "no",
                 "special": "undead{5}"
             },
             {
@@ -10552,7 +10552,7 @@
                 "id": 7433,
                 "level": 1,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 7141,
@@ -10582,13 +10582,13 @@
                 "id": 7443,
                 "level": 30,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 7451,
                 "level": 40,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 1305,
@@ -13741,7 +13741,7 @@
                 "id": 7435,
                 "level": 1,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 11259,
@@ -13759,7 +13759,7 @@
                 "id": 7437,
                 "level": 10,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 1283,
@@ -13777,7 +13777,7 @@
                 "id": 7447,
                 "level": 40,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 7142,
@@ -14209,7 +14209,7 @@
                 "id": 7441,
                 "level": 20,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 6414,
@@ -14253,13 +14253,13 @@
                 "id": 7449,
                 "level": 40,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 7445,
                 "level": 40,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 8841,
@@ -15127,7 +15127,7 @@
                 "id": 7439,
                 "level": 10,
                 "alwaysSpecial": "no",
-                "special": "culinary"
+                "special": "culinary{10}"
             },
             {
                 "id": 1313,

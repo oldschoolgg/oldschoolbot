@@ -2,7 +2,7 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
-import { allItemsThatCanBeDisassembledIDs, DissassemblySourceGroups } from '../../lib/invention';
+import { allItemsThatCanBeDisassembledIDs, DisassemblySourceGroups } from '../../lib/invention';
 import { handleDisassembly } from '../../lib/invention/disassemble';
 import { calcPerHour, clamp, formatDuration, toKMB } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -49,7 +49,7 @@ export const askCommand: OSBMahojiCommand = {
 		const user = await client.fetchUser(member.user.id);
 		if (options.disassemble) {
 			const item = getOSItem(options.disassemble.name);
-			const group = DissassemblySourceGroups.find(g => g.items.some(i => i.item.name === item.name));
+			const group = DisassemblySourceGroups.find(g => g.items.some(i => i.item.name === item.name));
 			if (!group) return 'This item cannot be disassembled.';
 			const bank = user.bank();
 			const timePer = Time.Second * 0.33;
