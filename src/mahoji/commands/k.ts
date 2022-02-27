@@ -9,6 +9,12 @@ import { OSBMahojiCommand } from '../lib/util';
 export const killCommand: OSBMahojiCommand = {
 	name: 'k',
 	description: 'Send your minion to kill things.',
+	attributes: {
+		requiresMinion: true,
+		requiresMinionNotBusy: true,
+		description: 'Send your minion to kill things.',
+		examples: ['/k zulrah']
+	},
 	options: [
 		{
 			type: ApplicationCommandOptionType.String,
