@@ -66,7 +66,7 @@ export async function handleDisassembly({
 	assert(data.lvl >= 1 && data.lvl <= 120, 'Disassemble item level must be between 1-120');
 	console.log(`${data.item.name} has a ${junkChance}% chance of becoming junk`);
 
-	const specialBank: IMaterialBank = {}; 
+	const specialBank: IMaterialBank = {};
 	if (data.special) {
 		for (let part of data.special.parts) {
 			specialBank[part.type] = part.chance;
@@ -81,12 +81,12 @@ export async function handleDisassembly({
 		} else {
 			materialLoot.add(table.roll(), group.partQuantity);
 		}
-		if ( data.special ) {
+		if (data.special) {
 			if (data.special.always || !junk) {
 				const specialResult = specialTable.roll();
 				const specialItem = data.special.parts.find(item => item.type === specialResult);
 				materialLoot.add(specialResult, specialItem!.amount);
-			};
+			}
 		}
 	}
 

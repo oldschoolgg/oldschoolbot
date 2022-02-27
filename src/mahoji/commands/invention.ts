@@ -61,7 +61,15 @@ export const askCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand
 		}
 	],
-	run: async ({ member, options }: CommandRunOptions<{ disassemble?: { name: string; quantity?: number }, missing?: {}, duplicates?: {}, chances?: {} }>) => {
+	run: async ({
+		member,
+		options
+	}: CommandRunOptions<{
+		disassemble?: { name: string; quantity?: number };
+		missing?: {};
+		duplicates?: {};
+		chances?: {};
+	}>) => {
 		const user = await client.fetchUser(member.user.id);
 		if (options.disassemble) {
 			const item = getOSItem(options.disassemble.name);
@@ -78,39 +86,43 @@ export const askCommand: OSBMahojiCommand = {
 				result.materials
 			}\`. It took ${formatDuration(duration)}, giving ${toKMB(calcPerHour(result.xp, duration))}XP/hr`;
 		}
-		if ( options.missing ) {
+		if (options.missing) {
 			const missingItems = [];
-			for ( let item of Items ) {
-				if ( !item[1].tradeable || !item[1].tradeable_on_ge ) continue;
-				const name = item[1].name;
+			for (let item of Items) {
+				if (!item[1].tradeable || !item[1].tradeable_on_ge) continue;
+				const { name } = item[1];
 				const group = DisassemblySourceGroups.find(g => g.items.some(i => i.item.name === name));
-				if ( !group ) missingItems.push(name);
+				if (!group) missingItems.push(name);
 			}
-			console.log(missingItems)
-			return `Found ${missingItems.length} missing items in Groups.`
+			console.log(missingItems);
+			return `Found ${missingItems.length} missing items in Groups.`;
 		}
-		if ( options.duplicates ) {
+		if (options.duplicates) {
 			const duplicateItems = [];
 			const foundItems: number[] = [];
-			for ( let group of DisassemblySourceGroups ) {
-				for ( let itm of group.items ) {
-					foundItems.includes(itm.item.id) ? duplicateItems.push({name: itm.item.name, group: group.name}) : foundItems.push(itm.item.id);
+			for (let group of DisassemblySourceGroups) {
+				for (let itm of group.items) {
+					foundItems.includes(itm.item.id)
+						? duplicateItems.push({ name: itm.item.name, group: group.name })
+						: foundItems.push(itm.item.id);
 				}
 			}
-			console.log(duplicateItems)
-			return `Found ${duplicateItems.length} duplicate items in Groups.`
+			console.log(duplicateItems);
+			return `Found ${duplicateItems.length} duplicate items in Groups.`;
 		}
-		if ( options.chances ) {
+		if (options.chances) {
 			const missingChances = [];
 			let totalGroups = 0;
-			for ( let group of DisassemblySourceGroups ) {
+			for (let group of DisassemblySourceGroups) {
 				totalGroups += 1;
-				if ( Object.keys(group.parts).length < 1 ) {
+				if (Object.keys(group.parts).length < 1) {
 					missingChances.push(group.name);
 				}
 			}
-			console.log(missingChances)
-			return `Found ${missingChances.length} Groups missing chance out of ${totalGroups} Groups. (${Math.round((1-(missingChances.length/totalGroups)) * 100)}% complete)`
+			console.log(missingChances);
+			return `Found ${missingChances.length} Groups missing chance out of ${totalGroups} Groups. (${Math.round(
+				(1 - missingChances.length / totalGroups) * 100
+			)}% complete)`;
 		}
 		return 'Wut da hell';
 	}
