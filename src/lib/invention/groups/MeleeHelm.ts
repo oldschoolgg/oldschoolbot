@@ -1,12 +1,124 @@
-import { DisassemblySourceGroup } from "..";
 import getOSItem from '../../util/getOSItem';
+import { DisassemblySourceGroup } from '..';
+
 const i = getOSItem;
 
 export const MeleeHelm: DisassemblySourceGroup = {
 	name: 'MeleeHelm',
-	items: [{ item: i("Ram skull helm"), lvl: 1 },{ item: i("Spiny helmet"), lvl: 5 },{ item: i("Tyras helm"), lvl: 5 },{ item: i("Black mask"), lvl: 20 },{ item: i("Black full helm"), lvl: 25, special: { always: true, parts: [{ type: "knightly", chance: 100, amount: 6 }, ] } },{ item: i("Black full helm (g)"), lvl: 25 },{ item: i("Black full helm (t)"), lvl: 25, special: { always: true, parts: [{ type: "knightly", chance: 100, amount: 6 }, ] } },{ item: i("Black helm (h1)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Black helm (h2)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Black helm (h3)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Black helm (h4)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Black helm (h5)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Initiate sallet"), lvl: 25 },{ item: i("White full helm"), lvl: 25, special: { always: true, parts: [{ type: "knightly", chance: 100, amount: 6 }, ] } },{ item: i("Fremennik helm"), lvl: 30 },{ item: i("Proselyte sallet"), lvl: 30 },{ item: i("Bandos mitre"), lvl: 40, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Berserker helm"), lvl: 45 },{ item: i("Warrior helm"), lvl: 45 },{ item: i("Dwarven helmet"), lvl: 50 },{ item: i("Fighter hat"), lvl: 50 },{ item: i("Fire cape"), lvl: 50 },{ item: i("Rock-shell helm"), lvl: 50 },{ item: i("Rune full helm (g)"), lvl: 50 },{ item: i("Rune full helm (t)"), lvl: 50 },{ item: i("Rune helm (h1)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Rune helm (h2)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Rune helm (h3)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Rune helm (h4)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Rune helm (h5)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 6 }, ] } },{ item: i("Granite helm"), lvl: 55 },{ item: i("Helm of neitiznot"), lvl: 55 },{ item: i("Dragon full helm"), lvl: 60 },{ item: i("Dharok's helm"), lvl: 70, special: { always: false, parts: [{ type: "undead", chance: 100, amount: 6 }, ] } },{ item: i("Guthan's helm"), lvl: 70, special: { always: false, parts: [{ type: "undead", chance: 100, amount: 6 }, ] } },{ item: i("Torag's helm"), lvl: 70, special: { always: false, parts: [{ type: "undead", chance: 100, amount: 6 }, ] } },{ item: i("Verac's helm"), lvl: 70, special: { always: false, parts: [{ type: "undead", chance: 100, amount: 6 }, ] } },{ item: i("Statius's full helm"), lvl: 78 },],
+	items: [
+		{ item: i('Ram skull helm'), lvl: 1 },
+		{ item: i('Spiny helmet'), lvl: 5 },
+		{ item: i('Tyras helm'), lvl: 5 },
+		{ item: i('Black mask'), lvl: 20 },
+		{
+			item: i('Black full helm'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 6 }] }
+		},
+		{ item: i('Black full helm (g)'), lvl: 25 },
+		{
+			item: i('Black full helm (t)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i('Black helm (h1)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i('Black helm (h2)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i('Black helm (h3)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i('Black helm (h4)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i('Black helm (h5)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{ item: i('Initiate sallet'), lvl: 25 },
+		{
+			item: i('White full helm'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 6 }] }
+		},
+		{ item: i('Fremennik helm'), lvl: 30 },
+		{ item: i('Proselyte sallet'), lvl: 30 },
+		{
+			item: i('Bandos mitre'),
+			lvl: 40,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{ item: i('Berserker helm'), lvl: 45 },
+		{ item: i('Warrior helm'), lvl: 45 },
+		{ item: i('Dwarven helmet'), lvl: 50 },
+		{ item: i('Fighter hat'), lvl: 50 },
+		{ item: i('Fire cape'), lvl: 50 },
+		{ item: i('Rock-shell helm'), lvl: 50 },
+		{ item: i('Rune full helm (g)'), lvl: 50 },
+		{ item: i('Rune full helm (t)'), lvl: 50 },
+		{
+			item: i('Rune helm (h1)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i('Rune helm (h2)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i('Rune helm (h3)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i('Rune helm (h4)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i('Rune helm (h5)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+		},
+		{ item: i('Granite helm'), lvl: 55 },
+		{ item: i('Helm of neitiznot'), lvl: 55 },
+		{ item: i('Dragon full helm'), lvl: 60 },
+		{
+			item: i("Dharok's helm"),
+			lvl: 70,
+			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i("Guthan's helm"),
+			lvl: 70,
+			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i("Torag's helm"),
+			lvl: 70,
+			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 6 }] }
+		},
+		{
+			item: i("Verac's helm"),
+			lvl: 70,
+			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 6 }] }
+		},
+		{ item: i("Statius's full helm"), lvl: 78 }
+	],
 	parts: {},
-  partQuantity: 6
+	partQuantity: 6
 };
 
 export default MeleeHelm;

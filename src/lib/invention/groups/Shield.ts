@@ -1,12 +1,16 @@
-import { DisassemblySourceGroup } from "..";
 import getOSItem from '../../util/getOSItem';
+import { DisassemblySourceGroup } from '..';
+
 const i = getOSItem;
 
 export const Shield: DisassemblySourceGroup = {
 	name: 'Shield',
-	items: [{ item: i("Granite shield"), lvl: 55 },{ item: i("Dragon kiteshield"), lvl: 60 },],
+	items: [
+		{ item: i('Granite shield'), lvl: 55 },
+		{ item: i('Dragon kiteshield'), lvl: 60 }
+	],
 	parts: {},
-  partQuantity: 8
+	partQuantity: 8
 };
 
 export default Shield;

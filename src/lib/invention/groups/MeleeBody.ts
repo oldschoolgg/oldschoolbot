@@ -1,12 +1,128 @@
-import { DisassemblySourceGroup } from "..";
 import getOSItem from '../../util/getOSItem';
+import { DisassemblySourceGroup } from '..';
+
 const i = getOSItem;
 
 export const MeleeBody: DisassemblySourceGroup = {
 	name: 'MeleeBody',
-	items: [{ item: i("Black chainbody"), lvl: 25, special: { always: true, parts: [{ type: "knightly", chance: 100, amount: 8 }, ] } },{ item: i("Black platebody"), lvl: 25, special: { always: true, parts: [{ type: "knightly", chance: 100, amount: 8 }, ] } },{ item: i("Black platebody (g)"), lvl: 25 },{ item: i("Black platebody (h1)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Black platebody (h2)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Black platebody (h3)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Black platebody (h4)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Black platebody (h5)"), lvl: 25, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Black platebody (t)"), lvl: 25 },{ item: i("Initiate cuisse"), lvl: 25 },{ item: i("Initiate hauberk"), lvl: 25 },{ item: i("White chainbody"), lvl: 25, special: { always: true, parts: [{ type: "knightly", chance: 100, amount: 8 }, ] } },{ item: i("White platebody"), lvl: 25, special: { always: true, parts: [{ type: "knightly", chance: 100, amount: 8 }, ] } },{ item: i("Proselyte hauberk"), lvl: 30 },{ item: i("Bandos robe top"), lvl: 40, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Fighter torso"), lvl: 50 },{ item: i("Rock-shell plate"), lvl: 50 },{ item: i("Rune platebody (g)"), lvl: 50 },{ item: i("Rune platebody (h1)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Rune platebody (h2)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Rune platebody (h3)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Rune platebody (h4)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Rune platebody (h5)"), lvl: 50, special: { always: true, parts: [{ type: "fortunate", chance: 100, amount: 8 }, ] } },{ item: i("Rune platebody (t)"), lvl: 50 },{ item: i("Granite body"), lvl: 55 },{ item: i("Dragon chainbody"), lvl: 60 },{ item: i("Dragon platebody"), lvl: 60 },{ item: i("Bandos chestplate"), lvl: 70, special: { always: true, parts: [{ type: "bandos", chance: 100, amount: 8 }, ] } },{ item: i("Dharok's platebody"), lvl: 70, special: { always: false, parts: [{ type: "undead", chance: 100, amount: 8 }, ] } },{ item: i("Guthan's platebody"), lvl: 70, special: { always: false, parts: [{ type: "undead", chance: 100, amount: 8 }, ] } },{ item: i("Torag's platebody"), lvl: 70, special: { always: false, parts: [{ type: "undead", chance: 100, amount: 8 }, ] } },{ item: i("Verac's brassard"), lvl: 70, special: { always: false, parts: [{ type: "undead", chance: 100, amount: 8 }, ] } },{ item: i("Statius's platebody"), lvl: 78 },{ item: i("Vesta's chainbody"), lvl: 78 },],
+	items: [
+		{
+			item: i('Black chainbody'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('Black platebody'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 8 }] }
+		},
+		{ item: i('Black platebody (g)'), lvl: 25 },
+		{
+			item: i('Black platebody (h1)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('Black platebody (h2)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('Black platebody (h3)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('Black platebody (h4)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('Black platebody (h5)'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{ item: i('Black platebody (t)'), lvl: 25 },
+		{ item: i('Initiate cuisse'), lvl: 25 },
+		{ item: i('Initiate hauberk'), lvl: 25 },
+		{
+			item: i('White chainbody'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('White platebody'),
+			lvl: 25,
+			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 8 }] }
+		},
+		{ item: i('Proselyte hauberk'), lvl: 30 },
+		{
+			item: i('Bandos robe top'),
+			lvl: 40,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{ item: i('Fighter torso'), lvl: 50 },
+		{ item: i('Rock-shell plate'), lvl: 50 },
+		{ item: i('Rune platebody (g)'), lvl: 50 },
+		{
+			item: i('Rune platebody (h1)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('Rune platebody (h2)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('Rune platebody (h3)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('Rune platebody (h4)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i('Rune platebody (h5)'),
+			lvl: 50,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+		},
+		{ item: i('Rune platebody (t)'), lvl: 50 },
+		{ item: i('Granite body'), lvl: 55 },
+		{ item: i('Dragon chainbody'), lvl: 60 },
+		{ item: i('Dragon platebody'), lvl: 60 },
+		{
+			item: i('Bandos chestplate'),
+			lvl: 70,
+			special: { always: true, parts: [{ type: 'bandos', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i("Dharok's platebody"),
+			lvl: 70,
+			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i("Guthan's platebody"),
+			lvl: 70,
+			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i("Torag's platebody"),
+			lvl: 70,
+			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 8 }] }
+		},
+		{
+			item: i("Verac's brassard"),
+			lvl: 70,
+			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 8 }] }
+		},
+		{ item: i("Statius's platebody"), lvl: 78 },
+		{ item: i("Vesta's chainbody"), lvl: 78 }
+	],
 	parts: {},
-  partQuantity: 8
+	partQuantity: 8
 };
 
 export default MeleeBody;
