@@ -181,12 +181,15 @@ export const untrustedGuildSettingsCache = new Map<string, Guild>();
 
 export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	const id = typeof guild === 'string' ? guild : guild.id;
-	const result = await prisma.guild.findFirst({
+	const result = await prisma.guild.upsert({
 		where: {
+			id
+		},
+		update: {},
+		create: {
 			id
 		}
 	});
-	if (!result) throw new Error(`mahojiGuildSettingsFetch returned no result for ${id}`);
 	untrustedGuildSettingsCache.set(id, result);
 	return result;
 }
