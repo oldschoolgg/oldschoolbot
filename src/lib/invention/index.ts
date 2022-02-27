@@ -1,6 +1,6 @@
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import DisassembleGroups from './oldGroups';
+import DisassembleGroups from './groups';
 
 const materialTypes = [
 	'junk',
@@ -67,6 +67,12 @@ const materialTypes = [
 	'corporeal',
 	'crystal',
 	'seren',
+	'brassican',
+	'harnessed',
+	'historic',
+	'classic',
+	'timeworn',
+	'vintage',
 	// Custom
 	'rocky'
 ] as const;
