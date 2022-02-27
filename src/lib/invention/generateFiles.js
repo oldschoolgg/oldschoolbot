@@ -45,7 +45,7 @@ for (let key of Object.keys(disassemblyData)) {
     if (special !== undefined) {
       completeLine += `, special: { always: ${item.alwaysSpecial === "yes" ? "true" : "false"}, parts: [`;
       const splt = special.split(',');
-      for (part of splt) {
+      for (let part of splt) {
         const match = part.match(regexp);
         completeLine += `{ type: "${match[1]}", `;
         let chance = match[3] ? match[3].replace('{', '').replace('}', '') : "100";
