@@ -1,4 +1,4 @@
-import { Guild, Prisma } from '@prisma/client';
+import { Guild, Prisma, User } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
@@ -19,6 +19,8 @@ import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { Gear } from '../lib/structures/Gear';
+import { Skills } from '../lib/types';
 import { assert } from '../lib/util';
 
 export function mahojiParseNumber({
@@ -205,4 +207,45 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 export interface MahojiUserOption {
 	user: APIUser;
 	member: APIInteractionDataResolvedGuildMember;
+}
+
+export function getSkillsOfMahojiUser(user: User): Skills {
+	return {
+		agility: Number(user.skills_agility),
+		cooking: Number(user.skills_cooking),
+		fishing: Number(user.skills_fishing),
+		mining: Number(user.skills_mining),
+		smithing: Number(user.skills_smithing),
+		woodcutting: Number(user.skills_woodcutting),
+		firemaking: Number(user.skills_firemaking),
+		runecraft: Number(user.skills_runecraft),
+		crafting: Number(user.skills_crafting),
+		prayer: Number(user.skills_prayer),
+		fletching: Number(user.skills_fletching),
+		farming: Number(user.skills_farming),
+		herblore: Number(user.skills_herblore),
+		thieving: Number(user.skills_thieving),
+		hunter: Number(user.skills_hunter),
+		construction: Number(user.skills_construction),
+		magic: Number(user.skills_magic),
+		attack: Number(user.skills_attack),
+		strength: Number(user.skills_strength),
+		defence: Number(user.skills_defence),
+		ranged: Number(user.skills_ranged),
+		hitpoints: Number(user.skills_hitpoints),
+		slayer: Number(user.skills_slayer)
+	};
+}
+
+export function getUserGear(user: User) {
+	return {
+		melee: new Gear(user.gear_melee as any),
+		mage: new Gear(user.gear_mage as any),
+		range: new Gear(user.gear_range as any),
+		misc: new Gear(user.gear_misc as any),
+		skilling: new Gear(user.gear_skilling as any),
+		wildy: new Gear(user.gear_wildy as any),
+		fashion: new Gear(user.gear_fashion as any),
+		other: new Gear(user.gear_other as any)
+	};
 }
