@@ -40,7 +40,6 @@ import { Skills as TSkills } from '../../lib/types';
 import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
-	BarbarianAssaultActivityTaskOptions,
 	BlastFurnaceActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
@@ -403,9 +402,8 @@ export default class extends Extendable {
 			}
 
 			case 'BarbarianAssault': {
-				const data = currentTask as BarbarianAssaultActivityTaskOptions;
-
-				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault, with a party of ${data.users.length}. ${formattedDuration}`;
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault. ${formattedDuration}`;
 			}
 
 			case 'AgilityArena': {
@@ -603,6 +601,16 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing ${
 					data.quantity
 				} Last Man Standing matches, the trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'BirthdayEvent': {
+				return `${this.minionName} is currently doing the Birthday Event! The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case 'TokkulShop': {
+				return `${
+					this.minionName
+				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
 		}
 	}

@@ -1,8 +1,15 @@
-import { Prisma } from '@prisma/client';
-import { MessageButton, TextChannel } from 'discord.js';
+import { Guild, Prisma, User } from '@prisma/client';
+import { Guild as DJSGuild, MessageButton, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { ApplicationCommandOptionType, InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
+import {
+	APIInteractionDataResolvedGuildMember,
+	APIUser,
+	ApplicationCommandOptionType,
+	InteractionResponseType,
+	InteractionType,
+	MessageFlags
+} from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { CommandOption } from 'mahoji/dist/lib/types';
 
@@ -12,17 +19,28 @@ import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { Skills } from '../lib/types';
 import { assert } from '../lib/util';
 
-export function mahojiParseNumber({ input }: { input: string | undefined | null }): number | null {
+export function mahojiParseNumber({
+	input,
+	min,
+	max
+}: {
+	input: number | string | undefined | null;
+	min?: number;
+	max?: number;
+}): number | null {
 	if (input === undefined || input === null) return null;
-	const parsed = evalMathExpression(input);
+	const parsed = typeof input === 'number' ? input : evalMathExpression(input);
+	if (parsed === null) return null;
+	if (min && parsed < min) return null;
+	if (max && parsed > max) return null;
+	if (Number.isNaN(parsed)) return null;
 	return parsed;
 }
 
 export const filterOption: CommandOption = {
-	// what if we allow this
-	// autoComplete: [filters.map(i => i.name)]
 	type: ApplicationCommandOptionType.String,
 	name: 'filter',
 	description: 'The filter you want to use.',
@@ -46,13 +64,8 @@ export const searchOption: CommandOption = {
 	required: false
 };
 
-export async function handleMahojiConfirmation(
-	channelID: string,
-	userID: bigint,
-	interaction: SlashCommandInteraction,
-	str: string
-) {
-	const channel = client.channels.cache.get(channelID);
+export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {
+	const channel = client.channels.cache.get(interaction.channelID.toString());
 	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
 	await interaction.deferReply();
 
@@ -97,7 +110,7 @@ export async function handleMahojiConfirmation(
 	try {
 		const selection = await confirmMessage.awaitMessageComponentInteraction({
 			filter: i => {
-				if (i.user.id !== userID.toString()) {
+				if (i.user.id !== (userID ?? interaction.userID).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}
@@ -116,6 +129,23 @@ export async function handleMahojiConfirmation(
 	}
 }
 
+/**
+ *
+ * User
+ *
+ */
+
+export async function mahojiUsersSettingsFetch(user: bigint | string | KlasaUser) {
+	const { id } = typeof user === 'string' || typeof user === 'bigint' ? await client.fetchUser(user) : user;
+	const result = await prisma.user.findFirst({
+		where: {
+			id
+		}
+	});
+	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${id}`);
+	return result;
+}
+
 export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
 	const klasaUser = typeof user === 'string' ? await client.fetchUser(user) : user;
 
@@ -128,7 +158,85 @@ export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: P
 
 	// Patch instead of syncing to avoid another database read.
 	await klasaUser.settings.sync(true);
+	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match');
 	assert(klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points, 'Patched user should match');
+	const klasaBank = klasaUser.settings.get(UserSettings.Bank);
+	const newBank = newUser.bank;
+	for (const [key, value] of Object.entries(klasaBank)) {
+		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`);
+	}
+	assert(klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level);
+	assert(klasaUser.settings.get(UserSettings.HonourPoints) === newUser.honour_points);
 
 	return { newUser };
+}
+
+/**
+ *
+ * Guild
+ *
+ */
+
+export const untrustedGuildSettingsCache = new Map<string, Guild>();
+
+export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
+	const id = typeof guild === 'string' ? guild : guild.id;
+	const result = await prisma.guild.upsert({
+		where: {
+			id
+		},
+		update: {},
+		create: {
+			id
+		}
+	});
+	untrustedGuildSettingsCache.set(id, result);
+	return result;
+}
+
+export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: Prisma.GuildUpdateArgs['data']) {
+	const guildID = typeof guild === 'string' ? guild : guild.id;
+
+	const newGuild = await prisma.guild.update({
+		data,
+		where: {
+			id: guildID
+		}
+	});
+	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
+	await (client.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
+	return { newGuild };
+}
+
+export interface MahojiUserOption {
+	user: APIUser;
+	member: APIInteractionDataResolvedGuildMember;
+}
+
+export function getSkillsOfMahojiUser(user: User): Skills {
+	return {
+		agility: Number(user.skills_agility),
+		cooking: Number(user.skills_cooking),
+		fishing: Number(user.skills_fishing),
+		mining: Number(user.skills_mining),
+		smithing: Number(user.skills_smithing),
+		woodcutting: Number(user.skills_woodcutting),
+		firemaking: Number(user.skills_firemaking),
+		runecraft: Number(user.skills_runecraft),
+		crafting: Number(user.skills_crafting),
+		prayer: Number(user.skills_prayer),
+		fletching: Number(user.skills_fletching),
+		farming: Number(user.skills_farming),
+		herblore: Number(user.skills_herblore),
+		thieving: Number(user.skills_thieving),
+		hunter: Number(user.skills_hunter),
+		construction: Number(user.skills_construction),
+		magic: Number(user.skills_magic),
+		attack: Number(user.skills_attack),
+		strength: Number(user.skills_strength),
+		defence: Number(user.skills_defence),
+		ranged: Number(user.skills_ranged),
+		hitpoints: Number(user.skills_hitpoints),
+		slayer: Number(user.skills_slayer)
+	};
 }

@@ -261,12 +261,6 @@ export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTaskOptions {
-	leader: string;
-	users: string[];
-	totalLevel: number;
-}
-
 export interface AgilityArenaActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface TempleTrekkingActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -347,6 +341,11 @@ export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOp
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	favour: KourendFavour;
+	quantity: number;
+}
+
+export interface TokkulShopOptions extends ActivityTaskOptions {
+	itemID: number;
 	quantity: number;
 }
 

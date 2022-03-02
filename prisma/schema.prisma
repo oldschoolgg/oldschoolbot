@@ -114,6 +114,8 @@ model ClientStorage {
   tob_cost                     Json     @default("{}") @db.Json
   tob_loot                     Json     @default("{}") @db.Json
   degraded_items_cost          Json     @default("{}") @db.Json
+  tks_cost                     Json     @default("{}") @db.Json
+  tks_loot                     Json     @default("{}") @db.Json
   disabled_commands            String[] @db.VarChar(32)
 
   @@map("clientStorage")
@@ -163,7 +165,6 @@ model Guild {
   language          String   @default("en-US") @db.VarChar(5)
   disabledCommands  String[]
   jmodComments      String?  @db.VarChar(19)
-  hcimdeaths        String?  @db.VarChar(19)
   petchannel        String?  @db.VarChar(19)
   tweetchannel      String?  @db.VarChar(19)
   levelUpMessages   String?  @db.VarChar(19)
@@ -459,6 +460,7 @@ model CommandUsage {
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
   flags        Json?
+  inhibited    Boolean?             @default(false)
 
   args       Json?   @db.Json
   channel_id String? @db.VarChar(19)
@@ -581,6 +583,8 @@ enum activity_type_enum {
   TearsOfGuthix
   TheatreOfBlood
   LastManStanding
+  BirthdayEvent
+  TokkulShop
 }
 
 enum xp_gains_skill_enum {
