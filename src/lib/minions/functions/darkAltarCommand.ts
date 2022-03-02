@@ -61,8 +61,9 @@ export async function darkAltarCommand({
 	let timePerRune = runeData.baseTime;
 
 	const boosts = [];
+
 	const [hasEliteDiary] = await userhasDiaryTier(user, KourendKebosDiary.elite);
-	if (hasEliteDiary) {
+	if (hasEliteDiary && rune === 'blood') {
 		boosts.push('10% additional runes for Kourend/Kebos elite diary');
 	}
 
