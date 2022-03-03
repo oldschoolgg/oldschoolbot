@@ -103,7 +103,7 @@ export async function minionKillCommand(
 	channelID: bigint,
 	name: string,
 	quantity: number | undefined,
-	method: PvMMethod
+	method: PvMMethod | undefined
 ) {
 	const { minionName } = user;
 
@@ -130,7 +130,7 @@ export async function minionKillCommand(
 		cbOpts: myCBOpts as CombatOptionsEnum[],
 		user,
 		monster,
-		method: method ?? 'none',
+		method,
 		isOnTask
 	});
 

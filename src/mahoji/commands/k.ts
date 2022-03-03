@@ -52,6 +52,6 @@ export const killCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod }>) => {
 		const user = await client.fetchUser(userID);
-		return minionKillCommand(user, channelID, options.name, options.quantity, options.method ?? 'none');
+		return minionKillCommand(user, channelID, options.name, options.quantity, options.method);
 	}
 };
