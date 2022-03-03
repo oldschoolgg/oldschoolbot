@@ -17,7 +17,7 @@ import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
-const BarbBuyables = [
+export const BarbBuyables = [
 	{
 		item: getOSItem('Fighter hat'),
 		cost: 275 * 4
@@ -118,13 +118,18 @@ export async function barbAssaultBuyCommand(
 	klasaUser: KlasaUser,
 	user: User,
 	input: string,
-	quantity: number
+	quantity?: number
 ) {
+	if (typeof input !== 'string') input = '';
 	const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
 		return `Here are the items you can buy: \n\n${BarbBuyables.map(
 			i => `**${i.item.name}:** ${i.cost} points`
 		).join('\n')}.`;
+	}
+
+	if (!quantity) {
+		quantity = 1;
 	}
 
 	const { item, cost } = buyable;

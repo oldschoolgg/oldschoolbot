@@ -3,10 +3,12 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { client } from '../..';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import {
+	barbAssaultBuyCommand,
 	barbAssaultGambleCommand,
 	barbAssaultLevelCommand,
 	barbAssaultStartCommand,
 	barbAssaultStatsCommand,
+	BarbBuyables,
 	GambleTiers
 } from '../lib/abstracted_commands/barbAssault';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
@@ -45,6 +47,32 @@ export const minigamesCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
 					description: 'Start a Barbarian Assault trip.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'buy',
+					description: 'Purchase items with Honour points.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							description: 'What item you wish to buy.',
+							required: true,
+							autocomplete: async (value: string) => {
+								return BarbBuyables.filter(i =>
+									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity you want to purchase.',
+							required: false,
+							min_value: 1,
+							max_value: 1000
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -344,6 +372,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		barb_assault?: {
 			start?: { quantity?: number };
+			buy?: { name: string; quantity?: number };
 			level?: {};
 			gamble?: { tier: string; quantity: number };
 			stats?: {};
@@ -378,6 +407,15 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.barb_assault?.start) {
 			return barbAssaultStartCommand(channelID, user, klasaUser);
+		}
+		if (options.barb_assault?.buy) {
+			return barbAssaultBuyCommand(
+				interaction,
+				klasaUser,
+				user,
+				options.barb_assault.buy.name,
+				options.barb_assault.buy.quantity
+			);
 		}
 		if (options.barb_assault?.level) {
 			return barbAssaultLevelCommand(user);
