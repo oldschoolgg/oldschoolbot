@@ -275,6 +275,8 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		await mahojiUserSettingsUpdate(user.id, {
 			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
 		});
+	} else {
+		return 'Error processing command. This should never happen, please report bug.';
 	}
 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
