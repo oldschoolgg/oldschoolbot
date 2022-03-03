@@ -54,7 +54,9 @@ export default class extends Task {
 		let loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
-			const highestDefenderOwned = defenders.find(def => userBank.has(def.itemID) || loot.has(def.itemID));
+			const highestDefenderOwned = defenders.find(
+				def => userBank.has(def.itemID) || user.hasItemEquippedAnywhere(def.itemID) || loot.has(def.itemID)
+			);
 			const possibleDefenderToDrop =
 				defenders[
 					Math.max(
