@@ -43,7 +43,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 	],
 	run: async ({ userID, options, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
 		let { name, quantity } = options;
-		const user = await client.fetchUser(userID.toString());
+		const user = await client.fetchUser(userID);
 
 		const bar = Smithing.Bars.find(
 			bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)

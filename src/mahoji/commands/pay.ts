@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
+import { Events } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { toKMB } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
@@ -58,6 +59,8 @@ export const payCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(bank);
 		await recipient.addItemsToBank({ items: bank, collectionLog: false });
+
+		client.emit(Events.EconomyLog, `${user.sanitizedName} paid ${amount} GP to ${recipient.sanitizedName}.`);
 
 		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;
 	}

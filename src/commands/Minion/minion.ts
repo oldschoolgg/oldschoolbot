@@ -551,13 +551,13 @@ Please click the buttons below for important links.`
 	@requiresMinion
 	@minionNotBusy
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		runCommand({ message: msg, commandName: 'k', args: [quantity, name], bypassInhibitors: true });
+		runCommand({ message: msg, commandName: 'k', args: { name, quantity }, bypassInhibitors: true });
 	}
 
 	@requiresMinion
 	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		runCommand({ message: msg, commandName: 'k', args: [quantity, name], bypassInhibitors: true });
+		runCommand({ message: msg, commandName: 'k', args: { name, quantity }, bypassInhibitors: true });
 	}
 
 	async opens(msg: KlasaMessage) {

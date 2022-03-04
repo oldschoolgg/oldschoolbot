@@ -60,7 +60,13 @@ export const mahojiClient = new MahojiClient({
 export const client = new OldSchoolBotClient(clientOptions);
 client.on('raw', async event => {
 	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
+	// TODO: Ignore interactions if client not ready, they will error and fail to execute
+	// if they use things depending on the client being ready. For now, we have to
+	// just have them fail/error for the user.
+	if (!client.ready) return;
+
 	const data = event.d as APIInteraction;
+
 	const result = await mahojiClient.parseInteraction(data);
 
 	if (result === null) return;
@@ -80,12 +86,28 @@ client.on('raw', async event => {
 				interaction: result.interaction,
 				type: InteractionType.ApplicationCommand
 			};
-			result.interaction.respond(ERROR_RESPONSE);
+			try {
+				await result.interaction.respond(ERROR_RESPONSE);
+			} catch (err: unknown) {
+				logError(err, {
+					user_id: result.interaction.userID.toString(),
+					name: result.interaction.data.interaction.data?.name ?? 'None',
+					command: result.interaction.command.name
+				});
+			}
 		}
 		return;
 	}
 	if (result.type === InteractionType.ApplicationCommand) {
-		return result.interaction.respond(result);
+		try {
+			await result.interaction.respond(result);
+		} catch (err: unknown) {
+			logError(err, {
+				user_id: result.interaction.userID.toString(),
+				name: result.interaction.data.interaction.data?.name ?? 'None',
+				command: result.interaction.command.name
+			});
+		}
 	}
 	if (result.type === InteractionType.ApplicationCommandAutocomplete) {
 		return result.interaction.respond(result);

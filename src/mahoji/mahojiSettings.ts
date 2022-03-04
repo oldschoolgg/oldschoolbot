@@ -136,8 +136,8 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
  *
  */
 
-export async function mahojiUsersSettingsFetch(user: string | KlasaUser) {
-	const { id } = typeof user === 'string' ? await client.fetchUser(user) : user;
+export async function mahojiUsersSettingsFetch(user: bigint | string | KlasaUser) {
+	const { id } = typeof user === 'string' || typeof user === 'bigint' ? await client.fetchUser(user) : user;
 	const result = await prisma.user.findFirst({
 		where: {
 			id
@@ -166,6 +166,8 @@ export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: P
 	for (const [key, value] of Object.entries(klasaBank)) {
 		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`);
 	}
+	assert(klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level);
+	assert(klasaUser.settings.get(UserSettings.HonourPoints) === newUser.honour_points);
 
 	return { newUser };
 }
@@ -180,12 +182,15 @@ export const untrustedGuildSettingsCache = new Map<string, Guild>();
 
 export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	const id = typeof guild === 'string' ? guild : guild.id;
-	const result = await prisma.guild.findFirst({
+	const result = await prisma.guild.upsert({
 		where: {
+			id
+		},
+		update: {},
+		create: {
 			id
 		}
 	});
-	if (!result) throw new Error(`mahojiGuildSettingsFetch returned no result for ${id}`);
 	untrustedGuildSettingsCache.set(id, result);
 	return result;
 }
