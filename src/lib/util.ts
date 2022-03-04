@@ -1,3 +1,4 @@
+import { bold } from '@discordjs/builders';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
@@ -570,13 +571,17 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 		if (uniques.includes(item.id)) {
 			uniquesReceived += qty;
 		}
-		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
+		const rate = Math.round(iterations / qty);
+		if (rate < 2) continue;
+		let { name } = item;
+		if (uniques.includes(item.id)) name = bold(name);
+		result.push(`${qty}x ${name} (1 in ${rate})`);
 	}
 	result.push(
-		`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived} which is ${calcWhatPercent(
+		`\n**${uniquesReceived}x Uniques (1 in ${Math.round(iterations / uniquesReceived)} which is ${calcWhatPercent(
 			uniquesReceived,
 			iterations
-		)}%)`
+		)}%)**`
 	);
 	return result.join(', ');
 }

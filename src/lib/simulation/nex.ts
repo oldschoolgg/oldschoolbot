@@ -7,13 +7,15 @@
  */
 
 import { User } from '@prisma/client';
-import { User as DJUser } from 'discord.js';
+import { randArrItem, roll } from 'e';
 import { KlasaUser } from 'klasa';
 import { LootTable } from 'oldschooljs';
+import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { getSkillsOfMahojiUser } from '../../mahoji/mahojiSettings';
 import { Skills } from '../types';
 import { formatSkillRequirements, skillsMeetRequirements } from '../util';
+import { TeamLoot } from './TeamLoot';
 
 const minStats: Skills = {
 	attack: 90,
@@ -24,20 +26,8 @@ const minStats: Skills = {
 	prayer: 77
 };
 
-interface TeamMember {
-	user: User;
-	djsUser: DJUser;
-}
-
-interface NexContext {
-	quantity: number;
-	team: TeamMember[];
-}
-
-interface NexResult {
-	inhibitedReason: string;
-}
-
+// @ts-ignore adfsfsdafds
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function checkNexUser(user: User, klasaUser: KlasaUser) {
 	if (!skillsMeetRequirements(getSkillsOfMahojiUser(user), minStats)) {
 		return `${klasaUser.username} doesn't have the skill requirements: ${formatSkillRequirements(minStats)}.`;
@@ -46,7 +36,7 @@ async function checkNexUser(user: User, klasaUser: KlasaUser) {
 	return null;
 }
 
-const NexUniqueTable = new LootTable()
+export const NexUniqueTable = new LootTable()
 	.add('Nihil horn', 1, 2)
 	.add('Zaryte vambraces', 1, 2)
 	.add('Ancient hilt', 1, 2)
@@ -54,7 +44,7 @@ const NexUniqueTable = new LootTable()
 	.add('Torva platebody (damaged)', 1, 2)
 	.add('Torva platelegs (damaged)', 1, 2);
 
-const NexNonUniqueTable = new LootTable()
+export const NexNonUniqueTable = new LootTable()
 	.add('Blood rune', [84, 325], 3)
 	.add('Death rune', [85, 170], 3)
 	.add('Soul rune', [86, 227], 3)
@@ -72,8 +62,44 @@ const NexNonUniqueTable = new LootTable()
 	.add(new LootTable().every('Shark', 3).every('Prayer potion(4)', 1), 1, 1)
 	.add(new LootTable().every('Saradomin brew(4)', 2).every('Super restore(4)', 1), 1, 1)
 	.add('Ecumenical key shard', [6, 39])
-	.add('Nihil shard', [1, 20])
+	.oneIn(25, 'Nihil shard', [1, 20])
 	.add('Blood essence', [1, 2])
 	.add('Coins', [8539, 26_748])
-	.oneIn(10, 'Rune sword')
+	.oneIn(100, 'Rune sword')
 	.tertiary(20, 'Clue scroll (elite)');
+
+interface TeamMember {
+	id: string;
+	/**
+	 * 0% - 100%, how well they did in the fight.
+	 */
+	contribution: number;
+}
+
+interface NexContext {
+	quantity: number;
+	team: TeamMember[];
+}
+
+export function handleNexKills({ quantity, team }: NexContext) {
+	const teamLoot = new TeamLoot();
+	const uniqueDecider = new SimpleTable<string>();
+	for (const user of team) uniqueDecider.add(user.id);
+
+	for (let i = 0; i < quantity; i++) {
+		const uniqueRecipient = roll(53) ? uniqueDecider.roll().item : null;
+		for (const teamMember of team) {
+			teamLoot.add(teamMember.id, NexNonUniqueTable.roll());
+			if (teamMember.id === uniqueRecipient) {
+				teamLoot.add(teamMember.id, NexUniqueTable.roll());
+			}
+		}
+
+		if (roll(500)) {
+			const recipient = randArrItem(team);
+			teamLoot.add(recipient.id, 'Nexling');
+		}
+	}
+
+	return teamLoot;
+}

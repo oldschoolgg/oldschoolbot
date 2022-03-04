@@ -13,6 +13,7 @@ import {
 	rewardTokens
 } from '../minions/data/templeTrekking';
 import { UserSettings } from '../settings/types/UserSettings';
+import { NexNonUniqueTable, NexUniqueTable } from '../simulation/nex';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
 import { addArrayOfNumbers, stringMatches } from '../util';
@@ -81,6 +82,7 @@ import {
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
+	NexCL,
 	oborCL,
 	pestControlCL,
 	questCL,
@@ -251,6 +253,11 @@ export const allCollectionLogs: ICollection = {
 				alias: Monsters.KrilTsutsaroth.aliases,
 				allItems: Monsters.KrilTsutsaroth.allItems,
 				items: krilTsutsarothCL
+			},
+			Nex: {
+				alias: ['nex'],
+				allItems: [...NexUniqueTable.allItems, ...NexNonUniqueTable.allItems],
+				items: NexCL
 			},
 			'The Nightmare': {
 				alias: NightmareMonster.aliases,
