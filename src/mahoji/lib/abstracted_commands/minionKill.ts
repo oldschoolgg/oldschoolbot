@@ -241,11 +241,11 @@ export async function minionKillCommand(
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Dragon hunter lance');
+			timeToFinish = reduceNumByPercent(timeToFinish, 20);
+			boosts.push('20% for Dragon hunter lance');
 		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Dragon hunter crossbow');
+			timeToFinish = reduceNumByPercent(timeToFinish, 20);
+			boosts.push('20% for Dragon hunter crossbow');
 		}
 	}
 
