@@ -33,9 +33,9 @@ export const statsCommand: OSBMahojiCommand = {
 			required: false
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ username: string; type?: string }>) => {
+	run: async ({ options }: CommandRunOptions<{ username: string; type?: AccountType }>) => {
 		try {
-			const player = await Hiscores.fetch(options.username, {});
+			const player = await Hiscores.fetch(options.username, { type: options.type });
 			const postfix = options.type === AccountType.Seasonal ? 'Shattered Relics Leagues' : options.type ?? null;
 			return {
 				embeds: [
