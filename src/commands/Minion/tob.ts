@@ -253,24 +253,28 @@ export default class extends BotCommand {
 			return msg.channel.send("Your minion is busy, so you can't start a raid.");
 		}
 
-		let maxSize = 5;
-		let maxSizeInput = input ? parseInt(input) : null;
-		if (maxSizeInput) {
-			maxSize = clamp(maxSizeInput, 2, 5);
+		let users: KlasaUser[] = [];
+		if (input === 'solo') {
+			users = [msg.author];
+		} else {
+			let maxSize = 5;
+			let maxSizeInput = input ? parseInt(input) : null;
+			if (maxSizeInput) {
+				maxSize = clamp(maxSizeInput, 2, 5);
+			}
+			const partyOptions: MakePartyOptions = {
+				leader: msg.author,
+				minSize: 1,
+				maxSize,
+				ironmanAllowed: true,
+				message: `${msg.author.username} is hosting a ${
+					isHardMode ? '**Hard mode** ' : ''
+				}Theatre of Blood mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
+				customDenier: user => checkTOBUser(user, isHardMode)
+			};
+
+			users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy).slice(0, maxSize);
 		}
-		const partyOptions: MakePartyOptions = {
-			leader: msg.author,
-			minSize: 2,
-			maxSize,
-			ironmanAllowed: true,
-			message: `${msg.author.username} is hosting a ${
-				isHardMode ? '**Hard mode** ' : ''
-			}Theatre of Blood mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
-			customDenier: user => checkTOBUser(user, isHardMode)
-		};
-
-		const users = (await msg.makePartyAwaiter(partyOptions)).filter(u => !u.minionIsBusy).slice(0, maxSize);
-
 		const teamCheckFailure = await checkTOBTeam(users, isHardMode);
 		if (teamCheckFailure) {
 			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`);
@@ -343,7 +347,7 @@ export default class extends BotCommand {
 			deaths: parsedTeam.map(i => i.deaths)
 		});
 
-		let str = `${partyOptions.leader.username}'s party (${users
+		let str = `${msg.author.username}'s party (${users
 			.map(u => u.username)
 			.join(', ')}) is now off to do a Theatre of Blood raid - the total trip will take ${formatDuration(
 			duration

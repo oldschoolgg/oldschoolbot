@@ -1,19 +1,59 @@
 import { calcPercentOfNum, calcWhatPercent, noOp, objectEntries, roll, shuffleArr } from 'e';
-import { Task } from 'klasa';
+import { KlasaClient, KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { tobMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { TOBRooms, TOBUniques, TOBUniquesToAnnounce, totalXPFromRaid } from '../../../lib/data/tob';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore, runCommand } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
+
+async function soloFinishTob(
+	client: KlasaClient,
+	allUsers: KlasaUser[],
+	channelID: string,
+	resultMessage: string,
+	hardMode: boolean,
+	data: TheatreOfBloodTaskOptions
+) {
+	handleTripFinish(
+		client,
+		allUsers[0],
+		channelID,
+		resultMessage,
+		res => {
+			const flags: Record<string, string> = hardMode ? { hard: 'hard' } : {};
+
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			if (!res.prompter) res.prompter = {};
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			res.prompter.flags = flags;
+
+			allUsers[0].log('continued trip of solo ToB');
+			return runCommand({
+				message: res,
+				commandName: 'tob',
+				args: ['solo'],
+				isContinue: true,
+				method: 'start',
+				bypassInhibitors: true
+			});
+		},
+		undefined,
+		data,
+		null
+	);
+}
 
 export default class extends Task {
 	async run(data: TheatreOfBloodTaskOptions) {
@@ -59,11 +99,16 @@ export default class extends Task {
 		// GIVE XP HERE
 		// 100k tax if they wipe
 		if (wipedRoom !== null) {
-			sendToChannelID(this.client, channelID, {
-				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${
-					diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
-				}`
-			});
+			const resultMessage = `${allTag} Your team wiped in the Theatre of Blood, in the ${
+				TOBRooms[wipedRoom].name
+			} room!${diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''}`;
+			if (allUsers.length === 1) {
+				soloFinishTob(this.client, allUsers, channelID, resultMessage, hardMode, data);
+			} else {
+				sendToChannelID(this.client, channelID, {
+					content: resultMessage
+				});
+			}
 			// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
 			await updateBankSetting(
 				this.client,
@@ -146,7 +191,10 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			kc: 1,
 			teamSize: users.length
 		});
-
-		sendToChannelID(this.client, channelID, { content: resultMessage });
+		if (allUsers.length === 1) {
+			soloFinishTob(this.client, allUsers, channelID, resultMessage, hardMode, data);
+		} else {
+			sendToChannelID(this.client, channelID, { content: resultMessage });
+		}
 	}
 }

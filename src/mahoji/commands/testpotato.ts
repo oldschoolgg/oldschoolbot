@@ -106,6 +106,9 @@ async function resetAccount(user: KlasaUser) {
 async function setMinigameKC(user: KlasaUser, _minigame: string, kc: number) {
 	const minigame = Minigames.find(m => m.column === _minigame.toLowerCase());
 	if (!minigame) return 'No kc set because invalid minigame.';
+	if (['tob', 'tob_hard'].includes(minigame.column)) {
+		await user.settings.update(`${minigame.column}_attempts`, kc);
+	}
 	await prisma.minigame.update({
 		where: {
 			user_id: user.id
