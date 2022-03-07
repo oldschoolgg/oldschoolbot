@@ -288,10 +288,12 @@ export default class extends BotCommand {
 			const igne = tameSpecies.find(t => t.name === 'Igne');
 			const [tame, failMsg] = await getAvailableTamePartner(msg.author, igne!.id, 'combat', [tame_growth.adult]);
 			if (!tame) {
-				return msg.channel.send(`Your solo failed because: ${failMsg}. Requires: Adult Igne tame.`);
+				return msg.channel.send(
+					`Your solo failed because: ${failMsg}. Requires: Adult Igne tame that isn't on a trip.`
+				);
 			}
-			await markTamePartnerBusy(msg.author, tame.id);
-			debugStr += `Bringing your tame, ${tame.nickname ?? igne.name}, with you to help solo the Theatre!\n`;
+			await markTamePartnerBusy(tame.id);
+			debugStr += `Bringing your tame, ${tame.nickname ?? igne!.name}, with you to help solo the Theatre!\n\n`;
 		}
 		const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = await createTOBTeam({
 			team: await Promise.all(

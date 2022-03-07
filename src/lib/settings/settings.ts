@@ -15,6 +15,7 @@ import {
 } from '../../mahoji/lib/util';
 import { Emoji } from '../constants';
 import { BotCommand } from '../structures/BotCommand';
+import { clearTamePartnerBusy } from '../tames';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
 import { logError } from '../util/logError';
@@ -97,6 +98,7 @@ export function minionActivityCacheDelete(userID: string) {
 export async function cancelTask(userID: string) {
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
 	minionActivityCache.delete(userID);
+	await clearTamePartnerBusy(userID);
 }
 
 export async function syncActivityCache() {

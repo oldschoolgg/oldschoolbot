@@ -657,7 +657,7 @@ export default class extends BotCommand {
 		if (getTameSpecies(selectedTame).type !== TameType.Combat) {
 			return msg.channel.send('This tame species cannot do PvM.');
 		}
-		if (currentTask) {
+		if (currentTask || selectedTame.is_doloing) {
 			return msg.channel.send(`${tameName(selectedTame)} is busy.`);
 		}
 		const monster = findMonster(str);
@@ -749,7 +749,7 @@ export default class extends BotCommand {
 		if (getTameSpecies(selectedTame).type !== TameType.Gatherer) {
 			return msg.channel.send('This tame species cannot collect items.');
 		}
-		if (currentTask) {
+		if (currentTask || selectedTame.is_doloing) {
 			return msg.channel.send(`${tameName(selectedTame)} is busy.`);
 		}
 		const collectable = collectables.find(c => stringMatches(c.item.name, str));

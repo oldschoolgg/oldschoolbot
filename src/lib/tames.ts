@@ -392,23 +392,32 @@ export async function getAvailableTamePartner(
 	// Sort by skill level to use the highest one available.
 	const orderField = `max_${type}_level`;
 	const activityData = (await prisma.$queryRawUnsafe(
-		`select t.ID, (select count(a.*) from tame_activity a WHERE a.tame_id = t.id AND completed = false AND a.tame_id IN (${tameIds})) FROM tames t ORDER BY t.${orderField} DESC;`
-	)) as [number, number][];
-	if (activityData.length === 0) return [null, 'All eligible tames are busy'];
-
-	const [availableTame] = activityData[0];
+		`select t.ID, (select count(a.*) from tame_activity a WHERE a.tame_id = t.id AND completed = false) as active_tasks FROM tames t WHERE t.id IN (${tameIds}) ORDER BY t.${orderField} DESC;`
+	)) as { id: number; active_tasks: number }[];
+	if (!activityData || activityData.length === 0) return [null, 'No eligible tame found.'];
+	console.log(activityData);
+	let availableTame: number | null = null;
+	for (const { id: possibleId, active_tasks: onTask } of activityData) {
+		if (onTask === 0) {
+			availableTame = possibleId;
+			break;
+		}
+	}
+	if (!availableTame) {
+		return [null, 'No matching tames are available.'];
+	}
 	const tame = await prisma.tame.findFirst({ where: { id: availableTame } });
 	return [tame, ''];
 }
-export async function markTamePartnerBusy(user: KlasaUser, tameId) {
+export async function markTamePartnerBusy(tameId: number) {
 	await prisma.tame.update({
-		where: { id: tameId, user_id: user.id },
+		where: { id: tameId },
 		data: { is_doloing: true }
 	});
 }
-export async function clearTamePartnerBusy(user: KlasaUser) {
+export async function clearTamePartnerBusy(userId: string) {
 	await prisma.tame.updateMany({
-		where: { user_id: user.id },
+		where: { user_id: userId },
 		data: { is_doloing: false }
 	});
 }
