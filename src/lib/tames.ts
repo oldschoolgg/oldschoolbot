@@ -376,6 +376,31 @@ export async function getUsersTame(user: KlasaUser): Promise<[Tame | null, TameA
 	return [tame, activity];
 }
 
+export async function getAvailableTamePartner(
+	user: KlasaUser,
+	species: number,
+	type: 'combat' | 'gatherer' | 'support' | 'artisan',
+	growthStages: tame_growth[]
+) {
+	const tames = await prisma.tame.findMany({
+		where: { user_id: user.id, species_id: species, growth_stage: { in: growthStages } }
+	});
+	if (tames.length === 0) return [null, 'No eligible tame found.'];
+
+	const tameIds = tames.map(t => t.id);
+
+	// Sort by skill level to use the highest one available.
+	const orderField = `max_${type}_level`;
+	const activityData = (await prisma.$queryRawUnsafe(
+		`select t.ID, (select count(a.*) from tame_activity a WHERE a.tame_id = t.id AND completed = false AND a.tame_id IN (${tameIds})) FROM tames t ORDER BY t.${orderField} DESC;`
+	)) as [number, number][];
+	if (activityData.length === 0) return [null, 'All eligible tames are busy'];
+
+	const [availableTame] = activityData[0];
+	const tame = await prisma.tame.findFirst({ where: { id: availableTame } });
+	return [tame, ''];
+}
+
 export async function createTameTask({
 	user,
 	channelID,

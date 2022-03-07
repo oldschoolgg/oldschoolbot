@@ -559,6 +559,7 @@ model Tame {
   fed_items          Json           @default("{}") @db.Json
   species_variant    Int            @default(1)
   tame_activity      TameActivity[]
+  is_doloing         Boolean        @default(false)
 
   @@index([date], map: "IDX_d84ebb9dcec7acde63c223cf1b")
   @@map("tames")
