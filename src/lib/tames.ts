@@ -380,7 +380,8 @@ export async function getAvailableTamePartner(
 	user: KlasaUser,
 	species: number,
 	type: 'combat' | 'gatherer' | 'support' | 'artisan',
-	growthStages: tame_growth[]
+	growthStages: tame_growth[],
+	requiredEatenItems: Bank | null = null
 ): Promise<[Tame | null, string]> {
 	const tames = await prisma.tame.findMany({
 		where: { user_id: user.id, species_id: species, growth_stage: { in: growthStages } }
@@ -392,13 +393,15 @@ export async function getAvailableTamePartner(
 	// Sort by skill level to use the highest one available.
 	const orderField = `max_${type}_level`;
 	const activityData = (await prisma.$queryRawUnsafe(
-		`select t.ID, (select count(a.*) from tame_activity a WHERE a.tame_id = t.id AND completed = false) as active_tasks FROM tames t WHERE t.id IN (${tameIds}) ORDER BY t.${orderField} DESC;`
-	)) as { id: number; active_tasks: number }[];
+		`select t.ID, t.fed_items, (select count(a.*) from tame_activity a WHERE a.tame_id = t.id AND completed = false) as active_tasks FROM tames t WHERE t.id IN (${tameIds}) ORDER BY t.${orderField} DESC;`
+	)) as { id: number; fed_items: ItemBank; active_tasks: number }[];
 	if (!activityData || activityData.length === 0) return [null, 'No eligible tame found.'];
-	console.log(activityData);
 	let availableTame: number | null = null;
-	for (const { id: possibleId, active_tasks: onTask } of activityData) {
+	for (const { id: possibleId, fed_items: fedItems, active_tasks: onTask } of activityData) {
 		if (onTask === 0) {
+			if (requiredEatenItems && !new Bank(fedItems).has(requiredEatenItems)) {
+				continue;
+			}
 			availableTame = possibleId;
 			break;
 		}
