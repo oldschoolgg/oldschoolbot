@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
 import { PerkTier } from '../constants';
+import { clearTamePartnerBusy } from '../tames';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
 import { cleanString, isGroupActivity } from '../util';
@@ -65,6 +66,7 @@ export async function completeActivity(_activity: Activity) {
 	} finally {
 		client.oneCommandAtATimeCache.delete(activity.userID);
 		minionActivityCacheDelete(activity.userID);
+		await clearTamePartnerBusy(activity.userID);
 	}
 }
 

@@ -24,12 +24,14 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { TheatreOfBlood, TheatreOfBloodOptions } from '../../lib/simulation/tob';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { getAvailableTamePartner, markTamePartnerBusy, tameSpecies } from '../../lib/tames';
 import { MakePartyOptions } from '../../lib/types';
 import { TheatreOfBloodTaskOptions } from '../../lib/types/minions';
 import { calcDropRatesFromBank, clamp, formatDuration, toKMB, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { generateChart } from '../../lib/util/chart';
 import getOSItem from '../../lib/util/getOSItem';
+import { tame_growth } from '.prisma/client';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -279,7 +281,18 @@ export default class extends BotCommand {
 		if (teamCheckFailure) {
 			return msg.channel.send(`Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`);
 		}
+		let debugStr = '';
 
+		// Check tame for dolo'ing
+		if (users.length === 1) {
+			const igne = tameSpecies.find(t => t.name === 'Igne');
+			const [tame, failMsg] = await getAvailableTamePartner(msg.author, igne!.id, 'combat', [tame_growth.adult]);
+			if (!tame) {
+				return msg.channel.send(`Your solo failed because: ${failMsg}. Requires: Adult Igne tame.`);
+			}
+			await markTamePartnerBusy(msg.author, tame.id);
+			debugStr += `Bringing your tame, ${tame.nickname ?? igne.name}, with you to help solo the Theatre!\n`;
+		}
 		const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = await createTOBTeam({
 			team: await Promise.all(
 				users.map(async u => ({
@@ -294,8 +307,6 @@ export default class extends BotCommand {
 			),
 			hardMode: isHardMode
 		});
-
-		let debugStr = '';
 
 		const totalCost = new Bank();
 

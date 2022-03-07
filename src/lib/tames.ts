@@ -381,7 +381,7 @@ export async function getAvailableTamePartner(
 	species: number,
 	type: 'combat' | 'gatherer' | 'support' | 'artisan',
 	growthStages: tame_growth[]
-) {
+): Promise<[Tame | null, string]> {
 	const tames = await prisma.tame.findMany({
 		where: { user_id: user.id, species_id: species, growth_stage: { in: growthStages } }
 	});
@@ -399,6 +399,18 @@ export async function getAvailableTamePartner(
 	const [availableTame] = activityData[0];
 	const tame = await prisma.tame.findFirst({ where: { id: availableTame } });
 	return [tame, ''];
+}
+export async function markTamePartnerBusy(user: KlasaUser, tameId) {
+	await prisma.tame.update({
+		where: { id: tameId, user_id: user.id },
+		data: { is_doloing: true }
+	});
+}
+export async function clearTamePartnerBusy(user: KlasaUser) {
+	await prisma.tame.updateMany({
+		where: { user_id: user.id },
+		data: { is_doloing: false }
+	});
 }
 
 export async function createTameTask({
