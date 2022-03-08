@@ -7,6 +7,7 @@ import { ironsCantUse, minionNotBusy } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
+import { logError } from '../../lib/util/logError';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -54,8 +55,13 @@ export default class extends BotCommand {
 			return msg.channel.send('Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.');
 		}
 
+		await msg.guild.emojis.fetch();
 		const reaction = msg.guild.emojis.cache.random();
-		await msg.author.removeItemsFromBank(bank);
+		if (!reaction) {
+			return msg.channel.send(
+				"Couldn't retrieve emojis for this guild, ensure you have some emojis and try again."
+			);
+		}
 
 		const message = await msg.channel.sendBankImage({
 			content: `You created a giveaway that will finish in ${formatDuration(
@@ -67,20 +73,32 @@ React to this messsage with ${reaction} to enter.`,
 			title: `${msg.author.username}'s Giveaway`
 		});
 
-		await prisma.giveaway.create({
-			data: {
-				channel_id: msg.channel.id,
-				start_date: new Date(),
-				finish_date: duration.fromNow,
-				completed: false,
-				loot: bank.bank,
-				user_id: msg.author.id,
-				reaction_id: reaction.id,
-				duration: duration.offset,
-				message_id: message.id
-			}
-		});
+		const dbData = {
+			channel_id: msg.channel.id,
+			start_date: new Date(),
+			finish_date: duration.fromNow,
+			completed: false,
+			loot: bank.bank,
+			user_id: msg.author.id,
+			reaction_id: reaction.id,
+			duration: duration.offset,
+			message_id: message.id
+		};
 
+		try {
+			await prisma.giveaway.create({
+				data: dbData
+			});
+		} catch (err: any) {
+			logError(err, {
+				user_id: msg.author.id,
+				giveaway_data: JSON.stringify(dbData)
+			});
+			return msg.channel.send('Error starting giveaway. Please report this error.');
+		}
+
+		// Wait until the create succeeds to remove items, otherwise they can be lost.
+		await msg.author.removeItemsFromBank(bank);
 		await message.react(reaction);
 		return message;
 	}
