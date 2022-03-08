@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import { ironsCantUse, minionNotBusy } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, roll } from '../../lib/util';
 import { logError } from '../../lib/util/logError';
 
 export default class extends BotCommand {
@@ -55,9 +55,12 @@ export default class extends BotCommand {
 			return msg.channel.send('Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.');
 		}
 
-		await msg.guild.emojis.fetch();
+		// fetch() always calls the API when no id is specified, so only do it sparingly or if needed.
+		if (!msg.guild.emojis.cache || msg.guild.emojis.cache.size === 0 || roll(10)) {
+			await msg.guild.emojis.fetch();
+		}
 		const reaction = msg.guild.emojis.cache.random();
-		if (!reaction) {
+		if (!reaction || !reaction.id) {
 			return msg.channel.send(
 				"Couldn't retrieve emojis for this guild, ensure you have some emojis and try again."
 			);
@@ -99,7 +102,23 @@ React to this messsage with ${reaction} to enter.`,
 
 		// Wait until the create succeeds to remove items, otherwise they can be lost.
 		await msg.author.removeItemsFromBank(bank);
-		await message.react(reaction);
+
+		try {
+			await message.react(reaction);
+		} catch (err: any) {
+			if (err.code === 10_014) {
+				// Re-fetch emojis for next time, since the cache is obviously invalid.
+				msg.guild.emojis.cache.delete(reaction.id);
+				await msg.guild.emojis.fetch();
+				return msg.channel.send(
+					'Error starting giveaway, selected emoji no longer exists. You will be refunded when the giveaway ends.'
+				);
+			}
+			logError(err, { user_id: msg.author.id, emoji_id: reaction.id, guild_id: msg.guild.id });
+			return msg.channel.send(
+				'Unknown error. You will be refunded when the giveaway ends if the giveaway fails.'
+			);
+		}
 		return message;
 	}
 }
