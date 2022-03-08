@@ -107,9 +107,8 @@ React to this messsage with ${reaction} to enter.`,
 			await message.react(reaction);
 		} catch (err: any) {
 			if (err.code === 10_014) {
-				// Re-fetch emojis for next time, since the cache is obviously invalid.
+				// Unknown emoji: Remove deleted emoji from the cache so it's not tried next time.
 				msg.guild.emojis.cache.delete(reaction.id);
-				await msg.guild.emojis.fetch();
 				return msg.channel.send(
 					'Error starting giveaway, selected emoji no longer exists. You will be refunded when the giveaway ends.'
 				);
