@@ -1635,7 +1635,7 @@ setCustomItem(
 setCustomItem(
 	50_562,
 	"Shaman's poncho",
-	'Rune boots',
+	'Rune platebody',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
@@ -1647,7 +1647,7 @@ setCustomItem(
 setCustomItem(
 	50_563,
 	"Shaman's hand wraps",
-	'Rune boots',
+	'Rune gloves',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
