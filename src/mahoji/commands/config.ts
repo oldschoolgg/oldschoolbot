@@ -183,9 +183,7 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst)
 	) {
 		if (hasCannon) warningMsg = priorityWarningMsg;
-		await mahojiUserSettingsUpdate(user.id, {
-			combat_options: removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst)
-		});
+		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
 	if (
@@ -194,17 +192,23 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage)
 	) {
 		if (warningMsg === '' && hasCannon) warningMsg = priorityWarningMsg;
-		await mahojiUserSettingsUpdate(user.id, {
-			combat_options: removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage)
-		});
+		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage);
 	}
 	// Warn if enabling cannon with ice burst/barrage:
 	if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB) {
 		warningMsg = priorityWarningMsg;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
-		combat_options: [...settings.combat_options, newcbopt.id]
-	});
+	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
+		await mahojiUserSettingsUpdate(user.id, {
+			combat_options: [...settings.combat_options, newcbopt.id]
+		});
+	} else if (!nextBool && settings.combat_options.includes(newcbopt.id)) {
+		await mahojiUserSettingsUpdate(user.id, {
+			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
+		});
+	} else {
+		return 'Error processing command. This should never happen, please report bug.';
+	}
 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
 }
