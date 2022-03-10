@@ -44,17 +44,18 @@ export async function getNewUser(id: string): Promise<NewUser> {
 }
 
 export async function syncNewUserUsername(message: KlasaMessage) {
+	const cleanedUsername = cleanUsername(message.author.username);
+	const username = cleanedUsername.length > 32 ? cleanedUsername.substring(0, 32) : cleanedUsername;
 	await prisma.newUser.upsert({
 		where: {
 			id: message.author.id
 		},
 		update: {
-			username: cleanUsername(message.author.username)
+			username
 		},
 		create: {
 			id: message.author.id,
-			username: cleanUsername(message.author.username),
-			minigame: {}
+			username
 		}
 	});
 }
