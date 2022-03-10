@@ -184,7 +184,9 @@ export async function triggerRandomEvent(ch: TextChannel, user: KlasaUser) {
 	const roll = randInt(1, 4);
 	user.log(`getting ${event.name} random event.`);
 
-	const embed = new MessageEmbed().setFooter('Use `/config user random_events choice:disable` to disable random events.');
+	const embed = new MessageEmbed().setFooter(
+		'Use `/config user random_events choice:disable` to disable random events.'
+	);
 
 	switch (roll) {
 		case 1: {
