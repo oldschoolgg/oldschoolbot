@@ -286,17 +286,10 @@ export default class extends BotCommand {
 		// Check tame for dolo'ing
 		if (users.length === 1) {
 			const igne = tameSpecies.find(t => t.name === 'Igne');
-			const requiredFed = new Bank().add('Bandos chestplate').add('Bandos tassets').add('Bandos boots');
-			const [tame, failMsg] = await getAvailableTamePartner(
-				msg.author,
-				igne!.id,
-				'combat',
-				[tame_growth.adult],
-				requiredFed
-			);
+			const [tame, failMsg] = await getAvailableTamePartner(msg.author, igne!.id, 'combat', [tame_growth.adult]);
 			if (!tame) {
 				return msg.channel.send(
-					`Your solo failed because: ${failMsg}. Requires: Adult Igne tame that isn't on a trip, who has eaten: ${requiredFed}.`
+					`Your solo failed because: ${failMsg}. Requires: Adult Igne tame that isn't on a trip.`
 				);
 			}
 
