@@ -44,10 +44,19 @@ export async function getNewUser(id: string): Promise<NewUser> {
 }
 
 export async function syncNewUserUsername(message: KlasaMessage) {
-	await prisma.$queryRaw`UPDATE new_users
-SET username = ${cleanUsername(message.author.username)}
-WHERE id = ${message.author.id}
-AND ((username IS NULL) OR (username <> ${cleanUsername(message.author.username)}));`;
+	await prisma.newUser.upsert({
+		where: {
+			id: message.author.id
+		},
+		update: {
+			username: cleanUsername(message.author.username)
+		},
+		create: {
+			id: message.author.id,
+			username: cleanUsername(message.author.username),
+			minigame: {}
+		}
+	});
 }
 
 export async function getMinionName(userID: string): Promise<string> {
