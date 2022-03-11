@@ -32,7 +32,7 @@ export default class extends BotCommand {
 			: undefined;
 
 		const res: any =
-			await prisma.$queryRawUnsafe(`SELECT user_id AS user, sum(xp) AS total_xp, max(date) AS lastDate
+			await prisma.$queryRawUnsafe(`SELECT user_id::text AS user, sum(xp) AS total_xp, max(date) AS lastDate
 FROM xp_gains
 WHERE date > now() - INTERVAL '1 ${interval.toLowerCase() === 'day' ? 'day' : 'week'}'
 ${skillObj ? `AND skill = '${skillObj.id}'` : ''}
