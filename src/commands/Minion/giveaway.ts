@@ -6,7 +6,8 @@ import { Bank } from 'oldschooljs';
 import { ironsCantUse, minionNotBusy } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration } from '../../lib/util';
+import { formatDuration, roll } from '../../lib/util';
+import { logError } from '../../lib/util/logError';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -54,8 +55,16 @@ export default class extends BotCommand {
 			return msg.channel.send('Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.');
 		}
 
+		// fetch() always calls the API when no id is specified, so only do it sparingly or if needed.
+		if (!msg.guild.emojis.cache || msg.guild.emojis.cache.size === 0 || roll(10)) {
+			await msg.guild.emojis.fetch();
+		}
 		const reaction = msg.guild.emojis.cache.random();
-		await msg.author.removeItemsFromBank(bank);
+		if (!reaction || !reaction.id) {
+			return msg.channel.send(
+				"Couldn't retrieve emojis for this guild, ensure you have some emojis and try again."
+			);
+		}
 
 		const message = await msg.channel.sendBankImage({
 			content: `You created a giveaway that will finish in ${formatDuration(
@@ -67,21 +76,48 @@ React to this messsage with ${reaction} to enter.`,
 			title: `${msg.author.username}'s Giveaway`
 		});
 
-		await prisma.giveaway.create({
-			data: {
-				channel_id: msg.channel.id,
-				start_date: new Date(),
-				finish_date: duration.fromNow,
-				completed: false,
-				loot: bank.bank,
-				user_id: msg.author.id,
-				reaction_id: reaction.id,
-				duration: duration.offset,
-				message_id: message.id
-			}
-		});
+		const dbData = {
+			channel_id: msg.channel.id,
+			start_date: new Date(),
+			finish_date: duration.fromNow,
+			completed: false,
+			loot: bank.bank,
+			user_id: msg.author.id,
+			reaction_id: reaction.id,
+			duration: duration.offset,
+			message_id: message.id
+		};
 
-		await message.react(reaction);
+		try {
+			await prisma.giveaway.create({
+				data: dbData
+			});
+		} catch (err: any) {
+			logError(err, {
+				user_id: msg.author.id,
+				giveaway_data: JSON.stringify(dbData)
+			});
+			return msg.channel.send('Error starting giveaway. Please report this error.');
+		}
+
+		// Wait until the create succeeds to remove items, otherwise they can be lost.
+		await msg.author.removeItemsFromBank(bank);
+
+		try {
+			await message.react(reaction);
+		} catch (err: any) {
+			if (err.code === 10_014) {
+				// Unknown emoji: Remove deleted emoji from the cache so it's not tried next time.
+				msg.guild.emojis.cache.delete(reaction.id);
+				return msg.channel.send(
+					'Error starting giveaway, selected emoji no longer exists. You will be refunded when the giveaway ends.'
+				);
+			}
+			logError(err, { user_id: msg.author.id, emoji_id: reaction.id, guild_id: msg.guild.id });
+			return msg.channel.send(
+				'Unknown error. You will be refunded when the giveaway ends if the giveaway fails.'
+			);
+		}
 		return message;
 	}
 }
