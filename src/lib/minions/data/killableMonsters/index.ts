@@ -1,7 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
+import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
@@ -338,5 +338,10 @@ export const effectiveMonsters = [
 		name: "Phosani's Nightmare",
 		aliases: ['phosani', 'phosanis nightmare'],
 		id: PHOSANI_NIGHTMARE_ID
+	},
+	{
+		name: 'Nex',
+		aliases: ['nex'],
+		id: NEX_ID
 	}
 ];

@@ -225,7 +225,8 @@ export const enum Tasks {
 	ToB = 'tobActivity',
 	LastManStanding = 'lmsActivity',
 	BirthdayEvent = 'birthdayEventActivity',
-	TokkulShop = 'tokkulShopActivity'
+	TokkulShop = 'tokkulShopActivity',
+	Nex = 'nexActivity'
 }
 
 export enum ActivityGroup {
@@ -398,6 +399,7 @@ export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const HESPORI_ID = 8583;
+export const NEX_ID = 11_278;
 
 /**
  * Map<user_id, PromiseQueue>

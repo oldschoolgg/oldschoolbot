@@ -25,4 +25,8 @@ export class TeamLoot {
 		bank.add(...args);
 		return bank;
 	}
+
+	entries() {
+		return Array.from(this.map.entries());
+	}
 }

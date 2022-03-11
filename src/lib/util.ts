@@ -1,4 +1,5 @@
 import { bold } from '@discordjs/builders';
+import { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
@@ -11,7 +12,7 @@ import {
 	MessageButton,
 	MessageOptions,
 	TextChannel,
-	User,
+	User as DJSUser,
 	Util
 } from 'discord.js';
 import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
@@ -487,8 +488,8 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export function patronMaxTripCalc(user: KlasaUser) {
-	const perkTier = getUsersPerkTier(user);
+export function patronMaxTripCalc(user: KlasaUser | User) {
+	const perkTier = getUsersPerkTier(user instanceof KlasaUser ? user : user.bitfield);
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
 	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
@@ -675,7 +676,7 @@ export function calcMaxRCQuantity(rune: Rune, user: KlasaUser) {
 	return 0;
 }
 
-export function convertDJSUserToAPIUser(user: User | KlasaUser): APIUser {
+export function convertDJSUserToAPIUser(user: DJSUser | KlasaUser): APIUser {
 	const apiUser: APIUser = {
 		id: user.id,
 		username: user.username,

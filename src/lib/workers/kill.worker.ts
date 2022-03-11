@@ -40,10 +40,10 @@ export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs
 		const loot = handleNexKills({
 			quantity,
 			team: [
-				{ id: '1', contribution: 100 },
-				{ id: '2', contribution: 100 },
-				{ id: '3', contribution: 100 },
-				{ id: '4', contribution: 100 }
+				{ id: '1', contribution: 100, deaths: [] },
+				{ id: '2', contribution: 100, deaths: [] },
+				{ id: '3', contribution: 100, deaths: [] },
+				{ id: '4', contribution: 100, deaths: [] }
 			]
 		});
 		return {

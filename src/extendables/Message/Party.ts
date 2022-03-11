@@ -1,5 +1,5 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { Message, MessageReaction } from 'discord.js';
+import { Message, MessageReaction, TextChannel } from 'discord.js';
 import { debounce, sleep } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
@@ -8,8 +8,9 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
 
-async function _setup(
-	msg: KlasaMessage,
+export async function setupParty(
+	channel: TextChannel,
+	user: KlasaUser,
 	options: MakePartyOptions
 ): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
 	const usersWhoConfirmed: KlasaUser[] = [options.leader];
@@ -22,7 +23,7 @@ async function _setup(
 			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`;
 	}
 
-	const confirmMessage = (await msg.channel.send(getMessageContent())) as KlasaMessage;
+	const confirmMessage = (await channel.send(getMessageContent())) as KlasaMessage;
 	async function addEmojis() {
 		await confirmMessage.react(ReactionEmoji.Join);
 		await sleep(50);
@@ -98,11 +99,10 @@ async function _setup(
 				removeUser(user);
 			});
 
-			function startTrip() {
+			async function startTrip() {
+				await confirmMessage.delete();
 				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
-					msg.channel.send(
-						`${msg.author} Not enough people joined your ${options.party ? 'party' : 'mass'}!`
-					);
+					channel.send(`${user} Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
 					reject(new Error(SILENT_ERROR));
 					return;
 				}
@@ -174,7 +174,8 @@ export default class extends Extendable {
 	}
 
 	async makePartyAwaiter(this: KlasaMessage, options: MakePartyOptions) {
-		const [usersWhoConfirmed, reactionAwaiter] = await _setup(this, options);
+		if (this.channel.type !== 'text') throw new Error('Tried to make party in non-text channel.');
+		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(this.channel, options.leader, options);
 
 		await reactionAwaiter();
 
