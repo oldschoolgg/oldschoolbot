@@ -1,12 +1,15 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Message, MessageReaction, TextChannel } from 'discord.js';
-import { debounce, sleep } from 'e';
+import { debounce, sleep, Time } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { ReactionEmoji, SILENT_ERROR } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
+
+const partyLockCache = new Set<string>();
+setInterval(() => partyLockCache.clear(), Time.Minute * 20);
 
 export async function setupParty(
 	channel: TextChannel,
@@ -50,6 +53,7 @@ export async function setupParty(
 
 	const reactionAwaiter = () =>
 		new Promise<KlasaUser[]>(async (resolve, reject) => {
+			partyLockCache.add(user.id);
 			let partyCancelled = false;
 			const collector = new CustomReactionCollector(confirmMessage, {
 				time: 120_000,
@@ -115,7 +119,7 @@ export async function setupParty(
 				if (user.client.settings?.get(ClientSettings.UserBlacklist).includes(user.id)) return;
 				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
-						if (usersWhoConfirmed.includes(user)) return;
+						if (usersWhoConfirmed.includes(user) || partyLockCache.has(user.id)) return;
 
 						if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
 							return;
@@ -123,6 +127,7 @@ export async function setupParty(
 
 						// Add the user
 						usersWhoConfirmed.push(user);
+						partyLockCache.add(user.id);
 						updateUsersIn();
 
 						if (usersWhoConfirmed.length >= options.maxSize) {
@@ -161,6 +166,9 @@ export async function setupParty(
 
 			collector.once('end', () => {
 				confirmMessage.removeAllReactions();
+				for (const user of usersWhoConfirmed) {
+					partyLockCache.delete(user.id);
+				}
 				setTimeout(() => startTrip(), 750);
 			});
 		});

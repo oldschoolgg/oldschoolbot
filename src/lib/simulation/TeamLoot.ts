@@ -1,7 +1,15 @@
+import { spoiler, userMention } from '@discordjs/builders';
 import { Bank } from 'oldschooljs';
+
+import { Emoji } from '../constants';
 
 export class TeamLoot {
 	map = new Map<string, Bank>();
+	purpleItems: number[];
+
+	constructor(purpleItems: number[]) {
+		this.purpleItems = purpleItems;
+	}
 
 	totalLoot() {
 		const totalLoot = new Bank();
@@ -28,5 +36,16 @@ export class TeamLoot {
 
 	entries() {
 		return Array.from(this.map.entries());
+	}
+
+	formatLoot(): string {
+		let str = '';
+		for (const [id, loot] of this.entries()) {
+			const isPurple = this.purpleItems.some(i => loot.has(i));
+			str += isPurple
+				? `${Emoji.Purple} ${userMention(id)} received ${spoiler(loot.toString())}.`
+				: `${userMention(id)} received ${loot}.`;
+		}
+		return str;
 	}
 }

@@ -126,8 +126,18 @@ interface NexContext {
 	team: { id: string; contribution: number; deaths: number[] }[];
 }
 
+export const purpleNexItems = resolveItems([
+	'Nexling',
+	'Ancient hilt',
+	'Nihil horn',
+	'Zaryte vambraces',
+	'Torva full helm (damaged)',
+	'Torva platebody (damaged)',
+	'Torva platelegs (damaged)'
+]);
+
 export function handleNexKills({ quantity, team }: NexContext) {
-	const teamLoot = new TeamLoot();
+	const teamLoot = new TeamLoot(purpleNexItems);
 	const uniqueDecider = new SimpleTable<string>();
 	for (const user of team) uniqueDecider.add(user.id);
 
@@ -170,9 +180,10 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 		const defensivePercents = [defence, clamp(kcPercent * 2, 0, 100)];
 		const totalDefensivePercent = sumArr(defensivePercents) / defensivePercents.length;
 		deathChance = reduceNumByPercent(deathChance, totalDefensivePercent);
+		deathChance = clamp(deathChance, 5, 100);
 
 		const reducedTime = reduceNumByPercent(lengthPerKill, kcPercent / 4 + offence / 7);
-		const messages: string[] = [`${userMention(member.id)} -${formatDuration(lengthPerKill - reducedTime, true)}`];
+		const messages: string[] = [`-${formatDuration(lengthPerKill - reducedTime, true)}`];
 
 		lengthPerKill = reducedTime;
 
