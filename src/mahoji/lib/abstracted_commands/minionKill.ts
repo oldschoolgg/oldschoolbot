@@ -286,7 +286,7 @@ export async function minionKillCommand(
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
 	const hasCannon = user.owns(CombatCannonItemBank);
-	if (!isOnTask && method !== 'none') {
+	if (!isOnTask && method && method !== 'none') {
 		return 'You can only burst/barrage/cannon while on task in BSO.';
 	}
 	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {

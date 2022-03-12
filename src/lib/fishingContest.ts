@@ -157,7 +157,7 @@ export const fishingLocations: FishingLocation[] = [
 	},
 	{
 		id: 8,
-		name: 'East Piscarillius Ocean',
+		name: 'East Piscarilius Ocean',
 		temperature: 'warm',
 		water: 'ocean',
 		specialtyVerb: 'firm',

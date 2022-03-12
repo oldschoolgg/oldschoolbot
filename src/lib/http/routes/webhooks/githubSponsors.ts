@@ -4,7 +4,7 @@ import { KlasaUser } from 'klasa';
 import { client } from '../../../..';
 import PatreonTask from '../../../../tasks/patreon';
 import { boxFrenzy } from '../../../boxFrenzy';
-import { Channel, PerkTier } from '../../../constants';
+import { Channel } from '../../../constants';
 import { addPatronLootTime } from '../../../doubleLoot';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
@@ -36,23 +36,12 @@ const githubSponsors = (server: FastifyServer) =>
 
 					addPatronLootTime(tier, client, user as KlasaUser);
 
-					const isDoingReset = [PerkTier.Five, PerkTier.Six].includes(tier);
-					if (isDoingReset) {
-						await client.query(`
-UPDATE users
-SET "lastDailyTimestamp" = 0
-WHERE "lastDailyTimestamp" != 0;
-`);
-					}
 					for (const id of [Channel.BSOChannel, Channel.BSOGeneral]) {
 						boxFrenzy(
 							client.channels.cache.get(id) as TextChannel,
 							`🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
-${
-	data.sender.login
-} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.
-${isDoingReset ? 'Everyones daily cooldown has been reset.' : ''}
+${data.sender.login} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉`,
 							tier * 3
