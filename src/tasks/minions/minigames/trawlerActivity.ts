@@ -69,6 +69,15 @@ export default class extends Task {
 				previousCL
 			);
 
-		handleTripFinish(this.client, user, channelID, str, ['fishingtrawler', [], true], image!, data, itemsAdded);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			['minigames', { fishing_trawler: { start: {} } }, true],
+			image!,
+			data,
+			itemsAdded
+		);
 	}
 }

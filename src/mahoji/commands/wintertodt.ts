@@ -18,6 +18,7 @@ export const wintertodtCommand: OSBMahojiCommand = {
 	description: 'Sends your minion to do Wintertodt.',
 	attributes: {
 		altProtection: true,
+		requiresMinion: true,
 		requiresMinionNotBusy: true,
 		requiredPermissionsForBot: ['ATTACH_FILES'],
 		categoryFlags: ['minion', 'skilling', 'minigame'],
@@ -25,8 +26,8 @@ export const wintertodtCommand: OSBMahojiCommand = {
 		examples: ['/wintertodt']
 	},
 	options: [],
-	run: async ({ member, channelID }: CommandRunOptions) => {
-		const user = await client.fetchUser(member.user.id);
+	run: async ({ userID, channelID }: CommandRunOptions) => {
+		const user = await client.fetchUser(userID);
 		const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		if (fmLevel < 50) {

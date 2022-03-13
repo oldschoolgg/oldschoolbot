@@ -4,8 +4,9 @@ import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { KourendKebosDiary, userhasDiaryTier } from '../../lib/diaries';
+import { PvMMethod } from '../constants';
 import { CombatOptionsEnum } from '../minions/data/combatConstants';
-import { DetermineBoostParams } from '../minions/types';
+import { KillableMonster } from '../minions/types';
 import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
@@ -36,17 +37,24 @@ export enum SlayerMasterEnum {
 	Duradel
 }
 
+export interface DetermineBoostParams {
+	cbOpts: CombatOptionsEnum[];
+	user: KlasaUser;
+	monster: KillableMonster;
+	method?: PvMMethod | null;
+	isOnTask?: boolean;
+}
 export function determineBoostChoice(params: DetermineBoostParams) {
 	let boostChoice = 'none';
 
-	if (params.msg.flagArgs.none || (params.method && params.method === 'none')) {
+	if (params.method && params.method === 'none') {
 		return boostChoice;
 	}
-	if (params.msg.flagArgs.barrage || (params.method && params.method === 'barrage')) {
+	if (params.method && params.method === 'barrage') {
 		boostChoice = 'barrage';
-	} else if (params.msg.flagArgs.burst || (params.method && params.method === 'burst')) {
+	} else if (params.method && params.method === 'burst') {
 		boostChoice = 'burst';
-	} else if (params.msg.flagArgs.cannon || (params.method && params.method === 'cannon')) {
+	} else if (params.method && params.method === 'cannon') {
 		boostChoice = 'cannon';
 	} else if (params.cbOpts.includes(CombatOptionsEnum.AlwaysIceBarrage) && params.monster!.canBarrage) {
 		boostChoice = 'barrage';
@@ -56,7 +64,7 @@ export function determineBoostChoice(params: DetermineBoostParams) {
 		boostChoice = 'cannon';
 	}
 
-	if (boostChoice === 'barrage' && params.msg.author.skillLevel(SkillsEnum.Magic) < 94) {
+	if (boostChoice === 'barrage' && params.user.skillLevel(SkillsEnum.Magic) < 94) {
 		boostChoice = 'burst';
 	}
 	return boostChoice;
