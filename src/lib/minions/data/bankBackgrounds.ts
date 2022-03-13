@@ -546,13 +546,6 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['538600275221413900']
-	},
-	{
-		id: 94,
-		name: 'Eggscape CustomBG',
-		image: null,
-		available: false,
-		owners: ['268767449791332354']
 	}
 ];
 
