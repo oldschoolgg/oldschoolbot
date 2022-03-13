@@ -17,13 +17,21 @@ import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
 import {
+	mahoganyHomesBuildCommand,
+	mahoganyHomesBuyables,
+	mahoganyHomesBuyCommand
+} from '../lib/abstracted_commands/mahoganyHomesCommand';
+import {
 	pestControlBuyables,
 	pestControlBuyCommand,
 	pestControlStartCommand,
 	pestControlStatsCommand,
 	pestControlXPCommand
 } from '../lib/abstracted_commands/pestControlCommand';
+import { pyramidPlunderCommand } from '../lib/abstracted_commands/pyramidPlunderCommand';
+import { roguesDenCommand } from '../lib/abstracted_commands/roguesDenCommand';
 import { sepulchreCommand } from '../lib/abstracted_commands/sepulchreCommand';
+import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -334,6 +342,63 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		/**
+		 *
+		 * Mahogany Homes
+		 *
+		 */
+		{
+			name: 'mahogany_homes',
+			description: 'Sends your minion to do the Mahogany Homes minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Mahogany Homes trip.'
+				},
+				{
+					name: 'buy',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Buy items with your Pest Control commendation games.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							required: true,
+							description: 'The skill you want XP in.',
+							autocomplete: async value => {
+								return mahoganyHomesBuyables
+									.filter(i =>
+										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
+		 * Tears of Guthix
+		 *
+		 */
+		{
+			name: 'tears_of_guthix',
+			description: 'Sends your minion to do the Tears of Guthix minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup
+		},
+		/**
+		 *
+		 * Rogues Den
+		 *
+		 */
+		{
+			name: 'rogues_den',
+			description: 'Sends your minion to do the Rogues Den minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup
 		}
 	],
 	run: async ({
@@ -367,6 +432,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		gnome_restaurant?: { start?: {} };
 		sepulchre?: { start?: {} };
 		gauntlet?: { start?: { corrupted?: boolean } };
+		mahogany_homes?: { start?: {}; buy?: { name: string } };
+		tears_of_guthix?: {};
+		pyramid_plunder?: {};
+		rogues_den?: {};
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
@@ -476,8 +545,51 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 * Gauntlet
 		 *
 		 */
-		if (options.gauntlet?.start)
+		if (options.gauntlet?.start) {
 			return gauntletCommand(klasaUser, channelID, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
+		}
+
+		/**
+		 *
+		 * Mahogany Homes
+		 *
+		 */
+		if (options.mahogany_homes) {
+			if (options.mahogany_homes.buy) {
+				return mahoganyHomesBuyCommand(klasaUser, options.mahogany_homes.buy.name);
+			}
+			if (options.mahogany_homes.start) {
+				return mahoganyHomesBuildCommand(klasaUser, channelID);
+			}
+		}
+
+		/**
+		 *
+		 * Tears of Guthix
+		 *
+		 */
+		if (options.tears_of_guthix) {
+			return tearsOfGuthixCommand(klasaUser, channelID);
+		}
+
+		/**
+		 *
+		 * Pyramid Plunder
+		 *
+		 */
+		if (options.pyramid_plunder) {
+			return pyramidPlunderCommand(klasaUser, channelID);
+		}
+
+		/**
+		 *
+		 * Rogues Den
+		 *
+		 */
+		if (options.rogues_den) {
+			return roguesDenCommand(klasaUser, channelID);
+		}
+
 		return 'Invalid command.';
 	}
 };
