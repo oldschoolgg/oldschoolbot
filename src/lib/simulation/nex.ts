@@ -36,7 +36,7 @@ function gearStats(user: User) {
 	};
 }
 
-const allowedWeapons = resolveItems(['Dragon crossbow', 'Zaryte crossbow', 'Twisted bow']);
+const allowedWeapons = resolveItems(['Armadyl crossbow', 'Dragon crossbow', 'Zaryte crossbow', 'Twisted bow']);
 const weaponsStr = allowedWeapons.map(itemNameFromID).join(', ');
 const allowedAmmo = resolveItems(['Dragon arrow', 'Ruby dragon bolts (e)']);
 const ammoStr = allowedAmmo.map(itemNameFromID).join(', ');
@@ -142,7 +142,8 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	for (const user of team) uniqueDecider.add(user.id);
 
 	for (let i = 0; i < quantity; i++) {
-		const uniqueRecipient = roll(53) ? uniqueDecider.roll().item : null;
+		// const uniqueRecipient = roll(53) ? uniqueDecider.roll().item : null;
+		const uniqueRecipient = roll(3) ? uniqueDecider.roll().item : null;
 		for (const teamMember of team) {
 			if (teamMember.deaths.includes(i)) continue;
 			teamLoot.add(teamMember.id, NexNonUniqueTable.roll());

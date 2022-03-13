@@ -45,6 +45,7 @@ export class TeamLoot {
 			str += isPurple
 				? `${Emoji.Purple} ${userMention(id)} received ${spoiler(loot.toString())}.`
 				: `${userMention(id)} received ${loot}.`;
+			str += '\n';
 		}
 		return str;
 	}

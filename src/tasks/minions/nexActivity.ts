@@ -2,7 +2,6 @@ import { userMention } from '@discordjs/builders';
 import { MessageEmbed } from 'discord.js';
 import { Task } from 'klasa';
 
-import { Emoji } from '../../lib/constants';
 import { trackLoot } from '../../lib/settings/prisma';
 import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
@@ -40,13 +39,7 @@ export default class extends Task {
 		const embed = new MessageEmbed().setThumbnail(
 			'https://cdn.discordapp.com/attachments/342983479501389826/951730848426786846/Nex.webp'
 		).setDescription(`
-${users
-	.map(user => {
-		const userLoot = loot.get(user[0]);
-		const skulls = new Array(user[2].length).fill(Emoji.Skull).join('');
-		return `${skulls}${userMention(user[0])} received ${userLoot}`;
-	})
-	.join('\n')}`);
+${loot.formatLoot()}`);
 
 		sendToChannelID(this.client, channelID, {
 			embed,
