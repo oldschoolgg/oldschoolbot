@@ -35,6 +35,7 @@ import {
 	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
+import { PartyhatTable } from './holidayItems';
 
 export const warmGear = resolveItems([
 	'Staff of fire',
@@ -1118,10 +1119,7 @@ export const baseFilters: Filterable[] = [
 	{
 		name: 'Holiday',
 		aliases: ['holiday', 'hmb', 'rare', 'rares'],
-		items: () => [
-			...allOpenables.find(o => o.name === 'Holiday Mystery box')!.allItems,
-			...allOpenables.find(o => o.name === 'Christmas cracker')!.allItems
-		]
+		items: () => [...allOpenables.find(o => o.name === 'Holiday Mystery box')!.allItems, ...PartyhatTable.allItems]
 	},
 	{
 		name: 'Custom Items',
