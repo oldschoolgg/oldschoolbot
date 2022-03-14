@@ -8,7 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
-import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
@@ -232,7 +232,7 @@ export default class extends BotCommand {
 			boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
 		}\n**Supply Usage:** ${suppliesUsage}`;
 
-		await addSubTaskToActivityTask<VolcanicMineActivityTaskOptions>({
+		await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: numberOfGames,
