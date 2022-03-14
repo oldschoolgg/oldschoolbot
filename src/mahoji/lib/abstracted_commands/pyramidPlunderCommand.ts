@@ -8,6 +8,7 @@ import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function pyramidPlunderCommand(user: KlasaUser, channelID: bigint) {
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	const thievingLevel = user.skillLevel(SkillsEnum.Thieving);
 	const minLevel = plunderRooms[0].thievingLevel;
 	if (thievingLevel < minLevel) {

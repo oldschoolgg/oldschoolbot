@@ -4,7 +4,7 @@ import { KlasaUser } from 'klasa';
 import { Emoji } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { TearsOfGuthixActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
@@ -20,6 +20,7 @@ const ironmanExtraReqs = {
 };
 
 export async function tearsOfGuthixCommand(user: KlasaUser, channelID: bigint) {
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	await user.settings.sync();
 	const currentDate = new Date().getTime();
 	const lastPlayedDate = user.settings.get(UserSettings.LastTearsOfGuthixTimestamp);
@@ -73,7 +74,7 @@ export async function tearsOfGuthixCommand(user: KlasaUser, channelID: bigint) {
 	duration += Time.Second * 0.6 * userQP;
 	if (duration > Time.Minute * 30) duration = Time.Minute * 30;
 
-	await addSubTaskToActivityTask<TearsOfGuthixActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		minigameID: 'tears_of_guthix',
 		userID: user.id,
 		channelID: channelID.toString(),

@@ -5,11 +5,12 @@ import { Bank } from 'oldschooljs';
 import { client } from '../../..';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { RoguesDenMazeTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { addBanks, formatDuration, itemID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.skillLevel(SkillsEnum.Agility) < 50 || user.skillLevel(SkillsEnum.Thieving) < 50) {
 		return "To attempt the Rogues' Den maze you need 50 Agility and 50 Thieving.";
 	}
@@ -53,7 +54,7 @@ export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
 		);
 	}
 
-	await addSubTaskToActivityTask<RoguesDenMazeTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,

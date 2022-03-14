@@ -3,12 +3,12 @@ import { Bank } from 'oldschooljs';
 
 import { gloriesInventorySize } from '../../commands/Minion/chargeglories';
 import { Events } from '../../lib/constants';
-import { GloryChargingActivityTaskOptions } from '../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run(data: GloryChargingActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID } = data;
 		const user = await this.client.fetchUser(userID);
 		let deaths = 0;
