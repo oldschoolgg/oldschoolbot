@@ -109,7 +109,7 @@ export function parseBankFromFlags({
 		if (
 			flagsKeys.includes('search') &&
 			flags.search &&
-			!item.name.toLowerCase().includes(flags.search?.toLowerCase())
+			!item.name.toLowerCase().includes(flags.search.toLowerCase())
 		) {
 			continue;
 		}
