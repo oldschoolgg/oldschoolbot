@@ -31,7 +31,11 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
+	nexCL,
+	pernixOutfit,
 	temporossCL,
+	torvaOutfit,
+	virtusOutfit,
 	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
@@ -518,6 +522,14 @@ const godwars = resolveItems([
 	...godwarsGear
 ]);
 
+const nex = resolveItems([
+	...torvaOutfit,
+	...pernixOutfit,
+	...virtusOutfit,
+	...nexCL
+	
+])
+
 const dagannothkings = resolveItems([
 	'Berserker ring',
 	'Warrior ring',
@@ -957,6 +969,11 @@ export const baseFilters: Filterable[] = [
 		name: 'God wars',
 		aliases: ['god wars', 'gwd', 'godwars', 'gw'],
 		items: () => godwars
+	},
+	{
+		name: 'Nex',
+		aliases: ['nex'],
+		items: () => nex
 	},
 	{
 		name: 'Dagannoth kings',
