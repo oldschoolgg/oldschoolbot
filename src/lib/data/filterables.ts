@@ -522,13 +522,7 @@ const godwars = resolveItems([
 	...godwarsGear
 ]);
 
-const nex = resolveItems([
-	...torvaOutfit,
-	...pernixOutfit,
-	...virtusOutfit,
-	...nexCL
-	
-])
+const nex = resolveItems([...torvaOutfit, ...pernixOutfit, ...virtusOutfit, ...nexCL]);
 
 const dagannothkings = resolveItems([
 	'Berserker ring',
