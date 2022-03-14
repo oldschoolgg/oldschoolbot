@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { Guild } from 'discord.js';
 import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
@@ -311,6 +312,18 @@ async function handleRSN(user: KlasaUser, newRSN: string) {
 	return `Your RSN has been set to: \`${newRSN}\`.`;
 }
 
+async function setSmallBank(user: User, choice: 'enable' | 'disable') {
+	const newBitfield = uniqueArr(
+		choice === 'enable'
+			? [...user.bitfield, BitField.AlwaysSmallBank]
+			: removeFromArr(user.bitfield, BitField.AlwaysSmallBank)
+	);
+	await mahojiUserSettingsUpdate(user.id, {
+		bitfield: newBitfield
+	});
+	return `Small Banks are now ${choice}d for you.`;
+}
+
 export const configCommand: OSBMahojiCommand = {
 	name: 'config',
 	description: 'Commands configuring settings and options.',
@@ -496,6 +509,23 @@ export const configCommand: OSBMahojiCommand = {
 							required: true
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'small_bank',
+					description: 'Enable or disable using small bank images.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'choice',
+							description: 'Do you want small bank images?',
+							required: true,
+							choices: [
+								{ name: 'Enable', value: 'enable' },
+								{ name: 'Disable', value: 'disable' }
+							]
+						}
+					]
 				}
 			]
 		}
@@ -518,9 +548,10 @@ export const configCommand: OSBMahojiCommand = {
 			random_events?: { choice: 'enable' | 'disable' };
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 			set_rsn?: { username: string };
+			small_bank?: { choice: 'enable' | 'disable' };
 		};
 	}>) => {
-		const user = await client.fetchUser(userID);
+		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
 		const guild = guildID ? client.guilds.cache.get(guildID.toString()) ?? null : null;
 		if (options.server) {
 			if (options.server.channel) {
@@ -551,6 +582,9 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (options.user.set_rsn) {
 				return handleRSN(user, options.user.set_rsn.username);
+			}
+			if (options.user.small_bank) {
+				return setSmallBank(mahojiUser, options.user.small_bank.choice);
 			}
 		}
 		return 'wut da';

@@ -3,7 +3,7 @@ import { KlasaUser } from 'klasa';
 
 import { MAX_QP } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { QuestingActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
@@ -28,7 +28,7 @@ export async function questCommand(user: KlasaUser, channelID: bigint) {
 		boosts.push('10% for Graceful');
 	}
 
-	await addSubTaskToActivityTask<QuestingActivityTaskOptions>({
+	await addSubTaskToActivityTask<ActivityTaskOptions>({
 		type: 'Questing',
 		duration,
 		userID: user.id,

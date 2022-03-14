@@ -31,11 +31,20 @@ export const statsCommand: OSBMahojiCommand = {
 			description: 'The type of account (normal, ironman, HCIM, DMM, leagues, etc).',
 			choices: accountTypeOptions,
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'virtual',
+			description: 'Show virtual stats? (Up to level 120)',
+			required: false
 		}
 	],
-	run: async ({ options }: CommandRunOptions<{ username: string; type?: AccountType }>) => {
+	run: async ({ options }: CommandRunOptions<{ username: string; type?: AccountType; virtual?: boolean }>) => {
 		try {
-			const player = await Hiscores.fetch(options.username, { type: options.type });
+			const player = await Hiscores.fetch(options.username, {
+				type: options.type,
+				virtualLevels: Boolean(options.virtual)
+			});
 			const postfix = options.type === AccountType.Seasonal ? 'Shattered Relics Leagues' : options.type ?? null;
 			return {
 				embeds: [
@@ -43,7 +52,8 @@ export const statsCommand: OSBMahojiCommand = {
 						username: options.username,
 						color: 7_981_338,
 						player,
-						postfix: postfix ? ` (${postfix})` : undefined
+						postfix: postfix ? ` (${postfix})` : undefined,
+						key: 'level'
 					})
 				]
 			};

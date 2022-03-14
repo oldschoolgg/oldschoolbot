@@ -429,7 +429,7 @@ export default class BankImageTask extends Task {
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
-		if (cached) {
+		if (cached && !flags.nocache) {
 			return {
 				cachedURL: cached,
 				image: null,
