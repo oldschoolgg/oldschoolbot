@@ -12,6 +12,7 @@ import {
 } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { CommandOption } from 'mahoji/dist/lib/types';
+import { Items } from 'oldschooljs';
 
 import { client } from '..';
 import { SILENT_ERROR } from '../lib/constants';
@@ -54,16 +55,22 @@ export const filterOption: CommandOption = {
 
 		return [...res]
 			.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
-			.slice(0, 10)
 			.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
 	}
 };
 
-export const searchOption: CommandOption = {
+const itemArr = Items.array().map(i => ({ name: i.name, id: i.id, key: `${i.name}${i.id}` }));
+
+export const itemOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
-	name: 'search',
-	description: 'An item name search query.',
-	required: false
+	name: 'item',
+	description: 'The item you want to pick.',
+	required: false,
+	autocomplete: async value => {
+		return itemArr
+			.filter(i => i.key.includes(value.toLowerCase()))
+			.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
+	}
 };
 
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {

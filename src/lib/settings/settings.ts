@@ -16,7 +16,7 @@ import {
 import { Emoji } from '../constants';
 import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
-import { channelIsSendable, cleanUsername, isGroupActivity, truncateString } from '../util';
+import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
 import { logError } from '../util/logError';
 import { activitySync, prisma } from './prisma';
 
@@ -44,10 +44,20 @@ export async function getNewUser(id: string): Promise<NewUser> {
 }
 
 export async function syncNewUserUsername(message: KlasaMessage) {
-	await prisma.$queryRaw`UPDATE new_users
-SET username = ${truncateString(cleanUsername(message.author.username), 32)}
-WHERE id = ${message.author.id}
-AND ((username IS NULL) OR (username <> ${cleanUsername(message.author.username)}));`;
+	const cleanedUsername = cleanUsername(message.author.username);
+	const username = cleanedUsername.length > 32 ? cleanedUsername.substring(0, 32) : cleanedUsername;
+	await prisma.newUser.upsert({
+		where: {
+			id: message.author.id
+		},
+		update: {
+			username
+		},
+		create: {
+			id: message.author.id,
+			username
+		}
+	});
 }
 
 export async function getMinionName(userID: string): Promise<string> {
