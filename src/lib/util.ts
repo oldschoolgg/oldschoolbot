@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';

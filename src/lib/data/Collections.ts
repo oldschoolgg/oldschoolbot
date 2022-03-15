@@ -13,7 +13,7 @@ import {
 	rewardTokens
 } from '../minions/data/templeTrekking';
 import { UserSettings } from '../settings/types/UserSettings';
-import { NexNonUniqueTable, NexUniqueTable } from '../simulation/nex';
+import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
 import { addArrayOfNumbers, stringMatches } from '../util';
