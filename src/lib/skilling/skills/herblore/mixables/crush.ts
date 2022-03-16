@@ -110,7 +110,7 @@ const Crush: Mixable[] = [
 		outputMultiple: 2
 	},
 	{
-		name: 'Crystal dust',
+		name: 'Crystal shard',
 		aliases: ['crystal', 'crystal shard', 'crystal dust'],
 		id: itemID('Crystal dust'),
 		level: 70,

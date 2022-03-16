@@ -65,7 +65,24 @@ export default class extends BotCommand {
 		const bank = new Bank(loot);
 		bank.add('Zamorakian spear');
 		bank.add('Dragon warhammer');
-		bank.add('Bandos godsword');
+		bank.add('Bandos Godsword');
+		bank.add('Grimy Korulsi', 1_000_000);
+		bank.add('Korulsi', 1_000_000);
+		bank.add('Korulsi Seed', 1_000_000);
+		bank.add('Enhanced Divine Water', 10_000);
+		bank.add('Enhanced Stamina Potion', 10_000);
+		bank.add('Enhanced Saradomin Brew', 10_000);
+		bank.add('Enhanced Super Restore', 10_000);
+		bank.add('Elder Rune', 1_000_000);
+		bank.add('Dark Animica', 1_000_000);
+		bank.add('Void Staff (u)');
+		bank.add('Spellbound Ring');
+		bank.add('Magus Scroll');
+		bank.add('Crystal Shard', 1_000_000);
+		bank.add('Crystal Dust', 1_000_000);
+		bank.add('Tattered Tome');
+		bank.add('Virtus Book');
+
 		await prisma.playerOwnedHouse.update({
 			where: {
 				user_id: msg.author.id
