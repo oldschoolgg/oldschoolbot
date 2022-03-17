@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 
 import { client } from '../..';
-import { allItemsThatCanBeDisassembledIDs, DisassemblySourceGroups } from '../../lib/invention';
+import { allItemsThatCanBeDisassembledIDs, DisassemblySourceGroups, MaterialType } from '../../lib/invention';
 import { handleDisassembly } from '../../lib/invention/disassemble';
 import { calcPerHour, clamp, formatDuration, toKMB } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -115,11 +115,15 @@ export const askCommand: OSBMahojiCommand = {
 			let totalGroups = 0;
 			for (let group of DisassemblySourceGroups) {
 				totalGroups += 1;
-				if (Object.keys(group.parts).length < 1) {
-					missingChances.push(group.name);
+				let part: MaterialType
+				for ( part in group.parts ) {
+					if ( group.parts[part] === 0 ) {
+						missingChances.push(group.name);
+						break;
+					}
 				}
 			}
-			console.log(missingChances);
+			console.log(missingChances.sort());
 			return `Found ${missingChances.length} Groups missing chance out of ${totalGroups} Groups. (${Math.round(
 				(1 - missingChances.length / totalGroups) * 100
 			)}% complete)`;
