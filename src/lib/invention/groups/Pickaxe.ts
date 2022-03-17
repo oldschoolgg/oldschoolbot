@@ -19,7 +19,12 @@ export const Pickaxe: DisassemblySourceGroup = {
 					{ type: 'faceted', chance: 13, amount: 1 }
 				]
 			}
-		}
+		},
+		{ item: i('Bronze pickaxe'), lvl: 1, partQuantity: 8 },
+		{ item: i('Iron pickaxe'), lvl: 10, partQuantity: 8 },
+		{ item: i('Steel pickaxe'), lvl: 20, partQuantity: 8 },
+		{ item: i('Mithril pickaxe'), lvl: 30, partQuantity: 8 },
+		{ item: i('Rune pickaxe'), lvl: 50, partQuantity: 8 }
 	],
 	parts: { heavy: 3, head: 30, direct: 2, base: 35, spiked: 30 }
 };

@@ -13,7 +13,7 @@ export const Hasta: DisassemblySourceGroup = {
 		{ item: i('Rune hasta'), lvl: 50, partQuantity: 8 },
 		{ item: i('Dragon hasta'), lvl: 60, partQuantity: 8 }
 	],
-	parts: { stave: 0, blade: 0, crafted: 0, precise: 0, direct: 0 }
+	parts: { stave: 35, blade: 30, crafted: 30, precise: 3, direct: 2 }
 };
 
 export default Hasta;

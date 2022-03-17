@@ -19,14 +19,9 @@ export const Orbs: DisassemblySourceGroup = {
 					{ type: 'faceted', chance: 13, amount: 1 }
 				]
 			}
-		},
-		{ item: i('Bronze pickaxe'), lvl: 1, partQuantity: 8 },
-		{ item: i('Iron pickaxe'), lvl: 10, partQuantity: 8 },
-		{ item: i('Steel pickaxe'), lvl: 20, partQuantity: 8 },
-		{ item: i('Mithril pickaxe'), lvl: 30, partQuantity: 8 },
-		{ item: i('Rune pickaxe'), lvl: 50, partQuantity: 8 }
+		}
 	],
-	parts: { delicate: 0, magic: 0, smooth: 0, enhancing: 0, ethereal: 0, faceted: 0 }
+	parts: { delicate: 35, magic: 30, smooth: 30, enhancing: 3, ethereal: 2, faceted: 1 }
 };
 
 export default Orbs;

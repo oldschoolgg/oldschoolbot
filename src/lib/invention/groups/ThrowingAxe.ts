@@ -9,7 +9,7 @@ export const ThrowingAxe: DisassemblySourceGroup = {
 		{ item: i('Toktz-xil-ul'), lvl: 60, partQuantity: 8 },
 		{ item: i("Morrigan's throwing axe"), lvl: 78, partQuantity: 8 }
 	],
-	parts: { simple: 0, blade: 0, plated: 0, sharp: 0, swift: 0 }
+	parts: { simple: 35, blade: 30, plated: 30, sharp: 3, swift: 2 }
 };
 
 export default ThrowingAxe;

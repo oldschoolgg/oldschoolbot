@@ -14,7 +14,7 @@ export const Bars: DisassemblySourceGroup = {
 		{ item: i('Mithril bar'), lvl: 30, partQuantity: 2 },
 		{ item: i('Gold bar'), lvl: 40, partQuantity: 2 }
 	],
-	parts: { simple: 0, crafted: 0 }
+	parts: { simple: 75, crafted: 25 }
 };
 
 export default Bars;

@@ -14,7 +14,7 @@ export const Defender: DisassemblySourceGroup = {
 		{ item: i('Rune defender'), lvl: 50, partQuantity: 8 },
 		{ item: i('Dragon defender'), lvl: 60, partQuantity: 8 }
 	],
-	parts: { base: 0, deflecting: 0 }
+	parts: { base: 40, deflecting: 40, precise: 10, subtle: 10 } // Wiki doesn't contain values
 };
 
 export default Defender;

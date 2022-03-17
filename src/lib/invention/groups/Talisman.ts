@@ -18,7 +18,7 @@ export const Talisman: DisassemblySourceGroup = {
 		{ item: i('Elemental talisman'), lvl: 58, partQuantity: 1 },
 		{ item: i('Death talisman'), lvl: 65, partQuantity: 1 }
 	],
-	parts: { magic: 0, powerful: 0 }
+	parts: { magic: 85, crafted: 13, powerful: 2 }
 };
 
 export default Talisman;

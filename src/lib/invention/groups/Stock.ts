@@ -17,7 +17,7 @@ export const Stock: DisassemblySourceGroup = {
 		{ item: i('Magic stock'), lvl: 47, partQuantity: 2 },
 		{ item: i('Dragon limbs'), lvl: 60, partQuantity: 2 }
 	],
-	parts: { connector: 0, tensile: 0, spiked: 0, stunning: 0, dextrous: 0 }
+	parts: { connector: 35, tensile: 30, spiked: 30, stunning: 3, dextrous: 2 }
 };
 
 export default Stock;

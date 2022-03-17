@@ -13,7 +13,7 @@ export const ShortbowUnstrung: DisassemblySourceGroup = {
 		{ item: i('Yew shortbow (u)'), lvl: 32, partQuantity: 4 },
 		{ item: i('Magic shortbow (u)'), lvl: 40, partQuantity: 4 }
 	],
-	parts: { stave: 0, tensile: 0, flexible: 0, precise: 0, dextrous: 0 }
+	parts: { stave: 35, tensile: 30, flexible: 30, precise: 3, dextrous: 2 }
 };
 
 export default ShortbowUnstrung;

@@ -9,7 +9,7 @@ export const UnstrungJewellery: DisassemblySourceGroup = {
 		{ item: i('Unstrung symbol'), lvl: 16, partQuantity: 2 },
 		{ item: i('Unstrung emblem'), lvl: 17, partQuantity: 2 }
 	],
-	parts: { delicate: 0, connector: 0, smooth: 0, precious: 0, enhancing: 0 }
+	parts: { delicate: 35, connector: 30, smooth: 30, precious: 3, enhancing: 2 }
 };
 
 export default UnstrungJewellery;

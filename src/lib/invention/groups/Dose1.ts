@@ -6,7 +6,7 @@ const i = getOSItem;
 export const Dose1: DisassemblySourceGroup = {
 	name: 'Dose1',
 	items: [{ item: i('Vial of water'), lvl: 1, partQuantity: 1 }],
-	parts: { delicate: 0, organic: 0, crafted: 0, enhancing: 0, healthy: 0 }
+	parts: { delicate: 35, organic: 32, crafted: 30, enhancing: 3, healthy: 1 }
 };
 
 export default Dose1;

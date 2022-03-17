@@ -12,7 +12,7 @@ export const Remains: DisassemblySourceGroup = {
 		{ item: i('Asyn remains'), lvl: 63, partQuantity: 1 },
 		{ item: i('Fiyr remains'), lvl: 80, partQuantity: 1 }
 	],
-	parts: { organic: 0, pious: 0 }
+	parts: { organic: 98, pious: 2 }
 };
 
 export default Remains;

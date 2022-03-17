@@ -12,7 +12,7 @@ export const TroubleBrewingFlags: DisassemblySourceGroup = {
 		{ item: i('Phasmatys flag'), lvl: 1, partQuantity: 12 },
 		{ item: i('Treasure flag'), lvl: 1, partQuantity: 12 }
 	],
-	parts: { base: 0, blade: 0, metallic: 0, sharp: 0, dextrous: 0 }
+	parts: { base: 35, blade: 30, metallic: 30, sharp: 3, dextrous: 2 }
 };
 
 export default TroubleBrewingFlags;

@@ -16,7 +16,7 @@ export const UncutGems: DisassemblySourceGroup = {
 		{ item: i('Uncut dragonstone'), lvl: 55, partQuantity: 1 },
 		{ item: i('Uncut onyx'), lvl: 67, partQuantity: 1 }
 	],
-	parts: { clear: 0, delicate: 0, smooth: 0, precious: 0, light: 0, faceted: 0 }
+	parts: { clear: 35, delicate: 30, smooth: 30, precious: 3, light: 2, faceted: 1 }
 };
 
 export default UncutGems;

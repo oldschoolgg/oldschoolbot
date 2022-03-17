@@ -9,7 +9,7 @@ export const Shield: DisassemblySourceGroup = {
 		{ item: i('Granite shield'), lvl: 55, partQuantity: 8 },
 		{ item: i('Dragon kiteshield'), lvl: 60, partQuantity: 8 }
 	],
-	parts: { cover: 0, base: 0, deflecting: 0, strong: 0, protective: 0 }
+	parts: { cover: 35, base: 30, deflecting: 30, strong: 3, protective: 2 }
 };
 
 export default Shield;

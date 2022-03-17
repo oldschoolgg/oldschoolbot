@@ -11,7 +11,7 @@ export const Limbs: DisassemblySourceGroup = {
 		{ item: i('Blurite limbs'), lvl: 12, partQuantity: 2 },
 		{ item: i('Mithril limbs'), lvl: 30, partQuantity: 2 }
 	],
-	parts: { connector: 0, tensile: 0, spiked: 0, stunning: 0, dextrous: 0 }
+	parts: { connector: 35, tensile: 30, spiked: 30, stunning: 3, dextrous: 2 }
 };
 
 export default Limbs;

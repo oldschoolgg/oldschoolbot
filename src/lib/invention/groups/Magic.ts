@@ -15,7 +15,7 @@ export const Magic: DisassemblySourceGroup = {
 			special: { always: true, parts: [{ type: 'harnessed', chance: 100, amount: 2 }] }
 		}
 	],
-	parts: { cover: 0, magic: 0, deflecting: 0, powerful: 0, protective: 0 }
+	parts: { cover: 35, magic: 30, deflecting: 30, powerful: 3, protective: 2 }
 };
 
 export default Magic;

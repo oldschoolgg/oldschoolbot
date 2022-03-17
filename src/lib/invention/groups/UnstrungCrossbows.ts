@@ -13,7 +13,7 @@ export const UnstrungCrossbows: DisassemblySourceGroup = {
 		{ item: i('Runite crossbow (u)'), lvl: 34, partQuantity: 4 },
 		{ item: i('Dragon crossbow (u)'), lvl: 47, partQuantity: 4 }
 	],
-	parts: { connector: 0, tensile: 0, spiked: 0, stunning: 0, dextrous: 0 }
+	parts: { connector: 35, tensile: 30, spiked: 30, stunning: 3, dextrous: 2 }
 };
 
 export default UnstrungCrossbows;

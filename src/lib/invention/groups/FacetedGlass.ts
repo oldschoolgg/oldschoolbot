@@ -9,7 +9,7 @@ export const FacetedGlass: DisassemblySourceGroup = {
 		{ item: i('Empty light orb'), lvl: 87, partQuantity: 2 },
 		{ item: i('Light orb'), lvl: 87, partQuantity: 2 }
 	],
-	parts: { clear: 0, delicate: 0, smooth: 0, faceted: 0, enhancing: 0 }
+	parts: { clear: 30, delicate: 30, smooth: 30, faceted: 1, enhancing: 3 }
 };
 
 export default FacetedGlass;

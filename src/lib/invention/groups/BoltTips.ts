@@ -21,7 +21,7 @@ export const BoltTips: DisassemblySourceGroup = {
 		{ item: i('Onyx bolt tips'), lvl: 18, partQuantity: 2 },
 		{ item: i('Barb bolttips'), lvl: 22, partQuantity: 2 }
 	],
-	parts: { base: 0, head: 0, spiked: 0, stunning: 0 }
+	parts: { base: 40, head: 30, spiked: 27, stunning: 3 }
 };
 
 export default BoltTips;
