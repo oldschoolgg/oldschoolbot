@@ -187,7 +187,7 @@ export const NexUniqueTable = new LootTable()
 	.add('Torva platebody (damaged)', 1, 2)
 	.add('Torva platelegs (damaged)', 1, 2);
 
-export const NexNonUniqueTable = new LootTable()
+const NexNonUniqueBaseTable = new LootTable()
 	.add('Blood rune', [84, 325], 3)
 	.add('Death rune', [85, 170], 3)
 	.add('Soul rune', [86, 227], 3)
@@ -205,8 +205,11 @@ export const NexNonUniqueTable = new LootTable()
 	.add(new LootTable().every('Shark', 3).every('Prayer potion(4)', 1), 1, 1)
 	.add(new LootTable().every('Saradomin brew(4)', 2).every('Super restore(4)', 1), 1, 1)
 	.add('Ecumenical key shard', [6, 39])
-	.oneIn(25, 'Nihil shard', [1, 20])
 	.add('Blood essence', [1, 2])
-	.add('Coins', [8539, 26_748])
+	.add('Coins', [8539, 26_748]);
+
+export const NexNonUniqueTable = new LootTable()
+	.every(NexNonUniqueBaseTable, 2)
+	.oneIn(25, 'Nihil shard', [1, 20])
 	.oneIn(100, 'Rune sword')
 	.tertiary(20, 'Clue scroll (elite)');

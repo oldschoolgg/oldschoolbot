@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Message, MessageReaction, TextChannel } from 'discord.js';
-import { debounce, sleep, Time } from 'e';
+import { debounce, noOp, sleep, Time } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { ReactionEmoji, SILENT_ERROR } from '../../lib/constants';
@@ -104,7 +104,7 @@ export async function setupParty(
 			});
 
 			async function startTrip() {
-				await confirmMessage.delete();
+				await confirmMessage.delete().catch(noOp);
 				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
 					channel.send(`${user} Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
 					reject(new Error(SILENT_ERROR));

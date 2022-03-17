@@ -135,16 +135,16 @@ export const enum Emoji {
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
 	Minigames = '<:minigameIcon:630400565070921761>',
-	Skull = '<:Skull:802136963926065165>',
+	Skull = '<:skull:951672438318592060>',
 	CombatSword = '<:combat:802136963956080650>',
 	OSRSSkull = '<:skull:863392427040440320>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
 
 export const enum ReactionEmoji {
-	Join = '705971600956194907',
-	Stop = '705972260950769669',
-	Start = '705973302719414329'
+	Join = '951309579302604900',
+	Stop = '951309579248091166',
+	Start = '951309579302604880'
 }
 
 export const enum Image {
@@ -474,7 +474,13 @@ export const PATRON_ONLY_GEAR_SETUP =
 export type ProjectileType = 'arrow' | 'bolt';
 export const projectiles: Record<ProjectileType, number[]> = {
 	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
+	bolt: resolveItems([
+		'Runite bolts',
+		'Dragon bolts',
+		'Diamond bolts (e)',
+		'Diamond dragon bolts (e)',
+		'Ruby dragon bolts (e)'
+	])
 };
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';

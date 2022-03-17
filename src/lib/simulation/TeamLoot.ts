@@ -43,8 +43,8 @@ export class TeamLoot {
 		for (const [id, loot] of this.entries()) {
 			const isPurple = this.purpleItems.some(i => loot.has(i));
 			str += isPurple
-				? `${Emoji.Purple} ${userMention(id)} received ${spoiler(loot.toString())}.`
-				: `${userMention(id)} received ${loot}.`;
+				? `${Emoji.Purple} ${userMention(id)} received ${spoiler(loot.toString())}`
+				: `${userMention(id)} received ${loot}`;
 			str += '\n';
 		}
 		return str;

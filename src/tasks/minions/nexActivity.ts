@@ -2,6 +2,7 @@ import { userMention } from '@discordjs/builders';
 import { MessageEmbed } from 'discord.js';
 import { Task } from 'klasa';
 
+import { NEX_ID } from '../../lib/constants';
 import { trackLoot } from '../../lib/settings/prisma';
 import { handleNexKills } from '../../lib/simulation/nex';
 import { NexTaskOptions } from '../../lib/types/minions';
@@ -25,6 +26,7 @@ export default class extends Task {
 		for (const [uID, uLoot] of loot.entries()) {
 			const user = await this.client.users.fetch(uID);
 			await user.addItemsToBank({ items: uLoot, collectionLog: true });
+			await user.incrementMonsterScore(NEX_ID, quantity);
 		}
 
 		await trackLoot({

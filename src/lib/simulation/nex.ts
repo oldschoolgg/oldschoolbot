@@ -1,11 +1,10 @@
 /**
  * pay 100k to get items back if die
- *
  */
 
 import { userMention } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { calcWhatPercent, percentChance, randArrItem, reduceNumByPercent, roll, sumArr, Time } from 'e';
+import { calcWhatPercent, percentChance, randArrItem, randInt, reduceNumByPercent, roll, sumArr, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -13,8 +12,9 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { getSkillsOfMahojiUser, getUserGear } from '../../mahoji/mahojiSettings';
 import { NEX_ID } from '../constants';
 import { Skills } from '../types';
-import { clamp, formatDuration, formatSkillRequirements, itemNameFromID, skillsMeetRequirements } from '../util';
+import { clamp, formatSkillRequirements, itemNameFromID, skillsMeetRequirements } from '../util';
 import getUsersPerkTier from '../util/getUsersPerkTier';
+import itemID from '../util/itemID';
 import { calcMaxTripLength } from '../util/minionUtils';
 import resolveItems from '../util/resolveItems';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
@@ -39,8 +39,15 @@ function gearStats(user: User) {
 
 const allowedWeapons = resolveItems(['Armadyl crossbow', 'Dragon crossbow', 'Zaryte crossbow', 'Twisted bow']);
 const weaponsStr = allowedWeapons.map(itemNameFromID).join(', ');
-const allowedAmmo = resolveItems(['Dragon arrow', 'Ruby dragon bolts (e)']);
+const allowedAmmo = resolveItems(['Dragon arrow', 'Ruby dragon bolts (e)', 'Rune arrow']);
 const ammoStr = allowedAmmo.map(itemNameFromID).join(', ');
+
+const minimumCostOwned = new Bank()
+	.add('Saradomin brew(4)', 8)
+	.add('Super restore(4)', 5)
+	.add('Ranging potion(4)', 2)
+	.add('Sanfew serum(4)')
+	.multiply(5);
 
 export function checkNexUser(user: User): [false] | [true, string] {
 	const tag = userMention(user.id);
@@ -71,6 +78,10 @@ export function checkNexUser(user: User): [false] | [true, string] {
 			true,
 			`${tag} has less than 200 ${itemNameFromID(ammo.item)} equipped, they might run out in the fight!`
 		];
+	}
+	const bank = new Bank(user.bank as any);
+	if (!bank.has(minimumCostOwned)) {
+		return [true, `${tag} needs to own a minimum of these supplies: ${minimumCostOwned}`];
 	}
 	return [false];
 }
@@ -113,9 +124,11 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	for (let i = 0; i < quantity; i++) {
 		// const uniqueRecipient = roll(53) ? uniqueDecider.roll().item : null;
 		const uniqueRecipient = roll(3) ? uniqueDecider.roll().item : null;
+		const nonUniqueDrop = NexNonUniqueTable.roll();
+
 		for (const teamMember of team) {
 			if (teamMember.deaths.includes(i)) continue;
-			teamLoot.add(teamMember.id, NexNonUniqueTable.roll());
+			teamLoot.add(teamMember.id, nonUniqueDrop);
 			if (teamMember.id === uniqueRecipient) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
@@ -138,11 +151,15 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 	let resultTeam: TeamMember[] = [];
 
 	for (const member of team) {
-		const { offence, defence } = gearStats(member);
+		let { offence, defence, rangeGear } = gearStats(member);
 		let deathChance = 100;
 		let nexKC = (member.monsterScores as ItemBank)[NEX_ID] ?? 0;
 		const kcPercent = clamp(calcWhatPercent(nexKC, 100), 0, 100);
+		const messages: string[] = [];
 
+		if ([rangeGear.ammo?.item].includes(itemID('Rune arrow'))) {
+			offence -= 5;
+		}
 		let offensivePercents = [offence, clamp(calcWhatPercent(nexKC, 100), 0, 100)];
 		const totalOffensivePecent = sumArr(offensivePercents) / offensivePercents.length;
 		const contribution = reduceNumByPercent(100, totalOffensivePecent);
@@ -152,12 +169,17 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 		deathChance = reduceNumByPercent(deathChance, totalDefensivePercent);
 		deathChance = clamp(deathChance, 5, 100);
 
-		const reducedTime = reduceNumByPercent(lengthPerKill, kcPercent / 4 + offence / 7);
-		const messages: string[] = [`-${formatDuration(lengthPerKill - reducedTime, true)}`];
+		const timeReductionPercent = clamp(kcPercent / 4 + offence / 7, 1, 100);
+		const reducedTime = reduceNumByPercent(lengthPerKill, timeReductionPercent);
+		messages.push(`${timeReductionPercent.toFixed(2)}% faster`);
 
 		lengthPerKill = reducedTime;
 
-		const cost = new Bank().add('Saradomin brew(4)', 8).add('Super restore(4)', 5).add('Ranging potion(4)', 2);
+		const cost = new Bank()
+			.add('Saradomin brew(4)', 8)
+			.add('Super restore(4)', 5)
+			.add('Ranging potion(4)', 2)
+			.add('Sanfew serum(4)');
 
 		resultTeam.push({
 			id: member.id,
@@ -193,6 +215,17 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 	}
 	for (const [id, deathArr] of Object.entries(deaths)) {
 		resultTeam[resultTeam.indexOf(resultTeam.find(i => i.id === id)!)].deaths = deathArr;
+	}
+
+	/**
+	 * Ammo
+	 */
+	for (const user of team) {
+		const { rangeGear } = gearStats(user);
+		const teamUser = resultTeam.findIndex(a => a.id === user.id);
+		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
+		// Between 50-60 ammo per kill (before reductions)
+		resultTeam[teamUser].cost.add(ammo, randInt(50, 60) * quantity);
 	}
 
 	const duration = quantity * lengthPerKill;
