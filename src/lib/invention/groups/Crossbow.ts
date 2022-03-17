@@ -24,7 +24,7 @@ export const Crossbow: DisassemblySourceGroup = {
 			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 8 }] }
 		}
 	],
-	parts: {stunning: 3, dextrous: 2, connector: 35, tensile: 30, spiked: 30}
+	parts: { stunning: 3, dextrous: 2, connector: 35, tensile: 30, spiked: 30 }
 };
 
 export default Crossbow;

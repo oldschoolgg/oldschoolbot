@@ -82,7 +82,7 @@ export const Potion: DisassemblySourceGroup = {
 		{ item: i('Magic essence(4)'), lvl: 57, partQuantity: 1 },
 		{ item: i('Magic essence(3)'), lvl: 57, partQuantity: 1 },
 		{ item: i('Magic essence(1)'), lvl: 57, partQuantity: 1 },
-		{ item: i('Magic essence (unf)'), lvl: 57, partQuantity: 1 }
+		{ item: i('Magic essence (unf)'), lvl: 57, partQuantity: 1 },
 		{ item: i('Super restore(2)'), lvl: 63, partQuantity: 1 },
 		{ item: i('Super restore(4)'), lvl: 63, partQuantity: 1 },
 		{ item: i('Super restore(3)'), lvl: 63, partQuantity: 1 },

@@ -36,7 +36,8 @@ export const Halberd: DisassemblySourceGroup = {
 					{ type: 'faceted', chance: 13, amount: 1 }
 				]
 			}
-		},{ item: i('Guthix mjolnir'), lvl: 40, partQuantity: 8 },
+		},
+		{ item: i('Guthix mjolnir'), lvl: 40, partQuantity: 8 },
 		{
 			item: i('Saradomin mjolnir'),
 			lvl: 40,

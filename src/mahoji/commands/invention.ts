@@ -115,9 +115,9 @@ export const askCommand: OSBMahojiCommand = {
 			let totalGroups = 0;
 			for (let group of DisassemblySourceGroups) {
 				totalGroups += 1;
-				let part: MaterialType
-				for ( part in group.parts ) {
-					if ( group.parts[part] === 0 ) {
+				let part: MaterialType = 'armadyl';
+				for (part in group.parts) {
+					if (group.parts[part] === 0) {
 						missingChances.push(group.name);
 						break;
 					}
