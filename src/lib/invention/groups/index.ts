@@ -26,7 +26,6 @@ import Hasta from './Hasta';
 import Herb from './Herb';
 import Hides from './Hides';
 import HybridArmour from './HybridArmour';
-import Javelin from './Javelin';
 import Jewellery from './Jewellery';
 import Knives from './Knives';
 import Leather from './Leather';
@@ -86,7 +85,6 @@ export default [
 	Seed,
 	Herb,
 	Potion,
-	Javelin,
 	BoltTips,
 	Planks,
 	FacetedGlass,

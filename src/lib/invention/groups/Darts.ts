@@ -23,7 +23,8 @@ export const Darts: DisassemblySourceGroup = {
 		{ item: i('Rune dart'), lvl: 50, partQuantity: 8 },
 		{ item: i('Rune javelin'), lvl: 50, partQuantity: 8 },
 		{ item: i('Dragon dart'), lvl: 60, partQuantity: 8 },
-		{ item: i('Dragon javelin'), lvl: 60, partQuantity: 8 }
+		{ item: i('Dragon javelin'), lvl: 60, partQuantity: 8 },
+		{ item: i("Morrigan's javelin"), lvl: 78, partQuantity: 8 }
 	],
 	parts: { simple: 35, swift: 2, sharp: 3, blade: 30, spiked: 30 }
 };
