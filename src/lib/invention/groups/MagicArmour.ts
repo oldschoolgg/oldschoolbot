@@ -12,7 +12,6 @@ export const MagicArmour: DisassemblySourceGroup = {
 			partQuantity: 8,
 			special: { always: true, parts: [{ type: 'harnessed', chance: 100, amount: 8 }] }
 		},
-		{ item: i('Zamorak robe top'), lvl: 1, partQuantity: 8 },
 		{ item: i('Splitbark body'), lvl: 40, partQuantity: 8 },
 		{
 			item: i('Enchanted top'),
