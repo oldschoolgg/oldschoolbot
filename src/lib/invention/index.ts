@@ -110,10 +110,10 @@ export interface DisassemblySourceGroup {
 		item: Item;
 		lvl: number;
 		junkChance?: number;
+		partQuantity: number;
 		special?: { always: boolean; parts: SpecialDisassemblyGroup[] };
 	}[];
 	parts: IMaterialBank;
-	partQuantity: number;
 }
 
 export const DisassemblySourceGroups = DisassembleGroups;

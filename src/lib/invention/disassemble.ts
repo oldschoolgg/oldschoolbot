@@ -79,7 +79,7 @@ export async function handleDisassembly({
 			materialLoot.add('junk');
 			junk = true;
 		} else {
-			materialLoot.add(table.roll(), group.partQuantity);
+			materialLoot.add(table.roll(), data.partQuantity);
 		}
 		if (data.special) {
 			if (data.special.always || !junk) {

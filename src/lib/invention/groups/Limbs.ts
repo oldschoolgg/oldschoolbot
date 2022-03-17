@@ -6,13 +6,12 @@ const i = getOSItem;
 export const Limbs: DisassemblySourceGroup = {
 	name: 'Limbs',
 	items: [
-		{ item: i('Bronze limbs'), lvl: 1 },
-		{ item: i('Iron limbs'), lvl: 10 },
-		{ item: i('Blurite limbs'), lvl: 12 },
-		{ item: i('Mithril limbs'), lvl: 30 }
+		{ item: i('Bronze limbs'), lvl: 1, partQuantity: 2 },
+		{ item: i('Iron limbs'), lvl: 10, partQuantity: 2 },
+		{ item: i('Blurite limbs'), lvl: 12, partQuantity: 2 },
+		{ item: i('Mithril limbs'), lvl: 30, partQuantity: 2 }
 	],
-	parts: {},
-	partQuantity: 2
+	parts: { connector: 0, tensile: 0, spiked: 0, stunning: 0, dextrous: 0 }
 };
 
 export default Limbs;

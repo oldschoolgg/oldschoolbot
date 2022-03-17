@@ -6,10 +6,11 @@ const i = getOSItem;
 export const Pickaxe: DisassemblySourceGroup = {
 	name: 'Pickaxe',
 	items: [
-		{ item: i('Dragon pickaxe'), lvl: 60 },
+		{ item: i('Dragon pickaxe'), lvl: 60, partQuantity: 8 },
 		{
 			item: i('Crystal pickaxe'),
 			lvl: 71,
+			partQuantity: 8,
 			special: {
 				always: true,
 				parts: [
@@ -20,8 +21,7 @@ export const Pickaxe: DisassemblySourceGroup = {
 			}
 		}
 	],
-	parts: { heavy: 3, head: 30, direct: 2, base: 35, spiked: 30 },
-	partQuantity: 8
+	parts: { heavy: 3, head: 30, direct: 2, base: 35, spiked: 30 }
 };
 
 export default Pickaxe;

@@ -13,8 +13,7 @@ const i = getOSItem;
 export const Ores: DisassemblySourceGroup = {
 	name: 'Ores',
 	items: [],
-	parts: {},
-  partQuantity: 0
+	parts: {}
 };
 
 export default Ores;
@@ -39,7 +38,7 @@ for (let key of Object.keys(disassemblyData)) {
   currentFile = currentFile.replace(/Ores/g, fixedName);
 
   const items = groupData.items.map((item) => {
-    let completeLine = `{ item: i("${itemNameFromID(item.id)}"), lvl: ${item.level}`;
+    let completeLine = `{ item: i("${itemNameFromID(item.id)}"), lvl: ${item.level}, partQuantity: ${groupData.compqty}`;
     const special = item.special;
     // "crystal{85/115},seren[1]{15/115},faceted[1]{15/115}"
     if (special !== undefined) {
@@ -55,7 +54,7 @@ for (let key of Object.keys(disassemblyData)) {
         }
         completeLine += `chance: ${chance}, `;
         const amount = match[2] ? match[2].replace('[', '').replace(']', '') : groupData.compqty;
-        completeLine += `amount: ${amount} }, `;
+        completeLine += `amount: ${amount} }, \n`;
       }
       completeLine += "] }";
     }
@@ -80,13 +79,21 @@ for (let key of Object.keys(disassemblyData)) {
       if ( ["_total", "_master_modifier"].includes(chanceKey)) continue;
       chanceOutput.push(`${chanceKey}: ${groupData.chances[chanceKey]}`);
     }
+  } else {
+    for ( let part of groupData.often ) {
+      chanceOutput.push(`${part}: 0`);
+    };
+    if ( groupData.rarely ) {
+      for ( let part of groupData.rarely ) {
+        chanceOutput.push(`${part}: 0`)
+      }  
+    }
+    
   };
 
   if ( chanceOutput.length > 0 ) {
     currentFile = currentFile.replace('parts: {}', `parts: {${chanceOutput.join(', ')}}`)
   }
-
-  currentFile = currentFile.replace('partQuantity: 0', `partQuantity: ${groupData.compqty}`);
 
   fs.writeFileSync(`./groups/${fixedName}.ts`, currentFile);
 
