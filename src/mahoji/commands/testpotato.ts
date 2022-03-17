@@ -395,8 +395,9 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				}
 				if (options.nexhax) {
 					const gear = new Gear({
-						[EquipmentSlot.TwoHanded]: 'Twisted bow',
-						[EquipmentSlot.Ammo]: 'Dragon arrow',
+						[EquipmentSlot.Weapon]: 'Zaryte crossbow',
+						[EquipmentSlot.Shield]: 'Elysian spirit shield',
+						[EquipmentSlot.Ammo]: 'Ruby dragon bolts(e)',
 						[EquipmentSlot.Body]: 'Armadyl chestplate',
 						[EquipmentSlot.Legs]: 'Armadyl chainskirt',
 						[EquipmentSlot.Feet]: 'Pegasian boots',
@@ -406,7 +407,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Head]: 'Armadyl helmet',
 						[EquipmentSlot.Ring]: 'Archers ring (i)'
 					});
-					gear.ammo!.quantity = 1000;
+					gear.ammo!.quantity = 1_000_000;
 					await mahojiUserSettingsUpdate(user.id, {
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						skills_ranged: convertLVLtoXP(99),

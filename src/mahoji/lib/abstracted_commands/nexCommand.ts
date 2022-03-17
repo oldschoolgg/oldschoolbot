@@ -11,7 +11,7 @@ import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { calculateNexDetails, checkNexUser } from '../../../lib/simulation/nex';
 import { NexTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../../lib/util';
+import { calcPerHour, formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
@@ -35,7 +35,11 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 		message: `${user} is hosting a Nex mass! Anyone can click the ${Emoji.Join} reaction to join, click it again to leave.`,
 		customDenier: async user => checkNexUser(await mahojiUsersSettingsFetch(user.id))
 	});
-	await reactionAwaiter();
+	try {
+		await reactionAwaiter();
+	} catch (err) {
+		return typeof err === 'string' ? err : 'An error occurred.';
+	}
 	usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);
 
 	if (usersWhoConfirmed.length < 2 || usersWhoConfirmed.length > 10) {
@@ -92,16 +96,18 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 
 	let str = `${user.username}'s party (${usersWhoConfirmed.map(u => u.username).join(', ')}) is now off to kill ${
 		details.quantity
-	}x Nex! - the total trip will take ${formatDuration(details.duration)}.
+	}x Nex! (${calcPerHour(details.quantity, details.duration)}/hr) - the total trip will take ${formatDuration(
+		details.duration
+	)}.
 
 ${details.team
 	.map(i => {
 		const mUser = mahojiUsers.find(t => t.id === i.id)!;
-		return `${userMention(i.id)}: Contribution[${i.contribution.toFixed(2)}%] DeathChance[${i.deathChance.toFixed(
-			2
-		)}%] Cost[${i.cost}] KC[${(mUser.monsterScores as any)[NEX_ID] ?? 0}] Offence[${Math.round(
-			i.totalOffensivePecent
-		)}%] Defence[${Math.round(i.totalDefensivePercent)}%] *${i.messages.join(', ')}*`;
+		return `${userMention(i.id)}: Contrib[${i.contribution.toFixed(2)}%] Death[${i.deathChance.toFixed(2)}%] KC[${
+			(mUser.monsterScores as any)[NEX_ID] ?? 0
+		}] Offence[${Math.round(i.totalOffensivePecent)}%] Defence[${Math.round(
+			i.totalDefensivePercent
+		)}%] *${i.messages.join(', ')}*`;
 	})
 	.join('\n')}
 `;

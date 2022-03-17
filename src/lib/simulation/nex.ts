@@ -4,7 +4,17 @@
 
 import { userMention } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { calcWhatPercent, percentChance, randArrItem, randInt, reduceNumByPercent, roll, sumArr, Time } from 'e';
+import {
+	calcWhatPercent,
+	increaseNumByPercent,
+	percentChance,
+	randArrItem,
+	randInt,
+	reduceNumByPercent,
+	roll,
+	sumArr,
+	Time
+} from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
@@ -12,10 +22,10 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { getSkillsOfMahojiUser, getUserGear } from '../../mahoji/mahojiSettings';
 import { NEX_ID } from '../constants';
 import { Skills } from '../types';
-import { clamp, formatSkillRequirements, itemNameFromID, skillsMeetRequirements } from '../util';
+import { clamp, formatDuration, formatSkillRequirements, itemNameFromID, skillsMeetRequirements } from '../util';
 import getUsersPerkTier from '../util/getUsersPerkTier';
 import itemID from '../util/itemID';
-import { calcMaxTripLength } from '../util/minionUtils';
+import { arrows, bolts, bows, calcMaxTripLength, crossbows } from '../util/minionUtils';
 import resolveItems from '../util/resolveItems';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
 import { TeamLoot } from './TeamLoot';
@@ -72,6 +82,12 @@ export function checkNexUser(user: User): [false] | [true, string] {
 	if (!ammo) return [true, `${tag} has no ammo for their weapon equipped.`];
 	if (!allowedAmmo.includes(ammo.item)) {
 		return [true, `${tag} needs to be using one of these types of ammo: ${ammoStr}`];
+	}
+	if (
+		(crossbows.includes(weapon.id) && arrows.includes(ammo.item)) ||
+		(bows.includes(weapon.id) && bolts.includes(ammo.item))
+	) {
+		return [true, `${tag} is using incorrect ammo for their type of weapon.`];
 	}
 	if (ammo.quantity < 200) {
 		return [
@@ -144,11 +160,13 @@ export function handleNexKills({ quantity, team }: NexContext) {
 }
 
 export function calculateNexDetails({ team }: { team: User[] }) {
-	const maxTripLength = calcMaxTripLength(
+	let maxTripLength = calcMaxTripLength(
 		[...team].sort((a, b) => getUsersPerkTier(b.bitfield) - getUsersPerkTier(a.bitfield))[0]
 	);
-	let lengthPerKill = Time.Minute * 20;
+	let lengthPerKill = Time.Minute * 35;
 	let resultTeam: TeamMember[] = [];
+
+	team = [...team, ...team, ...team, ...team, ...team].slice(0, 4);
 
 	for (const member of team) {
 		let { offence, defence, rangeGear } = gearStats(member);
@@ -160,18 +178,38 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 		if ([rangeGear.ammo?.item].includes(itemID('Rune arrow'))) {
 			offence -= 5;
 		}
+		offence -= 5;
+		const isUsingZCB = rangeGear.weapon?.item === itemID('Zaryte crossbow');
+		if (isUsingZCB) offence += 5;
+
+		offence -= 2;
+		const isUsingVambs = rangeGear.hands?.item === itemID('Zaryte vambraces');
+		if (isUsingVambs) offence += 2;
+
 		let offensivePercents = [offence, clamp(calcWhatPercent(nexKC, 100), 0, 100)];
 		const totalOffensivePecent = sumArr(offensivePercents) / offensivePercents.length;
-		const contribution = reduceNumByPercent(100, totalOffensivePecent);
+		const contribution = totalOffensivePecent;
 
 		const defensivePercents = [defence, clamp(kcPercent * 2, 0, 100)];
 		const totalDefensivePercent = sumArr(defensivePercents) / defensivePercents.length;
 		deathChance = reduceNumByPercent(deathChance, totalDefensivePercent);
 		deathChance = clamp(deathChance, 5, 100);
 
-		const timeReductionPercent = clamp(kcPercent / 4 + offence / 7, 1, 100);
+		for (const [shield, time, shortName] of [
+			[itemID('Elysian spirit shield'), Time.Minute * 6, 'ely'],
+			[itemID('Spectral spirit shield'), Time.Minute * 3, 'spectral']
+		] as const) {
+			if (rangeGear.shield?.item === shield) {
+				const timeToAdd = Math.ceil(time / team.length);
+				maxTripLength += timeToAdd;
+				messages.push(`+${formatDuration(timeToAdd, true)} for ${shortName}`);
+			}
+		}
+
+		let timeReductionPercent = clamp(kcPercent / 4 + offence / 7, 1, 100);
+		if (isUsingZCB) timeReductionPercent = increaseNumByPercent(timeReductionPercent, 5);
 		const reducedTime = reduceNumByPercent(lengthPerKill, timeReductionPercent);
-		messages.push(`${timeReductionPercent.toFixed(2)}% faster`);
+		messages.push(`${timeReductionPercent.toFixed(1)}% faster`);
 
 		lengthPerKill = reducedTime;
 
@@ -194,7 +232,7 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 		});
 	}
 
-	lengthPerKill = clamp(lengthPerKill, Time.Minute * 5, Time.Hour);
+	lengthPerKill = clamp(lengthPerKill, Time.Minute * 6, Time.Hour);
 
 	let quantity = Math.floor(maxTripLength / lengthPerKill);
 
