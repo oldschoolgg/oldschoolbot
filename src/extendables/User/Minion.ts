@@ -63,6 +63,7 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
 import { Skills as TSkills } from '../../lib/types';
 import {
+	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BlastFurnaceActivityTaskOptions,
@@ -80,10 +81,8 @@ import {
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	FishingContestOptions,
-	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
-	GloryChargingActivityTaskOptions,
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
@@ -105,10 +104,7 @@ import {
 	SepulchreActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	SoulWarsOptions,
 	TheatreOfBloodTaskOptions,
-	VolcanicMineActivityTaskOptions,
-	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
@@ -422,7 +418,7 @@ export default class extends Extendable {
 			}
 
 			case 'FishingTrawler': {
-				const data = currentTask as FishingTrawlerActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently aboard the Fishing Trawler, doing ${data.quantity}x trips. ${formattedDuration}`;
 			}
 
@@ -513,12 +509,12 @@ export default class extends Extendable {
 			}
 
 			case 'GloryCharging': {
-				const data = currentTask as GloryChargingActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 			}
 
 			case 'WealthCharging': {
-				const data = currentTask as WealthChargingActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
 			}
 
@@ -527,7 +523,7 @@ export default class extends Extendable {
 			}
 
 			case 'SoulWars': {
-				const data = currentTask as SoulWarsOptions;
+				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
 			}
 
@@ -638,7 +634,7 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
 			}
 			case 'VolcanicMine': {
-				const data = currentTask as VolcanicMineActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
 			case 'MonkeyRumble': {

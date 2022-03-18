@@ -47,6 +47,7 @@ const corruptedRequirements = {
 };
 
 export async function gauntletCommand(user: KlasaUser, channelID: bigint, type: 'corrupted' | 'normal' = 'normal') {
+	if (user.minionIsBusy) return `${user.minionName} is busy.`;
 	if (user.settings.get(UserSettings.QP) < 200) {
 		return 'You need atleast 200 QP to do the Gauntlet.';
 	}
