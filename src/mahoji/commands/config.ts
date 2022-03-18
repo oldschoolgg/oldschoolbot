@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { Guild } from 'discord.js';
 import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
@@ -252,9 +253,7 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst)
 	) {
 		if (hasCannon) warningMsg = priorityWarningMsg;
-		await mahojiUserSettingsUpdate(user.id, {
-			combat_options: removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst)
-		});
+		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
 	if (
@@ -263,17 +262,23 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage)
 	) {
 		if (warningMsg === '' && hasCannon) warningMsg = priorityWarningMsg;
-		await mahojiUserSettingsUpdate(user.id, {
-			combat_options: removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage)
-		});
+		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage);
 	}
 	// Warn if enabling cannon with ice burst/barrage:
 	if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB) {
 		warningMsg = priorityWarningMsg;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
-		combat_options: [...settings.combat_options, newcbopt.id]
-	});
+	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
+		await mahojiUserSettingsUpdate(user.id, {
+			combat_options: [...settings.combat_options, newcbopt.id]
+		});
+	} else if (!nextBool && settings.combat_options.includes(newcbopt.id)) {
+		await mahojiUserSettingsUpdate(user.id, {
+			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
+		});
+	} else {
+		return 'Error processing command. This should never happen, please report bug.';
+	}
 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
 }
@@ -305,6 +310,18 @@ async function handleRSN(user: KlasaUser, newRSN: string) {
 		return `Changed your RSN from \`${RSN}\` to \`${newRSN}\``;
 	}
 	return `Your RSN has been set to: \`${newRSN}\`.`;
+}
+
+async function setSmallBank(user: User, choice: 'enable' | 'disable') {
+	const newBitfield = uniqueArr(
+		choice === 'enable'
+			? [...user.bitfield, BitField.AlwaysSmallBank]
+			: removeFromArr(user.bitfield, BitField.AlwaysSmallBank)
+	);
+	await mahojiUserSettingsUpdate(user.id, {
+		bitfield: newBitfield
+	});
+	return `Small Banks are now ${choice}d for you.`;
 }
 
 export const configCommand: OSBMahojiCommand = {
@@ -492,6 +509,23 @@ export const configCommand: OSBMahojiCommand = {
 							required: true
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'small_bank',
+					description: 'Enable or disable using small bank images.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'choice',
+							description: 'Do you want small bank images?',
+							required: true,
+							choices: [
+								{ name: 'Enable', value: 'enable' },
+								{ name: 'Disable', value: 'disable' }
+							]
+						}
+					]
 				}
 			]
 		}
@@ -514,9 +548,10 @@ export const configCommand: OSBMahojiCommand = {
 			random_events?: { choice: 'enable' | 'disable' };
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 			set_rsn?: { username: string };
+			small_bank?: { choice: 'enable' | 'disable' };
 		};
 	}>) => {
-		const user = await client.fetchUser(userID);
+		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
 		const guild = guildID ? client.guilds.cache.get(guildID.toString()) ?? null : null;
 		if (options.server) {
 			if (options.server.channel) {
@@ -547,6 +582,9 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (options.user.set_rsn) {
 				return handleRSN(user, options.user.set_rsn.username);
+			}
+			if (options.user.small_bank) {
+				return setSmallBank(mahojiUser, options.user.small_bank.choice);
 			}
 		}
 		return 'wut da';

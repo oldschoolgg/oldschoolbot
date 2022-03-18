@@ -3,12 +3,12 @@ import { Task } from 'klasa';
 import { Emoji, MAX_QP } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { QuestingActivityTaskOptions } from '../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run(data: QuestingActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentQP = user.settings.get(UserSettings.QP);

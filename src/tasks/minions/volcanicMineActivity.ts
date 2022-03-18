@@ -7,7 +7,7 @@ import { Emoji, Events } from '../../lib/constants';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -20,7 +20,7 @@ const numuliteTable = new LootTable().every('Numulite', 5).add('Calcite', 1).add
 const fragmentTable = new LootTable({ limit: 175 }).add(numuliteTable, 1, 45).add(fossilTable, 1, 5);
 
 export default class extends Task {
-	async run(data: VolcanicMineActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const userSkillingGear = user.getGear('skilling');
