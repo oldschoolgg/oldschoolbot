@@ -129,7 +129,7 @@ export function convertComponentDJSComponent(component: APIActionRowComponent): 
 }
 export function allAbstractCommands(client: KlasaClient): AbstractCommand[] {
 	return [
-		...(client.commands.array() as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
+		...Array.from(client.commands.values() as any as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
 		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
 	];
 }
