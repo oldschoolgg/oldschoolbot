@@ -47,7 +47,6 @@ import Remains from './Remains';
 import Runes from './Runes';
 import Scimitar from './Scimitar';
 import Seed from './Seed';
-import Shield from './Shield';
 import Shortbow from './Shortbow';
 import ShortbowUnstrung from './ShortbowUnstrung';
 import Spear from './Spear';
@@ -117,7 +116,6 @@ export default [
 	Wand,
 	UnstrungJewellery,
 	Clockwork,
-	Shield,
 	Clothing,
 	Limbs,
 	Sword,

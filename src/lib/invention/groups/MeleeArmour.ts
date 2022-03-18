@@ -524,7 +524,9 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Iron kiteshield'), lvl: 10, partQuantity: 8 },
 		{ item: i('Steel kiteshield'), lvl: 20, partQuantity: 8 },
 		{ item: i('Mithril kiteshield'), lvl: 30, partQuantity: 8 },
-		{ item: i('Rune kiteshield'), lvl: 50, partQuantity: 8 }
+		{ item: i('Rune kiteshield'), lvl: 50, partQuantity: 8 },
+		{ item: i('Granite shield'), lvl: 55, partQuantity: 8 },
+		{ item: i('Dragon kiteshield'), lvl: 60, partQuantity: 8 }
 	],
 	parts: { cover: 35, plated: 30, deflecting: 30, strong: 3, protective: 2 }
 };
