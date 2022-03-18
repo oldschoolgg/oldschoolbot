@@ -26,7 +26,7 @@
 		"chartjs-node-canvas": "^4.1.5",
 		"chartjs-plugin-datalabels": "^2.0.0",
 		"chokidar": "^3.5.3",
-		"discord.js": "github:gc/discord.js#2ece91eb206f708ae31e556b62781adf72d24b19",
+		"discord.js": "github:gc/discord.js#cb",
 		"e": "^0.2.1",
 		"emoji-regex": "^9.2.2",
 		"fastify": "^3.25.1",

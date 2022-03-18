@@ -2212,7 +2212,7 @@ discord-api-types@^0.27.0:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.27.3.tgz#518e99a548b62a7912a09e94ad90d0612e2053c6"
   integrity sha512-HOG64DTpZ7CB5EU9eKbjHD50H5qG1pxKG8pmFfHUMKjKvEWeLBHfw0c9xF1cruiYLnBb3+n7m3jBWxZ3H1hcgQ==
 
-"discord.js@github:gc/discord.js#2ece91eb206f708ae31e556b62781adf72d24b19":
+"discord.js@github:gc/discord.js#cb":
   version "13.0.0-dev"
   resolved "https://codeload.github.com/gc/discord.js/tar.gz/2ece91eb206f708ae31e556b62781adf72d24b19"
   dependencies:
