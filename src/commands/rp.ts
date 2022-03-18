@@ -222,7 +222,7 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 	}
 }
 
-export const emoji = (client: KlasaClient) => getSupportGuild(client)?.emojis.cache.random().toString();
+export const emoji = (client: KlasaClient) => getSupportGuild(client)?.emojis.cache.random()?.toString();
 
 const statusMap = {
 	'0': '🟢 Ready',
@@ -444,7 +444,7 @@ ${
 				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
 					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
 				});
-				const emoji = getSupportGuild(this.client)?.emojis.cache.random().toString();
+				const emoji = getSupportGuild(this.client)?.emojis.cache.random()?.toString();
 				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
 
 				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
