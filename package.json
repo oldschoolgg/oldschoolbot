@@ -28,7 +28,7 @@
 		"chartjs-plugin-datalabels": "^2.0.0",
 		"chokidar": "^3.5.3",
 		"deepmerge": "^4.2.2",
-		"discord.js": "github:gc/discord.js#2ece91eb206f708ae31e556b62781adf72d24b19",
+		"discord.js": "github:gc/discord.js#c37c1f3e8a0472c955668af4263b8b54eea1520a",
 		"e": "^0.2.1",
 		"emoji-regex": "^9.2.2",
 		"fastify": "^3.25.1",
