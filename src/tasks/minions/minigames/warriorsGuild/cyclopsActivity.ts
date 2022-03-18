@@ -3,7 +3,7 @@ import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../../../lib/settings/types/UserSettings';
 import { CyclopsTable } from '../../../../lib/simulation/cyclops';
-import { CyclopsActivityTaskOptions } from '../../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
 import { roll } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import itemID from '../../../../lib/util/itemID';
@@ -46,7 +46,7 @@ const defenders = [
 ];
 
 export default class extends Task {
-	async run(data: CyclopsActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await this.client.fetchUser(userID);
 		const userBank = new Bank(user.settings.get(UserSettings.Bank));

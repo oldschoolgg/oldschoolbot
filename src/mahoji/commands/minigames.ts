@@ -17,13 +17,29 @@ import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
 import {
+	mahoganyHomesBuildCommand,
+	mahoganyHomesBuyables,
+	mahoganyHomesBuyCommand
+} from '../lib/abstracted_commands/mahoganyHomesCommand';
+import {
 	pestControlBuyables,
 	pestControlBuyCommand,
 	pestControlStartCommand,
 	pestControlStatsCommand,
 	pestControlXPCommand
 } from '../lib/abstracted_commands/pestControlCommand';
+import { pyramidPlunderCommand } from '../lib/abstracted_commands/pyramidPlunderCommand';
+import { roguesDenCommand } from '../lib/abstracted_commands/roguesDenCommand';
 import { sepulchreCommand } from '../lib/abstracted_commands/sepulchreCommand';
+import {
+	soulWarsBuyables,
+	soulWarsBuyCommand,
+	soulWarsImbueables,
+	soulWarsImbueCommand,
+	soulWarsStartCommand,
+	soulWarsTokensCommand
+} from '../lib/abstracted_commands/soulWarsCommand';
+import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -334,6 +350,156 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		/**
+		 *
+		 * Mahogany Homes
+		 *
+		 */
+		{
+			name: 'mahogany_homes',
+			description: 'Sends your minion to do the Mahogany Homes minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Mahogany Homes trip.'
+				},
+				{
+					name: 'buy',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Buy items with your Mahogany Homes points.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							required: true,
+							description: 'The item you want to buy.',
+							autocomplete: async value => {
+								return mahoganyHomesBuyables
+									.filter(i =>
+										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
+		 * Tears of Guthix
+		 *
+		 */
+		{
+			name: 'tears_of_guthix',
+			description: 'Sends your minion to do the Tears of Guthix minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Rogues Den trip.'
+				}
+			]
+		},
+		/**
+		 *
+		 * Pyramid Plunder
+		 *
+		 */
+		{
+			name: 'pyramid_plunder',
+			description: 'Sends your minion to do the Pyramid Plunder minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Pyramid Plunder trip.'
+				}
+			]
+		},
+		/**
+		 *
+		 * Rogues Den
+		 *
+		 */
+		{
+			name: 'rogues_den',
+			description: 'Sends your minion to do the Rogues Den minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Rogues Den trip.'
+				}
+			]
+		},
+		/**
+		 *
+		 * Soul Wars
+		 *
+		 */
+		{
+			name: 'soul_wars',
+			description: 'Sends your minion to do the Soul Wars minigame.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Soul Wars trip.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'tokens',
+					description: 'See how many Zeal tokens you have.'
+				},
+				{
+					name: 'buy',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Buy items with your Zeal Tokens.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							required: true,
+							description: 'The item you want to buy.',
+							autocomplete: async value => {
+								return soulWarsBuyables
+									.filter(i =>
+										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						}
+					]
+				},
+				{
+					name: 'imbue',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Imbue items with your Zeal Tokens.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							required: true,
+							description: 'The item you want to imbue.',
+							autocomplete: async value => {
+								return soulWarsImbueables
+									.filter(i =>
+										!value ? true : i.input.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.input.name, value: i.input.name }));
+							}
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -367,6 +533,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		gnome_restaurant?: { start?: {} };
 		sepulchre?: { start?: {} };
 		gauntlet?: { start?: { corrupted?: boolean } };
+		mahogany_homes?: { start?: {}; buy?: { name: string } };
+		tears_of_guthix?: { start?: {} };
+		pyramid_plunder?: { start?: {} };
+		rogues_den?: { start?: {} };
+		soul_wars?: { start?: {}; buy?: { name: string }; imbue?: { name: string }; tokens?: {} };
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
@@ -476,8 +647,71 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 * Gauntlet
 		 *
 		 */
-		if (options.gauntlet?.start)
+		if (options.gauntlet?.start) {
 			return gauntletCommand(klasaUser, channelID, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
+		}
+
+		/**
+		 *
+		 * Mahogany Homes
+		 *
+		 */
+		if (options.mahogany_homes) {
+			if (options.mahogany_homes.buy) {
+				return mahoganyHomesBuyCommand(klasaUser, options.mahogany_homes.buy.name);
+			}
+			if (options.mahogany_homes.start) {
+				return mahoganyHomesBuildCommand(klasaUser, channelID);
+			}
+		}
+
+		/**
+		 *
+		 * Tears of Guthix
+		 *
+		 */
+		if (options.tears_of_guthix) {
+			return tearsOfGuthixCommand(klasaUser, channelID);
+		}
+
+		/**
+		 *
+		 * Pyramid Plunder
+		 *
+		 */
+		if (options.pyramid_plunder) {
+			return pyramidPlunderCommand(klasaUser, channelID);
+		}
+
+		/**
+		 *
+		 * Rogues Den
+		 *
+		 */
+		if (options.rogues_den) {
+			return roguesDenCommand(klasaUser, channelID);
+		}
+
+		/**
+		 *
+		 * Soul Wars
+		 *
+		 */
+		if (options.soul_wars) {
+			if (options.soul_wars.start) {
+				return soulWarsStartCommand(klasaUser, channelID);
+			}
+			if (options.soul_wars.imbue) {
+				return soulWarsImbueCommand(klasaUser, options.soul_wars.imbue.name);
+			}
+			if (options.soul_wars.buy) {
+				return soulWarsBuyCommand(klasaUser, options.soul_wars.buy.name);
+			}
+			if (options.soul_wars.tokens) {
+				return soulWarsTokensCommand(user);
+			}
+		}
+
 		return 'Invalid command.';
 	}
 };

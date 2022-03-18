@@ -107,6 +107,15 @@ export default class extends Task {
 				previousCL
 			);
 
-		handleTripFinish(this.client, user, channelID, str, ['plunder', [], true], image!, data, itemsAdded);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			['minigames', { pyramid_plunder: {} }, true],
+			image!,
+			data,
+			itemsAdded
+		);
 	}
 }
