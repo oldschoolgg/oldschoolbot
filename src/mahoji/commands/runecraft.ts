@@ -225,6 +225,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			essenceQuantity: quantity,
+			useStaminas: usestams,
 			duration,
 			imbueCasts,
 			type: 'Runecraft'
