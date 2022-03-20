@@ -41,7 +41,7 @@ export const openCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Integer,
 			name: 'quantity',
-			description: 'The quantity you want to open (defaults to max).',
+			description: 'The quantity you want to open (defaults to one).',
 			required: false,
 			min_value: 1,
 			max_value: 100_000
