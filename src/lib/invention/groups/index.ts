@@ -47,6 +47,7 @@ import Remains from './Remains';
 import Runes from './Runes';
 import Scimitar from './Scimitar';
 import Seed from './Seed';
+import Shield from './Shield';
 import Shortbow from './Shortbow';
 import ShortbowUnstrung from './ShortbowUnstrung';
 import Spear from './Spear';
@@ -127,5 +128,6 @@ export default [
 	Crossbow,
 	Dose1,
 	Crossbows2h,
-	Sword2h
+	Sword2h,
+	Shield
 ];
