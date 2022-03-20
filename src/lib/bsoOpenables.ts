@@ -7,7 +7,9 @@ import {
 	allPetIDs,
 	chambersOfXericCL,
 	cmbClothes,
-	customBossesDropsThatCantBeDroppedInMBs
+	customBossesDropsThatCantBeDroppedInMBs,
+	theatreOfBloodHardUniques,
+	theatreOfBloodNormalUniques
 } from './data/CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './data/holidayItems';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
@@ -323,7 +325,9 @@ const cantBeDropped = resolveItems([
 	...RoyalMysteryBoxTable.allItems,
 	...BeachMysteryBoxTable.allItems,
 	...IndependenceBoxTable.allItems,
-	...cmbClothes
+	...cmbClothes,
+	...theatreOfBloodHardUniques,
+	...theatreOfBloodNormalUniques
 ]);
 
 export const tmbTable: number[] = [];

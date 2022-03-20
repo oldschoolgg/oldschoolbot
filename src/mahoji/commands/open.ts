@@ -32,9 +32,9 @@ export const openCommand: OSBMahojiCommand = {
 			name: 'name',
 			description: 'The thing you want to open.',
 			required: false,
-			autocomplete: async (value, member) => {
-				const user = await client.fetchUser(member.user.id);
-				return user
+			autocomplete: async (value, user) => {
+				const botUser = await client.fetchUser(user.id);
+				return botUser
 					.bank()
 					.items()
 					.filter(i => allOpenablesIDs.has(i[0].id))
@@ -58,8 +58,8 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		}
 	],
-	run: async ({ member, options }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
-		const user = await client.fetchUser(member.user.id);
+	run: async ({ userID, options }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
+		const user = await client.fetchUser(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
 				user

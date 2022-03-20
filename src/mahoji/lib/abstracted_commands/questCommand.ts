@@ -3,11 +3,17 @@ import { KlasaUser } from 'klasa';
 
 import { MAX_QP } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { QuestingActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function questCommand(user: KlasaUser, channelID: bigint) {
+	if (!user.hasMinion) {
+		return 'You need a minion to do a questing trip';
+	}
+	if (user.minionIsBusy) {
+		return 'Your minion must not be busy to do a questing trip';
+	}
 	const currentQP = user.settings.get(UserSettings.QP);
 	if (currentQP >= MAX_QP) {
 		return 'You already have the maximum amount of Quest Points.';
@@ -22,7 +28,7 @@ export async function questCommand(user: KlasaUser, channelID: bigint) {
 		boosts.push('10% for Graceful');
 	}
 
-	await addSubTaskToActivityTask<QuestingActivityTaskOptions>({
+	await addSubTaskToActivityTask<ActivityTaskOptions>({
 		type: 'Questing',
 		duration,
 		userID: user.id,

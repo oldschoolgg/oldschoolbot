@@ -1,73 +1,57 @@
-import { calcPercentOfNum, calcWhatPercent, noOp, randInt } from 'e';
+import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Task } from 'klasa';
 
+import { client } from '../../..';
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { BarbarianAssaultActivityTaskOptions } from '../../../lib/types/minions';
-import { sendToChannelID } from '../../../lib/util/webhook';
-
-function generateExpertiseString(totalLevel: number) {
-	if (totalLevel === 4) {
-		return 'Your team are all level 1, and new to Barbarian Assault.';
-	}
-	if (totalLevel <= 10) {
-		return 'Some members of your team have a decent amount of experience with Barbarian Assault.';
-	}
-	if (totalLevel <= 15) {
-		return 'Your team is quite skilled at Barbarian Assault.';
-	}
-	return 'Your team are the best-of-the-best at Barbarian Assault!';
-}
+import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity, totalLevel }: BarbarianAssaultActivityTaskOptions) {
+	async run(data: MinigameActivityTaskOptions) {
+		const { channelID, quantity, userID } = data;
+		const [klasaUser, user] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
 		let basePoints = 35;
-		let resultStr = 'The base amount of points is 35. ';
-		resultStr += `Your teams total level is ${totalLevel}/${users.length * 5}. `;
 
-		const teamSkillPercent = calcWhatPercent(totalLevel, users.length * 5);
-		// You get up to 20% extra points for your team being higher levelled
+		let resultStr = `The base amount of points is 35. Your Honour Level is ${user.honour_level}.`;
+
+		const teamSkillPercent = calcWhatPercent(user.honour_level, 5);
+
 		basePoints += calcPercentOfNum(teamSkillPercent, 20);
-		resultStr += `Your team receives ${calcPercentOfNum(
-			teamSkillPercent,
-			users.length * 5
-		)} extra points for your honour levels. \n`;
 
-		for (const id of users) {
-			const user = await this.client.fetchUser(id).catch(noOp);
-			if (!user) continue;
-			let pts = basePoints + randInt(-3, 3);
-			const [hasDiary] = await userhasDiaryTier(user, KandarinDiary.hard);
-			if (hasDiary) {
-				pts *= 1.1;
-				resultStr += `${user.username} received 10% extra pts for kandarin hard diary. `;
-			}
+		let pts = basePoints + randInt(-3, 3);
+		const [hasDiary] = await userhasDiaryTier(klasaUser, KandarinDiary.hard);
+		if (hasDiary) {
+			pts *= 1.1;
+			resultStr += `${klasaUser.username} 10% extra pts for Kandarin Hard diary. `;
+		}
+		let totalPoints = Math.floor(pts * quantity);
 
-			if (user.usingPet('Flappy')) {
-				pts *= 2;
-				resultStr += `<:flappy:812280578195456002> Flappy helps ${user.username}, granting them 2x points.`;
-			}
-
-			let totalPoints = Math.floor(pts * quantity);
-
-			await incrementMinigameScore(user.id, 'barb_assault', quantity);
-
-			await user.settings.update(
-				UserSettings.HonourPoints,
-				user.settings.get(UserSettings.HonourPoints) + totalPoints
-			);
-
-			resultStr += `${user} received ${totalPoints} points\n`;
+		if (klasaUser.usingPet('Flappy')) {
+			totalPoints *= 2;
+			resultStr += `<:flappy:812280578195456002> Flappy helps ${klasaUser.username}, granting them 2x points.`;
 		}
 
-		const leaderUser = await this.client.fetchUser(leader);
+		await incrementMinigameScore(user.id, 'barb_assault', quantity);
+		await mahojiUserSettingsUpdate(user.id, {
+			honour_points: {
+				increment: totalPoints
+			}
+		});
 
-		resultStr = `${leaderUser}, your team finished doing ${quantity} waves of Barbarian Assault. ${generateExpertiseString(
-			totalLevel
-		)}
+		resultStr = `${klasaUser}, ${klasaUser.minionName} finished doing ${quantity} waves of Barbarian Assault, you received ${totalPoints} Honour Points.
 ${resultStr}`;
 
-		sendToChannelID(this.client, channelID, { content: resultStr });
+		handleTripFinish(
+			this.client,
+			klasaUser,
+			channelID,
+			resultStr,
+			['minigames', { barb_assault: { start: {} } }, true, 'play'],
+			undefined,
+			data,
+			null
+		);
 	}
 }
