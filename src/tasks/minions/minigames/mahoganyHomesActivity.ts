@@ -40,7 +40,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['minigames', { mahogany_homes: {} }, true],
+			['minigames', { mahogany_homes: { start: {} } }, true],
 			undefined,
 			data,
 			null

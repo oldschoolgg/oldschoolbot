@@ -3,7 +3,7 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { ironsCantUse, minionNotBusy } from '../../lib/minions/decorators';
+import { ironsCantUse } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, roll } from '../../lib/util';
@@ -23,7 +23,6 @@ export default class extends BotCommand {
 		});
 	}
 
-	@minionNotBusy
 	@ironsCantUse
 	async run(msg: KlasaMessage, [string, [bank]]: [string, [Bank]]) {
 		const existingGiveaways = await prisma.giveaway.findMany({
@@ -89,6 +88,11 @@ React to this messsage with ${reaction} to enter.`,
 		};
 
 		try {
+			await msg.author.removeItemsFromBank(bank);
+		} catch (err: any) {
+			return msg.channel.send(err instanceof Error ? err.message : err);
+		}
+		try {
 			await prisma.giveaway.create({
 				data: dbData
 			});
@@ -97,11 +101,8 @@ React to this messsage with ${reaction} to enter.`,
 				user_id: msg.author.id,
 				giveaway_data: JSON.stringify(dbData)
 			});
-			return msg.channel.send('Error starting giveaway. Please report this error.');
+			return msg.channel.send('Error starting giveaway. Please report this error so you can get refunded.');
 		}
-
-		// Wait until the create succeeds to remove items, otherwise they can be lost.
-		await msg.author.removeItemsFromBank(bank);
 
 		try {
 			await message.react(reaction);
