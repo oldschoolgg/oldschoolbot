@@ -109,7 +109,13 @@ export default class extends BotCommand {
 				}
 				break;
 			default:
-				if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon'))) {
+				if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon')) && fish.name === 'Shark') {
+					scaledTimePerFish *= 0.675;
+					boosts.push('32.5% for Crystal harpoon');
+				} else if (msg.author.hasItemEquippedAnywhere(itemID('Dragon harpoon')) && fish.name === 'Shark') {
+					scaledTimePerFish *= 0.8;
+					boosts.push('20% for Dragon harpoon');
+				} else if (msg.author.hasItemEquippedAnywhere(itemID('Crystal harpoon')) && fish.name !== 'Shark') {
 					scaledTimePerFish *= 0.95;
 					boosts.push('5% for Crystal harpoon');
 				}
