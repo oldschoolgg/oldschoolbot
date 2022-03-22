@@ -46,6 +46,7 @@ interface UnifiedOpenable {
 
 const clueItemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
+	.concat([itemID('Ranger boots')])
 	.concat([itemID('Bloodhound')]);
 
 const clueOpenables: UnifiedOpenable[] = [];
