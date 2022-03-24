@@ -3363,3 +3363,4 @@ setCustomItem(
 	},
 	10_000_000
 );
+setCustomItem(70_018, 'Grand Crystal Acorn', 'Magic seed', {}, 500_000);

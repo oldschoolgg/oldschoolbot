@@ -508,10 +508,10 @@ const specialPlants: Plant[] = [
 		outputCrop: itemID('Crystal shard'),
 		variableYield: true,
 		variableOutputAmount: [
-			[null, 8, 10],
-			['compost', 10, 12],
-			['supercompost', 12, 14],
-			['ultracompost', 14, 16]
+			[null, 10, 30],
+			['compost', 15, 30],
+			['supercompost', 20, 30],
+			['ultracompost', 25, 30]
 		],
 		treeWoodcuttingLevel: 1,
 		name: 'Crystal tree',
@@ -723,6 +723,48 @@ const specialPlants: Plant[] = [
 		additionalPatchesByFarmLvl: [],
 		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 10,
+		timePerHarvest: 5
+	},
+	{
+		level: 115,
+		plantXp: 260,
+		checkXp: 19_240,
+		harvestXp: 0,
+		inputItems: resolveNameBank({ 'Grand Crystal acorn': 1 }),
+		outputCrop: itemID('Crystal shard'),
+		variableYield: true,
+		variableOutputAmount: [
+			[null, 50, 150],
+			['compost', 75, 150],
+			['supercompost', 100, 150],
+			['ultracompost', 120, 150]
+		],
+		treeWoodcuttingLevel: 1,
+		name: 'Grand Crystal tree',
+		aliases: ['grand crystal tree', 'grand crystal', 'grand'],
+		petChance: 9000,
+		seedType: 'crystal',
+		growthTime: 540,
+		numOfStages: 6,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 0,
+		needsChopForHarvest: true,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 0,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[33, 3] // Prifddinas (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [],
+		timePerPatchTravel: 20,
 		timePerHarvest: 5
 	}
 ];

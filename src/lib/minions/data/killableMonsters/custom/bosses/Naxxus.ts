@@ -66,7 +66,7 @@ export const NaxxusLootTable = new LootTable()
 	.tertiary(500, 'Abyssal Gem')
 	.tertiary(750, 'Tattered Tome')
 	.tertiary(500, 'Spellbound Ring')
-	.tertiary(35, 'Korulsi Seed');
+	.tertiary(10, 'Korulsi Seed');
 
 export const Naxxus: KillableMonster = {
 	id: 294_820,
