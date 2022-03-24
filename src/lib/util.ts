@@ -712,3 +712,15 @@ export function convertDJSMemberToAPIMember(member: GuildMember): APIInteraction
 export function removeFromArr<T>(arr: T[], item: T) {
 	return arr.filter(i => i !== item);
 }
+
+/**
+ * Scale percentage exponentially
+ *
+ * @param decay Between 0.01 and 0.05; bigger means more penalty.
+ * @param percent The percent to scale
+ * @returns percent
+ */
+export function exponentialPercentScale(percent: number, decay = 0.0038) {
+	const decayedPercent = Math.pow(100 * Math.E, -decay * (100 - percent));
+	return decayedPercent * 100;
+}

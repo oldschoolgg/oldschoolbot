@@ -299,6 +299,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'badnexgear',
+					description: 'Gives you bad nex gear ahahahahaha'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'setmonsterkc',
 					description: 'Set monster kc.',
 					options: [
@@ -344,6 +349,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setxp?: { skill: string; xp: number };
 				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
 				nexhax?: {};
+				badnexgear?: {};
 				setmonsterkc?: { monster: string; kc: string };
 			}>) => {
 				if (production) {
@@ -418,6 +424,27 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						GP: mahojiUser.GP + BigInt(10_000_000)
 					});
 					return 'Gave you range gear, gp, gear and stats for nex.';
+				}
+				if (options.badnexgear) {
+					const gear = new Gear({
+						[EquipmentSlot.Weapon]: 'Armadyl crossbow',
+						// [EquipmentSlot.Shield]: nu,
+						[EquipmentSlot.Ammo]: 'Ruby dragon bolts(e)',
+						[EquipmentSlot.Body]: "Karil's leathertop",
+						[EquipmentSlot.Legs]: "Karil's leatherskirt",
+						[EquipmentSlot.Feet]: 'Snakeskin boots',
+						[EquipmentSlot.Cape]: "Ava's accumulator",
+						[EquipmentSlot.Neck]: 'Amulet of accuracy',
+						[EquipmentSlot.Hands]: 'Barrows gloves',
+						[EquipmentSlot.Head]: "Karil's coif",
+						[EquipmentSlot.Ring]: 'Archers ring'
+					});
+					gear.ammo!.quantity = 1_000_000;
+					await mahojiUserSettingsUpdate(user.id, {
+						gear_range: gear.raw() as Prisma.InputJsonObject,
+						bank: user.bank().add(nexSupplies).bank
+					});
+					return 'Gave you bad nex gear';
 				}
 				if (options.setmonsterkc) {
 					const monster = effectiveMonsters.find(m =>

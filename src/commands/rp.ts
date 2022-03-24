@@ -19,6 +19,7 @@ import {
 	Channel,
 	DISABLED_COMMANDS,
 	Emoji,
+	NEX_ID,
 	Roles,
 	SupportServer
 } from '../lib/constants';
@@ -28,12 +29,15 @@ import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } f
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { calculateNexDetails, nexGearStats } from '../lib/simulation/nex';
 import { BotCommand } from '../lib/structures/BotCommand';
 import {
 	asyncExec,
+	calcPerHour,
 	channelIsSendable,
 	cleanString,
 	convertBankToPerHourStats,
+	exponentialPercentScale,
 	formatDuration,
 	getSupportGuild,
 	getUsername,
@@ -49,6 +53,7 @@ import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
@@ -254,6 +259,38 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'nexsim': {
+				let str =
+					'Simulating Nex kills with 2-10 team sizes, assuming each team member is a copy of your account.\n';
+				const user = await mahojiUsersSettingsFetch(msg.author.id);
+				const gearStats = nexGearStats(user);
+				const kc = msg.flagArgs.kc ?? (user.monsterScores as any)[NEX_ID];
+				(user.monsterScores as any)[NEX_ID] = kc;
+				str += `Offence[${gearStats.offence.toFixed(1)}] Defence[${gearStats.defence.toFixed(1)}] KC[${
+					(user.monsterScores as any)[NEX_ID]
+				}]\n\n`;
+				for (let i = 2; i < 10; i++) {
+					const res = calculateNexDetails({ team: new Array(i).fill(user) });
+					str += `**${i}:** `;
+					if (!res.quantity) {
+						str += 'Died';
+					} else {
+						str += `${calcPerHour(res.quantity, res.duration).toFixed(1)}/hr (${
+							res.quantity
+						} kills in ${formatDuration(res.duration)} - ${formatDuration(
+							res.duration / res.quantity,
+							true
+						)} per kill)`;
+					}
+					str += '\n';
+				}
+				return msg.channel.send(str);
+			}
+			case 'testexp': {
+				const num = Number(input ?? 1);
+				if (!num || isNaN(num)) return;
+				return msg.channel.send(`${num}% -> ${exponentialPercentScale(num)}`);
+			}
 			case 'ping': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || typeof input !== 'string') return;

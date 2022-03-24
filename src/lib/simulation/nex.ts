@@ -22,7 +22,14 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { getSkillsOfMahojiUser, getUserGear } from '../../mahoji/mahojiSettings';
 import { NEX_ID } from '../constants';
 import { Skills } from '../types';
-import { clamp, formatDuration, formatSkillRequirements, itemNameFromID, skillsMeetRequirements } from '../util';
+import {
+	clamp,
+	exponentialPercentScale,
+	formatDuration,
+	formatSkillRequirements,
+	itemNameFromID,
+	skillsMeetRequirements
+} from '../util';
 import getUsersPerkTier from '../util/getUsersPerkTier';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, calcMaxTripLength, crossbows } from '../util/minionUtils';
@@ -36,12 +43,12 @@ const minStats: Skills = {
 	prayer: 77
 };
 
-function gearStats(user: User) {
+export function nexGearStats(user: User) {
 	let gear = getUserGear(user);
 	const offence = calcWhatPercent(gear.range.stats.attack_ranged, 252);
 	const defence = calcWhatPercent(gear.range.stats.defence_magic, 150);
 	return {
-		offence,
+		offence: exponentialPercentScale(offence),
 		defence,
 		rangeGear: gear.range
 	};
@@ -65,8 +72,13 @@ export function checkNexUser(user: User): [false] | [true, string] {
 		return [true, `${tag} doesn't have the skill requirements: ${formatSkillRequirements(minStats)}.`];
 	}
 	if (user.GP < 1_000_000) return [true, `${tag} needs atleast 1m GP to cover potential deaths.`];
-	const { offence, defence, rangeGear } = gearStats(user);
-	if (offence < 50) return [true, `${tag}'s range gear is terrible! You need higher range attack.`];
+	const { offence, defence, rangeGear } = nexGearStats(user);
+	if (offence < 50) {
+		return [
+			true,
+			`${tag}'s range gear is terrible! You need higher range attack. You have ${offence}%, you need 50%.`
+		];
+	}
 	if (defence < 50) return [true, `${tag}'s range gear is terrible! You need higher mage defence.`];
 	for (const slot of ['ammo', 'body', 'feet', 'head', 'body', 'legs'] as const) {
 		if (!rangeGear[slot]) {
@@ -166,10 +178,8 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 	let lengthPerKill = Time.Minute * 35;
 	let resultTeam: TeamMember[] = [];
 
-	team = [...team, ...team, ...team, ...team, ...team].slice(0, 4);
-
 	for (const member of team) {
-		let { offence, defence, rangeGear } = gearStats(member);
+		let { offence, defence, rangeGear } = nexGearStats(member);
 		let deathChance = 100;
 		let nexKC = (member.monsterScores as ItemBank)[NEX_ID] ?? 0;
 		const kcPercent = clamp(calcWhatPercent(nexKC, 100), 0, 100);
@@ -195,9 +205,16 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 		deathChance = reduceNumByPercent(deathChance, totalDefensivePercent);
 		deathChance = clamp(deathChance, 5, 100);
 
+		let timeReductionPercent = clamp(kcPercent / 4.5 + offence / 7, 1, 100);
+		if (isUsingZCB) timeReductionPercent = increaseNumByPercent(timeReductionPercent, 5);
+		const reducedTime = reduceNumByPercent(lengthPerKill, timeReductionPercent);
+		messages.push(`${timeReductionPercent.toFixed(1)}% faster`);
+
+		lengthPerKill = reducedTime;
+
 		for (const [shield, time, shortName] of [
-			[itemID('Elysian spirit shield'), Time.Minute * 6, 'ely'],
-			[itemID('Spectral spirit shield'), Time.Minute * 3, 'spectral']
+			[itemID('Elysian spirit shield'), increaseNumByPercent(lengthPerKill, 3), 'ely'],
+			[itemID('Spectral spirit shield'), increaseNumByPercent(lengthPerKill, 3), 'spectral']
 		] as const) {
 			if (rangeGear.shield?.item === shield) {
 				const timeToAdd = Math.ceil(time / team.length);
@@ -206,12 +223,10 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 			}
 		}
 
-		let timeReductionPercent = clamp(kcPercent / 4 + offence / 7, 1, 100);
-		if (isUsingZCB) timeReductionPercent = increaseNumByPercent(timeReductionPercent, 5);
-		const reducedTime = reduceNumByPercent(lengthPerKill, timeReductionPercent);
-		messages.push(`${timeReductionPercent.toFixed(1)}% faster`);
-
-		lengthPerKill = reducedTime;
+		if (rangeGear.shield?.item === itemID('Elysian spirit shield')) {
+			deathChance = reduceNumByPercent(deathChance, 30);
+			messages.push('-30% death% for ely');
+		}
 
 		const cost = new Bank()
 			.add('Saradomin brew(4)', 8)
@@ -259,7 +274,7 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 	 * Ammo
 	 */
 	for (const user of team) {
-		const { rangeGear } = gearStats(user);
+		const { rangeGear } = nexGearStats(user);
 		const teamUser = resultTeam.findIndex(a => a.id === user.id);
 		const ammo = rangeGear.ammo?.item ?? itemID('Dragon arrow');
 		// Between 50-60 ammo per kill (before reductions)
