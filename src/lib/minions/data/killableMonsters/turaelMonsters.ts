@@ -268,7 +268,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
-			'Bandos chestplate',
+			['Torva platebody', 'Bandos chestplate'],
 			["Verac's plateskirt", 'Bandos tassets'],
 			['Arclight', 'Abyssal whip', 'Dragon scimitar'],
 			['Rune crossbow', "Karil's crossbow", 'Armadyl crossbow'],
@@ -1040,8 +1040,8 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 6,
 		itemsRequired: deepResolveItems([
-			'Bandos chestplate',
-			["Verac's plateskirt", 'Bandos tassets'],
+			['Torva platebody', 'Bandos chestplate'],
+			["Verac's plateskirt", 'Bandos tassets', 'Torva platelegs'],
 			['Abyssal whip', 'Dragon scimitar']
 		]),
 		qpRequired: 175,

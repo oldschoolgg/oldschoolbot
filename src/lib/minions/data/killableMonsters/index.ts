@@ -114,8 +114,8 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody"],
-			['Bandos tassets', "Torag's platelegs"]
+			['Torva platebody', 'Bandos chestplate', "Torag's platebody"],
+			['Torva platelegs', 'Bandos tassets', "Torag's platelegs"]
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth rex']),
 		qpRequired: 0,

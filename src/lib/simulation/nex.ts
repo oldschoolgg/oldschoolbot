@@ -20,7 +20,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { getSkillsOfMahojiUser, getUserGear } from '../../mahoji/mahojiSettings';
-import { NEX_ID } from '../constants';
+import { BitField, NEX_ID } from '../constants';
 import { Skills } from '../types';
 import {
 	clamp,
@@ -40,7 +40,7 @@ import { TeamLoot } from './TeamLoot';
 const minStats: Skills = {
 	defence: 90,
 	ranged: 90,
-	prayer: 77
+	prayer: 74
 };
 
 export function nexGearStats(user: User) {
@@ -150,8 +150,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	for (const user of team) uniqueDecider.add(user.id);
 
 	for (let i = 0; i < quantity; i++) {
-		// const uniqueRecipient = roll(53) ? uniqueDecider.roll().item : null;
-		const uniqueRecipient = roll(3) ? uniqueDecider.roll().item : null;
+		const uniqueRecipient = roll(53) ? uniqueDecider.roll().item : null;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
 
 		for (const teamMember of team) {
@@ -182,7 +181,8 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 		let { offence, defence, rangeGear } = nexGearStats(member);
 		let deathChance = 100;
 		let nexKC = (member.monsterScores as ItemBank)[NEX_ID] ?? 0;
-		const kcPercent = clamp(calcWhatPercent(nexKC, 100), 0, 100);
+		const kcLearningCap = 500;
+		const kcPercent = clamp(calcWhatPercent(nexKC, kcLearningCap), 0, 100);
 		const messages: string[] = [];
 
 		if ([rangeGear.ammo?.item].includes(itemID('Rune arrow'))) {
@@ -195,6 +195,10 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 		offence -= 2;
 		const isUsingVambs = rangeGear.hands?.item === itemID('Zaryte vambraces');
 		if (isUsingVambs) offence += 2;
+
+		offence -= 5;
+		const hasRigour = member.bitfield.includes(BitField.HasDexScroll);
+		if (hasRigour) offence += 5;
 
 		let offensivePercents = [offence, clamp(calcWhatPercent(nexKC, 100), 0, 100)];
 		const totalOffensivePecent = sumArr(offensivePercents) / offensivePercents.length;
