@@ -263,8 +263,10 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 				deathsThisKill++;
 			}
 		}
-		if (deathsThisKill === resultTeam.length) wipedKill = i + 1;
-		break;
+		if (deathsThisKill === resultTeam.length) {
+			wipedKill = i + 1;
+			break;
+		}
 	}
 	for (const [id, deathArr] of Object.entries(deaths)) {
 		resultTeam[resultTeam.indexOf(resultTeam.find(i => i.id === id)!)].deaths = deathArr;
