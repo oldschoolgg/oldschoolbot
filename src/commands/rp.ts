@@ -11,7 +11,7 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client, mahojiClient } from '..';
-import { CLIENT_ID } from '../config';
+import { CLIENT_ID, production } from '../config';
 import {
 	badges,
 	BitField,
@@ -37,7 +37,6 @@ import {
 	channelIsSendable,
 	cleanString,
 	convertBankToPerHourStats,
-	exponentialPercentScale,
 	formatDuration,
 	getSupportGuild,
 	getUsername,
@@ -260,6 +259,7 @@ export default class extends BotCommand {
 
 		switch (cmd.toLowerCase()) {
 			case 'nexsim': {
+				if (production) return;
 				let str =
 					'Simulating Nex kills with 2-10 team sizes, assuming each team member is a copy of your account.\n';
 				const user = await mahojiUsersSettingsFetch(msg.author.id);
@@ -285,11 +285,6 @@ export default class extends BotCommand {
 					str += '\n';
 				}
 				return msg.channel.send(str);
-			}
-			case 'testexp': {
-				const num = Number(input ?? 1);
-				if (!num || isNaN(num)) return;
-				return msg.channel.send(`${num}% -> ${exponentialPercentScale(num)}`);
 			}
 			case 'ping': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;

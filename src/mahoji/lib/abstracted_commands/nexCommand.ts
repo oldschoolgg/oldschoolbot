@@ -28,7 +28,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 	await interaction.deferReply();
 
 	let [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel as TextChannel, user, {
-		minSize: 1,
+		minSize: 2,
 		maxSize: 10,
 		leader: user,
 		ironmanAllowed: true,

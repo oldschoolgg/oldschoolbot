@@ -165,7 +165,7 @@ export async function setupParty(
 			});
 
 			collector.once('end', () => {
-				confirmMessage.removeAllReactions();
+				confirmMessage.delete().catch(noOp);
 				for (const user of usersWhoConfirmed) {
 					partyLockCache.delete(user.id);
 				}

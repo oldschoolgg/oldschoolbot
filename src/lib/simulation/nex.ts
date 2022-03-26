@@ -1,7 +1,3 @@
-/**
- * pay 100k to get items back if die
- */
-
 import { userMention } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import {
