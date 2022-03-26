@@ -23,7 +23,6 @@ import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import resolveItems from '../../lib/util/resolveItems';
 
 const uniques = [
 	'Dexterous prayer scroll',
