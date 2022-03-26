@@ -181,7 +181,7 @@ export default class extends BotCommand {
 				if (
 					isChallengeMode &&
 					!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-					!['Twisted bow', 'Hellfire bow', 'Zaryte bow'].some(i => user.hasItemEquippedOrInBank(i))
+					!['Twisted bow', 'Zaryte bow'].some(i => user.hasItemEquippedOrInBank(i))
 				) {
 					return [
 						true,
