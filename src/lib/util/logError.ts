@@ -8,6 +8,6 @@ export function logError(err: Error | unknown, context?: Record<string, string>)
 			tags: context
 		});
 	} else {
-		console.error(err);
+		console.error(context, err);
 	}
 }
