@@ -107,9 +107,9 @@ export async function mageTrainingArenaBuyCommand(user: KlasaUser, input = '') {
 }
 
 export async function mageTrainingArenaPointsCommand(user: KlasaUser) {
-	const userpizazz = await getNewUser(user.id);
+	const parsedUser = await getNewUser(user.id);
 
-	return `You have **${userpizazz.pizazz_points.toLocaleString()}** Pizazz points.
+	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.
     **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
     ${mageTrainingArenaBuyables
 			.map(
