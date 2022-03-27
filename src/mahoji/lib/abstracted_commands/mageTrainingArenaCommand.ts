@@ -110,8 +110,8 @@ export async function mageTrainingArenaPointsCommand(user: KlasaUser) {
 	const userpizazz = await getNewUser(user.id);
 
 	return `You have **${userpizazz.pizazz_points.toLocaleString()}** Pizazz points.
-        **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
-        ${mageTrainingArenaBuyables
+    **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
+    ${mageTrainingArenaBuyables
 			.map(
 				i =>
 					`${i.item.name} - ${i.cost} pts - ${formatDuration(
@@ -120,10 +120,10 @@ export async function mageTrainingArenaPointsCommand(user: KlasaUser) {
 			)
 			.join('\n')}
         
-        Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena train.** You can buy rewards using **/minigames mage_training_arena buy**`;
+    Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena train**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
 
-export async function mageTrainingArenaTrainCommand(user: KlasaUser, channelID: bigint): CommandResponse {
+export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: bigint): CommandResponse {
 	if (user.minionIsBusy) return `${user.minionName} is currently busy.`;
 	await user.settings.sync(true);
 

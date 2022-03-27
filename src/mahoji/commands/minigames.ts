@@ -20,7 +20,7 @@ import {
 	mageTrainingArenaBuyables,
 	mageTrainingArenaBuyCommand,
 	mageTrainingArenaPointsCommand,
-	mageTrainingArenaTrainCommand
+	mageTrainingArenaStartCommand
 } from '../lib/abstracted_commands/mageTrainingArenaCommand';
 import {
 	mahoganyHomesBuildCommand,
@@ -373,6 +373,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Start a Mage Training Arena trip.'
 				},
 				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'points',
+					description: 'See your Mage Training Arena points.'
+				},
+				{
 					name: 'buy',
 					type: ApplicationCommandOptionType.Subcommand,
 					description: 'Buy items with your Mage Training Arena points.',
@@ -577,7 +582,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		sepulchre?: { start?: {} };
 		gauntlet?: { start?: { corrupted?: boolean } };
 		mage_training_arena?: {
-			train?: {};
+			start?: {};
 			buy?: { name: string };
 			points?: {};
 		};
@@ -708,8 +713,8 @@ export const minigamesCommand: OSBMahojiCommand = {
 			if (options.mage_training_arena?.buy) {
 				return mageTrainingArenaBuyCommand(klasaUser, options.mage_training_arena.buy.name);
 			}
-			if (options.mage_training_arena?.train) {
-				return mageTrainingArenaTrainCommand(klasaUser, channelID);
+			if (options.mage_training_arena?.start) {
+				return mageTrainingArenaStartCommand(klasaUser, channelID);
 			}
 			if (options.mage_training_arena?.points) {
 				return mageTrainingArenaPointsCommand(klasaUser);
