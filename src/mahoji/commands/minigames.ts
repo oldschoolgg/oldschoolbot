@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
+import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import {
 	barbAssaultGambleCommand,
@@ -40,6 +41,7 @@ import {
 	soulWarsTokensCommand
 } from '../lib/abstracted_commands/soulWarsCommand';
 import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCommand';
+import { trekCommand, trekShop } from '../lib/abstracted_commands/trekCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -311,6 +313,100 @@ export const minigamesCommand: OSBMahojiCommand = {
 		},
 		/**
 		 *
+		 * Trek
+		 *
+		 */
+		{
+			name: 'temple_trek',
+			description: 'Send your minion to complete the temple trekking minigame',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Allows a player to start the temple trekking minigame.',
+					options: [
+						{
+							name: 'difficulty',
+							description: 'The difficulty of the trek.',
+							type: ApplicationCommandOptionType.String,
+							required: true,
+							choices: [
+								{
+									name: 'Easy',
+									value: 'Easy'
+								},
+								{
+									name: 'Medium',
+									value: 'Medium'
+								},
+								{
+									name: 'Hard',
+									value: 'Hard'
+								}
+							]
+						},
+						{
+							name: 'quantity',
+							description: 'The quantity of treks to do.',
+							type: ApplicationCommandOptionType.Integer,
+							required: false,
+							min_value: 1,
+							max_value: 1000
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'buy',
+					description: 'Allows a player to exchange reward tokens.',
+					options: [
+						{
+							name: 'reward',
+							description: 'The reward you want to purchase.',
+							type: ApplicationCommandOptionType.String,
+							required: true,
+							autocomplete: async (value: string) => {
+								return TrekShopItems.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.name, value: i.name }));
+							}
+						},
+						{
+							name: 'difficulty',
+							description: 'The difficulty of token to use. Easy/Medium/Hard',
+							type: ApplicationCommandOptionType.String,
+							required: true,
+							choices: [
+								{
+									name: 'Easy',
+									value: 'Easy'
+								},
+								{
+									name: 'Medium',
+									value: 'Medium'
+								},
+								{
+									name: 'Hard',
+									value: 'Hard'
+								}
+							]
+						},
+
+						{
+							name: 'quantity',
+							description: 'The quantity you want to purchase. Range: 1 - 1000',
+							type: ApplicationCommandOptionType.Integer,
+							required: false,
+							min_value: 1,
+							max_value: 100
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
 		 * Sepulchre
 		 *
 		 */
@@ -531,6 +627,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		mage_arena?: { start?: {} };
 		mage_arena_2?: { start?: {} };
 		gnome_restaurant?: { start?: {} };
+		temple_trek?: {
+			start?: { difficulty: string; quantity?: number };
+			buy?: { reward: string; difficulty: string; quantity?: number };
+		};
 		sepulchre?: { start?: {} };
 		gauntlet?: { start?: { corrupted?: boolean } };
 		mahogany_homes?: { start?: {}; buy?: { name: string } };
@@ -634,6 +734,22 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.gnome_restaurant?.start) return gnomeRestaurantCommand(klasaUser, channelID);
+
+		/**
+		 *
+		 * Trek
+		 *
+		 */
+		if (options.temple_trek) {
+			if (options.temple_trek.buy) {
+				let { reward, difficulty, quantity } = options.temple_trek.buy!;
+				return trekShop(klasaUser, reward, difficulty, quantity, interaction);
+			}
+			if (options.temple_trek.start) {
+				let { difficulty, quantity } = options.temple_trek.start!;
+				return trekCommand(klasaUser, channelID, difficulty, quantity);
+			}
+		}
 
 		/**
 		 *
