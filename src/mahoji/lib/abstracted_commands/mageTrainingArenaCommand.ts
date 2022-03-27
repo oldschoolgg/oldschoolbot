@@ -78,7 +78,7 @@ export async function mageTrainingArenaBuyCommand(user: KlasaUser, input = '') {
 	const newUser = await getNewUser(user.id);
 	const balance = newUser.pizazz_points;
 
-	if (upgradesFrom && user.owns(upgradesFrom.id)) {
+	if (upgradesFrom && !user.owns(upgradesFrom.id)) {
 		return `To buy a ${item.name}, you need to upgrade to it with a ${upgradesFrom.name}, which you do not own.`;
 	}
 
@@ -110,8 +110,8 @@ export async function mageTrainingArenaPointsCommand(user: KlasaUser) {
 	const parsedUser = await getNewUser(user.id);
 
 	return `You have **${parsedUser.pizazz_points.toLocaleString()}** Pizazz points.
-    **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
-    ${mageTrainingArenaBuyables
+**Pizazz Points Per Hour:** ${pizazzPointsPerHour}
+${mageTrainingArenaBuyables
 			.map(
 				i =>
 					`${i.item.name} - ${i.cost} pts - ${formatDuration(
@@ -120,7 +120,7 @@ export async function mageTrainingArenaPointsCommand(user: KlasaUser) {
 			)
 			.join('\n')}
         
-    Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena train**. You can buy rewards using **/minigames mage_training_arena buy**.`;
+Hint: Magic Training Arena is combined into 1 room, and 1 set of points - rewards take approximately the same amount of time to get. To get started use **/minigames mage_training_arena train**. You can buy rewards using **/minigames mage_training_arena buy**.`;
 }
 
 export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: bigint): CommandResponse {
@@ -139,7 +139,7 @@ export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: 
 
 	await user.removeItemsFromBank(cost);
 
-	updateBankSetting(client, ClientSettings.EconomyStats.MTACostBank, cost);
+	await updateBankSetting(client, ClientSettings.EconomyStats.MTACostBank, cost);
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		userID: user.id,
