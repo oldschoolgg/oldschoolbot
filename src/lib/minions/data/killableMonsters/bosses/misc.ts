@@ -67,6 +67,9 @@ const killableBosses: KillableMonster[] = [
 			{
 				[itemID('Salve amulet(ei)')]: 20,
 				[itemID('Salve amulet(i)')]: 16
+			},
+			{
+				[itemID('Zaryte crossbow')]: 5
 			}
 		],
 		levelRequirements: {
