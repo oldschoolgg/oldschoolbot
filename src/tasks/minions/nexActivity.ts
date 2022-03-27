@@ -11,12 +11,12 @@ import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: NexTaskOptions) {
-		const { quantity, channelID, users, wipedKill, duration } = data;
-		const allMention = users.map(t => userMention(t[0])).join(' ');
+		const { quantity, channelID, users, wipedKill, duration, userDetails } = data;
+		const allMention = userDetails.map(t => userMention(t[0])).join(' ');
 
 		const loot = handleNexKills({
 			quantity,
-			team: users.map(u => ({
+			team: userDetails.map(u => ({
 				id: u[0],
 				contribution: u[1],
 				deaths: u[2]

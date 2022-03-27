@@ -279,7 +279,8 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 export interface NexTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	leader: string;
-	users: [string, number, number[]][];
+	users: string[];
+	userDetails: [string, number, number[]][];
 	fakeDuration: number;
 	wipedKill: number | null;
 }
