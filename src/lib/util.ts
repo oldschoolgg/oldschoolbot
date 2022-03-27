@@ -720,7 +720,6 @@ export function removeFromArr<T>(arr: T[], item: T) {
  * @param percent The percent to scale
  * @returns percent
  */
-export function exponentialPercentScale(percent: number, decay = 0.0038) {
-	const decayedPercent = Math.pow(100 * Math.E, -decay * (100 - percent));
-	return decayedPercent * 100;
+export function exponentialPercentScale(percent: number, decay = 0.021) {
+	return 100 * Math.pow(Math.E, -decay * (100 - percent));
 }
