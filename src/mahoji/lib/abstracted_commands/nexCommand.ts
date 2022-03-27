@@ -88,7 +88,8 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 		duration: details.duration,
 		type: 'Nex',
 		leader: user.id,
-		users: details.team.map(i => [i.id, i.contribution, i.deaths]),
+		users: details.team.map(i => i.id),
+		userDetails: details.team.map(i => [i.id, i.contribution, i.deaths]),
 		fakeDuration: details.fakeDuration,
 		quantity: details.quantity,
 		wipedKill: details.wipedKill
