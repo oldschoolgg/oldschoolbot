@@ -710,13 +710,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.mage_training_arena) {
-			if (options.mage_training_arena?.buy) {
+			if (options.mage_training_arena.buy) {
 				return mageTrainingArenaBuyCommand(klasaUser, options.mage_training_arena.buy.name);
 			}
-			if (options.mage_training_arena?.start) {
+			if (options.mage_training_arena.start) {
 				return mageTrainingArenaStartCommand(klasaUser, channelID);
 			}
-			if (options.mage_training_arena?.points) {
+			if (options.mage_training_arena.points) {
 				return mageTrainingArenaPointsCommand(klasaUser);
 			}
 		}
