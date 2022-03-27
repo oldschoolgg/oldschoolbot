@@ -187,12 +187,12 @@ export const maxRangeGear = constructGearSetup({
 const maxRange = new Gear(maxRangeGear);
 
 export const maxMeleeGear = constructGearSetup({
-	head: 'Torva full helm',
+	head: "Inquisitor's great helm",
 	neck: 'Amulet of torture',
-	body: 'Torva platebody',
+	body: "Inquisitor's hauberk",
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
-	legs: 'Torva platelegs',
+	legs: "Inquisitor's plateskirt",
 	feet: 'Primordial boots',
 	weapon: "Inquisitor's mace",
 	shield: 'Avernic defender',
