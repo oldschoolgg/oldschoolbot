@@ -135,16 +135,16 @@ export const enum Emoji {
 	Incinerator = '<:incinerator:802136963674275882>',
 	CollectionLog = '<:collectionLog:802136964027121684>',
 	Minigames = '<:minigameIcon:630400565070921761>',
-	Skull = '<:skull:951672438318592060>',
+	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
 	OSRSSkull = '<:skull:863392427040440320>',
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
 
 export const enum ReactionEmoji {
-	Join = '951309579302604900',
-	Stop = '951309579248091166',
-	Start = '951309579302604880'
+	Join = '705971600956194907',
+	Stop = '705972260950769669',
+	Start = '705973302719414329'
 }
 
 export const enum Image {
