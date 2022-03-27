@@ -17,6 +17,7 @@ import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
 import {
+	mageTrainingArenaBuyables,
 	mageTrainingArenaBuyCommand,
 	mageTrainingArenaPointsCommand,
 	mageTrainingArenaTrainCommand
@@ -382,7 +383,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							required: true,
 							description: 'The item you want to buy.',
 							autocomplete: async value => {
-								return mahoganyHomesBuyables
+								return mageTrainingArenaBuyables
 									.filter(i =>
 										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
 									)
@@ -575,7 +576,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		gnome_restaurant?: { start?: {} };
 		sepulchre?: { start?: {} };
 		gauntlet?: { start?: { corrupted?: boolean } };
-		mage_training_arena?: { train?: {}; buy?: { name: string }; points?: {} };
+		mage_training_arena?: {
+			train?: {};
+			buy?: { name: string };
+			points?: {};
+		};
 		mahogany_homes?: { start?: {}; buy?: { name: string } };
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };

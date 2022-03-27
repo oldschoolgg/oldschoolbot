@@ -20,7 +20,7 @@ const RuneTable = new LootTable()
 	.every('Nature rune', [18, 22])
 	.every('Fire rune', [35, 45]);
 
-const buyables = [
+export const mageTrainingArenaBuyables = [
 	{
 		item: getOSItem('Infinity gloves'),
 		cost: 420
@@ -67,9 +67,9 @@ const buyables = [
 ];
 
 export async function mageTrainingArenaBuyCommand(user: KlasaUser, input = '') {
-	const buyable = buyables.find(i => stringMatches(input, i.item.name));
+	const buyable = mageTrainingArenaBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
-		return `Here are the items you can buy: \n\n${buyables
+		return `Here are the items you can buy: \n\n${mageTrainingArenaBuyables
 			.map(i => `**${i.item.name}:** ${i.cost} points`)
 			.join('\n')}.`;
 	}
@@ -106,11 +106,12 @@ export async function mageTrainingArenaBuyCommand(user: KlasaUser, input = '') {
 	return `Successfully purchased 1x ${item.name} for ${cost} Pizazz Points.`;
 }
 
-export async function mageTrainingArenaPointsCommand(){
-	const user = await getNewUser(user.id);
-	return `You have **${user.pizazz_points.toLocaleString()}** Pizazz points.
+export async function mageTrainingArenaPointsCommand(user: KlasaUser) {
+	const userpizazz = await getNewUser(user.id);
+
+	return `You have **${userpizazz.pizazz_points.toLocaleString()}** Pizazz points.
         **Pizazz Points Per Hour:** ${pizazzPointsPerHour}
-        ${buyables
+        ${mageTrainingArenaBuyables
 			.map(
 				i =>
 					`${i.item.name} - ${i.cost} pts - ${formatDuration(
