@@ -364,7 +364,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		{
 			name: 'mage_training_arena',
-			description: 'Sends your minion to train the Mage Training Arena.',
+			description: 'Sends your minion to train at the Mage Training Arena.',
 			type: ApplicationCommandOptionType.SubcommandGroup,
 			options: [
 				{
