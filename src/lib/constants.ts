@@ -434,7 +434,7 @@ export const skillEmoji = {
 	hunter: '<:hunter:630911040166559784>',
 	cml: '<:CrystalMathLabs:364657225249062912>',
 	clock: '<:ehpclock:352323705210142721>',
-	combat: '<:combat:956971849579917382>'
+	combat: '<:combat:634636918289727488>'
 };
 
 export const LEVEL_99_XP = 13_034_431;
