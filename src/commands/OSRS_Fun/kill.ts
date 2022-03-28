@@ -68,20 +68,20 @@ export default class extends BotCommand {
 			onTask: msg.flagArgs.ontask === undefined ? false : true
 		});
 
-		if (typeof result === 'string') {
-			return msg.channel.send(result);
+		if (result.error) {
+			return msg.channel.send(result.error);
 		}
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				new Bank(result.bank),
-				`Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster?.name ?? bossName)}`,
+				new Bank(result.bank?.bank),
+				result.title ?? `Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster?.name ?? bossName)}`,
 				true,
 				msg.flagArgs,
 				msg.author
 			);
 
-		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });
+		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')], content: result.content });
 	}
 }
