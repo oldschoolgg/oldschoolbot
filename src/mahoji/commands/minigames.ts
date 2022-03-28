@@ -399,7 +399,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.Integer,
 							required: false,
 							min_value: 1,
-							max_value: 100
+							max_value: 1000
 						}
 					]
 				}
