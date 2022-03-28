@@ -17,7 +17,7 @@ import { SkillsEnum } from './../../lib/skilling/types';
 interface Collectable {
 	item: Item;
 	skillReqs?: Skills;
-	itemCost: Bank;
+	itemCost?: Bank;
 	quantity: number;
 	duration: number;
 	qpRequired?: number;
@@ -50,6 +50,11 @@ export const collectables: Collectable[] = [
 		},
 		duration: Time.Minute * 8.3,
 		qpRequired: 32
+	},
+	{
+		item: getOSItem('Flax'),
+		quantity: 28,
+		duration: Time.Minute * 1.68
 	},
 	{
 		item: getOSItem("Red spiders' eggs"),
@@ -164,16 +169,18 @@ export default class extends BotCommand {
 			);
 		}
 
-		const cost = collectable.itemCost.clone().multiply(quantity);
-		if (!msg.author.owns(cost)) {
-			return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
-		}
-		await msg.author.removeItemsFromBank(cost);
+		if (collectable.itemCost) {
+			const cost = collectable.itemCost.clone().multiply(quantity);
+			if (!msg.author.owns(cost)) {
+				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
+			}
+			await msg.author.removeItemsFromBank(cost);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CollectingCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
-		);
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.CollectingCost,
+				addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
+			);
+		}
 
 		await addSubTaskToActivityTask<CollectingOptions>({
 			collectableID: collectable.item.id,
@@ -184,12 +191,14 @@ export default class extends BotCommand {
 			type: 'Collecting'
 		});
 
-		return msg.channel.send(
-			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
-				collectable.item.name
-			}, it'll take around ${formatDuration(duration)} to finish.
+		let response = `${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
+			collectable.item.name
+		}, it'll take around ${formatDuration(duration)} to finish.`;
 
-Removed ${cost} from your bank.`
-		);
+		if (collectable.itemCost) {
+			response += `\nRemoved ${collectable.itemCost.clone().multiply(quantity)} from your bank.`;
+		}
+
+		return msg.channel.send(response);
 	}
 }
