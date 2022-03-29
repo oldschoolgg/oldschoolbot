@@ -1,6 +1,7 @@
 import './lib/data/itemAliases';
 import './lib/crons';
 
+import { Stopwatch } from '@sapphire/stopwatch';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -66,8 +67,15 @@ client.on('raw', async event => {
 	if (!client.ready) return;
 
 	const data = event.d as APIInteraction;
+	client.emit('debug', `Received ${data.type} interaction`);
 
+	const timer = new Stopwatch();
 	const result = await mahojiClient.parseInteraction(data);
+	timer.stop();
+	client.emit(
+		'debug',
+		`Parsed ${result?.interaction?.data.interaction.data?.name ?? 'None'} interaction in ${timer.duration}ms`
+	);
 
 	if (result === null) return;
 
@@ -113,6 +121,7 @@ client.on('raw', async event => {
 		return result.interaction.respond(result);
 	}
 });
+client.on('debug', console.log);
 client.on('ready', client.init);
 client.on('ready', onStartup);
 mahojiClient.start();
