@@ -3130,9 +3130,9 @@ setCustomItem(
 	100_000
 );
 
-setCustomItem(70_001, 'Grimy Korulsi', 'Magic seed', {}, 500_000);
-setCustomItem(70_002, 'Korulsi', 'Magic seed', {}, 500_000);
-setCustomItem(70_003, 'Korulsi Seed', 'Magic seed', {}, 500_000);
+setCustomItem(70_001, 'Grimy Korulsi', 'Magic seed', {}, 25_000);
+setCustomItem(70_002, 'Korulsi', 'Magic seed', {}, 25_000);
+setCustomItem(70_003, 'Korulsi Seed', 'Magic seed', {}, 25_000);
 setCustomItem(70_004, 'Enhanced Saradomin Brew', 'Vial of Water', {}, 10_000);
 setCustomItem(70_005, 'Enhanced Super Restore', 'Vial of Water', {}, 10_000);
 setCustomItem(70_006, 'Enhanced Stamina Potion', 'Vial of Water', {}, 10_000);
@@ -3363,4 +3363,4 @@ setCustomItem(
 	},
 	10_000_000
 );
-setCustomItem(70_018, 'Grand Crystal Acorn', 'Magic seed', {}, 500_000);
+setCustomItem(70_018, 'Grand Crystal Acorn', 'Magic seed', {}, 50_000);
