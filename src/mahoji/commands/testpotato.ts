@@ -335,6 +335,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							max_value: 10_000
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'irontoggle',
+					description: 'Toggle being an ironman on/off.'
 				}
 			],
 			run: async ({
@@ -351,6 +356,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				nexhax?: {};
 				badnexgear?: {};
 				setmonsterkc?: { monster: string; kc: string };
+				irontoggle?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -358,6 +364,13 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				}
 				const user = await client.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+				if (options.irontoggle) {
+					const current = mahojiUser.minion_ironman;
+					await mahojiUserSettingsUpdate(user.id, {
+						minion_ironman: !current
+					});
+					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
+				}
 				if (options.max) {
 					return giveMaxStats(user);
 				}
