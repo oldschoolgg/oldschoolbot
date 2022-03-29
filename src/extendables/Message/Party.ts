@@ -17,6 +17,7 @@ export async function setupParty(
 	options: MakePartyOptions
 ): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
 	const usersWhoConfirmed: KlasaUser[] = [options.leader];
+	let deleted = false;
 
 	function getMessageContent() {
 		return `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
@@ -39,6 +40,7 @@ export async function setupParty(
 
 	// Debounce message edits to prevent spam.
 	const updateUsersIn = debounce(() => {
+		if (deleted || confirmMessage.deleted) return;
 		confirmMessage.edit(getMessageContent());
 	}, 500);
 
@@ -165,6 +167,7 @@ export async function setupParty(
 			});
 
 			collector.once('end', () => {
+				deleted = true;
 				confirmMessage.delete().catch(noOp);
 				for (const user of usersWhoConfirmed) {
 					partyLockCache.delete(user.id);
