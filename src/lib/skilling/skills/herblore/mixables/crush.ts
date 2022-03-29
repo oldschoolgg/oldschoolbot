@@ -108,7 +108,19 @@ const Crush: Mixable[] = [
 		bankTimePerPotion: 0.17,
 		wesley: false,
 		outputMultiple: 2
-	}
+	},
+	{
+		name: 'Ignecarus Scales',
+		aliases: ['ignecarus scale', 'igne scale'],
+		id: itemID('Ignecarus Scales'),
+		level: 92,
+		xp: 5000,
+		inputItems: resolveNameBank({ 'Ignecarus Dragonclaw': 1 }),
+		tickRate: 2,
+		bankTimePerPotion: 0.17,
+		wesley: false,
+		outputMultiple: 150
+	} ,
 ];
 
 export default Crush;
