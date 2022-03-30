@@ -207,6 +207,7 @@ export default class extends BotCommand {
 
 		switch (BossName.replace(/\W/g, '').toUpperCase()) {
 			case 'NEX': {
+				if (1 > 0) return msg.channel.send('Currently disabled.');
 				let kc = 0;
 				const totalLoot = new Bank();
 				let user = await mahojiUsersSettingsFetch(msg.author.id);
