@@ -181,8 +181,8 @@ export const BuildersSupplyCrateTable = new LootTable()
 
 export const NexUniqueTable = new LootTable()
 	.add('Nihil horn', 1, 2)
-	.add('Zaryte vambraces', 1, 2)
-	.add('Ancient hilt', 1, 2)
+	.add('Zaryte vambraces', 1, 3)
+	.add('Ancient hilt', 1, 1)
 	.add('Torva full helm (damaged)', 1, 2)
 	.add('Torva platebody (damaged)', 1, 2)
 	.add('Torva platelegs (damaged)', 1, 2);
