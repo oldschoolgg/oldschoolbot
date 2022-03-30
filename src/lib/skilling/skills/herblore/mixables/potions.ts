@@ -403,6 +403,16 @@ const Potions: Mixable[] = [
 		bankTimePerPotion: 0.17
 	},
 	{
+		name: 'Ancient brew (3)',
+		aliases: ['ancient brew (3)', 'ancient brew'],
+		id: itemID('Ancient brew (3)'),
+		level: 85,
+		xp: 190,
+		inputItems: resolveNameBank({ 'Dwarf weed potion (unf)': 1, 'Nihil dust': 1 }),
+		tickRate: 2,
+		bankTimePerPotion: 0.17
+	},
+	{
 		name: 'Anti-venom (4)',
 		aliases: ['anti-venom (4)', 'anti-venom'],
 		id: itemID('Anti-venom (4)'),
