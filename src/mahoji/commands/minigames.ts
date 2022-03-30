@@ -18,6 +18,12 @@ import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
 import {
+	mageTrainingArenaBuyables,
+	mageTrainingArenaBuyCommand,
+	mageTrainingArenaPointsCommand,
+	mageTrainingArenaStartCommand
+} from '../lib/abstracted_commands/mageTrainingArenaCommand';
+import {
 	mahoganyHomesBuildCommand,
 	mahoganyHomesBuyables,
 	mahoganyHomesBuyCommand
@@ -449,6 +455,48 @@ export const minigamesCommand: OSBMahojiCommand = {
 		},
 		/**
 		 *
+		 * Mage Training Arena
+		 *
+		 */
+		{
+			name: 'mage_training_arena',
+			description: 'Sends your minion to train at the Mage Training Arena.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Mage Training Arena trip.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'points',
+					description: 'See your Mage Training Arena points.'
+				},
+				{
+					name: 'buy',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Buy items with your Mage Training Arena points.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							required: true,
+							description: 'The item you want to buy.',
+							autocomplete: async value => {
+								return mageTrainingArenaBuyables
+									.filter(i =>
+										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
 		 * Mahogany Homes
 		 *
 		 */
@@ -633,6 +681,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		};
 		sepulchre?: { start?: {} };
 		gauntlet?: { start?: { corrupted?: boolean } };
+		mage_training_arena?: {
+			start?: {};
+			buy?: { name: string };
+			points?: {};
+		};
 		mahogany_homes?: { start?: {}; buy?: { name: string } };
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
@@ -765,6 +818,23 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.gauntlet?.start) {
 			return gauntletCommand(klasaUser, channelID, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
+		}
+
+		/**
+		 *
+		 * Mage Training Arena
+		 *
+		 */
+		if (options.mage_training_arena) {
+			if (options.mage_training_arena.buy) {
+				return mageTrainingArenaBuyCommand(klasaUser, options.mage_training_arena.buy.name);
+			}
+			if (options.mage_training_arena.start) {
+				return mageTrainingArenaStartCommand(klasaUser, channelID);
+			}
+			if (options.mage_training_arena.points) {
+				return mageTrainingArenaPointsCommand(klasaUser);
+			}
 		}
 
 		/**
