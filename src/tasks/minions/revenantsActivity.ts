@@ -1,7 +1,6 @@
 import { deepClone, roll } from 'e';
 import { Task } from 'klasa';
 
-import { revenantMonsters } from '../../commands/Minion/revs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { runCommand } from '../../lib/settings/settings';
@@ -14,6 +13,7 @@ import { RevenantOptions } from '../../lib/types/minions';
 import { updateBankSetting } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { revenantMonsters } from '../../mahoji/lib/abstracted_commands/revsCommand';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
@@ -107,15 +107,15 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				const flags: Record<string, string> = skulled ? { skull: 'skull' } : {};
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				if (!res.prompter) res.prompter = {};
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				res.prompter.flags = flags;
 				user.log(`continued trip of killing ${monster.name}`);
-				return runCommand({ message: res, commandName: 'revs', args: [style, monster.name], isContinue: true });
+				return runCommand({
+					message: res,
+					commandName: 'k',
+					args: {
+						name: monster.name
+					},
+					isContinue: true
+				});
 			},
 			image!,
 			data,

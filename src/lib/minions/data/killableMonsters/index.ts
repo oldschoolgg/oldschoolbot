@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { revenantMonsters } from '../../../../mahoji/lib/abstracted_commands/revsCommand';
 import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
@@ -324,6 +325,7 @@ export default killableMonsters;
 
 export const effectiveMonsters = [
 	...killableMonsters,
+	...revenantMonsters,
 	NightmareMonster,
 	{
 		name: 'Zalcano',
