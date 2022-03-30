@@ -146,7 +146,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 	for (const user of team) uniqueDecider.add(user.id);
 
 	for (let i = 0; i < quantity; i++) {
-		const uniqueRecipient = roll(53) ? uniqueDecider.roll().item : null;
+		const uniqueRecipient = roll(43) ? uniqueDecider.roll().item : null;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
 
 		for (const teamMember of team) {
