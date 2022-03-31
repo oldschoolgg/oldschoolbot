@@ -50,7 +50,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Boolean,
-			name: 'blastfurnace',
+			name: 'blast_furnace',
 			description: 'If you want to blast furnace the bars.',
 			required: false
 		}
@@ -63,28 +63,29 @@ export const smeltingCommand: OSBMahojiCommand = {
 		let { name, quantity, blastfurnace } = options;
 		const user = await client.fetchUser(userID);
 		if (blastfurnace === undefined) blastfurnace = false;
+		const boosts = [];
 
-		const bar = Smithing.Bars.find(
-			bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
-		);
-
-		const blastbar = Smithing.BlastableBars.find(
-			bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
-		);
+		const bar = blastfurnace
+			? Smithing.BlastableBars.find(
+					bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
+			  )
+			: Smithing.Bars.find(bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name));
 
 		if (!bar) {
+			if (blastfurnace) {
+				return `Thats not a valid bar to blast furnace. Valid bars are ${Smithing.BlastableBars.map(
+					bar => bar.name
+				).join(', ')}.`;
+			}
 			return `Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(bar => bar.name).join(', ')}.`;
-		}
-
-		if (!blastbar) {
-			return `Thats not a valid bar to blast furance. Valid bars are ${Smithing.BlastableBars.map(
-				bar => bar.name
-			).join(', ')}.`;
 		}
 
 		if (user.skillLevel(SkillsEnum.Smithing) < bar.level) {
 			return `${user.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
 		}
+
+		// All bars take 2.4s to smith normally, add on quarter of a second to account for banking/etc.
+		let timeToSmithSingleBar = blastfurnace ? bar.timeToUse + Time.Second / 10 : bar.timeToUse + Time.Second / 4;
 
 		if (blastfurnace) {
 			const requiredSkills = {
@@ -100,30 +101,22 @@ export const smeltingCommand: OSBMahojiCommand = {
 					requiredSkills
 				)}`;
 			}
-		}
 
-		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
-		let timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
-		if (blastfurnace) {
-			timeToSmithSingleBar = blastbar.timeToUse + Time.Second / 10;
-		}
-
-		// check if they have a coal bag
-		let coalbag = '';
-		if (
-			user.hasItemEquippedOrInBank(itemID('Coal bag')) &&
-			(blastbar.id === itemID('Steel Bar') ||
-				blastbar.id === itemID('Mithril Bar') ||
-				blastbar.id === itemID('Adamantite Bar') ||
-				blastbar.id === itemID('Runite Bar'))
-		) {
-			coalbag = '\n\n**Boosts:** 60% speed boost for coal bag.';
-			timeToSmithSingleBar *= 0.625;
-		}
-		let graceful = '';
-		if (!user.hasGracefulEquipped()) {
-			timeToSmithSingleBar *= 1.075;
-			graceful = '\n-7.5% time penalty for not having graceful equipped.';
+			// Boosts
+			if (
+				user.hasItemEquippedOrInBank(itemID('Coal bag')) &&
+				(bar.id === itemID('Steel Bar') ||
+					bar.id === itemID('Mithril Bar') ||
+					bar.id === itemID('Adamantite Bar') ||
+					bar.id === itemID('Runite Bar'))
+			) {
+				boosts.push('60% for coal bag');
+				timeToSmithSingleBar *= 0.625;
+			}
+			if (!user.hasGracefulEquipped()) {
+				timeToSmithSingleBar *= 1.075;
+				boosts.push('-7.5% penalty for not having graceful equipped.');
+			}
 		}
 
 		const maxTripLength = user.maxTripLength('Smithing');
@@ -133,8 +126,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
 		}
 
-		let itemsNeeded = new Bank(bar.inputOres);
-		if (blastfurnace) itemsNeeded = blastbar.inputOres.clone().multiply(quantity);
+		const itemsNeeded = bar.inputOres.clone();
 
 		const maxCanDo = user.bank().fits(itemsNeeded);
 		if (maxCanDo === 0) {
@@ -156,9 +148,10 @@ export const smeltingCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
+		let coinsToRemove = 0;
 		if (blastfurnace) {
 			const gpPerHour = (user.isIronman ? 1 : 3.5) * 72_000;
-			const coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
+			coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
 			const gp = user.settings.get(UserSettings.GP);
 			if (gp < coinsToRemove) {
 				return `You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`;
@@ -180,18 +173,16 @@ export const smeltingCommand: OSBMahojiCommand = {
 			type: 'Smelting'
 		});
 
-		let goldGauntletMessage = '';
 		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
-			goldGauntletMessage = '\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.';
+			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 
-		let response = `${user.minionName} is now smelting ${quantity}x ${bar.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish.${goldGauntletMessage}`;
+		const response = `${user.minionName} is now smelting ${quantity}x ${
+			bar.name
+		}, it'll take around ${formatDuration(duration)} to finish. ${
+			blastfurnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
+		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
 
-		if (blastfurnace) {
-			response += `You paid ${coinsToRemove} GP to use the Blast Furnace.${goldGauntletMessage}${coalbag}${graceful}`;
-		}
 		return response;
 	}
 };
