@@ -85,6 +85,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	quantity: number;
+	blastf: boolean;
 }
 
 export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
