@@ -3,14 +3,13 @@ import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 
 import { client } from '../..';
-import { production } from '../../config';
+import { OWNER_ID, production } from '../../config';
 import { BadgesEnum, BitField, BotID, Channel, DISABLED_COMMANDS, PerkTier, SupportServer } from '../../lib/constants';
-import { getGuildSettings } from '../../lib/settings/settings';
-import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
 import { Cooldowns } from './Cooldowns';
 
 export type CommandArgs = (string | number | boolean | unknown)[] | Record<string, unknown>;
@@ -29,6 +28,8 @@ export interface AbstractCommandAttributes {
 	requiredPermissionsForBot?: PermissionResolvable[];
 	requiredPermissionsForUser?: PermissionResolvable[];
 	runIn?: string[];
+	requiresMinionNotBusy?: boolean;
+	requiresMinion?: boolean;
 	description: string;
 }
 
@@ -53,8 +54,13 @@ interface Inhibitor {
 const inhibitors: Inhibitor[] = [
 	{
 		name: 'settingSyncer',
-		run: async ({ user }) => {
+		run: async ({ user, guild }) => {
 			await user.settings.sync();
+
+			if (guild && !untrustedGuildSettingsCache.has(guild.id)) {
+				await mahojiGuildSettingsFetch(guild);
+			}
+
 			return false;
 		},
 		canBeDisabled: false
@@ -75,6 +81,32 @@ const inhibitors: Inhibitor[] = [
 		},
 		canBeDisabled: false,
 		silent: true
+	},
+	{
+		name: 'hasMinion',
+		run: async ({ user, command }) => {
+			if (!command.attributes?.requiresMinion) return false;
+
+			if (!user.hasMinion) {
+				return 'You need a minion to use this command.';
+			}
+
+			return false;
+		},
+		canBeDisabled: false
+	},
+	{
+		name: 'minionNotBusy',
+		run: async ({ user, command }) => {
+			if (!command.attributes?.requiresMinionNotBusy) return false;
+
+			if (user.minionIsBusy) {
+				return 'Your minion must not be busy to use this command.';
+			}
+
+			return false;
+		},
+		canBeDisabled: false
 	},
 	{
 		name: 'altProtection',
@@ -127,8 +159,8 @@ const inhibitors: Inhibitor[] = [
 				return 'This command is globally disabled.';
 			}
 			if (!guild) return false;
-			const settings = await getGuildSettings(guild);
-			if (settings.get(GuildSettings.DisabledCommands).includes(command.name)) {
+			const cachedSettings = untrustedGuildSettingsCache.get(guild.id);
+			if (cachedSettings?.disabledCommands.includes(command.name)) {
 				return 'This command is disabled in this server.';
 			}
 			return false;
@@ -184,8 +216,8 @@ const inhibitors: Inhibitor[] = [
 			}
 
 			// Allow guild-moderators to use commands in disabled channels
-			const settings = await getGuildSettings(guild!);
-			if (settings.get(GuildSettings.StaffOnlyChannels).includes(channel.id)) {
+			const settings = untrustedGuildSettingsCache.get(guild.id);
+			if (settings?.staffOnlyChannels.includes(channel.id)) {
 				const hasPerm = await member.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
 				if (!hasPerm) return "You need the 'Ban Members' permission to use commands in disabled channels.";
 			}
@@ -229,6 +261,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'cooldown',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.cooldown) return false;
+			if (OWNER_ID === user.id) return false;
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis)}`;

@@ -1,7 +1,7 @@
 import { KlasaMessage } from 'klasa';
 
 import { cancelTask, getActivityOfUser } from '../../settings/settings';
-import { NightmareActivityTaskOptions, RaidsOptions } from '../../types/minions';
+import { NexTaskOptions, NightmareActivityTaskOptions, RaidsOptions } from '../../types/minions';
 
 export async function cancelTaskCommand(msg: KlasaMessage) {
 	const currentTask = getActivityOfUser(msg.author.id);
@@ -22,6 +22,14 @@ export async function cancelTaskCommand(msg: KlasaMessage) {
 		);
 	}
 
+	if (currentTask.type === 'Nex') {
+		const data = currentTask as NexTaskOptions;
+		if (data.users.length > 1) {
+			return msg.channel.send(
+				`${msg.author.minionName} is fighting Nex with a team, they can't abandon the trip!`
+			);
+		}
+	}
 	if (currentTask.type === 'Nightmare') {
 		const data = currentTask as NightmareActivityTaskOptions;
 		if (data.users.length > 1) {

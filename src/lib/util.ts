@@ -1,7 +1,21 @@
+import { bold } from '@discordjs/builders';
+import type { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel, Util } from 'discord.js';
+import {
+	Channel,
+	Client,
+	DMChannel,
+	Guild,
+	GuildMember,
+	MessageButton,
+	MessageOptions,
+	TextChannel,
+	User as DJSUser,
+	Util
+} from 'discord.js';
+import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import murmurHash from 'murmurhash';
@@ -16,6 +30,8 @@ import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearSt
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
+import { Rune } from './skilling/skills/runecraft';
+import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
@@ -472,8 +488,8 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export function patronMaxTripCalc(user: KlasaUser) {
-	const perkTier = getUsersPerkTier(user);
+export function patronMaxTripCalc(user: KlasaUser | User) {
+	const perkTier = getUsersPerkTier(user instanceof KlasaUser ? user : user.bitfield);
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
 	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
@@ -556,13 +572,17 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 		if (uniques.includes(item.id)) {
 			uniquesReceived += qty;
 		}
-		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
+		const rate = Math.round(iterations / qty);
+		if (rate < 2) continue;
+		let { name } = item;
+		if (uniques.includes(item.id)) name = bold(name);
+		result.push(`${qty}x ${name} (1 in ${rate})`);
 	}
 	result.push(
-		`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived} which is ${calcWhatPercent(
+		`\n**${uniquesReceived}x Uniques (1 in ${Math.round(iterations / uniquesReceived)} which is ${calcWhatPercent(
 			uniquesReceived,
 			iterations
-		)}%)`
+		)}%)**`
 	);
 	return result.join(', ');
 }
@@ -644,4 +664,63 @@ export function clamp(val: number, min: number, max: number) {
 
 export function calcPerHour(value: number, duration: number) {
 	return (value / (duration / Time.Minute)) * 60;
+}
+
+export function calcMaxRCQuantity(rune: Rune, user: KlasaUser) {
+	const level = user.skillLevel(SkillsEnum.Runecraft);
+	for (let i = rune.levels.length; i > 0; i--) {
+		const [levelReq, qty] = rune.levels[i - 1];
+		if (level >= levelReq) return qty;
+	}
+
+	return 0;
+}
+
+export function convertDJSUserToAPIUser(user: DJSUser | KlasaUser): APIUser {
+	const apiUser: APIUser = {
+		id: user.id,
+		username: user.username,
+		discriminator: user.discriminator,
+		avatar: user.avatar,
+		bot: user.bot,
+		system: user.system,
+		flags: undefined,
+		mfa_enabled: undefined,
+		banner: undefined,
+		accent_color: undefined,
+		locale: undefined,
+		verified: undefined,
+		email: undefined,
+		premium_type: undefined,
+		public_flags: undefined
+	};
+
+	return apiUser;
+}
+
+export function convertDJSMemberToAPIMember(member: GuildMember): APIInteractionGuildMember {
+	return {
+		permissions: member.permissions.bitfield.toString(),
+		user: convertDJSUserToAPIUser(member.user),
+		roles: Array.from(member.roles.cache.keys()),
+		joined_at: member.joinedTimestamp!.toString(),
+		deaf: false,
+		mute: false
+	};
+}
+
+export function removeFromArr<T>(arr: T[], item: T) {
+	return arr.filter(i => i !== item);
+}
+
+/**
+ * Scale percentage exponentially
+ *
+ * @param decay Between 0.01 and 0.05; bigger means more penalty.
+ * @param percent The percent to scale
+ * @returns percent
+ */
+export function exponentialPercentScale(percent: number, decay = 0.0038) {
+	const decayedPercent = Math.pow(100 * Math.E, -decay * (100 - percent));
+	return decayedPercent * 100;
 }

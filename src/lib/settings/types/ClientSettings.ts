@@ -78,6 +78,9 @@ export namespace ClientSettings {
 
 		export const DegradedItemsCost = T<Readonly<ItemBank>>('degraded_items_cost');
 
+		export const TKSCost = T<Readonly<ItemBank>>('tks_cost');
+		export const TKSLoot = T<Readonly<ItemBank>>('tks_loot');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');
