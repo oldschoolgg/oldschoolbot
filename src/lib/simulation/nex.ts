@@ -153,11 +153,9 @@ export function handleNexKills({ quantity, team }: NexContext) {
 			if (teamMember.id === uniqueRecipient) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
-		}
-
-		if (roll(20)) {
-			const recipient = randArrItem(survivors);
-			teamLoot.add(recipient.id, 'Clue scroll (elite)');
+			if (roll(20)) {
+				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
+			}
 		}
 
 		if (roll(500)) {
