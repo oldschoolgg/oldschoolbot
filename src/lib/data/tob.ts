@@ -242,12 +242,12 @@ const maxRange = new Gear(TOBMaxRangeGear);
 maxRange.ammo!.quantity = 10_000;
 
 export const TOBMaxMeleeGear = constructGearSetup({
-	head: 'Neitiznot faceguard',
+	head: 'Torva full helm',
 	neck: 'Amulet of torture',
-	body: 'Bandos chestplate',
+	body: 'Torva platebody',
 	cape: 'Infernal cape',
 	hands: 'Ferocious gloves',
-	legs: 'Bandos tassets',
+	legs: 'Torva platelegs',
 	feet: 'Primordial boots',
 	'2h': 'Scythe of vitur',
 	ring: 'Berserker ring(i)'

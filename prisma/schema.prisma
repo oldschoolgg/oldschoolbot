@@ -585,6 +585,7 @@ enum activity_type_enum {
   LastManStanding
   BirthdayEvent
   TokkulShop
+  Nex
 }
 
 enum xp_gains_skill_enum {

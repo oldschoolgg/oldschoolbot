@@ -1004,6 +1004,13 @@
   resolved "https://registry.yarnpkg.com/@sapphire/snowflake/-/snowflake-3.2.0.tgz#fa915798d0a0ce5fa93b16c793185ae5d0a3f117"
   integrity sha512-tfHzY+6/5bbHdB+uNqsEQ5rhjaZAoFUrqP/l1S5jwxMdKeSCIiGkJjcE99/WGGdzyWGjTNgNVX/dt4Me/FdMlg==
 
+"@sapphire/stopwatch@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@sapphire/stopwatch/-/stopwatch-1.4.0.tgz#76bd616a5ab8618c3932a016586143b7774286c7"
+  integrity sha512-4gtDuls69vTLseQ3TCZnrWj2boLz7imok0W7wg0+VtF+VGTK3glRn34YEEt0Hj92Ebqmst87EPEJyZ1U5nNs9w==
+  dependencies:
+    tslib "^2.3.1"
+
 "@sapphire/time-utilities@^1.4.4":
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.4.4.tgz#5822a3ffd467b7270a9ff8ae23f71b08f03700af"

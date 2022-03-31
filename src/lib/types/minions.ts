@@ -23,6 +23,7 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	runeID: number;
 	essenceQuantity: number;
 	imbueCasts: number;
+	useStaminas?: boolean;
 }
 
 export interface DarkAltarOptions extends ActivityTaskOptions {
@@ -273,6 +274,15 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	fakeDuration: number;
 	wipedRoom: null | number;
 	deaths: number[][];
+}
+
+export interface NexTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+	leader: string;
+	users: string[];
+	userDetails: [string, number, number[]][];
+	fakeDuration: number;
+	wipedKill: number | null;
 }
 
 export interface CollectingOptions extends ActivityTaskOptions {
