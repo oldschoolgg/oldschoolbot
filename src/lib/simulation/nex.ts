@@ -142,23 +142,27 @@ export const purpleNexItems = resolveItems([
 
 export function handleNexKills({ quantity, team }: NexContext) {
 	const teamLoot = new TeamLoot(purpleNexItems);
-	const uniqueDecider = new SimpleTable<string>();
-	for (const user of team) uniqueDecider.add(user.id);
 
 	for (let i = 0; i < quantity; i++) {
-		const uniqueRecipient = roll(43) ? uniqueDecider.roll().item : null;
+		const survivors = team.filter(usr => !usr.deaths.includes(i));
+
+		const uniqueRecipient = roll(43) ? randArrItem(survivors).id : null;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
 
-		for (const teamMember of team) {
-			if (teamMember.deaths.includes(i)) continue;
+		for (const teamMember of survivors) {
 			teamLoot.add(teamMember.id, nonUniqueDrop);
 			if (teamMember.id === uniqueRecipient) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
 		}
 
+		if (roll(20)) {
+			const recipient = randArrItem(survivors);
+			teamLoot.add(recipient.id, 'Clue scroll (elite)');
+		}
+
 		if (roll(500)) {
-			const recipient = randArrItem(team);
+			const recipient = randArrItem(survivors);
 			teamLoot.add(recipient.id, 'Nexling');
 		}
 	}
