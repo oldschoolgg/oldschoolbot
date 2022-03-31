@@ -827,6 +827,7 @@ setCustomItem(
 setCustomItem(48_012, 'Gorajan shards', 'Coal', {}, 1_000_000);
 setCustomItem(48_013, 'Gorajan bonecrusher', 'Coal', {}, 20_000_000);
 setCustomItem(48_014, 'Gorajan bonecrusher (u)', 'Coal', {}, 20_000_000);
+setCustomItem(50_118, 'Gorajan bonecrusher (disabled)', 'Coal', {}, 20_000_000);
 /**
  * END DUNGEONEERING
  */

@@ -182,6 +182,24 @@ const chaoticCreatables: Createable[] = [
 			[itemID('Gorajan bonecrusher')]: 1
 		},
 		requiredSkills: { crafting: 120 }
+	},
+	{
+		name: 'Disable Gorajan bonecrusher',
+		inputItems: {
+			[itemID('Gorajan bonecrusher')]: 1
+		},
+		outputItems: {
+			[itemID('Gorajan bonecrusher (disabled)')]: 1
+		}
+	},
+	{
+		name: 'Enable Gorajan bonecrusher',
+		inputItems: {
+			[itemID('Gorajan bonecrusher (disabled)')]: 1
+		},
+		outputItems: {
+			[itemID('Gorajan bonecrusher')]: 1
+		}
 	}
 ];
 
