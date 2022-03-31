@@ -9,6 +9,7 @@ import {
 	uniqueArr
 } from 'e';
 import { KlasaUser } from 'klasa';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -53,11 +54,13 @@ import {
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
+	stringMatches,
 	updateBankSetting
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
+import { nexCommand } from './nexCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -99,6 +102,7 @@ function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles
 }
 
 export async function minionKillCommand(
+	interaction: SlashCommandInteraction,
 	user: KlasaUser,
 	channelID: bigint,
 	name: string,
@@ -111,6 +115,9 @@ export async function minionKillCommand(
 	let messages: string[] = [];
 
 	if (!name) return invalidMonsterMsg;
+
+	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID);
+
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
 
