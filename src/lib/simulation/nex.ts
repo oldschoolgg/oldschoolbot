@@ -13,7 +13,6 @@ import {
 } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { getSkillsOfMahojiUser, getUserGear } from '../../mahoji/mahojiSettings';
 import { BitField, NEX_ID } from '../constants';
