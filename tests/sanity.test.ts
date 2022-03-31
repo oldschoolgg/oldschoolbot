@@ -1,4 +1,5 @@
 import { allOpenables } from '../src/lib/openables';
+import { exponentialPercentScale } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import itemID from '../src/lib/util/itemID';
 import itemIsTradeable from '../src/lib/util/itemIsTradeable';
@@ -37,5 +38,12 @@ describe('Sanity', () => {
 			}
 			ids.add(openable.id);
 		}
+	});
+	test('exponentialPercentScale', () => {
+		for (let i = 0; i < 100; i++) {
+			let num = exponentialPercentScale(i);
+			expect(num > 0 && num <= 100).toBeTruthy();
+		}
+		expect(exponentialPercentScale(100)).toEqual(100);
 	});
 });

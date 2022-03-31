@@ -143,5 +143,7 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.BirthdayEvent;
 		case 'TokkulShop':
 			return Tasks.TokkulShop;
+		case 'Nex':
+			return Tasks.Nex;
 	}
 }

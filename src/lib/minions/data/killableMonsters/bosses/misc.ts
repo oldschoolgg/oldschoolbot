@@ -56,6 +56,7 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 205,
 		itemInBankBoosts: [
 			{
+				[itemID('Zaryte crossbow')]: 18,
 				[itemID('Bandos godsword')]: 13,
 				[itemID('Dragon warhammer')]: 13,
 				[itemID('Dragon claws')]: 8
@@ -232,8 +233,8 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
-			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
-			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
+			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate', 'Torva platebody'],
+			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets', 'Torva platelegs'],
 			['Zamorakian spear', 'Zamorakian hasta']
 		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),

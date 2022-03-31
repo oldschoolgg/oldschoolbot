@@ -1,5 +1,6 @@
+import { Embed } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { Guild } from 'discord.js';
+import { Guild, HexColorString, Util } from 'discord.js';
 import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -15,6 +16,50 @@ import {
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../mahojiSettings';
+
+async function bgColorConfig(user: User, hex?: string) {
+	const currentColor = user.bank_bg_hex;
+
+	const embed = new Embed();
+
+	if (hex === 'reset') {
+		await mahojiUserSettingsUpdate(user.id, {
+			bank_bg_hex: null
+		});
+		return 'Reset your bank background color.';
+	}
+
+	if (!hex) {
+		if (!currentColor) {
+			return 'You have no background color set.';
+		}
+		return {
+			embeds: [
+				embed
+					.setColor(Util.resolveColor(currentColor as HexColorString))
+					.setDescription(`Your current background color is \`${currentColor}\`.`)
+			]
+		};
+	}
+
+	hex = hex.toUpperCase();
+	const isValid = hex.length === 7 && /^#([0-9A-F]{3}){1,2}$/i.test(hex);
+	if (!isValid) {
+		return "That's not a valid hex color. It needs to be 7 characters long, starting with '#', for example: #4e42f5 - use this to pick one: <https://www.google.com/search?q=hex+color+picker>";
+	}
+
+	await mahojiUserSettingsUpdate(user.id, {
+		bank_bg_hex: hex
+	});
+
+	return {
+		embeds: [
+			embed
+				.setColor(Util.resolveColor(hex as HexColorString))
+				.setDescription(`Your background color is now \`${hex}\``)
+		]
+	};
+}
 
 async function handleChannelEnable(
 	user: KlasaUser,
@@ -526,6 +571,19 @@ export const configCommand: OSBMahojiCommand = {
 							]
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'bg_color',
+					description: 'Set a custom color for transparent bank backgrounds.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'color',
+							description: 'The color in hex format.',
+							required: false
+						}
+					]
 				}
 			]
 		}
@@ -549,6 +607,7 @@ export const configCommand: OSBMahojiCommand = {
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 			set_rsn?: { username: string };
 			small_bank?: { choice: 'enable' | 'disable' };
+			bg_color?: { color?: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
@@ -585,6 +644,9 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (options.user.small_bank) {
 				return setSmallBank(mahojiUser, options.user.small_bank.choice);
+			}
+			if (options.user.bg_color) {
+				return bgColorConfig(mahojiUser, options.user.bg_color.color);
 			}
 		}
 		return 'wut da';

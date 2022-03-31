@@ -47,7 +47,8 @@ export const openCommand: OSBMahojiCommand = {
 			max_value: 100_000
 		}
 	],
-	run: async ({ userID, options }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
+	run: async ({ userID, options, interaction }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
+		await interaction.deferReply();
 		const user = await client.fetchUser(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
