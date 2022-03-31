@@ -12,10 +12,11 @@ export async function preCommand({
 }: {
 	abstractCommand: AbstractCommand;
 	userID: string;
-	guildID: string | null;
+	guildID?: string | null;
 	channelID: string;
 	bypassInhibitors: boolean;
 }): Promise<{ silent: boolean; reason: string } | undefined> {
+	client.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
 	const user = await client.fetchUser(userID);
 	if (user.isBusy && !bypassInhibitors && !client.owners.has(user)) {
 		return { silent: true, reason: 'You cannot use a command right now.' };

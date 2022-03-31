@@ -91,6 +91,15 @@ export default class extends Task {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.GnomeRestaurantLootBank, loot);
 
-		handleTripFinish(this.client, user, channelID, str, ['gnomerestaurant', [], true], undefined, data, loot);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			['minigames', { gnome_restaurant: { start: {} } }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }
