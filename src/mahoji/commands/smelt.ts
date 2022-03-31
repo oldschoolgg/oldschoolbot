@@ -59,20 +59,20 @@ export const smeltingCommand: OSBMahojiCommand = {
 		userID,
 		options,
 		channelID
-	}: CommandRunOptions<{ name: string; quantity?: number; blastfurnace?: boolean }>) => {
-		let { name, quantity, blastfurnace } = options;
+	}: CommandRunOptions<{ name: string; quantity?: number; blast_furnace?: boolean }>) => {
+		let { name, quantity, blast_furnace } = options;
 		const user = await client.fetchUser(userID);
-		if (blastfurnace === undefined) blastfurnace = false;
+		if (blast_furnace === undefined) blast_furnace = false;
 		const boosts = [];
 
-		const bar = blastfurnace
+		const bar = blast_furnace
 			? Smithing.BlastableBars.find(
 					bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
 			  )
 			: Smithing.Bars.find(bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name));
 
 		if (!bar) {
-			if (blastfurnace) {
+			if (blast_furnace) {
 				return `Thats not a valid bar to blast furnace. Valid bars are ${Smithing.BlastableBars.map(
 					bar => bar.name
 				).join(', ')}.`;
@@ -85,9 +85,9 @@ export const smeltingCommand: OSBMahojiCommand = {
 		}
 
 		// All bars take 2.4s to smith normally, add on quarter of a second to account for banking/etc.
-		let timeToSmithSingleBar = blastfurnace ? bar.timeToUse + Time.Second / 10 : bar.timeToUse + Time.Second / 4;
+		let timeToSmithSingleBar = blast_furnace ? bar.timeToUse + Time.Second / 10 : bar.timeToUse + Time.Second / 4;
 
-		if (blastfurnace) {
+		if (blast_furnace) {
 			const requiredSkills = {
 				crafting: 12,
 				firemaking: 16,
@@ -149,7 +149,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 		}
 
 		let coinsToRemove = 0;
-		if (blastfurnace) {
+		if (blast_furnace) {
 			const gpPerHour = (user.isIronman ? 1 : 3.5) * 72_000;
 			coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
 			const gp = user.settings.get(UserSettings.GP);
@@ -168,7 +168,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
-			blastf: blastfurnace,
+			blastf: blast_furnace,
 			duration,
 			type: 'Smelting'
 		});
@@ -180,7 +180,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 		const response = `${user.minionName} is now smelting ${quantity}x ${
 			bar.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${
-			blastfurnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
+			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
 		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
 
 		return response;
