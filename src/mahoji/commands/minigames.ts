@@ -10,6 +10,7 @@ import {
 	GambleTiers
 } from '../lib/abstracted_commands/barbAssault';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
+import { championsChallengeCommand } from '../lib/abstracted_commands/championchallenge';
 import { fishingTrawlerCommand } from '../lib/abstracted_commands/fishingTrawler';
 import { gauntletCommand } from '../lib/abstracted_commands/gauntletCommand';
 import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaurantCommand';
@@ -114,6 +115,22 @@ export const minigamesCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
 					description: 'Start a Castle Wars trip.'
+				}
+			]
+		},
+		/**
+		 *
+		 * Champions' Challenge
+		 *
+		 */ {
+			name: 'champions_challenge',
+			description: "Sends your minion to do the Champions' Challenge minigame.",
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: "Start a Champions' Challenge trip."
 				}
 			]
 		},
@@ -515,6 +532,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			stats?: {};
 		};
 		castle_wars?: { stats?: {}; start?: {} };
+		champions_challenge?: { start?: {} };
 		lms?: {
 			stats?: {};
 			start?: {};
@@ -577,6 +595,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (options.castle_wars?.start) {
 			return castleWarsStartCommand(klasaUser, channelID);
 		}
+
+		/**
+		 *
+		 * Champions' Challenge
+		 *
+		 */
+		if (options.champions_challenge?.start) return championsChallengeCommand(klasaUser, channelID);
 
 		/**
 		 *
