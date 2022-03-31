@@ -61,7 +61,7 @@ export default class extends Task {
 				{
 					name: bar.name,
 					quantity: oldQuantity,
-					blastfurnace: blastf
+					blast_furnace: blastf
 				},
 				true
 			],
