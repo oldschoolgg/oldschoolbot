@@ -6,12 +6,12 @@ import { Emoji, Events } from '../../../lib/constants';
 import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { AerialFishingActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { anglerBoostPercent, rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run(data: AerialFishingActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);

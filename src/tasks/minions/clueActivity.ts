@@ -23,7 +23,7 @@ export default class extends Task {
 			user.minionName
 		} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
-		} in your bank. You can open this casket using \`+open ${clueTier.name}\``;
+		} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
 
 		const loot = new Bank().add(clueTier.id, quantity);
 		await user.addItemsToBank({ items: loot, collectionLog: true });
