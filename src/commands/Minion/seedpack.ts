@@ -80,7 +80,7 @@ const HighSeedPackTable = new LootTable()
 	.add('Spirit seed', 1, 1)
 	.add('Redwood tree seed', 1, 1);
 
-function openSeedPack(seedTier: number): ItemBank {
+export function openSeedPack(seedTier: number): ItemBank {
 	const loot = new Bank();
 
 	const tempTable = new LootTable();
@@ -91,6 +91,7 @@ function openSeedPack(seedTier: number): ItemBank {
 	let low = 0;
 
 	switch (seedTier) {
+		case 0:
 		case 1: {
 			high = 0;
 			medium = rand(1, 3);
@@ -140,11 +141,9 @@ function openSeedPack(seedTier: number): ItemBank {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			aliases: ['sp'],
 			usage: '[quantity:int]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Opens seed packs.',
 			examples: ['+seedpack']

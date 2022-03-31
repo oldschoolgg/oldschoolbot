@@ -177,7 +177,7 @@ export const maxRangeGear = constructGearSetup({
 	neck: 'Necklace of anguish',
 	body: 'Armadyl chestplate',
 	cape: "Ava's assembler",
-	hands: 'Barrows gloves',
+	hands: 'Zaryte vambraces',
 	legs: 'Armadyl chainskirt',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
@@ -351,7 +351,7 @@ interface ItemBoost {
 	item: Item;
 	boost: number;
 	mustBeEquipped: boolean;
-	setup?: 'mage';
+	setup?: 'mage' | 'range';
 	mustBeCharged?: boolean;
 	requiredCharges?: number;
 }
@@ -413,6 +413,14 @@ const itemBoosts: ItemBoost[][] = [
 			setup: 'mage',
 			mustBeCharged: true,
 			requiredCharges: SANGUINESTI_CHARGES_PER_COX
+		}
+	],
+	[
+		{
+			item: getOSItem('Zaryte vambraces'),
+			boost: 4,
+			mustBeEquipped: true,
+			setup: 'range'
 		}
 	]
 ];

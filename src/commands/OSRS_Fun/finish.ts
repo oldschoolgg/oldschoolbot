@@ -1,9 +1,16 @@
 import { MessageEmbed } from 'discord.js';
+import { randInt } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
+import { NEX_ID } from '../../lib/constants';
+import { NexCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
+import { calculateNexDetails, handleNexKills } from '../../lib/simulation/nex';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { roll } from '../../lib/util';
+import { formatDuration, itemNameFromID, roll } from '../../lib/util';
+import { makeBankImage } from '../../lib/util/makeBankImage';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 // Use if Drop rate is X/Y
 function rollX(xVar: number, max: number) {
@@ -186,8 +193,6 @@ async function getAllPetsEmbed(petsRecieved: string[]) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 5,
-			oneAtTime: true,
 			description: "Simulates how long it takes you to 'finish' a boss (Get all its drops)",
 			usage: '<BossName:str>',
 			examples: ['+finish bandos', '+finish corp'],
@@ -201,6 +206,64 @@ export default class extends BotCommand {
 		const duplicates: string[] = [];
 
 		switch (BossName.replace(/\W/g, '').toUpperCase()) {
+			case 'NEX': {
+				if (1 > 0) return msg.channel.send('Currently disabled.');
+				let kc = 0;
+				const totalLoot = new Bank();
+				let user = await mahojiUsersSettingsFetch(msg.author.id);
+				let totalTime = 0;
+				let totalKC = 0;
+				let totalTrips = 0;
+				let finishedCL = false;
+				let kcStrings: string[] = [];
+				while (!finishedCL) {
+					if (NexCL.every(i => totalLoot.has(i))) {
+						finishedCL = true;
+						break;
+					}
+
+					const details = calculateNexDetails({
+						team: [
+							user,
+							...[user, user, user, user].map(() => ({ ...user, id: randInt(1, 10_000_000).toString() }))
+						].map(u => ({ ...u, monsterScores: { [NEX_ID]: kc } }))
+					});
+					kc += details.quantity;
+					totalTrips++;
+					totalKC += details.quantity;
+					totalTime += details.duration;
+					const loot = handleNexKills({
+						quantity: details.quantity,
+						team: details.team.map(u => ({
+							id: u.id,
+							contribution: u.contribution,
+							deaths: u.deaths
+						}))
+					});
+					const userLoot = loot.get(user.id);
+					for (const item of NexCL) {
+						if (userLoot.has(item) && !totalLoot.has(item)) {
+							kcStrings.push(`${itemNameFromID(item)} at ${randInt(kc - details.quantity, kc)} KC`);
+						}
+					}
+					totalLoot.add(userLoot);
+				}
+				const image = await makeBankImage({ bank: totalLoot, title: 'Loot From Finishing Nex' });
+
+				return msg.channel.send({
+					content: `Total Time: ${formatDuration(totalTime)}
+Total KC: ${totalKC}
+Total Trips: ${totalTrips}
+${kcStrings.join('\n')}
+`,
+					files: [
+						{
+							attachment: image.file.buffer,
+							name: image.file.fileName
+						}
+					]
+				});
+			}
 			case 'MOLE':
 			case 'GIANTMOLE': {
 				const lootMSG = [];

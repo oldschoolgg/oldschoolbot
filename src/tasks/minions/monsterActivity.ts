@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
+import { PvMMethod } from '../../lib/constants';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -54,6 +55,9 @@ export default class extends Task {
 		}
 		// Regular loot
 		const loot = monster.table.kill(quantity - newSuperiorCount, killOptions);
+		if (monster.specialLoot) {
+			monster.specialLoot(loot, user, data);
+		}
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
@@ -168,11 +172,20 @@ export default class extends Task {
 				? undefined
 				: res => {
 						user.log(`continued trip of killing ${monster.name}`);
-						let args = [quantity, monster.name];
-						if (usingCannon) args.push('cannon');
-						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
-						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
-						return runCommand(res, 'k', args, true);
+						let method: PvMMethod = 'none';
+						if (usingCannon) method = 'cannon';
+						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
+						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
+						return runCommand({
+							message: res,
+							commandName: 'k',
+							args: {
+								name: monster.name,
+								quantity,
+								method
+							},
+							isContinue: true
+						});
 				  },
 			image!,
 			data,

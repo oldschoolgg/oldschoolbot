@@ -3,8 +3,8 @@ import { noOp } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
 import { customClientOptions } from '../../config';
-import { getGuildSettingsCached } from '../../lib/settings/settings';
 import chatHeadImage, { chatHeads } from '../../lib/util/chatHeadImage';
+import { untrustedGuildSettingsCache } from '../../mahoji/mahojiSettings';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -14,7 +14,7 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	get cmdPrefix(this: KlasaMessage) {
 		let defaultPrefix = customClientOptions.prefix ?? '+';
-		return this.guild ? getGuildSettingsCached(this.guild)?.get('prefix') ?? defaultPrefix : defaultPrefix;
+		return this.guild ? untrustedGuildSettingsCache.get(this.guild.id)?.prefix ?? defaultPrefix : defaultPrefix;
 	}
 
 	removeAllReactions(this: KlasaMessage) {

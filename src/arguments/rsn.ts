@@ -6,7 +6,7 @@ export default class extends Argument {
 			if (!msg.author.settings.get('RSN')) await msg.author.settings.sync(true);
 			const player = msg.author.settings.get('RSN');
 			if (player) return player;
-			throw `Please specify a username, or set one with \`${msg.cmdPrefix}setrsn <username>\``;
+			throw 'Please specify a username, or set one with `/config user set_rsn <username>`';
 		}
 
 		const constructor = this.constructor as typeof Argument;

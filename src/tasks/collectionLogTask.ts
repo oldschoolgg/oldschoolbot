@@ -12,6 +12,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
+import { logError } from '../lib/util/logError';
 import BankImageTask from './bankImage';
 
 interface ISprite {
@@ -383,7 +384,7 @@ export default class CollectionLogTask extends Task {
 			const itemImage = await (this.client.tasks.get('bankImage') as BankImageTask)
 				.getItemImage(item, 1)
 				.catch(() => {
-					console.error(`Failed to load item image for item with id: ${item}`);
+					logError(`Failed to load item image for item with id: ${item}`);
 				});
 			if (!itemImage) {
 				this.client.emit(Events.Warn, `Item with ID[${item}] has no item image.`);
@@ -477,15 +478,25 @@ export default class CollectionLogTask extends Task {
 			ctx.textAlign = 'left';
 			ctx.fillStyle = '#FF981F';
 			this.drawText(ctx, (drawnSoFar = collectionLog.isActivity ? 'Completions: ' : 'Kills: '), 0, 25);
+			let pixelLevel = 25;
 			for (let [type, value] of objectEntries(collectionLog.completions)) {
+				if (
+					ctx.measureText(drawnSoFar).width +
+						ctx.measureText(` / ${type}: `).width +
+						ctx.measureText(value.toLocaleString()).width >=
+					225
+				) {
+					pixelLevel += 10;
+					drawnSoFar = '';
+				}
 				if (type !== 'Default') {
 					if (value === 0) continue;
 					ctx.fillStyle = '#FF981F';
-					this.drawText(ctx, ` / ${type}: `, ctx.measureText(drawnSoFar).width, 25);
+					this.drawText(ctx, ` / ${type}: `, ctx.measureText(drawnSoFar).width, pixelLevel);
 					drawnSoFar += ` / ${type}: `;
 				}
 				ctx.fillStyle = '#FFFFFF';
-				this.drawText(ctx, value.toLocaleString(), ctx.measureText(drawnSoFar).width, 25);
+				this.drawText(ctx, value.toLocaleString(), ctx.measureText(drawnSoFar).width, pixelLevel);
 				drawnSoFar += value.toLocaleString();
 			}
 		}

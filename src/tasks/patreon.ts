@@ -12,6 +12,7 @@ import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Patron } from '../lib/types';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { logError } from '../lib/util/logError';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
@@ -30,7 +31,7 @@ patreonApiURL.search = new URLSearchParams([
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
 
-const tiers: [PatronTierID, BitField][] = [
+export const tiers: [PatronTierID, BitField][] = [
 	[PatronTierID.Five, BitField.IsPatronTier5],
 	[PatronTierID.Four, BitField.IsPatronTier4],
 	[PatronTierID.Three, BitField.IsPatronTier3],
@@ -301,7 +302,7 @@ export default class PatreonTask extends Task {
 		}).then(res => res.json());
 
 		if (result.errors) {
-			console.error(result.errors);
+			logError(result.errors);
 			throw 'Failed to fetch patrons.';
 		}
 

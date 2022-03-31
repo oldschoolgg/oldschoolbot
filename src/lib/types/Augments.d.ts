@@ -1,9 +1,9 @@
-import { ActivityTypeEnum, PlayerOwnedHouse } from '@prisma/client';
+import { activity_type_enum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageAttachment, MessageEmbed, MessageOptions, MessagePayload } from 'discord.js';
+import { MessageAttachment, MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
-import { Bank, Player } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 
@@ -53,12 +53,11 @@ declare module 'klasa' {
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
 		options: KlasaClientOptions;
-		fetchUser(id: string): Promise<KlasaUser>;
+		fetchUser(id: string | bigint): Promise<KlasaUser>;
 	}
 
 	interface Command {
 		altProtection?: boolean;
-		oneAtTime?: boolean;
 		guildOnly?: boolean;
 		perkTier?: number;
 		ironCantUse?: boolean;
@@ -83,10 +82,7 @@ declare module 'klasa' {
 			flags: { [key: string]: string | number };
 		}): Promise<MessageOptions | MessageAttachment>;
 	}
-	interface Command {
-		kill(message: KlasaMessage, [quantity, monster]: [number | string, string]): Promise<any>;
-		getStatsEmbed(username: string, color: number, player: Player, key = 'level', showExtra = true): MessageEmbed;
-	}
+
 	interface KlasaMessage {
 		cmdPrefix: string;
 
@@ -101,10 +97,9 @@ declare module 'klasa' {
 	}
 }
 
-declare module 'discord-api-types/v8' {
+declare module 'discord.js/node_modules/discord-api-types/v8' {
 	type Snowflake = string;
 }
-
 type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
 
 declare module 'discord.js' {
@@ -159,11 +154,6 @@ declare module 'discord.js' {
 		skillLevel(skillName: SkillsEnum): number;
 		totalLevel(returnXP = false): number;
 		toggleBusy(busy: boolean): void;
-		/**
-		 * Returns how many of an item a user owns, checking their bank and all equipped gear.
-		 * @param itemID The item ID.
-		 */
-		numOfItemsOwned(itemID: number): number;
 		/**
 		 * Returns true if the user has this item equipped in any of their setups.
 		 * @param itemID The item ID.
@@ -247,7 +237,7 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: ActivityTypeEnum): number;
+		maxTripLength(activity?: activity_type_enum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;

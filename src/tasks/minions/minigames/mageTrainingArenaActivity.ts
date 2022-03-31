@@ -15,7 +15,7 @@ export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
-		incrementMinigameScore(userID, 'magic_training_arena', quantity);
+		await incrementMinigameScore(userID, 'magic_training_arena', quantity);
 
 		const loot = new Bank();
 

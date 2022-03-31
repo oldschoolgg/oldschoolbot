@@ -11,6 +11,7 @@ import { Minigames } from '../lib/settings/minigames';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
 import { convertXPtoLVL } from '../lib/util';
+import { logError } from '../lib/util/logError';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -19,7 +20,7 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const collections = ['pets', 'skilling', 'clues', 'bosses', 'minigames', 'cox', 'tob', 'slayer', 'other', 'custom'];
+const collections = ['pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer', 'other', 'custom'];
 
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
@@ -60,7 +61,7 @@ async function addRoles({
 		try {
 			await g.members.fetch(u);
 		} catch {
-			console.error(`Failed to fetch \`${u}\` member.`);
+			logError(`Failed to fetch \`${u}\` member.`);
 		}
 	}
 	const roleName = _role.name!;
@@ -131,7 +132,7 @@ export default class extends Task {
 		// eslint-disable-next-line @typescript-eslint/unbound-method
 		const q = async <T>(str: string) => {
 			const result = await this.client.query<T>(str).catch(err => {
-				console.error(`This query failed: ${str}`, err);
+				logError(`This query failed: ${str}`, err);
 				return [];
 			});
 			return result;
@@ -214,12 +215,12 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 					collections.map(async clName => {
 						const items = getCollectionItems(clName);
 						if (!items || items.length === 0) {
-							console.error(`${clName} collection log doesnt exist`);
+							logError(`${clName} collection log doesnt exist`);
 							return [];
 						}
 
 						function handleErr(): CLUser[] {
-							console.error(`Failed to select top collectors for ${clName}`);
+							logError(`Failed to select top collectors for ${clName}`);
 							return [];
 						}
 
@@ -256,6 +257,14 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 			for (let i = 0; i < topIronUsers.length; i++) {
 				const id = topIronUsers[i]?.id;
 				addToUserMap(userMap, id, `Rank ${i + 1} Ironman Collector`);
+				topCollectors.push(id);
+			}
+			const topNormieUsers = (await q<any>(generateQuery(getCollectionItems('overall'), false, 3))).filter(
+				(i: any) => i.qty > 0
+			) as CLUser[];
+			for (let i = 0; i < topNormieUsers.length; i++) {
+				const id = topNormieUsers[i]?.id;
+				addToUserMap(userMap, id, `Rank ${i + 1} Collector`);
 				topCollectors.push(id);
 			}
 
@@ -426,7 +435,7 @@ LIMIT 2;`
 					await fn();
 				} catch (err: any) {
 					failed.push(`${name} (${err.message})`);
-					console.error(err);
+					logError(err);
 				}
 			})
 		);

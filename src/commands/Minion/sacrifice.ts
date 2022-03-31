@@ -21,9 +21,7 @@ async function trackSacBank(user: KlasaUser, bank: Bank) {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[bank:...str]',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
 			examples: ['+sacrifice 1 Elysian sigil']
@@ -33,9 +31,10 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [bankStr = '']: [string | undefined]) {
 		const bankToSac = parseInputCostBank({
 			inputStr: bankStr,
-			usersBank: msg.author.bank(),
+			usersBank: msg.author.bank({ withGP: true }),
 			flags: msg.flagArgs,
-			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
+			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems),
+			user: msg.author
 		});
 
 		const sacVal = msg.author.settings.get(UserSettings.SacrificedValue);

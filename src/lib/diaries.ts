@@ -6,6 +6,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { MAX_QP } from './constants';
 import { getAllMinigameScores, MinigameName } from './settings/settings';
 import { UserSettings } from './settings/types/UserSettings';
+import Skillcapes from './skilling/skillcapes';
 import { courses } from './skilling/skills/agility';
 import { Skills } from './types';
 import { formatSkillRequirements, itemNameFromID } from './util';
@@ -22,7 +23,7 @@ export interface DiaryTier {
 	lapsReqs?: Record<string, number>;
 	qp?: number;
 	monsterScores?: Record<string, number>;
-	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
+	customReq?: (user: KlasaUser, summary: Boolean) => Promise<[true] | [false, string]>;
 }
 interface Diary {
 	name: string;
@@ -108,7 +109,7 @@ export async function userhasDiaryTier(user: KlasaUser, tier: DiaryTier): Promis
 	}
 
 	if (tier.customReq) {
-		const [hasCustomReq, reason] = await tier.customReq(user);
+		const [hasCustomReq, reason] = await tier.customReq(user, false);
 		if (!hasCustomReq) {
 			canDo = false;
 			reasons.push(reason!);
@@ -475,8 +476,18 @@ export const FaladorDiary: Diary = {
 			thieving: 13,
 			woodcutting: 75
 		},
-		qp: MAX_QP,
-		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)'])
+		collectionLogReqs: resolveItems(['Air rune', 'Saradomin brew(3)']),
+		customReq: async (user, summary) => {
+			if (summary) return [false, 'Quest point cape or Skill cape.'];
+			const userBank = user.bank();
+			if (userBank.has('Quest point cape') && user.settings.get(UserSettings.QP) >= MAX_QP) return [true];
+			for (const cape of Skillcapes) {
+				if ((userBank.has(cape.trimmed) || userBank.has(cape.untrimmed)) && user.skillLevel(cape.skill) >= 99) {
+					return [true];
+				}
+			}
+			return [false, 'you need a Quest point cape or Skill cape'];
+		}
 	}
 };
 
@@ -638,7 +649,8 @@ export const KandarinDiary: Diary = {
 			smithing: 90
 		},
 		collectionLogReqs: resolveItems(['Grimy dwarf weed', 'Shark']),
-		customReq: async user => {
+		customReq: async (user, summary) => {
+			if (summary) return [false, 'Barbarian Assault Honour Level of 5.'];
 			const honourLevel = user.settings.get(UserSettings.HonourLevel);
 			if (honourLevel < 5) {
 				return [false, 'your Barbarian Assault Honour Level is less than 5'];

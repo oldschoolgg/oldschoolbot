@@ -3,23 +3,19 @@ import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { BitField, Emoji } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { filterableTypes } from '../../lib/data/filterables';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { makePaginatedMessage } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
-import BankImageTask from '../../tasks/bankImage';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			description: 'Shows your bank, with all your items and GP.',
-			cooldown: 3,
-			oneAtTime: true,
 			usage: '[page:int{1}] [name:...string]',
 			usageDelim: ' ',
-			requiredPermissions: ['ATTACH_FILES'],
+			requiredPermissionsForBot: ['ATTACH_FILES'],
 			aliases: ['b', 'bs'],
 			examples: ['+b'],
 			categoryFlags: ['minion']
@@ -53,15 +49,7 @@ export default class extends BotCommand {
 		if (!page) page = 1;
 
 		if (msg.flagArgs.smallbank) {
-			const userBg = msg.author.settings.get(UserSettings.BankBackground);
-			const { uniqueSprite } = (this.client.tasks.get('bankImage') as BankImageTask).getBgAndSprite(userBg);
-			const currentStatus = msg.author.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank);
-			await msg.author.settings.update(UserSettings.BitField, BitField.AlwaysSmallBank);
-			return msg.channel.send(
-				`Small Banks are now ${currentStatus ? 'disabled' : 'enabled'} for you.${
-					uniqueSprite ? ' Your current BG will always draw the bank as small.' : ''
-				}`
-			);
+			return msg.channel.send('You now use `/config user small_bank` to change this setting.');
 		}
 
 		if (baseBank.length === 0) {
@@ -73,7 +61,8 @@ export default class extends BotCommand {
 		const bank = parseBank({
 			inputBank: baseBank,
 			flags: msg.flagArgs,
-			inputStr: itemNameOrID
+			inputStr: itemNameOrID,
+			user: msg.author
 		});
 
 		if (bank.length === 0) {
@@ -89,7 +78,7 @@ export default class extends BotCommand {
 				const filter = msg.flagArgs.filter
 					? filterableTypes.find(type => type.aliases.some(alias => msg.flagArgs.filter === alias)) ?? null
 					: null;
-				if (filter && !filter.items.includes(item.id)) {
+				if (filter && !filter.items(msg.author).includes(item.id)) {
 					continue;
 				}
 

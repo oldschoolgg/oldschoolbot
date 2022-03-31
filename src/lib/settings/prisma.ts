@@ -6,6 +6,7 @@ import { client } from '../..';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
 import { cleanString, isGroupActivity } from '../util';
+import { logError } from '../util/logError';
 import { taskNameFromType } from '../util/taskNameFromType';
 import { minionActivityCache, minionActivityCacheDelete } from './settings';
 
@@ -56,9 +57,10 @@ export async function completeActivity(_activity: Activity) {
 
 	client.oneCommandAtATimeCache.add(activity.userID);
 	try {
+		client.emit('debug', `Running ${task.name} for ${activity.userID}`);
 		await task.run(activity);
 	} catch (err) {
-		console.error(err);
+		logError(err);
 	} finally {
 		client.oneCommandAtATimeCache.delete(activity.userID);
 		minionActivityCacheDelete(activity.userID);

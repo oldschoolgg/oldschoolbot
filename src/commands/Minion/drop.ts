@@ -13,7 +13,6 @@ export default class extends BotCommand {
 			cooldown: 3,
 			usage: '[bank:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Drops an item from your bank.',
 			examples: ['+drop 1 elysian sigil', '+drop bronze dagger']
@@ -25,7 +24,8 @@ export default class extends BotCommand {
 			inputStr: bankStr,
 			usersBank: msg.author.bank(),
 			flags: msg.flagArgs,
-			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems)
+			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems),
+			user: msg.author
 		});
 
 		if (!msg.author.owns(bank)) {

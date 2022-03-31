@@ -29,8 +29,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [plantName:...string] [autoFarmed:boolean]',
 			aliases: ['plant'],
 			usageDelim: ' ',
@@ -109,11 +107,8 @@ export default class extends BotCommand {
 
 		const storeHarvestablePlant = patchType.lastPlanted;
 		const planted = storeHarvestablePlant
-			? Farming.Plants.find(
-					plants =>
-						stringMatches(plants.name, storeHarvestablePlant) ||
-						stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
-			  )
+			? Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
+			  Farming.Plants.find(plants => stringMatches(plants.name.split(' ')[0], storeHarvestablePlant))
 			: null;
 
 		const lastPlantTime: number = patchType.plantTime;

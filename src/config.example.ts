@@ -26,8 +26,10 @@ export const SENTRY_DSN: string | null = null;
 export const HTTP_PORT = 1234;
 export const CLIENT_SECRET = '';
 export const CLIENT_ID = '';
+export const DEV_SERVER_ID = '';
 export const GITHUB_TOKEN = '';
 export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {
 	// Your bot unique ID goes here
 	BotID: '303730326692429825'
 };
+export const OWNER_ID = '157797566833098752';

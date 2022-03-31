@@ -12,12 +12,10 @@ import { Workers } from '../../lib/workers';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
-			oneAtTime: true,
 			description: 'Simulate killing OSRS monsters and shows the loot.',
 			usage: '<quantity:int{1}> <BossName:...str>',
 			usageDelim: ' ',
-			requiredPermissions: ['ATTACH_FILES'],
+			requiredPermissionsForBot: ['ATTACH_FILES'],
 			examples: ['+kill 100 vorkath', 'kill 100k bandos'],
 			categoryFlags: ['fun', 'simulation']
 		});
@@ -70,20 +68,20 @@ export default class extends BotCommand {
 			onTask: msg.flagArgs.ontask === undefined ? false : true
 		});
 
-		if (typeof result === 'string') {
-			return msg.channel.send(result);
+		if (result.error) {
+			return msg.channel.send(result.error);
 		}
 
 		const { image } = await this.client.tasks
 			.get('bankImage')!
 			.generateBankImage(
-				new Bank(result.bank),
-				`Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster?.name ?? bossName)}`,
+				new Bank(result.bank?.bank),
+				result.title ?? `Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster?.name ?? bossName)}`,
 				true,
 				msg.flagArgs,
 				msg.author
 			);
 
-		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')] });
+		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')], content: result.content });
 	}
 }

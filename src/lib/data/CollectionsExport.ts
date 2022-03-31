@@ -1,9 +1,11 @@
 import { objectEntries } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { growablePets } from '../growablePets';
 import { implings } from '../implings';
+import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
 
 export interface IToReturnCollection {
@@ -167,9 +169,6 @@ export const dagannothKingsCL = resolveItems([
 	'Seercull',
 	'Mud battlestaff'
 ]);
-export const dagannothRexCL = resolveItems(['Dragon axe', 'Berserker ring', 'Warrior ring', 'Pet dagannoth rex']);
-export const dagannothPrimeCL = resolveItems(['Mud battlestaff', 'Dragon axe', 'Seers ring', 'Pet dagannoth prime']);
-export const dagannothSupremeCL = resolveItems(['Dragon axe', 'Seercull', 'Archers ring', 'Pet dagannoth supreme']);
 export const fightCavesCL = resolveItems(['Tzrek-jad', 'Fire cape']);
 export const theGauntletCL = resolveItems([
 	'Youngllef',
@@ -179,6 +178,33 @@ export const theGauntletCL = resolveItems([
 	'Gauntlet cape'
 ]);
 export const giantMoleCL = resolveItems(['Baby mole', 'Mole skin', 'Mole claw']);
+export const godWarsDungeonCL = resolveItems([
+	'Pet zilyana',
+	'Armadyl crossbow',
+	'Saradomin hilt',
+	'Saradomin sword',
+	"Saradomin's light",
+	"Pet k'ril tsutsaroth",
+	'Staff of the dead',
+	'Zamorakian spear',
+	'Steam battlestaff',
+	'Zamorak hilt',
+	"Pet kree'arra",
+	'Armadyl helmet',
+	'Armadyl chestplate',
+	'Armadyl chainskirt',
+	'Armadyl hilt',
+	'Pet general graardor',
+	'Bandos chestplate',
+	'Bandos tassets',
+	'Bandos boots',
+	'Bandos hilt',
+	...godWarsDungeonGodswordShards,
+	'Frozen key piece (bandos)',
+	'Frozen key piece (saradomin)',
+	'Frozen key piece (zamorak)',
+	'Frozen key piece (armadyl)'
+]);
 export const grotesqueGuardiansCL = resolveItems([
 	'Noon',
 	'Black tourmaline core',
@@ -1325,7 +1351,8 @@ export const allPetsCL = resolveItems([
 	'Youngllef',
 	'Little nightmare',
 	"Lil' creator",
-	'Tiny tempor'
+	'Tiny tempor',
+	'Nexling'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1987,3 +2014,97 @@ export const allClueItems = [
 	...cluesMediumCL,
 	...cluesSharedCL
 ];
+
+interface LMSBuyable {
+	item: Item;
+	cost: number | null;
+	quantity?: number;
+	onlyCL?: true;
+	wins?: number;
+}
+
+export const LMSBuyables: LMSBuyable[] = [
+	{ item: getOSItem("Deadman's chest"), cost: 160 },
+	{ item: getOSItem("Deadman's legs"), cost: 160 },
+	{ item: getOSItem("Deadman's cape"), cost: 160 },
+	{ item: getOSItem('Swift blade'), cost: 350 },
+	{ item: getOSItem('Guthixian icon'), cost: 500 },
+	{ item: getOSItem('Trouver parchment'), cost: 30 },
+	{ item: getOSItem('Wilderness crabs teleport'), cost: 1 },
+	{ item: getOSItem('Blighted bind sack'), quantity: 300, cost: 1 },
+	{ item: getOSItem('Blighted snare sack'), quantity: 150, cost: 1 },
+	{ item: getOSItem('Blighted entangle sack'), quantity: 70, cost: 1 },
+	{ item: getOSItem('Blighted teleport spell sack'), quantity: 50, cost: 1 },
+	{ item: getOSItem('Blighted vengeance sack'), quantity: 50, cost: 1 },
+	{ item: getOSItem('Blighted ancient ice sack'), quantity: 30, cost: 1 },
+	{ item: getOSItem('Adamant arrow'), quantity: 350, cost: 1 },
+	{ item: getOSItem('Bolt rack'), quantity: 200, cost: 1 },
+	{ item: getOSItem('Rune arrow'), quantity: 300, cost: 3 },
+	{ item: getOSItem('Dragonstone bolts (e)'), quantity: 20, cost: 3 },
+	{ item: getOSItem('Blighted karambwan'), quantity: 12, cost: 1 },
+	{ item: getOSItem('Blighted manta ray'), quantity: 15, cost: 1 },
+	{ item: getOSItem('Blighted anglerfish'), quantity: 15, cost: 1 },
+	{ item: getOSItem('Blighted super restore(4)'), quantity: 4, cost: 1 },
+	{ item: getOSItem('Climbing boots'), quantity: 20, cost: 1 },
+	{ item: getOSItem('Looting bag'), cost: 1 },
+	{ item: getOSItem('Looting bag note'), cost: 1 },
+	{ item: getOSItem('Ring of wealth scroll'), cost: 5 },
+	{ item: getOSItem('Magic shortbow scroll'), cost: 5 },
+	{ item: getOSItem('Clue box'), cost: 5 },
+	{ item: getOSItem('Crystal weapon seed'), cost: 12 },
+	{ item: getOSItem('Granite clamp'), cost: 25 },
+	{ item: getOSItem('Ornate maul handle'), cost: 15 },
+	{ item: getOSItem('Steam staff upgrade kit'), cost: 13 },
+	{ item: getOSItem('Lava staff upgrade kit'), cost: 13 },
+	{ item: getOSItem('Dragon pickaxe upgrade kit'), cost: 14 },
+	{ item: getOSItem('Ward upgrade kit'), cost: 20 },
+	{ item: getOSItem('Green dark bow paint'), cost: 25 },
+	{ item: getOSItem('Yellow dark bow paint'), cost: 25 },
+	{ item: getOSItem('White dark bow paint'), cost: 25 },
+	{ item: getOSItem('Blue dark bow paint'), cost: 25 },
+	{ item: getOSItem('Volcanic whip mix'), cost: 25 },
+	{ item: getOSItem('Frozen whip mix'), cost: 25 },
+	{ item: getOSItem('Rune pouch'), cost: 75 },
+	{ item: getOSItem('Rune pouch note'), cost: 75 },
+	{ item: getOSItem('Decorative emblem'), cost: 100 },
+	{ item: getOSItem("Saradomin's tear"), cost: 150 },
+	{ item: getOSItem('Target teleport scroll'), cost: 250 },
+	{ item: getOSItem("Vesta's longsword (inactive)"), cost: 300 },
+	{ item: getOSItem('Armadyl halo'), cost: 450 },
+	{ item: getOSItem('Bandos halo'), cost: 450 },
+	{ item: getOSItem('Seren halo'), cost: 450 },
+	{ item: getOSItem('Ancient halo'), cost: 450 },
+	{ item: getOSItem('Brassica halo'), cost: 450 },
+	{ item: getOSItem('Paddewwa teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Senntisten teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Annakarl teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Carrallangar teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Dareeyak teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Ghorrock teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Kharyrll teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Lassar teleport'), quantity: 2, cost: 1 },
+	{ item: getOSItem('Target teleport'), cost: 1 },
+	// Capes
+	{ item: getOSItem("Victor's cape (1)"), cost: null, wins: 1 },
+	{ item: getOSItem("Victor's cape (10)"), cost: null, wins: 10 },
+	{ item: getOSItem("Victor's cape (50)"), cost: null, wins: 50 },
+	{ item: getOSItem("Victor's cape (100)"), cost: null, wins: 100 },
+	{ item: getOSItem("Victor's cape (500)"), cost: null, wins: 500 },
+	{ item: getOSItem("Victor's cape (1000)"), cost: null, wins: 1000 },
+	// Special attacks
+	{ item: getOSItem('Golden armadyl special attack'), cost: 75, onlyCL: true },
+	{ item: getOSItem('Golden saradomin special attack'), cost: 75, onlyCL: true },
+	{ item: getOSItem('Golden bandos special attack'), cost: 75, onlyCL: true },
+	{ item: getOSItem('Golden zamorak special attack'), cost: 75, onlyCL: true }
+];
+
+export const NexCL = resolveItems([
+	'Nexling',
+	'Ancient hilt',
+	'Nihil horn',
+	'Zaryte vambraces',
+	'Torva full helm (damaged)',
+	'Torva platebody (damaged)',
+	'Torva platelegs (damaged)',
+	'Nihil shard'
+]);

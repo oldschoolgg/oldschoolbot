@@ -13,6 +13,7 @@ import {
 	rewardTokens
 } from '../minions/data/templeTrekking';
 import { UserSettings } from '../settings/types/UserSettings';
+import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
 import { addArrayOfNumbers, stringMatches } from '../util';
@@ -53,9 +54,6 @@ import {
 	creatureCreationCL,
 	cyclopsCL,
 	dagannothKingsCL,
-	dagannothPrimeCL,
-	dagannothRexCL,
-	dagannothSupremeCL,
 	dailyCL,
 	demonicGorillaCL,
 	fightCavesCL,
@@ -64,6 +62,7 @@ import {
 	generalGraardorCL,
 	giantMoleCL,
 	gnomeRestaurantCL,
+	godWarsDungeonCL,
 	gracefulCL,
 	grotesqueGuardiansCL,
 	hallowedSepulchreCL,
@@ -83,6 +82,7 @@ import {
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
+	NexCL,
 	oborCL,
 	pestControlCL,
 	questCL,
@@ -180,35 +180,17 @@ export const allCollectionLogs: ICollection = {
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
 				kcActivity: {
-					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name]
+					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name],
+					Rex: Monsters.DagannothRex.name,
+					Prime: Monsters.DagannothPrime.name,
+					Supreme: Monsters.DagannothSupreme.name
 				},
-				allItems: (() => {
-					return [
-						...new Set(
-							...[
-								Monsters.DagannothPrime.allItems,
-								Monsters.DagannothSupreme.allItems,
-								Monsters.DagannothRex.allItems
-							]
-						)
-					];
-				})(),
+				allItems: [
+					...Monsters.DagannothPrime.allItems,
+					...Monsters.DagannothSupreme.allItems,
+					...Monsters.DagannothRex.allItems
+				],
 				items: dagannothKingsCL
-			},
-			'Dagannoth Rex': {
-				alias: Monsters.DagannothRex.aliases,
-				allItems: Monsters.DagannothRex.allItems,
-				items: dagannothRexCL
-			},
-			'Dagannoth Prime': {
-				alias: Monsters.DagannothPrime.aliases,
-				allItems: Monsters.DagannothPrime.allItems,
-				items: dagannothPrimeCL
-			},
-			'Dagannoth Supreme': {
-				alias: Monsters.DagannothSupreme.aliases,
-				allItems: Monsters.DagannothSupreme.allItems,
-				items: dagannothSupremeCL
 			},
 			'The Fight Caves': {
 				kcActivity: Monsters.TzTokJad.name,
@@ -271,6 +253,11 @@ export const allCollectionLogs: ICollection = {
 				alias: Monsters.KrilTsutsaroth.aliases,
 				allItems: Monsters.KrilTsutsaroth.allItems,
 				items: krilTsutsarothCL
+			},
+			Nex: {
+				alias: ['nex'],
+				allItems: [...NexUniqueTable.allItems, ...NexNonUniqueTable.allItems],
+				items: NexCL
 			},
 			'The Nightmare': {
 				alias: NightmareMonster.aliases,
@@ -551,7 +538,11 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Last Man Standing': {
 				items: lastManStandingCL,
-				isActivity: true
+				isActivity: true,
+				kcActivity: {
+					Default: user => user.getMinigameScore('lms')
+				},
+				alias: ['lms']
 			},
 			'Magic Training Arena': {
 				alias: ['mta'],
@@ -695,25 +686,19 @@ export const allCollectionLogs: ICollection = {
 						);
 					}
 				},
-				allItems: (() => {
-					return [
-						...new Set(
-							...[
-								Monsters.RevenantImp.allItems,
-								Monsters.RevenantGoblin.allItems,
-								Monsters.RevenantPyrefiend.allItems,
-								Monsters.RevenantHobgoblin.allItems,
-								Monsters.RevenantCyclops.allItems,
-								Monsters.RevenantHellhound.allItems,
-								Monsters.RevenantDemon.allItems,
-								Monsters.RevenantOrk.allItems,
-								Monsters.RevenantDarkBeast.allItems,
-								Monsters.RevenantKnight.allItems,
-								Monsters.RevenantDragon.allItems
-							]
-						)
-					];
-				})(),
+				allItems: [
+					...Monsters.RevenantImp.allItems,
+					...Monsters.RevenantGoblin.allItems,
+					...Monsters.RevenantPyrefiend.allItems,
+					...Monsters.RevenantHobgoblin.allItems,
+					...Monsters.RevenantCyclops.allItems,
+					...Monsters.RevenantHellhound.allItems,
+					...Monsters.RevenantDemon.allItems,
+					...Monsters.RevenantOrk.allItems,
+					...Monsters.RevenantDarkBeast.allItems,
+					...Monsters.RevenantKnight.allItems,
+					...Monsters.RevenantDragon.allItems
+				],
 				items: revenantsCL
 			},
 			'Rooftop Agility': {
@@ -815,6 +800,25 @@ export const allCollectionLogs: ICollection = {
 			Graceful: {
 				counts: false,
 				items: gracefulCL
+			},
+			'God Wars Dungeon': {
+				counts: false,
+				alias: ['gwd', 'god wars'],
+				kcActivity: {
+					Default: [
+						Monsters.CommanderZilyana.name,
+						Monsters.KrilTsutsaroth.name,
+						Monsters.Kreearra.name,
+						Monsters.GeneralGraardor.name
+					]
+				},
+				allItems: [
+					...Monsters.CommanderZilyana.allItems,
+					...Monsters.KrilTsutsaroth.allItems,
+					...Monsters.Kreearra.allItems,
+					...Monsters.GeneralGraardor.allItems
+				],
+				items: godWarsDungeonCL
 			}
 		}
 	}

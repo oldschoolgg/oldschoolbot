@@ -1,18 +1,23 @@
 /* eslint-disable prefer-promise-reject-errors */
-import { Message, MessageReaction } from 'discord.js';
-import { debounce, sleep } from 'e';
+import { Message, MessageReaction, TextChannel } from 'discord.js';
+import { debounce, noOp, sleep, Time } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
-import { ReactionEmoji } from '../../lib/constants';
+import { ReactionEmoji, SILENT_ERROR } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
 
-async function _setup(
-	msg: KlasaMessage,
+const partyLockCache = new Set<string>();
+setInterval(() => partyLockCache.clear(), Time.Minute * 20);
+
+export async function setupParty(
+	channel: TextChannel,
+	user: KlasaUser,
 	options: MakePartyOptions
 ): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
 	const usersWhoConfirmed: KlasaUser[] = [options.leader];
+	let deleted = false;
 
 	function getMessageContent() {
 		return `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
@@ -22,7 +27,7 @@ async function _setup(
 			)}\n\nThis party will automatically depart in 2 minutes, or if the leader clicks the start (start early) or stop button.`;
 	}
 
-	const confirmMessage = (await msg.channel.send(getMessageContent())) as KlasaMessage;
+	const confirmMessage = (await channel.send(getMessageContent())) as KlasaMessage;
 	async function addEmojis() {
 		await confirmMessage.react(ReactionEmoji.Join);
 		await sleep(50);
@@ -35,6 +40,7 @@ async function _setup(
 
 	// Debounce message edits to prevent spam.
 	const updateUsersIn = debounce(() => {
+		if (deleted || confirmMessage.deleted) return;
 		confirmMessage.edit(getMessageContent());
 	}, 500);
 
@@ -49,6 +55,8 @@ async function _setup(
 
 	const reactionAwaiter = () =>
 		new Promise<KlasaUser[]>(async (resolve, reject) => {
+			partyLockCache.add(user.id);
+			let partyCancelled = false;
 			const collector = new CustomReactionCollector(confirmMessage, {
 				time: 120_000,
 				max: options.usersAllowed?.length ?? options.maxSize,
@@ -97,9 +105,11 @@ async function _setup(
 				removeUser(user);
 			});
 
-			function startTrip() {
-				if (usersWhoConfirmed.length < options.minSize) {
-					reject(`${msg.author} Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
+			async function startTrip() {
+				await confirmMessage.delete().catch(noOp);
+				if (!partyCancelled && usersWhoConfirmed.length < options.minSize) {
+					channel.send(`${user} Not enough people joined your ${options.party ? 'party' : 'mass'}!`);
+					reject(new Error(SILENT_ERROR));
 					return;
 				}
 
@@ -111,7 +121,7 @@ async function _setup(
 				if (user.client.settings?.get(ClientSettings.UserBlacklist).includes(user.id)) return;
 				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
-						if (usersWhoConfirmed.includes(user)) return;
+						if (usersWhoConfirmed.includes(user) || partyLockCache.has(user.id)) return;
 
 						if (options.usersAllowed && !options.usersAllowed.includes(user.id)) {
 							return;
@@ -119,6 +129,7 @@ async function _setup(
 
 						// Add the user
 						usersWhoConfirmed.push(user);
+						partyLockCache.add(user.id);
 						updateUsersIn();
 
 						if (usersWhoConfirmed.length >= options.maxSize) {
@@ -131,6 +142,7 @@ async function _setup(
 
 					case ReactionEmoji.Stop: {
 						if (user === options.leader) {
+							partyCancelled = true;
 							reject(
 								`The leader (${options.leader.username}) cancelled this ${
 									options.party ? 'party' : 'mass'
@@ -155,7 +167,11 @@ async function _setup(
 			});
 
 			collector.once('end', () => {
-				confirmMessage.removeAllReactions();
+				deleted = true;
+				confirmMessage.delete().catch(noOp);
+				for (const user of usersWhoConfirmed) {
+					partyLockCache.delete(user.id);
+				}
 				setTimeout(() => startTrip(), 750);
 			});
 		});
@@ -169,7 +185,8 @@ export default class extends Extendable {
 	}
 
 	async makePartyAwaiter(this: KlasaMessage, options: MakePartyOptions) {
-		const [usersWhoConfirmed, reactionAwaiter] = await _setup(this, options);
+		if (this.channel.type !== 'text') throw new Error('Tried to make party in non-text channel.');
+		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(this.channel, options.leader, options);
 
 		await reactionAwaiter();
 

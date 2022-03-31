@@ -23,10 +23,9 @@ type MiscEmojisKeys = keyof typeof miscEmojis;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: ['br'],
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			categoryFlags: ['utility'],
 			description: 'Shows the boss records (boss hiscores) for an OSRS account.',
 			examples: ['+br mylife212', '+bossrecords Woox']

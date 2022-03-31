@@ -1,14 +1,15 @@
-import { Intents, Permissions } from 'discord.js';
-import { KlasaClient, KlasaClientOptions, KlasaMessage, PermissionLevels } from 'klasa';
+import { Intents } from 'discord.js';
+import { Time } from 'e';
+import { KlasaClient, KlasaClientOptions } from 'klasa';
 
 import { customClientOptions, production, providerConfig } from '../config';
-import { PermissionLevelsEnum } from './constants';
+import { formatDuration } from './util';
 
 export const clientOptions: KlasaClientOptions = {
 	/* Discord.js Options */
 	messageCacheMaxSize: 200,
 	messageCacheLifetime: 120,
-	messageSweepInterval: 120,
+	messageSweepInterval: 5000,
 	owners: ['157797566833098752'],
 	shards: 'auto',
 	http: {
@@ -26,28 +27,23 @@ export const clientOptions: KlasaClientOptions = {
 	/* Klasa Options */
 	prefix: '+',
 	providers: providerConfig ?? undefined,
-	permissionLevels: new PermissionLevels()
-		.add(0, () => true)
-		.add(
-			PermissionLevelsEnum.Moderator,
-			(message: KlasaMessage) =>
-				message.member ? message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS) : false,
-			{
-				fetch: true
-			}
-		)
-		.add(
-			PermissionLevelsEnum.Admin,
-			(message: KlasaMessage) =>
-				message.member ? message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) : false,
-			{
-				fetch: true
-			}
-		)
-		.add(9, (message: KlasaMessage) => message.client.owners.has(message.author), { break: true })
-		.add(PermissionLevelsEnum.Owner, (message: KlasaMessage) => message.client.owners.has(message.author)),
 	pieceDefaults: { commands: { deletable: true } },
-	readyMessage: (client: KlasaClient) => `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds.`,
+	readyMessage: (client: KlasaClient) => {
+		const deprecatedCommands = client.commands.filter(c => c.path.toLowerCase().includes('deprecated')).size;
+		const totalCmds = client.commands.size;
+		const commandsLeft = totalCmds - deprecatedCommands;
+		const endOfTheWorld = new Date('2022-04-22');
+		const diff = endOfTheWorld.getTime() - Date.now();
+		const daysUntil = diff / Time.Day;
+		const migrationStr = `There are ${
+			totalCmds - deprecatedCommands
+		} commands left (${deprecatedCommands} deprecated) to become Slash Commands within ${formatDuration(diff)
+			.split(' ')
+			.slice(0, 2)
+			.join(' ')
+			.replace(',', '')} (${(commandsLeft / daysUntil).toFixed(2)} per day)`;
+		return `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds. ${migrationStr}`;
+	},
 	partials: ['USER', 'CHANNEL'],
 	production,
 	...customClientOptions

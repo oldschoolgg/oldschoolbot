@@ -1,32 +1,27 @@
-import { command_usage_status, NewUser, Prisma } from '@prisma/client';
-import { captureException } from '@sentry/node';
-import { Guild, Util } from 'discord.js';
+import { NewUser } from '@prisma/client';
+import { Util } from 'discord.js';
+import { roll } from 'e';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
-import { Emoji, getCommandArgs, shouldTrackCommand } from '../constants';
+import { client, mahojiClient } from '../..';
+import { CommandArgs } from '../../mahoji/lib/inhibitors';
+import { postCommand } from '../../mahoji/lib/postCommand';
+import { preCommand } from '../../mahoji/lib/preCommand';
+import {
+	convertAPIEmbedToDJSEmbed,
+	convertComponentDJSComponent,
+	convertKlasaCommandToAbstractCommand,
+	convertMahojiCommandToAbstractCommand
+} from '../../mahoji/lib/util';
+import { Emoji } from '../constants';
+import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
-import { cleanUsername, isGroupActivity } from '../util';
+import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
+import { logError } from '../util/logError';
 import { activitySync, prisma } from './prisma';
 
 export * from './minigames';
-
-const guildSettingsCache = new Map<string, Settings>();
-
-export async function getGuildSettings(guild: Guild) {
-	const cached = guildSettingsCache.get(guild.id);
-	if (cached) return cached;
-	const gateway = (guild.client.gateways.get('guilds') as Gateway)!;
-	const settings = await gateway.acquire(guild);
-	gateway.cache.set(guild.id, { settings });
-	guildSettingsCache.set(guild.id, settings);
-	return settings;
-}
-
-export function getGuildSettingsCached(guild: Guild) {
-	return guildSettingsCache.get(guild.id);
-}
 
 export async function getUserSettings(userID: string): Promise<Settings> {
 	return (client.gateways.get('users') as Gateway)!
@@ -50,10 +45,21 @@ export async function getNewUser(id: string): Promise<NewUser> {
 }
 
 export async function syncNewUserUsername(message: KlasaMessage) {
-	await prisma.$queryRaw`UPDATE new_users
-SET username = ${cleanUsername(message.author.username)}
-WHERE id = ${message.author.id}
-AND ((username IS NULL) OR (username <> ${cleanUsername(message.author.username)}));`;
+	if (!roll(20)) return;
+	const cleanedUsername = cleanUsername(message.author.username);
+	const username = cleanedUsername.length > 32 ? cleanedUsername.substring(0, 32) : cleanedUsername;
+	await prisma.newUser.upsert({
+		where: {
+			id: message.author.id
+		},
+		update: {
+			username
+		},
+		create: {
+			id: message.author.id,
+			username
+		}
+	});
 }
 
 export async function getMinionName(userID: string): Promise<string> {
@@ -114,64 +120,128 @@ export async function syncActivityCache() {
 	}
 }
 
-export function settingsUpdate(type: Prisma.ModelName, id: string, newData: any) {
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
-	return prisma[type].update({ where: { id }, data: newData });
+export async function runMahojiCommand({
+	msg,
+	commandName,
+	options
+}: {
+	msg: KlasaMessage;
+	commandName: string;
+	options: Record<string, unknown>;
+}) {
+	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
+	if (!mahojiCommand) {
+		throw new Error(`No mahoji command found for ${commandName}`);
+	}
+
+	return mahojiCommand.run({
+		userID: BigInt(msg.author.id),
+		guildID: msg.guild ? BigInt(msg.guild.id) : (null as any),
+		channelID: BigInt(msg.channel.id),
+		options,
+		user: msg.author as any, // kinda dirty
+		member: msg.member as any,
+		client: mahojiClient,
+		interaction: {} as any
+	});
 }
 
-export async function runCommand(
-	message: KlasaMessage,
-	commandName: string,
-	args: unknown[],
-	isContinue = false,
-	method = 'run'
-) {
-	const command = message.client.commands.get(commandName);
-	if (!command) {
-		throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
-	}
-	if (!command.enabled) {
-		throw new Error(`The ${command.name} command is disabled.`);
-	}
+export async function runCommand({
+	message,
+	commandName,
+	args,
+	isContinue,
+	method = 'run',
+	bypassInhibitors
+}: {
+	message: KlasaMessage;
+	commandName: string;
+	args: CommandArgs;
+	isContinue?: boolean;
+	method?: string;
+	bypassInhibitors?: true;
+}) {
+	const channel = client.channels.cache.get(message.channel.id);
 
-	let commandUsage: {
-		date: Date;
-		user_id: string;
-		command_name: string;
-		status: command_usage_status;
-		args: null | any;
-		channel_id: string;
-		is_continue: boolean;
-		guild_id: string | null;
-		flags: Prisma.InputJsonObject | undefined;
-	} | null = {
-		date: message.createdAt,
-		user_id: message.author.id,
-		command_name: command.name,
-		status: command_usage_status.Unknown,
-		args: getCommandArgs(command, args),
-		channel_id: message.channel.id,
-		is_continue: isContinue,
-		guild_id: message.guild?.id ?? null,
-		flags: Object.keys(message.flagArgs).length > 0 ? message.flagArgs : undefined
-	};
+	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
+	const command = message.client.commands.get(commandName) as BotCommand | undefined;
+	const actualCommand = mahojiCommand ?? command;
+	if (!actualCommand) throw new Error('No command found');
+	const abstractCommand =
+		actualCommand instanceof BotCommand
+			? convertKlasaCommandToAbstractCommand(actualCommand)
+			: convertMahojiCommandToAbstractCommand(actualCommand);
 
+	let error: Error | null = null;
+	let inhibited = false;
 	try {
-		// @ts-ignore Cant be typechecked
-		const result = await command[method](message, args);
-		commandUsage.status = command_usage_status.Success;
-		return result;
-	} catch (err) {
-		commandUsage.status = command_usage_status.Error;
-		message.client.emit('commandError', message, command, args, err);
+		const inhibitedReason = await preCommand({
+			abstractCommand,
+			userID: message.author.id,
+			channelID: message.channel.id,
+			guildID: message.guild?.id ?? null,
+			bypassInhibitors: bypassInhibitors ?? false
+		});
+
+		if (inhibitedReason) {
+			inhibited = true;
+			if (inhibitedReason.silent) return;
+			return message.channel.send(inhibitedReason.reason);
+		}
+
+		if (mahojiCommand) {
+			if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
+			const result = await runMahojiCommand({
+				msg: message,
+				options: args,
+				commandName
+			});
+			if (channelIsSendable(channel)) {
+				if (typeof result === 'string') {
+					await channel.send(result);
+				} else {
+					await channel.send({
+						...result,
+						embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
+						components: result.components?.map(convertComponentDJSComponent)
+					});
+				}
+			}
+		} else {
+			if (!Array.isArray(args)) throw new Error('Had object args for non-mahoji command');
+			if (!command) throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
+			if (!command.enabled) throw new Error(`The ${command.name} command is disabled.`);
+
+			try {
+				// @ts-ignore Cant be typechecked
+				const result = await command[method](message, args);
+				return result;
+			} catch (err) {
+				message.client.emit('commandError', message, command, args, err);
+			}
+		}
+	} catch (err: any) {
+		if (typeof err === 'string') {
+			if (channelIsSendable(channel)) {
+				return channel.send(err);
+			}
+		}
+		error = err as Error;
 	} finally {
-		if (shouldTrackCommand(command, args)) {
-			await prisma.commandUsage
-				.create({
-					data: commandUsage
-				})
-				.catch(captureException);
+		try {
+			await postCommand({
+				abstractCommand,
+				userID: message.author.id,
+				guildID: message.guild?.id ?? null,
+				channelID: message.channel.id,
+				args,
+				error,
+				msg: message,
+				isContinue: isContinue ?? false,
+				inhibited
+			});
+		} catch (err) {
+			logError(err);
 		}
 	}
 

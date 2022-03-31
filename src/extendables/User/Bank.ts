@@ -3,7 +3,6 @@ import { percentChance } from 'e';
 import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { O } from 'ts-toolbelt';
 
 import { projectiles } from '../../lib/constants';
 import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions/blowpipeCommand';
@@ -33,23 +32,6 @@ export default class extends Extendable {
 		const bank = new Bank(this.settings.get(UserSettings.Bank));
 		if (withGP) bank.add('Coins', this.settings.get(UserSettings.GP));
 		return bank;
-	}
-
-	public numOfItemsOwned(this: User, itemID: number) {
-		const bank = this.settings.get(UserSettings.Bank);
-
-		let numOwned = 0;
-
-		if (typeof bank[itemID] !== 'undefined') {
-			numOwned += bank[itemID];
-		}
-
-		for (const setup of Object.values(this.rawGear())) {
-			const thisItemEquipped = Object.values(setup).find(setup => setup?.item === itemID);
-			if (thisItemEquipped) numOwned += thisItemEquipped.quantity;
-		}
-
-		return numOwned;
 	}
 
 	public allItemsOwned(this: User): Bank {
@@ -135,7 +117,7 @@ export default class extends Extendable {
 		});
 	}
 
-	public async removeItemsFromBank(this: User, _itemBank: O.Readonly<ItemBank>) {
+	public async removeItemsFromBank(this: User, _itemBank: Readonly<ItemBank>) {
 		return this.queueFn(async user => {
 			const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
 
@@ -159,6 +141,7 @@ export default class extends Extendable {
 				await user.removeGP(items[995]);
 				delete items[995];
 			}
+			if (Object.keys(items).length === 0) return;
 
 			user.log(`Had items removed from bank - ${JSON.stringify(items)}`);
 			return user.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items));

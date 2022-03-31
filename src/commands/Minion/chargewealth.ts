@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { WealthChargingActivityTaskOptions } from '../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { formatDuration, skillsMeetRequirements } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
@@ -30,8 +30,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[quantity:int{1}]',
 			usageDelim: ' ',
 			description: 'Sends your minion to charge inventories of ring of wealths',
@@ -84,7 +82,7 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't have enough Rings of wealth, ${quantityWealths} required.`);
 		}
 
-		await addSubTaskToActivityTask<WealthChargingActivityTaskOptions>({
+		await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,
