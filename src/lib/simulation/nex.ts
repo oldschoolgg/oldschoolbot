@@ -97,10 +97,10 @@ export function checkNexUser(user: User): [false] | [true, string] {
 	) {
 		return [true, `${tag} is using incorrect ammo for their type of weapon.`];
 	}
-	if (ammo.quantity < 200) {
+	if (ammo.quantity < 600) {
 		return [
 			true,
-			`${tag} has less than 200 ${itemNameFromID(ammo.item)} equipped, they might run out in the fight!`
+			`${tag} has less than 600 ${itemNameFromID(ammo.item)} equipped, they might run out in the fight!`
 		];
 	}
 	const bank = new Bank(user.bank as any);
