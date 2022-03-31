@@ -11,7 +11,7 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client, mahojiClient } from '..';
-import { CLIENT_ID } from '../config';
+import { CLIENT_ID, production } from '../config';
 import {
 	badges,
 	BitField,
@@ -19,6 +19,7 @@ import {
 	Channel,
 	DISABLED_COMMANDS,
 	Emoji,
+	NEX_ID,
 	Roles,
 	SupportServer
 } from '../lib/constants';
@@ -28,9 +29,11 @@ import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } f
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { calculateNexDetails, nexGearStats } from '../lib/simulation/nex';
 import { BotCommand } from '../lib/structures/BotCommand';
 import {
 	asyncExec,
+	calcPerHour,
 	channelIsSendable,
 	cleanString,
 	convertBankToPerHourStats,
@@ -49,6 +52,7 @@ import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
@@ -222,7 +226,7 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 	}
 }
 
-export const emoji = (client: KlasaClient) => getSupportGuild(client)?.emojis.cache.random().toString();
+export const emoji = (client: KlasaClient) => getSupportGuild(client)?.emojis.cache.random()?.toString();
 
 const statusMap = {
 	'0': '🟢 Ready',
@@ -254,6 +258,50 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'nexsim': {
+				if (production) return;
+				let str =
+					'Simulating Nex kills with 2-10 team sizes, assuming each team member is a copy of your account.\n';
+				const user = await mahojiUsersSettingsFetch(msg.author.id);
+				const gearStats = nexGearStats(user);
+				const kc = msg.flagArgs.kc ?? (user.monsterScores as any)[NEX_ID];
+				(user.monsterScores as any)[NEX_ID] = kc;
+				str += `Offence[${gearStats.offence.toFixed(1)}] Defence[${gearStats.defence.toFixed(1)}] KC[${
+					(user.monsterScores as any)[NEX_ID]
+				}]\n\n`;
+				for (let i = 2; i < 10; i++) {
+					const res = calculateNexDetails({ team: new Array(i).fill(user) });
+					str += `**${i}:** `;
+					if (!res.quantity) {
+						str += 'Died';
+					} else {
+						str += `${calcPerHour(res.quantity, res.duration).toFixed(1)}/hr (${
+							res.quantity
+						} kills in ${formatDuration(res.duration)} - ${formatDuration(
+							res.duration / res.quantity,
+							true
+						)} per kill)`;
+					}
+					str += '\n';
+				}
+				return msg.channel.send(str);
+			}
+			case 'ping': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
+				if (!input || typeof input !== 'string') return;
+				const roles = await prisma.pingableRole.findMany();
+				const roleToPing = roles.find(i => i.id === Number(input) || stringMatches(i.name, input));
+				if (!roleToPing) {
+					return msg.channel.send('No role with that name found.');
+				}
+				if (!msg.member) return;
+				if (!msg.member.roles.cache.has(Roles.MassHoster)) {
+					return;
+				}
+				return msg.channel.send(
+					`<@&${roleToPing.role_id}> You were pinged because you have this role, you can remove it using \`+roles ${roleToPing.name}\`.`
+				);
+			}
 			case 'checkmasses': {
 				return checkMassesCommand(msg);
 			}
@@ -428,7 +476,7 @@ ${
 				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
 					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
 				});
-				const emoji = getSupportGuild(this.client)?.emojis.cache.random().toString();
+				const emoji = getSupportGuild(this.client)?.emojis.cache.random()?.toString();
 				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
 
 				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);

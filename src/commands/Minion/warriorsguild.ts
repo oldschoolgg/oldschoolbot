@@ -6,7 +6,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { AnimatedArmourActivityTaskOptions, CyclopsActivityTaskOptions } from '../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import resolveItems from '../../lib/util/resolveItems';
@@ -148,7 +148,7 @@ export default class extends BotCommand {
 				);
 			}
 
-			await addSubTaskToActivityTask<CyclopsActivityTaskOptions>({
+			await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 				userID: msg.author.id,
 				channelID: msg.channel.id,
 				quantity,
