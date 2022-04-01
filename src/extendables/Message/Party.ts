@@ -55,7 +55,6 @@ export async function setupParty(
 
 	const reactionAwaiter = () =>
 		new Promise<KlasaUser[]>(async (resolve, reject) => {
-			partyLockCache.add(user.id);
 			let partyCancelled = false;
 			const collector = new CustomReactionCollector(confirmMessage, {
 				time: 120_000,
@@ -102,6 +101,7 @@ export async function setupParty(
 			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
 				if (!usersWhoConfirmed.includes(user)) return false;
 				if (reaction.emoji.id !== ReactionEmoji.Join) return false;
+				partyLockCache.delete(user.id);
 				removeUser(user);
 			});
 
