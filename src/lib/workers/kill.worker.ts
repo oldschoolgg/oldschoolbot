@@ -37,6 +37,9 @@ export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs
 	}
 
 	if (['nex', 'next'].some(alias => stringMatches(alias, bossName))) {
+		if (quantity > 10_000) {
+			return { error: 'I can only kill a maximum of 10k Nex a time!' };
+		}
 		const loot = handleNexKills({
 			quantity,
 			team: [
