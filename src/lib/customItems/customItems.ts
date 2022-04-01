@@ -2655,3 +2655,14 @@ setCustomItem(
 	},
 	1000
 );
+setCustomItem(
+	122_002,
+	"Olof's gold",
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);

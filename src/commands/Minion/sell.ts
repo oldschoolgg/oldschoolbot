@@ -29,6 +29,10 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [[bankToSell]]: [[Bank, number]]) {
 		let totalPrice = 0;
+		if (bankToSell.has("Olof's gold")) {
+			return msg.channel.send('Wait a second... this gold is fake...');
+		}
+
 		for (const [item, qty] of bankToSell.items()) {
 			totalPrice += sellPriceOfItem(this.client, item) * qty;
 		}
