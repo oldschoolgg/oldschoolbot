@@ -252,13 +252,13 @@ export function getSkillsOfMahojiUser(user: User): Skills {
 
 export function getUserGear(user: User) {
 	return {
-		melee: new Gear((user.gear_melee as any) ?? defaultGear),
-		mage: new Gear((user.gear_mage as any) ?? defaultGear),
-		range: new Gear((user.gear_range as any) ?? defaultGear),
-		misc: new Gear((user.gear_misc as any) ?? defaultGear),
-		skilling: new Gear((user.gear_skilling as any) ?? defaultGear),
-		wildy: new Gear((user.gear_wildy as any) ?? defaultGear),
-		fashion: new Gear((user.gear_fashion as any) ?? defaultGear),
-		other: new Gear((user.gear_other as any) ?? defaultGear)
+		melee: new Gear((user.gear_melee as any) ?? { ...defaultGear }),
+		mage: new Gear((user.gear_mage as any) ?? { ...defaultGear }),
+		range: new Gear((user.gear_range as any) ?? { ...defaultGear }),
+		misc: new Gear((user.gear_misc as any) ?? { ...defaultGear }),
+		skilling: new Gear((user.gear_skilling as any) ?? { ...defaultGear }),
+		wildy: new Gear((user.gear_wildy as any) ?? { ...defaultGear }),
+		fashion: new Gear((user.gear_fashion as any) ?? { ...defaultGear }),
+		other: new Gear((user.gear_other as any) ?? { ...defaultGear })
 	};
 }
