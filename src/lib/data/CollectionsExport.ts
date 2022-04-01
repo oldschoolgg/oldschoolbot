@@ -1351,7 +1351,8 @@ export const allPetsCL = resolveItems([
 	'Youngllef',
 	'Little nightmare',
 	"Lil' creator",
-	'Tiny tempor'
+	'Tiny tempor',
+	'Nexling'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2096,3 +2097,14 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Golden bandos special attack'), cost: 75, onlyCL: true },
 	{ item: getOSItem('Golden zamorak special attack'), cost: 75, onlyCL: true }
 ];
+
+export const NexCL = resolveItems([
+	'Nexling',
+	'Ancient hilt',
+	'Nihil horn',
+	'Zaryte vambraces',
+	'Torva full helm (damaged)',
+	'Torva platebody (damaged)',
+	'Torva platelegs (damaged)',
+	'Nihil shard'
+]);
