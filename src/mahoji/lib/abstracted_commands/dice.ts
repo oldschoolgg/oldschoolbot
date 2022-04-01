@@ -6,10 +6,15 @@ import { Emoji } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { rand, updateGPTrackSetting } from '../../../lib/util';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
-
-export async function diceCommand(KlasaUser: KlasaUser, amount?: number) {
+export async function diceCommand(KlasaUser: KlasaUser, diceamount?: string) {
 	const roll = rand(1, 100);
+	const amount = mahojiParseNumber({ input: diceamount, min: 1, max: 500_000_000_000 });
+
+	if (!diceamount) {
+		return `You rolled **${roll}** on the percentile dice.`;
+	}
 
 	if (!amount) {
 		return `You rolled **${roll}** on the percentile dice.`;

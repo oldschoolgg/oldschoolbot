@@ -20,9 +20,10 @@ export const gambleCommand: OSBMahojiCommand = {
 			description: 'Allows you to simulate dice rolls, or dice your bot GP.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: ApplicationCommandOptionType.String,
 					name: 'amount',
-					description: 'Amount you wish to gamble.'
+					description: 'Amount you wish to gamble.',
+					required: false
 				}
 			]
 		}
@@ -31,7 +32,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		options,
 		userID
 	}: CommandRunOptions<{
-		dice?: { amount?: number };
+		dice?: { amount?: string };
 	}>) => {
 		const KlasaUser = await client.fetchUser(userID);
 
@@ -40,7 +41,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		 * Dice
 		 *
 		 */
-		if (options.dice?.amount) {
+		if (options.dice) {
 			return diceCommand(KlasaUser, options.dice.amount);
 		}
 		return 'Invalid command.';
