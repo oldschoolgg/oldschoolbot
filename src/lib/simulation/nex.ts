@@ -26,7 +26,6 @@ import {
 	itemNameFromID,
 	skillsMeetRequirements
 } from '../util';
-import getUsersPerkTier from '../util/getUsersPerkTier';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, calcMaxTripLength, crossbows } from '../util/minionUtils';
 import resolveItems from '../util/resolveItems';
@@ -167,9 +166,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 }
 
 export function calculateNexDetails({ team }: { team: User[] }) {
-	let maxTripLength = calcMaxTripLength(
-		[...team].sort((a, b) => getUsersPerkTier(b.bitfield) - getUsersPerkTier(a.bitfield))[0]
-	);
+	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
 	let resultTeam: TeamMember[] = [];
 
