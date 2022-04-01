@@ -23,7 +23,6 @@ import { MakePartyOptions } from '../../lib/types';
 import { RaidsOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import resolveItems from '../../lib/util/resolveItems';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -181,13 +180,11 @@ export default class extends BotCommand {
 				if (
 					isChallengeMode &&
 					!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-					resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).every(
-						i => !user.hasItemEquippedAnywhere(i) && user.owns(i)
-					)
+					!['Twisted bow', 'Zaryte bow'].some(i => user.hasItemEquippedOrInBank(i))
 				) {
 					return [
 						true,
-						'You need either a Dragon hunter crossbow or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
+						'You need either a Dragon hunter crossbow, Zaryte bow, or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
 					];
 				}
 

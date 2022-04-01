@@ -30,9 +30,12 @@ export default class extends BotCommand {
 				slayer: 110
 			},
 			itemBoosts: [
+				['Drygore longsword', 15],
 				['Ignis ring(i)', 10],
-				['TzKal cape', 6]
+				['TzKal cape', 6],
+				["Brawler's hook necklace", 4]
 			],
+			speedMaxReduction: 40,
 			customDenier: async () => {
 				return [false];
 			},
