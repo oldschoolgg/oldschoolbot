@@ -2,8 +2,8 @@ import { ApplicationCommandOptionType } from 'discord-api-types';
 import { CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
-import { diceCommand } from '../lib/abstracted_commands/dice';
-import { luckyPickCommand } from '../lib/abstracted_commands/luckypick';
+import { diceCommand } from '../lib/abstracted_commands/diceCommand';
+import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const gambleCommand: OSBMahojiCommand = {
@@ -55,6 +55,7 @@ export const gambleCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
+		interaction,
 		userID
 	}: CommandRunOptions<{
 		dice?: { amount?: string };
@@ -76,7 +77,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.lucky_pick) {
-			return luckyPickCommand(KlasaUser, options.lucky_pick.amount, options.lucky_pick.simulate);
+			return luckyPickCommand(KlasaUser, options.lucky_pick.amount, options.lucky_pick.simulate, interaction);
 		}
 		return 'Invalid command.';
 	}

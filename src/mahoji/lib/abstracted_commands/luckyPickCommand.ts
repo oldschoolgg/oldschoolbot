@@ -1,17 +1,24 @@
-import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
+import { MessageButton, MessageComponentInteraction, MessageOptions, TextChannel } from 'discord.js';
 import { chunk, randArrItem, randInt, roll, shuffleArr, Time } from 'e';
 import { KlasaUser } from 'klasa';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { client } from '../../..';
 import { production } from '../../../config';
+import { SILENT_ERROR } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { updateGPTrackSetting } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
-import { mahojiParseNumber } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
 
-export async function luckyPickCommand(KlasaUser: KlasaUser, luckypickamount: string, simulate: boolean) {
+export async function luckyPickCommand(
+	KlasaUser: KlasaUser,
+	luckypickamount: string,
+	simulate: boolean,
+	interaction: SlashCommandInteraction
+): Promise<string> {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
 
 	if (!amount) {
@@ -95,7 +102,10 @@ export async function luckyPickCommand(KlasaUser: KlasaUser, luckypickamount: st
 		)} per bet.`;
 	}
 
-	await `Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`;
+	await handleMahojiConfirmation(
+		interaction,
+		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
+	);
 	const currentBalance = KlasaUser.settings.get(UserSettings.GP);
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
@@ -121,10 +131,12 @@ export async function luckyPickCommand(KlasaUser: KlasaUser, luckypickamount: st
 		);
 	}
 
-	const sentMessage = await {
+	const channel = client.channels.cache.get(interaction.channelID.toString());
+	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
+	const sentMessage = await channel.send({
 		content: 'Pick *one* button!',
 		components: getCurrentButtons({ showTrueNames: false })
-	};
+	});
 
 	const finalize = async ({
 		button,
@@ -144,27 +156,37 @@ export async function luckyPickCommand(KlasaUser: KlasaUser, luckypickamount: st
 			: `You won ${toKMB(amountReceived)}!`;
 	};
 
-	const collector = sentMessage!.createMessageComponentInteractionCollector({
-		time: Time.Second * 10,
-		filter: i => i.user.id === KlasaUser.id
-	});
-
-	collector.on('collect', async interaction => {
-		const pickedButton = buttonsToShow.find(b => b.id.toString() === interaction.customID)!;
-		buttonsToShow[pickedButton.id].picked = true;
-		collector.stop('PICKED');
-		try {
-			await finalize({ button: pickedButton, interaction });
-		} catch (err) {
-			logError(err);
-		}
-	});
-
-	collector.on('end', async () => {
-		if (collector.endReason === 'PICKED') return;
+	const cancel = async () => {
+		await sentMessage.delete();
 		if (!buttonsToShow.some(b => b.picked)) {
 			await KlasaUser.addGP(amount);
-			await `You didn't pick any buttons in time, so you were refunded ${toKMB(amount)} GP.`;
+			return `You didn't pick any buttons in time, so you were refunded ${toKMB(amount)} GP.`;
 		}
-	});
+		throw new Error(SILENT_ERROR);
+	};
+
+	try {
+		const selection = await sentMessage.awaitMessageComponentInteraction({
+			filter: i => {
+				if (i.user.id !== (KlasaUser.id ?? interaction.userID).toString()) {
+					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+					return false;
+				}
+				return true;
+			},
+			time: Time.Second * 10
+		});
+
+		const pickedButton = buttonsToShow.find(b => b.id.toString() === selection.customID)!;
+		buttonsToShow[pickedButton.id].picked = true;
+
+		try {
+			return await finalize({ button: pickedButton, interaction: selection });
+		} catch (err) {
+			logError(err);
+			return 'Error.';
+		}
+	} catch (err) {
+		return cancel();
+	}
 }
