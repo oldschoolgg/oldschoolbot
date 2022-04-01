@@ -3,6 +3,7 @@ import { CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import { diceCommand } from '../lib/abstracted_commands/dice';
+import { luckyPickCommand } from '../lib/abstracted_commands/luckypick';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const gambleCommand: OSBMahojiCommand = {
@@ -26,6 +27,30 @@ export const gambleCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
+		},
+		/**
+		 *
+		 * Lucky Pick
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'lucky_pick',
+			description: 'Allows you play lucky pick and risk your GP.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'amount',
+					description: 'Amount you wish to gamble.',
+					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'simulate',
+					description: 'Simulate playing lucky pick.',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({
@@ -33,6 +58,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		userID
 	}: CommandRunOptions<{
 		dice?: { amount?: string };
+		lucky_pick?: { amount: string; simulate: boolean };
 	}>) => {
 		const KlasaUser = await client.fetchUser(userID);
 
@@ -43,6 +69,14 @@ export const gambleCommand: OSBMahojiCommand = {
 		 */
 		if (options.dice) {
 			return diceCommand(KlasaUser, options.dice.amount);
+		}
+		/**
+		 *
+		 * Lucky Pick
+		 *
+		 */
+		if (options.lucky_pick) {
+			return luckyPickCommand(KlasaUser, options.lucky_pick.amount, options.lucky_pick.simulate);
 		}
 		return 'Invalid command.';
 	}
