@@ -175,6 +175,11 @@ export const testPotatoCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'sacrificed_bank',
 					description: 'Shows an image containing all your sacrificed items.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'cl_bank',
+					description: 'Shows a bank image containing all items in your collection log.'
 				}
 			]
 		}
@@ -197,6 +202,7 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				item: string;
 			};
 			sacrificed_bank?: {};
+			cl_bank?: {};
 		};
 	}>) => {
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -222,6 +228,16 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				const image = await makeBankImage({
 					bank: new Bank(mahojiUser.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
+				});
+				return {
+					attachments: [image.file]
+				};
+			}
+			if (patron.cl_bank) {
+				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const image = await makeBankImage({
+					bank: new Bank(mahojiUser.collectionLogBank as ItemBank),
+					title: 'Your Entire Collection Log'
 				});
 				return {
 					attachments: [image.file]
