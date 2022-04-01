@@ -101,7 +101,7 @@ export const openCommand: OSBMahojiCommand = {
 			items: loot.bank,
 			collectionLog: true,
 			filterLoot: false,
-			dontAddToTempCL: !itemsThatDontAddToTempCL.includes(openable.id)
+			dontAddToTempCL: itemsThatDontAddToTempCL.includes(openable.id)
 		});
 
 		const image = await client.tasks.get('bankImage')!.generateBankImage(
