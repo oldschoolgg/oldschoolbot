@@ -121,7 +121,6 @@ client.on('raw', async event => {
 		return result.interaction.respond(result);
 	}
 });
-client.on('debug', console.log);
 client.on('ready', client.init);
 client.on('ready', onStartup);
 mahojiClient.start();
