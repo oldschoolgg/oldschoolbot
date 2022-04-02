@@ -186,7 +186,8 @@ export const testPotatoCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		options,
-		userID
+		userID,
+		interaction
 	}: CommandRunOptions<{
 		patron?: {
 			kc_gains?: {
@@ -205,6 +206,7 @@ export const testPotatoCommand: OSBMahojiCommand = {
 			cl_bank?: {};
 		};
 	}>) => {
+		interaction.deferReply();
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		if (options.patron) {

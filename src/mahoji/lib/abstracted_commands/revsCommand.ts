@@ -27,7 +27,7 @@ export async function revsCommand(
 	user: KlasaUser,
 	mUser: User,
 	channelID: bigint,
-	interaction: SlashCommandInteraction,
+	interaction: SlashCommandInteraction | null,
 	name: string
 ): CommandResponse {
 	const style = convertAttackStylesToSetup(mUser.attack_style);
@@ -75,10 +75,12 @@ export async function revsCommand(
 	let hasPrayerPots = true;
 	if (user.bank().amount('Prayer potion(4)') < 5) {
 		hasPrayerPots = false;
-		await handleMahojiConfirmation(
-			interaction,
-			'Are you sure you want to kill revenants without prayer potions? You should bring at least 5 Prayer potion(4).'
-		);
+		if (interaction) {
+			await handleMahojiConfirmation(
+				interaction,
+				'Are you sure you want to kill revenants without prayer potions? You should bring at least 5 Prayer potion(4).'
+			);
+		}
 	} else {
 		cost.add('Prayer potion(4)', 5);
 	}
