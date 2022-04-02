@@ -19,6 +19,7 @@ import { SILENT_ERROR } from '../lib/constants';
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
 import { defaultGear } from '../lib/gear';
+import killableMonsters from '../lib/minions/data/killableMonsters';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
@@ -70,6 +71,18 @@ export const itemOption: CommandOption = {
 		return itemArr
 			.filter(i => i.key.includes(value.toLowerCase()))
 			.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
+	}
+};
+
+export const monsterOption: CommandOption = {
+	type: ApplicationCommandOptionType.String,
+	name: 'monster',
+	description: 'The monster you want to pick.',
+	required: true,
+	autocomplete: async value => {
+		return killableMonsters
+			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+			.map(i => ({ name: i.name, value: i.name }));
 	}
 };
 
@@ -261,4 +274,10 @@ export function getUserGear(user: User) {
 		fashion: new Gear((user.gear_fashion as any) ?? { ...defaultGear }),
 		other: new Gear((user.gear_other as any) ?? { ...defaultGear })
 	};
+}
+
+export function patronMsg(tierNeeded: number) {
+	return `You need to be a Tier ${
+		tierNeeded - 1
+	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
 }

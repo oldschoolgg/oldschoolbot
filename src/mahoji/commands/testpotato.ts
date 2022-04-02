@@ -134,7 +134,10 @@ const openablesBank = new Bank();
 for (const i of allOpenables.values()) {
 	openablesBank.add(i.id, 100);
 }
-const spawnPresets = [['openables', openablesBank]] as const;
+const spawnPresets = [
+	['openables', openablesBank],
+	['random', new Bank()]
+] as const;
 
 const nexSupplies = new Bank()
 	.add('Shark', 10_000)
@@ -394,7 +397,15 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					const bankToGive = new Bank();
 					if (preset) {
 						const actualPreset = spawnPresets.find(i => i[0] === preset);
-						if (actualPreset) bankToGive.add(actualPreset[1]);
+						if (!actualPreset) return 'Invalid preset';
+						let b = actualPreset[1];
+						if (actualPreset[0] === 'random') {
+							b = new Bank();
+							for (let i = 0; i < 200; i++) {
+								b.add(Items.random().id);
+							}
+						}
+						bankToGive.add(b);
 					}
 					if (item) {
 						try {
@@ -410,7 +421,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					}
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
-					return `Spawned: ${bankToGive}.`;
+					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
 				}
 				if (options.nexhax) {
 					const gear = new Gear({
