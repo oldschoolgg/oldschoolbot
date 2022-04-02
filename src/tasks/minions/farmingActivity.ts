@@ -5,6 +5,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { production } from '../../config';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events } from '../../lib/constants';
+import { handleNaxxusTeaser } from '../../lib/handleNaxxusTeaser';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -164,6 +165,10 @@ export default class extends Task {
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
+			}
+
+			if (loot.has('Tormented skull')) {
+				loot.bank[itemID('Tormented skull')] = 1;
 			}
 
 			if (Object.keys(loot).length > 0) {
@@ -387,7 +392,15 @@ export default class extends Task {
 				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
 					farmingLevel: currentFarmingLevel
 				});
+				const shouldReceiveSkull = await handleNaxxusTeaser(user);
+
 				loot = hesporiLoot;
+				if (shouldReceiveSkull) {
+					loot.add('Tormented skull');
+					infoStr.push(
+						'**As you land a killing blow on Hespori, your chainmace glows strongly as it seems to disintegrate it, leaving behind only a skull.**'
+					);
+				}
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 				if (roll((plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5)) {
 					loot.add('Plopper');
@@ -489,6 +502,9 @@ export default class extends Task {
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
+			}
+			if (loot.has('Tormented skull')) {
+				loot.bank[itemID('Tormented skull')] = 1;
 			}
 
 			if (user.hasItemEquippedOrInBank(itemID('Farming master cape'))) {

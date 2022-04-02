@@ -2597,3 +2597,72 @@ setCustomItem(
 	},
 	100_000_000
 );
+
+setCustomItem(
+	152_616,
+	'Tormented skull',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		examine: "Almost sounds like there's screaming coming from inside it..."
+	},
+	100_000_000
+);
+
+setCustomItem(
+	52_620,
+	'Celebratory cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	121_234,
+	'Burnt celebratory cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	121_521,
+	'Celebratory cake with candle',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	122_001,
+	'Lit celebratory cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	122_002,
+	"Olof's gold",
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
