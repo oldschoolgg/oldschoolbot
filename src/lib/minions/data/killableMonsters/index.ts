@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { revenantMonsters } from '../../../../mahoji/lib/abstracted_commands/revsCommand';
 import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
@@ -16,6 +15,7 @@ import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
 import { mazchnaMonsters } from './mazchnaMonsters';
 import { nieveMonsters } from './nieveMonsters';
+import { revenantMonsters } from './revs';
 import { turaelMonsters } from './turaelMonsters';
 import { vannakaMonsters } from './vannakaMonsters';
 

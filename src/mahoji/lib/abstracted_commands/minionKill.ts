@@ -35,6 +35,7 @@ import {
 	iceBurstConsumables,
 	SlayerActivityConstants
 } from '../../../lib/minions/data/combatConstants';
+import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
@@ -62,7 +63,7 @@ import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';
-import { revenantMonsters, revsCommand } from './revsCommand';
+import { revsCommand } from './revsCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 

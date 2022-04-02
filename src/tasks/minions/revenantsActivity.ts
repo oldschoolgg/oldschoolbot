@@ -2,6 +2,7 @@ import { deepClone, roll } from 'e';
 import { Task } from 'klasa';
 
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { runCommand } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -13,7 +14,6 @@ import { RevenantOptions } from '../../lib/types/minions';
 import { updateBankSetting } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { revenantMonsters } from '../../mahoji/lib/abstracted_commands/revsCommand';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
