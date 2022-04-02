@@ -405,7 +405,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 								b.add(Items.random().id);
 							}
 						}
-						if (actualPreset) bankToGive.add(b);
+						bankToGive.add(b);
 					}
 					if (item) {
 						try {
