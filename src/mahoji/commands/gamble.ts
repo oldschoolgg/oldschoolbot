@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType } from 'discord-api-types';
 import { CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
+import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
@@ -12,6 +13,28 @@ export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
 	description: 'Partake in various gambling activities.',
 	options: [
+		/**
+		 *
+		 * Cape
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'cape',
+			description: 'Allows you to gamble fire/infernal capes for a chance at the pets.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'type',
+					description: 'The cape you wish to gamble.',
+					required: false,
+					choices: [
+						{ name: 'fire', value: 'fire' },
+						{ name: 'infernal', value: 'infernal' }
+					]
+				}
+			]
+		},
 		/**
 		 *
 		 * Dice
@@ -84,12 +107,24 @@ export const gambleCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{
+		cape?: { type?: string };
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string; simulate: boolean };
 	}>) => {
 		const KlasaUser = await client.fetchUser(userID);
 
+		/**
+		 *
+		 * Cape
+		 *
+		 */
+		if (options.cape) {
+			if (options.cape.type) {
+				return capeGambleCommand(KlasaUser, options.cape.type, interaction);
+			}
+			return capeGambleStatsCommand(KlasaUser);
+		}
 		/**
 		 *
 		 * Dice
