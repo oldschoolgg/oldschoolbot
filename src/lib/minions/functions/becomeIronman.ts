@@ -1,5 +1,6 @@
 import { KlasaMessage } from 'klasa';
 
+import { BitField } from '../../constants';
 import { prisma } from '../../settings/prisma';
 import { UserSettings } from '../../settings/types/UserSettings';
 
@@ -51,22 +52,25 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		await msg.author.settings.reset();
 
 		try {
-			await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
-			await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
-			await prisma.minigame.delete({ where: { user_id: msg.author.id } });
-			await prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
-			await prisma.newUser.delete({ where: { id: msg.author.id } });
-			await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
-			await prisma.tameActivity.deleteMany({ where: { user_id: msg.author.id } });
-			await prisma.tame.deleteMany({ where: { user_id: msg.author.id } });
-			await prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
+			await Promise.all([
+				prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } }),
+				prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } }),
+				prisma.minigame.delete({ where: { user_id: msg.author.id } }),
+				prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } }),
+				prisma.newUser.delete({ where: { id: msg.author.id } }),
+				prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } }),
+				prisma.tameActivity.deleteMany({ where: { user_id: msg.author.id } }),
+				prisma.tame.deleteMany({ where: { user_id: msg.author.id } }),
+				prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(msg.author.id) } })
+			]);
 		} catch (err) {
 			console.log(err);
 		}
 
 		await msg.author.settings.update([
 			[UserSettings.Minion.Ironman, true],
-			[UserSettings.Minion.HasBought, true]
+			[UserSettings.Minion.HasBought, true],
+			[UserSettings.BitField, BitField.BypassAgeRestriction]
 		]);
 		return msg.channel.send('You are now an ironman.');
 	} catch (err) {
