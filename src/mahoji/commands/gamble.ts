@@ -3,8 +3,10 @@ import { CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
+import { duelCommand } from '../lib/abstracted_commands/duelCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { OSBMahojiCommand } from '../lib/util';
+import { MahojiUserOption } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -24,6 +26,30 @@ export const gambleCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
+					required: false
+				}
+			]
+		},
+		/**
+		 *
+		 * Duel
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'duel',
+			description: 'Simulates dueling another player, or allows you to duel another player for their bot GP.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.User,
+					name: 'user',
+					description: 'The user you want to duel.',
+					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'amount',
+					description: 'The GP you want to duel for.',
 					required: false
 				}
 			]
@@ -59,6 +85,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		userID
 	}: CommandRunOptions<{
 		dice?: { amount?: string };
+		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string; simulate: boolean };
 	}>) => {
 		const KlasaUser = await client.fetchUser(userID);
@@ -70,6 +97,14 @@ export const gambleCommand: OSBMahojiCommand = {
 		 */
 		if (options.dice) {
 			return diceCommand(KlasaUser, options.dice.amount);
+		}
+		/**
+		 *
+		 * Duel
+		 *
+		 */
+		 if (options.duel) {
+			return duelCommand(KlasaUser, options.duel.amount);
 		}
 		/**
 		 *
