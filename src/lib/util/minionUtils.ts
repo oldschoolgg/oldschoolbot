@@ -4,6 +4,7 @@ import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { getUserGear } from '../../mahoji/mahojiSettings';
 import { PerkTier } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
 import { convertXPtoLVL, patronMaxTripCalc } from '../util';
@@ -123,3 +124,18 @@ export const bolts = resolveItems([
 	'Iron bolts',
 	'Bronze bolts'
 ]);
+
+export function userHasItemsEquippedAnywhere(
+	user: User | KlasaUser,
+	_item: number | string | string[] | number[],
+	every = false
+): boolean {
+	const allGear = Object.values(user instanceof KlasaUser ? user.rawGear() : getUserGear(user));
+	const items = resolveItems(_item);
+	for (const gear of allGear) {
+		if (gear.hasEquipped(items, every)) {
+			return true;
+		}
+	}
+	return false;
+}
