@@ -103,8 +103,13 @@ export const gambleCommand: OSBMahojiCommand = {
 		 * Duel
 		 *
 		 */
-		 if (options.duel) {
-			return duelCommand(KlasaUser, options.duel.amount);
+		if (options.duel) {
+			return duelCommand(
+				KlasaUser,
+				interaction,
+				await client.fetchUser(options.duel.user.user.id),
+				options.duel.amount
+			);
 		}
 		/**
 		 *

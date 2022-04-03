@@ -1,99 +1,121 @@
-import { User } from "discord.js";
-import { noOp, sleep } from "e";
-import { KlasaUser } from "klasa";
-import { Bank, Util } from "oldschooljs";
-import { client } from "../../..";
-import { Emoji, Events } from "../../../lib/constants";
-import { ClientSettings } from "../../../lib/settings/types/ClientSettings";
-import { UserSettings } from "../../../lib/settings/types/UserSettings";
-import { mahojiParseNumber } from "../../mahojiSettings";
+import { MessageButton, TextChannel, User } from 'discord.js';
+import { noOp, sleep, Time } from 'e';
+import { KlasaUser } from 'klasa';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { Bank, Util } from 'oldschooljs';
 
-export async function duelCommand(KlasaUser: KlasaUser, duelamount?: string) {
-    const options = {
-        max: 1,
-        time: 15_000,
-        errors: ['time']
-    };
+import { client } from '../../..';
+import { Emoji, Events } from '../../../lib/constants';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { mahojiParseNumber } from '../../mahojiSettings';
 
-    const user = await client.fetchUser(KlasaUser.id.toString());
-	const recipient = await client.fetchUser(KlasaUser.id);
-   
-    const amount = mahojiParseNumber({ input: duelamount, min: 1, max: 500_000_000_000 });
-    if (!duelamount) {
-		return `${Math.random() >= 0.5 ? KlasaUser.username : KlasaUser.username} won the duel with ${Math.floor(
-            Math.random() * 30 + 1
-        )} HP remaining.`;
-	}
+async function checkBal(user: KlasaUser, amount: number) {
+	await user.settings.sync(true);
+	return user.settings.get(UserSettings.GP) >= amount;
+}
 
+export async function duelCommand(
+	KlasaUser: KlasaUser,
+	interaction: SlashCommandInteraction,
+	duelUser: KlasaUser,
+	duelamount?: string
+) {
+	await interaction.deferReply();
+
+	const duelSourceUser = KlasaUser;
+	const duelTargetUser = duelUser;
+
+	const amount = mahojiParseNumber({ input: duelamount, min: 1, max: 500_000_000_000 });
 	if (!amount) {
-		return `${Math.random() >= 0.5 ? KlasaUser.username : KlasaUser.username} won the duel with ${Math.floor(
-            Math.random() * 30 + 1
-        )} HP remaining.`;
+		const winner = Math.random() >= 0.5 ? duelSourceUser : duelTargetUser;
+		return `${winner} won the duel against ${
+			winner.id === duelSourceUser.id ? duelTargetUser : duelSourceUser
+		} with ${Math.floor(Math.random() * 30 + 1)} HP remaining.`;
 	}
 
-   const checkBal(user: KlasaUser, amount: number) {
-		await user.settings.sync(true);
-		return user.settings.get(UserSettings.GP) >= amount;}
+	if (duelSourceUser.isIronman) return "You can't duel someone as an ironman.";
+	if (duelTargetUser.isIronman) return "You can't duel someone who is an ironman.";
+	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
+	if (!(duelTargetUser instanceof User)) return "You didn't mention a user to duel.";
+	if (duelTargetUser.bot) return 'You cant duel a bot.';
+	if (duelSourceUser.minionIsBusy) return `${duelSourceUser.minionName} is busy.`;
+	if (duelTargetUser.minionIsBusy) return 'That user is busy right now.';
 
-        if (recipient.isIronman) return "You can't duel someone as an ironman.";
-		if (user.isIronman) return "You can't duel someone as an ironman.";
-		if (!(user instanceof User)) return "You didn't mention a user to duel.";
-		if (user.id === KlasaUser.id) return 'You cant duel yourself.';
-		if (recipient.bot) return 'You cant duel a bot.';
-		if (recipient.isBusy) return 'That user is busy right now.';
-        if (user.minionIsBusy) return `${user.minionName} is busy.`;
+	if (!(await checkBal(duelSourceUser, amount))) {
+		return 'You dont have have enough GP to duel that much.';
+	}
 
-        if (!(await checkBal(KlasaUser, amount))) {
-			return 'You dont have have enough GP to duel that much.';
-		}
+	if (!(await checkBal(duelTargetUser, amount))) {
+		return "That person doesn't have enough GP to duel that much.";
+	}
 
-		if (!(await checkBal(user, amount))) {
-			return "That person doesn't have enough GP to duel that much.";
-		}
+	const channel = client.channels.cache.get(interaction.channelID.toString());
+	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
+	const duelMessage = await channel.send({
+		content: `${duelTargetUser}, do you accept the duel for ${Util.toKMB(amount)} GP?`,
+		components: [
+			[
+				new MessageButton({
+					label: 'Accept',
+					style: 'PRIMARY',
+					customID: 'CONFIRM'
+				}),
+				new MessageButton({
+					label: 'Decline',
+					style: 'SECONDARY',
+					customID: 'CANCEL'
+				})
+			]
+		]
+	});
 
-		const duelMsg = await `${user.username}, say \`fight\` if you accept the duel for ${Util.toKMB(amount)} GP.`;
-        try {
-			await msg.channel.awaitMessages({
-				...options,
-				filter: _msg => _msg.user.id === user.id && _msg.content.toLowerCase() === 'fight'
-			});
-		} catch (err) {
-			return duelMsg.edit("The user didn't accept the duel.");
-		}
+	function cancel() {
+		duelMessage.delete().catch(noOp);
+		return "Duel cancelled, user didn't accept in time.";
+	}
 
-		if (!(await checkBal(KlasaUser, amount)) || !(await checkBal(user, amount))) {
-			return (Emoji.Bpaptu);
+	async function confirm(amount: number) {
+		duelMessage.edit({ components: [] }).catch(noOp);
+		if (!(await checkBal(duelSourceUser, amount)) || !(await checkBal(duelTargetUser, amount))) {
+			duelMessage.delete().catch(noOp);
+			return 'User appears to be less wealthy than expected (they lost some money before accepting...).';
 		}
 
 		const b = new Bank().add('Coins', amount);
-		await KlasaUser.removeItemsFromBank(b);
-		await user.removeItemsFromBank(b);
+		await duelSourceUser.removeItemsFromBank(b);
+		await duelTargetUser.removeItemsFromBank(b);
 
-		await duelMsg.edit(`${user.username} accepted the duel. You both enter the duel arena...`).catch(noOp);
-
-		await sleep(2000);
-		await duelMsg.edit(`${user.username} and ${KlasaUser.username} begin fighting...`).catch(noOp);
-
-		const [winner, loser] = Math.random() > 0.5 ? [user, KlasaUser] : [KlasaUser, user];
+		await duelMessage
+			.edit(`${duelTargetUser.username} accepted the duel. You both enter the duel arena...`)
+			.catch(noOp);
 
 		await sleep(2000);
-		await duelMsg.edit('The fight is almost over...').catch(noOp);
+		await duelMessage
+			.edit(`${duelSourceUser.username} and ${duelTargetUser.username} begin fighting...`)
+			.catch(noOp);
+
+		const [winner, loser] =
+			Math.random() > 0.5 ? [duelSourceUser, duelTargetUser] : [duelTargetUser, duelSourceUser];
+
+		await sleep(2000);
+		await duelMessage.edit('The fight is almost over...').catch(noOp);
 		await sleep(2000);
 
 		const winningAmount = amount * 2;
 		const tax = winningAmount - winningAmount * 0.95;
 
-		const dicingBank = client.settings.get(ClientSettings.EconomyStats.DuelTaxBank);
+		const dicingBank = client.settings.get(ClientSettings.EconomyStats.DuelTaxBank) as number;
 		const dividedAmount = tax / 1_000_000;
 		client.settings.update(
 			ClientSettings.EconomyStats.DuelTaxBank,
 			Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)
 		);
 
-		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins);
+		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins) as number;
 		winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);
 
-		const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses);
+		const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses) as number;
 		loser.settings.update(UserSettings.Stats.DuelLosses, lossesOfLoser + 1);
 
 		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount - tax), collectionLog: false });
@@ -112,5 +134,32 @@ export async function duelCommand(KlasaUser: KlasaUser, duelamount?: string) {
 			`${winner.sanitizedName} won ${winningAmount} GP in a duel with ${loser.sanitizedName}.`
 		);
 
-		return `Congratulations ${winner.username}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(tax)} tax.`;
+		duelMessage.edit(
+			`Congratulations ${winner.username}! You won ${Util.toKMB(winningAmount)}, and paid ${Util.toKMB(tax)} tax.`
+		);
+
+		return `Duel finished, ${winner} won.`;
 	}
+
+	try {
+		const selection = await duelMessage.awaitMessageComponentInteraction({
+			filter: i => {
+				if (i.user.id !== (duelTargetUser.id ?? interaction.userID).toString()) {
+					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+					return false;
+				}
+				return true;
+			},
+			time: Time.Second * 10
+		});
+		if (selection.customID === 'CANCEL') {
+			return cancel();
+		}
+		if (selection.customID === 'CONFIRM') {
+			return await confirm(amount);
+		}
+	} catch (err) {
+		return cancel();
+	}
+	return cancel();
+}
