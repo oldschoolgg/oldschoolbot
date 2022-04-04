@@ -6,6 +6,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { getUserGear } from '../../mahoji/mahojiSettings';
 import { PerkTier } from '../constants';
+import { allPetIDs } from '../data/CollectionsExport';
 import { UserSettings } from '../settings/types/UserSettings';
 import { convertXPtoLVL, patronMaxTripCalc } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
@@ -130,8 +131,14 @@ export function userHasItemsEquippedAnywhere(
 	_item: number | string | string[] | number[],
 	every = false
 ): boolean {
-	const allGear = Object.values(user instanceof KlasaUser ? user.rawGear() : getUserGear(user));
 	const items = resolveItems(_item);
+	if (items.length === 1 && allPetIDs.includes(items[0])) {
+		const pet =
+			user instanceof KlasaUser ? user.settings.get(UserSettings.Minion.EquippedPet) : user.minion_equippedPet;
+		return pet === items[0];
+	}
+
+	const allGear = Object.values(user instanceof KlasaUser ? user.rawGear() : getUserGear(user));
 	for (const gear of allGear) {
 		if (gear.hasEquipped(items, every)) {
 			return true;

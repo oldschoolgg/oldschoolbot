@@ -46,7 +46,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 		return `${user}, your mass didn't start because it needs atleast 2 users.`;
 	}
 
-	const mahojiUsers = await Promise.all(usersWhoConfirmed.map(mahojiUsersSettingsFetch));
+	const mahojiUsers = await Promise.all(usersWhoConfirmed.map(i => mahojiUsersSettingsFetch(i.id)));
 
 	for (const user of mahojiUsers) {
 		const result = checkNexUser(user);
