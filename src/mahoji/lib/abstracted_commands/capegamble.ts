@@ -6,9 +6,9 @@ import { client } from '../../..';
 import { Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { roll } from '../../../lib/util';
-import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
+import chatHeadImage from '../../../lib/util/makeChatHeadImage';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export async function capeGambleStatsCommand(user: KlasaUser) {
@@ -22,15 +22,6 @@ export async function capeGambleStatsCommand(user: KlasaUser) {
 }
 
 export async function capeGambleCommand(user: KlasaUser, type: string, interaction: SlashCommandInteraction) {
-	const firesGambled = user.settings.get(UserSettings.Stats.FireCapesSacrificed);
-	const infernalsGambled = user.settings.get(UserSettings.Stats.InfernalCapesSacrificed);
-	if (!type) {
-		return `You can gamble Fire capes and Infernal capes like this: \"\gamble cape fire/infernal\"
-	
-	**Fire Cape's Sacrificed:** ${firesGambled}
-	**Infernal Cape's Gambled:** ${infernalsGambled}`;
-	}
-
 	const item = getOSItem(type === 'fire' ? 'Fire cape' : 'Infernal cape');
 	const key = type === 'fire' ? UserSettings.Stats.FireCapesSacrificed : UserSettings.Stats.InfernalCapesSacrificed;
 
@@ -56,31 +47,35 @@ export async function capeGambleCommand(user: KlasaUser, type: string, interacti
 			} pet by sacrificing a ${item.name} for the ${formatOrdinal(newSacrificedCount)} time!`
 		);
 		return {
-			files: [
-				await chatHeadImage({
-					content:
-						type === 'fire'
-							? 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
-							: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours.',
-					head: type === 'fire' ? 'mejJal' : 'ketKeh'
-				})
+			attachments: [
+				(
+					await chatHeadImage({
+						content:
+							type === 'fire'
+								? 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
+								: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours.',
+						head: type === 'fire' ? 'mejJal' : 'ketKeh'
+					})
+				).file
 			]
 		};
 	}
 
 	return {
-		files: [
-			await chatHeadImage({
-				content:
-					type === 'fire'
-						? `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
-								newSacrificedCount
-						  )} time you gamble cape.`
-						: `No Jal-Nib-Rek for you. This is the ${formatOrdinal(
-								newSacrificedCount
-						  )} time you gamble cape.`,
-				head: type === 'fire' ? 'mejJal' : 'ketKeh'
-			})
+		attachments: [
+			(
+				await chatHeadImage({
+					content:
+						type === 'fire'
+							? `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
+									newSacrificedCount
+							  )} time you gamble cape.`
+							: `No Jal-Nib-Rek for you. This is the ${formatOrdinal(
+									newSacrificedCount
+							  )} time you gamble cape.`,
+					head: type === 'fire' ? 'mejJal' : 'ketKeh'
+				})
+			).file
 		]
 	};
 }
