@@ -63,7 +63,7 @@ export async function lmsCommand(
 			return `You received ${loot}.`;
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(user, {
+		const { newUser } = await mahojiUserSettingsUpdate(client, user, {
 			lms_points: {
 				decrement: cost
 			}

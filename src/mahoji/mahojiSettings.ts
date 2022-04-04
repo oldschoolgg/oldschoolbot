@@ -1,7 +1,7 @@
-import { Guild, Prisma, User } from '@prisma/client';
+import type { Guild, Prisma, User } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton, TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
+import { KlasaClient, KlasaUser } from 'klasa';
 import {
 	APIInteractionDataResolvedGuildMember,
 	APIUser,
@@ -14,7 +14,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Items } from 'oldschooljs';
 
-import { client } from '..';
 import { SILENT_ERROR } from '../lib/constants';
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
@@ -87,7 +86,7 @@ export const monsterOption: CommandOption = {
 };
 
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {
-	const channel = client.channels.cache.get(interaction.channelID.toString());
+	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
 	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
 	await interaction.deferReply();
 
@@ -157,18 +156,21 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
  *
  */
 
-export async function mahojiUsersSettingsFetch(user: bigint | string | KlasaUser) {
-	const { id } = typeof user === 'string' || typeof user === 'bigint' ? await client.fetchUser(user) : user;
+export async function mahojiUsersSettingsFetch(user: bigint | string) {
 	const result = await prisma.user.findFirst({
 		where: {
-			id
+			id: user.toString()
 		}
 	});
-	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${id}`);
+	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
 	return result;
 }
 
-export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
+export async function mahojiUserSettingsUpdate(
+	client: KlasaClient,
+	user: string | KlasaUser,
+	data: Prisma.UserUpdateArgs['data']
+) {
 	const klasaUser = typeof user === 'string' ? await client.fetchUser(user) : user;
 
 	const newUser = await prisma.user.update({
@@ -178,7 +180,6 @@ export async function mahojiUserSettingsUpdate(user: string | KlasaUser, data: P
 		}
 	});
 
-	// Patch instead of syncing to avoid another database read.
 	await klasaUser.settings.sync(true);
 	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match');
 	assert(klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points, 'Patched user should match');
@@ -216,7 +217,11 @@ export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	return result;
 }
 
-export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: Prisma.GuildUpdateArgs['data']) {
+export async function mahojiGuildSettingsUpdate(
+	client: KlasaClient,
+	guild: string | DJSGuild,
+	data: Prisma.GuildUpdateArgs['data']
+) {
 	const guildID = typeof guild === 'string' ? guild : guild.id;
 
 	const newGuild = await prisma.guild.update({
