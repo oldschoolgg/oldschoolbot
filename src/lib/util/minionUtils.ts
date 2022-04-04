@@ -1,13 +1,13 @@
 import { activity_type_enum, User } from '@prisma/client';
 import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { getUserGear } from '../../mahoji/mahojiSettings';
 import { PerkTier } from '../constants';
 import { allPetIDs } from '../data/CollectionsExport';
 import { UserSettings } from '../settings/types/UserSettings';
+import { SkillsEnum } from '../skilling/types';
 import { convertXPtoLVL, patronMaxTripCalc } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import resolveItems from './resolveItems';
