@@ -15,6 +15,7 @@ import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
 import { mazchnaMonsters } from './mazchnaMonsters';
 import { nieveMonsters } from './nieveMonsters';
+import { revenantMonsters } from './revs';
 import { turaelMonsters } from './turaelMonsters';
 import { vannakaMonsters } from './vannakaMonsters';
 
@@ -151,17 +152,19 @@ const killableMonsters: KillableMonster[] = [
 			"Guthan's chainskirt",
 			"Guthan's helm",
 			"Guthan's warspear",
-			['Bandos chestplate', "Torag's platebody"],
-			['Bandos tassets', "Torag's platelegs"]
+			['Bandos chestplate', "Torag's platebody", 'Torva platebody'],
+			['Bandos tassets', "Torag's platelegs", 'Torva platelegs']
 		]),
 		notifyDrops: resolveItems(['Pet dagannoth supreme']),
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Bandos chestplate')]: 2
+				[itemID('Bandos chestplate')]: 2,
+				[itemID('Torva platebody')]: 2
 			},
 			{
-				[itemID('Bandos tassets')]: 2
+				[itemID('Bandos tassets')]: 2,
+				[itemID('Torva platelegs')]: 2
 			},
 			{
 				[itemID('Saradomin godsword')]: 4,
@@ -324,6 +327,7 @@ export default killableMonsters;
 
 export const effectiveMonsters = [
 	...killableMonsters,
+	...revenantMonsters,
 	NightmareMonster,
 	{
 		name: 'Zalcano',

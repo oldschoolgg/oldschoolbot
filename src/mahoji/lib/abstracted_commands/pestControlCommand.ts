@@ -4,6 +4,7 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
+import { client } from '../../..';
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -135,7 +136,7 @@ export async function pestControlBuyCommand(klasaUser: KlasaUser, user: User, in
 		}
 		await klasaUser.removeItemsFromBank(new Bank().add(buyable.inputItem.id));
 	}
-	await mahojiUserSettingsUpdate(user.id, {
+	await mahojiUserSettingsUpdate(client, user.id, {
 		pest_control_points: {
 			decrement: cost
 		}
@@ -224,7 +225,7 @@ export async function pestControlXPCommand(
 		interaction,
 		`Are you sure you want to spend ${amount} points on ${xpPerPoint * amount} ${toTitleCase(skillName)} XP?`
 	);
-	await mahojiUserSettingsUpdate(user.id, {
+	await mahojiUserSettingsUpdate(client, user.id, {
 		pest_control_points: {
 			decrement: amount
 		}
