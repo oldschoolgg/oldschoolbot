@@ -37,7 +37,7 @@ export default class extends BotCommand {
 		const hasSkipper = msg.author.usingPet('Skipper') || msg.author.bank().amount('Skipper') > 0;
 		const taxRate = hasSkipper ? 0.15 : 0.25;
 		const tax = Math.ceil(totalPrice * taxRate);
-		totalPrice = Math.floor(totalPrice - tax);
+		totalPrice = Math.max(0, Math.floor(totalPrice - tax));
 
 		await msg.confirm(
 			`${
