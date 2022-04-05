@@ -2219,9 +2219,9 @@ discord-api-types@^0.27.0:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.27.3.tgz#518e99a548b62a7912a09e94ad90d0612e2053c6"
   integrity sha512-HOG64DTpZ7CB5EU9eKbjHD50H5qG1pxKG8pmFfHUMKjKvEWeLBHfw0c9xF1cruiYLnBb3+n7m3jBWxZ3H1hcgQ==
 
-"discord.js@github:gc/discord.js#c37c1f3e8a0472c955668af4263b8b54eea1520a":
+"discord.js@github:gc/discord.js#fd4c015610e3c10d96c131b6e3e7e3ab78132dad":
   version "13.0.0-dev"
-  resolved "https://codeload.github.com/gc/discord.js/tar.gz/c37c1f3e8a0472c955668af4263b8b54eea1520a"
+  resolved "https://codeload.github.com/gc/discord.js/tar.gz/fd4c015610e3c10d96c131b6e3e7e3ab78132dad"
   dependencies:
     "@discordjs/builders" "^0.1.1"
     "@discordjs/collection" "^0.1.6"
