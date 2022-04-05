@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank } from '../types';
+import { ItemBank, Skills } from '../types';
 import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
@@ -14,6 +14,7 @@ import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { lmsCreatables } from './creatables/lms';
+import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 import { tobCreatables } from './creatables/tob';
@@ -23,7 +24,7 @@ export interface Createable {
 	outputItems: ItemBank | Bank;
 	inputItems: ItemBank | Bank | ((user: KlasaUser) => Bank);
 	cantHaveItems?: ItemBank;
-	requiredSkills?: Record<string, number>;
+	requiredSkills?: Skills;
 	QPRequired?: number;
 	noCl?: boolean;
 	GPCost?: number;
@@ -1783,7 +1784,8 @@ const Createables: Createable[] = [
 	...BsoCreateables,
 	...gracefulOutfitCreatables,
 	...tobCreatables,
-	...lmsCreatables
+	...lmsCreatables,
+	...nexCreatables
 ];
 
 export default Createables;

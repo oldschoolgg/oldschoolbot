@@ -21,6 +21,7 @@ import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
 import { mazchnaMonsters } from './mazchnaMonsters';
 import { nieveMonsters } from './nieveMonsters';
+import { revenantMonsters } from './revs';
 import { turaelMonsters } from './turaelMonsters';
 import { vannakaMonsters } from './vannakaMonsters';
 
@@ -330,6 +331,7 @@ export default killableMonsters;
 
 export const effectiveMonsters = [
 	...killableMonsters,
+	...revenantMonsters,
 	NightmareMonster,
 	{
 		name: 'Zalcano',

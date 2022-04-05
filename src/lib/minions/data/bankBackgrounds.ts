@@ -214,6 +214,17 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 20_000_000
 	},
 	{
+		id: 23,
+		name: 'ToB',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
 		id: 26,
 		name: 'Weeb',
 		image: null,

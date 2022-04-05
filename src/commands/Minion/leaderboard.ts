@@ -1,4 +1,5 @@
 import { MessageEmbed } from 'discord.js';
+import { roll } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 
 import { production } from '../../config';
@@ -104,7 +105,7 @@ export default class extends BotCommand {
 	}
 
 	async init() {
-		if (production) await this.cacheUsernames();
+		if (production) await this.cacheUsernames(true);
 	}
 
 	getPos(page: number, record: number) {
@@ -118,7 +119,9 @@ export default class extends BotCommand {
 		return username;
 	}
 
-	async cacheUsernames() {
+	async cacheUsernames(force = false) {
+		if (!force && !roll(20)) return;
+
 		const allNewUsers = await prisma.newUser.findMany({
 			where: {
 				username: {
