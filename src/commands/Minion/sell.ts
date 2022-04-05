@@ -3,9 +3,10 @@ import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { MAX_INT_JAVA } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemID as id, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { clamp, itemID as id, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 
 /**
  * - Hardcoded prices
@@ -26,7 +27,7 @@ export function sellPriceOfItem(client: KlasaClient, item: Item, taxRate = 20): 
 	let basePrice = customPrices[item.id] ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
-	price = Math.floor(price);
+	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
 	return { price, basePrice };
 }
 
