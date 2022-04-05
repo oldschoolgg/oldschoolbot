@@ -6,12 +6,12 @@ import { determineXPFromTickets } from '../../../commands/Minion/agilityarena';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run(data: AgilityArenaActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, duration, userID } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);

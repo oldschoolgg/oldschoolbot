@@ -20,10 +20,6 @@ export default class extends Task {
 			xpReceived *= 1.1;
 		}
 
-		await user.addXP({
-			skillName: SkillsEnum.Smithing,
-			amount: xpReceived
-		});
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Smithing,
 			amount: xpReceived,

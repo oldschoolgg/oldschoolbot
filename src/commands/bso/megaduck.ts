@@ -9,11 +9,10 @@ import { Bank } from 'oldschooljs';
 
 import { Events, PerkTier } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
-import { getGuildSettings } from '../../lib/settings/settings';
-import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsername } from '../../lib/util';
 import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 const _mapImage = readFileSync('./src/lib/resources/images/megaduckmap.png');
 const _noMoveImage = readFileSync('./src/lib/resources/images/megaducknomovemap.png');
@@ -45,7 +44,7 @@ function topFeeders(client: KlasaClient, entries: any[]) {
 		.join(', ')}`;
 }
 
-function applyDirection(location: MegaDuckLocation, direction: 'up' | 'down' | 'left' | 'right') {
+function applyDirection(location: MegaDuckLocation, direction: 'up' | 'down' | 'left' | 'right'): MegaDuckLocation {
 	let newLocation = { ...location };
 	switch (direction) {
 		case 'up':
@@ -151,17 +150,19 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 	}
 
 	async run(msg: KlasaMessage, [direction]: ['up' | 'down' | 'left' | 'right' | undefined]) {
-		const settings = await getGuildSettings(msg.guild!);
+		const settings = await mahojiGuildSettingsFetch(msg.guild!);
 		const location: Readonly<MegaDuckLocation> = {
-			...(settings.get(GuildSettings.MegaDuckLocation) ?? defaultMegaDuckLocation)
+			...((settings.mega_duck_location as any) || defaultMegaDuckLocation)
 		};
 		if (msg.flagArgs.reset && msg.member && msg.member.permissions.has('ADMINISTRATOR')) {
 			await msg.confirm(
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
 			);
-			await settings.update(GuildSettings.MegaDuckLocation, {
-				...defaultMegaDuckLocation,
-				steps: location.steps
+			await mahojiGuildSettingsUpdate(msg.guild!, {
+				mega_duck_location: {
+					...defaultMegaDuckLocation,
+					steps: location.steps
+				}
 			});
 		}
 		if (msg.flagArgs.all && msg.author.perkTier >= PerkTier.Five) {
@@ -214,7 +215,9 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			}
 		}
 		newLocation.steps.push([newLocation.x, newLocation.y]);
-		await settings.update(GuildSettings.MegaDuckLocation, newLocation);
+		await mahojiGuildSettingsUpdate(msg.guild!, {
+			mega_duck_location: newLocation as any
+		});
 		if (
 			!locationIsFinished(location) &&
 			locationIsFinished(newLocation) &&
@@ -233,7 +236,9 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 				usersParticipated: {},
 				placesVisited: [...newLocation.placesVisited, 'ocean']
 			};
-			await settings.update(GuildSettings.MegaDuckLocation, newT);
+			await mahojiGuildSettingsUpdate(msg.guild!, {
+				mega_duck_location: newT as any
+			});
 			this.client.emit(
 				Events.ServerNotification,
 				`The ${msg.guild!.name} server just returned Mega Duck into the ocean with Mrs Duck, ${

@@ -17,6 +17,8 @@ interface DegradeableItem {
 		cost: Bank;
 		charges: number;
 	};
+	unchargedItem?: Item;
+	convertOnCharge?: boolean;
 }
 
 export const degradeableItems: DegradeableItem[] = [
@@ -40,7 +42,9 @@ export const degradeableItems: DegradeableItem[] = [
 		chargeInput: {
 			cost: new Bank().add('Blood rune', 3),
 			charges: 1
-		}
+		},
+		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
+		convertOnCharge: true
 	}
 ];
 

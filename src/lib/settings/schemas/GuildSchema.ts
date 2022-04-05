@@ -4,7 +4,6 @@ import { defaultMegaDuckLocation } from '../../minions/types';
 
 Client.defaultGuildSchema
 	.add('jmodComments', 'textchannel', { default: null })
-	.add('hcimdeaths', 'textchannel', { default: null })
 	.add('petchannel', 'textchannel', { default: null })
 	.add('tweetchannel', 'textchannel', { default: null })
 	.add('levelUpMessages', 'textchannel', { default: null })

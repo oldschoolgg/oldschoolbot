@@ -77,11 +77,11 @@ export const createCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		member,
 		options,
-		interaction
+		interaction,
+		userID
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
-		const user = await client.fetchUser(member.user.id);
+		const user = await client.fetchUser(userID.toString());
 
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
@@ -178,7 +178,7 @@ export const createCommand: OSBMahojiCommand = {
 		if (createableItem.cantHaveItems) {
 			const allItemsOwned = user.allItemsOwned();
 			for (const [itemID, qty] of Object.entries(createableItem.cantHaveItems)) {
-				const numOwned = allItemsOwned.amount(itemID);
+				const numOwned = allItemsOwned.amount(Number(itemID));
 				if (numOwned >= qty) {
 					return `You can't ${action} this item, because you have ${new Bank(
 						createableItem.cantHaveItems
@@ -186,6 +186,8 @@ export const createCommand: OSBMahojiCommand = {
 				}
 			}
 		}
+
+		const isDyeing = inItems.items().some(i => i[0].name.toLowerCase().includes('dye'));
 
 		if (action === 'revert') {
 			await handleMahojiConfirmation(
@@ -199,14 +201,11 @@ export const createCommand: OSBMahojiCommand = {
 				interaction,
 				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}${
 					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
-				}.`
-			);
-		}
-
-		if (inItems.items().some(i => i[0].name.toLowerCase().includes('dye'))) {
-			await handleMahojiConfirmation(
-				interaction,
-				'If you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
+				}.${
+					isDyeing
+						? '\n\nIf you are putting a dye on an item - the action is irreversible, you cannot get back the dye or the item, it is dyed forever. Are you sure you want to do that?'
+						: ''
+				}`
 			);
 		}
 
