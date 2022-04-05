@@ -82,6 +82,8 @@ export default class extends Task {
 			}
 		}
 
+		let daeyaltQty = 0;
+
 		// Gem rocks roll off the GemRockTable
 		if (ore.id === 1625) {
 			for (let i = 0; i < quantity; i++) {
@@ -104,6 +106,11 @@ export default class extends Task {
 					break;
 				}
 			}
+		} else if (ore.id === 24_704) {
+			for (let i = 0; i < quantity; i++) {
+				daeyaltQty += rand(2, 3);
+			}
+			loot.add(ore.id, daeyaltQty);
 		} else {
 			loot.add(ore.id, quantity);
 		}
