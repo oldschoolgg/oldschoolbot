@@ -1,4 +1,4 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -20,13 +20,17 @@ const specialSoldItems = new Map([
 	[id('Ancient relic'), 16_000_000]
 ]);
 
-export function sellPriceOfItem(client: KlasaClient, item: Item) {
+export function sellPriceOfItem(client: KlasaClient, item: Item, taxRate = 20): { price: number; basePrice: number } {
+	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
 	const customPrices = client.settings.get(ClientSettings.CustomPrices);
 	let basePrice = customPrices[item.id] ?? item.price;
-	if (basePrice > item.highalch * 3) {
-		return basePrice;
+	let price = basePrice;
+	price = reduceNumByPercent(price, taxRate);
+	price = Math.floor(price);
+	if (price < item.highalch * 3) {
+		price = Math.floor(calcPercentOfNum(30, item.highalch));
 	}
-	return calcPercentOfNum(30, item.highalch);
+	return { price, basePrice };
 }
 
 export default class extends BotCommand {
@@ -43,6 +47,7 @@ export default class extends BotCommand {
 		let totalPrice = 0;
 
 		const hasSkipper = msg.author.usingPet('Skipper') || msg.author.bank().amount('Skipper') > 0;
+		const taxRatePercent = hasSkipper ? 15 : 25;
 
 		for (const [item, qty] of bankToSell.items()) {
 			const specialPrice = specialSoldItems.get(item.id);
@@ -50,7 +55,8 @@ export default class extends BotCommand {
 				totalPrice += Math.floor(specialPrice * qty);
 			} else {
 				if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
-				totalPrice += sellPriceOfItem(this.client, item) * qty;
+				const { price } = sellPriceOfItem(this.client, item, taxRatePercent);
+				totalPrice += price * qty;
 			}
 		}
 
@@ -74,7 +80,9 @@ export default class extends BotCommand {
 		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
 		return msg.channel.send(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}** GP (${Util.toKMB(totalPrice)}).  ${
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(
+				totalPrice
+			)})** (${taxRatePercent}% below market price) ${
 				hasSkipper
 					? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
 					: ''

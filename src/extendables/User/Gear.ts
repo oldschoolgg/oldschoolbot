@@ -7,7 +7,7 @@ import { defaultGear, GearSetupType, resolveGearTypeSetting } from '../../lib/ge
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Gear } from '../../lib/structures/Gear';
-import resolveItems from '../../lib/util/resolveItems';
+import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -37,13 +37,7 @@ export default class extends Extendable {
 	}
 
 	public hasItemEquippedAnywhere(this: User, _item: number | string | string[] | number[], every = false): boolean {
-		const items = resolveItems(_item);
-		for (const gear of Object.values(this.rawGear())) {
-			if (gear.hasEquipped(items, every)) {
-				return true;
-			}
-		}
-		return false;
+		return userHasItemsEquippedAnywhere(this, _item, every);
 	}
 
 	public hasItemEquippedOrInBank(this: User, item: number | string) {
