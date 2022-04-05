@@ -1,6 +1,8 @@
-import { KlasaUser } from 'klasa';
+import { reduceNumByPercent } from 'e';
+import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { sellPriceOfItem } from '../src/commands/Minion/sell';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { deduplicateClueScrolls, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
@@ -59,5 +61,14 @@ describe('util', () => {
 
 	test('truncateString', () => {
 		expect(truncateString('testtttttt', 5)).toEqual('te...');
+	});
+
+	test('sellPriceOfItem', () => {
+		const clientMock = { settings: { get: () => ({}) } } as any as KlasaClient;
+		const item = getOSItem('Dragon pickaxe');
+		const { price } = item;
+		let expected = Math.floor(reduceNumByPercent(price, 20));
+		expect(sellPriceOfItem(clientMock, item)).toEqual({ price: expected, basePrice: price });
+		expect(sellPriceOfItem(clientMock, getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
 	});
 });
