@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { RoguesDenMazeTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -23,7 +23,7 @@ export default class extends Task {
 		return lowestCountPiece;
 	}
 
-	async run(data: RoguesDenMazeTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
 
 		incrementMinigameScore(userID, 'rogues_den', quantity);
@@ -65,7 +65,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['roguesden', [], true],
+			['minigames', { rogues_den: {} }, true],
 			gotLoot ? image! : undefined,
 			data,
 			itemsAdded

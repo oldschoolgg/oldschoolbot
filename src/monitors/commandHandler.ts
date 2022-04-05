@@ -1,13 +1,13 @@
 import { Permissions } from 'discord.js';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { getGuildSettings, syncNewUserUsername } from '../lib/settings/settings';
-import { GuildSettings } from '../lib/settings/types/GuildSettings';
+import { syncNewUserUsername } from '../lib/settings/settings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import { logError } from '../lib/util/logError';
 import { postCommand } from '../mahoji/lib/postCommand';
 import { preCommand } from '../mahoji/lib/preCommand';
 import { convertKlasaCommandToAbstractCommand } from '../mahoji/lib/util';
+import { mahojiGuildSettingsFetch } from '../mahoji/mahojiSettings';
 
 export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {
@@ -31,10 +31,10 @@ export default class extends Monitor {
 	}
 
 	public async sendPrefixReminder(message: KlasaMessage) {
-		const settings = await getGuildSettings(message.guild!);
+		const settings = await mahojiGuildSettingsFetch(message.guild!);
 
 		if (message.guild !== null) {
-			const staffOnlyChannels = settings.get(GuildSettings.StaffOnlyChannels);
+			const { staffOnlyChannels } = settings;
 			if (
 				!message.member ||
 				(staffOnlyChannels.includes(message.channel.id) &&
@@ -44,14 +44,7 @@ export default class extends Monitor {
 			}
 		}
 
-		const prefix = settings.get(GuildSettings.Prefix);
-		return message.channel.send(
-			`The prefix${
-				Array.isArray(prefix)
-					? `es for this guild are: ${prefix.map(pre => `\`${pre}\``).join(', ')}`
-					: ` in this guild is set to: \`${prefix}\``
-			}`
-		);
+		return message.channel.send(`The prefix in this guild is set to: \`${settings.prefix}\``);
 	}
 
 	public async runCommand(msg: KlasaMessage) {
@@ -70,7 +63,7 @@ export default class extends Monitor {
 		const abstractCommand = convertKlasaCommandToAbstractCommand(command);
 
 		let error: Error | string | null = null;
-
+		let inhibited = false;
 		try {
 			const inhibitedReason = await preCommand({
 				abstractCommand,
@@ -81,6 +74,7 @@ export default class extends Monitor {
 			});
 
 			if (inhibitedReason) {
+				inhibited = true;
 				if (inhibitedReason.silent) return;
 				return msg.channel.send(inhibitedReason.reason);
 			}
@@ -107,7 +101,8 @@ export default class extends Monitor {
 					error,
 					args: msg.args,
 					msg,
-					isContinue: false
+					isContinue: false,
+					inhibited
 				});
 			} catch (err) {
 				logError(err);

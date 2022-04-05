@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { prisma } from '../settings/prisma';
-import { DissassemblySourceGroup } from '.';
+import { DisassemblySourceGroup, IMaterialBank } from '.';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 
@@ -16,7 +16,7 @@ import MaterialLootTable from './MaterialLootTable';
  * you receive less XP from certain *items* based on how many of those you have already disassembled.
  *
  */
-async function calculateDisXP(user: KlasaUser, quantity: number, item: DissassemblySourceGroup['items'][number]) {
+async function calculateDisXP(user: KlasaUser, quantity: number, item: DisassemblySourceGroup['items'][number]) {
 	const prismaUser = await prisma.user.findFirst({
 		where: {
 			id: user.id
@@ -54,7 +54,7 @@ export async function handleDisassembly({
 	user: KlasaUser;
 	quantity: number;
 	item: Item;
-	group: DissassemblySourceGroup;
+	group: DisassemblySourceGroup;
 }): Promise<DisassemblyResult> {
 	const data = group.items.find(i => i.item === item);
 	if (!data) throw new Error(`No data for ${item.name}`);
@@ -65,11 +65,28 @@ export async function handleDisassembly({
 	const junkChance = 100 - calcWhatPercent(data.lvl, 120);
 	assert(data.lvl >= 1 && data.lvl <= 120, 'Disassemble item level must be between 1-120');
 	console.log(`${data.item.name} has a ${junkChance}% chance of becoming junk`);
+
+	const specialBank: IMaterialBank = {};
+	if (data.special) {
+		for (let part of data.special.parts) {
+			specialBank[part.type] = part.chance;
+		}
+	}
+	const specialTable = new MaterialLootTable(specialBank);
 	for (let i = 0; i < quantity; i++) {
+		let junk = false;
 		if (percentChance(junkChance)) {
 			materialLoot.add('junk');
+			junk = true;
 		} else {
-			materialLoot.add(table.roll());
+			materialLoot.add(table.roll(), data.partQuantity);
+		}
+		if (data.special) {
+			if (data.special.always || !junk) {
+				const specialResult = specialTable.roll();
+				const specialItem = data.special.parts.find(item => item.type === specialResult);
+				materialLoot.add(specialResult, specialItem!.amount);
+			}
 		}
 	}
 

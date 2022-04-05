@@ -8,7 +8,7 @@ import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { WintertodtActivityTaskOptions } from '../../lib/types/minions';
+import { MinigameActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, bankHasItem, formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { OSBMahojiCommand } from '../lib/util';
@@ -26,8 +26,8 @@ export const wintertodtCommand: OSBMahojiCommand = {
 		examples: ['/wintertodt']
 	},
 	options: [],
-	run: async ({ member, channelID }: CommandRunOptions) => {
-		const user = await client.fetchUser(member.user.id);
+	run: async ({ userID, channelID }: CommandRunOptions) => {
+		const user = await client.fetchUser(userID);
 		const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		if (fmLevel < 50) {
@@ -97,7 +97,7 @@ export const wintertodtCommand: OSBMahojiCommand = {
 
 		const duration = durationPerTodt * quantity;
 
-		await addSubTaskToActivityTask<WintertodtActivityTaskOptions>({
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			minigameID: 'wintertodt',
 			userID: user.id,
 			channelID: channelID.toString(),

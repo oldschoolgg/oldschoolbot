@@ -9,13 +9,13 @@ import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ItemBank } from '../../../lib/types';
-import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { addBanks, bankHasItem, multiplyBank, rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
-	async run(data: WintertodtActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);

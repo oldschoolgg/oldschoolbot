@@ -1,0 +1,88 @@
+import getOSItem from '../../util/getOSItem';
+import { DisassemblySourceGroup } from '..';
+
+const i = getOSItem;
+
+export const Jewellery: DisassemblySourceGroup = {
+	name: 'Jewellery',
+	items: [
+		{ item: i('Ham logo'), lvl: 1, partQuantity: 5 },
+		{ item: i('Opal ring'), lvl: 1, partQuantity: 5 },
+		{ item: i('Gold ring'), lvl: 5, partQuantity: 5 },
+		{ item: i('Gold necklace'), lvl: 6, partQuantity: 5 },
+		{ item: i('Gold bracelet'), lvl: 7, partQuantity: 5 },
+		{ item: i('Gold amulet'), lvl: 8, partQuantity: 5 },
+		{ item: i('Jade ring'), lvl: 13, partQuantity: 5 },
+		{ item: i('Holy symbol'), lvl: 16, partQuantity: 5 },
+		{ item: i('Opal necklace'), lvl: 16, partQuantity: 5 },
+		{ item: i('Topaz ring'), lvl: 16, partQuantity: 5 },
+		{ item: i('Unblessed symbol'), lvl: 16, partQuantity: 5 },
+		{ item: i('Unholy symbol'), lvl: 17, partQuantity: 5 },
+		{ item: i('Unpowered symbol'), lvl: 17, partQuantity: 5 },
+		{ item: i('Ring of recoil'), lvl: 20, partQuantity: 5 },
+		{ item: i('Sapphire ring'), lvl: 20, partQuantity: 5 },
+		{ item: i('Opal bracelet'), lvl: 22, partQuantity: 5 },
+		{ item: i('Sapphire necklace'), lvl: 22, partQuantity: 5 },
+		{ item: i('Bracelet of clay'), lvl: 23, partQuantity: 5 },
+		{ item: i('Sapphire bracelet'), lvl: 23, partQuantity: 5 },
+		{ item: i('Sapphire amulet'), lvl: 24, partQuantity: 5 },
+		{ item: i('Jade necklace'), lvl: 25, partQuantity: 5 },
+		{ item: i('Emerald ring'), lvl: 27, partQuantity: 5 },
+		{ item: i('Opal amulet'), lvl: 27, partQuantity: 5 },
+		{ item: i('Binding necklace'), lvl: 29, partQuantity: 5 },
+		{ item: i('Emerald necklace'), lvl: 29, partQuantity: 5 },
+		{ item: i('Jade bracelet'), lvl: 29, partQuantity: 5 },
+		{ item: i('Emerald bracelet'), lvl: 30, partQuantity: 5 },
+		{ item: i('Emerald amulet'), lvl: 31, partQuantity: 5 },
+		{ item: i('Topaz necklace'), lvl: 32, partQuantity: 5 },
+		{ item: i('Jade amulet'), lvl: 34, partQuantity: 5 },
+		{ item: i('Ring of forging'), lvl: 34, partQuantity: 5 },
+		{ item: i('Ruby ring'), lvl: 34, partQuantity: 5 },
+		{ item: i('Salve amulet'), lvl: 35, partQuantity: 5 },
+		{ item: i('Salve amulet (e)'), lvl: 35, partQuantity: 5 },
+		{ item: i('Strung rabbit foot'), lvl: 37, partQuantity: 5 },
+		{ item: i('Topaz bracelet'), lvl: 38, partQuantity: 5 },
+		{ item: i('Ruby necklace'), lvl: 40, partQuantity: 5 },
+		{ item: i('Ruby bracelet'), lvl: 42, partQuantity: 5 },
+		{ item: i('Diamond ring'), lvl: 43, partQuantity: 5 },
+		{ item: i('Ring of life'), lvl: 43, partQuantity: 5 },
+		{ item: i('Archers ring'), lvl: 45, partQuantity: 5 },
+		{ item: i('Seers ring'), lvl: 45, partQuantity: 5 },
+		{ item: i('Topaz amulet'), lvl: 45, partQuantity: 5 },
+		{ item: i('Warrior ring'), lvl: 45, partQuantity: 5 },
+		{
+			item: i('Ring of coins'),
+			lvl: 50,
+			partQuantity: 5,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 5 }] }
+		},
+		{ item: i('Ruby amulet'), lvl: 50, partQuantity: 5 },
+		{
+			item: i('Strength amulet (t)'),
+			lvl: 50,
+			partQuantity: 5,
+			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 5 }] }
+		},
+		{ item: i('Dragonstone ring'), lvl: 55, partQuantity: 5 },
+		{ item: i('Ring of wealth'), lvl: 55, partQuantity: 5 },
+		{ item: i('Diamond necklace'), lvl: 56, partQuantity: 5 },
+		{ item: i('Phoenix necklace'), lvl: 56, partQuantity: 5 },
+		{ item: i('Diamond bracelet'), lvl: 58, partQuantity: 5 },
+		{ item: i('Onyx ring'), lvl: 67, partQuantity: 5 },
+		{ item: i('Ring of stone'), lvl: 67, partQuantity: 5 },
+		{ item: i('Diamond amulet'), lvl: 70, partQuantity: 5 },
+		{ item: i('Skills necklace'), lvl: 72, partQuantity: 5 },
+		{ item: i('Combat bracelet'), lvl: 74, partQuantity: 5 },
+		{ item: i('Dragonstone bracelet'), lvl: 74, partQuantity: 5 },
+		{ item: i('Dragonstone amulet'), lvl: 80, partQuantity: 5 },
+		{ item: i('Berserker necklace'), lvl: 82, partQuantity: 5 },
+		{ item: i('Onyx necklace'), lvl: 82, partQuantity: 5 },
+		{ item: i('Onyx bracelet'), lvl: 84, partQuantity: 5 },
+		{ item: i('Regen bracelet'), lvl: 84, partQuantity: 5 },
+		{ item: i('Onyx amulet'), lvl: 90, partQuantity: 5 },
+		{ item: i('Pre-nature amulet'), lvl: 8, partQuantity: 5 }
+	],
+	parts: { precious: 3, enhancing: 2, connector: 30, delicate: 35, smooth: 30 }
+};
+
+export default Jewellery;

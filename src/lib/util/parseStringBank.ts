@@ -86,7 +86,7 @@ export function parseBankFromFlags({
 	user
 }: {
 	bank: Bank;
-	flags: Record<string, string>;
+	flags: Record<string, string | undefined>;
 	excludeItems: readonly number[];
 	maxSize?: number;
 	user?: KlasaUser;
@@ -105,7 +105,11 @@ export function parseBankFromFlags({
 		if (flagsKeys.includes('tradeables') && !item.tradeable) continue;
 		if (flagsKeys.includes('untradeables') && item.tradeable) continue;
 		if (flagsKeys.includes('equippables') && !item.equipment?.slot) continue;
-		if (flagsKeys.includes('search') && !item.name.toLowerCase().includes(flags.search.toLowerCase())) {
+		if (
+			flagsKeys.includes('search') &&
+			flags.search &&
+			!item.name.toLowerCase().includes(flags.search.toLowerCase())
+		) {
 			continue;
 		}
 
@@ -121,7 +125,7 @@ export function parseBankFromFlags({
 
 interface ParseBankOptions {
 	inputBank: Bank;
-	flags?: Record<string, string>;
+	flags?: Record<string, string | undefined>;
 	inputStr?: string;
 	excludeItems?: number[];
 	filters?: string[];

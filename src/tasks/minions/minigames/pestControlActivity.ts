@@ -2,12 +2,11 @@ import { Time } from 'e';
 import { Task } from 'klasa';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { getBoatType } from '../../../commands/Minion/pestcontrol';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
+import { getBoatType } from '../../../mahoji/lib/abstracted_commands/pestControlCommand';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
@@ -20,7 +19,7 @@ export default class extends Task {
 
 		// 2x points for Flappy.
 		let hasFlappy = false;
-		if (user.equippedPet() === itemID('Flappy')) {
+		if (user.usingPet('Flappy')) {
 			hasFlappy = true;
 			points *= 2;
 		}
@@ -44,7 +43,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['pestcontrol', [quantity], true, 'start'],
+			['minigames', { pest_control: { start: {} } }, true, 'start'],
 			undefined,
 			data,
 			null
