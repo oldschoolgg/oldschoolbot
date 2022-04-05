@@ -120,8 +120,8 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.cape) {
-			if (options.cape?.type) {
-				return capeGambleCommand(KlasaUser, options.cape!.type, interaction);
+			if (options.cape.type) {
+				return capeGambleCommand(KlasaUser, options.cape.type, interaction);
 			}
 			return capeGambleStatsCommand(KlasaUser);
 		}
