@@ -142,21 +142,26 @@ export default class extends BotCommand {
 				)}.`
 			);
 		}
-
 		if (fish.bait) {
-			const hasBait = await msg.author.hasItem(fish.bait, quantity);
-			if (!hasBait) {
+			const baseCost = new Bank().add(fish.bait);
+
+			const maxCanDo = msg.author.bank().fits(baseCost);
+			if (maxCanDo === 0) {
 				return msg.channel.send(`You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`);
 			}
-		}
+			if (maxCanDo < quantity) {
+				quantity = maxCanDo;
+			}
 
-		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
-		duration += rand(-tenPercent, tenPercent);
+			const cost = new Bank();
+			cost.add(baseCost.multiply(quantity));
 
-		// Remove the bait from their bank.
-		if (fish.bait) {
+			// Remove the bait from their bank.
+
 			await msg.author.removeItemsFromBank(new Bank().add(fish.bait, quantity));
 		}
+		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
+		duration += rand(-tenPercent, tenPercent);
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
 			fishID: fish.id,
