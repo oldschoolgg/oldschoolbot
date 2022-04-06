@@ -51,21 +51,15 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 
 		await msg.author.settings.reset();
 
-		try {
-			await Promise.all([
-				prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } }),
-				prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } }),
-				prisma.minigame.delete({ where: { user_id: msg.author.id } }),
-				prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } }),
-				prisma.newUser.delete({ where: { id: msg.author.id } }),
-				prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } }),
-				prisma.tameActivity.deleteMany({ where: { user_id: msg.author.id } }),
-				prisma.tame.deleteMany({ where: { user_id: msg.author.id } }),
-				prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(msg.author.id) } })
-			]);
-		} catch (err) {
-			console.log(err);
-		}
+		await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
+		await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } }).catch();
+		await prisma.minigame.delete({ where: { user_id: msg.author.id } });
+		await prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
+		await prisma.newUser.delete({ where: { id: msg.author.id } });
+		await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
+		await prisma.tameActivity.deleteMany({ where: { user_id: msg.author.id } });
+		await prisma.tame.deleteMany({ where: { user_id: msg.author.id } });
+		await prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 
 		await msg.author.settings.update([
 			[UserSettings.Minion.Ironman, true],
