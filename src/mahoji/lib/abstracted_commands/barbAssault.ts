@@ -102,7 +102,7 @@ export async function barbAssaultLevelCommand(user: User) {
 		if (points < level.cost) {
 			return `You don't have enough points to upgrade to level ${level.level}. You need ${level.cost} points.`;
 		}
-		await mahojiUserSettingsUpdate(user.id, {
+		await mahojiUserSettingsUpdate(client, user.id, {
 			honour_level: { increment: 1 },
 			honour_points: { decrement: level.cost }
 		});
@@ -145,7 +145,7 @@ export async function barbAssaultBuyCommand(
 			cost * quantity
 		).toLocaleString()} honour points?`
 	);
-	await mahojiUserSettingsUpdate(user.id, {
+	await mahojiUserSettingsUpdate(client, user.id, {
 		honour_points: {
 			decrement: cost * quantity
 		}
@@ -182,7 +182,7 @@ export async function barbAssaultGambleCommand(
 			cost * quantity
 		).toLocaleString()} honour points?`
 	);
-	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(client, user.id, {
 		honour_points: {
 			decrement: cost * quantity
 		},

@@ -6,14 +6,11 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			aliases: ['lastmanstanding']
+			aliases: ['ts']
 		});
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.channel.send(
-			`You now use this command using: \`/minigames lms simulate\`
-${COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg)}`
-		);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minigames trek'));
 	}
 }

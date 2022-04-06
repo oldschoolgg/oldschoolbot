@@ -26,7 +26,7 @@ export default class extends Task {
 		for (const [uID, uLoot] of loot.entries()) {
 			const user = await this.client.users.fetch(uID);
 			await user.addItemsToBank({ items: uLoot, collectionLog: true });
-			await user.incrementMonsterScore(NEX_ID, quantity);
+			await user.incrementMonsterScore(NEX_ID, quantity - userDetails.find(i => i[0] === uID)![2].length);
 		}
 
 		await trackLoot({

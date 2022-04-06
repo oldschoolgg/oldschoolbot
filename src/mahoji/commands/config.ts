@@ -23,7 +23,7 @@ async function bgColorConfig(user: User, hex?: string) {
 	const embed = new Embed();
 
 	if (hex === 'reset') {
-		await mahojiUserSettingsUpdate(user.id, {
+		await mahojiUserSettingsUpdate(client, user.id, {
 			bank_bg_hex: null
 		});
 		return 'Reset your bank background color.';
@@ -48,7 +48,7 @@ async function bgColorConfig(user: User, hex?: string) {
 		return "That's not a valid hex color. It needs to be 7 characters long, starting with '#', for example: #4e42f5 - use this to pick one: <https://www.google.com/search?q=hex+color+picker>";
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await mahojiUserSettingsUpdate(client, user.id, {
 		bank_bg_hex: hex
 	});
 
@@ -76,7 +76,7 @@ async function handleChannelEnable(
 	if (choice === 'disable') {
 		if (isDisabled) return 'This channel is already disabled.';
 
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			staffOnlyChannels: [...settings.staffOnlyChannels, cID]
 		});
 
@@ -84,7 +84,7 @@ async function handleChannelEnable(
 	}
 	if (!isDisabled) return 'This channel is already enabled.';
 
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		staffOnlyChannels: settings.staffOnlyChannels.filter(i => i !== cID)
 	});
 
@@ -109,7 +109,7 @@ async function handleTweetsEnable(
 		if (settings.tweetchannel === cID) {
 			return 'Jmod Tweets are already enabled in this channel.';
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			tweetchannel: cID
 		});
 
@@ -119,7 +119,7 @@ async function handleTweetsEnable(
 		return 'Enabled Jmod Tweets in this channel.';
 	}
 	if (!settings.tweetchannel) return "Jmod Tweets aren't enabled, so you can't disable them.";
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		tweetchannel: null
 	});
 	return 'Disabled Jmod Tweets in this channel.';
@@ -140,7 +140,7 @@ async function handlePetMessagesEnable(
 		if (settings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			petchannel: cID
 		});
 		return 'Enabled Pet Messages in this guild.';
@@ -148,7 +148,7 @@ async function handlePetMessagesEnable(
 	if (settings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';
@@ -172,7 +172,7 @@ async function handleJModCommentsEnable(
 		if (settings.jmodComments === cID) {
 			return 'JMod Comments are already enabled in this channel.';
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			jmodComments: cID
 		});
 		if (settings.jmodComments !== null) {
@@ -183,7 +183,7 @@ async function handleJModCommentsEnable(
 	if (settings.jmodComments === null) {
 		return "JMod Comments aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		jmodComments: null
 	});
 	return 'Disabled JMod Comments in this channel.';
@@ -205,7 +205,7 @@ async function handleCommandEnable(
 		if (!settings.disabledCommands.includes(commandName)) {
 			return "That command isn't disabled.";
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			disabledCommands: settings.disabledCommands.filter(i => i !== command.name)
 		});
 
@@ -215,7 +215,7 @@ async function handleCommandEnable(
 	if (settings.disabledCommands.includes(command.name)) {
 		return 'That command is already disabled.';
 	}
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		disabledCommands: [...settings.disabledCommands, command.name]
 	});
 
@@ -223,7 +223,7 @@ async function handleCommandEnable(
 }
 
 async function handleRandomEventsEnable(user: KlasaUser, choice: 'enable' | 'disable') {
-	const currentSettings = await mahojiUsersSettingsFetch(user);
+	const currentSettings = await mahojiUsersSettingsFetch(user.id);
 
 	const nextBool = choice === 'enable' ? false : true;
 	const currentStatus = currentSettings.bitfield.includes(BitField.DisabledRandomEvents);
@@ -232,7 +232,7 @@ async function handleRandomEventsEnable(user: KlasaUser, choice: 'enable' | 'dis
 		return `Random events are already ${!currentStatus ? 'enabled' : 'disabled'} for you.`;
 	}
 
-	await mahojiUserSettingsUpdate(user, {
+	await mahojiUserSettingsUpdate(client, user, {
 		bitfield: uniqueArr(
 			nextBool
 				? [...currentSettings.bitfield, BitField.DisabledRandomEvents]
@@ -247,7 +247,7 @@ async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefi
 	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		prefix: newPrefix
 	});
 	return `Changed Command Prefix for this server to \`${newPrefix}\``;
@@ -314,11 +314,11 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		warningMsg = priorityWarningMsg;
 	}
 	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
-		await mahojiUserSettingsUpdate(user.id, {
+		await mahojiUserSettingsUpdate(client, user.id, {
 			combat_options: [...settings.combat_options, newcbopt.id]
 		});
 	} else if (!nextBool && settings.combat_options.includes(newcbopt.id)) {
-		await mahojiUserSettingsUpdate(user.id, {
+		await mahojiUserSettingsUpdate(client, user.id, {
 			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
 		});
 	} else {
@@ -348,7 +348,7 @@ async function handleRSN(user: KlasaUser, newRSN: string) {
 		return `Your RSN is already set to \`${RSN}\``;
 	}
 
-	await mahojiUserSettingsUpdate(user.id, {
+	await mahojiUserSettingsUpdate(client, user.id, {
 		RSN: newRSN
 	});
 	if (RSN !== null) {
@@ -363,7 +363,7 @@ async function setSmallBank(user: User, choice: 'enable' | 'disable') {
 			? [...user.bitfield, BitField.AlwaysSmallBank]
 			: removeFromArr(user.bitfield, BitField.AlwaysSmallBank)
 	);
-	await mahojiUserSettingsUpdate(user.id, {
+	await mahojiUserSettingsUpdate(client, user.id, {
 		bitfield: newBitfield
 	});
 	return `Small Banks are now ${choice}d for you.`;

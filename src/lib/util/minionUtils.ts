@@ -1,11 +1,13 @@
 import { activity_type_enum, User } from '@prisma/client';
 import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { getUserGear } from '../../mahoji/mahojiSettings';
 import { PerkTier } from '../constants';
+import { allPetIDs } from '../data/CollectionsExport';
 import { UserSettings } from '../settings/types/UserSettings';
+import { SkillsEnum } from '../skilling/types';
 import { convertXPtoLVL, patronMaxTripCalc } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import resolveItems from './resolveItems';
@@ -123,3 +125,24 @@ export const bolts = resolveItems([
 	'Iron bolts',
 	'Bronze bolts'
 ]);
+
+export function userHasItemsEquippedAnywhere(
+	user: User | KlasaUser,
+	_item: number | string | string[] | number[],
+	every = false
+): boolean {
+	const items = resolveItems(_item);
+	if (items.length === 1 && allPetIDs.includes(items[0])) {
+		const pet =
+			user instanceof KlasaUser ? user.settings.get(UserSettings.Minion.EquippedPet) : user.minion_equippedPet;
+		return pet === items[0];
+	}
+
+	const allGear = Object.values(user instanceof KlasaUser ? user.rawGear() : getUserGear(user));
+	for (const gear of allGear) {
+		if (gear.hasEquipped(items, every)) {
+			return true;
+		}
+	}
+	return false;
+}
