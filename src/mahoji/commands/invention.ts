@@ -23,8 +23,8 @@ export const askCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					description: 'The item you want to disassemble.',
 					required: true,
-					autocomplete: async (value, member) => {
-						const user = await client.fetchUser(member.user.id);
+					autocomplete: async (value, { id }) => {
+						const user = await client.fetchUser(id);
 						return user
 							.bank()
 							.items()
@@ -62,7 +62,7 @@ export const askCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		member,
+		userID,
 		options
 	}: CommandRunOptions<{
 		disassemble?: { name: string; quantity?: number };
@@ -70,7 +70,7 @@ export const askCommand: OSBMahojiCommand = {
 		duplicates?: {};
 		chances?: {};
 	}>) => {
-		const user = await client.fetchUser(member.user.id);
+		const user = await client.fetchUser(userID);
 		if (options.disassemble) {
 			const item = getOSItem(options.disassemble.name);
 			const group = DisassemblySourceGroups.find(g => g.items.some(i => i.item.name === item.name));
