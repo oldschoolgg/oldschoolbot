@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { client } from '../../..';
+import { getPOHObject } from '../../../lib/poh';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
@@ -39,12 +40,19 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 		boosts.push('25% for 66 Magic (teleports)');
 	}
 
+	const poh = await user.getPOH();
+	const hasOrnateJewelleryBox = poh.jewellery_box === getPOHObject('Ornate jewellery box').id;
+	const hasJewelleryBox = poh.jewellery_box !== null;
+
 	const bank = user.bank();
 	switch (randInt(1, 3)) {
 		case 1: {
 			if (user.hasItemEquippedOrInBank('Amulet of eternal glory')) {
 				deliveryLength = reduceNumByPercent(deliveryLength, 20);
 				boosts.push('20% for Amulet of eternal glory');
+			} else if (hasOrnateJewelleryBox) {
+				deliveryLength = reduceNumByPercent(deliveryLength, 20);
+				boosts.push('20% for Ornate Jewellery Box');
 			} else if (bank.has('Amulet of glory(6)')) {
 				itemsToRemove.add('Amulet of glory(6)');
 				deliveryLength = reduceNumByPercent(deliveryLength, 20);
@@ -53,7 +61,10 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 			break;
 		}
 		case 2: {
-			if (bank.has('Ring of dueling(8)')) {
+			if (hasJewelleryBox) {
+				deliveryLength = reduceNumByPercent(deliveryLength, 20);
+				boosts.push('20% for Jewellery Box');
+			} else if (bank.has('Ring of dueling(8)')) {
 				itemsToRemove.add('Ring of dueling(8)');
 				deliveryLength = reduceNumByPercent(deliveryLength, 20);
 				boosts.push('20% for Ring of dueling(8)');
@@ -61,7 +72,10 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 			break;
 		}
 		case 3: {
-			if (bank.has('Games necklace(8)')) {
+			if (hasJewelleryBox) {
+				deliveryLength = reduceNumByPercent(deliveryLength, 20);
+				boosts.push('20% for Jewellery Box');
+			} else if (bank.has('Games necklace(8)')) {
 				itemsToRemove.add('Games necklace(8)');
 				deliveryLength = reduceNumByPercent(deliveryLength, 20);
 				boosts.push('20% boost for Games necklace(8)');
