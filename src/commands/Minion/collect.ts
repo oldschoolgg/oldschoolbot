@@ -164,16 +164,26 @@ export default class extends BotCommand {
 			);
 		}
 
-		const cost = collectable.itemCost.clone().multiply(quantity);
-		if (!msg.author.owns(cost)) {
-			return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
-		}
-		await msg.author.removeItemsFromBank(cost);
+		let cost: Bank = new Bank();
+		let ns = false;
+		if (collectable.itemCost) {
+			cost = collectable.itemCost.clone().multiply(quantity);
+			if (cost.has('Stamina potion(4)') && msg.flagArgs.ns) {
+				// 50% longer trip time for not using stamina potion (4)
+				ns = true;
+				duration *= 1.5;
+				cost.remove('Stamina potion(4)', cost.amount('Stamina potion (4)'));
+			}
+			if (!msg.author.owns(cost)) {
+				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
+			}
+			await msg.author.removeItemsFromBank(cost);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CollectingCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
-		);
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.CollectingCost,
+				addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
+			);
+		}
 
 		await addSubTaskToActivityTask<CollectingOptions>({
 			collectableID: collectable.item.id,
@@ -187,9 +197,13 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
 				collectable.item.name
-			}, it'll take around ${formatDuration(duration)} to finish.
+			}, it'll take around ${formatDuration(duration)} to finish.${
+				cost.toString().length > 0
+					? `
 
 Removed ${cost} from your bank.`
+					: ''
+			}${ns ? '\n 50% longer trip due to not using Stamina potions.' : ''}`
 		);
 	}
 }
