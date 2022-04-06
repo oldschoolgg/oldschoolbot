@@ -1,7 +1,7 @@
 import { KlasaMessage } from 'klasa';
 
 import { cancelTask, getActivityOfUser } from '../../settings/settings';
-import { RaidsOptions } from '../../types/minions';
+import { NexTaskOptions, NightmareActivityTaskOptions, RaidsOptions } from '../../types/minions';
 import chatHeadImage from '../../util/chatHeadImage';
 
 export async function cancelTaskCommand(msg: KlasaMessage) {
@@ -25,6 +25,23 @@ export async function cancelTaskCommand(msg: KlasaMessage) {
 		return msg.channel.send(
 			`${msg.author.minionName} is in a group PVM trip, their team wouldn't like it if they left!`
 		);
+	}
+
+	if (currentTask.type === 'Nex') {
+		const data = currentTask as NexTaskOptions;
+		if (data.users.length > 1) {
+			return msg.channel.send(
+				`${msg.author.minionName} is fighting Nex with a team, they can't abandon the trip!`
+			);
+		}
+	}
+	if (currentTask.type === 'Nightmare') {
+		const data = currentTask as NightmareActivityTaskOptions;
+		if (data.users.length > 1) {
+			return msg.channel.send(
+				`${msg.author.minionName} is fighting the Nightmare with a team, they cant leave their team!`
+			);
+		}
 	}
 
 	if (currentTask.type === 'BarbarianAssault') {

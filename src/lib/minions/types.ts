@@ -17,7 +17,7 @@ import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
 import { AttackStyles } from './functions';
 
-export interface BankBackground {
+export type BankBackground = {
 	image: Image | null;
 	id: number;
 	name: string;
@@ -32,7 +32,15 @@ export interface BankBackground {
 	skillsNeeded?: Skills;
 	transparent?: true;
 	owners?: string[];
-}
+} & (
+	| {
+			hasPurple: true;
+			purpleImage: Image | null;
+	  }
+	| {
+			hasPurple?: null;
+	  }
+);
 
 export interface ClueMilestoneReward {
 	itemReward: number;

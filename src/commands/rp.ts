@@ -355,7 +355,7 @@ export default class extends BotCommand {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || typeof input !== 'string') return;
 				const roles = await prisma.pingableRole.findMany();
-				const roleToPing = roles.find(i => i.id === Number(str) || stringMatches(i.name, input));
+				const roleToPing = roles.find(i => i.id === Number(input) || stringMatches(i.name, input));
 				if (!roleToPing) {
 					return msg.channel.send('No role with that name found.');
 				}

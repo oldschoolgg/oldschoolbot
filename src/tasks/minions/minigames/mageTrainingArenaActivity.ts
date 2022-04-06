@@ -44,7 +44,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['minigames', { mage_arena: {} }, true, 'train'],
+			['minigames', { mage_training_arena: { start: {} } }, true],
 			undefined,
 			data,
 			loot

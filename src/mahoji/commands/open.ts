@@ -52,13 +52,14 @@ export const openCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Integer,
 			name: 'quantity',
-			description: 'The quantity you want to open (defaults to max).',
+			description: 'The quantity you want to open (defaults to one).',
 			required: false,
 			min_value: 1,
 			max_value: 100_000
 		}
 	],
-	run: async ({ userID, options }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
+	run: async ({ userID, options, interaction }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
+		await interaction.deferReply();
 		const user = await client.fetchUser(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
@@ -101,7 +102,7 @@ export const openCommand: OSBMahojiCommand = {
 			items: loot.bank,
 			collectionLog: true,
 			filterLoot: false,
-			dontAddToTempCL: !itemsThatDontAddToTempCL.includes(openable.id)
+			dontAddToTempCL: itemsThatDontAddToTempCL.includes(openable.id)
 		});
 
 		const image = await client.tasks.get('bankImage')!.generateBankImage(

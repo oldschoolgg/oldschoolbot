@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -208,4 +209,10 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	}
 
 	return `**XP Gains:** ${res.join(' ')}`;
+}
+
+export function convertAttackStylesToSetup(styles: AttackStyles | User['attack_style']): 'melee' | 'range' | 'mage' {
+	if (styles.includes(SkillsEnum.Magic)) return 'mage';
+	if (styles.includes(SkillsEnum.Ranged)) return 'range';
+	return 'melee';
 }

@@ -11,7 +11,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -84,7 +84,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['runecraft', { quantity: essenceQuantity, rune: rune.name }, true],
+			['runecraft', { quantity: essenceQuantity, rune: rune.name, usestams: useStaminas }, true],
 			undefined,
 			data,
 			loot
