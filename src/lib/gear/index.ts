@@ -45,6 +45,7 @@ export const defaultGear: GearSetup = {
 	[EquipmentSlot.Shield]: null,
 	[EquipmentSlot.Weapon]: null
 };
+Object.freeze(defaultGear);
 
 export const globalPresets: GearPreset[] = [
 	{
