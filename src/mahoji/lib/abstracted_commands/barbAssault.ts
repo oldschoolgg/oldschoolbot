@@ -15,6 +15,7 @@ import { clamp, formatDuration, itemID, randomVariation, stringMatches } from '.
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 export const BarbBuyables = [
@@ -203,10 +204,23 @@ export async function barbAssaultGambleCommand(
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}
-	const { itemsAdded } = await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
-	return `You spent ${(
-		cost * quantity
-	).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received... ${itemsAdded}.`;
+	const { itemsAdded, previousCL } = await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
+
+	return {
+		content: `You spent ${(
+			cost * quantity
+		).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
+		attachments: [
+			(
+				await makeBankImage({
+					bank: itemsAdded,
+					user: klasaUser,
+					cl: previousCL,
+					flags: { showNewCL: 1 }
+				})
+			).file
+		]
+	};
 }
 
 export async function barbAssaultStartCommand(channelID: bigint, user: User, klasaUser: KlasaUser) {
