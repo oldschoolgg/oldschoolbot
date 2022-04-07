@@ -164,7 +164,16 @@ export default class extends BotCommand {
 			);
 		}
 
-		const cost = collectable.itemCost.clone().multiply(quantity);
+		const poh = await msg.author.getPOH();
+		const hasJewelleryBox = poh.jewellery_box !== null;
+
+		let cost: Bank = new Bank();
+
+		if (collectable.itemCost) {
+			cost = collectable.itemCost.clone().multiply(quantity);
+			if (cost.has('Ring of dueling(8)') && hasJewelleryBox)
+				cost.remove('Ring of dueling(8)', cost.amount('Ring of dueling(8)'));
+		}
 		if (!msg.author.owns(cost)) {
 			return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
 		}
