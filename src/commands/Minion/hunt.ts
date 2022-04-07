@@ -194,7 +194,7 @@ export default class extends BotCommand {
 			wildyScore = score;
 			if (!bol) {
 				return msg.channel.send(
-					`To hunt ${creature.name} in the wilderness you need to meet the following requirment: ${reason} To check current equipped gear in wildy, write \`${msg.cmdPrefix}gear wildy\`.`
+					`To hunt ${creature.name} in the wilderness you need to meet the following requirement: ${reason} To check current equipped gear in wildy, write \`${msg.cmdPrefix}gear wildy\`.`
 				);
 			}
 			if (userBank.amount(itemID('Saradomin brew(4)')) < 10 || userBank.amount(itemID('Super restore(4)')) < 5) {

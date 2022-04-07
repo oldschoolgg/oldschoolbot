@@ -34,7 +34,7 @@ export default class extends Task {
 		}
 
 		await incrementMinigameScore(user.id, 'barb_assault', quantity);
-		await mahojiUserSettingsUpdate(user.id, {
+		await mahojiUserSettingsUpdate(client, user.id, {
 			honour_points: {
 				increment: totalPoints
 			}

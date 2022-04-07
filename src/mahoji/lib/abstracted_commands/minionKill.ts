@@ -9,6 +9,7 @@ import {
 	uniqueArr
 } from 'e';
 import { KlasaUser } from 'klasa';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -35,6 +36,7 @@ import {
 	iceBurstConsumables,
 	SlayerActivityConstants
 } from '../../../lib/minions/data/combatConstants';
+import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
@@ -54,12 +56,15 @@ import {
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
+	stringMatches,
 	updateBankSetting
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';
+import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { revsCommand } from './revsCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -114,11 +119,12 @@ function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles
 }
 
 export async function minionKillCommand(
+	interaction: SlashCommandInteraction,
 	user: KlasaUser,
 	channelID: bigint,
 	name: string,
 	quantity: number | undefined,
-	method: PvMMethod
+	method: PvMMethod | undefined
 ) {
 	const { minionName } = user;
 
@@ -132,6 +138,10 @@ export async function minionKillCommand(
 			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`
 		});
 		name = 'Ogress Warrior';
+	}
+	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
+		const mUser = await mahojiUsersSettingsFetch(user.id);
+		return revsCommand(user, mUser, channelID, interaction, name);
 	}
 
 	const monster = findMonster(name);
@@ -153,7 +163,7 @@ export async function minionKillCommand(
 		cbOpts: myCBOpts as CombatOptionsEnum[],
 		user,
 		monster,
-		method: method ?? 'none',
+		method,
 		isOnTask
 	});
 
@@ -241,11 +251,11 @@ export async function minionKillCommand(
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Dragon hunter lance');
+			timeToFinish = reduceNumByPercent(timeToFinish, 20);
+			boosts.push('20% for Dragon hunter lance');
 		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Dragon hunter crossbow');
+			timeToFinish = reduceNumByPercent(timeToFinish, 20);
+			boosts.push('20% for Dragon hunter crossbow');
 		}
 	}
 
@@ -286,7 +296,7 @@ export async function minionKillCommand(
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
 	const hasCannon = user.owns(CombatCannonItemBank);
-	if (!isOnTask && method !== 'none') {
+	if (!isOnTask && method && method !== 'none') {
 		return 'You can only burst/barrage/cannon while on task in BSO.';
 	}
 	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {

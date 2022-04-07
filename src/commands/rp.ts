@@ -318,7 +318,7 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 	}
 }
 
-export const emoji = (client: KlasaClient) => getSupportGuild(client)?.emojis.cache.random().toString();
+export const emoji = (client: KlasaClient) => getSupportGuild(client)?.emojis.cache.random()?.toString();
 
 const statusMap = {
 	'0': '🟢 Ready',
@@ -351,6 +351,22 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'ping': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
+				if (!input || typeof input !== 'string') return;
+				const roles = await prisma.pingableRole.findMany();
+				const roleToPing = roles.find(i => i.id === Number(input) || stringMatches(i.name, input));
+				if (!roleToPing) {
+					return msg.channel.send('No role with that name found.');
+				}
+				if (!msg.member) return;
+				if (!msg.member.roles.cache.has(Roles.MassHoster)) {
+					return;
+				}
+				return msg.channel.send(
+					`<@&${roleToPing.role_id}> You were pinged because you have this role, you can remove it using \`+roles ${roleToPing.name}\`.`
+				);
+			}
 			case 'checkmasses': {
 				return checkMassesCommand(msg);
 			}
@@ -538,7 +554,7 @@ ${
 				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
 					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
 				});
-				const emoji = getSupportGuild(this.client)?.emojis.cache.random().toString();
+				const emoji = getSupportGuild(this.client)?.emojis.cache.random()?.toString();
 				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
 
 				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
@@ -596,6 +612,7 @@ ${
 				);
 			}
 			case 'setprice': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (typeof input !== 'string') return;
 				const [itemName, rawPrice] = input.split(',');
 				const item = getOSItem(itemName);
@@ -652,11 +669,13 @@ ${
 `);
 			}
 			case 'patreon': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				msg.channel.send('Running patreon task...');
 				await this.client.tasks.get('patreon')?.run();
 				return msg.channel.send('Finished syncing patrons.');
 			}
 			case 'roles': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				msg.channel.send('Running roles task...');
 				try {
 					const result = (await this.client.tasks.get('roles')?.run()) as string;
@@ -669,6 +688,7 @@ ${
 				}
 			}
 			case 'canceltask': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
 				await cancelTask(input.id);
 				this.client.oneCommandAtATimeCache.delete(input.id);
@@ -700,6 +720,7 @@ ${
 				return msg.channel.send(`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`);
 			}
 			case 'giveperm': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
 				await input.settings.update(
 					UserSettings.BitField,
@@ -717,6 +738,7 @@ ${
 			}
 
 			case 'bf': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !str || !(input instanceof KlasaUser) || typeof str !== 'string') {
 					return msg.channel.send(
 						Object.entries(BitFieldData)
@@ -762,6 +784,7 @@ ${
 			}
 
 			case 'badges': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !str || !(input instanceof KlasaUser) || typeof str !== 'string') {
 					return msg.channel.send(
 						Object.entries(badges)
@@ -803,6 +826,7 @@ ${
 			}
 
 			case 'mostactive': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				const res = await this.client.query<{ num: number; username: string }[]>(`
 SELECT sum(duration) as num, "new_user"."username", user_id
 FROM activity
@@ -819,6 +843,7 @@ LIMIT 10;
 				);
 			}
 			case 'bank': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
 				return msg.channel.sendBankImage({
 					bank: input.allItemsOwned()

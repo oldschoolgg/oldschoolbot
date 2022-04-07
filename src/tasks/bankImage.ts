@@ -36,10 +36,6 @@ registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
 
-const coxPurpleBg = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/14_purple.jpg');
-const hhhBg1 = fs.readFileSync('./src/lib/resources/images/hhh1.jpg');
-const hhhBg2 = fs.readFileSync('./src/lib/resources/images/hhh2.jpg');
-
 export type BankImageResult =
 	| {
 			cachedURL: null;
@@ -119,12 +115,19 @@ export default class BankImageTask extends Task {
 
 		this.backgroundImages = await Promise.all(
 			backgroundImages.map(async img => {
-				const bgPath = `./src/lib/resources/images/bank_backgrounds/${img.id}.${
-					img.transparent ? 'png' : 'jpg'
-				}`;
+				const ext = img.transparent ? 'png' : 'jpg';
+				const bgPath = `./src/lib/resources/images/bank_backgrounds/${img.id}.${ext}`;
+				const purplePath = img.hasPurple
+					? `./src/lib/resources/images/bank_backgrounds/${img.id}_purple.${ext}`
+					: null;
 				return {
 					...img,
-					image: fs.existsSync(bgPath) ? await canvasImageFromBuffer(fs.readFileSync(bgPath)) : null
+					image: fs.existsSync(bgPath) ? await canvasImageFromBuffer(fs.readFileSync(bgPath)) : null,
+					purpleImage: purplePath
+						? fs.existsSync(purplePath)
+							? await canvasImageFromBuffer(fs.readFileSync(purplePath))
+							: null
+						: null
 				};
 			})
 		);
@@ -428,25 +431,15 @@ export default class BankImageTask extends Task {
 			currentCL !== undefined &&
 			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
-		if (isPurple && bgImage.name === 'CoX') {
-			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
-		}
-
-		const isTOT = title === 'Loot From Trick Or Treating';
-		const isScare = isTOT && roll(100);
-		if (isTOT) {
-			hasBgSprite = false;
-			bgImage = { ...bgImage, image: await canvasImageFromBuffer(isScare ? hhhBg1 : hhhBg2) };
-		}
+		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : bgImage.image!;
 
 		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
 
-		const useSmallBank =
-			!isScare && user
-				? hasBgSprite
-					? true
-					: await user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
-				: true;
+		const useSmallBank = user
+			? hasBgSprite
+				? true
+				: user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
+			: true;
 
 		const cacheKey = [
 			title,
@@ -468,7 +461,7 @@ export default class BankImageTask extends Task {
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
-		if (cached) {
+		if (cached && !flags.nocache) {
 			return {
 				cachedURL: cached,
 				image: null,
@@ -480,8 +473,8 @@ export default class BankImageTask extends Task {
 		const canvas = createCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
 		let resizeBg = -1;
-		if (!wide && !useSmallBank && !isTransparent && bgImage.image && canvasHeight > 331) {
-			resizeBg = Math.min(1440, canvasHeight) / bgImage.image.height;
+		if (!wide && !useSmallBank && !isTransparent && actualBackground && canvasHeight > 331) {
+			resizeBg = Math.min(1440, canvasHeight) / actualBackground.height;
 		}
 
 		const ctx = canvas.getContext('2d');
@@ -502,11 +495,11 @@ export default class BankImageTask extends Task {
 
 		if (!hasBgSprite) {
 			ctx.drawImage(
-				bgImage!.image,
-				resizeBg === -1 ? 0 : (canvas.width - bgImage.image!.width! * resizeBg) / 2,
+				actualBackground,
+				resizeBg === -1 ? 0 : (canvas.width - actualBackground.width! * resizeBg) / 2,
 				0,
-				wide ? canvas.width : bgImage.image!.width! * (resizeBg === -1 ? 1 : resizeBg),
-				wide ? canvas.height : bgImage.image!.height! * (resizeBg === -1 ? 1 : resizeBg)
+				wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? 1 : resizeBg),
+				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
 			);
 		}
 

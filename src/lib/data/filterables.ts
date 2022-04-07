@@ -31,10 +31,15 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
+	nexCL,
+	pernixOutfit,
 	temporossCL,
+	torvaOutfit,
+	virtusOutfit,
 	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
+import { PartyhatTable } from './holidayItems';
 
 export const warmGear = resolveItems([
 	'Staff of fire',
@@ -404,7 +409,8 @@ const bones = resolveItems([
 	'Wyrm bones',
 	'Wyvern bones',
 	'Zogre bones',
-	'Abyssal dragon bones'
+	'Abyssal dragon bones',
+	'Royal dragon bones'
 ]);
 
 const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
@@ -516,6 +522,8 @@ const godwars = resolveItems([
 	'Saradomin godsword (or)',
 	...godwarsGear
 ]);
+
+const nex = resolveItems([...torvaOutfit, ...pernixOutfit, ...virtusOutfit, ...nexCL]);
 
 const dagannothkings = resolveItems([
 	'Berserker ring',
@@ -958,6 +966,11 @@ export const baseFilters: Filterable[] = [
 		items: () => godwars
 	},
 	{
+		name: 'Nex',
+		aliases: ['nex'],
+		items: () => nex
+	},
+	{
 		name: 'Dagannoth kings',
 		aliases: ['dagannoth kings', 'dks', 'dk', 'dagannoth', 'kings'],
 		items: () => dagannothkings
@@ -1118,10 +1131,7 @@ export const baseFilters: Filterable[] = [
 	{
 		name: 'Holiday',
 		aliases: ['holiday', 'hmb', 'rare', 'rares'],
-		items: () => [
-			...allOpenables.find(o => o.name === 'Holiday Mystery box')!.allItems,
-			...allOpenables.find(o => o.name === 'Christmas cracker')!.allItems
-		]
+		items: () => [...allOpenables.find(o => o.name === 'Holiday Mystery box')!.allItems, ...PartyhatTable.allItems]
 	},
 	{
 		name: 'Custom Items',

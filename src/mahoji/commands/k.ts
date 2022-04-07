@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import { PVM_METHODS, PvMMethod } from '../../lib/constants';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -22,7 +22,7 @@ export const killCommand: OSBMahojiCommand = {
 			description: 'The thing you want to kill.',
 			required: true,
 			autocomplete: async value => {
-				return killableMonsters
+				return effectiveMonsters
 					.filter(m =>
 						!value
 							? true
@@ -49,9 +49,10 @@ export const killCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID,
-		channelID
+		channelID,
+		interaction
 	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod }>) => {
 		const user = await client.fetchUser(userID);
-		return minionKillCommand(user, channelID, options.name, options.quantity, options.method ?? 'none');
+		return minionKillCommand(interaction, user, channelID, options.name, options.quantity, options.method);
 	}
 };

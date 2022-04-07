@@ -31,7 +31,7 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [bankStr = '']: [string | undefined]) {
 		const bankToSac = parseInputCostBank({
 			inputStr: bankStr,
-			usersBank: msg.author.bank(),
+			usersBank: msg.author.bank({ withGP: true }),
 			flags: msg.flagArgs,
 			excludeItems: msg.author.settings.get(UserSettings.FavoriteItems),
 			user: msg.author

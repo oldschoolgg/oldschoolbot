@@ -7,16 +7,11 @@ import { BitField, Channel, Color, PerkTier, spawnLampResetTime, SupportServer }
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration } from '../../lib/util';
-import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { LampTable } from '../../lib/xpLamps';
 
 export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
-		if (
-			!isPrimaryPatron(msg.author) &&
-			!msg.author.bitfield.includes(BitField.HasPermanentSpawnLamp) &&
-			msg.author.perkTier < PerkTier.Four
-		) {
+		if (!msg.author.bitfield.includes(BitField.HasPermanentSpawnLamp) && msg.author.perkTier < PerkTier.Four) {
 			return msg.channel.send('You need to be a Tier 3 patron to use this command.');
 		}
 

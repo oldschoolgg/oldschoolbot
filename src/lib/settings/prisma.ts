@@ -59,6 +59,7 @@ export async function completeActivity(_activity: Activity) {
 
 	client.oneCommandAtATimeCache.add(activity.userID);
 	try {
+		client.emit('debug', `Running ${task.name} for ${activity.userID}`);
 		await task.run(activity);
 	} catch (err) {
 		logError(err);

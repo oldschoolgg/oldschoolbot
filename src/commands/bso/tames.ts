@@ -886,7 +886,7 @@ export default class extends BotCommand {
 			return msg.channel.send("You can't merge two tames from two different species!");
 		}
 
-		const { mergingCost } = getTameSpecies(currentTame);
+		const { mergingCost, shinyVariant } = getTameSpecies(currentTame);
 
 		if (!msg.author.owns(mergingCost)) {
 			return msg.channel.send(
@@ -902,7 +902,11 @@ export default class extends BotCommand {
 			maxCombatLevel: Math.max(currentTame!.max_combat_level, toSelect.max_combat_level),
 			maxArtisanLevel: Math.max(currentTame!.max_artisan_level, toSelect.max_artisan_level),
 			maxGathererLevel: Math.max(currentTame!.max_gatherer_level, toSelect.max_gatherer_level),
-			maxSupportLevel: Math.max(currentTame!.max_support_level, toSelect.max_support_level)
+			maxSupportLevel: Math.max(currentTame!.max_support_level, toSelect.max_support_level),
+			speciesVariant:
+				currentTame!.species_variant === shinyVariant || toSelect.species_variant === shinyVariant
+					? shinyVariant
+					: currentTame!.species_variant
 		};
 
 		delete msg.flagArgs.cf;
@@ -947,7 +951,8 @@ export default class extends BotCommand {
 				max_combat_level: mergeStuff.maxCombatLevel,
 				max_artisan_level: mergeStuff.maxArtisanLevel,
 				max_gatherer_level: mergeStuff.maxGathererLevel,
-				max_support_level: mergeStuff.maxSupportLevel
+				max_support_level: mergeStuff.maxSupportLevel,
+				species_variant: mergeStuff.speciesVariant
 			}
 		});
 

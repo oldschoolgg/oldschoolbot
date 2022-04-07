@@ -2,7 +2,7 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
@@ -21,7 +21,7 @@ export async function fishingTrawlerCommand(klasaUser: KlasaUser, channelID: big
 	const quantity = Math.floor(klasaUser.maxTripLength('FishingTrawler') / tripLength);
 	const duration = quantity * tripLength;
 
-	await addSubTaskToActivityTask<FishingTrawlerActivityTaskOptions>({
+	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		userID: klasaUser.id,
 		channelID: channelID.toString(),
 		type: 'FishingTrawler',

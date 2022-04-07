@@ -22,7 +22,7 @@ export async function cacheCleanup(client: KlasaClient) {
 	let users = 0;
 	let channels = 0;
 
-	for (const ch of client.channels.cache.array()) {
+	for (const ch of client.channels.cache.values()) {
 		if (['voice', 'category', 'news', 'dm', 'stage'].includes(ch.type)) {
 			client.channels.cache.delete(ch.id);
 			channels++;

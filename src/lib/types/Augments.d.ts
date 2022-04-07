@@ -2,7 +2,7 @@ import { activity_type_enum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageOptions, MessagePayload } from 'discord.js';
-import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import { KlasaClient, KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
@@ -32,6 +32,12 @@ type SendBankImageFn = (options: {
 	gearPlaceholder?: Record<GearSetupType, GearSetup>;
 }) => Promise<KlasaMessage>;
 
+declare module 'mahoji' {
+	interface MahojiClient {
+		_djsClient: KlasaClient;
+	}
+}
+
 declare module 'klasa' {
 	interface KlasaClient {
 		oneCommandAtATimeCache: Set<string>;
@@ -55,7 +61,7 @@ declare module 'klasa' {
 		analyticsInterval: NodeJS.Timeout;
 		metricsInterval: NodeJS.Timeout;
 		options: KlasaClientOptions;
-		fetchUser(id: string): Promise<KlasaUser>;
+		fetchUser(id: string | bigint): Promise<KlasaUser>;
 	}
 
 	interface Command {

@@ -1,4 +1,6 @@
-import { Guild } from 'discord.js';
+import { Embed } from '@discordjs/builders';
+import { User } from '@prisma/client';
+import { Guild, HexColorString, Util } from 'discord.js';
 import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -15,6 +17,50 @@ import {
 	mahojiUsersSettingsFetch
 } from '../mahojiSettings';
 
+async function bgColorConfig(user: User, hex?: string) {
+	const currentColor = user.bank_bg_hex;
+
+	const embed = new Embed();
+
+	if (hex === 'reset') {
+		await mahojiUserSettingsUpdate(client, user.id, {
+			bank_bg_hex: null
+		});
+		return 'Reset your bank background color.';
+	}
+
+	if (!hex) {
+		if (!currentColor) {
+			return 'You have no background color set.';
+		}
+		return {
+			embeds: [
+				embed
+					.setColor(Util.resolveColor(currentColor as HexColorString))
+					.setDescription(`Your current background color is \`${currentColor}\`.`)
+			]
+		};
+	}
+
+	hex = hex.toUpperCase();
+	const isValid = hex.length === 7 && /^#([0-9A-F]{3}){1,2}$/i.test(hex);
+	if (!isValid) {
+		return "That's not a valid hex color. It needs to be 7 characters long, starting with '#', for example: #4e42f5 - use this to pick one: <https://www.google.com/search?q=hex+color+picker>";
+	}
+
+	await mahojiUserSettingsUpdate(client, user.id, {
+		bank_bg_hex: hex
+	});
+
+	return {
+		embeds: [
+			embed
+				.setColor(Util.resolveColor(hex as HexColorString))
+				.setDescription(`Your background color is now \`${hex}\``)
+		]
+	};
+}
+
 async function handleChannelEnable(
 	user: KlasaUser,
 	guild: Guild | null,
@@ -30,7 +76,7 @@ async function handleChannelEnable(
 	if (choice === 'disable') {
 		if (isDisabled) return 'This channel is already disabled.';
 
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			staffOnlyChannels: [...settings.staffOnlyChannels, cID]
 		});
 
@@ -38,7 +84,7 @@ async function handleChannelEnable(
 	}
 	if (!isDisabled) return 'This channel is already enabled.';
 
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		staffOnlyChannels: settings.staffOnlyChannels.filter(i => i !== cID)
 	});
 
@@ -60,7 +106,7 @@ async function handlePetMessagesEnable(
 		if (settings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			petchannel: cID
 		});
 		return 'Enabled Pet Messages in this guild.';
@@ -68,7 +114,7 @@ async function handlePetMessagesEnable(
 	if (settings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';
@@ -90,7 +136,7 @@ async function handleCommandEnable(
 		if (!settings.disabledCommands.includes(commandName)) {
 			return "That command isn't disabled.";
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			disabledCommands: settings.disabledCommands.filter(i => i !== command.name)
 		});
 
@@ -100,7 +146,7 @@ async function handleCommandEnable(
 	if (settings.disabledCommands.includes(command.name)) {
 		return 'That command is already disabled.';
 	}
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		disabledCommands: [...settings.disabledCommands, command.name]
 	});
 
@@ -108,7 +154,7 @@ async function handleCommandEnable(
 }
 
 async function handleRandomEventsEnable(user: KlasaUser, choice: 'enable' | 'disable') {
-	const currentSettings = await mahojiUsersSettingsFetch(user);
+	const currentSettings = await mahojiUsersSettingsFetch(user.id);
 
 	const nextBool = choice === 'enable' ? false : true;
 	const currentStatus = currentSettings.bitfield.includes(BitField.DisabledRandomEvents);
@@ -117,7 +163,7 @@ async function handleRandomEventsEnable(user: KlasaUser, choice: 'enable' | 'dis
 		return `Random events are already ${!currentStatus ? 'enabled' : 'disabled'} for you.`;
 	}
 
-	await mahojiUserSettingsUpdate(user, {
+	await mahojiUserSettingsUpdate(client, user, {
 		bitfield: uniqueArr(
 			nextBool
 				? [...currentSettings.bitfield, BitField.DisabledRandomEvents]
@@ -132,7 +178,7 @@ async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefi
 	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		prefix: newPrefix
 	});
 	return `Changed Command Prefix for this server to \`${newPrefix}\``;
@@ -183,9 +229,7 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBurst)
 	) {
 		if (hasCannon) warningMsg = priorityWarningMsg;
-		await mahojiUserSettingsUpdate(user.id, {
-			combat_options: removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst)
-		});
+		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBurst);
 	}
 	// If enabling Ice Burst, make sure barrage isn't also enabled:
 	if (
@@ -194,19 +238,37 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		settings.combat_options.includes(CombatOptionsEnum.AlwaysIceBarrage)
 	) {
 		if (warningMsg === '' && hasCannon) warningMsg = priorityWarningMsg;
-		await mahojiUserSettingsUpdate(user.id, {
-			combat_options: removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage)
-		});
+		settings.combat_options = removeFromArr(settings.combat_options, CombatOptionsEnum.AlwaysIceBarrage);
 	}
 	// Warn if enabling cannon with ice burst/barrage:
 	if (nextBool && newcbopt.id === CombatOptionsEnum.AlwaysCannon && warningMsg === '' && hasBurstB) {
 		warningMsg = priorityWarningMsg;
 	}
-	await mahojiUserSettingsUpdate(user.id, {
-		combat_options: [...settings.combat_options, newcbopt.id]
-	});
+	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
+		await mahojiUserSettingsUpdate(client, user.id, {
+			combat_options: [...settings.combat_options, newcbopt.id]
+		});
+	} else if (!nextBool && settings.combat_options.includes(newcbopt.id)) {
+		await mahojiUserSettingsUpdate(client, user.id, {
+			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
+		});
+	} else {
+		return 'Error processing command. This should never happen, please report bug.';
+	}
 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
+}
+
+async function setSmallBank(user: User, choice: 'enable' | 'disable') {
+	const newBitfield = uniqueArr(
+		choice === 'enable'
+			? [...user.bitfield, BitField.AlwaysSmallBank]
+			: removeFromArr(user.bitfield, BitField.AlwaysSmallBank)
+	);
+	await mahojiUserSettingsUpdate(client, user.id, {
+		bitfield: newBitfield
+	});
+	return `Small Banks are now ${choice}d for you.`;
 }
 
 export const configCommand: OSBMahojiCommand = {
@@ -347,6 +409,36 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'small_bank',
+					description: 'Enable or disable using small bank images.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'choice',
+							description: 'Do you want small bank images?',
+							required: true,
+							choices: [
+								{ name: 'Enable', value: 'enable' },
+								{ name: 'Disable', value: 'disable' }
+							]
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'bg_color',
+					description: 'Set a custom color for transparent bank backgrounds.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'color',
+							description: 'The color in hex format.',
+							required: false
+						}
+					]
 				}
 			]
 		}
@@ -369,9 +461,11 @@ export const configCommand: OSBMahojiCommand = {
 			random_events?: { choice: 'enable' | 'disable' };
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 			set_rsn?: { username: string };
+			small_bank?: { choice: 'enable' | 'disable' };
+			bg_color?: { color?: string };
 		};
 	}>) => {
-		const user = await client.fetchUser(userID);
+		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
 		const guild = guildID ? client.guilds.cache.get(guildID.toString()) ?? null : null;
 		if (options.server) {
 			if (options.server.channel) {
@@ -393,6 +487,12 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (options.user.combat_options) {
 				return handleCombatOptions(user, options.user.combat_options.action, options.user.combat_options.input);
+			}
+			if (options.user.small_bank) {
+				return setSmallBank(mahojiUser, options.user.small_bank.choice);
+			}
+			if (options.user.bg_color) {
+				return bgColorConfig(mahojiUser, options.user.bg_color.color);
 			}
 		}
 		return 'wut da';

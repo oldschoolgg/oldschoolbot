@@ -368,7 +368,15 @@ export const chambersOfXericCL = resolveItems([
 	"Xeric's general",
 	"Xeric's champion"
 ]);
-export const theatreOfBLoodCL = resolveItems([
+const theatreOfBloodCapes = resolveItems([
+	'Sinhaza shroud tier 1',
+	'Sinhaza shroud tier 2',
+	'Sinhaza shroud tier 3',
+	'Sinhaza shroud tier 4',
+	'Sinhaza shroud tier 5'
+]);
+
+export const theatreOfBloodNormalUniques = resolveItems([
 	"Lil' zik",
 	'Scythe of vitur (uncharged)',
 	'Ghrazi rapier',
@@ -377,17 +385,14 @@ export const theatreOfBLoodCL = resolveItems([
 	'Justiciar chestguard',
 	'Justiciar legguards',
 	'Avernic defender hilt',
-	'Vial of blood',
-	'Sinhaza shroud tier 1',
-	'Sinhaza shroud tier 2',
-	'Sinhaza shroud tier 3',
-	'Sinhaza shroud tier 4',
-	'Sinhaza shroud tier 5',
-	'Sanguine dust',
-	'Holy ornament kit',
-	'Sanguine ornament kit'
+	'Vial of blood'
 ]);
-
+export const theatreOfBloodHardUniques = resolveItems(['Sanguine dust', 'Holy ornament kit', 'Sanguine ornament kit']);
+export const theatreOfBLoodCL = resolveItems([
+	...theatreOfBloodNormalUniques,
+	...theatreOfBloodCapes,
+	...theatreOfBloodHardUniques
+]);
 export const cluesBeginnerCL = resolveItems([
 	'Mole slippers',
 	'Frog slippers',

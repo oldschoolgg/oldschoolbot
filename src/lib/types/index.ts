@@ -73,7 +73,7 @@ export interface MakePartyOptions {
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	party?: boolean;
-	customDenier?(user: KlasaUser): Promise<[boolean, string] | [boolean]>;
+	customDenier?(user: KlasaUser): Promise<[false] | [true, string]>;
 }
 
 export type Skills = Partial<{

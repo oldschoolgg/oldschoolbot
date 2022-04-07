@@ -1,14 +1,5 @@
 import { User } from 'discord.js';
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	increaseNumByPercent,
-	notEmpty,
-	objectValues,
-	randInt,
-	Time,
-	uniqueArr
-} from 'e';
+import { increaseNumByPercent, notEmpty, objectValues, randInt, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -25,7 +16,6 @@ import {
 	MAX_QP,
 	MAX_TOTAL_LEVEL,
 	MAX_XP,
-	PerkTier,
 	skillEmoji
 } from '../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
@@ -63,6 +53,7 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
 import { Skills as TSkills } from '../../lib/types';
 import {
+	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BlastFurnaceActivityTaskOptions,
@@ -80,10 +71,8 @@ import {
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	FishingContestOptions,
-	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
-	GloryChargingActivityTaskOptions,
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
@@ -105,10 +94,7 @@ import {
 	SepulchreActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	SoulWarsOptions,
 	TheatreOfBloodTaskOptions,
-	VolcanicMineActivityTaskOptions,
-	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
@@ -119,7 +105,6 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
-	patronMaxTripCalc,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
@@ -127,6 +112,7 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import { calcMaxTripLength, getKC, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import { activity_type_enum } from '.prisma/client';
 
@@ -422,7 +408,7 @@ export default class extends Extendable {
 			}
 
 			case 'FishingTrawler': {
-				const data = currentTask as FishingTrawlerActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently aboard the Fishing Trawler, doing ${data.quantity}x trips. ${formattedDuration}`;
 			}
 
@@ -513,12 +499,12 @@ export default class extends Extendable {
 			}
 
 			case 'GloryCharging': {
-				const data = currentTask as GloryChargingActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 			}
 
 			case 'WealthCharging': {
-				const data = currentTask as WealthChargingActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
 			}
 
@@ -527,7 +513,7 @@ export default class extends Extendable {
 			}
 
 			case 'SoulWars': {
-				const data = currentTask as SoulWarsOptions;
+				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
 			}
 
@@ -638,7 +624,7 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
 			}
 			case 'VolcanicMine': {
-				const data = currentTask as VolcanicMineActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
 			case 'MonkeyRumble': {
@@ -709,7 +695,7 @@ export default class extends Extendable {
 	}
 
 	getKC(this: KlasaUser, id: number) {
-		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
+		return getKC(this, id);
 	}
 
 	getOpenableScore(this: KlasaUser, id: number) {
@@ -758,72 +744,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public maxTripLength(this: User, activity?: activity_type_enum) {
-		let max = Time.Minute * 30;
-
-		max += patronMaxTripCalc(this);
-
-		const hasMasterHPCape = this.hasItemEquippedAnywhere('Hitpoints master cape');
-		let masterHPCapeBoost = 0;
-		let regularHPBoost = false;
-
-		switch (activity) {
-			case 'Fishing':
-				if (this.hasItemEquippedAnywhere('Fish sack')) {
-					max += Time.Minute * 9;
-				}
-				break;
-			case 'Nightmare':
-			case 'GroupMonsterKilling':
-			case 'MonsterKilling':
-			case 'Wintertodt':
-			case 'Zalcano':
-			case 'BarbarianAssault':
-			case 'AnimatedArmour':
-			case 'Sepulchre':
-			case 'Pickpocket':
-			case 'SoulWars':
-			case 'Cyclops': {
-				masterHPCapeBoost = 20;
-				regularHPBoost = true;
-				break;
-			}
-			case 'KalphiteKing':
-			case 'Nex':
-			case 'VasaMagus':
-			case 'Ignecarus':
-			case 'KingGoldemar':
-			case 'Dungeoneering': {
-				masterHPCapeBoost = 10;
-				regularHPBoost = true;
-				break;
-			}
-			case 'Alching': {
-				max *= 2;
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-
-		if (regularHPBoost) {
-			const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
-			const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
-			max += calcPercentOfNum(hpPercent, Time.Minute * 5);
-
-			if (hasMasterHPCape) {
-				max += calcPercentOfNum(masterHPCapeBoost, max);
-			}
-		}
-
-		if (this.usingPet('Zak')) {
-			max *= 1.4;
-		}
-
-		const sac = this.settings.get(UserSettings.SacrificedValue);
-		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
-		max += calcPercentOfNum(sacPercent, this.perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
-		return max;
+		return calcMaxTripLength(this, activity);
 	}
 
 	// @ts-ignore 2784
@@ -1119,7 +1040,7 @@ export default class extends Extendable {
 	}
 
 	public skillLevel(this: User, skillName: SkillsEnum) {
-		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number, 120);
+		return skillLevel(this, skillName);
 	}
 
 	public totalLevel(this: User, returnXP = false) {

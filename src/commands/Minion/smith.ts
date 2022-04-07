@@ -110,10 +110,9 @@ export default class extends BotCommand {
 		// If no quantity provided, set it to the max.
 		if (quantity === null) {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
-		}
-
-		if (smithedItem.name.includes('Gorajan')) {
-			quantity = 1;
+			if (smithedItem.name.includes('Dwarven') || smithedItem.name.includes('Gorajan')) {
+				quantity = 1;
+			}
 		}
 
 		await msg.author.settings.sync(true);

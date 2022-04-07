@@ -599,7 +599,13 @@ export function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number)
 export type ProjectileType = 'arrow' | 'bolt';
 export const projectiles: Record<ProjectileType, number[]> = {
 	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
-	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
+	bolt: resolveItems([
+		'Runite bolts',
+		'Dragon bolts',
+		'Diamond bolts (e)',
+		'Diamond dragon bolts (e)',
+		'Ruby dragon bolts (e)'
+	])
 };
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
@@ -655,7 +661,7 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 ) => `This command you're trying to use, has been changed to a 'slash command'.
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
-- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used too though.
+- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
 - You no longer use this command using \`${msg.cmdPrefix}${commandName ?? msg.command?.name}\`, now you use: \`/${
 	commandName ?? msg.command?.name
 }\`
