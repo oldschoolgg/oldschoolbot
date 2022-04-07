@@ -6,12 +6,9 @@ const i = getOSItem;
 export const Bolts: DisassemblySourceGroup = {
 	name: 'Bolts',
 	items: [
-		{ item: i('Barbed bolts'), lvl: 1, partQuantity: 6 },
 		{ item: i('Bronze bolts'), lvl: 1, partQuantity: 6 },
 		{ item: i('Iron bolts'), lvl: 5, partQuantity: 6 },
 		{ item: i('Opal bolts'), lvl: 5, partQuantity: 6 },
-		{ item: i('Blurite bolts'), lvl: 8, partQuantity: 6 },
-		{ item: i('Steel bolts (unf)'), lvl: 8, partQuantity: 6 },
 		{
 			item: i('Black brutal'),
 			lvl: 10,

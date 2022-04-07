@@ -7,7 +7,6 @@ export const Arrows: DisassemblySourceGroup = {
 	name: 'Arrows',
 	items: [
 		{ item: i('Bronze arrow'), lvl: 1, partQuantity: 6 },
-		{ item: i('Training arrows'), lvl: 1, partQuantity: 6 },
 		{ item: i('Bronze brutal'), lvl: 2, partQuantity: 6 },
 		{ item: i('Iron arrow'), lvl: 5, partQuantity: 6 },
 		{ item: i('Iron brutal'), lvl: 5, partQuantity: 6 },

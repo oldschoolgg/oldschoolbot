@@ -13,7 +13,6 @@ export const BoltTips: DisassemblySourceGroup = {
 		{ item: i('Iron bolts (unf)'), lvl: 4, partQuantity: 2 },
 		{ item: i('Jade bolt tips'), lvl: 6, partQuantity: 2 },
 		{ item: i('Topaz bolt tips'), lvl: 12, partQuantity: 2 },
-		{ item: i('Unfinished broad bolts'), lvl: 12, partQuantity: 2 },
 		{ item: i('Mithril bolts (unf)'), lvl: 13, partQuantity: 2 },
 		{ item: i('Emerald bolt tips'), lvl: 14, partQuantity: 2 },
 		{ item: i('Sapphire bolt tips'), lvl: 14, partQuantity: 2 },

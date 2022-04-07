@@ -8,7 +8,6 @@ export const Logs: DisassemblySourceGroup = {
 	items: [
 		{ item: i('Arctic pyre logs'), lvl: 1, partQuantity: 1 },
 		{ item: i('Blue logs'), lvl: 1, partQuantity: 1 },
-		{ item: i('Cowhide'), lvl: 1, partQuantity: 1 },
 		{ item: i('Green logs'), lvl: 1, partQuantity: 1 },
 		{ item: i('Logs'), lvl: 1, partQuantity: 1 },
 		{ item: i('Magic pyre logs'), lvl: 1, partQuantity: 1 },

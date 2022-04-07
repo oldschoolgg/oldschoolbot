@@ -1,13 +1,16 @@
-import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { table } from 'table';
 
 import { client } from '../..';
+import { isCustomItem } from '../../lib/customItems/util';
 import { allItemsThatCanBeDisassembledIDs, DisassemblySourceGroups, MaterialType } from '../../lib/invention';
-import { handleDisassembly } from '../../lib/invention/disassemble';
-import { calcPerHour, clamp, formatDuration, toKMB } from '../../lib/util';
+import { bankDisassembleAnalysis, handleDisassembly } from '../../lib/invention/disassemble';
+import { formatDuration } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'invention',
@@ -59,32 +62,48 @@ export const askCommand: OSBMahojiCommand = {
 			name: 'chances',
 			description: 'Find missing part chances',
 			type: ApplicationCommandOptionType.Subcommand
+		},
+		{
+			name: 'analyzebank',
+			description: 'Shows some details on what can be disassembled in your bank.',
+			type: ApplicationCommandOptionType.Subcommand
+		},
+		{
+			name: 'missingitems',
+			description: 'Shows items that cant be disassembled',
+			type: ApplicationCommandOptionType.Subcommand
 		}
 	],
 	run: async ({
 		userID,
-		options
+		options,
+		interaction
 	}: CommandRunOptions<{
 		disassemble?: { name: string; quantity?: number };
 		missing?: {};
 		duplicates?: {};
 		chances?: {};
+		analyzebank?: {};
+		missingitems?: {};
 	}>) => {
 		const user = await client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (options.disassemble) {
 			const item = getOSItem(options.disassemble.name);
 			const group = DisassemblySourceGroups.find(g => g.items.some(i => i.item.name === item.name));
 			if (!group) return 'This item cannot be disassembled.';
-			const bank = user.bank();
-			const timePer = Time.Second * 0.33;
-			const maxCanDo = Math.floor(user.maxTripLength() / timePer);
-			const quantity = clamp(options.disassemble.quantity ?? bank.amount(item.id), 1, maxCanDo);
-			const duration = quantity * timePer;
-			const result = await handleDisassembly({ user, quantity, item, group });
-			await user.removeItemsFromBank(new Bank().add(item.name, quantity));
-			return `You disassembled ${quantity}x ${item.name}, and received ${result.xp} XP and these materials: \`${
-				result.materials
-			}\`. It took ${formatDuration(duration)}, giving ${toKMB(calcPerHour(result.xp, duration))}XP/hr`;
+			const result = await handleDisassembly({
+				user: mahojiUser,
+				inputQuantity: options.disassemble.quantity,
+				item
+			});
+			await user.removeItemsFromBank(result.cost);
+			return `**Disassembled:** ${result.quantity}x ${item.name}
+**Junk Chance:** ${result.junkChance.toFixed(2)}%
+**Materials Received:** ${result.materials}
+**XP:** ${result.xp}
+**XP/Hr:** ${result.xpHr}
+**Duration:** ${formatDuration(result.duration)}`;
 		}
 		if (options.missing) {
 			const missingItems = [];
@@ -128,6 +147,28 @@ export const askCommand: OSBMahojiCommand = {
 				(1 - missingChances.length / totalGroups) * 100
 			)}% complete)`;
 		}
+		if (options.analyzebank) {
+			const result = bankDisassembleAnalysis({ bank: new Bank(mahojiUser.bank as ItemBank), user: mahojiUser });
+			return result;
+		}
+
+		if (options.missingitems) {
+			await interaction.deferReply();
+			const itemsShouldBe = Items.filter(
+				i => Boolean(i.tradeable) && Boolean(i.tradeable_on_ge) && !allItemsThatCanBeDisassembledIDs.has(i.id)
+			)
+				.sort((a, b) => b.price - a.price)
+				.array();
+
+			const normalTable = table([
+				['Num', 'Item', 'ID', 'Custom'],
+				...itemsShouldBe.map((r, ind) => [`${++ind}. `, r.name, r.id, isCustomItem(r.id) ? 'Yes' : ''])
+			]);
+			return {
+				attachments: [{ fileName: 'missing-items-disassemble.txt', buffer: Buffer.from(normalTable) }]
+			};
+		}
+
 		return 'Wut da hell';
 	}
 };

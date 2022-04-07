@@ -7,7 +7,6 @@ export const Knives: DisassemblySourceGroup = {
 	name: 'Knives',
 	items: [
 		{ item: i('Bronze knife'), lvl: 1, partQuantity: 8 },
-		{ item: i('Holy water'), lvl: 1, partQuantity: 8 },
 		{ item: i('Iron knife'), lvl: 10, partQuantity: 8 },
 		{ item: i('Steel knife'), lvl: 20, partQuantity: 8 },
 		{

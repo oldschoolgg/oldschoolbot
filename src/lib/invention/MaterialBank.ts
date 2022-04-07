@@ -19,7 +19,13 @@ export class MaterialBank {
 		return this;
 	}
 
-	public add(material: MaterialType, quantity = 1): MaterialBank {
+	public add(material: MaterialType | MaterialBank, quantity = 1): MaterialBank {
+		if (typeof material !== 'string') {
+			for (const [type, qty] of Object.entries(material.bank)) {
+				this.addItem(type as MaterialType, qty);
+			}
+			return this;
+		}
 		return this.addItem(material, quantity);
 	}
 

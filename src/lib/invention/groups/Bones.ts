@@ -7,8 +7,6 @@ export const Bones: DisassemblySourceGroup = {
 	name: 'Bones',
 	items: [
 		{ item: i('Bones'), lvl: 1, partQuantity: 2 },
-		{ item: i('Burnt bones'), lvl: 1, partQuantity: 2 },
-		{ item: i('Small ninja monkey bones'), lvl: 1, partQuantity: 2 },
 		{ item: i('Wolf bones'), lvl: 1, partQuantity: 2 },
 		{ item: i('Bat bones'), lvl: 2, partQuantity: 2 },
 		{ item: i('Big bones'), lvl: 6, partQuantity: 2 },

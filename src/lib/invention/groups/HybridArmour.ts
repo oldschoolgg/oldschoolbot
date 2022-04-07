@@ -79,8 +79,6 @@ export const HybridArmour: DisassemblySourceGroup = {
 		{ item: i('Team-8 cape'), lvl: 1, partQuantity: 6 },
 		{ item: i('Team-9 cape'), lvl: 1, partQuantity: 6 },
 		{ item: i('Obsidian cape'), lvl: 35, partQuantity: 6 },
-		{ item: i("Klank's gauntlets"), lvl: 1, partQuantity: 4 },
-		{ item: i('Insulated boots'), lvl: 37, partQuantity: 4 },
 		{
 			item: i('Void knight gloves'),
 			lvl: 42,
@@ -122,8 +120,7 @@ export const HybridArmour: DisassemblySourceGroup = {
 					{ type: 'faceted', chance: 13, amount: 1 }
 				]
 			}
-		},
-		{ item: i('Mirror shield'), lvl: 25, partQuantity: 8 }
+		}
 	],
 	parts: { cover: 45, deflecting: 45, powerful: 3, evasive: 3, protective: 3 }
 };

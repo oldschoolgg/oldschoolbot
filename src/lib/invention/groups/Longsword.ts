@@ -19,7 +19,6 @@ export const Longsword: DisassemblySourceGroup = {
 			partQuantity: 8,
 			special: { always: false, parts: [{ type: 'culinary', chance: 100, amount: 8 }] }
 		},
-		{ item: i("Harry's cutlass"), lvl: 20, partQuantity: 8 },
 		{
 			item: i('Black longsword'),
 			lvl: 25,
@@ -31,20 +30,6 @@ export const Longsword: DisassemblySourceGroup = {
 			lvl: 25,
 			partQuantity: 8,
 			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 8 }] }
-		},
-		{ item: i('Excalibur'), lvl: 30, partQuantity: 8 },
-		{ item: i('Lucky cutlass'), lvl: 30, partQuantity: 8 },
-		{
-			item: i('Skewer'),
-			lvl: 30,
-			partQuantity: 8,
-			special: { always: false, parts: [{ type: 'culinary', chance: 100, amount: 8 }] }
-		},
-		{
-			item: i('Cleaver'),
-			lvl: 40,
-			partQuantity: 8,
-			special: { always: false, parts: [{ type: 'culinary', chance: 100, amount: 8 }] }
 		},
 		{ item: i('Dragon longsword'), lvl: 60, partQuantity: 8 },
 		{ item: i("Vesta's longsword"), lvl: 78, partQuantity: 8 },

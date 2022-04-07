@@ -6,9 +6,6 @@ const i = getOSItem;
 export const Dagger: DisassemblySourceGroup = {
 	name: 'Dagger',
 	items: [
-		{ item: i('Bone dagger'), lvl: 1, partQuantity: 8 },
-		{ item: i('Dark dagger'), lvl: 1, partQuantity: 8 },
-		{ item: i('Glowing dagger'), lvl: 1, partQuantity: 8 },
 		{
 			item: i('Black dagger'),
 			lvl: 25,
@@ -21,7 +18,6 @@ export const Dagger: DisassemblySourceGroup = {
 			partQuantity: 8,
 			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 8 }] }
 		},
-		{ item: i('Keris'), lvl: 50, partQuantity: 8 },
 		{ item: i('Dragon dagger'), lvl: 60, partQuantity: 8 },
 		{ item: i('Toktz-xil-ek'), lvl: 60, partQuantity: 8 },
 		{ item: i('Bronze dagger'), lvl: 1, partQuantity: 8 },

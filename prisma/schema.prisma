@@ -432,9 +432,10 @@ model User {
   got_free_festive_present Boolean  @default(false)
 
   // Invention
-  materials_total         Json @default("{}") @db.Json
-  materials_owned         Json @default("{}") @db.Json
-  disassembled_items_bank Json @default("{}") @db.Json
+  materials_total         Json   @default("{}") @db.Json
+  materials_owned         Json   @default("{}") @db.Json
+  disassembled_items_bank Json   @default("{}") @db.Json
+  skills_invention        BigInt @default(0) @map("skills.invention")
 
   @@map("users")
 }

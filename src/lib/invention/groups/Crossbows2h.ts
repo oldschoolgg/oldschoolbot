@@ -7,7 +7,6 @@ export const Crossbows2h: DisassemblySourceGroup = {
 	name: 'Crossbows2h',
 	items: [
 		{ item: i('Orange salamander'), lvl: 50, partQuantity: 12 },
-		{ item: i('Fixed device'), lvl: 60, partQuantity: 12 },
 		{ item: i('Red salamander'), lvl: 60, partQuantity: 12 },
 		{ item: i('Black salamander'), lvl: 70, partQuantity: 12 },
 		{

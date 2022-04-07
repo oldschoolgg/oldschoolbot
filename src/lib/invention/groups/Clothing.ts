@@ -6,8 +6,6 @@ const i = getOSItem;
 export const Clothing: DisassemblySourceGroup = {
 	name: 'Clothing',
 	items: [
-		{ item: i('Bedsheet'), lvl: 1, partQuantity: 1 },
-		{ item: i('Black santa hat'), lvl: 1, partQuantity: 1 },
 		{
 			item: i('Black beret'),
 			lvl: 1,

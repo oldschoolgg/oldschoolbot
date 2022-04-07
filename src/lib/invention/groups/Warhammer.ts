@@ -6,7 +6,6 @@ const i = getOSItem;
 export const Warhammer: DisassemblySourceGroup = {
 	name: 'Warhammer',
 	items: [
-		{ item: i('Rat pole'), lvl: 1, partQuantity: 8 },
 		{
 			item: i('Black warhammer'),
 			lvl: 25,
@@ -19,7 +18,6 @@ export const Warhammer: DisassemblySourceGroup = {
 			partQuantity: 8,
 			special: { always: true, parts: [{ type: 'knightly', chance: 100, amount: 8 }] }
 		},
-		{ item: i('Ivandis flail'), lvl: 31, partQuantity: 8 },
 		{ item: i('Granite maul'), lvl: 55, partQuantity: 8 },
 		{ item: i('Dragon warhammer'), lvl: 60, partQuantity: 8 },
 		{
