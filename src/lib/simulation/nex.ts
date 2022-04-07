@@ -13,7 +13,6 @@ import {
 } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { getSkillsOfMahojiUser, getUserGear } from '../../mahoji/mahojiSettings';
 import { BitField, NEX_ID } from '../constants';
@@ -26,7 +25,6 @@ import {
 	itemNameFromID,
 	skillsMeetRequirements
 } from '../util';
-import getUsersPerkTier from '../util/getUsersPerkTier';
 import itemID from '../util/itemID';
 import { arrows, bolts, bows, calcMaxTripLength, crossbows } from '../util/minionUtils';
 import resolveItems from '../util/resolveItems';
@@ -97,10 +95,10 @@ export function checkNexUser(user: User): [false] | [true, string] {
 	) {
 		return [true, `${tag} is using incorrect ammo for their type of weapon.`];
 	}
-	if (ammo.quantity < 200) {
+	if (ammo.quantity < 600) {
 		return [
 			true,
-			`${tag} has less than 200 ${itemNameFromID(ammo.item)} equipped, they might run out in the fight!`
+			`${tag} has less than 600 ${itemNameFromID(ammo.item)} equipped, they might run out in the fight!`
 		];
 	}
 	const bank = new Bank(user.bank as any);
@@ -142,23 +140,25 @@ export const purpleNexItems = resolveItems([
 
 export function handleNexKills({ quantity, team }: NexContext) {
 	const teamLoot = new TeamLoot(purpleNexItems);
-	const uniqueDecider = new SimpleTable<string>();
-	for (const user of team) uniqueDecider.add(user.id);
 
 	for (let i = 0; i < quantity; i++) {
-		const uniqueRecipient = roll(43) ? uniqueDecider.roll().item : null;
+		const survivors = team.filter(usr => !usr.deaths.includes(i));
+
+		const uniqueRecipient = roll(43) ? randArrItem(survivors).id : null;
 		const nonUniqueDrop = NexNonUniqueTable.roll();
 
-		for (const teamMember of team) {
-			if (teamMember.deaths.includes(i)) continue;
+		for (const teamMember of survivors) {
 			teamLoot.add(teamMember.id, nonUniqueDrop);
 			if (teamMember.id === uniqueRecipient) {
 				teamLoot.add(teamMember.id, NexUniqueTable.roll());
 			}
+			if (roll(20)) {
+				teamLoot.add(teamMember.id, 'Clue scroll (elite)');
+			}
 		}
 
 		if (roll(500)) {
-			const recipient = randArrItem(team);
+			const recipient = randArrItem(survivors);
 			teamLoot.add(recipient.id, 'Nexling');
 		}
 	}
@@ -167,9 +167,7 @@ export function handleNexKills({ quantity, team }: NexContext) {
 }
 
 export function calculateNexDetails({ team }: { team: User[] }) {
-	let maxTripLength = calcMaxTripLength(
-		[...team].sort((a, b) => getUsersPerkTier(b.bitfield) - getUsersPerkTier(a.bitfield))[0]
-	);
+	let maxTripLength = Math.max(...team.map(u => calcMaxTripLength(u)));
 	let lengthPerKill = Time.Minute * 35;
 	let resultTeam: TeamMember[] = [];
 

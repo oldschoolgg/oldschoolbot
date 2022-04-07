@@ -211,5 +211,4 @@ const NexNonUniqueBaseTable = new LootTable()
 export const NexNonUniqueTable = new LootTable()
 	.every(NexNonUniqueBaseTable, 2)
 	.oneIn(25, 'Nihil shard', [1, 20])
-	.oneIn(100, 'Rune sword')
-	.tertiary(20, 'Clue scroll (elite)');
+	.oneIn(100, 'Rune sword');

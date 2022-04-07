@@ -5,7 +5,7 @@ export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, nu
 	const userBodyID = setup.body?.item;
 	const userLegsID = setup.legs?.item;
 
-	const minimumStatRequirmentsBodyLegs = {
+	const minimumStatRequirementsBodyLegs = {
 		DefenceMage: 68,
 		DefenceRanged: 76,
 		DefenceStab: 48,
@@ -21,7 +21,7 @@ export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, nu
 	const userLegsItem = getOSItem(userLegsID);
 
 	if (!userBodyItem.equipment || !userLegsItem.equipment) {
-		return [false, "The body and or legs equipped in wildy setup dosen't have any stats.", 0];
+		return [false, "The body and or legs equipped in wildy setup doesn't have any stats.", 0];
 	}
 
 	const userStatsBodyLegs = {
@@ -33,15 +33,15 @@ export function hasWildyHuntGearEquipped(setup: GearSetup): [boolean, string, nu
 	};
 
 	if (
-		userStatsBodyLegs.userDefenceMage < minimumStatRequirmentsBodyLegs.DefenceMage ||
-		userStatsBodyLegs.userDefenceRanged < minimumStatRequirmentsBodyLegs.DefenceRanged ||
-		userStatsBodyLegs.userDefenceCrush < minimumStatRequirmentsBodyLegs.DefenceCrush ||
-		userStatsBodyLegs.userDefenceSlash < minimumStatRequirmentsBodyLegs.DefenceSlash ||
-		userStatsBodyLegs.userDefenceStab < minimumStatRequirmentsBodyLegs.DefenceStab
+		userStatsBodyLegs.userDefenceMage < minimumStatRequirementsBodyLegs.DefenceMage ||
+		userStatsBodyLegs.userDefenceRanged < minimumStatRequirementsBodyLegs.DefenceRanged ||
+		userStatsBodyLegs.userDefenceCrush < minimumStatRequirementsBodyLegs.DefenceCrush ||
+		userStatsBodyLegs.userDefenceSlash < minimumStatRequirementsBodyLegs.DefenceSlash ||
+		userStatsBodyLegs.userDefenceStab < minimumStatRequirementsBodyLegs.DefenceStab
 	) {
 		return [
 			false,
-			`The combined defensive stats for the body and legs equipped in wildy setup dosen't meet the minimum required stats: ${minimumStatRequirmentsBodyLegs.DefenceMage} Magic Defence, ${minimumStatRequirmentsBodyLegs.DefenceRanged} Ranged Defence, ${minimumStatRequirmentsBodyLegs.DefenceStab} Stab Defence, ${minimumStatRequirmentsBodyLegs.DefenceSlash} Slash Defence, ${minimumStatRequirmentsBodyLegs.DefenceCrush} Crush Defence.`,
+			`The combined defensive stats for the body and legs equipped in wildy setup doesn't meet the minimum required stats: ${minimumStatRequirementsBodyLegs.DefenceMage} Magic Defence, ${minimumStatRequirementsBodyLegs.DefenceRanged} Ranged Defence, ${minimumStatRequirementsBodyLegs.DefenceStab} Stab Defence, ${minimumStatRequirementsBodyLegs.DefenceSlash} Slash Defence, ${minimumStatRequirementsBodyLegs.DefenceCrush} Crush Defence.`,
 			0
 		];
 	}
