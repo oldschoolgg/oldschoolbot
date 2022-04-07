@@ -254,10 +254,12 @@ const killableBosses: KillableMonster[] = [
 			{ [itemID('Spectral spirit shield')]: 10 },
 			{
 				[itemID('Bandos chestplate')]: 5,
+				[itemID('Torva platebody')]: 6,
 				[itemID("Inquisitor's hauberk")]: 8
 			},
 			{
 				[itemID('Bandos tassets')]: 5,
+				[itemID('Torva platelegs')]: 6,
 				[itemID("Inquisitor's plateskirt")]: 8
 			},
 			{

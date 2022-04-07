@@ -87,6 +87,7 @@ const source: [string, (string | number)[]][] = [
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
 	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
+	['Armadyl crossbow', ['Zaryte crossbow']],
 	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
 	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
