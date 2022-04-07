@@ -2220,6 +2220,8 @@ export const kingGoldemarCL = resolveItems([
 
 export const abyssalDragonCL = resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']);
 
+export const nihilizCL = resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nihil shard']);
+
 export const vasaMagusCL = resolveItems([
 	'Tattered robes of Vasa',
 	'Jar of magic',

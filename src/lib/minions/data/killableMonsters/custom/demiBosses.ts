@@ -9,6 +9,7 @@ import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
 import { CustomMonster } from './customMonsters';
+import { NihilizLootTable } from './Nihiliz';
 import { KrakenTable } from './SeaKraken';
 import { TreebeardLootTable } from './Treebeard';
 
@@ -202,9 +203,64 @@ export const QueenBlackDragon: CustomMonster = {
 	]
 };
 
+const Nihiliz: CustomMonster = {
+	id: 708_080,
+	name: 'Nihiliz',
+	aliases: ['nihiliz', 'shadow nihil', 'mini nex', 'nihilist'],
+	timeToFinish: Time.Minute * 20,
+	table: NihilizLootTable,
+	emoji: '',
+	wildy: false,
+	difficultyRating: 9,
+	qpRequired: 1000,
+	healAmountNeeded: 20 * 25,
+	attackStyleToUse: GearStat.AttackStab,
+	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+	minimumGearRequirements: {
+		melee: {
+			[GearStat.AttackStab]: 100,
+			[GearStat.DefenceStab]: 150,
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.DefenceMagic]: -20,
+			[GearStat.DefenceRanged]: 150
+		}
+	},
+	itemInBankBoosts: [
+		{
+			[itemID('Drygore rapier')]: 15
+		},
+		{
+			[itemID('Offhand drygore rapier')]: 10
+		},
+		{
+			[itemID('Dragon warhammer')]: 5
+		}
+	],
+	groupKillable: true,
+	respawnTime: Time.Second * 10,
+	levelRequirements: {
+		prayer: 95,
+		attack: 99,
+		strength: 105,
+		magic: 105,
+		defence: 99
+	},
+	pohBoosts: {
+		pool: {
+			'Fancy rejuvenation pool': 5,
+			'Ornate rejuvenation pool': 10,
+			'Ancient rejuvenation pool': 15
+		}
+	},
+	uniques: resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nihil shard']),
+	notifyDrops: resolveItems(['Nihil horn', 'Zaryte vambraces']),
+	baseMonster: Monsters.Hespori
+};
+
 export const customDemiBosses = {
 	Treebeard,
 	SeaKraken,
 	Malygos,
-	QueenBlackDragon
+	QueenBlackDragon,
+	Nihiliz
 };

@@ -120,6 +120,7 @@ import {
 	monkeyBackpacksCL,
 	motherlodeMineCL,
 	nexCL,
+	nihilizCL,
 	oborCL,
 	pestControlCL,
 	queenBlackDragonCL,
@@ -413,6 +414,11 @@ export const allCollectionLogs: ICollection = {
 				alias: BSOMonsters.Malygos.aliases,
 				allItems: BSOMonsters.Malygos.table.allItems,
 				items: abyssalDragonCL
+			},
+			Nihiliz: {
+				alias: BSOMonsters.Nihiliz.aliases,
+				allItems: BSOMonsters.Nihiliz.table.allItems,
+				items: nihilizCL
 			},
 			'Kalphite King': {
 				alias: KalphiteKingMonster.aliases,
