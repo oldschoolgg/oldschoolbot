@@ -15,6 +15,12 @@ export const Crossbow: DisassemblySourceGroup = {
 		{ item: i('Dorgeshuun crossbow'), lvl: 28, partQuantity: 8 },
 		{ item: i('Rune crossbow'), lvl: 50, partQuantity: 8 },
 		{
+			item: i("Karil's crossbow"),
+			lvl: 70,
+			partQuantity: 12,
+			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 12 }] }
+		},
+		{
 			item: i('Armadyl crossbow'),
 			lvl: 75,
 			partQuantity: 8,
