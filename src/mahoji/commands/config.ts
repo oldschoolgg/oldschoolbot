@@ -259,15 +259,17 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 	if (!command || (command && command === 'list')) {
 		// List enabled combat options:
 		const cbOpts = settings.combat_options.map(o => CombatOptionsArray.find(coa => coa!.id === o)!.name);
-		return `Your current combat options are:\n${cbOpts.join('\n')}\n\nTry: \`/config user command_options help\``;
+		return `Your current combat options are:
+		\n${cbOpts.join('\n')}
+		\n\nTry: \`/config user combat_options action:Help\``;
 	}
 
 	if (command === 'help' || !option || !['add', 'remove'].includes(command)) {
 		return (
-			'Changes your Combat Options. Usage: `/config user combat_options [add/remove/list] always cannon`' +
+			'Changes your Combat Options. Usage: `/config user combat_options action:[Add/Remove/List] input:[Always Cannon/Always Ice Burst/Always Ice Barrage]`' +
 			`\n\nList of possible options:\n${CombatOptionsArray.map(coa => `**${coa!.name}**: ${coa!.desc}`).join(
 				'\n'
-			)}`
+			)} ${priorityWarningMsg}`
 		);
 	}
 
@@ -276,7 +278,7 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 			stringMatches(option, item.name) ||
 			(item.aliases && item.aliases.some(alias => stringMatches(alias, option)))
 	);
-	if (!newcbopt) return 'Cannot find matching option. Try: `/config user combat_options help`';
+	if (!newcbopt) return 'Cannot find matching option. Try: `/config user combat_options action:Help`';
 
 	const currentStatus = settings.combat_options.includes(newcbopt.id);
 
