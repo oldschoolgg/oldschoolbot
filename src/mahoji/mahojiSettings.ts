@@ -1,5 +1,5 @@
 import type { Guild, Prisma, User } from '@prisma/client';
-import { Guild as DJSGuild, MessageButton, TextChannel } from 'discord.js';
+import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import {
@@ -23,7 +23,7 @@ import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
 import { Skills } from '../lib/types';
-import { assert } from '../lib/util';
+import { assert, channelIsSendable } from '../lib/util';
 
 export function mahojiParseNumber({
 	input,
@@ -87,7 +87,7 @@ export const monsterOption: CommandOption = {
 
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {
 	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
-	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
+	if ( !channelIsSendable(channel) ) throw new Error('Channel for confirmation not found.');
 	await interaction.deferReply();
 
 	const confirmMessage = await channel.send({
