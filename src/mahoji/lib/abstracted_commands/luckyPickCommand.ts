@@ -1,4 +1,4 @@
-import { MessageButton, MessageComponentInteraction, MessageOptions, TextChannel } from 'discord.js';
+import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
 import { chunk, randArrItem, randInt, roll, shuffleArr, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -9,7 +9,7 @@ import { production } from '../../../config';
 import { SILENT_ERROR } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { updateGPTrackSetting } from '../../../lib/util';
+import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
 import { logError } from '../../../lib/util/logError';
 import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
 
@@ -132,7 +132,7 @@ export async function luckyPickCommand(
 	}
 
 	const channel = client.channels.cache.get(interaction.channelID.toString());
-	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
+	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const sentMessage = await channel.send({
 		content: 'Pick *one* button!',
 		components: getCurrentButtons({ showTrueNames: false })

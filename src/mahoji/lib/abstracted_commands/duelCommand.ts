@@ -1,4 +1,4 @@
-import { MessageButton, TextChannel, User } from 'discord.js';
+import { MessageButton, User } from 'discord.js';
 import { noOp, sleep, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -8,6 +8,7 @@ import { client } from '../../..';
 import { Emoji, Events } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { channelIsSendable } from '../../../lib/util';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
 async function checkBal(user: KlasaUser, amount: number) {
@@ -51,7 +52,7 @@ export async function duelCommand(
 	}
 
 	const channel = client.channels.cache.get(interaction.channelID.toString());
-	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
+	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const duelMessage = await channel.send({
 		content: `${duelTargetUser}, do you accept the duel for ${Util.toKMB(amount)} GP?`,
 		components: [
