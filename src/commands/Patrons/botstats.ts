@@ -1,4 +1,3 @@
-import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Monsters } from 'oldschooljs';
 
@@ -105,15 +104,14 @@ GROUP BY "bankBackground";`);
 			}
 		});
 
-		let str = 'Bot Stats Monsters\n\n';
-		str += Object.entries(totalBank)
-			.sort(([, qty1], [, qty2]) => qty2 - qty1)
-			.map(([monID, qty]) => {
-				return `${Monsters.get(parseInt(monID))?.name}: ${qty.toLocaleString()}`;
-			})
-			.join('\n');
-
-		return msg.channel.send({ files: [new MessageAttachment(Buffer.from(str), 'Bot Stats Monsters.txt')] });
+		return msg.channel.send(
+			Object.entries(totalBank)
+				.sort(([, qty1], [, qty2]) => qty2 - qty1)
+				.map(([monID, qty]) => {
+					return `**${Monsters.get(parseInt(monID))?.name}:** ${qty.toLocaleString()}`;
+				})
+				.join('\n')
+		);
 	}
 
 	async clues(msg: KlasaMessage) {
