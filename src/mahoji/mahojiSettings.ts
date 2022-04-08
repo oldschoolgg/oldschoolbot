@@ -87,7 +87,7 @@ export const monsterOption: CommandOption = {
 
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {
 	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
-	if ( !channelIsSendable(channel) ) throw new Error('Channel for confirmation not found.');
+	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	await interaction.deferReply();
 
 	const confirmMessage = await channel.send({
