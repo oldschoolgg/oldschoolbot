@@ -202,17 +202,17 @@ export const runecraftCommand: OSBMahojiCommand = {
 					numberOfInventories / (8 * teleportReduction)
 				)}x Ring of dueling(8).`;
 			}
-			if (usestams) {
-				removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
-				if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
-					return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
-						Math.ceil(duration / (Time.Minute * 8)),
-						1
-					)}x Stamina potion(4).`;
-				}
-			}
-			totalCost.add(removeTalismanAndOrRunes);
 		}
+		if (usestams) {
+			removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
+			if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
+				return `You don't have enough Stamina potion(4) for this trip. You need ${Math.max(
+					Math.ceil(duration / (Time.Minute * 8)),
+					1
+				)}x Stamina potion(4).`;
+			}
+		}
+		totalCost.add(removeTalismanAndOrRunes);
 
 		totalCost.add('Pure essence', quantity);
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
@@ -243,6 +243,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}${
 				teleportReduction > 1 ? ', 50% less ring of dueling charges due to Crafting cape' : ''
 			}.`;
+		} else if (usestams) {
+			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}`;
 		}
 
 		return response;
