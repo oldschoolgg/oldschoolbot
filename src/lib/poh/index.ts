@@ -8,7 +8,7 @@ import { GardenDecorations } from './objects/garden_decorations';
 import { Guards } from './objects/guards';
 import { JewelleryBoxes } from './objects/jewellery_boxes';
 import { MountedCapes } from './objects/mounted_capes';
-import { MountedFishBass, MountedFishSwordfish, MountedFishShark } from './objects/mounted_fish';
+import { MountedFishBass, MountedFishShark, MountedFishSwordfish } from './objects/mounted_fish';
 import { MountedHeads } from './objects/mounted_heads';
 import { MountedItems } from './objects/mounted_items';
 import { Pools } from './objects/pools';
