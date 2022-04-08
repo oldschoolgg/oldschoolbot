@@ -67,7 +67,9 @@ export default class extends BotCommand {
 		}
 
 		if (mixableItem.name === 'Torstol potion (unf)') {
-			await msg.confirm(`${msg.author.username}, are you sure you want to mix Torstol potion (unf)?`);
+			await msg.confirm(
+				`${msg.author.username}, are you sure you want to mix Torstol potion (unf)? Super Combat Potions can only be made with Torstol`
+			);
 		}
 
 		let sets = 'x';
