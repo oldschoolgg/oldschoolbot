@@ -66,6 +66,10 @@ export default class extends BotCommand {
 			return msg.channel.send(`You need atleast **${mixableItem.qpRequired}** QP to make ${mixableItem.name}.`);
 		}
 
+		if (mixableItem.name === 'Torstol potion (unf)') {
+			await msg.confirm(`${msg.author.username}, are you sure you want to mix Torstol potion (unf)?`);
+		}
+
 		let sets = 'x';
 		let cost = 'is now';
 		if (mixableItem.outputMultiple) {
