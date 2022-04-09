@@ -83,8 +83,6 @@ async function bankSortConfig(
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
 
-	console.log(inputBank.toString(), newBank.toString(), parseStringBank(inputStr));
-
 	const { newUser } = await mahojiUserSettingsUpdate(client, user.id, {
 		bank_sort_weightings: newBank.bank
 	});
