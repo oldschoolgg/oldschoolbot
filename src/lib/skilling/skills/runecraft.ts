@@ -14,6 +14,7 @@ export interface Rune {
 	tripLength: number;
 	inputRune?: Bank;
 	inputTalisman?: Bank;
+	nostams?: boolean;
 }
 
 const Runes: Rune[] = [
@@ -33,7 +34,8 @@ const Runes: Rune[] = [
 			[88, 9],
 			[99, 10]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute,
+		nostams: true
 	},
 	{
 		xp: 5.5,
@@ -49,7 +51,8 @@ const Runes: Rune[] = [
 			[84, 7],
 			[98, 8]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute,
+		nostams: true
 	},
 	{
 		xp: 6,
@@ -63,7 +66,8 @@ const Runes: Rune[] = [
 			[76, 5],
 			[95, 6]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute,
+		nostams: true
 	},
 	{
 		xp: 8.5,
@@ -84,7 +88,8 @@ const Runes: Rune[] = [
 			[52, 3],
 			[78, 4]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute,
+		nostams: true
 	},
 	{
 		xp: 9,
@@ -113,7 +118,8 @@ const Runes: Rune[] = [
 			[35, 2],
 			[70, 3]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute,
+		nostams: true
 	},
 	{
 		xp: 9.5,
@@ -142,7 +148,8 @@ const Runes: Rune[] = [
 			[46, 2],
 			[92, 3]
 		],
-		tripLength: Time.Minute
+		tripLength: Time.Minute,
+		nostams: true
 	},
 	{
 		xp: 10.5,
@@ -162,7 +169,8 @@ const Runes: Rune[] = [
 			[59, 2]
 		],
 		tripLength: Time.Minute * 1.3,
-		qpRequired: 5
+		qpRequired: 5,
+		nostams: true
 	},
 	{
 		xp: 8.5,
@@ -172,7 +180,8 @@ const Runes: Rune[] = [
 			[35, 1],
 			[74, 2]
 		],
-		tripLength: Time.Minute * 2
+		tripLength: Time.Minute * 2,
+		nostams: true
 	},
 	{
 		xp: 8.7,
@@ -183,7 +192,8 @@ const Runes: Rune[] = [
 			[82, 2]
 		],
 		qpRequired: 15,
-		tripLength: Time.Minute
+		tripLength: Time.Minute,
+		nostams: true
 	},
 	{
 		xp: 9,
@@ -193,7 +203,8 @@ const Runes: Rune[] = [
 			[44, 1],
 			[91, 2]
 		],
-		tripLength: Time.Minute * 1.5
+		tripLength: Time.Minute * 1.5,
+		nostams: true
 	},
 	{
 		xp: 9.5,
@@ -204,7 +215,8 @@ const Runes: Rune[] = [
 			[95, 2]
 		],
 		qpRequired: 10,
-		tripLength: Time.Minute * 1.7
+		tripLength: Time.Minute * 1.7,
+		nostams: true
 	},
 	{
 		xp: 10,
@@ -215,7 +227,8 @@ const Runes: Rune[] = [
 			[99, 2]
 		],
 		qpRequired: 10,
-		tripLength: Time.Minute * 1.3
+		tripLength: Time.Minute * 1.3,
+		nostams: true
 	},
 	{
 		xp: 8,
@@ -223,7 +236,8 @@ const Runes: Rune[] = [
 		name: 'Wrath rune',
 		levels: [[95, 1]],
 		qpRequired: 200,
-		tripLength: Time.Minute
+		tripLength: Time.Minute,
+		nostams: true
 	}
 ];
 
