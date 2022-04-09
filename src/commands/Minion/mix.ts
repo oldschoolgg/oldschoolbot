@@ -74,12 +74,12 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 		let requiredItems = new Bank(mixableItem.inputItems);
-		if ( msg.flagArgs.unf && mixableItem.name === "Super combat potion (4)" ) {
+		if (msg.flagArgs.unf && mixableItem.name === 'Super combat potion (4)') {
 			requiredItems = new Bank()
 				.add('Super attack(4)')
 				.add('Super strength (4)')
 				.add('Super defence (4)')
-				.add('Torstol potion (unf)')
+				.add('Torstol potion (unf)');
 		}
 
 		// Get the base time to mix the item then add on quarter of a second per item to account for banking/etc.
