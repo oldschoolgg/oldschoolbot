@@ -1762,7 +1762,7 @@ const Createables: Createable[] = [
 	{
 		name: 'Ecumenical key',
 		inputItems: new Bank({
-			'Ecumenical key shard': 50,
+			'Ecumenical key shard': 50
 		}),
 		outputItems: {
 			[itemID('Ecumenical key')]: 1
