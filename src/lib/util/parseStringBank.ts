@@ -124,7 +124,7 @@ export function parseBankFromFlags({
 }
 
 interface ParseBankOptions {
-	inputBank: Bank;
+	inputBank?: Bank;
 	flags?: Record<string, string | undefined>;
 	inputStr?: string;
 	excludeItems?: number[];
@@ -132,6 +132,7 @@ interface ParseBankOptions {
 	search?: string;
 	maxSize?: number;
 	user?: KlasaUser;
+	noDuplicateItems?: true;
 }
 
 export function parseBank({
@@ -142,16 +143,21 @@ export function parseBank({
 	filters,
 	search,
 	maxSize,
-	user
+	user,
+	noDuplicateItems = undefined
 }: ParseBankOptions): Bank {
 	if (inputStr) {
 		let _bank = new Bank();
-		const strItems = parseStringBank(inputStr, inputBank);
+		const strItems = parseStringBank(inputStr, inputBank, noDuplicateItems);
 		for (const [item, quantity] of strItems) {
 			if (maxSize && _bank.length >= maxSize) break;
 			_bank.add(
 				item.id,
-				!quantity ? inputBank.amount(item.id) : Math.max(0, Math.min(quantity, inputBank.amount(item.id)))
+				!quantity
+					? inputBank?.amount(item.id)
+					: inputBank === undefined
+					? quantity
+					: Math.max(0, Math.min(quantity, inputBank.amount(item.id) ?? 1))
 			);
 		}
 		return _bank;
@@ -167,7 +173,7 @@ export function parseBank({
 		flags.search = search;
 	}
 
-	return parseBankFromFlags({ bank: inputBank, flags, excludeItems, maxSize, user });
+	return parseBankFromFlags({ bank: inputBank ?? new Bank(), flags, excludeItems, maxSize, user });
 }
 
 function truncateBankToSize(bank: Bank, size: number) {

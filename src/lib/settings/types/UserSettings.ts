@@ -10,6 +10,7 @@ import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
+import { BankSortMethod } from '../../sorts';
 import { Nursery } from '../../tames';
 import { ItemBank } from '../../types';
 import { UserKourendFavour } from './../../minions/data/kourendFavour';
@@ -201,4 +202,7 @@ export namespace UserSettings {
 	export const GPLuckyPick = T<number>('gp_luckypick');
 	export const GPDice = T<number>('gp_dice');
 	export const GPSlots = T<number>('gp_slots');
+
+	export const BankSortWeightings = T<Readonly<ItemBank>>('bank_sort_weightings');
+	export const BankSortMethod = T<BankSortMethod | null>('bank_sort_method');
 }

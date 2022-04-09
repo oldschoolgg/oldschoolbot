@@ -193,4 +193,7 @@ Client.defaultUserSchema
 	.add('lms_points', 'integer', { default: 0 })
 
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });
+	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+
+	.add('bank_sort_method', 'string', { default: null })
+	.add('bank_sort_weightings', 'any', { default: {} });
