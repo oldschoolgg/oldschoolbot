@@ -55,7 +55,7 @@ setCustomItem(
 		},
 		highalch: 25_000_000
 	},
-	10_000_000
+	25_000_000
 );
 
 setCustomItem(
