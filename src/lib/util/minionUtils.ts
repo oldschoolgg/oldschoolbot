@@ -23,14 +23,13 @@ export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_ty
 
 	max += patronMaxTripCalc(user);
 
-	const hasMasterHPCape =
-		user instanceof KlasaUser ? user.hasItemEquippedAnywhere('Hitpoints master cape') : getUserGear(user);
+	const hasMasterHPCape = userHasItemsEquippedAnywhere(user, 'Hitpoints master cape');
 	let masterHPCapeBoost = 0;
 	let regularHPBoost = false;
 
 	switch (activity) {
 		case 'Fishing':
-			if ((user as any).hasItemEquippedAnywhere('Fish sack')) {
+			if (userHasItemsEquippedAnywhere(user, 'Fish sack')) {
 				max += Time.Minute * 9;
 			}
 			break;
