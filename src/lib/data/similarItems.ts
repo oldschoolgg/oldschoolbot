@@ -240,7 +240,7 @@ const source: [string, (string | number)[]][] = [
 			'Mystic steam staff',
 			'Mud battlestaff',
 			'Mystic mud staff',
-			'Kodai wand'
+			'Virtus wand'
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
