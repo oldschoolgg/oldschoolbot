@@ -74,8 +74,7 @@ const DyeTable = new LootTable()
 	.add('Third age dye', 2)
 	.add('Blood dye', 1, 3)
 	.add('Shadow dye', 1, 3)
-	.add('Ice dye', 1, 3)
-	.add('Dungeoneering dye', 1, 3);
+	.add('Ice dye', 1, 3);
 
 const table = new LootTable()
 	.every(runeAlchablesTable, [1, 4])

@@ -206,7 +206,7 @@ Here are the items you can buy: \n\n${buyables
 		const quantity = Math.floor(msg.author.maxTripLength('MonkeyRumble') / fightDuration);
 		let duration = quantity * fightDuration;
 
-		let chanceOfSpecial = Math.floor(150 * (6 - monkeyTierOfUser(msg.author) / 2));
+		let chanceOfSpecial = Math.floor(125 * (6 - monkeyTierOfUser(msg.author) / 2));
 		if (msg.author.hasItemEquippedAnywhere('Big banana')) {
 			chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 12);
 			boosts.push('12% higher chance of purple monkeys from Big banana');
