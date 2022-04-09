@@ -67,9 +67,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		if (usestams === undefined) {
-			if (runeObj.nostams) {
-				usestams = true;
-			} else usestams = true;
+			usestams = true;
 		}
 
 		if (!usestams && runeObj.nostams) {
