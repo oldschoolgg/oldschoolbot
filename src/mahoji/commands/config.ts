@@ -15,7 +15,7 @@ import { BankSortMethods } from '../../lib/sorts';
 import { removeFromArr, stringMatches } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
-import { parseBank, parseStringBank } from '../../lib/util/parseStringBank';
+import { parseBank } from '../../lib/util/parseStringBank';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
 import {
 	mahojiGuildSettingsFetch,
