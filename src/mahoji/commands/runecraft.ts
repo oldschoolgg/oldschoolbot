@@ -70,7 +70,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			usestams = true;
 		}
 
-		if (!usestams && runeObj.nostams) {
+		if (!usestams && !runeObj.stams) {
 			usestams = true;
 		}
 
@@ -247,7 +247,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
-		if (runeObj.nostams) {
+		if (!runeObj.stams) {
 			response += `\nNote: You are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;
 		}
 
