@@ -248,7 +248,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
 
 		if (runeObj.nostams) {
-			response += `\nYou are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;
+			response += `\nNote: You are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;
 		}
 
 		if (runeObj.inputRune) {
