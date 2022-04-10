@@ -12,18 +12,52 @@ import { client } from '../..';
 import { BitField, PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { BankSortMethods } from '../../lib/sorts';
-import { removeFromArr, stringMatches } from '../../lib/util';
+import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
+import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
 import {
+	itemOption,
 	mahojiGuildSettingsFetch,
 	mahojiGuildSettingsUpdate,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch,
 	patronMsg
 } from '../mahojiSettings';
+
+async function favAlchConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+	const currentFavorites = user.favorite_alchables;
+	const removeItem = itemToRemove ? getItem(itemToRemove) : null;
+	const addItem = itemToAdd ? getItem(itemToAdd) : null;
+	const item = removeItem || addItem;
+
+	if (!item) {
+		if (currentFavorites.length === 0) {
+			return 'You have no favorited alchable items.';
+		}
+		return `Your current favorite alchable items are: ${currentFavorites.map(itemNameFromID).join(', ')}.`;
+	}
+
+	if (!item.highalch) return "That item isn't alchable.";
+
+	const action = Boolean(removeItem) ? 'remove' : 'add';
+	const isAlreadyFav = currentFavorites.includes(item.id);
+
+	if (action === 'remove') {
+		if (!isAlreadyFav) return 'That item is not favorited.';
+		await mahojiUserSettingsUpdate(client, user.id, {
+			favorite_alchables: removeFromArr(currentFavorites, item.id)
+		});
+		return `Removed ${item.name} from your favorite alchable items.`;
+	}
+	if (isAlreadyFav) return 'That item is already favorited.';
+	await mahojiUserSettingsUpdate(client, user.id, {
+		favorite_alchables: uniqueArr([...currentFavorites, item.id])
+	});
+	return `Added ${item.name} to your favorite alchable items.`;
+}
 
 async function bankSortConfig(
 	user: User,
@@ -683,6 +717,25 @@ export const configCommand: OSBMahojiCommand = {
 							required: false
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'favorite_alchs',
+					description: 'Manage your favorite alchables.',
+					options: [
+						{
+							...itemOption(item => item.highalch > 10),
+							name: 'add',
+							description: 'Add an item to your favorite alchables.',
+							required: false
+						},
+						{
+							...itemOption(item => item.highalch > 10),
+							name: 'remove',
+							description: 'Remove an item from your favorite alchables.',
+							required: false
+						}
+					]
 				}
 			]
 		}
@@ -708,6 +761,7 @@ export const configCommand: OSBMahojiCommand = {
 			small_bank?: { choice: 'enable' | 'disable' };
 			bg_color?: { color?: string };
 			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
+			favorite_alchs?: { add?: string; remove?: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
@@ -733,7 +787,8 @@ export const configCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user) {
-			const { random_events, combat_options, set_rsn, small_bank, bg_color, bank_sort } = options.user;
+			const { random_events, combat_options, set_rsn, small_bank, bg_color, bank_sort, favorite_alchs } =
+				options.user;
 			if (random_events) {
 				return handleRandomEventsEnable(user, random_events.choice);
 			}
@@ -756,6 +811,9 @@ export const configCommand: OSBMahojiCommand = {
 					bank_sort.add_weightings,
 					bank_sort.remove_weightings
 				);
+			}
+			if (favorite_alchs) {
+				return favAlchConfig(mahojiUser, favorite_alchs.add, favorite_alchs.remove);
 			}
 		}
 		return 'Invalid command.';
