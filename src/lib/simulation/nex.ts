@@ -23,6 +23,7 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
+	randomVariation,
 	skillsMeetRequirements
 } from '../util';
 import itemID from '../util/itemID';
@@ -286,7 +287,7 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 	return {
 		team: resultTeam,
 		quantity,
-		duration: wipedKill ? wipedKill * lengthPerKill : duration,
+		duration: wipedKill ? wipedKill * lengthPerKill - randomVariation(lengthPerKill / 2, 90) : duration,
 		fakeDuration: duration,
 		wipedKill,
 		deaths
