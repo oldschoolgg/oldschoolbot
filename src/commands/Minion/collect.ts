@@ -169,12 +169,14 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (collectable.itemCost) {
-			const cost = collectable.itemCost.clone().multiply(quantity);
+		const cost = collectable.itemCost?.clone().multiply(quantity) ?? null;
+		if (cost) {
+
 			if (!msg.author.owns(cost)) {
 				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
 			}
 			await msg.author.removeItemsFromBank(cost);
+
 
 			await this.client.settings.update(
 				ClientSettings.EconomyStats.CollectingCost,
@@ -191,14 +193,12 @@ export default class extends BotCommand {
 			type: 'Collecting'
 		});
 
-		let response = `${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
-			collectable.item.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
 
-		if (collectable.itemCost) {
-			response += `\nRemoved ${collectable.itemCost.clone().multiply(quantity)} from your bank.`;
-		}
-
-		return msg.channel.send(response);
+		return msg.channel.send(
+			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
+				collectable.item.name
+			}, it'll take around ${formatDuration(duration)} to finish.
+${cost ? `\nRemoved ${cost} from your bank.` : ''}`
+		);
 	}
 }
