@@ -11,6 +11,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { client } from '../..';
 import { BitField, PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
+import { prisma } from '../../lib/settings/prisma';
 import { BankSortMethods } from '../../lib/sorts';
 import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
@@ -26,6 +27,28 @@ import {
 	mahojiUsersSettingsFetch,
 	patronMsg
 } from '../mahojiSettings';
+
+const toggles = [
+	{
+		name: 'Disable Random Events',
+		bit: BitField.DisabledRandomEvents
+	},
+	{
+		name: 'Small Bank Images',
+		bit: BitField.AlwaysSmallBank
+	}
+];
+
+async function handleToggle(user: User, name: string) {
+	const toggle = toggles.find(i => stringMatches(i.name, name));
+	if (!toggle) return 'Invalid toggle name.';
+	const includedNow = user.bitfield.includes(toggle.bit);
+	const nextArr = includedNow ? removeFromArr(user.bitfield, toggle.bit) : [...user.bitfield, toggle.bit];
+	await mahojiUserSettingsUpdate(client, user.id, {
+		bitfield: nextArr
+	});
+	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.`;
+}
 
 async function favAlchConfig(
 	user: User,
@@ -349,27 +372,6 @@ async function handleCommandEnable(
 	return `Successfully disabled the \`${command.name}\` command.`;
 }
 
-async function handleRandomEventsEnable(user: KlasaUser, choice: 'enable' | 'disable') {
-	const currentSettings = await mahojiUsersSettingsFetch(user.id);
-
-	const nextBool = choice === 'enable' ? false : true;
-	const currentStatus = currentSettings.bitfield.includes(BitField.DisabledRandomEvents);
-
-	if (currentStatus === nextBool) {
-		return `Random events are already ${!currentStatus ? 'enabled' : 'disabled'} for you.`;
-	}
-
-	await mahojiUserSettingsUpdate(client, user, {
-		bitfield: uniqueArr(
-			nextBool
-				? [...currentSettings.bitfield, BitField.DisabledRandomEvents]
-				: currentSettings.bitfield.filter(i => i !== BitField.DisabledRandomEvents)
-		)
-	});
-
-	return `Random events are now ${!nextBool ? 'enabled' : 'disabled'} for you.`;
-}
-
 async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefix: string) {
 	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
 	if (!guild) return 'This command can only be run in servers.';
@@ -482,18 +484,6 @@ async function handleRSN(user: KlasaUser, newRSN: string) {
 		return `Changed your RSN from \`${RSN}\` to \`${newRSN}\``;
 	}
 	return `Your RSN has been set to: \`${newRSN}\`.`;
-}
-
-async function setSmallBank(user: User, choice: 'enable' | 'disable') {
-	const newBitfield = uniqueArr(
-		choice === 'enable'
-			? [...user.bitfield, BitField.AlwaysSmallBank]
-			: removeFromArr(user.bitfield, BitField.AlwaysSmallBank)
-	);
-	await mahojiUserSettingsUpdate(client, user.id, {
-		bitfield: newBitfield
-	});
-	return `Small Banks are now ${choice}d for you.`;
 }
 
 export const configCommand: OSBMahojiCommand = {
@@ -623,18 +613,34 @@ export const configCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'random_events',
-					description: 'Enable or disable receiving random events.',
+					name: 'toggle',
+					description: 'Toggle different settings on and off.',
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'choice',
-							description: 'Enable or disable random events for your account.',
+							name: 'name',
+							description: 'The thing you want to toggle on/off.',
 							required: true,
-							choices: [
-								{ name: 'Enable', value: 'enable' },
-								{ name: 'Disable', value: 'disable' }
-							]
+							autocomplete: async (value, user) => {
+								const mUser = await prisma.user.findFirst({
+									where: {
+										id: user.id
+									},
+									select: {
+										bitfield: true
+									}
+								});
+								const bitfield = mUser?.bitfield ?? [];
+								return toggles
+									.filter(i => {
+										if (!value) return true;
+										return i.name.toLowerCase().includes(value.toLowerCase());
+									})
+									.map(i => ({
+										name: `${i.name} (Currently ${bitfield.includes(i.bit) ? 'On' : 'Off'})`,
+										value: i.name
+									}));
+							}
 						}
 					]
 				},
@@ -679,23 +685,6 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'username',
 							description: 'Your RuneScape username.',
 							required: true
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'small_bank',
-					description: 'Enable or disable using small bank images.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'choice',
-							description: 'Do you want small bank images?',
-							required: true,
-							choices: [
-								{ name: 'Enable', value: 'enable' },
-								{ name: 'Disable', value: 'disable' }
-							]
 						}
 					]
 				},
@@ -781,10 +770,9 @@ export const configCommand: OSBMahojiCommand = {
 			prefix?: { new_prefix: string };
 		};
 		user?: {
-			random_events?: { choice: 'enable' | 'disable' };
+			toggle?: { name: string };
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 			set_rsn?: { username: string };
-			small_bank?: { choice: 'enable' | 'disable' };
 			bg_color?: { color?: string };
 			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
 			favorite_alchs?: { add?: string; remove?: string; add_many?: string };
@@ -813,19 +801,15 @@ export const configCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user) {
-			const { random_events, combat_options, set_rsn, small_bank, bg_color, bank_sort, favorite_alchs } =
-				options.user;
-			if (random_events) {
-				return handleRandomEventsEnable(user, random_events.choice);
+			const { toggle, combat_options, set_rsn, bg_color, bank_sort, favorite_alchs } = options.user;
+			if (toggle) {
+				return handleToggle(mahojiUser, toggle.name);
 			}
 			if (combat_options) {
 				return handleCombatOptions(user, combat_options.action, combat_options.input);
 			}
 			if (set_rsn) {
 				return handleRSN(user, set_rsn.username);
-			}
-			if (small_bank) {
-				return setSmallBank(mahojiUser, small_bank.choice);
 			}
 			if (bg_color) {
 				return bgColorConfig(mahojiUser, bg_color.color);
