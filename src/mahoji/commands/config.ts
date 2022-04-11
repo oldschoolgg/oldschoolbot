@@ -27,8 +27,28 @@ import {
 	patronMsg
 } from '../mahojiSettings';
 
-async function favAlchConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+async function favAlchConfig(
+	user: User,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	manyToAdd: string | undefined
+) {
 	const currentFavorites = user.favorite_alchables;
+	if (manyToAdd) {
+		const items = parseBank({ inputStr: manyToAdd })
+			.filter(i => i.highalch > 1)
+			.filter(i => !currentFavorites.includes(i.id));
+		if (items.length === 0) return 'No valid items were given.';
+		const newFavs = uniqueArr([...currentFavorites, ...items.items().map(i => i[0].id)]);
+		await mahojiUserSettingsUpdate(client, user.id, {
+			favorite_alchables: newFavs
+		});
+		return `Added ${items
+			.items()
+			.map(i => i[0].name)
+			.join(', ')} to your favorites.`;
+	}
+
 	const removeItem = itemToRemove ? getItem(itemToRemove) : null;
 	const addItem = itemToAdd ? getItem(itemToAdd) : null;
 	const item = removeItem || addItem;
@@ -734,6 +754,12 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'remove',
 							description: 'Remove an item from your favorite alchables.',
 							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'add_many',
+							description: 'Add many to your favorite alchables at once.',
+							required: false
 						}
 					]
 				}
@@ -761,7 +787,7 @@ export const configCommand: OSBMahojiCommand = {
 			small_bank?: { choice: 'enable' | 'disable' };
 			bg_color?: { color?: string };
 			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
-			favorite_alchs?: { add?: string; remove?: string };
+			favorite_alchs?: { add?: string; remove?: string; add_many?: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
@@ -813,7 +839,7 @@ export const configCommand: OSBMahojiCommand = {
 				);
 			}
 			if (favorite_alchs) {
-				return favAlchConfig(mahojiUser, favorite_alchs.add, favorite_alchs.remove);
+				return favAlchConfig(mahojiUser, favorite_alchs.add, favorite_alchs.remove, favorite_alchs.add_many);
 			}
 		}
 		return 'Invalid command.';

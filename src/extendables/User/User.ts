@@ -1,9 +1,11 @@
 import { User } from 'discord.js';
-import { objectEntries } from 'e';
+import { objectEntries, Time } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import PromiseQueue from 'p-queue';
 
+import { timePerAlch } from '../../commands/Minion/alch';
 import { Events, PerkTier, userQueues } from '../../lib/constants';
 import { readableStatName } from '../../lib/gear';
 import { KillableMonster } from '../../lib/minions/types';
@@ -13,6 +15,11 @@ import { Skills } from '../../lib/types';
 import { formatItemReqs, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+
+function alchPrice(bank: Bank, item: Item, tripLength: number) {
+	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
+	return maxCasts * item.highalch;
+}
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -127,11 +134,13 @@ export default class extends Extendable {
 	}
 
 	public getUserFavAlchs(this: User): Item[] {
+		const bank = this.bank();
 		return this.settings
 			.get(UserSettings.FavoriteAlchables)
-			.filter(id => this.bank().has(id))
+			.filter(id => bank.has(id))
 			.map(getOSItem)
 			.filter(i => i.highalch > 0 && i.tradeable)
-			.sort((a, b) => b.highalch - a.highalch);
+			.filter(i => bank.amount(i.id) >= Math.floor((Time.Minute * 30) / timePerAlch))
+			.sort((a, b) => alchPrice(bank, b, b.highalch) - alchPrice(bank, b, a.highalch));
 	}
 }
