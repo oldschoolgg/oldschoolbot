@@ -331,7 +331,8 @@ const source: [string, (string | number)[]][] = [
 		['Basic tackle box', 'Standard tackle box', 'Professional tackle box', "Champion's tackle box"]
 	],
 	['Magic shortbow', ['Magic shortbow (i)']],
-	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]]
+	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
+	['Kodai wand', ['Virtus wand']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {
