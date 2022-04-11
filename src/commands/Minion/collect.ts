@@ -17,7 +17,7 @@ import { SkillsEnum } from './../../lib/skilling/types';
 interface Collectable {
 	item: Item;
 	skillReqs?: Skills;
-	itemCost: Bank;
+	itemCost?: Bank;
 	quantity: number;
 	duration: number;
 	qpRequired?: number;
@@ -164,25 +164,29 @@ export default class extends BotCommand {
 			);
 		}
 
+
 		const poh = await msg.author.getPOH();
 		const hasJewelleryBox = poh.jewellery_box !== null;
 
-		let cost: Bank = new Bank();
+		const cost = collectable.itemCost?.clone().multiply(quantity) ?? null;
+      
+      let cost: Bank = new Bank();
 
-		if (collectable.itemCost) {
+		if (cost) {
 			cost = collectable.itemCost.clone().multiply(quantity);
 			if (cost.has('Ring of dueling(8)') && hasJewelleryBox)
 				cost.remove('Ring of dueling(8)', cost.amount('Ring of dueling(8)'));
 		}
-		if (!msg.author.owns(cost)) {
-			return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
-		}
-		await msg.author.removeItemsFromBank(cost);
+			if (!msg.author.owns(cost)) {
+				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
+			}
+			await msg.author.removeItemsFromBank(cost);
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.CollectingCost,
+				addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
+			);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CollectingCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
-		);
+		}
 
 		await addSubTaskToActivityTask<CollectingOptions>({
 			collectableID: collectable.item.id,
@@ -197,8 +201,7 @@ export default class extends BotCommand {
 			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
 				collectable.item.name
 			}, it'll take around ${formatDuration(duration)} to finish.
-
-Removed ${cost} from your bank.`
+${cost ? `\nRemoved ${cost} from your bank.` : ''}`
 		);
 	}
 }

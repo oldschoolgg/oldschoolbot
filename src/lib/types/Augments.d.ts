@@ -209,7 +209,7 @@ declare module 'discord.js' {
 		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
 		getPOH(): Promise<PlayerOwnedHouse>;
-		getUserFavAlchs(): Item[];
+		getUserFavAlchs(duration: number): Item[];
 		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
