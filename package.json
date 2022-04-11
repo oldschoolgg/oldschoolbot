@@ -71,6 +71,7 @@
 		"eslint": "^7.32.0",
 		"jest": "^27.5.1",
 		"jest-circus": "^27.5.1",
+		"jest-mock-extended": "^2.0.5",
 		"prisma": "^3.9.2",
 		"rimraf": "^3.0.2",
 		"ts-jest": "^27.1.3",

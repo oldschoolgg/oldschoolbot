@@ -1,21 +1,128 @@
-import { Embed } from '@discordjs/builders';
+import { Embed, inlineCode } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { Guild, HexColorString, Util } from 'discord.js';
 import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { client } from '../..';
 import { BitField, PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { removeFromArr, stringMatches } from '../../lib/util';
+import { BankSortMethods } from '../../lib/sorts';
+import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
+import { getItem } from '../../lib/util/getOSItem';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { makeBankImage } from '../../lib/util/makeBankImage';
+import { parseBank } from '../../lib/util/parseStringBank';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
 import {
+	itemOption,
 	mahojiGuildSettingsFetch,
 	mahojiGuildSettingsUpdate,
 	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
+	mahojiUsersSettingsFetch,
+	patronMsg
 } from '../mahojiSettings';
+
+async function favAlchConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+	const currentFavorites = user.favorite_alchables;
+	const removeItem = itemToRemove ? getItem(itemToRemove) : null;
+	const addItem = itemToAdd ? getItem(itemToAdd) : null;
+	const item = removeItem || addItem;
+
+	if (!item) {
+		if (currentFavorites.length === 0) {
+			return 'You have no favorited alchable items.';
+		}
+		return `Your current favorite alchable items are: ${currentFavorites.map(itemNameFromID).join(', ')}.`;
+	}
+
+	if (!item.highalch) return "That item isn't alchable.";
+
+	const action = Boolean(removeItem) ? 'remove' : 'add';
+	const isAlreadyFav = currentFavorites.includes(item.id);
+
+	if (action === 'remove') {
+		if (!isAlreadyFav) return 'That item is not favorited.';
+		await mahojiUserSettingsUpdate(client, user.id, {
+			favorite_alchables: removeFromArr(currentFavorites, item.id)
+		});
+		return `Removed ${item.name} from your favorite alchable items.`;
+	}
+	if (isAlreadyFav) return 'That item is already favorited.';
+	await mahojiUserSettingsUpdate(client, user.id, {
+		favorite_alchables: uniqueArr([...currentFavorites, item.id])
+	});
+	return `Added ${item.name} to your favorite alchable items.`;
+}
+
+async function bankSortConfig(
+	user: User,
+	sortMethod: string | undefined,
+	addWeightingBank: string | undefined,
+	removeWeightingBank: string | undefined
+): CommandResponse {
+	const currentMethod = user.bank_sort_method;
+	const currentWeightingBank = new Bank(user.bank_sort_weightings as ItemBank);
+
+	const perkTier = getUsersPerkTier(user.bitfield);
+	if (perkTier < PerkTier.Two) {
+		return patronMsg(PerkTier.Two);
+	}
+
+	if (!sortMethod && !addWeightingBank && !removeWeightingBank) {
+		const sortStr = currentMethod
+			? `Your current bank sort method is ${inlineCode(currentMethod)}.`
+			: 'You have not set a bank sort method.';
+		const weightingBankStr = currentWeightingBank.toString();
+		const response: Awaited<CommandResponse> = {
+			content: sortStr
+		};
+		if (weightingBankStr.length > 500) {
+			response.content += `\n**Weightings:**${weightingBankStr}`;
+		} else {
+			response.attachments = [
+				(
+					await makeBankImage({
+						bank: currentWeightingBank,
+						title: 'Bank Sort Weightings',
+						user: client.users.cache.get(user.id)
+					})
+				).file
+			];
+		}
+		return response;
+	}
+
+	if (sortMethod) {
+		if (!(BankSortMethods as readonly string[]).includes(sortMethod)) {
+			return `That's not a valid bank sort method. Valid methods are: ${BankSortMethods.join(', ')}.`;
+		}
+		await mahojiUserSettingsUpdate(client, user.id, {
+			bank_sort_method: sortMethod
+		});
+
+		return `Your bank sort method is now ${inlineCode(sortMethod)}.`;
+	}
+
+	const newBank = currentWeightingBank.clone();
+	const inputStr = addWeightingBank ?? removeWeightingBank ?? '';
+	const inputBank = parseBank({
+		inputStr
+	});
+
+	if (addWeightingBank) newBank.add(inputBank);
+	else if (removeWeightingBank) newBank.remove(inputBank);
+
+	const { newUser } = await mahojiUserSettingsUpdate(client, user.id, {
+		bank_sort_weightings: newBank.bank
+	});
+
+	return bankSortConfig(newUser, undefined, undefined, undefined);
+}
 
 async function bgColorConfig(user: User, hex?: string) {
 	const currentColor = user.bank_bg_hex;
@@ -584,6 +691,51 @@ export const configCommand: OSBMahojiCommand = {
 							required: false
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'bank_sort',
+					description: 'Change the way your bank is sorted.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'sort_method',
+							description: 'The way items in your bank should be sorted.',
+							required: false,
+							choices: BankSortMethods.map(i => ({ name: i, value: i }))
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'add_weightings',
+							description: "Add custom weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'remove_weightings',
+							description: "Remove weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'favorite_alchs',
+					description: 'Manage your favorite alchables.',
+					options: [
+						{
+							...itemOption(item => item.highalch > 10),
+							name: 'add',
+							description: 'Add an item to your favorite alchables.',
+							required: false
+						},
+						{
+							...itemOption(item => item.highalch > 10),
+							name: 'remove',
+							description: 'Remove an item from your favorite alchables.',
+							required: false
+						}
+					]
 				}
 			]
 		}
@@ -608,6 +760,8 @@ export const configCommand: OSBMahojiCommand = {
 			set_rsn?: { username: string };
 			small_bank?: { choice: 'enable' | 'disable' };
 			bg_color?: { color?: string };
+			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
+			favorite_alchs?: { add?: string; remove?: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
@@ -633,22 +787,35 @@ export const configCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user) {
-			if (options.user.random_events) {
-				return handleRandomEventsEnable(user, options.user.random_events.choice);
+			const { random_events, combat_options, set_rsn, small_bank, bg_color, bank_sort, favorite_alchs } =
+				options.user;
+			if (random_events) {
+				return handleRandomEventsEnable(user, random_events.choice);
 			}
-			if (options.user.combat_options) {
-				return handleCombatOptions(user, options.user.combat_options.action, options.user.combat_options.input);
+			if (combat_options) {
+				return handleCombatOptions(user, combat_options.action, combat_options.input);
 			}
-			if (options.user.set_rsn) {
-				return handleRSN(user, options.user.set_rsn.username);
+			if (set_rsn) {
+				return handleRSN(user, set_rsn.username);
 			}
-			if (options.user.small_bank) {
-				return setSmallBank(mahojiUser, options.user.small_bank.choice);
+			if (small_bank) {
+				return setSmallBank(mahojiUser, small_bank.choice);
 			}
-			if (options.user.bg_color) {
-				return bgColorConfig(mahojiUser, options.user.bg_color.color);
+			if (bg_color) {
+				return bgColorConfig(mahojiUser, bg_color.color);
+			}
+			if (bank_sort) {
+				return bankSortConfig(
+					mahojiUser,
+					bank_sort.sort_method,
+					bank_sort.add_weightings,
+					bank_sort.remove_weightings
+				);
+			}
+			if (favorite_alchs) {
+				return favAlchConfig(mahojiUser, favorite_alchs.add, favorite_alchs.remove);
 			}
 		}
-		return 'wut da';
+		return 'Invalid command.';
 	}
 };
