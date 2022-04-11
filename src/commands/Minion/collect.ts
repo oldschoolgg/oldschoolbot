@@ -171,12 +171,10 @@ export default class extends BotCommand {
 
 		const cost = collectable.itemCost?.clone().multiply(quantity) ?? null;
 		if (cost) {
-
 			if (!msg.author.owns(cost)) {
 				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
 			}
 			await msg.author.removeItemsFromBank(cost);
-
 
 			await this.client.settings.update(
 				ClientSettings.EconomyStats.CollectingCost,
@@ -192,7 +190,6 @@ export default class extends BotCommand {
 			duration,
 			type: 'Collecting'
 		});
-
 
 		return msg.channel.send(
 			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
