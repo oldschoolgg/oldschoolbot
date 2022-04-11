@@ -36,6 +36,10 @@ const toggles = [
 	{
 		name: 'Small Bank Images',
 		bit: BitField.AlwaysSmallBank
+	},
+	{
+		name: 'Disable Gorajan Bonecrusher',
+		bit: BitField.DisabledGorajanBoneCrusher
 	}
 ];
 
