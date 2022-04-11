@@ -170,18 +170,21 @@ export default class extends BotCommand {
 		let cost: Bank = new Bank();
 
 		if (collectable.itemCost) {
-			cost = collectable.itemCost.clone().multiply(quantity);
-			if (cost.has('Ring of dueling(8)') && hasJewelleryBox)
-				cost.remove('Ring of dueling(8)', cost.amount('Ring of dueling(8)'));
+			{
+				cost = collectable.itemCost.clone().multiply(quantity);
+				if (cost.has('Ring of dueling(8)') && hasJewelleryBox)
+					cost.remove('Ring of dueling(8)', cost.amount('Ring of dueling(8)'));
+			}
+			if (!msg.author.owns(cost)) {
+				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
+			}
+
+			await msg.author.removeItemsFromBank(cost);
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.CollectingCost,
+				addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
+			);
 		}
-		if (!msg.author.owns(cost)) {
-			return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
-		}
-		await msg.author.removeItemsFromBank(cost);
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CollectingCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
-		);
 
 		await addSubTaskToActivityTask<CollectingOptions>({
 			collectableID: collectable.item.id,
