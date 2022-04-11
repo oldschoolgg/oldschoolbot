@@ -21,6 +21,7 @@ interface Collectable {
 	quantity: number;
 	duration: number;
 	qpRequired?: number;
+	onlyTamesCan?: true;
 }
 
 export const collectables: Collectable[] = [
@@ -120,6 +121,12 @@ export const collectables: Collectable[] = [
 		},
 		duration: 5 * Time.Minute,
 		qpRequired: 82
+	},
+	{
+		item: getOSItem('Orange'),
+		quantity: 1,
+		duration: 2 * Time.Minute,
+		onlyTamesCan: true
 	}
 ];
 
@@ -149,6 +156,9 @@ export default class extends BotCommand {
 					.map(i => i.item.name)
 					.join(', ')}.`
 			);
+		}
+		if (collectable.onlyTamesCan) {
+			return msg.channel.send('Only Tames can collect this.');
 		}
 
 		const maxTripLength = msg.author.maxTripLength('Collecting');
