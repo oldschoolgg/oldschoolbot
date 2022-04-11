@@ -39,4 +39,30 @@ describe('hasItemEquippedOrInBank', () => {
 			)
 		).toEqual(true);
 	});
+	test('More than one item passing', () => {
+		expect(
+			hasItemEquippedOrInBank(
+				mockUser({
+					bank: new Bank().add('Coal').add('Egg'),
+					meleeGear: {
+						weapon: 'Bronze dagger'
+					}
+				}),
+				['Coal', 'Egg', 'Bronze dagger']
+			)
+		).toEqual(true);
+	});
+	test('More than one item failing', () => {
+		expect(
+			hasItemEquippedOrInBank(
+				mockUser({
+					bank: new Bank().add('Coal').add('Egg'),
+					meleeGear: {
+						weapon: 'Bronze dagger'
+					}
+				}),
+				['Coal', 'Egg', 'Bronze dagger', 'Trout']
+			)
+		).toEqual(false);
+	});
 });

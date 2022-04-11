@@ -21,7 +21,7 @@ export const askCommand: OSBMahojiCommand = {
 			description: 'The page in your bank you want to see.',
 			required: false
 		},
-		itemOption,
+		itemOption(),
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'format',

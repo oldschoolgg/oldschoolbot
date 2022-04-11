@@ -179,7 +179,7 @@ export async function handleTripFinish(
 					? '\nVoidling notices your Magic Master cape and wants to be just like you. Voidling is now alching much faster!'
 					: ''
 			}`;
-		} else if (user.getUserFavAlchs().length !== 0) {
+		} else if (user.getUserFavAlchs(Time.Minute * 30).length !== 0) {
 			message +=
 				"\nYour Voidling didn't alch anything because you either don't have any nature runes or fire runes.";
 		}
