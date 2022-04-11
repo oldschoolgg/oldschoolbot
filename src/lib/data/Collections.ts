@@ -256,7 +256,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			Nex: {
 				alias: ['nex'],
-				allItems: [...NexUniqueTable.allItems, ...NexNonUniqueTable.allItems],
+				allItems: [...NexUniqueTable.allItems, ...NexNonUniqueTable.allItems, 12073],
 				items: NexCL
 			},
 			'The Nightmare': {
