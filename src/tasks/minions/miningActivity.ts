@@ -12,7 +12,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
-		const { oreID, quantity, userID, channelID, duration } = data;
+		const { oreID, quantity, userID, channelID, duration, powerMine } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
@@ -82,30 +82,42 @@ export default class extends Task {
 			}
 		}
 
-		// Gem rocks roll off the GemRockTable
-		if (ore.id === 1625) {
-			for (let i = 0; i < quantity; i++) {
-				loot.add(Mining.GemRockTable.roll());
-			}
-		} else if (ore.id === 21_622) {
-			// Volcanic ash
-			const userLevel = user.skillLevel(SkillsEnum.Mining);
-			const tiers = [
-				[22, 1],
-				[37, 2],
-				[52, 3],
-				[67, 4],
-				[82, 5],
-				[97, 6]
-			];
-			for (const [lvl, multiplier] of tiers.reverse()) {
-				if (userLevel >= lvl) {
-					loot.add(ore.id, quantity * multiplier);
-					break;
+		if (!powerMine) {
+			// Gem rocks roll off the GemRockTable
+			if (ore.id === 1625) {
+				for (let i = 0; i < quantity; i++) {
+					loot.add(Mining.GemRockTable.roll());
 				}
+			} else if (ore.id === 21_622) {
+				// Volcanic ash
+				const userLevel = user.skillLevel(SkillsEnum.Mining);
+				const tiers = [
+					[22, 1],
+					[37, 2],
+					[52, 3],
+					[67, 4],
+					[82, 5],
+					[97, 6]
+				];
+				for (const [lvl, multiplier] of tiers.reverse()) {
+					if (userLevel >= lvl) {
+						loot.add(ore.id, quantity * multiplier);
+						break;
+					}
+				}
+			} else if (ore.id === 6973) {
+				// Sandstone roll off the SandstoneRockTable
+				for (let i = 0; i < quantity; i++) {
+					loot.add(Mining.SandstoneRockTable.roll());
+				}
+			} else if (ore.id === 6981) {
+				// Granite roll off the GraniteRockTable
+				for (let i = 0; i < quantity; i++) {
+					loot.add(Mining.GraniteRockTable.roll());
+				}
+			} else {
+				loot.add(ore.id, quantity);
 			}
-		} else {
-			loot.add(ore.id, quantity);
 		}
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {

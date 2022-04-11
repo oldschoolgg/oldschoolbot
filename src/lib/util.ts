@@ -31,7 +31,7 @@ import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
 import { Rune } from './skilling/skills/runecraft';
-import { SkillsEnum } from './skilling/types';
+import { Ore, SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
 import {
 	GroupMonsterActivityTaskOptions,
@@ -149,10 +149,71 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 
 	return cap;
 }
+export function determineMiningTime(
+	quantity: number | null,
+	user: KlasaUser,
+	ore: Ore,
+	ticksBetweenRolls: number,
+	glovesRate: number,
+	armourEffect: number,
+	miningCapeEffect: number,
+	powerMining: boolean,
+	lvl: number
+): [number, number] {
+	let { intercept } = ore;
+	if (ore.id === 1625 && user.hasItemEquippedAnywhere('Amulet of glory')) {
+		intercept *= 3;
+	}
+	let timeElapsed = 0;
+	// banking 30 ticks
+	const bankTime = ore.bankingTime;
+	const chanceOfSuccess = ore.slope * lvl + intercept;
+	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
 
-export function determineScaledOreTime(xp: number, respawnTime: number, lvl: number) {
-	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
-	return Math.floor((t + respawnTime) * 1000) * 1.2;
+	// If specific quantity
+	if (quantity) {
+		for (let i = 0; i < quantity; i++) {
+			while (!percentChance(chanceOfSuccess)) {
+				timeElapsed += ticksBetweenRolls;
+			}
+			if (!percentChance(glovesRate)) {
+				timeElapsed += respawnTimeOrPick;
+			}
+			if (percentChance(miningCapeEffect)) {
+				i++;
+			}
+			if (percentChance(armourEffect)) {
+				i++;
+			}
+		}
+		if (!powerMining) {
+			timeElapsed += (quantity / 28) * bankTime;
+		}
+		return [timeElapsed * 0.6 * Time.Second, quantity];
+	}
+
+	// If no specific quantity
+	let newQuantity = 0;
+	while (timeElapsed < user.maxTripLength('Mining') / (Time.Second * 0.6)) {
+		while (!percentChance(chanceOfSuccess)) {
+			timeElapsed += ticksBetweenRolls;
+		}
+		if (!percentChance(glovesRate)) {
+			timeElapsed += respawnTimeOrPick;
+		}
+		newQuantity++;
+		if (percentChance(miningCapeEffect)) {
+			newQuantity++;
+		}
+		if (percentChance(armourEffect)) {
+			newQuantity++;
+		}
+		// Add banking time every 28th quantity
+		if (newQuantity % 28 === 0 && !powerMining) {
+			timeElapsed += bankTime;
+		}
+	}
+	return [timeElapsed * 0.6 * Time.Second, newQuantity];
 }
 export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);

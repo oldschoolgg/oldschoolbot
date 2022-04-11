@@ -1,4 +1,3 @@
-import { reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -6,42 +5,179 @@ import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { determineScaledOreTime, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { determineMiningTime, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
 const pickaxes = [
 	{
 		id: itemID('Crystal pickaxe'),
-		reductionPercent: 11,
+		ticksBetweenRolls: 2.75,
 		miningLvl: 71
 	},
 	{
 		id: itemID('Infernal pickaxe'),
-		reductionPercent: 6,
+		ticksBetweenRolls: 2.83,
 		miningLvl: 61
 	},
 	{
 		id: itemID('Dragon pickaxe'),
-		reductionPercent: 6,
+		ticksBetweenRolls: 2.83,
 		miningLvl: 61
+	},
+	{
+		id: itemID('Rune pickaxe'),
+		ticksBetweenRolls: 3,
+		miningLvl: 41
+	},
+	{
+		id: itemID('Adamant pickaxe'),
+		ticksBetweenRolls: 4,
+		miningLvl: 31
+	},
+	{
+		id: itemID('Mithril pickaxe'),
+		ticksBetweenRolls: 5,
+		miningLvl: 21
+	},
+	{
+		id: itemID('Black pickaxe'),
+		ticksBetweenRolls: 5,
+		miningLvl: 11
+	},
+	{
+		id: itemID('Steel pickaxe'),
+		ticksBetweenRolls: 6,
+		miningLvl: 6
+	},
+	{
+		id: itemID('Iron pickaxe'),
+		ticksBetweenRolls: 7,
+		miningLvl: 1
+	},
+	{
+		id: itemID('Bronze pickaxe'),
+		ticksBetweenRolls: 8,
+		miningLvl: 1
 	}
 ];
 
 const gloves = [
 	{
 		id: itemID('Expert mining gloves'),
-		reductionPercent: 6
+		'Silver ore': 50,
+		Coal: 40,
+		'Gold ore': 33.33,
+		'Mithril ore': 25,
+		'Adamantite ore': 16.66,
+		'Runite ore': 12.5,
+		'Amethyst ore': 25
 	},
 	{
 		id: itemID('Superior mining gloves'),
-		reductionPercent: 4
+		'Silver ore': 0,
+		Coal: 0,
+		'Gold ore': 0,
+		'Mithril ore': 25,
+		'Adamantite ore': 16.66,
+		'Runite ore': 12.5,
+		Amethyst: 0
 	},
 	{
 		id: itemID('Mining gloves'),
-		reductionPercent: 2
+		'Silver ore': 50,
+		Coal: 40,
+		'Gold ore': 33.33,
+		'Mithril ore': 0,
+		'Adamantite ore': 0,
+		'Runite ore': 0,
+		Amethyst: 0
 	}
 ];
+
+const varrockArmours = [
+	{
+		id: itemID('Varrock armour 4'),
+		Clay: 10,
+		'Copper ore': 10,
+		'Tin ore': 10,
+		'Iron ore': 10,
+		'Silver ore': 10,
+		Coal: 10,
+		Sandstone: 10,
+		'Gold ore': 10,
+		Granite: 10,
+		'Mithril ore': 10,
+		'Adamantite ore': 10,
+		'Runite ore': 10,
+		Amethyst: 10
+	},
+	{
+		id: itemID('Varrock armour 3'),
+		Clay: 10,
+		'Copper ore': 10,
+		'Tin ore': 10,
+		'Iron ore': 10,
+		'Silver ore': 10,
+		Coal: 10,
+		Sandstone: 10,
+		'Gold ore': 10,
+		Granite: 10,
+		'Mithril ore': 10,
+		'Adamantite ore': 10,
+		'Runite ore': 0,
+		Amethyst: 0
+	},
+	{
+		id: itemID('Varrock armour 2'),
+		Clay: 10,
+		'Copper ore': 10,
+		'Tin ore': 10,
+		'Iron ore': 10,
+		Silver: 10,
+		Coal: 10,
+		Sandstone: 10,
+		'Gold ore': 10,
+		Granite: 10,
+		'Mithril ore': 10,
+		'Adamantite ore': 0,
+		'Runite ore': 0,
+		Amethyst: 0
+	},
+	{
+		id: itemID('Varrock armour 1'),
+		Clay: 10,
+		'Copper ore': 10,
+		'Tin ore': 10,
+		'Iron ore': 10,
+		'Silver ore': 10,
+		Coal: 10,
+		Sandstone: 0,
+		'Gold ore': 0,
+		Granite: 0,
+		'Mithril ore': 0,
+		'Adamantite ore': 0,
+		'Runite ore': 0,
+		Amethyst: 0
+	}
+];
+
+const miningCape = {
+	id: itemID('Mining cape'),
+	Clay: 5,
+	'Copper ore': 5,
+	'Tin ore': 5,
+	'Iron ore': 5,
+	'Silver ore': 5,
+	Coal: 5,
+	Sandstone: 5,
+	'Gold ore': 5,
+	Granite: 5,
+	'Mithril ore': 5,
+	'Adamantite ore': 5,
+	'Runite ore': 0,
+	Amethyst: 0
+};
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -72,9 +208,16 @@ export default class extends BotCommand {
 			return msg.channel.send(`${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`);
 		}
 
-		// Calculate the time it takes to mine a single ore of this type, at this persons level.
-		let timeToMine = determineScaledOreTime(ore!.xp, ore.respawnTime, msg.author.skillLevel(SkillsEnum.Mining));
+		let miningLevel = msg.author.skillLevel(SkillsEnum.Mining);
+		if ((ore.minerals || ore.nuggets) && msg.author.skillLevel(SkillsEnum.Mining) >= 60) {
+			miningLevel += 7;
+		}
+		// Checks if user own Celestial ring or Celestial signet
+		if (msg.author.hasItemEquippedOrInBank(25_541) || msg.author.hasItemEquippedOrInBank(25_545)) {
+			miningLevel += 4;
+		}
 
+		let currentPickaxe = null;
 		// For each pickaxe, if they have it, give them its' bonus and break.
 		const boosts = [];
 		for (const pickaxe of pickaxes) {
@@ -82,54 +225,102 @@ export default class extends BotCommand {
 				msg.author.hasItemEquippedOrInBank(pickaxe.id) &&
 				msg.author.skillLevel(SkillsEnum.Mining) >= pickaxe.miningLvl
 			) {
-				timeToMine = reduceNumByPercent(timeToMine, pickaxe.reductionPercent);
-				boosts.push(`${pickaxe.reductionPercent}% for ${itemNameFromID(pickaxe.id)}`);
+				currentPickaxe = pickaxe;
+				boosts.push(`${pickaxe.ticksBetweenRolls} ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
 				break;
 			}
 		}
-		if (msg.author.skillLevel(SkillsEnum.Mining) >= 60) {
+
+		if (currentPickaxe === null) {
+			return msg.channel.send('You need to own a pickaxe.');
+		}
+
+		let glovesRate = 0;
+		if ((ore.minerals || ore.nuggets) && msg.author.skillLevel(SkillsEnum.Mining) >= 60) {
 			for (const glove of gloves) {
 				if (msg.author.hasItemEquippedAnywhere(glove.id)) {
-					timeToMine = reduceNumByPercent(timeToMine, glove.reductionPercent);
-					boosts.push(`${glove.reductionPercent}% for ${itemNameFromID(glove.id)}`);
+					for (const [name, value] of Object.entries(glove)) {
+						if (name === ore.name) {
+							glovesRate = value;
+							boosts.push(`Lowered rock depletion rate by ${value}% for ${itemNameFromID(glove.id)}`);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		let armourEffect = 0;
+		for (const armour of varrockArmours) {
+			if (msg.author.hasItemEquippedOrInBank(armour.id)) {
+				for (const [name, value] of Object.entries(armour)) {
+					if (name === ore.name) {
+						armourEffect = value;
+						boosts.push(`${value}% chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
+						break;
+					}
+				}
+			}
+			if (armourEffect !== 0) {
+				break;
+			}
+		}
+
+		let miningCapeEffect = 0;
+		if (msg.author.hasItemEquippedOrInBank(miningCape.id)) {
+			for (const [name, value] of Object.entries(miningCape)) {
+				if (name === ore.name) {
+					miningCapeEffect = value;
+					boosts.push(`${value}% chance to mine an extra ore using ${itemNameFromID(miningCape.id)}`);
 					break;
 				}
 			}
 		}
-		// Give gem rocks a speed increase for wearing a glory
-		if (ore.id === 1625 && msg.author.hasItemEquippedAnywhere('Amulet of glory')) {
-			timeToMine = Math.floor(timeToMine / 2);
-			boosts.push('50% for having an Amulet of glory equipped');
-		}
 
 		const maxTripLength = msg.author.maxTripLength('Mining');
 
-		// If no quantity provided, set it to the max.
-		if (quantity === null) {
-			quantity = Math.floor(maxTripLength / timeToMine);
+		let powerMine = false;
+		if (msg.flagArgs.pm) {
+			powerMine = true;
 		}
-		const duration = quantity * timeToMine;
+		// Calculate the time it takes to mine specific quantity or as many as possible.
+		let [timeToMine, newQuantity] = determineMiningTime(
+			quantity,
+			msg.author,
+			ore,
+			currentPickaxe.ticksBetweenRolls,
+			glovesRate,
+			armourEffect,
+			miningCapeEffect,
+			powerMine,
+			miningLevel
+		);
 
-		if (duration > maxTripLength) {
+		const duration = timeToMine;
+
+		if (duration > maxTripLength && quantity) {
 			return msg.channel.send(
 				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
 					maxTripLength
-				)}, try a lower quantity. The highest amount of ${ore.name} you can mine is ${Math.floor(
-					maxTripLength / timeToMine
-				)}.`
+				)}, try a lower quantity.`
 			);
+		}
+
+		if (ore.id === 1625 && msg.author.hasItemEquippedAnywhere('Amulet of glory')) {
+			boosts.push('3x success rate for having an Amulet of glory equipped');
 		}
 
 		await addSubTaskToActivityTask<MiningActivityTaskOptions>({
 			oreID: ore.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
-			quantity,
+			quantity: newQuantity,
+			powerMine,
 			duration,
 			type: 'Mining'
 		});
 
-		let response = `${msg.author.minionName} is now mining ${quantity}x ${
+		let response = `${msg.author.minionName} is now mining ${newQuantity}x ${
 			ore.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
 

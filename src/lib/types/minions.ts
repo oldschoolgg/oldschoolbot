@@ -80,6 +80,7 @@ export interface FishingActivityTaskOptions extends ActivityTaskOptions {
 export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 	oreID: number;
 	quantity: number;
+	powerMine: boolean;
 }
 
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
