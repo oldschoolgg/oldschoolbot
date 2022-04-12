@@ -34,7 +34,7 @@ describe('Gear', () => {
 		expect(allItems).toEqual(
 			['Max cape', 'Graceful cape', 'Attack cape', 'Crafting cape', 'Runecraft cape', 'Mining cape'].sort()
 		);
-		expect(allItems.length).toEqual(5);
+		expect(allItems.length).toEqual(6);
 	});
 
 	test('equippedWeapon', () => {
