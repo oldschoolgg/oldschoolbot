@@ -37,6 +37,12 @@ export async function lastLootCommand(interaction: SlashCommandInteraction, user
 				]
 			};
 		default:
+			if ( loot.toString().length > 500 ) {
+				return {
+					content: 'Your last received loot was:',
+					attachments:  [{ buffer: Buffer.from(loot.toString()), fileName: 'Loot.txt' }]
+				};
+			}
 			return `Your last received loot was: ${loot}`;
 	}
 }
