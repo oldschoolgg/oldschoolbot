@@ -271,7 +271,7 @@ export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 }
 
 export function isNexActivity(data: any): data is NexTaskOptions {
-	return 'wipedKill' in data;
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
 }
 
 export function sha256Hash(x: string) {
