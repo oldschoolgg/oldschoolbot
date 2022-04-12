@@ -324,7 +324,7 @@ export const allOpenables: UnifiedOpenable[] = [
 		name: 'Hallowed sack',
 		id: 24_946,
 		openedItem: getOSItem('Hallowed sack'),
-		aliases: ['hallowed sack'],
+		aliases: ['hallowed sack', 'hallow sack'],
 		output: HallowedSackTable,
 		allItems: HallowedSackTable.allItems
 	},

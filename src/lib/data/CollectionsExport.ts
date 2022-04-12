@@ -1129,6 +1129,7 @@ export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 
 export const hallowedSepulchreCL = resolveItems([
 	'Hallowed mark',
 	'Hallowed token',
+	'Hallowed sack',
 	'Hallowed grapple',
 	'Hallowed focus',
 	'Hallowed symbol',
