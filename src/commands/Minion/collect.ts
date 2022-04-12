@@ -169,7 +169,6 @@ export default class extends BotCommand {
 			);
 		}
 
-
 		let cost: Bank = new Bank();
 		let ns = false;
 		if (collectable.itemCost) {
@@ -204,7 +203,6 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
 				collectable.item.name
-
 			}, it'll take around ${formatDuration(duration)} to finish.${
 				cost.toString().length > 0
 					? `
@@ -212,7 +210,6 @@ export default class extends BotCommand {
 Removed ${cost} from your bank.`
 					: ''
 			}${ns ? '\n 50% longer trip due to not using Stamina potions.' : ''}`
-
 		);
 	}
 }
