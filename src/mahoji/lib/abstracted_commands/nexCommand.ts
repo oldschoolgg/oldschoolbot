@@ -97,9 +97,9 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 
 	let str = `${user.username}'s party (${usersWhoConfirmed.map(u => u.username).join(', ')}) is now off to kill ${
 		details.quantity
-	}x Nex! (${calcPerHour(details.quantity, details.duration).toFixed(
+	}x Nex! (${calcPerHour(details.quantity, details.fakeDuration).toFixed(
 		1
-	)}/hr) - the total trip will take ${formatDuration(details.duration)}.
+	)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
 
 ${details.team
 	.map(i => {
