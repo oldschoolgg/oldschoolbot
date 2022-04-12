@@ -11,6 +11,7 @@ import { cluesRaresCL } from './data/CollectionsExport';
 import ClueTiers from './minions/data/clueTiers';
 import { defaultFarmingContract } from './minions/farming';
 import { UserSettings } from './settings/types/UserSettings';
+import { HallowedSackTable } from './simulation/hallowedSack';
 import {
 	BagFullOfGemsTable,
 	BuildersSupplyCrateTable,
@@ -318,6 +319,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['builders supply crate'],
 		output: BuildersSupplyCrateTable,
 		allItems: BuildersSupplyCrateTable.allItems
+	},
+	{
+		name: 'Hallowed sack',
+		id: 24_946,
+		openedItem: getOSItem('Hallowed sack'),
+		aliases: ['hallowed sack'],
+		output: HallowedSackTable,
+		allItems: HallowedSackTable.allItems
 	},
 	{
 		name: 'Infernal eel',

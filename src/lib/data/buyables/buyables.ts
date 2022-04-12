@@ -192,6 +192,10 @@ const sepulchreBuyables: Buyable[] = [
 		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
 	},
 	{
+		name: 'Hallowed sack',
+		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+	},
+	{
 		name: 'Hallowed ring',
 		itemCost: resolveNameBank({ 'Hallowed mark': 250 })
 	},
