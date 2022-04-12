@@ -149,7 +149,7 @@ export const testPotatoCommand: OSBMahojiCommand = {
 					options: [
 						monsterOption,
 						{
-							...itemOption,
+							...itemOption(),
 							required: true
 						},
 						{
@@ -167,7 +167,7 @@ export const testPotatoCommand: OSBMahojiCommand = {
 						"Show's which players have received the most drops of an item, based on their collection log.",
 					options: [
 						{
-							...itemOption,
+							...itemOption(),
 							required: true
 						}
 					]
