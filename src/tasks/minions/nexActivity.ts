@@ -14,8 +14,9 @@ export default class extends Task {
 		const { quantity, channelID, users, wipedKill, duration, userDetails } = data;
 		const allMention = userDetails.map(t => userMention(t[0])).join(' ');
 
+		const survivedQuantity = wipedKill ? wipedKill - 1 : quantity;
 		const loot = handleNexKills({
-			quantity,
+			quantity: survivedQuantity,
 			team: userDetails.map(u => ({
 				id: u[0],
 				contribution: u[1],
