@@ -13,6 +13,7 @@ import {
 } from '../lib/abstracted_commands/achievementDiaryCommand';
 import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
+import { lastLootCommand } from '../lib/abstracted_commands/lastLootCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { MahojiUserOption } from '../mahojiSettings';
@@ -92,6 +93,23 @@ export const minionCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'quest',
 			description: 'Send your minion to do quests.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'last_loot',
+			description: 'See the last loot your minion received',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'format',
+					description: 'The format of the data.',
+					autocomplete: async value => {
+						return ['image', 'names', 'text']
+							.filter(format => (!value ? true : format.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i, value: i }));
+					}
+				}
+			]
 		}
 	],
 	run: async ({
@@ -106,6 +124,7 @@ export const minionCommand: OSBMahojiCommand = {
 		bankbg?: { name?: string };
 		cracker?: { user: MahojiUserOption };
 		quest?: {};
+		last_loot?: { format?: string };
 	}>) => {
 		const user = await client.fetchUser(userID.toString());
 
@@ -122,6 +141,11 @@ export const minionCommand: OSBMahojiCommand = {
 
 		if (options.stats) {
 			return { embeds: [await minionStatsEmbed(user)] };
+		}
+
+		if (options.last_loot) {
+			const format = options.last_loot.format ? options.last_loot.format : 'text';
+			return lastLootCommand(interaction, user, format);
 		}
 
 		if (options.achievementdiary) {
