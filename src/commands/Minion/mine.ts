@@ -226,13 +226,13 @@ export default class extends BotCommand {
 				msg.author.skillLevel(SkillsEnum.Mining) >= pickaxe.miningLvl
 			) {
 				currentPickaxe = pickaxe;
-				boosts.push(`${pickaxe.ticksBetweenRolls} ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
+				boosts.push(`**${pickaxe.ticksBetweenRolls}** ticks between rolls for ${itemNameFromID(pickaxe.id)}`);
 				break;
 			}
 		}
 
 		if (currentPickaxe === null) {
-			return msg.channel.send('You need to own a pickaxe.');
+			return msg.channel.send('You need to own a pickaxe suitable for your mining level.');
 		}
 
 		let glovesRate = 0;
@@ -242,7 +242,7 @@ export default class extends BotCommand {
 					for (const [name, value] of Object.entries(glove)) {
 						if (name === ore.name) {
 							glovesRate = value;
-							boosts.push(`Lowered rock depletion rate by ${value}% for ${itemNameFromID(glove.id)}`);
+							boosts.push(`Lowered rock depletion rate by **${value}%** for ${itemNameFromID(glove.id)}`);
 							break;
 						}
 					}
@@ -256,7 +256,7 @@ export default class extends BotCommand {
 				for (const [name, value] of Object.entries(armour)) {
 					if (name === ore.name) {
 						armourEffect = value;
-						boosts.push(`${value}% chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
+						boosts.push(`**${value}%** chance to mine an extra ore using ${itemNameFromID(armour.id)}`);
 						break;
 					}
 				}
@@ -271,13 +271,11 @@ export default class extends BotCommand {
 			for (const [name, value] of Object.entries(miningCape)) {
 				if (name === ore.name) {
 					miningCapeEffect = value;
-					boosts.push(`${value}% chance to mine an extra ore using ${itemNameFromID(miningCape.id)}`);
+					boosts.push(`**${value}%** chance to mine an extra ore using ${itemNameFromID(miningCape.id)}`);
 					break;
 				}
 			}
 		}
-
-		const maxTripLength = msg.author.maxTripLength('Mining');
 
 		let powerMine = false;
 		if (msg.flagArgs.pm) {
@@ -297,14 +295,6 @@ export default class extends BotCommand {
 		);
 
 		const duration = timeToMine;
-
-		if (duration > maxTripLength && quantity) {
-			return msg.channel.send(
-				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					maxTripLength
-				)}, try a lower quantity.`
-			);
-		}
 
 		if (ore.id === 1625 && msg.author.hasItemEquippedAnywhere('Amulet of glory')) {
 			boosts.push('3x success rate for having an Amulet of glory equipped');

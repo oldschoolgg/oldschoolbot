@@ -262,6 +262,7 @@ const source: [string, (string | number)[]][] = [
 	],
 	['Runecraft cape', ['Max cape', 'Runecraft cape(t)']],
 	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
+	['Mining cape', ['Max cape', 'Mining cape(t)']],
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
 	['Salve amulet (i)', ['Salve amulet(ei)']],

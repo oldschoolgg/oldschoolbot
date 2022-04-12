@@ -165,34 +165,11 @@ export function determineMiningTime(
 		intercept *= 3;
 	}
 	let timeElapsed = 0;
-	// banking 30 ticks
+
 	const bankTime = ore.bankingTime;
 	const chanceOfSuccess = ore.slope * lvl + intercept;
 	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
 
-	// If specific quantity
-	if (quantity) {
-		for (let i = 0; i < quantity; i++) {
-			while (!percentChance(chanceOfSuccess)) {
-				timeElapsed += ticksBetweenRolls;
-			}
-			if (!percentChance(glovesRate)) {
-				timeElapsed += respawnTimeOrPick;
-			}
-			if (percentChance(miningCapeEffect)) {
-				i++;
-			}
-			if (percentChance(armourEffect)) {
-				i++;
-			}
-		}
-		if (!powerMining) {
-			timeElapsed += (quantity / 28) * bankTime;
-		}
-		return [timeElapsed * 0.6 * Time.Second, quantity];
-	}
-
-	// If no specific quantity
 	let newQuantity = 0;
 	while (timeElapsed < user.maxTripLength('Mining') / (Time.Second * 0.6)) {
 		while (!percentChance(chanceOfSuccess)) {
@@ -211,6 +188,9 @@ export function determineMiningTime(
 		// Add banking time every 28th quantity
 		if (newQuantity % 28 === 0 && !powerMining) {
 			timeElapsed += bankTime;
+		}
+		if (quantity && newQuantity >= quantity) {
+			break;
 		}
 	}
 	return [timeElapsed * 0.6 * Time.Second, newQuantity];

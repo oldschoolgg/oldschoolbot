@@ -12,7 +12,8 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
-		const { oreID, quantity, userID, channelID, duration, powerMine } = data;
+		const { oreID, userID, channelID, duration, powerMine } = data;
+		let { quantity } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const ore = Mining.Ores.find(ore => ore.id === oreID)!;
@@ -71,7 +72,7 @@ export default class extends Task {
 		if (numberOfMinutes > 10 && ore.nuggets) {
 			const numberOfNuggets = rand(0, Math.floor(numberOfMinutes / 4));
 			loot.add('Golden nugget', numberOfNuggets);
-		} else if (numberOfMinutes > 10 && ore.minerals) {
+		} else if (numberOfMinutes > 10 && ore.minerals && user.skillLevel(SkillsEnum.Mining) >= 60) {
 			let numberOfMinerals = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(ore.minerals)) numberOfMinerals++;
@@ -131,7 +132,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['mine', [quantity, ore.name], true],
+			['mine', [duration > 0.9 * user.maxTripLength('Mining') ? null : quantity, ore.name], true],
 			undefined,
 			data,
 			loot
