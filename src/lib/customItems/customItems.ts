@@ -1886,26 +1886,6 @@ setCustomItem(
 	'Infernal slayer helmet(i)',
 	'Gorajan warrior helmet',
 	{
-		equipment: {
-		attack_stab: 35,
-		attack_slash: 18,
-		attack_crush: 18,
-		attack_magic: 20,
-		attack_ranged: 20,
-		defence_stab: 70,
-		defence_slash: 75,
-		defence_crush: 75,
-		defence_magic: 85,
-		defence_ranged: 75,
-		melee_strength: 5,
-		ranged_strength: 5,
-		magic_damage: 5,
-		prayer: 1,
-		slot: EquipmentSlot.Head,
-			requirements: {
-				defence: 92
-			}
-		},
 		customItemData: {
 			isSuperUntradeable: true
 		}
