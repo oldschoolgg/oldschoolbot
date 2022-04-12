@@ -1,3 +1,4 @@
+import '../customItems/customItems';
 import '../data/itemAliases';
 
 import { Bank, Misc, Monsters } from 'oldschooljs';
