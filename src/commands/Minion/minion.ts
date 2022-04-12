@@ -6,6 +6,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import {
 	Color,
+	COMMAND_BECAME_SLASH_COMMAND_MESSAGE,
 	Emoji,
 	informationalButtons,
 	lastTripCache,
@@ -30,13 +31,13 @@ import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
+import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
-import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
+import { convertLVLtoXP, isAtleastThisOld, isValidNickname, stringMatches } from '../../lib/util';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -79,20 +80,19 @@ const subCommands = [
 	'blowpipe',
 	'bp',
 	'charge',
-	'data'
+	'data',
+	'commands'
 ];
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			aliases: ['m'],
 			usage: `[${subCommands.join('|')}] [quantity:int{1}|name:...string] [name:...string] [name:...string]`,
 			usageDelim: ' ',
 			subcommands: true,
-			requiredPermissions: ['EMBED_LINKS']
+			requiredPermissionsForBot: ['EMBED_LINKS']
 		});
 	}
 
@@ -153,7 +153,12 @@ export default class MinionCommand extends BotCommand {
 					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
 						return lastTrip.continue(msg);
 					}
-					await runCommand(msg, 'mclue', [selection.customID]);
+					await runCommand({
+						message: msg,
+						commandName: 'mclue',
+						args: [selection.customID],
+						bypassInhibitors: true
+					});
 				} catch {
 					await sentMessage.edit({ components: [] });
 				}
@@ -172,6 +177,28 @@ export default class MinionCommand extends BotCommand {
 
 	async train(msg: KlasaMessage, [input]: [string | undefined]) {
 		return trainCommand(msg, input);
+	}
+
+	async commands(msg: KlasaMessage) {
+		const commands = await prisma.commandUsage.findMany({
+			where: {
+				user_id: msg.author.id
+			},
+			orderBy: {
+				date: 'desc'
+			},
+			take: 15
+		});
+		return msg.channel.send(
+			commands
+				.map(
+					(c, inde) =>
+						`${inde + 1}. \`+${c.command_name}\` Args[${JSON.stringify(c.args)}] Date[<t:${Math.round(
+							c.date.getTime() / 1000
+						)}:R>] isContinue[${c.is_continue ? 'Yes' : 'No'}]`
+				)
+				.join('\n')
+		);
 	}
 
 	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
@@ -218,7 +245,7 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async info(msg: KlasaMessage) {
-		return runCommand(msg, 'rp', ['c', msg.author]);
+		return runCommand({ message: msg, commandName: 'rp', args: ['c', msg.author], bypassInhibitors: true });
 	}
 
 	async tempcl(msg: KlasaMessage, [input = '']: [string | undefined]) {
@@ -311,9 +338,8 @@ export default class MinionCommand extends BotCommand {
 		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
 
-	@requiresMinion
 	async stats(msg: KlasaMessage) {
-		return msg.channel.send({ embeds: [await minionStatsEmbed(msg.author)] });
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion stats'));
 	}
 
 	@requiresMinion
@@ -373,9 +399,8 @@ export default class MinionCommand extends BotCommand {
 		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
 
 		await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-		const accountIsTwoYearsOld = Date.now() - msg.author.createdTimestamp < Time.Year * 2;
 
-		const starter = accountIsTwoYearsOld
+		const starter = isAtleastThisOld(msg.author.createdTimestamp, Time.Year * 2)
 			? new Bank({
 					Shark: 300,
 					'Saradomin brew(4)': 50,
@@ -402,7 +427,7 @@ export default class MinionCommand extends BotCommand {
 				new MessageEmbed().setTitle('Your minion is now ready to use!').setDescription(
 					`You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
 
-${starter !== null ? `You received these starter items: ${starter}` : ''}.
+${starter !== null ? `**You received these starter items:** ${starter}.` : ''}
 
 🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://wiki.oldschool.gg/rules>
 
@@ -427,19 +452,19 @@ Please click the buttons below for important links.`
 
 	@requiresMinion
 	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
-		runCommand(msg, 'mclue', [quantity, tierName]);
+		runCommand({ message: msg, commandName: 'mclue', args: [quantity, tierName], bypassInhibitors: true });
 	}
 
 	@requiresMinion
 	@minionNotBusy
 	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		runCommand(msg, 'k', [quantity, name]);
+		runCommand({ message: msg, commandName: 'k', args: { name, quantity }, bypassInhibitors: true });
 	}
 
 	@requiresMinion
 	@minionNotBusy
 	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		runCommand(msg, 'k', [quantity, name]);
+		runCommand({ message: msg, commandName: 'k', args: { name, quantity }, bypassInhibitors: true });
 	}
 
 	async opens(msg: KlasaMessage) {

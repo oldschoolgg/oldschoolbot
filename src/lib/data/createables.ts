@@ -4,8 +4,8 @@ import { Bank } from 'oldschooljs';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { ItemBank } from '../types';
-import { itemNameFromID, resolveNameBank } from '../util';
+import { ItemBank, Skills } from '../types';
+import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
 import { armorAndItemPacks } from './creatables/armorPacks';
@@ -13,16 +13,18 @@ import { BsoCreateables } from './creatables/bsoItems';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
+import { lmsCreatables } from './creatables/lms';
+import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 import { tobCreatables } from './creatables/tob';
 
 export interface Createable {
 	name: string;
-	outputItems: ItemBank;
-	inputItems: ItemBank | ((user: KlasaUser) => Bank);
+	outputItems: ItemBank | Bank;
+	inputItems: ItemBank | Bank | ((user: KlasaUser) => Bank);
 	cantHaveItems?: ItemBank;
-	requiredSkills?: Record<string, number>;
+	requiredSkills?: Skills;
 	QPRequired?: number;
 	noCl?: boolean;
 	GPCost?: number;
@@ -35,20 +37,20 @@ export interface Createable {
 const revWeapons: Createable[] = [
 	{
 		name: 'Bracelet of ethereum',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Bracelet of ethereum (uncharged)': 1,
 			'Revenant ether': 2000
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Bracelet of ethereum': 1
 		})
 	},
 	{
 		name: 'Revenant ether',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Bracelet of ethereum (uncharged)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Revenant ether': 250
 		}),
 		noCl: true
@@ -308,7 +310,7 @@ const crystalTools: Createable[] = [
 	},
 	{
 		name: 'Crystal halberd',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Crystal weapon seed': 1,
 			'Crystal shard': 40
 		}),
@@ -324,62 +326,62 @@ const crystalTools: Createable[] = [
 const hunterClothing: Createable[] = [
 	{
 		name: 'Polar camouflage gear',
-		inputItems: resolveNameBank({ 'Polar kebbit fur': 4 }),
-		outputItems: resolveNameBank({ 'Polar camo top': 1, 'Polar camo legs': 1 }),
+		inputItems: new Bank({ 'Polar kebbit fur': 4 }),
+		outputItems: new Bank({ 'Polar camo top': 1, 'Polar camo legs': 1 }),
 		GPCost: 40
 	},
 	{
 		name: 'Woodland camouflage gear',
-		inputItems: resolveNameBank({ 'Common kebbit fur': 4 }),
-		outputItems: resolveNameBank({ 'Wood camo top': 1, 'Wood camo legs': 1 }),
+		inputItems: new Bank({ 'Common kebbit fur': 4 }),
+		outputItems: new Bank({ 'Wood camo top': 1, 'Wood camo legs': 1 }),
 		GPCost: 40
 	},
 	{
 		name: 'Jungle camouflage gear',
-		inputItems: resolveNameBank({ 'Feldip weasel fur': 4 }),
-		outputItems: resolveNameBank({ 'Jungle camo top': 1, 'Jungle camo legs': 1 }),
+		inputItems: new Bank({ 'Feldip weasel fur': 4 }),
+		outputItems: new Bank({ 'Jungle camo top': 1, 'Jungle camo legs': 1 }),
 		GPCost: 40
 	},
 	{
 		name: 'Desert camouflage gear',
-		inputItems: resolveNameBank({ 'Desert devil fur': 4 }),
-		outputItems: resolveNameBank({ 'Desert camo top': 1, 'Desert camo legs': 1 }),
+		inputItems: new Bank({ 'Desert devil fur': 4 }),
+		outputItems: new Bank({ 'Desert camo top': 1, 'Desert camo legs': 1 }),
 		GPCost: 40
 	},
 	{
 		name: 'Larupia hunter gear',
-		inputItems: resolveNameBank({ 'Larupia fur': 1, 'Tatty larupia fur': 2 }),
-		outputItems: resolveNameBank({ 'Larupia hat': 1, 'Larupia top': 1, 'Larupia legs': 1 }),
+		inputItems: new Bank({ 'Larupia fur': 1, 'Tatty larupia fur': 2 }),
+		outputItems: new Bank({ 'Larupia hat': 1, 'Larupia top': 1, 'Larupia legs': 1 }),
 		GPCost: 700
 	},
 	{
 		name: 'Graahk hunter gear',
-		inputItems: resolveNameBank({ 'Graahk fur': 1, 'Tatty graahk fur': 2 }),
-		outputItems: resolveNameBank({ 'Graahk headdress': 1, 'Graahk top': 1, 'Graahk legs': 1 }),
+		inputItems: new Bank({ 'Graahk fur': 1, 'Tatty graahk fur': 2 }),
+		outputItems: new Bank({ 'Graahk headdress': 1, 'Graahk top': 1, 'Graahk legs': 1 }),
 		GPCost: 1000
 	},
 	{
 		name: 'Kyatt hunter gear',
-		inputItems: resolveNameBank({ 'Kyatt fur': 1, 'Tatty kyatt fur': 2 }),
-		outputItems: resolveNameBank({ 'Kyatt hat': 1, 'Kyatt top': 1, 'Kyatt legs': 1 }),
+		inputItems: new Bank({ 'Kyatt fur': 1, 'Tatty kyatt fur': 2 }),
+		outputItems: new Bank({ 'Kyatt hat': 1, 'Kyatt top': 1, 'Kyatt legs': 1 }),
 		GPCost: 1400
 	},
 	{
 		name: 'Spotted cape',
-		inputItems: resolveNameBank({ 'Spotted kebbit fur': 2 }),
-		outputItems: resolveNameBank({ 'Spotted cape': 1 }),
+		inputItems: new Bank({ 'Spotted kebbit fur': 2 }),
+		outputItems: new Bank({ 'Spotted cape': 1 }),
 		GPCost: 400
 	},
 	{
 		name: 'Spottier cape',
-		inputItems: resolveNameBank({ 'Dashing kebbit fur': 2 }),
-		outputItems: resolveNameBank({ 'Spottier cape': 1 }),
+		inputItems: new Bank({ 'Dashing kebbit fur': 2 }),
+		outputItems: new Bank({ 'Spottier cape': 1 }),
 		GPCost: 800
 	},
 	{
 		name: 'Gloves of silence',
-		inputItems: resolveNameBank({ 'Dark kebbit fur': 2 }),
-		outputItems: resolveNameBank({ 'Gloves of silence': 1 }),
+		inputItems: new Bank({ 'Dark kebbit fur': 2 }),
+		outputItems: new Bank({ 'Gloves of silence': 1 }),
 		GPCost: 600
 	}
 ];
@@ -437,33 +439,33 @@ const Reverteables: Createable[] = [
 	},
 	{
 		name: 'Revert volatile nightmare staff',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Nightmare staff': 1,
 			'Volatile orb': 1
 		}),
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Volatile nightmare staff': 1
 		}),
 		noCl: true
 	},
 	{
 		name: 'Revert harmonised nightmare staff',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Nightmare staff': 1,
 			'Harmonised orb': 1
 		}),
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Harmonised nightmare staff': 1
 		}),
 		noCl: true
 	},
 	{
 		name: 'Revert eldritch nightmare staff',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Nightmare staff': 1,
 			'Eldritch orb': 1
 		}),
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Eldritch nightmare staff': 1
 		}),
 		noCl: true
@@ -871,10 +873,10 @@ const Reverteables: Createable[] = [
 	},
 	{
 		name: 'Revert zamorakian hasta',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Zamorakian hasta': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Zamorakian spear': 1
 		}),
 		noCl: true
@@ -975,6 +977,16 @@ const Createables: Createable[] = [
 		},
 		outputItems: {
 			[itemID('Zamorak godsword')]: 1
+		}
+	},
+	{
+		name: 'Ancient godsword',
+		inputItems: {
+			[itemID('Godsword blade')]: 1,
+			[itemID('Ancient hilt')]: 1
+		},
+		outputItems: {
+			[itemID('Ancient godsword')]: 1
 		}
 	},
 	{
@@ -1169,13 +1181,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Holy book',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Saradomin page 1': 1,
 			'Saradomin page 2': 1,
 			'Saradomin page 3': 1,
 			'Saradomin page 4': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Holy book': 1
 		}),
 		requiredSkills: { agility: 35 },
@@ -1183,13 +1195,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Book of balance',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Guthix page 1': 1,
 			'Guthix page 2': 1,
 			'Guthix page 3': 1,
 			'Guthix page 4': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Book of balance': 1
 		}),
 		requiredSkills: { agility: 35 },
@@ -1197,13 +1209,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Unholy book',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Zamorak page 1': 1,
 			'Zamorak page 2': 1,
 			'Zamorak page 3': 1,
 			'Zamorak page 4': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Unholy book': 1
 		}),
 		requiredSkills: { agility: 35 },
@@ -1211,13 +1223,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Book of law',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Armadyl page 1': 1,
 			'Armadyl page 2': 1,
 			'Armadyl page 3': 1,
 			'Armadyl page 4': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Book of law': 1
 		}),
 		requiredSkills: { agility: 35 },
@@ -1225,13 +1237,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Book of war',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Bandos page 1': 1,
 			'Bandos page 2': 1,
 			'Bandos page 3': 1,
 			'Bandos page 4': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Book of war': 1
 		}),
 		requiredSkills: { agility: 35 },
@@ -1239,13 +1251,13 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Book of darkness',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ancient page 1': 1,
 			'Ancient page 2': 1,
 			'Ancient page 3': 1,
 			'Ancient page 4': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Book of darkness': 1
 		}),
 		requiredSkills: { agility: 35 },
@@ -1253,33 +1265,33 @@ const Createables: Createable[] = [
 	},
 	{
 		name: "Ava's accumulator",
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Steel arrow': 75
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			"Ava's accumulator": 1
 		}),
 		QPRequired: 30
 	},
 	{
 		name: "Ava's assembler",
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Mithril arrow': 75,
 			"Ava's accumulator": 1,
 			"Vorkath's head": 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			"Ava's assembler": 1
 		}),
 		QPRequired: 205
 	},
 	{
 		name: 'Dragon sq shield',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Shield right half': 1,
 			'Shield left half': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragon sq shield': 1
 		}),
 		QPRequired: 111,
@@ -1289,12 +1301,12 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Dragon kiteshield',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragon sq shield': 1,
 			'Dragon metal shard': 1,
 			'Dragon metal slice': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragon kiteshield': 1
 		}),
 		QPRequired: 205,
@@ -1302,12 +1314,12 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Dragon platebody',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragon chainbody': 1,
 			'Dragon metal shard': 1,
 			'Dragon metal lump': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragon platebody': 1
 		}),
 		QPRequired: 205,
@@ -1315,21 +1327,21 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Coconut milk',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Vial: 1,
 			Coconut: 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Coconut milk': 1,
 			'Coconut shell': 1
 		})
 	},
 	{
 		name: 'Zamorakian hasta',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Zamorakian spear': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Zamorakian hasta': 1
 		}),
 		QPRequired: 3,
@@ -1343,155 +1355,155 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Ultracompost',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Supercompost: 1,
 			'Volcanic ash': 2
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Ultracompost: 1
 		})
 	},
 	{
 		name: 'Tomatoes(5)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Tomato: 5
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Tomatoes(5)': 1
 		})
 	},
 	{
 		name: 'Tomato',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Tomatoes(5)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Tomato: 5
 		})
 	},
 	{
 		name: 'Apples(5)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Cooking apple': 5
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Apples(5)': 1
 		})
 	},
 	{
 		name: 'Cooking apple',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Apples(5)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Cooking Apple': 5
 		})
 	},
 	{
 		name: 'Bananas(5)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Banana: 5
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Bananas(5)': 1
 		})
 	},
 	{
 		name: 'Banana',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Bananas(5)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Banana: 5
 		})
 	},
 	{
 		name: 'Strawberries(5)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Strawberry: 5
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Strawberries(5)': 1
 		})
 	},
 	{
 		name: 'Strawberry',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Strawberries(5)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Strawberry: 5
 		})
 	},
 	{
 		name: 'Oranges(5)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Orange: 5
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Oranges(5)': 1
 		})
 	},
 	{
 		name: 'Orange',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Oranges(5)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Orange: 5
 		})
 	},
 	{
 		name: 'Potatoes(10)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Potato: 10
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Potatoes(10)': 1
 		})
 	},
 	{
 		name: 'Potato',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Potatoes(10)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Potato: 10
 		})
 	},
 	{
 		name: 'Onions(10)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Onion: 10
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Onions(10)': 1
 		})
 	},
 	{
 		name: 'Onion',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Onions(10)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Onion: 10
 		})
 	},
 	{
 		name: 'Cabbages(10)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Cabbage: 10
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Cabbages(10)': 1
 		})
 	},
 	{
 		name: 'Cabbage',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Cabbages(10)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Cabbage: 10
 		})
 	},
@@ -1507,37 +1519,37 @@ const Createables: Createable[] = [
 	}, */
 	{
 		name: 'Eldritch nightmare staff',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Nightmare staff': 1,
 			'Eldritch orb': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Eldritch nightmare staff': 1
 		})
 	},
 	{
 		name: 'Harmonised nightmare staff',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Nightmare staff': 1,
 			'Harmonised orb': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Harmonised nightmare staff': 1
 		})
 	},
 	{
 		name: 'Volatile nightmare staff',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Nightmare staff': 1,
 			'Volatile orb': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Volatile nightmare staff': 1
 		})
 	},
 	{
 		name: "Zamorak's grapes",
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Grapes: 1,
 			"Bologa's blessing": 1
 		}),
@@ -1547,7 +1559,7 @@ const Createables: Createable[] = [
 	},
 	{
 		name: "Toad's legs",
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Swamp toad': 1
 		}),
 		outputItems: {
@@ -1663,20 +1675,17 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Bottled dragonbreath',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			Dragonfruit: 10,
 			Vial: 1
 		}),
 		outputItems: {
 			[itemID('Bottled dragonbreath')]: 1
-		},
-		requiredSkills: {
-			slayer: 62
 		}
 	},
 	{
 		name: 'Ring of endurance',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ring of endurance (uncharged)': 1,
 			'Stamina potion (4)': 125
 		}),
@@ -1686,7 +1695,7 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Fish sack barrel',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Fish sack': 1,
 			'Fish barrel': 1
 		}),
@@ -1706,7 +1715,7 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Salve amulet (e)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Salve amulet': 1,
 			"Tarn's diary": 1
 		}),
@@ -1717,7 +1726,7 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Salve amulet(ei)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Salve amulet(i)': 1,
 			"Tarn's diary": 1
 		}),
@@ -1728,12 +1737,37 @@ const Createables: Createable[] = [
 	},
 	{
 		name: 'Little parasite',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Parasitic egg': 1,
 			'Little nightmare': 1
 		}),
 		outputItems: {
 			[itemID('Little parasite')]: 1
+		}
+	},
+	{
+		name: 'Strange hallowed tome',
+		inputItems: new Bank({
+			'Mysterious page 1': 1,
+			'Mysterious page 2': 1,
+			'Mysterious page 3': 1,
+			'Mysterious page 4': 1,
+			'Mysterious page 5': 1
+		}),
+		outputItems: {
+			[itemID('Strange hallowed tome')]: 1
+		}
+	},
+	{
+		name: 'Frozen key',
+		inputItems: new Bank({
+			'Frozen key piece (bandos)': 1,
+			'Frozen key piece (saradomin)': 1,
+			'Frozen key piece (zamorak)': 1,
+			'Frozen key piece (armadyl)': 1
+		}),
+		outputItems: {
+			[itemID('Frozen key')]: 1
 		}
 	},
 	...Reverteables,
@@ -1749,7 +1783,9 @@ const Createables: Createable[] = [
 	...armorAndItemPacks,
 	...BsoCreateables,
 	...gracefulOutfitCreatables,
-	...tobCreatables
+	...tobCreatables,
+	...lmsCreatables,
+	...nexCreatables
 ];
 
 export default Createables;

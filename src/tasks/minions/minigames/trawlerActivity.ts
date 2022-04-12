@@ -2,17 +2,17 @@ import { calcPercentOfNum, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { getRandomMysteryBox } from '../../../lib/data/openables';
+import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { anglerBoostPercent, itemID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run(data: FishingTrawlerActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
 		const user = await this.client.fetchUser(userID);
 
@@ -53,7 +53,7 @@ export default class extends Task {
 		if (user.hasItemEquippedAnywhere(itemID('Fishing master cape'))) {
 			loot.multiply(4);
 			for (let i = 0; i < quantity; i++) {
-				if (roll(2)) loot.add(getRandomMysteryBox());
+				if (roll(2)) loot.add(MysteryBoxes.roll());
 			}
 			str += '\n\nYou received **4x** extra fish because you are a master at Fishing.';
 		}
@@ -84,6 +84,15 @@ export default class extends Task {
 				previousCL
 			);
 
-		handleTripFinish(this.client, user, channelID, str, ['fishingtrawler', [], true], image!, data, itemsAdded);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			['minigames', { fishing_trawler: { start: {} } }, true],
+			image!,
+			data,
+			itemsAdded
+		);
 	}
 }

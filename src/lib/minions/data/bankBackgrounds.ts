@@ -206,6 +206,25 @@ const backgroundImages: BankBackground[] = [
 		available: false
 	},
 	{
+		id: 22,
+		name: 'Nieve',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000
+	},
+	{
+		id: 23,
+		name: 'ToB',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
 		id: 26,
 		name: 'Weeb',
 		image: null,
@@ -531,6 +550,13 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 100_000_000,
 		perkTierNeeded: PerkTier.Four,
 		transparent: true
+	},
+	{
+		id: 93,
+		name: 'Purrincess CustomBG',
+		image: null,
+		available: false,
+		owners: ['538600275221413900']
 	}
 ];
 

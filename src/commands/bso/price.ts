@@ -1,5 +1,4 @@
 import { MessageEmbed } from 'discord.js';
-import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Items, Util } from 'oldschooljs';
 
@@ -10,8 +9,7 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 2,
-			oneAtTime: true,
-			description: 'Looks up the price of an item using the OSBuddy API.',
+			description: 'Looks up the price of an item.',
 			usage: '<name:str>'
 		});
 	}
@@ -30,7 +28,7 @@ export default class extends BotCommand {
 			)
 			.setDescription(
 				`**Price:** ${Util.toKMB(priceOfItem)} 
-**Sell price:** ${Util.toKMB(calcPercentOfNum(80, sellPriceOfItem(this.client, item)))}
+**Sell price:** ${sellPriceOfItem(this.client, item)}
 **Alch value:** ${Util.toKMB(item.highalch)}`
 			);
 

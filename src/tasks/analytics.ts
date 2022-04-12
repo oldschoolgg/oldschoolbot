@@ -65,7 +65,7 @@ export default class extends Task {
 		await prisma.analytic.create({
 			data: {
 				guildsCount: this.client.guilds.cache.size,
-				membersCount: this.client.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount), 0),
+				membersCount: this.client.guilds.cache.reduce((acc, curr) => (acc += curr.memberCount || 0), 0),
 				timestamp: Math.floor(Date.now() / 1000),
 				clueTasksCount: taskCounts.Clue,
 				minigameTasksCount: taskCounts.Minigame,

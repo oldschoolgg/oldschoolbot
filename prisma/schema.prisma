@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Activity {
-  id             Int                @default(autoincrement())
+  id             Int                @id @unique @default(autoincrement())
   user_id        BigInt
   start_date     DateTime           @db.Timestamp(6)
   finish_date    DateTime           @db.Timestamp(6)
@@ -20,7 +20,6 @@ model Activity {
   data           Json               @db.Json
 
 
-  @@id([id, user_id, channel_id], map: "PK_2c70277d97a802ada5b408873b6")
   @@index([group_activity], map: "IDX_73e0d6954aecafe0383b77d390")
   @@index([completed], map: "IDX_d71ac68a9d4b4245287caab788")
   @@map("activity")
@@ -117,6 +116,9 @@ model ClientStorage {
   tob_cost                     Json     @default("{}") @db.Json
   tob_loot                     Json     @default("{}") @db.Json
   degraded_items_cost          Json     @default("{}") @db.Json
+  tks_cost                     Json     @default("{}") @db.Json
+  tks_loot                     Json     @default("{}") @db.Json
+  disabled_commands            String[] @db.VarChar(32)
 
 
   // BSO
@@ -195,9 +197,7 @@ model Guild {
   language          String   @default("en-US") @db.VarChar(5)
   disabledCommands  String[]
   jmodComments      String?  @db.VarChar(19)
-  hcimdeaths        String?  @db.VarChar(19)
   petchannel        String?  @db.VarChar(19)
-  streamertweets    String?  @db.VarChar(19)
   tweetchannel      String?  @db.VarChar(19)
   levelUpMessages   String?  @db.VarChar(19)
   staffOnlyChannels String[] @db.VarChar(19)
@@ -390,6 +390,8 @@ model User {
   farmingPatches_mushroom    Json?    @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
   kourend_favour             Json?    @map("kourend_favour") @db.Json
+  bank_sort_method           String?  @db.VarChar(16)
+  bank_sort_weightings       Json     @default("{}") @db.Json
 
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
@@ -405,6 +407,10 @@ model User {
 
   tob_cost Json @default("{}") @db.Json
   tob_loot Json @default("{}") @db.Json
+
+  weekly_buy_bank Json @default("{}") @db.Json
+
+  lms_points Int @default(0)
 
   // BSO
   nursery                  Json?    @db.Json
@@ -426,6 +432,7 @@ model User {
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
   got_free_festive_present Boolean  @default(false)
+
 
   @@map("users")
 }
@@ -498,12 +505,13 @@ model Minigame {
   tears_of_guthix         Int    @default(0)
   tob                     Int    @default(0)
   tob_hard                Int    @default(0)
-  fishing_contest         Int    @default(0)
+  lms                     Int    @default(0)
 
   // BSO
   ourania_delivery_service Int @default(0)
   monkey_rumble            Int @default(0)
   emerged_inferno          Int @default(0)
+  fishing_contest          Int @default(0)
 
   NewUser NewUser[]
   @@map("minigames")
@@ -566,6 +574,7 @@ model CommandUsage {
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
   flags        Json?
+  inhibited    Boolean?             @default(false)
 
   args       Json?   @db.Json
   channel_id String? @db.VarChar(19)
@@ -601,6 +610,25 @@ model LootTrack {
 
   @@id([id, type])
   @@map("loot_track")
+}
+
+model EconomyItem {
+  item_id  Int
+  quantity BigInt
+  date     DateTime @default(now())
+
+  @@id([item_id, date])
+  @@map("economy_item")
+}
+
+model LastManStandingGame {
+  id       Int      @id @default(autoincrement())
+  user_id  BigInt
+  date     DateTime @default(now())
+  position Int      @db.SmallInt
+  kills    Int      @db.SmallInt
+
+  @@map("lms_games")
 }
 
 enum command_usage_status {
@@ -689,7 +717,10 @@ enum activity_type_enum {
   Inferno
   TearsOfGuthix
   TheatreOfBlood
+  LastManStanding
   FishingContest
+  BirthdayEvent
+  TokkulShop
 }
 
 enum xp_gains_skill_enum {

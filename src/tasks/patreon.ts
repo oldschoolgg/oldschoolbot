@@ -3,6 +3,7 @@ import { Time } from 'e';
 import { ArrayActions, Gateway, Task } from 'klasa';
 import fetch from 'node-fetch';
 
+import { client } from '..';
 import { patreonConfig, production } from '../config';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from '../lib/constants';
 import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
@@ -11,6 +12,7 @@ import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Patron } from '../lib/types';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { logError } from '../lib/util/logError';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
@@ -29,7 +31,7 @@ patreonApiURL.search = new URLSearchParams([
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
 
-const tiers: [PatronTierID, BitField][] = [
+export const tiers: [PatronTierID, BitField][] = [
 	[PatronTierID.Five, BitField.IsPatronTier5],
 	[PatronTierID.Four, BitField.IsPatronTier4],
 	[PatronTierID.Three, BitField.IsPatronTier3],
@@ -97,13 +99,9 @@ export default class PatreonTask extends Task {
 	}
 
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
-		const settings = await (this.client.gateways.get('users') as Gateway)!
-			.acquire({
-				id: userID
-			})
-			.sync(true);
+		const user = await client.fetchUser(userID);
 
-		const userBitfield = settings.get(UserSettings.BitField);
+		const userBitfield = user.settings.get(UserSettings.BitField);
 
 		const bitFieldToRemove = bitFieldFromPerkTier(from);
 		const bitFieldToAdd = bitFieldFromPerkTier(to);
@@ -111,16 +109,17 @@ export default class PatreonTask extends Task {
 
 		// Remove any/all the patron bits from this user.
 		try {
-			await settings.update(UserSettings.BitField, newBitfield, {
+			await user.settings.update(UserSettings.BitField, newBitfield, {
 				arrayAction: ArrayActions.Overwrite
 			});
 		} catch (_) {}
 
 		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === settings.get(UserSettings.BankBackground));
+		const bg = backgroundImages.find(bg => bg.id === user.settings.get(UserSettings.BankBackground));
 		if (bg && bg.perkTierNeeded && bg.perkTierNeeded > to) {
-			await settings.update(UserSettings.BankBackground, 1);
+			await user.settings.update(UserSettings.BankBackground, 1);
 		}
+		await user.settings.sync(true);
 	}
 
 	async givePerks(userID: string, perkTier: PerkTier) {
@@ -245,7 +244,7 @@ export default class PatreonTask extends Task {
 				this.client.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
 
 			if (settings.get(UserSettings.PatreonID) !== patron.patreonID) {
-				settings.update(UserSettings.PatreonID, patron.patreonID);
+				await settings.update(UserSettings.PatreonID, patron.patreonID);
 			}
 			const userBitfield = settings.get(UserSettings.BitField);
 			if (
@@ -298,12 +297,12 @@ export default class PatreonTask extends Task {
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {
 		const users: Patron[] = [];
-		const result: any = await fetch(url || patreonApiURL, {
+		const result: any = await fetch(url ?? patreonApiURL.toString(), {
 			headers: { Authorization: `Bearer ${patreonConfig!.token}` }
 		}).then(res => res.json());
 
 		if (result.errors) {
-			console.error(result.errors);
+			logError(result.errors);
 			throw 'Failed to fetch patrons.';
 		}
 

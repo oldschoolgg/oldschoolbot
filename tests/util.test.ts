@@ -1,9 +1,11 @@
-import { KlasaUser } from 'klasa';
+import { calcPercentOfNum, reduceNumByPercent } from 'e';
+import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { sellPriceOfItem } from '../src/commands/Minion/sell';
 import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { sanitizeBank, stripEmojis } from '../src/lib/util';
+import { sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 
 describe('util', () => {
@@ -62,5 +64,23 @@ describe('util', () => {
 		buggyBank.bank[2] = 0;
 		sanitizeBank(buggyBank);
 		expect(buggyBank.bank).toEqual({});
+	});
+
+	test('truncateString', () => {
+		expect(truncateString('testtttttt', 5)).toEqual('te...');
+	});
+
+	test('sellPriceOfItem', () => {
+		const clientMock = { settings: { get: () => ({}) } } as any as KlasaClient;
+		const item = getOSItem('Dragon pickaxe');
+		const { price } = item;
+		let expected = Math.floor(reduceNumByPercent(price, 20));
+		expect(sellPriceOfItem(clientMock, item)).toEqual({ price: expected, basePrice: price });
+		expect(sellPriceOfItem(clientMock, getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
+
+		expect(sellPriceOfItem(clientMock, getOSItem('Rune pickaxe'))).toEqual({
+			price: calcPercentOfNum(30, 19_200),
+			basePrice: 21_814
+		});
 	});
 });

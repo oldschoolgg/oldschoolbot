@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { randInt } from 'e';
 import { Bank, Items } from 'oldschooljs';
 
 import getOSItem from '../src/lib/util/getOSItem';
@@ -15,6 +16,7 @@ import resolveItems from '../src/lib/util/resolveItems';
 const psb = parseStringBank;
 const get = getOSItem;
 const pQI = parseQuantityAndItem;
+
 describe('Bank Parsers', () => {
 	test('parseStringBank', async () => {
 		const output = psb(` 1 twisted bow, coal,  5k egg,  1b trout, 5 ${itemID('Feather')} `);
@@ -202,6 +204,18 @@ describe('Bank Parsers', () => {
 		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones').add('Tradeable mystery box');
 		expect(parseBank({ inputBank: bank, inputStr: 'pUrPle gRaceful top, 5 tmb' }).toString()).toEqual(
 			'30x Arceuus graceful top, 1x Tradeable Mystery Box'
+		);
+	});
+
+	test('parseBank - max size', async () => {
+		const bank = new Bank().add('Arceuus graceful top', 30).add('Bones');
+		for (let i = 0; i < 500; i++) bank.add(Items.random().id, randInt(1, 20));
+		expect(parseBank({ inputBank: bank, flags: { all: 'all' }, maxSize: 23 }).length).toEqual(23);
+	});
+
+	test('parseBank - with no inputBank', async () => {
+		expect(parseBank({ inputBank: undefined, inputStr: '100 trout, 100 twisted bow' }).bank).toEqual(
+			new Bank().add('Trout', 100).add('Twisted bow', 100).bank
 		);
 	});
 

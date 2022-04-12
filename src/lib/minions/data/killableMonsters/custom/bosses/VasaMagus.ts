@@ -2,7 +2,7 @@ import { Monsters } from 'oldschooljs';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { MysteryBoxes } from '../../../../../data/openables';
+import { MysteryBoxes } from '../../../../../bsoOpenables';
 import setCustomMonster from '../../../../../util/setCustomMonster';
 
 export const VasaMagusLootTable = new LootTable()
@@ -17,7 +17,7 @@ export const VasaMagusLootTable = new LootTable()
 	.add('Elder rune', [50, 100])
 	.add('Pure essence', [1000, 2000])
 	.tertiary(16, RareDropTable)
-	.tertiary(12, 'Clue scroll (grandmaster)')
+	.tertiary(19, 'Clue scroll (grandmaster)')
 	.tertiary(15, MysteryBoxes)
 	.tertiary(1000, 'Jar of magic')
 	.tertiary(500, 'Voidling')

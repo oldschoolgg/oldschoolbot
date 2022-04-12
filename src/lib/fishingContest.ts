@@ -157,7 +157,7 @@ export const fishingLocations: FishingLocation[] = [
 	},
 	{
 		id: 8,
-		name: 'East Piscarillius Ocean',
+		name: 'East Piscarilius Ocean',
 		temperature: 'warm',
 		water: 'ocean',
 		specialtyVerb: 'firm',
@@ -254,6 +254,15 @@ export function getCurrentFishType(dateOverride?: Date): FishType {
 
 export function getValidLocationsForFishType(type: FishType) {
 	return fishingLocations.filter(loc => loc.temperature === type.temperature && loc.water === type.water);
+}
+
+export async function getTopDailyFishingCatch() {
+	const topThreeCatches: FishingContestCatch[] = await prisma.$queryRawUnsafe(`SELECT *
+FROM fishing_contest_catch
+WHERE date::date = '${ISODateString()}'
+ORDER BY length_cm DESC
+LIMIT 3;`);
+	return topThreeCatches;
 }
 
 export async function getUsersFishingContestDetails(user: KlasaUser) {

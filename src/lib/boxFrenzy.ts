@@ -1,8 +1,8 @@
 import { Message, TextChannel } from 'discord.js';
 import { Bank, Items } from 'oldschooljs';
 
-import { getRandomMysteryBox } from './data/openables';
-import { itemNameFromID, stringMatches } from './util';
+import { MysteryBoxes } from './bsoOpenables';
+import { stringMatches } from './util';
 
 export async function boxFrenzy(channel: TextChannel, content: string, quantity: number) {
 	let bank = new Bank();
@@ -28,12 +28,10 @@ export async function boxFrenzy(channel: TextChannel, content: string, quantity:
 				const isRight = items.find(i => stringMatches(i[0].name, _msg.content) && !guessed.has(i[0].id));
 				if (isRight) {
 					const item = isRight[0];
-					const box = getRandomMysteryBox();
-					_msg.author.addItemsToBank({ items: { [box]: 1 }, collectionLog: true });
+					const loot = MysteryBoxes.roll();
+					_msg.author.addItemsToBank({ items: loot, collectionLog: true });
 					guessed.add(item.id);
-					_msg.channel.send(
-						`${_msg.author}, you guessed one of the items correctly and received 1x ${itemNameFromID(box)}.`
-					);
+					_msg.channel.send(`${_msg.author}, you guessed one of the items correctly and received ${loot}.`);
 				}
 				return false;
 			}

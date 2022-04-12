@@ -1,8 +1,8 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Channel, giveBoxResetTime, PerkTier } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, itemID, roll } from '../../lib/util';
@@ -40,7 +40,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.LastGivenBox, currentDate);
 
-		const boxToReceive = new Bank().add(roll(10) ? getRandomMysteryBox() : itemID('Mystery box'));
+		const boxToReceive = new Bank().add(roll(10) ? MysteryBoxes.roll() : itemID('Mystery box'));
 
 		await user.addItemsToBank({ items: boxToReceive, collectionLog: false });
 

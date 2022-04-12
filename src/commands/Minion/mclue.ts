@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClueTier } from '../../lib/minions/types';
@@ -10,16 +11,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, rand, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import resolveItems from '../../lib/util/resolveItems';
-
-export const clueHunterOutfit = resolveItems([
-	'Helm of raedwald',
-	'Clue hunter garb',
-	'Clue hunter trousers',
-	'Clue hunter boots',
-	'Clue hunter gloves',
-	'Clue hunter cloak'
-]);
 
 function reducedClueTime(clueTier: ClueTier, score: number) {
 	// Every 3 hours become 1% better to a cap of 10%
@@ -34,8 +25,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
 			usageDelim: ' ',
 			categoryFlags: ['minion', 'minigame'],

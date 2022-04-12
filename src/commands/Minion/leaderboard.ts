@@ -1,4 +1,5 @@
 import { MessageEmbed } from 'discord.js';
+import { roll } from 'e';
 import { CommandStore, KlasaMessage, util } from 'klasa';
 
 import { production } from '../../config';
@@ -6,6 +7,7 @@ import { badges, Emoji } from '../../lib/constants';
 import { getCollectionItems } from '../../lib/data/Collections';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { allOpenables } from '../../lib/openables';
 import { prisma } from '../../lib/settings/prisma';
 import { Minigames } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
@@ -21,11 +23,7 @@ import {
 	stripEmojis,
 	toTitleCase
 } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 import PostgresProvider from '../../providers/postgres';
-import { allOpenables } from './open';
-
-const allOpenableItems = allOpenables.map(getOSItem);
 
 export const LB_PAGE_SIZE = 10;
 
@@ -92,8 +90,7 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
-			requiredPermissions: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
-			oneAtTime: true,
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
 			categoryFlags: ['minion', 'utility'],
 			examples: [
 				'+lb gp',
@@ -108,7 +105,7 @@ export default class extends BotCommand {
 	}
 
 	async init() {
-		if (production) await this.cacheUsernames();
+		if (production) await this.cacheUsernames(true);
 	}
 
 	getPos(page: number, record: number) {
@@ -122,7 +119,9 @@ export default class extends BotCommand {
 		return username;
 	}
 
-	async cacheUsernames() {
+	async cacheUsernames(force = false) {
+		if (!force && !roll(20)) return;
+
 		const allNewUsers = await prisma.newUser.findMany({
 			where: {
 				username: {
@@ -455,7 +454,7 @@ ORDER BY u.sacbanklength DESC LIMIT 10;`;
 		} else {
 			const openable = !name
 				? undefined
-				: allOpenableItems.find(
+				: allOpenables.find(
 						item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
 				  );
 			if (openable) {
@@ -467,7 +466,7 @@ ORDER BY u.sacbanklength DESC LIMIT 10;`;
 
 		if (entityID === -1) {
 			return msg.channel.send(
-				`That's not a valid openable item! You can check: ${allOpenableItems.map(i => i.name).join(', ')}.`
+				`That's not a valid openable item! You can check: ${allOpenables.map(i => i.name).join(', ')}.`
 			);
 		}
 

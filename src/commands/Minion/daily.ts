@@ -36,7 +36,6 @@ export default class DailyCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			cooldown: 5,
 			categoryFlags: ['minion'],
 			examples: ['+daily'],

@@ -74,9 +74,6 @@ import {
 	customPetsCL,
 	cyclopsCL,
 	dagannothKingsCL,
-	dagannothPrimeCL,
-	dagannothRexCL,
-	dagannothSupremeCL,
 	dailyCL,
 	demonicGorillaCL,
 	discontinuedCustomPetsCL,
@@ -250,35 +247,17 @@ export const allCollectionLogs: ICollection = {
 			'Dagannoth Kings': {
 				alias: ['dagannoth kings', 'kings', 'dagga', 'dks'],
 				kcActivity: {
-					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name]
+					Default: [Monsters.DagannothSupreme.name, Monsters.DagannothRex.name, Monsters.DagannothPrime.name],
+					Rex: Monsters.DagannothRex.name,
+					Prime: Monsters.DagannothPrime.name,
+					Supreme: Monsters.DagannothSupreme.name
 				},
-				allItems: (() => {
-					return [
-						...new Set(
-							...[
-								Monsters.DagannothPrime.allItems,
-								Monsters.DagannothSupreme.allItems,
-								Monsters.DagannothRex.allItems
-							]
-						)
-					];
-				})(),
+				allItems: [
+					...Monsters.DagannothPrime.allItems,
+					...Monsters.DagannothSupreme.allItems,
+					...Monsters.DagannothRex.allItems
+				],
 				items: dagannothKingsCL
-			},
-			'Dagannoth Rex': {
-				alias: Monsters.DagannothRex.aliases,
-				allItems: Monsters.DagannothRex.allItems,
-				items: dagannothRexCL
-			},
-			'Dagannoth Prime': {
-				alias: Monsters.DagannothPrime.aliases,
-				allItems: Monsters.DagannothPrime.allItems,
-				items: dagannothPrimeCL
-			},
-			'Dagannoth Supreme': {
-				alias: Monsters.DagannothSupreme.aliases,
-				allItems: Monsters.DagannothSupreme.allItems,
-				items: dagannothSupremeCL
 			},
 			'The Fight Caves': {
 				kcActivity: Monsters.TzTokJad.name,
@@ -347,7 +326,11 @@ export const allCollectionLogs: ICollection = {
 				items: krilTsutsarothCL
 			},
 			'The Nightmare': {
-				alias: NightmareMonster.aliases,
+				alias: [...NightmareMonster.aliases, 'phosani'],
+				kcActivity: {
+					Default: 'Nightmare',
+					Phosani: "Phosani's Nightmare"
+				},
 				items: theNightmareCL
 			},
 			Obor: {
@@ -771,7 +754,11 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Last Man Standing': {
 				items: lastManStandingCL,
-				isActivity: true
+				isActivity: true,
+				kcActivity: {
+					Default: user => user.getMinigameScore('lms')
+				},
+				alias: ['lms']
 			},
 			'Magic Training Arena': {
 				alias: ['mta'],

@@ -30,7 +30,7 @@ export default class extends Task {
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
-					loot.add(openCoffin(floor.number));
+					loot.add(openCoffin(floor.number, user.cl()));
 				}
 
 				agilityXP += floor.xp;
@@ -71,6 +71,15 @@ export default class extends Task {
 				previousCL
 			);
 
-		handleTripFinish(this.client, user, channelID, str, ['sepulchre', [], true], image!, data, itemsAdded);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			['minigames', { sepulchre: { start: {} } }, true],
+			image!,
+			data,
+			itemsAdded
+		);
 	}
 }

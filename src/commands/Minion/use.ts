@@ -1,8 +1,10 @@
+import { randInt, Time } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { bossActiveIsActiveOrSoonActive, bossEvents, startBossEvent } from '../../lib/bossEvents';
 import { BitField } from '../../lib/constants';
+import { addToDoubleLootTimer } from '../../lib/doubleLoot';
 import { dyedItems } from '../../lib/dyedItems';
 import { monkeyTiers } from '../../lib/monkeyRumble';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -54,6 +56,33 @@ const combinedUsables = [
 			return msg.channel.send(
 				'You fed a Magical mango to Blabberbeak, and he transformed into a weird-looking mango bird, oops.'
 			);
+		}
+	},
+	{
+		items: ['Candle', 'Celebratory cake'].map(getOSItem),
+		run: async (msg: KlasaMessage) => {
+			await msg.author.removeItemsFromBank(new Bank().add('Candle').add('Celebratory cake'));
+			await msg.author.addItemsToBank({
+				items: new Bank().add('Celebratory cake with candle'),
+				collectionLog: true
+			});
+			return msg.channel.send('You stick a candle in your cake.');
+		}
+	},
+	{
+		items: ['Tinderbox', 'Celebratory cake with candle'].map(getOSItem),
+		run: async (msg: KlasaMessage) => {
+			await msg.author.removeItemsFromBank(new Bank().add('Celebratory cake with candle'));
+			await msg.author.addItemsToBank({ items: new Bank().add('Lit celebratory cake'), collectionLog: true });
+			return msg.channel.send('You light the candle in your cake.');
+		}
+	},
+	{
+		items: ['Klik', 'Celebratory cake with candle'].map(getOSItem),
+		run: async (msg: KlasaMessage) => {
+			await msg.author.removeItemsFromBank(new Bank().add('Celebratory cake with candle'));
+			await msg.author.addItemsToBank({ items: new Bank().add('Burnt celebratory cake'), collectionLog: true });
+			return msg.channel.send('You try to get Klik to light the candle... but he burnt the cake..');
 		}
 	}
 ];
@@ -190,6 +219,18 @@ const usables = [
 			await msg.author.settings.update(UserSettings.BitField, BitField.HasSlepeyTablet);
 			return msg.channel.send('You used your Slepey tablet, and unlocked the Slepe teleport.');
 		}
+	},
+	{
+		item: getOSItem('Double loot token'),
+		run: async (msg: KlasaMessage) => {
+			await addToDoubleLootTimer(
+				msg.client as KlasaClient,
+				Time.Minute * randInt(6, 36),
+				`${msg.author} used a Double Loot token!`
+			);
+			await msg.author.removeItemsFromBank(new Bank().add('Double loot token'));
+			return msg.channel.send('You used your Double Loot Token!');
+		}
 	}
 ];
 
@@ -197,7 +238,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '<item:...string>',
-			oneAtTime: true,
 			cooldown: 5,
 			altProtection: true
 		});

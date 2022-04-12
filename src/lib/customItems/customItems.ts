@@ -1,12 +1,14 @@
+import '../deletedItems';
 import './customItemsFancy';
 import './farming';
 import './pets';
 import './fishing';
+import './nex';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import getOSItem from '../util/getOSItem';
-import { setCustomItem } from './util';
+import { setCustomItem, UN_EQUIPPABLE } from './util';
 
 setCustomItem(19_939, 'Untradeable Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(6199, 'Tradeable Mystery Box', 'Mystery box', {}, 100_000);
@@ -109,7 +111,6 @@ setCustomItem(
 	'Abyssal cape',
 	'Infernal cape',
 	{
-		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
 		wiki_name: 'Abyssal cape',
@@ -241,549 +242,6 @@ setCustomItem(19_838, 'Reward casket (grandmaster)', 'Reward casket (master)');
 setCustomItem(516, 'Nuts of monkey', 'Rune platelegs');
 
 /**
- * Nex
- */
-setCustomItem(3741, 'Frozen key', 'Key');
-setCustomItem(11_039, 'Key piece 1', 'Key');
-setCustomItem(11_040, 'Key piece 2', 'Key');
-setCustomItem(11_041, 'Key piece 3', 'Key');
-setCustomItem(11_042, 'Key piece 4', 'Key');
-
-setCustomItem(
-	432,
-	'Torva full helm',
-	'Rune full helm',
-	{
-		equipment: {
-			attack_stab: 35,
-			attack_slash: 18,
-			attack_crush: 18,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 70,
-			defence_slash: 75,
-			defence_crush: 75,
-			defence_magic: -5,
-			defence_ranged: 55,
-
-			melee_strength: 5,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Head,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	709,
-	'Torva platebody',
-	'Rune platebody',
-	{
-		equipment: {
-			attack_stab: 35,
-			attack_slash: 18,
-			attack_crush: 18,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 160,
-			defence_slash: 150,
-			defence_crush: 150,
-			defence_magic: 0,
-			defence_ranged: 165,
-
-			melee_strength: 5,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Body,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	2404,
-	'Torva platelegs',
-	'Rune platelegs',
-	{
-		equipment: {
-			attack_stab: 35,
-			attack_slash: 18,
-			attack_crush: 18,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 130,
-			defence_slash: 130,
-			defence_crush: 130,
-			defence_magic: 0,
-			defence_ranged: 130,
-
-			melee_strength: 5,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Legs,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	2838,
-	'Torva boots',
-	'Rune boots',
-	{
-		equipment: {
-			attack_stab: 22,
-			attack_slash: 2,
-			attack_crush: 2,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 24,
-			defence_slash: 24,
-			defence_crush: 24,
-			defence_magic: 0,
-			defence_ranged: 35,
-
-			melee_strength: 5,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Feet,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	4273,
-	'Torva gloves',
-	'Rune gloves',
-	{
-		equipment: {
-			attack_stab: 26,
-			attack_slash: 16,
-			attack_crush: 16,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 18,
-			defence_slash: 18,
-			defence_crush: 18,
-			defence_magic: 0,
-			defence_ranged: 35,
-
-			melee_strength: 5,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Hands,
-			requirements: null
-		},
-		highalch: 50_000_000,
-		tradeable: true
-	},
-	50_000_000
-);
-
-setCustomItem(
-	601,
-	'Pernix cowl',
-	'Rune full helm',
-	{
-		equipment: {
-			attack_stab: -5,
-			attack_slash: -5,
-			attack_crush: -5,
-			attack_magic: -12,
-			attack_ranged: 20,
-
-			defence_stab: 25,
-			defence_slash: 25,
-			defence_crush: 17,
-			defence_magic: 25,
-			defence_ranged: 58,
-
-			melee_strength: 0,
-			ranged_strength: 5,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Head,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	605,
-	'Pernix body',
-	'Rune platebody',
-	{
-		equipment: {
-			attack_stab: -5,
-			attack_slash: -5,
-			attack_crush: -5,
-			attack_magic: -12,
-			attack_ranged: 45,
-
-			defence_stab: 25,
-			defence_slash: 25,
-			defence_crush: 25,
-			defence_magic: 73,
-			defence_ranged: 62,
-
-			melee_strength: 0,
-			ranged_strength: 5,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Body,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	4272,
-	'Pernix chaps',
-	'Rune platelegs',
-	{
-		equipment: {
-			attack_stab: -5,
-			attack_slash: -5,
-			attack_crush: -5,
-			attack_magic: -12,
-			attack_ranged: 25,
-
-			defence_stab: 25,
-			defence_slash: 15,
-			defence_crush: 5,
-			defence_magic: 45,
-			defence_ranged: 38,
-
-			melee_strength: 0,
-			ranged_strength: 5,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Legs,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	758,
-	'Pernix boots',
-	'Rune boots',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: -12,
-			attack_ranged: 19,
-
-			defence_stab: 4,
-			defence_slash: 4,
-			defence_crush: 3,
-			defence_magic: 6,
-			defence_ranged: 6,
-
-			melee_strength: 0,
-			ranged_strength: 5,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Feet,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	759,
-	'Pernix gloves',
-	'Rune gloves',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: -5,
-			attack_magic: -5,
-			attack_ranged: 15,
-
-			defence_stab: 4,
-			defence_slash: 4,
-			defence_crush: 1,
-			defence_magic: 27,
-			defence_ranged: 15,
-
-			melee_strength: 0,
-			ranged_strength: 5,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Hands,
-			requirements: null
-		},
-		highalch: 50_000_000,
-		tradeable: true
-	},
-	50_000_000
-);
-
-setCustomItem(
-	788,
-	'Virtus mask',
-	'Rune full helm',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 20,
-			attack_ranged: -3,
-
-			defence_stab: 35,
-			defence_slash: 35,
-			defence_crush: 35,
-			defence_magic: 85,
-			defence_ranged: 75,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 5,
-			prayer: 1,
-			slot: EquipmentSlot.Head,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	983,
-	'Virtus robe top',
-	'Rune platebody',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 45,
-			attack_ranged: -5,
-
-			defence_stab: 44,
-			defence_slash: 44,
-			defence_crush: 55,
-			defence_magic: 65,
-			defence_ranged: 5,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 5,
-			prayer: 1,
-			slot: EquipmentSlot.Body,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	2409,
-	'Virtus robe legs',
-	'Rune platelegs',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 40,
-			attack_ranged: -5,
-
-			defence_stab: 22,
-			defence_slash: 20,
-			defence_crush: 15,
-			defence_magic: 65,
-			defence_ranged: 15,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 5,
-			prayer: 1,
-			slot: EquipmentSlot.Legs,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	9654,
-	'Virtus boots',
-	'Rune boots',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 22,
-			attack_ranged: -5,
-
-			defence_stab: 9,
-			defence_slash: 9,
-			defence_crush: 9,
-			defence_magic: 12,
-			defence_ranged: 9,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 5,
-			prayer: 1,
-			slot: EquipmentSlot.Feet,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	2423,
-	'Virtus gloves',
-	'Rune gloves',
-	{
-		equipment: {
-			attack_stab: 15,
-			attack_slash: 15,
-			attack_crush: 15,
-			attack_magic: 22,
-			attack_ranged: 12,
-
-			defence_stab: 9,
-			defence_slash: 9,
-			defence_crush: 9,
-			defence_magic: 12,
-			defence_ranged: 9,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 1,
-			prayer: 1,
-			slot: EquipmentSlot.Hands,
-			requirements: null
-		},
-		highalch: 50_000_000,
-		tradeable: true
-	},
-	50_000_000
-);
-
-setCustomItem(
-	2832,
-	'Zaryte bow',
-	'Twisted bow',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 0,
-			attack_ranged: 190,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 0,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 2,
-			magic_damage: 0,
-			prayer: 6,
-			slot: EquipmentSlot.TwoHanded,
-			requirements: null
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	2834,
-	'Virtus wand',
-	'Master wand',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 200,
-			attack_ranged: 0,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 20,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 15,
-			prayer: 0,
-			slot: EquipmentSlot.Weapon,
-			requirements: null
-		},
-		highalch: 50_000_000,
-		tradeable: true
-	},
-	50_000_000
-);
-setCustomItem(
-	2836,
-	'Virtus book',
-	'Holy book',
-	{
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 35,
-			attack_ranged: 0,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 25,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 5,
-			slot: EquipmentSlot.Shield,
-			requirements: null
-		},
-		highalch: 50_000_000,
-		tradeable: true
-	},
-	50_000_000
-);
-
-setCustomItem(21_807, 'Ancient emblem', 'Ancient emblem');
-setCustomItem(11_196, 'Bloodsoaked feather', 'Feather');
-
-/**
  * Exclusive Items
  *
  * Items from 40_000 to 45_000 will not be dropped by any mystery box, and are untradeable
@@ -907,8 +365,7 @@ setCustomItem(
 	'Hellfire bownana (broken)',
 	'Twisted bow',
 	{
-		equipable: false,
-		equipment: null
+		...UN_EQUIPPABLE
 	},
 	0
 );
@@ -1202,7 +659,6 @@ setCustomItem(
 	'Vasa cloak',
 	'Infernal cape',
 	{
-		duplicate: false,
 		tradeable: true,
 		tradeable_on_ge: true,
 		wiki_name: 'Abyssal cape',
@@ -1704,8 +1160,7 @@ setCustomItem(
 	'Hellfire bow (broken)',
 	'Twisted bow',
 	{
-		equipable: false,
-		equipment: null
+		...UN_EQUIPPABLE
 	},
 	0
 );
@@ -1927,8 +1382,8 @@ setCustomItem(50_016, 'Master farmer boots', 'Rune boots', {}, 1_000_000);
 
 setCustomItem(50_017, 'Elder logs', 'Magic logs', {}, 19_000);
 setCustomItem(50_018, 'Elder plank', 'Mahogany plank', {}, 10_000);
-setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', { highalch: 1025 }, 19_000);
-setCustomItem(50_020, 'Elder bow', 'Mahogany plank', { highalch: 2100 }, 10_000);
+setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', { highalch: 1025 }, 10_000);
+setCustomItem(50_020, 'Elder bow', 'Mahogany plank', { highalch: 2100 }, 19_000);
 setCustomItem(50_021, 'Elder rune', 'Fire rune', {}, 500);
 setCustomItem(50_022, 'Jar of magic', 'Fire rune', {}, 1_000_000);
 setCustomItem(50_023, 'Magus scroll', 'Fire rune', {}, 500_000);
@@ -3128,4 +2583,86 @@ setCustomItem(
 		}
 	},
 	100_000
+);
+
+setCustomItem(
+	52_616,
+	'Double loot token',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000_000
+);
+
+setCustomItem(
+	152_616,
+	'Tormented skull',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		},
+		examine: "Almost sounds like there's screaming coming from inside it..."
+	},
+	100_000_000
+);
+
+setCustomItem(
+	52_620,
+	'Celebratory cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	121_234,
+	'Burnt celebratory cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	121_521,
+	'Celebratory cake with candle',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	122_001,
+	'Lit celebratory cake',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1000
+);
+setCustomItem(
+	122_002,
+	"Olof's gold",
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
 );

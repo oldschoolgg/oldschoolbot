@@ -178,7 +178,6 @@ const boostPerPlayer = 5;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			subcommands: true,

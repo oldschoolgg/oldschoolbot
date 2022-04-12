@@ -14,7 +14,7 @@ const tier3ElligibleBits = [
 ];
 
 export default function getUsersPerkTier(
-	userOrBitfield: KlasaUser | readonly BitField[],
+	userOrBitfield: KlasaUser | readonly BitField[] | User,
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
 	if (noCheckOtherAccounts !== true && userOrBitfield instanceof KlasaUser) {
@@ -78,7 +78,7 @@ export default function getUsersPerkTier(
 
 	if (userOrBitfield instanceof User) {
 		const supportGuild = getSupportGuild(userOrBitfield.client);
-		const member = supportGuild.members.cache.get(userOrBitfield.id);
+		const member = supportGuild?.members.cache.get(userOrBitfield.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
 			return PerkTier.One;
 		}

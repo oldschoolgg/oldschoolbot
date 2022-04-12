@@ -16,9 +16,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[qty:int{1,100}]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES']
 		});
 	}
 

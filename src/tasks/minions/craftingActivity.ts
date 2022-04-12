@@ -1,3 +1,4 @@
+import { increaseNumByPercent } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -38,7 +39,7 @@ export default class extends Task {
 		const hasScroll = await user.hasItem(itemID('Scroll of dexterity'));
 		if (hasScroll) {
 			let _qty = quantityToGive - crushed;
-			_qty = Math.floor(_qty * 1.15);
+			_qty = Math.floor(increaseNumByPercent(_qty, 15));
 			loot.add(item.id, _qty);
 		} else {
 			loot.add(item.id, quantityToGive - crushed);

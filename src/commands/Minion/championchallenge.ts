@@ -12,7 +12,6 @@ import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			description: 'Sends your minion to do the Champions Challenge, if you have all the champion scrolls',

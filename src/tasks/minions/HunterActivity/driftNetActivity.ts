@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { DriftNetActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
 
@@ -44,7 +44,7 @@ const shelldonFish = resolveItems([
 ]);
 
 export default class extends Task {
-	async run(data: DriftNetActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);

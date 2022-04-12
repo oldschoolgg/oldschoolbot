@@ -50,7 +50,7 @@ export default class TradeableItemBankArgument extends Argument {
 		for (const flag of Object.keys(msg.flagArgs)) {
 			const matching = filterableTypes.find(type => type.aliases.some(alias => stringMatches(alias, flag)));
 			if (matching) {
-				for (const item of matching.items) {
+				for (const item of matching.items(msg.author)) {
 					items.push([getOSItem(item), qtyOverride ?? 0]);
 				}
 			}

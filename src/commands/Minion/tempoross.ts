@@ -12,7 +12,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			aliases: ['temp', 'ross', 'tempo', 'watertodt'],
-			oneAtTime: true,
 			altProtection: true,
 			usage: '[quantity:int{1}]',
 			usageDelim: ' ',

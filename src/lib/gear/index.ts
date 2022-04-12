@@ -1,7 +1,7 @@
 import { GearPreset } from '@prisma/client';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { itemID } from '../util';
+import itemID from '../util/itemID';
 import { DefenceGearStat, GearSetup, GearStat, OffenceGearStat, OtherGearStat } from './types';
 
 export * from './types';
@@ -16,10 +16,10 @@ export const maxDefenceStats: { [key in DefenceGearStat]: number } = {
 };
 
 export const maxOffenceStats: { [key in OffenceGearStat]: number } = {
-	[GearStat.AttackCrush]: 352,
+	[GearStat.AttackCrush]: 360,
 	[GearStat.AttackMagic]: 459,
 	[GearStat.AttackRanged]: 431,
-	[GearStat.AttackSlash]: 288,
+	[GearStat.AttackSlash]: 295,
 	[GearStat.AttackStab]: 361
 };
 
@@ -44,6 +44,7 @@ export const defaultGear: GearSetup = {
 	[EquipmentSlot.Shield]: null,
 	[EquipmentSlot.Weapon]: null
 };
+Object.freeze(defaultGear);
 
 export const globalPresets: GearPreset[] = [
 	{

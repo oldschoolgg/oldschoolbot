@@ -87,6 +87,7 @@ const source: [string, (string | number)[]][] = [
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
 	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
+	['Armadyl crossbow', ['Zaryte crossbow']],
 	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
 	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
@@ -239,7 +240,7 @@ const source: [string, (string | number)[]][] = [
 			'Mystic steam staff',
 			'Mud battlestaff',
 			'Mystic mud staff',
-			'Kodai wand'
+			'Virtus wand'
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
@@ -268,17 +269,17 @@ const source: [string, (string | number)[]][] = [
 	['Herblore master cape', ["Artisan's cape"]],
 	['Runecraft master cape', ["Artisan's cape"]],
 	['Smithing master cape', ["Artisan's cape"]],
-	['Torva full helm', ['Gorajan warrior helmet']],
+	['Torva full helm', ['Gorajan warrior helmet', 'Infernal slayer helmet(i)']],
 	['Torva platebody', ['Gorajan warrior top']],
 	['Torva platelegs', ['Gorajan warrior legs']],
 	['Torva gloves', ['Gorajan warrior gloves']],
 	['Torva boots', ['Gorajan warrior boots']],
-	['Virtus mask', ['Gorajan occult helmet']],
+	['Virtus mask', ['Gorajan occult helmet', 'Infernal slayer helmet(i)']],
 	['Virtus robe top', ['Gorajan occult top']],
 	['Virtus robe legs', ['Gorajan occult legs']],
 	['Virtus gloves', ['Gorajan occult gloves']],
 	['Virtus boots', ['Gorajan occult boots']],
-	['Pernix cowl', ['Gorajan archer helmet']],
+	['Pernix cowl', ['Gorajan archer helmet', 'Infernal slayer helmet(i)']],
 	['Pernix body', ['Gorajan archer top']],
 	['Pernix chaps', ['Gorajan archer legs']],
 	['Pernix gloves', ['Gorajan archer gloves']],
@@ -320,7 +321,7 @@ const source: [string, (string | number)[]][] = [
 	['Gorajan occult helmet', ['Infernal slayer helmet(i)']],
 	['Gorajan warrior helmet', ['Infernal slayer helmet(i)']],
 	['Ring of suffering (i)', ['Ring of suffering (ri)']],
-	['Scythe of vitur', [...scytheChargedSimilar, ...scytheUnchargedSimilar]],
+	['Scythe of vitur', [...scytheChargedSimilar]],
 	['Scythe of vitur (uncharged)', [...scytheUnchargedSimilar]],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
 	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
@@ -328,7 +329,10 @@ const source: [string, (string | number)[]][] = [
 	[
 		"Beginner's tackle box",
 		['Basic tackle box', 'Standard tackle box', 'Professional tackle box', "Champion's tackle box"]
-	]
+	],
+	['Magic shortbow', ['Magic shortbow (i)']],
+	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
+	['Kodai wand', ['Virtus wand']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

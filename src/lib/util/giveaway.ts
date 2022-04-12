@@ -1,5 +1,5 @@
 import { Giveaway } from '@prisma/client';
-import { TextChannel } from 'discord.js';
+import { Snowflake, TextChannel } from 'discord.js';
 import { noOp, randArrItem } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -7,6 +7,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { Events } from '../constants';
 import { prisma } from '../settings/prisma';
+import { logError } from './logError';
 
 export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Giveaway) {
 	if (giveaway.completed) {
@@ -25,19 +26,22 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 			}
 		});
 
-		const channel = client.channels.cache.get(giveaway.channel_id) as TextChannel | undefined;
-		const message = await channel?.messages.fetch(giveaway.message_id).catch(noOp);
+		const channel = client.channels.cache.get(giveaway.channel_id as Snowflake) as TextChannel | undefined;
+		if (!channel?.messages) return;
+		const message = await channel?.messages.fetch(giveaway.message_id as Snowflake).catch(noOp);
 
 		const reactions = message ? message.reactions.cache.get(giveaway.reaction_id) : undefined;
 		const users: KlasaUser[] = !reactions
 			? []
-			: (await reactions.users.fetch())!
-					.array()!
-					.filter(u => !u.isIronman && !u.bot && u.id !== giveaway.user_id);
+			: Array.from(
+					(await reactions.users.fetch())!
+						.filter(u => !u.isIronman && !u.bot && u.id !== giveaway.user_id)
+						.values()
+			  );
 		const creator = await client.fetchUser(giveaway.user_id);
 
 		if (users.length === 0 || !channel || !message) {
-			console.error('Giveaway failed');
+			logError('Giveaway failed');
 			await creator.addItemsToBank({ items: loot });
 			creator.send(`Your giveaway failed to finish, you were refunded the items: ${new Bank(loot)}.`).catch(noOp);
 
@@ -67,6 +71,6 @@ They received these items: ${osBank}`;
 			}`
 		);
 	} catch (err) {
-		console.error(err);
+		logError(err);
 	}
 }

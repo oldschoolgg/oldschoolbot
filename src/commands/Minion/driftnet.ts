@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { DriftNetActivityTaskOptions } from '../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { formatDuration, randFloat } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
@@ -13,10 +13,8 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			usage: '[tripTime:int{1}]',
 			usageDelim: ' ',
-			cooldown: 1,
 			aliases: ['drift', 'dn'],
 			description: 'Sends your minion to driftnet fishing.',
 			examples: ['+driftnet 30', '+dn'],
@@ -115,7 +113,7 @@ export default class extends BotCommand {
 			);
 		}
 
-		await addSubTaskToActivityTask<DriftNetActivityTaskOptions>({
+		await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

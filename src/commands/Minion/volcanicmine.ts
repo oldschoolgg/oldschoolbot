@@ -8,7 +8,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
-import { VolcanicMineActivityTaskOptions } from '../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 
@@ -38,7 +38,7 @@ const VolcanicMineShop: { name: string; output: ItemBank; cost: number; clOnly?:
 	{
 		name: 'Mithril ore',
 		output: resolveNameBank({ 'Mithril ore': 1 }),
-		cost: 30
+		cost: 150
 	},
 	{
 		name: 'Adamantite ore',
@@ -90,7 +90,6 @@ export default class extends BotCommand {
 			usage: '[shop] [numberOfGames|quantity:int] [item:...string]',
 			subcommands: true,
 			usageDelim: ' ',
-			cooldown: 3,
 			categoryFlags: ['minion'],
 			aliases: ['vm'],
 			description: 'Participate in games on the Volcanic Mine.',
@@ -236,7 +235,7 @@ export default class extends BotCommand {
 			boosts.length > 0 ? `\n**Boosts**\n${boosts.join('\n')}` : ''
 		}\n**Supply Usage:** ${suppliesUsage}`;
 
-		await addSubTaskToActivityTask<VolcanicMineActivityTaskOptions>({
+		await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: numberOfGames,

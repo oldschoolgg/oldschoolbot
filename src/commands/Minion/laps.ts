@@ -40,7 +40,7 @@ export function alching({
 }) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = user.bank();
-	const favAlchables = user.getUserFavAlchs() as Item[];
+	const favAlchables = user.getUserFavAlchs(tripLength) as Item[];
 
 	if (!flags.alch) {
 		return null;
@@ -86,8 +86,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[quantity:int{1}|name:...string] [name:...string]',
 			usageDelim: ' ',
 			description: 'Sends your minion to do laps of an agility course.',

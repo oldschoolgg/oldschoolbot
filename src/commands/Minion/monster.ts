@@ -29,8 +29,6 @@ import findMonster from '../../lib/util/findMonster';
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[name:...string]',
 			categoryFlags: ['minion', 'pvm'],
 			description: 'Shows information on a monster, and how long you take to kill it.',

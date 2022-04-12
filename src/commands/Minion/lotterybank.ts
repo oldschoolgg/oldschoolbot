@@ -110,10 +110,8 @@ const specialPrices = new Bank()
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[str:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
 			examples: ['+sacrifice 1 Elysian sigil'],
@@ -122,6 +120,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [str]: [string | undefined]) {
+		if (1 > 0) {
+			return msg.channel.send("There currently isn't a lottery running!");
+		}
 		if (msg.author.isIronman) {
 			return msg.channel.send('Ironmen cannot participate in the lottery.');
 		}

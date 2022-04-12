@@ -1,9 +1,23 @@
+import { bold } from '@discordjs/builders';
+import type { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
-import { Channel, Client, DMChannel, Guild, MessageButton, MessageOptions, TextChannel } from 'discord.js';
+import {
+	Channel,
+	Client,
+	DMChannel,
+	Guild,
+	GuildMember,
+	MessageButton,
+	MessageOptions,
+	TextChannel,
+	User as DJSUser,
+	Util
+} from 'discord.js';
+import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, sumArr, Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults, util } from 'klasa';
+import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import murmurHash from 'murmurhash';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -17,7 +31,6 @@ import {
 	BitField,
 	CENA_CHARS,
 	continuationChars,
-	Events,
 	PerkTier,
 	ProjectileType,
 	skillEmoji,
@@ -26,6 +39,8 @@ import {
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
+import { Rune } from './skilling/skills/runecraft';
+import { SkillsEnum } from './skilling/types';
 import { Gear } from './structures/Gear';
 import { ArrayItemsResolved, Skills } from './types';
 import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
@@ -93,14 +108,6 @@ export function toTitleCase(str: string) {
 		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
 	}
 	return splitStr.join(' ');
-}
-
-export function cleanString(str: string) {
-	return str.replace(/[^0-9a-zA-Z+]/gi, '').toUpperCase();
-}
-
-export function stringMatches(str: string, str2: string) {
-	return cleanString(str) === cleanString(str2);
 }
 
 export function formatDuration(ms: number, short = false) {
@@ -192,10 +199,6 @@ export function roll(max: number) {
 
 export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
-}
-
-export function floatPromise(ctx: { client: Client }, promise: Promise<unknown>) {
-	if (util.isThenable(promise)) promise.catch(error => ctx.client.emit(Events.Wtf, error));
 }
 
 export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
@@ -294,9 +297,9 @@ export function countSkillsAtleast99(user: KlasaUser) {
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
-export function getSupportGuild(client: Client) {
+export function getSupportGuild(client: Client): Guild | null {
 	const guild = client.guilds.cache.get(SupportServer);
-	if (!guild) throw "Can't find support guild.";
+	if (!guild) return null;
 	return guild;
 }
 
@@ -458,15 +461,16 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-export function updateBankSetting(client: KlasaClient | KlasaUser, setting: string, bankToAdd: Bank | ItemBank) {
+export function updateBankSetting(
+	_client: KlasaClient | KlasaUser | Client,
+	setting: string,
+	bankToAdd: Bank | ItemBank
+) {
+	const client = _client as KlasaClient | KlasaUser;
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
 	return client.settings.update(setting, newBank.bank);
-}
-
-export function removeFromArr<T>(array: T[], item: T) {
-	return array.filter(i => i !== item);
 }
 
 const masterFarmerOutfit = resolveItems([
@@ -526,8 +530,8 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export function patronMaxTripCalc(user: KlasaUser) {
-	const perkTier = getUsersPerkTier(user);
+export function patronMaxTripCalc(user: KlasaUser | User) {
+	const perkTier = getUsersPerkTier(user instanceof KlasaUser ? user : user.bitfield);
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
 	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
@@ -647,13 +651,17 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 		if (uniques.includes(item.id)) {
 			uniquesReceived += qty;
 		}
-		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
+		const rate = Math.round(iterations / qty);
+		if (rate < 2) continue;
+		let { name } = item;
+		if (uniques.includes(item.id)) name = bold(name);
+		result.push(`${qty}x ${name} (1 in ${rate})`);
 	}
 	result.push(
-		`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived} which is ${calcWhatPercent(
+		`\n**${uniquesReceived}x Uniques (1 in ${Math.round(iterations / uniquesReceived)} which is ${calcWhatPercent(
 			uniquesReceived,
 			iterations
-		)}%)`
+		)}%)**`
 	);
 	return result.join(', ');
 }
@@ -723,4 +731,90 @@ export function sanitizeBank(bank: Bank) {
 			delete bank.bank[key];
 		}
 	}
+}
+
+export function isAtleastThisOld(date: Date | number, age: number) {
+	const difference = Date.now() - (typeof date === 'number' ? date : date.getTime());
+	return difference >= age;
+}
+
+export function truncateString(str: string, maxLen: number) {
+	if (str.length < maxLen) return str;
+	return `${str.slice(0, maxLen - 3)}...`;
+}
+
+export function cleanUsername(str: string) {
+	return Util.escapeMarkdown(stripEmojis(str));
+}
+
+export function moidLink(items: number[]) {
+	return `https://chisel.weirdgloop.org/moid/item_id.html#${items.join(',')}`;
+}
+export { cleanString, stringMatches } from './util/cleanString';
+
+export function clamp(val: number, min: number, max: number) {
+	return Math.min(max, Math.max(min, val));
+}
+
+export function calcPerHour(value: number, duration: number) {
+	return (value / (duration / Time.Minute)) * 60;
+}
+
+export function calcMaxRCQuantity(rune: Rune, user: KlasaUser) {
+	const level = user.skillLevel(SkillsEnum.Runecraft);
+	for (let i = rune.levels.length; i > 0; i--) {
+		const [levelReq, qty] = rune.levels[i - 1];
+		if (level >= levelReq) return qty;
+	}
+
+	return 0;
+}
+
+export function convertDJSUserToAPIUser(user: DJSUser | KlasaUser): APIUser {
+	const apiUser: APIUser = {
+		id: user.id,
+		username: user.username,
+		discriminator: user.discriminator,
+		avatar: user.avatar,
+		bot: user.bot,
+		system: user.system,
+		flags: undefined,
+		mfa_enabled: undefined,
+		banner: undefined,
+		accent_color: undefined,
+		locale: undefined,
+		verified: undefined,
+		email: undefined,
+		premium_type: undefined,
+		public_flags: undefined
+	};
+
+	return apiUser;
+}
+
+export function convertDJSMemberToAPIMember(member: GuildMember): APIInteractionGuildMember {
+	return {
+		permissions: member.permissions.bitfield.toString(),
+		user: convertDJSUserToAPIUser(member.user),
+		roles: Array.from(member.roles.cache.keys()),
+		joined_at: member.joinedTimestamp!.toString(),
+		deaf: false,
+		mute: false
+	};
+}
+
+export function removeFromArr<T>(arr: T[], item: T) {
+	return arr.filter(i => i !== item);
+}
+
+/**
+ * Scale percentage exponentially
+ *
+ * @param decay Between 0.01 and 0.05; bigger means more penalty.
+ * @param percent The percent to scale
+ * @returns percent
+ */
+export function exponentialPercentScale(percent: number, decay = 0.0038) {
+	const decayedPercent = Math.pow(100 * Math.E, -decay * (100 - percent));
+	return decayedPercent * 100;
 }

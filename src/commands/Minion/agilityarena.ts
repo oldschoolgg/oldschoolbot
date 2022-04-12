@@ -6,7 +6,7 @@ import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { AgilityArenaActivityTaskOptions } from '../../lib/types/minions';
+import { MinigameActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, resolveNameBank, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import chatHeadImage from '../../lib/util/chatHeadImage';
@@ -69,8 +69,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '[buy] [name:string] [quantity:int{1}]',
 			usageDelim: ' ',
 			description: 'Sends your minion to complete the Brimhaven Agility Arena.',
@@ -104,7 +102,7 @@ export default class extends BotCommand {
 			boosts.push('10% extra tickets for Karamja Elite diary');
 		}
 
-		await addSubTaskToActivityTask<AgilityArenaActivityTaskOptions>({
+		await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			duration,

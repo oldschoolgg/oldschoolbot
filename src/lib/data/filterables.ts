@@ -1,14 +1,16 @@
+import { KlasaUser } from 'klasa';
 import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
 import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
 import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
-import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { superCompostables } from '../../commands/Minion/compostbin';
+import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
 import { monkeyEatables } from '../monkeyRumble';
+import { allOpenables } from '../openables';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
@@ -29,11 +31,15 @@ import {
 	cluesMasterRareCL,
 	cluesMediumCL,
 	cluesSharedCL,
+	nexCL,
+	pernixOutfit,
 	temporossCL,
+	torvaOutfit,
+	virtusOutfit,
 	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
-import Openables, { tmbTable, umbTable } from './openables';
+import { PartyhatTable } from './holidayItems';
 
 export const warmGear = resolveItems([
 	'Staff of fire',
@@ -403,7 +409,8 @@ const bones = resolveItems([
 	'Wyrm bones',
 	'Wyvern bones',
 	'Zogre bones',
-	'Abyssal dragon bones'
+	'Abyssal dragon bones',
+	'Royal dragon bones'
 ]);
 
 const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));
@@ -515,6 +522,8 @@ const godwars = resolveItems([
 	'Saradomin godsword (or)',
 	...godwarsGear
 ]);
+
+const nex = resolveItems([...torvaOutfit, ...pernixOutfit, ...virtusOutfit, ...nexCL]);
 
 const dagannothkings = resolveItems([
 	'Berserker ring',
@@ -907,269 +916,276 @@ const food = resolveItems(Eatables.map(food => food.name));
 interface Filterable {
 	name: string;
 	aliases: string[];
-	items: number[];
+	items: (user?: KlasaUser) => number[];
 }
 
-export const filterableTypes: Filterable[] = [
+export const baseFilters: Filterable[] = [
 	{
 		name: 'Smithing',
 		aliases: ['smithing', 'smith', 'sm'],
-		items: smithing
+		items: () => smithing
 	},
 	{
 		name: 'Diango',
 		aliases: ['diango', 'daily', 'dailies'],
-		items: diango
+		items: () => diango
 	},
 	{
 		name: 'Diaries',
 		aliases: ['diaries', 'diary', 'ad'],
-		items: diaries
+		items: () => diaries
 	},
 	{
 		name: 'Crafting',
 		aliases: ['crafting', 'craft', 'cr'],
-		items: craftingItemsSet
+		items: () => craftingItemsSet
 	},
 	{
 		name: 'Barrows',
 		aliases: ['barrows', 'br'],
-		items: barrows
+		items: () => barrows
 	},
 	{
 		name: 'Skilling',
 		aliases: ['skilling', 'skill'],
-		items: skilling
+		items: () => skilling
 	},
 	{
 		name: 'Gear',
 		aliases: ['gear', 'gr'],
-		items: gear
+		items: () => gear
 	},
 	{
 		name: 'Clues and Caskets',
-		aliases: ['clues', 'caskets', 'cl', 'clue', 'casket', 'tt'],
-		items: cluesAndCaskets
+		aliases: ['clues and caskets', 'clues', 'caskets', 'cl', 'clue', 'casket', 'tt'],
+		items: () => cluesAndCaskets
 	},
 	{
 		name: 'God wars',
-		aliases: ['gwd', 'godwars', 'gw'],
-		items: godwars
+		aliases: ['god wars', 'gwd', 'godwars', 'gw'],
+		items: () => godwars
+	},
+	{
+		name: 'Nex',
+		aliases: ['nex'],
+		items: () => nex
 	},
 	{
 		name: 'Dagannoth kings',
-		aliases: ['dks', 'dk', 'dagannoth', 'kings'],
-		items: dagannothkings
+		aliases: ['dagannoth kings', 'dks', 'dk', 'dagannoth', 'kings'],
+		items: () => dagannothkings
 	},
 	{
 		name: 'Cerberus',
 		aliases: ['cerb', 'ce', 'cerberus'],
-		items: cerberus
+		items: () => cerberus
 	},
 	{
 		name: 'Zulrah',
 		aliases: ['zul', 'zulr', 'zulrah'],
-		items: zulrah
+		items: () => zulrah
 	},
 	{
 		name: 'Corporeal beast',
-		aliases: ['corp', 'co', 'corporeal'],
-		items: corporealBeast
+		aliases: ['corporeal beast', 'corp', 'co', 'corporeal'],
+		items: () => corporealBeast
 	},
 	{
 		name: 'Kalphite queen',
-		aliases: ['kq', 'ka', 'kalphite', 'queen'],
-		items: kalphitequeen
+		aliases: ['kalphite queen', 'kq', 'ka', 'kalphite', 'queen'],
+		items: () => kalphitequeen
 	},
 	{
 		name: 'Vorkath',
 		aliases: ['vorkath', 'vork'],
-		items: vorkath
+		items: () => vorkath
 	},
 	{
 		name: 'Farming',
 		aliases: ['farming', 'farm', 'seeds'],
-		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']), ...seeds]
+		items: () => [
+			...resolveItems(['Compost', 'Supercompost', 'Ultracompost', 'Bottomless compost bucket ']),
+			...seeds
+		]
 	},
 	{
 		name: 'Compost',
 		aliases: ['compost', 'compostables'],
-		items: [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(superCompostables)]
+		items: () => [...resolveItems(['Compost', 'Supercompost', 'Ultracompost']), ...resolveItems(superCompostables)]
 	},
 	{
 		name: 'Herblore',
 		aliases: ['herblore'],
-		items: herblore
+		items: () => herblore
 	},
 	{
 		name: 'Fletching',
 		aliases: ['fletching', 'fletch'],
-		items: fletchingItemsSet
+		items: () => fletchingItemsSet
 	},
 	{
 		name: 'Agility',
 		aliases: ['agility', 'agi'],
-		items: agility
+		items: () => agility
 	},
 	{
 		name: 'Prayer',
 		aliases: ['prayer', 'pray'],
-		items: prayer
+		items: () => prayer
 	},
 	{
 		name: 'Potions',
 		aliases: ['potions', 'pots'],
-		items: potions
+		items: () => potions
 	},
 	{
 		name: 'Herbs',
 		aliases: ['herbs'],
-		items: herbs
+		items: () => herbs
 	},
 	{
 		name: 'Secondaries',
 		aliases: ['seconds', 'secondary', 'secondaries'],
-		items: secondaries
+		items: () => secondaries
 	},
 	{
 		name: 'Food',
 		aliases: ['food'],
-		items: food
+		items: () => food
 	},
 	{
 		name: 'Wintertodt',
 		aliases: ['wintertodt', 'todt', 'wt'],
-		items: wintertodtCL
+		items: () => wintertodtCL
 	},
 	{
 		name: 'Warm gear',
 		aliases: ['warm gear', 'warm'],
-		items: warmGear
+		items: () => warmGear
 	},
 	{
 		name: 'Tempoross',
 		aliases: ['temp', 'ross', 'tempo', 'tempoross'],
-		items: temporossCL
+		items: () => temporossCL
 	},
 	{
 		name: 'Beginner Clues',
 		aliases: ['clues beginner', 'beginner clues', 'clue beginner', 'beginner clue'],
-		items: cluesBeginnerCL
+		items: () => cluesBeginnerCL
 	},
 	{
 		name: 'Easy Clues',
 		aliases: ['clues easy', 'easy clues', 'clue easy', 'easy clue'],
-		items: cluesEasyCL
+		items: () => cluesEasyCL
 	},
 	{
 		name: 'Medium Clues',
 		aliases: ['clues medium', 'medium clues', 'clue medium', 'medium clue'],
-		items: cluesMediumCL
+		items: () => cluesMediumCL
 	},
 	{
 		name: 'Hard Clues',
 		aliases: ['clues hard', 'hard clues', 'clue hard', 'hard clue'],
-		items: cluesHardCL
+		items: () => cluesHardCL
 	},
 	{
 		name: 'Elite Clues',
 		aliases: ['clues elite', 'elite clues', 'clue elite', 'elite clue'],
-		items: cluesEliteCL
+		items: () => cluesEliteCL
 	},
 	{
 		name: 'Master Clues',
 		aliases: ['clues master', 'master clues', 'clue master', 'master clue'],
-		items: cluesMasterCL
+		items: () => cluesMasterCL
 	},
 	{
 		name: 'All Clues',
 		aliases: ['clues all', 'all clues', 'clue all', 'all clue'],
-		items: allClueItems
+		items: () => allClueItems
 	},
 	{
 		name: 'Clues Shared',
 		aliases: ['clues shared', 'shared clues', 'clue shared', 'shared clue'],
-		items: cluesSharedCL
+		items: () => cluesSharedCL
 	},
 	{
 		name: 'Clues Rares',
-		aliases: ['clues rare', 'rare clues', 'clue rare', 'rare clue'],
-		items: [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
+		aliases: ['clues rares', 'clues rare', 'rare clues', 'clue rare', 'rare clue'],
+		items: () => [...new Set([...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL])]
 	},
 	{
 		name: 'umb',
 		aliases: ['umb'],
-		items: umbTable
+		items: () => umbTable
 	},
 	{
 		name: 'tmb',
 		aliases: ['tmb'],
-		items: tmbTable
+		items: () => tmbTable
 	},
 	{
 		name: 'Pets',
 		aliases: ['pets', 'pmb'],
-		items: allPetIDs.flat(Infinity) as number[]
+		items: () => allPetIDs.flat(Infinity) as number[]
 	},
 	{
 		name: 'Holiday',
 		aliases: ['holiday', 'hmb', 'rare', 'rares'],
-		items: [
-			...(Openables.find(o => o.name === 'Holiday Mystery box')!.table as LootTable).allItems,
-			...(Openables.find(o => o.name === 'Christmas cracker')!.table as LootTable).allItems
-		]
+		items: () => [...allOpenables.find(o => o.name === 'Holiday Mystery box')!.allItems, ...PartyhatTable.allItems]
 	},
 	{
 		name: 'Custom Items',
 		aliases: ['custom', 'custom items'],
-		items: customItems
+		items: () => customItems
 	},
 	{
 		name: 'Beginner rewards',
 		aliases: ['beginnerrewards'],
-		items: BeginnerClueTable.allItems
+		items: () => BeginnerClueTable.allItems
 	},
 	{
 		name: 'Easy rewards',
 		aliases: ['easyrewards'],
-		items: EasyClueTable.allItems
+		items: () => EasyClueTable.allItems
 	},
 	{
 		name: 'Medium rewards',
 		aliases: ['mediumrewards'],
-		items: MediumClueTable.allItems
+		items: () => MediumClueTable.allItems
 	},
 	{
 		name: 'Hard rewards',
 		aliases: ['hardrewards'],
-		items: HardClueTable.allItems
+		items: () => HardClueTable.allItems
 	},
 	{
 		name: 'Elite rewards',
 		aliases: ['eliterewards'],
-		items: EliteClueTable.allItems
+		items: () => EliteClueTable.allItems
 	},
 	{
 		name: 'Master rewards',
 		aliases: ['masterrewards'],
-		items: MasterClueTable.allItems
+		items: () => MasterClueTable.allItems
 	},
 	{
 		name: 'Grandmaster rewards',
 		aliases: ['grandmasterrewards'],
-		items: GrandmasterClueTable.allItems
+		items: () => GrandmasterClueTable.allItems
 	},
 	{
 		name: 'Fruit',
 		aliases: ['fruit'],
-		items: monkeyEatables.map(i => i.item.id)
+		items: () => monkeyEatables.map(i => i.item.id)
 	},
 	{
 		name: 'Lamps',
 		aliases: ['lamps'],
-		items: XPLamps.map(i => i.itemID)
+		items: () => XPLamps.map(i => i.itemID)
 	}
 ];
+
+export const filterableTypes = [...baseFilters];
 
 for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 	for (const [name, cl] of Object.entries(clGroup)) {
@@ -1179,7 +1195,7 @@ for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 			filterableTypes.push({
 				name,
 				aliases: aliasesForThisCL,
-				items: cl.items
+				items: () => cl.items
 			});
 		}
 	}

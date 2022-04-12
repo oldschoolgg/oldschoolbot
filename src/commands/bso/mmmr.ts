@@ -66,7 +66,6 @@ buyables.push({
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			description: 'Sends your minion to do the Monkey Rumble minigame.',
@@ -207,7 +206,7 @@ Here are the items you can buy: \n\n${buyables
 		const quantity = Math.floor(msg.author.maxTripLength('MonkeyRumble') / fightDuration);
 		let duration = quantity * fightDuration;
 
-		let chanceOfSpecial = Math.floor(150 * (6 - monkeyTierOfUser(msg.author) / 2));
+		let chanceOfSpecial = Math.floor(125 * (6 - monkeyTierOfUser(msg.author) / 2));
 		if (msg.author.hasItemEquippedAnywhere('Big banana')) {
 			chanceOfSpecial = reduceNumByPercent(chanceOfSpecial, 12);
 			boosts.push('12% higher chance of purple monkeys from Big banana');

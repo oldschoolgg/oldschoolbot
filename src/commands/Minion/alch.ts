@@ -10,6 +10,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 
 const unlimitedFireRuneProviders = resolveItems([
@@ -25,13 +26,14 @@ const unlimitedFireRuneProviders = resolveItems([
 	'Tome of fire'
 ]);
 
+// 5 tick action
+export const timePerAlch = Time.Second * 1.5;
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[quantity:int{1}] [item:...item]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			description: 'Allows you to send your minion to alch items from your bank',
 			examples: ['+alch 12 dragon scimitar', '+alch pumpkin'],
 			categoryFlags: ['minion', 'skilling']
@@ -44,7 +46,7 @@ export default class extends BotCommand {
 		const userBank = msg.author.bank();
 		let osItem = item?.find(i => userBank.has(i.id) && i.highalch && i.tradeable);
 
-		const [favAlchs] = msg.author.getUserFavAlchs() as Item[];
+		const [favAlchs] = msg.author.getUserFavAlchs(calcMaxTripLength(msg.author, 'Alching')) as Item[];
 
 		if (!osItem && !favAlchs) {
 			return msg.channel.send("You don't have any of that item to alch.");
@@ -59,8 +61,6 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		// 5 tick action
-		const timePerAlch = Time.Second * 1.5;
 		const maxTripLength = msg.author.maxTripLength('Alching');
 
 		const maxCasts = Math.min(Math.floor(maxTripLength / timePerAlch), userBank.amount(osItem.id));

@@ -7,6 +7,7 @@ import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS } from '../config';
+import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
@@ -94,7 +95,6 @@ export const enum Emoji {
 	Prayer = '<:prayer:630911040426868746>',
 	Construction = '<:construction:630911040493715476>',
 	Diango = '<:diangoChatHead:678146375300415508>',
-	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
 	QuestIcon = '<:questIcon:690191385907036179>',
 	MinigameIcon = '<:minigameIcon:630400565070921761>',
@@ -250,7 +250,10 @@ export const enum Tasks {
 	Inferno = 'infernoActivity',
 	ToB = 'tobActivity',
 	FishingContest = 'fishingContestActivity',
-	TearsOfGuthix = 'tearsOfGuthixActivity'
+	TearsOfGuthix = 'tearsOfGuthixActivity',
+	LastManStanding = 'lmsActivity',
+	BirthdayEvent = 'birthdayEventActivity',
+	TokkulShop = 'tokkulShopActivity'
 }
 
 export enum ActivityGroup {
@@ -270,13 +273,6 @@ export const enum Events {
 	ServerNotification = 'serverNotification',
 	SkillLevelUp = 'skillLevelUp',
 	EconomyLog = 'economyLog'
-}
-
-export const enum PermissionLevelsEnum {
-	Zero = 0,
-	Moderator = 6,
-	Admin = 7,
-	Owner = 10
 }
 
 export const rootFolder = join(__dirname, '..', '..', '..');
@@ -311,7 +307,6 @@ export const enum PerkTier {
 }
 
 export const enum BitField {
-	HasGivenBirthdayPresent = 1,
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
@@ -337,29 +332,67 @@ export const enum BitField {
 	HasScrollOfLongevity = 203,
 	HasScrollOfTheHunt = 204,
 	HasBananaEnchantmentScroll = 205,
-	HasDaemonheimAgilityPass = 206
+	HasDaemonheimAgilityPass = 206,
+	DisabledGorajanBoneCrusher = 207
 }
 
 interface BitFieldData {
 	name: string;
+	/**
+	 * Users can never 'choose' to get this, even in testing.
+	 */
+	protected: boolean;
+	userConfigurable: boolean;
 }
 
-export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
-	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron' },
-	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron' },
-	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron' },
-	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron' },
-	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron' },
-	[BitField.isModerator]: { name: 'Moderator' },
-	[BitField.isContributor]: { name: 'Contributor' },
-	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
-	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
-	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
-	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
-	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp' },
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
-	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' },
-	[BitField.IsWikiContributor]: { name: 'Wiki Contributor' }
+export const BitFieldData: Record<BitField, BitFieldData> = {
+	[BitField.IsWikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
+	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
+	[BitField.isContributor]: { name: 'Contributor', protected: true, userConfigurable: false },
+
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
+	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
+
+	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
+	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasArcaneScroll]: { name: 'Arcane Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasSlepeyTablet]: { name: 'Slepey Tablet Used', protected: false, userConfigurable: false },
+	[BitField.HasScrollOfFarming]: { name: 'Scroll of Farming Used', protected: false, userConfigurable: false },
+	[BitField.HasScrollOfLongevity]: { name: 'Scroll of Longevity Used', protected: false, userConfigurable: false },
+	[BitField.HasScrollOfTheHunt]: { name: 'Scroll of the Hunt Used', protected: false, userConfigurable: false },
+	[BitField.HasBananaEnchantmentScroll]: {
+		name: 'Banana Enchantment Scroll Used',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.HasDaemonheimAgilityPass]: {
+		name: 'Daemonheim Agility Pass Used',
+		protected: false,
+		userConfigurable: false
+	},
+
+	[BitField.HasGivenBirthdayPack]: { name: 'Has Given Birthday Pack', protected: false, userConfigurable: false },
+	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
+	[BitField.HasPermanentEventBackgrounds]: {
+		name: 'Permanent Event Backgrounds',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
+
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
+	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
+	[BitField.DisabledGorajanBoneCrusher]: {
+		name: 'Disabled Gorajan Bonecrusher',
+		protected: false,
+		userConfigurable: true
+	}
 } as const;
 
 export const enum PatronTierID {
@@ -472,14 +505,14 @@ export const SILENT_ERROR = 'SILENT_ERROR';
 export const informationalButtons = [
 	new MessageButton().setLabel('Wiki').setEmoji('📰').setURL('https://wiki.oldschool.gg/').setStyle('LINK'),
 	new MessageButton()
+		.setLabel('Wiki')
+		.setEmoji('863823820435619890')
+		.setURL('https://bso-wiki.oldschool.gg/')
+		.setStyle('LINK'),
+	new MessageButton()
 		.setLabel('Patreon')
 		.setEmoji('679334888792391703')
 		.setURL('https://www.patreon.com/oldschoolbot')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Support Server')
-		.setEmoji('778418736180494347')
-		.setURL('https://www.discord.gg/ob')
 		.setStyle('LINK'),
 	new MessageButton()
 		.setLabel('Bot Invite')
@@ -572,7 +605,13 @@ export function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number)
 export type ProjectileType = 'arrow' | 'bolt';
 export const projectiles: Record<ProjectileType, number[]> = {
 	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
-	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
+	bolt: resolveItems([
+		'Runite bolts',
+		'Dragon bolts',
+		'Diamond bolts (e)',
+		'Diamond dragon bolts (e)',
+		'Ruby dragon bolts (e)'
+	])
 };
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
@@ -603,9 +642,10 @@ export const userTimers = [
 	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
 ] as const;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: Command, args: any[]) {
+export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
+	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && subs.includes(args[0])) {
+		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
 			return false;
 		}
 	}
@@ -614,8 +654,25 @@ export function shouldTrackCommand(command: Command, args: any[]) {
 export function getCommandArgs(command: Command, args: any[]) {
 	if (args.length === 0) return undefined;
 	if (command.name === 'bank') return undefined;
-	if (command.name === 'rp' && args[0] === 'c') return undefined;
+	if (command.name === 'rp' && ['c'].includes(args[0])) return undefined;
+	if (command.name === 'eval') return undefined;
 	return args;
 }
 
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
+
+export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
+	msg: KlasaMessage,
+	commandName?: string
+) => `This command you're trying to use, has been changed to a 'slash command'.
+
+- Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
+- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
+- You no longer use this command using \`${msg.cmdPrefix}${commandName ?? msg.command?.name}\`, now you use: \`/${
+	commandName ?? msg.command?.name
+}\`
+`;
+
+export const DISABLED_COMMANDS = new Set<string>();
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export type PvMMethod = typeof PVM_METHODS[number];

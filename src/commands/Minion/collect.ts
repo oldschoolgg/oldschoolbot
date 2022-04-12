@@ -17,10 +17,11 @@ import { SkillsEnum } from './../../lib/skilling/types';
 interface Collectable {
 	item: Item;
 	skillReqs?: Skills;
-	itemCost: Bank;
+	itemCost?: Bank;
 	quantity: number;
 	duration: number;
 	qpRequired?: number;
+	onlyTamesCan?: true;
 }
 
 export const collectables: Collectable[] = [
@@ -120,6 +121,12 @@ export const collectables: Collectable[] = [
 		},
 		duration: 5 * Time.Minute,
 		qpRequired: 82
+	},
+	{
+		item: getOSItem('Orange'),
+		quantity: 1,
+		duration: 2 * Time.Minute,
+		onlyTamesCan: true
 	}
 ];
 
@@ -127,8 +134,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			usage: '<quantity:int{1}|name:...string> [name:...string]',
 			usageDelim: ' ',
 			description: 'Sends your minion to collect items.',
@@ -151,6 +156,9 @@ export default class extends BotCommand {
 					.map(i => i.item.name)
 					.join(', ')}.`
 			);
+		}
+		if (collectable.onlyTamesCan) {
+			return msg.channel.send('Only Tames can collect this.');
 		}
 
 		const maxTripLength = msg.author.maxTripLength('Collecting');
@@ -181,16 +189,17 @@ export default class extends BotCommand {
 			);
 		}
 
-		const cost = collectable.itemCost.clone().multiply(quantity);
-		if (!msg.author.owns(cost)) {
-			return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
+		const cost = collectable.itemCost?.clone().multiply(quantity) ?? null;
+		if (cost) {
+			if (!msg.author.owns(cost)) {
+				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
+			}
+			await msg.author.removeItemsFromBank(cost);
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.CollectingCost,
+				addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
+			);
 		}
-		await msg.author.removeItemsFromBank(cost);
-
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CollectingCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
-		);
 
 		await addSubTaskToActivityTask<CollectingOptions>({
 			collectableID: collectable.item.id,
@@ -205,8 +214,7 @@ export default class extends BotCommand {
 			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
 				collectable.item.name
 			}, it'll take around ${formatDuration(duration)} to finish.
-
-Removed ${cost} from your bank.`
+${cost ? `\nRemoved ${cost} from your bank.` : ''}`
 		);
 	}
 }

@@ -1,5 +1,5 @@
 import { Image } from 'canvas';
-import { KlasaMessage } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
@@ -8,17 +8,16 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
-import { O } from 'ts-toolbelt';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
-import { CombatOptionsEnum } from './data/combatConstants';
+import { MonsterActivityTaskOptions } from '../types/minions';
 import { AttackStyles } from './functions';
 
-export interface BankBackground {
+export type BankBackground = {
 	image: Image | null;
 	id: number;
 	name: string;
@@ -33,7 +32,15 @@ export interface BankBackground {
 	skillsNeeded?: Skills;
 	transparent?: true;
 	owners?: string[];
-}
+} & (
+	| {
+			hasPurple: true;
+			purpleImage: Image | null;
+	  }
+	| {
+			hasPurple?: null;
+	  }
+);
 
 export interface ClueMilestoneReward {
 	itemReward: number;
@@ -107,6 +114,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
+	specialLoot?: (loot: Bank, user: KlasaUser, data: MonsterActivityTaskOptions) => Promise<void>;
 }
 /*
  * Monsters will have an array of Consumables
@@ -144,14 +152,6 @@ export interface AddMonsterXpParams {
 	superiorCount?: number;
 }
 
-export interface DetermineBoostParams {
-	cbOpts: CombatOptionsEnum[];
-	msg: KlasaMessage;
-	monster: KillableMonster;
-	method?: string | null;
-	isOnTask?: boolean;
-}
-
 export interface ResolveAttackStylesParams {
 	monsterID: number;
 	boostMethod?: string;
@@ -171,7 +171,7 @@ export interface MegaDuckLocation {
 	steps: [number, number][];
 }
 
-export const defaultMegaDuckLocation: O.Readonly<MegaDuckLocation> = {
+export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
 	x: 1356,
 	y: 209,
 	usersParticipated: {},

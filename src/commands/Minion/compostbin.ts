@@ -38,10 +38,8 @@ export const superCompostables = [
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[quantity:int{1}|cropToCompost:...string] [cropToCompost:...string]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			description: 'Composts crops into supercompost.',
 			examples: ['+compostbin watermelon']
 		});

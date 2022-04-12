@@ -2,8 +2,8 @@ import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { BitField, Channel, PerkTier } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
@@ -12,8 +12,7 @@ import { createdChallenge, itemChallenge, reactChallenge, triviaChallenge } from
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 60 * 45,
-			oneAtTime: true
+			cooldown: 60 * 45
 		});
 	}
 
@@ -34,7 +33,7 @@ export default class extends BotCommand {
 		const item = randArrItem([itemChallenge, itemChallenge, createdChallenge, reactChallenge, triviaChallenge]);
 		const winner = await item(msg);
 		if (winner) {
-			const loot = new Bank().add(getRandomMysteryBox());
+			const loot = new Bank().add(MysteryBoxes.roll());
 			await winner.addItemsToBank({ items: loot, collectionLog: false });
 			return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**.`);
 		}

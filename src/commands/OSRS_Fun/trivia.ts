@@ -16,8 +16,6 @@ try {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
-			oneAtTime: true,
 			description: 'Sends a OSRS related trivia question.',
 			examples: ['+t'],
 			categoryFlags: ['fun'],
