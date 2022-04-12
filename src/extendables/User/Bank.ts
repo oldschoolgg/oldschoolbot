@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { projectiles } from '../../lib/constants';
+import { implings } from '../../lib/implings';
 import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions/blowpipeCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
@@ -109,6 +110,10 @@ export default class extends Extendable {
 
 			// Re-add the coins to the loot
 			if (coinsInLoot > 0) loot.add('Coins', coinsInLoot);
+
+			// Skip Impling loots
+			if (Object.keys(implings).every(imp => !loot.has(Number(imp))))
+				await this.settings.update(UserSettings.LastLoot, loot.bank);
 
 			return {
 				previousCL,
