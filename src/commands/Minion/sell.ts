@@ -1,26 +1,44 @@
-import { calcPercentOfNum } from 'e';
+import { calcPercentOfNum, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { MAX_INT_JAVA } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { clamp, itemID as id, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 
-export function sellPriceOfItem(client: KlasaClient, item: Item) {
+/**
+ * - Hardcoded prices
+ * - Can be sold by ironmen
+ */
+const specialSoldItems = new Map([
+	[id('Ancient emblem'), 500_000],
+	[id('Ancient totem'), 1_000_000],
+	[id('Ancient statuette'), 2_000_000],
+	[id('Ancient medallion'), 4_000_000],
+	[id('Ancient effigy'), 8_000_000],
+	[id('Ancient relic'), 16_000_000]
+]);
+
+export function sellPriceOfItem(client: KlasaClient, item: Item, taxRate = 20): { price: number; basePrice: number } {
+	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
 	const customPrices = client.settings.get(ClientSettings.CustomPrices);
 	let basePrice = customPrices[item.id] ?? item.price;
-	if (basePrice > item.highalch * 3) {
-		return basePrice;
+	let price = basePrice;
+	price = reduceNumByPercent(price, taxRate);
+	price = Math.floor(price);
+	if (price < item.highalch * 3) {
+		price = Math.floor(calcPercentOfNum(30, item.highalch));
 	}
-	return calcPercentOfNum(30, item.highalch);
+	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
+	return { price, basePrice };
 }
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '(items:TradeableBank)',
-			ironCantUse: true,
 			categoryFlags: ['minion'],
 			description: 'Sells an item to the bot.',
 			examples: ['+sell bronze arrow']
@@ -29,19 +47,20 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [[bankToSell]]: [[Bank, number]]) {
 		let totalPrice = 0;
-		if (bankToSell.has("Olof's gold")) {
-			return msg.channel.send('Wait a second... this gold is fake...');
-		}
+
+		const hasSkipper = msg.author.usingPet('Skipper') || msg.author.bank().amount('Skipper') > 0;
+		const taxRatePercent = hasSkipper ? 15 : 25;
 
 		for (const [item, qty] of bankToSell.items()) {
-			totalPrice += sellPriceOfItem(this.client, item) * qty;
+			const specialPrice = specialSoldItems.get(item.id);
+			if (specialPrice) {
+				totalPrice += Math.floor(specialPrice * qty);
+			} else {
+				if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
+				const { price } = sellPriceOfItem(this.client, item, taxRatePercent);
+				totalPrice += price * qty;
+			}
 		}
-
-		if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
-		const hasSkipper = msg.author.usingPet('Skipper') || msg.author.bank().amount('Skipper') > 0;
-		const taxRate = hasSkipper ? 0.15 : 0.25;
-		const tax = Math.ceil(totalPrice * taxRate);
-		totalPrice = Math.floor(totalPrice - tax);
 
 		await msg.confirm(
 			`${
@@ -63,9 +82,9 @@ export default class extends BotCommand {
 		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
 		return msg.channel.send(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}** GP (${Util.toKMB(
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(
 				totalPrice
-			)}).  Tax: ${tax.toLocaleString()} ${
+			)})** (${taxRatePercent}% below market price) ${
 				hasSkipper
 					? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
 					: ''

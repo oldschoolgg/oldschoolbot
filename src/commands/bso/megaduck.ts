@@ -158,7 +158,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			await msg.confirm(
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
 			);
-			await mahojiGuildSettingsUpdate(msg.guild!, {
+			await mahojiGuildSettingsUpdate(this.client, msg.guild!, {
 				mega_duck_location: {
 					...defaultMegaDuckLocation,
 					steps: location.steps
@@ -215,7 +215,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			}
 		}
 		newLocation.steps.push([newLocation.x, newLocation.y]);
-		await mahojiGuildSettingsUpdate(msg.guild!, {
+		await mahojiGuildSettingsUpdate(this.client, msg.guild!, {
 			mega_duck_location: newLocation as any
 		});
 		if (
@@ -236,7 +236,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 				usersParticipated: {},
 				placesVisited: [...newLocation.placesVisited, 'ocean']
 			};
-			await mahojiGuildSettingsUpdate(msg.guild!, {
+			await mahojiGuildSettingsUpdate(this.client, msg.guild!, {
 				mega_duck_location: newT as any
 			});
 			this.client.emit(

@@ -1,6 +1,7 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Task } from 'klasa';
 
+import { client } from '../../..';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -37,7 +38,7 @@ export default class extends Task {
 			points *= 2;
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(userID, {
+		const { newUser } = await mahojiUserSettingsUpdate(client, userID, {
 			zeal_tokens: {
 				increment: points
 			}

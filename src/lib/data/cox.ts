@@ -350,7 +350,7 @@ interface ItemBoost {
 	item: Item;
 	boost: number;
 	mustBeEquipped: boolean;
-	setup?: 'mage' | 'melee';
+	setup?: 'mage' | 'range' | 'melee';
 	mustBeCharged?: boolean;
 	requiredCharges?: number;
 }

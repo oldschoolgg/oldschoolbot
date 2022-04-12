@@ -27,6 +27,13 @@ export async function crackerCommand({
 	otherPerson: KlasaUser;
 	interaction: SlashCommandInteraction;
 }) {
+	if (owner.isIronman && owner === otherPerson) {
+		await owner.removeItemsFromBank(new Bank().add('Christmas cracker', 1));
+		const loot = PartyhatTable.roll();
+		await owner.addItemsToBank({ items: loot, collectionLog: true });
+		return `${Emoji.ChristmasCracker} ${owner} pulled a Christmas cracker with... yourself? You received ${loot}.`;
+	}
+
 	if (otherPerson.isIronman) return 'That person is an ironman, they stand alone.';
 	if (otherPerson.bot) return "Bot's don't have hands.";
 	if (otherPerson.id === owner.id) return 'Nice try.';

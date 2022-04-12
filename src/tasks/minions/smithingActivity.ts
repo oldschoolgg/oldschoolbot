@@ -1,11 +1,12 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { hasBlackSmithEquipped } from '../../commands/Minion/smith';
+import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import Smithing from '../../lib/skilling/skills/smithing/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { hasItemEquippedOrInBank } from '../../lib/util/minionUtils';
 
 export default class extends Task {
 	async run(data: SmithingActivityTaskOptions) {
@@ -15,7 +16,8 @@ export default class extends Task {
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
 
 		let xpReceived = quantity * smithedItem.xp;
-		const hasBS = hasBlackSmithEquipped(user.getGear('skilling'));
+
+		const hasBS = hasItemEquippedOrInBank(user, BlacksmithOutfit);
 		if (hasBS) {
 			xpReceived *= 1.1;
 		}

@@ -3,26 +3,17 @@ import { calcPercentOfNum, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { Gear } from '../../lib/structures/Gear';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-
-export function hasBlackSmithEquipped(setup: Gear) {
-	return setup.hasEquipped([
-		'Blacksmith helmet',
-		'Blacksmith top',
-		'Blacksmith apron',
-		'Blacksmith boots',
-		'Blacksmith gloves'
-	]);
-}
+import { hasItemEquippedOrInBank } from '../../lib/util/minionUtils';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -73,11 +64,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		if (
-			smithedItem.requiresBlacksmith &&
-			!Object.values(msg.author.rawGear()).some(i => hasBlackSmithEquipped(i))
-		) {
-			return msg.channel.send('You need the Blacksmith outfit to smith this item.');
+		if (smithedItem.requiresBlacksmith) {
+			if (!hasItemEquippedOrInBank(msg.author, BlacksmithOutfit)) {
+				return msg.channel.send('You need the Blacksmith outfit equipped or in your bank to smith this item.');
+			}
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Smithing) < smithedItem.level) {

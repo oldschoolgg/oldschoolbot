@@ -409,7 +409,8 @@ const bones = resolveItems([
 	'Wyrm bones',
 	'Wyvern bones',
 	'Zogre bones',
-	'Abyssal dragon bones'
+	'Abyssal dragon bones',
+	'Royal dragon bones'
 ]);
 
 const fletchingItems = Fletchables.flatMap(item => Object.keys(item.inputItems.bank).map(key => parseInt(key)));

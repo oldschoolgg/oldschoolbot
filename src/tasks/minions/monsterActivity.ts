@@ -4,7 +4,7 @@ import { MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
-import { Emoji, PvMMethod } from '../../lib/constants';
+import { BitField, Emoji, PvMMethod } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -190,7 +190,7 @@ export default class extends Task {
 			loot.add('Clue hunter boots');
 		}
 
-		if (user.settings.get(UserSettings.Bank)[itemID('Gorajan bonecrusher')]) {
+		if (user.owns('Gorajan bonecrusher') && !user.bitfield.includes(BitField.DisabledGorajanBoneCrusher)) {
 			let totalXP = 0;
 			for (const bone of bones) {
 				const amount = loot.amount(bone.inputId);

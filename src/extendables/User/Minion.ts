@@ -1,14 +1,5 @@
 import { User } from 'discord.js';
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	increaseNumByPercent,
-	notEmpty,
-	objectValues,
-	randInt,
-	Time,
-	uniqueArr
-} from 'e';
+import { increaseNumByPercent, notEmpty, objectValues, randInt, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -25,7 +16,6 @@ import {
 	MAX_QP,
 	MAX_TOTAL_LEVEL,
 	MAX_XP,
-	PerkTier,
 	skillEmoji
 } from '../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
@@ -115,7 +105,6 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
-	patronMaxTripCalc,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
@@ -123,6 +112,7 @@ import {
 	Util
 } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import { calcMaxTripLength, getKC, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import { activity_type_enum } from '.prisma/client';
 
@@ -705,7 +695,7 @@ export default class extends Extendable {
 	}
 
 	getKC(this: KlasaUser, id: number) {
-		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
+		return getKC(this, id);
 	}
 
 	getOpenableScore(this: KlasaUser, id: number) {
@@ -754,72 +744,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public maxTripLength(this: User, activity?: activity_type_enum) {
-		let max = Time.Minute * 30;
-
-		max += patronMaxTripCalc(this);
-
-		const hasMasterHPCape = this.hasItemEquippedAnywhere('Hitpoints master cape');
-		let masterHPCapeBoost = 0;
-		let regularHPBoost = false;
-
-		switch (activity) {
-			case 'Fishing':
-				if (this.hasItemEquippedAnywhere('Fish sack')) {
-					max += Time.Minute * 9;
-				}
-				break;
-			case 'Nightmare':
-			case 'GroupMonsterKilling':
-			case 'MonsterKilling':
-			case 'Wintertodt':
-			case 'Zalcano':
-			case 'BarbarianAssault':
-			case 'AnimatedArmour':
-			case 'Sepulchre':
-			case 'Pickpocket':
-			case 'SoulWars':
-			case 'Cyclops': {
-				masterHPCapeBoost = 20;
-				regularHPBoost = true;
-				break;
-			}
-			case 'KalphiteKing':
-			case 'Nex':
-			case 'VasaMagus':
-			case 'Ignecarus':
-			case 'KingGoldemar':
-			case 'Dungeoneering': {
-				masterHPCapeBoost = 10;
-				regularHPBoost = true;
-				break;
-			}
-			case 'Alching': {
-				max *= 2;
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-
-		if (regularHPBoost) {
-			const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
-			const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
-			max += calcPercentOfNum(hpPercent, Time.Minute * 5);
-
-			if (hasMasterHPCape) {
-				max += calcPercentOfNum(masterHPCapeBoost, max);
-			}
-		}
-
-		if (this.usingPet('Zak')) {
-			max *= 1.4;
-		}
-
-		const sac = this.settings.get(UserSettings.SacrificedValue);
-		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
-		max += calcPercentOfNum(sacPercent, this.perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
-		return max;
+		return calcMaxTripLength(this, activity);
 	}
 
 	// @ts-ignore 2784
@@ -1115,7 +1040,7 @@ export default class extends Extendable {
 	}
 
 	public skillLevel(this: User, skillName: SkillsEnum) {
-		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number, 120);
+		return skillLevel(this, skillName);
 	}
 
 	public totalLevel(this: User, returnXP = false) {

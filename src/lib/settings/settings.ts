@@ -1,5 +1,6 @@
 import { NewUser } from '@prisma/client';
 import { Util } from 'discord.js';
+import { roll } from 'e';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -44,6 +45,7 @@ export async function getNewUser(id: string): Promise<NewUser> {
 }
 
 export async function syncNewUserUsername(message: KlasaMessage) {
+	if (!roll(20)) return;
 	const cleanedUsername = cleanUsername(message.author.username);
 	const username = cleanedUsername.length > 32 ? cleanedUsername.substring(0, 32) : cleanedUsername;
 	await prisma.newUser.upsert({
@@ -140,7 +142,7 @@ export async function runMahojiCommand({
 		user: msg.author as any, // kinda dirty
 		member: msg.member as any,
 		client: mahojiClient,
-		interaction: {} as any
+		interaction: null as any
 	});
 }
 

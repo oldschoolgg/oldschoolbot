@@ -14,7 +14,7 @@ const tier3ElligibleBits = [
 ];
 
 export default function getUsersPerkTier(
-	userOrBitfield: KlasaUser | readonly BitField[],
+	userOrBitfield: KlasaUser | readonly BitField[] | User,
 	noCheckOtherAccounts?: boolean
 ): PerkTier | 0 {
 	if (noCheckOtherAccounts !== true && userOrBitfield instanceof KlasaUser) {

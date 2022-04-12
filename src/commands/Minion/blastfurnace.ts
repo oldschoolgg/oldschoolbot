@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -18,7 +19,7 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { hasBlackSmithEquipped } from './smith';
+import { hasItemEquippedOrInBank } from '../../lib/util/minionUtils';
 
 const requiredSkills = {
 	crafting: 12,
@@ -104,8 +105,7 @@ export default class extends BotCommand {
 			timeToSmithSingleBar /= 2;
 			boosts.push('2x boost for Smithing master cape');
 		}
-
-		if (hasBlackSmithEquipped(msg.author.getGear('skilling'))) {
+		if (hasItemEquippedOrInBank(msg.author, BlacksmithOutfit)) {
 			boosts.push('10% more XP for having the blacksmith outfit equipped');
 		}
 

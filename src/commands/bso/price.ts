@@ -1,5 +1,4 @@
 import { MessageEmbed } from 'discord.js';
-import { calcPercentOfNum } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Items, Util } from 'oldschooljs';
 
@@ -29,7 +28,7 @@ export default class extends BotCommand {
 			)
 			.setDescription(
 				`**Price:** ${Util.toKMB(priceOfItem)} 
-**Sell price:** ${Util.toKMB(calcPercentOfNum(80, sellPriceOfItem(this.client, item)))}
+**Sell price:** ${sellPriceOfItem(this.client, item)}
 **Alch value:** ${Util.toKMB(item.highalch)}`
 			);
 

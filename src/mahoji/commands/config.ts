@@ -1,20 +1,219 @@
+import { Embed, inlineCode } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { Guild } from 'discord.js';
+import { Guild, HexColorString, Util } from 'discord.js';
 import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { client } from '../..';
-import { BitField } from '../../lib/constants';
+import { BitField, PerkTier } from '../../lib/constants';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
-import { removeFromArr, stringMatches } from '../../lib/util';
+import { prisma } from '../../lib/settings/prisma';
+import { BankSortMethods } from '../../lib/sorts';
+import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
+import { getItem } from '../../lib/util/getOSItem';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { makeBankImage } from '../../lib/util/makeBankImage';
+import { parseBank } from '../../lib/util/parseStringBank';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
 import {
+	itemOption,
 	mahojiGuildSettingsFetch,
 	mahojiGuildSettingsUpdate,
 	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
+	mahojiUsersSettingsFetch,
+	patronMsg
 } from '../mahojiSettings';
+
+const toggles = [
+	{
+		name: 'Disable Random Events',
+		bit: BitField.DisabledRandomEvents
+	},
+	{
+		name: 'Small Bank Images',
+		bit: BitField.AlwaysSmallBank
+	},
+	{
+		name: 'Disable Gorajan Bonecrusher',
+		bit: BitField.DisabledGorajanBoneCrusher
+	}
+];
+
+async function handleToggle(user: User, name: string) {
+	const toggle = toggles.find(i => stringMatches(i.name, name));
+	if (!toggle) return 'Invalid toggle name.';
+	const includedNow = user.bitfield.includes(toggle.bit);
+	const nextArr = includedNow ? removeFromArr(user.bitfield, toggle.bit) : [...user.bitfield, toggle.bit];
+	await mahojiUserSettingsUpdate(client, user.id, {
+		bitfield: nextArr
+	});
+	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.`;
+}
+
+async function favAlchConfig(
+	user: User,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	manyToAdd: string | undefined
+) {
+	const currentFavorites = user.favorite_alchables;
+	if (manyToAdd) {
+		const items = parseBank({ inputStr: manyToAdd })
+			.filter(i => i.highalch > 1)
+			.filter(i => !currentFavorites.includes(i.id));
+		if (items.length === 0) return 'No valid items were given.';
+		const newFavs = uniqueArr([...currentFavorites, ...items.items().map(i => i[0].id)]);
+		await mahojiUserSettingsUpdate(client, user.id, {
+			favorite_alchables: newFavs
+		});
+		return `Added ${items
+			.items()
+			.map(i => i[0].name)
+			.join(', ')} to your favorites.`;
+	}
+
+	const removeItem = itemToRemove ? getItem(itemToRemove) : null;
+	const addItem = itemToAdd ? getItem(itemToAdd) : null;
+	const item = removeItem || addItem;
+
+	if (!item) {
+		if (currentFavorites.length === 0) {
+			return 'You have no favorited alchable items.';
+		}
+		return `Your current favorite alchable items are: ${currentFavorites.map(itemNameFromID).join(', ')}.`;
+	}
+
+	if (!item.highalch) return "That item isn't alchable.";
+
+	const action = Boolean(removeItem) ? 'remove' : 'add';
+	const isAlreadyFav = currentFavorites.includes(item.id);
+
+	if (action === 'remove') {
+		if (!isAlreadyFav) return 'That item is not favorited.';
+		await mahojiUserSettingsUpdate(client, user.id, {
+			favorite_alchables: removeFromArr(currentFavorites, item.id)
+		});
+		return `Removed ${item.name} from your favorite alchable items.`;
+	}
+	if (isAlreadyFav) return 'That item is already favorited.';
+	await mahojiUserSettingsUpdate(client, user.id, {
+		favorite_alchables: uniqueArr([...currentFavorites, item.id])
+	});
+	return `Added ${item.name} to your favorite alchable items.`;
+}
+
+async function bankSortConfig(
+	user: User,
+	sortMethod: string | undefined,
+	addWeightingBank: string | undefined,
+	removeWeightingBank: string | undefined
+): CommandResponse {
+	const currentMethod = user.bank_sort_method;
+	const currentWeightingBank = new Bank(user.bank_sort_weightings as ItemBank);
+
+	const perkTier = getUsersPerkTier(user.bitfield);
+	if (perkTier < PerkTier.Two) {
+		return patronMsg(PerkTier.Two);
+	}
+
+	if (!sortMethod && !addWeightingBank && !removeWeightingBank) {
+		const sortStr = currentMethod
+			? `Your current bank sort method is ${inlineCode(currentMethod)}.`
+			: 'You have not set a bank sort method.';
+		const weightingBankStr = currentWeightingBank.toString();
+		const response: Awaited<CommandResponse> = {
+			content: sortStr
+		};
+		if (weightingBankStr.length > 500) {
+			response.content += `\n**Weightings:**${weightingBankStr}`;
+		} else {
+			response.attachments = [
+				(
+					await makeBankImage({
+						bank: currentWeightingBank,
+						title: 'Bank Sort Weightings',
+						user: client.users.cache.get(user.id)
+					})
+				).file
+			];
+		}
+		return response;
+	}
+
+	if (sortMethod) {
+		if (!(BankSortMethods as readonly string[]).includes(sortMethod)) {
+			return `That's not a valid bank sort method. Valid methods are: ${BankSortMethods.join(', ')}.`;
+		}
+		await mahojiUserSettingsUpdate(client, user.id, {
+			bank_sort_method: sortMethod
+		});
+
+		return `Your bank sort method is now ${inlineCode(sortMethod)}.`;
+	}
+
+	const newBank = currentWeightingBank.clone();
+	const inputStr = addWeightingBank ?? removeWeightingBank ?? '';
+	const inputBank = parseBank({
+		inputStr
+	});
+
+	if (addWeightingBank) newBank.add(inputBank);
+	else if (removeWeightingBank) newBank.remove(inputBank);
+
+	const { newUser } = await mahojiUserSettingsUpdate(client, user.id, {
+		bank_sort_weightings: newBank.bank
+	});
+
+	return bankSortConfig(newUser, undefined, undefined, undefined);
+}
+
+async function bgColorConfig(user: User, hex?: string) {
+	const currentColor = user.bank_bg_hex;
+
+	const embed = new Embed();
+
+	if (hex === 'reset') {
+		await mahojiUserSettingsUpdate(client, user.id, {
+			bank_bg_hex: null
+		});
+		return 'Reset your bank background color.';
+	}
+
+	if (!hex) {
+		if (!currentColor) {
+			return 'You have no background color set.';
+		}
+		return {
+			embeds: [
+				embed
+					.setColor(Util.resolveColor(currentColor as HexColorString))
+					.setDescription(`Your current background color is \`${currentColor}\`.`)
+			]
+		};
+	}
+
+	hex = hex.toUpperCase();
+	const isValid = hex.length === 7 && /^#([0-9A-F]{3}){1,2}$/i.test(hex);
+	if (!isValid) {
+		return "That's not a valid hex color. It needs to be 7 characters long, starting with '#', for example: #4e42f5 - use this to pick one: <https://www.google.com/search?q=hex+color+picker>";
+	}
+
+	await mahojiUserSettingsUpdate(client, user.id, {
+		bank_bg_hex: hex
+	});
+
+	return {
+		embeds: [
+			embed
+				.setColor(Util.resolveColor(hex as HexColorString))
+				.setDescription(`Your background color is now \`${hex}\``)
+		]
+	};
+}
 
 async function handleChannelEnable(
 	user: KlasaUser,
@@ -31,7 +230,7 @@ async function handleChannelEnable(
 	if (choice === 'disable') {
 		if (isDisabled) return 'This channel is already disabled.';
 
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			staffOnlyChannels: [...settings.staffOnlyChannels, cID]
 		});
 
@@ -39,7 +238,7 @@ async function handleChannelEnable(
 	}
 	if (!isDisabled) return 'This channel is already enabled.';
 
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		staffOnlyChannels: settings.staffOnlyChannels.filter(i => i !== cID)
 	});
 
@@ -61,7 +260,7 @@ async function handlePetMessagesEnable(
 		if (settings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			petchannel: cID
 		});
 		return 'Enabled Pet Messages in this guild.';
@@ -69,7 +268,7 @@ async function handlePetMessagesEnable(
 	if (settings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';
@@ -91,7 +290,7 @@ async function handleCommandEnable(
 		if (!settings.disabledCommands.includes(commandName)) {
 			return "That command isn't disabled.";
 		}
-		await mahojiGuildSettingsUpdate(guild.id, {
+		await mahojiGuildSettingsUpdate(client, guild.id, {
 			disabledCommands: settings.disabledCommands.filter(i => i !== command.name)
 		});
 
@@ -101,39 +300,18 @@ async function handleCommandEnable(
 	if (settings.disabledCommands.includes(command.name)) {
 		return 'That command is already disabled.';
 	}
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		disabledCommands: [...settings.disabledCommands, command.name]
 	});
 
 	return `Successfully disabled the \`${command.name}\` command.`;
 }
 
-async function handleRandomEventsEnable(user: KlasaUser, choice: 'enable' | 'disable') {
-	const currentSettings = await mahojiUsersSettingsFetch(user);
-
-	const nextBool = choice === 'enable' ? false : true;
-	const currentStatus = currentSettings.bitfield.includes(BitField.DisabledRandomEvents);
-
-	if (currentStatus === nextBool) {
-		return `Random events are already ${!currentStatus ? 'enabled' : 'disabled'} for you.`;
-	}
-
-	await mahojiUserSettingsUpdate(user, {
-		bitfield: uniqueArr(
-			nextBool
-				? [...currentSettings.bitfield, BitField.DisabledRandomEvents]
-				: currentSettings.bitfield.filter(i => i !== BitField.DisabledRandomEvents)
-		)
-	});
-
-	return `Random events are now ${!nextBool ? 'enabled' : 'disabled'} for you.`;
-}
-
 async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefix: string) {
 	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
-	await mahojiGuildSettingsUpdate(guild.id, {
+	await mahojiGuildSettingsUpdate(client, guild.id, {
 		prefix: newPrefix
 	});
 	return `Changed Command Prefix for this server to \`${newPrefix}\``;
@@ -200,11 +378,11 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		warningMsg = priorityWarningMsg;
 	}
 	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
-		await mahojiUserSettingsUpdate(user.id, {
+		await mahojiUserSettingsUpdate(client, user.id, {
 			combat_options: [...settings.combat_options, newcbopt.id]
 		});
 	} else if (!nextBool && settings.combat_options.includes(newcbopt.id)) {
-		await mahojiUserSettingsUpdate(user.id, {
+		await mahojiUserSettingsUpdate(client, user.id, {
 			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
 		});
 	} else {
@@ -212,18 +390,6 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 	}
 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
-}
-
-async function setSmallBank(user: User, choice: 'enable' | 'disable') {
-	const newBitfield = uniqueArr(
-		choice === 'enable'
-			? [...user.bitfield, BitField.AlwaysSmallBank]
-			: removeFromArr(user.bitfield, BitField.AlwaysSmallBank)
-	);
-	await mahojiUserSettingsUpdate(user.id, {
-		bitfield: newBitfield
-	});
-	return `Small Banks are now ${choice}d for you.`;
 }
 
 export const configCommand: OSBMahojiCommand = {
@@ -319,18 +485,34 @@ export const configCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'random_events',
-					description: 'Enable or disable receiving random events.',
+					name: 'toggle',
+					description: 'Toggle different settings on and off.',
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'choice',
-							description: 'Enable or disable random events for your account.',
+							name: 'name',
+							description: 'The thing you want to toggle on/off.',
 							required: true,
-							choices: [
-								{ name: 'Enable', value: 'enable' },
-								{ name: 'Disable', value: 'disable' }
-							]
+							autocomplete: async (value, user) => {
+								const mUser = await prisma.user.findFirst({
+									where: {
+										id: user.id
+									},
+									select: {
+										bitfield: true
+									}
+								});
+								const bitfield = mUser?.bitfield ?? [];
+								return toggles
+									.filter(i => {
+										if (!value) return true;
+										return i.name.toLowerCase().includes(value.toLowerCase());
+									})
+									.map(i => ({
+										name: `${i.name} (Currently ${bitfield.includes(i.bit) ? 'On' : 'Off'})`,
+										value: i.name
+									}));
+							}
 						}
 					]
 				},
@@ -367,18 +549,65 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'small_bank',
-					description: 'Enable or disable using small bank images.',
+					name: 'bg_color',
+					description: 'Set a custom color for transparent bank backgrounds.',
 					options: [
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'choice',
-							description: 'Do you want small bank images?',
-							required: true,
-							choices: [
-								{ name: 'Enable', value: 'enable' },
-								{ name: 'Disable', value: 'disable' }
-							]
+							name: 'color',
+							description: 'The color in hex format.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'bank_sort',
+					description: 'Change the way your bank is sorted.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'sort_method',
+							description: 'The way items in your bank should be sorted.',
+							required: false,
+							choices: BankSortMethods.map(i => ({ name: i, value: i }))
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'add_weightings',
+							description: "Add custom weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'remove_weightings',
+							description: "Remove weightings for extra bank sorting (e.g. '1 trout, 5 coal')",
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'favorite_alchs',
+					description: 'Manage your favorite alchables.',
+					options: [
+						{
+							...itemOption(item => item.highalch > 10),
+							name: 'add',
+							description: 'Add an item to your favorite alchables.',
+							required: false
+						},
+						{
+							...itemOption(item => item.highalch > 10),
+							name: 'remove',
+							description: 'Remove an item from your favorite alchables.',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'add_many',
+							description: 'Add many to your favorite alchables at once.',
+							required: false
 						}
 					]
 				}
@@ -400,10 +629,12 @@ export const configCommand: OSBMahojiCommand = {
 			prefix?: { new_prefix: string };
 		};
 		user?: {
-			random_events?: { choice: 'enable' | 'disable' };
+			toggle?: { name: string };
 			combat_options?: { action: 'add' | 'remove' | 'list' | 'help'; input: string };
 			set_rsn?: { username: string };
-			small_bank?: { choice: 'enable' | 'disable' };
+			bg_color?: { color?: string };
+			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
+			favorite_alchs?: { add?: string; remove?: string; add_many?: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
@@ -423,16 +654,28 @@ export const configCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user) {
-			if (options.user.random_events) {
-				return handleRandomEventsEnable(user, options.user.random_events.choice);
+			const { toggle, combat_options, bg_color, bank_sort, favorite_alchs } = options.user;
+			if (toggle) {
+				return handleToggle(mahojiUser, toggle.name);
 			}
-			if (options.user.combat_options) {
-				return handleCombatOptions(user, options.user.combat_options.action, options.user.combat_options.input);
+			if (combat_options) {
+				return handleCombatOptions(user, combat_options.action, combat_options.input);
 			}
-			if (options.user.small_bank) {
-				return setSmallBank(mahojiUser, options.user.small_bank.choice);
+			if (bg_color) {
+				return bgColorConfig(mahojiUser, bg_color.color);
+			}
+			if (bank_sort) {
+				return bankSortConfig(
+					mahojiUser,
+					bank_sort.sort_method,
+					bank_sort.add_weightings,
+					bank_sort.remove_weightings
+				);
+			}
+			if (favorite_alchs) {
+				return favAlchConfig(mahojiUser, favorite_alchs.add, favorite_alchs.remove, favorite_alchs.add_many);
 			}
 		}
-		return 'wut da';
+		return 'Invalid command.';
 	}
 };
