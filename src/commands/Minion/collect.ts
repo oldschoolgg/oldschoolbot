@@ -17,7 +17,7 @@ import { SkillsEnum } from './../../lib/skilling/types';
 interface Collectable {
 	item: Item;
 	skillReqs?: Skills;
-	itemCost: Bank;
+	itemCost?: Bank;
 	quantity: number;
 	duration: number;
 	qpRequired?: number;
@@ -50,6 +50,11 @@ export const collectables: Collectable[] = [
 		},
 		duration: Time.Minute * 8.3,
 		qpRequired: 32
+	},
+	{
+		item: getOSItem('Flax'),
+		quantity: 28,
+		duration: Time.Minute * 1.68
 	},
 	{
 		item: getOSItem("Red spiders' eggs"),
@@ -164,6 +169,7 @@ export default class extends BotCommand {
 			);
 		}
 
+
 		let cost: Bank = new Bank();
 		let ns = false;
 		if (collectable.itemCost) {
@@ -174,6 +180,7 @@ export default class extends BotCommand {
 				duration *= 1.5;
 				cost.remove('Stamina potion(4)', cost.amount('Stamina potion (4)'));
 			}
+
 			if (!msg.author.owns(cost)) {
 				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
 			}
@@ -197,6 +204,7 @@ export default class extends BotCommand {
 		return msg.channel.send(
 			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
 				collectable.item.name
+
 			}, it'll take around ${formatDuration(duration)} to finish.${
 				cost.toString().length > 0
 					? `
@@ -204,6 +212,7 @@ export default class extends BotCommand {
 Removed ${cost} from your bank.`
 					: ''
 			}${ns ? '\n 50% longer trip due to not using Stamina potions.' : ''}`
+
 		);
 	}
 }
