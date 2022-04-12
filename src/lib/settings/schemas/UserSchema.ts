@@ -25,6 +25,7 @@ Client.defaultUserSchema
 	.add('lastTearsOfGuthixTimestamp', 'integer', { default: 1 })
 	.add('sacrificedValue', 'integer', { default: 0, minimum: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('bank', 'any', { default: {} })
+	.add('lastLoot', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('creatureScores', 'any', { default: {} })
 	.add('clueScores', 'any', { default: {} })
