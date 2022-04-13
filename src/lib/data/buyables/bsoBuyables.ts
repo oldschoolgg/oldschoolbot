@@ -54,5 +54,12 @@ export const bsoBuyables: Buyable[] = [
 		skillsNeeded: {
 			fishing: 50
 		}
+	},
+	{
+		name: 'Bingo ticket',
+		outputItems: {
+			[itemID('Bingo ticket')]: 1
+		},
+		gpCost: 1_000_000_000
 	}
 ];
