@@ -213,7 +213,7 @@ export default class extends BotCommand {
 			miningLevel += 7;
 		}
 		// Checks if user own Celestial ring or Celestial signet
-		if (msg.author.hasItemEquippedOrInBank(25_541) || msg.author.hasItemEquippedOrInBank(25_545)) {
+		if (msg.author.hasItemEquippedOrInBank('Celestial ring')) {
 			miningLevel += 4;
 		}
 

@@ -271,7 +271,8 @@ const source: [string, (string | number)[]][] = [
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
 	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
 	['Magic shortbow', ['Magic shortbow (i)']],
-	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]]
+	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
+	['Celestial ring', ['Celestial signet']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(
