@@ -133,14 +133,15 @@ export default class extends Extendable {
 		return createdPoh;
 	}
 
-	public getUserFavAlchs(this: User): Item[] {
+	public getUserFavAlchs(this: User, duration: number): Item[] {
+		// This absolutely matters because shorter trips can change which stack is the most valuable to alch:
+		const tripLength = duration ?? Time.Minute * 30;
 		const bank = this.bank();
 		return this.settings
 			.get(UserSettings.FavoriteAlchables)
 			.filter(id => bank.has(id))
 			.map(getOSItem)
 			.filter(i => i.highalch > 0 && i.tradeable)
-			.filter(i => bank.amount(i.id) >= Math.floor((Time.Minute * 30) / timePerAlch))
-			.sort((a, b) => alchPrice(bank, b, b.highalch) - alchPrice(bank, b, a.highalch));
+			.sort((a, b) => alchPrice(bank, b, tripLength) - alchPrice(bank, a, tripLength));
 	}
 }
