@@ -226,7 +226,8 @@ export const enum Tasks {
 	LastManStanding = 'lmsActivity',
 	BirthdayEvent = 'birthdayEventActivity',
 	TokkulShop = 'tokkulShopActivity',
-	Nex = 'nexActivity'
+	Nex = 'nexActivity',
+	Easter = 'easterActivity'
 }
 
 export enum ActivityGroup {

@@ -588,6 +588,7 @@ enum activity_type_enum {
   BirthdayEvent
   TokkulShop
   Nex
+  Easter
 }
 
 enum xp_gains_skill_enum {
