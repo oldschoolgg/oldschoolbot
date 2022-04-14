@@ -2666,3 +2666,15 @@ setCustomItem(
 	},
 	1_000_000
 );
+setCustomItem(
+	122_003,
+	'Bingo ticket',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	1_000_000
+);

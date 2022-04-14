@@ -1,5 +1,5 @@
 import { MessageAttachment } from 'discord.js';
-import { randArrItem } from 'e';
+import { noOp, randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
@@ -15,6 +15,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	bankHasAllItemsFromBank,
 	formatSkillRequirements,
+	getSupportGuild,
 	multiplyBank,
 	skillsMeetRequirements,
 	stringMatches,
@@ -209,6 +210,13 @@ export default class extends BotCommand {
 				ClientSettings.BankLottery,
 				new Bank(this.client.settings.get(ClientSettings.BankLottery)).add(995, buyable.gpCost! * quantity).bank
 			);
+		}
+		if (buyable.name === 'Bingo ticket') {
+			const guild = getSupportGuild(msg.client);
+			const member = await guild?.members.fetch(msg.author.id).catch(noOp);
+			if (!member?.roles.cache.has('963939163583971388')) {
+				await member?.roles.add('963939163583971388').catch(noOp);
+			}
 		}
 
 		await msg.author.addItemsToBank({ items: outItems, collectionLog: true });

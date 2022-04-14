@@ -42,6 +42,7 @@ import {
 	getSupportGuild,
 	getUsername,
 	isGroupActivity,
+	isNexActivity,
 	isRaidsActivity,
 	isSuperUntradeable,
 	isTobActivity,
@@ -173,9 +174,10 @@ async function checkMassesCommand(msg: KlasaMessage) {
 	const now = Date.now();
 	const massStr = masses
 		.map(m => {
-			const remainingTime = isTobActivity(m)
-				? m.finishDate - m.duration + m.fakeDuration - now
-				: m.finishDate - now;
+			const remainingTime =
+				isTobActivity(m) || isNexActivity(m)
+					? m.finishDate - m.duration + m.fakeDuration - now
+					: m.finishDate - now;
 			if (isGroupActivity(m)) {
 				return [
 					remainingTime,

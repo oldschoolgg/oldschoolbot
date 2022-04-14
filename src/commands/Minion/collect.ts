@@ -53,6 +53,11 @@ export const collectables: Collectable[] = [
 		qpRequired: 32
 	},
 	{
+		item: getOSItem('Flax'),
+		quantity: 28,
+		duration: Time.Minute * 1.68
+	},
+	{
 		item: getOSItem("Red spiders' eggs"),
 		quantity: 80,
 		itemCost: new Bank({
@@ -195,6 +200,7 @@ export default class extends BotCommand {
 				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
 			}
 			await msg.author.removeItemsFromBank(cost);
+
 			await this.client.settings.update(
 				ClientSettings.EconomyStats.CollectingCost,
 				addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
