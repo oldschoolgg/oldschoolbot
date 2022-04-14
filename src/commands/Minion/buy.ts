@@ -214,7 +214,9 @@ export default class extends BotCommand {
 		if (buyable.name === 'Bingo ticket') {
 			const guild = getSupportGuild(msg.client);
 			const member = await guild?.members.fetch(msg.author.id).catch(noOp);
-			await member?.roles.add('963939163583971388').catch(noOp);
+			if (!member?.roles.cache.has('963939163583971388')) {
+				await member?.roles.add('963939163583971388').catch(noOp);
+			}
 		}
 
 		await msg.author.addItemsToBank({ items: outItems, collectionLog: true });
