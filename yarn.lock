@@ -1004,6 +1004,13 @@
   resolved "https://registry.yarnpkg.com/@sapphire/snowflake/-/snowflake-3.2.0.tgz#fa915798d0a0ce5fa93b16c793185ae5d0a3f117"
   integrity sha512-tfHzY+6/5bbHdB+uNqsEQ5rhjaZAoFUrqP/l1S5jwxMdKeSCIiGkJjcE99/WGGdzyWGjTNgNVX/dt4Me/FdMlg==
 
+"@sapphire/stopwatch@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@sapphire/stopwatch/-/stopwatch-1.4.0.tgz#76bd616a5ab8618c3932a016586143b7774286c7"
+  integrity sha512-4gtDuls69vTLseQ3TCZnrWj2boLz7imok0W7wg0+VtF+VGTK3glRn34YEEt0Hj92Ebqmst87EPEJyZ1U5nNs9w==
+  dependencies:
+    tslib "^2.3.1"
+
 "@sapphire/time-utilities@^1.4.4":
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/@sapphire/time-utilities/-/time-utilities-1.4.4.tgz#5822a3ffd467b7270a9ff8ae23f71b08f03700af"
@@ -2212,9 +2219,9 @@ discord-api-types@^0.27.0:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.27.3.tgz#518e99a548b62a7912a09e94ad90d0612e2053c6"
   integrity sha512-HOG64DTpZ7CB5EU9eKbjHD50H5qG1pxKG8pmFfHUMKjKvEWeLBHfw0c9xF1cruiYLnBb3+n7m3jBWxZ3H1hcgQ==
 
-"discord.js@github:gc/discord.js#c37c1f3e8a0472c955668af4263b8b54eea1520a":
+"discord.js@github:gc/discord.js#fd4c015610e3c10d96c131b6e3e7e3ab78132dad":
   version "13.0.0-dev"
-  resolved "https://codeload.github.com/gc/discord.js/tar.gz/c37c1f3e8a0472c955668af4263b8b54eea1520a"
+  resolved "https://codeload.github.com/gc/discord.js/tar.gz/fd4c015610e3c10d96c131b6e3e7e3ab78132dad"
   dependencies:
     "@discordjs/builders" "^0.1.1"
     "@discordjs/collection" "^0.1.6"
@@ -3742,6 +3749,13 @@ jest-message-util@^27.5.1:
     pretty-format "^27.5.1"
     slash "^3.0.0"
     stack-utils "^2.0.3"
+
+jest-mock-extended@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/jest-mock-extended/-/jest-mock-extended-2.0.5.tgz#1feca6866ecbb4e5e79e57d9286969fde53a07cf"
+  integrity sha512-cQjKRqzZ/hUyy3AdmB7Aa+0DB45dt/eEApwfZFZzup9oefGnw2QodW/BLR39aCpPkK0Qb54P5OKYRXJ98kQ8cQ==
+  dependencies:
+    ts-essentials "^7.0.3"
 
 jest-mock@^27.5.1:
   version "27.5.1"
@@ -5660,6 +5674,11 @@ tree-kill@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
   integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
+
+ts-essentials@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/ts-essentials/-/ts-essentials-7.0.3.tgz#686fd155a02133eedcc5362dc8b5056cde3e5a38"
+  integrity sha512-8+gr5+lqO3G84KdiTSMRLtuyJ+nTBVRKuCrK4lidMPdVeEp0uqC875uE5NMcaA7YYMN7XsNiFQuMvasF8HT/xQ==
 
 ts-jest@^27.1.3:
   version "27.1.3"

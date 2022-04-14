@@ -163,7 +163,7 @@ async function finalizeEvent(event: RandomEvent, user: KlasaUser, ch: TextChanne
 
 const options = {
 	max: 1,
-	time: 30_000,
+	time: 60_000,
 	errors: ['time']
 };
 

@@ -33,7 +33,12 @@ import { POHBoosts } from './poh';
 import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
+import {
+	GroupMonsterActivityTaskOptions,
+	NexTaskOptions,
+	RaidsOptions,
+	TheatreOfBloodTaskOptions
+} from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -265,6 +270,10 @@ export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 	return 'wipedRoom' in data;
 }
 
+export function isNexActivity(data: any): data is NexTaskOptions {
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
+}
+
 export function sha256Hash(x: string) {
 	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }
@@ -438,7 +447,12 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-export function updateBankSetting(client: KlasaClient | KlasaUser, setting: string, bankToAdd: Bank | ItemBank) {
+export function updateBankSetting(
+	_client: KlasaClient | KlasaUser | Client,
+	setting: string,
+	bankToAdd: Bank | ItemBank
+) {
+	const client = _client as KlasaClient | KlasaUser;
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);

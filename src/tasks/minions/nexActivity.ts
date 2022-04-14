@@ -11,12 +11,13 @@ import { sendToChannelID } from '../../lib/util/webhook';
 
 export default class extends Task {
 	async run(data: NexTaskOptions) {
-		const { quantity, channelID, users, wipedKill, duration } = data;
-		const allMention = users.map(t => userMention(t[0])).join(' ');
+		const { quantity, channelID, users, wipedKill, duration, userDetails } = data;
+		const allMention = userDetails.map(t => userMention(t[0])).join(' ');
 
+		const survivedQuantity = wipedKill ? wipedKill - 1 : quantity;
 		const loot = handleNexKills({
-			quantity,
-			team: users.map(u => ({
+			quantity: survivedQuantity,
+			team: userDetails.map(u => ({
 				id: u[0],
 				contribution: u[1],
 				deaths: u[2]
@@ -26,7 +27,7 @@ export default class extends Task {
 		for (const [uID, uLoot] of loot.entries()) {
 			const user = await this.client.users.fetch(uID);
 			await user.addItemsToBank({ items: uLoot, collectionLog: true });
-			await user.incrementMonsterScore(NEX_ID, quantity);
+			await user.incrementMonsterScore(NEX_ID, quantity - userDetails.find(i => i[0] === uID)![2].length);
 		}
 
 		await trackLoot({

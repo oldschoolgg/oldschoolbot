@@ -17,6 +17,7 @@ export async function setupParty(
 	options: MakePartyOptions
 ): Promise<[KlasaUser[], () => Promise<KlasaUser[]>]> {
 	const usersWhoConfirmed: KlasaUser[] = [options.leader];
+	let deleted = false;
 
 	function getMessageContent() {
 		return `${options.message}\n\n**Users Joined:** ${usersWhoConfirmed
@@ -39,6 +40,7 @@ export async function setupParty(
 
 	// Debounce message edits to prevent spam.
 	const updateUsersIn = debounce(() => {
+		if (deleted || confirmMessage.deleted) return;
 		confirmMessage.edit(getMessageContent());
 	}, 500);
 
@@ -53,7 +55,6 @@ export async function setupParty(
 
 	const reactionAwaiter = () =>
 		new Promise<KlasaUser[]>(async (resolve, reject) => {
-			partyLockCache.add(user.id);
 			let partyCancelled = false;
 			const collector = new CustomReactionCollector(confirmMessage, {
 				time: 120_000,
@@ -100,6 +101,7 @@ export async function setupParty(
 			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
 				if (!usersWhoConfirmed.includes(user)) return false;
 				if (reaction.emoji.id !== ReactionEmoji.Join) return false;
+				partyLockCache.delete(user.id);
 				removeUser(user);
 			});
 
@@ -165,6 +167,7 @@ export async function setupParty(
 			});
 
 			collector.once('end', () => {
+				deleted = true;
 				confirmMessage.delete().catch(noOp);
 				for (const user of usersWhoConfirmed) {
 					partyLockCache.delete(user.id);

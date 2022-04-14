@@ -46,7 +46,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 		return `${user}, your mass didn't start because it needs atleast 2 users.`;
 	}
 
-	const mahojiUsers = await Promise.all(usersWhoConfirmed.map(mahojiUsersSettingsFetch));
+	const mahojiUsers = await Promise.all(usersWhoConfirmed.map(i => mahojiUsersSettingsFetch(i.id)));
 
 	for (const user of mahojiUsers) {
 		const result = checkNexUser(user);
@@ -88,7 +88,8 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 		duration: details.duration,
 		type: 'Nex',
 		leader: user.id,
-		users: details.team.map(i => [i.id, i.contribution, i.deaths]),
+		users: details.team.map(i => i.id),
+		userDetails: details.team.map(i => [i.id, i.contribution, i.deaths]),
 		fakeDuration: details.fakeDuration,
 		quantity: details.quantity,
 		wipedKill: details.wipedKill
@@ -96,9 +97,9 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 
 	let str = `${user.username}'s party (${usersWhoConfirmed.map(u => u.username).join(', ')}) is now off to kill ${
 		details.quantity
-	}x Nex! (${calcPerHour(details.quantity, details.duration).toFixed(
+	}x Nex! (${calcPerHour(details.quantity, details.fakeDuration).toFixed(
 		1
-	)}/hr) - the total trip will take ${formatDuration(details.duration)}.
+	)}/hr) - the total trip will take ${formatDuration(details.fakeDuration)}.
 
 ${details.team
 	.map(i => {
