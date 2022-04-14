@@ -164,6 +164,11 @@ export default class extends BotCommand {
 		const outItems = multiplyBank(output, quantity);
 		const itemString = new Bank(outItems).toString();
 
+		if (buyable.name === 'Bingo ticket' && msg.author.isIronman) {
+			if (msg.author.cl().has('Bingo ticket')) return msg.channel.send('You already bought a Bingo ticket.');
+			quantity = 1;
+		}
+
 		// Start building a string to show to the user.
 		let str = `${msg.author}, please confirm that you want to buy **${itemString}** for: `;
 
