@@ -60,6 +60,7 @@ export const bsoBuyables: Buyable[] = [
 		outputItems: {
 			[itemID('Bingo ticket')]: 1
 		},
-		gpCost: 1_000_000_000
+		gpCost: 1_000_000_000,
+		ironmanPrice: 0
 	}
 ];
