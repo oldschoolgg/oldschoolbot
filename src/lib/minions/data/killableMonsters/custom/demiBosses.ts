@@ -207,7 +207,7 @@ const Nihiliz: CustomMonster = {
 	id: 708_080,
 	name: 'Nihiliz',
 	aliases: ['nihiliz', 'shadow nihil boss', 'mini nex', 'nihilist'],
-	timeToFinish: Time.Minute * 20,
+	timeToFinish: Time.Minute * 15,
 	table: NihilizLootTable,
 	emoji: '',
 	wildy: false,
@@ -226,6 +226,9 @@ const Nihiliz: CustomMonster = {
 		}
 	},
 	itemInBankBoosts: [
+		{
+			[itemID('Zaryte crossbow')]: 20
+		},
 		{
 			[itemID('Drygore rapier')]: 15
 		},
