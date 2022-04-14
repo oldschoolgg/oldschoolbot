@@ -206,7 +206,7 @@ export const QueenBlackDragon: CustomMonster = {
 const Nihiliz: CustomMonster = {
 	id: 708_080,
 	name: 'Nihiliz',
-	aliases: ['nihiliz', 'shadow nihil', 'mini nex', 'nihilist'],
+	aliases: ['nihiliz', 'shadow nihil boss', 'mini nex', 'nihilist'],
 	timeToFinish: Time.Minute * 20,
 	table: NihilizLootTable,
 	emoji: '',
