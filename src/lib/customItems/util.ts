@@ -17,6 +17,7 @@ export function isCustomItem(itemID: number) {
 interface CustomItemData {
 	isSuperUntradeable?: boolean;
 	cantDropFromMysteryBoxes?: boolean;
+	cantBeSacrificed?: true;
 }
 declare module 'oldschooljs/dist/meta/types' {
 	interface Item {

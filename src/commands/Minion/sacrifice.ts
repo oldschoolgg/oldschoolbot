@@ -7,11 +7,8 @@ import minionIcons from '../../lib/minions/data/minionIcons';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID, roll, updateBankSetting } from '../../lib/util';
+import { roll, updateBankSetting } from '../../lib/util';
 import { parseInputCostBank } from '../../lib/util/parseStringBank';
-import resolveItems from '../../lib/util/resolveItems';
-
-const cantBeSacrificed = resolveItems(['Bingo ticket']);
 
 async function trackSacBank(user: KlasaUser, bank: Bank) {
 	const currentSacBank = new Bank(user.settings.get(UserSettings.SacrificedBank));
@@ -46,10 +43,9 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't own ${bankToSac}.`);
 		}
 
-		for (const id of cantBeSacrificed) {
-			if (bankToSac.has(id)) {
-				return msg.channel.send(`You cannot sacrifice ${itemNameFromID(id)}.`);
-			}
+		const cantSac = bankToSac.items().find(i => i[0].customItemData?.cantBeSacrificed);
+		if (cantSac) {
+			return msg.channel.send(`You cannot sacrifice ${cantSac[0].name}.`);
 		}
 
 		if (bankToSac.length === 0) {

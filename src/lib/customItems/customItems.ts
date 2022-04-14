@@ -2673,7 +2673,8 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
 		}
 	},
 	1_000_000
