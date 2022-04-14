@@ -237,6 +237,9 @@ const Nihiliz: CustomMonster = {
 		},
 		{
 			[itemID('Dragon warhammer')]: 5
+		},
+		{
+			[itemID('Zaryte vambraces')]: 5
 		}
 	],
 	groupKillable: true,
