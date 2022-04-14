@@ -43,6 +43,11 @@ export default class extends BotCommand {
 			return msg.channel.send(`You don't own ${bankToSac}.`);
 		}
 
+		const cantSac = bankToSac.items().find(i => i[0].customItemData?.cantBeSacrificed);
+		if (cantSac) {
+			return msg.channel.send(`You cannot sacrifice ${cantSac[0].name}.`);
+		}
+
 		if (bankToSac.length === 0) {
 			return msg.channel.send(
 				`No items were provided.\nYour current sacrificed value is: ${sacVal.toLocaleString()} (${Util.toKMB(
