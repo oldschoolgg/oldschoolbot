@@ -1553,7 +1553,8 @@ export const allPetsCL = resolveItems([
 	'Little nightmare',
 	"Lil' creator",
 	'Tiny tempor',
-	'Abyssal protector'
+	'Abyssal protector',
+	'Nexling'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2220,7 +2221,7 @@ export const kingGoldemarCL = resolveItems([
 
 export const abyssalDragonCL = resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']);
 
-export const nihilizCL = resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nihil shard']);
+export const nihilizCL = resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nihil shard', 'Nexling']);
 
 export const vasaMagusCL = resolveItems([
 	'Tattered robes of Vasa',

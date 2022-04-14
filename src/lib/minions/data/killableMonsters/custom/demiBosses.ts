@@ -252,8 +252,8 @@ const Nihiliz: CustomMonster = {
 			'Ancient rejuvenation pool': 15
 		}
 	},
-	uniques: resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nihil shard']),
-	notifyDrops: resolveItems(['Nihil horn', 'Zaryte vambraces']),
+	uniques: resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nihil shard', 'Nexling']),
+	notifyDrops: resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nexling']),
 	baseMonster: Monsters.Hespori
 };
 
