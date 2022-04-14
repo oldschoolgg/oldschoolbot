@@ -203,11 +203,18 @@ setCustomItem(
 	500_000_000
 );
 
-setCustomItem(5020, 'Lottery ticket', 'Paramaya ticket');
+setCustomItem(5020, 'Lottery ticket', 'Paramaya ticket', {
+	customItemData: {
+		isSuperUntradeable: true,
+		cantDropFromMysteryBoxes: true,
+		cantBeSacrificed: true
+	}
+});
 setCustomItem(5021, 'Bank lottery ticket', 'Paramaya ticket', {
 	customItemData: {
-		isSuperUntradeable: false,
-		cantDropFromMysteryBoxes: true
+		isSuperUntradeable: true,
+		cantDropFromMysteryBoxes: true,
+		cantBeSacrificed: true
 	}
 });
 // setCustomItem(25238, 'Dwarven defender', ('Dragon defender'));
