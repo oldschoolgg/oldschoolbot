@@ -20,7 +20,7 @@ export default class extends BotCommand {
 			const withoutTicket = mentions.find(u => !u.cl().has('Bingo ticket'))
 			if (withoutTicket) return msg.channel.send(`${withoutTicket} hasn't bought a ticket.`)
 			return msg.channel.send(`**Team Submission:**
-${mentions.map(u => `${u.username}#${u.discriminator}[${u.id}]`).join('\n')}`)
+${mentions.map(u => `${u.username}[${u.id}]`).join('\n')}`)
 		}
 		return msg.channel.send(str);
 	}
