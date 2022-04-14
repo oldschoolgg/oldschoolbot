@@ -89,9 +89,9 @@ export async function isElligibleForPresent(user: KlasaUser) {
 	if (user.isIronman) return true;
 	if (user.perkTier >= PerkTier.Four) return true;
 	if (user.totalLevel() >= 2000) return true;
-	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRaw`SELECT SUM(duration)
+	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(duration)
 FROM activity
-WHERE user_id = ${BigInt(user.id)};`;
+WHERE user_id = ${BigInt(user.id)};`);
 	if (totalActivityDuration[0].sum >= Time.Hour * 80) return true;
 	return false;
 }
