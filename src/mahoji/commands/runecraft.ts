@@ -85,10 +85,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 			usestams = true;
 		}
 
-		
-
-		
-
 		const quantityPerEssence = calcMaxRCQuantity(runeObj, user);
 
 		if (quantityPerEssence === 0) {
