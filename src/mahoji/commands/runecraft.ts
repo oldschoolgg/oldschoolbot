@@ -60,6 +60,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const user = await client.fetchUser(userID.toString());
 		let { rune, quantity, usestams } = options;
 
+		rune = rune.toLowerCase().replace('rune', '').trim();
+
+		if (rune !== 'chaos' && rune.endsWith('s')) {
+			rune = rune.slice(0, rune.length - 1);
+		}
+
 		if (['blood', 'soul'].includes(rune)) {
 			return darkAltarCommand({ user, channelID, name: rune });
 		}
@@ -79,11 +85,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 			usestams = true;
 		}
 
-		rune = rune.toLowerCase().replace('rune', '').trim();
+		
 
-		if (rune !== 'chaos' && rune.endsWith('s')) {
-			rune = rune.slice(0, rune.length - 1);
-		}
+		
 
 		const quantityPerEssence = calcMaxRCQuantity(runeObj, user);
 
