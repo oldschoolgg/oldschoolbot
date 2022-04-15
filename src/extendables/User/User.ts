@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { objectEntries, Time } from 'e';
+import { objectEntries } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -133,14 +133,13 @@ export default class extends Extendable {
 		return createdPoh;
 	}
 
-	public getUserFavAlchs(this: User): Item[] {
+	public getUserFavAlchs(this: User, duration: number): Item[] {
 		const bank = this.bank();
 		return this.settings
 			.get(UserSettings.FavoriteAlchables)
 			.filter(id => bank.has(id))
 			.map(getOSItem)
 			.filter(i => i.highalch > 0 && i.tradeable)
-			.filter(i => bank.amount(i.id) >= Math.floor((Time.Minute * 30) / timePerAlch))
-			.sort((a, b) => alchPrice(bank, b, b.highalch) - alchPrice(bank, b, a.highalch));
+			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
 	}
 }
