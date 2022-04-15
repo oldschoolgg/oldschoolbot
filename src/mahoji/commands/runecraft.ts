@@ -59,6 +59,17 @@ export const runecraftCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean }>) => {
 		const user = await client.fetchUser(userID.toString());
 		let { rune, quantity, usestams } = options;
+
+		rune = rune.toLowerCase().replace('rune', '').trim();
+
+		if (rune !== 'chaos' && rune.endsWith('s')) {
+			rune = rune.slice(0, rune.length - 1);
+		}
+
+		if (['blood', 'soul'].includes(rune)) {
+			return darkAltarCommand({ user, channelID, name: rune });
+		}
+
 		const runeObj = Runecraft.Runes.find(
 			_rune => stringMatches(_rune.name, rune) || stringMatches(_rune.name.split(' ')[0], rune)
 		);
@@ -72,16 +83,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		if (!usestams && !runeObj.stams) {
 			usestams = true;
-		}
-
-		rune = rune.toLowerCase().replace('rune', '').trim();
-
-		if (rune !== 'chaos' && rune.endsWith('s')) {
-			rune = rune.slice(0, rune.length - 1);
-		}
-
-		if (['blood', 'soul'].includes(rune)) {
-			return darkAltarCommand({ user, channelID, name: rune });
 		}
 
 		const quantityPerEssence = calcMaxRCQuantity(runeObj, user);
