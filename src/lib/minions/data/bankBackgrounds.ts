@@ -71,7 +71,7 @@ const backgroundImages: BankBackground[] = [
 			"Pet k'ril tsutsaroth": 1,
 			"Pet kree'arra": 1,
 			'Pet zilyana': 1,
-			'Nexling': 1,
+			Nexling: 1,
 			'Ancient hilt': 1,
 			'Nihil horn': 1,
 			'Zaryte vambraces': 1,
