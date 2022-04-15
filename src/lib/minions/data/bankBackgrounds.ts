@@ -201,9 +201,10 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 19,
-		name: 'tob',
+		name: 'Rick CustomBG',
 		image: null,
-		available: false
+		available: false,
+		owners: ['604278562320810009']
 	},
 	{
 		id: 22,
