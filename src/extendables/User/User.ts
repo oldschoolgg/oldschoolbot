@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { objectEntries, Time } from 'e';
+import { objectEntries } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -134,14 +134,12 @@ export default class extends Extendable {
 	}
 
 	public getUserFavAlchs(this: User, duration: number): Item[] {
-		// This absolutely matters because shorter trips can change which stack is the most valuable to alch:
-		const tripLength = duration ?? Time.Minute * 30;
 		const bank = this.bank();
 		return this.settings
 			.get(UserSettings.FavoriteAlchables)
 			.filter(id => bank.has(id))
 			.map(getOSItem)
 			.filter(i => i.highalch > 0 && i.tradeable)
-			.sort((a, b) => alchPrice(bank, b, tripLength) - alchPrice(bank, a, tripLength));
+			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
 	}
 }
