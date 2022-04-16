@@ -1,5 +1,6 @@
+import { activity_type_enum } from '@prisma/client';
+
 import { Tasks } from '../constants';
-import { activity_type_enum } from '.prisma/client';
 
 export function taskNameFromType(activityType: activity_type_enum): Tasks {
 	switch (activityType) {
@@ -167,5 +168,7 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.BirthdayEvent;
 		case 'TokkulShop':
 			return Tasks.TokkulShop;
+		case 'Easter':
+			return Tasks.Easter;
 	}
 }
