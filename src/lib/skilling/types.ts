@@ -50,6 +50,11 @@ export interface Log {
 	name: string;
 	aliases?: string[];
 	respawnTime: number;
+	bankingTime: number;
+	slope: number;
+	intercept: number;
+	depletionChance: number;
+	wcGuild?: boolean;
 	petChance?: number;
 	qpRequired: number;
 	clueScrollChance?: number;

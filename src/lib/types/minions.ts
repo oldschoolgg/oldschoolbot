@@ -98,6 +98,7 @@ export interface FiremakingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
+	powerChopping: boolean;
 	logID: number;
 	quantity: number;
 }

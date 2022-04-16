@@ -31,7 +31,7 @@ import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
 import { Rune } from './skilling/skills/runecraft';
-import { SkillsEnum } from './skilling/types';
+import { Log, SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
 import {
 	GroupMonsterActivityTaskOptions,
@@ -154,9 +154,47 @@ export function determineScaledOreTime(xp: number, respawnTime: number, lvl: num
 	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
 	return Math.floor((t + respawnTime) * 1000) * 1.2;
 }
-export function determineScaledLogTime(xp: number, respawnTime: number, lvl: number) {
-	const t = xp / (lvl / 4 + 0.5) + ((100 - lvl) / 100 + 0.75);
-	return Math.floor((t + respawnTime) * 1000) * 1.2;
+
+export function determineWoodcuttingTime(
+	quantity: number | null,
+	user: KlasaUser,
+	log: Log,
+	multiplier: number,
+	powerChopping: boolean,
+	lvl: number
+): [number, number] {
+	const intercept = log.intercept * multiplier;
+	const slope = log.slope * multiplier;
+
+	let timeElapsed = 0;
+
+	const bankTime = log.bankingTime;
+	const chanceOfSuccess = slope * lvl + intercept;
+	const { respawnTime } = log;
+
+	let newQuantity = 0;
+	while (timeElapsed < (100 * user.maxTripLength('Woodcutting')) / (Time.Second * 0.6)) {
+		// Keep rolling until log chopped
+		while (!percentChance(chanceOfSuccess)) {
+			timeElapsed += 4;
+		}
+		// Delay for depleting a tree
+		if (percentChance(log.depletionChance)) {
+			timeElapsed += respawnTime;
+		} else {
+			timeElapsed += 4;
+		}
+		newQuantity++;
+
+		// Add banking time every 28th quantity
+		if (newQuantity % 28 === 0 && !powerChopping) {
+			timeElapsed += bankTime;
+		}
+		if (quantity && newQuantity >= quantity) {
+			break;
+		}
+	}
+	return [timeElapsed * 0.6 * Time.Second, newQuantity];
 }
 
 export function rand(min: number, max: number) {
