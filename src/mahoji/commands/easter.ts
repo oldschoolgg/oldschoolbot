@@ -42,7 +42,7 @@ export const easterCommand: OSBMahojiCommand = {
 
 		const eggsGivenOut = user.settings.get(UserSettings.EggsDelivered);
 		const cl = user.cl();
-		if (cl.has(UniqueTable.allItems)) {
+		if (cl.has(DeliverRewardTable.allItems)) {
 			return "I don't have anything left to give you!";
 		}
 
@@ -56,7 +56,7 @@ export const easterCommand: OSBMahojiCommand = {
 			let loot = DeliverRewardTable.roll(eggsGivenOut);
 
 			// Can't get more than one of each unique.
-			for (const item of UniqueTable.allItems) {
+			for (const item of DeliverRewardTable.allItems) {
 				if (!loot.has(item)) continue;
 				if (cl.has(item)) {
 					loot.remove(item, loot.amount(item));
