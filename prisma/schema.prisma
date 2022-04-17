@@ -432,6 +432,7 @@ model User {
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
   got_free_festive_present Boolean  @default(false)
+  eggs_delivered           Int      @default(0)
 
 
   @@map("users")
@@ -721,6 +722,7 @@ enum activity_type_enum {
   FishingContest
   BirthdayEvent
   TokkulShop
+  Easter
 }
 
 enum xp_gains_skill_enum {

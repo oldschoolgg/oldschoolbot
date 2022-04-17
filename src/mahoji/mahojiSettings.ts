@@ -191,6 +191,7 @@ export async function mahojiUserSettingsUpdate(
 	}
 	assert(klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level);
 	assert(klasaUser.settings.get(UserSettings.HonourPoints) === newUser.honour_points);
+	assert(klasaUser.settings.get(UserSettings.EggsDelivered) === newUser.eggs_delivered);
 
 	return { newUser };
 }

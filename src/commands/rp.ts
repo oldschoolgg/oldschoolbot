@@ -62,6 +62,7 @@ import PatreonTask from '../tasks/patreon';
 async function checkBank(msg: KlasaMessage) {
 	const rawBank = msg.author.settings.get(UserSettings.Bank);
 	const rawCL = msg.author.settings.get(UserSettings.CollectionLogBank);
+	const rawTempCL = msg.author.settings.get(UserSettings.TempCL);
 	const rawSB = msg.author.settings.get(UserSettings.SacrificedBank);
 	const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
 
@@ -79,6 +80,7 @@ async function checkBank(msg: KlasaMessage) {
 	const allItemsToCheck = [
 		...Object.keys(rawBank),
 		...Object.keys(rawCL),
+		...Object.keys(rawTempCL),
 		...Object.keys(rawSB),
 		...favorites,
 		...allGearItemIDs
@@ -95,10 +97,12 @@ async function checkBank(msg: KlasaMessage) {
 
 	const newBank = { ...rawBank };
 	const newCL = { ...rawCL };
+	const newTempCL = { ...rawTempCL };
 	const newSB = { ...rawSB };
 	for (const id of brokenBank) {
 		delete newBank[id];
 		delete newCL[id];
+		delete newTempCL[id];
 		delete newSB[id];
 	}
 
@@ -121,6 +125,7 @@ async function checkBank(msg: KlasaMessage) {
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 		await msg.author.settings.update(UserSettings.CollectionLogBank, newCL);
+		await msg.author.settings.update(UserSettings.TempCL, newTempCL);
 		await msg.author.settings.update(UserSettings.SacrificedBank, newSB);
 
 		return msg.channel.send(

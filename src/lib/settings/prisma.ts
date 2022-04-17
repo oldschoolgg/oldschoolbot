@@ -4,6 +4,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
+import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { PerkTier } from '../constants';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
@@ -44,6 +45,21 @@ export function activitySync(activity: Activity) {
 	}
 }
 
+async function onActivityFinish(activity: ActivityTaskData) {
+	const user = client.users.cache.get(activity.userID);
+	if (!user) return;
+
+	// If user has easter egg crate, they deliver 1 egg per 10 minutes.
+	if (user.owns('Easter egg crate') && activity.duration >= Time.Minute * 10) {
+		const numEggs = Math.floor(activity.duration / (Time.Minute * 10));
+		await mahojiUserSettingsUpdate(client, user, {
+			eggs_delivered: {
+				increment: numEggs
+			}
+		});
+	}
+}
+
 export async function completeActivity(_activity: Activity) {
 	const activity = convertStoredActivityToFlatActivity(_activity);
 	if (_activity.completed) {
@@ -61,6 +77,7 @@ export async function completeActivity(_activity: Activity) {
 	try {
 		client.emit('debug', `Running ${task.name} for ${activity.userID}`);
 		await task.run(activity);
+		await onActivityFinish(activity);
 	} catch (err) {
 		logError(err);
 	} finally {
