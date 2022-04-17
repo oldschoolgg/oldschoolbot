@@ -1989,7 +1989,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Cob',
 	'Gregoyle',
 	'Mini Pumpkinhead',
-	'Seer'
+	'Seer',
+	'Leia'
 ]);
 
 export const kingGoldemarCL = resolveItems([
