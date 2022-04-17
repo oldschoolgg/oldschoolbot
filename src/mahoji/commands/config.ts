@@ -103,15 +103,16 @@ async function favAlchConfig(
 }
 
 async function bankSortConfig(
-	user: User,
+	user: KlasaUser,
+	mahojiUser: User,
 	sortMethod: string | undefined,
 	addWeightingBank: string | undefined,
 	removeWeightingBank: string | undefined
 ): CommandResponse {
-	const currentMethod = user.bank_sort_method;
-	const currentWeightingBank = new Bank(user.bank_sort_weightings as ItemBank);
+	const currentMethod = mahojiUser.bank_sort_method;
+	const currentWeightingBank = new Bank(mahojiUser.bank_sort_weightings as ItemBank);
 
-	const perkTier = getUsersPerkTier(user.bitfield);
+	const perkTier = getUsersPerkTier(user);
 	if (perkTier < PerkTier.Two) {
 		return patronMsg(PerkTier.Two);
 	}
@@ -132,7 +133,7 @@ async function bankSortConfig(
 					await makeBankImage({
 						bank: currentWeightingBank,
 						title: 'Bank Sort Weightings',
-						user: client.users.cache.get(user.id)
+						user: client.users.cache.get(mahojiUser.id)
 					})
 				).file
 			];
@@ -144,7 +145,7 @@ async function bankSortConfig(
 		if (!(BankSortMethods as readonly string[]).includes(sortMethod)) {
 			return `That's not a valid bank sort method. Valid methods are: ${BankSortMethods.join(', ')}.`;
 		}
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(client, mahojiUser.id, {
 			bank_sort_method: sortMethod
 		});
 
@@ -160,11 +161,11 @@ async function bankSortConfig(
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
 
-	const { newUser } = await mahojiUserSettingsUpdate(client, user.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(client, mahojiUser.id, {
 		bank_sort_weightings: newBank.bank
 	});
 
-	return bankSortConfig(newUser, undefined, undefined, undefined);
+	return bankSortConfig(user, newUser, undefined, undefined, undefined);
 }
 
 async function bgColorConfig(user: User, hex?: string) {
@@ -816,6 +817,7 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (bank_sort) {
 				return bankSortConfig(
+					user,
 					mahojiUser,
 					bank_sort.sort_method,
 					bank_sort.add_weightings,
