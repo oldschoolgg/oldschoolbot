@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { Time, uniqueArr } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -86,6 +86,7 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
+	randomVariation,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
@@ -205,9 +206,15 @@ export default class extends Extendable {
 
 				const ore = Mining.Ores.find(ore => ore.id === data.oreID);
 
-				return `${this.minionName} is currently mining ${data.quantity}x ${
-					ore!.name
-				}. ${formattedDuration} Your ${Emoji.Mining} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
+				return `${this.minionName} is currently mining ${ore!.name}. ${
+					data.fakeDurationMax === data.fakeDurationMin
+						? formattedDuration
+						: `approximately ${formatDuration(
+								randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+						  )} **to** ${formatDuration(
+								randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+						  )} remaining.`
+				} Your ${Emoji.Mining} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
 			}
 
 			case 'Smelting': {

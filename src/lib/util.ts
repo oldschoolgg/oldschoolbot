@@ -158,6 +158,7 @@ export function determineMiningTime(
 	armourEffect: number,
 	miningCapeEffect: number,
 	powerMining: boolean,
+	goldSilverBoost: boolean,
 	lvl: number
 ): [number, number] {
 	let { intercept } = ore;
@@ -166,7 +167,7 @@ export function determineMiningTime(
 	}
 	let timeElapsed = 0;
 
-	const bankTime = ore.bankingTime;
+	const bankTime = goldSilverBoost ? ore.bankingTime / 3.3 : ore.bankingTime;
 	const chanceOfSuccess = ore.slope * lvl + intercept;
 	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
 

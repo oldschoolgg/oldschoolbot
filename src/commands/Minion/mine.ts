@@ -1,11 +1,13 @@
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { determineMiningTime, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import { determineMiningTime, formatDuration, itemNameFromID, randomVariation, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
@@ -266,6 +268,18 @@ export default class extends BotCommand {
 			}
 		}
 
+		const [hasFaladorHard] = await userhasDiaryTier(msg.author, FaladorDiary.hard);
+		let goldSilverBoost = false;
+		if (
+			(hasFaladorHard || msg.author.skillLevel(SkillsEnum.Crafting) >= 99) &&
+			(ore.name === 'Gold ore' || ore.name === 'Silver ore')
+		) {
+			goldSilverBoost = true;
+			boosts.push(
+				`**70%** faster ${ore.name} banking for ${hasFaladorHard ? 'Falador hard diary' : '99 Crafting'}`
+			);
+		}
+
 		let miningCapeEffect = 0;
 		if (msg.author.hasItemEquippedOrInBank(miningCape.id)) {
 			for (const [name, value] of Object.entries(miningCape)) {
@@ -291,10 +305,14 @@ export default class extends BotCommand {
 			armourEffect,
 			miningCapeEffect,
 			powerMine,
+			goldSilverBoost,
 			miningLevel
 		);
 
 		const duration = timeToMine;
+
+		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
 
 		if (ore.id === 1625 && msg.author.hasItemEquippedAnywhere('Amulet of glory')) {
 			boosts.push('3x success rate for having an Amulet of glory equipped');
@@ -307,12 +325,18 @@ export default class extends BotCommand {
 			quantity: newQuantity,
 			powerMine,
 			duration,
+			fakeDurationMax,
+			fakeDurationMin,
 			type: 'Mining'
 		});
 
-		let response = `${msg.author.minionName} is now mining ${newQuantity}x ${
+		let response = `${msg.author.minionName} is now of mining ${
 			ore.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		} until your minion is satisfied, it'll take ${
+			quantity
+				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
+				: formatDuration(duration)
+		} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n **Boosts:** ${boosts.join(', ')}.`;
