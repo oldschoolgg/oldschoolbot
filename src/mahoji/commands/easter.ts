@@ -3,6 +3,7 @@ import { Bank, LootTable } from 'oldschooljs';
 import { client } from '../..';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { newChatHeadImage } from '../../lib/util/chatHeadImage';
+import itemID from '../../lib/util/itemID';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate } from '../mahojiSettings';
 
@@ -38,11 +39,14 @@ export const easterCommand: OSBMahojiCommand = {
 	},
 	options: [],
 	run: async ({ userID }) => {
+		const uniquesToCheck = [...UniqueTable.allItems];
+		uniquesToCheck.push(itemID('Decorative easter eggs'));
+
 		const user = await client.fetchUser(userID.toString());
 
 		const eggsGivenOut = user.settings.get(UserSettings.EggsDelivered);
 		const cl = user.cl();
-		if (cl.has(DeliverRewardTable.allItems)) {
+		if (cl.has(uniquesToCheck)) {
 			return "I don't have anything left to give you!";
 		}
 
@@ -56,7 +60,7 @@ export const easterCommand: OSBMahojiCommand = {
 			let loot = DeliverRewardTable.roll(eggsGivenOut);
 
 			// Can't get more than one of each unique.
-			for (const item of DeliverRewardTable.allItems) {
+			for (const item of uniquesToCheck) {
 				if (!loot.has(item)) continue;
 				if (cl.has(item)) {
 					loot.remove(item, loot.amount(item));
