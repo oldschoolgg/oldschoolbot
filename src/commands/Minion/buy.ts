@@ -22,6 +22,7 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { bingoStart } from '../bso/bingo';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -167,6 +168,9 @@ export default class extends BotCommand {
 		if (buyable.name === 'Bingo ticket' && msg.author.isIronman) {
 			if (msg.author.cl().has('Bingo ticket')) return msg.channel.send('You already bought a Bingo ticket.');
 			quantity = 1;
+		}
+		if (buyable.name === 'Bingo ticket' && Date.now() >= bingoStart) {
+			return msg.channel.send('You cannot buy Bingo tickets anymore, sorry!');
 		}
 
 		// Start building a string to show to the user.
