@@ -18,6 +18,7 @@ const marimboChatHead = fs.readFileSync('./src/lib/resources/images/marimbo.png'
 const ketKehChatHead = fs.readFileSync('./src/lib/resources/images/ketKeh.png');
 const gertrudeChatHead = fs.readFileSync('./src/lib/resources/images/gertrude.png');
 const antiSantaChatHead = fs.readFileSync('./src/lib/resources/images/antisanta.png');
+const bunnyChatHead = fs.readFileSync('./src/lib/resources/images/bunny.png');
 
 export const chatHeads = {
 	mejJal: mejJalChatHead,
@@ -29,7 +30,8 @@ export const chatHeads = {
 	marimbo: marimboChatHead,
 	ketKeh: ketKehChatHead,
 	gertrude: gertrudeChatHead,
-	antiSanta: antiSantaChatHead
+	antiSanta: antiSantaChatHead,
+	bunny: bunnyChatHead
 };
 
 const names: Record<keyof typeof chatHeads, string> = {
@@ -42,10 +44,11 @@ const names: Record<keyof typeof chatHeads, string> = {
 	marimbo: 'Marimbo',
 	ketKeh: 'Tzhaar-Ket-Keh',
 	gertrude: 'Gertrude',
-	antiSanta: 'Anti-Santa'
+	antiSanta: 'Anti-Santa',
+	bunny: 'Easter Bunny'
 };
 
-export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
+export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
 	const canvas = new Canvas(519, 142);
 	canvas.context.imageSmoothingEnabled = false;
 	const headImage = await canvasImageFromBuffer(chatHeads[head]);
@@ -65,5 +68,10 @@ export default async function chatHeadImage({ content, head }: { content: string
 
 		.toBufferAsync();
 
+	return image;
+}
+
+export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
+	const image = await newChatHeadImage({ content, head });
 	return new MessageAttachment(image);
 }

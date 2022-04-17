@@ -1108,6 +1108,10 @@ export const allCollectionLogs: ICollection = {
 	},
 	Discontinued: {
 		activities: {
+			'Easter 2022': {
+				items: resolveItems(['Chickaxe', 'Leia', 'Decorative easter eggs']),
+				counts: false
+			},
 			'Thanksgiving 2021': {
 				items: resolveItems(['Raw turkey', 'Turkey', 'Turkey drumstick', 'Burnt turkey', 'Cornucopia']),
 				counts: false

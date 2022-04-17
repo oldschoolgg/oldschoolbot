@@ -196,4 +196,5 @@ Client.defaultUserSchema
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 
 	.add('bank_sort_method', 'string', { default: null })
-	.add('bank_sort_weightings', 'any', { default: {} });
+	.add('bank_sort_weightings', 'any', { default: {} })
+	.add('eggs_delivered', 'integer', { default: 0 });
