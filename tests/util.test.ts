@@ -74,7 +74,7 @@ describe('util', () => {
 		const clientMock = { settings: { get: () => ({}) } } as any as KlasaClient;
 		const item = getOSItem('Dragon pickaxe');
 		const { price } = item;
-		let expected = Math.floor(reduceNumByPercent(price, 20));
+		let expected = Math.floor(reduceNumByPercent(price, 25));
 		expect(sellPriceOfItem(clientMock, item)).toEqual({ price: expected, basePrice: price });
 		expect(sellPriceOfItem(clientMock, getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
 
