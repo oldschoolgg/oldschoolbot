@@ -39,7 +39,7 @@ export const easterCommand: OSBMahojiCommand = {
 	options: [],
 	run: async ({ userID }) => {
 		const user = await client.fetchUser(userID.toString());
-		if (user.minionIsBusy) return `${user.minionName} is busy.`;
+
 		const eggsGivenOut = user.settings.get(UserSettings.EggsDelivered);
 		const cl = user.cl();
 		if (cl.has(UniqueTable.allItems)) {
@@ -74,7 +74,7 @@ export const easterCommand: OSBMahojiCommand = {
 					{
 						fileName: 'image.jpg',
 						buffer: await newChatHeadImage({
-							content: 'Thank you for delivering eggs, please take these as a reward!',
+							content: `Thank you for delivering ${eggsGivenOut} eggs, please take these as a reward!`,
 							head: 'bunny'
 						})
 					}
@@ -87,8 +87,7 @@ export const easterCommand: OSBMahojiCommand = {
 		}
 		const loot = new Bank().add('Easter egg crate');
 
-		const klasaUser = await client.fetchUser(userID);
-		await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		const buffer = await newChatHeadImage({
 			content:
 				'Player, please help me deliver these Easter eggs! Take them with you and hand them out. Come back after handing some out!',
