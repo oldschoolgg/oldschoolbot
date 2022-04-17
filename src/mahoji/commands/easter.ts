@@ -1,6 +1,7 @@
 import { Bank, LootTable } from 'oldschooljs';
 
 import { client } from '../..';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { newChatHeadImage } from '../../lib/util/chatHeadImage';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate } from '../mahojiSettings';
@@ -39,7 +40,7 @@ export const easterCommand: OSBMahojiCommand = {
 	run: async ({ userID }) => {
 		const user = await client.fetchUser(userID.toString());
 		if (user.minionIsBusy) return `${user.minionName} is busy.`;
-		const eggsGivenOut = 600; // user.settings.get(UserSettings.EggsDelivered);
+		const eggsGivenOut = user.settings.get(UserSettings.EggsDelivered);
 		const cl = user.cl();
 		if (cl.has(UniqueTable.allItems)) {
 			return "I don't have anything left to give you!";
