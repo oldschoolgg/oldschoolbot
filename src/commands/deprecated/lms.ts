@@ -12,7 +12,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		return msg.channel.send(
-			`You now use this command using: \`/lms simulate\`
+			`You now use this command using: \`/minigames lms simulate\`
 ${COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg)}`
 		);
 	}
