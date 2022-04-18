@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
+import { bingoIsActive } from '../../lib/bingo';
 import Buyables from '../../lib/data/buyables/buyables';
 import { kittens } from '../../lib/growablePets';
 import { isElligibleForPresent } from '../../lib/settings/prisma';
@@ -22,7 +23,6 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import { bingoStart } from '../bso/bingo';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -169,7 +169,7 @@ export default class extends BotCommand {
 			if (msg.author.cl().has('Bingo ticket')) return msg.channel.send('You already bought a Bingo ticket.');
 			quantity = 1;
 		}
-		if (buyable.name === 'Bingo ticket' && Date.now() >= bingoStart) {
+		if (buyable.name === 'Bingo ticket' && bingoIsActive()) {
 			return msg.channel.send('You cannot buy Bingo tickets anymore, sorry!');
 		}
 
