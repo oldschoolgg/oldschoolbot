@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
+import { determineBingoProgress, onFinishTile } from '../../lib/bingo';
 import { allCLItemsFiltered, convertCLtoBank } from '../../lib/data/Collections';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
@@ -47,12 +48,22 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
-		let updates: [string, ItemBank][] = [
-			[UserSettings.CollectionLogBank, items.clone().add(this.settings.get(UserSettings.CollectionLogBank)).bank]
-		];
+		const newCL = items.clone().add(this.settings.get(UserSettings.CollectionLogBank));
+		let updates: [string, ItemBank][] = [[UserSettings.CollectionLogBank, newCL.bank]];
 
 		if (!dontAddToTempCL) {
-			updates.push([UserSettings.TempCL, items.clone().add(this.settings.get(UserSettings.TempCL)).bank]);
+			const oldTempCL = new Bank(this.settings.get(UserSettings.TempCL));
+			const newTempCL = items.clone().add(oldTempCL);
+			// If they have purchased a Bingo ticket, check the before/after bingo progress.
+			if (newCL.has('Bingo ticket')) {
+				const before = determineBingoProgress(oldTempCL);
+				const after = determineBingoProgress(newTempCL);
+				// If they finished a tile, process it.
+				if (before.tilesCompletedCount !== after.tilesCompletedCount) {
+					onFinishTile(this, before, after, newCL);
+				}
+			}
+			updates.push([UserSettings.TempCL, newTempCL.bank]);
 		}
 
 		return this.settings.update(updates);
