@@ -112,7 +112,7 @@ export async function revsCommand(
 
 	const defensiveGearPercent = Math.max(
 		0,
-		calcWhatPercent(userGear.getStats().defence_magic, maxDefenceStats['defence_magic'] / 2.5)
+		calcWhatPercent(userGear.getStats().defence_magic, maxDefenceStats['defence_magic'] / 2)
 	);
 	let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 	deathChance += deathChanceFromGear;
