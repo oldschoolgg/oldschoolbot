@@ -31,7 +31,7 @@ ${mentions.map(u => `${u.username}[${u.id}]`).join('\n')}`);
 **Start:** ${time(bingoStart / 1000)}
 **Finish:** ${time(end / 1000)}
 
-You have ${tilesCompleted} tiles completed.
+You have completed tiles: ${tilesCompleted}
 ${bingoTableStr}`;
 		return msg.channel.send(str);
 	}
