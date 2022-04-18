@@ -100,6 +100,7 @@ export async function revsCommand(
 		if (errors.length > 0) return errors.join('\n');
 		if (combatBoosts.length > 0) boosts = [...boosts, ...combatBoosts];
 		if (combatBankusage.length > 0) cost.add(combatBankusage);
+		boosts.push('5x for Hellfire bow');
 	}
 
 	updateBankSetting(user.client, ClientSettings.EconomyStats.PVMCost, cost);
