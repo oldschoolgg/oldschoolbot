@@ -549,6 +549,52 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'bingoreset': {
+				const [totalWith] = await prisma.$queryRawUnsafe<[{ count: number }]>(`SELECT COUNT(*)
+FROM users
+WHERE "collectionLogBank"->>'122003' IS NOT NULL;`);
+				await msg.confirm(
+					`Are you sure you want to reset the temperary collection logs of ${totalWith.count} people? (Everyone with a Bingo ticket in their CL)`
+				);
+				if (!msg.flagArgs.confirm) return msg.channel.send('Put `--confirm` in your message to run this.');
+				await prisma.$queryRawUnsafe(`UPDATE users
+SET temp_cl = '{}'::jsonb
+WHERE "collectionLogBank"->>'122003' IS NOT NULL;`);
+				sendToChannelID(this.client, '590529353931030554', {
+					content: `${msg.author} reset the temp CLs of ${totalWith.count} users.`
+				});
+				return msg.channel.send(`Reset the temporary collection logs of ${totalWith.count} people.`);
+			}
+			case 'bingostats': {
+				const stats = [
+					[
+						'Total unique people with tickets',
+						`SELECT COUNT(*)
+FROM users
+WHERE "collectionLogBank"->>'122003' IS NOT NULL;`
+					],
+					[
+						'Total ironmen with tickets',
+						`SELECT COUNT(*)
+FROM users
+WHERE "collectionLogBank"->>'122003' IS NOT NULL
+AND "minion.ironman" = true;`
+					],
+					[
+						'Total tickets bought (excluding irons)',
+						`SELECT SUM(("collectionLogBank"->>'122003')::int) AS count
+FROM users
+WHERE "collectionLogBank"->>'122003' IS NOT NULL
+AND "minion.ironman" = false;`
+					]
+				];
+				let result = '**Bingo Stats**\n';
+				for (const [name, query] of stats) {
+					const [totalWith] = await prisma.$queryRawUnsafe<[{ count: number }]>(query);
+					result += `**${name}:** ${totalWith.count}\n`;
+				}
+				return msg.channel.send(result);
+			}
 			case 'blacklist':
 			case 'bl': {
 				if (!input || !(input instanceof KlasaUser)) return;

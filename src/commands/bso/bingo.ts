@@ -4,13 +4,13 @@ import { KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
 
-const start = 1_650_286_800_000;
-const end = start + Time.Day * 7 * 2;
+export const bingoStart = 1_650_286_800_000;
+const end = bingoStart + Time.Day * 7 * 2;
 
 export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const str = `**#1 - BSO Bingo**
-**Start:** ${time(start / 1000)}
+**Start:** ${time(bingoStart / 1000)}
 **Finish:** ${time(end / 1000)}`;
 		if (msg.channel.id === '963954209768763433') {
 			msg.delete().catch(noOp);
