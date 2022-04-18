@@ -173,7 +173,7 @@ export function determineWoodcuttingTime(
 	const { findNewTreeTime } = log;
 
 	let newQuantity = 0;
-	while (timeElapsed < (1.5 * user.maxTripLength('Woodcutting')) / (Time.Second * 0.6)) {
+	while (timeElapsed < user.maxTripLength('Woodcutting') / (Time.Second * 0.6)) {
 		// Keep rolling until log chopped
 		while (!percentChance(chanceOfSuccess)) {
 			timeElapsed += 4;
