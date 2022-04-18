@@ -170,17 +170,17 @@ export function determineWoodcuttingTime(
 
 	const bankTime = log.bankingTime;
 	const chanceOfSuccess = slope * lvl + intercept;
-	const { respawnTime } = log;
+	const { findNewTreeTime } = log;
 
 	let newQuantity = 0;
-	while (timeElapsed < (100 * user.maxTripLength('Woodcutting')) / (Time.Second * 0.6)) {
+	while (timeElapsed < (1.5 * user.maxTripLength('Woodcutting')) / (Time.Second * 0.6)) {
 		// Keep rolling until log chopped
 		while (!percentChance(chanceOfSuccess)) {
 			timeElapsed += 4;
 		}
 		// Delay for depleting a tree
 		if (percentChance(log.depletionChance)) {
-			timeElapsed += respawnTime;
+			timeElapsed += findNewTreeTime;
 		} else {
 			timeElapsed += 4;
 		}

@@ -1,3 +1,4 @@
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
@@ -7,7 +8,13 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { determineWoodcuttingTime, formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
+import {
+	determineWoodcuttingTime,
+	formatDuration,
+	itemNameFromID,
+	randomVariation,
+	stringMatches
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
 
@@ -127,7 +134,7 @@ export default class extends BotCommand {
 				msg.author.skillLevel(SkillsEnum.Woodcutting) >= axe.wcLvl
 			) {
 				multiplier = axe.multiplier;
-				boosts.push(`${axe.multiplier}x speed for ${itemNameFromID(axe.id)}`);
+				boosts.push(`${axe.multiplier}x success multiplier for ${itemNameFromID(axe.id)}`);
 				break;
 			}
 		}
@@ -155,19 +162,28 @@ export default class extends BotCommand {
 
 		const duration = timetoChop;
 
+		const fakeDurationMin = quantity ? randomVariation(reduceNumByPercent(duration, 25), 20) : duration;
+		const fakeDurationMax = quantity ? randomVariation(increaseNumByPercent(duration, 25), 20) : duration;
+
 		await addSubTaskToActivityTask<WoodcuttingActivityTaskOptions>({
 			logID: log.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity: newQuantity,
 			duration,
+			fakeDurationMax,
+			fakeDurationMin,
 			powerChopping,
 			type: 'Woodcutting'
 		});
 
-		let response = `${msg.author.minionName} is now chopping ${newQuantity}x ${
+		let response = `${msg.author.minionName} is now chopping ${
 			log.name
-		}, it'll take around ${formatDuration(duration)} to finish.`;
+		} until your minion is satisfied, it'll take ${
+			quantity
+				? `between ${formatDuration(fakeDurationMin)} **and** ${formatDuration(fakeDurationMax)}`
+				: formatDuration(duration)
+		} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

@@ -1,5 +1,5 @@
 import { User } from 'discord.js';
-import { Time, uniqueArr } from 'e';
+import { increaseNumByPercent, reduceNumByPercent, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -86,6 +86,7 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
+	randomVariation,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
@@ -279,11 +280,15 @@ export default class extends Extendable {
 
 				const log = Woodcutting.Logs.find(log => log.id === data.logID);
 
-				return `${this.minionName} is currently chopping ${data.quantity}x ${
-					log!.name
-				}. ${formattedDuration} Your ${Emoji.Woodcutting} Woodcutting level is ${this.skillLevel(
-					SkillsEnum.Woodcutting
-				)}`;
+				return `${this.minionName} is currently chopping ${log!.name}. ${
+					data.fakeDurationMax === data.fakeDurationMin
+						? formattedDuration
+						: `approximately ${formatDuration(
+								randomVariation(reduceNumByPercent(durationRemaining, 25), 20)
+						  )} **to** ${formatDuration(
+								randomVariation(increaseNumByPercent(durationRemaining, 25), 20)
+						  )} remaining.`
+				} Your ${Emoji.Woodcutting} Woodcutting level is ${this.skillLevel(SkillsEnum.Woodcutting)}`;
 			}
 			case 'Runecraft': {
 				const data = currentTask as RunecraftActivityTaskOptions;
