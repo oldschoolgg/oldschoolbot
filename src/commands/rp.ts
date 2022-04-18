@@ -12,6 +12,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client, mahojiClient } from '..';
 import { CLIENT_ID } from '../config';
+import { bingoLeaderboard, csvDumpBingoPlayers } from '../lib/bingo';
 import {
 	badges,
 	BitField,
@@ -549,6 +550,14 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'bingoleaderboard': {
+				return msg.channel.send(await bingoLeaderboard());
+			}
+			case 'bingocsvdump': {
+				return msg.channel.send({
+					files: [new MessageAttachment(Buffer.from(await csvDumpBingoPlayers()), 'output.txt')]
+				});
+			}
 			case 'bingoreset': {
 				const [totalWith] = await prisma.$queryRawUnsafe<[{ count: number }]>(`SELECT COUNT(*)
 FROM users
