@@ -21,8 +21,8 @@ const specialSoldItems = new Map([
 	[id('Ancient relic'), 16_000_000]
 ]);
 
-export function sellPriceOfItem(client: KlasaClient, item: Item, taxRate = 20): { price: number; basePrice: number } {
-	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
+export function sellPriceOfItem(client: KlasaClient, item: Item, taxRate = 25): { price: number; basePrice: number } {
+	if (!item.price) return { price: 0, basePrice: 0 };
 	const customPrices = client.settings.get(ClientSettings.CustomPrices);
 	let basePrice = customPrices[item.id] ?? item.price;
 	let price = basePrice;
