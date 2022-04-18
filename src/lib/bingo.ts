@@ -302,7 +302,7 @@ export async function onFinishTile(
 	}
 	if (!newTotalCL.has('Bingo ticket')) return;
 	const tile = bingoTiles.find(i => i.id === finishedTile)!;
-	sendToChannelID(user.client as KlasaClient, '965089835100549191', {
+	sendToChannelID(user.client as KlasaClient, '965529168588734464', {
 		content: `${user} just finished the '${tile.name}' tile! This is their ${after.tilesCompletedCount}/${bingoTiles.length} finished tile.`
 	});
 }
