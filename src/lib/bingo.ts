@@ -240,7 +240,7 @@ const bingoTiles: BingoTile[] = [
 		allOf: resolveItems(['Squid dye'])
 	},
 	{
-		id: 24,
+		id: 25,
 		name: 'Enhanced crystal weapon seed!',
 		allOf: resolveItems(['Enhanced crystal weapon seed'])
 	}
