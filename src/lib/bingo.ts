@@ -8,6 +8,7 @@ import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit, skillingPets
 import { TanglerootTable } from './minions/data/killableMonsters/custom/Treebeard';
 import { prisma } from './settings/prisma';
 import { ItemBank } from './types';
+import { formatOrdinal } from './util/formatOrdinal';
 import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
 import { sendToChannelID } from './util/webhook';
@@ -302,8 +303,11 @@ export async function onFinishTile(
 	}
 	if (!newTotalCL.has('Bingo ticket')) return;
 	const tile = bingoTiles.find(i => i.id === finishedTile)!;
-	sendToChannelID(user.client as KlasaClient, '965089835100549191', {
+	sendToChannelID(user.client as KlasaClient, '965529168588734464', {
 		content: `${user} just finished the '${tile.name}' tile! This is their ${after.tilesCompletedCount}/${bingoTiles.length} finished tile.`
+	});
+	sendToChannelID(user.client as KlasaClient, '965546522353737788', {
+		content: `Someone just finished their ${formatOrdinal(after.tilesCompletedCount)} tile!`
 	});
 }
 

@@ -567,7 +567,8 @@ WHERE "collectionLogBank"->>'122003' IS NOT NULL;`);
 				);
 				if (!msg.flagArgs.confirm) return msg.channel.send('Put `--confirm` in your message to run this.');
 				await prisma.$queryRawUnsafe(`UPDATE users
-SET temp_cl = '{}'::jsonb
+SET temp_cl = '{}'::jsonb,
+last_temp_cl_reset = now()
 WHERE "collectionLogBank"->>'122003' IS NOT NULL;`);
 				sendToChannelID(this.client, '590529353931030554', {
 					content: `${msg.author} reset the temp CLs of ${totalWith.count} users.`
