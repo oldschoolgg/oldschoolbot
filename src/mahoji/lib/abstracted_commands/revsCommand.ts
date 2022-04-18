@@ -14,6 +14,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import combatAmmoUsage from '../../../lib/util/combatAmmoUsage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { getUserGear, handleMahojiConfirmation } from '../../mahojiSettings';
 
@@ -33,7 +34,7 @@ export async function revsCommand(
 	const style = convertAttackStylesToSetup(mUser.attack_style);
 	const userGear = getUserGear(mUser).wildy;
 
-	const boosts = [];
+	let boosts = [];
 	const monster = revenantMonsters.find(
 		m =>
 			stringMatches(m.name, name) ||
@@ -66,7 +67,9 @@ export async function revsCommand(
 		timePerMonster = reduceNumByPercent(timePerMonster, 35);
 		boosts.push(`${35}% for ${specialWeapon.name}`);
 	}
-
+	if (userGear.hasEquipped(['Hellfire bow'])) {
+		timePerMonster /= 5;
+	}
 	const quantity = Math.floor(user.maxTripLength('Revenants') / timePerMonster);
 	let duration = quantity * timePerMonster;
 
@@ -84,6 +87,20 @@ export async function revsCommand(
 	} else {
 		cost.add('Prayer potion(4)', 5);
 	}
+	if (userGear.hasEquipped(['Hellfire bow'])) {
+		const {
+			bank: combatBankusage,
+			boosts: combatBoosts,
+			errors
+		} = combatAmmoUsage({
+			duration,
+			user,
+			gearType: 'wildy'
+		});
+		if (errors.length > 0) return errors.join('\n');
+		if (combatBoosts.length > 0) boosts = [...boosts, ...combatBoosts];
+		if (combatBankusage.length > 0) cost.add(combatBankusage);
+	}
 
 	updateBankSetting(user.client, ClientSettings.EconomyStats.PVMCost, cost);
 	await user.removeItemsFromBank(cost);
@@ -95,7 +112,7 @@ export async function revsCommand(
 
 	const defensiveGearPercent = Math.max(
 		0,
-		calcWhatPercent(userGear.getStats().defence_magic, maxDefenceStats['defence_magic'])
+		calcWhatPercent(userGear.getStats().defence_magic, maxDefenceStats['defence_magic'] / 2.5)
 	);
 	let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 	deathChance += deathChanceFromGear;
