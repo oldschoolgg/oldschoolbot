@@ -212,7 +212,7 @@ const bingoTiles: BingoTile[] = [
 	{
 		id: 19,
 		name: 'Skeletal visage AND Draconic visage AND Wyvern visage',
-		oneOf: resolveItems(['Skeletal visage', 'Draconic visage', 'Wyvern visage'])
+		allOf: resolveItems(['Skeletal visage', 'Draconic visage', 'Wyvern visage'])
 	},
 	{
 		id: 20,
