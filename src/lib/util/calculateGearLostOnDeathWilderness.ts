@@ -154,9 +154,7 @@ export const lockedItems = resolveItems([
 	'Ranger hat (l)',
 	'Healer hat (l)',
 	'Fighter torso (l)',
-	'Penance skirt (l)',
-	"Combatant's cape",
-	'Ranged master cape'
+	'Penance skirt (l)'
 ]);
 
 const itemsThatBreakOnDeath: Record<number, number> = {
