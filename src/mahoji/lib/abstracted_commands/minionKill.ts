@@ -17,6 +17,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
 import { client } from '../../..';
+import { bingoIsActive } from '../../../lib/bingo';
 import { PvMMethod } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
@@ -588,7 +589,10 @@ export async function minionKillCommand(
 	}
 	const rangeSetup = { ...user.getGear('range').raw() };
 	let usedDart = false;
-	if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
+	if (
+		(!bingoIsActive() || !user.cl().has('Bingo ticket')) &&
+		rangeSetup.weapon?.item === itemID('Deathtouched dart')
+	) {
 		duration = 1;
 		if (rangeSetup.weapon.quantity > 1) {
 			rangeSetup.weapon.quantity--;
