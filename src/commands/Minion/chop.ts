@@ -120,11 +120,6 @@ export default class extends BotCommand {
 			);
 		}
 
-		let powerChopping = false;
-		if (msg.flagArgs.pc || msg.flagArgs.powerchop || msg.flagArgs.powerChopping || msg.flagArgs.powerchopping) {
-			powerChopping = true;
-		}
-
 		// If the user has an axe apply boost
 		const boosts = [];
 		let multiplier = 0;
@@ -143,11 +138,25 @@ export default class extends BotCommand {
 			return msg.channel.send('You need to own a axe suitable for your woodcutting level!');
 		}
 
+		let powerChopping = false;
+		if (msg.flagArgs.pc || msg.flagArgs.powerchop || msg.flagArgs.powerChopping || msg.flagArgs.powerchopping) {
+			boosts.push('Powerchopping, not gonna bank');
+			powerChopping = true;
+		}
+
 		let wcLvl = msg.author.skillLevel(SkillsEnum.Woodcutting);
 
 		// Invisible wc boost for woodcutting guild
 		if (msg.author.skillLevel(SkillsEnum.Woodcutting) >= 60 && log.wcGuild && hasFavour) {
+			boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 			wcLvl += 7;
+		}
+
+		// Enable 1.5 tick teaks half way to 99
+		if (msg.author.skillLevel(SkillsEnum.Woodcutting) >= 92 && log.id === 6333) {
+			boosts.push(
+				'You are chopping the teaks using a faster method (1.5t) because of your experience in woodcutting (level 92+)'
+			);
 		}
 
 		// Calculate the time it takes to chop a single log of this type, at this persons level.

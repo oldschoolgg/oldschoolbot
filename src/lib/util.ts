@@ -172,17 +172,22 @@ export function determineWoodcuttingTime(
 	const chanceOfSuccess = slope * lvl + intercept;
 	const { findNewTreeTime } = log;
 
+	let teakTick = false;
+	if (user.skillLevel(SkillsEnum.Woodcutting) >= 92 && log.id === 6333) {
+		teakTick = true;
+	}
+
 	let newQuantity = 0;
 	while (timeElapsed < user.maxTripLength('Woodcutting') / (Time.Second * 0.6)) {
 		// Keep rolling until log chopped
 		while (!percentChance(chanceOfSuccess)) {
-			timeElapsed += 4;
+			timeElapsed += teakTick ? 1.5 : 4;
 		}
 		// Delay for depleting a tree
 		if (percentChance(log.depletionChance)) {
 			timeElapsed += findNewTreeTime;
 		} else {
-			timeElapsed += 4;
+			timeElapsed += teakTick ? 1.5 : 4;
 		}
 		newQuantity++;
 
