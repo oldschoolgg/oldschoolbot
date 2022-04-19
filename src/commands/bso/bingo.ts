@@ -25,13 +25,15 @@ ${mentions.map(u => `${u.username}[${u.id}]`).join('\n')}`);
 		if (!bingoIsActive()) {
 			return msg.channel.send(`Bingo start: ${time(bingoStart / 1000)}`);
 		}
-		const { tilesCompleted, bingoTableStr } = determineBingoProgress(msg.author.settings.get(UserSettings.TempCL));
+		const { bingoTableStr, tilesCompletedCount } = determineBingoProgress(
+			msg.author.settings.get(UserSettings.TempCL)
+		);
 
 		const str = `**#1 - BSO Bingo**
 **Start:** ${time(bingoStart / 1000)}
-**Finish:** ${time(end / 1000)}
+**Finish:** ${time(end / 1000)} (${time(end / 1000, 'R')})
 
-You have ${tilesCompleted} tiles completed.
+You have ${tilesCompletedCount} tiles completed.
 ${bingoTableStr}`;
 		return msg.channel.send(str);
 	}

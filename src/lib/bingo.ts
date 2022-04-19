@@ -60,7 +60,6 @@ const bingoTiles: BingoTile[] = [
 		id: 4,
 		name: '1 OSRS Boss Pet',
 		oneOf: resolveItems([
-			'Abyssal orphan',
 			'Baby mole',
 			'Callisto cub',
 			'Hellpuppy',
@@ -175,12 +174,10 @@ const bingoTiles: BingoTile[] = [
 		name: 'Get ANY Jar drop',
 		oneOf: resolveItems([
 			'Jar of chemicals',
-			'Jar of darkness',
 			'Jar of decay',
 			'Jar of dirt',
 			'Jar of dreams',
 			'Jar of eyes',
-			'Jar of miasma',
 			'Jar of sand',
 			'Jar of smoke',
 			'Jar of souls',
