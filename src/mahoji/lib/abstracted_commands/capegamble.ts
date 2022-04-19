@@ -6,9 +6,9 @@ import { client } from '../../..';
 import { Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { roll } from '../../../lib/util';
+import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
-import chatHeadImage from '../../../lib/util/makeChatHeadImage';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export async function capeGambleStatsCommand(user: KlasaUser) {
@@ -27,7 +27,7 @@ export async function capeGambleCommand(user: KlasaUser, type: string, interacti
 
 	const capesOwned = await user.bank().amount(item.id);
 
-	if (capesOwned < 1) return `You have no ${item.name}'s' to gamble!`;
+	if (capesOwned < 1) return `You have no ${item.name}'s to gamble!`;
 
 	await handleMahojiConfirmation(interaction, `Are you sure you want to gamble a ${item.name}?`);
 
@@ -48,23 +48,25 @@ export async function capeGambleCommand(user: KlasaUser, type: string, interacti
 		);
 		return {
 			attachments: [
-				(
-					await chatHeadImage({
+				{
+					fileName: 'image.jpg',
+					buffer: await newChatHeadImage({
 						content:
 							type === 'fire'
 								? 'You lucky. Better train him good else TzTok-Jad find you, JalYt.'
 								: 'Luck be a TzHaar tonight. Jal-Nib-Rek is yours.',
 						head: type === 'fire' ? 'mejJal' : 'ketKeh'
 					})
-				).file
+				}
 			]
 		};
 	}
 
 	return {
 		attachments: [
-			(
-				await chatHeadImage({
+			{
+				fileName: 'image.jpg',
+				buffer: await newChatHeadImage({
 					content:
 						type === 'fire'
 							? `You not lucky. Maybe next time, JalYt. This is the ${formatOrdinal(
@@ -75,7 +77,7 @@ export async function capeGambleCommand(user: KlasaUser, type: string, interacti
 							  )} time you gamble cape.`,
 					head: type === 'fire' ? 'mejJal' : 'ketKeh'
 				})
-			).file
+			}
 		]
 	};
 }
