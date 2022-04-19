@@ -64,9 +64,8 @@ export const runecraftCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean; daeyalt_essence?: boolean }>) => {
 		const user = await client.fetchUser(userID.toString());
-		let { rune, quantity, usestams, daeyalt_essence } = options;
-		if (usestams === undefined) usestams = true;
-		if (daeyalt_essence === undefined) daeyalt_essence = false;
+		let { rune, quantity, usestams } = options;
+
 		rune = rune.toLowerCase().replace('rune', '').trim();
 
 		if (rune !== 'chaos' && rune.endsWith('s')) {
@@ -76,12 +75,20 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (['blood', 'soul'].includes(rune)) {
 			return darkAltarCommand({ user, channelID, name: rune });
 		}
+
 		const runeObj = Runecraft.Runes.find(
 			_rune => stringMatches(_rune.name, rune) || stringMatches(_rune.name.split(' ')[0], rune)
 		);
-
 		if (!runeObj) {
 			return `Thats not a valid rune. Valid rune are ${Runecraft.Runes.map(_rune => _rune.name).join(', ')}.`;
+		}
+
+		if (usestams === undefined) {
+			usestams = true;
+		}
+
+		if (!usestams && !runeObj.stams) {
+			usestams = true;
 		}
 
 		const quantityPerEssence = calcMaxRCQuantity(runeObj, user);
@@ -95,7 +102,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 		}
 
 		const bank = user.bank();
-		const daeyaltEssenceOwned = bank.amount('Daeyalt essence');
 		const numEssenceOwned = bank.amount('Pure essence');
 
 		let { tripLength } = runeObj;
@@ -145,18 +151,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
 		// If no quantity provided, set it to the max.
-		if (daeyalt_essence) {
-			if (!quantity) quantity = Math.min(daeyaltEssenceOwned, maxCanDo);
-			if (daeyaltEssenceOwned === 0 || quantity === 0 || daeyaltEssenceOwned < quantity) {
-				return "You don't have enough Daeyalt Essence to craft these runes. You can acquire some through Mining.";
-			}
-		} else {
-			if (!quantity) quantity = Math.min(numEssenceOwned, maxCanDo);
+		if (!quantity) quantity = Math.min(numEssenceOwned, maxCanDo);
 
 			if (numEssenceOwned === 0 || quantity === 0 || numEssenceOwned < quantity) {
 				return "You don't have enough Pure Essence to craft these runes. You can acquire some through Mining, or purchasing from other players.";
 			}
-		}
+		
 
 		const numberOfInventories = Math.max(Math.ceil(quantity / inventorySize), 1);
 		const duration = numberOfInventories * tripLength;
@@ -228,10 +228,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			}
 			totalCost.add(removeTalismanAndOrRunes);
 		}
-		if (daeyalt_essence) {
-			totalCost.add('Daeyalt essence', quantity);
-			if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
-		} else totalCost.add('Pure essence', quantity);
+		if (totalCost.add('Pure essence', quantity))
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
@@ -243,7 +240,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			essenceQuantity: quantity,
 			useStaminas: usestams,
-			daeyaltEssence: daeyalt_essence,
 			duration,
 			imbueCasts,
 			type: 'Runecraft'
