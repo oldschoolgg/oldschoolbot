@@ -210,18 +210,22 @@ export default class extends BotCommand {
 			return msg.channel.send(`${msg.author.minionName} needs ${ore.level} Mining to mine ${ore.name}.`);
 		}
 
+		const boosts = [];
+
 		let miningLevel = msg.author.skillLevel(SkillsEnum.Mining);
 		if ((ore.minerals || ore.nuggets) && msg.author.skillLevel(SkillsEnum.Mining) >= 60) {
+			boosts.push('+7 invisible Mining lvls at the Mining guild');
 			miningLevel += 7;
 		}
 		// Checks if user own Celestial ring or Celestial signet
 		if (msg.author.hasItemEquippedOrInBank('Celestial ring')) {
+			boosts.push('+4 invisible Mining lvls for Celestial ring');
 			miningLevel += 4;
 		}
 
 		let currentPickaxe = null;
 		// For each pickaxe, if they have it, give them its' bonus and break.
-		const boosts = [];
+
 		for (const pickaxe of pickaxes) {
 			if (
 				msg.author.hasItemEquippedOrInBank(pickaxe.id) &&
