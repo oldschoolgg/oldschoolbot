@@ -164,10 +164,12 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Bandos chestplate')]: 2
+				[itemID('Bandos chestplate')]: 2,
+				[itemID('Torva platebody')]: 2
 			},
 			{
-				[itemID('Bandos tassets')]: 2
+				[itemID('Bandos tassets')]: 2,
+				[itemID('Torva platelegs')]: 2
 			},
 			{
 				[itemID('Saradomin godsword')]: 4,

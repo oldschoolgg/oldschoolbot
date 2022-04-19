@@ -253,7 +253,9 @@ export const enum Tasks {
 	TearsOfGuthix = 'tearsOfGuthixActivity',
 	LastManStanding = 'lmsActivity',
 	BirthdayEvent = 'birthdayEventActivity',
-	TokkulShop = 'tokkulShopActivity'
+	TokkulShop = 'tokkulShopActivity',
+	Nex = 'nexActivity',
+	Easter = 'easterActivity'
 }
 
 export enum ActivityGroup {
@@ -332,7 +334,8 @@ export const enum BitField {
 	HasScrollOfLongevity = 203,
 	HasScrollOfTheHunt = 204,
 	HasBananaEnchantmentScroll = 205,
-	HasDaemonheimAgilityPass = 206
+	HasDaemonheimAgilityPass = 206,
+	DisabledGorajanBoneCrusher = 207
 }
 
 interface BitFieldData {
@@ -386,7 +389,12 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
 
 	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
-	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true }
+	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
+	[BitField.DisabledGorajanBoneCrusher]: {
+		name: 'Disabled Gorajan Bonecrusher',
+		protected: false,
+		userConfigurable: true
+	}
 } as const;
 
 export const enum PatronTierID {

@@ -1,11 +1,13 @@
-import { activity_type_enum, User } from '@prisma/client';
+import type { activity_type_enum, User } from '@prisma/client';
 import { calcPercentOfNum, calcWhatPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { getUserGear } from '../../mahoji/mahojiSettings';
 import { PerkTier } from '../constants';
 import { allPetIDs } from '../data/CollectionsExport';
+import { getSimilarItems } from '../data/similarItems';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { convertXPtoLVL, patronMaxTripCalc } from '../util';
@@ -23,14 +25,13 @@ export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_ty
 
 	max += patronMaxTripCalc(user);
 
-	const hasMasterHPCape =
-		user instanceof KlasaUser ? user.hasItemEquippedAnywhere('Hitpoints master cape') : getUserGear(user);
+	const hasMasterHPCape = userHasItemsEquippedAnywhere(user, 'Hitpoints master cape');
 	let masterHPCapeBoost = 0;
 	let regularHPBoost = false;
 
 	switch (activity) {
 		case 'Fishing':
-			if ((user as any).hasItemEquippedAnywhere('Fish sack')) {
+			if (userHasItemsEquippedAnywhere(user, 'Fish sack')) {
 				max += Time.Minute * 9;
 			}
 			break;
@@ -178,4 +179,19 @@ export function userHasItemsEquippedAnywhere(
 		}
 	}
 	return false;
+}
+
+export function hasItemEquippedOrInBank(
+	user: User | KlasaUser,
+	_items: string | number | (string | number)[]
+): boolean {
+	const bank = user instanceof KlasaUser ? user.bank() : new Bank(user.bank as ItemBank);
+	const items = resolveItems(_items);
+	for (const baseID of items) {
+		const similarItems = [...getSimilarItems(baseID), baseID];
+		const hasOneEquipped = similarItems.some(id => userHasItemsEquippedAnywhere(user, id, true));
+		const hasOneInBank = similarItems.some(id => bank.has(id));
+		if (!hasOneEquipped && !hasOneInBank) return false;
+	}
+	return true;
 }

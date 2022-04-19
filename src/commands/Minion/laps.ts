@@ -40,7 +40,7 @@ export function alching({
 }) {
 	if (user.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = user.bank();
-	const favAlchables = user.getUserFavAlchs() as Item[];
+	const favAlchables = user.getUserFavAlchs(tripLength) as Item[];
 
 	if (!flags.alch) {
 		return null;

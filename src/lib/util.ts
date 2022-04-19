@@ -43,7 +43,12 @@ import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { Gear } from './structures/Gear';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
+import {
+	GroupMonsterActivityTaskOptions,
+	NexTaskOptions,
+	RaidsOptions,
+	TheatreOfBloodTaskOptions
+} from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -286,6 +291,10 @@ export function isGroupActivity(data: any): data is GroupMonsterActivityTaskOpti
 
 export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 	return 'wipedRoom' in data;
+}
+
+export function isNexActivity(data: any): data is NexTaskOptions {
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
 }
 
 export function sha256Hash(x: string) {
@@ -814,7 +823,6 @@ export function removeFromArr<T>(arr: T[], item: T) {
  * @param percent The percent to scale
  * @returns percent
  */
-export function exponentialPercentScale(percent: number, decay = 0.0038) {
-	const decayedPercent = Math.pow(100 * Math.E, -decay * (100 - percent));
-	return decayedPercent * 100;
+export function exponentialPercentScale(percent: number, decay = 0.021) {
+	return 100 * Math.pow(Math.E, -decay * (100 - percent));
 }

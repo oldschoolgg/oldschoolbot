@@ -3,9 +3,10 @@ import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { MAX_INT_JAVA } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemID as id, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { clamp, itemID as id, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 
 /**
  * - Hardcoded prices
@@ -20,8 +21,8 @@ const specialSoldItems = new Map([
 	[id('Ancient relic'), 16_000_000]
 ]);
 
-export function sellPriceOfItem(client: KlasaClient, item: Item, taxRate = 20): { price: number; basePrice: number } {
-	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
+export function sellPriceOfItem(client: KlasaClient, item: Item, taxRate = 25): { price: number; basePrice: number } {
+	if (!item.price) return { price: 0, basePrice: 0 };
 	const customPrices = client.settings.get(ClientSettings.CustomPrices);
 	let basePrice = customPrices[item.id] ?? item.price;
 	let price = basePrice;
@@ -30,6 +31,7 @@ export function sellPriceOfItem(client: KlasaClient, item: Item, taxRate = 20): 
 	if (price < item.highalch * 3) {
 		price = Math.floor(calcPercentOfNum(30, item.highalch));
 	}
+	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
 	return { price, basePrice };
 }
 

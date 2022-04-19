@@ -28,7 +28,7 @@ export default class extends BotCommand {
 			)
 			.setDescription(
 				`**Price:** ${Util.toKMB(priceOfItem)} 
-**Sell price:** ${sellPriceOfItem(this.client, item)}
+**Sell price:** ${sellPriceOfItem(this.client, item).price}
 **Alch value:** ${Util.toKMB(item.highalch)}`
 			);
 

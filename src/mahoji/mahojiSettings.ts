@@ -13,6 +13,7 @@ import {
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Items } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { SILENT_ERROR } from '../lib/constants';
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
@@ -59,19 +60,19 @@ export const filterOption: CommandOption = {
 	}
 };
 
-const itemArr = Items.array().map(i => ({ name: i.name, id: i.id, key: `${i.name}${i.id}` }));
+const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
 
-export const itemOption: CommandOption = {
+export const itemOption = (filter?: (item: Item) => boolean): CommandOption => ({
 	type: ApplicationCommandOptionType.String,
 	name: 'item',
 	description: 'The item you want to pick.',
 	required: false,
 	autocomplete: async value => {
-		return itemArr
-			.filter(i => i.key.includes(value.toLowerCase()))
-			.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
+		let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
+		if (filter) res = res.filter(filter);
+		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
 	}
-};
+});
 
 export const monsterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
@@ -190,6 +191,7 @@ export async function mahojiUserSettingsUpdate(
 	}
 	assert(klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level);
 	assert(klasaUser.settings.get(UserSettings.HonourPoints) === newUser.honour_points);
+	assert(klasaUser.settings.get(UserSettings.EggsDelivered) === newUser.eggs_delivered);
 
 	return { newUser };
 }

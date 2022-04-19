@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, tame_growth } from '@prisma/client';
 import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -7,6 +7,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { client } from '../..';
+import { generateNewTame } from '../../commands/bso/nursery';
 import { production } from '../../config';
 import { BitField, MAX_QP } from '../../lib/constants';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -17,6 +18,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
 import { Gear } from '../../lib/structures/Gear';
+import { tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
@@ -343,6 +345,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'irontoggle',
 					description: 'Toggle being an ironman on/off.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'spawntames',
+					description: 'Spawns you adult tames.'
 				}
 			],
 			run: async ({
@@ -360,6 +367,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				badnexgear?: {};
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
+				spawntames?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -482,6 +490,20 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						}
 					});
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
+				}
+				if (options.spawntames) {
+					for (const specie of tameSpecies) {
+						await generateNewTame(user, specie);
+						await prisma.tame.updateMany({
+							where: {
+								user_id: user.id
+							},
+							data: {
+								growth_stage: tame_growth.adult
+							}
+						});
+					}
+					return 'Gave you an adult of each tame.';
 				}
 				return 'Nothin!';
 			}

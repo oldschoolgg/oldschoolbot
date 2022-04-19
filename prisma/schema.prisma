@@ -390,6 +390,8 @@ model User {
   farmingPatches_mushroom    Json?    @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
   kourend_favour             Json?    @map("kourend_favour") @db.Json
+  bank_sort_method           String?  @db.VarChar(16)
+  bank_sort_weightings       Json     @default("{}") @db.Json
 
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
@@ -430,6 +432,7 @@ model User {
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
   got_free_festive_present Boolean  @default(false)
+  eggs_delivered           Int      @default(0)
 
   // Invention
   materials_total         Json   @default("{}") @db.Json
@@ -724,6 +727,7 @@ enum activity_type_enum {
   FishingContest
   BirthdayEvent
   TokkulShop
+  Easter
 }
 
 enum xp_gains_skill_enum {

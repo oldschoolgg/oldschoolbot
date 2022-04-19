@@ -87,6 +87,7 @@ const source: [string, (string | number)[]][] = [
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
 	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
+	['Armadyl crossbow', ['Zaryte crossbow']],
 	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
 	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
@@ -239,7 +240,7 @@ const source: [string, (string | number)[]][] = [
 			'Mystic steam staff',
 			'Mud battlestaff',
 			'Mystic mud staff',
-			'Kodai wand'
+			'Virtus wand'
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
@@ -330,7 +331,8 @@ const source: [string, (string | number)[]][] = [
 		['Basic tackle box', 'Standard tackle box', 'Professional tackle box', "Champion's tackle box"]
 	],
 	['Magic shortbow', ['Magic shortbow (i)']],
-	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]]
+	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
+	['Kodai wand', ['Virtus wand']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

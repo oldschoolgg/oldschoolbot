@@ -175,11 +175,18 @@ setCustomItem(
 	500_000_000
 );
 
-setCustomItem(5020, 'Lottery ticket', 'Paramaya ticket');
+setCustomItem(5020, 'Lottery ticket', 'Paramaya ticket', {
+	customItemData: {
+		isSuperUntradeable: true,
+		cantDropFromMysteryBoxes: true,
+		cantBeSacrificed: true
+	}
+});
 setCustomItem(5021, 'Bank lottery ticket', 'Paramaya ticket', {
 	customItemData: {
-		isSuperUntradeable: false,
-		cantDropFromMysteryBoxes: true
+		isSuperUntradeable: true,
+		cantDropFromMysteryBoxes: true,
+		cantBeSacrificed: true
 	}
 });
 // setCustomItem(25238, 'Dwarven defender', ('Dragon defender'));
@@ -1325,6 +1332,51 @@ setCustomItem(48_330, 'Turkey', 'Coal', {}, 100_000);
 setCustomItem(48_331, 'Turkey drumstick', 'Coal', {}, 100_000);
 setCustomItem(48_332, 'Burnt turkey', 'Coal', {}, 100_000);
 setCustomItem(48_333, 'Cornucopia', 'Coal', {}, 100_000);
+setCustomItem(
+	48_334,
+	'Easter egg crate',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+setCustomItem(
+	48_335,
+	'Decorative easter eggs',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+setCustomItem(
+	48_336,
+	'Leia',
+	'Herbi',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	48_337,
+	'Chickaxe',
+	'Dragon pickaxe',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+
 /**
  * Misc Items
  *
@@ -1354,8 +1406,8 @@ setCustomItem(50_016, 'Master farmer boots', 'Rune boots', {}, 1_000_000);
 
 setCustomItem(50_017, 'Elder logs', 'Magic logs', {}, 19_000);
 setCustomItem(50_018, 'Elder plank', 'Mahogany plank', {}, 10_000);
-setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', { highalch: 1025 }, 19_000);
-setCustomItem(50_020, 'Elder bow', 'Mahogany plank', { highalch: 2100 }, 10_000);
+setCustomItem(50_019, 'Elder bow(u)', 'Magic logs', { highalch: 1025 }, 10_000);
+setCustomItem(50_020, 'Elder bow', 'Mahogany plank', { highalch: 2100 }, 19_000);
 setCustomItem(50_021, 'Elder rune', 'Fire rune', {}, 500);
 setCustomItem(50_022, 'Jar of magic', 'Fire rune', {}, 1_000_000);
 setCustomItem(50_023, 'Magus scroll', 'Fire rune', {}, 500_000);
@@ -2634,6 +2686,19 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000
+);
+setCustomItem(
+	122_003,
+	'Bingo ticket',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true,
+			cantBeSacrificed: true
 		}
 	},
 	1_000_000

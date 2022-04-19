@@ -2,7 +2,7 @@ import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
 import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
-import { noOp, notEmpty, uniqueArr } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
@@ -12,6 +12,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client, mahojiClient } from '..';
 import { CLIENT_ID } from '../config';
+import { bingoLeaderboard, csvDumpBingoPlayers } from '../lib/bingo';
 import {
 	badges,
 	BitField,
@@ -42,6 +43,7 @@ import {
 	getSupportGuild,
 	getUsername,
 	isGroupActivity,
+	isNexActivity,
 	isRaidsActivity,
 	isSuperUntradeable,
 	isTobActivity,
@@ -61,6 +63,7 @@ import PatreonTask from '../tasks/patreon';
 async function checkBank(msg: KlasaMessage) {
 	const rawBank = msg.author.settings.get(UserSettings.Bank);
 	const rawCL = msg.author.settings.get(UserSettings.CollectionLogBank);
+	const rawTempCL = msg.author.settings.get(UserSettings.TempCL);
 	const rawSB = msg.author.settings.get(UserSettings.SacrificedBank);
 	const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
 
@@ -78,6 +81,7 @@ async function checkBank(msg: KlasaMessage) {
 	const allItemsToCheck = [
 		...Object.keys(rawBank),
 		...Object.keys(rawCL),
+		...Object.keys(rawTempCL),
 		...Object.keys(rawSB),
 		...favorites,
 		...allGearItemIDs
@@ -94,10 +98,12 @@ async function checkBank(msg: KlasaMessage) {
 
 	const newBank = { ...rawBank };
 	const newCL = { ...rawCL };
+	const newTempCL = { ...rawTempCL };
 	const newSB = { ...rawSB };
 	for (const id of brokenBank) {
 		delete newBank[id];
 		delete newCL[id];
+		delete newTempCL[id];
 		delete newSB[id];
 	}
 
@@ -120,6 +126,7 @@ async function checkBank(msg: KlasaMessage) {
 		});
 		await msg.author.settings.update(UserSettings.Bank, newBank);
 		await msg.author.settings.update(UserSettings.CollectionLogBank, newCL);
+		await msg.author.settings.update(UserSettings.TempCL, newTempCL);
 		await msg.author.settings.update(UserSettings.SacrificedBank, newSB);
 
 		return msg.channel.send(
@@ -173,9 +180,10 @@ async function checkMassesCommand(msg: KlasaMessage) {
 	const now = Date.now();
 	const massStr = masses
 		.map(m => {
-			const remainingTime = isTobActivity(m)
-				? m.finishDate - m.duration + m.fakeDuration - now
-				: m.finishDate - now;
+			const remainingTime =
+				isTobActivity(m) || isNexActivity(m)
+					? m.finishDate - m.duration + m.fakeDuration - now
+					: m.finishDate - now;
 			if (isGroupActivity(m)) {
 				return [
 					remainingTime,
@@ -542,6 +550,44 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
+			case 'bingoleaderboard': {
+				return msg.channel.send(await bingoLeaderboard());
+			}
+			case 'bingocsvdump': {
+				return msg.channel.send({
+					files: [new MessageAttachment(Buffer.from(await csvDumpBingoPlayers()), 'output.txt')]
+				});
+			}
+			case 'bingostats': {
+				const stats = [
+					[
+						'Total unique people with tickets',
+						`SELECT COUNT(*)
+FROM users
+WHERE "collectionLogBank"->>'122003' IS NOT NULL;`
+					],
+					[
+						'Total ironmen with tickets',
+						`SELECT COUNT(*)
+FROM users
+WHERE "collectionLogBank"->>'122003' IS NOT NULL
+AND "minion.ironman" = true;`
+					],
+					[
+						'Total tickets bought (excluding irons)',
+						`SELECT SUM(("collectionLogBank"->>'122003')::int) AS count
+FROM users
+WHERE "collectionLogBank"->>'122003' IS NOT NULL
+AND "minion.ironman" = false;`
+					]
+				];
+				let result = '**Bingo Stats**\n';
+				for (const [name, query] of stats) {
+					const [totalWith] = await prisma.$queryRawUnsafe<[{ count: number }]>(query);
+					result += `**${name}:** ${totalWith.count}\n`;
+				}
+				return msg.channel.send(result);
+			}
 			case 'blacklist':
 			case 'bl': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -1045,49 +1091,6 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
-			}
-			case 'migratenex': {
-				const nexItems = [
-					['Torva full helm (broken)', 'Torva full helm'],
-					['Torva platebody (broken)', 'Torva platebody'],
-					['Torva platelegs (broken)', 'Torva platelegs'],
-					['Torva boots (broken)', 'Torva boots'],
-					['Torva gloves (broken)', 'Torva gloves'],
-					['Pernix cowl (broken)', 'Pernix cowl'],
-					['Pernix body (broken)', 'Pernix body'],
-					['Pernix chaps (broken)', 'Pernix chaps'],
-					['Pernix boots (broken)', 'Pernix boots'],
-					['Pernix gloves (broken)', 'Pernix gloves'],
-					['Virtus mask (broken)', 'Virtus mask'],
-					['Virtus robe top (broken)', 'Virtus robe top'],
-					['Virtus robe legs (broken)', 'Virtus robe legs'],
-					['Virtus boots (broken)', 'Virtus boots'],
-					['Virtus gloves (broken)', 'Virtus gloves']
-				];
-				const res: any[] = await prisma.$queryRawUnsafe(`SELECT id
-FROM users
-WHERE "collectionLogBank"::jsonb ?| array['601', '605', '4272', '758', '759', '432', '709', '2404', '2838', '4273', '788', '983', '2409', '9654', '2423'];`);
-				let IDs = res.map(i => i.id);
-
-				for (const id of IDs) {
-					const user = await client.fetchUser(id).catch(noOp);
-					if (!user) continue;
-					const itemsToAddToTheirCL = new Bank();
-					const cl = user.cl();
-					if (!cl.has('Virtus crystal') && (cl.has('Virtus wand') || cl.has('Virtus book'))) {
-						itemsToAddToTheirCL.add('Virtus crystal', cl.amount('Virtus wand') + cl.amount('Virtus book'));
-					}
-					for (const [brokenItem, normalItem] of nexItems) {
-						if (cl.has(normalItem)) {
-							const quantityToAdd = cl.amount(normalItem) - cl.amount(brokenItem);
-							if (quantityToAdd > 0) {
-								itemsToAddToTheirCL.add(brokenItem, quantityToAdd);
-							}
-						}
-					}
-					console.log(`Adding ${itemsToAddToTheirCL} to ${user.username}`);
-					await user.addItemsToCollectionLog({ items: itemsToAddToTheirCL });
-				}
 			}
 		}
 	}

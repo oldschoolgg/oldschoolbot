@@ -115,6 +115,8 @@ const BlacksmithCrateTable = new LootTable()
 	.add('Blacksmith gloves')
 	.add('Blacksmith boots');
 
+export const BlacksmithOutfit = BlacksmithCrateTable.allItems;
+
 export const SpoilsOfWarBaseTable = new LootTable()
 	.add('Pure essence', [4000, 6000], 6)
 	.add('Coins', [20_000, 30_000], 5)

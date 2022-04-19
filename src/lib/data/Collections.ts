@@ -326,7 +326,11 @@ export const allCollectionLogs: ICollection = {
 				items: krilTsutsarothCL
 			},
 			'The Nightmare': {
-				alias: NightmareMonster.aliases,
+				alias: [...NightmareMonster.aliases, 'phosani'],
+				kcActivity: {
+					Default: 'Nightmare',
+					Phosani: "Phosani's Nightmare"
+				},
 				items: theNightmareCL
 			},
 			Obor: {
@@ -1104,6 +1108,10 @@ export const allCollectionLogs: ICollection = {
 	},
 	Discontinued: {
 		activities: {
+			'Easter 2022': {
+				items: resolveItems(['Chickaxe', 'Leia', 'Decorative easter eggs']),
+				counts: false
+			},
 			'Thanksgiving 2021': {
 				items: resolveItems(['Raw turkey', 'Turkey', 'Turkey drumstick', 'Burnt turkey', 'Cornucopia']),
 				counts: false

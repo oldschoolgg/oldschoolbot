@@ -1,12 +1,13 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { hasBlackSmithEquipped } from '../../commands/Minion/smith';
+import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BlastFurnaceActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
+import { hasItemEquippedOrInBank } from '../../lib/util/minionUtils';
 
 export default class extends Task {
 	async run(data: BlastFurnaceActivityTaskOptions) {
@@ -17,7 +18,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		const hasBS = hasBlackSmithEquipped(user.getGear('skilling'));
+		const hasBS = hasItemEquippedOrInBank(user, BlacksmithOutfit);
 
 		if (bar.id === itemID('Gold bar') && user.hasItemEquippedOrInBank('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
