@@ -7,7 +7,7 @@ import { Bank, Items } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { bankImageCache, BitField, Events } from '../lib/constants';
+import { bankImageCache, BitField, Events, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { GearSetupType } from '../lib/gear';
@@ -15,7 +15,7 @@ import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { BankSortMethods, sorts } from '../lib/sorts';
+import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import {
 	addArrayOfNumbers,
 	cleanString,
@@ -29,6 +29,7 @@ import {
 	drawImageWithOutline,
 	fillTextXTimesInCtx
 } from '../lib/util/canvasUtil';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
@@ -291,8 +292,6 @@ export default class BankImageTask extends Task {
 		const settings =
 			typeof user === 'undefined' ? null : typeof user === 'string' ? await getUserSettings(user) : user.settings;
 
-		const favorites = settings?.get(UserSettings.FavoriteItems);
-
 		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1);
 		const rawCL = settings?.get(UserSettings.CollectionLogBank);
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
@@ -335,17 +334,36 @@ export default class BankImageTask extends Task {
 		let items = bank.items();
 
 		// Sorting
-		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? 'value' : 'value';
-		if (sort || favorites?.length) {
-			items = items.sort((a, b) => {
-				if (favorites) {
-					const aFav = favorites.includes(a[0].id);
-					const bFav = favorites.includes(b[0].id);
-					if (aFav && bFav) return sorts[sort](a, b);
-					if (bFav) return 1;
-					if (aFav) return -1;
-				}
-				return sorts[sort](a, b);
+		const favorites = settings?.get(UserSettings.FavoriteItems);
+		const weightings = settings?.get(UserSettings.BankSortWeightings);
+
+		const perkTier = user ? getUsersPerkTier(user) : 0;
+		const defaultSort: BankSortMethod =
+			perkTier < PerkTier.Two ? 'value' : settings?.get(UserSettings.BankSortMethod) ?? 'value';
+		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? defaultSort : defaultSort;
+
+		items.sort(sorts[sort]);
+
+		if (favorites) {
+			items.sort((a, b) => {
+				const aFav = favorites.includes(a[0].id);
+				const bFav = favorites.includes(b[0].id);
+				if (aFav && bFav) return sorts[sort](a, b);
+				if (bFav) return 1;
+				if (aFav) return -1;
+				return 0;
+			});
+		}
+
+		if (perkTier >= PerkTier.Two && weightings && Object.keys(weightings).length > 0) {
+			items.sort((a, b) => {
+				const aWeight = weightings[a[0].id];
+				const bWeight = weightings[b[0].id];
+				if (aWeight === undefined && bWeight === undefined) return 0;
+				if (bWeight && aWeight) return bWeight - aWeight;
+				if (bWeight) return 1;
+				if (aWeight) return -1;
+				return 0;
 			});
 		}
 
@@ -428,7 +446,8 @@ export default class BankImageTask extends Task {
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
 			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
-			useSmallBank ? 'smallbank' : 'no-smallbank'
+			useSmallBank ? 'smallbank' : 'no-smallbank',
+			sort
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);

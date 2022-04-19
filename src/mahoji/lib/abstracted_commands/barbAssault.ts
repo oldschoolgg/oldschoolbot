@@ -15,9 +15,10 @@ import { clamp, formatDuration, itemID, randomVariation, stringMatches } from '.
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
-const BarbBuyables = [
+export const BarbBuyables = [
 	{
 		item: getOSItem('Fighter hat'),
 		cost: 275 * 4
@@ -118,13 +119,18 @@ export async function barbAssaultBuyCommand(
 	klasaUser: KlasaUser,
 	user: User,
 	input: string,
-	quantity: number
+	quantity?: number
 ) {
+	if (typeof input !== 'string') input = '';
 	const buyable = BarbBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
 		return `Here are the items you can buy: \n\n${BarbBuyables.map(
 			i => `**${i.item.name}:** ${i.cost} points`
 		).join('\n')}.`;
+	}
+
+	if (!quantity) {
+		quantity = 1;
 	}
 
 	const { item, cost } = buyable;
@@ -198,10 +204,23 @@ export async function barbAssaultGambleCommand(
 			)} High gamble! They are the ${formatOrdinal(amount + 1)} to it.`
 		);
 	}
-	const { itemsAdded } = await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
-	return `You spent ${(
-		cost * quantity
-	).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received... ${itemsAdded}.`;
+	const { itemsAdded, previousCL } = await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
+
+	return {
+		content: `You spent ${(
+			cost * quantity
+		).toLocaleString()} Honour Points for ${quantity.toLocaleString()}x ${name} Gamble, and received...`,
+		attachments: [
+			(
+				await makeBankImage({
+					bank: itemsAdded,
+					user: klasaUser,
+					cl: previousCL,
+					flags: { showNewCL: 1 }
+				})
+			).file
+		]
+	};
 }
 
 export async function barbAssaultStartCommand(channelID: bigint, user: User, klasaUser: KlasaUser) {
