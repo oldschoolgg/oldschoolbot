@@ -334,6 +334,17 @@ export function hasSlayerUnlock(
 	return { success, errors };
 }
 
+export function filterSacReplace(sacBank: Bank, mutate: boolean = true) {
+	const bankToSac = mutate ? sacBank : new Bank(sacBank.bank);
+
+	if (bankToSac.has('Black mask')) {
+		const numBlackMask = bankToSac.amount('Black mask');
+		bankToSac.remove('Black mask', numBlackMask);
+		bankToSac.add('Black mask (10)', numBlackMask);
+	}
+	return bankToSac;
+}
+
 export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	// Order: Fang, eye, heart.
 	const numBlackMask = myLoot.amount('Black mask (10)');
