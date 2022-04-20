@@ -11,7 +11,7 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client, mahojiClient } from '..';
-import { CLIENT_ID } from '../config';
+import { CLIENT_ID, production } from '../config';
 import { bingoLeaderboard, csvDumpBingoPlayers } from '../lib/bingo';
 import {
 	badges,
@@ -34,6 +34,7 @@ import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../l
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
+import { ItemBank } from '../lib/types';
 import {
 	asyncExec,
 	channelIsSendable,
@@ -49,7 +50,8 @@ import {
 	isTobActivity,
 	itemNameFromID,
 	moidLink,
-	stringMatches
+	stringMatches,
+	toKMB
 } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -57,6 +59,7 @@ import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
+import { mahojiParseNumber } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
@@ -359,6 +362,52 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'setmp': {
+				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
+				if (
+					!msg.member ||
+					[Roles.BSOMassHoster, Roles.Moderator, Roles.MassHoster, Roles.PatronTier3].every(
+						r => !msg.member!.roles.cache.has(r)
+					)
+				) {
+					return;
+				}
+				if (!input || typeof input !== 'string') return;
+				const [itemName, _price] = input.split(',');
+				const item = getOSItem(itemName);
+				const price = mahojiParseNumber({ input: _price, min: 1, max: 100_000_000_000 });
+				if (!price) return msg.channel.send('Invalid price.');
+				await msg.confirm(
+					`Are you sure you want to set the *market value* of ${item.name} to ${toKMB(
+						price
+					)}? This must be a reasonable price that the item is sold/bought at. If you put misleading, incorrect, or unnecessary values, you will be banned.`
+				);
+				const { market_prices: currentMarketPrices } = (await prisma.clientStorage.findFirst({
+					select: {
+						market_prices: true
+					}
+				}))!;
+				const newMarketPrices: ItemBank = {
+					...(currentMarketPrices as ItemBank),
+					[item.id]: price
+				};
+				const { market_prices: updatedMarketPrices } = await prisma.clientStorage.update({
+					data: {
+						market_prices: newMarketPrices
+					},
+					where: {
+						id: CLIENT_ID
+					},
+					select: {
+						market_prices: true
+					}
+				});
+				return msg.channel.send(
+					`You set the price of ${item.name} to ${(updatedMarketPrices as ItemBank)[
+						item.id
+					].toLocaleString()}.`
+				);
+			}
 			case 'ping': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || typeof input !== 'string') return;
