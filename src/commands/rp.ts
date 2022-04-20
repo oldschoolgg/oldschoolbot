@@ -365,14 +365,40 @@ export default class extends BotCommand {
 			case 'setmp': {
 				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
 				if (
-					!msg.member ||
-					[Roles.BSOMassHoster, Roles.Moderator, Roles.MassHoster, Roles.PatronTier3].every(
-						r => !msg.member!.roles.cache.has(r)
-					)
+					production &&
+					(!msg.member ||
+						[Roles.BSOMassHoster, Roles.Moderator, Roles.MassHoster, Roles.PatronTier3].every(
+							r => !msg.member!.roles.cache.has(r)
+						))
 				) {
 					return;
 				}
+				const { market_prices: currentMarketPrices } = (await prisma.clientStorage.findFirst({
+					select: {
+						market_prices: true
+					},
+					where: {
+						id: CLIENT_ID
+					}
+				}))!;
 				if (!input || typeof input !== 'string') return;
+				if (input === 'list') {
+					return msg.channel.send({
+						files: [
+							new MessageAttachment(
+								Buffer.from(
+									Object.entries(currentMarketPrices as ItemBank)
+										.map(ent => {
+											const itemName = itemNameFromID(parseInt(ent[0]));
+											return `${itemName}\t${ent[1]}\t${toKMB(ent[1])}`;
+										})
+										.join('\n')
+								),
+								'output.txt'
+							)
+						]
+					});
+				}
 				const [itemName, _price] = input.split(',');
 				const item = getOSItem(itemName);
 				const price = mahojiParseNumber({ input: _price, min: 1, max: 100_000_000_000 });
@@ -382,15 +408,12 @@ export default class extends BotCommand {
 						price
 					)}? This must be a reasonable price that the item is sold/bought at. If you put misleading, incorrect, or unnecessary values, you will be banned.`
 				);
-				const { market_prices: currentMarketPrices } = (await prisma.clientStorage.findFirst({
-					select: {
-						market_prices: true
-					}
-				}))!;
+
 				const newMarketPrices: ItemBank = {
 					...(currentMarketPrices as ItemBank),
 					[item.id]: price
 				};
+
 				const { market_prices: updatedMarketPrices } = await prisma.clientStorage.update({
 					data: {
 						market_prices: newMarketPrices
