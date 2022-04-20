@@ -6,197 +6,159 @@ const i = getOSItem;
 export const RangedArmour: DisassemblySourceGroup = {
 	name: 'RangedArmour',
 	items: [
-		{ item: i("Ava's attractor"), lvl: 1, partQuantity: 6 },
-		{
-			item: i('Greater demon mask'),
-			lvl: 29,
-			partQuantity: 6,
-			special: {
-				always: true,
-				parts: [
-					{ type: 'historic', chance: 80, amount: 20 },
-					{ type: 'classic', chance: 18, amount: 5 },
-					{ type: 'timeworn', chance: 1, amount: 1 },
-					{ type: 'vintage', chance: 1, amount: 1 }
-				]
-			}
-		},
-		{
-			item: i('Imp mask'),
-			lvl: 29,
-			partQuantity: 6,
-			special: {
-				always: true,
-				parts: [
-					{ type: 'historic', chance: 80, amount: 20 },
-					{ type: 'classic', chance: 18, amount: 5 },
-					{ type: 'timeworn', chance: 1, amount: 1 },
-					{ type: 'vintage', chance: 1, amount: 1 }
-				]
-			}
-		},
-		{
-			item: i('Lesser demon mask'),
-			lvl: 29,
-			partQuantity: 6,
-			special: {
-				always: true,
-				parts: [
-					{ type: 'historic', chance: 80, amount: 20 },
-					{ type: 'classic', chance: 18, amount: 5 },
-					{ type: 'timeworn', chance: 1, amount: 1 },
-					{ type: 'vintage', chance: 1, amount: 1 }
-				]
-			}
-		},
-		{ item: i('Runner boots'), lvl: 50, partQuantity: 4 },
-		{ item: i('Leather body'), lvl: 1, partQuantity: 8 },
-		{ item: i('Leather chaps'), lvl: 1, partQuantity: 8 },
-		{ item: i('Hardleather body'), lvl: 10, partQuantity: 8 },
-		{ item: i('Studded body'), lvl: 20, partQuantity: 8 },
+		{ item: i("Ava's attractor"), lvl: 1 },
+		{ item: i('Leather body'), lvl: 1 },
+		{ item: i('Leather chaps'), lvl: 1 },
+		{ item: i('Hardleather body'), lvl: 10 },
+		{ item: i('Studded body'), lvl: 20 },
 		{
 			item: i('Studded body (g)'),
-			lvl: 20,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+			lvl: 20
 		},
 		{
 			item: i('Studded body (t)'),
-			lvl: 20,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+			lvl: 20
 		},
-		{ item: i('Studded chaps'), lvl: 20, partQuantity: 8 },
-		{ item: i('Frog-leather body'), lvl: 25, partQuantity: 8 },
-		{ item: i('Frog-leather chaps'), lvl: 25, partQuantity: 8 },
-		{ item: i('Snakeskin body'), lvl: 30, partQuantity: 8 },
-		{ item: i('Snakeskin chaps'), lvl: 30, partQuantity: 8 },
+		{ item: i('Studded chaps'), lvl: 20 },
+		{ item: i('Frog-leather body'), lvl: 25 },
+		{ item: i('Frog-leather chaps'), lvl: 25 },
+		{ item: i('Snakeskin body'), lvl: 30 },
+		{ item: i('Snakeskin chaps'), lvl: 30 },
 		{
 			item: i('Armadyl robe top'),
-			lvl: 40,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+			lvl: 40
 		},
-		{ item: i('Spined body'), lvl: 50, partQuantity: 8 },
+		{ item: i('Spined body'), lvl: 50 },
 		{
-			item: i('Armadyl chestplate'),
-			lvl: 70,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 8 }] }
+			item: ["Green d'hide vambraces", "Green d'hide vambraces (g)", "Green d'hide vambraces (t)"].map(i),
+			lvl: 57
 		},
-		{ item: i("Morrigan's leather body"), lvl: 78, partQuantity: 8 },
+		{ item: i('Green dragon leather'), lvl: 57 },
+		{ item: ["Green d'hide chaps", "Green d'hide chaps (g)", "Green d'hide chaps (t)"].map(i), lvl: 60 },
+		{ item: ["Green d'hide shield", "Green d'hide shield (g)", "Green d'hide shield (t)"].map(i), lvl: 62 },
+		{ item: ["Green d'hide body", "Green d'hide body (g)", "Green d'hide body (t)"].map(i), lvl: 63 },
+
+		{ item: i('Blue dragon leather'), lvl: 66 },
+		{ item: ["Blue d'hide vambraces", "Blue d'hide vambraces (g)", "Blue d'hide vambraces (t)"].map(i), lvl: 66 },
+		{ item: ["Blue d'hide chaps", "Blue d'hide chaps (g)", "Blue d'hide chaps (t)"].map(i), lvl: 68 },
+		{ item: ["Blue d'hide shield", "Blue d'hide shield (g)", "Blue d'hide shield (t)"].map(i), lvl: 69 },
+		{ item: ["Blue d'hide body", "Blue d'hide body (g)", "Blue d'hide body (t)"].map(i), lvl: 71 },
+
+		{ item: i('Red dragon leather'), lvl: 73 },
+		{ item: ["Red d'hide vambraces", "Red d'hide vambraces (g)", "Red d'hide vambraces (t)"].map(i), lvl: 73 },
+		{ item: ["Red d'hide chaps", "Red d'hide chaps (g)", "Red d'hide chaps (t)"].map(i), lvl: 75 },
+		{ item: ["Red d'hide shield", "Red d'hide shield (g)", "Red d'hide shield (t)"].map(i), lvl: 76 },
+		{ item: ["Red d'hide body", "Red d'hide body (g)", "Red d'hide body (t)"].map(i), lvl: 77 },
+
+		{ item: i('Black dragon leather'), lvl: 79 },
+		{
+			item: ["Black d'hide vambraces", "Black d'hide vambraces (g)", "Black d'hide vambraces (t)"].map(i),
+			lvl: 79
+		},
+		{ item: ["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)"].map(i), lvl: 82 },
+		{ item: ["Black d'hide shield", "Black d'hide shield (g)", "Black d'hide shield (t)"].map(i), lvl: 83 },
+		{ item: ["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)"].map(i), lvl: 84 },
+
+		{ item: i("Morrigan's leather body"), lvl: 78 },
 		{
 			item: i('Ranger boots'),
-			lvl: 40,
-			partQuantity: 4,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 4 }] }
+			lvl: 40
 		},
-		{ item: i('Spined boots'), lvl: 50, partQuantity: 4 },
-		{ item: i("Ava's accumulator"), lvl: 1, partQuantity: 6 },
+		{ item: i('Spined boots'), lvl: 50 },
+		{ item: i("Ava's accumulator"), lvl: 1 },
 		{
 			item: i('Armadyl cloak'),
-			lvl: 40,
-			partQuantity: 6,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+			lvl: 40
 		},
-		{ item: i('Leather boots'), lvl: 1, partQuantity: 4 },
-		{ item: i('Leather gloves'), lvl: 1, partQuantity: 4 },
-		{ item: i('Leather vambraces'), lvl: 1, partQuantity: 4 },
-		{ item: i('Spiky vambraces'), lvl: 5, partQuantity: 4 },
-		{ item: i('Hardleather gloves'), lvl: 10, partQuantity: 4 },
-		{ item: i('Frog-leather boots'), lvl: 25, partQuantity: 4 },
-		{ item: i('Snakeskin boots'), lvl: 30, partQuantity: 4 },
-		{ item: i('Snakeskin vambraces'), lvl: 30, partQuantity: 4 },
-		{ item: i('Green spiky vambraces'), lvl: 40, partQuantity: 4 },
-		{ item: i('Blue spiky vambraces'), lvl: 50, partQuantity: 4 },
-		{ item: i('Spined gloves'), lvl: 50, partQuantity: 4 },
-		{ item: i('Red spiky vambraces'), lvl: 55, partQuantity: 4 },
-		{ item: i('Black spiky vambraces'), lvl: 60, partQuantity: 4 },
-		{ item: i('Leather cowl'), lvl: 1, partQuantity: 6 },
-		{ item: i('Snakeskin bandana'), lvl: 30, partQuantity: 6 },
+		{ item: i('Leather boots'), lvl: 1 },
+		{ item: i('Leather gloves'), lvl: 1 },
+		{ item: i('Leather vambraces'), lvl: 1 },
+		{ item: i('Spiky vambraces'), lvl: 5 },
+		{ item: i('Hardleather gloves'), lvl: 10 },
+		{ item: i('Frog-leather boots'), lvl: 25 },
+		{ item: i('Snakeskin boots'), lvl: 30 },
+		{ item: i('Snakeskin vambraces'), lvl: 30 },
+		{ item: i('Green spiky vambraces'), lvl: 40 },
+		{ item: i('Blue spiky vambraces'), lvl: 50 },
+		{ item: i('Spined gloves'), lvl: 50 },
+		{ item: i('Red spiky vambraces'), lvl: 55 },
+		{ item: i('Black spiky vambraces'), lvl: 60 },
+		{ item: i('Leather cowl'), lvl: 1 },
+		{ item: i('Snakeskin bandana'), lvl: 30 },
 		{
 			item: i('Armadyl mitre'),
-			lvl: 40,
-			partQuantity: 6,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+			lvl: 40
 		},
 		{
 			item: i('Guthix mitre'),
-			lvl: 40,
-			partQuantity: 6,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+			lvl: 40
 		},
 		{
 			item: i('Robin hood hat'),
-			lvl: 40,
-			partQuantity: 6,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+			lvl: 40
 		},
 		{
 			item: i('Saradomin mitre'),
-			lvl: 40,
-			partQuantity: 6,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+			lvl: 40
 		},
 		{
 			item: i('Zamorak mitre'),
-			lvl: 40,
-			partQuantity: 6,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+			lvl: 40
 		},
-		{ item: i('Archer helm'), lvl: 45, partQuantity: 6 },
-		{ item: i('Ranger hat'), lvl: 50, partQuantity: 6 },
-		{ item: i('Runner hat'), lvl: 50, partQuantity: 6 },
-		{ item: i('Spined helm'), lvl: 50, partQuantity: 6 },
+		{ item: i('Archer helm'), lvl: 45 },
+		{ item: i('Ranger hat'), lvl: 50 },
+		{ item: i('Runner hat'), lvl: 50 },
+		{ item: i('Spined helm'), lvl: 50 },
+		{
+			item: i('Armadyl chestplate'),
+			lvl: 70,
+
+			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 8 }] }
+		},
+		{
+			item: ['3rd age range coif', '3rd age range top', '3rd age range legs', '3rd age vambraces'].map(i),
+			lvl: 65,
+			flags: ['third_age']
+		},
 		{
 			item: i('Armadyl helmet'),
 			lvl: 70,
-			partQuantity: 6,
+
 			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 6 }] }
 		},
 		{
 			item: i("Karil's coif"),
-			lvl: 70,
-			partQuantity: 6,
-			special: { always: false, parts: [{ type: 'undead', chance: 100, amount: 6 }] }
+			lvl: 70
 		},
-		{ item: i("Morrigan's coif"), lvl: 78, partQuantity: 6 },
+		{ item: i("Morrigan's coif"), lvl: 78 },
 		{
 			item: i('Studded chaps (g)'),
-			lvl: 20,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+			lvl: 20
 		},
 		{
 			item: i('Studded chaps (t)'),
-			lvl: 20,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+			lvl: 20
 		},
 		{
 			item: i('Armadyl robe legs'),
-			lvl: 40,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+			lvl: 40
 		},
-		{ item: i('Penance skirt'), lvl: 50, partQuantity: 8 },
-		{ item: i('Spined chaps'), lvl: 50, partQuantity: 8 },
+		{ item: i('Penance skirt'), lvl: 50 },
+		{ item: i('Spined chaps'), lvl: 50 },
 		{
 			item: i('Armadyl chainskirt'),
 			lvl: 70,
-			partQuantity: 8,
+
 			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 8 }] }
 		},
-		{ item: i("Morrigan's leather chaps"), lvl: 78, partQuantity: 8 },
-		{ item: i('Hard leather shield'), lvl: 10, partQuantity: 8 },
+		{ item: i("Morrigan's leather chaps"), lvl: 78 },
+		{ item: i('Hard leather shield'), lvl: 10 },
 		{
 			item: i('Elysian spirit shield'),
 			lvl: 75,
-			partQuantity: 8,
+
 			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 4 }] }
 		}
 	],
-	parts: { cover: 35, tensile: 30, padded: 30, evasive: 3, protective: 2 }
+	parts: { cover: 35, padded: 30, protective: 2 }
 };
-
-export default RangedArmour;

@@ -57,7 +57,11 @@ interface DisassemblyResult {
 }
 
 export function findDisassemblyGroup(item: Item) {
-	return DisassemblySourceGroups.find(g => g.items.some(i => i.item.name === item.name)) ?? null;
+	return (
+		DisassemblySourceGroups.find(g =>
+			g.items.some(i => (Array.isArray(i.item) ? i.item.includes(item) : i.item.name === item.name))
+		) ?? null
+	);
 }
 
 export function handleDisassembly({

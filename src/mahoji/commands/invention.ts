@@ -1,12 +1,11 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { table } from 'table';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { client } from '../..';
-import { isCustomItem } from '../../lib/customItems/util';
+import { econBank } from '../../lib/econbank';
 import { allItemsThatCanBeDisassembledIDs, DisassemblySourceGroups, MaterialType } from '../../lib/invention';
-import { bankDisassembleAnalysis, handleDisassembly } from '../../lib/invention/disassemble';
+import { bankDisassembleAnalysis, findDisassemblyGroup, handleDisassembly } from '../../lib/invention/disassemble';
 import { formatDuration } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { OSBMahojiCommand } from '../lib/util';
@@ -90,9 +89,9 @@ export const askCommand: OSBMahojiCommand = {
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (options.disassemble) {
 			const item = getOSItem(options.disassemble.name);
-			const group = DisassemblySourceGroups.find(g => g.items.some(i => i.item.name === item.name));
+			const group = findDisassemblyGroup(item);
 			if (!group) return 'This item cannot be disassembled.';
-			const result = await handleDisassembly({
+			const result = handleDisassembly({
 				user: mahojiUser,
 				inputQuantity: options.disassemble.quantity,
 				item
@@ -110,7 +109,7 @@ export const askCommand: OSBMahojiCommand = {
 			for (let item of Items) {
 				if (!item[1].tradeable || !item[1].tradeable_on_ge) continue;
 				const { name } = item[1];
-				const group = DisassemblySourceGroups.find(g => g.items.some(i => i.item.name === name));
+				const group = findDisassemblyGroup(item[1]);
 				if (!group) missingItems.push(name);
 			}
 			console.log(missingItems);
@@ -121,9 +120,12 @@ export const askCommand: OSBMahojiCommand = {
 			const foundItems: number[] = [];
 			for (let group of DisassemblySourceGroups) {
 				for (let itm of group.items) {
-					foundItems.includes(itm.item.id)
-						? duplicateItems.push({ name: itm.item.name, group: group.name })
-						: foundItems.push(itm.item.id);
+					const items: Item[] = Array.isArray(itm.item) ? itm.item : [itm.item];
+					if (items.some(i => foundItems.includes(i.id))) {
+						duplicateItems.push(items.map(i => ({ name: i.name, group: i.name })));
+					} else {
+						foundItems.push(...items.map(i => i.id));
+					}
 				}
 			}
 			console.log(duplicateItems);
@@ -160,10 +162,11 @@ export const askCommand: OSBMahojiCommand = {
 				.sort((a, b) => b.price - a.price)
 				.array();
 
-			const normalTable = table([
-				['Num', 'Item', 'ID', 'Custom'],
-				...itemsShouldBe.map((r, ind) => [`${++ind}. `, r.name, r.id, isCustomItem(r.id) ? 'Yes' : ''])
-			]);
+			const normalTable = itemsShouldBe
+				.filter(i => ['(p', 'Team-'].every(str => !i.name.includes(str)))
+				.sort((a, b) => econBank.amount(b.id) - econBank.amount(a.id))
+				.map(i => `${i.name}\t${econBank.amount(i.id)}`)
+				.join('\n');
 			return {
 				attachments: [{ fileName: 'missing-items-disassemble.txt', buffer: Buffer.from(normalTable) }]
 			};

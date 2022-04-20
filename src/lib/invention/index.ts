@@ -5,74 +5,36 @@ import DisassembleGroups from './groups';
 const materialTypes = [
 	'junk',
 	'simple',
-	'living',
-	'head',
 	'blade',
 	'smooth',
 	'sharp',
-	'direct',
-	'stave',
-	'crafted',
-	'precise',
-	'spiked',
 	'swift',
 	'magic',
 	'powerful',
 	'base',
-	'stunning',
 	'imbued',
-	'tensile',
 	'flexible',
 	'strong',
 	'cover',
-	'deflecting',
 	'protective',
 	'heavy',
-	'evasive',
-	'clear',
 	'delicate',
 	'precious',
-	'light',
-	'faceted',
 	'padded',
 	'plated',
-	'connector',
 	'dextrous',
 	'metallic',
 	'organic',
-	'healthy',
-	'enhancing',
-	'subtle',
 	'pious',
-	'variable',
 	'ethereal',
-	'clockwork',
-	'dragonfire',
-	'explosive',
 	'corporeal',
 	'armadyl',
 	'bandos',
 	'saradomin',
 	'zamorak',
-	'zaros',
-	'resilient',
-	'rumbling',
-	'pestiferous',
 	'third-age',
-	'culinary',
-	'shifting',
-	'undead',
-	'fortunate',
-	'knightly',
 	'corporeal',
 	'crystal',
-	'seren',
-	'brassican',
-	'harnessed',
-	'historic',
-	'classic',
-	'timeworn',
-	'vintage',
 	// Custom
 	'rocky'
 ] as const;
@@ -104,15 +66,46 @@ export interface SpecialDisassemblyGroup {
 	amount: number;
 }
 
+type DisassembleFlag = 'third_age' | 'dyed' | 'dwarven' | 'barrows';
+
+interface IDisassembleFlag {
+	name: string;
+	flag: DisassembleFlag;
+}
+
+const disassembleFlags: IDisassembleFlag[] = [
+	{
+		name: 'Third Age',
+		flag: 'third_age'
+	},
+	{
+		name: 'Dyed',
+		flag: 'dyed'
+	},
+	{
+		name: 'Dwarven',
+		flag: 'dwarven'
+	},
+	{
+		name: 'Barrows',
+		flag: 'barrows'
+	}
+];
+console.log(disassembleFlags);
+
 export interface DisassemblySourceGroup {
 	name: string;
 	items: {
-		item: Item;
+		item: Item | Item[];
 		lvl: number;
 		junkChance?: number;
-		partQuantity: number;
+		partQuantity?: number;
 		special?: { always: boolean; parts: SpecialDisassemblyGroup[] };
+		flags?: DisassembleFlag[];
 	}[];
+	/**
+	 * Percentage chances of what material you will get from this item.
+	 */
 	parts: IMaterialBank;
 }
 

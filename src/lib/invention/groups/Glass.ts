@@ -6,17 +6,17 @@ const i = getOSItem;
 export const Glass: DisassemblySourceGroup = {
 	name: 'Glass',
 	items: [
-		{ item: i('Vial'), lvl: 1, partQuantity: 1 },
-		{ item: i('Molten glass'), lvl: 25, partQuantity: 1 },
-		{ item: i('Beer glass'), lvl: 1, partQuantity: 2 },
-		{ item: i('Fishbowl'), lvl: 42, partQuantity: 2 },
-		{ item: i('Unpowered orb'), lvl: 46, partQuantity: 2 },
-		{ item: i('Lantern lens'), lvl: 49, partQuantity: 2 },
-		{ item: i('Water orb'), lvl: 56, partQuantity: 2 },
-		{ item: i('Earth orb'), lvl: 60, partQuantity: 2 },
-		{ item: i('Fire orb'), lvl: 63, partQuantity: 2 }
+		{ item: i('Vial'), lvl: 1 },
+		{ item: i('Molten glass'), lvl: 25 },
+		{ item: i('Beer glass'), lvl: 1 },
+		{ item: i('Fishbowl'), lvl: 42 },
+		{ item: i('Unpowered orb'), lvl: 46 },
+		{ item: i('Lantern lens'), lvl: 49 },
+		{ item: i('Water orb'), lvl: 56 },
+		{ item: i('Earth orb'), lvl: 60 },
+		{ item: i('Fire orb'), lvl: 63 }
 	],
-	parts: { clear: 35, delicate: 32, smooth: 30, enhancing: 3 }
+	parts: { delicate: 32, smooth: 30 }
 };
 
 export default Glass;

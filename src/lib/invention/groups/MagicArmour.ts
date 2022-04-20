@@ -6,100 +6,75 @@ const i = getOSItem;
 export const MagicArmour: DisassemblySourceGroup = {
 	name: 'MagicArmour',
 	items: [
-		{
-			item: i('Elemental helmet'),
-			lvl: 1,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'harnessed', chance: 100, amount: 8 }] }
-		},
-		{ item: i('Splitbark body'), lvl: 40, partQuantity: 8 },
+		{ item: i('Splitbark body'), lvl: 40 },
 		{
 			item: i('Enchanted top'),
-			lvl: 45,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+			lvl: 45
 		},
-		{ item: i('Skeletal top'), lvl: 50, partQuantity: 8 },
-		{ item: i('Infinity top'), lvl: 55, partQuantity: 8 },
-		{ item: i('Lunar torso'), lvl: 60, partQuantity: 8 },
-		{ item: i("Zuriel's robe top"), lvl: 78, partQuantity: 8 },
-		{ item: i('Wizard boots'), lvl: 1, partQuantity: 4 },
-		{ item: i('Splitbark boots'), lvl: 40, partQuantity: 4 },
-		{ item: i('Splitbark gauntlets'), lvl: 40, partQuantity: 4 },
-		{ item: i('Skeletal boots'), lvl: 50, partQuantity: 4 },
-		{ item: i('Infinity boots'), lvl: 55, partQuantity: 4 },
-		{ item: i('Lunar boots'), lvl: 60, partQuantity: 4 },
-		{ item: i('Lunar cape'), lvl: 60, partQuantity: 6 },
-		{ item: i('Skeletal gloves'), lvl: 50, partQuantity: 4 },
-		{ item: i('Infinity gloves'), lvl: 55, partQuantity: 4 },
-		{ item: i('Lunar gloves'), lvl: 60, partQuantity: 4 },
-		{ item: i('Body tiara'), lvl: 1, partQuantity: 6 },
-		{ item: i('Chaos tiara'), lvl: 1, partQuantity: 6 },
-		{ item: i('Cosmic tiara'), lvl: 1, partQuantity: 6 },
-		{ item: i('Earth tiara'), lvl: 1, partQuantity: 6 },
-		{ item: i('Law tiara'), lvl: 1, partQuantity: 6 },
-		{ item: i('Mind tiara'), lvl: 1, partQuantity: 6 },
-		{ item: i('Nature tiara'), lvl: 1, partQuantity: 6 },
-		{ item: i('Water tiara'), lvl: 1, partQuantity: 6 },
-		{ item: i("Dagon'hai hat"), lvl: 40, partQuantity: 6 },
-		{ item: i("Dagon'hai robe bottom"), lvl: 40, partQuantity: 6 },
-		{ item: i("Dagon'hai robe top"), lvl: 40, partQuantity: 6 },
-		{ item: i('Splitbark helm'), lvl: 40, partQuantity: 6 },
+		{ item: i('Infinity top'), lvl: 55 },
+		{ item: i("Zuriel's robe top"), lvl: 78 },
+		{ item: i('Wizard boots'), lvl: 1 },
+		{ item: i('Splitbark boots'), lvl: 40 },
+		{ item: i('Splitbark gauntlets'), lvl: 40 },
+		{ item: i('Infinity boots'), lvl: 55 },
+		{ item: i('Infinity gloves'), lvl: 55 },
+		{ item: i('Body tiara'), lvl: 1 },
+		{ item: i('Chaos tiara'), lvl: 1 },
+		{ item: i('Cosmic tiara'), lvl: 1 },
+		{ item: i('Earth tiara'), lvl: 1 },
+		{ item: i('Law tiara'), lvl: 1 },
+		{ item: i('Mind tiara'), lvl: 1 },
+		{ item: i('Nature tiara'), lvl: 1 },
+		{ item: i('Water tiara'), lvl: 1 },
+		{ item: i("Dagon'hai hat"), lvl: 40 },
+		{ item: i("Dagon'hai robe bottom"), lvl: 40 },
+		{ item: i("Dagon'hai robe top"), lvl: 40 },
+		{ item: i('Splitbark helm'), lvl: 40 },
 		{
 			item: i('Enchanted hat'),
-			lvl: 45,
-			partQuantity: 6,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 6 }] }
+			lvl: 45
 		},
-		{ item: i('Farseer helm'), lvl: 45, partQuantity: 6 },
-		{ item: i('Healer hat'), lvl: 50, partQuantity: 6 },
-		{ item: i('Skeletal helm'), lvl: 50, partQuantity: 6 },
-		{ item: i('Infinity hat'), lvl: 55, partQuantity: 6 },
-		{ item: i('Lunar helm'), lvl: 60, partQuantity: 6 },
-		{ item: i("Zuriel's hood"), lvl: 78, partQuantity: 6 },
-		{ item: i('Splitbark legs'), lvl: 40, partQuantity: 8 },
+		{ item: i('Farseer helm'), lvl: 45 },
+		{ item: i('Healer hat'), lvl: 50 },
+		{ item: i('Infinity hat'), lvl: 55 },
+		{ item: i("Zuriel's hood"), lvl: 78 },
+		{ item: i('Splitbark legs'), lvl: 40 },
 		{
 			item: i('Enchanted robe'),
-			lvl: 45,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'fortunate', chance: 100, amount: 8 }] }
+			lvl: 45
 		},
-		{ item: i('Skeletal bottoms'), lvl: 50, partQuantity: 8 },
-		{ item: i('Infinity bottoms'), lvl: 55, partQuantity: 8 },
-		{ item: i('Lunar legs'), lvl: 60, partQuantity: 8 },
-		{ item: i("Zuriel's robe bottom"), lvl: 78, partQuantity: 8 },
+		{ item: i('Infinity bottoms'), lvl: 55 },
 		{
-			item: i('Elemental shield'),
-			lvl: 1,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'harnessed', chance: 100, amount: 8 }] }
+			item: ['3rd age cloak', '3rd age druidic robe bottoms', '3rd age druidic robe top', '3rd age mage hat'].map(
+				i
+			),
+			lvl: 65,
+			flags: ['third_age']
 		},
-		{
-			item: i('Mind shield'),
-			lvl: 1,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'harnessed', chance: 100, amount: 8 }] }
-		},
+		{ item: i("Ahrim's robeskirt"), lvl: 70 },
+		{ item: i("Ahrim's robetop"), lvl: 70 },
+		{ item: i("Ahrim's hood"), lvl: 70 },
+		{ item: i("Zuriel's robe bottom"), lvl: 78 },
 		{
 			item: i('Dragonfire ward'),
-			lvl: 70,
-			partQuantity: 8,
-			special: { always: true, parts: [{ type: 'dragonfire', chance: 100, amount: 3 }] }
+			lvl: 70
 		},
 		{
 			item: i('Arcane spirit shield'),
 			lvl: 75,
-			partQuantity: 8,
+
 			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 4 }] }
 		},
 		{
 			item: i('Spectral spirit shield'),
 			lvl: 75,
-			partQuantity: 8,
+
 			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 4 }] }
+		},
+		{
+			item: ['Ancestral hat', 'Ancestral robe top', 'Ancestral robe bottom'].map(i),
+			lvl: 75
 		}
 	],
-	parts: { cover: 35, magic: 30, deflecting: 30, powerful: 3, protective: 2 }
+	parts: { cover: 35, magic: 30, powerful: 3, protective: 32 }
 };
-
-export default MagicArmour;

@@ -1,5 +1,6 @@
 import { Bank } from 'oldschooljs';
 
+import { itemNameFromID } from '../../../../util';
 import itemID from '../../../../util/itemID';
 import { Craftable } from '../../../types';
 
@@ -151,3 +152,12 @@ const Dragonhide: Craftable[] = [
 ];
 
 export default Dragonhide;
+
+console.log(
+	Dragonhide.map(
+		i => `{ item: ['${itemNameFromID(i.id)}', '${itemNameFromID(i.id)} (g)', '${itemNameFromID(
+			i.id
+		)} (t)'].map(i), lvl: ${i.level} },
+{ item: i('${new Bank(i.inputItems).items()[0][0].name}'), lvl: ${i.level} },`
+	).join('\n')
+);

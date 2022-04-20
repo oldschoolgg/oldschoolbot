@@ -1,97 +1,83 @@
-import Arrows from './Arrows';
-import Ashes from './Ashes';
-import Bars from './Bars';
-import Battleaxe from './Battleaxe';
-import Bolts from './Bolts';
-import BoltTips from './BoltTips';
-import Bones from './Bones';
-import Cannonballs from './Cannonballs';
-import Claws from './Claws';
-import Clothing from './Clothing';
-import Crossbow from './Crossbow';
-import Crossbows2h from './Crossbows2h';
-import Dagger from './Dagger';
-import Darts from './Darts';
-import Default from './Default';
-import Defender from './Defender';
-import Food from './Food';
-import Gems from './Gems';
-import Glass from './Glass';
-import Halberd from './Halberd';
-import Hasta from './Hasta';
-import Herb from './Herb';
-import Hides from './Hides';
-import HybridArmour from './HybridArmour';
-import Jewellery from './Jewellery';
-import Knives from './Knives';
-import Leather from './Leather';
-import Logs from './Logs';
-import Longsword from './Longsword';
-import Mace from './Mace';
-import Magic from './Magic';
-import MagicArmour from './MagicArmour';
-import Maul from './Maul';
-import MeleeArmour from './MeleeArmour';
-import Orbs from './Orbs';
-import Ores from './Ores';
-import Pickaxe from './Pickaxe';
-import Planks from './Planks';
-import Potion from './Potion';
-import RangedArmour from './RangedArmour';
-import Runes from './Runes';
-import Scimitar from './Scimitar';
-import Seed from './Seed';
-import Shield from './Shield';
-import Shortbow from './Shortbow';
-import ShortbowUnstrung from './ShortbowUnstrung';
-import Spear from './Spear';
-import Staff from './Staff';
-import Sword from './Sword';
-import Sword2h from './Sword2h';
-import Talisman from './Talisman';
-import ThrowingAxe from './ThrowingAxe';
-import UncutGems from './UncutGems';
-import Wand from './Wand';
-import Warhammer from './Warhammer';
+import { Ashes } from './Ashes';
+import { Axes } from './Axes';
+import { Bars } from './Bars';
+import { Battleaxe } from './Battleaxe';
+import { BoltTips } from './BoltTips';
+import { Bones } from './Bones';
+import { Bows } from './Bows';
+import { Claws } from './Claws';
+import { Clothing } from './Clothing';
+import { Dagger } from './Dagger';
+import { Default } from './Default';
+import { Defender } from './Defender';
+import { Food } from './Food';
+import { Gems } from './Gems';
+import { Glass } from './Glass';
+import { Halberd } from './Halberd';
+import { Hasta } from './Hasta';
+import { Herb } from './Herb';
+import { HybridArmour } from './HybridArmour';
+import { Jewellery } from './Jewellery';
+import { LeatherHides } from './LeatherHides';
+import { Logs } from './Logs';
+import { Longsword } from './Longsword';
+import { Mace } from './Mace';
+import { Magic } from './Magic';
+import { MagicArmour } from './MagicArmour';
+import { Maul } from './Maul';
+import { MeleeArmour } from './MeleeArmour';
+import { Ores } from './Ores';
+import { Planks } from './Planks';
+import { Potion } from './Potion';
+import { Projectiles } from './Projectiles';
+import { RangedArmour } from './RangedArmour';
+import { Runes } from './Runes';
+import { Scimitar } from './Scimitar';
+import { Seed } from './Seed';
+import { Shield } from './Shield';
+import { Spear } from './Spear';
+import { Staff } from './Staff';
+import { Sword } from './Sword';
+import { Talisman } from './Talisman';
+import { ThrowingAxe } from './ThrowingAxe';
+import { UncutGems } from './UncutGems';
+import { UnstrungBows } from './UnstrungBows';
+import { Wand } from './Wand';
+import { Warhammer } from './Warhammer';
 
 export default [
-	Hides,
+	LeatherHides,
 	Battleaxe,
+	Projectiles,
 	Hasta,
-	Darts,
 	Runes,
-	Bolts,
 	Warhammer,
-	Leather,
+	LeatherHides,
 	Gems,
 	Claws,
 	Dagger,
-	ShortbowUnstrung,
+	UnstrungBows,
 	MagicArmour,
 	Maul,
-	Knives,
 	Logs,
-	Arrows,
 	Seed,
 	Herb,
 	Potion,
 	BoltTips,
 	Planks,
 	Halberd,
-	Cannonballs,
 	ThrowingAxe,
 	Bars,
 	Bones,
 	RangedArmour,
-	Pickaxe,
+	Axes,
 	Spear,
 	UncutGems,
 	HybridArmour,
 	Default,
-	Shortbow,
+	Bows,
 	Food,
 	Staff,
-	Orbs,
 	Glass,
 	Longsword,
 	Jewellery,
@@ -106,8 +92,5 @@ export default [
 	Ashes,
 	Magic,
 	Defender,
-	Crossbow,
-	Crossbows2h,
-	Sword2h,
 	Shield
 ];
