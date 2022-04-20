@@ -4,6 +4,7 @@ import { KlasaMessage } from 'klasa';
 import { BitField } from '../../constants';
 import { prisma } from '../../settings/prisma';
 import { UserSettings } from '../../settings/types/UserSettings';
+import { logError } from '../../util/logError';
 
 export async function becomeIronman(msg: KlasaMessage) {
 	/**
@@ -71,10 +72,10 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 			return msg.channel.send('You are now an ironman.');
 		} catch (e) {
 			// Actual database error
+			logError(e, { command: 'minion ironman', user_id: msg.author.id });
 			return msg.channel.send('We are in an unknown state. Likely inconsistent.');
 		}
 	} catch (err) {
-		console.log(err);
 		return msg.channel.send('Cancelled ironman swap.');
 	}
 }
