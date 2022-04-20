@@ -364,6 +364,14 @@ export default class extends BotCommand {
 		switch (cmd.toLowerCase()) {
 			case 'setmp': {
 				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
+				if (
+					!msg.member ||
+					[Roles.BSOMassHoster, Roles.Moderator, Roles.MassHoster, Roles.PatronTier3].every(
+						r => !msg.member!.roles.cache.has(r)
+					)
+				) {
+					return;
+				}
 				if (!input || typeof input !== 'string') return;
 				const [itemName, _price] = input.split(',');
 				const item = getOSItem(itemName);
