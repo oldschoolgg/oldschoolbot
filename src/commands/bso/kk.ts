@@ -36,7 +36,7 @@ function calcFood(user: KlasaUser, teamSize: number, quantity: number) {
 	else if (kc > 10) healAmountNeeded *= 0.8;
 	else if (kc > 5) healAmountNeeded *= 0.9;
 	healAmountNeeded /= (teamSize + 1) / 1.5;
-	let brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
+	let brewsNeeded = Math.ceil((healAmountNeeded * quantity) / 16);
 	if (teamSize === 1) brewsNeeded += 2;
 	const restoresNeeded = Math.ceil(brewsNeeded / 3);
 	const items = new Bank({
@@ -264,11 +264,16 @@ export default class extends BotCommand {
 			effectiveTime = reduceNumByPercent(effectiveTime, 20);
 		}
 
+		let minDuration = 2;
+		if (users.length === 4) minDuration = 1.5;
+		if (users.length === 5) minDuration = 1.2;
+		if (users.length >= 6) minDuration = 1;
+
 		let [quantity, duration, perKillTime] = await calcDurQty(
 			users,
 			{ ...KalphiteKingMonster, timeToFinish: effectiveTime },
 			undefined,
-			Time.Minute * 2,
+			Time.Minute * minDuration,
 			Time.Minute * 30
 		);
 		this.checkReqs(users, KalphiteKingMonster, quantity);
