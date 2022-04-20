@@ -78,5 +78,5 @@ export const NihilizLootTable = new LootTable()
 	.tertiary(1200, 'Nihil horn')
 	.tertiary(900, 'Zaryte vambraces')
 	.tertiary(500, 'Uncut zenyte', [1, 3])
-	.tertiary(90, 'Clue scroll (grandmaster)')
+	.tertiary(100, 'Clue scroll (grandmaster)')
 	.tertiary(5000, 'Nexling');
