@@ -2,7 +2,7 @@ import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
 import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
-import { noOp, notEmpty, uniqueArr } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
@@ -558,23 +558,6 @@ ${
 					files: [new MessageAttachment(Buffer.from(await csvDumpBingoPlayers()), 'output.txt')]
 				});
 			}
-			case 'bingoreset': {
-				const [totalWith] = await prisma.$queryRawUnsafe<[{ count: number }]>(`SELECT COUNT(*)
-FROM users
-WHERE "collectionLogBank"->>'122003' IS NOT NULL;`);
-				await msg.confirm(
-					`Are you sure you want to reset the temperary collection logs of ${totalWith.count} people? (Everyone with a Bingo ticket in their CL)`
-				);
-				if (!msg.flagArgs.confirm) return msg.channel.send('Put `--confirm` in your message to run this.');
-				await prisma.$queryRawUnsafe(`UPDATE users
-SET temp_cl = '{}'::jsonb,
-last_temp_cl_reset = now()
-WHERE "collectionLogBank"->>'122003' IS NOT NULL;`);
-				sendToChannelID(this.client, '590529353931030554', {
-					content: `${msg.author} reset the temp CLs of ${totalWith.count} users.`
-				});
-				return msg.channel.send(`Reset the temporary collection logs of ${totalWith.count} people.`);
-			}
 			case 'bingostats': {
 				const stats = [
 					[
@@ -1108,49 +1091,6 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
-			}
-			case 'migratenex': {
-				const nexItems = [
-					['Torva full helm (broken)', 'Torva full helm'],
-					['Torva platebody (broken)', 'Torva platebody'],
-					['Torva platelegs (broken)', 'Torva platelegs'],
-					['Torva boots (broken)', 'Torva boots'],
-					['Torva gloves (broken)', 'Torva gloves'],
-					['Pernix cowl (broken)', 'Pernix cowl'],
-					['Pernix body (broken)', 'Pernix body'],
-					['Pernix chaps (broken)', 'Pernix chaps'],
-					['Pernix boots (broken)', 'Pernix boots'],
-					['Pernix gloves (broken)', 'Pernix gloves'],
-					['Virtus mask (broken)', 'Virtus mask'],
-					['Virtus robe top (broken)', 'Virtus robe top'],
-					['Virtus robe legs (broken)', 'Virtus robe legs'],
-					['Virtus boots (broken)', 'Virtus boots'],
-					['Virtus gloves (broken)', 'Virtus gloves']
-				];
-				const res: any[] = await prisma.$queryRawUnsafe(`SELECT id
-FROM users
-WHERE "collectionLogBank"::jsonb ?| array['601', '605', '4272', '758', '759', '432', '709', '2404', '2838', '4273', '788', '983', '2409', '9654', '2423'];`);
-				let IDs = res.map(i => i.id);
-
-				for (const id of IDs) {
-					const user = await client.fetchUser(id).catch(noOp);
-					if (!user) continue;
-					const itemsToAddToTheirCL = new Bank();
-					const cl = user.cl();
-					if (!cl.has('Virtus crystal') && (cl.has('Virtus wand') || cl.has('Virtus book'))) {
-						itemsToAddToTheirCL.add('Virtus crystal', cl.amount('Virtus wand') + cl.amount('Virtus book'));
-					}
-					for (const [brokenItem, normalItem] of nexItems) {
-						if (cl.has(normalItem)) {
-							const quantityToAdd = cl.amount(normalItem) - cl.amount(brokenItem);
-							if (quantityToAdd > 0) {
-								itemsToAddToTheirCL.add(brokenItem, quantityToAdd);
-							}
-						}
-					}
-					console.log(`Adding ${itemsToAddToTheirCL} to ${user.username}`);
-					await user.addItemsToCollectionLog({ items: itemsToAddToTheirCL });
-				}
 			}
 		}
 	}
