@@ -256,11 +256,19 @@ export const allCollectionLogs: ICollection = {
 			},
 			Nex: {
 				alias: ['nex'],
-				allItems: [...NexUniqueTable.allItems, ...NexNonUniqueTable.allItems],
+				allItems: [
+					...NexUniqueTable.allItems,
+					...NexNonUniqueTable.allItems,
+					...resolveItems(['Clue scroll (elite)'])
+				],
 				items: NexCL
 			},
 			'The Nightmare': {
-				alias: NightmareMonster.aliases,
+				alias: [...NightmareMonster.aliases, 'phosani'],
+				kcActivity: {
+					Default: 'Nightmare',
+					Phosani: "Phosani's Nightmare"
+				},
 				items: theNightmareCL
 			},
 			Obor: {
@@ -622,8 +630,8 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Chaos Druids': {
-				allItems: Monsters.ChaosDruid.allItems,
-				kcActivity: Monsters.ChaosDruid.name,
+				allItems: Monsters.ElderChaosDruid.allItems,
+				kcActivity: Monsters.ElderChaosDruid.name,
 				items: chaosDruisCL
 			},
 			'Chompy Birds': {

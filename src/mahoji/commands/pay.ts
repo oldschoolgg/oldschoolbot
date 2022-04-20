@@ -43,7 +43,7 @@ export const payCommand: OSBMahojiCommand = {
 		if (user.isIronman) return "Iron players can't send money.";
 		if (recipient.isIronman) return "Iron players can't receive money.";
 		if (GP < amount) return "You don't have enough GP.";
-		if (user.bot) return "You can't send money to a bot.";
+		if (recipient.bot) return "You can't send money to a bot.";
 		if (client.oneCommandAtATimeCache.has(recipient.id)) return 'That user is busy right now.';
 
 		if (amount > 500_000_000) {

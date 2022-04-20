@@ -1,12 +1,15 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
+import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import {
+	barbAssaultBuyCommand,
 	barbAssaultGambleCommand,
 	barbAssaultLevelCommand,
 	barbAssaultStartCommand,
 	barbAssaultStatsCommand,
+	BarbBuyables,
 	GambleTiers
 } from '../lib/abstracted_commands/barbAssault';
 import { castleWarsStartCommand, castleWarsStatsCommand } from '../lib/abstracted_commands/castleWarsCommand';
@@ -16,6 +19,12 @@ import { gnomeRestaurantCommand } from '../lib/abstracted_commands/gnomeRestaura
 import { lmsCommand } from '../lib/abstracted_commands/lmsCommand';
 import { mageArena2Command } from '../lib/abstracted_commands/mageArena2Command';
 import { mageArenaCommand } from '../lib/abstracted_commands/mageArenaCommand';
+import {
+	mageTrainingArenaBuyables,
+	mageTrainingArenaBuyCommand,
+	mageTrainingArenaPointsCommand,
+	mageTrainingArenaStartCommand
+} from '../lib/abstracted_commands/mageTrainingArenaCommand';
 import {
 	mahoganyHomesBuildCommand,
 	mahoganyHomesBuyables,
@@ -40,6 +49,7 @@ import {
 	soulWarsTokensCommand
 } from '../lib/abstracted_commands/soulWarsCommand';
 import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCommand';
+import { trekCommand, trekShop } from '../lib/abstracted_commands/trekCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -61,6 +71,32 @@ export const minigamesCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
 					description: 'Start a Barbarian Assault trip.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'buy',
+					description: 'Purchase items with Honour points.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							description: 'What item you wish to buy.',
+							required: true,
+							autocomplete: async (value: string) => {
+								return BarbBuyables.filter(i =>
+									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.item.name, value: i.item.name }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity you want to purchase.',
+							required: false,
+							min_value: 1,
+							max_value: 1000
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -311,6 +347,100 @@ export const minigamesCommand: OSBMahojiCommand = {
 		},
 		/**
 		 *
+		 * Trek
+		 *
+		 */
+		{
+			name: 'temple_trek',
+			description: 'Send your minion to complete the temple trekking minigame',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Allows a player to start the temple trekking minigame.',
+					options: [
+						{
+							name: 'difficulty',
+							description: 'The difficulty of the trek.',
+							type: ApplicationCommandOptionType.String,
+							required: true,
+							choices: [
+								{
+									name: 'Easy',
+									value: 'Easy'
+								},
+								{
+									name: 'Medium',
+									value: 'Medium'
+								},
+								{
+									name: 'Hard',
+									value: 'Hard'
+								}
+							]
+						},
+						{
+							name: 'quantity',
+							description: 'The quantity of treks to do.',
+							type: ApplicationCommandOptionType.Integer,
+							required: false,
+							min_value: 1,
+							max_value: 1000
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'buy',
+					description: 'Allows a player to exchange reward tokens.',
+					options: [
+						{
+							name: 'reward',
+							description: 'The reward you want to purchase.',
+							type: ApplicationCommandOptionType.String,
+							required: true,
+							autocomplete: async (value: string) => {
+								return TrekShopItems.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.name, value: i.name }));
+							}
+						},
+						{
+							name: 'difficulty',
+							description: 'The difficulty of token to use. Easy/Medium/Hard',
+							type: ApplicationCommandOptionType.String,
+							required: true,
+							choices: [
+								{
+									name: 'Easy',
+									value: 'Easy'
+								},
+								{
+									name: 'Medium',
+									value: 'Medium'
+								},
+								{
+									name: 'Hard',
+									value: 'Hard'
+								}
+							]
+						},
+
+						{
+							name: 'quantity',
+							description: 'The quantity you want to purchase. Range: 1 - 1000',
+							type: ApplicationCommandOptionType.Integer,
+							required: false,
+							min_value: 1,
+							max_value: 1000
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
 		 * Sepulchre
 		 *
 		 */
@@ -346,6 +476,48 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'corrupted',
 							description: 'If you want to do Corrupted Gauntlet.',
 							required: false
+						}
+					]
+				}
+			]
+		},
+		/**
+		 *
+		 * Mage Training Arena
+		 *
+		 */
+		{
+			name: 'mage_training_arena',
+			description: 'Sends your minion to train at the Mage Training Arena.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a Mage Training Arena trip.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'points',
+					description: 'See your Mage Training Arena points.'
+				},
+				{
+					name: 'buy',
+					type: ApplicationCommandOptionType.Subcommand,
+					description: 'Buy items with your Mage Training Arena points.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'name',
+							required: true,
+							description: 'The item you want to buy.',
+							autocomplete: async value => {
+								return mageTrainingArenaBuyables
+									.filter(i =>
+										!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.item.name, value: i.item.name }));
+							}
 						}
 					]
 				}
@@ -476,6 +648,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 									)
 									.map(i => ({ name: i.item.name, value: i.item.name }));
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The amount of items you want to buy.',
+							required: false,
+							min_value: 1
 						}
 					]
 				},
@@ -510,6 +689,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		barb_assault?: {
 			start?: { quantity?: number };
+			buy?: { name: string; quantity?: number };
 			level?: {};
 			gamble?: { tier: string; quantity: number };
 			stats?: {};
@@ -531,13 +711,22 @@ export const minigamesCommand: OSBMahojiCommand = {
 		mage_arena?: { start?: {} };
 		mage_arena_2?: { start?: {} };
 		gnome_restaurant?: { start?: {} };
+		temple_trek?: {
+			start?: { difficulty: string; quantity?: number };
+			buy?: { reward: string; difficulty: string; quantity?: number };
+		};
 		sepulchre?: { start?: {} };
 		gauntlet?: { start?: { corrupted?: boolean } };
+		mage_training_arena?: {
+			start?: {};
+			buy?: { name: string };
+			points?: {};
+		};
 		mahogany_homes?: { start?: {}; buy?: { name: string } };
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
-		soul_wars?: { start?: {}; buy?: { name: string }; imbue?: { name: string }; tokens?: {} };
+		soul_wars?: { start?: {}; buy?: { name: string; quantity?: number }; imbue?: { name: string }; tokens?: {} };
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
@@ -549,6 +738,15 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.barb_assault?.start) {
 			return barbAssaultStartCommand(channelID, user, klasaUser);
+		}
+		if (options.barb_assault?.buy) {
+			return barbAssaultBuyCommand(
+				interaction,
+				klasaUser,
+				user,
+				options.barb_assault.buy.name,
+				options.barb_assault.buy.quantity
+			);
 		}
 		if (options.barb_assault?.level) {
 			return barbAssaultLevelCommand(user);
@@ -637,6 +835,22 @@ export const minigamesCommand: OSBMahojiCommand = {
 
 		/**
 		 *
+		 * Trek
+		 *
+		 */
+		if (options.temple_trek) {
+			if (options.temple_trek.buy) {
+				let { reward, difficulty, quantity } = options.temple_trek.buy!;
+				return trekShop(klasaUser, reward, difficulty, quantity, interaction);
+			}
+			if (options.temple_trek.start) {
+				let { difficulty, quantity } = options.temple_trek.start!;
+				return trekCommand(klasaUser, channelID, difficulty, quantity);
+			}
+		}
+
+		/**
+		 *
 		 * Sepulchre
 		 *
 		 */
@@ -649,6 +863,23 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.gauntlet?.start) {
 			return gauntletCommand(klasaUser, channelID, options.gauntlet.start.corrupted ? 'corrupted' : 'normal');
+		}
+
+		/**
+		 *
+		 * Mage Training Arena
+		 *
+		 */
+		if (options.mage_training_arena) {
+			if (options.mage_training_arena.buy) {
+				return mageTrainingArenaBuyCommand(klasaUser, options.mage_training_arena.buy.name);
+			}
+			if (options.mage_training_arena.start) {
+				return mageTrainingArenaStartCommand(klasaUser, channelID);
+			}
+			if (options.mage_training_arena.points) {
+				return mageTrainingArenaPointsCommand(klasaUser);
+			}
 		}
 
 		/**
@@ -705,7 +936,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				return soulWarsImbueCommand(klasaUser, options.soul_wars.imbue.name);
 			}
 			if (options.soul_wars.buy) {
-				return soulWarsBuyCommand(klasaUser, options.soul_wars.buy.name);
+				return soulWarsBuyCommand(klasaUser, options.soul_wars.buy.name, options.soul_wars.buy.quantity);
 			}
 			if (options.soul_wars.tokens) {
 				return soulWarsTokensCommand(user);

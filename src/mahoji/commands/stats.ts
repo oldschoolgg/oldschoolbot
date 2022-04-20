@@ -41,6 +41,9 @@ export const statsCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options }: CommandRunOptions<{ username: string; type?: AccountType; virtual?: boolean }>) => {
 		try {
+			if (!options.type) {
+				options.type = AccountType.Normal;
+			}
 			const player = await Hiscores.fetch(options.username, {
 				type: options.type,
 				virtualLevels: Boolean(options.virtual)

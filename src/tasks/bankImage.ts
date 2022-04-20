@@ -7,7 +7,7 @@ import { Bank, Items } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { bankImageCache, BitField, Events } from '../lib/constants';
+import { bankImageCache, BitField, Events, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { GearSetupType } from '../lib/gear';
@@ -15,7 +15,7 @@ import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { BankSortMethods, sorts } from '../lib/sorts';
+import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import {
 	addArrayOfNumbers,
 	cleanString,
@@ -29,13 +29,12 @@ import {
 	drawImageWithOutline,
 	fillTextXTimesInCtx
 } from '../lib/util/canvasUtil';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
-
-const coxPurpleBg = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/14_purple.jpg');
 
 export type BankImageResult =
 	| {
@@ -112,12 +111,19 @@ export default class BankImageTask extends Task {
 
 		this.backgroundImages = await Promise.all(
 			backgroundImages.map(async img => {
-				const bgPath = `./src/lib/resources/images/bank_backgrounds/${img.id}.${
-					img.transparent ? 'png' : 'jpg'
-				}`;
+				const ext = img.transparent ? 'png' : 'jpg';
+				const bgPath = `./src/lib/resources/images/bank_backgrounds/${img.id}.${ext}`;
+				const purplePath = img.hasPurple
+					? `./src/lib/resources/images/bank_backgrounds/${img.id}_purple.${ext}`
+					: null;
 				return {
 					...img,
-					image: fs.existsSync(bgPath) ? await canvasImageFromBuffer(fs.readFileSync(bgPath)) : null
+					image: fs.existsSync(bgPath) ? await canvasImageFromBuffer(fs.readFileSync(bgPath)) : null,
+					purpleImage: purplePath
+						? fs.existsSync(purplePath)
+							? await canvasImageFromBuffer(fs.readFileSync(purplePath))
+							: null
+						: null
 				};
 			})
 		);
@@ -286,8 +292,6 @@ export default class BankImageTask extends Task {
 		const settings =
 			typeof user === 'undefined' ? null : typeof user === 'string' ? await getUserSettings(user) : user.settings;
 
-		const favorites = settings?.get(UserSettings.FavoriteItems);
-
 		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1);
 		const rawCL = settings?.get(UserSettings.CollectionLogBank);
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
@@ -330,17 +334,36 @@ export default class BankImageTask extends Task {
 		let items = bank.items();
 
 		// Sorting
-		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? 'value' : 'value';
-		if (sort || favorites?.length) {
-			items = items.sort((a, b) => {
-				if (favorites) {
-					const aFav = favorites.includes(a[0].id);
-					const bFav = favorites.includes(b[0].id);
-					if (aFav && bFav) return sorts[sort](a, b);
-					if (bFav) return 1;
-					if (aFav) return -1;
-				}
-				return sorts[sort](a, b);
+		const favorites = settings?.get(UserSettings.FavoriteItems);
+		const weightings = settings?.get(UserSettings.BankSortWeightings);
+
+		const perkTier = user ? getUsersPerkTier(user) : 0;
+		const defaultSort: BankSortMethod =
+			perkTier < PerkTier.Two ? 'value' : settings?.get(UserSettings.BankSortMethod) ?? 'value';
+		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? defaultSort : defaultSort;
+
+		items.sort(sorts[sort]);
+
+		if (favorites) {
+			items.sort((a, b) => {
+				const aFav = favorites.includes(a[0].id);
+				const bFav = favorites.includes(b[0].id);
+				if (aFav && bFav) return sorts[sort](a, b);
+				if (bFav) return 1;
+				if (aFav) return -1;
+				return 0;
+			});
+		}
+
+		if (perkTier >= PerkTier.Two && weightings && Object.keys(weightings).length > 0) {
+			items.sort((a, b) => {
+				const aWeight = weightings[a[0].id];
+				const bWeight = weightings[b[0].id];
+				if (aWeight === undefined && bWeight === undefined) return 0;
+				if (bWeight && aWeight) return bWeight - aWeight;
+				if (bWeight) return 1;
+				if (aWeight) return -1;
+				return 0;
 			});
 		}
 
@@ -397,16 +420,14 @@ export default class BankImageTask extends Task {
 			currentCL !== undefined &&
 			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
-		if (isPurple && bgImage.name === 'CoX') {
-			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
-		}
+		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : bgImage.image!;
 
 		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
 
 		const useSmallBank = user
 			? hasBgSprite
 				? true
-				: await user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
+				: user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
 			: true;
 
 		const cacheKey = [
@@ -425,7 +446,8 @@ export default class BankImageTask extends Task {
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
 			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
-			useSmallBank ? 'smallbank' : 'no-smallbank'
+			useSmallBank ? 'smallbank' : 'no-smallbank',
+			sort
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
@@ -441,8 +463,8 @@ export default class BankImageTask extends Task {
 		const canvas = createCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
 		let resizeBg = -1;
-		if (!wide && !useSmallBank && !isTransparent && bgImage.image && canvasHeight > 331) {
-			resizeBg = Math.min(1440, canvasHeight) / bgImage.image.height;
+		if (!wide && !useSmallBank && !isTransparent && actualBackground && canvasHeight > 331) {
+			resizeBg = Math.min(1440, canvasHeight) / actualBackground.height;
 		}
 
 		const ctx = canvas.getContext('2d');
@@ -463,11 +485,11 @@ export default class BankImageTask extends Task {
 
 		if (!hasBgSprite) {
 			ctx.drawImage(
-				bgImage!.image,
-				resizeBg === -1 ? 0 : (canvas.width - bgImage.image!.width! * resizeBg) / 2,
+				actualBackground,
+				resizeBg === -1 ? 0 : (canvas.width - actualBackground.width! * resizeBg) / 2,
 				0,
-				wide ? canvas.width : bgImage.image!.width! * (resizeBg === -1 ? 1 : resizeBg),
-				wide ? canvas.height : bgImage.image!.height! * (resizeBg === -1 ? 1 : resizeBg)
+				wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? 1 : resizeBg),
+				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
 			);
 		}
 

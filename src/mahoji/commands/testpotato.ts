@@ -37,13 +37,13 @@ async function givePatronLevel(user: KlasaUser, tier: number) {
 	const tierToGive = tiers[tier];
 	const currentBitfield = user.settings.get(UserSettings.BitField);
 	if (!tier || !tierToGive) {
-		await mahojiUserSettingsUpdate(user, {
+		await mahojiUserSettingsUpdate(client, user, {
 			bitfield: currentBitfield.filter(i => !tiers.map(t => t[1]).includes(i))
 		});
 		return 'Removed patron perks.';
 	}
 	const newBitField: BitField[] = [...currentBitfield, tierToGive[1]];
-	await mahojiUserSettingsUpdate(user, {
+	await mahojiUserSettingsUpdate(client, user, {
 		bitfield: uniqueArr(newBitField)
 	});
 	return `Gave you tier ${tierToGive[1] - 1} patron.`;
@@ -125,7 +125,7 @@ async function setMinigameKC(user: KlasaUser, _minigame: string, kc: number) {
 async function setXP(user: KlasaUser, skillName: string, xp: number) {
 	const skill = Object.values(Skills).find(c => c.id === skillName);
 	if (!skill) return 'No xp set because invalid skill.';
-	await mahojiUserSettingsUpdate(user, {
+	await mahojiUserSettingsUpdate(client, user, {
 		[`skills_${skill.id}`]: xp
 	});
 	return `Set ${skill.name} XP to ${xp}.`;
@@ -134,7 +134,10 @@ const openablesBank = new Bank();
 for (const i of allOpenables.values()) {
 	openablesBank.add(i.id, 100);
 }
-const spawnPresets = [['openables', openablesBank]] as const;
+const spawnPresets = [
+	['openables', openablesBank],
+	['random', new Bank()]
+] as const;
 
 const nexSupplies = new Bank()
 	.add('Shark', 10_000)
@@ -366,7 +369,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
 					const current = mahojiUser.minion_ironman;
-					await mahojiUserSettingsUpdate(user.id, {
+					await mahojiUserSettingsUpdate(client, user.id, {
 						minion_ironman: !current
 					});
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
@@ -394,7 +397,15 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					const bankToGive = new Bank();
 					if (preset) {
 						const actualPreset = spawnPresets.find(i => i[0] === preset);
-						if (actualPreset) bankToGive.add(actualPreset[1]);
+						if (!actualPreset) return 'Invalid preset';
+						let b = actualPreset[1];
+						if (actualPreset[0] === 'random') {
+							b = new Bank();
+							for (let i = 0; i < 200; i++) {
+								b.add(Items.random().id);
+							}
+						}
+						bankToGive.add(b);
 					}
 					if (item) {
 						try {
@@ -410,7 +421,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					}
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
-					return `Spawned: ${bankToGive}.`;
+					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
 				}
 				if (options.nexhax) {
 					const gear = new Gear({
@@ -427,7 +438,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring (i)'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(user.id, {
+					await mahojiUserSettingsUpdate(client, user.id, {
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						skills_ranged: convertLVLtoXP(99),
 						skills_prayer: convertLVLtoXP(99),
@@ -453,7 +464,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(user.id, {
+					await mahojiUserSettingsUpdate(client, user.id, {
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						bank: user.bank().add(nexSupplies).bank
 					});
@@ -464,7 +475,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					await mahojiUserSettingsUpdate(user.id, {
+					await mahojiUserSettingsUpdate(client, user.id, {
 						monsterScores: {
 							...(mahojiUser.monsterScores as Record<string, unknown>),
 							[monster.id]: options.setmonsterkc.kc ?? 1

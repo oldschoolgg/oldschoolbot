@@ -1759,6 +1759,15 @@ const Createables: Createable[] = [
 			[itemID('Frozen key')]: 1
 		}
 	},
+	{
+		name: 'Ecumenical key',
+		inputItems: new Bank({
+			'Ecumenical key shard': 50
+		}),
+		outputItems: {
+			[itemID('Ecumenical key')]: 1
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
