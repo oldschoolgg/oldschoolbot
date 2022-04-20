@@ -1,3 +1,4 @@
+import { noOp } from 'e';
 import { KlasaMessage } from 'klasa';
 
 import { BitField } from '../../constants';
@@ -53,10 +54,10 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 
 		try {
 			await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
-			prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } }).catch(_err => null);
-			prisma.minigame.delete({ where: { user_id: msg.author.id } }).catch(_err => null);
+			prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } }).catch(noOp);
+			prisma.minigame.delete({ where: { user_id: msg.author.id } }).catch(noOp);
 			await prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
-			prisma.newUser.delete({ where: { id: msg.author.id } }).catch(_err => null);
+			prisma.newUser.delete({ where: { id: msg.author.id } }).catch(noOp);
 			await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 			await prisma.tameActivity.deleteMany({ where: { user_id: msg.author.id } });
 			await prisma.tame.deleteMany({ where: { user_id: msg.author.id } });
