@@ -876,6 +876,46 @@ export const allCollectionLogs: ICollection = {
 				alias: ['af', 'aerial fishing'],
 				items: aerialFishingCL
 			},
+			'All Pets': {
+				alias: ['pet', 'pets'],
+				items: allPetsCL
+			},
+			Camdozaal: {
+				items: camdozaalCL
+			},
+			"Champion's Challenge": {
+				alias: ['champion', 'champion scrolls', 'champion scroll', 'scroll', 'scrolls'],
+				items: championsChallengeCL,
+				isActivity: true
+			},
+			'Chaos Druids': {
+				allItems: Monsters.ElderChaosDruid.allItems,
+				kcActivity: Monsters.ElderChaosDruid.name,
+				items: chaosDruisCL
+			},
+			'Chompy Birds': {
+				alias: ['chompy', 'bgc', 'big chompy hunting', 'ch', 'chompyhunting', 'chompyhunt'],
+				kcActivity: 'BigChompyBirdHunting',
+				items: chompyBirdsCL
+			},
+			'Creature Creation': {
+				items: creatureCreationCL
+			},
+			Cyclopes: {
+				alias: ['cyclops', 'wg', 'warriors guild', 'warrior guild'],
+				kcActivity: Monsters.Cyclops.name,
+				allItems: Monsters.Cyclops.allItems,
+				items: cyclopsCL
+			},
+			'Fossil Island Notes': {
+				items: fossilIslandNotesCL
+			},
+			"Glough's Experiments": {
+				alias: Monsters.DemonicGorilla.aliases,
+				allItems: Monsters.DemonicGorilla.allItems,
+				kcActivity: Monsters.DemonicGorilla.name,
+				items: demonicGorillaCL
+			},
 			'Monkey Backpacks': {
 				alias: ['monkey', 'monkey bps', 'backpacks'],
 				kcActivity: {
