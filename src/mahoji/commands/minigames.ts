@@ -573,7 +573,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
-					description: 'Start a Rogues Den trip.'
+					description: 'Start a Tears of Guthix trip.'
 				}
 			]
 		},
