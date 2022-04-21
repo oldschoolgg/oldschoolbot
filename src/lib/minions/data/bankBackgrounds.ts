@@ -165,6 +165,8 @@ const backgroundImages: BankBackground[] = [
 		id: 14,
 		name: 'CoX',
 		image: null,
+		hasPurple: true,
+		purpleImage: null,
 		available: true,
 		bitfield: BitField.HasPermanentEventBackgrounds
 	},
@@ -356,6 +358,8 @@ const backgroundImages: BankBackground[] = [
 		id: 52,
 		name: 'Cyrillax CustomBG',
 		image: null,
+		hasPurple: true,
+		purpleImage: null,
 		available: false,
 		owners: ['425134194436341760']
 	},
