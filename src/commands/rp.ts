@@ -37,6 +37,8 @@ import { BotCommand } from '../lib/structures/BotCommand';
 import { ItemBank } from '../lib/types';
 import {
 	asyncExec,
+	bankValueWithMarketPrices,
+	calcPerHour,
 	channelIsSendable,
 	cleanString,
 	convertBankToPerHourStats,
@@ -1163,6 +1165,41 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
+			}
+			case 'ltc': {
+				let str = '';
+				const results = await prisma.lootTrack.findMany();
+
+				str += `${['id', 'cost_h', 'cost', 'loot_h', 'loot', 'per_hour_h', 'per_hour', 'ratio'].join('\t')}\n`;
+				for (const res of results) {
+					if (!res.total_duration || !res.total_kc) continue;
+					if (Object.keys({ ...(res.cost as ItemBank), ...(res.loot as ItemBank) }).length === 0) continue;
+
+					const marketValueCost = Math.round(
+						await bankValueWithMarketPrices(prisma, new Bank(res.cost as ItemBank))
+					);
+					const marketValueLoot = Math.round(
+						await bankValueWithMarketPrices(prisma, new Bank(res.loot as ItemBank))
+					);
+					const ratio = marketValueLoot / marketValueCost;
+
+					if (!marketValueCost || !marketValueLoot || ratio === Infinity) continue;
+
+					str += `${[
+						res.id,
+						toKMB(marketValueCost),
+						marketValueCost,
+						toKMB(marketValueLoot),
+						marketValueLoot,
+						toKMB(calcPerHour(marketValueLoot, res.total_duration * Time.Minute)),
+						calcPerHour(marketValueLoot, res.total_duration * Time.Minute),
+						ratio
+					].join('\t')}\n`;
+				}
+
+				return msg.channel.send({
+					files: [new MessageAttachment(Buffer.from(str), 'output.txt')]
+				});
 			}
 		}
 	}
