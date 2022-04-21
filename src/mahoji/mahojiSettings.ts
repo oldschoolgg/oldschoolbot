@@ -182,15 +182,27 @@ export async function mahojiUserSettingsUpdate(
 	});
 
 	await klasaUser.settings.sync(true);
-	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match');
-	assert(klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points, 'Patched user should match');
+
+	const errorContext = {
+		user_id: klasaUser.id
+	};
+
+	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match', errorContext);
+	assert(
+		klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points,
+		'Patched user should match',
+		errorContext
+	);
 	const klasaBank = klasaUser.settings.get(UserSettings.Bank);
 	const newBank = newUser.bank;
 	for (const [key, value] of Object.entries(klasaBank)) {
-		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`);
+		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
 	}
-	assert(klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level);
-	assert(klasaUser.settings.get(UserSettings.HonourPoints) === newUser.honour_points);
+	assert(
+		klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
+		'Patched user should match',
+		errorContext
+	);
 
 	return { newUser };
 }
