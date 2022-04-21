@@ -1735,7 +1735,7 @@ export const holidayCL = resolveItems([
 	'Antisanta gloves',
 	'Antisanta boots'
 ]);
-export const diariesCL = resolveItems([
+export const diariesCL = [
 	'Karamja gloves 1',
 	'Karamja gloves 2',
 	'Karamja gloves 3',
@@ -1784,7 +1784,7 @@ export const diariesCL = resolveItems([
 	"Rada's blessing 2",
 	"Rada's blessing 3",
 	"Rada's blessing 4"
-]);
+];
 export const dailyCL = resolveItems([
 	'Event rpg',
 	'Green banner',

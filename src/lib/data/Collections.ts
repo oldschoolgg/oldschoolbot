@@ -788,7 +788,7 @@ export const allCollectionLogs: ICollection = {
 			'Achievement Diary': {
 				counts: false,
 				alias: ['ad', 'diary', 'diaries'],
-				items: diariesCL
+				items: resolveItems([...diariesCL])
 			},
 			Daily: {
 				counts: false,
