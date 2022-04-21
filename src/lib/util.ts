@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import type { User } from '@prisma/client';
+import type { PrismaClient, User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
@@ -26,7 +26,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
-import { production } from '../config';
+import { CLIENT_ID, production } from '../config';
 import {
 	BitField,
 	CENA_CHARS,
@@ -825,4 +825,21 @@ export function removeFromArr<T>(arr: T[], item: T) {
  */
 export function exponentialPercentScale(percent: number, decay = 0.021) {
 	return 100 * Math.pow(Math.E, -decay * (100 - percent));
+}
+
+export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
+	const marketPrices = (await prisma.clientStorage.findFirst({
+		where: { id: CLIENT_ID },
+		select: {
+			market_prices: true
+		}
+	}))!.market_prices as ItemBank;
+	let price = 0;
+	for (const [item, qty] of bank.items()) {
+		if (!item) {
+			continue;
+		}
+		price += (marketPrices[item.id] ?? item.price * 0.8) * qty;
+	}
+	return price;
 }
