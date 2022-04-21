@@ -817,16 +817,18 @@ export const allCollectionLogs: ICollection = {
 						Monsters.CommanderZilyana.name,
 						Monsters.KrilTsutsaroth.name,
 						Monsters.Kreearra.name,
-						Monsters.GeneralGraardor.name
+						Monsters.GeneralGraardor.name,
+						'Nex'
 					]
 				},
 				allItems: [
 					...Monsters.CommanderZilyana.allItems,
 					...Monsters.KrilTsutsaroth.allItems,
 					...Monsters.Kreearra.allItems,
-					...Monsters.GeneralGraardor.allItems
+					...Monsters.GeneralGraardor.allItems,
+					...NexNonUniqueTable.allItems
 				],
-				items: godWarsDungeonCL
+				items: [...godWarsDungeonCL, ...NexCL]
 			}
 		}
 	}
