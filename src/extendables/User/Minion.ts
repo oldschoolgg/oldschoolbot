@@ -616,6 +616,11 @@ export default class extends Extendable {
 					data.users.length
 				}. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
+			case 'Easter': {
+				return `${this.minionName} is currently doing the Easter Event. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 		}
 	}
 

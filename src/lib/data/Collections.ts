@@ -256,7 +256,11 @@ export const allCollectionLogs: ICollection = {
 			},
 			Nex: {
 				alias: ['nex'],
-				allItems: [...NexUniqueTable.allItems, ...NexNonUniqueTable.allItems],
+				allItems: [
+					...NexUniqueTable.allItems,
+					...NexNonUniqueTable.allItems,
+					...resolveItems(['Clue scroll (elite)'])
+				],
 				items: NexCL
 			},
 			'The Nightmare': {
@@ -626,8 +630,8 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Chaos Druids': {
-				allItems: Monsters.ChaosDruid.allItems,
-				kcActivity: Monsters.ChaosDruid.name,
+				allItems: Monsters.ElderChaosDruid.allItems,
+				kcActivity: Monsters.ElderChaosDruid.name,
 				items: chaosDruisCL
 			},
 			'Chompy Birds': {
@@ -813,16 +817,18 @@ export const allCollectionLogs: ICollection = {
 						Monsters.CommanderZilyana.name,
 						Monsters.KrilTsutsaroth.name,
 						Monsters.Kreearra.name,
-						Monsters.GeneralGraardor.name
+						Monsters.GeneralGraardor.name,
+						'Nex'
 					]
 				},
 				allItems: [
 					...Monsters.CommanderZilyana.allItems,
 					...Monsters.KrilTsutsaroth.allItems,
 					...Monsters.Kreearra.allItems,
-					...Monsters.GeneralGraardor.allItems
+					...Monsters.GeneralGraardor.allItems,
+					...NexNonUniqueTable.allItems
 				],
-				items: godWarsDungeonCL
+				items: [...godWarsDungeonCL, ...NexCL]
 			}
 		}
 	}

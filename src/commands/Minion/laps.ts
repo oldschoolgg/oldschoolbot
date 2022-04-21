@@ -29,7 +29,7 @@ const unlimitedFireRuneProviders = [
 function alching(msg: KlasaMessage, tripLength: number) {
 	if (msg.author.skillLevel(SkillsEnum.Magic) < 55) return null;
 	const bank = msg.author.bank();
-	const favAlchables = msg.author.getUserFavAlchs() as Item[];
+	const favAlchables = msg.author.getUserFavAlchs(tripLength) as Item[];
 
 	if (!msg.flagArgs.alch) {
 		return null;

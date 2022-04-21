@@ -23,6 +23,7 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
+	randomVariation,
 	skillsMeetRequirements
 } from '../util';
 import itemID from '../util/itemID';
@@ -101,10 +102,15 @@ export function checkNexUser(user: User): [false] | [true, string] {
 			`${tag} has less than 600 ${itemNameFromID(ammo.item)} equipped, they might run out in the fight!`
 		];
 	}
-	const bank = new Bank(user.bank as any);
+	const bank = new Bank(user.bank as ItemBank);
 	if (!bank.has(minimumCostOwned)) {
 		return [true, `${tag} needs to own a minimum of these supplies: ${minimumCostOwned}`];
 	}
+	const cl = new Bank(user.collectionLogBank as ItemBank);
+	if (!cl.has('Frozen key') && !bank.has('Frozen key')) {
+		return [true, `${tag} needs to have created a Frozen key to fight Nex.`];
+	}
+
 	return [false];
 }
 
@@ -286,7 +292,7 @@ export function calculateNexDetails({ team }: { team: User[] }) {
 	return {
 		team: resultTeam,
 		quantity,
-		duration: wipedKill ? wipedKill * lengthPerKill : duration,
+		duration: wipedKill ? wipedKill * lengthPerKill - randomVariation(lengthPerKill / 2, 90) : duration,
 		fakeDuration: duration,
 		wipedKill,
 		deaths
