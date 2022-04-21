@@ -7,6 +7,7 @@ import { table } from 'table';
 
 import { production } from '../../config';
 import { BitField, Emoji, projectiles, ProjectileType } from '../../lib/constants';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -412,16 +413,28 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			['range', rangeGear, rangeWeapons]
 		] as const) {
 			const weapon = setup.equippedWeapon();
-			if (!weapon || !Object.keys(weapons).map(itemID).includes(weapon.id)) {
+			const validWeapons = Object.keys(weapons)
+				.map(itemID)
+				.map(id => [...getSimilarItems(id), id])
+				.flat();
+			if (!weapon || !validWeapons.includes(weapon.id)) {
 				return `You need one of these weapons in your ${name} setup: ${Object.keys(weapons).join(', ')}.`;
 			}
 		}
 
-		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 7.5, 'Zuk with ACB');
-		duration.add(rangeGear.equippedWeapon() === getOSItem('Armadyl crossbow'), 4.5, 'ACB');
+		zukDeathChance.add(
+			getSimilarItems(itemID('Armadyl crossbow')).includes(rangeGear.equippedWeapon()!.id),
+			7.5,
+			'Zuk with ACB'
+		);
+		duration.add(getSimilarItems(itemID('Armadyl crossbow')).includes(rangeGear.equippedWeapon()!.id), 4.5, 'ACB');
 
-		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), 1.5, 'Zuk with TBow');
-		duration.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), -7.5, 'TBow');
+		zukDeathChance.add(
+			getSimilarItems(itemID('Twisted bow')).includes(rangeGear.equippedWeapon()!.id),
+			1.5,
+			'Zuk with TBow'
+		);
+		duration.add(getSimilarItems(itemID('Twisted bow')).includes(rangeGear.equippedWeapon()!.id), -7.5, 'TBow');
 
 		/**
 		 *
