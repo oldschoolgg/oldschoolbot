@@ -429,12 +429,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		);
 		duration.add(getSimilarItems(itemID('Armadyl crossbow')).includes(rangeGear.equippedWeapon()!.id), 4.5, 'ACB');
 
-		zukDeathChance.add(
-			getSimilarItems(itemID('Twisted bow')).includes(rangeGear.equippedWeapon()!.id),
-			1.5,
-			'Zuk with TBow'
-		);
-		duration.add(getSimilarItems(itemID('Twisted bow')).includes(rangeGear.equippedWeapon()!.id), -7.5, 'TBow');
+		zukDeathChance.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), 1.5, 'Zuk with TBow');
+		duration.add(rangeGear.equippedWeapon() === getOSItem('Twisted bow'), -7.5, 'TBow');
 
 		/**
 		 *
