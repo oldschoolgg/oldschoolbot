@@ -92,12 +92,6 @@ export const gambleCommand: OSBMahojiCommand = {
 					name: 'amount',
 					description: 'Amount you wish to gamble.',
 					required: true
-				},
-				{
-					type: ApplicationCommandOptionType.Boolean,
-					name: 'simulate',
-					description: 'Simulate playing lucky pick.',
-					required: false
 				}
 			]
 		}
@@ -110,7 +104,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		cape?: { type?: string };
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
-		lucky_pick?: { amount: string; simulate: boolean };
+		lucky_pick?: { amount: string };
 	}>) => {
 		const KlasaUser = await client.fetchUser(userID);
 
@@ -152,7 +146,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.lucky_pick) {
-			return luckyPickCommand(KlasaUser, options.lucky_pick.amount, options.lucky_pick.simulate, interaction);
+			return luckyPickCommand(KlasaUser, options.lucky_pick.amount, interaction);
 		}
 		return 'Invalid command.';
 	}

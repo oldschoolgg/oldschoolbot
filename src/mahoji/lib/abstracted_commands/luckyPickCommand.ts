@@ -1,11 +1,10 @@
 import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
-import { chunk, randArrItem, randInt, roll, shuffleArr, Time } from 'e';
+import { chunk, roll, shuffleArr, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { client } from '../../..';
-import { production } from '../../../config';
 import { SILENT_ERROR } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -16,7 +15,6 @@ import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSetting
 export async function luckyPickCommand(
 	klasaUser: KlasaUser,
 	luckypickamount: string,
-	simulate: boolean,
 	interaction: SlashCommandInteraction
 ): Promise<string> {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
@@ -80,26 +78,6 @@ export async function luckyPickCommand(
 	}
 	if (klasaUser.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
-	}
-	if (simulate && !production) {
-		let houseBalance = 0;
-		let betQuantity = 10_000;
-
-		const pickedButtonsMap: Record<string, number> = {};
-		for (let i = 0; i < betQuantity; i++) {
-			let betSize = randInt(1_000_000, 1_000_000_000);
-
-			houseBalance += betSize;
-			const buttons = getButtons();
-			const pickedButton = randArrItem(buttons);
-			!pickedButtonsMap[pickedButton.name]
-				? (pickedButtonsMap[pickedButton.name] = 1)
-				: pickedButtonsMap[pickedButton.name]++;
-			houseBalance -= pickedButton.mod(betSize);
-		}
-		return `With ${betQuantity} bets, the house ended up with ${toKMB(houseBalance)}. Average profit of ${toKMB(
-			houseBalance / betQuantity
-		)} per bet.`;
 	}
 
 	await handleMahojiConfirmation(
