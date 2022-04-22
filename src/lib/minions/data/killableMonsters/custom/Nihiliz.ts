@@ -42,6 +42,7 @@ const regularTable = new LootTable()
 	.add('Dragon bolts (unf)', [20, 30], 2)
 	.add('Cadantine seed', [1, 3], 2)
 	.add('Toadflax seed', [1, 3], 2)
+	.add('Bow string', [100, 400], 2)
 	.add('Ruby bolt tips', [15, 75])
 	.add('Dragonstone bolt tips', [10, 50])
 	.add('Onyx bolt tips', [2, 10])
@@ -50,7 +51,6 @@ const regularTable = new LootTable()
 	.add('Death rune', [200, 500])
 	.add('Amethyst', [10, 25])
 	.add('Uncut dragonstone', [10, 20])
-	.oneIn(128, 'Uncut onyx')
 
 	/* Food */
 	.add(foodTable, 1, 14)
@@ -58,6 +58,9 @@ const regularTable = new LootTable()
 	/* Other */
 	.add('Coins', [50_000, 200_000])
 	.add('Pure essence', [2000, 3000])
+	.tertiary(500, 'Uncut zenyte', [1, 3])
+
+	/* Troll drops */
 	.oneIn(73_000, StaffOrbTable, 1000, { multiply: true })
 
 	/* Sub Tables */
@@ -77,6 +80,5 @@ export const NihilizLootTable = new LootTable()
 	.tertiary(10, 'Nihil shard', [5, 20])
 	.tertiary(1200, 'Nihil horn')
 	.tertiary(900, 'Zaryte vambraces')
-	.tertiary(500, 'Uncut zenyte', [1, 3])
 	.tertiary(100, 'Clue scroll (grandmaster)')
 	.tertiary(5000, 'Nexling');
