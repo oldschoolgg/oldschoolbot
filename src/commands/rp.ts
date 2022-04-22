@@ -629,21 +629,20 @@ ${
 			}
 			case 'bingocsvdump': {
 				const result = await bingoTeamLeaderboard();
-				let text = [
-					'Team Members',
-					'Tiles Completed Count',
-					'Table',
-					'Complete Tiles',
-					'Finished Golden Tiles'
-				].join('\t');
+				let text = ['Team Members', 'Tiles Completed Count', 'Table', 'Finished Golden Tiles'].join('\t');
 				text += '\n';
 				text += result
 					.map(({ progress, team, finishedGoldenTiles }) => {
 						return [
-							`${team.join(' ')}`,
+							`"${team
+								.map(i => {
+									const user = client.users.cache.get(i);
+									if (!user) return i;
+									return `${user.username}#${user.discriminator}`;
+								})
+								.join('\n')}"`,
 							progress.tilesCompletedCount,
 							`"${progress.bingoTableStr}"`,
-							`"${progress.tilesCompleted.map(i => bingoTiles.find(t => t.id === i)?.name).join('\n')}"`,
 							finishedGoldenTiles ? 'YES' : ''
 						].join('\t');
 					})
