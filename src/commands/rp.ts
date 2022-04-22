@@ -12,7 +12,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client, mahojiClient } from '..';
 import { CLIENT_ID, production } from '../config';
-import { bingoLeaderboard, bingoTeamLeaderboard, bingoTiles } from '../lib/bingo';
+import { bingoLeaderboard, bingoTeamLeaderboard } from '../lib/bingo';
 import {
 	badges,
 	BitField,
