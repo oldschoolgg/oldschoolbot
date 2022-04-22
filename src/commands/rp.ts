@@ -12,7 +12,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client, mahojiClient } from '..';
 import { CLIENT_ID, production } from '../config';
-import { bingoLeaderboard, csvDumpBingoPlayers } from '../lib/bingo';
+import { bingoLeaderboard, bingoTeamLeaderboard, bingoTiles } from '../lib/bingo';
 import {
 	badges,
 	BitField,
@@ -628,8 +628,28 @@ ${
 				return msg.channel.send(await bingoLeaderboard());
 			}
 			case 'bingocsvdump': {
+				const result = await bingoTeamLeaderboard();
+				let text = [
+					'Team Members',
+					'Tiles Completed Count',
+					'Table',
+					'Complete Tiles',
+					'Finished Golden Tiles'
+				].join('\t');
+				text += '\n';
+				text += result
+					.map(({ progress, team, finishedGoldenTiles }) => {
+						return [
+							`${team.join(' ')}`,
+							progress.tilesCompletedCount,
+							`"${progress.bingoTableStr}"`,
+							`"${progress.tilesCompleted.map(i => bingoTiles.find(t => t.id === i)?.name).join('\n')}"`,
+							finishedGoldenTiles ? 'YES' : ''
+						].join('\t');
+					})
+					.join('\n');
 				return msg.channel.send({
-					files: [new MessageAttachment(Buffer.from(await csvDumpBingoPlayers()), 'output.txt')]
+					files: [new MessageAttachment(Buffer.from(text), 'output.txt')]
 				});
 			}
 			case 'bingostats': {
