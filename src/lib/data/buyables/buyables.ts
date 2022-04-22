@@ -29,7 +29,7 @@ export interface Buyable {
 	restockTime?: number;
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
-	collectionLogReqs?: string[];
+	collectionLogReqs?: number[];
 	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
 
