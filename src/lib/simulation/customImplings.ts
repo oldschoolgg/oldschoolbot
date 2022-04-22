@@ -86,7 +86,6 @@ export const ChimplingImpling = new SimpleOpenable({
 		.tertiary(7000, 'Monkey egg')
 		.tertiary(3000, 'Monkey dye')
 		.tertiary(100, 'Banana enchantment scroll')
-		.tertiary(1_000_000, 'Shiny monkey nuts')
 });
 
 Openables.set(InfernalImpling.id, InfernalImpling);
