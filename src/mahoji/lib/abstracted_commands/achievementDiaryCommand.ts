@@ -1,9 +1,10 @@
+import { strikethrough } from '@discordjs/builders';
 import { KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { diaries, DiaryTier, userhasDiaryTier } from '../../../lib/diaries';
 import { Minigames } from '../../../lib/settings/minigames';
-import { formatSkillRequirements, itemNameFromID, stringMatches, textEffect, toTitleCase } from '../../../lib/util';
+import { formatSkillRequirements, itemNameFromID, stringMatches, toTitleCase } from '../../../lib/util';
 
 const lampRewards = {
 	Easy: 'Antique lamp 1',
@@ -37,9 +38,7 @@ export async function achievementDiaryCommand(user: KlasaUser, diaryName: string
 					};
 				})
 			);
-			str += `**${dir.name}:** ${res
-				.map(t => textEffect(t.name, t.has ? 'strikethrough' : 'none'))
-				.join(' - ')}\n`;
+			str += `**${dir.name}:** ${res.map(t => (t.has ? t.name : strikethrough(t.name))).join(' - ')}\n`;
 		}
 		return str;
 	}

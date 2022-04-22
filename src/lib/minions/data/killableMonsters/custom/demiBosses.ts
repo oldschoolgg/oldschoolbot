@@ -181,7 +181,7 @@ const QueenBlackDragon: CustomMonster = {
 			prayer: 3
 		}
 	},
-	itemsRequired: deepResolveItems([['Dragonfire shield']]),
+	itemsRequired: deepResolveItems([['Dragonfire shield', 'Dragonfire ward']]),
 	respawnTime: Time.Second * 20,
 	levelRequirements: {
 		prayer: 70,

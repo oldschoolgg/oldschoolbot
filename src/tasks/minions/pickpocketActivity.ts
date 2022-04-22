@@ -1,4 +1,4 @@
-import { percentChance, Time } from 'e';
+import { percentChance, randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -7,7 +7,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { roll, rollRogueOutfitDoubleLoot, updateGPTrackSetting } from '../../lib/util';
+import { rogueOutfitPercentBonus, roll, updateGPTrackSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { multiplyBankNotClues } from '../../lib/util/mbnc';
@@ -64,7 +64,7 @@ export default class extends Task {
 		for (let i = 0; i < successfulQuantity; i++) {
 			const lootItems = npc.table.roll();
 
-			if (rollRogueOutfitDoubleLoot(user)) {
+			if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
 				rogueOutfitBoostActivated = true;
 				const doubledLoot = lootItems.multiply(2);
 				if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');

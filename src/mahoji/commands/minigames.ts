@@ -573,7 +573,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'start',
-					description: 'Start a Rogues Den trip.'
+					description: 'Start a Tears of Guthix trip.'
 				}
 			]
 		},
@@ -648,6 +648,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 									)
 									.map(i => ({ name: i.item.name, value: i.item.name }));
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The amount of items you want to buy.',
+							required: false,
+							min_value: 1
 						}
 					]
 				},
@@ -719,7 +726,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
-		soul_wars?: { start?: {}; buy?: { name: string }; imbue?: { name: string }; tokens?: {} };
+		soul_wars?: { start?: {}; buy?: { name: string; quantity?: number }; imbue?: { name: string }; tokens?: {} };
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
@@ -929,7 +936,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				return soulWarsImbueCommand(klasaUser, options.soul_wars.imbue.name);
 			}
 			if (options.soul_wars.buy) {
-				return soulWarsBuyCommand(klasaUser, options.soul_wars.buy.name);
+				return soulWarsBuyCommand(klasaUser, options.soul_wars.buy.name, options.soul_wars.buy.quantity);
 			}
 			if (options.soul_wars.tokens) {
 				return soulWarsTokensCommand(user);
