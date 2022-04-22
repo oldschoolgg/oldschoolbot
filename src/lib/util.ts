@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import type { User } from '@prisma/client';
+import type { PrismaClient, User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
@@ -26,7 +26,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
-import { production } from '../config';
+import { CLIENT_ID, production } from '../config';
 import {
 	BitField,
 	CENA_CHARS,
@@ -51,6 +51,7 @@ import {
 } from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
+import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -206,10 +207,6 @@ export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
 }
 
-export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
-	return Promise.all(ids.map(id => client.fetchUser(id)));
-}
-
 const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
@@ -250,10 +247,6 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 		}
 	}
 	return amountEquipped * 20;
-}
-
-export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
-	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
 }
 
 export function generateContinuationChar(user: KlasaUser) {
@@ -504,15 +497,6 @@ export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: s
 	return client.settings.update(setting, newValue);
 }
 
-export function textEffect(str: string, effect: 'none' | 'strikethrough') {
-	let wrap = '';
-
-	if (effect === 'strikethrough') {
-		wrap = '~~';
-	}
-	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
-}
-
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
 	const active: any[] = user.settings.get(key) as any[];
 	return user.settings.update(key, active);
@@ -649,8 +633,11 @@ export function getMonster(str: string): Monster {
 	}
 	return mon;
 }
-export function assert(condition: boolean, desc?: string) {
-	if (!condition) throw new Error(desc);
+
+export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
+	if (!condition) {
+		logError(new Error(desc ?? 'Failed assertion'), context);
+	}
 }
 
 export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
@@ -707,14 +694,6 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	return setup;
 }
 
-export function convertBankToPerHourStats(bank: Bank, time: number) {
-	let result = [];
-	for (const [item, qty] of bank.items()) {
-		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
-	}
-	return result;
-}
-
 export function formatTimestamp(date: Date, relative = false) {
 	const unixTime = date.getTime() / 1000;
 	if (relative) {
@@ -740,6 +719,13 @@ export function sanitizeBank(bank: Bank) {
 			delete bank.bank[key];
 		}
 	}
+}
+export function convertBankToPerHourStats(bank: Bank, time: number) {
+	let result = [];
+	for (const [item, qty] of bank.items()) {
+		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
+	}
+	return result;
 }
 
 export function isAtleastThisOld(date: Date | number, age: number) {
@@ -825,4 +811,21 @@ export function removeFromArr<T>(arr: T[], item: T) {
  */
 export function exponentialPercentScale(percent: number, decay = 0.021) {
 	return 100 * Math.pow(Math.E, -decay * (100 - percent));
+}
+
+export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank) {
+	const marketPrices = (await prisma.clientStorage.findFirst({
+		where: { id: CLIENT_ID },
+		select: {
+			market_prices: true
+		}
+	}))!.market_prices as ItemBank;
+	let price = 0;
+	for (const [item, qty] of bank.items()) {
+		if (!item) {
+			continue;
+		}
+		price += (marketPrices[item.id] ?? item.price * 0.8) * qty;
+	}
+	return price;
 }

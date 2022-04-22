@@ -1152,7 +1152,6 @@ setCustomItem(48_223, 'Scroll of the hunt', 'Coal', {}, 1_000_000);
 setCustomItem(48_224, 'Monkey egg', 'Egg', {}, 100_000_000);
 setCustomItem(48_225, 'Banana enchantment scroll', 'Egg', {}, 1_000_000);
 setCustomItem(48_226, 'Chimpling jar', 'Egg', {}, 100_000);
-setCustomItem(48_227, 'Shiny monkey nuts', 'Egg', {}, 100_000);
 setCustomItem(48_228, 'Monkey dye', 'Egg', {}, 10_000_000);
 setCustomItem(48_229, 'Marimbo statue', 'Egg', {}, 10_000_000);
 setCustomItem(48_230, 'Big banana', 'Bronze kiteshield', {}, 100_000);

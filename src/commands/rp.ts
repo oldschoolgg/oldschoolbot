@@ -11,8 +11,8 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client, mahojiClient } from '..';
-import { CLIENT_ID } from '../config';
-import { bingoLeaderboard, csvDumpBingoPlayers } from '../lib/bingo';
+import { CLIENT_ID, production } from '../config';
+import { bingoLeaderboard, bingoTeamLeaderboard } from '../lib/bingo';
 import {
 	badges,
 	BitField,
@@ -34,8 +34,11 @@ import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../l
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
+import { ItemBank } from '../lib/types';
 import {
 	asyncExec,
+	bankValueWithMarketPrices,
+	calcPerHour,
 	channelIsSendable,
 	cleanString,
 	convertBankToPerHourStats,
@@ -49,7 +52,8 @@ import {
 	isTobActivity,
 	itemNameFromID,
 	moidLink,
-	stringMatches
+	stringMatches,
+	toKMB
 } from '../lib/util';
 import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -57,6 +61,7 @@ import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
+import { mahojiParseNumber } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
@@ -359,6 +364,75 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'setmp': {
+				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
+				if (
+					production &&
+					(!msg.member ||
+						[Roles.BSOMassHoster, Roles.Moderator, Roles.MassHoster, Roles.PatronTier3].every(
+							r => !msg.member!.roles.cache.has(r)
+						))
+				) {
+					return;
+				}
+				const { market_prices: currentMarketPrices } = (await prisma.clientStorage.findFirst({
+					select: {
+						market_prices: true
+					},
+					where: {
+						id: CLIENT_ID
+					}
+				}))!;
+				if (!input || typeof input !== 'string') return;
+				if (input === 'list') {
+					return msg.channel.send({
+						files: [
+							new MessageAttachment(
+								Buffer.from(
+									Object.entries(currentMarketPrices as ItemBank)
+										.map(ent => {
+											const itemName = itemNameFromID(parseInt(ent[0]));
+											return `${itemName}\t${ent[1]}\t${toKMB(ent[1])}`;
+										})
+										.join('\n')
+								),
+								'output.txt'
+							)
+						]
+					});
+				}
+				const [itemName, _price] = input.split(',');
+				const item = getOSItem(itemName);
+				const price = mahojiParseNumber({ input: _price, min: 1, max: 100_000_000_000 });
+				if (!price) return msg.channel.send('Invalid price.');
+				await msg.confirm(
+					`Are you sure you want to set the *market value* of ${item.name} to ${toKMB(
+						price
+					)}? This must be a reasonable price that the item is sold/bought at. If you put misleading, incorrect, or unnecessary values, you will be banned.`
+				);
+
+				const newMarketPrices: ItemBank = {
+					...(currentMarketPrices as ItemBank),
+					[item.id]: price
+				};
+
+				const { market_prices: updatedMarketPrices } = await prisma.clientStorage.update({
+					data: {
+						market_prices: newMarketPrices
+					},
+					where: {
+						id: CLIENT_ID
+					},
+					select: {
+						market_prices: true
+					}
+				});
+				return msg.channel.send(
+					`You set the price of ${item.name} to ${(updatedMarketPrices as ItemBank)[
+						item.id
+					].toLocaleString()}.`
+				);
+			}
 			case 'ping': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || typeof input !== 'string') return;
@@ -554,8 +628,27 @@ ${
 				return msg.channel.send(await bingoLeaderboard());
 			}
 			case 'bingocsvdump': {
+				const result = await bingoTeamLeaderboard();
+				let text = ['Team Members', 'Tiles Completed Count', 'Table', 'Finished Golden Tiles'].join('\t');
+				text += '\n';
+				text += result
+					.map(({ progress, team, finishedGoldenTiles }) => {
+						return [
+							`"${team
+								.map(i => {
+									const user = client.users.cache.get(i);
+									if (!user) return i;
+									return `${user.username}#${user.discriminator}`;
+								})
+								.join('\n')}"`,
+							progress.tilesCompletedCount,
+							`"${progress.bingoTableStr}"`,
+							finishedGoldenTiles ? 'YES' : ''
+						].join('\t');
+					})
+					.join('\n');
 				return msg.channel.send({
-					files: [new MessageAttachment(Buffer.from(await csvDumpBingoPlayers()), 'output.txt')]
+					files: [new MessageAttachment(Buffer.from(text), 'output.txt')]
 				});
 			}
 			case 'bingostats': {
@@ -1091,6 +1184,41 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
+			}
+			case 'ltc': {
+				let str = '';
+				const results = await prisma.lootTrack.findMany();
+
+				str += `${['id', 'cost_h', 'cost', 'loot_h', 'loot', 'per_hour_h', 'per_hour', 'ratio'].join('\t')}\n`;
+				for (const res of results) {
+					if (!res.total_duration || !res.total_kc) continue;
+					if (Object.keys({ ...(res.cost as ItemBank), ...(res.loot as ItemBank) }).length === 0) continue;
+
+					const marketValueCost = Math.round(
+						await bankValueWithMarketPrices(prisma, new Bank(res.cost as ItemBank))
+					);
+					const marketValueLoot = Math.round(
+						await bankValueWithMarketPrices(prisma, new Bank(res.loot as ItemBank))
+					);
+					const ratio = marketValueLoot / marketValueCost;
+
+					if (!marketValueCost || !marketValueLoot || ratio === Infinity) continue;
+
+					str += `${[
+						res.id,
+						toKMB(marketValueCost),
+						marketValueCost,
+						toKMB(marketValueLoot),
+						marketValueLoot,
+						toKMB(calcPerHour(marketValueLoot, res.total_duration * Time.Minute)),
+						calcPerHour(marketValueLoot, res.total_duration * Time.Minute),
+						ratio
+					].join('\t')}\n`;
+				}
+
+				return msg.channel.send({
+					files: [new MessageAttachment(Buffer.from(str), 'output.txt')]
+				});
 			}
 		}
 	}
