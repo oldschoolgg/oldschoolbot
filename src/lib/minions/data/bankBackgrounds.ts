@@ -569,6 +569,13 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['192621282452439041']
+	},
+	{
+		id: 95,
+		name: 'OilInGasLife CustomBG',
+		image: null,
+		available: false,
+		owners: ['944238795329511465']
 	}
 ];
 
