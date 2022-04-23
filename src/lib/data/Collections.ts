@@ -56,6 +56,7 @@ import {
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
+	diariesCL,
 	fightCavesCL,
 	fishingTrawlerCL,
 	fossilIslandNotesCL,
@@ -784,6 +785,11 @@ export const allCollectionLogs: ICollection = {
 	},
 	Custom: {
 		activities: {
+			'Achievement Diary': {
+				counts: false,
+				alias: ['ad', 'diary', 'diaries'],
+				items: resolveItems([...diariesCL])
+			},
 			Daily: {
 				counts: false,
 				alias: ['diango'],
