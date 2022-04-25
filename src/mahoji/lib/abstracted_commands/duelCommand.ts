@@ -16,14 +16,14 @@ async function checkBal(user: KlasaUser, amount: number) {
 }
 
 export async function duelCommand(
-	KlasaUser: KlasaUser,
+	klasaUser: KlasaUser,
 	interaction: SlashCommandInteraction,
 	duelUser: KlasaUser,
 	duelamount?: string
 ) {
 	await interaction.deferReply();
 
-	const duelSourceUser = KlasaUser;
+	const duelSourceUser = klasaUser;
 	const duelTargetUser = duelUser;
 
 	const amount = mahojiParseNumber({ input: duelamount, min: 1, max: 500_000_000_000 });

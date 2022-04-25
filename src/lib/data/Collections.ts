@@ -76,6 +76,7 @@ import {
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
+	diariesCL,
 	discontinuedCustomPetsCL,
 	expertCapesCL,
 	fightCavesCL,
@@ -1097,6 +1098,11 @@ export const allCollectionLogs: ICollection = {
 			Miscellaneous: {
 				alias: ['misc'],
 				items: miscellaneousCL
+			},
+			'Achievement Diary': {
+				counts: false,
+				alias: ['ad', 'diary', 'diaries'],
+				items: resolveItems([...diariesCL])
 			},
 			Daily: {
 				counts: false,
