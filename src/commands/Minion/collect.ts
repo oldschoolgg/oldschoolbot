@@ -65,6 +65,20 @@ export const collectables: Collectable[] = [
 		duration: Time.Minute * 8.5
 	},
 	{
+		item: getOSItem('White berries'),
+		quantity: 27,
+		qpRequired: 22,
+		skillReqs: {
+			ranged: 60,
+			thieving: 50,
+			agility: 56,
+			crafting: 10,
+			fletching: 5,
+			cooking: 30
+		},
+		duration: Time.Minute * 4.05
+	},
+	{
 		item: getOSItem('Snape grass'),
 		quantity: 120,
 		itemCost: new Bank({
