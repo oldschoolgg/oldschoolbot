@@ -93,6 +93,17 @@ export const collectables: Collectable[] = [
 		duration: Time.Minute,
 		qpRequired: 30
 	},
+	{
+		item: getOSItem('Jangerberries'),
+		quantity: 224,
+		itemCost: new Bank({
+			'Ring of dueling(8)': 1
+		}),
+		skillReqs: {
+			agility: 10
+		},
+		duration: Time.Minute * 24
+	},
 	// Miniquest to get Tarn's diary for Salve amulet (e)/(ei)
 	{
 		item: getOSItem("Tarn's diary"),
