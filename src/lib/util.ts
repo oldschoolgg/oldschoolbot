@@ -1,3 +1,5 @@
+import { bold } from '@discordjs/builders';
+import type { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
@@ -10,7 +12,7 @@ import {
 	MessageButton,
 	MessageOptions,
 	TextChannel,
-	User,
+	User as DJSUser,
 	Util
 } from 'discord.js';
 import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
@@ -31,9 +33,15 @@ import { POHBoosts } from './poh';
 import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
+import {
+	GroupMonsterActivityTaskOptions,
+	NexTaskOptions,
+	RaidsOptions,
+	TheatreOfBloodTaskOptions
+} from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
+import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -172,10 +180,6 @@ export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
 }
 
-export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
-	return Promise.all(ids.map(id => client.fetchUser(id)));
-}
-
 const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
@@ -218,10 +222,6 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	return amountEquipped * 20;
 }
 
-export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
-	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
-}
-
 export function generateContinuationChar(user: KlasaUser) {
 	const baseChar =
 		user.perkTier > PerkTier.One
@@ -261,6 +261,10 @@ export function isRaidsActivity(data: any): data is RaidsOptions {
 
 export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 	return 'wipedRoom' in data;
+}
+
+export function isNexActivity(data: any): data is NexTaskOptions {
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
 }
 
 export function sha256Hash(x: string) {
@@ -436,7 +440,12 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-export function updateBankSetting(client: KlasaClient | KlasaUser, setting: string, bankToAdd: Bank | ItemBank) {
+export function updateBankSetting(
+	_client: KlasaClient | KlasaUser | Client,
+	setting: string,
+	bankToAdd: Bank | ItemBank
+) {
+	const client = _client as KlasaClient | KlasaUser;
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
@@ -447,15 +456,6 @@ export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: s
 	const current = client.settings.get(setting) as number;
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
-}
-
-export function textEffect(str: string, effect: 'none' | 'strikethrough') {
-	let wrap = '';
-
-	if (effect === 'strikethrough') {
-		wrap = '~~';
-	}
-	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
 }
 
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
@@ -486,8 +486,8 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export function patronMaxTripCalc(user: KlasaUser) {
-	const perkTier = getUsersPerkTier(user);
+export function patronMaxTripCalc(user: KlasaUser | User) {
+	const perkTier = getUsersPerkTier(user instanceof KlasaUser ? user : user.bitfield);
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
 	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
@@ -559,8 +559,10 @@ export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
 }
 
-export function assert(condition: boolean, desc?: string) {
-	if (!condition) throw new Error(desc);
+export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
+	if (!condition) {
+		logError(new Error(desc ?? 'Failed assertion'), context);
+	}
 }
 
 export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
@@ -570,13 +572,17 @@ export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: n
 		if (uniques.includes(item.id)) {
 			uniquesReceived += qty;
 		}
-		result.push(`${qty}x ${item.name} (1 in ${(iterations / qty).toFixed(2)})`);
+		const rate = Math.round(iterations / qty);
+		if (rate < 2) continue;
+		let { name } = item;
+		if (uniques.includes(item.id)) name = bold(name);
+		result.push(`${qty}x ${name} (1 in ${rate})`);
 	}
 	result.push(
-		`${uniquesReceived}x Uniques (1 in ${iterations / uniquesReceived} which is ${calcWhatPercent(
+		`\n**${uniquesReceived}x Uniques (1 in ${Math.round(iterations / uniquesReceived)} which is ${calcWhatPercent(
 			uniquesReceived,
 			iterations
-		)}%)`
+		)}%)**`
 	);
 	return result.join(', ');
 }
@@ -607,14 +613,6 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	return setup;
 }
 
-export function convertBankToPerHourStats(bank: Bank, time: number) {
-	let result = [];
-	for (const [item, qty] of bank.items()) {
-		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
-	}
-	return result;
-}
-
 /**
  * Removes extra clue scrolls from loot, if they got more than 1 or if they already own 1.
  */
@@ -640,6 +638,13 @@ export function sanitizeBank(bank: Bank) {
 			delete bank.bank[key];
 		}
 	}
+}
+export function convertBankToPerHourStats(bank: Bank, time: number) {
+	let result = [];
+	for (const [item, qty] of bank.items()) {
+		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
+	}
+	return result;
 }
 
 export function truncateString(str: string, maxLen: number) {
@@ -670,7 +675,7 @@ export function calcMaxRCQuantity(rune: Rune, user: KlasaUser) {
 	return 0;
 }
 
-export function convertDJSUserToAPIUser(user: User | KlasaUser): APIUser {
+export function convertDJSUserToAPIUser(user: DJSUser | KlasaUser): APIUser {
 	const apiUser: APIUser = {
 		id: user.id,
 		username: user.username,
@@ -705,4 +710,15 @@ export function convertDJSMemberToAPIMember(member: GuildMember): APIInteraction
 
 export function removeFromArr<T>(arr: T[], item: T) {
 	return arr.filter(i => i !== item);
+}
+
+/**
+ * Scale percentage exponentially
+ *
+ * @param decay Between 0.01 and 0.05; bigger means more penalty.
+ * @param percent The percent to scale
+ * @returns percent
+ */
+export function exponentialPercentScale(percent: number, decay = 0.021) {
+	return 100 * Math.pow(Math.E, -decay * (100 - percent));
 }

@@ -1,10 +1,7 @@
-import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import { diaries } from '../../lib/diaries';
-import { ActivityTaskOptions } from '../../lib/types/minions';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import BankImageTask from '../../tasks/bankImage';
 import {
@@ -33,11 +30,6 @@ export const minionCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'birthdayevent',
-			description: 'Send your minion to do the Birthday Event.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -100,7 +92,6 @@ export const minionCommand: OSBMahojiCommand = {
 		channelID,
 		interaction
 	}: CommandRunOptions<{
-		birthdayevent?: {};
 		stats?: {};
 		achievementdiary?: { diary?: string; claim?: boolean };
 		bankbg?: { name?: string };
@@ -108,17 +99,6 @@ export const minionCommand: OSBMahojiCommand = {
 		quest?: {};
 	}>) => {
 		const user = await client.fetchUser(userID.toString());
-
-		if (options.birthdayevent) {
-			await addSubTaskToActivityTask<ActivityTaskOptions>({
-				userID: userID.toString(),
-				channelID: channelID.toString(),
-				duration: Time.Minute * 20,
-				type: 'BirthdayEvent'
-			});
-
-			return `${user.minionName} is doing the 2022 OSRS Birthday Event! The trip will take around 20 minutes.`;
-		}
 
 		if (options.stats) {
 			return { embeds: [await minionStatsEmbed(user)] };
