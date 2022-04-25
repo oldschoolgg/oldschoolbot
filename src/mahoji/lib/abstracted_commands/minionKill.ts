@@ -9,6 +9,7 @@ import {
 	uniqueArr
 } from 'e';
 import { KlasaUser } from 'klasa';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -34,6 +35,7 @@ import {
 	iceBurstConsumables,
 	SlayerActivityConstants
 } from '../../../lib/minions/data/combatConstants';
+import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
@@ -53,11 +55,15 @@ import {
 	isWeekend,
 	itemNameFromID,
 	randomVariation,
+	stringMatches,
 	updateBankSetting
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
+import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { nexCommand } from './nexCommand';
+import { revsCommand } from './revsCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -99,6 +105,7 @@ function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles
 }
 
 export async function minionKillCommand(
+	interaction: SlashCommandInteraction,
 	user: KlasaUser,
 	channelID: bigint,
 	name: string,
@@ -111,6 +118,13 @@ export async function minionKillCommand(
 	let messages: string[] = [];
 
 	if (!name) return invalidMonsterMsg;
+
+	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID);
+	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
+		const mUser = await mahojiUsersSettingsFetch(user.id);
+		return revsCommand(user, mUser, channelID, interaction, name);
+	}
+
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
 

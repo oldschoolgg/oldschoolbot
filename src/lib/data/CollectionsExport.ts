@@ -1351,7 +1351,8 @@ export const allPetsCL = resolveItems([
 	'Youngllef',
 	'Little nightmare',
 	"Lil' creator",
-	'Tiny tempor'
+	'Tiny tempor',
+	'Nexling'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1734,6 +1735,56 @@ export const holidayCL = resolveItems([
 	'Antisanta gloves',
 	'Antisanta boots'
 ]);
+export const diariesCL = [
+	'Karamja gloves 1',
+	'Karamja gloves 2',
+	'Karamja gloves 3',
+	'Karamja gloves 4',
+	'Ardougne cloak 1',
+	'Ardougne cloak 2',
+	'Ardougne cloak 3',
+	'Ardougne cloak 4',
+	'Falador shield 1',
+	'Falador shield 2',
+	'Falador shield 3',
+	'Falador shield 4',
+	'Fremennik sea boots 1',
+	'Fremennik sea boots 2',
+	'Fremennik sea boots 3',
+	'Fremennik sea boots 4',
+	'Kandarin headgear 1',
+	'Kandarin headgear 2',
+	'Kandarin headgear 3',
+	'Kandarin headgear 4',
+	'Desert amulet 1',
+	'Desert amulet 2',
+	'Desert amulet 3',
+	'Desert amulet 4',
+	"Explorer's ring 1",
+	"Explorer's ring 2",
+	"Explorer's ring 3",
+	"Explorer's ring 4",
+	'Morytania legs 1',
+	'Morytania legs 2',
+	'Morytania legs 3',
+	'Morytania legs 4',
+	'Varrock armour 1',
+	'Varrock armour 2',
+	'Varrock armour 3',
+	'Varrock armour 4',
+	'Wilderness sword 1',
+	'Wilderness sword 2',
+	'Wilderness sword 3',
+	'Wilderness sword 4',
+	'Western banner 1',
+	'Western banner 2',
+	'Western banner 3',
+	'Western banner 4',
+	"Rada's blessing 1",
+	"Rada's blessing 2",
+	"Rada's blessing 3",
+	"Rada's blessing 4"
+];
 export const dailyCL = resolveItems([
 	'Event rpg',
 	'Green banner',
@@ -2096,3 +2147,14 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Golden bandos special attack'), cost: 75, onlyCL: true },
 	{ item: getOSItem('Golden zamorak special attack'), cost: 75, onlyCL: true }
 ];
+
+export const NexCL = resolveItems([
+	'Nexling',
+	'Ancient hilt',
+	'Nihil horn',
+	'Zaryte vambraces',
+	'Torva full helm (damaged)',
+	'Torva platebody (damaged)',
+	'Torva platelegs (damaged)',
+	'Nihil shard'
+]);
