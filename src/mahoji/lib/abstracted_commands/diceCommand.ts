@@ -8,7 +8,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { percentChance, rand, updateGPTrackSetting } from '../../../lib/util';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
-export async function diceCommand(KlasaUser: KlasaUser, diceamount?: string) {
+export async function diceCommand(klasaUser: KlasaUser, diceamount?: string) {
 	const roll = rand(1, 100);
 	const amount = mahojiParseNumber({ input: diceamount, min: 1, max: 500_000_000_000 });
 
@@ -19,7 +19,7 @@ export async function diceCommand(KlasaUser: KlasaUser, diceamount?: string) {
 	if (!amount) {
 		return `You rolled **${roll}** on the percentile dice.`;
 	}
-	if (KlasaUser.isIronman) return "You're an ironman and you cant play dice.";
+	if (klasaUser.isIronman) return "You're an ironman and you cant play dice.";
 
 	if (amount > 10_000_000_000) {
 		return 'You can only dice up to 10b at a time!';
@@ -29,32 +29,32 @@ export async function diceCommand(KlasaUser: KlasaUser, diceamount?: string) {
 		return 'You have to dice atleast 1,000,000.';
 	}
 
-	await KlasaUser.settings.sync(true);
-	const gp = KlasaUser.settings.get(UserSettings.GP);
+	await klasaUser.settings.sync(true);
+	const gp = klasaUser.settings.get(UserSettings.GP);
 	if (amount > gp) return "You don't have enough GP.";
 	const won = roll >= 55;
 	let amountToAdd = won ? amount : -amount;
 
-	await KlasaUser.addGP(amountToAdd);
+	await klasaUser.addGP(amountToAdd);
 	await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
-	await updateGPTrackSetting(KlasaUser, UserSettings.GPDice, amountToAdd);
+	await updateGPTrackSetting(klasaUser, UserSettings.GPDice, amountToAdd);
 
 	if (won) {
-		const wins = KlasaUser.settings.get(UserSettings.Stats.DiceWins);
-		KlasaUser.settings.update(UserSettings.Stats.DiceWins, wins + 1);
+		const wins = klasaUser.settings.get(UserSettings.Stats.DiceWins);
+		klasaUser.settings.update(UserSettings.Stats.DiceWins, wins + 1);
 	} else {
-		const losses = KlasaUser.settings.get(UserSettings.Stats.DiceLosses);
-		KlasaUser.settings.update(UserSettings.Stats.DiceLosses, losses + 1);
+		const losses = klasaUser.settings.get(UserSettings.Stats.DiceLosses);
+		klasaUser.settings.update(UserSettings.Stats.DiceLosses, losses + 1);
 	}
 
 	if (amount >= 100_000_000 && won && percentChance(3)) {
-		await KlasaUser.addItemsToBank({ items: new Bank().add('Gamblers bag'), collectionLog: true });
-		return `${KlasaUser.username} rolled **${roll}** on the percentile dice, and you won ${Util.toKMB(
+		await klasaUser.addItemsToBank({ items: new Bank().add('Gamblers bag'), collectionLog: true });
+		return `${klasaUser.username} rolled **${roll}** on the percentile dice, and you won ${Util.toKMB(
 			amountToAdd
 		)} GP.\n\nYou received a **Gamblers Bag**.`;
 	}
 
-	return `${KlasaUser.username} rolled **${roll}** on the percentile dice, and you ${
+	return `${klasaUser.username} rolled **${roll}** on the percentile dice, and you ${
 		won ? 'won' : 'lost'
 	} ${Util.toKMB(amountToAdd)} GP. ${roll === 73 ? Emoji.Bpaptu : ''}`;
 }

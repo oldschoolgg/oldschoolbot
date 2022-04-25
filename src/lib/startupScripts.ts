@@ -49,3 +49,6 @@ const checkConstraints: CheckConstraint[] = [
 for (const { table, name, body } of checkConstraints) {
 	startupScripts.push({ sql: `ALTER TABLE ${table} ADD CONSTRAINT ${name} CHECK (${body});`, ignoreErrors: true });
 }
+startupScripts.push({
+	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS activity_only_one_task ON activity (user_id, completed) WHERE NOT completed;'
+});
