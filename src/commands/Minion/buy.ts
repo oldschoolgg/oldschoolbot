@@ -14,6 +14,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	bankHasAllItemsFromBank,
 	formatSkillRequirements,
+	itemNameFromID,
 	multiplyBank,
 	skillsMeetRequirements,
 	stringMatches,
@@ -77,6 +78,16 @@ export default class extends BotCommand {
 				content: 'Here is a table of all buyable items.',
 				files: [new MessageAttachment(Buffer.from(normalTable), 'Buyables.txt')]
 			});
+		}
+
+		if (buyable.collectionLogReqs) {
+			const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
+			const unownedItems = buyable.collectionLogReqs.filter(i => !cl.has(i));
+			if (unownedItems.length > 0) {
+				return msg.channel.send(
+					`You don't have **${unownedItems.map(itemNameFromID).join(', ')}** in your collection log`
+				);
+			}
 		}
 
 		if (buyable.customReq) {
