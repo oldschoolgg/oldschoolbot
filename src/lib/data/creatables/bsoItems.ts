@@ -135,143 +135,22 @@ const componentRevertables: Createable[] = [
 		outputItems: {
 			[itemID('Ancestral components')]: 3
 		}
-	},
-	{
-		name: 'Revert torva full helm (broken)',
-		inputItems: {
-			[itemID('Torva full helm (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Bandosian components')]: 1
-		}
-	},
-	{
-		name: 'Revert torva platebody (broken)',
-		inputItems: {
-			[itemID('Torva platebody (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Bandosian components')]: 1
-		}
-	},
-	{
-		name: 'Revert torva platelegs (broken)',
-		inputItems: {
-			[itemID('Torva platelegs (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Bandosian components')]: 1
-		}
-	},
-	{
-		name: 'Revert torva gloves (broken)',
-		inputItems: {
-			[itemID('Torva gloves (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Bandosian components')]: 1
-		}
-	},
-	{
-		name: 'Revert torva boots (broken)',
-		inputItems: {
-			[itemID('Torva boots (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Bandosian components')]: 1
-		}
-	},
-	{
-		name: 'Revert pernix cowl (broken)',
-		inputItems: {
-			[itemID('Pernix cowl (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Armadylean components')]: 1
-		}
-	},
-	{
-		name: 'Revert pernix body (broken)',
-		inputItems: {
-			[itemID('Pernix body (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Armadylean components')]: 1
-		}
-	},
-	{
-		name: 'Revert pernix chaps (broken)',
-		inputItems: {
-			[itemID('Pernix chaps (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Armadylean components')]: 1
-		}
-	},
-	{
-		name: 'Revert pernix gloves (broken)',
-		inputItems: {
-			[itemID('Pernix gloves (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Armadylean components')]: 1
-		}
-	},
-	{
-		name: 'Revert pernix boots (broken)',
-		inputItems: {
-			[itemID('Pernix boots (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Armadylean components')]: 1
-		}
-	},
-	{
-		name: 'Revert virtus mask (broken)',
-		inputItems: {
-			[itemID('Virtus mask (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Ancestral components')]: 1
-		}
-	},
-	{
-		name: 'Revert virtus robe top (broken)',
-		inputItems: {
-			[itemID('Virtus robe top (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Ancestral components')]: 1
-		}
-	},
-	{
-		name: 'Revert virtus robe legs (broken)',
-		inputItems: {
-			[itemID('Virtus robe legs (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Ancestral components')]: 1
-		}
-	},
-	{
-		name: 'Revert virtus gloves (broken)',
-		inputItems: {
-			[itemID('Virtus gloves (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Ancestral components')]: 1
-		}
-	},
-	{
-		name: 'Revert virtus boots (broken)',
-		inputItems: {
-			[itemID('Virtus boots (broken)')]: 1
-		},
-		outputItems: {
-			[itemID('Ancestral components')]: 1
-		}
 	}
 ];
+
+for (const [component, brokenOutfit] of nexBrokenArmorDetails) {
+	for (let i = 0; i < brokenOutfit.length; i++) {
+		componentRevertables.push({
+			name: `Revert ${getOSItem(brokenOutfit[i]).name}`,
+			inputItems: {
+				[brokenOutfit[i]]: 1
+			},
+			outputItems: {
+				[component.id]: 1
+			}
+		});
+	}
+}
 
 const chaoticCreatables: Createable[] = [
 	{
