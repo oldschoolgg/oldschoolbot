@@ -22,8 +22,9 @@ import { defaultGear } from '../lib/gear';
 import killableMonsters from '../lib/minions/data/killableMonsters';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import Skills from '../lib/skilling/skills';
 import { Gear } from '../lib/structures/Gear';
-import { Skills } from '../lib/types';
+import type { Skills as TSkills } from '../lib/types';
 import { assert, channelIsSendable } from '../lib/util';
 
 export function mahojiParseNumber({
@@ -83,6 +84,18 @@ export const monsterOption: CommandOption = {
 		return killableMonsters
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 			.map(i => ({ name: i.name, value: i.name }));
+	}
+};
+
+export const skillOption: CommandOption = {
+	type: ApplicationCommandOptionType.String,
+	name: 'skill',
+	description: 'The skill you want to select.',
+	required: false,
+	autocomplete: async (value: string) => {
+		return Object.values(Skills)
+			.filter(skill => (!value ? true : skill.name.toLowerCase().includes(value.toLowerCase())))
+			.map(val => ({ name: val.name, value: val.name }));
 	}
 };
 
@@ -253,7 +266,7 @@ export interface MahojiUserOption {
 	member: APIInteractionDataResolvedGuildMember;
 }
 
-export function getSkillsOfMahojiUser(user: User): Skills {
+export function getSkillsOfMahojiUser(user: User): TSkills {
 	return {
 		agility: Number(user.skills_agility),
 		cooking: Number(user.skills_cooking),
