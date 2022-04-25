@@ -30,33 +30,33 @@ export const RangedArmour: DisassemblySourceGroup = {
 		},
 		{ item: i('Spined body'), lvl: 50 },
 		{
-			item: ["Green d'hide vambraces", "Green d'hide vambraces (g)", "Green d'hide vambraces (t)"].map(i),
+			item: ["Green d'hide vambraces"].map(i),
 			lvl: 57
 		},
 		{ item: i('Green dragon leather'), lvl: 57 },
 		{ item: ["Green d'hide chaps", "Green d'hide chaps (g)", "Green d'hide chaps (t)"].map(i), lvl: 60 },
-		{ item: ["Green d'hide shield", "Green d'hide shield (g)", "Green d'hide shield (t)"].map(i), lvl: 62 },
+		{ item: ["Green d'hide shield"].map(i), lvl: 62 },
 		{ item: ["Green d'hide body", "Green d'hide body (g)", "Green d'hide body (t)"].map(i), lvl: 63 },
 
 		{ item: i('Blue dragon leather'), lvl: 66 },
-		{ item: ["Blue d'hide vambraces", "Blue d'hide vambraces (g)", "Blue d'hide vambraces (t)"].map(i), lvl: 66 },
+		{ item: ["Blue d'hide vambraces"].map(i), lvl: 66 },
 		{ item: ["Blue d'hide chaps", "Blue d'hide chaps (g)", "Blue d'hide chaps (t)"].map(i), lvl: 68 },
-		{ item: ["Blue d'hide shield", "Blue d'hide shield (g)", "Blue d'hide shield (t)"].map(i), lvl: 69 },
+		{ item: ["Blue d'hide shield"].map(i), lvl: 69 },
 		{ item: ["Blue d'hide body", "Blue d'hide body (g)", "Blue d'hide body (t)"].map(i), lvl: 71 },
 
 		{ item: i('Red dragon leather'), lvl: 73 },
-		{ item: ["Red d'hide vambraces", "Red d'hide vambraces (g)", "Red d'hide vambraces (t)"].map(i), lvl: 73 },
+		{ item: ["Red d'hide vambraces"].map(i), lvl: 73 },
 		{ item: ["Red d'hide chaps", "Red d'hide chaps (g)", "Red d'hide chaps (t)"].map(i), lvl: 75 },
-		{ item: ["Red d'hide shield", "Red d'hide shield (g)", "Red d'hide shield (t)"].map(i), lvl: 76 },
+		{ item: ["Red d'hide shield"].map(i), lvl: 76 },
 		{ item: ["Red d'hide body", "Red d'hide body (g)", "Red d'hide body (t)"].map(i), lvl: 77 },
 
 		{ item: i('Black dragon leather'), lvl: 79 },
 		{
-			item: ["Black d'hide vambraces", "Black d'hide vambraces (g)", "Black d'hide vambraces (t)"].map(i),
+			item: ["Black d'hide vambraces"].map(i),
 			lvl: 79
 		},
 		{ item: ["Black d'hide chaps", "Black d'hide chaps (g)", "Black d'hide chaps (t)"].map(i), lvl: 82 },
-		{ item: ["Black d'hide shield", "Black d'hide shield (g)", "Black d'hide shield (t)"].map(i), lvl: 83 },
+		{ item: ["Black d'hide shield"].map(i), lvl: 83 },
 		{ item: ["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)"].map(i), lvl: 84 },
 
 		{ item: i("Morrigan's leather body"), lvl: 78 },
