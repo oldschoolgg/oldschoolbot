@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { client } from '../..';
 import { prisma } from '../../lib/settings/prisma';
 import { discrimName } from '../../lib/util';
+import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiClientSettingsFetch, MahojiUserOption } from '../mahojiSettings';
@@ -51,12 +52,14 @@ export const askCommand: OSBMahojiCommand = {
 		const itemsSent = parseBank({
 			inputBank: senderKlasaUser.bank({ withGP: true }),
 			inputStr: options.send,
-			maxSize: 70
-		});
+			maxSize: 70,
+			flags: { tradeables: 'tradeables' }
+		}).filter(i => itemIsTradeable(i.id));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
-			maxSize: 70
-		});
+			maxSize: 70,
+			flags: { tradeables: 'tradeables' }
+		}).filter(i => itemIsTradeable(i.id));
 
 		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
 		if (!senderKlasaUser.owns(itemsSent)) return "You don't own those items.";
