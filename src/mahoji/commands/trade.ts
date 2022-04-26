@@ -54,12 +54,12 @@ export const askCommand: OSBMahojiCommand = {
 			inputStr: options.send,
 			maxSize: 70,
 			flags: { tradeables: 'tradeables' }
-		}).filter(i => itemIsTradeable(i.id));
+		}).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
 			maxSize: 70,
 			flags: { tradeables: 'tradeables' }
-		}).filter(i => itemIsTradeable(i.id));
+		}).filter(i => itemIsTradeable(i.id, true));
 
 		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
 		if (!senderKlasaUser.owns(itemsSent)) return "You don't own those items.";
