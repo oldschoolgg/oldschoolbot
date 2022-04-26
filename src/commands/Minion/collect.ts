@@ -17,7 +17,7 @@ import { SkillsEnum } from './../../lib/skilling/types';
 interface Collectable {
 	item: Item;
 	skillReqs?: Skills;
-	itemCost: Bank;
+	itemCost?: Bank;
 	quantity: number;
 	duration: number;
 	qpRequired?: number;
@@ -52,12 +52,31 @@ export const collectables: Collectable[] = [
 		qpRequired: 32
 	},
 	{
+		item: getOSItem('Flax'),
+		quantity: 28,
+		duration: Time.Minute * 1.68
+	},
+	{
 		item: getOSItem("Red spiders' eggs"),
 		quantity: 80,
 		itemCost: new Bank({
 			'Stamina potion(4)': 1
 		}),
 		duration: Time.Minute * 8.5
+	},
+	{
+		item: getOSItem('White berries'),
+		quantity: 27,
+		qpRequired: 22,
+		skillReqs: {
+			ranged: 60,
+			thieving: 50,
+			agility: 56,
+			crafting: 10,
+			fletching: 5,
+			cooking: 30
+		},
+		duration: Time.Minute * 4.05
 	},
 	{
 		item: getOSItem('Snape grass'),
@@ -87,6 +106,17 @@ export const collectables: Collectable[] = [
 		}),
 		duration: Time.Minute,
 		qpRequired: 30
+	},
+	{
+		item: getOSItem('Jangerberries'),
+		quantity: 224,
+		itemCost: new Bank({
+			'Ring of dueling(8)': 1
+		}),
+		skillReqs: {
+			agility: 10
+		},
+		duration: Time.Minute * 24
 	},
 	// Miniquest to get Tarn's diary for Salve amulet (e)/(ei)
 	{
@@ -164,16 +194,18 @@ export default class extends BotCommand {
 			);
 		}
 
-		const cost = collectable.itemCost.clone().multiply(quantity);
-		if (!msg.author.owns(cost)) {
-			return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
-		}
-		await msg.author.removeItemsFromBank(cost);
+		const cost = collectable.itemCost?.clone().multiply(quantity) ?? null;
+		if (cost) {
+			if (!msg.author.owns(cost)) {
+				return msg.channel.send(`You don't have the items needed for this trip, you need: ${cost}.`);
+			}
+			await msg.author.removeItemsFromBank(cost);
 
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.CollectingCost,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
-		);
+			await this.client.settings.update(
+				ClientSettings.EconomyStats.CollectingCost,
+				addBanks([this.client.settings.get(ClientSettings.EconomyStats.CollectingCost), cost.bank])
+			);
+		}
 
 		await addSubTaskToActivityTask<CollectingOptions>({
 			collectableID: collectable.item.id,
@@ -188,8 +220,7 @@ export default class extends BotCommand {
 			`${msg.author.minionName} is now collecting ${quantity * collectable.quantity}x ${
 				collectable.item.name
 			}, it'll take around ${formatDuration(duration)} to finish.
-
-Removed ${cost} from your bank.`
+${cost ? `\nRemoved ${cost} from your bank.` : ''}`
 		);
 	}
 }

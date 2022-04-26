@@ -142,7 +142,7 @@ export async function runMahojiCommand({
 		user: msg.author as any, // kinda dirty
 		member: msg.member as any,
 		client: mahojiClient,
-		interaction: {} as any
+		interaction: null as any
 	});
 }
 
