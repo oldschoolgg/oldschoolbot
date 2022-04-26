@@ -1,4 +1,4 @@
-import type { Guild, Prisma, User } from '@prisma/client';
+import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
@@ -15,6 +15,7 @@ import { CommandOption } from 'mahoji/dist/lib/types';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { CLIENT_ID } from '../config';
 import { SILENT_ERROR } from '../lib/constants';
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
@@ -102,7 +103,9 @@ export const skillOption: CommandOption = {
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {
 	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
-	await interaction.deferReply();
+	if (!interaction.deferred) {
+		await interaction.deferReply();
+	}
 
 	const confirmMessage = await channel.send({
 		content: str,
@@ -122,14 +125,14 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 		]
 	});
 
-	const cancel = async () => {
+	const cancel = async (reason: 'time' | 'cancel') => {
 		await confirmMessage.delete();
 		await interaction.respond({
 			type: InteractionType.ApplicationCommand,
 			response: {
 				type: InteractionResponseType.ChannelMessageWithSource,
 				data: {
-					content: 'You did not confirm in time.',
+					content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
 					flags: MessageFlags.Ephemeral
 				}
 			},
@@ -154,13 +157,13 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 			time: Time.Second * 10
 		});
 		if (selection.customID === 'CANCEL') {
-			return cancel();
+			return cancel('cancel');
 		}
 		if (selection.customID === 'CONFIRM') {
 			return confirm();
 		}
 	} catch {
-		return cancel();
+		return cancel('time');
 	}
 }
 
@@ -311,4 +314,15 @@ export function patronMsg(tierNeeded: number) {
 	return `You need to be a Tier ${
 		tierNeeded - 1
 	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
+}
+
+// Is not typesafe, returns only what is selected, but will say it contains everything.
+export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect) {
+	const clientSettings = await prisma.clientStorage.findFirst({
+		where: {
+			id: CLIENT_ID
+		},
+		select
+	});
+	return clientSettings as ClientStorage;
 }

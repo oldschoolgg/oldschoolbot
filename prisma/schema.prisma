@@ -509,6 +509,20 @@ model LastManStandingGame {
   @@map("lms_games")
 }
 
+model EconomyTransaction {
+  id        String   @id @default(uuid()) @db.Uuid
+  date      DateTime @default(now())
+  sender    BigInt
+  recipient BigInt
+  guild_id  BigInt
+
+  // From the perspective of the sender
+  items_sent     Json @default("{}") @db.Json
+  items_received Json @default("{}") @db.Json
+
+  @@map("economy_transaction")
+}
+
 enum command_usage_status {
   Unknown
   Success

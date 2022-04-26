@@ -3,6 +3,7 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -130,30 +131,33 @@ export default class extends BotCommand {
 			return msg.channel.send(`Cancelling sale of ${bankStr}.`);
 		}
 
+		const gpBank = new Bank().add('Coins', price);
+
 		try {
 			if (buyerMember.user.settings.get(UserSettings.GP) < price || !msg.author.bank().fits(bankToSell)) {
 				return msg.channel.send('One of you lacks the required GP or items to make this trade.');
 			}
 			if (price > 0) {
-				await buyerMember.user.removeItemsFromBank(new Bank().add('Coins', price));
-				await msg.author.addItemsToBank({ items: new Bank().add('Coins', price), collectionLog: false });
+				await buyerMember.user.removeItemsFromBank(gpBank);
+				await msg.author.addItemsToBank({ items: gpBank, collectionLog: false });
 			}
 
-			await msg.author.removeItemsFromBank(bankToSell.bank);
+			await msg.author.removeItemsFromBank(bankToSell);
 			await buyerMember.user.addItemsToBank({ items: bankToSell, collectionLog: false, filterLoot: false });
 		} catch (err) {
 			this.client.emit(Events.Wtf, err);
 			return msg.channel.send('Fatal error occurred. Please seek help in the support server.');
 		}
 
-		this.client.emit(
-			Events.EconomyLog,
-			`${msg.author.sanitizedName} sold ${bankStr} to ${
-				buyerMember.user.sanitizedName
-			} for ${price.toLocaleString()} GP.`
-		);
-
-		msg.author.log(`sold ${bankStr} to ${buyerMember.user.sanitizedName} for ${price}`);
+		await prisma.economyTransaction.create({
+			data: {
+				guild_id: BigInt(msg.guild!.id),
+				sender: BigInt(msg.author.id),
+				recipient: BigInt(buyerMember.user.id),
+				items_sent: bankToSell.bank,
+				items_received: gpBank.bank
+			}
+		});
 
 		return msg.channel.send(`Sale of ${bankStr} complete!`);
 	}
