@@ -2073,6 +2073,18 @@ interface LMSBuyable {
 	wins?: number;
 }
 
+export const LMSSellables: LMSBuyable[] = [
+	{ item: getOSItem("Deadman's chest"), cost: 128 },
+	{ item: getOSItem("Deadman's legs"), cost: 128 },
+	{ item: getOSItem("Deadman's cape"), cost: 128 },
+	{ item: getOSItem('Guthixian icon'), cost: 400 },
+	{ item: getOSItem('Armadyl halo'), cost: 360 },
+	{ item: getOSItem('Bandos halo'), cost: 360 },
+	{ item: getOSItem('Seren halo'), cost: 360 },
+	{ item: getOSItem('Ancient halo'), cost: 360 },
+	{ item: getOSItem('Brassica halo'), cost: 360 }
+];
+
 export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem("Deadman's chest"), cost: 160 },
 	{ item: getOSItem("Deadman's legs"), cost: 160 },

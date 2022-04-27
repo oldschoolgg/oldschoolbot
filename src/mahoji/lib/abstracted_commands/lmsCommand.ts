@@ -4,7 +4,7 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank } from 'oldschooljs';
 
 import { client } from '../../..';
-import { LMSBuyables } from '../../../lib/data/CollectionsExport';
+import { LMSBuyables, LMSSellables } from '../../../lib/data/CollectionsExport';
 import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
@@ -17,6 +17,7 @@ export async function lmsCommand(
 		stats?: {};
 		start?: {};
 		buy?: { name?: string; quantity?: number };
+		sell?: { name?: string };
 		simulate?: { names?: string };
 	},
 	user: KlasaUser,
@@ -41,6 +42,34 @@ export async function lmsCommand(
 		return {
 			content: 'Starting simulation...'
 		};
+	}
+
+	if (options.sell) {
+		const itemToSell = LMSSellables.find(i => stringMatches(i.item.name, options.sell?.name ?? ''));
+		if (!itemToSell) {
+			return "That's not a valid item you can sell.";
+		}
+		const bank = user.bank();
+		const amount = bank.amount(itemToSell.item.name);
+		if (amount < 1) {
+			return `You don't have enough ${itemToSell.item.name} to sell`;
+		}
+		const quantity = 1;
+		const sellValue = itemToSell.cost ? itemToSell.cost * quantity : itemToSell.cost;
+		if (!sellValue) {
+			return "That's not a valid item you can sell.";
+		}
+		await handleMahojiConfirmation(
+			interaction,
+			`Are you sure you want to sell ${itemToSell.item.name} to gain ${sellValue} points?`
+		);
+		await user.removeItemsFromBank(new Bank().add(itemToSell.item.id, 1));
+		const { newUser } = await mahojiUserSettingsUpdate(client, user, {
+			lms_points: {
+				increment: sellValue
+			}
+		});
+		return `You sold ${itemToSell.item.name} to gain ${sellValue} points. You now have ${newUser.lms_points} LMS points.`;
 	}
 
 	if (options.buy) {

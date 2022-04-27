@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
-import { LMSBuyables } from '../../lib/data/CollectionsExport';
+import { LMSBuyables, LMSSellables } from '../../lib/data/CollectionsExport';
 import {
 	barbAssaultBuyCommand,
 	barbAssaultGambleCommand,
@@ -196,6 +196,24 @@ export const minigamesCommand: OSBMahojiCommand = {
 							required: false,
 							min_value: 1,
 							max_value: 1000
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'sell',
+					description: 'Sell a reward back for points.',
+					options: [
+						{
+							name: 'name',
+							description: 'The item you want to sell.',
+							type: ApplicationCommandOptionType.String,
+							required: true,
+							autocomplete: async (value: string) => {
+								return LMSSellables.filter(i =>
+									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: i.item.name, value: i.item.name }));
+							}
 						}
 					]
 				},
@@ -699,6 +717,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			stats?: {};
 			start?: {};
 			buy?: { name?: string; quantity?: number };
+			sell?: { name?: string };
 			simulate?: { names?: string };
 		};
 		pest_control?: {
