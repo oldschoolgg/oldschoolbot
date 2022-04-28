@@ -112,6 +112,9 @@ export interface FiremakingActivityTaskOptions extends ActivityTaskOptions {
 }
 
 export interface WoodcuttingActivityTaskOptions extends ActivityTaskOptions {
+	fakeDurationMax: number;
+	fakeDurationMin: number;
+	powerChopping: boolean;
 	logID: number;
 	quantity: number;
 }

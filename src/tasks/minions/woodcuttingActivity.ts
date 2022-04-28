@@ -12,7 +12,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: WoodcuttingActivityTaskOptions) {
-		const { logID, quantity, userID, channelID, duration } = data;
+		const { logID, quantity, userID, channelID, duration, powerChopping } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
@@ -53,7 +53,11 @@ export default class extends Task {
 			duration
 		});
 
-		let loot = new Bank().add(log.id, quantity);
+		let loot = new Bank();
+
+		if (!powerChopping) {
+			loot.add(log.id, quantity);
+		}
 
 		if (user.hasItemEquippedAnywhere('Woodcutting master cape')) {
 			loot.multiply(2);

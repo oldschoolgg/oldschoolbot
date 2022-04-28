@@ -833,6 +833,21 @@ const Buyables: Buyable[] = [
 			'Raw shark': 1
 		})
 	},
+	{
+		name: 'Bronze axe',
+		gpCost: 500,
+		ironmanPrice: 16
+	},
+	{
+		name: 'Iron axe',
+		gpCost: 1000,
+		ironmanPrice: 56
+	},
+	{
+		name: 'Steel axe',
+		gpCost: 2000,
+		ironmanPrice: 200
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
