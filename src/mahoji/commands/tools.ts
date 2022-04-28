@@ -128,15 +128,16 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 		.join('\n')}`;
 }
 
-async function mostDrops(user: User, itemName: string) {
+async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
+	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	if (!item) return "That's not a valid item.";
 	if (!allDroppedItems.includes(item.id) && !user.bitfield.includes(BitField.isModerator)) {
 		return "You can't check this item, because it's not on any collection log.";
 	}
 
-	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
+	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
 	const result = await client.query<
 		{
@@ -223,6 +224,12 @@ export const testPotatoCommand: OSBMahojiCommand = {
 						{
 							...itemOption(),
 							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
 						}
 					]
 				},
@@ -260,6 +267,7 @@ export const testPotatoCommand: OSBMahojiCommand = {
 			};
 			mostdrops?: {
 				item: string;
+				ironman?: boolean;
 			};
 			sacrificed_bank?: {};
 			cl_bank?: {};
@@ -282,7 +290,7 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				);
 			}
 			if (patron.mostdrops) {
-				return mostDrops(mahojiUser, patron.mostdrops.item);
+				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
 				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Two) return patronMsg(PerkTier.Two);
