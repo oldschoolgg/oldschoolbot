@@ -55,7 +55,6 @@ export const filterOption: CommandOption = {
 		let res = !value
 			? filterableTypes
 			: filterableTypes.filter(filter => filter.name.toLowerCase().includes(value.toLowerCase()));
-
 		return [...res]
 			.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
 			.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
@@ -100,13 +99,28 @@ export const skillOption: CommandOption = {
 	}
 };
 
-export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {
+export const Option: CommandOption = {
+	type: ApplicationCommandOptionType.String,
+	name: 'skill',
+	description: 'The skill you want to select.',
+	required: false,
+	autocomplete: async (value: string) => {
+		return Object.values(Skills)
+			.filter(skill => (!value ? true : skill.name.toLowerCase().includes(value.toLowerCase())))
+			.map(val => ({ name: val.name, value: val.name }));
+	}
+};
+
+export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: bigint[]) {
 	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
 		await interaction.deferReply();
 	}
 
+	const users: BigInt[] = _users ?? [interaction.userID];
+	let confirmed: BigInt[] = [];
+	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
 		content: str,
 		components: [
@@ -125,46 +139,55 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 		]
 	});
 
-	const cancel = async (reason: 'time' | 'cancel') => {
-		await confirmMessage.delete();
-		await interaction.respond({
-			type: InteractionType.ApplicationCommand,
-			response: {
-				type: InteractionResponseType.ChannelMessageWithSource,
-				data: {
-					content: reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
-					flags: MessageFlags.Ephemeral
-				}
-			},
-			interaction
-		});
-		throw new Error(SILENT_ERROR);
-	};
-
-	async function confirm() {
-		await confirmMessage.delete();
-	}
-
-	try {
-		const selection = await confirmMessage.awaitMessageComponentInteraction({
-			filter: i => {
-				if (i.user.id !== (userID ?? interaction.userID).toString()) {
-					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-					return false;
-				}
-				return true;
-			},
+	return new Promise<void>(async (resolve, reject) => {
+		const collector = confirmMessage.createMessageComponentInteractionCollector({
 			time: Time.Second * 10
 		});
-		if (selection.customID === 'CANCEL') {
-			return cancel('cancel');
+
+		async function confirm(id: bigint) {
+			if (confirmed.includes(id)) return;
+			confirmed.push(id);
+			if (!isConfirmed()) return;
+			collector.stop();
+			await confirmMessage.delete();
+			resolve();
 		}
-		if (selection.customID === 'CONFIRM') {
-			return confirm();
-		}
-	} catch {
-		return cancel('time');
-	}
+
+		const cancel = async (reason: 'time' | 'cancel') => {
+			await confirmMessage.delete();
+			await interaction.respond({
+				type: InteractionType.ApplicationCommand,
+				response: {
+					type: InteractionResponseType.ChannelMessageWithSource,
+					data: {
+						content:
+							reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
+						flags: MessageFlags.Ephemeral
+					}
+				},
+				interaction
+			});
+			collector.stop();
+			reject(new Error(SILENT_ERROR));
+		};
+
+		collector.on('collect', async i => {
+			const id = BigInt(i.user.id);
+			if (!users.includes(id)) {
+				i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+				return false;
+			}
+			if (i.customID === 'CANCEL') {
+				return cancel('cancel');
+			}
+			if (i.customID === 'CONFIRM') {
+				i.reply({ ephemeral: true, content: 'You confirmed the trade.' });
+				return confirm(id);
+			}
+		});
+
+		collector.on('end', () => !isConfirmed() && cancel('time'));
+	});
 }
 
 /**

@@ -159,6 +159,8 @@ export default class extends BotCommand {
 			}
 		});
 
-		return msg.channel.send(`Sale of ${bankStr} complete!`);
+		return msg.channel.send(
+			`Sale of ${bankStr} complete! Try out \`/trade\`, it's a new slash command for trading items.`
+		);
 	}
 }

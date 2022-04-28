@@ -1,12 +1,19 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
 import { prisma } from '../../lib/settings/prisma';
-import { discrimName } from '../../lib/util';
+import { discrimName, truncateString } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiClientSettingsFetch, MahojiUserOption } from '../mahojiSettings';
+import {
+	filterOption,
+	handleMahojiConfirmation,
+	mahojiClientSettingsFetch,
+	mahojiParseNumber,
+	MahojiUserOption
+} from '../mahojiSettings';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'trade',
@@ -29,6 +36,19 @@ export const askCommand: OSBMahojiCommand = {
 			name: 'receive',
 			description: 'The items you want to receieve from the other player.',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'price',
+			description: 'A shortcut for adding GP to the received items.',
+			required: false
+		},
+		filterOption,
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'search',
+			description: 'An optional search of items by name.',
+			required: false
 		}
 	],
 	run: async ({
@@ -36,7 +56,14 @@ export const askCommand: OSBMahojiCommand = {
 		userID,
 		guildID,
 		options
-	}: CommandRunOptions<{ user: MahojiUserOption; send?: string; receive?: string }>) => {
+	}: CommandRunOptions<{
+		user: MahojiUserOption;
+		send?: string;
+		receive?: string;
+		price?: string;
+		filter?: string;
+		search?: string;
+	}>) => {
 		if (!guildID) return 'You can only run this in a server.';
 		const senderKlasaUser = await client.fetchUser(userID);
 		const recipientKlasaUser = await client.fetchUser(options.user.user.id);
@@ -53,7 +80,9 @@ export const askCommand: OSBMahojiCommand = {
 			inputBank: senderKlasaUser.bank({ withGP: true }),
 			inputStr: options.send,
 			maxSize: 70,
-			flags: { tradeables: 'tradeables' }
+			flags: { tradeables: 'tradeables' },
+			filters: [options.filter],
+			search: options.search
 		}).filter(i => itemIsTradeable(i.id, true));
 		const itemsReceived = parseBank({
 			inputStr: options.receive,
@@ -61,22 +90,29 @@ export const askCommand: OSBMahojiCommand = {
 			flags: { tradeables: 'tradeables' }
 		}).filter(i => itemIsTradeable(i.id, true));
 
+		if (options.price) {
+			const gp = mahojiParseNumber({ input: options.price, min: 1 });
+			if (gp) {
+				itemsReceived.add('Coins', gp);
+			}
+		}
+
+		const allItems = new Bank().add(itemsSent).add(itemsReceived);
+		if (allItems.items().some(i => !itemIsTradeable(i[0].id, true))) {
+			return "You're trying to trade untradeable items.";
+		}
+
 		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
 		if (!senderKlasaUser.owns(itemsSent)) return "You don't own those items.";
 		if (!recipientKlasaUser.owns(itemsReceived)) return "They don't own those items.";
 
 		await handleMahojiConfirmation(
 			interaction,
-			`${senderKlasaUser} are you sure you want to *give* ${itemsSent} to ${discrimName(
-				recipientKlasaUser
-			)} in return for ${itemsReceived}?`
-		);
-		await handleMahojiConfirmation(
-			interaction,
-			`${recipientKlasaUser} are you sure you want to *give* ${itemsReceived} to ${discrimName(
-				senderKlasaUser
-			)} in return for ${itemsSent}?`,
-			BigInt(recipientKlasaUser.id)
+			`**${senderKlasaUser}** is giving: ${truncateString(itemsSent.toString(), 950)}
+**${recipientKlasaUser}** is giving: ${truncateString(itemsReceived.toString(), 950)}
+
+Both parties must click confirm to make the trade.`,
+			[BigInt(recipientKlasaUser.id), BigInt(senderKlasaUser.id)]
 		);
 
 		await Promise.all([
