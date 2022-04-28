@@ -65,6 +65,20 @@ export const collectables: Collectable[] = [
 		duration: Time.Minute * 8.5
 	},
 	{
+		item: getOSItem('White berries'),
+		quantity: 27,
+		qpRequired: 22,
+		skillReqs: {
+			ranged: 60,
+			thieving: 50,
+			agility: 56,
+			crafting: 10,
+			fletching: 5,
+			cooking: 30
+		},
+		duration: Time.Minute * 4.05
+	},
+	{
 		item: getOSItem('Snape grass'),
 		quantity: 120,
 		itemCost: new Bank({
@@ -92,6 +106,17 @@ export const collectables: Collectable[] = [
 		}),
 		duration: Time.Minute,
 		qpRequired: 30
+	},
+	{
+		item: getOSItem('Jangerberries'),
+		quantity: 224,
+		itemCost: new Bank({
+			'Ring of dueling(8)': 1
+		}),
+		skillReqs: {
+			agility: 10
+		},
+		duration: Time.Minute * 24
 	},
 	// Miniquest to get Tarn's diary for Salve amulet (e)/(ei)
 	{

@@ -10,14 +10,53 @@ import LeaderboardCommand from '../../commands/Minion/leaderboard';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { prisma } from '../../lib/settings/prisma';
+import Skills from '../../lib/skilling/skills';
 import { stringMatches } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
-import { itemOption, mahojiUsersSettingsFetch, monsterOption, patronMsg } from '../mahojiSettings';
+import { itemOption, mahojiUsersSettingsFetch, monsterOption, patronMsg, skillOption } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
+const skillsVals = Object.values(Skills);
+
+async function xpGains(interval: string, skill?: string) {
+	if (!TimeIntervals.includes(interval as any)) return 'Invalid time.';
+	const skillObj = skill
+		? skillsVals.find(_skill => _skill.aliases.some(name => stringMatches(name, skill)))
+		: undefined;
+
+	const res: any =
+		await prisma.$queryRawUnsafe(`SELECT user_id::text AS user, sum(xp) AS total_xp, max(date) AS lastDate
+FROM xp_gains
+WHERE date > now() - INTERVAL '1 ${interval.toLowerCase() === 'day' ? 'day' : 'week'}'
+${skillObj ? `AND skill = '${skillObj.id}'` : ''}
+GROUP BY user_id
+ORDER BY total_xp DESC, lastDate ASC
+LIMIT 10;`);
+
+	if (res.length === 0) {
+		return 'No results found.';
+	}
+
+	const command = client.commands.get('leaderboard') as LeaderboardCommand;
+
+	let place = 0;
+	const embed = new Embed()
+		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
+		.setDescription(
+			res
+				.map(
+					(i: any) =>
+						`${++place}. **${command.getUsername(i.user)}**: ${Number(i.total_xp).toLocaleString()} XP`
+				)
+				.join('\n')
+		);
+
+	return { embeds: [embed] };
+}
 
 async function kcGains(user: User, interval: string, monsterName: string): CommandResponse {
 	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
@@ -144,6 +183,21 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'xp_gains',
+					description: "Show's who has the highest XP gains for a given time period.",
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'time',
+							description: 'The time period.',
+							required: true,
+							choices: ['day', 'week'].map(i => ({ name: i, value: i }))
+						},
+						skillOption
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'drystreak',
 					description: "Show's the biggest drystreaks for certain drops from a certain monster.",
 					options: [
@@ -195,6 +249,10 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				time: 'day' | 'week';
 				monster: string;
 			};
+			xp_gains?: {
+				time: 'day' | 'week';
+				skill?: string;
+			};
 			drystreak?: {
 				monster: string;
 				item: string;
@@ -236,15 +294,9 @@ export const testPotatoCommand: OSBMahojiCommand = {
 					attachments: [image.file]
 				};
 			}
-			if (patron.cl_bank) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Two) return patronMsg(PerkTier.Two);
-				const image = await makeBankImage({
-					bank: new Bank(mahojiUser.collectionLogBank as ItemBank),
-					title: 'Your Entire Collection Log'
-				});
-				return {
-					attachments: [image.file]
-				};
+			if (patron.xp_gains) {
+				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 		}
 		return 'Invalid command!';

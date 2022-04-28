@@ -1,11 +1,10 @@
 import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
-import { chunk, randArrItem, randInt, roll, shuffleArr, Time } from 'e';
+import { chunk, roll, shuffleArr, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { client } from '../../..';
-import { production } from '../../../config';
 import { SILENT_ERROR } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -14,9 +13,8 @@ import { logError } from '../../../lib/util/logError';
 import { handleMahojiConfirmation, mahojiParseNumber } from '../../mahojiSettings';
 
 export async function luckyPickCommand(
-	KlasaUser: KlasaUser,
+	klasaUser: KlasaUser,
 	luckypickamount: string,
-	simulate: boolean,
 	interaction: SlashCommandInteraction
 ): Promise<string> {
 	const amount = mahojiParseNumber({ input: luckypickamount, min: 1_000_000, max: 3_000_000_000 });
@@ -78,39 +76,19 @@ export async function luckyPickCommand(
 		id: number;
 		picked: boolean;
 	}
-	if (KlasaUser.isIronman) {
+	if (klasaUser.isIronman) {
 		return "Ironmen can't gamble! Go pickpocket some men for GP.";
-	}
-	if (simulate && !production) {
-		let houseBalance = 0;
-		let betQuantity = 10_000;
-
-		const pickedButtonsMap: Record<string, number> = {};
-		for (let i = 0; i < betQuantity; i++) {
-			let betSize = randInt(1_000_000, 1_000_000_000);
-
-			houseBalance += betSize;
-			const buttons = getButtons();
-			const pickedButton = randArrItem(buttons);
-			!pickedButtonsMap[pickedButton.name]
-				? (pickedButtonsMap[pickedButton.name] = 1)
-				: pickedButtonsMap[pickedButton.name]++;
-			houseBalance -= pickedButton.mod(betSize);
-		}
-		return `With ${betQuantity} bets, the house ended up with ${toKMB(houseBalance)}. Average profit of ${toKMB(
-			houseBalance / betQuantity
-		)} per bet.`;
 	}
 
 	await handleMahojiConfirmation(
 		interaction,
 		`Are you sure you want to gamble ${toKMB(amount)}? You might lose it all, you might win a lot.`
 	);
-	const currentBalance = KlasaUser.settings.get(UserSettings.GP);
+	const currentBalance = klasaUser.settings.get(UserSettings.GP);
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
 	}
-	await KlasaUser.removeGP(amount);
+	await klasaUser.removeGP(amount);
 	const buttonsToShow = getButtons();
 	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): MessageOptions['components'] {
 		let chunkedButtons = chunk(buttonsToShow, 5);
@@ -146,9 +124,9 @@ export async function luckyPickCommand(
 		interaction: MessageComponentInteraction;
 	}) => {
 		let amountReceived = button.mod(amount);
-		await KlasaUser.addGP(amountReceived);
+		await klasaUser.addGP(amountReceived);
 		await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceLuckyPick, amountReceived - amount);
-		await updateGPTrackSetting(KlasaUser, UserSettings.GPLuckyPick, amountReceived - amount);
+		await updateGPTrackSetting(klasaUser, UserSettings.GPLuckyPick, amountReceived - amount);
 
 		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) });
 		return amountReceived === 0
@@ -159,7 +137,7 @@ export async function luckyPickCommand(
 	const cancel = async () => {
 		await sentMessage.delete();
 		if (!buttonsToShow.some(b => b.picked)) {
-			await KlasaUser.addGP(amount);
+			await klasaUser.addGP(amount);
 			return `You didn't pick any buttons in time, so you were refunded ${toKMB(amount)} GP.`;
 		}
 		throw new Error(SILENT_ERROR);
@@ -168,7 +146,7 @@ export async function luckyPickCommand(
 	try {
 		const selection = await sentMessage.awaitMessageComponentInteraction({
 			filter: i => {
-				if (i.user.id !== (KlasaUser.id ?? interaction.userID).toString()) {
+				if (i.user.id !== (klasaUser.id ?? interaction.userID).toString()) {
 					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 					return false;
 				}

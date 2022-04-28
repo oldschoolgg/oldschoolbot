@@ -1,5 +1,5 @@
 import type { Guild, Prisma, User } from '@prisma/client';
-import { Guild as DJSGuild, MessageButton, TextChannel } from 'discord.js';
+import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import {
@@ -22,9 +22,10 @@ import { defaultGear } from '../lib/gear';
 import killableMonsters from '../lib/minions/data/killableMonsters';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import Skills from '../lib/skilling/skills';
 import { Gear } from '../lib/structures/Gear';
-import { Skills } from '../lib/types';
-import { assert } from '../lib/util';
+import type { Skills as TSkills } from '../lib/types';
+import { assert, channelIsSendable } from '../lib/util';
 
 export function mahojiParseNumber({
 	input,
@@ -86,9 +87,21 @@ export const monsterOption: CommandOption = {
 	}
 };
 
+export const skillOption: CommandOption = {
+	type: ApplicationCommandOptionType.String,
+	name: 'skill',
+	description: 'The skill you want to select.',
+	required: false,
+	autocomplete: async (value: string) => {
+		return Object.values(Skills)
+			.filter(skill => (!value ? true : skill.name.toLowerCase().includes(value.toLowerCase())))
+			.map(val => ({ name: val.name, value: val.name }));
+	}
+};
+
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {
 	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
-	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
+	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	await interaction.deferReply();
 
 	const confirmMessage = await channel.send({
@@ -182,15 +195,27 @@ export async function mahojiUserSettingsUpdate(
 	});
 
 	await klasaUser.settings.sync(true);
-	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match');
-	assert(klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points, 'Patched user should match');
+
+	const errorContext = {
+		user_id: klasaUser.id
+	};
+
+	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match', errorContext);
+	assert(
+		klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points,
+		'Patched user should match',
+		errorContext
+	);
 	const klasaBank = klasaUser.settings.get(UserSettings.Bank);
 	const newBank = newUser.bank;
 	for (const [key, value] of Object.entries(klasaBank)) {
-		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`);
+		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
 	}
-	assert(klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level);
-	assert(klasaUser.settings.get(UserSettings.HonourPoints) === newUser.honour_points);
+	assert(
+		klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
+		'Patched user should match',
+		errorContext
+	);
 
 	return { newUser };
 }
@@ -241,7 +266,7 @@ export interface MahojiUserOption {
 	member: APIInteractionDataResolvedGuildMember;
 }
 
-export function getSkillsOfMahojiUser(user: User): Skills {
+export function getSkillsOfMahojiUser(user: User): TSkills {
 	return {
 		agility: Number(user.skills_agility),
 		cooking: Number(user.skills_cooking),
