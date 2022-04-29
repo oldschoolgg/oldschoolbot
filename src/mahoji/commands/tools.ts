@@ -12,7 +12,7 @@ import { allDroppedItems } from '../../lib/data/Collections';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import { stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -21,6 +21,51 @@ import { itemOption, mahojiUsersSettingsFetch, monsterOption, patronMsg, skillOp
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
+
+function dateDiff(first: number, second: number) {
+	return Math.round((second - first) / (1000 * 60 * 60 * 24));
+}
+
+async function minionStats(user: User) {
+	const { id } = user;
+	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = (await Promise.all([
+		prisma.$queryRawUnsafe(`SELECT count(id)
+FROM activity
+WHERE user_id = ${id}`),
+		prisma.$queryRawUnsafe(`SELECT id, start_date, type
+FROM activity
+WHERE user_id = ${id}
+ORDER BY id ASC
+LIMIT 1;`),
+		prisma.$queryRawUnsafe(`
+SELECT type, count(type) as qty
+FROM activity
+WHERE user_id = ${id}
+GROUP BY type
+ORDER BY qty DESC
+LIMIT 15;`),
+		prisma.$queryRawUnsafe(`
+SELECT sum(duration)
+FROM activity
+WHERE user_id = ${id};`)
+	])) as any[];
+
+	const totalDuration = Number(_totalDuration.sum);
+	const firstActivityDate = new Date(firstActivity.start_date);
+
+	const diff = dateDiff(firstActivityDate.getTime(), Date.now());
+	const perDay = totalDuration / diff;
+
+	return `**Total Activities:** ${totalActivities.count}
+**Common Activities:** ${countsPerActivity
+		.slice(0, 3)
+		.map((i: any) => `${i.qty}x ${i.type}`)
+		.join(', ')}
+**Total Minion Activity:** ${formatDuration(totalDuration)}
+**First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
+**Average Per Day:** ${formatDuration(perDay)}
+`;
+}
 
 async function xpGains(interval: string, skill?: string) {
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time.';
@@ -242,6 +287,11 @@ export const testPotatoCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'cl_bank',
 					description: 'Shows a bank image containing all items in your collection log.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'minion_stats',
+					description: 'Shows statistics about your minion.'
 				}
 			]
 		}
@@ -271,6 +321,7 @@ export const testPotatoCommand: OSBMahojiCommand = {
 			};
 			sacrificed_bank?: {};
 			cl_bank?: {};
+			minion_stats?: {};
 		};
 	}>) => {
 		interaction.deferReply();
@@ -305,6 +356,10 @@ export const testPotatoCommand: OSBMahojiCommand = {
 			if (patron.xp_gains) {
 				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
+			}
+			if (patron.minion_stats) {
+				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				return minionStats(mahojiUser);
 			}
 		}
 		return 'Invalid command!';
