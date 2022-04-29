@@ -332,7 +332,7 @@ const crystalTools: Createable[] = [
 		QPRequired: 150,
 		noCl: true
 	},
-		{
+	{
 		name: 'Crystal legs',
 		inputItems: new Bank({
 			'Crystal armour seed': 2,
@@ -345,7 +345,7 @@ const crystalTools: Createable[] = [
 		QPRequired: 150,
 		noCl: true
 	},
-		{
+	{
 		name: 'Crystal body',
 		inputItems: new Bank({
 			'Crystal armour seed': 3,
