@@ -13,7 +13,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Callisto.name,
 		aliases: Monsters.Callisto.aliases,
 		table: Monsters.Callisto,
-		timeToFinish: Time.Minute * 6,
+		timeToFinish: Time.Minute * 5.4,
 		emoji: '<:Callisto_cub:324127376273440768>',
 		wildy: true,
 
@@ -70,7 +70,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Venenatis.name,
 		aliases: Monsters.Venenatis.aliases,
 		table: Monsters.Venenatis,
-		timeToFinish: Time.Minute * 5,
+		timeToFinish: Time.Minute * 4.5,
 		emoji: '<:Venenatis_spiderling:324127379092144129>',
 		wildy: true,
 
@@ -171,7 +171,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Scorpia.name,
 		aliases: Monsters.Scorpia.aliases,
 		table: Monsters.Scorpia,
-		timeToFinish: Time.Minute * 3.3,
+		timeToFinish: Time.Minute * 3.0,
 		emoji: '<:Scorpias_offspring:324127378773377024>',
 		wildy: true,
 		difficultyRating: 8,

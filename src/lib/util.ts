@@ -33,9 +33,15 @@ import { POHBoosts } from './poh';
 import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
-import { GroupMonsterActivityTaskOptions, RaidsOptions, TheatreOfBloodTaskOptions } from './types/minions';
+import {
+	GroupMonsterActivityTaskOptions,
+	NexTaskOptions,
+	RaidsOptions,
+	TheatreOfBloodTaskOptions
+} from './types/minions';
 import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
+import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -174,10 +180,6 @@ export function itemNameFromID(itemID: number | string) {
 	return Items.get(itemID)?.name;
 }
 
-export async function arrIDToUsers(client: KlasaClient, ids: string[]) {
-	return Promise.all(ids.map(id => client.fetchUser(id)));
-}
-
 const rawEmojiRegex = emojiRegex();
 
 export function stripEmojis(str: string) {
@@ -220,10 +222,6 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	return amountEquipped * 20;
 }
 
-export function rollRogueOutfitDoubleLoot(user: KlasaUser): boolean {
-	return randInt(1, 100) <= rogueOutfitPercentBonus(user);
-}
-
 export function generateContinuationChar(user: KlasaUser) {
 	const baseChar =
 		user.perkTier > PerkTier.One
@@ -263,6 +261,10 @@ export function isRaidsActivity(data: any): data is RaidsOptions {
 
 export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 	return 'wipedRoom' in data;
+}
+
+export function isNexActivity(data: any): data is NexTaskOptions {
+	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
 }
 
 export function sha256Hash(x: string) {
@@ -438,7 +440,12 @@ export function formatPohBoosts(boosts: POHBoosts) {
 	return slotStr.join(', ');
 }
 
-export function updateBankSetting(client: KlasaClient | KlasaUser, setting: string, bankToAdd: Bank | ItemBank) {
+export function updateBankSetting(
+	_client: KlasaClient | KlasaUser | Client,
+	setting: string,
+	bankToAdd: Bank | ItemBank
+) {
+	const client = _client as KlasaClient | KlasaUser;
 	if (bankToAdd === undefined || bankToAdd === null) throw new Error(`Gave null bank for ${client} ${setting}`);
 	const current = new Bank(client.settings.get(setting) as ItemBank);
 	const newBank = current.add(bankToAdd);
@@ -449,15 +456,6 @@ export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: s
 	const current = client.settings.get(setting) as number;
 	const newValue = current + amount;
 	return client.settings.update(setting, newValue);
-}
-
-export function textEffect(str: string, effect: 'none' | 'strikethrough') {
-	let wrap = '';
-
-	if (effect === 'strikethrough') {
-		wrap = '~~';
-	}
-	return `${wrap}${str.replace(/~/g, '')}${wrap}`;
 }
 
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
@@ -561,8 +559,10 @@ export function getUsername(client: KlasaClient, id: string): string {
 	return (client.commands.get('leaderboard') as any)!.getUsername(id);
 }
 
-export function assert(condition: boolean, desc?: string) {
-	if (!condition) throw new Error(desc);
+export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
+	if (!condition) {
+		logError(new Error(desc ?? 'Failed assertion'), context);
+	}
 }
 
 export function calcDropRatesFromBank(bank: Bank, iterations: number, uniques: number[]) {
@@ -613,14 +613,6 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	return setup;
 }
 
-export function convertBankToPerHourStats(bank: Bank, time: number) {
-	let result = [];
-	for (const [item, qty] of bank.items()) {
-		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
-	}
-	return result;
-}
-
 /**
  * Removes extra clue scrolls from loot, if they got more than 1 or if they already own 1.
  */
@@ -646,6 +638,13 @@ export function sanitizeBank(bank: Bank) {
 			delete bank.bank[key];
 		}
 	}
+}
+export function convertBankToPerHourStats(bank: Bank, time: number) {
+	let result = [];
+	for (const [item, qty] of bank.items()) {
+		result.push(`${(qty / (time / Time.Hour)).toFixed(1)}/hr ${item.name}`);
+	}
+	return result;
 }
 
 export function truncateString(str: string, maxLen: number) {
@@ -720,7 +719,10 @@ export function removeFromArr<T>(arr: T[], item: T) {
  * @param percent The percent to scale
  * @returns percent
  */
-export function exponentialPercentScale(percent: number, decay = 0.0038) {
-	const decayedPercent = Math.pow(100 * Math.E, -decay * (100 - percent));
-	return decayedPercent * 100;
+export function exponentialPercentScale(percent: number, decay = 0.021) {
+	return 100 * Math.pow(Math.E, -decay * (100 - percent));
+}
+
+export function discrimName(user: KlasaUser | APIUser) {
+	return `${user.username}#${user.discriminator}`;
 }

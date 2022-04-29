@@ -355,6 +355,8 @@ model User {
   farmingPatches_mushroom    Json?    @map("farmingPatches.mushroom") @db.Json
   farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
   kourend_favour             Json?    @map("kourend_favour") @db.Json
+  bank_sort_method           String?  @db.VarChar(16)
+  bank_sort_weightings       Json     @default("{}") @db.Json
 
   premium_balance_tier        Int?
   premium_balance_expiry_date BigInt?
@@ -507,6 +509,26 @@ model LastManStandingGame {
   @@map("lms_games")
 }
 
+enum economy_transaction_type {
+  trade
+  giveaway
+}
+
+model EconomyTransaction {
+  id        String                   @id @default(uuid()) @db.Uuid
+  date      DateTime                 @default(now())
+  sender    BigInt
+  recipient BigInt
+  guild_id  BigInt?
+  type      economy_transaction_type
+
+  // From the perspective of the sender
+  items_sent     Json? @default("{}") @db.Json
+  items_received Json? @default("{}") @db.Json
+
+  @@map("economy_transaction")
+}
+
 enum command_usage_status {
   Unknown
   Success
@@ -586,6 +608,7 @@ enum activity_type_enum {
   BirthdayEvent
   TokkulShop
   Nex
+  Easter
 }
 
 enum xp_gains_skill_enum {

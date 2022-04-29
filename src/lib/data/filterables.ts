@@ -357,6 +357,7 @@ const secondaries = resolveItems([
 	'Poison ivy berries',
 	"Zulrah's scales",
 	'Torstol',
+	'Cave nightshade',
 	'Crushed superior dragon bones',
 	'Amylase crystal'
 ]);

@@ -520,6 +520,8 @@ Type \`confirm\` if you understand the above information, and want to become an 
 				new MessageEmbed().setTitle('Your minion is now ready to use!').setDescription(
 					`You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
 
+<:ironman:626647335900020746> You can make your new minion an Ironman by using the command: \`${msg.cmdPrefix}m ironman\`.
+
 🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://wiki.oldschool.gg/rules>
 
 <:patreonLogo:679334888792391703> **Patreon:** If you're able too, please consider supporting my work on Patreon, it's highly appreciated and helps me hugely <https://www.patreon.com/oldschoolbot> ❤️

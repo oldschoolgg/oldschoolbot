@@ -226,7 +226,8 @@ export const enum Tasks {
 	LastManStanding = 'lmsActivity',
 	BirthdayEvent = 'birthdayEventActivity',
 	TokkulShop = 'tokkulShopActivity',
-	Nex = 'nexActivity'
+	Nex = 'nexActivity',
+	Easter = 'easterActivity'
 }
 
 export enum ActivityGroup {
@@ -380,7 +381,7 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
-export const MAX_QP = 284;
+export const MAX_QP = 289;
 export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
@@ -502,7 +503,7 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 ) => `This command you're trying to use, has been changed to a 'slash command'.
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
-- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used too though.
+- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
 - You no longer use this command using \`${msg.cmdPrefix}${commandName ?? msg.command?.name}\`, now you use: \`/${
 	commandName ?? msg.command?.name
 }\`
