@@ -23,7 +23,7 @@ export default class extends BotCommand {
 		if (!collection) {
 			const { percent, notOwned, owned, debugBank } = msg.author.completion();
 			if (msg.flagArgs.missingbank) {
-				const displayMode = msg.flagArgs.ids ? 'ids' : 'names';
+				const displayMode = msg.flagArgs.id ? 'id' : 'names';
 				debugBank.remove(convertCLtoBank(owned));
 				return msg.channel.sendBankImage({
 					bank: debugBank,
