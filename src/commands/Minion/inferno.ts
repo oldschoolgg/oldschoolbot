@@ -718,6 +718,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const diedPreZuk = percentChance(preZukDeathChance.value);
 		const diedZuk = percentChance(zukDeathChance.value);
 		const diedEmergedZuk = isEmergedZuk && percentChance(emergedZukDeathChance.value);
+		const hasMasterRange = user.hasItemEquippedAnywhere('Ranged master cape')
 		let deathTime: number | null = null;
 		if (diedPreZuk) {
 			deathTime = randInt(Time.Minute, calcPercentOfNum(90, duration.value));
@@ -735,7 +736,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			fakeDuration,
 			hasKodai: mageGear.hasEquipped('Kodai wand', true, true),
 			isEmergedZuk,
-			user.hasItemEquippedAnywhere('Ranged master cape')
+			hasMasterRange
 		});
 
 		return {
