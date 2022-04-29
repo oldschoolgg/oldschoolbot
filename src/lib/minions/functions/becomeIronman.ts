@@ -55,10 +55,10 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 
 		try {
 			await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
-			prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } }).catch(noOp);
-			prisma.minigame.delete({ where: { user_id: msg.author.id } }).catch(noOp);
+			await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } }).catch(noOp);
+			await prisma.minigame.delete({ where: { user_id: msg.author.id } }).catch(noOp);
 			await prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
-			prisma.newUser.delete({ where: { id: msg.author.id } }).catch(noOp);
+			await prisma.newUser.delete({ where: { id: msg.author.id } }).catch(noOp);
 			await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 			await prisma.tameActivity.deleteMany({ where: { user_id: msg.author.id } });
 			await prisma.tame.deleteMany({ where: { user_id: msg.author.id } });
@@ -73,7 +73,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		} catch (e) {
 			// Actual database error
 			logError(e, { command: 'minion ironman', user_id: msg.author.id });
-			return msg.channel.send('We are in an unknown state. Likely inconsistent.');
+			return msg.channel.send('There was an error in converting to an Ironman. Please contact us for help.');
 		}
 	} catch (err) {
 		return msg.channel.send('Cancelled ironman swap.');
