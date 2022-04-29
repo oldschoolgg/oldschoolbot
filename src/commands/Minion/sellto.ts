@@ -159,6 +159,13 @@ export default class extends BotCommand {
 			}
 		});
 
+		this.client.emit(
+			Events.EconomyLog,
+			`${msg.author.sanitizedName} sold ${bankStr} to ${
+				buyerMember.user.sanitizedName
+			} for ${price.toLocaleString()} GP.`
+		);
+
 		return msg.channel.send(
 			`Sale of ${bankStr} complete! Try out \`/trade\`, it's a new slash command for trading items.`
 		);

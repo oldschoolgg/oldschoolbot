@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
+import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { discrimName, truncateString } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
@@ -132,6 +133,10 @@ Both parties must click confirm to make the trade.`,
 				items_received: itemsReceived.bank
 			}
 		});
+		client.emit(
+			Events.EconomyLog,
+			`${senderKlasaUser.sanitizedName} sold ${itemsSent} to ${recipientKlasaUser.sanitizedName} for ${itemsReceived}.`
+		);
 
 		return `${discrimName(senderKlasaUser)} sold ${itemsSent} to ${discrimName(
 			recipientKlasaUser
