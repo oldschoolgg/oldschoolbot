@@ -325,6 +325,9 @@ const crystalTools: Createable[] = [
 			'Crystal armour seed': 1,
 			'Crystal shard': 150
 		}),
+		outputItems: {
+			[itemID('Crystal helm')]: 1
+		},
 		requiredSkills: { smithing: 70, crafting: 70 },
 		QPRequired: 150,
 		noCl: true
@@ -335,6 +338,9 @@ const crystalTools: Createable[] = [
 			'Crystal armour seed': 2,
 			'Crystal shard': 300
 		}),
+		outputItems: {
+			[itemID('Crystal legs')]: 1
+		},
 		requiredSkills: { smithing: 72, crafting: 72 },
 		QPRequired: 150,
 		noCl: true
@@ -345,6 +351,9 @@ const crystalTools: Createable[] = [
 			'Crystal armour seed': 3,
 			'Crystal shard': 450
 		}),
+		outputItems: {
+			[itemID('Crystal body')]: 1
+		},
 		requiredSkills: { smithing: 74, crafting: 74 },
 		QPRequired: 150,
 		noCl: true
