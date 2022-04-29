@@ -19,7 +19,7 @@ import { SILENT_ERROR } from '../lib/constants';
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
 import { defaultGear } from '../lib/gear';
-import killableMonsters from '../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
@@ -80,7 +80,7 @@ export const monsterOption: CommandOption = {
 	description: 'The monster you want to pick.',
 	required: true,
 	autocomplete: async value => {
-		return killableMonsters
+		return effectiveMonsters
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 			.map(i => ({ name: i.name, value: i.name }));
 	}
