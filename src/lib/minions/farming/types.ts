@@ -1,24 +1,24 @@
-export enum FarmingPatchTypes {
-	Herb = 'herb',
-	FruitTree = 'fruit tree',
-	Tree = 'tree',
-	Allotment = 'allotment',
-	Hops = 'hops',
-	Cactus = 'cactus',
-	Bush = 'bush',
-	Flower = 'flower',
-	Spirit = 'spirit',
-	Hardwood = 'hardwood',
-	Seaweed = 'seaweed',
-	Vine = 'vine',
-	Calquat = 'calquat',
-	Redwood = 'redwood',
-	Crystal = 'crystal',
-	Celastrus = 'celastrus',
-	Hespori = 'hespori',
-	Mushroom = 'mushroom',
-	Belladonna = 'belladonna'
-}
+// export enum FarmingPatchTypes {
+// 	Herb = 'herb',
+// 	FruitTree = 'fruit tree',
+// 	Tree = 'tree',
+// 	Allotment = 'allotment',
+// 	Hops = 'hops',
+// 	Cactus = 'cactus',
+// 	Bush = 'bush',
+// 	Flower = 'flower',
+// 	Spirit = 'spirit',
+// 	Hardwood = 'hardwood',
+// 	Seaweed = 'seaweed',
+// 	Vine = 'vine',
+// 	Calquat = 'calquat',
+// 	Redwood = 'redwood',
+// 	Crystal = 'crystal',
+// 	Celastrus = 'celastrus',
+// 	Hespori = 'hespori',
+// 	Mushroom = 'mushroom',
+// 	Belladonna = 'belladonna'
+// }
 
 export interface IPatchData {
 	lastPlanted: string | null;

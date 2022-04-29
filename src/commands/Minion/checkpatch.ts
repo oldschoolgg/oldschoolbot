@@ -4,7 +4,6 @@ import { CommandStore, KlasaMessage } from 'klasa';
 import { Emoji } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
-import { FarmingPatchTypes } from '../../lib/minions/farming/types';
 import Farming from '../../lib/skilling/skills/farming';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, stringMatches, toTitleCase } from '../../lib/util';

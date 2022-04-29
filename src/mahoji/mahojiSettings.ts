@@ -196,14 +196,15 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
  *
  */
 
-export async function mahojiUsersSettingsFetch(user: bigint | string) {
+export async function mahojiUsersSettingsFetch(user: bigint | string, select?: Prisma.UserSelect) {
 	const result = await prisma.user.findFirst({
 		where: {
 			id: user.toString()
-		}
+		},
+		select
 	});
 	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
-	return result;
+	return result as User;
 }
 
 export async function mahojiUserSettingsUpdate(
