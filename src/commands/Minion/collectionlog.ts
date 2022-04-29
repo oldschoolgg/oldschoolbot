@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { allCLItemsFiltered } from '../../lib/data/Collections';
+import { allCLItemsFiltered, convertCLtoBank } from '../../lib/data/Collections';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
 
@@ -22,6 +22,15 @@ export default class extends BotCommand {
 
 		if (!collection) {
 			const { percent, notOwned, owned, debugBank } = msg.author.completion();
+			if (msg.flagArgs.missingbank) {
+				const displayMode = msg.flagArgs.ids ? 'ids' : 'names';
+				debugBank.remove(convertCLtoBank(owned));
+				return msg.channel.sendBankImage({
+					bank: debugBank,
+					title: `${msg.author.username}'s Missing CL Items`,
+					flags: { [displayMode]: displayMode }
+				});
+			}
 			if (msg.flagArgs.debug) {
 				return msg.channel.sendBankImage({
 					bank: debugBank,
