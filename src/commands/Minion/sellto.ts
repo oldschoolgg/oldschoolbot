@@ -155,7 +155,8 @@ export default class extends BotCommand {
 				sender: BigInt(msg.author.id),
 				recipient: BigInt(buyerMember.user.id),
 				items_sent: bankToSell.bank,
-				items_received: gpBank.bank
+				items_received: gpBank.bank,
+				type: 'trade'
 			}
 		});
 

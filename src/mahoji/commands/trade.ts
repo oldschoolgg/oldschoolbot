@@ -130,7 +130,8 @@ Both parties must click confirm to make the trade.`,
 				sender: BigInt(senderKlasaUser.id),
 				recipient: BigInt(recipientKlasaUser.id),
 				items_sent: itemsSent.bank,
-				items_received: itemsReceived.bank
+				items_received: itemsReceived.bank,
+				type: 'trade'
 			}
 		});
 		client.emit(
