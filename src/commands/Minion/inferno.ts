@@ -82,16 +82,23 @@ export default class extends BotCommand {
 		dart,
 		fakeDuration,
 		hasKodai,
-		isEmergedZuk
+		isEmergedZuk,
+		hasMasterRange
 	}: {
 		projectile: number;
 		dart: number;
 		fakeDuration: number;
 		hasKodai: boolean;
 		isEmergedZuk: boolean;
+		hasMasterRange: boolean;
 	}) {
-		const projectilesPerHour = 150;
-		const dartsPerHour = 300;
+		let projectilesPerHour = 150;
+		let dartsPerHour = 300;
+		if (hasMasterRange) {
+			dartsPerHour = Math.ceil(dartsPerHour * 0.1);
+			projectilesPerHour = Math.ceil(projectilesPerHour * 0.1);
+		}
+			
 		const bloodBarragePerHour = 200;
 		const iceBarragePerHour = 100;
 		const elderBarragePerHour = 20;
@@ -727,7 +734,8 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 			dart: blowpipeData.dartID,
 			fakeDuration,
 			hasKodai: mageGear.hasEquipped('Kodai wand', true, true),
-			isEmergedZuk
+			isEmergedZuk,
+			user.hasItemEquippedAnywhere('Ranged master cape')
 		});
 
 		return {
