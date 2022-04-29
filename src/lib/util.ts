@@ -722,3 +722,7 @@ export function removeFromArr<T>(arr: T[], item: T) {
 export function exponentialPercentScale(percent: number, decay = 0.021) {
 	return 100 * Math.pow(Math.E, -decay * (100 - percent));
 }
+
+export function discrimName(user: KlasaUser | APIUser) {
+	return `${user.username}#${user.discriminator}`;
+}
