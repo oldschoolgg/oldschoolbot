@@ -318,6 +318,36 @@ const crystalTools: Createable[] = [
 		requiredSkills: { smithing: 78, crafting: 78 },
 		QPRequired: 150,
 		noCl: true
+	},
+	{
+		name: 'Crystal helm',
+		inputItems: new Bank({
+			'Crystal armour seed': 1,
+			'Crystal shard': 150
+		}),
+		requiredSkills: { smithing: 70, crafting: 70 },
+		QPRequired: 150,
+		noCl: true
+	},
+		{
+		name: 'Crystal legs',
+		inputItems: new Bank({
+			'Crystal armour seed': 2,
+			'Crystal shard': 300
+		}),
+		requiredSkills: { smithing: 72, crafting: 72 },
+		QPRequired: 150,
+		noCl: true
+	},
+		{
+		name: 'Crystal body',
+		inputItems: new Bank({
+			'Crystal armour seed': 3,
+			'Crystal shard': 450
+		}),
+		requiredSkills: { smithing: 74, crafting: 74 },
+		QPRequired: 150,
+		noCl: true
 	}
 ];
 
