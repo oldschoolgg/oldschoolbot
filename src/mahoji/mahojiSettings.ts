@@ -292,7 +292,7 @@ export interface MahojiUserOption {
 	member: APIInteractionDataResolvedGuildMember;
 }
 
-export function getSkillsOfMahojiUser(user: User): TSkills {
+export function getSkillsOfMahojiUser(user: User): Required<TSkills> {
 	return {
 		agility: Number(user.skills_agility),
 		cooking: Number(user.skills_cooking),
