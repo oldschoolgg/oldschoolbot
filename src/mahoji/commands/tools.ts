@@ -1,5 +1,6 @@
 import { Embed } from '@discordjs/builders';
 import { User } from '@prisma/client';
+import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -7,23 +8,64 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { client } from '../..';
 import LeaderboardCommand from '../../commands/Minion/leaderboard';
-import { BitField, PerkTier } from '../../lib/constants';
+import { MysteryBoxes } from '../../lib/bsoOpenables';
+import { BitField, giveBoxResetTime, PerkTier } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, itemID, roll, stringMatches } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import getUsersPerkTier, { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
-import { itemOption, mahojiUsersSettingsFetch, monsterOption, patronMsg, skillOption } from '../mahojiSettings';
+import {
+	itemOption,
+	MahojiUserOption,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch,
+	monsterOption,
+	patronMsg,
+	skillOption
+} from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
 
 function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
+}
+
+async function giveBox(mahojiUser: User, user: KlasaUser, _recipient: MahojiUserOption) {
+	const recipient = await client.fetchUser(_recipient.user.id);
+	if (!isPrimaryPatron(user)) {
+		return 'Shared-perk accounts cannot use this.';
+	}
+
+	const currentDate = Date.now();
+	const lastDate = Number(mahojiUser.lastGivenBoxx);
+	const difference = currentDate - lastDate;
+	const isOwner = client.owners.has(user);
+
+	// If no user or not an owner and can not send one yet, show time till next box.
+	if (!user || (difference < giveBoxResetTime && !isOwner)) {
+		if (difference >= giveBoxResetTime || isOwner) {
+			return 'You can give another box!';
+		}
+		return `You can give another box in ${formatDuration(giveBoxResetTime - difference)}`;
+	}
+
+	if (recipient.id === user.id) return "You can't give boxes to yourself!";
+	if (recipient.isIronman) return "You can't give boxes to ironmen!";
+	await mahojiUserSettingsUpdate(client, user.id, {
+		lastGivenBoxx: currentDate
+	});
+
+	const boxToReceive = new Bank().add(roll(10) ? MysteryBoxes.roll() : itemID('Mystery box'));
+
+	await recipient.addItemsToBank({ items: boxToReceive, collectionLog: false });
+
+	return `Gave **${boxToReceive}** to ${recipient.username}.`;
 }
 
 async function minionStats(user: User) {
@@ -292,6 +334,19 @@ export const testPotatoCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'minion_stats',
 					description: 'Shows statistics about your minion.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'give_box',
+					description: 'Allows you to give a mystery box to a friend.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.User,
+							name: 'user',
+							description: 'The user you want to give a box too.',
+							required: true
+						}
+					]
 				}
 			]
 		}
@@ -322,10 +377,14 @@ export const testPotatoCommand: OSBMahojiCommand = {
 			sacrificed_bank?: {};
 			cl_bank?: {};
 			minion_stats?: {};
+			give_box?: {
+				user: MahojiUserOption;
+			};
 		};
 	}>) => {
 		interaction.deferReply();
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		const klasaUser = await client.fetchUser(userID);
 
 		if (options.patron) {
 			const { patron } = options;
@@ -360,6 +419,10 @@ export const testPotatoCommand: OSBMahojiCommand = {
 			if (patron.minion_stats) {
 				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser);
+			}
+			if (patron.give_box) {
+				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.One) return patronMsg(PerkTier.One);
+				return giveBox(mahojiUser, klasaUser, patron.give_box.user);
 			}
 		}
 		return 'Invalid command!';
