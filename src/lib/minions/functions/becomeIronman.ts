@@ -1,7 +1,10 @@
+import { noOp } from 'e';
 import { KlasaMessage } from 'klasa';
 
+import { BitField } from '../../constants';
 import { prisma } from '../../settings/prisma';
 import { UserSettings } from '../../settings/types/UserSettings';
+import { logError } from '../../util/logError';
 
 export async function becomeIronman(msg: KlasaMessage) {
 	/**
@@ -52,23 +55,26 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 
 		try {
 			await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
-			await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
-			await prisma.minigame.delete({ where: { user_id: msg.author.id } });
+			await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } }).catch(noOp);
+			await prisma.minigame.delete({ where: { user_id: msg.author.id } }).catch(noOp);
 			await prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
-			await prisma.newUser.delete({ where: { id: msg.author.id } });
+			await prisma.newUser.delete({ where: { id: msg.author.id } }).catch(noOp);
 			await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
 			await prisma.tameActivity.deleteMany({ where: { user_id: msg.author.id } });
 			await prisma.tame.deleteMany({ where: { user_id: msg.author.id } });
 			await prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
-		} catch (err) {
-			console.log(err);
-		}
 
-		await msg.author.settings.update([
-			[UserSettings.Minion.Ironman, true],
-			[UserSettings.Minion.HasBought, true]
-		]);
-		return msg.channel.send('You are now an ironman.');
+			await msg.author.settings.update([
+				[UserSettings.Minion.Ironman, true],
+				[UserSettings.Minion.HasBought, true],
+				[UserSettings.BitField, BitField.BypassAgeRestriction]
+			]);
+			return msg.channel.send('You are now an ironman.');
+		} catch (e) {
+			// Actual database error
+			logError(e, { command: 'minion ironman', user_id: msg.author.id });
+			return msg.channel.send('There was an error in converting to an Ironman. Please contact us for help.');
+		}
 	} catch (err) {
 		return msg.channel.send('Cancelled ironman swap.');
 	}
