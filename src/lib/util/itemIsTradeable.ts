@@ -1,3 +1,4 @@
+import { COINS_ID } from '../constants';
 import getOSItem from './getOSItem';
 import resolveItems from './resolveItems';
 
@@ -15,8 +16,9 @@ export const specialTradeables = resolveItems([
 	'Inverted santa hat'
 ]);
 
-export default function itemIsTradeable(itemID: number | string) {
+export default function itemIsTradeable(itemID: number | string, allowCoins = false) {
 	const osItem = getOSItem(itemID);
+	if (allowCoins && osItem.id === COINS_ID) return true;
 
 	if (specialTradeables.includes(osItem.id)) return true;
 	if (specialUntradeables.includes(osItem.id) || !('tradeable' in osItem) || !osItem.tradeable) {
