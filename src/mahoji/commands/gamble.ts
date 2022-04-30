@@ -6,6 +6,7 @@ import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_com
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
+import { slotsCommand } from '../lib/abstracted_commands/slots';
 import { OSBMahojiCommand } from '../lib/util';
 import { MahojiUserOption } from '../mahojiSettings';
 
@@ -94,6 +95,24 @@ export const gambleCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		/**
+		 *
+		 * Slots
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'slots',
+			description: 'Allows you play slots and risk your GP.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'amount',
+					description: 'Amount you wish to gamble.',
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
@@ -105,6 +124,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
+		slots?: { amount: string };
 	}>) => {
 		const KlasaUser = await client.fetchUser(userID);
 
@@ -147,6 +167,14 @@ export const gambleCommand: OSBMahojiCommand = {
 		 */
 		if (options.lucky_pick) {
 			return luckyPickCommand(KlasaUser, options.lucky_pick.amount, interaction);
+		}
+		/**
+		 *
+		 * Slots
+		 *
+		 */
+		if (options.slots) {
+			return slotsCommand(KlasaUser, options.slots.amount, interaction);
 		}
 		return 'Invalid command.';
 	}
