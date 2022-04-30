@@ -164,7 +164,7 @@ export function saidYes(content: string) {
 	return newContent === 'y' || newContent === 'yes';
 }
 
-export function convertXPtoLVL(xp: number, cap = 99) {
+export function convertXPtoLVL(xp: number, cap = 120) {
 	let points = 0;
 
 	for (let lvl = 1; lvl <= cap; lvl++) {

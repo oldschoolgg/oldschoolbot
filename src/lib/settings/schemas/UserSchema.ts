@@ -148,6 +148,10 @@ Client.defaultUserSchema
 				default: 0,
 				maximum: Number.MAX_SAFE_INTEGER
 			})
+			.add(SkillsEnum.Invention, 'integer', {
+				default: 0,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder

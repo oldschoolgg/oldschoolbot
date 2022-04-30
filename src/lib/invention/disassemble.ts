@@ -1,11 +1,11 @@
 import { User } from '@prisma/client';
-import { assert } from 'console';
 import { calcWhatPercent, percentChance, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
+import { getSkillsOfMahojiUser } from '../../mahoji/mahojiSettings';
 import { ItemBank } from '../types';
 import { calcPerHour, clamp, formatDuration, toKMB } from '../util';
 import { calcMaxTripLength } from '../util/minionUtils';
@@ -46,22 +46,34 @@ function calculateDisXP(quantity: number, item: DisassemblySourceGroup['items'][
 	};
 }
 
-interface DisassemblyResult {
-	xp: number;
-	materials: MaterialBank;
-	junkChance: number;
-	xpHr: string;
-	quantity: number;
-	duration: number;
-	cost: Bank;
-}
+type DisassemblyResult =
+	| {
+			xp: number;
+			materials: MaterialBank;
+			junkChance: number;
+			xpHr: string;
+			quantity: number;
+			duration: number;
+			cost: Bank;
+			error: null;
+	  }
+	| {
+			error: string;
+	  };
 
 export function findDisassemblyGroup(item: Item) {
-	return (
-		DisassemblySourceGroups.find(g =>
-			g.items.some(i => (Array.isArray(i.item) ? i.item.includes(item) : i.item.name === item.name))
-		) ?? null
-	);
+	for (const group of DisassemblySourceGroups) {
+		const matchingItem = group.items.find(i =>
+			Array.isArray(i.item) ? i.item.includes(item) : i.item.name === item.name
+		);
+		if (matchingItem) {
+			return {
+				group,
+				data: matchingItem
+			};
+		}
+	}
+	return null;
 }
 
 export function handleDisassembly({
@@ -73,16 +85,22 @@ export function handleDisassembly({
 	inputQuantity?: number;
 	item: Item;
 }): DisassemblyResult {
-	const group = findDisassemblyGroup(item);
-	if (!group) throw new Error('This item cannot be disassembled.');
-	const data = group.items.find(i => i.item === item);
-	if (!data) throw new Error(`No data for ${item.name}`);
+	const _group = findDisassemblyGroup(item);
+	if (!_group) throw new Error(`No data for ${item.name}`);
+	const { data, group } = _group;
+	const skills = getSkillsOfMahojiUser(user, true);
+	console.log(skills.invention);
+
+	if (skills.invention < data.lvl) {
+		return {
+			error: `You need ${data.lvl} Invention to disassemble ${item.name}. Your Invention level is ${skills.invention}.`
+		};
+	}
 
 	const materialLoot = new MaterialBank();
 	const table = new MaterialLootTable(group.parts);
 
 	const junkChance = 100 - calcWhatPercent(data.lvl, 120);
-	assert(data.lvl >= 1 && data.lvl <= 120, 'Disassemble item level must be between 1-120');
 
 	const specialBank: IMaterialBank = {};
 	if (data.special) {
@@ -133,7 +151,8 @@ export function handleDisassembly({
 		xpHr: toKMB(calcPerHour(xp, duration)),
 		quantity: realQuantity,
 		duration,
-		cost
+		cost,
+		error: null
 	};
 }
 
@@ -149,15 +168,17 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			inputQuantity: qty,
 			item
 		});
+		if (result.error !== null) return result.error;
 		totalXP += result.xp;
 		totalMaterials.add(result.materials);
 		totalTime += result.duration;
 		results.push({ ...result, item });
 	}
+	// @ts-ignore ignore
 	results.sort((a, b) => b.xp - a.xp);
 	const normalTable = table([
 		['Item', 'XP', 'Time'],
-		...results.map(r => [r.item.name, r.xp, formatDuration(r.duration)])
+		...results.map(r => (r.error === null ? [r.item.name, r.xp, formatDuration(r.duration)] : []))
 	]);
 	return {
 		content: `

@@ -6,6 +6,7 @@ import { client } from '../..';
 import { econBank } from '../../lib/econbank';
 import { allItemsThatCanBeDisassembledIDs, DisassemblySourceGroups, MaterialType } from '../../lib/invention';
 import { bankDisassembleAnalysis, findDisassemblyGroup, handleDisassembly } from '../../lib/invention/disassemble';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { formatDuration } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { OSBMahojiCommand } from '../lib/util';
@@ -27,6 +28,8 @@ export const askCommand: OSBMahojiCommand = {
 					required: true,
 					autocomplete: async (value, { id }) => {
 						const user = await client.fetchUser(id);
+						const inventionLevel = user.skillLevel(SkillsEnum.Invention);
+
 						return user
 							.bank()
 							.items()
@@ -35,6 +38,11 @@ export const askCommand: OSBMahojiCommand = {
 									allItemsThatCanBeDisassembledIDs.has(i[0].id) &&
 									(!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase()))
 							)
+							.filter(i => {
+								const data = findDisassemblyGroup(i[0]);
+								if (!data) return false;
+								return inventionLevel >= data.data.lvl;
+							})
 							.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name }));
 					}
 				},
@@ -96,8 +104,17 @@ export const askCommand: OSBMahojiCommand = {
 				inputQuantity: options.disassemble.quantity,
 				item
 			});
+			if (result.error !== null) return result.error;
 			await user.removeItemsFromBank(result.cost);
-			return `**Disassembled:** ${result.quantity}x ${item.name}
+			const xpStr = await user.addXP({
+				skillName: SkillsEnum.Invention,
+				amount: result.xp,
+				duration: result.duration,
+				multiplier: false
+			});
+			console.log(xpStr);
+			return `${xpStr}
+**Disassembled:** ${result.quantity}x ${item.name}
 **Junk Chance:** ${result.junkChance.toFixed(2)}%
 **Materials Received:** ${result.materials}
 **XP:** ${result.xp}

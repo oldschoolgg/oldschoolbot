@@ -24,7 +24,7 @@ import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
 import { Skills } from '../lib/types';
-import { assert, channelIsSendable } from '../lib/util';
+import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
 
 export function mahojiParseNumber({
 	input,
@@ -253,8 +253,8 @@ export interface MahojiUserOption {
 	member: APIInteractionDataResolvedGuildMember;
 }
 
-export function getSkillsOfMahojiUser(user: User): Skills {
-	return {
+export function getSkillsOfMahojiUser(user: User, levels = false): Required<Skills> {
+	let obj: Required<Skills> = {
 		agility: Number(user.skills_agility),
 		cooking: Number(user.skills_cooking),
 		fishing: Number(user.skills_fishing),
@@ -277,8 +277,16 @@ export function getSkillsOfMahojiUser(user: User): Skills {
 		defence: Number(user.skills_defence),
 		ranged: Number(user.skills_ranged),
 		hitpoints: Number(user.skills_hitpoints),
-		slayer: Number(user.skills_slayer)
+		slayer: Number(user.skills_slayer),
+		dungeoneering: Number(user.skills_dungeoneering),
+		invention: Number(user.skills_invention)
 	};
+	if (levels) {
+		for (const [key, val] of Object.entries(obj) as [keyof Skills, number][]) {
+			obj[key] = convertXPtoLVL(val);
+		}
+	}
+	return obj;
 }
 
 export function getUserGear(user: User) {

@@ -154,7 +154,8 @@ export const enum Emoji {
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
 	SOTW = '<:SOTWtrophy:842938096097820693>',
-	OSRSSkull = '<:skull:863392427040440320>'
+	OSRSSkull = '<:skull:863392427040440320>',
+	Invention = '<:Invention:936219232146980874>'
 }
 
 export const enum ReactionEmoji {

@@ -6,7 +6,6 @@ const i = getOSItem;
 export const Ores: DisassemblySourceGroup = {
 	name: 'Ores',
 	items: [
-		{ item: i('Clay'), lvl: 1 },
 		{ item: i('Copper ore'), lvl: 1 },
 		{ item: i('Tin ore'), lvl: 1 },
 		{ item: i('Iron ore'), lvl: 15 },
@@ -17,5 +16,5 @@ export const Ores: DisassemblySourceGroup = {
 		{ item: i('Adamantite ore'), lvl: 70 },
 		{ item: i('Runite ore'), lvl: 85 }
 	],
-	parts: { rocky: 100 }
+	parts: { rocky: 75, simple: 5, metallic: 20 }
 };
