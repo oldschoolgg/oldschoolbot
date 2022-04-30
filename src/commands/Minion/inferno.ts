@@ -98,7 +98,7 @@ export default class extends BotCommand {
 			dartsPerHour = Math.ceil(dartsPerHour * 0.1);
 			projectilesPerHour = Math.ceil(projectilesPerHour * 0.1);
 		}
-			
+
 		const bloodBarragePerHour = 200;
 		const iceBarragePerHour = 100;
 		const elderBarragePerHour = 20;
@@ -718,7 +718,7 @@ AND (data->>'diedPreZuk')::boolean = false;`)
 		const diedPreZuk = percentChance(preZukDeathChance.value);
 		const diedZuk = percentChance(zukDeathChance.value);
 		const diedEmergedZuk = isEmergedZuk && percentChance(emergedZukDeathChance.value);
-		const hasMasterRange = user.hasItemEquippedAnywhere('Ranged master cape')
+		const hasMasterRange = user.hasItemEquippedAnywhere('Ranged master cape');
 		let deathTime: number | null = null;
 		if (diedPreZuk) {
 			deathTime = randInt(Time.Minute, calcPercentOfNum(90, duration.value));
