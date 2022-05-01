@@ -48,26 +48,17 @@ const boxTable = new LootTable()
 	.add('Equippable mystery box', 1, 5)
 	.add('Pet mystery box');
 
-const runeTable = new LootTable()
-	.add('Nature rune', [3000, 5000])
-	.add('Law rune', [3000, 5000])
-	.add('Death rune', [3000, 5000])
-	.add('Blood rune', [3000, 5000])
-	.add('Soul rune', [3000, 5000])
-	.add('Wrath rune', [3000, 5000])
-	.add('Astral rune', [3000, 5000]);
-
 const LogsTable = new LootTable()
 	.add('Teak logs', [20, 100])
 	.add('Mahogany logs', [5, 50])
 	.add('Yew logs', [50, 150])
 	.add('Magic logs', [20, 100])
-	.add('Elder logs', [5, 50]);
+	.add('Elder logs', [5, 15]);
 
 const Supplies = new LootTable()
 	.add('Saradomin brew(4)', [6, 13], 2)
 	.add('Super restore(4)', [6, 13], 2)
-	.add(StaffOrbTable, [100, 300], 1, { multiply: true })
+	.add(StaffOrbTable, [100, 300], 3, { multiply: true })
 	.add('Mysterious seed');
 
 const DyeTable = new LootTable()
@@ -100,12 +91,11 @@ const table = new LootTable()
 	.oneIn(90, 'Holiday mystery box')
 	.add(ClueTable, [1, 3])
 	.add(DragonTable, [2, 5], 2)
-	.add(runeTable, [1, 5])
 	.add(runeAlchablesTable, 12, 2)
 	.add(BattlestaffTable, 20, 2)
-	.add('Coins', [3_500_000, 8_000_000])
+	.add('Coins', [4_500_000, 8_200_000])
 	.add(AllBarrows, 3)
-	.add(LogsTable, 4)
+	.add(LogsTable, 2)
 	.add(Supplies, 1, 5);
 
 class GrandmasterClue extends Clue {
