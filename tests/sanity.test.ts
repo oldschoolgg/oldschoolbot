@@ -23,6 +23,13 @@ describe('Sanity', () => {
 		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
 		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Coal'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Golden partyhat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Rune pouch'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Agility cape'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Achievement diary cape'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Crafting master cape'))).toEqual(false);
+		expect(itemIsTradeable(itemID('Infernal bulwark'))).toEqual(false);
 	});
 	test('Growable pets cant come from mystery boxes', () => {
 		const allGrowablePets = growablePets.map(p => p.stages).flat();
