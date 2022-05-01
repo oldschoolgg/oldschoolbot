@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 import { percentChance } from 'e';
-import { Extendable, ExtendableStore } from 'klasa';
+import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -18,6 +18,7 @@ import {
 } from '../../lib/util';
 import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
+import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 export interface GetUserBankOptions {
 	withGP?: boolean;
@@ -61,13 +62,6 @@ export default class extends Extendable {
 		this.settings.update(UserSettings.GP, currentGP - amount);
 	}
 
-	public async addGP(this: User, amount: number) {
-		await this.settings.sync(true);
-		const currentGP = this.settings.get(UserSettings.GP);
-		this.log(`had ${amount} GP added. BeforeBalance[${currentGP}] NewBalance[${currentGP + amount}]`);
-		return this.settings.update(UserSettings.GP, currentGP + amount);
-	}
-
 	public async addItemsToBank(
 		this: User,
 		{
@@ -99,7 +93,11 @@ export default class extends Extendable {
 			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
 			const coinsInLoot = loot.amount('Coins');
 			if (coinsInLoot > 0) {
-				await user.addGP(loot.amount('Coins'));
+				await mahojiUserSettingsUpdate(this.client as KlasaClient, user.id, {
+					GP: {
+						increment: coinsInLoot
+					}
+				});
 				loot.remove('Coins', loot.amount('Coins'));
 			}
 
