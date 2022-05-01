@@ -14,7 +14,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Gear } from '../../lib/structures/Gear';
 import { RevenantOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches, toKMB, updateBankSetting } from '../../lib/util';
+import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import combatAmmoUsage from '../../lib/util/combatAmmoUsage';
@@ -193,10 +193,13 @@ export default class extends BotCommand {
 			if (toSellBank.length === 0) {
 				return msg.channel.send('You have no ancient items to sell.');
 			}
-			await msg.confirm(`Do you want to sell ${toSellBank} for ${toKMB(value)}?`);
+
+			const loot = new Bank().add('Coins', value);
+
+			await msg.confirm(`Do you want to sell ${toSellBank} for ${loot}?`);
 			await msg.author.removeItemsFromBank(toSellBank);
-			await msg.author.addGP(value);
-			return msg.channel.send(`You sold ${toSellBank} for ${toKMB(value)}.`);
+			await msg.author.addItemsToBank({ items: loot });
+			return msg.channel.send(`You sold ${toSellBank} for ${loot}.`);
 		}
 
 		if (!style || !['melee', 'range', 'mage'].includes(style)) {

@@ -156,7 +156,6 @@ declare module 'discord.js' {
 		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
 		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
 		log(stringLog: string): void;
-		addGP(amount: number): Promise<SettingsUpdateResult>;
 		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(params: AddXpParams): Promise<string>;

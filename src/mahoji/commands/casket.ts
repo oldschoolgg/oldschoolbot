@@ -38,7 +38,7 @@ export const casketCommand: OSBMahojiCommand = {
 			description: 'The quantity you want to open.',
 			required: true,
 			min_value: 1,
-			max_value: 100_000
+			max_value: 300_000
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
