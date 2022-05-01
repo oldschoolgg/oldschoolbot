@@ -1,5 +1,5 @@
 import { KlasaUser } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 
 import { client } from '../../..';
 import { Emoji } from '../../../lib/constants';
@@ -35,7 +35,7 @@ export async function diceCommand(klasaUser: KlasaUser, diceamount?: string) {
 	const won = roll >= 55;
 	let amountToAdd = won ? amount : -amount;
 
-	await klasaUser.addGP(amountToAdd);
+	await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amountToAdd) });
 	await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
 	await updateGPTrackSetting(klasaUser, UserSettings.GPDice, amountToAdd);
 
