@@ -487,7 +487,7 @@ export function isValidNickname(str?: string) {
 }
 
 export function patronMaxTripCalc(user: KlasaUser | User) {
-	const perkTier = getUsersPerkTier(user instanceof KlasaUser ? user : user.bitfield);
+	const perkTier = getUsersPerkTier(user);
 	if (perkTier === PerkTier.Two) return Time.Minute * 3;
 	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
 	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;

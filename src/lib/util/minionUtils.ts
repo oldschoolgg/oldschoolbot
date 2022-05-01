@@ -55,7 +55,7 @@ export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_ty
 		user instanceof KlasaUser ? user.settings.get(UserSettings.SacrificedValue) : Number(user.sacrificedValue);
 	const isIronman = user instanceof KlasaUser ? user.isIronman : user.minion_ironman;
 	const sacPercent = Math.min(100, calcWhatPercent(sac, isIronman ? 5_000_000_000 : 10_000_000_000));
-	const perkTier = getUsersPerkTier(user instanceof KlasaUser ? user : user.bitfield);
+	const perkTier = getUsersPerkTier(user);
 	max += calcPercentOfNum(sacPercent, perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
 	return max;
 }
