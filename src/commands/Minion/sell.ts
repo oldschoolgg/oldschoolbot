@@ -71,10 +71,11 @@ export default class extends BotCommand {
 		);
 
 		if (bankToSell.has('Coins')) {
-			return msg.channel.send('You cant sell coins.');
+			return msg.channel.send("You can't sell coins.");
 		}
 
-		await Promise.all([msg.author.removeItemsFromBank(bankToSell.bank), msg.author.addGP(totalPrice)]);
+		await msg.author.removeItemsFromBank(bankToSell.bank);
+		await msg.author.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
 
 		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceSellingItems, totalPrice);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
