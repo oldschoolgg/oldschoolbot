@@ -24,7 +24,7 @@ export default function getUsersPerkTier(
 	const isMahojiUser = typeof userOrBitfield === 'object' && 'main_account' in userOrBitfield;
 	if (noCheckOtherAccounts !== true && isMahojiUser) {
 		let main = userOrBitfield.main_account;
-		const allAccounts: string[] = [...userOrBitfield.ironman_alts];
+		const allAccounts: string[] = [...userOrBitfield.ironman_alts, userOrBitfield.id];
 		if (main) {
 			allAccounts.push(main);
 		}
