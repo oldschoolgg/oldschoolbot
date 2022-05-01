@@ -16,6 +16,7 @@ import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { miningBuyables } from './mining';
+import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
 import { slayerBuyables } from './slayerBuyables';
 
@@ -30,6 +31,7 @@ export interface Buyable {
 	restockTime?: number;
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
+	collectionLogReqs?: number[];
 	customReq?: (user: KlasaUser) => Promise<[true] | [false, string]>;
 }
 
@@ -847,7 +849,8 @@ const Buyables: Buyable[] = [
 	...runeBuyables,
 	...bsoBuyables,
 	...randomEventBuyables,
-	...tobCapes
+	...tobCapes,
+	...perduBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

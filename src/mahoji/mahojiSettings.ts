@@ -1,5 +1,5 @@
-import type { Guild, Prisma, User } from '@prisma/client';
-import { Guild as DJSGuild, MessageButton, TextChannel } from 'discord.js';
+import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
+import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import {
@@ -15,16 +15,18 @@ import { CommandOption } from 'mahoji/dist/lib/types';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { CLIENT_ID } from '../config';
 import { SILENT_ERROR } from '../lib/constants';
 import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
 import { defaultGear } from '../lib/gear';
-import killableMonsters from '../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../lib/minions/data/killableMonsters';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import Skills from '../lib/skilling/skills';
 import { Gear } from '../lib/structures/Gear';
-import { Skills } from '../lib/types';
-import { assert } from '../lib/util';
+import type { Skills as TSkills } from '../lib/types';
+import { assert, channelIsSendable } from '../lib/util';
 
 export function mahojiParseNumber({
 	input,
@@ -53,7 +55,6 @@ export const filterOption: CommandOption = {
 		let res = !value
 			? filterableTypes
 			: filterableTypes.filter(filter => filter.name.toLowerCase().includes(value.toLowerCase()));
-
 		return [...res]
 			.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
 			.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
@@ -80,17 +81,46 @@ export const monsterOption: CommandOption = {
 	description: 'The monster you want to pick.',
 	required: true,
 	autocomplete: async value => {
-		return killableMonsters
+		return effectiveMonsters
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 			.map(i => ({ name: i.name, value: i.name }));
 	}
 };
 
-export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, userID?: bigint) {
-	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
-	if (!channel || !(channel instanceof TextChannel)) throw new Error('Channel for confirmation not found.');
-	await interaction.deferReply();
+export const skillOption: CommandOption = {
+	type: ApplicationCommandOptionType.String,
+	name: 'skill',
+	description: 'The skill you want to select.',
+	required: false,
+	autocomplete: async (value: string) => {
+		return Object.values(Skills)
+			.filter(skill => (!value ? true : skill.name.toLowerCase().includes(value.toLowerCase())))
+			.map(val => ({ name: val.name, value: val.name }));
+	}
+};
 
+export const Option: CommandOption = {
+	type: ApplicationCommandOptionType.String,
+	name: 'skill',
+	description: 'The skill you want to select.',
+	required: false,
+	autocomplete: async (value: string) => {
+		return Object.values(Skills)
+			.filter(skill => (!value ? true : skill.name.toLowerCase().includes(value.toLowerCase())))
+			.map(val => ({ name: val.name, value: val.name }));
+	}
+};
+
+export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: bigint[]) {
+	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
+	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
+	if (!interaction.deferred) {
+		await interaction.deferReply();
+	}
+
+	const users: BigInt[] = _users ?? [interaction.userID];
+	let confirmed: BigInt[] = [];
+	const isConfirmed = () => confirmed.length === users.length;
 	const confirmMessage = await channel.send({
 		content: str,
 		components: [
@@ -109,46 +139,55 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 		]
 	});
 
-	const cancel = async () => {
-		await confirmMessage.delete();
-		await interaction.respond({
-			type: InteractionType.ApplicationCommand,
-			response: {
-				type: InteractionResponseType.ChannelMessageWithSource,
-				data: {
-					content: 'You did not confirm in time.',
-					flags: MessageFlags.Ephemeral
-				}
-			},
-			interaction
-		});
-		throw new Error(SILENT_ERROR);
-	};
-
-	async function confirm() {
-		await confirmMessage.delete();
-	}
-
-	try {
-		const selection = await confirmMessage.awaitMessageComponentInteraction({
-			filter: i => {
-				if (i.user.id !== (userID ?? interaction.userID).toString()) {
-					i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-					return false;
-				}
-				return true;
-			},
+	return new Promise<void>(async (resolve, reject) => {
+		const collector = confirmMessage.createMessageComponentInteractionCollector({
 			time: Time.Second * 10
 		});
-		if (selection.customID === 'CANCEL') {
-			return cancel();
+
+		async function confirm(id: bigint) {
+			if (confirmed.includes(id)) return;
+			confirmed.push(id);
+			if (!isConfirmed()) return;
+			collector.stop();
+			await confirmMessage.delete();
+			resolve();
 		}
-		if (selection.customID === 'CONFIRM') {
-			return confirm();
-		}
-	} catch {
-		return cancel();
-	}
+
+		const cancel = async (reason: 'time' | 'cancel') => {
+			await confirmMessage.delete();
+			await interaction.respond({
+				type: InteractionType.ApplicationCommand,
+				response: {
+					type: InteractionResponseType.ChannelMessageWithSource,
+					data: {
+						content:
+							reason === 'cancel' ? 'The confirmation was cancelled.' : 'You did not confirm in time.',
+						flags: MessageFlags.Ephemeral
+					}
+				},
+				interaction
+			});
+			collector.stop();
+			reject(new Error(SILENT_ERROR));
+		};
+
+		collector.on('collect', async i => {
+			const id = BigInt(i.user.id);
+			if (!users.includes(id)) {
+				i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
+				return false;
+			}
+			if (i.customID === 'CANCEL') {
+				return cancel('cancel');
+			}
+			if (i.customID === 'CONFIRM') {
+				i.reply({ ephemeral: true, content: 'You confirmed the trade.' });
+				return confirm(id);
+			}
+		});
+
+		collector.on('end', () => !isConfirmed() && cancel('time'));
+	});
 }
 
 /**
@@ -253,7 +292,7 @@ export interface MahojiUserOption {
 	member: APIInteractionDataResolvedGuildMember;
 }
 
-export function getSkillsOfMahojiUser(user: User): Skills {
+export function getSkillsOfMahojiUser(user: User): Required<TSkills> {
 	return {
 		agility: Number(user.skills_agility),
 		cooking: Number(user.skills_cooking),
@@ -277,7 +316,8 @@ export function getSkillsOfMahojiUser(user: User): Skills {
 		defence: Number(user.skills_defence),
 		ranged: Number(user.skills_ranged),
 		hitpoints: Number(user.skills_hitpoints),
-		slayer: Number(user.skills_slayer)
+		slayer: Number(user.skills_slayer),
+		dungeoneering: Number(user.skills_dungeoneering)
 	};
 }
 
@@ -298,4 +338,15 @@ export function patronMsg(tierNeeded: number) {
 	return `You need to be a Tier ${
 		tierNeeded - 1
 	} Patron to use this command. You can become a patron to support the bot here: <https://www.patreon.com/oldschoolbot>`;
+}
+
+// Is not typesafe, returns only what is selected, but will say it contains everything.
+export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect) {
+	const clientSettings = await prisma.clientStorage.findFirst({
+		where: {
+			id: CLIENT_ID
+		},
+		select
+	});
+	return clientSettings as ClientStorage;
 }

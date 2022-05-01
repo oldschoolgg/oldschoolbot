@@ -128,7 +128,7 @@ interface ParseBankOptions {
 	flags?: Record<string, string | undefined>;
 	inputStr?: string;
 	excludeItems?: number[];
-	filters?: string[];
+	filters?: (string | undefined)[];
 	search?: string;
 	maxSize?: number;
 	user?: KlasaUser;
@@ -164,7 +164,7 @@ export function parseBank({
 	}
 
 	if (filters) {
-		for (const filter of filters) {
+		for (const filter of filters.filter(notEmpty)) {
 			flags[filter] = filter;
 		}
 	}

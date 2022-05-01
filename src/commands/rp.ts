@@ -149,7 +149,7 @@ async function checkBank(msg: KlasaMessage) {
 function generateReadyThings(user: KlasaUser) {
 	const readyThings = [];
 	for (const [cooldown, setting, name] of userTimers) {
-		const lastTime = user.settings.get(setting);
+		const lastTime: number = user.settings.get(setting) as number;
 		const difference = Date.now() - lastTime;
 
 		const cd = typeof cooldown === 'number' ? cooldown : cooldown(user);

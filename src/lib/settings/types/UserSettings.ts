@@ -34,7 +34,6 @@ export namespace UserSettings {
 	export const LapsScores = T<Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const LastSpawnLamp = T<number>('lastSpawnLamp');
-	export const LastGivenBox = T<number>('lastGivenBoxx');
 	export const LastTearsOfGuthixTimestamp = T<number>('lastTearsOfGuthixTimestamp');
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');

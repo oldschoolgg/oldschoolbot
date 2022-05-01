@@ -17,6 +17,7 @@ import {
 	bankHasAllItemsFromBank,
 	formatSkillRequirements,
 	getSupportGuild,
+	itemNameFromID,
 	multiplyBank,
 	skillsMeetRequirements,
 	stringMatches,
@@ -84,6 +85,16 @@ export default class extends BotCommand {
 
 		if (buyable.name === 'Bank lottery ticket' && msg.author.isIronman) {
 			return msg.channel.send('Ironmen cant buy this.');
+		}
+
+		if (buyable.collectionLogReqs) {
+			const cl = new Bank(msg.author.settings.get(UserSettings.CollectionLogBank));
+			const unownedItems = buyable.collectionLogReqs.filter(i => !cl.has(i));
+			if (unownedItems.length > 0) {
+				return msg.channel.send(
+					`You don't have **${unownedItems.map(itemNameFromID).join(', ')}** in your collection log`
+				);
+			}
 		}
 
 		if (buyable.customReq) {
