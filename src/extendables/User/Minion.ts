@@ -33,7 +33,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import Smithing from '../../lib/skilling/skills/smithing';
-import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
+import { Pickpocketables, Stalls } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
 import { Skills as TSkills } from '../../lib/types';
@@ -394,8 +394,11 @@ export default class extends Extendable {
 
 			case 'Pickpocket': {
 				const data = currentTask as PickpocketActivityTaskOptions;
-				const npc = Pickpocketables.find(_npc => _npc.id === data.monsterID)!;
-				return `${this.minionName} is currently pickpocketing a ${npc.name} ${data.quantity}x times. ${formattedDuration}`;
+				const npc = Pickpocketables.find(_npc => _npc.id === data.monsterID);
+				const stall = Stalls.find(_stall => _stall.id === data.monsterID)!;
+				return `${this.minionName} is currently ${npc ? 'pickpocketing' : 'stealing'} from ${
+					npc ? npc.name : stall.name
+				} ${data.quantity}x times. ${formattedDuration}`;
 			}
 
 			case 'BarbarianAssault': {

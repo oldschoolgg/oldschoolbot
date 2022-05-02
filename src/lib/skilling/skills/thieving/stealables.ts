@@ -28,6 +28,7 @@ import { ItemBank } from '../../../types';
 
 export interface Stealable {
 	name: string;
+	alias?: string[];
 	level: number;
 	xp: number;
 	qpRequired?: number;
@@ -38,21 +39,21 @@ export interface Stealable {
 
 export interface Stall extends Stealable {
 	respawnTime: number;
+	lootPercent: number;
 }
 
 export interface Pickpockable extends Stealable {
-	alias?: string[];
 	stunTime: number;
 	stunDamage: number;
 	slope: number;
 	intercept: number;
 	customTickRate?: number;
-	itemsRequired?: ItemBank;
 }
 
 export const Stalls: Stall[] = [
 	{
 		name: 'Vegetable stall',
+		alias: ['Veg stall', 'Vegetable', 'Veggi stall'],
 		level: 2,
 		xp: 10,
 		id: 4706,
@@ -64,34 +65,42 @@ export const Stalls: Stall[] = [
 			.add('Garlic')
 			.tertiary(206_777, 'Rocky'),
 		qpRequired: 3,
-		respawnTime: Time.Second * 2
+		respawnTime: Time.Second * 2,
+		lootPercent: 20
 	},
 	{
 		name: "Baker's stall",
+		alias: ['Baker stall', 'Baker', 'Bakers stall'],
 		level: 5,
 		xp: 16,
 		id: 4707,
 		table: new LootTable().add('Cake').add('Bread').add('Chocolate slice').tertiary(124_066, 'Rocky'),
-		respawnTime: Time.Second * 2
+		respawnTime: Time.Second * 2,
+		lootPercent: 20
 	},
 	{
 		name: 'Tea stall',
+		alias: ['Tea', 'Tea stall'],
 		level: 5,
 		xp: 16,
 		id: 4708,
 		table: new LootTable().add('Cup of tea').tertiary(68_926, 'Rocky'),
-		respawnTime: Time.Second * 7
+		respawnTime: Time.Second * 7,
+		lootPercent: 35
 	},
 	{
 		name: 'Silk stall',
+		alias: ['Silk'],
 		level: 20,
 		xp: 24,
 		id: 4709,
 		table: new LootTable().add('Silk').tertiary(68_926, 'Rocky'),
-		respawnTime: Time.Second * 5
+		respawnTime: Time.Second * 5,
+		lootPercent: 30
 	},
 	{
 		name: 'Wine stall',
+		alias: ['Wine'],
 		level: 22,
 		xp: 27,
 		id: 4710,
@@ -102,12 +111,14 @@ export const Stalls: Stall[] = [
 			.add('Jug of water')
 			.add('Jug of wine')
 			.tertiary(36_490, 'Rocky'),
-		respawnTime: Time.Second * 10
+		respawnTime: Time.Second * 10,
+		lootPercent: 38
 	},
 	{
 		name: 'Fruit stall',
+		alias: ['Fruit', 'Fruits'],
 		level: 25,
-		xp: 28.2,
+		xp: 28.5,
 		id: 4711,
 		table: new LootTable()
 			.add('Cooking apple', 1, 40)
@@ -121,13 +132,60 @@ export const Stalls: Stall[] = [
 			.add('Golovanova fruit top', 1, 2)
 			.add('Papaya fruit', 1, 1)
 			.tertiary(124_066, 'Rocky'),
-		respawnTime: Time.Second * 2
+		respawnTime: Time.Second * 2.6,
+		lootPercent: 25
+	},
+	{
+		name: 'Fur stall',
+		alias: ['Fur', 'Furs'],
+		level: 35,
+		xp: 36,
+		id: 4712,
+		table: new LootTable().every('Grey wolf fur').tertiary(36_490, 'Rocky'),
+		respawnTime: Time.Second * 10,
+		lootPercent: 80
+	},
+	{
+		name: 'Fish stall',
+		alias: ['Fish', 'Fishy'],
+		level: 42,
+		xp: 42,
+		id: 4713,
+		table: new LootTable().add('Raw salmon').add('Raw tuna').add('Raw lobster').tertiary(36_490, 'Rocky'),
+		respawnTime: Time.Second * 10,
+		lootPercent: 75
+	},
+	{
+		name: 'Silver stall',
+		alias: ['Silver'],
+		level: 50,
+		xp: 54,
+		id: 4714,
+		table: new LootTable().every('Silver ore').tertiary(36_490, 'Rocky'),
+		respawnTime: Time.Second * 16,
+		lootPercent: 80
+	},
+	{
+		name: 'Gem stall',
+		alias: ['Gem', 'Gems'],
+		level: 75,
+		xp: 160,
+		id: 4715,
+		table: new LootTable()
+			.add('Uncut sapphire', 1, 105)
+			.add('Uncut emerald', 1, 17)
+			.add('Uncut ruby', 1, 5)
+			.add('Uncut diamond')
+			.tertiary(36_490, 'Rocky'),
+		respawnTime: Time.Second * 100,
+		lootPercent: 100
 	},
 	{
 		name: 'Ore stall',
+		alias: ['Ore', 'Ores'],
 		level: 82,
 		xp: 180,
-		id: 4712,
+		id: 4716,
 		table: new LootTable()
 			.add('Iron ore', 1, 37)
 			.add('Silver ore', 1, 16)
@@ -137,7 +195,11 @@ export const Stalls: Stall[] = [
 			.add('Adamantite ore', 1, 15)
 			.add('Runite ore', 1, 2)
 			.tertiary(36_490, 'Rocky'),
-		respawnTime: Time.Second * 60
+		respawnTime: Time.Second * 60,
+		lootPercent: 100,
+		itemsRequired: resolveNameBank({
+			'Fire cape': 1
+		})
 	}
 ];
 

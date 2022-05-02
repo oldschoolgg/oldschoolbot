@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
+import { Pickpockable, Pickpocketables, Stalls } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../lib/util';
@@ -47,24 +47,32 @@ export function calcLootXPPickpocketing(
 
 export default class extends Task {
 	async run(data: PickpocketActivityTaskOptions) {
-		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived } = data;
+		const { monsterID, quantity, successfulQuantity, userID, channelID, xpReceived, duration } = data;
 		const user = await this.client.fetchUser(userID);
-		const npc = Pickpocketables.find(_npc => _npc.id === monsterID)!;
+		const npc = Pickpocketables.find(_npc => _npc.id === monsterID);
+		const stall = Stalls.find(_stall => _stall.id === monsterID)!;
 
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
 		let rogueOutfitBoostActivated = false;
 
 		const loot = new Bank();
-		for (let i = 0; i < successfulQuantity; i++) {
-			const lootItems = npc.table.roll();
 
-			if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
-				rogueOutfitBoostActivated = true;
-				const doubledLoot = lootItems.multiply(2);
-				if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');
-				loot.add(doubledLoot);
-			} else {
-				loot.add(lootItems);
+		if (npc) {
+			for (let i = 0; i < successfulQuantity; i++) {
+				const lootItems = npc.table.roll();
+
+				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
+					rogueOutfitBoostActivated = true;
+					const doubledLoot = lootItems.multiply(2);
+					if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');
+					loot.add(doubledLoot);
+				} else {
+					loot.add(lootItems);
+				}
+			}
+		} else if (stall) {
+			for (let i = 0; i < (successfulQuantity * stall.lootPercent) / 100; i++) {
+				loot.add(stall.table.roll());
 			}
 		}
 
@@ -73,15 +81,19 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived });
+		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived, duration });
 
-		let str = `${user}, ${user.minionName} finished pickpocketing a ${
-			npc.name
-		} ${successfulQuantity}x times, due to failures you missed out on ${
-			quantity - successfulQuantity
-		}x pickpockets. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished ${npc ? 'pickpocketing' : 'stealing'} from ${
+			npc ? npc.name : stall.name
+		} ${successfulQuantity}x times, due to failures you missed out on ${quantity - successfulQuantity}x ${
+			npc ? 'pickpockets' : 'steals'
+		}. ${xpRes}`;
 
-		str += `\n\nYou received: ${loot}.`;
+		str += `\n\nYou received: ${loot}${
+			npc
+				? ''
+				: `, ${stall.lootPercent}% of the loot was kept in favour of enhancing amount of stalls stolen from`
+		}.`;
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
@@ -91,7 +103,11 @@ export default class extends Task {
 			str += "\n\n**You have a funny feeling you're being followed...**";
 			this.client.emit(
 				Events.ServerNotification,
-				`**${user.username}'s** minion, ${user.minionName}, just received a **Rocky** <:Rocky:324127378647285771> while pickpocketing a ${npc.name}, their Thieving level is ${currentLevel}!`
+				`**${user.username}'s** minion, ${
+					user.minionName
+				}, just received a **Rocky** <:Rocky:324127378647285771> while ${
+					npc ? 'pickpocketing' : 'stealing'
+				} from ${npc ? npc.name : stall.name}, their Thieving level is ${currentLevel}!`
 			);
 		}
 
@@ -100,7 +116,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['pickpocket', [quantity, npc.name], true],
+			['pickpocket', [quantity, npc ? npc.name : stall.name], true],
 			undefined,
 			data,
 			loot
