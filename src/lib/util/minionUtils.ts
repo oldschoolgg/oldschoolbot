@@ -10,7 +10,8 @@ import { allPetIDs } from '../data/CollectionsExport';
 import { getSimilarItems } from '../data/similarItems';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { convertXPtoLVL, patronMaxTripCalc } from '../util';
+import { convertXPtoLVL } from '../util';
+import { patronMaxTripCalc } from '../util/getUsersPerkTier';
 import getUsersPerkTier from './getUsersPerkTier';
 import resolveItems from './resolveItems';
 

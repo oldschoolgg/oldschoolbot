@@ -1,6 +1,6 @@
 import { User as MahojiUser } from '@prisma/client';
 import { User } from 'discord.js';
-import { notEmpty } from 'e';
+import { notEmpty, Time } from 'e';
 import { KlasaUser } from 'klasa';
 
 import { client } from '../../index';
@@ -16,6 +16,14 @@ const tier3ElligibleBits = [
 	BitField.isModerator,
 	BitField.IsWikiContributor
 ];
+
+export function patronMaxTripCalc(user: KlasaUser | User) {
+	const perkTier = getUsersPerkTier(user);
+	if (perkTier === PerkTier.Two) return Time.Minute * 3;
+	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
+	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
+	return 0;
+}
 
 export default function getUsersPerkTier(
 	userOrBitfield: KlasaUser | MahojiUser | readonly BitField[],
