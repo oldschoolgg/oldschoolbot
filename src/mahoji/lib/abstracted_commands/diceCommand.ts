@@ -35,16 +35,17 @@ export async function diceCommand(klasaUser: KlasaUser, diceamount?: string) {
 	const won = roll >= 55;
 	let amountToAdd = won ? amount : -amount;
 
-	await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amountToAdd) });
 	await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
 	await updateGPTrackSetting(klasaUser, UserSettings.GPDice, amountToAdd);
 
 	if (won) {
 		const wins = klasaUser.settings.get(UserSettings.Stats.DiceWins);
-		klasaUser.settings.update(UserSettings.Stats.DiceWins, wins + 1);
+		await klasaUser.settings.update(UserSettings.Stats.DiceWins, wins + 1);
+		await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amount) });
 	} else {
 		const losses = klasaUser.settings.get(UserSettings.Stats.DiceLosses);
 		klasaUser.settings.update(UserSettings.Stats.DiceLosses, losses + 1);
+		await klasaUser.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 
 	return `${klasaUser.username} rolled **${roll}** on the percentile dice, and you ${
