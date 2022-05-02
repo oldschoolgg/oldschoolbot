@@ -140,7 +140,7 @@ export default class DailyCommand extends BotCommand {
 
 		const hasSkipper = msg.author.usingPet('Skipper') || msg.author.bank().amount('Skipper') > 0;
 		if (!msg.author.isIronman && triviaCorrect && hasSkipper) {
-			loot[COINS_ID] *= 1.5;
+			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
 			dmStr +=
 				'\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!';
 		}
