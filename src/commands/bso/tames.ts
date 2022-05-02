@@ -34,7 +34,6 @@ import {
 	formatSkillRequirements,
 	isWeekend,
 	itemNameFromID,
-	patronMaxTripCalc,
 	stringMatches,
 	toTitleCase,
 	updateBankSetting
@@ -42,6 +41,7 @@ import {
 import { canvasImageFromBuffer, canvasToBufferAsync, fillTextXTimesInCtx } from '../../lib/util/canvasUtil';
 import findMonster from '../../lib/util/findMonster';
 import getOSItem from '../../lib/util/getOSItem';
+import { patronMaxTripCalc } from '../../lib/util/getUsersPerkTier';
 import itemID from '../../lib/util/itemID';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';

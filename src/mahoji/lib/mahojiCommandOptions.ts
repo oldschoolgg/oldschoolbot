@@ -4,7 +4,7 @@ import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import Skills from '../../lib/skilling/skills';
 
 export const filterOption: CommandOption = {
@@ -42,7 +42,7 @@ export const monsterOption: CommandOption = {
 	description: 'The monster you want to pick.',
 	required: true,
 	autocomplete: async value => {
-		return killableMonsters
+		return effectiveMonsters
 			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 			.map(i => ({ name: i.name, value: i.name }));
 	}

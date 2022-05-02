@@ -1,6 +1,6 @@
 import { Activity, NewUser, Prisma } from '@prisma/client';
 import { Util } from 'discord.js';
-import { roll } from 'e';
+import { roll, Time } from 'e';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -14,7 +14,7 @@ import {
 	convertKlasaCommandToAbstractCommand,
 	convertMahojiCommandToAbstractCommand
 } from '../../mahoji/lib/util';
-import { Emoji } from '../constants';
+import { Emoji, PerkTier } from '../constants';
 import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
@@ -306,10 +306,43 @@ export async function completeActivity(_activity: Activity) {
 	try {
 		client.emit('debug', `Running ${task.name} for ${activity.userID}`);
 		await task.run(activity);
+		await onActivityFinish(activity);
 	} catch (err) {
 		logError(err);
 	} finally {
 		client.oneCommandAtATimeCache.delete(activity.userID);
 		minionActivityCacheDelete(activity.userID);
 	}
+}
+
+async function onActivityFinish(activity: ActivityTaskData) {
+	const user = client.users.cache.get(activity.userID);
+	if (!user) return;
+
+	// If user has easter egg crate, they deliver 1 egg per 10 minutes.
+	if (user.owns('Easter egg crate') && activity.duration >= Time.Minute * 10) {
+		const numEggs = Math.floor(activity.duration / (Time.Minute * 10));
+
+		await prisma.user.update({
+			data: {
+				eggs_delivered: {
+					increment: numEggs
+				}
+			},
+			where: {
+				id: user.id
+			}
+		});
+	}
+}
+
+export async function isElligibleForPresent(user: KlasaUser) {
+	if (user.isIronman) return true;
+	if (user.perkTier >= PerkTier.Four) return true;
+	if (user.totalLevel() >= 2000) return true;
+	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRawUnsafe(`SELECT SUM(duration)
+FROM activity
+WHERE user_id = ${BigInt(user.id)};`);
+	if (totalActivityDuration[0].sum >= Time.Hour * 80) return true;
+	return false;
 }

@@ -1,6 +1,5 @@
 import { Activity, activity_type_enum, loot_track_type, Prisma, PrismaClient } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ItemBank } from '../types';

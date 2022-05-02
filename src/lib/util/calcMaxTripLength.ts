@@ -6,14 +6,23 @@ import { PerkTier } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import getUsersPerkTier, { patronMaxTripCalc } from './getUsersPerkTier';
-import { skillLevel } from './minionUtils';
+import { skillLevel, userHasItemsEquippedAnywhere } from './minionUtils';
 
 export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_type_enum) {
 	let max = Time.Minute * 30;
 
 	max += patronMaxTripCalc(user);
 
+	const hasMasterHPCape = userHasItemsEquippedAnywhere(user, 'Hitpoints master cape');
+	let masterHPCapeBoost = 0;
+	let regularHPBoost = false;
+
 	switch (activity) {
+		case 'Fishing':
+			if (userHasItemsEquippedAnywhere(user, 'Fish sack')) {
+				max += Time.Minute * 9;
+			}
+			break;
 		case 'Nightmare':
 		case 'GroupMonsterKilling':
 		case 'MonsterKilling':
@@ -25,9 +34,18 @@ export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_ty
 		case 'Pickpocket':
 		case 'SoulWars':
 		case 'Cyclops': {
-			const hpLevel = skillLevel(user, SkillsEnum.Hitpoints);
-			const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
-			max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+			masterHPCapeBoost = 20;
+			regularHPBoost = true;
+			break;
+		}
+		case 'KalphiteKing':
+		case 'Nex':
+		case 'VasaMagus':
+		case 'Ignecarus':
+		case 'KingGoldemar':
+		case 'Dungeoneering': {
+			masterHPCapeBoost = 10;
+			regularHPBoost = true;
 			break;
 		}
 		case 'Alching': {
@@ -37,6 +55,20 @@ export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_ty
 		default: {
 			break;
 		}
+	}
+
+	if (regularHPBoost) {
+		const hpLevel = skillLevel(user, SkillsEnum.Hitpoints);
+		const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
+		max += calcPercentOfNum(hpPercent, Time.Minute * 5);
+
+		if (hasMasterHPCape) {
+			max += calcPercentOfNum(masterHPCapeBoost, max);
+		}
+	}
+
+	if (userHasItemsEquippedAnywhere(user, 'Zak')) {
+		max *= 1.4;
 	}
 
 	const sac =

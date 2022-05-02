@@ -20,12 +20,7 @@ import getUsersPerkTier, { isPrimaryPatron } from '../../lib/util/getUsersPerkTi
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	MahojiUserOption,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	patronMsg,
-} from '../mahojiSettings';
+import { MahojiUserOption, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);

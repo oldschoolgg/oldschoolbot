@@ -1,9 +1,8 @@
 import { schedule } from 'node-cron';
 
 import { prisma } from './settings/prisma';
-import { OldSchoolBotClient } from './structures/OldSchoolBotClient';
 
-export function initCrons(client: OldSchoolBotClient) {
+export function initCrons() {
 	/**
 	 * Reset weekly buy banks
 	 */
