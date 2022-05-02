@@ -776,7 +776,7 @@ LIMIT 10;
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
+				const command = allAbstractCommands(this.client, mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
 					where: { id: CLIENT_ID },
@@ -799,7 +799,7 @@ LIMIT 10;
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
+				const command = allAbstractCommands(this.client, mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
