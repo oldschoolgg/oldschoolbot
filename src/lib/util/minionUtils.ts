@@ -11,8 +11,7 @@ import { getSimilarItems } from '../data/similarItems';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { convertXPtoLVL } from '../util';
-import { patronMaxTripCalc } from '../util/getUsersPerkTier';
-import getUsersPerkTier from './getUsersPerkTier';
+import getUsersPerkTier, { patronMaxTripCalc } from './getUsersPerkTier';
 import resolveItems from './resolveItems';
 
 export function skillLevel(user: KlasaUser | User, skill: SkillsEnum) {
