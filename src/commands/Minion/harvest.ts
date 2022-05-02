@@ -2,8 +2,6 @@ import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
-import { FarmingPatchTypes } from '../../lib/minions/farming/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -12,6 +10,7 @@ import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, formatDuration, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
+import { farmingPatchNames, getFarmingInfo, isPatchName } from '../../mahoji/commands/farming';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -32,27 +31,21 @@ export default class extends BotCommand {
 		const GP = msg.author.settings.get(UserSettings.GP);
 		const currentWoodcuttingLevel = msg.author.skillLevel(SkillsEnum.Woodcutting);
 		const currentDate = new Date().getTime();
-
-		const getPatchType = resolvePatchTypeSetting(seedType.toLowerCase());
-		if (!getPatchType) {
-			const patchStr: string[] = [];
-			const patchArray = Object.values(FarmingPatchTypes);
-			for (let i = 0; i < patchArray.length; i++) {
-				const patches = patchArray[i];
-				patchStr.push(`${patches}`);
-			}
-			throw `That is not a valid patch type! The available patches are: ${patchStr.join(
-				', '
-			)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
+		if (!isPatchName(seedType)) {
+			return msg.channel.send(
+				`That is not a valid patch type! The available patches are: ${farmingPatchNames.join(
+					', '
+				)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`
+			);
 		}
-
-		const patchType = msg.author.settings.get(getPatchType) ?? defaultPatches;
+		const { patches } = await getFarmingInfo(BigInt(msg.author.id));
+		const patch = patches[seedType];
 
 		const upgradeType = null;
 		let returnMessageStr = '';
 		const boostStr = [];
 
-		const storeHarvestablePlant = patchType.lastPlanted;
+		const storeHarvestablePlant = patch.lastPlanted;
 		const planted = storeHarvestablePlant
 			? Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
 			  Farming.Plants.find(
@@ -62,7 +55,7 @@ export default class extends BotCommand {
 			  )
 			: null;
 
-		const lastPlantTime: number = patchType.plantTime;
+		const lastPlantTime: number = patch.plantTime;
 		const difference = currentDate - lastPlantTime;
 		/* Initiate a cooldown feature for each of the seed types.
 			Allows for a run of specific seed type to only be possible until the
@@ -73,7 +66,7 @@ export default class extends BotCommand {
 			)}!`;
 		}
 
-		const storeHarvestableQuantity = patchType.lastQuantity;
+		const storeHarvestableQuantity = patch.lastQuantity;
 
 		if (
 			planted &&
@@ -94,7 +87,7 @@ export default class extends BotCommand {
 		const timePerPatchHarvest = Time.Second * planted.timePerHarvest;
 
 		// 1.5 mins per patch --> ex: 10 patches = 15 mins
-		let duration = patchType.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
+		let duration = patch.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
 
 		// Reduce time if user has graceful equipped
 		if (msg.author.hasGracefulEquipped()) {
@@ -116,9 +109,9 @@ export default class extends BotCommand {
 		}
 
 		// If user does not have something already planted, just plant the new seeds.
-		if (!patchType.patchPlanted) {
+		if (!patch.patchPlanted) {
 			throw 'There is nothing planted in this patch to harvest!';
-		} else if (patchType.patchPlanted) {
+		} else if (patch.patchPlanted) {
 			if (planted.needsChopForHarvest) {
 				if (!planted.treeWoodcuttingLevel) return;
 				if (currentWoodcuttingLevel < planted.treeWoodcuttingLevel && GP < 200 * storeHarvestableQuantity) {
@@ -152,14 +145,13 @@ export default class extends BotCommand {
 		}
 
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
-			plantsName: patchType.lastPlanted,
-			patchType,
-			getPatchType,
+			plantsName: patch.lastPlanted,
+			patchType: patch,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			upgradeType,
 			duration,
-			quantity: patchType.lastQuantity,
+			quantity: patch.lastQuantity,
 			planting: false,
 			currentDate,
 			type: 'Farming',

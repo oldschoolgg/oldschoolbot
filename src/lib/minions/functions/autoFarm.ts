@@ -3,21 +3,22 @@ import { KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import { getFarmingInfo } from '../../../mahoji/commands/farming';
 import { runCommand } from '../../settings/settings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
 import Farming, { plants } from '../../skilling/skills/farming';
 import { stringMatches } from '../../util';
-import { defaultPatches, resolvePatchTypeSetting } from '../farming';
 
 export async function autoFarm(msg: KlasaMessage) {
 	const currentDate = new Date().getTime();
 	const userBank = msg.author.bank();
 	let possiblePlants = plants.sort((a, b) => b.level - a.level);
+	const { patches } = await getFarmingInfo(BigInt(msg.author.id));
+
 	const toPlant = possiblePlants.find(p => {
 		if (msg.author.skillLevel(SkillsEnum.Farming) < p.level) return false;
-		const getPatchType = resolvePatchTypeSetting(p.seedType)!;
-		const patchData = msg.author.settings.get(getPatchType) ?? defaultPatches;
+		const patchData = patches[p.seedType];
 		const lastPlantTime: number = patchData.plantTime;
 		const difference = currentDate - lastPlantTime;
 		const planted =

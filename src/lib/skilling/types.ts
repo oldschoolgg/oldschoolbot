@@ -1,6 +1,7 @@
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
+import { FarmingPatchName } from '../../mahoji/commands/farming';
 import { Emoji } from '../constants';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
@@ -218,7 +219,7 @@ export interface Plant {
 	givesLogs: boolean;
 	givesCrops: boolean;
 	petChance: number;
-	seedType: string;
+	seedType: FarmingPatchName;
 	growthTime: number;
 	numOfStages: number;
 	chance1: number;

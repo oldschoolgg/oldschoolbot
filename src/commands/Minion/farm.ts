@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcNumOfPatches, returnListOfPlants } from '../../lib/skilling/functions/calcsFarming';
@@ -24,6 +23,7 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
+import { getFarmingInfo } from '../../mahoji/commands/farming';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -97,9 +97,8 @@ export default class extends BotCommand {
 			);
 		}
 
-		const getPatchType = resolvePatchTypeSetting(plants.seedType);
-		if (!getPatchType) return;
-		const patchType = msg.author.settings.get(getPatchType) ?? defaultPatches;
+		const { patches } = await getFarmingInfo(BigInt(msg.author.id));
+		const patchType = patches[plants.seedType];
 
 		const timePerPatchTravel = Time.Second * plants.timePerPatchTravel;
 		const timePerPatchHarvest = Time.Second * plants.timePerHarvest;
@@ -336,7 +335,6 @@ export default class extends BotCommand {
 		await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
 			plantsName: plants.name,
 			patchType,
-			getPatchType,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
 			quantity,

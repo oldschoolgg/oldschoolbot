@@ -3,10 +3,10 @@ import { CommandStore, KlasaMessage } from 'klasa';
 
 import { Emoji } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
-import { defaultPatches, resolvePatchTypeSetting } from '../../lib/minions/farming';
 import Farming from '../../lib/skilling/skills/farming';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, stringMatches, toTitleCase } from '../../lib/util';
+import { farmingPatchNames, getFarmingInfo } from '../../mahoji/commands/farming';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -30,15 +30,10 @@ export default class extends BotCommand {
 		let finalStr = '';
 		let nothingPlanted = [];
 
-		const patchArray = Object.values(FarmingPatchTypes);
-		for (let i = 0; i < patchArray.length; i++) {
-			const patchType = patchArray[i];
-
+		const { patches } = await getFarmingInfo(BigInt(msg.author.id));
+		for (const patchType of farmingPatchNames) {
+			const patch = patches[patchType];
 			baseStr = `**${toTitleCase(patchType)} patch:** `;
-
-			const getPatchType = resolvePatchTypeSetting(patchType);
-			if (!getPatchType) return;
-			const patch = msg.author.settings.get(getPatchType) ?? defaultPatches;
 
 			if (patch.lastPlanted) {
 				const { lastPlanted } = patch;

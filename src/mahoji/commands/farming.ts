@@ -3,10 +3,11 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { defaultPatches } from '../../lib/minions/farming';
 import { IPatchData } from '../../lib/minions/farming/types';
+import { assert } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-const farmingPatchNames = [
+export const farmingPatchNames = [
 	'herb',
 	'fruit_tree',
 	'tree',
@@ -28,38 +29,37 @@ const farmingPatchNames = [
 	'belladonna'
 ] as const;
 
+export type FarmingPatchName = typeof farmingPatchNames[number];
+
+export function isPatchName(name: string): name is FarmingPatchName {
+	return farmingPatchNames.includes(name as FarmingPatchName);
+}
+
 const farmingKeys: (keyof User)[] = farmingPatchNames.map(i => `farmingPatches_${i}` as const);
 
-async function getFarmingInfo(userID: bigint) {
-	const userData = await mahojiUsersSettingsFetch(userID, {
-		farmingPatches_herb: true,
-		farmingPatches_fruit_tree: true,
-		farmingPatches_tree: true,
-		farmingPatches_allotment: true,
-		farmingPatches_hops: true,
-		farmingPatches_cactus: true,
-		farmingPatches_bush: true,
-		farmingPatches_spirit: true,
-		farmingPatches_hardwood: true,
-		farmingPatches_seaweed: true,
-		farmingPatches_vine: true,
-		farmingPatches_calquat: true,
-		farmingPatches_redwood: true,
-		farmingPatches_crystal: true,
-		farmingPatches_celastrus: true,
-		farmingPatches_hespori: true,
-		farmingPatches_flower: true,
-		farmingPatches_mushroom: true,
-		farmingPatches_belladonna: true
-	});
+export function getFarmingKeyFromName(name: FarmingPatchName) {
+	const key = farmingKeys.find(k => k.includes(name));
+	if (!key) throw new Error('No farming key found');
+	return key;
+}
 
-	const patches = {};
+export async function getFarmingInfo(userID: bigint | string) {
+	let keys: Partial<Record<keyof User, true>> = {};
+	for (const key of farmingKeys) keys[key] = true;
+	const userData = await mahojiUsersSettingsFetch(userID, keys);
+
+	const patches: Record<FarmingPatchName, IPatchData> = {} as Record<FarmingPatchName, IPatchData>;
 
 	for (const key of farmingKeys) {
 		const patch: IPatchData = (userData[key] as IPatchData | null) ?? defaultPatches;
-
-		console.log(patch);
+		const patchName: FarmingPatchName = key.replace('farmingPatches_', '') as FarmingPatchName;
+		assert(farmingPatchNames.includes(patchName));
+		patches[patchName] = patch;
 	}
+
+	return {
+		patches
+	};
 }
 
 export const farmingCommand: OSBMahojiCommand = {
