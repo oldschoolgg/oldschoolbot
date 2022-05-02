@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { Command, KlasaMessage, KlasaUser } from 'klasa';
@@ -639,10 +640,12 @@ export const spawnLampResetTime = (user: KlasaUser) => {
 export const itemContractResetTime = Time.Hour * 8;
 export const giveBoxResetTime = Time.Hour * 24;
 
+const lastBox: keyof User = 'lastGivenBoxx';
+
 export const userTimers = [
 	[dailyResetTime, UserSettings.LastDailyTimestamp, 'Daily'],
 	[itemContractResetTime, UserSettings.LastItemContractDate, 'ItemContract'],
-	[giveBoxResetTime, UserSettings.LastGivenBox, 'GiveBox'],
+	[giveBoxResetTime, lastBox, 'GiveBox'],
 	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
 ] as const;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];

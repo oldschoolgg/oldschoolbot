@@ -14,7 +14,7 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 		throw new Error('Tried to complete an already completed giveaway.');
 	}
 
-	const loot: ItemBank = giveaway.loot as ItemBank;
+	const loot = new Bank(giveaway.loot as ItemBank);
 
 	try {
 		await prisma.giveaway.updateMany({
@@ -43,7 +43,7 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 		if (users.length === 0 || !channel || !message) {
 			logError('Giveaway failed');
 			await creator.addItemsToBank({ items: loot });
-			creator.send(`Your giveaway failed to finish, you were refunded the items: ${new Bank(loot)}.`).catch(noOp);
+			creator.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
 
 			if (message && channel) {
 				channel.send('Nobody entered the giveaway :(');
@@ -53,16 +53,25 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 
 		const winner = randArrItem(users);
 		await winner.addItemsToBank({ items: loot });
+		await prisma.economyTransaction.create({
+			data: {
+				guild_id: undefined,
+				sender: BigInt(creator.id),
+				recipient: BigInt(winner.id),
+				items_sent: loot.bank,
+				items_received: undefined,
+				type: 'giveaway'
+			}
+		});
 
-		const osBank = new Bank(loot);
 		client.emit(
 			Events.EconomyLog,
-			`${winner.username}[${winner.id}] won ${osBank} in a giveaway of ${users.length} made by ${creator.username}[${creator.id}].`
+			`${winner.username}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.username}[${creator.id}].`
 		);
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... ||**${winner}**||
 			
-They received these items: ${osBank}`;
+They received these items: ${loot}`;
 
 		const resultMsg = await channel.send(str);
 		message.edit(

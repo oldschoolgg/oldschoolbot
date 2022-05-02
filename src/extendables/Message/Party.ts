@@ -76,16 +76,8 @@ export async function setupParty(
 						const [customDenied, reason] = await options.customDenier(user);
 						if (customDenied) {
 							user.send(`You couldn't join this mass, for this reason: ${reason}`);
-							reaction.users.remove(user);
 							return false;
 						}
-					}
-
-					if (
-						(reaction.emoji.id === ReactionEmoji.Join && user === options.leader) ||
-						(user !== options.leader && reaction.emoji.id !== ReactionEmoji.Join)
-					) {
-						reaction.users.remove(user);
 					}
 
 					return ([ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as string[]).includes(

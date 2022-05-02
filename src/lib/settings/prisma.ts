@@ -4,7 +4,6 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { PerkTier } from '../constants';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
@@ -52,9 +51,15 @@ async function onActivityFinish(activity: ActivityTaskData) {
 	// If user has easter egg crate, they deliver 1 egg per 10 minutes.
 	if (user.owns('Easter egg crate') && activity.duration >= Time.Minute * 10) {
 		const numEggs = Math.floor(activity.duration / (Time.Minute * 10));
-		await mahojiUserSettingsUpdate(client, user, {
-			eggs_delivered: {
-				increment: numEggs
+
+		await prisma.user.update({
+			data: {
+				eggs_delivered: {
+					increment: numEggs
+				}
+			},
+			where: {
+				id: user.id
 			}
 		});
 	}

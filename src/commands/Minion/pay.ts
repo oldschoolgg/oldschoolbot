@@ -1,4 +1,5 @@
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { Channel, Events } from '../../lib/constants';
@@ -36,8 +37,9 @@ export default class extends BotCommand {
 			);
 		}
 
-		await msg.author.removeGP(amount);
-		await user.addGP(amount);
+		const bank = new Bank().add('Coins', amount);
+		await msg.author.removeItemsFromBank(bank);
+		await user.addItemsToBank({ items: bank });
 
 		this.client.emit(Events.EconomyLog, `${msg.author.sanitizedName} paid ${amount} GP to ${user.sanitizedName}.`);
 

@@ -829,3 +829,7 @@ export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank
 	}
 	return price;
 }
+
+export function discrimName(user: KlasaUser | APIUser) {
+	return `${user.username}#${user.discriminator}`;
+}

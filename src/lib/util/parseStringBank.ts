@@ -4,7 +4,6 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
-import { MAX_INT_JAVA } from '../constants';
 import { filterableTypes } from '../data/filterables';
 import { evalMathExpression } from '../expressionParser';
 import { cleanString, stringMatches } from '../util';
@@ -51,7 +50,7 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	}
 	if (osItems.length === 0) return [];
 
-	let quantity = floor(min(MAX_INT_JAVA, max(0, parsedQty ?? 0)));
+	let quantity = floor(min(100_000_000_000, max(0, parsedQty ?? 0)));
 
 	return [osItems, quantity];
 }
@@ -128,7 +127,7 @@ interface ParseBankOptions {
 	flags?: Record<string, string | undefined>;
 	inputStr?: string;
 	excludeItems?: number[];
-	filters?: string[];
+	filters?: (string | undefined)[];
 	search?: string;
 	maxSize?: number;
 	user?: KlasaUser;
@@ -164,7 +163,7 @@ export function parseBank({
 	}
 
 	if (filters) {
-		for (const filter of filters) {
+		for (const filter of filters.filter(notEmpty)) {
 			flags[filter] = filter;
 		}
 	}

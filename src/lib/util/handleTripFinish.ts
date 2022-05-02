@@ -3,7 +3,6 @@ import { Message, MessageAttachment, MessageCollector, TextChannel } from 'disco
 import { randInt, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util';
 
 import { alching } from '../../commands/Minion/laps';
 import { MysteryBoxes } from '../bsoOpenables';
@@ -162,15 +161,19 @@ export async function handleTripFinish(
 			if (!user.owns(alchResult.bankToRemove)) {
 				message += `Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
 			}
+			await user.addItemsToBank({ items: alchResult.bankToAdd });
 			await user.removeItemsFromBank(alchResult.bankToRemove);
+
 			updateBankSetting(client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 
-			const alchGP = alchResult.itemToAlch.highalch * alchResult.maxCasts;
-			await user.addGP(alchGP);
-			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
+			updateGPTrackSetting(
+				client,
+				ClientSettings.EconomyStats.GPSourceAlching,
+				alchResult.bankToAdd.amount('Coins')
+			);
 			message += `\nYour Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
 				alchResult.bankToRemove
-			} from your bank and added ${toKMB(alchGP)} GP. ${
+			} from your bank and added ${alchResult.bankToAdd}. ${
 				!voidlingEquipped && !user.hasItemEquippedAnywhere('Magic master cape')
 					? "As you left your Voidling alone in the bank, it got distracted easily and didn't manage to alch at its full potential."
 					: ''

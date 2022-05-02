@@ -3,7 +3,6 @@ import { chunk } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { bingoStart } from '../commands/bso/bingo';
 import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit, skillingPetsCL } from './data/CollectionsExport';
 import { TanglerootTable } from './minions/data/killableMonsters/custom/Treebeard';
 import { prisma } from './settings/prisma';
@@ -376,7 +375,7 @@ ${mapped.map((i, index) => `${++index}. <@${i.id}> - ${i.tilesCompletedCount} ti
 }
 
 export function bingoIsActive() {
-	return Date.now() >= bingoStart;
+	return false; // Date.now() >= bingoStart;
 }
 
 export async function calculateBingoTeamDetails(oneTeamMember: string | string[]) {
