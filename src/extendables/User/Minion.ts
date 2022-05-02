@@ -92,8 +92,9 @@ import {
 	toTitleCase,
 	Util
 } from '../../lib/util';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import { calcMaxTripLength, getKC, skillLevel } from '../../lib/util/minionUtils';
+import { getKC, skillLevel } from '../../lib/util/minionUtils';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()

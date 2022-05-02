@@ -1,4 +1,4 @@
-import { NewUser } from '@prisma/client';
+import { Activity, NewUser, Prisma } from '@prisma/client';
 import { Util } from 'discord.js';
 import { roll } from 'e';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
@@ -19,7 +19,8 @@ import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
 import { logError } from '../util/logError';
-import { activitySync, prisma } from './prisma';
+import { taskNameFromType } from '../util/taskNameFromType';
+import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 
 export * from './minigames';
 
@@ -277,4 +278,38 @@ export async function addToBuyLimitBank(user: KlasaUser, newBank: Bank) {
 		throw new Error('Error storing updated weekly_buy_bank');
 	}
 	return true;
+}
+
+export function activitySync(activity: Activity) {
+	const users: bigint[] | string[] = isGroupActivity(activity.data)
+		? ((activity.data as Prisma.JsonObject).users! as string[])
+		: [activity.user_id];
+	for (const user of users) {
+		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
+	}
+}
+
+export async function completeActivity(_activity: Activity) {
+	const activity = convertStoredActivityToFlatActivity(_activity);
+	if (_activity.completed) {
+		throw new Error('Tried to complete an already completed task.');
+	}
+
+	const taskName = taskNameFromType(activity.type);
+	const task = client.tasks.get(taskName);
+
+	if (!task) {
+		throw new Error('Missing task');
+	}
+
+	client.oneCommandAtATimeCache.add(activity.userID);
+	try {
+		client.emit('debug', `Running ${task.name} for ${activity.userID}`);
+		await task.run(activity);
+	} catch (err) {
+		logError(err);
+	} finally {
+		client.oneCommandAtATimeCache.delete(activity.userID);
+		minionActivityCacheDelete(activity.userID);
+	}
 }
