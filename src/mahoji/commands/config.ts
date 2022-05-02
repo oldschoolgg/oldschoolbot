@@ -8,7 +8,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { client } from '../..';
+import { client, mahojiClient } from '../..';
 import { BitField, PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
@@ -349,7 +349,9 @@ async function handleCommandEnable(
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allAbstractCommands(client).find(i => i.name.toLowerCase() === commandName.toLowerCase());
+	const command = allAbstractCommands(client, mahojiClient).find(
+		i => i.name.toLowerCase() === commandName.toLowerCase()
+	);
 	if (!command) return "That's not a valid command.";
 
 	if (choice === 'enable') {
@@ -575,7 +577,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The command you want to enable/disable.',
 							required: true,
 							autocomplete: async value => {
-								return allAbstractCommands(client)
+								return allAbstractCommands(client, mahojiClient)
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 							}
