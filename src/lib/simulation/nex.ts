@@ -26,8 +26,9 @@ import {
 	randomVariation,
 	skillsMeetRequirements
 } from '../util';
+import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import itemID from '../util/itemID';
-import { arrows, bolts, bows, calcMaxTripLength, crossbows } from '../util/minionUtils';
+import { arrows, bolts, bows, crossbows } from '../util/minionUtils';
 import resolveItems from '../util/resolveItems';
 import { NexNonUniqueTable, NexUniqueTable } from './misc';
 import { TeamLoot } from './TeamLoot';
