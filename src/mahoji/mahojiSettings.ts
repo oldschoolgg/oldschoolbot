@@ -196,14 +196,16 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
  *
  */
 
-export async function mahojiUsersSettingsFetch(user: bigint | string) {
+// Is not typesafe, returns only what is selected, but will say it contains everything.
+export async function mahojiUsersSettingsFetch(user: bigint | string, select?: Prisma.UserSelect) {
 	const result = await prisma.user.findFirst({
 		where: {
 			id: user.toString()
-		}
+		},
+		select
 	});
 	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
-	return result;
+	return result as User;
 }
 
 export async function mahojiUserSettingsUpdate(
