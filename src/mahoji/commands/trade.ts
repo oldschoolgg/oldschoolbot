@@ -7,9 +7,9 @@ import { prisma } from '../../lib/settings/prisma';
 import { discrimName, truncateString } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import {
-	filterOption,
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiParseNumber,

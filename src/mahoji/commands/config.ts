@@ -8,8 +8,8 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { client } from '../..';
-import { BitField, PerkTier } from '../../lib/constants';
+import { client, mahojiClient } from '../..';
+import { BitField, PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
@@ -19,9 +19,9 @@ import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
 import {
-	itemOption,
 	mahojiGuildSettingsFetch,
 	mahojiGuildSettingsUpdate,
 	mahojiUserSettingsUpdate,
@@ -79,6 +79,10 @@ async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRe
 	const item = getItem(itemToAdd ?? itemToRemove);
 	if (!item) return "That's not a valid item.";
 	if (itemToAdd) {
+		let limit = (getUsersPerkTier(user.bitfield) + 1) * 100;
+		if (currentFavorites.length >= limit) {
+			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
+		}
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
 		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: [...currentFavorites, item.id] });
 		return `You favorited ${item.name}.`;
@@ -285,6 +289,40 @@ async function handleChannelEnable(
 	return 'Channel enabled. Anyone can use commands in this channel now.';
 }
 
+async function handleTweetsEnable(
+	user: KlasaUser,
+	guild: Guild | null,
+	channelID: bigint,
+	choice: 'enable' | 'disable'
+) {
+	if (!guild) return 'This command can only be run in servers.';
+	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
+	const cID = channelID.toString();
+	const settings = await mahojiGuildSettingsFetch(guild);
+
+	if (choice === 'enable') {
+		if (guild.memberCount < 20 && user.perkTier < PerkTier.Four) {
+			return TWEETS_RATELIMITING;
+		}
+		if (settings.tweetchannel === cID) {
+			return 'Jmod Tweets are already enabled in this channel.';
+		}
+		await mahojiGuildSettingsUpdate(client, guild.id, {
+			tweetchannel: cID
+		});
+
+		if (settings.tweetchannel) {
+			return "Jmod Tweets are already enabled in another channel, but I've switched them to use this channel.";
+		}
+		return 'Enabled Jmod Tweets in this channel.';
+	}
+	if (!settings.tweetchannel) return "Jmod Tweets aren't enabled, so you can't disable them.";
+	await mahojiGuildSettingsUpdate(client, guild.id, {
+		tweetchannel: null
+	});
+	return 'Disabled Jmod Tweets in this channel.';
+}
+
 async function handlePetMessagesEnable(
 	user: KlasaUser,
 	guild: Guild | null,
@@ -314,6 +352,41 @@ async function handlePetMessagesEnable(
 	return 'Disabled Pet Messages in this guild.';
 }
 
+async function handleJModCommentsEnable(
+	user: KlasaUser,
+	guild: Guild | null,
+	channelID: bigint,
+	choice: 'enable' | 'disable'
+) {
+	if (!guild) return 'This command can only be run in servers.';
+	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
+	const cID = channelID.toString();
+	const settings = await mahojiGuildSettingsFetch(guild);
+
+	if (choice === 'enable') {
+		if (guild!.memberCount < 20 && user.perkTier < PerkTier.Four) {
+			return TWEETS_RATELIMITING;
+		}
+		if (settings.jmodComments === cID) {
+			return 'JMod Comments are already enabled in this channel.';
+		}
+		await mahojiGuildSettingsUpdate(client, guild.id, {
+			jmodComments: cID
+		});
+		if (settings.jmodComments !== null) {
+			return "JMod Comments are already enabled in another channel, but I've switched them to use this channel.";
+		}
+		return 'Enabled JMod Comments in this channel.';
+	}
+	if (settings.jmodComments === null) {
+		return "JMod Comments aren't enabled, so you can't disable them.";
+	}
+	await mahojiGuildSettingsUpdate(client, guild.id, {
+		jmodComments: null
+	});
+	return 'Disabled JMod Comments in this channel.';
+}
+
 async function handleCommandEnable(
 	user: KlasaUser,
 	guild: Guild | null,
@@ -323,7 +396,9 @@ async function handleCommandEnable(
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allAbstractCommands(client).find(i => i.name.toLowerCase() === commandName.toLowerCase());
+	const command = allAbstractCommands(client, mahojiClient).find(
+		i => i.name.toLowerCase() === commandName.toLowerCase()
+	);
 	if (!command) return "That's not a valid command.";
 
 	if (choice === 'enable') {
@@ -432,6 +507,35 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 	return `${newcbopt.name} is now ${nextBool ? 'enabled' : 'disabled'} for you.${warningMsg}`;
 }
 
+async function handleRSN(user: KlasaUser, newRSN: string) {
+	const settings = await mahojiUsersSettingsFetch(user.id);
+	const { RSN } = settings;
+	if (!newRSN && RSN) {
+		return `Your current RSN is: \`${RSN}\``;
+	}
+
+	if (!newRSN && !RSN) {
+		return "You don't have an RSN set. You can set one like this: `/config user set_rsn <username>`";
+	}
+
+	newRSN = newRSN.toLowerCase();
+	if (!newRSN.match('^[A-Za-z0-9]{1}[A-Za-z0-9 -_\u00A0]{0,11}$')) {
+		return 'That username is not valid.';
+	}
+
+	if (RSN === newRSN) {
+		return `Your RSN is already set to \`${RSN}\``;
+	}
+
+	await mahojiUserSettingsUpdate(client, user.id, {
+		RSN: newRSN
+	});
+	if (RSN !== null) {
+		return `Changed your RSN from \`${RSN}\` to \`${newRSN}\``;
+	}
+	return `Your RSN has been set to: \`${newRSN}\`.`;
+}
+
 export const configCommand: OSBMahojiCommand = {
 	name: 'config',
 	description: 'Commands configuring settings and options.',
@@ -460,6 +564,23 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'jmod_tweets',
+					description: 'Enable or disable JMod tweets in this channel.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'choice',
+							description: 'Enable or disable JMod tweets for this channel.',
+							required: true,
+							choices: [
+								{ name: 'Enable', value: 'enable' },
+								{ name: 'Disable', value: 'disable' }
+							]
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'pet_messages',
 					description: 'Enable or disable Pet Messages in this server.',
 					options: [
@@ -467,6 +588,23 @@ export const configCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'choice',
 							description: 'Enable or disable Pet Messages for this server.',
+							required: true,
+							choices: [
+								{ name: 'Enable', value: 'enable' },
+								{ name: 'Disable', value: 'disable' }
+							]
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'jmod_comments',
+					description: 'Enable or disable JMod Reddit comments in this server.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'choice',
+							description: 'Enable or disable JMod Reddit comments for this server.',
 							required: true,
 							choices: [
 								{ name: 'Enable', value: 'enable' },
@@ -486,7 +624,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The command you want to enable/disable.',
 							required: true,
 							autocomplete: async value => {
-								return allAbstractCommands(client)
+								return allAbstractCommands(client, mahojiClient)
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 							}
@@ -741,8 +879,14 @@ export const configCommand: OSBMahojiCommand = {
 			if (options.server.channel) {
 				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);
 			}
+			if (options.server.jmod_tweets) {
+				return handleTweetsEnable(user, guild, channelID, options.server.jmod_tweets.choice);
+			}
 			if (options.server.pet_messages) {
 				return handlePetMessagesEnable(user, guild, channelID, options.server.pet_messages.choice);
+			}
+			if (options.server.jmod_comments) {
+				return handleJModCommentsEnable(user, guild, channelID, options.server.jmod_comments.choice);
 			}
 			if (options.server.command) {
 				return handleCommandEnable(user, guild, options.server.command.command, options.server.command.choice);
@@ -759,6 +903,9 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (combat_options) {
 				return handleCombatOptions(user, combat_options.action, combat_options.input);
+			}
+			if (set_rsn) {
+				return handleRSN(user, set_rsn.username);
 			}
 			if (bg_color) {
 				return bgColorConfig(mahojiUser, bg_color.color);

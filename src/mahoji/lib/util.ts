@@ -17,11 +17,11 @@ import {
 	APIRole,
 	APIUser,
 	ComponentType,
-	ICommand
+	ICommand,
+	MahojiClient
 } from 'mahoji';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
-import { mahojiClient } from '../..';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AbstractCommand, AbstractCommandAttributes, CommandArgs } from './inhibitors';
 
@@ -127,7 +127,7 @@ export function convertComponentDJSComponent(component: APIActionRowComponent): 
 	};
 	return new MessageActionRow(data);
 }
-export function allAbstractCommands(client: KlasaClient): AbstractCommand[] {
+export function allAbstractCommands(client: KlasaClient, mahojiClient: MahojiClient): AbstractCommand[] {
 	return [
 		...Array.from(client.commands.values() as any as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
 		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)

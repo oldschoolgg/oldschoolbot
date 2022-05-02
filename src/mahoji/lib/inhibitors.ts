@@ -5,6 +5,7 @@ import { KlasaUser } from 'klasa';
 import { client } from '../..';
 import { OWNER_ID, production } from '../../config';
 import { BadgesEnum, BitField, BotID, Channel, DISABLED_COMMANDS, PerkTier, SupportServer } from '../../lib/constants';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
@@ -299,6 +300,17 @@ const inhibitors: Inhibitor[] = [
 			return false;
 		},
 		canBeDisabled: false
+	},
+	{
+		name: 'blacklisted',
+		run: async ({ user }) => {
+			if (client.settings.get(ClientSettings.UserBlacklist).includes(user.id)) {
+				return 'This user is blacklisted.';
+			}
+			return false;
+		},
+		canBeDisabled: false,
+		silent: true
 	},
 	{
 		name: 'runIn',
