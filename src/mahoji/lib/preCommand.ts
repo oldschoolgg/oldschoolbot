@@ -12,9 +12,7 @@ async function cacheLinkedUsers(user_id: bigint | string) {
 		allAccounts.push(main);
 	}
 	// Ensure linked users are cached
-	const allAccountsMap = await Promise.all(
-		allAccounts.map(id => client.users.cache.get(id) ?? client.fetchUser(id))
-	);
+	const allAccountsMap = await Promise.all(allAccounts.map(id => client.fetchUser(id)));
 	return allAccountsMap.length;
 }
 export async function preCommand({
