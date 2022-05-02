@@ -13,7 +13,7 @@ async function cacheLinkedUsers(user_id: bigint | string) {
 	}
 	// Ensure linked users are cached
 	const allAccountsMap = await Promise.all(
-		allAccounts.map(async id => client.users.cache.get(id) ?? client.fetchUser(id))
+		allAccounts.map(id => client.users.cache.get(id) ?? client.fetchUser(id))
 	);
 	return allAccountsMap.length;
 }
