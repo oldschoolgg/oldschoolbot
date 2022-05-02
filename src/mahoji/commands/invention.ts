@@ -8,7 +8,7 @@ import { allItemsThatCanBeDisassembledIDs, DisassemblySourceGroups, MaterialType
 import { bankDisassembleAnalysis, findDisassemblyGroup, handleDisassembly } from '../../lib/invention/disassemble';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { formatDuration } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
+import { getItem } from '../../lib/util/getOSItem';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -96,7 +96,8 @@ export const askCommand: OSBMahojiCommand = {
 		const user = await client.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (options.disassemble) {
-			const item = getOSItem(options.disassemble.name);
+			const item = getItem(options.disassemble.name);
+			if (!item) return "That's not a valid item.";
 			const group = findDisassemblyGroup(item);
 			if (!group) return 'This item cannot be disassembled.';
 			const result = handleDisassembly({
