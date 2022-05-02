@@ -65,7 +65,28 @@ async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRe
 		await mahojiUserSettingsUpdate(client, user.id, { favorite_food: removeFromArr(currentFavorites, item.id) });
 		return `You unfavorited ${item.name}.`;
 	}
-	return `Your current favorite food is: ${currentFavorites.map(itemNameFromID).join(', ')}.`;
+	return `Your current favorite food is: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+	}.`;
+}
+
+async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+	const currentFavorites = user.favoriteItems;
+	const item = getItem(itemToAdd ?? itemToRemove);
+	if (!item) return "That's not a valid item.";
+	if (itemToAdd) {
+		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
+		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: [...currentFavorites, item.id] });
+		return `You favorited ${item.name}.`;
+	}
+	if (itemToRemove) {
+		if (!currentFavorites.includes(item.id)) return 'This item is not favorited.';
+		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: removeFromArr(currentFavorites, item.id) });
+		return `You unfavorited ${item.name}.`;
+	}
+	return `Your current favorite items are: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+	}.`;
 }
 
 async function favAlchConfig(
@@ -807,6 +828,25 @@ export const configCommand: OSBMahojiCommand = {
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'favorite_items',
+					description: 'Manage your favorite items.',
+					options: [
+						{
+							...itemOption(),
+							name: 'add',
+							description: 'Add an item to your favorite items.',
+							required: false
+						},
+						{
+							...itemOption(),
+							name: 'remove',
+							description: 'Remove an item from your favorite items.',
+							required: false
+						}
+					]
 				}
 			]
 		}
@@ -833,6 +873,7 @@ export const configCommand: OSBMahojiCommand = {
 			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
 			favorite_alchs?: { add?: string; remove?: string; add_many?: string };
 			favorite_food?: { add?: string; remove?: string };
+			favorite_items?: { add?: string; remove?: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
@@ -858,8 +899,16 @@ export const configCommand: OSBMahojiCommand = {
 			}
 		}
 		if (options.user) {
-			const { toggle, combat_options, set_rsn, bg_color, bank_sort, favorite_alchs, favorite_food } =
-				options.user;
+			const {
+				toggle,
+				combat_options,
+				set_rsn,
+				bg_color,
+				bank_sort,
+				favorite_alchs,
+				favorite_food,
+				favorite_items
+			} = options.user;
 			if (toggle) {
 				return handleToggle(mahojiUser, toggle.name);
 			}
@@ -886,6 +935,9 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (favorite_food) {
 				return favFoodConfig(mahojiUser, favorite_food.add, favorite_food.remove);
+			}
+			if (favorite_items) {
+				return favItemConfig(mahojiUser, favorite_items.add, favorite_items.remove);
 			}
 		}
 		return 'Invalid command.';
