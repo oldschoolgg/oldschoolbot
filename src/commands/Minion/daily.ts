@@ -86,8 +86,7 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		const guild = this.client.guilds.cache.get(SupportServer);
-		if (!guild) return;
-		const member = await guild.members.fetch(user).catch(() => null);
+		const member = await guild?.members.fetch(user).catch(() => null);
 
 		const loot = dailyRoll(3, triviaCorrect);
 
