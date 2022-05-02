@@ -75,6 +75,10 @@ async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRe
 	const item = getItem(itemToAdd ?? itemToRemove);
 	if (!item) return "That's not a valid item.";
 	if (itemToAdd) {
+		let limit = (getUsersPerkTier(user.bitfield) + 1) * 100;
+		if (currentFavorites.length >= limit) {
+			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
+		}
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
 		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: [...currentFavorites, item.id] });
 		return `You favorited ${item.name}.`;
