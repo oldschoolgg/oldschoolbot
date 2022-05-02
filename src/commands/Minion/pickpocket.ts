@@ -76,13 +76,9 @@ export default class extends BotCommand {
 
 		if (!pickpocketable && !stallable) {
 			return msg.channel.send(
-				pickpocketable
-					? `That is not a valid NPC to pickpocket, try pickpocketing one of the following: ${Pickpocketables.map(
-							npc => npc.name
-					  ).join(', ')}.`
-					: `That is not a valid Stall to steal from, try steal from one of the following: ${Stalls.map(
-							stall => stall.name
-					  ).join(', ')}.`
+				`That is not a valid NPC/Stall to pickpocket or steal from, try pickpocketing or stealing from one of the following: ${Pickpocketables.map(
+					npc => npc.name
+				).join(', ')}${Stalls.map(stall => stall.name).join(', ')}.`
 			);
 		}
 
