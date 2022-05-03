@@ -1,9 +1,11 @@
 import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, convertCLtoBank } from '../../lib/data/Collections';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
+import { patronMsg } from '../../mahoji/mahojiSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -23,6 +25,9 @@ export default class extends BotCommand {
 		if (!collection) {
 			const { percent, notOwned, owned, debugBank } = msg.author.completion();
 			if (msg.flagArgs.missingbank) {
+				if (msg.author.perkTier < PerkTier.Four) {
+					return msg.channel.send(patronMsg(PerkTier.Four));
+				}
 				const displayMode = msg.flagArgs.id ? 'id' : 'names';
 				debugBank.remove(convertCLtoBank(owned));
 				return msg.channel.sendBankImage({
