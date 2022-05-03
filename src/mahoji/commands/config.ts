@@ -8,7 +8,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { client } from '../..';
+import { client, mahojiClient } from '../..';
 import { BitField, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
@@ -19,9 +19,9 @@ import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { itemOption } from '../lib/mahojiCommandOptions';
 import { allAbstractCommands, hasBanMemberPerms, OSBMahojiCommand } from '../lib/util';
 import {
-	itemOption,
 	mahojiGuildSettingsFetch,
 	mahojiGuildSettingsUpdate,
 	mahojiUserSettingsUpdate,
@@ -79,6 +79,10 @@ async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRe
 	const item = getItem(itemToAdd ?? itemToRemove);
 	if (!item) return "That's not a valid item.";
 	if (itemToAdd) {
+		let limit = (getUsersPerkTier(user) + 1) * 100;
+		if (currentFavorites.length >= limit) {
+			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
+		}
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
 		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: [...currentFavorites, item.id] });
 		return `You favorited ${item.name}.`;
@@ -323,7 +327,9 @@ async function handleCommandEnable(
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allAbstractCommands(client).find(i => i.name.toLowerCase() === commandName.toLowerCase());
+	const command = allAbstractCommands(client, mahojiClient).find(
+		i => i.name.toLowerCase() === commandName.toLowerCase()
+	);
 	if (!command) return "That's not a valid command.";
 
 	if (choice === 'enable') {
@@ -486,7 +492,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The command you want to enable/disable.',
 							required: true,
 							autocomplete: async value => {
-								return allAbstractCommands(client)
+								return allAbstractCommands(client, mahojiClient)
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 							}

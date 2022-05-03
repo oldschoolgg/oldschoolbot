@@ -18,16 +18,9 @@ import { formatDuration, itemID, roll, stringMatches } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier, { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	itemOption,
-	MahojiUserOption,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch,
-	monsterOption,
-	patronMsg,
-	skillOption
-} from '../mahojiSettings';
+import { MahojiUserOption, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -146,7 +139,7 @@ LIMIT 10;`);
 }
 
 async function kcGains(user: User, interval: string, monsterName: string): CommandResponse {
-	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
@@ -186,7 +179,7 @@ LIMIT 10`;
 }
 
 async function dryStreakCommand(user: User, monsterName: string, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monsterName)));
 	if (!mon) {
 		return "That's not a valid monster or minigame.";
@@ -216,7 +209,7 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 }
 
 async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	if (!item) return "That's not a valid item.";
@@ -403,7 +396,7 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const image = await makeBankImage({
 					bank: new Bank(mahojiUser.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
@@ -413,15 +406,15 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.xp_gains) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser);
 			}
 			if (patron.give_box) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.One) return patronMsg(PerkTier.One);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.One) return patronMsg(PerkTier.One);
 				return giveBox(mahojiUser, klasaUser, patron.give_box.user);
 			}
 		}
