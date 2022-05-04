@@ -204,7 +204,7 @@ export interface Plant {
 	checkXp: number;
 	harvestXp: number;
 	name: string;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	aliases: string[];
 	outputCrop?: number;
 	outputLogs?: number;
@@ -225,7 +225,7 @@ export interface Plant {
 	chance1: number;
 	chance99: number;
 	chanceOfDeath: number;
-	protectionPayment?: ItemBank;
+	protectionPayment?: Bank;
 	defaultNumOfPatches: number;
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;

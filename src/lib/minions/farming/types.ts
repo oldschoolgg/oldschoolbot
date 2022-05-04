@@ -1,24 +1,5 @@
-// export enum FarmingPatchTypes {
-// 	Herb = 'herb',
-// 	FruitTree = 'fruit tree',
-// 	Tree = 'tree',
-// 	Allotment = 'allotment',
-// 	Hops = 'hops',
-// 	Cactus = 'cactus',
-// 	Bush = 'bush',
-// 	Flower = 'flower',
-// 	Spirit = 'spirit',
-// 	Hardwood = 'hardwood',
-// 	Seaweed = 'seaweed',
-// 	Vine = 'vine',
-// 	Calquat = 'calquat',
-// 	Redwood = 'redwood',
-// 	Crystal = 'crystal',
-// 	Celastrus = 'celastrus',
-// 	Hespori = 'hespori',
-// 	Mushroom = 'mushroom',
-// 	Belladonna = 'belladonna'
-// }
+import { FarmingPatchName } from '../../../mahoji/commands/farming';
+import { Plant } from '../../skilling/types';
 
 export interface IPatchData {
 	lastPlanted: string | null;
@@ -28,6 +9,14 @@ export interface IPatchData {
 	lastUpgradeType: string | null;
 	lastPayment: boolean;
 	wasReminded?: true;
+}
+export interface IPatchDataDetailed extends IPatchData {
+	ready: boolean | null;
+	readyIn: number | null;
+	readyAt: Date | null;
+	patchName: FarmingPatchName;
+	friendlyName: string;
+	plant: Plant | null;
 }
 
 export type PatchData = IPatchData | null;
@@ -41,5 +30,3 @@ export interface FarmingContract {
 	plantTier: PlantTier;
 	contractsCompleted: number;
 }
-
-export type CompostTier = 'compost' | 'supercompost' | 'ultracompost';
