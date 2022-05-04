@@ -5,8 +5,8 @@ import { client } from '../..';
 import { Emoji } from '../../lib/constants';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { filterOption, itemOption } from '../mahojiSettings';
 
 const bankFormats = ['json'] as const;
 type BankFormat = typeof bankFormats[number];

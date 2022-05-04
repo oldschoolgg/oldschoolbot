@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import type { PrismaClient, User } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
@@ -49,7 +49,6 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
@@ -521,14 +520,6 @@ export function isValidNickname(str?: string) {
 		['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
 		stripEmojis(str).length === str.length
 	);
-}
-
-export function patronMaxTripCalc(user: KlasaUser | User) {
-	const perkTier = getUsersPerkTier(user instanceof KlasaUser ? user : user.bitfield);
-	if (perkTier === PerkTier.Two) return Time.Minute * 3;
-	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
-	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
-	return 0;
 }
 
 export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {

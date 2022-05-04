@@ -111,8 +111,9 @@ import {
 	toTitleCase,
 	Util
 } from '../../lib/util';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import { calcMaxTripLength, getKC, skillLevel } from '../../lib/util/minionUtils';
+import { getKC, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import { activity_type_enum } from '.prisma/client';
 
