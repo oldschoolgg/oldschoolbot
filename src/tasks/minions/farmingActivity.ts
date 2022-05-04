@@ -178,7 +178,7 @@ export default class extends Task {
 				user,
 				channelID,
 				str,
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				undefined,
 				data,
 				null
@@ -453,7 +453,7 @@ export default class extends Task {
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

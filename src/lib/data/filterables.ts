@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { superCompostables } from '../../commands/Minion/compostbin';
+import { superCompostables } from '../../mahoji/lib/abstracted_commands/farmingCommand';
 import { UserSettings } from '../settings/types/UserSettings';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';

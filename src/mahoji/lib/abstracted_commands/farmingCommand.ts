@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
 import { client } from '../../..';
@@ -10,12 +11,112 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import Farming from '../../../lib/skilling/skills/farming';
-import { SkillsEnum } from '../../../lib/skilling/types';
+import { Plant, SkillsEnum } from '../../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, updateBankSetting } from '../../../lib/util';
+import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { hasItemEquippedOrInBank } from '../../../lib/util/minionUtils';
-import { CompostName, findPlant, getFarmingInfo } from '../../commands/farming';
+import { CompostName, farmingPatchNames, findPlant, getFarmingInfo, isPatchName } from '../../commands/farming';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
+
+function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
+	if (plant.needsChopForHarvest && plant.treeWoodcuttingLevel && wcLevel < plant.treeWoodcuttingLevel) {
+		const gpToCutTree = plant.seedType === 'redwood' ? 2000 * quantity : 200 * quantity;
+		if (bal < gpToCutTree) {
+			return `Your minion does not have ${plant.treeWoodcuttingLevel} Woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cannot harvest them.`;
+		}
+	}
+	return null;
+}
+
+export async function harvestCommand({
+	user,
+	channelID,
+	seedType
+}: {
+	user: KlasaUser;
+	channelID: bigint;
+	seedType: string;
+}) {
+	const GP = user.settings.get(UserSettings.GP);
+	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
+	const currentDate = new Date().getTime();
+	if (!isPatchName(seedType)) {
+		return `That is not a valid patch type! The available patches are: ${farmingPatchNames.join(
+			', '
+		)}. *Don't include numbers, this command harvests all crops available of the specified patch type.*`;
+	}
+	const { patchesDetailed } = await getFarmingInfo(user.id);
+	const patch = patchesDetailed.find(i => i.patchName === seedType)!;
+	if (patch.ready === null) return 'You have nothing planted in those patches.';
+
+	const upgradeType = null;
+	let returnMessageStr = '';
+	const boostStr = [];
+
+	const storeHarvestablePlant = patch.lastPlanted;
+	const plant = findPlant(patch.lastPlanted)!;
+
+	if (!patch.ready) {
+		return `Please come back when your crops have finished growing in ${formatDuration(patch.readyIn!)}!`;
+	}
+
+	const treeStr = !plant ? null : treeCheck(plant, currentWoodcuttingLevel, GP, patch.lastQuantity);
+	if (treeStr) return treeStr;
+
+	const timePerPatchTravel = Time.Second * plant.timePerPatchTravel;
+	const timePerPatchHarvest = Time.Second * plant.timePerHarvest;
+
+	// 1.5 mins per patch --> ex: 10 patches = 15 mins
+	let duration = patch.lastQuantity * (timePerPatchTravel + timePerPatchHarvest);
+
+	if (user.hasGracefulEquipped()) {
+		boostStr.push('10% time for Graceful');
+		duration *= 0.9;
+	}
+
+	if (hasItemEquippedOrInBank(user, 'Ring of endurance')) {
+		boostStr.push('10% time for Ring of Endurance');
+		duration *= 0.9;
+	}
+
+	const maxTripLength = user.maxTripLength('Farming');
+
+	if (duration > maxTripLength) {
+		return `${user.minionName} can't go on trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity.`;
+	}
+
+	if (hasItemEquippedOrInBank(user, 'Magic secateurs')) {
+		boostStr.push('10% crop yield for Magic Secateurs');
+	}
+
+	if (hasItemEquippedOrInBank(user, ['Farming cape(t)', 'Farming cape'])) {
+		boostStr.push('5% crop yield for Farming Skillcape');
+	}
+
+	returnMessageStr = `${user.minionName} is now harvesting ${patch.lastQuantity}x ${storeHarvestablePlant}.
+It'll take around ${formatDuration(duration)} to finish.
+	
+${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
+
+	await addSubTaskToActivityTask<FarmingActivityTaskOptions>({
+		plantsName: patch.lastPlanted,
+		patchType: patch,
+		userID: user.id,
+		channelID: channelID.toString(),
+		upgradeType,
+		duration,
+		quantity: patch.lastQuantity,
+		planting: false,
+		currentDate,
+		type: 'Farming',
+		autoFarmed: false
+	});
+
+	return returnMessageStr;
+}
 
 export async function farmingPlantCommand({
 	user,
@@ -73,23 +174,8 @@ export async function farmingPlantCommand({
 		return `Please come back when your crops have finished growing in ${formatDuration(patchType.readyIn!)}!`;
 	}
 
-	const storeHarvestableQuantity = patchType.lastQuantity;
-
-	if (
-		planted &&
-		planted.needsChopForHarvest &&
-		planted.treeWoodcuttingLevel &&
-		currentWoodcuttingLevel < planted.treeWoodcuttingLevel
-	) {
-		const gpToCutTree =
-			planted.seedType === 'redwood' ? 2000 * storeHarvestableQuantity : 200 * storeHarvestableQuantity;
-		if (GP < gpToCutTree) {
-			return `${user.minionName} remembers that they do not have ${planted.treeWoodcuttingLevel} Woodcutting or the ${gpToCutTree} GP required to be able to harvest the currently planted trees, and so they cancel their trip.`;
-		}
-	}
-
-	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse);
-	infoStr.push(`You are treating all of your patches with ${compostTier}.`);
+	const treeStr = !planted ? null : treeCheck(planted, currentWoodcuttingLevel, GP, patchType.lastQuantity);
+	if (treeStr) return treeStr;
 
 	const [numOfPatches, noFarmGuild] = calcNumOfPatches(plant, user, questPoints);
 	if (numOfPatches === 0) {
@@ -163,8 +249,8 @@ export async function farmingPlantCommand({
 		infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 	}
 
+	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse);
 	let upgradeType: CompostName | null = null;
-
 	if (plant.canCompostandPay && compostTier) {
 		const compostCost = new Bank().add(compostTier, quantity);
 		if (user.owns(compostCost)) {
@@ -185,13 +271,12 @@ export async function farmingPlantCommand({
 		if (hasItemEquippedOrInBank(user, 'Magic secateurs')) {
 			boostStr.push('10% crop yield for Magic Secateurs');
 		}
-
 		if (hasItemEquippedOrInBank(user, ['Farming cape(t)', 'Farming cape'])) {
 			boostStr.push('5% crop yield for Farming Skillcape');
 		}
 
 		infoStr.unshift(
-			`${user.minionName} is now harvesting ${storeHarvestableQuantity}x ${patchType.lastPlanted}, and then planting ${quantity}x ${plant.name}.`
+			`${user.minionName} is now harvesting ${patchType.lastQuantity}x ${patchType.lastPlanted}, and then planting ${quantity}x ${plant.name}.`
 		);
 	}
 
@@ -224,4 +309,65 @@ export async function farmingPlantCommand({
 It'll take around ${formatDuration(duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
+}
+
+export const superCompostables = [
+	'Pineapple',
+	'Watermelon',
+	'Coconut',
+	'Coconut shell',
+	'Papaya fruit',
+	'Mushroom',
+	'Poison ivy berries',
+	'Jangerberries',
+	'White berries',
+	'Snape grass',
+	'Toadflax',
+	'Avantoe',
+	'Kwuarm',
+	'Snapdragon',
+	'Cadantine',
+	'Lantadyme',
+	'Dwarf weed',
+	'Torstol',
+	'Oak roots',
+	'Willow roots',
+	'Maple roots',
+	'Yew roots',
+	'Magic roots',
+	'Celastrus bark',
+	'Calquat fruit',
+	'White tree fruit',
+	'White lily'
+];
+
+export async function compostBinCommand(
+	interaction: SlashCommandInteraction,
+	user: KlasaUser,
+	cropToCompost: string,
+	quantity: number | undefined
+) {
+	const superCompostableCrop = superCompostables.find(crop => stringMatches(crop, cropToCompost));
+	if (!superCompostableCrop) {
+		return `That's not a valid crop to compost. The crops you can compost are: ${superCompostables.join(', ')}.`;
+	}
+
+	const userBank = user.bank();
+	if (!quantity) quantity = userBank.amount(superCompostableCrop);
+	const cost = new Bank().add(superCompostableCrop, quantity);
+	const loot = new Bank().add('Supercompost', quantity);
+
+	if (!userBank.has(cost)) return `You do not have enough ${superCompostableCrop}.`;
+
+	if (quantity === 0) return `You have no ${superCompostableCrop} to compost!`;
+
+	await handleMahojiConfirmation(
+		interaction,
+		`${user}, please confirm that you want to compost ${cost} into ${loot}.`
+	);
+
+	await user.removeItemsFromBank(cost);
+	await user.addItemsToBank({ items: loot });
+
+	return `You composted ${cost} into ${loot}.`;
 }

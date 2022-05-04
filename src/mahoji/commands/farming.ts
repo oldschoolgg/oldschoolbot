@@ -5,6 +5,7 @@ import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji
 
 import { client } from '../..';
 import { Emoji } from '../../lib/constants';
+import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { defaultPatches } from '../../lib/minions/farming';
 import { IPatchData, IPatchDataDetailed } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
@@ -12,7 +13,13 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Farming from '../../lib/skilling/skills/farming';
 import { assert, formatDuration, stringMatches, toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import { farmingPlantCommand } from '../lib/abstracted_commands/farmingCommand';
+import {
+	compostBinCommand,
+	farmingPlantCommand,
+	harvestCommand,
+	superCompostables
+} from '../lib/abstracted_commands/farmingCommand';
+import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -46,10 +53,8 @@ export function isPatchName(name: string): name is FarmingPatchName {
 
 const farmingKeys: (keyof User)[] = farmingPatchNames.map(i => `farmingPatches_${i}` as const);
 
-export function getFarmingKeyFromName(name: FarmingPatchName) {
-	const key = farmingKeys.find(k => k.includes(name));
-	if (!key) throw new Error('No farming key found');
-	return key;
+export function getFarmingKeyFromName(name: FarmingPatchName): keyof User {
+	return `farmingPatches_${name}`;
 }
 
 export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
@@ -213,6 +218,71 @@ export const farmingCommand: OSBMahojiCommand = {
 			name: 'always_pay',
 			description: 'Toggle always paying farmers for protection.',
 			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'harvest',
+			description: 'Allows you to harvest patches without replanting.',
+			required: false,
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'patch_name',
+					description: 'The patches you want to harvest.',
+					required: true,
+					autocomplete: async (value: string) => {
+						return farmingPatchNames
+							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i, value: i }));
+					}
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'tithe_farm',
+			description: 'Allows you to do the Tithe Farm minigame.',
+			required: false,
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'buy_reward',
+					description: 'Buy a Tithe Farm reward.',
+					required: false,
+					autocomplete: async (value: string) => {
+						return TitheFarmBuyables.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({ name: i.name, value: i.name }));
+					}
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'compost_bin',
+			description: 'Allows you to make compost from crops.',
+			required: false,
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'plant_name',
+					description: 'The plant you want to put in the Compost Bins.',
+					required: false,
+					autocomplete: async (value: string) => {
+						return superCompostables
+							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i, value: i }));
+					}
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you want to put in.',
+					required: false,
+					min_value: 1,
+					max_value: 200
+				}
+			]
 		}
 	],
 	run: async ({
@@ -226,6 +296,9 @@ export const farmingCommand: OSBMahojiCommand = {
 		default_compost?: { compost: CompostName };
 		always_pay?: {};
 		plant?: { plant_name: string; quantity?: number };
+		harvest?: { patch_name: string };
+		tithe_farm?: { buy_reward?: string };
+		compost_bin?: { plant_name: string; quantity?: number };
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const { patchesDetailed } = await getFarmingInfo(userID);
@@ -256,6 +329,27 @@ export const farmingCommand: OSBMahojiCommand = {
 				autoFarmed: false,
 				channelID
 			});
+		}
+		if (options.harvest) {
+			return harvestCommand({
+				user: klasaUser,
+				seedType: options.harvest.patch_name,
+				channelID
+			});
+		}
+		if (options.tithe_farm) {
+			if (options.tithe_farm.buy_reward) {
+				return titheFarmShopCommand(interaction, klasaUser, options.tithe_farm.buy_reward);
+			}
+			return titheFarmCommand(klasaUser, channelID);
+		}
+		if (options.compost_bin) {
+			return compostBinCommand(
+				interaction,
+				klasaUser,
+				options.compost_bin.plant_name,
+				options.compost_bin.quantity
+			);
 		}
 
 		return userGrowingProgressStr(patchesDetailed);
