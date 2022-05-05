@@ -32,7 +32,6 @@ export async function resolveChannel(
 
 	const db = await prisma.webhook.findFirst({ where: { channel_id: channelID } });
 	if (db) {
-		client.emit('log', 'Restoring webhook from DB.');
 		webhookCache.set(db.channel_id, new WebhookClient(db.webhook_id, db.webhook_token));
 		return webhookCache.get(db.channel_id);
 	}
@@ -42,7 +41,6 @@ export async function resolveChannel(
 	}
 
 	try {
-		client.emit('log', 'Trying to create webhook.');
 		const createdWebhook = await channel.createWebhook(client.user!.username, {
 			avatar: client.user!.displayAvatarURL({})
 		});
@@ -57,7 +55,6 @@ export async function resolveChannel(
 		webhookCache.set(channelID, webhook);
 		return webhook;
 	} catch (_) {
-		client.emit('log', 'Failed to create webhook');
 		return channel;
 	}
 }
@@ -82,7 +79,6 @@ export async function sendToChannelID(
 		const channel = await resolveChannel(client, channelID);
 		if (!channel) return;
 
-		client.emit('log', `Sending to channelID[${channelID}].`);
 		let files = data.image ? [data.image] : undefined;
 		let embeds = [];
 		if (data.embed) embeds.push(data.embed);
