@@ -1,4 +1,3 @@
-import { Time } from 'e';
 import * as fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
@@ -81,9 +80,6 @@ export default class DailyCommand extends BotCommand {
 
 	async reward(msg: KlasaMessage, triviaCorrect: boolean) {
 		const user = msg.author;
-		if (Date.now() - user.createdTimestamp < Time.Month) {
-			user.log('[NAC-DAILY]');
-		}
 
 		const guild = this.client.guilds.cache.get(SupportServer);
 		const member = await guild?.members.fetch(user).catch(() => null);
