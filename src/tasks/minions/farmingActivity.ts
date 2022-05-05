@@ -14,13 +14,14 @@ import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
+import { getFarmingKeyFromName } from '../../mahoji/commands/farming';
+import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {
 		const {
 			plantsName,
 			patchType,
-			getPatchType,
 			quantity,
 			upgradeType,
 			payment,
@@ -154,7 +155,7 @@ export default class extends Task {
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
 			);
 			await user.addItemsToBank({ items: loot, collectionLog: true });
-			const updatePatches: PatchTypes.PatchData = {
+			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
 				plantTime: currentDate + duration,
@@ -163,7 +164,9 @@ export default class extends Task {
 				lastPayment: payment ?? false
 			};
 
-			await user.settings.update(getPatchType, updatePatches);
+			await mahojiUserSettingsUpdate(this.client, user.id, {
+				[getFarmingKeyFromName(plant.seedType)]: newPatch
+			});
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
@@ -175,7 +178,7 @@ export default class extends Task {
 				user,
 				channelID,
 				str,
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				undefined,
 				data,
 				null
@@ -383,7 +386,7 @@ export default class extends Task {
 				);
 			}
 
-			let updatePatches: PatchTypes.PatchData = {
+			let newPatch: PatchTypes.PatchData = {
 				lastPlanted: null,
 				patchPlanted: false,
 				plantTime: 0,
@@ -393,7 +396,7 @@ export default class extends Task {
 			};
 
 			if (planting) {
-				updatePatches = {
+				newPatch = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
 					plantTime: currentDate + duration,
@@ -403,7 +406,9 @@ export default class extends Task {
 				};
 			}
 
-			await user.settings.update(getPatchType, updatePatches);
+			await mahojiUserSettingsUpdate(this.client, user.id, {
+				[getFarmingKeyFromName(plant.seedType)]: newPatch
+			});
 
 			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? {
 				...defaultFarmingContract
@@ -448,7 +453,7 @@ export default class extends Task {
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

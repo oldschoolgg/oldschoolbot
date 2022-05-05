@@ -38,6 +38,7 @@ export const mockUser = (overrides?: MockUserArgs): User => {
 		gear_range: new Gear().raw() as Prisma.JsonValue,
 		gear_skilling: new Gear().raw() as Prisma.JsonValue,
 		gear_wildy: new Gear().raw() as Prisma.JsonValue,
-		bank: overrides?.bank?.bank ?? (new Bank().bank as Prisma.JsonValue)
-	} as User;
+		bank: overrides?.bank?.bank ?? (new Bank().bank as Prisma.JsonValue),
+		skills_agility: 1_000_000
+	} as unknown as User;
 };

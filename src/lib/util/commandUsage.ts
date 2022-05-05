@@ -13,9 +13,9 @@ export function makeCommandUsage({
 	isContinue,
 	inhibited
 }: {
-	userID: string;
-	channelID: string;
-	guildID?: string | null;
+	userID: string | bigint;
+	channelID: string | bigint;
+	guildID?: string | bigint | null;
 	flags: null | Record<string, string>;
 	commandName: string;
 	args: CommandArgs;
@@ -24,12 +24,12 @@ export function makeCommandUsage({
 }): Prisma.CommandUsageCreateInput {
 	return {
 		date: new Date(),
-		user_id: userID,
+		user_id: userID.toString(),
 		command_name: commandName,
 		status: command_usage_status.Unknown,
 		args: getCommandArgs(commandName, args),
-		channel_id: channelID,
-		guild_id: guildID,
+		channel_id: channelID.toString(),
+		guild_id: guildID?.toString(),
 		flags: flags ? (Object.keys(flags).length > 0 ? flags : undefined) : undefined,
 		is_continue: isContinue ?? undefined,
 		inhibited
