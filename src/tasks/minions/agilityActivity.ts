@@ -123,7 +123,6 @@ export default class extends Task {
 				// @ts-ignore
 				res.prompter.flags = flags;
 
-				user.log(`continued trip of ${quantity}x ${course.name} laps`);
 				return runCommand({
 					message: res,
 					commandName: 'laps',

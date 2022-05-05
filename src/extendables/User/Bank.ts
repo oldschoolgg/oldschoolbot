@@ -140,7 +140,6 @@ export default class extends Extendable {
 			}
 			if (Object.keys(items).length === 0) return;
 
-			user.log(`Had items removed from bank - ${JSON.stringify(items)}`);
 			return user.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items));
 		});
 	}
