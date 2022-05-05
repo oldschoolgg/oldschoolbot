@@ -15,21 +15,29 @@ export async function autoFarm(
 	patchesDetailed: IPatchDataDetailed[]
 ) {
 	const userBank = user.bank();
-	let possiblePlants = plants.sort((a, b) => b.level - a.level);
+	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
+	const elligible = [...plants]
+		.filter(p => {
+			if (p.level > farmingLevel) return false;
+			const [numOfPatches] = calcNumOfPatches(p, user, user.settings.get(UserSettings.QP));
+			if (numOfPatches === 0) return false;
+			const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
+			if (!userBank.has(reqItems.bank)) return false;
+			return true;
+		})
+		.sort((a, b) => b.level - a.level);
 
-	const toPlant = possiblePlants.find(p => {
-		if (user.skillLevel(SkillsEnum.Farming) < p.level) return false;
-		const patchData = patchesDetailed.find(_p => (_p.patchName = p.seedType))!;
-		// Still growing
+	const canPlant = elligible.find(p => {
+		const patchData = patchesDetailed.find(_p => _p.patchName === p.seedType)!;
 		if (patchData.ready === false) return false;
-		const [numOfPatches] = calcNumOfPatches(p, user, user.settings.get(UserSettings.QP));
-		const reqItems = new Bank(p.inputItems).multiply(numOfPatches);
-		if (!userBank.has(reqItems.bank)) return false;
 		return true;
 	});
+	const canHarvest = elligible.find(p => patchesDetailed.find(_p => _p.patchName === p.seedType)!.ready);
+	const toPlant = canPlant ?? canHarvest;
 	if (!toPlant) {
-		return "There's no Farming crops that you have the requirements to plant.";
+		return "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}
+
 	return farmingPlantCommand({
 		user,
 		plantName: toPlant.name,

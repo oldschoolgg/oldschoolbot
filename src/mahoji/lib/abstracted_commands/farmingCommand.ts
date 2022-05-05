@@ -1,6 +1,5 @@
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -130,7 +129,7 @@ export async function farmingPlantCommand({
 	quantity: number | null;
 	autoFarmed: boolean;
 	channelID: bigint;
-}): CommandResponse {
+}): Promise<string> {
 	await user.settings.sync(true);
 	const userBank = user.bank();
 	const alwaysPay = user.settings.get(UserSettings.Minion.DefaultPay);

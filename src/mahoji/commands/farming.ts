@@ -69,16 +69,15 @@ export function findPlant(lastPlanted: IPatchData['lastPlanted']) {
 export function userGrowingProgressStr(patchesDetailed: IPatchDataDetailed[]) {
 	let str = '';
 	for (const patch of patchesDetailed.filter(i => i.ready === true)) {
-		str += `${Emoji.Tick} **${patch.friendlyName}**: Your ${patch.lastPlanted} is ready to be harvested!\n`;
+		str += `${Emoji.Tick} **${patch.friendlyName}**: ${patch.lastQuantity} ${patch.lastPlanted} is ready to be harvested!\n`;
 	}
 	for (const patch of patchesDetailed.filter(i => i.ready === false)) {
-		str += `${Emoji.Stopwatch} **${patch.friendlyName}**: Ready at ${time(patch.readyAt!, 'T')} (${time(
-			patch.readyAt!,
-			'R'
-		)})\n`;
+		str += `${Emoji.Stopwatch} **${patch.friendlyName}**: ${patch.lastQuantity} ${
+			patch.lastPlanted
+		} ready at ${time(patch.readyAt!, 'T')} (${time(patch.readyAt!, 'R')})\n`;
 	}
-	const notReady = patchesDetailed.filter(i => !i.ready);
-	str += `${Emoji.RedX} **Not ready:** ${notReady.map(i => i.friendlyName).join(', ')}.`;
+	const notReady = patchesDetailed.filter(i => i.ready === null);
+	str += `${Emoji.RedX} **Nothing planted:** ${notReady.map(i => i.friendlyName).join(', ')}.`;
 	return str;
 }
 
