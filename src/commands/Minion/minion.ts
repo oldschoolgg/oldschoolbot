@@ -19,7 +19,6 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { becomeIronman } from '../../lib/minions/functions/becomeIronman';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
@@ -271,11 +270,11 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async af(msg: KlasaMessage) {
-		return autoFarm(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
 	async autofarm(msg: KlasaMessage) {
-		return autoFarm(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
 	async activities(msg: KlasaMessage) {

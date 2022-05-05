@@ -105,7 +105,6 @@ export const askCommand: OSBMahojiCommand = {
 
 		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
 		if (!senderKlasaUser.owns(itemsSent)) return "You don't own those items.";
-		if (!recipientKlasaUser.owns(itemsReceived)) return "They don't own those items.";
 
 		await handleMahojiConfirmation(
 			interaction,
@@ -115,6 +114,8 @@ export const askCommand: OSBMahojiCommand = {
 Both parties must click confirm to make the trade.`,
 			[BigInt(recipientKlasaUser.id), BigInt(senderKlasaUser.id)]
 		);
+
+		if (!recipientKlasaUser.owns(itemsReceived)) return "They don't own those items.";
 
 		await Promise.all([
 			senderKlasaUser.removeItemsFromBank(itemsSent),

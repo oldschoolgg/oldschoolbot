@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { HexColorString } from 'discord.js';
 
+import { CompostName } from '../../../mahoji/commands/farming';
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
-import { PatchTypes } from '../../minions/farming';
-import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
+import { FarmingContract } from '../../minions/farming/types';
 import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
@@ -129,7 +129,7 @@ export namespace UserSettings {
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
 		export const FarmingContract = T<FarmingContract | null>('minion.farmingContract');
-		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
+		export const DefaultCompostToUse = T<CompostName | null>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
 		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');
 	}
@@ -170,28 +170,6 @@ export namespace UserSettings {
 		export const Wildy = T<GearSetup | null>('gear.wildy');
 		export const Fashion = T<GearSetup | null>('gear.fashion');
 		export const Other = T<GearSetup | null>('gear.other');
-	}
-
-	export namespace FarmingPatches {
-		export const Herb = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Herb}`);
-		export const FruitTree = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.FruitTree}`);
-		export const Tree = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Tree}`);
-		export const Allotment = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Allotment}`);
-		export const Hops = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Hops}`);
-		export const Cactus = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Cactus}`);
-		export const Bush = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Bush}`);
-		export const Spirit = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Spirit}`);
-		export const Hardwood = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Hardwood}`);
-		export const Seaweed = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Seaweed}`);
-		export const Vine = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Vine}`);
-		export const Calquat = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Calquat}`);
-		export const Redwood = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Redwood}`);
-		export const Crystal = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Crystal}`);
-		export const Celastrus = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Celastrus}`);
-		export const Hespori = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Hespori}`);
-		export const Flower = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Flower}`);
-		export const Mushroom = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Mushroom}`);
-		export const Belladonna = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Belladonna}`);
 	}
 
 	export const Nursery = T<Nursery | null>('nursery');

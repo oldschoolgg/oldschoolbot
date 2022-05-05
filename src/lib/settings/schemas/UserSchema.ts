@@ -1,6 +1,5 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import { FarmingPatchTypes } from '../../minions/farming/types';
 import { BlowpipeData } from '../../minions/types';
 import { SkillsEnum } from '../../skilling/types';
 import { baseUserKourendFavour } from './../../minions/data/kourendFavour';
@@ -159,28 +158,6 @@ Client.defaultUserSchema
 			.add('wildy', 'any', { default: null })
 			.add('fashion', 'any', { default: null })
 			.add('other', 'any', { default: null })
-	)
-	.add('farmingPatches', (folder: SchemaFolder) =>
-		folder
-			.add(FarmingPatchTypes.Herb, 'any', { default: null })
-			.add(FarmingPatchTypes.FruitTree, 'any', { default: null })
-			.add(FarmingPatchTypes.Tree, 'any', { default: null })
-			.add(FarmingPatchTypes.Allotment, 'any', { default: null })
-			.add(FarmingPatchTypes.Hops, 'any', { default: null })
-			.add(FarmingPatchTypes.Cactus, 'any', { default: null })
-			.add(FarmingPatchTypes.Bush, 'any', { default: null })
-			.add(FarmingPatchTypes.Spirit, 'any', { default: null })
-			.add(FarmingPatchTypes.Hardwood, 'any', { default: null })
-			.add(FarmingPatchTypes.Seaweed, 'any', { default: null })
-			.add(FarmingPatchTypes.Vine, 'any', { default: null })
-			.add(FarmingPatchTypes.Calquat, 'any', { default: null })
-			.add(FarmingPatchTypes.Redwood, 'any', { default: null })
-			.add(FarmingPatchTypes.Crystal, 'any', { default: null })
-			.add(FarmingPatchTypes.Celastrus, 'any', { default: null })
-			.add(FarmingPatchTypes.Hespori, 'any', { default: null })
-			.add(FarmingPatchTypes.Flower, 'any', { default: null })
-			.add(FarmingPatchTypes.Mushroom, 'any', { default: null })
-			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
 	)
 	.add('nursery', 'any', { default: null })
 	.add('selected_tame', 'any', { default: null })

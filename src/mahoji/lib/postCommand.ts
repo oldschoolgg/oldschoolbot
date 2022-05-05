@@ -18,7 +18,7 @@ export async function handleCommandError({
 	args: CommandArgs;
 	commandName: string;
 	error: string | Error;
-	userID: string;
+	userID: string | bigint;
 	msg: KlasaMessage | null;
 }): Promise<void> {
 	if (error instanceof Error && error.message === SILENT_ERROR) {
@@ -36,7 +36,7 @@ export async function handleCommandError({
 	}
 
 	logError(error, {
-		user_id: userID,
+		user_id: userID.toString(),
 		command: commandName,
 		args: Array.isArray(args)
 			? args.join(', ')
@@ -60,9 +60,9 @@ export async function postCommand({
 	inhibited
 }: {
 	abstractCommand: AbstractCommand;
-	userID: string;
-	guildID?: string | null;
-	channelID: string;
+	userID: string | bigint;
+	guildID?: string | bigint | null;
+	channelID: string | bigint;
 	error: Error | string | null;
 	args: CommandArgs;
 	msg: KlasaMessage | null;
@@ -89,7 +89,7 @@ export async function postCommand({
 		handleCommandError({ error, userID, args, commandName: abstractCommand.name, msg });
 	}
 
-	setTimeout(() => client.oneCommandAtATimeCache.delete(userID), 1000);
+	setTimeout(() => client.oneCommandAtATimeCache.delete(userID.toString()), 1000);
 
 	return undefined;
 }

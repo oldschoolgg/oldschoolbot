@@ -1,4 +1,5 @@
-import { itemID, resolveNameBank } from 'oldschooljs/dist/util';
+import { Bank } from 'oldschooljs';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { Plant } from '../../types';
 
@@ -10,7 +11,7 @@ export const bushes: Plant[] = [
 		harvestXp: 120,
 		name: 'Avocado bush',
 		aliases: ['avocado', 'avocado bush'],
-		inputItems: resolveNameBank({ 'Avocado seed': 1 }),
+		inputItems: new Bank({ 'Avocado seed': 1 }),
 		outputCrop: itemID('Avocado'),
 		petChance: 14_400,
 		seedType: 'bush',
@@ -19,7 +20,7 @@ export const bushes: Plant[] = [
 		chance1: 88.6,
 		chance99: 154.9,
 		chanceOfDeath: 15,
-		protectionPayment: resolveNameBank({ Dragonfruit: 15 }),
+		protectionPayment: new Bank({ Dragonfruit: 15 }),
 		treeWoodcuttingLevel: 55,
 		woodcuttingXp: 500,
 		needsChopForHarvest: true,
@@ -35,7 +36,7 @@ export const bushes: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[99, 1],
-			[110, 1]
+			[110, 2]
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10,
@@ -48,7 +49,7 @@ export const bushes: Plant[] = [
 		harvestXp: 120,
 		name: 'Mango bush',
 		aliases: ['mango', 'mango bush'],
-		inputItems: resolveNameBank({ 'Mango seed': 1 }),
+		inputItems: new Bank({ 'Mango seed': 1 }),
 		outputCrop: itemID('Mango'),
 		petChance: 14_400,
 		seedType: 'bush',
@@ -57,7 +58,7 @@ export const bushes: Plant[] = [
 		chance1: 88.6,
 		chance99: 154.9,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ Avocado: 15 }),
+		protectionPayment: new Bank({ Avocado: 15 }),
 		treeWoodcuttingLevel: 55,
 		woodcuttingXp: 500,
 		needsChopForHarvest: true,
@@ -73,7 +74,7 @@ export const bushes: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[99, 1],
-			[110, 1]
+			[110, 2]
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10,
@@ -86,7 +87,7 @@ export const bushes: Plant[] = [
 		harvestXp: 120,
 		name: 'Lychee bush',
 		aliases: ['lychee', 'lychee bush'],
-		inputItems: resolveNameBank({ 'Lychee seed': 1 }),
+		inputItems: new Bank({ 'Lychee seed': 1 }),
 		outputCrop: itemID('Lychee'),
 		petChance: 14_400,
 		seedType: 'bush',
@@ -95,7 +96,7 @@ export const bushes: Plant[] = [
 		chance1: 88.6,
 		chance99: 154.9,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ Mango: 15 }),
+		protectionPayment: new Bank({ Mango: 15 }),
 		treeWoodcuttingLevel: 55,
 		woodcuttingXp: 500,
 		needsChopForHarvest: true,
@@ -111,7 +112,7 @@ export const bushes: Plant[] = [
 		// [Farm Lvl, Patches Gained]
 		additionalPatchesByFarmLvl: [
 			[99, 1],
-			[110, 1]
+			[110, 2]
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10,
