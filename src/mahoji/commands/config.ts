@@ -105,7 +105,7 @@ async function favAlchConfig(
 ) {
 	const currentFavorites = user.favorite_alchables;
 	if (manyToAdd) {
-		const items = parseBank({ inputStr: manyToAdd })
+		const items = parseBank({ inputStr: manyToAdd, noDuplicateItems: true })
 			.filter(i => i.highalch > 1)
 			.filter(i => !currentFavorites.includes(i.id));
 		if (items.length === 0) return 'No valid items were given.';
@@ -202,7 +202,8 @@ async function bankSortConfig(
 	const newBank = currentWeightingBank.clone();
 	const inputStr = addWeightingBank ?? removeWeightingBank ?? '';
 	const inputBank = parseBank({
-		inputStr
+		inputStr,
+		noDuplicateItems: true
 	});
 
 	if (addWeightingBank) newBank.add(inputBank);
