@@ -859,8 +859,6 @@ export default class extends Extendable {
 				`${Emoji.QuestIcon} **${this.username}'s** minion, ${this.minionName}, just achieved the maximum amount of Quest Points!`
 			);
 		}
-
-		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
 		return this.settings.update(UserSettings.QP, newQP);
 	}
 
@@ -872,8 +870,6 @@ export default class extends Extendable {
 	public async incrementMonsterScore(this: User, monsterID: number, amountToAdd = 1) {
 		await this.settings.sync(true);
 		const currentMonsterScores = this.settings.get(UserSettings.MonsterScores);
-
-		this.log(`had Quantity[${amountToAdd}] KC added to Monster[${monsterID}]`);
 
 		return this.settings.update(
 			UserSettings.MonsterScores,
@@ -892,16 +888,12 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentClueScores = this.settings.get(UserSettings.ClueScores);
 
-		this.log(`had Quantity[${amountToAdd}] KC added to Clue[${clueID}]`);
-
 		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
 	}
 
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {
 		await this.settings.sync(true);
 		const currentCreatureScores = this.settings.get(UserSettings.CreatureScores);
-
-		this.log(`had Quantity[${amountToAdd}] Score added to Creature[${creatureID}]`);
 
 		return this.settings.update(
 			UserSettings.CreatureScores,
