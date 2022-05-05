@@ -19,7 +19,7 @@ import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
 import type { Skills as TSkills } from '../lib/types';
-import { assert, channelIsSendable } from '../lib/util';
+import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
 
 export function mahojiParseNumber({
 	input,
@@ -138,10 +138,10 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 
 export async function mahojiUserSettingsUpdate(
 	client: KlasaClient,
-	user: string | KlasaUser,
+	user: string | bigint | KlasaUser,
 	data: Prisma.UserUpdateArgs['data']
 ) {
-	const klasaUser = typeof user === 'string' ? await client.fetchUser(user) : user;
+	const klasaUser = typeof user === 'string' || typeof user === 'bigint' ? await client.fetchUser(user) : user;
 
 	const newUser = await prisma.user.update({
 		data,
@@ -222,8 +222,8 @@ export interface MahojiUserOption {
 	member: APIInteractionDataResolvedGuildMember;
 }
 
-export function getSkillsOfMahojiUser(user: User): Required<TSkills> {
-	return {
+export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSkills> {
+	const skills: Required<TSkills> = {
 		agility: Number(user.skills_agility),
 		cooking: Number(user.skills_cooking),
 		fishing: Number(user.skills_fishing),
@@ -249,6 +249,12 @@ export function getSkillsOfMahojiUser(user: User): Required<TSkills> {
 		slayer: Number(user.skills_slayer),
 		dungeoneering: Number(user.skills_dungeoneering)
 	};
+	if (levels) {
+		for (const [key, val] of Object.entries(skills) as [keyof TSkills, number][]) {
+			skills[key] = convertXPtoLVL(val);
+		}
+	}
+	return skills;
 }
 
 export function getUserGear(user: User) {

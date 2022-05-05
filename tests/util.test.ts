@@ -7,6 +7,8 @@ import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
+import { getSkillsOfMahojiUser } from '../src/mahoji/mahojiSettings';
+import { mockUser } from './utils';
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -82,5 +84,10 @@ describe('util', () => {
 			price: calcPercentOfNum(30, 19_200),
 			basePrice: 21_814
 		});
+	});
+
+	test('getSkillsOfMahojiUser', () => {
+		expect(getSkillsOfMahojiUser(mockUser(), true).agility).toEqual(73);
+		expect(getSkillsOfMahojiUser(mockUser()).agility).toEqual(1_000_000);
 	});
 });

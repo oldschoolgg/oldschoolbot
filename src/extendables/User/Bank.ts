@@ -52,7 +52,6 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentGP = this.settings.get(UserSettings.GP);
 		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
-		this.log(`had ${amount} GP removed. BeforeBalance[${currentGP}] NewBalance[${currentGP - amount}]`);
 		this.settings.update(UserSettings.GP, currentGP - amount);
 	}
 
