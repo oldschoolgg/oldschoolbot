@@ -265,12 +265,12 @@ export default class MinionCommand extends BotCommand {
 		return equipPet(msg, input);
 	}
 
-	async af() {
-		return COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm');
+	async af(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
-	async autofarm() {
-		return COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm');
+	async autofarm(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
 	async activities(msg: KlasaMessage) {
