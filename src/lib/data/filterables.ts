@@ -1,7 +1,6 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { superCompostables } from '../../mahoji/lib/abstracted_commands/farmingCommand';
 import { UserSettings } from '../settings/types/UserSettings';
 import { gracefulItems } from '../skilling/skills/agility';
 import { Craftables } from '../skilling/skills/crafting/craftables';
@@ -24,6 +23,36 @@ import {
 	wintertodtCL
 } from './CollectionsExport';
 import { Eatables } from './eatables';
+
+export const superCompostables = [
+	'Pineapple',
+	'Watermelon',
+	'Coconut',
+	'Coconut shell',
+	'Papaya fruit',
+	'Mushroom',
+	'Poison ivy berries',
+	'Jangerberries',
+	'White berries',
+	'Snape grass',
+	'Toadflax',
+	'Avantoe',
+	'Kwuarm',
+	'Snapdragon',
+	'Cadantine',
+	'Lantadyme',
+	'Dwarf weed',
+	'Torstol',
+	'Oak roots',
+	'Willow roots',
+	'Maple roots',
+	'Yew roots',
+	'Magic roots',
+	'Celastrus bark',
+	'Calquat fruit',
+	'White tree fruit',
+	'White lily'
+];
 
 export const warmGear = resolveItems([
 	'Staff of fire',

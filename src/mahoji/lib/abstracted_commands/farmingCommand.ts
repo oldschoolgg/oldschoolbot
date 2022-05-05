@@ -4,6 +4,7 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank } from 'oldschooljs';
 
 import { client } from '../../..';
+import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -311,36 +312,6 @@ It'll take around ${formatDuration(duration)} to finish.
 
 ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 }
-
-export const superCompostables = [
-	'Pineapple',
-	'Watermelon',
-	'Coconut',
-	'Coconut shell',
-	'Papaya fruit',
-	'Mushroom',
-	'Poison ivy berries',
-	'Jangerberries',
-	'White berries',
-	'Snape grass',
-	'Toadflax',
-	'Avantoe',
-	'Kwuarm',
-	'Snapdragon',
-	'Cadantine',
-	'Lantadyme',
-	'Dwarf weed',
-	'Torstol',
-	'Oak roots',
-	'Willow roots',
-	'Maple roots',
-	'Yew roots',
-	'Magic roots',
-	'Celastrus bark',
-	'Calquat fruit',
-	'White tree fruit',
-	'White lily'
-];
 
 export async function compostBinCommand(
 	interaction: SlashCommandInteraction,

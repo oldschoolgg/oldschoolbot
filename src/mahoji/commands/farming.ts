@@ -6,6 +6,7 @@ import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji
 import { client } from '../..';
 import { Emoji } from '../../lib/constants';
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
+import { superCompostables } from '../../lib/data/filterables';
 import { defaultPatches } from '../../lib/minions/farming';
 import { IPatchData, IPatchDataDetailed } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
@@ -13,12 +14,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Farming from '../../lib/skilling/skills/farming';
 import { assert, formatDuration, stringMatches, toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import {
-	compostBinCommand,
-	farmingPlantCommand,
-	harvestCommand,
-	superCompostables
-} from '../lib/abstracted_commands/farmingCommand';
+import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
