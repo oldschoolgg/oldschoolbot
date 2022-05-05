@@ -23,9 +23,9 @@ export async function preCommand({
 	bypassInhibitors
 }: {
 	abstractCommand: AbstractCommand;
-	userID: string;
-	guildID?: string | null;
-	channelID: string;
+	userID: string | bigint;
+	guildID?: string | bigint | null;
+	channelID: string | bigint;
 	bypassInhibitors: boolean;
 }): Promise<{ silent: boolean; reason: string } | undefined> {
 	client.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
@@ -33,10 +33,10 @@ export async function preCommand({
 	if (user.isBusy && !bypassInhibitors && !client.owners.has(user)) {
 		return { silent: true, reason: 'You cannot use a command right now.' };
 	}
-	client.oneCommandAtATimeCache.add(userID);
-	const guild = guildID ? client.guilds.cache.get(guildID) : null;
-	const member = guild?.members.cache.get(userID);
-	const channel = client.channels.cache.get(channelID) as TextChannel;
+	client.oneCommandAtATimeCache.add(userID.toString());
+	const guild = guildID ? client.guilds.cache.get(guildID.toString()) : null;
+	const member = guild?.members.cache.get(userID.toString());
+	const channel = client.channels.cache.get(channelID.toString()) as TextChannel;
 	await cacheLinkedUsers(userID);
 	const inhibitResult = await runInhibitors({
 		user,

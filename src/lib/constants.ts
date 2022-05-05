@@ -118,6 +118,7 @@ export const enum Emoji {
 	Ranged = '<:ranged:630911040258834473>',
 	Gear = '<:gear:835314891950129202>',
 	Slayer = '<:slayer:630911040560824330>',
+	Stopwatch = '⏱️',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -498,15 +499,15 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 }
 
 export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage,
+	msg: KlasaMessage | null,
 	commandName?: string
 ) => `This command you're trying to use, has been changed to a 'slash command'.
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
 - Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`${msg.cmdPrefix}${commandName ?? msg.command?.name}\`, now you use: \`/${
-	commandName ?? msg.command?.name
-}\`
+- You no longer use this command using \`${msg?.cmdPrefix ?? '+'}${
+	commandName ?? msg?.command?.name
+}\`, now you use: \`/${commandName ?? msg?.command?.name}\`
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();

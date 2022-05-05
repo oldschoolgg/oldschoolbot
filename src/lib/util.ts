@@ -698,7 +698,7 @@ export function convertDJSMemberToAPIMember(member: GuildMember): APIInteraction
 	};
 }
 
-export function removeFromArr<T>(arr: T[], item: T) {
+export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
 	return arr.filter(i => i !== item);
 }
 
