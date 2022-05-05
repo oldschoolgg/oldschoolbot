@@ -1,5 +1,4 @@
 import { KlasaUser } from 'klasa';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
@@ -9,11 +8,7 @@ import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
 import { plants } from '../../skilling/skills/farming';
 import { IPatchDataDetailed } from '../farming/types';
 
-export async function autoFarm(
-	interaction: SlashCommandInteraction,
-	user: KlasaUser,
-	patchesDetailed: IPatchDataDetailed[]
-) {
+export async function autoFarm(user: KlasaUser, patchesDetailed: IPatchDataDetailed[], channelID: bigint) {
 	const userBank = user.bank();
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const elligible = [...plants]
@@ -42,7 +37,7 @@ export async function autoFarm(
 		user,
 		plantName: toPlant.name,
 		autoFarmed: true,
-		channelID: interaction.channelID,
+		channelID,
 		quantity: null,
 		pay: false
 	});

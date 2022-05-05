@@ -305,7 +305,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		const { patchesDetailed } = await getFarmingInfo(userID);
 
 		if (options.auto_farm) {
-			return autoFarm(interaction, klasaUser, patchesDetailed);
+			return autoFarm(klasaUser, patchesDetailed, channelID);
 		}
 		if (options.always_pay) {
 			const isEnabled = klasaUser.settings.get(UserSettings.Minion.DefaultPay);
