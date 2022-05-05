@@ -43,6 +43,7 @@ export async function autoFarm(
 		plantName: toPlant.name,
 		autoFarmed: true,
 		channelID: interaction.channelID,
-		quantity: null
+		quantity: null,
+		pay: false
 	});
 }

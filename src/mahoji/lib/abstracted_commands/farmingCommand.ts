@@ -122,13 +122,15 @@ export async function farmingPlantCommand({
 	plantName,
 	quantity,
 	autoFarmed,
-	channelID
+	channelID,
+	pay
 }: {
 	user: KlasaUser;
 	plantName: string;
 	quantity: number | null;
 	autoFarmed: boolean;
 	channelID: bigint;
+	pay: boolean;
 }): Promise<string> {
 	await user.settings.sync(true);
 	const userBank = user.bank();
@@ -149,7 +151,7 @@ export async function farmingPlantCommand({
 		)}. *Make sure you are not attempting to farm 0 crops.*`;
 	}
 
-	let wantsToPay = alwaysPay && plant.canPayFarmer;
+	let wantsToPay = (pay || alwaysPay) && plant.canPayFarmer;
 
 	if (user.skillLevel(SkillsEnum.Farming) < plant.level) {
 		return `${user.minionName} needs ${plant.level} Farming to plant ${plant.name}.`;
