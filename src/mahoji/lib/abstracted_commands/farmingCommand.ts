@@ -187,8 +187,9 @@ export async function farmingPlantCommand({
 	const maxTripLength = user.maxTripLength('Farming');
 
 	// If no quantity provided, set it to the max PATCHES available.
+	const maxCanDo = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));
 	if (quantity === null) {
-		quantity = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));
+		quantity = maxCanDo;
 	}
 	quantity = Math.min(quantity, numOfPatches);
 
@@ -220,9 +221,7 @@ export async function farmingPlantCommand({
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${plant.name} you can plant is ${
-			(Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest)), numOfPatches)
-		}.`;
+		)}, try a lower quantity. The highest amount of ${plant.name} you can plant is ${maxCanDo}.`;
 	}
 
 	const cost = new Bank();
