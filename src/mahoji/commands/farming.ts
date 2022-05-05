@@ -188,6 +188,12 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'quantity',
 					description: 'The quantity you want to plant.',
 					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'pay',
+					description: 'Pay farmers for protection.',
+					required: false
 				}
 			]
 		},
@@ -294,7 +300,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		auto_farm?: {};
 		default_compost?: { compost: CompostName };
 		always_pay?: {};
-		plant?: { plant_name: string; quantity?: number };
+		plant?: { plant_name: string; quantity?: number; pay?: boolean };
 		harvest?: { patch_name: string };
 		tithe_farm?: { buy_reward?: string };
 		compost_bin?: { plant_name: string; quantity?: number };
@@ -326,7 +332,8 @@ export const farmingCommand: OSBMahojiCommand = {
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,
 				autoFarmed: false,
-				channelID
+				channelID,
+				pay: Boolean(options.plant.pay)
 			});
 		}
 		if (options.harvest) {
