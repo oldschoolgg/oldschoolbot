@@ -9,6 +9,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { itemID, stringMatches, truncateString, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -50,6 +51,7 @@ export const openCommand: OSBMahojiCommand = {
 	run: async ({ userID, options, interaction }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
 		await interaction.deferReply();
 		const user = await client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
 				user
@@ -76,7 +78,7 @@ export const openCommand: OSBMahojiCommand = {
 		const loot =
 			output instanceof LootTable
 				? { bank: output.roll(quantity) }
-				: await output({ user, self: openable, quantity });
+				: await output({ user, self: openable, quantity, mahojiUser });
 		const { previousCL } = await user.addItemsToBank({
 			items: loot.bank,
 			collectionLog: true,
