@@ -1,12 +1,12 @@
 import { Bank } from 'oldschooljs';
 
-import { hasItemEquippedOrInBank } from '../src/lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../src/lib/util/minionUtils';
 import { mockUser } from './utils';
 
-describe('hasItemEquippedOrInBank', () => {
+describe('hasItemsEquippedOrInBank', () => {
 	test("Doesn't have", () => {
 		expect(
-			hasItemEquippedOrInBank(
+			hasItemsEquippedOrInBank(
 				mockUser({
 					bank: new Bank(),
 					meleeGear: {}
@@ -17,7 +17,7 @@ describe('hasItemEquippedOrInBank', () => {
 	});
 	test('Has just in gear', () => {
 		expect(
-			hasItemEquippedOrInBank(
+			hasItemsEquippedOrInBank(
 				mockUser({
 					bank: new Bank(),
 					meleeGear: {
@@ -30,7 +30,7 @@ describe('hasItemEquippedOrInBank', () => {
 	});
 	test('Has just in bank', () => {
 		expect(
-			hasItemEquippedOrInBank(
+			hasItemsEquippedOrInBank(
 				mockUser({
 					bank: new Bank().add('Slayer helmet (i)'),
 					meleeGear: {}
@@ -41,7 +41,7 @@ describe('hasItemEquippedOrInBank', () => {
 	});
 	test('More than one item passing', () => {
 		expect(
-			hasItemEquippedOrInBank(
+			hasItemsEquippedOrInBank(
 				mockUser({
 					bank: new Bank().add('Coal').add('Egg'),
 					meleeGear: {
@@ -54,14 +54,15 @@ describe('hasItemEquippedOrInBank', () => {
 	});
 	test('More than one item failing', () => {
 		expect(
-			hasItemEquippedOrInBank(
+			hasItemsEquippedOrInBank(
 				mockUser({
 					bank: new Bank().add('Coal').add('Egg'),
 					meleeGear: {
 						weapon: 'Bronze dagger'
 					}
 				}),
-				['Coal', 'Egg', 'Bronze dagger', 'Trout']
+				['Coal', 'Egg', 'Bronze dagger', 'Trout'],
+				'every'
 			)
 		).toEqual(false);
 	});

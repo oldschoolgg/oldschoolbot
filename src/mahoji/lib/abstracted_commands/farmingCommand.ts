@@ -15,7 +15,7 @@ import { Plant, SkillsEnum } from '../../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { hasItemEquippedOrInBank } from '../../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
 import { CompostName, farmingPatchNames, findPlant, getFarmingInfo, isPatchName } from '../../commands/farming';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
@@ -75,7 +75,7 @@ export async function harvestCommand({
 		duration *= 0.9;
 	}
 
-	if (hasItemEquippedOrInBank(user, 'Ring of endurance')) {
+	if (hasItemsEquippedOrInBank(user, ['Ring of endurance'])) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
 	}
@@ -88,11 +88,11 @@ export async function harvestCommand({
 		)}, try a lower quantity.`;
 	}
 
-	if (hasItemEquippedOrInBank(user, 'Magic secateurs')) {
+	if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
 		boostStr.push('10% crop yield for Magic Secateurs');
 	}
 
-	if (hasItemEquippedOrInBank(user, 'Farming cape')) {
+	if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
 		boostStr.push('5% crop yield for Farming Skillcape');
 	}
 
@@ -269,10 +269,10 @@ export async function farmingPlantCommand({
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);
 	} else if (patchType.patchPlanted) {
-		if (hasItemEquippedOrInBank(user, 'Magic secateurs')) {
+		if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
 			boostStr.push('10% crop yield for Magic Secateurs');
 		}
-		if (hasItemEquippedOrInBank(user, 'Farming cape')) {
+		if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
 			boostStr.push('5% crop yield for Farming Skillcape');
 		}
 
