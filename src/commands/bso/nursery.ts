@@ -13,11 +13,11 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Nursery, Species, tameSpecies } from '../../lib/tames';
 import { formatDuration, gaussianRandom, stringMatches, updateBankSetting } from '../../lib/util';
-import { hasItemEquippedOrInBank } from '../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { tame_growth } from '.prisma/client';
 
 export async function generateNewTame(user: KlasaUser | User, species: Species) {
-	let shinyChance = hasItemEquippedOrInBank(user, 'Ring of luck')
+	let shinyChance = hasItemsEquippedOrInBank(user, ['Ring of luck'])
 		? Math.floor(reduceNumByPercent(species.shinyChance, 3))
 		: species.shinyChance;
 

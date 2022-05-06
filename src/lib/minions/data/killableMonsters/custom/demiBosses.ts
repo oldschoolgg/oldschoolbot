@@ -3,10 +3,10 @@ import { LootTable, Monsters } from 'oldschooljs';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { HighSeedPackTable } from '../../../../../commands/Minion/seedpack';
 import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
+import { HighSeedPackTable } from '../../../farming';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
 import { CustomMonster } from './customMonsters';
 import { KrakenTable } from './SeaKraken';

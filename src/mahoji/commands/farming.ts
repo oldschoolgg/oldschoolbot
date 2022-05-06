@@ -8,13 +8,14 @@ import { Emoji } from '../../lib/constants';
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';
 import { defaultPatches } from '../../lib/minions/farming';
-import { IPatchData, IPatchDataDetailed } from '../../lib/minions/farming/types';
+import { ContractOption, ContractOptions, IPatchData, IPatchDataDetailed } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Farming from '../../lib/skilling/skills/farming';
 import { assert, formatDuration, stringMatches, toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
+import { faringContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -101,7 +102,7 @@ export async function getFarmingInfo(userID: bigint | string) {
 		const readyIn = readyAt ? readyAt.getTime() - now : null;
 
 		if (ready) {
-			assert(readyAt !== null, 'readyAt shouldnt be null if ready');
+			assert(readyAt !== null, "readyAt shouldn't be null if ready");
 			assert(
 				readyIn !== null && readyIn <= 0,
 				`${patchName} readyIn should be less than 0 ready, received ${readyIn} ${formatDuration(readyIn!)}`
@@ -284,6 +285,21 @@ export const farmingCommand: OSBMahojiCommand = {
 					max_value: 200
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'contract',
+			description: 'Allows you to do Farming Contracts.',
+			required: false,
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'input',
+					description: 'The input you want to give.',
+					required: false,
+					choices: ContractOptions.map(i => ({ value: i, name: i }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -300,8 +316,10 @@ export const farmingCommand: OSBMahojiCommand = {
 		harvest?: { patch_name: string };
 		tithe_farm?: { buy_reward?: string };
 		compost_bin?: { plant_name: string; quantity?: number };
+		contract?: { input?: ContractOption };
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const { patchesDetailed } = await getFarmingInfo(userID);
 
 		if (options.auto_farm) {
@@ -352,6 +370,9 @@ export const farmingCommand: OSBMahojiCommand = {
 				options.compost_bin.plant_name,
 				options.compost_bin.quantity
 			);
+		}
+		if (options.contract) {
+			return faringContractCommand(mahojiUser, options.contract.input);
 		}
 
 		return userGrowingProgressStr(patchesDetailed);

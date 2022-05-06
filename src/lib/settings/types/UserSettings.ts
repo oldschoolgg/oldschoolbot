@@ -5,7 +5,6 @@ import { CompostName } from '../../../mahoji/commands/farming';
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
-import { FarmingContract } from '../../minions/farming/types';
 import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
@@ -128,7 +127,6 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
-		export const FarmingContract = T<FarmingContract | null>('minion.farmingContract');
 		export const DefaultCompostToUse = T<CompostName | null>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
 		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');

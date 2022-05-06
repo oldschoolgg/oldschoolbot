@@ -2,9 +2,10 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { minionName } from '../../../lib/util/minionUtils';
 
 const ticketTable = new SimpleTable<number>().add(1, 4).add(2, 4).add(3, 1);
 
@@ -13,8 +14,6 @@ export default class extends Task {
 		const { channelID, quantity, userID } = data;
 
 		incrementMinigameScore(userID, 'castle_wars', quantity);
-
-		const minionName = await getMinionName(userID);
 
 		const user = await this.client.fetchUser(userID);
 		const loot = new Bank();
@@ -34,7 +33,9 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`<@${userID}>, ${minionName} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
+			`<@${userID}>, ${minionName(
+				user
+			)} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
 			['minigames', { castle_wars: { start: {} } }, true, 'play'],
 			undefined,
 			data,

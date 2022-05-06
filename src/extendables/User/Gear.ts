@@ -5,7 +5,7 @@ import { defaultGear, GearSetupType, resolveGearTypeSetting } from '../../lib/ge
 import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Gear } from '../../lib/structures/Gear';
-import { hasItemEquippedOrInBank, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -39,7 +39,7 @@ export default class extends Extendable {
 	}
 
 	public hasItemEquippedOrInBank(this: User, item: number | string | string[]) {
-		return hasItemEquippedOrInBank(this, item);
+		return hasItemsEquippedOrInBank(this, Array.isArray(item) ? item : [item]);
 	}
 
 	public equippedPet(this: User) {
