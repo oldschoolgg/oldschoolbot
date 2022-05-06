@@ -101,7 +101,7 @@ export async function getFarmingInfo(userID: bigint | string) {
 		const readyIn = readyAt ? readyAt.getTime() - now : null;
 
 		if (ready) {
-			assert(readyAt !== null, 'readyAt shouldnt be null if ready');
+			assert(readyAt !== null, "readyAt shouldn't be null if ready");
 			assert(
 				readyIn !== null && readyIn <= 0,
 				`${patchName} readyIn should be less than 0 ready, received ${readyIn} ${formatDuration(readyIn!)}`

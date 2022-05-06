@@ -250,9 +250,9 @@ export async function farmingPlantCommand({
 		infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 	}
 
-	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse);
+	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse) ?? 'compost';
 	let upgradeType: CompostName | null = null;
-	if (plant.canCompostandPay && compostTier) {
+	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
 		const compostCost = new Bank().add(compostTier, quantity);
 		if (user.owns(compostCost)) {
 			infoStr.push(`You are treating your patches with ${compostCost}.`);
