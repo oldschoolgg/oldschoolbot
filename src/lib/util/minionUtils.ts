@@ -7,7 +7,6 @@ import { getUserGear } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
 import { allPetIDs } from '../data/CollectionsExport';
 import { getSimilarItems } from '../data/similarItems';
-import { getActivityOfUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
 import { convertXPtoLVL, Util } from '../util';
@@ -143,9 +142,4 @@ export function minionName(user: KlasaUser | User) {
 	icon ??= Emoji.Minion;
 
 	return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
-}
-
-export function minionIsBusy(userID: bigint | string): boolean {
-	const usersTask = getActivityOfUser(userID.toString());
-	return Boolean(usersTask);
 }
