@@ -2,12 +2,13 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { minionName } from '../../../lib/util/minionUtils';
 
 const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')
@@ -77,8 +78,6 @@ export default class extends Task {
 			loot.add(tipTable.roll());
 		}
 
-		const minionName = await getMinionName(userID);
-
 		const user = await this.client.fetchUser(userID);
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 		const xpRes = await user.addXP({
@@ -87,7 +86,9 @@ export default class extends Task {
 			duration
 		});
 
-		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
+		let str = `<@${userID}>, ${minionName(
+			user
+		)} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.GnomeRestaurantLootBank, loot);
 

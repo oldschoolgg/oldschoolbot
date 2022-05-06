@@ -10,6 +10,7 @@ import {
 	MessageFlags
 } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { Bank } from 'oldschooljs';
 
 import { CLIENT_ID } from '../config';
 import { SILENT_ERROR } from '../lib/constants';
@@ -18,7 +19,7 @@ import { defaultGear } from '../lib/gear';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
-import type { Skills as TSkills } from '../lib/types';
+import type { ItemBank, Skills as TSkills } from '../lib/types';
 import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
 
 export function mahojiParseNumber({
@@ -284,4 +285,8 @@ export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSele
 		select
 	});
 	return clientSettings as ClientStorage;
+}
+
+export function getMahojiBank(user: User) {
+	return new Bank(user.bank as ItemBank);
 }

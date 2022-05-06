@@ -89,12 +89,12 @@ import {
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
-	toTitleCase,
-	Util
+	toTitleCase
 } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import { getKC, skillLevel } from '../../lib/util/minionUtils';
+import { minionIsBusy } from '../../lib/util/minionIsBusy';
+import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -680,8 +680,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.id);
-		return Boolean(usersTask);
+		return minionIsBusy(this.id);
 	}
 
 	public hasGracefulEquipped(this: User) {
@@ -694,12 +693,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionName(this: User): string {
-		const name = this.settings.get(UserSettings.Minion.Name);
-		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
-
-		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
-
-		return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
+		return minionName(this);
 	}
 
 	public async addXP(this: User, params: AddXpParams): Promise<string> {
