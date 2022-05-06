@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';

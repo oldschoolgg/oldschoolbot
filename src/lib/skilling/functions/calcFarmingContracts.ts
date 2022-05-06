@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 
 import { rand, stringMatches } from '../../../lib/util';
