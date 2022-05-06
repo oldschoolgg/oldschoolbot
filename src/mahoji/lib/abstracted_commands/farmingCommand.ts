@@ -38,6 +38,9 @@ export async function harvestCommand({
 	channelID: bigint;
 	seedType: string;
 }) {
+	if (user.minionIsBusy) {
+		return 'Your minion must not be busy to use this command.';
+	}
 	const GP = user.settings.get(UserSettings.GP);
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	const currentDate = new Date().getTime();
@@ -134,6 +137,9 @@ export async function farmingPlantCommand({
 	pay: boolean;
 }): Promise<string> {
 	await user.settings.sync(true);
+	if (user.minionIsBusy) {
+		return 'Your minion must not be busy to use this command.';
+	}
 	const userBank = user.bank();
 	const alwaysPay = user.settings.get(UserSettings.Minion.DefaultPay);
 	const questPoints = user.settings.get(UserSettings.QP);
