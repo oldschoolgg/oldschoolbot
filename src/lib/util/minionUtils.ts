@@ -106,9 +106,10 @@ export function userHasItemsEquippedAnywhere(
 	return false;
 }
 
-export function hasItemEquippedOrInBank(
+export function hasItemsEquippedOrInBank(
 	user: User | KlasaUser,
-	_items: string | number | (string | number)[]
+	_items: (string | number)[],
+	type: 'every' | 'one' = 'one'
 ): boolean {
 	const bank = user instanceof KlasaUser ? user.bank() : new Bank(user.bank as ItemBank);
 	const items = resolveItems(_items);
@@ -116,7 +117,12 @@ export function hasItemEquippedOrInBank(
 		const similarItems = [...getSimilarItems(baseID), baseID];
 		const hasOneEquipped = similarItems.some(id => userHasItemsEquippedAnywhere(user, id, true));
 		const hasOneInBank = similarItems.some(id => bank.has(id));
-		if (!hasOneEquipped && !hasOneInBank) return false;
+		// If only one needs to be equipped, return true now if it is equipped.
+		if (type === 'one' && (hasOneEquipped || hasOneInBank)) return true;
+		// If all need to be equipped, return false now if not equipped.
+		else if (type === 'every' && !hasOneEquipped && !hasOneInBank) {
+			return false;
+		}
 	}
-	return true;
+	return type === 'one' ? false : true;
 }
