@@ -92,7 +92,7 @@ export async function harvestCommand({
 		boostStr.push('10% crop yield for Magic Secateurs');
 	}
 
-	if (hasItemsEquippedOrInBank(user, ['Farming cape(t)', 'Farming cape'])) {
+	if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
 		boostStr.push('5% crop yield for Farming Skillcape');
 	}
 
@@ -272,7 +272,7 @@ export async function farmingPlantCommand({
 		if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
 			boostStr.push('10% crop yield for Magic Secateurs');
 		}
-		if (hasItemsEquippedOrInBank(user, ['Farming cape(t)', 'Farming cape'])) {
+		if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
 			boostStr.push('5% crop yield for Farming Skillcape');
 		}
 
