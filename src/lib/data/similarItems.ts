@@ -241,6 +241,7 @@ const source: [string, (string | number)[]][] = [
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
+	['Farming cape', ['Max cape', 'Farming cape(t)']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband']],
 	['Angler top', ['Spirit angler top']],
