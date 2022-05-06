@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
@@ -10,6 +11,7 @@ import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import ClueTiers from './minions/data/clueTiers';
 import { defaultFarmingContract } from './minions/farming';
+import { FarmingContract } from './minions/farming/types';
 import { UserSettings } from './settings/types/UserSettings';
 import {
 	BagFullOfGemsTable,
@@ -27,6 +29,7 @@ interface OpenArgs {
 	quantity: number;
 	user: KlasaUser;
 	self: UnifiedOpenable;
+	mahojiUser: User;
 }
 
 interface UnifiedOpenable {
@@ -254,7 +257,8 @@ const osjsOpenables: UnifiedOpenable[] = [
 			bank: Bank;
 			message?: string;
 		}> => {
-			const { plantTier } = args.user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+			const { plantTier } =
+				(args.mahojiUser.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
 			const openLoot = new Bank();
 			for (let i = 0; i < args.quantity; i++) {
 				openLoot.add(openSeedPack(plantTier));

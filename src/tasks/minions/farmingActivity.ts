@@ -15,7 +15,7 @@ import chatHeadImage from '../../lib/util/chatHeadImage';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import { getFarmingKeyFromName } from '../../mahoji/commands/farming';
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {
@@ -33,6 +33,7 @@ export default class extends Task {
 			autoFarmed
 		} = data;
 		const user = await this.client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = user.skillLevel(SkillsEnum.Farming);
 		const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		let baseBonus = 1;
@@ -410,9 +411,10 @@ export default class extends Task {
 				[getFarmingKeyFromName(plant.seedType)]: newPatch
 			});
 
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? {
-				...defaultFarmingContract
-			};
+			const currentContract: FarmingContract | null =
+				(mahojiUser.minion_farmingContract as FarmingContract | null) ?? {
+					...defaultFarmingContract
+				};
 
 			const { contractsCompleted } = currentContract;
 
@@ -426,7 +428,10 @@ export default class extends Task {
 					contractsCompleted: contractsCompleted + 1
 				};
 
-				user.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
+				await mahojiUserSettingsUpdate(this.client, user.id, {
+					minion_farmingContract: farmingContractUpdate as any
+				});
+
 				loot.add('Seed pack');
 
 				janeMessage = true;

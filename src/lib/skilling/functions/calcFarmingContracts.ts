@@ -1,6 +1,8 @@
+import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 
 import { rand, stringMatches } from '../../../lib/util';
+import { getSkillsOfMahojiUser } from '../../../mahoji/mahojiSettings';
 import { PlantTier } from '../../minions/farming/types';
 import { SkillsEnum } from '../types';
 
@@ -80,10 +82,11 @@ const hardPlants: PlantsList = [
 ];
 
 export function getPlantToGrow(
-	user: KlasaUser,
+	user: KlasaUser | User,
 	{ contractLevel, ignorePlant }: { contractLevel: 'easy' | 'medium' | 'hard'; ignorePlant: string | null }
 ): [string, PlantTier] {
-	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
+	const farmingLevel =
+		user instanceof KlasaUser ? user.skillLevel(SkillsEnum.Farming) : getSkillsOfMahojiUser(user, true).farming;
 	let contractType: PlantsList = [];
 	if (contractLevel === 'easy') contractType = [...easyPlants];
 	if (contractLevel === 'medium') contractType = [...mediumPlants];

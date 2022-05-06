@@ -4,11 +4,13 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { getUserGear } from '../../mahoji/mahojiSettings';
+import { Emoji } from '../constants';
 import { allPetIDs } from '../data/CollectionsExport';
 import { getSimilarItems } from '../data/similarItems';
+import { getActivityOfUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { convertXPtoLVL } from '../util';
+import { convertXPtoLVL, Util } from '../util';
 import resolveItems from './resolveItems';
 
 export function skillLevel(user: KlasaUser | User, skill: SkillsEnum) {
@@ -125,4 +127,25 @@ export function hasItemsEquippedOrInBank(
 		}
 	}
 	return type === 'one' ? false : true;
+}
+
+export function minionName(user: KlasaUser | User) {
+	let [name, isIronman, icon] =
+		user instanceof KlasaUser
+			? [
+					user.settings.get(UserSettings.Minion.Name),
+					user.settings.get(UserSettings.Minion.Ironman),
+					user.settings.get(UserSettings.Minion.Icon)
+			  ]
+			: [user.minion_name, user.minion_ironman, user.minion_icon];
+
+	const prefix = isIronman ? Emoji.Ironman : '';
+	icon ??= Emoji.Minion;
+
+	return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
+}
+
+export function minionIsBusy(userID: bigint | string): boolean {
+	const usersTask = getActivityOfUser(userID.toString());
+	return Boolean(usersTask);
 }

@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -124,10 +125,17 @@ export function findFavour(favourName: string): KourendFavour | undefined {
 	);
 }
 
-export function gotFavour(user: KlasaUser, favour: Favours | undefined, neededPoints: number): [boolean, number] {
-	const currentUserFavour = user.settings.get(UserSettings.KourendFavour);
+export function gotFavour(
+	user: KlasaUser | User,
+	favour: Favours | undefined,
+	neededPoints: number
+): [boolean, number] {
+	const currentUserFavour =
+		user instanceof KlasaUser
+			? user.settings.get(UserSettings.KourendFavour)
+			: (user.kourend_favour as UserKourendFavour | null);
 	let gotEnoughPoints = false;
-	if (!favour) return [gotEnoughPoints, neededPoints];
+	if (!favour || !currentUserFavour) return [gotEnoughPoints, neededPoints];
 	for (const [key, value] of Object.entries(currentUserFavour) as [keyof UserKourendFavour, number][]) {
 		if (key.toLowerCase() === favour.toString().toLowerCase()) {
 			if (value >= neededPoints) gotEnoughPoints = true;

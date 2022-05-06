@@ -5,10 +5,11 @@ import { itemID } from 'oldschooljs/dist/util';
 
 import { requiresMinion } from '../../lib/minions/decorators';
 import { defaultFarmingContract } from '../../lib/minions/farming';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { FarmingContract } from '../../lib/minions/farming/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { bankHasItem, rand, roll } from '../../lib/util';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 const LowSeedPackTable = new LootTable()
 	.add('Potato seed', [8, 12], 2)
@@ -154,9 +155,9 @@ export default class extends BotCommand {
 	async run(msg: KlasaMessage, [quantity]: [number | undefined]) {
 		await msg.author.settings.sync(true);
 		const realQty = quantity ?? 1;
-
+		const mahojiUser = await mahojiUsersSettingsFetch(msg.author.id);
 		const userBank = msg.author.bank().bank;
-		const { plantTier } = msg.author.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+		const { plantTier } = (mahojiUser.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
 		const loot = new Bank();
 
 		if (bankHasItem(userBank, itemID('Seed pack'), realQty)) {
