@@ -30,6 +30,7 @@ import {
 	fillTextXTimesInCtx
 } from '../lib/util/canvasUtil';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
@@ -64,6 +65,112 @@ interface IBgSprite {
 	borderTitle: Canvas;
 	repeatableBg: Canvas;
 }
+
+const i = itemID;
+const forcedShortNameMap = new Map<number, string>([
+	[i('Guam seed'), 'guam'],
+	[i('Marrentill seed'), 'marren'],
+	[i('Tarromin seed'), 'tarro'],
+	[i('Harralander seed'), 'harra'],
+	[i('Ranarr seed'), 'ranarr'],
+	[i('Toadflax seed'), 'toad'],
+	[i('Irit seed'), 'irit'],
+	[i('Avantoe seed'), 'avan'],
+	[i('Kwuarm seed'), 'kwuarm'],
+	[i('Snapdragon seed'), 'snap'],
+	[i('Cadantine seed'), 'cadan'],
+	[i('Lantadyme seed'), 'lanta'],
+	[i('Dwarf weed seed'), 'dwarf'],
+	[i('Torstol seed'), 'torstol'],
+	[i('Redberry seed'), 'redberry'],
+	[i('Cadavaberry seed'), 'cadava'],
+	[i('Dwellberry seed'), 'dwell'],
+	[i('Jangerberry seed'), 'janger'],
+	[i('Whiteberry seed'), 'white'],
+	[i('Poison ivy seed'), 'ivy'],
+	[i('Grape seed'), 'grape'],
+	[i('Mushroom spore'), 'mushroom'],
+	[i('Belladonna seed'), 'bella'],
+	[i('Seaweed spore'), 'seaweed'],
+	[i('Hespori seed'), 'hespori'],
+	[i('Kronos seed'), 'kronos'],
+	[i('Iasor seed'), 'iasor'],
+	[i('Attas seed'), 'attas'],
+	[i('Cactus seed'), 'cactus'],
+	[i('Potato cactus seed'), 'pcact'],
+	[i('Acorn'), 'oak'],
+	[i('willow seed'), 'willow'],
+	[i('Maple seed'), 'maple'],
+	[i('Yew seed'), 'yew'],
+	[i('Magic seed'), 'magic'],
+	[i('Redwood tree seed'), 'red'],
+	[i('Teak seed'), 'teak'],
+	[i('Mahogany seed'), 'mahog'],
+	[i('Crystal acorn'), 'crystal'],
+	[i('Celastrus seed'), 'celas'],
+	[i('Spirit seed'), 'spirit'],
+	[i('Calquat tree seed'), 'calquat'],
+	[i('Apple tree seed'), 'apple'],
+	[i('Banana tree seed'), 'banana'],
+	[i('Orange tree seed'), 'orange'],
+	[i('Curry tree seed'), 'curry'],
+	[i('Pineapple seed'), 'pinea'],
+	[i('Papaya tree seed'), 'papaya'],
+	[i('Palm tree seed'), 'palm'],
+	[i('Dragonfruit tree seed'), 'dragon'],
+	[i('Potato seed'), 'potato'],
+	[i('Onion seed'), 'onion'],
+	[i('Cabbage seed'), 'cabbage'],
+	[i('Tomato seed'), 'tomato'],
+	[i('Sweetcorn seed'), 'scorn'],
+	[i('Strawberry seed'), 'sberry'],
+	[i('Watermelon seed'), 'melon'],
+	[i('Snape grass seed'), 'snape'],
+	[i('Marigold seed'), 'marigo'],
+	[i('Rosemary seed'), 'rosemar'],
+	[i('Nasturtium seed'), 'nastur'],
+	[i('Woad seed'), 'woad'],
+	[i('Limpwurt seed'), 'limpwurt'],
+	[i('White lily seed'), 'lily'],
+	[i('Barley seed'), 'barley'],
+	[i('Hammerstone seed'), 'hammer'],
+	[i('Asgarnian seed'), 'asgar'],
+	[i('Jute seed'), 'Jute'],
+	[i('Yanillian seed'), 'yani'],
+	[i('Krandorian seed'), 'krand'],
+	[i('Wildblood seed'), 'wild.b'],
+
+	// Herbs
+	[i('Guam leaf'), 'guam'],
+	[i('Marrentill'), 'marren'],
+	[i('Tarromin'), 'tarro'],
+	[i('Harralander'), 'harra'],
+	[i('Ranarr weed'), 'ranarr'],
+	[i('Toadflax'), 'toad'],
+	[i('Irit leaf'), 'irit'],
+	[i('Avantoe'), 'avan'],
+	[i('Kwuarm'), 'kwuarm'],
+	[i('Snapdragon'), 'snap'],
+	[i('Cadantine'), 'cadan'],
+	[i('Lantadyme'), 'lanta'],
+	[i('Dwarf weed'), 'dwarf'],
+	[i('Torstol'), 'torstol'],
+
+	[i('Grimy guam leaf'), 'guam'],
+	[i('Grimy marrentill'), 'marren'],
+	[i('Grimy tarromin'), 'tarro'],
+	[i('Grimy harralander'), 'harra'],
+	[i('Grimy ranarr weed'), 'ranarr'],
+	[i('Grimy toadflax'), 'toad'],
+	[i('Grimy irit leaf'), 'irit'],
+	[i('Grimy avantoe'), 'avan'],
+	[i('Grimy kwuarm'), 'kwuarm'],
+	[i('Grimy snapdragon'), 'snap'],
+	[i('Grimy cadantine'), 'cadan'],
+	[i('Grimy lantadyme'), 'lanta'],
+	[i('Grimy dwarf weed'), 'dwarf'],
+	[i('Grimy torstol'), 'torstol']
+]);
 
 export default class BankImageTask extends Task {
 	public itemIconsList: Set<number>;
@@ -598,8 +705,10 @@ export default class BankImageTask extends Task {
 				bottomItemText = item.id.toString();
 			}
 
-			if (flags.names) {
-				bottomItemText = `${item.name!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
+			const forcedShortName = forcedShortNameMap.get(item.id);
+			if (flags.names || forcedShortName) {
+				const name = (forcedShortName?.toUpperCase() ?? item.name).slice(0, 7);
+				bottomItemText = name;
 			}
 
 			if (bottomItemText) {
