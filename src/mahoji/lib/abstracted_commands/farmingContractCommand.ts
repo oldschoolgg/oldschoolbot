@@ -7,9 +7,9 @@ import { defaultFarmingContract } from '../../../lib/minions/farming';
 import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
+import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { minionName } from '../../../lib/util/minionUtils';
-import { findPlant } from '../../commands/farming';
 import { getMahojiBank, getSkillsOfMahojiUser, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 async function janeImage(content: string) {

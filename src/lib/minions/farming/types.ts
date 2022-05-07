@@ -1,5 +1,5 @@
-import { FarmingPatchName } from '../../../mahoji/commands/farming';
 import { Plant } from '../../skilling/types';
+import { FarmingPatchName } from '../../util/farmingHelpers';
 
 export interface IPatchData {
 	lastPlanted: string | null;

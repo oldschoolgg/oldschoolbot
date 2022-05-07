@@ -12,9 +12,9 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
+import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { getFarmingKeyFromName } from '../../mahoji/commands/farming';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
