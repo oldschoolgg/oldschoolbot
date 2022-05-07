@@ -2,10 +2,10 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { FarmingPatchName } from '../../mahoji/commands/farming';
 import { Emoji } from '../constants';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank, Skills } from '../types';
+import { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
 	Agility = 'agility',

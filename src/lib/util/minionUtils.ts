@@ -4,11 +4,12 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { getUserGear } from '../../mahoji/mahojiSettings';
+import { Emoji } from '../constants';
 import { allPetIDs } from '../data/CollectionsExport';
 import { getSimilarItems } from '../data/similarItems';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { convertXPtoLVL } from '../util';
+import { convertXPtoLVL, Util } from '../util';
 import resolveItems from './resolveItems';
 
 export function skillLevel(user: KlasaUser | User, skill: SkillsEnum) {
@@ -106,9 +107,10 @@ export function userHasItemsEquippedAnywhere(
 	return false;
 }
 
-export function hasItemEquippedOrInBank(
+export function hasItemsEquippedOrInBank(
 	user: User | KlasaUser,
-	_items: string | number | (string | number)[]
+	_items: (string | number)[],
+	type: 'every' | 'one' = 'one'
 ): boolean {
 	const bank = user instanceof KlasaUser ? user.bank() : new Bank(user.bank as ItemBank);
 	const items = resolveItems(_items);
@@ -116,7 +118,28 @@ export function hasItemEquippedOrInBank(
 		const similarItems = [...getSimilarItems(baseID), baseID];
 		const hasOneEquipped = similarItems.some(id => userHasItemsEquippedAnywhere(user, id, true));
 		const hasOneInBank = similarItems.some(id => bank.has(id));
-		if (!hasOneEquipped && !hasOneInBank) return false;
+		// If only one needs to be equipped, return true now if it is equipped.
+		if (type === 'one' && (hasOneEquipped || hasOneInBank)) return true;
+		// If all need to be equipped, return false now if not equipped.
+		else if (type === 'every' && !hasOneEquipped && !hasOneInBank) {
+			return false;
+		}
 	}
-	return true;
+	return type === 'one' ? false : true;
+}
+
+export function minionName(user: KlasaUser | User) {
+	let [name, isIronman, icon] =
+		user instanceof KlasaUser
+			? [
+					user.settings.get(UserSettings.Minion.Name),
+					user.settings.get(UserSettings.Minion.Ironman),
+					user.settings.get(UserSettings.Minion.Icon)
+			  ]
+			: [user.minion_name, user.minion_ironman, user.minion_icon];
+
+	const prefix = isIronman ? Emoji.Ironman : '';
+	icon ??= Emoji.Minion;
+
+	return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
 }
