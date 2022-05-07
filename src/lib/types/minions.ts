@@ -186,7 +186,6 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	upgradeType: string | null;
 	payment?: boolean;
 	patchType: IPatchData;
-	getPatchType: string;
 	planting: boolean;
 	currentDate: number;
 	autoFarmed: boolean;
