@@ -17,6 +17,7 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const smeltingCommand: OSBMahojiCommand = {
@@ -89,12 +90,12 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		if (blast_furnace) {
 			const requiredSkills = {
-				crafting: 12,
-				firemaking: 16,
-				magic: 33,
-				mining: 50,
-				smithing: 20,
-				thieving: 13
+				[SkillsEnum.Crafting]: 12,
+				[SkillsEnum.Firemaking]: 16,
+				[SkillsEnum.Magic]: 33,
+				[SkillsEnum.Mining]: 50,
+				[SkillsEnum.Smithing]: 20,
+				[SkillsEnum.Thieving]: 13
 			};
 			if (!skillsMeetRequirements(user.rawSkills, requiredSkills)) {
 				return `You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(
@@ -104,11 +105,8 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 			// Boosts
 			if (
-				user.hasItemEquippedOrInBank(itemID('Coal bag')) &&
-				(bar.id === itemID('Steel Bar') ||
-					bar.id === itemID('Mithril Bar') ||
-					bar.id === itemID('Adamantite Bar') ||
-					bar.id === itemID('Runite Bar'))
+				user.hasItemEquippedOrInBank('Coal bag') &&
+				resolveItems(['Steel ar', 'Mithril bar', 'Adamantite bar', 'runite bar'])
 			) {
 				boosts.push('60% for coal bag');
 				timeToSmithSingleBar *= 0.625;
