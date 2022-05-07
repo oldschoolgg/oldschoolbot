@@ -3,7 +3,11 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { client } from '../..';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { truncateString } from '../../lib/util';
-import { abstractedOpenCommand } from '../lib/abstracted_commands/openCommand';
+import {
+	abstractedOpenCommand,
+	abstractedOpenUntilCommand,
+	OpenUntilItems
+} from '../lib/abstracted_commands/openCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -41,9 +45,20 @@ export const openCommand: OSBMahojiCommand = {
 			required: false,
 			min_value: 1,
 			max_value: 100_000
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'open_until',
+			description: 'Keep opening items until you get this item.',
+			required: false,
+			choices: OpenUntilItems.map(i => ({ name: i.name, value: i.name }))
 		}
 	],
-	run: async ({ userID, options, interaction }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
+	run: async ({
+		userID,
+		options,
+		interaction
+	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string }>) => {
 		await interaction.deferReply();
 		const user = await client.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -56,10 +71,12 @@ export const openCommand: OSBMahojiCommand = {
 				1950
 			)}.`;
 		}
-
-		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(user, mahojiUser, ['all'], 'auto');
+		if (options.open_until) {
+			return abstractedOpenUntilCommand(user, mahojiUser, options.name, options.open_until);
 		}
-		return abstractedOpenCommand(user, mahojiUser, [options.name], options.quantity);
+		if (options.name.toLowerCase() === 'all') {
+			return abstractedOpenCommand(user, mahojiUser, ['all'], 'auto', null);
+		}
+		return abstractedOpenCommand(user, mahojiUser, [options.name], options.quantity, null);
 	}
 };
