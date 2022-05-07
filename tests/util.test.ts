@@ -81,8 +81,8 @@ describe('util', () => {
 		expect(sellPriceOfItem(clientMock, getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
 
 		expect(sellPriceOfItem(clientMock, getOSItem('Rune pickaxe'))).toEqual({
-			price: calcPercentOfNum(30, 19_200),
-			basePrice: 21_814
+			price: calcPercentOfNum(30, getOSItem('Rune pickaxe').highalch),
+			basePrice: getOSItem('Rune pickaxe').price
 		});
 	});
 

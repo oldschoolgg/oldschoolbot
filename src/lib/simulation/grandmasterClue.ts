@@ -110,7 +110,7 @@ class GrandmasterClue extends Clue {
 			}
 		}
 
-		return loot.values();
+		return loot;
 	}
 }
 

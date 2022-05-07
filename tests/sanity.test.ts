@@ -46,6 +46,7 @@ describe('Sanity', () => {
 		expect(isSuperUntradeable(getOSItem('Head of TzKal Zuk'))).toEqual(true);
 		expect(isSuperUntradeable(getOSItem('Infernal bulwark'))).toEqual(true);
 		expect(isSuperUntradeable(getOSItem('Infernal core'))).toEqual(true);
+		expect(isSuperUntradeable(getOSItem('Seed pack'))).toEqual(true);
 
 		for (const cape of masterCapesCL) {
 			expect(isSuperUntradeable(cape)).toEqual(true);
@@ -114,7 +115,8 @@ describe('Sanity', () => {
 			'Ancient hilt',
 			'Nihil horn',
 			'Zaryte vambraces',
-			'Ancient godsword'
+			'Ancient godsword',
+			'Seed pack'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {

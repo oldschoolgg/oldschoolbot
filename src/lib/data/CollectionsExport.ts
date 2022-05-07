@@ -1411,7 +1411,8 @@ export const allPetsCL = resolveItems([
 	'Youngllef',
 	'Little nightmare',
 	"Lil' creator",
-	'Tiny tempor'
+	'Tiny tempor',
+	'Abyssal protector'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2228,7 +2229,7 @@ export const allPetIDs = [
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan'])
+	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector'])
 ];
 
 export const antiSantaOutfit = new Bank({
