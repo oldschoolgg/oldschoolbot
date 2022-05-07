@@ -106,7 +106,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			// Boosts
 			if (
 				user.hasItemEquippedOrInBank('Coal bag') &&
-				resolveItems(['Steel ar', 'Mithril bar', 'Adamantite bar', 'runite bar'])
+				resolveItems(['Steel bar', 'Mithril bar', 'Adamantite bar', 'Runite bar']).includes(bar.id)
 			) {
 				boosts.push('60% for coal bag');
 				timeToSmithSingleBar *= 0.625;
