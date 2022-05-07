@@ -4,6 +4,7 @@ import './farming';
 import './pets';
 import './fishing';
 import './nex';
+import './nonCustomChanges';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 

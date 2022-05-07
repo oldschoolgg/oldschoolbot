@@ -11,6 +11,7 @@ import { itemID, stringMatches, truncateString, updateGPTrackSetting } from '../
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 const itemsThatDontAddToTempCL = resolveItems([
 	'Clothing Mystery Box',
@@ -61,6 +62,7 @@ export const openCommand: OSBMahojiCommand = {
 	run: async ({ userID, options, interaction }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
 		await interaction.deferReply();
 		const user = await client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
 				user
@@ -97,7 +99,7 @@ export const openCommand: OSBMahojiCommand = {
 		const loot =
 			output instanceof LootTable
 				? { bank: output.roll(quantityToRoll) }
-				: await output({ user, self: openable, quantity: quantityToRoll });
+				: await output({ user, self: openable, quantity: quantityToRoll, mahojiUser });
 		const { previousCL } = await user.addItemsToBank({
 			items: loot.bank,
 			collectionLog: true,

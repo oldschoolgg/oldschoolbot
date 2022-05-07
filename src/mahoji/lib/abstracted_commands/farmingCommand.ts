@@ -11,13 +11,14 @@ import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
-import Farming from '../../../lib/skilling/skills/farming';
+import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
+import Farming, { CompostName } from '../../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import { hasItemEquippedOrInBank } from '../../../lib/util/minionUtils';
-import { CompostName, farmingPatchNames, findPlant, getFarmingInfo, isPatchName } from '../../commands/farming';
+import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
+import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {
@@ -39,6 +40,9 @@ export async function harvestCommand({
 	channelID: bigint;
 	seedType: string;
 }) {
+	if (user.minionIsBusy) {
+		return 'Your minion must not be busy to use this command.';
+	}
 	const GP = user.settings.get(UserSettings.GP);
 	const currentWoodcuttingLevel = user.skillLevel(SkillsEnum.Woodcutting);
 	const currentDate = new Date().getTime();
@@ -76,7 +80,7 @@ export async function harvestCommand({
 		duration *= 0.9;
 	}
 
-	if (hasItemEquippedOrInBank(user, 'Ring of endurance')) {
+	if (hasItemsEquippedOrInBank(user, ['Ring of endurance'])) {
 		boostStr.push('10% time for Ring of Endurance');
 		duration *= 0.9;
 	}
@@ -89,11 +93,11 @@ export async function harvestCommand({
 		)}, try a lower quantity.`;
 	}
 
-	if (hasItemEquippedOrInBank(user, 'Magic secateurs')) {
+	if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
 		boostStr.push('10% crop yield for Magic Secateurs');
 	}
 
-	if (hasItemEquippedOrInBank(user, ['Farming cape(t)', 'Farming cape'])) {
+	if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
 		boostStr.push('5% crop yield for Farming Skillcape');
 	}
 
@@ -135,6 +139,9 @@ export async function farmingPlantCommand({
 	pay: boolean;
 }): Promise<string> {
 	await user.settings.sync(true);
+	if (user.minionIsBusy) {
+		return 'Your minion must not be busy to use this command.';
+	}
 	const userBank = user.bank();
 	const alwaysPay = user.settings.get(UserSettings.Minion.DefaultPay);
 	const questPoints = user.settings.get(UserSettings.QP);
@@ -267,9 +274,9 @@ export async function farmingPlantCommand({
 		infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 	}
 
-	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse);
+	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse) ?? 'compost';
 	let upgradeType: CompostName | null = null;
-	if (plant.canCompostandPay && compostTier) {
+	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
 		const compostCost = new Bank().add(compostTier, quantity);
 		if (user.owns(compostCost)) {
 			infoStr.push(`You are treating your patches with ${compostCost}.`);
@@ -286,10 +293,10 @@ export async function farmingPlantCommand({
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);
 	} else if (patchType.patchPlanted) {
-		if (hasItemEquippedOrInBank(user, 'Magic secateurs')) {
+		if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
 			boostStr.push('10% crop yield for Magic Secateurs');
 		}
-		if (hasItemEquippedOrInBank(user, ['Farming cape(t)', 'Farming cape'])) {
+		if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
 			boostStr.push('5% crop yield for Farming Skillcape');
 		}
 
