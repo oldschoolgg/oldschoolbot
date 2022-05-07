@@ -41,7 +41,7 @@ const LowSeedPackTable = new LootTable()
 	.add('Mushroom spore', [4, 6], 1)
 	.add('Belladonna seed', [4, 6], 1);
 
-const MediumSeedPackTable = new LootTable()
+export const MediumSeedPackTable = new LootTable()
 	.add('Irit seed', [2, 6], 3)
 	.add('Limpwurt seed', [4, 8], 3)
 	.add('Watermelon seed', [8, 12], 2)
@@ -60,9 +60,12 @@ const MediumSeedPackTable = new LootTable()
 	.add('Lantadyme seed', [1, 3], 1)
 	.add('Dwarf weed seed', [1, 3], 1)
 	.add('Calquat tree seed', [3, 6], 1)
-	.add('Teak seed', [1, 3], 1);
+	.add('Teak seed', [1, 3], 1)
+	.add('Mango seed', [1, 3], 1)
+	.add('Avocado seed', [1, 3], 1)
+	.add('Lychee seed', [1, 3], 1);
 
-const HighSeedPackTable = new LootTable()
+export const HighSeedPackTable = new LootTable()
 	.add('Papaya tree seed', [1, 3], 5)
 	.add('Palm tree seed', [1, 2], 5)
 	.add('Hespori seed', 1, 5)
@@ -71,6 +74,7 @@ const HighSeedPackTable = new LootTable()
 	.add('Maple seed', [1, 2], 4)
 	.add('Mahogany seed', [1, 2], 4)
 	.add('Yew seed', 1, 3)
+	.add('Mango seed', 1, 3)
 	.add('Dragonfruit tree seed', 1, 3)
 	.add('Celastrus seed', 1, 2)
 	.add('Torstol seed', 1, 2)
@@ -81,7 +85,11 @@ const HighSeedPackTable = new LootTable()
 export function openSeedPack(seedTier: number): Bank {
 	const loot = new Bank();
 
-	const tempTable = new LootTable();
+	const tempTable = new LootTable().tertiary(3, 'Athelas seed');
+
+	if (seedTier > 2) {
+		tempTable.tertiary(10, new LootTable().every('Mysterious seed', [1, 3]));
+	}
 
 	// Roll amount variables
 	let high = 0;

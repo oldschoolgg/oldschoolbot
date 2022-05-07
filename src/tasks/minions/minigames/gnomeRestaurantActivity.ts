@@ -91,7 +91,9 @@ export default class extends Task {
 			duration
 		});
 
-		let str = `<@${userID}>, ${minionName(user)} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${
+		let str = `<@${userID}>, ${minionName(
+			user
+		)} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${
 			user.usingPet('Flappy')
 				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
 				: ''

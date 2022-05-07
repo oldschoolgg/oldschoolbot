@@ -399,6 +399,7 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: ['equippable mystery box', 'emb'],
 		output: makeOutputFromArrayOfItemIDs(randomEquippable),
 		allItems: [],
+		isMysteryBox: true,
 		smokeyApplies: true
 	},
 	{

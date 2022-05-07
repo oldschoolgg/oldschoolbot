@@ -9,6 +9,7 @@ import { stoneSpirits } from '../minions/data/stoneSpirits';
 import { assert } from '../util';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
+import { LampTable } from '../xpLamps';
 import {
 	gracefulCapes,
 	gracefulFeet,
@@ -17,7 +18,6 @@ import {
 	gracefulLegs,
 	gracefulTops
 } from './gracefulVariants';
-import { LampTable } from '../xpLamps';
 import { allHolidayItems } from './holidayItems';
 
 export interface IToReturnCollection {

@@ -33,7 +33,9 @@ export default class extends Task {
 			this.client,
 			user,
 			channelID,
-			`<@${userID}>, ${minionName(user)} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
+			`<@${userID}>, ${minionName(
+				user
+			)} finished ${quantity}x Castle Wars games and received ${loot}.${boostMsg}`,
 			['minigames', { castle_wars: { start: {} } }, true, 'play'],
 			undefined,
 			data,

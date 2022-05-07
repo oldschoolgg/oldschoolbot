@@ -1,5 +1,5 @@
-import { randInt } from 'e';
 import type { User } from '@prisma/client';
+import { randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
