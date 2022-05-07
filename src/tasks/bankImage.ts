@@ -169,7 +169,26 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Grimy cadantine'), 'cadan'],
 	[i('Grimy lantadyme'), 'lanta'],
 	[i('Grimy dwarf weed'), 'dwarf'],
-	[i('Grimy torstol'), 'torstol']
+	[i('Grimy torstol'), 'torstol'],
+
+	// Clues & Caskets
+	[i('Clue scroll (beginner)'), 'beginner'],
+	[i('Reward casket (beginner)'), 'beginner'],
+
+	[i('Clue scroll (easy)'), 'easy'],
+	[i('Reward casket (easy)'), 'easy'],
+
+	[i('Clue scroll (medium)'), 'medium'],
+	[i('Reward casket (medium)'), 'medium'],
+
+	[i('Clue scroll (hard)'), 'hard'],
+	[i('Reward casket (hard)'), 'hard'],
+
+	[i('Clue scroll (elite)'), 'elite'],
+	[i('Reward casket (elite)'), 'elite'],
+
+	[i('Clue scroll (master)'), 'master'],
+	[i('Reward casket (master)'), 'master']
 ]);
 
 export default class BankImageTask extends Task {
