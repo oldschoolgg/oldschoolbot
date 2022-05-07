@@ -19,7 +19,7 @@ import {
 	updateBankSetting
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { hasItemEquippedOrInBank } from '../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 
 const requiredSkills = {
 	crafting: 12,
@@ -105,7 +105,7 @@ export default class extends BotCommand {
 			timeToSmithSingleBar /= 2;
 			boosts.push('2x boost for Smithing master cape');
 		}
-		if (hasItemEquippedOrInBank(msg.author, BlacksmithOutfit)) {
+		if (hasItemsEquippedOrInBank(msg.author, BlacksmithOutfit, 'every')) {
 			boosts.push('10% more XP for having the blacksmith outfit equipped');
 		}
 

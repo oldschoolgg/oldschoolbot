@@ -1,4 +1,5 @@
 import { Emoji } from '../../../constants';
+import getOSItem from '../../../util/getOSItem';
 import itemID from '../../../util/itemID';
 import resolveItems from '../../../util/resolveItems';
 import { Plant, SkillsEnum } from '../../types';
@@ -35,6 +36,22 @@ const femaleFarmerItems: { [key: number]: number } = {
 };
 
 export const allFarmingItems: number[] = [];
+
+export const CompostTiers = [
+	{
+		name: 'compost',
+		item: getOSItem('Compost')
+	},
+	{
+		name: 'supercompost',
+		item: getOSItem('Supercompost')
+	},
+	{
+		name: 'ultracompost',
+		item: getOSItem('Ultracompost')
+	}
+] as const;
+export type CompostName = typeof CompostTiers[number]['name'];
 
 for (const plant of plants) {
 	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);

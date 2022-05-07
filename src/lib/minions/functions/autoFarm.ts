@@ -9,6 +9,9 @@ import { plants } from '../../skilling/skills/farming';
 import { IPatchDataDetailed } from '../farming/types';
 
 export async function autoFarm(user: KlasaUser, patchesDetailed: IPatchDataDetailed[], channelID: bigint) {
+	if (user.minionIsBusy) {
+		return 'Your minion must not be busy to use this command.';
+	}
 	const userBank = user.bank();
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const elligible = [...plants]

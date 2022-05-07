@@ -7,7 +7,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BlastFurnaceActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { hasItemEquippedOrInBank } from '../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 
 export default class extends Task {
 	async run(data: BlastFurnaceActivityTaskOptions) {
@@ -18,7 +18,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		const hasBS = hasItemEquippedOrInBank(user, BlacksmithOutfit);
+		const hasBS = hasItemsEquippedOrInBank(user, BlacksmithOutfit, 'every');
 
 		if (bar.id === itemID('Gold bar') && user.hasItemEquippedOrInBank('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;

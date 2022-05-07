@@ -2,7 +2,6 @@ import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { production } from '../../config';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events } from '../../lib/constants';
 import { handleNaxxusTeaser } from '../../lib/handleNaxxusTeaser';
@@ -16,10 +15,10 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
+import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { getFarmingKeyFromName } from '../../mahoji/commands/farming';
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {
@@ -37,6 +36,7 @@ export default class extends Task {
 			autoFarmed
 		} = data;
 		const user = await this.client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
 		const currentWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 		let baseBonus = 1;
@@ -184,7 +184,7 @@ export default class extends Task {
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
-				plantTime: currentDate + (production ? duration : 1),
+				plantTime: currentDate + duration,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: payment ?? false
@@ -458,7 +458,7 @@ export default class extends Task {
 				newPatch = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
-					plantTime: currentDate + (production ? duration : 1),
+					plantTime: currentDate + duration,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: payment ? payment : false
@@ -469,9 +469,10 @@ export default class extends Task {
 				[getFarmingKeyFromName(plant.seedType)]: newPatch
 			});
 
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? {
-				...defaultFarmingContract
-			};
+			const currentContract: FarmingContract | null =
+				(mahojiUser.minion_farmingContract as FarmingContract | null) ?? {
+					...defaultFarmingContract
+				};
 
 			const { contractsCompleted } = currentContract;
 
@@ -485,7 +486,10 @@ export default class extends Task {
 					contractsCompleted: contractsCompleted + 1
 				};
 
-				user.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
+				await mahojiUserSettingsUpdate(this.client, user.id, {
+					minion_farmingContract: farmingContractUpdate as any
+				});
+
 				loot.add('Seed pack');
 
 				janeMessage = true;

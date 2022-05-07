@@ -1,5 +1,4 @@
 import { Activity, NewUser, Prisma } from '@prisma/client';
-import { Util } from 'discord.js';
 import { roll, Time } from 'e';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -14,7 +13,7 @@ import {
 	convertKlasaCommandToAbstractCommand,
 	convertMahojiCommandToAbstractCommand
 } from '../../mahoji/lib/util';
-import { Emoji, PerkTier } from '../constants';
+import { PerkTier } from '../constants';
 import { BotCommand } from '../structures/BotCommand';
 import { ActivityTaskData } from '../types/minions';
 import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
@@ -61,24 +60,6 @@ export async function syncNewUserUsername(message: KlasaMessage) {
 			username
 		}
 	});
-}
-
-export async function getMinionName(userID: string): Promise<string> {
-	const result = await client.query<{ name?: string; isIronman: boolean; icon?: string }[]>(
-		'SELECT "minion.name" as name, "minion.ironman" as isIronman, "minion.icon" as icon FROM users WHERE id = $1;',
-		[userID]
-	);
-	if (result.length === 0) {
-		throw new Error('No user found in database for minion name.');
-	}
-
-	const [{ name, isIronman, icon }] = result;
-
-	const prefix = isIronman ? Emoji.Ironman : '';
-
-	const displayIcon = icon ?? Emoji.Minion;
-
-	return name ? `${prefix} ${displayIcon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${displayIcon} Your minion`;
 }
 
 declare global {

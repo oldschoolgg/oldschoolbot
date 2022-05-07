@@ -3,7 +3,7 @@ import { Bank, LootTable, Monsters } from 'oldschooljs';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../../../../commands/Minion/seedpack';
+import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
 import { lowRuneHighAdamantTable, runeWeaponTable } from '../../../../simulation/sharedTables';
 import { SkillsEnum } from '../../../../skilling/types';

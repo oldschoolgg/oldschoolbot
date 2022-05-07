@@ -3,7 +3,7 @@ import { LootTable, Monsters } from 'oldschooljs';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { HighSeedPackTable } from '../../../../../commands/Minion/seedpack';
+import { HighSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
