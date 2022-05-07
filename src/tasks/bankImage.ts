@@ -36,6 +36,7 @@ import { logError } from '../lib/util/logError';
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/small-pixel.ttf', { family: 'Regular' });
 
 export type BankImageResult =
 	| {
@@ -640,7 +641,7 @@ export default class BankImageTask extends Task {
 		// Draw Items
 		ctx.textAlign = 'start';
 		ctx.fillStyle = '#494034';
-		ctx.font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
+		const font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
 
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
@@ -700,6 +701,7 @@ export default class BankImageTask extends Task {
 
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
+				ctx.font = font;
 				// Check if new cl item
 				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 				const formattedQuantity = formatItemStackQuantity(quantity);
@@ -726,11 +728,12 @@ export default class BankImageTask extends Task {
 
 			const forcedShortName = forcedShortNameMap.get(item.id);
 			if (flags.names || forcedShortName) {
-				const name = (forcedShortName?.toUpperCase() ?? item.name).slice(0, 7);
+				const name = (forcedShortName?.toUpperCase() ?? item.name).slice(0, 8);
 				bottomItemText = name;
 			}
 
 			if (bottomItemText) {
+				ctx.font = '10px Smallest Pixel-7';
 				ctx.fillStyle = 'black';
 				let text = typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
 				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
