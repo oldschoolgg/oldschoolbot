@@ -633,8 +633,8 @@ export default class BankImageTask extends Task {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id, quantity).catch(() => {
-				logError(`Failed to load item image for item with id: ${item.id}`);
+			const itemImage = await this.getItemImage(item.id, quantity).catch(err => {
+				logError(`Failed to load item image for item with id: ${item.id}, ${err}`);
 			});
 			if (!itemImage) {
 				this.client.emit(Events.Warn, `Item with ID[${item.id}] has no item image.`);
