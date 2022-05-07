@@ -24,7 +24,7 @@ export async function getFarmingInfo(userID: bigint | string) {
 		patches[patchName] = patch;
 
 		const plant = findPlant(patch.lastPlanted);
-		if (!plant) throw new Error(`No plant found for ${patch.lastPlanted}`);
+		if (patch.lastPlanted !== null && !plant) throw new Error(`No plant found for ${patch.lastPlanted}`);
 		const difference = now - patch.plantTime;
 
 		const ready = plant ? difference > plant.growthTime * Time.Minute : null;
