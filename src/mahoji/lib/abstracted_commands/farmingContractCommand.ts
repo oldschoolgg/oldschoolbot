@@ -3,8 +3,9 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { client } from '../../..';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { defaultFarmingContract, getPlantToGrow } from '../../../lib/minions/farming';
+import { defaultFarmingContract } from '../../../lib/minions/farming';
 import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
+import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { minionName } from '../../../lib/util/minionUtils';
