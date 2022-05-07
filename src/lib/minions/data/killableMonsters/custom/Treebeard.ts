@@ -1,10 +1,6 @@
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import {
-	HighSeedPackTable,
-	LowSeedPackTable,
-	MediumSeedPackTable
-} from '../../../../skilling/functions/calcFarmingContracts';
+import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../../../data/seedPackTables';
 
 export const TanglerootTable = new LootTable().add(20_661).add(24_555).add(24_557).add(24_559).add(24_561).add(24_563);
 
