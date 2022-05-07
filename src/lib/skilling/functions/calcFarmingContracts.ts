@@ -8,7 +8,7 @@ import { PlantTier } from '../../minions/farming/types';
 import { stringMatches } from '../../util/cleanString';
 import { SkillsEnum } from '../types';
 
-const LowSeedPackTable = new LootTable()
+export const LowSeedPackTable = new LootTable()
 	.add('Potato seed', [8, 12], 2)
 	.add('Onion seed', [8, 12], 2)
 	.add('Cabbage seed', [8, 12], 2)
