@@ -7,7 +7,7 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './CollectionsExport';
+} from './gracefulVariants';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];

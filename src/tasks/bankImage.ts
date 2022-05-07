@@ -36,6 +36,7 @@ import { logError } from '../lib/util/logError';
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
+registerFont('./src/lib/resources/small-pixel.ttf', { family: 'Regular' });
 
 export type BankImageResult =
 	| {
@@ -169,7 +170,26 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Grimy cadantine'), 'cadan'],
 	[i('Grimy lantadyme'), 'lanta'],
 	[i('Grimy dwarf weed'), 'dwarf'],
-	[i('Grimy torstol'), 'torstol']
+	[i('Grimy torstol'), 'torstol'],
+
+	// Clues & Caskets
+	[i('Clue scroll (beginner)'), 'beginner'],
+	[i('Reward casket (beginner)'), 'beginner'],
+
+	[i('Clue scroll (easy)'), 'easy'],
+	[i('Reward casket (easy)'), 'easy'],
+
+	[i('Clue scroll (medium)'), 'medium'],
+	[i('Reward casket (medium)'), 'medium'],
+
+	[i('Clue scroll (hard)'), 'hard'],
+	[i('Reward casket (hard)'), 'hard'],
+
+	[i('Clue scroll (elite)'), 'elite'],
+	[i('Reward casket (elite)'), 'elite'],
+
+	[i('Clue scroll (master)'), 'master'],
+	[i('Reward casket (master)'), 'master']
 ]);
 
 export default class BankImageTask extends Task {
@@ -621,7 +641,7 @@ export default class BankImageTask extends Task {
 		// Draw Items
 		ctx.textAlign = 'start';
 		ctx.fillStyle = '#494034';
-		ctx.font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
+		const font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
 
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
@@ -633,8 +653,8 @@ export default class BankImageTask extends Task {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id, quantity).catch(() => {
-				logError(`Failed to load item image for item with id: ${item.id}`);
+			const itemImage = await this.getItemImage(item.id, quantity).catch(err => {
+				logError(`Failed to load item image for item with id: ${item.id}, ${err}`);
 			});
 			if (!itemImage) {
 				this.client.emit(Events.Warn, `Item with ID[${item.id}] has no item image.`);
@@ -681,6 +701,7 @@ export default class BankImageTask extends Task {
 
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
+				ctx.font = font;
 				// Check if new cl item
 				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 				const formattedQuantity = formatItemStackQuantity(quantity);
@@ -705,13 +726,18 @@ export default class BankImageTask extends Task {
 				bottomItemText = item.id.toString();
 			}
 
+			if (flags.names) {
+				bottomItemText = item.name;
+			}
+
 			const forcedShortName = forcedShortNameMap.get(item.id);
-			if (flags.names || forcedShortName) {
-				const name = (forcedShortName?.toUpperCase() ?? item.name).slice(0, 7);
-				bottomItemText = name;
+			if (forcedShortName && !bottomItemText) {
+				ctx.font = '10px Smallest Pixel-7';
+				bottomItemText = forcedShortName?.toUpperCase();
 			}
 
 			if (bottomItemText) {
+				bottomItemText = bottomItemText.toString().slice(0, 8);
 				ctx.fillStyle = 'black';
 				let text = typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
 				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);

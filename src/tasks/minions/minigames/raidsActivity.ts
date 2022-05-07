@@ -128,7 +128,6 @@ export default class extends Task {
 					// @ts-ignore
 					res.prompter.flags = flags;
 
-					allUsers[0].log('continued trip of solo CoX');
 					return runCommand({ message: res, commandName: 'raid', args: ['solo'], isContinue: true });
 				},
 				undefined,

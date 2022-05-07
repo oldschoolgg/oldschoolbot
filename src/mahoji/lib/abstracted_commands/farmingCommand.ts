@@ -10,13 +10,14 @@ import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
-import Farming from '../../../lib/skilling/skills/farming';
+import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
+import Farming, { CompostName } from '../../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
 import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
-import { CompostName, farmingPatchNames, findPlant, getFarmingInfo, isPatchName } from '../../commands/farming';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 function treeCheck(plant: Plant, wcLevel: number, bal: number, quantity: number): string | null {

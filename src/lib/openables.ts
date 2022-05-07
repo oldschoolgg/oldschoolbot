@@ -8,7 +8,7 @@ import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import ClueTiers from './minions/data/clueTiers';
-import { defaultFarmingContract, openSeedPack } from './minions/farming';
+import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { UserSettings } from './settings/types/UserSettings';
 import {
@@ -18,6 +18,7 @@ import {
 	CrystalChestTable,
 	SpoilsOfWarTable
 } from './simulation/misc';
+import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import { itemID, roll } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
