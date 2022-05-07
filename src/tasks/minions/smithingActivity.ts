@@ -6,7 +6,7 @@ import Smithing from '../../lib/skilling/skills/smithing/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { hasItemEquippedOrInBank } from '../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 
 export default class extends Task {
 	async run(data: SmithingActivityTaskOptions) {
@@ -17,7 +17,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * smithedItem.xp;
 
-		const hasBS = hasItemEquippedOrInBank(user, BlacksmithOutfit);
+		const hasBS = hasItemsEquippedOrInBank(user, BlacksmithOutfit, 'every');
 		if (hasBS) {
 			xpReceived *= 1.1;
 		}

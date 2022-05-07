@@ -13,7 +13,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { hasItemEquippedOrInBank } from '../../lib/util/minionUtils';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -65,7 +65,7 @@ export default class extends BotCommand {
 		}
 
 		if (smithedItem.requiresBlacksmith) {
-			if (!hasItemEquippedOrInBank(msg.author, BlacksmithOutfit)) {
+			if (!hasItemsEquippedOrInBank(msg.author, BlacksmithOutfit, 'every')) {
 				return msg.channel.send('You need the Blacksmith outfit equipped or in your bank to smith this item.');
 			}
 		}
