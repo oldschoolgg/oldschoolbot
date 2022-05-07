@@ -1,51 +1,21 @@
 import { noOp, reduceNumByPercent, Time } from 'e';
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { DungeoneeringOptions, maxFloorUserCanDo } from '../../commands/Minion/dung';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji } from '../../lib/constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { DungeoneeringOptions } from '../../lib/skilling/skills/dung/dungData';
+import {
+	gorajanShardChance,
+	maxFloorUserCanDo,
+	numberOfGorajanOutfitsEquipped
+} from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { randomVariation, roll, toKMB } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export function gorajanShardChance(user: KlasaUser) {
-	let goraShardBoosts = [];
-	let baseRate = 2000;
-	if (user.hasItemEquippedAnywhere('Dungeoneering master cape')) {
-		baseRate /= 2;
-		goraShardBoosts.push('2x for Dung. mastery');
-	} else if (user.skillLevel(SkillsEnum.Dungeoneering) >= 99) {
-		baseRate = reduceNumByPercent(baseRate, 30);
-		goraShardBoosts.push('30% for 99+ Dungeoneering');
-	}
-
-	if (user.hasItemEquippedAnywhere('Ring of luck')) {
-		baseRate = reduceNumByPercent(baseRate, 5);
-		goraShardBoosts.push('5% for Ring of Luck');
-	}
-	return {
-		chance: baseRate,
-		boosts: goraShardBoosts
-	};
-}
-
-const data = [
-	[gorajanWarriorOutfit, 'melee'],
-	[gorajanOccultOutfit, 'mage'],
-	[gorajanArcherOutfit, 'range']
-] as const;
-
-export function numberOfGorajanOutfitsEquipped(user: KlasaUser) {
-	let num = 0;
-	for (const outfit of data) {
-		if (user.getGear(outfit[1]).hasEquipped(outfit[0], true)) num++;
-	}
-	return num;
-}
 export default class extends Task {
 	async run(data: DungeoneeringOptions) {
 		const { channelID, duration, userID, floor, quantity, users } = data;

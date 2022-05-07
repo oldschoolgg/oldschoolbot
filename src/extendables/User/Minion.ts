@@ -7,7 +7,6 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { sotwConfig, sotwIsActive } from '../../commands/bso/sotw';
 import { collectables } from '../../commands/Minion/collect';
-import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { bossEvents } from '../../lib/bossEvents';
 import {
 	Emoji,
@@ -36,6 +35,7 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
 import Crafting from '../../lib/skilling/skills/crafting';
+import { DungeoneeringOptions } from '../../lib/skilling/skills/dung/dungData';
 import Farming from '../../lib/skilling/skills/farming';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';

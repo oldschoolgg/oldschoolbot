@@ -9,12 +9,12 @@ import { runCommand } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
+import { gorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, randomVariation, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { gorajanShardChance } from './dungeoneeringActivity';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
