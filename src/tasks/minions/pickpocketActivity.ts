@@ -89,11 +89,13 @@ export default class extends Task {
 			npc ? 'pickpockets' : 'steals'
 		}. ${xpRes}`;
 
-		str += `\n\nYou received: ${loot}${
+		str += `\n\n${
 			npc
-				? ''
-				: `, ${stall.lootPercent}% of the loot was kept in favour of enhancing amount of stalls stolen from`
-		}.`;
+				? `You received: ${loot}.`
+				: `${
+						100 - stall.lootPercent
+				  }% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
+		}\nYou received: ${loot}.`;
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
