@@ -109,8 +109,7 @@ const XPObjects: IXPObject[] = [
 						SkillsEnum.Fishing,
 						SkillsEnum.Thieving,
 						SkillsEnum.Firemaking,
-						SkillsEnum.Agility,
-						SkillsEnum.Dungeoneering
+						SkillsEnum.Agility
 					].includes(skill)
 						? 150
 						: 50) *
