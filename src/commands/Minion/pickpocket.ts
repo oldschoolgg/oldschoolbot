@@ -23,6 +23,7 @@ import {
 } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
+import { Pickpockable, Stall } from './../../lib/skilling/skills/thieving/stealables';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -66,75 +67,101 @@ export default class extends BotCommand {
 			quantity = null;
 		}
 
-		const pickpocketable = Pickpocketables.find(
+		const stealable: Pickpockable | Stall | undefined = Pickpocketables.find(
 			npc => stringMatches(npc.name, name) || npc.alias?.some(alias => stringMatches(alias, name))
-		);
+		)
+			? Pickpocketables.find(
+					npc => stringMatches(npc.name, name) || npc.alias?.some(alias => stringMatches(alias, name))
+			  )
+			: Stalls.find(
+					stall => stringMatches(stall.name, name) || stall.alias?.some(alias => stringMatches(alias, name))
+			  );
 
-		const stallable = Stalls.find(
-			stall => stringMatches(stall.name, name) || stall.alias?.some(alias => stringMatches(alias, name))
-		);
-
-		if (!pickpocketable && !stallable) {
+		if (!stealable) {
 			return msg.channel.send(
 				`That is not a valid NPC/Stall to pickpocket or steal from, try pickpocketing or stealing from one of the following: ${Pickpocketables.map(
 					npc => npc.name
-				).join(', ')}${Stalls.map(stall => stall.name).join(', ')}.`
+				).join(', ')}, ${Stalls.map(stall => stall.name).join(', ')}.`
 			);
 		}
 
+		const isPickpockable: boolean = (<Pickpockable>stealable).slope ? true : false;
+
 		const maxTripLength = msg.author.maxTripLength('Pickpocket');
 
-		if (pickpocketable) {
-			if (pickpocketable.qpRequired && msg.author.settings.get(UserSettings.QP) < pickpocketable.qpRequired) {
-				return msg.channel.send(
-					`You need atleast **${pickpocketable.qpRequired}** QP to pickpocket a ${pickpocketable.name}.`
-				);
-			}
+		if (stealable.qpRequired && msg.author.settings.get(UserSettings.QP) < stealable.qpRequired) {
+			return msg.channel.send(
+				`You need atleast **${stealable.qpRequired}** QP to ${isPickpockable ? 'pickpocket' : 'steal from'} a ${
+					stealable.name
+				}.`
+			);
+		}
 
-			if (
-				pickpocketable.itemsRequired &&
-				!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, pickpocketable.itemsRequired)
-			) {
-				return msg.channel.send(
-					`You need these items to pickpocket this NPC: ${new Bank(pickpocketable.itemsRequired)}.`
-				);
-			}
+		if (
+			stealable.itemsRequired &&
+			!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, stealable.itemsRequired)
+		) {
+			return msg.channel.send(
+				`You need these items to ${
+					isPickpockable ? 'pickpocket this NPC' : 'steal from this stall'
+				}: ${new Bank(stealable.itemsRequired)}.`
+			);
+		}
 
-			if (msg.author.skillLevel(SkillsEnum.Thieving) < pickpocketable.level) {
-				return msg.channel.send(
-					`${msg.author.minionName} needs ${pickpocketable.level} Thieving to pickpocket a ${pickpocketable.name}.`
-				);
-			}
+		if (msg.author.skillLevel(SkillsEnum.Thieving) < stealable.level) {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${stealable.level} Thieving to ${
+					isPickpockable ? 'pickpocket' : 'steal from'
+				} a ${stealable.name}.`
+			);
+		}
 
-			const timeToPickpocket = (pickpocketable.customTickRate ?? 2) * 600;
+		const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 15);
+		if (!hasFavour && stealable.name === 'Fruit stall') {
+			return msg.channel.send(
+				`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to steal fruit from the Fruit stalls!`
+			);
+		}
 
-			// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
-			if (quantity === null) {
-				quantity = Math.floor(maxTripLength / timeToPickpocket);
-			}
+		const timeToTheft = isPickpockable
+			? ((<Pickpockable>stealable).customTickRate ?? 2) * 600
+			: (<Stall>stealable).respawnTime;
 
-			const duration = quantity * timeToPickpocket;
+		// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
+		if (quantity === null) {
+			quantity = Math.floor(maxTripLength / timeToTheft);
+		}
 
-			if (duration > maxTripLength) {
-				return msg.channel.send(
-					`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-						maxTripLength
-					)}, try a lower quantity. The highest amount of times you can pickpocket a ${
-						pickpocketable.name
-					} is ${Math.floor(maxTripLength / timeToPickpocket)}.`
-				);
-			}
+		const duration = quantity * timeToTheft;
 
-			const boosts = [];
+		if (duration > maxTripLength) {
+			return msg.channel.send(
+				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
+					maxTripLength
+				)}, try a lower quantity. The highest amount of times you can ${
+					isPickpockable ? 'pickpocket' : 'steal from'
+				} a ${stealable.name} is ${Math.floor(maxTripLength / timeToTheft)}.`
+			);
+		}
 
+		const boosts = [];
+		let successfulQuantity = 0;
+		let xpReceived = 0;
+		let damageTaken = 0;
+
+		let str = `${msg.author.minionName} is now going to ${isPickpockable ? 'pickpocket' : 'steal from'} a ${
+			stealable.name
+		} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`;
+
+		if (isPickpockable) {
 			const [hasArdyHard] = await userhasDiaryTier(msg.author, ArdougneDiary.hard);
 			if (hasArdyHard) {
 				boosts.push('+10% chance of success from Ardougne Hard diary');
 			}
 
-			const [successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(
+			[successfulQuantity, damageTaken, xpReceived] = calcLootXPPickpocketing(
 				msg.author.skillLevel(SkillsEnum.Thieving),
-				pickpocketable,
+				<Pickpockable>stealable,
 				quantity,
 				msg.author.hasItemEquippedAnywhere(['Thieving cape', 'Thieving cape(t)']),
 				hasArdyHard
@@ -154,100 +181,29 @@ export default class extends BotCommand {
 			}
 
 			updateBankSetting(this.client, ClientSettings.EconomyStats.ThievingCost, foodRemoved);
-
-			await addSubTaskToActivityTask<PickpocketActivityTaskOptions>({
-				monsterID: pickpocketable.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: 'Pickpocket',
-				damageTaken,
-				successfulQuantity,
-				xpReceived
-			});
-
-			let str = `${msg.author.minionName} is now going to pickpocket a ${
-				pickpocketable.name
-			} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish. Removed ${foodRemoved}.`;
-
-			if (boosts.length > 0) {
-				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
-			}
-
-			return msg.channel.send(str);
-		}
-
-		if (stallable) {
-			if (stallable.qpRequired && msg.author.settings.get(UserSettings.QP) < stallable.qpRequired) {
-				return msg.channel.send(
-					`You need atleast **${stallable.qpRequired}** QP to steal from ${stallable.name}.`
-				);
-			}
-
-			if (
-				stallable.itemsRequired &&
-				!bankHasAllItemsFromBank(msg.author.allItemsOwned().bank, stallable.itemsRequired)
-			) {
-				return msg.channel.send(
-					`You need these items to steal from this stall: ${new Bank(stallable.itemsRequired)}.`
-				);
-			}
-
-			if (msg.author.skillLevel(SkillsEnum.Thieving) < stallable.level) {
-				return msg.channel.send(
-					`${msg.author.minionName} needs ${stallable.level} Thieving to steal from ${stallable.name}.`
-				);
-			}
-
-			const [hasFavour, requiredPoints] = gotFavour(msg.author, Favours.Hosidius, 15);
-			if (!hasFavour && stallable.name === 'Fruit stall') {
-				return msg.channel.send(
-					`${msg.author.minionName} needs ${requiredPoints}% Hosidius Favour to steal fruit from the Fruit stalls!`
-				);
-			}
-
-			const timeToSteal = stallable.respawnTime;
-
-			// If no quantity provided, set it to the max the player can make by either the items in bank or max time.
-			if (quantity === null) {
-				quantity = Math.floor(maxTripLength / timeToSteal);
-			}
-
-			const duration = quantity * timeToSteal;
-
-			if (duration > maxTripLength) {
-				return msg.channel.send(
-					`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-						maxTripLength
-					)}, try a lower quantity. The highest amount of times you can steal from ${
-						stallable.name
-					} is ${Math.floor(maxTripLength / timeToSteal)}.`
-				);
-			}
-
-			const damageTaken = 0;
+			str += ` Removed ${foodRemoved}.`;
+		} else {
 			// Up to 5% fail chance, random
-			const successfulQuantity = Math.floor((quantity * rand(95, 100)) / 100);
-			const xpReceived = successfulQuantity * stallable.xp;
-
-			await addSubTaskToActivityTask<PickpocketActivityTaskOptions>({
-				monsterID: stallable.id,
-				userID: msg.author.id,
-				channelID: msg.channel.id,
-				quantity,
-				duration,
-				type: 'Pickpocket',
-				damageTaken,
-				successfulQuantity,
-				xpReceived
-			});
-
-			return msg.channel.send(
-				`${msg.author.minionName} is now going to steal from ${
-					stallable.name
-				} ${quantity}x times, it'll take around ${formatDuration(duration)} to finish.`
-			);
+			successfulQuantity = Math.floor((quantity * rand(95, 100)) / 100);
+			xpReceived = successfulQuantity * stealable.xp;
 		}
+
+		await addSubTaskToActivityTask<PickpocketActivityTaskOptions>({
+			monsterID: stealable.id,
+			userID: msg.author.id,
+			channelID: msg.channel.id,
+			quantity,
+			duration,
+			type: 'Pickpocket',
+			damageTaken,
+			successfulQuantity,
+			xpReceived
+		});
+
+		if (boosts.length > 0) {
+			str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+		}
+
+		return msg.channel.send(str);
 	}
 }
