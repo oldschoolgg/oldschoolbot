@@ -51,7 +51,13 @@ export const openCommand: OSBMahojiCommand = {
 			name: 'open_until',
 			description: 'Keep opening items until you get this item.',
 			required: false,
-			choices: OpenUntilItems.map(i => ({ name: i.name, value: i.name }))
+			autocomplete: async (value: string) => {
+				if (!value) return OpenUntilItems.map(i => ({ name: i.name, value: i.name }));
+				return OpenUntilItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase())).map(i => ({
+					name: i.name,
+					value: i.name
+				}));
+			}
 		}
 	],
 	run: async ({
@@ -72,7 +78,7 @@ export const openCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 		if (options.open_until) {
-			return abstractedOpenUntilCommand(user, mahojiUser, options.name, options.open_until);
+			return abstractedOpenUntilCommand(interaction, user, mahojiUser, options.name, options.open_until);
 		}
 		if (options.name.toLowerCase() === 'all') {
 			return abstractedOpenCommand(user, mahojiUser, ['all'], 'auto', null);

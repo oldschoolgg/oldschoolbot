@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
-import { notEmpty } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -11,11 +12,17 @@ import { ItemBank } from '../../../lib/types';
 import { updateGPTrackSetting } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
-export const OpenUntilItems = ['Clue scroll (master)', 'Clue scroll (medium)'].map(getOSItem);
+export const OpenUntilItems = uniqueArr(allOpenables.map(i => i.allItems).flat(2))
+	.map(getOSItem)
+	.sort((a, b) => {
+		if (b.name.includes('Clue')) return 1;
+		if (a.name.includes('Clue')) return -1;
+		return 0;
+	});
 
 function getOpenableLoot({
 	openable,
@@ -41,6 +48,7 @@ async function addToOpenablesScores(mahojiUser: User, kcBank: Bank) {
 }
 
 export async function abstractedOpenUntilCommand(
+	interaction: SlashCommandInteraction,
 	user: KlasaUser,
 	mahojiUser: User,
 	name: string,
@@ -51,18 +59,26 @@ export async function abstractedOpenUntilCommand(
 	const openable = allOpenables.find(i => i.openedItem === openableItem);
 	if (!openable) return "That's not a valid item.";
 	const openUntil = getItem(openUntilItem);
-	if (!openUntil || !OpenUntilItems.includes(openUntil)) {
-		return `That's not a valid item to open until, you can only do it with: ${OpenUntilItems.map(i => i.name).join(
-			', '
-		)}.`;
+	if (!openUntil) {
+		return `That's not a valid item to open until, you can only do it with items that you can get from ${openable.openedItem.name}.`;
 	}
 	if (!openable.allItems.includes(openUntil.id)) {
 		return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
 	}
+	const amountOfThisOpenableOwned = user.bank().amount(openableItem.id);
+	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
+	if (openUntil.name.includes('Clue') && user.owns(openUntil.id)) {
+		await handleMahojiConfirmation(
+			interaction,
+			`You're trying to open until you receive a ${openUntil.name}, but you already have one, and couldn't receive a second, are you sure you want to do this?`
+		);
+	}
+
 	const cost = new Bank();
 	const loot = new Bank();
 	let amountOpened = 0;
-	for (let i = 0; i < 100; i++) {
+	let max = Math.min(100, amountOfThisOpenableOwned);
+	for (let i = 0; i < max; i++) {
 		cost.add(openable.openedItem.id);
 		const thisLoot = await getOpenableLoot({ openable, quantity: 1, mahojiUser, user });
 		loot.add(thisLoot.bank);
@@ -83,7 +99,7 @@ export async function abstractedOpenUntilCommand(
 			}`
 		],
 		openables: [openable],
-		kcBank: new Bank().add(openable.openedItem.id)
+		kcBank: new Bank().add(openable.openedItem.id, amountOpened)
 	});
 }
 
@@ -164,6 +180,7 @@ export async function abstractedOpenCommand(
 	if (names.includes('all') && !openables.length) return 'You have no openable items.';
 	if (!openables.length) return "That's not a valid item.";
 	if (openUntil && !OpenUntilItems.includes(openUntil)) return "You can't open until this item.";
+	if (openUntil && openables.length > 1) return 'You can\'t "open until" with more than 1 openable.';
 
 	const cost = new Bank();
 	const kcBank = new Bank();
