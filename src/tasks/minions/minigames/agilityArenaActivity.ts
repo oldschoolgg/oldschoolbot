@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { determineXPFromTickets } from '../../../commands/Minion/agilityarena';
+import { Emoji, Events } from '../../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -44,6 +45,19 @@ export default class extends Task {
 		)}, you received ${Math.floor(
 			agilityXP
 		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.`;
+
+		// Roll for pet
+		if (roll((26_404 - user.skillLevel(SkillsEnum.Agility) * 25) / ticketsReceived)) {
+			user.addItemsToBank({
+				items: new Bank().add('Giant Squirrel'),
+				collectionLog: true
+			});
+			str += `**\nYou have a funny feeling you're being followed...**`;
+			this.client.emit(
+				Events.ServerNotification,
+				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
+			);
+		}
 
 		if (nextLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
