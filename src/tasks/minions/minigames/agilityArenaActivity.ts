@@ -47,16 +47,18 @@ export default class extends Task {
 		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.`;
 
 		// Roll for pet
-		if (roll((26_404 - user.skillLevel(SkillsEnum.Agility) * 25) / ticketsReceived)) {
-			user.addItemsToBank({
-				items: new Bank().add('Giant Squirrel'),
-				collectionLog: true
-			});
-			str += `**\nYou have a funny feeling you're being followed...**`;
-			this.client.emit(
-				Events.ServerNotification,
-				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
-			);
+		for (let i = 0; i < ticketsReceived; i++) {
+			if (roll(26_404 - user.skillLevel(SkillsEnum.Agility) * 25)) {
+				user.addItemsToBank({
+					items: new Bank().add('Giant Squirrel'),
+					collectionLog: true
+				});
+				str += "**\nYou have a funny feeling you're being followed...**";
+				this.client.emit(
+					Events.ServerNotification,
+					`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
+				);
+			}
 		}
 
 		if (nextLevel > currentLevel) {
