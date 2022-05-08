@@ -4,13 +4,15 @@ import { KlasaMessage, Task, TaskStore } from 'klasa';
 
 import { production } from '../config';
 import { PerkTier } from '../lib/constants';
-import { FarmingPatchTypes, PatchData } from '../lib/minions/farming/types';
 import { runCommand } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { getFarmingInfo } from '../lib/skilling/functions/getFarmingInfo';
 import Farming from '../lib/skilling/skills/farming';
 import { stringMatches } from '../lib/util';
+import { farmingPatchNames, getFarmingKeyFromName } from '../lib/util/farmingHelpers';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
+import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -36,9 +38,9 @@ export default class extends Task {
 				for (const user of this.client.users.cache.values()) {
 					if (getUsersPerkTier(user) < PerkTier.Four) continue;
 					if (!user.settings.get(UserSettings.FarmingPatchReminders)) continue;
-					for (const patchType of Object.values(FarmingPatchTypes)) {
-						const key = `farmingPatches.${patchType}`;
-						const patch: PatchData = user.settings.get(key) as unknown as any;
+					const { patches } = await getFarmingInfo(user.id);
+					for (const patchType of farmingPatchNames) {
+						const patch = patches[patchType];
 						if (!patch) continue;
 						if (patch.plantTime < basePlantTime) continue;
 
@@ -55,7 +57,9 @@ export default class extends Task {
 						if (!planted) continue;
 						if (difference < planted.growthTime * Time.Minute) continue;
 						if (patch.wasReminded) continue;
-						await user.settings.update(key, { ...patch, wasReminded: true });
+						await mahojiUserSettingsUpdate(this.client, user.id, {
+							[getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
+						});
 
 						// Build buttons (only show Harvest/replant if not busy):
 						const farmingReminderButtons: MessageActionRow = new MessageActionRow();

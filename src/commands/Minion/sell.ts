@@ -64,7 +64,8 @@ export default class extends BotCommand {
 			)}).`
 		);
 
-		await Promise.all([msg.author.removeItemsFromBank(bankToSell.bank), msg.author.addGP(totalPrice)]);
+		await msg.author.removeItemsFromBank(bankToSell.bank);
+		await msg.author.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
 
 		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceSellingItems, totalPrice);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);

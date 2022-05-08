@@ -89,7 +89,7 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
-			requiredPermissionsForBot: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY'],
 			categoryFlags: ['minion', 'utility'],
 			examples: [
 				'+lb gp',

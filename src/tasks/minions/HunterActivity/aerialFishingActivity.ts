@@ -162,7 +162,6 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log('continued trip of Aerial fishing.');
 				return this.client.commands
 					.get('aerialfish')!
 					.run(res, [

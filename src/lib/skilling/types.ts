@@ -4,6 +4,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { Emoji } from '../constants';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
+import { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
 	Agility = 'agility',
@@ -203,7 +204,7 @@ export interface Plant {
 	checkXp: number;
 	harvestXp: number;
 	name: string;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	aliases: string[];
 	outputCrop?: number;
 	outputLogs?: number;
@@ -218,13 +219,13 @@ export interface Plant {
 	givesLogs: boolean;
 	givesCrops: boolean;
 	petChance: number;
-	seedType: string;
+	seedType: FarmingPatchName;
 	growthTime: number;
 	numOfStages: number;
 	chance1: number;
 	chance99: number;
 	chanceOfDeath: number;
-	protectionPayment?: ItemBank;
+	protectionPayment?: Bank;
 	defaultNumOfPatches: number;
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;
