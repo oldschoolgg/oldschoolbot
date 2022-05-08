@@ -71,18 +71,16 @@ export default class extends BotCommand {
 		const balance = msg.author.settings.get(UserSettings.DungeoneeringTokens);
 		if (balance < cost * qty) {
 			return msg.channel.send(
-				`You don't have enough Dungeoneering tokens to buy the ${qty}x ${
-					item.name
-				}. You need ${qty * cost}, but you have only ${balance.toLocaleString()}.`
+				`You don't have enough Dungeoneering tokens to buy the ${qty}x ${item.name}. You need ${
+					qty * cost
+				}, but you have only ${balance.toLocaleString()}.`
 			);
 		}
 
 		await msg.author.settings.update(UserSettings.DungeoneeringTokens, balance - cost * qty);
 		await msg.author.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
 
-		return msg.channel.send(
-			`Successfully purchased ${qty}x ${item.name} for ${qty * cost} Dungeoneering tokens.`
-		);
+		return msg.channel.send(`Successfully purchased ${qty}x ${item.name} for ${qty * cost} Dungeoneering tokens.`);
 	}
 
 	@minionNotBusy
