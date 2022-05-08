@@ -163,4 +163,5 @@ export namespace UserSettings {
 
 	export const BankSortWeightings = T<Readonly<ItemBank>>('bank_sort_weightings');
 	export const BankSortMethod = T<BankSortMethod | null>('bank_sort_method');
+	export const AutoOpenIDs = T<number[]>('auto_open_ids');
 }
