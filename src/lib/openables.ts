@@ -2,7 +2,6 @@ import type { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
@@ -32,7 +31,7 @@ interface OpenArgs {
 	mahojiUser: User;
 }
 
-interface UnifiedOpenable {
+export interface UnifiedOpenable {
 	name: string;
 	id: number;
 	openedItem: Item;
@@ -72,7 +71,7 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 
-			const message = `You opened ${quantity} ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+			const message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
@@ -113,7 +112,7 @@ for (const clueTier of ClueTiers) {
 			return { bank: loot, message };
 		},
 		emoji: Emoji.Casket,
-		allItems: BeginnerClueTable.allItems
+		allItems: clueTier.allItems
 	});
 }
 
