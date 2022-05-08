@@ -37,7 +37,7 @@ export default class extends BotCommand {
 			altProtection: true,
 			categoryFlags: ['minion', 'pvm', 'minigame'],
 			subcommands: true,
-			usage: '[start|buy] [floor:int{1,7}|name:...string]',
+			usage: '[start|buy] [qty:int{1}] [floor:int{1,7}|name:...string]',
 			usageDelim: ' ',
 			aliases: ['dg']
 		});
@@ -56,7 +56,7 @@ export default class extends BotCommand {
 		return msg.channel.send(str);
 	}
 
-	async buy(msg: KlasaMessage, [input = '']: [string]) {
+	async buy(msg: KlasaMessage, [qty = 1, input = '']: [number, string]) {
 		if (typeof input === 'number') input = '';
 		const buyable = dungBuyables.find(i => stringMatches(input, i.item.name));
 		if (!buyable) {
@@ -69,19 +69,19 @@ export default class extends BotCommand {
 
 		const { item, cost } = buyable;
 		const balance = msg.author.settings.get(UserSettings.DungeoneeringTokens);
-		if (balance < cost) {
+		if (balance < cost * qty) {
 			return msg.channel.send(
-				`You don't have enough Dungeoneering tokens to buy the ${
+				`You don't have enough Dungeoneering tokens to buy the ${qty}x ${
 					item.name
-				}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`
+				}. You need ${qty * cost}, but you have only ${balance.toLocaleString()}.`
 			);
 		}
 
-		await msg.author.settings.update(UserSettings.DungeoneeringTokens, balance - cost);
-		await msg.author.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
+		await msg.author.settings.update(UserSettings.DungeoneeringTokens, balance - cost * qty);
+		await msg.author.addItemsToBank({ items: { [item.id]: qty }, collectionLog: true });
 
 		return msg.channel.send(
-			`Successfully purchased 1x ${item.name} for ${cost.toLocaleString()} Dungeoneering tokens.`
+			`Successfully purchased ${qty}x ${item.name} for ${qty * cost} Dungeoneering tokens.`
 		);
 	}
 
