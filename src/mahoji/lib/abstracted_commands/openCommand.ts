@@ -3,16 +3,16 @@ import { notEmpty, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
 
 import { client } from '../../..';
+import { PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { ItemBank } from '../../../lib/types';
 import { updateGPTrackSetting } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate, patronMsg } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -54,9 +54,11 @@ export async function abstractedOpenUntilCommand(
 	name: string,
 	openUntilItem: string
 ) {
-	const openableItem = getItem(name.replace(regex, '$1'));
+	if (user.perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);
+	name = name.replace(regex, '$1');
+	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
-	const openable = allOpenables.find(i => i.openedItem === openableItem);
+	const openable = allOpenables.find(i => i.openedItem === openableItem.openedItem);
 	if (!openable) return "That's not a valid item.";
 	const openUntil = getItem(openUntilItem);
 	if (!openUntil) {
@@ -166,21 +168,20 @@ export async function abstractedOpenCommand(
 	user: KlasaUser,
 	mahojiUser: User,
 	_names: string[],
-	_quantity: number | 'auto' = 1,
-	openUntil: Item | null
+	_quantity: number | 'auto' = 1
 ) {
 	const bank = user.bank();
+	const favorites = mahojiUser.favoriteItems;
 
 	const names = _names.map(i => i.replace(regex, '$1'));
 	const openables = names.includes('all')
-		? allOpenables.filter(({ openedItem }) => bank.has(openedItem.id))
+		? allOpenables.filter(({ openedItem }) => bank.has(openedItem.id) && !favorites.includes(openedItem.id))
 		: names
 				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
 				.filter(notEmpty);
 	if (names.includes('all') && !openables.length) return 'You have no openable items.';
 	if (!openables.length) return "That's not a valid item.";
-	if (openUntil && !OpenUntilItems.includes(openUntil)) return "You can't open until this item.";
-	if (openUntil && openables.length > 1) return 'You can\'t "open until" with more than 1 openable.';
+	if (openables.length > 1 && user.perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);
 
 	const cost = new Bank();
 	const kcBank = new Bank();

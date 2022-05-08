@@ -81,8 +81,8 @@ export const openCommand: OSBMahojiCommand = {
 			return abstractedOpenUntilCommand(interaction, user, mahojiUser, options.name, options.open_until);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(user, mahojiUser, ['all'], 'auto', null);
+			return abstractedOpenCommand(user, mahojiUser, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(user, mahojiUser, [options.name], options.quantity, null);
+		return abstractedOpenCommand(user, mahojiUser, [options.name], options.quantity);
 	}
 };
