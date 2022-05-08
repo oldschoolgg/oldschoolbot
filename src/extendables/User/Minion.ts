@@ -5,7 +5,6 @@ import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { collectables } from '../../commands/Minion/collect';
 import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear';
@@ -95,6 +94,7 @@ import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
+import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()

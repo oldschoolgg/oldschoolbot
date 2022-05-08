@@ -716,3 +716,7 @@ export function exponentialPercentScale(percent: number, decay = 0.021) {
 export function discrimName(user: KlasaUser | APIUser) {
 	return `${user.username}#${user.discriminator}`;
 }
+
+export function isValidSkill(skill: string): skill is SkillsEnum {
+	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
+}
