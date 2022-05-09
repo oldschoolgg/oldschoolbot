@@ -3,7 +3,6 @@ import { randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
@@ -50,6 +49,7 @@ export interface UnifiedOpenable {
 	isMysteryBox?: boolean;
 	smokeyApplies?: boolean;
 	excludeLootFromBoxes?: boolean;
+	excludeFromOpenAll?: true;
 }
 
 const clueItemsToNotifyOf = cluesRaresCL
@@ -99,11 +99,11 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 
-			let message = `You opened ${quantity} ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+			let message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 			if (extraClueRolls > 0) {
-				message += `\nYou received ${extraClueRolls} extra clue rolls.`;
+				message += `${extraClueRolls} extra rolls`;
 			}
 
 			const nthCasket = (user.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
@@ -143,7 +143,7 @@ for (const clueTier of ClueTiers) {
 			return { bank: loot, message };
 		},
 		emoji: Emoji.Casket,
-		allItems: BeginnerClueTable.allItems
+		allItems: clueTier.allItems
 	});
 }
 
