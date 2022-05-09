@@ -24,12 +24,12 @@ export function makeCommandUsage({
 }): Prisma.CommandUsageCreateInput {
 	return {
 		date: new Date(),
-		user_id: userID.toString(),
+		user_id: BigInt(userID),
 		command_name: commandName,
 		status: command_usage_status.Unknown,
 		args: getCommandArgs(commandName, args),
-		channel_id: channelID.toString(),
-		guild_id: guildID?.toString(),
+		channel_id: BigInt(channelID),
+		guild_id: guildID ? BigInt(guildID) : null,
 		flags: flags ? (Object.keys(flags).length > 0 ? flags : undefined) : undefined,
 		is_continue: isContinue ?? undefined,
 		inhibited
