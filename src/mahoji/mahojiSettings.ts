@@ -110,7 +110,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return cancel('cancel');
 			}
 			if (i.customID === 'CONFIRM') {
-				i.reply({ ephemeral: true, content: 'You confirmed the trade.' });
+				i.reply({ ephemeral: true, content: 'You confirmed.' });
 				return confirm(id);
 			}
 		});
