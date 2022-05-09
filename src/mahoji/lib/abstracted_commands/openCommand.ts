@@ -56,7 +56,7 @@ export async function abstractedOpenUntilCommand(
 	name: string,
 	openUntilItem: string
 ) {
-	if (user.perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
