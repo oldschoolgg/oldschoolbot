@@ -172,6 +172,10 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Grimy dwarf weed'), 'dwarf'],
 	[i('Grimy torstol'), 'torstol'],
 
+	[i('Compost'), 'compost'],
+	[i('Supercompost'), 'super'],
+	[i('Ultracompost'), 'ultra'],
+
 	// Clues & Caskets
 	[i('Clue scroll (beginner)'), 'beginner'],
 	[i('Reward casket (beginner)'), 'beginner'],
