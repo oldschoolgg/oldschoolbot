@@ -67,7 +67,8 @@ export async function abstractedOpenUntilCommand(
 		return `That's not a valid item to open until, you can only do it with items that you can get from ${openable.openedItem.name}.`;
 	}
 	if (!openable.allItems.includes(openUntil.id)) {
-		return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
+		if (!(openUntil.name === 'Clue scroll (grandmaster)' && openable.name === 'Reward casket (master)'))
+			return `${openable.openedItem.name} doesn't drop ${openUntil.name}.`;
 	}
 	const amountOfThisOpenableOwned = user.bank().amount(openableItem.id);
 	if (amountOfThisOpenableOwned === 0) return "You don't own any of that item.";
@@ -147,7 +148,7 @@ async function finalizeOpening({
 			loot.add((await getOpenableLoot({ user, mahojiUser, openable, quantity: smokeyBonus })).bank);
 			bonuses.push(`${smokeyBonus}x ${openable.name}`);
 		}
-		smokeyMsg = `${Emoji.Smokey} Bonus Rolls: ${messages.join(', ')}`;
+		smokeyMsg = `${Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}`;
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
 
