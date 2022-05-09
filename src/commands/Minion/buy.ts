@@ -1,11 +1,10 @@
 import { MessageAttachment } from 'discord.js';
-import { noOp, randArrItem } from 'e';
+import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
-import { bingoIsActive } from '../../lib/bingo';
 import Buyables from '../../lib/data/buyables/buyables';
 import { kittens } from '../../lib/growablePets';
 import { isElligibleForPresent, Minigames } from '../../lib/settings/settings';
@@ -15,7 +14,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import {
 	bankHasAllItemsFromBank,
 	formatSkillRequirements,
-	getSupportGuild,
 	itemNameFromID,
 	multiplyBank,
 	skillsMeetRequirements,
@@ -175,14 +173,6 @@ export default class extends BotCommand {
 		const outItems = multiplyBank(output, quantity);
 		const itemString = new Bank(outItems).toString();
 
-		if (buyable.name === 'Bingo ticket' && msg.author.isIronman) {
-			if (msg.author.cl().has('Bingo ticket')) return msg.channel.send('You already bought a Bingo ticket.');
-			quantity = 1;
-		}
-		if (buyable.name === 'Bingo ticket' && bingoIsActive()) {
-			return msg.channel.send('You cannot buy Bingo tickets anymore, sorry!');
-		}
-
 		// Start building a string to show to the user.
 		let str = `${msg.author}, please confirm that you want to buy **${itemString}** for: `;
 
@@ -229,13 +219,6 @@ export default class extends BotCommand {
 				ClientSettings.BankLottery,
 				new Bank(this.client.settings.get(ClientSettings.BankLottery)).add(995, buyable.gpCost! * quantity).bank
 			);
-		}
-		if (buyable.name === 'Bingo ticket') {
-			const guild = getSupportGuild(msg.client);
-			const member = await guild?.members.fetch(msg.author.id).catch(noOp);
-			if (!member?.roles.cache.has('963939163583971388')) {
-				await member?.roles.add('963939163583971388').catch(noOp);
-			}
 		}
 
 		await msg.author.addItemsToBank({ items: outItems, collectionLog: true });
