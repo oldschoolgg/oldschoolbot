@@ -49,6 +49,7 @@ export interface UnifiedOpenable {
 	isMysteryBox?: boolean;
 	smokeyApplies?: boolean;
 	excludeLootFromBoxes?: boolean;
+	excludeFromOpenAll?: true;
 }
 
 const clueItemsToNotifyOf = cluesRaresCL

@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
 import { notEmpty, roll, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -179,7 +180,7 @@ async function finalizeOpening({
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
 
-	return {
+	let response: Awaited<CommandResponse> = {
 		attachments: [
 			{
 				fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`,
@@ -189,6 +190,12 @@ async function finalizeOpening({
 		content: `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`
 	};
+	if (response.content!.length > 1900) {
+		response.attachments!.push({ fileName: 'response.txt', buffer: Buffer.from(response.content!) });
+		response.content =
+			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
+	}
+	return response;
 }
 
 export async function abstractedOpenCommand(
@@ -202,7 +209,10 @@ export async function abstractedOpenCommand(
 
 	const names = _names.map(i => i.replace(regex, '$1'));
 	const openables = names.includes('all')
-		? allOpenables.filter(({ openedItem }) => bank.has(openedItem.id) && !favorites.includes(openedItem.id))
+		? allOpenables.filter(
+				({ openedItem, excludeFromOpenAll }) =>
+					bank.has(openedItem.id) && !favorites.includes(openedItem.id) && excludeFromOpenAll !== true
+		  )
 		: names
 				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
 				.filter(notEmpty);
