@@ -9,6 +9,7 @@ import { assert, resolveNameBank } from '../../util';
 import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
+import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '../CollectionsExport';
 import { Createable } from '../createables';
 
 const dyeCreatables: Createable[] = [];
@@ -44,7 +45,28 @@ const nexCreatables: Createable[] = [
 			[itemID('Virtus book')]: 1
 		},
 		requiredSkills: { smithing: 80, crafting: 80 }
-	}
+	},
+		...brokenPernixOutfit.map(piece => ({
+		name: `Revert ${getOSItem(piece)}`,
+		inputItems: new Bank().add(piece),
+		outputItems: {
+			[itemID('Armadylean components')]: 1
+		}
+	})),
+	...brokenTorvaOutfit.map(part => ({
+		name: `Revert ${getOSItem(part)}`,
+		inputItems: new Bank().add(part),
+		outputItems: {
+			[itemID('Bandosian components')]: 1
+		}
+	})),
+	...brokenVirtusOutfit.map(part => ({
+		name: `Revert ${getOSItem(part)}`,
+		inputItems: new Bank().add(part),
+		outputItems: {
+			[itemID('Ancestral components')]: 1
+		}
+	}))
 ];
 
 for (const [component, brokenOutfit, repairedOutfit] of nexBrokenArmorDetails) {
@@ -137,20 +159,6 @@ const componentRevertables: Createable[] = [
 		}
 	}
 ];
-
-for (const [component, brokenOutfit] of nexBrokenArmorDetails) {
-	for (let i = 0; i < brokenOutfit.length; i++) {
-		componentRevertables.push({
-			name: `Revert ${getOSItem(brokenOutfit[i]).name}`,
-			inputItems: {
-				[brokenOutfit[i]]: 1
-			},
-			outputItems: {
-				[component.id]: 1
-			}
-		});
-	}
-}
 
 const chaoticCreatables: Createable[] = [
 	{
