@@ -46,22 +46,22 @@ const nexCreatables: Createable[] = [
 		},
 		requiredSkills: { smithing: 80, crafting: 80 }
 	},
-		...brokenPernixOutfit.map(piece => ({
-		name: `Revert ${getOSItem(piece)}`,
+	...brokenPernixOutfit.map(piece => ({
+		name: `Revert ${getOSItem(piece).name}`,
 		inputItems: new Bank().add(piece),
 		outputItems: {
 			[itemID('Armadylean components')]: 1
 		}
 	})),
 	...brokenTorvaOutfit.map(part => ({
-		name: `Revert ${getOSItem(part)}`,
+		name: `Revert ${getOSItem(part).name}`,
 		inputItems: new Bank().add(part),
 		outputItems: {
 			[itemID('Bandosian components')]: 1
 		}
 	})),
 	...brokenVirtusOutfit.map(part => ({
-		name: `Revert ${getOSItem(part)}`,
+		name: `Revert ${getOSItem(part).name}`,
 		inputItems: new Bank().add(part),
 		outputItems: {
 			[itemID('Ancestral components')]: 1
