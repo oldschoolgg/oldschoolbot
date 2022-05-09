@@ -737,9 +737,9 @@ export default class BankImageTask extends Task {
 			}
 
 			if (bottomItemText) {
-				bottomItemText = bottomItemText.toString().slice(0, 8);
+				let text =
+					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
 				ctx.fillStyle = 'black';
-				let text = typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
 				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
 				ctx.fillStyle =
 					typeof bottomItemText === 'string' ? 'white' : generateHexColorForCashStack(bottomItemText);
