@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { bingoIsActive, determineBingoProgress, onFinishTile } from '../../lib/bingo';
 import { allCLItemsFiltered, convertCLtoBank } from '../../lib/data/Collections';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 
@@ -53,15 +52,6 @@ export default class extends Extendable {
 		if (!dontAddToTempCL) {
 			const oldTempCL = new Bank(this.settings.get(UserSettings.TempCL));
 			const newTempCL = items.clone().add(oldTempCL);
-			// If they have purchased a Bingo ticket, check the before/after bingo progress.
-			if (newCL.has('Bingo ticket') && bingoIsActive()) {
-				const before = determineBingoProgress(oldTempCL);
-				const after = determineBingoProgress(newTempCL);
-				// If they finished a tile, process it.
-				if (before.tilesCompletedCount !== after.tilesCompletedCount) {
-					onFinishTile(this, before, after, newCL);
-				}
-			}
 			updates.push([UserSettings.TempCL, newTempCL.bank]);
 		}
 
