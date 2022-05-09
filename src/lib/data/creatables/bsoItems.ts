@@ -53,16 +53,16 @@ const nexCreatables: Createable[] = [
 			[itemID('Armadylean components')]: 1
 		}
 	})),
-	...brokenTorvaOutfit.map(part => ({
-		name: `Revert ${getOSItem(part).name}`,
-		inputItems: new Bank().add(part),
+	...brokenTorvaOutfit.map(piece => ({
+		name: `Revert ${getOSItem(piece).name}`,
+		inputItems: new Bank().add(piece),
 		outputItems: {
 			[itemID('Bandosian components')]: 1
 		}
 	})),
-	...brokenVirtusOutfit.map(part => ({
-		name: `Revert ${getOSItem(part).name}`,
-		inputItems: new Bank().add(part),
+	...brokenVirtusOutfit.map(piece => ({
+		name: `Revert ${getOSItem(piece).name}`,
+		inputItems: new Bank().add(piece),
 		outputItems: {
 			[itemID('Ancestral components')]: 1
 		}
