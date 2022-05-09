@@ -94,7 +94,7 @@ export const PMBTable = new LootTable()
 	.add('Youngllef')
 	.add('Little nightmare')
 	.add("Lil' creator")
-	.add ('Abyssal protector')
+	.add('Abyssal protector')
 	.add('Tiny tempor');
 
 const DwarvenCrateTable = new LootTable()
