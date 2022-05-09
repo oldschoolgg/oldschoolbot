@@ -190,7 +190,16 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (elite)'), 'elite'],
 
 	[i('Clue scroll (master)'), 'master'],
-	[i('Reward casket (master)'), 'master']
+	[i('Reward casket (master)'), 'master'],
+
+	[i('Clue scroll (grandmaster)'), 'grandmaster'],
+	[i('Reward casket (grandmaster)'), 'grandmaster'],
+	[i('Athelas'), 'athelas'],
+	[i('Athelas seed'), 'athelas'],
+	[i('Mysterious seed'), 'mysterious'],
+	[i('Mango seed'), 'mango'],
+	[i('Avocado seed'), 'avocado'],
+	[i('Lychee seed'), 'lychee']
 ]);
 
 export default class BankImageTask extends Task {
@@ -786,14 +795,18 @@ export default class BankImageTask extends Task {
 				bottomItemText = item.id.toString();
 			}
 
+			if (flags.names) {
+				bottomItemText = item.name;
+			}
+
 			const forcedShortName = forcedShortNameMap.get(item.id);
-			if (flags.names || forcedShortName) {
-				const name = (forcedShortName?.toUpperCase() ?? item.name).slice(0, 8);
-				bottomItemText = name;
+			if (forcedShortName && !bottomItemText) {
+				ctx.font = '10px Smallest Pixel-7';
+				bottomItemText = forcedShortName?.toUpperCase();
 			}
 
 			if (bottomItemText) {
-				ctx.font = '10px Smallest Pixel-7';
+				bottomItemText = bottomItemText.toString().slice(0, 8);
 				ctx.fillStyle = 'black';
 				let text = typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
 				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);

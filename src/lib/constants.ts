@@ -136,6 +136,7 @@ export const enum Emoji {
 	RunecraftMasterCape = '<:runecraftMasterCape:869497600997470258>',
 	Flappy = '<:Flappy:884799334737129513>',
 	Stopwatch = '⏱️',
+	Smokey = '<:Smokey:886284971914969149>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
