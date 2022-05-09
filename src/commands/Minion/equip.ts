@@ -124,8 +124,6 @@ export default class extends BotCommand {
 			quantity
 		};
 
-		msg.author.log(`equipping ${quantity}x ${itemToEquip.name}[${itemToEquip.id}]`);
-
 		await msg.author.settings.update(gearTypeSetting, newGear);
 		const image = await generateGearImage(
 			this.client,
