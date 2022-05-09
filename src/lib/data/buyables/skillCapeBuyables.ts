@@ -25,7 +25,7 @@ for (const skillcape of Skillcapes) {
 		gpCost: 99_000,
 		customReq: async (user: KlasaUser) => {
 			if (user.skillLevel(skillcape.skill) < 99) {
-				return [false, `You need level ${99} ${skillcape.skill}.`];
+				return [false, `You need level ${99} ${toTitleCase(skillcape.skill)} to buy a cape of accomplishment.`];
 			}
 			return [true];
 		}
