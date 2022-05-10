@@ -170,5 +170,7 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.TokkulShop;
 		case 'Easter':
 			return Tasks.Easter;
+		case 'BaxtorianBathhouses':
+			return Tasks.BaxtorianBathhouses;
 	}
 }

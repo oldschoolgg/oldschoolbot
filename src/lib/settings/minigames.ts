@@ -175,6 +175,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Last Man Standing',
 		aliases: ['last man standing', 'lms'],
 		column: 'lms'
+	},
+	{
+		name: 'Baxtorian Bathhouses',
+		aliases: ['bb', 'bbh', 'baxtorian bathhouses', 'baxtorian bathhouse'],
+		column: 'bax_baths'
 	}
 ];
 
