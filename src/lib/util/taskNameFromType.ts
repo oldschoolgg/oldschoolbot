@@ -144,7 +144,6 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 		case 'Nex':
 			return Tasks.Nex;
 		case 'Easter':
-			return Tasks.Easter;
 		case 'BlastFurnace':
 			return Tasks.REMOVED;
 	}
