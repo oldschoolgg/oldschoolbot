@@ -46,9 +46,9 @@ describe('decantPotionFromBank', () => {
 				'Strength potion (1)': 1000
 			})
 		});
-		expect(() => decantPotionFromBank(userBank, 'attack potion', 2)).toThrowError(
-			"You don't have any **Attack potion** to decant!"
-		);
+		expect(decantPotionFromBank(userBank, 'attack potion', 2)).toEqual({
+			error: "You don't have any **Attack potion** to decant!"
+		});
 		expect(decantPotionFromBank(userBank, 'attack potion', 4)).toMatchObject({
 			potionsToAdd: new Bank({
 				'Attack potion (4)': 500
