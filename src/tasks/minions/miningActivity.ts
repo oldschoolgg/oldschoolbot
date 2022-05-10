@@ -132,6 +132,9 @@ export default class extends Task {
 					break;
 				}
 			}
+		} else if (user.equippedPet() === itemID('Doug')) {
+			loot.add(ore.id, quantity * 4);
+			str += '\n<:doug:748892864813203591> Doug helps you gather 4x as many ores!';
 		} else {
 			loot.add(ore.id, quantity);
 		}
