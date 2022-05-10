@@ -91,7 +91,7 @@ export default class extends BotCommand {
 			timeToSmithSingleBar *= 0.625;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven gauntlets')) && bar.id !== itemID('Gold bar')) {
+		if (msg.author.hasItemEquippedAnywhere(itemID('Dwarven gauntlets'))) {
 			boosts.push('100% for having a Dwarven gauntlets equipped.');
 			timeToSmithSingleBar /= 2;
 		}
