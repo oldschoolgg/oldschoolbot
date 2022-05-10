@@ -609,6 +609,9 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
+			case 'BlastFurnace': {
+				throw new Error('Removed');
+			}
 		}
 	}
 
