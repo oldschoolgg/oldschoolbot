@@ -1,13 +1,15 @@
 import { ApplicationCommandOptionType } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
-import { Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Bank, Items } from 'oldschooljs';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
+import { GearSetupTypes, globalPresets } from '../../lib/gear';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import Skills from '../../lib/skilling/skills';
+import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { toTitleCase } from '../../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
@@ -58,14 +60,44 @@ export const skillOption: CommandOption = {
 	choices: Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
 };
 
-export const Option: CommandOption = {
+export const gearSetupOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
-	name: 'skill',
-	description: 'The skill you want to select.',
+	name: 'gear_setup',
+	description: 'The gear setup want to select.',
 	required: false,
-	autocomplete: async (value: string) => {
-		return Object.values(Skills)
-			.filter(skill => (!value ? true : skill.name.toLowerCase().includes(value.toLowerCase())))
-			.map(val => ({ name: val.name, value: val.name }));
+	choices: GearSetupTypes.map(i => ({ name: toTitleCase(i), value: i }))
+};
+
+export const ownedItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
+	type: ApplicationCommandOptionType.String,
+	name: 'item',
+	description: 'The item you want to pick.',
+	required: false,
+	autocomplete: async (value, user) => {
+		const mUser = await mahojiUsersSettingsFetch(user.id, { bank: true });
+		const bank = new Bank(mUser.bank as ItemBank);
+		let res = bank.items().filter(i => i[0].name.includes(value.toLowerCase()));
+		if (filter) res = res.filter(i => filter(i[0]));
+		return res.map(i => ({ name: `${i[0].name}`, value: i[0].name.toString() }));
+	}
+});
+
+export const gearPresetOption: CommandOption = {
+	type: ApplicationCommandOptionType.String,
+	name: 'gear_preset',
+	description: 'The gear preset you want to select.',
+	required: false,
+	autocomplete: async (value, user) => {
+		const presets = await prisma.gearPreset.findMany({
+			where: {
+				user_id: user.id
+			},
+			select: {
+				name: true
+			}
+		});
+		return [...presets, ...globalPresets]
+			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+			.map(i => ({ name: i.name, value: i.name }));
 	}
 };
