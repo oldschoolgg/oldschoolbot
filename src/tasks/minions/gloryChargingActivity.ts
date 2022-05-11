@@ -54,7 +54,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['activities', { charge: 'glory', quantity }, true],
+			['activities', { charge: { item: 'glory', quantity } }, true],
 			undefined,
 			data,
 			loot
