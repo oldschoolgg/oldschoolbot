@@ -224,7 +224,7 @@ export async function lampCommand(user: KlasaUser, itemToUse: string, skill: str
 	assert(typeof amount === 'number' && amount > 0);
 
 	await user.removeItemsFromBank(toRemoveFromBank);
-	const xpStr = await user.addXP({ skillName: skill, amount, artificial: true });
+	const xpStr = await user.addXP({ skillName: skill, amount, artificial: true, multiplier: false });
 
 	return { content: `You used ${toRemoveFromBank}. ${xpStr}` };
 }
