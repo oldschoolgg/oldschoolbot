@@ -6,6 +6,8 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import Skills from '../../lib/skilling/skills';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { toTitleCase } from '../../lib/util';
 
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
@@ -53,11 +55,7 @@ export const skillOption: CommandOption = {
 	name: 'skill',
 	description: 'The skill you want to select.',
 	required: false,
-	autocomplete: async (value: string) => {
-		return Object.values(Skills)
-			.filter(skill => (!value ? true : skill.name.toLowerCase().includes(value.toLowerCase())))
-			.map(val => ({ name: val.name, value: val.name }));
-	}
+	choices: Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
 };
 
 export const Option: CommandOption = {

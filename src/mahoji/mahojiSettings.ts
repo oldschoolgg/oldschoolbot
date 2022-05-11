@@ -110,7 +110,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return cancel('cancel');
 			}
 			if (i.customID === 'CONFIRM') {
-				i.reply({ ephemeral: true, content: 'You confirmed the trade.' });
+				i.reply({ ephemeral: true, content: 'You confirmed.' });
 				return confirm(id);
 			}
 		});
@@ -127,11 +127,15 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 
 // Is not typesafe, returns only what is selected, but will say it contains everything.
 export async function mahojiUsersSettingsFetch(user: bigint | string, select?: Prisma.UserSelect) {
-	const result = await prisma.user.findFirst({
+	const result = await prisma.user.upsert({
 		where: {
 			id: user.toString()
 		},
-		select
+		select,
+		create: {
+			id: user.toString()
+		},
+		update: {}
 	});
 	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
 	return result as User;

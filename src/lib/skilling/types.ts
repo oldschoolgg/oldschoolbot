@@ -1,10 +1,10 @@
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { FarmingPatchName } from '../../mahoji/commands/farming';
 import { Emoji } from '../constants';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
+import { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
 	Agility = 'agility',
@@ -107,11 +107,12 @@ export interface Bar {
 	xp: number;
 	id: number;
 	name: string;
-	inputOres: ItemBank;
+	inputOres: Bank;
 	/**
 	 * Chance that the ore will fail to smelt (i.e iron), out of 100
 	 */
 	chanceOfFail: number;
+	timeToUse: number;
 }
 
 export interface BlastableBar {

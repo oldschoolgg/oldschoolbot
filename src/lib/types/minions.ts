@@ -85,6 +85,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	quantity: number;
+	blastf: boolean;
 }
 
 export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
@@ -289,11 +290,6 @@ export interface CollectingOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
-	barID: number;
-	quantity: number;
-}
-
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	favour: KourendFavour;
 	quantity: number;
@@ -307,7 +303,6 @@ export interface TokkulShopOptions extends ActivityTaskOptions {
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
-	| BlastFurnaceActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
 	| CollectingOptions
 	| RaidsOptions

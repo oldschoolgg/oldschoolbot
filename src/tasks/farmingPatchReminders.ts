@@ -6,11 +6,12 @@ import { production } from '../config';
 import { PerkTier } from '../lib/constants';
 import { runCommand } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { getFarmingInfo } from '../lib/skilling/functions/getFarmingInfo';
 import Farming from '../lib/skilling/skills/farming';
 import { stringMatches } from '../lib/util';
+import { farmingPatchNames, getFarmingKeyFromName } from '../lib/util/farmingHelpers';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
-import { farmingPatchNames, getFarmingInfo, getFarmingKeyFromName } from '../mahoji/commands/farming';
 import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 
 declare module 'klasa' {
