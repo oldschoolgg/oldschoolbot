@@ -1,10 +1,10 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { wealthInventorySize } from '../../commands/Minion/chargewealth';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { wealthInventorySize } from '../../mahoji/lib/abstracted_commands/chargeWealthCommand';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -34,6 +34,15 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		handleTripFinish(this.client, user, channelID, str, ['chargewealth', [quantity], true], undefined, data, loot);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			['activities', { charge: 'wealth', quantity }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }

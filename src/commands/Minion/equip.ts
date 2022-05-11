@@ -9,7 +9,7 @@ import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatSkillRequirements, itemNameFromID, skillsMeetRequirements, toTitleCase } from '../../lib/util';
+import { formatSkillRequirements, skillsMeetRequirements, toTitleCase } from '../../lib/util';
 
 export const WILDY_PRESET_WARNING_MESSAGE =
 	"You are equipping items to your **wilderness** setup. *Every* item in this setup can potentially be lost if you're doing activities in the wilderness. Are you sure you want to equip it?";
@@ -99,11 +99,6 @@ export default class extends BotCommand {
 		const equippedInThisSlot = currentEquippedGear[slot];
 		if (equippedInThisSlot) {
 			const newGear = { ...currentEquippedGear };
-			msg.author.log(
-				`automatically unequipping ${itemNameFromID(newGear[slot]!.item)}, so they can equip ${
-					itemToEquip.name
-				}`
-			);
 			newGear[slot] = null;
 
 			await msg.author.addItemsToBank({
