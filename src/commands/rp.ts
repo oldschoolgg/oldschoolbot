@@ -836,17 +836,17 @@ LIMIT 10;
 					return msg.channel.send(`${input.username} is already a patron of at least that tier.`);
 				}
 				if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-					return msg.channel.send(
+					await msg.confirm(
 						`${input} already has ${formatDuration(
 							currentBalanceTime!
-						)} of Tier ${currentBalanceTier}, you can't add time for a different tier.`
+						)} of Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 					);
 				}
 				await msg.confirm(
 					`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}?`
 				);
 				await input.settings.update(UserSettings.PremiumBalanceTier, tier);
-				if (currentBalanceTime !== null) {
+				if (currentBalanceTime !== null && tier === currentBalanceTier) {
 					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, currentBalanceTime + ms);
 				} else {
 					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, Date.now() + ms);
