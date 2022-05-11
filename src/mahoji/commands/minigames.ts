@@ -50,6 +50,11 @@ import {
 } from '../lib/abstracted_commands/soulWarsCommand';
 import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCommand';
 import { trekCommand, trekShop } from '../lib/abstracted_commands/trekCommand';
+import {
+	volcanicMineCommand,
+	VolcanicMineShop,
+	volcanicMineShopCommand
+} from '../lib/abstracted_commands/volcanicMineCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -679,6 +684,52 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'volcanic_mine',
+			description: 'The Volcanic Mine minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a volcanic mine trip.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Number,
+							name: 'quantity',
+							description: 'The amount of games you want to do.',
+							required: false,
+							min_value: 1
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'buy',
+					description: 'Purchase a reward using reward points.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'item',
+							description: 'The item you want to buy.',
+							required: true,
+							autocomplete: async (value: string) => {
+								return VolcanicMineShop.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({ name: `${i.name}`, value: i.name }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Number,
+							name: 'quantity',
+							description: 'The amount you want to buy.',
+							required: false,
+							min_value: 1
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -727,6 +778,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
 		soul_wars?: { start?: {}; buy?: { name: string; quantity?: number }; imbue?: { name: string }; tokens?: {} };
+		volcanic_mine?: {
+			start?: {};
+			buy?: { item: string; quantity?: number };
+		};
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
@@ -941,6 +996,24 @@ export const minigamesCommand: OSBMahojiCommand = {
 			if (options.soul_wars.tokens) {
 				return soulWarsTokensCommand(user);
 			}
+		}
+
+		/**
+		 *
+		 * Volcanic Mine
+		 *
+		 */
+		if (options.volcanic_mine?.start) {
+			return volcanicMineCommand(klasaUser, channelID, undefined);
+		}
+		if (options.volcanic_mine?.buy) {
+			return volcanicMineShopCommand(
+				interaction,
+				user,
+				klasaUser,
+				options.volcanic_mine.buy.item,
+				options.volcanic_mine.buy.quantity
+			);
 		}
 
 		return 'Invalid command.';

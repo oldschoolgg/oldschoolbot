@@ -1,11 +1,11 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { gloriesInventorySize } from '../../commands/Minion/chargeglories';
 import { Events } from '../../lib/constants';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {

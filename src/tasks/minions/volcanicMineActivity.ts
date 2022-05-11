@@ -2,7 +2,6 @@ import { randFloat, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { VolcanicMineGameTime } from '../../commands/Minion/volcanicmine';
 import { Emoji, Events } from '../../lib/constants';
 import { incrementMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -10,6 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
 
 const fossilTable = new LootTable()
 	.add('Unidentified small fossil', 1, 10)

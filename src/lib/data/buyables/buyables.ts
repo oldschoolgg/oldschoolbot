@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { chompyHats } from '../../../commands/Minion/chompyhunt';
+import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { MinigameName } from '../../settings/settings';
