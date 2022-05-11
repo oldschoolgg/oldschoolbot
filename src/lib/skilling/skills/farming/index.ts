@@ -52,7 +52,7 @@ export type CompostName = typeof CompostTiers[number]['name'];
 
 for (const plant of plants) {
 	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);
-	for (const key of Object.keys(plant.inputItems)) {
+	for (const key of Object.keys(plant.inputItems.bank)) {
 		allFarmingItems.push(Number(key));
 	}
 	if (plant.outputLogs) allFarmingItems.push(plant.outputLogs);
