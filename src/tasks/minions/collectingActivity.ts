@@ -39,7 +39,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['minion', { collect: { item: collectable.item.name, quantity } }],
+			['activities', { collect: { item: collectable.item.name, quantity } }],
 			undefined,
 			data,
 			loot ?? null

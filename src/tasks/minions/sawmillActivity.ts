@@ -37,7 +37,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['activities', { quantity: plankQuantity, type: plank.name }, true],
+			['activities', { sawmill: { quantity: plankQuantity, type: plank.name } }, true],
 			undefined,
 			data,
 			loot

@@ -26,7 +26,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['warriorsguild', [quantity, 'tokens'], true],
+			['activities', { warriors_guild: { action: 'tokens', quantity } }, true],
 			undefined,
 			data,
 			loot
