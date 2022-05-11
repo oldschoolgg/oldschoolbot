@@ -8,7 +8,7 @@ import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
 import { bsoOpenables } from './bsoOpenables';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
-import { clueHunterOutfit, cluesRaresCL } from './data/CollectionsExport';
+import { clueHunterOutfit } from './data/CollectionsExport';
 import ClueTiers from './minions/data/clueTiers';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
@@ -52,11 +52,34 @@ export interface UnifiedOpenable {
 	excludeFromOpenAll?: true;
 }
 
-const clueItemsToNotifyOf = cluesRaresCL
+const clueItemsToNotifyOf = resolveItems([
+	'3rd age range coif',
+	'3rd age range top',
+	'3rd age range legs',
+	'3rd age vambraces',
+	'3rd age robe top',
+	'3rd age robe',
+	'3rd age mage hat',
+	'3rd age amulet',
+	'3rd age plateskirt',
+	'3rd age platelegs',
+	'3rd age platebody',
+	'3rd age full helmet',
+	'3rd age kiteshield',
+	'3rd age longsword',
+	'3rd age wand',
+	'3rd age cloak',
+	'3rd age bow',
+	'3rd age pickaxe',
+	'3rd age axe',
+	'3rd age druidic robe bottoms',
+	'3rd age druidic robe top',
+	'3rd age druidic staff',
+	'3rd age druidic cloak'
+])
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat(
 		resolveItems([
-			'Bloodhound',
 			'Dwarven blessing',
 			'First age tiara',
 			'First age amulet',
