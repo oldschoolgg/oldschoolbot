@@ -204,7 +204,7 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 		.join('\n')}`;
 }
 
-export const testPotatoCommand: OSBMahojiCommand = {
+export const toolsCommand: OSBMahojiCommand = {
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
 	options: [

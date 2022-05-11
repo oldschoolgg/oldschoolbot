@@ -20,7 +20,6 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
@@ -180,7 +179,7 @@ export default class MinionCommand extends BotCommand {
 	async commands(msg: KlasaMessage) {
 		const commands = await prisma.commandUsage.findMany({
 			where: {
-				user_id: msg.author.id
+				user_id: BigInt(msg.author.id)
 			},
 			orderBy: {
 				date: 'desc'
@@ -267,11 +266,11 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async af(msg: KlasaMessage) {
-		return autoFarm(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
 	async autofarm(msg: KlasaMessage) {
-		return autoFarm(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
 	async activities(msg: KlasaMessage) {

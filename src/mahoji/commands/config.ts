@@ -54,7 +54,12 @@ async function handleToggle(user: User, name: string) {
 async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
 	const currentFavorites = user.favorite_food;
 	const item = getItem(itemToAdd ?? itemToRemove);
-	if (!item || !Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
+	const currentItems = `Your current favorite food is: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+	}.`;
+	if (!item) return currentItems;
+	if (!Eatables.some(i => i.id === item.id)) return "That's not a valid item.";
+
 	if (itemToAdd) {
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
 		await mahojiUserSettingsUpdate(client, user.id, { favorite_food: [...currentFavorites, item.id] });
@@ -65,15 +70,16 @@ async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRe
 		await mahojiUserSettingsUpdate(client, user.id, { favorite_food: removeFromArr(currentFavorites, item.id) });
 		return `You unfavorited ${item.name}.`;
 	}
-	return `Your current favorite food is: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
-	}.`;
+	return currentItems;
 }
 
 async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
 	const currentFavorites = user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
-	if (!item) return "That's not a valid item.";
+	const currentItems = `Your current favorite items are: ${
+		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
+	}.`;
+	if (!item) return currentItems;
 	if (itemToAdd) {
 		let limit = (getUsersPerkTier(user.bitfield) + 1) * 100;
 		if (currentFavorites.length >= limit) {
@@ -88,9 +94,7 @@ async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRe
 		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: removeFromArr(currentFavorites, item.id) });
 		return `You unfavorited ${item.name}.`;
 	}
-	return `Your current favorite items are: ${
-		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
-	}.`;
+	return currentItems;
 }
 
 async function favAlchConfig(
@@ -101,7 +105,7 @@ async function favAlchConfig(
 ) {
 	const currentFavorites = user.favorite_alchables;
 	if (manyToAdd) {
-		const items = parseBank({ inputStr: manyToAdd })
+		const items = parseBank({ inputStr: manyToAdd, noDuplicateItems: true })
 			.filter(i => i.highalch > 1)
 			.filter(i => !currentFavorites.includes(i.id));
 		if (items.length === 0) return 'No valid items were given.';
@@ -198,7 +202,8 @@ async function bankSortConfig(
 	const newBank = currentWeightingBank.clone();
 	const inputStr = addWeightingBank ?? removeWeightingBank ?? '';
 	const inputBank = parseBank({
-		inputStr
+		inputStr,
+		noDuplicateItems: true
 	});
 
 	if (addWeightingBank) newBank.add(inputBank);

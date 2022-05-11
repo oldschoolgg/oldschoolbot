@@ -53,7 +53,6 @@ export default class extends Task {
 					calc.lostItems
 				}.\nHere is what you saved:`,
 				res => {
-					user.log(`continued trip of killing ${monster.name}`);
 					return runCommand({
 						message: res,
 						commandName: 'k',
@@ -101,7 +100,6 @@ export default class extends Task {
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of killing ${monster.name}`);
 				return runCommand({
 					message: res,
 					commandName: 'k',

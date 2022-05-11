@@ -10,6 +10,7 @@ import {
 	MessageFlags
 } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { Bank } from 'oldschooljs';
 
 import { CLIENT_ID } from '../config';
 import { SILENT_ERROR } from '../lib/constants';
@@ -18,8 +19,8 @@ import { defaultGear } from '../lib/gear';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
-import type { Skills as TSkills } from '../lib/types';
-import { assert, channelIsSendable } from '../lib/util';
+import type { ItemBank, Skills as TSkills } from '../lib/types';
+import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
 
 export function mahojiParseNumber({
 	input,
@@ -109,7 +110,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return cancel('cancel');
 			}
 			if (i.customID === 'CONFIRM') {
-				i.reply({ ephemeral: true, content: 'You confirmed the trade.' });
+				i.reply({ ephemeral: true, content: 'You confirmed.' });
 				return confirm(id);
 			}
 		});
@@ -126,11 +127,15 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 
 // Is not typesafe, returns only what is selected, but will say it contains everything.
 export async function mahojiUsersSettingsFetch(user: bigint | string, select?: Prisma.UserSelect) {
-	const result = await prisma.user.findFirst({
+	const result = await prisma.user.upsert({
 		where: {
 			id: user.toString()
 		},
-		select
+		select,
+		create: {
+			id: user.toString()
+		},
+		update: {}
 	});
 	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
 	return result as User;
@@ -138,10 +143,10 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 
 export async function mahojiUserSettingsUpdate(
 	client: KlasaClient,
-	user: string | KlasaUser,
+	user: string | bigint | KlasaUser,
 	data: Prisma.UserUpdateArgs['data']
 ) {
-	const klasaUser = typeof user === 'string' ? await client.fetchUser(user) : user;
+	const klasaUser = typeof user === 'string' || typeof user === 'bigint' ? await client.fetchUser(user) : user;
 
 	const newUser = await prisma.user.update({
 		data,
@@ -222,8 +227,8 @@ export interface MahojiUserOption {
 	member: APIInteractionDataResolvedGuildMember;
 }
 
-export function getSkillsOfMahojiUser(user: User): Required<TSkills> {
-	return {
+export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSkills> {
+	const skills: Required<TSkills> = {
 		agility: Number(user.skills_agility),
 		cooking: Number(user.skills_cooking),
 		fishing: Number(user.skills_fishing),
@@ -248,6 +253,12 @@ export function getSkillsOfMahojiUser(user: User): Required<TSkills> {
 		hitpoints: Number(user.skills_hitpoints),
 		slayer: Number(user.skills_slayer)
 	};
+	if (levels) {
+		for (const [key, val] of Object.entries(skills) as [keyof TSkills, number][]) {
+			skills[key] = convertXPtoLVL(val);
+		}
+	}
+	return skills;
 }
 
 export function getUserGear(user: User) {
@@ -278,4 +289,8 @@ export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSele
 		select
 	});
 	return clientSettings as ClientStorage;
+}
+
+export function getMahojiBank(user: User) {
+	return new Bank(user.bank as ItemBank);
 }

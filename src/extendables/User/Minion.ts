@@ -5,7 +5,6 @@ import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { collectables } from '../../commands/Minion/collect';
 import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear';
@@ -41,7 +40,6 @@ import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
-	BlastFurnaceActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
@@ -89,12 +87,13 @@ import {
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
-	toTitleCase,
-	Util
+	toTitleCase
 } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import { getKC, skillLevel } from '../../lib/util/minionUtils';
+import { minionIsBusy } from '../../lib/util/minionIsBusy';
+import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
+import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -524,18 +523,6 @@ export default class extends Extendable {
 				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
 
-			case 'BlastFurnace': {
-				const data = currentTask as BlastFurnaceActivityTaskOptions;
-
-				const bar = Smithing.BlastableBars.find(bar => bar.id === data.barID);
-
-				return `${this.minionName} is currently smelting ${data.quantity}x ${
-					bar!.name
-				} at the Blast Furnace. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
-					SkillsEnum.Smithing
-				)}`;
-			}
-
 			case 'MageArena2': {
 				return `${this.minionName} is currently attempting the Mage Arena II. ${formattedDuration}`;
 			}
@@ -617,20 +604,15 @@ export default class extends Extendable {
 					data.users.length
 				}. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
-			case 'Easter': {
-				return `${this.minionName} is currently doing the Easter Event. The trip should take ${formatDuration(
-					durationRemaining
-				)}.`;
+			case 'Easter':
+			case 'BlastFurnace': {
+				throw new Error('Removed');
 			}
 		}
 	}
 
 	getKC(this: KlasaUser, id: number) {
 		return getKC(this, id);
-	}
-
-	getOpenableScore(this: KlasaUser, id: number) {
-		return this.settings.get(UserSettings.OpenableScores)[id] ?? 0;
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
@@ -680,8 +662,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.id);
-		return Boolean(usersTask);
+		return minionIsBusy(this.id);
 	}
 
 	public hasGracefulEquipped(this: User) {
@@ -694,12 +675,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionName(this: User): string {
-		const name = this.settings.get(UserSettings.Minion.Name);
-		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
-
-		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
-
-		return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
+		return minionName(this);
 	}
 
 	public async addXP(this: User, params: AddXpParams): Promise<string> {
@@ -859,8 +835,6 @@ export default class extends Extendable {
 				`${Emoji.QuestIcon} **${this.username}'s** minion, ${this.minionName}, just achieved the maximum amount of Quest Points!`
 			);
 		}
-
-		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
 		return this.settings.update(UserSettings.QP, newQP);
 	}
 
@@ -873,26 +847,15 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentMonsterScores = this.settings.get(UserSettings.MonsterScores);
 
-		this.log(`had Quantity[${amountToAdd}] KC added to Monster[${monsterID}]`);
-
 		return this.settings.update(
 			UserSettings.MonsterScores,
 			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
 		);
 	}
 
-	public async incrementOpenableScore(this: User, openableID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const scores = this.settings.get(UserSettings.OpenableScores);
-
-		return this.settings.update(UserSettings.OpenableScores, addItemToBank(scores, openableID, amountToAdd));
-	}
-
 	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
 		await this.settings.sync(true);
 		const currentClueScores = this.settings.get(UserSettings.ClueScores);
-
-		this.log(`had Quantity[${amountToAdd}] KC added to Clue[${clueID}]`);
 
 		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
 	}
@@ -900,8 +863,6 @@ export default class extends Extendable {
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {
 		await this.settings.sync(true);
 		const currentCreatureScores = this.settings.get(UserSettings.CreatureScores);
-
-		this.log(`had Quantity[${amountToAdd}] Score added to Creature[${creatureID}]`);
 
 		return this.settings.update(
 			UserSettings.CreatureScores,

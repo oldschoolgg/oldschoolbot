@@ -45,7 +45,6 @@ export default class extends Extendable {
 		{ items, dontAddToTempCL = false }: { items: Bank; dontAddToTempCL?: boolean }
 	) {
 		await this.settings.sync(true);
-		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
 		let updates: [string, ItemBank][] = [
 			[UserSettings.CollectionLogBank, items.clone().add(this.settings.get(UserSettings.CollectionLogBank)).bank]
