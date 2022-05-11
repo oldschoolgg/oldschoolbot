@@ -23,7 +23,6 @@ import { MakePartyOptions } from '../../lib/types';
 import { formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import itemID from '../../lib/util/itemID';
 
 // Max people in a party:
 const maxTeamSize = 20;
@@ -168,7 +167,7 @@ export default class extends BotCommand {
 					`You can't start a Dungeoneering party because of ${user.username}: ${check[1]}`
 				);
 			}
-			if (await user.hasItem(itemID('Scroll of teleportation'))) {
+			if (user.owns('Scroll of teleportation')) {
 				let y = 15;
 				if (user.hasItemEquippedOrInBank('Dungeoneering master cape')) {
 					y += 10;

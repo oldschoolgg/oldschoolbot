@@ -5,7 +5,7 @@ import { client } from '../..';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { toKMB } from '../../lib/util';
+import { addToGPTaxBalance, toKMB } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, MahojiUserOption } from '../mahojiSettings';
 
@@ -74,6 +74,7 @@ export const payCommand: OSBMahojiCommand = {
 		});
 
 		client.emit(Events.EconomyLog, `${user.sanitizedName} paid ${amount} GP to ${recipient.sanitizedName}.`);
+		addToGPTaxBalance(user.id, amount);
 
 		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;
 	}

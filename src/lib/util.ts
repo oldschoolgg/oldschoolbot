@@ -40,6 +40,7 @@ import {
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
+import { prisma } from './settings/prisma';
 import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { Gear } from './structures/Gear';
@@ -831,4 +832,29 @@ export function discrimName(user: KlasaUser | APIUser) {
 
 export function isValidSkill(skill: string): skill is SkillsEnum {
 	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
+}
+
+export async function addToGPTaxBalance(userID: bigint | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			}
+		}),
+		prisma.user.update({
+			where: {
+				id: userID.toString()
+			},
+			data: {
+				total_gp_traded: {
+					increment: amount
+				}
+			}
+		})
+	]);
 }

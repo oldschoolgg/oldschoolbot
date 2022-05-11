@@ -45,7 +45,7 @@ export default class extends BotCommand {
 				throw `${user.username} doesn't have the requirements for this monster: ${reason}`;
 			}
 
-			if (!user.hasItem(itemID('Frozen key'))) {
+			if (!user.owns('Frozen key')) {
 				throw `${user} doesn't have a Frozen key.`;
 			}
 

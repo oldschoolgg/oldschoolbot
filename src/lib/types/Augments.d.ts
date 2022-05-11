@@ -152,10 +152,7 @@ declare module 'discord.js' {
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
-		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
 		log(stringLog: string): void;
-		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(params: AddXpParams): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;

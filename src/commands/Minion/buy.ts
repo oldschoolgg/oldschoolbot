@@ -204,7 +204,7 @@ export default class extends BotCommand {
 				return msg.channel.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
 			}
 			econBankChanges.add('Coins', totalGPCost);
-			await msg.author.removeGP(totalGPCost);
+			await msg.author.removeItemsFromBank(new Bank().add('Coins', totalGPCost));
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
