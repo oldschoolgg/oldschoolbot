@@ -86,7 +86,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['wg', [quantity, 'cyclops'], true],
+			['activities', { warriors_guild: { action: 'cyclops', quantity } }, true],
 			image!,
 			data,
 			itemsAdded

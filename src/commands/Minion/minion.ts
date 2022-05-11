@@ -179,7 +179,7 @@ export default class MinionCommand extends BotCommand {
 	async commands(msg: KlasaMessage) {
 		const commands = await prisma.commandUsage.findMany({
 			where: {
-				user_id: msg.author.id
+				user_id: BigInt(msg.author.id)
 			},
 			orderBy: {
 				date: 'desc'

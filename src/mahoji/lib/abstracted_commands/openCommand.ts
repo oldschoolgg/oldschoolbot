@@ -1,6 +1,7 @@
 import { User } from '@prisma/client';
 import { notEmpty, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -54,7 +55,7 @@ export async function abstractedOpenUntilCommand(
 	name: string,
 	openUntilItem: string
 ) {
-	if (user.perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (user.perkTier < PerkTier.Three) return patronMsg(PerkTier.Three);
 	name = name.replace(regex, '$1');
 	const openableItem = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
 	if (!openableItem) return "That's not a valid item.";
@@ -152,7 +153,7 @@ async function finalizeOpening({
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
 
-	return {
+	let response: Awaited<CommandResponse> = {
 		attachments: [
 			{
 				fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`,
@@ -162,6 +163,12 @@ async function finalizeOpening({
 		content: `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`
 	};
+	if (response.content!.length > 1900) {
+		response.attachments!.push({ fileName: 'response.txt', buffer: Buffer.from(response.content!) });
+		response.content =
+			'Due to opening so many things at once, you will have to download the attached text file to read the response.';
+	}
+	return response;
 }
 
 export async function abstractedOpenCommand(
@@ -181,7 +188,7 @@ export async function abstractedOpenCommand(
 				.filter(notEmpty);
 	if (names.includes('all') && !openables.length) return 'You have no openable items.';
 	if (!openables.length) return "That's not a valid item.";
-	if (openables.length > 1 && user.perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (openables.length > 1 && user.perkTier < PerkTier.Two) return patronMsg(PerkTier.Two);
 
 	const cost = new Bank();
 	const kcBank = new Bank();
