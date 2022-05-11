@@ -267,7 +267,7 @@ export default class extends Task {
 						throw `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`;
 					} else {
 						payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
-						await user.removeGP(gpToCutTree);
+						await user.removeItemsFromBank(new Bank().add('Coins', gpToCutTree));
 					}
 
 					harvestXp = 0;

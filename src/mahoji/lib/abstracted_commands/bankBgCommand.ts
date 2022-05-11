@@ -128,7 +128,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 
 		if (selectedImage.gpCost) {
 			economyCost.add(selectedImage.gpCost);
-			await user.removeGP(selectedImage.gpCost);
+			await user.removeItemsFromBank(new Bank().add('Coins', selectedImage.gpCost));
 		}
 	}
 
