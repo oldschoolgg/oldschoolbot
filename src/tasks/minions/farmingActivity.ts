@@ -10,7 +10,7 @@ import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, channelIsSendable, rand, roll } from '../../lib/util';
+import { bankHasItem, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -28,7 +28,6 @@ export default class extends Task {
 			userID,
 			channelID,
 			planting,
-			duration,
 			currentDate,
 			autoFarmed
 		} = data;
@@ -159,7 +158,7 @@ export default class extends Task {
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
-				plantTime: currentDate + duration,
+				plantTime: currentDate,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: payment ?? false
@@ -170,9 +169,6 @@ export default class extends Task {
 			});
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
-
-			const channel = this.client.channels.cache.get(channelID);
-			if (!channelIsSendable(channel)) return;
 
 			handleTripFinish(
 				this.client,
@@ -400,7 +396,7 @@ export default class extends Task {
 				newPatch = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
-					plantTime: currentDate + duration,
+					plantTime: currentDate,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: payment ? payment : false
