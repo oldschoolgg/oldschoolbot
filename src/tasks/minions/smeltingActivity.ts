@@ -13,7 +13,7 @@ import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: SmeltingActivityTaskOptions) {
-		let { barID, quantity, userID, channelID, duration } = data;
+		let { barID, quantity, userID, channelID, duration, blastf } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
@@ -84,7 +84,8 @@ export default class extends Task {
 				'smelt',
 				{
 					name: bar.name,
-					quantity: oldQuantity
+					quantity: oldQuantity,
+					blast_furnace: blastf
 				},
 				true
 			],

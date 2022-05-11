@@ -30,7 +30,7 @@ import { AddXpParams, KillableMonster } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
 import { getActivityOfUser, getMinigameScore, MinigameName, Minigames } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
+import Skillcapes from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
@@ -56,7 +56,6 @@ import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
-	BlastFurnaceActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
@@ -570,18 +569,6 @@ export default class extends Extendable {
 				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
 
-			case 'BlastFurnace': {
-				const data = currentTask as BlastFurnaceActivityTaskOptions;
-
-				const bar = Smithing.BlastableBars.find(bar => bar.id === data.barID);
-
-				return `${this.minionName} is currently smelting ${data.quantity}x ${
-					bar!.name
-				} at the Blast Furnace. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
-					SkillsEnum.Smithing
-				)}`;
-			}
-
 			case 'OuraniaDeliveryService': {
 				return `${this.minionName} is currently delivering in the Ourania Deliver Service. ${formattedDuration}`;
 			}
@@ -692,10 +679,9 @@ export default class extends Extendable {
 					this.minionName
 				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
-			case 'Easter': {
-				return `${this.minionName} is currently doing the Easter Event. The trip should take ${formatDuration(
-					durationRemaining
-				)}.`;
+			case 'Easter':
+			case 'BlastFurnace': {
+				throw new Error('Removed');
 			}
 		}
 	}
@@ -789,16 +775,18 @@ export default class extends Extendable {
 			.map(i => i.item);
 
 		// Build list of all Master capes including combined capes.
-		const allMasterCapes = MasterSkillcapes.map(msc => getSimilarItems(msc.item.id)).flat(Infinity) as number[];
+		const allMasterCapes = Skillcapes.map(i => i.masterCape)
+			.map(msc => getSimilarItems(msc.id))
+			.flat(Infinity) as number[];
 
 		// Get cape object from MasterSkillCapes that matches active skill.
-		const matchingCape = multiplier ? MasterSkillcapes.find(cape => params.skillName === cape.skill) : undefined;
+		const matchingCape = multiplier
+			? Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape
+			: undefined;
 
 		// If the matching cape [or similar] is equipped, isMatchingCape = matched itemId.
 		const isMatchingCape =
-			multiplier && matchingCape
-				? allCapes.find(cape => getSimilarItems(matchingCape.item.id).includes(cape))
-				: false;
+			multiplier && matchingCape ? allCapes.find(cape => getSimilarItems(matchingCape.id).includes(cape)) : false;
 
 		// Get the masterCape itemId for use in text output, and check for non-matching cape.
 		const masterCape = isMatchingCape

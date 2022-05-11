@@ -4,11 +4,20 @@ import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, itemID, stringMatches, updateBankSetting } from '../../lib/util';
+import {
+	formatDuration,
+	formatSkillRequirements,
+	itemID,
+	skillsMeetRequirements,
+	stringMatches,
+	updateBankSetting
+} from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const smeltingCommand: OSBMahojiCommand = {
@@ -39,17 +48,36 @@ export const smeltingCommand: OSBMahojiCommand = {
 			required: false,
 			min_value: 1,
 			max_value: 100_000
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'blast_furnace',
+			description: 'If you want to blast furnace the bars.',
+			required: false
 		}
 	],
-	run: async ({ userID, options, channelID }: CommandRunOptions<{ name: string; quantity?: number }>) => {
-		let { name, quantity } = options;
+	run: async ({
+		userID,
+		options,
+		channelID
+	}: CommandRunOptions<{ name: string; quantity?: number; blast_furnace?: boolean }>) => {
+		let { name, quantity, blast_furnace } = options;
 		const user = await client.fetchUser(userID);
+		if (blast_furnace === undefined) blast_furnace = false;
+		const boosts = [];
 
-		const bar = Smithing.Bars.find(
-			bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
-		);
+		const bar = blast_furnace
+			? Smithing.BlastableBars.find(
+					bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name)
+			  )
+			: Smithing.Bars.find(bar => stringMatches(bar.name, name) || stringMatches(bar.name.split(' ')[0], name));
 
 		if (!bar) {
+			if (blast_furnace) {
+				return `Thats not a valid bar to blast furnace. Valid bars are ${Smithing.BlastableBars.map(
+					bar => bar.name
+				).join(', ')}.`;
+			}
 			return `Thats not a valid bar to smelt. Valid bars are ${Smithing.Bars.map(bar => bar.name).join(', ')}.`;
 		}
 
@@ -61,10 +89,39 @@ export const smeltingCommand: OSBMahojiCommand = {
 			return 'You try to smelt the bars, but nothing is happening. Perhaps the furnace is not hot enough to melt dwarven ore.';
 		}
 
-		// All bars take 2.4s to smith, add on quarter of a second to account for banking/etc.
-		let timeToSmithSingleBar = Time.Second * 2.4 + Time.Second / 4;
-		if (user.hasItemEquippedAnywhere(itemID('Dwarven gauntlets'))) {
+		// All bars take 2.4s to smith normally, add on quarter of a second to account for banking/etc.
+		let timeToSmithSingleBar = blast_furnace ? bar.timeToUse + Time.Second / 10 : bar.timeToUse + Time.Second / 4;
+		if (user.hasItemEquippedAnywhere('Dwarven gauntlets')) {
 			timeToSmithSingleBar /= 2;
+		}
+
+		if (blast_furnace) {
+			const requiredSkills = {
+				[SkillsEnum.Crafting]: 12,
+				[SkillsEnum.Firemaking]: 16,
+				[SkillsEnum.Magic]: 33,
+				[SkillsEnum.Mining]: 50,
+				[SkillsEnum.Smithing]: 20,
+				[SkillsEnum.Thieving]: 13
+			};
+			if (!skillsMeetRequirements(user.rawSkills, requiredSkills)) {
+				return `You don't have the required stats to use the Blast Furnace, you need: ${formatSkillRequirements(
+					requiredSkills
+				)}`;
+			}
+
+			// Boosts
+			if (
+				user.hasItemEquippedOrInBank('Coal bag') &&
+				resolveItems(['Steel bar', 'Mithril bar', 'Adamantite bar', 'Runite bar']).includes(bar.id)
+			) {
+				boosts.push('60% for coal bag');
+				timeToSmithSingleBar *= 0.625;
+			}
+			if (!user.hasGracefulEquipped()) {
+				timeToSmithSingleBar *= 1.075;
+				boosts.push('-7.5% penalty for not having graceful equipped.');
+			}
 		}
 
 		const maxTripLength = user.maxTripLength('Smithing');
@@ -74,9 +131,9 @@ export const smeltingCommand: OSBMahojiCommand = {
 			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
 		}
 
-		const baseCost = new Bank(bar.inputOres);
+		const itemsNeeded = bar.inputOres.clone();
 
-		const maxCanDo = user.bank().fits(baseCost);
+		const maxCanDo = user.bank().fits(itemsNeeded);
 		if (maxCanDo === 0) {
 			return "You don't have enough supplies to smelt even one of this item!";
 		}
@@ -85,7 +142,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 		}
 
 		const cost = new Bank();
-		cost.add(baseCost.multiply(quantity));
+		cost.add(itemsNeeded.multiply(quantity));
 
 		const duration = quantity * timeToSmithSingleBar;
 		if (duration > maxTripLength) {
@@ -96,6 +153,18 @@ export const smeltingCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
+		let coinsToRemove = 0;
+		if (blast_furnace) {
+			const gpPerHour = (user.isIronman ? 1 : 3.5) * 72_000;
+			coinsToRemove = Math.floor(gpPerHour * (duration / Time.Hour));
+			const gp = user.settings.get(UserSettings.GP);
+			if (gp < coinsToRemove) {
+				return `You need atleast ${coinsToRemove} GP to work at the Blast Furnace.`;
+			}
+
+			cost.add('Coins', coinsToRemove);
+		}
+
 		await user.removeItemsFromBank(cost);
 		updateBankSetting(client, ClientSettings.EconomyStats.SmithingCost, cost);
 
@@ -104,17 +173,21 @@ export const smeltingCommand: OSBMahojiCommand = {
 			userID: user.id,
 			channelID: channelID.toString(),
 			quantity,
+			blastf: blast_furnace,
 			duration,
 			type: 'Smelting'
 		});
 
-		let goldGauntletMessage = '';
 		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
-			goldGauntletMessage = '\n\n**Boosts:** 56.2 xp per gold bar for Goldsmith gauntlets.';
+			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 
-		return `${user.minionName} is now smelting ${quantity}x ${bar.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish.${goldGauntletMessage}`;
+		const response = `${user.minionName} is now smelting ${quantity}x ${
+			bar.name
+		}, it'll take around ${formatDuration(duration)} to finish. ${
+			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
+		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
+
+		return response;
 	}
 };

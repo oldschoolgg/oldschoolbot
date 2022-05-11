@@ -89,7 +89,7 @@ export async function luckyPickCommand(
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
 	}
-	await klasaUser.removeGP(amount);
+	await klasaUser.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
 	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): MessageOptions['components'] {
 		let chunkedButtons = chunk(buttonsToShow, 5);

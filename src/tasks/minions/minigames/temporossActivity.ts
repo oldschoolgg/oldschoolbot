@@ -88,7 +88,7 @@ export default class extends Task {
 			user,
 			channelID,
 			output,
-			['tempoross', [quantity], true],
+			['k', { name: 'Tempoross', quantity }, true],
 			image!,
 			data,
 			itemsAdded

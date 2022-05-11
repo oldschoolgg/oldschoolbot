@@ -40,7 +40,7 @@ describe('util', () => {
 		expect(
 			getUserFoodFromBank(
 				fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
-				1600,
+				1700,
 				[]
 			)
 		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));

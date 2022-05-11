@@ -6,7 +6,7 @@ import {
 	brokenPernixOutfit,
 	brokenTorvaOutfit,
 	brokenVirtusOutfit,
-	nexCL,
+	nexUniqueDrops,
 	pernixOutfit,
 	torvaOutfit,
 	virtusOutfit
@@ -14,6 +14,7 @@ import {
 import { GearStat } from './gear';
 import { KillableMonster } from './minions/types';
 import getOSItem from './util/getOSItem';
+import itemID from './util/itemID';
 import { makeKillTable } from './util/setCustomMonster';
 
 export const nexBrokenArmorDetails = [
@@ -51,7 +52,7 @@ export const NexMonster: KillableMonster = {
 	name: 'Nex',
 	aliases: ['nex'],
 	timeToFinish: Time.Minute * 25,
-	notifyDrops: nexCL,
+	notifyDrops: [...nexUniqueDrops, itemID('Bloodsoaked feather')],
 	table: makeKillTable(nexLootTable),
 	emoji: '',
 	wildy: false,
