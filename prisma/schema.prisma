@@ -379,6 +379,8 @@ model User {
 
   lms_points Int @default(0)
 
+  minion_bought_date DateTime? @db.Timestamp(6)
+
   @@map("users")
 }
 
