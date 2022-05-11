@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -98,7 +99,7 @@ export default class extends BotCommand {
 			if (gpCost > userGP) {
 				return msg.channel.send(`You need ${gpCost} GP to create ${quantity} planks.`);
 			}
-			await msg.author.removeGP(gpCost);
+			await msg.author.removeItemsFromBank(new Bank().add('Coins', gpCost));
 		}
 
 		await msg.author.removeItemsFromBank(cost.bank);
