@@ -138,7 +138,9 @@ export default class extends Task {
 
 		const hasKlik = user.equippedPet() === itemID('Klik');
 		if (hasKlik) {
-			const smeltedOre = Smithing.Bars.find(o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1);
+			const smeltedOre = Smithing.Bars.find(
+				o => o.inputOres.bank[ore.id] && Object.keys(o.inputOres.bank).length === 1
+			);
 			if (smeltedOre) {
 				loot.remove(ore.id, loot.amount(ore.id));
 				loot.add(smeltedOre.id, quantity);

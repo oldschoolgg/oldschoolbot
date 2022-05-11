@@ -65,6 +65,8 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { revsCommand } from './revsCommand';
+import { temporossCommand } from './temporossCommand';
+import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -139,6 +141,9 @@ export async function minionKillCommand(
 		});
 		name = 'Ogress Warrior';
 	}
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
+	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
+
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		return revsCommand(user, mUser, channelID, interaction, name);

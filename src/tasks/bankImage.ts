@@ -173,6 +173,10 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Grimy dwarf weed'), 'dwarf'],
 	[i('Grimy torstol'), 'torstol'],
 
+	[i('Compost'), 'compost'],
+	[i('Supercompost'), 'super'],
+	[i('Ultracompost'), 'ultra'],
+
 	// Clues & Caskets
 	[i('Clue scroll (beginner)'), 'beginner'],
 	[i('Reward casket (beginner)'), 'beginner'],
@@ -806,9 +810,9 @@ export default class BankImageTask extends Task {
 			}
 
 			if (bottomItemText) {
-				bottomItemText = bottomItemText.toString().slice(0, 8);
+				let text =
+					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
 				ctx.fillStyle = 'black';
-				let text = typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
 				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
 				ctx.fillStyle =
 					typeof bottomItemText === 'string' ? 'white' : generateHexColorForCashStack(bottomItemText);

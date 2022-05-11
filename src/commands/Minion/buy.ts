@@ -12,15 +12,14 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import {
-	bankHasAllItemsFromBank,
 	formatSkillRequirements,
 	itemNameFromID,
-	multiplyBank,
 	skillsMeetRequirements,
 	stringMatches,
 	updateBankSetting
 } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -132,15 +131,6 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.settings.sync(true);
-		const userBank = msg.author.settings.get(UserSettings.Bank);
-
-		if (buyable.itemCost && !bankHasAllItemsFromBank(userBank, multiplyBank(buyable.itemCost, quantity))) {
-			return msg.channel.send(
-				`You don't have the required items to purchase this. You need: ${new Bank(
-					multiplyBank(buyable.itemCost, quantity)
-				)}.`
-			);
-		}
 
 		const GP = msg.author.settings.get(UserSettings.GP);
 		let gpCost = msg.author.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
@@ -164,13 +154,19 @@ export default class extends BotCommand {
 			return msg.channel.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
 		}
 
-		let output =
+		let singleCost: Bank =
 			buyable.outputItems === undefined
-				? new Bank().add(buyable.name).bank
+				? new Bank().add(buyable.name)
 				: buyable.outputItems instanceof Bank
-				? buyable.outputItems.bank
-				: buyable.outputItems;
-		const outItems = multiplyBank(output, quantity);
+				? buyable.outputItems
+				: buyable.outputItems(await mahojiUsersSettingsFetch(msg.author.id));
+
+		const outItems = singleCost.clone().multiply(quantity);
+
+		if (buyable.itemCost && !msg.author.owns(outItems)) {
+			return msg.channel.send(`You don't have the required items to purchase this. You need: ${outItems}.`);
+		}
+
 		const itemString = new Bank(outItems).toString();
 
 		// Start building a string to show to the user.
@@ -178,7 +174,7 @@ export default class extends BotCommand {
 
 		// If theres an item cost or GP cost, add it to the string to show users the cost.
 		if (buyable.itemCost) {
-			str += new Bank(multiplyBank(buyable.itemCost, quantity)).toString();
+			str += outItems.toString();
 			if (gpCost) {
 				str += `, ${totalGPCost.toLocaleString()} GP.`;
 			}

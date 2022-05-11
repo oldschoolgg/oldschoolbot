@@ -2,12 +2,12 @@ import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { collectables } from '../../commands/Minion/collect';
 import { MorytaniaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CollectingOptions } from '../../lib/types/minions';
 import { updateBankSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 
 export default class extends Task {
 	async run(data: CollectingOptions) {
@@ -39,7 +39,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['collect', [quantity, collectable.item.name]],
+			['activities', { collect: { item: collectable.item.name, quantity } }],
 			undefined,
 			data,
 			loot ?? null

@@ -31,9 +31,9 @@ export default class extends Task {
 			userID,
 			channelID,
 			planting,
-			duration,
 			currentDate,
-			autoFarmed
+			autoFarmed,
+			duration
 		} = data;
 		const user = await this.client.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -184,7 +184,7 @@ export default class extends Task {
 			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
-				plantTime: currentDate + duration,
+				plantTime: currentDate,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: payment ?? false
@@ -458,7 +458,7 @@ export default class extends Task {
 				newPatch = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
-					plantTime: currentDate + duration,
+					plantTime: currentDate,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: payment ? payment : false

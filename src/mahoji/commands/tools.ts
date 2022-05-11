@@ -321,7 +321,16 @@ export const toolsCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'cl_bank',
-					description: 'Shows a bank image containing all items in your collection log.'
+					description: 'Shows a bank image containing all items in your collection log.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'format',
+							description: 'Bank Image or Json format?',
+							required: false,
+							choices: ['bank', 'json'].map(i => ({ name: i, value: i }))
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -368,7 +377,9 @@ export const toolsCommand: OSBMahojiCommand = {
 				ironman?: boolean;
 			};
 			sacrificed_bank?: {};
-			cl_bank?: {};
+			cl_bank?: {
+				format?: 'bank' | 'json';
+			};
 			minion_stats?: {};
 			give_box?: {
 				user: MahojiUserOption;
@@ -400,6 +411,23 @@ export const toolsCommand: OSBMahojiCommand = {
 				const image = await makeBankImage({
 					bank: new Bank(mahojiUser.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
+				});
+				return {
+					attachments: [image.file]
+				};
+			}
+			if (patron.cl_bank) {
+				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const clBank = new Bank(mahojiUser.collectionLogBank as ItemBank);
+				if (patron.cl_bank.format === 'json') {
+					const json = JSON.stringify(clBank);
+					return {
+						attachments: [{ buffer: Buffer.from(json), fileName: 'clbank.json' }]
+					};
+				}
+				const image = await makeBankImage({
+					bank: clBank,
+					title: 'Your Entire Collection Log'
 				});
 				return {
 					attachments: [image.file]

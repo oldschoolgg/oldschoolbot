@@ -3,7 +3,6 @@ export const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 const arrayColumns = [
 	['clientStorage', 'userBlacklist'],
 	['clientStorage', 'guildBlacklist'],
-	['clientStorage', 'locked_skills'],
 	['guilds', 'disabledCommands'],
 	['guilds', 'staffOnlyChannels'],
 	['users', 'badges'],
