@@ -5,6 +5,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	async run(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'activities decant'));
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'k name:Zalcano'));
 	}
 }

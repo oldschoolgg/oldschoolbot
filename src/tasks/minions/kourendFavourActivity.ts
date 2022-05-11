@@ -69,7 +69,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['minion', { name: confirmedFavour.name }, true],
+			['activities', { favour: { name: confirmedFavour.name } }, true],
 			undefined,
 			data,
 			loot ?? null

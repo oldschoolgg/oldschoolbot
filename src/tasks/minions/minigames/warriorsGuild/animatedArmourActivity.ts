@@ -1,9 +1,9 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Armours } from '../../../../commands/Minion/warriorsguild';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
+import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
 
 export default class extends Task {
 	async run(data: AnimatedArmourActivityTaskOptions) {
@@ -26,7 +26,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['warriorsguild', [quantity, 'tokens'], true],
+			['activities', { warriors_guild: { action: 'tokens', quantity } }, true],
 			undefined,
 			data,
 			loot
