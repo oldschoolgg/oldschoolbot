@@ -37,6 +37,7 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertLVLtoXP, isAtleastThisOld, isValidNickname, stringMatches } from '../../lib/util';
+import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -397,8 +398,10 @@ export default class MinionCommand extends BotCommand {
 	async buy(msg: KlasaMessage) {
 		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
 
-		await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
+		await mahojiUserSettingsUpdate(this.client, msg.author.id, {
+			minion_hasBought: true,
+			minion_bought_date: new Date()
+		});
 		const starter = isAtleastThisOld(msg.author.createdTimestamp, Time.Year * 2)
 			? new Bank({
 					Shark: 300,
