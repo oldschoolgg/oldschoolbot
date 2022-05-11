@@ -249,7 +249,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		name: 'Seed pack',
 		id: 22_993,
 		openedItem: getOSItem(22_993),
-		aliases: ['seed pack'],
+		aliases: ['seed pack', 'sp'],
 		output: async (
 			args: OpenArgs
 		): Promise<{
