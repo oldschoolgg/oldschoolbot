@@ -34,6 +34,15 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		handleTripFinish(this.client, user, channelID, str, ['chargewealth', [quantity], true], undefined, data, loot);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			['activities', { charge: 'wealth', quantity }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }

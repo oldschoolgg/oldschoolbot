@@ -37,6 +37,6 @@ export default class extends Task {
 			}
 		}
 
-		handleTripFinish(this.client, user, channelID, str, ['chompyhunt', []], undefined, data, loot);
+		handleTripFinish(this.client, user, channelID, str, ['activities', { chompy_hunt: {} }], undefined, data, loot);
 	}
 }

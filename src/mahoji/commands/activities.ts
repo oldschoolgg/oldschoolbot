@@ -205,7 +205,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		favour?: { name?: string; no_stams?: boolean };
 		decant?: { potion_name: string; dose?: number };
 		charge?: { item: string; quantity?: number };
-		volcanic_mine?: { start: string; quantity?: number };
 		fight_caves?: {};
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);

@@ -779,7 +779,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		rogues_den?: { start?: {} };
 		soul_wars?: { start?: {}; buy?: { name: string; quantity?: number }; imbue?: { name: string }; tokens?: {} };
 		volcanic_mine?: {
-			start?: {};
+			start?: { quantity?: number };
 			buy?: { item: string; quantity?: number };
 		};
 	}>) => {
@@ -1004,7 +1004,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.volcanic_mine?.start) {
-			return volcanicMineCommand(klasaUser, channelID, undefined);
+			return volcanicMineCommand(klasaUser, channelID, options.volcanic_mine.start.quantity);
 		}
 		if (options.volcanic_mine?.buy) {
 			return volcanicMineShopCommand(

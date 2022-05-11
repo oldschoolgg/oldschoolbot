@@ -99,7 +99,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['volcanicmine', [quantity], true],
+			['minigames', { volcanic_mine: { start: { quantity } } }, true],
 			undefined,
 			data,
 			itemsAdded

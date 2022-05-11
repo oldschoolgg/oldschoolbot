@@ -180,7 +180,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`${user} ${msg}`,
-			['fightcaves', [], true],
+			['activities', { fight_caves: {} }, true],
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
