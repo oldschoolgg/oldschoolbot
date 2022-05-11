@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { client } from '../..';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { discrimName, truncateString } from '../../lib/util';
+import { addToGPTaxBalance, discrimName, truncateString } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
@@ -139,6 +139,12 @@ Both parties must click confirm to make the trade.`,
 			Events.EconomyLog,
 			`${senderKlasaUser.sanitizedName} sold ${itemsSent} to ${recipientKlasaUser.sanitizedName} for ${itemsReceived}.`
 		);
+		if (itemsReceived.has('Coins')) {
+			addToGPTaxBalance(recipientKlasaUser.id, itemsReceived.amount('Coins'));
+		}
+		if (itemsSent.has('Coins')) {
+			addToGPTaxBalance(senderKlasaUser.id, itemsSent.amount('Coins'));
+		}
 
 		return `${discrimName(senderKlasaUser)} sold ${itemsSent} to ${discrimName(
 			recipientKlasaUser
