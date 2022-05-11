@@ -419,7 +419,7 @@ model User {
 
   // BSO
   nursery                  Json?    @db.Json
-  selected_tame            Json?    @db.Json
+  selected_tame            Int?
   monkeys_fought           String[]
   times_fed_gregoyle       Int      @default(0)
   wrong_accusations        Int      @default(0)
