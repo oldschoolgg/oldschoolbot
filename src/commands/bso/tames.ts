@@ -45,6 +45,7 @@ import { patronMaxTripCalc } from '../../lib/util/getUsersPerkTier';
 import itemID from '../../lib/util/itemID';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
+import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import BankImageTask from '../../tasks/bankImage';
 import { collectables } from '../Minion/collect';
 import { Tame, tame_growth, TameActivity } from '.prisma/client';
@@ -558,7 +559,9 @@ export default class extends BotCommand {
 		if (currentTask) {
 			return msg.channel.send("You can't select a different tame, because your current one is busy.");
 		}
-		await msg.author.settings.update(UserSettings.SelectedTame, toSelect.id);
+		await mahojiUserSettingsUpdate(this.client, msg.author.id, {
+			selected_tame: toSelect.id
+		});
 		return msg.channel.send(`You selected your ${tameName(toSelect)}.`);
 	}
 
