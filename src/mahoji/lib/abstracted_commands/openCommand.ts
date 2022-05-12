@@ -147,7 +147,7 @@ async function finalizeOpening({
 			loot.add((await getOpenableLoot({ user, mahojiUser, openable, quantity: smokeyBonus })).bank);
 			bonuses.push(`${smokeyBonus}x ${openable.name}`);
 		}
-		smokeyMsg = `${Emoji.Smokey} Bonus Rolls: ${messages.join(', ')}`;
+		smokeyMsg = bonuses.length ? `${Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}` : null;
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
 

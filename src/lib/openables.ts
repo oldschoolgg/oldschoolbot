@@ -126,7 +126,7 @@ for (const clueTier of ClueTiers) {
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 			if (extraClueRolls > 0) {
-				message += `${extraClueRolls} extra rolls`;
+				message += `${mimicNumber ? ' ' : ''}${extraClueRolls} extra rolls`;
 			}
 
 			const nthCasket = (user.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
@@ -169,6 +169,9 @@ for (const clueTier of ClueTiers) {
 		allItems: clueTier.allItems
 	});
 }
+
+const masterClue = clueOpenables.find(c => c.name === 'Reward casket (master)');
+masterClue!.allItems.push(itemID('Clue scroll (grandmaster)'));
 
 const osjsOpenables: UnifiedOpenable[] = [
 	{
