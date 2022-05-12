@@ -2,7 +2,6 @@ import { MessageAttachment } from 'discord.js';
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { toKMB } from 'oldschooljs/dist/util/util';
 import { table } from 'table';
 
 import Buyables from '../../lib/data/buyables/buyables';
@@ -130,9 +129,6 @@ export default class extends BotCommand {
 			}
 		}
 
-		await msg.author.settings.sync(true);
-
-		const GP = msg.author.settings.get(UserSettings.GP);
 		let gpCost = msg.author.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
 		if (buyable.name === getOSItem('Festive present').name) {
@@ -148,64 +144,29 @@ export default class extends BotCommand {
 			}
 		}
 
-		const totalGPCost = (gpCost ?? 0) * quantity;
+		const singleCost: Bank = buyable.itemCost ?? new Bank();
+		if (gpCost) singleCost.add('Coins', gpCost);
 
-		if (gpCost && msg.author.settings.get(UserSettings.GP) < totalGPCost) {
-			return msg.channel.send(`You need ${totalGPCost.toLocaleString()} GP to purchase this item.`);
+		const totalCost = singleCost.clone().multiply(quantity);
+		if (!msg.author.owns(totalCost)) {
+			return msg.channel.send(`You don't have the required items to purchase this. You need: ${totalCost}.`);
 		}
 
-		let singleCost: Bank =
+		let singleOutput: Bank =
 			buyable.outputItems === undefined
 				? new Bank().add(buyable.name)
 				: buyable.outputItems instanceof Bank
 				? buyable.outputItems
 				: buyable.outputItems(await mahojiUsersSettingsFetch(msg.author.id));
 
-		const outItems = singleCost.clone().multiply(quantity);
+		const outItems = singleOutput.clone().multiply(quantity);
 
-		if (buyable.itemCost && !msg.author.owns(outItems)) {
-			return msg.channel.send(`You don't have the required items to purchase this. You need: ${outItems}.`);
-		}
-
-		const itemString = new Bank(outItems).toString();
-
-		// Start building a string to show to the user.
-		let str = `${msg.author}, please confirm that you want to buy **${itemString}** for: `;
-
-		// If theres an item cost or GP cost, add it to the string to show users the cost.
-		if (buyable.itemCost) {
-			str += outItems.toString();
-			if (gpCost) {
-				str += `, ${totalGPCost.toLocaleString()} GP.`;
-			}
-		} else if (gpCost) {
-			str += `${totalGPCost.toLocaleString()} GP.`;
-		}
-
-		await msg.confirm(str);
-		if (buyable.name === 'Bank lottery ticket') {
-			await msg.confirm(
-				'**WARNING: This lottery, has only ONE item that will be given out, a Smokey. Everything else (GP/Items) will be deleted as an item/GP sink, and not given to anyone.**'
-			);
-		}
+		await msg.confirm(`${msg.author}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`);
 
 		const econBankChanges = new Bank();
 
-		await msg.author.settings.sync(true);
-		if (buyable.itemCost) {
-			const cost = new Bank(buyable.itemCost).multiply(quantity);
-
-			econBankChanges.add(cost);
-			await msg.author.removeItemsFromBank(cost);
-		}
-
-		if (gpCost) {
-			if (GP < totalGPCost) {
-				return msg.channel.send(`You need ${toKMB(totalGPCost)} GP to purchase this item.`);
-			}
-			econBankChanges.add('Coins', totalGPCost);
-			await msg.author.removeItemsFromBank(new Bank().add('Coins', totalGPCost));
-		}
+		await msg.author.removeItemsFromBank(totalCost);
+		econBankChanges.add(totalCost);
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyCostBank, econBankChanges);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.BuyLootBank, outItems);
@@ -219,6 +180,6 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank({ items: outItems, collectionLog: true });
 
-		return msg.channel.send(`You purchased ${quantity > 1 ? `${quantity}x` : '1x'} ${buyable.name}.`);
+		return msg.channel.send(`You purchased ${outItems}.`);
 	}
 }

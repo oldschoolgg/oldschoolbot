@@ -6,10 +6,10 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { client } from '..';
 import { collectables } from '../commands/Minion/collect';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import { effectiveMonsters } from './minions/data/killableMonsters';
 import { prisma, trackLoot } from './settings/prisma';
-import { UserSettings } from './settings/types/UserSettings';
 import { generateContinuationChar, itemNameFromID, roll } from './util';
 import { createCollector } from './util/createCollector';
 import getOSItem from './util/getOSItem';
@@ -362,7 +362,11 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 }
 
 export async function getUsersTame(user: KlasaUser): Promise<[Tame | null, TameActivity | null]> {
-	const selectedTame = user.settings.get(UserSettings.SelectedTame);
+	const selectedTame = (
+		await mahojiUsersSettingsFetch(user.id, {
+			selected_tame: true
+		})
+	).selected_tame;
 	if (!selectedTame) {
 		return [null, null];
 	}
