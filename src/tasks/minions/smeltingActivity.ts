@@ -59,16 +59,14 @@ export default class extends Task {
 			[bar.id]: quantity
 		});
 
-		if (duration >= MIN_LENGTH_FOR_PET) {
+		if (duration >= MIN_LENGTH_FOR_PET && !blastf && user.settings.get(UserSettings.QP) > 10) {
 			const numMinutes = duration / Time.Minute;
-			if (user.settings.get(UserSettings.QP) > 10) {
-				for (let i = 0; i < numMinutes; i++) {
-					if (roll(6500)) {
-						str +=
-							'\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him \'Zak\'.';
-						loot.add('Zak');
-						break;
-					}
+			for (let i = 0; i < numMinutes; i++) {
+				if (roll(6500)) {
+					str +=
+						'\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him \'Zak\'.';
+					loot.add('Zak');
+					break;
 				}
 			}
 		}
