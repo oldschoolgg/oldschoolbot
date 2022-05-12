@@ -12,7 +12,6 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -95,7 +94,7 @@ export default class extends BotCommand {
 
 		let totalPlanksNeeded = planksQtyCost * quantity;
 
-		const hasScroll = await msg.author.hasItem(itemID('Scroll of proficiency'));
+		const hasScroll = msg.author.owns('Scroll of proficiency');
 		if (hasScroll) {
 			totalPlanksNeeded = Math.floor(totalPlanksNeeded * 0.85);
 		}
@@ -119,8 +118,7 @@ export default class extends BotCommand {
 		if (msg.author.settings.get(UserSettings.GP) < gpNeeded) {
 			return msg.channel.send("You don't have enough GP to pay your Butler.");
 		}
-		await msg.author.removeGP(gpNeeded);
-		await msg.author.removeItemsFromBank(new Bank().add(plank, totalPlanksNeeded));
+		await msg.author.removeItemsFromBank(new Bank().add(plank, totalPlanksNeeded).add('Coins', gpNeeded));
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ConstructCostBank,

@@ -1,13 +1,27 @@
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { stringMatches } from '../../util';
 import Potions from '../data/potions';
 
-export default function decantPotionFromBank(userBank: ItemBank, potion: string, dose: 1 | 2 | 3 | 4) {
+export default function decantPotionFromBank(
+	userBank: Bank,
+	potion: string,
+	dose: number
+):
+	| {
+			potionsToAdd: Bank;
+			potionsToRemove: Bank;
+			sumOfPots: number;
+			potionName: string;
+			finalUserBank: Bank;
+			error: null;
+	  }
+	| {
+			error: string;
+	  } {
 	const potionToDecant = Potions.find(pot => stringMatches(pot.name, potion));
 	if (!potionToDecant) {
-		throw "You can't decant that!";
+		return { error: "That's not a valid potion that you can decant." };
 	}
 	const potionsToRemove = new Bank();
 	const potionsToAdd = new Bank();
@@ -16,7 +30,7 @@ export default function decantPotionFromBank(userBank: ItemBank, potion: string,
 
 	for (let i = 0; i < potionToDecant.items.length; i++) {
 		if (i === dose - 1) continue;
-		let qty = userBank[potionToDecant.items[i]];
+		let qty = userBank.amount(potionToDecant.items[i]);
 		if (qty > 0) {
 			potionsToRemove.add(potionToDecant.items[i], qty);
 			sumOfPots += qty;
@@ -25,7 +39,7 @@ export default function decantPotionFromBank(userBank: ItemBank, potion: string,
 	}
 
 	if (!totalDosesToCreate) {
-		throw `You don't have any **${potionToDecant.name}** to decant!`;
+		return { error: `You don't have any **${potionToDecant.name}** to decant!` };
 	}
 
 	const newPotionDoseRequested = Math.floor(totalDosesToCreate / dose);
@@ -42,6 +56,7 @@ export default function decantPotionFromBank(userBank: ItemBank, potion: string,
 		potionsToRemove,
 		sumOfPots,
 		potionName: potionToDecant.name,
-		finalUserBank: new Bank().add(userBank).add(potionsToAdd).remove(potionsToRemove)
+		finalUserBank: new Bank().add(userBank).add(potionsToAdd).remove(potionsToRemove),
+		error: null
 	};
 }

@@ -63,7 +63,7 @@ export default class extends BotCommand {
 
 		// Check the user has the required logs to light.
 		// Multiplying the logs required by the quantity of ashes.
-		const hasRequiredLogs = await msg.author.hasItem(log.inputLogs, quantity);
+		const hasRequiredLogs = msg.author.bank().amount(log.inputLogs) >= quantity;
 		if (!hasRequiredLogs) {
 			return msg.channel.send(`You dont have ${quantity}x ${log.name}.`);
 		}

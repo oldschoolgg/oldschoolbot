@@ -147,7 +147,7 @@ async function finalizeOpening({
 			loot.add((await getOpenableLoot({ user, mahojiUser, openable, quantity: smokeyBonus })).bank);
 			bonuses.push(`${smokeyBonus}x ${openable.name}`);
 		}
-		smokeyMsg = `${Emoji.Smokey} Bonus Rolls: ${messages.join(', ')}`;
+		smokeyMsg = bonuses.length ? `${Emoji.Smokey} Bonus Rolls: ${bonuses.join(', ')}` : null;
 	}
 	if (smokeyMsg) messages.push(smokeyMsg);
 
@@ -218,7 +218,7 @@ export async function abstractedOpenCommand(
 				.filter(notEmpty);
 	if (names.includes('all') && !openables.length) return 'You have no openable items.';
 	if (!openables.length) return "That's not a valid item.";
-	if (openables.length > 1 && user.perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (openables.length > 1 && user.perkTier < PerkTier.Two) return patronMsg(PerkTier.Two);
 
 	const cost = new Bank();
 	const kcBank = new Bank();

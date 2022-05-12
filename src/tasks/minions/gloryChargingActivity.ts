@@ -1,11 +1,11 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { gloriesInventorySize } from '../../commands/Minion/chargeglories';
 import { Events } from '../../lib/constants';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -49,6 +49,15 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		handleTripFinish(this.client, user, channelID, str, ['chargeglories', [quantity], true], undefined, data, loot);
+		handleTripFinish(
+			this.client,
+			user,
+			channelID,
+			str,
+			['activities', { charge: { item: 'glory', quantity } }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }

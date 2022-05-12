@@ -233,7 +233,6 @@ export const enum Tasks {
 	MageArena = 'mageArenaActivity',
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
-	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	KingGoldemar = 'kingGoldemarActivity',
@@ -258,8 +257,8 @@ export const enum Tasks {
 	BirthdayEvent = 'birthdayEventActivity',
 	TokkulShop = 'tokkulShopActivity',
 	Nex = 'nexActivity',
-	Easter = 'easterActivity',
-	BaxtorianBathhouses = 'bathhousesActivity'
+	BaxtorianBathhouses = 'bathhousesActivity',
+	REMOVED = '__REMOVED__'
 }
 
 export enum ActivityGroup {

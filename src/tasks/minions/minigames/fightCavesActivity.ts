@@ -3,7 +3,6 @@ import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
-import { fightCavesCost } from '../../../commands/Minion/fightcaves';
 import { Emoji, Events } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -15,6 +14,7 @@ import chatHeadImage from '../../../lib/util/chatHeadImage';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
+import { fightCavesCost } from '../../../mahoji/lib/abstracted_commands/fightCavesCommand';
 
 const TokkulID = itemID('Tokkul');
 
@@ -184,7 +184,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`${user} ${msg}`,
-			['fightcaves', [], true],
+			['activities', { fight_caves: {} }, true],
 			await chatHeadImage({
 				content: `You defeated TzTok-Jad for the ${formatOrdinal(
 					user.getKC(Monsters.TzTokJad.id)
