@@ -147,6 +147,9 @@ for (const clueTier of ClueTiers) {
 	});
 }
 
+const masterClue = clueOpenables.find(c => c.name === 'Reward casket (master)');
+masterClue!.allItems.push(itemID('Clue scroll (grandmaster)'));
+
 const osjsOpenables: UnifiedOpenable[] = [
 	{
 		name: 'Brimstone chest',
