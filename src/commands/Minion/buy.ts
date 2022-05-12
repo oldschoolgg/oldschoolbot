@@ -125,8 +125,6 @@ export default class extends BotCommand {
 			}
 		}
 
-		await msg.author.settings.sync(true);
-
 		const gpCost =
 			msg.author.isIronman && buyable.ironmanPrice !== undefined ? buyable.ironmanPrice : buyable.gpCost;
 
@@ -146,18 +144,10 @@ export default class extends BotCommand {
 				: buyable.outputItems(await mahojiUsersSettingsFetch(msg.author.id));
 
 		const outItems = singleOutput.clone().multiply(quantity);
-		const itemString = new Bank(outItems).toString();
 
-		// This will show both coins and item costs, and both can be used together, seamlessly.
-		const str = `${
-			msg.author
-		}, please confirm that you want to buy **${itemString}** for: ${totalCost.toString()}. `;
-
-		await msg.confirm(str);
+		await msg.confirm(`${msg.author}, please confirm that you want to buy **${outItems}** for: ${totalCost}.`);
 
 		const econBankChanges = new Bank();
-
-		await msg.author.settings.sync(true);
 
 		await msg.author.removeItemsFromBank(totalCost);
 		econBankChanges.add(totalCost);
@@ -167,6 +157,6 @@ export default class extends BotCommand {
 
 		await msg.author.addItemsToBank({ items: outItems, collectionLog: true });
 
-		return msg.channel.send(`You purchased ${outItems.toString()}.`);
+		return msg.channel.send(`You purchased ${outItems}.`);
 	}
 }
