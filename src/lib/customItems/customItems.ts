@@ -5,6 +5,7 @@ import './pets';
 import './fishing';
 import './nex';
 import './nonCustomChanges';
+import './baxBath';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 

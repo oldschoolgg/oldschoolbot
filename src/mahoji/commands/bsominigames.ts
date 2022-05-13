@@ -3,10 +3,13 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { client } from '../..';
 import {
 	BathhouseOres,
-	bathhouseTierNames,
+	bathHouseTiers,
 	BathwaterMixtures,
+	baxBathHelpStr,
+	baxBathSim,
 	baxtorianBathhousesStartCommand
 } from '../../lib/baxtorianBathhouses';
+import { toTitleCase } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -34,13 +37,18 @@ export const minigamesCommand: OSBMahojiCommand = {
 							name: 'tier',
 							description: 'The tier of bath you want to run.',
 							required: true,
-							choices: bathhouseTierNames.map(i => ({ name: i, value: i }))
+							choices: bathHouseTiers.map(i => ({
+								name: `${i.name} (${Object.entries(i.skillRequirements)
+									.map(i => `${i[1]} ${toTitleCase(i[0])}`)
+									.join(', ')})`,
+								value: i.name
+							}))
 						},
 						{
 							type: ApplicationCommandOptionType.String,
-							name: 'ore',
-							description: 'The ore you want to use to heat the boilers.',
-							required: false,
+							name: 'heating',
+							description: 'The heating you want to use to heat the boilers.',
+							required: true,
 							choices: BathhouseOres.map(i => ({
 								name: `${i.item.name} + ${i.logs.name} (Usable at ${i.tiers.join(', ')})`,
 								value: i.item.name
@@ -50,7 +58,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'water_mixture',
 							description: 'The herbs you want to use for your water mixture.',
-							required: false,
+							required: true,
 							choices: BathwaterMixtures.map(i => ({
 								name: `${i.name} (${i.items.map(i => i.name).join(', ')})`,
 								value: i.name
@@ -68,7 +76,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		baxtorian_bathhouses?: {
 			help?: {};
-			start?: { tier: string; ore?: string; water_mixture?: string };
+			start?: { tier: string; heating?: string; water_mixture?: string };
 		};
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
@@ -76,7 +84,13 @@ export const minigamesCommand: OSBMahojiCommand = {
 		const { baxtorian_bathhouses } = options;
 
 		if (baxtorian_bathhouses?.help) {
-			return;
+			if (1 > 0) {
+				const sim = baxBathSim();
+				return {
+					attachments: [{ fileName: 'sim.txt', buffer: Buffer.from(sim) }]
+				};
+			}
+			return baxBathHelpStr;
 		}
 
 		if (baxtorian_bathhouses?.start) {
@@ -85,7 +99,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 				user,
 				klasaUser,
 				tier: baxtorian_bathhouses.start.tier,
-				ore: baxtorian_bathhouses.start.ore,
+				ore: baxtorian_bathhouses.start.heating,
 				mixture: baxtorian_bathhouses.start.water_mixture
 			});
 		}
