@@ -134,8 +134,9 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
-	requiresBlacksmith?: boolean;
 	qpRequired?: number;
+	requiresBlacksmith?: boolean;
+	cantBeDoubled?: boolean;
 }
 
 export interface Craftable {

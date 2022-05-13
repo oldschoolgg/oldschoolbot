@@ -14,6 +14,7 @@ import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
+import resolveItems from '../../lib/util/resolveItems';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -121,9 +122,20 @@ export default class extends BotCommand {
 
 		const hasScroll = msg.author.owns('Scroll of efficiency');
 		if (hasScroll) {
+			const itemsThatCanBeSaved = resolveItems([
+				'Bronze bar',
+				'Iron bar',
+				'Steel bar',
+				'Mithril bar',
+				'Adamantite bar',
+				'Runite bar',
+				'Dwarven bar'
+			]);
 			for (const [item, qty] of baseCost.items()) {
-				const saved = Math.floor(calcPercentOfNum(15, qty));
-				cost.remove(item.id, saved);
+				if (itemsThatCanBeSaved.includes(item.id)) {
+					const saved = Math.floor(calcPercentOfNum(15, qty));
+					cost.remove(item.id, saved);
+				}
 			}
 		}
 
@@ -147,7 +159,8 @@ export default class extends BotCommand {
 			channelID: msg.channel.id,
 			quantity,
 			duration,
-			type: 'Smithing'
+			type: 'Smithing',
+			cantBeDoubled: smithedItem.cantBeDoubled
 		});
 
 		let str = `${msg.author.minionName} is now smithing ${quantity * smithedItem.outputMultiple}x ${
