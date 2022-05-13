@@ -58,6 +58,7 @@ export default class extends Task {
 		const logItem = Firemaking.Burnables.find(i => i.inputLogs === log.id);
 		if (user.hasItemEquippedAnywhere('Inferno adze') && logItem) {
 			loot.remove(log.id, quantity);
+			loot.add('Ashes', quantity);
 			xpRes += '\n';
 			xpRes += await user.addXP({
 				skillName: SkillsEnum.Firemaking,

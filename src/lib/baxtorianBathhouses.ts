@@ -7,7 +7,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
 import { client } from '..';
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
 import { incrementMinigameScore } from './settings/minigames';
@@ -16,7 +16,7 @@ import { SkillsEnum } from './skilling/types';
 import { getAllUserTames, TameSpeciesID } from './tames';
 import { ItemBank, Skills } from './types';
 import { MinigameActivityTaskOptions } from './types/minions';
-import { formatDuration, stringMatches } from './util';
+import { formatDuration, formatSkillRequirements, skillsMeetRequirements, stringMatches } from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
@@ -88,10 +88,12 @@ interface BathhouseTier {
 	hoursReq: number;
 	skillRequirements: Skills;
 	customRequirements?: (user: User) => Promise<[true] | [false, string]>;
-	// tipTable
-	// tips: (user: User, activity: BathhouseTaskOptions) => Bank;
 	warmthPerBath: number;
 	xpMultiplier: number;
+	/**
+	 * Uniques are less common in lower tiers
+	 */
+	uniqueMultiplier: number;
 }
 export const bathHouseTiers: BathhouseTier[] = [
 	{
@@ -102,7 +104,8 @@ export const bathHouseTiers: BathhouseTier[] = [
 			firemaking: 50
 		},
 		warmthPerBath: 5 * 10,
-		xpMultiplier: 1
+		xpMultiplier: 1,
+		uniqueMultiplier: 2.5
 	},
 	{
 		name: 'Hot',
@@ -112,7 +115,8 @@ export const bathHouseTiers: BathhouseTier[] = [
 			firemaking: 80
 		},
 		warmthPerBath: 10 * 25,
-		xpMultiplier: 1.35
+		xpMultiplier: 1.35,
+		uniqueMultiplier: 1.75
 	},
 	{
 		name: 'Fiery',
@@ -122,25 +126,11 @@ export const bathHouseTiers: BathhouseTier[] = [
 			firemaking: 95
 		},
 		warmthPerBath: 15 * 50,
-		xpMultiplier: 1.8
-		// customRequirements:async (user: User) => {
-		//     const [tame, activity] = await getUsersTame(user)
-		//     const species = !tame ? null : getTameSpecies(tame);
-		//     if (!species || species.name !== "Igne") return [false, `You need a Ignecarus tame  `]
-		// }
+		xpMultiplier: 1.8,
+		uniqueMultiplier: 1
 	}
 ];
 
-/**
- * Magical: 2
- * Vitalizing: 2
- * Caustic: 2
- * Unholy: 2
- * Invigorating: 2
- * Healing: 2
- *
- *
- */
 export const BathwaterMixtures = [
 	{ items: resolveOSItems(['Guam leaf', 'Avantoe']), name: 'Vitalizing' },
 	{ items: resolveOSItems(['Marrentill', 'Kwuarm']), name: 'Soothing' },
@@ -270,10 +260,15 @@ const species: BathhouseSpecies[] = [
 export const baxBathHelpStr = `**Baxtorian Bathhouses**
 
 - In this minigame, you play the role of a Boiler and Herbalist. Your job is to heat the water, and infuse it with herbs to give the water special properties.
-- You heat the water using ore, logs and coal. The ore/logs you use, is partly your choice.
+- You heat the water using ore, logs and coal. You need better ore/logs for higher tiers (e.g. Runite ore for Fiery temperature)
+- Herbs are used to make a water mixture (e.g. Vitalizing), you can use whichever you want. Using one that the species' prefers will earn you extra tips.
 - You infuse the water with mixtures of herb pairs (e.g. Ranarr and Tarromin), your choice of which to use.
 - There are 3 tiers (Warm, Hot, Fiery), they are in increasing difficulty and requirements.
 - You get Herblore and Firemaking experience for your work, as well as occasional tips from the customers.
+
+Species you can serve, and what mixtures they prefer: ${species
+	.map(i => `${i.name} (Prefers ${i.preferredMixture})`)
+	.join(', ')}
 `;
 
 function calcHerbsNeeded(qty: number) {
@@ -308,7 +303,8 @@ export async function baxtorianBathhousesStartCommand({
 	if (!oreToUse) {
 		oreToUse = BathhouseOres.find(o => userBank.amount(o.item.id) >= warmthNeeded / o.warmth) ?? BathhouseOres[0];
 	}
-	let mixtureToUse = mixture ? BathwaterMixtures.find(m => m.items.some(o => stringMatches(o.name, mixture))) : null;
+
+	let mixtureToUse = mixture ? BathwaterMixtures.find(m => stringMatches(m.name, mixture)) : null;
 	if (!mixtureToUse) {
 		mixtureToUse =
 			BathwaterMixtures.find(o => {
@@ -317,17 +313,31 @@ export async function baxtorianBathhousesStartCommand({
 				return userBank.has(checkBank);
 			}) ?? BathwaterMixtures[0];
 	}
+
+	if (!oreToUse.tiers.includes(bathHouseTier.name)) {
+		return `Your heating isn't good enough to run a ${
+			bathHouseTier.name
+		} bath, you need to use one of these: ${BathhouseOres.filter(i => i.tiers.includes(bathHouseTier.name))
+			.map(i => i.item.name)
+			.join(', ')}`;
+	}
+	const hasReq = skillsMeetRequirements(getSkillsOfMahojiUser(user), bathHouseTier.skillRequirements);
+	if (!hasReq) {
+		return `You don't have the required skills to run ${
+			bathHouseTier.name
+		} baths, you need: ${formatSkillRequirements(bathHouseTier.skillRequirements)}.`;
+	}
+
 	const boosts: string[] = [];
 
-	const tameToUse = (await getAllUserTames(user.id)).filter(
-		i => !i.tame_activity && i.species_id === TameSpeciesID.Igne
-	)[0];
+	const tames = await getAllUserTames(user.id);
+	const tameToUse = tames.find(i => i.tame_activity.length === 0 && i.species_id === TameSpeciesID.Igne);
 
 	let oreNeeded = Math.floor(warmthNeeded / oreToUse.warmth);
 	let logsNeeded = Math.floor(warmthNeeded / oreToUse.warmth);
 	let coalNeeded = quantity * 22;
 	if (tameToUse) {
-		boosts.push('30% Less heating needed');
+		boosts.push(`30% Less heating needed as you brought ${tameToUse.nickname ?? 'your Igne tame'} to help you`);
 		oreNeeded = Math.floor(reduceNumByPercent(oreNeeded, 30));
 		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 30));
 		logsNeeded = Math.floor(reduceNumByPercent(logsNeeded, 30));
@@ -361,7 +371,9 @@ export async function baxtorianBathhousesStartCommand({
 
 	return `${userMention(user.id)}, your minion is now working at the Baxtorian Bathhouses for ${formatDuration(
 		duration
-	)}. They are using ${heatingCost} to heat the water, and ${herbCost} for their water mixture. Removed ${cost} from your bank.
+	)}.
+${Emoji.Firemaking} Water heating cost: ${heatingCost}
+${Emoji.Herblore} Water Mixture cost: ${herbCost}
 **Boosts:** ${boosts.length > 0 ? boosts.join(', ') : 'None.'}`;
 }
 
@@ -375,16 +387,21 @@ function calculateResult(data: BathhouseTaskOptions) {
 	const amountHerbsUsed = calcHerbsNeeded(quantity);
 
 	const herbXP = amountHerbsUsed * (firstHerb.xp + secondHerb.xp) * 250 * tier.xpMultiplier;
-	const firemakingXP = 1000 * quantity * tier.xpMultiplier + ore.warmth * 19_363;
+	const firemakingXP = herbXP * 23.5 * tier.xpMultiplier;
 
 	const speciesServed: BathhouseSpecies[] = [];
 	for (let i = 0; i < quantity; i++) speciesServed.push(randArrItem(speciesCanServe));
+
+	let gaveExtraTips: BathhouseSpecies | null = null;
 
 	const loot = new Bank();
 	for (const specie of speciesServed) {
 		const isPreferred = data.mixture === specie.preferredMixture;
 		loot.add(specie.tipTable.roll(isPreferred ? 3 : 1));
-		if (isPreferred) loot.add(MysteryBoxes.roll());
+		if (isPreferred) {
+			loot.add(MysteryBoxes.roll());
+			gaveExtraTips = specie;
+		}
 	}
 
 	return {
@@ -395,7 +412,8 @@ function calculateResult(data: BathhouseTaskOptions) {
 		tier,
 		herbs: [firstHerb, secondHerb].map(i => i.id).map(getOSItem),
 		speciesServed,
-		mixture
+		mixture,
+		gaveExtraTips
 	};
 }
 
@@ -438,21 +456,22 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 	const klasaUser = await client.fetchUser(userID);
 	const cl = klasaUser.cl();
-	const { loot, herbXP, firemakingXP, tier, speciesServed, ore, mixture } = calculateResult(data);
+	const { loot, herbXP, firemakingXP, tier, speciesServed, ore, mixture, gaveExtraTips } = calculateResult(data);
 	await incrementMinigameScore(userID, 'bax_baths', quantity);
 
 	const uniques = resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire']);
-	let uniqueChance = 64;
+	let uniqueChance = Math.floor(50 * tier.uniqueMultiplier);
 	const uniquesNotReceived = uniques.filter(i => !cl.has(i));
 	if (uniquesNotReceived.length === 0) uniqueChance *= 1.5;
 	const uniquesCanReceive = uniquesNotReceived.length === 0 ? uniques : uniquesNotReceived;
 	let gotPurple = false;
+	const petChance = Math.floor(1000 * tier.uniqueMultiplier);
 	for (let i = 0; i < quantity; i++) {
 		if (roll(uniqueChance)) {
 			gotPurple = true;
 			loot.add(randArrItem(uniquesCanReceive));
 		}
-		if (roll(1500)) {
+		if (roll(petChance)) {
 			gotPurple = true;
 			loot.add('Phoenix eggling');
 		}
@@ -476,7 +495,11 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 		`${userMention(userID)}, ${minionName(mahojiUser)} finished running ${quantity}x ${tier.name} baths for ${
 			uniqSpecies.length
 		} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.
-${gotPurple ? Emoji.Purple : ''}**Tips received:** ${loot}.
+${gotPurple ? Emoji.Purple : ''}**Tips received:** ${loot}.${
+			gaveExtraTips
+				? `\nYou got extra tips from ${gaveExtraTips.name} for using their preferred water mixture.`
+				: ''
+		}
 ${xpStr}`,
 		[
 			'bsominigames',

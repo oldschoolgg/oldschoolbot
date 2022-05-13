@@ -146,7 +146,7 @@ const staticXPBoosts = new Map<SkillsEnum, StaticXPBoost[]>().set(SkillsEnum.Fir
 		skill: SkillsEnum.Firemaking
 	},
 	{
-		item: getOSItem('Flame ring'),
+		item: getOSItem('Ring of fire'),
 		boostPercent: 2.5,
 		skill: SkillsEnum.Firemaking
 	}

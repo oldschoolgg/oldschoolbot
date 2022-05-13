@@ -84,13 +84,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		const { baxtorian_bathhouses } = options;
 
 		if (baxtorian_bathhouses?.help) {
-			if (1 > 0) {
-				const sim = baxBathSim();
-				return {
-					attachments: [{ fileName: 'sim.txt', buffer: Buffer.from(sim) }]
-				};
-			}
-			return baxBathHelpStr;
+			const sim = baxBathSim();
+			return {
+				content: baxBathHelpStr,
+				attachments: [{ fileName: 'sim.txt', buffer: Buffer.from(sim) }]
+			};
 		}
 
 		if (baxtorian_bathhouses?.start) {
