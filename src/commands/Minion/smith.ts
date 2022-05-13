@@ -126,6 +126,8 @@ export default class extends BotCommand {
 				'Bronze bar',
 				'Iron bar',
 				'Steel bar',
+				'Gold bar',
+				'Silver bar',
 				'Mithril bar',
 				'Adamantite bar',
 				'Runite bar',
