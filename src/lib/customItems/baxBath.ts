@@ -1,29 +1,5 @@
 import { setCustomItem } from './util';
 
-// setCustomItem(
-// 	63_198,
-// 	'Flame shards',
-// 	'Coal',
-// 	{
-// 		customItemData: {
-// 			cantDropFromMysteryBoxes: true
-// 		}
-// 	},
-// 	1000
-// );
-
-// setCustomItem(
-// 	63_199,
-// 	'Flamestone',
-// 	'Coal',
-// 	{
-// 		customItemData: {
-// 			cantDropFromMysteryBoxes: true
-// 		}
-// 	},
-// 	5_000_000
-// );
-
 setCustomItem(
 	63_200,
 	'Inferno adze',

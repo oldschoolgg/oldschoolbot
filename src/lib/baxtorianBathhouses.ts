@@ -11,12 +11,19 @@ import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahoji/mahoj
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
 import { incrementMinigameScore } from './settings/minigames';
+import { ClientSettings } from './settings/types/ClientSettings';
 import Grimy from './skilling/skills/herblore/mixables/grimy';
 import { SkillsEnum } from './skilling/types';
 import { getAllUserTames, TameSpeciesID } from './tames';
 import { ItemBank, Skills } from './types';
 import { MinigameActivityTaskOptions } from './types/minions';
-import { formatDuration, formatSkillRequirements, skillsMeetRequirements, stringMatches } from './util';
+import {
+	formatDuration,
+	formatSkillRequirements,
+	skillsMeetRequirements,
+	stringMatches,
+	updateBankSetting
+} from './util';
 import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
@@ -272,7 +279,7 @@ Species you can serve, and what mixtures they prefer: ${species
 `;
 
 function calcHerbsNeeded(qty: number) {
-	return Math.ceil(qty * 2.5);
+	return Math.ceil(qty * 5.5);
 }
 
 export async function baxtorianBathhousesStartCommand({
@@ -355,6 +362,7 @@ export async function baxtorianBathhousesStartCommand({
 	if (!klasaUser.owns(cost)) {
 		return `You don't have enough supplies to do a trip, for ${quantity}x ${bathHouseTier.name} baths, you need: ${cost}.`;
 	}
+	updateBankSetting(client, ClientSettings.EconomyStats.BaxtorianBathhousesCost, cost);
 	await klasaUser.removeItemsFromBank(cost);
 
 	await addSubTaskToActivityTask<BathhouseTaskOptions>({
@@ -372,8 +380,8 @@ export async function baxtorianBathhousesStartCommand({
 	return `${userMention(user.id)}, your minion is now working at the Baxtorian Bathhouses for ${formatDuration(
 		duration
 	)}.
-${Emoji.Firemaking} Water heating cost: ${heatingCost}
-${Emoji.Herblore} Water Mixture cost: ${herbCost}
+${Emoji.Firemaking} **Water Heating cost:** ${heatingCost}
+${Emoji.Herblore} **Water Mixture cost:** ${herbCost}
 **Boosts:** ${boosts.length > 0 ? boosts.join(', ') : 'None.'}`;
 }
 
@@ -384,9 +392,8 @@ function calculateResult(data: BathhouseTaskOptions) {
 	const mixture = BathwaterMixtures.find(i => i.name === data.mixture)!;
 	const [firstHerb, secondHerb] = mixture.items.map(herb => Grimy.find(i => i.id === herb.id)!);
 	const speciesCanServe = species.filter(i => i.tier === tier.name);
-	const amountHerbsUsed = calcHerbsNeeded(quantity);
 
-	const herbXP = amountHerbsUsed * (firstHerb.xp + secondHerb.xp) * 250 * tier.xpMultiplier;
+	const herbXP = quantity * (firstHerb.xp + secondHerb.xp) * 200 * tier.xpMultiplier;
 	const firemakingXP = herbXP * 23.5 * tier.xpMultiplier;
 
 	const speciesServed: BathhouseSpecies[] = [];
@@ -487,6 +494,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	});
 
 	let uniqSpecies = uniqueArr(speciesServed);
+	updateBankSetting(client, ClientSettings.EconomyStats.BaxtorianBathhousesLoot, loot);
 
 	handleTripFinish(
 		client,

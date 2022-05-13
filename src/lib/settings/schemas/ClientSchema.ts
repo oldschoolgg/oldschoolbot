@@ -94,4 +94,7 @@ Client.defaultClientSchema
 	.add('locked_skills', 'any', { array: true, default: [] })
 	.add('custom_prices', 'any', { default: {} })
 	.add('zippy_loot', 'any', { default: {} })
-	.add('market_prices', 'any', { default: {} });
+	.add('market_prices', 'any', { default: {} })
+
+	.add('bb_cost', 'any', { default: {} })
+	.add('bb_loot', 'any', { default: {} });
