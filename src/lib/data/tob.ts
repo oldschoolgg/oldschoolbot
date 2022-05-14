@@ -430,6 +430,9 @@ export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Pro
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.username} doesn't have enough supplies`;
 	}
+	if (users.length < 2 || users.length > 5) {
+		return 'TOB team must be 2-5 users';
+	}
 
 	for (const user of users) {
 		const checkResult = await checkTOBUser(user, isHardMode, users.length);
