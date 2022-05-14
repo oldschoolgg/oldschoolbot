@@ -12,7 +12,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 3 },
 		timeToUse: Time.Second * 3.4,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven knife',
@@ -22,7 +23,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 2 },
 		timeToUse: Time.Second * 3.4,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven gauntlets',
@@ -32,7 +34,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 3 },
 		timeToUse: Time.Second * 3.4,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven greathammer',
@@ -42,7 +45,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 4 },
 		timeToUse: Time.Second * 3.4,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven pickaxe',
@@ -52,7 +56,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 3 },
 		timeToUse: Time.Second * 3.4,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven warhammer',
@@ -62,7 +67,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 3, [itemID('Broken dwarven warhammer')]: 1 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven full helm',
@@ -72,7 +78,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 2 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven platebody',
@@ -82,7 +89,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 5 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven platelegs',
@@ -92,7 +100,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 4 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven gloves',
@@ -102,7 +111,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 2 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	},
 	{
 		name: 'Dwarven boots',
@@ -112,7 +122,8 @@ const Dwarven: SmithedItem[] = [
 		inputBars: { [itemID('Dwarven bar')]: 2 },
 		timeToUse: Time.Minute * 3,
 		outputMultiple: 1,
-		requiresBlacksmith: true
+		requiresBlacksmith: true,
+		cantBeDoubled: true
 	}
 ];
 

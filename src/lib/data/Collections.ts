@@ -868,6 +868,10 @@ export const allCollectionLogs: ICollection = {
 					"Champion's tackle box",
 					'Golden fishing trophy'
 				])
+			},
+			'Baxtorian Bathhouses': {
+				alias: ['bb', 'bax bath', 'baxtorian bathhouses', 'bath', 'baths'],
+				items: resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling'])
 			}
 		}
 	},

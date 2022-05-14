@@ -60,6 +60,7 @@ export async function handleTripFinish(
 
 	if (
 		loot &&
+		!data.cantBeDoubled &&
 		!['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'].includes(data.type) &&
 		data.duration > Time.Minute * 20 &&
 		roll(pet === itemID('Mr. E') ? 12 : 15)

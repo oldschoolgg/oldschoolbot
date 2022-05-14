@@ -108,6 +108,9 @@ export namespace ClientSettings {
 		export const FishingContestCost = T<Readonly<ItemBank>>('fc_cost');
 		export const FishingContestLoot = T<Readonly<ItemBank>>('fc_loot');
 
+		export const BaxtorianBathhousesCost = T<Readonly<ItemBank>>('bb_cost');
+		export const BaxtorianBathhousesLoot = T<Readonly<ItemBank>>('bb_loot');
+
 		export const DegradedItemsCost = T<Readonly<ItemBank>>('degraded_items_cost');
 
 		export const ZippyLoot = T<Readonly<ItemBank>>('zippy_loot');

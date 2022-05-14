@@ -9,6 +9,7 @@ import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 import { client } from '../..';
 import { generateNewTame } from '../../commands/bso/nursery';
 import { production } from '../../config';
+import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { BitField, MAX_QP } from '../../lib/constants';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -102,10 +103,11 @@ async function resetAccount(user: KlasaUser) {
 	await prisma.giveaway.deleteMany({ where: { user_id: user.id } });
 	await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
-	await prisma.newUser.deleteMany({ where: { id: user.id } });
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
 	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await prisma.user.deleteMany({ where: { id: user.id } });
+	await prisma.newUser.deleteMany({ where: { id: user.id } });
+
 	await user.settings.sync(true);
 	return 'Reset all your data.';
 }
@@ -136,9 +138,20 @@ const openablesBank = new Bank();
 for (const i of allOpenables.values()) {
 	openablesBank.add(i.id, 100);
 }
+const baxBathBank = new Bank();
+for (const o of BathhouseOres) {
+	baxBathBank.add(o.item.id, 100_000);
+	baxBathBank.add(o.logs.id, 100_000);
+}
+for (const m of BathwaterMixtures) {
+	for (const i of m.items) baxBathBank.add(i.id, 100_000);
+}
+baxBathBank.add('Coal', 100_000);
+
 const spawnPresets = [
 	['openables', openablesBank],
-	['random', new Bank()]
+	['random', new Bank()],
+	['baxtorian_bathhouse', baxBathBank]
 ] as const;
 
 const nexSupplies = new Bank()

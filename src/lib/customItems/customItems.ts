@@ -5,6 +5,7 @@ import './pets';
 import './fishing';
 import './nex';
 import './nonCustomChanges';
+import './baxBath';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -2730,4 +2731,15 @@ setCustomItem(
 		}
 	},
 	1_000_000
+);
+setCustomItem(
+	63_204,
+	'Chimpchompa',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
 );

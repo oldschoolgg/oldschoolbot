@@ -18,6 +18,7 @@ export interface ActivityTaskOptions {
 	id: number;
 	finishDate: number;
 	channelID: string;
+	cantBeDoubled?: boolean;
 }
 
 export interface KibbleOptions extends ActivityTaskOptions {

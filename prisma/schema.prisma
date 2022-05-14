@@ -518,6 +518,7 @@ model Minigame {
   monkey_rumble            Int @default(0)
   emerged_inferno          Int @default(0)
   fishing_contest          Int @default(0)
+  bax_baths                Int @default(0)
 
   NewUser NewUser[]
   @@map("minigames")
@@ -748,6 +749,7 @@ enum activity_type_enum {
   BirthdayEvent
   TokkulShop
   Easter
+  BaxtorianBathhouses
 }
 
 enum xp_gains_skill_enum {

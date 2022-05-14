@@ -53,6 +53,25 @@ const customBSOCreatures: Creature[] = [
 			req.add('Delicious kibble', kibbleRequired);
 			return req;
 		}
+	},
+	{
+		name: 'Chimpchompa',
+		id: 63_204,
+		aliases: ['chimpchompa'],
+		level: 99,
+		hunterXP: 300,
+		table: new LootTable().every('Chimpchompa'),
+		huntTechnique: HunterTechniqueEnum.BoxTrapping,
+		multiTraps: true,
+		wildy: false,
+		prayerLvl: 43,
+		catchTime: 200,
+		qpRequired: 2,
+		slope: 1.22,
+		intercept: -31.33,
+		bait: qty => {
+			return new Bank().add('Banana', qty);
+		}
 	}
 ];
 
