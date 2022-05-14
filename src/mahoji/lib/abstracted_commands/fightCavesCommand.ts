@@ -147,7 +147,7 @@ export async function fightCavesCommand(user: KlasaUser, channelID: bigint): Com
 	const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
 	return {
-		content: `**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(2)} minutes)
+		content: `**Duration:** ${formatDuration(fakeDuration)} (${(fakeDuration / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}
