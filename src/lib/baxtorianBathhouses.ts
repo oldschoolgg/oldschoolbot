@@ -49,43 +49,43 @@ export const BathhouseOres: BathhouseOre[] = [
 	{
 		item: getOSItem('Copper ore'),
 		warmth: 1,
-		logs: getOSItem('Logs'),
+		logs: getOSItem('Oak logs'),
 		tiers: ['Warm']
 	},
 	{
 		item: getOSItem('Tin ore'),
 		warmth: 1,
-		logs: getOSItem('Logs'),
+		logs: getOSItem('Oak logs'),
 		tiers: ['Warm']
 	},
 	{
 		item: getOSItem('Iron ore'),
 		warmth: 2,
-		logs: getOSItem('Oak logs'),
+		logs: getOSItem('Willow logs'),
 		tiers: ['Warm', 'Hot']
 	},
 	{
 		item: getOSItem('Gold ore'),
 		warmth: 2,
-		logs: getOSItem('Willow logs'),
+		logs: getOSItem('Maple logs'),
 		tiers: ['Warm', 'Hot']
 	},
 	{
 		item: getOSItem('Mithril ore'),
 		warmth: 5,
-		logs: getOSItem('Maple logs'),
+		logs: getOSItem('Yew logs'),
 		tiers: ['Warm', 'Hot']
 	},
 	{
 		item: getOSItem('Adamantite ore'),
 		warmth: 10,
-		logs: getOSItem('Yew logs'),
+		logs: getOSItem('Magic logs'),
 		tiers: ['Warm', 'Hot', 'Fiery']
 	},
 	{
 		item: getOSItem('Runite ore'),
 		warmth: 25,
-		logs: getOSItem('Magic logs'),
+		logs: getOSItem('Elder logs'),
 		tiers: ['Warm', 'Hot', 'Fiery']
 	}
 ];
@@ -270,7 +270,7 @@ export const baxBathHelpStr = `**Baxtorian Bathhouses**
 - You heat the water using ore, logs and coal. You need better ore/logs for higher tiers (e.g. Runite ore for Fiery temperature)
 - Herbs are used to make a water mixture (e.g. Vitalizing), you can use whichever you want. Using one that the species' prefers will earn you extra tips.
 - You infuse the water with mixtures of herb pairs (e.g. Ranarr and Tarromin), your choice of which to use.
-- There are 3 tiers (Warm, Hot, Fiery), they are in increasing difficulty and requirements.
+- There are 3 tiers (Warm, Hot, Fiery), they are in increasing difficulty and requirements, but higher tiers give better xp, unique chances and tips.
 - You get Herblore and Firemaking experience for your work, as well as occasional tips from the customers.
 
 Species you can serve, and what mixtures they prefer: ${species
@@ -393,8 +393,8 @@ function calculateResult(data: BathhouseTaskOptions) {
 	const [firstHerb, secondHerb] = mixture.items.map(herb => Grimy.find(i => i.id === herb.id)!);
 	const speciesCanServe = species.filter(i => i.tier === tier.name);
 
-	const herbXP = quantity * (firstHerb.xp + secondHerb.xp) * 200 * tier.xpMultiplier;
-	const firemakingXP = herbXP * 23.5 * tier.xpMultiplier;
+	const herbXP = quantity * (firstHerb.xp + secondHerb.xp) * 220 * tier.xpMultiplier;
+	const firemakingXP = herbXP * 15.5 * tier.xpMultiplier + ore.warmth * 5000;
 
 	const speciesServed: BathhouseSpecies[] = [];
 	for (let i = 0; i < quantity; i++) speciesServed.push(randArrItem(speciesCanServe));
@@ -503,7 +503,7 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 		`${userMention(userID)}, ${minionName(mahojiUser)} finished running ${quantity}x ${tier.name} baths for ${
 			uniqSpecies.length
 		} species (${uniqSpecies.map(i => i.name).join(', ')}) at the Baxtorian Bathhouses.
-${gotPurple ? Emoji.Purple : ''}**Tips received:** ${loot}.${
+${gotPurple ? `${Emoji.Purple} ` : ''}**Tips received:** ${loot}.${
 			gaveExtraTips
 				? `\nYou got extra tips from ${gaveExtraTips.name} for using their preferred water mixture.`
 				: ''
