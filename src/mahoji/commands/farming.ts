@@ -5,6 +5,7 @@ import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';
 import { ContractOption, ContractOptions } from '../../lib/minions/farming/types';
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
+import { autoReplant } from '../../lib/minions/functions/autoReplant';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
@@ -63,6 +64,12 @@ export const farmingCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'auto_farm',
 			description: 'Automatically farm any available things you can do.',
+			required: false
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'auto_replant',
+			description: 'Automatically replant all patches that is ready for harvest.',
 			required: false
 		},
 		{
@@ -175,6 +182,7 @@ export const farmingCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		check_patches?: {};
 		auto_farm?: {};
+		auto_replant?: {};
 		default_compost?: { compost: CompostName };
 		always_pay?: {};
 		plant?: { plant_name: string; quantity?: number; pay?: boolean };
@@ -189,6 +197,9 @@ export const farmingCommand: OSBMahojiCommand = {
 
 		if (options.auto_farm) {
 			return autoFarm(klasaUser, patchesDetailed, channelID);
+		}
+		if (options.auto_replant) {
+			return autoReplant(klasaUser, patchesDetailed, channelID);
 		}
 		if (options.always_pay) {
 			const isEnabled = klasaUser.settings.get(UserSettings.Minion.DefaultPay);
@@ -211,6 +222,7 @@ export const farmingCommand: OSBMahojiCommand = {
 				plantName: options.plant.plant_name,
 				quantity: options.plant.quantity ?? null,
 				autoFarmed: false,
+				autoReplanted: false,
 				channelID,
 				pay: Boolean(options.plant.pay)
 			});

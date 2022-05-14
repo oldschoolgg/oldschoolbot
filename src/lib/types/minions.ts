@@ -189,6 +189,7 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	planting: boolean;
 	currentDate: number;
 	autoFarmed: boolean;
+	autoReplanted: boolean;
 }
 
 export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {

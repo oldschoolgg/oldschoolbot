@@ -29,7 +29,8 @@ export default class extends Task {
 			channelID,
 			planting,
 			currentDate,
-			autoFarmed
+			autoFarmed,
+			autoReplanted
 		} = data;
 		const user = await this.client.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -175,7 +176,11 @@ export default class extends Task {
 				user,
 				channelID,
 				str,
-				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
+				autoFarmed
+					? ['farming', { auto_farm: {} }, true]
+					: autoReplanted
+					? ['farming', { auto_replant: {} }, true]
+					: undefined,
 				undefined,
 				data,
 				null
@@ -454,7 +459,11 @@ export default class extends Task {
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
+				autoFarmed
+					? ['farming', { auto_farm: {} }, true]
+					: autoReplanted
+					? ['farming', { auto_replant: {} }, true]
+					: undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

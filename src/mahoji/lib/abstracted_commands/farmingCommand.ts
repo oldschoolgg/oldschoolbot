@@ -116,7 +116,8 @@ ${boostStr.length > 0 ? '**Boosts**: ' : ''}${boostStr.join(', ')}`;
 		planting: false,
 		currentDate,
 		type: 'Farming',
-		autoFarmed: false
+		autoFarmed: false,
+		autoReplanted: false
 	});
 
 	return returnMessageStr;
@@ -127,6 +128,7 @@ export async function farmingPlantCommand({
 	plantName,
 	quantity,
 	autoFarmed,
+	autoReplanted,
 	channelID,
 	pay
 }: {
@@ -134,6 +136,7 @@ export async function farmingPlantCommand({
 	plantName: string;
 	quantity: number | null;
 	autoFarmed: boolean;
+	autoReplanted: boolean;
 	channelID: bigint;
 	pay: boolean;
 }): Promise<string> {
@@ -310,7 +313,8 @@ export async function farmingPlantCommand({
 		duration,
 		currentDate,
 		type: 'Farming',
-		autoFarmed
+		autoFarmed,
+		autoReplanted
 	});
 
 	return `${infoStr.join(' ')}
