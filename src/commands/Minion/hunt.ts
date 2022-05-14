@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { monkeyTiers } from '../../lib/monkeyRumble';
 import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -16,6 +17,7 @@ import { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import itemID from '../../lib/util/itemID';
+import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from './../../lib/constants';
 import { Peak } from './../../tasks/WildernessPeakInterval';
 
@@ -119,6 +121,13 @@ export default class extends BotCommand {
 				msg.author.skillLevel(SkillsEnum.Fishing) < 99)
 		) {
 			return msg.channel.send("You need level 120 Hunter, 99 Agility, 99 Fishing to hunt Sand Gecko's.");
+		}
+
+		if (
+			creature.name === 'Chimpchompa' &&
+			!userHasItemsEquippedAnywhere(msg.author, monkeyTiers.map(i => i.greegrees.map(i => i.id)).flat(2), false)
+		) {
+			return msg.channel.send("You can't hunt Chimpchompa's! You need to be wearing a greegree.");
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Hunter) + (usingHuntPotion ? 2 : 0) < creature.level) {
