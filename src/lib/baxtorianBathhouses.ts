@@ -28,7 +28,7 @@ import addSubTaskToActivityTask from './util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from './util/calcMaxTripLength';
 import getOSItem from './util/getOSItem';
 import { handleTripFinish } from './util/handleTripFinish';
-import { minionName } from './util/minionUtils';
+import { hasItemsEquippedOrInBank, minionName } from './util/minionUtils';
 import resolveItems, { resolveOSItems } from './util/resolveItems';
 
 export const bathhouseTierNames = ['Warm', 'Hot', 'Fiery'] as const;
@@ -344,10 +344,16 @@ export async function baxtorianBathhousesStartCommand({
 	let logsNeeded = Math.floor(warmthNeeded / oreToUse.warmth);
 	let coalNeeded = quantity * 22;
 	if (tameToUse) {
-		boosts.push(`30% Less heating needed as you brought ${tameToUse.nickname ?? 'your Igne tame'} to help you`);
-		oreNeeded = Math.floor(reduceNumByPercent(oreNeeded, 30));
-		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 30));
-		logsNeeded = Math.floor(reduceNumByPercent(logsNeeded, 30));
+		boosts.push(`20% Less heating needed as you brought ${tameToUse.nickname ?? 'your Igne tame'} to help you`);
+		oreNeeded = Math.floor(reduceNumByPercent(oreNeeded, 20));
+		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 20));
+		logsNeeded = Math.floor(reduceNumByPercent(logsNeeded, 20));
+	}
+	if (hasItemsEquippedOrInBank(user, ['Firemaking master cape'])) {
+		boosts.push('5% Less heating for Firemaking mastery');
+		oreNeeded = Math.floor(reduceNumByPercent(oreNeeded, 5));
+		coalNeeded = Math.floor(reduceNumByPercent(coalNeeded, 5));
+		logsNeeded = Math.floor(reduceNumByPercent(logsNeeded, 5));
 	}
 	const heatingCost = new Bank()
 		.add(oreToUse.item.id, oreNeeded)
