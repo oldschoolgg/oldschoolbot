@@ -545,9 +545,9 @@ export default class extends Extendable {
 				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 				return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${this.minionName} is currently killing ${
 					data.quantity
-				}x ${Monsters.get(data.monsterID)!.name} in the wilderness. If they don't die, the trip should take ${formatDuration(
-					durationRemaining
-				)}.`;
+				}x ${
+					Monsters.get(data.monsterID)!.name
+				} in the wilderness. If they don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'PestControl': {
 				const data = currentTask as MinigameActivityTaskOptions;
