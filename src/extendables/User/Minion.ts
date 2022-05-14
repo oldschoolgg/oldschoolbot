@@ -2,6 +2,7 @@ import { User } from 'discord.js';
 import { increaseNumByPercent, notEmpty, objectValues, randInt, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
@@ -111,6 +112,7 @@ import {
 } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import getOSItem from '../../lib/util/getOSItem';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
@@ -131,6 +133,24 @@ const suffixes = new SimpleTable<string>()
 function levelUpSuffix() {
 	return suffixes.roll().item;
 }
+
+interface StaticXPBoost {
+	item: Item;
+	boostPercent: number;
+	skill: SkillsEnum;
+}
+const staticXPBoosts = new Map<SkillsEnum, StaticXPBoost[]>().set(SkillsEnum.Firemaking, [
+	{
+		item: getOSItem('Flame gloves'),
+		boostPercent: 2.5,
+		skill: SkillsEnum.Firemaking
+	},
+	{
+		item: getOSItem('Ring of fire'),
+		boostPercent: 2.5,
+		skill: SkillsEnum.Firemaking
+	}
+]);
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -679,6 +699,13 @@ export default class extends Extendable {
 					this.minionName
 				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
+			case 'BaxtorianBathhouses': {
+				return `${
+					this.minionName
+				} is currently heating baths at the Baxtorian Bathhouses. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 			case 'Easter':
 			case 'BlastFurnace': {
 				throw new Error('Removed');
@@ -852,6 +879,15 @@ export default class extends Extendable {
 				params.amount = increaseNumByPercent(params.amount, 6);
 			} else {
 				params.amount = increaseNumByPercent(params.amount, firstAgeEquipped);
+			}
+		}
+
+		const boosts = staticXPBoosts.get(params.skillName);
+		if (boosts && !params.artificial) {
+			for (const booster of boosts) {
+				if (this.hasItemEquippedAnywhere(booster.item.id)) {
+					params.amount = increaseNumByPercent(params.amount, booster.boostPercent);
+				}
 			}
 		}
 
