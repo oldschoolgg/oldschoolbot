@@ -209,6 +209,13 @@ export const activitiesCommand: OSBMahojiCommand = {
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+
+		// Minion can be busy
+		if (options.decant) {
+			return decantCommand(klasaUser, options.decant.potion_name, options.decant.dose);
+		}
+
+		// Minion must be free
 		const isBusy = minionIsBusy(mahojiUser.id);
 		const busyStr = `${minionName(mahojiUser)} is currently busy.`;
 		if (isBusy) return busyStr;
@@ -241,9 +248,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.favour) {
 			return favourCommand(klasaUser, mahojiUser, options.favour.name, channelID, options.favour.no_stams);
-		}
-		if (options.decant) {
-			return decantCommand(klasaUser, options.decant.potion_name, options.decant.dose);
 		}
 		if (options.charge?.item === 'glory') {
 			return chargeGloriesCommand(klasaUser, channelID, options.charge.quantity);
