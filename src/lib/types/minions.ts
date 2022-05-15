@@ -63,6 +63,7 @@ export interface RevenantOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
 	died: boolean;
+	fakeDuration: number;
 	usingPrayerPots: boolean;
 	skulled: boolean;
 	style: 'melee' | 'range' | 'mage';
