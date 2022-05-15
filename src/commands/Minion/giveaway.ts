@@ -1,3 +1,4 @@
+import { time } from '@discordjs/builders';
 import { Duration } from '@sapphire/time-utilities';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
@@ -6,7 +7,7 @@ import { Bank } from 'oldschooljs';
 import { ironsCantUse } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addToGPTaxBalance, formatDuration, roll } from '../../lib/util';
+import { addToGPTaxBalance, roll } from '../../lib/util';
 import { logError } from '../../lib/util/logError';
 
 export default class extends BotCommand {
@@ -66,9 +67,10 @@ export default class extends BotCommand {
 		}
 
 		const message = await msg.channel.sendBankImage({
-			content: `You created a giveaway that will finish in ${formatDuration(
-				duration.offset
-			)}, the winner will receive these items.
+			content: `You created a giveaway that will finish at ${time(duration.fromNow, 'F')} (${time(
+				duration.fromNow,
+				'R'
+			)}), the winner will receive these items.
 			
 React to this messsage with ${reaction} to enter.`,
 			bank,
