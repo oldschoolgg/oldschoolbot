@@ -71,10 +71,10 @@ export default class extends BotCommand {
 		}
 
 		const message = await msg.channel.sendBankImage({
-			content: `You created a giveaway that will finish at ${time(
+			content: `You created a giveaway that will finish at ${time(duration.fromNow, 'F')} (${time(
 				duration.fromNow,
-				'F'
-			)}, the winner will receive these items.
+				'R'
+			)}), the winner will receive these items.
 			
 React to this messsage with ${reaction} to enter.`,
 			bank,
