@@ -50,6 +50,7 @@ import {
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
+	FightCavesActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	FletchingActivityTaskOptions,
@@ -298,7 +299,11 @@ export default class extends Extendable {
 			}
 
 			case 'FightCaves': {
-				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
+				const data = currentTask as FightCavesActivityTaskOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${
+					Emoji.TzRekJad
+				}. If they're successful and don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'TitheFarm': {
 				return `${this.minionName} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
