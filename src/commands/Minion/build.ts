@@ -113,8 +113,7 @@ export default class extends BotCommand {
 		if (msg.author.settings.get(UserSettings.GP) < gpNeeded) {
 			return msg.channel.send("You don't have enough GP to pay your Butler.");
 		}
-		await msg.author.removeGP(gpNeeded);
-		await msg.author.removeItemsFromBank(new Bank().add(plank, totalPlanksNeeded));
+		await msg.author.removeItemsFromBank(new Bank().add(plank, totalPlanksNeeded).add('Coins', gpNeeded));
 
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.ConstructCostBank,

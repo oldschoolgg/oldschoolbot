@@ -98,8 +98,6 @@ export default class extends BotCommand {
 
 		await trackSacBank(msg.author, bankToSac);
 
-		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
-
 		let str = '';
 		const currentIcon = msg.author.settings.get(UserSettings.Minion.Icon);
 		// Ignores notifying the user/server if the user is using a custom icon

@@ -12,15 +12,61 @@ import { allDroppedItems } from '../../lib/data/Collections';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import { stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { itemOption, mahojiUsersSettingsFetch, monsterOption, patronMsg, skillOption } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
+
+function dateDiff(first: number, second: number) {
+	return Math.round((second - first) / (1000 * 60 * 60 * 24));
+}
+
+async function minionStats(user: User) {
+	const { id } = user;
+	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = (await Promise.all([
+		prisma.$queryRawUnsafe(`SELECT count(id)
+FROM activity
+WHERE user_id = ${id}`),
+		prisma.$queryRawUnsafe(`SELECT id, start_date, type
+FROM activity
+WHERE user_id = ${id}
+ORDER BY id ASC
+LIMIT 1;`),
+		prisma.$queryRawUnsafe(`
+SELECT type, count(type) as qty
+FROM activity
+WHERE user_id = ${id}
+GROUP BY type
+ORDER BY qty DESC
+LIMIT 15;`),
+		prisma.$queryRawUnsafe(`
+SELECT sum(duration)
+FROM activity
+WHERE user_id = ${id};`)
+	])) as any[];
+
+	const totalDuration = Number(_totalDuration.sum);
+	const firstActivityDate = new Date(firstActivity.start_date);
+
+	const diff = dateDiff(firstActivityDate.getTime(), Date.now());
+	const perDay = totalDuration / diff;
+
+	return `**Total Activities:** ${totalActivities.count}
+**Common Activities:** ${countsPerActivity
+		.slice(0, 3)
+		.map((i: any) => `${i.qty}x ${i.type}`)
+		.join(', ')}
+**Total Minion Activity:** ${formatDuration(totalDuration)}
+**First Activity:** ${firstActivity.type} ${firstActivityDate.toLocaleDateString('en-CA')}
+**Average Per Day:** ${formatDuration(perDay)}
+`;
+}
 
 async function xpGains(interval: string, skill?: string) {
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time.';
@@ -59,7 +105,7 @@ LIMIT 10;`);
 }
 
 async function kcGains(user: User, interval: string, monsterName: string): CommandResponse {
-	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
@@ -99,7 +145,7 @@ LIMIT 10`;
 }
 
 async function dryStreakCommand(user: User, monsterName: string, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monsterName)));
 	if (!mon) {
 		return "That's not a valid monster or minigame.";
@@ -128,15 +174,16 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 		.join('\n')}`;
 }
 
-async function mostDrops(user: User, itemName: string) {
-	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
+	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
+	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	if (!item) return "That's not a valid item.";
 	if (!allDroppedItems.includes(item.id) && !user.bitfield.includes(BitField.isModerator)) {
 		return "You can't check this item, because it's not on any collection log.";
 	}
 
-	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
+	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
 	const result = await client.query<
 		{
@@ -157,7 +204,7 @@ async function mostDrops(user: User, itemName: string) {
 		.join('\n')}`;
 }
 
-export const testPotatoCommand: OSBMahojiCommand = {
+export const toolsCommand: OSBMahojiCommand = {
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
 	options: [
@@ -223,6 +270,12 @@ export const testPotatoCommand: OSBMahojiCommand = {
 						{
 							...itemOption(),
 							required: true
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'ironman',
+							description: 'Only check ironmen accounts.',
+							required: false
 						}
 					]
 				},
@@ -234,7 +287,21 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'cl_bank',
-					description: 'Shows a bank image containing all items in your collection log.'
+					description: 'Shows a bank image containing all items in your collection log.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'format',
+							description: 'Bank Image or Json format?',
+							required: false,
+							choices: ['bank', 'json'].map(i => ({ name: i, value: i }))
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'minion_stats',
+					description: 'Shows statistics about your minion.'
 				}
 			]
 		}
@@ -260,9 +327,13 @@ export const testPotatoCommand: OSBMahojiCommand = {
 			};
 			mostdrops?: {
 				item: string;
+				ironman?: boolean;
 			};
 			sacrificed_bank?: {};
-			cl_bank?: {};
+			cl_bank?: {
+				format?: 'bank' | 'json';
+			};
+			minion_stats?: {};
 		};
 	}>) => {
 		interaction.deferReply();
@@ -282,10 +353,10 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				);
 			}
 			if (patron.mostdrops) {
-				return mostDrops(mahojiUser, patron.mostdrops.item);
+				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const image = await makeBankImage({
 					bank: new Bank(mahojiUser.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
@@ -294,9 +365,30 @@ export const testPotatoCommand: OSBMahojiCommand = {
 					attachments: [image.file]
 				};
 			}
+			if (patron.cl_bank) {
+				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const clBank = new Bank(mahojiUser.collectionLogBank as ItemBank);
+				if (patron.cl_bank.format === 'json') {
+					const json = JSON.stringify(clBank);
+					return {
+						attachments: [{ buffer: Buffer.from(json), fileName: 'clbank.json' }]
+					};
+				}
+				const image = await makeBankImage({
+					bank: clBank,
+					title: 'Your Entire Collection Log'
+				});
+				return {
+					attachments: [image.file]
+				};
+			}
 			if (patron.xp_gains) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
+			}
+			if (patron.minion_stats) {
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				return minionStats(mahojiUser);
 			}
 		}
 		return 'Invalid command!';

@@ -3,8 +3,9 @@ import { Bank } from 'oldschooljs';
 
 import { client } from '../..';
 import { Events } from '../../lib/constants';
+import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { toKMB } from '../../lib/util';
+import { addToGPTaxBalance, toKMB } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, MahojiUserOption } from '../mahojiSettings';
 
@@ -28,7 +29,8 @@ export const payCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID,
-		interaction
+		interaction,
+		guildID
 	}: CommandRunOptions<{
 		user: MahojiUserOption;
 		amount: string;
@@ -60,7 +62,19 @@ export const payCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bank);
 		await recipient.addItemsToBank({ items: bank, collectionLog: false });
 
+		await prisma.economyTransaction.create({
+			data: {
+				guild_id: guildID,
+				sender: BigInt(user.id),
+				recipient: BigInt(recipient.id),
+				items_sent: bank.bank,
+				items_received: undefined,
+				type: 'trade'
+			}
+		});
+
 		client.emit(Events.EconomyLog, `${user.sanitizedName} paid ${amount} GP to ${recipient.sanitizedName}.`);
+		addToGPTaxBalance(user.id, amount);
 
 		return `You sent ${amount.toLocaleString()} GP to ${recipient}.`;
 	}

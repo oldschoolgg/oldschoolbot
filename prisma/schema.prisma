@@ -106,7 +106,6 @@ model ClientStorage {
   gp_open                      BigInt   @default(0)
   gp_daily                     BigInt   @default(0)
   gp_luckypick                 BigInt   @default(0)
-  locked_skills                Json[]   @db.Json
   custom_prices                Json     @default("{}") @db.Json
   nightmare_cost               Json     @default("{}") @db.Json
   create_cost                  Json     @default("{}") @db.Json
@@ -117,6 +116,7 @@ model ClientStorage {
   tks_cost                     Json     @default("{}") @db.Json
   tks_loot                     Json     @default("{}") @db.Json
   disabled_commands            String[] @db.VarChar(32)
+  gp_tax_balance               BigInt   @default(0)
 
   @@map("clientStorage")
 }
@@ -375,7 +375,11 @@ model User {
 
   weekly_buy_bank Json @default("{}") @db.Json
 
+  total_gp_traded BigInt @default(0)
+
   lms_points Int @default(0)
+
+  minion_bought_date DateTime? @db.Timestamp(6)
 
   @@map("users")
 }
@@ -457,7 +461,7 @@ model Minigame {
 model CommandUsage {
   id           Int                  @id @default(autoincrement())
   date         DateTime             @db.Timestamp(6)
-  user_id      String               @db.VarChar(19)
+  user_id      BigInt
   command_name String               @db.VarChar(32)
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
@@ -465,8 +469,8 @@ model CommandUsage {
   inhibited    Boolean?             @default(false)
 
   args       Json?   @db.Json
-  channel_id String? @db.VarChar(19)
-  guild_id   String? @db.VarChar(19)
+  channel_id BigInt?
+  guild_id   BigInt?
 
   @@map("command_usage")
 }
@@ -507,6 +511,26 @@ model LastManStandingGame {
   kills    Int      @db.SmallInt
 
   @@map("lms_games")
+}
+
+enum economy_transaction_type {
+  trade
+  giveaway
+}
+
+model EconomyTransaction {
+  id        String                   @id @default(uuid()) @db.Uuid
+  date      DateTime                 @default(now())
+  sender    BigInt
+  recipient BigInt
+  guild_id  BigInt?
+  type      economy_transaction_type
+
+  // From the perspective of the sender
+  items_sent     Json? @default("{}") @db.Json
+  items_received Json? @default("{}") @db.Json
+
+  @@map("economy_transaction")
 }
 
 enum command_usage_status {

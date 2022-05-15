@@ -95,7 +95,7 @@ async function giveGear(user: KlasaUser) {
 
 async function resetAccount(user: KlasaUser) {
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
-	await prisma.commandUsage.deleteMany({ where: { user_id: user.id } });
+	await prisma.commandUsage.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.gearPreset.deleteMany({ where: { user_id: user.id } });
 	await prisma.giveaway.deleteMany({ where: { user_id: user.id } });
 	await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } });

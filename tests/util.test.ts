@@ -6,6 +6,8 @@ import { sellPriceOfItem } from '../src/commands/Minion/sell';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { deduplicateClueScrolls, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
+import { getSkillsOfMahojiUser } from '../src/mahoji/mahojiSettings';
+import { mockUser } from './utils';
 
 describe('util', () => {
 	test('stripEmojis', () => {
@@ -37,7 +39,7 @@ describe('util', () => {
 		expect(
 			getUserFoodFromBank(
 				fakeUser(new Bank().add('Shark', 100).add('Lobster', 20).add('Shrimps', 50).add('Coal')),
-				1600,
+				1700,
 				[]
 			)
 		).toStrictEqual(new Bank().add('Lobster', 20).add('Shark', 66).add('Shrimps', 50));
@@ -70,5 +72,10 @@ describe('util', () => {
 		let expected = Math.floor(reduceNumByPercent(price, 20));
 		expect(sellPriceOfItem(clientMock, item)).toEqual({ price: expected, basePrice: price });
 		expect(sellPriceOfItem(clientMock, getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
+	});
+
+	test('getSkillsOfMahojiUser', () => {
+		expect(getSkillsOfMahojiUser(mockUser(), true).agility).toEqual(73);
+		expect(getSkillsOfMahojiUser(mockUser()).agility).toEqual(1_000_000);
 	});
 });

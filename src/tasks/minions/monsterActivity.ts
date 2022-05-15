@@ -171,7 +171,6 @@ export default class extends Task {
 			isOnTask && thisTripFinishesTask
 				? undefined
 				: res => {
-						user.log(`continued trip of killing ${monster.name}`);
 						let method: PvMMethod = 'none';
 						if (usingCannon) method = 'cannon';
 						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';

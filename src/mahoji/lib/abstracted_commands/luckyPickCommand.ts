@@ -2,6 +2,7 @@ import { MessageButton, MessageComponentInteraction, MessageOptions } from 'disc
 import { chunk, roll, shuffleArr, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import { client } from '../../..';
@@ -88,7 +89,7 @@ export async function luckyPickCommand(
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
 	}
-	await klasaUser.removeGP(amount);
+	await klasaUser.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
 	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): MessageOptions['components'] {
 		let chunkedButtons = chunk(buttonsToShow, 5);
@@ -124,7 +125,7 @@ export async function luckyPickCommand(
 		interaction: MessageComponentInteraction;
 	}) => {
 		let amountReceived = button.mod(amount);
-		await klasaUser.addGP(amountReceived);
+		await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
 		await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceLuckyPick, amountReceived - amount);
 		await updateGPTrackSetting(klasaUser, UserSettings.GPLuckyPick, amountReceived - amount);
 
@@ -137,7 +138,7 @@ export async function luckyPickCommand(
 	const cancel = async () => {
 		await sentMessage.delete();
 		if (!buttonsToShow.some(b => b.picked)) {
-			await klasaUser.addGP(amount);
+			await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amount) });
 			return `You didn't pick any buttons in time, so you were refunded ${toKMB(amount)} GP.`;
 		}
 		throw new Error(SILENT_ERROR);
