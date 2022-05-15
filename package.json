@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@discordjs/builders": "^0.11.0",
 		"@octokit/graphql": "^4.8.0",
-		"@prisma/client": "^3.9.2",
+		"@prisma/client": "^3.14.0",
 		"@sapphire/discord-utilities": "^2.8.0",
 		"@sapphire/discord.js-utilities": "^3.0.0-next.600390f4.0",
 		"@sapphire/stopwatch": "^1.4.0",
@@ -72,7 +72,7 @@
 		"jest": "^27.5.1",
 		"jest-circus": "^27.5.1",
 		"jest-mock-extended": "^2.0.5",
-		"prisma": "^3.9.2",
+		"prisma": "^3.14.0",
 		"rimraf": "^3.0.2",
 		"ts-jest": "^27.1.3",
 		"typescript": "^4.5.5"
