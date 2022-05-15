@@ -45,9 +45,9 @@ import { patronMaxTripCalc } from '../../lib/util/getUsersPerkTier';
 import itemID from '../../lib/util/itemID';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import resolveItems from '../../lib/util/resolveItems';
+import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import BankImageTask from '../../tasks/bankImage';
-import { collectables } from '../Minion/collect';
 import { Tame, tame_growth, TameActivity } from '.prisma/client';
 
 interface FeedableItem {

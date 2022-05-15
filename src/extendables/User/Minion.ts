@@ -7,7 +7,6 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { sotwConfig, sotwIsActive } from '../../commands/bso/sotw';
-import { collectables } from '../../commands/Minion/collect';
 import { bossEvents } from '../../lib/bossEvents';
 import {
 	Emoji,
@@ -116,6 +115,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
+import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
