@@ -196,7 +196,6 @@ export async function abstractedOpenCommand(
 
 	if (!openables.length) return "That's not a valid item.";
 
-
 	const cost = new Bank();
 	const kcBank = new Bank();
 	const loot = new Bank();
