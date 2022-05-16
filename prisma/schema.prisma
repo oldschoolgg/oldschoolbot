@@ -150,6 +150,8 @@ model ClientStorage {
   fc_loot                 Json   @default("{}") @db.Json
   zippy_loot              Json   @default("{}") @db.Json
   market_prices           Json   @default("{}") @db.Json
+  bb_cost                 Json   @default("{}") @db.Json
+  bb_loot                 Json   @default("{}") @db.Json
 
   @@map("clientStorage")
 }
