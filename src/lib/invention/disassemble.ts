@@ -8,7 +8,7 @@ import { table } from 'table';
 import { getSkillsOfMahojiUser } from '../../mahoji/mahojiSettings';
 import { ItemBank } from '../types';
 import { calcPerHour, clamp, formatDuration, toKMB } from '../util';
-import { calcMaxTripLength } from '../util/minionUtils';
+import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { DisassemblySourceGroup, DisassemblySourceGroups, IMaterialBank } from '.';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
