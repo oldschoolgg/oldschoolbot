@@ -169,7 +169,9 @@ const backgroundImages: BankBackground[] = [
 		name: 'CoX',
 		image: null,
 		available: true,
-		bitfield: BitField.HasPermanentEventBackgrounds
+		bitfield: BitField.HasPermanentEventBackgrounds,
+		hasPurple: true,
+		purpleImage: null
 	},
 	{
 		id: 15,
@@ -277,6 +279,34 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 20_000_000
+	},
+	{
+		id: 23,
+		name: 'ToB',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 24,
+		name: 'Zilyana',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000
+	},
+	{
+		id: 25,
+		name: 'Zilyana Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000,
+		transparent: true
 	}
 ];
 

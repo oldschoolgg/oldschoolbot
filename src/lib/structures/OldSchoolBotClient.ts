@@ -63,7 +63,7 @@ export class OldSchoolBotClient extends Client {
 	}
 
 	init = () => {
-		initCrons();
+		initCrons(this);
 		this.refreshEmojis();
 	};
 }

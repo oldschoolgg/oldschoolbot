@@ -11,9 +11,9 @@ import { OSBMahojiCommand } from '../lib/util';
 
 function determineLimit(user: KlasaUser) {
 	const perkTier = getUsersPerkTier(user);
-	if (perkTier >= PerkTier.Six) return 100_000;
-	if (perkTier >= PerkTier.Five) return 80_000;
-	if (perkTier >= PerkTier.Four) return 60_000;
+	if (perkTier >= PerkTier.Six) return 300_000;
+	if (perkTier >= PerkTier.Five) return 200_000;
+	if (perkTier >= PerkTier.Four) return 100_000;
 	if (perkTier === PerkTier.Three) return 40_000;
 	if (perkTier === PerkTier.Two) return 20_000;
 	if (perkTier === PerkTier.One) return 1000;
@@ -38,7 +38,7 @@ export const casketCommand: OSBMahojiCommand = {
 			description: 'The quantity you want to open.',
 			required: true,
 			min_value: 1,
-			max_value: 100_000
+			max_value: 300_000
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {

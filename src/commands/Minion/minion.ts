@@ -20,7 +20,6 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
@@ -38,6 +37,7 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
+import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -180,7 +180,7 @@ export default class MinionCommand extends BotCommand {
 	async commands(msg: KlasaMessage) {
 		const commands = await prisma.commandUsage.findMany({
 			where: {
-				user_id: msg.author.id
+				user_id: BigInt(msg.author.id)
 			},
 			orderBy: {
 				date: 'desc'
@@ -267,11 +267,11 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async af(msg: KlasaMessage) {
-		return autoFarm(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
 	async autofarm(msg: KlasaMessage) {
-		return autoFarm(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
 	async activities(msg: KlasaMessage) {
@@ -514,11 +514,16 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	async buy(msg: KlasaMessage) {
 		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
 
-		await msg.author.settings.update(UserSettings.Minion.HasBought, true);
+		await mahojiUserSettingsUpdate(this.client, msg.author.id, {
+			minion_hasBought: true,
+			minion_bought_date: new Date()
+		});
 		return msg.channel.send({
 			embeds: [
 				new MessageEmbed().setTitle('Your minion is now ready to use!').setDescription(
 					`You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
+
+<:ironman:626647335900020746> You can make your new minion an Ironman by using the command: \`${msg.cmdPrefix}m ironman\`.
 
 🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://wiki.oldschool.gg/rules>
 

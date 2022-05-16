@@ -41,6 +41,7 @@ import {
 	getSupportGuild,
 	getUsername,
 	isGroupActivity,
+	isNexActivity,
 	isRaidsActivity,
 	isTobActivity,
 	itemNameFromID,
@@ -81,9 +82,10 @@ async function checkMassesCommand(msg: KlasaMessage) {
 	const now = Date.now();
 	const massStr = masses
 		.map(m => {
-			const remainingTime = isTobActivity(m)
-				? m.finishDate - m.duration + m.fakeDuration - now
-				: m.finishDate - now;
+			const remainingTime =
+				isTobActivity(m) || isNexActivity(m)
+					? m.finishDate - m.duration + m.fakeDuration - now
+					: m.finishDate - now;
 			if (isGroupActivity(m)) {
 				return [
 					remainingTime,
@@ -774,7 +776,7 @@ LIMIT 10;
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
+				const command = allAbstractCommands(this.client, mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
 					where: { id: CLIENT_ID },
@@ -797,7 +799,7 @@ LIMIT 10;
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
+				const command = allAbstractCommands(this.client, mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({

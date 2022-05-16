@@ -118,6 +118,7 @@ export const enum Emoji {
 	Ranged = '<:ranged:630911040258834473>',
 	Gear = '<:gear:835314891950129202>',
 	Slayer = '<:slayer:630911040560824330>',
+	Stopwatch = '⏱️',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -141,11 +142,11 @@ export const enum Emoji {
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
 
-export const enum ReactionEmoji {
-	Join = '705971600956194907',
-	Stop = '705972260950769669',
-	Start = '705973302719414329'
-}
+export const ReactionEmoji = {
+	Join: DISCORD_SETTINGS.Emojis?.ReactionJoin ?? '705971600956194907',
+	Stop: DISCORD_SETTINGS.Emojis?.ReactionStop ?? '705972260950769669',
+	Start: DISCORD_SETTINGS.Emojis?.ReactionStart ?? '705973302719414329'
+};
 
 export const enum Image {
 	DiceBag = 'https://i.imgur.com/sySQkSX.png'
@@ -211,7 +212,6 @@ export const enum Tasks {
 	Raids = 'raidsActivity',
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
-	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	DarkAltar = 'darkAltarActivity',
@@ -226,7 +226,8 @@ export const enum Tasks {
 	LastManStanding = 'lmsActivity',
 	BirthdayEvent = 'birthdayEventActivity',
 	TokkulShop = 'tokkulShopActivity',
-	Nex = 'nexActivity'
+	Nex = 'nexActivity',
+	REMOVED = '__REMOVED__'
 }
 
 export enum ActivityGroup {
@@ -380,7 +381,7 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
-export const MAX_QP = 284;
+export const MAX_QP = 289;
 export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
@@ -497,15 +498,15 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 }
 
 export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage,
+	msg: KlasaMessage | null,
 	commandName?: string
 ) => `This command you're trying to use, has been changed to a 'slash command'.
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
-- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used too though.
-- You no longer use this command using \`${msg.cmdPrefix}${commandName ?? msg.command?.name}\`, now you use: \`/${
-	commandName ?? msg.command?.name
-}\`
+- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
+- You no longer use this command using \`${msg?.cmdPrefix ?? '+'}${
+	commandName ?? msg?.command?.name
+}\`, now you use: \`/${commandName ?? msg?.command?.name}\`
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();

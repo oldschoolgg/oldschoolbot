@@ -5,8 +5,8 @@ import { client } from '../..';
 import { Emoji } from '../../lib/constants';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { filterOption, itemOption } from '../mahojiSettings';
 
 const bankFormats = ['json'] as const;
 type BankFormat = typeof bankFormats[number];
@@ -21,7 +21,7 @@ export const askCommand: OSBMahojiCommand = {
 			description: 'The page in your bank you want to see.',
 			required: false
 		},
-		itemOption,
+		itemOption(),
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'format',
@@ -39,8 +39,10 @@ export const askCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		user,
-		options
+		options,
+		interaction
 	}: CommandRunOptions<{ page?: number; format?: BankFormat; search?: string; filter?: string; item?: string }>) => {
+		await interaction.deferReply();
 		const klasaUser = await client.fetchUser(user.id);
 		const baseBank = klasaUser.bank({ withGP: true });
 

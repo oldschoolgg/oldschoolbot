@@ -143,10 +143,12 @@ export async function soulWarsStartCommand(user: KlasaUser, channelID: bigint) {
 	} is now off to do ${quantity}x games of Soul Wars - the total trip will take ${formatDuration(duration)}.`;
 }
 
-export async function soulWarsBuyCommand(user: KlasaUser, input = '') {
+export async function soulWarsBuyCommand(user: KlasaUser, input = '', quantity?: number) {
 	const possibleItemName = input.split(' ');
 
-	let quantity = 1;
+	if (!quantity) {
+		quantity = 1;
+	}
 	if (!Number.isNaN(parseInt(possibleItemName[0]))) {
 		quantity = Number(possibleItemName.shift());
 	}
