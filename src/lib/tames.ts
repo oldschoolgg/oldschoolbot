@@ -5,17 +5,17 @@ import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { client } from '..';
-import { collectables } from '../commands/Minion/collect';
+import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import { effectiveMonsters } from './minions/data/killableMonsters';
 import { prisma, trackLoot } from './settings/prisma';
-import { UserSettings } from './settings/types/UserSettings';
 import { generateContinuationChar, itemNameFromID, roll } from './util';
 import { createCollector } from './util/createCollector';
 import getOSItem from './util/getOSItem';
 import { collectors } from './util/handleTripFinish';
 import { sendToChannelID } from './util/webhook';
-import { Tame, tame_growth, TameActivity } from '.prisma/client';
+import { Tame, tame_growth, TameActivity, User } from '.prisma/client';
 
 interface NurseryEgg {
 	species: number;
@@ -48,9 +48,14 @@ export interface TameTaskGathererOptions {
 
 export type TameTaskOptions = TameTaskCombatOptions | TameTaskGathererOptions;
 
+export enum TameSpeciesID {
+	Igne = 1,
+	Monkey = 2
+}
+
 export const tameSpecies: Species[] = [
 	{
-		id: 1,
+		id: TameSpeciesID.Igne,
 		type: TameType.Combat,
 		name: 'Igne',
 		variants: [1, 2, 3],
@@ -75,7 +80,7 @@ export const tameSpecies: Species[] = [
 		emoji: '<:dragonEgg:858948148641660948>'
 	},
 	{
-		id: 2,
+		id: TameSpeciesID.Monkey,
 		type: TameType.Gatherer,
 		name: 'Monkey',
 		variants: [1, 2, 3],
@@ -361,8 +366,12 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 	}
 }
 
-export async function getUsersTame(user: KlasaUser): Promise<[Tame | null, TameActivity | null]> {
-	const selectedTame = user.settings.get(UserSettings.SelectedTame);
+export async function getUsersTame(user: KlasaUser | User): Promise<[Tame | null, TameActivity | null]> {
+	const selectedTame = (
+		await mahojiUsersSettingsFetch(user.id, {
+			selected_tame: true
+		})
+	).selected_tame;
 	if (!selectedTame) {
 		return [null, null];
 	}
@@ -406,4 +415,20 @@ export async function createTameTask({
 	});
 
 	return activity;
+}
+
+export async function getAllUserTames(userID: bigint | string) {
+	const tames = await prisma.tame.findMany({
+		where: {
+			user_id: userID.toString()
+		},
+		include: {
+			tame_activity: {
+				where: {
+					completed: false
+				}
+			}
+		}
+	});
+	return tames;
 }

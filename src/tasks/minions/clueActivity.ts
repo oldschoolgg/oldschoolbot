@@ -70,11 +70,6 @@ export default class extends Task {
 		}
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		this.client.emit(
-			Events.Log,
-			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
-		);
-
 		handleTripFinish(
 			this.client,
 			user,

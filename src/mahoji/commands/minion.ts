@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import { diaries } from '../../lib/diaries';
+import getOSItem from '../../lib/util/getOSItem';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import BankImageTask from '../../tasks/bankImage';
 import {
@@ -10,7 +11,8 @@ import {
 } from '../lib/abstracted_commands/achievementDiaryCommand';
 import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
-import { questCommand } from '../lib/abstracted_commands/questCommand';
+import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
+import { skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { MahojiUserOption } from '../mahojiSettings';
 
@@ -82,21 +84,49 @@ export const minionCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'quest',
-			description: 'Send your minion to do quests.'
+			name: 'lamp',
+			description: 'Use lamps to claim XP.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'item',
+					description: 'The item you want to use.',
+					autocomplete: async (value: string) => {
+						return Lampables.map(i => i.items)
+							.flat(2)
+							.map(getOSItem)
+							.filter(p => (!value ? true : p.name.toLowerCase().includes(value.toLowerCase())))
+							.map(p => ({ name: p.name, value: p.name }));
+					},
+					required: true
+				},
+				{
+					...skillOption,
+					required: true,
+					name: 'skill',
+					description: 'The skill you want to use the item on.'
+				},
+				{
+					type: ApplicationCommandOptionType.Number,
+					name: 'quantity',
+					description: 'You quantity you want to use.',
+					required: false,
+					min_value: 1,
+					max_value: 100_000
+				}
+			]
 		}
 	],
 	run: async ({
 		userID,
 		options,
-		channelID,
 		interaction
 	}: CommandRunOptions<{
 		stats?: {};
 		achievementdiary?: { diary?: string; claim?: boolean };
 		bankbg?: { name?: string };
 		cracker?: { user: MahojiUserOption };
-		quest?: {};
+		lamp?: { item: string; quantity?: number; skill: string };
 	}>) => {
 		const user = await client.fetchUser(userID.toString());
 
@@ -118,8 +148,9 @@ export const minionCommand: OSBMahojiCommand = {
 			const otherUser = await client.fetchUser(options.cracker.user.user.id);
 			return crackerCommand({ owner: user, otherPerson: otherUser, interaction });
 		}
-		if (options.quest) {
-			return questCommand(user, channelID);
+
+		if (options.lamp) {
+			return lampCommand(user, options.lamp.item, options.lamp.skill, options.lamp.quantity);
 		}
 
 		return 'Unknown command';

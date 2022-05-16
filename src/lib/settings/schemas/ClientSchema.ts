@@ -88,9 +88,13 @@ Client.defaultClientSchema
 	.add('gp_ic', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_slots', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('custom_prices', 'any', { default: {} })
 
 	.add('double_loot_finish_time', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('locked_skills', 'any', { array: true, default: [] })
 	.add('custom_prices', 'any', { default: {} })
 	.add('zippy_loot', 'any', { default: {} })
-	.add('market_prices', 'any', { default: {} });
+	.add('market_prices', 'any', { default: {} })
+
+	.add('bb_cost', 'any', { default: {} })
+	.add('bb_loot', 'any', { default: {} });

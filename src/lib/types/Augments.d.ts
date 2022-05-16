@@ -150,13 +150,9 @@ declare module 'discord.js' {
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
-		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
 		log(stringLog: string): void;
-		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(params: AddXpParams): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
@@ -181,10 +177,6 @@ declare module 'discord.js' {
 		 * Returns the KC the user has for this monster.
 		 */
 		getKC(id: number): number;
-		/**
-		 * Returns how many times they've opened this openable.
-		 */
-		getOpenableScore(id: number): number;
 		/**
 		 * Returns a tuple where the first item is formatted KC entry name and second is the KC.
 		 * If the search doesn't return anything then returns [null, 0].

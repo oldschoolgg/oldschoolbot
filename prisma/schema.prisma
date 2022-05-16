@@ -108,7 +108,6 @@ model ClientStorage {
   gp_open                      BigInt   @default(0)
   gp_daily                     BigInt   @default(0)
   gp_luckypick                 BigInt   @default(0)
-  locked_skills                Json[]   @db.Json
   custom_prices                Json     @default("{}") @db.Json
   nightmare_cost               Json     @default("{}") @db.Json
   create_cost                  Json     @default("{}") @db.Json
@@ -119,6 +118,7 @@ model ClientStorage {
   tks_cost                     Json     @default("{}") @db.Json
   tks_loot                     Json     @default("{}") @db.Json
   disabled_commands            String[] @db.VarChar(32)
+  gp_tax_balance               BigInt   @default(0)
 
 
   // BSO
@@ -411,11 +411,15 @@ model User {
 
   weekly_buy_bank Json @default("{}") @db.Json
 
+  total_gp_traded BigInt @default(0)
+
   lms_points Int @default(0)
+
+  minion_bought_date DateTime? @db.Timestamp(6)
 
   // BSO
   nursery                  Json?    @db.Json
-  selected_tame            Json?    @db.Json
+  selected_tame            Int?
   monkeys_fought           String[]
   times_fed_gregoyle       Int      @default(0)
   wrong_accusations        Int      @default(0)
@@ -519,6 +523,7 @@ model Minigame {
   monkey_rumble            Int @default(0)
   emerged_inferno          Int @default(0)
   fishing_contest          Int @default(0)
+  bax_baths                Int @default(0)
 
   NewUser NewUser[]
   @@map("minigames")
@@ -576,7 +581,7 @@ model Tame {
 model CommandUsage {
   id           Int                  @id @default(autoincrement())
   date         DateTime             @db.Timestamp(6)
-  user_id      String               @db.VarChar(19)
+  user_id      BigInt
   command_name String               @db.VarChar(32)
   status       command_usage_status @default(value: Unknown)
   is_continue  Boolean              @default(false)
@@ -584,8 +589,8 @@ model CommandUsage {
   inhibited    Boolean?             @default(false)
 
   args       Json?   @db.Json
-  channel_id String? @db.VarChar(19)
-  guild_id   String? @db.VarChar(19)
+  channel_id BigInt?
+  guild_id   BigInt?
 
   @@map("command_usage")
 }
@@ -749,6 +754,7 @@ enum activity_type_enum {
   BirthdayEvent
   TokkulShop
   Easter
+  BaxtorianBathhouses
 }
 
 enum xp_gains_skill_enum {

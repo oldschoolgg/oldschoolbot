@@ -1,4 +1,5 @@
-import { itemID, resolveNameBank } from '../../util';
+import { Bank } from 'oldschooljs';
+
 import { Buyable } from './buyables';
 
 const items = [
@@ -12,34 +13,34 @@ const items = [
 export const bsoBuyables: Buyable[] = [
 	...items.map(i => ({
 		name: i[0],
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			[i[0]]: 1
 		}),
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			'Castle wars ticket': i[1]
 		})
 	})),
 	{
 		name: 'Fishbowl helmet',
-		outputItems: {
-			[itemID('Fishbowl helmet')]: 1
-		},
+		outputItems: new Bank({
+			'Fishbowl helmet': 1
+		}),
 		qpRequired: 85,
 		gpCost: 500_000
 	},
 	{
 		name: 'Diving apparatus',
-		outputItems: {
-			[itemID('Diving apparatus')]: 1
-		},
+		outputItems: new Bank({
+			'Diving apparatus': 1
+		}),
 		qpRequired: 85,
 		gpCost: 500_000
 	},
 	{
 		name: "Beginner's tackle box",
-		outputItems: {
-			[itemID("Beginner's tackle box")]: 1
-		},
+		outputItems: new Bank({
+			"Beginner's tackle box": 1
+		}),
 		gpCost: 500_000,
 		skillsNeeded: {
 			fishing: 50
@@ -47,20 +48,12 @@ export const bsoBuyables: Buyable[] = [
 	},
 	{
 		name: 'Contest rod',
-		outputItems: {
-			[itemID('Contest rod')]: 1
-		},
+		outputItems: new Bank({
+			'Contest rod': 1
+		}),
 		gpCost: 500_000,
 		skillsNeeded: {
 			fishing: 50
 		}
-	},
-	{
-		name: 'Bingo ticket',
-		outputItems: {
-			[itemID('Bingo ticket')]: 1
-		},
-		gpCost: 1_000_000_000,
-		ironmanPrice: 0
 	}
 ];

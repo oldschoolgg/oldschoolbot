@@ -164,7 +164,7 @@ export default class extends BotCommand {
 		}
 
 		if (fish.bait) {
-			const hasBait = await msg.author.hasItem(fish.bait, quantity);
+			const hasBait = msg.author.bank().amount(fish.bait) >= quantity;
 			if (!hasBait) {
 				return msg.channel.send(`You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`);
 			}

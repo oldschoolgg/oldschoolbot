@@ -27,6 +27,7 @@ import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
 import { CLIENT_ID, production } from '../config';
+import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
 import {
 	BitField,
 	CENA_CHARS,
@@ -39,6 +40,7 @@ import {
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
+import { prisma } from './settings/prisma';
 import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { Gear } from './structures/Gear';
@@ -49,7 +51,6 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
@@ -294,8 +295,11 @@ export function sha256Hash(x: string) {
 	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }
 
-export function countSkillsAtleast99(user: KlasaUser) {
-	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>;
+export function countSkillsAtleast99(user: KlasaUser | User) {
+	const skills =
+		user instanceof KlasaUser
+			? ((user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>)
+			: getSkillsOfMahojiUser(user);
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
@@ -521,14 +525,6 @@ export function isValidNickname(str?: string) {
 		['\n', '`', '@', '<', ':'].every(char => !str.includes(char)) &&
 		stripEmojis(str).length === str.length
 	);
-}
-
-export function patronMaxTripCalc(user: KlasaUser | User) {
-	const perkTier = getUsersPerkTier(user instanceof KlasaUser ? user : user.bitfield);
-	if (perkTier === PerkTier.Two) return Time.Minute * 3;
-	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
-	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
-	return 0;
 }
 
 export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
@@ -798,7 +794,7 @@ export function convertDJSMemberToAPIMember(member: GuildMember): APIInteraction
 	};
 }
 
-export function removeFromArr<T>(arr: T[], item: T) {
+export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
 	return arr.filter(i => i !== item);
 }
 
@@ -832,4 +828,33 @@ export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank
 
 export function discrimName(user: KlasaUser | APIUser) {
 	return `${user.username}#${user.discriminator}`;
+}
+
+export function isValidSkill(skill: string): skill is SkillsEnum {
+	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
+}
+
+export async function addToGPTaxBalance(userID: bigint | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			}
+		}),
+		prisma.user.update({
+			where: {
+				id: userID.toString()
+			},
+			data: {
+				total_gp_traded: {
+					increment: amount
+				}
+			}
+		})
+	]);
 }

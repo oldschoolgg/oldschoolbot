@@ -6,7 +6,7 @@ import { Bank } from 'oldschooljs';
 import { ironsCantUse } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { formatDuration, isSuperUntradeable } from '../../lib/util';
+import { addToGPTaxBalance, formatDuration, isSuperUntradeable } from '../../lib/util';
 import { logError } from '../../lib/util/logError';
 
 export default class extends BotCommand {
@@ -96,6 +96,10 @@ React to this messsage with ${reaction} to enter.`,
 		} catch (err: any) {
 			return msg.channel.send(err instanceof Error ? err.message : err);
 		}
+		if (bank.has('Coins')) {
+			addToGPTaxBalance(msg.author.id, bank.amount('Coins'));
+		}
+
 		try {
 			await prisma.giveaway.create({
 				data: dbData

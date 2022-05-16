@@ -1,4 +1,3 @@
-import { Time } from 'e';
 import * as fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
 
@@ -81,13 +80,9 @@ export default class DailyCommand extends BotCommand {
 
 	async reward(msg: KlasaMessage, triviaCorrect: boolean) {
 		const user = msg.author;
-		if (Date.now() - user.createdTimestamp < Time.Month) {
-			user.log('[NAC-DAILY]');
-		}
 
 		const guild = this.client.guilds.cache.get(SupportServer);
-		if (!guild) return;
-		const member = await guild.members.fetch(user).catch(() => null);
+		const member = await guild?.members.fetch(user).catch(() => null);
 
 		const loot = dailyRoll(3, triviaCorrect);
 
@@ -141,7 +136,7 @@ export default class DailyCommand extends BotCommand {
 
 		const hasSkipper = msg.author.usingPet('Skipper') || msg.author.bank().amount('Skipper') > 0;
 		if (!msg.author.isIronman && triviaCorrect && hasSkipper) {
-			loot[COINS_ID] *= 1.5;
+			loot[COINS_ID] = Math.floor(loot[COINS_ID] * 1.5);
 			dmStr +=
 				'\n<:skipper:755853421801766912> Skipper has negotiated with Diango and gotten you 50% extra GP from your daily!';
 		}

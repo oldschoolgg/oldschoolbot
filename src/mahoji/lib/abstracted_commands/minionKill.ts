@@ -17,7 +17,6 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
 import { client } from '../../..';
-import { bingoIsActive } from '../../../lib/bingo';
 import { PvMMethod } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
@@ -66,6 +65,8 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { revsCommand } from './revsCommand';
+import { temporossCommand } from './temporossCommand';
+import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -140,6 +141,9 @@ export async function minionKillCommand(
 		});
 		name = 'Ogress Warrior';
 	}
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
+	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
+
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		return revsCommand(user, mUser, channelID, interaction, name);
@@ -589,10 +593,7 @@ export async function minionKillCommand(
 	}
 	const rangeSetup = { ...user.getGear('range').raw() };
 	let usedDart = false;
-	if (
-		(!bingoIsActive() || !user.cl().has('Bingo ticket')) &&
-		rangeSetup.weapon?.item === itemID('Deathtouched dart')
-	) {
+	if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
 		duration = 1;
 		if (rangeSetup.weapon.quantity > 1) {
 			rangeSetup.weapon.quantity--;

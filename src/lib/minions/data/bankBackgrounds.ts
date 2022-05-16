@@ -228,6 +228,23 @@ const backgroundImages: BankBackground[] = [
 		purpleImage: null
 	},
 	{
+		id: 24,
+		name: 'Zilyana',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000
+	},
+	{
+		id: 25,
+		name: 'Zilyana Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000,
+		transparent: true
+	},
+	{
 		id: 26,
 		name: 'Weeb',
 		image: null,

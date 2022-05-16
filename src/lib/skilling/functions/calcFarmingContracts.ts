@@ -1,8 +1,75 @@
+import { User } from '@prisma/client';
+import { randInt, roll } from 'e';
 import { KlasaUser } from 'klasa';
+import { Bank, LootTable } from 'oldschooljs';
 
-import { rand, stringMatches } from '../../../lib/util';
+import { getSkillsOfMahojiUser } from '../../../mahoji/mahojiSettings';
+import { HighSeedPackTable, LowSeedPackTable, MediumSeedPackTable } from '../../data/seedPackTables';
 import { PlantTier } from '../../minions/farming/types';
+import { stringMatches } from '../../util/cleanString';
 import { SkillsEnum } from '../types';
+
+export function openSeedPack(seedTier: number): Bank {
+	const loot = new Bank();
+
+	const tempTable = new LootTable().tertiary(3, 'Athelas seed');
+
+	if (seedTier > 2) {
+		tempTable.tertiary(10, new LootTable().every('Mysterious seed', [1, 3]));
+	}
+
+	// Roll amount variables
+	let high = 0;
+	let medium = 0;
+	let low = 0;
+
+	switch (seedTier) {
+		case 0:
+		case 1: {
+			high = 0;
+			medium = randInt(1, 3);
+			low = 6 - medium;
+			break;
+		}
+		case 2: {
+			if (roll(11)) {
+				high = 1;
+			}
+			medium = randInt(2, 3);
+			low = 7 - medium - high;
+			break;
+		}
+		case 3: {
+			high = randInt(0, 1);
+			medium = randInt(2, 4);
+			low = 8 - medium - high;
+			break;
+		}
+		case 4: {
+			high = randInt(1, 2);
+			medium = randInt(3, 5);
+			low = 9 - medium - high;
+			break;
+		}
+		case 5: {
+			high = randInt(1, 3);
+			medium = randInt(4, 6);
+			low = 10 - medium - high;
+			break;
+		}
+	}
+
+	// Low seed roll
+	tempTable.every(LowSeedPackTable, low);
+	// Medium seed roll
+	tempTable.every(MediumSeedPackTable, medium);
+	// High seed roll
+	tempTable.every(HighSeedPackTable, high);
+
+	loot.add(tempTable.roll());
+
+	return loot;
+}
 
 export type PlantsList = [number, string, number][];
 
@@ -85,10 +152,11 @@ const hardPlants: PlantsList = [
 ];
 
 export function getPlantToGrow(
-	user: KlasaUser,
+	user: KlasaUser | User,
 	{ contractLevel, ignorePlant }: { contractLevel: 'easy' | 'medium' | 'hard'; ignorePlant: string | null }
 ): [string, PlantTier] {
-	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
+	const farmingLevel =
+		user instanceof KlasaUser ? user.skillLevel(SkillsEnum.Farming) : getSkillsOfMahojiUser(user, true).farming;
 	let contractType: PlantsList = [];
 	if (contractLevel === 'easy') contractType = [...easyPlants];
 	if (contractLevel === 'medium') contractType = [...mediumPlants];
@@ -101,7 +169,7 @@ export function getPlantToGrow(
 			contractType.splice(contractType.indexOf(index), 1);
 	}
 
-	const plantFromContract = contractType[rand(0, contractType.length - 1)];
+	const plantFromContract = contractType[randInt(0, contractType.length - 1)];
 	const plantToGrow = plantFromContract[1];
 	const tier = plantFromContract[2];
 

@@ -1,17 +1,17 @@
+import type { User } from '@prisma/client';
 import { randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
-import { openSeedPack } from '../commands/Minion/seedpack';
 import { bsoOpenables } from './bsoOpenables';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
-import { clueHunterOutfit, cluesRaresCL } from './data/CollectionsExport';
+import { clueHunterOutfit } from './data/CollectionsExport';
 import ClueTiers from './minions/data/clueTiers';
 import { defaultFarmingContract } from './minions/farming';
+import { FarmingContract } from './minions/farming/types';
 import { UserSettings } from './settings/types/UserSettings';
 import {
 	BagFullOfGemsTable,
@@ -20,6 +20,7 @@ import {
 	CrystalChestTable,
 	SpoilsOfWarTable
 } from './simulation/misc';
+import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import { itemID, percentChance, roll } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
@@ -29,6 +30,7 @@ export interface OpenArgs {
 	quantity: number;
 	user: KlasaUser;
 	self: UnifiedOpenable;
+	mahojiUser: User;
 }
 
 export interface UnifiedOpenable {
@@ -47,13 +49,37 @@ export interface UnifiedOpenable {
 	isMysteryBox?: boolean;
 	smokeyApplies?: boolean;
 	excludeLootFromBoxes?: boolean;
+	excludeFromOpenAll?: true;
 }
 
-const clueItemsToNotifyOf = cluesRaresCL
+const clueItemsToNotifyOf = resolveItems([
+	'3rd age range coif',
+	'3rd age range top',
+	'3rd age range legs',
+	'3rd age vambraces',
+	'3rd age robe top',
+	'3rd age robe',
+	'3rd age mage hat',
+	'3rd age amulet',
+	'3rd age plateskirt',
+	'3rd age platelegs',
+	'3rd age platebody',
+	'3rd age full helmet',
+	'3rd age kiteshield',
+	'3rd age longsword',
+	'3rd age wand',
+	'3rd age cloak',
+	'3rd age bow',
+	'3rd age pickaxe',
+	'3rd age axe',
+	'3rd age druidic robe bottoms',
+	'3rd age druidic robe top',
+	'3rd age druidic staff',
+	'3rd age druidic cloak'
+])
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat(
 		resolveItems([
-			'Bloodhound',
 			'Dwarven blessing',
 			'First age tiara',
 			'First age amulet',
@@ -96,11 +122,11 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 
-			let message = `You opened ${quantity} ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+			let message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 			if (extraClueRolls > 0) {
-				message += `\nYou received ${extraClueRolls} extra clue rolls.`;
+				message += `${mimicNumber ? ' ' : ''}${extraClueRolls} extra rolls`;
 			}
 
 			const nthCasket = (user.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
@@ -140,9 +166,12 @@ for (const clueTier of ClueTiers) {
 			return { bank: loot, message };
 		},
 		emoji: Emoji.Casket,
-		allItems: BeginnerClueTable.allItems
+		allItems: clueTier.allItems
 	});
 }
+
+const masterClue = clueOpenables.find(c => c.name === 'Reward casket (master)');
+masterClue!.allItems.push(itemID('Clue scroll (grandmaster)'));
 
 const osjsOpenables: UnifiedOpenable[] = [
 	{
@@ -269,14 +298,15 @@ const osjsOpenables: UnifiedOpenable[] = [
 		name: 'Seed pack',
 		id: 22_993,
 		openedItem: getOSItem(22_993),
-		aliases: ['seed pack'],
+		aliases: ['seed pack', 'sp'],
 		output: async (
 			args: OpenArgs
 		): Promise<{
 			bank: Bank;
 			message?: string;
 		}> => {
-			const { plantTier } = args.user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+			const { plantTier } =
+				(args.mahojiUser.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
 			const openLoot = new Bank();
 			for (let i = 0; i < args.quantity; i++) {
 				openLoot.add(openSeedPack(plantTier));

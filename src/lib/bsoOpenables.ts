@@ -94,7 +94,8 @@ export const PMBTable = new LootTable()
 	.add('Youngllef')
 	.add('Little nightmare')
 	.add("Lil' creator")
-	.add('Tiny tempor');
+	.add('Tiny tempor')
+	.add('Abyssal protector');
 
 const DwarvenCrateTable = new LootTable()
 	.add('Dwarven ore')
@@ -399,6 +400,7 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: ['equippable mystery box', 'emb'],
 		output: makeOutputFromArrayOfItemIDs(randomEquippable),
 		allItems: [],
+		isMysteryBox: true,
 		smokeyApplies: true
 	},
 	{
@@ -436,7 +438,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Tester Gift box'),
 		aliases: ['tester gift box', 'tgb'],
 		output: testerGiftTable,
-		allItems: testerGiftTable.allItems
+		allItems: testerGiftTable.allItems,
+		excludeFromOpenAll: true
 	},
 	{
 		name: 'Dwarven crate',
@@ -452,7 +455,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Blacksmith crate'),
 		aliases: ['blacksmith crate', 'bsc'],
 		output: BlacksmithCrateTable,
-		allItems: BlacksmithCrateTable.allItems
+		allItems: BlacksmithCrateTable.allItems,
+		excludeFromOpenAll: true
 	},
 	{
 		name: 'Birthday pack',
@@ -460,7 +464,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Birthday pack'),
 		aliases: ['bp', 'birthday pack'],
 		output: BirthdayPackTable,
-		allItems: BirthdayPackTable.allItems
+		allItems: BirthdayPackTable.allItems,
+		excludeFromOpenAll: true
 	},
 	{
 		name: 'Gamblers bag',
@@ -469,7 +474,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		aliases: ['gamblers bag', 'gb'],
 		output: GamblersBagTable,
 		allItems: GamblersBagTable.allItems,
-		smokeyApplies: true
+		smokeyApplies: true,
+		excludeFromOpenAll: true
 	},
 	{
 		name: 'Royal mystery box',
@@ -477,7 +483,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Royal mystery box'),
 		aliases: ['royal mystery box', 'rmb'],
 		output: RoyalMysteryBoxTable,
-		allItems: RoyalMysteryBoxTable.allItems
+		allItems: RoyalMysteryBoxTable.allItems,
+		excludeFromOpenAll: true
 	},
 	{
 		name: 'Beach mystery box',
@@ -485,7 +492,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Beach mystery box'),
 		aliases: ['Beach mystery box', 'bmb'],
 		output: BeachMysteryBoxTable,
-		allItems: BeachMysteryBoxTable.allItems
+		allItems: BeachMysteryBoxTable.allItems,
+		excludeFromOpenAll: true
 	},
 	{
 		name: 'Independence box',
@@ -493,7 +501,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Independence box'),
 		aliases: ['independence box'],
 		output: IndependenceBoxTable,
-		allItems: IndependenceBoxTable.allItems
+		allItems: IndependenceBoxTable.allItems,
+		excludeFromOpenAll: true
 	},
 	{
 		name: 'Magic crate',
@@ -520,7 +529,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		openedItem: getOSItem('Festive present'),
 		aliases: ['festive present'],
 		output: FestivePresentTable,
-		allItems: FestivePresentTable.allItems
+		allItems: FestivePresentTable.allItems,
+		excludeFromOpenAll: true
 	},
 	{
 		name: 'Chimpling jar',

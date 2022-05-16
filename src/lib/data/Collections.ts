@@ -615,7 +615,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['grandmaster', 'clues grandmaster', 'clue grandmaster', 'clue gm', 'gm'],
 				allItems: GrandmasterClueTable.table.allItems,
 				kcActivity: {
-					Default: async user => user.getOpenableScore(19_838)
+					Default: async user => user.settings.get(UserSettings.ClueScores)[19_838] || 0
 				},
 				items: cluesGrandmasterCL,
 				isActivity: true
@@ -868,6 +868,10 @@ export const allCollectionLogs: ICollection = {
 					"Champion's tackle box",
 					'Golden fishing trophy'
 				])
+			},
+			'Baxtorian Bathhouses': {
+				alias: ['bb', 'bax bath', 'baxtorian bathhouses', 'bath', 'baths'],
+				items: resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling'])
 			}
 		}
 	},

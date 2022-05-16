@@ -2,7 +2,6 @@ import { randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { production } from '../../config';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events } from '../../lib/constants';
 import { handleNaxxusTeaser } from '../../lib/handleNaxxusTeaser';
@@ -16,26 +15,28 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { bankHasItem, rand, roll } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
+import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {
 		const {
 			plantsName,
 			patchType,
-			getPatchType,
 			quantity,
 			upgradeType,
 			payment,
 			userID,
 			channelID,
 			planting,
-			duration,
 			currentDate,
-			autoFarmed
+			autoFarmed,
+			duration
 		} = data;
 		const user = await this.client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
 		const currentWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 		let baseBonus = 1;
@@ -180,16 +181,18 @@ export default class extends Task {
 				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
 			);
 			await user.addItemsToBank({ items: loot, collectionLog: true });
-			const updatePatches: PatchTypes.PatchData = {
+			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
-				plantTime: currentDate + (production ? duration : 1),
+				plantTime: currentDate,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: payment ?? false
 			};
 
-			await user.settings.update(getPatchType, updatePatches);
+			await mahojiUserSettingsUpdate(this.client, user.id, {
+				[getFarmingKeyFromName(plant.seedType)]: newPatch
+			});
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
@@ -200,7 +203,7 @@ export default class extends Task {
 				user,
 				channelID,
 				str,
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				undefined,
 				data,
 				null
@@ -295,7 +298,7 @@ export default class extends Task {
 						throw `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`;
 					} else {
 						payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
-						await user.removeGP(gpToCutTree);
+						await user.removeItemsFromBank(new Bank().add('Coins', gpToCutTree));
 					}
 
 					harvestXp = 0;
@@ -442,7 +445,7 @@ export default class extends Task {
 				);
 			}
 
-			let updatePatches: PatchTypes.PatchData = {
+			let newPatch: PatchTypes.PatchData = {
 				lastPlanted: null,
 				patchPlanted: false,
 				plantTime: 0,
@@ -452,21 +455,24 @@ export default class extends Task {
 			};
 
 			if (planting) {
-				updatePatches = {
+				newPatch = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
-					plantTime: currentDate + (production ? duration : 1),
+					plantTime: currentDate,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: payment ? payment : false
 				};
 			}
 
-			await user.settings.update(getPatchType, updatePatches);
+			await mahojiUserSettingsUpdate(this.client, user.id, {
+				[getFarmingKeyFromName(plant.seedType)]: newPatch
+			});
 
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? {
-				...defaultFarmingContract
-			};
+			const currentContract: FarmingContract | null =
+				(mahojiUser.minion_farmingContract as FarmingContract | null) ?? {
+					...defaultFarmingContract
+				};
 
 			const { contractsCompleted } = currentContract;
 
@@ -480,7 +486,10 @@ export default class extends Task {
 					contractsCompleted: contractsCompleted + 1
 				};
 
-				user.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
+				await mahojiUserSettingsUpdate(this.client, user.id, {
+					minion_farmingContract: farmingContractUpdate as any
+				});
+
 				loot.add('Seed pack');
 
 				janeMessage = true;
@@ -553,7 +562,7 @@ export default class extends Task {
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

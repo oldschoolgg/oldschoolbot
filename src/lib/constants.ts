@@ -135,6 +135,8 @@ export const enum Emoji {
 	SlayerMasterCape = '<:slayerMasterCape:869497600284459008>',
 	RunecraftMasterCape = '<:runecraftMasterCape:869497600997470258>',
 	Flappy = '<:Flappy:884799334737129513>',
+	Stopwatch = '⏱️',
+	Smokey = '<:Smokey:886284971914969149>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -232,7 +234,6 @@ export const enum Tasks {
 	MageArena = 'mageArenaActivity',
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
-	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	KingGoldemar = 'kingGoldemarActivity',
@@ -257,7 +258,8 @@ export const enum Tasks {
 	BirthdayEvent = 'birthdayEventActivity',
 	TokkulShop = 'tokkulShopActivity',
 	Nex = 'nexActivity',
-	Easter = 'easterActivity'
+	BaxtorianBathhouses = 'bathhousesActivity',
+	REMOVED = '__REMOVED__'
 }
 
 export enum ActivityGroup {
@@ -669,15 +671,15 @@ export function getCommandArgs(command: Command, args: any[]) {
 export const GLOBAL_BSO_XP_MULTIPLIER = 5;
 
 export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage,
+	msg: KlasaMessage | null,
 	commandName?: string
 ) => `This command you're trying to use, has been changed to a 'slash command'.
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
 - Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`${msg.cmdPrefix}${commandName ?? msg.command?.name}\`, now you use: \`/${
-	commandName ?? msg.command?.name
-}\`
+- You no longer use this command using \`${msg?.cmdPrefix ?? '+'}${
+	commandName ?? msg?.command?.name
+}\`, now you use: \`/${commandName ?? msg?.command?.name}\`
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();

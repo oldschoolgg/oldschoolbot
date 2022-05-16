@@ -4,12 +4,12 @@ import { Bank } from 'oldschooljs';
 import { client } from '../..';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { discrimName, truncateString } from '../../lib/util';
+import { addToGPTaxBalance, discrimName, truncateString } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import {
-	filterOption,
 	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiParseNumber,
@@ -105,7 +105,6 @@ export const askCommand: OSBMahojiCommand = {
 
 		if (itemsSent.length === 0 && itemsReceived.length === 0) return "You can't make an empty trade.";
 		if (!senderKlasaUser.owns(itemsSent)) return "You don't own those items.";
-		if (!recipientKlasaUser.owns(itemsReceived)) return "They don't own those items.";
 
 		await handleMahojiConfirmation(
 			interaction,
@@ -115,6 +114,8 @@ export const askCommand: OSBMahojiCommand = {
 Both parties must click confirm to make the trade.`,
 			[BigInt(recipientKlasaUser.id), BigInt(senderKlasaUser.id)]
 		);
+
+		if (!recipientKlasaUser.owns(itemsReceived)) return "They don't own those items.";
 
 		await Promise.all([
 			senderKlasaUser.removeItemsFromBank(itemsSent),
@@ -138,6 +139,12 @@ Both parties must click confirm to make the trade.`,
 			Events.EconomyLog,
 			`${senderKlasaUser.sanitizedName} sold ${itemsSent} to ${recipientKlasaUser.sanitizedName} for ${itemsReceived}.`
 		);
+		if (itemsReceived.has('Coins')) {
+			addToGPTaxBalance(recipientKlasaUser.id, itemsReceived.amount('Coins'));
+		}
+		if (itemsSent.has('Coins')) {
+			addToGPTaxBalance(senderKlasaUser.id, itemsSent.amount('Coins'));
+		}
 
 		return `${discrimName(senderKlasaUser)} sold ${itemsSent} to ${discrimName(
 			recipientKlasaUser

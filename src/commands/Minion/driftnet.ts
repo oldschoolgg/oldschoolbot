@@ -39,9 +39,8 @@ export default class extends BotCommand {
 		}
 
 		if (
-			!msg.author.hasItemEquippedAnywhere('Graceful gloves') ||
-			!msg.author.hasItemEquippedAnywhere('Graceful top') ||
-			!msg.author.hasItemEquippedAnywhere('Graceful legs')
+			!msg.author.hasItemEquippedAnywhere(['Graceful gloves', 'Graceful top', 'Graceful legs'], true) &&
+			!msg.author.hasItemEquippedAnywhere('Agility master cape')
 		) {
 			return msg.channel.send('You need Graceful top, legs and gloves equipped to do Drift net fishing.');
 		}

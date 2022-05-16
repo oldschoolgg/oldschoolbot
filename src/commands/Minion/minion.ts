@@ -19,7 +19,6 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
-import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { becomeIronman } from '../../lib/minions/functions/becomeIronman';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
@@ -38,6 +37,7 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertLVLtoXP, isAtleastThisOld, isValidNickname, stringMatches } from '../../lib/util';
+import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -182,7 +182,7 @@ export default class MinionCommand extends BotCommand {
 	async commands(msg: KlasaMessage) {
 		const commands = await prisma.commandUsage.findMany({
 			where: {
-				user_id: msg.author.id
+				user_id: BigInt(msg.author.id)
 			},
 			orderBy: {
 				date: 'desc'
@@ -271,11 +271,11 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async af(msg: KlasaMessage) {
-		return autoFarm(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
 	async autofarm(msg: KlasaMessage) {
-		return autoFarm(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
 	}
 
 	async activities(msg: KlasaMessage) {
@@ -398,8 +398,10 @@ export default class MinionCommand extends BotCommand {
 	async buy(msg: KlasaMessage) {
 		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
 
-		await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
+		await mahojiUserSettingsUpdate(this.client, msg.author.id, {
+			minion_hasBought: true,
+			minion_bought_date: new Date()
+		});
 		const starter = isAtleastThisOld(msg.author.createdTimestamp, Time.Year * 2)
 			? new Bank({
 					Shark: 300,

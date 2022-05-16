@@ -2,12 +2,11 @@ import { User } from 'discord.js';
 import { increaseNumByPercent, notEmpty, objectValues, randInt, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { sotwConfig, sotwIsActive } from '../../commands/bso/sotw';
-import { collectables } from '../../commands/Minion/collect';
-import { DungeoneeringOptions } from '../../commands/Minion/dung';
 import { bossEvents } from '../../lib/bossEvents';
 import {
 	Emoji,
@@ -31,11 +30,12 @@ import { AddXpParams, KillableMonster } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
 import { getActivityOfUser, getMinigameScore, MinigameName, Minigames } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
+import Skillcapes from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
 import Crafting from '../../lib/skilling/skills/crafting';
+import { DungeoneeringOptions } from '../../lib/skilling/skills/dung/dungData';
 import Farming from '../../lib/skilling/skills/farming';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -56,7 +56,6 @@ import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
-	BlastFurnaceActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
@@ -108,12 +107,15 @@ import {
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
-	toTitleCase,
-	Util
+	toTitleCase
 } from '../../lib/util';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import { calcMaxTripLength, getKC, skillLevel } from '../../lib/util/minionUtils';
+import getOSItem from '../../lib/util/getOSItem';
+import { minionIsBusy } from '../../lib/util/minionIsBusy';
+import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
+import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -131,6 +133,24 @@ const suffixes = new SimpleTable<string>()
 function levelUpSuffix() {
 	return suffixes.roll().item;
 }
+
+interface StaticXPBoost {
+	item: Item;
+	boostPercent: number;
+	skill: SkillsEnum;
+}
+const staticXPBoosts = new Map<SkillsEnum, StaticXPBoost[]>().set(SkillsEnum.Firemaking, [
+	{
+		item: getOSItem('Flame gloves'),
+		boostPercent: 2.5,
+		skill: SkillsEnum.Firemaking
+	},
+	{
+		item: getOSItem('Ring of fire'),
+		boostPercent: 2.5,
+		skill: SkillsEnum.Firemaking
+	}
+]);
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -569,18 +589,6 @@ export default class extends Extendable {
 				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
 
-			case 'BlastFurnace': {
-				const data = currentTask as BlastFurnaceActivityTaskOptions;
-
-				const bar = Smithing.BlastableBars.find(bar => bar.id === data.barID);
-
-				return `${this.minionName} is currently smelting ${data.quantity}x ${
-					bar!.name
-				} at the Blast Furnace. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
-					SkillsEnum.Smithing
-				)}`;
-			}
-
 			case 'OuraniaDeliveryService': {
 				return `${this.minionName} is currently delivering in the Ourania Deliver Service. ${formattedDuration}`;
 			}
@@ -691,20 +699,22 @@ export default class extends Extendable {
 					this.minionName
 				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
-			case 'Easter': {
-				return `${this.minionName} is currently doing the Easter Event. The trip should take ${formatDuration(
+			case 'BaxtorianBathhouses': {
+				return `${
+					this.minionName
+				} is currently heating baths at the Baxtorian Bathhouses. The trip should take ${formatDuration(
 					durationRemaining
 				)}.`;
+			}
+			case 'Easter':
+			case 'BlastFurnace': {
+				throw new Error('Removed');
 			}
 		}
 	}
 
 	getKC(this: KlasaUser, id: number) {
 		return getKC(this, id);
-	}
-
-	getOpenableScore(this: KlasaUser, id: number) {
-		return this.settings.get(UserSettings.OpenableScores)[id] ?? 0;
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
@@ -754,8 +764,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.id);
-		return Boolean(usersTask);
+		return minionIsBusy(this.id);
 	}
 
 	public hasGracefulEquipped(this: User) {
@@ -768,12 +777,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionName(this: User): string {
-		const name = this.settings.get(UserSettings.Minion.Name);
-		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
-
-		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
-
-		return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
+		return minionName(this);
 	}
 
 	public async addXP(this: User, params: AddXpParams): Promise<string> {
@@ -798,16 +802,18 @@ export default class extends Extendable {
 			.map(i => i.item);
 
 		// Build list of all Master capes including combined capes.
-		const allMasterCapes = MasterSkillcapes.map(msc => getSimilarItems(msc.item.id)).flat(Infinity) as number[];
+		const allMasterCapes = Skillcapes.map(i => i.masterCape)
+			.map(msc => getSimilarItems(msc.id))
+			.flat(Infinity) as number[];
 
 		// Get cape object from MasterSkillCapes that matches active skill.
-		const matchingCape = multiplier ? MasterSkillcapes.find(cape => params.skillName === cape.skill) : undefined;
+		const matchingCape = multiplier
+			? Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape
+			: undefined;
 
 		// If the matching cape [or similar] is equipped, isMatchingCape = matched itemId.
 		const isMatchingCape =
-			multiplier && matchingCape
-				? allCapes.find(cape => getSimilarItems(matchingCape.item.id).includes(cape))
-				: false;
+			multiplier && matchingCape ? allCapes.find(cape => getSimilarItems(matchingCape.id).includes(cape)) : false;
 
 		// Get the masterCape itemId for use in text output, and check for non-matching cape.
 		const masterCape = isMatchingCape
@@ -873,6 +879,15 @@ export default class extends Extendable {
 				params.amount = increaseNumByPercent(params.amount, 6);
 			} else {
 				params.amount = increaseNumByPercent(params.amount, firstAgeEquipped);
+			}
+		}
+
+		const boosts = staticXPBoosts.get(params.skillName);
+		if (boosts && !params.artificial) {
+			for (const booster of boosts) {
+				if (this.hasItemEquippedAnywhere(booster.item.id)) {
+					params.amount = increaseNumByPercent(params.amount, booster.boostPercent);
+				}
 			}
 		}
 
@@ -1090,8 +1105,6 @@ export default class extends Extendable {
 				`${Emoji.QuestIcon} **${this.username}'s** minion, ${this.minionName}, just achieved the maximum amount of Quest Points!`
 			);
 		}
-
-		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
 		return this.settings.update(UserSettings.QP, newQP);
 	}
 
@@ -1104,26 +1117,15 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentMonsterScores = this.settings.get(UserSettings.MonsterScores);
 
-		this.log(`had Quantity[${amountToAdd}] KC added to Monster[${monsterID}]`);
-
 		return this.settings.update(
 			UserSettings.MonsterScores,
 			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
 		);
 	}
 
-	public async incrementOpenableScore(this: User, openableID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const scores = this.settings.get(UserSettings.OpenableScores);
-
-		return this.settings.update(UserSettings.OpenableScores, addItemToBank(scores, openableID, amountToAdd));
-	}
-
 	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
 		await this.settings.sync(true);
 		const currentClueScores = this.settings.get(UserSettings.ClueScores);
-
-		this.log(`had Quantity[${amountToAdd}] KC added to Clue[${clueID}]`);
 
 		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
 	}
@@ -1131,8 +1133,6 @@ export default class extends Extendable {
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {
 		await this.settings.sync(true);
 		const currentCreatureScores = this.settings.get(UserSettings.CreatureScores);
-
-		this.log(`had Quantity[${amountToAdd}] Score added to Creature[${creatureID}]`);
 
 		return this.settings.update(
 			UserSettings.CreatureScores,
