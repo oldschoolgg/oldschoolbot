@@ -2743,3 +2743,37 @@ setCustomItem(
 	},
 	10_000
 );
+setCustomItem(
+	63_500,
+	'Drakonfire Shield',
+	'Dragonfire Shield',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	10_000
+);
+setCustomItem(
+	63_501,
+	'Drakon Fang',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+		}
+	},
+	10_000
+);
+setCustomItem(
+	63_502,
+	'Drakon Claw',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
