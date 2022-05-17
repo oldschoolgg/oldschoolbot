@@ -44,17 +44,20 @@ export default class extends Task {
 				bonusXP += Math.floor(xp * (gorajanEquipped / 2));
 				xp += bonusXP;
 			}
-			await u.addXP({
+			const xpStr = await u.addXP({
 				skillName: SkillsEnum.Dungeoneering,
 				amount: xp / 5,
-				duration
+				duration,
+				minimal: true
 			});
 			await u.settings.update(
 				UserSettings.DungeoneeringTokens,
 				u.settings.get(UserSettings.DungeoneeringTokens) + tokens
 			);
-			let rawXPHr = (xp / (duration / Time.Minute)) * 60;
-			rawXPHr = Math.floor(xp / 1000) * 1000;
+			let rawXPHr = (xp / minutes) * 60;
+			rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
+			let rawTokenHr = (tokens / minutes) * 60;
+			rawTokenHr = Math.floor(rawTokenHr / 100) * 100;
 
 			// Allow MBs to roll per floor and not trip
 			// This allows people that wants to farm mbs and not xp to do a lot of small floors
@@ -69,13 +72,16 @@ export default class extends Task {
 				}
 			}
 
-			str += `${gotMysteryBox ? Emoji.MysteryBox : ''} ${u} received: ${xp.toLocaleString()} XP (${toKMB(
+			str += `${gotMysteryBox ? Emoji.MysteryBox : ''} ${u} received: ${xpStr} XP (${toKMB(
 				rawXPHr
-			)}/hr) and <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens (${toKMB(
-				(rawXPHr * 0.1) / 4
+			)}/hr), <:dungeoneeringToken:829004684685606912> ${
+				tokens.toLocaleString()
+			} Dungeoneering tokens (${toKMB(
+				rawTokenHr
 			)}/hr)`;
+
 			if (gorajanEquipped > 0) {
-				str += ` ${bonusXP.toLocaleString()} Bonus XP`;
+				str += `, ${bonusXP.toLocaleString()} Bonus XP from Gorajan`;
 			}
 
 			if (floor >= 5 && roll(Math.floor(gorajanShardChance(user).chance / minutes))) {
