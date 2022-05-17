@@ -2744,16 +2744,39 @@ setCustomItem(
 	10_000
 );
 setCustomItem(
-	63_500,
-	'Drakonfire Shield',
-	'Dragonfire Shield',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		}
-	},
-	10_000
+    63_500,
+    'Drakonfire Shield',
+    'Dragonfire Shield',
+    {
+        customItemData: {
+            cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+        },
+        equipment: {
+            attack_stab: 0,
+            attack_slash: 0,
+            attack_crush: 0,
+            attack_magic: -15,
+            attack_ranged: -25,
+
+            defence_stab: 90,
+            defence_slash: 95,
+            defence_crush: 92,
+            defence_magic: 92,
+            defence_ranged: 30,
+
+            melee_strength: 10,
+            ranged_strength: 0,
+            magic_damage: 0,
+            prayer: 5,
+            slot: EquipmentSlot.Shield,
+            requirements: { 
+				defence: 120 
+			}
+        },
+        highalch: 25_000_000
+    },
+    50_000_000
 );
 setCustomItem(
 	63_501,
