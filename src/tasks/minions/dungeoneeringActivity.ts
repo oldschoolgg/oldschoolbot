@@ -74,9 +74,7 @@ export default class extends Task {
 
 			str += `${gotMysteryBox ? Emoji.MysteryBox : ''} ${u} received: ${xpStr} XP (${toKMB(
 				rawXPHr
-			)}/hr), <:dungeoneeringToken:829004684685606912> ${
-				tokens.toLocaleString()
-			} Dungeoneering tokens (${toKMB(
+			)}/hr), <:dungeoneeringToken:829004684685606912> ${tokens.toLocaleString()} Dungeoneering tokens (${toKMB(
 				rawTokenHr
 			)}/hr)`;
 
