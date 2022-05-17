@@ -54,13 +54,6 @@ export default class extends Extendable {
 		return totalBank;
 	}
 
-	public async removeGP(this: User, amount: number) {
-		await this.settings.sync(true);
-		const currentGP = this.settings.get(UserSettings.GP);
-		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
-		this.settings.update(UserSettings.GP, currentGP - amount);
-	}
-
 	public async addItemsToBank(
 		this: User,
 		{
@@ -135,7 +128,11 @@ export default class extends Extendable {
 			};
 
 			if (items[995]) {
-				await user.removeGP(items[995]);
+				await mahojiUserSettingsUpdate(this.client as KlasaClient, this.id, {
+					GP: {
+						decrement: items[995]
+					}
+				});
 				delete items[995];
 			}
 			if (Object.keys(items).length === 0) return;
@@ -255,20 +252,6 @@ export default class extends Extendable {
 		return {
 			realCost
 		};
-	}
-
-	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {
-		if (sync) await this.settings.sync(true);
-
-		const bank = this.settings.get(UserSettings.Bank);
-		return typeof bank[itemID] !== 'undefined' && bank[itemID] >= amount;
-	}
-
-	public async numberOfItemInBank(this: User, itemID: number, sync = true) {
-		if (sync) await this.settings.sync(true);
-
-		const bank = this.settings.get(UserSettings.Bank);
-		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
 	}
 
 	public owns(this: User, bank: ItemBank | Bank | string | number) {

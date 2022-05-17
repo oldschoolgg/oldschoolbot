@@ -39,8 +39,10 @@ export const askCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		user,
-		options
+		options,
+		interaction
 	}: CommandRunOptions<{ page?: number; format?: BankFormat; search?: string; filter?: string; item?: string }>) => {
+		await interaction.deferReply();
 		const klasaUser = await client.fetchUser(user.id);
 		const baseBank = klasaUser.bank({ withGP: true });
 

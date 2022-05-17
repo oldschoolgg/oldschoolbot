@@ -146,8 +146,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'quantity',
 					description: 'The quantity you want to put in.',
 					required: false,
-					min_value: 1,
-					max_value: 200
+					min_value: 1
 				}
 			]
 		},

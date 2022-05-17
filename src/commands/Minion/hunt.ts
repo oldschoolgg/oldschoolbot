@@ -250,7 +250,7 @@ export default class extends BotCommand {
 		}
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.HunterCost, removeBank);
-		await msg.author.removeItemsFromBank(removeBank.bank);
+		await msg.author.removeItemsFromBank(removeBank);
 
 		let wildyPeak = null;
 		let wildyStr = '';

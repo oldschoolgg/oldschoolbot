@@ -6,6 +6,14 @@ import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
+const autocompleteMonsters = [
+	...effectiveMonsters,
+	{
+		name: 'Tempoross',
+		aliases: ['temp', 'tempoross']
+	}
+];
+
 export const killCommand: OSBMahojiCommand = {
 	name: 'k',
 	description: 'Send your minion to kill things.',
@@ -22,7 +30,7 @@ export const killCommand: OSBMahojiCommand = {
 			description: 'The thing you want to kill.',
 			required: true,
 			autocomplete: async value => {
-				return effectiveMonsters
+				return autocompleteMonsters
 					.filter(m =>
 						!value
 							? true

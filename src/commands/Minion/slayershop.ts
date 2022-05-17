@@ -96,7 +96,7 @@ export default class extends BotCommand {
 
 		await msg.author.settings.sync(true);
 
-		if (buyable.haveOne && (await msg.author.numberOfItemInBank(buyable.item!)) >= 1) {
+		if (buyable.haveOne && msg.author.bank().amount(buyable.item!) >= 1) {
 			return msg.channel.send(`You can only have 1 ${buyable.name}`);
 		}
 
