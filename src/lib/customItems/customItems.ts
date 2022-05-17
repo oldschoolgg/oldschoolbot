@@ -2800,3 +2800,14 @@ setCustomItem(
 	},
 	10_000
 );
+setCustomItem(
+	63_503,
+	'Drakon Bones',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);

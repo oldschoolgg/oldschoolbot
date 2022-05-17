@@ -20,6 +20,61 @@ function neemCost(extraCost?: Bank) {
 	};
 }
 
+const Drakon: CustomMonster = {
+    id: 345_232,
+    baseMonster: Monsters.BlackDragon,
+    name: 'Drakon',
+    aliases: ['drakon', 'drak'],
+    timeToFinish: Time.Minute * 15,
+    hp: 1000,
+    table: new LootTable()
+        .every('Drakon bones')
+        .tertiary(30, 'Clue scroll (grandmaster)')
+		.tertiary(50, 'Drakon Claw')
+		.tertiary(25, 'Drakon Fang')
+		.tertiary(25, RareDropTable)
+        .add('Black Dragonhide', [15, 250])
+        .add('Blue Dragonhide', [15, 275])
+        .add('Red Dragonhide', [15, 300])
+        .add('Battlestaff', [10, 50])
+        .add('Death rune', [10, 300])
+		.add('Blood rune', [10, 250])
+		.add('Soul rune', [10, 400])
+        .add('Mahogany Plank', [10, 200])
+		.add('Bronze Bar', [15, 200])
+		.add('Iron Bar', [15, 200])
+		.add('Iron Ore', [15, 200])
+		.add('Rune Javelin', [15, 200])
+        .add('Elder Plank', [10, 150])
+        .add('Dragon Dart Tip', [12, 325])
+        .add('Dragon Arrowtips', [12, 400])
+        .add('Dragon Bolts (Unf)', [10, 400])
+		.add(GrimyHerbTable),
+    notifyDrops: resolveItems([]),
+    difficultyRating: 5,
+    itemsRequired: resolveItems([]),
+    qpRequired: 250,
+    healAmountNeeded: 20 * 50,
+    attackStyleToUse: GearStat.AttackStab,
+    attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
+    itemInBankBoosts: [
+        {
+            [itemID('Drakonfire Shield')]: 10,
+            [itemID('TzKal cape')]: 6,
+            [itemID('Infernal cape')]: 2,
+        }
+    ],
+    itemCost: {
+        itemCost: new Bank().add('Prayer potion(4)', 1),
+        qtyPerKill: 0.2
+    },
+    pohBoosts: {
+        pool: {
+            'Ancient rejuvenation pool': 3
+        }
+    }
+};
+
 const FrostDragon: CustomMonster = {
 	id: 345_232,
 	baseMonster: Monsters.LavaDragon,
@@ -323,6 +378,7 @@ const GanodermicBeast: CustomMonster = {
 };
 
 export const resourceDungeonMonsters = {
+	Drakon,
 	FrostDragon,
 	RumPumpedCrab,
 	FungalRodent,
