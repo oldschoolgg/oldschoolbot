@@ -952,7 +952,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.mahogany_homes) {
 			if (options.mahogany_homes.buy) {
-				return mahoganyHomesBuyCommand(klasaUser, options.mahogany_homes.buy.name, options.mahogany_homes.buy.quantity );
+				return mahoganyHomesBuyCommand(
+					klasaUser,
+					options.mahogany_homes.buy.name,
+					options.mahogany_homes.buy.quantity
+				);
 			}
 			if (options.mahogany_homes.start) {
 				return mahoganyHomesBuildCommand(klasaUser, channelID);
