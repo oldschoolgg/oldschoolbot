@@ -114,8 +114,6 @@ export default class extends BotCommand {
 			type: 'Alching'
 		});
 
-		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);
-
 		const response = `${msg.author.minionName} is now alching ${quantity}x ${
 			osItem.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;

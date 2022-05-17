@@ -1,4 +1,5 @@
 import { bold } from '@discordjs/builders';
+import { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
@@ -24,11 +25,14 @@ import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
+import { CLIENT_ID } from '../config';
+import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
 import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
+import { prisma } from './settings/prisma';
 import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
@@ -269,8 +273,11 @@ export function sha256Hash(x: string) {
 	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }
 
-export function countSkillsAtleast99(user: KlasaUser) {
-	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>;
+export function countSkillsAtleast99(user: KlasaUser | User) {
+	const skills =
+		user instanceof KlasaUser
+			? ((user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>)
+			: getSkillsOfMahojiUser(user);
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
@@ -715,4 +722,33 @@ export function exponentialPercentScale(percent: number, decay = 0.021) {
 
 export function discrimName(user: KlasaUser | APIUser) {
 	return `${user.username}#${user.discriminator}`;
+}
+
+export function isValidSkill(skill: string): skill is SkillsEnum {
+	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
+}
+
+export async function addToGPTaxBalance(userID: bigint | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			}
+		}),
+		prisma.user.update({
+			where: {
+				id: userID.toString()
+			},
+			data: {
+				total_gp_traded: {
+					increment: amount
+				}
+			}
+		})
+	]);
 }

@@ -1,4 +1,3 @@
-import { resolveNameBank } from '../../util';
 import { Buyable } from './buyables';
 
 export const canifisClothes: Buyable[] = [
@@ -119,9 +118,6 @@ export const canifisClothes: Buyable[] = [
 	},
 	{
 		name: 'Purple robe bottoms',
-		outputItems: resolveNameBank({
-			'Purple robe bottoms': 1
-		}),
 		gpCost: 100_000,
 		qpRequired: 15
 	},

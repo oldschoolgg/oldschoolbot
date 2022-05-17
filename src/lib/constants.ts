@@ -142,11 +142,11 @@ export const enum Emoji {
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
 
-export const enum ReactionEmoji {
-	Join = '705971600956194907',
-	Stop = '705972260950769669',
-	Start = '705973302719414329'
-}
+export const ReactionEmoji = {
+	Join: DISCORD_SETTINGS.Emojis?.ReactionJoin ?? '705971600956194907',
+	Stop: DISCORD_SETTINGS.Emojis?.ReactionStop ?? '705972260950769669',
+	Start: DISCORD_SETTINGS.Emojis?.ReactionStart ?? '705973302719414329'
+};
 
 export const enum Image {
 	DiceBag = 'https://i.imgur.com/sySQkSX.png'
@@ -212,7 +212,6 @@ export const enum Tasks {
 	Raids = 'raidsActivity',
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
-	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	DarkAltar = 'darkAltarActivity',
@@ -228,7 +227,7 @@ export const enum Tasks {
 	BirthdayEvent = 'birthdayEventActivity',
 	TokkulShop = 'tokkulShopActivity',
 	Nex = 'nexActivity',
-	Easter = 'easterActivity'
+	REMOVED = '__REMOVED__'
 }
 
 export enum ActivityGroup {

@@ -1,17 +1,15 @@
-import { randInt } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank, LootTable } from 'oldschooljs';
 
 import { client } from '../..';
-import { Events } from '../../lib/constants';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
-import { itemID, stringMatches, truncateString, updateGPTrackSetting } from '../../lib/util';
-import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import { truncateString } from '../../lib/util';
+import {
+	abstractedOpenCommand,
+	abstractedOpenUntilCommand,
+	OpenUntilItems
+} from '../lib/abstracted_commands/openCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
-
-const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
 export const openCommand: OSBMahojiCommand = {
 	name: 'open',
@@ -36,7 +34,8 @@ export const openCommand: OSBMahojiCommand = {
 							val.toLowerCase().includes(value.toLowerCase())
 						);
 					})
-					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }));
+					.map(i => ({ name: `${i[0].name} (${i[1]}x Owned)`, value: i[0].name.toLowerCase() }))
+					.concat([{ name: 'All (Open Everything)', value: 'all' }]);
 			}
 		},
 		{
@@ -46,9 +45,26 @@ export const openCommand: OSBMahojiCommand = {
 			required: false,
 			min_value: 1,
 			max_value: 100_000
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'open_until',
+			description: 'Keep opening items until you get this item.',
+			required: false,
+			autocomplete: async (value: string) => {
+				if (!value) return OpenUntilItems.map(i => ({ name: i.name, value: i.name }));
+				return OpenUntilItems.filter(i => i.name.toLowerCase().includes(value.toLowerCase())).map(i => ({
+					name: i.name,
+					value: i.name
+				}));
+			}
 		}
 	],
-	run: async ({ userID, options, interaction }: CommandRunOptions<{ name?: string; quantity?: number }>) => {
+	run: async ({
+		userID,
+		options,
+		interaction
+	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string }>) => {
 		await interaction.deferReply();
 		const user = await client.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -61,74 +77,12 @@ export const openCommand: OSBMahojiCommand = {
 				1950
 			)}.`;
 		}
-		const name = options.name.replace(regex, '$1');
-		const openable = allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name)));
-		if (!openable) return "That's not a valid item.";
-
-		const { openedItem, output } = openable;
-		const bank = user.bank();
-		const quantity = options.quantity ?? 1;
-		const cost = new Bank().add(openedItem.id, quantity);
-		if (!bank.has(cost)) return `You don't have ${cost}.`;
-
-		const previousScore = user.getOpenableScore(openedItem.id);
-
-		await user.removeItemsFromBank(cost);
-		await user.incrementOpenableScore(openedItem.id, quantity);
-		const loot =
-			output instanceof LootTable
-				? { bank: output.roll(quantity) }
-				: await output({ user, self: openable, quantity, mahojiUser });
-		const { previousCL } = await user.addItemsToBank({
-			items: loot.bank,
-			collectionLog: true,
-			filterLoot: false
-		});
-		const image = await client.tasks.get('bankImage')!.generateBankImage(
-			loot.bank,
-			`Loot from ${quantity}x ${openedItem.name}`,
-			true,
-			{
-				showNewCL: 'showNewCL'
-			},
-			user,
-			previousCL
-		);
-
-		if (loot.bank.has('Coins')) {
-			await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceOpen, loot.bank.amount('Coins'));
+		if (options.open_until) {
+			return abstractedOpenUntilCommand(interaction, user, mahojiUser, options.name, options.open_until);
 		}
-
-		const nthOpenable = formatOrdinal(previousScore + randInt(1, quantity));
-
-		if (loot.bank.has("Lil' creator")) {
-			client.emit(
-				Events.ServerNotification,
-				`<:lil_creator:798221383951319111> **${user.username}'s** minion, ${
-					user.minionName
-				}, just received a Lil' creator! They've done ${await user.getMinigameScore(
-					'soul_wars'
-				)} Soul wars games, and this is their ${nthOpenable} Spoils of war crate.`
-			);
+		if (options.name.toLowerCase() === 'all') {
+			return abstractedOpenCommand(interaction, user, mahojiUser, ['all'], 'auto');
 		}
-
-		if (openedItem.id === itemID('Bag full of gems') && loot.bank.has('Uncut onyx')) {
-			client.emit(
-				Events.ServerNotification,
-				`${user} just received an Uncut Onyx from their ${nthOpenable} Bag full of gems!`
-			);
-		}
-
-		return {
-			attachments: [
-				{
-					fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`,
-					buffer: image.image!
-				}
-			],
-			content:
-				loot.message ??
-				`You have opened the ${openedItem.name} ${user.getOpenableScore(openedItem.id).toLocaleString()} times.`
-		};
+		return abstractedOpenCommand(interaction, user, mahojiUser, [options.name], options.quantity);
 	}
 };

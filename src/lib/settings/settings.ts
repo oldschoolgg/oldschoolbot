@@ -120,7 +120,8 @@ export async function runMahojiCommand({
 		guildID: msg.guild ? BigInt(msg.guild.id) : (null as any),
 		channelID: BigInt(msg.channel.id),
 		options,
-		user: msg.author as any, // kinda dirty
+		// TODO: Make this typesafe
+		user: msg.author as any,
 		member: msg.member as any,
 		client: mahojiClient,
 		interaction: null as any
