@@ -1079,6 +1079,22 @@ const dragonBoneCreatables: Createable[] = [
 		})
 	},
 	{
+        name: 'Drakonfire Shield',
+        inputItems: resolveNameBank({
+            'Dragonfire Shield': 1,
+            'Drakon Claw': 5,
+            'Drakon Fang': 1,
+			'Infernal Core': 1,
+            "Dragon's Fury": 100
+        }),
+        outputItems: resolveNameBank({
+            'Drakonfire Shield': 1
+        }),
+        requiredSkills: {
+            defence: 120,
+        }
+    },
+	{
 		name: 'Divine water',
 		inputItems: (user: KlasaUser) => {
 			const userBank = user.bank();
