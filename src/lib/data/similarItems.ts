@@ -182,7 +182,7 @@ const source: [string, (string | number)[]][] = [
 	],
 	['Guthix cape', ['Saradomin cape', 'Zamorak cape', 'Guthix max cape', 'Saradomin max cape', 'Zamorak max cape']],
 	['Dragonfire ward', [22_003]],
-	['Dragonfire shield', [11_284]],
+	['Dragonfire shield', [11_284, 'Drakonfire Shield']],
 	['Ancient wyvern shield', [21_634]],
 	['Avernic defender', ['Avernic defender (l)']],
 	['Void melee helm', ['Void melee helm (l)']],
