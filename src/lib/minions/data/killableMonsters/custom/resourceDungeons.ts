@@ -57,7 +57,13 @@ const Drakon: CustomMonster = {
     healAmountNeeded: 20 * 50,
     attackStyleToUse: GearStat.AttackStab,
     attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
-    itemInBankBoosts: [
+    levelRequirements: {
+		dungeoneering: 99,
+		attack: 120,
+		strength: 120,
+		defence: 120,
+	},
+	itemInBankBoosts: [
 		{
 			[itemID('Drakonfire Shield')]: 10,
 		},
