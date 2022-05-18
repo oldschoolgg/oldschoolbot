@@ -2813,3 +2813,120 @@ setCustomItem(
 	},
 	10_000
 );
+setCustomItem(
+	63_504,
+	'Dragonbane Fragment',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+		}
+	},
+	10_000
+);
+setCustomItem(
+    63_500,
+    'Dragonbane Glaive',
+    'Dragonbane Glaive',
+    {
+        customItemData: {
+            cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+        },
+        equipment: {
+            attack_stab: 95,
+            attack_slash: 95,
+            attack_crush: 85,
+            attack_magic: 0,
+            attack_ranged: 0,
+
+            defence_stab: 0,
+            defence_slash: 0,
+            defence_crush: 0,
+            defence_magic: 0,
+            defence_ranged: 0,
+
+            melee_strength: 90,
+            ranged_strength: 0,
+            magic_damage: 0,
+            prayer: 0,
+            slot: EquipmentSlot.Shield,
+            requirements: { 
+				attack: 120,
+				strength: 120
+			}
+        },
+        highalch: 25_000_000
+    },
+    50_000_000
+);
+setCustomItem(
+    63_500,
+    'Dragonbane Ballista',
+    'Dragonbane Ballista',
+    {
+        customItemData: {
+            cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+        },
+        equipment: {
+            attack_stab: 0,
+            attack_slash: 0,
+            attack_crush: 0,
+            attack_magic: 0,
+            attack_ranged: 135,
+
+            defence_stab: 0,
+            defence_slash: 0,
+            defence_crush: 0,
+            defence_magic: 0,
+            defence_ranged: 0,
+
+            melee_strength: 0,
+            ranged_strength: 10,
+            magic_damage: 0,
+            prayer: 0,
+            slot: EquipmentSlot.Shield,
+            requirements: { 
+				ranged: 120 ,
+			}
+        },
+        highalch: 25_000_000
+    },
+    50_000_000
+);
+setCustomItem(
+    63_500,
+    'Dragonbane Staff',
+    'Dragonbane Staff',
+    {
+        customItemData: {
+            cantDropFromMysteryBoxes: true,
+            isSuperUntradeable: true
+        },
+        equipment: {
+            attack_stab: 0,
+            attack_slash: 0,
+            attack_crush: 0,
+            attack_magic: 150,
+            attack_ranged: 0,
+
+            defence_stab: 0,
+            defence_slash: 0,
+            defence_crush: 0,
+            defence_magic: 0,
+            defence_ranged: 0,
+
+            melee_strength: 0,
+            ranged_strength: 0,
+            magic_damage: 5,
+            prayer: 0,
+            slot: EquipmentSlot.Shield,
+            requirements: { 
+				magic: 120 ,
+			}
+        },
+        highalch: 25_000_000
+    },
+    50_000_000
+);
