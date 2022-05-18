@@ -1,6 +1,5 @@
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
 import { superCompostables } from '../../lib/data/filterables';
 import { ContractOption, ContractOptions } from '../../lib/minions/farming/types';
@@ -182,7 +181,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		compost_bin?: { plant_name: string; quantity?: number };
 		contract?: { input?: ContractOption };
 	}>) => {
-		const klasaUser = await client.fetchUser(userID);
+		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const { patchesDetailed } = await getFarmingInfo(userID);
 
@@ -191,7 +190,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		}
 		if (options.always_pay) {
 			const isEnabled = klasaUser.settings.get(UserSettings.Minion.DefaultPay);
-			await mahojiUserSettingsUpdate(client, userID, {
+			await mahojiUserSettingsUpdate(userID, {
 				minion_defaultPay: !isEnabled
 			});
 			return `'Always pay farmers' is now ${!isEnabled ? 'enabled' : 'disabled'}.`;
@@ -199,7 +198,7 @@ export const farmingCommand: OSBMahojiCommand = {
 		if (options.default_compost) {
 			const tier = CompostTiers.find(i => stringMatches(i.name, options.default_compost!.compost));
 			if (!tier) return 'Invalid tier.';
-			await mahojiUserSettingsUpdate(client, userID, {
+			await mahojiUserSettingsUpdate(userID, {
 				minion_defaultCompostToUse: tier.name
 			});
 			return `You will now use ${tier.item.name} by default.`;

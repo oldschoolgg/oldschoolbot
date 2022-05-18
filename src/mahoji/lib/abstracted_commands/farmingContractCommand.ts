@@ -1,7 +1,6 @@
 import { User } from '@prisma/client';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { client } from '../../..';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
@@ -74,7 +73,7 @@ export async function faringContractCommand(user: User, input?: ContractOption):
 				plantTier,
 				contractsCompleted: currentContract.contractsCompleted
 			};
-			await mahojiUserSettingsUpdate(client, user.id, {
+			await mahojiUserSettingsUpdate(user.id, {
 				minion_farmingContract: farmingContractUpdate as any
 			});
 			return janeImage(
@@ -112,7 +111,7 @@ export async function faringContractCommand(user: User, input?: ContractOption):
 		contractsCompleted: currentContract.contractsCompleted
 	};
 
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		minion_farmingContract: farmingContractUpdate as any
 	});
 

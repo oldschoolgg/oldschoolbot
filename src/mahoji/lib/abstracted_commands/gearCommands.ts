@@ -93,7 +93,7 @@ export async function gearPresetEquipCommand(user: KlasaUser, gearSetup: string,
 
 	await user.removeItemsFromBank(toRemove.bank);
 
-	const { newUser } = await mahojiUserSettingsUpdate(user.client, user.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 		[`gear_${gearSetup}`]: newGear
 	});
 	const updatedGear = getUserGear(newUser)[gearSetup];
@@ -206,7 +206,7 @@ export async function gearEquipCommand(args: {
 
 		const loot = new Bank().add(equippedInThisSlot.item, equippedInThisSlot.quantity);
 		await klasaUser.addItemsToBank({ items: loot, collectionLog: false });
-		await mahojiUserSettingsUpdate(klasaUser.client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			[dbKey]: newGear
 		});
 		return gearEquipCommand({
@@ -230,7 +230,7 @@ export async function gearEquipCommand(args: {
 		quantity
 	};
 
-	const { newUser } = await mahojiUserSettingsUpdate(klasaUser.client, user.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 		[dbKey]: newGear
 	});
 	const image = await generateGearImage(
@@ -287,7 +287,7 @@ export async function gearUnequipCommand(
 		},
 		collectionLog: false
 	});
-	await mahojiUserSettingsUpdate(klasaUser.client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		[`gear_${gearSetup}`]: newGear
 	});
 
@@ -337,7 +337,7 @@ export async function autoEquipCommand(
 
 	await user.removeItemsFromBank(toRemoveFromBank);
 	await user.addItemsToBank({ items: toRemoveFromGear, collectionLog: false });
-	await mahojiUserSettingsUpdate(user.client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		[`gear_${gearSetup}`]: gearToEquip
 	});
 

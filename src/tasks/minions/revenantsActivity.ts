@@ -40,7 +40,6 @@ export default class extends Task {
 			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				`${user} ${
@@ -95,7 +94,6 @@ export default class extends Task {
 			);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,

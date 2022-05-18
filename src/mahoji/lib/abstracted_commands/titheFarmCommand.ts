@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../../..';
 import { Emoji } from '../../../lib/constants';
 import TitheFarmBuyables from '../../../lib/data/buyables/titheFarmBuyables';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
@@ -94,7 +93,7 @@ export async function titheFarmShopCommand(interaction: SlashCommandInteraction,
 	let purchaseMsg = `${itemString} for ${titheFarmPointsCost} Tithe Farm points`;
 
 	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		stats_titheFarmPoints: {
 			decrement: titheFarmPointsCost
 		}

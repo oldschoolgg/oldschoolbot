@@ -512,7 +512,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	async buy(msg: KlasaMessage) {
 		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
 
-		await mahojiUserSettingsUpdate(this.client, msg.author.id, {
+		await mahojiUserSettingsUpdate(msg.author.id, {
 			minion_hasBought: true,
 			minion_bought_date: new Date()
 		});

@@ -281,8 +281,8 @@ export function countSkillsAtleast99(user: KlasaUser | User) {
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
-export function getSupportGuild(client: Client): Guild | null {
-	const guild = client.guilds.cache.get(SupportServer);
+export function getSupportGuild(): Guild | null {
+	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;
 }

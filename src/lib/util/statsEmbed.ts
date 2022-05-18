@@ -2,7 +2,6 @@ import { MessageEmbed } from 'discord.js';
 import { Player } from 'oldschooljs';
 import { CluesScore, SkillScore, SkillsScore } from 'oldschooljs/dist/meta/types';
 
-import { client } from '../..';
 import { skillEmoji } from '../constants';
 import { toTitleCase } from '../util';
 
@@ -28,7 +27,9 @@ export function statsEmbed({
 
 	const embed = new MessageEmbed()
 		.setColor(color)
-		.setTitle(`${client._badgeCache.get(username.toLowerCase()) || ''} ${toTitleCase(username)}${postfix ?? ''}`)
+		.setTitle(
+			`${globalClient._badgeCache.get(username.toLowerCase()) || ''} ${toTitleCase(username)}${postfix ?? ''}`
+		)
 		.addField(
 			'\u200b',
 			['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']

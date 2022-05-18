@@ -4,7 +4,6 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../../..';
 import { Events } from '../../../lib/constants';
 import { maxOtherStats } from '../../../lib/gear';
 import { countUsersWithItemInCl } from '../../../lib/settings/prisma';
@@ -103,7 +102,7 @@ export async function barbAssaultLevelCommand(user: User) {
 		if (points < level.cost) {
 			return `You don't have enough points to upgrade to level ${level.level}. You need ${level.cost} points.`;
 		}
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			honour_level: { increment: 1 },
 			honour_points: { decrement: level.cost }
 		});
@@ -146,7 +145,7 @@ export async function barbAssaultBuyCommand(
 			cost * quantity
 		).toLocaleString()} honour points?`
 	);
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		honour_points: {
 			decrement: cost * quantity
 		}
@@ -183,7 +182,7 @@ export async function barbAssaultGambleCommand(
 			cost * quantity
 		).toLocaleString()} honour points?`
 	);
-	const { newUser } = await mahojiUserSettingsUpdate(client, user.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 		honour_points: {
 			decrement: cost * quantity
 		},
@@ -195,7 +194,7 @@ export async function barbAssaultGambleCommand(
 	if (loot.has('Pet penance queen')) {
 		const amount = await countUsersWithItemInCl(itemID('Pet penance queen'), false);
 
-		client.emit(
+		globalClient.emit(
 			Events.ServerNotification,
 			`<:Pet_penance_queen:324127377649303553> **${klasaUser.username}'s** minion, ${
 				klasaUser.minionName

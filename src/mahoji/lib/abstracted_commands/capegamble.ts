@@ -2,7 +2,6 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../../..';
 import { Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { roll } from '../../../lib/util';
@@ -40,7 +39,7 @@ export async function capeGambleCommand(user: KlasaUser, type: string, interacti
 
 	if (roll(chance)) {
 		await user.addItemsToBank({ items: new Bank().add(pet.id), collectionLog: true });
-		client.emit(
+		globalClient.emit(
 			Events.ServerNotification,
 			`**${user.username}'s** just received their ${formatOrdinal(user.cl().amount(pet.id))} ${
 				pet.name

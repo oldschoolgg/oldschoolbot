@@ -1,7 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord-api-types';
 import { CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { GearSetupType, GearStat } from '../../lib/gear';
 import { gearEquipCommand, gearUnequipCommand } from '../lib/abstracted_commands/gearCommands';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
@@ -79,7 +78,7 @@ export const gearCommand: OSBMahojiCommand = {
 		equip?: { gear_setup: GearSetupType; item?: string; preset?: string; quantity?: number; auto?: string };
 		unequip?: { gear_setup: GearSetupType; item?: string; all?: boolean };
 	}>) => {
-		const klasaUser = await client.fetchUser(userID);
+		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (options.equip) {
 			return gearEquipCommand({

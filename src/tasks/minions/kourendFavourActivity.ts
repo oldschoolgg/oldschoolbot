@@ -65,7 +65,6 @@ export default class extends Task {
 		}${loot ? ` You also recieved ${loot}.` : ''}`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,

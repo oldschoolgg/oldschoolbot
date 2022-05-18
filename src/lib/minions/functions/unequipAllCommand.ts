@@ -1,4 +1,4 @@
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
@@ -23,7 +23,7 @@ export async function unEquipAllCommand(user: KlasaUser, gearType: GearSetupType
 		return `You have no items in your ${toTitleCase(gearType)} setup.`;
 	}
 
-	await mahojiUserSettingsUpdate(user.client as KlasaClient, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		[`gear_${gearType}`]: defaultGear
 	});
 

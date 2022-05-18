@@ -5,7 +5,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { client } from '../../..';
 import { SILENT_ERROR } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -110,7 +109,7 @@ export async function luckyPickCommand(
 		);
 	}
 
-	const channel = client.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const sentMessage = await channel.send({
 		content: 'Pick *one* button!',
@@ -126,7 +125,11 @@ export async function luckyPickCommand(
 	}) => {
 		let amountReceived = button.mod(amount);
 		await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
-		await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceLuckyPick, amountReceived - amount);
+		await updateGPTrackSetting(
+			globalClient,
+			ClientSettings.EconomyStats.GPSourceLuckyPick,
+			amountReceived - amount
+		);
 		await updateGPTrackSetting(klasaUser, UserSettings.GPLuckyPick, amountReceived - amount);
 
 		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) });
