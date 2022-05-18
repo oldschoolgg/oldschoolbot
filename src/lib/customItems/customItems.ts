@@ -2898,7 +2898,7 @@ setCustomItem(
 setCustomItem(
     63_507,
     'Dragonbane Staff',
-    'Fire Staff',
+    'Staff of Fire',
     {
         customItemData: {
             cantDropFromMysteryBoxes: true,
