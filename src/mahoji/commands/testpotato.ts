@@ -317,6 +317,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'drakhax',
+					description: 'Gives you everything needed for Drakons.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'badnexgear',
 					description: 'Gives you bad nex gear ahahahahaha'
 				},
@@ -377,6 +382,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setxp?: { skill: string; xp: number };
 				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
 				nexhax?: {};
+				drakhax?: {};
 				badnexgear?: {};
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
@@ -469,6 +475,31 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						GP: mahojiUser.GP + BigInt(10_000_000)
 					});
 					return 'Gave you range gear, gp, gear and stats for nex.';
+					}
+				if (options.drakhax) {
+					const gear = new Gear({
+						[EquipmentSlot.Weapon]: 'Drygore Rapier',
+						[EquipmentSlot.Shield]: 'Offhand Drygore Rapier',
+						[EquipmentSlot.Ammo]: 'Dwarven Blessing',
+						[EquipmentSlot.Body]: 'Gorajan Warrior Top',
+						[EquipmentSlot.Legs]: 'Gorajan Warrior Legs',
+						[EquipmentSlot.Feet]: 'Gorajan Warrior Boots',
+						[EquipmentSlot.Cape]: 'TzKal Cape',
+						[EquipmentSlot.Neck]: "Brawler's Hook Necklace",
+						[EquipmentSlot.Hands]: 'Gorajan Warrior Gloves ',
+						[EquipmentSlot.Head]: 'Gorajan Warrior Helmet',
+						[EquipmentSlot.Ring]: 'Ignis Ring (i)'
+					});
+					await mahojiUserSettingsUpdate(client, user.id, {
+						gear_melee: gear.raw() as Prisma.InputJsonObject,
+						skills_defence: convertLVLtoXP(120),
+						skills_attack: convertLVLtoXP(120),
+						skills_strength: convertLVLtoXP(120),
+						skills_dungeoneering: convertLVLtoXP(99),
+						bank: user.bank().add(nexSupplies).bank,
+						GP: mahojiUser.GP + BigInt(10_000_000)
+					});
+					return 'Gave you melee gear, gp, gear and stats for drakons.';
 				}
 				if (options.badnexgear) {
 					const gear = new Gear({
