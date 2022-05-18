@@ -67,6 +67,11 @@ const Drakon: CustomMonster = {
 		{
 			[itemID('Drakonfire Shield')]: 10,
 		},
+		{
+			[itemID('Dragonbane Glaive')]: 10,
+			[itemID('Dragonbane Ballista')]: 10,
+			[itemID('Dragonbane Staff')]: 10,
+		},
         {
             [itemID('TzKal cape')]: 6,
             [itemID('Infernal cape')]: 2,
@@ -122,6 +127,14 @@ const FrostDragon: CustomMonster = {
 		prayer: 70
 	},
 	itemInBankBoosts: [
+		{
+			[itemID('Dragonbane Glaive')]: 10,
+			[itemID('Dragonbane Ballista')]: 10,
+			[itemID('Dragonbane Staff')]: 10,
+		},
+		{
+			[itemID('Drakonfire Shield')]: 10,
+		},
 		{
 			[itemID('TzKal cape')]: 8,
 			[itemID('Infernal cape')]: 4,

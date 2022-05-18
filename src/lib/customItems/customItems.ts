@@ -2850,7 +2850,7 @@ setCustomItem(
             ranged_strength: 0,
             magic_damage: 0,
             prayer: 0,
-            slot: EquipmentSlot.Shield,
+            slot: EquipmentSlot.Weapon,
             requirements: { 
 				attack: 120,
 				strength: 120
@@ -2886,7 +2886,7 @@ setCustomItem(
             ranged_strength: 10,
             magic_damage: 0,
             prayer: 0,
-            slot: EquipmentSlot.Shield,
+            slot: EquipmentSlot.Weapon,
             requirements: { 
 				ranged: 120 ,
 			}
@@ -2921,7 +2921,7 @@ setCustomItem(
             ranged_strength: 0,
             magic_damage: 5,
             prayer: 0,
-            slot: EquipmentSlot.Shield,
+            slot: EquipmentSlot.Weapon,
             requirements: { 
 				magic: 120 ,
 			}

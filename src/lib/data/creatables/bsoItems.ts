@@ -1099,6 +1099,56 @@ const dragonBoneCreatables: Createable[] = [
         }
     },
 	{
+        name: 'Dragonbane Fragment',
+        inputItems: resolveNameBank({
+            'Ignecarus Scale': 100,
+            'Ignecarus Dragonclaw': 5,
+            'Drakon Fang': 5,
+			'Drakon Claw': 5,
+            "Dragon's Fury": 10
+        }),
+        outputItems: resolveNameBank({
+            'Dragonbane Fragment': 1
+        }),
+        requiredSkills: {
+			crafting: 120,
+			smithing: 120
+        }
+    },
+	{
+        name: 'Dragonbane Glaive',
+        inputItems: resolveNameBank({
+            'Dragon Hunter Lance': 1,
+			'Crystal Halberd': 1,
+			'Dragonbane Fragment': 1
+        }),
+        outputItems: resolveNameBank({
+            'Dragonbane Glaive': 1
+        }),
+    },
+	{
+        name: 'Dragonbane Ballista',
+        inputItems: resolveNameBank({
+            'Dragon Hunter Crossbow': 1,
+			'Heavy Ballista': 1,
+			'Dragonbane Fragment': 1
+        }),
+        outputItems: resolveNameBank({
+            'Dragonbane Ballista': 1
+        }),
+    },
+	{
+        name: 'Dragonbane Staff',
+        inputItems: resolveNameBank({
+            'Dragon Hunter Lance': 1,
+			'Nightmare Staff': 1,
+			'Dragonbane Fragment': 1
+        }),
+        outputItems: resolveNameBank({
+            'Dragonbane Staff': 1
+        }),
+    },
+	{
 		name: 'Divine water',
 		inputItems: (user: KlasaUser) => {
 			const userBank = user.bank();
