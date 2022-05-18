@@ -99,6 +99,9 @@ export default class extends BotCommand {
 				if (gear.hasEquipped('Dragonfire shield')) {
 					baseDeathChance -= 33;
 				}
+				if (gear.hasEquipped('Drakonfire shield')) {
+					baseDeathChance -= 30;
+				}
 				baseDeathChance -= (100 - preCalcedDeathChance) / 10;
 				if (solo) {
 					baseDeathChance *= 2.5;
