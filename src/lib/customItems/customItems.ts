@@ -2827,7 +2827,7 @@ setCustomItem(
 setCustomItem(
     63_505,
     'Dragonbane Glaive',
-    'Dragonbane Glaive',
+    'Dragon Spear',
     {
         customItemData: {
             cantDropFromMysteryBoxes: true,
@@ -2863,7 +2863,7 @@ setCustomItem(
 setCustomItem(
     63_506,
     'Dragonbane Ballista',
-    'Dragonbane Ballista',
+    'Heavy Ballista',
     {
         customItemData: {
             cantDropFromMysteryBoxes: true,
@@ -2898,7 +2898,7 @@ setCustomItem(
 setCustomItem(
     63_507,
     'Dragonbane Staff',
-    'Dragonbane Staff',
+    'Fire Staff',
     {
         customItemData: {
             cantDropFromMysteryBoxes: true,
