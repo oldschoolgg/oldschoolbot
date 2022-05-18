@@ -92,7 +92,6 @@ export const equippedItemOption = (): CommandOption => ({
 				value: item.name
 			});
 		}
-		console.log(results);
 		return results;
 	}
 });

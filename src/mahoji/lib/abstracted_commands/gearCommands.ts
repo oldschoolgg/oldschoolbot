@@ -7,8 +7,9 @@ import { Bank } from 'oldschooljs';
 import { EquipmentSlot, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../../lib/constants';
-import { defaultGear, GearSetup, globalPresets } from '../../../lib/gear';
+import { defaultGear, GearSetup, GearSetupType, GearStat, globalPresets } from '../../../lib/gear';
 import { generateGearImage } from '../../../lib/gear/functions/generateGearImage';
+import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../../lib/settings/prisma';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -119,14 +120,18 @@ export async function gearEquipCommand(args: {
 	preset: string | undefined;
 	quantity: number | undefined;
 	unEquippedItem: Bank | undefined;
+	auto: string | undefined;
 }): CommandResponse {
-	const { interaction, user, klasaUser, setup, item, preset, quantity: _quantity } = args;
+	const { interaction, user, klasaUser, setup, item, preset, quantity: _quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	if (minionIsBusy(user.id)) {
 		return `${minionName(user)} is currently out on a trip, so you can't change their gear!`;
 	}
 	if (preset) {
 		return gearPresetEquipCommand(klasaUser, setup, preset);
+	}
+	if (auto) {
+		return autoEquipCommand(klasaUser, setup, auto);
 	}
 	const itemToEquip = getItem(item);
 	if (!itemToEquip) return "You didn't supply the name of an item or preset you want to equip.";
@@ -205,7 +210,8 @@ export async function gearEquipCommand(args: {
 			item,
 			preset,
 			quantity,
-			unEquippedItem: loot
+			unEquippedItem: loot,
+			auto: undefined
 		});
 	}
 
@@ -288,6 +294,55 @@ export async function gearUnequipCommand(
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,
+		attachments: [{ fileName: 'gear.jpg', buffer: image }]
+	};
+}
+
+export async function autoEquipCommand(
+	user: KlasaUser,
+	gearSetup: GearSetupType,
+	equipmentType: string
+): CommandResponse {
+	if (gearSetup === 'other' && user.perkTier < PerkTier.Four) {
+		return PATRON_ONLY_GEAR_SETUP;
+	}
+
+	if (!Object.values(GearStat).includes(equipmentType as any)) {
+		return 'Invalid gear stat.';
+	}
+
+	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
+		user.settings.get(UserSettings.Bank),
+		user.getGear(gearSetup),
+		gearSetup,
+		user.rawSkills,
+		equipmentType as GearStat,
+		null
+	);
+
+	if (Object.keys(toRemoveFromBank).length === 0) {
+		return "Couldn't find anything to equip.";
+	}
+
+	if (!user.owns(toRemoveFromBank)) {
+		return `You dont own ${toRemoveFromBank}!`;
+	}
+
+	await user.removeItemsFromBank(toRemoveFromBank);
+	await user.addItemsToBank({ items: toRemoveFromGear, collectionLog: false });
+	await mahojiUserSettingsUpdate(user.client, user.id, {
+		[`gear_${gearSetup}`]: gearToEquip
+	});
+
+	const image = await generateGearImage(
+		user.client as KlasaClient,
+		user,
+		user.getGear(gearSetup),
+		gearSetup,
+		user.settings.get(UserSettings.Minion.EquippedPet)
+	);
+	return {
+		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
 		attachments: [{ fileName: 'gear.jpg', buffer: image }]
 	};
 }

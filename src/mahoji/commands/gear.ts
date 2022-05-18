@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType } from 'discord-api-types';
 import { CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
-import { GearSetupType } from '../../lib/gear';
+import { GearSetupType, GearStat } from '../../lib/gear';
 import { gearEquipCommand, gearUnequipCommand } from '../lib/abstracted_commands/gearCommands';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -37,6 +37,13 @@ export const gearCommand: OSBMahojiCommand = {
 					description: 'The quantity you want to equip (optional).',
 					required: false,
 					min_value: 1
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'auto',
+					description: 'Automatically equip the best gear you have for a certain style.',
+					required: false,
+					choices: Object.values(GearStat).map(k => ({ name: k, value: k }))
 				}
 			]
 		},
@@ -69,12 +76,11 @@ export const gearCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{
-		equip?: { gear_setup: GearSetupType; item?: string; preset?: string; quantity?: number };
+		equip?: { gear_setup: GearSetupType; item?: string; preset?: string; quantity?: number; auto?: string };
 		unequip?: { gear_setup: GearSetupType; item?: string; all?: boolean };
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
-		console.log(options);
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
@@ -84,7 +90,8 @@ export const gearCommand: OSBMahojiCommand = {
 				item: options.equip.item,
 				preset: options.equip.preset,
 				quantity: options.equip.quantity,
-				unEquippedItem: undefined
+				unEquippedItem: undefined,
+				auto: options.equip.auto
 			});
 		}
 		if (options.unequip) {

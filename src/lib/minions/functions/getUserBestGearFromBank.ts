@@ -5,7 +5,7 @@ import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 import { GearSetupType, GearStat } from '../../gear/types';
 import { Gear } from '../../structures/Gear';
 import { ItemBank, Skills } from '../../types';
-import { skillsMeetRequirements } from '../../util';
+import { assert, skillsMeetRequirements } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
 function getItemScore(item: Item) {
@@ -20,10 +20,10 @@ export default function getUserBestGearFromBank(
 	userGear: Gear,
 	gearType: GearSetupType,
 	skills: Skills,
-	type: string,
-	style: string,
+	gearStat: GearStat,
 	extra: string | null = null
 ) {
+	assert(Object.values(GearStat).includes(gearStat as any));
 	let toRemoveFromGear: ItemBank = {};
 	let toRemoveFromBank: ItemBank = {};
 	const gearToEquip = { ...userGear.raw() };
@@ -34,7 +34,6 @@ export default function getUserBestGearFromBank(
 	let scoreWsExtra = 0;
 
 	// Get primary stat to sort by
-	const gearStat: GearStat = `${type}_${style}` as GearStat;
 	let gearStatExtra: GearStat | null = null;
 
 	// Get extra settings (prayer or strength)
