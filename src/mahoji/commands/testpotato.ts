@@ -160,6 +160,13 @@ const nexSupplies = new Bank()
 	.add('Super restore(4)', 100)
 	.add('Ranging potion(4)', 100);
 
+const drakSupplies = new Bank()
+	.add('Rocktail', 10_000)
+	.add('Raw Rocktail', 10_000)
+	.add('Prayer Potion (4)', 10_000)
+	.add('Heat Res. Restore', 10_000)
+	.add('Heat Res. Brew', 10_000);
+
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
 	: {
@@ -479,7 +486,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				if (options.drakhax) {
 					const gear = new Gear({
 						[EquipmentSlot.Weapon]: 'Drygore Rapier',
-						[EquipmentSlot.Shield]: 'Offhand Drygore Rapier',
+						[EquipmentSlot.Shield]: 'Drakonfire Shield',
 						[EquipmentSlot.Ammo]: 'Dwarven Blessing',
 						[EquipmentSlot.Body]: 'Gorajan Warrior Top',
 						[EquipmentSlot.Legs]: 'Gorajan Warrior Legs',
@@ -495,9 +502,10 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						skills_defence: convertLVLtoXP(120),
 						skills_attack: convertLVLtoXP(120),
 						skills_strength: convertLVLtoXP(120),
+						skills_smithing: convertLVLtoXP(120),
+						skills_crafting: convertLVLtoXP(120),
 						skills_dungeoneering: convertLVLtoXP(99),
-						bank: user.bank().add(nexSupplies).bank,
-						GP: mahojiUser.GP + BigInt(10_000_000)
+						bank: user.bank().add(drakSupplies).bank,
 					});
 					return 'Gave you melee gear, gp, gear and stats for drakons.';
 				}

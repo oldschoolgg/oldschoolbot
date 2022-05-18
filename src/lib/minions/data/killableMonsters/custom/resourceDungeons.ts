@@ -26,29 +26,29 @@ const Drakon: CustomMonster = {
     name: 'Drakon',
     aliases: ['drakon', 'drak'],
     timeToFinish: Time.Minute * 45,
-    hp: 2000,
+    hp: 1500,
     table: new LootTable()
         .every('Drakon bones')
         .tertiary(30, 'Clue scroll (grandmaster)')
-		.tertiary(50, 'Drakon Claw')
-		.tertiary(25, 'Drakon Fang')
+		.tertiary(100, 'Drakon Claw')
+		.tertiary(300, 'Drakon Fang')
 		.tertiary(25, RareDropTable)
-        .add('Black Dragonhide', [200, 250])
-        .add('Blue Dragonhide', [225, 275])
-        .add('Red Dragonhide', [250, 300])
-        .add('Battlestaff', [50, 100])
-        .add('Death rune', [250, 300])
-		.add('Blood rune', [200, 250])
-		.add('Soul rune', [350, 400])
-        .add('Mahogany Plank', [150, 200])
-		.add('Bronze Bar', [150, 200])
-		.add('Iron Bar', [150, 200])
-		.add('Iron Ore', [150, 200])
-		.add('Rune Javelin', [150, 200])
-        .add('Elder Plank', [100, 150])
-        .add('Dragon Dart Tip', [275, 325])
-        .add('Dragon Arrowtips', [350, 400])
-        .add('Dragon Bolts (Unf)', [350, 400])
+        .add('Black Dragonhide', [300, 350])
+        .add('Blue Dragonhide', [325, 375])
+        .add('Red Dragonhide', [350, 400])
+        .add('Battlestaff', [150, 200])
+        .add('Death rune', [350, 400])
+		.add('Blood rune', [300, 350])
+		.add('Soul rune', [450, 500])
+        .add('Mahogany Plank', [250, 300])
+		.add('Bronze Bar', [250, 300])
+		.add('Iron Bar', [250, 300])
+		.add('Iron Ore', [250, 300])
+		.add('Rune Javelin', [250, 300])
+        .add('Elder Plank', [200, 250])
+        .add('Dragon Dart Tip', [375, 425])
+        .add('Dragon Arrowtips', [450, 500])
+        .add('Dragon Bolts (Unf)', [450, 500])
 		.add(GrimyHerbTable),
     notifyDrops: resolveItems([]),
     difficultyRating: 5,
