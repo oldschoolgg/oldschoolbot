@@ -6,6 +6,7 @@ import { client } from '../..';
 import { econBank } from '../../lib/econbank';
 import { allItemsThatCanBeDisassembledIDs, DisassemblySourceGroups, MaterialType } from '../../lib/invention';
 import { bankDisassembleAnalysis, findDisassemblyGroup, handleDisassembly } from '../../lib/invention/disassemble';
+import { inventCommand, Inventions } from '../../lib/invention/inventions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { formatDuration } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
@@ -79,14 +80,42 @@ export const askCommand: OSBMahojiCommand = {
 			name: 'missingitems',
 			description: 'Shows items that cant be disassembled',
 			type: ApplicationCommandOptionType.Subcommand
+		},
+		{
+			name: 'invent',
+			description: 'Use your materials to invent an item.',
+			type: ApplicationCommandOptionType.Subcommand,
+			options: [
+				{
+					name: 'name',
+					type: ApplicationCommandOptionType.String,
+					description: 'The item you want to invent.',
+					required: true,
+					autocomplete: async (value, { id }) => {
+						const mUser = await mahojiUsersSettingsFetch(id, {
+							blueprints_owned: true
+						});
+						const unlocked = mUser.blueprints_owned.map(bpID => Inventions.find(i => i.id === bpID)!);
+
+						return Inventions.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({
+							name: `${i.name} ${unlocked.includes(i) ? '(Unlocked)' : '(NOT Unlocked)'}`,
+							value: i.name
+						}));
+					}
+				}
+			]
 		}
 	],
 	run: async ({
 		userID,
 		options,
+		channelID,
 		interaction
 	}: CommandRunOptions<{
 		disassemble?: { name: string; quantity?: number };
+		invent?: { name: string; quantity?: number };
 		missing?: {};
 		duplicates?: {};
 		chances?: {};
@@ -121,6 +150,9 @@ export const askCommand: OSBMahojiCommand = {
 **XP:** ${result.xp}
 **XP/Hr:** ${result.xpHr}
 **Duration:** ${formatDuration(result.duration)}`;
+		}
+		if (options.invent) {
+			return inventCommand(mahojiUser, channelID, options.invent.name);
 		}
 		if (options.missing) {
 			const missingItems = [];

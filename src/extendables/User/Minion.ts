@@ -706,6 +706,13 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
+			case 'ItemInventing': {
+				return `${
+					this.minionName
+				} is currently attempting to invent an item. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 			case 'Easter':
 			case 'BlastFurnace': {
 				throw new Error('Removed');

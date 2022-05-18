@@ -13,5 +13,5 @@ export const Magic: DisassemblySourceGroup = {
 			lvl: 1
 		}
 	],
-	parts: { cover: 35, magic: 30, powerful: 3, protective: 2 }
+	parts: { magic: 30, powerful: 3, protective: 2 }
 };

@@ -1,7 +1,7 @@
-import { setCustomItem } from './util';
+import { setCustomItem } from '../util';
 
 setCustomItem(
-	90_000,
+	63_205,
 	'Invention master cape',
 	'Abyssal cape',
 	{
@@ -13,34 +13,37 @@ setCustomItem(
 	200_000_000
 );
 setCustomItem(
-	90_001,
+	63_206,
 	'Invention cape',
 	'Fire cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	20_000
 );
 setCustomItem(
-	90_002,
+	63_207,
 	'Invention cape(t)',
 	'Fire cape',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	20_000
 );
 setCustomItem(
-	90_003,
+	63_208,
 	'Invention hood',
 	'Rune full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	20_000

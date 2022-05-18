@@ -54,5 +54,5 @@ export const Halberd: DisassemblySourceGroup = {
 			}
 		}
 	],
-	parts: { blade: 30, sharp: 3, protective: 5 }
+	parts: { sharp: 30, protective: 5 }
 };

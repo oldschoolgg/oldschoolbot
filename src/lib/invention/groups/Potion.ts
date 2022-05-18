@@ -116,5 +116,5 @@ export const Potion: DisassemblySourceGroup = {
 		{ item: i('Extended super antifire(3)'), lvl: 90 },
 		{ item: i('Extended super antifire(1)'), lvl: 90 }
 	],
-	parts: { delicate: 35, organic: 32 }
+	parts: { precious: 35, organic: 32 }
 };

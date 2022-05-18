@@ -301,5 +301,5 @@ export const MeleeArmour: DisassemblySourceGroup = {
 			special: { always: true, parts: [{ type: 'bandos', chance: 100, amount: 4 }] }
 		}
 	],
-	parts: { cover: 35, plated: 30, strong: 3, protective: 2 }
+	parts: { plated: 30, strong: 3, protective: 2 }
 };

@@ -21,5 +21,5 @@ export const Battleaxe: DisassemblySourceGroup = {
 		},
 		{ item: i('Dragon battleaxe'), lvl: 60 }
 	],
-	parts: { blade: 30, sharp: 3, smooth: 30 }
+	parts: { sharp: 30, smooth: 30 }
 };

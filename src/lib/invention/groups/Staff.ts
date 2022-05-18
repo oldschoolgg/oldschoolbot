@@ -62,5 +62,5 @@ export const Staff: DisassemblySourceGroup = {
 		{ item: i('Staff of light'), lvl: 75 },
 		{ item: i("Zuriel's staff"), lvl: 78 }
 	],
-	parts: { padded: 30, imbued: 2, powerful: 3, magic: 30 }
+	parts: { imbued: 2, powerful: 3, magic: 30 }
 };

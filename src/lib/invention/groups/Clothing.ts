@@ -406,5 +406,5 @@ export const Clothing: DisassemblySourceGroup = {
 		},
 		{ item: i('Spottier cape'), lvl: 66 }
 	],
-	parts: { simple: 35, padded: 29, cover: 35 }
+	parts: { simple: 35 }
 };

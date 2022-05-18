@@ -160,5 +160,5 @@ export const RangedArmour: DisassemblySourceGroup = {
 			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 4 }] }
 		}
 	],
-	parts: { cover: 35, padded: 30, protective: 2 }
+	parts: { protective: 2 }
 };

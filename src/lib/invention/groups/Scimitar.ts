@@ -23,5 +23,5 @@ export const Scimitar: DisassemblySourceGroup = {
 		{ item: i('Gilded scimitar'), lvl: 50 },
 		{ item: i('Dragon scimitar'), lvl: 60 }
 	],
-	parts: { blade: 30, metallic: 30, sharp: 3, base: 35 }
+	parts: { sharp: 30, metallic: 30, base: 35 }
 };

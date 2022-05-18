@@ -443,9 +443,11 @@ model User {
 
   // Invention
   materials_total         Json   @default("{}") @db.Json
+  // Current materials owned
   materials_owned         Json   @default("{}") @db.Json
   disassembled_items_bank Json   @default("{}") @db.Json
   skills_invention        BigInt @default(0) @map("skills.invention")
+  blueprints_owned        Int[]
 
   @@map("users")
 }
@@ -757,6 +759,7 @@ enum activity_type_enum {
   TokkulShop
   Easter
   BaxtorianBathhouses
+  ItemInventing
 }
 
 enum xp_gains_skill_enum {

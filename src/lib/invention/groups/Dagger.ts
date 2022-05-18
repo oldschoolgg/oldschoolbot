@@ -22,5 +22,5 @@ export const Dagger: DisassemblySourceGroup = {
 		{ item: i('Mithril dagger'), lvl: 30 },
 		{ item: i('Rune dagger'), lvl: 50 }
 	],
-	parts: { blade: 30, base: 35, sharp: 30 }
+	parts: { sharp: 30, base: 35 }
 };

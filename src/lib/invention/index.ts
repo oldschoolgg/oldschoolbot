@@ -2,41 +2,39 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import DisassembleGroups from './groups';
 
-const materialTypes = [
+export const materialTypes = [
 	'junk',
 	'simple',
-	'blade',
+	'base',
+
 	'smooth',
 	'sharp',
+
 	'swift',
 	'magic',
 	'powerful',
-	'base',
 	'imbued',
 	'flexible',
 	'strong',
-	'cover',
 	'protective',
 	'heavy',
-	'delicate',
 	'precious',
-	'padded',
 	'plated',
 	'dextrous',
 	'metallic',
 	'organic',
 	'pious',
+	'corporeal',
+	'crystal',
+	'rocky',
+	// Special
 	'ethereal',
 	'corporeal',
 	'armadyl',
 	'bandos',
 	'saradomin',
 	'zamorak',
-	'third-age',
-	'corporeal',
-	'crystal',
-	// Custom
-	'rocky'
+	'third-age'
 ] as const;
 
 export type MaterialType = typeof materialTypes[number];

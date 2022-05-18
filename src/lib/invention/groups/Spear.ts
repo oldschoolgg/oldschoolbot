@@ -15,7 +15,6 @@ export const Spear: DisassemblySourceGroup = {
 		},
 		{ item: i('Mithril spear'), lvl: 30 },
 		{ item: i('Rune spear'), lvl: 50 },
-		{ item: i('Leaf-bladed spear'), lvl: 55 },
 		{ item: i('Dragon spear'), lvl: 60 },
 		{
 			item: i("Guthan's warspear"),
@@ -28,5 +27,5 @@ export const Spear: DisassemblySourceGroup = {
 		},
 		{ item: i("Vesta's spear"), lvl: 78 }
 	],
-	parts: { blade: 30, sharp: 30 }
+	parts: { sharp: 30 }
 };

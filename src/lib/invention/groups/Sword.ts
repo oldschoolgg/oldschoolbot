@@ -17,7 +17,6 @@ export const Sword: DisassemblySourceGroup = {
 			item: i('White sword'),
 			lvl: 25
 		},
-		{ item: i('Leaf-bladed sword'), lvl: 55 },
 		{ item: i('Toktz-xil-ak'), lvl: 60 },
 		{ item: i('Bronze sword'), lvl: 1 },
 		{ item: i('Iron sword'), lvl: 10 },
@@ -52,8 +51,7 @@ export const Sword: DisassemblySourceGroup = {
 			item: i('Zamorak godsword'),
 			lvl: 75,
 			special: { always: true, parts: [{ type: 'zamorak', chance: 100, amount: 12 }] }
-		},
-		{ item: i('Godsword blade'), lvl: 75 }
+		}
 	],
-	parts: { blade: 30, metallic: 30, base: 35, dextrous: 2 }
+	parts: { sharp: 30, metallic: 30, base: 35, dextrous: 2 }
 };

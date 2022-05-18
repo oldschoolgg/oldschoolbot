@@ -54,5 +54,5 @@ export const HybridArmour: DisassemblySourceGroup = {
 			}
 		}
 	],
-	parts: { cover: 45, powerful: 3, protective: 3 }
+	parts: { powerful: 3, protective: 3 }
 };

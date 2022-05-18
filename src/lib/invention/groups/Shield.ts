@@ -185,5 +185,5 @@ export const Shield: DisassemblySourceGroup = {
 		{ item: i('Dragon kiteshield'), lvl: 60 },
 		{ item: i('3rd age kiteshield'), lvl: 65, flags: ['third_age'] }
 	],
-	parts: { cover: 35, base: 30, strong: 3, protective: 32 }
+	parts: { base: 30, strong: 3, protective: 32 }
 };
