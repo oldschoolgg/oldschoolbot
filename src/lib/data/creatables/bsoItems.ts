@@ -1092,6 +1092,10 @@ const dragonBoneCreatables: Createable[] = [
         }),
         requiredSkills: {
             defence: 120,
+			attack: 120,
+			strength: 120,
+			crafting: 120,
+			smithing: 120
         }
     },
 	{

@@ -2771,7 +2771,9 @@ setCustomItem(
             prayer: 5,
             slot: EquipmentSlot.Shield,
             requirements: { 
-				defence: 120 
+				defence: 120 ,
+				attack: 120,
+				strength: 120
 			}
         },
         highalch: 25_000_000
