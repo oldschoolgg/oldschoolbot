@@ -31,6 +31,7 @@ export default class extends BotCommand {
 			},
 			itemBoosts: [
 				['Drygore longsword', 15],
+				['Drakonfire Shield', 15],
 				['Ignis ring(i)', 10],
 				['TzKal cape', 6],
 				["Brawler's hook necklace", 4]
@@ -48,7 +49,7 @@ export default class extends BotCommand {
 				cape: 'TzKal cape',
 				ring: 'Ignis ring(i)',
 				weapon: 'Drygore longsword',
-				shield: 'Dragonfire shield',
+				shield: 'Drakonfire shield',
 				neck: "Brawler's hook necklace"
 			}),
 			gearSetup: 'melee',

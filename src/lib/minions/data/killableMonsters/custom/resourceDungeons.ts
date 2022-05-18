@@ -58,8 +58,10 @@ const Drakon: CustomMonster = {
     attackStyleToUse: GearStat.AttackStab,
     attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
     itemInBankBoosts: [
+		{
+			[itemID('Drakonfire Shield')]: 10,
+		},
         {
-            [itemID('Drakonfire Shield')]: 10,
             [itemID('TzKal cape')]: 6,
             [itemID('Infernal cape')]: 2,
         }

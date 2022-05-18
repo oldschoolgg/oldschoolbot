@@ -71,8 +71,12 @@ const Malygos: CustomMonster = {
 	},
 	itemInBankBoosts: [
 		{
+			[itemID('Drakonfire Shield')]: 15
+		},
+		{
 			[itemID('Saradomin godsword')]: 5
 		},
+		
 		{
 			[itemID('Dragon warhammer')]: 5
 		},
@@ -196,6 +200,9 @@ const QueenBlackDragon: CustomMonster = {
 	notifyDrops: resolveItems(['Queen black dragonling']),
 	baseMonster: Monsters.Vorkath,
 	itemInBankBoosts: [
+		{
+			[itemID('Drakonfire Shield')]: 10
+		},
 		{
 			[itemID('Royal crossbow')]: 8
 		}
