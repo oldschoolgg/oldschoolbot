@@ -21,7 +21,7 @@ function neemCost(extraCost?: Bank) {
 }
 
 const Drakon: CustomMonster = {
-    id: 345_232,
+    id: 424_242,
     baseMonster: Monsters.BlackDragon,
     name: 'Drakon',
     aliases: ['drakon', 'drak'],
