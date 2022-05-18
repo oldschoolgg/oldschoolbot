@@ -3,8 +3,8 @@ import { CommandRunOptions } from 'mahoji';
 
 import { client } from '../..';
 import { GearSetupType } from '../../lib/gear';
-import { gearEquipCommand } from '../lib/abstracted_commands/gearCommands';
-import { gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
+import { gearEquipCommand, gearUnequipCommand } from '../lib/abstracted_commands/gearCommands';
+import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -39,6 +39,29 @@ export const gearCommand: OSBMahojiCommand = {
 					min_value: 1
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'unequip',
+			description: 'Unequip an item from one of your gear setups.',
+			options: [
+				{
+					...gearSetupOption,
+					required: true
+				},
+				{
+					...equippedItemOption(),
+					name: 'item',
+					description: 'The item you want to unequip.',
+					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'all',
+					description: 'Unequip everything in this setup?',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({
@@ -46,22 +69,32 @@ export const gearCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{
-		equip?: { setup: GearSetupType; item?: string; preset?: string; quantity?: number };
+		equip?: { gear_setup: GearSetupType; item?: string; preset?: string; quantity?: number };
+		unequip?: { gear_setup: GearSetupType; item?: string; all?: boolean };
 	}>) => {
 		const klasaUser = await client.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
-
+		console.log(options);
 		if (options.equip) {
 			return gearEquipCommand({
 				interaction,
 				user: mahojiUser,
 				klasaUser,
-				setup: options.equip.setup,
+				setup: options.equip.gear_setup,
 				item: options.equip.item,
 				preset: options.equip.preset,
 				quantity: options.equip.quantity,
 				unEquippedItem: undefined
 			});
+		}
+		if (options.unequip) {
+			return gearUnequipCommand(
+				klasaUser,
+				mahojiUser,
+				options.unequip.gear_setup,
+				options.unequip.item,
+				options.unequip.all
+			);
 		}
 		return 'Invalid command.';
 	}

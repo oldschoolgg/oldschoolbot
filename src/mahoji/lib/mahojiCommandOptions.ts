@@ -1,4 +1,5 @@
-import { ApplicationCommandOptionType } from 'mahoji';
+import { uniqueArr } from 'e';
+import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
@@ -9,7 +10,8 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { toTitleCase } from '../../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import getOSItem from '../../lib/util/getOSItem';
+import { getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
@@ -68,13 +70,40 @@ export const gearSetupOption: CommandOption = {
 	choices: GearSetupTypes.map(i => ({ name: toTitleCase(i), value: i }))
 };
 
+export const equippedItemOption = (): CommandOption => ({
+	type: ApplicationCommandOptionType.String,
+	name: 'item',
+	description: 'The item you want to pick.',
+	required: false,
+	autocomplete: async (value, user) => {
+		const mUser = await mahojiUsersSettingsFetch(user.id);
+
+		let results: APIApplicationCommandOptionChoice[] = [];
+		const entries: [string, Item[]][] = Object.entries(getUserGear(mUser)).map(entry => [
+			entry[0],
+			entry[1].allItems(false).map(getOSItem)
+		]);
+		for (const item of uniqueArr(entries.map(i => i[1]).flat(2))) {
+			if (results.length >= 15) break;
+			if (value && !item.name.toLowerCase().includes(value.toLowerCase())) continue;
+			const equippedIn = entries.filter(i => i[1].includes(item));
+			results.push({
+				name: `${item.name} (${equippedIn.map(i => i[0]).join(', ')})`,
+				value: item.name
+			});
+		}
+		console.log(results);
+		return results;
+	}
+});
+
 export const ownedItemOption = (filter?: (item: Item) => boolean): CommandOption => ({
 	type: ApplicationCommandOptionType.String,
 	name: 'item',
 	description: 'The item you want to pick.',
 	required: false,
 	autocomplete: async (value, user) => {
-		const mUser = await mahojiUsersSettingsFetch(user.id, { bank: true });
+		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const bank = new Bank(mUser.bank as ItemBank);
 		let res = bank.items().filter(i => i[0].name.includes(value.toLowerCase()));
 		if (filter) res = res.filter(i => filter(i[0]));

@@ -178,6 +178,10 @@ export async function mahojiUserSettingsUpdate(
 		'Patched user should match',
 		errorContext
 	);
+	assert(
+		JSON.stringify(klasaUser.settings.get('gear.melee')) === JSON.stringify(newUser.gear_melee),
+		'Melee gear should match'
+	);
 
 	return { newUser };
 }
