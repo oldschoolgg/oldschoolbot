@@ -1101,7 +1101,7 @@ const dragonBoneCreatables: Createable[] = [
 	{
         name: 'Dragonbane Fragment',
         inputItems: resolveNameBank({
-            'Ignecarus Scale': 100,
+            'Ignecarus Scales': 100,
             'Ignecarus Dragonclaw': 5,
             'Drakon Fang': 5,
 			'Drakon Claw': 5,
