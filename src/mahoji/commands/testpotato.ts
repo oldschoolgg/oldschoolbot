@@ -134,9 +134,16 @@ const openablesBank = new Bank();
 for (const i of allOpenables.values()) {
 	openablesBank.add(i.id, 100);
 }
+
+const equippablesBank = new Bank();
+for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).values()) {
+	equippablesBank.add(i.id);
+}
+
 const spawnPresets = [
 	['openables', openablesBank],
-	['random', new Bank()]
+	['random', new Bank()],
+	['equippables', equippablesBank]
 ] as const;
 
 const nexSupplies = new Bank()
