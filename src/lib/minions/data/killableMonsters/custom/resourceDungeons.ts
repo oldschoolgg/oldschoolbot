@@ -25,8 +25,8 @@ const Drakon: CustomMonster = {
     baseMonster: Monsters.BlackDragon,
     name: 'Drakon',
     aliases: ['drakon', 'drak'],
-    timeToFinish: Time.Minute * 15,
-    hp: 1000,
+    timeToFinish: Time.Minute * 30,
+    hp: 2000,
     table: new LootTable()
         .every('Drakon bones')
         .tertiary(30, 'Clue scroll (grandmaster)')
