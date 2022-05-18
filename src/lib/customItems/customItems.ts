@@ -2825,7 +2825,7 @@ setCustomItem(
 	10_000
 );
 setCustomItem(
-    63_500,
+    63_505,
     'Dragonbane Glaive',
     'Dragonbane Glaive',
     {
@@ -2861,7 +2861,7 @@ setCustomItem(
     50_000_000
 );
 setCustomItem(
-    63_500,
+    63_506,
     'Dragonbane Ballista',
     'Dragonbane Ballista',
     {
@@ -2896,7 +2896,7 @@ setCustomItem(
     50_000_000
 );
 setCustomItem(
-    63_500,
+    63_507,
     'Dragonbane Staff',
     'Dragonbane Staff',
     {
