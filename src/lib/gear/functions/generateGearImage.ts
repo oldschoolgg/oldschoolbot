@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
+import { User } from '@prisma/client';
 import { Canvas, createCanvas } from 'canvas';
 import * as fs from 'fs';
 import { KlasaClient, KlasaUser } from 'klasa';
@@ -10,6 +11,7 @@ import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
 import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
 import { GearSetupType, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
+import { GearSetup } from '../types';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
 const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
@@ -79,8 +81,8 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 
 export async function generateGearImage(
 	client: KlasaClient,
-	user: KlasaUser,
-	gearSetup: Gear,
+	user: KlasaUser | User,
+	gearSetup: Gear | GearSetup,
 	gearType: GearSetupType | null,
 	petID: number | null
 ) {
@@ -89,15 +91,14 @@ export async function generateGearImage(
 		bankTask = client.tasks.get('bankImage') as BankImageTask;
 	}
 
-	let {
-		sprite,
-		uniqueSprite,
-		background: userBgImage
-	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
+	const bankBg =
+		(user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackground) : user.bankBackground) ?? 1;
 
-	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+	let { sprite, uniqueSprite, background: userBgImage } = bankTask.getBgAndSprite(bankBg);
 
-	const gearStats = gearSetup.stats;
+	const hexColor = user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackgroundHex) : user.bank_bg_hex;
+
+	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
 	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');

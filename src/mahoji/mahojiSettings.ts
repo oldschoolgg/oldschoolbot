@@ -1,5 +1,5 @@
 import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
-import { Guild as DJSGuild, MessageButton } from 'discord.js';
+import { Client, Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaClient, KlasaUser } from 'klasa';
 import {
@@ -142,11 +142,12 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 }
 
 export async function mahojiUserSettingsUpdate(
-	client: KlasaClient,
+	client: KlasaClient | Client,
 	user: string | bigint | KlasaUser,
 	data: Prisma.UserUpdateArgs['data']
 ) {
-	const klasaUser = typeof user === 'string' || typeof user === 'bigint' ? await client.fetchUser(user) : user;
+	const klasaUser =
+		typeof user === 'string' || typeof user === 'bigint' ? await (client as KlasaClient).fetchUser(user) : user;
 
 	const newUser = await prisma.user.update({
 		data,
@@ -176,6 +177,10 @@ export async function mahojiUserSettingsUpdate(
 		klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
 		'Patched user should match',
 		errorContext
+	);
+	assert(
+		JSON.stringify(klasaUser.settings.get('gear.melee')) === JSON.stringify(newUser.gear_melee),
+		'Melee gear should match'
 	);
 
 	return { newUser };

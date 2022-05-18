@@ -6,7 +6,6 @@ import { PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../lib/constants';
 import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
 import { generateAllGearImage, generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy } from '../../lib/minions/decorators';
-import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { makePaginatedMessage } from '../../lib/util';
@@ -16,19 +15,14 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			usage: `[swap|unequipall] [${GearSetupTypes.join('|')}] [${GearSetupTypes.join('|')}]`,
+			usage: `[swap] [${GearSetupTypes.join('|')}] [${GearSetupTypes.join('|')}]`,
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['gearall', 'gall'],
 			description: 'Show and manage your gear.',
-			examples: ['+gear melee', '+gear misc', '+gear unequipall melee'],
+			examples: ['+gear melee', '+gear misc'],
 			categoryFlags: ['minion', 'skilling']
 		});
-	}
-
-	@minionNotBusy
-	async unequipall(msg: KlasaMessage, [gearType]: [GearSetupType]) {
-		return unEquipAllCommand(msg, gearType);
 	}
 
 	@minionNotBusy

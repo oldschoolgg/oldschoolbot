@@ -15,7 +15,6 @@ import {
 	MIMIC_MONSTER_ID,
 	PerkTier
 } from '../../lib/constants';
-import { GearSetupType } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
@@ -28,7 +27,6 @@ import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
 import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
-import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
@@ -570,9 +568,7 @@ Please click the buttons below for important links.`
 		return msg.channel.send(`You've opened... ${openableScores}`);
 	}
 
-	@requiresMinion
-	@minionNotBusy
-	async unequipall(msg: KlasaMessage, [gearType]: [string]) {
-		return unEquipAllCommand(msg, gearType as GearSetupType);
+	async unequipall(msg: KlasaMessage) {
+		return msg.channel.send('This has been moved to the `/gear unequip` slash command.');
 	}
 }
