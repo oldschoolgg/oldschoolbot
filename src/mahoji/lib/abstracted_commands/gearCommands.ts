@@ -127,6 +127,10 @@ export async function gearEquipCommand(args: {
 	if (minionIsBusy(user.id)) {
 		return `${minionName(user)} is currently out on a trip, so you can't change their gear!`;
 	}
+
+	if (setup === 'other' && getUsersPerkTier(user) < PerkTier.Four) {
+		return PATRON_ONLY_GEAR_SETUP;
+	}
 	if (preset) {
 		return gearPresetEquipCommand(klasaUser, setup, preset);
 	}
@@ -147,8 +151,11 @@ export async function gearEquipCommand(args: {
 	const allGear = getUserGear(user);
 	const currentEquippedGear = allGear[setup];
 
-	if (setup === 'other' && getUsersPerkTier(user) < PerkTier.Four) {
-		return PATRON_ONLY_GEAR_SETUP;
+	if (setup === 'wildy') {
+		await handleMahojiConfirmation(
+			interaction,
+			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
+		);
 	}
 
 	/**
