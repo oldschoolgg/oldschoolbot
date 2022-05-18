@@ -2756,14 +2756,14 @@ setCustomItem(
             attack_stab: 0,
             attack_slash: 0,
             attack_crush: 0,
-            attack_magic: -15,
-            attack_ranged: -25,
+            attack_magic: 0,
+            attack_ranged: 0,
 
             defence_stab: 90,
             defence_slash: 95,
             defence_crush: 92,
-            defence_magic: 92,
-            defence_ranged: 30,
+            defence_magic: 30,
+            defence_ranged: 92,
 
             melee_strength: 10,
             ranged_strength: 0,
