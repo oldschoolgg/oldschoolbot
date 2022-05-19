@@ -888,7 +888,9 @@ export default class extends BotCommand {
 		if (getTameSpecies(currentTame).id !== getTameSpecies(toSelect).id) {
 			return msg.channel.send("You can't merge two tames from two different species!");
 		}
-
+		if (currentTame.growth_stage != tame_growth.adult || toSelect.growth_stage != tame_growth.adult) {
+			return msg.channel.send("You can only merge two tames when they are both Adults.");
+		}
 		const { mergingCost, shinyVariant } = getTameSpecies(currentTame);
 
 		if (!msg.author.owns(mergingCost)) {
