@@ -3,7 +3,6 @@ import { User } from 'discord.js';
 import { notEmpty, Time } from 'e';
 import { KlasaUser } from 'klasa';
 
-import { client } from '../../index';
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { BitField, PerkTier, Roles } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
@@ -38,7 +37,7 @@ export default function getUsersPerkTier(
 		}
 
 		const allAccountTiers = allAccounts
-			.map(id => client.users.cache.get(id))
+			.map(id => globalClient.users.cache.get(id))
 			.filter(notEmpty)
 			.map(t => getUsersPerkTier(t, true));
 
@@ -75,7 +74,7 @@ export default function getUsersPerkTier(
 		if (date && Date.now() < date) {
 			return userOrBitfield.premium_balance_tier + 1;
 		} else if (date && Date.now() > date) {
-			mahojiUserSettingsUpdate(client, userOrBitfield.id, {
+			mahojiUserSettingsUpdate(userOrBitfield.id, {
 				premium_balance_tier: null,
 				premium_balance_expiry_date: null
 			}).catch(e => {
@@ -122,7 +121,7 @@ export default function getUsersPerkTier(
 	}
 	// This can be combined into one block because both the Mahoji/DB User type and [Klasa]User class have `id` member
 	if (isMahojiUser || userOrBitfield instanceof User) {
-		const supportGuild = getSupportGuild(client);
+		const supportGuild = getSupportGuild();
 		const member = supportGuild?.members.cache.get(userOrBitfield.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
 			return PerkTier.One;

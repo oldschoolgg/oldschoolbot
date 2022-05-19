@@ -16,7 +16,6 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} completed the Champion's Challenge! You have received the **Champion's cape**.`,

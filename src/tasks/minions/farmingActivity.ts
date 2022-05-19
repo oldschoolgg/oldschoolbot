@@ -164,14 +164,13 @@ export default class extends Task {
 				lastPayment: payment ?? false
 			};
 
-			await mahojiUserSettingsUpdate(this.client, user.id, {
+			await mahojiUserSettingsUpdate(user.id, {
 				[getFarmingKeyFromName(plant.seedType)]: newPatch
 			});
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				str,
@@ -403,7 +402,7 @@ export default class extends Task {
 				};
 			}
 
-			await mahojiUserSettingsUpdate(this.client, user.id, {
+			await mahojiUserSettingsUpdate(user.id, {
 				[getFarmingKeyFromName(plant.seedType)]: newPatch
 			});
 
@@ -424,7 +423,7 @@ export default class extends Task {
 					contractsCompleted: contractsCompleted + 1
 				};
 
-				await mahojiUserSettingsUpdate(this.client, user.id, {
+				await mahojiUserSettingsUpdate(user.id, {
 					minion_farmingContract: farmingContractUpdate as any
 				});
 
@@ -450,7 +449,6 @@ export default class extends Task {
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				infoStr.join('\n'),

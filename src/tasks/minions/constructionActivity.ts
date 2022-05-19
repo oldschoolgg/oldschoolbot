@@ -30,15 +30,6 @@ export default class extends Task {
 			str += `\nYou received ${bonusXP.toLocaleString()} bonus XP from your Carpenter's outfit.`;
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['build', [quantity, object.name], true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, ['build', [quantity, object.name], true], undefined, data, null);
 	}
 }
