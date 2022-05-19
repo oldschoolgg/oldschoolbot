@@ -7,6 +7,7 @@ import { BSOMonsters } from '../../minions/data/killableMonsters/custom/customMo
 import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
+import { resourceDungeonTasks } from './resourceDungeonTasks';
 
 export const konarTasks: AssignableSlayerTask[] = [
 	{
@@ -451,5 +452,6 @@ export const konarTasks: AssignableSlayerTask[] = [
 		slayerLevel: 62,
 		unlocked: true
 	},
-	...bossTasks
+	...bossTasks,
+	...resourceDungeonTasks
 ];

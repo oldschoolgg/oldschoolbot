@@ -1,4 +1,5 @@
 import { Monsters } from 'oldschooljs';
+import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 
 import itemID from '../util/itemID';
 
@@ -82,7 +83,10 @@ export enum SlayerTaskUnlocksEnum {
 	// Custom
 	SizeMatters,
 	BlockAndRoll,
-	PoreDecisions
+	PoreDecisions,
+	ResourcefulThinking,
+	DrakonThingsOut,
+	StayingFrosty
 }
 export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 	{
@@ -553,5 +557,33 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		slayerPointCost: 600,
 		canBeRemoved: true,
 		aliases: ['pore decisions', 'poor decisions']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.ResourcefulThinking,
+		name: 'Resourceful Thinking',
+		desc: 'Allows you to get Resource Dungeon monsters as slayer tasks',
+		slayerPointCost: 600,
+		canBeRemoved: true,
+		aliases: ['resourceful thinking', 'resource dungeon']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.DrakonThingsOut,
+		name: 'Drakon Things Out',
+		desc: 'Extends Drakon tasks.',
+		slayerPointCost: 100,
+		extendID: [BSOMonsters.Drakon.id],
+		extendMult: 2,
+		canBeRemoved: true,
+		aliases: ['extend drakon', 'extend drakons']
+	},
+	{
+		id: SlayerTaskUnlocksEnum.StayingFrosty,
+		name: 'Staying Frosty',
+		desc: 'Extends Frost Dragon tasks.',
+		slayerPointCost: 100,
+		extendID: [BSOMonsters.FrostDragon.id],
+		extendMult: 2,
+		canBeRemoved: true,
+		aliases: ['extend frost dragon', 'extend frost dragons']
 	}
 ];

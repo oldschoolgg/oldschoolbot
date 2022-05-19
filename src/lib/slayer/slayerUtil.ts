@@ -164,6 +164,16 @@ export function userCanUseTask(
 	) {
 		return false;
 	}
+	if (
+		[
+			BSOMonsters.Drakon.name,
+			BSOMonsters.FrostDragon.name,
+			BSOMonsters.RumPumpedCrab.name
+		].includes(task.monster.name) &&
+		!myUnlocks.includes(SlayerTaskUnlocksEnum.ResourcefulThinking)
+	) {
+		return false;
+	}
 	if (lmon === 'grotesque guardians' && !bankHasItem(user.bank().bank, itemID('Brittle key'))) return false;
 	if (lmon === 'lizardman' && !myUnlocks.includes(SlayerTaskUnlocksEnum.ReptileGotRipped)) return false;
 	if (lmon === 'red dragon' && !myUnlocks.includes(SlayerTaskUnlocksEnum.SeeingRed)) return false;

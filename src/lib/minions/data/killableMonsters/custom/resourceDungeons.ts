@@ -62,6 +62,7 @@ const Drakon: CustomMonster = {
 		attack: 120,
 		strength: 120,
 		defence: 120,
+		slayer: 99
 	},
 	itemInBankBoosts: [
 		{
