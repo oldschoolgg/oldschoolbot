@@ -14,7 +14,7 @@ export const commandsRoute = (server: FastifyServer) =>
 				`public, max-age=${(Time.Minute * 5) / 1000}, s-maxage=${(Time.Minute * 5) / 1000}`
 			);
 			reply.send(
-				allAbstractCommands(globalClient, globalClient.mahojiClient)
+				allAbstractCommands(globalClient.mahojiClient)
 					.filter(c => typeof c.attributes?.description === 'string' && c.attributes.description.length > 1)
 					.map((cmd: AbstractCommand) => {
 						const botCommand = globalClient.commands.get(cmd.name);

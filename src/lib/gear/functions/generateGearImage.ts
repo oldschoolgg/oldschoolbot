@@ -2,7 +2,7 @@
 import { User } from '@prisma/client';
 import { Canvas, createCanvas } from 'canvas';
 import * as fs from 'fs';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
 import BankImageTask from '../../../tasks/bankImage';
@@ -80,7 +80,6 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 }
 
 export async function generateGearImage(
-	client: KlasaClient,
 	user: KlasaUser | User,
 	gearSetup: Gear | GearSetup,
 	gearType: GearSetupType | null,
@@ -88,7 +87,7 @@ export async function generateGearImage(
 ) {
 	// Init the background images if they are not already
 	if (!bankTask) {
-		bankTask = client.tasks.get('bankImage') as BankImageTask;
+		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 	}
 
 	const bankBg =
@@ -222,7 +221,7 @@ export async function generateGearImage(
 
 	// Draw items
 	if (petID) {
-		const image = await client.tasks.get('bankImage')!.getItemImage(petID, 1);
+		const image = await globalClient.tasks.get('bankImage')!.getItemImage(petID, 1);
 		ctx.drawImage(
 			image,
 			178 + slotSize / 2 - image.width / 2,
@@ -235,7 +234,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
+		const image = await globalClient.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 
 		let [x, y] = slotCoordinates[enumName];
 		x = x + slotSize / 2 - image.width / 2;
@@ -250,9 +249,9 @@ export async function generateGearImage(
 	return canvas.toBuffer();
 }
 
-export async function generateAllGearImage(client: KlasaClient, user: KlasaUser) {
+export async function generateAllGearImage(user: KlasaUser) {
 	if (!bankTask) {
-		bankTask = client.tasks.get('bankImage') as BankImageTask;
+		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 	}
 
 	let {
@@ -312,7 +311,7 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 		for (const enumName of Object.values(EquipmentSlot)) {
 			const item = gear[enumName];
 			if (!item) continue;
-			const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
+			const image = await globalClient.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 			let [x, y] = slotCoordinatesCompact[enumName];
 			x = x + slotSize / 2 - image.width / 2;
 			y = y + slotSize / 2 - image.height / 2;
@@ -333,7 +332,7 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
 	const userPet = user.settings.get(UserSettings.Minion.EquippedPet);
 	if (userPet) {
-		const image = await client.tasks.get('bankImage')!.getItemImage(userPet, 1);
+		const image = await globalClient.tasks.get('bankImage')!.getItemImage(userPet, 1);
 		ctx.drawImage(image, petX, petY, image.width, image.height);
 	}
 

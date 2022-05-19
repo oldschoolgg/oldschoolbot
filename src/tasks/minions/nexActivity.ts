@@ -44,7 +44,7 @@ export default class extends Task {
 		).setDescription(`
 ${loot.formatLoot()}`);
 
-		sendToChannelID(this.client, channelID, {
+		sendToChannelID(channelID, {
 			embed,
 			content: `${allMention} Your team finished killing ${quantity}x Nex.${
 				wipedKill ? ` Your team wiped on the ${formatOrdinal(wipedKill)} kill.` : ''

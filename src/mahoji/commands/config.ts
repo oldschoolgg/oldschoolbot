@@ -274,7 +274,7 @@ async function handleChannelEnable(
 	if (choice === 'disable') {
 		if (isDisabled) return 'This channel is already disabled.';
 
-		await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			staffOnlyChannels: [...settings.staffOnlyChannels, cID]
 		});
 
@@ -282,7 +282,7 @@ async function handleChannelEnable(
 	}
 	if (!isDisabled) return 'This channel is already enabled.';
 
-	await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		staffOnlyChannels: settings.staffOnlyChannels.filter(i => i !== cID)
 	});
 
@@ -307,7 +307,7 @@ async function handleTweetsEnable(
 		if (settings.tweetchannel === cID) {
 			return 'Jmod Tweets are already enabled in this channel.';
 		}
-		await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			tweetchannel: cID
 		});
 
@@ -317,7 +317,7 @@ async function handleTweetsEnable(
 		return 'Enabled Jmod Tweets in this channel.';
 	}
 	if (!settings.tweetchannel) return "Jmod Tweets aren't enabled, so you can't disable them.";
-	await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		tweetchannel: null
 	});
 	return 'Disabled Jmod Tweets in this channel.';
@@ -338,7 +338,7 @@ async function handlePetMessagesEnable(
 		if (settings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			petchannel: cID
 		});
 		return 'Enabled Pet Messages in this guild.';
@@ -346,7 +346,7 @@ async function handlePetMessagesEnable(
 	if (settings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';
@@ -370,7 +370,7 @@ async function handleJModCommentsEnable(
 		if (settings.jmodComments === cID) {
 			return 'JMod Comments are already enabled in this channel.';
 		}
-		await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			jmodComments: cID
 		});
 		if (settings.jmodComments !== null) {
@@ -381,7 +381,7 @@ async function handleJModCommentsEnable(
 	if (settings.jmodComments === null) {
 		return "JMod Comments aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		jmodComments: null
 	});
 	return 'Disabled JMod Comments in this channel.';
@@ -396,7 +396,7 @@ async function handleCommandEnable(
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allAbstractCommands(globalClient, globalClient.mahojiClient).find(
+	const command = allAbstractCommands(globalClient.mahojiClient).find(
 		i => i.name.toLowerCase() === commandName.toLowerCase()
 	);
 	if (!command) return "That's not a valid command.";
@@ -405,7 +405,7 @@ async function handleCommandEnable(
 		if (!settings.disabledCommands.includes(commandName)) {
 			return "That command isn't disabled.";
 		}
-		await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			disabledCommands: settings.disabledCommands.filter(i => i !== command.name)
 		});
 
@@ -415,7 +415,7 @@ async function handleCommandEnable(
 	if (settings.disabledCommands.includes(command.name)) {
 		return 'That command is already disabled.';
 	}
-	await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		disabledCommands: [...settings.disabledCommands, command.name]
 	});
 
@@ -426,7 +426,7 @@ async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefi
 	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
-	await mahojiGuildSettingsUpdate(globalClient, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		prefix: newPrefix
 	});
 	return `Changed Command Prefix for this server to \`${newPrefix}\``;
@@ -624,7 +624,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The command you want to enable/disable.',
 							required: true,
 							autocomplete: async value => {
-								return allAbstractCommands(globalClient, globalClient.mahojiClient)
+								return allAbstractCommands(globalClient.mahojiClient)
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 							}
