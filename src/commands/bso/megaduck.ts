@@ -4,7 +4,7 @@ import { Canvas } from 'canvas-constructor';
 import { MessageAttachment } from 'discord.js';
 import { readFileSync } from 'fs';
 import jimp from 'jimp';
-import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events, PerkTier } from '../../lib/constants';
@@ -36,11 +36,11 @@ function locationIsFinished(location: MegaDuckLocation) {
 	return location.x < 770 && location.y > 1011;
 }
 
-function topFeeders(client: KlasaClient, entries: any[]) {
+function topFeeders(entries: any[]) {
 	return `Top 10 Feeders: ${[...entries]
 		.sort((a, b) => b[1] - a[1])
 		.slice(0, 10)
-		.map(ent => `${getUsername(client, ent[0])}. ${ent[1]}`)
+		.map(ent => `${getUsername(ent[0])}. ${ent[1]}`)
 		.join(', ')}`;
 }
 
@@ -158,7 +158,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			await msg.confirm(
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
 			);
-			await mahojiGuildSettingsUpdate(this.client, msg.guild!, {
+			await mahojiGuildSettingsUpdate(msg.guild!, {
 				mega_duck_location: {
 					...defaultMegaDuckLocation,
 					steps: location.steps
@@ -177,7 +177,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			return msg.channel.send({
 				content: `${msg.author} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[msg.author.id] ?? 0
-				} times. ${topFeeders(this.client, Object.entries(location.usersParticipated))}`,
+				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
 				files: [image]
 			});
 		}
@@ -215,7 +215,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			}
 		}
 		newLocation.steps.push([newLocation.x, newLocation.y]);
-		await mahojiGuildSettingsUpdate(this.client, msg.guild!, {
+		await mahojiGuildSettingsUpdate(msg.guild!, {
 			mega_duck_location: newLocation as any
 		});
 		if (
@@ -236,19 +236,19 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 				usersParticipated: {},
 				placesVisited: [...newLocation.placesVisited, 'ocean']
 			};
-			await mahojiGuildSettingsUpdate(this.client, msg.guild!, {
+			await mahojiGuildSettingsUpdate(msg.guild!, {
 				mega_duck_location: newT as any
 			});
 			this.client.emit(
 				Events.ServerNotification,
 				`The ${msg.guild!.name} server just returned Mega Duck into the ocean with Mrs Duck, ${
 					Object.keys(newLocation.usersParticipated).length
-				} users received a Baby duckling pet. ${topFeeders(this.client, entries)}`
+				} users received a Baby duckling pet. ${topFeeders(entries)}`
 			);
 			return msg.channel.send(
 				`Mega duck has arrived at his destination! ${
 					Object.keys(newLocation.usersParticipated).length
-				} users received a Baby duckling pet. ${topFeeders(this.client, entries)}`
+				} users received a Baby duckling pet. ${topFeeders(entries)}`
 			);
 		}
 		return msg.channel.send({

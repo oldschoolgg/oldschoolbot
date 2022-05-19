@@ -16,7 +16,7 @@ export async function addToDoubleLootTimer(client: KlasaClient, amount: number, 
 		current = Date.now();
 	}
 	await client.settings.update(ClientSettings.DoubleLootFinishTime, current + amount);
-	sendToChannelID(client, Channel.BSOGeneral, {
+	sendToChannelID(Channel.BSOGeneral, {
 		content: `<@&923768318442229792> 🎉 ${formatDuration(
 			amount
 		)} added to the Double Loot timer because: ${reason}. 🎉`

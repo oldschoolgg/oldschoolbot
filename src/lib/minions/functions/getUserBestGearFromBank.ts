@@ -2,11 +2,10 @@ import { Bank } from 'oldschooljs';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { addBanks, removeItemFromBank } from 'oldschooljs/dist/util';
 
-import { canEquipItemInThisGearType } from '../../../commands/Minion/equip';
 import { GearSetupType, GearStat } from '../../gear/types';
 import { Gear } from '../../structures/Gear';
 import { ItemBank, Skills } from '../../types';
-import { skillsMeetRequirements } from '../../util';
+import { assert, skillsMeetRequirements } from '../../util';
 import getOSItem from '../../util/getOSItem';
 
 function getItemScore(item: Item) {
@@ -21,10 +20,10 @@ export default function getUserBestGearFromBank(
 	userGear: Gear,
 	gearType: GearSetupType,
 	skills: Skills,
-	type: string,
-	style: string,
+	gearStat: GearStat,
 	extra: string | null = null
 ) {
+	assert(Object.values(GearStat).includes(gearStat as any));
 	let toRemoveFromGear: ItemBank = {};
 	let toRemoveFromBank: ItemBank = {};
 	const gearToEquip = { ...userGear.raw() };
@@ -35,7 +34,6 @@ export default function getUserBestGearFromBank(
 	let scoreWsExtra = 0;
 
 	// Get primary stat to sort by
-	const gearStat: GearStat = `${type}_${style}` as GearStat;
 	let gearStatExtra: GearStat | null = null;
 
 	// Get extra settings (prayer or strength)
@@ -99,8 +97,6 @@ export default function getUserBestGearFromBank(
 			: true;
 		if (item.equipable_by_player && item.equipment && item.equipment[gearStat] >= 0 && quantity > 0 && hasStats) {
 			// Ignore wilderness only items if non wildy gear type
-			const itemLockedTo = canEquipItemInThisGearType(gearType, item.id);
-			if (itemLockedTo !== true) continue;
 			equipables[item.equipment.slot].push(item.id);
 		}
 	}

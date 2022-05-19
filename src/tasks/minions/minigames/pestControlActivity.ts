@@ -39,7 +39,6 @@ export default class extends Task {
 		if (hasFlappy) str += '\n2x Points for using Flappy.';
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,

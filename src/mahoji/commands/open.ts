@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { allOpenables, allOpenablesIDs } from '../../lib/openables';
 import { truncateString } from '../../lib/util';
 import {
@@ -21,7 +20,7 @@ export const openCommand: OSBMahojiCommand = {
 			description: 'The thing you want to open.',
 			required: false,
 			autocomplete: async (value, user) => {
-				const botUser = await client.fetchUser(user.id);
+				const botUser = await globalClient.fetchUser(user.id);
 				return botUser
 					.bank()
 					.items()
@@ -66,7 +65,7 @@ export const openCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string }>) => {
 		await interaction.deferReply();
-		const user = await client.fetchUser(userID);
+		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!options.name) {
 			return `You have... ${truncateString(
@@ -81,8 +80,8 @@ export const openCommand: OSBMahojiCommand = {
 			return abstractedOpenUntilCommand(interaction, user, mahojiUser, options.name, options.open_until);
 		}
 		if (options.name.toLowerCase() === 'all') {
-			return abstractedOpenCommand(user, mahojiUser, ['all'], 'auto');
+			return abstractedOpenCommand(interaction, user, mahojiUser, ['all'], 'auto');
 		}
-		return abstractedOpenCommand(user, mahojiUser, [options.name], options.quantity);
+		return abstractedOpenCommand(interaction, user, mahojiUser, [options.name], options.quantity);
 	}
 };

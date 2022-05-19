@@ -303,8 +303,8 @@ export function countSkillsAtleast99(user: KlasaUser | User) {
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
-export function getSupportGuild(client: Client): Guild | null {
-	const guild = client.guilds.cache.get(SupportServer);
+export function getSupportGuild(): Guild | null {
+	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;
 }
@@ -604,8 +604,8 @@ export function birdhouseLimit(user: KlasaUser) {
 }
 export const asyncExec = promisify(exec);
 
-export function getUsername(client: KlasaClient, id: string): string {
-	return (client.commands.get('leaderboard') as any)!.getUsername(id);
+export function getUsername(id: string): string {
+	return (globalClient.commands.get('leaderboard') as any)!.getUsername(id);
 }
 export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
 	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {

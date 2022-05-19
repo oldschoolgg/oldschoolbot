@@ -248,7 +248,6 @@ export default class extends Task {
 		await user.addItemsToBank({ items: baseBank, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user} ${text}

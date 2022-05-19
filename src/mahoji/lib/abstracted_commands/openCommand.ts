@@ -5,7 +5,6 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { client } from '../../..';
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -14,7 +13,7 @@ import { assert, updateGPTrackSetting } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
-import { mahojiUserSettingsUpdate, patronMsg } from '../../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate, patronMsg } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -43,7 +42,7 @@ function getOpenableLoot({
 }
 
 async function addToOpenablesScores(mahojiUser: User, kcBank: Bank) {
-	const { newUser } = await mahojiUserSettingsUpdate(client, mahojiUser.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(mahojiUser.id, {
 		openable_scores: new Bank().add(mahojiUser.openable_scores as ItemBank).add(kcBank).bank
 	});
 	return new Bank().add(newUser.openable_scores as ItemBank);
@@ -159,7 +158,7 @@ async function finalizeOpening({
 		dontAddToTempCL: openables.some(i => itemsThatDontAddToTempCL.includes(i.id))
 	});
 
-	const image = await client.tasks.get('bankImage')!.generateBankImage(
+	const image = await globalClient.tasks.get('bankImage')!.generateBankImage(
 		loot,
 		openables.length === 1
 			? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
@@ -173,7 +172,7 @@ async function finalizeOpening({
 	);
 
 	if (loot.has('Coins')) {
-		await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
+		await updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
 	}
 
 	const openedStr = openables
@@ -199,6 +198,7 @@ ${messages.join(', ')}`
 }
 
 export async function abstractedOpenCommand(
+	interaction: SlashCommandInteraction,
 	user: KlasaUser,
 	mahojiUser: User,
 	_names: string[],
@@ -216,9 +216,14 @@ export async function abstractedOpenCommand(
 		: names
 				.map(name => allOpenables.find(o => o.aliases.some(alias => stringMatches(alias, name))))
 				.filter(notEmpty);
-	if (names.includes('all') && !openables.length) return 'You have no openable items.';
+
+	if (names.includes('all')) {
+		if (!openables.length) return 'You have no openable items.';
+		if (user.perkTier < PerkTier.Two) return patronMsg(PerkTier.Two);
+		await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
+	}
+
 	if (!openables.length) return "That's not a valid item.";
-	if (openables.length > 1 && user.perkTier < PerkTier.Two) return patronMsg(PerkTier.Two);
 
 	const cost = new Bank();
 	const kcBank = new Bank();

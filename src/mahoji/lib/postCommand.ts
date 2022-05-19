@@ -1,6 +1,5 @@
 import { KlasaMessage } from 'klasa';
 
-import { client } from '../..';
 import { Emoji, shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { cleanMentions } from '../../lib/util';
@@ -89,7 +88,7 @@ export async function postCommand({
 		handleCommandError({ error, userID, args, commandName: abstractCommand.name, msg });
 	}
 
-	setTimeout(() => client.oneCommandAtATimeCache.delete(userID.toString()), 1000);
+	setTimeout(() => globalClient.oneCommandAtATimeCache.delete(userID.toString()), 1000);
 
 	return undefined;
 }

@@ -1,7 +1,6 @@
 import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Task } from 'klasa';
 
-import { client } from '../../..';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
@@ -38,7 +37,7 @@ export default class extends Task {
 			points *= 2;
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(client, userID, {
+		const { newUser } = await mahojiUserSettingsUpdate(userID, {
 			zeal_tokens: {
 				increment: points
 			}
@@ -49,7 +48,6 @@ export default class extends Task {
 		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${newUser.zeal_tokens}.\n\n`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,

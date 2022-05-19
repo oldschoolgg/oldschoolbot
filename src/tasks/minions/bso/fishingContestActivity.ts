@@ -109,7 +109,6 @@ export default class extends Task {
 		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished fishing at ${fishLocation.name}, you caught: ${caughtFish

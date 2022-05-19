@@ -161,11 +161,11 @@ export const enum Emoji {
 	Invention = '<:Invention:936219232146980874>'
 }
 
-export const enum ReactionEmoji {
-	Join = '705971600956194907',
-	Stop = '705972260950769669',
-	Start = '705973302719414329'
-}
+export const ReactionEmoji = {
+	Join: DISCORD_SETTINGS.Emojis?.ReactionJoin ?? '705971600956194907',
+	Stop: DISCORD_SETTINGS.Emojis?.ReactionStop ?? '705972260950769669',
+	Start: DISCORD_SETTINGS.Emojis?.ReactionStart ?? '705973302719414329'
+};
 
 export const enum Image {
 	DiceBag = 'https://i.imgur.com/sySQkSX.png'

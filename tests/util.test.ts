@@ -1,5 +1,5 @@
 import { calcPercentOfNum, reduceNumByPercent } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { sellPriceOfItem } from '../src/commands/Minion/sell';
@@ -73,14 +73,13 @@ describe('util', () => {
 	});
 
 	test('sellPriceOfItem', () => {
-		const clientMock = { settings: { get: () => ({}) } } as any as KlasaClient;
 		const item = getOSItem('Dragon pickaxe');
 		const { price } = item;
 		let expected = Math.floor(reduceNumByPercent(price, 25));
-		expect(sellPriceOfItem(clientMock, item)).toEqual({ price: expected, basePrice: price });
-		expect(sellPriceOfItem(clientMock, getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
+		expect(sellPriceOfItem(item)).toEqual({ price: expected, basePrice: price });
+		expect(sellPriceOfItem(getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
 
-		expect(sellPriceOfItem(clientMock, getOSItem('Rune pickaxe'))).toEqual({
+		expect(sellPriceOfItem(getOSItem('Rune pickaxe'))).toEqual({
 			price: calcPercentOfNum(30, getOSItem('Rune pickaxe').highalch),
 			basePrice: getOSItem('Rune pickaxe').price
 		});

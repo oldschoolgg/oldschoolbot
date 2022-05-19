@@ -125,6 +125,7 @@ export async function revsCommand(
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
+		fakeDuration: duration,
 		duration: died ? randInt(Math.min(Time.Minute * 3, duration), duration) : duration,
 		type: 'Revenants',
 		died,
