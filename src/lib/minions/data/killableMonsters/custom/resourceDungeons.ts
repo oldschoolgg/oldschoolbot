@@ -75,7 +75,7 @@ const Drakon: CustomMonster = {
     ],
     itemCost: {
         itemCost: new Bank().add('Prayer potion(4)', 1).add('Anti-Venom+(4)', 1).add('Super Combat Potion(4)', 1),
-        qtyPerKill: 1.0
+        qtyPerKill: 0.5
     },
     pohBoosts: {
         pool: {
