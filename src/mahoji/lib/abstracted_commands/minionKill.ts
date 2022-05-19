@@ -252,15 +252,35 @@ export async function minionKillCommand(
 	// Removed vorkath because he has a special boost.
 	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 		if (
-			user.hasItemEquippedOrInBank('Dragon hunter lance') &&
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 20);
-			boosts.push('20% for Dragon hunter lance');
-		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 20);
-			boosts.push('20% for Dragon hunter crossbow');
+			if (user.hasItemEquippedOrInBank('Dragonbane Glaive')) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 30);
+				boosts.push('30% for Dragonbane Glaive');
+			}
+			else if (user.hasItemEquippedOrInBank('Dragon hunter lance')) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 20);
+				boosts.push('20% for Dragon hunter lance');
+			}
+		} else if (
+			attackStyles.includes(SkillsEnum.Ranged)
+		) {
+			if (user.hasItemEquippedOrInBank('Dragonbane Ballista')) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 30);
+				boosts.push('30% for Dragonbane Ballista');
+			}
+			else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow')) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 20);
+				boosts.push('20% for Dragon hunter crossbow');
+			}
+		} else if (
+			attackStyles.includes(SkillsEnum.Magic)
+		) {
+			if (user.hasItemEquippedOrInBank('Dragonbane Staff')) {
+				timeToFinish = reduceNumByPercent(timeToFinish, 30);
+				boosts.push('30% for Dragonbane Staff');
+			}
 		}
 	}
 

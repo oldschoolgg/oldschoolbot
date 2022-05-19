@@ -79,20 +79,40 @@ export default class MinionCommand extends BotCommand {
 		if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 			isDragon = true;
 			if (
-				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&
 				!attackStyles.includes(SkillsEnum.Ranged) &&
 				!attackStyles.includes(SkillsEnum.Magic)
 			) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				ownedBoostItems.push('Dragon hunter lance');
-				totalItemBoost += 15;
+				if (msg.author.hasItemEquippedOrInBank('Dragonbane Glaive')) {
+					timeToFinish = reduceNumByPercent(timeToFinish, 30);
+					ownedBoostItems.push('Dragonbane Glaive');
+					totalItemBoost += 30;
+				}
+				else if (msg.author.hasItemEquippedOrInBank('Dragon hunter lance')) {
+					timeToFinish = reduceNumByPercent(timeToFinish, 20);
+					ownedBoostItems.push('Dragon hunter lance');
+					totalItemBoost += 20;
+				}
 			} else if (
-				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
 				attackStyles.includes(SkillsEnum.Ranged)
 			) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				ownedBoostItems.push('Dragon hunter crossbow');
-				totalItemBoost += 15;
+				if (msg.author.hasItemEquippedOrInBank('Dragonbane Ballista')) {
+					timeToFinish = reduceNumByPercent(timeToFinish, 30);
+					ownedBoostItems.push('Dragonbane Ballista');
+					totalItemBoost += 30;
+				}
+				else if (msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow')) {
+					timeToFinish = reduceNumByPercent(timeToFinish, 20);
+					ownedBoostItems.push('Dragon hunter crossbow');
+					totalItemBoost += 20;
+				}
+			} else if (
+				attackStyles.includes(SkillsEnum.Magic)
+			) {
+				if (msg.author.hasItemEquippedOrInBank('Dragonbane Staff')) {
+					timeToFinish = reduceNumByPercent(timeToFinish, 30);
+					ownedBoostItems.push('Dragonbane Staff');
+					totalItemBoost += 30;
+				}
 			}
 		}
 		// poh boosts
@@ -180,8 +200,7 @@ export default class MinionCommand extends BotCommand {
 		str.push(`${itemRequirements.join('')}`);
 		let totalBoost = [];
 		if (isDragon) {
-			totalBoost.push('15% for Dragon hunter lance OR 15% for Dragon hunter crossbow');
-		}
+			totalBoost.push('30% for Dragonbane weapons OR 20% for Dragon hunter weapons'); }
 		if (monster.itemInBankBoosts) {
 			totalBoost.push(`${formatItemBoosts(monster.itemInBankBoosts)}`);
 		}

@@ -74,14 +74,8 @@ const Malygos: CustomMonster = {
 			[itemID('Drakonfire Shield')]: 15
 		},
 		{
-			[itemID('Dragonbane Glaive')]: 10,
-			[itemID('Dragonbane Ballista')]: 10,
-			[itemID('Dragonbane Staff')]: 10,
-		},
-		{
 			[itemID('Saradomin godsword')]: 5
 		},
-		
 		{
 			[itemID('Dragon warhammer')]: 5
 		},
@@ -207,11 +201,6 @@ const QueenBlackDragon: CustomMonster = {
 	itemInBankBoosts: [
 		{
 			[itemID('Drakonfire Shield')]: 10
-		},
-		{
-			[itemID('Dragonbane Glaive')]: 10,
-			[itemID('Dragonbane Ballista')]: 10,
-			[itemID('Dragonbane Staff')]: 10,
 		},
 		{
 			[itemID('Royal crossbow')]: 8

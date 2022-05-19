@@ -8,6 +8,7 @@ import { SlayerTaskUnlocksEnum } from '../slayerUnlocks';
 import { AssignableSlayerTask } from '../types';
 import { bossTasks } from './bossTasks';
 import { polyporeTasks } from './polyporeTasks';
+import { resourceDungeonTasks } from './resourceDungeonTasks';
 
 export const nieveTasks: AssignableSlayerTask[] = [
 	{
@@ -457,5 +458,6 @@ export const nieveTasks: AssignableSlayerTask[] = [
 		unlocked: true
 	},
 	...bossTasks,
-	...polyporeTasks
+	...polyporeTasks,
+	...resourceDungeonTasks
 ];
