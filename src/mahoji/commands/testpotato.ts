@@ -165,7 +165,7 @@ const drakSupplies = new Bank()
 	.add('Raw Rocktail', 10_000)
 	.add('Prayer Potion (4)', 10_000)
 	.add('Super Combat Potion (4)', 10_000)
-	.add('Anti Venom +(4)', 10_000)
+	.add('Anti-Venom +(4)', 10_000)
 	.add('Heat Res. Restore', 10_000)
 	.add('Heat Res. Brew', 10_000);
 
