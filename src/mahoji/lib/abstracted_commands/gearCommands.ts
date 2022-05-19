@@ -1,6 +1,6 @@
 import { GearPreset, User } from '@prisma/client';
 import { objectValues } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
@@ -98,7 +98,6 @@ export async function gearPresetEquipCommand(user: KlasaUser, gearSetup: string,
 	});
 	const updatedGear = getUserGear(newUser)[gearSetup];
 	const image = await generateGearImage(
-		user.client as KlasaClient,
 		user,
 		updatedGear,
 		gearSetup,
@@ -233,13 +232,7 @@ export async function gearEquipCommand(args: {
 	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 		[dbKey]: newGear
 	});
-	const image = await generateGearImage(
-		klasaUser.client as KlasaClient,
-		user,
-		newUser[dbKey] as GearSetup,
-		setup,
-		user.minion_equippedPet
-	);
+	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.minion_equippedPet);
 
 	return {
 		content: `You equipped ${itemToEquip.name} in your ${toTitleCase(setup)} setup.`,
@@ -291,13 +284,7 @@ export async function gearUnequipCommand(
 		[`gear_${gearSetup}`]: newGear
 	});
 
-	const image = await generateGearImage(
-		klasaUser.client as KlasaClient,
-		user,
-		new Gear(newGear),
-		gearSetup,
-		user.minion_equippedPet
-	);
+	const image = await generateGearImage(user, new Gear(newGear), gearSetup, user.minion_equippedPet);
 
 	return {
 		content: `You unequipped ${item.name} from your ${toTitleCase(gearSetup)} setup.`,
@@ -342,7 +329,6 @@ export async function autoEquipCommand(
 	});
 
 	const image = await generateGearImage(
-		user.client as KlasaClient,
 		user,
 		user.getGear(gearSetup),
 		gearSetup,

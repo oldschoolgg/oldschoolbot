@@ -134,7 +134,7 @@ export default class extends Task {
 				null
 			);
 		} else {
-			sendToChannelID(this.client, channelID, { content: resultMessage });
+			sendToChannelID(channelID, { content: resultMessage });
 		}
 	}
 }

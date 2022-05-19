@@ -143,9 +143,9 @@ export default class extends Task {
 		});
 
 		if (users.length > 1) {
-			sendToChannelID(this.client, channelID, { content: resultStr });
+			sendToChannelID(channelID, { content: resultStr });
 		} else if (!kcAmounts[leader]) {
-			sendToChannelID(this.client, channelID, {
+			sendToChannelID(channelID, {
 				content: `${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`
 			});
 		} else {

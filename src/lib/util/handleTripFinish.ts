@@ -90,7 +90,7 @@ export async function handleTripFinish(
 
 	message = await handleGrowablePetGrowth(user, data, message);
 
-	sendToChannelID(globalClient, channelID, { content: message, image: attachable }).then(() => {
+	sendToChannelID(channelID, { content: message, image: attachable }).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);
 		const randomEventChance = 60 - minutes;
 		if (
