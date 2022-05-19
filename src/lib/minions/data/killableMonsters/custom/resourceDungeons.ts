@@ -25,7 +25,7 @@ const Drakon: CustomMonster = {
     baseMonster: Monsters.BlackDragon,
     name: 'Drakon',
     aliases: ['drakon', 'drak'],
-    timeToFinish: Time.Minute * 45,
+    timeToFinish: Time.Minute * 50,
     hp: 1500,
     table: new LootTable()
         .every('Drakon bones')
@@ -74,8 +74,8 @@ const Drakon: CustomMonster = {
         }
     ],
     itemCost: {
-        itemCost: new Bank().add('Prayer potion(4)', 1),
-        qtyPerKill: 0.2
+        itemCost: new Bank().add('Prayer potion(4)', 1).add('Anti-Venom+(4)', 1).add('Super Combat Potion(4)', 1),
+        qtyPerKill: 1.0
     },
     pohBoosts: {
         pool: {
