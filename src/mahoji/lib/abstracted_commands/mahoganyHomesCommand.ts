@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../../..';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Plank } from '../../../lib/skilling/skills/construction/constructables';
@@ -138,7 +137,7 @@ export async function mahoganyHomesBuildCommand(user: KlasaUser, channelID: bigi
 	}
 	await user.removeItemsFromBank(itemsNeeded.bank);
 
-	updateBankSetting(client, ClientSettings.EconomyStats.ConstructCostBank, itemsNeeded);
+	updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, itemsNeeded);
 
 	await addSubTaskToActivityTask<MahoganyHomesActivityTaskOptions>({
 		userID: user.id,

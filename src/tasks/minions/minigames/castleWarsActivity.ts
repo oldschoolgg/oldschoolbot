@@ -23,7 +23,6 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`<@${userID}>, ${minionName(user)} finished ${quantity}x Castle Wars games and received ${loot}.`,

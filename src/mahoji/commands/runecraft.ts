@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { client } from '../..';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -57,7 +56,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		options,
 		channelID
 	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean }>) => {
-		const user = await client.fetchUser(userID.toString());
+		const user = await globalClient.fetchUser(userID.toString());
 		let { rune, quantity, usestams } = options;
 
 		rune = rune.toLowerCase().replace('rune', '').trim();
@@ -227,7 +226,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting(client, ClientSettings.EconomyStats.RunecraftCost, totalCost);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.RunecraftCost, totalCost);
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,

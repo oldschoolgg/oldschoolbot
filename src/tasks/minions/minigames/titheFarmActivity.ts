@@ -123,7 +123,6 @@ export default class extends Task {
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			returnStr,
