@@ -69,7 +69,6 @@ export default class extends Task {
 			await user.addItemsToBank({ items: itemLootBank, collectionLog: false });
 
 			return handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				`${user} You died ${formatDuration(
@@ -109,7 +108,6 @@ export default class extends Task {
 			}
 
 			return handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				`${user} ${msg}`,
@@ -176,7 +174,6 @@ export default class extends Task {
 		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user} ${msg}`,

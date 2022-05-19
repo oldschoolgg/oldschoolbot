@@ -126,7 +126,6 @@ export default class extends BotCommand {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(monster, user);
 				await removeFoodFromUser({
-					client: this.client,
 					user,
 					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
 					healPerAction: Math.ceil(healAmountNeeded / quantity),

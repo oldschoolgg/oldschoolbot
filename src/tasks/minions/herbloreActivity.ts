@@ -31,15 +31,6 @@ export default class extends Task {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['mix', [quantity, mixableItem.name], true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, ['mix', [quantity, mixableItem.name], true], undefined, data, loot);
 	}
 }

@@ -1,7 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord-api-types';
 import { CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { KourendFavours } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
@@ -207,7 +206,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		charge?: { item: string; quantity?: number };
 		fight_caves?: {};
 	}>) => {
-		const klasaUser = await client.fetchUser(userID);
+		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		// Minion can be busy

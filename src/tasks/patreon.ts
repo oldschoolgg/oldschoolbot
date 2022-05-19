@@ -3,7 +3,6 @@ import { Time } from 'e';
 import { ArrayActions, Gateway, Task } from 'klasa';
 import fetch from 'node-fetch';
 
-import { client } from '..';
 import { patreonConfig, production } from '../config';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from '../lib/constants';
 import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
@@ -99,7 +98,7 @@ export default class PatreonTask extends Task {
 	}
 
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
-		const user = await client.fetchUser(userID);
+		const user = await globalClient.fetchUser(userID);
 
 		const userBitfield = user.settings.get(UserSettings.BitField);
 

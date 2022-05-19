@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { client } from '../../..';
 import { prisma } from '../../../lib/settings/prisma';
 import { getNewUser } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -134,7 +133,7 @@ export async function mageTrainingArenaStartCommand(user: KlasaUser, channelID: 
 
 	await user.removeItemsFromBank(cost);
 
-	await updateBankSetting(client, ClientSettings.EconomyStats.MTACostBank, cost);
+	await updateBankSetting(globalClient, ClientSettings.EconomyStats.MTACostBank, cost);
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({
 		userID: user.id,

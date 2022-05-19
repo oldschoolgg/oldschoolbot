@@ -82,7 +82,6 @@ export default class extends Task {
 			.generateBankImage(itemsAdded, `Loot From ${quantity}x Cyclops`, true, { showNewCL: 1 }, user, previousCL);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
