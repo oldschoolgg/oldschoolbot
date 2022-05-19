@@ -28,7 +28,7 @@ import { tiers } from '../../tasks/patreon';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-async function giveMaxStats(user: KlasaUser, level = 99, qp = MAX_QP) {
+async function giveMaxStats(user: KlasaUser, level = 120, qp = MAX_QP) {
 	const paths = Object.values(Skills).map(sk => `skills.${sk.id}`);
 	await user.settings.update(paths.map(path => [path, convertLVLtoXP(level)]));
 	await user.settings.update(UserSettings.QP, MAX_QP);
@@ -164,6 +164,8 @@ const drakSupplies = new Bank()
 	.add('Rocktail', 10_000)
 	.add('Raw Rocktail', 10_000)
 	.add('Prayer Potion (4)', 10_000)
+	.add('Super Combat Potion (4)', 10_000)
+	.add('Anti Venom +(4)', 10_000)
 	.add('Heat Res. Restore', 10_000)
 	.add('Heat Res. Brew', 10_000);
 
@@ -485,7 +487,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					}
 				if (options.drakhax) {
 					const gear = new Gear({
-						[EquipmentSlot.Weapon]: 'Drygore Rapier',
+						[EquipmentSlot.Weapon]: 'Dragonbane Glaive',
 						[EquipmentSlot.Shield]: 'Drakonfire Shield',
 						[EquipmentSlot.Ammo]: 'Dwarven Blessing',
 						[EquipmentSlot.Body]: 'Gorajan Warrior Top',
@@ -507,7 +509,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						skills_dungeoneering: convertLVLtoXP(99),
 						bank: user.bank().add(drakSupplies).bank,
 					});
-					return 'Gave you melee gear, gp, gear and stats for drakons.';
+					return 'Gave you gear and stats for drakons.';
 				}
 				if (options.badnexgear) {
 					const gear = new Gear({
