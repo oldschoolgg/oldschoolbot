@@ -604,8 +604,8 @@ export function birdhouseLimit(user: KlasaUser) {
 }
 export const asyncExec = promisify(exec);
 
-export function getUsername(client: KlasaClient, id: string): string {
-	return (client.commands.get('leaderboard') as any)!.getUsername(id);
+export function getUsername(id: string): string {
+	return (globalClient.commands.get('leaderboard') as any)!.getUsername(id);
 }
 export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
 	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {

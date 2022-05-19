@@ -508,7 +508,7 @@ export default class extends BotCommand {
 				const premiumDate = u.settings.get(UserSettings.PremiumBalanceExpiryDate);
 				const premiumTier = u.settings.get(UserSettings.PremiumBalanceTier);
 
-				let str = `**${getUsername(this.client, u.id)}**
+				let str = `**${getUsername(u.id)}**
 ${generateReadyThings(u).join('\n')}
 **Perk Tier:** ${getUsersPerkTier(u)}
 **Bitfields:** ${bitfields}
@@ -525,14 +525,12 @@ ${generateReadyThings(u).join('\n')}
 
 **Main Account:** ${
 					u.settings.get(UserSettings.MainAccount) !== null
-						? `${getUsername(this.client, u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
+						? `${getUsername(u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
 								UserSettings.MainAccount
 						  )}]`
 						: 'None'
 				}
-**Ironman Alt Accounts:** ${u.settings
-					.get(UserSettings.IronmanAlts)
-					.map(id => `${getUsername(this.client, id)}[${id}]`)}
+**Ironman Alt Accounts:** ${u.settings.get(UserSettings.IronmanAlts).map(id => `${getUsername(id)}[${id}]`)}
 `;
 
 				return msg.channel.send(str);
@@ -759,7 +757,7 @@ ${
 				msg.channel.send('Running roles task...');
 				try {
 					const result = (await this.client.tasks.get('roles')?.run()) as string;
-					return sendToChannelID(this.client, msg.channel.id, {
+					return sendToChannelID(msg.channel.id, {
 						content: result.slice(0, 2500)
 					});
 				} catch (err: any) {
@@ -811,7 +809,7 @@ ${
 					],
 					{ arrayAction: 'overwrite' }
 				);
-				sendToChannelID(this.client, Channel.ErrorLogs, {
+				sendToChannelID(Channel.ErrorLogs, {
 					content: `${msg.author.username} gave permanent t1/bgs to ${input.username}`
 				});
 				return msg.channel.send(`Gave permanent perks to ${input.username}.`);
@@ -931,9 +929,7 @@ LIMIT 10;
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client, globalClient.mahojiClient).find(c =>
-					stringMatches(c.name, input)
-				);
+				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
 					where: { id: CLIENT_ID },
@@ -956,9 +952,7 @@ LIMIT 10;
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client, globalClient.mahojiClient).find(c =>
-					stringMatches(c.name, input)
-				);
+				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({

@@ -135,7 +135,7 @@ export async function minionKillCommand(
 	if (!name) return invalidMonsterMsg;
 
 	if (user.usingPet('Ishi')) {
-		sendToChannelID(globalClient, channelID.toString(), {
+		sendToChannelID(channelID.toString(), {
 			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`
 		});
 		name = 'Ogress Warrior';

@@ -243,7 +243,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		const continuationChar = generateContinuationChar(res.user);
 		res.message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
-		sendToChannelID(globalClient, activity.channel_id, {
+		sendToChannelID(activity.channel_id, {
 			content: res.message,
 			image: (
 				await (globalClient.tasks.get('bankImage') as BankImageTask).generateBankImage(

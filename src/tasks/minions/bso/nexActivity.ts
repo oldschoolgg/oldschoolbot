@@ -159,11 +159,11 @@ export default class extends Task {
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
-				sendToChannelID(this.client, channelID, {
+				sendToChannelID(channelID, {
 					content: `${users.map(id => `<@${id}>`).join(' ')} Your team all died, and failed to defeat Nex.`
 				});
 			} else {
-				sendToChannelID(this.client, channelID, { content: resultStr });
+				sendToChannelID(channelID, { content: resultStr });
 			}
 		} else {
 			const image = !kcAmounts[userID]

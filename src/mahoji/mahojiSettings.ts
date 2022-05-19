@@ -1,7 +1,7 @@
 import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import {
 	APIInteractionDataResolvedGuildMember,
 	APIUser,
@@ -204,11 +204,7 @@ export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	return result;
 }
 
-export async function mahojiGuildSettingsUpdate(
-	client: KlasaClient,
-	guild: string | DJSGuild,
-	data: Prisma.GuildUpdateArgs['data']
-) {
+export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: Prisma.GuildUpdateArgs['data']) {
 	const guildID = typeof guild === 'string' ? guild : guild.id;
 
 	const newGuild = await prisma.guild.update({
@@ -218,7 +214,7 @@ export async function mahojiGuildSettingsUpdate(
 		}
 	});
 	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
-	await (client.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
+	await (globalClient.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
 	return { newGuild };
 }
 

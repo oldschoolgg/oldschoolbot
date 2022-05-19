@@ -4,7 +4,7 @@ import { Canvas, createCanvas, Image } from 'canvas';
 import { randInt } from 'e';
 import * as fs from 'fs';
 import fsPromises from 'fs/promises';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
 import BankImageTask from '../../../tasks/bankImage';
@@ -323,9 +323,9 @@ export async function generateGearImage(
 	return canvas.toBuffer();
 }
 
-export async function generateAllGearImage(client: KlasaClient, user: KlasaUser) {
+export async function generateAllGearImage(user: KlasaUser) {
 	if (!bankTask) {
-		bankTask = client.tasks.get('bankImage') as BankImageTask;
+		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 	}
 
 	let {
@@ -385,7 +385,7 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 		for (const enumName of Object.values(EquipmentSlot)) {
 			const item = gear[enumName];
 			if (!item) continue;
-			const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
+			const image = await globalClient.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 			let [x, y] = slotCoordinatesCompact[enumName];
 			x = x + slotSize / 2 - image.width / 2;
 			y = y + slotSize / 2 - image.height / 2;
@@ -406,7 +406,7 @@ export async function generateAllGearImage(client: KlasaClient, user: KlasaUser)
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
 	const userPet = user.settings.get(UserSettings.Minion.EquippedPet);
 	if (userPet) {
-		const image = await client.tasks.get('bankImage')!.getItemImage(userPet, 1);
+		const image = await globalClient.tasks.get('bankImage')!.getItemImage(userPet, 1);
 		ctx.drawImage(image, petX, petY, image.width, image.height);
 	}
 

@@ -26,7 +26,7 @@ const githubSponsors = (server: FastifyServer) =>
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
 					let effectiveTier = tier - 1;
-					sendToChannelID(globalClient, Channel.NewSponsors, {
+					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] became a Tier ${effectiveTier} sponsor.`
 					});
 					if (user) {
@@ -52,7 +52,7 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 				case 'pending_tier_change': {
 					const from = parseStrToTier(data.changes!.tier.from.name);
 					const to = parseStrToTier(data.sponsorship.tier.name);
-					sendToChannelID(globalClient, Channel.NewSponsors, {
+					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] changed their sponsorship from Tier ${
 							from - 1
 						} to Tier ${to - 1}.`
@@ -67,7 +67,7 @@ ${data.sender.login} became a Github sponsor, as a reward for everyone, here is 
 						await (globalClient.tasks.get('patreon') as PatreonTask)!.removePerks(user.id);
 					}
 
-					sendToChannelID(globalClient, Channel.NewSponsors, {
+					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] cancelled being a Tier ${
 							parseStrToTier(data.sponsorship.tier.name) - 1
 						} sponsor. ${

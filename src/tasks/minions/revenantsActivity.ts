@@ -39,7 +39,7 @@ export default class extends Task {
 			const image = await generateGearImage(user, new Gear(calc.newGear), 'wildy', null);
 			await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
 
-			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
 
 			let extraMsg = '';
 

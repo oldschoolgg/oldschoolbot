@@ -110,7 +110,7 @@ export default class extends BotCommand {
 		if (msg.flagArgs.all) {
 			return msg.channel.send({
 				content: 'Here are all your gear setups',
-				files: [new MessageAttachment(await generateAllGearImage(this.client, msg.author), 'osbot.png')]
+				files: [new MessageAttachment(await generateAllGearImage(msg.author), 'osbot.png')]
 			});
 		}
 
