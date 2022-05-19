@@ -54,7 +54,7 @@ const Drakon: CustomMonster = {
     difficultyRating: 5,
     itemsRequired: resolveItems([]),
     qpRequired: 250,
-    healAmountNeeded: 20 * 50,
+    healAmountNeeded: 20 * 100,
     attackStyleToUse: GearStat.AttackStab,
     attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
     levelRequirements: {
