@@ -136,7 +136,7 @@ export default class extends Task {
 				str += `\n${user.minionName} tells you to come back after your birdhouses are full!`;
 			}
 
-			handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot);
+			handleTripFinish(user, channelID, str, undefined, undefined, data, loot);
 		}
 	}
 }

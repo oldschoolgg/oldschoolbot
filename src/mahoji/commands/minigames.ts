@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import TrekShopItems from '../../lib/data/buyables/trekBuyables';
 import { LMSBuyables } from '../../lib/data/CollectionsExport';
 import {
@@ -783,7 +782,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { item: string; quantity?: number };
 		};
 	}>) => {
-		const klasaUser = await client.fetchUser(userID);
+		const klasaUser = await globalClient.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
 
 		/**

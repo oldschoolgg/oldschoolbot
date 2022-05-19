@@ -2,7 +2,6 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../../..';
 import { BitField } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -19,7 +18,7 @@ import BankImageTask from '../../../tasks/bankImage';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 export async function bankBgCommand(interaction: SlashCommandInteraction, user: KlasaUser, name: string) {
-	const bankImages = (client.tasks.get('bankImage') as BankImageTask).backgroundImages;
+	const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;
 	const selectedImage = bankImages.find(img => stringMatches(img.name, name));
 
 	if (!selectedImage) {
@@ -147,7 +146,7 @@ export async function bankBgCommand(interaction: SlashCommandInteraction, user: 
 
 	await user.settings.update(UserSettings.BankBackground, selectedImage.id);
 
-	updateBankSetting(client, ClientSettings.EconomyStats.BankBgCostBank, economyCost);
+	updateBankSetting(globalClient, ClientSettings.EconomyStats.BankBgCostBank, economyCost);
 
 	return `Your bank background is now **${selectedImage.name}**!`;
 }

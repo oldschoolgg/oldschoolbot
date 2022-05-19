@@ -61,6 +61,6 @@ export default class extends Task {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(this.client, user, channelID, str, ['runecraft', { rune }, true], undefined, data, loot);
+		handleTripFinish(user, channelID, str, ['runecraft', { rune }, true], undefined, data, loot);
 	}
 }

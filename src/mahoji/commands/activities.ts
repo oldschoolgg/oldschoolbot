@@ -1,7 +1,6 @@
 import { ApplicationCommandOptionType } from 'discord-api-types';
 import { CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { KourendFavours } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
@@ -215,8 +214,15 @@ export const activitiesCommand: OSBMahojiCommand = {
 		charge?: { item: string; quantity?: number };
 		fight_caves?: {};
 	}>) => {
-		const klasaUser = await client.fetchUser(userID);
+		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+
+		// Minion can be busy
+		if (options.decant) {
+			return decantCommand(klasaUser, options.decant.potion_name, options.decant.dose);
+		}
+
+		// Minion must be free
 		const isBusy = minionIsBusy(mahojiUser.id);
 		const busyStr = `${minionName(mahojiUser)} is currently busy.`;
 		if (isBusy) return busyStr;
@@ -255,9 +261,6 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.favour) {
 			return favourCommand(klasaUser, mahojiUser, options.favour.name, channelID, options.favour.no_stams);
-		}
-		if (options.decant) {
-			return decantCommand(klasaUser, options.decant.potion_name, options.decant.dose);
 		}
 		if (options.charge?.item === 'glory') {
 			return chargeGloriesCommand(klasaUser, channelID, options.charge.quantity);

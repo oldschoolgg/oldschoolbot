@@ -125,7 +125,6 @@ export default class extends Task {
 			sendToChannelID(this.client, channelID, { content: resultStr });
 		} else {
 			handleTripFinish(
-				this.client,
 				users[0],
 				channelID,
 				resultStr,

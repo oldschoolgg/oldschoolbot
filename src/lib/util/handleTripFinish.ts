@@ -1,7 +1,7 @@
 import { activity_type_enum } from '@prisma/client';
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
 import { randInt, Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../commands/Minion/laps';
@@ -38,7 +38,6 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 ];
 
 export async function handleTripFinish(
-	client: KlasaClient,
 	user: KlasaUser,
 	channelID: string,
 	message: string,
@@ -69,7 +68,7 @@ export async function handleTripFinish(
 		const bonusLoot = new Bank().add(loot).add(otherLoot);
 		message += `\n<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`;
 		await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
-		updateBankSetting(client, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
 	}
 
 	const minutes = data.duration / Time.Minute;
@@ -126,14 +125,14 @@ export async function handleTripFinish(
 
 	if (bonusLoot.length > 0) {
 		if (bonusLoot.has('Coins')) {
-			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePet, bonusLoot.amount('Coins'));
+			updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePet, bonusLoot.amount('Coins'));
 		}
 		await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
 	}
 	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 		const GP = loot.amount(COINS_ID);
 		if (typeof GP === 'number') {
-			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+			updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
 		}
 	}
 
@@ -165,10 +164,10 @@ export async function handleTripFinish(
 			await user.addItemsToBank({ items: alchResult.bankToAdd });
 			await user.removeItemsFromBank(alchResult.bankToRemove);
 
-			updateBankSetting(client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 
 			updateGPTrackSetting(
-				client,
+				globalClient,
 				ClientSettings.EconomyStats.GPSourceAlching,
 				alchResult.bankToAdd.amount('Coins')
 			);
@@ -210,11 +209,11 @@ export async function handleTripFinish(
 			: new MessageAttachment(attachment)
 		: undefined;
 
-	const channel = client.channels.cache.get(channelID);
+	const channel = globalClient.channels.cache.get(channelID);
 
 	message = await handleGrowablePetGrowth(user, data, message);
 
-	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
+	sendToChannelID(globalClient, channelID, { content: message, image: attachable }).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);
 		const randomEventChance = 60 - minutes;
 		if (
@@ -263,8 +262,8 @@ export async function handleTripFinish(
 	collectors.set(user.id, collector);
 
 	collector.on('collect', async (mes: KlasaMessage) => {
-		if (client.settings.get(ClientSettings.UserBlacklist).includes(mes.author.id)) return;
-		if (user.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
+		if (globalClient.settings.get(ClientSettings.UserBlacklist).includes(mes.author.id)) return;
+		if (user.minionIsBusy || globalClient.oneCommandAtATimeCache.has(mes.author.id)) {
 			collector.stop();
 			collectors.delete(user.id);
 			return;

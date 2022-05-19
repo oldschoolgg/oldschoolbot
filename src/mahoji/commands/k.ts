@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { PVM_METHODS, PvMMethod } from '../../lib/constants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
@@ -60,7 +59,7 @@ export const killCommand: OSBMahojiCommand = {
 		channelID,
 		interaction
 	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod }>) => {
-		const user = await client.fetchUser(userID);
+		const user = await globalClient.fetchUser(userID);
 		return minionKillCommand(interaction, user, channelID, options.name, options.quantity, options.method);
 	}
 };

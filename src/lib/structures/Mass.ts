@@ -21,8 +21,8 @@ export interface MassOptions {
 }
 
 const emojis = [ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as const;
-function isActionEmoji(str: string | null): str is ReactionEmoji {
-	return emojis.includes(str as ReactionEmoji);
+function isActionEmoji(str: string | null) {
+	return emojis.includes(str);
 }
 
 export class Mass {
@@ -148,6 +148,9 @@ export class Mass {
 							collector.stop();
 						}
 						break;
+					}
+
+					default: {
 					}
 				}
 			});

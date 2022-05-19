@@ -141,12 +141,8 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 	return result as User;
 }
 
-export async function mahojiUserSettingsUpdate(
-	client: KlasaClient,
-	user: string | bigint | KlasaUser,
-	data: Prisma.UserUpdateArgs['data']
-) {
-	const klasaUser = typeof user === 'string' || typeof user === 'bigint' ? await client.fetchUser(user) : user;
+export async function mahojiUserSettingsUpdate(user: string | bigint | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
+	const klasaUser = typeof user === 'string' || typeof user === 'bigint' ? await globalClient.fetchUser(user) : user;
 
 	const newUser = await prisma.user.update({
 		data,
@@ -176,6 +172,10 @@ export async function mahojiUserSettingsUpdate(
 		klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
 		'Patched user should match',
 		errorContext
+	);
+	assert(
+		JSON.stringify(klasaUser.settings.get('gear.melee')) === JSON.stringify(newUser.gear_melee),
+		'Melee gear should match'
 	);
 
 	return { newUser };

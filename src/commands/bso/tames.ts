@@ -559,7 +559,7 @@ export default class extends BotCommand {
 		if (currentTask) {
 			return msg.channel.send("You can't select a different tame, because your current one is busy.");
 		}
-		await mahojiUserSettingsUpdate(this.client, msg.author.id, {
+		await mahojiUserSettingsUpdate(msg.author.id, {
 			selected_tame: toSelect.id
 		});
 		return msg.channel.send(`You selected your ${tameName(toSelect)}.`);

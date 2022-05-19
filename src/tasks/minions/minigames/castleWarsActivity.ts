@@ -30,7 +30,6 @@ export default class extends Task {
 		const boostMsg = boosts.length ? `\n${boosts.join('\n')}` : '';
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`<@${userID}>, ${minionName(

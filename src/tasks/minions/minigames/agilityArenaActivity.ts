@@ -89,6 +89,6 @@ export default class extends Task {
 			collectionLog: true
 		});
 
-		handleTripFinish(this.client, user, channelID, str, ['agilityarena', [], true], undefined, data, null);
+		handleTripFinish(user, channelID, str, ['agilityarena', [], true], undefined, data, null);
 	}
 }

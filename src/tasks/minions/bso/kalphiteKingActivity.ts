@@ -197,7 +197,6 @@ export default class extends Task {
 							)
 				  ).image;
 			handleTripFinish(
-				this.client,
 				leaderUser,
 				channelID,
 				!kcAmounts[userID]

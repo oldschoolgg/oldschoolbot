@@ -16,7 +16,6 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
-import { client } from '../../..';
 import { PvMMethod } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
@@ -136,7 +135,7 @@ export async function minionKillCommand(
 	if (!name) return invalidMonsterMsg;
 
 	if (user.usingPet('Ishi')) {
-		sendToChannelID(client, channelID.toString(), {
+		sendToChannelID(globalClient, channelID.toString(), {
 			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`
 		});
 		name = 'Ogress Warrior';
@@ -505,7 +504,6 @@ export async function minionKillCommand(
 
 		try {
 			const { foodRemoved, reductions } = await removeFoodFromUser({
-				client,
 				user,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
@@ -614,7 +612,7 @@ export async function minionKillCommand(
 	}
 
 	if (lootToRemove.length > 0) {
-		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 		await user.removeItemsFromBank(lootToRemove);
 		totalCost.add(lootToRemove);
 	}

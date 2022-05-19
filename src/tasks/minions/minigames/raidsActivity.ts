@@ -133,7 +133,6 @@ export default class extends Task {
 
 		if (allUsers.length === 1) {
 			handleTripFinish(
-				this.client,
 				allUsers[0],
 				channelID,
 				resultMessage,

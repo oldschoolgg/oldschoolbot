@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../../..';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { Planks } from '../../../lib/minions/data/planks';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -82,7 +81,7 @@ export async function sawmillCommand(
 	await user.removeItemsFromBank(costBank);
 
 	await updateBankSetting(
-		client,
+		globalClient,
 		ClientSettings.EconomyStats.ConstructCostBank,
 		new Bank().add('Coins', plank!.gpCost * quantity)
 	);

@@ -167,7 +167,6 @@ export default class extends Task {
 
 			const kc = leaderUser.getKC(monsterID);
 			handleTripFinish(
-				this.client,
 				leaderUser,
 				channelID,
 				`${leaderUser}, ${leaderUser.minionName} finished killing ${quantity} ${monsterName}, you died ${
