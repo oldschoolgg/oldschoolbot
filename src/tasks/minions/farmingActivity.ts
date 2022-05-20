@@ -213,7 +213,7 @@ export default class extends Task {
 					);
 				} else if (plantToHarvest.fixedOutput) {
 					if (!plantToHarvest.fixedOutputAmount) return;
-					cropYield = plantToHarvest.fixedOutputAmount;
+					cropYield = plantToHarvest.fixedOutputAmount * alivePlants;
 				} else {
 					const plantChanceFactor =
 						Math.floor(
@@ -288,9 +288,7 @@ export default class extends Task {
 					harvestXp = 0;
 				} else if (plantToHarvest.givesCrops && chopped) {
 					if (!plantToHarvest.outputCrop) return;
-					loot.add(plantToHarvest.outputCrop, cropYield * alivePlants);
-
-					harvestXp = cropYield * alivePlants * plantToHarvest.harvestXp;
+					harvestXp = cropYield * plantToHarvest.harvestXp;
 				}
 			}
 
