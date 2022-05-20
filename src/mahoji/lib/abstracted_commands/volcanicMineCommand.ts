@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import { objectEntries, Time } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -210,7 +210,7 @@ export async function volcanicMineShopCommand(
 			collectionLog: true
 		});
 	}
-	await mahojiUserSettingsUpdate(klasaUser.client as KlasaClient, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		volcanic_mine_points: {
 			decrement: cost
 		}

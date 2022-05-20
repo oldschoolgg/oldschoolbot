@@ -2,7 +2,6 @@ import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
 import { PerkTier } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -42,7 +41,7 @@ export const casketCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
-		const user = await client.fetchUser(userID.toString());
+		const user = await globalClient.fetchUser(userID.toString());
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
 			return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
@@ -60,7 +59,7 @@ export const casketCommand: OSBMahojiCommand = {
 
 		if (Object.keys(loot.bank).length === 0) return `${title} and got nothing :(`;
 
-		const { image } = await client.tasks
+		const { image } = await globalClient.tasks
 			.get('bankImage')!
 			.generateBankImage(new Bank(loot.bank), title, true, {}, user);
 

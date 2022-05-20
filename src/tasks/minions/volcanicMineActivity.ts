@@ -95,7 +95,6 @@ export default class extends Task {
 		const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,

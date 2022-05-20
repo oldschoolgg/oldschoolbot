@@ -3,7 +3,6 @@ import { FastifyInstance } from 'fastify';
 import fetch from 'node-fetch';
 import { encode } from 'querystring';
 
-import { client } from '../../..';
 import { CLIENT_ID, CLIENT_SECRET } from '../../../config';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { encryptJWT, rateLimit } from '../util';
@@ -13,7 +12,7 @@ export async function fetchUser(token: string) {
 	const apiUser = await fetch('https://discordapp.com/api/users/@me', {
 		headers: { Authorization: apiToken }
 	}).then((result: any) => result.json());
-	const user = await client.fetchUser(apiUser.id);
+	const user = await globalClient.fetchUser(apiUser.id);
 
 	return {
 		...apiUser,

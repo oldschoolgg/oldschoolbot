@@ -1,6 +1,6 @@
 import { Snowflake, TextChannel } from 'discord.js';
 import { noOp, randArrItem } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -9,7 +9,7 @@ import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 import { Giveaway } from '.prisma/client';
 
-export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Giveaway) {
+export async function handleGiveawayCompletion(giveaway: Giveaway) {
 	if (giveaway.completed) {
 		throw new Error('Tried to complete an already completed giveaway.');
 	}
@@ -26,7 +26,7 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 			}
 		});
 
-		const channel = client.channels.cache.get(giveaway.channel_id as Snowflake) as TextChannel | undefined;
+		const channel = globalClient.channels.cache.get(giveaway.channel_id as Snowflake) as TextChannel | undefined;
 		if (!channel?.messages) return;
 		const message = await channel?.messages.fetch(giveaway.message_id as Snowflake).catch(noOp);
 
@@ -38,7 +38,7 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 						.filter(u => !u.isIronman && !u.bot && u.id !== giveaway.user_id)
 						.values()
 			  );
-		const creator = await client.fetchUser(giveaway.user_id);
+		const creator = await globalClient.fetchUser(giveaway.user_id);
 
 		if (users.length === 0 || !channel || !message) {
 			logError('Giveaway failed');
@@ -64,7 +64,7 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 			}
 		});
 
-		client.emit(
+		globalClient.emit(
 			Events.EconomyLog,
 			`${winner.username}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.username}[${creator.id}].`
 		);

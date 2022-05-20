@@ -58,6 +58,6 @@ export default class extends Task {
 			hasDiary ? '\n10% XP bonus for Lumbridge & Draynor Hard diary.' : ''
 		}`;
 
-		handleTripFinish(this.client, user, channelID, output, undefined, undefined, data, null);
+		handleTripFinish(user, channelID, output, undefined, undefined, data, null);
 	}
 }

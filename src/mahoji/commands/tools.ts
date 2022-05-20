@@ -5,7 +5,6 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { client } from '../..';
 import LeaderboardCommand from '../../commands/Minion/leaderboard';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
@@ -87,7 +86,7 @@ LIMIT 10;`);
 		return 'No results found.';
 	}
 
-	const command = client.commands.get('leaderboard') as LeaderboardCommand;
+	const command = globalClient.commands.get('leaderboard') as LeaderboardCommand;
 
 	let place = 0;
 	const embed = new Embed()
@@ -121,13 +120,13 @@ GROUP BY 1
 ORDER BY qty DESC, lastDate ASC
 LIMIT 10`;
 
-	const res = await client.query<{ user_id: string; qty: number }[]>(query);
+	const res = await globalClient.query<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
 		return 'No results found.';
 	}
 
-	const command = client.commands.get('leaderboard') as LeaderboardCommand;
+	const command = globalClient.commands.get('leaderboard') as LeaderboardCommand;
 
 	let place = 0;
 	const embed = new Embed()
@@ -158,7 +157,7 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 	const { id } = mon;
 	const query = `SELECT "id", "${key}"->>'${id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "${key}"->>'${id}' IS NOT NULL ${ironmanPart} ORDER BY ("${key}"->>'${id}')::int DESC LIMIT 10;`;
 
-	const result = await client.query<
+	const result = await globalClient.query<
 		{
 			id: string;
 			KC: string;
@@ -167,7 +166,7 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 
 	if (result.length === 0) return 'No results found.';
 
-	const command = client.commands.get('leaderboard') as LeaderboardCommand;
+	const command = globalClient.commands.get('leaderboard') as LeaderboardCommand;
 
 	return `**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
 		.map(({ id, KC }) => `${command.getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`)
@@ -185,7 +184,7 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 
 	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
-	const result = await client.query<
+	const result = await globalClient.query<
 		{
 			id: string;
 			qty: string;
@@ -194,7 +193,7 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 
 	if (result.length === 0) return 'No results found.';
 
-	const command = client.commands.get('leaderboard') as LeaderboardCommand;
+	const command = globalClient.commands.get('leaderboard') as LeaderboardCommand;
 
 	return `**Most '${item.name}' received:**\n${result
 		.map(

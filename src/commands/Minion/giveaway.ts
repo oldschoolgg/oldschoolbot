@@ -54,7 +54,7 @@ export default class extends BotCommand {
 			return msg.channel.send('Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.');
 		}
 
-		const supportServer = getSupportGuild(this.client);
+		const supportServer = getSupportGuild();
 		if (!supportServer) return msg.channel.send("Couldn't find support server!");
 
 		// fetch() always calls the API when no id is specified, so only do it sparingly or if needed.

@@ -2,7 +2,6 @@ import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { client } from '../../..';
 import { ZALCANO_ID } from '../../../lib/constants';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -69,7 +68,6 @@ export async function zalcanoCommand(user: KlasaUser, channelID: bigint) {
 	const duration = quantity * baseTime;
 
 	const { foodRemoved } = await removeFoodFromUser({
-		client,
 		user,
 		totalHealingNeeded: healAmountNeeded * quantity,
 		healPerAction: Math.ceil(healAmountNeeded / quantity),

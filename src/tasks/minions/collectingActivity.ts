@@ -35,7 +35,6 @@ export default class extends Task {
 		updateBankSetting(this.client, ClientSettings.EconomyStats.CollectingLoot, loot);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,

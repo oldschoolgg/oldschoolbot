@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { diaries } from '../../lib/diaries';
 import getOSItem from '../../lib/util/getOSItem';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
@@ -68,7 +67,7 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The name of the bank background you want.',
 					autocomplete: async value => {
-						const bankImages = (client.tasks.get('bankImage') as BankImageTask).backgroundImages;
+						const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;
 						return bankImages
 							.filter(bg => (!value ? true : bg.available))
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
@@ -128,7 +127,7 @@ export const minionCommand: OSBMahojiCommand = {
 		cracker?: { user: MahojiUserOption };
 		lamp?: { item: string; quantity?: number; skill: string };
 	}>) => {
-		const user = await client.fetchUser(userID.toString());
+		const user = await globalClient.fetchUser(userID.toString());
 
 		if (options.stats) {
 			return { embeds: [await minionStatsEmbed(user)] };
@@ -145,7 +144,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return bankBgCommand(interaction, user, options.bankbg.name ?? '');
 		}
 		if (options.cracker) {
-			const otherUser = await client.fetchUser(options.cracker.user.user.id);
+			const otherUser = await globalClient.fetchUser(options.cracker.user.user.id);
 			return crackerCommand({ owner: user, otherPerson: otherUser, interaction });
 		}
 

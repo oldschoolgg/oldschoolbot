@@ -5,7 +5,6 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { client } from '../../..';
 import { PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -42,7 +41,7 @@ function getOpenableLoot({
 }
 
 async function addToOpenablesScores(mahojiUser: User, kcBank: Bank) {
-	const { newUser } = await mahojiUserSettingsUpdate(client, mahojiUser.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(mahojiUser.id, {
 		openable_scores: new Bank().add(mahojiUser.openable_scores as ItemBank).add(kcBank).bank
 	});
 	return new Bank().add(newUser.openable_scores as ItemBank);
@@ -132,7 +131,7 @@ async function finalizeOpening({
 		filterLoot: false
 	});
 
-	const image = await client.tasks.get('bankImage')!.generateBankImage(
+	const image = await globalClient.tasks.get('bankImage')!.generateBankImage(
 		loot,
 		openables.length === 1
 			? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
@@ -146,7 +145,7 @@ async function finalizeOpening({
 	);
 
 	if (loot.has('Coins')) {
-		await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
+		await updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
 	}
 
 	const openedStr = openables
