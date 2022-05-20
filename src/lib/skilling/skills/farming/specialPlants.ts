@@ -5,6 +5,84 @@ import { Plant } from '../../types';
 
 const specialPlants: Plant[] = [
 	{
+		level: 2,
+		plantXp: 8.5,
+		checkXp: 0,
+		harvestXp: 47,
+		inputItems: new Bank({ 'Marigold seed': 1 }),
+		outputCrop: itemID('Marigolds'),
+		variableYield: false,
+		name: 'Marigold',
+		aliases: ['marigolds', 'marigold'],
+		petChance: 281_040,
+		seedType: 'flower',
+		growthTime: 20,
+		numOfStages: 4,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 25,
+		needsChopForHarvest: false,
+		fixedOutputAmount: 1,
+		fixedOutput: true,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patch
+			[33, 1] // Prif Patch
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 1] // Farming Guild
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 5
+	},
+	{
+		level: 11,
+		plantXp: 12,
+		checkXp: 0,
+		harvestXp: 66.5,
+		inputItems: new Bank({ 'Rosemary seed': 1 }),
+		outputCrop: itemID('Rosemary'),
+		variableYield: false,
+		name: 'Rosemary',
+		aliases: ['rosemarys', 'rosemary'],
+		petChance: 281_040,
+		seedType: 'flower',
+		growthTime: 20,
+		numOfStages: 4,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 25,
+		needsChopForHarvest: false,
+		fixedOutputAmount: 1,
+		fixedOutput: true,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patch
+			[33, 1] // Prif Patch
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 1] // Farming Guild
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 5
+	},
+	{
 		level: 23,
 		plantXp: 19,
 		checkXp: 0,
@@ -38,6 +116,83 @@ const specialPlants: Plant[] = [
 		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
+	},
+	{
+		level: 24,
+		plantXp: 19.5,
+		checkXp: 0,
+		harvestXp: 111,
+		inputItems: new Bank({ 'Nasturtium seed': 1 }),
+		outputCrop: itemID('Nasturtiums'),
+		variableYield: false,
+		name: 'Nasturtium',
+		aliases: ['nasturtiums', 'nasturtium'],
+		petChance: 281_040,
+		seedType: 'flower',
+		growthTime: 20,
+		numOfStages: 4,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 25,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patch
+			[33, 1] // Prif Patch
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 1] // Farming Guild
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 5
+	},
+	{
+		level: 25,
+		plantXp: 20.5,
+		checkXp: 0,
+		harvestXp: 115.5,
+		inputItems: new Bank({ 'Woad seed': 1 }),
+		outputCrop: itemID('Woad leaf'),
+		variableYield: false,
+		name: 'Woad leaf',
+		aliases: ['Woad leaf', 'woad'],
+		petChance: 281_040,
+		seedType: 'flower',
+		growthTime: 20,
+		numOfStages: 4,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 25,
+		needsChopForHarvest: false,
+		fixedOutputAmount: 3,
+		fixedOutput: true,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patch
+			[33, 1] // Prif Patch
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 1] // Farming Guild
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 5
 	},
 	{
 		level: 26,
@@ -289,6 +444,45 @@ const specialPlants: Plant[] = [
 		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 7,
 		timePerHarvest: 10
+	},
+	{
+		level: 58,
+		plantXp: 42,
+		checkXp: 0,
+		harvestXp: 250,
+		inputItems: new Bank({ 'White lily seed': 1 }),
+		outputCrop: itemID('White lily'),
+		variableYield: false,
+		name: 'White lily',
+		aliases: ['white lily', 'white lilies'],
+		petChance: 281_040,
+		seedType: 'flower',
+		growthTime: 20,
+		numOfStages: 4,
+		chance1: 0,
+		chance99: 0,
+		chanceOfDeath: 25,
+		needsChopForHarvest: false,
+		fixedOutputAmount: 1,
+		fixedOutput: true,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[1, 1], // Canifs Patch
+			[33, 1] // Prif Patch
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 1] // Farming Guild
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 5
 	},
 	{
 		level: 59,
