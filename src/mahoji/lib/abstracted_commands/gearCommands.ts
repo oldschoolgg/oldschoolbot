@@ -21,7 +21,7 @@ import {
 	skillsMeetRequirements,
 	toTitleCase
 } from '../../../lib/util';
-import { getItem } from '../../../lib/util/getOSItem';
+import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { minionName } from '../../../lib/util/minionUtils';
@@ -338,4 +338,16 @@ export async function autoEquipCommand(
 		content: `You auto-equipped your best ${equipmentType} in your ${gearSetup} preset.`,
 		attachments: [{ fileName: 'gear.jpg', buffer: image }]
 	};
+}
+
+export async function gearStatsCommand(user: User, input: string): CommandResponse {
+	const gear = { ...defaultGear };
+	for (const name of input.split(',')) {
+		const item = getOSItem(name);
+		if (item.equipment) {
+			gear[item.equipment.slot] = { item: item.id, quantity: 1 };
+		}
+	}
+	const image = await generateGearImage(user, new Gear(gear), null, null);
+	return { attachments: [{ fileName: 'image.jpg', buffer: image }] };
 }

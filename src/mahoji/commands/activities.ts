@@ -14,6 +14,7 @@ import { collectables, collectCommand } from '../lib/abstracted_commands/collect
 import { decantCommand } from '../lib/abstracted_commands/decantCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
+import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
@@ -188,6 +189,23 @@ export const activitiesCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'fight_caves',
 			description: 'Allows you to fight TzTok-Jad and do the Fight Caves.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'inferno',
+			description: 'Allows you to fight TzKal-Zuk and do the Inferno.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'action',
+					description: 'The action you want to perform',
+					required: true,
+					choices: [
+						{ name: 'Start Inferno Trip', value: 'start' },
+						{ name: 'Check Inferno Stats', value: 'stats' }
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -205,6 +223,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		decant?: { potion_name: string; dose?: number };
 		charge?: { item: string; quantity?: number };
 		fight_caves?: {};
+		inferno?: { action: string };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -213,12 +232,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 		if (options.decant) {
 			return decantCommand(klasaUser, options.decant.potion_name, options.decant.dose);
 		}
+		if (options.inferno?.action === 'stats') return infernoStatsCommand(klasaUser);
 
 		// Minion must be free
 		const isBusy = minionIsBusy(mahojiUser.id);
 		const busyStr = `${minionName(mahojiUser)} is currently busy.`;
 		if (isBusy) return busyStr;
 
+		if (options.inferno?.action === 'start') return infernoStartCommand(klasaUser, channelID);
 		if (options.sawmill) {
 			return sawmillCommand(klasaUser, options.sawmill.type, options.sawmill.quantity, channelID);
 		}
