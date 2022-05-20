@@ -3,6 +3,7 @@ import {
 	Guild,
 	MessageActionRow,
 	MessageActionRowOptions,
+	MessageAttachment,
 	MessageButtonStyleResolvable,
 	MessageComponentType,
 	MessageEmbed,
@@ -20,6 +21,7 @@ import {
 	ICommand,
 	MahojiClient
 } from 'mahoji';
+import { MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -102,6 +104,10 @@ export function getCommandArgs(
 export function convertAPIEmbedToDJSEmbed(embed: APIEmbed) {
 	const data: MessageEmbedOptions = { ...embed, timestamp: embed.timestamp ? Number(embed.timestamp) : undefined };
 	return new MessageEmbed(data);
+}
+
+export function convertAttachmentDJSAttachment(attachment: MahojiAttachment): MessageAttachment {
+	return new MessageAttachment(attachment.buffer, attachment.fileName);
 }
 
 export function convertComponentDJSComponent(component: APIActionRowComponent): MessageActionRow {
