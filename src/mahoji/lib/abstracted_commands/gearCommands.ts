@@ -139,7 +139,7 @@ export async function gearEquipCommand(args: {
 	const itemToEquip = getItem(item);
 	if (!itemToEquip) return "You didn't supply the name of an item or preset you want to equip.";
 	const quantity = mahojiParseNumber({ input: _quantity ?? 1, min: 1, max: MAX_INT_JAVA }) ?? 1;
-	if (!itemToEquip.equipable_by_player || !itemToEquip.equipment) return "This item isn't equippable.";
+	if (!itemToEquip.equipable_by_player || !itemToEquip.equipment) return "This item isn't equipable.";
 
 	const bank = new Bank(user.bank as ItemBank);
 	const cost = new Bank().add(itemToEquip.id, quantity);
@@ -205,12 +205,12 @@ export async function gearEquipCommand(args: {
 
 		const loot = new Bank().add(equippedInThisSlot.item, equippedInThisSlot.quantity);
 		await klasaUser.addItemsToBank({ items: loot, collectionLog: false });
-		await mahojiUserSettingsUpdate(user.id, {
+		const { newUser } = await mahojiUserSettingsUpdate(user.id, {
 			[dbKey]: newGear
 		});
 		return gearEquipCommand({
 			interaction,
-			user,
+			user: newUser,
 			klasaUser,
 			setup,
 			item,
