@@ -6,7 +6,7 @@ import { NexTaskOptions, NightmareActivityTaskOptions, RaidsOptions } from '../.
 import { minionName } from '../../../lib/util/minionUtils';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
-export async function cancelTaskCommand(user: User, interaction: SlashCommandInteraction): Promise<string> {
+export async function cancelTaskCommand(user: User, interaction?: SlashCommandInteraction): Promise<string> {
 	const currentTask = getActivityOfUser(user.id);
 
 	const mName = minionName(user);
@@ -51,12 +51,14 @@ export async function cancelTaskCommand(user: User, interaction: SlashCommandInt
 		}
 	}
 
-	await handleMahojiConfirmation(
-		interaction,
-		`${mName} is currently doing a ${currentTask.type} trip.
+	if (interaction) {
+		await handleMahojiConfirmation(
+			interaction,
+			`${mName} is currently doing a ${currentTask.type} trip.
 Please confirm if you want to call your minion back from their trip. 
 They'll **drop** all their current **loot and supplies** to get back as fast as they can, so you won't receive any loot from this trip if you cancel it, and you will lose any supplies you spent to start this trip, if any.`
-	);
+		);
+	}
 
 	await cancelTask(user.id);
 

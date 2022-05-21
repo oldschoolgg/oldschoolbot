@@ -31,10 +31,12 @@ import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 import { isUsersDailyReady } from './daily';
 
@@ -112,7 +114,8 @@ export default class MinionCommand extends BotCommand {
 						auto_farm: {}
 					},
 					bypassInhibitors: true
-				})
+				}),
+			cantBeBusy: true
 		});
 
 		const dailyIsReady = isUsersDailyReady(msg.author);
@@ -126,7 +129,8 @@ export default class MinionCommand extends BotCommand {
 						commandName: 'daily',
 						args: [],
 						bypassInhibitors: true
-					})
+					}),
+				cantBeBusy: true
 			});
 		}
 
@@ -142,6 +146,54 @@ export default class MinionCommand extends BotCommand {
 						bypassInhibitors: true
 					}),
 				cantBeBusy: false
+			});
+		}
+
+		const farmingPatchDetails = await (
+			await getFarmingInfo(msg.author.id)
+		).patchesDetailed
+			.filter(p => p.ready === true)
+			.sort((a, b) => b.plantTime - a.plantTime)
+			.slice(0, 2);
+		for (const p of farmingPatchDetails) {
+			dynamicButtons.add({
+				name: `Harvest ${p.plant!.name}`,
+				emoji: Emoji.Farming,
+				fn: () =>
+					runCommand({
+						message: msg,
+						commandName: 'farming',
+						args: { plant: { plant_name: p.plant!.name } },
+						bypassInhibitors: true
+					}),
+				cantBeBusy: true
+			});
+		}
+		dynamicButtons.add({
+			name: 'Check Patches',
+			emoji: Emoji.Stopwatch,
+			fn: () =>
+				runCommand({
+					message: msg,
+					commandName: 'farming',
+					args: { check_patches: {} },
+					bypassInhibitors: true
+				}),
+			cantBeBusy: false
+		});
+		const birdhouseDetails = await calculateBirdhouseDetails(msg.author.id);
+		if (birdhouseDetails.isReady) {
+			dynamicButtons.add({
+				name: 'Birdhouse Run',
+				emoji: '692946556399124520',
+				fn: () =>
+					runCommand({
+						message: msg,
+						commandName: 'activities',
+						args: { birdhouses: { action: 'harvest' } },
+						bypassInhibitors: true
+					}),
+				cantBeBusy: true
 			});
 		}
 
@@ -162,7 +214,8 @@ export default class MinionCommand extends BotCommand {
 						bypassInhibitors: true
 					});
 				},
-				emoji: '365003979840552960'
+				emoji: '365003979840552960',
+				cantBeBusy: true
 			});
 		}
 

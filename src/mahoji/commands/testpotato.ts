@@ -15,6 +15,7 @@ import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Skills from '../../lib/skilling/skills';
+import Farming from '../../lib/skilling/skills/farming';
 import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -139,10 +140,20 @@ for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).
 	equippablesBank.add(i.id);
 }
 
+const farmingPreset = new Bank();
+for (const plant of Farming.Plants) {
+	farmingPreset.add(plant.inputItems.clone().multiply(100));
+	if (plant.protectionPayment) {
+		farmingPreset.add(plant.protectionPayment.clone().multiply(100));
+	}
+}
+farmingPreset.add('Ultracompost', 10_000);
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
-	['equippables', equippablesBank]
+	['equippables', equippablesBank],
+	['farming', farmingPreset]
 ] as const;
 
 const nexSupplies = new Bank()
