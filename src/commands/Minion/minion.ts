@@ -159,6 +159,18 @@ export default class MinionCommand extends BotCommand {
 		}
 
 		dynamicButtons.add({
+			name: 'Auto-Slay',
+			emoji: Emoji.Slayer,
+			fn: () =>
+				runCommand({
+					message: msg,
+					commandName: 'autoslay',
+					args: [],
+					bypassInhibitors: true
+				}),
+			cantBeBusy: true
+		});
+		dynamicButtons.add({
 			name: 'Check Patches',
 			emoji: Emoji.Stopwatch,
 			fn: () =>
