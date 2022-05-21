@@ -46,7 +46,7 @@ import {
 	itemNameFromID,
 	stringMatches
 } from '../lib/util';
-import getOSItem from '../lib/util/getOSItem';
+import getOSItem, { getItem } from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
@@ -951,6 +951,12 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
+			}
+			case 'itemdata': {
+				if (typeof input !== 'string') return;
+				const item = getItem(input);
+				if (!item) return;
+				return msg.channel.send(JSON.stringify(item, null, 2));
 			}
 		}
 	}
