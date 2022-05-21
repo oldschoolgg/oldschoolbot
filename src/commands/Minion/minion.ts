@@ -158,26 +158,6 @@ export default class MinionCommand extends BotCommand {
 			});
 		}
 
-		const farmingPatchDetails = await (
-			await getFarmingInfo(msg.author.id)
-		).patchesDetailed
-			.filter(p => p.ready === true)
-			.sort((a, b) => b.plantTime - a.plantTime)
-			.slice(0, 1);
-		for (const p of farmingPatchDetails) {
-			dynamicButtons.add({
-				name: `Harvest ${p.plant!.name}`,
-				emoji: Emoji.Farming,
-				fn: () =>
-					runCommand({
-						message: msg,
-						commandName: 'farming',
-						args: { plant: { plant_name: p.plant!.name } },
-						bypassInhibitors: true
-					}),
-				cantBeBusy: true
-			});
-		}
 		dynamicButtons.add({
 			name: 'Check Patches',
 			emoji: Emoji.Stopwatch,
