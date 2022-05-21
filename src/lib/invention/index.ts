@@ -64,7 +64,7 @@ export interface SpecialDisassemblyGroup {
 	amount: number;
 }
 
-type DisassembleFlag = 'third_age' | 'dyed' | 'dwarven' | 'barrows';
+type DisassembleFlag = 'third_age' | 'dyed' | 'dwarven' | 'barrows' | 'abyssal';
 
 interface IDisassembleFlag {
 	name: string;

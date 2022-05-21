@@ -7,6 +7,7 @@ export const Glass: DisassemblySourceGroup = {
 	name: 'Glass',
 	items: [
 		{ item: i('Vial'), lvl: 1 },
+		{ item: i('Vial of water'), lvl: 1 },
 		{ item: i('Molten glass'), lvl: 25 },
 		{ item: i('Beer glass'), lvl: 1 },
 		{ item: i('Fishbowl'), lvl: 42 },

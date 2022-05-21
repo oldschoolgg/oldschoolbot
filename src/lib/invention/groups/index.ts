@@ -1,7 +1,6 @@
 import { Ashes } from './Ashes';
 import { Axes } from './Axes';
 import { Bars } from './Bars';
-import { Battleaxe } from './Battleaxe';
 import { BoltTips } from './BoltTips';
 import { Bones } from './Bones';
 import { Bows } from './Bows';
@@ -27,13 +26,13 @@ import { MagicArmour } from './MagicArmour';
 import { Maul } from './Maul';
 import { MeleeArmour } from './MeleeArmour';
 import { Ores } from './Ores';
+import { Organic } from './Organic';
 import { Planks } from './Planks';
 import { Potion } from './Potion';
 import { Projectiles } from './Projectiles';
 import { RangedArmour } from './RangedArmour';
 import { Runes } from './Runes';
 import { Scimitar } from './Scimitar';
-import { Seed } from './Seed';
 import { Shield } from './Shield';
 import { Spear } from './Spear';
 import { Staff } from './Staff';
@@ -47,7 +46,6 @@ import { Warhammer } from './Warhammer';
 
 export default [
 	LeatherHides,
-	Battleaxe,
 	Projectiles,
 	Hasta,
 	Runes,
@@ -60,7 +58,7 @@ export default [
 	MagicArmour,
 	Maul,
 	Logs,
-	Seed,
+	Organic,
 	Herb,
 	Potion,
 	BoltTips,

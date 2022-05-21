@@ -17,6 +17,7 @@ export const Projectiles: DisassemblySourceGroup = {
 		{ item: i('Mithril dart'), lvl: 30 },
 		{ item: i('Adamant dart'), lvl: 30 },
 		{ item: i('Rune dart'), lvl: 50 },
+		{ item: i('Amethyst dart'), lvl: 50 },
 		{ item: i('Dragon dart'), lvl: 60 },
 		// Javelins
 		{ item: i('Bronze javelin'), lvl: 1 },
@@ -50,6 +51,7 @@ export const Projectiles: DisassemblySourceGroup = {
 			lvl: 25
 		},
 		{ item: i('Mithril knife'), lvl: 30 },
+		{ item: i('Adamant knife'), lvl: 40 },
 		{ item: i('Rune knife'), lvl: 50 },
 		{ item: i('Dragon knife'), lvl: 60 },
 		// Bolts

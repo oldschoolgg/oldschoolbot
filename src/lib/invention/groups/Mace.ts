@@ -42,7 +42,8 @@ export const Mace: DisassemblySourceGroup = {
 		{ item: i('Steel mace'), lvl: 20 },
 		{ item: i('Mithril mace'), lvl: 30 },
 		{ item: i('Adamant mace'), lvl: 40 },
-		{ item: i('Rune mace'), lvl: 50 }
+		{ item: i('Rune mace'), lvl: 50 },
+		{ item: i("Viggora's chainmace (u)"), lvl: 80 }
 	],
 	parts: { dextrous: 2, heavy: 3, base: 35, smooth: 30 }
 };

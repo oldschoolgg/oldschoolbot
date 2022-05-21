@@ -1,11 +1,12 @@
 // Base custom items are referenced elsewhere in the custom items files and must be loaded first
+
 import './baseCustomItems';
 import '../deletedItems';
+import './invention';
 import './customItemsFancy';
 import './farming';
 import './pets';
 import './fishing';
-import './invention';
 import './nex';
 import './nonCustomChanges';
 import './baxBath';

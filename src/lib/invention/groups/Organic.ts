@@ -3,9 +3,10 @@ import { DisassemblySourceGroup } from '..';
 
 const i = getOSItem;
 
-export const Seed: DisassemblySourceGroup = {
-	name: 'Seed',
+export const Organic: DisassemblySourceGroup = {
+	name: 'Organic',
 	items: [
+		// Seeds
 		{ item: i('Potato seed'), lvl: 1 },
 		{ item: i('Marigold seed'), lvl: 2 },
 		{ item: i('Barley seed'), lvl: 3 },
@@ -43,6 +44,7 @@ export const Seed: DisassemblySourceGroup = {
 		{ item: i('Strawberry seed'), lvl: 31 },
 		{ item: i('Ranarr seed'), lvl: 32 },
 		{ item: i('Banana tree seed'), lvl: 33 },
+		{ item: i('Teak seed'), lvl: 35 },
 		{ item: i('Dwellberry seed'), lvl: 36 },
 		{ item: i('Toadflax seed'), lvl: 38 },
 		{ item: i('Orange tree seed'), lvl: 39 },
@@ -75,8 +77,18 @@ export const Seed: DisassemblySourceGroup = {
 		{ item: i('Torstol seed'), lvl: 85 },
 		{ item: i('Potato cactus seed'), lvl: 86 },
 		{ item: i('Avocado seed'), lvl: 99 },
+		{ item: i('Athelas seed'), lvl: 99 },
 		{ item: i('Mango seed'), lvl: 105 },
-		{ item: i('Lychee seed'), lvl: 111 }
+		{ item: i('Lychee seed'), lvl: 111 },
+		// Misc
+		{ item: i('Yew roots'), lvl: 35 },
+		{ item: i('Limpwurt root'), lvl: 35 },
+		{ item: i('Giant seaweed'), lvl: 45 },
+		{ item: i("Red spiders' eggs"), lvl: 45 },
+		{ item: i('Potato cactus'), lvl: 55 },
+		{ item: i('Mort myre fungus'), lvl: 55 },
+		{ item: i('Red chinchompa'), lvl: 55 },
+		{ item: i('Black chinchompa'), lvl: 70 }
 	],
 	parts: { organic: 99 }
 };

@@ -1,15 +1,24 @@
+import { userMention } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { calcWhatPercent, percentChance, Time } from 'e';
+import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
-import { getSkillsOfMahojiUser } from '../../mahoji/mahojiSettings';
+import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
+import { ActivityTaskOptions } from '../types/minions';
 import { calcPerHour, clamp, formatDuration, toKMB } from '../util';
+import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
+import getOSItem, { getItem } from '../util/getOSItem';
+import { handleTripFinish } from '../util/handleTripFinish';
+import { minionName } from '../util/minionUtils';
 import { DisassemblySourceGroup, DisassemblySourceGroups, IMaterialBank } from '.';
+import { transactMaterialsFromUser } from './inventions';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 
@@ -89,7 +98,6 @@ export function handleDisassembly({
 	if (!_group) throw new Error(`No data for ${item.name}`);
 	const { data, group } = _group;
 	const skills = getSkillsOfMahojiUser(user, true);
-	console.log(skills.invention);
 
 	if (skills.invention < data.lvl) {
 		return {
@@ -159,19 +167,23 @@ export function handleDisassembly({
 export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user: User }): CommandResponse {
 	let totalXP = 0;
 	let totalMaterials = new MaterialBank();
-	let totalTime = 0;
 	const results: ({ item: Item } & DisassemblyResult)[] = [];
+	const cantBeDisassembled = [];
 	for (const [item, qty] of bank.items()) {
-		if (!findDisassemblyGroup(item)) continue;
+		const group = findDisassemblyGroup(item);
+		if (!group) {
+			cantBeDisassembled.push(item);
+			continue;
+		}
 		const result = handleDisassembly({
 			user,
 			inputQuantity: qty,
 			item
 		});
 		if (result.error !== null) return result.error;
-		totalXP += result.xp;
+		const { xp } = calculateDisXP(qty, group.data);
+		totalXP += xp;
 		totalMaterials.add(result.materials);
-		totalTime += result.duration;
 		results.push({ ...result, item });
 	}
 	// @ts-ignore ignore
@@ -183,7 +195,102 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 	return {
 		content: `
 **Total XP:** ${totalXP}
-**Total Time:** ${formatDuration(totalTime)}`,
+**Items in your bank that can't be disassembled:** ${cantBeDisassembled
+			.map(i => i.name)
+			.join(', ')
+			.slice(0, 1500)}`,
 		attachments: [{ fileName: 'disassemble-analysis.txt', buffer: Buffer.from(normalTable) }]
 	};
+}
+
+export interface DisassembleTaskOptions extends ActivityTaskOptions {
+	item: number;
+	quantity: number;
+}
+
+export async function disassembleCommand({
+	mahojiUser,
+	klasaUser,
+	itemToDisassembleName,
+	quantityToDisassemble,
+	channelID
+}: {
+	mahojiUser: User;
+	klasaUser: KlasaUser;
+	itemToDisassembleName: string;
+	quantityToDisassemble: number | undefined;
+	channelID: bigint;
+}): CommandResponse {
+	const item = getItem(itemToDisassembleName);
+	if (!item) return "That's not a valid item.";
+	const group = findDisassemblyGroup(item);
+	if (!group) return 'This item cannot be disassembled.';
+	const result = handleDisassembly({
+		user: mahojiUser,
+		inputQuantity: quantityToDisassemble,
+		item
+	});
+	if (result.error !== null) return result.error;
+
+	if (!klasaUser.owns(result.cost)) {
+		return `You don't own ${result.cost}.`;
+	}
+	await klasaUser.removeItemsFromBank(result.cost);
+
+	await addSubTaskToActivityTask<DisassembleTaskOptions>({
+		userID: mahojiUser.id,
+		channelID: channelID.toString(),
+		duration: result.duration,
+		type: 'Disassembling',
+		item: item.id,
+		quantity: result.quantity
+	});
+
+	return `${klasaUser}, ${klasaUser.minionName} is now disassembling ${result.quantity}x ${
+		item.name
+	}, the trip will take approximately ${formatDuration(result.duration)}
+**Junk Chance:** ${result.junkChance.toFixed(2)}%`;
+}
+
+export async function disassemblyTask(data: DisassembleTaskOptions) {
+	const { userID, quantity } = data;
+	const klasaUser = await globalClient.fetchUser(userID);
+	const mahojiUser = await mahojiUsersSettingsFetch(userID);
+	const item = getOSItem(data.item);
+
+	const result = handleDisassembly({
+		user: mahojiUser,
+		inputQuantity: quantity,
+		item
+	});
+	if (result.error !== null) throw new Error('WHAT THE FUCK');
+
+	await transactMaterialsFromUser({ userID: BigInt(data.userID), add: result.materials });
+
+	const xpStr = await klasaUser.addXP({
+		skillName: SkillsEnum.Invention,
+		amount: result.xp,
+		duration: data.duration,
+		multiplier: false
+	});
+	handleTripFinish(
+		klasaUser,
+		data.channelID,
+		`${userMention(data.userID)}, ${minionName(mahojiUser)} finished disassembling ${data.quantity}x ${
+			item.name
+		}. You received these materials: ${result.materials}.
+${xpStr}`,
+		[
+			'invention',
+			{
+				disassemble: {
+					name: item.name
+				}
+			},
+			true
+		],
+		undefined,
+		data,
+		null
+	);
 }

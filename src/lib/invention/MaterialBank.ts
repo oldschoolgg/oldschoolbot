@@ -9,6 +9,10 @@ export class MaterialBank {
 		this.validate();
 	}
 
+	clone() {
+		return new MaterialBank({ ...this.bank });
+	}
+
 	private validate() {
 		for (const [key, value] of Object.entries(this.bank)) {
 			assert(materialTypes.includes(key as any));
@@ -20,6 +24,13 @@ export class MaterialBank {
 		return this.bank[material] ?? 0;
 	}
 
+	has(bank: MaterialBank) {
+		for (const { type, quantity } of bank.values()) {
+			if (this.amount(type) < quantity) return false;
+		}
+		return true;
+	}
+
 	addItem(material: MaterialType, quantity: number): this {
 		if (quantity < 1) return this;
 		if (this.bank[material] !== undefined) this.bank[material]! += quantity;
@@ -29,10 +40,9 @@ export class MaterialBank {
 	}
 
 	removeItem(material: MaterialType, quantity: number): this {
-		if (!this.bank[material] || this.bank[material]! < quantity) {
-			throw new Error('Tried to remove more from a material bank than is owned');
-		}
+		if (typeof this.bank[material] === 'undefined') return this;
 		this.bank[material]! -= quantity;
+		if (this.bank[material]! <= 0) delete this.bank[material];
 		this.validate();
 		return this;
 	}

@@ -23,6 +23,8 @@ export const Sword: DisassemblySourceGroup = {
 		{ item: i('Steel sword'), lvl: 20 },
 		{ item: i('Mithril sword'), lvl: 30 },
 		{ item: i('Mithril 2h sword'), lvl: 30 },
+		{ item: i('Adamant sword'), lvl: 30 },
+		{ item: i('Adamant 2h sword'), lvl: 30 },
 		{ item: i('Rune sword'), lvl: 50 },
 		{ item: i('Rune 2h sword'), lvl: 50 },
 		{ item: i('Dragon 2h sword'), lvl: 60 },

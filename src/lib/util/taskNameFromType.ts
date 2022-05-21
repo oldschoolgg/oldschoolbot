@@ -170,6 +170,8 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.BaxtorianBathhouses;
 		case 'ItemInventing':
 			return Tasks.ItemInventing;
+		case 'Disassembling':
+			return Tasks.Disassembling;
 		case 'Easter':
 		case 'BlastFurnace':
 			return Tasks.REMOVED;

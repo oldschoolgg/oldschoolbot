@@ -6,6 +6,7 @@ const i = getOSItem;
 export const HybridArmour: DisassemblySourceGroup = {
 	name: 'HybridArmour',
 	items: [
+		{ item: i('Cape of legends'), lvl: 1 },
 		{
 			item: i('Void knight top'),
 			lvl: 42
@@ -21,7 +22,6 @@ export const HybridArmour: DisassemblySourceGroup = {
 			}
 		},
 		{ item: i('Dragonstone boots'), lvl: 50 },
-		{ item: i('Cape of legends'), lvl: 1 },
 		{ item: i('Obsidian cape'), lvl: 35 },
 		{
 			item: i('Void knight gloves'),

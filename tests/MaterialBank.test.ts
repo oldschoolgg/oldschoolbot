@@ -14,4 +14,14 @@ describe('materialLoot', () => {
 		expect(materialLoot.amount('bandos')).toEqual(6);
 		expect(materialLoot.amount('armadyl')).toEqual(10);
 	});
+	test('has', () => {
+		const materialLoot = new MaterialBank();
+		materialLoot.add('armadyl', 10);
+		materialLoot.add('bandos', 5);
+
+		expect(materialLoot.has(new MaterialBank().add('armadyl', 10))).toEqual(true);
+		expect(materialLoot.has(new MaterialBank().add('armadyl', 10).add('bandos', 5))).toEqual(true);
+		expect(materialLoot.has(new MaterialBank().add('armadyl', 11))).toEqual(false);
+		expect(materialLoot.has(new MaterialBank().add('armadyl', 10).add('bandos', 6))).toEqual(false);
+	});
 });

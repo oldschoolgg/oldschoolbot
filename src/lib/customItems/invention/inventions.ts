@@ -1,9 +1,6 @@
-import { Inventions } from '../../invention/inventions';
 import { setCustomItem } from '../util';
 
 function addInvention(id: number, name: string) {
-	const invention = Inventions.find(i => i.name === name);
-	if (!invention) throw new Error(`Tried to add non-existant invention: ${name}`);
 	setCustomItem(
 		id,
 		name,

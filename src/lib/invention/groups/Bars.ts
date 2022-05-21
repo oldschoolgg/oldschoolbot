@@ -12,7 +12,9 @@ export const Bars: DisassemblySourceGroup = {
 		{ item: i('Silver bar'), lvl: 20 },
 		{ item: i('Steel bar'), lvl: 20 },
 		{ item: i('Mithril bar'), lvl: 30 },
-		{ item: i('Gold bar'), lvl: 40 }
+		{ item: i('Gold bar'), lvl: 40 },
+		{ item: i('Adamantite bar'), lvl: 70 },
+		{ item: i('Runite bar'), lvl: 90 }
 	],
 	parts: { simple: 75 }
 };
