@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { randInt, roll } from 'e';
+import { randArrItem, randInt, roll } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -166,7 +166,7 @@ export function getPlantToGrow(
 			contractType.splice(contractType.indexOf(index), 1);
 	}
 
-	const plantFromContract = contractType[randInt(0, contractType.length - 1)];
+	const plantFromContract = randArrItem(contractType);
 	const plantToGrow = plantFromContract[1];
 	const tier = plantFromContract[2];
 
