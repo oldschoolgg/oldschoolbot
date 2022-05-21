@@ -121,7 +121,7 @@ export async function calculateBirdhouseDetails(userID: string | bigint): Promis
 		};
 	}
 
-	const details = (bh.minion_birdhouseTraps as unknown as BirdhouseData | null) ?? defaultBirdhouseTrap;
+	const details = bh.minion_birdhouseTraps as unknown as BirdhouseData;
 
 	const birdHouse = details.lastPlaced ? birdhouses.find(_birdhouse => _birdhouse.name === details.lastPlaced) : null;
 	if (!birdHouse) throw new Error(`Missing ${details.lastPlaced} birdhouse`);
