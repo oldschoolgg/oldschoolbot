@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { uniqueArr } from 'e';
+import { Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
@@ -14,10 +14,17 @@ import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
 import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
+import {
+	FarmingPatchName,
+	farmingPatchNames,
+	getFarmingKeyFromName,
+	userGrowingProgressStr
+} from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
@@ -360,6 +367,20 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'irontoggle',
 					description: 'Toggle being an ironman on/off.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'forcegrow',
+					description: 'Force a plant to grow.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'patch_name',
+							description: 'The patches you want to harvest.',
+							required: true,
+							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+						}
+					]
 				}
 			],
 			run: async ({
@@ -377,6 +398,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				badnexgear?: {};
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
+				forcegrow?: { patch_name: FarmingPatchName };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -499,6 +521,22 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						}
 					});
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
+				}
+				if (options.forcegrow) {
+					const farmingDetails = await getFarmingInfo(userID);
+					const thisPlant = farmingDetails.patchesDetailed.find(
+						p => p.plant?.seedType === options.forcegrow?.patch_name
+					);
+					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
+					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
+
+					await mahojiUserSettingsUpdate(user.id, {
+						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
+							...rawPlant,
+							plantTime: Date.now() - Time.Month
+						}
+					});
+					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
 				return 'Nothin!';
 			}
