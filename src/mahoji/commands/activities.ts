@@ -221,7 +221,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 					required: true,
 					choices: [
 						{ name: 'Check Birdhouses', value: 'check' },
-						{ name: 'Harvest and Plant Birdhouses', value: 'harvest' }
+						{ name: 'Collect and Plant Birdhouses', value: 'harvest' }
 					]
 				},
 				{
