@@ -20,6 +20,7 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
@@ -34,10 +35,12 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
+import { convertLVLtoXP, convertMahojiResponseToDJSResponse, isValidNickname, stringMatches } from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
+import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { isUsersDailyReady } from './daily';
 
 const patMessages = [
@@ -101,6 +104,12 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
+		const [birdhouseDetails, mahojiUser, farmingDetails] = await Promise.all([
+			calculateBirdhouseDetails(msg.author.id),
+			mahojiUsersSettingsFetch(msg.author.id, { minion_farmingContract: true }),
+			getFarmingInfo(msg.author.id)
+		]);
+
 		const dynamicButtons = new DynamicButtons();
 
 		dynamicButtons.add({
@@ -154,7 +163,7 @@ export default class MinionCommand extends BotCommand {
 		).patchesDetailed
 			.filter(p => p.ready === true)
 			.sort((a, b) => b.plantTime - a.plantTime)
-			.slice(0, 2);
+			.slice(0, 1);
 		for (const p of farmingPatchDetails) {
 			dynamicButtons.add({
 				name: `Harvest ${p.plant!.name}`,
@@ -181,7 +190,6 @@ export default class MinionCommand extends BotCommand {
 				}),
 			cantBeBusy: false
 		});
-		const birdhouseDetails = await calculateBirdhouseDetails(msg.author.id);
 		if (birdhouseDetails.isReady) {
 			dynamicButtons.add({
 				name: 'Birdhouse Run',
@@ -193,6 +201,19 @@ export default class MinionCommand extends BotCommand {
 						args: { birdhouses: { action: 'harvest' } },
 						bypassInhibitors: true
 					}),
+				cantBeBusy: true
+			});
+		}
+		const contract = mahojiUser.minion_farmingContract as FarmingContract | null;
+		const contractedPlant = farmingDetails.patchesDetailed.find(p => p.plant?.name === contract?.plantToGrow);
+		if (msg.author.skillLevel(SkillsEnum.Farming) > 45 && (!contractedPlant || contractedPlant.ready !== false)) {
+			dynamicButtons.add({
+				name: 'Auto Farming Contract',
+				emoji: '977410792754413668',
+				fn: async () => {
+					const result = await autoContract(msg.author, BigInt(msg.channel.id), BigInt(msg.author.id));
+					return msg.channel.send(convertMahojiResponseToDJSResponse(result));
+				},
 				cantBeBusy: true
 			});
 		}
@@ -220,7 +241,7 @@ export default class MinionCommand extends BotCommand {
 		}
 
 		const sentMessage = await msg.channel.send({
-			content: msg.author.minionStatus,
+			content: `${msg.author.minionStatus}`,
 			components: dynamicButtons.render({ isBusy: msg.author.minionIsBusy })
 		});
 		if (dynamicButtons.buttons.length > 0) {
@@ -242,7 +263,10 @@ export default class MinionCommand extends BotCommand {
 					for (const button of dynamicButtons.buttons) {
 						if (selection.customID === button.id) {
 							if (selection.user.minionIsBusy && button.cantBeBusy) {
-								return selection.reply({ content: msg.author.minionStatus, ephemeral: true });
+								return selection.reply({
+									content: `Your action couldn't be performed, because your minion is busy: ${msg.author.minionStatus}`,
+									ephemeral: true
+								});
 							}
 							return button.fn();
 						}
