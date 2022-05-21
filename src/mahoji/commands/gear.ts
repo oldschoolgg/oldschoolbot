@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType } from 'discord-api-types';
 import { CommandRunOptions } from 'mahoji';
 
 import { GearSetupType, GearStat } from '../../lib/gear';
-import { gearEquipCommand, gearUnequipCommand } from '../lib/abstracted_commands/gearCommands';
+import { gearEquipCommand, gearStatsCommand, gearUnequipCommand } from '../lib/abstracted_commands/gearCommands';
 import { equippedItemOption, gearPresetOption, gearSetupOption, ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -68,6 +68,19 @@ export const gearCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'stats',
+			description: 'Check the gear stats of a list of items, regardless if you own them or not.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'gear_setup',
+					description: 'A list of equippable items to check the stats of.',
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
@@ -77,6 +90,7 @@ export const gearCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		equip?: { gear_setup: GearSetupType; item?: string; preset?: string; quantity?: number; auto?: string };
 		unequip?: { gear_setup: GearSetupType; item?: string; all?: boolean };
+		stats?: { gear_setup: string };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -102,6 +116,7 @@ export const gearCommand: OSBMahojiCommand = {
 				options.unequip.all
 			);
 		}
+		if (options.stats) return gearStatsCommand(mahojiUser, options.stats.gear_setup);
 		return 'Invalid command.';
 	}
 };

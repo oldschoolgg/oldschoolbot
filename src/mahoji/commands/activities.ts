@@ -4,8 +4,10 @@ import { CommandRunOptions } from 'mahoji';
 import { KourendFavours } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
+import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { minionName } from '../../lib/util/minionUtils';
+import { birdhouseCheckCommand, birdhouseHarvestCommand } from '../lib/abstracted_commands/birdhousesCommand';
 import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
 import { chargeWealthCommand } from '../lib/abstracted_commands/chargeWealthCommand';
@@ -14,6 +16,7 @@ import { collectables, collectCommand } from '../lib/abstracted_commands/collect
 import { decantCommand } from '../lib/abstracted_commands/decantCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
+import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
@@ -188,6 +191,47 @@ export const activitiesCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'fight_caves',
 			description: 'Allows you to fight TzTok-Jad and do the Fight Caves.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'inferno',
+			description: 'Allows you to fight TzKal-Zuk and do the Inferno.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'action',
+					description: 'The action you want to perform',
+					required: true,
+					choices: [
+						{ name: 'Start Inferno Trip', value: 'start' },
+						{ name: 'Check Inferno Stats', value: 'stats' }
+					]
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'birdhouses',
+			description: 'Allows you to plant Birdhouse traps.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'action',
+					description: 'The action you want to perform.',
+					required: true,
+					choices: [
+						{ name: 'Check Birdhouses', value: 'check' },
+						{ name: 'Collect and Plant Birdhouses', value: 'harvest' }
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'birdhouse',
+					description: 'The birdhouse you want to plant.',
+					required: false,
+					choices: birdhouses.map(i => ({ name: i.name, value: i.name }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -205,6 +249,8 @@ export const activitiesCommand: OSBMahojiCommand = {
 		decant?: { potion_name: string; dose?: number };
 		charge?: { item: string; quantity?: number };
 		fight_caves?: {};
+		inferno?: { action: string };
+		birdhouses?: { action?: string; birdhouse?: string };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -213,12 +259,18 @@ export const activitiesCommand: OSBMahojiCommand = {
 		if (options.decant) {
 			return decantCommand(klasaUser, options.decant.potion_name, options.decant.dose);
 		}
+		if (options.inferno?.action === 'stats') return infernoStatsCommand(klasaUser);
+		if (options.birdhouses?.action === 'check') return birdhouseCheckCommand(mahojiUser);
 
 		// Minion must be free
 		const isBusy = minionIsBusy(mahojiUser.id);
 		const busyStr = `${minionName(mahojiUser)} is currently busy.`;
 		if (isBusy) return busyStr;
 
+		if (options.birdhouses?.action === 'harvest') {
+			return birdhouseHarvestCommand(klasaUser, mahojiUser, channelID, options.birdhouses.birdhouse);
+		}
+		if (options.inferno?.action === 'start') return infernoStartCommand(klasaUser, channelID);
 		if (options.sawmill) {
 			return sawmillCommand(klasaUser, options.sawmill.type, options.sawmill.quantity, channelID);
 		}
