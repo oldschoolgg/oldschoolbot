@@ -89,8 +89,7 @@ export default class extends Extendable {
 			return this.createDM().then(dm => dm.send(input));
 		}
 
-		let messagePayload =
-			input instanceof MessagePayload ? input.resolveData() : MessagePayload.create(this, input).resolveData();
+		let messagePayload = MessagePayload.create(this, input).resolveData();
 
 		const { data, files } = await messagePayload.resolveFiles();
 		// @ts-ignore 2341

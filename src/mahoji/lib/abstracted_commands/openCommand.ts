@@ -171,7 +171,7 @@ ${messages.join(', ')}`
 }
 
 export async function abstractedOpenCommand(
-	interaction: SlashCommandInteraction,
+	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	mahojiUser: User,
 	_names: string[],
@@ -190,7 +190,7 @@ export async function abstractedOpenCommand(
 	if (names.includes('all')) {
 		if (!openables.length) return 'You have no openable items.';
 		if (user.perkTier < PerkTier.Two) return patronMsg(PerkTier.Two);
-		await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
+		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
 	}
 
 	if (!openables.length) return "That's not a valid item.";
