@@ -1,10 +1,11 @@
 import { User } from '@prisma/client';
-import { notEmpty } from 'e';
+import { notEmpty, randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
+import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { dyedItems } from '../../../lib/dyedItems';
 import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -166,6 +167,14 @@ for (const genericU of genericUsables) {
 		}
 	});
 }
+usables.push({
+	items: [getOSItem('Double loot token')],
+	run: async (user: KlasaUser) => {
+		await user.removeItemsFromBank(new Bank().add('Double loot token'));
+		await addToDoubleLootTimer(Time.Minute * randInt(6, 36), `${user} used a Double Loot token!`);
+		return 'You used your Double Loot Token!';
+	}
+});
 export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
 
 export async function useCommand(mUser: User, user: KlasaUser, _firstItem: string, _secondItem?: string) {
