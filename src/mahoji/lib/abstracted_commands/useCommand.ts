@@ -1,22 +1,26 @@
 import { User } from '@prisma/client';
-import { notEmpty, randInt, Time } from 'e';
+import { notEmpty } from 'e';
 import { KlasaUser } from 'klasa';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../../lib/constants';
-import { addToDoubleLootTimer } from '../../../lib/doubleLoot';
 import { dyedItems } from '../../../lib/dyedItems';
+import { assert } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+
+interface Usable {
+	items: Item[];
+	run: (user: KlasaUser, mahojiUser: User) => Promise<string>;
+}
+export const usables: Usable[] = [];
 
 interface UsableUnlock {
 	item: Item;
-	resultMessage: string;
 	bitfield: BitField;
+	resultMessage: string;
 }
-
 const usableUnlocks: UsableUnlock[] = [
 	{
 		item: getOSItem('Torn prayer scroll'),
@@ -71,19 +75,31 @@ const usableUnlocks: UsableUnlock[] = [
 		resultMessage: 'You show your pass to the Daemonheim guards, and they grant you access to their rooftops.'
 	}
 ];
-
-const otherUsables = [
-	{
-		item: getOSItem('Double loot token'),
-		run: async (user: KlasaUser) => {
-			await user.removeItemsFromBank(new Bank().add('Double loot token'));
-			await addToDoubleLootTimer(Time.Minute * randInt(6, 36), `${user} used a Double Loot token!`);
-			return 'You used your Double Loot Token!';
+for (const usableUnlock of usableUnlocks) {
+	usables.push({
+		items: [usableUnlock.item],
+		run: async (klasaUser, mahojiUser) => {
+			if (mahojiUser.bitfield.includes(usableUnlock.bitfield)) {
+				return "You already used this item, you can't use it again.";
+			}
+			await klasaUser.removeItemsFromBank(new Bank().add(usableUnlock.item.id));
+			await mahojiUserSettingsUpdate(mahojiUser.id, {
+				bitfield: {
+					push: usableUnlock.bitfield
+				}
+			});
+			return usableUnlock.resultMessage;
 		}
-	}
-];
+	});
+}
 
-const combinedUsables: { items: [Item, Item]; cost?: Bank; loot?: Bank; response: string }[] = [
+const genericUsables: { items: [Item, Item]; cost: Bank; loot: Bank | null; response: string }[] = [
+	{
+		items: [getOSItem('Banana'), getOSItem('Monkey')],
+		cost: new Bank().add('Banana').freeze(),
+		loot: null,
+		response: 'You fed a Banana to your Monkey!'
+	},
 	{
 		items: [getOSItem('Knife'), getOSItem('Turkey')],
 		cost: new Bank().add('Turkey'),
@@ -122,73 +138,49 @@ const combinedUsables: { items: [Item, Item]; cost?: Bank; loot?: Bank; response
 	}
 ];
 
-export const allUsableItems = new Set(usableUnlocks.map(i => i.item.id));
-
-export async function useCommand(
-	interaction: SlashCommandInteraction,
-	mUser: User,
-	user: KlasaUser,
-	itemOrItems: string
-) {
-	if (itemOrItems.includes(',')) {
-		const items = itemOrItems.split(',').map(getItem).filter(notEmpty);
-		if (items.length !== 2) return 'Invalid items.';
-
-		// Redying
-		// e.g. [Blood Dye, Dwarven warhammer (blood)]
-		const baseItem = dyedItems.find(i => i.dyedVersions.some(o => items.includes(o.item)));
-		const dyeToApply = baseItem?.dyedVersions.find(i => items.includes(i.dye));
-		const dyedVariantTheyHave = baseItem?.dyedVersions.find(i => items.includes(i.item));
-		if (baseItem && dyeToApply && dyedVariantTheyHave) {
-			await handleMahojiConfirmation(
-				interaction,
-				`Are you sure you want to use a ${dyeToApply.dye.name} on your ${dyedVariantTheyHave.item.name}?`
-			);
-			const cost = new Bank().add(dyedVariantTheyHave.item.id).add(dyeToApply.dye.id);
-			if (!user.owns(cost)) {
-				return "You don't own that.";
-			}
-			await user.removeItemsFromBank(cost);
-			await user.addItemsToBank({ items: new Bank().add(dyeToApply.item.id), collectionLog: false });
-			return `You redyed your ${dyedVariantTheyHave.item.name} into a ${dyeToApply.item.name} using a ${dyeToApply.dye.name}.`;
+const allDyes = ['Dungeoneering dye', 'Blood dye', 'Ice dye', 'Shadow dye', 'Third age dye', 'Monkey dye'].map(
+	getOSItem
+);
+for (const group of dyedItems) {
+	for (const dyedVersion of group.dyedVersions) {
+		for (const dye of allDyes.filter(i => i !== dyedVersion.dye)) {
+			const resultingItem = group.dyedVersions.find(i => i.dye === dye);
+			if (!resultingItem) continue;
+			genericUsables.push({
+				items: [dyedVersion.item, dye],
+				cost: new Bank().add(dyedVersion.item.id).add(dye.id),
+				loot: new Bank().add(resultingItem.item.id),
+				response: `You used a ${dye.name} on your ${dyedVersion.item.name}, and received a ${resultingItem.item.name}.`
+			});
 		}
-
-		const doubleUsable = combinedUsables.find(i => items.every(t => i.items.includes(t)));
-		if (!doubleUsable) return "This isn't a valid combination of items you can use.";
-		for (const item of items) {
-			if (!user.owns(item.id)) return `You don't own ${item.name}.`;
-		}
-		if (doubleUsable.cost) {
-			if (!user.owns(doubleUsable.cost)) return `You don't own ${doubleUsable.cost}.`;
-			await user.removeItemsFromBank(doubleUsable.cost);
-		}
-		if (doubleUsable.loot) await user.addItemsToBank({ items: doubleUsable.loot, collectionLog: true });
-		return doubleUsable.response;
 	}
-	const firstItem = getItem(itemOrItems);
-	if (!firstItem) return "That's not a valid item.";
+}
+
+for (const genericU of genericUsables) {
+	usables.push({
+		items: genericU.items,
+		run: async klasaUser => {
+			if (genericU.cost) await klasaUser.removeItemsFromBank(genericU.cost);
+			if (genericU.loot) await klasaUser.addItemsToBank({ items: genericU.loot });
+			return genericU.response;
+		}
+	});
+}
+export const allUsableItems = new Set(usables.map(i => i.items.map(i => i.id)).flat(2));
+
+export async function useCommand(mUser: User, user: KlasaUser, _firstItem: string, _secondItem?: string) {
+	const firstItem = getItem(_firstItem);
+	const secondItem = _secondItem === undefined ? null : getItem(_secondItem);
+	if (!firstItem || (_secondItem !== undefined && !secondItem)) return "That's not a valid item.";
+	const items = [firstItem, secondItem].filter(notEmpty);
+	assert(items.length === 1 || items.length === 2);
 
 	const bank = user.bank();
-	if (!bank.has(firstItem.id)) {
-		return "You don't own this item.";
-	}
-	const usable = usableUnlocks.find(u => u.item === firstItem);
-	if (usable) {
-		if (mUser.bitfield.includes(usable.bitfield)) {
-			return "You already used this item, you can't use it again.";
-		}
-		await user.removeItemsFromBank(new Bank().add(usable.item.id));
-		await mahojiUserSettingsUpdate(mUser.id, {
-			bitfield: {
-				push: usable.bitfield
-			}
-		});
-		return usable.resultMessage;
-	}
+	const checkBank = new Bank();
+	for (const i of items) checkBank.add(i.id);
+	if (!bank.has(checkBank)) return `You don't own ${checkBank}.`;
 
-	const other = otherUsables.find(i => i.item === firstItem);
-	if (other) {
-		return other.run(user);
-	}
-	return "That's not an item you can use.";
+	const usable = usables.find(i => items.every(t => i.items.includes(t)));
+	if (!usable) return "That's not a usable item.";
+	return usable.run(user, mUser);
 }

@@ -992,30 +992,34 @@ LIMIT 10;
 				const currentBalanceTier = input.settings.get(UserSettings.PremiumBalanceTier);
 				const currentBalanceTime = input.settings.get(UserSettings.PremiumBalanceExpiryDate);
 
-				if (input.perkTier > 1 && !currentBalanceTier) {
-					return msg.channel.send(`${input.username} is already a patron.`);
+				const oldPerkTier = input.perkTier;
+				if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
+					return msg.channel.send(`${input.username} is already a patron of at least that tier.`);
 				}
 				if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-					return msg.channel.send(
+					await msg.confirm(
 						`${input} already has ${formatDuration(
 							currentBalanceTime!
-						)} of Tier ${currentBalanceTier}, you can't add time for a different tier.`
+						)} of Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 					);
 				}
 				await msg.confirm(
 					`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}?`
 				);
 				await input.settings.update(UserSettings.PremiumBalanceTier, tier);
-				if (currentBalanceTime !== null) {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, currentBalanceTime + ms);
+
+				let newBalanceExpiryTime = 0;
+				if (currentBalanceTime !== null && tier === currentBalanceTier) {
+					newBalanceExpiryTime = currentBalanceTime + ms;
 				} else {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, Date.now() + ms);
+					newBalanceExpiryTime = Date.now() + ms;
 				}
+				await input.settings.update(UserSettings.PremiumBalanceExpiryDate, newBalanceExpiryTime);
 
 				return msg.channel.send(
 					`Gave ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}. They have ${formatDuration(
-						input.settings.get(UserSettings.PremiumBalanceExpiryDate)! - Date.now()
-					)} remaning.`
+						newBalanceExpiryTime - Date.now()
+					)} remaining.`
 				);
 			}
 		}
