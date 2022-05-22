@@ -188,7 +188,7 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 					: '.'
 			}
 `,
-			['inferno', [], true, 'start'],
+			['activities', { inferno: { action: 'start' } }, true],
 			await chatHeadImage({
 				content: chatText,
 				head: 'ketKeh'
