@@ -262,7 +262,7 @@ You made it through ${percentMadeItThrough.toFixed(2)}% of the Inferno${
 					: '.'
 			}
 `,
-			['inferno', isEmergedZuk ? ['emerged'] : [], true, 'start'],
+			['activities', { inferno: { action: 'start', emerged: isEmergedZuk } }, true],
 			await chatHeadImage({
 				content: chatText,
 				head: 'ketKeh'
