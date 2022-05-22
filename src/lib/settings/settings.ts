@@ -8,7 +8,6 @@ import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
 import {
 	convertAPIEmbedToDJSEmbed,
-	convertAttachmentDJSAttachment,
 	convertComponentDJSComponent,
 	convertKlasaCommandToAbstractCommand,
 	convertMahojiCommandToAbstractCommand
@@ -182,13 +181,10 @@ export async function runCommand({
 				if (typeof result === 'string') {
 					await channel.send(result);
 				} else {
-					const { attachments } = result;
-					delete result.attachments;
 					await channel.send({
 						...result,
 						embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
-						components: result.components?.map(convertComponentDJSComponent),
-						files: attachments ? attachments.map(convertAttachmentDJSAttachment) : undefined
+						components: result.components?.map(convertComponentDJSComponent)
 					});
 				}
 			}

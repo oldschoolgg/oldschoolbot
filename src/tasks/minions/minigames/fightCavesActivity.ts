@@ -74,7 +74,7 @@ export default class extends Task {
 				`${user} You died ${formatDuration(
 					preJadDeathTime
 				)} into your attempt.${slayerMsg} The following supplies were refunded back into your bank: ${itemLootBank}.`,
-				['activities', { fight_caves: {} }, true],
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `You die before you even reach TzTok-Jad...atleast you tried, I give you ${tokkulReward}x Tokkul. ${attemptsStr}`,
 					head: 'mejJal'
@@ -111,7 +111,7 @@ export default class extends Task {
 				user,
 				channelID,
 				`${user} ${msg}`,
-				['activities', { fight_caves: {} }, true],
+				['fightcaves', [], true],
 				await chatHeadImage({
 					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'
