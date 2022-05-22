@@ -91,7 +91,7 @@ export const mahoganyHomesBuyables = [
 	{ item: getOSItem("Carpenter's boots"), cost: 200 }
 ];
 
-export async function mahoganyHomesBuyCommand(user: KlasaUser, input = '') {
+export async function mahoganyHomesBuyCommand(user: KlasaUser, input = '', quantity?: number) {
 	const buyable = mahoganyHomesBuyables.find(i => stringMatches(input, i.item.name));
 	if (!buyable) {
 		return `Here are the items you can buy: \n\n${mahoganyHomesBuyables
@@ -99,16 +99,22 @@ export async function mahoganyHomesBuyCommand(user: KlasaUser, input = '') {
 			.join('\n')}.`;
 	}
 
-	const { item, cost } = buyable;
-	const balance = user.settings.get(UserSettings.CarpenterPoints);
-	if (balance < cost) {
-		return `You don't have enough Carpenter Points to buy the ${item.name}. You need ${cost}, but you have only ${balance}.`;
+	if (!quantity) {
+		quantity = 1;
 	}
 
-	await user.settings.update(UserSettings.CarpenterPoints, balance - cost);
-	await user.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
+	const { item, cost } = buyable;
+	const balance = user.settings.get(UserSettings.CarpenterPoints);
+	if (balance < cost * quantity) {
+		return `You don't have enough Carpenter Points to buy ${quantity.toLocaleString()}x ${item.name}. You need ${
+			cost * quantity
+		}, but you have only ${balance}.`;
+	}
 
-	return `Successfully purchased 1x ${item.name} for ${cost} Carpenter Points.`;
+	await user.settings.update(UserSettings.CarpenterPoints, balance - cost * quantity);
+	await user.addItemsToBank({ items: new Bank().add(item.id, quantity), collectionLog: true });
+
+	return `Successfully purchased ${quantity.toLocaleString()}x ${item.name} for ${cost * quantity} Carpenter Points.`;
 }
 
 export async function mahoganyHomesBuildCommand(user: KlasaUser, channelID: bigint): CommandResponse {

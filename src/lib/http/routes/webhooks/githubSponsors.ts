@@ -33,7 +33,7 @@ const githubSponsors = (server: FastifyServer) =>
 						await (globalClient.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
 					}
 
-					addPatronLootTime(tier, globalClient, user as KlasaUser);
+					addPatronLootTime(tier, user as KlasaUser);
 
 					for (const id of [Channel.BSOChannel, Channel.BSOGeneral]) {
 						boxFrenzy(

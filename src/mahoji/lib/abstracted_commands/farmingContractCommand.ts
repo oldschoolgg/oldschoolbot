@@ -1,15 +1,25 @@
-import { User } from '@prisma/client';
+import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
 import { defaultFarmingContract } from '../../../lib/minions/farming';
 import { ContractOption, FarmingContract, FarmingContractDifficultyLevel } from '../../../lib/minions/farming/types';
 import { getPlantToGrow } from '../../../lib/skilling/functions/calcFarmingContracts';
+import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { roughMergeMahojiResponse } from '../../../lib/util';
 import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 import { findPlant } from '../../../lib/util/farmingHelpers';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
 import { minionName } from '../../../lib/util/minionUtils';
-import { getMahojiBank, getSkillsOfMahojiUser, mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import {
+	getMahojiBank,
+	getSkillsOfMahojiUser,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch
+} from '../../mahojiSettings';
+import { farmingPlantCommand, harvestCommand } from './farmingCommand';
+import { abstractedOpenCommand } from './openCommand';
 
 async function janeImage(content: string) {
 	const image = await newChatHeadImage({ content, head: 'jane' });
@@ -22,7 +32,8 @@ const contractToFarmingLevel = {
 	hard: 85
 };
 
-export async function faringContractCommand(user: User, input?: ContractOption): CommandResponse {
+export async function farmingContractCommand(userID: bigint, input?: ContractOption): CommandResponse {
+	const user = await mahojiUsersSettingsFetch(userID);
 	const bank = getMahojiBank(user);
 	const farmingLevel = getSkillsOfMahojiUser(user, true).farming;
 	const currentContract: FarmingContract =
@@ -118,4 +129,55 @@ export async function faringContractCommand(user: User, input?: ContractOption):
 	return janeImage(
 		`Please could you grow a ${plantToGrow} for us? I'll reward you once you have checked its health.`
 	);
+}
+
+export async function autoContract(klasaUser: KlasaUser, channelID: bigint, userID: bigint): CommandResponse {
+	const [farmingDetails, mahojiUser] = await Promise.all([getFarmingInfo(userID), mahojiUsersSettingsFetch(userID)]);
+	const contract = mahojiUser.minion_farmingContract as FarmingContract | null;
+	const plant = contract?.hasContract ? findPlant(contract?.plantToGrow) : null;
+	const patch = farmingDetails.patchesDetailed.find(p => p.plant === plant);
+	const bestContractTierCanDo = Object.entries(contractToFarmingLevel)
+		.sort((a, b) => b[1] - a[1])
+		.find(a => klasaUser.skillLevel(SkillsEnum.Farming) >= a[1])?.[0] as ContractOption | undefined;
+
+	if (klasaUser.owns('Seed pack')) {
+		const openResponse = await abstractedOpenCommand(null, klasaUser, mahojiUser, ['seed pack'], 'auto');
+		const contractResponse = await farmingContractCommand(userID, bestContractTierCanDo);
+		return roughMergeMahojiResponse(openResponse, contractResponse);
+	}
+
+	// If they have no contract, get them a contract, recurse.
+	if (!contract || !contract.hasContract) {
+		const contractResult = await farmingContractCommand(userID, bestContractTierCanDo);
+		const newUser = await mahojiUsersSettingsFetch(mahojiUser.id, { minion_farmingContract: true });
+		const contract = newUser.minion_farmingContract as FarmingContract | null;
+		if (!contract || !contract.plantToGrow) return contractResult;
+		return farmingPlantCommand({
+			user: klasaUser,
+			plantName: contract.plantToGrow,
+			pay: false,
+			autoFarmed: false,
+			quantity: null,
+			channelID
+		});
+	}
+
+	// If they have a contract, but nothing planted, plant it.
+	if (!patch) {
+		return farmingPlantCommand({
+			user: klasaUser,
+			plantName: plant!.name,
+			quantity: null,
+			autoFarmed: false,
+			channelID,
+			pay: false
+		});
+	}
+
+	// If they have a contract, and its planted, and its ready, harvest it.
+	if (patch.ready) {
+		return harvestCommand({ user: klasaUser, channelID, seedType: patch.patchName });
+	}
+
+	return 'Your current contract is still growing.';
 }

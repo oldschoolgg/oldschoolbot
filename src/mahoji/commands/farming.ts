@@ -10,7 +10,7 @@ import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/fa
 import { stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
-import { faringContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
+import { farmingContractCommand } from '../lib/abstracted_commands/farmingContractCommand';
 import { titheFarmCommand, titheFarmShopCommand } from '../lib/abstracted_commands/titheFarmCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -96,11 +96,7 @@ export const farmingCommand: OSBMahojiCommand = {
 					name: 'patch_name',
 					description: 'The patches you want to harvest.',
 					required: true,
-					autocomplete: async (value: string) => {
-						return farmingPatchNames
-							.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i, value: i }));
-					}
+					choices: farmingPatchNames.map(i => ({ name: i, value: i }))
 				}
 			]
 		},
@@ -182,7 +178,6 @@ export const farmingCommand: OSBMahojiCommand = {
 		contract?: { input?: ContractOption };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
-		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const { patchesDetailed } = await getFarmingInfo(userID);
 
 		if (options.auto_farm) {
@@ -235,7 +230,7 @@ export const farmingCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.contract) {
-			return faringContractCommand(mahojiUser, options.contract.input);
+			return farmingContractCommand(userID, options.contract.input);
 		}
 
 		return userGrowingProgressStr(patchesDetailed);

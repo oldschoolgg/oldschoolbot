@@ -53,7 +53,7 @@ import {
 	stringMatches,
 	toKMB
 } from '../lib/util';
-import getOSItem from '../lib/util/getOSItem';
+import getOSItem, { getItem } from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
@@ -976,7 +976,7 @@ LIMIT 10;
 			}
 			case 'dtp': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				addPatronLootTime(input.perkTier, this.client, input);
+				addPatronLootTime(input.perkTier, input);
 				return msg.channel.send('Done.');
 			}
 			case 'addptime': {
@@ -1034,7 +1034,7 @@ LIMIT 10;
 				if (typeof input !== 'string' || input.length < 2) return;
 				const duration = new Duration(input);
 				const ms = duration.offset;
-				addToDoubleLootTimer(this.client, ms, 'added by RP command');
+				addToDoubleLootTimer(ms, 'added by RP command');
 				return msg.channel.send(`Added ${formatDuration(ms)} to the double loot timer.`);
 			}
 			case 'resetdoubletime': {
@@ -1158,6 +1158,12 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				return msg.channel.send({
 					files: [new MessageAttachment(Buffer.from(str), 'output.txt')]
 				});
+			}
+			case 'itemdata': {
+				if (typeof input !== 'string') return;
+				const item = getItem(input);
+				if (!item) return;
+				return msg.channel.send(JSON.stringify(item, null, 2));
 			}
 		}
 	}

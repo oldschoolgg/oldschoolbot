@@ -10,12 +10,12 @@ export function isDoubleLootActive(client: KlasaClient, duration: number = 0) {
 	return Date.now() - duration < client.settings.get(ClientSettings.DoubleLootFinishTime);
 }
 
-export async function addToDoubleLootTimer(client: KlasaClient, amount: number, reason: string) {
-	let current = client.settings.get(ClientSettings.DoubleLootFinishTime);
+export async function addToDoubleLootTimer(amount: number, reason: string) {
+	let current = globalClient.settings.get(ClientSettings.DoubleLootFinishTime);
 	if (current < Date.now()) {
 		current = Date.now();
 	}
-	await client.settings.update(ClientSettings.DoubleLootFinishTime, current + amount);
+	await globalClient.settings.update(ClientSettings.DoubleLootFinishTime, current + amount);
 	sendToChannelID(Channel.BSOGeneral, {
 		content: `<@&923768318442229792> 🎉 ${formatDuration(
 			amount
@@ -23,7 +23,7 @@ export async function addToDoubleLootTimer(client: KlasaClient, amount: number, 
 	});
 }
 
-export async function addPatronLootTime(_tier: number, client: KlasaClient, user?: KlasaUser) {
+export async function addPatronLootTime(_tier: number, user?: KlasaUser) {
 	let map: Record<number, number> = {
 		1: 3,
 		2: 6,
@@ -35,5 +35,5 @@ export async function addPatronLootTime(_tier: number, client: KlasaClient, user
 	if (!map[tier]) return;
 	let minutes = map[tier];
 	let timeAdded = Math.floor(Time.Minute * minutes);
-	addToDoubleLootTimer(client, timeAdded, `${user ?? 'Someone'} became a Tier ${tier} sponsor`);
+	addToDoubleLootTimer(timeAdded, `${user ?? 'Someone'} became a Tier ${tier} sponsor`);
 }
