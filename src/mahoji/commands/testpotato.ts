@@ -29,6 +29,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { tiers } from '../../tasks/patreon';
+import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -155,12 +156,15 @@ for (const plant of Farming.Plants) {
 	}
 }
 farmingPreset.add('Ultracompost', 10_000);
+const usables = new Bank();
+for (const usable of allUsableItems) usables.add(usable, 100);
 
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
 	['equippables', equippablesBank],
-	['farming', farmingPreset]
+	['farming', farmingPreset],
+	['usables', usables]
 ] as const;
 
 const nexSupplies = new Bank()
