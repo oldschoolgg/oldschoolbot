@@ -131,6 +131,12 @@ export const minionCommand: OSBMahojiCommand = {
 					...ownedItemOption(i => allUsableItems.has(i.id)),
 					required: true,
 					name: 'item'
+				},
+				{
+					...ownedItemOption(i => allUsableItems.has(i.id)),
+					required: false,
+					name: 'secondary_item',
+					description: 'Optional second item to use the first one on.'
 				}
 			]
 		}
@@ -146,7 +152,7 @@ export const minionCommand: OSBMahojiCommand = {
 		cracker?: { user: MahojiUserOption };
 		lamp?: { item: string; quantity?: number; skill: string };
 		cancel?: {};
-		use?: { item: string };
+		use?: { item: string; secondary_item?: string };
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -176,7 +182,7 @@ export const minionCommand: OSBMahojiCommand = {
 
 		if (options.cancel) return cancelTaskCommand(mahojiUser, interaction);
 
-		if (options.use) return useCommand(mahojiUser, user, options.use.item);
+		if (options.use) return useCommand(mahojiUser, user, options.use.item, options.use.secondary_item);
 
 		return 'Unknown command';
 	}
