@@ -180,7 +180,7 @@ export async function useCommand(mUser: User, user: KlasaUser, _firstItem: strin
 	for (const i of items) checkBank.add(i.id);
 	if (!bank.has(checkBank)) return `You don't own ${checkBank}.`;
 
-	const usable = usables.find(i => items.every(t => i.items.includes(t)));
+	const usable = usables.find(i => i.items.length === items.length && items.every(t => i.items.includes(t)));
 	if (!usable) return "That's not a usable item.";
 	return usable.run(user, mUser);
 }

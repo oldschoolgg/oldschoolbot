@@ -928,7 +928,9 @@ LIMIT 10;
 				});
 			}
 			case 'disable': {
-				if (!input || input instanceof KlasaUser) return;
+				if (!input || input instanceof KlasaUser) {
+					return msg.channel.send(`Disabled Commands: ${Array.from(DISABLED_COMMANDS).join(', ')}.`);
+				}
 				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
@@ -1168,6 +1170,25 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				const item = getItem(input);
 				if (!item) return;
 				return msg.channel.send(JSON.stringify(item, null, 2));
+			}
+			case 'testercheck': {
+				if (production) return;
+				let time = '12hours';
+				if (typeof input === 'string') time = input;
+				const result = await prisma.$queryRawUnsafe<
+					{ username: string; qty: number }[]
+				>(`SELECT "new_user"."username", COUNT(user_id) AS qty
+FROM command_usage
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "command_usage"."user_id"::text
+WHERE date > now() - INTERVAL '${time}'
+GROUP BY "new_user"."username"
+ORDER BY qty DESC;`);
+				return msg.channel.send(
+					result
+						.slice(0, 10)
+						.map(u => `${u.username}: ${u.qty} commands`)
+						.join('\n')
+				);
 			}
 		}
 	}
