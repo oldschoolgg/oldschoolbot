@@ -964,6 +964,25 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				if (!item) return;
 				return msg.channel.send(JSON.stringify(item, null, 2));
 			}
+			case 'testercheck': {
+				if (production) return;
+				let time = '12hours';
+				if (typeof input === 'string') time = input;
+				const result = await prisma.$queryRawUnsafe<
+					{ username: string; qty: number }[]
+				>(`SELECT "new_user"."username", COUNT(user_id) AS qty
+FROM command_usage
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "command_usage"."user_id"::text
+WHERE date > now() - INTERVAL '${time}'
+GROUP BY "new_user"."username"
+ORDER BY qty DESC;`);
+				return msg.channel.send(
+					result
+						.slice(0, 10)
+						.map(u => `${u.username}: ${u.qty} commands`)
+						.join('\n')
+				);
+			}
 		}
 	}
 }
