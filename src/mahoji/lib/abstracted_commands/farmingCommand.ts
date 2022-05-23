@@ -4,7 +4,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { client } from '../../..';
 import { superCompostables } from '../../../lib/data/filterables';
 import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
@@ -264,14 +263,13 @@ export async function farmingPlantCommand({
 			if (userBank.amount(payment.id) >= qty * quantity) {
 				cost.add(payment.id, qty * quantity);
 				didPay = true;
+				infoStr.push(
+					`You are paying a nearby farmer ${qty * quantity} ${payment.name} to look after your patches.`
+				);
+			} else {
+				infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 			}
 		}
-	}
-
-	if (didPay) {
-		infoStr.push('You are paying a nearby farmer to look after your patches.');
-	} else if (wantsToPay) {
-		infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 	}
 
 	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse) ?? 'compost';
@@ -288,7 +286,7 @@ export async function farmingPlantCommand({
 	if (!user.owns(cost)) return `You don't own ${cost}.`;
 	await user.removeItemsFromBank(cost);
 
-	updateBankSetting(client, ClientSettings.EconomyStats.FarmingCostBank, cost);
+	updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingCostBank, cost);
 	// If user does not have something already planted, just plant the new seeds.
 	if (!patchType.patchPlanted) {
 		infoStr.unshift(`${user.minionName} is now planting ${quantity}x ${plant.name}.`);

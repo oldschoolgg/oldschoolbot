@@ -1,12 +1,11 @@
 import { Prisma, tame_growth } from '@prisma/client';
-import { uniqueArr } from 'e';
+import { Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
-import { client } from '../..';
 import { generateNewTame } from '../../commands/bso/nursery';
 import { production } from '../../config';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
@@ -17,14 +16,23 @@ import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
+import Farming from '../../lib/skilling/skills/farming';
 import { Gear } from '../../lib/structures/Gear';
 import { tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
+import {
+	FarmingPatchName,
+	farmingPatchNames,
+	getFarmingKeyFromName,
+	userGrowingProgressStr
+} from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { tiers } from '../../tasks/patreon';
+import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -40,13 +48,13 @@ async function givePatronLevel(user: KlasaUser, tier: number) {
 	const tierToGive = tiers[tier];
 	const currentBitfield = user.settings.get(UserSettings.BitField);
 	if (!tier || !tierToGive) {
-		await mahojiUserSettingsUpdate(client, user, {
+		await mahojiUserSettingsUpdate(user, {
 			bitfield: currentBitfield.filter(i => !tiers.map(t => t[1]).includes(i))
 		});
 		return 'Removed patron perks.';
 	}
 	const newBitField: BitField[] = [...currentBitfield, tierToGive[1]];
-	await mahojiUserSettingsUpdate(client, user, {
+	await mahojiUserSettingsUpdate(user, {
 		bitfield: uniqueArr(newBitField)
 	});
 	return `Gave you tier ${tierToGive[1] - 1} patron.`;
@@ -129,7 +137,7 @@ async function setMinigameKC(user: KlasaUser, _minigame: string, kc: number) {
 async function setXP(user: KlasaUser, skillName: string, xp: number) {
 	const skill = Object.values(Skills).find(c => c.id === skillName);
 	if (!skill) return 'No xp set because invalid skill.';
-	await mahojiUserSettingsUpdate(client, user, {
+	await mahojiUserSettingsUpdate(user, {
 		[`skills_${skill.id}`]: xp
 	});
 	return `Set ${skill.name} XP to ${xp}.`;
@@ -148,10 +156,30 @@ for (const m of BathwaterMixtures) {
 }
 baxBathBank.add('Coal', 100_000);
 
+const equippablesBank = new Bank();
+for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).values()) {
+	equippablesBank.add(i.id);
+}
+
+const farmingPreset = new Bank();
+for (const plant of Farming.Plants) {
+	farmingPreset.add(plant.inputItems.clone().multiply(100));
+	if (plant.protectionPayment) {
+		farmingPreset.add(plant.protectionPayment.clone().multiply(100));
+	}
+}
+farmingPreset.add('Ultracompost', 10_000);
+const usables = new Bank();
+for (const usable of allUsableItems) usables.add(usable, 100);
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
-	['baxtorian_bathhouse', baxBathBank]
+	['equippables', equippablesBank],
+	['farming', farmingPreset],
+
+	['baxtorian_bathhouse', baxBathBank],
+	['usables', usables]
 ] as const;
 
 const nexSupplies = new Bank()
@@ -363,6 +391,20 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'spawntames',
 					description: 'Spawns you adult tames.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'forcegrow',
+					description: 'Force a plant to grow.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'patch_name',
+							description: 'The patches you want to harvest.',
+							required: true,
+							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+						}
+					]
 				}
 			],
 			run: async ({
@@ -381,16 +423,17 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				spawntames?: {};
+				forcegrow?: { patch_name: FarmingPatchName };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
-				const user = await client.fetchUser(userID.toString());
+				const user = await globalClient.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
 					const current = mahojiUser.minion_ironman;
-					await mahojiUserSettingsUpdate(client, user.id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						minion_ironman: !current
 					});
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
@@ -459,7 +502,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring (i)'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(client, user.id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						skills_ranged: convertLVLtoXP(99),
 						skills_prayer: convertLVLtoXP(99),
@@ -485,7 +528,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(client, user.id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						bank: user.bank().add(nexSupplies).bank
 					});
@@ -496,7 +539,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					await mahojiUserSettingsUpdate(client, user.id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						monsterScores: {
 							...(mahojiUser.monsterScores as Record<string, unknown>),
 							[monster.id]: options.setmonsterkc.kc ?? 1
@@ -517,6 +560,22 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						});
 					}
 					return 'Gave you an adult of each tame.';
+				}
+				if (options.forcegrow) {
+					const farmingDetails = await getFarmingInfo(userID);
+					const thisPlant = farmingDetails.patchesDetailed.find(
+						p => p.plant?.seedType === options.forcegrow?.patch_name
+					);
+					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
+					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
+
+					await mahojiUserSettingsUpdate(user.id, {
+						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
+							...rawPlant,
+							plantTime: Date.now() - Time.Month
+						}
+					});
+					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
 				return 'Nothin!';
 			}

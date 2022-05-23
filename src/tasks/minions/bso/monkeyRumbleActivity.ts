@@ -88,7 +88,6 @@ export default class extends Task {
 		const fightsPerHour = `${Math.round((quantity / (duration / Time.Minute)) * 60).toLocaleString()}`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished fighting ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr

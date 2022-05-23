@@ -133,7 +133,6 @@ export default class extends Task {
 
 		if (allUsers.length === 1) {
 			handleTripFinish(
-				this.client,
 				allUsers[0],
 				channelID,
 				resultMessage,
@@ -154,7 +153,7 @@ export default class extends Task {
 				null
 			);
 		} else {
-			sendToChannelID(this.client, channelID, { content: resultMessage });
+			sendToChannelID(channelID, { content: resultMessage });
 		}
 	}
 }

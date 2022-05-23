@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 
-import { GearSetup } from '../src/lib/gear/types';
+import { GearSetup, GearStat } from '../src/lib/gear/types';
 import getUserBestGearFromBank from '../src/lib/minions/functions/getUserBestGearFromBank';
 import { Gear } from '../src/lib/structures/Gear';
 import { Skills } from '../src/lib/types';
@@ -54,7 +54,9 @@ const maxCombat: Skills = {
 
 describe('getUserBestGearFromBank', () => {
 	test('autoequip melee attack slash', async () => {
-		expect(getUserBestGearFromBank(userBank.bank, userGear, 'melee', maxCombat, 'attack', 'slash')).toStrictEqual({
+		expect(
+			getUserBestGearFromBank(userBank.bank, userGear, 'melee', maxCombat, GearStat.AttackSlash)
+		).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
 				body: { item: itemID('Bandos chestplate'), quantity: 1 },
@@ -93,7 +95,9 @@ describe('getUserBestGearFromBank', () => {
 		});
 	});
 	test('autoequip melee attack crush', async () => {
-		expect(getUserBestGearFromBank(userBank.bank, userGear, 'melee', maxCombat, 'attack', 'crush')).toStrictEqual({
+		expect(
+			getUserBestGearFromBank(userBank.bank, userGear, 'melee', maxCombat, GearStat.AttackCrush)
+		).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
 				body: { item: itemID('Bandos chestplate'), quantity: 1 },
@@ -130,7 +134,7 @@ describe('getUserBestGearFromBank', () => {
 	});
 	test('autoequip mage attack magic strength', async () => {
 		expect(
-			getUserBestGearFromBank(userBank.bank, userGear, 'mage', maxCombat, 'attack', 'magic', 'strength')
+			getUserBestGearFromBank(userBank.bank, userGear, 'mage', maxCombat, GearStat.AttackMagic, 'strength')
 		).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
@@ -168,44 +172,48 @@ describe('getUserBestGearFromBank', () => {
 		});
 	});
 	test('autoequip mage attack magic', async () => {
-		expect(getUserBestGearFromBank(userBank.bank, userGear, 'mage', maxCombat, 'attack', 'magic')).toStrictEqual({
-			gearToEquip: {
-				...nullGear,
-				cape: { item: itemID('Cape of legends'), quantity: 1 },
-				hands: { item: itemID('Leather gloves'), quantity: 1 },
-				neck: { item: itemID('3rd age amulet'), quantity: 1 },
-				head: { item: itemID('Helm of neitiznot'), quantity: 1 },
-				legs: { item: itemID('Ancestral robe bottom'), quantity: 1 },
-				body: { item: itemID('Ancestral robe top'), quantity: 1 }
-			},
-			toRemoveFromGear: new Bank({
-				'Dragon chainbody': 1,
-				'Amulet of strength': 1,
-				'Elder maul': 1
-			}).bank,
-			toRemoveFromBank: new Bank({
-				'Helm of neitiznot': 1,
-				'Ancestral robe top': 1,
-				'Ancestral robe bottom': 1,
-				'3rd age amulet': 1
-			}).bank,
-			userFinalBank: new Bank({
-				'Bandos chestplate': 4,
-				'Bandos tassets': 1,
-				'Helm of neitiznot': 1,
-				'Justiciar faceguard': 1,
-				'Dragon scimitar': 1,
-				'Occult necklace': 1,
-				'Dragon chainbody': 1,
-				'Amulet of strength': 1,
-				'Elder maul': 1,
-				'Dragonfire shield': 1,
-				'Amulet of glory': 1
-			}).bank
-		});
+		expect(getUserBestGearFromBank(userBank.bank, userGear, 'mage', maxCombat, GearStat.AttackMagic)).toStrictEqual(
+			{
+				gearToEquip: {
+					...nullGear,
+					cape: { item: itemID('Cape of legends'), quantity: 1 },
+					hands: { item: itemID('Leather gloves'), quantity: 1 },
+					neck: { item: itemID('3rd age amulet'), quantity: 1 },
+					head: { item: itemID('Helm of neitiznot'), quantity: 1 },
+					legs: { item: itemID('Ancestral robe bottom'), quantity: 1 },
+					body: { item: itemID('Ancestral robe top'), quantity: 1 }
+				},
+				toRemoveFromGear: new Bank({
+					'Dragon chainbody': 1,
+					'Amulet of strength': 1,
+					'Elder maul': 1
+				}).bank,
+				toRemoveFromBank: new Bank({
+					'Helm of neitiznot': 1,
+					'Ancestral robe top': 1,
+					'Ancestral robe bottom': 1,
+					'3rd age amulet': 1
+				}).bank,
+				userFinalBank: new Bank({
+					'Bandos chestplate': 4,
+					'Bandos tassets': 1,
+					'Helm of neitiznot': 1,
+					'Justiciar faceguard': 1,
+					'Dragon scimitar': 1,
+					'Occult necklace': 1,
+					'Dragon chainbody': 1,
+					'Amulet of strength': 1,
+					'Elder maul': 1,
+					'Dragonfire shield': 1,
+					'Amulet of glory': 1
+				}).bank
+			}
+		);
 	});
 	test('autoequip melee defence slash', async () => {
-		expect(getUserBestGearFromBank(userBank.bank, userGear, 'melee', maxCombat, 'defence', 'slash')).toStrictEqual({
+		expect(
+			getUserBestGearFromBank(userBank.bank, userGear, 'melee', maxCombat, GearStat.DefenceSlash)
+		).toStrictEqual({
 			gearToEquip: {
 				...nullGear,
 				body: { item: itemID('Bandos chestplate'), quantity: 1 },
@@ -250,8 +258,7 @@ describe('getUserBestGearFromBank', () => {
 				userGear,
 				'melee',
 				{ defence: convertLVLtoXP(99) },
-				'defence',
-				'slash'
+				GearStat.DefenceSlash
 			)
 		).toStrictEqual({
 			gearToEquip: {
@@ -326,8 +333,7 @@ describe('getUserBestGearFromBank', () => {
 				userGearStackables1,
 				'range',
 				{ ...maxCombat, hitpoints: convertLVLtoXP(99) },
-				'attack',
-				'ranged'
+				GearStat.AttackRanged
 			)
 		).toStrictEqual({
 			gearToEquip: {

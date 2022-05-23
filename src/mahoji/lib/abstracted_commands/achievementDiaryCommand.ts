@@ -38,7 +38,7 @@ export async function achievementDiaryCommand(user: KlasaUser, diaryName: string
 					};
 				})
 			);
-			str += `**${dir.name}:** ${res.map(t => (t.has ? t.name : strikethrough(t.name))).join(' - ')}\n`;
+			str += `**${dir.name}:** ${res.map(t => (t.has ? strikethrough(t.name) : t.name)).join(' - ')}\n`;
 		}
 		return str;
 	}

@@ -7,7 +7,6 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { sotwConfig, sotwIsActive } from '../../commands/bso/sotw';
-import { collectables } from '../../commands/Minion/collect';
 import { bossEvents } from '../../lib/bossEvents';
 import {
 	Emoji,
@@ -68,6 +67,7 @@ import {
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
+	FightCavesActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	FishingContestOptions,
@@ -116,6 +116,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
+import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -343,7 +344,11 @@ export default class extends Extendable {
 			}
 
 			case 'FightCaves': {
-				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
+				const data = currentTask as FightCavesActivityTaskOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${
+					Emoji.TzRekJad
+				}. If they're successful and don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'TitheFarm': {
 				return `${this.minionName} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
@@ -623,9 +628,12 @@ export default class extends Extendable {
 			}
 			case 'Revenants': {
 				const data = currentTask as RevenantOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 				return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${this.minionName} is currently killing ${
 					data.quantity
-				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
+				}x ${
+					Monsters.get(data.monsterID)!.name
+				} in the wilderness. If they don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'PestControl': {
 				const data = currentTask as MinigameActivityTaskOptions;

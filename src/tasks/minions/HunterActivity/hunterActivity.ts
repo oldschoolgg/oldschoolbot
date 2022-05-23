@@ -217,15 +217,6 @@ export default class extends Task {
 			type: 'Skilling'
 		});
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['hunt', [quantity, creatureName], true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, ['hunt', [quantity, creatureName], true], undefined, data, loot);
 	}
 }

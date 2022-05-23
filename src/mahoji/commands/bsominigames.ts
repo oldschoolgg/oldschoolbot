@@ -1,6 +1,5 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import {
 	BathhouseOres,
 	bathHouseTiers,
@@ -79,7 +78,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			start?: { tier: string; heating?: string; water_mixture?: string };
 		};
 	}>) => {
-		const klasaUser = await client.fetchUser(userID);
+		const klasaUser = await globalClient.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
 		const { baxtorian_bathhouses } = options;
 

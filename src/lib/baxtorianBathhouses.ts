@@ -6,7 +6,6 @@ import { Bank, LootTable } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
-import { client } from '..';
 import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import { MysteryBoxes } from './bsoOpenables';
 import { Emoji, GLOBAL_BSO_XP_MULTIPLIER } from './constants';
@@ -368,7 +367,7 @@ export async function baxtorianBathhousesStartCommand({
 	if (!klasaUser.owns(cost)) {
 		return `You don't have enough supplies to do a trip, for ${quantity}x ${bathHouseTier.name} baths, you need: ${cost}.`;
 	}
-	updateBankSetting(client, ClientSettings.EconomyStats.BaxtorianBathhousesCost, cost);
+	updateBankSetting(globalClient, ClientSettings.EconomyStats.BaxtorianBathhousesCost, cost);
 	await klasaUser.removeItemsFromBank(cost);
 
 	await addSubTaskToActivityTask<BathhouseTaskOptions>({
@@ -467,7 +466,7 @@ export function baxBathSim() {
 export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	const { userID, channelID, quantity, duration } = data;
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
-	const klasaUser = await client.fetchUser(userID);
+	const klasaUser = await globalClient.fetchUser(userID);
 	const cl = klasaUser.cl();
 	const { loot, herbXP, firemakingXP, tier, speciesServed, ore, mixture, gaveExtraTips } = calculateResult(data);
 	await incrementMinigameScore(userID, 'bax_baths', quantity);
@@ -500,10 +499,9 @@ export async function baxtorianBathhousesActivity(data: BathhouseTaskOptions) {
 	});
 
 	let uniqSpecies = uniqueArr(speciesServed);
-	updateBankSetting(client, ClientSettings.EconomyStats.BaxtorianBathhousesLoot, loot);
+	updateBankSetting(globalClient, ClientSettings.EconomyStats.BaxtorianBathhousesLoot, loot);
 
 	handleTripFinish(
-		client,
 		klasaUser,
 		channelID,
 		`${userMention(userID)}, ${minionName(mahojiUser)} finished running ${quantity}x ${tier.name} baths for ${

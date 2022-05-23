@@ -146,7 +146,6 @@ export default class extends BotCommand {
 		);
 
 		const { foodRemoved } = await removeFoodFromUser({
-			client: this.client,
 			user: msg.author,
 			totalHealingNeeded: damageTaken,
 			healPerAction: Math.ceil(damageTaken / quantity),

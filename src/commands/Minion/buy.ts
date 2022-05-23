@@ -144,7 +144,8 @@ export default class extends BotCommand {
 			}
 		}
 
-		const singleCost: Bank = buyable.itemCost ?? new Bank();
+		// If itemCost is undefined, it creates a new empty Bank, like we want:
+		const singleCost: Bank = new Bank(buyable.itemCost);
 		if (gpCost) singleCost.add('Coins', gpCost);
 
 		const totalCost = singleCost.clone().multiply(quantity);

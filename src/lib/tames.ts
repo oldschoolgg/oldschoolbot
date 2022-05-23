@@ -4,8 +4,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { client } from '..';
-import { collectables } from '../commands/Minion/collect';
+import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import { effectiveMonsters } from './minions/data/killableMonsters';
@@ -244,10 +243,10 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		const continuationChar = generateContinuationChar(res.user);
 		res.message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
-		sendToChannelID(client, activity.channel_id, {
+		sendToChannelID(activity.channel_id, {
 			content: res.message,
 			image: (
-				await (client.tasks.get('bankImage') as BankImageTask).generateBankImage(
+				await (globalClient.tasks.get('bankImage') as BankImageTask).generateBankImage(
 					res.loot,
 					`${tameName(tame)}'s Loot`,
 					true,
@@ -263,23 +262,23 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			channelID: activity.channel_id,
 			continuationCharacter: [continuationChar],
 			toExecute: async (mes: KlasaMessage, collector: MessageCollector) => {
-				if (client.oneCommandAtATimeCache.has(mes.author.id)) {
+				if (globalClient.oneCommandAtATimeCache.has(mes.author.id)) {
 					collector.stop();
 					collectors.delete(mes.author.id);
 					return;
 				}
-				client.oneCommandAtATimeCache.add(mes.author.id);
+				globalClient.oneCommandAtATimeCache.add(mes.author.id);
 				try {
 					const activityData = activity.data as any as TameTaskOptions;
 					let tameInteraction = '';
 					switch (activityData.type) {
 						case TameType.Combat:
 							tameInteraction = effectiveMonsters.find(e => e.id === activityData.monsterID)!.name;
-							(client.commands.get('tame') as any)!.k(mes, [tameInteraction]);
+							(globalClient.commands.get('tame') as any)!.k(mes, [tameInteraction]);
 							break;
 						case TameType.Gatherer:
 							tameInteraction = itemNameFromID(activityData.itemID)!.toLowerCase();
-							(client.commands.get('tame') as any)!.c(mes, [tameInteraction]);
+							(globalClient.commands.get('tame') as any)!.c(mes, [tameInteraction]);
 							break;
 						default:
 							break;
@@ -288,7 +287,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 					console.log({ err });
 					mes.channel.send(err);
 				} finally {
-					setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);
+					setTimeout(() => globalClient.oneCommandAtATimeCache.delete(mes.author.id), 300);
 				}
 			}
 		});
@@ -312,7 +311,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			}
 			const fullMonster = Monsters.get(monsterID)!;
 			const loot = fullMonster.kill(killQty, {});
-			const user = await client.fetchUser(activity.user_id);
+			const user = await globalClient.fetchUser(activity.user_id);
 			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${fullMonster.name}.`;
 			const boosts = [];
 			if (hasOri) {
@@ -345,7 +344,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const collectable = collectables.find(c => c.item.id === itemID)!;
 			const totalQuantity = quantity * collectable.quantity;
 			const loot = new Bank().add(collectable.item.id, totalQuantity);
-			const user = await client.fetchUser(activity.user_id);
+			const user = await globalClient.fetchUser(activity.user_id);
 			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;

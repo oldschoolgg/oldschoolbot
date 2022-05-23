@@ -30,7 +30,7 @@ export default class extends Task {
 		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.fetchUser(userID);
 		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
-			sendToChannelID(this.client, channelID, {
+			sendToChannelID(channelID, {
 				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
 			});
 		}
@@ -292,7 +292,6 @@ export default class extends Task {
 			);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,

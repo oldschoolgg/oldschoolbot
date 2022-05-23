@@ -103,7 +103,8 @@ export const Lampables: IXPObject[] = [
 						SkillsEnum.Fishing,
 						SkillsEnum.Thieving,
 						SkillsEnum.Firemaking,
-						SkillsEnum.Agility
+						SkillsEnum.Agility,
+						SkillsEnum.Dungeoneering
 					].includes(skill)
 						? 150
 						: 50) *

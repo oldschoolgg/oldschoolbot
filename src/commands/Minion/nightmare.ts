@@ -297,7 +297,6 @@ export default class extends BotCommand {
 			}
 			let healingMod = isPhosani ? 1.5 : 1;
 			const { foodRemoved } = await removeFoodFromUser({
-				client: this.client,
 				user,
 				totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
 				healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,

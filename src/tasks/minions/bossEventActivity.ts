@@ -15,6 +15,6 @@ export default class extends Task {
 			}))
 		);
 		const bossEvent = bossEvents.find(b => b.id === data.bossID)!;
-		bossEvent.handleFinish(this.client, data, bossUsers);
+		bossEvent.handleFinish(data, bossUsers);
 	}
 }

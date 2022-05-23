@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Smithing from '../../lib/skilling/skills/smithing';
@@ -62,7 +61,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ name: string; quantity?: number; blast_furnace?: boolean }>) => {
 		let { name, quantity, blast_furnace } = options;
-		const user = await client.fetchUser(userID);
+		const user = await globalClient.fetchUser(userID);
 		if (blast_furnace === undefined) blast_furnace = false;
 		const boosts = [];
 
@@ -166,7 +165,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 		}
 
 		await user.removeItemsFromBank(cost);
-		updateBankSetting(client, ClientSettings.EconomyStats.SmithingCost, cost);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.SmithingCost, cost);
 
 		await addSubTaskToActivityTask<SmeltingActivityTaskOptions>({
 			barID: bar.id,

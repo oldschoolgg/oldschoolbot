@@ -50,13 +50,13 @@ export default class extends Task {
 
 		const tagAll = bossUsers.map(u => u.user.toString()).join(', ');
 		if (wrongFoodDeaths.length === bossUsers.length * quantity) {
-			return sendToChannelID(this.client, channelID, {
+			return sendToChannelID(channelID, {
 				content: `${tagAll}\n\nYour team began the fight, but the intense heat of the dragons lair melted your potions, and spoiled them - with no food left to eat, your entire team died.`
 			});
 		}
 
 		if (addArrayOfNumbers(objectValues(deaths).map(d => d.qty)) === idArr.length * quantity) {
-			return sendToChannelID(this.client, channelID, {
+			return sendToChannelID(channelID, {
 				content: `${tagAll}\n\nYour team all died.`
 			});
 		}
@@ -144,6 +144,6 @@ export default class extends Task {
 			kc: quantity
 		});
 
-		sendToChannelID(this.client, channelID, { content: resultStr });
+		sendToChannelID(channelID, { content: resultStr });
 	}
 }

@@ -190,7 +190,7 @@ export default class extends Task {
 				lastPayment: payment ?? false
 			};
 
-			await mahojiUserSettingsUpdate(this.client, user.id, {
+			await mahojiUserSettingsUpdate(user.id, {
 				[getFarmingKeyFromName(plant.seedType)]: newPatch
 			});
 
@@ -199,7 +199,6 @@ export default class extends Task {
 			if (hasPlopper) str += '\nYou received 4x loot from Plopper';
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				str,
@@ -244,8 +243,7 @@ export default class extends Task {
 					);
 				} else if (plantToHarvest.fixedOutput) {
 					if (!plantToHarvest.fixedOutputAmount) return;
-					cropYield = plantToHarvest.fixedOutputAmount;
-					if (plantToHarvest.seedType === 'mushroom') cropYield *= alivePlants;
+					cropYield = plantToHarvest.fixedOutputAmount * alivePlants;
 				} else {
 					const plantChanceFactor =
 						Math.floor(
@@ -465,7 +463,7 @@ export default class extends Task {
 				};
 			}
 
-			await mahojiUserSettingsUpdate(this.client, user.id, {
+			await mahojiUserSettingsUpdate(user.id, {
 				[getFarmingKeyFromName(plant.seedType)]: newPatch
 			});
 
@@ -486,7 +484,7 @@ export default class extends Task {
 					contractsCompleted: contractsCompleted + 1
 				};
 
-				await mahojiUserSettingsUpdate(this.client, user.id, {
+				await mahojiUserSettingsUpdate(user.id, {
 					minion_farmingContract: farmingContractUpdate as any
 				});
 
@@ -558,7 +556,6 @@ export default class extends Task {
 			if (hasPlopper) infoStr.push('\nYou received 4x loot from Plopper');
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				infoStr.join('\n'),
