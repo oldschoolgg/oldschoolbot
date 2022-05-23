@@ -150,6 +150,10 @@ export async function volcanicMineCommand(user: KlasaUser, channelID: bigint, ga
 
 	await user.removeItemsFromBank(suppliesUsage);
 
+	if (user.usingPet('Doug')) {
+		boosts.push('20% more Mining XP for having Doug helping you!');
+	}
+
 	let duration = VolcanicMineGameTime * gameQuantity;
 
 	const str = `${
