@@ -22,7 +22,7 @@ export interface MassOptions {
 
 const emojis = [ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as const;
 function isActionEmoji(str: string | null) {
-	return emojis.includes(str);
+	return emojis.includes(str as string);
 }
 
 export class Mass {
@@ -107,7 +107,7 @@ export class Mass {
 							reaction.users.remove(user);
 						}
 
-						return emojis.includes(reaction.emoji.id);
+						return isActionEmoji(reaction.emoji.id);
 					}
 				}
 			);
