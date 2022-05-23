@@ -1,7 +1,7 @@
 import { activity_type_enum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageAttachment, MessageOptions } from 'discord.js';
+import { MessageAttachment, MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaClient, KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
@@ -106,7 +106,7 @@ declare module 'klasa' {
 declare module 'discord.js/node_modules/discord-api-types/v8' {
 	type Snowflake = string;
 }
-export type KlasaSend = (input: string | MessageOptions) => Promise<KlasaMessage>;
+export type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
 
 declare module 'discord.js' {
 	interface TextBasedChannel {
