@@ -33,3 +33,4 @@ export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {
 	BotID: '729244028989603850'
 };
 export const OWNER_ID = '157797566833098752';
+export const MAXING_MESSAGE = 'Congratulations on maxing!';
