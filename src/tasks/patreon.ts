@@ -31,6 +31,7 @@ patreonApiURL.search = new URLSearchParams([
 ]).toString();
 
 export const tiers: [PatronTierID, BitField][] = [
+	[PatronTierID.Six, BitField.IsPatronTier5],
 	[PatronTierID.Five, BitField.IsPatronTier5],
 	[PatronTierID.Four, BitField.IsPatronTier4],
 	[PatronTierID.Three, BitField.IsPatronTier3],
