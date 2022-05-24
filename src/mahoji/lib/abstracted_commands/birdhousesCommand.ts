@@ -7,7 +7,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import birdhouses, { Birdhouse } from '../../../lib/skilling/skills/hunter/birdHouseTrapping';
 import defaultBirdhouseTrap, { BirdhouseData } from '../../../lib/skilling/skills/hunter/defaultBirdHouseTrap';
 import { BirdhouseActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, itemID, itemNameFromID, stringMatches, updateBankSetting } from '../../../lib/util';
+import { formatDuration, itemID, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { minionName } from '../../../lib/util/minionUtils';
 import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../../mahojiSettings';
@@ -210,11 +210,10 @@ export async function birdhouseHarvestCommand(
 
 	let canPay = false;
 	for (const currentSeed of birdhouseSeedReq) {
-		if (userBank.amount(currentSeed.itemID) >= currentSeed.amount * 4) {
-			infoStr.push(
-				`You baited the birdhouses with ${currentSeed.amount * 4}x ${itemNameFromID(currentSeed.itemID)}.`
-			);
-			removeBank.add(currentSeed.itemID, currentSeed.amount * 4);
+		const seedCost = new Bank().add(currentSeed.itemID, currentSeed.amount * 4);
+		if (!userBank.has(seedCost)) {
+			infoStr.push(`You baited the birdhouses with ${seedCost}.`);
+			removeBank.add(seedCost);
 			canPay = true;
 			break;
 		}
