@@ -213,7 +213,7 @@ export async function birdhouseHarvestCommand(
 	let canPay = false;
 	for (const currentSeed of birdhouseSeedReq) {
 		const seedCost = new Bank().add(currentSeed.itemID, currentSeed.amount * birdHouses);
-		if (!userBank.has(seedCost)) {
+		if (userBank.has(seedCost)) {
 			infoStr.push(`You baited the birdhouses with ${seedCost}.`);
 			removeBank.add(seedCost);
 			canPay = true;
