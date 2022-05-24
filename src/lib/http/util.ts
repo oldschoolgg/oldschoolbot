@@ -3,7 +3,6 @@ import { createHmac } from 'crypto';
 import { onRequestHookHandler } from 'fastify';
 import * as jwt from 'jwt-simple';
 
-import { client } from '../..';
 import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
 import { PerkTier } from '../constants';
 
@@ -109,9 +108,9 @@ export async function fetchSponsors() {
 }
 
 export async function getUserFromGithubID(githubID: string) {
-	const result = await client.query<{ id: string }[]>(`SELECT id FROM users WHERE github_id = '${githubID}';`);
+	const result = await globalClient.query<{ id: string }[]>(`SELECT id FROM users WHERE github_id = '${githubID}';`);
 	if (result.length === 0) return null;
-	return client.fetchUser(result[0].id);
+	return globalClient.fetchUser(result[0].id);
 }
 
 export function encryptJWT(payload: unknown, secret = CLIENT_SECRET) {

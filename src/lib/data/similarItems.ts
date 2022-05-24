@@ -7,7 +7,7 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './CollectionsExport';
+} from './gracefulVariants';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];
@@ -163,6 +163,7 @@ const source: [string, (string | number)[]][] = [
 	["Ava's accumulator", ['Accumulator max cape']],
 	["Ava's assembler", ['Assembler max cape', 'Assembler max cape (l)']],
 	['Mythical cape', ['Mythical max cape']],
+	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
 		'Imbued guthix cape',
 		[
@@ -240,6 +241,7 @@ const source: [string, (string | number)[]][] = [
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
+	['Farming cape', ['Max cape', 'Farming cape(t)']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband']],
 	['Angler top', ['Spirit angler top']],

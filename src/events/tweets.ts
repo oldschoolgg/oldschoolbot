@@ -4,7 +4,6 @@ import he from 'he';
 import { Event, EventStore } from 'klasa';
 import Twit from 'twit';
 
-import { client } from '..';
 import { twitterAppConfig } from '../config';
 import { prisma } from '../lib/settings/prisma';
 import { assert } from '../lib/util';
@@ -130,7 +129,7 @@ export default class extends Event {
 		assert(tweetChannels.length < 500, 'Should be less than 500 tweetchannels');
 
 		for (const id of tweetChannels) {
-			const channel = client.channels.cache.get(id);
+			const channel = globalClient.channels.cache.get(id);
 			if (
 				channel &&
 				channel instanceof TextChannel &&
@@ -138,7 +137,7 @@ export default class extends Event {
 				channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
 				channel.permissionsFor(this.client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
 			) {
-				sendToChannelID(this.client, channel.id, { content: `<${url}>`, embed });
+				sendToChannelID(channel.id, { content: `<${url}>`, embed });
 			}
 		}
 	}

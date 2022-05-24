@@ -1,10 +1,17 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { PVM_METHODS, PvMMethod } from '../../lib/constants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
+
+const autocompleteMonsters = [
+	...effectiveMonsters,
+	{
+		name: 'Tempoross',
+		aliases: ['temp', 'tempoross']
+	}
+];
 
 export const killCommand: OSBMahojiCommand = {
 	name: 'k',
@@ -22,7 +29,7 @@ export const killCommand: OSBMahojiCommand = {
 			description: 'The thing you want to kill.',
 			required: true,
 			autocomplete: async value => {
-				return effectiveMonsters
+				return autocompleteMonsters
 					.filter(m =>
 						!value
 							? true
@@ -52,7 +59,7 @@ export const killCommand: OSBMahojiCommand = {
 		channelID,
 		interaction
 	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod }>) => {
-		const user = await client.fetchUser(userID);
+		const user = await globalClient.fetchUser(userID);
 		return minionKillCommand(interaction, user, channelID, options.name, options.quantity, options.method);
 	}
 };

@@ -99,7 +99,7 @@ export default class extends BotCommand {
 			duration *= 0.9;
 		}
 
-		if (msg.author.hasItemEquippedAnywhere(['Achievement diary cape', 'Achievement diary cape(t)'], false)) {
+		if (msg.author.hasItemEquippedOrInBank('Achievement diary cape')) {
 			boosts.push('10% for Achievement diary cape');
 			duration *= 0.9;
 		}

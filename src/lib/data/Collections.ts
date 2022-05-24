@@ -56,6 +56,7 @@ import {
 	dagannothKingsCL,
 	dailyCL,
 	demonicGorillaCL,
+	diariesCL,
 	fightCavesCL,
 	fishingTrawlerCL,
 	fossilIslandNotesCL,
@@ -630,8 +631,8 @@ export const allCollectionLogs: ICollection = {
 				isActivity: true
 			},
 			'Chaos Druids': {
-				allItems: Monsters.ChaosDruid.allItems,
-				kcActivity: Monsters.ChaosDruid.name,
+				allItems: Monsters.ElderChaosDruid.allItems,
+				kcActivity: Monsters.ElderChaosDruid.name,
 				items: chaosDruisCL
 			},
 			'Chompy Birds': {
@@ -784,6 +785,11 @@ export const allCollectionLogs: ICollection = {
 	},
 	Custom: {
 		activities: {
+			'Achievement Diary': {
+				counts: false,
+				alias: ['ad', 'diary', 'diaries'],
+				items: resolveItems([...diariesCL])
+			},
 			Daily: {
 				counts: false,
 				alias: ['diango'],
@@ -817,16 +823,18 @@ export const allCollectionLogs: ICollection = {
 						Monsters.CommanderZilyana.name,
 						Monsters.KrilTsutsaroth.name,
 						Monsters.Kreearra.name,
-						Monsters.GeneralGraardor.name
+						Monsters.GeneralGraardor.name,
+						'Nex'
 					]
 				},
 				allItems: [
 					...Monsters.CommanderZilyana.allItems,
 					...Monsters.KrilTsutsaroth.allItems,
 					...Monsters.Kreearra.allItems,
-					...Monsters.GeneralGraardor.allItems
+					...Monsters.GeneralGraardor.allItems,
+					...NexNonUniqueTable.allItems
 				],
-				items: godWarsDungeonCL
+				items: [...godWarsDungeonCL, ...NexCL]
 			}
 		}
 	}

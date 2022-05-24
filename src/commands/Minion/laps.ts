@@ -61,10 +61,14 @@ function alching(msg: KlasaMessage, tripLength: number) {
 
 	if (maxCasts === 0 || bankToRemove.length === 0) return null;
 
+	const alchGP = itemToAlch.highalch * maxCasts;
+	const bankToAdd = new Bank().add('Coins', alchGP);
+
 	return {
 		maxCasts,
 		bankToRemove,
-		itemToAlch
+		itemToAlch,
+		bankToAdd
 	};
 }
 

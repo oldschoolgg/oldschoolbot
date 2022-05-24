@@ -1,4 +1,5 @@
 import { Client, KlasaClientOptions, KlasaUser } from 'klasa';
+import { MahojiClient } from 'mahoji';
 
 import { clientOptions } from '../config';
 import { initCrons } from '../crons';
@@ -23,6 +24,7 @@ export class OldSchoolBotClient extends Client {
 	public secondaryUserBusyCache = new Set<string>();
 	public piscinaPool = piscinaPool;
 	public production = production ?? false;
+	public mahojiClient!: MahojiClient;
 	_emojis: any;
 
 	public constructor(clientOptions: KlasaClientOptions) {
@@ -63,7 +65,7 @@ export class OldSchoolBotClient extends Client {
 	}
 
 	init = () => {
-		initCrons();
+		initCrons(this);
 		this.refreshEmojis();
 	};
 }

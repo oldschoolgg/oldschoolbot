@@ -31,7 +31,6 @@ export default class extends Task {
 		)} points. ${perHour}`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
