@@ -7,7 +7,7 @@ import { Bank } from 'oldschooljs';
 import { ironsCantUse } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addToGPTaxBalance, roll } from '../../lib/util';
+import { addToGPTaxBalance, getSupportGuild } from '../../lib/util';
 import { logError } from '../../lib/util/logError';
 
 export default class extends BotCommand {
