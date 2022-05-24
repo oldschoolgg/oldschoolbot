@@ -21,6 +21,7 @@ import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
+import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -780,4 +781,15 @@ export function roughMergeMahojiResponse(one: Awaited<CommandResponse>, two: Awa
 		if (res.attachments) newResponse.attachments = [...newResponse.attachments!, ...res.attachments];
 	}
 	return newResponse;
+}
+
+export async function asyncGzip(buffer: Buffer) {
+	return new Promise<Buffer>((resolve, reject) => {
+		gzip(buffer, {}, (error, gzipped) => {
+			if (error) {
+				reject(error);
+			}
+			resolve(gzipped);
+		});
+	});
 }
