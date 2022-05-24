@@ -2,7 +2,6 @@ import { percentChance } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { client } from '../../..';
 import { Emoji } from '../../../lib/constants';
 import { prisma } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -114,14 +113,13 @@ export default class extends Task {
 		});
 		const points = addArrayOfNumbers(result.map(i => i.points));
 
-		const { newUser } = await mahojiUserSettingsUpdate(client, user, {
+		const { newUser } = await mahojiUserSettingsUpdate(user, {
 			lms_points: {
 				increment: points
 			}
 		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${

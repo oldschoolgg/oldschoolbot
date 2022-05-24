@@ -8,7 +8,6 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { client, mahojiClient } from '../..';
 import { BitField, PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
@@ -45,7 +44,7 @@ async function handleToggle(user: User, name: string) {
 	if (!toggle) return 'Invalid toggle name.';
 	const includedNow = user.bitfield.includes(toggle.bit);
 	const nextArr = includedNow ? removeFromArr(user.bitfield, toggle.bit) : [...user.bitfield, toggle.bit];
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		bitfield: nextArr
 	});
 	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.`;
@@ -62,12 +61,12 @@ async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRe
 
 	if (itemToAdd) {
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, { favorite_food: [...currentFavorites, item.id] });
+		await mahojiUserSettingsUpdate(user.id, { favorite_food: [...currentFavorites, item.id] });
 		return `You favorited ${item.name}.`;
 	}
 	if (itemToRemove) {
 		if (!currentFavorites.includes(item.id)) return 'This item is not favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, { favorite_food: removeFromArr(currentFavorites, item.id) });
+		await mahojiUserSettingsUpdate(user.id, { favorite_food: removeFromArr(currentFavorites, item.id) });
 		return `You unfavorited ${item.name}.`;
 	}
 	return currentItems;
@@ -86,12 +85,12 @@ async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRe
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: [...currentFavorites, item.id] });
+		await mahojiUserSettingsUpdate(user.id, { favoriteItems: [...currentFavorites, item.id] });
 		return `You favorited ${item.name}.`;
 	}
 	if (itemToRemove) {
 		if (!currentFavorites.includes(item.id)) return 'This item is not favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: removeFromArr(currentFavorites, item.id) });
+		await mahojiUserSettingsUpdate(user.id, { favoriteItems: removeFromArr(currentFavorites, item.id) });
 		return `You unfavorited ${item.name}.`;
 	}
 	return currentItems;
@@ -110,7 +109,7 @@ async function favAlchConfig(
 			.filter(i => !currentFavorites.includes(i.id));
 		if (items.length === 0) return 'No valid items were given.';
 		const newFavs = uniqueArr([...currentFavorites, ...items.items().map(i => i[0].id)]);
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			favorite_alchables: newFavs
 		});
 		return `Added ${items
@@ -137,13 +136,13 @@ async function favAlchConfig(
 
 	if (action === 'remove') {
 		if (!isAlreadyFav) return 'That item is not favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			favorite_alchables: removeFromArr(currentFavorites, item.id)
 		});
 		return `Removed ${item.name} from your favorite alchable items.`;
 	}
 	if (isAlreadyFav) return 'That item is already favorited.';
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		favorite_alchables: uniqueArr([...currentFavorites, item.id])
 	});
 	return `Added ${item.name} to your favorite alchable items.`;
@@ -180,7 +179,7 @@ async function bankSortConfig(
 					await makeBankImage({
 						bank: currentWeightingBank,
 						title: 'Bank Sort Weightings',
-						user: client.users.cache.get(mahojiUser.id)
+						user: globalClient.users.cache.get(mahojiUser.id)
 					})
 				).file
 			];
@@ -192,7 +191,7 @@ async function bankSortConfig(
 		if (!(BankSortMethods as readonly string[]).includes(sortMethod)) {
 			return `That's not a valid bank sort method. Valid methods are: ${BankSortMethods.join(', ')}.`;
 		}
-		await mahojiUserSettingsUpdate(client, mahojiUser.id, {
+		await mahojiUserSettingsUpdate(mahojiUser.id, {
 			bank_sort_method: sortMethod
 		});
 
@@ -209,7 +208,7 @@ async function bankSortConfig(
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
 
-	const { newUser } = await mahojiUserSettingsUpdate(client, mahojiUser.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(mahojiUser.id, {
 		bank_sort_weightings: newBank.bank
 	});
 
@@ -222,7 +221,7 @@ async function bgColorConfig(user: User, hex?: string) {
 	const embed = new Embed();
 
 	if (hex === 'reset') {
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			bank_bg_hex: null
 		});
 		return 'Reset your bank background color.';
@@ -247,7 +246,7 @@ async function bgColorConfig(user: User, hex?: string) {
 		return "That's not a valid hex color. It needs to be 7 characters long, starting with '#', for example: #4e42f5 - use this to pick one: <https://www.google.com/search?q=hex+color+picker>";
 	}
 
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		bank_bg_hex: hex
 	});
 
@@ -275,7 +274,7 @@ async function handleChannelEnable(
 	if (choice === 'disable') {
 		if (isDisabled) return 'This channel is already disabled.';
 
-		await mahojiGuildSettingsUpdate(client, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			staffOnlyChannels: [...settings.staffOnlyChannels, cID]
 		});
 
@@ -283,7 +282,7 @@ async function handleChannelEnable(
 	}
 	if (!isDisabled) return 'This channel is already enabled.';
 
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		staffOnlyChannels: settings.staffOnlyChannels.filter(i => i !== cID)
 	});
 
@@ -308,7 +307,7 @@ async function handleTweetsEnable(
 		if (settings.tweetchannel === cID) {
 			return 'Jmod Tweets are already enabled in this channel.';
 		}
-		await mahojiGuildSettingsUpdate(client, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			tweetchannel: cID
 		});
 
@@ -318,7 +317,7 @@ async function handleTweetsEnable(
 		return 'Enabled Jmod Tweets in this channel.';
 	}
 	if (!settings.tweetchannel) return "Jmod Tweets aren't enabled, so you can't disable them.";
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		tweetchannel: null
 	});
 	return 'Disabled Jmod Tweets in this channel.';
@@ -339,7 +338,7 @@ async function handlePetMessagesEnable(
 		if (settings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await mahojiGuildSettingsUpdate(client, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			petchannel: cID
 		});
 		return 'Enabled Pet Messages in this guild.';
@@ -347,7 +346,7 @@ async function handlePetMessagesEnable(
 	if (settings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';
@@ -371,7 +370,7 @@ async function handleJModCommentsEnable(
 		if (settings.jmodComments === cID) {
 			return 'JMod Comments are already enabled in this channel.';
 		}
-		await mahojiGuildSettingsUpdate(client, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			jmodComments: cID
 		});
 		if (settings.jmodComments !== null) {
@@ -382,7 +381,7 @@ async function handleJModCommentsEnable(
 	if (settings.jmodComments === null) {
 		return "JMod Comments aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		jmodComments: null
 	});
 	return 'Disabled JMod Comments in this channel.';
@@ -397,7 +396,7 @@ async function handleCommandEnable(
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allAbstractCommands(client, mahojiClient).find(
+	const command = allAbstractCommands(globalClient.mahojiClient).find(
 		i => i.name.toLowerCase() === commandName.toLowerCase()
 	);
 	if (!command) return "That's not a valid command.";
@@ -406,7 +405,7 @@ async function handleCommandEnable(
 		if (!settings.disabledCommands.includes(commandName)) {
 			return "That command isn't disabled.";
 		}
-		await mahojiGuildSettingsUpdate(client, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			disabledCommands: settings.disabledCommands.filter(i => i !== command.name)
 		});
 
@@ -416,7 +415,7 @@ async function handleCommandEnable(
 	if (settings.disabledCommands.includes(command.name)) {
 		return 'That command is already disabled.';
 	}
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		disabledCommands: [...settings.disabledCommands, command.name]
 	});
 
@@ -427,7 +426,7 @@ async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefi
 	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		prefix: newPrefix
 	});
 	return `Changed Command Prefix for this server to \`${newPrefix}\``;
@@ -494,11 +493,11 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		warningMsg = priorityWarningMsg;
 	}
 	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			combat_options: [...settings.combat_options, newcbopt.id]
 		});
 	} else if (!nextBool && settings.combat_options.includes(newcbopt.id)) {
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
 		});
 	} else {
@@ -528,7 +527,7 @@ async function handleRSN(user: KlasaUser, newRSN: string) {
 		return `Your RSN is already set to \`${RSN}\``;
 	}
 
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		RSN: newRSN
 	});
 	if (RSN !== null) {
@@ -625,7 +624,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The command you want to enable/disable.',
 							required: true,
 							autocomplete: async value => {
-								return allAbstractCommands(client, mahojiClient)
+								return allAbstractCommands(globalClient.mahojiClient)
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 							}
@@ -887,8 +886,11 @@ export const configCommand: OSBMahojiCommand = {
 			favorite_items?: { add?: string; remove?: string };
 		};
 	}>) => {
-		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
-		const guild = guildID ? client.guilds.cache.get(guildID.toString()) ?? null : null;
+		const [user, mahojiUser] = await Promise.all([
+			globalClient.fetchUser(userID),
+			mahojiUsersSettingsFetch(userID)
+		]);
+		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) ?? null : null;
 		if (options.server) {
 			if (options.server.channel) {
 				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);

@@ -65,7 +65,6 @@ export const globalPresets: GearPreset[] = [
 		ammo: null,
 		ammo_qty: null
 	},
-
 	{
 		name: 'carpenter',
 		user_id: '123',
@@ -83,7 +82,6 @@ export const globalPresets: GearPreset[] = [
 		ammo: null,
 		ammo_qty: null
 	},
-
 	{
 		name: 'rogue',
 		user_id: '123',
@@ -101,9 +99,8 @@ export const globalPresets: GearPreset[] = [
 		ammo: null,
 		ammo_qty: null
 	},
-
 	{
-		name: 'clue',
+		name: 'clue_hunter',
 		user_id: '123',
 		head: itemID('Helm of raedwald'),
 		neck: null,
@@ -119,7 +116,6 @@ export const globalPresets: GearPreset[] = [
 		ammo: null,
 		ammo_qty: null
 	},
-
 	{
 		name: 'angler',
 		user_id: '123',
@@ -137,9 +133,25 @@ export const globalPresets: GearPreset[] = [
 		ammo: null,
 		ammo_qty: null
 	},
-
 	{
-		name: 'pyro',
+		name: 'spirit_angler',
+		user_id: '123',
+		head: itemID('Spirit angler headband'),
+		neck: null,
+		body: itemID('Spirit angler top'),
+		legs: itemID('Spirit angler waders'),
+		cape: null,
+		two_handed: null,
+		hands: null,
+		feet: itemID('Spirit angler boots'),
+		shield: null,
+		weapon: null,
+		ring: null,
+		ammo: null,
+		ammo_qty: null
+	},
+	{
+		name: 'pyromancer',
 		user_id: '123',
 		head: itemID('Pyromancer hood'),
 		neck: null,
@@ -155,7 +167,6 @@ export const globalPresets: GearPreset[] = [
 		ammo: null,
 		ammo_qty: null
 	},
-
 	{
 		name: 'prospector',
 		user_id: '123',
@@ -173,7 +184,6 @@ export const globalPresets: GearPreset[] = [
 		ammo: null,
 		ammo_qty: null
 	},
-
 	{
 		name: 'lumberjack',
 		user_id: '123',
@@ -185,6 +195,23 @@ export const globalPresets: GearPreset[] = [
 		two_handed: null,
 		hands: null,
 		feet: itemID('Lumberjack boots'),
+		shield: null,
+		weapon: null,
+		ring: null,
+		ammo: null,
+		ammo_qty: null
+	},
+	{
+		name: 'farmer',
+		user_id: '123',
+		head: itemID("Farmer's strawhat"),
+		neck: null,
+		body: itemID("Farmer's jacket"),
+		legs: itemID("Farmer's boro trousers"),
+		cape: null,
+		two_handed: null,
+		hands: null,
+		feet: itemID("Farmer's boots"),
 		shield: null,
 		weapon: null,
 		ring: null,

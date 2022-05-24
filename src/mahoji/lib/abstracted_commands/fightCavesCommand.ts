@@ -109,9 +109,6 @@ export async function fightCavesCommand(user: KlasaUser, channelID: bigint): Com
 
 	duration += (rand(1, 5) * duration) / 100;
 
-	const diedPreJad = percentChance(preJadDeathChance);
-	const preJadDeathTime = diedPreJad ? rand(Time.Minute * 20, duration) : null;
-
 	await user.removeItemsFromBank(fightCavesCost);
 
 	// Add slayer
@@ -128,6 +125,11 @@ export async function fightCavesCommand(user: KlasaUser, channelID: bigint): Com
 		debugStr += ', 15% on Task with Black mask (i)';
 	}
 
+	const diedPreJad = percentChance(preJadDeathChance);
+	const fakeDuration = duration;
+	duration = diedPreJad ? rand(Time.Minute * 20, duration) : duration;
+	const preJadDeathTime = diedPreJad ? duration : null;
+
 	await addSubTaskToActivityTask<FightCavesActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
@@ -136,7 +138,8 @@ export async function fightCavesCommand(user: KlasaUser, channelID: bigint): Com
 		type: 'FightCaves',
 		jadDeathChance,
 		preJadDeathChance,
-		preJadDeathTime
+		preJadDeathTime,
+		fakeDuration
 	});
 
 	updateBankSetting(user.client as KlasaClient, ClientSettings.EconomyStats.FightCavesCost, fightCavesCost);
@@ -144,7 +147,7 @@ export async function fightCavesCommand(user: KlasaUser, channelID: bigint): Com
 	const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
 	return {
-		content: `**Duration:** ${formatDuration(duration)} (${(duration / 1000 / 60).toFixed(2)} minutes)
+		content: `**Duration:** ${formatDuration(fakeDuration)} (${(fakeDuration / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}

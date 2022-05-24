@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import { randInt, roll } from 'e';
+import { randArrItem, randInt, roll } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
@@ -72,10 +72,14 @@ export type PlantsList = [number, string, number][];
 const easyPlants: PlantsList = [
 	// [farmingLevelNeeded, plantToGrow, plantTier]
 	[45, 'Potato', 1],
+	[45, 'Marigold', 1],
 	[45, 'Onion', 1],
 	[45, 'Cabbage', 1],
+	[45, 'Rosemary', 1],
 	[45, 'Tomato', 1],
 	[45, 'Sweetcorn', 1],
+	[45, 'Nasturtium', 1],
+	[45, 'Woad leaf', 1],
 	[45, 'Limpwurt', 1],
 	[48, 'Jangerberry', 2],
 	[55, 'Cactus', 3],
@@ -106,6 +110,7 @@ const mediumPlants: PlantsList = [
 	[65, 'Avantoe', 3],
 	[65, 'Cactus', 4],
 	[65, 'Kwuarm', 3],
+	[65, 'White lily', 2],
 	[65, 'Whiteberry', 3],
 	[65, 'Yew tree', 4],
 	[65, 'Snape grass', 2],
@@ -125,6 +130,7 @@ const hardPlants: PlantsList = [
 	// [farmingLevelNeeded, plantToGrow, plantTier]
 	[85, 'Maple tree', 5],
 	[85, 'Watermelon', 4],
+	[85, 'White lily', 2],
 	[85, 'Whiteberry', 3],
 	[85, 'Yew tree', 5],
 	[85, 'Snape grass', 3],
@@ -160,7 +166,7 @@ export function getPlantToGrow(
 			contractType.splice(contractType.indexOf(index), 1);
 	}
 
-	const plantFromContract = contractType[randInt(0, contractType.length - 1)];
+	const plantFromContract = randArrItem(contractType);
 	const plantToGrow = plantFromContract[1];
 	const tier = plantFromContract[2];
 

@@ -16,7 +16,6 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
-import { client } from '../../..';
 import { PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
@@ -415,7 +414,6 @@ export async function minionKillCommand(
 
 		try {
 			const { foodRemoved, reductions } = await removeFoodFromUser({
-				client,
 				user,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
@@ -487,7 +485,7 @@ export async function minionKillCommand(
 	}
 
 	if (lootToRemove.length > 0) {
-		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 		await user.removeItemsFromBank(lootToRemove);
 		totalCost.add(lootToRemove);
 	}

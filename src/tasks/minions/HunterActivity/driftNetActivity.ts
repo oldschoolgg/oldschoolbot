@@ -78,7 +78,6 @@ export default class extends Task {
 		str += `\n\nYou received: ${loot}.`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,

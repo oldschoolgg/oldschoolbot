@@ -1,7 +1,6 @@
 import { codeBlock } from '@discordjs/builders';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { Emoji } from '../../lib/constants';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
@@ -39,9 +38,11 @@ export const askCommand: OSBMahojiCommand = {
 	],
 	run: async ({
 		user,
-		options
+		options,
+		interaction
 	}: CommandRunOptions<{ page?: number; format?: BankFormat; search?: string; filter?: string; item?: string }>) => {
-		const klasaUser = await client.fetchUser(user.id);
+		await interaction.deferReply();
+		const klasaUser = await globalClient.fetchUser(user.id);
 		const baseBank = klasaUser.bank({ withGP: true });
 
 		if (options.page && options.item) {

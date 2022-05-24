@@ -55,11 +55,14 @@ export default class extends BotCommand {
 			return msg.channel.send('Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.');
 		}
 
+		const supportServer = getSupportGuild();
+		if (!supportServer) return msg.channel.send("Couldn't find support server!");
+
 		// fetch() always calls the API when no id is specified, so only do it sparingly or if needed.
-		if (!msg.guild.emojis.cache || msg.guild.emojis.cache.size === 0 || roll(10)) {
-			await msg.guild.emojis.fetch();
+		if (supportServer.emojis.cache.size === 0) {
+			await supportServer.fetch();
 		}
-		const reaction = msg.guild.emojis.cache.random();
+		const reaction = supportServer.emojis.cache.random();
 		if (!reaction || !reaction.id) {
 			return msg.channel.send(
 				"Couldn't retrieve emojis for this guild, ensure you have some emojis and try again."

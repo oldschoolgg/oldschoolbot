@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../../..';
 import { LMSBuyables } from '../../../lib/data/CollectionsExport';
 import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
@@ -37,7 +36,7 @@ export async function lmsCommand(
 	}
 
 	if (options.simulate) {
-		lmsSimCommand(client.channels.cache.get(channelID.toString()), options.simulate.names);
+		lmsSimCommand(globalClient.channels.cache.get(channelID.toString()), options.simulate.names);
 		return {
 			content: 'Starting simulation...'
 		};
@@ -63,7 +62,7 @@ export async function lmsCommand(
 			return `You received ${loot}.`;
 		}
 
-		const { newUser } = await mahojiUserSettingsUpdate(client, user, {
+		const { newUser } = await mahojiUserSettingsUpdate(user, {
 			lms_points: {
 				decrement: cost
 			}

@@ -78,7 +78,7 @@ GROUP BY item_id;`);
 					channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
 					channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
 				) {
-					sendToChannelID(client, channel.id, { content: `<${url}>`, embed });
+					sendToChannelID(channel.id, { content: `<${url}>`, embed });
 				}
 			}
 		}
