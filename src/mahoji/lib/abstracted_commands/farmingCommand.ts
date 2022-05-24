@@ -259,16 +259,13 @@ export async function farmingPlantCommand({
 
 	let didPay = false;
 	if (wantsToPay && plant.protectionPayment) {
-		for (const [payment, qty] of plant.protectionPayment.items()) {
-			if (userBank.amount(payment.id) >= qty * quantity) {
-				cost.add(payment.id, qty * quantity);
-				didPay = true;
-				infoStr.push(
-					`You are paying a nearby farmer ${qty * quantity} ${payment.name} to look after your patches.`
-				);
-			} else {
-				infoStr.push('You did not have enough payment to automatically pay for crop protection.');
-			}
+		const paymentCost = plant.protectionPayment.clone().multiply(quantity);
+		if (userBank.has(paymentCost)) {
+			cost.add(paymentCost);
+			didPay = true;
+			infoStr.push(`You are paying a nearby farmer ${cost} to look after your patches.`);
+		} else {
+			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 		}
 	}
 
