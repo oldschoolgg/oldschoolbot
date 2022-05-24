@@ -1,5 +1,5 @@
 import { Embed } from '@discordjs/builders';
-import { User } from '@prisma/client';
+import { Activity, User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -13,13 +13,19 @@ import { allDroppedItems } from '../../lib/data/Collections';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import { formatDuration, itemID, roll, stringMatches } from '../../lib/util';
+import { asyncGzip, formatDuration, itemID, roll, stringMatches } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier, { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { MahojiUserOption, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	MahojiUserOption,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch,
+	patronMsg
+} from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -60,12 +66,35 @@ async function giveBox(mahojiUser: User, user: KlasaUser, _recipient: MahojiUser
 	return `Gave **${boxToReceive}** to ${recipient.username}.`;
 }
 
+const whereInMassClause = (id: string) =>
+	`OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${id}%')`;
+
+async function activityExport(user: User): CommandResponse {
+	const allActivities = await prisma.$queryRawUnsafe<
+		Activity[]
+	>(`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
+FROM activity
+WHERE user_id = '${user.id}'
+OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${user.id}%');`);
+	let res = ['Start', 'Finish', 'Duration', 'Type', 'Data'].join('\t');
+	for (const { start_date, finish_date, duration, type, data } of allActivities) {
+		res += `\n${start_date}\t${finish_date}\t${duration}\t${type}\t${JSON.stringify(data)}`;
+	}
+	const buffer = Buffer.from(res, 'utf-8');
+	const zipped = await asyncGzip(buffer);
+
+	return {
+		attachments: [{ fileName: 'activity-export.gz', buffer: zipped }]
+	};
+}
+
 async function minionStats(user: User) {
 	const { id } = user;
 	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = (await Promise.all([
 		prisma.$queryRawUnsafe(`SELECT count(id)
 FROM activity
-WHERE user_id = ${id}`),
+WHERE user_id = ${id}
+${whereInMassClause(id)};`),
 		prisma.$queryRawUnsafe(`SELECT id, start_date, type
 FROM activity
 WHERE user_id = ${id}
@@ -75,13 +104,15 @@ LIMIT 1;`),
 SELECT type, count(type) as qty
 FROM activity
 WHERE user_id = ${id}
+${whereInMassClause(id)}
 GROUP BY type
 ORDER BY qty DESC
 LIMIT 15;`),
 		prisma.$queryRawUnsafe(`
 SELECT sum(duration)
 FROM activity
-WHERE user_id = ${id};`)
+WHERE user_id = ${id}
+${whereInMassClause(id)};`)
 	])) as any[];
 
 	const totalDuration = Number(_totalDuration.sum);
@@ -348,6 +379,11 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: true
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'activity_export',
+					description: 'Export all your activities (For advanced users).'
 				}
 			]
 		}
@@ -383,6 +419,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			give_box?: {
 				user: MahojiUserOption;
 			};
+			activity_export?: {};
 		};
 	}>) => {
 		interaction.deferReply();
@@ -443,6 +480,16 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (patron.give_box) {
 				if (getUsersPerkTier(mahojiUser) < PerkTier.One) return patronMsg(PerkTier.One);
 				return giveBox(mahojiUser, klasaUser, patron.give_box.user);
+			}
+			if (patron.activity_export) {
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				const promise = activityExport(mahojiUser);
+				await handleMahojiConfirmation(
+					interaction,
+					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'
+				);
+				const result = await promise;
+				return result;
 			}
 		}
 		return 'Invalid command!';
