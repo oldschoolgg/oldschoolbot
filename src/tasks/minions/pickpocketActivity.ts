@@ -113,6 +113,14 @@ export default class extends Task {
 			);
 		}
 
-		handleTripFinish(user, channelID, str, ['pickpocket', [quantity, npc ? npc.name : stall.name], true], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['pickpocket', [quantity, npc ? npc.name : stall.name], true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }

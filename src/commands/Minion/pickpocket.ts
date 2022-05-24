@@ -167,8 +167,6 @@ export default class extends BotCommand {
 				hasArdyHard
 			);
 
-
-
 			if (rogueOutfitPercentBonus(msg.author) > 0) {
 				boosts.push(`${rogueOutfitPercentBonus(msg.author)}% chance of x2 loot due to rogue outfit equipped`);
 			}
