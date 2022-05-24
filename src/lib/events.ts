@@ -1,6 +1,7 @@
 import { noOp } from 'e';
 import { KlasaUser } from 'klasa';
 
+import { MAXING_MESSAGE } from '../config.example';
 import { Events, LEVEL_99_XP, SupportServer } from './constants';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
@@ -36,5 +37,5 @@ export async function onMax(user: KlasaUser) {
 
 	user.client.emit(Events.ServerNotification, str);
 	sendToChannelID(SupportServer, { content: str }).catch(noOp);
-	user.send('Congratulations on maxing!').catch(noOp);
+	user.send(MAXING_MESSAGE).catch(noOp);
 }
