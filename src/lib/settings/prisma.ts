@@ -2,13 +2,9 @@ import { Activity, activity_type_enum, loot_track_type, Prisma, PrismaClient } f
 import { Time } from 'e';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
-import { cleanString, isGroupActivity } from '../util';
-import { logError } from '../util/logError';
-import { taskNameFromType } from '../util/taskNameFromType';
-import { minionActivityCache, minionActivityCacheDelete } from './settings';
+import { cleanString } from '../util';
 
 declare global {
 	namespace NodeJS {
@@ -33,40 +29,6 @@ export function convertStoredActivityToFlatActivity(activity: Activity): Activit
 	};
 }
 
-export function activitySync(activity: Activity) {
-	const users: bigint[] | string[] = isGroupActivity(activity.data)
-		? ((activity.data as Prisma.JsonObject).users! as string[])
-		: [activity.user_id];
-	for (const user of users) {
-		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
-	}
-}
-
-export async function completeActivity(_activity: Activity) {
-	const activity = convertStoredActivityToFlatActivity(_activity);
-	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
-	}
-
-	const taskName = taskNameFromType(activity.type);
-	const task = client.tasks.get(taskName);
-
-	if (!task) {
-		throw new Error('Missing task');
-	}
-
-	client.oneCommandAtATimeCache.add(activity.userID);
-	try {
-		client.emit('debug', `Running ${task.name} for ${activity.userID}`);
-		await task.run(activity);
-	} catch (err) {
-		logError(err);
-	} finally {
-		client.oneCommandAtATimeCache.delete(activity.userID);
-		minionActivityCacheDelete(activity.userID);
-	}
-}
-
 /**
  * ⚠️ Uses queryRawUnsafe
  */
@@ -77,7 +39,7 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 				   AND ("collectionLogBank"->>'${itemID}')::int >= 1
 				   ${ironmenOnly ? 'AND "minion.ironman" = true' : ''};`;
 	const result = parseInt(((await prisma.$queryRawUnsafe(query)) as any)[0].count);
-	if (isNaN(result) || typeof result !== 'number') {
+	if (isNaN(result)) {
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
 	}
 	return result;

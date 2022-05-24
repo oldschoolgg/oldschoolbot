@@ -54,6 +54,7 @@ export interface ClueTier {
 	timeToFinish: number;
 	milestoneReward?: ClueMilestoneReward;
 	mimicChance: number | false;
+	allItems: number[];
 }
 
 export type GearRequirement = Partial<{ [key in GearStat]: number }>;

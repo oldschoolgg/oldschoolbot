@@ -1,5 +1,5 @@
-import { activitySync, prisma } from '../settings/prisma';
-import { getActivityOfUser } from '../settings/settings';
+import { prisma } from '../settings/prisma';
+import { activitySync, getActivityOfUser } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
 import { isGroupActivity } from '../util';
 import { logError } from './logError';

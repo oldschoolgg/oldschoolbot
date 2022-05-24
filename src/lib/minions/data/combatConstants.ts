@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import itemID from '../../util/itemID';
 import { Consumable } from '../types';
 
 // Configure boost percents
@@ -32,12 +31,12 @@ export enum SlayerActivityConstants {
 	IceBurst,
 	Cannon
 }
-export const CombatCannonItemBank = {
-	[itemID('Cannon barrels')]: 1,
-	[itemID('Cannon base')]: 1,
-	[itemID('Cannon furnace')]: 1,
-	[itemID('Cannon stand')]: 1
-};
+export const CombatCannonItemBank = new Bank({
+	'Cannon barrels': 1,
+	'Cannon base': 1,
+	'Cannon furnace': 1,
+	'Cannon stand': 1
+});
 
 export const CombatOptionsArray: CombatOptionsDesc[] = [
 	{

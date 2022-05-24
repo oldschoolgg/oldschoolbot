@@ -10,7 +10,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import { calcMaxTripLength } from '../../lib/util/minionUtils';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import resolveItems from '../../lib/util/resolveItems';
 
 const unlimitedFireRuneProviders = resolveItems([
@@ -113,8 +113,6 @@ export default class extends BotCommand {
 			alchValue,
 			type: 'Alching'
 		});
-
-		msg.author.log(`alched Quantity[${quantity}] ItemID[${osItem.id}] for ${alchValue}`);
 
 		const response = `${msg.author.minionName} is now alching ${quantity}x ${
 			osItem.name

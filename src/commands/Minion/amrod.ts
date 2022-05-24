@@ -6,7 +6,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatSkillRequirements, stringMatches } from '../../lib/util';
 import itemID from '../../lib/util/itemID';
-import { soteSkillRequirements } from './zalcano';
+import { soteSkillRequirements } from '../../mahoji/lib/abstracted_commands/zalcanoCommand';
 
 const amrodTradeableList = [
 	{

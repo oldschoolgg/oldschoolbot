@@ -167,18 +167,19 @@ export default class extends BotCommand {
 				hasArdyHard
 			);
 
+
+
+			if (rogueOutfitPercentBonus(msg.author) > 0) {
+				boosts.push(`${rogueOutfitPercentBonus(msg.author)}% chance of x2 loot due to rogue outfit equipped`);
+			}
+
 			const { foodRemoved } = await removeFoodFromUser({
-				client: this.client,
 				user: msg.author,
 				totalHealingNeeded: damageTaken,
 				healPerAction: Math.ceil(damageTaken / quantity),
 				activityName: 'Pickpocketing',
 				attackStylesUsed: []
 			});
-
-			if (rogueOutfitPercentBonus(msg.author) > 0) {
-				boosts.push(`${rogueOutfitPercentBonus(msg.author)}% chance of x2 loot due to rogue outfit equipped`);
-			}
 
 			updateBankSetting(this.client, ClientSettings.EconomyStats.ThievingCost, foodRemoved);
 			str += ` Removed ${foodRemoved}.`;

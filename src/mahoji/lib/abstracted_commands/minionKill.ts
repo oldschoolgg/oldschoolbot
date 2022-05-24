@@ -16,7 +16,6 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
-import { client } from '../../..';
 import { PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
@@ -64,6 +63,8 @@ import getOSItem from '../../../lib/util/getOSItem';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';
 import { revsCommand } from './revsCommand';
+import { temporossCommand } from './temporossCommand';
+import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -120,6 +121,9 @@ export async function minionKillCommand(
 	if (!name) return invalidMonsterMsg;
 
 	if (stringMatches(name, 'nex')) return nexCommand(interaction, user, channelID);
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
+	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
+
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		return revsCommand(user, mUser, channelID, interaction, name);
@@ -410,7 +414,6 @@ export async function minionKillCommand(
 
 		try {
 			const { foodRemoved, reductions } = await removeFoodFromUser({
-				client,
 				user,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
@@ -482,7 +485,7 @@ export async function minionKillCommand(
 	}
 
 	if (lootToRemove.length > 0) {
-		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 		await user.removeItemsFromBank(lootToRemove);
 		totalCost.add(lootToRemove);
 	}

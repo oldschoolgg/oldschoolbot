@@ -84,11 +84,10 @@ export default class extends Task {
 		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			output,
-			['tempoross', [quantity], true],
+			['k', { name: 'Tempoross', quantity }, true],
 			image!,
 			data,
 			itemsAdded
