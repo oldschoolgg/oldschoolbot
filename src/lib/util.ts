@@ -9,6 +9,7 @@ import {
 	DMChannel,
 	Guild,
 	GuildMember,
+	MessageAttachment,
 	MessageButton,
 	MessageOptions,
 	TextChannel,
@@ -18,7 +19,9 @@ import {
 import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, sumArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
+import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
+import { gzip } from 'node:zlib';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -857,4 +860,42 @@ export async function addToGPTaxBalance(userID: bigint | string, amount: number)
 			}
 		})
 	]);
+}
+
+export function convertMahojiResponseToDJSResponse(response: Awaited<CommandResponse>): string | MessageOptions {
+	if (typeof response === 'string') return response;
+	return {
+		content: response.content,
+		files: response.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
+	};
+}
+
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): InteractionResponseDataWithBufferAttachments {
+	if (typeof one === 'string') return { content: one };
+	const response: InteractionResponseDataWithBufferAttachments = {};
+	if (one.content) response.content = one.content;
+	if (one.attachments) response.attachments = one.attachments;
+	return response;
+}
+
+export function roughMergeMahojiResponse(one: Awaited<CommandResponse>, two: Awaited<CommandResponse>) {
+	const first = normalizeMahojiResponse(one);
+	const second = normalizeMahojiResponse(two);
+	const newResponse: InteractionResponseDataWithBufferAttachments = { content: '', attachments: [] };
+	for (const res of [first, second]) {
+		if (res.content) newResponse.content += `${res.content} `;
+		if (res.attachments) newResponse.attachments = [...newResponse.attachments!, ...res.attachments];
+	}
+	return newResponse;
+}
+
+export async function asyncGzip(buffer: Buffer) {
+	return new Promise<Buffer>((resolve, reject) => {
+		gzip(buffer, {}, (error, gzipped) => {
+			if (error) {
+				reject(error);
+			}
+			resolve(gzipped);
+		});
+	});
 }

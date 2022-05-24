@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { COINS_ID, dailyResetTime, Emoji, SupportServer } from '../../lib/constants';
 import pets from '../../lib/data/pets';
@@ -31,6 +31,19 @@ const options = {
 	errors: ['time']
 };
 
+export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
+	const currentDate = new Date().getTime();
+	const lastVoteDate = user.settings.get(UserSettings.LastDailyTimestamp);
+	const difference = currentDate - lastVoteDate;
+
+	if (difference < dailyResetTime) {
+		const duration = Date.now() - (lastVoteDate + dailyResetTime);
+		return { isReady: false, durationUntilReady: duration };
+	}
+
+	return { isReady: true };
+}
+
 export default class DailyCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
@@ -45,18 +58,16 @@ export default class DailyCommand extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		if (msg.channel.id === '342983479501389826') return;
-		await msg.author.settings.sync();
-		const currentDate = new Date().getTime();
-		const lastVoteDate = msg.author.settings.get(UserSettings.LastDailyTimestamp);
-		const difference = currentDate - lastVoteDate;
-
-		// If they have already claimed a daily in the past 4h
-		if (difference < dailyResetTime) {
-			let duration = formatDuration(Date.now() - (lastVoteDate + dailyResetTime));
-			return msg.channel.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
+		const check = isUsersDailyReady(msg.author);
+		if (!check.isReady) {
+			return msg.channel.send(
+				`**${Emoji.Diango} Diango says...** You can claim your next daily in ${formatDuration(
+					check.durationUntilReady
+				)}.`
+			);
 		}
 
-		await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
+		await msg.author.settings.update(UserSettings.LastDailyTimestamp, new Date().getTime());
 
 		const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
 

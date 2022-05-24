@@ -7,7 +7,7 @@ import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
-import { DISCORD_SETTINGS } from '../config';
+import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
@@ -162,9 +162,9 @@ export const enum Emoji {
 }
 
 export const ReactionEmoji = {
-	Join: DISCORD_SETTINGS.Emojis?.ReactionJoin ?? '705971600956194907',
-	Stop: DISCORD_SETTINGS.Emojis?.ReactionStop ?? '705972260950769669',
-	Start: DISCORD_SETTINGS.Emojis?.ReactionStart ?? '705973302719414329'
+	Join: production ? '705971600956194907' : '951309579302604900',
+	Stop: production ? '705972260950769669' : '951309579248091166',
+	Start: production ? '705973302719414329' : '951309579302604880'
 };
 
 export const enum Image {

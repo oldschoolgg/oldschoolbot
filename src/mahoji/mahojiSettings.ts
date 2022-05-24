@@ -78,12 +78,12 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 			confirmed.push(id);
 			if (!isConfirmed()) return;
 			collector.stop();
-			await confirmMessage.delete();
+			if (!confirmMessage.deleted) await confirmMessage.delete();
 			resolve();
 		}
 
 		const cancel = async (reason: 'time' | 'cancel') => {
-			await confirmMessage.delete();
+			if (!confirmMessage.deleted) await confirmMessage.delete();
 			await interaction.respond({
 				type: InteractionType.ApplicationCommand,
 				response: {

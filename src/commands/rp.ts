@@ -53,7 +53,7 @@ import {
 	stringMatches,
 	toKMB
 } from '../lib/util';
-import getOSItem from '../lib/util/getOSItem';
+import getOSItem, { getItem } from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
@@ -928,7 +928,9 @@ LIMIT 10;
 				});
 			}
 			case 'disable': {
-				if (!input || input instanceof KlasaUser) return;
+				if (!input || input instanceof KlasaUser) {
+					return msg.channel.send(`Disabled Commands: ${Array.from(DISABLED_COMMANDS).join(', ')}.`);
+				}
 				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
@@ -976,7 +978,7 @@ LIMIT 10;
 			}
 			case 'dtp': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				addPatronLootTime(input.perkTier, this.client, input);
+				addPatronLootTime(input.perkTier, input);
 				return msg.channel.send('Done.');
 			}
 			case 'addptime': {
@@ -992,30 +994,34 @@ LIMIT 10;
 				const currentBalanceTier = input.settings.get(UserSettings.PremiumBalanceTier);
 				const currentBalanceTime = input.settings.get(UserSettings.PremiumBalanceExpiryDate);
 
-				if (input.perkTier > 1 && !currentBalanceTier) {
-					return msg.channel.send(`${input.username} is already a patron.`);
+				const oldPerkTier = input.perkTier;
+				if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
+					return msg.channel.send(`${input.username} is already a patron of at least that tier.`);
 				}
 				if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-					return msg.channel.send(
+					await msg.confirm(
 						`${input} already has ${formatDuration(
 							currentBalanceTime!
-						)} of Tier ${currentBalanceTier}, you can't add time for a different tier.`
+						)} of Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 					);
 				}
 				await msg.confirm(
 					`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}?`
 				);
 				await input.settings.update(UserSettings.PremiumBalanceTier, tier);
-				if (currentBalanceTime !== null) {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, currentBalanceTime + ms);
+
+				let newBalanceExpiryTime = 0;
+				if (currentBalanceTime !== null && tier === currentBalanceTier) {
+					newBalanceExpiryTime = currentBalanceTime + ms;
 				} else {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, Date.now() + ms);
+					newBalanceExpiryTime = Date.now() + ms;
 				}
+				await input.settings.update(UserSettings.PremiumBalanceExpiryDate, newBalanceExpiryTime);
 
 				return msg.channel.send(
 					`Gave ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}. They have ${formatDuration(
-						input.settings.get(UserSettings.PremiumBalanceExpiryDate)! - Date.now()
-					)} remaning.`
+						newBalanceExpiryTime - Date.now()
+					)} remaining.`
 				);
 			}
 		}
@@ -1034,7 +1040,7 @@ LIMIT 10;
 				if (typeof input !== 'string' || input.length < 2) return;
 				const duration = new Duration(input);
 				const ms = duration.offset;
-				addToDoubleLootTimer(this.client, ms, 'added by RP command');
+				addToDoubleLootTimer(ms, 'added by RP command');
 				return msg.channel.send(`Added ${formatDuration(ms)} to the double loot timer.`);
 			}
 			case 'resetdoubletime': {
@@ -1158,6 +1164,31 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				return msg.channel.send({
 					files: [new MessageAttachment(Buffer.from(str), 'output.txt')]
 				});
+			}
+			case 'itemdata': {
+				if (typeof input !== 'string') return;
+				const item = getItem(input);
+				if (!item) return;
+				return msg.channel.send(JSON.stringify(item, null, 2));
+			}
+			case 'testercheck': {
+				if (production) return;
+				let time = '12hours';
+				if (typeof input === 'string') time = input;
+				const result = await prisma.$queryRawUnsafe<
+					{ username: string; qty: number }[]
+				>(`SELECT "new_user"."username", COUNT(user_id) AS qty
+FROM command_usage
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "command_usage"."user_id"::text
+WHERE date > now() - INTERVAL '${time}'
+GROUP BY "new_user"."username"
+ORDER BY qty DESC;`);
+				return msg.channel.send(
+					result
+						.slice(0, 10)
+						.map(u => `${u.username}: ${u.qty} commands`)
+						.join('\n')
+				);
 			}
 		}
 	}

@@ -559,6 +559,14 @@ export const minigamesCommand: OSBMahojiCommand = {
 									)
 									.map(i => ({ name: i.item.name, value: i.item.name }));
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity you want to purchase.',
+							required: false,
+							min_value: 1,
+							max_value: 1000
 						}
 					]
 				}
@@ -772,7 +780,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { name: string };
 			points?: {};
 		};
-		mahogany_homes?: { start?: {}; buy?: { name: string } };
+		mahogany_homes?: { start?: {}; buy?: { name: string; quantity?: number } };
 		tears_of_guthix?: { start?: {} };
 		pyramid_plunder?: { start?: {} };
 		rogues_den?: { start?: {} };
@@ -943,7 +951,11 @@ export const minigamesCommand: OSBMahojiCommand = {
 		 */
 		if (options.mahogany_homes) {
 			if (options.mahogany_homes.buy) {
-				return mahoganyHomesBuyCommand(klasaUser, options.mahogany_homes.buy.name);
+				return mahoganyHomesBuyCommand(
+					klasaUser,
+					options.mahogany_homes.buy.name,
+					options.mahogany_homes.buy.quantity
+				);
 			}
 			if (options.mahogany_homes.start) {
 				return mahoganyHomesBuildCommand(klasaUser, channelID);

@@ -259,18 +259,14 @@ export async function farmingPlantCommand({
 
 	let didPay = false;
 	if (wantsToPay && plant.protectionPayment) {
-		for (const [payment, qty] of plant.protectionPayment.items()) {
-			if (userBank.amount(payment.id) >= qty * quantity) {
-				cost.add(payment.id, qty * quantity);
-				didPay = true;
-			}
+		const paymentCost = plant.protectionPayment.clone().multiply(quantity);
+		if (userBank.has(paymentCost)) {
+			cost.add(paymentCost);
+			didPay = true;
+			infoStr.push(`You are paying a nearby farmer ${cost} to look after your patches.`);
+		} else {
+			infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 		}
-	}
-
-	if (didPay) {
-		infoStr.push('You are paying a nearby farmer to look after your patches.');
-	} else if (wantsToPay) {
-		infoStr.push('You did not have enough payment to automatically pay for crop protection.');
 	}
 
 	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse) ?? 'compost';

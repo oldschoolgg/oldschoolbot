@@ -1,5 +1,5 @@
 import { Prisma, tame_growth } from '@prisma/client';
-import { uniqueArr } from 'e';
+import { Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
@@ -16,14 +16,23 @@ import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
+import Farming from '../../lib/skilling/skills/farming';
 import { Gear } from '../../lib/structures/Gear';
 import { tameSpecies } from '../../lib/tames';
 import { stringMatches } from '../../lib/util';
+import {
+	FarmingPatchName,
+	farmingPatchNames,
+	getFarmingKeyFromName,
+	userGrowingProgressStr
+} from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { tiers } from '../../tasks/patreon';
+import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -152,11 +161,25 @@ for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).
 	equippablesBank.add(i.id);
 }
 
+const farmingPreset = new Bank();
+for (const plant of Farming.Plants) {
+	farmingPreset.add(plant.inputItems.clone().multiply(100));
+	if (plant.protectionPayment) {
+		farmingPreset.add(plant.protectionPayment.clone().multiply(100));
+	}
+}
+farmingPreset.add('Ultracompost', 10_000);
+const usables = new Bank();
+for (const usable of allUsableItems) usables.add(usable, 100);
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
+	['equippables', equippablesBank],
+	['farming', farmingPreset],
+
 	['baxtorian_bathhouse', baxBathBank],
-	['equippables', equippablesBank]
+	['usables', usables]
 ] as const;
 
 const nexSupplies = new Bank()
@@ -368,6 +391,20 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'spawntames',
 					description: 'Spawns you adult tames.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'forcegrow',
+					description: 'Force a plant to grow.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'patch_name',
+							description: 'The patches you want to harvest.',
+							required: true,
+							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+						}
+					]
 				}
 			],
 			run: async ({
@@ -386,6 +423,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				spawntames?: {};
+				forcegrow?: { patch_name: FarmingPatchName };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -522,6 +560,22 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						});
 					}
 					return 'Gave you an adult of each tame.';
+				}
+				if (options.forcegrow) {
+					const farmingDetails = await getFarmingInfo(userID);
+					const thisPlant = farmingDetails.patchesDetailed.find(
+						p => p.plant?.seedType === options.forcegrow?.patch_name
+					);
+					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
+					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
+
+					await mahojiUserSettingsUpdate(user.id, {
+						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
+							...rawPlant,
+							plantTime: Date.now() - Time.Month
+						}
+					});
+					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
 				return 'Nothin!';
 			}
