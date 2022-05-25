@@ -14,6 +14,7 @@ import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
+import { logError } from './logError';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -160,7 +161,10 @@ export async function handleTripFinish(
 				});
 			}
 		} catch (err: any) {
-			console.log({ err });
+			logError(err, {
+				user_id: user.id,
+				type: data.type
+			});
 			channel.send(err);
 		}
 	});
