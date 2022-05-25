@@ -16,9 +16,9 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, sumArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
+import { APIInteractionGuildMember, APIUser } from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
