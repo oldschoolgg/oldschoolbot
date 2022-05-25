@@ -38,7 +38,13 @@ import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
-import { convertLVLtoXP, convertMahojiResponseToDJSResponse, isValidNickname, stringMatches } from '../../lib/util';
+import {
+	convertLVLtoXP,
+	convertMahojiResponseToDJSResponse,
+	getClueScoresFromOpenables,
+	isValidNickname,
+	stringMatches
+} from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
@@ -606,17 +612,15 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		const userData = await mahojiUsersSettingsFetch(msg.author.id, {
 			openable_scores: true
 		});
-		const openableScores = new Bank(userData.openable_scores as ItemBank);
-		if (openableScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
 
-		// Make array of [name, score] for each clue that exists in openable_scores:
-		const clueScores = ClueTiers.map(ct => [ct.name, openableScores.bank[String(ct.id)] ?? 0]).filter(
-			score => score[1] > 0
-		);
+		const clueScores = getClueScoresFromOpenables(new Bank(userData.openable_scores as ItemBank));
 		if (clueScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
 
 		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
-		res += clueScores.map(score => `**${score[0]}**: ${score[1]}`).join('\n');
+		for (const [clueID, clueScore] of Object.entries(clueScores.bank)) {
+			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
+			res += `**${clue!.name}**: ${clueScore}\n`;
+		}
 		return msg.channel.send(res);
 	}
 
