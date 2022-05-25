@@ -606,17 +606,17 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		const userData = await mahojiUsersSettingsFetch(msg.author.id, {
 			openable_scores: true
 		});
-		const openableScores = userData.openable_scores as ItemBank;
-		if (!openableScores || openableScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
+		const openableScores = new Bank(userData.openable_scores as ItemBank);
+		if (openableScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
+
+		// Make array of [name, score] for each clue that exists in openable_scores:
+		const clueScores = ClueTiers.map(ct => [ct.name, openableScores.bank[String(ct.id)] ?? 0]).filter(
+			score => score[1] > 0
+		);
+		if (clueScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
 
 		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
-		for (const clue of ClueTiers) {
-			const clueScore = openableScores[String(clue.id)] ?? 0;
-			if (clueScore) {
-				res += `**${clue!.name}**: ${clueScore}\n`;
-			}
-		}
-
+		res += clueScores.map(score => `**${score[0]}**: ${score[1]}`).join('\n');
 		return msg.channel.send(res);
 	}
 
