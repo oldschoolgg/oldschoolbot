@@ -124,7 +124,7 @@ GROUP BY "bankBackground";`);
 		);
 
 		const banks: ItemBank[] = res[0].array;
-		console.log(banks);
+
 		banks.map(bank => {
 			for (const [id, qty] of Object.entries(bank)) {
 				if (!ClueTiers.find(ct => ct.id === Number(id))) continue;
