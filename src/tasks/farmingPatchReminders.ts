@@ -57,7 +57,7 @@ export default class extends Task {
 						if (!planted) continue;
 						if (difference < planted.growthTime * Time.Minute) continue;
 						if (patch.wasReminded) continue;
-						await mahojiUserSettingsUpdate(this.client, user.id, {
+						await mahojiUserSettingsUpdate(user.id, {
 							[getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
 						});
 

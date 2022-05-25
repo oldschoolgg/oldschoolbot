@@ -1,7 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 import { addToGPTaxBalance, discrimName, truncateString } from '../../lib/util';
@@ -66,8 +65,8 @@ export const askCommand: OSBMahojiCommand = {
 		search?: string;
 	}>) => {
 		if (!guildID) return 'You can only run this in a server.';
-		const senderKlasaUser = await client.fetchUser(userID);
-		const recipientKlasaUser = await client.fetchUser(options.user.user.id);
+		const senderKlasaUser = await globalClient.fetchUser(userID);
+		const recipientKlasaUser = await globalClient.fetchUser(options.user.user.id);
 		const settings = await mahojiClientSettingsFetch({ userBlacklist: true });
 
 		const isBlacklisted = settings.userBlacklist.includes(recipientKlasaUser.id);
@@ -135,7 +134,7 @@ Both parties must click confirm to make the trade.`,
 				type: 'trade'
 			}
 		});
-		client.emit(
+		globalClient.emit(
 			Events.EconomyLog,
 			`${senderKlasaUser.sanitizedName} sold ${itemsSent} to ${recipientKlasaUser.sanitizedName} for ${itemsReceived}.`
 		);

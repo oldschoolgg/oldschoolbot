@@ -1,5 +1,5 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
-import { MessageAttachment, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
@@ -15,29 +15,33 @@ import {
 	MIMIC_MONSTER_ID,
 	PerkTier
 } from '../../lib/constants';
-import { GearSetupType } from '../../lib/gear';
+import { DynamicButtons } from '../../lib/DynamicButtons';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
-import { cancelTaskCommand } from '../../lib/minions/functions/cancelTaskCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
 import { pastActivities } from '../../lib/minions/functions/pastActivities';
 import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
-import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
+import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertLVLtoXP, isValidNickname, stringMatches } from '../../lib/util';
-import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
+import { convertLVLtoXP, convertMahojiResponseToDJSResponse, isValidNickname, stringMatches } from '../../lib/util';
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { isUsersDailyReady } from './daily';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -100,37 +104,139 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		let components = [];
-		const bank = msg.author.bank();
-		if (!msg.author.minionIsBusy) {
-			for (const tier of ClueTiers) {
-				if (bank.has(tier.scrollID)) {
-					components.push(
-						new MessageButton()
-							.setLabel(`Do ${tier.name} Clue`)
-							.setStyle('SECONDARY')
-							.setCustomID(tier.name)
-							.setEmoji('365003979840552960')
-					);
-				}
-			}
+		const [birdhouseDetails, mahojiUser, farmingDetails] = await Promise.all([
+			calculateBirdhouseDetails(msg.author.id),
+			mahojiUsersSettingsFetch(msg.author.id, { minion_farmingContract: true }),
+			getFarmingInfo(msg.author.id)
+		]);
+
+		const dynamicButtons = new DynamicButtons();
+
+		dynamicButtons.add({
+			name: 'Auto Farm',
+			emoji: Emoji.Farming,
+			fn: () =>
+				runCommand({
+					message: msg,
+					commandName: 'farming',
+					args: {
+						auto_farm: {}
+					},
+					bypassInhibitors: true
+				}),
+			cantBeBusy: true
+		});
+
+		const dailyIsReady = isUsersDailyReady(msg.author);
+		if (dailyIsReady.isReady) {
+			dynamicButtons.add({
+				name: 'Claim Daily',
+				emoji: Emoji.MoneyBag,
+				fn: () =>
+					runCommand({
+						message: msg,
+						commandName: 'daily',
+						args: [],
+						bypassInhibitors: true
+					}),
+				cantBeBusy: true
+			});
+		}
+
+		if (msg.author.minionIsBusy) {
+			dynamicButtons.add({
+				name: 'Cancel Trip',
+				emoji: Emoji.Minion,
+				fn: () =>
+					runCommand({
+						message: msg,
+						commandName: 'minion',
+						args: { cancel: {} },
+						bypassInhibitors: true
+					}),
+				cantBeBusy: false
+			});
+		}
+
+		dynamicButtons.add({
+			name: 'Auto-Slay',
+			emoji: Emoji.Slayer,
+			fn: () =>
+				runCommand({
+					message: msg,
+					commandName: 'autoslay',
+					args: [],
+					bypassInhibitors: true
+				}),
+			cantBeBusy: true
+		});
+		dynamicButtons.add({
+			name: 'Check Patches',
+			emoji: Emoji.Stopwatch,
+			fn: () =>
+				runCommand({
+					message: msg,
+					commandName: 'farming',
+					args: { check_patches: {} },
+					bypassInhibitors: true
+				}),
+			cantBeBusy: false
+		});
+		if (birdhouseDetails.isReady) {
+			dynamicButtons.add({
+				name: 'Birdhouse Run',
+				emoji: '692946556399124520',
+				fn: () =>
+					runCommand({
+						message: msg,
+						commandName: 'activities',
+						args: { birdhouses: { action: 'harvest' } },
+						bypassInhibitors: true
+					}),
+				cantBeBusy: true
+			});
+		}
+		const contract = mahojiUser.minion_farmingContract as FarmingContract | null;
+		const contractedPlant = farmingDetails.patchesDetailed.find(p => p.plant?.name === contract?.plantToGrow);
+		if (msg.author.skillLevel(SkillsEnum.Farming) > 45 && (!contractedPlant || contractedPlant.ready !== false)) {
+			dynamicButtons.add({
+				name: 'Auto Farming Contract',
+				emoji: '977410792754413668',
+				fn: async () => {
+					const result = await autoContract(msg.author, BigInt(msg.channel.id), BigInt(msg.author.id));
+					return msg.channel.send(convertMahojiResponseToDJSResponse(result));
+				},
+				cantBeBusy: true
+			});
 		}
 
 		const lastTrip = lastTripCache.get(msg.author.id);
 		if (lastTrip && !msg.author.minionIsBusy) {
-			components.push(
-				new MessageButton()
-					.setLabel(`Repeat ${lastTrip.data.type} Trip`)
-					.setStyle('SECONDARY')
-					.setCustomID('REPEAT_LAST_TRIP')
-			);
+			dynamicButtons.add({ name: `Repeat ${lastTrip.data.type} Trip`, fn: () => lastTrip.continue(msg) });
+		}
+
+		const bank = msg.author.bank();
+		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID) && ClueTiers.indexOf(t) > 2)) {
+			dynamicButtons.add({
+				name: `Do ${tier.name} Clue`,
+				fn: () => {
+					return runCommand({
+						message: msg,
+						commandName: 'mclue',
+						args: [tier.name],
+						bypassInhibitors: true
+					});
+				},
+				emoji: '365003979840552960',
+				cantBeBusy: true
+			});
 		}
 
 		const sentMessage = await msg.channel.send({
-			content: msg.author.minionStatus,
-			components: components.length > 0 ? [...chunk(components, 5)] : undefined
+			content: `${msg.author.minionStatus}`,
+			components: dynamicButtons.render({ isBusy: msg.author.minionIsBusy })
 		});
-		if (components.length > 0) {
+		if (dynamicButtons.buttons.length > 0) {
 			const handleButtons = async () => {
 				try {
 					const selection = await sentMessage.awaitMessageComponentInteraction({
@@ -139,28 +245,24 @@ export default class MinionCommand extends BotCommand {
 								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
 								return false;
 							}
-							if (i.user.minionIsBusy) {
-								i.reply({ ephemeral: true, content: 'Your minion is busy.' });
-								return false;
-							}
 							return true;
 						},
 						time: Time.Second * 15
 					});
 					await sentMessage.edit({ components: [] });
 					selection.deferUpdate();
-					if (selection.user.minionIsBusy) {
-						return selection.reply({ content: msg.author.minionStatus, ephemeral: true });
+
+					for (const button of dynamicButtons.buttons) {
+						if (selection.customID === button.id) {
+							if (selection.user.minionIsBusy && button.cantBeBusy) {
+								return selection.reply({
+									content: `Your action couldn't be performed, because your minion is busy: ${msg.author.minionStatus}`,
+									ephemeral: true
+								});
+							}
+							return button.fn();
+						}
 					}
-					if (selection.customID === 'REPEAT_LAST_TRIP' && lastTrip) {
-						return lastTrip.continue(msg);
-					}
-					await runCommand({
-						message: msg,
-						commandName: 'mclue',
-						args: [selection.customID],
-						bypassInhibitors: true
-					});
 				} catch {
 					await sentMessage.edit({ components: [] });
 				}
@@ -170,7 +272,7 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async cancel(msg: KlasaMessage) {
-		return cancelTaskCommand(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion cancel'));
 	}
 
 	async train(msg: KlasaMessage, [input]: [string | undefined]) {
@@ -514,7 +616,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 	async buy(msg: KlasaMessage) {
 		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
 
-		await mahojiUserSettingsUpdate(this.client, msg.author.id, {
+		await mahojiUserSettingsUpdate(msg.author.id, {
 			minion_hasBought: true,
 			minion_bought_date: new Date()
 		});
@@ -570,9 +672,7 @@ Please click the buttons below for important links.`
 		return msg.channel.send(`You've opened... ${openableScores}`);
 	}
 
-	@requiresMinion
-	@minionNotBusy
-	async unequipall(msg: KlasaMessage, [gearType]: [string]) {
-		return unEquipAllCommand(msg, gearType as GearSetupType);
+	async unequipall(msg: KlasaMessage) {
+		return msg.channel.send('This has been moved to the `/gear unequip` slash command.');
 	}
 }

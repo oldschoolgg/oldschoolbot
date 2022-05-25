@@ -4,7 +4,6 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../../..';
 import { setupParty } from '../../../extendables/Message/Party';
 import { Emoji, NEX_ID } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/settings/prisma';
@@ -16,7 +15,7 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 
 export async function nexCommand(interaction: SlashCommandInteraction, user: KlasaUser, channelID: bigint) {
-	const channel = client.channels.cache.get(channelID.toString());
+	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || channel.type !== 'text') return 'You need to run this in a text channel.';
 	const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 
@@ -61,7 +60,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 
 	const totalCost = new Bank();
 	for (const user of details.team) {
-		const klasaUser = await client.fetchUser(user.id);
+		const klasaUser = await globalClient.fetchUser(user.id);
 		if (!klasaUser.allItemsOwned().has(user.cost)) {
 			return `${klasaUser} doesn't have the required items: ${user.cost}.`;
 		}
@@ -69,7 +68,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 	}
 
 	await Promise.all([
-		await updateBankSetting(client, ClientSettings.EconomyStats.TOBCost, totalCost),
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.TOBCost, totalCost),
 		await trackLoot({
 			cost: totalCost,
 			id: 'nex',
@@ -77,7 +76,7 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 			changeType: 'cost'
 		}),
 		...details.team.map(async i => {
-			const klasaUser = await client.fetchUser(i.id);
+			const klasaUser = await globalClient.fetchUser(i.id);
 			await klasaUser.specialRemoveItems(i.cost);
 		})
 	]);

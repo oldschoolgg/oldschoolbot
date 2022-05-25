@@ -28,6 +28,6 @@ export default class extends Task {
 		const loot = new Bank().add(clueTier.id, quantity);
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, undefined, data, loot);
 	}
 }

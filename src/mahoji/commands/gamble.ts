@@ -1,7 +1,5 @@
-import { ApplicationCommandOptionType } from 'discord-api-types';
-import { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
@@ -106,7 +104,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
 	}>) => {
-		const KlasaUser = await client.fetchUser(userID);
+		const KlasaUser = await globalClient.fetchUser(userID);
 
 		/**
 		 *
@@ -136,7 +134,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			return duelCommand(
 				KlasaUser,
 				interaction,
-				await client.fetchUser(options.duel.user.user.id),
+				await globalClient.fetchUser(options.duel.user.user.id),
 				options.duel.amount
 			);
 		}

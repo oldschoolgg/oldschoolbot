@@ -1,3 +1,4 @@
+import { time } from '@discordjs/builders';
 import { Duration } from '@sapphire/time-utilities';
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
@@ -6,7 +7,7 @@ import { Bank } from 'oldschooljs';
 import { ironsCantUse } from '../../lib/minions/decorators';
 import { prisma } from '../../lib/settings/prisma';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addToGPTaxBalance, formatDuration, getSupportGuild } from '../../lib/util';
+import { addToGPTaxBalance, getSupportGuild } from '../../lib/util';
 import { logError } from '../../lib/util/logError';
 
 export default class extends BotCommand {
@@ -54,7 +55,7 @@ export default class extends BotCommand {
 			return msg.channel.send('Your giveaway cannot last longer than 7 days, or be faster than 5 seconds.');
 		}
 
-		const supportServer = getSupportGuild(this.client);
+		const supportServer = getSupportGuild();
 		if (!supportServer) return msg.channel.send("Couldn't find support server!");
 
 		// fetch() always calls the API when no id is specified, so only do it sparingly or if needed.
@@ -69,9 +70,10 @@ export default class extends BotCommand {
 		}
 
 		const message = await msg.channel.sendBankImage({
-			content: `You created a giveaway that will finish in ${formatDuration(
-				duration.offset
-			)}, the winner will receive these items.
+			content: `You created a giveaway that will finish at ${time(duration.fromNow, 'F')} (${time(
+				duration.fromNow,
+				'R'
+			)}), the winner will receive these items.
 			
 React to this messsage with ${reaction} to enter.`,
 			bank,

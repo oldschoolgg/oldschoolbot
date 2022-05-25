@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 import { percentChance } from 'e';
-import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -85,7 +85,7 @@ export default class extends Extendable {
 			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
 			const coinsInLoot = loot.amount('Coins');
 			if (coinsInLoot > 0) {
-				await mahojiUserSettingsUpdate(this.client as KlasaClient, user.id, {
+				await mahojiUserSettingsUpdate(user.id, {
 					GP: {
 						increment: coinsInLoot
 					}
@@ -128,7 +128,7 @@ export default class extends Extendable {
 			};
 
 			if (items[995]) {
-				await mahojiUserSettingsUpdate(this.client as KlasaClient, this.id, {
+				await mahojiUserSettingsUpdate(this.id, {
 					GP: {
 						decrement: items[995]
 					}

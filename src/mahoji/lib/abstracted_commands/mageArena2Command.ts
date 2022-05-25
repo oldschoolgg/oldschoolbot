@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { client } from '../../..';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
@@ -33,7 +32,6 @@ export async function mageArena2Command(user: KlasaUser, channelID: bigint) {
 	}
 
 	const { foodRemoved } = await removeFoodFromUser({
-		client,
 		user,
 		totalHealingNeeded: 20 * 23,
 		healPerAction: 20 * 23,
@@ -45,7 +43,7 @@ export async function mageArena2Command(user: KlasaUser, channelID: bigint) {
 
 	const totalCost = itemsNeeded.clone().add(foodRemoved);
 
-	await updateBankSetting(client, ClientSettings.EconomyStats.MageArenaCost, totalCost);
+	await updateBankSetting(globalClient, ClientSettings.EconomyStats.MageArenaCost, totalCost);
 
 	await addSubTaskToActivityTask<ActivityTaskOptions>({
 		userID: user.id,

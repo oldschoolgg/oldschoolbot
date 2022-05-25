@@ -9,16 +9,19 @@ import {
 	DMChannel,
 	Guild,
 	GuildMember,
+	MessageAttachment,
 	MessageButton,
 	MessageOptions,
 	TextChannel,
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
 import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
+import { APIInteractionGuildMember, APIUser } from 'mahoji';
+import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
+import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
@@ -281,8 +284,8 @@ export function countSkillsAtleast99(user: KlasaUser | User) {
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
-export function getSupportGuild(client: Client): Guild | null {
-	const guild = client.guilds.cache.get(SupportServer);
+export function getSupportGuild(): Guild | null {
+	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;
 }
@@ -552,8 +555,8 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 
 export const asyncExec = promisify(exec);
 
-export function getUsername(client: KlasaClient, id: string): string {
-	return (client.commands.get('leaderboard') as any)!.getUsername(id);
+export function getUsername(id: string): string {
+	return (globalClient.commands.get('leaderboard') as any)!.getUsername(id);
 }
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
@@ -751,4 +754,42 @@ export async function addToGPTaxBalance(userID: bigint | string, amount: number)
 			}
 		})
 	]);
+}
+
+export function convertMahojiResponseToDJSResponse(response: Awaited<CommandResponse>): string | MessageOptions {
+	if (typeof response === 'string') return response;
+	return {
+		content: response.content,
+		files: response.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
+	};
+}
+
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): InteractionResponseDataWithBufferAttachments {
+	if (typeof one === 'string') return { content: one };
+	const response: InteractionResponseDataWithBufferAttachments = {};
+	if (one.content) response.content = one.content;
+	if (one.attachments) response.attachments = one.attachments;
+	return response;
+}
+
+export function roughMergeMahojiResponse(one: Awaited<CommandResponse>, two: Awaited<CommandResponse>) {
+	const first = normalizeMahojiResponse(one);
+	const second = normalizeMahojiResponse(two);
+	const newResponse: InteractionResponseDataWithBufferAttachments = { content: '', attachments: [] };
+	for (const res of [first, second]) {
+		if (res.content) newResponse.content += `${res.content} `;
+		if (res.attachments) newResponse.attachments = [...newResponse.attachments!, ...res.attachments];
+	}
+	return newResponse;
+}
+
+export async function asyncGzip(buffer: Buffer) {
+	return new Promise<Buffer>((resolve, reject) => {
+		gzip(buffer, {}, (error, gzipped) => {
+			if (error) {
+				reject(error);
+			}
+			resolve(gzipped);
+		});
+	});
 }
