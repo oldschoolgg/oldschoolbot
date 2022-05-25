@@ -78,16 +78,11 @@ export const askCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					description: 'The item you want to invent.',
 					required: true,
-					autocomplete: async (value, { id }) => {
-						const mUser = await mahojiUsersSettingsFetch(id, {
-							blueprints_owned: true
-						});
-						const unlocked = mUser.blueprints_owned.map(bpID => Inventions.find(i => i.id === bpID)!);
-
+					autocomplete: async value => {
 						return Inventions.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 						).map(i => ({
-							name: `${i.name} ${unlocked.includes(i) ? '(Unlocked)' : '(NOT Unlocked)'}`,
+							name: i.name,
 							value: i.name
 						}));
 					}

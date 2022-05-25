@@ -147,9 +147,6 @@ export async function inventCommand(user: User, channelID: bigint, inventionName
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	const invention = Inventions.find(i => stringMatches(i.name, inventionName));
 	if (!invention) return "That's not a valid invention.";
-	if (1 > 2 && !user.blueprints_owned.includes(invention.id)) {
-		return "You don't have the blueprint for this Invention, so your minion doesn't know how to invent it!";
-	}
 	const details = inventionDetails(user, invention);
 
 	const ownedBank = new MaterialBank(user.materials_owned as IMaterialBank);
