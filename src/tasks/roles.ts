@@ -320,9 +320,9 @@ LIMIT 1;`
 				await Promise.all(
 					ClueTiers.map(t =>
 						q(
-							`SELECT id, '${t.name}' as n, ("clueScores"->>'${t.id}')::int as qty
+							`SELECT id, '${t.name}' as n, (openable_scores->>'${t.id}')::int as qty
 FROM users
-WHERE "clueScores"->>'${t.id}' IS NOT NULL
+WHERE "openable_scores"->>'${t.id}' IS NOT NULL
 ORDER BY qty DESC
 LIMIT 1;`
 						)

@@ -868,13 +868,6 @@ export default class extends Extendable {
 		);
 	}
 
-	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const currentClueScores = this.settings.get(UserSettings.ClueScores);
-
-		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
-	}
-
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {
 		await this.settings.sync(true);
 		const currentCreatureScores = this.settings.get(UserSettings.CreatureScores);
