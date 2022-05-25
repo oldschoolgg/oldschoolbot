@@ -1,7 +1,8 @@
 {
 	"scripts": {
 		"lint": "eslint \"{src,tests}/**/*.ts\" --fix",
-		"build": "yarn wipedist && tsc -p src",
+		"build:tsc": "tsc -p src",
+		"build": "yarn wipedist && yarn build:tsc",
 		"wipedist": "rimraf \"dist/\"",
 		"start": "yarn build && concurrently \"tsc -w -p src\" \"node dist/\"",
 		"test": "concurrently \"tsc -p src\" \"yarn test:lint\" \"yarn test:unit\"",
