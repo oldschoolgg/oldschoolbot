@@ -37,6 +37,7 @@ import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { ItemBank } from '../../lib/types';
 import { convertLVLtoXP, convertMahojiResponseToDJSResponse, isValidNickname, stringMatches } from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -602,14 +603,20 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 	@requiresMinion
 	async clues(msg: KlasaMessage) {
-		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
-		if (Object.keys(clueScores).length === 0) return msg.channel.send("You haven't done any clues yet.");
+		const userData = await mahojiUsersSettingsFetch(msg.author.id, {
+			openable_scores: true
+		});
+		const openableScores = userData.openable_scores as ItemBank;
+		if (!openableScores || openableScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
 
 		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
-		for (const [clueID, clueScore] of Object.entries(clueScores)) {
-			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
-			res += `**${clue!.name}**: ${clueScore}\n`;
+		for (const clue of ClueTiers) {
+			const clueScore = openableScores[String(clue.id)] ?? 0;
+			if (clueScore) {
+				res += `**${clue!.name}**: ${clueScore}\n`;
+			}
 		}
+
 		return msg.channel.send(res);
 	}
 
