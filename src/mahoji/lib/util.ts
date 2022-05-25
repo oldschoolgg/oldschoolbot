@@ -14,6 +14,7 @@ import {
 	APIActionRowComponent,
 	APIEmbed,
 	APIInteractionDataResolvedChannel,
+	APIMessageActionRowComponent,
 	APIRole,
 	APIUser,
 	ComponentType,
@@ -104,7 +105,9 @@ export function convertAPIEmbedToDJSEmbed(embed: APIEmbed) {
 	return new MessageEmbed(data);
 }
 
-export function convertComponentDJSComponent(component: APIActionRowComponent): MessageActionRow {
+export function convertComponentDJSComponent(
+	component: APIActionRowComponent<APIMessageActionRowComponent>
+): MessageActionRow {
 	const data: MessageActionRowOptions = {
 		components: component.components.map(cp => {
 			if (cp.type === ComponentType.Button) {
