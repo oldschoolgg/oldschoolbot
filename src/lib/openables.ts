@@ -157,6 +157,8 @@ for (const clueTier of ClueTiers) {
 				return { bank: loot };
 			}
 
+			await user.incrementClueScore(clueTier.id, quantity);
+
 			if (mimicNumber > 0) {
 				await user.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 			}
