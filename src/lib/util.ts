@@ -33,6 +33,7 @@ import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
 import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
+import ClueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
 import { prisma } from './settings/prisma';
@@ -792,4 +793,8 @@ export async function asyncGzip(buffer: Buffer) {
 			resolve(gzipped);
 		});
 	});
+}
+
+export function getClueScoresFromOpenables(openableScores: Bank, mutate = false) {
+	return openableScores.filter(item => Boolean(ClueTiers.find(ct => ct.id === item.id)), mutate);
 }

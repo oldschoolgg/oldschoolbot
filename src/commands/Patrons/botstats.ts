@@ -120,13 +120,14 @@ GROUP BY "bankBackground";`);
 		const totalBank: { [key: string]: number } = {};
 
 		const res: any = await this._query(
-			'SELECT ARRAY(SELECT "clueScores" FROM users WHERE "clueScores"::text <> \'{}\'::text);'
+			"SELECT ARRAY(SELECT openable_scores FROM users WHERE openable_scores::text <> '{}'::text);"
 		);
 
 		const banks: ItemBank[] = res[0].array;
-
+		console.log(banks);
 		banks.map(bank => {
 			for (const [id, qty] of Object.entries(bank)) {
+				if (!ClueTiers.find(ct => ct.id === Number(id))) continue;
 				if (!totalBank[id]) totalBank[id] = qty;
 				else totalBank[id] += qty;
 			}

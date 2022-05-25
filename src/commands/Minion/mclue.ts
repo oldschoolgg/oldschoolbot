@@ -58,7 +58,7 @@ export default class extends BotCommand {
 
 		const [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
-			msg.author.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 1
+			msg.author.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 1
 		);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
