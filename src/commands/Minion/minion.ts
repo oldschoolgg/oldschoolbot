@@ -619,7 +619,7 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
 		for (const [clueID, clueScore] of Object.entries(clueScores.bank)) {
 			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
-			res += `**${clue!.name}**: ${clueScore}\n`;
+			res += `**${clue!.name}**: ${clueScore.toLocaleString()}\n`;
 		}
 		return msg.channel.send(res);
 	}
