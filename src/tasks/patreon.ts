@@ -105,7 +105,7 @@ export default class PatreonTask extends Task {
 
 		const bitFieldToRemove = bitFieldFromPerkTier(from);
 		const bitFieldToAdd = bitFieldFromPerkTier(to);
-		const newBitfield = [...userBitfield, bitFieldToAdd].filter(i => i !== bitFieldToRemove);
+		const newBitfield = [...userBitfield.filter(i => i !== bitFieldToRemove), bitFieldToAdd];
 
 		// Remove any/all the patron bits from this user.
 		try {
