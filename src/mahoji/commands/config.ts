@@ -589,7 +589,6 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The option you want to add/remove.',
 							required: false,
 							autocomplete: async value => {
-								console.log(value);
 								return CombatOptionsArray.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
