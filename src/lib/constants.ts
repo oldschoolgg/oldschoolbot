@@ -261,6 +261,7 @@ export const enum Tasks {
 	BaxtorianBathhouses = 'bathhousesActivity',
 	ItemInventing = 'itemInventingActivity',
 	Disassembling = 'disassemblingActivity',
+	Research = 'researchActivity',
 	REMOVED = '__REMOVED__'
 }
 

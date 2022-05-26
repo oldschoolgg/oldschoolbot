@@ -6,10 +6,8 @@ export const materialTypes = [
 	'junk',
 	'simple',
 	'base',
-
 	'smooth',
 	'sharp',
-
 	'swift',
 	'magic',
 	'powerful',

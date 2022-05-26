@@ -1,11 +1,12 @@
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, Time } from 'e';
-import { Task } from 'klasa';
-import { MonsterKillOptions, Monsters } from 'oldschooljs';
+import { KlasaUser, Task } from 'klasa';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { BitField, Emoji, PvMMethod } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
+import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -21,7 +22,39 @@ import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerIn
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { itemID, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
+
+async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
+	if (!hasItemsEquippedOrInBank(user, ['Gorajan bonecrusher', 'Superior bonecrusher'], 'one')) return;
+	if (user.bitfield.includes(BitField.DisabledGorajanBoneCrusher)) return;
+	let hasSuperior = user.owns('Superior bonecrusher');
+
+	let totalXP = 0;
+	for (const bone of bones) {
+		const amount = loot.amount(bone.inputId);
+		if (amount > 0) {
+			totalXP += bone.xp * amount * 4;
+			loot.remove(bone.inputId, amount);
+		}
+	}
+
+	if (hasSuperior) {
+		const t = await inventionItemBoost({ userID: user.id, inventionID: InventionID.SuperiorBonecrusher, duration });
+		if (!t.success) {
+			hasSuperior = false;
+		} else {
+			totalXP = increaseNumByPercent(totalXP, 25);
+		}
+	}
+
+	await user.addXP({
+		skillName: SkillsEnum.Prayer,
+		amount: totalXP,
+		duration
+	});
+	messages.push(`${totalXP} Prayer XP${hasSuperior ? '(25% more from Superior bonecrusher)' : ''}`);
+}
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -116,12 +149,13 @@ export default class extends Task {
 		});
 
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
+		const messages: string[] = [];
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 
 		if (masterCapeRolls > 0) {
-			str += `${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls `;
+			messages.push(`${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls`);
 		}
 
 		if (monster.id === Monsters.Vorkath.id && roll(6000)) {
@@ -161,17 +195,21 @@ export default class extends Task {
 		}
 
 		if (gotBrock) {
-			str += '\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.';
+			messages.push(
+				'<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.'
+			);
 		}
 
 		if (gotKlik) {
-			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
+			messages.push(
+				'<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.'
+			);
 		}
 
 		if (isDoubleLootActive(this.client, duration)) {
-			str += '\n\n**Double Loot!**';
+			messages.push('**Double Loot!**');
 		} else if (oriBoost) {
-			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
+			messages.push('Ori has used the abyss to transmute you +25% bonus loot!');
 		}
 
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
@@ -190,21 +228,7 @@ export default class extends Task {
 			loot.add('Clue hunter boots');
 		}
 
-		if (user.owns('Gorajan bonecrusher') && !user.bitfield.includes(BitField.DisabledGorajanBoneCrusher)) {
-			let totalXP = 0;
-			for (const bone of bones) {
-				const amount = loot.amount(bone.inputId);
-				if (amount > 0) {
-					totalXP += bone.xp * amount * 4;
-					loot.remove(bone.inputId, amount);
-				}
-			}
-			str += await user.addXP({
-				skillName: SkillsEnum.Prayer,
-				amount: totalXP,
-				duration
-			});
-		}
+		await bonecrusherEffect(user, loot, duration, messages);
 
 		let thisTripFinishesTask = false;
 

@@ -17,6 +17,7 @@ export class MaterialBank {
 		for (const [key, value] of Object.entries(this.bank)) {
 			assert(materialTypes.includes(key as any));
 			assert(typeof value === 'number' && value > 0 && !isNaN(value));
+			assert(parseInt(value.toString()) === value);
 		}
 	}
 
@@ -24,7 +25,10 @@ export class MaterialBank {
 		return this.bank[material] ?? 0;
 	}
 
-	has(bank: MaterialBank) {
+	has(bank: MaterialType | MaterialBank) {
+		if (typeof bank === 'string') {
+			return typeof this.bank[bank] !== 'undefined';
+		}
 		for (const { type, quantity } of bank.values()) {
 			if (this.amount(type) < quantity) return false;
 		}
@@ -32,6 +36,7 @@ export class MaterialBank {
 	}
 
 	addItem(material: MaterialType, quantity: number): this {
+		quantity = Math.floor(quantity);
 		if (quantity < 1) return this;
 		if (this.bank[material] !== undefined) this.bank[material]! += quantity;
 		else this.bank[material] = quantity;
@@ -40,9 +45,11 @@ export class MaterialBank {
 	}
 
 	removeItem(material: MaterialType, quantity: number): this {
+		quantity = Math.floor(quantity);
 		if (typeof this.bank[material] === 'undefined') return this;
 		this.bank[material]! -= quantity;
 		if (this.bank[material]! <= 0) delete this.bank[material];
+
 		this.validate();
 		return this;
 	}
@@ -86,5 +93,12 @@ export class MaterialBank {
 			values.push({ type: key as MaterialType, quantity: value });
 		}
 		return values;
+	}
+
+	public multiply(multiplier: number) {
+		for (const material of Object.keys(this.bank) as (keyof IMaterialBank)[]) {
+			this.bank[material]! *= multiplier;
+		}
+		return this;
 	}
 }

@@ -21,22 +21,30 @@ import { MaterialBank } from './MaterialBank';
 const InventionFlags = ['equipped', 'bank'] as const;
 type InventionFlag = typeof InventionFlags[number];
 
-interface Invention {
-	id: number;
+export enum InventionID {
+	SuperiorBonecrusher = 1,
+	SuperiorDwarfMultiCannon = 2,
+	SuperiorInfernoAdze = 3
+}
+
+export type Invention = Readonly<{
+	id: InventionID;
 	name: string;
 	description: string;
 	item: Item;
+	brokenVersion: Item;
 	materialTypeBank: MaterialBank;
-	flags: InventionFlag[];
+	flags: readonly InventionFlag[];
 	itemCost: Bank;
-}
+}>;
 
-export const Inventions: Invention[] = [
+export const Inventions: readonly Invention[] = [
 	{
-		id: 1,
+		id: InventionID.SuperiorBonecrusher,
 		name: 'Superior bonecrusher',
 		description: 'Provides a 25% increase in XP over the Gorajan bonecrusher.',
 		item: getOSItem('Superior bonecrusher'),
+		brokenVersion: getOSItem('Superior bonecrusher (broken)'),
 		materialTypeBank: new MaterialBank({
 			pious: 75,
 			sharp: 10,
@@ -46,10 +54,11 @@ export const Inventions: Invention[] = [
 		itemCost: new Bank().add('Gorajan bonecrusher')
 	},
 	{
-		id: 2,
+		id: InventionID.SuperiorDwarfMultiCannon,
 		name: 'Superior dwarf multicannon',
 		description: 'A 25% stronger version of the Dwarven multicannon.',
 		item: getOSItem('Superior dwarf multicannon'),
+		brokenVersion: getOSItem('Superior dwarf multicannon (broken)'),
 		materialTypeBank: new MaterialBank({
 			pious: 75,
 			sharp: 10,
@@ -59,10 +68,11 @@ export const Inventions: Invention[] = [
 		itemCost: new Bank().add('Cannon base').add('Cannon stand').add('Cannon barrel').add('Cannon furnace')
 	},
 	{
-		id: 3,
+		id: InventionID.SuperiorInfernoAdze,
 		name: 'Superior inferno adze',
 		description: 'Chops, and firemakes logs. Mines, and smelts ores.',
 		item: getOSItem('Superior inferno adze'),
+		brokenVersion: getOSItem('Superior inferno adze (broken)'),
 		materialTypeBank: new MaterialBank({
 			pious: 75,
 			sharp: 10,
@@ -71,7 +81,7 @@ export const Inventions: Invention[] = [
 		flags: ['equipped'],
 		itemCost: new Bank().add('Inferno adze').add('Infernal core').add('Dragon pickaxe')
 	}
-];
+] as const;
 
 function calculateSuccessChance(invLevel: number, cl: Bank, invention: Invention) {
 	let successRatePercent = 1;
@@ -196,4 +206,46 @@ export async function itemInventingActivity(options: ItemInventingOptions) {
 		options,
 		null
 	);
+}
+
+type InventionItemBoostResult =
+	| {
+			success: true;
+			materialCost: MaterialBank;
+	  }
+	| {
+			success: false;
+	  };
+
+export async function inventionItemBoost({
+	userID,
+	inventionID,
+	duration
+}: {
+	userID: string | bigint;
+	inventionID: InventionID;
+	duration: number;
+}): Promise<InventionItemBoostResult> {
+	const mUser = await mahojiUsersSettingsFetch(userID, { materials_owned: true });
+	const invention = Inventions.find(i => i.id === inventionID)!;
+
+	const materialCost = new MaterialBank();
+	materialCost.add(invention.materialTypeBank.clone().multiply(Math.ceil(duration / (Time.Minute * 3))));
+
+	const materialsOwned = new MaterialBank(mUser.materials_owned as IMaterialBank);
+
+	if (!materialsOwned.has(materialCost)) {
+		return {
+			success: false
+		};
+	}
+	try {
+		await transactMaterialsFromUser({
+			userID: BigInt(userID),
+			remove: materialCost
+		});
+		return { success: true, materialCost };
+	} catch {
+		return { success: false };
+	}
 }

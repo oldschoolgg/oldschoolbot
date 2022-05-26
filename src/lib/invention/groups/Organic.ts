@@ -73,6 +73,7 @@ export const Organic: DisassemblySourceGroup = {
 		{ item: i('Magic seed'), lvl: 75 },
 		{ item: i('Dwarf weed seed'), lvl: 79 },
 		{ item: i('Snape grass seed'), lvl: 80 },
+		{ item: i('Dragonfruit tree seed'), lvl: 80 },
 		{ item: i('Spirit seed'), lvl: 83 },
 		{ item: i('Torstol seed'), lvl: 85 },
 		{ item: i('Potato cactus seed'), lvl: 86 },
@@ -88,7 +89,10 @@ export const Organic: DisassemblySourceGroup = {
 		{ item: i('Potato cactus'), lvl: 55 },
 		{ item: i('Mort myre fungus'), lvl: 55 },
 		{ item: i('Red chinchompa'), lvl: 55 },
-		{ item: i('Black chinchompa'), lvl: 70 }
+		{ item: i('Black chinchompa'), lvl: 70 },
+		{ item: i('Simple kibble'), lvl: 105 },
+		{ item: i('Delicious kibble'), lvl: 110 },
+		{ item: i('Extraordinary kibble'), lvl: 120 }
 	],
-	parts: { organic: 99 }
+	parts: { organic: 100 }
 };

@@ -1,12 +1,21 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { econBank } from '../../lib/econbank';
-import { allItemsThatCanBeDisassembledIDs, DisassemblySourceGroups } from '../../lib/invention';
+import {
+	allItemsThatCanBeDisassembledIDs,
+	DisassemblySourceGroups,
+	IMaterialBank,
+	MaterialType,
+	materialTypes
+} from '../../lib/invention';
 import { bankDisassembleAnalysis, disassembleCommand, findDisassemblyGroup } from '../../lib/invention/disassemble';
 import { inventCommand, Inventions } from '../../lib/invention/inventions';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
+import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { toTitleCase } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -88,6 +97,48 @@ export const askCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			name: 'research',
+			description: 'Use your materials to research possible inventions.',
+			type: ApplicationCommandOptionType.Subcommand,
+			options: [
+				{
+					name: 'material',
+					type: ApplicationCommandOptionType.String,
+					description: 'The type of materials you want to research with.',
+					required: true,
+					autocomplete: async (value: string, user: APIUser) => {
+						const mahojiUser = await mahojiUsersSettingsFetch(user.id, { materials_owned: true });
+						const bank = new MaterialBank(mahojiUser.materials_owned as IMaterialBank);
+						return materialTypes
+							.filter(i => (!value ? true : i.includes(value.toLowerCase())))
+							.sort((a, b) => {
+								if (bank.has(b)) return 1;
+								if (bank.has(a)) return -1;
+								return 0;
+							})
+							.map(i => ({
+								name: `${toTitleCase(i)} ${
+									bank.has(i) ? `(${bank.amount(i).toLocaleString()}x Owned)` : ''
+								}`,
+								value: i
+							}));
+					}
+				},
+				{
+					name: 'quantity',
+					type: ApplicationCommandOptionType.Integer,
+					description: 'The amount of materials you want to use (Optional).',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			name: 'materials',
+			description: 'Shows the materials you have.',
+			type: ApplicationCommandOptionType.Subcommand
 		}
 	],
 	run: async ({
@@ -96,11 +147,13 @@ export const askCommand: OSBMahojiCommand = {
 		channelID,
 		interaction
 	}: CommandRunOptions<{
-		disassemble?: { name: string; quantity?: number };
-		invent?: { name: string; quantity?: number };
 		duplicates?: {};
 		analyzebank?: {};
 		missingitems?: {};
+		disassemble?: { name: string; quantity?: number };
+		research?: { material: MaterialType; quantity?: number };
+		invent?: { name: string; quantity?: number };
+		materials?: {};
 	}>) => {
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -110,6 +163,14 @@ export const askCommand: OSBMahojiCommand = {
 				mahojiUser,
 				itemToDisassembleName: options.disassemble.name,
 				quantityToDisassemble: options.disassemble.quantity,
+				channelID
+			});
+		}
+		if (options.research) {
+			return researchCommand({
+				user: mahojiUser,
+				inputQuantity: options.research.quantity,
+				material: options.research.material,
 				channelID
 			});
 		}
@@ -154,6 +215,10 @@ export const askCommand: OSBMahojiCommand = {
 			return {
 				attachments: [{ fileName: 'missing-items-disassemble.txt', buffer: Buffer.from(normalTable) }]
 			};
+		}
+
+		if (options.materials) {
+			return new MaterialBank(mahojiUser.materials_owned as IMaterialBank).toString();
 		}
 
 		return 'Wut da hell';

@@ -447,6 +447,7 @@ model User {
   materials_owned         Json   @default("{}") @db.Json
   disassembled_items_bank Json   @default("{}") @db.Json
   skills_invention        BigInt @default(0) @map("skills.invention")
+  unlocked_blueprints     Int[]
 
   @@map("users")
 }
@@ -758,8 +759,10 @@ enum activity_type_enum {
   TokkulShop
   Easter
   BaxtorianBathhouses
+
   ItemInventing
   Disassembling
+  Research
 }
 
 enum xp_gains_skill_enum {

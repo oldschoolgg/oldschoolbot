@@ -24,6 +24,7 @@ export const Bones: DisassemblySourceGroup = {
 		{ item: i('Raurg bones'), lvl: 38 },
 		{ item: i('Dagannoth bones'), lvl: 50 },
 		{ item: i('Ourg bones'), lvl: 56 },
+		{ item: i('Drake bones'), lvl: 56 },
 		{ item: i('Lava dragon bones'), lvl: 62 },
 		{ item: i('Superior dragon bones'), lvl: 70 },
 		{ item: i('Frost dragon bones'), lvl: 80 },
