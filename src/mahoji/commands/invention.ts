@@ -1,8 +1,8 @@
+import { shuffleArr } from 'e';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { econBank } from '../../lib/econbank';
 import {
 	allItemsThatCanBeDisassembledIDs,
 	DisassemblySourceGroups,
@@ -207,10 +207,9 @@ export const askCommand: OSBMahojiCommand = {
 				.sort((a, b) => b.price - a.price)
 				.array();
 
-			const normalTable = itemsShouldBe
+			const normalTable = shuffleArr(itemsShouldBe)
 				.filter(i => ['(p', 'Team-'].every(str => !i.name.includes(str)))
-				.sort((a, b) => econBank.amount(b.id) - econBank.amount(a.id))
-				.map(i => `${i.name}\t${econBank.amount(i.id)}`)
+				.map(i => `${i.name}`)
 				.join('\n');
 			return {
 				attachments: [{ fileName: 'missing-items-disassemble.txt', buffer: Buffer.from(normalTable) }]
