@@ -1,5 +1,5 @@
 import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
-import { chunk, roll, shuffleArr, Time } from 'e';
+import { chunk, noOp, roll, shuffleArr, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
@@ -132,7 +132,7 @@ export async function luckyPickCommand(
 		);
 		await updateGPTrackSetting(klasaUser, UserSettings.GPLuckyPick, amountReceived - amount);
 
-		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) });
+		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
 		return amountReceived === 0
 			? 'Unlucky, you picked the wrong button and lost your bet!'
 			: `You won ${toKMB(amountReceived)}!`;
@@ -163,7 +163,8 @@ export async function luckyPickCommand(
 		buttonsToShow[pickedButton.id].picked = true;
 
 		try {
-			return await finalize({ button: pickedButton, interaction: selection });
+			const result = await finalize({ button: pickedButton, interaction: selection });
+			return result;
 		} catch (err) {
 			logError(err);
 			return 'Error.';
