@@ -220,7 +220,10 @@ export default class MinionCommand extends BotCommand {
 		}
 
 		const bank = msg.author.bank();
-		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID) && ClueTiers.indexOf(t) > 2)) {
+
+		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
+			.reverse()
+			.slice(0, 3)) {
 			dynamicButtons.add({
 				name: `Do ${tier.name} Clue`,
 				fn: () => {
