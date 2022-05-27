@@ -48,6 +48,14 @@ export default class extends Task {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
-		handleTripFinish(user, channelID, str, ['light', [quantity, burnable.name], true], undefined, data, null);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['light', { name: burnable.name, quantity }, true],
+			undefined,
+			data,
+			null
+		);
 	}
 }

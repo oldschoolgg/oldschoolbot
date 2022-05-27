@@ -1,18 +1,18 @@
 import { Time } from 'e';
-import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../lib/constants';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import Agility from '../../lib/skilling/skills/agility';
+import { courses } from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { BotCommand } from '../../lib/structures/BotCommand';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { OSBMahojiCommand } from '../lib/util';
 
 const unlimitedFireRuneProviders = [
 	'Staff of fire',
@@ -28,12 +28,10 @@ const unlimitedFireRuneProviders = [
 ];
 
 export function alching({
-	flags,
 	user,
 	tripLength,
 	isUsingVoidling
 }: {
-	flags: Record<string, string>;
 	user: KlasaUser;
 	tripLength: number;
 	isUsingVoidling: boolean;
@@ -42,9 +40,6 @@ export function alching({
 	const bank = user.bank();
 	const favAlchables = user.getUserFavAlchs(tripLength) as Item[];
 
-	if (!flags.alch) {
-		return null;
-	}
 	if (favAlchables.length === 0) {
 		return null;
 	}
@@ -86,97 +81,118 @@ export function alching({
 	};
 }
 
-export default class extends BotCommand {
-	public constructor(store: CommandStore, file: string[], directory: string) {
-		super(store, file, directory, {
-			altProtection: true,
-			usage: '[quantity:int{1}|name:...string] [name:...string]',
-			usageDelim: ' ',
-			description: 'Sends your minion to do laps of an agility course.',
-			examples: ['+laps gnome', '+laps 5 draynor'],
-			categoryFlags: ['minion', 'skilling']
-		});
-	}
-
-	@requiresMinion
-	@minionNotBusy
-	async run(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
+export const lapsCommand: OSBMahojiCommand = {
+	name: 'laps',
+	description: 'Do laps on Agility courses to train Agility.',
+	attributes: {
+		requiresMinion: true,
+		requiresMinionNotBusy: true,
+		description: 'Do laps on Agility courses to train Agility.',
+		examples: ['/laps name:Ardougne rooftop course']
+	},
+	options: [
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'name',
+			description: 'The course you want to do laps on.',
+			required: true,
+			autocomplete: async (value: string) => {
+				return courses
+					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+					.map(i => ({
+						name: i.name,
+						value: i.name
+					}));
+			}
+		},
+		{
+			type: ApplicationCommandOptionType.Integer,
+			name: 'quantity',
+			description: 'The quantity of laps you want to do (optional).',
+			required: false,
+			min_value: 1
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'alch',
+			description: 'Do you want to alch while doing agility? (optional).',
+			required: false
 		}
+	],
+	run: async ({
+		options,
+		userID,
+		channelID
+	}: CommandRunOptions<{ name: string; quantity?: number; alch?: boolean }>) => {
+		const user = await globalClient.fetchUser(userID);
 
-		const course = Agility.Courses.find(course => course.aliases.some(alias => stringMatches(alias, name)));
+		const course = courses.find(course => course.aliases.some(alias => stringMatches(alias, options.name)));
 
 		if (!course) {
-			return msg.channel.send(
-				`Thats not a valid course. Valid courses are ${Agility.Courses.map(course => course.name).join(', ')}.`
-			);
+			return 'Thats not a valid course.';
 		}
 
-		if (msg.author.skillLevel(SkillsEnum.Agility) < course.level) {
-			return msg.channel.send(
-				`${msg.author.minionName} needs ${course.level} agility to train at ${course.name}.`
-			);
+		if (user.skillLevel(SkillsEnum.Agility) < course.level) {
+			return `${user.minionName} needs ${course.level} agility to train at ${course.name}.`;
 		}
 
-		if (course.qpRequired && msg.author.settings.get(UserSettings.QP) < course.qpRequired) {
-			return msg.channel.send(`You need atleast ${course.qpRequired} Quest Points to do this course.`);
+		if (course.qpRequired && user.settings.get(UserSettings.QP) < course.qpRequired) {
+			return `You need atleast ${course.qpRequired} Quest Points to do this course.`;
 		}
 
 		if (
 			course.name === 'Daemonheim Rooftop Course' &&
-			!msg.author.bitfield.includes(BitField.HasDaemonheimAgilityPass)
+			!user.settings.get(UserSettings.BitField).includes(BitField.HasDaemonheimAgilityPass)
 		) {
-			return msg.channel.send('The Daemonheim guards deny you access to the course.');
+			return 'The Daemonheim guards deny you access to the course.';
 		}
 
-		const maxTripLength = msg.author.maxTripLength('Agility');
+		const maxTripLength = user.maxTripLength('Agility');
 
 		// If no quantity provided, set it to the max.
 		const timePerLap = course.lapTime * Time.Second;
-		if (quantity === null) {
+		let { quantity } = options;
+		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timePerLap);
 		}
 		const duration = quantity * timePerLap;
 
 		if (duration > maxTripLength) {
-			return msg.channel.send(
-				`${msg.author.minionName} can't go on trips longer than ${formatDuration(
-					maxTripLength
-				)}, try a lower quantity. The highest amount of ${course.name} laps you can do is ${Math.floor(
-					maxTripLength / timePerLap
-				)}.`
-			);
+			return `${user.minionName} can't go on trips longer than ${formatDuration(
+				maxTripLength
+			)}, try a lower quantity. The highest amount of ${course.name} laps you can do is ${Math.floor(
+				maxTripLength / timePerLap
+			)}.`;
 		}
 
-		let response = `${msg.author.minionName} is now doing ${quantity}x ${
+		let response = `${user.minionName} is now doing ${quantity}x ${
 			course.name
 		} laps, it'll take around ${formatDuration(duration)} to finish.`;
 
 		const alchResult =
 			course.name === 'Ape Atoll Agility Course'
 				? null
+				: !options.alch
+				? null
 				: alching({
-						user: msg.author,
-						flags: msg.flagArgs,
+						user,
 						tripLength: duration,
-						isUsingVoidling: msg.author.usingPet('Voidling')
+						isUsingVoidling: user.usingPet('Voidling')
 				  });
 		if (alchResult !== null) {
-			if (!msg.author.owns(alchResult.bankToRemove)) {
-				return msg.channel.send(`You don't own ${alchResult.bankToRemove}.`);
+			if (!user.owns(alchResult.bankToRemove)) {
+				return `You don't own ${alchResult.bankToRemove}.`;
 			}
 
-			await msg.author.removeItemsFromBank(alchResult.bankToRemove);
+			await user.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
-			updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({
 			courseID: course.name,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
+			userID: user.id,
+			channelID: channelID.toString(),
 			quantity,
 			duration,
 			type: 'Agility',
@@ -189,6 +205,6 @@ export default class extends BotCommand {
 					  }
 		});
 
-		return msg.channel.send(response);
+		return response;
 	}
-}
+};
