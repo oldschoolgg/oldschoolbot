@@ -210,6 +210,6 @@ export default class extends Task {
 			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
 		}
 
-		handleTripFinish(user, channelID, str, ['fish', [quantity, fish.name], true], undefined, data, loot);
+		handleTripFinish(user, channelID, str, ['fish', { name: fish.name, quantity }, true], undefined, data, loot);
 	}
 }
