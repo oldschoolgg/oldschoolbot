@@ -4,7 +4,7 @@ import { randInt, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { alching } from '../../commands/Minion/laps';
+import { alching } from '../../mahoji/commands/laps';
 import { MysteryBoxes } from '../bsoOpenables';
 import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -155,8 +155,7 @@ export async function handleTripFinish(
 			tripLength: voidlingEquipped
 				? data.duration * (user.hasItemEquippedAnywhere('Magic master cape') ? 3 : 1)
 				: data.duration / (user.hasItemEquippedAnywhere('Magic master cape') ? 1 : randInt(6, 7)),
-			isUsingVoidling: true,
-			flags: { alch: 'yes' }
+			isUsingVoidling: true
 		});
 		if (alchResult !== null) {
 			if (!user.owns(alchResult.bankToRemove)) {

@@ -590,7 +590,7 @@ setCustomItem(47_521, 'Beach mystery box', 'Mystery box', {}, 1_000_000);
 setCustomItem(47_523, 'Beach ball', 'Coal', {}, 100_000);
 setCustomItem(47_524, 'Water balloon', 'Coal', {}, 100_000);
 setCustomItem(47_525, 'Ice cream', 'Coal', {}, 100_000);
-setCustomItem(47_526, 'Crab hat', 'Coal', {}, 100_000);
+setCustomItem(47_526, 'Crab hat', 'Santa hat', {}, 100_000);
 
 setCustomItem(47_528, "Bryophyta's staff(i)", "Bryophyta's staff", {}, 1_000_000);
 

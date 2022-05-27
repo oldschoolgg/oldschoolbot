@@ -32,7 +32,7 @@ export default class extends Task {
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
-			['fletch', [quantity, fletchableItem.name], true],
+			['fletch', { name: fletchableItem.name, quantity }, true],
 			undefined,
 			data,
 			loot
