@@ -2,7 +2,6 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Firemaking from '../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FiremakingActivityTaskOptions } from '../../lib/types/minions';
@@ -60,24 +59,18 @@ export const lightCommand: OSBMahojiCommand = {
 
 		const maxTripLength = user.maxTripLength('Firemaking');
 
+		const amountOfLogsOwned = user.bank().amount(log.inputLogs);
+
 		let { quantity } = options;
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
-			const amountOfLogsOwned = user.settings.get(UserSettings.Bank)[log.inputLogs];
-			if (!amountOfLogsOwned || amountOfLogsOwned === 0) {
-				return `You have no ${log.name}.`;
-			}
+			if (!amountOfLogsOwned) return `You have no ${log.name}.`;
 			quantity = Math.min(Math.floor(maxTripLength / timeToLightSingleLog), amountOfLogsOwned);
 		}
-
-		// Check the user has the required logs to light.
-		// Multiplying the logs required by the quantity of ashes.
-		const hasRequiredLogs = user.bank().amount(log.inputLogs) >= quantity;
-		if (!hasRequiredLogs) {
-			return `You dont have ${quantity}x ${log.name}.`;
-		}
-
 		const duration = quantity * timeToLightSingleLog;
+
+		const cost = new Bank().add(log.inputLogs, quantity);
+		if (!user.owns(cost)) return `You dont have ${quantity}x ${log.name}.`;
 
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -87,7 +80,7 @@ export const lightCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		await user.removeItemsFromBank(new Bank().add(log.inputLogs, quantity));
+		await user.removeItemsFromBank(cost);
 
 		await addSubTaskToActivityTask<FiremakingActivityTaskOptions>({
 			burnableID: log.inputLogs,
