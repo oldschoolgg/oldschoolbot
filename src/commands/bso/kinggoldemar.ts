@@ -55,7 +55,7 @@ export default class extends BotCommand {
 				legs: 'Gorajan warrior legs',
 				hands: 'Gorajan warrior gloves',
 				feet: 'Gorajan warrior boots',
-				cape: 'Abyssal cape',
+				cape: 'TzKal cape',
 				ring: 'Warrior ring(i)',
 				weapon: 'Drygore longsword',
 				shield: 'Offhand drygore longsword',
