@@ -103,7 +103,6 @@ export async function degradeItem({
 			const gear = { ...user.getGear(degItem.setup).raw() };
 			gear.weapon = null;
 			await user.settings.update(`gear.${degItem.setup}`, gear);
-			await user.client.settings!.update(ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted.bank);
 			if (degItem.itemsToRefundOnBreak) {
 				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
 			}
