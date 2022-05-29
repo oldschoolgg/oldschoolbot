@@ -2,11 +2,10 @@ import { reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../../..';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, formatDuration, itemID } from '../../../lib/util';
+import { addBanks, formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
@@ -34,7 +33,7 @@ export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
 	if (user.hasItemEquippedOrInBank('Stamina potion(4)')) {
 		baseTime = reduceNumByPercent(baseTime, 50);
 
-		const potionsInBank = await user.numberOfItemInBank(itemID('Stamina potion(4)'));
+		const potionsInBank = user.bank().amount('Stamina potion(4)');
 		const maxPossibleLaps = Math.floor(user.maxTripLength('RoguesDenMaze') / baseTime);
 
 		// do as many laps as possible with the current stamina potion supply
@@ -48,9 +47,9 @@ export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
 
 	if (staminasToRemove.length > 0) {
 		await user.removeItemsFromBank(staminasToRemove.bank);
-		await client.settings.update(
+		await globalClient.settings.update(
 			ClientSettings.EconomyStats.RoguesDenStaminas,
-			addBanks([client.settings.get(ClientSettings.EconomyStats.RoguesDenStaminas), staminasToRemove.bank])
+			addBanks([globalClient.settings.get(ClientSettings.EconomyStats.RoguesDenStaminas), staminasToRemove.bank])
 		);
 	}
 

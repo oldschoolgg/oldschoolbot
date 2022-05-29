@@ -1,7 +1,6 @@
 import { KlasaUser } from 'klasa';
-import { Util } from 'oldschooljs';
+import { Bank, Util } from 'oldschooljs';
 
-import { client } from '../../..';
 import { Emoji } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -35,16 +34,17 @@ export async function diceCommand(klasaUser: KlasaUser, diceamount?: string) {
 	const won = roll >= 55;
 	let amountToAdd = won ? amount : -amount;
 
-	await klasaUser.addGP(amountToAdd);
-	await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
+	await updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
 	await updateGPTrackSetting(klasaUser, UserSettings.GPDice, amountToAdd);
 
 	if (won) {
 		const wins = klasaUser.settings.get(UserSettings.Stats.DiceWins);
-		klasaUser.settings.update(UserSettings.Stats.DiceWins, wins + 1);
+		await klasaUser.settings.update(UserSettings.Stats.DiceWins, wins + 1);
+		await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amount) });
 	} else {
 		const losses = klasaUser.settings.get(UserSettings.Stats.DiceLosses);
 		klasaUser.settings.update(UserSettings.Stats.DiceLosses, losses + 1);
+		await klasaUser.removeItemsFromBank(new Bank().add('Coins', amount));
 	}
 
 	return `${klasaUser.username} rolled **${roll}** on the percentile dice, and you ${

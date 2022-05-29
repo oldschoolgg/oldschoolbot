@@ -94,6 +94,7 @@ export type CategoryFlag =
 export interface IDiscordSettings {
 	Roles: Record<string, string>;
 	Channels: Record<string, string>;
+	Emojis: Record<string, string>;
 	SupportServer: string;
 	BotID: string;
 }

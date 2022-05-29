@@ -56,7 +56,5 @@ jobs:
                   popd
             - name: Generate Prisma Client
               run: npx prisma generate
-            - name: Run TSC
-              uses: icrawl/action-tsc@v1
-              with:
-                  build: src
+            - name: Build code
+              run: yarn build:tsc

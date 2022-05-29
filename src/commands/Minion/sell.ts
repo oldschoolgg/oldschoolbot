@@ -1,5 +1,5 @@
 import { reduceNumByPercent } from 'e';
-import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -21,9 +21,9 @@ const specialSoldItems = new Map([
 	[id('Ancient relic'), 16_000_000]
 ]);
 
-export function sellPriceOfItem(client: KlasaClient, item: Item, taxRate = 20): { price: number; basePrice: number } {
+export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; basePrice: number } {
 	if (!item.price || !item.tradeable) return { price: 0, basePrice: 0 };
-	const customPrices = client.settings.get(ClientSettings.CustomPrices);
+	const customPrices = globalClient.settings.get(ClientSettings.CustomPrices);
 	let basePrice = customPrices[item.id] ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
@@ -51,7 +51,7 @@ export default class extends BotCommand {
 				totalPrice += Math.floor(specialPrice * qty);
 			} else {
 				if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
-				const { price } = sellPriceOfItem(this.client, item, taxRatePercent);
+				const { price } = sellPriceOfItem(item, taxRatePercent);
 				totalPrice += price * qty;
 			}
 		}
@@ -64,7 +64,8 @@ export default class extends BotCommand {
 			)}).`
 		);
 
-		await Promise.all([msg.author.removeItemsFromBank(bankToSell.bank), msg.author.addGP(totalPrice)]);
+		await msg.author.removeItemsFromBank(bankToSell.bank);
+		await msg.author.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
 
 		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceSellingItems, totalPrice);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);

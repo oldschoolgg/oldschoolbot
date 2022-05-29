@@ -114,7 +114,6 @@ export default class extends Task {
 
 		if (allUsers.length === 1) {
 			handleTripFinish(
-				this.client,
 				allUsers[0],
 				channelID,
 				resultMessage,
@@ -128,7 +127,6 @@ export default class extends Task {
 					// @ts-ignore
 					res.prompter.flags = flags;
 
-					allUsers[0].log('continued trip of solo CoX');
 					return runCommand({ message: res, commandName: 'raid', args: ['solo'], isContinue: true });
 				},
 				undefined,
@@ -136,7 +134,7 @@ export default class extends Task {
 				null
 			);
 		} else {
-			sendToChannelID(this.client, channelID, { content: resultMessage });
+			sendToChannelID(channelID, { content: resultMessage });
 		}
 	}
 }

@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { runCommand } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
@@ -110,27 +109,10 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				const flags: Record<string, string> = alch === null ? {} : { alch: 'alch' };
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				if (!res.prompter) res.prompter = {};
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				res.prompter.flags = flags;
-
-				user.log(`continued trip of ${quantity}x ${course.name} laps`);
-				return runCommand({
-					message: res,
-					commandName: 'laps',
-					args: [quantity, course.aliases[0]],
-					isContinue: true
-				});
-			},
+			['laps', { name: course.name, quantity, alch: Boolean(alch) }, true],
 			undefined,
 			data,
 			loot

@@ -1,10 +1,10 @@
 import { MessageButton, MessageComponentInteraction, MessageOptions } from 'discord.js';
-import { chunk, roll, shuffleArr, Time } from 'e';
+import { chunk, noOp, roll, shuffleArr, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { client } from '../../..';
 import { SILENT_ERROR } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -88,7 +88,7 @@ export async function luckyPickCommand(
 	if (currentBalance < amount) {
 		return "You don't have enough GP to make this bet.";
 	}
-	await klasaUser.removeGP(amount);
+	await klasaUser.removeItemsFromBank(new Bank().add('Coins', amount));
 	const buttonsToShow = getButtons();
 	function getCurrentButtons({ showTrueNames }: { showTrueNames: boolean }): MessageOptions['components'] {
 		let chunkedButtons = chunk(buttonsToShow, 5);
@@ -109,7 +109,7 @@ export async function luckyPickCommand(
 		);
 	}
 
-	const channel = client.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const sentMessage = await channel.send({
 		content: 'Pick *one* button!',
@@ -124,11 +124,15 @@ export async function luckyPickCommand(
 		interaction: MessageComponentInteraction;
 	}) => {
 		let amountReceived = button.mod(amount);
-		await klasaUser.addGP(amountReceived);
-		await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceLuckyPick, amountReceived - amount);
+		await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
+		await updateGPTrackSetting(
+			globalClient,
+			ClientSettings.EconomyStats.GPSourceLuckyPick,
+			amountReceived - amount
+		);
 		await updateGPTrackSetting(klasaUser, UserSettings.GPLuckyPick, amountReceived - amount);
 
-		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) });
+		await interaction.update({ components: getCurrentButtons({ showTrueNames: true }) }).catch(noOp);
 		return amountReceived === 0
 			? 'Unlucky, you picked the wrong button and lost your bet!'
 			: `You won ${toKMB(amountReceived)}!`;
@@ -137,7 +141,7 @@ export async function luckyPickCommand(
 	const cancel = async () => {
 		await sentMessage.delete();
 		if (!buttonsToShow.some(b => b.picked)) {
-			await klasaUser.addGP(amount);
+			await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amount) });
 			return `You didn't pick any buttons in time, so you were refunded ${toKMB(amount)} GP.`;
 		}
 		throw new Error(SILENT_ERROR);
@@ -159,7 +163,8 @@ export async function luckyPickCommand(
 		buttonsToShow[pickedButton.id].picked = true;
 
 		try {
-			return await finalize({ button: pickedButton, interaction: selection });
+			const result = await finalize({ button: pickedButton, interaction: selection });
+			return result;
 		} catch (err) {
 			logError(err);
 			return 'Error.';

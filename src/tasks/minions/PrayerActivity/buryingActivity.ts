@@ -44,15 +44,6 @@ export default class extends Task {
 			str += '\n\nWhile digging a hole to bury bones in, you find a garb and pair of trousers.';
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['bury', [quantity, bone.name], true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, ['bury', [quantity, bone.name], true], undefined, data, null);
 	}
 }

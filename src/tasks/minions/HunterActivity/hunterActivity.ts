@@ -192,11 +192,10 @@ export default class extends Task {
 		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['hunt', [quantity, creatureName], true],
+			['hunt', { name: creatureName, quantity, hunter_potion: data.usingHuntPotion }, true],
 			undefined,
 			data,
 			loot

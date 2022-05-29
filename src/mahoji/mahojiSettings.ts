@@ -1,32 +1,27 @@
 import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import {
 	APIInteractionDataResolvedGuildMember,
 	APIUser,
-	ApplicationCommandOptionType,
 	InteractionResponseType,
 	InteractionType,
 	MessageFlags
 } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
-import { CommandOption } from 'mahoji/dist/lib/types';
-import { Items } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Bank } from 'oldschooljs';
 
 import { CLIENT_ID } from '../config';
 import { SILENT_ERROR } from '../lib/constants';
-import { baseFilters, filterableTypes } from '../lib/data/filterables';
 import { evalMathExpression } from '../lib/expressionParser';
 import { defaultGear } from '../lib/gear';
-import killableMonsters from '../lib/minions/data/killableMonsters';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import Skills from '../lib/skilling/skills';
 import { Gear } from '../lib/structures/Gear';
-import type { Skills as TSkills } from '../lib/types';
-import { assert, channelIsSendable } from '../lib/util';
+import type { ItemBank, Skills as TSkills } from '../lib/types';
+import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
+import { logError } from '../lib/util/logError';
 
 export function mahojiParseNumber({
 	input,
@@ -45,71 +40,6 @@ export function mahojiParseNumber({
 	if (Number.isNaN(parsed)) return null;
 	return parsed;
 }
-
-export const filterOption: CommandOption = {
-	type: ApplicationCommandOptionType.String,
-	name: 'filter',
-	description: 'The filter you want to use.',
-	required: false,
-	autocomplete: async (value: string) => {
-		let res = !value
-			? filterableTypes
-			: filterableTypes.filter(filter => filter.name.toLowerCase().includes(value.toLowerCase()));
-		return [...res]
-			.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
-			.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));
-	}
-};
-
-const itemArr = Items.array().map(i => ({ ...i, key: `${i.name.toLowerCase()}${i.id}` }));
-
-export const itemOption = (filter?: (item: Item) => boolean): CommandOption => ({
-	type: ApplicationCommandOptionType.String,
-	name: 'item',
-	description: 'The item you want to pick.',
-	required: false,
-	autocomplete: async value => {
-		let res = itemArr.filter(i => i.key.includes(value.toLowerCase()));
-		if (filter) res = res.filter(filter);
-		return res.map(i => ({ name: `${i.name}`, value: i.id.toString() }));
-	}
-});
-
-export const monsterOption: CommandOption = {
-	type: ApplicationCommandOptionType.String,
-	name: 'monster',
-	description: 'The monster you want to pick.',
-	required: true,
-	autocomplete: async value => {
-		return killableMonsters
-			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-			.map(i => ({ name: i.name, value: i.name }));
-	}
-};
-
-export const skillOption: CommandOption = {
-	type: ApplicationCommandOptionType.String,
-	name: 'skill',
-	description: 'The skill you want to select.',
-	required: false,
-	autocomplete: async (value: string) => {
-		return Object.values(Skills)
-			.filter(skill => (!value ? true : skill.name.toLowerCase().includes(value.toLowerCase())))
-			.map(val => ({ name: val.name, value: val.name }));
-	}
-};
-
-export const Option: CommandOption = {
-	type: ApplicationCommandOptionType.String,
-	name: 'skill',
-	description: 'The skill you want to select.',
-	required: false,
-	autocomplete: async (value: string) => {
-		return Object.values(Skills)
-			.filter(skill => (!value ? true : skill.name.toLowerCase().includes(value.toLowerCase())))
-			.map(val => ({ name: val.name, value: val.name }));
-	}
-};
 
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: bigint[]) {
 	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
@@ -149,12 +79,12 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 			confirmed.push(id);
 			if (!isConfirmed()) return;
 			collector.stop();
-			await confirmMessage.delete();
+			if (!confirmMessage.deleted) await confirmMessage.delete();
 			resolve();
 		}
 
 		const cancel = async (reason: 'time' | 'cancel') => {
-			await confirmMessage.delete();
+			if (!confirmMessage.deleted) await confirmMessage.delete();
 			await interaction.respond({
 				type: InteractionType.ApplicationCommand,
 				response: {
@@ -181,7 +111,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return cancel('cancel');
 			}
 			if (i.customID === 'CONFIRM') {
-				i.reply({ ephemeral: true, content: 'You confirmed the trade.' });
+				i.reply({ ephemeral: true, content: 'You confirmed.' });
 				return confirm(id);
 			}
 		});
@@ -196,54 +126,73 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
  *
  */
 
-export async function mahojiUsersSettingsFetch(user: bigint | string) {
-	const result = await prisma.user.findFirst({
+// Is not typesafe, returns only what is selected, but will say it contains everything.
+export async function mahojiUsersSettingsFetch(user: bigint | string, select?: Prisma.UserSelect) {
+	const result = await prisma.user.upsert({
 		where: {
 			id: user.toString()
-		}
+		},
+		select,
+		create: {
+			id: user.toString()
+		},
+		update: {}
 	});
 	if (!result) throw new Error(`mahojiUsersSettingsFetch returned no result for ${user}`);
-	return result;
+	return result as User;
 }
 
-export async function mahojiUserSettingsUpdate(
-	client: KlasaClient,
-	user: string | KlasaUser,
-	data: Prisma.UserUpdateArgs['data']
-) {
-	const klasaUser = typeof user === 'string' ? await client.fetchUser(user) : user;
+export async function mahojiUserSettingsUpdate(user: string | bigint | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
+	try {
+		const klasaUser =
+			typeof user === 'string' || typeof user === 'bigint' ? await globalClient.fetchUser(user) : user;
 
-	const newUser = await prisma.user.update({
-		data,
-		where: {
-			id: klasaUser.id
+		const newUser = await prisma.user.update({
+			data,
+			where: {
+				id: klasaUser.id
+			}
+		});
+
+		await klasaUser.settings.sync(true);
+
+		const errorContext = {
+			user_id: klasaUser.id
+		};
+
+		assert(
+			BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP,
+			'Patched user should match',
+			errorContext
+		);
+		assert(
+			klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points,
+			'Patched user should match',
+			errorContext
+		);
+		const klasaBank = klasaUser.settings.get(UserSettings.Bank);
+		const newBank = newUser.bank;
+		for (const [key, value] of Object.entries(klasaBank)) {
+			assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
 		}
-	});
+		assert(
+			klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
+			'Patched user should match',
+			errorContext
+		);
+		assert(
+			JSON.stringify(klasaUser.settings.get('gear.melee')) === JSON.stringify(newUser.gear_melee),
+			'Melee gear should match'
+		);
 
-	await klasaUser.settings.sync(true);
-
-	const errorContext = {
-		user_id: klasaUser.id
-	};
-
-	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match', errorContext);
-	assert(
-		klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points,
-		'Patched user should match',
-		errorContext
-	);
-	const klasaBank = klasaUser.settings.get(UserSettings.Bank);
-	const newBank = newUser.bank;
-	for (const [key, value] of Object.entries(klasaBank)) {
-		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
+		return { newUser };
+	} catch (err) {
+		logError(err, {
+			user_id: user.toString(),
+			updated_data: JSON.stringify(data)
+		});
+		throw err;
 	}
-	assert(
-		klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
-		'Patched user should match',
-		errorContext
-	);
-
-	return { newUser };
 }
 
 /**
@@ -269,11 +218,7 @@ export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	return result;
 }
 
-export async function mahojiGuildSettingsUpdate(
-	client: KlasaClient,
-	guild: string | DJSGuild,
-	data: Prisma.GuildUpdateArgs['data']
-) {
+export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: Prisma.GuildUpdateArgs['data']) {
 	const guildID = typeof guild === 'string' ? guild : guild.id;
 
 	const newGuild = await prisma.guild.update({
@@ -283,7 +228,7 @@ export async function mahojiGuildSettingsUpdate(
 		}
 	});
 	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
-	await (client.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
+	await (globalClient.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
 	return { newGuild };
 }
 
@@ -292,8 +237,8 @@ export interface MahojiUserOption {
 	member: APIInteractionDataResolvedGuildMember;
 }
 
-export function getSkillsOfMahojiUser(user: User): Required<TSkills> {
-	return {
+export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSkills> {
+	const skills: Required<TSkills> = {
 		agility: Number(user.skills_agility),
 		cooking: Number(user.skills_cooking),
 		fishing: Number(user.skills_fishing),
@@ -318,6 +263,12 @@ export function getSkillsOfMahojiUser(user: User): Required<TSkills> {
 		hitpoints: Number(user.skills_hitpoints),
 		slayer: Number(user.skills_slayer)
 	};
+	if (levels) {
+		for (const [key, val] of Object.entries(skills) as [keyof TSkills, number][]) {
+			skills[key] = convertXPtoLVL(val);
+		}
+	}
+	return skills;
 }
 
 export function getUserGear(user: User) {
@@ -348,4 +299,8 @@ export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSele
 		select
 	});
 	return clientSettings as ClientStorage;
+}
+
+export function getMahojiBank(user: User) {
+	return new Bank(user.bank as ItemBank);
 }

@@ -82,11 +82,10 @@ export default class extends Task {
 			.generateBankImage(itemsAdded, `Loot From ${quantity}x Cyclops`, true, { showNewCL: 1 }, user, previousCL);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['wg', [quantity, 'cyclops'], true],
+			['activities', { warriors_guild: { action: 'cyclops', quantity } }, true],
 			image!,
 			data,
 			itemsAdded
