@@ -120,7 +120,6 @@ export default class extends Task {
 		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${

@@ -89,7 +89,7 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			subcommands: true,
 			aliases: ['lb'],
-			requiredPermissionsForBot: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY', 'MANAGE_MESSAGES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'READ_MESSAGE_HISTORY'],
 			categoryFlags: ['minion', 'utility'],
 			examples: [
 				'+lb gp',
@@ -124,12 +124,15 @@ export default class extends BotCommand {
 				username: {
 					not: null
 				}
+			},
+			select: {
+				id: true,
+				username: true
 			}
 		});
 
 		const arrayOfIronmenAndBadges: { badges: number[]; id: string; ironman: boolean }[] = await this.query(
-			'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;',
-			false
+			'SELECT "badges", "id", "minion.ironman" as "ironman" FROM users WHERE ARRAY_LENGTH(badges, 1) > 0 OR "minion.ironman" = true;'
 		);
 
 		for (const user of allNewUsers) {
@@ -177,9 +180,8 @@ LIMIT 10;`);
 		);
 	}
 
-	async query(query: string, cacheUsernames = true) {
+	async query(query: string) {
 		const result = await (this.client.providers.default as PostgresProvider).runAll(query);
-		if (cacheUsernames) this.cacheUsernames();
 		return result;
 	}
 

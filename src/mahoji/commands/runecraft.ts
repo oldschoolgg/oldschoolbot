@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { client } from '../..';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -57,9 +56,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 		options,
 		channelID
 	}: CommandRunOptions<{ rune: string; quantity?: number; usestams?: boolean }>) => {
-		const user = await client.fetchUser(userID.toString());
+		const user = await globalClient.fetchUser(userID.toString());
 		let { rune, quantity, usestams } = options;
-		if (usestams === undefined) usestams = true;
+
 		rune = rune.toLowerCase().replace('rune', '').trim();
 
 		if (rune !== 'chaos' && rune.endsWith('s')) {
@@ -69,12 +68,20 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (['blood', 'soul'].includes(rune)) {
 			return darkAltarCommand({ user, channelID, name: rune });
 		}
+
 		const runeObj = Runecraft.Runes.find(
 			_rune => stringMatches(_rune.name, rune) || stringMatches(_rune.name.split(' ')[0], rune)
 		);
-
 		if (!runeObj) {
 			return `Thats not a valid rune. Valid rune are ${Runecraft.Runes.map(_rune => _rune.name).join(', ')}.`;
+		}
+
+		if (usestams === undefined) {
+			usestams = true;
+		}
+
+		if (!usestams && !runeObj.stams) {
+			usestams = true;
 		}
 
 		const quantityPerEssence = calcMaxRCQuantity(runeObj, user);
@@ -202,6 +209,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 					numberOfInventories / (8 * teleportReduction)
 				)}x Ring of dueling(8).`;
 			}
+
 			if (usestams) {
 				removeTalismanAndOrRunes.add('Stamina potion(4)', Math.max(Math.ceil(duration / (Time.Minute * 8)), 1));
 				if (!user.bank().has(removeTalismanAndOrRunes.bank)) {
@@ -218,7 +226,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
-		updateBankSetting(client, ClientSettings.EconomyStats.RunecraftCost, totalCost);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.RunecraftCost, totalCost);
 
 		await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
 			runeID: runeObj.id,
@@ -238,6 +246,10 @@ export const runecraftCommand: OSBMahojiCommand = {
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
 			quantityPerEssence * quantity
 		}x runes due to the multiplier.\n\n**Boosts:** ${boosts.join(', ')}`;
+
+		if (!runeObj.stams) {
+			response += `\nNote: You are unable to use Stamina Potion's when crafting ${runeObj.name}s.`;
+		}
 
 		if (runeObj.inputRune) {
 			response += `\nYour minion also consumed ${removeTalismanAndOrRunes}${

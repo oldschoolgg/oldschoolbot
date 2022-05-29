@@ -44,7 +44,6 @@ export default class extends Task {
 		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${newUser.zeal_tokens}.\n\n`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,

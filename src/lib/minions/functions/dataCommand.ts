@@ -57,14 +57,14 @@ GROUP BY type;`);
 		name: 'Personal Monster KC',
 		run: async (user: KlasaUser) => {
 			const result: { id: number; kc: number }[] =
-				await prisma.$queryRaw`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int) AS kc
+				await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int) AS kc
 FROM activity
 WHERE completed = true
 AND user_id = ${BigInt(user.id)}
 AND type = 'MonsterKilling'
 AND data IS NOT NULL
 AND data::text != '{}'
-GROUP BY data->>'monsterID';`;
+GROUP BY data->>'monsterID';`);
 			const dataPoints: [string, number][] = result
 				.sort((a, b) => b.kc - a.kc)
 				.slice(0, 30)
@@ -123,12 +123,12 @@ GROUP BY mins;`;
 		name: 'Personal Inferno Death Times',
 		run: async (user: KlasaUser) => {
 			const result: { mins: number; count: number }[] =
-				await prisma.$queryRaw`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
+				await prisma.$queryRawUnsafe(`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${BigInt(user.id)}
 AND data->>'deathTime' IS NOT NULL) death_mins
-GROUP BY mins;`;
+GROUP BY mins;`);
 			return lineChart(
 				'Personal Inferno Death Times',
 				val => `${val} Mins`,
@@ -234,12 +234,12 @@ WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name:
 		name: 'Personal Farmed Crops',
 		run: async (user: KlasaUser) => {
 			const result: { plant: string; qty: number }[] =
-				await prisma.$queryRaw`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
+				await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
 FROM activity
 WHERE type = 'Farming'
 AND data->>'plantsName' IS NOT NULL
 AND user_id = ${BigInt(user.id)}
-GROUP BY data->>'plantsName'`;
+GROUP BY data->>'plantsName'`);
 			result.sort((a, b) => b.qty - a.qty);
 			return barChart(
 				'Global Farmed Crops',

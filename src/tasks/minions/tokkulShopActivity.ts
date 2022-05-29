@@ -14,7 +14,6 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: false });
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.TKSLoot, loot);
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished shopping in Tzhaar City and received ${loot}.`,
