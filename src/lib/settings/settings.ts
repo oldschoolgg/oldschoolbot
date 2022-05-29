@@ -3,7 +3,6 @@ import { roll } from 'e';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { client, mahojiClient } from '../..';
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
 import { postCommand } from '../../mahoji/lib/postCommand';
 import { preCommand } from '../../mahoji/lib/preCommand';
@@ -23,7 +22,7 @@ import { convertStoredActivityToFlatActivity, prisma } from './prisma';
 export * from './minigames';
 
 export async function getUserSettings(userID: string): Promise<Settings> {
-	return (client.gateways.get('users') as Gateway)!
+	return (globalClient.gateways.get('users') as Gateway)!
 		.acquire({
 			id: userID
 		})
@@ -110,7 +109,7 @@ export async function runMahojiCommand({
 	commandName: string;
 	options: Record<string, unknown>;
 }) {
-	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
+	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
 	if (!mahojiCommand) {
 		throw new Error(`No mahoji command found for ${commandName}`);
 	}
@@ -123,7 +122,7 @@ export async function runMahojiCommand({
 		// TODO: Make this typesafe
 		user: msg.author as any,
 		member: msg.member as any,
-		client: mahojiClient,
+		client: globalClient.mahojiClient,
 		interaction: null as any
 	});
 }
@@ -143,9 +142,9 @@ export async function runCommand({
 	method?: string;
 	bypassInhibitors?: true;
 }) {
-	const channel = client.channels.cache.get(message.channel.id);
+	const channel = globalClient.channels.cache.get(message.channel.id);
 
-	const mahojiCommand = mahojiClient.commands.values.find(c => c.name === commandName);
+	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
 	const command = message.client.commands.get(commandName) as BotCommand | undefined;
 	const actualCommand = mahojiCommand ?? command;
 	if (!actualCommand) throw new Error('No command found');
@@ -277,20 +276,20 @@ export async function completeActivity(_activity: Activity) {
 	}
 
 	const taskName = taskNameFromType(activity.type);
-	const task = client.tasks.get(taskName);
+	const task = globalClient.tasks.get(taskName);
 
 	if (!task) {
 		throw new Error('Missing task');
 	}
 
-	client.oneCommandAtATimeCache.add(activity.userID);
+	globalClient.oneCommandAtATimeCache.add(activity.userID);
 	try {
-		client.emit('debug', `Running ${task.name} for ${activity.userID}`);
+		globalClient.emit('debug', `Running ${task.name} for ${activity.userID}`);
 		await task.run(activity);
 	} catch (err) {
 		logError(err);
 	} finally {
-		client.oneCommandAtATimeCache.delete(activity.userID);
+		globalClient.oneCommandAtATimeCache.delete(activity.userID);
 		minionActivityCacheDelete(activity.userID);
 	}
 }

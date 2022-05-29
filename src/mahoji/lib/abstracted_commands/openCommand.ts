@@ -5,7 +5,6 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { client } from '../../..';
 import { PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -42,7 +41,7 @@ function getOpenableLoot({
 }
 
 async function addToOpenablesScores(mahojiUser: User, kcBank: Bank) {
-	const { newUser } = await mahojiUserSettingsUpdate(client, mahojiUser.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(mahojiUser.id, {
 		openable_scores: new Bank().add(mahojiUser.openable_scores as ItemBank).add(kcBank).bank
 	});
 	return new Bank().add(newUser.openable_scores as ItemBank);
@@ -132,7 +131,7 @@ async function finalizeOpening({
 		filterLoot: false
 	});
 
-	const image = await client.tasks.get('bankImage')!.generateBankImage(
+	const image = await globalClient.tasks.get('bankImage')!.generateBankImage(
 		loot,
 		openables.length === 1
 			? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
@@ -146,7 +145,7 @@ async function finalizeOpening({
 	);
 
 	if (loot.has('Coins')) {
-		await updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
+		await updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
 	}
 
 	const openedStr = openables
@@ -172,7 +171,7 @@ ${messages.join(', ')}`
 }
 
 export async function abstractedOpenCommand(
-	interaction: SlashCommandInteraction,
+	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	mahojiUser: User,
 	_names: string[],
@@ -191,11 +190,17 @@ export async function abstractedOpenCommand(
 	if (names.includes('all')) {
 		if (!openables.length) return 'You have no openable items.';
 		if (user.perkTier < PerkTier.Two) return patronMsg(PerkTier.Two);
-		await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
+		if (interaction) await handleMahojiConfirmation(interaction, 'Are you sure you want to open ALL your items?');
 	}
 
 	if (!openables.length) return "That's not a valid item.";
-
+	// This code will only execute if we're not in auto/all mode:
+	if (typeof _quantity === 'number') {
+		for (const openable of openables) {
+			const tmpCost = new Bank().add(openable.id, _quantity);
+			if (!bank.has(tmpCost)) return `You don't own ${tmpCost}`;
+		}
+	}
 	const cost = new Bank();
 	const kcBank = new Bank();
 	const loot = new Bank();
