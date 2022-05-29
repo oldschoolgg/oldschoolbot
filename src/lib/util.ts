@@ -45,8 +45,10 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { calcMaxTripLength } from './util/calcMaxTripLength';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
+import { userHasItemsEquippedAnywhere } from './util/minionUtils';
 import resolveItems from './util/resolveItems';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -156,19 +158,19 @@ export function convertXPtoLVL(xp: number, cap = 99) {
 	return cap;
 }
 export function determineMiningTime(
-	quantity: number | null,
-	user: KlasaUser,
+	quantity: number | undefined,
+	user: User,
 	ore: Ore,
 	ticksBetweenRolls: number,
 	glovesRate: number,
 	armourEffect: number,
 	miningCapeEffect: number,
-	powerMining: boolean,
+	powermining: boolean,
 	goldSilverBoost: boolean,
 	lvl: number
 ): [number, number] {
 	let { intercept } = ore;
-	if (ore.id === 1625 && user.hasItemEquippedAnywhere('Amulet of glory')) {
+	if (ore.id === 1625 && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
 		intercept *= 3;
 	}
 	let timeElapsed = 0;
@@ -178,7 +180,8 @@ export function determineMiningTime(
 	const respawnTimeOrPick = ticksBetweenRolls > ore.respawnTime ? ticksBetweenRolls : ore.respawnTime;
 
 	let newQuantity = 0;
-	while (timeElapsed < user.maxTripLength('Mining') / (Time.Second * 0.6)) {
+
+	while (timeElapsed < calcMaxTripLength(user, 'Mining') / (Time.Second * 0.6)) {
 		while (!percentChance(chanceOfSuccess)) {
 			timeElapsed += ticksBetweenRolls;
 		}
@@ -192,9 +195,9 @@ export function determineMiningTime(
 		if (percentChance(armourEffect)) {
 			newQuantity++;
 		}
-		// Add banking time every 28th quantity
-		if (newQuantity % 28 === 0 && !powerMining) {
-			timeElapsed += bankTime;
+		// Add 28th of banking time every quantity
+		if (!powermining) {
+			timeElapsed += bankTime / 28;
 		}
 		if (quantity && newQuantity >= quantity) {
 			break;

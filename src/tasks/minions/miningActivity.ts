@@ -8,11 +8,12 @@ import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { rand } from '../../lib/util';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
-		const { oreID, userID, channelID, duration, powerMine } = data;
+		const { oreID, userID, channelID, duration, powermine } = data;
 		let { quantity } = data;
 		const user = await this.client.fetchUser(userID);
 
@@ -83,7 +84,7 @@ export default class extends Task {
 			}
 		}
 
-		if (!powerMine) {
+		if (!powermine) {
 			// Gem rocks roll off the GemRockTable
 			if (ore.id === 1625) {
 				for (let i = 0; i < quantity; i++) {
@@ -127,13 +128,18 @@ export default class extends Task {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
+		const theQuantity = duration > 0.9 * calcMaxTripLength(user, 'Mining') ? undefined : quantity;
 		handleTripFinish(
 			user,
 			channelID,
 			str,
 			[
 				'mine',
-				{ name: ore.name, quantity: duration > 0.9 * user.maxTripLength('Mining') ? null : quantity },
+				{
+					name: ore.name,
+					quantity: theQuantity,
+					powermine
+				},
 				true
 			],
 			undefined,
