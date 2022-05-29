@@ -8,8 +8,6 @@ export async function unequipPet(msg: KlasaMessage) {
 	const equippedPet = msg.author.settings.get(UserSettings.Minion.EquippedPet);
 	if (!equippedPet) return msg.channel.send("You don't have a pet equipped.");
 
-	msg.author.log(`unequipping ${itemNameFromID(equippedPet)}[${equippedPet}]`);
-
 	const loot = new Bank().add(equippedPet);
 
 	await msg.author.settings.update(UserSettings.Minion.EquippedPet, null);

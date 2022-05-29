@@ -1,3 +1,5 @@
+import '../data/itemAliases';
+
 import { Bank, Misc, Monsters } from 'oldschooljs';
 import { addBanks } from 'oldschooljs/dist/util/bank';
 
@@ -37,6 +39,9 @@ export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs
 	}
 
 	if (['nex', 'next'].some(alias => stringMatches(alias, bossName))) {
+		if (quantity > 3000) {
+			return { error: 'I can only kill a maximum of 3k Nex a time!' };
+		}
 		const loot = handleNexKills({
 			quantity,
 			team: [

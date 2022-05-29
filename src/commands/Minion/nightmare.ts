@@ -256,7 +256,7 @@ export default class extends BotCommand {
 			}
 			if (isPhosani) {
 				effectiveTime = reduceNumByPercent(effectiveTime, 31);
-				if (user.owns('Dragon claws')) {
+				if (user.hasItemEquippedOrInBank('Dragon claws')) {
 					effectiveTime = reduceNumByPercent(effectiveTime, 3);
 					soloBoosts.push('3% for Dragon claws');
 				}
@@ -264,7 +264,7 @@ export default class extends BotCommand {
 					effectiveTime = reduceNumByPercent(effectiveTime, 3);
 					soloBoosts.push('3% for Harmonised nightmare staff');
 				}
-				if (user.owns('Elder maul')) {
+				if (user.hasItemEquippedOrInBank('Elder maul')) {
 					effectiveTime = reduceNumByPercent(effectiveTime, 3);
 					soloBoosts.push('3% for Elder maul');
 				}
@@ -292,7 +292,6 @@ export default class extends BotCommand {
 			}
 			let healingMod = isPhosani ? 1.5 : 1;
 			const { foodRemoved } = await removeFoodFromUser({
-				client: this.client,
 				user,
 				totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
 				healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,

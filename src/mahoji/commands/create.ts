@@ -2,7 +2,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
-import { client } from '../..';
 import Createables from '../../lib/data/createables';
 import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -79,7 +78,7 @@ export const createCommand: OSBMahojiCommand = {
 		interaction,
 		userID
 	}: CommandRunOptions<{ item: string; quantity?: number; showall?: boolean }>) => {
-		const user = await client.fetchUser(userID.toString());
+		const user = await globalClient.fetchUser(userID.toString());
 
 		const itemName = options.item.toLowerCase();
 		let { quantity } = options;
@@ -207,8 +206,8 @@ export const createCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(inItems);
 		await user.addItemsToBank({ items: outItems });
 
-		updateBankSetting(client, ClientSettings.EconomyStats.CreateCost, inItems);
-		updateBankSetting(client, ClientSettings.EconomyStats.CreateLoot, outItems);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
 
 		// Only allow +create to add items to CL
 		if (!createableItem.noCl && action === 'create') await user.addItemsToCollectionLog({ items: outItems });

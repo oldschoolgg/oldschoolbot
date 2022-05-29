@@ -7,7 +7,6 @@ import {
 	Util,
 	WebhookClient
 } from 'discord.js';
-import { KlasaClient } from 'klasa';
 import PQueue from 'p-queue';
 
 import { prisma } from '../settings/prisma';
@@ -16,11 +15,8 @@ import { logError } from './logError';
 
 const webhookCache: Map<string, WebhookClient> = new Map();
 
-export async function resolveChannel(
-	client: KlasaClient,
-	channelID: string
-): Promise<WebhookClient | TextChannel | undefined> {
-	const channel = client.channels.cache.get(channelID);
+export async function resolveChannel(channelID: string): Promise<WebhookClient | TextChannel | undefined> {
+	const channel = globalClient.channels.cache.get(channelID);
 	if (!channel) return undefined;
 	if (channel.type === 'dm') {
 		return channel as TextChannel;
@@ -32,19 +28,17 @@ export async function resolveChannel(
 
 	const db = await prisma.webhook.findFirst({ where: { channel_id: channelID } });
 	if (db) {
-		client.emit('log', 'Restoring webhook from DB.');
 		webhookCache.set(db.channel_id, new WebhookClient(db.webhook_id, db.webhook_token));
 		return webhookCache.get(db.channel_id);
 	}
 
-	if (!channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.MANAGE_WEBHOOKS)) {
+	if (!channel.permissionsFor(globalClient.user!)?.has(Permissions.FLAGS.MANAGE_WEBHOOKS)) {
 		return channel;
 	}
 
 	try {
-		client.emit('log', 'Trying to create webhook.');
-		const createdWebhook = await channel.createWebhook(client.user!.username, {
-			avatar: client.user!.displayAvatarURL({})
+		const createdWebhook = await channel.createWebhook(globalClient.user!.username, {
+			avatar: globalClient.user!.displayAvatarURL({})
 		});
 		await prisma.webhook.create({
 			data: {
@@ -57,7 +51,6 @@ export async function resolveChannel(
 		webhookCache.set(channelID, webhook);
 		return webhook;
 	} catch (_) {
-		client.emit('log', 'Failed to create webhook');
 		return channel;
 	}
 }
@@ -70,7 +63,6 @@ async function deleteWebhook(channelID: string) {
 const queue = new PQueue({ concurrency: 10 });
 
 export async function sendToChannelID(
-	client: KlasaClient,
 	channelID: string,
 	data: {
 		content?: string;
@@ -79,10 +71,9 @@ export async function sendToChannelID(
 	}
 ) {
 	queue.add(async () => {
-		const channel = await resolveChannel(client, channelID);
+		const channel = await resolveChannel(channelID);
 		if (!channel) return;
 
-		client.emit('log', `Sending to channelID[${channelID}].`);
 		let files = data.image ? [data.image] : undefined;
 		let embeds = [];
 		if (data.embed) embeds.push(data.embed);
@@ -97,7 +88,7 @@ export async function sendToChannelID(
 				const error = err as Error;
 				if (error.message === 'Unknown Webhook') {
 					await deleteWebhook(channelID);
-					await sendToChannelID(client, channelID, data);
+					await sendToChannelID(channelID, data);
 				} else {
 					logError(error, {
 						content: data.content ?? 'None',

@@ -1,12 +1,11 @@
 import { Prisma } from '@prisma/client';
-import { uniqueArr } from 'e';
+import { Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
-import { client } from '../..';
 import { production } from '../../config';
 import { BitField, MAX_QP } from '../../lib/constants';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -15,13 +14,22 @@ import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
+import Farming from '../../lib/skilling/skills/farming';
 import { Gear } from '../../lib/structures/Gear';
 import { stringMatches } from '../../lib/util';
+import {
+	FarmingPatchName,
+	farmingPatchNames,
+	getFarmingKeyFromName,
+	userGrowingProgressStr
+} from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { tiers } from '../../tasks/patreon';
+import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -95,7 +103,7 @@ async function giveGear(user: KlasaUser) {
 
 async function resetAccount(user: KlasaUser) {
 	await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
-	await prisma.commandUsage.deleteMany({ where: { user_id: user.id } });
+	await prisma.commandUsage.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.gearPreset.deleteMany({ where: { user_id: user.id } });
 	await prisma.giveaway.deleteMany({ where: { user_id: user.id } });
 	await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } });
@@ -134,7 +142,30 @@ const openablesBank = new Bank();
 for (const i of allOpenables.values()) {
 	openablesBank.add(i.id, 100);
 }
-const spawnPresets = [['openables', openablesBank]] as const;
+
+const equippablesBank = new Bank();
+for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).values()) {
+	equippablesBank.add(i.id);
+}
+
+const farmingPreset = new Bank();
+for (const plant of Farming.Plants) {
+	farmingPreset.add(plant.inputItems.clone().multiply(100));
+	if (plant.protectionPayment) {
+		farmingPreset.add(plant.protectionPayment.clone().multiply(100));
+	}
+}
+farmingPreset.add('Ultracompost', 10_000);
+const usables = new Bank();
+for (const usable of allUsableItems) usables.add(usable, 100);
+
+const spawnPresets = [
+	['openables', openablesBank],
+	['random', new Bank()],
+	['equippables', equippablesBank],
+	['farming', farmingPreset],
+	['usables', usables]
+] as const;
 
 const nexSupplies = new Bank()
 	.add('Shark', 10_000)
@@ -340,6 +371,20 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'irontoggle',
 					description: 'Toggle being an ironman on/off.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'forcegrow',
+					description: 'Force a plant to grow.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'patch_name',
+							description: 'The patches you want to harvest.',
+							required: true,
+							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+						}
+					]
 				}
 			],
 			run: async ({
@@ -357,12 +402,13 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				badnexgear?: {};
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
+				forcegrow?: { patch_name: FarmingPatchName };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
-				const user = await client.fetchUser(userID.toString());
+				const user = await globalClient.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 				if (options.irontoggle) {
 					const current = mahojiUser.minion_ironman;
@@ -394,7 +440,15 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					const bankToGive = new Bank();
 					if (preset) {
 						const actualPreset = spawnPresets.find(i => i[0] === preset);
-						if (actualPreset) bankToGive.add(actualPreset[1]);
+						if (!actualPreset) return 'Invalid preset';
+						let b = actualPreset[1];
+						if (actualPreset[0] === 'random') {
+							b = new Bank();
+							for (let i = 0; i < 200; i++) {
+								b.add(Items.random().id);
+							}
+						}
+						bankToGive.add(b);
 					}
 					if (item) {
 						try {
@@ -410,7 +464,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					}
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
-					return `Spawned: ${bankToGive}.`;
+					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
 				}
 				if (options.nexhax) {
 					const gear = new Gear({
@@ -471,6 +525,22 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						}
 					});
 					return `Set your ${monster.name} KC to ${options.setmonsterkc.kc ?? 1}.`;
+				}
+				if (options.forcegrow) {
+					const farmingDetails = await getFarmingInfo(userID);
+					const thisPlant = farmingDetails.patchesDetailed.find(
+						p => p.plant?.seedType === options.forcegrow?.patch_name
+					);
+					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
+					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
+
+					await mahojiUserSettingsUpdate(user.id, {
+						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
+							...rawPlant,
+							plantTime: Date.now() - Time.Month
+						}
+					});
+					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
 				}
 				return 'Nothin!';
 			}

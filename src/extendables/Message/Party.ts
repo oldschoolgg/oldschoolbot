@@ -55,7 +55,6 @@ export async function setupParty(
 
 	const reactionAwaiter = () =>
 		new Promise<KlasaUser[]>(async (resolve, reject) => {
-			partyLockCache.add(user.id);
 			let partyCancelled = false;
 			const collector = new CustomReactionCollector(confirmMessage, {
 				time: 120_000,
@@ -81,16 +80,8 @@ export async function setupParty(
 						const [customDenied, reason] = await options.customDenier(user);
 						if (customDenied) {
 							user.send(`You couldn't join this mass, for this reason: ${reason}`);
-							reaction.users.remove(user);
 							return false;
 						}
-					}
-
-					if (
-						(reaction.emoji.id === ReactionEmoji.Join && user === options.leader) ||
-						(user !== options.leader && reaction.emoji.id !== ReactionEmoji.Join)
-					) {
-						reaction.users.remove(user);
 					}
 
 					return ([ReactionEmoji.Join, ReactionEmoji.Stop, ReactionEmoji.Start] as string[]).includes(
@@ -102,6 +93,7 @@ export async function setupParty(
 			collector.on('remove', (reaction: MessageReaction, user: KlasaUser) => {
 				if (!usersWhoConfirmed.includes(user)) return false;
 				if (reaction.emoji.id !== ReactionEmoji.Join) return false;
+				partyLockCache.delete(user.id);
 				removeUser(user);
 			});
 

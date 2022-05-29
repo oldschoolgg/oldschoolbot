@@ -2,7 +2,6 @@ import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
 import { PerkTier } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -11,9 +10,9 @@ import { OSBMahojiCommand } from '../lib/util';
 
 function determineLimit(user: KlasaUser) {
 	const perkTier = getUsersPerkTier(user);
-	if (perkTier >= PerkTier.Six) return 100_000;
-	if (perkTier >= PerkTier.Five) return 80_000;
-	if (perkTier >= PerkTier.Four) return 60_000;
+	if (perkTier >= PerkTier.Six) return 300_000;
+	if (perkTier >= PerkTier.Five) return 200_000;
+	if (perkTier >= PerkTier.Four) return 100_000;
 	if (perkTier === PerkTier.Three) return 40_000;
 	if (perkTier === PerkTier.Two) return 20_000;
 	if (perkTier === PerkTier.One) return 1000;
@@ -38,11 +37,11 @@ export const casketCommand: OSBMahojiCommand = {
 			description: 'The quantity you want to open.',
 			required: true,
 			min_value: 1,
-			max_value: 100_000
+			max_value: 300_000
 		}
 	],
 	run: async ({ options, userID, interaction }: CommandRunOptions<{ name: string; quantity: number }>) => {
-		const user = await client.fetchUser(userID.toString());
+		const user = await globalClient.fetchUser(userID.toString());
 		const limit = determineLimit(user);
 		if (options.quantity > limit) {
 			return `The quantity you gave exceeds your limit of ${limit.toLocaleString()}! *You can increase your limit by up to 100,000 by becoming a patron at <https://www.patreon.com/oldschoolbot>.*`;
@@ -60,7 +59,7 @@ export const casketCommand: OSBMahojiCommand = {
 
 		if (Object.keys(loot.bank).length === 0) return `${title} and got nothing :(`;
 
-		const { image } = await client.tasks
+		const { image } = await globalClient.tasks
 			.get('bankImage')!
 			.generateBankImage(new Bank(loot.bank), title, true, {}, user);
 

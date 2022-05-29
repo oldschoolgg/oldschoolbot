@@ -7,7 +7,7 @@ import { Bank, Items } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
 
-import { bankImageCache, BitField, Events } from '../lib/constants';
+import { bankImageCache, BitField, Events, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
 import { GearSetupType } from '../lib/gear';
@@ -15,7 +15,7 @@ import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { BankSortMethods, sorts } from '../lib/sorts';
+import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import {
 	addArrayOfNumbers,
 	cleanString,
@@ -29,13 +29,14 @@ import {
 	drawImageWithOutline,
 	fillTextXTimesInCtx
 } from '../lib/util/canvasUtil';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 
 registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-compact.otf', { family: 'Regular' });
 registerFont('./src/lib/resources/osrs-font-bold.ttf', { family: 'Regular' });
-
-const coxPurpleBg = fs.readFileSync('./src/lib/resources/images/bank_backgrounds/14_purple.jpg');
+registerFont('./src/lib/resources/small-pixel.ttf', { family: 'Regular' });
 
 export type BankImageResult =
 	| {
@@ -65,6 +66,135 @@ interface IBgSprite {
 	borderTitle: Canvas;
 	repeatableBg: Canvas;
 }
+
+const i = itemID;
+const forcedShortNameMap = new Map<number, string>([
+	[i('Guam seed'), 'guam'],
+	[i('Marrentill seed'), 'marren'],
+	[i('Tarromin seed'), 'tarro'],
+	[i('Harralander seed'), 'harra'],
+	[i('Ranarr seed'), 'ranarr'],
+	[i('Toadflax seed'), 'toad'],
+	[i('Irit seed'), 'irit'],
+	[i('Avantoe seed'), 'avan'],
+	[i('Kwuarm seed'), 'kwuarm'],
+	[i('Snapdragon seed'), 'snap'],
+	[i('Cadantine seed'), 'cadan'],
+	[i('Lantadyme seed'), 'lanta'],
+	[i('Dwarf weed seed'), 'dwarf'],
+	[i('Torstol seed'), 'torstol'],
+	[i('Redberry seed'), 'redberry'],
+	[i('Cadavaberry seed'), 'cadava'],
+	[i('Dwellberry seed'), 'dwell'],
+	[i('Jangerberry seed'), 'janger'],
+	[i('Whiteberry seed'), 'white'],
+	[i('Poison ivy seed'), 'ivy'],
+	[i('Grape seed'), 'grape'],
+	[i('Mushroom spore'), 'mushroom'],
+	[i('Belladonna seed'), 'bella'],
+	[i('Seaweed spore'), 'seaweed'],
+	[i('Hespori seed'), 'hespori'],
+	[i('Kronos seed'), 'kronos'],
+	[i('Iasor seed'), 'iasor'],
+	[i('Attas seed'), 'attas'],
+	[i('Cactus seed'), 'cactus'],
+	[i('Potato cactus seed'), 'pcact'],
+	[i('Acorn'), 'oak'],
+	[i('willow seed'), 'willow'],
+	[i('Maple seed'), 'maple'],
+	[i('Yew seed'), 'yew'],
+	[i('Magic seed'), 'magic'],
+	[i('Redwood tree seed'), 'red'],
+	[i('Teak seed'), 'teak'],
+	[i('Mahogany seed'), 'mahog'],
+	[i('Crystal acorn'), 'crystal'],
+	[i('Celastrus seed'), 'celas'],
+	[i('Spirit seed'), 'spirit'],
+	[i('Calquat tree seed'), 'calquat'],
+	[i('Apple tree seed'), 'apple'],
+	[i('Banana tree seed'), 'banana'],
+	[i('Orange tree seed'), 'orange'],
+	[i('Curry tree seed'), 'curry'],
+	[i('Pineapple seed'), 'pinea'],
+	[i('Papaya tree seed'), 'papaya'],
+	[i('Palm tree seed'), 'palm'],
+	[i('Dragonfruit tree seed'), 'dragon'],
+	[i('Potato seed'), 'potato'],
+	[i('Onion seed'), 'onion'],
+	[i('Cabbage seed'), 'cabbage'],
+	[i('Tomato seed'), 'tomato'],
+	[i('Sweetcorn seed'), 'scorn'],
+	[i('Strawberry seed'), 'sberry'],
+	[i('Watermelon seed'), 'melon'],
+	[i('Snape grass seed'), 'snape'],
+	[i('Marigold seed'), 'marigo'],
+	[i('Rosemary seed'), 'rosemar'],
+	[i('Nasturtium seed'), 'nastur'],
+	[i('Woad seed'), 'woad'],
+	[i('Limpwurt seed'), 'limpwurt'],
+	[i('White lily seed'), 'lily'],
+	[i('Barley seed'), 'barley'],
+	[i('Hammerstone seed'), 'hammer'],
+	[i('Asgarnian seed'), 'asgar'],
+	[i('Jute seed'), 'Jute'],
+	[i('Yanillian seed'), 'yani'],
+	[i('Krandorian seed'), 'krand'],
+	[i('Wildblood seed'), 'wild.b'],
+
+	// Herbs
+	[i('Guam leaf'), 'guam'],
+	[i('Marrentill'), 'marren'],
+	[i('Tarromin'), 'tarro'],
+	[i('Harralander'), 'harra'],
+	[i('Ranarr weed'), 'ranarr'],
+	[i('Toadflax'), 'toad'],
+	[i('Irit leaf'), 'irit'],
+	[i('Avantoe'), 'avan'],
+	[i('Kwuarm'), 'kwuarm'],
+	[i('Snapdragon'), 'snap'],
+	[i('Cadantine'), 'cadan'],
+	[i('Lantadyme'), 'lanta'],
+	[i('Dwarf weed'), 'dwarf'],
+	[i('Torstol'), 'torstol'],
+
+	[i('Grimy guam leaf'), 'guam'],
+	[i('Grimy marrentill'), 'marren'],
+	[i('Grimy tarromin'), 'tarro'],
+	[i('Grimy harralander'), 'harra'],
+	[i('Grimy ranarr weed'), 'ranarr'],
+	[i('Grimy toadflax'), 'toad'],
+	[i('Grimy irit leaf'), 'irit'],
+	[i('Grimy avantoe'), 'avan'],
+	[i('Grimy kwuarm'), 'kwuarm'],
+	[i('Grimy snapdragon'), 'snap'],
+	[i('Grimy cadantine'), 'cadan'],
+	[i('Grimy lantadyme'), 'lanta'],
+	[i('Grimy dwarf weed'), 'dwarf'],
+	[i('Grimy torstol'), 'torstol'],
+
+	[i('Compost'), 'compost'],
+	[i('Supercompost'), 'super'],
+	[i('Ultracompost'), 'ultra'],
+
+	// Clues & Caskets
+	[i('Clue scroll (beginner)'), 'beginner'],
+	[i('Reward casket (beginner)'), 'beginner'],
+
+	[i('Clue scroll (easy)'), 'easy'],
+	[i('Reward casket (easy)'), 'easy'],
+
+	[i('Clue scroll (medium)'), 'medium'],
+	[i('Reward casket (medium)'), 'medium'],
+
+	[i('Clue scroll (hard)'), 'hard'],
+	[i('Reward casket (hard)'), 'hard'],
+
+	[i('Clue scroll (elite)'), 'elite'],
+	[i('Reward casket (elite)'), 'elite'],
+
+	[i('Clue scroll (master)'), 'master'],
+	[i('Reward casket (master)'), 'master']
+]);
 
 export default class BankImageTask extends Task {
 	public itemIconsList: Set<number>;
@@ -112,12 +242,19 @@ export default class BankImageTask extends Task {
 
 		this.backgroundImages = await Promise.all(
 			backgroundImages.map(async img => {
-				const bgPath = `./src/lib/resources/images/bank_backgrounds/${img.id}.${
-					img.transparent ? 'png' : 'jpg'
-				}`;
+				const ext = img.transparent ? 'png' : 'jpg';
+				const bgPath = `./src/lib/resources/images/bank_backgrounds/${img.id}.${ext}`;
+				const purplePath = img.hasPurple
+					? `./src/lib/resources/images/bank_backgrounds/${img.id}_purple.${ext}`
+					: null;
 				return {
 					...img,
-					image: fs.existsSync(bgPath) ? await canvasImageFromBuffer(fs.readFileSync(bgPath)) : null
+					image: fs.existsSync(bgPath) ? await canvasImageFromBuffer(fs.readFileSync(bgPath)) : null,
+					purpleImage: purplePath
+						? fs.existsSync(purplePath)
+							? await canvasImageFromBuffer(fs.readFileSync(purplePath))
+							: null
+						: null
 				};
 			})
 		);
@@ -286,8 +423,6 @@ export default class BankImageTask extends Task {
 		const settings =
 			typeof user === 'undefined' ? null : typeof user === 'string' ? await getUserSettings(user) : user.settings;
 
-		const favorites = settings?.get(UserSettings.FavoriteItems);
-
 		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1);
 		const rawCL = settings?.get(UserSettings.CollectionLogBank);
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
@@ -330,17 +465,36 @@ export default class BankImageTask extends Task {
 		let items = bank.items();
 
 		// Sorting
-		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? 'value' : 'value';
-		if (sort || favorites?.length) {
-			items = items.sort((a, b) => {
-				if (favorites) {
-					const aFav = favorites.includes(a[0].id);
-					const bFav = favorites.includes(b[0].id);
-					if (aFav && bFav) return sorts[sort](a, b);
-					if (bFav) return 1;
-					if (aFav) return -1;
-				}
-				return sorts[sort](a, b);
+		const favorites = settings?.get(UserSettings.FavoriteItems);
+		const weightings = settings?.get(UserSettings.BankSortWeightings);
+
+		const perkTier = user ? getUsersPerkTier(user) : 0;
+		const defaultSort: BankSortMethod =
+			perkTier < PerkTier.Two ? 'value' : settings?.get(UserSettings.BankSortMethod) ?? 'value';
+		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? defaultSort : defaultSort;
+
+		items.sort(sorts[sort]);
+
+		if (favorites) {
+			items.sort((a, b) => {
+				const aFav = favorites.includes(a[0].id);
+				const bFav = favorites.includes(b[0].id);
+				if (aFav && bFav) return sorts[sort](a, b);
+				if (bFav) return 1;
+				if (aFav) return -1;
+				return 0;
+			});
+		}
+
+		if (perkTier >= PerkTier.Two && weightings && Object.keys(weightings).length > 0) {
+			items.sort((a, b) => {
+				const aWeight = weightings[a[0].id];
+				const bWeight = weightings[b[0].id];
+				if (aWeight === undefined && bWeight === undefined) return 0;
+				if (bWeight && aWeight) return bWeight - aWeight;
+				if (bWeight) return 1;
+				if (aWeight) return -1;
+				return 0;
 			});
 		}
 
@@ -397,16 +551,14 @@ export default class BankImageTask extends Task {
 			currentCL !== undefined &&
 			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
-		if (isPurple && bgImage.name === 'CoX') {
-			bgImage = { ...bgImage, image: await canvasImageFromBuffer(coxPurpleBg) };
-		}
+		let actualBackground = isPurple && bgImage.hasPurple ? bgImage.purpleImage! : bgImage.image!;
 
 		const hexColor = user?.settings.get(UserSettings.BankBackgroundHex);
 
 		const useSmallBank = user
 			? hasBgSprite
 				? true
-				: await user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
+				: user.settings.get(UserSettings.BitField).includes(BitField.AlwaysSmallBank)
 			: true;
 
 		const cacheKey = [
@@ -425,7 +577,8 @@ export default class BankImageTask extends Task {
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
 			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
-			useSmallBank ? 'smallbank' : 'no-smallbank'
+			useSmallBank ? 'smallbank' : 'no-smallbank',
+			sort
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
@@ -441,8 +594,8 @@ export default class BankImageTask extends Task {
 		const canvas = createCanvas(width, useSmallBank ? canvasHeight : Math.max(331, canvasHeight));
 
 		let resizeBg = -1;
-		if (!wide && !useSmallBank && !isTransparent && bgImage.image && canvasHeight > 331) {
-			resizeBg = Math.min(1440, canvasHeight) / bgImage.image.height;
+		if (!wide && !useSmallBank && !isTransparent && actualBackground && canvasHeight > 331) {
+			resizeBg = Math.min(1440, canvasHeight) / actualBackground.height;
 		}
 
 		const ctx = canvas.getContext('2d');
@@ -463,11 +616,11 @@ export default class BankImageTask extends Task {
 
 		if (!hasBgSprite) {
 			ctx.drawImage(
-				bgImage!.image,
-				resizeBg === -1 ? 0 : (canvas.width - bgImage.image!.width! * resizeBg) / 2,
+				actualBackground,
+				resizeBg === -1 ? 0 : (canvas.width - actualBackground.width! * resizeBg) / 2,
 				0,
-				wide ? canvas.width : bgImage.image!.width! * (resizeBg === -1 ? 1 : resizeBg),
-				wide ? canvas.height : bgImage.image!.height! * (resizeBg === -1 ? 1 : resizeBg)
+				wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? 1 : resizeBg),
+				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
 			);
 		}
 
@@ -492,7 +645,7 @@ export default class BankImageTask extends Task {
 		// Draw Items
 		ctx.textAlign = 'start';
 		ctx.fillStyle = '#494034';
-		ctx.font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
+		const font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
 
 		let xLoc = 0;
 		let yLoc = compact ? 5 : 0;
@@ -504,8 +657,8 @@ export default class BankImageTask extends Task {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id, quantity).catch(() => {
-				logError(`Failed to load item image for item with id: ${item.id}`);
+			const itemImage = await this.getItemImage(item.id, quantity).catch(err => {
+				logError(`Failed to load item image for item with id: ${item.id}, ${err}`);
 			});
 			if (!itemImage) {
 				this.client.emit(Events.Warn, `Item with ID[${item.id}] has no item image.`);
@@ -552,6 +705,7 @@ export default class BankImageTask extends Task {
 
 			// Do not draw the item qty if there is 0 of that item in the bank
 			if (quantity !== 0) {
+				ctx.font = font;
 				// Check if new cl item
 				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 				const formattedQuantity = formatItemStackQuantity(quantity);
@@ -577,12 +731,19 @@ export default class BankImageTask extends Task {
 			}
 
 			if (flags.names) {
-				bottomItemText = `${item.name!.replace('Grimy', 'Grmy').slice(0, 7)}..`;
+				bottomItemText = item.name;
+			}
+
+			const forcedShortName = forcedShortNameMap.get(item.id);
+			if (forcedShortName && !bottomItemText) {
+				ctx.font = '10px Smallest Pixel-7';
+				bottomItemText = forcedShortName?.toUpperCase();
 			}
 
 			if (bottomItemText) {
+				let text =
+					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
 				ctx.fillStyle = 'black';
-				let text = typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText;
 				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
 				ctx.fillStyle =
 					typeof bottomItemText === 'string' ? 'white' : generateHexColorForCashStack(bottomItemText);
