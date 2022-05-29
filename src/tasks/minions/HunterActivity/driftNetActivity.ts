@@ -78,12 +78,10 @@ export default class extends Task {
 		str += `\n\nYou received: ${loot}.`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
 			res => {
-				user.log('continued trip of Drift net fishing.');
 				return this.client.commands
 					.get('driftnet')!
 					.run(res, [

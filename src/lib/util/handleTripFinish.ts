@@ -1,7 +1,7 @@
 import { activity_type_enum } from '@prisma/client';
 import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
 import { Time } from 'e';
-import { KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
@@ -14,6 +14,7 @@ import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
+import { logError } from './logError';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -26,7 +27,6 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 ];
 
 export async function handleTripFinish(
-	client: KlasaClient,
 	user: KlasaUser,
 	channelID: string,
 	message: string,
@@ -47,7 +47,7 @@ export async function handleTripFinish(
 	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 		const GP = loot.amount(COINS_ID);
 		if (typeof GP === 'number') {
-			updateGPTrackSetting(client, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+			updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
 		}
 	}
 
@@ -87,11 +87,11 @@ export async function handleTripFinish(
 			: new MessageAttachment(attachment)
 		: undefined;
 
-	const channel = client.channels.cache.get(channelID);
+	const channel = globalClient.channels.cache.get(channelID);
 
 	message = await handleGrowablePetGrowth(user, data, message);
 
-	sendToChannelID(client, channelID, { content: message, image: attachable }).then(() => {
+	sendToChannelID(channelID, { content: message, image: attachable }).then(() => {
 		const minutes = Math.min(30, data.duration / Time.Minute);
 		const randomEventChance = 60 - minutes;
 		if (
@@ -140,8 +140,8 @@ export async function handleTripFinish(
 	collectors.set(user.id, collector);
 
 	collector.on('collect', async (mes: KlasaMessage) => {
-		if (client.settings.get(ClientSettings.UserBlacklist).includes(mes.author.id)) return;
-		if (user.minionIsBusy || client.oneCommandAtATimeCache.has(mes.author.id)) {
+		if (globalClient.settings.get(ClientSettings.UserBlacklist).includes(mes.author.id)) return;
+		if (user.minionIsBusy || globalClient.oneCommandAtATimeCache.has(mes.author.id)) {
 			collector.stop();
 			collectors.delete(user.id);
 			return;
@@ -161,7 +161,10 @@ export async function handleTripFinish(
 				});
 			}
 		} catch (err: any) {
-			console.log({ err });
+			logError(err, {
+				user_id: user.id,
+				type: data.type
+			});
 			channel.send(err);
 		}
 	});

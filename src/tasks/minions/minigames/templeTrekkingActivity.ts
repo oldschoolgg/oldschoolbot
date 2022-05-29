@@ -98,11 +98,10 @@ export default class extends Task {
 			);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['trek', [quantity, difficulty], true],
+			['minigames', { temple_trek: { start: { difficulty, quantity } } }, true],
 			image!,
 			data,
 			itemsAdded

@@ -1,8 +1,8 @@
 import { deepClone, roll } from 'e';
 import { Task } from 'klasa';
 
-import { revenantMonsters } from '../../commands/Minion/revs';
 import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import announceLoot from '../../lib/minions/functions/announceLoot';
 import { runCommand } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -17,7 +17,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
-		const { monsterID, userID, channelID, quantity, died, skulled, style } = data;
+		const { monsterID, userID, channelID, quantity, died, skulled } = data;
 		const monster = revenantMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.fetchUser(userID);
 		if (died) {
@@ -34,15 +34,12 @@ export default class extends Task {
 				skulled
 			});
 
-			const image = await generateGearImage(this.client, user, new Gear(calc.newGear), 'wildy', null);
+			const image = await generateGearImage(user, new Gear(calc.newGear), 'wildy', null);
 			await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
 
-			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
-
-			const flags: Record<string, string> = !skulled ? {} : { skull: 'skull' };
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				`${user} ${
@@ -55,17 +52,12 @@ export default class extends Task {
 					calc.lostItems
 				}.\nHere is what you saved:`,
 				res => {
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					if (!res.prompter) res.prompter = {};
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					res.prompter.flags = flags;
-					user.log(`continued trip of killing ${monster.name}`);
 					return runCommand({
 						message: res,
-						commandName: 'revs',
-						args: [style, monster.name],
+						commandName: 'k',
+						args: {
+							name: monster.name
+						},
 						isContinue: true
 					});
 				},
@@ -102,20 +94,18 @@ export default class extends Task {
 			);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
 			res => {
-				const flags: Record<string, string> = skulled ? { skull: 'skull' } : {};
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				if (!res.prompter) res.prompter = {};
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				res.prompter.flags = flags;
-				user.log(`continued trip of killing ${monster.name}`);
-				return runCommand({ message: res, commandName: 'revs', args: [style, monster.name], isContinue: true });
+				return runCommand({
+					message: res,
+					commandName: 'k',
+					args: {
+						name: monster.name
+					},
+					isContinue: true
+				});
 			},
 			image!,
 			data,

@@ -41,7 +41,7 @@ export default class extends Event {
 		}
 		this.client.__geInterval = setInterval(async () => {
 			try {
-				const guild = getSupportGuild(this.client);
+				const guild = getSupportGuild();
 				const channel = guild?.channels.cache.get(Channel.GrandExchange) as TextChannel;
 				const messages = await channel.messages.fetch({ limit: 5 });
 				if (messages.some(m => m.author.id === this.client.user!.id)) return;

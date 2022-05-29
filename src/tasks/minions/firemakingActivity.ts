@@ -45,11 +45,10 @@ export default class extends Task {
 		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['light', [quantity, burnable.name], true],
+			['light', { name: burnable.name, quantity }, true],
 			undefined,
 			data,
 			null

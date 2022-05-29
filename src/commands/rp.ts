@@ -3,14 +3,13 @@ import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
 import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
+import { ArrayActions, CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { client, mahojiClient } from '..';
 import { CLIENT_ID, production } from '../config';
 import {
 	badges,
@@ -41,12 +40,13 @@ import {
 	getSupportGuild,
 	getUsername,
 	isGroupActivity,
+	isNexActivity,
 	isRaidsActivity,
 	isTobActivity,
 	itemNameFromID,
 	stringMatches
 } from '../lib/util';
-import getOSItem from '../lib/util/getOSItem';
+import getOSItem, { getItem } from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
@@ -81,9 +81,10 @@ async function checkMassesCommand(msg: KlasaMessage) {
 	const now = Date.now();
 	const massStr = masses
 		.map(m => {
-			const remainingTime = isTobActivity(m)
-				? m.finishDate - m.duration + m.fakeDuration - now
-				: m.finishDate - now;
+			const remainingTime =
+				isTobActivity(m) || isNexActivity(m)
+					? m.finishDate - m.duration + m.fakeDuration - now
+					: m.finishDate - now;
 			if (isGroupActivity(m)) {
 				return [
 					remainingTime,
@@ -177,7 +178,7 @@ async function unsafeEval({
 
 	stopwatch.stop();
 	if (flags.bk || result instanceof Bank) {
-		const image = await client.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
+		const image = await globalClient.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
 		return { files: [new MessageAttachment(image.image!)], rawOutput: result };
 	}
 
@@ -206,7 +207,7 @@ async function unsafeEval({
 
 async function evalCommand(msg: KlasaMessage, code: string) {
 	try {
-		if (!client.owners.has(msg.author)) {
+		if (!globalClient.owners.has(msg.author)) {
 			return "You don't have permission to use this command.";
 		}
 		const res = await unsafeEval({ code, flags: msg.flagArgs, msg });
@@ -226,7 +227,7 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 	}
 }
 
-export const emoji = (client: KlasaClient) => getSupportGuild(client)?.emojis.cache.random()?.toString();
+export const emoji = () => getSupportGuild()?.emojis.cache.random()?.toString();
 
 const statusMap = {
 	'0': '🟢 Ready',
@@ -363,14 +364,12 @@ export default class extends BotCommand {
 
 **Main Account:** ${
 						u.settings.get(UserSettings.MainAccount) !== null
-							? `${getUsername(this.client, u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
+							? `${getUsername(u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
 									UserSettings.MainAccount
 							  )}]`
 							: 'None'
 					}
-**Ironman Alt Accounts:** ${u.settings
-						.get(UserSettings.IronmanAlts)
-						.map(id => `${getUsername(this.client, id)}[${id}]`)}
+**Ironman Alt Accounts:** ${u.settings.get(UserSettings.IronmanAlts).map(id => `${getUsername(id)}[${id}]`)}
 `
 				);
 			}
@@ -476,7 +475,7 @@ ${
 				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
 					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
 				});
-				const emoji = getSupportGuild(this.client)?.emojis.cache.random()?.toString();
+				const emoji = getSupportGuild()?.emojis.cache.random()?.toString();
 				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
 
 				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
@@ -602,7 +601,7 @@ ${
 				msg.channel.send('Running roles task...');
 				try {
 					const result = (await this.client.tasks.get('roles')?.run()) as string;
-					return sendToChannelID(this.client, msg.channel.id, {
+					return sendToChannelID(msg.channel.id, {
 						content: result.slice(0, 2500)
 					});
 				} catch (err: any) {
@@ -654,7 +653,7 @@ ${
 					],
 					{ arrayAction: 'overwrite' }
 				);
-				sendToChannelID(this.client, Channel.ErrorLogs, {
+				sendToChannelID(Channel.ErrorLogs, {
 					content: `${msg.author.username} gave permanent t1/bgs to ${input.username}`
 				});
 				return msg.channel.send(`Gave permanent perks to ${input.username}.`);
@@ -773,8 +772,10 @@ LIMIT 10;
 				});
 			}
 			case 'disable': {
-				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
+				if (!input || input instanceof KlasaUser) {
+					return msg.channel.send(`Disabled Commands: ${Array.from(DISABLED_COMMANDS).join(', ')}.`);
+				}
+				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
 					where: { id: CLIENT_ID },
@@ -797,7 +798,7 @@ LIMIT 10;
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
+				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
@@ -832,30 +833,34 @@ LIMIT 10;
 				const currentBalanceTier = input.settings.get(UserSettings.PremiumBalanceTier);
 				const currentBalanceTime = input.settings.get(UserSettings.PremiumBalanceExpiryDate);
 
-				if (input.perkTier > 1 && !currentBalanceTier) {
-					return msg.channel.send(`${input.username} is already a patron.`);
+				const oldPerkTier = input.perkTier;
+				if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
+					return msg.channel.send(`${input.username} is already a patron of at least that tier.`);
 				}
 				if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-					return msg.channel.send(
+					await msg.confirm(
 						`${input} already has ${formatDuration(
 							currentBalanceTime!
-						)} of Tier ${currentBalanceTier}, you can't add time for a different tier.`
+						)} of Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 					);
 				}
 				await msg.confirm(
 					`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}?`
 				);
 				await input.settings.update(UserSettings.PremiumBalanceTier, tier);
-				if (currentBalanceTime !== null) {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, currentBalanceTime + ms);
+
+				let newBalanceExpiryTime = 0;
+				if (currentBalanceTime !== null && tier === currentBalanceTier) {
+					newBalanceExpiryTime = currentBalanceTime + ms;
 				} else {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, Date.now() + ms);
+					newBalanceExpiryTime = Date.now() + ms;
 				}
+				await input.settings.update(UserSettings.PremiumBalanceExpiryDate, newBalanceExpiryTime);
 
 				return msg.channel.send(
 					`Gave ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}. They have ${formatDuration(
-						input.settings.get(UserSettings.PremiumBalanceExpiryDate)! - Date.now()
-					)} remaning.`
+						newBalanceExpiryTime - Date.now()
+					)} remaining.`
 				);
 			}
 		}
@@ -938,8 +943,8 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 			case 'localmahojisync': {
 				await msg.channel.send('Syncing commands locally...');
 				await bulkUpdateCommands({
-					client: mahojiClient,
-					commands: mahojiClient.commands.values,
+					client: globalClient.mahojiClient,
+					commands: globalClient.mahojiClient.commands.values,
 					guildID: msg.guild!.id
 				});
 				return msg.channel.send('Locally synced slash commands.');
@@ -947,11 +952,36 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 			case 'globalmahojisync': {
 				await msg.channel.send('Syncing commands...');
 				await bulkUpdateCommands({
-					client: mahojiClient,
-					commands: mahojiClient.commands.values,
+					client: globalClient.mahojiClient,
+					commands: globalClient.mahojiClient.commands.values,
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
+			}
+			case 'itemdata': {
+				if (typeof input !== 'string') return;
+				const item = getItem(input);
+				if (!item) return;
+				return msg.channel.send(JSON.stringify(item, null, 2));
+			}
+			case 'testercheck': {
+				if (production) return;
+				let time = '12hours';
+				if (typeof input === 'string') time = input;
+				const result = await prisma.$queryRawUnsafe<
+					{ username: string; qty: number }[]
+				>(`SELECT "new_user"."username", COUNT(user_id) AS qty
+FROM command_usage
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "command_usage"."user_id"::text
+WHERE date > now() - INTERVAL '${time}'
+GROUP BY "new_user"."username"
+ORDER BY qty DESC;`);
+				return msg.channel.send(
+					result
+						.slice(0, 10)
+						.map(u => `${u.username}: ${u.qty} commands`)
+						.join('\n')
+				);
 			}
 		}
 	}

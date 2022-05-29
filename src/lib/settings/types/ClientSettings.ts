@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { SkillsEnum } from '../../skilling/types';
 import { ItemBank, ItemPriceCache } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
@@ -91,6 +90,5 @@ export namespace ClientSettings {
 		export const GPSourceLuckyPick = T<number>('gp_luckypick');
 	}
 
-	export const LockedSkills = T<readonly SkillsEnum[]>('locked_skills');
 	export const CustomPrices = T<Readonly<ItemBank>>('custom_prices');
 }

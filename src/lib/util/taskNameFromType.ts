@@ -113,8 +113,6 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.Collecting;
 		case 'MageTrainingArena':
 			return Tasks.MageTrainingArena;
-		case 'BlastFurnace':
-			return Tasks.BlastFurnaceActivity;
 		case 'MageArena2':
 			return Tasks.MageArena2;
 		case 'BigChompyBirdHunting':
@@ -145,5 +143,8 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.TokkulShop;
 		case 'Nex':
 			return Tasks.Nex;
+		case 'Easter':
+		case 'BlastFurnace':
+			return Tasks.REMOVED;
 	}
 }
