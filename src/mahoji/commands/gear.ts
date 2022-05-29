@@ -1,5 +1,4 @@
-import { ApplicationCommandOptionType } from 'discord-api-types';
-import { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { GearSetupType, GearStat } from '../../lib/gear';
 import { gearEquipCommand, gearStatsCommand, gearUnequipCommand } from '../lib/abstracted_commands/gearCommands';

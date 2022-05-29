@@ -44,7 +44,7 @@ OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIK
 	const zipped = await asyncGzip(buffer);
 
 	return {
-		attachments: [{ fileName: 'activity-export.gz', buffer: zipped }]
+		attachments: [{ fileName: 'activity-export.txt.gz', buffer: zipped }]
 	};
 }
 

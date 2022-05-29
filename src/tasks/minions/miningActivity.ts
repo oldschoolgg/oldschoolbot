@@ -131,7 +131,11 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['mine', [duration > 0.9 * user.maxTripLength('Mining') ? null : quantity, ore.name], true],
+			[
+				'mine',
+				{ name: ore.name, quantity: duration > 0.9 * user.maxTripLength('Mining') ? null : quantity },
+				true
+			],
 			undefined,
 			data,
 			loot
