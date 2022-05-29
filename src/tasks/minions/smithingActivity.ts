@@ -28,6 +28,14 @@ export default class extends Task {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(user, channelID, str, ['smith', [quantity, smithedItem.name], true], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['smith', { name: smithedItem.name, quantity }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }
