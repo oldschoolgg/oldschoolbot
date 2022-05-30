@@ -140,5 +140,4 @@ client.on('raw', async event => {
 client.on('ready', client.init);
 client.on('ready', onStartup);
 mahojiClient.start();
-mahojiClient._djsClient = client;
 client.login(botToken);
