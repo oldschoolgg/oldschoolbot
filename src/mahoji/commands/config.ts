@@ -727,7 +727,6 @@ export const configCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		server?: {
 			channel?: { choice: 'enable' | 'disable' };
-			jmod_tweets?: { choice: 'enable' | 'disable' };
 			pet_messages?: { choice: 'enable' | 'disable' };
 			jmod_comments?: { choice: 'enable' | 'disable' };
 			command?: { command: string; choice: 'enable' | 'disable' };
