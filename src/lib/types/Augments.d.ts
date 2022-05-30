@@ -32,12 +32,6 @@ type SendBankImageFn = (options: {
 	gearPlaceholder?: Record<GearSetupType, GearSetup>;
 }) => Promise<KlasaMessage>;
 
-declare module 'mahoji' {
-	interface MahojiClient {
-		_djsClient: KlasaClient;
-	}
-}
-
 declare module 'klasa' {
 	interface KlasaClient {
 		oneCommandAtATimeCache: Set<string>;
