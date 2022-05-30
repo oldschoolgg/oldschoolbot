@@ -194,7 +194,13 @@ export async function abstractedOpenCommand(
 	}
 
 	if (!openables.length) return "That's not a valid item.";
-
+	// This code will only execute if we're not in auto/all mode:
+	if (typeof _quantity === 'number') {
+		for (const openable of openables) {
+			const tmpCost = new Bank().add(openable.id, _quantity);
+			if (!bank.has(tmpCost)) return `You don't own ${tmpCost}`;
+		}
+	}
 	const cost = new Bank();
 	const kcBank = new Bank();
 	const loot = new Bank();

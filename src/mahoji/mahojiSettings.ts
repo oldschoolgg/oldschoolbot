@@ -21,6 +21,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
 import type { ItemBank, Skills as TSkills } from '../lib/types';
 import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
+import { logError } from '../lib/util/logError';
 
 export function mahojiParseNumber({
 	input,
@@ -41,7 +42,7 @@ export function mahojiParseNumber({
 }
 
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: bigint[]) {
-	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
 		await interaction.deferReply();
@@ -142,43 +143,56 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 }
 
 export async function mahojiUserSettingsUpdate(user: string | bigint | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
-	const klasaUser = typeof user === 'string' || typeof user === 'bigint' ? await globalClient.fetchUser(user) : user;
+	try {
+		const klasaUser =
+			typeof user === 'string' || typeof user === 'bigint' ? await globalClient.fetchUser(user) : user;
 
-	const newUser = await prisma.user.update({
-		data,
-		where: {
-			id: klasaUser.id
+		const newUser = await prisma.user.update({
+			data,
+			where: {
+				id: klasaUser.id
+			}
+		});
+
+		await klasaUser.settings.sync(true);
+
+		const errorContext = {
+			user_id: klasaUser.id
+		};
+
+		assert(
+			BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP,
+			'Patched user should match',
+			errorContext
+		);
+		assert(
+			klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points,
+			'Patched user should match',
+			errorContext
+		);
+		const klasaBank = klasaUser.settings.get(UserSettings.Bank);
+		const newBank = newUser.bank;
+		for (const [key, value] of Object.entries(klasaBank)) {
+			assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
 		}
-	});
+		assert(
+			klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
+			'Patched user should match',
+			errorContext
+		);
+		assert(
+			JSON.stringify(klasaUser.settings.get('gear.melee')) === JSON.stringify(newUser.gear_melee),
+			'Melee gear should match'
+		);
 
-	await klasaUser.settings.sync(true);
-
-	const errorContext = {
-		user_id: klasaUser.id
-	};
-
-	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match', errorContext);
-	assert(
-		klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points,
-		'Patched user should match',
-		errorContext
-	);
-	const klasaBank = klasaUser.settings.get(UserSettings.Bank);
-	const newBank = newUser.bank;
-	for (const [key, value] of Object.entries(klasaBank)) {
-		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
+		return { newUser };
+	} catch (err) {
+		logError(err, {
+			user_id: user.toString(),
+			updated_data: JSON.stringify(data)
+		});
+		throw err;
 	}
-	assert(
-		klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
-		'Patched user should match',
-		errorContext
-	);
-	assert(
-		JSON.stringify(klasaUser.settings.get('gear.melee')) === JSON.stringify(newUser.gear_melee),
-		'Melee gear should match'
-	);
-
-	return { newUser };
 }
 
 /**

@@ -1,5 +1,4 @@
-import { ApplicationCommandOptionType } from 'discord-api-types';
-import { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { KourendFavours } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
@@ -14,6 +13,7 @@ import { chargeWealthCommand } from '../lib/abstracted_commands/chargeWealthComm
 import { chompyHuntClaimCommand, chompyHuntCommand } from '../lib/abstracted_commands/chompyHuntCommand';
 import { collectables, collectCommand } from '../lib/abstracted_commands/collectCommand';
 import { decantCommand } from '../lib/abstracted_commands/decantCommand';
+import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
@@ -232,6 +232,26 @@ export const activitiesCommand: OSBMahojiCommand = {
 					choices: birdhouses.map(i => ({ name: i.name, value: i.name }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'driftnet_fishing',
+			description: 'The Drift Net fishing activity.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'minutes',
+					description: 'How many minutes you want to do (optional).',
+					required: false,
+					min_value: 1
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'no_stams',
+					description: "Don't use stams?",
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({
@@ -251,6 +271,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		fight_caves?: {};
 		inferno?: { action: string };
 		birdhouses?: { action?: string; birdhouse?: string };
+		driftnet_fishing?: { minutes?: number; no_stams?: boolean };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -308,6 +329,14 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.fight_caves) {
 			return fightCavesCommand(klasaUser, channelID);
+		}
+		if (options.driftnet_fishing) {
+			return driftNetCommand(
+				channelID,
+				klasaUser,
+				options.driftnet_fishing.minutes,
+				options.driftnet_fishing.no_stams
+			);
 		}
 
 		return 'Invalid command.';

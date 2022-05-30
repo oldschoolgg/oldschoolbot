@@ -117,7 +117,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['pickpocket', [quantity, npc ? npc.name : stall.name], true],
+			['pickpocket', { name: npc ? npc.name : stall.name, quantity }, true],
 			undefined,
 			data,
 			loot
