@@ -2,7 +2,7 @@ import { activity_type_enum, PlayerOwnedHouse } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageOptions, MessagePayload } from 'discord.js';
-import { KlasaClient, KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { CommentStream, SubmissionStream } from 'snoostorm';
