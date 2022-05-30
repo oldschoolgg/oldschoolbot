@@ -11,6 +11,9 @@ import { production } from '../../config';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { BitField, MAX_QP } from '../../lib/constants';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
+import { materialTypes } from '../../lib/invention';
+import { transactMaterialsFromUser } from '../../lib/invention/inventions';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
@@ -199,6 +202,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					name: 'spawn',
 					description: 'Spawn stuff.',
 					options: [
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'materials',
+							description: 'Spawns you 10,000 of every material.'
+						},
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'preset',
@@ -417,7 +425,13 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				reset?: {};
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
-				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
+				spawn?: {
+					preset?: string;
+					collectionlog?: boolean;
+					item?: string;
+					items?: string;
+					materials?: boolean;
+				};
 				nexhax?: {};
 				badnexgear?: {};
 				setmonsterkc?: { monster: string; kc: string };
@@ -482,6 +496,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						for (const [i, qty] of parseStringBank(items, undefined, true)) {
 							bankToGive.add(i.id, qty || 1);
 						}
+					}
+					if (options.spawn.materials) {
+						const loot = new MaterialBank();
+						for (const t of materialTypes) loot.add(t, 10_000);
+						await transactMaterialsFromUser({ userID: BigInt(user.id), add: loot });
+						return `Gave you ${loot}.`;
 					}
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });

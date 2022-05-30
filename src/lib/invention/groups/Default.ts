@@ -7,14 +7,8 @@ export const Default: DisassemblySourceGroup = {
 	name: 'Default',
 	items: [
 		{
-			item: i('Arcane sigil'),
-			lvl: 1,
-			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 3 }] }
-		},
-		{
 			item: i('Armadyl hilt'),
-			lvl: 1,
-			special: { always: false, parts: [{ type: 'armadyl', chance: 100, amount: 1 }] }
+			lvl: 1
 		},
 		{ item: i('Armadyl page 1'), lvl: 1 },
 		{ item: i('Armadyl page 2'), lvl: 1 },
@@ -23,8 +17,7 @@ export const Default: DisassemblySourceGroup = {
 		{ item: i('Ball of wool'), lvl: 1 },
 		{
 			item: i('Bandos hilt'),
-			lvl: 1,
-			special: { always: false, parts: [{ type: 'bandos', chance: 100, amount: 1 }] }
+			lvl: 1
 		},
 		{ item: i('Bandos page 1'), lvl: 1 },
 		{ item: i('Bandos page 2'), lvl: 1 },
@@ -36,11 +29,6 @@ export const Default: DisassemblySourceGroup = {
 		{ item: i('Bronze dart tip'), lvl: 1 },
 		{ item: i('Bronze feather'), lvl: 1 },
 		{ item: i('Bronze nails'), lvl: 1 },
-		{
-			item: i('Elysian sigil'),
-			lvl: 1,
-			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 3 }] }
-		},
 		{ item: i('Feather'), lvl: 1 },
 		{
 			item: i('Fury ornament kit'),
@@ -53,8 +41,7 @@ export const Default: DisassemblySourceGroup = {
 		{ item: i('Sapphire glacialis'), lvl: 1 },
 		{
 			item: i('Saradomin hilt'),
-			lvl: 1,
-			special: { always: false, parts: [{ type: 'saradomin', chance: 100, amount: 1 }] }
+			lvl: 1
 		},
 		{ item: i('Saradomin page 1'), lvl: 1 },
 		{ item: i('Saradomin page 2'), lvl: 1 },
@@ -66,17 +53,11 @@ export const Default: DisassemblySourceGroup = {
 		{ item: i('Snowy knight'), lvl: 1 },
 		{ item: i('Soda ash'), lvl: 1 },
 		{ item: i('Soft clay'), lvl: 1 },
-		{
-			item: i('Spectral sigil'),
-			lvl: 1,
-			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 3 }] }
-		},
 		{ item: i('Steel dart tip'), lvl: 1 },
 		{ item: i('Steel nails'), lvl: 1 },
 		{
 			item: i('Zamorak hilt'),
-			lvl: 1,
-			special: { always: false, parts: [{ type: 'zamorak', chance: 100, amount: 1 }] }
+			lvl: 1
 		},
 		{ item: i('Zamorak page 1'), lvl: 1 },
 		{ item: i('Zamorak page 2'), lvl: 1 },

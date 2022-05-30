@@ -18,6 +18,7 @@ export const Bones: DisassemblySourceGroup = {
 		{ item: i('Shaikahan bones'), lvl: 10 },
 		{ item: i('Babydragon bones'), lvl: 12 },
 		{ item: i('Wyrm bones'), lvl: 12 },
+		{ item: i('Hydra bones'), lvl: 18 },
 		{ item: i('Wyvern bones'), lvl: 20 },
 		{ item: i('Dragon bones'), lvl: 28 },
 		{ item: i('Fayrg bones'), lvl: 33 },

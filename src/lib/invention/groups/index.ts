@@ -39,9 +39,9 @@ import { Staff } from './Staff';
 import { Sword } from './Sword';
 import { Talisman } from './Talisman';
 import { ThrowingAxe } from './ThrowingAxe';
+import { TreasureTrails } from './TreasureTrails';
 import { UncutGems } from './UncutGems';
 import { UnstrungBows } from './UnstrungBows';
-import { Wand } from './Wand';
 import { Warhammer } from './Warhammer';
 
 export default [
@@ -82,7 +82,6 @@ export default [
 	Ores,
 	Talisman,
 	Scimitar,
-	Wand,
 	Clothing,
 	Sword,
 	MeleeArmour,
@@ -90,5 +89,6 @@ export default [
 	Ashes,
 	Magic,
 	Defender,
-	Shield
+	Shield,
+	TreasureTrails
 ];

@@ -31,28 +31,23 @@ export const Sword: DisassemblySourceGroup = {
 		{ item: i('Dragon sword'), lvl: 60 },
 		{
 			item: i('Armadyl godsword'),
-			lvl: 75,
-			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 12 }] }
+			lvl: 75
 		},
 		{
 			item: i('Bandos godsword'),
-			lvl: 75,
-			special: { always: true, parts: [{ type: 'bandos', chance: 100, amount: 12 }] }
+			lvl: 75
 		},
 		{
 			item: i('Saradomin godsword'),
-			lvl: 75,
-			special: { always: true, parts: [{ type: 'saradomin', chance: 100, amount: 12 }] }
+			lvl: 75
 		},
 		{
 			item: i('Saradomin sword'),
-			lvl: 75,
-			special: { always: true, parts: [{ type: 'saradomin', chance: 100, amount: 12 }] }
+			lvl: 75
 		},
 		{
 			item: i('Zamorak godsword'),
-			lvl: 75,
-			special: { always: true, parts: [{ type: 'zamorak', chance: 100, amount: 12 }] }
+			lvl: 75
 		}
 	],
 	parts: { sharp: 30, metallic: 30, base: 35, dextrous: 2 }

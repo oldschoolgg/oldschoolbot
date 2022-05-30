@@ -22,18 +22,22 @@ import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
 import { GearSetupType } from '../../../lib/gear';
+import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import {
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
 	boostIceBurst,
+	boostSuperiorCannon,
+	boostSuperiorCannonMulti,
 	cannonMultiConsumables,
 	cannonSingleConsumables,
 	CombatCannonItemBank,
 	CombatOptionsEnum,
 	iceBarrageConsumables,
 	iceBurstConsumables,
-	SlayerActivityConstants
+	SlayerActivityConstants,
+	superiorCannonSingleConsumables
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
@@ -299,7 +303,9 @@ export async function minionKillCommand(
 	let usingCannon = false;
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
-	const hasCannon = user.owns(CombatCannonItemBank);
+	const hasSuperiorCannon = user.owns('Superior dwarf multicannon');
+	const hasCannon = user.owns(CombatCannonItemBank) || hasSuperiorCannon;
+
 	if (!isOnTask && method && method !== 'none') {
 		return 'You can only burst/barrage/cannon while on task in BSO.';
 	}
@@ -319,7 +325,24 @@ export async function minionKillCommand(
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
 
-	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	const canAffordSuperiorCannonBoost = hasSuperiorCannon
+		? await canAffordInventionBoost(BigInt(user.id), InventionID.SuperiorDwarfMultiCannon, timeToFinish)
+		: false;
+
+	if (boostChoice === 'cannon' && canAffordSuperiorCannonBoost) {
+		const res = await inventionItemBoost({
+			userID: BigInt(user.id),
+			inventionID: InventionID.SuperiorDwarfMultiCannon,
+			duration: timeToFinish
+		});
+		if (res.success) {
+			usingCannon = true;
+			consumableCosts.push(superiorCannonSingleConsumables);
+			let boost = monster.cannonMulti ? boostSuperiorCannonMulti : boostSuperiorCannon;
+			timeToFinish = reduceNumByPercent(timeToFinish, boost);
+			boosts.push(`${boost}% for Superior Cannon (Removed ${res.materialCost})`);
+		}
+	} else if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBarrageConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 		boosts.push(`${boostIceBarrage}% for Ice Barrage`);

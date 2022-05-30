@@ -24,4 +24,13 @@ describe('materialLoot', () => {
 		expect(materialLoot.has(new MaterialBank().add('armadyl', 11))).toEqual(false);
 		expect(materialLoot.has(new MaterialBank().add('armadyl', 10).add('bandos', 6))).toEqual(false);
 	});
+	test('fits', () => {
+		const materialLoot = new MaterialBank();
+		materialLoot.add('armadyl', 10);
+		materialLoot.add('bandos', 5);
+
+		expect(materialLoot.fits(new MaterialBank().add('armadyl', 10))).toEqual(1);
+		expect(new MaterialBank().add('armadyl', 10).fits(materialLoot)).toEqual(0);
+		expect(materialLoot.fits(new MaterialBank().add('armadyl', 1))).toEqual(10);
+	});
 });

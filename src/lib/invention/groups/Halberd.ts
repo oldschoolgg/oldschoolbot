@@ -22,36 +22,16 @@ export const Halberd: DisassemblySourceGroup = {
 		{ item: i('Dragon halberd'), lvl: 60 },
 		{
 			item: i('Crystal halberd'),
-			lvl: 70,
-			special: {
-				always: true,
-				parts: [{ type: 'crystal', chance: 74, amount: 12 }]
-			}
+			lvl: 70
 		},
 		{ item: i('Guthix mjolnir'), lvl: 40 },
 		{
 			item: i('Saradomin mjolnir'),
-			lvl: 40,
-
-			special: {
-				always: true,
-				parts: [
-					{ type: 'base', chance: 100, amount: 8 },
-					{ type: 'saradomin', chance: 100, amount: 1 }
-				]
-			}
+			lvl: 40
 		},
 		{
 			item: i('Zamorak mjolnir'),
-			lvl: 40,
-
-			special: {
-				always: true,
-				parts: [
-					{ type: 'base', chance: 100, amount: 8 },
-					{ type: 'zamorak', chance: 100, amount: 1 }
-				]
-			}
+			lvl: 40
 		}
 	],
 	parts: { sharp: 30, protective: 5 }

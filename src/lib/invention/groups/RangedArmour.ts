@@ -105,26 +105,18 @@ export const RangedArmour: DisassemblySourceGroup = {
 			item: i('Zamorak mitre'),
 			lvl: 40
 		},
-		{ item: i('Archer helm'), lvl: 45 },
-		{ item: i('Ranger hat'), lvl: 50 },
-		{ item: i('Runner hat'), lvl: 50 },
-		{ item: i('Spined helm'), lvl: 50 },
 		{
 			item: i('Armadyl chestplate'),
-			lvl: 70,
-
-			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 8 }] }
+			lvl: 70
 		},
 		{
 			item: ['3rd age range coif', '3rd age range top', '3rd age range legs', '3rd age vambraces'].map(i),
 			lvl: 65,
-			flags: ['third_age']
+			flags: new Set(['third_age'])
 		},
 		{
 			item: i('Armadyl helmet'),
-			lvl: 70,
-
-			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 6 }] }
+			lvl: 70
 		},
 		{
 			item: i("Karil's coif"),
@@ -143,21 +135,16 @@ export const RangedArmour: DisassemblySourceGroup = {
 			item: i('Armadyl robe legs'),
 			lvl: 40
 		},
-		{ item: i('Penance skirt'), lvl: 50 },
-		{ item: i('Spined chaps'), lvl: 50 },
 		{
 			item: i('Armadyl chainskirt'),
-			lvl: 70,
-
-			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 8 }] }
+			lvl: 70
 		},
 		{ item: i("Morrigan's leather chaps"), lvl: 78 },
 		{ item: i('Hard leather shield'), lvl: 10 },
 		{
 			item: i('Elysian spirit shield'),
 			lvl: 75,
-
-			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 4 }] }
+			flags: new Set(['corporeal'])
 		}
 	],
 	parts: { protective: 2 }

@@ -6,18 +6,12 @@ const i = getOSItem;
 export const Staff: DisassemblySourceGroup = {
 	name: 'Staff',
 	items: [
-		{ item: i('Dramen staff'), lvl: 1 },
 		{ item: i('Magic staff'), lvl: 1 },
-		{ item: i('Skull sceptre'), lvl: 1 },
 		{ item: i('Staff'), lvl: 1 },
 		{ item: i('Staff of air'), lvl: 1 },
 		{ item: i('Staff of earth'), lvl: 1 },
 		{ item: i('Staff of fire'), lvl: 1 },
 		{ item: i('Staff of water'), lvl: 1 },
-		{
-			item: i('White magic staff'),
-			lvl: 25
-		},
 		{ item: i('Battlestaff'), lvl: 30 },
 		{ item: i('Air battlestaff'), lvl: 30 },
 		{ item: i('Earth battlestaff'), lvl: 30 },
@@ -33,8 +27,6 @@ export const Staff: DisassemblySourceGroup = {
 		{ item: i('Mystic mud staff'), lvl: 40 },
 		{ item: i('Mystic steam staff'), lvl: 40 },
 		{ item: i('Mystic water staff'), lvl: 40 },
-		{ item: i("Iban's staff"), lvl: 50 },
-		{ item: i("Slayer's staff"), lvl: 55 },
 		{
 			item: i('Armadyl crozier'),
 			lvl: 60
@@ -57,8 +49,8 @@ export const Staff: DisassemblySourceGroup = {
 			lvl: 60
 		},
 		{ item: i('Lunar staff'), lvl: 65 },
-		{ item: i('3rd age druidic staff'), lvl: 65, flags: ['third_age'] },
-		{ item: i("Ahrim's staff"), lvl: 65, flags: ['third_age'] },
+		{ item: i('3rd age druidic staff'), lvl: 65, flags: new Set(['third_age']) },
+		{ item: i("Ahrim's staff"), lvl: 65, flags: new Set(['barrows']) },
 		{ item: i('Staff of light'), lvl: 75 },
 		{ item: i("Zuriel's staff"), lvl: 78 }
 	],

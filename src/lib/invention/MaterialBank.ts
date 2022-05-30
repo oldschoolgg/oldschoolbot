@@ -13,11 +13,15 @@ export class MaterialBank {
 		return new MaterialBank({ ...this.bank });
 	}
 
-	private validate() {
+	private validate(): void {
 		for (const [key, value] of Object.entries(this.bank)) {
-			assert(materialTypes.includes(key as any));
+			if (!materialTypes.includes(key as any)) {
+				delete this.bank[key as keyof IMaterialBank];
+				return this.validate();
+			}
+			assert(materialTypes.includes(key as any), `${key} ${value}`);
 			assert(typeof value === 'number' && value > 0 && !isNaN(value));
-			assert(parseInt(value.toString()) === value);
+			assert(parseInt(value.toString()) === value, `${key} ${value} ${parseInt(value.toString())}`);
 		}
 	}
 
@@ -54,9 +58,9 @@ export class MaterialBank {
 		return this;
 	}
 
-	public add(material: MaterialType | MaterialBank, quantity = 1): MaterialBank {
+	public add(material: MaterialType | IMaterialBank | MaterialBank, quantity = 1): MaterialBank {
 		if (typeof material !== 'string') {
-			for (const [type, qty] of Object.entries(material.bank)) {
+			for (const [type, qty] of Object.entries(material instanceof MaterialBank ? material.bank : material)) {
 				this.addItem(type as MaterialType, qty);
 			}
 			return this;
@@ -96,9 +100,18 @@ export class MaterialBank {
 	}
 
 	public multiply(multiplier: number) {
+		if (!Number.isInteger(multiplier)) throw new Error('Tried to multiply material bank by non-integer');
 		for (const material of Object.keys(this.bank) as (keyof IMaterialBank)[]) {
 			this.bank[material]! *= multiplier;
 		}
 		return this;
+	}
+
+	public fits(bank: MaterialBank): number {
+		const items = bank.values();
+		const divisions = items
+			.map(({ type, quantity }) => Math.floor(this.amount(type) / quantity))
+			.sort((a, b) => a - b);
+		return divisions[0] ?? 0;
 	}
 }

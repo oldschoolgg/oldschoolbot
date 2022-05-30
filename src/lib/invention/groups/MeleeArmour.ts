@@ -38,14 +38,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Black platebody (t)'), lvl: 25 },
 		{ item: i('Initiate cuisse'), lvl: 25 },
 		{ item: i('Initiate hauberk'), lvl: 25 },
-		{
-			item: i('White chainbody'),
-			lvl: 25
-		},
-		{
-			item: i('White platebody'),
-			lvl: 25
-		},
 		{ item: i('Proselyte hauberk'), lvl: 30 },
 		{
 			item: i('Bandos robe top'),
@@ -71,9 +63,7 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Dragon platebody'), lvl: 60 },
 		{
 			item: i('Bandos chestplate'),
-			lvl: 70,
-
-			special: { always: true, parts: [{ type: 'bandos', chance: 100, amount: 8 }] }
+			lvl: 70
 		},
 		{
 			item: i("Dharok's platebody"),
@@ -158,7 +148,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Berserker helm'), lvl: 45 },
 		{ item: i('Warrior helm'), lvl: 45 },
 		{ item: i('Dwarven helmet'), lvl: 50 },
-		{ item: i('Fighter hat'), lvl: 50 },
 		{ item: i('Fire cape'), lvl: 50 },
 		{ item: i('Rock-shell helm'), lvl: 50 },
 		{ item: i('Rune full helm (g)'), lvl: 50 },
@@ -246,8 +235,7 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Dragon plateskirt'), lvl: 60 },
 		{
 			item: i('Bandos tassets'),
-			lvl: 70,
-			special: { always: true, parts: [{ type: 'bandos', chance: 100, amount: 8 }] }
+			lvl: 70
 		},
 		{
 			item: i("Dharok's platelegs"),
@@ -297,8 +285,7 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Dragon boots'), lvl: 60 },
 		{
 			item: i('Bandos boots'),
-			lvl: 70,
-			special: { always: true, parts: [{ type: 'bandos', chance: 100, amount: 4 }] }
+			lvl: 70
 		}
 	],
 	parts: { plated: 30, strong: 3, protective: 2 }

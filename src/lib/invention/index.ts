@@ -22,32 +22,21 @@ export const materialTypes = [
 	'metallic',
 	'organic',
 	'pious',
-	'corporeal',
 	'crystal',
 	'rocky',
 	// Special
-	'ethereal',
 	'corporeal',
-	'armadyl',
-	'bandos',
-	'saradomin',
-	'zamorak',
-	'third-age'
+	'third-age',
+	'mysterious',
+	'barrows',
+	'abyssal',
+	'dwarven',
+	'mysterious',
+	'treasured'
 ] as const;
 
 export type MaterialType = typeof materialTypes[number];
 
-// interface ItemSource {
-// name: MaterialType;
-// typeWeightings: SimpleTable<MaterialType>;
-// items: { item: Item; level: number }[];
-// }
-
-// interface ItemSource {
-// name: MaterialType;
-// typeWeightings: SimpleTable<MaterialType>;
-// items: { item: Item; level: number }[];
-// }
 export type IMaterialBank = {
 	[key in MaterialType]?: number;
 };
@@ -56,13 +45,15 @@ export interface SingleMaterial {
 	quantity: number;
 }
 
-export interface SpecialDisassemblyGroup {
-	type: MaterialType;
-	chance: number;
-	amount: number;
-}
-
-type DisassembleFlag = 'third_age' | 'dyed' | 'dwarven' | 'barrows' | 'abyssal';
+export type DisassembleFlag =
+	| 'third_age'
+	| 'dyed'
+	| 'dwarven'
+	| 'barrows'
+	| 'abyssal'
+	| 'corporeal'
+	| 'treasure_trails'
+	| 'mystery_box';
 
 interface IDisassembleFlag {
 	name: string;
@@ -89,16 +80,17 @@ const disassembleFlags: IDisassembleFlag[] = [
 ];
 console.log(disassembleFlags);
 
+export interface DisassemblyItem {
+	item: Item | Item[];
+	lvl: number;
+	junkChance?: number;
+	partQuantity?: number;
+	flags?: Set<DisassembleFlag>;
+}
+
 export interface DisassemblySourceGroup {
 	name: string;
-	items: {
-		item: Item | Item[];
-		lvl: number;
-		junkChance?: number;
-		partQuantity?: number;
-		special?: { always: boolean; parts: SpecialDisassemblyGroup[] };
-		flags?: DisassembleFlag[];
-	}[];
+	items: DisassemblyItem[];
 	/**
 	 * Percentage chances of what material you will get from this item.
 	 */

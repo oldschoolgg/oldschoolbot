@@ -96,5 +96,5 @@ export const Food: DisassemblySourceGroup = {
 		{ item: i('Raw rocktail'), lvl: 120 },
 		{ item: i('Rocktail'), lvl: 120 }
 	],
-	parts: { organic: 89 }
+	parts: { organic: 100 }
 };

@@ -1,13 +1,18 @@
 import { userMention } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { calcWhatPercent, percentChance, Time } from 'e';
+import { calcWhatPercent, percentChance, roll, Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import {
+	clientSettingsUpdate,
+	getSkillsOfMahojiUser,
+	mahojiClientSettingsFetch,
+	mahojiUsersSettingsFetch
+} from '../../mahoji/mahojiSettings';
 import { SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
 import { ActivityTaskOptions } from '../types/minions';
@@ -17,7 +22,7 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
 import { handleTripFinish } from '../util/handleTripFinish';
 import { minionName } from '../util/minionUtils';
-import { DisassemblySourceGroup, DisassemblySourceGroups, IMaterialBank } from '.';
+import { DisassembleFlag, DisassemblyItem, DisassemblySourceGroup, DisassemblySourceGroups, MaterialType } from '.';
 import { transactMaterialsFromUser } from './inventions';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
@@ -30,25 +35,7 @@ import MaterialLootTable from './MaterialLootTable';
  *
  */
 function calculateDisXP(quantity: number, item: DisassemblySourceGroup['items'][number]) {
-	// const prismaUser = await prisma.user.findFirst({
-	// 	where: {
-	// 		id: user.id
-	// 	},
-	// 	select: {
-	// 		disassembled_items_bank: true,
-	// 		materials_owned: true,
-	// 		materials_total: true
-	// 	}
-	// });
-	// if (!prismaUser) throw new Error("This isn't possible. Trust me.");
-	// const disassembledItemsBank = new Bank(prismaUser.disassembled_items_bank as ItemBank);
-
-	// const amountAlreadyDisassembled = disassembledItemsBank.amount(item.item.id);
-	// if (amountAlreadyDisassembled > 0) {
-	// 	// do something here
-	// }
-
-	let baseXPPerItem = item.lvl / 4.5;
+	let baseXPPerItem = item.lvl / 3.369;
 
 	return {
 		xp: Math.floor(quantity * baseXPPerItem)
@@ -85,6 +72,26 @@ export function findDisassemblyGroup(item: Item) {
 	return null;
 }
 
+const flagToMaterialMap: [DisassembleFlag, MaterialType][] = [
+	['corporeal', 'corporeal'],
+	['third_age', 'third-age'],
+	['barrows', 'barrows'],
+	['treasure_trails', 'treasured'],
+	['mystery_box', 'mysterious'],
+	['abyssal', 'abyssal']
+];
+
+function flagEffectsInDisassembly(item: DisassemblyItem, loot: MaterialBank) {
+	const tertiaryChance = item.lvl;
+	let success = roll(tertiaryChance);
+	if (!success) return;
+	for (const [flag, mat] of flagToMaterialMap) {
+		if (item.flags?.has(flag)) {
+			loot.add(mat);
+		}
+	}
+}
+
 export function handleDisassembly({
 	user,
 	inputQuantity,
@@ -108,17 +115,7 @@ export function handleDisassembly({
 	const materialLoot = new MaterialBank();
 	const table = new MaterialLootTable(group.parts);
 
-	const junkChance = 100 - calcWhatPercent(data.lvl, 120);
-
-	const specialBank: IMaterialBank = {};
-	if (data.special) {
-		for (let part of data.special.parts) {
-			specialBank[part.type] = part.chance;
-		}
-	}
-	const specialTable = new MaterialLootTable(specialBank);
-
-	const bank = new Bank(user.bank as ItemBank);
+	const bank = new Bank(user.bank as ItemBank).freeze();
 
 	// The time it takes to disassemble 1 of this item.
 	const timePer = Time.Second * 0.33;
@@ -131,20 +128,17 @@ export function handleDisassembly({
 
 	const duration = realQuantity * timePer;
 
+	// An item with lvl 1 has a ~99% chance of becoming junk.
+	// Cannot be lower than 5% junk chance
+	const junkChance = Math.max(5, 100 - calcWhatPercent(data.lvl, 120));
+
 	for (let i = 0; i < realQuantity; i++) {
-		let junk = false;
 		if (percentChance(junkChance)) {
 			materialLoot.add('junk');
-			junk = true;
 		} else {
 			materialLoot.add(table.roll(), data.partQuantity);
-		}
-		if (data.special) {
-			if (data.special.always || !junk) {
-				const specialResult = specialTable.roll();
-				const specialItem = data.special.parts.find(item => item.type === specialResult);
-				materialLoot.add(specialResult, specialItem!.amount);
-			}
+			// Modify the loot based off the flags the items have.
+			if (data.flags) flagEffectsInDisassembly(data, materialLoot);
 		}
 	}
 
@@ -264,8 +258,21 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 		item
 	});
 	if (result.error !== null) throw new Error('WHAT THE FUCK');
+	const cost = new Bank().add(item.id, quantity);
+	console.log(result.materials.bank);
+	console.log(cost.bank);
+	await transactMaterialsFromUser({
+		userID: BigInt(data.userID),
+		add: result.materials,
+		addToDisassembledItemsBank: cost
+	});
 
-	await transactMaterialsFromUser({ userID: BigInt(data.userID), add: result.materials });
+	const { items_disassembled_cost } = await mahojiClientSettingsFetch({
+		items_disassembled_cost: true
+	});
+	await clientSettingsUpdate({
+		items_disassembled_cost: new Bank(items_disassembled_cost as ItemBank).add(cost).bank
+	});
 
 	const xpStr = await klasaUser.addXP({
 		skillName: SkillsEnum.Invention,
@@ -276,15 +283,16 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 	handleTripFinish(
 		klasaUser,
 		data.channelID,
-		`${userMention(data.userID)}, ${minionName(mahojiUser)} finished disassembling ${data.quantity}x ${
-			item.name
-		}. You received these materials: ${result.materials}.
+		`${userMention(data.userID)}, ${minionName(
+			mahojiUser
+		)} finished disassembling ${cost}. You received these materials: ${result.materials}.
 ${xpStr}`,
 		[
 			'invention',
 			{
 				disassemble: {
-					name: item.name
+					name: item.name,
+					quantity
 				}
 			},
 			true
@@ -294,3 +302,17 @@ ${xpStr}`,
 		null
 	);
 }
+
+const duplicateItems = [];
+const foundItems: number[] = [];
+for (let group of DisassemblySourceGroups) {
+	for (let itm of group.items) {
+		const items: Item[] = Array.isArray(itm.item) ? itm.item : [itm.item];
+		if (items.some(i => foundItems.includes(i.id))) {
+			duplicateItems.push(items.map(i => ({ name: i.name, group: i.name })));
+		} else {
+			foundItems.push(...items.map(i => i.id));
+		}
+	}
+}
+if (duplicateItems.length) console.warn(`Found duplicate items ${uniqueArr(duplicateItems.flat().map(i => i.name))}`);

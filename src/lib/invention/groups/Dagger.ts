@@ -10,10 +10,6 @@ export const Dagger: DisassemblySourceGroup = {
 			item: i('Black dagger'),
 			lvl: 25
 		},
-		{
-			item: i('White dagger'),
-			lvl: 25
-		},
 		{ item: i('Bronze dagger'), lvl: 1 },
 		{ item: i('Iron dagger'), lvl: 10 },
 		{ item: i('Steel dagger'), lvl: 20 },
@@ -21,7 +17,7 @@ export const Dagger: DisassemblySourceGroup = {
 		{ item: i('Rune dagger'), lvl: 50 },
 		{ item: i('Dragon dagger'), lvl: 60 },
 		{ item: i('Toktz-xil-ek'), lvl: 60 },
-		{ item: i('Abyssal dagger'), lvl: 90, flags: ['abyssal'] }
+		{ item: i('Abyssal dagger'), lvl: 90, flags: new Set(['abyssal']) }
 	],
 	parts: { sharp: 30, base: 35 }
 };

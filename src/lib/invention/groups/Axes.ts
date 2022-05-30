@@ -20,14 +20,9 @@ export const Axes: DisassemblySourceGroup = {
 		{ item: i('Dragon pickaxe'), lvl: 60 },
 		{
 			item: i('Crystal pickaxe'),
-			lvl: 71,
-
-			special: {
-				always: true,
-				parts: [{ type: 'crystal', chance: 74, amount: 8 }]
-			}
+			lvl: 71
 		},
-		{ item: i('3rd age pickaxe'), lvl: 60, flags: ['third_age'] },
+		{ item: i('3rd age pickaxe'), lvl: 60, flags: new Set(['third_age']) },
 		// Axes
 		{ item: i('Bronze axe'), lvl: 1 },
 		{ item: i('Bronze battleaxe'), lvl: 1 },
@@ -51,10 +46,10 @@ export const Axes: DisassemblySourceGroup = {
 		{ item: i('Rune battleaxe'), lvl: 50 },
 		{ item: i('Gilded axe'), lvl: 61 },
 		{ item: i('Dragon axe'), lvl: 61 },
-		{ item: i('3rd age axe'), lvl: 60, flags: ['third_age'] },
+		{ item: i('3rd age axe'), lvl: 60, flags: new Set(['third_age']) },
 		{ item: i('Crystal axe'), lvl: 61 },
 		{ item: i('Dragon battleaxe'), lvl: 60 },
-		{ item: i('Dwarven battleaxe'), lvl: 80, flags: ['dwarven'] }
+		{ item: i('Dwarven battleaxe'), lvl: 80, flags: new Set(['dwarven']) }
 	],
 	parts: { heavy: 3, base: 35, sharp: 30 }
 };

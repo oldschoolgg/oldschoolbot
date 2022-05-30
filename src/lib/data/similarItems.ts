@@ -334,7 +334,10 @@ const source: [string, (string | number)[]][] = [
 	],
 	['Magic shortbow', ['Magic shortbow (i)']],
 	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
-	['Kodai wand', ['Virtus wand']]
+	['Kodai wand', ['Virtus wand']],
+	// Inventions
+	['Inferno adze', ['Superior inferno adze']],
+	['Gorajan bonecrusher', ['Superior bonecrusher']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

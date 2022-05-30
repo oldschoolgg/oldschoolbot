@@ -74,17 +74,11 @@ export const Shield: DisassemblySourceGroup = {
 		{
 			item: i('Blessed spirit shield'),
 			lvl: 70,
-
-			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 8 }] }
+			flags: new Set(['corporeal'])
 		},
 		{
 			item: i('Crystal shield'),
-			lvl: 70,
-
-			special: {
-				always: true,
-				parts: [{ type: 'crystal', chance: 74, amount: 8 }]
-			}
+			lvl: 70
 		},
 		{
 			item: i('Dragonfire shield'),
@@ -163,15 +157,11 @@ export const Shield: DisassemblySourceGroup = {
 		{
 			item: i('Blessed spirit shield'),
 			lvl: 70,
-			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 8 }] }
+			flags: new Set(['corporeal'])
 		},
 		{
 			item: i('Crystal shield'),
-			lvl: 70,
-			special: {
-				always: true,
-				parts: [{ type: 'crystal', chance: 74, amount: 8 }]
-			}
+			lvl: 70
 		},
 		{
 			item: i('Dragonfire shield'),
@@ -184,7 +174,7 @@ export const Shield: DisassemblySourceGroup = {
 		{ item: i('Rune kiteshield'), lvl: 50 },
 		{ item: i('Granite shield'), lvl: 55 },
 		{ item: i('Dragon kiteshield'), lvl: 60 },
-		{ item: i('3rd age kiteshield'), lvl: 65, flags: ['third_age'] }
+		{ item: i('3rd age kiteshield'), lvl: 65, flags: new Set(['third_age']) }
 	],
 	parts: { base: 30, strong: 3, protective: 32 }
 };

@@ -153,6 +153,9 @@ model ClientStorage {
   bb_cost                 Json   @default("{}") @db.Json
   bb_loot                 Json   @default("{}") @db.Json
 
+  items_disassembled_cost  Json @default("{}") @db.Json
+  invention_materials_cost Json @default("{}") @db.Json
+
   @@map("clientStorage")
 }
 
@@ -442,12 +445,11 @@ model User {
   eggs_delivered           Int      @default(0)
 
   // Invention
-  materials_total         Json   @default("{}") @db.Json
-  // Current materials owned
-  materials_owned         Json   @default("{}") @db.Json
-  disassembled_items_bank Json   @default("{}") @db.Json
-  skills_invention        BigInt @default(0) @map("skills.invention")
-  unlocked_blueprints     Int[]
+  skills_invention          BigInt @default(0) @map("skills.invention")
+  materials_owned           Json   @default("{}") @db.Json
+  disassembled_items_bank   Json   @default("{}") @db.Json
+  researched_materials_bank Json   @default("{}") @db.Json
+  unlocked_blueprints       Int[]
 
   @@map("users")
 }
@@ -760,7 +762,6 @@ enum activity_type_enum {
   Easter
   BaxtorianBathhouses
 
-  ItemInventing
   Disassembling
   Research
 }

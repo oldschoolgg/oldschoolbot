@@ -303,6 +303,22 @@ export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSele
 	return clientSettings as ClientStorage;
 }
 
+export async function clientSettingsUpdate(data: Prisma.ClientStorageUpdateArgs['data']) {
+	try {
+		await prisma.clientStorage.update({
+			data,
+			where: {
+				id: CLIENT_ID
+			}
+		});
+	} catch (err) {
+		logError(err, {
+			updated_data: JSON.stringify(data)
+		});
+		throw err;
+	}
+}
+
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
 }

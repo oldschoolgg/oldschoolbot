@@ -29,5 +29,5 @@ export const Runes: DisassemblySourceGroup = {
 		{ item: i('Wrath rune'), lvl: 95 },
 		{ item: i('Elder rune'), lvl: 99 }
 	],
-	parts: { powerful: 5, magic: 85 }
+	parts: { powerful: 5, magic: 85, base: 10 }
 };

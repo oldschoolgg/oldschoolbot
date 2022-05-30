@@ -2,8 +2,14 @@ import { bold, userMention } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { shuffleArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import {
+	getSkillsOfMahojiUser,
+	handleMahojiConfirmation,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch
+} from '../../mahoji/mahojiSettings';
 import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
 import { clamp, formatDuration, roll } from '../util';
@@ -15,6 +21,16 @@ import { IMaterialBank, MaterialType, materialTypes } from '.';
 import { Invention, Inventions, transactMaterialsFromUser } from './inventions';
 import { MaterialBank } from './MaterialBank';
 
+function inventionsCanUnlockFromResearch(user: User, researchedMaterial: MaterialType): Invention[] {
+	const inventionLevel = getSkillsOfMahojiUser(user, true).invention;
+	return Inventions.filter(i => {
+		if (!i.materialTypeBank.has(researchedMaterial)) return false;
+		if (user.unlocked_blueprints.includes(i.id)) return false;
+		if (i.inventionLevelNeeded > inventionLevel) return false;
+		return true;
+	});
+}
+
 export interface ResearchTaskOptions extends ActivityTaskOptions {
 	material: MaterialType;
 	quantity: number;
@@ -24,12 +40,14 @@ export async function researchCommand({
 	user,
 	material,
 	inputQuantity,
-	channelID
+	channelID,
+	interaction
 }: {
 	user: User;
 	material: MaterialType;
 	inputQuantity: number | undefined;
 	channelID: bigint;
+	interaction: SlashCommandInteraction;
 }): CommandResponse {
 	material = material.toLowerCase() as MaterialType;
 	if (!materialTypes.includes(material)) {
@@ -53,9 +71,18 @@ export async function researchCommand({
 		return `You don't have enough materials to do this trip. You are missing: ${missing}.`;
 	}
 
+	const inventionsCanUnlockFromThis = inventionsCanUnlockFromResearch(user, material);
+	if (inventionsCanUnlockFromThis.length === 0) {
+		await handleMahojiConfirmation(
+			interaction,
+			`You're trying to research a material that won't have a chance of unlocking any blueprints, because none are available or you don't have the required level. Are you sure you want to still research with '${material}'?`
+		);
+	}
+
 	await transactMaterialsFromUser({
 		userID: BigInt(user.id),
-		remove: cost
+		remove: cost,
+		addToResearchedMaterialsBank: true
 	});
 
 	await addSubTaskToActivityTask<ResearchTaskOptions>({
@@ -78,7 +105,7 @@ export async function researchTask(data: ResearchTaskOptions) {
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 	const inventionToTryUnlock: Invention | null =
-		shuffleArr(Inventions.filter(i => i.materialTypeBank.has(material)))[0] ?? null;
+		shuffleArr(inventionsCanUnlockFromResearch(mahojiUser, data.material))[0] ?? null;
 	let unlockedBlueprint: Invention | null = null;
 
 	for (let i = 0; i < quantity; i++) {
@@ -105,7 +132,7 @@ export async function researchTask(data: ResearchTaskOptions) {
 
 	const xpStr = await klasaUser.addXP({
 		skillName: SkillsEnum.Invention,
-		amount: quantity * 6.39,
+		amount: quantity * 56.39,
 		duration: data.duration,
 		multiplier: false
 	});

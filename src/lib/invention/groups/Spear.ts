@@ -22,8 +22,7 @@ export const Spear: DisassemblySourceGroup = {
 		},
 		{
 			item: i('Zamorakian spear'),
-			lvl: 75,
-			special: { always: true, parts: [{ type: 'zamorak', chance: 100, amount: 12 }] }
+			lvl: 75
 		},
 		{ item: i("Vesta's spear"), lvl: 78 }
 	],

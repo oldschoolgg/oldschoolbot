@@ -10,8 +10,9 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, multiplyBank, rand } from '../../lib/util';
+import { multiplyBank, rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
@@ -44,7 +45,7 @@ export default class extends Task {
 			}
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
-		const xpRes = await user.addXP({
+		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Mining,
 			amount: xpReceived,
 			duration
@@ -136,11 +137,9 @@ export default class extends Task {
 			loot.add(ore.id, quantity);
 		}
 
-		const hasKlik = user.equippedPet() === itemID('Klik');
+		const hasKlik = user.usingPet('Klik');
 		if (hasKlik) {
-			const smeltedOre = Smithing.Bars.find(
-				o => o.inputOres.bank[ore.id] && Object.keys(o.inputOres.bank).length === 1
-			);
+			const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
 			if (smeltedOre) {
 				loot.remove(ore.id, loot.amount(ore.id));
 				loot.add(smeltedOre.id, quantity);
@@ -156,6 +155,22 @@ export default class extends Task {
 			if (amountOfSpirits > 0) {
 				await user.removeItemsFromBank(new Bank().add(spiritOre.spirit.id, amountOfSpirits));
 				loot.add(oreID, amountOfSpirits);
+			}
+		}
+
+		const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
+		if (hasAdze) {
+			const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
+			if (smeltedOre) {
+				loot.remove(ore.id, loot.amount(ore.id));
+				loot.add(smeltedOre.id, quantity);
+
+				xpRes += await user.addXP({
+					skillName: SkillsEnum.Smithing,
+					amount: smeltedOre.xp * quantity,
+					duration
+				});
+				str += ' Your Superior inferno adze smelted all the ore you mined.';
 			}
 		}
 

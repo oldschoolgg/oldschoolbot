@@ -26,8 +26,8 @@ export const Warhammer: DisassemblySourceGroup = {
 		{ item: i('Steel warhammer'), lvl: 20 },
 		{ item: i('Mithril warhammer'), lvl: 30 },
 		{ item: i('Rune warhammer'), lvl: 50 },
-		{ item: i('Dwarven warhammer'), lvl: 99, flags: ['dwarven'] },
-		{ item: i('Dwarven warnana'), lvl: 99, flags: ['dwarven', 'dyed'] }
+		{ item: i('Dwarven warhammer'), lvl: 99, flags: new Set(['dwarven']) },
+		{ item: i('Dwarven warnana'), lvl: 99, flags: new Set(['dwarven', 'dyed']) }
 	],
 	parts: { strong: 2, heavy: 3, base: 35, smooth: 30 }
 };

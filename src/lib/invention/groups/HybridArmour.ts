@@ -14,12 +14,7 @@ export const HybridArmour: DisassemblySourceGroup = {
 		{ item: i('Obsidian platebody'), lvl: 60 },
 		{
 			item: i('Crystal body'),
-			lvl: 70,
-
-			special: {
-				always: true,
-				parts: [{ type: 'crystal', chance: 74, amount: 8 }]
-			}
+			lvl: 70
 		},
 		{ item: i('Dragonstone boots'), lvl: 50 },
 		{ item: i('Obsidian cape'), lvl: 35 },
@@ -36,22 +31,12 @@ export const HybridArmour: DisassemblySourceGroup = {
 		{ item: i('Berserker ring'), lvl: 45 },
 		{
 			item: i('Crystal helm'),
-			lvl: 70,
-
-			special: {
-				always: true,
-				parts: [{ type: 'crystal', chance: 74, amount: 6 }]
-			}
+			lvl: 70
 		},
 		{ item: i('Obsidian platelegs'), lvl: 60 },
 		{
 			item: i('Crystal legs'),
-			lvl: 70,
-
-			special: {
-				always: true,
-				parts: [{ type: 'crystal', chance: 74, amount: 8 }]
-			}
+			lvl: 70
 		}
 	],
 	parts: { powerful: 3, protective: 3 }

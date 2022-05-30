@@ -49,7 +49,7 @@ export const MagicArmour: DisassemblySourceGroup = {
 				i
 			),
 			lvl: 65,
-			flags: ['third_age']
+			flags: new Set(['third_age'])
 		},
 		{ item: i("Ahrim's robeskirt"), lvl: 70 },
 		{ item: i("Ahrim's robetop"), lvl: 70 },
@@ -62,14 +62,12 @@ export const MagicArmour: DisassemblySourceGroup = {
 		{
 			item: i('Arcane spirit shield'),
 			lvl: 75,
-
-			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 4 }] }
+			flags: new Set(['corporeal'])
 		},
 		{
 			item: i('Spectral spirit shield'),
 			lvl: 75,
-
-			special: { always: true, parts: [{ type: 'corporeal', chance: 100, amount: 4 }] }
+			flags: new Set(['corporeal'])
 		},
 		{
 			item: ['Ancestral hat', 'Ancestral robe top', 'Ancestral robe bottom'].map(i),

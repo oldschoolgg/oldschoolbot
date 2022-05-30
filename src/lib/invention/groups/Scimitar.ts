@@ -10,10 +10,6 @@ export const Scimitar: DisassemblySourceGroup = {
 			item: i('Black scimitar'),
 			lvl: 25
 		},
-		{
-			item: i('White scimitar'),
-			lvl: 25
-		},
 		{ item: i('Brine sabre'), lvl: 40 },
 		{ item: i('Bronze scimitar'), lvl: 1 },
 		{ item: i('Iron scimitar'), lvl: 10 },

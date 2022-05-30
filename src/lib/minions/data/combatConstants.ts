@@ -5,6 +5,8 @@ import { Consumable } from '../types';
 // Configure boost percents
 export const boostCannon = 30;
 export const boostCannonMulti = 55;
+export const boostSuperiorCannon = 40;
+export const boostSuperiorCannonMulti = 70;
 export const boostIceBurst = 35;
 export const boostIceBarrage = 55;
 // What % of the kills should be cannon XP
@@ -77,4 +79,9 @@ export const iceBurstConsumables: Consumable = {
 	itemCost: new Bank().add('Water rune', 4).add('Chaos rune', 4).add('Death rune', 2),
 	qtyPerMinute: 16,
 	isRuneCost: true
+};
+
+export const superiorCannonSingleConsumables: Consumable = {
+	itemCost: new Bank().add('Cannonball', 1),
+	qtyPerMinute: 20
 };

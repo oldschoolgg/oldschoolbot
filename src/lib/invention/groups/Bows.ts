@@ -15,11 +15,7 @@ export const Bows: DisassemblySourceGroup = {
 		{ item: i('Dark bow'), lvl: 70 },
 		{
 			item: i('Crystal bow'),
-			lvl: 70,
-			special: {
-				always: true,
-				parts: [{ type: 'crystal', chance: 74, amount: 12 }]
-			}
+			lvl: 70
 		},
 		{ item: i('Twisted bow'), lvl: 75 },
 		{
@@ -31,7 +27,7 @@ export const Bows: DisassemblySourceGroup = {
 				'Twisted bow (3a)'
 			].map(i),
 			lvl: 75,
-			flags: ['dyed']
+			flags: new Set(['dyed'])
 		},
 		{ item: i('Zaryte bow'), lvl: 75 },
 		{
@@ -43,7 +39,7 @@ export const Bows: DisassemblySourceGroup = {
 				'Zaryte bow (3a)'
 			].map(i),
 			lvl: 75,
-			flags: ['dyed']
+			flags: new Set(['dyed'])
 		},
 		{
 			item: i('Hellfire bow'),
@@ -52,7 +48,7 @@ export const Bows: DisassemblySourceGroup = {
 		{
 			item: i('Hellfire bownana'),
 			lvl: 110,
-			flags: ['dyed']
+			flags: new Set(['dyed'])
 		},
 		// Crossbows
 		{ item: i('Bronze crossbow'), lvl: 1 },
@@ -68,8 +64,7 @@ export const Bows: DisassemblySourceGroup = {
 		},
 		{
 			item: i('Armadyl crossbow'),
-			lvl: 75,
-			special: { always: true, parts: [{ type: 'armadyl', chance: 100, amount: 8 }] }
+			lvl: 75
 		},
 		{ item: i('Elder bow'), lvl: 70 }
 	],
