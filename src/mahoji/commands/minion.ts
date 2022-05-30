@@ -1,7 +1,10 @@
+import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { PerkTier } from '../../lib/constants';
 import { diaries } from '../../lib/diaries';
 import getOSItem from '../../lib/util/getOSItem';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
 import BankImageTask from '../../tasks/bankImage';
 import {
@@ -15,7 +18,13 @@ import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { MahojiUserOption, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	MahojiUserOption,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch,
+	patronMsg
+} from '../mahojiSettings';
 
 export const minionCommand: OSBMahojiCommand = {
 	name: 'minion',
@@ -139,6 +148,19 @@ export const minionCommand: OSBMahojiCommand = {
 					description: 'Optional second item to use the first one on.'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'set_icon',
+			description: 'Set the icon for your minion.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'icon',
+					description: 'The icon you want to pick.',
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
@@ -153,9 +175,11 @@ export const minionCommand: OSBMahojiCommand = {
 		lamp?: { item: string; quantity?: number; skill: string };
 		cancel?: {};
 		use?: { item: string; secondary_item?: string };
+		set_icon?: { icon: string };
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+		const perkTier = getUsersPerkTier(user);
 
 		if (options.stats) {
 			return { embeds: [await minionStatsEmbed(user)] };
@@ -183,6 +207,19 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.cancel) return cancelTaskCommand(mahojiUser, interaction);
 
 		if (options.use) return useCommand(mahojiUser, user, options.use.item, options.use.secondary_item);
+		if (options.set_icon) {
+			if (perkTier < PerkTier.Four) return patronMsg(PerkTier.Four);
+
+			const res = FormattedCustomEmoji.exec(options.set_icon.icon);
+			if (!res || !res[0]) return "That's not a valid emoji.";
+
+			await handleMahojiConfirmation(interaction, 'Icons cannot be inappropriate or NSFW. Do you understand?');
+			await mahojiUserSettingsUpdate(user.id, {
+				minion_icon: res[0]
+			});
+
+			return `Changed your minion icon to ${res}.`;
+		}
 
 		return 'Unknown command';
 	}
