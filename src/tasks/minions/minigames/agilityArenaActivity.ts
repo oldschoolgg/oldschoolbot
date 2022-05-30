@@ -2,7 +2,6 @@ import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { determineXPFromTickets } from '../../../commands/Minion/agilityarena';
 import { Emoji, Events } from '../../../lib/constants';
 import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -10,6 +9,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -89,6 +89,14 @@ export default class extends Task {
 			collectionLog: true
 		});
 
-		handleTripFinish(user, channelID, str, ['agilityarena', [], true], undefined, data, null);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { agility_arena: { start: {} } }, true],
+			undefined,
+			data,
+			null
+		);
 	}
 }

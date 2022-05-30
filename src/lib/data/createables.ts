@@ -8,6 +8,7 @@ import { ItemBank, Skills } from '../types';
 import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
+import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { BsoCreateables } from './creatables/bsoItems';
 import { capeCreatables } from './creatables/capes';
@@ -1794,7 +1795,8 @@ const Createables: Createable[] = [
 	...gracefulOutfitCreatables,
 	...tobCreatables,
 	...lmsCreatables,
-	...nexCreatables
+	...nexCreatables,
+	...amrodCreatables
 ];
 
 export default Createables;
