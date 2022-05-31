@@ -35,10 +35,6 @@ export default class extends BotCommand {
 			return msg.channel.send('No valid items that you own were given.');
 		}
 
-		await msg.confirm(
-			`${msg.author}, are you sure you want to drop ${bank}? This is irreversible, and you will lose the items permanently.`
-		);
-
 		const favs = msg.author.settings.get(UserSettings.FavoriteItems);
 		let itemsToDoubleCheck = [
 			...favs,
@@ -59,6 +55,10 @@ export default class extends BotCommand {
 				}, some of the items you are dropping look valuable, are you *really* sure you want to drop them? **${doubleCheckItems
 					.map(itemNameFromID)
 					.join(', ')}**`
+			);
+		} else {
+			await msg.confirm(
+				`${msg.author}, are you sure you want to drop ${bank}? This is irreversible, and you will lose the items permanently.`
 			);
 		}
 
