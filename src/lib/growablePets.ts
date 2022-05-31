@@ -53,16 +53,12 @@ for (let i = 0; i < kittens.length; i++) {
 	});
 }
 
-export async function handleGrowablePetGrowth(
-	user: KlasaUser,
-	data: ActivityTaskOptions,
-	message: string
-): Promise<string> {
+export async function handleGrowablePetGrowth(user: KlasaUser, data: ActivityTaskOptions, messages: string[]) {
 	const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
-	if (!equippedPet) return message;
+	if (!equippedPet) return;
 	const equippedGrowablePet = growablePets.find(pet => pet.stages.includes(equippedPet));
-	if (!equippedGrowablePet) return message;
-	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return message;
+	if (!equippedGrowablePet) return;
+	if (equippedGrowablePet.stages[equippedGrowablePet.stages.length - 1] === equippedPet) return;
 	const minutesInThisTrip = data.duration / Time.Minute;
 	if (randFloat(0, equippedGrowablePet.growthRate) <= minutesInThisTrip) {
 		let nextPet = equippedGrowablePet.stages[equippedGrowablePet.stages.indexOf(equippedPet) + 1];
@@ -80,7 +76,6 @@ export async function handleGrowablePetGrowth(
 		}
 		await user.settings.update(UserSettings.Minion.EquippedPet, nextPet);
 		await user.addItemsToCollectionLog({ items: new Bank().add(nextPet) });
-		return `${message}\n\nYour ${itemNameFromID(equippedPet)} grew into a ${itemNameFromID(nextPet)}!`;
+		messages.push(`Your ${itemNameFromID(equippedPet)} grew into a ${itemNameFromID(nextPet)}!`);
 	}
-	return message;
 }

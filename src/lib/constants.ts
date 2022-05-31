@@ -408,7 +408,8 @@ export const enum PatronTierID {
 	Two = '4608226',
 	Three = '4720356',
 	Four = '5262065',
-	Five = '5262216'
+	Five = '5262216',
+	Six = '8091554'
 }
 
 export const enum BadgesEnum {
