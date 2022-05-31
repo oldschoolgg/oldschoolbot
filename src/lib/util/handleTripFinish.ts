@@ -1,10 +1,10 @@
 import { activity_type_enum } from '@prisma/client';
-import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
+import { Message, MessageAttachment, MessageCollector } from 'discord.js';
 import { Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
+import { COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
@@ -12,7 +12,7 @@ import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, generateContinuationChar, roll, stringMatches, updateGPTrackSetting } from '../util';
+import { channelIsSendable, generateContinuationChar, stringMatches, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { logError } from './logError';
 import { sendToChannelID } from './webhook';
@@ -24,6 +24,46 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'MonsterKilling',
 	'Raids',
 	'ClueCompletion'
+];
+
+const tripFinishEffects: {
+	name: string;
+	fn: (options: { data: ActivityTaskOptions; user: KlasaUser; loot: Bank | null; messages: string[] }) => unknown;
+}[] = [
+	{
+		name: 'Track GP Analytics',
+		fn: ({ data, loot }) => {
+			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
+				const GP = loot.amount(COINS_ID);
+				if (typeof GP === 'number') {
+					updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+				}
+			}
+		}
+	},
+	{
+		name: 'Implings',
+		fn: async ({ data, messages, user }) => {
+			const imp = handlePassiveImplings(user, data);
+			if (imp && imp.bank.length > 0) {
+				const many = imp.bank.length > 1;
+				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
+				await user.addItemsToBank({ items: imp.bank, collectionLog: true });
+			}
+		}
+	},
+	{
+		name: 'Growable Pets',
+		fn: async ({ data, messages, user }) => {
+			await handleGrowablePetGrowth(user, data, messages);
+		}
+	},
+	{
+		name: 'Random Events',
+		fn: async ({ data, messages, user }) => {
+			await triggerRandomEvent(user, data.duration, messages);
+		}
+	}
 ];
 
 export async function handleTripFinish(
@@ -40,70 +80,29 @@ export async function handleTripFinish(
 ) {
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar = generateContinuationChar(user);
+	const messages: string[] = [];
 	if (onContinue) {
-		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
+		messages.push(`Say \`${continuationChar}\` to repeat this trip`);
 	}
-
-	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-		const GP = loot.amount(COINS_ID);
-		if (typeof GP === 'number') {
-			updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
-		}
-	}
+	await Promise.all(tripFinishEffects.map(effect => effect.fn({ data, user, loot, messages })));
 
 	const clueReceived = loot ? clueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
 	if (clueReceived) {
-		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
 		if (perkTier > PerkTier.One) {
-			message += ` Say \`c\` if you want to complete this ${clueReceived.name} clue now.`;
+			messages.push(`${Emoji.Casket} **Got a ${clueReceived.name} clue**, say \`c\` to complete it now`);
 		} else {
-			message += 'You can get your minion to complete them using `+minion clue easy/medium/etc`';
+			messages.push(
+				`${Emoji.Casket} **Got a ${clueReceived.name} clue**, complete it using \`+minion clue ${clueReceived.name}\``
+			);
 		}
 	}
 
-	if (loot?.has('Unsired')) {
-		message += '\n**You received an unsired!** You can offer it for loot using `+offer unsired`.';
+	if (messages.length > 0) {
+		message += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	const imp = handlePassiveImplings(user, data);
-	if (imp) {
-		if (imp.bank.length > 0) {
-			const many = imp.bank.length > 1;
-			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${
-				imp.bank
-			}.`;
-			await user.addItemsToBank({ items: imp.bank, collectionLog: true });
-		}
-
-		if (imp.missed.length > 0) {
-			message += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed}.`;
-		}
-	}
-
-	const attachable = attachment
-		? attachment instanceof MessageAttachment
-			? attachment
-			: new MessageAttachment(attachment)
-		: undefined;
-
-	const channel = globalClient.channels.cache.get(channelID);
-
-	message = await handleGrowablePetGrowth(user, data, message);
-
-	sendToChannelID(channelID, { content: message, image: attachable }).then(() => {
-		const minutes = Math.min(30, data.duration / Time.Minute);
-		const randomEventChance = 60 - minutes;
-		if (
-			channel &&
-			!user.bitfield.includes(BitField.DisabledRandomEvents) &&
-			roll(randomEventChance) &&
-			channel instanceof TextChannel
-		) {
-			triggerRandomEvent(channel, user);
-		}
-	});
-
+	sendToChannelID(channelID, { content: message, image: attachment });
 	if (!onContinue && !clueReceived) return;
 
 	const existingCollector = collectors.get(user.id);
@@ -129,6 +128,7 @@ export async function handleTripFinish(
 		lastTripCache.set(user.id, { data, continue: onContinueFn });
 	}
 
+	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
 	const collector = new MessageCollector(channel, {
 		filter: (mes: Message) =>
