@@ -1,27 +1,56 @@
-import { DMChannel, MessageButton, MessageOptions, NewsChannel, TextChannel, ThreadChannel } from 'discord.js';
+import {
+	DMChannel,
+	MessageButton,
+	MessageButtonStyle,
+	MessageComponentInteraction,
+	MessageOptions,
+	NewsChannel,
+	TextChannel,
+	ThreadChannel
+} from 'discord.js';
 import { chunk, noOp, Time } from 'e';
+import { KlasaMessage } from 'klasa';
 import murmurhash from 'murmurhash';
 
 import { ClientSettings } from './settings/types/ClientSettings';
 
+type DynamicButtonFn = (opts: { message: KlasaMessage; interaction: MessageComponentInteraction }) => unknown;
+
 export class DynamicButtons {
-	buttons: { name: string; id: string; fn: () => {}; emoji: string | undefined; cantBeBusy: boolean }[] = [];
+	buttons: {
+		name: string;
+		id: string;
+		fn: DynamicButtonFn;
+		emoji: string | undefined;
+		cantBeBusy: boolean;
+		style?: MessageButtonStyle;
+	}[] = [];
+
 	channel: TextChannel;
 	timer: number | undefined;
 	usersWhoCanInteract: string[];
+	message: KlasaMessage | null = null;
+	contentAfterFinish: string | null = null;
+	deleteAfterConfirm: boolean | undefined;
 
 	constructor({
 		channel,
 		timer,
-		usersWhoCanInteract
+		usersWhoCanInteract,
+		contentAfterFinish,
+		deleteAfterConfirm
 	}: {
 		channel: TextChannel | DMChannel | NewsChannel | ThreadChannel;
 		timer?: number;
 		usersWhoCanInteract: string[];
+		contentAfterFinish?: string | null;
+		deleteAfterConfirm?: boolean;
 	}) {
 		this.channel = channel as TextChannel;
 		this.timer = timer;
 		this.usersWhoCanInteract = usersWhoCanInteract;
+		this.contentAfterFinish = contentAfterFinish ?? null;
+		this.deleteAfterConfirm = deleteAfterConfirm;
 	}
 
 	async render({ isBusy, messageOptions }: { isBusy: boolean; messageOptions: MessageOptions }) {
@@ -30,10 +59,12 @@ export class DynamicButtons {
 				if (isBusy && b.cantBeBusy) return false;
 				return true;
 			})
-			.map(b => new MessageButton({ label: b.name, customID: b.id, style: 'SECONDARY', emoji: b.emoji }));
+			.map(
+				b => new MessageButton({ label: b.name, customID: b.id, style: b.style ?? 'SECONDARY', emoji: b.emoji })
+			);
 		const chunkedButtons = chunk(buttons, 5);
-		const message = await this.channel.send({ ...messageOptions, components: chunkedButtons });
-		const collectedInteraction = await message
+		this.message = await this.channel.send({ ...messageOptions, components: chunkedButtons });
+		const collectedInteraction = await this.message
 			.awaitMessageComponentInteraction({
 				filter: i => {
 					if (globalClient.settings.get(ClientSettings.UserBlacklist).includes(i.user.id)) return false;
@@ -46,7 +77,11 @@ export class DynamicButtons {
 				time: this.timer ?? Time.Second * 20
 			})
 			.catch(noOp);
-		await message.edit({ components: [] });
+		if (this.deleteAfterConfirm === true) {
+			await this.message.delete().catch(noOp);
+		} else {
+			await this.message.edit({ components: [], content: this.contentAfterFinish ?? undefined });
+		}
 
 		if (collectedInteraction) {
 			collectedInteraction.deferUpdate();
@@ -58,20 +93,36 @@ export class DynamicButtons {
 							ephemeral: true
 						});
 					}
-					return button.fn();
+					await button.fn({ message: this.message!, interaction: collectedInteraction });
+					return collectedInteraction;
 				}
 			}
 		}
+
+		return collectedInteraction;
 	}
 
-	add({ name, fn, emoji, cantBeBusy }: { name: string; fn: () => {}; emoji?: string; cantBeBusy?: boolean }) {
+	add({
+		name,
+		fn,
+		emoji,
+		cantBeBusy,
+		style
+	}: {
+		name: string;
+		fn: DynamicButtonFn;
+		emoji?: string;
+		cantBeBusy?: boolean;
+		style?: MessageButtonStyle;
+	}) {
 		const id = murmurhash(name).toString();
 		this.buttons.push({
 			name,
 			id,
 			fn,
 			emoji,
-			cantBeBusy: cantBeBusy ?? false
+			cantBeBusy: cantBeBusy ?? false,
+			style
 		});
 	}
 }
