@@ -326,10 +326,10 @@ export async function minionKillCommand(
 	}
 
 	const canAffordSuperiorCannonBoost = hasSuperiorCannon
-		? await canAffordInventionBoost(BigInt(user.id), InventionID.SuperiorDwarfMultiCannon, timeToFinish)
+		? (await canAffordInventionBoost(BigInt(user.id), InventionID.SuperiorDwarfMultiCannon, timeToFinish)).canAfford
 		: false;
 
-	if (boostChoice === 'cannon' && canAffordSuperiorCannonBoost) {
+	if (boostChoice === 'cannon' && canAffordSuperiorCannonBoost && (monster.canCannon || monster.cannonMulti)) {
 		const res = await inventionItemBoost({
 			userID: BigInt(user.id),
 			inventionID: InventionID.SuperiorDwarfMultiCannon,

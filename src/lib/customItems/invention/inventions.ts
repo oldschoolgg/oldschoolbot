@@ -21,3 +21,4 @@ addInvention(63_302, 'Superior dwarf multicannon');
 addInvention(63_303, 'Superior dwarf multicannon (broken)');
 addInvention(63_304, 'Superior inferno adze', 'Dragon pickaxe');
 addInvention(63_305, 'Superior inferno adze (broken)');
+addInvention(63_306, 'Silverhawk boots', 'Dragon boots');

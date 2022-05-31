@@ -29,7 +29,8 @@ type InventionFlag = typeof InventionFlags[number];
 export enum InventionID {
 	SuperiorBonecrusher = 1,
 	SuperiorDwarfMultiCannon = 2,
-	SuperiorInfernoAdze = 3
+	SuperiorInfernoAdze = 3,
+	SilverHawkBoots = 4
 }
 
 export type Invention = Readonly<{
@@ -105,6 +106,22 @@ export const Inventions: readonly Invention[] = [
 		itemCost: new Bank().add('Inferno adze').add('Infernal core').add('Dragon pickaxe').freeze(),
 		inventionLevelNeeded: 70,
 		usageCostMultiplier: 0
+	},
+	{
+		id: InventionID.SilverHawkBoots,
+		name: 'Silverhawk boots',
+		description: 'Boosts agility training, and gives idle agility XP.',
+		item: getOSItem('Silverhawk boots'),
+		brokenVersion: getOSItem('Coal'),
+		materialTypeBank: new MaterialBank({
+			swift: 50,
+			protective: 25,
+			dextrous: 25
+		}),
+		flags: ['equipped'],
+		itemCost: new Bank().add('Graceful boots').freeze(),
+		inventionLevelNeeded: 70,
+		usageCostMultiplier: 0.5
 	}
 ] as const;
 
@@ -271,8 +288,15 @@ type InventionItemBoostResult =
 			success: false;
 	  };
 
-export async function canAffordInventionBoost(userID: bigint, inventionID: InventionID, duration: number) {
-	const mUser = await mahojiUsersSettingsFetch(userID, { materials_owned: true });
+export async function canAffordInventionBoost(
+	userID: bigint | string | User,
+	inventionID: InventionID,
+	duration: number
+) {
+	const mUser =
+		typeof userID == 'bigint' || typeof userID === 'string'
+			? await mahojiUsersSettingsFetch(userID, { materials_owned: true })
+			: userID;
 	const invention = Inventions.find(i => i.id === inventionID)!;
 	if (invention.usageCostMultiplier === null) {
 		throw new Error('Tried to calculate cost of invention that has no cost.');
@@ -296,11 +320,11 @@ export async function inventionItemBoost({
 	inventionID,
 	duration
 }: {
-	userID: string | bigint;
+	userID: string | bigint | User;
 	inventionID: InventionID;
 	duration: number;
 }): Promise<InventionItemBoostResult> {
-	const { materialCost, canAfford } = await canAffordInventionBoost(BigInt(userID), inventionID, duration);
+	const { materialCost, canAfford, mUser } = await canAffordInventionBoost(userID, inventionID, duration);
 
 	if (!canAfford) {
 		return {
@@ -309,7 +333,7 @@ export async function inventionItemBoost({
 	}
 	try {
 		await transactMaterialsFromUser({
-			userID: BigInt(userID),
+			userID: BigInt(mUser.id),
 			remove: materialCost,
 			addToInventionCostBank: true
 		});

@@ -5,16 +5,19 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
+import { canAffordInventionBoost, InventionID, inventionItemBoost, silverHawkBoost } from '../invention/inventions';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ClientSettings } from '../settings/types/ClientSettings';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
+import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
 import {
 	channelIsSendable,
@@ -22,11 +25,13 @@ import {
 	itemID,
 	roll,
 	stringMatches,
+	toKMB,
 	updateBankSetting,
 	updateGPTrackSetting
 } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { logError } from './logError';
+import { userHasItemsEquippedAnywhere } from './minionUtils';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -106,7 +111,7 @@ const tripFinishEffects: {
 		name: 'Custom Pet Perk',
 		fn: async ({ data, messages, user }) => {
 			const pet = user.equippedPet();
-			const minutes = data.duration / Time.Minute;
+			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
 			let bonusLoot = new Bank();
 
@@ -229,6 +234,35 @@ const tripFinishEffects: {
 				messages.push(
 					"Your Voidling didn't alch anything because you either don't have any nature runes or fire runes."
 				);
+			}
+		}
+	},
+	{
+		name: 'Invention Effects',
+		fn: async ({ data, messages, user }) => {
+			const mahojiUser = await mahojiUsersSettingsFetch(BigInt(user.id), { materials_owned: true });
+			if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots')) {
+				const res = await canAffordInventionBoost(mahojiUser, InventionID.SilverHawkBoots, data.duration);
+				if (res.canAfford) {
+					const costRes = await inventionItemBoost({
+						userID: user.id,
+						inventionID: InventionID.SilverHawkBoots,
+						duration: data.duration
+					});
+					if (costRes.success) {
+						const xpToReceive = silverHawkBoost.passiveXPCalc(
+							data.duration,
+							user.skillLevel(SkillsEnum.Invention)
+						);
+						await user.addXP({
+							skillName: SkillsEnum.Invention,
+							amount: xpToReceive,
+							multiplier: false,
+							duration: data.duration
+						});
+						messages.push(`Received ${toKMB(xpToReceive)} Agility XP from Silverhawk boots`);
+					}
+				}
 			}
 		}
 	}
