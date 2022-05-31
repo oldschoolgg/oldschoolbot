@@ -1,5 +1,5 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { chunk, randArrItem, Time } from 'e';
+import { chunk, randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
@@ -71,15 +71,12 @@ const subCommands = [
 	'info',
 	'equippet',
 	'unequippet',
-	'autofarm',
 	'activities',
-	'af',
 	'ep',
 	'uep',
 	'lapcounts',
 	'cancel',
 	'train',
-	'unequipall',
 	'tempcl',
 	'blowpipe',
 	'bp',
@@ -108,7 +105,7 @@ export default class MinionCommand extends BotCommand {
 			getFarmingInfo(msg.author.id)
 		]);
 
-		const dynamicButtons = new DynamicButtons();
+		const dynamicButtons = new DynamicButtons({ channel: msg.channel, usersWhoCanInteract: [msg.author.id] });
 
 		dynamicButtons.add({
 			name: 'Auto Farm',
@@ -233,43 +230,10 @@ export default class MinionCommand extends BotCommand {
 			});
 		}
 
-		const sentMessage = await msg.channel.send({
-			content: `${msg.author.minionStatus}`,
-			components: dynamicButtons.render({ isBusy: msg.author.minionIsBusy })
+		dynamicButtons.render({
+			isBusy: msg.author.minionIsBusy,
+			messageOptions: { content: msg.author.minionStatus }
 		});
-		if (dynamicButtons.buttons.length > 0) {
-			const handleButtons = async () => {
-				try {
-					const selection = await sentMessage.awaitMessageComponentInteraction({
-						filter: i => {
-							if (i.user.id !== msg.author.id) {
-								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-								return false;
-							}
-							return true;
-						},
-						time: Time.Second * 15
-					});
-					await sentMessage.edit({ components: [] });
-					selection.deferUpdate();
-
-					for (const button of dynamicButtons.buttons) {
-						if (selection.customID === button.id) {
-							if (selection.user.minionIsBusy && button.cantBeBusy) {
-								return selection.reply({
-									content: `Your action couldn't be performed, because your minion is busy: ${msg.author.minionStatus}`,
-									ephemeral: true
-								});
-							}
-							return button.fn();
-						}
-					}
-				} catch {
-					await sentMessage.edit({ components: [] });
-				}
-			};
-			handleButtons();
-		}
 	}
 
 	async train(msg: KlasaMessage, [input]: [string | undefined]) {
