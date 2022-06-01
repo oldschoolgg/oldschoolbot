@@ -31,7 +31,17 @@ export default class extends Task {
 					const user = await globalClient.fetchUser(row.id);
 					if (user.settings.get(UserSettings.LastDailyTimestamp) === -1) continue;
 
-					await user.settings.update(UserSettings.LastDailyTimestamp, -1);
+					try {
+						await user.settings.update(UserSettings.LastDailyTimestamp, -1);
+					} catch (e) {
+						logError(e, {
+							msg: 'Unable to update settings, syncing user first.',
+							user_id: user.id,
+							context: 'dailyReminder.ts'
+						});
+						await user.settings.sync(true);
+						await user.settings.update(UserSettings.LastDailyTimestamp, -1);
+					}
 					await user.send('Your daily is ready!').catch(noOp);
 				}
 			} catch (err) {
