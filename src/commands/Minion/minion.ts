@@ -544,6 +544,8 @@ Type \`confirm\` if you understand the above information, and want to become an 
 			minion_hasBought: true,
 			minion_bought_date: new Date()
 		});
+		await msg.author.settings.sync(true);
+
 		return msg.channel.send({
 			embeds: [
 				new MessageEmbed().setTitle('Your minion is now ready to use!').setDescription(
