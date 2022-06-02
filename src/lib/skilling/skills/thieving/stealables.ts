@@ -28,6 +28,7 @@ import { ItemBank } from '../../../types';
 
 export interface Stealable {
 	name: string;
+	type: 'pickpockable' | 'stall';
 	alias?: string[];
 	level: number;
 	xp: number;
@@ -35,24 +36,21 @@ export interface Stealable {
 	itemsRequired?: ItemBank;
 	table: LootTable;
 	id: number;
-}
-
-export interface Stall extends Stealable {
-	respawnTime: number;
-	lootPercent: number;
-}
-
-export interface Pickpockable extends Stealable {
-	stunTime: number;
-	stunDamage: number;
-	slope: number;
-	intercept: number;
+	// Stall properties
+	respawnTime?: number;
+	lootPercent?: number;
+	// Pickpocket properties
+	stunTime?: number;
+	stunDamage?: number;
+	slope?: number;
+	intercept?: number;
 	customTickRate?: number;
 }
 
-export const Stalls: Stall[] = [
+const stalls: Stealable[] = [
 	{
 		name: 'Vegetable stall',
+		type: 'stall',
 		alias: ['Veg stall', 'Vegetable', 'Veggi stall'],
 		level: 2,
 		xp: 10,
@@ -70,6 +68,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: "Baker's stall",
+		type: 'stall',
 		alias: ['Baker stall', 'Baker', 'Bakers stall'],
 		level: 5,
 		xp: 16,
@@ -80,6 +79,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: 'Tea stall',
+		type: 'stall',
 		alias: ['Tea', 'Tea stall'],
 		level: 5,
 		xp: 16,
@@ -90,6 +90,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: 'Silk stall',
+		type: 'stall',
 		alias: ['Silk'],
 		level: 20,
 		xp: 24,
@@ -100,6 +101,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: 'Wine stall',
+		type: 'stall',
 		alias: ['Wine'],
 		level: 22,
 		xp: 27,
@@ -116,6 +118,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: 'Fruit stall',
+		type: 'stall',
 		alias: ['Fruit', 'Fruits'],
 		level: 25,
 		xp: 28.5,
@@ -137,6 +140,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: 'Fur stall',
+		type: 'stall',
 		alias: ['Fur', 'Furs'],
 		level: 35,
 		xp: 36,
@@ -147,6 +151,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: 'Fish stall',
+		type: 'stall',
 		alias: ['Fish', 'Fishy'],
 		level: 42,
 		xp: 42,
@@ -157,6 +162,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: 'Silver stall',
+		type: 'stall',
 		alias: ['Silver'],
 		level: 50,
 		xp: 54,
@@ -167,6 +173,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: 'Gem stall',
+		type: 'stall',
 		alias: ['Gem', 'Gems'],
 		level: 75,
 		xp: 160,
@@ -182,6 +189,7 @@ export const Stalls: Stall[] = [
 	},
 	{
 		name: 'Ore stall',
+		type: 'stall',
 		alias: ['Ore', 'Ores'],
 		level: 82,
 		xp: 180,
@@ -203,9 +211,10 @@ export const Stalls: Stall[] = [
 	}
 ];
 
-export const Pickpocketables: Pickpockable[] = [
+const pickpocketables: Stealable[] = [
 	{
 		name: 'Man',
+		type: 'pickpockable',
 		level: 1,
 		xp: 8,
 		table: Monsters.Man.pickpocketTable!,
@@ -217,6 +226,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Woman',
+		type: 'pickpockable',
 		level: 1,
 		xp: 8,
 		table: Monsters.Woman.pickpocketTable!,
@@ -228,6 +238,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Farmer',
+		type: 'pickpockable',
 		level: 10,
 		xp: 14.5,
 		table: Farmer.pickpocketTable!,
@@ -240,6 +251,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Female H.A.M. member',
+		type: 'pickpockable',
 		level: 15,
 		xp: 18.5,
 		alias: ['female ham'],
@@ -252,6 +264,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Male H.A.M. member',
+		type: 'pickpockable',
 		level: 20,
 		xp: 22.5,
 		alias: ['ham', 'male ham'],
@@ -264,6 +277,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Warrior woman',
+		type: 'pickpockable',
 		level: 25,
 		xp: 26,
 		table: WarriorWoman.pickpocketTable!,
@@ -276,6 +290,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Rogue',
+		type: 'pickpockable',
 		level: 32,
 		xp: 35.5,
 		table: Rogue.pickpocketTable!,
@@ -287,6 +302,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Cave goblin',
+		type: 'pickpockable',
 		level: 36,
 		xp: 40,
 		alias: ['goblin'],
@@ -300,6 +316,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Master Farmer',
+		type: 'pickpockable',
 		level: 38,
 		xp: 43,
 		alias: ['mf', 'master'],
@@ -312,6 +329,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Guard',
+		type: 'pickpockable',
 		level: 40,
 		xp: 46.8,
 		table: Guard.pickpocketTable!,
@@ -323,6 +341,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Fremennik Citizen',
+		type: 'pickpockable',
 		level: 45,
 		xp: 65,
 		alias: ['fremmy', 'fremennik'],
@@ -336,6 +355,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Bearded Pollnivnian Bandit',
+		type: 'pickpockable',
 		level: 45,
 		xp: 65,
 		alias: ['bearded bandit', 'beard', 'beard bandit'],
@@ -350,6 +370,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Desert Bandit',
+		type: 'pickpockable',
 		level: 53,
 		xp: 79.5,
 		alias: ['desert'],
@@ -362,6 +383,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Knight of Ardougne',
+		type: 'pickpockable',
 		level: 55,
 		xp: 84.3,
 		alias: ['knight', 'ardy knight'],
@@ -374,6 +396,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Pollnivnian Bandit',
+		type: 'pickpockable',
 		level: 55,
 		xp: 84.3,
 		table: PollnivnianBandit.pickpocketTable!,
@@ -387,6 +410,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Yanille Watchman',
+		type: 'pickpockable',
 		level: 65,
 		xp: 137.5,
 		alias: ['yanille'],
@@ -399,6 +423,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Menaphite Thug',
+		type: 'pickpockable',
 		level: 65,
 		xp: 137.5,
 		alias: ['thug'],
@@ -412,6 +437,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Paladin',
+		type: 'pickpockable',
 		level: 70,
 		xp: 151.7,
 		table: Paladin.pickpocketTable!,
@@ -423,6 +449,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Gnome',
+		type: 'pickpockable',
 		level: 75,
 		xp: 198.5,
 		table: Gnome.pickpocketTable!,
@@ -434,6 +461,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Hero',
+		type: 'pickpockable',
 		level: 80,
 		xp: 275,
 		table: Hero.pickpocketTable!,
@@ -445,6 +473,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Vyre',
+		type: 'pickpockable',
 		level: 82,
 		xp: 306.9,
 		table: Vyre.pickpocketTable!,
@@ -456,6 +485,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'Elf',
+		type: 'pickpockable',
 		level: 85,
 		xp: 353,
 		table: PrifddinasElf.pickpocketTable!,
@@ -468,6 +498,7 @@ export const Pickpocketables: Pickpockable[] = [
 	},
 	{
 		name: 'TzHaar-Hur',
+		type: 'pickpockable',
 		level: 90,
 		xp: 103.4,
 		alias: ['tzhaar'],
@@ -483,7 +514,9 @@ export const Pickpocketables: Pickpockable[] = [
 	}
 ];
 
-for (const entity of Pickpocketables) {
+export const stealables: Stealable[] = [...stalls, ...pickpocketables];
+
+for (const entity of stealables) {
 	if (!entity.table) {
 		console.error(`Warning! No table for ${entity.name}.`);
 	}
