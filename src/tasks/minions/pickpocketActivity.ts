@@ -116,7 +116,7 @@ export default class extends Task {
 			.get('bankImage')!
 			.generateBankImage(
 				itemsAdded,
-				`Loot From ${quantity} ${obj.name}:`,
+				`Loot From ${successfulQuantity} ${obj.name}:`,
 				true,
 				{ showNewCL: 1 },
 				user,
