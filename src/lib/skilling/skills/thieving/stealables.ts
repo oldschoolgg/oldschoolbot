@@ -184,7 +184,8 @@ const stalls: Stealable[] = [
 			.add('Uncut ruby', 1, 5)
 			.add('Uncut diamond')
 			.tertiary(36_490, 'Rocky'),
-		respawnTime: Time.Second * 100,
+		// World hopping rate
+		respawnTime: Time.Second * 10,
 		lootPercent: 100
 	},
 	{
@@ -203,7 +204,8 @@ const stalls: Stealable[] = [
 			.add('Adamantite ore', 1, 15)
 			.add('Runite ore', 1, 2)
 			.tertiary(36_490, 'Rocky'),
-		respawnTime: Time.Second * 60,
+		// World hopping rate
+		respawnTime: Time.Second * 15,
 		lootPercent: 100,
 		itemsRequired: resolveNameBank({
 			'Fire cape': 1

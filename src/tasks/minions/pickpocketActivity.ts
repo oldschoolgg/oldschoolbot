@@ -79,7 +79,7 @@ export default class extends Task {
 			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourcePickpocket, loot.amount('Coins'));
 		}
 
-		await user.addItemsToBank({ items: loot, collectionLog: true });
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived, duration });
 
 		let str = `${user}, ${user.minionName} finished ${
@@ -88,20 +88,20 @@ export default class extends Task {
 			quantity - successfulQuantity
 		}x ${obj.type === 'pickpockable' ? 'pickpockets' : 'steals'}. ${xpRes}`;
 
-		str += `\n\n${
+		str += `\n${
 			obj.type === 'pickpockable'
-				? `You received: ${loot}.`
+				? ''
 				: `${
 						100 - obj.lootPercent!
 				  }% of the loot was dropped in favour of enhancing amount of stalls stolen from.`
-		}\nYou received: ${loot}.`;
+		}`;
 
 		if (rogueOutfitBoostActivated) {
 			str += '\nYour rogue outfit allows you to take some extra loot.';
 		}
 
 		if (loot.amount('Rocky') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
+			str += "\n**You have a funny feeling you're being followed...**";
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${
@@ -112,6 +112,17 @@ export default class extends Task {
 			);
 		}
 
-		handleTripFinish(user, channelID, str, ['steal', { name: obj.name, quantity }, true], undefined, data, loot);
+		const { image } = await this.client.tasks
+			.get('bankImage')!
+			.generateBankImage(
+				itemsAdded,
+				`Loot From ${quantity} ${obj.name}:`,
+				true,
+				{ showNewCL: 1 },
+				user,
+				previousCL
+			);
+
+		handleTripFinish(user, channelID, str, ['steal', { name: obj.name, quantity }, true], image!, data, loot);
 	}
 }

@@ -132,6 +132,10 @@ export const stealCommand: OSBMahojiCommand = {
 				hasArdyHard
 			);
 
+			if (user.hasItemEquippedAnywhere(['Thieving cape', 'Thieving cape(t)'])) {
+				boosts.push('+10% chance of success from Thieving cape');
+			}
+
 			if (rogueOutfitPercentBonus(user) > 0) {
 				boosts.push(`${rogueOutfitPercentBonus(user)}% chance of x2 loot due to rogue outfit equipped`);
 			}
