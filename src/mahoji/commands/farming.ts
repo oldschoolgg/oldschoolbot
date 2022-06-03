@@ -74,8 +74,8 @@ export const farmingCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'autofarmFilter',
 					description: 'The auto farm filter you want to use by default.',
-					required: false
-					//	choices: Object.keys(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
+					required: true,
+					choices: Object.keys(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
 				}
 			]
 		},
@@ -184,7 +184,7 @@ export const farmingCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		check_patches?: {};
 		auto_farm?: {};
-		autofarmFilter?: { autofarmFilter: AutoFarmFilterEnum };
+		autofarmFilter?: { autofarmFilter: string };
 		default_compost?: { compost: CompostName };
 		always_pay?: {};
 		plant?: { plant_name: string; quantity?: number; pay?: boolean };
