@@ -5,7 +5,7 @@ import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
 import { BlowpipeData } from '../../minions/types';
-import { CompostName } from '../../skilling/skills/farming';
+import { AutoFarmFilterEnum, CompostName } from '../../skilling/skills/farming';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
@@ -117,6 +117,7 @@ export namespace UserSettings {
 		export const EquippedPet = T<number | null>('minion.equippedPet');
 		export const DefaultCompostToUse = T<CompostName | null>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
+		export const AutoFarmFilterToUse = T<AutoFarmFilterEnum | null>('minion.autoFarmFilterToUse');
 		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');
 	}
 

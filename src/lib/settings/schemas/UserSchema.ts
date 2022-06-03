@@ -83,6 +83,7 @@ Client.defaultUserSchema
 			.add('equippedPet', 'integer', { default: null })
 			.add('farmingContract', 'any', { default: null })
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
+			.add('autoFarmFilterToUse', 'any', { default: null })
 			.add('defaultPay', 'boolean', { default: false })
 			.add('birdhouseTraps', 'any', { default: null })
 	)

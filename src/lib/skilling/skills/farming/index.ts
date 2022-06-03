@@ -50,6 +50,11 @@ export const CompostTiers = [
 ] as const;
 export type CompostName = typeof CompostTiers[number]['name'];
 
+export enum AutoFarmFilterEnum {
+	AllFarm = 'allFarm',
+	Replant = 'replant'
+}
+
 for (const plant of plants) {
 	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);
 	for (const key of Object.keys(plant.inputItems.bank)) {
