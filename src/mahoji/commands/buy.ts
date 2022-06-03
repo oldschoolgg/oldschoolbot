@@ -76,10 +76,10 @@ export const buyCommand: OSBMahojiCommand = {
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 
 			return {
-				...mahojiChatHead({
+				...(await mahojiChatHead({
 					head: 'gertrude',
 					content: `Here's a ${kitten.name}, raise it well and take care of it, please!`
-				}),
+				})),
 				content: `Removed ${cost} from your bank.`
 			};
 		}
