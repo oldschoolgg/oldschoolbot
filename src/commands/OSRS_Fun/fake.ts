@@ -174,8 +174,8 @@ export default class extends BotCommand {
 			description: 'Generates fake loot images.',
 			examples: ['+fake arma Magnaboy'],
 			requiredPermissionsForBot: ['ATTACH_FILES'],
-			usage: '<zammy|tob|sara|corp|bandos|arma> (username:string)',
-			usageDelim: ',',
+			usage: '<zammy|tob|sara|corp|bandos|arma> <username:...string>',
+			usageDelim: ' ',
 			categoryFlags: ['fun']
 		});
 	}
