@@ -66,13 +66,13 @@ export const farmingCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'autofarmFilter',
+			name: 'auto_farm_filter',
 			description: 'Set which auto farm filter you want to use by default.',
 			required: false,
 			options: [
 				{
 					type: ApplicationCommandOptionType.String,
-					name: 'autofarmFilter',
+					name: 'auto_farm_filter_data',
 					description: 'The auto farm filter you want to use by default.',
 					required: true,
 					choices: Object.keys(AutoFarmFilterEnum).map(i => ({ name: i, value: i }))
@@ -184,7 +184,7 @@ export const farmingCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		check_patches?: {};
 		auto_farm?: {};
-		autofarmFilter?: { autofarmFilter: string };
+		auto_farm_filter?: { auto_farm_filter_data: string };
 		default_compost?: { compost: CompostName };
 		always_pay?: {};
 		plant?: { plant_name: string; quantity?: number; pay?: boolean };
@@ -214,16 +214,23 @@ export const farmingCommand: OSBMahojiCommand = {
 			});
 			return `You will now use ${tier.item.name} by default.`;
 		}
-		if (options.autofarmFilter) {
+		if (options.auto_farm_filter) {
 			const autoFarmFilterString = Object.keys(AutoFarmFilterEnum).find(i =>
-				stringMatches(i, options.autofarmFilter!.autofarmFilter)
+				stringMatches(i, options.auto_farm_filter!.auto_farm_filter_data)
 			);
 			if (!autoFarmFilterString) return 'Invalid auto farm filter.';
 			const autoFarmFilter = autoFarmFilterString as AutoFarmFilterEnum;
 			await mahojiUserSettingsUpdate(userID, {
 				minion_autoFarmFilterToUse: autoFarmFilter
 			});
-			return `You will now use ${autoFarmFilter} filter by default when autofarming.`;
+
+			const filterTexts = {
+				allfarm: 'All crops will be farmed with the highest available seed',
+				replant: 'Only planted crops will be replanted, using the same seed'
+			};
+			type FilterKey = keyof typeof filterTexts;
+			const key = autoFarmFilter.toString().toLowerCase() as FilterKey;
+			return `${autoFarmFilter} filter is now enabled when autofarming: ${filterTexts[key]}.`;
 		}
 		if (options.plant) {
 			return farmingPlantCommand({

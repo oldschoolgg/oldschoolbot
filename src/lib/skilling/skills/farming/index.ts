@@ -51,7 +51,7 @@ export const CompostTiers = [
 export type CompostName = typeof CompostTiers[number]['name'];
 
 export enum AutoFarmFilterEnum {
-	AllFarm = 'allFarm',
+	Allfarm = 'allfarm',
 	Replant = 'replant'
 }
 

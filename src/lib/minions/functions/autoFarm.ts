@@ -3,6 +3,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { farmingPlantCommand } from '../../../mahoji/lib/abstracted_commands/farmingCommand';
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { calcNumOfPatches } from '../../skilling/functions/calcsFarming';
 import { AutoFarmFilterEnum, plants } from '../../skilling/skills/farming';
@@ -17,10 +18,16 @@ export async function autoFarm(user: KlasaUser, patchesDetailed: IPatchDataDetai
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	let toPlant: Plant | undefined = undefined;
 	let errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
-	let autoFarmFilter = user.settings.get(UserSettings.Minion.AutoFarmFilterToUse);
-	if (!autoFarmFilter) autoFarmFilter = AutoFarmFilterEnum.AllFarm;
+	let fetchAutoFarmFilter = await mahojiUsersSettingsFetch(user.id, {
+		minion_autoFarmFilterToUse: true
+	});
+	let autoFarmFilter = fetchAutoFarmFilter.minion_autoFarmFilterToUse as unknown as AutoFarmFilterEnum | undefined;
 
-	if (autoFarmFilter === AutoFarmFilterEnum.AllFarm) {
+	if (!autoFarmFilter) autoFarmFilter = AutoFarmFilterEnum.Allfarm;
+
+	const autoFarmFilterString = autoFarmFilter.toString().toLowerCase();
+
+	if (autoFarmFilterString === AutoFarmFilterEnum.Allfarm) {
 		const elligible = [...plants]
 			.filter(p => {
 				if (p.level > farmingLevel) return false;
@@ -41,7 +48,7 @@ export async function autoFarm(user: KlasaUser, patchesDetailed: IPatchDataDetai
 		toPlant = canPlant ?? canHarvest;
 		errorString = "There's no Farming crops that you have the requirements to plant, and nothing to harvest.";
 	}
-	if (autoFarmFilter === AutoFarmFilterEnum.Replant) {
+	if (autoFarmFilterString === AutoFarmFilterEnum.Replant) {
 		const elligible = [...plants]
 			.filter(p => {
 				if (p.level > farmingLevel) return false;
