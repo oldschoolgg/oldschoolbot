@@ -405,7 +405,8 @@ export const enum PatronTierID {
 	Two = '4608226',
 	Three = '4720356',
 	Four = '5262065',
-	Five = '5262216'
+	Five = '5262216',
+	Six = '8091554'
 }
 
 export const enum BadgesEnum {
@@ -451,9 +452,6 @@ export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
-export const TWEETS_RATELIMITING =
-	'Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.' +
-	'You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.';
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;

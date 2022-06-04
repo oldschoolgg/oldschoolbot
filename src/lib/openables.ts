@@ -4,6 +4,7 @@ import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
+import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
 import { bsoOpenables } from './bsoOpenables';
@@ -370,6 +371,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['builders supply crate'],
 		output: BuildersSupplyCrateTable,
 		allItems: BuildersSupplyCrateTable.allItems
+	},
+	{
+		name: 'Hallowed sack',
+		id: 24_946,
+		openedItem: getOSItem('Hallowed sack'),
+		aliases: ['hallowed sack', 'hallow sack'],
+		output: HallowedSackTable,
+		allItems: HallowedSackTable.allItems
 	},
 	{
 		name: 'Infernal eel',

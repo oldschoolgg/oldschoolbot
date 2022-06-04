@@ -1,12 +1,12 @@
 import { activity_type_enum } from '@prisma/client';
-import { Message, MessageAttachment, MessageCollector, TextChannel } from 'discord.js';
+import { Message, MessageAttachment, MessageCollector } from 'discord.js';
 import { randInt, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
 import { MysteryBoxes } from '../bsoOpenables';
-import { BitField, COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
+import { COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import clueTiers from '../minions/data/clueTiers';
@@ -38,6 +38,202 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
+const tripFinishEffects: {
+	name: string;
+	fn: (options: { data: ActivityTaskOptions; user: KlasaUser; loot: Bank | null; messages: string[] }) => unknown;
+}[] = [
+	{
+		name: 'Track GP Analytics',
+		fn: ({ data, loot }) => {
+			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
+				const GP = loot.amount(COINS_ID);
+				if (typeof GP === 'number') {
+					updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+				}
+			}
+		}
+	},
+	{
+		name: 'Implings',
+		fn: async ({ data, messages, user }) => {
+			const imp = await handlePassiveImplings(user, data);
+			if (imp && imp.bank.length > 0) {
+				const many = imp.bank.length > 1;
+				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
+				await user.addItemsToBank({ items: imp.bank, collectionLog: true });
+			}
+		}
+	},
+	{
+		name: 'Growable Pets',
+		fn: async ({ data, messages, user }) => {
+			await handleGrowablePetGrowth(user, data, messages);
+		}
+	},
+	{
+		name: 'Random Events',
+		fn: async ({ data, messages, user }) => {
+			await triggerRandomEvent(user, data.duration, messages);
+		}
+	},
+	{
+		name: 'Random Events',
+		fn: async ({ data, messages, user }) => {
+			await triggerRandomEvent(user, data.duration, messages);
+		}
+	},
+	{
+		name: 'Loot Doubling',
+		fn: async ({ data, messages, user, loot }) => {
+			if (
+				loot &&
+				!data.cantBeDoubled &&
+				!['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'].includes(
+					data.type
+				) &&
+				data.duration > Time.Minute * 20 &&
+				roll(user.usingPet('Mr. E') ? 12 : 15)
+			) {
+				const otherLoot = new Bank().add(MysteryBoxes.roll());
+				const bonusLoot = new Bank().add(loot).add(otherLoot);
+				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
+				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
+				updateBankSetting(globalClient, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
+			}
+		}
+	},
+	{
+		name: 'Custom Pet Perk',
+		fn: async ({ data, messages, user }) => {
+			const pet = user.equippedPet();
+			const minutes = data.duration / Time.Minute;
+			if (minutes < 5) return;
+			let bonusLoot = new Bank();
+
+			switch (pet) {
+				case itemID('Peky'): {
+					for (let i = 0; i < minutes; i++) {
+						if (roll(10)) {
+							bonusLoot.add(PekyTable.roll());
+						}
+					}
+					messages.push(
+						`<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`
+					);
+					break;
+				}
+				case itemID('Obis'): {
+					let rolls = minutes / 3;
+					for (let i = 0; i < rolls; i++) {
+						bonusLoot.add(RuneTable.roll());
+					}
+					messages.push(
+						`<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`
+					);
+					break;
+				}
+				case itemID('Brock'): {
+					let rolls = minutes / 3;
+					for (let i = 0; i < rolls; i++) {
+						bonusLoot.add(WoodTable.roll());
+					}
+					messages.push(
+						`<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${bonusLoot}.`
+					);
+					break;
+				}
+				case itemID('Wilvus'): {
+					let rolls = minutes / 6;
+					for (let i = 0; i < rolls; i++) {
+						bonusLoot.add(WilvusTable.roll());
+					}
+					messages.push(
+						`<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${bonusLoot}.`
+					);
+					break;
+				}
+				case itemID('Smokey'): {
+					for (let i = 0; i < minutes; i++) {
+						if (roll(450)) {
+							bonusLoot.add(MysteryBoxes.roll());
+						}
+					}
+					if (bonusLoot.length > 0) {
+						messages.push(
+							`<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`
+						);
+					}
+					break;
+				}
+				case itemID('Doug'): {
+					for (let i = 0; i < minutes / 2; i++) {
+						bonusLoot.add(DougTable.roll());
+					}
+					messages.push(`Doug did some mining while you were on your trip and got you: ${bonusLoot}.`);
+					break;
+				}
+				case itemID('Harry'): {
+					for (let i = 0; i < minutes; i++) {
+						bonusLoot.add('Banana', randInt(1, 3));
+					}
+					messages.push(`<:harry:749945071104819292>: ${bonusLoot}.`);
+					break;
+				}
+				default: {
+				}
+			}
+		}
+	},
+	{
+		name: 'Voidling',
+		fn: async ({ data, messages, user }) => {
+			if (!user.allItemsOwned().has('Voidling')) return;
+			const voidlingEquipped = user.usingPet('Voidling');
+			const alchResult = alching({
+				user,
+				tripLength: voidlingEquipped
+					? data.duration * (user.hasItemEquippedAnywhere('Magic master cape') ? 3 : 1)
+					: data.duration / (user.hasItemEquippedAnywhere('Magic master cape') ? 1 : randInt(6, 7)),
+				isUsingVoidling: true
+			});
+			if (alchResult !== null) {
+				if (!user.owns(alchResult.bankToRemove)) {
+					messages.push(
+						`Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`
+					);
+				}
+				await user.addItemsToBank({ items: alchResult.bankToAdd });
+				await user.removeItemsFromBank(alchResult.bankToRemove);
+
+				updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+
+				updateGPTrackSetting(
+					globalClient,
+					ClientSettings.EconomyStats.GPSourceAlching,
+					alchResult.bankToAdd.amount('Coins')
+				);
+				messages.push(
+					`Your Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
+						alchResult.bankToRemove
+					} from your bank and added ${alchResult.bankToAdd}. ${
+						!voidlingEquipped && !user.hasItemEquippedAnywhere('Magic master cape')
+							? "As you left your Voidling in the bank, it didn't manage to alch at its full potential."
+							: ''
+					}${
+						user.hasItemEquippedAnywhere('Magic master cape')
+							? 'Voidling was buffed by your Magic Master cape, and is alching much faster!'
+							: ''
+					}`
+				);
+			} else if (user.getUserFavAlchs(Time.Minute * 30).length !== 0) {
+				messages.push(
+					"Your Voidling didn't alch anything because you either don't have any nature runes or fire runes."
+				);
+			}
+		}
+	}
+];
+
 export async function handleTripFinish(
 	user: KlasaUser,
 	channelID: string,
@@ -52,179 +248,25 @@ export async function handleTripFinish(
 ) {
 	const perkTier = getUsersPerkTier(user);
 	const continuationChar = generateContinuationChar(user);
+	const messages: string[] = [];
 	if (onContinue) {
-		message += `\nSay \`${continuationChar}\` to repeat this trip.`;
+		messages.push(`Say \`${continuationChar}\` to repeat this trip`);
 	}
-
-	const pet = user.equippedPet();
-
-	if (
-		loot &&
-		!data.cantBeDoubled &&
-		!['GroupMonsterKilling', 'KingGoldemar', 'Ignecarus', 'Inferno', 'Alching', 'Agility'].includes(data.type) &&
-		data.duration > Time.Minute * 20 &&
-		roll(pet === itemID('Mr. E') ? 12 : 15)
-	) {
-		const otherLoot = new Bank().add(MysteryBoxes.roll());
-		const bonusLoot = new Bank().add(loot).add(otherLoot);
-		message += `\n<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`;
-		await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
-	}
-
-	const minutes = data.duration / Time.Minute;
-	let bonusLoot = new Bank();
-	if (minutes < 5) {
-		// Do nothing
-	} else if (pet === itemID('Peky')) {
-		for (let i = 0; i < minutes; i++) {
-			if (roll(10)) {
-				bonusLoot.add(PekyTable.roll());
-			}
-		}
-		message += `\n<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`;
-	} else if (pet === itemID('Obis')) {
-		let rolls = minutes / 3;
-		for (let i = 0; i < rolls; i++) {
-			bonusLoot.add(RuneTable.roll());
-		}
-		message += `\n<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`;
-	} else if (pet === itemID('Brock')) {
-		let rolls = minutes / 3;
-		for (let i = 0; i < rolls; i++) {
-			bonusLoot.add(WoodTable.roll());
-		}
-		message += `\n<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${bonusLoot}.`;
-	} else if (pet === itemID('Wilvus')) {
-		let rolls = minutes / 6;
-		for (let i = 0; i < rolls; i++) {
-			bonusLoot.add(WilvusTable.roll());
-		}
-		message += `\n<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${bonusLoot}.`;
-	} else if (pet === itemID('Smokey')) {
-		for (let i = 0; i < minutes; i++) {
-			if (roll(450)) {
-				bonusLoot.add(MysteryBoxes.roll());
-			}
-		}
-		if (bonusLoot.length > 0) {
-			message += `\n<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`;
-		}
-	} else if (pet === itemID('Doug')) {
-		for (let i = 0; i < minutes / 2; i++) {
-			bonusLoot.add(DougTable.roll());
-		}
-
-		message += `\nDoug did some mining while you were on your trip and got you: ${bonusLoot}.`;
-	} else if (pet === itemID('Harry')) {
-		for (let i = 0; i < minutes; i++) {
-			bonusLoot.add('Banana', randInt(1, 3));
-		}
-
-		message += `\n<:harry:749945071104819292>: ${bonusLoot}.`;
-	}
-
-	if (bonusLoot.length > 0) {
-		if (bonusLoot.has('Coins')) {
-			updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePet, bonusLoot.amount('Coins'));
-		}
-		await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
-	}
-	if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
-		const GP = loot.amount(COINS_ID);
-		if (typeof GP === 'number') {
-			updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
-		}
-	}
+	await Promise.all(tripFinishEffects.map(effect => effect.fn({ data, user, loot, messages })));
 
 	const clueReceived = loot ? clueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
 	if (clueReceived) {
-		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
 		if (perkTier > PerkTier.One) {
-			message += ` Say \`c\` if you want to complete this ${clueReceived.name} clue now.`;
+			messages.push(`${Emoji.Casket} **Got a ${clueReceived.name} clue**, say \`c\` to complete it now`);
 		} else {
-			message += 'You can get your minion to complete them using `+minion clue easy/medium/etc`';
-		}
-	}
-
-	if (user.allItemsOwned().has('Voidling')) {
-		const voidlingEquipped = user.usingPet('Voidling');
-		const alchResult = alching({
-			user,
-			tripLength: voidlingEquipped
-				? data.duration * (user.hasItemEquippedAnywhere('Magic master cape') ? 3 : 1)
-				: data.duration / (user.hasItemEquippedAnywhere('Magic master cape') ? 1 : randInt(6, 7)),
-			isUsingVoidling: true
-		});
-		if (alchResult !== null) {
-			if (!user.owns(alchResult.bankToRemove)) {
-				message += `Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`;
-			}
-			await user.addItemsToBank({ items: alchResult.bankToAdd });
-			await user.removeItemsFromBank(alchResult.bankToRemove);
-
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
-
-			updateGPTrackSetting(
-				globalClient,
-				ClientSettings.EconomyStats.GPSourceAlching,
-				alchResult.bankToAdd.amount('Coins')
+			messages.push(
+				`${Emoji.Casket} **Got a ${clueReceived.name} clue**, complete it using \`+minion clue ${clueReceived.name}\``
 			);
-			message += `\nYour Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
-				alchResult.bankToRemove
-			} from your bank and added ${alchResult.bankToAdd}. ${
-				!voidlingEquipped && !user.hasItemEquippedAnywhere('Magic master cape')
-					? "As you left your Voidling alone in the bank, it got distracted easily and didn't manage to alch at its full potential."
-					: ''
-			}${
-				user.hasItemEquippedAnywhere('Magic master cape')
-					? '\nVoidling notices your Magic Master cape and wants to be just like you. Voidling is now alching much faster!'
-					: ''
-			}`;
-		} else if (user.getUserFavAlchs(Time.Minute * 30).length !== 0) {
-			message +=
-				"\nYour Voidling didn't alch anything because you either don't have any nature runes or fire runes.";
 		}
 	}
 
-	const imp = await handlePassiveImplings(user, data);
-	if (imp) {
-		if (imp.bank.length > 0) {
-			const many = imp.bank.length > 1;
-			message += `\n\nYour minion caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${
-				imp.bank
-			}.`;
-			await user.addItemsToBank({ items: imp.bank, collectionLog: true });
-		}
-
-		if (imp.missed.length > 0) {
-			message += `\n\nYou missed out on these implings, because your hunter level is too low: ${imp.missed}.`;
-		}
-	}
-
-	const attachable = attachment
-		? attachment instanceof MessageAttachment
-			? attachment
-			: new MessageAttachment(attachment)
-		: undefined;
-
-	const channel = globalClient.channels.cache.get(channelID);
-
-	message = await handleGrowablePetGrowth(user, data, message);
-
-	sendToChannelID(channelID, { content: message, image: attachable }).then(() => {
-		const minutes = Math.min(30, data.duration / Time.Minute);
-		const randomEventChance = 60 - minutes;
-		if (
-			channel &&
-			!user.bitfield.includes(BitField.DisabledRandomEvents) &&
-			roll(randomEventChance) &&
-			channel instanceof TextChannel
-		) {
-			triggerRandomEvent(channel, user);
-		}
-	});
+	sendToChannelID(channelID, { content: message, image: attachment });
 
 	if (!onContinue && !clueReceived) return;
 
@@ -251,6 +293,7 @@ export async function handleTripFinish(
 		lastTripCache.set(user.id, { data, continue: onContinueFn });
 	}
 
+	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
 	const collector = new MessageCollector(channel, {
 		filter: (mes: Message) =>

@@ -1,4 +1,3 @@
-import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { chunk, randArrItem, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
@@ -17,7 +16,6 @@ import {
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { becomeIronman } from '../../lib/minions/functions/becomeIronman';
@@ -77,15 +75,12 @@ const subCommands = [
 	'info',
 	'equippet',
 	'unequippet',
-	'autofarm',
 	'activities',
-	'af',
 	'ep',
 	'uep',
 	'lapcounts',
 	'cancel',
 	'train',
-	'unequipall',
 	'tempcl',
 	'blowpipe',
 	'bp',
@@ -114,7 +109,7 @@ export default class MinionCommand extends BotCommand {
 			getFarmingInfo(msg.author.id)
 		]);
 
-		const dynamicButtons = new DynamicButtons();
+		const dynamicButtons = new DynamicButtons({ channel: msg.channel, usersWhoCanInteract: [msg.author.id] });
 
 		dynamicButtons.add({
 			name: 'Auto Farm',
@@ -239,51 +234,14 @@ export default class MinionCommand extends BotCommand {
 			});
 		}
 
-		const sentMessage = await msg.channel.send({
-			content: `${msg.author.minionStatus}`,
-			components: dynamicButtons.render({ isBusy: msg.author.minionIsBusy })
+		dynamicButtons.render({
+			isBusy: msg.author.minionIsBusy,
+			messageOptions: { content: msg.author.minionStatus }
 		});
-		if (dynamicButtons.buttons.length > 0) {
-			const handleButtons = async () => {
-				try {
-					const selection = await sentMessage.awaitMessageComponentInteraction({
-						filter: i => {
-							if (i.user.id !== msg.author.id) {
-								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-								return false;
-							}
-							return true;
-						},
-						time: Time.Second * 15
-					});
-					await sentMessage.edit({ components: [] });
-					selection.deferUpdate();
-
-					for (const button of dynamicButtons.buttons) {
-						if (selection.customID === button.id) {
-							if (selection.user.minionIsBusy && button.cantBeBusy) {
-								return selection.reply({
-									content: `Your action couldn't be performed, because your minion is busy: ${msg.author.minionStatus}`,
-									ephemeral: true
-								});
-							}
-							return button.fn();
-						}
-					}
-				} catch {
-					await sentMessage.edit({ components: [] });
-				}
-			};
-			handleButtons();
-		}
 	}
 
 	async ironman(msg: KlasaMessage) {
 		return becomeIronman(msg);
-	}
-
-	async cancel(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion cancel'));
 	}
 
 	async train(msg: KlasaMessage, [input]: [string | undefined]) {
@@ -381,14 +339,6 @@ export default class MinionCommand extends BotCommand {
 		return equipPet(msg, input);
 	}
 
-	async af(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
-	}
-
-	async autofarm(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
-	}
-
 	async activities(msg: KlasaMessage) {
 		return pastActivities(msg);
 	}
@@ -412,37 +362,8 @@ export default class MinionCommand extends BotCommand {
 		return msg.channel.send(str);
 	}
 
-	@requiresMinion
-	async seticon(msg: KlasaMessage, [icon]: [string]) {
-		if (msg.author.perkTier < PerkTier.Four) {
-			return msg.channel.send("You need to be a Tier 3 Patron to change your minion's icon to a custom icon.");
-		}
-
-		if (!icon) {
-			await msg.confirm('Would you like to return to your default minion icon?');
-			const sacValue = msg.author.settings.get(UserSettings.SacrificedValue);
-			let icon = null;
-			for (const sacIcon of minionIcons) {
-				if (sacValue < sacIcon.valueRequired) continue;
-				if (sacValue >= sacIcon.valueRequired) {
-					icon = sacIcon.emoji;
-					break;
-				}
-			}
-			await msg.author.settings.update(UserSettings.Minion.Icon, icon);
-			return msg.channel.send(`Restored your minion icon to ${icon ?? Emoji.Minion}.`);
-		}
-
-		const res = FormattedCustomEmoji.exec(icon);
-		if (!res || !res[0]) {
-			return msg.channel.send("That's not a valid emoji.");
-		}
-
-		await msg.confirm('Icons cannot be inappropriate or NSFW. Do you understand?');
-
-		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
-
-		return msg.channel.send(`Changed your minion icon to ${res}.`);
+	async seticon(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_icon'));
 	}
 
 	async pat(msg: KlasaMessage) {
@@ -586,9 +507,5 @@ Please click the buttons below for important links.`
 	async opens(msg: KlasaMessage) {
 		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
 		return msg.channel.send(`You've opened... ${openableScores}`);
-	}
-
-	async unequipall(msg: KlasaMessage) {
-		return msg.channel.send('This has been moved to the `/gear unequip` slash command.');
 	}
 }
