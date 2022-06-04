@@ -463,6 +463,9 @@ export async function minionKillCommand(
 				return e.message;
 			}
 		}
+	} else {
+		boosts.push('4% for no food');
+		duration = reduceNumByPercent(duration, 4);
 	}
 
 	// Boosts that don't affect quantity:
