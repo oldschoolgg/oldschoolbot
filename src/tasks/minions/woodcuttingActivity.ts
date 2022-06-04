@@ -62,7 +62,12 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
+		const twoMillionPetRate =
+			(user.settings.get(`skills.${SkillsEnum.Woodcutting}`) as number) >= 200_000_000 ? 15 : 1;
+		if (
+			log.petChance &&
+			roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity / twoMillionPetRate)
+		) {
 			loot.add('Beaver');
 			str += "\n**You have a funny feeling you're being followed...**";
 			this.client.emit(

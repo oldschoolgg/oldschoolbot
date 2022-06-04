@@ -37,7 +37,9 @@ export default class extends Task {
 			[rune.id]: runeQuantity
 		});
 
-		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
+		const twoMillionPetRate =
+			(user.settings.get(`skills.${SkillsEnum.Runecraft}`) as number) >= 200_000_000 ? 15 : 1;
+		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity / twoMillionPetRate)) {
 			loot.add('Rift guardian');
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(

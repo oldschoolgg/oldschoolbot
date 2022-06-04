@@ -181,7 +181,10 @@ export default class extends Task {
 
 		// Roll for pet
 		if (fish.petChance) {
-			const chance = fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25;
+			let chance = fish.petChance - user.skillLevel(SkillsEnum.Fishing) * 25;
+			if ((user.settings.get(`skills.${SkillsEnum.Fishing}`) as number) >= 200_000_000) {
+				chance /= 15;
+			}
 			for (let i = 0; i < quantity; i++) {
 				if (roll(chance)) {
 					loot.add('Heron');

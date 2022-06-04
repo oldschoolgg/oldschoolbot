@@ -41,8 +41,10 @@ export default class extends Task {
 		let loot = new Bank().add(runeData.item.id, runeQuantity);
 
 		const lvl = user.skillLevel(SkillsEnum.Runecraft);
+		const twoMillionPetRate =
+			(user.settings.get(`skills.${SkillsEnum.Runecraft}`) as number) >= 200_000_000 ? 15 : 1;
 		for (let i = 0; i < quantity; i++) {
-			if (roll(runeData.petChance - lvl * 25)) {
+			if (roll((runeData.petChance - lvl * 25) / twoMillionPetRate)) {
 				loot.add('Rift guardian');
 			}
 		}

@@ -102,8 +102,8 @@ export default class extends Task {
 		}
 
 		const loot = new Bank();
-
-		if (roll((7_494_389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest)) {
+		const twoMillionPetRate = (user.settings.get(`skills.${SkillsEnum.Farming}`) as number) >= 200_000_000 ? 15 : 1;
+		if (roll((7_494_389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest / twoMillionPetRate)) {
 			loot.add('Tangleroot');
 			lootStr.push('\n\n```diff');
 			lootStr.push("\n- You have a funny feeling you're being followed...");

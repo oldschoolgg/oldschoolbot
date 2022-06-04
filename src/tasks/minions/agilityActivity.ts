@@ -97,7 +97,11 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
+		const twoMillionPetRate = (user.settings.get(`skills.${SkillsEnum.Agility}`) as number) >= 200_000_000 ? 15 : 1;
+		if (
+			course.petChance &&
+			roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity / twoMillionPetRate)
+		) {
 			loot.add('Giant squirrel');
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(

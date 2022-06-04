@@ -57,7 +57,8 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
+		const twoMillionPetRate = (user.settings.get(`skills.${SkillsEnum.Mining}`) as number) >= 200_000_000 ? 15 : 1;
+		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity / twoMillionPetRate)) {
 			loot.add('Rock golem');
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(

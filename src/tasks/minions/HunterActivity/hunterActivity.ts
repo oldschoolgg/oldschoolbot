@@ -113,6 +113,9 @@ export default class extends Task {
 		let babyChinChance = 0;
 		if (creature.name.toLowerCase().includes('chinchompa')) {
 			babyChinChance = calcBabyChinchompaChance(currentLevel, creature);
+			if ((user.settings.get(`skills.${SkillsEnum.Hunter}`) as number) >= 200_000_000) {
+				babyChinChance /= 15;
+			}
 		}
 
 		let creatureTable = creature.table;

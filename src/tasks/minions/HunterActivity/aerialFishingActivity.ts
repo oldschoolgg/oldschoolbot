@@ -136,7 +136,8 @@ export default class extends Task {
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
-		if (roll((636_833 - user.skillLevel(SkillsEnum.Fishing) * 25) / totalFishCaught)) {
+		const twoMillionPetRate = (user.settings.get(`skills.${SkillsEnum.Fishing}`) as number) >= 200_000_000 ? 15 : 1;
+		if (roll((636_833 - user.skillLevel(SkillsEnum.Fishing) * 25) / totalFishCaught / twoMillionPetRate)) {
 			loot.add('Heron');
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(

@@ -72,10 +72,11 @@ export default class extends Task {
 
 		const fragmentRolls = rand(38, 40) * quantity;
 		const loot = new Bank().add(fragmentTable.roll(fragmentRolls));
+		const twoMillionPetRate = (user.settings.get(`skills.${SkillsEnum.Mining}`) as number) >= 200_000_000 ? 15 : 1;
 		// Iterate over the fragments received
 		for (let i = 0; i < fragmentRolls; i++) {
 			// Roll for pet --- Average 40 fragments per game at 60K chance per fragment
-			if (roll(60_000)) loot.add('Rock golem');
+			if (roll(60_000 / twoMillionPetRate)) loot.add('Rock golem');
 		}
 
 		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${

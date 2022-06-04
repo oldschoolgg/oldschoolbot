@@ -47,8 +47,9 @@ export default class extends Task {
 		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.`;
 
 		// Roll for pet
+		const twoMillionPetRate = (user.settings.get(`skills.${SkillsEnum.Agility}`) as number) >= 200_000_000 ? 15 : 1;
 		for (let i = 0; i < ticketsReceived; i++) {
-			if (roll(26_404 - user.skillLevel(SkillsEnum.Agility) * 25)) {
+			if (roll((26_404 - user.skillLevel(SkillsEnum.Agility) * 25) / twoMillionPetRate)) {
 				user.addItemsToBank({
 					items: new Bank().add('Giant Squirrel'),
 					collectionLog: true
