@@ -70,7 +70,10 @@ export default class extends Task {
 					deaths[user.id] = deaths[user.id] ? ++deaths[user.id] : 1;
 					kcAmounts[user.id]--;
 				} else {
-					if (user.owns('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet)) {
+					if (
+						user.cl().has('Slepey tablet') &&
+						(user.owns('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet))
+					) {
 						loot[user.id].remove('Slepey tablet', loot[user.id].amount('Slepey tablet'));
 					}
 					loot[user.id].bank;
