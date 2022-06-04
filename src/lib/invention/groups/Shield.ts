@@ -173,8 +173,7 @@ export const Shield: DisassemblySourceGroup = {
 		{ item: i('Mithril kiteshield'), lvl: 30 },
 		{ item: i('Rune kiteshield'), lvl: 50 },
 		{ item: i('Granite shield'), lvl: 55 },
-		{ item: i('Dragon kiteshield'), lvl: 60 },
-		{ item: i('3rd age kiteshield'), lvl: 65, flags: new Set(['third_age']) }
+		{ item: i('Dragon kiteshield'), lvl: 60 }
 	],
 	parts: { base: 30, strong: 3, protective: 32 }
 };

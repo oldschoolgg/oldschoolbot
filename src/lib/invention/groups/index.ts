@@ -9,6 +9,8 @@ import { Clothing } from './Clothing';
 import { Dagger } from './Dagger';
 import { Default } from './Default';
 import { Defender } from './Defender';
+import { Drygores } from './Drygores';
+import { Dwarven } from './Dwarven';
 import { Food } from './Food';
 import { Gems } from './Gems';
 import { Glass } from './Glass';
@@ -38,6 +40,7 @@ import { Spear } from './Spear';
 import { Staff } from './Staff';
 import { Sword } from './Sword';
 import { Talisman } from './Talisman';
+import { ThirdAge } from './ThirdAge';
 import { ThrowingAxe } from './ThrowingAxe';
 import { TreasureTrails } from './TreasureTrails';
 import { UncutGems } from './UncutGems';
@@ -90,5 +93,8 @@ export default [
 	Magic,
 	Defender,
 	Shield,
-	TreasureTrails
+	TreasureTrails,
+	Drygores,
+	Dwarven,
+	ThirdAge
 ];

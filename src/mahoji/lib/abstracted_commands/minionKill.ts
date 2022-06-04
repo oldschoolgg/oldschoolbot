@@ -154,6 +154,7 @@ export async function minionKillCommand(
 
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
+	const maxTripLength = user.maxTripLength('MonsterKilling');
 
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
@@ -330,10 +331,12 @@ export async function minionKillCommand(
 		: false;
 
 	if (boostChoice === 'cannon' && canAffordSuperiorCannonBoost && (monster.canCannon || monster.cannonMulti)) {
+		let qty = quantity || floor(maxTripLength / timeToFinish);
+		console.log(`${user} is killing roughly ${qty}x ${monster.name}`);
 		const res = await inventionItemBoost({
 			userID: BigInt(user.id),
 			inventionID: InventionID.SuperiorDwarfMultiCannon,
-			duration: timeToFinish
+			duration: timeToFinish * qty
 		});
 		if (res.success) {
 			usingCannon = true;
@@ -364,8 +367,6 @@ export async function minionKillCommand(
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
 	}
-
-	const maxTripLength = user.maxTripLength('MonsterKilling');
 
 	const hasBlessing = user.hasItemEquippedAnywhere('Dwarven blessing');
 	const hasZealotsAmulet = user.hasItemEquippedAnywhere('Amulet of zealots');

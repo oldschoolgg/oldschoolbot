@@ -9,7 +9,7 @@ import { inventCommand, Inventions } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { toTitleCase } from '../../lib/util';
+import { stringMatches, toTitleCase } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -161,6 +161,24 @@ export const askCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			name: 'details',
+			description: 'See details and information on an Invention.',
+			type: ApplicationCommandOptionType.Subcommand,
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'invention',
+					description: 'The invention you want to check.',
+					required: true,
+					autocomplete: async value => {
+						return Inventions.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({ name: i.name, value: i.name }));
+					}
+				}
+			]
 		}
 	],
 	run: async ({
@@ -183,6 +201,7 @@ export const askCommand: OSBMahojiCommand = {
 				| 'unlocked_blueprints'
 				| 'invention_mat_cost';
 		};
+		details?: { invention: string };
 	}>) => {
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -205,7 +224,19 @@ export const askCommand: OSBMahojiCommand = {
 			});
 		}
 		if (options.invent) {
-			return inventCommand(interaction, mahojiUser, user, options.invent.name);
+			return inventCommand(mahojiUser, user, options.invent.name);
+		}
+		if (options.details) {
+			const invention = Inventions.find(i => stringMatches(i.name, options.details!.invention!));
+			if (!invention) return 'No invention found.';
+			return `**${invention.name}** - *${invention.description}*
+- Requires level ${invention.inventionLevelNeeded} Invention
+- The materials used for this invention: ${invention.materialTypeBank
+				.values()
+				.map(i => `${i.type} (${i.quantity})`)
+				.join(', ')}
+- ${invention.flags.includes('equipped') ? 'Must be equipped' : 'Works in bank'}
+- ${invention.itemCost ? `Requires ${invention.itemCost} to make` : 'Requires no items to make'}`;
 		}
 
 		if (options.tools) {

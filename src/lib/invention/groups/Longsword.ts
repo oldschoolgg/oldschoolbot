@@ -16,7 +16,6 @@ export const Longsword: DisassemblySourceGroup = {
 		{ item: i('Mithril longsword'), lvl: 30 },
 		{ item: i('Rune longsword'), lvl: 50 },
 		{ item: i('Dragon longsword'), lvl: 60 },
-		{ item: i('3rd age longsword'), lvl: 65, flags: new Set(['third_age']) },
 		{ item: i("Vesta's longsword"), lvl: 78 }
 	],
 	parts: { sharp: 30, metallic: 30, base: 35, dextrous: 2 }

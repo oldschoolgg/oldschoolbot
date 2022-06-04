@@ -12,7 +12,6 @@ export const Magic: DisassemblySourceGroup = {
 		{ item: i('Apprentice wand'), lvl: 50 },
 		{ item: i('Teacher wand'), lvl: 55 },
 		{ item: i('Master wand'), lvl: 60 },
-		{ item: i('3rd age wand'), lvl: 65 },
 		{
 			item: i('Mind helmet'),
 			lvl: 1

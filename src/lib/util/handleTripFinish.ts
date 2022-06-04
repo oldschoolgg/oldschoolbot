@@ -5,12 +5,11 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { COINS_ID, Emoji, lastTripCache, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
-import { canAffordInventionBoost, InventionID, inventionItemBoost, silverHawkBoost } from '../invention/inventions';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
 import clueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
@@ -240,28 +239,26 @@ const tripFinishEffects: {
 	{
 		name: 'Invention Effects',
 		fn: async ({ data, messages, user }) => {
-			const mahojiUser = await mahojiUsersSettingsFetch(BigInt(user.id), { materials_owned: true });
 			if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots')) {
-				const res = await canAffordInventionBoost(mahojiUser, InventionID.SilverHawkBoots, data.duration);
-				if (res.canAfford) {
-					const costRes = await inventionItemBoost({
-						userID: user.id,
-						inventionID: InventionID.SilverHawkBoots,
+				const costRes = await inventionItemBoost({
+					userID: user.id,
+					inventionID: InventionID.SilverHawkBoots,
+					duration: data.duration
+				});
+				if (costRes.success) {
+					const xpToReceive = inventionBoosts.silverHawks.passiveXPCalc(
+						data.duration,
+						user.skillLevel(SkillsEnum.Agility)
+					);
+					await user.addXP({
+						skillName: SkillsEnum.Agility,
+						amount: xpToReceive,
+						multiplier: false,
 						duration: data.duration
 					});
-					if (costRes.success) {
-						const xpToReceive = silverHawkBoost.passiveXPCalc(
-							data.duration,
-							user.skillLevel(SkillsEnum.Invention)
-						);
-						await user.addXP({
-							skillName: SkillsEnum.Invention,
-							amount: xpToReceive,
-							multiplier: false,
-							duration: data.duration
-						});
-						messages.push(`Received ${toKMB(xpToReceive)} Agility XP from Silverhawk boots`);
-					}
+					messages.push(
+						`+${toKMB(xpToReceive)} Agility XP from Silverhawk boots (Removed ${costRes.materialCost})`
+					);
 				}
 			}
 		}
@@ -298,6 +295,10 @@ export async function handleTripFinish(
 				`${Emoji.Casket} **Got a ${clueReceived.name} clue**, complete it using \`+minion clue ${clueReceived.name}\``
 			);
 		}
+	}
+
+	if (messages.length > 0) {
+		message += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
 	sendToChannelID(channelID, { content: message, image: attachment });

@@ -110,11 +110,6 @@ export const RangedArmour: DisassemblySourceGroup = {
 			lvl: 70
 		},
 		{
-			item: ['3rd age range coif', '3rd age range top', '3rd age range legs', '3rd age vambraces'].map(i),
-			lvl: 65,
-			flags: new Set(['third_age'])
-		},
-		{
 			item: i('Armadyl helmet'),
 			lvl: 70
 		},

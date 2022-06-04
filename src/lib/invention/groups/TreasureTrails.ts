@@ -27,5 +27,5 @@ export const TreasureTrails: DisassemblySourceGroup = {
 		{ item: i('Clue scroll (grandmaster)'), lvl: 120, flags: new Set(['treasure_trails']) },
 		{ item: i('Reward casket (grandmaster)'), lvl: 120, flags: new Set(['treasure_trails']) }
 	],
-	parts: { treasured: 75, base: 25 }
+	parts: { treasured: 100 }
 };

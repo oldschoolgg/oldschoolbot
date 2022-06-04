@@ -6,6 +6,7 @@ import { table } from 'table';
 
 import { dyedItems } from '../dyedItems';
 import { growablePets } from '../growablePets';
+import { Inventions } from '../invention/inventions';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
 import {
@@ -1069,6 +1070,10 @@ export const allCollectionLogs: ICollection = {
 					'Dwarven knife',
 					'Dwarven gauntlets'
 				])
+			},
+			Invention: {
+				alias: ['inv'],
+				items: [...Inventions.map(i => i.item.id), ...resolveItems('Cogsworth')]
 			}
 		}
 	},

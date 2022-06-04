@@ -48,7 +48,6 @@ export namespace UserSettings {
 	export const CarpenterPoints = T<number>('carpenter_points');
 	export const ZealTokens = T<number>('zeal_tokens');
 	export const OpenableScores = T<Readonly<ItemBank>>('openable_scores');
-	export const HasSpawnedRMB = T<boolean>('spawned_rmb');
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
 	export const DungeoneeringTokens = T<number>('dungeoneering_tokens');
 	export const TotalCoxPoints = T<number>('total_cox_points');

@@ -426,13 +426,10 @@ model User {
   nursery                  Json?    @db.Json
   selected_tame            Int?
   monkeys_fought           String[]
-  times_fed_gregoyle       Int      @default(0)
-  wrong_accusations        Int      @default(0)
   gp_slots                 BigInt   @default(0)
   emerged_inferno_attempts Int      @default(0)
   skills_dungeoneering     BigInt   @default(0) @map("skills.dungeoneering")
   ourania_tokens           Int      @default(0)
-  spawned_rmb              Boolean  @default(false)
   total_item_contracts     Int      @default(0)
   last_item_contract_date  BigInt   @default(0)
   current_item_contract    Int?
@@ -441,8 +438,6 @@ model User {
   dungeoneering_tokens     Int      @default(0)
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
-  got_free_festive_present Boolean  @default(false)
-  eggs_delivered           Int      @default(0)
 
   // Invention
   skills_invention          BigInt @default(0) @map("skills.invention")
@@ -450,6 +445,7 @@ model User {
   disassembled_items_bank   Json   @default("{}") @db.Json
   researched_materials_bank Json   @default("{}") @db.Json
   unlocked_blueprints       Int[]
+  disabled_inventions       Int[]
 
   @@map("users")
 }
@@ -669,6 +665,16 @@ model EconomyTransaction {
   @@map("economy_transaction")
 }
 
+// model MaterialTransaction {
+//   id           Int                  @id @default(autoincrement())
+//   date         DateTime             @db.Timestamp(6) @default(now())
+//   user_id      BigInt
+//   add Json
+//   remove Json
+
+//   @@map("material_transaction")
+// }
+
 enum command_usage_status {
   Unknown
   Success
@@ -793,6 +799,38 @@ enum xp_gains_skill_enum {
   slayer
   invention
 }
+
+// enum material_type_enum {
+//   junk
+//   simple
+//   base
+//   smooth
+//   sharp
+//   swift
+//   magic
+//   powerful
+//   imbued
+//   flexible
+//   strong
+//   protective
+//   heavy
+//   precious
+//   plated
+//   dextrous
+//   metallic
+//   organic
+//   pious
+//   crystal
+//   rocky
+//   // Special
+//   corporeal
+//   thirdage
+//   mysterious
+//   barrows
+//   abyssal
+//   dwarven
+//   treasured
+// }
 
 enum tame_growth {
   baby

@@ -1,4 +1,4 @@
-import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, percentChance, reduceNumByPercent, Time } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -6,7 +6,9 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { BitField, Emoji, PvMMethod } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
-import { InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -20,7 +22,8 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll } from '../../lib/util';
+import { assert, itemID, roll } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
@@ -39,21 +42,91 @@ async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, 
 		}
 	}
 
+	let materialCost: MaterialBank | null = null;
+
 	if (hasSuperior) {
 		const t = await inventionItemBoost({ userID: user.id, inventionID: InventionID.SuperiorBonecrusher, duration });
 		if (!t.success) {
 			hasSuperior = false;
 		} else {
-			totalXP = increaseNumByPercent(totalXP, 25);
+			totalXP = increaseNumByPercent(totalXP, inventionBoosts.superiorBonecrusher.xpBoostPercent);
+			materialCost = t.materialCost;
 		}
 	}
 
-	await user.addXP({
+	const xpStr = await user.addXP({
 		skillName: SkillsEnum.Prayer,
 		amount: totalXP,
+		duration,
+		minimal: true
+	});
+	messages.push(
+		`${xpStr} Prayer XP${
+			hasSuperior
+				? `(${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher, Removed ${materialCost})`
+				: ''
+		}`
+	);
+}
+
+const hideLeatherMap = [
+	[getOSItem('Green dragonhide'), getOSItem('Green dragon leather')],
+	[getOSItem('Blue dragonhide'), getOSItem('Blue dragon leather')],
+	[getOSItem('Red dragonhide'), getOSItem('Red dragon leather')],
+	[getOSItem('Black dragonhide'), getOSItem('Black dragon leather')],
+	[getOSItem('Royal dragonhide'), getOSItem('Royal dragon leather')]
+] as const;
+
+async function portableTannerEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
+	if (!user.owns('Portable tanner')) return;
+	const boostRes = await inventionItemBoost({
+		userID: BigInt(user.id),
+		inventionID: InventionID.PortableTanner,
 		duration
 	});
-	messages.push(`${totalXP} Prayer XP${hasSuperior ? '(25% more from Superior bonecrusher)' : ''}`);
+	if (!boostRes.success) return;
+	let triggered = false;
+	for (const [hide, leather] of hideLeatherMap) {
+		let qty = loot.amount(hide.id);
+		if (qty > 0) {
+			triggered = true;
+			loot.remove(hide.id, qty);
+			loot.add(leather.id, qty);
+		}
+	}
+	if (!triggered) return;
+	messages.push(`Portable Tanner turned the hides into leathers (Removed ${boostRes.materialCost})`);
+}
+
+async function clueUpgraderEffect(user: KlasaUser, loot: Bank, messages: string[]) {
+	if (!user.owns('Clue upgrader')) return;
+	const upgradedClues = new Bank();
+	const removeBank = new Bank();
+	let durationForCost = 0;
+	for (let i = 0; i < 4; i++) {
+		const clueTier = ClueTiers[i];
+		if (!loot.has(clueTier.scrollID)) continue;
+		// Lower tiers are more common to upgrade
+		let chanceOfUpgradePercent = 45 - (i + 1 * 5);
+		for (let t = 0; t < loot.amount(clueTier.scrollID); t++) {
+			if (percentChance(chanceOfUpgradePercent)) {
+				removeBank.add(clueTier.scrollID);
+				upgradedClues.add(ClueTiers[i + 1].scrollID);
+				durationForCost += (i + 1) * Time.Minute * 2;
+			}
+		}
+	}
+	const boostRes = await inventionItemBoost({
+		userID: BigInt(user.id),
+		inventionID: InventionID.ClueUpgrader,
+		duration: durationForCost
+	});
+	if (!boostRes.success) return;
+
+	loot.add(upgradedClues);
+	assert(loot.has(removeBank));
+	loot.remove(removeBank);
+	messages.push(`Clue Upgrader got you ${upgradedClues} (Removed ${boostRes.materialCost})`);
 }
 
 export default class extends Task {
@@ -229,6 +302,8 @@ export default class extends Task {
 		}
 
 		await bonecrusherEffect(user, loot, duration, messages);
+		await portableTannerEffect(user, loot, duration, messages);
+		await clueUpgraderEffect(user, loot, messages);
 
 		let thisTripFinishesTask = false;
 
@@ -314,6 +389,10 @@ export default class extends Task {
 				user,
 				previousCL
 			);
+
+		if (messages.length > 0) {
+			str += `\n**Messages:** ${messages.join(', ')}`;
+		}
 
 		handleTripFinish(
 			user,

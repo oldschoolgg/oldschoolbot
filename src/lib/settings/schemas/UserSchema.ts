@@ -41,7 +41,6 @@ Client.defaultUserSchema
 	.add('carpenter_points', 'integer', { default: 0 })
 	.add('zeal_tokens', 'integer', { default: 0 })
 	.add('openable_scores', 'any', { default: {} })
-	.add('spawned_rmb', 'boolean', { default: false })
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('dungeoneering_tokens', 'integer', { default: 0 })
 	.add('total_cox_points', 'integer', { default: 0 })

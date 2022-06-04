@@ -2,6 +2,7 @@ import { reduceNumByPercent, round, Time } from 'e';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -9,6 +10,7 @@ import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -66,18 +68,36 @@ export const buildCommand: OSBMahojiCommand = {
 		const planksHas = userBank.amount(plank);
 
 		const maxTripLength = user.maxTripLength('Construction');
+		const maxForMaterials = planksHas / planksQtyCost;
+		const maxForTime = Math.floor(maxTripLength / timeToBuildSingleObject);
+		let defaultQuantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
 
-		let { quantity } = options;
-		if (!quantity) {
-			const maxForMaterials = planksHas / planksQtyCost;
-			const maxForTime = Math.floor(maxTripLength / timeToBuildSingleObject);
-			quantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
+		let boosts: string[] = [];
+
+		if (hasItemsEquippedOrInBank(user, ['Drygore saw'])) {
+			const boostRes = await inventionItemBoost({
+				userID: BigInt(user.id),
+				inventionID: InventionID.DrygoreSaw,
+				duration: defaultQuantity * timeToBuildSingleObject
+			});
+			if (boostRes.success) {
+				timeToBuildSingleObject = reduceNumByPercent(
+					timeToBuildSingleObject,
+					inventionBoosts.drygoreSaw.buildBoostPercent
+				);
+				boosts.push(
+					`${inventionBoosts.drygoreSaw.buildBoostPercent}% faster building from Drygore saw (Removed ${boostRes.materialCost})`
+				);
+			}
 		}
+		let { quantity } = options;
+		if (!quantity) quantity = defaultQuantity;
 
 		const cost = new Bank().add(plank, planksQtyCost * quantity);
 		const hasScroll = user.owns('Scroll of proficiency');
 		if (hasScroll) {
 			cost.bank[plank] = reduceNumByPercent(cost.bank[plank], 15);
+			boosts.push('15% less planks used from Scroll of proficiency');
 		}
 
 		const objectsPerInv = 26 / planksQtyCost;

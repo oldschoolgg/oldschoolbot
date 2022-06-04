@@ -1,25 +1,23 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User } from '@prisma/client';
-import { percentChance, Time } from 'e';
+import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import {
 	clientSettingsUpdate,
-	getSkillsOfMahojiUser,
-	handleMahojiConfirmation,
 	mahojiClientSettingsFetch,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
 import { ItemBank } from '../types';
-import { assert, clamp, stringMatches } from '../util';
+import { clamp, stringMatches, toKMB } from '../util';
 import getOSItem from '../util/getOSItem';
+import { logError } from '../util/logError';
 import { minionIsBusy } from '../util/minionIsBusy';
-import { minionName } from '../util/minionUtils';
+import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../util/minionUtils';
 import { IMaterialBank } from '.';
 import { MaterialBank } from './MaterialBank';
 
@@ -30,7 +28,21 @@ export enum InventionID {
 	SuperiorBonecrusher = 1,
 	SuperiorDwarfMultiCannon = 2,
 	SuperiorInfernoAdze = 3,
-	SilverHawkBoots = 4
+	SilverHawkBoots = 4,
+	MechaMortar = 5,
+	QuickTrap = 6,
+	ArcaneHarvester = 7,
+	ClueUpgrader = 8,
+	PortableTanner = 9,
+	DrygoreSaw = 10,
+	DwarvenToolkit = 11,
+	RoboFlappy = 12
+
+	// POSSIBLE/LATER IDEAS:
+	// herb cleaner
+	// Auto disassembler - AFTER RELEASE
+	// Engineer Harry, monkey with a spanner
+	// get 5% more xp from lamps, but it goes to a random skill instead.
 }
 
 export type Invention = Readonly<{
@@ -38,10 +50,9 @@ export type Invention = Readonly<{
 	name: string;
 	description: string;
 	item: Item;
-	brokenVersion: Item;
 	materialTypeBank: MaterialBank;
 	flags: readonly InventionFlag[];
-	itemCost: Bank;
+	itemCost: Bank | null;
 	inventionLevelNeeded: number;
 	/**
 	 * Fine tune the amount of materials used in usage of the invention,
@@ -51,17 +62,48 @@ export type Invention = Readonly<{
 	usageCostMultiplier: number | null;
 }>;
 
+export const inventionBoosts = {
+	silverHawks: {
+		passiveXPCalc: (duration: number, agilityLevel: number) => {
+			const minuteSegments = Math.floor(duration / Time.Minute);
+			return agilityLevel * 5 * minuteSegments;
+		},
+		agilitySpeedBoostPercent: 20
+	},
+	superiorBonecrusher: {
+		xpBoostPercent: 25
+	},
+	superiorCannon: {
+		speedBoostPercentSingles: 37,
+		speedBoostPercentMulti: 65
+	},
+	mechaMortar: {
+		herbloreSpeedBoostPercent: 35
+	},
+	quickTrap: {
+		boxTrapBoostPercent: 20
+	},
+	arcaneHarvester: {
+		harvestBoostPercent: 15
+	},
+	drygoreSaw: {
+		buildBoostPercent: 25
+	},
+	dwarvenToolkit: {
+		disassembleBoostPercent: 35
+	}
+};
+
 export const Inventions: readonly Invention[] = [
 	{
 		id: InventionID.SuperiorBonecrusher,
 		name: 'Superior bonecrusher',
-		description: 'Provides a 25% increase in XP over the Gorajan bonecrusher.',
+		description: `Provides a ${inventionBoosts.superiorBonecrusher.xpBoostPercent}% increase in XP over the Gorajan bonecrusher.`,
 		item: getOSItem('Superior bonecrusher'),
-		brokenVersion: getOSItem('Superior bonecrusher (broken)'),
 		materialTypeBank: new MaterialBank({
-			pious: 75,
-			sharp: 10,
-			magic: 15
+			pious: 7,
+			sharp: 1,
+			magic: 2
 		}),
 		flags: ['bank'],
 		itemCost: new Bank().add('Gorajan bonecrusher').freeze(),
@@ -71,13 +113,12 @@ export const Inventions: readonly Invention[] = [
 	{
 		id: InventionID.SuperiorDwarfMultiCannon,
 		name: 'Superior dwarf multicannon',
-		description: 'A 25% stronger version of the Dwarven multicannon.',
+		description: `A ${inventionBoosts.superiorCannon.speedBoostPercentSingles}-${inventionBoosts.superiorCannon.speedBoostPercentMulti}% stronger version of the Dwarven multicannon.`,
 		item: getOSItem('Superior dwarf multicannon'),
-		brokenVersion: getOSItem('Superior dwarf multicannon (broken)'),
 		materialTypeBank: new MaterialBank({
-			strong: 75,
-			heavy: 10,
-			metallic: 15
+			strong: 4,
+			heavy: 2,
+			metallic: 4
 		}),
 		flags: ['bank'],
 		itemCost: new Bank()
@@ -95,12 +136,11 @@ export const Inventions: readonly Invention[] = [
 		name: 'Superior inferno adze',
 		description: 'Chops, and firemakes logs. Mines, and smelts ores.',
 		item: getOSItem('Superior inferno adze'),
-		brokenVersion: getOSItem('Superior inferno adze (broken)'),
 		materialTypeBank: new MaterialBank({
-			sharp: 25,
-			base: 25,
-			metallic: 25,
-			magic: 25
+			sharp: 3,
+			base: 3,
+			metallic: 1,
+			magic: 3
 		}),
 		flags: ['equipped'],
 		itemCost: new Bank().add('Inferno adze').add('Infernal core').add('Dragon pickaxe').freeze(),
@@ -110,54 +150,132 @@ export const Inventions: readonly Invention[] = [
 	{
 		id: InventionID.SilverHawkBoots,
 		name: 'Silverhawk boots',
-		description: 'Boosts agility training, and gives idle agility XP.',
+		description: `Makes agility ${
+			inventionBoosts.silverHawks.agilitySpeedBoostPercent
+		}% faster, and gives up to ${toKMB(
+			inventionBoosts.silverHawks.passiveXPCalc(Time.Hour, 120)
+		)}/hr passive agility XP.`,
 		item: getOSItem('Silverhawk boots'),
-		brokenVersion: getOSItem('Coal'),
 		materialTypeBank: new MaterialBank({
-			swift: 50,
-			protective: 25,
-			dextrous: 25
+			swift: 5,
+			protective: 1,
+			dextrous: 4
 		}),
 		flags: ['equipped'],
 		itemCost: new Bank().add('Graceful boots').freeze(),
 		inventionLevelNeeded: 70,
+		usageCostMultiplier: 0.1
+	},
+	{
+		id: InventionID.MechaMortar,
+		name: 'Mecha mortar',
+		description: `Makes Herblore training ${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% faster.`,
+		item: getOSItem('Mecha mortar'),
+		materialTypeBank: new MaterialBank({
+			organic: 8,
+			metallic: 2
+		}),
+		flags: ['bank'],
+		itemCost: null,
+		inventionLevelNeeded: 80,
+		usageCostMultiplier: 0.8
+	},
+	{
+		id: InventionID.QuickTrap,
+		name: 'Quick trap',
+		description: `Makes box-trap hunting ${inventionBoosts.quickTrap.boxTrapBoostPercent}% faster.`,
+		item: getOSItem('Quick trap'),
+		materialTypeBank: new MaterialBank({
+			precious: 2,
+			imbued: 4,
+			magic: 4
+		}),
+		flags: ['bank'],
+		itemCost: null,
+		inventionLevelNeeded: 80,
+		usageCostMultiplier: 0.8
+	},
+	{
+		id: InventionID.ArcaneHarvester,
+		name: 'Arcane harvester',
+		description: `Increases farming yield by ${inventionBoosts.arcaneHarvester.harvestBoostPercent}%.`,
+		item: getOSItem('Arcane harvester'),
+		materialTypeBank: new MaterialBank({
+			imbued: 2,
+			organic: 3,
+			magic: 5
+		}),
+		flags: ['equipped'],
+		itemCost: null,
+		inventionLevelNeeded: 80,
+		usageCostMultiplier: 0.8
+	},
+	{
+		id: InventionID.PortableTanner,
+		name: 'Portable tanner',
+		description: 'Tans hides received from PvM.',
+		item: getOSItem('Portable tanner'),
+		materialTypeBank: new MaterialBank({
+			metallic: 2,
+			plated: 3,
+			organic: 5
+		}),
+		flags: ['bank'],
+		itemCost: null,
+		inventionLevelNeeded: 90,
+		usageCostMultiplier: 0.8
+	},
+	{
+		id: InventionID.DrygoreSaw,
+		name: 'Drygore saw',
+		description: `${inventionBoosts.drygoreSaw.buildBoostPercent}% faster construction building.`,
+		item: getOSItem('Drygore saw'),
+		materialTypeBank: new MaterialBank({
+			drygore: 8,
+			sharp: 2
+		}),
+		flags: ['bank'],
+		itemCost: null,
+		inventionLevelNeeded: 100,
+		usageCostMultiplier: 0.8
+	},
+	{
+		id: InventionID.ClueUpgrader,
+		name: 'Clue upgrader',
+		description: 'Has a chance to upgrade Beginner-Elite clues to the next tier when received as loot in PvM.',
+		item: getOSItem('Clue upgrader'),
+		materialTypeBank: new MaterialBank({
+			treasured: 8,
+			metallic: 2
+		}),
+		flags: ['bank'],
+		itemCost: null,
+		inventionLevelNeeded: 105,
 		usageCostMultiplier: 0.5
+	},
+	{
+		id: InventionID.DwarvenToolkit,
+		name: 'Dwarven toolkit',
+		description: `Makes disassembly ${inventionBoosts.dwarvenToolkit.disassembleBoostPercent}% faster`,
+		item: getOSItem('Dwarven toolkit'),
+		materialTypeBank: new MaterialBank({
+			dwarven: 8,
+			metallic: 2
+		}),
+		flags: ['bank'],
+		itemCost: null,
+		inventionLevelNeeded: 70,
+		usageCostMultiplier: 0.1
 	}
 ] as const;
 
-function calculateSuccessChance(invLevel: number, cl: Bank, invention: Invention) {
-	let successRatePercent = 1;
-
-	// Higher success for higher invention levels
-	successRatePercent += invLevel * 0.1;
-
-	// 2x success if they have made one before
-	if (cl.has(invention.item.id)) successRatePercent *= 2;
-
-	assert(successRatePercent >= 0 && successRatePercent <= 100);
-	return successRatePercent;
-}
-
-function calculateMaterialCostOfInventionAttempt(invention: Invention) {
+function inventingCost(invention: Invention) {
 	let baseMultiplierPerType = 7;
 	let cost = new MaterialBank();
 	for (const { type, quantity } of invention.materialTypeBank.values()) {
-		cost.add(type, quantity * baseMultiplierPerType);
+		cost.add(type, quantity * 10 * baseMultiplierPerType);
 	}
 	return cost;
-}
-
-function inventingDetails(user: User, invention: Invention) {
-	const stats = getSkillsOfMahojiUser(user, true);
-	const cl = new Bank(user.collectionLogBank as ItemBank);
-	const successChance = calculateSuccessChance(stats.invention, cl, invention);
-
-	const cost = calculateMaterialCostOfInventionAttempt(invention);
-
-	return {
-		successChance,
-		cost
-	};
 }
 
 export async function transactMaterialsFromUser({
@@ -209,16 +327,10 @@ export async function transactMaterialsFromUser({
 	await mahojiUserSettingsUpdate(userID, updateObject);
 }
 
-export async function inventCommand(
-	interaction: SlashCommandInteraction,
-	user: User,
-	klasaUser: KlasaUser,
-	inventionName: string
-): CommandResponse {
+export async function inventCommand(user: User, klasaUser: KlasaUser, inventionName: string): CommandResponse {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	const invention = Inventions.find(i => stringMatches(i.name, inventionName));
 	if (!invention) return "That's not a valid invention.";
-	const details = inventingDetails(user, invention);
 	if (!user.unlocked_blueprints.includes(invention.id)) {
 		return `You don't have the blueprint for this Invention unlocked, your minion doesn't know how to make it! To unlock the blueprint, you can do research with one of these materials: ${invention.materialTypeBank
 			.values()
@@ -227,56 +339,28 @@ export async function inventCommand(
 	}
 
 	const ownedBank = new MaterialBank(user.materials_owned as IMaterialBank);
+	const cost = inventingCost(invention);
 
-	const attemptsCanDo = ownedBank.fits(details.cost);
-	if (attemptsCanDo === 0) {
-		return `You don't have enough materials to do even one attempt at inventing this item. You need atleast: ${details.cost}.`;
+	if (invention.itemCost && !klasaUser.owns(invention.itemCost)) {
+		return `You don't own the items needed to create this invention, you need: ${invention.itemCost}.`;
+	}
+	if (!ownedBank.has(cost)) {
+		return `You don't have enough materials to invent this item, it costs: ${cost}.`;
 	}
 
-	if (!klasaUser.owns(invention.itemCost)) {
-		return `You don't own the items needed to create this invention, you need: ${invention.itemCost}. You only have to use these items if you succesfully invent it.`;
-	}
-
-	let attemptsToDo = Math.min(attemptsCanDo, 10);
-
-	await handleMahojiConfirmation(
-		interaction,
-		`${minionName(
-			user
-		)} will do up to ${attemptsToDo} attempts at making this item, or less if you succeed earlier. Each attempt will cost materials. They have a ${
-			details.successChance
-		}% chance of success. Are you sure you want to spend the materials to do this?`
-	);
-
-	let didSucceed = false;
-	let attemptsDone = 0;
-	for (let i = 0; i < attemptsToDo; i++) {
-		attemptsDone++;
-		if (percentChance(details.successChance)) {
-			didSucceed = true;
-			break;
-		}
-	}
-
-	const cost = details.cost.clone().multiply(attemptsDone);
 	await transactMaterialsFromUser({
 		userID: BigInt(user.id),
 		remove: cost
 	});
 
-	if (didSucceed) {
+	if (invention.itemCost) {
 		await klasaUser.removeItemsFromBank(invention.itemCost);
-		const loot = new Bank().add(invention.item.id);
-		await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
-		return `${userMention(user.id)}, after ${attemptsDone} attempts at a ${
-			details.successChance
-		}% chance of success, your minion succesfully invented a ${
-			invention.name
-		}! You received ${loot}. Items removed: ${invention.itemCost}. Materials used: ${cost}.`;
 	}
-	return `${userMention(user.id)}, after ${attemptsDone} attempts at a ${
-		details.successChance
-	}% chance of success, your minion failed to invent a ${invention.name}. Materials used: ${cost}.`;
+	const loot = new Bank().add(invention.item.id);
+	await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
+	return `${userMention(user.id)}, your minion created a ${invention.name}! (${
+		invention.description
+	}) Items removed: ${invention.itemCost ?? 'None'}. Materials used: ${cost}.`;
 }
 
 type InventionItemBoostResult =
@@ -294,9 +378,7 @@ export async function canAffordInventionBoost(
 	duration: number
 ) {
 	const mUser =
-		typeof userID == 'bigint' || typeof userID === 'string'
-			? await mahojiUsersSettingsFetch(userID, { materials_owned: true })
-			: userID;
+		typeof userID == 'bigint' || typeof userID === 'string' ? await mahojiUsersSettingsFetch(userID) : userID;
 	const invention = Inventions.find(i => i.id === inventionID)!;
 	if (invention.usageCostMultiplier === null) {
 		throw new Error('Tried to calculate cost of invention that has no cost.');
@@ -306,6 +388,7 @@ export async function canAffordInventionBoost(
 	let multiplier = Math.ceil(duration / (Time.Minute * 3));
 	multiplier = clamp(Math.floor(multiplier * invention.usageCostMultiplier), 1, 1000);
 	materialCost.add(invention.materialTypeBank.clone().multiply(multiplier));
+
 	return {
 		mUser,
 		invention,
@@ -324,7 +407,23 @@ export async function inventionItemBoost({
 	inventionID: InventionID;
 	duration: number;
 }): Promise<InventionItemBoostResult> {
-	const { materialCost, canAfford, mUser } = await canAffordInventionBoost(userID, inventionID, duration);
+	const { materialCost, canAfford, mUser, invention } = await canAffordInventionBoost(userID, inventionID, duration);
+
+	// If it has to be equipped, and isn't, or has to be in bank, and isn't, fail.
+	if (
+		mUser.disabled_inventions.includes(invention.id) ||
+		(invention.flags.includes('equipped') && !userHasItemsEquippedAnywhere(mUser, invention.item.id)) ||
+		(invention.flags.includes('bank') && !hasItemsEquippedOrInBank(mUser, [invention.item.id]))
+	) {
+		console.log(
+			mUser.id,
+			invention.name,
+			mUser.disabled_inventions.includes(invention.id),
+			invention.flags.includes('equipped') && !userHasItemsEquippedAnywhere(mUser, invention.item.id),
+			invention.flags.includes('bank') && !hasItemsEquippedOrInBank(mUser, [invention.item.id])
+		);
+		return { success: false };
+	}
 
 	if (!canAfford) {
 		return {
@@ -338,7 +437,8 @@ export async function inventionItemBoost({
 			addToInventionCostBank: true
 		});
 		return { success: true, materialCost };
-	} catch {
+	} catch (err) {
+		logError(err, { user_id: mUser.id });
 		return { success: false };
 	}
 }

@@ -47,7 +47,7 @@ export async function researchCommand({
 	material: MaterialType;
 	inputQuantity: number | undefined;
 	channelID: bigint;
-	interaction: SlashCommandInteraction;
+	interaction?: SlashCommandInteraction;
 }): CommandResponse {
 	material = material.toLowerCase() as MaterialType;
 	if (!materialTypes.includes(material)) {
@@ -72,7 +72,7 @@ export async function researchCommand({
 	}
 
 	const inventionsCanUnlockFromThis = inventionsCanUnlockFromResearch(user, material);
-	if (inventionsCanUnlockFromThis.length === 0) {
+	if (inventionsCanUnlockFromThis.length === 0 && interaction) {
 		await handleMahojiConfirmation(
 			interaction,
 			`You're trying to research a material that won't have a chance of unlocking any blueprints, because none are available or you don't have the required level. Are you sure you want to still research with '${material}'?`

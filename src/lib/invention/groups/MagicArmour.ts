@@ -44,13 +44,6 @@ export const MagicArmour: DisassemblySourceGroup = {
 			lvl: 45
 		},
 		{ item: i('Infinity bottoms'), lvl: 55 },
-		{
-			item: ['3rd age cloak', '3rd age druidic robe bottoms', '3rd age druidic robe top', '3rd age mage hat'].map(
-				i
-			),
-			lvl: 65,
-			flags: new Set(['third_age'])
-		},
 		{ item: i("Ahrim's robeskirt"), lvl: 70 },
 		{ item: i("Ahrim's robetop"), lvl: 70 },
 		{ item: i("Ahrim's hood"), lvl: 70 },

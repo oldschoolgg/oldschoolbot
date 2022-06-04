@@ -2047,7 +2047,8 @@ export const customPetsCL = resolveItems([
 	'Queen black dragonling',
 	'Mr. E',
 	'Nexterminator',
-	'Phoenix eggling'
+	'Phoenix eggling',
+	'Cogsworth'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([

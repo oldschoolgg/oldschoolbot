@@ -1,12 +1,13 @@
 import { Bank } from 'oldschooljs';
 
+import { inventionBoosts } from '../../invention/inventions';
 import { Consumable } from '../types';
 
 // Configure boost percents
 export const boostCannon = 30;
 export const boostCannonMulti = 55;
-export const boostSuperiorCannon = 40;
-export const boostSuperiorCannonMulti = 70;
+export const boostSuperiorCannon = inventionBoosts.superiorCannon.speedBoostPercentSingles;
+export const boostSuperiorCannonMulti = inventionBoosts.superiorCannon.speedBoostPercentMulti;
 export const boostIceBurst = 35;
 export const boostIceBarrage = 55;
 // What % of the kills should be cannon XP

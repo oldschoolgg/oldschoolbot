@@ -1,6 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { calcWhatPercent, percentChance, roll, Time, uniqueArr } from 'e';
+import { calcWhatPercent, percentChance, reduceNumByPercent, roll, Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -22,8 +22,15 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
 import { handleTripFinish } from '../util/handleTripFinish';
 import { minionName } from '../util/minionUtils';
-import { DisassembleFlag, DisassemblyItem, DisassemblySourceGroup, DisassemblySourceGroups, MaterialType } from '.';
-import { transactMaterialsFromUser } from './inventions';
+import {
+	DisassembleFlag,
+	DisassemblyItem,
+	DisassemblySourceGroup,
+	DisassemblySourceGroups,
+	IMaterialBank,
+	MaterialType
+} from '.';
+import { inventionBoosts, InventionID, inventionItemBoost, transactMaterialsFromUser } from './inventions';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 
@@ -51,6 +58,7 @@ type DisassemblyResult =
 			quantity: number;
 			duration: number;
 			cost: Bank;
+			messages: string[];
 			error: null;
 	  }
 	| {
@@ -92,7 +100,7 @@ function flagEffectsInDisassembly(item: DisassemblyItem, loot: MaterialBank) {
 	}
 }
 
-export function handleDisassembly({
+export async function handleDisassembly({
 	user,
 	inputQuantity,
 	item
@@ -100,7 +108,7 @@ export function handleDisassembly({
 	user: User;
 	inputQuantity?: number;
 	item: Item;
-}): DisassemblyResult {
+}): Promise<DisassemblyResult> {
 	const _group = findDisassemblyGroup(item);
 	if (!_group) throw new Error(`No data for ${item.name}`);
 	const { data, group } = _group;
@@ -118,14 +126,28 @@ export function handleDisassembly({
 	const bank = new Bank(user.bank as ItemBank).freeze();
 
 	// The time it takes to disassemble 1 of this item.
-	const timePer = Time.Second * 0.33;
+	let timePer = Time.Second * 0.33;
+
+	let messages: string[] = [];
+	if (bank.has('Dwarven toolkit')) {
+		const boostRes = await inventionItemBoost({
+			userID: user.id,
+			inventionID: InventionID.DwarvenToolkit,
+			duration: (inputQuantity ?? bank.amount(item.id)) * timePer
+		});
+		if (boostRes.success) {
+			timePer = reduceNumByPercent(timePer, inventionBoosts.dwarvenToolkit.disassembleBoostPercent);
+			messages.push(
+				`${inventionBoosts.dwarvenToolkit.disassembleBoostPercent}% faster disassembly from Dwarven toolkit (Removed ${boostRes.materialCost})`
+			);
+		}
+	}
 
 	// The max amount of items they can disassemble this trip
 	const maxCanDo = Math.floor(calcMaxTripLength(user) / timePer);
 
 	// The actual quantity they'll disassemble.
 	const realQuantity = clamp(inputQuantity ?? bank.amount(item.id), 1, maxCanDo);
-
 	const duration = realQuantity * timePer;
 
 	// An item with lvl 1 has a ~99% chance of becoming junk.
@@ -142,6 +164,10 @@ export function handleDisassembly({
 		}
 	}
 
+	if (materialLoot.has('drygore')) materialLoot.bank.drygore! *= 10;
+	if (materialLoot.has('dwarven')) materialLoot.bank.dwarven! *= 10;
+	if (materialLoot.has('treasured')) materialLoot.bank.treasured! *= 10;
+
 	const { xp } = calculateDisXP(realQuantity, data);
 
 	const cost = new Bank().add(item.name, realQuantity);
@@ -154,7 +180,8 @@ export function handleDisassembly({
 		quantity: realQuantity,
 		duration,
 		cost,
-		error: null
+		error: null,
+		messages
 	};
 }
 
@@ -169,7 +196,7 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			cantBeDisassembled.push(item);
 			continue;
 		}
-		const result = handleDisassembly({
+		const result = await handleDisassembly({
 			user,
 			inputQuantity: qty,
 			item
@@ -200,6 +227,8 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 export interface DisassembleTaskOptions extends ActivityTaskOptions {
 	item: number;
 	quantity: number;
+	materials: IMaterialBank;
+	xp: number;
 }
 
 export async function disassembleCommand({
@@ -219,7 +248,7 @@ export async function disassembleCommand({
 	if (!item) return "That's not a valid item.";
 	const group = findDisassemblyGroup(item);
 	if (!group) return 'This item cannot be disassembled.';
-	const result = handleDisassembly({
+	const result = await handleDisassembly({
 		user: mahojiUser,
 		inputQuantity: quantityToDisassemble,
 		item
@@ -237,13 +266,16 @@ export async function disassembleCommand({
 		duration: result.duration,
 		type: 'Disassembling',
 		item: item.id,
-		quantity: result.quantity
+		quantity: result.quantity,
+		materials: result.materials.bank,
+		xp: result.xp
 	});
 
 	return `${klasaUser}, ${klasaUser.minionName} is now disassembling ${result.quantity}x ${
 		item.name
 	}, the trip will take approximately ${formatDuration(result.duration)}
-**Junk Chance:** ${result.junkChance.toFixed(2)}%`;
+**Junk Chance:** ${result.junkChance.toFixed(2)}%
+${result.messages.length > 0 ? `**Messages:** ${result.messages.join(', ')}` : ''}`;
 }
 
 export async function disassemblyTask(data: DisassembleTaskOptions) {
@@ -252,18 +284,10 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 	const item = getOSItem(data.item);
 
-	const result = handleDisassembly({
-		user: mahojiUser,
-		inputQuantity: quantity,
-		item
-	});
-	if (result.error !== null) throw new Error('WHAT THE FUCK');
 	const cost = new Bank().add(item.id, quantity);
-	console.log(result.materials.bank);
-	console.log(cost.bank);
 	await transactMaterialsFromUser({
 		userID: BigInt(data.userID),
-		add: result.materials,
+		add: new MaterialBank(data.materials),
 		addToDisassembledItemsBank: cost
 	});
 
@@ -276,17 +300,36 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 
 	const xpStr = await klasaUser.addXP({
 		skillName: SkillsEnum.Invention,
-		amount: result.xp,
+		amount: data.xp,
 		duration: data.duration,
 		multiplier: false
 	});
+
+	let str = `${userMention(data.userID)}, ${minionName(
+		mahojiUser
+	)} finished disassembling ${cost}. You received these materials: ${new MaterialBank(data.materials)}.
+${xpStr}`;
+
+	const loot = new Bank();
+	const minutes = Math.floor(data.duration / Time.Minute);
+	const cogsworthChancePerHour = 250;
+	const chancePerMinute = cogsworthChancePerHour * 60;
+	for (let i = 0; i < minutes; i++) {
+		if (roll(chancePerMinute)) {
+			loot.add('Cogsworth');
+		}
+	}
+	if (loot.has('Cogsworth')) {
+		str += `**While disassembling some items, your minion suddenly was inspired to create a mechanical pet out of some scraps! Received ${loot}.`;
+	}
+	if (loot.length > 0) {
+		await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
+	}
+
 	handleTripFinish(
 		klasaUser,
 		data.channelID,
-		`${userMention(data.userID)}, ${minionName(
-			mahojiUser
-		)} finished disassembling ${cost}. You received these materials: ${result.materials}.
-${xpStr}`,
+		str,
 		[
 			'invention',
 			{

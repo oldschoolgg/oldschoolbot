@@ -1,10 +1,11 @@
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { BitField } from '../../lib/constants';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { courses } from '../../lib/skilling/skills/agility';
@@ -12,6 +13,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
 const unlimitedFireRuneProviders = [
@@ -149,8 +151,23 @@ export const lapsCommand: OSBMahojiCommand = {
 
 		const maxTripLength = user.maxTripLength('Agility');
 
-		// If no quantity provided, set it to the max.
-		const timePerLap = course.lapTime * Time.Second;
+		let timePerLap = course.lapTime * Time.Second;
+
+		let boosts: string[] = [];
+		if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots')) {
+			const costRes = await inventionItemBoost({
+				userID: user.id,
+				inventionID: InventionID.SilverHawkBoots,
+				duration: timePerLap * (options.quantity ?? Math.floor(maxTripLength / timePerLap))
+			});
+			if (costRes.success) {
+				timePerLap = reduceNumByPercent(timePerLap, inventionBoosts.silverHawks.agilitySpeedBoostPercent);
+				boosts.push(
+					`${inventionBoosts.silverHawks.agilitySpeedBoostPercent}% faster for Silverhawk boots (removed ${costRes.materialCost})`
+				);
+			}
+		}
+
 		let { quantity } = options;
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timePerLap);
@@ -187,6 +204,9 @@ export const lapsCommand: OSBMahojiCommand = {
 			await user.removeItemsFromBank(alchResult.bankToRemove);
 			response += `\n\nYour minion is alching ${alchResult.maxCasts}x ${alchResult.itemToAlch.name} while training. Removed ${alchResult.bankToRemove} from your bank.`;
 			updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
+		}
+		if (boosts.length > 0) {
+			response += `\n**Boosts:** ${boosts.join(', ')}`;
 		}
 
 		await addSubTaskToActivityTask<AgilityActivityTaskOptions>({

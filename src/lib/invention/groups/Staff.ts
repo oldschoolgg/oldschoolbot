@@ -49,7 +49,6 @@ export const Staff: DisassemblySourceGroup = {
 			lvl: 60
 		},
 		{ item: i('Lunar staff'), lvl: 65 },
-		{ item: i('3rd age druidic staff'), lvl: 65, flags: new Set(['third_age']) },
 		{ item: i("Ahrim's staff"), lvl: 65, flags: new Set(['barrows']) },
 		{ item: i('Staff of light'), lvl: 75 },
 		{ item: i("Zuriel's staff"), lvl: 78 }
