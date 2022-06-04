@@ -81,12 +81,6 @@ const tripFinishEffects: {
 		}
 	},
 	{
-		name: 'Random Events',
-		fn: async ({ data, messages, user }) => {
-			await triggerRandomEvent(user, data.duration, messages);
-		}
-	},
-	{
 		name: 'Loot Doubling',
 		fn: async ({ data, messages, user, loot }) => {
 			if (
@@ -113,7 +107,6 @@ const tripFinishEffects: {
 			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
 			let bonusLoot = new Bank();
-
 			switch (pet) {
 				case itemID('Peky'): {
 					for (let i = 0; i < minutes; i++) {
@@ -300,7 +293,6 @@ export async function handleTripFinish(
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
 	}
-
 	sendToChannelID(channelID, { content: message, image: attachment });
 
 	if (!onContinue && !clueReceived) return;
