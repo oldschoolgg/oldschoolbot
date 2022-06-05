@@ -1917,6 +1917,7 @@ export const capesCL = resolveItems([
 	'Ardougne cloak 4',
 	'Obsidian cape',
 	'Obsidian cape (r)',
+	'Jester cape',
 	'Cape of skulls',
 	'Team cape zero',
 	'Team cape i',
