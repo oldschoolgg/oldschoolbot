@@ -179,6 +179,7 @@ const tripFinishEffects: {
 				default: {
 				}
 			}
+			await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
 		}
 	},
 	{
