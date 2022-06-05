@@ -5,7 +5,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { allItemsThatCanBeDisassembledIDs, IMaterialBank, MaterialType, materialTypes } from '../../lib/invention';
 import { bankDisassembleAnalysis, disassembleCommand, findDisassemblyGroup } from '../../lib/invention/disassemble';
-import { inventCommand, Inventions } from '../../lib/invention/inventions';
+import { inventCommand, inventingCost, Inventions } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -157,6 +157,10 @@ export const askCommand: OSBMahojiCommand = {
 						{
 							name: 'Global Invention Material Cost',
 							value: 'invention_mat_cost'
+						},
+						{
+							name: 'Material Spread',
+							value: 'material_spread'
 						}
 					]
 				}
@@ -199,7 +203,8 @@ export const askCommand: OSBMahojiCommand = {
 				| 'materials_researched'
 				| 'global_disassembled'
 				| 'unlocked_blueprints'
-				| 'invention_mat_cost';
+				| 'invention_mat_cost'
+				| 'material_spread';
 		};
 		details?: { invention: string };
 	}>) => {
@@ -235,8 +240,8 @@ export const askCommand: OSBMahojiCommand = {
 				.values()
 				.map(i => `${i.type} (${i.quantity})`)
 				.join(', ')}
-- ${invention.flags.includes('equipped') ? 'Must be equipped' : 'Works in bank'}
-- ${invention.itemCost ? `Requires ${invention.itemCost} to make` : 'Requires no items to make'}`;
+- Required cost to make: ${inventingCost(invention)} and ${invention.itemCost ? `${invention.itemCost}` : 'No items'}
+- ${invention.flags.includes('equipped') ? 'Must be equipped' : 'Works in bank'}`;
 		}
 
 		if (options.tools) {
@@ -330,6 +335,19 @@ These Inventions are still not unlocked: ${locked
 					return `The Global Amount of Materials spent on inventing/using inventions: ${new MaterialBank(
 						invCost.invention_materials_cost as IMaterialBank
 					)}`;
+				}
+				case 'material_spread': {
+					const mats = new MaterialBank();
+					for (const invention of Inventions) {
+						mats.add(invention.materialTypeBank);
+					}
+					let res = ['Material Spread (to see which materials are used the most/least for inventions)'];
+					for (const type of [...materialTypes].sort((a, b) => mats.amount(b) - mats.amount(a))) {
+						res.push(`${type}\t${mats.amount(type) ?? 0}`);
+					}
+					return {
+						attachments: [{ fileName: 'material_spread.txt', buffer: Buffer.from(res.join('\n')) }]
+					};
 				}
 			}
 		}

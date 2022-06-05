@@ -36,13 +36,19 @@ export enum InventionID {
 	PortableTanner = 9,
 	DrygoreSaw = 10,
 	DwarvenToolkit = 11,
-	RoboFlappy = 12
-
+	MechaRod = 12,
+	MasterHammerAndChisel = 13,
+	// RoboFlappy = 12
+	// crafting one?
+	// mining could add boost, like obsidian pickaxe, but will it effect moktang? (where get obsidian?)
+	
 	// POSSIBLE/LATER IDEAS:
 	// herb cleaner
 	// Auto disassembler - AFTER RELEASE
 	// Engineer Harry, monkey with a spanner
 	// get 5% more xp from lamps, but it goes to a random skill instead.
+	// an invention tool that converts logs into planks when chopping
+
 }
 
 export type Invention = Readonly<{
@@ -91,6 +97,12 @@ export const inventionBoosts = {
 	},
 	dwarvenToolkit: {
 		disassembleBoostPercent: 35
+	},
+	mechaRod: {
+		speedBoostPercent: 35
+	},
+	masterHammerAndChisel: {
+		speedBoostPercent: 35 
 	}
 };
 
@@ -163,7 +175,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['equipped'],
 		itemCost: new Bank().add('Graceful boots').freeze(),
-		inventionLevelNeeded: 70,
+		inventionLevelNeeded: 90,
 		usageCostMultiplier: 0.1
 	},
 	{
@@ -177,7 +189,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 80,
+		inventionLevelNeeded: 90,
 		usageCostMultiplier: 0.8
 	},
 	{
@@ -207,7 +219,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['equipped'],
 		itemCost: null,
-		inventionLevelNeeded: 80,
+		inventionLevelNeeded: 110,
 		usageCostMultiplier: 0.8
 	},
 	{
@@ -231,8 +243,8 @@ export const Inventions: readonly Invention[] = [
 		description: `${inventionBoosts.drygoreSaw.buildBoostPercent}% faster construction building.`,
 		item: getOSItem('Drygore saw'),
 		materialTypeBank: new MaterialBank({
-			drygore: 8,
-			sharp: 2
+			drygore: 7,
+			sharp: 3
 		}),
 		flags: ['bank'],
 		itemCost: null,
@@ -265,11 +277,42 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 70,
-		usageCostMultiplier: 0.1
+		usageCostMultiplier: 0.05
+	},
+	{
+		id: InventionID.MechaRod,
+		name: 'Mecha Rod',
+		description: `Makes fishing ${inventionBoosts.mechaRod.speedBoostPercent}% faster.`,
+		item: getOSItem('Mecha rod'),
+		materialTypeBank: new MaterialBank({
+			flexible: 5,
+			organic: 3,
+			strong: 2,
+		}),
+		flags: ['bank'],
+		itemCost: null,
+		inventionLevelNeeded: 60,
+		usageCostMultiplier: 0.9
+	},
+	{
+		id: InventionID.MasterHammerAndChisel,
+		name: 'Master Hammer and Chisel',
+		description: `Makes Crafting ${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster.`,
+		item: getOSItem('Master hammer and chisel'),
+		materialTypeBank: new MaterialBank({
+			simple: 3,
+			sharp: 2,
+			metallic: 2,
+			swift: 3
+		}),
+		flags: ['bank'],
+		itemCost: null,
+		inventionLevelNeeded: 80,
+		usageCostMultiplier: 0.9
 	}
 ] as const;
 
-function inventingCost(invention: Invention) {
+export function inventingCost(invention: Invention) {
 	let baseMultiplierPerType = 7;
 	let cost = new MaterialBank();
 	for (const { type, quantity } of invention.materialTypeBank.values()) {

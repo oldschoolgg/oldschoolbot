@@ -91,5 +91,5 @@ export const Projectiles: DisassemblySourceGroup = {
 		{ item: i('Dragonstone bolts (e)'), lvl: 71 },
 		{ item: i('Onyx dragon bolts'), lvl: 84 }
 	],
-	parts: { simple: 35, swift: 2, sharp: 63 }
+	parts: { simple: 10, swift: 30, sharp: 60 }
 };

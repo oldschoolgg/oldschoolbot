@@ -26,3 +26,5 @@ addInvention(63_314, 'Clue upgrader');
 addInvention(63_316, 'Portable tanner');
 addInvention(63_318, 'Drygore saw');
 addInvention(63_320, 'Dwarven toolkit');
+addInvention(63_322, 'Mecha rod');
+addInvention(63_324, 'Master hammer and chisel');

@@ -1,19 +1,29 @@
 import getOSItem from '../../util/getOSItem';
 import { DisassemblySourceGroup } from '..';
 
-const i = getOSItem;
-
 export const Drygores: DisassemblySourceGroup = {
 	name: 'Drygores',
 	items: [
-		{ item: i('Drygore rapier'), lvl: 120 },
-		{ item: i('Offhand drygore rapier'), lvl: 120 },
-
-		{ item: i('Drygore longsword'), lvl: 120 },
-		{ item: i('Offhand drygore longsword'), lvl: 120 },
-
-		{ item: i('Drygore mace'), lvl: 120 },
-		{ item: i('Offhand drygore mace'), lvl: 120 }
+		{
+			item: [
+				'Drygore rapier',
+				'Drygore rapier (blood)',
+				'Drygore rapier (ice)',
+				'Drygore rapier (shadow)',
+				'Drygore rapier (3a)',
+				'Drygore mace',
+				'Drygore mace (blood)',
+				'Drygore mace (ice)',
+				'Drygore mace (shadow)',
+				'Drygore mace (3a)',
+				'Drygore longsword',
+				'Drygore longsword (blood)',
+				'Drygore longsword (ice)',
+				'Drygore longsword (shadow)',
+				'Drygore longsword (3a)'
+			].map(getOSItem),
+			lvl: 120
+		}
 	],
 	parts: { drygore: 100 }
 };

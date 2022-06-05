@@ -337,7 +337,8 @@ const source: [string, (string | number)[]][] = [
 	['Kodai wand', ['Virtus wand']],
 	// Inventions
 	['Inferno adze', ['Superior inferno adze']],
-	['Gorajan bonecrusher', ['Superior bonecrusher']]
+	['Gorajan bonecrusher', ['Superior bonecrusher']],
+	['Magic secateurs', ['Arcane harvester']]
 ];
 
 for (const { baseItem, dyedVersions } of dyedItems) {

@@ -8,6 +8,7 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
+import { DisassemblySourceGroups, materialTypes } from '../invention';
 import { monkeyEatables } from '../monkeyRumble';
 import { allOpenables } from '../openables';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
@@ -1229,4 +1230,16 @@ for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 			});
 		}
 	}
+}
+
+for (const type of materialTypes) {
+	const items = DisassemblySourceGroups.filter(i => Boolean(i.parts[type]))
+		.map(i => i.items.map(i => (Array.isArray(i.item) ? i.item : [i.item])))
+		.flat(5)
+		.map(i => i.id);
+	filterableTypes.push({
+		name: `${type}-material`,
+		aliases: [type],
+		items: () => items
+	});
 }

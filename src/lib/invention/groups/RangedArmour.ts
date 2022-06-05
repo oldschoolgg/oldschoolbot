@@ -142,5 +142,5 @@ export const RangedArmour: DisassemblySourceGroup = {
 			flags: new Set(['corporeal'])
 		}
 	],
-	parts: { protective: 2 }
+	parts: { protective: 20, dextrous: 40 }
 };

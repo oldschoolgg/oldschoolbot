@@ -41,7 +41,6 @@ import { Staff } from './Staff';
 import { Sword } from './Sword';
 import { Talisman } from './Talisman';
 import { ThirdAge } from './ThirdAge';
-import { ThrowingAxe } from './ThrowingAxe';
 import { TreasureTrails } from './TreasureTrails';
 import { UncutGems } from './UncutGems';
 import { UnstrungBows } from './UnstrungBows';
@@ -67,7 +66,6 @@ export default [
 	BoltTips,
 	Planks,
 	Halberd,
-	ThrowingAxe,
 	Bars,
 	Bones,
 	RangedArmour,

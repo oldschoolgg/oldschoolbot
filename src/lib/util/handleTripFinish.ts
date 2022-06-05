@@ -232,7 +232,7 @@ const tripFinishEffects: {
 	{
 		name: 'Invention Effects',
 		fn: async ({ data, messages, user }) => {
-			if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots')) {
+			if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots') && data.duration > Time.Minute) {
 				const costRes = await inventionItemBoost({
 					userID: user.id,
 					inventionID: InventionID.SilverHawkBoots,
