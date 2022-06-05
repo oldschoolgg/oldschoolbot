@@ -276,7 +276,7 @@ export async function handleTripFinish(
 	if (onContinue) {
 		messages.push(`Say \`${continuationChar}\` to repeat this trip`);
 	}
-	await Promise.all(tripFinishEffects.map(effect => effect.fn({ data, user, loot, messages })));
+	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
 	const clueReceived = loot ? clueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
