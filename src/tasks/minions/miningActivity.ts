@@ -160,7 +160,9 @@ export default class extends Task {
 
 		const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
 		if (hasAdze) {
-			const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
+			const smeltedOre = Smithing.Bars.find(
+				o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
+			);
 			if (smeltedOre) {
 				loot.remove(ore.id, loot.amount(ore.id));
 				loot.add(smeltedOre.id, quantity);

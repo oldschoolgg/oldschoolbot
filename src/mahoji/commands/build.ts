@@ -69,8 +69,6 @@ export const buildCommand: OSBMahojiCommand = {
 
 		const maxTripLength = user.maxTripLength('Construction');
 		const maxForMaterials = planksHas / planksQtyCost;
-		const maxForTime = Math.floor(maxTripLength / timeToBuildSingleObject);
-		let defaultQuantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
 
 		let boosts: string[] = [];
 
@@ -78,7 +76,7 @@ export const buildCommand: OSBMahojiCommand = {
 			const boostRes = await inventionItemBoost({
 				userID: BigInt(user.id),
 				inventionID: InventionID.DrygoreSaw,
-				duration: defaultQuantity * timeToBuildSingleObject
+				duration: options.quantity ? options.quantity * timeToBuildSingleObject : maxTripLength
 			});
 			if (boostRes.success) {
 				timeToBuildSingleObject = reduceNumByPercent(
@@ -90,6 +88,10 @@ export const buildCommand: OSBMahojiCommand = {
 				);
 			}
 		}
+		const maxForTime = Math.floor(maxTripLength / timeToBuildSingleObject);
+
+		let defaultQuantity = Math.floor(Math.min(maxForTime, Math.max(maxForMaterials, 1)));
+
 		let { quantity } = options;
 		if (!quantity) quantity = defaultQuantity;
 
@@ -132,11 +134,14 @@ export const buildCommand: OSBMahojiCommand = {
 
 		const xpHr = `${(((object.xp * quantity) / (duration / Time.Minute)) * 60).toLocaleString()} XP/Hr`;
 
-		return `${user.minionName} is now constructing ${quantity}x ${object.name}, it'll take around ${formatDuration(
-			duration
-		)} to finish. Removed ${cost} from your bank. **${xpHr}**
+		let str = `${user.minionName} is now constructing ${quantity}x ${
+			object.name
+		}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost} from your bank. **${xpHr}**
 
-You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.
-${hasScroll ? 'Your Scroll of proficiency allows you to save 15% of your planks.' : ''}`;
+You paid ${gpNeeded.toLocaleString()} GP, because you used ${invsPerTrip} inventories of planks.`;
+		if (boosts.length > 0) {
+			str += `**Boosts:** ${boosts.join(', ')}`;
+		}
+		return str;
 	}
 };

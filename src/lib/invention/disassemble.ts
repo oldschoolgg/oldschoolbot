@@ -165,7 +165,7 @@ export async function handleDisassembly({
 	}
 
 	if (materialLoot.has('drygore')) materialLoot.bank.drygore! *= 190;
-	if (materialLoot.has('dwarven')) materialLoot.bank.dwarven! *= 10;
+	if (materialLoot.has('dwarven')) materialLoot.bank.dwarven! *= 190;
 	if (materialLoot.has('treasured')) materialLoot.bank.treasured! *= 10;
 
 	const { xp } = calculateDisXP(realQuantity, data);

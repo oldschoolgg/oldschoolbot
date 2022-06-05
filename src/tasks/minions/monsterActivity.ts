@@ -116,6 +116,7 @@ async function clueUpgraderEffect(user: KlasaUser, loot: Bank, messages: string[
 			}
 		}
 	}
+	if (upgradedClues.length === 0) return;
 	const boostRes = await inventionItemBoost({
 		userID: BigInt(user.id),
 		inventionID: InventionID.ClueUpgrader,

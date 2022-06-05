@@ -37,18 +37,17 @@ export enum InventionID {
 	DrygoreSaw = 10,
 	DwarvenToolkit = 11,
 	MechaRod = 12,
-	MasterHammerAndChisel = 13,
+	MasterHammerAndChisel = 13
 	// RoboFlappy = 12
 	// crafting one?
 	// mining could add boost, like obsidian pickaxe, but will it effect moktang? (where get obsidian?)
-	
+
 	// POSSIBLE/LATER IDEAS:
 	// herb cleaner
 	// Auto disassembler - AFTER RELEASE
 	// Engineer Harry, monkey with a spanner
 	// get 5% more xp from lamps, but it goes to a random skill instead.
 	// an invention tool that converts logs into planks when chopping
-
 }
 
 export type Invention = Readonly<{
@@ -102,7 +101,7 @@ export const inventionBoosts = {
 		speedBoostPercent: 35
 	},
 	masterHammerAndChisel: {
-		speedBoostPercent: 35 
+		speedBoostPercent: 35
 	}
 };
 
@@ -287,7 +286,7 @@ export const Inventions: readonly Invention[] = [
 		materialTypeBank: new MaterialBank({
 			flexible: 5,
 			organic: 3,
-			strong: 2,
+			strong: 2
 		}),
 		flags: ['bank'],
 		itemCost: null,
@@ -327,14 +326,14 @@ export async function transactMaterialsFromUser({
 	remove,
 	addToDisassembledItemsBank,
 	addToResearchedMaterialsBank,
-	addToInventionCostBank
+	addToGlobalInventionCostBank
 }: {
 	userID: bigint;
 	add?: MaterialBank;
 	remove?: MaterialBank;
 	addToDisassembledItemsBank?: Bank;
 	addToResearchedMaterialsBank?: boolean;
-	addToInventionCostBank?: boolean;
+	addToGlobalInventionCostBank?: boolean;
 }) {
 	const user = await mahojiUsersSettingsFetch(userID, {
 		materials_owned: true,
@@ -360,10 +359,11 @@ export async function transactMaterialsFromUser({
 			.add(user.researched_materials_bank as IMaterialBank).bank;
 	}
 
-	if (addToInventionCostBank && remove) {
+	if (addToGlobalInventionCostBank && remove) {
 		const current = await mahojiClientSettingsFetch({ invention_materials_cost: true });
 		await clientSettingsUpdate({
-			invention_materials_cost: new MaterialBank(current as IMaterialBank).add(remove).bank
+			invention_materials_cost: new MaterialBank(current.invention_materials_cost as IMaterialBank).add(remove)
+				.bank
 		});
 	}
 
@@ -393,7 +393,8 @@ export async function inventCommand(user: User, klasaUser: KlasaUser, inventionN
 
 	await transactMaterialsFromUser({
 		userID: BigInt(user.id),
-		remove: cost
+		remove: cost,
+		addToGlobalInventionCostBank: true
 	});
 
 	if (invention.itemCost) {
@@ -477,7 +478,7 @@ export async function inventionItemBoost({
 		await transactMaterialsFromUser({
 			userID: BigInt(mUser.id),
 			remove: materialCost,
-			addToInventionCostBank: true
+			addToGlobalInventionCostBank: true
 		});
 		return { success: true, materialCost };
 	} catch (err) {
