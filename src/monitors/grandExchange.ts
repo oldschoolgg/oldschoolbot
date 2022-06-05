@@ -3,7 +3,10 @@ import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 import { Channel, SupportServer } from '../lib/constants';
 
 const filteredCustomEmojis = ['redAlarm', 'blueAlarm'];
-const filteredEmojisRegex = filteredCustomEmojis.map(emoji => new RegExp(`<a?:${emoji}:\\d+>`));
+const filteredEmojisRegex = [
+	new RegExp('<a:\\w+:\\d+>'),
+	...filteredCustomEmojis.map(emoji => new RegExp(`(<a?)?:${emoji}:(\\d+>)?`))
+];
 
 export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {
@@ -50,7 +53,7 @@ export default class extends Monitor {
 			failed = true;
 		}
 		if (filteredEmojisRegex.some(regex => msg.content.match(regex))) {
-			reasons.push('contains one or more blacklisted emojis');
+			reasons.push('contains one or more animated/blacklisted emojis');
 			failed = true;
 		}
 		if (failed) {
