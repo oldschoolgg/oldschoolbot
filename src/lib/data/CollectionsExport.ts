@@ -1903,6 +1903,8 @@ export const capesCL = resolveItems([
 	'Zamorak cape',
 	'Saradomin castlewars cloak',
 	'Zamorak castlewars cloak',
+	'Red soul cape',
+	'Blue soul cape',
 	"Deadman's cape",
 	"Victor's cape (1)",
 	"Victor's cape (10)",
