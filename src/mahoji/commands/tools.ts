@@ -63,7 +63,7 @@ async function giveBox(mahojiUser: User, user: KlasaUser, _recipient: MahojiUser
 
 	await recipient.addItemsToBank({ items: boxToReceive, collectionLog: false });
 
-	return `Gave **${boxToReceive}** to ${recipient.username}.`;
+	return `Gave **${boxToReceive}** to ${recipient}.`;
 }
 
 const whereInMassClause = (id: string) =>
