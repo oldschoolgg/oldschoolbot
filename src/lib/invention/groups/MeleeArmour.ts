@@ -4,7 +4,7 @@ import { DisassemblySourceGroup } from '..';
 const i = getOSItem;
 
 export const MeleeArmour: DisassemblySourceGroup = {
-	name: 'MeleeArmour',
+	name: 'Melee Armour',
 	items: [
 		{
 			item: i('Black chainbody'),
@@ -63,22 +63,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Dragon platebody'), lvl: 60 },
 		{
 			item: i('Bandos chestplate'),
-			lvl: 70
-		},
-		{
-			item: i("Dharok's platebody"),
-			lvl: 70
-		},
-		{
-			item: i("Guthan's platebody"),
-			lvl: 70
-		},
-		{
-			item: i("Torag's platebody"),
-			lvl: 70
-		},
-		{
-			item: i("Verac's brassard"),
 			lvl: 70
 		},
 		{ item: i("Statius's platebody"), lvl: 78 },
@@ -175,22 +159,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Granite helm'), lvl: 55 },
 		{ item: i('Helm of neitiznot'), lvl: 55 },
 		{ item: i('Dragon full helm'), lvl: 60 },
-		{
-			item: i("Dharok's helm"),
-			lvl: 70
-		},
-		{
-			item: i("Guthan's helm"),
-			lvl: 70
-		},
-		{
-			item: i("Torag's helm"),
-			lvl: 70
-		},
-		{
-			item: i("Verac's helm"),
-			lvl: 70
-		},
 		{ item: i("Statius's full helm"), lvl: 78 },
 		{ item: i('Bronze full helm'), lvl: 1 },
 		{ item: i('Bronze med helm'), lvl: 1 },
@@ -237,22 +205,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 			item: i('Bandos tassets'),
 			lvl: 70
 		},
-		{
-			item: i("Dharok's platelegs"),
-			lvl: 70
-		},
-		{
-			item: i("Guthan's chainskirt"),
-			lvl: 70
-		},
-		{
-			item: i("Torag's platelegs"),
-			lvl: 70
-		},
-		{
-			item: i("Verac's plateskirt"),
-			lvl: 70
-		},
 		{ item: i("Statius's platelegs"), lvl: 78 },
 		{ item: i("Vesta's plateskirt"), lvl: 78 },
 		{ item: i('Iron plateskirt'), lvl: 10 },
@@ -261,6 +213,7 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Mithril platelegs'), lvl: 30 },
 		{ item: i('Mithril plateskirt'), lvl: 30 },
 		{ item: i('Adamant platelegs'), lvl: 40 },
+		{ item: i('Adamant platebody'), lvl: 40 },
 		{ item: i('Adamant plateskirt'), lvl: 40 },
 		{ item: i('Rune plateskirt'), lvl: 50 },
 		{ item: i('Rune platelegs'), lvl: 50 },

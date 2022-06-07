@@ -59,10 +59,6 @@ export const Bows: DisassemblySourceGroup = {
 		{ item: i('Dragon crossbow'), lvl: 60 },
 		{ item: i('Rune crossbow'), lvl: 50 },
 		{
-			item: i("Karil's crossbow"),
-			lvl: 70
-		},
-		{
 			item: i('Armadyl crossbow'),
 			lvl: 75
 		},

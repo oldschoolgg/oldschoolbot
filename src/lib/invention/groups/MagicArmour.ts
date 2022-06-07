@@ -44,9 +44,6 @@ export const MagicArmour: DisassemblySourceGroup = {
 			lvl: 45
 		},
 		{ item: i('Infinity bottoms'), lvl: 55 },
-		{ item: i("Ahrim's robeskirt"), lvl: 70 },
-		{ item: i("Ahrim's robetop"), lvl: 70 },
-		{ item: i("Ahrim's hood"), lvl: 70 },
 		{ item: i("Zuriel's robe bottom"), lvl: 78 },
 		{
 			item: i('Dragonfire ward'),

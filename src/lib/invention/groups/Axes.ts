@@ -46,8 +46,7 @@ export const Axes: DisassemblySourceGroup = {
 		{ item: i('Gilded axe'), lvl: 61 },
 		{ item: i('Dragon axe'), lvl: 61 },
 		{ item: i('Crystal axe'), lvl: 61 },
-		{ item: i('Dragon battleaxe'), lvl: 60 },
-		{ item: i('Dwarven battleaxe'), lvl: 80, flags: new Set(['dwarven']) }
+		{ item: i('Dragon battleaxe'), lvl: 60 }
 	],
 	parts: { heavy: 3, base: 35, sharp: 30 }
 };

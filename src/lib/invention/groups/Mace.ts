@@ -33,10 +33,6 @@ export const Mace: DisassemblySourceGroup = {
 		},
 		{ item: i('Dragon mace'), lvl: 60 },
 		{ item: i('Tzhaar-ket-em'), lvl: 60 },
-		{
-			item: i("Verac's flail"),
-			lvl: 70
-		},
 		{ item: i('Bronze mace'), lvl: 1 },
 		{ item: i('Iron mace'), lvl: 10 },
 		{ item: i('Steel mace'), lvl: 20 },
@@ -47,5 +43,3 @@ export const Mace: DisassemblySourceGroup = {
 	],
 	parts: { dextrous: 2, heavy: 3, base: 35, smooth: 30 }
 };
-
-export default Mace;

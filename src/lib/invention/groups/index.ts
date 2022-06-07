@@ -1,5 +1,6 @@
 import { Ashes } from './Ashes';
 import { Axes } from './Axes';
+import { Barrows } from './Barrows';
 import { Bars } from './Bars';
 import { BoltTips } from './BoltTips';
 import { Bones } from './Bones';
@@ -94,5 +95,6 @@ export default [
 	TreasureTrails,
 	Drygores,
 	Dwarven,
-	ThirdAge
+	ThirdAge,
+	Barrows
 ];

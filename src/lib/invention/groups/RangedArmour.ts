@@ -113,10 +113,6 @@ export const RangedArmour: DisassemblySourceGroup = {
 			item: i('Armadyl helmet'),
 			lvl: 70
 		},
-		{
-			item: i("Karil's coif"),
-			lvl: 70
-		},
 		{ item: i("Morrigan's coif"), lvl: 78 },
 		{
 			item: i('Studded chaps (g)'),
