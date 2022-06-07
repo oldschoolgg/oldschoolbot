@@ -66,7 +66,12 @@ export async function titheFarmCommand(user: KlasaUser, channelID: bigint) {
 	)} to finish.\n\n${boostStr.length > 0 ? '**Boosts:** ' : ''}${boostStr.join(', ')}`;
 }
 
-export async function titheFarmShopCommand(interaction: SlashCommandInteraction, user: KlasaUser, buyableName: string) {
+export async function titheFarmShopCommand(
+	interaction: SlashCommandInteraction,
+	user: KlasaUser,
+	buyableName: string,
+	_quantity?: number
+) {
 	const buyable = TitheFarmBuyables.find(
 		item =>
 			stringMatches(buyableName, item.name) ||
@@ -79,27 +84,27 @@ export async function titheFarmShopCommand(interaction: SlashCommandInteraction,
 		)}.`;
 	}
 
-	const outItems = buyable.outputItems;
-	const itemString = new Bank(outItems).toString();
+	const quantity = _quantity ?? 1;
+
+	const loot = new Bank(buyable.outputItems).multiply(quantity);
+	const cost = buyable.titheFarmPoints * quantity;
 
 	const titheFarmPoints = user.settings.get(UserSettings.Stats.TitheFarmPoints);
 
-	const titheFarmPointsCost = buyable.titheFarmPoints;
-
-	if (titheFarmPoints < titheFarmPointsCost) {
-		return `You need ${titheFarmPointsCost} Tithe Farm points to make this purchase.`;
+	if (titheFarmPoints < cost) {
+		return `You need ${cost} Tithe Farm points to make this purchase.`;
 	}
 
-	let purchaseMsg = `${itemString} for ${titheFarmPointsCost} Tithe Farm points`;
+	let purchaseMsg = `${loot} for ${cost} Tithe Farm points`;
 
 	await handleMahojiConfirmation(interaction, `${user}, please confirm that you want to purchase ${purchaseMsg}.`);
 	await mahojiUserSettingsUpdate(user.id, {
 		stats_titheFarmPoints: {
-			decrement: titheFarmPointsCost
+			decrement: cost
 		}
 	});
 
-	await user.addItemsToBank({ items: outItems, collectionLog: true });
+	await user.addItemsToBank({ items: loot, collectionLog: true });
 
-	return `You purchased ${itemString} for ${titheFarmPointsCost} Tithe Farm points.`;
+	return `You purchased ${loot} for ${cost} Tithe Farm points.`;
 }

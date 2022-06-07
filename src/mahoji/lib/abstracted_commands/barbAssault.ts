@@ -214,7 +214,7 @@ export async function barbAssaultGambleCommand(
 				await makeBankImage({
 					bank: itemsAdded,
 					user: klasaUser,
-					cl: previousCL,
+					previousCL,
 					flags: { showNewCL: 1 }
 				})
 			).file

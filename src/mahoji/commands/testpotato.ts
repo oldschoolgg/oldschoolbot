@@ -29,6 +29,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { tiers } from '../../tasks/patreon';
+import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -89,7 +90,7 @@ async function giveGear(user: KlasaUser) {
 	await user.settings.update(UserSettings.GP, 1_000_000_000);
 	await user.settings.update(UserSettings.Slayer.SlayerPoints, 100_000);
 
-	await user.getPOH();
+	await getPOH(user.id);
 	await prisma.playerOwnedHouse.update({
 		where: {
 			user_id: user.id
