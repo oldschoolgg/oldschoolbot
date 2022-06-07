@@ -1297,8 +1297,8 @@ export const troubleBrewingCL = resolveItems([
 	'Treasure flag',
 	'Phasmatys flag',
 	'The stuff',
-	'Rum',
-	'Rum'
+	'Red rum (trouble brewing)',
+	'Blue rum (trouble brewing)'
 ]);
 export const volcanicMineCL = resolveItems(['Ash covered tome', 'Large water container', 'Volcanic mine teleport']);
 export const aerialFishingCL = resolveItems([
