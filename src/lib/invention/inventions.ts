@@ -1,6 +1,6 @@
 import { userMention } from '@discordjs/builders';
 import { Prisma, User } from '@prisma/client';
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
@@ -18,7 +18,7 @@ import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { minionIsBusy } from '../util/minionIsBusy';
 import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../util/minionUtils';
-import { IMaterialBank } from '.';
+import { IMaterialBank, MaterialType } from '.';
 import { MaterialBank } from './MaterialBank';
 
 const InventionFlags = ['equipped', 'bank'] as const;
@@ -102,6 +102,11 @@ export const inventionBoosts = {
 	},
 	masterHammerAndChisel: {
 		speedBoostPercent: 35
+	},
+	inventionMasterCape: {
+		materialCostReductionPercent: 5,
+		extraMaterialsPercent: 5,
+		disassemblySpeedBoostPercent: 5
 	}
 };
 
@@ -248,7 +253,7 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 100,
-		usageCostMultiplier: 0.8
+		usageCostMultiplier: 0.6
 	},
 	{
 		id: InventionID.ClueUpgrader,
@@ -275,7 +280,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 70,
+		inventionLevelNeeded: 80,
 		usageCostMultiplier: 0.05
 	},
 	{
@@ -310,6 +315,29 @@ export const Inventions: readonly Invention[] = [
 		usageCostMultiplier: 0.9
 	}
 ] as const;
+
+export const materialBoosts: Map<MaterialType, { outputMulitplier?: number; reduceCostToPercent?: number }> = new Map([
+	[
+		'drygore',
+		{
+			outputMulitplier: 800,
+			reduceCostToPercent: 15
+		}
+	],
+	[
+		'dwarven',
+		{
+			outputMulitplier: 800,
+			reduceCostToPercent: 15
+		}
+	],
+	[
+		'treasured',
+		{
+			outputMulitplier: 10
+		}
+	]
+]);
 
 export function inventingCost(invention: Invention) {
 	let baseMultiplierPerType = 7;
@@ -411,6 +439,7 @@ type InventionItemBoostResult =
 	| {
 			success: true;
 			materialCost: MaterialBank;
+			messages: string;
 	  }
 	| {
 			success: false;
@@ -432,6 +461,15 @@ export async function canAffordInventionBoost(
 	let multiplier = Math.ceil(duration / (Time.Minute * 3));
 	multiplier = clamp(Math.floor(multiplier * invention.usageCostMultiplier), 1, 1000);
 	materialCost.add(invention.materialTypeBank.clone().multiply(multiplier));
+	for (const [mat, boosts] of materialBoosts) {
+		if (!materialCost.has(mat)) continue;
+		if (boosts.reduceCostToPercent) {
+			materialCost.bank[mat] = Math.ceil(
+				reduceNumByPercent(materialCost.amount(mat), 100 - boosts.reduceCostToPercent)
+			);
+		}
+	}
+	materialCost.validate();
 
 	return {
 		mUser,
@@ -459,13 +497,6 @@ export async function inventionItemBoost({
 		(invention.flags.includes('equipped') && !userHasItemsEquippedAnywhere(mUser, invention.item.id)) ||
 		(invention.flags.includes('bank') && !hasItemsEquippedOrInBank(mUser, [invention.item.id]))
 	) {
-		console.log(
-			mUser.id,
-			invention.name,
-			mUser.disabled_inventions.includes(invention.id),
-			invention.flags.includes('equipped') && !userHasItemsEquippedAnywhere(mUser, invention.item.id),
-			invention.flags.includes('bank') && !hasItemsEquippedOrInBank(mUser, [invention.item.id])
-		);
 		return { success: false };
 	}
 
@@ -474,13 +505,22 @@ export async function inventionItemBoost({
 			success: false
 		};
 	}
+
+	let messages: string[] = [`Removed ${materialCost}`];
+	if (userHasItemsEquippedAnywhere(mUser, 'Invention master cape')) {
+		materialCost.mutReduceAllValuesByPercent(inventionBoosts.inventionMasterCape.materialCostReductionPercent);
+		messages.push(
+			`${inventionBoosts.inventionMasterCape.materialCostReductionPercent}% less materials for mastery`
+		);
+	}
+
 	try {
 		await transactMaterialsFromUser({
 			userID: BigInt(mUser.id),
 			remove: materialCost,
 			addToGlobalInventionCostBank: true
 		});
-		return { success: true, materialCost };
+		return { success: true, materialCost, messages: messages.join(', ') };
 	} catch (err) {
 		logError(err, { user_id: mUser.id });
 		return { success: false };

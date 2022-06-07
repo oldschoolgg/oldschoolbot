@@ -100,7 +100,7 @@ export const craftCommand: OSBMahojiCommand = {
 					inventionBoosts.masterHammerAndChisel.speedBoostPercent
 				);
 				boosts.push(
-					`${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster for Master hammer and chisel (Removed ${res.materialCost})`
+					`${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster for Master hammer and chisel (${res.messages})`
 				);
 			}
 		}

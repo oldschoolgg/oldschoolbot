@@ -38,4 +38,30 @@ describe('materialLoot', () => {
 		expect(new MaterialBank().add('dextrous', 10).fits(materialLoot)).toEqual(0);
 		expect(materialLoot.fits(new MaterialBank().add('dextrous', 1))).toEqual(10);
 	});
+	test('mutReduceAllValuesByPercent', () => {
+		const materialLoot = new MaterialBank()
+			.add('crystal', 100_001)
+			.add('dextrous', 11)
+			.add('swift', 5)
+			.add('abyssal', 1);
+		materialLoot.mutReduceAllValuesByPercent(10);
+
+		expect(materialLoot.amount('dextrous')).toEqual(10);
+		expect(materialLoot.amount('swift')).toEqual(5);
+		expect(materialLoot.amount('abyssal')).toEqual(1);
+		expect(materialLoot.amount('crystal')).toEqual(90_001);
+	});
+	test('mutIncreaseAllValuesByPercent', () => {
+		const materialLoot = new MaterialBank()
+			.add('crystal', 100_001)
+			.add('dextrous', 11)
+			.add('swift', 5)
+			.add('abyssal', 1);
+		materialLoot.mutIncreaseAllValuesByPercent(10);
+
+		expect(materialLoot.amount('dextrous')).toEqual(12);
+		expect(materialLoot.amount('swift')).toEqual(5);
+		expect(materialLoot.amount('abyssal')).toEqual(1);
+		expect(materialLoot.amount('crystal')).toEqual(110_001);
+	});
 });

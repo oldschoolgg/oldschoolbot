@@ -167,12 +167,12 @@ export default class extends Task {
 				loot.remove(ore.id, loot.amount(ore.id));
 				loot.add(smeltedOre.id, quantity);
 
-				xpRes += await user.addXP({
+				str += ` ${await user.addXP({
 					skillName: SkillsEnum.Smithing,
 					amount: smeltedOre.xp * quantity,
 					duration
-				});
-				str += ' Your Superior inferno adze smelted all the ore you mined.';
+				})}`;
+				str += ' Your Superior inferno adze smelted all the ore you mined (No materials used).';
 			}
 		}
 

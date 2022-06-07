@@ -250,9 +250,7 @@ const tripFinishEffects: {
 						multiplier: false,
 						duration: data.duration
 					});
-					messages.push(
-						`+${toKMB(xpToReceive)} Agility XP from Silverhawk boots (Removed ${costRes.materialCost})`
-					);
+					messages.push(`+${toKMB(xpToReceive)} Agility XP from Silverhawk boots (${costRes.messages})`);
 				}
 			}
 		}

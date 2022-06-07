@@ -7,7 +7,6 @@ import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { BitField, Emoji, PvMMethod } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import { MaterialBank } from '../../lib/invention/MaterialBank';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -42,15 +41,14 @@ async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, 
 		}
 	}
 
-	let materialCost: MaterialBank | null = null;
-
+	let boostMsg: string | null = null;
 	if (hasSuperior) {
 		const t = await inventionItemBoost({ userID: user.id, inventionID: InventionID.SuperiorBonecrusher, duration });
 		if (!t.success) {
 			hasSuperior = false;
 		} else {
 			totalXP = increaseNumByPercent(totalXP, inventionBoosts.superiorBonecrusher.xpBoostPercent);
-			materialCost = t.materialCost;
+			boostMsg = t.messages;
 		}
 	}
 
@@ -63,7 +61,7 @@ async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, 
 	messages.push(
 		`${xpStr} Prayer XP${
 			hasSuperior
-				? `(${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher, Removed ${materialCost})`
+				? `(${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher, ${boostMsg})`
 				: ''
 		}`
 	);
@@ -95,7 +93,7 @@ async function portableTannerEffect(user: KlasaUser, loot: Bank, duration: numbe
 		}
 	}
 	if (!triggered) return;
-	messages.push(`Portable Tanner turned the hides into leathers (Removed ${boostRes.materialCost})`);
+	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
 }
 
 async function clueUpgraderEffect(user: KlasaUser, loot: Bank, messages: string[]) {
@@ -127,7 +125,7 @@ async function clueUpgraderEffect(user: KlasaUser, loot: Bank, messages: string[
 	loot.add(upgradedClues);
 	assert(loot.has(removeBank));
 	loot.remove(removeBank);
-	messages.push(`Clue Upgrader got you ${upgradedClues} (Removed ${boostRes.materialCost})`);
+	messages.push(`Clue Upgrader got you ${upgradedClues} (${boostRes.messages})`);
 }
 
 export default class extends Task {

@@ -84,7 +84,7 @@ export const buildCommand: OSBMahojiCommand = {
 					inventionBoosts.drygoreSaw.buildBoostPercent
 				);
 				boosts.push(
-					`${inventionBoosts.drygoreSaw.buildBoostPercent}% faster building from Drygore saw (Removed ${boostRes.materialCost})`
+					`${inventionBoosts.drygoreSaw.buildBoostPercent}% faster building from Drygore saw (${boostRes.messages})`
 				);
 			}
 		}

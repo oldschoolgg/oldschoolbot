@@ -1,3 +1,5 @@
+import { calcPercentOfNum } from 'e';
+
 import { assert, toTitleCase } from '../util';
 import { IMaterialBank, MaterialType, materialTypes } from '.';
 
@@ -13,7 +15,7 @@ export class MaterialBank {
 		return new MaterialBank({ ...this.bank });
 	}
 
-	private validate(): void {
+	validate(): void {
 		for (const [key, value] of Object.entries(this.bank)) {
 			if (!materialTypes.includes(key as any)) {
 				delete this.bank[key as keyof IMaterialBank];
@@ -113,5 +115,21 @@ export class MaterialBank {
 			.map(({ type, quantity }) => Math.floor(this.amount(type) / quantity))
 			.sort((a, b) => a - b);
 		return divisions[0] ?? 0;
+	}
+
+	mutReduceAllValuesByPercent(percent: number) {
+		for (const [key, value] of Object.entries(this.bank) as [MaterialType, number][]) {
+			let percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
+			this.remove(key, percentOfThisItem);
+		}
+		return this;
+	}
+
+	mutIncreaseAllValuesByPercent(percent: number) {
+		for (const [key, value] of Object.entries(this.bank) as [MaterialType, number][]) {
+			let percentOfThisItem = Math.floor(calcPercentOfNum(value, percent));
+			this.add(key, percentOfThisItem);
+		}
+		return this;
 	}
 }

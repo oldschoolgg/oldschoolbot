@@ -66,7 +66,7 @@ export const Bows: DisassemblySourceGroup = {
 			item: i('Armadyl crossbow'),
 			lvl: 75
 		},
-		{ item: i('Elder bow'), lvl: 70 }
+		{ item: i('Elder bow'), lvl: 105 }
 	],
 	parts: { flexible: 30, dextrous: 10, swift: 10 }
 };

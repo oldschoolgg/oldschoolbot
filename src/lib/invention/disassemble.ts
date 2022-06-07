@@ -21,7 +21,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
 import { handleTripFinish } from '../util/handleTripFinish';
-import { minionName } from '../util/minionUtils';
+import { minionName, userHasItemsEquippedAnywhere } from '../util/minionUtils';
 import {
 	DisassembleFlag,
 	DisassemblyItem,
@@ -30,7 +30,13 @@ import {
 	IMaterialBank,
 	MaterialType
 } from '.';
-import { inventionBoosts, InventionID, inventionItemBoost, transactMaterialsFromUser } from './inventions';
+import {
+	inventionBoosts,
+	InventionID,
+	inventionItemBoost,
+	materialBoosts,
+	transactMaterialsFromUser
+} from './inventions';
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 
@@ -42,10 +48,10 @@ import MaterialLootTable from './MaterialLootTable';
  *
  */
 function calculateDisXP(quantity: number, item: DisassemblySourceGroup['items'][number]) {
-	let baseXPPerItem = item.lvl / 3.369;
+	let baseXPPerItem = 10 + item.lvl * (item.lvl / 200);
 
 	return {
-		xp: Math.floor(quantity * baseXPPerItem)
+		xp: Math.ceil(quantity * baseXPPerItem)
 	};
 }
 
@@ -138,9 +144,15 @@ export async function handleDisassembly({
 		if (boostRes.success) {
 			timePer = reduceNumByPercent(timePer, inventionBoosts.dwarvenToolkit.disassembleBoostPercent);
 			messages.push(
-				`${inventionBoosts.dwarvenToolkit.disassembleBoostPercent}% faster disassembly from Dwarven toolkit (Removed ${boostRes.materialCost})`
+				`${inventionBoosts.dwarvenToolkit.disassembleBoostPercent}% faster disassembly from Dwarven toolkit (${boostRes.messages})`
 			);
 		}
+	}
+	if (userHasItemsEquippedAnywhere(user, 'Invention master cape')) {
+		timePer = reduceNumByPercent(timePer, inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent);
+		messages.push(
+			`${inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent}% faster disassembly for mastery`
+		);
 	}
 
 	// The max amount of items they can disassemble this trip
@@ -164,9 +176,12 @@ export async function handleDisassembly({
 		}
 	}
 
-	if (materialLoot.has('drygore')) materialLoot.bank.drygore! *= 190;
-	if (materialLoot.has('dwarven')) materialLoot.bank.dwarven! *= 190;
-	if (materialLoot.has('treasured')) materialLoot.bank.treasured! *= 10;
+	for (const [mat, boosts] of materialBoosts.entries()) {
+		if (!materialLoot.has(mat)) continue;
+		if (boosts.outputMulitplier) {
+			materialLoot.bank[mat]! *= boosts.outputMulitplier;
+		}
+	}
 
 	const { xp } = calculateDisXP(realQuantity, data);
 
@@ -284,10 +299,17 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 	const item = getOSItem(data.item);
 
+	const messages: string[] = [];
 	const cost = new Bank().add(item.id, quantity);
+	const materialLoot = new MaterialBank(data.materials);
+	if (userHasItemsEquippedAnywhere(mahojiUser, 'Invention master cape')) {
+		materialLoot.mutIncreaseAllValuesByPercent(inventionBoosts.inventionMasterCape.extraMaterialsPercent);
+		messages.push(`${inventionBoosts.inventionMasterCape.extraMaterialsPercent}% bonus materials for mastery`);
+	}
+
 	await transactMaterialsFromUser({
 		userID: BigInt(data.userID),
-		add: new MaterialBank(data.materials),
+		add: materialLoot,
 		addToDisassembledItemsBank: cost
 	});
 
@@ -307,7 +329,7 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 
 	let str = `${userMention(data.userID)}, ${minionName(
 		mahojiUser
-	)} finished disassembling ${cost}. You received these materials: ${new MaterialBank(data.materials)}.
+	)} finished disassembling ${cost}. You received these materials: ${materialLoot}.
 ${xpStr}`;
 
 	const loot = new Bank();
@@ -320,10 +342,15 @@ ${xpStr}`;
 		}
 	}
 	if (loot.has('Cogsworth')) {
-		str += `**While disassembling some items, your minion suddenly was inspired to create a mechanical pet out of some scraps! Received ${loot}.`;
+		messages.push(
+			`**While disassembling some items, your minion suddenly was inspired to create a mechanical pet out of some scraps! Received ${loot}.`
+		);
 	}
 	if (loot.length > 0) {
 		await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
+	}
+	if (messages.length > 0) {
+		str += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
 	handleTripFinish(

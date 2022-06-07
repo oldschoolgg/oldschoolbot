@@ -23,6 +23,26 @@ export const Drygores: DisassemblySourceGroup = {
 				'Drygore longsword (3a)'
 			].map(getOSItem),
 			lvl: 120
+		},
+		{
+			item: [
+				'Offhand drygore rapier',
+				'Offhand drygore rapier (blood)',
+				'Offhand drygore rapier (ice)',
+				'Offhand drygore rapier (shadow)',
+				'Offhand drygore rapier (3a)',
+				'Offhand drygore mace',
+				'Offhand drygore mace (blood)',
+				'Offhand drygore mace (ice)',
+				'Offhand drygore mace (shadow)',
+				'Offhand drygore mace (3a)',
+				'Offhand drygore longsword',
+				'Offhand drygore longsword (blood)',
+				'Offhand drygore longsword (ice)',
+				'Offhand drygore longsword (shadow)',
+				'Offhand drygore longsword (3a)'
+			].map(getOSItem),
+			lvl: 100
 		}
 	],
 	parts: { drygore: 100 }

@@ -343,7 +343,7 @@ export async function minionKillCommand(
 			consumableCosts.push(superiorCannonSingleConsumables);
 			let boost = monster.cannonMulti ? boostSuperiorCannonMulti : boostSuperiorCannon;
 			timeToFinish = reduceNumByPercent(timeToFinish, boost);
-			boosts.push(`${boost}% for Superior Cannon (Removed ${res.materialCost})`);
+			boosts.push(`${boost}% for Superior Cannon (${res.messages})`);
 		}
 	} else if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBarrageConsumables);

@@ -105,9 +105,7 @@ export const fishCommand: OSBMahojiCommand = {
 		});
 		if (res.success) {
 			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
-			boosts.push(
-				`${inventionBoosts.mechaRod.speedBoostPercent}% faster for Mecha rod (Removed ${res.materialCost})`
-			);
+			boosts.push(`${inventionBoosts.mechaRod.speedBoostPercent}% faster for Mecha rod (${res.messages})`);
 		}
 
 		switch (fish.bait) {

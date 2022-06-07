@@ -163,7 +163,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			if (costRes.success) {
 				timePerLap = reduceNumByPercent(timePerLap, inventionBoosts.silverHawks.agilitySpeedBoostPercent);
 				boosts.push(
-					`${inventionBoosts.silverHawks.agilitySpeedBoostPercent}% faster for Silverhawk boots (removed ${costRes.materialCost})`
+					`${inventionBoosts.silverHawks.agilitySpeedBoostPercent}% faster for Silverhawk boots (${costRes.messages})`
 				);
 			}
 		}

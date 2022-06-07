@@ -124,7 +124,7 @@ export const mineCommand: OSBMahojiCommand = {
 					inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
 				);
 				boosts.push(
-					`${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% boost for Mecha-Mortar (Removed ${boostResult.materialCost})`
+					`${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% boost for Mecha-Mortar (${boostResult.messages})`
 				);
 			}
 		}

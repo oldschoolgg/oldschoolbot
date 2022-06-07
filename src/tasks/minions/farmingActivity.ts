@@ -32,7 +32,7 @@ async function arcaneHarvesterEffect(user: KlasaUser, plant: Plant, loot: Bank):
 		});
 		if (boostRes.success) {
 			increaseBankQuantitesByPercent(loot, inventionBoosts.arcaneHarvester.harvestBoostPercent);
-			return `\n${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (Removed ${boostRes.materialCost})`;
+			return `\n${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`;
 		}
 	}
 }

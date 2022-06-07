@@ -60,7 +60,7 @@ interface IDisassembleFlag {
 	flag: DisassembleFlag;
 }
 
-const disassembleFlags: IDisassembleFlag[] = [
+export const disassembleFlags: IDisassembleFlag[] = [
 	{
 		name: 'Third Age',
 		flag: 'third_age'
@@ -78,7 +78,6 @@ const disassembleFlags: IDisassembleFlag[] = [
 		flag: 'barrows'
 	}
 ];
-console.log(disassembleFlags);
 
 export interface DisassemblyItem {
 	item: Item | Item[];

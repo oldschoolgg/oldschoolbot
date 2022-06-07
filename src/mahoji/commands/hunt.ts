@@ -177,7 +177,7 @@ export const huntCommand: OSBMahojiCommand = {
 			});
 			if (boostRes.success) {
 				boosts.push(
-					`${inventionBoosts.quickTrap.boxTrapBoostPercent}% boost for Quick-Trap invention (Removed ${boostRes.materialCost})`
+					`${inventionBoosts.quickTrap.boxTrapBoostPercent}% boost for Quick-Trap invention (${boostRes.messages})`
 				);
 				catchTime = reduceNumByPercent(catchTime, inventionBoosts.quickTrap.boxTrapBoostPercent);
 			}

@@ -12,7 +12,7 @@ import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses'
 import { BitField, MAX_QP } from '../../lib/constants';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { materialTypes } from '../../lib/invention';
-import { transactMaterialsFromUser } from '../../lib/invention/inventions';
+import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -202,6 +202,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					name: 'spawn',
 					description: 'Spawn stuff.',
 					options: [
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'inventionmax',
+							description: 'Gets you totally maxed for invention.'
+						},
 						{
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'materials',
@@ -431,6 +436,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					item?: string;
 					items?: string;
 					materials?: boolean;
+					inventionmax?: boolean;
 				};
 				nexhax?: {};
 				badnexgear?: {};
@@ -502,6 +508,20 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						for (const t of materialTypes) loot.add(t, 10_000);
 						await transactMaterialsFromUser({ userID: BigInt(user.id), add: loot });
 						return `Gave you ${loot}.`;
+					}
+					if (options.spawn.inventionmax) {
+						const loot = new MaterialBank();
+						for (const t of materialTypes) loot.add(t, 10_000);
+						await transactMaterialsFromUser({ userID: BigInt(user.id), add: loot });
+						await mahojiUserSettingsUpdate(user.id, {
+							unlocked_blueprints: Inventions.map(i => i.id),
+							skills_invention: 200_000_000
+						});
+						const bBank = new Bank();
+						for (const inv of Inventions) bBank.add(inv.item.id);
+						await user.addItemsToBank({ items: bBank });
+
+						return `Gave you ${loot}, ${bBank}, 200m invention xp, unlocked all blueprints.`;
 					}
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
