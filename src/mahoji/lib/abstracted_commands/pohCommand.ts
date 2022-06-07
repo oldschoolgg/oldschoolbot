@@ -1,5 +1,4 @@
 import { KlasaUser } from 'klasa';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -34,7 +33,7 @@ export async function getPOH(userID: string) {
 	if (poh === null) poh = await prisma.playerOwnedHouse.create({ data: { user_id: userID } });
 	return poh;
 }
-export async function makePOHImage(user: KlasaUser, showSpaces = false): CommandResponse {
+export async function makePOHImage(user: KlasaUser, showSpaces = false) {
 	const poh = await getPOH(user.id);
 	const buffer = await (globalClient.tasks.get('pohImage') as PoHImage).run(poh, showSpaces);
 	return { attachments: [{ buffer, fileName: 'image.jpg' }] };
@@ -123,12 +122,13 @@ export async function pohBuildCommand(interaction: SlashCommandInteraction, user
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, obj.itemCost);
 	}
 
+	let refunded: Bank | null = null;
 	if (inPlace !== null) {
 		const inPlaceObj = getPOHObject(inPlace);
 		if (inPlaceObj.refundItems && inPlaceObj.itemCost) {
 			const itemsToRefund = new Bank(inPlaceObj.itemCost.bank).remove(itemsNotRefundable);
 			if (itemsToRefund.length > 0) {
-				`You were refunded: ${itemsToRefund}, from the ${inPlaceObj.name} you already had built here.`;
+				refunded = itemsToRefund;
 				await user.addItemsToBank({ items: itemsToRefund, collectionLog: false });
 			}
 		}
@@ -142,9 +142,15 @@ export async function pohBuildCommand(interaction: SlashCommandInteraction, user
 			[obj.slot]: obj.id
 		}
 	});
+
+	let str = `You built a ${obj.name} in your house, using ${obj.itemCost}.`;
+	if (refunded !== null && inPlace) {
+		str += ` You were refunded: ${refunded}, from the ${getPOHObject(inPlace).name} you already had built here.`;
+	}
+
 	return {
-		...makePOHImage(user),
-		content: `You built a ${obj.name} in your house, using ${obj.itemCost}.`
+		...(await makePOHImage(user)),
+		content: str
 	};
 }
 
@@ -191,7 +197,7 @@ export async function mountItemCommand(user: KlasaUser, name: string) {
 	});
 
 	return {
-		...makePOHImage(user),
+		...(await makePOHImage(user)),
 		content: `You mounted a ${item.name} in your house, using 2x Magic stone and 1x ${
 			item.name
 		} (given back when another item is mounted).${currItem ? ` Refunded 1x ${itemNameFromID(currItem)}.` : ''}`
@@ -218,7 +224,7 @@ export async function pohDestroyCommand(user: KlasaUser, name: string) {
 		});
 		await user.addItemsToBank({ items: { [inPlace!]: 1 }, collectionLog: false });
 		return {
-			...makePOHImage(user),
+			...(await makePOHImage(user)),
 			content: `You removed a ${obj.name} from your house, and were refunded 1x ${itemNameFromID(inPlace!)}.`
 		};
 	}
@@ -244,5 +250,5 @@ export async function pohDestroyCommand(user: KlasaUser, name: string) {
 		}
 	});
 
-	return { ...makePOHImage(user), content: str };
+	return { ...(await makePOHImage(user)), content: str };
 }
