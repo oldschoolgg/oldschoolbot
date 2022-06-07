@@ -25,6 +25,7 @@ import {
 	stringMatches
 } from '../../lib/util';
 import findMonster from '../../lib/util/findMonster';
+import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -97,7 +98,7 @@ export default class MinionCommand extends BotCommand {
 		}
 		// poh boosts
 		if (monster.pohBoosts) {
-			const [boostPercent, messages] = calcPOHBoosts(await msg.author.getPOH(), monster.pohBoosts);
+			const [boostPercent, messages] = calcPOHBoosts(await getPOH(user.id), monster.pohBoosts);
 			if (boostPercent > 0) {
 				timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
 				let boostString = messages.join(' ').replace(RegExp('[0-9]{2}% for '), '');

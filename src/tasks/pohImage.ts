@@ -1,5 +1,4 @@
 import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
-import { MessageAttachment } from 'discord.js';
 import { objectEntries, randInt } from 'e';
 import * as fs from 'fs';
 import { Task } from 'klasa';
@@ -120,6 +119,6 @@ export default class PoHImage extends Task {
 			const [x, y] = this.randMinionCoords();
 			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
 		}
-		return new MessageAttachment(canvas.toBuffer('image/png'));
+		return canvas.toBuffer('image/png');
 	}
 }
