@@ -514,6 +514,7 @@ model Minigame {
   tob                     Int    @default(0)
   tob_hard                Int    @default(0)
   lms                     Int    @default(0)
+  trouble_brewing         Int    @default(0)
 
   // BSO
   ourania_delivery_service Int @default(0)
@@ -750,6 +751,7 @@ enum activity_type_enum {
   FishingContest
   BirthdayEvent
   TokkulShop
+  TroubleBrewing
   Easter
   BaxtorianBathhouses
 }
