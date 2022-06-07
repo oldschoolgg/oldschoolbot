@@ -180,6 +180,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Baxtorian Bathhouses',
 		aliases: ['bb', 'bbh', 'baxtorian bathhouses', 'baxtorian bathhouse'],
 		column: 'bax_baths'
+	},
+	{
+		name: 'Trouble Brewing',
+		aliases: ['trouble brewing', 'tb'],
+		column: 'trouble_brewing'
 	}
 ];
 

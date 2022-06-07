@@ -291,3 +291,7 @@ setItemAlias(12_796, 'Mystic steam staff (or)');
 setItemAlias(12_795, 'Steam battlestaff (or)');
 setItemAlias(21_200, 'Mystic lava staff (or)');
 setItemAlias(21_198, 'Lava battlestaff (or)');
+
+// Trouble Brewing
+setItemAlias(8940, 'Red rum (trouble brewing)');
+setItemAlias(8941, 'Blue rum (trouble brewing)');

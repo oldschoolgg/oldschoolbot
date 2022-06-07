@@ -1,4 +1,4 @@
-import { activity_type_enum, PlayerOwnedHouse } from '@prisma/client';
+import { activity_type_enum } from '@prisma/client';
 import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
 import { MessageAttachment, MessageOptions, MessagePayload } from 'discord.js';
@@ -198,7 +198,6 @@ declare module 'discord.js' {
 		 */
 		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
-		getPOH(): Promise<PlayerOwnedHouse>;
 		getUserFavAlchs(duration: number): Item[];
 		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;

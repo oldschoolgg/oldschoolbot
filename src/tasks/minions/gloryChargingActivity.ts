@@ -14,7 +14,7 @@ export default class extends Task {
 		let deaths = 0;
 		let loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
-			if (roll(9)) {
+			if (roll(99)) {
 				deaths++;
 			} else {
 				for (let i = 0; i < gloriesInventorySize; i++) {

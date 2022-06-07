@@ -714,6 +714,12 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
+			case 'TroubleBrewing': {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
 			case 'Easter':
 			case 'BlastFurnace': {
 				throw new Error('Removed');
