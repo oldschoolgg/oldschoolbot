@@ -709,13 +709,15 @@ export function averageArr(arr: number[]) {
 	return sumArr(arr) / arr.length;
 }
 
-/**
- * Removes items with 0 or less quantity
- */
 export function sanitizeBank(bank: Bank) {
 	for (const [key, value] of Object.entries(bank.bank)) {
-		if (value === 0 || value < 1) {
+		if (value < 1) {
 			delete bank.bank[key];
+		}
+		// If this bank contains a fractional/float,
+		// round it down.
+		if (!Number.isInteger(value)) {
+			bank.bank[key] = Math.floor(value);
 		}
 	}
 }
