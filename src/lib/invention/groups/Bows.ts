@@ -6,12 +6,21 @@ const i = getOSItem;
 export const Bows: DisassemblySourceGroup = {
 	name: 'Bows',
 	items: [
+		{ item: i('Shortbow'), lvl: 1 },
+		{ item: i('Longbow'), lvl: 5 },
 		{ item: i('Oak shortbow'), lvl: 10 },
+		{ item: i('Oak longbow'), lvl: 15 },
 		{ item: i('Willow shortbow'), lvl: 20 },
+		{ item: i('Willow longbow'), lvl: 25 },
+		{ item: i('Willow comp bow'), lvl: 25 },
 		{ item: i('Comp ogre bow'), lvl: 30 },
 		{ item: i('Maple shortbow'), lvl: 30 },
+		{ item: i('Maple longbow'), lvl: 35 },
 		{ item: i('Yew shortbow'), lvl: 40 },
+		{ item: i('Yew longbow'), lvl: 45 },
+		{ item: i('Yew comp bow'), lvl: 45 },
 		{ item: i('Magic shortbow'), lvl: 50 },
+		{ item: i('Magic longbow'), lvl: 55 },
 		{ item: i('Dark bow'), lvl: 70 },
 		{
 			item: i('Crystal bow'),
@@ -61,6 +70,10 @@ export const Bows: DisassemblySourceGroup = {
 		{
 			item: i('Armadyl crossbow'),
 			lvl: 75
+		},
+		{
+			item: i("Craw's bow (u)"),
+			lvl: 85
 		},
 		{ item: i('Elder bow'), lvl: 105 }
 	],

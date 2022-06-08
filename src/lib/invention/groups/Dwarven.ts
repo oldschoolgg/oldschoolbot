@@ -8,6 +8,7 @@ export const Dwarven: DisassemblySourceGroup = {
 	items: [
 		{ item: i('Dwarven ore'), lvl: 50 },
 		{ item: i('Dwarven bar'), lvl: 80 },
+		{ item: i('Broken dwarven warhammer'), lvl: 100 },
 		{ item: i('Dwarven full helm'), lvl: 120 },
 		{ item: i('Dwarven platebody'), lvl: 120 },
 		{ item: i('Dwarven platelegs'), lvl: 120 },

@@ -2,6 +2,7 @@ import { Ashes } from './Ashes';
 import { Axes } from './Axes';
 import { Barrows } from './Barrows';
 import { Bars } from './Bars';
+import { BluntWeapons } from './BluntWeapons';
 import { BoltTips } from './BoltTips';
 import { Bones } from './Bones';
 import { Bows } from './Bows';
@@ -26,7 +27,6 @@ import { Longsword } from './Longsword';
 import { Mace } from './Mace';
 import { Magic } from './Magic';
 import { MagicArmour } from './MagicArmour';
-import { Maul } from './Maul';
 import { MeleeArmour } from './MeleeArmour';
 import { Ores } from './Ores';
 import { Organic } from './Organic';
@@ -46,20 +46,18 @@ import { ThirdAge } from './ThirdAge';
 import { TreasureTrails } from './TreasureTrails';
 import { UncutGems } from './UncutGems';
 import { UnstrungBows } from './UnstrungBows';
-import { Warhammer } from './Warhammer';
 
 export const DisassemblySourceGroups = [
 	LeatherHides,
 	Projectiles,
 	Hasta,
 	Runes,
-	Warhammer,
 	Gems,
 	Claws,
 	Dagger,
 	UnstrungBows,
 	MagicArmour,
-	Maul,
+	BluntWeapons,
 	Logs,
 	Organic,
 	Herb,

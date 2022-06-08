@@ -8,35 +8,50 @@ export const MeleeArmour: DisassemblySourceGroup = {
 	name: 'Melee Armour',
 	items: [
 		{
-			item: i('Black chainbody'),
-			lvl: 25
+			item: [
+				'Bronze chainbody',
+				'Bronze platebody',
+				'Bronze platelegs',
+				'Bronze plateskirt',
+				'Bronze platelegs (g)',
+				'Bronze platelegs (t)',
+				'Bronze plateskirt (g)',
+				'Bronze plateskirt (t)',
+				'Bronze full helm (t)'
+			].map(i),
+			lvl: 1
 		},
 		{
-			item: i('Black platebody'),
-			lvl: 25
-		},
-		{ item: i('Black platebody (g)'), lvl: 25 },
-		{
-			item: i('Black platebody (h1)'),
-			lvl: 25
-		},
-		{
-			item: i('Black platebody (h2)'),
-			lvl: 25
-		},
-		{
-			item: i('Black platebody (h3)'),
-			lvl: 25
+			item: [
+				'Iron platebody (g)',
+				'Iron platebody (t)',
+				'Iron platelegs (g)',
+				'Iron platelegs (t)',
+				'Iron plateskirt (g)',
+				'Iron plateskirt (t)',
+				'Iron full helm (g)',
+				'Iron full helm (t)'
+			].map(i),
+			lvl: 10
 		},
 		{
-			item: i('Black platebody (h4)'),
+			item: [
+				'Black platebody (g)',
+				'Black platebody',
+				'Black chainbody',
+				'Black platebody (h1)',
+				'Black platebody (h2)',
+				'Black platebody (h3)',
+				'Black platebody (h4)',
+				'Black platebody (h5)',
+				'Black skirt',
+				'Black skirt (g)',
+				'Black skirt (t)',
+				'Black platebody (t)',
+				'Black med helm'
+			].map(i),
 			lvl: 25
 		},
-		{
-			item: i('Black platebody (h5)'),
-			lvl: 25
-		},
-		{ item: i('Black platebody (t)'), lvl: 25 },
 		{ item: i('Initiate cuisse'), lvl: 25 },
 		{ item: i('Initiate hauberk'), lvl: 25 },
 		{ item: i('Proselyte hauberk'), lvl: 30 },
@@ -67,17 +82,31 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		},
 		{ item: i("Statius's platebody"), lvl: 78 },
 		{ item: i("Vesta's chainbody"), lvl: 78 },
-		{ item: i('Bronze chainbody'), lvl: 10 },
-		{ item: i('Bronze platebody'), lvl: 10 },
-		{ item: i('Bronze platelegs'), lvl: 10 },
-		{ item: i('Bronze plateskirt'), lvl: 10 },
 		{ item: i('Iron chainbody'), lvl: 10 },
 		{ item: i('Iron platebody'), lvl: 10 },
 		{ item: i('Iron platelegs'), lvl: 10 },
-		{ item: i('Steel chainbody'), lvl: 20 },
-		{ item: i('Steel platebody'), lvl: 20 },
-		{ item: i('Mithril chainbody'), lvl: 30 },
-		{ item: i('Mithril platebody'), lvl: 30 },
+		{
+			item: [
+				'Steel full helm (g)',
+				'Steel chainbody',
+				'Steel platebody',
+				'Steel platebody (t)',
+				'Steel platelegs (t)'
+			].map(i),
+			lvl: 20
+		},
+		{
+			item: [
+				'Mithril platebody',
+				'Mithril chainbody',
+				'Mithril platebody (g)',
+				'Mithril platebody (t)',
+				'Mithril plateskirt (g)',
+				'Mithril full helm (g)',
+				'Mithril full helm (t)'
+			].map(i),
+			lvl: 30
+		},
 		{ item: i('Rune chainbody'), lvl: 50 },
 		{ item: i('Rune platebody'), lvl: 50 },
 		{ item: i('Rune platelegs'), lvl: 50 },
@@ -160,7 +189,12 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Helm of neitiznot'), lvl: 55 },
 		{ item: i('Dragon full helm'), lvl: 60 },
 		{ item: i("Statius's full helm"), lvl: 78 },
-		{ item: i('Bronze full helm'), lvl: 1 },
+		{
+			item: ['Bronze full helm', 'Bronze full helm (g)', 'Bronze platebody (t)', 'Bronze platebody (g)'].map(
+				getOSItem
+			),
+			lvl: 1
+		},
 		{ item: i('Bronze med helm'), lvl: 1 },
 		{ item: i('Iron full helm'), lvl: 10 },
 		{ item: i('Iron med helm'), lvl: 10 },
@@ -221,18 +255,90 @@ export const MeleeArmour: DisassemblySourceGroup = {
 			].map(i),
 			lvl: 20
 		},
-		{ item: i('Mithril platelegs'), lvl: 30 },
+		{
+			item: ['Mithril platelegs', 'Mithril platelegs (t)', 'Mithril plateskirt (t)', 'Mithril platelegs (g)'].map(
+				i
+			),
+			lvl: 30
+		},
 		{ item: i('Mithril plateskirt'), lvl: 30 },
-		{ item: i('Adamant platelegs'), lvl: 40 },
-		{ item: i('Adamant platelegs (t)'), lvl: 40 },
-		{ item: i('Adamant platelegs (g)'), lvl: 40 },
-		{ item: i('Adamant platebody'), lvl: 40 },
-		{ item: i('Adamant plateskirt'), lvl: 40 },
-		{ item: i('Rune plateskirt'), lvl: 50 },
+		{
+			item: [
+				'Adamant platelegs',
+				'Adamant platebody (g)',
+				'Adamant platebody (h1)',
+				'Adamant platebody (h2)',
+				'Adamant platebody (h3)',
+				'Adamant platebody (h4)',
+				'Adamant platebody (h5)',
+				'Adamant platebody (t)',
+				'Adamant plateskirt (g)',
+				'Adamant plateskirt (t)',
+				'Adamant platelegs (t)',
+				'Adamant platelegs (g)',
+				'Adamant platebody',
+				'Adamant plateskirt',
+				'Adamant helm (h1)',
+				'Adamant helm (h2)',
+				'Adamant helm (h3)',
+				'Adamant helm (h4)',
+				'Adamant helm (h5)',
+				'Adamant med helm',
+				'Adamant full helm',
+				'Adamant full helm (g)',
+				'Adamant full helm (t)',
+				'Adamant chainbody'
+			].map(i),
+			lvl: 40
+		},
+		{
+			item: [
+				'Rune plateskirt',
+				'Bandos kiteshield',
+				'Zamorak kiteshield',
+				'Zamorak platebody',
+				'Zamorak platelegs',
+				'Zamorak plateskirt',
+				'Zamorak full helm',
+				'Bandos platebody',
+				'Bandos platelegs',
+				'Bandos plateskirt',
+				'Bandos full helm',
+				'Zamorak platebody',
+				'Zamorak platelegs',
+				'Zamorak plateskirt',
+				'Zamorak full helm',
+				'Zamorak kiteshield',
+				'Saradomin kiteshield',
+				'Saradomin platebody',
+				'Saradomin platelegs',
+				'Saradomin plateskirt',
+				'Saradomin full helm',
+				'Armadyl kiteshield',
+				'Armadyl platebody',
+				'Armadyl platelegs',
+				'Armadyl plateskirt',
+				'Armadyl full helm',
+				'Guthix full helm',
+				'Guthix kiteshield',
+				'Guthix platebody',
+				'Guthix platelegs',
+				'Guthix plateskirt',
+				'Ancient full helm',
+				'Ancient platebody',
+				'Ancient platelegs',
+				'Ancient plateskirt'
+			].map(i),
+			lvl: 50
+		},
 		// Boots
 		{
 			item: i('Bronze boots'),
 			lvl: 1
+		},
+		{
+			item: i('Steel boots'),
+			lvl: 10
 		},
 		{
 			item: i('Black boots'),
@@ -243,15 +349,32 @@ export const MeleeArmour: DisassemblySourceGroup = {
 			lvl: 30
 		},
 		{
+			item: i('Adamant boots'),
+			lvl: 40
+		},
+		{
+			item: i('Rune boots'),
+			lvl: 50
+		},
+		{
+			item: i('Dragon med helm'),
+			lvl: 60
+		},
+		{
 			item: i('White boots'),
 			lvl: 25
 		},
 		{ item: i('Rock-shell boots'), lvl: 50 },
 		{ item: i('Dragon boots'), lvl: 60 },
 		{ item: i('Royal dragon platebody'), lvl: 80 },
+		{ item: ['Primordial boots', 'Eternal boots', 'Pegasian boots'].map(i), lvl: 85 },
 		{
 			item: i('Bandos boots'),
 			lvl: 70
+		},
+		{
+			item: ['Dragonstone full helm', 'Dragonstone platebody', 'Dragonstone platelegs'].map(i),
+			lvl: 75
 		},
 		{
 			item: [...torvaOutfit, ...brokenTorvaOutfit].map(i),

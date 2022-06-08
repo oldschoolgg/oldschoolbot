@@ -31,23 +31,14 @@ export const Sword: DisassemblySourceGroup = {
 		{ item: i('Leaf-bladed sword'), lvl: 60 },
 		{ item: i('Dragon sword'), lvl: 60 },
 		{
-			item: i('Armadyl godsword'),
-			lvl: 75
-		},
-		{
-			item: i('Bandos godsword'),
-			lvl: 75
-		},
-		{
-			item: i('Saradomin godsword'),
-			lvl: 75
-		},
-		{
-			item: i('Saradomin sword'),
-			lvl: 75
-		},
-		{
-			item: i('Zamorak godsword'),
+			item: [
+				'Armadyl godsword',
+				'Ancient godsword',
+				'Bandos godsword',
+				'Saradomin godsword',
+				'Saradomin sword',
+				'Zamorak godsword'
+			].map(i),
 			lvl: 75
 		}
 	],

@@ -5,7 +5,7 @@ const i = getOSItem;
 
 export const Bars: DisassemblySourceGroup = {
 	name: 'Bars',
-	description: 'Metal bars used for smithing',
+	description: 'Metal bars.',
 	items: [
 		{ item: i('Bronze bar'), lvl: 1 },
 		{ item: i('Blurite bar'), lvl: 8 },
@@ -17,5 +17,5 @@ export const Bars: DisassemblySourceGroup = {
 		{ item: i('Adamantite bar'), lvl: 70 },
 		{ item: i('Runite bar'), lvl: 90 }
 	],
-	parts: { simple: 75 }
+	parts: { simple: 25, metallic: 75 }
 };

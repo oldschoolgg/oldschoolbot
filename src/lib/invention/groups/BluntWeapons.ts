@@ -3,8 +3,8 @@ import { DisassemblySourceGroup } from '..';
 
 const i = getOSItem;
 
-export const Warhammer: DisassemblySourceGroup = {
-	name: 'Warhammer',
+export const BluntWeapons: DisassemblySourceGroup = {
+	name: 'Blunt Weapons',
 	items: [
 		{
 			item: i('Black warhammer'),
@@ -22,7 +22,9 @@ export const Warhammer: DisassemblySourceGroup = {
 		{ item: i('Steel warhammer'), lvl: 20 },
 		{ item: i('Mithril warhammer'), lvl: 30 },
 		{ item: i('Adamant warhammer'), lvl: 40 },
-		{ item: i('Rune warhammer'), lvl: 50 }
+		{ item: i('Rune warhammer'), lvl: 50 },
+		{ item: i('Tzhaar-ket-om'), lvl: 60 },
+		{ item: i('Elder maul'), lvl: 80 }
 	],
 	parts: { strong: 2, heavy: 3, base: 35, smooth: 30 }
 };

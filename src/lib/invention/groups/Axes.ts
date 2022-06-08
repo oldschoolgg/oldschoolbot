@@ -7,7 +7,7 @@ export const Axes: DisassemblySourceGroup = {
 	name: 'Axes',
 	description: 'Pickaxes, axes, thrownaxes, battleaxes!',
 	items: [
-		{ item: i('Bronze pickaxe'), lvl: 1 },
+		{ item: ['Bronze pickaxe', 'Bronze thrownaxe'].map(i), lvl: 1 },
 		{ item: i('Iron pickaxe'), lvl: 10 },
 		{ item: i('Iron thrownaxe'), lvl: 10 },
 		{ item: i('Steel pickaxe'), lvl: 20 },
@@ -46,6 +46,7 @@ export const Axes: DisassemblySourceGroup = {
 		{ item: i('Rune battleaxe'), lvl: 50 },
 		{ item: i('Gilded axe'), lvl: 61 },
 		{ item: i('Dragon axe'), lvl: 61 },
+		{ item: i('Dragon thrownaxe'), lvl: 61 },
 		{ item: i('Crystal axe'), lvl: 61 },
 		{ item: i('Dragon battleaxe'), lvl: 60 }
 	],

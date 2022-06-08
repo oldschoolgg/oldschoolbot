@@ -12,6 +12,7 @@ export const Jewellery: DisassemblySourceGroup = {
 		{ item: i('Gold bracelet'), lvl: 7 },
 		{ item: i('Pre-nature amulet'), lvl: 8 },
 		{ item: i('Gold amulet'), lvl: 8 },
+		{ item: i('Amulet of power'), lvl: 8 },
 		{ item: i('Jade ring'), lvl: 13 },
 		{ item: i('Holy symbol'), lvl: 16 },
 		{ item: i('Opal necklace'), lvl: 16 },
@@ -72,6 +73,14 @@ export const Jewellery: DisassemblySourceGroup = {
 		{ item: i('Onyx bracelet'), lvl: 84 },
 		{ item: i('Regen bracelet'), lvl: 84 },
 		{ item: i('Onyx amulet'), lvl: 90 },
+		{ item: i('Zenyte ring'), lvl: 89 },
+		{ item: i('Ring of suffering'), lvl: 89 },
+		{ item: i('Zenyte necklace'), lvl: 92 },
+		{ item: i('Necklace of anguish'), lvl: 92 },
+		{ item: i('Zenyte bracelet'), lvl: 95 },
+		{ item: i('Tormented bracelet'), lvl: 95 },
+		{ item: i('Zenyte amulet'), lvl: 98 },
+		{ item: i('Amulet of torture'), lvl: 98 },
 		{ item: i('Amulet of fury'), lvl: 90 }
 	],
 	parts: { precious: 3, smooth: 30 }
