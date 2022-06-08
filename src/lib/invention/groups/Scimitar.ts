@@ -7,7 +7,7 @@ export const Scimitar: DisassemblySourceGroup = {
 	name: 'Scimitar',
 	items: [
 		{
-			item: i('Black scimitar'),
+			item: ['Black scimitar', 'White scimitar'].map(i),
 			lvl: 25
 		},
 		{ item: i('Brine sabre'), lvl: 40 },

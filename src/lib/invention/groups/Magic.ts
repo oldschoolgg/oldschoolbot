@@ -39,6 +39,10 @@ export const Magic: DisassemblySourceGroup = {
 			item: i('Divine sigil'),
 			lvl: 99,
 			flags: new Set(['corporeal'])
+		},
+		{
+			item: i('Magus scroll'),
+			lvl: 105
 		}
 	],
 	parts: { magic: 30, powerful: 3, protective: 2 }

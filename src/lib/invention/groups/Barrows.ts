@@ -5,6 +5,7 @@ const i = getOSItem;
 
 export const Barrows: DisassemblySourceGroup = {
 	name: 'Barrows',
+	description: 'Barrows weaponry and armor.',
 	items: [
 		{
 			item: [

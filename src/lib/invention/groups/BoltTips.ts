@@ -4,7 +4,7 @@ import { DisassemblySourceGroup } from '..';
 const i = getOSItem;
 
 export const BoltTips: DisassemblySourceGroup = {
-	name: 'BoltTips',
+	name: 'Bolt Tips',
 	items: [
 		{ item: i('Opal bolt tips'), lvl: 11 },
 		{ item: i('Jade bolt tips'), lvl: 26 },

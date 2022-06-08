@@ -1,3 +1,4 @@
+import { brokenPernixOutfit, pernixOutfit } from '../../data/CollectionsExport';
 import getOSItem from '../../util/getOSItem';
 import { DisassemblySourceGroup } from '..';
 
@@ -41,6 +42,8 @@ export const RangedArmour: DisassemblySourceGroup = {
 		{ item: ["Blue d'hide chaps", "Blue d'hide chaps (g)", "Blue d'hide chaps (t)"].map(i), lvl: 68 },
 		{ item: ["Blue d'hide shield"].map(i), lvl: 69 },
 		{ item: ["Blue d'hide body", "Blue d'hide body (g)", "Blue d'hide body (t)"].map(i), lvl: 71 },
+
+		{ item: ["Zamorak d'hide shield"].map(i), lvl: 76 },
 
 		{ item: ["Red d'hide vambraces"].map(i), lvl: 73 },
 		{ item: ["Red d'hide chaps", "Red d'hide chaps (g)", "Red d'hide chaps (t)"].map(i), lvl: 75 },
@@ -106,7 +109,7 @@ export const RangedArmour: DisassemblySourceGroup = {
 			lvl: 70
 		},
 		{
-			item: i('Armadyl helmet'),
+			item: ['Armadyl helmet', 'Armadyl chaps', 'Zamorak chaps'].map(i),
 			lvl: 70
 		},
 		{ item: i("Morrigan's coif"), lvl: 78 },
@@ -132,7 +135,11 @@ export const RangedArmour: DisassemblySourceGroup = {
 			item: i('Elysian spirit shield'),
 			lvl: 75,
 			flags: new Set(['corporeal'])
+		},
+		{
+			item: [...pernixOutfit, ...brokenPernixOutfit].map(i),
+			lvl: 110
 		}
 	],
-	parts: { protective: 20, dextrous: 40 }
+	parts: { protective: 20, dextrous: 80 }
 };

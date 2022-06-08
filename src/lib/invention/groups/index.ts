@@ -30,6 +30,7 @@ import { Maul } from './Maul';
 import { MeleeArmour } from './MeleeArmour';
 import { Ores } from './Ores';
 import { Organic } from './Organic';
+import { Pious } from './Pious';
 import { Planks } from './Planks';
 import { Potion } from './Potion';
 import { Projectiles } from './Projectiles';
@@ -95,5 +96,6 @@ export const DisassemblySourceGroups = [
 	Drygores,
 	Dwarven,
 	ThirdAge,
-	Barrows
+	Barrows,
+	Pious
 ];

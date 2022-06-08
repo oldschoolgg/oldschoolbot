@@ -1,3 +1,4 @@
+import { brokenVirtusOutfit, virtusOutfit } from '../../data/CollectionsExport';
 import getOSItem from '../../util/getOSItem';
 import { DisassemblySourceGroup } from '..';
 
@@ -62,6 +63,10 @@ export const MagicArmour: DisassemblySourceGroup = {
 		{
 			item: ['Ancestral hat', 'Ancestral robe top', 'Ancestral robe bottom'].map(i),
 			lvl: 75
+		},
+		{
+			item: [...virtusOutfit, ...brokenVirtusOutfit].map(i),
+			lvl: 110
 		}
 	],
 	parts: { magic: 30, powerful: 3, protective: 32 }

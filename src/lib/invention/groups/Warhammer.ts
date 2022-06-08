@@ -21,6 +21,7 @@ export const Warhammer: DisassemblySourceGroup = {
 		{ item: i('Iron warhammer'), lvl: 10 },
 		{ item: i('Steel warhammer'), lvl: 20 },
 		{ item: i('Mithril warhammer'), lvl: 30 },
+		{ item: i('Adamant warhammer'), lvl: 40 },
 		{ item: i('Rune warhammer'), lvl: 50 }
 	],
 	parts: { strong: 2, heavy: 3, base: 35, smooth: 30 }

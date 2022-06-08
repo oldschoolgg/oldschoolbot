@@ -89,6 +89,7 @@ export interface DisassemblyItem {
 
 export interface DisassemblySourceGroup {
 	name: string;
+	description?: string;
 	items: DisassemblyItem[];
 	/**
 	 * Percentage chances of what material you will get from this item.

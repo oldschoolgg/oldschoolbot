@@ -5,6 +5,12 @@ const i = getOSItem;
 
 export const Ashes: DisassemblySourceGroup = {
 	name: 'Ashes',
-	items: [{ item: i('Infernal ashes'), lvl: 25 }],
-	parts: { pious: 1, organic: 98 }
+	items: [
+		{ item: i('Fiendish ashes'), lvl: 10 },
+		{ item: i('Vile ashes'), lvl: 20 },
+		{ item: i('Malicious ashes'), lvl: 50 },
+		{ item: i('Abyssal ashes'), lvl: 60 },
+		{ item: i('Infernal ashes'), lvl: 90 }
+	],
+	parts: { pious: 5, organic: 95 }
 };

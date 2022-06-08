@@ -52,6 +52,10 @@ export const Shield: DisassemblySourceGroup = {
 			lvl: 50
 		},
 		{
+			item: i('Rune sq shield'),
+			lvl: 50
+		},
+		{
 			item: i('Rune shield (h2)'),
 			lvl: 50
 		},

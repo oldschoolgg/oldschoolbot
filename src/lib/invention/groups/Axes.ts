@@ -5,6 +5,7 @@ const i = getOSItem;
 
 export const Axes: DisassemblySourceGroup = {
 	name: 'Axes',
+	description: 'Pickaxes, axes, thrownaxes, battleaxes!',
 	items: [
 		{ item: i('Bronze pickaxe'), lvl: 1 },
 		{ item: i('Iron pickaxe'), lvl: 10 },

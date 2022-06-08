@@ -1,3 +1,4 @@
+import { brokenTorvaOutfit, torvaOutfit } from '../../data/CollectionsExport';
 import getOSItem from '../../util/getOSItem';
 import { DisassemblySourceGroup } from '..';
 
@@ -207,11 +208,24 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i("Statius's platelegs"), lvl: 78 },
 		{ item: i("Vesta's plateskirt"), lvl: 78 },
 		{ item: i('Iron plateskirt'), lvl: 10 },
-		{ item: i('Steel platelegs'), lvl: 20 },
-		{ item: i('Steel plateskirt'), lvl: 20 },
+		{
+			item: [
+				'Steel platelegs',
+				'Steel platelegs (g)',
+				'Steel plateskirt (t)',
+				'Steel kiteshield (g)',
+				'Steel platebody (g)',
+				'Steel full helm (t)',
+				'Steel plateskirt (g)',
+				'Steel plateskirt'
+			].map(i),
+			lvl: 20
+		},
 		{ item: i('Mithril platelegs'), lvl: 30 },
 		{ item: i('Mithril plateskirt'), lvl: 30 },
 		{ item: i('Adamant platelegs'), lvl: 40 },
+		{ item: i('Adamant platelegs (t)'), lvl: 40 },
+		{ item: i('Adamant platelegs (g)'), lvl: 40 },
 		{ item: i('Adamant platebody'), lvl: 40 },
 		{ item: i('Adamant plateskirt'), lvl: 40 },
 		{ item: i('Rune plateskirt'), lvl: 50 },
@@ -234,9 +248,18 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		},
 		{ item: i('Rock-shell boots'), lvl: 50 },
 		{ item: i('Dragon boots'), lvl: 60 },
+		{ item: i('Royal dragon platebody'), lvl: 80 },
 		{
 			item: i('Bandos boots'),
 			lvl: 70
+		},
+		{
+			item: [...torvaOutfit, ...brokenTorvaOutfit].map(i),
+			lvl: 110
+		},
+		{
+			item: ['Abyssal cape'].map(i),
+			lvl: 110
 		}
 	],
 	parts: { plated: 30, strong: 3, protective: 2 }
