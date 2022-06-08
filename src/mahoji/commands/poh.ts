@@ -114,5 +114,6 @@ export const pohCommand: OSBMahojiCommand = {
 		if (options.destroy) {
 			return pohDestroyCommand(user, options.destroy.name);
 		}
+		return 'Invalid command.';
 	}
 };
