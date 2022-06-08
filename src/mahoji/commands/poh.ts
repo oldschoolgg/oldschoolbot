@@ -1,6 +1,7 @@
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { PoHObjects } from '../../lib/poh';
+import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import {
 	getPOH,
 	makePOHImage,
@@ -17,7 +18,6 @@ export const pohCommand: OSBMahojiCommand = {
 	description: 'Allows you to access and build in your POH.',
 	attributes: {
 		requiresMinion: true,
-		requiresMinionNotBusy: true,
 		description: 'Allows you to access and build in your POH.',
 		examples: ['/poh build:Demonic throne']
 	},
@@ -101,15 +101,18 @@ export const pohCommand: OSBMahojiCommand = {
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!mahojiUser.minion_hasBought) return "You don't own a minion yet, so you have no PoH!";
+		if (options.view) {
+			return makePOHImage(user, options.view?.build_mode);
+		}
 		if (options.wallkit) {
 			return pohWallkitCommand(user, options.wallkit.name);
 		}
+		if (minionIsBusy(user.id)) return 'You cannot interact with your PoH, because your minion is busy.';
 		if (options.build) {
 			return pohBuildCommand(interaction, user, options.build.name);
 		}
 		if (options.destroy) {
 			return pohDestroyCommand(user, options.destroy.name);
 		}
-		return makePOHImage(user, options.view?.build_mode);
 	}
 };
