@@ -8,7 +8,8 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
-import { DisassemblySourceGroups, materialTypes } from '../invention';
+import { materialTypes } from '../invention';
+import { DisassemblySourceGroups } from '../invention/groups';
 import { monkeyEatables } from '../monkeyRumble';
 import { allOpenables } from '../openables';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';

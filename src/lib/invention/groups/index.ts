@@ -47,13 +47,12 @@ import { UncutGems } from './UncutGems';
 import { UnstrungBows } from './UnstrungBows';
 import { Warhammer } from './Warhammer';
 
-export default [
+export const DisassemblySourceGroups = [
 	LeatherHides,
 	Projectiles,
 	Hasta,
 	Runes,
 	Warhammer,
-	LeatherHides,
 	Gems,
 	Claws,
 	Dagger,

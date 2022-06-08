@@ -45,7 +45,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		},
 		{ item: i('Fighter torso'), lvl: 50 },
 		{ item: i('Rock-shell plate'), lvl: 50 },
-		{ item: i('Rune platebody (g)'), lvl: 50 },
 		{
 			item: [
 				'Rune platebody (h1)',
@@ -216,7 +215,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Adamant platebody'), lvl: 40 },
 		{ item: i('Adamant plateskirt'), lvl: 40 },
 		{ item: i('Rune plateskirt'), lvl: 50 },
-		{ item: i('Rune platelegs'), lvl: 50 },
 		// Boots
 		{
 			item: i('Bronze boots'),

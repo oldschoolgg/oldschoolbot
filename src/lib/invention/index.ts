@@ -1,6 +1,6 @@
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import DisassembleGroups from './groups';
+import { DisassemblySourceGroups } from './groups';
 
 export const materialTypes = [
 	'junk',
@@ -96,7 +96,6 @@ export interface DisassemblySourceGroup {
 	parts: IMaterialBank;
 }
 
-export const DisassemblySourceGroups = DisassembleGroups;
 export const allItemsThatCanBeDisassembled = Array.from(
 	new Set(DisassemblySourceGroups.map(i => i.items.map(i => i.item)).flat(2))
 );

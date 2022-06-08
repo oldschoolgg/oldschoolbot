@@ -168,6 +168,8 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.TokkulShop;
 		case 'BaxtorianBathhouses':
 			return Tasks.BaxtorianBathhouses;
+		case 'TroubleBrewing':
+			return Tasks.TroubleBrewing;
 		case 'Disassembling':
 			return Tasks.Disassembling;
 		case 'Research':

@@ -11,6 +11,7 @@ import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
 import { chaeldarMonsters } from './chaeldarMonsters';
+import { creatureCreationCreatures } from './creatureCreation';
 import { Ignecarus } from './custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from './custom/bosses/KalphiteKing';
 import KingGoldemar from './custom/bosses/KingGoldemar';
@@ -36,6 +37,7 @@ const killableMonsters: KillableMonster[] = [
 	...vannakaMonsters,
 	...low,
 	...customKillableMonsters,
+	...creatureCreationCreatures,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,

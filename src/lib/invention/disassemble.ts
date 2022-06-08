@@ -22,14 +22,8 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
 import { handleTripFinish } from '../util/handleTripFinish';
 import { minionName, userHasItemsEquippedAnywhere } from '../util/minionUtils';
-import {
-	DisassembleFlag,
-	DisassemblyItem,
-	DisassemblySourceGroup,
-	DisassemblySourceGroups,
-	IMaterialBank,
-	MaterialType
-} from '.';
+import { DisassembleFlag, DisassemblyItem, DisassemblySourceGroup, IMaterialBank, MaterialType } from '.';
+import { DisassemblySourceGroups } from './groups';
 import {
 	inventionBoosts,
 	InventionID,

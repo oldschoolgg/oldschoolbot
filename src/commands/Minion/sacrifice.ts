@@ -92,7 +92,7 @@ export default class extends BotCommand {
 			)}) to your sacrificed amount.`
 		);
 
-		if (totalPrice > 200_000_000) {
+		if (totalPrice > 5_000_000_000) {
 			this.client.emit(Events.ServerNotification, `${msg.author.username} just sacrificed ${bankToSac}!`);
 		}
 

@@ -98,7 +98,7 @@ export const buildCommand: OSBMahojiCommand = {
 		const cost = new Bank().add(plank, planksQtyCost * quantity);
 		const hasScroll = user.owns('Scroll of proficiency');
 		if (hasScroll) {
-			cost.bank[plank] = reduceNumByPercent(cost.bank[plank], 15);
+			cost.bank[plank] = Math.floor(reduceNumByPercent(cost.bank[plank], 15));
 			boosts.push('15% less planks used from Scroll of proficiency');
 		}
 
