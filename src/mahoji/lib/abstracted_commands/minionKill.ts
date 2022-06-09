@@ -326,12 +326,19 @@ export async function minionKillCommand(
 	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
+	const { canAfford, mUser } = await canAffordInventionBoost(
+		BigInt(user.id),
+		InventionID.SuperiorDwarfMultiCannon,
+		timeToFinish
+	);
+	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
 
-	const canAffordSuperiorCannonBoost = hasSuperiorCannon
-		? (await canAffordInventionBoost(BigInt(user.id), InventionID.SuperiorDwarfMultiCannon, timeToFinish)).canAfford
-		: false;
-
-	if (boostChoice === 'cannon' && canAffordSuperiorCannonBoost && (monster.canCannon || monster.cannonMulti)) {
+	if (
+		boostChoice === 'cannon' &&
+		!mUser.disabled_inventions.includes(InventionID.SuperiorDwarfMultiCannon) &&
+		canAffordSuperiorCannonBoost &&
+		(monster.canCannon || monster.cannonMulti)
+	) {
 		let qty = quantity || floor(maxTripLength / timeToFinish);
 		console.log(`${user} is killing roughly ${qty}x ${monster.name}`);
 		const res = await inventionItemBoost({

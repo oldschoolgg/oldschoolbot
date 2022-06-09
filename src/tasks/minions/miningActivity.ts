@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import { InventionID } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../lib/skilling/skills/mining';
@@ -13,6 +14,7 @@ import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { multiplyBank, rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
@@ -159,7 +161,10 @@ export default class extends Task {
 		}
 
 		const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
-		if (hasAdze) {
+		const adzeIsDisabled = (
+			await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true })
+		).disabled_inventions.includes(InventionID.SuperiorInfernoAdze);
+		if (hasAdze && !adzeIsDisabled) {
 			const smeltedOre = Smithing.Bars.find(
 				o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
 			);

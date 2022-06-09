@@ -133,7 +133,8 @@ export async function handleDisassembly({
 		const boostRes = await inventionItemBoost({
 			userID: user.id,
 			inventionID: InventionID.DwarvenToolkit,
-			duration: (inputQuantity ?? bank.amount(item.id)) * timePer
+			duration:
+				Math.min(inputQuantity ?? bank.amount(item.id), Math.floor(calcMaxTripLength(user) / timePer)) * timePer
 		});
 		if (boostRes.success) {
 			timePer = reduceNumByPercent(timePer, inventionBoosts.dwarvenToolkit.disassembleBoostPercent);

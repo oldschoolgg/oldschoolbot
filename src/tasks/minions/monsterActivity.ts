@@ -125,7 +125,7 @@ async function clueUpgraderEffect(user: KlasaUser, loot: Bank, messages: string[
 	loot.add(upgradedClues);
 	assert(loot.has(removeBank));
 	loot.remove(removeBank);
-	messages.push(`Clue Upgrader got you ${upgradedClues} (${boostRes.messages})`);
+	messages.push(`Clue Upgrader upgraded ${removeBank} into ${upgradedClues} (${boostRes.messages})`);
 }
 
 export default class extends Task {
