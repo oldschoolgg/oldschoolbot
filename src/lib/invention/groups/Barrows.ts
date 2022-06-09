@@ -34,7 +34,7 @@ export const Barrows: DisassemblySourceGroup = {
 				"Verac's plateskirt",
 				"Verac's flail"
 			].map(i),
-			lvl: 70
+			lvl: 80
 		}
 	],
 	parts: { barrows: 80, strong: 10, protective: 10 }

@@ -1,15 +1,21 @@
-import { shuffleArr } from 'e';
+import { reduceNumByPercent, shuffleArr, Time } from 'e';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { table } from 'table';
 
 import { allItemsThatCanBeDisassembledIDs, IMaterialBank, MaterialType, materialTypes } from '../../lib/invention';
-import { bankDisassembleAnalysis, disassembleCommand, findDisassemblyGroup } from '../../lib/invention/disassemble';
-import { inventCommand, inventingCost, Inventions } from '../../lib/invention/inventions';
+import {
+	bankDisassembleAnalysis,
+	calculateDisXP,
+	disassembleCommand,
+	findDisassemblyGroup
+} from '../../lib/invention/disassemble';
+import { inventCommand, inventingCost, inventionBoosts, Inventions } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { stringMatches, toTitleCase } from '../../lib/util';
+import { calcPerHour, stringMatches, toKMB, toTitleCase } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -161,6 +167,10 @@ export const askCommand: OSBMahojiCommand = {
 						{
 							name: 'Material Spread',
 							value: 'material_spread'
+						},
+						{
+							name: 'XP Stats',
+							value: 'xp'
 						}
 					]
 				}
@@ -204,7 +214,8 @@ export const askCommand: OSBMahojiCommand = {
 				| 'global_disassembled'
 				| 'unlocked_blueprints'
 				| 'invention_mat_cost'
-				| 'material_spread';
+				| 'material_spread'
+				| 'xp';
 		};
 		details?: { invention: string };
 	}>) => {
@@ -347,6 +358,46 @@ These Inventions are still not unlocked: ${locked
 					}
 					return {
 						attachments: [{ fileName: 'material_spread.txt', buffer: Buffer.from(res.join('\n')) }]
+					};
+				}
+				case 'xp': {
+					let xpTable = [];
+					xpTable.push([
+						'Invention Level(1-120)',
+						'Item Weighting(1-120)',
+						'XP Per',
+						'XP/Hr',
+						'XP/Hr With Toolkit',
+						'XP/Hr With Toolkit&Cape'
+					]);
+
+					const lvls = [1, 10, 30, 60, 80, 100, 120];
+					for (const lvl of lvls) {
+						for (const weighting of lvls) {
+							const { xp } = calculateDisXP(lvl, 1, weighting);
+							let dur = Time.Second * 0.33;
+							let toolkitDur = reduceNumByPercent(
+								dur,
+								inventionBoosts.dwarvenToolkit.disassembleBoostPercent
+							);
+							let capeAndToolkitDur = reduceNumByPercent(
+								toolkitDur,
+								inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent
+							);
+
+							xpTable.push([
+								lvl,
+								weighting,
+								xp,
+								toKMB(calcPerHour(xp, dur)),
+								toKMB(calcPerHour(xp, toolkitDur)),
+								lvl === 120 ? toKMB(calcPerHour(xp, capeAndToolkitDur)) : 'N/A'
+							]);
+						}
+					}
+
+					return {
+						attachments: [{ buffer: Buffer.from(table(xpTable)), fileName: 'invention-xp.txt' }]
 					};
 				}
 			}

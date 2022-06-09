@@ -18,5 +18,5 @@ export const UnstrungBows: DisassemblySourceGroup = {
 		{ item: i('Magic longbow (u)'), lvl: 85 },
 		{ item: i('Elder bow (u)'), lvl: 105 }
 	],
-	parts: { flexible: 30, dextrous: 5 }
+	parts: { flexible: 5, dextrous: 5, simple: 20 }
 };

@@ -22,7 +22,7 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
 import { handleTripFinish } from '../util/handleTripFinish';
 import { minionName, userHasItemsEquippedAnywhere } from '../util/minionUtils';
-import { DisassembleFlag, DisassemblyItem, DisassemblySourceGroup, IMaterialBank, MaterialType } from '.';
+import { DisassembleFlag, DisassemblyItem, IMaterialBank, MaterialType } from '.';
 import { DisassemblySourceGroups } from './groups';
 import {
 	inventionBoosts,
@@ -34,15 +34,8 @@ import {
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 
-/**
- * The XP you get for disassembly is calculated based on the item and quantity.
- *
- * To prevent the issue of users training Invention entirely through just, for example, a 100m stack of Pure essence,
- * you receive less XP from certain *items* based on how many of those you have already disassembled.
- *
- */
-function calculateDisXP(quantity: number, item: DisassemblySourceGroup['items'][number]) {
-	let baseXPPerItem = 10 + item.lvl * (item.lvl / 200);
+export function calculateDisXP(inventionLevel: number, quantity: number, lvl: number) {
+	let baseXPPerItem = 2 + Math.floor(lvl / 11) + Math.floor(inventionLevel / 5) + (lvl - lvl / 1.2) * (lvl / 16.5);
 
 	return {
 		xp: Math.ceil(quantity * baseXPPerItem)
@@ -178,7 +171,7 @@ export async function handleDisassembly({
 		}
 	}
 
-	const { xp } = calculateDisXP(realQuantity, data);
+	const { xp } = calculateDisXP(skills.invention, realQuantity, data.lvl);
 
 	const cost = new Bank().add(item.name, realQuantity);
 
@@ -212,7 +205,7 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			item
 		});
 		if (result.error !== null) return result.error;
-		const { xp } = calculateDisXP(qty, group.data);
+		const { xp } = calculateDisXP(getSkillsOfMahojiUser(user, true).invention, qty, group.data.lvl);
 		totalXP += xp;
 		totalMaterials.add(result.materials);
 		results.push({ ...result, item });
