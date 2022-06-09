@@ -67,7 +67,18 @@ export const Jewellery: DisassemblySourceGroup = {
 		{ item: i('Skills necklace'), lvl: 72 },
 		{ item: i('Combat bracelet'), lvl: 74 },
 		{ item: i('Dragonstone bracelet'), lvl: 74 },
-		{ item: i('Dragonstone amulet'), lvl: 80 },
+		{
+			item: [
+				'Dragonstone amulet',
+				'Amulet of glory',
+				'Amulet of glory (t)',
+				'Amulet of glory (t4)',
+				'Amulet of glory (t6)',
+				'Amulet of glory(4)',
+				'Amulet of glory(6)'
+			].map(i),
+			lvl: 80
+		},
 		{ item: i('Berserker necklace'), lvl: 82 },
 		{ item: i('Onyx necklace'), lvl: 82 },
 		{ item: i('Onyx bracelet'), lvl: 84 },

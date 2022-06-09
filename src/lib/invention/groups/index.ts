@@ -13,6 +13,7 @@ import { Default } from './Default';
 import { Defender } from './Defender';
 import { Drygores } from './Drygores';
 import { Dwarven } from './Dwarven';
+import { EnsouledHeads } from './EnsouledHeads';
 import { Food } from './Food';
 import { Gems } from './Gems';
 import { Glass } from './Glass';
@@ -95,5 +96,6 @@ export const DisassemblySourceGroups = [
 	Dwarven,
 	ThirdAge,
 	Barrows,
-	Pious
+	Pious,
+	EnsouledHeads
 ];

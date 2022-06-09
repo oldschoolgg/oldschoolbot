@@ -10,7 +10,8 @@ export const Claws: DisassemblySourceGroup = {
 		{ item: i('Iron claws'), lvl: 10 },
 		{ item: i('Steel claws'), lvl: 20 },
 		{ item: i('Mithril claws'), lvl: 30 },
-		{ item: i('Rune claws'), lvl: 50 }
+		{ item: i('Rune claws'), lvl: 50 },
+		{ item: i('Dragon claws'), lvl: 120 }
 	],
-	parts: { sharp: 60, swift: 2 }
+	parts: { sharp: 60, swift: 20 }
 };

@@ -381,7 +381,7 @@ export const MeleeArmour: DisassemblySourceGroup = {
 			lvl: 110
 		},
 		{
-			item: ['Abyssal cape'].map(i),
+			item: ['Abyssal cape', 'Avernic defender hilt'].map(i),
 			lvl: 110
 		}
 	],

@@ -16,8 +16,10 @@ export const Pious: DisassemblySourceGroup = {
 			lvl: 10
 		},
 		{
-			item: ['Holy blessing'].map(getOSItem),
-			lvl: 50
+			item: ['Holy blessing', 'War blessing', 'Unholy blessing', 'Peaceful blessing', 'Ancient blessing'].map(
+				getOSItem
+			),
+			lvl: 70
 		},
 		{
 			item: [
@@ -46,15 +48,25 @@ export const Pious: DisassemblySourceGroup = {
 				'Ancient page 3',
 				'Ancient page 4'
 			].map(getOSItem),
-			lvl: 50
+			lvl: 70
+		},
+		{
+			item: ['Holy sandals', 'Holy wraps'].map(getOSItem),
+			lvl: 80
 		},
 		{
 			item: ['Godsword shard 1', 'Godsword shard 2', 'Godsword shard 3'].map(getOSItem),
-			lvl: 65
+			lvl: 80
 		},
 		{
-			item: ['Zamorak hilt', 'Saradomin hilt', 'Bandos hilt', 'Armadyl hilt'].map(getOSItem),
-			lvl: 90
+			item: ['Zamorak hilt', 'Saradomin hilt', 'Bandos hilt', 'Armadyl hilt', 'Ancient hilt'].map(getOSItem),
+			lvl: 100
+		},
+		{
+			item: ['Armadylean components', 'Bandosian components', 'Ancestral components', 'Holy elixir'].map(
+				getOSItem
+			),
+			lvl: 100
 		}
 	],
 	parts: { pious: 50, simple: 50 }

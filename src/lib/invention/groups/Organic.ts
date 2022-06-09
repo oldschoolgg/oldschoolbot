@@ -67,6 +67,7 @@ export const Organic: DisassemblySourceGroup = {
 		{ item: i('Belladonna seed'), lvl: 63 },
 		{ item: i('Cadantine seed'), lvl: 67 },
 		{ item: i('Palm tree seed'), lvl: 68 },
+		{ item: i('Grape seed'), lvl: 68 },
 		{ item: i('Poison ivy seed'), lvl: 70 },
 		{ item: i('Calquat tree seed'), lvl: 72 },
 		{ item: i('Lantadyme seed'), lvl: 73 },
@@ -81,6 +82,7 @@ export const Organic: DisassemblySourceGroup = {
 		{ item: i('Athelas seed'), lvl: 99 },
 		{ item: i('Mango seed'), lvl: 105 },
 		{ item: i('Lychee seed'), lvl: 111 },
+		{ item: i('Mysterious seed'), lvl: 120 },
 		// Misc
 		{
 			item: [
@@ -88,6 +90,22 @@ export const Organic: DisassemblySourceGroup = {
 				'Apple pie',
 				'Raw turkey',
 				'Premade choc bomb',
+				'Dragon bitter',
+				'Cooked chompy',
+				'Cooked crab meat',
+				'Cooked jubbly',
+				'Cooked meat',
+				'Cooked mystery meat',
+				'Cooked oomlie wrap',
+				'Cooked rabbit',
+				'Cooked slimy eel',
+				'Cooked sweetcorn',
+				'Cooking apple',
+				'Dragon bitter',
+				'Dragon bitter(4)',
+				'Dragon bitter(m)',
+				'Curry leaf',
+				'Dragon bitter(m4)',
 				'Raw yak meat',
 				'Redberries',
 				'Dwellberries',
@@ -172,7 +190,14 @@ export const Organic: DisassemblySourceGroup = {
 				'Chocolate dust',
 				'Chocolified skull',
 				'Chopped garlic',
+				'Woad leaf',
 				'Chopped onion',
+				'Yellow flowers',
+				'Yanillian hops',
+				'Fish chunks',
+				'Fish food',
+				'Fish n chips',
+				'Fish offcuts',
 				'Chopped tomato',
 				'Chopped tuna',
 				'Chopped ugthanki',
@@ -183,7 +208,9 @@ export const Organic: DisassemblySourceGroup = {
 				'Chilli con carne',
 				'Chilli potato',
 				'Anchovies',
-				'Anchovy pizza'
+				'Anchovy pizza',
+				'Whisky',
+				'Weeds'
 			].map(i),
 			lvl: 1
 		},
@@ -200,9 +227,10 @@ export const Organic: DisassemblySourceGroup = {
 		{ item: i('Black salamander'), lvl: 70 },
 		{ item: i('Chimpchompa'), lvl: 70 },
 		{ item: i('Big banana'), lvl: 70 },
+		{ item: i('Ignecarus scales'), lvl: 85 },
 		{ item: i('Simple kibble'), lvl: 105 },
 		{ item: i('Delicious kibble'), lvl: 110 },
-		{ item: i('Extraordinary kibble'), lvl: 120 }
+		{ item: ['Extraordinary kibble', 'Ignecarus dragonclaw', 'Dragon egg'].map(i), lvl: 120 }
 	],
 	parts: { organic: 100 }
 };

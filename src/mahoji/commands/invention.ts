@@ -1,4 +1,4 @@
-import { reduceNumByPercent, shuffleArr, Time } from 'e';
+import { randArrItem, reduceNumByPercent, shuffleArr, Time } from 'e';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -11,11 +11,12 @@ import {
 	disassembleCommand,
 	findDisassemblyGroup
 } from '../../lib/invention/disassemble';
+import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { inventCommand, inventingCost, inventionBoosts, Inventions } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { calcPerHour, stringMatches, toKMB, toTitleCase } from '../../lib/util';
+import { calcPerHour, convertXPtoLVL, formatDuration, stringMatches, toKMB, toTitleCase } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -171,6 +172,10 @@ export const askCommand: OSBMahojiCommand = {
 						{
 							name: 'XP Stats',
 							value: 'xp'
+						},
+						{
+							name: 'Simulate maxing',
+							value: 'simulate'
 						}
 					]
 				}
@@ -215,7 +220,8 @@ export const askCommand: OSBMahojiCommand = {
 				| 'unlocked_blueprints'
 				| 'invention_mat_cost'
 				| 'material_spread'
-				| 'xp';
+				| 'xp'
+				| 'simulate';
 		};
 		details?: { invention: string };
 	}>) => {
@@ -399,6 +405,26 @@ These Inventions are still not unlocked: ${locked
 					return {
 						attachments: [{ buffer: Buffer.from(table(xpTable)), fileName: 'invention-xp.txt' }]
 					};
+				}
+				case 'simulate': {
+					const group = randArrItem(DisassemblySourceGroups);
+					let xp = 0;
+					let duration = 0;
+					let itemsUsed = new Bank();
+					let timePer = Time.Second * 0.33;
+					while (true) {
+						const level = convertXPtoLVL(xp);
+						if (level === 120) break;
+						const itemCanDis = group.items.sort((a, b) => b.lvl - a.lvl).find(i => i.lvl <= level)!;
+						const item = Array.isArray(itemCanDis.item) ? itemCanDis.item[0] : itemCanDis.item;
+						let qty = 1000;
+						xp += calculateDisXP(level, qty, itemCanDis.lvl).xp;
+						duration += timePer * qty;
+						itemsUsed.add(item.id, qty);
+					}
+					return `You reached ${xp.toLocaleString()} XP (level ${convertXPtoLVL(
+						xp
+					)}) Invention, after disassembling: ${itemsUsed}. It would've taken ${formatDuration(duration)}`;
 				}
 			}
 		}

@@ -50,7 +50,19 @@ export const Shield: DisassemblySourceGroup = {
 			lvl: 50
 		},
 		{ item: i('Spirit shield'), lvl: 55 },
-		{ item: ['Adamant sq shield', 'Adamant shield (h2)'].map(i), lvl: 30 },
+		{
+			item: [
+				'Adamant sq shield',
+				'Adamant shield (h1)',
+				'Adamant shield (h3)',
+				'Adamant shield (h4)',
+				'Adamant shield (h5)',
+				'Adamant kiteshield',
+				'Adamant kiteshield (g)',
+				'Adamant kiteshield (t)'
+			].map(i),
+			lvl: 30
+		},
 		{ item: i('Dragon sq shield'), lvl: 60 },
 		{ item: i('Toktz-ket-xil'), lvl: 60 },
 
