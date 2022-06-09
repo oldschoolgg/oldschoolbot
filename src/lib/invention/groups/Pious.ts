@@ -69,5 +69,5 @@ export const Pious: DisassemblySourceGroup = {
 			lvl: 100
 		}
 	],
-	parts: { pious: 50, simple: 50 }
+	parts: { pious: 80, simple: 20 }
 };
