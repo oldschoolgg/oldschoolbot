@@ -103,7 +103,7 @@ export function calcJunkChance(lvl: number, hasMasterCape: boolean) {
 	return clamp(base, 2, 100);
 }
 export function calculateDisXP(inventionLevel: number, quantity: number, lvl: number) {
-	let baseXPPerItem = 2 + floor(lvl / 11) + floor(inventionLevel / 5) + (lvl - lvl / 1.2) * (lvl / 6.5);
+	let baseXPPerItem = 2 + floor(lvl / 11) + floor(inventionLevel / 5) + (lvl - lvl / 1.2) * (lvl / 7.5);
 	return {
 		xp: Math.ceil(quantity * baseXPPerItem)
 	};
