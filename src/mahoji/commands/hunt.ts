@@ -235,6 +235,14 @@ export const huntCommand: OSBMahojiCommand = {
 			boosts.push(`+2 hunter level for using ${hunterPotionQuantity}x Hunter potion(4) every 2nd minute.`);
 		}
 
+		if (creature.bait) {
+			let reqBank = creature.bait(quantity, user);
+			if (!user.owns(reqBank)) {
+				return `You don't have enough bait to catch ${quantity}x ${creature.name}, you need: ${reqBank}.`;
+			}
+			removeBank.add(reqBank);
+		}
+
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.HunterCost, removeBank);
 		await user.removeItemsFromBank(removeBank);
 
@@ -283,6 +291,10 @@ export const huntCommand: OSBMahojiCommand = {
 
 		if (wildyStr.length > 0) {
 			response += `\n\n${wildyStr}`;
+		}
+
+		if (removeBank.length) {
+			response += `\nRemoved ${removeBank}`;
 		}
 
 		return response;
