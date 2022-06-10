@@ -34,6 +34,12 @@ import {
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 
+export function calcJunkChance(lvl: number) {
+	// An item with lvl 1 has a ~99% chance of becoming junk.
+	// Cannot be lower than 5% junk chance
+	const junkChance = Math.max(5, 100 - calcWhatPercent(lvl, 120));
+	return junkChance;
+}
 export function calculateDisXP(inventionLevel: number, quantity: number, lvl: number) {
 	let baseXPPerItem = 2 + Math.floor(lvl / 11) + Math.floor(inventionLevel / 5) + (lvl - lvl / 1.2) * (lvl / 16.5);
 
@@ -150,9 +156,7 @@ export async function handleDisassembly({
 	const realQuantity = clamp(inputQuantity ?? bank.amount(item.id), 1, maxCanDo);
 	const duration = realQuantity * timePer;
 
-	// An item with lvl 1 has a ~99% chance of becoming junk.
-	// Cannot be lower than 5% junk chance
-	const junkChance = Math.max(5, 100 - calcWhatPercent(data.lvl, 120));
+	const junkChance = calcJunkChance(data.lvl);
 
 	for (let i = 0; i < realQuantity; i++) {
 		if (percentChance(junkChance)) {

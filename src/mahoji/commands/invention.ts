@@ -7,6 +7,7 @@ import { table } from 'table';
 import { allItemsThatCanBeDisassembledIDs, IMaterialBank, MaterialType, materialTypes } from '../../lib/invention';
 import {
 	bankDisassembleAnalysis,
+	calcJunkChance,
 	calculateDisXP,
 	disassembleCommand,
 	findDisassemblyGroup
@@ -138,6 +139,10 @@ export const askCommand: OSBMahojiCommand = {
 							value: 'materials_owned'
 						},
 						{
+							name: 'Material Groups',
+							value: 'groups'
+						},
+						{
 							name: 'Analyze Bank',
 							value: 'analyze_bank'
 						},
@@ -211,6 +216,7 @@ export const askCommand: OSBMahojiCommand = {
 		invent?: { name: string; quantity?: number };
 		tools?: {
 			command:
+				| 'groups'
 				| 'materials_owned'
 				| 'analyze_bank'
 				| 'missing_items'
@@ -425,6 +431,24 @@ These Inventions are still not unlocked: ${locked
 					return `You reached ${xp.toLocaleString()} XP (level ${convertXPtoLVL(
 						xp
 					)}) Invention, after disassembling: ${itemsUsed}. It would've taken ${formatDuration(duration)}`;
+				}
+				case 'groups': {
+					let str = '';
+					for (const group of DisassemblySourceGroups) {
+						str += `${group.name} (${new MaterialBank(group.parts)
+							.values()
+							.map(i => `${i.quantity}% ${i.type}`)
+							.join(', ')})
+       ${group.items
+			.map(i => {
+				return `${Array.isArray(i.item) ? i.item.map(i => i.name).join(', ') : i.item.name} - ${Math.floor(
+					calcJunkChance(i.lvl)
+				)}% Junk Chance - Level/Weighting ${i.lvl}`;
+			})
+			.join('\n       ')}`;
+						str += '\n';
+					}
+					return { attachments: [{ buffer: Buffer.from(str), fileName: 'groups.txt' }] };
 				}
 			}
 		}
