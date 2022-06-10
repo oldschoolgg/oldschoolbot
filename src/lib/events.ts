@@ -1,7 +1,7 @@
 import { noOp } from 'e';
 import { KlasaUser } from 'klasa';
 
-import { MAXING_MESSAGE } from '../config.example';
+import { MAXING_MESSAGE } from '../config';
 import { Events, LEVEL_99_XP, SupportServer } from './constants';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
