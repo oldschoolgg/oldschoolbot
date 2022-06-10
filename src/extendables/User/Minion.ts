@@ -846,13 +846,12 @@ export default class extends Extendable {
 		// Get the masterCape itemId for use in text output, and check for non-matching cape.
 		const masterCape = isMatchingCape
 			? isMatchingCape
-			: multiplier
+			: multiplier || params.masterCapeBoost === true
 			? allMasterCapes.find(cape => allCapes.includes(cape))
 			: undefined;
 
 		// When SOTW is active, don't give extra boosts to it
 		const isSkillThatShouldntGetExtraBoost = sotwIsActive() && sotwConfig.skill === params.skillName;
-
 		if (masterCape && !isSkillThatShouldntGetExtraBoost) {
 			params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);
 		}

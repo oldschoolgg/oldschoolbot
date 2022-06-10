@@ -110,7 +110,7 @@ export const MagicArmour: DisassemblySourceGroup = {
 		},
 		{
 			item: [...virtusOutfit, ...brokenVirtusOutfit].map(i),
-			lvl: 110
+			lvl: 99
 		}
 	],
 	parts: { magic: 30, powerful: 3, protective: 32 }

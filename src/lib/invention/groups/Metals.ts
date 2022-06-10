@@ -3,7 +3,7 @@ import { DisassemblySourceGroup } from '..';
 
 const i = getOSItem;
 
-export const Bars: DisassemblySourceGroup = {
+export const Metals: DisassemblySourceGroup = {
 	name: 'Metals',
 	description: 'Metal bars, dart tips.',
 	items: [
@@ -22,7 +22,7 @@ export const Bars: DisassemblySourceGroup = {
 		{ item: i('Adamant dart tip'), lvl: 70 },
 		{ item: i('Runite bar'), lvl: 90 },
 		{ item: i('Rune dart tip'), lvl: 90 },
-		{ item: i('Dragon dart tip'), lvl: 100 }
+		{ item: i('Dragon dart tip'), lvl: 99 }
 	],
 	parts: { simple: 25, metallic: 75 }
 };

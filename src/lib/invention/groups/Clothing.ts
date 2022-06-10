@@ -589,7 +589,7 @@ export const Clothing: DisassemblySourceGroup = {
 				'Dungeoneering master cape',
 				'Invention master cape'
 			].map(i),
-			lvl: 120
+			lvl: 99
 		}
 	],
 	parts: { simple: 35 }

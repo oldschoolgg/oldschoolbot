@@ -1,7 +1,6 @@
 import { Ashes } from './Ashes';
 import { Axes } from './Axes';
 import { Barrows } from './Barrows';
-import { Bars } from './Bars';
 import { BluntWeapons } from './BluntWeapons';
 import { BoltTips } from './BoltTips';
 import { Bones } from './Bones';
@@ -29,6 +28,8 @@ import { Mace } from './Mace';
 import { Magic } from './Magic';
 import { MagicArmour } from './MagicArmour';
 import { MeleeArmour } from './MeleeArmour';
+import { Metals } from './Metals';
+import { MysteryBoxes } from './MysteryBoxes';
 import { Ores } from './Ores';
 import { Organic } from './Organic';
 import { Pious } from './Pious';
@@ -36,6 +37,7 @@ import { Planks } from './Planks';
 import { Potion } from './Potion';
 import { Projectiles } from './Projectiles';
 import { RangedArmour } from './RangedArmour';
+import { RawFood } from './RawFood';
 import { Runes } from './Runes';
 import { Scimitar } from './Scimitar';
 import { Shield } from './Shield';
@@ -48,7 +50,7 @@ import { TreasureTrails } from './TreasureTrails';
 import { UncutGems } from './UncutGems';
 import { UnstrungBows } from './UnstrungBows';
 
-export const DisassemblySourceGroups = [
+export const DisassemblyGroupMap = {
 	LeatherHides,
 	Projectiles,
 	Hasta,
@@ -66,7 +68,7 @@ export const DisassemblySourceGroups = [
 	BoltTips,
 	Planks,
 	Halberd,
-	Bars,
+	Metals,
 	Bones,
 	RangedArmour,
 	Axes,
@@ -97,5 +99,9 @@ export const DisassemblySourceGroups = [
 	ThirdAge,
 	Barrows,
 	Pious,
-	EnsouledHeads
-];
+	EnsouledHeads,
+	RawFood,
+	MysteryBoxes
+} as const;
+
+export const DisassemblySourceGroups = Object.values(DisassemblyGroupMap);

@@ -24,8 +24,8 @@ export const BluntWeapons: DisassemblySourceGroup = {
 		{ item: i('Adamant warhammer'), lvl: 40 },
 		{ item: i('Rune warhammer'), lvl: 50 },
 		{ item: i('Tzhaar-ket-om'), lvl: 60 },
-		{ item: i('Elder maul'), lvl: 100 },
-		{ item: i('Abyssal bludgeon'), lvl: 100 }
+		{ item: i('Elder maul'), lvl: 90 },
+		{ item: i('Abyssal bludgeon'), lvl: 90 }
 	],
 	parts: { strong: 2, heavy: 3, base: 35, smooth: 30 }
 };

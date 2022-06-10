@@ -138,6 +138,7 @@ export interface AddXpParams {
 	multiplier?: boolean;
 	minimal?: boolean;
 	artificial?: boolean;
+	masterCapeBoost?: boolean;
 }
 
 export interface AddMonsterXpParams {

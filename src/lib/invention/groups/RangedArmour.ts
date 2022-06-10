@@ -11,6 +11,7 @@ export const RangedArmour: DisassemblySourceGroup = {
 		{ item: i('Leather body'), lvl: 1 },
 		{ item: i('Leather chaps'), lvl: 1 },
 		{ item: i('Hardleather body'), lvl: 10 },
+		{ item: i('Hard leather shield'), lvl: 10 },
 		{ item: i('Studded body'), lvl: 20 },
 		{
 			item: i('Studded body (g)'),
@@ -145,7 +146,12 @@ export const RangedArmour: DisassemblySourceGroup = {
 				"Ancient d'hide body",
 				"Ancient d'hide boots",
 				"Ancient d'hide shield",
-				'Ancient coif'
+				'Ancient coif',
+				'Royal dragonhide coif',
+				'Royal dragonhide chaps',
+				'Royal dragonhide body',
+				'Royal dragonhide boots',
+				'Royal dragonhide vambraces'
 			].map(i),
 			lvl: 70
 		},
@@ -167,7 +173,6 @@ export const RangedArmour: DisassemblySourceGroup = {
 			lvl: 70
 		},
 		{ item: i("Morrigan's leather chaps"), lvl: 78 },
-		{ item: i('Hard leather shield'), lvl: 10 },
 		{
 			item: i('Elysian spirit shield'),
 			lvl: 75,
@@ -175,7 +180,7 @@ export const RangedArmour: DisassemblySourceGroup = {
 		},
 		{
 			item: [...pernixOutfit, ...brokenPernixOutfit].map(i),
-			lvl: 110
+			lvl: 99
 		}
 	],
 	parts: { protective: 20, dextrous: 80 }

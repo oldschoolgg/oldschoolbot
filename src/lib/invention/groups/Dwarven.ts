@@ -8,19 +8,19 @@ export const Dwarven: DisassemblySourceGroup = {
 	items: [
 		{ item: i('Dwarven ore'), lvl: 50 },
 		{ item: i('Dwarven bar'), lvl: 80 },
-		{ item: i('Broken dwarven warhammer'), lvl: 100 },
-		{ item: i('Dwarven full helm'), lvl: 120 },
-		{ item: i('Dwarven platebody'), lvl: 120 },
-		{ item: i('Dwarven platelegs'), lvl: 120 },
-		{ item: i('Dwarven boots'), lvl: 120 },
-		{ item: i('Dwarven gloves'), lvl: 120 },
-		{ item: i('Dwarven warhammer'), lvl: 120 },
-		{ item: i('Dwarven warhammer (ice)'), lvl: 120 },
-		{ item: i('Dwarven warhammer (shadow)'), lvl: 120 },
-		{ item: i('Dwarven warhammer (blood)'), lvl: 120 },
-		{ item: i('Dwarven warhammer (3a)'), lvl: 120 },
-		{ item: i('Dwarven warnana'), lvl: 120 },
-		{ item: i('Dwarven battleaxe'), lvl: 120 }
+		{ item: i('Broken dwarven warhammer'), lvl: 90 },
+		{ item: i('Dwarven full helm'), lvl: 99 },
+		{ item: i('Dwarven platebody'), lvl: 99 },
+		{ item: i('Dwarven platelegs'), lvl: 99 },
+		{ item: i('Dwarven boots'), lvl: 99 },
+		{ item: i('Dwarven gloves'), lvl: 99 },
+		{ item: i('Dwarven warhammer'), lvl: 99 },
+		{ item: i('Dwarven warhammer (ice)'), lvl: 99 },
+		{ item: i('Dwarven warhammer (shadow)'), lvl: 99 },
+		{ item: i('Dwarven warhammer (blood)'), lvl: 99 },
+		{ item: i('Dwarven warhammer (3a)'), lvl: 99 },
+		{ item: i('Dwarven warnana'), lvl: 99 },
+		{ item: i('Dwarven battleaxe'), lvl: 99 }
 	],
 	parts: { dwarven: 100 }
 };

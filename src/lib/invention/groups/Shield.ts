@@ -86,7 +86,7 @@ export const Shield: DisassemblySourceGroup = {
 		{ item: i('Rune kiteshield'), lvl: 50 },
 		{ item: i('Granite shield'), lvl: 55 },
 		{ item: i('Dragon kiteshield'), lvl: 60 },
-		{ item: i('Divine spirit shield'), lvl: 120 }
+		{ item: i('Divine spirit shield'), lvl: 99 }
 	],
 	parts: { base: 30, strong: 3, protective: 32 }
 };

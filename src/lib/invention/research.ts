@@ -134,7 +134,8 @@ export async function researchTask(data: ResearchTaskOptions) {
 		skillName: SkillsEnum.Invention,
 		amount: quantity * 56.39,
 		duration: data.duration,
-		multiplier: false
+		multiplier: false,
+		masterCapeBoost: true
 	});
 	let str = `${userMention(data.userID)}, ${minionName(
 		mahojiUser

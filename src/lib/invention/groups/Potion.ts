@@ -154,7 +154,7 @@ export const Potion: DisassemblySourceGroup = {
 		{ item: getOSItem('Sanfew serum (2)'), lvl: 33 },
 		{ item: getOSItem('Sanfew serum (3)'), lvl: 49 },
 		{ item: getOSItem('Sanfew serum (4)'), lvl: 65 },
-		{ item: ['Heat res. brew', 'Heat res. restore'].map(i), lvl: 110 }
+		{ item: ['Heat res. brew', 'Heat res. restore'].map(i), lvl: 99 }
 	],
 	parts: { precious: 35, organic: 32 }
 };

@@ -80,9 +80,9 @@ export const Organic: DisassemblySourceGroup = {
 		{ item: i('Potato cactus seed'), lvl: 86 },
 		{ item: i('Avocado seed'), lvl: 99 },
 		{ item: i('Athelas seed'), lvl: 99 },
-		{ item: i('Mango seed'), lvl: 105 },
-		{ item: i('Lychee seed'), lvl: 111 },
-		{ item: i('Mysterious seed'), lvl: 120 },
+		{ item: i('Mango seed'), lvl: 90 },
+		{ item: i('Lychee seed'), lvl: 90 },
+		{ item: i('Mysterious seed'), lvl: 99 },
 		// Misc
 		{
 			item: [
@@ -228,9 +228,12 @@ export const Organic: DisassemblySourceGroup = {
 		{ item: i('Chimpchompa'), lvl: 70 },
 		{ item: i('Big banana'), lvl: 70 },
 		{ item: i('Ignecarus scales'), lvl: 85 },
-		{ item: i('Simple kibble'), lvl: 105 },
-		{ item: i('Delicious kibble'), lvl: 110 },
-		{ item: ['Extraordinary kibble', 'Ignecarus dragonclaw', 'Dragon egg'].map(i), lvl: 120 }
+		{ item: i('Simple kibble'), lvl: 90 },
+		{ item: i('Avocado'), lvl: 90 },
+		{ item: i('Mango'), lvl: 90 },
+		{ item: i('Lychee'), lvl: 90 },
+		{ item: i('Delicious kibble'), lvl: 95 },
+		{ item: ['Extraordinary kibble', 'Ignecarus dragonclaw', 'Dragon egg'].map(i), lvl: 99 }
 	],
 	parts: { organic: 100 }
 };

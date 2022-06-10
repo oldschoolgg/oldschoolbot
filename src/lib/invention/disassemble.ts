@@ -13,6 +13,7 @@ import {
 	mahojiClientSettingsFetch,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
+import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
 import { ActivityTaskOptions } from '../types/minions';
@@ -21,9 +22,9 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
 import { handleTripFinish } from '../util/handleTripFinish';
-import { minionName, userHasItemsEquippedAnywhere } from '../util/minionUtils';
-import { DisassembleFlag, DisassemblyItem, IMaterialBank, MaterialType } from '.';
-import { DisassemblySourceGroups } from './groups';
+import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../util/minionUtils';
+import { DisassembleFlag, DisassemblyItem, DisassemblySourceGroup, IMaterialBank, MaterialType } from '.';
+import { DisassemblyGroupMap, DisassemblySourceGroups } from './groups';
 import {
 	inventionBoosts,
 	InventionID,
@@ -34,15 +35,75 @@ import {
 import { MaterialBank } from './MaterialBank';
 import MaterialLootTable from './MaterialLootTable';
 
-export function calcJunkChance(lvl: number) {
-	// An item with lvl 1 has a ~99% chance of becoming junk.
-	// Cannot be lower than 5% junk chance
-	const junkChance = Math.max(5, 100 - calcWhatPercent(lvl, 120));
-	return junkChance;
+const MASTER_CAPE_JUNK_REDUCTION = 5;
+
+const masterCapeBoosts: Record<SkillsEnum, DisassemblySourceGroup[]> = {
+	smithing: [DisassemblyGroupMap.Metals],
+	mining: [DisassemblyGroupMap.Ores],
+
+	woodcutting: [DisassemblyGroupMap.Logs],
+	firemaking: [DisassemblyGroupMap.Ashes],
+
+	herblore: [DisassemblyGroupMap.Potion],
+	farming: [DisassemblyGroupMap.Organic],
+
+	cooking: [DisassemblyGroupMap.Food],
+	fishing: [DisassemblyGroupMap.RawFood],
+
+	construction: [DisassemblyGroupMap.Planks],
+	fletching: [DisassemblyGroupMap.Bows, DisassemblyGroupMap.UnstrungBows],
+	crafting: [DisassemblyGroupMap.Jewellery],
+	runecraft: [DisassemblyGroupMap.Talisman, DisassemblyGroupMap.Runes],
+
+	// Combat
+	ranged: [DisassemblyGroupMap.Projectiles],
+	attack: [DisassemblyGroupMap.Sword, DisassemblyGroupMap.Longsword],
+	strength: [DisassemblyGroupMap.BluntWeapons, DisassemblyGroupMap.Mace],
+	defence: [DisassemblyGroupMap.Shield, DisassemblyGroupMap.Defender],
+	magic: [DisassemblyGroupMap.Magic],
+	prayer: [DisassemblyGroupMap.Bones],
+	thieving: [],
+	dungeoneering: [],
+	agility: [],
+	slayer: [],
+	hitpoints: [],
+	invention: [],
+	hunter: []
+};
+
+function doesHaveMasterCapeBoost(
+	user: User,
+	group: DisassemblySourceGroup
+): { has: false } | { has: true; cape: string } {
+	for (const [skill, groups] of Object.entries(masterCapeBoosts)) {
+		const skillCape = Skillcapes.find(i => i.skill === skill);
+		if (!skillCape) continue;
+		if (!groups.includes(group)) continue;
+		const has = hasItemsEquippedOrInBank(user, [skillCape.masterCape.name]);
+		return has
+			? {
+					has: true,
+					cape: skillCape.masterCape.name
+			  }
+			: { has: false };
+	}
+	return { has: false };
+}
+
+export const dissasemblyWeighting = {
+	min: 1,
+	max: 99
+};
+
+const { floor } = Math;
+
+export function calcJunkChance(lvl: number, hasMasterCape: boolean) {
+	let base = 100 - calcWhatPercent(lvl, dissasemblyWeighting.max);
+	if (hasMasterCape) base -= MASTER_CAPE_JUNK_REDUCTION;
+	return clamp(base, 2, 100);
 }
 export function calculateDisXP(inventionLevel: number, quantity: number, lvl: number) {
-	let baseXPPerItem = 2 + Math.floor(lvl / 11) + Math.floor(inventionLevel / 5) + (lvl - lvl / 1.2) * (lvl / 16.5);
-
+	let baseXPPerItem = 2 + floor(lvl / 11) + floor(inventionLevel / 5) + (lvl - lvl / 1.2) * (lvl / 6.5);
 	return {
 		xp: Math.ceil(quantity * baseXPPerItem)
 	};
@@ -133,7 +194,7 @@ export async function handleDisassembly({
 			userID: user.id,
 			inventionID: InventionID.DwarvenToolkit,
 			duration:
-				Math.min(inputQuantity ?? bank.amount(item.id), Math.floor(calcMaxTripLength(user) / timePer)) * timePer
+				Math.min(inputQuantity ?? bank.amount(item.id), floor(calcMaxTripLength(user) / timePer)) * timePer
 		});
 		if (boostRes.success) {
 			timePer = reduceNumByPercent(timePer, inventionBoosts.dwarvenToolkit.disassembleBoostPercent);
@@ -150,13 +211,17 @@ export async function handleDisassembly({
 	}
 
 	// The max amount of items they can disassemble this trip
-	const maxCanDo = Math.floor(calcMaxTripLength(user) / timePer);
+	const maxCanDo = floor(calcMaxTripLength(user) / timePer);
 
 	// The actual quantity they'll disassemble.
 	const realQuantity = clamp(inputQuantity ?? bank.amount(item.id), 1, maxCanDo);
 	const duration = realQuantity * timePer;
 
-	const junkChance = calcJunkChance(data.lvl);
+	const masterCapeBoost = doesHaveMasterCapeBoost(user, _group.group);
+	if (masterCapeBoost.has) {
+		messages.push(`${MASTER_CAPE_JUNK_REDUCTION}% junk chance reduction for ${masterCapeBoost.cape}`);
+	}
+	const junkChance = calcJunkChance(data.lvl, masterCapeBoost.has);
 
 	for (let i = 0; i < realQuantity; i++) {
 		if (percentChance(junkChance)) {
@@ -316,7 +381,8 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 		skillName: SkillsEnum.Invention,
 		amount: data.xp,
 		duration: data.duration,
-		multiplier: false
+		multiplier: false,
+		masterCapeBoost: true
 	});
 
 	let str = `${userMention(data.userID)}, ${minionName(
@@ -325,7 +391,7 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 ${xpStr}`;
 
 	const loot = new Bank();
-	const minutes = Math.floor(data.duration / Time.Minute);
+	const minutes = floor(data.duration / Time.Minute);
 	const cogsworthChancePerHour = 250;
 	const chancePerMinute = cogsworthChancePerHour * 60;
 	for (let i = 0; i < minutes; i++) {

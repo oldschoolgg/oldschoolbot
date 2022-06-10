@@ -95,7 +95,8 @@ export const inventionBoosts = {
 		buildBoostPercent: 25
 	},
 	dwarvenToolkit: {
-		disassembleBoostPercent: 35
+		disassembleBoostPercent: 35,
+		requiredLevel: 80
 	},
 	mechaRod: {
 		speedBoostPercent: 35
@@ -280,7 +281,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 80,
+		inventionLevelNeeded: inventionBoosts.dwarvenToolkit.requiredLevel,
 		usageCostMultiplier: 0.05
 	},
 	{
@@ -334,7 +335,13 @@ export const materialBoosts: Map<MaterialType, { outputMulitplier?: number; redu
 	[
 		'treasured',
 		{
-			outputMulitplier: 10
+			outputMulitplier: 100
+		}
+	],
+	[
+		'mysterious',
+		{
+			outputMulitplier: 1000
 		}
 	]
 ]);

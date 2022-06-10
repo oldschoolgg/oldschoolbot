@@ -22,7 +22,7 @@ export const EnsouledHeads: DisassemblySourceGroup = {
 		},
 		{
 			item: getOSItem('Ensouled chaos druid head'),
-			lvl: 120
+			lvl: 99
 		},
 		{
 			item: getOSItem('Ensouled dagannoth head'),

@@ -33,7 +33,7 @@ export const ThirdAge: DisassemblySourceGroup = {
 				'3rd age druidic cloak',
 				'Ring of 3rd age'
 			].map(i),
-			lvl: 120,
+			lvl: 99,
 			flags: new Set(['third_age'])
 		}
 	],

@@ -20,7 +20,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { calcPerHour, convertXPtoLVL, formatDuration, stringMatches, toKMB, toTitleCase } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiClientSettingsFetch, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'invention',
@@ -135,20 +135,8 @@ export const askCommand: OSBMahojiCommand = {
 					required: true,
 					choices: [
 						{
-							name: 'Materials Owned',
-							value: 'materials_owned'
-						},
-						{
 							name: 'Material Groups',
 							value: 'groups'
-						},
-						{
-							name: 'Analyze Bank',
-							value: 'analyze_bank'
-						},
-						{
-							name: 'Missing Item',
-							value: 'missing_items'
 						},
 						{
 							name: 'Items Disassembled',
@@ -159,16 +147,8 @@ export const askCommand: OSBMahojiCommand = {
 							value: 'materials_researched'
 						},
 						{
-							name: 'Global Disassembled',
-							value: 'global_disassembled'
-						},
-						{
 							name: 'Unlocked Blueprints/Inventions',
 							value: 'unlocked_blueprints'
-						},
-						{
-							name: 'Global Invention Material Cost',
-							value: 'invention_mat_cost'
 						},
 						{
 							name: 'Material Spread',
@@ -181,6 +161,14 @@ export const askCommand: OSBMahojiCommand = {
 						{
 							name: 'Simulate maxing',
 							value: 'simulate'
+						},
+						{
+							name: 'Analyze Bank',
+							value: 'analyze_bank'
+						},
+						{
+							name: 'Missing Item',
+							value: 'missing_items'
 						}
 					]
 				}
@@ -203,6 +191,29 @@ export const askCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			name: 'materials',
+			description: 'See the materials you own.',
+			type: ApplicationCommandOptionType.Subcommand
+		},
+		{
+			name: 'group',
+			description: 'See details about a group.',
+			type: ApplicationCommandOptionType.Subcommand,
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'group',
+					description: 'The group you want to check.',
+					required: true,
+					autocomplete: async value => {
+						return DisassemblySourceGroups.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({ name: i.name, value: i.name }));
+					}
+				}
+			]
 		}
 	],
 	run: async ({
@@ -214,17 +225,16 @@ export const askCommand: OSBMahojiCommand = {
 		disassemble?: { name: string; quantity?: number };
 		research?: { material: MaterialType; quantity?: number };
 		invent?: { name: string; quantity?: number };
+		group?: { group: string };
+		materials?: {};
 		tools?: {
 			command:
 				| 'groups'
-				| 'materials_owned'
 				| 'analyze_bank'
 				| 'missing_items'
 				| 'items_disassembled'
 				| 'materials_researched'
-				| 'global_disassembled'
 				| 'unlocked_blueprints'
-				| 'invention_mat_cost'
 				| 'material_spread'
 				| 'xp'
 				| 'simulate';
@@ -266,13 +276,37 @@ export const askCommand: OSBMahojiCommand = {
 - Required cost to make: ${inventingCost(invention)} and ${invention.itemCost ? `${invention.itemCost}` : 'No items'}
 - ${invention.flags.includes('equipped') ? 'Must be equipped' : 'Works in bank'}`;
 		}
+		if (options.materials) {
+			return `You own: ${new MaterialBank(mahojiUser.materials_owned as IMaterialBank)}`;
+		}
+		if (options.group) {
+			const group = DisassemblySourceGroups.find(i => i.name === options.group?.group);
+			if (!group) return "That's not a valid group.";
+			let str = `${['Name', 'Weighting/Level'].join('\t')}\n`;
+			let results: [string, number][] = [];
+			for (const baseItem of group.items) {
+				for (const item of Array.isArray(baseItem.item) ? baseItem.item : [baseItem.item]) {
+					results.push([item.name, baseItem.lvl]);
+				}
+			}
+			results.sort((a, b) => a[1] - b[1]);
+			for (const [name, lvl] of results) {
+				str += `${[name, lvl].join('\t')}\n`;
+			}
+			return {
+				content: `Items in the ${group.name} Category give materials at this relative ratio: ${new MaterialBank(
+					group.parts
+				)
+					.values()
+					.map(i => `${i.type}[${i.quantity}]`)
+					.join(' ')}`,
+				attachments: [{ buffer: Buffer.from(str), fileName: `${group.name}.txt` }]
+			};
+		}
 
 		if (options.tools) {
 			await interaction.deferReply();
 			switch (options.tools.command) {
-				case 'materials_owned': {
-					return new MaterialBank(mahojiUser.materials_owned as IMaterialBank).toString();
-				}
 				case 'analyze_bank': {
 					const result = bankDisassembleAnalysis({
 						bank: new Bank(mahojiUser.bank as ItemBank),
@@ -327,24 +361,6 @@ export const askCommand: OSBMahojiCommand = {
 						)}.`
 					};
 				}
-				case 'global_disassembled': {
-					const a = await mahojiClientSettingsFetch({
-						items_disassembled_cost: true
-					});
-
-					return {
-						content: 'These are all the items globally, anyone has ever disassembled.',
-						attachments: [
-							(
-								await makeBankImage({
-									bank: new Bank(a.items_disassembled_cost as ItemBank),
-									user,
-									title: 'Items Disassembled'
-								})
-							).file
-						]
-					};
-				}
 				case 'unlocked_blueprints': {
 					const unlocked = Inventions.filter(i => mahojiUser.unlocked_blueprints.includes(i.id));
 					const locked = Inventions.filter(i => !mahojiUser.unlocked_blueprints.includes(i.id));
@@ -352,12 +368,6 @@ export const askCommand: OSBMahojiCommand = {
 These Inventions are still not unlocked: ${locked
 						.map(i => `${i.name} (${Object.keys(i.materialTypeBank.bank).join(', ')})`)
 						.join(', ')}`;
-				}
-				case 'invention_mat_cost': {
-					const invCost = await mahojiClientSettingsFetch({ invention_materials_cost: true });
-					return `The Global Amount of Materials spent on inventing/using inventions: ${new MaterialBank(
-						invCost.invention_materials_cost as IMaterialBank
-					)}`;
 				}
 				case 'material_spread': {
 					const mats = new MaterialBank();
@@ -383,9 +393,10 @@ These Inventions are still not unlocked: ${locked
 						'XP/Hr With Toolkit&Cape'
 					]);
 
-					const lvls = [1, 10, 30, 60, 80, 100, 120];
+					const lvls = [1, 10, 30, 60, 80, 90, 99];
 					for (const lvl of lvls) {
 						for (const weighting of lvls) {
+							if (weighting > lvl) continue;
 							const { xp } = calculateDisXP(lvl, 1, weighting);
 							let dur = Time.Second * 0.33;
 							let toolkitDur = reduceNumByPercent(
@@ -402,8 +413,10 @@ These Inventions are still not unlocked: ${locked
 								weighting,
 								xp,
 								toKMB(calcPerHour(xp, dur)),
-								toKMB(calcPerHour(xp, toolkitDur)),
-								lvl === 120 ? toKMB(calcPerHour(xp, capeAndToolkitDur)) : 'N/A'
+								lvl >= inventionBoosts.dwarvenToolkit.requiredLevel
+									? toKMB(calcPerHour(xp, toolkitDur))
+									: 'N/A',
+								lvl === 99 ? toKMB(calcPerHour(xp, capeAndToolkitDur)) : 'N/A'
 							]);
 						}
 					}
@@ -442,7 +455,7 @@ These Inventions are still not unlocked: ${locked
        ${group.items
 			.map(i => {
 				return `${Array.isArray(i.item) ? i.item.map(i => i.name).join(', ') : i.item.name} - ${Math.floor(
-					calcJunkChance(i.lvl)
+					calcJunkChance(i.lvl, false)
 				)}% Junk Chance - Level/Weighting ${i.lvl}`;
 			})
 			.join('\n       ')}`;

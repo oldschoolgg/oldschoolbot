@@ -41,12 +41,15 @@ export const Magic: DisassemblySourceGroup = {
 			flags: new Set(['corporeal'])
 		},
 		{
-			item: i('Magus scroll'),
-			lvl: 105
-		},
-		{
-			item: ['Virtus crystal', 'Virtus wand', 'Primordial crystal', 'Pegasian crystal', 'Eternal crystal'].map(i),
-			lvl: 120
+			item: [
+				'Magus scroll',
+				'Virtus crystal',
+				'Virtus wand',
+				'Primordial crystal',
+				'Pegasian crystal',
+				'Eternal crystal'
+			].map(i),
+			lvl: 99
 		}
 	],
 	parts: { magic: 30, powerful: 3, protective: 2 }

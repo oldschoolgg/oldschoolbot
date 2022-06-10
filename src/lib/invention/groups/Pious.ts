@@ -60,13 +60,13 @@ export const Pious: DisassemblySourceGroup = {
 		},
 		{
 			item: ['Zamorak hilt', 'Saradomin hilt', 'Bandos hilt', 'Armadyl hilt', 'Ancient hilt'].map(getOSItem),
-			lvl: 100
+			lvl: 90
 		},
 		{
 			item: ['Armadylean components', 'Bandosian components', 'Ancestral components', 'Holy elixir'].map(
 				getOSItem
 			),
-			lvl: 100
+			lvl: 90
 		}
 	],
 	parts: { pious: 80, simple: 20 }

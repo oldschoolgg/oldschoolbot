@@ -52,11 +52,11 @@ export const Bows: DisassemblySourceGroup = {
 		},
 		{
 			item: i('Hellfire bow'),
-			lvl: 110
+			lvl: 99
 		},
 		{
 			item: i('Hellfire bownana'),
-			lvl: 110,
+			lvl: 99,
 			flags: new Set(['dyed'])
 		},
 		// Crossbows
@@ -67,14 +67,15 @@ export const Bows: DisassemblySourceGroup = {
 		{ item: i('Mithril crossbow'), lvl: 30 },
 		{ item: i('Rune crossbow'), lvl: 50 },
 		{ item: i('Dragon crossbow'), lvl: 60 },
-		{ item: i('Elder bow'), lvl: 109 },
+		{ item: i('Royal crossbow'), lvl: 70 },
+		{ item: i('Elder bow'), lvl: 95 },
 		{
 			item: i('Armadyl crossbow'),
-			lvl: 110
+			lvl: 99
 		},
 		{
 			item: i("Craw's bow (u)"),
-			lvl: 120
+			lvl: 99
 		}
 	],
 	parts: { flexible: 30, dextrous: 20, swift: 20 }

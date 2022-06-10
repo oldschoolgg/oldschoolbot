@@ -378,11 +378,11 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		},
 		{
 			item: [...torvaOutfit, ...brokenTorvaOutfit].map(i),
-			lvl: 110
+			lvl: 99
 		},
 		{
 			item: ['Abyssal cape', 'Avernic defender hilt'].map(i),
-			lvl: 110
+			lvl: 99
 		}
 	],
 	parts: { plated: 30, strong: 3, protective: 2 }
