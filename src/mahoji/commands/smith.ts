@@ -86,7 +86,12 @@ export const smithCommand: OSBMahojiCommand = {
 
 		let { quantity } = options;
 		// If no quantity provided, set it to the max.
-		if (!quantity) quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
+		if (!quantity) {
+			quantity = Math.floor(maxTripLength / timeToSmithSingleBar);
+			if (smithedItem.name.includes('Dwarven') || smithedItem.name.includes('Gorajan')) {
+				quantity = 1;
+			}
+		}
 
 		await user.settings.sync(true);
 		const baseCost = new Bank(smithedItem.inputBars);
