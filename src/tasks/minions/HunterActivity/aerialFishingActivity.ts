@@ -7,7 +7,7 @@ import Fishing from '../../../lib/skilling/skills/fishing';
 import aerialFishingCreatures from '../../../lib/skilling/skills/hunter/aerialFishing';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { anglerBoostPercent, rand, roll } from '../../../lib/util';
+import { anglerBoostPercent, rand, roll, skillingPetChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -136,8 +136,7 @@ export default class extends Task {
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
-		const twoMillionPetRate = (user.settings.get(`skills.${SkillsEnum.Fishing}`) as number) >= 200_000_000 ? 15 : 1;
-		if (roll((636_833 - user.skillLevel(SkillsEnum.Fishing) * 25) / totalFishCaught / twoMillionPetRate)) {
+		if (roll((skillingPetChance(user, SkillsEnum.Fishing, 636_833) as number) / totalFishCaught)) {
 			loot.add('Heron');
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(

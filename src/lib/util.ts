@@ -22,7 +22,7 @@ import { APIInteractionGuildMember, APIUser } from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
 import { gzip } from 'node:zlib';
-import { Bank } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
@@ -792,4 +792,39 @@ export async function asyncGzip(buffer: Buffer) {
 			resolve(gzipped);
 		});
 	});
+}
+
+export function skillingPetChance(
+	user: User | KlasaUser,
+	skill: SkillsEnum,
+	tableOrBaseDropRate: LootTable | number,
+	itemName?: string
+): LootTable | number {
+	const twoMillXP =
+		user instanceof KlasaUser
+			? (user.settings.get(`skills.${skill}`) as number) >= 200_000_000
+			: (getSkillsOfMahojiUser(user)[skill] as number) >= 200_000_000;
+	const skillLevel = user instanceof KlasaUser ? user.skillLevel(skill) : getSkillsOfMahojiUser(user, true)[skill];
+	if (!twoMillXP) {
+		return tableOrBaseDropRate instanceof LootTable ? tableOrBaseDropRate : tableOrBaseDropRate - skillLevel * 25;
+	}
+	if (tableOrBaseDropRate instanceof LootTable) {
+		if (!itemName || !Items.find(e => e.id === itemID(itemName))) return tableOrBaseDropRate;
+		const newLootTable = tableOrBaseDropRate.clone();
+		// Find and remove skilling Pet and store drop rate
+		const tempLootTable = new LootTable();
+		tempLootTable.tertiaryItems = newLootTable.tertiaryItems.filter(e => e.item === itemID(itemName));
+		newLootTable.tertiaryItems = newLootTable.tertiaryItems.filter(e => e.item !== itemID(itemName));
+		let newChance = 0;
+		for (let item of tempLootTable.tertiaryItems) {
+			if (item.chance > 0) {
+				newChance = Math.round(item.chance / 15);
+				break;
+			}
+		}
+		newLootTable.tertiary(newChance, itemName);
+		return newLootTable;
+	}
+	const dropRate = (tableOrBaseDropRate - skillLevel * 25) / 15;
+	return dropRate;
 }

@@ -25,12 +25,6 @@ export function calcLootXPHunting(
 	return [successful, xpReceived, chanceOfSuccess];
 }
 
-export function calcBabyChinchompaChance(currentLevel: number, creature: Creature): number {
-	const baseRate =
-		creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
-	return baseRate - currentLevel * 25;
-}
-
 export function generateHerbiTable(currentHerbLvl: number, gotMagicSec: boolean): LootTable {
 	let herbiTable = new LootTable();
 	if (currentHerbLvl < 31) return herbiTable;

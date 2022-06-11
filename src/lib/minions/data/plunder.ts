@@ -1,9 +1,12 @@
+import { User } from 'discord.js';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
+import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
-import { rand, roll } from '../../util';
+import { rand, roll, skillingPetChance } from '../../util';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 
@@ -99,7 +102,6 @@ export const plunderRooms = [
 	},
 	{
 		number: 7,
-		petChance: 2000,
 		thievingLevel: 81,
 		xp: 9738,
 		rockyChance: 10_339,
@@ -107,7 +109,6 @@ export const plunderRooms = [
 	},
 	{
 		number: 8,
-		petChance: 2000,
 		thievingLevel: 91,
 		xp: 12_665,
 		rockyChance: 6893,
@@ -119,12 +120,12 @@ export const plunderBoosts = resolveNameBank({
 	"Pharaoh's sceptre (3)": 5
 });
 
-export function lootRoom(room: number): [ItemBank, number] {
+export function lootRoom(user: KlasaUser | User, room: number): [ItemBank, number] {
 	const loot = new Bank();
 	const sceptreChance = 1000;
 	const roomObj = plunderRooms[room - 1];
 
-	if (roll(roomObj.rockyChance)) {
+	if (roll(skillingPetChance(user, SkillsEnum.Thieving, roomObj.rockyChance) as number)) {
 		loot.add('Rocky');
 	}
 

@@ -5,7 +5,7 @@ import { Emoji, Events } from '../../lib/constants';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { calcMaxRCQuantity, roll } from '../../lib/util';
+import { calcMaxRCQuantity, roll, skillingPetChance } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -37,9 +37,7 @@ export default class extends Task {
 			[rune.id]: runeQuantity
 		});
 
-		const twoMillionPetRate =
-			(user.settings.get(`skills.${SkillsEnum.Runecraft}`) as number) >= 200_000_000 ? 15 : 1;
-		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity / twoMillionPetRate)) {
+		if (roll((skillingPetChance(user, SkillsEnum.Runecraft, 1_795_758) as number) / essenceQuantity)) {
 			loot.add('Rift guardian');
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(

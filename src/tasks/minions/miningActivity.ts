@@ -7,7 +7,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Mining from '../../lib/skilling/skills/mining';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { rand } from '../../lib/util';
+import { rand, skillingPetChance } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -57,8 +57,7 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		const twoMillionPetRate = (user.settings.get(`skills.${SkillsEnum.Mining}`) as number) >= 200_000_000 ? 15 : 1;
-		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity / twoMillionPetRate)) {
+		if (ore.petChance && roll((skillingPetChance(user, SkillsEnum.Mining, ore.petChance) as number) / quantity)) {
 			loot.add('Rock golem');
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(

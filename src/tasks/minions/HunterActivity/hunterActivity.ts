@@ -8,15 +8,11 @@ import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHu
 import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import {
-	calcBabyChinchompaChance,
-	calcLootXPHunting,
-	generateHerbiTable
-} from '../../../lib/skilling/functions/calcsHunter';
+import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/functions/calcsHunter';
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, stringMatches, updateBankSetting } from '../../../lib/util';
+import { rand, roll, skillingPetChance, stringMatches, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
@@ -112,10 +108,9 @@ export default class extends Task {
 
 		let babyChinChance = 0;
 		if (creature.name.toLowerCase().includes('chinchompa')) {
-			babyChinChance = calcBabyChinchompaChance(currentLevel, creature);
-			if ((user.settings.get(`skills.${SkillsEnum.Hunter}`) as number) >= 200_000_000) {
-				babyChinChance /= 15;
-			}
+			babyChinChance =
+				creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
+			babyChinChance = skillingPetChance(user, SkillsEnum.Hunter, babyChinChance) as number;
 		}
 
 		let creatureTable = creature.table;

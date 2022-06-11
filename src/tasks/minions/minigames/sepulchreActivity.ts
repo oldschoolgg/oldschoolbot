@@ -7,7 +7,7 @@ import { trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
-import { roll } from '../../../lib/util';
+import { roll, skillingPetChance } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -20,8 +20,6 @@ export default class extends Task {
 		const loot = new Bank();
 		let agilityXP = 0;
 		let numCoffinsOpened = 0;
-		const twoMillionPetRate = (user.settings.get(`skills.${SkillsEnum.Agility}`) as number) >= 200_000_000 ? 15 : 1;
-
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
 				if (floor.number === 5) {
@@ -36,7 +34,15 @@ export default class extends Task {
 
 				agilityXP += floor.xp;
 			}
-			if (roll(completedFloors[completedFloors.length - 1].petChance / twoMillionPetRate)) {
+			if (
+				roll(
+					skillingPetChance(
+						user,
+						SkillsEnum.Agility,
+						completedFloors[completedFloors.length - 1].petChance
+					) as number
+				)
+			) {
 				loot.add('Giant squirrel');
 			}
 		}

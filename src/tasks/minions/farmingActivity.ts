@@ -10,7 +10,7 @@ import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { assert, rand, roll, updateBankSetting } from '../../lib/util';
+import { assert, rand, roll, skillingPetChance, updateBankSetting } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -336,8 +336,6 @@ export default class extends Task {
 			}
 
 			let tangleroot = false;
-			const twoMillionPetRate =
-				(user.settings.get(`skills.${SkillsEnum.Farming}`) as number) >= 200_000_000 ? 15 : 1;
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
 				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
@@ -347,11 +345,7 @@ export default class extends Task {
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll(
-					(plantToHarvest.petChance - user.skillLevel(SkillsEnum.Farming) * 25) /
-						alivePlants /
-						twoMillionPetRate
-				)
+				roll((skillingPetChance(user, SkillsEnum.Farming, plantToHarvest.petChance) as number) / alivePlants)
 			) {
 				loot.add('Tangleroot');
 				tangleroot = true;

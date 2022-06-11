@@ -1,13 +1,13 @@
 import { percentChance, randInt } from 'e';
 import { Task } from 'klasa';
-import { Bank } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
-import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../lib/util';
+import { rogueOutfitPercentBonus, skillingPetChance, updateGPTrackSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export function calcLootXPPickpocketing(
@@ -56,8 +56,7 @@ export default class extends Task {
 
 		const loot = new Bank();
 		for (let i = 0; i < successfulQuantity; i++) {
-			const lootItems = npc.table.roll();
-
+			const lootItems = (skillingPetChance(user, SkillsEnum.Thieving, npc.table, 'Rocky') as LootTable).roll();
 			if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
 				rogueOutfitBoostActivated = true;
 				const doubledLoot = lootItems.multiply(2);
