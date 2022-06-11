@@ -390,7 +390,7 @@ export default class CollectionLogTask extends Task {
 				y += 1;
 			}
 			const itemImage = await (this.client.tasks.get('bankImage') as BankImageTask)
-				.getItemImage(item, 1)
+				.getItemImage(item)
 				.catch(() => {
 					logError(`Failed to load item image for item with id: ${item}`);
 				});

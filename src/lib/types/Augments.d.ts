@@ -15,7 +15,7 @@ import { BitField, PerkTier } from '../constants';
 import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
-import { AddXpParams, KillableMonster } from '../minions/types';
+import { AddXpParams, Flags, KillableMonster } from '../minions/types';
 import { MinigameName } from '../settings/minigames';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
@@ -72,7 +72,7 @@ declare module 'klasa' {
 			bank: Bank,
 			title?: string,
 			showValue?: boolean,
-			flags?: { [key: string]: string | number },
+			flags?: Flags,
 			user?: KlasaUser,
 			cl?: Bank
 		): Promise<BankImageResult>;

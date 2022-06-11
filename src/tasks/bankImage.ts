@@ -1,23 +1,23 @@
-import { objectKeys } from 'e';
 import * as fs from 'fs';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
-import { Canvas, CanvasRenderingContext2D, FontLibrary, Image, QuadOrRect } from 'skia-canvas/lib';
+import { Canvas, CanvasRenderingContext2D, FontLibrary, Image } from 'skia-canvas/lib';
 
-import { bankImageCache, BitField, Events, PerkTier } from '../lib/constants';
+import { bankImageCache, BitField, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
-import { GearSetupType } from '../lib/gear';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
-import { BankBackground } from '../lib/minions/types';
+import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import {
 	addArrayOfNumbers,
+	assert,
 	cleanString,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
@@ -202,9 +202,6 @@ export default class BankImageTask extends Task {
 	public itemIconImagesCache: Map<number, Image>;
 	public backgroundImages: BankBackground[] = [];
 
-	public skillMiniIcons: Image = new Image();
-	public skillMiniIconsSheet: Record<string, Canvas> = {};
-
 	public _bgSpriteData: Image = new Image();
 	public bgSpriteList: Record<string, IBgSprite> = {};
 
@@ -259,29 +256,17 @@ export default class BankImageTask extends Task {
 				};
 			})
 		);
-
-		// Get MiniIcons
-		this.skillMiniIcons = await canvasImageFromBuffer(
-			fs.readFileSync('./src/lib/resources/images/skill_mini_icons.png')
-		);
-		// Get skill mini icons
-		this.skillMiniIconsSheet.melee = this.getClippedRegion(this.skillMiniIcons, 0, 0, 12, 12);
-		this.skillMiniIconsSheet.range = this.getClippedRegion(this.skillMiniIcons, 12, 0, 12, 12);
-		this.skillMiniIconsSheet.mage = this.getClippedRegion(this.skillMiniIcons, 24, 0, 12, 12);
-		this.skillMiniIconsSheet.misc = this.getClippedRegion(this.skillMiniIcons, 36, 0, 12, 12);
-		this.skillMiniIconsSheet.skilling = this.getClippedRegion(this.skillMiniIcons, 48, 0, 12, 12);
-		this.skillMiniIconsSheet.other = this.getClippedRegion(this.skillMiniIcons, 60, 0, 12, 12);
-		this.skillMiniIconsSheet.wildy = this.getClippedRegion(this.skillMiniIcons, 72, 0, 12, 12);
-		this.skillMiniIconsSheet.fashion = this.getClippedRegion(this.skillMiniIcons, 84, 0, 12, 12);
 	}
 
 	// Split sprite into smaller images by coors and size
 	getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
-		const canvas = new Canvas(0, 0);
+		const canvas = new Canvas(width, height);
 		const ctx = canvas.getContext('2d');
-		canvas.width = width;
-		canvas.height = height;
-		ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
+		if (image instanceof Canvas) {
+			ctx.drawCanvas(image, x, y, width, height, 0, 0, width, height);
+		} else {
+			ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
+		}
 		return canvas;
 	}
 
@@ -296,15 +281,19 @@ export default class BankImageTask extends Task {
 		for (const fileName of filesInDir) {
 			this.itemIconsList.add(parseInt(path.parse(fileName).name));
 		}
+		const img = await this.getItemImage(0);
+		assert(img instanceof Image);
 	}
 
-	async getItemImage(itemID: number, quantity: number): Promise<Image> {
-		const isOnDisk = this.itemIconsList.has(itemID);
+	async getItemImage(itemID: number): Promise<Image> {
 		const cachedImage = this.itemIconImagesCache.get(itemID);
+		if (cachedImage) return cachedImage;
+
+		const isOnDisk = this.itemIconsList.has(itemID);
 
 		if (!isOnDisk) {
 			await this.fetchAndCacheImage(itemID);
-			return this.getItemImage(itemID, quantity);
+			return this.getItemImage(itemID);
 		}
 
 		if (!cachedImage) {
@@ -312,10 +301,10 @@ export default class BankImageTask extends Task {
 			try {
 				const image = await canvasImageFromBuffer(imageBuffer);
 				this.itemIconImagesCache.set(itemID, image);
-				return this.getItemImage(itemID, quantity);
+				return this.getItemImage(itemID);
 			} catch (err) {
 				logError(`Failed to load item icon with id: ${itemID}`);
-				return this.getItemImage(1, 1);
+				return this.getItemImage(1);
 			}
 		}
 
@@ -338,14 +327,14 @@ export default class BankImageTask extends Task {
 	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite, titleLine = true) {
 		// Top border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-y')!;
+		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
 		ctx.translate(0, 0);
 		ctx.scale(1, 1);
 		ctx.fillRect(0, 0, ctx.canvas.width, sprite.border.height);
 		ctx.restore();
 		// Bottom border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-y')!;
+		ctx.fillStyle = ctx.createPattern(sprite.border, 'repeat-x')!;
 		ctx.translate(0, ctx.canvas.height);
 		ctx.scale(1, -1);
 		ctx.fillRect(0, 0, ctx.canvas.width, sprite.border.height);
@@ -391,7 +380,7 @@ export default class BankImageTask extends Task {
 		// Title border
 		if (titleLine) {
 			ctx.save();
-			ctx.fillStyle = ctx.createPattern(sprite.borderTitle, 'repeat-y')!;
+			ctx.fillStyle = ctx.createPattern(sprite.borderTitle, 'repeat-x')!;
 			ctx.translate(sprite.border.height - 1, 27);
 			ctx.fillRect(0, 0, ctx.canvas.width - sprite.border.height * 2 + 2, sprite.borderTitle.height);
 			ctx.restore();
@@ -409,51 +398,129 @@ export default class BankImageTask extends Task {
 		};
 	}
 
+	async drawItems(
+		ctx: CanvasRenderingContext2D,
+		compact: boolean,
+		spacer: number,
+		itemsPerRow: number,
+		itemWidthSize: number,
+		items: [Item, number][],
+		flags: FlagMap,
+		currentCL: Bank | undefined
+	) {
+		// Draw Items
+		ctx.textAlign = 'start';
+		ctx.fillStyle = '#494034';
+		const font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
+
+		let xLoc = 0;
+		let yLoc = compact ? 5 : 0;
+		for (let i = 0; i < items.length; i++) {
+			if (i % itemsPerRow === 0) yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08));
+			// For some reason, it starts drawing at -2 so we compensate that
+			// Adds the border width
+			// Adds distance from side
+			// 36 + 21 is the itemLength + the space between each item
+			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
+			let [item, quantity] = items[i];
+			const itemImage = await (this.getItemImage(item.id) ?? this.getItemImage(0))!;
+
+			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
+			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
+			const isNewCLItem =
+				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
+
+			if (isNewCLItem) {
+				drawImageWithOutline(
+					ctx,
+					itemImage,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth,
+					itemHeight,
+					'#ac7fff',
+					1
+				);
+			} else {
+				ctx.drawImage(
+					itemImage,
+					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
+					floor(yLoc + (itemSize - itemHeight) / 2),
+					itemWidth,
+					itemHeight
+				);
+			}
+
+			// Do not draw the item qty if there is 0 of that item in the bank
+			if (quantity) {
+				if (ctx.font !== font) ctx.font = font;
+				// Check if new cl item
+				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
+				const formattedQuantity = formatItemStackQuantity(quantity);
+				// Draw qty shadow
+				ctx.fillStyle = '#000000';
+				fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 17, yLoc + distanceFromTop - 23);
+				// Draw qty
+				ctx.fillStyle = quantityColor;
+				fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 18, yLoc + distanceFromTop - 24);
+			}
+
+			let bottomItemText: string | number | null = null;
+
+			if (flags.has('sv')) {
+				bottomItemText = item.price * quantity;
+			} else if (flags.has('av')) {
+				bottomItemText = (item.highalch ?? 0) * quantity;
+			} else if (flags.has('id')) {
+				bottomItemText = item.id.toString();
+			} else if (flags.has('names')) {
+				bottomItemText = item.name;
+			}
+
+			const forcedShortName = forcedShortNameMap.get(item.id);
+			if (forcedShortName && !bottomItemText) {
+				ctx.font = '10px Smallest Pixel-7';
+				bottomItemText = forcedShortName?.toUpperCase();
+			}
+
+			if (bottomItemText) {
+				let text =
+					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
+				ctx.fillStyle = 'black';
+				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
+				ctx.fillStyle =
+					typeof bottomItemText === 'string' ? 'white' : generateHexColorForCashStack(bottomItemText);
+				fillTextXTimesInCtx(ctx, text, floor(xLoc - 1), yLoc + distanceFromTop - 1);
+			}
+		}
+	}
+
 	async generateBankImage(
 		_bank: Bank,
 		title = '',
 		showValue = true,
-		flags: { [key: string]: string | number } = {},
+		_flags: Flags = {},
 		user?: KlasaUser,
 		collectionLog?: Bank
 	): Promise<BankImageResult> {
-		const bank = _bank instanceof Bank ? _bank : new Bank(_bank);
-		let compact = Boolean(flags.compact);
+		const bank = _bank.clone();
+		const flags = new Map(Object.entries(_flags));
+		let compact = flags.has('compact');
 		const spacer = compact ? 2 : 12;
 
 		const settings =
 			typeof user === 'undefined' ? null : typeof user === 'string' ? await getUserSettings(user) : user.settings;
 
-		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.background ?? 1);
+		const bankBackgroundID = Number(settings?.get(UserSettings.BankBackground) ?? flags.get('background') ?? 1);
 		const rawCL = settings?.get(UserSettings.CollectionLogBank);
 		const currentCL: Bank | undefined = collectionLog ?? (rawCL === undefined ? undefined : new Bank(rawCL));
 		let partial = false;
 
-		// Used for flags placeholder and ph
-		const placeholder: Record<number, [number, GearSetupType[]]> = {};
-
-		// Add the equipped items to the user bank variable temporarily to allow them to show in bank
-		// Only shows if the tile ends with 's Bank, so we know the bank command called it
-		if (user && (flags.placeholder || flags.ph) && title.endsWith("'s Bank")) {
-			for (const [type, gear] of Object.entries(user.rawGear())) {
-				for (const slot of Object.values(gear)) {
-					if (slot && slot.item) {
-						if (placeholder[slot.item]) {
-							placeholder[slot.item][0] += slot.quantity;
-							placeholder[slot.item][1].push(type as GearSetupType);
-						} else {
-							placeholder[slot.item] = [slot.quantity, [type as GearSetupType]];
-						}
-						bank.add(slot.item, slot.quantity);
-					}
-				}
-			}
-		}
-
 		// Filtering
-		const searchQuery = flags.search as string | undefined;
-		const filter = flags.filter
-			? filterableTypes.find(type => type.aliases.some(alias => flags.filter === alias)) ?? null
+		const searchQuery = flags.get('search') as string | undefined;
+		const filterInput = flags.get('filter');
+		const filter = flags.get('search')
+			? filterableTypes.find(type => type.aliases.some(alias => filterInput === alias)) ?? null
 			: null;
 		if (filter || searchQuery) {
 			partial = true;
@@ -472,7 +539,8 @@ export default class BankImageTask extends Task {
 		const perkTier = user ? getUsersPerkTier(user) : 0;
 		const defaultSort: BankSortMethod =
 			perkTier < PerkTier.Two ? 'value' : settings?.get(UserSettings.BankSortMethod) ?? 'value';
-		const sort = flags.sort ? BankSortMethods.find(s => s === flags.sort) ?? defaultSort : defaultSort;
+		const sortInput = flags.get('sort');
+		const sort = sortInput ? BankSortMethods.find(s => s === sortInput) ?? defaultSort : defaultSort;
 
 		items.sort(sorts[sort]);
 
@@ -505,13 +573,15 @@ export default class BankImageTask extends Task {
 		const chunked = util.chunk(items, chunkSize);
 
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
-		const { page, noBorder, wide } = flags;
+		const page = flags.get('page');
+		const noBorder = flags.get('noBorder');
+		const wide = flags.get('wide');
 		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
 
 		// Paging
-		if (typeof page === 'number' && !flags.full) {
+		if (typeof page === 'number' && !flags.has('full')) {
 			let pageLoot = chunked[page];
 			let asItem = Items.get(page + 1);
 			if (asItem && !pageLoot) {
@@ -526,7 +596,7 @@ export default class BankImageTask extends Task {
 			items = pageLoot;
 		}
 
-		if (items.length > 500 && !flags.nc) compact = true;
+		if (items.length > 500 && !flags.has('nc')) compact = true;
 
 		const itemWidthSize = compact ? 12 + 21 : 36 + 21;
 
@@ -548,7 +618,7 @@ export default class BankImageTask extends Task {
 		const isTransparent = Boolean(bgImage.transparent);
 
 		const isPurple: boolean =
-			flags.showNewCL !== undefined &&
+			flags.get('showNewCL') !== undefined &&
 			currentCL !== undefined &&
 			bank.items().some(([item]) => !currentCL.has(item.id) && allCLItems.includes(item.id));
 
@@ -577,14 +647,13 @@ export default class BankImageTask extends Task {
 			Object.entries(flags).toString(),
 			sha256Hash(items.map(i => `${i[0].id}-${i[1]}`).join('')),
 			hexColor ?? 'no-hex',
-			objectKeys(placeholder).length > 0 ? sha256Hash(JSON.stringify(placeholder)) : '',
 			useSmallBank ? 'smallbank' : 'no-smallbank',
 			sort,
 			Math.random() * 190
 		].join('-');
 
 		let cached = bankImageCache.get(cacheKey);
-		if (cached && !flags.nocache) {
+		if (cached && !flags.has('nocache')) {
 			return {
 				cachedURL: cached,
 				image: null,
@@ -632,162 +701,37 @@ export default class BankImageTask extends Task {
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 		}
 
-		// if (!hasBgSprite) {
-		// 	ctx.drawImage(
-		// 		actualBackground,
-		// 		resizeBg === -1 ? 0 : (canvas.width - actualBackground.width! * resizeBg) / 2,
-		// 		0,
-		// 		wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? 1 : resizeBg),
-		// 		wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
-		// 	);
-		// }
-
-		// Skips border if noBorder is set
-		if (!isTransparent && noBorder !== 1) {
-			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
+		if (!hasBgSprite) {
+			ctx.drawImage(
+				actualBackground,
+				resizeBg === -1 ? 0 : (canvas.width - actualBackground.width! * resizeBg) / 2,
+				0,
+				wide ? canvas.width : actualBackground.width! * (resizeBg === -1 ? 1 : resizeBg),
+				wide ? canvas.height : actualBackground.height! * (resizeBg === -1 ? 1 : resizeBg)
+			);
 		}
+
 		if (showValue) {
 			title += ` (Value: ${toKMB(totalValue)})`;
 		}
 
 		// Draw Bank Title
-		ctx.textAlign = 'center';
 		ctx.font = '16px RuneScape Bold 12';
+		const titleWidthPx = ctx.measureText(title);
+		let titleX = Math.floor(floor(canvas.width / 2) - titleWidthPx.width / 2);
 
 		ctx.fillStyle = '#000000';
-		fillTextXTimesInCtx(ctx, title, floor(canvas.width / 2) + 1, 22);
+		fillTextXTimesInCtx(ctx, title, titleX + 1, 22);
 
 		ctx.fillStyle = '#ff981f';
-		fillTextXTimesInCtx(ctx, title, floor(canvas.width / 2), 21);
+		fillTextXTimesInCtx(ctx, title, titleX, 21);
 
-		// Draw Items
-		ctx.textAlign = 'start';
-		ctx.fillStyle = '#494034';
-		const font = compact ? '14px OSRSFontCompact' : '16px OSRSFontCompact';
+		this.drawItems(ctx, compact, spacer, itemsPerRow, itemWidthSize, items, flags, currentCL);
 
-		let xLoc = 0;
-		let yLoc = compact ? 5 : 0;
-		for (let i = 0; i < items.length; i++) {
-			if (i % itemsPerRow === 0) yLoc += floor((itemSize + spacer / 2) * (compact ? 0.9 : 1.08));
-			// For some reason, it starts drawing at -2 so we compensate that
-			// Adds the border width
-			// Adds distance from side
-			// 36 + 21 is the itemLength + the space between each item
-			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
-			let [item, quantity] = items[i];
-			const itemImage = await this.getItemImage(item.id, quantity).catch(err => {
-				logError(`Failed to load item image for item with id: ${item.id}, ${err}`);
-			});
-			if (!itemImage) {
-				this.client.emit(Events.Warn, `Item with ID[${item.id}] has no item image.`);
-				continue;
-			}
-
-			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
-			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
-
-			// If there is this item as placeholder, and the item qty is the same as the placeholder qty,
-			// Make it transparent, because it is not in the bank
-			if (placeholder[item.id] && quantity === (placeholder[item.id][0] ?? 0)) {
-				ctx.globalAlpha = 0.3;
-			}
-
-			const isNewCLItem = flags.showNewCL && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
-
-			if (isNewCLItem) {
-				drawImageWithOutline(
-					ctx,
-					itemImage,
-					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-					floor(yLoc + (itemSize - itemHeight) / 2),
-					itemWidth,
-					itemHeight,
-					'#ac7fff',
-					1
-				);
-			} else {
-				ctx.drawImage(
-					itemImage,
-					floor(xLoc + (itemSize - itemWidth) / 2) + 2,
-					floor(yLoc + (itemSize - itemHeight) / 2),
-					itemWidth,
-					itemHeight
-				);
-			}
-
-			// Force the global alpha to 1
-			ctx.globalAlpha = 1;
-
-			// Remove placeholder qty, it was only needed for the item to actually show
-			if (placeholder[item.id]) quantity -= placeholder[item.id][0];
-
-			// Do not draw the item qty if there is 0 of that item in the bank
-			if (quantity !== 0) {
-				ctx.font = font;
-				// Check if new cl item
-				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
-				const formattedQuantity = formatItemStackQuantity(quantity);
-				// Draw qty shadow
-				ctx.fillStyle = '#000000';
-				fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 17, yLoc + distanceFromTop - 23);
-				// Draw qty
-				ctx.fillStyle = quantityColor;
-				fillTextXTimesInCtx(ctx, formattedQuantity, xLoc + distanceFromSide - 18, yLoc + distanceFromTop - 24);
-			}
-
-			let bottomItemText: string | number | null = null;
-
-			if (flags.sv) {
-				bottomItemText = item.price * quantity;
-			}
-
-			if (flags.av) {
-				bottomItemText = (item.highalch ?? 0) * quantity;
-			}
-			if (flags.id) {
-				bottomItemText = item.id.toString();
-			}
-
-			if (flags.names) {
-				bottomItemText = item.name;
-			}
-
-			const forcedShortName = forcedShortNameMap.get(item.id);
-			if (forcedShortName && !bottomItemText) {
-				ctx.font = '10px Smallest Pixel-7';
-				bottomItemText = forcedShortName?.toUpperCase();
-			}
-
-			if (bottomItemText) {
-				let text =
-					typeof bottomItemText === 'number' ? toKMB(bottomItemText) : bottomItemText.toString().slice(0, 8);
-				ctx.fillStyle = 'black';
-				fillTextXTimesInCtx(ctx, text, floor(xLoc), yLoc + distanceFromTop);
-				ctx.fillStyle =
-					typeof bottomItemText === 'string' ? 'white' : generateHexColorForCashStack(bottomItemText);
-				fillTextXTimesInCtx(ctx, text, floor(xLoc - 1), yLoc + distanceFromTop - 1);
-			}
-
-			if (placeholder[item.id]) {
-				let i = 0;
-				for (const slotType of placeholder[item.id][1].slice(0, 4)) {
-					ctx.drawImage(
-						this.skillMiniIconsSheet[i === 3 && placeholder[item.id][1].length > 4 ? 'more' : slotType],
-						floor(
-							xLoc +
-								itemImage.width / 2 -
-								i * (placeholder[item.id][1].length <= 3 ? 12 : 10) +
-								(placeholder[item.id][1].length <= 3 ? 3 : 8)
-						),
-						floor(yLoc + itemImage.height / 2) + 3 - (bottomItemText ? 10 : 0),
-						12,
-						12
-					);
-					i++;
-				}
-			}
+		// Skips border if noBorder is set
+		if (!isTransparent && noBorder !== 1) {
+			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
-
 		const image = await canvas.toBuffer('png');
 
 		return {

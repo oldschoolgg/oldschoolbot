@@ -161,3 +161,5 @@ export interface BlowpipeData {
 	dartQuantity: number;
 	dartID: number | null;
 }
+export type Flags = Record<string, string | number>;
+export type FlagMap = Map<string, string | number>;
