@@ -1,17 +1,10 @@
-import { Canvas, CanvasRenderingContext2D, Image } from 'canvas';
+import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
 
 import { formatItemStackQuantity, generateHexColorForCashStack } from '../util';
 
-export function fillTextXTimesInCtx(
-	ctx: CanvasRenderingContext2D,
-	text: string,
-	x: number,
-	y: number,
-	numberOfTimes = 3
-) {
-	for (let i = 0; i < numberOfTimes; i++) {
-		ctx.fillText(text, x, y);
-	}
+export function fillTextXTimesInCtx(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
+	let textPath = ctx.outlineText(text);
+	ctx.fill(textPath.offset(x, y));
 }
 
 export function drawItemQuantityText(ctx: CanvasRenderingContext2D, quantity: number, x: number, y: number) {
@@ -39,24 +32,7 @@ export function drawTitleText(ctx: CanvasRenderingContext2D, title: string, x: n
 }
 
 export function canvasImageFromBuffer(imageBuffer: Buffer): Promise<Image> {
-	return new Promise((resolve, reject) => {
-		const canvasImage = new Image();
-
-		canvasImage.onload = () => resolve(canvasImage);
-		canvasImage.onerror = () => reject(new Error('Failed to load image.'));
-		canvasImage.src = imageBuffer;
-	});
-}
-
-export function canvasToBufferAsync(canvas: Canvas, ...args: any[]) {
-	return new Promise<Buffer>((resolve, reject) =>
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		canvas.toBuffer((error: Error | null, buffer: Buffer | null): void => {
-			if (error) reject(error);
-			else resolve(buffer!);
-		}, ...args)
-	);
+	return loadImage(imageBuffer);
 }
 
 export function drawImageWithOutline(

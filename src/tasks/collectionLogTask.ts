@@ -1,11 +1,11 @@
-import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
-import { MessageAttachment, MessageOptions } from 'discord.js';
-import { objectEntries } from 'e';
+import { calcWhatPercent, objectEntries } from 'e';
 import fs from 'fs';
 import { KlasaUser, Task } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
 import { Events } from '../lib/constants';
-import { allCollectionLogs, getCollection, getPossibleOptions, getTotalCl } from '../lib/data/Collections';
+import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
 import bankBackgrounds from '../lib/minions/data/bankBackgrounds';
 import { UserSettings } from '../lib/settings/types/UserSettings';
@@ -29,6 +29,14 @@ interface ISprite {
 	scrollBarOff: Canvas;
 	repeatableBg: Canvas;
 }
+
+export const collectionLogTypes = [
+	{ name: 'collection', description: 'Normal Collection Log' },
+	{ name: 'sacrifice', description: 'Sacrificed Items Log' },
+	{ name: 'bank', description: 'Owned Items Log' },
+	{ name: 'temp', description: 'Temporary Log' }
+] as const;
+export type CollectionLogType = typeof collectionLogTypes[number]['name'];
 
 export default class CollectionLogTask extends Task {
 	private clSprite: Image = new Image();
@@ -66,7 +74,7 @@ export default class CollectionLogTask extends Task {
 
 	// Split sprite into smaller images by coors and size
 	getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
-		const canvas = createCanvas(0, 0);
+		const canvas = new Canvas(0, 0);
 		const ctx = canvas.getContext('2d');
 		canvas.width = width;
 		canvas.height = height;
@@ -77,28 +85,28 @@ export default class CollectionLogTask extends Task {
 	drawBorder(ctx: CanvasRenderingContext2D) {
 		// Top border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-y');
+		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-y')!;
 		ctx.translate(0, 0);
 		ctx.scale(1, 1);
 		ctx.fillRect(0, 0, ctx.canvas.width, this.scls.border.height);
 		ctx.restore();
 		// Bottom border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-y');
+		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-y')!;
 		ctx.translate(0, ctx.canvas.height);
 		ctx.scale(1, -1);
 		ctx.fillRect(0, 0, ctx.canvas.width, this.scls.border.height);
 		ctx.restore();
 		// Right border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-x');
+		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-x')!;
 		ctx.rotate((Math.PI / 180) * 90);
 		ctx.translate(0, -ctx.canvas.width);
 		ctx.fillRect(0, 0, ctx.canvas.height, this.scls.border.height);
 		ctx.restore();
 		// Left border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-x');
+		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-x')!;
 		ctx.rotate((Math.PI / 180) * 90);
 		ctx.scale(1, -1);
 		ctx.fillRect(0, 0, ctx.canvas.height, this.scls.border.height);
@@ -129,7 +137,7 @@ export default class CollectionLogTask extends Task {
 		ctx.restore();
 		// Title border
 		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.borderTitle, 'repeat-y');
+		ctx.fillStyle = ctx.createPattern(this.scls.borderTitle, 'repeat-y')!;
 		ctx.translate(this.scls.border.height - 1, 29);
 		ctx.fillRect(0, 0, ctx.canvas.width - this.scls.border.height * 2 + 2, this.scls.borderTitle.height);
 		ctx.restore();
@@ -181,7 +189,7 @@ export default class CollectionLogTask extends Task {
 		};
 
 		// Create base canvas
-		const canvasList = createCanvas(200, leftHeight);
+		const canvasList = new Canvas(200, leftHeight);
 		// Get the canvas context
 		const ctxl = canvasList.getContext('2d');
 		ctxl.font = '16px OSRSFontCompact';
@@ -210,15 +218,13 @@ export default class CollectionLogTask extends Task {
 	async generateLogImage(options: {
 		user: KlasaUser;
 		collection: string;
-		type: 'collection' | 'sacrifice' | 'bank' | 'temp';
+		type: CollectionLogType;
 		flags: { [key: string]: string | number };
-	}): Promise<MessageOptions | MessageAttachment> {
+	}): Promise<CommandResponse> {
 		if (options.flags.temp) {
 			options.type = 'temp';
 		}
 		let { collection, type, user, flags } = options;
-
-		await user.settings.sync(true);
 
 		let collectionLog: IToReturnCollection | undefined | false = undefined;
 
@@ -233,17 +239,16 @@ export default class CollectionLogTask extends Task {
 
 		if (!collectionLog) {
 			return {
-				content: "That's not a valid collection log type. The valid types are: ",
-				files: [getPossibleOptions()]
+				content: "That's not a valid collection log type."
 			};
 		}
 
 		if (flags.text) {
 			return {
 				content: 'This is the items on your log:',
-				files: [
-					new MessageAttachment(
-						Buffer.from(
+				attachments: [
+					{
+						buffer: Buffer.from(
 							collectionLog.collection
 								.map(i => {
 									let _i = getOSItem(i);
@@ -254,8 +259,8 @@ export default class CollectionLogTask extends Task {
 								.filter(f => f)
 								.join(flags.comma ? ', ' : '\n')
 						),
-						'yourLogItems.txt'
-					)
+						fileName: 'yourLogItems.txt'
+					}
 				]
 			};
 		}
@@ -306,7 +311,7 @@ export default class CollectionLogTask extends Task {
 		);
 
 		// Create base canvas
-		const canvas = createCanvas(canvasWidth, canvasHeight);
+		const canvas = new Canvas(canvasWidth, canvasHeight);
 		// Get the canvas context
 		const ctx = canvas.getContext('2d');
 		ctx.font = '16px OSRSFontCompact';
@@ -316,7 +321,7 @@ export default class CollectionLogTask extends Task {
 		const boxHeight = ctx.canvas.height - 69;
 
 		// Draw base background
-		ctx.fillStyle = ctx.createPattern(this.scls.repeatableBg, 'repeat');
+		ctx.fillStyle = ctx.createPattern(this.scls.repeatableBg, 'repeat')!;
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
 		// Draw cl box lines
@@ -340,7 +345,10 @@ export default class CollectionLogTask extends Task {
 			ctx,
 			`${user.username}'s ${
 				type === 'sacrifice' ? 'Sacrifice' : type === 'collection' ? 'Collection' : 'Bank'
-			} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()}`,
+			} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
+				userTotalCl[1],
+				userTotalCl[0]
+			).toFixed(2)}%`,
 			ctx.canvas.width / 2,
 			22
 		);
@@ -575,6 +583,8 @@ export default class CollectionLogTask extends Task {
 			}
 		}
 
-		return new MessageAttachment(canvas.toBuffer('image/png'), `${type}_log_${new Date().valueOf()}.png`);
+		return {
+			attachments: [{ buffer: await canvas.toBuffer('png'), fileName: `${type}_log_${new Date().valueOf()}.png` }]
+		};
 	}
 }

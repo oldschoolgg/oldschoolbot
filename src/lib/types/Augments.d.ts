@@ -1,14 +1,16 @@
 import { activity_type_enum } from '@prisma/client';
-import { Image } from 'canvas';
 import { FSWatcher } from 'chokidar';
-import { MessageAttachment, MessageOptions, MessagePayload } from 'discord.js';
+import { MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
+import { Image } from 'skia-canvas/lib';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { BankImageResult } from '../../tasks/bankImage';
+import { CollectionLogType } from '../../tasks/collectionLogTask';
 import { BitField, PerkTier } from '../constants';
 import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
@@ -75,12 +77,6 @@ declare module 'klasa' {
 			cl?: Bank
 		): Promise<BankImageResult>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
-		generateLogImage(options: {
-			user: KlasaUser;
-			collection: string;
-			type: 'collection' | 'sacrifice' | 'bank';
-			flags: { [key: string]: string | number };
-		}): Promise<MessageOptions | MessageAttachment>;
 	}
 
 	interface KlasaMessage {
