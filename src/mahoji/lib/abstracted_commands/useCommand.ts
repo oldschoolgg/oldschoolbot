@@ -69,11 +69,6 @@ const usableUnlocks: UsableUnlock[] = [
 		item: getOSItem('Daemonheim agility pass'),
 		bitfield: BitField.HasDaemonheimAgilityPass,
 		resultMessage: 'You show your pass to the Daemonheim guards, and they grant you access to their rooftops.'
-	},
-	{
-		item: getOSItem('Double loot token'),
-		bitfield: BitField.HasDaemonheimAgilityPass,
-		resultMessage: 'You show your pass to the Daemonheim guards, and they grant you access to their rooftops.'
 	}
 ];
 for (const usableUnlock of usableUnlocks) {
