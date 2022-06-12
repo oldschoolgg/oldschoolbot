@@ -541,7 +541,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'name',
-							description: 'The thing you want to toggle on/off.',
+							description: 'The setting you want to toggle on/off.',
 							required: true,
 							autocomplete: async (value, user) => {
 								const mUser = await prisma.user.findFirst({
