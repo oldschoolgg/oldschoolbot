@@ -1,11 +1,8 @@
-import { registerFont } from 'canvas';
-import { Canvas } from 'canvas-constructor';
 import { MessageAttachment } from 'discord.js';
 import * as fs from 'fs';
+import { Canvas } from 'skia-canvas/lib';
 
 import { canvasImageFromBuffer } from './canvasUtil';
-
-registerFont('./src/lib/resources/osrs-font-quill-8.ttf', { family: 'Regular' });
 
 export const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
@@ -41,25 +38,23 @@ const names: Record<keyof typeof chatHeads, string> = {
 
 export async function newChatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {
 	const canvas = new Canvas(519, 142);
-	canvas.context.imageSmoothingEnabled = false;
+	const ctx = canvas.getContext('2d');
+	ctx.imageSmoothingEnabled = false;
 	const headImage = await canvasImageFromBuffer(chatHeads[head]);
 	const bg = await canvasImageFromBuffer(textBoxFile);
 
-	const image = await canvas
-		.addImage(bg as any, 0, 0)
-		.addImage(headImage as any, 28, bg.height / 2 - headImage.height / 2)
-		.setTextAlign('center')
-		.setTextFont('16px RuneScape Quill 8')
+	ctx.drawImage(bg, 0, 0);
+	ctx.drawImage(headImage, 28, bg.height / 2 - headImage.height / 2);
+	ctx.font = '16px RuneScape Quill 8';
 
-		.setColor('#810303')
-		.addText(names[head], 307, 36)
+	ctx.fillStyle = '#810303';
+	const nameWidth = Math.floor(ctx.measureText(names[head]).width);
+	ctx.fillText(names[head], 307 - nameWidth / 2, 36);
+	ctx.textWrap = true;
+	ctx.fillStyle = '#000';
+	ctx.fillText(content, 307, 58, 361); // .addMultilineText(content 361, 18)
 
-		.setColor('#000')
-		.addMultilineText(content, 307, 58, 361, 18)
-
-		.toBufferAsync();
-
-	return image;
+	return canvas.toBuffer('png');
 }
 
 export default async function chatHeadImage({ content, head }: { content: string; head: keyof typeof chatHeads }) {

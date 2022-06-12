@@ -29,15 +29,12 @@ import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
 
 FontLibrary.use({
-	// './src/lib/resources/osrs-font.ttf',
+	OSRSFont: './src/lib/resources/osrs-font.ttf',
 	OSRSFontCompact: './src/lib/resources/osrs-font-compact.otf',
 	'RuneScape Bold 12': './src/lib/resources/osrs-font-bold.ttf',
-	'Smallest Pixel-7': './src/lib/resources/small-pixel.ttf'
+	'Smallest Pixel-7': './src/lib/resources/small-pixel.ttf',
+	'RuneScape Quill 8': './src/lib/resources/osrs-font-quill-8.ttf'
 });
-console.log(FontLibrary.has('RuneScape Bold 12'));
-console.log(FontLibrary.family('RuneScape Bold 12'));
-console.log(FontLibrary.has('RuneScape Bold 12'));
-console.log(FontLibrary.family('RuneScape Bold 12'));
 
 export type BankImageResult =
 	| {
