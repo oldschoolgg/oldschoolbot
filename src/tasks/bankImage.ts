@@ -291,19 +291,15 @@ export default class BankImageTask extends Task {
 			return this.getItemImage(itemID);
 		}
 
-		if (!cachedImage) {
-			const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
-			try {
-				const image = await loadImage(imageBuffer);
-				this.itemIconImagesCache.set(itemID, image);
-				return image;
-			} catch (err) {
-				logError(`Failed to load item icon with id: ${itemID}`);
-				return this.getItemImage(1);
-			}
+		const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
+		try {
+			const image = await loadImage(imageBuffer);
+			this.itemIconImagesCache.set(itemID, image);
+			return image;
+		} catch (err) {
+			logError(`Failed to load item icon with id: ${itemID}`);
+			return this.getItemImage(1);
 		}
-
-		return cachedImage;
 	}
 
 	async fetchAndCacheImage(itemID: number) {
@@ -474,7 +470,7 @@ export default class BankImageTask extends Task {
 			const forcedShortName = forcedShortNameMap.get(item.id);
 			if (forcedShortName && !bottomItemText) {
 				ctx.font = '10px Smallest Pixel-7';
-				bottomItemText = forcedShortName?.toUpperCase();
+				bottomItemText = forcedShortName.toUpperCase();
 			}
 
 			if (bottomItemText) {
