@@ -1,34 +1,15 @@
 import { calcWhatPercent, objectEntries } from 'e';
-import fs from 'fs';
 import { KlasaUser, Task } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
+import { Canvas, CanvasRenderingContext2D } from 'skia-canvas/lib';
 
-import { Events } from '../lib/constants';
 import { allCollectionLogs, getCollection, getTotalCl } from '../lib/data/Collections';
 import { IToReturnCollection } from '../lib/data/CollectionsExport';
-import bankBackgrounds from '../lib/minions/data/bankBackgrounds';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
-import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import { formatItemStackQuantity, generateHexColorForCashStack, toKMB } from '../lib/util';
+import { fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getOSItem from '../lib/util/getOSItem';
-import { logError } from '../lib/util/logError';
-import BankImageTask from './bankImage';
-
-interface ISprite {
-	image: string;
-	oddListColor: string;
-	border: Canvas;
-	borderCorner: Canvas;
-	borderTitle: Canvas;
-	tabBorderActive: Canvas;
-	tabBorderInactive: Canvas;
-	scrollArrow: Canvas;
-	scrollBarEnd: Canvas;
-	scrollBarOn: Canvas;
-	scrollBarOff: Canvas;
-	repeatableBg: Canvas;
-}
+import BankImageTask, { IBgSprite } from './bankImage';
 
 export const collectionLogTypes = [
 	{ name: 'collection', description: 'Normal Collection Log' },
@@ -37,110 +18,22 @@ export const collectionLogTypes = [
 	{ name: 'temp', description: 'Temporary Log' }
 ] as const;
 export type CollectionLogType = typeof collectionLogTypes[number]['name'];
+export const CollectionLogFlags = [
+	{ name: 'text', description: 'Show your CL in text format.' },
+	{ name: 'missing', description: 'Show only missing items.' }
+];
 
 export default class CollectionLogTask extends Task {
-	private clSprite: Image = new Image();
-
-	// css = Collection Log Spreadsheet
-	private cls = <ISprite>{
-		image: './src/lib/resources/images/bank_backgrounds/spritesheet/Default.png',
-		oddListColor: '#655741'
-	};
-
-	private clsDark = <ISprite>{
-		image: './src/lib/resources/images/bank_backgrounds/spritesheet/Dark.png',
-		oddListColor: '#393939'
-	};
-
-	private scls = <ISprite>{};
-
-	async init() {
-		for (const cls of [this.cls, this.clsDark]) {
-			this.clSprite = await canvasImageFromBuffer(fs.readFileSync(cls.image));
-			cls.border = this.getClippedRegion(this.clSprite, 0, 0, 18, 6);
-			cls.borderCorner = this.getClippedRegion(this.clSprite, 19, 0, 6, 6);
-			cls.borderTitle = this.getClippedRegion(this.clSprite, 26, 0, 18, 6);
-			cls.tabBorderInactive = this.getClippedRegion(this.clSprite, 0, 7, 75, 20);
-			cls.tabBorderActive = this.getClippedRegion(this.clSprite, 0, 45, 75, 20);
-			cls.scrollArrow = this.getClippedRegion(this.clSprite, 0, 28, 16, 16);
-			cls.scrollBarEnd = this.getClippedRegion(this.clSprite, 17, 28, 16, 6);
-			cls.scrollBarOn = this.getClippedRegion(this.clSprite, 17, 35, 16, 1);
-			cls.scrollBarOff = this.getClippedRegion(this.clSprite, 17, 37, 16, 1);
-			cls.repeatableBg = this.getClippedRegion(this.clSprite, 93, 0, 96, 65);
-		}
-	}
-
 	run() {}
 
-	// Split sprite into smaller images by coors and size
-	getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
-		const canvas = new Canvas(0, 0);
-		const ctx = canvas.getContext('2d');
-		canvas.width = width;
-		canvas.height = height;
-		ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
-		return canvas;
+	getTask() {
+		const task = globalClient.tasks.get('bankImage') as BankImageTask;
+		return task;
 	}
 
-	drawBorder(ctx: CanvasRenderingContext2D) {
-		// Top border
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-y')!;
-		ctx.translate(0, 0);
-		ctx.scale(1, 1);
-		ctx.fillRect(0, 0, ctx.canvas.width, this.scls.border.height);
-		ctx.restore();
-		// Bottom border
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-y')!;
-		ctx.translate(0, ctx.canvas.height);
-		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, ctx.canvas.width, this.scls.border.height);
-		ctx.restore();
-		// Right border
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-x')!;
-		ctx.rotate((Math.PI / 180) * 90);
-		ctx.translate(0, -ctx.canvas.width);
-		ctx.fillRect(0, 0, ctx.canvas.height, this.scls.border.height);
-		ctx.restore();
-		// Left border
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.border, 'repeat-x')!;
-		ctx.rotate((Math.PI / 180) * 90);
-		ctx.scale(1, -1);
-		ctx.fillRect(0, 0, ctx.canvas.height, this.scls.border.height);
-		ctx.restore();
-		// Corners
-		// Top left
-		ctx.save();
-		ctx.scale(1, 1);
-		ctx.drawImage(this.scls.borderCorner, 0, 0);
-		ctx.restore();
-		// Top right
-		ctx.save();
-		ctx.translate(ctx.canvas.width, 0);
-		ctx.scale(-1, 1);
-		ctx.drawImage(this.scls.borderCorner, 0, 0);
-		ctx.restore();
-		// Bottom right
-		ctx.save();
-		ctx.translate(ctx.canvas.width, ctx.canvas.height);
-		ctx.scale(-1, -1);
-		ctx.drawImage(this.scls.borderCorner, 0, 0);
-		ctx.restore();
-		// Bottom left
-		ctx.save();
-		ctx.translate(0, ctx.canvas.height);
-		ctx.scale(1, -1);
-		ctx.drawImage(this.scls.borderCorner, 0, 0);
-		ctx.restore();
-		// Title border
-		ctx.save();
-		ctx.fillStyle = ctx.createPattern(this.scls.borderTitle, 'repeat-y')!;
-		ctx.translate(this.scls.border.height - 1, 29);
-		ctx.fillRect(0, 0, ctx.canvas.width - this.scls.border.height * 2 + 2, this.scls.borderTitle.height);
-		ctx.restore();
+	drawBorder(ctx: CanvasRenderingContext2D, sprite: IBgSprite) {
+		const task = this.getTask();
+		return task.drawBorder(ctx, sprite);
 	}
 
 	drawSquare(
@@ -177,7 +70,7 @@ export default class CollectionLogTask extends Task {
 		fillTextXTimesInCtx(ctx, text, x, y);
 	}
 
-	drawLeftList(collectionLog: IToReturnCollection) {
+	drawLeftList(collectionLog: IToReturnCollection, sprite: IBgSprite) {
 		if (!collectionLog.leftList) return;
 		const leftHeight = Object.keys(collectionLog.leftList).length * 15; // 15 is the height of every list item
 		const colors = {
@@ -185,7 +78,7 @@ export default class CollectionLogTask extends Task {
 			started: '#FFFF00',
 			completed: '#0DC10D',
 			selected: '#6F675E',
-			odd: this.scls.oddListColor
+			odd: sprite.oddListColor
 		};
 
 		// Create base canvas
@@ -193,7 +86,6 @@ export default class CollectionLogTask extends Task {
 		// Get the canvas context
 		const ctxl = canvasList.getContext('2d');
 		ctxl.font = '16px OSRSFontCompact';
-		ctxl.textAlign = 'left';
 		ctxl.imageSmoothingEnabled = false;
 		let index = 0;
 		let widestName = 0;
@@ -212,7 +104,7 @@ export default class CollectionLogTask extends Task {
 			index++;
 		}
 
-		return this.getClippedRegion(canvasList, 0, 0, widestName + 8, canvasList.height);
+		return getClippedRegion(canvasList, 0, 0, widestName + 8, canvasList.height);
 	}
 
 	async generateLogImage(options: {
@@ -221,6 +113,8 @@ export default class CollectionLogTask extends Task {
 		type: CollectionLogType;
 		flags: { [key: string]: string | number };
 	}): Promise<CommandResponse> {
+		const { sprite } = this.getTask().getBgAndSprite(options.user.settings.get(UserSettings.BankBackground));
+
 		if (options.flags.temp) {
 			options.type = 'temp';
 		}
@@ -270,16 +164,12 @@ export default class CollectionLogTask extends Task {
 			delete flags.tall;
 		}
 
-		const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
-		this.scls = this.cls;
-		if (userBgID === bankBackgrounds.find(b => b.name === 'Dark')!.id) this.scls = this.clsDark;
-
 		const userCollectionBank = collectionLog.userItems;
 
 		const fullSize = flags.nl || !collectionLog.leftList;
 
 		const userTotalCl = getTotalCl(user, type);
-		const leftListCanvas = this.drawLeftList(collectionLog);
+		const leftListCanvas = this.drawLeftList(collectionLog, sprite);
 
 		let leftDivisor = 214;
 		let rightArea = 276;
@@ -321,12 +211,12 @@ export default class CollectionLogTask extends Task {
 		const boxHeight = ctx.canvas.height - 69;
 
 		// Draw base background
-		ctx.fillStyle = ctx.createPattern(this.scls.repeatableBg, 'repeat')!;
+		ctx.fillStyle = ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
 		// Draw cl box lines
-		this.drawBorder(ctx);
-		ctx.strokeStyle = this.scls.oddListColor;
+		this.drawBorder(ctx, sprite);
+		ctx.strokeStyle = sprite.oddListColor;
 		if (!fullSize) {
 			this.drawSquare(ctx, 10, 59, ctx.canvas.width - 20, boxHeight);
 			this.drawSquare(ctx, leftDivisor, 59, rightArea, 47);
@@ -340,37 +230,28 @@ export default class CollectionLogTask extends Task {
 		ctx.save();
 		ctx.font = '16px RuneScape Bold 12';
 		ctx.fillStyle = '#FF981F';
-		ctx.textAlign = 'center';
-		this.drawText(
-			ctx,
-			`${user.username}'s ${
-				type === 'sacrifice' ? 'Sacrifice' : type === 'collection' ? 'Collection' : 'Bank'
-			} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
-				userTotalCl[1],
-				userTotalCl[0]
-			).toFixed(2)}%`,
-			ctx.canvas.width / 2,
-			22
-		);
+		const title = `${user.username}'s ${
+			type === 'sacrifice' ? 'Sacrifice' : type === 'collection' ? 'Collection' : 'Bank'
+		} Log - ${userTotalCl[1].toLocaleString()}/${userTotalCl[0].toLocaleString()} / ${calcWhatPercent(
+			userTotalCl[1],
+			userTotalCl[0]
+		).toFixed(2)}%`;
+		const titleX = ctx.canvas.width / 2 - ctx.measureText(title).width / 2;
+		this.drawText(ctx, title, titleX, 22);
 		ctx.restore();
 
 		// Draw cl tabs
 		let aclIndex = 0;
 		ctx.save();
 		for (const cl of Object.keys(allCollectionLogs)) {
-			const x = aclIndex * this.scls.tabBorderInactive.width + aclIndex * 6 + 10;
-			ctx.drawImage(
-				cl === collectionLog.category ? this.scls.tabBorderActive : this.scls.tabBorderInactive,
-				x,
-				39
-			);
+			const x = aclIndex * sprite.tabBorderInactive.width + aclIndex * 6 + 10;
+			ctx.drawImage(cl === collectionLog.category ? sprite.tabBorderActive : sprite.tabBorderInactive, x, 39);
 			ctx.fillStyle = cl === collectionLog.category ? '#FFFFFF' : '#FF981F';
-			ctx.textAlign = 'center';
 			this.drawText(
 				ctx,
 				cl,
-				x + this.scls.tabBorderInactive.width / 2,
-				39 + this.scls.tabBorderInactive.height / 2 + 6 // 6 is to proper center the text
+				Math.floor(x + sprite.tabBorderInactive.width / 2 - ctx.measureText(cl).width / 2),
+				39 + sprite.tabBorderInactive.height / 2 + 6 // 6 is to proper center the text
 			);
 			aclIndex++;
 		}
@@ -389,15 +270,7 @@ export default class CollectionLogTask extends Task {
 				i = 0;
 				y += 1;
 			}
-			const itemImage = await (this.client.tasks.get('bankImage') as BankImageTask)
-				.getItemImage(item)
-				.catch(() => {
-					logError(`Failed to load item image for item with id: ${item}`);
-				});
-			if (!itemImage) {
-				this.client.emit(Events.Warn, `Item with ID[${item}] has no item image.`);
-				continue;
-			}
+			const itemImage = await this.getTask().getItemImage(item);
 
 			let qtyText = 0;
 			if (!userCollectionBank.has(item)) {
@@ -475,7 +348,7 @@ export default class CollectionLogTask extends Task {
 			`${
 				flags.missing ? '' : `${collectionLog.collectionObtained.toLocaleString()}/`
 			}${collectionLog.collectionTotal.toLocaleString()}`,
-			obtainableMeasure.width,
+			Math.floor(obtainableMeasure.width),
 			13
 		);
 
@@ -483,7 +356,6 @@ export default class CollectionLogTask extends Task {
 			let drawnSoFar = '';
 			// Times done/killed
 			ctx.font = '16px OSRSFontCompact';
-			ctx.textAlign = 'left';
 			ctx.fillStyle = '#FF981F';
 			this.drawText(ctx, (drawnSoFar = collectionLog.isActivity ? 'Completions: ' : 'Kills: '), 0, 25);
 			let pixelLevel = 25;
@@ -509,21 +381,14 @@ export default class CollectionLogTask extends Task {
 			}
 		}
 		ctx.restore();
-		// Total value of the selected activity/tab
-		// Times done/killed
+
 		ctx.save();
 		ctx.font = '16px OSRSFontCompact';
-		ctx.textAlign = 'right';
-		ctx.fillStyle = generateHexColorForCashStack(Math.round(totalPrice));
-		this.drawText(ctx, Math.round(totalPrice).toLocaleString(), ctx.canvas.width - 15, 75 + 25);
-		ctx.fillStyle = '#FF981F';
-		this.drawText(
-			ctx,
-			'Value: ',
-			ctx.canvas.width - 12 - ctx.measureText(`${Math.round(totalPrice).toLocaleString()} `).width,
-			75 + 25
-		);
+		ctx.fillStyle = generateHexColorForCashStack(totalPrice);
+		let value = toKMB(totalPrice);
+		this.drawText(ctx, value, ctx.canvas.width - 15 - ctx.measureText(value).width, 75 + 25);
 		ctx.restore();
+
 		if (leftListCanvas && !fullSize) {
 			if (!Boolean(flags.tall)) {
 				let selectedPos = 8;

@@ -2,7 +2,11 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { allCollectionLogs } from '../../lib/data/Collections';
 import { toTitleCase } from '../../lib/util';
-import CollectionLogTask, { CollectionLogType, collectionLogTypes } from '../../tasks/collectionLogTask';
+import CollectionLogTask, {
+	CollectionLogFlags,
+	CollectionLogType,
+	collectionLogTypes
+} from '../../tasks/collectionLogTask';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const collectionLogCommand: OSBMahojiCommand = {
@@ -40,14 +44,23 @@ export const collectionLogCommand: OSBMahojiCommand = {
 			description: 'The type of log you want to see.',
 			required: false,
 			choices: collectionLogTypes.map(i => ({ name: `${toTitleCase(i.name)} (${i.description})`, value: i.name }))
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'flag',
+			description: 'The flag you want to pass.',
+			required: false,
+			choices: CollectionLogFlags.map(i => ({ name: `${toTitleCase(i.name)} (${i.description})`, value: i.name }))
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ name: string; type?: CollectionLogType }>) => {
+	run: async ({ options, userID }: CommandRunOptions<{ name: string; type?: CollectionLogType; flag?: string }>) => {
 		const user = await globalClient.fetchUser(userID);
+		let flags: Record<string, string> = {};
+		if (options.flag) flags[options.flag] = options.flag;
 		const result = await (globalClient.tasks.get('collectionLogTask') as CollectionLogTask)!.generateLogImage({
 			user,
 			type: options.type ?? 'collection',
-			flags: {},
+			flags,
 			collection: options.name
 		});
 		return result;

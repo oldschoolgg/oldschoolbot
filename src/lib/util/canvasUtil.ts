@@ -116,3 +116,14 @@ export function printWrappedText(ctx: CanvasRenderingContext2D, text: string, x:
 	const wrappedText = textWrap(ctx, text, wrapWidth);
 	return printMultilineText(ctx, wrappedText, x, y);
 }
+
+export function getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
+	const canvas = new Canvas(width, height);
+	const ctx = canvas.getContext('2d');
+	if (image instanceof Canvas) {
+		ctx.drawCanvas(image, x, y, width, height, 0, 0, width, height);
+	} else {
+		ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
+	}
+	return canvas;
+}

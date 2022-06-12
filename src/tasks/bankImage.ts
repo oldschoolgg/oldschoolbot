@@ -1,4 +1,5 @@
-import * as fs from 'fs';
+import { existsSync } from 'fs';
+import * as fs from 'fs/promises';
 import { KlasaUser, Task, TaskStore, util } from 'klasa';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
@@ -22,7 +23,7 @@ import {
 	generateHexColorForCashStack,
 	sha256Hash
 } from '../lib/util';
-import { drawImageWithOutline, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
@@ -57,11 +58,16 @@ const distanceFromSide = 16;
 
 const { floor, ceil } = Math;
 
-interface IBgSprite {
+type BGSpriteName = 'dark' | 'default' | 'transparent';
+export interface IBgSprite {
+	name: BGSpriteName;
 	border: Canvas;
 	borderCorner: Canvas;
 	borderTitle: Canvas;
 	repeatableBg: Canvas;
+	tabBorderInactive: Canvas;
+	tabBorderActive: Canvas;
+	oddListColor: string;
 }
 
 const i = itemID;
@@ -212,21 +218,29 @@ export default class BankImageTask extends Task {
 	}
 
 	async init() {
+		const colors: Record<BGSpriteName, string> = {
+			default: '#655741',
+			dark: '#393939',
+			transparent: ''
+		};
 		// Init bank sprites
 		const basePath = './src/lib/resources/images/bank_backgrounds/spritesheet/';
-		await fs.readdir(basePath, async (err, files) => {
-			if (err) throw 'Could not load sprite files';
-			for (const file of files) {
-				const bgName = file.split('\\').pop()!.split('/').pop()!.split('.').shift()!;
-				this._bgSpriteData = await loadImage(fs.readFileSync(basePath + file));
-				this.bgSpriteList[bgName] = {
-					border: this.getClippedRegion(this._bgSpriteData, 0, 0, 18, 6),
-					borderCorner: this.getClippedRegion(this._bgSpriteData, 19, 0, 6, 6),
-					borderTitle: this.getClippedRegion(this._bgSpriteData, 26, 0, 18, 6),
-					repeatableBg: this.getClippedRegion(this._bgSpriteData, 93, 0, 96, 65)
-				};
-			}
-		});
+		const files = await fs.readdir(basePath);
+		for (const file of files) {
+			const bgName: BGSpriteName = file.split('\\').pop()!.split('/').pop()!.split('.').shift()! as BGSpriteName;
+			let d = await loadImage(await fs.readFile(basePath + file));
+			this._bgSpriteData = d;
+			this.bgSpriteList[bgName] = {
+				name: bgName,
+				border: getClippedRegion(d, 0, 0, 18, 6),
+				borderCorner: getClippedRegion(d, 19, 0, 6, 6),
+				borderTitle: getClippedRegion(d, 26, 0, 18, 6),
+				tabBorderInactive: getClippedRegion(d, 0, 7, 75, 20),
+				tabBorderActive: getClippedRegion(d, 0, 45, 75, 20),
+				repeatableBg: getClippedRegion(d, 93, 0, 96, 65),
+				oddListColor: colors[bgName]
+			};
+		}
 
 		await this.run();
 	}
@@ -243,10 +257,10 @@ export default class BankImageTask extends Task {
 					: null;
 				return {
 					...img,
-					image: fs.existsSync(bgPath) ? await loadImage(fs.readFileSync(bgPath)) : null,
+					image: existsSync(bgPath) ? await loadImage(await fs.readFile(bgPath)) : null,
 					purpleImage: purplePath
-						? fs.existsSync(purplePath)
-							? await loadImage(fs.readFileSync(purplePath))
+						? existsSync(purplePath)
+							? await loadImage(await fs.readFile(purplePath))
 							: null
 						: null
 				};
@@ -254,24 +268,12 @@ export default class BankImageTask extends Task {
 		);
 	}
 
-	// Split sprite into smaller images by coors and size
-	getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
-		const canvas = new Canvas(width, height);
-		const ctx = canvas.getContext('2d');
-		if (image instanceof Canvas) {
-			ctx.drawCanvas(image, x, y, width, height, 0, 0, width, height);
-		} else {
-			ctx.drawImage(image, x, y, width, height, 0, 0, width, height);
-		}
-		return canvas;
-	}
-
 	async cacheFiles() {
 		// Ensure that the icon_cache dir exists.
-		fs.promises.mkdir(CACHE_DIR).catch(() => null);
+		await fs.mkdir(CACHE_DIR).catch(() => null);
 
 		// Get a list of all files (images) in the dir.
-		const filesInDir = await fs.promises.readdir(CACHE_DIR);
+		const filesInDir = await fs.readdir(CACHE_DIR);
 
 		// For each one, set a cache value that it exists.
 		for (const fileName of filesInDir) {
@@ -290,7 +292,7 @@ export default class BankImageTask extends Task {
 		}
 
 		if (!cachedImage) {
-			const imageBuffer = await fs.promises.readFile(path.join(CACHE_DIR, `${itemID}.png`));
+			const imageBuffer = await fs.readFile(path.join(CACHE_DIR, `${itemID}.png`));
 			try {
 				const image = await loadImage(imageBuffer);
 				this.itemIconImagesCache.set(itemID, image);
@@ -309,7 +311,7 @@ export default class BankImageTask extends Task {
 			result => result.buffer()
 		);
 
-		await fs.promises.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
+		await fs.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
 
 		const image = await loadImage(imageBuffer);
 
@@ -382,8 +384,8 @@ export default class BankImageTask extends Task {
 
 	getBgAndSprite(bankBgId: number = 1) {
 		const background = this.backgroundImages.find(i => i.id === bankBgId)!;
-		const hasBgSprite = Boolean(this.bgSpriteList[background.name]);
-		const bgSprite = hasBgSprite ? this.bgSpriteList[background.name] : this.bgSpriteList['Default'];
+		const hasBgSprite = Boolean(this.bgSpriteList[background.name.toLowerCase()]);
+		const bgSprite = hasBgSprite ? this.bgSpriteList[background.name.toLowerCase()] : this.bgSpriteList.default;
 		return {
 			uniqueSprite: hasBgSprite,
 			sprite: bgSprite,
