@@ -125,8 +125,7 @@ export default class extends BotCommand {
 				...msg.flagArgs,
 				page: page - 1
 			},
-			user: msg.author,
-			gearPlaceholder: msg.author.rawGear()
+			user: msg.author
 		});
 	}
 }

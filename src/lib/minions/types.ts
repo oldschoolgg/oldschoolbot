@@ -1,4 +1,3 @@
-import { Image } from 'canvas';
 import { KlasaUser } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
 import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
@@ -8,6 +7,7 @@ import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
 import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import { Image } from 'skia-canvas/lib';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
@@ -180,3 +180,5 @@ export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
 	placesVisited: [],
 	steps: []
 };
+export type Flags = Record<string, string | number>;
+export type FlagMap = Map<string, string | number>;

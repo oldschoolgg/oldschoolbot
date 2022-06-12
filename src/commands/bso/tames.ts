@@ -1,10 +1,10 @@
-import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
 import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import fs from 'fs';
 import { CommandStore, KlasaClient, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
 import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
@@ -38,7 +38,7 @@ import {
 	toTitleCase,
 	updateBankSetting
 } from '../../lib/util';
-import { canvasImageFromBuffer, canvasToBufferAsync, fillTextXTimesInCtx } from '../../lib/util/canvasUtil';
+import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../../lib/util/canvasUtil';
 import findMonster from '../../lib/util/findMonster';
 import getOSItem from '../../lib/util/getOSItem';
 import { patronMaxTripCalc } from '../../lib/util/getUsersPerkTier';
@@ -217,7 +217,7 @@ export async function getTameStatus(user: KlasaUser) {
 let bankTask: BankImageTask | null = null;
 // Split sprite into smaller images by coors and size
 function getClippedRegion(image: Image | Canvas, x: number, y: number, width: number, height: number) {
-	const canvas = createCanvas(0, 0);
+	const canvas = new Canvas(0, 0);
 	const ctx = canvas.getContext('2d');
 	canvas.width = width;
 	canvas.height = height;
@@ -237,7 +237,7 @@ function drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
 }
 
 async function getItem(item: number) {
-	return bankTask?.getItemImage(item, 1).catch(() => {
+	return bankTask!.getItemImage(item).catch(() => {
 		console.error(`Failed to load item image for item with id: ${item}`);
 	});
 }
@@ -372,7 +372,7 @@ export default class extends BotCommand {
 
 		const tamesPerLine = 3;
 
-		const canvas = createCanvas(
+		const canvas = new Canvas(
 			12 + 10 + (256 + 10) * Math.min(userTames.length, tamesPerLine),
 			12 + 10 + (128 + 10) * Math.ceil(userTames.length / tamesPerLine)
 		);
@@ -386,7 +386,7 @@ export default class extends BotCommand {
 			? hexColor
 				? hexColor
 				: 'transparent'
-			: ctx.createPattern(sprite.repeatableBg, 'repeat');
+			: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -513,17 +513,13 @@ export default class extends BotCommand {
 
 		const rawBadges = msg.author.settings.get(UserSettings.Badges);
 		const badgesStr = rawBadges.map(num => badges[num]).join(' ');
+		const buffer = await canvas.toBuffer('png');
 
 		return msg.channel.send({
 			content: `${badgesStr}${msg.author.username}, ${
 				userTames.length > 1 ? 'here are your tames' : 'this is your tame'
 			}!`,
-			files: [
-				new MessageAttachment(
-					await canvasToBufferAsync(canvas, 'image/png'),
-					`${msg.author.username}_${msg.author.discriminator}_tames.png`
-				)
-			]
+			files: [new MessageAttachment(buffer, `${msg.author.username}_${msg.author.discriminator}_tames.png`)]
 		});
 	}
 

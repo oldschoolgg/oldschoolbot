@@ -1,4 +1,5 @@
 import { MessageAttachment } from 'discord.js';
+import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
@@ -33,7 +34,7 @@ import { allFarmingItems } from '../skilling/skills/farming';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import mixables from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
-import { addArrayOfNumbers, stringMatches } from '../util';
+import { addArrayOfNumbers, removeFromArr, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalDragonCL,
@@ -1237,48 +1238,36 @@ export const allCollectionLogs: ICollection = {
 	}
 };
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
-export const allDroppedItems = [
-	...new Set([
-		...Object.entries(allCollectionLogs)
-			.map(e =>
-				Object.entries(e[1].activities).map(a => [
-					...new Set([...a[1].items, ...(a[1].allItems !== undefined ? a[1].allItems : [])])
-				])
-			)
-			.flat(100),
-		...Object.values(Monsters)
-			.map(m => (m && m.allItems ? m.allItems : []))
-			.flat(100)
-	])
-];
+export const allDroppedItems = uniqueArr([
+	...Object.values(allCollectionLogs)
+		.map(e =>
+			Object.values(e.activities).map(a => [
+				...new Set([...a.items, ...(a.allItems !== undefined ? a.allItems : [])])
+			])
+		)
+		.flat(100),
+	...Object.values(Monsters)
+		.map(m => (m && m.allItems ? m.allItems : []))
+		.flat(100)
+]);
 
-export const allCLItems = [
-	...new Set(
-		Object.entries(allCollectionLogs)
-			.map(e => Object.entries(e[1].activities).map(a => a[1].items))
-			.flat(100)
-	)
-];
+export const allCLItems = uniqueArr(
+	Object.values(allCollectionLogs)
+		.map(e => Object.values(e.activities).map(a => a.items))
+		.flat(100)
+);
 
 export const allCLItemsFiltered = [
 	...new Set(
-		Object.entries(allCollectionLogs)
+		Object.values(allCollectionLogs)
 			.map(e =>
-				Object.entries(e[1].activities)
-					.filter(f => f[1].counts === undefined)
-					.map(a => a[1].items)
+				Object.values(e.activities)
+					.filter(f => f.counts === undefined)
+					.map(a => a.items)
 			)
 			.flat(100)
 	)
 ];
-
-export function convertCLtoBank(items: number[]) {
-	const clBank = new Bank();
-	for (const item of items) {
-		clBank.add(item, 1);
-	}
-	return clBank;
-}
 
 // Get the left list to be added to the cls
 function getLeftList(
@@ -1370,13 +1359,12 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 			stringMatches(category, collection) ||
 			(entries.alias && entries.alias.some(a => stringMatches(a, collection)))
 		) {
-			_items = [
-				...new Set(
-					Object.entries(entries.activities)
-						.map(e => [...new Set([...e[1].items, ...(allItems && e[1].allItems ? e[1].allItems : [])])])
-						.flat(2)
-				)
-			];
+			_items = uniqueArr(
+				Object.values(entries.activities)
+					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
+					.flat(2)
+			);
+
 			break;
 		}
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
@@ -1393,14 +1381,14 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 	}
 
 	if (_items.length === 0) {
-		const _monster = killableMonsters.find(
-			m => stringMatches(m.name, collection) || m.aliases.some(name => stringMatches(name, collection))
+		const _monster = killableMonsters.find(m =>
+			[m.name, ...m.aliases].some(name => stringMatches(name, collection))
 		);
 		if (_monster) {
-			_items = Array.from(new Set(Object.values(Monsters.get(_monster!.id)!.allItems!).flat(100))) as number[];
+			_items = uniqueArr(Monsters.get(_monster!.id)!.allItems);
 		}
 	}
-	if (removeCoins && _items.includes(995)) _items.splice(_items.indexOf(995), 1);
+	if (removeCoins && _items.includes(995)) _items = removeFromArr(_items, 995);
 	return _items;
 }
 
