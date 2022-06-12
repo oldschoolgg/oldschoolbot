@@ -805,26 +805,19 @@ export function skillingPetChance(
 			? (user.settings.get(`skills.${skill}`) as number) >= 200_000_000
 			: (getSkillsOfMahojiUser(user)[skill] as number) >= 200_000_000;
 	const skillLevel = user instanceof KlasaUser ? user.skillLevel(skill) : getSkillsOfMahojiUser(user, true)[skill];
-	if (!twoMillXP) {
-		return tableOrBaseDropRate instanceof LootTable ? tableOrBaseDropRate : tableOrBaseDropRate - skillLevel * 25;
-	}
+	const twoMillPetMulti = twoMillXP ? 15 : 1;
 	if (tableOrBaseDropRate instanceof LootTable) {
 		if (!itemName || !Items.find(e => e.id === itemID(itemName))) return tableOrBaseDropRate;
 		const newLootTable = tableOrBaseDropRate.clone();
-		// Find and remove skilling Pet and store drop rate
-		const tempLootTable = new LootTable();
-		tempLootTable.tertiaryItems = newLootTable.tertiaryItems.filter(e => e.item === itemID(itemName));
-		newLootTable.tertiaryItems = newLootTable.tertiaryItems.filter(e => e.item !== itemID(itemName));
-		let newChance = 0;
-		for (let item of tempLootTable.tertiaryItems) {
-			if (item.chance > 0) {
-				newChance = Math.round(item.chance / 15);
-				break;
-			}
-		}
-		newLootTable.tertiary(newChance, itemName);
+		const skillingPetEntry = newLootTable.tertiaryItems.find(e => e.item === itemID(itemName));
+		if (!skillingPetEntry) return tableOrBaseDropRate;
+		skillingPetEntry.chance = Math.floor((skillingPetEntry.chance - skillLevel * 25) / twoMillPetMulti);
+		newLootTable.tertiaryItems = [
+			...newLootTable.tertiaryItems.filter(e => e.item !== itemID(itemName)),
+			skillingPetEntry
+		];
 		return newLootTable;
 	}
-	const dropRate = (tableOrBaseDropRate - skillLevel * 25) / 15;
+	const dropRate = Math.floor((tableOrBaseDropRate - skillLevel * 25) / twoMillPetMulti);
 	return dropRate;
 }
