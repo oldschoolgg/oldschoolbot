@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { User } from '@prisma/client';
-import { Canvas, createCanvas, Image } from 'canvas';
 import { randInt } from 'e';
 import * as fs from 'fs';
 import fsPromises from 'fs/promises';
 import { KlasaUser } from 'klasa';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
+import { Canvas, Image } from 'skia-canvas/lib';
 
 import BankImageTask from '../../../tasks/bankImage';
 import { monkeyTiers } from '../../monkeyRumble';
@@ -240,7 +240,7 @@ export async function generateGearImage(
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
-	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
+	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -248,7 +248,7 @@ export async function generateGearImage(
 		? hexColor
 			? hexColor
 			: 'transparent'
-		: ctx.createPattern(sprite.repeatableBg, 'repeat');
+		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	if (!uniqueSprite) {
@@ -290,7 +290,7 @@ export async function generateGearImage(
 
 	// Draw items
 	if (petID) {
-		const image = await bankTask.getItemImage(petID, 1);
+		const image = await bankTask.getItemImage(petID);
 		ctx.drawImage(
 			image,
 			(transMogImage ? 200 : 0) + 178 + slotSize / 2 - image.width / 2,
@@ -303,7 +303,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await bankTask.getItemImage(item.item, item.quantity);
+		const image = await bankTask.getItemImage(item.item);
 
 		let [x, y] = slotCoordinates[enumName];
 		x = x + slotSize / 2 - image.width / 2;
@@ -320,7 +320,7 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.toBuffer();
+	return canvas.toBuffer('png');
 }
 
 export async function generateAllGearImage(user: KlasaUser) {
@@ -337,7 +337,7 @@ export async function generateAllGearImage(user: KlasaUser) {
 	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
 
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
-	const canvas = createCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
+	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -345,7 +345,7 @@ export async function generateAllGearImage(user: KlasaUser) {
 		? hexColor
 			? hexColor
 			: 'transparent'
-		: ctx.createPattern(bgSprite.repeatableBg, 'repeat');
+		: ctx.createPattern(bgSprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	if (!hasBgSprite) {
@@ -412,5 +412,5 @@ export async function generateAllGearImage(user: KlasaUser) {
 
 	if (!userBg.transparent) bankTask?.drawBorder(ctx, bgSprite, false);
 
-	return canvas.toBuffer();
+	return canvas.toBuffer('png');
 }

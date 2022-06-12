@@ -1,17 +1,15 @@
 /* eslint-disable prefer-destructuring */
-import { Image } from 'canvas';
-import { Canvas } from 'canvas-constructor';
 import { MessageAttachment } from 'discord.js';
 import { readFileSync } from 'fs';
-import jimp from 'jimp';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Canvas, Image } from 'skia-canvas/lib';
 
 import { Events, PerkTier } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsername } from '../../lib/util';
-import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
+import { canvasImageFromBuffer, drawCircle } from '../../lib/util/canvasUtil';
 import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 const _mapImage = readFileSync('./src/lib/resources/images/megaduckmap.png');
@@ -85,23 +83,23 @@ export default class extends BotCommand {
 		const mapImage = await canvasImageFromBuffer(_mapImage);
 
 		const canvas = new Canvas(mapImage.width, mapImage.height);
-		canvas.context.imageSmoothingEnabled = false;
-		canvas.addImage(mapImage as any, 0, 0);
+		const ctx = canvas.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
+		ctx.drawImage(mapImage, 0, 0);
 
 		const locations: { loc: MegaDuckLocation; steps: [number, number][] }[] = await this.client
 			.query(`SELECT mega_duck_location as loc
 FROM guilds
 WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 		for (const { loc } of locations) {
-			canvas.setColor('rgba(255,0,0,0.5)');
-			canvas.addCircle(loc.x, loc.y, 10);
-			canvas.setColor('rgba(0,0,255,0.25)');
+			drawCircle(ctx, loc.x, loc.y, 10);
+			ctx.fillStyle = 'rgba(0,0,255,0.25)';
 			for (const [x, y] of loc.steps || []) {
-				canvas.addRect(x, y, 1, 1);
+				ctx.fillRect(x, y, 1, 1);
 			}
 		}
 
-		return canvas.toBufferAsync();
+		return canvas.toBuffer('png');
 	}
 
 	async makeImage(location: MegaDuckLocation) {
@@ -115,36 +113,40 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 		const centerPosition = Math.floor(canvasSize / 2 / scale);
 
 		const canvas = new Canvas(canvasSize, canvasSize);
-		canvas.context.imageSmoothingEnabled = false;
+		const ctx = canvas.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
 
-		const image = await canvas
-			.scale(scale, scale)
-			.addImage(mapImage as any, 0 - x + centerPosition, 0 - y + centerPosition);
+		ctx.scale(scale, scale);
+		ctx.drawImage(mapImage, 0 - x + centerPosition, 0 - y + centerPosition);
 
 		// image.addImage(noMoveImage as any, 0 - x + centerPosition, 0 - y + centerPosition);
 
-		image.setTextFont('14px Arial').setColor('#ffff00').addRect(centerPosition, centerPosition, 1, 1);
+		ctx.font = '14px Arial';
+		ctx.fillStyle = '#ffff00';
+		ctx.fillRect(centerPosition, centerPosition, 1, 1);
 
-		const noMoveCanvas = new Canvas(noMoveImage.width, noMoveImage.height).addImage(noMoveImage as any, 0, 0);
+		const noMoveCanvas = new Canvas(noMoveImage.width, noMoveImage.height);
+		const noMoveCanvasCtx = noMoveCanvas.getContext('2d');
+		noMoveCanvasCtx.drawImage(noMoveImage, 0, 0);
 
 		const currentColor = this.getPixel(
 			x,
 			y,
-			noMoveCanvas.context.getImageData(0, 0, noMoveCanvas.canvas.width, noMoveCanvas.canvas.height).data,
-			noMoveCanvas.canvas.width
+			noMoveCanvasCtx.getImageData(0, 0, noMoveCanvasCtx.canvas.width, noMoveCanvasCtx.canvas.height).data,
+			noMoveCanvas.width
 		);
 
-		image.setColor('rgba(0,0,255,0.25)');
+		ctx.fillStyle = 'rgba(0,0,255,0.25)';
 		for (const [_xS, _yS] of steps) {
 			let xS = _xS - x + centerPosition;
 			let yS = _yS - y + centerPosition;
-			image.addRect(xS, yS, 1, 1);
+			ctx.fillRect(xS, yS, 1, 1);
 		}
 
-		const buffer = await image.toBufferAsync();
+		const buffer = await canvas.toBuffer('png');
 
 		return {
-			image: await (await jimp.read(buffer)).quality(65).getBufferAsync(jimp.MIME_JPEG),
+			image: buffer,
 			currentColor
 		};
 	}
