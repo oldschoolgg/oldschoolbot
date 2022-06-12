@@ -1,8 +1,8 @@
 import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
-import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
-import { notEmpty, uniqueArr } from 'e';
+import { MessageAttachment, MessageOptions, TextChannel, Util } from 'discord.js';
+import { notEmpty, randInt, sumArr, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
@@ -18,7 +18,6 @@ import {
 	Channel,
 	DISABLED_COMMANDS,
 	Emoji,
-	NEX_ID,
 	Roles,
 	SupportServer
 } from '../lib/constants';
@@ -28,13 +27,9 @@ import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } f
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { calculateNexDetails, nexGearStats } from '../lib/simulation/nex';
 import { BotCommand } from '../lib/structures/BotCommand';
 import {
-	asyncExec,
-	calcPerHour,
 	channelIsSendable,
-	cleanString,
 	convertBankToPerHourStats,
 	formatDuration,
 	getSupportGuild,
@@ -52,7 +47,6 @@ import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
@@ -259,34 +253,6 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
-			case 'nexsim': {
-				if (production) return;
-				let str =
-					'Simulating Nex kills with 2-10 team sizes, assuming each team member is a copy of your account.\n';
-				const user = await mahojiUsersSettingsFetch(msg.author.id);
-				const gearStats = nexGearStats(user);
-				const kc = msg.flagArgs.kc ?? (user.monsterScores as any)[NEX_ID];
-				(user.monsterScores as any)[NEX_ID] = kc;
-				str += `Offence[${gearStats.offence.toFixed(1)}] Defence[${gearStats.defence.toFixed(1)}] KC[${
-					(user.monsterScores as any)[NEX_ID]
-				}]\n\n`;
-				for (let i = 2; i < 10; i++) {
-					const res = calculateNexDetails({ team: new Array(i).fill(user) });
-					str += `**${i}:** `;
-					if (!res.quantity) {
-						str += 'Died';
-					} else {
-						str += `${calcPerHour(res.quantity, res.duration).toFixed(1)}/hr (${
-							res.quantity
-						} kills in ${formatDuration(res.duration)} - ${formatDuration(
-							res.duration / res.quantity,
-							true
-						)} per kill)`;
-					}
-					str += '\n';
-				}
-				return msg.channel.send(str);
-			}
 			case 'ping': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || typeof input !== 'string') return;
@@ -378,36 +344,6 @@ export default class extends BotCommand {
 				if (typeof input !== 'string') return;
 				return itemSearch(msg, input);
 			}
-			case 'pingtesters': {
-				if (!msg.guild || msg.guild.id !== SupportServer) return;
-				if (
-					!msg.guild ||
-					msg.channel.id !== Channel.TestingMain ||
-					!msg.member ||
-					(!msg.member.roles.cache.has(Roles.Moderator) && !msg.member.roles.cache.has(Roles.Contributor))
-				) {
-					return;
-				}
-				return msg.channel.send(`<@&${Roles.Testers}>`);
-			}
-			case 'git': {
-				try {
-					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
-						timeout: 30
-					});
-					const rawStr = currentCommit.stdout.trim();
-					const [commitHash, ...commentArr] = rawStr.split(' ');
-					return msg.channel.send({
-						embeds: [
-							new MessageEmbed()
-								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...master)
-**Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
-						]
-					});
-				} catch {
-					return msg.channel.send('Failed to fetch git info.');
-				}
-			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
 				const item = getOSItem(input);
@@ -428,30 +364,6 @@ ${
 		? "You don't have this item equipped anywhere."
 		: `You have ${item.name} equipped in these setups: ${setupsWith.join(', ')}.`
 }`);
-			}
-			case 'issues': {
-				if (typeof input !== 'string' || input.length < 3 || input.length > 25) return;
-				const query = cleanString(input);
-
-				const searchURL = new URL('https://api.github.com/search/issues');
-
-				searchURL.search = new URLSearchParams([
-					['q', ['repo:oldschoolgg/oldschoolbot', 'is:issue', 'is:open', query].join(' ')]
-				]).toString();
-				const { items } = (await fetch(searchURL.toString()).then(res => res.json())) as Record<string, any>;
-				if (items.length === 0) return msg.channel.send('No results found.');
-				return msg.channel.send({
-					embeds: [
-						new MessageEmbed()
-							.setTitle(`${items.length} Github issues found from your search`)
-							.setDescription(
-								items
-									.slice(0, 10)
-									.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
-									.join('\n')
-							)
-					]
-				});
 			}
 		}
 
@@ -949,6 +861,15 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				});
 				return msg.channel.send('Locally synced slash commands.');
 			}
+			case 'globalcommandnuke': {
+				await msg.channel.send('Syncing commands...');
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: [],
+					guildID: null
+				});
+				return msg.channel.send('Globally nuked slash commands.');
+			}
 			case 'globalmahojisync': {
 				await msg.channel.send('Syncing commands...');
 				await bulkUpdateCommands({
@@ -982,6 +903,36 @@ ORDER BY qty DESC;`);
 						.map(u => `${u.username}: ${u.qty} commands`)
 						.join('\n')
 				);
+			}
+			case 'bitest': {
+				const times = [];
+				let amount = 100;
+
+				const bank = new Bank();
+				while (bank.length < 1000) bank.add(Items.random().id, randInt(1, 100));
+				for (let i = 0; i < amount; i++) {
+					let start = Date.now();
+					await (globalClient.tasks.get('bankImage') as BankImageTask).generateBankImage(
+						bank,
+						'Title',
+						false,
+						{
+							full: 'full'
+						},
+						msg.author,
+						undefined
+					);
+					let finish = Date.now();
+					times.push(finish - start);
+				}
+				times.sort((a, b) => b - a);
+				let average = sumArr(times) / times.length;
+				let max = times[0];
+				let min = times[times.length - 1];
+				return msg.channel.send(`Generated ${amount} bank images
+**Average:** ${average}ms
+**Max:** ${max}ms
+**Min:** ${min}ms`);
 			}
 		}
 	}

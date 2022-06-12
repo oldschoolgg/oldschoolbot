@@ -18,7 +18,6 @@ export const buildCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Sends your minion to train Construction by building things.',
 		examples: ['/build name:Crude chair']
 	},
 	options: [

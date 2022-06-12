@@ -213,8 +213,7 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 }
 
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
-	leader: string;
-	users: string[];
+	method: 'solo' | 'mass';
 	quantity: number;
 	isPhosani?: boolean;
 }
@@ -302,6 +301,12 @@ export interface TokkulShopOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {
+	quantity: number;
+	impling: string;
+	darkLure: boolean;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
@@ -322,4 +327,5 @@ export type ActivityTaskData =
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
+	| PuroPuroActivityTaskOptions
 	| KourendFavourActivityTaskOptions;

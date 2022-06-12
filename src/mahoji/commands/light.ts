@@ -16,7 +16,6 @@ export const lightCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Light logs to train Firemaking.',
 		examples: ['/light name:Logs']
 	},
 	options: [

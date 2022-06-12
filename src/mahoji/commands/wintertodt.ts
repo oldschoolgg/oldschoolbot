@@ -8,20 +8,19 @@ import { warmGear } from '../../lib/data/filterables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, bankHasItem, formatDuration } from '../../lib/util';
+import { bankHasItem, formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const wintertodtCommand: OSBMahojiCommand = {
 	name: 'wintertodt',
-	description: 'Sends your minion to do Wintertodt.',
+	description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
 	attributes: {
 		altProtection: true,
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
 		requiredPermissionsForBot: ['ATTACH_FILES'],
 		categoryFlags: ['minion', 'skilling', 'minigame'],
-		description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
 		examples: ['/wintertodt']
 	},
 	options: [],
@@ -84,13 +83,10 @@ export const wintertodtCommand: OSBMahojiCommand = {
 			await user.removeItemsFromBank(new Bank().add(food.id, amountNeeded));
 
 			// Track this food cost in Economy Stats
-			await globalClient.settings.update(
+			await updateBankSetting(
+				globalClient,
 				ClientSettings.EconomyStats.WintertodtCost,
-				addItemToBank(
-					globalClient.settings.get(ClientSettings.EconomyStats.WintertodtCost),
-					food.id,
-					amountNeeded
-				)
+				new Bank().add(food.id, amountNeeded)
 			);
 
 			break;
