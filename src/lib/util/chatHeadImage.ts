@@ -2,7 +2,7 @@ import { MessageAttachment } from 'discord.js';
 import * as fs from 'fs';
 import { Canvas } from 'skia-canvas/lib';
 
-import { canvasImageFromBuffer } from './canvasUtil';
+import { canvasImageFromBuffer, printWrappedText } from './canvasUtil';
 
 export const textBoxFile = fs.readFileSync('./src/lib/resources/images/textbox.png');
 const mejJalChatHead = fs.readFileSync('./src/lib/resources/images/mejJal.png');
@@ -50,9 +50,8 @@ export async function newChatHeadImage({ content, head }: { content: string; hea
 	ctx.fillStyle = '#810303';
 	const nameWidth = Math.floor(ctx.measureText(names[head]).width);
 	ctx.fillText(names[head], 307 - nameWidth / 2, 36);
-	ctx.textWrap = true;
 	ctx.fillStyle = '#000';
-	ctx.fillText(content, 307, 58, 361); // .addMultilineText(content 361, 18)
+	printWrappedText(ctx, content, 316, 58, 361);
 
 	return canvas.toBuffer('png');
 }

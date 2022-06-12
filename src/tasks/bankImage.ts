@@ -417,7 +417,6 @@ export default class BankImageTask extends Task {
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
 			const itemImage = await this.getItemImage(item.id);
-			console.log(itemImage);
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 			const isNewCLItem =
@@ -445,8 +444,8 @@ export default class BankImageTask extends Task {
 			}
 
 			// Do not draw the item qty if there is 0 of that item in the bank
-			if (quantity) {
-				if (ctx.font !== font) ctx.font = font;
+			if (quantity !== 0) {
+				ctx.font = font;
 				// Check if new cl item
 				const quantityColor = isNewCLItem ? '#ac7fff' : generateHexColorForCashStack(quantity);
 				const formattedQuantity = formatItemStackQuantity(quantity);
@@ -667,23 +666,6 @@ export default class BankImageTask extends Task {
 		ctx.imageSmoothingEnabled = false;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		this.drawItems(ctx, compact, spacer, itemsPerRow, itemWidthSize, items, flags, currentCL);
-
-		// const h = canvas.height;
-		// const w = canvas.width;
-		// let quad: QuadOrRect = [
-		// 	w * 0.33,
-		// 	h / 2, // upper left
-		// 	w * 0.66,
-		// 	h / 2, // upper right
-		// 	w,
-		// 	h * 0.9, // bottom right
-		// 	0,
-		// 	h * 0.9 // bottom left
-		// ];
-
-		// let matrix = ctx.createProjection(quad, [w / 2, h / 2]); // use default basis
-		// ctx.setTransform(matrix);
 
 		if (!isTransparent) {
 			ctx.fillStyle = ctx.createPattern(bgSprite.repeatableBg, 'repeat')!;
@@ -724,7 +706,8 @@ export default class BankImageTask extends Task {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
-		ctx.drawImage(await this.getItemImage(0), 10, 10);
+		await this.drawItems(ctx, compact, spacer, itemsPerRow, itemWidthSize, items, flags, currentCL);
+
 		const image = await canvas.toBuffer('png');
 
 		return {
