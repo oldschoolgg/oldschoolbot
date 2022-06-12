@@ -419,7 +419,6 @@ export default class BankImageTask extends Task {
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
-			// ctx.globalAlpha = 1;
 			if (isNewCLItem) {
 				drawImageWithOutline(
 					ctx,
