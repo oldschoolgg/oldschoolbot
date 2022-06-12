@@ -287,7 +287,6 @@ export default class BankImageTask extends Task {
 		if (cachedImage) return cachedImage;
 
 		const isOnDisk = this.itemIconsList.has(itemID);
-
 		if (!isOnDisk) {
 			await this.fetchAndCacheImage(itemID);
 			return this.getItemImage(itemID);
@@ -420,8 +419,7 @@ export default class BankImageTask extends Task {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
-			const itemImage = await (this.getItemImage(item.id) ?? this.getItemImage(0))!;
-
+			const itemImage = (await this.getItemImage(item.id)) ?? this.itemIconImagesCache.get(0)!;
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 			const isNewCLItem =
@@ -729,6 +727,7 @@ export default class BankImageTask extends Task {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
+
 		const image = await canvas.toBuffer('png');
 
 		return {

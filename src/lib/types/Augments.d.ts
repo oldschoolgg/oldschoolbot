@@ -2,7 +2,6 @@ import { activity_type_enum } from '@prisma/client';
 import { FSWatcher } from 'chokidar';
 import { MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
 import { Image } from 'skia-canvas/lib';
@@ -10,7 +9,6 @@ import { CommentStream, SubmissionStream } from 'snoostorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { BankImageResult } from '../../tasks/bankImage';
-import { CollectionLogType } from '../../tasks/collectionLogTask';
 import { BitField, PerkTier } from '../constants';
 import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
