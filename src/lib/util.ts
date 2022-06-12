@@ -794,30 +794,32 @@ export async function asyncGzip(buffer: Buffer) {
 	});
 }
 
-export function skillingPetChance(
+export function skillingPetDropRate(
 	user: User | KlasaUser,
 	skill: SkillsEnum,
 	tableOrBaseDropRate: LootTable | number,
 	itemName?: string
 ): LootTable | number {
-	const twoMillXP =
+	const twoHundredMillXP =
 		user instanceof KlasaUser
 			? (user.settings.get(`skills.${skill}`) as number) >= 200_000_000
 			: (getSkillsOfMahojiUser(user)[skill] as number) >= 200_000_000;
 	const skillLevel = user instanceof KlasaUser ? user.skillLevel(skill) : getSkillsOfMahojiUser(user, true)[skill];
-	const twoMillPetMulti = twoMillXP ? 15 : 1;
+	const petRateDivisor = twoHundredMillXP ? 15 : 1;
 	if (tableOrBaseDropRate instanceof LootTable) {
 		if (!itemName || !Items.find(e => e.id === itemID(itemName))) return tableOrBaseDropRate;
 		const newLootTable = tableOrBaseDropRate.clone();
-		const skillingPetEntry = newLootTable.tertiaryItems.find(e => e.item === itemID(itemName));
-		if (!skillingPetEntry) return tableOrBaseDropRate;
-		skillingPetEntry.chance = Math.floor((skillingPetEntry.chance - skillLevel * 25) / twoMillPetMulti);
+		const skillingPetEntryRaw = newLootTable.tertiaryItems.find(e => e.item === itemID(itemName));
+		if (!skillingPetEntryRaw) return tableOrBaseDropRate;
+		// Clone because the entries on each LootTable->subTable aren't deepcloned by LootTable.clone()
+		const skillingPetEntry = { ...skillingPetEntryRaw };
+		skillingPetEntry.chance = Math.floor((skillingPetEntry.chance - skillLevel * 25) / petRateDivisor);
 		newLootTable.tertiaryItems = [
 			...newLootTable.tertiaryItems.filter(e => e.item !== itemID(itemName)),
 			skillingPetEntry
 		];
 		return newLootTable;
 	}
-	const dropRate = Math.floor((tableOrBaseDropRate - skillLevel * 25) / twoMillPetMulti);
+	const dropRate = Math.floor((tableOrBaseDropRate - skillLevel * 25) / petRateDivisor);
 	return dropRate;
 }
