@@ -5,7 +5,7 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { toKMB } from 'oldschooljs/dist/util/util';
 import * as path from 'path';
-import { Canvas, CanvasRenderingContext2D, FontLibrary, Image } from 'skia-canvas/lib';
+import { Canvas, CanvasRenderingContext2D, FontLibrary, Image, loadImage } from 'skia-canvas/lib';
 
 import { bankImageCache, BitField, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
@@ -17,13 +17,12 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import {
 	addArrayOfNumbers,
-	assert,
 	cleanString,
 	formatItemStackQuantity,
 	generateHexColorForCashStack,
 	sha256Hash
 } from '../lib/util';
-import { canvasImageFromBuffer, drawImageWithOutline, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
+import { drawImageWithOutline, fillTextXTimesInCtx } from '../lib/util/canvasUtil';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import itemID from '../lib/util/itemID';
 import { logError } from '../lib/util/logError';
@@ -219,7 +218,7 @@ export default class BankImageTask extends Task {
 			if (err) throw 'Could not load sprite files';
 			for (const file of files) {
 				const bgName = file.split('\\').pop()!.split('/').pop()!.split('.').shift()!;
-				this._bgSpriteData = await canvasImageFromBuffer(fs.readFileSync(basePath + file));
+				this._bgSpriteData = await loadImage(fs.readFileSync(basePath + file));
 				this.bgSpriteList[bgName] = {
 					border: this.getClippedRegion(this._bgSpriteData, 0, 0, 18, 6),
 					borderCorner: this.getClippedRegion(this._bgSpriteData, 19, 0, 6, 6),
@@ -244,10 +243,10 @@ export default class BankImageTask extends Task {
 					: null;
 				return {
 					...img,
-					image: fs.existsSync(bgPath) ? await canvasImageFromBuffer(fs.readFileSync(bgPath)) : null,
+					image: fs.existsSync(bgPath) ? await loadImage(fs.readFileSync(bgPath)) : null,
 					purpleImage: purplePath
 						? fs.existsSync(purplePath)
-							? await canvasImageFromBuffer(fs.readFileSync(purplePath))
+							? await loadImage(fs.readFileSync(purplePath))
 							: null
 						: null
 				};
@@ -278,8 +277,8 @@ export default class BankImageTask extends Task {
 		for (const fileName of filesInDir) {
 			this.itemIconsList.add(parseInt(path.parse(fileName).name));
 		}
-		const img = await this.getItemImage(0);
-		assert(img instanceof Image);
+		// const img = await this.getItemImage(0);
+		// assert(img instanceof Image);
 	}
 
 	async getItemImage(itemID: number): Promise<Image> {
@@ -295,9 +294,9 @@ export default class BankImageTask extends Task {
 		if (!cachedImage) {
 			const imageBuffer = await fs.promises.readFile(path.join(CACHE_DIR, `${itemID}.png`));
 			try {
-				const image = await canvasImageFromBuffer(imageBuffer);
+				const image = await loadImage(imageBuffer);
 				this.itemIconImagesCache.set(itemID, image);
-				return this.getItemImage(itemID);
+				return image;
 			} catch (err) {
 				logError(`Failed to load item icon with id: ${itemID}`);
 				return this.getItemImage(1);
@@ -314,7 +313,7 @@ export default class BankImageTask extends Task {
 
 		await fs.promises.writeFile(path.join(CACHE_DIR, `${itemID}.png`), imageBuffer);
 
-		const image = await canvasImageFromBuffer(imageBuffer);
+		const image = await loadImage(imageBuffer);
 
 		this.itemIconsList.add(itemID);
 		this.itemIconImagesCache.set(itemID, image);
@@ -727,7 +726,7 @@ export default class BankImageTask extends Task {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
-
+		ctx.drawImage(await this.getItemImage(0), 10, 10);
 		const image = await canvas.toBuffer('png');
 
 		return {
