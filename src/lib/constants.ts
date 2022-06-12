@@ -228,6 +228,7 @@ export const enum Tasks {
 	TokkulShop = 'tokkulShopActivity',
 	Nex = 'nexActivity',
 	TroubleBrewing = 'troubleBrewingActivity',
+	PuroPuro = 'puroPuroActivity',
 	REMOVED = '__REMOVED__'
 }
 

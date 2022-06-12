@@ -38,7 +38,7 @@ export const implings: Record<number, { level: number }> = {
 	[LuckyImpling.id]: { level: 89 }
 };
 
-const defaultImpTable = new LootTable()
+export const defaultImpTable = new LootTable()
 	.add('Baby impling jar', 1, 66)
 	.add('Young impling jar', 1, 55)
 	.add('Gourmet impling jar', 1, 48)
@@ -63,6 +63,7 @@ export function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions
 			'Inferno',
 			'Christmas',
 			'TheatreOfBlood',
+			activity_type_enum.PuroPuro,
 			activity_type_enum.BarbarianAssault,
 			activity_type_enum.CastleWars,
 			activity_type_enum.LastManStanding,

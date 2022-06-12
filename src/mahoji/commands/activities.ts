@@ -22,6 +22,7 @@ import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
@@ -312,6 +313,34 @@ export const activitiesCommand: OSBMahojiCommand = {
 					min_value: 1
 				}
 			]
+		},
+
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'puro_puro',
+			description: 'Hunt implings in Puro-Puro.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'impling',
+					description: 'The impling you want to hunt',
+					required: true,
+					choices: [
+						{
+							name: 'All Implings',
+							value: 'All'
+						},
+						{
+							name: 'Dragon Implings',
+							value: 'Dragon'
+						},
+						{
+							name: 'Ecelectic Implings',
+							value: 'Eclectic'
+						}
+					]
+				}
+			]
 		}
 	],
 	run: async ({
@@ -335,6 +364,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
+		puro_puro?: { name: string };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -409,6 +439,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.bury) {
 			return buryCommand(klasaUser, channelID, options.bury.name, options.bury.quantity);
+		}
+		if (options.puro_puro) {
+			return puroPuroStartCommand(klasaUser, channelID, options.puro_puro.name);
 		}
 
 		return 'Invalid command.';
