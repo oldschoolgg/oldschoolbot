@@ -15,6 +15,7 @@ import { Dwarven } from './Dwarven';
 import { EnsouledHeads } from './EnsouledHeads';
 import { Food } from './Food';
 import { Gems } from './Gems';
+import { Gilded } from './Gilded';
 import { Glass } from './Glass';
 import { Halberd } from './Halberd';
 import { Hasta } from './Hasta';
@@ -101,7 +102,8 @@ export const DisassemblyGroupMap = {
 	Pious,
 	EnsouledHeads,
 	RawFood,
-	MysteryBoxes
+	MysteryBoxes,
+	Gilded
 } as const;
 
 export const DisassemblySourceGroups = Object.values(DisassemblyGroupMap);

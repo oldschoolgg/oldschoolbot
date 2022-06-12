@@ -343,6 +343,12 @@ export const materialBoosts: Map<MaterialType, { outputMulitplier?: number; redu
 		{
 			outputMulitplier: 1000
 		}
+	],
+	[
+		'gilded',
+		{
+			outputMulitplier: 400
+		}
 	]
 ]);
 

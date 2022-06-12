@@ -26,10 +26,6 @@ export const RangedArmour: DisassemblySourceGroup = {
 		{ item: i('Frog-leather chaps'), lvl: 25 },
 		{ item: i('Snakeskin body'), lvl: 30 },
 		{ item: i('Snakeskin chaps'), lvl: 30 },
-		{
-			item: i('Armadyl robe top'),
-			lvl: 40
-		},
 		{ item: i('Spined body'), lvl: 50 },
 		{
 			item: ["Green d'hide vambraces"].map(i),
@@ -60,16 +56,8 @@ export const RangedArmour: DisassemblySourceGroup = {
 		{ item: ["Black d'hide body", "Black d'hide body (g)", "Black d'hide body (t)"].map(i), lvl: 84 },
 
 		{ item: i("Morrigan's leather body"), lvl: 78 },
-		{
-			item: i('Ranger boots'),
-			lvl: 40
-		},
 		{ item: i('Spined boots'), lvl: 50 },
 		{ item: i("Ava's accumulator"), lvl: 1 },
-		{
-			item: i('Armadyl cloak'),
-			lvl: 40
-		},
 		{ item: i('Leather boots'), lvl: 1 },
 		{ item: i('Leather gloves'), lvl: 1 },
 		{ item: i('Leather vambraces'), lvl: 1 },
@@ -85,26 +73,6 @@ export const RangedArmour: DisassemblySourceGroup = {
 		{ item: i('Black spiky vambraces'), lvl: 60 },
 		{ item: i('Leather cowl'), lvl: 1 },
 		{ item: i('Snakeskin bandana'), lvl: 30 },
-		{
-			item: i('Armadyl mitre'),
-			lvl: 40
-		},
-		{
-			item: i('Guthix mitre'),
-			lvl: 40
-		},
-		{
-			item: i('Robin hood hat'),
-			lvl: 40
-		},
-		{
-			item: i('Saradomin mitre'),
-			lvl: 40
-		},
-		{
-			item: i('Zamorak mitre'),
-			lvl: 40
-		},
 		{
 			item: i('Armadyl chestplate'),
 			lvl: 70
@@ -165,10 +133,6 @@ export const RangedArmour: DisassemblySourceGroup = {
 			lvl: 20
 		},
 		{
-			item: i('Armadyl robe legs'),
-			lvl: 40
-		},
-		{
 			item: i('Armadyl chainskirt'),
 			lvl: 70
 		},
@@ -177,6 +141,10 @@ export const RangedArmour: DisassemblySourceGroup = {
 			item: i('Elysian spirit shield'),
 			lvl: 75,
 			flags: new Set(['corporeal'])
+		},
+		{
+			item: ['Ranger boots', 'Robin hood hat'].map(i),
+			lvl: 99
 		},
 		{
 			item: [...pernixOutfit, ...brokenPernixOutfit].map(i),

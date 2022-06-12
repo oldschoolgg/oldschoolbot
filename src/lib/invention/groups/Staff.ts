@@ -27,27 +27,7 @@ export const Staff: DisassemblySourceGroup = {
 		{ item: i('Mystic mud staff'), lvl: 40 },
 		{ item: i('Mystic steam staff'), lvl: 40 },
 		{ item: i('Mystic water staff'), lvl: 40 },
-		{
-			item: i('Armadyl crozier'),
-			lvl: 60
-		},
-		{
-			item: i('Bandos crozier'),
-			lvl: 60
-		},
-		{
-			item: i('Guthix crozier'),
-			lvl: 60
-		},
-		{
-			item: i('Saradomin crozier'),
-			lvl: 60
-		},
 		{ item: i('Toktz-mej-tal'), lvl: 60 },
-		{
-			item: i('Zamorak crozier'),
-			lvl: 60
-		},
 		{ item: i('Lunar staff'), lvl: 65 },
 		{ item: i('Staff of light'), lvl: 75 },
 		{ item: i("Zuriel's staff"), lvl: 78 }

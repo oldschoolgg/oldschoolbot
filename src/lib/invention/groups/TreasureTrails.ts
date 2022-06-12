@@ -6,26 +6,26 @@ const i = getOSItem;
 export const TreasureTrails: DisassemblySourceGroup = {
 	name: 'Treasure Trails',
 	items: [
-		{ item: i('Clue scroll (beginner)'), lvl: 1, flags: new Set(['treasure_trails']) },
-		{ item: i('Reward casket (beginner)'), lvl: 1, flags: new Set(['treasure_trails']) },
+		{ item: i('Clue scroll (beginner)'), lvl: 10 },
+		{ item: i('Reward casket (beginner)'), lvl: 15 },
 
-		{ item: i('Clue scroll (easy)'), lvl: 10, flags: new Set(['treasure_trails']) },
-		{ item: i('Reward casket (easy)'), lvl: 10, flags: new Set(['treasure_trails']) },
+		{ item: i('Clue scroll (easy)'), lvl: 30 },
+		{ item: i('Reward casket (easy)'), lvl: 35 },
 
-		{ item: i('Clue scroll (medium)'), lvl: 30, flags: new Set(['treasure_trails']) },
-		{ item: i('Reward casket (medium)'), lvl: 30, flags: new Set(['treasure_trails']) },
+		{ item: i('Clue scroll (medium)'), lvl: 50 },
+		{ item: i('Reward casket (medium)'), lvl: 55 },
 
-		{ item: i('Clue scroll (hard)'), lvl: 45, flags: new Set(['treasure_trails']) },
-		{ item: i('Reward casket (hard)'), lvl: 45, flags: new Set(['treasure_trails']) },
+		{ item: i('Clue scroll (hard)'), lvl: 80 },
+		{ item: i('Reward casket (hard)'), lvl: 85 },
 
-		{ item: i('Clue scroll (elite)'), lvl: 60, flags: new Set(['treasure_trails']) },
-		{ item: i('Reward casket (elite)'), lvl: 60, flags: new Set(['treasure_trails']) },
+		{ item: i('Clue scroll (elite)'), lvl: 90 },
+		{ item: i('Reward casket (elite)'), lvl: 95 },
 
-		{ item: i('Clue scroll (master)'), lvl: 80, flags: new Set(['treasure_trails']) },
-		{ item: i('Reward casket (master)'), lvl: 80, flags: new Set(['treasure_trails']) },
+		{ item: i('Clue scroll (master)'), lvl: 99 },
+		{ item: i('Reward casket (master)'), lvl: 99 },
 
-		{ item: i('Clue scroll (grandmaster)'), lvl: 99, flags: new Set(['treasure_trails']) },
-		{ item: i('Reward casket (grandmaster)'), lvl: 99, flags: new Set(['treasure_trails']) }
+		{ item: i('Clue scroll (grandmaster)'), lvl: 99 },
+		{ item: i('Reward casket (grandmaster)'), lvl: 99 }
 	],
 	parts: { treasured: 100 }
 };

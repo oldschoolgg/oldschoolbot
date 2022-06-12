@@ -46,7 +46,6 @@ export const Axes: DisassemblySourceGroup = {
 		{ item: i('Adamant axe'), lvl: 31 },
 		{ item: i('Rune axe'), lvl: 41 },
 		{ item: i('Rune battleaxe'), lvl: 50 },
-		{ item: i('Gilded axe'), lvl: 61 },
 		{ item: i('Dragon axe'), lvl: 61 },
 		{ item: i('Dragon thrownaxe'), lvl: 61 },
 		{ item: i('Crystal axe'), lvl: 61 },

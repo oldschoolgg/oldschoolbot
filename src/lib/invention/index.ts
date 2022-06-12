@@ -32,7 +32,8 @@ export const materialTypes = [
 	'abyssal',
 	'dwarven',
 	'treasured',
-	'drygore'
+	'drygore',
+	'gilded'
 ] as const;
 
 export type MaterialType = typeof materialTypes[number];

@@ -19,10 +19,53 @@ export const Pious: DisassemblySourceGroup = {
 			item: ['Holy blessing', 'War blessing', 'Unholy blessing', 'Peaceful blessing', 'Ancient blessing'].map(
 				getOSItem
 			),
-			lvl: 70
+			lvl: 70,
+			flags: new Set(['treasure_trails'])
 		},
 		{
 			item: [
+				// Mitre
+				'Saradomin mitre',
+				'Guthix mitre',
+				'Zamorak mitre',
+				'Armadyl mitre',
+				'Bandos mitre',
+				'Ancient mitre',
+				// Robe legs
+				'Saradomin robe legs',
+				'Guthix robe legs',
+				'Zamorak robe legs',
+				'Armadyl robe legs',
+				'Bandos robe legs',
+				'Ancient robe legs',
+				// Robe top
+				'Saradomin robe top',
+				'Guthix robe top',
+				'Zamorak robe top',
+				'Armadyl robe top',
+				'Bandos robe top',
+				'Ancient robe top',
+				// Crozier
+				'Saradomin crozier',
+				'Guthix crozier',
+				'Zamorak crozier',
+				'Armadyl crozier',
+				'Bandos crozier',
+				'Ancient crozier',
+				// Cloaks
+				'Saradomin cloak',
+				'Guthix cloak',
+				'Zamorak cloak',
+				'Armadyl cloak',
+				'Bandos cloak',
+				'Ancient cloak',
+				// Stoles
+				'Armadyl stole',
+				'Bandos stole',
+				'Guthix stole',
+				'Saradomin stole',
+				'Zamorak stole',
+				// Pages
 				'Zamorak page 1',
 				'Zamorak page 2',
 				'Zamorak page 3',
@@ -48,7 +91,8 @@ export const Pious: DisassemblySourceGroup = {
 				'Ancient page 3',
 				'Ancient page 4'
 			].map(getOSItem),
-			lvl: 70
+			lvl: 70,
+			flags: new Set(['treasure_trails'])
 		},
 		{
 			item: ['Holy sandals', 'Holy wraps'].map(getOSItem),

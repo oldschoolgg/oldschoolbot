@@ -337,38 +337,6 @@ export const Clothing: DisassemblySourceGroup = {
 			lvl: 1
 		},
 		{
-			item: i('Guthix robe legs'),
-			lvl: 20
-		},
-		{
-			item: i('Guthix robe top'),
-			lvl: 20
-		},
-		{
-			item: i('Saradomin robe legs'),
-			lvl: 20
-		},
-		{
-			item: i('Saradomin robe top'),
-			lvl: 20
-		},
-		{
-			item: i('Zamorak robe legs'),
-			lvl: 20
-		},
-		{
-			item: i('Zamorak robe top'),
-			lvl: 20
-		},
-		{
-			item: i('Guthix cloak'),
-			lvl: 40
-		},
-		{
-			item: i('Saradomin cloak'),
-			lvl: 40
-		},
-		{
 			item: [
 				'Swanky boots',
 				'Darkmeyer hood',
@@ -527,34 +495,10 @@ export const Clothing: DisassemblySourceGroup = {
 			lvl: 40
 		},
 		{ item: i('Spotted cape'), lvl: 40 },
-		{
-			item: i('Zamorak cloak'),
-			lvl: 40
-		},
 		{ item: i('Lumberjack boots'), lvl: 44 },
 		{ item: i('Lumberjack hat'), lvl: 44 },
 		{ item: i('Lumberjack legs'), lvl: 44 },
 		{ item: i('Lumberjack top'), lvl: 44 },
-		{
-			item: i('Armadyl stole'),
-			lvl: 60
-		},
-		{
-			item: i('Bandos stole'),
-			lvl: 60
-		},
-		{
-			item: i('Guthix stole'),
-			lvl: 60
-		},
-		{
-			item: i('Saradomin stole'),
-			lvl: 60
-		},
-		{
-			item: i('Zamorak stole'),
-			lvl: 60
-		},
 		{ item: i('Spottier cape'), lvl: 66 },
 		{
 			item: [

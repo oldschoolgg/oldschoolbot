@@ -55,10 +55,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Initiate cuisse'), lvl: 25 },
 		{ item: i('Initiate hauberk'), lvl: 25 },
 		{ item: i('Proselyte hauberk'), lvl: 30 },
-		{
-			item: i('Bandos robe top'),
-			lvl: 40
-		},
 		{ item: i('Fighter torso'), lvl: 50 },
 		{ item: i('Rock-shell plate'), lvl: 50 },
 		{
@@ -110,10 +106,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Rune chainbody'), lvl: 50 },
 		{ item: i('Rune platebody'), lvl: 50 },
 		{ item: i('Rune platelegs'), lvl: 50 },
-		{
-			item: i('Bandos cloak'),
-			lvl: 40
-		},
 		{ item: i('Penance gloves'), lvl: 40 },
 		{ item: i('Rock-shell gloves'), lvl: 50 },
 		{ item: i('Steel gauntlets'), lvl: 20 },
@@ -154,10 +146,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		},
 		{ item: i('Fremennik helm'), lvl: 30 },
 		{ item: i('Proselyte sallet'), lvl: 30 },
-		{
-			item: i('Bandos mitre'),
-			lvl: 40
-		},
 		{ item: i('Berserker helm'), lvl: 45 },
 		{ item: i('Warrior helm'), lvl: 45 },
 		{ item: i('Dwarven helmet'), lvl: 50 },
@@ -223,10 +211,6 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		},
 		{ item: i('Proselyte cuisse'), lvl: 30 },
 		{ item: i('Proselyte tasset'), lvl: 30 },
-		{
-			item: i('Bandos robe legs'),
-			lvl: 40
-		},
 		{ item: i('Rock-shell legs'), lvl: 50 },
 		{ item: i('Rune platelegs (g)'), lvl: 50 },
 		{ item: i('Rune platelegs (t)'), lvl: 50 },

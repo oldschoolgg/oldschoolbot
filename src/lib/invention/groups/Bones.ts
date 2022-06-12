@@ -32,5 +32,5 @@ export const Bones: DisassemblySourceGroup = {
 		{ item: i('Royal dragon bones'), lvl: 99 },
 		{ item: i('Abyssal dragon bones'), lvl: 99 }
 	],
-	parts: { pious: 2, organic: 98 }
+	parts: { pious: 50, organic: 50 }
 };

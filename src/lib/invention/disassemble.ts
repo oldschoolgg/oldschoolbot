@@ -392,7 +392,7 @@ ${xpStr}`;
 
 	const loot = new Bank();
 	const minutes = floor(data.duration / Time.Minute);
-	const cogsworthChancePerHour = 250;
+	const cogsworthChancePerHour = 100;
 	const chancePerMinute = cogsworthChancePerHour * 60;
 	for (let i = 0; i < minutes; i++) {
 		if (roll(chancePerMinute)) {

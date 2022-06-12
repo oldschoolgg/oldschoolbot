@@ -393,9 +393,10 @@ These Inventions are still not unlocked: ${locked
 						'XP/Hr With Toolkit&Cape'
 					]);
 
-					const lvls = [1, 10, 30, 60, 80, 90, 99];
+					const lvls = [1, 10, 30, 60, 80, 90, 99, 110, 120];
+					const weightings = [1, 10, 30, 60, 80, 90, 99];
 					for (const lvl of lvls) {
-						for (const weighting of lvls) {
+						for (const weighting of weightings) {
 							if (weighting > lvl) continue;
 							const { xp } = calculateDisXP(lvl, 1, weighting);
 							let dur = Time.Second * 0.33;
