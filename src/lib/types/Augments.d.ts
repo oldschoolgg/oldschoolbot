@@ -10,7 +10,6 @@ import { CommentStream, SubmissionStream } from 'snoostorm';
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { BankImageResult } from '../../tasks/bankImage';
 import { BitField, PerkTier } from '../constants';
-import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
 import { AddXpParams, Flags, KillableMonster } from '../minions/types';
@@ -29,7 +28,6 @@ type SendBankImageFn = (options: {
 	flags?: Record<string, string | number>;
 	user?: KlasaUser;
 	cl?: Bank;
-	gearPlaceholder?: Record<GearSetupType, GearSetup>;
 }) => Promise<KlasaMessage>;
 
 declare module 'klasa' {

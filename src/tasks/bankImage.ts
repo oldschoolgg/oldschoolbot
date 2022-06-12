@@ -277,8 +277,6 @@ export default class BankImageTask extends Task {
 		for (const fileName of filesInDir) {
 			this.itemIconsList.add(parseInt(path.parse(fileName).name));
 		}
-		// const img = await this.getItemImage(0);
-		// assert(img instanceof Image);
 	}
 
 	async getItemImage(itemID: number): Promise<Image> {
@@ -418,12 +416,13 @@ export default class BankImageTask extends Task {
 			// 36 + 21 is the itemLength + the space between each item
 			xLoc = 2 + 6 + (compact ? 9 : 20) + (i % itemsPerRow) * itemWidthSize;
 			let [item, quantity] = items[i];
-			const itemImage = (await this.getItemImage(item.id)) ?? this.itemIconImagesCache.get(0)!;
+			const itemImage = await this.getItemImage(item.id);
+			console.log(itemImage);
 			const itemHeight = compact ? itemImage.height / 1 : itemImage.height;
 			const itemWidth = compact ? itemImage.width / 1 : itemImage.width;
 			const isNewCLItem =
 				flags.has('showNewCL') && currentCL && !currentCL.has(item.id) && allCLItems.includes(item.id);
-
+			// ctx.globalAlpha = 1;
 			if (isNewCLItem) {
 				drawImageWithOutline(
 					ctx,
@@ -668,6 +667,7 @@ export default class BankImageTask extends Task {
 		ctx.imageSmoothingEnabled = false;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		this.drawItems(ctx, compact, spacer, itemsPerRow, itemWidthSize, items, flags, currentCL);
 
 		// const h = canvas.height;
 		// const w = canvas.width;
@@ -719,8 +719,6 @@ export default class BankImageTask extends Task {
 
 		ctx.fillStyle = '#ff981f';
 		fillTextXTimesInCtx(ctx, title, titleX, 21);
-
-		this.drawItems(ctx, compact, spacer, itemsPerRow, itemWidthSize, items, flags, currentCL);
 
 		// Skips border if noBorder is set
 		if (!isTransparent && noBorder !== 1) {
