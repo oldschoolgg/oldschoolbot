@@ -62,16 +62,13 @@ export function drawImageWithOutline(
 function printMultilineText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
 	const lines = text.split(/\r?\n/);
 
-	// If there are no new lines, return using printText
-	if (lines.length <= 1) return ctx.fillText(text, x, y);
-
 	let linePositionY = y;
 	for (const line of lines) {
 		let lineMeasured = ctx.measureText(line);
 		let thisX = Math.floor(x - lineMeasured.width / 2);
 		ctx.fillText(line, thisX, Math.floor(linePositionY));
 		let height = lineMeasured.actualBoundingBoxAscent + lineMeasured.actualBoundingBoxDescent;
-		linePositionY += height + 3;
+		linePositionY += height + 1;
 	}
 }
 

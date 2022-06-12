@@ -49,9 +49,9 @@ export async function newChatHeadImage({ content, head }: { content: string; hea
 
 	ctx.fillStyle = '#810303';
 	const nameWidth = Math.floor(ctx.measureText(names[head]).width);
-	ctx.fillText(names[head], 307 - nameWidth / 2, 36);
+	ctx.fillText(names[head], Math.floor(307 - nameWidth / 2), 36);
 	ctx.fillStyle = '#000';
-	printWrappedText(ctx, content, 316, 58, 361);
+	printWrappedText(ctx, content, 307, 58, 361);
 
 	return canvas.toBuffer('png');
 }
