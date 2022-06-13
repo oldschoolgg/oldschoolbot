@@ -7,7 +7,7 @@ import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { formatDuration, randomVariation, roll, skillingPetChance } from '../../../lib/util';
+import { formatDuration, randomVariation, roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
 
@@ -48,7 +48,7 @@ export default class extends Task {
 
 		// Roll for pet
 		for (let i = 0; i < ticketsReceived; i++) {
-			if (roll(skillingPetChance(user, SkillsEnum.Agility, 26_404) as number)) {
+			if (roll(skillingPetDropRate(user, SkillsEnum.Agility, 26_404) as number)) {
 				user.addItemsToBank({
 					items: new Bank().add('Giant Squirrel'),
 					collectionLog: true

@@ -6,7 +6,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
-import { roll, skillingPetChance } from '../../lib/util';
+import { roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -64,7 +64,7 @@ export default class extends Task {
 		// Roll for pet
 		if (
 			log.petChance &&
-			roll((skillingPetChance(user, SkillsEnum.Woodcutting, log.petChance) as number) / quantity)
+			roll((skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance) as number) / quantity)
 		) {
 			loot.add('Beaver');
 			str += "\n**You have a funny feeling you're being followed...**";

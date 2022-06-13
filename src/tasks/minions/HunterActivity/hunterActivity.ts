@@ -12,7 +12,7 @@ import { calcLootXPHunting, generateHerbiTable } from '../../../lib/skilling/fun
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, skillingPetChance, stringMatches, updateBankSetting } from '../../../lib/util';
+import { rand, roll, skillingPetDropRate, stringMatches, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
@@ -110,7 +110,7 @@ export default class extends Task {
 		if (creature.name.toLowerCase().includes('chinchompa')) {
 			babyChinChance =
 				creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
-			babyChinChance = skillingPetChance(user, SkillsEnum.Hunter, babyChinChance) as number;
+			babyChinChance = skillingPetDropRate(user, SkillsEnum.Hunter, babyChinChance) as number;
 		}
 
 		let creatureTable = creature.table;

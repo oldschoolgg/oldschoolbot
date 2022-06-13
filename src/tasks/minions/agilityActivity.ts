@@ -9,7 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, skillingPetChance, updateGPTrackSetting } from '../../lib/util';
+import { addItemToBank, skillingPetDropRate, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -99,7 +99,7 @@ export default class extends Task {
 		// Roll for pet
 		if (
 			course.petChance &&
-			roll((skillingPetChance(user, SkillsEnum.Agility, course.petChance) as number) / quantity)
+			roll((skillingPetDropRate(user, SkillsEnum.Agility, course.petChance) as number) / quantity)
 		) {
 			loot.add('Giant squirrel');
 			str += "\nYou have a funny feeling you're being followed...";

@@ -6,7 +6,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { SkillsEnum } from '../../skilling/types';
 import { ItemBank } from '../../types';
-import { rand, roll, skillingPetChance } from '../../util';
+import { rand, roll, skillingPetDropRate } from '../../util';
 
 const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 
@@ -125,7 +125,7 @@ export function lootRoom(user: KlasaUser | User, room: number): [ItemBank, numbe
 	const sceptreChance = 1000;
 	const roomObj = plunderRooms[room - 1];
 
-	if (roll(skillingPetChance(user, SkillsEnum.Thieving, roomObj.rockyChance) as number)) {
+	if (roll(skillingPetDropRate(user, SkillsEnum.Thieving, roomObj.rockyChance) as number)) {
 		loot.add('Rocky');
 	}
 

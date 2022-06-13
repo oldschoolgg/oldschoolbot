@@ -6,7 +6,7 @@ import { Events } from '../../lib/constants';
 import { darkAltarRunes } from '../../lib/minions/functions/darkAltarCommand';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { DarkAltarOptions } from '../../lib/types/minions';
-import { skillingPetChance } from '../../lib/util';
+import { skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -42,7 +42,7 @@ export default class extends Task {
 		let loot = new Bank().add(runeData.item.id, runeQuantity);
 
 		for (let i = 0; i < quantity; i++) {
-			if (roll(skillingPetChance(user, SkillsEnum.Runecraft, runeData.petChance) as number)) {
+			if (roll(skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance) as number)) {
 				loot.add('Rift guardian');
 			}
 		}

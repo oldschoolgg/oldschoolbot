@@ -5,7 +5,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { TitheFarmActivityTaskOptions } from '../../../lib/types/minions';
-import { bankHasItem, roll, skillingPetChance } from '../../../lib/util';
+import { bankHasItem, roll, skillingPetDropRate } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 
@@ -103,7 +103,7 @@ export default class extends Task {
 
 		const loot = new Bank();
 
-		if (roll((skillingPetChance(user, SkillsEnum.Farming, 7_494_389) as number) / determineHarvest)) {
+		if (roll((skillingPetDropRate(user, SkillsEnum.Farming, 7_494_389) as number) / determineHarvest)) {
 			loot.add('Tangleroot');
 			lootStr.push('\n\n```diff');
 			lootStr.push("\n- You have a funny feeling you're being followed...");

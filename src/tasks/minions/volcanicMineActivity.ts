@@ -7,7 +7,7 @@ import { incrementMinigameScore } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
-import { rand, skillingPetChance } from '../../lib/util';
+import { rand, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { VolcanicMineGameTime } from '../../mahoji/lib/abstracted_commands/volcanicMineCommand';
 
@@ -75,7 +75,7 @@ export default class extends Task {
 		// Iterate over the fragments received
 		for (let i = 0; i < fragmentRolls; i++) {
 			// Roll for pet --- Average 40 fragments per game at 60K chance per fragment
-			if (roll(skillingPetChance(user, SkillsEnum.Mining, 60_000) as number)) loot.add('Rock golem');
+			if (roll(skillingPetDropRate(user, SkillsEnum.Mining, 60_000) as number)) loot.add('Rock golem');
 		}
 
 		let str = `${user}, ${user.minionName} finished playing ${quantity} games of Volcanic Mine.\n${xpRes}${

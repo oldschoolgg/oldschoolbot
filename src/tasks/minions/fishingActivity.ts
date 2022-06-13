@@ -7,7 +7,7 @@ import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueTo
 import Fishing from '../../lib/skilling/skills/fishing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
-import { anglerBoostPercent, rand, roll, skillingPetChance } from '../../lib/util';
+import { anglerBoostPercent, rand, roll, skillingPetDropRate } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 
@@ -181,7 +181,7 @@ export default class extends Task {
 
 		// Roll for pet
 		if (fish.petChance) {
-			let chance = skillingPetChance(user, SkillsEnum.Fishing, fish.petChance) as number;
+			let chance = skillingPetDropRate(user, SkillsEnum.Fishing, fish.petChance) as number;
 			for (let i = 0; i < quantity; i++) {
 				if (roll(chance)) {
 					loot.add('Heron');
