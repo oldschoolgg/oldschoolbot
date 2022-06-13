@@ -31,6 +31,7 @@ patreonApiURL.search = new URLSearchParams([
 ]).toString();
 
 export const tiers: [PatronTierID, BitField][] = [
+	[PatronTierID.Six, BitField.IsPatronTier5],
 	[PatronTierID.Five, BitField.IsPatronTier5],
 	[PatronTierID.Four, BitField.IsPatronTier4],
 	[PatronTierID.Three, BitField.IsPatronTier3],
@@ -104,7 +105,7 @@ export default class PatreonTask extends Task {
 
 		const bitFieldToRemove = bitFieldFromPerkTier(from);
 		const bitFieldToAdd = bitFieldFromPerkTier(to);
-		const newBitfield = [...userBitfield, bitFieldToAdd].filter(i => i !== bitFieldToRemove);
+		const newBitfield = [...userBitfield.filter(i => i !== bitFieldToRemove), bitFieldToAdd];
 
 		// Remove any/all the patron bits from this user.
 		try {

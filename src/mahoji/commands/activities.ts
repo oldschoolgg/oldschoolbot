@@ -4,15 +4,21 @@ import { KourendFavours } from '../../lib/minions/data/kourendFavour';
 import { Planks } from '../../lib/minions/data/planks';
 import Potions from '../../lib/minions/data/potions';
 import birdhouses from '../../lib/skilling/skills/hunter/birdHouseTrapping';
+import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
+import Prayer from '../../lib/skilling/skills/prayer';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { minionName } from '../../lib/util/minionUtils';
+import { aerialFishingCommand } from '../lib/abstracted_commands/aerialFishingCommand';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '../lib/abstracted_commands/birdhousesCommand';
+import { buryCommand } from '../lib/abstracted_commands/buryCommand';
 import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
 import { chargeGloriesCommand } from '../lib/abstracted_commands/chargeGloriesCommand';
 import { chargeWealthCommand } from '../lib/abstracted_commands/chargeWealthCommand';
 import { chompyHuntClaimCommand, chompyHuntCommand } from '../lib/abstracted_commands/chompyHuntCommand';
 import { collectables, collectCommand } from '../lib/abstracted_commands/collectCommand';
 import { decantCommand } from '../lib/abstracted_commands/decantCommand';
+import { driftNetCommand } from '../lib/abstracted_commands/driftNetCommand';
+import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
@@ -231,6 +237,81 @@ export const activitiesCommand: OSBMahojiCommand = {
 					choices: birdhouses.map(i => ({ name: i.name, value: i.name }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'driftnet_fishing',
+			description: 'The Drift Net fishing activity.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'minutes',
+					description: 'How many minutes you want to do (optional).',
+					required: false,
+					min_value: 1
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'no_stams',
+					description: "Don't use stams?",
+					required: false
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'aerial_fishing',
+			description: 'The Aerial Fishing activity.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'enchant',
+			description: 'Enchant items, like jewellry and bolts.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The item you want to enchant.',
+					required: true,
+					autocomplete: async (value: string) => {
+						return Enchantables.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({ name: i.name, value: i.name }));
+					}
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you want to enchant.',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'bury',
+			description: 'Bury bones!',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The item you want to enchant.',
+					required: true,
+					autocomplete: async (value: string) => {
+						return Prayer.Bones.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({ name: i.name, value: i.name }));
+					}
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you want to bury.',
+					required: false,
+					min_value: 1
+				}
+			]
 		}
 	],
 	run: async ({
@@ -250,6 +331,10 @@ export const activitiesCommand: OSBMahojiCommand = {
 		fight_caves?: {};
 		inferno?: { action: string };
 		birdhouses?: { action?: string; birdhouse?: string };
+		driftnet_fishing?: { minutes?: number; no_stams?: boolean };
+		aerial_fishing?: {};
+		enchant?: { name: string; quantity?: number };
+		bury?: { name: string; quantity?: number };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -307,6 +392,23 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.fight_caves) {
 			return fightCavesCommand(klasaUser, channelID);
+		}
+		if (options.driftnet_fishing) {
+			return driftNetCommand(
+				channelID,
+				klasaUser,
+				options.driftnet_fishing.minutes,
+				options.driftnet_fishing.no_stams
+			);
+		}
+		if (options.aerial_fishing) {
+			return aerialFishingCommand(klasaUser, channelID);
+		}
+		if (options.enchant) {
+			return enchantCommand(klasaUser, channelID, options.enchant.name, options.enchant.quantity);
+		}
+		if (options.bury) {
+			return buryCommand(klasaUser, channelID, options.bury.name, options.bury.quantity);
 		}
 
 		return 'Invalid command.';

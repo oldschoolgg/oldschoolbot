@@ -62,6 +62,7 @@ import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { nexCommand } from './nexCommand';
+import { getPOH } from './pohCommand';
 import { revsCommand } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
 import { zalcanoCommand } from './zalcanoCommand';
@@ -175,7 +176,7 @@ export async function minionKillCommand(
 	if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
 	if (monster.pohBoosts) {
-		const [boostPercent, messages] = calcPOHBoosts(await user.getPOH(), monster.pohBoosts);
+		const [boostPercent, messages] = calcPOHBoosts(await getPOH(user.id), monster.pohBoosts);
 		if (boostPercent > 0) {
 			timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
 			boosts.push(messages.join(' + '));

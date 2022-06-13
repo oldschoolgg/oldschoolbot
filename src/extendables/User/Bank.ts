@@ -9,13 +9,7 @@ import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
-import {
-	bankHasAllItemsFromBank,
-	deduplicateClueScrolls,
-	itemNameFromID,
-	removeBankFromBank,
-	sanitizeBank
-} from '../../lib/util';
+import { bankHasAllItemsFromBank, deduplicateClueScrolls, itemNameFromID, sanitizeBank } from '../../lib/util';
 import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
@@ -70,8 +64,6 @@ export default class extends Extendable {
 				currentBank: user.bank()
 			});
 
-			sanitizeBank(loot);
-
 			const previousCL = user.cl();
 
 			const { bankLoot, clLoot } = filterLoot
@@ -93,9 +85,9 @@ export default class extends Extendable {
 				loot.remove('Coins', loot.amount('Coins'));
 			}
 
-			const newBank = user.bank().add(loot).bank;
-
-			await this.settings.update(UserSettings.Bank, newBank);
+			const newBank = user.bank().add(loot);
+			sanitizeBank(newBank);
+			await this.settings.update(UserSettings.Bank, newBank.bank);
 
 			// Re-add the coins to the loot
 			if (coinsInLoot > 0) loot.add('Coins', coinsInLoot);
@@ -109,35 +101,30 @@ export default class extends Extendable {
 
 	public async removeItemsFromBank(this: User, _itemBank: Readonly<ItemBank>) {
 		return this.queueFn(async user => {
-			const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
+			const itemBank = new Bank(_itemBank instanceof Bank ? { ..._itemBank.bank } : { ..._itemBank });
 
 			await user.settings.sync(true);
 
-			const currentBank = user.settings.get(UserSettings.Bank);
-			const GP = user.settings.get(UserSettings.GP);
-			if (!bankHasAllItemsFromBank({ ...currentBank, 995: GP }, itemBank)) {
+			const owned = this.bank({ withGP: true });
+			if (!owned.has(itemBank)) {
 				throw new Error(
-					`Tried to remove ${new Bank(itemBank)} from ${
-						user.username
-					} but failed because they don't own all these items.`
+					`Tried to remove ${itemBank} from ${user.username} but failed because they don't own all these items.`
 				);
 			}
 
-			const items = {
-				...itemBank
-			};
-
-			if (items[995]) {
+			if (itemBank.has('Coins')) {
 				await mahojiUserSettingsUpdate(this.id, {
 					GP: {
-						decrement: items[995]
+						decrement: itemBank.amount('Coins')
 					}
 				});
-				delete items[995];
+				itemBank.remove('Coins', itemBank.amount('Coins'));
 			}
-			if (Object.keys(items).length === 0) return;
 
-			return user.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items));
+			if (itemBank.length === 0) return;
+			const newBank = this.bank().remove(itemBank);
+			sanitizeBank(newBank);
+			return user.settings.update(UserSettings.Bank, newBank.bank);
 		});
 	}
 
