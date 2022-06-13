@@ -23,7 +23,11 @@ import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
+const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
+assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
+
 async function arcaneHarvesterEffect(user: KlasaUser, plant: Plant, loot: Bank): Promise<string | undefined> {
+	if (plantsNotUsedForArcaneHarvester.includes(plant)) return;
 	if (hasItemsEquippedOrInBank(user, ['Arcane harvester'])) {
 		const boostRes = await inventionItemBoost({
 			userID: BigInt(user.id),

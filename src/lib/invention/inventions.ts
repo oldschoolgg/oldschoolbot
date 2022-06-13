@@ -73,7 +73,7 @@ export const inventionBoosts = {
 			const minuteSegments = Math.floor(duration / Time.Minute);
 			return agilityLevel * 5 * minuteSegments;
 		},
-		agilitySpeedBoostPercent: 20
+		agilitySpeedBoostPercent: 25
 	},
 	superiorBonecrusher: {
 		xpBoostPercent: 25
@@ -83,26 +83,26 @@ export const inventionBoosts = {
 		speedBoostPercentMulti: 65
 	},
 	mechaMortar: {
-		herbloreSpeedBoostPercent: 35
+		herbloreSpeedBoostPercent: 45
 	},
 	quickTrap: {
-		boxTrapBoostPercent: 20
+		boxTrapBoostPercent: 25
 	},
 	arcaneHarvester: {
 		harvestBoostPercent: 15
 	},
 	drygoreSaw: {
-		buildBoostPercent: 25
+		buildBoostPercent: 40
 	},
 	dwarvenToolkit: {
 		disassembleBoostPercent: 35,
 		requiredLevel: 80
 	},
 	mechaRod: {
-		speedBoostPercent: 35
+		speedBoostPercent: 45
 	},
 	masterHammerAndChisel: {
-		speedBoostPercent: 35
+		speedBoostPercent: 45
 	},
 	inventionMasterCape: {
 		materialCostReductionPercent: 5,
@@ -125,7 +125,7 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: new Bank().add('Gorajan bonecrusher').freeze(),
 		inventionLevelNeeded: 70,
-		usageCostMultiplier: 1
+		usageCostMultiplier: 0.5
 	},
 	{
 		id: InventionID.SuperiorDwarfMultiCannon,
@@ -222,7 +222,7 @@ export const Inventions: readonly Invention[] = [
 			organic: 3,
 			magic: 5
 		}),
-		flags: ['equipped'],
+		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 110,
 		usageCostMultiplier: 0.8
@@ -268,7 +268,7 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 105,
-		usageCostMultiplier: 0.5
+		usageCostMultiplier: 0.3
 	},
 	{
 		id: InventionID.DwarvenToolkit,

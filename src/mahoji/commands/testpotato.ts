@@ -10,7 +10,16 @@ import { generateNewTame } from '../../commands/bso/nursery';
 import { production } from '../../config';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
 import { BitField, MAX_QP } from '../../lib/constants';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit,
+	pernixOutfit,
+	torvaOutfit,
+	virtusOutfit
+} from '../../lib/data/CollectionsExport';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
+import { dyedItems } from '../../lib/dyedItems';
 import { materialTypes } from '../../lib/invention';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
@@ -34,6 +43,7 @@ import {
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import resolveItems from '../../lib/util/resolveItems';
 import { tiers } from '../../tasks/patreon';
 import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
@@ -176,6 +186,26 @@ farmingPreset.add('Ultracompost', 10_000);
 const usables = new Bank();
 for (const usable of allUsableItems) usables.add(usable, 100);
 
+const bsoGear = new Bank();
+for (const i of [
+	...gorajanArcherOutfit,
+	...gorajanOccultOutfit,
+	...gorajanWarriorOutfit,
+	...torvaOutfit,
+	...virtusOutfit,
+	...pernixOutfit,
+	...dyedItems.map(i => i.baseItem.id),
+	...resolveItems([
+		'Ignis ring(i)',
+		'TzKal cape',
+		'Arcane blast necklace',
+		'Farsight snapshot necklace',
+		"Brawler's hook necklace"
+	])
+]) {
+	bsoGear.add(i);
+}
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
@@ -183,7 +213,8 @@ const spawnPresets = [
 	['farming', farmingPreset],
 
 	['baxtorian_bathhouse', baxBathBank],
-	['usables', usables]
+	['usables', usables],
+	['bsogear', bsoGear]
 ] as const;
 
 const nexSupplies = new Bank()
