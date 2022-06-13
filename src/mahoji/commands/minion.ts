@@ -1,7 +1,7 @@
 import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { MAX_LEVEL, PerkTier } from '../../lib/constants';
+import { BitField, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -100,10 +100,12 @@ export const minionCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'name',
 					description: 'The name of the bank background you want.',
-					autocomplete: async value => {
+					autocomplete: async (value, user) => {
+						const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+						const isMod = mahojiUser.bitfield.includes(BitField.isModerator);
 						const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;
 						return bankImages
-							.filter(bg => (!value ? true : bg.available))
+							.filter(bg => isMod || bg.available)
 							.filter(bg => (!value ? true : bg.name.toLowerCase().includes(value.toLowerCase())))
 							.map(i => {
 								const name = i.perkTierNeeded
