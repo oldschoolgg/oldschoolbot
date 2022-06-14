@@ -58,18 +58,17 @@ async function tameAutocomplete(value: string, user: APIUser) {
 	const tames = await prisma.tame.findMany({
 		where: {
 			user_id: user.id
-		},
-		select: {
-			id: true,
-			nickname: true,
-			species_id: true,
-			growth_stage: true
 		}
 	});
 	return tames
 		.map(t => {
-			const species = tameSpecies.find(i => i.id === t.species_id)!;
-			return { name: `${t.nickname ?? species.name} ${t.growth_stage}`, value: t.id.toString() };
+			const { relevantLevelCategory, name } = tameSpecies.find(i => i.id === t.species_id)!;
+			return {
+				name: `${t.nickname ?? name} (${t.growth_stage}, ${
+					t[`max_${relevantLevelCategory}_level`]
+				} ${toTitleCase(relevantLevelCategory)})`,
+				value: t.id.toString()
+			};
 		})
 		.filter(t => (!value ? true : t.name.toLowerCase().includes(value.toLowerCase())));
 }
