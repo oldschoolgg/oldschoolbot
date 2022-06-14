@@ -1,9 +1,8 @@
-import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
-import { MessageAttachment } from 'discord.js';
 import { objectEntries, randInt } from 'e';
 import * as fs from 'fs';
 import { Task } from 'klasa';
 import path from 'path';
+import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
 import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../lib/poh';
 import { getActivityOfUser } from '../lib/settings/settings';
@@ -54,7 +53,7 @@ export default class PoHImage extends Task {
 
 	generateCanvas(bgId: number): [Canvas, CanvasRenderingContext2D] {
 		const bgImage = this.bgImages[bgId - 1]!;
-		const canvas = createCanvas(bgImage.width, bgImage.height);
+		const canvas = new Canvas(bgImage.width, bgImage.height);
 
 		const ctx = canvas.getContext('2d');
 		ctx.imageSmoothingEnabled = false;
@@ -120,6 +119,6 @@ export default class PoHImage extends Task {
 			const [x, y] = this.randMinionCoords();
 			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
 		}
-		return new MessageAttachment(canvas.toBuffer('image/png'));
+		return canvas.toBuffer('png');
 	}
 }

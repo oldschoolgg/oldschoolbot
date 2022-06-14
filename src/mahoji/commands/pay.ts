@@ -6,7 +6,12 @@ import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { addToGPTaxBalance, toKMB } from '../../lib/util';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, MahojiUserOption } from '../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	mahojiParseNumber,
+	MahojiUserOption,
+	mahojiUsersSettingsFetch
+} from '../mahojiSettings';
 
 export const payCommand: OSBMahojiCommand = {
 	name: 'pay',
@@ -37,6 +42,8 @@ export const payCommand: OSBMahojiCommand = {
 		const user = await globalClient.fetchUser(userID.toString());
 		const recipient = await globalClient.fetchUser(options.user.user.id);
 		const amount = mahojiParseNumber({ input: options.amount, min: 1, max: 500_000_000_000 });
+		// Ensure the recipient's users row exists:
+		await mahojiUsersSettingsFetch(options.user.user.id);
 		if (!amount) return "That's not a valid amount.";
 		const GP = user.settings.get(UserSettings.GP);
 

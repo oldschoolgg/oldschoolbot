@@ -5,6 +5,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { NestBoxesTable } from '../../lib/simulation/misc';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { clamp, itemID as id, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 
@@ -42,6 +43,23 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [[bankToSell]]: [[Bank, number]]) {
+		if (bankToSell.has('mole claw') || bankToSell.has('mole skin')) {
+			const moleBank = new Bank();
+			if (bankToSell.has('Mole claw')) {
+				moleBank.add('Mole claw', bankToSell.amount('Mole claw'));
+			}
+			if (bankToSell.has('Mole skin')) {
+				moleBank.add('Mole skin', bankToSell.amount('Mole skin'));
+			}
+			const loot = new Bank();
+			for (let i = 0; i < moleBank.amount('Mole claw') + moleBank.amount('Mole skin'); i++) {
+				loot.add(NestBoxesTable.roll());
+			}
+			await msg.author.removeItemsFromBank(moleBank);
+			await msg.author.addItemsToBank({ items: loot, collectionLog: true });
+			return msg.channel.send(`You exchanged ${moleBank} and received: ${loot}.`);
+		}
+
 		let totalPrice = 0;
 		const taxRatePercent = 20;
 

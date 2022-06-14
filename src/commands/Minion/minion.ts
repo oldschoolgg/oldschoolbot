@@ -1,31 +1,24 @@
-import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { chunk, randArrItem, Time } from 'e';
+import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import {
 	BitField,
-	Color,
 	COMMAND_BECAME_SLASH_COMMAND_MESSAGE,
 	Emoji,
 	informationalButtons,
 	lastTripCache,
-	MAX_LEVEL,
-	MIMIC_MONSTER_ID,
 	PerkTier
 } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import minionIcons from '../../lib/minions/data/minionIcons';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { equipPet } from '../../lib/minions/functions/equipPet';
-import { pastActivities } from '../../lib/minions/functions/pastActivities';
 import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { unequipPet } from '../../lib/minions/functions/unequipPet';
@@ -33,11 +26,10 @@ import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertLVLtoXP, convertMahojiResponseToDJSResponse, isValidNickname, stringMatches } from '../../lib/util';
+import { convertMahojiResponseToDJSResponse } from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
@@ -73,15 +65,12 @@ const subCommands = [
 	'info',
 	'equippet',
 	'unequippet',
-	'autofarm',
 	'activities',
-	'af',
 	'ep',
 	'uep',
 	'lapcounts',
 	'cancel',
 	'train',
-	'unequipall',
 	'tempcl',
 	'blowpipe',
 	'bp',
@@ -110,7 +99,7 @@ export default class MinionCommand extends BotCommand {
 			getFarmingInfo(msg.author.id)
 		]);
 
-		const dynamicButtons = new DynamicButtons();
+		const dynamicButtons = new DynamicButtons({ channel: msg.channel, usersWhoCanInteract: [msg.author.id] });
 
 		dynamicButtons.add({
 			name: 'Auto Farm',
@@ -235,47 +224,10 @@ export default class MinionCommand extends BotCommand {
 			});
 		}
 
-		const sentMessage = await msg.channel.send({
-			content: `${msg.author.minionStatus}`,
-			components: dynamicButtons.render({ isBusy: msg.author.minionIsBusy })
+		dynamicButtons.render({
+			isBusy: msg.author.minionIsBusy,
+			messageOptions: { content: msg.author.minionStatus }
 		});
-		if (dynamicButtons.buttons.length > 0) {
-			const handleButtons = async () => {
-				try {
-					const selection = await sentMessage.awaitMessageComponentInteraction({
-						filter: i => {
-							if (i.user.id !== msg.author.id) {
-								i.reply({ ephemeral: true, content: 'This is not your confirmation message.' });
-								return false;
-							}
-							return true;
-						},
-						time: Time.Second * 15
-					});
-					await sentMessage.edit({ components: [] });
-					selection.deferUpdate();
-
-					for (const button of dynamicButtons.buttons) {
-						if (selection.customID === button.id) {
-							if (selection.user.minionIsBusy && button.cantBeBusy) {
-								return selection.reply({
-									content: `Your action couldn't be performed, because your minion is busy: ${msg.author.minionStatus}`,
-									ephemeral: true
-								});
-							}
-							return button.fn();
-						}
-					}
-				} catch {
-					await sentMessage.edit({ components: [] });
-				}
-			};
-			handleButtons();
-		}
-	}
-
-	async cancel(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion cancel'));
 	}
 
 	async train(msg: KlasaMessage, [input]: [string | undefined]) {
@@ -371,68 +323,12 @@ export default class MinionCommand extends BotCommand {
 		return equipPet(msg, input);
 	}
 
-	async af(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
+	async lvl(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion level'));
 	}
 
-	async autofarm(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(null, 'farming auto_farm'));
-	}
-
-	async activities(msg: KlasaMessage) {
-		return pastActivities(msg);
-	}
-
-	@requiresMinion
-	async lvl(msg: KlasaMessage, [input]: [string]) {
-		const values = Object.values(Skills);
-		const skill = values.find(s => stringMatches(s.name, input) || s.aliases.some(a => stringMatches(a, input)));
-		if (!skill) {
-			return msg.channel.send(
-				`That's not a valid skill. The valid skills are: ${values.map(v => v.name).join(', ')}.`
-			);
-		}
-		const level = msg.author.skillLevel(skill.id);
-		const currentXP = msg.author.settings.get(`skills.${skill.id}`) as number;
-		let str = `${skill.emoji} Your ${skill.name} level is **${level}** (${currentXP.toLocaleString()} XP).`;
-		if (level < MAX_LEVEL) {
-			const xpToLevel = convertLVLtoXP(level + 1) - currentXP;
-			str += ` ${xpToLevel.toLocaleString()} XP away from level ${level + 1}`;
-		}
-		return msg.channel.send(str);
-	}
-
-	@requiresMinion
-	async seticon(msg: KlasaMessage, [icon]: [string]) {
-		if (msg.author.perkTier < PerkTier.Four) {
-			return msg.channel.send("You need to be a Tier 3 Patron to change your minion's icon to a custom icon.");
-		}
-
-		if (!icon) {
-			await msg.confirm('Would you like to return to your default minion icon?');
-			const sacValue = msg.author.settings.get(UserSettings.SacrificedValue);
-			let icon = null;
-			for (const sacIcon of minionIcons) {
-				if (sacValue < sacIcon.valueRequired) continue;
-				if (sacValue >= sacIcon.valueRequired) {
-					icon = sacIcon.emoji;
-					break;
-				}
-			}
-			await msg.author.settings.update(UserSettings.Minion.Icon, icon);
-			return msg.channel.send(`Restored your minion icon to ${icon ?? Emoji.Minion}.`);
-		}
-
-		const res = FormattedCustomEmoji.exec(icon);
-		if (!res || !res[0]) {
-			return msg.channel.send("That's not a valid emoji.");
-		}
-
-		await msg.confirm('Icons cannot be inappropriate or NSFW. Do you understand?');
-
-		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
-
-		return msg.channel.send(`Changed your minion icon to ${res}.`);
+	async seticon(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_icon'));
 	}
 
 	@requiresMinion
@@ -563,44 +459,12 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion stats'));
 	}
 
-	@requiresMinion
 	async kc(msg: KlasaMessage) {
-		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
-		const entries = Object.entries(monsterScores);
-		if (entries.length === 0) throw `${msg.author.minionName} hasn't killed any monsters yet!`;
-
-		const embed = new MessageEmbed()
-			.setColor(Color.Orange)
-			.setTitle(`**${msg.author.minionName}'s KCs**`)
-			.setDescription(
-				`These are your minions Kill Counts for all monsters, to see your Clue Scores, use \`${msg.cmdPrefix}m clues\`.`
-			);
-
-		for (const monsterScoreChunk of chunk(entries, 10)) {
-			embed.addField(
-				'\u200b',
-				monsterScoreChunk
-					.map(([monID, monKC]) => {
-						if (parseInt(monID) === MIMIC_MONSTER_ID) {
-							return `${Emoji.Casket} **Mimic:** ${monKC}`;
-						}
-						const mon = effectiveMonsters.find(m => m.id === parseInt(monID));
-						if (!mon) return `**${Monsters.get(parseInt(monID))?.name}:** ${monKC}`;
-						return `${(mon as any)?.emoji ?? ''}**${mon!.name}**: ${monKC}`;
-					})
-					.join('\n'),
-				true
-			);
-		}
-
-		return msg.channel.send({ embeds: [embed] });
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion kc'));
 	}
 
-	@requiresMinion
 	async qp(msg: KlasaMessage) {
-		return msg.channel.send(
-			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(UserSettings.QP)}.`
-		);
+		return msg.channel.send('You can see your QP in `/minion stats`.');
 	}
 
 	@requiresMinion
@@ -643,14 +507,8 @@ Please click the buttons below for important links.`
 		});
 	}
 
-	@requiresMinion
-	async setname(msg: KlasaMessage, [name]: [string]) {
-		if (!isValidNickname(name)) {
-			return msg.channel.send("That's not a valid name for your minion.");
-		}
-
-		await msg.author.settings.update(UserSettings.Minion.Name, name);
-		return msg.channel.send(`Renamed your minion to ${msg.author.minionName}.`);
+	async setname(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_name'));
 	}
 
 	@requiresMinion
@@ -673,9 +531,5 @@ Please click the buttons below for important links.`
 	async opens(msg: KlasaMessage) {
 		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
 		return msg.channel.send(`You've opened... ${openableScores}`);
-	}
-
-	async unequipall(msg: KlasaMessage) {
-		return msg.channel.send('This has been moved to the `/gear unequip` slash command.');
 	}
 }
