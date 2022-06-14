@@ -227,25 +227,20 @@ declare module 'discord.js' {
 
 	interface TextChannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 
 	interface Newshannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 	interface ThreadChannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 
 	interface DMChannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 
 	interface NewsChannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 }
