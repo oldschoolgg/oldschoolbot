@@ -477,7 +477,7 @@ const Potions: Mixable[] = [
 	},
 	{
 		name: 'Sanfew serum(4)',
-		aliases: ['sanfew', 'sanfew serum'],
+		aliases: ['sanfew', 'sanfew serum', 'sanfew serum(4)'],
 		id: itemID('Sanfew serum(4)'),
 		level: 65,
 		xp: 192,

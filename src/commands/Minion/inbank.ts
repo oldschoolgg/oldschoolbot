@@ -1,7 +1,8 @@
-import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { convertMahojiResponseToDJSResponse } from '../../lib/util';
+import CollectionLogTask from '../../tasks/collectionLogTask';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -15,18 +16,12 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [collection]: [string]) {
-		await msg.author.settings.sync(true);
-
-		const result = await this.client.tasks.get('collectionLogTask')!.generateLogImage({
+		const result = await (this.client.tasks.get('collectionLogTask')! as CollectionLogTask).generateLogImage({
 			user: msg.author,
 			type: 'bank',
 			flags: msg.flagArgs,
 			collection
 		});
-
-		if (!(result instanceof MessageAttachment)) {
-			return msg.channel.send(result);
-		}
-		return msg.channel.send({ files: [result as MessageAttachment] });
+		return msg.channel.send(convertMahojiResponseToDJSResponse(result));
 	}
 }
