@@ -93,7 +93,15 @@ export default class extends Task {
 			`${user}, ${user.minionName} finished fighting ${quantity}x monkeys, your monkey tier is ${monkeyTier}. ${rumbleTokensPerHour} tokens/hr, ${fightsPerHour} fights/hr
 ${xpStr}
 You received **${loot}.**`,
-			['mmmr', [], true, 'start'],
+			[
+				'bsominigames',
+				{
+					monkey_rumble: {
+						start: {}
+					}
+				},
+				true
+			],
 			files[0],
 			data,
 			loot

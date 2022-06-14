@@ -70,6 +70,7 @@ import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { getPOH } from './pohCommand';
 import { revsCommand } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
+import { vasaCommand } from './vasaCommand';
 import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
@@ -147,6 +148,7 @@ export async function minionKillCommand(
 	}
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
+	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);

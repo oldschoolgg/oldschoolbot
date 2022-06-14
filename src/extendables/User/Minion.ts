@@ -6,7 +6,6 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { sotwConfig, sotwIsActive } from '../../commands/bso/sotw';
 import { bossEvents } from '../../lib/bossEvents';
 import {
 	Emoji,
@@ -850,9 +849,7 @@ export default class extends Extendable {
 			? allMasterCapes.find(cape => allCapes.includes(cape))
 			: undefined;
 
-		// When SOTW is active, don't give extra boosts to it
-		const isSkillThatShouldntGetExtraBoost = sotwIsActive() && sotwConfig.skill === params.skillName;
-		if (masterCape && !isSkillThatShouldntGetExtraBoost) {
+		if (masterCape) {
 			params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);
 		}
 		// Check if each gorajan set is equipped:
@@ -901,7 +898,7 @@ export default class extends Extendable {
 			}
 		}
 
-		if (firstAgeEquipped > 0 && !isSkillThatShouldntGetExtraBoost) {
+		if (firstAgeEquipped > 0) {
 			if (firstAgeEquipped === 5) {
 				params.amount = increaseNumByPercent(params.amount, 6);
 			} else {

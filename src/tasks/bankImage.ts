@@ -242,7 +242,7 @@ export default class BankImageTask extends Task {
 		const colors: Record<BGSpriteName, string> = {
 			default: '#655741',
 			dark: '#393939',
-			transparent: ''
+			transparent: 'rgba(0,0,0,0)'
 		};
 		// Init bank sprites
 		const basePath = './src/lib/resources/images/bank_backgrounds/spritesheet/';
