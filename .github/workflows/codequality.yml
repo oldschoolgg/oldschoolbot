@@ -57,4 +57,4 @@ jobs:
             - name: Generate Prisma Client
               run: npx prisma generate
             - name: Build code
-              run: yarn build:tsc
+              run: yarn build
