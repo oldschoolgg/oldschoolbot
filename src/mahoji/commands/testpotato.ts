@@ -18,7 +18,7 @@ import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
 import Farming from '../../lib/skilling/skills/farming';
 import { Gear } from '../../lib/structures/Gear';
-import { stringMatches } from '../../lib/util';
+import { assert, stringMatches } from '../../lib/util';
 import {
 	FarmingPatchName,
 	farmingPatchNames,
@@ -29,6 +29,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
 import { tiers } from '../../tasks/patreon';
+import { getPOH } from '../lib/abstracted_commands/pohCommand';
 import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -89,7 +90,7 @@ async function giveGear(user: KlasaUser) {
 	await user.settings.update(UserSettings.GP, 1_000_000_000);
 	await user.settings.update(UserSettings.Slayer.SlayerPoints, 100_000);
 
-	await user.getPOH();
+	await getPOH(user.id);
 	await prisma.playerOwnedHouse.update({
 		where: {
 			user_id: user.id
@@ -385,6 +386,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stresstest',
+					description: 'Stress test.'
 				}
 			],
 			run: async ({
@@ -403,6 +409,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
+				stresstest?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -541,6 +548,31 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						}
 					});
 					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
+				}
+				if (options.stresstest) {
+					const currentBalance = user.settings.get(UserSettings.GP);
+					const currentTbow = user.bank().amount('Twisted bow');
+
+					const b = new Bank().add('Coins', 1).add('Twisted bow');
+					for (let i = 0; i < 30; i++) {
+						await user.addItemsToBank({ items: b });
+						assert(user.settings.get(UserSettings.GP) === currentBalance + 1);
+						assert(user.bank().amount('Twisted bow') === currentTbow + 1);
+						await user.removeItemsFromBank(b);
+						await user.addItemsToBank({ items: b });
+						await user.removeItemsFromBank(b);
+						await user.addItemsToBank({ items: b });
+						await user.removeItemsFromBank(b);
+
+						const a = user.bank().bank;
+						if (!a[itemID('Twisted bow')]) a[itemID('Twisted bow')] = 0;
+						a[itemID('Twisted bow')] += 1.5;
+						await user.settings.update(UserSettings.Bank, a);
+						await user.removeItemsFromBank(new Bank().add('Twisted bow'));
+					}
+					const newBal = user.settings.get(UserSettings.GP);
+					const newTbow = user.bank().amount('Twisted bow');
+					return `Bank/GP: ${currentBalance === newBal && currentTbow === newTbow ? 'OK' : 'FAIL'}`;
 				}
 				return 'Nothin!';
 			}

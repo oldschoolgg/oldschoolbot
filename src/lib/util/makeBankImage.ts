@@ -9,15 +9,26 @@ interface MakeBankImageOptions {
 	background?: number;
 	flags?: Record<string, string | number>;
 	user?: KlasaUser;
-	cl?: Bank;
+	previousCL?: Bank;
+	showNewCL?: boolean;
 }
 
-export async function makeBankImage({ bank, title, background, flags, user, cl }: MakeBankImageOptions): Promise<{
+export async function makeBankImage({
+	bank,
+	title,
+	background,
+	user,
+	previousCL,
+	showNewCL,
+	flags = {}
+}: MakeBankImageOptions): Promise<{
 	file: MahojiAttachment;
 }> {
+	let realFlags: Record<string, string | number> = { ...flags, background: background ?? 1, ...flags, nocache: 1 };
+	if (showNewCL) realFlags.showNewCL = 1;
 	const { image, isTransparent } = await globalClient.tasks
 		.get('bankImage')!
-		.generateBankImage(bank, title, true, { background: background ?? 1, ...flags, nocache: 1 }, user, cl);
+		.generateBankImage(bank, title, true, realFlags, user, previousCL);
 
 	return {
 		file: {
