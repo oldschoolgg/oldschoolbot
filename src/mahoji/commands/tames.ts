@@ -220,7 +220,7 @@ async function tameImage(user: KlasaUser): CommandResponse {
 		return "You don't have any tames.";
 	}
 
-	let { tame, species, activity } = await getUsersTame(user);
+	let { tame, activity } = await getUsersTame(user);
 
 	// Init the background images if they are not already
 	const bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
@@ -273,6 +273,7 @@ async function tameImage(user: KlasaUser): CommandResponse {
 	ctx.translate(16, 16);
 	let i = 0;
 	for (const t of userTames) {
+		const species = tameSpecies.find(i => i.id === t.species_id)!;
 		let isTameActive: boolean = false;
 		let selectedTame = tame && t.id === tame.id;
 		if (selectedTame) isTameActive = activity !== null;
@@ -288,8 +289,9 @@ async function tameImage(user: KlasaUser): CommandResponse {
 		);
 		// Draw tame
 		ctx.drawImage(
-			sprites.tames!.find(t => t.id === species!.id)!.sprites.find(f => f.type === t.species_variant)!
-				.growthStage[t.growth_stage],
+			sprites.tames!.find(t => t.id === species.id)!.sprites.find(f => f.type === t.species_variant)!.growthStage[
+				t.growth_stage
+			],
 			(10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2,
 			(10 + 128) * y + 10,
 			96,
@@ -301,12 +303,12 @@ async function tameImage(user: KlasaUser): CommandResponse {
 		ctx.textAlign = 'left';
 		drawText(
 			ctx,
-			`${t.id}. ${t.nickname ? `${t.nickname} (${species!.name})` : species!.name}`,
+			`${t.id}. ${t.nickname ? `${t.nickname} (${species.name})` : species.name}`,
 			(10 + 256) * x + 5,
 			(10 + 128) * y + 16
 		);
 		// Shiny indicator
-		if (t.species_variant === species!.shinyVariant) {
+		if (t.species_variant === species.shinyVariant) {
 			ctx.drawImage(sprites.base!.shinyIcon, (10 + 256) * x + 5, (10 + 128) * y + 18, 16, 16);
 			drawText(
 				ctx,
@@ -319,7 +321,7 @@ async function tameImage(user: KlasaUser): CommandResponse {
 		ctx.textAlign = 'right';
 		drawText(
 			ctx,
-			`${toTitleCase(species!.relevantLevelCategory)}: ${getMainTameLevel(t)}`,
+			`${toTitleCase(species.relevantLevelCategory)}: ${getMainTameLevel(t)}`,
 			(10 + 256) * x + 256 - 5,
 			(10 + 128) * y + 16
 		);
@@ -343,7 +345,7 @@ async function tameImage(user: KlasaUser): CommandResponse {
 		// Draw tame boosts
 		let prevWidth = 0;
 		let feedQty = 0;
-		for (const { item } of feedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species!.type))) {
+		for (const { item } of feedableItems.filter(f => f.tameSpeciesCanBeFedThis.includes(species.type))) {
 			if (tameHasBeenFed(t, item.id)) {
 				const itemImage = await bankTask.getItemImage(item.id);
 				if (itemImage) {
