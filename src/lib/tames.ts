@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { MessageCollector } from 'discord.js';
 import { increaseNumByPercent, round, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
@@ -9,6 +10,7 @@ import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import { effectiveMonsters } from './minions/data/killableMonsters';
 import { prisma, trackLoot } from './settings/prisma';
+import { runCommand } from './settings/settings';
 import { generateContinuationChar, itemNameFromID, roll } from './util';
 import { createCollector } from './util/createCollector';
 import getOSItem from './util/getOSItem';
@@ -270,15 +272,34 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 				globalClient.oneCommandAtATimeCache.add(mes.author.id);
 				try {
 					const activityData = activity.data as any as TameTaskOptions;
-					let tameInteraction = '';
 					switch (activityData.type) {
 						case TameType.Combat:
-							tameInteraction = effectiveMonsters.find(e => e.id === activityData.monsterID)!.name;
-							(globalClient.commands.get('tame') as any)!.k(mes, [tameInteraction]);
+							const monsterName = effectiveMonsters.find(e => e.id === activityData.monsterID)!.name;
+							await runCommand({
+								message: mes,
+								commandName: 'tames',
+								args: {
+									kill: {
+										name: monsterName
+									}
+								},
+								isContinue: true,
+								bypassInhibitors: true
+							});
 							break;
 						case TameType.Gatherer:
-							tameInteraction = itemNameFromID(activityData.itemID)!.toLowerCase();
-							(globalClient.commands.get('tame') as any)!.c(mes, [tameInteraction]);
+							const collectableName = itemNameFromID(activityData.itemID)!.toLowerCase();
+							await runCommand({
+								message: mes,
+								commandName: 'tames',
+								args: {
+									collect: {
+										name: collectableName
+									}
+								},
+								isContinue: true,
+								bypassInhibitors: true
+							});
 							break;
 						default:
 							break;

@@ -1,3 +1,4 @@
+import { time } from '@discordjs/builders';
 import { Tame, tame_growth, TameActivity } from '@prisma/client';
 import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { readFile } from 'fs/promises';
@@ -68,7 +69,7 @@ async function tameAutocomplete(value: string, user: APIUser) {
 	return tames
 		.map(t => {
 			const species = tameSpecies.find(i => i.id === t.species_id)!;
-			return { name: `${t.nickname ?? species.name} ${t.growth_stage}`, value: t.id };
+			return { name: `${t.nickname ?? species.name} ${t.growth_stage}`, value: t.id.toString() };
 		})
 		.filter(t => (!value ? true : t.name.toLowerCase().includes(value.toLowerCase())));
 }
@@ -220,10 +221,7 @@ async function tameImage(user: KlasaUser): CommandResponse {
 		return "You don't have any tames.";
 	}
 
-	let mainTame: [Tame | null, TameActivity | null] | null = null;
-	try {
-		mainTame = await getUsersTame(user);
-	} catch (e) {}
+	let mainTame: [Tame | null, TameActivity | null] = await getUsersTame(user);
 
 	// Init the background images if they are not already
 	const bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
@@ -278,7 +276,7 @@ async function tameImage(user: KlasaUser): CommandResponse {
 	for (const tame of userTames) {
 		let isTameActive = false;
 		let selectedTame = mainTame && mainTame[0] && mainTame[0].id === tame.id;
-		if (selectedTame) isTameActive = (await getTameStatus(user)).length > 1;
+		if (selectedTame) isTameActive = getTameStatus(mainTame[1]).length > 1;
 
 		const x = i % tamesPerLine;
 		const y = Math.floor(i / tamesPerLine);
@@ -338,7 +336,7 @@ async function tameImage(user: KlasaUser): CommandResponse {
 
 		// Draw tame status (idle, in activity)
 		if (selectedTame) {
-			const mtText = await getTameStatus(user);
+			const mtText = getTameStatus(mainTame[1]);
 			ctx.textAlign = 'right';
 			for (let i = 0; i < mtText.length; i++) {
 				drawText(ctx, mtText[i], (10 + 256) * x + 256 - 5, (10 + 128) * y + 28 + i * 12);
@@ -403,7 +401,7 @@ export async function removeRawFood({
 	monster: KillableMonster;
 	quantity: number;
 	tame: Tame;
-}): Promise<[string, Bank]> {
+}): Promise<{ success: false; str: string } | { success: true; str: string; removed: Bank }> {
 	await user.settings.sync(true);
 	if (tameHasBeenFed(tame, itemID('Abyssal cape'))) {
 		totalHealingNeeded = Math.floor(totalHealingNeeded * 0.75);
@@ -417,39 +415,44 @@ export async function removeRawFood({
 		true
 	);
 	if (!foodToRemove) {
-		throw `You don't have enough Raw food to feed your tame in this trip. You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.filter(
-			i => i.raw
-		)
-			.map(i => itemNameFromID(i.raw!))
-			.join(', ')}.`;
-	} else {
-		const itemCost = foodToRemove;
-		if (monster.itemCost) {
-			if (monster.itemCost.qtyPerKill) {
-				for (const [item, qty] of monster.itemCost.itemCost.items()) {
-					itemCost.add(item.id, Math.ceil(qty * monster.itemCost.qtyPerKill * quantity));
-				}
-			} else {
-				itemCost.add(monster.itemCost.itemCost.clone().multiply(quantity));
-			}
-		}
-		if (!user.owns(itemCost)) {
-			throw `You don't have the required items, you need: ${itemCost}.`;
-		}
-		await user.removeItemsFromBank(itemCost);
-
-		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, itemCost);
-
-		return [`${itemCost} from ${user.username}`, itemCost];
+		return {
+			success: false,
+			str: `You don't have enough Raw food to feed your tame in this trip. You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.filter(
+				i => i.raw
+			)
+				.map(i => itemNameFromID(i.raw!))
+				.join(', ')}.`
+		};
 	}
+	const itemCost = foodToRemove;
+	if (monster.itemCost) {
+		if (monster.itemCost.qtyPerKill) {
+			for (const [item, qty] of monster.itemCost.itemCost.items()) {
+				itemCost.add(item.id, Math.ceil(qty * monster.itemCost.qtyPerKill * quantity));
+			}
+		} else {
+			itemCost.add(monster.itemCost.itemCost.clone().multiply(quantity));
+		}
+	}
+	if (!user.owns(itemCost)) {
+		return { success: false, str: `You don't have the required items, you need: ${itemCost}.` };
+	}
+	await user.removeItemsFromBank(itemCost);
+
+	updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, itemCost);
+
+	return {
+		success: true,
+		str: `${itemCost} from ${user.username}`,
+		removed: itemCost
+	};
 }
 
-export async function getTameStatus(user: KlasaUser) {
-	const [, currentTask] = await getUsersTame(user);
-	if (currentTask) {
+export function getTameStatus(tameActivity: TameActivity | null) {
+	if (tameActivity) {
 		const currentDate = new Date().valueOf();
-		const timeRemaining = `${formatDuration(currentTask.finish_date.valueOf() - currentDate, true)} remaining`;
-		const activityData = currentTask.data as any as TameTaskOptions;
+		const timeRemaining = `${formatDuration(tameActivity.finish_date.valueOf() - currentDate, true)} remaining`;
+		const activityData = tameActivity.data as any as TameTaskOptions;
 		switch (activityData.type) {
 			case TameType.Combat:
 				return [
@@ -743,7 +746,7 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 	if (quantity < 1) {
 		return "Your tame can't kill this monster fast enough.";
 	}
-	const [foodStr, cost] = await removeRawFood({
+	const foodRes = await removeRawFood({
 		client: globalClient,
 		totalHealingNeeded: (monster.healAmountNeeded ?? 1) * quantity,
 		healPerAction: monster.healAmountNeeded ?? 1,
@@ -752,13 +755,17 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 		quantity,
 		tame: selectedTame
 	});
+	if (!foodRes.success) {
+		return foodRes.str;
+	}
+
 	const duration = Math.floor(quantity * speed);
 
 	await trackLoot({
 		id: monster.name,
 		changeType: 'cost',
 		type: 'Monster',
-		cost,
+		cost: foodRes.removed,
 		suffix: 'tame'
 	});
 
@@ -777,7 +784,7 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 
 	let reply = `${tameName(selectedTame)} is now killing ${quantity}x ${
 		monster.name
-	}. The trip will take ${formatDuration(duration)}.\n\nRemoved ${foodStr}`;
+	}. The trip will take ${formatDuration(duration)}.\n\nRemoved ${foodRes.str}`;
 
 	if (boosts.length > 0) {
 		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
@@ -889,6 +896,43 @@ async function selectCommand(user: KlasaUser, tameID: number) {
 	return `You selected your ${tameName(toSelect)}.`;
 }
 
+async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
+	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
+	const tame = tames.find(t => t.id === tameID);
+	if (!tame) {
+		return "Couldn't find that tame.";
+	}
+	const species = tameSpecies.find(i => i.id === tame.species_id)!;
+	const fedItems = new Bank(tame.fed_items as ItemBank);
+	const loot = new Bank(tame.max_total_loot as ItemBank);
+	const image = await makeBankImage({
+		bank: loot,
+		title: 'Total Loot From This Tame',
+		user
+	});
+	return {
+		content: `**Name:** ${tame.nickname ?? 'No name'}
+**Species:** ${species.name}
+**Shiny:** ${tame.species_variant === species.shinyVariant ? 'Yes' : 'No'}
+**Growth:** ${tame.growth_percent}% ${tame.growth_stage}
+**Hatch Date:** ${time(tame.date)} / ${time(tame.date, 'R')}
+**${toTitleCase(species.relevantLevelCategory)} Level:** ${tame[`max_${species.relevantLevelCategory}_level`]}
+**Boosts:** ${feedableItems
+			.filter(i => fedItems.has(i.item.id))
+			.map(i => `${i.item.name} (${i.description})`)
+			.join(', ')}`,
+		attachments: [image.file]
+	};
+}
+
+async function statusCommand(user: KlasaUser) {
+	const [selectedTame, currentTask] = await getUsersTame(user);
+	if (!selectedTame) {
+		return 'You have no tame selected.';
+	}
+	return `${tameName(selectedTame)} is currently: ${getTameStatus(currentTask)}`;
+}
+
 export const tamesCommand: OSBMahojiCommand = {
 	name: 'tames',
 	description: 'Manage your tames.',
@@ -898,6 +942,16 @@ export const tamesCommand: OSBMahojiCommand = {
 		examples: ['/tames select 1']
 	},
 	options: [
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'status',
+			description: 'Check the status of your selected tame.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'list',
+			description: 'List your tames.'
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'set_name',
@@ -915,11 +969,6 @@ export const tamesCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'cancel',
 			description: 'Cancel your tames trip.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'list',
-			description: 'List your tames.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -997,6 +1046,20 @@ export const tamesCommand: OSBMahojiCommand = {
 					autocomplete: tameAutocomplete
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'view',
+			description: 'View a tame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'tame',
+					description: 'The tame you want to view.',
+					required: true,
+					autocomplete: tameAutocomplete
+				}
+			]
 		}
 	],
 	run: async ({
@@ -1008,21 +1071,25 @@ export const tamesCommand: OSBMahojiCommand = {
 		set_name?: { name: string };
 		cancel?: {};
 		list?: {};
-		merge?: { tame: number };
+		merge?: { tame: string };
 		feed?: { items: string };
-		kill: { name: string };
-		collect: { name: string };
-		select: { tame: number };
+		kill?: { name: string };
+		collect?: { name: string };
+		select?: { tame: string };
+		view?: { tame: string };
+		status?: {};
 	}>) => {
 		const user = await globalClient.fetchUser(userID);
 		if (options.set_name) return setNameCommand(user, options.set_name.name);
 		if (options.cancel) return cancelCommand(user);
 		if (options.list) return tameImage(user);
-		if (options.merge) return mergeCommand(user, interaction, options.merge.tame);
+		if (options.merge) return mergeCommand(user, interaction, Number(options.merge.tame));
 		if (options.feed) return feedCommand(interaction, user, options.feed.items);
 		if (options.kill) return killCommand(user, channelID, options.kill.name);
 		if (options.collect) return collectCommand(user, channelID, options.collect.name);
-		if (options.select) return selectCommand(user, options.select.tame);
+		if (options.select) return selectCommand(user, Number(options.select.tame));
+		if (options.view) return viewCommand(user, Number(options.view.tame));
+		if (options.status) return statusCommand(user);
 		return 'Invalid command.';
 	}
 };
