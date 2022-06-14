@@ -269,7 +269,7 @@ async function tameImage(user: KlasaUser): CommandResponse {
 		);
 	}
 
-	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
+	if (!userBgImage.transparent) bankTask.drawBorder(ctx, sprite, false);
 
 	ctx.translate(16, 16);
 	let i = 0;
