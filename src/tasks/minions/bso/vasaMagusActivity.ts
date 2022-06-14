@@ -112,6 +112,6 @@ export default class extends Task {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.VasaLoot, loot);
 
-		handleTripFinish(user, channelID, resultStr, ['vasa', [quantity], true], image!, data, itemsAdded);
+		handleTripFinish(user, channelID, resultStr, ['k', { name: 'vasa' }, true], image!, data, itemsAdded);
 	}
 }
