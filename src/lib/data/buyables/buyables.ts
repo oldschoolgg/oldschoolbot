@@ -8,6 +8,7 @@ import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { MinigameName } from '../../settings/settings';
 import { Skills } from '../../types';
 import itemID from '../../util/itemID';
+import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';
 import { castleWarsBuyables } from './castleWars';
@@ -18,6 +19,7 @@ import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
 import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
+import { troubleBrewingBuyables } from './troubleBrewingShop';
 
 export interface Buyable {
 	name: string;
@@ -792,7 +794,9 @@ const Buyables: Buyable[] = [
 	...randomEventBuyables,
 	...tobCapes,
 	...perduBuyables,
-	...skillCapeBuyables
+	...skillCapeBuyables,
+	...aerialFishBuyables,
+	...troubleBrewingBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

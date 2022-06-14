@@ -10,6 +10,7 @@ import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
 import { chaeldarMonsters } from './chaeldarMonsters';
+import { creatureCreationCreatures } from './creatureCreation';
 import { konarMonsters } from './konarMonsters';
 import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
@@ -29,6 +30,7 @@ const killableMonsters: KillableMonster[] = [
 	...turaelMonsters,
 	...vannakaMonsters,
 	...low,
+	...creatureCreationCreatures,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
