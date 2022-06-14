@@ -8,7 +8,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
-import { effectiveMonsters } from './minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters } from './minions/data/killableMonsters';
 import { prisma, trackLoot } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { generateContinuationChar, itemNameFromID, roll } from './util';
@@ -78,7 +78,8 @@ export const tameSpecies: Species[] = [
 			.add('Elder rune', 100)
 			.add('Astral rune', 600)
 			.add('Coins', 10_000_000),
-		emoji: '<:dragonEgg:858948148641660948>'
+		emoji: '<:dragonEgg:858948148641660948>',
+		emojiID: '858948148641660948'
 	},
 	{
 		id: TameSpeciesID.Monkey,
@@ -95,6 +96,7 @@ export const tameSpecies: Species[] = [
 		hatchTime: Time.Hour * 4.5,
 		egg: getOSItem('Monkey egg'),
 		emoji: '<:monkey_egg:883326001445224488>',
+		emojiID: '883326001445224488',
 		mergingCost: new Bank()
 			.add('Banana', 3000)
 			.add('Magic banana', 50)
@@ -224,6 +226,22 @@ export interface Species {
 	egg: Item;
 	mergingCost: Bank;
 	emoji: string;
+	emojiID: string;
+}
+
+export function shortTameTripDesc(activity: TameActivity) {
+	const data = activity.data as unknown as TameTaskOptions;
+	switch (data.type) {
+		case TameType.Combat: {
+			const mon = killableMonsters.find(i => i.id === data.monsterID);
+			return `Killing ${mon!.name}`;
+		}
+		case TameType.Gatherer: {
+			return `Collecting ${itemNameFromID(data.itemID)}`;
+		}
+		default:
+			return 'Nothing';
+	}
 }
 
 export async function runTameTask(activity: TameActivity, tame: Tame) {
@@ -386,14 +404,69 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 	}
 }
 
-export async function getUsersTame(user: KlasaUser | User): Promise<[Tame | null, TameActivity | null]> {
+export async function tameLastFinishedActivity(user: User) {
+	const tameID = user.selected_tame;
+	if (!tameID) return null;
+	return prisma.tameActivity.findFirst({
+		where: {
+			user_id: user.id,
+			tame_id: tameID
+		},
+		orderBy: {
+			finish_date: 'desc'
+		}
+	});
+}
+
+export function repeatTameTrip(msg: KlasaMessage, activity: TameActivity) {
+	const data = activity.data as unknown as TameTaskOptions;
+	switch (data.type) {
+		case TameType.Combat: {
+			const mon = killableMonsters.find(i => i.id === data.monsterID);
+			return runCommand({
+				message: msg,
+				commandName: 'tames',
+				args: {
+					kill: {
+						name: mon!.name
+					}
+				},
+				bypassInhibitors: true
+			});
+		}
+		case TameType.Gatherer: {
+			return runCommand({
+				message: msg,
+				commandName: 'tames',
+				args: {
+					collect: {
+						name: itemNameFromID(data.itemID)
+					}
+				},
+				bypassInhibitors: true
+			});
+		}
+		default: {
+		}
+	}
+}
+
+export async function getUsersTame(
+	user: KlasaUser | User
+): Promise<
+	{ tame: null; activity: null; species: null } | { tame: Tame; species: Species; activity: TameActivity | null }
+> {
 	const selectedTame = (
 		await mahojiUsersSettingsFetch(user.id, {
 			selected_tame: true
 		})
 	).selected_tame;
 	if (!selectedTame) {
-		return [null, null];
+		return {
+			tame: null,
+			activity: null,
+			species: null
+		};
 	}
 	const tame = await prisma.tame.findFirst({ where: { id: selectedTame } });
 	if (!tame) {
@@ -402,7 +475,8 @@ export async function getUsersTame(user: KlasaUser | User): Promise<[Tame | null
 	const activity = await prisma.tameActivity.findFirst({
 		where: { user_id: user.id, tame_id: tame.id, completed: false }
 	});
-	return [tame, activity];
+	const species = tameSpecies.find(i => i.id === tame.species_id)!;
+	return { tame, activity, species };
 }
 
 export async function createTameTask({

@@ -29,7 +29,9 @@ import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { getUsersTame, repeatTameTrip, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
 import { convertMahojiResponseToDJSResponse, isAtleastThisOld } from '../../lib/util';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
@@ -93,7 +95,7 @@ export default class MinionCommand extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const [birdhouseDetails, mahojiUser, farmingDetails] = await Promise.all([
 			calculateBirdhouseDetails(msg.author.id),
-			mahojiUsersSettingsFetch(msg.author.id, { minion_farmingContract: true }),
+			mahojiUsersSettingsFetch(msg.author.id, { minion_farmingContract: true, selected_tame: true }),
 			getFarmingInfo(msg.author.id)
 		]);
 
@@ -220,6 +222,20 @@ export default class MinionCommand extends BotCommand {
 				emoji: '365003979840552960',
 				cantBeBusy: true
 			});
+		}
+
+		if (getUsersPerkTier(msg.author) >= PerkTier.Two) {
+			const { tame, species } = await getUsersTame(msg.author);
+			if (tame) {
+				const lastTameAct = await tameLastFinishedActivity(mahojiUser);
+				if (lastTameAct) {
+					dynamicButtons.add({
+						name: `Repeat ${shortTameTripDesc(lastTameAct)}`,
+						emoji: species!.emojiID,
+						fn: () => repeatTameTrip(msg, lastTameAct)
+					});
+				}
+			}
 		}
 
 		dynamicButtons.render({
