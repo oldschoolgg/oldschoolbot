@@ -104,13 +104,11 @@ async function clueUpgraderEffect(user: KlasaUser, loot: Bank, messages: string[
 	for (let i = 0; i < 5; i++) {
 		const clueTier = ClueTiers[i];
 		if (!loot.has(clueTier.scrollID)) continue;
-		// Lower tiers are more common to upgrade
-		let chanceOfUpgradePercent = 45 - (i + 1 * 5);
 		for (let t = 0; t < loot.amount(clueTier.scrollID); t++) {
-			if (percentChance(chanceOfUpgradePercent)) {
+			if (percentChance(inventionBoosts.clueUpgrader.chance(clueTier))) {
 				removeBank.add(clueTier.scrollID);
 				upgradedClues.add(ClueTiers[i + 1].scrollID);
-				durationForCost += (i + 1) * (Time.Minute * 3);
+				durationForCost += inventionBoosts.clueUpgrader.durationCalc(clueTier);
 			}
 		}
 	}

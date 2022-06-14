@@ -12,8 +12,10 @@ import {
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
+import ClueTiers from '../minions/data/clueTiers';
+import { ClueTier } from '../minions/types';
 import { ItemBank } from '../types';
-import { clamp, stringMatches, toKMB } from '../util';
+import { clamp, formatDuration, stringMatches, toKMB } from '../util';
 import getOSItem from '../util/getOSItem';
 import { logError } from '../util/logError';
 import { minionIsBusy } from '../util/minionIsBusy';
@@ -65,6 +67,7 @@ export type Invention = Readonly<{
 	 * null = has NO usage cost at all.
 	 */
 	usageCostMultiplier: number | null;
+	extraDescription?: () => string;
 }>;
 
 export const inventionBoosts = {
@@ -108,6 +111,17 @@ export const inventionBoosts = {
 		materialCostReductionPercent: 5,
 		extraMaterialsPercent: 5,
 		disassemblySpeedBoostPercent: 5
+	},
+	clueUpgrader: {
+		chance: (clue: ClueTier) => {
+			let index = ClueTiers.indexOf(clue);
+			let chanceOfUpgradePercent = 45 - (index + 1) * 5;
+			return chanceOfUpgradePercent;
+		},
+		durationCalc: (clue: ClueTier) => {
+			let index = ClueTiers.indexOf(clue);
+			return (index + 1) * (Time.Minute * 3);
+		}
 	}
 };
 
@@ -268,7 +282,18 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 105,
-		usageCostMultiplier: 0.3
+		usageCostMultiplier: 0.3,
+		extraDescription: () => {
+			let str = '';
+			for (const clue of ClueTiers.slice(0, 5)) {
+				let index = ClueTiers.indexOf(clue);
+				let next = ClueTiers[index + 1];
+				str += `**${clue.name}:** ${inventionBoosts.clueUpgrader.chance(clue)}% chance to upgrade into ${
+					next.name
+				}, costs ${formatDuration(inventionBoosts.clueUpgrader.durationCalc(clue))}\n`;
+			}
+			return str;
+		}
 	},
 	{
 		id: InventionID.DwarvenToolkit,

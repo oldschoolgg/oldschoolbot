@@ -267,7 +267,7 @@ export const askCommand: OSBMahojiCommand = {
 		if (options.details) {
 			const invention = Inventions.find(i => stringMatches(i.name, options.details!.invention!));
 			if (!invention) return 'No invention found.';
-			return `**${invention.name}** - *${invention.description}*
+			let str = `**${invention.name}** - *${invention.description}*
 - Requires level ${invention.inventionLevelNeeded} Invention
 - The materials used for this invention: ${invention.materialTypeBank
 				.values()
@@ -275,6 +275,8 @@ export const askCommand: OSBMahojiCommand = {
 				.join(', ')}
 - Required cost to make: ${inventingCost(invention)} and ${invention.itemCost ? `${invention.itemCost}` : 'No items'}
 - ${invention.flags.includes('equipped') ? 'Must be equipped' : 'Works in bank'}`;
+			if (invention.extraDescription) str += `\n${invention.extraDescription()}`;
+			return str;
 		}
 		if (options.materials) {
 			return `You own: ${new MaterialBank(mahojiUser.materials_owned as IMaterialBank)}`;
