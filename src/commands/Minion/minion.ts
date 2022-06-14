@@ -442,7 +442,8 @@ Type \`confirm\` if you understand the above information, and want to become an 
 
 			await msg.author.settings.update([
 				[UserSettings.Minion.Ironman, true],
-				[UserSettings.Minion.HasBought, true]
+				[UserSettings.Minion.HasBought, true],
+				[UserSettings.BitField, BitField.BypassAgeRestriction]
 			]);
 			return msg.channel.send('You are now an ironman.');
 		} catch (err) {
