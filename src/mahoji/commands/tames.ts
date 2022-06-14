@@ -1,0 +1,1028 @@
+import { Tame, tame_growth, TameActivity } from '@prisma/client';
+import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { readFile } from 'fs/promises';
+import { KlasaClient, KlasaUser } from 'klasa';
+import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { Bank, Monsters } from 'oldschooljs';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/lib';
+
+import { badges } from '../../lib/constants';
+import { Eatables } from '../../lib/data/eatables';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
+import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
+import { KillableMonster } from '../../lib/minions/types';
+import { prisma, trackLoot } from '../../lib/settings/prisma';
+import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../lib/skilling/types';
+import {
+	createTameTask,
+	getMainTameLevel,
+	getTameSpecies,
+	getUsersTame,
+	tameGrowthLevel,
+	tameHasBeenFed,
+	tameName,
+	tameSpecies,
+	TameTaskOptions,
+	TameType
+} from '../../lib/tames';
+import {
+	addBanks,
+	formatDuration,
+	formatSkillRequirements,
+	isWeekend,
+	itemID,
+	itemNameFromID,
+	stringMatches,
+	toTitleCase,
+	updateBankSetting
+} from '../../lib/util';
+import { fillTextXTimesInCtx, getClippedRegion } from '../../lib/util/canvasUtil';
+import findMonster from '../../lib/util/findMonster';
+import getOSItem from '../../lib/util/getOSItem';
+import { patronMaxTripCalc } from '../../lib/util/getUsersPerkTier';
+import { makeBankImage } from '../../lib/util/makeBankImage';
+import { parseStringBank } from '../../lib/util/parseStringBank';
+import resolveItems from '../../lib/util/resolveItems';
+import BankImageTask from '../../tasks/bankImage';
+import { collectables } from '../lib/abstracted_commands/collectCommand';
+import { OSBMahojiCommand } from '../lib/util';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../mahojiSettings';
+
+async function tameAutocomplete(value: string, user: APIUser) {
+	const tames = await prisma.tame.findMany({
+		where: {
+			user_id: user.id
+		},
+		select: {
+			id: true,
+			nickname: true,
+			species_id: true,
+			growth_stage: true
+		}
+	});
+	return tames
+		.map(t => {
+			const species = tameSpecies.find(i => i.id === t.species_id)!;
+			return { name: `${t.nickname ?? species.name} ${t.growth_stage}`, value: t.id };
+		})
+		.filter(t => (!value ? true : t.name.toLowerCase().includes(value.toLowerCase())));
+}
+
+interface FeedableItem {
+	item: Item;
+	tameSpeciesCanBeFedThis: TameType[];
+	description: string;
+	announcementString: string;
+}
+
+const feedableItems: FeedableItem[] = [
+	{
+		item: getOSItem('Ori'),
+		description: '25% extra loot',
+		tameSpeciesCanBeFedThis: [TameType.Combat],
+		announcementString: 'Your tame will now get 25% extra loot!'
+	},
+	{
+		item: getOSItem('Zak'),
+		description: '+35 minutes longer max trip length',
+		tameSpeciesCanBeFedThis: [TameType.Combat, TameType.Gatherer],
+		announcementString: 'Your tame now has a much longer max trip length!'
+	},
+	{
+		item: getOSItem('Abyssal cape'),
+		description: '25% food reduction',
+		tameSpeciesCanBeFedThis: [TameType.Combat],
+		announcementString: 'Your tame now has 25% food reduction!'
+	},
+	{
+		item: getOSItem('Voidling'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [TameType.Gatherer],
+		announcementString: 'Your tame can now collect items 10% faster thanks to the Voidling helping them teleport!'
+	},
+	{
+		item: getOSItem('Ring of endurance'),
+		description: '10% faster collecting',
+		tameSpeciesCanBeFedThis: [TameType.Gatherer],
+		announcementString:
+			'Your tame can now collect items 10% faster thanks to the Ring of endurance helping them run for longer!'
+	},
+	{
+		item: getOSItem('Dwarven warhammer'),
+		description: '30% faster PvM',
+		tameSpeciesCanBeFedThis: [TameType.Combat],
+		announcementString: "Your tame can now kill 30% faster! It's holding the Dwarven warhammer in its claws..."
+	},
+	{
+		item: getOSItem('Mr. E'),
+		description: 'Chance to get 2x loot',
+		tameSpeciesCanBeFedThis: [TameType.Combat, TameType.Gatherer, TameType.Artisan, TameType.Support],
+		announcementString: "With Mr. E's energy absorbed, your tame now has a chance at 2x loot!"
+	}
+];
+
+const feedingEasterEggs: [Bank, number, tame_growth[], string][] = [
+	[new Bank().add('Vial of water'), 2, [tame_growth.baby], 'https://imgur.com/pYjshTg'],
+	[new Bank().add('Bread'), 2, [tame_growth.baby, tame_growth.juvenile], 'https://i.imgur.com/yldSKLZ.mp4'],
+	[new Bank().add('Banana', 2), 2, [tame_growth.juvenile, tame_growth.adult], 'https://i.imgur.com/11Bads1.mp4'],
+	[new Bank().add('Strawberry'), 2, [tame_growth.juvenile, tame_growth.adult], 'https://i.imgur.com/ZqN1BHZ.mp4'],
+	[new Bank().add('Lychee'), 2, [tame_growth.juvenile, tame_growth.adult], 'https://i.imgur.com/e5TqK1S.mp4'],
+	[new Bank().add('Chocolate bar'), 2, [tame_growth.baby, tame_growth.juvenile], 'https://i.imgur.com/KRGURck.mp4'],
+	[new Bank().add('Watermelon'), 2, [tame_growth.juvenile, tame_growth.adult], 'https://i.imgur.com/qDY6Skv.mp4'],
+	[new Bank().add('Coconut milk'), 2, [tame_growth.baby], 'https://i.imgur.com/OE7tXI8.mp4'],
+	[
+		new Bank().add('Grapes'),
+		2,
+		[tame_growth.juvenile, tame_growth.adult],
+		'https://c.tenor.com/ZHBDNOEv_m4AAAAM/monkey-monke.gif'
+	]
+];
+
+// eslint-disable-next-line @typescript-eslint/init-declarations
+let sprites: {
+	base: {
+		image: Image;
+		slot: Canvas;
+		selectedSlot: Canvas;
+		shinyIcon: Canvas;
+	};
+	tames: {
+		id: number;
+		name: string;
+		image: Image;
+		sprites: { type: number; growthStage: Record<tame_growth, Canvas> }[];
+	}[];
+};
+async function initSprites() {
+	const tameSpriteBase = await loadImage(await readFile('./src/lib/resources/images/tames/tame_sprite.png'));
+	sprites = {
+		base: {
+			image: tameSpriteBase,
+			slot: getClippedRegion(tameSpriteBase, 0, 0, 256, 128),
+			selectedSlot: getClippedRegion(tameSpriteBase, 0, 128, 256, 128),
+			shinyIcon: getClippedRegion(tameSpriteBase, 256, 0, 24, 24)
+		},
+		tames: await Promise.all(
+			tameSpecies.map(async value => {
+				const tameImage = await loadImage(
+					await readFile(`./src/lib/resources/images/tames/${value.id}_sprite.png`)
+				);
+				const vars = [...value.variants];
+				if (value.shinyVariant) vars.push(value.shinyVariant);
+				return {
+					id: value.id,
+					name: value.name,
+					image: tameImage,
+					sprites: vars.map(v => {
+						return {
+							type: v,
+							growthStage: {
+								[tame_growth.baby]: getClippedRegion(tameImage, (v - 1) * 96, 0, 96, 96),
+								[tame_growth.juvenile]: getClippedRegion(tameImage, (v - 1) * 96, 96, 96, 96),
+								[tame_growth.adult]: getClippedRegion(tameImage, (v - 1) * 96, 96 * 2, 96, 96)
+							}
+						};
+					})
+				};
+			})
+		)
+	};
+}
+initSprites();
+
+function drawText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
+	const baseFill = ctx.fillStyle;
+	ctx.fillStyle = '#000000';
+	fillTextXTimesInCtx(ctx, text, x, y + 1);
+	fillTextXTimesInCtx(ctx, text, x, y - 1);
+	fillTextXTimesInCtx(ctx, text, x + 1, y);
+	fillTextXTimesInCtx(ctx, text, x - 1, y);
+	ctx.fillStyle = baseFill;
+	fillTextXTimesInCtx(ctx, text, x, y);
+}
+
+async function tameImage(user: KlasaUser): CommandResponse {
+	const userTames = await prisma.tame.findMany({
+		where: {
+			user_id: user.id
+		},
+		orderBy: {
+			id: 'asc'
+		}
+	});
+
+	if (userTames.length === 0) {
+		return "You don't have any tames.";
+	}
+
+	let mainTame: [Tame | null, TameActivity | null] | null = null;
+	try {
+		mainTame = await getUsersTame(user);
+	} catch (e) {}
+
+	// Init the background images if they are not already
+	const bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
+
+	let {
+		sprite,
+		uniqueSprite,
+		background: userBgImage
+	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
+	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+
+	const tamesPerLine = 3;
+
+	const canvas = new Canvas(
+		12 + 10 + (256 + 10) * Math.min(userTames.length, tamesPerLine),
+		12 + 10 + (128 + 10) * Math.ceil(userTames.length / tamesPerLine)
+	);
+
+	const ctx = canvas.getContext('2d');
+
+	ctx.font = '16px OSRSFontCompact';
+	ctx.imageSmoothingEnabled = false;
+
+	ctx.fillStyle = userBgImage.transparent
+		? hexColor
+			? hexColor
+			: 'transparent'
+		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
+
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	if (!uniqueSprite) {
+		let imgHeight = 0;
+		let imgWidth = 0;
+		const ratio1 = canvas.height / userBgImage.image!.height;
+		const ratio2 = canvas.width / userBgImage.image!.width;
+		imgWidth = userBgImage.image!.width * (ratio1 > ratio2 ? ratio1 : ratio2);
+		imgHeight = userBgImage.image!.height * (ratio1 > ratio2 ? ratio1 : ratio2);
+		ctx.drawImage(
+			userBgImage.image!,
+			(canvas.width - imgWidth) / 2,
+			(canvas.height - imgHeight) / 2,
+			imgWidth,
+			imgHeight
+		);
+	}
+
+	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
+
+	ctx.translate(16, 16);
+	let i = 0;
+	for (const tame of userTames) {
+		let isTameActive = false;
+		let selectedTame = mainTame && mainTame[0] && mainTame[0].id === tame.id;
+		if (selectedTame) isTameActive = (await getTameStatus(user)).length > 1;
+
+		const x = i % tamesPerLine;
+		const y = Math.floor(i / tamesPerLine);
+		ctx.drawImage(
+			selectedTame ? sprites.base!.selectedSlot : sprites.base!.slot,
+			(10 + 256) * x,
+			(10 + 128) * y,
+			256,
+			128
+		);
+		// Draw tame
+		ctx.drawImage(
+			sprites
+				.tames!.find(t => t.id === getTameSpecies(tame).id)!
+				.sprites.find(f => f.type === tame.species_variant)!.growthStage[tame.growth_stage],
+			(10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2,
+			(10 + 128) * y + 10,
+			96,
+			96
+		);
+
+		// Draw tame name / level / stats
+		ctx.fillStyle = '#ffffff';
+		ctx.textAlign = 'left';
+		drawText(
+			ctx,
+			`${tame.id}. ${
+				tame.nickname ? `${tame.nickname} (${getTameSpecies(tame).name})` : getTameSpecies(tame).name
+			}`,
+			(10 + 256) * x + 5,
+			(10 + 128) * y + 16
+		);
+		// Shiny indicator
+		if (tame.species_variant === getTameSpecies(tame).shinyVariant) {
+			ctx.drawImage(sprites.base!.shinyIcon, (10 + 256) * x + 5, (10 + 128) * y + 18, 16, 16);
+			drawText(
+				ctx,
+				'Shiny!',
+				(10 + 256) * x + 3 + sprites.base!.shinyIcon.width,
+				(10 + 128) * y + 18 + sprites.base!.shinyIcon.height / 2
+			);
+		}
+
+		ctx.textAlign = 'right';
+		drawText(
+			ctx,
+			`${toTitleCase(getTameSpecies(tame).relevantLevelCategory)}: ${getMainTameLevel(tame)}`,
+			(10 + 256) * x + 256 - 5,
+			(10 + 128) * y + 16
+		);
+		ctx.textAlign = 'left';
+		const grouthStage =
+			tame.growth_stage === 'adult'
+				? tame.growth_stage
+				: `${tame.growth_stage} (${tame.growth_percent.toFixed(2)}%)`;
+		drawText(ctx, `${toTitleCase(grouthStage)}`, (10 + 256) * x + 5, (10 + 128) * y + 128 - 5);
+
+		// Draw tame status (idle, in activity)
+		if (selectedTame) {
+			const mtText = await getTameStatus(user);
+			ctx.textAlign = 'right';
+			for (let i = 0; i < mtText.length; i++) {
+				drawText(ctx, mtText[i], (10 + 256) * x + 256 - 5, (10 + 128) * y + 28 + i * 12);
+			}
+		} else {
+			ctx.textAlign = 'right';
+			drawText(ctx, 'Not selected', (10 + 256) * x + 256 - 5, (10 + 128) * y + 28);
+		}
+
+		// Draw tame boosts
+		let prevWidth = 0;
+		let feedQty = 0;
+		for (const { item } of feedableItems.filter(f =>
+			f.tameSpeciesCanBeFedThis.includes(getTameSpecies(tame).type)
+		)) {
+			if (tameHasBeenFed(tame, item.id)) {
+				const itemImage = await bankTask.getItemImage(item.id);
+				if (itemImage) {
+					let ratio = 19 / itemImage.height;
+					const yLine = Math.floor(feedQty / 3);
+					if (feedQty % 3 === 0) prevWidth = 0;
+					ctx.drawImage(
+						itemImage,
+						(10 + 256) * x + 253 - prevWidth - Math.ceil(itemImage.width * ratio),
+						(10 + 128) * y + 128 - 25 - yLine * 20,
+						Math.floor(itemImage.width * ratio),
+						Math.floor(itemImage.height * ratio)
+					);
+
+					prevWidth += Math.ceil(itemImage.width * ratio);
+					feedQty++;
+				}
+			}
+		}
+		i++;
+	}
+
+	const rawBadges = user.settings.get(UserSettings.Badges);
+	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
+	const buffer = await canvas.toBuffer('png');
+
+	return {
+		content: `${badgesStr}${user.username}, ${userTames.length > 1 ? 'here are your tames' : 'this is your tame'}!`,
+		attachments: [{ buffer, fileName: `${user.username}_${user.discriminator}_tames.png` }]
+	};
+}
+
+export async function removeRawFood({
+	client,
+	user,
+	totalHealingNeeded,
+	healPerAction,
+	monster,
+	quantity,
+	tame
+}: {
+	client: KlasaClient;
+	user: KlasaUser;
+	totalHealingNeeded: number;
+	healPerAction: number;
+	raw?: boolean;
+	monster: KillableMonster;
+	quantity: number;
+	tame: Tame;
+}): Promise<[string, Bank]> {
+	await user.settings.sync(true);
+	if (tameHasBeenFed(tame, itemID('Abyssal cape'))) {
+		totalHealingNeeded = Math.floor(totalHealingNeeded * 0.75);
+		healPerAction = Math.floor(healPerAction * 0.75);
+	}
+
+	const foodToRemove = getUserFoodFromBank(
+		user,
+		totalHealingNeeded,
+		user.settings.get(UserSettings.FavoriteFood),
+		true
+	);
+	if (!foodToRemove) {
+		throw `You don't have enough Raw food to feed your tame in this trip. You need enough food to heal at least ${totalHealingNeeded} HP (${healPerAction} per action). You can use these food items: ${Eatables.filter(
+			i => i.raw
+		)
+			.map(i => itemNameFromID(i.raw!))
+			.join(', ')}.`;
+	} else {
+		const itemCost = foodToRemove;
+		if (monster.itemCost) {
+			if (monster.itemCost.qtyPerKill) {
+				for (const [item, qty] of monster.itemCost.itemCost.items()) {
+					itemCost.add(item.id, Math.ceil(qty * monster.itemCost.qtyPerKill * quantity));
+				}
+			} else {
+				itemCost.add(monster.itemCost.itemCost.clone().multiply(quantity));
+			}
+		}
+		if (!user.owns(itemCost)) {
+			throw `You don't have the required items, you need: ${itemCost}.`;
+		}
+		await user.removeItemsFromBank(itemCost);
+
+		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, itemCost);
+
+		return [`${itemCost} from ${user.username}`, itemCost];
+	}
+}
+
+export async function getTameStatus(user: KlasaUser) {
+	const [, currentTask] = await getUsersTame(user);
+	if (currentTask) {
+		const currentDate = new Date().valueOf();
+		const timeRemaining = `${formatDuration(currentTask.finish_date.valueOf() - currentDate, true)} remaining`;
+		const activityData = currentTask.data as any as TameTaskOptions;
+		switch (activityData.type) {
+			case TameType.Combat:
+				return [
+					`Killing ${activityData.quantity.toLocaleString()}x ${Monsters.find(
+						m => m.id === activityData.monsterID
+					)?.name.toLowerCase()}`,
+					timeRemaining
+				];
+			case TameType.Gatherer:
+				return [`Collecting ${itemNameFromID(activityData.itemID)?.toLowerCase()}`, timeRemaining];
+			default:
+				return ['This tame type is not released yet.'];
+		}
+	}
+	return ['Idle'];
+}
+
+async function setNameCommand(user: KlasaUser, name: string) {
+	if (!name || name.length < 2 || name.length > 30 || ['\n', '`', '@', '<', ':'].some(char => name.includes(char))) {
+		return "That's not a valid name for your tame.";
+	}
+	const [selectedTame] = await getUsersTame(user);
+	if (!selectedTame) {
+		return 'You have no selected tame to set a nickname for, select one first.';
+	}
+
+	await prisma.tame.update({
+		where: {
+			id: selectedTame.id
+		},
+		data: {
+			nickname: name
+		}
+	});
+
+	return `Updated the nickname of your selected tame to ${name}.`;
+}
+
+async function cancelCommand(user: KlasaUser) {
+	const [selectedTame, currentTask] = await getUsersTame(user);
+	if (!selectedTame) {
+		return 'You have no selected tame.';
+	}
+
+	if (!currentTask) {
+		return `${tameName(selectedTame)} is not doing any activity, so there's nothing to cancel.`;
+	}
+
+	await prisma.tameActivity.delete({
+		where: {
+			id: currentTask.id
+		}
+	});
+
+	return "You cancelled your tames' task.";
+}
+
+async function mergeCommand(user: KlasaUser, interaction: SlashCommandInteraction, tame: number) {
+	const requirements = {
+		[SkillsEnum.Magic]: 110,
+		[SkillsEnum.Runecraft]: 110,
+		[SkillsEnum.Herblore]: 110
+	};
+
+	if (!user.hasSkillReqs(requirements)) {
+		return `You are not skillful enough to do this merging ritual. You need the following requirements: ${formatSkillRequirements(
+			requirements
+		)}`;
+	}
+
+	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
+	const toSelect = tames.find(t => t.id === tame);
+	if (!toSelect || !tame) {
+		return "Couldn't find a tame to participate in the ritual. Make sure you selected the correct Tame, by its number or nickname.";
+	}
+
+	const [currentTame, currentTask] = await getUsersTame(user);
+	if (currentTask) return 'Your tame is busy. Wait for it to be free to do this.';
+	if (!currentTame) return "You don't have a selected tame. Select your tame first.";
+	if (currentTame.id === toSelect.id) return `You can't merge ${tameName(currentTame)} with itself!`;
+	if (getTameSpecies(currentTame).id !== getTameSpecies(toSelect).id) {
+		return "You can't merge two tames from two different species!";
+	}
+
+	const { mergingCost, shinyVariant } = getTameSpecies(currentTame);
+
+	if (!user.owns(mergingCost)) {
+		return `You don't have enough materials for this ritual. You need ${mergingCost}. You are missing **${mergingCost
+			.clone()
+			.remove(user.bank())}**.`;
+	}
+
+	const mergeStuff = {
+		totalLoot: new Bank(currentTame!.max_total_loot as ItemBank).add(toSelect.max_total_loot as ItemBank).bank,
+		fedItems: new Bank(currentTame!.fed_items as ItemBank).add(toSelect.fed_items as ItemBank).bank,
+		maxCombatLevel: Math.max(currentTame!.max_combat_level, toSelect.max_combat_level),
+		maxArtisanLevel: Math.max(currentTame!.max_artisan_level, toSelect.max_artisan_level),
+		maxGathererLevel: Math.max(currentTame!.max_gatherer_level, toSelect.max_gatherer_level),
+		maxSupportLevel: Math.max(currentTame!.max_support_level, toSelect.max_support_level),
+		speciesVariant:
+			currentTame!.species_variant === shinyVariant || toSelect.species_variant === shinyVariant
+				? shinyVariant
+				: currentTame!.species_variant
+	};
+
+	await handleMahojiConfirmation(
+		interaction,
+		`Are you sure you want to merge **${tameName(toSelect)}** (Tame ${toSelect.id}) into **${tameName(
+			currentTame!
+		)}** (Tame ${currentTame!.id})?\n\n${tameName(
+			currentTame!
+		)} will receive all the items fed and all loot obtained from ${tameName(
+			toSelect
+		)}, and will have its stats match the highest of both tames.\n\n**THIS ACTION CAN NOT BE REVERSED!**`
+	);
+
+	await user.removeItemsFromBank(mergingCost);
+	updateBankSetting(globalClient, ClientSettings.EconomyStats.TameMergingCost, mergingCost);
+
+	// Set the merged tame activities to the tame that is consuming it
+	await prisma.tameActivity.updateMany({
+		where: {
+			tame_id: toSelect.id
+		},
+		data: {
+			tame_id: currentTame.id
+		}
+	});
+
+	await prisma.tame.delete({
+		where: {
+			id: toSelect.id
+		}
+	});
+
+	await prisma.tame.update({
+		where: {
+			id: currentTame!.id
+		},
+		data: {
+			max_total_loot: mergeStuff.totalLoot,
+			fed_items: mergeStuff.fedItems,
+			max_combat_level: mergeStuff.maxCombatLevel,
+			max_artisan_level: mergeStuff.maxArtisanLevel,
+			max_gatherer_level: mergeStuff.maxGathererLevel,
+			max_support_level: mergeStuff.maxSupportLevel,
+			species_variant: mergeStuff.speciesVariant
+		}
+	});
+
+	return `${tameName(currentTame)} consumed ${tameName(toSelect)} and all its attributes.`;
+}
+
+async function feedCommand(interaction: SlashCommandInteraction, user: KlasaUser, str: string) {
+	const [selectedTame] = await getUsersTame(user);
+	if (!selectedTame) {
+		return 'You have no selected tame.';
+	}
+
+	let rawBank = parseStringBank(str);
+	let bankToAdd = new Bank();
+	let userBank = user.bank();
+	for (const [item, qty] of rawBank) {
+		let qtyOwned = userBank.amount(item.id);
+		if (qtyOwned === 0) continue;
+		let qtyToUse = !qty ? 1 : qty > qtyOwned ? qtyOwned : qty;
+		bankToAdd.add(item.id, qtyToUse);
+	}
+
+	const thisTameSpecialFeedableItems = feedableItems.filter(f =>
+		f.tameSpeciesCanBeFedThis.includes(getTameSpecies(selectedTame).type)
+	);
+
+	if (!str || bankToAdd.length === 0) {
+		const image = await makeBankImage({
+			bank: new Bank(selectedTame.fed_items as ItemBank),
+			title: 'Items Fed To This Tame'
+		});
+
+		return {
+			...image,
+			content: `The items which give a perk/usage to this tame type when fed are:\n${thisTameSpecialFeedableItems
+				.map(i => `- ${i.item.name} (${i.description})`)
+				.join('\n')}.`
+		};
+	}
+
+	if (!userBank.fits(bankToAdd)) {
+		return "You don't have enough items.";
+	}
+
+	let specialStrArr = [];
+	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
+		if (bankToAdd.has(item.id)) {
+			if (!tameSpeciesCanBeFedThis.includes(getTameSpecies(selectedTame).type)) {
+				await handleMahojiConfirmation(
+					interaction,
+					`Feeding a '${item.name}' to your tame won't give it a perk, are you sure you want to?`
+				);
+			}
+			specialStrArr.push(`**${item.name}**: ${description}`);
+		}
+	}
+	let specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
+	await handleMahojiConfirmation(
+		interaction,
+		`Are you sure you want to feed \`${bankToAdd}\` to ${tameName(
+			selectedTame
+		)}? You **cannot** get these items back after they're eaten by your tame.${specialStr}`
+	);
+
+	let egg = '';
+	for (const [eggBank, eggSpecies, eggGrowth, easterEgg] of feedingEasterEggs) {
+		if (
+			getTameSpecies(selectedTame).id === eggSpecies &&
+			bankToAdd.fits(eggBank) &&
+			eggGrowth.includes(selectedTame.growth_stage)
+		) {
+			egg = ` ${easterEgg}`;
+		}
+	}
+
+	let newBoosts: string[] = [];
+	for (const { item, announcementString } of thisTameSpecialFeedableItems) {
+		if (bankToAdd.has(item.id) && !tameHasBeenFed(selectedTame, item.id)) {
+			newBoosts.push(`**${announcementString}**`);
+		}
+	}
+
+	await user.removeItemsFromBank(bankToAdd);
+
+	await prisma.tame.update({
+		where: {
+			id: selectedTame.id
+		},
+		data: {
+			fed_items: addBanks([selectedTame.fed_items as ItemBank, bankToAdd.bank])
+		}
+	});
+
+	return `You fed \`${bankToAdd}\` to ${tameName(selectedTame)}.${
+		newBoosts.length > 0 ? `\n\n${newBoosts.join('\n')}` : ''
+	}${specialStr}${egg}`;
+}
+
+async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
+	const [selectedTame, currentTask] = await getUsersTame(user);
+	if (!selectedTame) {
+		return 'You have no selected tame.';
+	}
+	if (getTameSpecies(selectedTame).type !== TameType.Combat) {
+		return 'This tame species cannot do PvM.';
+	}
+	if (currentTask) {
+		return `${tameName(selectedTame)} is busy.`;
+	}
+	const monster = findMonster(str);
+	if (!monster) {
+		return "That's not a valid monster.";
+	}
+
+	// Get the amount stronger than minimum, and set boost accordingly:
+	const [speciesMinCombat, speciesMaxCombat] = getTameSpecies(selectedTame).combatLevelRange;
+	// Example: If combat level is 80/100 with 70 min, give a 10% boost.
+	const combatLevelBoost = calcWhatPercent(selectedTame.max_combat_level - speciesMinCombat, speciesMaxCombat);
+
+	// Increase trip length based on minion growth:
+	let speed = monster.timeToFinish * tameGrowthLevel(selectedTame);
+
+	// Apply calculated boost:
+	speed = reduceNumByPercent(speed, combatLevelBoost);
+
+	let boosts = [];
+	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel(selectedTame));
+	if (tameHasBeenFed(selectedTame, itemID('Zak'))) {
+		maxTripLength += Time.Minute * 35;
+		boosts.push('+35mins trip length (ate a Zak)');
+	}
+	maxTripLength += patronMaxTripCalc(user) * 2;
+	if (isWeekend()) {
+		speed = reduceNumByPercent(speed, 10);
+		boosts.push('10% weekend boost');
+	}
+	if (tameHasBeenFed(selectedTame, itemID('Dwarven warhammer'))) {
+		speed = reduceNumByPercent(speed, 30);
+		boosts.push('30% faster (ate a DWWH)');
+	}
+
+	// Calculate monster quantity:
+	const quantity = Math.floor(maxTripLength / speed);
+	if (quantity < 1) {
+		return "Your tame can't kill this monster fast enough.";
+	}
+	const [foodStr, cost] = await removeRawFood({
+		client: globalClient,
+		totalHealingNeeded: (monster.healAmountNeeded ?? 1) * quantity,
+		healPerAction: monster.healAmountNeeded ?? 1,
+		user,
+		monster,
+		quantity,
+		tame: selectedTame
+	});
+	const duration = Math.floor(quantity * speed);
+
+	await trackLoot({
+		id: monster.name,
+		changeType: 'cost',
+		type: 'Monster',
+		cost,
+		suffix: 'tame'
+	});
+
+	await createTameTask({
+		user,
+		channelID: channelID.toString(),
+		selectedTame,
+		data: {
+			type: TameType.Combat,
+			monsterID: monster.id,
+			quantity
+		},
+		type: TameType.Combat,
+		duration
+	});
+
+	let reply = `${tameName(selectedTame)} is now killing ${quantity}x ${
+		monster.name
+	}. The trip will take ${formatDuration(duration)}.\n\nRemoved ${foodStr}`;
+
+	if (boosts.length > 0) {
+		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+	}
+
+	return reply;
+}
+
+async function collectCommand(user: KlasaUser, channelID: bigint, str: string) {
+	const [selectedTame, currentTask] = await getUsersTame(user);
+	if (!selectedTame) {
+		return 'You have no selected tame.';
+	}
+
+	if (getTameSpecies(selectedTame).type !== TameType.Gatherer) {
+		return 'This tame species cannot collect items.';
+	}
+	if (currentTask) {
+		return `${tameName(selectedTame)} is busy.`;
+	}
+	const collectable = collectables.find(c => stringMatches(c.item.name, str));
+	if (!collectable) {
+		return `That's not a valid collectable item. The items you can collect are: ${collectables
+			.map(i => i.item.name)
+			.join(', ')}.`;
+	}
+
+	const [min, max] = getTameSpecies(selectedTame).gathererLevelRange;
+	const gathererLevelBoost = calcWhatPercent(selectedTame.max_gatherer_level - min, max);
+
+	// Increase trip length based on minion growth:
+	let speed = collectable.duration;
+	if (selectedTame.growth_stage === tame_growth.baby) {
+		speed /= 1.5;
+	} else if (selectedTame.growth_stage === tame_growth.juvenile) {
+		speed /= 2;
+	} else {
+		speed /= 2.5;
+	}
+
+	let boosts = [];
+
+	for (const item of resolveItems(['Voidling', 'Ring of endurance'])) {
+		if (tameHasBeenFed(selectedTame, item)) {
+			speed = reduceNumByPercent(speed, 10);
+			boosts.push(`10% for ${itemNameFromID(item)}`);
+		}
+	}
+
+	if (isWeekend()) {
+		speed = reduceNumByPercent(speed, 10);
+		boosts.push('10% weekend boost');
+	}
+
+	// Apply calculated boost:
+	speed = reduceNumByPercent(speed, gathererLevelBoost);
+
+	let maxTripLength = Time.Minute * 20 * (4 - tameGrowthLevel(selectedTame));
+	if (tameHasBeenFed(selectedTame, itemID('Zak'))) {
+		maxTripLength += Time.Minute * 35;
+		boosts.push('+35mins trip length (ate a Zak)');
+	}
+	maxTripLength += patronMaxTripCalc(user) * 2;
+	// Calculate monster quantity:
+	const quantity = Math.floor(maxTripLength / speed);
+	if (quantity < 1) {
+		return "Your tame can't kill this monster fast enough.";
+	}
+
+	let duration = Math.floor(quantity * speed);
+
+	await createTameTask({
+		user,
+		channelID: channelID.toString(),
+		selectedTame,
+		data: {
+			type: TameType.Gatherer,
+			itemID: collectable.item.id,
+			quantity
+		},
+		type: TameType.Gatherer,
+		duration
+	});
+
+	let reply = `${tameName(selectedTame)} is now collecting ${quantity * collectable.quantity}x ${
+		collectable.item.name
+	}. The trip will take ${formatDuration(duration)}.`;
+
+	if (boosts.length > 0) {
+		reply += `\n\n**Boosts:** ${boosts.join(', ')}.`;
+	}
+
+	return reply;
+}
+
+async function selectCommand(user: KlasaUser, tameID: number) {
+	const tames = await prisma.tame.findMany({ where: { user_id: user.id } });
+	const toSelect = tames.find(t => t.id === tameID);
+	if (!toSelect) {
+		return "Couldn't find a tame to select.";
+	}
+	const [, currentTask] = await getUsersTame(user);
+	if (currentTask) {
+		return "You can't select a different tame, because your current one is busy.";
+	}
+	await mahojiUserSettingsUpdate(user.id, {
+		selected_tame: toSelect.id
+	});
+	return `You selected your ${tameName(toSelect)}.`;
+}
+
+export const tamesCommand: OSBMahojiCommand = {
+	name: 'tames',
+	description: 'Manage your tames.',
+	attributes: {
+		requiresMinion: true,
+		description: 'Manage your tames.',
+		examples: ['/tames select 1']
+	},
+	options: [
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'set_name',
+			description: 'Change your tames name.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The name you want to use.',
+					required: true
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'cancel',
+			description: 'Cancel your tames trip.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'list',
+			description: 'List your tames.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'merge',
+			description: 'Merge a tame into your selected tame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'tame',
+					description: 'The tame you want to merge.',
+					required: true,
+					autocomplete: tameAutocomplete
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'feed',
+			description: 'Feed your selected tame items.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'items',
+					description: 'The items you want to feed.',
+					required: true
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'kill',
+			description: 'Send your selected tame to kill things.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The thing you want to kill.',
+					required: true,
+					autocomplete: async (value: string) => {
+						return killableMonsters
+							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i.name, value: i.name }));
+					}
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'collect',
+			description: 'Send your selected tame to collect things.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The thing you want to collect.',
+					required: true,
+					autocomplete: async (value: string) => {
+						return collectables
+							.filter(i => (!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i.item.name, value: i.item.name }));
+					}
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'select',
+			description: 'Select a tame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'tame',
+					description: 'The tame you want to select.',
+					required: true,
+					autocomplete: tameAutocomplete
+				}
+			]
+		}
+	],
+	run: async ({
+		options,
+		userID,
+		channelID,
+		interaction
+	}: CommandRunOptions<{
+		set_name?: { name: string };
+		cancel?: {};
+		list?: {};
+		merge?: { tame: number };
+		feed?: { items: string };
+		kill: { name: string };
+		collect: { name: string };
+		select: { tame: number };
+	}>) => {
+		const user = await globalClient.fetchUser(userID);
+		if (options.set_name) return setNameCommand(user, options.set_name.name);
+		if (options.cancel) return cancelCommand(user);
+		if (options.list) return tameImage(user);
+		if (options.merge) return mergeCommand(user, interaction, options.merge.tame);
+		if (options.feed) return feedCommand(interaction, user, options.feed.items);
+		if (options.kill) return killCommand(user, channelID, options.kill.name);
+		if (options.collect) return collectCommand(user, channelID, options.collect.name);
+		if (options.select) return selectCommand(user, options.select.tame);
+		return 'Invalid command.';
+	}
+};
