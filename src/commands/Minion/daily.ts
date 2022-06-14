@@ -1,29 +1,13 @@
-import * as fs from 'fs';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { COINS_ID, dailyResetTime, Emoji, SupportServer } from '../../lib/constants';
 import pets from '../../lib/data/pets';
+import { getRandomTriviaQuestion } from '../../lib/roboChimp';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, isWeekend, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
-
-if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
-	fs.writeFileSync(
-		'./src/lib/resources/trivia-questions.json',
-		JSON.stringify(
-			{
-				triviaQuestions: []
-			},
-			null,
-			4
-		)
-	);
-	console.log('Created empty trivia questions file at ./src/lib/resources/trivia-questions.json');
-}
-
-const { triviaQuestions } = JSON.parse(fs.readFileSync('./src/lib/resources/trivia-questions.json').toString());
 
 const options = {
 	max: 1,
@@ -69,9 +53,7 @@ export default class DailyCommand extends BotCommand {
 
 		await msg.author.settings.update(UserSettings.LastDailyTimestamp, new Date().getTime());
 
-		const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
-
-		const question = msg.author.settings.get('troll') ? `||${trivia.q.split('').join('||')}||` : trivia.q;
+		const { question, answers } = await getRandomTriviaQuestion();
 
 		await msg.channel.send(`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${question}`);
 		try {
@@ -79,8 +61,8 @@ export default class DailyCommand extends BotCommand {
 				...options,
 				filter: answer =>
 					answer.author.id === msg.author.id &&
-					answer.content &&
-					trivia.a.some((_ans: string) => stringMatches(_ans, answer.content))
+					Boolean(answer.content) &&
+					answers.some(_ans => stringMatches(_ans, answer.content))
 			});
 			const winner = collected.first();
 			if (winner) return this.reward(msg, true);
