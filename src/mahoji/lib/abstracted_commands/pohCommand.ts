@@ -155,12 +155,6 @@ export async function pohBuildCommand(interaction: SlashCommandInteraction, user
 }
 
 export async function pohMountItemCommand(user: KlasaUser, name: string) {
-	/*
-	if (1 < 2) {
-		return 'Item mounting is currently disabled.';
-	}
-
-	 */
 	const poh = await getPOH(user.id);
 	if (!name) {
 		return makePOHImage(user);
