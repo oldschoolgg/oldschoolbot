@@ -641,6 +641,15 @@ export function sanitizeBank(bank: Bank) {
 		}
 	}
 }
+export function getBankOfMissingItems(userBank: Bank, costBank: Bank) {
+	const resultBank = new Bank();
+	for (const [item, qty] of costBank.items()) {
+		const ownedQty = userBank.amount(item.id);
+		if (ownedQty >= qty) continue;
+		resultBank.add(item.id, qty - ownedQty);
+		return resultBank;
+	}
+}
 export function convertBankToPerHourStats(bank: Bank, time: number) {
 	let result = [];
 	for (const [item, qty] of bank.items()) {
