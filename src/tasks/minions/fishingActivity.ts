@@ -181,9 +181,9 @@ export default class extends Task {
 
 		// Roll for pet
 		if (fish.petChance) {
-			let chance = skillingPetDropRate(user, SkillsEnum.Fishing, fish.petChance) as number;
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, fish.petChance);
 			for (let i = 0; i < quantity; i++) {
-				if (roll(chance)) {
+				if (roll(petDropRate)) {
 					loot.add('Heron');
 					str += "\nYou have a funny feeling you're being followed...";
 					this.client.emit(

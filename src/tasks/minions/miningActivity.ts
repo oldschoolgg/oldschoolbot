@@ -57,13 +57,16 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (ore.petChance && roll((skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance) as number) / quantity)) {
-			loot.add('Rock golem');
-			str += "\nYou have a funny feeling you're being followed...";
-			this.client.emit(
-				Events.ServerNotification,
-				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
-			);
+		if (ore.petChance) {
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Mining, ore.petChance);
+			if (roll(petDropRate / quantity)) {
+				loot.add('Rock golem');
+				str += "\nYou have a funny feeling you're being followed...";
+				this.client.emit(
+					Events.ServerNotification,
+					`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`
+				);
+			}
 		}
 
 		const numberOfMinutes = duration / Time.Minute;

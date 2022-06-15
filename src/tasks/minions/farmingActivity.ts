@@ -336,6 +336,7 @@ export default class extends Task {
 			}
 
 			let tangleroot = false;
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance);
 			if (plantToHarvest.seedType === 'hespori') {
 				await user.incrementMonsterScore(Monsters.Hespori.id);
 				const hesporiLoot = Monsters.Hespori.kill(1, { farmingLevel: currentFarmingLevel });
@@ -345,7 +346,7 @@ export default class extends Task {
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
 				alivePlants > 0 &&
-				roll((skillingPetDropRate(user, SkillsEnum.Farming, plantToHarvest.petChance) as number) / alivePlants)
+				roll(petDropRate / alivePlants)
 			) {
 				loot.add('Tangleroot');
 				tangleroot = true;

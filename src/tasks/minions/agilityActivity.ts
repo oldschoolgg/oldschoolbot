@@ -97,10 +97,8 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (
-			course.petChance &&
-			roll((skillingPetDropRate(user, SkillsEnum.Agility, course.petChance) as number) / quantity)
-		) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Agility, course.petChance);
+		if (roll(petDropRate / quantity)) {
 			loot.add('Giant squirrel');
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(

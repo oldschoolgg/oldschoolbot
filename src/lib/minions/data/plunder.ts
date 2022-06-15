@@ -124,8 +124,8 @@ export function lootRoom(user: KlasaUser | User, room: number): [ItemBank, numbe
 	const loot = new Bank();
 	const sceptreChance = 1000;
 	const roomObj = plunderRooms[room - 1];
-
-	if (roll(skillingPetDropRate(user, SkillsEnum.Thieving, roomObj.rockyChance) as number)) {
+	const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, roomObj.rockyChance);
+	if (roll(petDropRate)) {
 		loot.add('Rocky');
 	}
 

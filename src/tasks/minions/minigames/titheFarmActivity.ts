@@ -102,8 +102,8 @@ export default class extends Task {
 		}
 
 		const loot = new Bank();
-
-		if (roll((skillingPetDropRate(user, SkillsEnum.Farming, 7_494_389) as number) / determineHarvest)) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Farming, 7_494_389);
+		if (roll(petDropRate / determineHarvest)) {
 			loot.add('Tangleroot');
 			lootStr.push('\n\n```diff');
 			lootStr.push("\n- You have a funny feeling you're being followed...");

@@ -110,8 +110,8 @@ export default class extends Task {
 		if (creature.name.toLowerCase().includes('chinchompa')) {
 			babyChinChance =
 				creature.name === 'Chinchompa' ? 131_395 : creature.name === 'Carnivorous chinchompa' ? 98_373 : 82_758;
-			babyChinChance = skillingPetDropRate(user, SkillsEnum.Hunter, babyChinChance) as number;
 		}
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Hunter, babyChinChance);
 
 		let creatureTable = creature.table;
 		let magicSecStr = '';
@@ -138,7 +138,7 @@ export default class extends Task {
 		const loot = new Bank();
 		for (let i = 0; i < successfulQuantity - pkedQuantity; i++) {
 			loot.add(creatureTable.roll());
-			if (roll(babyChinChance) && creature.name.toLowerCase().includes('chinchompa')) {
+			if (roll(petDropRate) && creature.name.toLowerCase().includes('chinchompa')) {
 				loot.add(itemID('Baby chinchompa'));
 			}
 		}

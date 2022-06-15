@@ -62,20 +62,20 @@ export default class extends Task {
 		}
 
 		// Roll for pet
-		if (
-			log.petChance &&
-			roll((skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance) as number) / quantity)
-		) {
-			loot.add('Beaver');
-			str += "\n**You have a funny feeling you're being followed...**";
-			this.client.emit(
-				Events.ServerNotification,
-				`${Emoji.Woodcutting} **${user.username}'s** minion, ${
-					user.minionName
-				}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
-					SkillsEnum.Woodcutting
-				)} Woodcutting!`
-			);
+		if (log.petChance) {
+			const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Woodcutting, log.petChance);
+			if (roll(petDropRate / quantity)) {
+				loot.add('Beaver');
+				str += "\n**You have a funny feeling you're being followed...**";
+				this.client.emit(
+					Events.ServerNotification,
+					`${Emoji.Woodcutting} **${user.username}'s** minion, ${
+						user.minionName
+					}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
+						SkillsEnum.Woodcutting
+					)} Woodcutting!`
+				);
+			}
 		}
 
 		str += `\nYou received ${loot}.`;

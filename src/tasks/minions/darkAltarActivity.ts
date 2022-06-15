@@ -40,9 +40,9 @@ export default class extends Task {
 		}
 
 		let loot = new Bank().add(runeData.item.id, runeQuantity);
-
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance);
 		for (let i = 0; i < quantity; i++) {
-			if (roll(skillingPetDropRate(user, SkillsEnum.Runecraft, runeData.petChance) as number)) {
+			if (roll(petDropRate)) {
 				loot.add('Rift guardian');
 			}
 		}

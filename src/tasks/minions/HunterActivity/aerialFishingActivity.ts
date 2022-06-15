@@ -136,7 +136,8 @@ export default class extends Task {
 
 		// Heron Pet roll
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
-		if (roll((skillingPetDropRate(user, SkillsEnum.Fishing, 636_833) as number) / totalFishCaught)) {
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Fishing, 636_833);
+		if (roll(petDropRate / totalFishCaught)) {
 			loot.add('Heron');
 			str += "\nYou have a funny feeling you're being followed...";
 			this.client.emit(

@@ -20,6 +20,11 @@ export default class extends Task {
 		const loot = new Bank();
 		let agilityXP = 0;
 		let numCoffinsOpened = 0;
+		let { petDropRate } = skillingPetDropRate(
+			user,
+			SkillsEnum.Agility,
+			completedFloors[completedFloors.length - 1].petChance
+		);
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
 				if (floor.number === 5) {
@@ -34,15 +39,7 @@ export default class extends Task {
 
 				agilityXP += floor.xp;
 			}
-			if (
-				roll(
-					skillingPetDropRate(
-						user,
-						SkillsEnum.Agility,
-						completedFloors[completedFloors.length - 1].petChance
-					) as number
-				)
-			) {
+			if (roll(petDropRate)) {
 				loot.add('Giant squirrel');
 			}
 		}

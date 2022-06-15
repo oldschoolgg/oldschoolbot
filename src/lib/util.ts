@@ -799,27 +799,27 @@ export function skillingPetDropRate(
 	skill: SkillsEnum,
 	tableOrBaseDropRate: LootTable | number,
 	itemName?: string
-): LootTable | number {
+): { petDropRate: number; newLootTable?: LootTable } {
 	const twoHundredMillXP =
 		user instanceof KlasaUser
 			? (user.settings.get(`skills.${skill}`) as number) >= 200_000_000
 			: (getSkillsOfMahojiUser(user)[skill] as number) >= 200_000_000;
 	const skillLevel = user instanceof KlasaUser ? user.skillLevel(skill) : getSkillsOfMahojiUser(user, true)[skill];
 	const petRateDivisor = twoHundredMillXP ? 15 : 1;
+	let dropRate = 0;
 	if (tableOrBaseDropRate instanceof LootTable) {
-		if (!itemName || !Items.find(e => e.id === itemID(itemName))) return tableOrBaseDropRate;
+		if (!itemName || !Items.find(e => e.id === itemID(itemName)))
+			return { petDropRate: dropRate, newLootTable: tableOrBaseDropRate };
 		const newLootTable = tableOrBaseDropRate.clone();
 		const skillingPetEntryRaw = newLootTable.tertiaryItems.find(e => e.item === itemID(itemName));
-		if (!skillingPetEntryRaw) return tableOrBaseDropRate;
+		if (!skillingPetEntryRaw) return { petDropRate: dropRate, newLootTable: tableOrBaseDropRate };
 		// Clone because the entries on each LootTable->subTable aren't deepcloned by LootTable.clone()
 		const skillingPetEntry = { ...skillingPetEntryRaw };
 		skillingPetEntry.chance = Math.floor((skillingPetEntry.chance - skillLevel * 25) / petRateDivisor);
-		newLootTable.tertiaryItems = [
-			...newLootTable.tertiaryItems.filter(e => e.item !== itemID(itemName)),
-			skillingPetEntry
-		];
-		return newLootTable;
+		newLootTable.tertiaryItems = newLootTable.tertiaryItems.filter(e => e.item !== itemID(itemName));
+		dropRate = skillingPetEntry.chance;
+		return { petDropRate: dropRate, newLootTable };
 	}
-	const dropRate = Math.floor((tableOrBaseDropRate - skillLevel * 25) / petRateDivisor);
-	return dropRate;
+	dropRate = Math.floor((tableOrBaseDropRate - skillLevel * 25) / petRateDivisor);
+	return { petDropRate: dropRate };
 }

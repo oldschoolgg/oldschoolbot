@@ -1,6 +1,6 @@
-import { percentChance, randInt } from 'e';
+import { percentChance, randInt, roll } from 'e';
 import { Task } from 'klasa';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
 import { Events } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -53,19 +53,28 @@ export default class extends Task {
 
 		const currentLevel = user.skillLevel(SkillsEnum.Thieving);
 		let rogueOutfitBoostActivated = false;
+		let str = '';
 
 		const loot = new Bank();
-		const adjustedLootTable = skillingPetDropRate(user, SkillsEnum.Thieving, npc.table, 'Rocky') as LootTable;
-		for (let i = 0; i < successfulQuantity; i++) {
-			const lootItems = adjustedLootTable.roll();
-			if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
-				rogueOutfitBoostActivated = true;
-				const doubledLoot = lootItems.multiply(2);
-				if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');
-				loot.add(doubledLoot);
-			} else {
-				loot.add(lootItems);
+		const { petDropRate, newLootTable } = skillingPetDropRate(user, SkillsEnum.Thieving, npc.table, 'Rocky');
+
+		if (newLootTable) {
+			for (let i = 0; i < successfulQuantity; i++) {
+				const lootItems = newLootTable.roll();
+				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
+					rogueOutfitBoostActivated = true;
+					const doubledLoot = lootItems.multiply(2);
+					if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');
+					loot.add(doubledLoot);
+				} else {
+					loot.add(lootItems);
+				}
 			}
+		}
+
+		// Roll for pet
+		if (roll(petDropRate / successfulQuantity)) {
+			loot.add('Rocky');
 		}
 
 		if (loot.has('Coins')) {
@@ -75,7 +84,7 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 		const xpRes = await user.addXP({ skillName: SkillsEnum.Thieving, amount: xpReceived });
 
-		let str = `${user}, ${user.minionName} finished pickpocketing a ${
+		str = `${user}, ${user.minionName} finished pickpocketing a ${
 			npc.name
 		} ${successfulQuantity}x times, due to failures you missed out on ${
 			quantity - successfulQuantity
