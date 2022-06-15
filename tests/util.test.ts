@@ -2,7 +2,7 @@ import { reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { sellPriceOfItem } from '../src/commands/Minion/sell';
+import { sellPriceOfItem, sellStorePriceOfItem } from '../src/commands/Minion/sell';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { deduplicateClueScrolls, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
@@ -71,6 +71,16 @@ describe('util', () => {
 		let expected = Math.floor(reduceNumByPercent(price, 20));
 		expect(sellPriceOfItem(item)).toEqual({ price: expected, basePrice: price });
 		expect(sellPriceOfItem(getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
+	});
+
+	test('sellStorePriceOfItem', () => {
+		const item = getOSItem('Dragon pickaxe');
+		const { cost } = item;
+		let expectedOneQty = Math.floor((0.4 - 0.03 * Math.min(1 - 1, 10)) * cost);
+		let expectedManyQty = Math.floor((0.4 - 0.03 * Math.min(222 - 1, 10)) * cost);
+		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
+		expect(sellStorePriceOfItem(item, 222)).toEqual({ price: expectedManyQty, basePrice: cost });
+		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
 	test('getSkillsOfMahojiUser', () => {
