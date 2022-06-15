@@ -98,7 +98,7 @@ export const pohCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.String,
 					name: 'name',
-					description: 'The object you want to mount.',
+					description: 'The item you want to mount.',
 					required: true,
 					autocomplete: async (value, user) => {
 						const mUser = await mahojiUsersSettingsFetch(user.id, { bank: true });
