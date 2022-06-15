@@ -1,4 +1,6 @@
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { PoHObjects } from '../../lib/poh';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -7,6 +9,7 @@ import {
 	makePOHImage,
 	pohBuildCommand,
 	pohDestroyCommand,
+	pohMountItemCommand,
 	pohWallkitCommand,
 	pohWallkits
 } from '../lib/abstracted_commands/pohCommand';
@@ -86,6 +89,25 @@ export const pohCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'mountitem',
+			description: 'Mount an item into your PoH.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'name',
+					description: 'The object you want to mount.',
+					required: true,
+					autocomplete: async (value, user) => {
+						const mUser = await mahojiUsersSettingsFetch(user.id, { bank: true });
+						const bank = new Bank(mUser.bank as ItemBank);
+						let res = bank.items().filter(i => i[0].name.toLowerCase().includes(value.toLowerCase()));
+						return res.map(i => ({ name: `${i[0].name}`, value: i[0].name.toString() }));
+					}
+				}
+			]
 		}
 	],
 	run: async ({
@@ -97,6 +119,7 @@ export const pohCommand: OSBMahojiCommand = {
 		wallkit?: { name: string };
 		build?: { name: string };
 		destroy?: { name: string };
+		mountitem?: { name: string };
 	}>) => {
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -113,6 +136,9 @@ export const pohCommand: OSBMahojiCommand = {
 		}
 		if (options.destroy) {
 			return pohDestroyCommand(user, options.destroy.name);
+		}
+		if (options.mountitem) {
+			return pohMountItemCommand(user, options.mountitem.name);
 		}
 		return 'Invalid command.';
 	}
