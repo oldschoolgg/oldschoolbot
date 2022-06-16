@@ -647,8 +647,8 @@ export function getBankOfMissingItems(userBank: Bank, costBank: Bank) {
 		const ownedQty = userBank.amount(item.id);
 		if (ownedQty >= qty) continue;
 		resultBank.add(item.id, qty - ownedQty);
-		return resultBank;
 	}
+	return resultBank;
 }
 export function convertBankToPerHourStats(bank: Bank, time: number) {
 	let result = [];
