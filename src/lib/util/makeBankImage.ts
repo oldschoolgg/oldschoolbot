@@ -2,6 +2,8 @@ import { KlasaUser } from 'klasa';
 import { MahojiAttachment } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
+import { Flags } from '../minions/types';
+
 interface MakeBankImageOptions {
 	bank: Bank;
 	content?: string;
@@ -24,7 +26,7 @@ export async function makeBankImage({
 }: MakeBankImageOptions): Promise<{
 	file: MahojiAttachment;
 }> {
-	let realFlags: Record<string, string | number> = { ...flags, background: background ?? 1, ...flags, nocache: 1 };
+	let realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
 	if (showNewCL) realFlags.showNewCL = 1;
 	const { image, isTransparent } = await globalClient.tasks
 		.get('bankImage')!
