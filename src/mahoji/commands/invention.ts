@@ -366,7 +366,11 @@ export const askCommand: OSBMahojiCommand = {
 				case 'unlocked_blueprints': {
 					const unlocked = Inventions.filter(i => mahojiUser.unlocked_blueprints.includes(i.id));
 					const locked = Inventions.filter(i => !mahojiUser.unlocked_blueprints.includes(i.id));
-					return `You have the following blueprints unlocked: ${unlocked.map(i => i.name).join(', ')}.
+					return `You have the following blueprints unlocked: ${
+						unlocked.length === 0
+							? 'None! Do some research to unlock some.'
+							: unlocked.map(i => i.name).join(', ')
+					}.
 These Inventions are still not unlocked: ${locked
 						.map(i => `${i.name} (${Object.keys(i.materialTypeBank.bank).join(', ')})`)
 						.join(', ')}`;
