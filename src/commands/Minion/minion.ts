@@ -225,8 +225,8 @@ export default class MinionCommand extends BotCommand {
 		}
 
 		if (getUsersPerkTier(msg.author) >= PerkTier.Two) {
-			const { tame, species } = await getUsersTame(msg.author);
-			if (tame) {
+			const { tame, species, activity } = await getUsersTame(msg.author);
+			if (tame && !activity) {
 				const lastTameAct = await tameLastFinishedActivity(mahojiUser);
 				if (lastTameAct) {
 					dynamicButtons.add({
