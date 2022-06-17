@@ -63,6 +63,7 @@ If you have errors or issues, you can ask us for help in the developer channel i
 -   [[Lilylicious](https://github.com/Lilylicious)]
 -   [[Gidedin](https://github.com/imgidedin)]
 -   [[Andre](https://github.com/ard35)]
+-   [[TastyPumPum](https://github.com/TastyPumPum)]
 
 ## Notes
 
