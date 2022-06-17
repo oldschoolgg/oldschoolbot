@@ -1,16 +1,35 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { PVM_METHODS, PvMMethod } from '../../lib/constants';
-import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { NEX_ID, PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
+import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { prisma } from '../../lib/settings/prisma';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
 const autocompleteMonsters = [
-	...effectiveMonsters,
+	...killableMonsters,
+	...revenantMonsters,
 	{
+		id: -1,
 		name: 'Tempoross',
 		aliases: ['temp', 'tempoross']
+	},
+	...["Phosani's Nightmare", 'Mass Nightmare', 'Solo Nightmare'].map(s => ({
+		id: -1,
+		name: s,
+		aliases: [s.toLowerCase()]
+	})),
+	{
+		name: 'Nex',
+		aliases: ['nex'],
+		id: NEX_ID
+	},
+	{
+		name: 'Zalcano',
+		aliases: ['zalcano'],
+		id: ZALCANO_ID,
+		emoji: '<:Smolcano:604670895113633802>'
 	}
 ];
 
