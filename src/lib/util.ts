@@ -30,7 +30,7 @@ import { promisify } from 'util';
 
 import { CLIENT_ID } from '../config';
 import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
-import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
+import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
@@ -494,7 +494,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
+export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[], target?: KlasaUser) {
 	const display = new PaginatedMessage();
 	// @ts-ignore 2445
 	display.setUpReactions = () => null;
@@ -518,12 +518,12 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 	}
 
-	await display.run(message);
+	await display.run(message, target);
 
 	if (pages.length > 1) {
 		const collector = display.response!.createMessageComponentInteractionCollector({
 			time: Time.Minute,
-			filter: i => i.user.id === message.author.id
+			filter: i => i.user.id === (target ? target.id : message.author.id)
 		});
 
 		collector.on('collect', async interaction => {
@@ -554,10 +554,6 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 }
 
 export const asyncExec = promisify(exec);
-
-export function getUsername(id: string): string {
-	return (globalClient.commands.get('leaderboard') as any)!.getUsername(id);
-}
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
@@ -794,4 +790,8 @@ export async function asyncGzip(buffer: Buffer) {
 			resolve(gzipped);
 		});
 	});
+}
+
+export function getUsername(id: string | bigint) {
+	return usernameCache.get(id.toString()) ?? 'Unknown';
 }
