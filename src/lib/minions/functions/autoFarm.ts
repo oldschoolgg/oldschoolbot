@@ -34,16 +34,13 @@ export async function autoFarm(user: KlasaUser, patchesDetailed: IPatchDataDetai
 		.filter(p => {
 			switch (autoFarmFilterString) {
 				case AutoFarmFilterEnum.Allfarm: {
-					allFarm(p, farmingLevel, user, userBank);
-					break;
+					return allFarm(p, farmingLevel, user, userBank);
 				}
 				case AutoFarmFilterEnum.Replant: {
-					replant(p, farmingLevel, user, userBank, patchesDetailed);
-					break;
+					return replant(p, farmingLevel, user, userBank, patchesDetailed);
 				}
 				default: {
-					allFarm(p, farmingLevel, user, userBank);
-					break;
+					return allFarm(p, farmingLevel, user, userBank);
 				}
 			}
 		})
