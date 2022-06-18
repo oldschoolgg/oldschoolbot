@@ -213,8 +213,7 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 }
 
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
-	leader: string;
-	users: string[];
+	method: 'solo' | 'mass';
 	quantity: number;
 	isPhosani?: boolean;
 }
