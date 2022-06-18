@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
 import { cancelTask, getActivityOfUser } from '../../../lib/settings/settings';
-import { NexTaskOptions, NightmareActivityTaskOptions, RaidsOptions } from '../../../lib/types/minions';
+import { NexTaskOptions, RaidsOptions } from '../../../lib/types/minions';
 import { minionName } from '../../../lib/util/minionUtils';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
 
@@ -27,12 +27,6 @@ export async function cancelTaskCommand(user: User, interaction?: SlashCommandIn
 		const data = currentTask as NexTaskOptions;
 		if (data.users.length > 1) {
 			return `${mName} is fighting Nex with a team, they can't abandon the trip!`;
-		}
-	}
-	if (currentTask.type === 'Nightmare') {
-		const data = currentTask as NightmareActivityTaskOptions;
-		if (data.users.length > 1) {
-			return `${mName} is fighting the Nightmare with a team, they cant leave their team!`;
 		}
 	}
 
