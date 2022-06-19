@@ -1,7 +1,7 @@
 import { noOp, shuffleArr } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
-import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';

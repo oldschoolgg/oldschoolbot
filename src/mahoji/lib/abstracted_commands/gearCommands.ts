@@ -306,7 +306,7 @@ export async function autoEquipCommand(
 	}
 
 	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
-		user.settings.get(UserSettings.Bank),
+		user.bank(),
 		user.getGear(gearSetup),
 		gearSetup,
 		user.rawSkills,
