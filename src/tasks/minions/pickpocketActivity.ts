@@ -15,7 +15,7 @@ import resolveItems from '../../lib/util/resolveItems';
 
 const notMultiplied = resolveItems([
 	'Blood shard',
-	'Enchanced crystal teleport seed',
+	'Enhanced crystal teleport seed',
 	...ClueTiers.map(i => i.scrollID)
 ]);
 
