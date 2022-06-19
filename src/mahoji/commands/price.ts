@@ -32,7 +32,7 @@ export const priceCommand: OSBMahojiCommand = {
 			.setDescription(
 				`**Price:** ${toKMB(priceOfItem)} 
 **Sell price:** ${sellPriceOfItem(item).price}
-**Alch value:** ${toKMB(item.highalch)}`
+**Alch value:** ${toKMB(item.highalch ?? 0)}`
 			);
 
 		return { embeds: [embed] };
