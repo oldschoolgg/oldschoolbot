@@ -83,8 +83,8 @@ export const disassembleFlags: IDisassembleFlag[] = [
 export interface DisassemblyItem {
 	item: Item | Item[];
 	lvl: number;
-	partQuantity?: number;
 	flags?: Set<DisassembleFlag>;
+	outputMultiplier?: number;
 }
 
 export interface DisassemblySourceGroup {

@@ -35,8 +35,8 @@ export class MaterialBank {
 		if (typeof bank === 'string') {
 			return typeof this.bank[bank] !== 'undefined';
 		}
-		for (const { type, quantity } of this.values()) {
-			if (bank.amount(type) > quantity) return false;
+		for (const { type, quantity } of bank.values()) {
+			if (this.amount(type) < quantity) return false;
 		}
 		return true;
 	}

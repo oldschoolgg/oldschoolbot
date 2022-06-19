@@ -20,7 +20,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { calcPerHour, convertXPtoLVL, formatDuration, stringMatches, toKMB, toTitleCase } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
-import { mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'invention',
@@ -57,11 +57,10 @@ export const askCommand: OSBMahojiCommand = {
 					}
 				},
 				{
-					type: ApplicationCommandOptionType.Integer,
+					type: ApplicationCommandOptionType.String,
 					name: 'quantity',
 					description: 'The quantity you want to disassemble.',
-					required: false,
-					min_value: 1
+					required: false
 				}
 			]
 		},
@@ -224,7 +223,7 @@ export const askCommand: OSBMahojiCommand = {
 		channelID,
 		interaction
 	}: CommandRunOptions<{
-		disassemble?: { name: string; quantity?: number };
+		disassemble?: { name: string; quantity?: string };
 		research?: { material: MaterialType; quantity?: number };
 		invent?: { name: string; quantity?: number };
 		group?: { group: string };
@@ -245,27 +244,6 @@ export const askCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
-		if (options.disassemble) {
-			return disassembleCommand({
-				klasaUser: user,
-				mahojiUser,
-				itemToDisassembleName: options.disassemble.name,
-				quantityToDisassemble: options.disassemble.quantity,
-				channelID
-			});
-		}
-		if (options.research) {
-			return researchCommand({
-				user: mahojiUser,
-				inputQuantity: options.research.quantity,
-				material: options.research.material,
-				channelID,
-				interaction
-			});
-		}
-		if (options.invent) {
-			return inventCommand(mahojiUser, user, options.invent.name);
-		}
 		if (options.details) {
 			const invention = Inventions.find(i => stringMatches(i.name, options.details!.invention!));
 			if (!invention) return 'No invention found.';
@@ -283,6 +261,7 @@ export const askCommand: OSBMahojiCommand = {
 		if (options.materials) {
 			return `You own: ${new MaterialBank(mahojiUser.materials_owned as IMaterialBank)}`;
 		}
+
 		if (options.group) {
 			const group = DisassemblySourceGroups.find(i => i.name === options.group?.group);
 			if (!group) return "That's not a valid group.";
@@ -475,6 +454,32 @@ These Inventions are still not unlocked: ${locked
 			}
 		}
 
-		return 'Wut da hell';
+		if (user.skillLevel(SkillsEnum.Crafting) < 90 || user.skillLevel(SkillsEnum.Smithing) < 90) {
+			return "Your minion isn't skilled enough to train Invention, you need level 90 Crafting and level 90 Smithing.";
+		}
+
+		if (options.disassemble) {
+			return disassembleCommand({
+				klasaUser: user,
+				mahojiUser,
+				itemToDisassembleName: options.disassemble.name,
+				quantityToDisassemble: mahojiParseNumber({ input: options.disassemble.quantity, min: 1 }) ?? undefined,
+				channelID
+			});
+		}
+		if (options.research) {
+			return researchCommand({
+				user: mahojiUser,
+				inputQuantity: options.research.quantity,
+				material: options.research.material,
+				channelID,
+				interaction
+			});
+		}
+		if (options.invent) {
+			return inventCommand(mahojiUser, user, options.invent.name);
+		}
+
+		return 'Invalid command.';
 	}
 };

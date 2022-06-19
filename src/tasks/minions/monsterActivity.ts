@@ -1,4 +1,4 @@
-import { calcWhatPercent, increaseNumByPercent, percentChance, reduceNumByPercent, Time } from 'e';
+import { calcWhatPercent, increaseNumByPercent, percentChance, reduceNumByPercent, sumArr, Time } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
@@ -41,9 +41,14 @@ async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, 
 		}
 	}
 
+	let durationForCost = totalXP * 16.8;
 	let boostMsg: string | null = null;
-	if (hasSuperior) {
-		const t = await inventionItemBoost({ userID: user.id, inventionID: InventionID.SuperiorBonecrusher, duration });
+	if (hasSuperior && durationForCost > Number(Time.Minute)) {
+		const t = await inventionItemBoost({
+			userID: user.id,
+			inventionID: InventionID.SuperiorBonecrusher,
+			duration: durationForCost
+		});
 		if (!t.success) {
 			hasSuperior = false;
 		} else {
@@ -129,8 +134,8 @@ export async function clueUpgraderEffect(
 	loot.add(upgradedClues);
 	assert(loot.has(removeBank));
 	loot.remove(removeBank);
-	messages.push(`Clue Upgrader upgraded ${removeBank} into ${upgradedClues} (${boostRes.messages})`);
-	return true;
+	let totalCluesUpgraded = sumArr(upgradedClues.items().map(i => i[1]));
+	messages.push(`<:Clue_upgrader:986830303001722880> Upgraded ${totalCluesUpgraded} clues (${boostRes.messages})`);
 }
 
 export default class extends Task {

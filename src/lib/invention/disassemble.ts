@@ -23,7 +23,14 @@ import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
 import { handleTripFinish } from '../util/handleTripFinish';
 import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../util/minionUtils';
-import { DisassembleFlag, DisassemblyItem, DisassemblySourceGroup, IMaterialBank, MaterialType } from '.';
+import {
+	allItemsThatCanBeDisassembledIDs,
+	DisassembleFlag,
+	DisassemblyItem,
+	DisassemblySourceGroup,
+	IMaterialBank,
+	MaterialType
+} from '.';
 import { DisassemblyGroupMap, DisassemblySourceGroups } from './groups';
 import {
 	inventionBoosts,
@@ -163,11 +170,13 @@ function flagEffectsInDisassembly(item: DisassemblyItem, loot: MaterialBank) {
 export async function handleDisassembly({
 	user,
 	inputQuantity,
-	item
+	item,
+	isSimulating
 }: {
 	user: User;
 	inputQuantity?: number;
 	item: Item;
+	isSimulating?: true;
 }): Promise<DisassemblyResult> {
 	const _group = findDisassemblyGroup(item);
 	if (!_group) throw new Error(`No data for ${item.name}`);
@@ -189,7 +198,7 @@ export async function handleDisassembly({
 	let timePer = Time.Second * 0.33;
 
 	let messages: string[] = [];
-	if (bank.has('Dwarven toolkit')) {
+	if (!isSimulating && bank.has('Dwarven toolkit')) {
 		const boostRes = await inventionItemBoost({
 			userID: user.id,
 			inventionID: InventionID.DwarvenToolkit,
@@ -203,7 +212,7 @@ export async function handleDisassembly({
 			);
 		}
 	}
-	if (userHasItemsEquippedAnywhere(user, 'Invention master cape')) {
+	if (!isSimulating && userHasItemsEquippedAnywhere(user, 'Invention master cape')) {
 		timePer = reduceNumByPercent(timePer, inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent);
 		messages.push(
 			`${inventionBoosts.inventionMasterCape.disassemblySpeedBoostPercent}% faster disassembly for mastery`
@@ -217,17 +226,17 @@ export async function handleDisassembly({
 	const realQuantity = clamp(inputQuantity ?? bank.amount(item.id), 1, maxCanDo);
 	const duration = realQuantity * timePer;
 
-	const masterCapeBoost = doesHaveMasterCapeBoost(user, _group.group);
-	if (masterCapeBoost.has) {
+	const masterCapeBoost = isSimulating ? false : doesHaveMasterCapeBoost(user, _group.group);
+	if (masterCapeBoost && masterCapeBoost.has) {
 		messages.push(`${MASTER_CAPE_JUNK_REDUCTION}% junk chance reduction for ${masterCapeBoost.cape}`);
 	}
-	const junkChance = calcJunkChance(data.lvl, masterCapeBoost.has);
+	const junkChance = calcJunkChance(data.lvl, masterCapeBoost ? masterCapeBoost.has : false);
 
 	for (let i = 0; i < realQuantity; i++) {
 		if (percentChance(junkChance)) {
 			materialLoot.add('junk');
 		} else {
-			materialLoot.add(table.roll(), data.partQuantity);
+			materialLoot.add(table.roll(), data.outputMultiplier ?? 1);
 			// Modify the loot based off the flags the items have.
 			if (data.flags) flagEffectsInDisassembly(data, materialLoot);
 		}
@@ -255,6 +264,49 @@ export async function handleDisassembly({
 		error: null,
 		messages
 	};
+}
+
+async function materialAnalysis(user: User, bank: Bank) {
+	let materialAnalysis = '';
+	let totalXP = 0;
+	let totalDur = 0;
+	let totalCost = new Bank();
+	let totalMats = new MaterialBank();
+
+	let start = Date.now();
+	for (const [item, qty] of bank.items()) {
+		if (!allItemsThatCanBeDisassembledIDs.has(item.id)) continue;
+		let thisXP = 0;
+		let thisDur = 0;
+		let thisCost = new Bank();
+		let thisMats = new MaterialBank();
+
+		while (bank.amount(item.id) > 0) {
+			let res = await handleDisassembly({ user, inputQuantity: qty, item, isSimulating: true });
+			if (res.error === null) {
+				thisXP += res.xp;
+				thisDur += res.duration;
+				thisCost.add(res.cost);
+				thisMats.add(res.materials);
+				bank.remove(res.cost);
+			} else {
+				break;
+			}
+		}
+		materialAnalysis += `${item.name}\t${toKMB(thisXP)}\t${formatDuration(thisDur)}\t${thisMats}\t${thisCost}\n`;
+		totalXP += thisXP;
+		totalDur += thisDur;
+		totalCost.add(thisCost);
+		totalMats.add(thisMats);
+		if (Date.now() - start > Time.Second * 10) {
+			materialAnalysis = `STOPPED EARLY BECAUSE YOU HAVE SO MANY ITEMS!\n${materialAnalysis}`;
+			break;
+		}
+	}
+
+	materialAnalysis += `\n\n\n
+Total\t${toKMB(totalXP)}\t${formatDuration(totalDur)}\t${totalMats}\t${totalCost}`;
+	return materialAnalysis;
 }
 
 export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user: User }): CommandResponse {
@@ -285,6 +337,7 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 		['Item', 'XP', 'Time'],
 		...results.map(r => (r.error === null ? [r.item.name, r.xp, formatDuration(r.duration)] : []))
 	]);
+
 	return {
 		content: `
 **Total XP:** ${totalXP}
@@ -292,7 +345,10 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			.map(i => i.name)
 			.join(', ')
 			.slice(0, 1500)}`,
-		attachments: [{ fileName: 'disassemble-analysis.txt', buffer: Buffer.from(normalTable) }]
+		attachments: [
+			{ fileName: 'disassemble-analysis.txt', buffer: Buffer.from(normalTable) },
+			{ fileName: 'material-analysis.txt', buffer: Buffer.from(await materialAnalysis(user, bank)) }
+		]
 	};
 }
 

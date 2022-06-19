@@ -14,19 +14,21 @@ export const Bows: DisassemblySourceGroup = {
 		{ item: i('Willow longbow'), lvl: 25 },
 		{ item: i('Willow comp bow'), lvl: 25 },
 		{ item: i('Comp ogre bow'), lvl: 30 },
-		{ item: i('Maple shortbow'), lvl: 30 },
-		{ item: i('Maple longbow'), lvl: 35 },
-		{ item: i('Yew shortbow'), lvl: 40 },
-		{ item: i('Yew longbow'), lvl: 45 },
-		{ item: i('Yew comp bow'), lvl: 45 },
-		{ item: i('Magic shortbow'), lvl: 50 },
-		{ item: i('Magic longbow'), lvl: 55 },
-		{ item: i('Dark bow'), lvl: 70 },
+		{ item: i('Maple shortbow'), lvl: 40 },
+		{ item: i('Maple longbow'), lvl: 45 },
+		{ item: i('Yew shortbow'), lvl: 50 },
+		{ item: i('Yew longbow'), lvl: 50 },
+		{ item: i('Yew comp bow'), lvl: 55 },
+		{ item: i('Magic shortbow'), lvl: 60 },
+		{ item: i('Magic longbow'), lvl: 65 },
+		{ item: i('Elder bow'), lvl: 70 },
+
+		{ item: i('Dark bow'), lvl: 90 },
 		{
 			item: i('Crystal bow'),
 			lvl: 70
 		},
-		{ item: i('Twisted bow'), lvl: 75 },
+		{ item: i('Twisted bow'), lvl: 99 },
 		{
 			item: [
 				'Twisted bownana',
@@ -38,7 +40,7 @@ export const Bows: DisassemblySourceGroup = {
 			lvl: 75,
 			flags: new Set(['dyed'])
 		},
-		{ item: i('Zaryte bow'), lvl: 75 },
+		{ item: i('Zaryte bow'), lvl: 99 },
 		{
 			item: [
 				'Zaryte bownana',
@@ -47,7 +49,7 @@ export const Bows: DisassemblySourceGroup = {
 				'Zaryte bow (blood)',
 				'Zaryte bow (3a)'
 			].map(i),
-			lvl: 75,
+			lvl: 99,
 			flags: new Set(['dyed'])
 		},
 		{
@@ -68,7 +70,6 @@ export const Bows: DisassemblySourceGroup = {
 		{ item: i('Rune crossbow'), lvl: 50 },
 		{ item: i('Dragon crossbow'), lvl: 60 },
 		{ item: i('Royal crossbow'), lvl: 70 },
-		{ item: i('Elder bow'), lvl: 95 },
 		{
 			item: i('Armadyl crossbow'),
 			lvl: 99

@@ -21,6 +21,7 @@ import {
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { dyedItems } from '../../lib/dyedItems';
 import { materialTypes } from '../../lib/invention';
+import { DisassemblySourceGroups } from '../../lib/invention/groups';
 import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -206,6 +207,13 @@ for (const i of [
 	bsoGear.add(i);
 }
 
+const disassembly = new Bank();
+for (const group of DisassemblySourceGroups) {
+	for (const item of group.items.map(i => i.item).flat(10)) {
+		disassembly.add(item.id, 1000);
+	}
+}
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
@@ -214,7 +222,8 @@ const spawnPresets = [
 
 	['baxtorian_bathhouse', baxBathBank],
 	['usables', usables],
-	['bsogear', bsoGear]
+	['bsogear', bsoGear],
+	['disassembly', disassembly]
 ] as const;
 
 const nexSupplies = new Bank()
@@ -223,12 +232,28 @@ const nexSupplies = new Bank()
 	.add('Super restore(4)', 100)
 	.add('Ranging potion(4)', 100);
 
+const thingsToWipe = ['bank', 'materials'] as const;
+
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
 	: {
 			name: 'testpotato',
 			description: 'Commands for making testing easier and faster.',
 			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'wipe',
+					description: 'Wipe/reset a part of your account.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'thing',
+							description: 'The thing you want to wipe.',
+							required: true,
+							choices: thingsToWipe.map(i => ({ name: i, value: i }))
+						}
+					]
+				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'spawn',
@@ -482,6 +507,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				spawntames?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
 				stresstest?: {};
+				wipe?: { thing: typeof thingsToWipe[number] };
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -495,6 +521,23 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						minion_ironman: !current
 					});
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
+				}
+				if (options.wipe) {
+					let { thing } = options.wipe;
+					if (thing === 'bank') {
+						await mahojiUserSettingsUpdate(user.id, {
+							bank: {}
+						});
+						return 'Reset your bank.';
+					}
+					if (thing === 'materials') {
+						await mahojiUserSettingsUpdate(user.id, {
+							materials_owned: {},
+							researched_materials_bank: {}
+						});
+						return 'Reset your materials owned.';
+					}
+					return 'Invalid thing to reset.';
 				}
 				if (options.max) {
 					return giveMaxStats(user);

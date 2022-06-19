@@ -344,7 +344,6 @@ export async function minionKillCommand(
 		(monster.canCannon || monster.cannonMulti)
 	) {
 		let qty = quantity || floor(maxTripLength / timeToFinish);
-		console.log(`${user} is killing roughly ${qty}x ${monster.name}`);
 		const res = await inventionItemBoost({
 			userID: BigInt(user.id),
 			inventionID: InventionID.SuperiorDwarfMultiCannon,
