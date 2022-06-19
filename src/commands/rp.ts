@@ -82,18 +82,22 @@ async function checkBank(msg: KlasaMessage) {
 
 	const brokenBank: number[] = [];
 	const allItemsToCheck = [
-		...Object.keys(rawBank),
-		...Object.keys(rawCL),
-		...Object.keys(rawTempCL),
-		...Object.keys(rawSB),
-		...favorites,
-		...allGearItemIDs
-	];
+		['bank', Object.keys(rawBank)],
+		['cl', Object.keys(rawCL)],
+		['tempcl', Object.keys(rawTempCL)],
+		['sacbank', Object.keys(rawSB)],
+		['favs', favorites],
+		['gear', allGearItemIDs]
+	] as const;
 
-	for (const id of allItemsToCheck.map(i => Number(i))) {
-		const item = Items.get(id);
-		if (!item) {
-			brokenBank.push(id);
+	let str = '';
+	for (const [name, ids] of allItemsToCheck) {
+		for (const id of ids.map(i => Number(i))) {
+			const item = Items.get(id);
+			if (!item) {
+				brokenBank.push(id);
+				str += `${id} in ${name} `;
+			}
 		}
 	}
 
@@ -120,6 +124,8 @@ async function checkBank(msg: KlasaMessage) {
 				delete gear[key as keyof GearSetup];
 			}
 		}
+		// @ts-ignore
+		delete gear.stats;
 		await msg.author.settings.update(`gear.${setupType}`, gear);
 	}
 
@@ -137,7 +143,7 @@ async function checkBank(msg: KlasaMessage) {
 				brokenBank.length
 			} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
 				brokenBank
-			)}`
+			)} ${str}`
 		);
 	}
 

@@ -187,7 +187,9 @@ export const askCommand: OSBMahojiCommand = {
 					autocomplete: async value => {
 						return Inventions.filter(i =>
 							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
-						).map(i => ({ name: i.name, value: i.name }));
+						)
+							.map(i => ({ name: i.name, value: i.name }))
+							.sort((a, b) => a.name.localeCompare(b.name));
 					}
 				}
 			]
