@@ -76,7 +76,7 @@ export const inventionBoosts = {
 			const minuteSegments = Math.floor(duration / Time.Minute);
 			return agilityLevel * 5 * minuteSegments;
 		},
-		agilitySpeedBoostPercent: 25
+		agilityBoostMultiplier: 1.9
 	},
 	superiorBonecrusher: {
 		xpBoostPercent: 25
@@ -118,6 +118,9 @@ export const inventionBoosts = {
 			let chanceOfUpgradePercent = 45 - (index + 1) * 5;
 			return chanceOfUpgradePercent;
 		},
+		pickPocketChance: (clue: ClueTier) => {
+			return Math.ceil(inventionBoosts.clueUpgrader.chance(clue) / 5);
+		},
 		durationCalc: (clue: ClueTier) => {
 			let index = ClueTiers.indexOf(clue);
 			return (index + 1) * (Time.Minute * 3);
@@ -132,9 +135,9 @@ export const Inventions: readonly Invention[] = [
 		description: `Provides a ${inventionBoosts.superiorBonecrusher.xpBoostPercent}% increase in XP over the Gorajan bonecrusher.`,
 		item: getOSItem('Superior bonecrusher'),
 		materialTypeBank: new MaterialBank({
-			pious: 7,
+			pious: 5,
 			sharp: 1,
-			magic: 2
+			magic: 4
 		}),
 		flags: ['bank'],
 		itemCost: new Bank().add('Gorajan bonecrusher').freeze(),
@@ -182,8 +185,8 @@ export const Inventions: readonly Invention[] = [
 		id: InventionID.SilverHawkBoots,
 		name: 'Silverhawk boots',
 		description: `Makes agility ${
-			inventionBoosts.silverHawks.agilitySpeedBoostPercent
-		}% faster, and gives up to ${toKMB(
+			inventionBoosts.silverHawks.agilityBoostMultiplier
+		}x faster, and gives up to ${toKMB(
 			inventionBoosts.silverHawks.passiveXPCalc(Time.Hour, 120)
 		)}/hr passive agility XP.`,
 		item: getOSItem('Silverhawk boots'),

@@ -21,22 +21,7 @@ export const Magic: DisassemblySourceGroup = {
 			lvl: 80
 		},
 		{
-			item: i('Spectral sigil'),
-			lvl: 80,
-			flags: new Set(['corporeal'])
-		},
-		{
-			item: i('Arcane sigil'),
-			lvl: 99,
-			flags: new Set(['corporeal'])
-		},
-		{
-			item: i('Elysian sigil'),
-			lvl: 99,
-			flags: new Set(['corporeal'])
-		},
-		{
-			item: i('Divine sigil'),
+			item: ['Arcane sigil', 'Spectral sigil', 'Elysian sigil', 'Divine sigil'].map(i),
 			lvl: 99,
 			flags: new Set(['corporeal'])
 		},

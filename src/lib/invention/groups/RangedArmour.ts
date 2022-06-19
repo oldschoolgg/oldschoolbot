@@ -139,7 +139,7 @@ export const RangedArmour: DisassemblySourceGroup = {
 		{ item: i("Morrigan's leather chaps"), lvl: 78 },
 		{
 			item: i('Elysian spirit shield'),
-			lvl: 75,
+			lvl: 99,
 			flags: new Set(['corporeal'])
 		},
 		{

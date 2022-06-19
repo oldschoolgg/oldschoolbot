@@ -1,4 +1,4 @@
-import { reduceNumByPercent, Time } from 'e';
+import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -161,9 +161,9 @@ export const lapsCommand: OSBMahojiCommand = {
 				duration: timePerLap * (options.quantity ?? Math.floor(maxTripLength / timePerLap))
 			});
 			if (costRes.success) {
-				timePerLap = reduceNumByPercent(timePerLap, inventionBoosts.silverHawks.agilitySpeedBoostPercent);
+				timePerLap = Math.floor(timePerLap / inventionBoosts.silverHawks.agilityBoostMultiplier);
 				boosts.push(
-					`${inventionBoosts.silverHawks.agilitySpeedBoostPercent}% faster for Silverhawk boots (${costRes.messages})`
+					`${inventionBoosts.silverHawks.agilityBoostMultiplier}x faster for Silverhawk boots (${costRes.messages})`
 				);
 			}
 		}

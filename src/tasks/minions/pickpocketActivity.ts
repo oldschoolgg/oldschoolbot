@@ -12,11 +12,13 @@ import { rogueOutfitPercentBonus, roll, updateGPTrackSetting } from '../../lib/u
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
+import { clueUpgraderEffect } from './monsterActivity';
 
 const notMultiplied = resolveItems([
 	'Blood shard',
-	'Enchanced crystal teleport seed',
-	...ClueTiers.map(i => i.scrollID)
+	'Enhanced crystal teleport seed',
+	...ClueTiers.map(i => i.scrollID),
+	...ClueTiers.map(i => i.id)
 ]);
 
 export function calcLootXPPickpocketing(
@@ -81,8 +83,8 @@ export default class extends Task {
 			}
 		}
 
-		let boosts = [];
-
+		let boosts: string[] = [];
+		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
 		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
 			boosts.push('3x loot for Thieves armband');
 			loot.multiply(3, notMultiplied);
@@ -127,6 +129,9 @@ export default class extends Task {
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${user.minionName}, just received a **Rocky** <:Rocky:324127378647285771> while pickpocketing a ${npc.name}, their Thieving level is ${currentLevel}!`
 			);
+		}
+		if (boosts.length > 0) {
+			str += `\n\n**Messages:** ${boosts.join(', ')}`;
 		}
 
 		handleTripFinish(

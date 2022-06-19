@@ -96,12 +96,12 @@ export const MagicArmour: DisassemblySourceGroup = {
 		},
 		{
 			item: i('Arcane spirit shield'),
-			lvl: 75,
+			lvl: 99,
 			flags: new Set(['corporeal'])
 		},
 		{
 			item: i('Spectral spirit shield'),
-			lvl: 75,
+			lvl: 99,
 			flags: new Set(['corporeal'])
 		},
 		{

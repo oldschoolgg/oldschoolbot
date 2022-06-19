@@ -96,34 +96,41 @@ async function portableTannerEffect(user: KlasaUser, loot: Bank, duration: numbe
 	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
 }
 
-async function clueUpgraderEffect(user: KlasaUser, loot: Bank, messages: string[]) {
-	if (!user.owns('Clue upgrader')) return;
+export async function clueUpgraderEffect(
+	user: KlasaUser,
+	loot: Bank,
+	messages: string[],
+	type: 'pvm' | 'pickpocketing'
+) {
+	if (!user.owns('Clue upgrader')) return false;
 	const upgradedClues = new Bank();
 	const removeBank = new Bank();
 	let durationForCost = 0;
+
+	const fn = type === 'pvm' ? inventionBoosts.clueUpgrader.chance : inventionBoosts.clueUpgrader.pickPocketChance;
 	for (let i = 0; i < 5; i++) {
 		const clueTier = ClueTiers[i];
 		if (!loot.has(clueTier.scrollID)) continue;
 		for (let t = 0; t < loot.amount(clueTier.scrollID); t++) {
-			if (percentChance(inventionBoosts.clueUpgrader.chance(clueTier))) {
+			if (percentChance(fn(clueTier))) {
 				removeBank.add(clueTier.scrollID);
 				upgradedClues.add(ClueTiers[i + 1].scrollID);
 				durationForCost += inventionBoosts.clueUpgrader.durationCalc(clueTier);
 			}
 		}
 	}
-	if (upgradedClues.length === 0) return;
+	if (upgradedClues.length === 0) return false;
 	const boostRes = await inventionItemBoost({
 		userID: BigInt(user.id),
 		inventionID: InventionID.ClueUpgrader,
 		duration: durationForCost
 	});
-	if (!boostRes.success) return;
-
+	if (!boostRes.success) return false;
 	loot.add(upgradedClues);
 	assert(loot.has(removeBank));
 	loot.remove(removeBank);
 	messages.push(`Clue Upgrader upgraded ${removeBank} into ${upgradedClues} (${boostRes.messages})`);
+	return true;
 }
 
 export default class extends Task {
@@ -300,7 +307,7 @@ export default class extends Task {
 
 		await bonecrusherEffect(user, loot, duration, messages);
 		await portableTannerEffect(user, loot, duration, messages);
-		await clueUpgraderEffect(user, loot, messages);
+		await clueUpgraderEffect(user, loot, messages, 'pvm');
 
 		let thisTripFinishesTask = false;
 
