@@ -1,5 +1,6 @@
 import { randInt, Time } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
 import { trackLoot } from '../../../lib/settings/prisma';
@@ -8,11 +9,9 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { addBanks, bankHasItem, multiplyBank, rand, roll } from '../../../lib/util';
+import { itemID, rand, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
@@ -20,7 +19,7 @@ export default class extends Task {
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		let loot: ItemBank = {};
+		let loot = new Bank();
 
 		let totalPoints = 0;
 
@@ -28,29 +27,28 @@ export default class extends Task {
 			const points = rand(1000, 5000);
 			totalPoints += points;
 
-			loot = addBanks([
-				loot,
+			loot.add(
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([user.allItemsOwned().bank, loot]),
+					itemsOwned: user.allItemsOwned().clone().add(loot).bank,
 					skills: user.rawSkills
 				})
-			]);
+			);
 		}
 
 		let gotToad = false;
 		if (duration > Time.Minute * 20 && roll(3000 / Math.floor(duration / Time.Minute))) {
 			gotToad = true;
-			loot[itemID('Wintertoad')] = 1;
+			loot.bank[itemID('Wintertoad')] = 1;
 		}
 
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.WintertodtLoot,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot), loot])
+			new Bank(loot).add(this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot))
 		);
 
-		if (bankHasItem(loot, itemID('Phoenix'))) {
+		if (loot.has('Phoenix')) {
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Phoenix} **${user.username}'s** minion, ${
@@ -108,11 +106,10 @@ export default class extends Task {
 		const newLevel = user.skillLevel(SkillsEnum.Firemaking);
 
 		if (user.usingPet('Flappy')) {
-			loot = multiplyBank(loot, 2);
+			loot.multiply(2);
 		}
-
-		if (user.hasItemEquippedAnywhere(itemID('Firemaking master cape'))) {
-			loot = multiplyBank(loot, 2);
+		if (user.hasItemEquippedAnywhere('Firemaking master cape')) {
+			loot.multiply(2);
 		}
 
 		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });

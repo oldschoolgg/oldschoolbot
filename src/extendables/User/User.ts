@@ -18,7 +18,7 @@ import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 
 function alchPrice(bank: Bank, item: Item, tripLength: number) {
 	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
-	return maxCasts * item.highalch;
+	return maxCasts * (item.highalch ?? 0);
 }
 
 export default class extends Extendable {
@@ -139,7 +139,7 @@ export default class extends Extendable {
 			.get(UserSettings.FavoriteAlchables)
 			.filter(id => bank.has(id))
 			.map(getOSItem)
-			.filter(i => i.highalch > 0 && i.tradeable)
+			.filter(i => i.highalch !== undefined && i.highalch > 0 && i.tradeable)
 			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
 	}
 

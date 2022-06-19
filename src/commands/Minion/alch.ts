@@ -83,7 +83,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		const alchValue = quantity * osItem.highalch;
+		const alchValue = quantity * (osItem.highalch ?? 0);
 		const consumedItems = new Bank({
 			...(fireRuneCost > 0 ? { 'Fire rune': fireRuneCost } : {}),
 			'Nature rune': quantity

@@ -12,7 +12,7 @@ import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { addBanks, bankHasItem, roll, skillsMeetRequirements } from '../util';
+import { bankHasItem, roll, skillsMeetRequirements } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
 import { slayerMasters } from './slayerMasters';
@@ -414,12 +414,15 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 			myClLoot.add('Black mask (10)');
 		}
 	}
+
+	const combinedBank = new Bank().add(myBank).add(myLoot);
+
 	if (numBludgeonPieces) {
 		for (let x = 0; x < numBludgeonPieces; x++) {
 			const bank: number[] = [];
-			const combinedBank = addBanks([myBank.bank, myLoot.bank]);
+
 			for (const piece of bludgeonPieces) {
-				bank.push(combinedBank[piece] ?? 0);
+				bank.push(combinedBank.amount(piece));
 			}
 			const minBank = Math.min(...bank);
 			for (let i = 0; i < bank.length; i++) {
@@ -434,9 +437,8 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	if (numDarkTotemBases) {
 		for (let x = 0; x < numDarkTotemBases; x++) {
 			const bank: number[] = [];
-			const combinedBank = addBanks([myBank.bank, myLoot.bank]);
 			for (const piece of totemPieces) {
-				bank.push(combinedBank[piece] ?? 0);
+				bank.push(combinedBank.amount(piece));
 			}
 			const minBank = Math.min(...bank);
 			for (let i = 0; i < bank.length; i++) {
@@ -451,9 +453,8 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	if (numHydraEyes) {
 		for (let x = 0; x < numHydraEyes; x++) {
 			const bank: number[] = [];
-			const combinedBank = addBanks([myBank.bank, myLoot.bank]);
 			for (const piece of ringPieces) {
-				bank.push(combinedBank[piece] ?? 0);
+				bank.push(combinedBank.amount(piece));
 			}
 			const minBank = Math.min(...bank);
 			for (let i = 0; i < bank.length; i++) {

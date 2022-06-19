@@ -1710,7 +1710,7 @@ export const miscellaneousCL = resolveItems([
 	'Long bone',
 	'Curved bone',
 	'Ecumenical key',
-	"Pharaoh's sceptre (3)",
+	"Pharaoh's sceptre",
 	'Dark totem base',
 	'Dark totem middle',
 	'Dark totem top',
