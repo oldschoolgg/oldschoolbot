@@ -163,7 +163,7 @@ export const Inventions: readonly Invention[] = [
 			.add('Dwarven bar')
 			.freeze(),
 		inventionLevelNeeded: 70,
-		usageCostMultiplier: 1
+		usageCostMultiplier: 0.7
 	},
 	{
 		id: InventionID.SuperiorInfernoAdze,
