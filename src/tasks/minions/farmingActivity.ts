@@ -403,7 +403,7 @@ export default class extends Task {
 
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
-				await user.incrementMonsterScore(Monsters.Hespori.id);
+				await user.incrementMonsterScore(Monsters.Hespori.id, patchType.lastQuantity);
 				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
 					farmingLevel: currentFarmingLevel
 				});

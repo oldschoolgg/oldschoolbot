@@ -67,6 +67,7 @@ import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
 import { revsCommand } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
@@ -149,6 +150,7 @@ export async function minionKillCommand(
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
 	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
+	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);

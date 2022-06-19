@@ -74,7 +74,7 @@ export default class extends Task {
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
-			const alchGP = alchedItem.highalch * alch.quantity;
+			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP({
 				skillName: SkillsEnum.Magic,

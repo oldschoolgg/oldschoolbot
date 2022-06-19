@@ -1,4 +1,5 @@
 import { Activity, NewUser, Prisma } from '@prisma/client';
+import { MessageAttachment } from 'discord.js';
 import { roll, Time } from 'e';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -183,9 +184,10 @@ export async function runCommand({
 					await channel.send(result);
 				} else {
 					await channel.send({
-						...result,
+						content: result.content,
 						embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
-						components: result.components?.map(convertComponentDJSComponent)
+						components: result.components?.map(convertComponentDJSComponent),
+						files: result.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
 					});
 				}
 			}

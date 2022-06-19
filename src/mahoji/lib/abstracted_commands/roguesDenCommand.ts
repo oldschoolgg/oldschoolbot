@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, formatDuration } from '../../../lib/util';
+import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
@@ -49,7 +49,7 @@ export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
 		await user.removeItemsFromBank(staminasToRemove.bank);
 		await globalClient.settings.update(
 			ClientSettings.EconomyStats.RoguesDenStaminas,
-			addBanks([globalClient.settings.get(ClientSettings.EconomyStats.RoguesDenStaminas), staminasToRemove.bank])
+			new Bank(staminasToRemove).add(globalClient.settings.get(ClientSettings.EconomyStats.RoguesDenStaminas))
 		);
 	}
 
