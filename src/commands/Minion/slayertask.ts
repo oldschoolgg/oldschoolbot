@@ -101,11 +101,21 @@ export default class extends BotCommand {
 	}
 
 	public async returnSuccess(msg: KlasaMessage, message: string, autoslay: boolean) {
+		const options = {
+			channelID: msg.channel.id,
+			userID: msg.author.id,
+			guildID: msg.guild?.id,
+			user: msg.author,
+			member: msg.member,
+			message: msg
+		};
+
 		if (autoslay) {
 			await msg.channel.send(message);
-			return runCommand({ message: msg, commandName: 'autoslay', args: [''], bypassInhibitors: true });
+			return runCommand({ commandName: 'autoslay', args: [''], bypassInhibitors: true, ...options });
 		}
 		const sentMessage = await msg.channel.send({ content: message, components: returnSuccessButtons });
+
 		try {
 			const selection = await sentMessage.awaitMessageComponentInteraction({
 				filter: i => {
@@ -119,43 +129,43 @@ export default class extends BotCommand {
 			});
 			switch (selection.customID) {
 				case 'assaved': {
-					await runCommand({ message: msg, commandName: 'autoslay', args: [''], bypassInhibitors: true });
+					await runCommand({ commandName: 'autoslay', args: [''], bypassInhibitors: true, ...options });
 					return;
 				}
 				case 'asdef': {
 					await runCommand({
-						message: msg,
 						commandName: 'autoslay',
 						args: ['default'],
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						...options
 					});
 					return;
 				}
 				case 'asehp': {
-					await runCommand({ message: msg, commandName: 'autoslay', args: ['ehp'], bypassInhibitors: true });
+					await runCommand({ commandName: 'autoslay', args: ['ehp'], bypassInhibitors: true, ...options });
 					return;
 				}
 				case 'asboss': {
-					await runCommand({ message: msg, commandName: 'autoslay', args: ['boss'], bypassInhibitors: true });
+					await runCommand({ commandName: 'autoslay', args: ['boss'], bypassInhibitors: true, ...options });
 					return;
 				}
 				case 'skip': {
 					msg.flagArgs.new = 'yes';
 					await runCommand({
-						message: msg,
 						commandName: 'slayertask',
 						args: ['skip'],
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						...options
 					});
 					return;
 				}
 				case 'block': {
 					msg.flagArgs.new = 'yes';
 					await runCommand({
-						message: msg,
 						commandName: 'slayertask',
 						args: ['block'],
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						...options
 					});
 					return;
 				}
@@ -287,7 +297,16 @@ export default class extends BotCommand {
 				}. You have ${slayerPoints.toLocaleString()} slayer points.`
 			);
 			if (Boolean(msg.flagArgs.new)) {
-				return runCommand({ message: msg, commandName: 'slayertask', args: [], bypassInhibitors: true });
+				return runCommand({
+					commandName: 'slayertask',
+					args: [],
+					bypassInhibitors: true,
+					channelID: msg.channel.id,
+					userID: msg.author.id,
+					guildID: msg.guild?.id,
+					user: msg.author,
+					member: msg.member
+				});
 			}
 			return;
 		}

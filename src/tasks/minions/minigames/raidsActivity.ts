@@ -127,7 +127,12 @@ export default class extends Task {
 					// @ts-ignore
 					res.prompter.flags = flags;
 
-					return runCommand({ message: res, commandName: 'raid', args: ['solo'], isContinue: true });
+					return runCommand({
+						...res,
+						commandName: 'raid',
+						args: ['solo'],
+						isContinue: true
+					});
 				},
 				undefined,
 				data,

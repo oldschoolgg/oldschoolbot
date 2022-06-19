@@ -1,3 +1,5 @@
+import { Time } from 'e';
+
 import { prisma } from '../settings/prisma';
 import { activitySync, getActivityOfUser } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
@@ -11,6 +13,7 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 	if (usersTask) {
 		throw `That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`;
 	}
+	taskToAdd.duration = Time.Second * 10;
 	let duration = Math.floor(taskToAdd.duration);
 	if (duration < 0) {
 		const error = new Error('Task has a negative duration');

@@ -16,7 +16,7 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
+import { calcWhatPercent, objectEntries, round, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import { APIInteractionGuildMember, APIUser } from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
@@ -30,7 +30,7 @@ import { promisify } from 'util';
 
 import { CLIENT_ID } from '../config';
 import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
-import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer, usernameCache } from './constants';
+import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
@@ -225,19 +225,6 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 		}
 	}
 	return amountEquipped * 20;
-}
-
-export function generateContinuationChar(user: KlasaUser) {
-	const baseChar =
-		user.perkTier > PerkTier.One
-			? 'y'
-			: Date.now() - user.createdTimestamp < Time.Month * 6
-			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
-			: randArrItem(continuationChars);
-
-	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
-		.slice(0, randInt(1, 2))
-		.join('')}`;
 }
 
 export function isValidGearSetup(str: string): str is GearSetupType {

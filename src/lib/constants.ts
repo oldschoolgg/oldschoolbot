@@ -1,10 +1,13 @@
 import { MessageButton } from 'discord.js';
 import { KlasaMessage } from 'klasa';
+import { APIButtonComponent, ButtonStyle, ComponentType } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
+import { RunCommandArgs } from './settings/settings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
@@ -388,8 +391,6 @@ export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
-export const continuationChars = 'abdefghjknoprstuvwxyz123456789'.split('');
-export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
@@ -444,28 +445,44 @@ export const MAX_LEVEL = 99;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
-export const informationalButtons = [
-	new MessageButton().setLabel('Wiki').setEmoji('📰').setURL('https://wiki.oldschool.gg/').setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Patreon')
-		.setEmoji('679334888792391703')
-		.setURL('https://www.patreon.com/oldschoolbot')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Support Server')
-		.setEmoji('778418736180494347')
-		.setURL('https://www.discord.gg/ob')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Bot Invite')
-		.setEmoji('🤖')
-		.setURL('http://www.oldschool.gg/invite/osb')
-		.setStyle('LINK')
+const buttonSource = [
+	{
+		label: 'Wiki',
+		emoji: '802136964027121684',
+		url: 'https://wiki.oldschool.gg/'
+	},
+	{
+		label: 'Patreon',
+		emoji: '679334888792391703',
+		url: 'https://www.patreon.com/oldschoolbot'
+	},
+	{
+		label: 'Support Server',
+		emoji: '778418736180494347',
+		url: 'https://www.discord.gg/ob'
+	},
+	{
+		label: 'Bot Invite',
+		emoji: '778418736180494347',
+		url: 'http://www.oldschool.gg/invite/osb'
+	}
 ];
 
+export const informationalButtons = buttonSource.map(i =>
+	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+);
+export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
+	type: ComponentType.Button,
+	label: i.label,
+	emoji: { id: i.emoji },
+	style: ButtonStyle.Link,
+	url: i.url
+}));
+
+export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
