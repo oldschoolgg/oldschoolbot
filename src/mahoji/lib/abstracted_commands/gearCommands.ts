@@ -200,7 +200,7 @@ export async function gearEquipCommand(args: {
 	 */
 	const equippedInThisSlot = currentEquippedGear[slot];
 	if (equippedInThisSlot) {
-		const newGear = { ...currentEquippedGear };
+		const newGear = { ...currentEquippedGear.raw() };
 		newGear[slot] = null;
 
 		const loot = new Bank().add(equippedInThisSlot.item, equippedInThisSlot.quantity);
@@ -223,7 +223,7 @@ export async function gearEquipCommand(args: {
 
 	await klasaUser.removeItemsFromBank(cost);
 
-	const newGear = { ...currentEquippedGear };
+	const newGear = { ...currentEquippedGear.raw() };
 	newGear[slot] = {
 		item: itemToEquip.id,
 		quantity
@@ -306,7 +306,7 @@ export async function autoEquipCommand(
 	}
 
 	const { gearToEquip, toRemoveFromBank, toRemoveFromGear } = getUserBestGearFromBank(
-		user.settings.get(UserSettings.Bank),
+		user.bank(),
 		user.getGear(gearSetup),
 		gearSetup,
 		user.rawSkills,

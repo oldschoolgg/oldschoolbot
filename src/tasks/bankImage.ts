@@ -539,7 +539,7 @@ export default class BankImageTask extends Task {
 
 		if (flags.has('alch')) {
 			bank.filter(item => {
-				return item.price > 1000 && item.price < item.highalch * 3;
+				return item.price > 1000 && item.price < (item.highalch ?? 0) * 3;
 			}, true);
 		}
 

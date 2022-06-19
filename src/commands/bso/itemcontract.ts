@@ -17,7 +17,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { DragonTable } from '../../lib/simulation/grandmasterClue';
 import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/sharedTables';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, formatDuration, itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
+import { formatDuration, itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
@@ -249,7 +249,7 @@ export default class DailyCommand extends BotCommand {
 			msg.author.settings.update(UserSettings.CurrentItemContract, pickItemContract(newStreak)),
 			msg.author.settings.update(
 				UserSettings.ItemContractBank,
-				addBanks([msg.author.settings.get(UserSettings.ItemContractBank), cost.bank])
+				new Bank().add(cost).add(msg.author.settings.get(UserSettings.ItemContractBank))
 			),
 			msg.author.removeItemsFromBank(cost),
 			msg.author.addItemsToBank({ items: loot, collectionLog: false }),

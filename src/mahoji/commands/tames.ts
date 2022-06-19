@@ -32,7 +32,6 @@ import {
 	TameType
 } from '../../lib/tames';
 import {
-	addBanks,
 	formatDuration,
 	formatSkillRequirements,
 	isWeekend,
@@ -677,7 +676,7 @@ async function feedCommand(interaction: SlashCommandInteraction, user: KlasaUser
 			id: tame.id
 		},
 		data: {
-			fed_items: addBanks([tame.fed_items as ItemBank, bankToAdd.bank])
+			fed_items: new Bank().add(tame.fed_items as ItemBank).add(bankToAdd).bank
 		}
 	});
 

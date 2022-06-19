@@ -1,5 +1,5 @@
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Kibble } from '../data/kibble';
@@ -235,6 +235,12 @@ export interface BossActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
+	method: 'solo' | 'mass';
+	quantity: number;
+	isPhosani?: boolean;
+}
+
 interface StoredBossUser extends Omit<BossUser, 'user' | 'itemsToRemove'> {
 	user: string;
 	itemsToRemove: ItemBank;
@@ -353,13 +359,6 @@ export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOp
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	favour: KourendFavour;
 	quantity: number;
-}
-
-export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
-	leader: string;
-	users: string[];
-	quantity: number;
-	isPhosani?: boolean;
 }
 
 export interface TokkulShopOptions extends ActivityTaskOptions {
