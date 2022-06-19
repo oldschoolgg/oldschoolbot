@@ -31,7 +31,7 @@ const LB_PAGE_SIZE = 10;
 
 function lbMsg(str: string, ironmanOnly?: boolean) {
 	return {
-		content: `Showing you the ${str} leaderboard, click the buttons to change pages. People with less than 5 KC are not shown.${
+		content: `Showing you the ${str} leaderboard, click the buttons to change pages.${
 			ironmanOnly ? ' Showing only ironmen.' : ''
 		}`,
 		flags: MessageFlags.Ephemeral

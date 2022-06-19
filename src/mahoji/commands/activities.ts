@@ -26,7 +26,7 @@ import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_comm
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
-import { itemOption } from '../lib/mahojiCommandOptions';
+import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -321,7 +321,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			description: 'Alch items for GP.',
 			options: [
 				{
-					...itemOption(i => Boolean(i.highalch))
+					...ownedItemOption(i => Boolean(i.highalch))
 				},
 				{
 					type: ApplicationCommandOptionType.Integer,

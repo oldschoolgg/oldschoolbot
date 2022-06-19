@@ -7,7 +7,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { AlchingActivityTaskOptions } from '../../../lib/types/minions';
-import { formatDuration, toKMB, updateBankSetting } from '../../../lib/util';
+import { clamp, formatDuration, toKMB, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getItem } from '../../../lib/util/getOSItem';
@@ -59,6 +59,7 @@ export async function alchCommand(
 	if (!quantity) {
 		quantity = maxCasts;
 	}
+	quantity = clamp(quantity, 1, maxCasts);
 
 	if (quantity * timePerAlch > maxTripLength) {
 		return `The max number of alchs you can do is ${maxCasts}!`;
