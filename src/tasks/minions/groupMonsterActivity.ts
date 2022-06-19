@@ -1,7 +1,7 @@
 import { noOp, randArrItem, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { addBanks, itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji } from '../../lib/constants';
@@ -50,7 +50,7 @@ export default class extends Task {
 			totalLoot.add(loot);
 			const kcToAdd = kcAmounts[user.id];
 			if (user.equippedPet() === itemID('Ori') && duration > Time.Minute * 5) {
-				loot.bank = addBanks([monster.table.kill(Math.ceil(kcToAdd * 0.25), {}).bank ?? {}, loot.bank]);
+				loot.add(monster.table.kill(Math.ceil(kcToAdd * 0.25), {}));
 			}
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 			totalLoot.add(loot);

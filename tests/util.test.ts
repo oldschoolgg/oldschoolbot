@@ -80,7 +80,7 @@ describe('util', () => {
 		expect(sellPriceOfItem(getOSItem('A yellow square'))).toEqual({ price: 0, basePrice: 0 });
 
 		expect(sellPriceOfItem(getOSItem('Rune pickaxe'))).toEqual({
-			price: calcPercentOfNum(30, getOSItem('Rune pickaxe').highalch),
+			price: calcPercentOfNum(30, getOSItem('Rune pickaxe').highalch!),
 			basePrice: getOSItem('Rune pickaxe').price
 		});
 	});

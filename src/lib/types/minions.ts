@@ -1,5 +1,5 @@
 import { ItemBank } from 'oldschooljs/dist/meta/types';
-import { TeamMember } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { TeamMember } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { Kibble } from '../data/kibble';

@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -10,7 +11,13 @@ import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { rogueOutfitPercentBonus, roll, updateGPTrackSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
-import { multiplyBankNotClues } from '../../lib/util/mbnc';
+import resolveItems from '../../lib/util/resolveItems';
+
+const notMultiplied = resolveItems([
+	'Blood shard',
+	'Enchanced crystal teleport seed',
+	...ClueTiers.map(i => i.scrollID)
+]);
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -75,17 +82,10 @@ export default class extends Task {
 		}
 
 		let boosts = [];
-		const bloodshardCount = loot.amount('Blood shard');
-		const seedCount = loot.amount('Enhanced crystal teleport seed');
+
 		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
 			boosts.push('3x loot for Thieves armband');
-			loot.bank = multiplyBankNotClues(loot.bank, 3);
-			if (bloodshardCount) {
-				loot.bank[itemID('Blood shard')] = bloodshardCount;
-			}
-			if (seedCount) {
-				loot.bank[itemID('Enhanced crystal teleport seed')] = seedCount;
-			}
+			loot.multiply(3, notMultiplied);
 		}
 
 		let gotWil = false;

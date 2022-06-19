@@ -14,7 +14,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, roll, updateBankSetting } from '../../../lib/util';
+import { roll, updateBankSetting } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
@@ -80,7 +80,7 @@ export default class extends Task {
 			if (!winner) continue;
 			const currentLoot = teamsLoot[winner];
 			if (!currentLoot) teamsLoot[winner] = loot.bank;
-			else teamsLoot[winner] = addBanks([currentLoot, loot.bank]);
+			else teamsLoot[winner] = new Bank().add(currentLoot).add(loot).bank;
 
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}

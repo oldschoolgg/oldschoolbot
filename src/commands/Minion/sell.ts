@@ -29,8 +29,8 @@ export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; base
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	price = Math.floor(price);
-	if (price < item.highalch * 3) {
-		price = Math.floor(calcPercentOfNum(30, item.highalch));
+	if (price < (item.highalch ?? 0) * 3) {
+		price = Math.floor(calcPercentOfNum(30, item.highalch!));
 	}
 	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
 	return { price, basePrice };
