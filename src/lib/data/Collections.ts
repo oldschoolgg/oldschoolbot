@@ -2,7 +2,7 @@ import { MessageAttachment } from 'discord.js';
 import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Clues, Monsters } from 'oldschooljs';
-import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
 
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
@@ -754,7 +754,7 @@ export const allCollectionLogs: ICollection = {
 					"Farmer's shirt",
 					"Farmer's boro trousers",
 					"Farmer's boots",
-					"Pharaoh's sceptre (3)",
+					"Pharaoh's sceptre",
 					'Baby chinchompa',
 					'Kyatt hat',
 					'Kyatt top',

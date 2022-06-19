@@ -1,5 +1,6 @@
 import { randInt } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -9,11 +10,8 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ItemBank } from '../../../lib/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { addBanks, bankHasItem } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -44,7 +42,7 @@ export default class extends Task {
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		let loot: ItemBank = {};
+		let loot = new Bank();
 
 		let totalPoints = 0;
 
@@ -52,23 +50,22 @@ export default class extends Task {
 			const points = PointsTable.roll().item;
 			totalPoints += points;
 
-			loot = addBanks([
-				loot,
+			loot.add(
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([user.allItemsOwned().bank, loot]),
+					itemsOwned: user.allItemsOwned().clone().add(loot).bank,
 					skills: user.rawSkills
 				})
-			]);
+			);
 		}
 
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.WintertodtLoot,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot), loot])
+			new Bank(loot).add(this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot))
 		);
 
-		if (bankHasItem(loot, itemID('Phoenix'))) {
+		if (loot.has('Phoenix')) {
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Phoenix} **${user.username}'s** minion, ${
