@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { prisma } from '../../lib/settings/prisma';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
@@ -25,7 +26,8 @@ const autocompleteMonsters = [
 		aliases: ['zalcano'],
 		id: ZALCANO_ID,
 		emoji: '<:Smolcano:604670895113633802>'
-	}
+	},
+	VasaMagus
 ];
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
