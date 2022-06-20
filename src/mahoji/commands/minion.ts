@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import { convertLVLtoXP, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
@@ -215,7 +216,7 @@ export const minionCommand: OSBMahojiCommand = {
 					description: 'The monster/thing you want to check your KC of.',
 					required: true,
 					autocomplete: async (value: string) => {
-						return effectiveMonsters
+						return [...effectiveMonsters, ...Minigames]
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
