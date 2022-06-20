@@ -222,10 +222,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		if (ourania_delivery_service?.stats) return odsStatsCommand(user);
 		if (ourania_delivery_service?.start) return odsStartCommand(klasaUser, channelID);
 
-		if (fishing_contest?.stats_info) return fishingContestStatsCommand(klasaUser);
-		if (fishing_contest?.fish) {
+		if (fishing_contest?.fish && fishing_contest.fish.location) {
 			return fishingContestStartCommand(klasaUser, channelID, fishing_contest.fish.location);
 		}
+		if (fishing_contest?.stats_info || fishing_contest) return fishingContestStatsCommand(klasaUser);
 
 		return 'Invalid command.';
 	}
