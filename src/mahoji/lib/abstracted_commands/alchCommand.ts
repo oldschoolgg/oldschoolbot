@@ -44,7 +44,7 @@ export async function alchCommand(
 
 	const [favAlchs] = user.getUserFavAlchs(calcMaxTripLength(user, 'Alching')) as Item[];
 
-	if (!osItem && !favAlchs) {
+	if (!favAlchs) {
 		return "You don't have any of that item to alch.";
 	}
 
