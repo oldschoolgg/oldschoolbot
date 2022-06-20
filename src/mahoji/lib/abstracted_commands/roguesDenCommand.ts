@@ -5,7 +5,7 @@ import { Bank } from 'oldschooljs';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import {formatDuration, updateBankSetting} from '../../../lib/util';
+import { formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function roguesDenCommand(user: KlasaUser, channelID: bigint) {
