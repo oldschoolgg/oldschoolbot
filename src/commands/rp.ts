@@ -59,7 +59,7 @@ import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import { mahojiParseNumber } from '../mahoji/mahojiSettings';
+import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
@@ -144,13 +144,13 @@ async function checkBank(msg: KlasaMessage) {
 	return msg.channel.send('You have no broken items on your account!');
 }
 
-function generateReadyThings(user: KlasaUser) {
+async function generateReadyThings(user: KlasaUser) {
 	const readyThings = [];
 	for (const [cooldown, setting, name] of userTimers) {
 		const lastTime: number = user.settings.get(setting) as number;
 		const difference = Date.now() - lastTime;
 
-		const cd = typeof cooldown === 'number' ? cooldown : cooldown(user);
+		const cd = typeof cooldown === 'number' ? cooldown : cooldown(await mahojiUsersSettingsFetch(user.id));
 
 		readyThings.push(
 			`**${name}:** ${difference < cd ? `*${formatDuration(Date.now() - (lastTime + cd), true)}*` : 'ready'}`
@@ -509,7 +509,7 @@ export default class extends BotCommand {
 				const premiumTier = u.settings.get(UserSettings.PremiumBalanceTier);
 
 				let str = `**${getUsername(u.id)}**
-${generateReadyThings(u).join('\n')}
+${(await generateReadyThings(u)).join('\n')}
 **Perk Tier:** ${getUsersPerkTier(u)}
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
