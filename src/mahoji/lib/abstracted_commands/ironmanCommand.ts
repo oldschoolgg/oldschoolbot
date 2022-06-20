@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { noOp } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
@@ -100,12 +101,12 @@ After becoming an ironman:
 		await prisma.user.create({
 			data: createOptions
 		});
-		await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
-		await prisma.playerOwnedHouse.delete({ where: { user_id: user.id } });
-		await prisma.minigame.delete({ where: { user_id: user.id } });
-		await prisma.xPGain.deleteMany({ where: { user_id: BigInt(user.id) } });
-		await prisma.newUser.delete({ where: { id: user.id } });
-		await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } });
+		await prisma.slayerTask.deleteMany({ where: { user_id: user.id } }).catch(noOp);
+		await prisma.playerOwnedHouse.delete({ where: { user_id: user.id } }).catch(noOp);
+		await prisma.minigame.delete({ where: { user_id: user.id } }).catch(noOp);
+		await prisma.xPGain.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+		await prisma.newUser.delete({ where: { id: user.id } }).catch(noOp);
+		await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 	} catch (_) {}
 
 	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
