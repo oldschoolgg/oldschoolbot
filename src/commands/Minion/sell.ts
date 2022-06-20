@@ -32,12 +32,21 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 	return { price, basePrice };
 }
 
+export function sellStorePriceOfItem(item: Item, qty: number): { price: number; basePrice: number } {
+	if (!item.cost || !item.lowalch) return { price: 0, basePrice: 0 };
+	let basePrice = item.cost;
+	// Sell price decline with stock by 3% and is always low alch price when stock is 0.
+	let price = (0.4 - 0.03 * Math.min(qty - 1, 10)) * basePrice;
+	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
+	return { price, basePrice };
+}
+
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			usage: '(items:TradeableBank)',
 			categoryFlags: ['minion'],
-			description: 'Sells an item to the bot for 80% of G.E price.',
+			description: 'Sells an item to the bot for 80% of G.E price (general store prices for ironmen).',
 			examples: ['+sell bronze arrow']
 		});
 	}
@@ -68,8 +77,9 @@ export default class extends BotCommand {
 			if (specialPrice) {
 				totalPrice += Math.floor(specialPrice * qty);
 			} else {
-				if (msg.author.isIronman) return msg.channel.send("Iron players can't sell items.");
-				const { price } = sellPriceOfItem(item, taxRatePercent);
+				const { price } = msg.author.isIronman
+					? sellStorePriceOfItem(item, qty)
+					: sellPriceOfItem(item, taxRatePercent);
 				totalPrice += price * qty;
 			}
 		}
@@ -91,9 +101,9 @@ export default class extends BotCommand {
 		msg.author.log(`sold ${JSON.stringify(bankToSell.bank)} for ${totalPrice}`);
 
 		return msg.channel.send(
-			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(
-				totalPrice
-			)})** (${taxRatePercent}% below market price).`
+			`Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${Util.toKMB(totalPrice)})**${
+				msg.author.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
+			}.`
 		);
 	}
 }
