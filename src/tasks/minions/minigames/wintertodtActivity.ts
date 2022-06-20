@@ -11,6 +11,7 @@ import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 const PointsTable = new SimpleTable<number>()
@@ -60,10 +61,7 @@ export default class extends Task {
 		}
 
 		// Track this food cost in Economy Stats
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.WintertodtLoot,
-			new Bank(loot).add(this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot)).bank
-		);
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.WintertodtLoot, loot);
 
 		if (loot.has('Phoenix')) {
 			this.client.emit(

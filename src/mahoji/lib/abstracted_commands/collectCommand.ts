@@ -8,7 +8,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { Skills } from '../../../lib/types';
 import { CollectingOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
 
@@ -175,10 +175,7 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 		}
 		await user.removeItemsFromBank(cost);
 
-		await user.client.settings!.update(
-			ClientSettings.EconomyStats.CollectingCost,
-			new Bank().add(cost).add(user.client.settings!.get(ClientSettings.EconomyStats.CollectingCost)).bank
-		);
+		await updateBankSetting(user.client, ClientSettings.EconomyStats.CollectingCost, cost);
 	}
 
 	await addSubTaskToActivityTask<CollectingOptions>({

@@ -1,9 +1,8 @@
 import { KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
 
 import { degradeableItems } from '../../degradeableItems';
 import { ClientSettings } from '../../settings/types/ClientSettings';
-import { stringMatches } from '../../util';
+import { stringMatches, updateBankSetting } from '../../util';
 
 export async function degradeableItemsCommand(msg: KlasaMessage, input: string | undefined = '') {
 	if (typeof input !== 'string') input = '';
@@ -52,10 +51,7 @@ ${degradeableItems
 	const currentCharges = msg.author.settings.get(item.settingsKey) as number;
 	const newCharges = currentCharges + amountOfCharges;
 	await msg.author.settings.update(item.settingsKey, newCharges);
-	await msg.client.settings!.update(
-		ClientSettings.EconomyStats.DegradedItemsCost,
-		new Bank().add(msg.client.settings!.get(ClientSettings.EconomyStats.DegradedItemsCost)).add(cost).bank
-	);
+	await updateBankSetting(msg.client, ClientSettings.EconomyStats.DegradedItemsCost, cost);
 
 	return msg.channel.send(`You added **${cost}** to your ${item.item.name}, it now has ${newCharges} charges.`);
 }
