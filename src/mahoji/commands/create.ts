@@ -10,8 +10,10 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { stringMatches, updateBankSetting } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation } from '../mahojiSettings';
+import { degradeableItems } from './../../lib/degradeableItems';
 
 function showAllCreatables() {
 	let content = 'This are the items that you can create:';
@@ -205,6 +207,15 @@ export const createCommand: OSBMahojiCommand = {
 
 		await user.removeItemsFromBank(inItems);
 		await user.addItemsToBank({ items: outItems });
+
+		// Abyssal tentacle, add 10k charges
+		if (outItems.has('Abyssal tentacle')) {
+			const abbyDegradeable = degradeableItems.find(i => i.item === getOSItem('Abyssal tentacle'));
+			if (!abbyDegradeable) return "Can't find the degradeable item. Error";
+			const currentCharges = user.settings.get(abbyDegradeable.settingsKey) as number;
+			const newCharges = currentCharges + 10_000;
+			await user.settings.update(abbyDegradeable.settingsKey, newCharges);
+		}
 
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
