@@ -32,6 +32,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsersTame, repeatTameTrip, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
 import { convertMahojiResponseToDJSResponse, isAtleastThisOld } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { spawnLampIsReady } from '../../mahoji/commands/tools';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
@@ -95,7 +96,7 @@ export default class MinionCommand extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const [birdhouseDetails, mahojiUser, farmingDetails] = await Promise.all([
 			calculateBirdhouseDetails(msg.author.id),
-			mahojiUsersSettingsFetch(msg.author.id, { minion_farmingContract: true, selected_tame: true }),
+			mahojiUsersSettingsFetch(msg.author.id),
 			getFarmingInfo(msg.author.id)
 		]);
 
@@ -202,6 +203,21 @@ export default class MinionCommand extends BotCommand {
 		const lastTrip = lastTripCache.get(msg.author.id);
 		if (lastTrip && !msg.author.minionIsBusy) {
 			dynamicButtons.add({ name: `Repeat ${lastTrip.data.type} Trip`, fn: () => lastTrip.continue(msg) });
+		}
+
+		const spawnLampReady = spawnLampIsReady(mahojiUser, msg.channel.id);
+		if (spawnLampReady) {
+			dynamicButtons.add({
+				name: 'Spawn Lamp',
+				emoji: '988325171498721290',
+				fn: () =>
+					runCommand({
+						message: msg,
+						commandName: 'tools',
+						args: { patron: { spawnlamp: {} } },
+						bypassInhibitors: true
+					})
+			});
 		}
 
 		const bank = msg.author.bank();

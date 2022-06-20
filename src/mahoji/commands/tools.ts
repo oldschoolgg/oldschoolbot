@@ -1,5 +1,6 @@
-import { Embed } from '@discordjs/builders';
+import { Embed, userMention } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
+import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -7,16 +8,20 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import LeaderboardCommand from '../../commands/Minion/leaderboard';
+import { production } from '../../config';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
-import { BitField, giveBoxResetTime, PerkTier } from '../../lib/constants';
+import { BitField, Channel, Emoji, giveBoxResetTime, PerkTier, spawnLampResetTime } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import { asyncGzip, formatDuration, itemID, roll, stringMatches } from '../../lib/util';
+import { asyncGzip, formatDuration, generateXPLevelQuestion, itemID, roll, stringMatches } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier, { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { LampTable } from '../../lib/xpLamps';
+import { buttonUserPicker } from '../lib/buttonUserPicker';
+import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import {
@@ -208,6 +213,79 @@ LIMIT 10`;
 	return { embeds: [embed] };
 }
 
+export function spawnLampIsReady(user: User, channelID: string): [true] | [false, string] {
+	const perkTier = getUsersPerkTier(user, true);
+	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
+		return [false, 'You need to be a T3 patron or higher to use this command.'];
+	}
+	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
+		return [false, "You can't use spawnlamp in this channel."];
+	}
+
+	const currentDate = Date.now();
+	const lastDate = Number(user.lastSpawnLamp);
+	const difference = currentDate - lastDate;
+
+	const cooldown = spawnLampResetTime(user);
+
+	if (production && difference < cooldown) {
+		const duration = formatDuration(Date.now() - (lastDate + cooldown));
+		return [false, `You can spawn another lamp in ${duration}.`];
+	}
+	return [true];
+}
+async function spawnLampCommand(user: User, channelID: bigint): CommandResponse {
+	const [lampIsReady, reason] = spawnLampIsReady(user, channelID.toString());
+	if (!lampIsReady && reason) return reason;
+
+	await mahojiUserSettingsUpdate(user.id, {
+		lastSpawnLamp: Date.now()
+	});
+
+	const { answers, question, explainAnswer } = generateXPLevelQuestion();
+
+	const winnerID = await buttonUserPicker({
+		channelID,
+		str: `<:Huge_lamp:988325171498721290> ${userMention(user.id)} spawned a Lamp: ${question}`,
+		ironmenAllowed: false,
+		answers,
+		creator: BigInt(user.id)
+	});
+	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
+	const winner = await globalClient.fetchUser(winnerID);
+	const loot = LampTable.roll();
+	await winner.addItemsToBank({ items: loot, collectionLog: false });
+	return `${winner} got it, and won **${loot}**! ${explainAnswer}`;
+}
+async function spawnBoxCommand(user: User, channelID: bigint): CommandResponse {
+	const perkTier = getUsersPerkTier(user, true);
+	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
+		return 'You need to be a T3 patron or higher to use this command.';
+	}
+	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID.toString())) {
+		return "You can't use spawnbox in this channel.";
+	}
+	const isOnCooldown = Cooldowns.get(user.id, 'SPAWN_BOX', Time.Minute * 45);
+	if (isOnCooldown !== null) {
+		return `This command is on cooldown for you for ${formatDuration(isOnCooldown)}.`;
+	}
+	const { answers, question, explainAnswer } = generateXPLevelQuestion();
+
+	const winnerID = await buttonUserPicker({
+		channelID,
+		str: `${Emoji.MysteryBox} ${userMention(user.id)} spawned a Mystery Box: ${question}`,
+		ironmenAllowed: false,
+		answers,
+		creator: BigInt(user.id)
+	});
+	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
+	const winner = await globalClient.fetchUser(winnerID);
+
+	const loot = new Bank().add(MysteryBoxes.roll());
+	await winner.addItemsToBank({ items: loot, collectionLog: false });
+	return `Congratulations, ${winner}! You received: **${loot}**. ${explainAnswer}`;
+}
+
 async function dryStreakCommand(user: User, monsterName: string, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monsterName)));
@@ -382,6 +460,16 @@ export const toolsCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'spawnlamp',
+					description: 'Allows you to spawn a lamp.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'spawnbox',
+					description: 'Allows you to spawn a mystery box.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
 				}
@@ -391,7 +479,8 @@ export const toolsCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID,
-		interaction
+		interaction,
+		channelID
 	}: CommandRunOptions<{
 		patron?: {
 			kc_gains?: {
@@ -420,9 +509,11 @@ export const toolsCommand: OSBMahojiCommand = {
 				user: MahojiUserOption;
 			};
 			activity_export?: {};
+			spawnlamp?: {};
+			spawnbox?: {};
 		};
 	}>) => {
-		interaction.deferReply();
+		if (interaction) interaction.deferReply();
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const klasaUser = await globalClient.fetchUser(userID);
 
@@ -491,6 +582,10 @@ export const toolsCommand: OSBMahojiCommand = {
 				const result = await promise;
 				return result;
 			}
+			if (patron.spawnlamp) {
+				return spawnLampCommand(mahojiUser, channelID);
+			}
+			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
 		}
 		return 'Invalid command!';
 	}
