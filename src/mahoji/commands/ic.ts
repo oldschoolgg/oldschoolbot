@@ -125,7 +125,7 @@ export function getItemContractDetails(mUser: User) {
 		canSkip: difference < itemContractResetTime,
 		lastDate,
 		infoStr: `**Current Contract:** ${
-			currentItem ? `${currentItem.name} (You${owns ? '' : " don't"} own it)` : '*None*'
+			currentItem ? `${currentItem.name} (ID: ${currentItem.id}) (You${owns ? '' : " don't"} own it)` : '*None*'
 		}
 **Current Streak:** ${streak}
 **Total Contracts Completed:** ${totalContracts}
