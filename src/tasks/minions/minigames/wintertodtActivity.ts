@@ -62,7 +62,7 @@ export default class extends Task {
 		// Track this food cost in Economy Stats
 		await this.client.settings.update(
 			ClientSettings.EconomyStats.WintertodtLoot,
-			new Bank(loot).add(this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot))
+			new Bank(loot).add(this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot)).bank
 		);
 
 		if (loot.has('Phoenix')) {
