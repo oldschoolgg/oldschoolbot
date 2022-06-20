@@ -262,7 +262,7 @@ async function spawnBoxCommand(user: User, channelID: bigint): CommandResponse {
 	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
 		return 'You need to be a T3 patron or higher to use this command.';
 	}
-	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
+	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID.toString())) {
 		return "You can't use spawnbox in this channel.";
 	}
 	const isOnCooldown = Cooldowns.get(user.id, 'SPAWN_BOX', Time.Minute * 45);
