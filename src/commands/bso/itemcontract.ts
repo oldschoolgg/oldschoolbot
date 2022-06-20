@@ -22,6 +22,7 @@ import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
+import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 const contractTable = new LootTable()
 	.every('Coins', [1_000_000, 3_500_000])
@@ -243,18 +244,18 @@ export default class DailyCommand extends BotCommand {
 			}
 		}
 
-		await Promise.all([
-			msg.author.settings.update(UserSettings.LastItemContractDate, currentDate),
-			msg.author.settings.update(UserSettings.TotalItemContracts, totalContracts + 1),
-			msg.author.settings.update(UserSettings.CurrentItemContract, pickItemContract(newStreak)),
-			msg.author.settings.update(
-				UserSettings.ItemContractBank,
-				new Bank().add(cost).add(msg.author.settings.get(UserSettings.ItemContractBank))
-			),
-			msg.author.removeItemsFromBank(cost),
-			msg.author.addItemsToBank({ items: loot, collectionLog: false }),
-			msg.author.settings.update(UserSettings.ItemContractStreak, newStreak)
-		]);
+		await mahojiUserSettingsUpdate(msg.author.id, {
+			last_item_contract_date: currentDate,
+			total_item_contracts: {
+				increment: 1
+			},
+			current_item_contract: pickItemContract(newStreak),
+			item_contract_bank: new Bank().add(cost).add(msg.author.settings.get(UserSettings.ItemContractBank)).bank,
+			item_contract_streak: newStreak
+		});
+		await msg.author.removeItemsFromBank(cost);
+		await msg.author.addItemsToBank({ items: loot, collectionLog: false });
+
 		updateBankSetting(this.client, ClientSettings.EconomyStats.ItemContractCost, cost);
 		updateBankSetting(this.client, ClientSettings.EconomyStats.ItemContractLoot, loot);
 		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceItemContracts, loot.amount('Coins'));

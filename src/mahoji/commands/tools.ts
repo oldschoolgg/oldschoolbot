@@ -453,7 +453,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 			if (patron.cl_bank) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const clBank = new Bank(mahojiUser.collectionLogBank as ItemBank);
 				if (patron.cl_bank.format === 'json') {
 					const json = JSON.stringify(clBank);
