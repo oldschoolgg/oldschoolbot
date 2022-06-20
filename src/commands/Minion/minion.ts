@@ -32,6 +32,7 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsersTame, repeatTameTrip, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
 import { convertMahojiResponseToDJSResponse, isAtleastThisOld } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { getItemContractDetails } from '../../mahoji/commands/ic';
 import { spawnLampIsReady } from '../../mahoji/commands/tools';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -215,6 +216,21 @@ export default class MinionCommand extends BotCommand {
 						message: msg,
 						commandName: 'tools',
 						args: { patron: { spawnlamp: {} } },
+						bypassInhibitors: true
+					})
+			});
+		}
+
+		const icDetails = getItemContractDetails(mahojiUser);
+		if (msg.author.perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
+			dynamicButtons.add({
+				name: `IC: ${icDetails.currentItem.name.slice(0, 20)}`,
+				emoji: '988422348434718812',
+				fn: () =>
+					runCommand({
+						message: msg,
+						commandName: 'ic',
+						args: { send: {} },
 						bypassInhibitors: true
 					})
 			});

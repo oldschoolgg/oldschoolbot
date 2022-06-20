@@ -292,6 +292,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'refreshic',
+					description: 'Refresh IC.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'gear',
 					description: 'Spawn food, pots, runes, coins, blowpipe, POH with a pool, and BiS gear.'
 				},
@@ -431,6 +436,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				spawntames?: {};
 				forcegrow?: { patch_name: FarmingPatchName };
 				stresstest?: {};
+				refreshic?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
@@ -438,6 +444,12 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				}
 				const user = await globalClient.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+				if (options.refreshic) {
+					await mahojiUserSettingsUpdate(user.id, {
+						last_item_contract_date: 0
+					});
+					return 'reset your last contract date';
+				}
 				if (options.irontoggle) {
 					const current = mahojiUser.minion_ironman;
 					await mahojiUserSettingsUpdate(user.id, {
