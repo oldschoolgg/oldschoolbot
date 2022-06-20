@@ -177,7 +177,7 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 
 		await user.client.settings!.update(
 			ClientSettings.EconomyStats.CollectingCost,
-			new Bank().add(cost).add(user.client.settings!.get(ClientSettings.EconomyStats.CollectingCost))
+			new Bank().add(cost).add(user.client.settings!.get(ClientSettings.EconomyStats.CollectingCost)).bank
 		);
 	}
 
