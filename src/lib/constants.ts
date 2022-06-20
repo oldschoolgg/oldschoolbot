@@ -138,6 +138,7 @@ export const enum Emoji {
 	Flappy = '<:Flappy:884799334737129513>',
 	Stopwatch = '⏱️',
 	Smokey = '<:Smokey:886284971914969149>',
+	ItemContract = '<:Item_contract:988422348434718812>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
