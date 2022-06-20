@@ -60,7 +60,7 @@ export default class extends Task {
 			);
 		}
 
-		// Track this food cost in Economy Stats
+		// Track loot in Economy Stats
 		await updateBankSetting(this.client, ClientSettings.EconomyStats.WintertodtLoot, loot);
 
 		if (loot.has('Phoenix')) {
