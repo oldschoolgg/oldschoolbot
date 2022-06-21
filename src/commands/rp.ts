@@ -64,15 +64,21 @@ import { mahojiParseNumber, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch }
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
-async function repairBrokenItemsFromUser(user: User): Promise<string> {
+export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise<[string] | [string, any[]]> {
 	const changes: Prisma.UserUpdateArgs['data'] = {};
-	const rawBank = user.bank as ItemBank;
-	const rawCL = user.collectionLogBank as ItemBank;
-	const rawTempCL = user.temp_cl as ItemBank;
-	const rawSB = user.sacrificedBank as ItemBank;
-	const favorites = user.favoriteItems;
+	const rawBank = user instanceof KlasaUser ? user.settings.get(UserSettings.Bank) : (user.bank as ItemBank);
+	const rawCL =
+		user instanceof KlasaUser
+			? user.settings.get(UserSettings.CollectionLogBank)
+			: (user.collectionLogBank as ItemBank);
+	const rawTempCL = user instanceof KlasaUser ? user.settings.get(UserSettings.TempCL) : (user.temp_cl as ItemBank);
+	const rawSB =
+		user instanceof KlasaUser ? user.settings.get(UserSettings.SacrificedBank) : (user.sacrificedBank as ItemBank);
+	const favorites = user instanceof KlasaUser ? user.settings.get(UserSettings.FavoriteItems) : user.favoriteItems;
 
-	const rawAllGear = GearSetupTypes.map(i => user[`gear_${i}`]);
+	const rawAllGear = GearSetupTypes.map(i =>
+		user instanceof KlasaUser ? user.settings.get(`gear.${i}`) : user[`gear_${i}`]
+	);
 	const allGearItemIDs = rawAllGear
 		.filter(notEmpty)
 		.map((b: any) =>
@@ -113,7 +119,9 @@ async function repairBrokenItemsFromUser(user: User): Promise<string> {
 	}
 
 	for (const setupType of GearSetupTypes) {
-		const _gear = user[`gear_${setupType}`] as GearSetup | null;
+		const _gear = (
+			user instanceof KlasaUser ? user.settings.get(`gear.${setupType}`) : user[`gear_${setupType}`]
+		) as GearSetup | null;
 		if (_gear === null) continue;
 		const gear = { ..._gear };
 		for (const [key, value] of Object.entries(gear)) {
@@ -133,19 +141,21 @@ async function repairBrokenItemsFromUser(user: User): Promise<string> {
 		changes.temp_cl = newTempCL;
 		changes.sacrificedBank = newSB;
 		if (newFavs.includes(NaN) || [newBank, newCL, newTempCL, newSB].some(i => Boolean(i['NaN']))) {
-			return 'Oopsie...';
+			return ['Oopsie...'];
 		}
 
 		await mahojiUserSettingsUpdate(user.id, changes);
 
-		return `You had ${
-			brokenBank.length
-		} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
-			brokenBank
-		).slice(0, 500)}`;
+		return [
+			`You had ${
+				brokenBank.length
+			} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
+				brokenBank
+			).slice(0, 500)}`
+		];
 	}
 
-	return 'You have no broken items on your account!';
+	return ['You have no broken items on your account!'];
 }
 
 async function generateReadyThings(user: KlasaUser) {
@@ -465,7 +475,9 @@ export default class extends BotCommand {
 				);
 			}
 			case 'checkbank': {
-				return msg.channel.send(await repairBrokenItemsFromUser(await mahojiUsersSettingsFetch(msg.author.id)));
+				return msg.channel.send(
+					(await repairBrokenItemsFromUser(await mahojiUsersSettingsFetch(msg.author.id)))[0]
+				);
 			}
 			case 'givetgb': {
 				if (!(input instanceof KlasaUser)) return;
@@ -1192,6 +1204,24 @@ ORDER BY qty DESC;`);
 						.slice(0, 10)
 						.map(u => `${u.username}: ${u.qty} commands`)
 						.join('\n')
+				);
+			}
+			case 'masscheckbankfix': {
+				let usersChanged = 0;
+				const allBrokenItems = new Set<any>();
+				const users = Array.from(globalClient.users.cache.values()).filter(
+					u => Object.keys(u.settings.get(UserSettings.Bank)).length !== 0
+				);
+				for (const user of users) {
+					const [, arr] = await repairBrokenItemsFromUser(user as KlasaUser);
+					if (arr) {
+						for (const i of arr) allBrokenItems.add(i);
+						usersChanged++;
+					}
+				}
+				let str = Array.from(allBrokenItems.values());
+				return msg.channel.send(
+					`Removed ${allBrokenItems.size} (${str}) from ${usersChanged} users, out of ${users.length} checked`
 				);
 			}
 			case 'bitest': {
