@@ -109,7 +109,7 @@ export async function duelCommand(
 		updateGPTrackSetting(
 			globalClient,
 			ClientSettings.EconomyStats.DuelTaxBank,
-			Math.round(dividedAmount * 100) / 100
+			Math.round((dividedAmount * 100) / 100)
 		);
 
 		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins) as number;
