@@ -15,7 +15,15 @@ import { allDroppedItems } from '../../lib/data/Collections';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import { asyncGzip, formatDuration, generateXPLevelQuestion, itemID, roll, stringMatches } from '../../lib/util';
+import {
+	asyncGzip,
+	formatDuration,
+	generateXPLevelQuestion,
+	isAtleastThisOld,
+	itemID,
+	roll,
+	stringMatches
+} from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier, { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -215,17 +223,16 @@ LIMIT 10`;
 
 const promotionEndDate = 1_655_803_876_958 + Time.Day;
 
-export function spawnLampIsReady(user: User, channelID: string): [true] | [false, string] {
+export function spawnLampIsReady(kUser: KlasaUser, user: User, channelID: string): [true] | [false, string] {
 	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
 		return [false, "You can't use spawnlamp in this channel."];
 	}
 
 	const perkTier = getUsersPerkTier(user, true);
-	if (
-		Date.now() >= promotionEndDate &&
-		perkTier < PerkTier.Four &&
-		!user.bitfield.includes(BitField.HasPermanentEventBackgrounds)
-	) {
+	const elligibleForFreePromotion =
+		isAtleastThisOld(kUser.createdTimestamp, Number(Time.Year)) && Date.now() < promotionEndDate;
+	const isPatron = perkTier >= PerkTier.Four || user.bitfield.includes(BitField.HasPermanentSpawnLamp);
+	if (!elligibleForFreePromotion && !isPatron) {
 		return [false, 'You need to be a T3 patron or higher to use this command.'];
 	}
 	const currentDate = Date.now();
@@ -234,14 +241,14 @@ export function spawnLampIsReady(user: User, channelID: string): [true] | [false
 
 	const cooldown = spawnLampResetTime(user);
 
-	if (production && difference < cooldown) {
+	if (difference < cooldown) {
 		const duration = formatDuration(Date.now() - (lastDate + cooldown));
 		return [false, `You can spawn another lamp in ${duration}.`];
 	}
 	return [true];
 }
-async function spawnLampCommand(user: User, channelID: bigint): CommandResponse {
-	const [lampIsReady, reason] = spawnLampIsReady(user, channelID.toString());
+async function spawnLampCommand(kUser: KlasaUser, user: User, channelID: bigint): CommandResponse {
+	const [lampIsReady, reason] = spawnLampIsReady(kUser, user, channelID.toString());
 	if (!lampIsReady && reason) return reason;
 
 	await mahojiUserSettingsUpdate(user.id, {
@@ -589,7 +596,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return result;
 			}
 			if (patron.spawnlamp) {
-				return spawnLampCommand(mahojiUser, channelID);
+				return spawnLampCommand(klasaUser, mahojiUser, channelID);
 			}
 			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
 		}
