@@ -21,15 +21,15 @@ export const Sword: DisassemblySourceGroup = {
 		{ item: i('Bronze sword'), lvl: 1 },
 		{ item: i('Iron sword'), lvl: 10 },
 		{ item: i('Steel sword'), lvl: 20 },
-		{ item: i('Mithril sword'), lvl: 30 },
-		{ item: i('Mithril 2h sword'), lvl: 30 },
-		{ item: i('Adamant sword'), lvl: 30 },
-		{ item: i('Adamant 2h sword'), lvl: 30 },
-		{ item: i('Rune sword'), lvl: 50 },
-		{ item: i('Rune 2h sword'), lvl: 50 },
-		{ item: i('Dragon 2h sword'), lvl: 60 },
+		{ item: i('Mithril sword'), lvl: 40 },
+		{ item: i('Mithril 2h sword'), lvl: 45 },
+		{ item: i('Adamant sword'), lvl: 50 },
+		{ item: i('Adamant 2h sword'), lvl: 60 },
+		{ item: i('Rune sword'), lvl: 60 },
+		{ item: i('Rune 2h sword'), lvl: 70 },
+		{ item: i('Dragon 2h sword'), lvl: 80 },
 		{ item: i('Leaf-bladed sword'), lvl: 60 },
-		{ item: i('Dragon sword'), lvl: 60 },
+		{ item: i('Dragon sword'), lvl: 80 },
 		{
 			item: [
 				'Armadyl godsword',
@@ -39,8 +39,8 @@ export const Sword: DisassemblySourceGroup = {
 				'Saradomin sword',
 				'Zamorak godsword'
 			].map(i),
-			lvl: 75
+			lvl: 99
 		}
 	],
-	parts: { sharp: 30, metallic: 30, base: 35, dextrous: 2 }
+	parts: { sharp: 30, metallic: 30, swift: 10, dextrous: 2, powerful: 10 }
 };

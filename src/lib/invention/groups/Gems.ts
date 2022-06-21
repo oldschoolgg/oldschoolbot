@@ -17,5 +17,5 @@ export const Gems: DisassemblySourceGroup = {
 		{ item: i('Onyx'), lvl: 67 },
 		{ item: i('Zenyte'), lvl: 75 }
 	],
-	parts: { precious: 33, smooth: 30 }
+	parts: { precious: 60, smooth: 30 }
 };

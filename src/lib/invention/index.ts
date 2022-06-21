@@ -11,7 +11,6 @@ export const materialTypes = [
 	'swift',
 	'magic',
 	'powerful',
-	'imbued',
 	'flexible',
 	'strong',
 	'protective',

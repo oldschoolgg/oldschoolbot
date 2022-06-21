@@ -94,5 +94,5 @@ export const Jewellery: DisassemblySourceGroup = {
 		{ item: i('Amulet of torture'), lvl: 98 },
 		{ item: i('Amulet of fury'), lvl: 90 }
 	],
-	parts: { precious: 3, smooth: 30 }
+	parts: { precious: 20, smooth: 80 }
 };

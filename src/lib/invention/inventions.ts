@@ -92,7 +92,7 @@ export const inventionBoosts = {
 		boxTrapBoostPercent: 25
 	},
 	arcaneHarvester: {
-		harvestBoostPercent: 15
+		harvestBoostPercent: 20
 	},
 	drygoreSaw: {
 		buildBoostPercent: 40
@@ -162,8 +162,8 @@ export const Inventions: readonly Invention[] = [
 			.add('Cannon furnace')
 			.add('Dwarven bar')
 			.freeze(),
-		inventionLevelNeeded: 70,
-		usageCostMultiplier: 0.7
+		inventionLevelNeeded: 80,
+		usageCostMultiplier: 0.1
 	},
 	{
 		id: InventionID.SuperiorInfernoAdze,
@@ -178,7 +178,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['equipped'],
 		itemCost: new Bank().add('Inferno adze').add('Infernal core').add('Dragon pickaxe').freeze(),
-		inventionLevelNeeded: 70,
+		inventionLevelNeeded: 80,
 		usageCostMultiplier: 0
 	},
 	{
@@ -211,7 +211,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 90,
+		inventionLevelNeeded: 95,
 		usageCostMultiplier: 0.8
 	},
 	{
@@ -220,14 +220,14 @@ export const Inventions: readonly Invention[] = [
 		description: `Makes box-trap hunting ${inventionBoosts.quickTrap.boxTrapBoostPercent}% faster.`,
 		item: getOSItem('Quick trap'),
 		materialTypeBank: new MaterialBank({
-			precious: 2,
-			imbued: 4,
-			magic: 4
+			precious: 1,
+			magic: 6,
+			organic: 3
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 80,
-		usageCostMultiplier: 0.8
+		inventionLevelNeeded: 90,
+		usageCostMultiplier: 0.5
 	},
 	{
 		id: InventionID.ArcaneHarvester,
@@ -235,8 +235,7 @@ export const Inventions: readonly Invention[] = [
 		description: `Increases farming yield by ${inventionBoosts.arcaneHarvester.harvestBoostPercent}%.`,
 		item: getOSItem('Arcane harvester'),
 		materialTypeBank: new MaterialBank({
-			imbued: 2,
-			organic: 3,
+			organic: 5,
 			magic: 5
 		}),
 		flags: ['bank'],
@@ -256,8 +255,8 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 90,
-		usageCostMultiplier: 0.8
+		inventionLevelNeeded: 95,
+		usageCostMultiplier: 0.5
 	},
 	{
 		id: InventionID.DrygoreSaw,
@@ -270,7 +269,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 100,
+		inventionLevelNeeded: 105,
 		usageCostMultiplier: 0.6
 	},
 	{
@@ -284,7 +283,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 105,
+		inventionLevelNeeded: 110,
 		usageCostMultiplier: 0.3,
 		extraDescription: () => {
 			let str = '';
@@ -324,7 +323,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 60,
+		inventionLevelNeeded: 85,
 		usageCostMultiplier: 0.9
 	},
 	{
@@ -340,7 +339,7 @@ export const Inventions: readonly Invention[] = [
 		}),
 		flags: ['bank'],
 		itemCost: null,
-		inventionLevelNeeded: 80,
+		inventionLevelNeeded: 90,
 		usageCostMultiplier: 0.9
 	}
 ] as const;

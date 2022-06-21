@@ -17,5 +17,5 @@ export const UncutGems: DisassemblySourceGroup = {
 		{ item: i('Uncut onyx'), lvl: 67 },
 		{ item: i('Uncut zenyte'), lvl: 75 }
 	],
-	parts: { precious: 30, smooth: 30 }
+	parts: { precious: 60, smooth: 30 }
 };

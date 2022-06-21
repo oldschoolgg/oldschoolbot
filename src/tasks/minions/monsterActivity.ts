@@ -66,7 +66,9 @@ async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, 
 	messages.push(
 		`${xpStr} Prayer XP${
 			hasSuperior
-				? `(${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher, ${boostMsg})`
+				? `(${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher, ${
+						boostMsg ? `, ${boostMsg}` : ''
+				  })`
 				: ''
 		}`
 	);

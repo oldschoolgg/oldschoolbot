@@ -36,5 +36,5 @@ export const Herb: DisassemblySourceGroup = {
 		{ item: i('Grimy torstol'), lvl: 75 },
 		{ item: i('Athelas'), lvl: 99 }
 	],
-	parts: { organic: 89 }
+	parts: { organic: 100 }
 };
