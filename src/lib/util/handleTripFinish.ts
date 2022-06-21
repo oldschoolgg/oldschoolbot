@@ -127,6 +127,6 @@ export async function handleTripFinish(
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
-		components
+		components: components[0].length > 0 ? components : undefined
 	});
 }

@@ -49,7 +49,7 @@ async function respondButton(id: string, token: string, text: string) {
 	const route = Routes.interactionCallback(id, token);
 	await globalClient.mahojiClient.restManager.post(route, {
 		body: {
-			type: InteractionResponseType.ChannelMessageWithSource,
+			type: InteractionResponseType.DeferredMessageUpdate,
 			data: { content: text, flags: MessageFlags.Ephemeral }
 		}
 	});
