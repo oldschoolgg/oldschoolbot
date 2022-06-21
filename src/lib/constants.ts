@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { Command, KlasaMessage, KlasaUser } from 'klasa';
+import { Command, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
@@ -13,6 +13,7 @@ import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
+import getUsersPerkTier from './util/getUsersPerkTier';
 import resolveItems from './util/resolveItems';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
@@ -137,6 +138,7 @@ export const enum Emoji {
 	Flappy = '<:Flappy:884799334737129513>',
 	Stopwatch = '⏱️',
 	Smokey = '<:Smokey:886284971914969149>',
+	ItemContract = '<:Item_contract:988422348434718812>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -625,14 +627,15 @@ export const projectiles: Record<ProjectileType, number[]> = {
 export const PHOSANI_NIGHTMARE_ID = 9416;
 
 export const dailyResetTime = Time.Hour * 4;
-export const spawnLampResetTime = (user: KlasaUser) => {
-	const bf = user.settings.get(UserSettings.BitField);
+export const spawnLampResetTime = (user: User) => {
+	const bf = user.bitfield;
+	const perkTier = getUsersPerkTier(user, true);
 
 	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
-	const hasTier5 = user.perkTier >= PerkTier.Five;
-	const hasTier4 = !hasTier5 && user.perkTier === PerkTier.Four;
+	const hasTier5 = perkTier >= PerkTier.Five;
+	const hasTier4 = !hasTier5 && perkTier === PerkTier.Four;
 
-	let cooldown = [PerkTier.Six, PerkTier.Five].includes(user.perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+	let cooldown = [PerkTier.Six, PerkTier.Five].includes(perkTier) ? Time.Hour * 12 : Time.Hour * 24;
 
 	if (!hasTier5 && !hasTier4 && hasPerm) {
 		cooldown = Time.Hour * 48;

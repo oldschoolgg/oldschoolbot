@@ -36,6 +36,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import Monster from 'oldschooljs/dist/structures/Monster';
+import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
@@ -917,4 +918,31 @@ export function increaseBankQuantitesByPercent(bank: Bank, percent: number) {
 		const increased = Math.floor(increaseNumByPercent(value, percent));
 		bank.bank[key] = increased;
 	}
+}
+
+export function generateXPLevelQuestion() {
+	const level = randInt(1, 120);
+	const xp = randInt(convertLVLtoXP(level), convertLVLtoXP(level + 1) - 1);
+
+	let chanceOfSwitching = randInt(1, 4);
+
+	let answers: string[] = [level.toString()];
+	let arr = shuffleArr(['plus', 'minus'] as const);
+
+	while (answers.length < 5) {
+		let modifier = randArrItem([1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10]);
+		let action = roll(chanceOfSwitching) ? arr[0] : arr[1];
+		let potentialAnswer = action === 'plus' ? level + modifier : level - modifier;
+		if (potentialAnswer < 1) potentialAnswer = level + modifier;
+		else if (potentialAnswer > 120) potentialAnswer = level - modifier;
+
+		if (answers.includes(potentialAnswer.toString())) continue;
+		answers.push(potentialAnswer.toString());
+	}
+
+	return {
+		question: `What level would you be at with **${xp.toLocaleString()}** XP?`,
+		answers,
+		explainAnswer: `${xp.toLocaleString()} is level ${level}!`
+	};
 }
