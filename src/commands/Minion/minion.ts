@@ -204,7 +204,7 @@ export default class MinionCommand extends BotCommand {
 			dynamicButtons.add({ name: `Repeat ${lastTrip.data.type} Trip`, fn: () => lastTrip.continue(msg) });
 		}
 
-		const spawnLampReady = spawnLampIsReady(mahojiUser, msg.channel.id);
+		const spawnLampReady = spawnLampIsReady(msg.author, mahojiUser, msg.channel.id);
 		if (spawnLampReady) {
 			dynamicButtons.add({
 				name: 'Spawn Lamp',

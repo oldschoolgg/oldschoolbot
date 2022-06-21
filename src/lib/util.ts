@@ -912,7 +912,7 @@ export function generateXPLevelQuestion() {
 	let answers: string[] = [level.toString()];
 	let arr = shuffleArr(['plus', 'minus'] as const);
 
-	while (answers.length < 5) {
+	while (answers.length < 4) {
 		let modifier = randArrItem([1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10]);
 		let action = roll(chanceOfSwitching) ? arr[0] : arr[1];
 		let potentialAnswer = action === 'plus' ? level + modifier : level - modifier;
