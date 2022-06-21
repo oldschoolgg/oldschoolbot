@@ -18,9 +18,7 @@ export async function unequipPet(msg: KlasaMessage) {
 			user_id: msg.author.id,
 			pet_to_unequip: equippedPet.toString()
 		});
-		return msg.channel.send(
-			`Error removing pet, ask for help in the support server.`
-		);
+		return msg.channel.send('Error removing pet, ask for help in the support server.');
 	}
 	await msg.author.settings.update(UserSettings.Minion.EquippedPet, null);
 
