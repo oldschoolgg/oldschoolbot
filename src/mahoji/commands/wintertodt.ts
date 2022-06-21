@@ -87,7 +87,7 @@ export const wintertodtCommand: OSBMahojiCommand = {
 			await updateBankSetting(
 				globalClient,
 				ClientSettings.EconomyStats.WintertodtCost,
-				new Bank().addItem(food.id, amountNeeded)
+				new Bank().add(food.id, amountNeeded)
 			);
 
 			break;
