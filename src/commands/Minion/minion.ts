@@ -18,10 +18,8 @@ import { becomeIronman } from '../../lib/minions/functions/becomeIronman';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
-import { equipPet } from '../../lib/minions/functions/equipPet';
 import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
-import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -206,7 +204,7 @@ export default class MinionCommand extends BotCommand {
 			dynamicButtons.add({ name: `Repeat ${lastTrip.data.type} Trip`, fn: () => lastTrip.continue(msg) });
 		}
 
-		const spawnLampReady = spawnLampIsReady(mahojiUser, msg.channel.id);
+		const spawnLampReady = spawnLampIsReady(msg.author, mahojiUser, msg.channel.id);
 		if (spawnLampReady) {
 			dynamicButtons.add({
 				name: 'Spawn Lamp',
@@ -358,21 +356,19 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async unequippet(msg: KlasaMessage) {
-		return unequipPet(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
-	@minionNotBusy
-	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return equipPet(msg, input);
+	async equippet(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
 	async uep(msg: KlasaMessage) {
-		return unequipPet(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
-	@minionNotBusy
-	async ep(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return equipPet(msg, input);
+	async ep(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
 	async lvl(msg: KlasaMessage) {

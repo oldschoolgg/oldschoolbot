@@ -1,4 +1,5 @@
 import { codeBlock, inlineCode } from '@discordjs/builders';
+import { Prisma, User } from '@prisma/client';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
 import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
@@ -59,18 +60,25 @@ import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { mahojiParseNumber, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
-async function checkBank(msg: KlasaMessage) {
-	const rawBank = msg.author.settings.get(UserSettings.Bank);
-	const rawCL = msg.author.settings.get(UserSettings.CollectionLogBank);
-	const rawTempCL = msg.author.settings.get(UserSettings.TempCL);
-	const rawSB = msg.author.settings.get(UserSettings.SacrificedBank);
-	const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
+export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise<[string] | [string, any[]]> {
+	const changes: Prisma.UserUpdateArgs['data'] = {};
+	const rawBank = user instanceof KlasaUser ? user.settings.get(UserSettings.Bank) : (user.bank as ItemBank);
+	const rawCL =
+		user instanceof KlasaUser
+			? user.settings.get(UserSettings.CollectionLogBank)
+			: (user.collectionLogBank as ItemBank);
+	const rawTempCL = user instanceof KlasaUser ? user.settings.get(UserSettings.TempCL) : (user.temp_cl as ItemBank);
+	const rawSB =
+		user instanceof KlasaUser ? user.settings.get(UserSettings.SacrificedBank) : (user.sacrificedBank as ItemBank);
+	const favorites = user instanceof KlasaUser ? user.settings.get(UserSettings.FavoriteItems) : user.favoriteItems;
 
-	const rawAllGear = GearSetupTypes.map(i => msg.author.settings.get(`gear.${i}`));
+	const rawAllGear = GearSetupTypes.map(i =>
+		user instanceof KlasaUser ? user.settings.get(`gear.${i}`) : user[`gear_${i}`]
+	);
 	const allGearItemIDs = rawAllGear
 		.filter(notEmpty)
 		.map((b: any) =>
@@ -90,13 +98,11 @@ async function checkBank(msg: KlasaMessage) {
 		['gear', allGearItemIDs]
 	] as const;
 
-	let str = '';
-	for (const [name, ids] of allItemsToCheck) {
+	for (const [, ids] of allItemsToCheck) {
 		for (const id of ids.map(i => Number(i))) {
 			const item = Items.get(id);
 			if (!item) {
 				brokenBank.push(id);
-				str += `${id} in ${name} `;
 			}
 		}
 	}
@@ -115,7 +121,9 @@ async function checkBank(msg: KlasaMessage) {
 	}
 
 	for (const setupType of GearSetupTypes) {
-		const _gear = msg.author.settings.get(`gear.${setupType}`) as GearSetup | null;
+		const _gear = (
+			user instanceof KlasaUser ? user.settings.get(`gear.${setupType}`) : user[`gear_${setupType}`]
+		) as GearSetup | null;
 		if (_gear === null) continue;
 		const gear = { ..._gear };
 		for (const [key, value] of Object.entries(gear)) {
@@ -124,30 +132,33 @@ async function checkBank(msg: KlasaMessage) {
 				delete gear[key as keyof GearSetup];
 			}
 		}
-		// @ts-ignore
-		delete gear.stats;
-		await msg.author.settings.update(`gear.${setupType}`, gear);
+		// @ts-ignore ???
+		changes[`gear_${setupType}`] = gear;
 	}
 
 	if (brokenBank.length > 0) {
-		await msg.author.settings.update(UserSettings.FavoriteItems, newFavs, {
-			arrayAction: 'overwrite'
-		});
-		await msg.author.settings.update(UserSettings.Bank, newBank);
-		await msg.author.settings.update(UserSettings.CollectionLogBank, newCL);
-		await msg.author.settings.update(UserSettings.TempCL, newTempCL);
-		await msg.author.settings.update(UserSettings.SacrificedBank, newSB);
+		changes.favoriteItems = newFavs;
+		changes.bank = newBank;
+		changes.collectionLogBank = newCL;
+		changes.temp_cl = newTempCL;
+		changes.sacrificedBank = newSB;
+		if (newFavs.includes(NaN) || [newBank, newCL, newTempCL, newSB].some(i => Boolean(i['NaN']))) {
+			return ['Oopsie...'];
+		}
 
-		return msg.channel.send(
+		await mahojiUserSettingsUpdate(user.id, changes);
+
+		return [
 			`You had ${
 				brokenBank.length
 			} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
 				brokenBank
-			)} ${str}`
-		);
+			).slice(0, 500)}`,
+			Object.keys(brokenBank)
+		];
 	}
 
-	return msg.channel.send('You have no broken items on your account!');
+	return ['You have no broken items on your account!'];
 }
 
 async function generateReadyThings(user: KlasaUser) {
@@ -467,7 +478,9 @@ export default class extends BotCommand {
 				);
 			}
 			case 'checkbank': {
-				return checkBank(msg);
+				return msg.channel.send(
+					(await repairBrokenItemsFromUser(await mahojiUsersSettingsFetch(msg.author.id)))[0]
+				);
 			}
 			case 'givetgb': {
 				if (!(input instanceof KlasaUser)) return;
@@ -1194,6 +1207,24 @@ ORDER BY qty DESC;`);
 						.slice(0, 10)
 						.map(u => `${u.username}: ${u.qty} commands`)
 						.join('\n')
+				);
+			}
+			case 'masscheckbankfix': {
+				let usersChanged = 0;
+				const allBrokenItems = new Set<any>();
+				const users = Array.from(globalClient.users.cache.values()).filter(
+					u => Object.keys(u.settings.get(UserSettings.Bank)).length !== 0
+				);
+				for (const user of users) {
+					const [, arr] = await repairBrokenItemsFromUser(user as KlasaUser);
+					if (arr) {
+						for (const i of arr) allBrokenItems.add(i);
+						usersChanged++;
+					}
+				}
+				let str = Array.from(allBrokenItems.values());
+				return msg.channel.send(
+					`Removed ${allBrokenItems.size} (${str}) from ${usersChanged} users, out of ${users.length} checked`
 				);
 			}
 			case 'bitest': {
