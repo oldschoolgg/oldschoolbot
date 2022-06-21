@@ -11,10 +11,8 @@ import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
-import { equipPet } from '../../lib/minions/functions/equipPet';
 import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
-import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
@@ -304,19 +302,19 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async unequippet(msg: KlasaMessage) {
-		return unequipPet(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
-	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return equipPet(msg, input);
+	async equippet(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
 	async uep(msg: KlasaMessage) {
-		return unequipPet(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
-	async ep(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return equipPet(msg, input);
+	async ep(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
 	async lvl(msg: KlasaMessage) {
