@@ -151,7 +151,8 @@ export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise
 				brokenBank.length
 			} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
 				brokenBank
-			).slice(0, 500)}`
+			).slice(0, 500)}`,
+			Object.keys(brokenBank)
 		];
 	}
 
