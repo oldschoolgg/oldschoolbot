@@ -16,10 +16,10 @@ export async function unequipPet(msg: KlasaMessage) {
 	} catch (e) {
 		logError(new Error('Failed to add pet to bank'), {
 			user_id: msg.author.id,
-			pet_to_unequip: String(equippedPet)
+			pet_to_unequip: equippedPet.toString()
 		});
 		return msg.channel.send(
-			`Error removing pet.\n\nPlease try \`${msg.cmdPrefix}rp checkbank\` or contact #help-and-support`
+			`Error removing pet, ask for help in the support server.`
 		);
 	}
 	await msg.author.settings.update(UserSettings.Minion.EquippedPet, null);
