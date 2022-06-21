@@ -9,7 +9,7 @@ import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
 
@@ -103,10 +103,7 @@ export default class extends BotCommand {
 		}
 
 		await msg.author.removeItemsFromBank(cost.bank);
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.MagicCostBank,
-			new Bank().add(cost).add(this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank))
-		);
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, cost);
 
 		await addSubTaskToActivityTask<CastingActivityTaskOptions>({
 			spellID: spell.id,
