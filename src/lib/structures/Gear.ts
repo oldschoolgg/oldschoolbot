@@ -137,6 +137,7 @@ export class Gear {
 		const sum = { ...baseStats };
 		for (const id of this.allItems(false)) {
 			const item = getOSItem(id);
+			if (!item) continue;
 			for (const keyToAdd of objectKeys(sum)) {
 				sum[keyToAdd] += item.equipment ? item.equipment[keyToAdd] : 0;
 			}
