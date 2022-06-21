@@ -1,4 +1,5 @@
 import { codeBlock, inlineCode } from '@discordjs/builders';
+import { Prisma, User } from '@prisma/client';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
 import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
@@ -59,18 +60,19 @@ import { logError } from '../lib/util/logError';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { mahojiParseNumber, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
-async function checkBank(msg: KlasaMessage) {
-	const rawBank = msg.author.settings.get(UserSettings.Bank);
-	const rawCL = msg.author.settings.get(UserSettings.CollectionLogBank);
-	const rawTempCL = msg.author.settings.get(UserSettings.TempCL);
-	const rawSB = msg.author.settings.get(UserSettings.SacrificedBank);
-	const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
+async function repairBrokenItemsFromUser(user: User): Promise<string> {
+	const changes: Prisma.UserUpdateArgs['data'] = {};
+	const rawBank = user.bank as ItemBank;
+	const rawCL = user.collectionLogBank as ItemBank;
+	const rawTempCL = user.temp_cl as ItemBank;
+	const rawSB = user.sacrificedBank as ItemBank;
+	const favorites = user.favoriteItems;
 
-	const rawAllGear = GearSetupTypes.map(i => msg.author.settings.get(`gear.${i}`));
+	const rawAllGear = GearSetupTypes.map(i => user[`gear_${i}`]);
 	const allGearItemIDs = rawAllGear
 		.filter(notEmpty)
 		.map((b: any) =>
@@ -111,7 +113,7 @@ async function checkBank(msg: KlasaMessage) {
 	}
 
 	for (const setupType of GearSetupTypes) {
-		const _gear = msg.author.settings.get(`gear.${setupType}`) as GearSetup | null;
+		const _gear = user[`gear_${setupType}`] as GearSetup | null;
 		if (_gear === null) continue;
 		const gear = { ..._gear };
 		for (const [key, value] of Object.entries(gear)) {
@@ -120,28 +122,30 @@ async function checkBank(msg: KlasaMessage) {
 				delete gear[key as keyof GearSetup];
 			}
 		}
-		await msg.author.settings.update(`gear.${setupType}`, gear);
+		// @ts-ignore ???
+		changes[`gear_${setupType}`] = gear;
 	}
 
 	if (brokenBank.length > 0) {
-		await msg.author.settings.update(UserSettings.FavoriteItems, newFavs, {
-			arrayAction: 'overwrite'
-		});
-		await msg.author.settings.update(UserSettings.Bank, newBank);
-		await msg.author.settings.update(UserSettings.CollectionLogBank, newCL);
-		await msg.author.settings.update(UserSettings.TempCL, newTempCL);
-		await msg.author.settings.update(UserSettings.SacrificedBank, newSB);
+		changes.favoriteItems = newFavs;
+		changes.bank = newBank;
+		changes.collectionLogBank = newCL;
+		changes.temp_cl = newTempCL;
+		changes.sacrificedBank = newSB;
+		if (newFavs.includes(NaN) || [newBank, newCL, newTempCL, newSB].some(i => Boolean(i['NaN']))) {
+			return 'Oopsie...';
+		}
 
-		return msg.channel.send(
-			`You had ${
-				brokenBank.length
-			} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
-				brokenBank
-			)}`
-		);
+		await mahojiUserSettingsUpdate(user.id, changes);
+
+		return `You had ${
+			brokenBank.length
+		} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
+			brokenBank
+		).slice(0, 500)}`;
 	}
 
-	return msg.channel.send('You have no broken items on your account!');
+	return 'You have no broken items on your account!';
 }
 
 async function generateReadyThings(user: KlasaUser) {
@@ -461,7 +465,7 @@ export default class extends BotCommand {
 				);
 			}
 			case 'checkbank': {
-				return checkBank(msg);
+				return msg.channel.send(await repairBrokenItemsFromUser(await mahojiUsersSettingsFetch(msg.author.id)));
 			}
 			case 'givetgb': {
 				if (!(input instanceof KlasaUser)) return;
