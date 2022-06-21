@@ -10,7 +10,7 @@ import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { itemID, rand, roll } from '../../../lib/util';
+import { itemID, rand, roll, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
@@ -42,11 +42,8 @@ export default class extends Task {
 			loot.bank[itemID('Wintertoad')] = 1;
 		}
 
-		// Track this food cost in Economy Stats
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.WintertodtLoot,
-			new Bank(loot).add(this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot))
-		);
+		// Track loot in Economy Stats
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.WintertodtLoot, loot);
 
 		if (loot.has('Phoenix')) {
 			this.client.emit(
