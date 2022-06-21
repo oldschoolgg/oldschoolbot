@@ -18,10 +18,8 @@ import { becomeIronman } from '../../lib/minions/functions/becomeIronman';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
-import { equipPet } from '../../lib/minions/functions/equipPet';
 import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
-import { unequipPet } from '../../lib/minions/functions/unequipPet';
 import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -32,6 +30,8 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsersTame, repeatTameTrip, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
 import { convertMahojiResponseToDJSResponse, isAtleastThisOld } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { getItemContractDetails } from '../../mahoji/commands/ic';
+import { spawnLampIsReady } from '../../mahoji/commands/tools';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
@@ -95,7 +95,7 @@ export default class MinionCommand extends BotCommand {
 	async run(msg: KlasaMessage) {
 		const [birdhouseDetails, mahojiUser, farmingDetails] = await Promise.all([
 			calculateBirdhouseDetails(msg.author.id),
-			mahojiUsersSettingsFetch(msg.author.id, { minion_farmingContract: true, selected_tame: true }),
+			mahojiUsersSettingsFetch(msg.author.id),
 			getFarmingInfo(msg.author.id)
 		]);
 
@@ -202,6 +202,36 @@ export default class MinionCommand extends BotCommand {
 		const lastTrip = lastTripCache.get(msg.author.id);
 		if (lastTrip && !msg.author.minionIsBusy) {
 			dynamicButtons.add({ name: `Repeat ${lastTrip.data.type} Trip`, fn: () => lastTrip.continue(msg) });
+		}
+
+		const spawnLampReady = spawnLampIsReady(mahojiUser, msg.channel.id);
+		if (spawnLampReady) {
+			dynamicButtons.add({
+				name: 'Spawn Lamp',
+				emoji: '988325171498721290',
+				fn: () =>
+					runCommand({
+						message: msg,
+						commandName: 'tools',
+						args: { patron: { spawnlamp: {} } },
+						bypassInhibitors: true
+					})
+			});
+		}
+
+		const icDetails = getItemContractDetails(mahojiUser);
+		if (msg.author.perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
+			dynamicButtons.add({
+				name: `IC: ${icDetails.currentItem.name.slice(0, 20)}`,
+				emoji: '988422348434718812',
+				fn: () =>
+					runCommand({
+						message: msg,
+						commandName: 'ic',
+						args: { send: {} },
+						bypassInhibitors: true
+					})
+			});
 		}
 
 		const bank = msg.author.bank();
@@ -326,21 +356,19 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async unequippet(msg: KlasaMessage) {
-		return unequipPet(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
-	@minionNotBusy
-	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return equipPet(msg, input);
+	async equippet(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
 	async uep(msg: KlasaMessage) {
-		return unequipPet(msg);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
-	@minionNotBusy
-	async ep(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return equipPet(msg, input);
+	async ep(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
 	}
 
 	async lvl(msg: KlasaMessage) {

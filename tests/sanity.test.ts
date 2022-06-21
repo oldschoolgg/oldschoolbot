@@ -228,4 +228,10 @@ describe('Sanity', () => {
 		}
 		expect(exponentialPercentScale(100)).toEqual(100);
 	});
+	test('pharaohs sceptre', () => {
+		const scep = getOSItem("Pharaoh's sceptre");
+		expect(scep.id).toEqual(9044);
+		expect(scep.equipable).toEqual(true);
+		expect(scep.equipment?.slot).toEqual(EquipmentSlot.Weapon);
+	});
 });
