@@ -213,15 +213,21 @@ LIMIT 10`;
 	return { embeds: [embed] };
 }
 
+const promotionEndDate = 1_655_803_876_958 + Time.Day;
+
 export function spawnLampIsReady(user: User, channelID: string): [true] | [false, string] {
-	const perkTier = getUsersPerkTier(user, true);
-	if (perkTier < PerkTier.Four && !user.bitfield.includes(BitField.HasPermanentEventBackgrounds)) {
-		return [false, 'You need to be a T3 patron or higher to use this command.'];
-	}
 	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
 		return [false, "You can't use spawnlamp in this channel."];
 	}
 
+	const perkTier = getUsersPerkTier(user, true);
+	if (
+		Date.now() >= promotionEndDate &&
+		perkTier < PerkTier.Four &&
+		!user.bitfield.includes(BitField.HasPermanentEventBackgrounds)
+	) {
+		return [false, 'You need to be a T3 patron or higher to use this command.'];
+	}
 	const currentDate = Date.now();
 	const lastDate = Number(user.lastSpawnLamp);
 	const difference = currentDate - lastDate;
