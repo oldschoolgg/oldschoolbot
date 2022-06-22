@@ -100,7 +100,6 @@ export default class extends Monitor {
 					channelID,
 					error,
 					args: msg.args,
-					msg,
 					isContinue: false,
 					inhibited
 				});

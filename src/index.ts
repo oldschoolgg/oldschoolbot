@@ -14,6 +14,7 @@ import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { assert } from './lib/util';
+import { interactionHook } from './lib/util/globalInteractions';
 import { logError } from './lib/util/logError';
 import { onStartup } from './mahoji/lib/events';
 import { postCommand } from './mahoji/lib/postCommand';
@@ -52,7 +53,6 @@ export const mahojiClient = new MahojiClient({
 				channelID: interaction.channelID.toString(),
 				args: interaction.options,
 				error,
-				msg: null,
 				isContinue: false,
 				inhibited
 			})
@@ -84,7 +84,7 @@ client.on('raw', async event => {
 
 	const data = event.d as APIInteraction;
 	client.emit('debug', `Received ${data.type} interaction`);
-
+	interactionHook(data);
 	const timer = new Stopwatch();
 	const result = await mahojiClient.parseInteraction(data);
 	timer.stop();
