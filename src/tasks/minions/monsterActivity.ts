@@ -303,7 +303,7 @@ export default class extends Task {
 						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
 						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
 						return runCommand({
-							message: res,
+							...res,
 							commandName: 'k',
 							args: {
 								name: monster.name,

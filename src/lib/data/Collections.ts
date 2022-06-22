@@ -1393,6 +1393,13 @@ function getUserClData(userBank: Bank, clItems: number[]) {
 	return [clItems.length, owned.length];
 }
 
+export const allClNames: string[] = [];
+for (const [category, val] of Object.entries(allCollectionLogs)) {
+	allClNames.push(category);
+	allClNames.push(...Object.keys(val.activities));
+}
+for (const mon of killableMonsters) allClNames.push(mon.name);
+
 // Main function that gets the user collection based on its search parameter
 export async function getCollection(options: {
 	user: KlasaUser;

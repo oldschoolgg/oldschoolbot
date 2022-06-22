@@ -68,9 +68,10 @@ export async function sendToChannelID(
 		content?: string;
 		image?: Buffer | MessageAttachment;
 		embed?: MessageEmbed;
+		components?: MessageOptions['components'];
 	}
 ) {
-	queue.add(async () => {
+	async function queuedFn() {
 		const channel = await resolveChannel(channelID);
 		if (!channel) return;
 
@@ -79,10 +80,11 @@ export async function sendToChannelID(
 		if (data.embed) embeds.push(data.embed);
 		if (channel instanceof WebhookClient) {
 			try {
-				await webhookSend(channel, {
+				return webhookSend(channel, {
 					content: data.content,
 					files,
-					embeds
+					embeds,
+					components: data.components
 				});
 			} catch (err: any) {
 				const error = err as Error;
@@ -97,13 +99,15 @@ export async function sendToChannelID(
 				}
 			}
 		} else {
-			await channel.send({
+			return channel.send({
 				content: data.content,
 				files,
-				embeds
+				embeds,
+				components: data.components
 			});
 		}
-	});
+	}
+	queue.add(queuedFn);
 }
 
 async function webhookSend(channel: WebhookClient, input: MessageOptions) {
@@ -129,5 +133,5 @@ async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 		}
 		return;
 	}
-	await channel.send({ content: input.content, embeds: input.embeds, files: input.files });
+	return channel.send({ content: input.content, embeds: input.embeds, files: input.files });
 }
