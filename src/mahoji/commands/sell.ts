@@ -48,17 +48,28 @@ export const sellCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.String,
 			name: 'items',
 			description: 'The items you want to sell.',
-			required: true
+			required: false
 		},
-		filterOption
+		filterOption,
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'search',
+			description: 'A search query for items in your bank to sell.',
+			required: false
+		}
 	],
-	run: async ({ userID, options, interaction }: CommandRunOptions<{ items: string; filter?: string }>) => {
+	run: async ({
+		userID,
+		options,
+		interaction
+	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const bankToSell = parseBank({
 			inputBank: user.bank(),
 			inputStr: options.items,
 			maxSize: 70,
-			filters: [options.filter]
+			filters: [options.filter],
+			search: options.search
 		});
 		if (bankToSell.length === 0) return 'No items provided.';
 
