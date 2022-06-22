@@ -536,5 +536,5 @@ export const Clothing: DisassemblySourceGroup = {
 			lvl: 99
 		}
 	],
-	parts: { simple: 35 }
+	parts: { simple: 35, protective: 5 }
 };
