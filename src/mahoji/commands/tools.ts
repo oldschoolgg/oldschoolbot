@@ -19,7 +19,6 @@ import {
 	formatDuration,
 	generateXPLevelQuestion,
 	getUsername,
-	isAtleastThisOld,
 	itemID,
 	roll,
 	stringMatches
@@ -209,18 +208,14 @@ LIMIT 10`;
 	return { embeds: [embed] };
 }
 
-const promotionEndDate = 1_655_803_876_958 + Time.Day;
-
-export function spawnLampIsReady(kUser: KlasaUser, user: User, channelID: string): [true] | [false, string] {
+export function spawnLampIsReady(user: User, channelID: string): [true] | [false, string] {
 	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
 		return [false, "You can't use spawnlamp in this channel."];
 	}
 
 	const perkTier = getUsersPerkTier(user, true);
-	const elligibleForFreePromotion =
-		isAtleastThisOld(kUser.createdTimestamp, Number(Time.Year)) && Date.now() < promotionEndDate;
 	const isPatron = perkTier >= PerkTier.Four || user.bitfield.includes(BitField.HasPermanentSpawnLamp);
-	if (!elligibleForFreePromotion && !isPatron) {
+	if (!isPatron) {
 		return [false, 'You need to be a T3 patron or higher to use this command.'];
 	}
 	const currentDate = Date.now();
@@ -235,8 +230,8 @@ export function spawnLampIsReady(kUser: KlasaUser, user: User, channelID: string
 	}
 	return [true];
 }
-async function spawnLampCommand(kUser: KlasaUser, user: User, channelID: bigint): CommandResponse {
-	const [lampIsReady, reason] = spawnLampIsReady(kUser, user, channelID.toString());
+async function spawnLampCommand(user: User, channelID: bigint): CommandResponse {
+	const [lampIsReady, reason] = spawnLampIsReady(user, channelID.toString());
 	if (!lampIsReady && reason) return reason;
 
 	await mahojiUserSettingsUpdate(user.id, {
@@ -580,7 +575,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return result;
 			}
 			if (patron.spawnlamp) {
-				return spawnLampCommand(klasaUser, mahojiUser, channelID);
+				return spawnLampCommand(mahojiUser, channelID);
 			}
 			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
 		}
