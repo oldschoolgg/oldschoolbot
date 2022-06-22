@@ -133,5 +133,10 @@ async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 		}
 		return;
 	}
-	return channel.send({ content: input.content, embeds: input.embeds, files: input.files });
+	return channel.send({
+		content: input.content,
+		embeds: input.embeds,
+		files: input.files,
+		components: input.components
+	});
 }
