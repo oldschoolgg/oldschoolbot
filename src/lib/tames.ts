@@ -11,7 +11,7 @@ import BankImageTask from '../tasks/bankImage';
 import killableMonsters, { effectiveMonsters } from './minions/data/killableMonsters';
 import { prisma, trackLoot } from './settings/prisma';
 import { runCommand } from './settings/settings';
-import { generateContinuationChar, itemNameFromID, roll } from './util';
+import { itemNameFromID, roll } from './util';
 import { createCollector } from './util/createCollector';
 import getOSItem from './util/getOSItem';
 import { collectors } from './util/handleTripFinish';
@@ -260,7 +260,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		const addRes = await addDurationToTame(tame, activity.duration);
 		if (addRes) res.message += `\n${addRes}`;
 
-		const continuationChar = generateContinuationChar(res.user);
+		// TODO: make tames use buttons for continuing
+		const continuationChar = 'y';
 		res.message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
 		sendToChannelID(activity.channel_id, {
@@ -294,7 +295,6 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 						case TameType.Combat:
 							const monsterName = effectiveMonsters.find(e => e.id === activityData.monsterID)!.name;
 							await runCommand({
-								message: mes,
 								commandName: 'tames',
 								args: {
 									kill: {
@@ -302,13 +302,17 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 									}
 								},
 								isContinue: true,
-								bypassInhibitors: true
+								bypassInhibitors: true,
+								channelID: mes.channel.id,
+								userID: mes.author.id,
+								guildID: mes.guild?.id,
+								user: mes.author,
+								member: mes.member
 							});
 							break;
 						case TameType.Gatherer:
 							const collectableName = itemNameFromID(activityData.itemID)!.toLowerCase();
 							await runCommand({
-								message: mes,
 								commandName: 'tames',
 								args: {
 									collect: {
@@ -316,7 +320,12 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 									}
 								},
 								isContinue: true,
-								bypassInhibitors: true
+								bypassInhibitors: true,
+								channelID: mes.channel.id,
+								userID: mes.author.id,
+								guildID: mes.guild?.id,
+								user: mes.author,
+								member: mes.member
 							});
 							break;
 						default:
@@ -424,26 +433,34 @@ export function repeatTameTrip(msg: KlasaMessage, activity: TameActivity) {
 		case TameType.Combat: {
 			const mon = killableMonsters.find(i => i.id === data.monsterID);
 			return runCommand({
-				message: msg,
 				commandName: 'tames',
 				args: {
 					kill: {
 						name: mon!.name
 					}
 				},
-				bypassInhibitors: true
+				bypassInhibitors: true,
+				channelID: msg.channel.id,
+				userID: msg.author.id,
+				guildID: msg.guild?.id,
+				user: msg.author,
+				member: msg.member
 			});
 		}
 		case TameType.Gatherer: {
 			return runCommand({
-				message: msg,
 				commandName: 'tames',
 				args: {
 					collect: {
 						name: itemNameFromID(data.itemID)
 					}
 				},
-				bypassInhibitors: true
+				bypassInhibitors: true,
+				channelID: msg.channel.id,
+				userID: msg.author.id,
+				guildID: msg.guild?.id,
+				user: msg.author,
+				member: msg.member
 			});
 		}
 		default: {

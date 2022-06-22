@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import PromiseQueue from 'p-queue';
 
-import { timePerAlch } from '../../commands/Minion/alch';
 import { Events, PerkTier, userQueues } from '../../lib/constants';
 import { readableStatName } from '../../lib/gear';
 import { KillableMonster } from '../../lib/minions/types';
@@ -15,6 +14,7 @@ import { Skills } from '../../lib/types';
 import { formatItemReqs, itemID, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { timePerAlch } from '../../mahoji/lib/abstracted_commands/alchCommand';
 
 function alchPrice(bank: Bank, item: Item, tripLength: number) {
 	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));

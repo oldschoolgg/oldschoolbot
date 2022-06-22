@@ -7,7 +7,6 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import LeaderboardCommand from '../../commands/Minion/leaderboard';
 import { production } from '../../config';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { BitField, Channel, Emoji, giveBoxResetTime, PerkTier, spawnLampResetTime } from '../../lib/constants';
@@ -19,7 +18,7 @@ import {
 	asyncGzip,
 	formatDuration,
 	generateXPLevelQuestion,
-	isAtleastThisOld,
+	getUsername,
 	itemID,
 	roll,
 	stringMatches
@@ -164,17 +163,12 @@ LIMIT 10;`);
 		return 'No results found.';
 	}
 
-	const command = globalClient.commands.get('leaderboard') as LeaderboardCommand;
-
 	let place = 0;
 	const embed = new Embed()
 		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 		.setDescription(
 			res
-				.map(
-					(i: any) =>
-						`${++place}. **${command.getUsername(i.user)}**: ${Number(i.total_xp).toLocaleString()} XP`
-				)
+				.map((i: any) => `${++place}. **${getUsername(i.user)}**: ${Number(i.total_xp).toLocaleString()} XP`)
 				.join('\n')
 		);
 
@@ -204,35 +198,24 @@ LIMIT 10`;
 		return 'No results found.';
 	}
 
-	const command = globalClient.commands.get('leaderboard') as LeaderboardCommand;
-
 	let place = 0;
 	const embed = new Embed()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
-			res
-				.map(
-					(i: any) =>
-						`${++place}. **${command.getUsername(i.user, res.length)}**: ${Number(i.qty).toLocaleString()}`
-				)
-				.join('\n')
+			res.map((i: any) => `${++place}. **${getUsername(i.user)}**: ${Number(i.qty).toLocaleString()}`).join('\n')
 		);
 
 	return { embeds: [embed] };
 }
 
-const promotionEndDate = 1_655_803_876_958 + Time.Day;
-
-export function spawnLampIsReady(kUser: KlasaUser, user: User, channelID: string): [true] | [false, string] {
+export function spawnLampIsReady(user: User, channelID: string): [true] | [false, string] {
 	if (production && ![Channel.BSOChannel, Channel.General, Channel.BSOGeneral].includes(channelID)) {
 		return [false, "You can't use spawnlamp in this channel."];
 	}
 
 	const perkTier = getUsersPerkTier(user, true);
-	const elligibleForFreePromotion =
-		isAtleastThisOld(kUser.createdTimestamp, Number(Time.Year)) && Date.now() < promotionEndDate;
 	const isPatron = perkTier >= PerkTier.Four || user.bitfield.includes(BitField.HasPermanentSpawnLamp);
-	if (!elligibleForFreePromotion && !isPatron) {
+	if (!isPatron) {
 		return [false, 'You need to be a T3 patron or higher to use this command.'];
 	}
 	const currentDate = Date.now();
@@ -247,8 +230,8 @@ export function spawnLampIsReady(kUser: KlasaUser, user: User, channelID: string
 	}
 	return [true];
 }
-async function spawnLampCommand(kUser: KlasaUser, user: User, channelID: bigint): CommandResponse {
-	const [lampIsReady, reason] = spawnLampIsReady(kUser, user, channelID.toString());
+async function spawnLampCommand(user: User, channelID: bigint): CommandResponse {
+	const [lampIsReady, reason] = spawnLampIsReady(user, channelID.toString());
 	if (!lampIsReady && reason) return reason;
 
 	await mahojiUserSettingsUpdate(user.id, {
@@ -322,10 +305,8 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 
 	if (result.length === 0) return 'No results found.';
 
-	const command = globalClient.commands.get('leaderboard') as LeaderboardCommand;
-
 	return `**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
-		.map(({ id, KC }) => `${command.getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`)
+		.map(({ id, KC }) => `${getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`)
 		.join('\n')}`;
 }
 
@@ -349,12 +330,10 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 
 	if (result.length === 0) return 'No results found.';
 
-	const command = globalClient.commands.get('leaderboard') as LeaderboardCommand;
-
 	return `**Most '${item.name}' received:**\n${result
 		.map(
 			({ id, qty }) =>
-				`${result.length < 10 ? '(Anonymous)' : command.getUsername(id)}: ${parseInt(qty).toLocaleString()}`
+				`${result.length < 10 ? '(Anonymous)' : getUsername(id)}: ${parseInt(qty).toLocaleString()}`
 		)
 		.join('\n')}`;
 }
@@ -596,7 +575,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return result;
 			}
 			if (patron.spawnlamp) {
-				return spawnLampCommand(klasaUser, mahojiUser, channelID);
+				return spawnLampCommand(mahojiUser, channelID);
 			}
 			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
 		}

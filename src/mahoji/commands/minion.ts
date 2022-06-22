@@ -18,7 +18,9 @@ import {
 import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand';
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
+import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
+import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -34,6 +36,19 @@ export const minionCommand: OSBMahojiCommand = {
 	name: 'minion',
 	description: 'Manage and control your minion.',
 	options: [
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'buy',
+			description: 'Buy a minion so you can start playing the bot!',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'ironman',
+					description: 'Do you want to be an ironman?',
+					required: false
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'cracker',
@@ -207,6 +222,19 @@ export const minionCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'ironman',
+			description: 'Become an ironman, or de-iron.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'permanent',
+					description: 'Do you want to become a permanent ironman?',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({
@@ -225,6 +253,8 @@ export const minionCommand: OSBMahojiCommand = {
 		set_name?: { name: string };
 		level?: { skill: string };
 		kc?: { name: string };
+		buy?: { ironman?: boolean };
+		ironman?: { permanent?: boolean };
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -298,6 +328,9 @@ export const minionCommand: OSBMahojiCommand = {
 			}
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
+
+		if (options.buy) return minionBuyCommand(user, mahojiUser, Boolean(options.buy.ironman));
+		if (options.ironman) return ironmanCommand(user, interaction);
 
 		return 'Unknown command';
 	}

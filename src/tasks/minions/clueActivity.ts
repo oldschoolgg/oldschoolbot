@@ -70,14 +70,6 @@ export default class extends Task {
 		}
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(
-			user,
-			channelID,
-			str,
-			res => this.client.commands.get('mclue')!.run(res, [quantity, clueTier.name]),
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, ['clue', { tier: clueTier.name, quantity }], undefined, data, loot);
 	}
 }
