@@ -83,7 +83,8 @@ export const sellCommand: OSBMahojiCommand = {
 		}
 
 		let totalPrice = 0;
-		const taxRatePercent = 20;
+		const hasSkipper = user.usingPet('Skipper') || user.bank().has('Skipper');
+		const taxRatePercent = hasSkipper ? 15 : 25;
 
 		for (const [item, qty] of bankToSell.items()) {
 			const specialPrice = specialSoldItems.get(item.id);
@@ -111,6 +112,10 @@ export const sellCommand: OSBMahojiCommand = {
 
 		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
 			totalPrice
-		)})** (${taxRatePercent}% below market price).`;
+		)})** (${taxRatePercent}% below market price). ${
+			hasSkipper
+				? '\n\n<:skipper:755853421801766912> Skipper has negotiated with the bank and you were charged less tax on the sale!'
+				: ''
+		}`;
 	}
 };

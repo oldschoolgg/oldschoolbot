@@ -35,19 +35,17 @@ export async function alchCommand(
 	channelID: bigint,
 	user: KlasaUser,
 	item: string,
-	quantity: number | undefined,
+	quantity: number | undefined
 	speedInput: number | undefined
 ) {
 	const userBank = user.bank();
 	let osItem = getItem(item);
-	if (!osItem) return 'Invalid item.';
-	if (!osItem.highalch || !osItem.tradeable) return 'This item cannot be alched.';
 
 	const [favAlchs] = user.getUserFavAlchs(calcMaxTripLength(user, 'Alching')) as Item[];
+	if (!osItem) osItem = favAlchs;
 
-	if (!favAlchs) {
-		return "You don't have any of that item to alch.";
-	}
+	if (!osItem) return 'Invalid item.';
+	if (!osItem.highalch || !osItem.tradeable) return 'This item cannot be alched.';
 
 	if (user.skillLevel(SkillsEnum.Magic) < 55) {
 		return 'You need level 55 Magic to cast High Alchemy';
