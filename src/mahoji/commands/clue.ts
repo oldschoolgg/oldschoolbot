@@ -67,13 +67,8 @@ export const clueCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		const bank = user.settings.get(UserSettings.Bank);
-		const numOfScrolls = bank[clueTier.scrollID];
-
-		if (!numOfScrolls || numOfScrolls < quantity) {
-			return `You don't have ${quantity} ${clueTier.name} clue scrolls.`;
-		}
-
+		const cost = new Bank().add(clueTier.scrollID, quantity);
+		if (!user.owns(cost)) return `You don't own ${cost}.`;
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
 		const randomAddedDuration = randInt(1, 20);
