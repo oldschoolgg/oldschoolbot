@@ -2,10 +2,10 @@ import { reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { sellPriceOfItem } from '../src/commands/Minion/sell';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
 import { deduplicateClueScrolls, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
+import { sellPriceOfItem } from '../src/mahoji/commands/sell';
 import { getSkillsOfMahojiUser } from '../src/mahoji/mahojiSettings';
 import { mockUser } from './utils';
 
