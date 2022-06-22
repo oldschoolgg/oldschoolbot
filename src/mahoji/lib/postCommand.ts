@@ -1,8 +1,6 @@
-import { KlasaMessage } from 'klasa';
-
 import { Emoji, shouldTrackCommand, SILENT_ERROR } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { cleanMentions } from '../../lib/util';
+import { channelIsSendable, cleanMentions } from '../../lib/util';
 import { makeCommandUsage } from '../../lib/util/commandUsage';
 import { logError } from '../../lib/util/logError';
 import { AbstractCommand, CommandArgs } from './inhibitors';
@@ -12,25 +10,27 @@ export async function handleCommandError({
 	commandName,
 	error,
 	userID,
-	msg
+	channelID
 }: {
 	args: CommandArgs;
 	commandName: string;
 	error: string | Error;
 	userID: string | bigint;
-	msg: KlasaMessage | null;
+	channelID: bigint | string;
 }): Promise<void> {
+	const channel = globalClient.channels.cache.get(channelID.toString());
+	if (!channelIsSendable(channel)) return;
 	if (error instanceof Error && error.message === SILENT_ERROR) {
 		return;
 	}
 	if (typeof error === 'string') {
 		console.log(`string error used ${error}`);
-		await msg?.channel.send(cleanMentions(null, error));
+		await channel.send(cleanMentions(null, error));
 		return;
 	}
 
 	if (error.name === 'AbortError') {
-		await msg?.channel.send('Oops! I had a network issue trying to respond to your command. Please try again.');
+		await channel.send('Oops! I had a network issue trying to respond to your command. Please try again.');
 		return;
 	}
 
@@ -44,7 +44,7 @@ export async function handleCommandError({
 					.join(', ')
 	});
 
-	await msg?.channel.send(`An unexpected error occurred ${Emoji.Sad}`);
+	channel.send(`An unexpected error occurred ${Emoji.Sad}`);
 }
 
 export async function postCommand({
@@ -54,7 +54,6 @@ export async function postCommand({
 	channelID,
 	args,
 	error,
-	msg,
 	isContinue,
 	inhibited
 }: {
@@ -64,7 +63,6 @@ export async function postCommand({
 	channelID: string | bigint;
 	error: Error | string | null;
 	args: CommandArgs;
-	msg: KlasaMessage | null;
 	isContinue: boolean;
 	inhibited: boolean;
 }): Promise<string | undefined> {
@@ -85,7 +83,7 @@ export async function postCommand({
 	}
 
 	if (error) {
-		handleCommandError({ error, userID, args, commandName: abstractCommand.name, msg });
+		handleCommandError({ error, userID, args, commandName: abstractCommand.name, channelID });
 	}
 
 	setTimeout(() => globalClient.oneCommandAtATimeCache.delete(userID.toString()), 1000);

@@ -1140,6 +1140,15 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				});
 				return msg.channel.send('Locally synced slash commands.');
 			}
+			case 'globalcommandnuke': {
+				await msg.channel.send('Syncing commands...');
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: [],
+					guildID: null
+				});
+				return msg.channel.send('Globally nuked slash commands.');
+			}
 			case 'globalmahojisync': {
 				await msg.channel.send('Syncing commands...');
 				await bulkUpdateCommands({

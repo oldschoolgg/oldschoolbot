@@ -1,7 +1,8 @@
-import { Activity, NewUser, Prisma } from '@prisma/client';
-import { MessageAttachment } from 'discord.js';
+import { Activity, NewUser, Prisma, User } from '@prisma/client';
+import { GuildMember, MessageAttachment } from 'discord.js';
 import { roll, Time } from 'e';
 import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
+import { APIInteractionGuildMember } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { CommandArgs } from '../../mahoji/lib/inhibitors';
@@ -103,13 +104,21 @@ export async function syncActivityCache() {
 }
 
 export async function runMahojiCommand({
-	msg,
+	channelID,
+	userID,
+	guildID,
 	commandName,
-	options
+	options,
+	user,
+	member
 }: {
-	msg: KlasaMessage;
 	commandName: string;
 	options: Record<string, unknown>;
+	channelID: bigint | string;
+	userID: bigint | string;
+	guildID: bigint | string | undefined;
+	user: User | KlasaUser;
+	member: APIInteractionGuildMember | GuildMember | null;
 }) {
 	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
 	if (!mahojiCommand) {
@@ -117,37 +126,46 @@ export async function runMahojiCommand({
 	}
 
 	return mahojiCommand.run({
-		userID: BigInt(msg.author.id),
-		guildID: msg.guild ? BigInt(msg.guild.id) : (null as any),
-		channelID: BigInt(msg.channel.id),
+		userID: BigInt(userID),
+		guildID: guildID ? BigInt(guildID) : undefined,
+		channelID: BigInt(channelID),
 		options,
 		// TODO: Make this typesafe
-		user: msg.author as any,
-		member: msg.member as any,
+		user: user as any,
+		member: member as any,
 		client: globalClient.mahojiClient,
 		interaction: null as any
 	});
 }
 
+export interface RunCommandArgs {
+	commandName: string;
+	args: CommandArgs;
+	user: User | KlasaUser;
+	channelID: string | bigint;
+	userID: string | bigint;
+	member: APIInteractionGuildMember | GuildMember | null;
+	isContinue?: boolean;
+	method?: string;
+	bypassInhibitors?: true;
+	guildID: string | bigint | undefined;
+}
 export async function runCommand({
-	message,
 	commandName,
 	args,
 	isContinue,
 	method = 'run',
-	bypassInhibitors
-}: {
-	message: KlasaMessage;
-	commandName: string;
-	args: CommandArgs;
-	isContinue?: boolean;
-	method?: string;
-	bypassInhibitors?: true;
-}) {
-	const channel = globalClient.channels.cache.get(message.channel.id);
-
+	bypassInhibitors,
+	userID,
+	channelID,
+	guildID,
+	user,
+	member
+}: RunCommandArgs) {
+	const channel = globalClient.channels.cache.get(channelID.toString());
+	if (!channel || !channelIsSendable(channel)) return;
 	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
-	const command = message.client.commands.get(commandName) as BotCommand | undefined;
+	const command = globalClient.commands.get(commandName) as BotCommand | undefined;
 	const actualCommand = mahojiCommand ?? command;
 	if (!actualCommand) throw new Error('No command found');
 	const abstractCommand =
@@ -160,24 +178,28 @@ export async function runCommand({
 	try {
 		const inhibitedReason = await preCommand({
 			abstractCommand,
-			userID: message.author.id,
-			channelID: message.channel.id,
-			guildID: message.guild?.id ?? null,
+			userID,
+			channelID,
+			guildID,
 			bypassInhibitors: bypassInhibitors ?? false
 		});
 
 		if (inhibitedReason) {
 			inhibited = true;
 			if (inhibitedReason.silent) return;
-			return message.channel.send(inhibitedReason.reason);
+			return channel.send(inhibitedReason.reason);
 		}
 
 		if (mahojiCommand) {
 			if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
 			const result = await runMahojiCommand({
-				msg: message,
 				options: args,
-				commandName
+				commandName,
+				guildID,
+				channelID,
+				userID,
+				member,
+				user
 			});
 			if (channelIsSendable(channel)) {
 				if (typeof result === 'string') {
@@ -195,13 +217,16 @@ export async function runCommand({
 			if (!Array.isArray(args)) throw new Error('Had object args for non-mahoji command');
 			if (!command) throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
 			if (!command.enabled) throw new Error(`The ${command.name} command is disabled.`);
-
+			const fakeMessage = {
+				author: user,
+				member
+			};
 			try {
 				// @ts-ignore Cant be typechecked
-				const result = await command[method](message, args);
+				const result = await command[method](fakeMessage, args);
 				return result;
 			} catch (err) {
-				message.client.emit('commandError', message, command, args, err);
+				globalClient.emit('commandError', fakeMessage, command, args, err);
 			}
 		}
 	} catch (err: any) {
@@ -215,12 +240,11 @@ export async function runCommand({
 		try {
 			await postCommand({
 				abstractCommand,
-				userID: message.author.id,
-				guildID: message.guild?.id ?? null,
-				channelID: message.channel.id,
+				userID,
+				guildID,
+				channelID,
 				args,
 				error,
-				msg: message,
 				isContinue: isContinue ?? false,
 				inhibited
 			});

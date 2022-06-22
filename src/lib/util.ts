@@ -42,15 +42,7 @@ import { promisify } from 'util';
 
 import { CLIENT_ID, production } from '../config';
 import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
-import {
-	BitField,
-	CENA_CHARS,
-	continuationChars,
-	PerkTier,
-	ProjectileType,
-	skillEmoji,
-	SupportServer
-} from './constants';
+import { BitField, ProjectileType, skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
@@ -262,19 +254,6 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 		}
 	}
 	return amountEquipped * 20;
-}
-
-export function generateContinuationChar(user: KlasaUser) {
-	const baseChar =
-		user.perkTier > PerkTier.One
-			? 'y'
-			: Date.now() - user.createdTimestamp < Time.Month * 6
-			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
-			: randArrItem(continuationChars);
-
-	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
-		.slice(0, randInt(1, 2))
-		.join('')}`;
 }
 
 export function isValidGearSetup(str: string): str is GearSetupType {
@@ -541,7 +520,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
+export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[], target?: KlasaUser) {
 	const display = new PaginatedMessage();
 	// @ts-ignore 2445
 	display.setUpReactions = () => null;
@@ -565,12 +544,12 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 	}
 
-	await display.run(message);
+	await display.run(message, target);
 
 	if (pages.length > 1) {
 		const collector = display.response!.createMessageComponentInteractionCollector({
 			time: Time.Minute,
-			filter: i => i.user.id === message.author.id
+			filter: i => i.user.id === (target ? target.id : message.author.id)
 		});
 
 		collector.on('collect', async interaction => {
@@ -618,9 +597,6 @@ export function birdhouseLimit(user: KlasaUser) {
 }
 export const asyncExec = promisify(exec);
 
-export function getUsername(id: string): string {
-	return (globalClient.commands.get('leaderboard') as any)!.getUsername(id);
-}
 export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
 	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {
 		return 'arrow';
@@ -945,4 +921,8 @@ export function generateXPLevelQuestion() {
 		answers,
 		explainAnswer: `${xp.toLocaleString()} is level ${level}!`
 	};
+}
+
+export function getUsername(id: string | bigint) {
+	return usernameCache.get(id.toString()) ?? 'Unknown';
 }

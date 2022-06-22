@@ -1,6 +1,7 @@
 import { Client, KlasaClientOptions, KlasaUser } from 'klasa';
 import { MahojiClient } from 'mahoji';
 
+import { cacheUsernames } from '../../mahoji/commands/leaderboard';
 import { clientOptions } from '../config';
 import { initCrons } from '../crons';
 import { prisma } from '../settings/prisma';
@@ -67,5 +68,6 @@ export class OldSchoolBotClient extends Client {
 	init = () => {
 		initCrons();
 		this.refreshEmojis();
+		cacheUsernames();
 	};
 }

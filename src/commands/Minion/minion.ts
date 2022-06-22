@@ -1,26 +1,18 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { randArrItem, Time } from 'e';
+import { MessageAttachment } from 'discord.js';
+import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import {
-	COMMAND_BECAME_SLASH_COMMAND_MESSAGE,
-	Emoji,
-	informationalButtons,
-	lastTripCache,
-	PerkTier
-} from '../../lib/constants';
+import { COMMAND_BECAME_SLASH_COMMAND_MESSAGE, Emoji, lastTripCache, PerkTier } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
-import { becomeIronman } from '../../lib/minions/functions/becomeIronman';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
-import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
@@ -28,13 +20,14 @@ import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsersTame, repeatTameTrip, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
-import { convertMahojiResponseToDJSResponse, isAtleastThisOld } from '../../lib/util';
+import { convertMahojiResponseToDJSResponse } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { getItemContractDetails } from '../../mahoji/commands/ic';
 import { spawnLampIsReady } from '../../mahoji/commands/tools';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { isUsersDailyReady } from './daily';
 
 const patMessages = [
@@ -59,8 +52,8 @@ const subCommands = [
 	'clue',
 	'kc',
 	'pat',
-	'stats',
 	'ironman',
+	'stats',
 	'opens',
 	'info',
 	'equippet',
@@ -75,8 +68,7 @@ const subCommands = [
 	'blowpipe',
 	'bp',
 	'charge',
-	'data',
-	'commands'
+	'data'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -101,17 +93,26 @@ export default class MinionCommand extends BotCommand {
 
 		const dynamicButtons = new DynamicButtons({ channel: msg.channel, usersWhoCanInteract: [msg.author.id] });
 
+		const cmdOptions = {
+			message: msg,
+			channelID: msg.channel.id,
+			userID: msg.author.id,
+			guildID: msg.guild?.id,
+			user: msg.author,
+			member: msg.member
+		};
+
 		dynamicButtons.add({
 			name: 'Auto Farm',
 			emoji: Emoji.Farming,
 			fn: () =>
 				runCommand({
-					message: msg,
 					commandName: 'farming',
 					args: {
 						auto_farm: {}
 					},
-					bypassInhibitors: true
+					bypassInhibitors: true,
+					...cmdOptions
 				}),
 			cantBeBusy: true
 		});
@@ -123,10 +124,10 @@ export default class MinionCommand extends BotCommand {
 				emoji: Emoji.MoneyBag,
 				fn: () =>
 					runCommand({
-						message: msg,
 						commandName: 'daily',
 						args: [],
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						...cmdOptions
 					}),
 				cantBeBusy: true
 			});
@@ -138,10 +139,10 @@ export default class MinionCommand extends BotCommand {
 				emoji: Emoji.Minion,
 				fn: () =>
 					runCommand({
-						message: msg,
 						commandName: 'minion',
 						args: { cancel: {} },
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						...cmdOptions
 					}),
 				cantBeBusy: false
 			});
@@ -152,10 +153,10 @@ export default class MinionCommand extends BotCommand {
 			emoji: Emoji.Slayer,
 			fn: () =>
 				runCommand({
-					message: msg,
 					commandName: 'autoslay',
 					args: [],
-					bypassInhibitors: true
+					bypassInhibitors: true,
+					...cmdOptions
 				}),
 			cantBeBusy: true
 		});
@@ -164,10 +165,10 @@ export default class MinionCommand extends BotCommand {
 			emoji: Emoji.Stopwatch,
 			fn: () =>
 				runCommand({
-					message: msg,
 					commandName: 'farming',
 					args: { check_patches: {} },
-					bypassInhibitors: true
+					bypassInhibitors: true,
+					...cmdOptions
 				}),
 			cantBeBusy: false
 		});
@@ -177,10 +178,10 @@ export default class MinionCommand extends BotCommand {
 				emoji: '692946556399124520',
 				fn: () =>
 					runCommand({
-						message: msg,
 						commandName: 'activities',
 						args: { birdhouses: { action: 'harvest' } },
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						...cmdOptions
 					}),
 				cantBeBusy: true
 			});
@@ -201,20 +202,34 @@ export default class MinionCommand extends BotCommand {
 
 		const lastTrip = lastTripCache.get(msg.author.id);
 		if (lastTrip && !msg.author.minionIsBusy) {
-			dynamicButtons.add({ name: `Repeat ${lastTrip.data.type} Trip`, fn: () => lastTrip.continue(msg) });
+			dynamicButtons.add({
+				name: `Repeat ${lastTrip.data.type} Trip`,
+				fn: () =>
+					lastTrip.continue({
+						user: msg.author,
+						userID: msg.author.id,
+						member: msg.member,
+						guildID: msg.guild?.id,
+						channelID: msg.channel.id
+					})
+			});
 		}
 
-		const spawnLampReady = spawnLampIsReady(msg.author, mahojiUser, msg.channel.id);
+		const spawnLampReady = spawnLampIsReady(mahojiUser, msg.channel.id);
 		if (spawnLampReady) {
 			dynamicButtons.add({
 				name: 'Spawn Lamp',
 				emoji: '988325171498721290',
 				fn: () =>
 					runCommand({
-						message: msg,
 						commandName: 'tools',
 						args: { patron: { spawnlamp: {} } },
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						channelID: msg.channel.id,
+						user: msg.author,
+						guildID: msg.guild?.id,
+						member: msg.member,
+						userID: msg.author.id
 					})
 			});
 		}
@@ -226,10 +241,14 @@ export default class MinionCommand extends BotCommand {
 				emoji: '988422348434718812',
 				fn: () =>
 					runCommand({
-						message: msg,
 						commandName: 'ic',
 						args: { send: {} },
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						channelID: msg.channel.id,
+						user: msg.author,
+						guildID: msg.guild?.id,
+						member: msg.member,
+						userID: msg.author.id
 					})
 			});
 		}
@@ -243,10 +262,10 @@ export default class MinionCommand extends BotCommand {
 				name: `Do ${tier.name} Clue`,
 				fn: () => {
 					return runCommand({
-						message: msg,
-						commandName: 'mclue',
-						args: [tier.name],
-						bypassInhibitors: true
+						commandName: 'clue',
+						args: { tier: tier.name },
+						bypassInhibitors: true,
+						...cmdOptions
 					});
 				},
 				emoji: '365003979840552960',
@@ -274,34 +293,8 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async ironman(msg: KlasaMessage) {
-		return becomeIronman(msg);
-	}
-
 	async train(msg: KlasaMessage, [input]: [string | undefined]) {
 		return trainCommand(msg, input);
-	}
-
-	async commands(msg: KlasaMessage) {
-		const commands = await prisma.commandUsage.findMany({
-			where: {
-				user_id: BigInt(msg.author.id)
-			},
-			orderBy: {
-				date: 'desc'
-			},
-			take: 15
-		});
-		return msg.channel.send(
-			commands
-				.map(
-					(c, inde) =>
-						`${inde + 1}. \`+${c.command_name}\` Args[${JSON.stringify(c.args)}] Date[<t:${Math.round(
-							c.date.getTime() / 1000
-						)}:R>] isContinue[${c.is_continue ? 'Yes' : 'No'}]`
-				)
-				.join('\n')
-		);
 	}
 
 	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
@@ -348,7 +341,16 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async info(msg: KlasaMessage) {
-		return runCommand({ message: msg, commandName: 'rp', args: ['c', msg.author], bypassInhibitors: true });
+		return runCommand({
+			commandName: 'rp',
+			args: ['c', msg.author],
+			bypassInhibitors: true,
+			channelID: msg.channel.id,
+			userID: msg.author.id,
+			guildID: msg.guild?.id,
+			user: msg.author,
+			member: msg.member
+		});
 	}
 
 	async tempcl(msg: KlasaMessage, [input = '']: [string | undefined]) {
@@ -379,6 +381,7 @@ export default class MinionCommand extends BotCommand {
 		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_icon'));
 	}
 
+	@requiresMinion
 	async pat(msg: KlasaMessage) {
 		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
@@ -389,6 +392,10 @@ export default class MinionCommand extends BotCommand {
 
 	async kc(msg: KlasaMessage) {
 		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion kc'));
+	}
+
+	async ironman(msg: KlasaMessage) {
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion ironman'));
 	}
 
 	async qp(msg: KlasaMessage) {
@@ -409,74 +416,23 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async buy(msg: KlasaMessage) {
-		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
-
-		await mahojiUserSettingsUpdate(msg.author.id, {
-			minion_hasBought: true,
-			minion_bought_date: new Date()
-		});
-		const starter = isAtleastThisOld(msg.author.createdTimestamp, Time.Year * 2)
-			? new Bank({
-					Shark: 300,
-					'Saradomin brew(4)': 50,
-					'Super restore(4)': 20,
-					'Anti-dragon shield': 1,
-					'Tiny lamp': 5,
-					'Small lamp': 2,
-					'Tradeable mystery box': 5,
-					'Untradeable Mystery box': 5,
-					'Dragon bones': 50,
-					Coins: 50_000_000,
-					'Clue scroll (beginner)': 10,
-					'Equippable mystery box': 1,
-					'Pet Mystery box': 1
-			  })
-			: null;
-
-		if (starter) {
-			await msg.author.addItemsToBank({ items: starter, collectionLog: false });
-		}
-
-		return msg.channel.send({
-			embeds: [
-				new MessageEmbed().setTitle('Your minion is now ready to use!').setDescription(
-					`You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
-
-${starter !== null ? `**You received these starter items:** ${starter}.` : ''}
-<:ironman:626647335900020746> You can make your new minion an Ironman by using the command: \`${
-						msg.cmdPrefix
-					}m ironman\`.
-
-🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://wiki.oldschool.gg/rules>
-
-<:patreonLogo:679334888792391703> **Patreon:** If you're able too, please consider supporting my work on Patreon, it's highly appreciated and helps me hugely <https://www.patreon.com/oldschoolbot> ❤️
-
-Please click the buttons below for important links.`
-				)
-			],
-			components: [informationalButtons]
-		});
+		return minionBuyCommand(msg.author, await mahojiUsersSettingsFetch(msg.author.id), false);
 	}
 
 	async setname(msg: KlasaMessage) {
 		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_name'));
 	}
 
-	@requiresMinion
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
-		runCommand({ message: msg, commandName: 'mclue', args: [quantity, tierName], bypassInhibitors: true });
+	async clue(msg: KlasaMessage) {
+		return msg.channel.send('This command has been moved to `/clue`');
 	}
 
-	@requiresMinion
-	@minionNotBusy
-	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		runCommand({ message: msg, commandName: 'k', args: { name, quantity }, bypassInhibitors: true });
+	async k(msg: KlasaMessage) {
+		return msg.channel.send('This command has been moved to `/k`');
 	}
 
-	@requiresMinion
-	@minionNotBusy
-	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		runCommand({ message: msg, commandName: 'k', args: { name, quantity }, bypassInhibitors: true });
+	async kill(msg: KlasaMessage) {
+		return msg.channel.send('This command has been moved to `/k`');
 	}
 
 	async opens(msg: KlasaMessage) {

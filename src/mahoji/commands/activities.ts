@@ -9,6 +9,7 @@ import Prayer from '../../lib/skilling/skills/prayer';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { minionName } from '../../lib/util/minionUtils';
 import { aerialFishingCommand } from '../lib/abstracted_commands/aerialFishingCommand';
+import { alchCommand } from '../lib/abstracted_commands/alchCommand';
 import { birdhouseCheckCommand, birdhouseHarvestCommand } from '../lib/abstracted_commands/birdhousesCommand';
 import { buryCommand } from '../lib/abstracted_commands/buryCommand';
 import { championsChallengeCommand } from '../lib/abstracted_commands/championsChallenge';
@@ -25,6 +26,7 @@ import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_comm
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
+import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -326,12 +328,38 @@ export const activitiesCommand: OSBMahojiCommand = {
 					min_value: 1
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'alch',
+			description: 'Alch items for GP.',
+			options: [
+				{
+					...ownedItemOption(i => Boolean(i.highalch))
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you want to bury.',
+					required: false,
+					min_value: 1
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'speed',
+					description: 'Alch faster, but use more runes.',
+					required: false,
+					min_value: 1,
+					max_value: 5
+				}
+			]
 		}
 	],
 	run: async ({
 		options,
 		channelID,
-		userID
+		userID,
+		interaction
 	}: CommandRunOptions<{
 		sawmill?: { type: string; quantity?: number; speed?: number };
 		chompy_hunt?: { action: 'start' | 'claim' };
@@ -349,6 +377,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
+		alch?: { item: string; quantity?: number; speed?: number };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -430,6 +459,16 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.bury) {
 			return buryCommand(klasaUser, channelID, options.bury.name, options.bury.quantity);
+		}
+		if (options.alch) {
+			return alchCommand(
+				interaction,
+				channelID,
+				klasaUser,
+				options.alch.item,
+				options.alch.quantity,
+				options.alch.speed
+			);
 		}
 
 		return 'Invalid command.';

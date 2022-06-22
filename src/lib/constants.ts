@@ -2,6 +2,8 @@ import { User } from '@prisma/client';
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { Command, KlasaMessage } from 'klasa';
+import { APIButtonComponent, ButtonStyle, ComponentType } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
@@ -9,6 +11,7 @@ import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
+import { RunCommandArgs } from './settings/settings';
 import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
@@ -453,8 +456,6 @@ export const MAX_XP = 5_000_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
-export const continuationChars = 'abdefghjknoprstuvwxyz123456789'.split('');
-export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
@@ -512,28 +513,44 @@ export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
-export const informationalButtons = [
-	new MessageButton().setLabel('Wiki').setEmoji('📰').setURL('https://wiki.oldschool.gg/').setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Wiki')
-		.setEmoji('863823820435619890')
-		.setURL('https://bso-wiki.oldschool.gg/')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Patreon')
-		.setEmoji('679334888792391703')
-		.setURL('https://www.patreon.com/oldschoolbot')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Bot Invite')
-		.setEmoji('🤖')
-		.setURL('http://www.oldschool.gg/invite/bso')
-		.setStyle('LINK')
+const buttonSource = [
+	{
+		label: 'Wiki',
+		emoji: '802136964027121684',
+		url: 'https://bso-wiki.oldschool.gg/'
+	},
+	{
+		label: 'Patreon',
+		emoji: '679334888792391703',
+		url: 'https://www.patreon.com/oldschoolbot'
+	},
+	{
+		label: 'Support Server',
+		emoji: '778418736180494347',
+		url: 'https://www.discord.gg/ob'
+	},
+	{
+		label: 'Bot Invite',
+		emoji: '778418736180494347',
+		url: 'http://www.oldschool.gg/invite/bso'
+	}
 ];
 
+export const informationalButtons = buttonSource.map(i =>
+	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+);
+export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
+	type: ComponentType.Button,
+	label: i.label,
+	emoji: { id: i.emoji },
+	style: ButtonStyle.Link,
+	url: i.url
+}));
+
+export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -689,3 +706,4 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
+export const usernameCache = new Map<string, string>();
