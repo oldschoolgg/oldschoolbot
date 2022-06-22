@@ -215,7 +215,7 @@ export default class MinionCommand extends BotCommand {
 			});
 		}
 
-		const spawnLampReady = spawnLampIsReady(mahojiUser, msg.channel.id);
+		const [spawnLampReady] = spawnLampIsReady(mahojiUser, msg.channel.id);
 		if (spawnLampReady) {
 			dynamicButtons.add({
 				name: 'Spawn Lamp',
