@@ -35,7 +35,7 @@ export async function alchCommand(
 	channelID: bigint,
 	user: KlasaUser,
 	item: string,
-	quantity: number | undefined
+	quantity: number | undefined,
 	speedInput: number | undefined
 ) {
 	const userBank = user.bank();
@@ -94,9 +94,7 @@ export async function alchCommand(
 		interaction,
 		`${user}, please confirm you want to alch ${quantity} ${osItem.name} (${toKMB(
 			alchValue
-		)}). This will take approximately ${formatDuration(duration)}, and consume ${
-			fireRuneCost > 0 ? `${fireRuneCost}x Fire rune` : ''
-		} ${quantity}x Nature runes.`
+		)}). This will take approximately ${formatDuration(duration)}, and consume ${consumedItems}`
 	);
 
 	await user.removeItemsFromBank(consumedItems);
