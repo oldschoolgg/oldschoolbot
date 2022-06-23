@@ -106,7 +106,7 @@ export default class extends BotCommand {
 			guildID: msg.guild?.id,
 			user: msg.author,
 			member: msg.member,
-			message: msg
+			msg
 		};
 
 		if (autoslay) {
@@ -303,7 +303,8 @@ export default class extends BotCommand {
 					userID: msg.author.id,
 					guildID: msg.guild?.id,
 					user: msg.author,
-					member: msg.member
+					member: msg.member,
+					msg
 				});
 			}
 			return;
