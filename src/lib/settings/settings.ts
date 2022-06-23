@@ -225,7 +225,11 @@ export async function runCommand({
 				const result = await command[method](fakeMessage, args);
 				return result;
 			} catch (err) {
-				globalClient.emit('commandError', fakeMessage, command, args, err);
+				logError(err, {
+					user_id: userID.toString(),
+					command_name: commandName,
+					args: JSON.stringify(args)
+				});
 			}
 		}
 	} catch (err: any) {
