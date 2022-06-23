@@ -4,10 +4,12 @@ import { Bank } from 'oldschooljs';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { itemNameFromID } from '../../util';
 import { logError } from '../../util/logError';
+import { minionIsBusy } from '../../util/minionIsBusy';
 
 export async function unequipPet(user: KlasaUser) {
 	const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
 	if (!equippedPet) return "You don't have a pet equipped.";
+	if (minionIsBusy(user.id)) return 'You cant unequip your pet while your minion is busy.';
 
 	const loot = new Bank().add(equippedPet);
 
