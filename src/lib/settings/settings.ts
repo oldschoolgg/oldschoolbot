@@ -149,6 +149,7 @@ export interface RunCommandArgs {
 	method?: string;
 	bypassInhibitors?: true;
 	guildID: string | bigint | undefined;
+	msg?: KlasaMessage;
 }
 export async function runCommand({
 	commandName,
@@ -160,7 +161,8 @@ export async function runCommand({
 	channelID,
 	guildID,
 	user,
-	member
+	member,
+	msg
 }: RunCommandArgs) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channel || !channelIsSendable(channel)) return;
@@ -217,7 +219,7 @@ export async function runCommand({
 			if (!Array.isArray(args)) throw new Error('Had object args for non-mahoji command');
 			if (!command) throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
 			if (!command.enabled) throw new Error(`The ${command.name} command is disabled.`);
-			const fakeMessage = {
+			const fakeMessage = msg ?? {
 				author: user,
 				member
 			};
@@ -226,7 +228,11 @@ export async function runCommand({
 				const result = await command[method](fakeMessage, args);
 				return result;
 			} catch (err) {
-				globalClient.emit('commandError', fakeMessage, command, args, err);
+				logError(err, {
+					user_id: userID.toString(),
+					command_name: commandName,
+					args: JSON.stringify(args)
+				});
 			}
 		}
 	} catch (err: any) {
