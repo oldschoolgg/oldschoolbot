@@ -10,7 +10,7 @@ import { clamp, itemID, toKMB, updateBankSetting, updateGPTrackSetting } from '.
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -64,12 +64,14 @@ export const sellCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
 		const user = await globalClient.fetchUser(userID.toString());
+		const mUser = await mahojiUsersSettingsFetch(user.id, { favoriteItems: true });
 		const bankToSell = parseBank({
 			inputBank: user.bank(),
 			inputStr: options.items,
 			maxSize: 70,
 			filters: [options.filter],
-			search: options.search
+			search: options.search,
+			excludeItems: mUser.favoriteItems
 		});
 		if (bankToSell.length === 0) return 'No items provided.';
 
