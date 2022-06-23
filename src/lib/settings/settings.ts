@@ -220,7 +220,8 @@ export async function runCommand({
 			if (!command.enabled) throw new Error(`The ${command.name} command is disabled.`);
 			const fakeMessage = msg ?? {
 				author: user,
-				member
+				member,
+				channel
 			};
 			try {
 				// @ts-ignore Cant be typechecked
