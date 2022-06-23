@@ -1,6 +1,6 @@
 import { MessageAttachment, TextChannel } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
@@ -167,7 +167,6 @@ export class BossInstance {
 	allowMoreThan1Group: boolean = false;
 	totalPercent: number = -1;
 	settingsKeys?: [string, string];
-	client: KlasaClient;
 	channel: TextChannel;
 	activity: activity_type_enum;
 	massText: string;
@@ -198,7 +197,6 @@ export class BossInstance {
 		this.food = options.food;
 		this.settingsKeys = options.settingsKeys;
 		this.channel = options.channel;
-		this.client = this.channel.client as KlasaClient;
 		this.activity = options.activity;
 		this.leader = options.leader;
 		this.minSize = options.minSize;
@@ -421,7 +419,7 @@ export class BossInstance {
 			totalCost.add(itemsToRemove);
 		}
 		if (this.settingsKeys) {
-			updateBankSetting(this.client, this.settingsKeys[0], totalCost);
+			updateBankSetting(globalClient, this.settingsKeys[0], totalCost);
 		}
 
 		const monster = effectiveMonsters.find(m => m.id === this.id);
