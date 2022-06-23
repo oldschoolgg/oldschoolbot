@@ -7,14 +7,14 @@ import { Bank } from 'oldschooljs';
 import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
-import clueTiers from '../minions/data/clueTiers';
+import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
-import { makeDoClueButton, repeatTripButton } from './globalInteractions';
+import { makeDoClueButton, makeOpenCasketButton, repeatTripButton } from './globalInteractions';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -82,7 +82,7 @@ export async function handleTripFinish(
 	const messages: string[] = [];
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages });
 
-	const clueReceived = loot ? clueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
+	const clueReceived = loot ? ClueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
@@ -123,6 +123,9 @@ export async function handleTripFinish(
 	const components: MessageOptions['components'] = [[]];
 	if (onContinueFn) components[0].push(repeatTripButton);
 	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
+
+	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
+	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
 
 	sendToChannelID(channelID, {
 		content: message,

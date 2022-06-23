@@ -22,6 +22,12 @@ const globalInteractionActions = [
 	'DO_HARD_CLUE',
 	'DO_ELITE_CLUE',
 	'DO_MASTER_CLUE',
+	'OPEN_BEGINNER_CASKET',
+	'OPEN_EASY_CASKET',
+	'OPEN_MEDIUM_CASKET',
+	'OPEN_HARD_CASKET',
+	'OPEN_ELITE_CASKET',
+	'OPEN_MASTER_CASKET',
 	'REPEAT_TRIP'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
@@ -39,18 +45,36 @@ export function makeDoClueButton(tier: ClueTier) {
 		.setEmoji('365003979840552960');
 }
 
+export function makeOpenCasketButton(tier: ClueTier) {
+	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
+	const id: GlobalInteractionAction = `OPEN_${name}_CASKET`;
+	return new MessageButton()
+		.setCustomID(id)
+		.setLabel(`Open ${tier.name} Casket`)
+		.setStyle('SECONDARY')
+		.setEmoji('365003978678730772');
+}
+
 export const repeatTripButton = new MessageButton()
 	.setCustomID('REPEAT_TRIP')
 	.setLabel('Repeat Trip')
 	.setStyle('SECONDARY')
 	.setEmoji('🔁');
 
-async function respondButton(id: string, token: string, text: string) {
+async function respondButton(id: string, token: string, text?: string) {
 	const route = Routes.interactionCallback(id, token);
+	if (text) {
+		return globalClient.mahojiClient.restManager.post(route, {
+			body: {
+				type: InteractionResponseType.DeferredMessageUpdate,
+				data: { content: text, flags: MessageFlags.Ephemeral }
+			}
+		});
+	}
+
 	await globalClient.mahojiClient.restManager.post(route, {
 		body: {
-			type: InteractionResponseType.DeferredMessageUpdate,
-			data: { content: text, flags: MessageFlags.Ephemeral }
+			type: InteractionResponseType.DeferredMessageUpdate
 		}
 	});
 }
@@ -71,11 +95,23 @@ export async function interactionHook(data: APIInteraction) {
 	};
 
 	async function doClue(data: APIMessageComponentInteraction, tier: ClueTier['name']) {
-		await respondButton(data.id, data.token, `Doing ${tier} clue...`);
+		await respondButton(data.id, data.token);
 		runCommand({
 			commandName: 'clue',
 			args: { tier },
 			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	async function openCasket(tier: ClueTier['name']) {
+		await respondButton(data.id, data.token);
+		runCommand({
+			commandName: 'open',
+			args: {
+				name: tier,
+				quantity: 1
+			},
 			...options
 		});
 	}
@@ -88,7 +124,7 @@ export async function interactionHook(data: APIInteraction) {
 		case 'REPEAT_TRIP': {
 			const entry = lastTripCache.get(userID);
 			if (entry) {
-				await respondButton(data.id, data.token, 'You repeated your trip.');
+				await respondButton(data.id, data.token);
 				return entry.continue({
 					...options
 				});
@@ -107,6 +143,19 @@ export async function interactionHook(data: APIInteraction) {
 			return doClue(data, 'Elite');
 		case 'DO_MASTER_CLUE':
 			return doClue(data, 'Master');
+
+		case 'OPEN_BEGINNER_CASKET':
+			return openCasket('Beginner');
+		case 'OPEN_EASY_CASKET':
+			return openCasket('Easy');
+		case 'OPEN_MEDIUM_CASKET':
+			return openCasket('Medium');
+		case 'OPEN_HARD_CASKET':
+			return openCasket('Hard');
+		case 'OPEN_ELITE_CASKET':
+			return openCasket('Elite');
+		case 'OPEN_MASTER_CASKET':
+			return openCasket('Master');
 		default: {
 		}
 	}
