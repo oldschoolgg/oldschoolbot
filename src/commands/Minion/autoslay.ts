@@ -277,7 +277,7 @@ export default class extends BotCommand {
 			guildID: msg.guild?.id,
 			user: msg.author,
 			member: msg.member,
-			message: msg
+			msg
 		};
 
 		if (method === 'low') {
