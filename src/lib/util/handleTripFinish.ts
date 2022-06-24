@@ -19,7 +19,7 @@ import { DougTable, PekyTable } from '../simulation/sharedTables';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, itemID, roll, updateBankSetting, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
-import { makeDoClueButton, makeOpenCasketButton, repeatTripButton } from './globalInteractions';
+import { makeDoClueButton, makeOpenCasketButton, makeRepeatTripButton } from './globalInteractions';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -262,21 +262,21 @@ export async function handleTripFinish(
 	};
 
 	const onContinueFn = Array.isArray(onContinue)
-		? // eslint-disable-next-line @typescript-eslint/no-unused-vars
-		  (_args: LastTripRunArgs) =>
+		? (args: LastTripRunArgs) =>
 				runCommand({
 					commandName: onContinue[0],
 					args: onContinue[1],
 					isContinue: onContinue[2],
 					method: onContinue[3],
 					bypassInhibitors: true,
-					...runCmdOptions
+					...runCmdOptions,
+					...args
 				})
 		: onContinue;
 
 	if (onContinueFn) lastTripCache.set(user.id, { data, continue: onContinueFn });
 	const components: MessageOptions['components'] = [[]];
-	if (onContinueFn) components[0].push(repeatTripButton);
+	if (onContinueFn) components[0].push(makeRepeatTripButton(user.id));
 	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;

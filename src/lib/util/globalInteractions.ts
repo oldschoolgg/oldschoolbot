@@ -57,13 +57,17 @@ export function makeOpenCasketButton(tier: ClueTier) {
 		.setEmoji('365003978678730772');
 }
 
-export const repeatTripButton = new MessageButton()
-	.setCustomID('REPEAT_TRIP')
-	.setLabel('Repeat Trip')
-	.setStyle('SECONDARY')
-	.setEmoji('🔁');
+export function makeRepeatTripButton(userID: string | bigint) {
+	const lastTrip = lastTripCache.get(userID.toString());
 
-async function respondButton(id: string, token: string, text?: string) {
+	return new MessageButton()
+		.setCustomID('REPEAT_TRIP')
+		.setLabel(lastTrip ? `Repeat ${lastTrip.data.type} Trip` : 'Repeat Trip')
+		.setStyle('SECONDARY')
+		.setEmoji('🔁');
+}
+
+export async function respondButton(id: string, token: string, text?: string) {
 	const route = Routes.interactionCallback(id, token);
 	if (text) {
 		return globalClient.mahojiClient.restManager.post(route, {
