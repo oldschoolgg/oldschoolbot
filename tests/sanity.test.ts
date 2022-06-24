@@ -98,7 +98,9 @@ describe('Sanity', () => {
 			'Uncut sapphire',
 			'Oak plank',
 			'Pure essence',
-			'Runite bolts'
+			'Runite bolts',
+			'Lava flower crown',
+			'Purple flower crown'
 		]);
 		// These items should all still excluded by the 'Openables' rule. Some items are also excluded by other means.
 		const shouldntBeIn = resolveItems([

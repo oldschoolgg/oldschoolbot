@@ -48,44 +48,49 @@ const contractTable = new LootTable()
 			.add('Clue scroll (Grandmaster)', 1, 2)
 	);
 
-const itemContractItems = Array.from(
-	new Set([
-		...allMbTables,
-		...kalphiteKingLootTable.allItems.filter(i => i !== itemID('Baby kalphite king')),
-		...AbyssalDragonLootTable.allItems,
-		...VasaMagus.allItems,
-		...Ignecarus.allItems.filter(i => i !== itemID('Dragon egg')),
-		...nexLootTable.allItems,
-		...PMBTable.allItems,
-		...[
-			...BSOMonsters.FrostDragon.table.allItems,
-			...BSOMonsters.GanodermicBeast.table.allItems,
-			...BSOMonsters.Grifolaroo.table.allItems,
-			...BSOMonsters.RumPumpedCrab.table.allItems,
-			...BSOMonsters.QueenBlackDragon.table.allItems
-		],
-		...resolveItems([
-			'Untradeable mystery box',
-			'Tradeable mystery box',
-			'Pet mystery box',
-			'Holiday mystery box',
-			'Klik',
-			'Scruffy',
-			'Shelldon',
-			'Remy',
-			'Divine sigil',
-			'Wintertoad',
-			'Hammy',
-			'Dwarven bar',
-			'Dwarven ore',
-			'Magic banana',
-			'Scroll of the hunt',
-			'Scroll of longevity',
-			'Scroll of life',
-			'Scroll of proficiency'
-		])
+const itemContractItemsSet = new Set([
+	...allMbTables,
+	...kalphiteKingLootTable.allItems.filter(i => i !== itemID('Baby kalphite king')),
+	...AbyssalDragonLootTable.allItems,
+	...VasaMagus.allItems,
+	...Ignecarus.allItems.filter(i => i !== itemID('Dragon egg')),
+	...nexLootTable.allItems,
+	...PMBTable.allItems,
+	...[
+		...BSOMonsters.FrostDragon.table.allItems,
+		...BSOMonsters.GanodermicBeast.table.allItems,
+		...BSOMonsters.Grifolaroo.table.allItems,
+		...BSOMonsters.RumPumpedCrab.table.allItems,
+		...BSOMonsters.QueenBlackDragon.table.allItems
+	],
+	...resolveItems([
+		'Untradeable mystery box',
+		'Tradeable mystery box',
+		'Pet mystery box',
+		'Holiday mystery box',
+		'Klik',
+		'Scruffy',
+		'Shelldon',
+		'Remy',
+		'Divine sigil',
+		'Wintertoad',
+		'Hammy',
+		'Dwarven bar',
+		'Dwarven ore',
+		'Magic banana',
+		'Scroll of the hunt',
+		'Scroll of longevity',
+		'Scroll of life',
+		'Scroll of proficiency'
 	])
-);
+]);
+
+const cantBeContract = resolveItems(['Coins']);
+for (const id of cantBeContract) {
+	itemContractItemsSet.delete(id);
+}
+
+const itemContractItems = Array.from(itemContractItemsSet);
 
 function pickItemContract(streak: number) {
 	let item = randArrItem(itemContractItems);
