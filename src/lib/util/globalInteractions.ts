@@ -1,12 +1,5 @@
 import { MessageButton } from 'discord.js';
-import {
-	APIInteraction,
-	APIMessageComponentInteraction,
-	InteractionResponseType,
-	InteractionType,
-	MessageFlags,
-	Routes
-} from 'mahoji';
+import { APIInteraction, APIMessageComponentInteraction, InteractionType } from 'mahoji';
 
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { lastTripCache } from '../constants';
@@ -14,6 +7,7 @@ import { ClueTier } from '../minions/data/clueTiers';
 import { runCommand } from '../settings/settings';
 import { minionIsBusy } from './minionIsBusy';
 import { minionName } from './minionUtils';
+import { respondToButton } from './respondToButton';
 
 const globalInteractionActions = [
 	'DO_BEGINNER_CLUE',
@@ -23,6 +17,13 @@ const globalInteractionActions = [
 	'DO_ELITE_CLUE',
 	'DO_MASTER_CLUE',
 	'DO_GRANDMASTER_CLUE',
+	'OPEN_BEGINNER_CASKET',
+	'OPEN_EASY_CASKET',
+	'OPEN_MEDIUM_CASKET',
+	'OPEN_HARD_CASKET',
+	'OPEN_ELITE_CASKET',
+	'OPEN_MASTER_CASKET',
+	'OPEN_GRANDMASTER_CASKET',
 	'REPEAT_TRIP'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
@@ -40,21 +41,26 @@ export function makeDoClueButton(tier: ClueTier) {
 		.setEmoji('365003979840552960');
 }
 
-export const repeatTripButton = new MessageButton()
-	.setCustomID('REPEAT_TRIP')
-	.setLabel('Repeat Trip')
-	.setStyle('SECONDARY')
-	.setEmoji('🔁');
-
-async function respondButton(id: string, token: string, text: string) {
-	const route = Routes.interactionCallback(id, token);
-	await globalClient.mahojiClient.restManager.post(route, {
-		body: {
-			type: InteractionResponseType.DeferredMessageUpdate,
-			data: { content: text, flags: MessageFlags.Ephemeral }
-		}
-	});
+export function makeOpenCasketButton(tier: ClueTier) {
+	const name: Uppercase<ClueTier['name']> = tier.name.toUpperCase() as Uppercase<ClueTier['name']>;
+	const id: GlobalInteractionAction = `OPEN_${name}_CASKET`;
+	return new MessageButton()
+		.setCustomID(id)
+		.setLabel(`Open ${tier.name} Casket`)
+		.setStyle('SECONDARY')
+		.setEmoji('365003978678730772');
 }
+
+export function makeRepeatTripButton(userID: string | bigint) {
+	const lastTrip = lastTripCache.get(userID.toString());
+
+	return new MessageButton()
+		.setCustomID('REPEAT_TRIP')
+		.setLabel(lastTrip ? `Repeat ${lastTrip.data.type} Trip` : 'Repeat Trip')
+		.setStyle('SECONDARY')
+		.setEmoji('🔁');
+}
+
 export async function interactionHook(data: APIInteraction) {
 	if (data.type !== InteractionType.MessageComponent) return;
 	const id = data.data.custom_id;
@@ -72,7 +78,7 @@ export async function interactionHook(data: APIInteraction) {
 	};
 
 	async function doClue(data: APIMessageComponentInteraction, tier: ClueTier['name']) {
-		await respondButton(data.id, data.token, `Doing ${tier} clue...`);
+		await respondToButton(data.id, data.token);
 		runCommand({
 			commandName: 'clue',
 			args: { tier },
@@ -81,20 +87,32 @@ export async function interactionHook(data: APIInteraction) {
 		});
 	}
 
+	async function openCasket(tier: ClueTier['name']) {
+		await respondToButton(data.id, data.token);
+		runCommand({
+			commandName: 'open',
+			args: {
+				name: tier,
+				quantity: 1
+			},
+			...options
+		});
+	}
+
 	if (minionIsBusy(user.id)) {
-		return respondButton(data.id, data.token, `${minionName(user)} is busy.`);
+		return respondToButton(data.id, data.token, `${minionName(user)} is busy.`);
 	}
 
 	switch (id) {
 		case 'REPEAT_TRIP': {
 			const entry = lastTripCache.get(userID);
 			if (entry) {
-				await respondButton(data.id, data.token, 'You repeated your trip.');
+				await respondToButton(data.id, data.token);
 				return entry.continue({
 					...options
 				});
 			}
-			return respondButton(data.id, data.token, "Couldn't find a last trip to repeat.");
+			return respondToButton(data.id, data.token, "Couldn't find a last trip to repeat.");
 		}
 		case 'DO_BEGINNER_CLUE':
 			return doClue(data, 'Beginner');
@@ -108,6 +126,19 @@ export async function interactionHook(data: APIInteraction) {
 			return doClue(data, 'Elite');
 		case 'DO_MASTER_CLUE':
 			return doClue(data, 'Master');
+
+		case 'OPEN_BEGINNER_CASKET':
+			return openCasket('Beginner');
+		case 'OPEN_EASY_CASKET':
+			return openCasket('Easy');
+		case 'OPEN_MEDIUM_CASKET':
+			return openCasket('Medium');
+		case 'OPEN_HARD_CASKET':
+			return openCasket('Hard');
+		case 'OPEN_ELITE_CASKET':
+			return openCasket('Elite');
+		case 'OPEN_MASTER_CASKET':
+			return openCasket('Master');
 		default: {
 		}
 	}

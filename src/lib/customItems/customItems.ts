@@ -2716,3 +2716,6 @@ setCustomItem(
 	},
 	10_000
 );
+
+setCustomItem(52_617, 'Lava flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
+setCustomItem(52_618, 'Purple flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
