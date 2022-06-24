@@ -49,14 +49,8 @@ export function makeOpenCasketButton(tier: ClueTier) {
 		.setEmoji('365003978678730772');
 }
 
-export function makeRepeatTripButton(userID: string | bigint) {
-	const lastTrip = lastTripCache.get(userID.toString());
-
-	return new MessageButton()
-		.setCustomID('REPEAT_TRIP')
-		.setLabel(lastTrip ? `Repeat ${lastTrip.data.type} Trip` : 'Repeat Trip')
-		.setStyle('SECONDARY')
-		.setEmoji('🔁');
+export function makeRepeatTripButton() {
+	return new MessageButton().setCustomID('REPEAT_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY').setEmoji('🔁');
 }
 
 export async function interactionHook(data: APIInteraction) {
