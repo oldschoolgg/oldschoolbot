@@ -52,7 +52,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['mix', { name: mixableItem.name, quantity, zahur }, true],
+			['mix', { name: mixableItem.name, quantity: quantity - bonus, zahur }, true],
 			undefined,
 			data,
 			loot
