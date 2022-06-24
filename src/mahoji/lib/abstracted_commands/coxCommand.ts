@@ -21,6 +21,7 @@ import { MakePartyOptions } from '../../../lib/types';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -130,7 +131,7 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 			if (
 				isChallengeMode &&
 				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow')
+				!userHasItemsEquippedAnywhere(user, ['Twisted bow', 'Zaryte bow'], false)
 			) {
 				return [
 					true,
