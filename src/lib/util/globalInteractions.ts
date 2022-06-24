@@ -1,12 +1,5 @@
 import { MessageButton } from 'discord.js';
-import {
-	APIInteraction,
-	APIMessageComponentInteraction,
-	InteractionResponseType,
-	InteractionType,
-	MessageFlags,
-	Routes
-} from 'mahoji';
+import { APIInteraction, APIMessageComponentInteraction, InteractionType } from 'mahoji';
 
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { lastTripCache } from '../constants';
@@ -14,6 +7,7 @@ import { ClueTier } from '../minions/data/clueTiers';
 import { runCommand } from '../settings/settings';
 import { minionIsBusy } from './minionIsBusy';
 import { minionName } from './minionUtils';
+import { respondToButton } from './respondToButton';
 
 const globalInteractionActions = [
 	'DO_BEGINNER_CLUE',
@@ -65,23 +59,6 @@ export function makeRepeatTripButton(userID: string | bigint) {
 		.setEmoji('🔁');
 }
 
-export async function respondButton(id: string, token: string, text?: string) {
-	const route = Routes.interactionCallback(id, token);
-	if (text) {
-		return globalClient.mahojiClient.restManager.post(route, {
-			body: {
-				type: InteractionResponseType.DeferredMessageUpdate,
-				data: { content: text, flags: MessageFlags.Ephemeral }
-			}
-		});
-	}
-
-	await globalClient.mahojiClient.restManager.post(route, {
-		body: {
-			type: InteractionResponseType.DeferredMessageUpdate
-		}
-	});
-}
 export async function interactionHook(data: APIInteraction) {
 	if (data.type !== InteractionType.MessageComponent) return;
 	const id = data.data.custom_id;
@@ -99,7 +76,7 @@ export async function interactionHook(data: APIInteraction) {
 	};
 
 	async function doClue(data: APIMessageComponentInteraction, tier: ClueTier['name']) {
-		await respondButton(data.id, data.token);
+		await respondToButton(data.id, data.token);
 		runCommand({
 			commandName: 'clue',
 			args: { tier },
@@ -109,7 +86,7 @@ export async function interactionHook(data: APIInteraction) {
 	}
 
 	async function openCasket(tier: ClueTier['name']) {
-		await respondButton(data.id, data.token);
+		await respondToButton(data.id, data.token);
 		runCommand({
 			commandName: 'open',
 			args: {
@@ -121,19 +98,19 @@ export async function interactionHook(data: APIInteraction) {
 	}
 
 	if (minionIsBusy(user.id)) {
-		return respondButton(data.id, data.token, `${minionName(user)} is busy.`);
+		return respondToButton(data.id, data.token, `${minionName(user)} is busy.`);
 	}
 
 	switch (id) {
 		case 'REPEAT_TRIP': {
 			const entry = lastTripCache.get(userID);
 			if (entry) {
-				await respondButton(data.id, data.token);
+				await respondToButton(data.id, data.token);
 				return entry.continue({
 					...options
 				});
 			}
-			return respondButton(data.id, data.token, "Couldn't find a last trip to repeat.");
+			return respondToButton(data.id, data.token, "Couldn't find a last trip to repeat.");
 		}
 		case 'DO_BEGINNER_CLUE':
 			return doClue(data, 'Beginner');
