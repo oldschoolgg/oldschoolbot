@@ -784,7 +784,15 @@ const Buyables: Buyable[] = [
 			'Raw shark': 1
 		})
 	},
-
+	{
+		name: 'Rainbow flower crown',
+		itemCost: new Bank({
+			Coins: 5000
+		}),
+		outputItems: new Bank({
+			'Rainbow flower crown': 1
+		})
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
