@@ -21,6 +21,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
 import type { ItemBank, Skills as TSkills } from '../lib/types';
 import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
+import { respondButton } from '../lib/util/globalInteractions';
 import { logError } from '../lib/util/logError';
 
 export function mahojiParseNumber({
@@ -111,7 +112,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return cancel('cancel');
 			}
 			if (i.customID === 'CONFIRM') {
-				i.reply({ ephemeral: true, content: 'You confirmed.' });
+				respondButton(i.id, i.token);
 				return confirm(id);
 			}
 		});
