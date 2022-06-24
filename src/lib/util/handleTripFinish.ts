@@ -107,15 +107,15 @@ export async function handleTripFinish(
 	};
 
 	const onContinueFn = Array.isArray(onContinue)
-		? // eslint-disable-next-line @typescript-eslint/no-unused-vars
-		  (_args: LastTripRunArgs) =>
+		? (args: LastTripRunArgs) =>
 				runCommand({
 					commandName: onContinue[0],
 					args: onContinue[1],
 					isContinue: onContinue[2],
 					method: onContinue[3],
 					bypassInhibitors: true,
-					...runCmdOptions
+					...runCmdOptions,
+					...args
 				})
 		: onContinue;
 
