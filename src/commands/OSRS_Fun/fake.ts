@@ -1,22 +1,16 @@
-import { createCanvas, Image, NodeCanvasRenderingContext2D, registerFont } from 'canvas';
 import { MessageAttachment } from 'discord.js';
 import { randInt } from 'e';
 import fs from 'fs';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Canvas, CanvasRenderingContext2D, loadImage } from 'skia-canvas/lib';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 const bg = fs.readFileSync('./src/lib/resources/images/tob-bg.png');
-const canvas = createCanvas(399, 100);
-const ctx = canvas.getContext('2d');
-
-ctx.font = '16px OSRSFont';
-
-registerFont('./src/lib/resources/osrs-font.ttf', { family: 'Regular' });
 
 const randomMessages = ['omfgggggg', '!#@$@#$@##@$', 'adfsjklfadkjsl;l', 'l00000l wtf'];
 
-function arma(ctx: NodeCanvasRenderingContext2D, username: string) {
+function arma(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText("Your Kree'arra kill count is: ", 11, 10);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText("Your Kree'arra kill count is: ").width, 10);
@@ -38,7 +32,7 @@ function arma(ctx: NodeCanvasRenderingContext2D, username: string) {
 	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 }
 
-function bandos(ctx: NodeCanvasRenderingContext2D, username: string) {
+function bandos(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText('Your General Graardor kill count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText('Your General Graardor kill count is: ').width, 10);
@@ -60,7 +54,7 @@ function bandos(ctx: NodeCanvasRenderingContext2D, username: string) {
 	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 }
 
-function ely(ctx: NodeCanvasRenderingContext2D, username: string) {
+function ely(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText('Your Corporeal Beast kill count is: ', 11, 40);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(
@@ -78,7 +72,7 @@ function ely(ctx: NodeCanvasRenderingContext2D, username: string) {
 	ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
 }
 
-function sara(ctx: NodeCanvasRenderingContext2D, username: string) {
+function sara(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText('Your Commander Zilyana kill count is: ', 11, 10);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText('Your Commander Zilyana kill count is: ').width, 10);
@@ -98,7 +92,7 @@ function sara(ctx: NodeCanvasRenderingContext2D, username: string) {
 	ctx.fillText(`${randMessage}*`, 12 + ctx.measureText(`${username}: `).width, 69);
 }
 
-function scythe(ctx: NodeCanvasRenderingContext2D, username: string) {
+function scythe(ctx: CanvasRenderingContext2D, username: string) {
 	const kc = randInt(1, 20);
 	/* Your completed Theatre of Blood count is: X. */
 	ctx.fillText('Your completed Theatre of Blood count is: ', 11, 10);
@@ -137,7 +131,7 @@ function scythe(ctx: NodeCanvasRenderingContext2D, username: string) {
 	ctx.fillText('*', 12 + ctx.measureText(`${username}: `).width, 70);
 }
 
-function zammy(ctx: NodeCanvasRenderingContext2D, username: string) {
+function zammy(ctx: CanvasRenderingContext2D, username: string) {
 	ctx.fillText("Your K'ril Tsutsaroth kill count is: ", 11, 10);
 	ctx.fillStyle = '#ff0000';
 	ctx.fillText(randInt(1, 20).toString(), 12 + ctx.measureText("Your K'ril Tsutsaroth kill count is: ").width, 10);
@@ -181,15 +175,21 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [thingName, username]: [string, string]) {
+		const canvas = new Canvas(399, 100);
+		const ctx = canvas.getContext('2d');
+
+		ctx.font = '16px OSRSFont';
 		ctx.fillStyle = '#000000';
-		const BG = new Image();
-		BG.src = bg;
-		ctx.drawImage(BG, 0, 0, BG.width, BG.height);
+
+		const image = await loadImage(bg);
+		ctx.drawImage(image, 0, 0, image.width, image.height);
 		for (const [names, fn] of thingMap) {
 			if (names.has(thingName.toLowerCase())) {
 				fn(ctx, username);
 				return msg.channel.send({
-					files: [new MessageAttachment(canvas.toBuffer(), `${Math.round(Math.random() * 10_000)}.jpg`)]
+					files: [
+						new MessageAttachment(await canvas.toBuffer('png'), `${Math.round(Math.random() * 10_000)}.jpg`)
+					]
 				});
 			}
 		}

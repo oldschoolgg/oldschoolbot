@@ -1,16 +1,27 @@
 import { Time } from 'e';
 import { Clues } from 'oldschooljs';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
-import { EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
-import { HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
-import { MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
-import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
+import { BeginnerCasket, BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
+import { EasyCasket, EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
+import { EliteCasket, EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
+import { HardCasket, HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
+import { MasterCasket, MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
+import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import itemID from '../../util/itemID';
-import { ClueTier } from '../types';
+import { ClueMilestoneReward } from '../types';
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
+
+export interface ClueTier {
+	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master';
+	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
+	id: number;
+	scrollID: number;
+	timeToFinish: number;
+	milestoneReward?: ClueMilestoneReward;
+	mimicChance: number | false;
+	allItems: number[];
+}
 
 const ClueTiers: ClueTier[] = [
 	{
