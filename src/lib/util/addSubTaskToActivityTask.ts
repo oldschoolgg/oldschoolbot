@@ -1,6 +1,3 @@
-import { Time } from 'e';
-
-import { production } from '../../config';
 import { prisma } from '../settings/prisma';
 import { activitySync, getActivityOfUser } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
@@ -13,10 +10,6 @@ export default async function addSubTaskToActivityTask<T extends ActivityTaskOpt
 	const usersTask = getActivityOfUser(taskToAdd.userID);
 	if (usersTask) {
 		throw `That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`;
-	}
-
-	if (!production) {
-		taskToAdd.duration = Time.Second * 10;
 	}
 
 	let duration = Math.floor(taskToAdd.duration);
