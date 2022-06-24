@@ -97,7 +97,7 @@ export async function tobStartCommand(user: KlasaUser, channelID: bigint, isHard
 		return `Your mass failed to start because of this reason: ${teamCheckFailure} ${users}`;
 	}
 
-	const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = await createTOBTeam({
+	const { duration, totalReduction, reductions, wipedRoom, deathDuration, parsedTeam } = createTOBTeam({
 		team: await Promise.all(
 			users.map(async u => ({
 				user: u,

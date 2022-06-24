@@ -116,6 +116,6 @@ export const raidCommand: OSBMahojiCommand = {
 			if (tob.check) return tobCheckCommand(user, Boolean(tob.check.hard_mode));
 		}
 
-		return 'asdf';
+		return 'Invalid command.';
 	}
 };

@@ -127,7 +127,6 @@ export default class extends Task {
 				},
 				true
 			],
-
 			undefined,
 			data,
 			null
