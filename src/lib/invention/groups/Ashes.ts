@@ -12,5 +12,5 @@ export const Ashes: DisassemblySourceGroup = {
 		{ item: i('Abyssal ashes'), lvl: 60 },
 		{ item: i('Infernal ashes'), lvl: 90 }
 	],
-	parts: { pious: 5, organic: 95 }
+	parts: { pious: 70, organic: 30 }
 };

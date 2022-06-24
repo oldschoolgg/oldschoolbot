@@ -454,8 +454,8 @@ These Inventions are still not unlocked: ${locked
 			}
 		}
 
-		if (user.skillLevel(SkillsEnum.Crafting) < 90 || user.skillLevel(SkillsEnum.Smithing) < 90) {
-			return "Your minion isn't skilled enough to train Invention, you need level 90 Crafting and level 90 Smithing.";
+		if (user.skillLevel(SkillsEnum.Crafting) < 90) {
+			return "Your minion isn't skilled enough to train Invention, you need level 90 Crafting.";
 		}
 
 		if (options.disassemble) {

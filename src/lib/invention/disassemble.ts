@@ -13,6 +13,7 @@ import {
 	mahojiClientSettingsFetch,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
+import { Emoji } from '../constants';
 import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
@@ -406,6 +407,19 @@ export async function disassembleCommand({
 ${result.messages.length > 0 ? `**Messages:** ${result.messages.join(', ')}` : ''}`;
 }
 
+async function handleInventionPrize(): Promise<Bank | null> {
+	const remaining = (await mahojiClientSettingsFetch({ invention_prizes_remaining: true }))
+		.invention_prizes_remaining as ItemBank;
+	const remainingBank = new Bank(remaining);
+	const toGive = remainingBank.random()?.id;
+	if (!toGive) return null;
+	const loot = new Bank().add(toGive);
+	await clientSettingsUpdate({
+		invention_prizes_remaining: remainingBank.remove(loot).bank
+	});
+	return loot;
+}
+
 export async function disassemblyTask(data: DisassembleTaskOptions) {
 	const { userID, quantity } = data;
 	const klasaUser = await globalClient.fetchUser(userID);
@@ -450,15 +464,27 @@ ${xpStr}`;
 	const minutes = floor(data.duration / Time.Minute);
 	const cogsworthChancePerHour = 100;
 	const chancePerMinute = cogsworthChancePerHour * 60;
+	const prizeLoot = new Bank();
+	const prizeChance = Math.floor(chancePerMinute / 10);
+
 	for (let i = 0; i < minutes; i++) {
 		if (roll(chancePerMinute)) {
 			loot.add('Cogsworth');
+		}
+		if (roll(prizeChance)) {
+			const prize = await handleInventionPrize();
+			if (prize) prizeLoot.add(prize);
 		}
 	}
 	if (loot.has('Cogsworth')) {
 		messages.push(
 			`**While disassembling some items, your minion suddenly was inspired to create a mechanical pet out of some scraps! Received ${loot}.`
 		);
+	}
+
+	if (prizeLoot.length > 0) {
+		loot.add(prizeLoot);
+		messages.push(`${Emoji.Gift} You received ${prizeLoot} as a bonus!`);
 	}
 	if (loot.length > 0) {
 		await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
