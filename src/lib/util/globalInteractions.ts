@@ -65,7 +65,7 @@ export function makeRepeatTripButton(userID: string | bigint) {
 		.setEmoji('🔁');
 }
 
-async function respondButton(id: string, token: string, text?: string) {
+export async function respondButton(id: string, token: string, text?: string) {
 	const route = Routes.interactionCallback(id, token);
 	if (text) {
 		return globalClient.mahojiClient.restManager.post(route, {
