@@ -35,6 +35,15 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 	return { price, basePrice };
 }
 
+export function sellStorePriceOfItem(item: Item, qty: number): { price: number; basePrice: number } {
+	if (!item.cost || !item.lowalch) return { price: 0, basePrice: 0 };
+	let basePrice = item.cost;
+	// Sell price decline with stock by 3% and is always low alch price when stock is 0.
+	let price = (0.4 - 0.03 * Math.min(qty - 1, 10)) * basePrice;
+	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
+	return { price, basePrice };
+}
+
 export const sellCommand: OSBMahojiCommand = {
 	name: 'sell',
 	description: 'Sell items from your bank to the bot for GP.',
@@ -100,8 +109,9 @@ export const sellCommand: OSBMahojiCommand = {
 			if (specialPrice) {
 				totalPrice += Math.floor(specialPrice * qty);
 			} else {
-				if (user.isIronman) return "Iron players can't sell items.";
-				const { price } = sellPriceOfItem(item, taxRatePercent);
+				const { price } = user.isIronman
+					? sellStorePriceOfItem(item, qty)
+					: sellPriceOfItem(item, taxRatePercent);
 				totalPrice += price * qty;
 			}
 		}
@@ -119,8 +129,8 @@ export const sellCommand: OSBMahojiCommand = {
 		updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceSellingItems, totalPrice);
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
 
-		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
-			totalPrice
-		)})** (${taxRatePercent}% below market price).`;
+		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
+			user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
+		}.`;
 	}
 };
