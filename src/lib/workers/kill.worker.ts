@@ -1,7 +1,6 @@
 import '../data/itemAliases';
 
 import { Bank, Misc, Monsters } from 'oldschooljs';
-import { addBanks } from 'oldschooljs/dist/util/bank';
 
 import { handleNexKills } from '../simulation/nex';
 import { calcDropRatesFromBank } from '../util';
@@ -25,17 +24,14 @@ export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs
 	}
 
 	if (['nightmare', 'the nightmare'].some(alias => stringMatches(alias, bossName))) {
-		let bank = {};
+		let bank = new Bank();
 		if (quantity > 10_000) {
 			return { error: 'I can only kill a maximum of 10k nightmares a time!' };
 		}
 		for (let i = 0; i < quantity; i++) {
-			bank = addBanks([
-				bank,
-				Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id
-			]);
+			bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id);
 		}
-		return { bank: new Bank(bank) };
+		return { bank };
 	}
 
 	if (['nex', 'next'].some(alias => stringMatches(alias, bossName))) {
