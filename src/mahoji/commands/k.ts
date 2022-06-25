@@ -2,8 +2,12 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
+import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
+import { NexMonster } from '../../lib/nex';
 import { prisma } from '../../lib/settings/prisma';
 import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
@@ -27,7 +31,39 @@ const autocompleteMonsters = [
 		id: ZALCANO_ID,
 		emoji: '<:Smolcano:604670895113633802>'
 	},
-	VasaMagus
+	VasaMagus,
+	{
+		...Ignecarus,
+		name: 'Ignecarus (Solo)'
+	},
+	{
+		...Ignecarus,
+		name: 'Ignecarus (Mass)'
+	},
+	{
+		...KingGoldemar,
+		name: 'King Goldemar (Solo)'
+	},
+	{
+		...KingGoldemar,
+		name: 'King Goldemar (Mass)'
+	},
+	{
+		...NexMonster,
+		name: 'Nex (Solo)'
+	},
+	{
+		...NexMonster,
+		name: 'Nex (Mass)'
+	},
+	{
+		...KalphiteKingMonster,
+		name: 'Kalphite King (Solo)'
+	},
+	{
+		...KalphiteKingMonster,
+		name: 'Kalphite King (Mass)'
+	}
 ];
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
