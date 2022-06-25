@@ -67,6 +67,10 @@ import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { igneCommand } from './igneCommand';
+import { kgCommand } from './kgCommand';
+import { kkCommand } from './kkCommand';
+import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
 import { revsCommand } from './revsCommand';
@@ -151,6 +155,10 @@ export async function minionKillCommand(
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
 	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes('ignecarus')) return igneCommand(interaction, user, channelID, name);
+	if (name.toLowerCase().includes('goldemar')) return kgCommand(interaction, user, channelID, name);
+	if (name.toLowerCase().includes('kalphite king')) return kkCommand(interaction, user, channelID, name);
+	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name);
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
