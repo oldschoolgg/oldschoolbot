@@ -465,8 +465,7 @@ ${xpStr}`;
 	const cogsworthChancePerHour = 100;
 	const chancePerMinute = cogsworthChancePerHour * 60;
 	const prizeLoot = new Bank();
-	const prizeChance = Math.floor(chancePerMinute / 10);
-
+	const prizeChance = Math.floor(chancePerMinute / 15);
 	for (let i = 0; i < minutes; i++) {
 		if (roll(chancePerMinute)) {
 			loot.add('Cogsworth');
@@ -478,7 +477,7 @@ ${xpStr}`;
 	}
 	if (loot.has('Cogsworth')) {
 		messages.push(
-			`**While disassembling some items, your minion suddenly was inspired to create a mechanical pet out of some scraps! Received ${loot}.`
+			`**While disassembling some items, your minion suddenly was inspired to create a mechanical pet out of some scraps!**`
 		);
 	}
 

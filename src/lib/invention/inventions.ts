@@ -39,16 +39,6 @@ export enum InventionID {
 	DwarvenToolkit = 11,
 	MechaRod = 12,
 	MasterHammerAndChisel = 13
-	// RoboFlappy = 12
-	// crafting one?
-	// mining could add boost, like obsidian pickaxe, but will it effect moktang? (where get obsidian?)
-
-	// POSSIBLE/LATER IDEAS:
-	// herb cleaner
-	// Auto disassembler - AFTER RELEASE
-	// Engineer Harry, monkey with a spanner
-	// get 5% more xp from lamps, but it goes to a random skill instead.
-	// an invention tool that converts logs into planks when chopping
 }
 
 export type Invention = Readonly<{
@@ -125,7 +115,7 @@ export const inventionBoosts = {
 			return (index + 1) * (Time.Minute * 3);
 		}
 	}
-};
+} as const;
 
 export const Inventions: readonly Invention[] = [
 	{

@@ -387,6 +387,14 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'invprizesleft': {
+				const remaining = await mahojiClientSettingsFetch({ invention_prizes_remaining: true });
+				const image = await makeBankImage({
+					bank: new Bank(remaining.invention_prizes_remaining as ItemBank),
+					title: 'Invention Prizes Left'
+				});
+				return msg.channel.send({ files: [new MessageAttachment(image.file.buffer)] });
+			}
 			case 'setmp': {
 				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
 				if (
@@ -1273,11 +1281,6 @@ ORDER BY qty DESC;`);
 **Average:** ${average}ms
 **Max:** ${max}ms
 **Min:** ${min}ms`);
-			}
-			case 'invprizesleft': {
-				const remaining = await mahojiClientSettingsFetch({ invention_prizes_remaining: true });
-				const image = await makeBankImage({ bank: new Bank(remaining.invention_prizes_remaining as ItemBank) });
-				return msg.channel.send({ files: [new MessageAttachment(image.file.buffer)] });
 			}
 			case 'resetinvprizes': {
 				await clientSettingsUpdate({
