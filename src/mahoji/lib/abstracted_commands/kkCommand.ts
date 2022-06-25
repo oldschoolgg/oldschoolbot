@@ -75,12 +75,12 @@ function calcFood(user: KlasaUser, teamSize: number, quantity: number) {
 }
 
 export async function kkCommand(
-	interaction: SlashCommandInteraction,
+	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	channelID: bigint,
 	inputName: string
 ): CommandResponse {
-	interaction.deferReply();
+	if (interaction) interaction.deferReply();
 	const failureRes = checkReqs([user], KalphiteKingMonster, 2);
 	if (failureRes) return failureRes;
 
