@@ -68,6 +68,14 @@ const randomEventBuyables: Buyable[] = [
 	}
 ];
 
+const ironmenBuyables: Buyable[] = ['Ironman helm', 'Ironman platebody', 'Ironman platelegs'].map(str => ({
+	name: str,
+	customReq: async (user: KlasaUser) => {
+		return user.isIronman ? [true] : [false, 'Only ironmen can buy this.'];
+	},
+	gpCost: 1000
+}));
+
 const tobCapes: Buyable[] = [
 	{
 		name: 'Sinhaza shroud tier 1',
@@ -776,7 +784,15 @@ const Buyables: Buyable[] = [
 			'Raw shark': 1
 		})
 	},
-
+	{
+		name: 'Rainbow flower crown',
+		itemCost: new Bank({
+			Coins: 5000
+		}),
+		outputItems: new Bank({
+			'Rainbow flower crown': 1
+		})
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -796,7 +812,8 @@ const Buyables: Buyable[] = [
 	...perduBuyables,
 	...skillCapeBuyables,
 	...aerialFishBuyables,
-	...troubleBrewingBuyables
+	...troubleBrewingBuyables,
+	...ironmenBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
