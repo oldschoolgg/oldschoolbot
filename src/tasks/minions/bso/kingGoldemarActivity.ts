@@ -128,7 +128,7 @@ export default class extends Task {
 				users[0],
 				channelID,
 				resultStr,
-				['kinggoldemar', ['solo'], true],
+				['k', { name: 'King Goldemar (Solo)' }, true],
 				undefined,
 				data,
 				totalLoot
