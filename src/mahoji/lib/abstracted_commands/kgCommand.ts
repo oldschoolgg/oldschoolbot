@@ -13,12 +13,12 @@ import { Gear } from '../../../lib/structures/Gear';
 import { channelIsSendable, formatDuration } from '../../../lib/util';
 
 export async function kgCommand(
-	interaction: SlashCommandInteraction,
+	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	channelID: bigint,
 	inputName: string
 ) {
-	interaction.deferReply();
+	if (interaction) interaction.deferReply();
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';

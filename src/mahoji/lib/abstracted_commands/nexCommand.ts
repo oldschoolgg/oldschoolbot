@@ -52,12 +52,12 @@ function checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: numbe
 }
 
 export async function nexCommand(
-	interaction: SlashCommandInteraction,
+	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	channelID: bigint,
 	inputName: string
 ) {
-	interaction.deferReply();
+	if (interaction) interaction.deferReply();
 	const userBank = user.bank();
 	if (!userBank.has('Frozen key')) {
 		return `${user.minionName} attempts to enter the Ancient Prison to fight Nex, but finds a giant frozen, metal door blocking their way.`;
