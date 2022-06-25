@@ -56,6 +56,7 @@ GROUP BY type;`);
 	{
 		name: 'Personal Monster KC',
 		run: async (user: KlasaUser) => {
+			// HERE
 			const result: { id: number; kc: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int) AS kc
 FROM activity

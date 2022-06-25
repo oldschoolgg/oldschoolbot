@@ -34,6 +34,7 @@ const autocompleteMonsters = [
 ];
 
 async function fetchUsersRecentlyKilledMonsters(userID: string) {
+	// HERE
 	const res = await prisma.$queryRawUnsafe<{ mon_id: string }[]>(
 		`SELECT DISTINCT((data->>'monsterID')) AS mon_id
 FROM activity

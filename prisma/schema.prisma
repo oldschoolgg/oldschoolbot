@@ -17,7 +17,7 @@ model Activity {
   group_activity Boolean
   type           activity_type_enum
   channel_id     BigInt
-  data           Json               @db.Json
+  data           Json?              @db.Json
 
 
   @@index([group_activity], map: "IDX_73e0d6954aecafe0383b77d390")
