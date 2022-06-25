@@ -8,7 +8,7 @@ import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore, runCommand } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
@@ -16,7 +16,6 @@ import { roll, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
-import { sendToChannelID } from '../../../lib/util/webhook';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -131,34 +130,25 @@ export default class extends Task {
 			teamSize: users.length
 		});
 
-		if (allUsers.length === 1) {
-			handleTripFinish(
-				allUsers[0],
-				channelID,
-				resultMessage,
-				res => {
-					const flags: Record<string, string> = challengeMode ? { cm: 'cm' } : {};
-
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					if (!res.prompter) res.prompter = {};
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					res.prompter.flags = flags;
-
-					return runCommand({
-						...res,
-						commandName: 'raid',
-						args: ['solo'],
-						isContinue: true
-					});
+		handleTripFinish(
+			allUsers[0],
+			channelID,
+			resultMessage,
+			[
+				'raid',
+				{
+					cox: {
+						start: {
+							challenge_mode: challengeMode,
+							type: users.length === 1 ? 'solo' : 'mass'
+						}
+					}
 				},
-				undefined,
-				data,
-				null
-			);
-		} else {
-			sendToChannelID(channelID, { content: resultMessage });
-		}
+				true
+			],
+			undefined,
+			data,
+			null
+		);
 	}
 }

@@ -13,6 +13,7 @@ import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 export default class extends Task {
@@ -147,6 +148,25 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			teamSize: users.length
 		});
 
-		sendToChannelID(channelID, { content: resultMessage });
+		handleTripFinish(
+			allUsers[0],
+			channelID,
+			resultMessage,
+			[
+				'raid',
+				{
+					tob: {
+						start: {
+							hard_mode: hardMode,
+							max_team_size: allUsers.length
+						}
+					}
+				},
+				true
+			],
+			undefined,
+			data,
+			null
+		);
 	}
 }

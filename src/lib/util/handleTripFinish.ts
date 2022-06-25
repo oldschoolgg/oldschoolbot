@@ -276,7 +276,7 @@ export async function handleTripFinish(
 
 	if (onContinueFn) lastTripCache.set(user.id, { data, continue: onContinueFn });
 	const components: MessageOptions['components'] = [[]];
-	if (onContinueFn) components[0].push(makeRepeatTripButton(user.id));
+	if (onContinueFn) components[0].push(makeRepeatTripButton());
 	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
