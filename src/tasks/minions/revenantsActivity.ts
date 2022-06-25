@@ -53,7 +53,7 @@ export default class extends Task {
 				}.\nHere is what you saved:`,
 				res => {
 					return runCommand({
-						message: res,
+						...res,
 						commandName: 'k',
 						args: {
 							name: monster.name
@@ -99,7 +99,7 @@ export default class extends Task {
 			str,
 			res => {
 				return runCommand({
-					message: res,
+					...res,
 					commandName: 'k',
 					args: {
 						name: monster.name

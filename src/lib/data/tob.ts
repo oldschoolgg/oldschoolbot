@@ -417,8 +417,8 @@ export async function checkTOBUser(
 
 	if (teamSize === 2) {
 		const kc = await getMinigameScore(user.id, isHardMode ? 'tob_hard' : 'tob');
-		if (kc < 300) {
-			return [true, `${user.username} needs atleast 300 KC before doing duo's.`];
+		if (kc < 150) {
+			return [true, `${user.username} needs atleast 150 KC before doing duo's.`];
 		}
 	}
 

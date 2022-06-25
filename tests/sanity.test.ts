@@ -1,3 +1,5 @@
+import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+
 import { allOpenables } from '../src/lib/openables';
 import { exponentialPercentScale } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
@@ -45,5 +47,11 @@ describe('Sanity', () => {
 			expect(num > 0 && num <= 100).toBeTruthy();
 		}
 		expect(exponentialPercentScale(100)).toEqual(100);
+	});
+	test('pharaohs sceptre', () => {
+		const scep = getOSItem("Pharaoh's sceptre");
+		expect(scep.id).toEqual(9044);
+		expect(scep.equipable).toEqual(true);
+		expect(scep.equipment?.slot).toEqual(EquipmentSlot.Weapon);
 	});
 });
