@@ -16,7 +16,7 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
+import { calcWhatPercent, objectEntries, round, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import { APIInteractionGuildMember, APIUser } from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
@@ -30,7 +30,7 @@ import { promisify } from 'util';
 
 import { CLIENT_ID } from '../config';
 import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
-import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
+import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
@@ -225,19 +225,6 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 		}
 	}
 	return amountEquipped * 20;
-}
-
-export function generateContinuationChar(user: KlasaUser) {
-	const baseChar =
-		user.perkTier > PerkTier.One
-			? 'y'
-			: Date.now() - user.createdTimestamp < Time.Month * 6
-			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
-			: randArrItem(continuationChars);
-
-	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
-		.slice(0, randInt(1, 2))
-		.join('')}`;
 }
 
 export function isValidGearSetup(str: string): str is GearSetupType {
@@ -494,7 +481,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
+export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[], target?: KlasaUser) {
 	const display = new PaginatedMessage();
 	// @ts-ignore 2445
 	display.setUpReactions = () => null;
@@ -518,12 +505,12 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 	}
 
-	await display.run(message);
+	await display.run(message, target);
 
 	if (pages.length > 1) {
 		const collector = display.response!.createMessageComponentInteractionCollector({
 			time: Time.Minute,
-			filter: i => i.user.id === message.author.id
+			filter: i => i.user.id === (target ? target.id : message.author.id)
 		});
 
 		collector.on('collect', async interaction => {
@@ -554,10 +541,6 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 }
 
 export const asyncExec = promisify(exec);
-
-export function getUsername(id: string): string {
-	return (globalClient.commands.get('leaderboard') as any)!.getUsername(id);
-}
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
@@ -794,4 +777,8 @@ export async function asyncGzip(buffer: Buffer) {
 			resolve(gzipped);
 		});
 	});
+}
+
+export function getUsername(id: string | bigint) {
+	return usernameCache.get(id.toString()) ?? 'Unknown';
 }
