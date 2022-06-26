@@ -67,6 +67,7 @@ import {
 	godWarsDungeonCL,
 	gracefulCL,
 	grotesqueGuardiansCL,
+	guardiansOfTheRiftCL,
 	hallowedSepulchreCL,
 	hesporiCL,
 	ICollection,
@@ -538,6 +539,11 @@ export const allCollectionLogs: ICollection = {
 				alias: ['gnome', 'restaurant'],
 				allItems: resolveItems(['Snake charm', 'Gnomeball']),
 				items: gnomeRestaurantCL,
+				isActivity: true
+			},
+			'Guardians of the Rift': {
+				alias: ['gotr'],
+				items: guardiansOfTheRiftCL,
 				isActivity: true
 			},
 			'Hallowed Sepulchre': {

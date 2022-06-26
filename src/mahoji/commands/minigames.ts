@@ -809,6 +809,18 @@ export const minigamesCommand: OSBMahojiCommand = {
 					description: 'Start a trip.'
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'gotr',
+			description: 'The Guardians of the Rift minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.'
+				}
+			]
 		}
 	],
 	run: async ({
@@ -868,6 +880,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 			xp: { quantity: number };
 		};
 		trouble_brewing?: {
+			start?: {};
+		};
+		gotr?: {
 			start?: {};
 		};
 	}>) => {
