@@ -56,19 +56,20 @@ export default class extends Task {
 		let str = '';
 
 		const loot = new Bank();
-		const { petDropRate, newLootTable } = skillingPetDropRate(user, SkillsEnum.Thieving, npc.table, 'Rocky');
+		const { petDropRate } = skillingPetDropRate(user, SkillsEnum.Thieving, npc.table, 'Rocky');
 
-		if (newLootTable) {
-			for (let i = 0; i < successfulQuantity; i++) {
-				const lootItems = newLootTable.roll();
-				if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
-					rogueOutfitBoostActivated = true;
-					const doubledLoot = lootItems.multiply(2);
-					if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');
-					loot.add(doubledLoot);
-				} else {
-					loot.add(lootItems);
-				}
+		for (let i = 0; i < successfulQuantity; i++) {
+			const lootItems = npc.table.roll();
+			// TODO: Remove Rocky from loot tables in oldschoolJS and add to npc objects
+			if (lootItems.has('Rocky')) lootItems.remove('Rocky');
+
+			if (randInt(1, 100) <= rogueOutfitPercentBonus(user)) {
+				rogueOutfitBoostActivated = true;
+				const doubledLoot = lootItems.multiply(2);
+				if (doubledLoot.has('Rocky')) doubledLoot.remove('Rocky');
+				loot.add(doubledLoot);
+			} else {
+				loot.add(lootItems);
 			}
 		}
 
