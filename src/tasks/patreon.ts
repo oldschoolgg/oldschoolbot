@@ -3,7 +3,6 @@ import { Time } from 'e';
 import { ArrayActions, Gateway, Task } from 'klasa';
 import fetch from 'node-fetch';
 
-import { client } from '..';
 import { patreonConfig, production } from '../config';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from '../lib/constants';
 import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
@@ -32,6 +31,7 @@ patreonApiURL.search = new URLSearchParams([
 ]).toString();
 
 export const tiers: [PatronTierID, BitField][] = [
+	[PatronTierID.Six, BitField.IsPatronTier5],
 	[PatronTierID.Five, BitField.IsPatronTier5],
 	[PatronTierID.Four, BitField.IsPatronTier4],
 	[PatronTierID.Three, BitField.IsPatronTier3],
@@ -99,13 +99,13 @@ export default class PatreonTask extends Task {
 	}
 
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
-		const user = await client.fetchUser(userID);
+		const user = await globalClient.fetchUser(userID);
 
 		const userBitfield = user.settings.get(UserSettings.BitField);
 
 		const bitFieldToRemove = bitFieldFromPerkTier(from);
 		const bitFieldToAdd = bitFieldFromPerkTier(to);
-		const newBitfield = [...userBitfield, bitFieldToAdd].filter(i => i !== bitFieldToRemove);
+		const newBitfield = [...userBitfield.filter(i => i !== bitFieldToRemove), bitFieldToAdd];
 
 		// Remove any/all the patron bits from this user.
 		try {

@@ -4,11 +4,10 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Util } from 'oldschooljs';
 
-import { client } from '../../..';
 import { Emoji, Events } from '../../../lib/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { channelIsSendable } from '../../../lib/util';
+import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
 async function checkBal(user: KlasaUser, amount: number) {
@@ -51,7 +50,7 @@ export async function duelCommand(
 		return "That person doesn't have enough GP to duel that much.";
 	}
 
-	const channel = client.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const duelMessage = await channel.send({
 		content: `${duelTargetUser}, do you accept the duel for ${Util.toKMB(amount)} GP?`,
@@ -106,11 +105,11 @@ export async function duelCommand(
 		const winningAmount = amount * 2;
 		const tax = winningAmount - winningAmount * 0.95;
 
-		const dicingBank = client.settings.get(ClientSettings.EconomyStats.DuelTaxBank) as number;
 		const dividedAmount = tax / 1_000_000;
-		client.settings.update(
+		updateGPTrackSetting(
+			globalClient,
 			ClientSettings.EconomyStats.DuelTaxBank,
-			Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)
+			Math.floor(Math.round(dividedAmount * 100) / 100)
 		);
 
 		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins) as number;
@@ -122,7 +121,7 @@ export async function duelCommand(
 		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount - tax), collectionLog: false });
 
 		if (amount >= 1_000_000_000) {
-			client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.MoneyBag} **${winner.username}** just won a **${Util.toKMB(winningAmount)}** GP duel against ${
 					loser.username
@@ -130,7 +129,7 @@ export async function duelCommand(
 			);
 		}
 
-		client.emit(
+		globalClient.emit(
 			Events.EconomyLog,
 			`${winner.sanitizedName} won ${winningAmount} GP in a duel with ${loser.sanitizedName}.`
 		);

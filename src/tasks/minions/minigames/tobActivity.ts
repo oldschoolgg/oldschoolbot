@@ -13,6 +13,7 @@ import { TheatreOfBlood } from '../../../lib/simulation/tob';
 import { TheatreOfBloodTaskOptions } from '../../../lib/types/minions';
 import { convertPercentChance, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 export default class extends Task {
@@ -59,7 +60,7 @@ export default class extends Task {
 		// GIVE XP HERE
 		// 100k tax if they wipe
 		if (wipedRoom !== null) {
-			sendToChannelID(this.client, channelID, {
+			sendToChannelID(channelID, {
 				content: `${allTag} Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${
 					diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
 				}`
@@ -142,6 +143,25 @@ Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercen
 			teamSize: users.length
 		});
 
-		sendToChannelID(this.client, channelID, { content: resultMessage });
+		handleTripFinish(
+			allUsers[0],
+			channelID,
+			resultMessage,
+			[
+				'raid',
+				{
+					tob: {
+						start: {
+							hard_mode: hardMode,
+							max_team_size: allUsers.length
+						}
+					}
+				},
+				true
+			],
+			undefined,
+			data,
+			null
+		);
 	}
 }

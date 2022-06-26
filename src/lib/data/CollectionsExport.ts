@@ -7,6 +7,14 @@ import { growablePets } from '../growablePets';
 import { implings } from '../implings';
 import getOSItem from '../util/getOSItem';
 import resolveItems from '../util/resolveItems';
+import {
+	gracefulCapes,
+	gracefulFeet,
+	gracefulHands,
+	gracefulHoods,
+	gracefulLegs,
+	gracefulTops
+} from './gracefulVariants';
 
 export interface IToReturnCollection {
 	category: string;
@@ -1288,8 +1296,8 @@ export const troubleBrewingCL = resolveItems([
 	'Treasure flag',
 	'Phasmatys flag',
 	'The stuff',
-	'Rum',
-	'Rum'
+	'Red rum (trouble brewing)',
+	'Blue rum (trouble brewing)'
 ]);
 export const volcanicMineCL = resolveItems(['Ash covered tome', 'Large water container', 'Volcanic mine teleport']);
 export const aerialFishingCL = resolveItems([
@@ -1352,7 +1360,8 @@ export const allPetsCL = resolveItems([
 	'Little nightmare',
 	"Lil' creator",
 	'Tiny tempor',
-	'Nexling'
+	'Nexling',
+	'Abyssal protector'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -1644,8 +1653,8 @@ export const miscellaneousCL = resolveItems([
 	'Big bass',
 	'Long bone',
 	'Curved bone',
-	// 'Ecumenical key',
-	"Pharaoh's sceptre (3)",
+	'Ecumenical key',
+	"Pharaoh's sceptre",
 	'Dark totem base',
 	'Dark totem middle',
 	'Dark totem top',
@@ -1672,7 +1681,7 @@ export const miscellaneousCL = resolveItems([
 	// 'Fresh crab claw',
 	// 'Fresh crab shell',
 	"Xeric's talisman (inert)",
-	// 'Mask of ranul',
+	'Mask of ranul',
 	'Elven signet',
 	'Crystal grail',
 	'Enhanced crystal teleport seed',
@@ -1893,6 +1902,15 @@ export const capesCL = resolveItems([
 	'Zamorak cape',
 	'Saradomin castlewars cloak',
 	'Zamorak castlewars cloak',
+	'Red soul cape',
+	'Blue soul cape',
+	"Deadman's cape",
+	"Victor's cape (1)",
+	"Victor's cape (10)",
+	"Victor's cape (50)",
+	"Victor's cape (100)",
+	"Victor's cape (500)",
+	"Victor's cape (1000)",
 	'Cape of legends',
 	'Ardougne cloak 1',
 	'Ardougne cloak 2',
@@ -1900,6 +1918,10 @@ export const capesCL = resolveItems([
 	'Ardougne cloak 4',
 	'Obsidian cape',
 	'Obsidian cape (r)',
+	'Jester cape',
+	'Cape of skulls',
+	'Team cape zero',
+	'Team cape i',
 	'Team cape x',
 	'Graceful cape',
 	'Arceuus graceful cape',
@@ -1952,80 +1974,6 @@ export const questCL = resolveItems([
 ]);
 
 export const implingsCL = objectEntries(implings).map(m => Number(m[0]));
-export const gracefulHoods = [
-	'Graceful hood',
-	'Arceuus graceful hood',
-	'Piscarilius graceful hood',
-	'Lovakengj graceful hood',
-	'Shayzien graceful hood',
-	'Hosidius graceful hood',
-	'Kourend graceful hood',
-	'Brimhaven graceful hood',
-	'Dark graceful hood'
-];
-
-export const gracefulTops = [
-	'Graceful top',
-	'Arceuus graceful top',
-	'Piscarilius graceful top',
-	'Lovakengj graceful top',
-	'Shayzien graceful top',
-	'Hosidius graceful top',
-	'Kourend graceful top',
-	'Brimhaven graceful top',
-	'Dark graceful top'
-];
-
-export const gracefulLegs = [
-	'Graceful legs',
-	'Arceuus graceful legs',
-	'Piscarilius graceful legs',
-	'Lovakengj graceful legs',
-	'Shayzien graceful legs',
-	'Hosidius graceful legs',
-	'Kourend graceful legs',
-	'Brimhaven graceful legs',
-	'Dark graceful legs'
-];
-
-export const gracefulFeet = [
-	'Graceful boots',
-	'Arceuus graceful boots',
-	'Piscarilius graceful boots',
-	'Lovakengj graceful boots',
-	'Shayzien graceful boots',
-	'Hosidius graceful boots',
-	'Kourend graceful boots',
-	'Brimhaven graceful boots',
-	'Dark graceful boots'
-];
-
-export const gracefulHands = [
-	'Graceful gloves',
-	'Arceuus graceful gloves',
-	'Piscarilius graceful gloves',
-	'Lovakengj graceful gloves',
-	'Shayzien graceful gloves',
-	'Hosidius graceful gloves',
-	'Kourend graceful gloves',
-	'Brimhaven graceful gloves',
-	'Dark graceful gloves'
-];
-
-export const gracefulCapes = [
-	'Graceful cape',
-	'Arceuus graceful cape',
-	'Piscarilius graceful cape',
-	'Lovakengj graceful cape',
-	'Shayzien graceful cape',
-	'Hosidius graceful cape',
-	'Kourend graceful cape',
-	'Brimhaven graceful cape',
-	'Dark graceful cape',
-	'Agility cape',
-	'Agility cape (t)',
-	'Max cape'
-];
 
 export const gracefulCL = resolveItems([
 	...gracefulHoods,
@@ -2041,7 +1989,7 @@ export const allPetIDs = [
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems(['Little parasite', 'Dark squirrel'])
+	...resolveItems(['Little parasite', 'Dark squirrel', 'Abyssal protector'])
 ];
 
 export const antiSantaOutfit = new Bank({

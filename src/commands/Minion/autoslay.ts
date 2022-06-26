@@ -271,6 +271,15 @@ export default class extends BotCommand {
 		// Determine method:
 		const method = determineAutoslayMethod(msg, _mode, autoslayOptions as AutoslayOptionsEnum[]);
 
+		const cmdRunOptions = {
+			channelID: msg.channel.id,
+			userID: msg.author.id,
+			guildID: msg.guild?.id,
+			user: msg.author,
+			member: msg.member,
+			msg
+		};
+
 		if (method === 'low') {
 			// Save as default if user --save's
 			if (msg.flagArgs.save && !autoslayOptions.includes(AutoslayOptionsEnum.LowestCombat)) {
@@ -291,12 +300,12 @@ export default class extends BotCommand {
 				return msg.channel.send('Error: Could not get Monster data to find a task.');
 			}
 			return runCommand({
-				message: msg,
 				commandName: 'k',
 				args: {
 					name: Monsters.get(currentMonID)!.name
 				},
-				bypassInhibitors: true
+				bypassInhibitors: true,
+				...cmdRunOptions
 			});
 		}
 		if (method === 'ehp') {
@@ -322,34 +331,34 @@ export default class extends BotCommand {
 				!msg.author.hasSkillReqs(ehpKillable.levelRequirements)[0]
 			) {
 				return runCommand({
-					message: msg,
 					commandName: 'k',
 					args: {
 						name: usersTask.assignedTask!.monster.name
 					},
-					bypassInhibitors: true
+					bypassInhibitors: true,
+					...cmdRunOptions
 				});
 			}
 
 			if (ehpMonster && ehpMonster.efficientName) {
 				if (ehpMonster.efficientMethod) msg.flagArgs[ehpMonster.efficientMethod] = 'force';
 				return runCommand({
-					message: msg,
 					commandName: 'k',
 					args: {
 						name: ehpMonster.efficientName,
 						method: ehpMonster.efficientMethod
 					},
-					bypassInhibitors: true
+					bypassInhibitors: true,
+					...cmdRunOptions
 				});
 			}
 			return runCommand({
-				message: msg,
 				commandName: 'k',
 				args: {
 					name: usersTask.assignedTask!.monster.name
 				},
-				bypassInhibitors: true
+				bypassInhibitors: true,
+				...cmdRunOptions
 			});
 		}
 		if (method === 'boss') {
@@ -367,7 +376,12 @@ export default class extends BotCommand {
 
 			let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 			if (commonName === 'TzHaar') {
-				return runCommand({ message: msg, commandName: 'fightcaves', args: [], bypassInhibitors: true });
+				return runCommand({
+					commandName: 'activities',
+					args: { fight_caves: {} },
+					bypassInhibitors: true,
+					...cmdRunOptions
+				});
 			}
 
 			const allMonsters = killableMonsters.filter(m => {
@@ -391,10 +405,10 @@ export default class extends BotCommand {
 			});
 			if (maxMobName !== '') {
 				return runCommand({
-					message: msg,
 					commandName: 'k',
 					args: { name: maxMobName },
-					bypassInhibitors: true
+					bypassInhibitors: true,
+					...cmdRunOptions
 				});
 			}
 			return msg.channel.send("Can't find any monsters you have the requirements to kill!");
@@ -405,10 +419,10 @@ export default class extends BotCommand {
 				await wipeDBArrayByKey(msg.author, UserSettings.Slayer.AutoslayOptions);
 			}
 			return runCommand({
-				message: msg,
 				commandName: 'k',
 				args: { name: usersTask.assignedTask!.monster.name },
-				bypassInhibitors: true
+				bypassInhibitors: true,
+				...cmdRunOptions
 			});
 		}
 		return msg.channel.send(`Unrecognized mode. Please use:\n\`${msg.cmdPrefix}as [default|highest|efficient]\``);

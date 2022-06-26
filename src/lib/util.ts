@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import type { User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
 import { exec } from 'child_process';
 import crypto from 'crypto';
@@ -9,27 +9,33 @@ import {
 	DMChannel,
 	Guild,
 	GuildMember,
+	MessageAttachment,
 	MessageButton,
 	MessageOptions,
 	TextChannel,
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
-import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
+import { calcWhatPercent, objectEntries, round, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
+import { APIInteractionGuildMember, APIUser } from 'mahoji';
+import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
+import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
 import { promisify } from 'util';
 
-import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
+import { CLIENT_ID } from '../config';
+import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
+import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
+import { prisma } from './settings/prisma';
 import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { ArrayItemsResolved, Skills } from './types';
@@ -39,7 +45,6 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
-import getUsersPerkTier from './util/getUsersPerkTier';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
@@ -222,19 +227,6 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	return amountEquipped * 20;
 }
 
-export function generateContinuationChar(user: KlasaUser) {
-	const baseChar =
-		user.perkTier > PerkTier.One
-			? 'y'
-			: Date.now() - user.createdTimestamp < Time.Month * 6
-			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
-			: randArrItem(continuationChars);
-
-	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
-		.slice(0, randInt(1, 2))
-		.join('')}`;
-}
-
 export function isValidGearSetup(str: string): str is GearSetupType {
 	return GearSetupTypes.includes(str as any);
 }
@@ -271,13 +263,16 @@ export function sha256Hash(x: string) {
 	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }
 
-export function countSkillsAtleast99(user: KlasaUser) {
-	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>;
+export function countSkillsAtleast99(user: KlasaUser | User) {
+	const skills =
+		user instanceof KlasaUser
+			? ((user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>)
+			: getSkillsOfMahojiUser(user);
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
-export function getSupportGuild(client: Client): Guild | null {
-	const guild = client.guilds.cache.get(SupportServer);
+export function getSupportGuild(): Guild | null {
+	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;
 }
@@ -486,15 +481,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export function patronMaxTripCalc(user: KlasaUser | User) {
-	const perkTier = getUsersPerkTier(user instanceof KlasaUser ? user : user.bitfield);
-	if (perkTier === PerkTier.Two) return Time.Minute * 3;
-	else if (perkTier === PerkTier.Three) return Time.Minute * 6;
-	else if (perkTier >= PerkTier.Four) return Time.Minute * 10;
-	return 0;
-}
-
-export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
+export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[], target?: KlasaUser) {
 	const display = new PaginatedMessage();
 	// @ts-ignore 2445
 	display.setUpReactions = () => null;
@@ -518,12 +505,12 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 	}
 
-	await display.run(message);
+	await display.run(message, target);
 
 	if (pages.length > 1) {
 		const collector = display.response!.createMessageComponentInteractionCollector({
 			time: Time.Minute,
-			filter: i => i.user.id === message.author.id
+			filter: i => i.user.id === (target ? target.id : message.author.id)
 		});
 
 		collector.on('collect', async interaction => {
@@ -554,10 +541,6 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 }
 
 export const asyncExec = promisify(exec);
-
-export function getUsername(client: KlasaClient, id: string): string {
-	return (client.commands.get('leaderboard') as any)!.getUsername(id);
-}
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {
@@ -629,13 +612,15 @@ export function deduplicateClueScrolls({ loot, currentBank }: { loot: Bank; curr
 	return newLoot;
 }
 
-/**
- * Removes items with 0 or less quantity
- */
 export function sanitizeBank(bank: Bank) {
 	for (const [key, value] of Object.entries(bank.bank)) {
-		if (value === 0 || value < 1) {
+		if (value < 1) {
 			delete bank.bank[key];
+		}
+		// If this bank contains a fractional/float,
+		// round it down.
+		if (!Number.isInteger(value)) {
+			bank.bank[key] = Math.floor(value);
 		}
 	}
 }
@@ -708,7 +693,7 @@ export function convertDJSMemberToAPIMember(member: GuildMember): APIInteraction
 	};
 }
 
-export function removeFromArr<T>(arr: T[], item: T) {
+export function removeFromArr<T>(arr: T[] | readonly T[], item: T) {
 	return arr.filter(i => i !== item);
 }
 
@@ -725,4 +710,75 @@ export function exponentialPercentScale(percent: number, decay = 0.021) {
 
 export function discrimName(user: KlasaUser | APIUser) {
 	return `${user.username}#${user.discriminator}`;
+}
+
+export function isValidSkill(skill: string): skill is SkillsEnum {
+	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
+}
+
+export async function addToGPTaxBalance(userID: bigint | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			}
+		}),
+		prisma.user.update({
+			where: {
+				id: userID.toString()
+			},
+			data: {
+				total_gp_traded: {
+					increment: amount
+				}
+			}
+		})
+	]);
+}
+
+export function convertMahojiResponseToDJSResponse(response: Awaited<CommandResponse>): string | MessageOptions {
+	if (typeof response === 'string') return response;
+	return {
+		content: response.content,
+		files: response.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
+	};
+}
+
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): InteractionResponseDataWithBufferAttachments {
+	if (typeof one === 'string') return { content: one };
+	const response: InteractionResponseDataWithBufferAttachments = {};
+	if (one.content) response.content = one.content;
+	if (one.attachments) response.attachments = one.attachments;
+	return response;
+}
+
+export function roughMergeMahojiResponse(one: Awaited<CommandResponse>, two: Awaited<CommandResponse>) {
+	const first = normalizeMahojiResponse(one);
+	const second = normalizeMahojiResponse(two);
+	const newResponse: InteractionResponseDataWithBufferAttachments = { content: '', attachments: [] };
+	for (const res of [first, second]) {
+		if (res.content) newResponse.content += `${res.content} `;
+		if (res.attachments) newResponse.attachments = [...newResponse.attachments!, ...res.attachments];
+	}
+	return newResponse;
+}
+
+export async function asyncGzip(buffer: Buffer) {
+	return new Promise<Buffer>((resolve, reject) => {
+		gzip(buffer, {}, (error, gzipped) => {
+			if (error) {
+				reject(error);
+			}
+			resolve(gzipped);
+		});
+	});
+}
+
+export function getUsername(id: string | bigint) {
+	return usernameCache.get(id.toString()) ?? 'Unknown';
 }

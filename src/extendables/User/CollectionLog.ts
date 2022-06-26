@@ -5,8 +5,16 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { MersenneTwister19937, shuffle } from 'random-js';
 
-import { allCLItemsFiltered, convertCLtoBank } from '../../lib/data/Collections';
+import { allCLItemsFiltered } from '../../lib/data/Collections';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+
+export function convertCLtoBank(items: number[]) {
+	const clBank = new Bank();
+	for (const item of items) {
+		clBank.add(item, 1);
+	}
+	return clBank;
+}
 
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
@@ -45,7 +53,6 @@ export default class extends Extendable {
 		{ items, dontAddToTempCL = false }: { items: Bank; dontAddToTempCL?: boolean }
 	) {
 		await this.settings.sync(true);
-		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
 		let updates: [string, ItemBank][] = [
 			[UserSettings.CollectionLogBank, items.clone().add(this.settings.get(UserSettings.CollectionLogBank)).bank]

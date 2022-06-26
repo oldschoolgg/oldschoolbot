@@ -1,36 +1,33 @@
 import { Time } from 'e';
-import * as fs from 'fs';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
 import { COINS_ID, Emoji, SupportServer } from '../../lib/constants';
 import pets from '../../lib/data/pets';
+import { getRandomTriviaQuestion } from '../../lib/roboChimp';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { formatDuration, isWeekend, roll, stringMatches, updateGPTrackSetting } from '../../lib/util';
 
-if (!fs.existsSync('./src/lib/resources/trivia-questions.json')) {
-	fs.writeFileSync(
-		'./src/lib/resources/trivia-questions.json',
-		JSON.stringify(
-			{
-				triviaQuestions: []
-			},
-			null,
-			4
-		)
-	);
-	console.log('Created empty trivia questions file at ./src/lib/resources/trivia-questions.json');
-}
-
-const { triviaQuestions } = JSON.parse(fs.readFileSync('./src/lib/resources/trivia-questions.json').toString());
-
 const options = {
 	max: 1,
 	time: 13_000,
 	errors: ['time']
 };
+
+export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isReady: false; durationUntilReady: number } {
+	const currentDate = new Date().getTime();
+	const lastVoteDate = user.settings.get(UserSettings.LastDailyTimestamp);
+	const difference = currentDate - lastVoteDate;
+
+	if (difference < Time.Hour * 12) {
+		const duration = Date.now() - (lastVoteDate + Time.Hour * 12);
+		return { isReady: false, durationUntilReady: duration };
+	}
+
+	return { isReady: true };
+}
 
 export default class DailyCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -46,30 +43,27 @@ export default class DailyCommand extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		if (msg.channel.id === '342983479501389826') return;
-		await msg.author.settings.sync();
-		const currentDate = new Date().getTime();
-		const lastVoteDate = msg.author.settings.get(UserSettings.LastDailyTimestamp);
-		const difference = currentDate - lastVoteDate;
-
-		// If they have already claimed a daily in the past 12h
-		if (difference < Time.Hour * 12) {
-			const duration = formatDuration(Date.now() - (lastVoteDate + Time.Hour * 12));
-
-			return msg.channel.send(`**${Emoji.Diango} Diango says...** You can claim your next daily in ${duration}.`);
+		const check = isUsersDailyReady(msg.author);
+		if (!check.isReady) {
+			return msg.channel.send(
+				`**${Emoji.Diango} Diango says...** You can claim your next daily in ${formatDuration(
+					check.durationUntilReady
+				)}.`
+			);
 		}
 
-		await msg.author.settings.update(UserSettings.LastDailyTimestamp, currentDate);
+		await msg.author.settings.update(UserSettings.LastDailyTimestamp, new Date().getTime());
 
-		const trivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
+		const { question, answers } = await getRandomTriviaQuestion();
 
-		await msg.channel.send(`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${trivia.q}`);
+		await msg.channel.send(`**${Emoji.Diango} Diango asks ${msg.author.username}...** ${question}`);
 		try {
 			const collected = await msg.channel.awaitMessages({
 				...options,
 				filter: answer =>
 					answer.author.id === msg.author.id &&
-					answer.content &&
-					trivia.a.some((_ans: string) => stringMatches(_ans, answer.content))
+					Boolean(answer.content) &&
+					answers.some(_ans => stringMatches(_ans, answer.content))
 			});
 			const winner = collected.first();
 			if (winner) return this.reward(msg, true);
@@ -80,13 +74,9 @@ export default class DailyCommand extends BotCommand {
 
 	async reward(msg: KlasaMessage, triviaCorrect: boolean) {
 		const user = msg.author;
-		if (Date.now() - user.createdTimestamp < Time.Month) {
-			user.log('[NAC-DAILY]');
-		}
 
 		const guild = this.client.guilds.cache.get(SupportServer);
-		if (!guild) return;
-		const member = await guild.members.fetch(user).catch(() => null);
+		const member = await guild?.members.fetch(user).catch(() => null);
 
 		const loot = dailyRoll(1, triviaCorrect);
 

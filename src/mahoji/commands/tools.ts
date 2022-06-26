@@ -1,23 +1,22 @@
 import { Embed } from '@discordjs/builders';
-import { User } from '@prisma/client';
+import { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { client } from '../..';
-import LeaderboardCommand from '../../commands/Minion/leaderboard';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import { formatDuration, stringMatches } from '../../lib/util';
+import { asyncGzip, formatDuration, getUsername, stringMatches } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { itemOption, mahojiUsersSettingsFetch, monsterOption, patronMsg, skillOption } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -26,12 +25,35 @@ function dateDiff(first: number, second: number) {
 	return Math.round((second - first) / (1000 * 60 * 60 * 24));
 }
 
+const whereInMassClause = (id: string) =>
+	`OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${id}%')`;
+
+async function activityExport(user: User): CommandResponse {
+	const allActivities = await prisma.$queryRawUnsafe<
+		Activity[]
+	>(`SELECT floor(date_part('epoch', start_date)) AS start_date, floor(date_part('epoch', finish_date)) AS finish_date, duration, type, data
+FROM activity
+WHERE user_id = '${user.id}'
+OR (group_activity = true AND data::jsonb ? 'users' AND data->>'users'::text LIKE '%${user.id}%');`);
+	let res = ['Start', 'Finish', 'Duration', 'Type', 'Data'].join('\t');
+	for (const { start_date, finish_date, duration, type, data } of allActivities) {
+		res += `\n${start_date}\t${finish_date}\t${duration}\t${type}\t${JSON.stringify(data)}`;
+	}
+	const buffer = Buffer.from(res, 'utf-8');
+	const zipped = await asyncGzip(buffer);
+
+	return {
+		attachments: [{ fileName: 'activity-export.txt.gz', buffer: zipped }]
+	};
+}
+
 async function minionStats(user: User) {
 	const { id } = user;
 	const [[totalActivities], [firstActivity], countsPerActivity, [_totalDuration]] = (await Promise.all([
 		prisma.$queryRawUnsafe(`SELECT count(id)
 FROM activity
-WHERE user_id = ${id}`),
+WHERE user_id = ${id}
+${whereInMassClause(id)};`),
 		prisma.$queryRawUnsafe(`SELECT id, start_date, type
 FROM activity
 WHERE user_id = ${id}
@@ -41,13 +63,15 @@ LIMIT 1;`),
 SELECT type, count(type) as qty
 FROM activity
 WHERE user_id = ${id}
+${whereInMassClause(id)}
 GROUP BY type
 ORDER BY qty DESC
 LIMIT 15;`),
 		prisma.$queryRawUnsafe(`
 SELECT sum(duration)
 FROM activity
-WHERE user_id = ${id};`)
+WHERE user_id = ${id}
+${whereInMassClause(id)};`)
 	])) as any[];
 
 	const totalDuration = Number(_totalDuration.sum);
@@ -86,17 +110,12 @@ LIMIT 10;`);
 		return 'No results found.';
 	}
 
-	const command = client.commands.get('leaderboard') as LeaderboardCommand;
-
 	let place = 0;
 	const embed = new Embed()
 		.setTitle(`Highest ${skillObj ? skillObj.name : 'Overall'} XP Gains in the past ${interval}`)
 		.setDescription(
 			res
-				.map(
-					(i: any) =>
-						`${++place}. **${command.getUsername(i.user)}**: ${Number(i.total_xp).toLocaleString()} XP`
-				)
+				.map((i: any) => `${++place}. **${getUsername(i.user)}**: ${Number(i.total_xp).toLocaleString()} XP`)
 				.join('\n')
 		);
 
@@ -104,7 +123,7 @@ LIMIT 10;`);
 }
 
 async function kcGains(user: User, interval: string, monsterName: string): CommandResponse {
-	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	if (!TimeIntervals.includes(interval as any)) return 'Invalid time interval.';
 	const monster = killableMonsters.find(
 		k => stringMatches(k.name, monsterName) || k.aliases.some(a => stringMatches(a, monsterName))
@@ -120,31 +139,24 @@ GROUP BY 1
 ORDER BY qty DESC, lastDate ASC
 LIMIT 10`;
 
-	const res = await client.query<{ user_id: string; qty: number }[]>(query);
+	const res = await globalClient.query<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
 		return 'No results found.';
 	}
 
-	const command = client.commands.get('leaderboard') as LeaderboardCommand;
-
 	let place = 0;
 	const embed = new Embed()
 		.setTitle(`Highest ${monster.name} KC gains in the past ${interval}`)
 		.setDescription(
-			res
-				.map(
-					(i: any) =>
-						`${++place}. **${command.getUsername(i.user, res.length)}**: ${Number(i.qty).toLocaleString()}`
-				)
-				.join('\n')
+			res.map((i: any) => `${++place}. **${getUsername(i.user)}**: ${Number(i.qty).toLocaleString()}`).join('\n')
 		);
 
 	return { embeds: [embed] };
 }
 
 async function dryStreakCommand(user: User, monsterName: string, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monsterName)));
 	if (!mon) {
 		return "That's not a valid monster or minigame.";
@@ -157,7 +169,7 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 	const { id } = mon;
 	const query = `SELECT "id", "${key}"->>'${id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "${key}"->>'${id}' IS NOT NULL ${ironmanPart} ORDER BY ("${key}"->>'${id}')::int DESC LIMIT 10;`;
 
-	const result = await client.query<
+	const result = await globalClient.query<
 		{
 			id: string;
 			KC: string;
@@ -166,15 +178,13 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 
 	if (result.length === 0) return 'No results found.';
 
-	const command = client.commands.get('leaderboard') as LeaderboardCommand;
-
 	return `**Dry Streaks for ${item.name} from ${mon.name}:**\n${result
-		.map(({ id, KC }) => `${command.getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`)
+		.map(({ id, KC }) => `${getUsername(id) as string}: ${parseInt(KC).toLocaleString()}`)
 		.join('\n')}`;
 }
 
 async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
-	if (getUsersPerkTier(user.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
 	const item = getItem(itemName);
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	if (!item) return "That's not a valid item.";
@@ -184,7 +194,7 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 
 	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
-	const result = await client.query<
+	const result = await globalClient.query<
 		{
 			id: string;
 			qty: string;
@@ -193,17 +203,15 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 
 	if (result.length === 0) return 'No results found.';
 
-	const command = client.commands.get('leaderboard') as LeaderboardCommand;
-
 	return `**Most '${item.name}' received:**\n${result
 		.map(
 			({ id, qty }) =>
-				`${result.length < 10 ? '(Anonymous)' : command.getUsername(id)}: ${parseInt(qty).toLocaleString()}`
+				`${result.length < 10 ? '(Anonymous)' : getUsername(id)}: ${parseInt(qty).toLocaleString()}`
 		)
 		.join('\n')}`;
 }
 
-export const testPotatoCommand: OSBMahojiCommand = {
+export const toolsCommand: OSBMahojiCommand = {
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
 	options: [
@@ -286,12 +294,26 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'cl_bank',
-					description: 'Shows a bank image containing all items in your collection log.'
+					description: 'Shows a bank image containing all items in your collection log.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'format',
+							description: 'Bank Image or Json format?',
+							required: false,
+							choices: ['bank', 'json'].map(i => ({ name: i, value: i }))
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'minion_stats',
 					description: 'Shows statistics about your minion.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'activity_export',
+					description: 'Export all your activities (For advanced users).'
 				}
 			]
 		}
@@ -320,8 +342,11 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				ironman?: boolean;
 			};
 			sacrificed_bank?: {};
-			cl_bank?: {};
+			cl_bank?: {
+				format?: 'bank' | 'json';
+			};
 			minion_stats?: {};
+			activity_export?: {};
 		};
 	}>) => {
 		interaction.deferReply();
@@ -344,7 +369,7 @@ export const testPotatoCommand: OSBMahojiCommand = {
 				return mostDrops(mahojiUser, patron.mostdrops.item, Boolean(patron.mostdrops.ironman));
 			}
 			if (patron.sacrificed_bank) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
 				const image = await makeBankImage({
 					bank: new Bank(mahojiUser.sacrificedBank as ItemBank),
 					title: 'Your Sacrificed Items'
@@ -353,13 +378,40 @@ export const testPotatoCommand: OSBMahojiCommand = {
 					attachments: [image.file]
 				};
 			}
+			if (patron.cl_bank) {
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Two) return patronMsg(PerkTier.Two);
+				const clBank = new Bank(mahojiUser.collectionLogBank as ItemBank);
+				if (patron.cl_bank.format === 'json') {
+					const json = JSON.stringify(clBank);
+					return {
+						attachments: [{ buffer: Buffer.from(json), fileName: 'clbank.json' }]
+					};
+				}
+				const image = await makeBankImage({
+					bank: clBank,
+					title: 'Your Entire Collection Log'
+				});
+				return {
+					attachments: [image.file]
+				};
+			}
 			if (patron.xp_gains) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
-				if (getUsersPerkTier(mahojiUser.bitfield) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser);
+			}
+			if (patron.activity_export) {
+				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
+				const promise = activityExport(mahojiUser);
+				await handleMahojiConfirmation(
+					interaction,
+					'I will send a file containing ALL of your activities, intended for advanced users who want to use the data. Anyone in this channel will be able to see and download the file, are you sure you want to do this?'
+				);
+				const result = await promise;
+				return result;
 			}
 		}
 		return 'Invalid command!';

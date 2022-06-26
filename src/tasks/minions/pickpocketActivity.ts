@@ -96,11 +96,10 @@ export default class extends Task {
 		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['pickpocket', [quantity, npc.name], true],
+			['pickpocket', { name: npc.name, quantity }, true],
 			undefined,
 			data,
 			loot

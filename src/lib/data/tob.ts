@@ -417,8 +417,8 @@ export async function checkTOBUser(
 
 	if (teamSize === 2) {
 		const kc = await getMinigameScore(user.id, isHardMode ? 'tob_hard' : 'tob');
-		if (kc < 300) {
-			return [true, `${user.username} needs atleast 300 KC before doing duo's.`];
+		if (kc < 150) {
+			return [true, `${user.username} needs atleast 150 KC before doing duo's.`];
 		}
 	}
 
@@ -429,6 +429,9 @@ export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Pro
 	const userWithoutSupplies = users.find(u => !u.owns(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.username} doesn't have enough supplies`;
+	}
+	if (users.length < 2 || users.length > 5) {
+		return 'TOB team must be 2-5 users';
 	}
 
 	for (const user of users) {

@@ -9,6 +9,7 @@ import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { updateBankSetting } from '../../lib/util';
 import { parseInputCostBank } from '../../lib/util/parseStringBank';
+import { sellPriceOfItem } from '../../mahoji/commands/sell';
 
 async function trackSacBank(user: KlasaUser, bank: Bank) {
 	const currentSacBank = new Bank(user.settings.get(UserSettings.SacrificedBank));
@@ -77,7 +78,10 @@ export default class extends BotCommand {
 			);
 		}
 
-		const totalPrice = bankToSac.value();
+		let totalPrice = 0;
+		for (const [item, qty] of bankToSac.items()) {
+			totalPrice += sellPriceOfItem(item, 0).basePrice * qty;
+		}
 
 		await msg.confirm(
 			`${
@@ -97,8 +101,6 @@ export default class extends BotCommand {
 		await msg.author.removeItemsFromBank(bankToSac.bank);
 
 		await trackSacBank(msg.author, bankToSac);
-
-		msg.author.log(`sacrificed ${bankToSac} for ${totalPrice}`);
 
 		let str = '';
 		const currentIcon = msg.author.settings.get(UserSettings.Minion.Icon);

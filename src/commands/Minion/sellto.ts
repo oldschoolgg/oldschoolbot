@@ -7,7 +7,7 @@ import { prisma } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemNameFromID } from '../../lib/util';
+import { addToGPTaxBalance, itemNameFromID } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { logError } from '../../lib/util/logError';
 import { parseInputBankWithPrice } from '../../lib/util/parseStringBank';
@@ -166,6 +166,10 @@ export default class extends BotCommand {
 				buyerMember.user.sanitizedName
 			} for ${price.toLocaleString()} GP.`
 		);
+
+		if (price > 0) {
+			addToGPTaxBalance(buyerMember.id, price);
+		}
 
 		return msg.channel.send(
 			`Sale of ${bankStr} complete! Try out \`/trade\`, it's a new slash command for trading items.`

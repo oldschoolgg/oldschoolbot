@@ -55,13 +55,12 @@ export default class extends Task {
 			.generateBankImage(itemsAdded, `Loot From ${quantity}x Zalcano`, true, { showNewCL: 1 }, user, previousCL);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished killing ${quantity}x Zalcano. Your Zalcano KC is now ${
 				kc + quantity
 			}. ${xpRes}`,
-			['zalcano', [], true],
+			['k', { name: 'zalcano' }, true],
 			image!,
 			data,
 			itemsAdded

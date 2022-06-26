@@ -28,11 +28,6 @@ export default class extends Task {
 		const loot = new Bank().add(clueTier.id, quantity);
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		this.client.emit(
-			Events.Log,
-			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
-		);
-
-		handleTripFinish(this.client, user, channelID, str, undefined, undefined, data, loot);
+		handleTripFinish(user, channelID, str, undefined, undefined, data, loot);
 	}
 }

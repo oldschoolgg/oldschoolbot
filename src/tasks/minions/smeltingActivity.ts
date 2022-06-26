@@ -10,14 +10,14 @@ import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: SmeltingActivityTaskOptions) {
-		let { barID, quantity, userID, channelID, duration } = data;
+		let { barID, quantity, userID, channelID, duration, blastf } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
 		// If this bar has a chance of failing to smelt, calculate that here.
 		const oldQuantity = quantity;
-		if (bar.chanceOfFail > 0) {
+		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (randInt(0, 100) > bar.chanceOfFail) {
@@ -52,7 +52,6 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
@@ -60,7 +59,8 @@ export default class extends Task {
 				'smelt',
 				{
 					name: bar.name,
-					quantity: oldQuantity
+					quantity: oldQuantity,
+					blast_furnace: blastf
 				},
 				true
 			],

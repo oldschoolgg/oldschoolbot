@@ -4,13 +4,13 @@ import he from 'he';
 import { schedule } from 'node-cron';
 import fetch from 'node-fetch';
 
-import { client } from '..';
 import { untrustedGuildSettingsCache } from '../mahoji/mahojiSettings';
 import { prisma } from './settings/prisma';
+import { OldSchoolBotClient } from './structures/OldSchoolBotClient';
 import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 
-export function initCrons() {
+export function initCrons(client: OldSchoolBotClient) {
 	/**
 	 * Reset weekly buy banks
 	 */
@@ -78,7 +78,7 @@ GROUP BY item_id;`);
 					channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.EMBED_LINKS) &&
 					channel.permissionsFor(client.user!)?.has(Permissions.FLAGS.SEND_MESSAGES)
 				) {
-					sendToChannelID(client, channel.id, { content: `<${url}>`, embed });
+					sendToChannelID(channel.id, { content: `<${url}>`, embed });
 				}
 			}
 		}

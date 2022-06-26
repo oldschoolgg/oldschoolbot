@@ -34,13 +34,12 @@ export default class extends Task {
 				skulled
 			});
 
-			const image = await generateGearImage(this.client, user, new Gear(calc.newGear), 'wildy', null);
+			const image = await generateGearImage(user, new Gear(calc.newGear), 'wildy', null);
 			await user.settings.update(UserSettings.Gear.Wildy, calc.newGear);
 
-			updateBankSetting(this.client, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.RevsCost, calc.lostItems);
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				`${user} ${
@@ -53,9 +52,8 @@ export default class extends Task {
 					calc.lostItems
 				}.\nHere is what you saved:`,
 				res => {
-					user.log(`continued trip of killing ${monster.name}`);
 					return runCommand({
-						message: res,
+						...res,
 						commandName: 'k',
 						args: {
 							name: monster.name
@@ -96,14 +94,12 @@ export default class extends Task {
 			);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
 			res => {
-				user.log(`continued trip of killing ${monster.name}`);
 				return runCommand({
-					message: res,
+					...res,
 					commandName: 'k',
 					args: {
 						name: monster.name

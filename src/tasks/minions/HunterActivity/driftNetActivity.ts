@@ -78,18 +78,10 @@ export default class extends Task {
 		str += `\n\nYou received: ${loot}.`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued trip of Drift net fishing.');
-				return this.client.commands
-					.get('driftnet')!
-					.run(res, [
-						Math.floor(Math.min(user.maxTripLength('DriftNet') / Time.Minute, duration / Time.Minute))
-					]);
-			},
+			['activities', { driftnet_fishing: { minutes: Math.floor(duration / Time.Minute) } }, true],
 			undefined,
 			data,
 			loot
