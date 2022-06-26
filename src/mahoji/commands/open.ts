@@ -64,7 +64,7 @@ export const openCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ name?: string; quantity?: number; open_until?: string }>) => {
-		await interaction.deferReply();
+		if (interaction) await interaction.deferReply();
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!options.name) {

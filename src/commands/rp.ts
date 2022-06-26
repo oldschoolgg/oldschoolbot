@@ -2,7 +2,7 @@ import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
 import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
-import { notEmpty, uniqueArr } from 'e';
+import { notEmpty, randInt, sumArr, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
@@ -949,6 +949,15 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				});
 				return msg.channel.send('Locally synced slash commands.');
 			}
+			case 'globalcommandnuke': {
+				await msg.channel.send('Syncing commands...');
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: [],
+					guildID: null
+				});
+				return msg.channel.send('Globally nuked slash commands.');
+			}
 			case 'globalmahojisync': {
 				await msg.channel.send('Syncing commands...');
 				await bulkUpdateCommands({
@@ -982,6 +991,36 @@ ORDER BY qty DESC;`);
 						.map(u => `${u.username}: ${u.qty} commands`)
 						.join('\n')
 				);
+			}
+			case 'bitest': {
+				const times = [];
+				let amount = 100;
+
+				const bank = new Bank();
+				while (bank.length < 1000) bank.add(Items.random().id, randInt(1, 100));
+				for (let i = 0; i < amount; i++) {
+					let start = Date.now();
+					await (globalClient.tasks.get('bankImage') as BankImageTask).generateBankImage(
+						bank,
+						'Title',
+						false,
+						{
+							full: 'full'
+						},
+						msg.author,
+						undefined
+					);
+					let finish = Date.now();
+					times.push(finish - start);
+				}
+				times.sort((a, b) => b - a);
+				let average = sumArr(times) / times.length;
+				let max = times[0];
+				let min = times[times.length - 1];
+				return msg.channel.send(`Generated ${amount} bank images
+**Average:** ${average}ms
+**Max:** ${max}ms
+**Min:** ${min}ms`);
 			}
 		}
 	}

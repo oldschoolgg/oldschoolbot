@@ -1137,7 +1137,6 @@ export const gnomeRestaurantCL = resolveItems(['Grand seed pod', 'Gnome scarf', 
 export const hallowedSepulchreCL = resolveItems([
 	'Hallowed mark',
 	'Hallowed token',
-	'Hallowed sack',
 	'Hallowed grapple',
 	'Hallowed focus',
 	'Hallowed symbol',
@@ -1297,8 +1296,8 @@ export const troubleBrewingCL = resolveItems([
 	'Treasure flag',
 	'Phasmatys flag',
 	'The stuff',
-	'Rum',
-	'Rum'
+	'Red rum (trouble brewing)',
+	'Blue rum (trouble brewing)'
 ]);
 export const volcanicMineCL = resolveItems(['Ash covered tome', 'Large water container', 'Volcanic mine teleport']);
 export const aerialFishingCL = resolveItems([
@@ -1654,8 +1653,8 @@ export const miscellaneousCL = resolveItems([
 	'Big bass',
 	'Long bone',
 	'Curved bone',
-	// 'Ecumenical key',
-	"Pharaoh's sceptre (3)",
+	'Ecumenical key',
+	"Pharaoh's sceptre",
 	'Dark totem base',
 	'Dark totem middle',
 	'Dark totem top',
@@ -1682,7 +1681,7 @@ export const miscellaneousCL = resolveItems([
 	// 'Fresh crab claw',
 	// 'Fresh crab shell',
 	"Xeric's talisman (inert)",
-	// 'Mask of ranul',
+	'Mask of ranul',
 	'Elven signet',
 	'Crystal grail',
 	'Enhanced crystal teleport seed',
@@ -1903,6 +1902,8 @@ export const capesCL = resolveItems([
 	'Zamorak cape',
 	'Saradomin castlewars cloak',
 	'Zamorak castlewars cloak',
+	'Red soul cape',
+	'Blue soul cape',
 	"Deadman's cape",
 	"Victor's cape (1)",
 	"Victor's cape (10)",
@@ -1917,6 +1918,7 @@ export const capesCL = resolveItems([
 	'Ardougne cloak 4',
 	'Obsidian cape',
 	'Obsidian cape (r)',
+	'Jester cape',
 	'Cape of skulls',
 	'Team cape zero',
 	'Team cape i',

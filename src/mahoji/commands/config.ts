@@ -105,7 +105,7 @@ async function favAlchConfig(
 	const currentFavorites = user.favorite_alchables;
 	if (manyToAdd) {
 		const items = parseBank({ inputStr: manyToAdd, noDuplicateItems: true })
-			.filter(i => i.highalch > 1)
+			.filter(i => i.highalch !== undefined && i.highalch > 1)
 			.filter(i => !currentFavorites.includes(i.id));
 		if (items.length === 0) return 'No valid items were given.';
 		const newFavs = uniqueArr([...currentFavorites, ...items.items().map(i => i[0].id)]);
@@ -618,7 +618,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'name',
-							description: 'The thing you want to toggle on/off.',
+							description: 'The setting you want to toggle on/off.',
 							required: true,
 							autocomplete: async (value, user) => {
 								const mUser = await prisma.user.findFirst({
@@ -731,13 +731,13 @@ export const configCommand: OSBMahojiCommand = {
 					description: 'Manage your favorite alchables.',
 					options: [
 						{
-							...itemOption(item => item.highalch > 10),
+							...itemOption(item => item.highalch !== undefined && item.highalch > 10),
 							name: 'add',
 							description: 'Add an item to your favorite alchables.',
 							required: false
 						},
 						{
-							...itemOption(item => item.highalch > 10),
+							...itemOption(item => item.highalch !== undefined && item.highalch > 10),
 							name: 'remove',
 							description: 'Remove an item from your favorite alchables.',
 							required: false

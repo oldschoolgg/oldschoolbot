@@ -5,7 +5,7 @@ import { Createable } from '../createables';
 export const amrodCreatables: Createable[] = [
 	{
 		name: 'Revert crystal weapon seed',
-		inputItems: new Bank().add('Enhanced crystal weapon seed'),
+		inputItems: new Bank().add('Crystal weapon seed'),
 		outputItems: new Bank().add('Crystal shard', 10),
 		QPRequired: 150,
 		noCl: true

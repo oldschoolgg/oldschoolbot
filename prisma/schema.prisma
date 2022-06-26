@@ -454,6 +454,7 @@ model Minigame {
   tob                     Int    @default(0)
   tob_hard                Int    @default(0)
   lms                     Int    @default(0)
+  trouble_brewing         Int    @default(0)
 
   new_user NewUser?
   @@map("minigames")
@@ -613,6 +614,7 @@ enum activity_type_enum {
   BirthdayEvent
   TokkulShop
   Nex
+  TroubleBrewing
   Easter
 }
 
