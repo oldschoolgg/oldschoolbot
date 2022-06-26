@@ -385,7 +385,7 @@ These Inventions are still not unlocked: ${locked
 					for (const lvl of lvls) {
 						for (const weighting of weightings) {
 							if (weighting > lvl) continue;
-							const { xp } = calculateDisXP(lvl, 1, weighting);
+							const { xp } = calculateDisXP({} as any, lvl, 1, weighting);
 							let dur = Time.Second * 0.33;
 							let toolkitDur = reduceNumByPercent(
 								dur,
@@ -425,7 +425,7 @@ These Inventions are still not unlocked: ${locked
 						const itemCanDis = group.items.sort((a, b) => b.lvl - a.lvl).find(i => i.lvl <= level)!;
 						const item = Array.isArray(itemCanDis.item) ? itemCanDis.item[0] : itemCanDis.item;
 						let qty = 1000;
-						xp += calculateDisXP(level, qty, itemCanDis.lvl).xp;
+						xp += calculateDisXP(group, level, qty, itemCanDis.lvl).xp;
 						duration += timePer * qty;
 						itemsUsed.add(item.id, qty);
 					}

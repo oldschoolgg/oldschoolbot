@@ -94,6 +94,7 @@ export interface DisassemblySourceGroup {
 	 * Percentage chances of what material you will get from this item.
 	 */
 	parts: IMaterialBank;
+	xpReductionDivisor?: number;
 }
 
 export const allItemsThatCanBeDisassembled = Array.from(
