@@ -44,6 +44,43 @@ const specialPlants: Plant[] = [
 		timePerHarvest: 5
 	},
 	{
+		level: 10,
+		plantXp: 11.5,
+		checkXp: 64,
+		harvestXp: 4.5,
+		inputItems: new Bank({ 'Redberry seed': 1 }).freeze(),
+		outputCrop: itemID('Redberries'),
+		name: 'Redberry',
+		aliases: ['redberry', 'redberries'],
+		petChance: 44_966,
+		seedType: 'bush',
+		growthTime: 100,
+		numOfStages: 5,
+		chance1: 88.6,
+		chance99: 154.9,
+		chanceOfDeath: 17, // needs data
+		protectionPayment: new Bank({ Cabbage: 20 }).freeze(),
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 3,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[3, 1] // Etceteria patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 1] // Farming Guild Low (1)
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
+	},
+	{
 		level: 11,
 		plantXp: 12,
 		checkXp: 0,
@@ -81,6 +118,43 @@ const specialPlants: Plant[] = [
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 5
+	},
+	{
+		level: 22,
+		plantXp: 18,
+		checkXp: 102.5,
+		harvestXp: 7,
+		inputItems: new Bank({ 'Cadavaberry seed': 1 }).freeze(),
+		outputCrop: itemID('Cadava berries'),
+		name: 'Cadavaberry',
+		aliases: ['cadavaberry', 'cadavaberries', 'cadava berries', 'cadava', 'cadava berry'],
+		petChance: 37_472,
+		seedType: 'bush',
+		growthTime: 120,
+		numOfStages: 6,
+		chance1: 88.6,
+		chance99: 154.9,
+		chanceOfDeath: 17, // needs data
+		protectionPayment: new Bank({ Tomato: 15 }).freeze(),
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 3,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[3, 1] // Etceteria patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 1] // Farming Guild Low (1)
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 23,
@@ -300,6 +374,43 @@ const specialPlants: Plant[] = [
 		additionalPatchesByFarmGuildAndLvl: [],
 		timePerPatchTravel: 2,
 		timePerHarvest: 15
+	},
+	{
+		level: 36,
+		plantXp: 31.5,
+		checkXp: 177.5,
+		harvestXp: 12,
+		inputItems: new Bank({ 'Dwellberry seed': 1 }).freeze(),
+		outputCrop: itemID('Dwellberries'),
+		name: 'Dwellberry',
+		aliases: ['dwellberry', 'dwellberries'],
+		petChance: 32_119,
+		seedType: 'bush',
+		growthTime: 140,
+		numOfStages: 7,
+		chance1: 88.6,
+		chance99: 154.9,
+		chanceOfDeath: 17, // needs data
+		protectionPayment: new Bank({ Strawberry: 15 }).freeze(),
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 3,
+		canPayFarmer: true,
+		canCompostPatch: true,
+		canCompostandPay: true,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[3, 1] // Etceteria patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[45, 1] // Farming Guild Low (1)
+		],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10
 	},
 	{
 		level: 48,

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { User } from '@prisma/client';
-import { Canvas, createCanvas } from 'canvas';
 import * as fs from 'fs';
 import { KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Canvas } from 'skia-canvas/lib';
 
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -99,7 +99,7 @@ export async function generateGearImage(
 
 	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
-	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
+	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -107,7 +107,7 @@ export async function generateGearImage(
 		? hexColor
 			? hexColor
 			: 'transparent'
-		: ctx.createPattern(sprite.repeatableBg, 'repeat');
+		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	if (!uniqueSprite) {
@@ -246,7 +246,7 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.toBuffer();
+	return canvas.toBuffer('png');
 }
 
 export async function generateAllGearImage(user: KlasaUser) {
@@ -263,7 +263,7 @@ export async function generateAllGearImage(user: KlasaUser) {
 	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
 
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
-	const canvas = createCanvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
+	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 
@@ -271,7 +271,7 @@ export async function generateAllGearImage(user: KlasaUser) {
 		? hexColor
 			? hexColor
 			: 'transparent'
-		: ctx.createPattern(bgSprite.repeatableBg, 'repeat');
+		: ctx.createPattern(bgSprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	if (!hasBgSprite) {
@@ -338,5 +338,5 @@ export async function generateAllGearImage(user: KlasaUser) {
 
 	if (!userBg.transparent) bankTask?.drawBorder(ctx, bgSprite, false);
 
-	return canvas.toBuffer();
+	return canvas.toBuffer('png');
 }
