@@ -897,6 +897,11 @@ async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
 		title: 'Total Loot From This Tame',
 		user
 	});
+	const fedImage = await makeBankImage({
+		bank: fedItems,
+		title: 'Items Fed To This Tame',
+		user
+	});
 	return {
 		content: `**Name:** ${tame.nickname ?? 'No name'}
 **Species:** ${species.name}
@@ -908,7 +913,7 @@ async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
 			.filter(i => fedItems.has(i.item.id))
 			.map(i => `${i.item.name} (${i.description})`)
 			.join(', ')}`,
-		attachments: [image.file]
+		attachments: [image.file, fedImage.file]
 	};
 }
 
