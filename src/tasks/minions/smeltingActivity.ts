@@ -17,7 +17,7 @@ export default class extends Task {
 
 		// If this bar has a chance of failing to smelt, calculate that here.
 		const oldQuantity = quantity;
-		if (bar.chanceOfFail > 0) {
+		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (randInt(0, 100) > bar.chanceOfFail) {
