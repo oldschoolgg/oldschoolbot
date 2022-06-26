@@ -76,7 +76,8 @@ const backgroundImages: BankBackground[] = [
 			'Armadyl godsword': 1,
 			'Zamorak godsword': 1,
 			'Bandos godsword': 1,
-			'Saradomin godsword': 1
+			'Saradomin godsword': 1,
+			'Ancient godsword': 1
 		}),
 		gpCost: 100_000_000
 	},

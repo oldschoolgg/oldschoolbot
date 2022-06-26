@@ -21,8 +21,7 @@ export default class extends Task {
 		// If this bar has a chance of failing to smelt, calculate that here.
 		const masterCapeInEffect = bar.chanceOfFail > 0 && user.hasItemEquippedAnywhere('Smithing master cape');
 		const oldQuantity = quantity;
-
-		if (bar.chanceOfFail > 0) {
+		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let chance = masterCapeInEffect ? bar.chanceOfFail / 2 : bar.chanceOfFail;
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
