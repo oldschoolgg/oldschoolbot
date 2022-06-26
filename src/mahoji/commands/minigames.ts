@@ -56,6 +56,7 @@ import {
 } from '../lib/abstracted_commands/soulWarsCommand';
 import { tearsOfGuthixCommand } from '../lib/abstracted_commands/tearsOfGuthixCommand';
 import { trekCommand, trekShop } from '../lib/abstracted_commands/trekCommand';
+import { troubleBrewingStartCommand } from '../lib/abstracted_commands/troubleBrewingCommand';
 import {
 	volcanicMineCommand,
 	VolcanicMineShop,
@@ -796,6 +797,18 @@ export const minigamesCommand: OSBMahojiCommand = {
 					]
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'trouble_brewing',
+			description: 'The Trouble Brewing minigame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'start',
+					description: 'Start a trip.'
+				}
+			]
 		}
 	],
 	run: async ({
@@ -853,6 +866,9 @@ export const minigamesCommand: OSBMahojiCommand = {
 			buy?: { item: string; quantity?: number };
 			recolor?: {};
 			xp: { quantity: number };
+		};
+		trouble_brewing?: {
+			start?: {};
 		};
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
@@ -1112,6 +1128,10 @@ export const minigamesCommand: OSBMahojiCommand = {
 		}
 		if (options.agility_arena?.xp) {
 			return agilityArenaXPCommand(klasaUser, options.agility_arena.xp.quantity);
+		}
+
+		if (options.trouble_brewing) {
+			return troubleBrewingStartCommand(user, channelID);
 		}
 
 		return 'Invalid command.';

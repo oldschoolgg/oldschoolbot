@@ -4,7 +4,9 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
+import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -17,7 +19,9 @@ import {
 import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand';
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
+import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
+import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -33,6 +37,19 @@ export const minionCommand: OSBMahojiCommand = {
 	name: 'minion',
 	description: 'Manage and control your minion.',
 	options: [
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'buy',
+			description: 'Buy a minion so you can start playing the bot!',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'ironman',
+					description: 'Do you want to be an ironman?',
+					required: false
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'cracker',
@@ -200,10 +217,23 @@ export const minionCommand: OSBMahojiCommand = {
 					description: 'The monster/thing you want to check your KC of.',
 					required: true,
 					autocomplete: async (value: string) => {
-						return effectiveMonsters
+						return [...effectiveMonsters, ...Minigames, ...creatures]
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'ironman',
+			description: 'Become an ironman, or de-iron.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'permanent',
+					description: 'Do you want to become a permanent ironman?',
+					required: false
 				}
 			]
 		}
@@ -224,6 +254,8 @@ export const minionCommand: OSBMahojiCommand = {
 		set_name?: { name: string };
 		level?: { skill: string };
 		kc?: { name: string };
+		buy?: { ironman?: boolean };
+		ironman?: { permanent?: boolean };
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -297,6 +329,9 @@ export const minionCommand: OSBMahojiCommand = {
 			}
 			return `Your ${kcName} KC is: ${kcAmount}.`;
 		}
+
+		if (options.buy) return minionBuyCommand(mahojiUser, Boolean(options.buy.ironman));
+		if (options.ironman) return ironmanCommand(user, interaction, Boolean(options.ironman.permanent));
 
 		return 'Unknown command';
 	}
