@@ -8,7 +8,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { BitField, PerkTier, TWEETS_RATELIMITING } from '../../lib/constants';
+import { BitField, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
@@ -105,7 +105,7 @@ async function favAlchConfig(
 	const currentFavorites = user.favorite_alchables;
 	if (manyToAdd) {
 		const items = parseBank({ inputStr: manyToAdd, noDuplicateItems: true })
-			.filter(i => i.highalch > 1)
+			.filter(i => i.highalch !== undefined && i.highalch > 1)
 			.filter(i => !currentFavorites.includes(i.id));
 		if (items.length === 0) return 'No valid items were given.';
 		const newFavs = uniqueArr([...currentFavorites, ...items.items().map(i => i[0].id)]);
@@ -289,40 +289,6 @@ async function handleChannelEnable(
 	return 'Channel enabled. Anyone can use commands in this channel now.';
 }
 
-async function handleTweetsEnable(
-	user: KlasaUser,
-	guild: Guild | null,
-	channelID: bigint,
-	choice: 'enable' | 'disable'
-) {
-	if (!guild) return 'This command can only be run in servers.';
-	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
-	const cID = channelID.toString();
-	const settings = await mahojiGuildSettingsFetch(guild);
-
-	if (choice === 'enable') {
-		if (guild.memberCount < 20 && user.perkTier < PerkTier.Four) {
-			return TWEETS_RATELIMITING;
-		}
-		if (settings.tweetchannel === cID) {
-			return 'Jmod Tweets are already enabled in this channel.';
-		}
-		await mahojiGuildSettingsUpdate(guild.id, {
-			tweetchannel: cID
-		});
-
-		if (settings.tweetchannel) {
-			return "Jmod Tweets are already enabled in another channel, but I've switched them to use this channel.";
-		}
-		return 'Enabled Jmod Tweets in this channel.';
-	}
-	if (!settings.tweetchannel) return "Jmod Tweets aren't enabled, so you can't disable them.";
-	await mahojiGuildSettingsUpdate(guild.id, {
-		tweetchannel: null
-	});
-	return 'Disabled Jmod Tweets in this channel.';
-}
-
 async function handlePetMessagesEnable(
 	user: KlasaUser,
 	guild: Guild | null,
@@ -365,7 +331,7 @@ async function handleJModCommentsEnable(
 
 	if (choice === 'enable') {
 		if (guild!.memberCount < 20 && user.perkTier < PerkTier.Four) {
-			return TWEETS_RATELIMITING;
+			return 'This server is too small to enable this feature in.';
 		}
 		if (settings.jmodComments === cID) {
 			return 'JMod Comments are already enabled in this channel.';
@@ -564,23 +530,6 @@ export const configCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'jmod_tweets',
-					description: 'Enable or disable JMod tweets in this channel.',
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'choice',
-							description: 'Enable or disable JMod tweets for this channel.',
-							required: true,
-							choices: [
-								{ name: 'Enable', value: 'enable' },
-								{ name: 'Disable', value: 'disable' }
-							]
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
 					name: 'pet_messages',
 					description: 'Enable or disable Pet Messages in this server.',
 					options: [
@@ -669,7 +618,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'name',
-							description: 'The thing you want to toggle on/off.',
+							description: 'The setting you want to toggle on/off.',
 							required: true,
 							autocomplete: async (value, user) => {
 								const mUser = await prisma.user.findFirst({
@@ -782,13 +731,13 @@ export const configCommand: OSBMahojiCommand = {
 					description: 'Manage your favorite alchables.',
 					options: [
 						{
-							...itemOption(item => item.highalch > 10),
+							...itemOption(item => item.highalch !== undefined && item.highalch > 10),
 							name: 'add',
 							description: 'Add an item to your favorite alchables.',
 							required: false
 						},
 						{
-							...itemOption(item => item.highalch > 10),
+							...itemOption(item => item.highalch !== undefined && item.highalch > 10),
 							name: 'remove',
 							description: 'Remove an item from your favorite alchables.',
 							required: false
@@ -868,7 +817,6 @@ export const configCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		server?: {
 			channel?: { choice: 'enable' | 'disable' };
-			jmod_tweets?: { choice: 'enable' | 'disable' };
 			pet_messages?: { choice: 'enable' | 'disable' };
 			jmod_comments?: { choice: 'enable' | 'disable' };
 			command?: { command: string; choice: 'enable' | 'disable' };
@@ -893,9 +841,6 @@ export const configCommand: OSBMahojiCommand = {
 		if (options.server) {
 			if (options.server.channel) {
 				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);
-			}
-			if (options.server.jmod_tweets) {
-				return handleTweetsEnable(user, guild, channelID, options.server.jmod_tweets.choice);
 			}
 			if (options.server.pet_messages) {
 				return handlePetMessagesEnable(user, guild, channelID, options.server.pet_messages.choice);

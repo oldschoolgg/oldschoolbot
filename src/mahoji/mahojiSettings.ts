@@ -22,6 +22,7 @@ import { Gear } from '../lib/structures/Gear';
 import type { ItemBank, Skills as TSkills } from '../lib/types';
 import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
 import { logError } from '../lib/util/logError';
+import { respondToButton } from '../lib/util/respondToButton';
 
 export function mahojiParseNumber({
 	input,
@@ -42,7 +43,7 @@ export function mahojiParseNumber({
 }
 
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: bigint[]) {
-	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
 		await interaction.deferReply();
@@ -111,7 +112,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return cancel('cancel');
 			}
 			if (i.customID === 'CONFIRM') {
-				i.reply({ ephemeral: true, content: 'You confirmed.' });
+				respondToButton(i.id, i.token);
 				return confirm(id);
 			}
 		});

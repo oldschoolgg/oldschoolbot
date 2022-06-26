@@ -370,8 +370,9 @@ export default class extends Extendable {
 
 			case 'Nightmare': {
 				const data = currentTask as NightmareActivityTaskOptions;
-
-				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
+				return `${this.minionName} is currently killing The Nightmare${
+					data.method === 'solo' ? 'solo' : 'in a team'
+				}. ${formattedDuration}`;
 			}
 
 			case 'AnimatedArmour': {
@@ -618,6 +619,12 @@ export default class extends Extendable {
 				return `${this.minionName} is currently killing Nex ${data.quantity} times with a team of ${
 					data.users.length
 				}. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'TroubleBrewing': {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'Easter':
 			case 'BlastFurnace': {
