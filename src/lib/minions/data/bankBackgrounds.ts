@@ -70,15 +70,7 @@ const backgroundImages: BankBackground[] = [
 			'Pet general graardor': 1,
 			"Pet k'ril tsutsaroth": 1,
 			"Pet kree'arra": 1,
-			'Pet zilyana': 1,
-			Nexling: 1,
-			'Ancient hilt': 1,
-			'Nihil horn': 1,
-			'Zaryte vambraces': 1,
-			'Torva full helm (damaged)': 1,
-			'Torva platebody (damaged)': 1,
-			'Torva platelegs (damaged)': 1,
-			'Nihil shard': 1
+			'Pet zilyana': 1
 		}),
 		itemCost: resolveNameBank({
 			'Armadyl godsword': 1,
