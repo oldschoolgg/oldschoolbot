@@ -116,7 +116,7 @@ export const plunderRooms = [
 ];
 
 export const plunderBoosts = resolveNameBank({
-	"Pharaoh's sceptre (3)": 5
+	"Pharaoh's sceptre": 5
 });
 
 export function lootRoom(room: number): [ItemBank, number] {
@@ -130,7 +130,7 @@ export function lootRoom(room: number): [ItemBank, number] {
 
 	for (let i = 0; i < 2; i++) {
 		if (roll(sceptreChance)) {
-			loot.add("Pharaoh's sceptre (3)");
+			loot.add("Pharaoh's sceptre");
 			break;
 		}
 	}

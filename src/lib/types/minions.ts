@@ -63,6 +63,7 @@ export interface RevenantOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
 	died: boolean;
+	fakeDuration: number;
 	usingPrayerPots: boolean;
 	skulled: boolean;
 	style: 'melee' | 'range' | 'mage';
@@ -85,6 +86,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	quantity: number;
+	blastf: boolean;
 }
 
 export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
@@ -167,6 +169,7 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	jadDeathChance: number;
 	preJadDeathChance: number;
 	preJadDeathTime: number | null;
+	fakeDuration: number;
 	quantity: number;
 }
 export interface InfernoOptions extends ActivityTaskOptions {
@@ -185,7 +188,6 @@ export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	upgradeType: string | null;
 	payment?: boolean;
 	patchType: IPatchData;
-	getPatchType: string;
 	planting: boolean;
 	currentDate: number;
 	autoFarmed: boolean;
@@ -211,8 +213,7 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 }
 
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
-	leader: string;
-	users: string[];
+	method: 'solo' | 'mass';
 	quantity: number;
 	isPhosani?: boolean;
 }
@@ -290,11 +291,6 @@ export interface CollectingOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
-	barID: number;
-	quantity: number;
-}
-
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	favour: KourendFavour;
 	quantity: number;
@@ -308,7 +304,6 @@ export interface TokkulShopOptions extends ActivityTaskOptions {
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
-	| BlastFurnaceActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
 	| CollectingOptions
 	| RaidsOptions

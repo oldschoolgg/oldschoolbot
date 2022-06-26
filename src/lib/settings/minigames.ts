@@ -155,6 +155,11 @@ export const Minigames: readonly BotMinigame[] = [
 		name: 'Last Man Standing',
 		aliases: ['last man standing', 'lms'],
 		column: 'lms'
+	},
+	{
+		name: 'Trouble Brewing',
+		aliases: ['trouble brewing', 'tb'],
+		column: 'trouble_brewing'
 	}
 ];
 
@@ -176,9 +181,10 @@ export async function getMinigameEntity(userID: string): Promise<Minigame> {
 }
 
 export async function incrementMinigameScore(userID: string, minigame: MinigameName, amountToAdd = 1) {
-	const result = await prisma.minigame.update({
+	const result = await prisma.minigame.upsert({
 		where: { user_id: userID },
-		data: { [minigame]: { increment: amountToAdd } }
+		update: { [minigame]: { increment: amountToAdd } },
+		create: { user_id: userID, [minigame]: amountToAdd }
 	});
 
 	return {

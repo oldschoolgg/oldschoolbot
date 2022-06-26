@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -8,7 +9,7 @@ import { Castables } from '../../lib/skilling/skills/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { CastingActivityTaskOptions } from '../../lib/types/minions';
-import { addBanks, formatDuration, stringMatches } from '../../lib/util';
+import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { determineRunes } from '../../lib/util/determineRunes';
 
@@ -98,14 +99,11 @@ export default class extends BotCommand {
 			if (gpCost > userGP) {
 				return msg.channel.send(`You need ${gpCost} GP to create ${quantity} planks.`);
 			}
-			await msg.author.removeGP(gpCost);
+			await msg.author.removeItemsFromBank(new Bank().add('Coins', gpCost));
 		}
 
 		await msg.author.removeItemsFromBank(cost.bank);
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.MagicCostBank,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.MagicCostBank), cost.bank])
-		);
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.MagicCostBank, cost);
 
 		await addSubTaskToActivityTask<CastingActivityTaskOptions>({
 			spellID: spell.id,

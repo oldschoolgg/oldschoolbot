@@ -20,7 +20,7 @@ export default class extends Task {
 					}
 				});
 
-				await Promise.all(result.map(t => handleGiveawayCompletion(this.client, t)));
+				await Promise.all(result.map(t => handleGiveawayCompletion(t)));
 			} catch (err) {
 				logError(err);
 			} finally {

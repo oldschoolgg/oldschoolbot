@@ -4,7 +4,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { GearSetupType } from './gear';
 import { ClientSettings } from './settings/types/ClientSettings';
-import { assert } from './util';
+import { assert, updateBankSetting } from './util';
 import getOSItem from './util/getOSItem';
 
 interface DegradeableItem {
@@ -25,7 +25,7 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Abyssal tentacle'),
 		settingsKey: 'tentacle_charges',
-		itemsToRefundOnBreak: new Bank().add('Abyssal tentacle'),
+		itemsToRefundOnBreak: new Bank().add('Kraken tentacle'),
 		setup: 'melee',
 		aliases: ['tentacle', 'tent'],
 		chargeInput: {
@@ -96,20 +96,22 @@ export async function degradeItem({
 		await user.settings.update(degItem.settingsKey, 0);
 		const itemsDeleted = new Bank().add(item.id);
 
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted);
+
 		if (hasEquipped) {
 			// If its equipped, unequip and delete it.
 			const gear = { ...user.getGear(degItem.setup).raw() };
 			gear.weapon = null;
 			await user.settings.update(`gear.${degItem.setup}`, gear);
-			await user.client.settings!.update(ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted);
-			if (degItem.itemsToRefundOnBreak)
+			if (degItem.itemsToRefundOnBreak) {
 				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
+			}
 		} else if (hasInBank) {
 			// If its in bank, just remove 1 from bank.
 			await user.removeItemsFromBank(new Bank().add(item.id, 1));
-			await user.client.settings!.update(ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted);
-			if (degItem.itemsToRefundOnBreak)
+			if (degItem.itemsToRefundOnBreak) {
 				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
+			}
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(

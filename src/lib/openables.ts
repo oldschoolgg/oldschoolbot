@@ -1,15 +1,16 @@
+import type { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
+import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
-import { openSeedPack } from '../commands/Minion/seedpack';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
 import ClueTiers from './minions/data/clueTiers';
 import { defaultFarmingContract } from './minions/farming';
+import { FarmingContract } from './minions/farming/types';
 import { UserSettings } from './settings/types/UserSettings';
 import {
 	BagFullOfGemsTable,
@@ -18,6 +19,7 @@ import {
 	CrystalChestTable,
 	SpoilsOfWarTable
 } from './simulation/misc';
+import { openSeedPack } from './skilling/functions/calcFarmingContracts';
 import { itemID, roll } from './util';
 import { formatOrdinal } from './util/formatOrdinal';
 import getOSItem from './util/getOSItem';
@@ -27,9 +29,10 @@ interface OpenArgs {
 	quantity: number;
 	user: KlasaUser;
 	self: UnifiedOpenable;
+	mahojiUser: User;
 }
 
-interface UnifiedOpenable {
+export interface UnifiedOpenable {
 	name: string;
 	id: number;
 	openedItem: Item;
@@ -69,7 +72,7 @@ for (const clueTier of ClueTiers) {
 				}
 			}
 
-			const message = `You opened ${quantity} ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
+			const message = `${quantity}x ${clueTier.name} Clue Casket${quantity > 1 ? 's' : ''} ${
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
@@ -110,7 +113,7 @@ for (const clueTier of ClueTiers) {
 			return { bank: loot, message };
 		},
 		emoji: Emoji.Casket,
-		allItems: BeginnerClueTable.allItems
+		allItems: clueTier.allItems
 	});
 }
 
@@ -247,14 +250,15 @@ const osjsOpenables: UnifiedOpenable[] = [
 		name: 'Seed pack',
 		id: 22_993,
 		openedItem: getOSItem(22_993),
-		aliases: ['seed pack'],
+		aliases: ['seed pack', 'sp'],
 		output: async (
 			args: OpenArgs
 		): Promise<{
 			bank: Bank;
 			message?: string;
 		}> => {
-			const { plantTier } = args.user.settings.get(UserSettings.Minion.FarmingContract) ?? defaultFarmingContract;
+			const { plantTier } =
+				(args.mahojiUser.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
 			const openLoot = new Bank();
 			for (let i = 0; i < args.quantity; i++) {
 				openLoot.add(openSeedPack(plantTier));
@@ -318,6 +322,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['builders supply crate'],
 		output: BuildersSupplyCrateTable,
 		allItems: BuildersSupplyCrateTable.allItems
+	},
+	{
+		name: 'Hallowed sack',
+		id: 24_946,
+		openedItem: getOSItem('Hallowed sack'),
+		aliases: ['hallowed sack', 'hallow sack'],
+		output: HallowedSackTable,
+		allItems: HallowedSackTable.allItems
 	},
 	{
 		name: 'Infernal eel',

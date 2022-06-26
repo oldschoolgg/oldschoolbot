@@ -3,13 +3,12 @@ import { CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { client } from '../..';
 import { Eatables } from '../../lib/data/eatables';
 import { warmGear } from '../../lib/data/filterables';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, bankHasItem, formatDuration } from '../../lib/util';
+import { bankHasItem, formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -27,7 +26,7 @@ export const wintertodtCommand: OSBMahojiCommand = {
 	},
 	options: [],
 	run: async ({ userID, channelID }: CommandRunOptions) => {
-		const user = await client.fetchUser(userID);
+		const user = await globalClient.fetchUser(userID);
 		const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
 		const wcLevel = user.skillLevel(SkillsEnum.Woodcutting);
 		if (fmLevel < 50) {
@@ -85,9 +84,10 @@ export const wintertodtCommand: OSBMahojiCommand = {
 			await user.removeItemsFromBank(new Bank().add(food.id, amountNeeded));
 
 			// Track this food cost in Economy Stats
-			await client.settings.update(
+			await updateBankSetting(
+				globalClient,
 				ClientSettings.EconomyStats.WintertodtCost,
-				addItemToBank(client.settings.get(ClientSettings.EconomyStats.WintertodtCost), food.id, amountNeeded)
+				new Bank().add(food.id, amountNeeded)
 			);
 
 			break;

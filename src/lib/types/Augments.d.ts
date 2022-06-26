@@ -1,19 +1,18 @@
-import { activity_type_enum, PlayerOwnedHouse } from '@prisma/client';
-import { Image } from 'canvas';
+import { activity_type_enum } from '@prisma/client';
 import { FSWatcher } from 'chokidar';
-import { MessageAttachment, MessageOptions, MessagePayload } from 'discord.js';
-import { KlasaClient, KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
+import { MessageOptions, MessagePayload } from 'discord.js';
+import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
 import { Bank } from 'oldschooljs';
 import PQueue from 'p-queue';
+import { Image } from 'skia-canvas/lib';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { BankImageResult } from '../../tasks/bankImage';
 import { BitField, PerkTier } from '../constants';
-import { GearSetup } from '../gear';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
-import { AddXpParams, KillableMonster } from '../minions/types';
+import { AddXpParams, Flags, KillableMonster } from '../minions/types';
 import { MinigameName } from '../settings/minigames';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
@@ -29,14 +28,7 @@ type SendBankImageFn = (options: {
 	flags?: Record<string, string | number>;
 	user?: KlasaUser;
 	cl?: Bank;
-	gearPlaceholder?: Record<GearSetupType, GearSetup>;
 }) => Promise<KlasaMessage>;
-
-declare module 'mahoji' {
-	interface MahojiClient {
-		_djsClient: KlasaClient;
-	}
-}
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -76,17 +68,11 @@ declare module 'klasa' {
 			bank: Bank,
 			title?: string,
 			showValue?: boolean,
-			flags?: { [key: string]: string | number },
+			flags?: Flags,
 			user?: KlasaUser,
 			cl?: Bank
 		): Promise<BankImageResult>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
-		generateLogImage(options: {
-			user: KlasaUser;
-			collection: string;
-			type: 'collection' | 'sacrifice' | 'bank';
-			flags: { [key: string]: string | number };
-		}): Promise<MessageOptions | MessageAttachment>;
 	}
 
 	interface KlasaMessage {
@@ -106,7 +92,7 @@ declare module 'klasa' {
 declare module 'discord.js/node_modules/discord-api-types/v8' {
 	type Snowflake = string;
 }
-type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
+export type KlasaSend = (input: string | MessagePayload | MessageOptions) => Promise<KlasaMessage>;
 
 declare module 'discord.js' {
 	interface TextBasedChannel {
@@ -147,14 +133,9 @@ declare module 'discord.js' {
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		incrementOpenableScore(openableID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		hasItem(itemID: number, amount = 1, sync = true): Promise<boolean>;
-		numberOfItemInBank(itemID: number, sync = true): Promise<number>;
 		log(stringLog: string): void;
-		addGP(amount: number): Promise<SettingsUpdateResult>;
-		removeGP(amount: number): Promise<SettingsUpdateResult>;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
 		addXP(params: AddXpParams): Promise<string>;
 		skillLevel(skillName: SkillsEnum): number;
@@ -180,10 +161,6 @@ declare module 'discord.js' {
 		 */
 		getKC(id: number): number;
 		/**
-		 * Returns how many times they've opened this openable.
-		 */
-		getOpenableScore(id: number): number;
-		/**
 		 * Returns a tuple where the first item is formatted KC entry name and second is the KC.
 		 * If the search doesn't return anything then returns [null, 0].
 		 */
@@ -208,7 +185,6 @@ declare module 'discord.js' {
 		 */
 		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
-		getPOH(): Promise<PlayerOwnedHouse>;
 		getUserFavAlchs(duration: number): Item[];
 		getGear(gearType: GearSetupType): Gear;
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
@@ -251,25 +227,20 @@ declare module 'discord.js' {
 
 	interface TextChannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 
 	interface Newshannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 	interface ThreadChannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 
 	interface DMChannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 
 	interface NewsChannel {
 		sendBankImage: SendBankImageFn;
-		__triviaQuestionsDone: any;
 	}
 }
