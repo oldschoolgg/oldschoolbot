@@ -190,7 +190,7 @@ export default class extends Task {
 					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${
 							leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0
 					  }.\n\n${soloXP}`,
-				['k', { name: 'Nex (Solo)' }, true],
+				['k', { name: users.length === 1 ? 'Nex (Solo)' : 'Nex (Mass)' }, true],
 				image!,
 				data,
 				soloItemsAdded
