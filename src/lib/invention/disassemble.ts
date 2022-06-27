@@ -110,10 +110,10 @@ export function calcJunkChance(lvl: number, hasMasterCape: boolean) {
 	if (hasMasterCape) base -= MASTER_CAPE_JUNK_REDUCTION;
 	return clamp(base, 2, 100);
 }
-export function calculateDisXP(group: DisassemblySourceGroup,inventionLevel: number, quantity: number, lvl: number) {
+export function calculateDisXP(group: DisassemblySourceGroup, inventionLevel: number, quantity: number, lvl: number) {
 	let baseXPPerItem = 2 + floor(lvl / 11) + floor(inventionLevel / 5) + (lvl - lvl / 1.2) * (lvl / 7.5);
 	let xp = Math.ceil(quantity * baseXPPerItem);
-	if (group.xpReductionDivisor) xp /= group.xpReductionDivisor
+	if (group.xpReductionDivisor) xp /= group.xpReductionDivisor;
 	return {
 		xp
 	};
@@ -173,7 +173,7 @@ function flagEffectsInDisassembly(item: DisassemblyItem, loot: MaterialBank) {
 export async function handleDisassembly({
 	user,
 	inputQuantity,
-	item,
+	item
 }: {
 	user: User;
 	inputQuantity?: number;
@@ -227,7 +227,7 @@ export async function handleDisassembly({
 	const realQuantity = clamp(inputQuantity ?? bank.amount(item.id), 1, maxCanDo);
 	const duration = realQuantity * timePer;
 
-	const masterCapeBoost =  doesHaveMasterCapeBoost(user, _group.group);
+	const masterCapeBoost = doesHaveMasterCapeBoost(user, _group.group);
 	if (masterCapeBoost && masterCapeBoost.has) {
 		messages.push(`${MASTER_CAPE_JUNK_REDUCTION}% junk chance reduction for ${masterCapeBoost.cape}`);
 	}
@@ -250,7 +250,7 @@ export async function handleDisassembly({
 		}
 	}
 
-	const { xp } = calculateDisXP(group,skills.invention, realQuantity, data.lvl);
+	const { xp } = calculateDisXP(group, skills.invention, realQuantity, data.lvl);
 
 	const cost = new Bank().add(item.name, realQuantity);
 
@@ -283,7 +283,7 @@ async function materialAnalysis(user: User, bank: Bank) {
 		let thisMats = new MaterialBank();
 
 		while (bank.amount(item.id) > 0) {
-			let res = await handleDisassembly({ user, inputQuantity: qty, item});
+			let res = await handleDisassembly({ user, inputQuantity: qty, item });
 			if (res.error === null) {
 				thisXP += res.xp;
 				thisDur += res.duration;
@@ -327,7 +327,7 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 			item
 		});
 		if (result.error !== null) return result.error;
-		const { xp } = calculateDisXP(group.group,getSkillsOfMahojiUser(user, true).invention, qty, group.data.lvl);
+		const { xp } = calculateDisXP(group.group, getSkillsOfMahojiUser(user, true).invention, qty, group.data.lvl);
 		totalXP += xp;
 		totalMaterials.add(result.materials);
 		results.push({ ...result, item });
@@ -477,7 +477,7 @@ ${xpStr}`;
 	}
 	if (loot.has('Cogsworth')) {
 		messages.push(
-			`**While disassembling some items, your minion suddenly was inspired to create a mechanical pet out of some scraps!**`
+			'**While disassembling some items, your minion suddenly was inspired to create a mechanical pet out of some scraps!**'
 		);
 	}
 

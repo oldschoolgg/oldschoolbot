@@ -1,12 +1,13 @@
-import { randArrItem, reduceNumByPercent, shuffleArr, Time } from 'e';
+import { time } from '@discordjs/builders';
+import { reduceNumByPercent, Time } from 'e';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank, Items } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
+import { production } from '../../config';
 import { allItemsThatCanBeDisassembledIDs, IMaterialBank, MaterialType, materialTypes } from '../../lib/invention';
 import {
-	bankDisassembleAnalysis,
 	calcJunkChance,
 	calculateDisXP,
 	disassembleCommand,
@@ -17,10 +18,13 @@ import { inventCommand, inventingCost, inventionBoosts, Inventions } from '../..
 import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { researchCommand } from '../../lib/invention/research';
 import { SkillsEnum } from '../../lib/skilling/types';
-import { calcPerHour, convertXPtoLVL, formatDuration, stringMatches, toKMB, toTitleCase } from '../../lib/util';
+import { calcPerHour, stringMatches, toKMB, toTitleCase } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
+
+const RELEASE_TIME_UNIX_TIME = 1_656_766_800;
+const RELEASE_DATE = new Date(RELEASE_TIME_UNIX_TIME * 1000);
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'invention',
@@ -150,24 +154,8 @@ export const askCommand: OSBMahojiCommand = {
 							value: 'unlocked_blueprints'
 						},
 						{
-							name: 'Material Spread',
-							value: 'material_spread'
-						},
-						{
 							name: 'XP Stats',
 							value: 'xp'
-						},
-						{
-							name: 'Simulate maxing',
-							value: 'simulate'
-						},
-						{
-							name: 'Analyze Bank',
-							value: 'analyze_bank'
-						},
-						{
-							name: 'Missing Item',
-							value: 'missing_items'
 						}
 					]
 				}
@@ -229,19 +217,18 @@ export const askCommand: OSBMahojiCommand = {
 		group?: { group: string };
 		materials?: {};
 		tools?: {
-			command:
-				| 'groups'
-				| 'analyze_bank'
-				| 'missing_items'
-				| 'items_disassembled'
-				| 'materials_researched'
-				| 'unlocked_blueprints'
-				| 'material_spread'
-				| 'xp'
-				| 'simulate';
+			command: 'groups' | 'items_disassembled' | 'materials_researched' | 'unlocked_blueprints' | 'xp';
 		};
 		details?: { invention: string };
 	}>) => {
+		if (production && Date.now() < RELEASE_DATE.getTime()) {
+			return `Invention will be released at ${time(RELEASE_DATE, 'F')}, ${time(RELEASE_DATE, 'R')}.
+In the meantime...
+- Read the wiki: <https://bso-wiki.oldschool.gg/skills/invention>
+- Think about what items you'll disassemble... doing a varying trips with your biggest (or cheapest) stacks of items is recommended for fast, cheap training.
+- Pick which invention you want to aim for first, and focus on getting the materials needed for it!`;
+		}
+
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (options.details) {
@@ -290,31 +277,6 @@ export const askCommand: OSBMahojiCommand = {
 		if (options.tools) {
 			await interaction.deferReply();
 			switch (options.tools.command) {
-				case 'analyze_bank': {
-					const result = bankDisassembleAnalysis({
-						bank: new Bank(mahojiUser.bank as ItemBank),
-						user: mahojiUser
-					});
-					return result;
-				}
-				case 'missing_items': {
-					const itemsShouldBe = Items.filter(
-						i =>
-							Boolean(i.tradeable) &&
-							Boolean(i.tradeable_on_ge) &&
-							!allItemsThatCanBeDisassembledIDs.has(i.id)
-					)
-						.sort((a, b) => b.price - a.price)
-						.array();
-
-					const normalTable = shuffleArr(itemsShouldBe)
-						.filter(i => ['(p', 'Team-'].every(str => !i.name.includes(str)))
-						.map(i => `${i.name}`)
-						.join('\n');
-					return {
-						attachments: [{ fileName: 'missing-items-disassemble.txt', buffer: Buffer.from(normalTable) }]
-					};
-				}
 				case 'items_disassembled': {
 					const a = await mahojiUsersSettingsFetch(user.id, {
 						disassembled_items_bank: true
@@ -355,19 +317,6 @@ export const askCommand: OSBMahojiCommand = {
 These Inventions are still not unlocked: ${locked
 						.map(i => `${i.name} (${Object.keys(i.materialTypeBank.bank).join(', ')})`)
 						.join(', ')}`;
-				}
-				case 'material_spread': {
-					const mats = new MaterialBank();
-					for (const invention of Inventions) {
-						mats.add(invention.materialTypeBank);
-					}
-					let res = ['Material Spread (to see which materials are used the most/least for inventions)'];
-					for (const type of [...materialTypes].sort((a, b) => mats.amount(b) - mats.amount(a))) {
-						res.push(`${type}\t${mats.amount(type) ?? 0}`);
-					}
-					return {
-						attachments: [{ fileName: 'material_spread.txt', buffer: Buffer.from(res.join('\n')) }]
-					};
 				}
 				case 'xp': {
 					let xpTable = [];
@@ -412,26 +361,6 @@ These Inventions are still not unlocked: ${locked
 					return {
 						attachments: [{ buffer: Buffer.from(table(xpTable)), fileName: 'invention-xp.txt' }]
 					};
-				}
-				case 'simulate': {
-					const group = randArrItem(DisassemblySourceGroups);
-					let xp = 0;
-					let duration = 0;
-					let itemsUsed = new Bank();
-					let timePer = Time.Second * 0.33;
-					while (true) {
-						const level = convertXPtoLVL(xp);
-						if (level === 120) break;
-						const itemCanDis = group.items.sort((a, b) => b.lvl - a.lvl).find(i => i.lvl <= level)!;
-						const item = Array.isArray(itemCanDis.item) ? itemCanDis.item[0] : itemCanDis.item;
-						let qty = 1000;
-						xp += calculateDisXP(group, level, qty, itemCanDis.lvl).xp;
-						duration += timePer * qty;
-						itemsUsed.add(item.id, qty);
-					}
-					return `You reached ${xp.toLocaleString()} XP (level ${convertXPtoLVL(
-						xp
-					)}) Invention, after disassembling: ${itemsUsed}. It would've taken ${formatDuration(duration)}`;
 				}
 				case 'groups': {
 					let str = '';
