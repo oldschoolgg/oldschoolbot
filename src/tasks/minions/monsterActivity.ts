@@ -26,6 +26,7 @@ import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { trackClientBankStats } from '../../mahoji/mahojiSettings';
 
 async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
 	if (!hasItemsEquippedOrInBank(user, ['Gorajan bonecrusher', 'Superior bonecrusher'], 'one')) return;
@@ -91,14 +92,17 @@ async function portableTannerEffect(user: KlasaUser, loot: Bank, duration: numbe
 	});
 	if (!boostRes.success) return;
 	let triggered = false;
+	let toAdd = new Bank();
 	for (const [hide, leather] of hideLeatherMap) {
 		let qty = loot.amount(hide.id);
 		if (qty > 0) {
 			triggered = true;
 			loot.remove(hide.id, qty);
-			loot.add(leather.id, qty);
+			toAdd.add(leather.id, qty);
 		}
 	}
+	loot.add(toAdd);
+	trackClientBankStats('portable_tanner_loot', toAdd);
 	if (!triggered) return;
 	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
 }
@@ -133,6 +137,7 @@ export async function clueUpgraderEffect(
 		duration: durationForCost
 	});
 	if (!boostRes.success) return false;
+	trackClientBankStats('clue_upgrader_loot', upgradedClues);
 	loot.add(upgradedClues);
 	assert(loot.has(removeBank));
 	loot.remove(removeBank);

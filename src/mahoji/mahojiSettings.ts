@@ -323,3 +323,10 @@ export async function clientSettingsUpdate(data: Prisma.ClientStorageUpdateArgs[
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
 }
+
+export async function trackClientBankStats(key: 'clue_upgrader_loot' | 'portable_tanner_loot', newItems: Bank) {
+	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
+	await clientSettingsUpdate({
+		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
+	});
+}

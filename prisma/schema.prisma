@@ -156,6 +156,8 @@ model ClientStorage {
   items_disassembled_cost    Json @default("{}") @db.Json
   invention_materials_cost   Json @default("{}") @db.Json
   invention_prizes_remaining Json @default("{}") @db.Json
+  clue_upgrader_loot         Json @default("{}") @db.Json
+  portable_tanner_loot       Json @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -667,16 +669,6 @@ model EconomyTransaction {
   @@map("economy_transaction")
 }
 
-// model MaterialTransaction {
-//   id           Int                  @id @default(autoincrement())
-//   date         DateTime             @db.Timestamp(6) @default(now())
-//   user_id      BigInt
-//   add Json
-//   remove Json
-
-//   @@map("material_transaction")
-// }
-
 enum command_usage_status {
   Unknown
   Success
@@ -802,38 +794,6 @@ enum xp_gains_skill_enum {
   slayer
   invention
 }
-
-// enum material_type_enum {
-//   junk
-//   simple
-//   base
-//   smooth
-//   sharp
-//   swift
-//   magic
-//   powerful
-//   imbued
-//   flexible
-//   strong
-//   protective
-//   heavy
-//   precious
-//   plated
-//   dextrous
-//   metallic
-//   organic
-//   pious
-//   crystal
-//   rocky
-//   // Special
-//   corporeal
-//   thirdage
-//   mysterious
-//   barrows
-//   abyssal
-//   dwarven
-//   treasured
-// }
 
 enum tame_growth {
   baby
