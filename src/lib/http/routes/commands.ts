@@ -35,7 +35,7 @@ const commandData = allAbstractCommands(globalClient.mahojiClient)
 		};
 	})
 	.sort((a, b) => a.name.localeCompare(b.name));
-console.log(commandData);
+
 export const commandsRoute = (server: FastifyServer) =>
 	server.route({
 		method: 'GET',
