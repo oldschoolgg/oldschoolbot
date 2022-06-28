@@ -2,7 +2,7 @@ import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Prisma, User } from '@prisma/client';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
-import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
+import { MessageAttachment, MessageOptions, TextChannel, Util } from 'discord.js';
 import { notEmpty, randInt, sumArr, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
@@ -35,11 +35,9 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import { ItemBank } from '../lib/types';
 import {
-	asyncExec,
 	bankValueWithMarketPrices,
 	calcPerHour,
 	channelIsSendable,
-	cleanString,
 	convertBankToPerHourStats,
 	formatDuration,
 	getSupportGuild,
@@ -575,24 +573,6 @@ ${(await generateReadyThings(u)).join('\n')}
 				if (typeof input !== 'string') return;
 				return itemSearch(msg, input);
 			}
-			case 'git': {
-				try {
-					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
-						timeout: 30
-					});
-					const rawStr = currentCommit.stdout.trim();
-					const [commitHash, ...commentArr] = rawStr.split(' ');
-					return msg.channel.send({
-						embeds: [
-							new MessageEmbed()
-								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...bso)
-**Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
-						]
-					});
-				} catch {
-					return msg.channel.send('Failed to fetch git info.');
-				}
-			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
 				const item = getOSItem(input);
@@ -613,30 +593,6 @@ ${
 		? "You don't have this item equipped anywhere."
 		: `You have ${item.name} equipped in these setups: ${setupsWith.join(', ')}.`
 }`);
-			}
-			case 'issues': {
-				if (typeof input !== 'string' || input.length < 3 || input.length > 25) return;
-				const query = cleanString(input);
-
-				const searchURL = new URL('https://api.github.com/search/issues');
-
-				searchURL.search = new URLSearchParams([
-					['q', ['repo:oldschoolgg/oldschoolbot', 'is:issue', 'is:open', query].join(' ')]
-				]).toString();
-				const { items } = (await fetch(searchURL.toString()).then(res => res.json())) as Record<string, any>;
-				if (items.length === 0) return msg.channel.send('No results found.');
-				return msg.channel.send({
-					embeds: [
-						new MessageEmbed()
-							.setTitle(`${items.length} Github issues found from your search`)
-							.setDescription(
-								items
-									.slice(0, 10)
-									.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
-									.join('\n')
-							)
-					]
-				});
 			}
 			case 'doubletime': {
 				const diff = this.client.settings.get(ClientSettings.DoubleLootFinishTime) - Date.now();

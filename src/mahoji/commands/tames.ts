@@ -941,7 +941,6 @@ export const tamesCommand: OSBMahojiCommand = {
 	description: 'Manage your tames.',
 	attributes: {
 		requiresMinion: true,
-		description: 'Manage your tames.',
 		examples: ['/tames select 1']
 	},
 	options: [

@@ -20,7 +20,6 @@ export const craftCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to mine things.',
 		examples: ['/craft name:Onyx necklace']
 	},
 	options: [

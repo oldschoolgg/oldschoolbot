@@ -251,8 +251,7 @@ export const icCommand: OSBMahojiCommand = {
 	name: 'ic',
 	description: 'Hand in random items for rewards.',
 	attributes: {
-		requiresMinion: true,
-		description: 'Hand in random items for rewards.'
+		requiresMinion: true
 	},
 	options: [
 		{

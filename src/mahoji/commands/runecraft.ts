@@ -19,7 +19,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 	description: 'Sends your minion to craft runes with essence.',
 	attributes: {
 		categoryFlags: ['minion', 'skilling'],
-		description: 'Sends your minion to craft runes with essence.',
 		examples: ['/runecraft']
 	},
 	options: [

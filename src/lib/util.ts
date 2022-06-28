@@ -1,7 +1,6 @@
 import { bold } from '@discordjs/builders';
 import type { PrismaClient, User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
-import { exec } from 'child_process';
 import crypto from 'crypto';
 import {
 	Channel,
@@ -38,7 +37,6 @@ import Items from 'oldschooljs/dist/structures/Items';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, nodeCrypto, real } from 'random-js';
-import { promisify } from 'util';
 
 import { CLIENT_ID, production } from '../config';
 import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
@@ -595,7 +593,6 @@ export function birdhouseLimit(user: KlasaUser) {
 	if (user.hasItemEquippedAnywhere('Hunter master cape')) base += 4;
 	return base;
 }
-export const asyncExec = promisify(exec);
 
 export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
 	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {

@@ -154,6 +154,7 @@ import {
 	zalcanoCL,
 	zulrahCL
 } from './CollectionsExport';
+import Createables from './createables';
 import { kibbles } from './kibble';
 
 export const allCollectionLogs: ICollection = {
@@ -1163,6 +1164,12 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Growable Pets': {
 				items: growablePets.map(i => i.stages).flat()
+			},
+			Creatables: {
+				counts: false,
+				items: Createables.filter(i => i.noCl !== true)
+					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
+					.flat()
 			}
 		}
 	},
