@@ -724,8 +724,8 @@ export default class extends Extendable {
 			}
 			case 'Disassembling': {
 				const data = currentTask as DisassembleTaskOptions;
-				return `${this.minionName} is currently disassembling ${data.quantity}x ${itemNameFromID(
-					data.item
+				return `${this.minionName} is currently disassembling ${data.qty}x ${itemNameFromID(
+					data.i
 				)}. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'Research': {

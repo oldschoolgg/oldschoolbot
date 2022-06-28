@@ -355,9 +355,9 @@ export async function bankDisassembleAnalysis({ bank, user }: { bank: Bank; user
 }
 
 export interface DisassembleTaskOptions extends ActivityTaskOptions {
-	item: number;
-	quantity: number;
-	materials: IMaterialBank;
+	i: number;
+	qty: number;
+	mats: IMaterialBank;
 	xp: number;
 }
 
@@ -395,9 +395,9 @@ export async function disassembleCommand({
 		channelID: channelID.toString(),
 		duration: result.duration,
 		type: 'Disassembling',
-		item: item.id,
-		quantity: result.quantity,
-		materials: result.materials.bank,
+		i: item.id,
+		qty: result.quantity,
+		mats: result.materials.bank,
 		xp: result.xp
 	});
 
@@ -422,14 +422,14 @@ async function handleInventionPrize(): Promise<Bank | null> {
 }
 
 export async function disassemblyTask(data: DisassembleTaskOptions) {
-	const { userID, quantity } = data;
+	const { userID, qty } = data;
 	const klasaUser = await globalClient.fetchUser(userID);
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
-	const item = getOSItem(data.item);
+	const item = getOSItem(data.i);
 
 	const messages: string[] = [];
-	const cost = new Bank().add(item.id, quantity);
-	const materialLoot = new MaterialBank(data.materials);
+	const cost = new Bank().add(item.id, qty);
+	const materialLoot = new MaterialBank(data.mats);
 	if (userHasItemsEquippedAnywhere(mahojiUser, 'Invention master cape')) {
 		materialLoot.mutIncreaseAllValuesByPercent(inventionBoosts.inventionMasterCape.extraMaterialsPercent);
 		messages.push(`${inventionBoosts.inventionMasterCape.extraMaterialsPercent}% bonus materials for mastery`);
@@ -502,7 +502,7 @@ ${xpStr}`;
 			{
 				disassemble: {
 					name: item.name,
-					quantity
+					quantity: qty
 				}
 			},
 			true

@@ -16,7 +16,8 @@ export const collectionLogTypes = [
 	{ name: 'sacrifice', description: 'Sacrificed Items Log' },
 	{ name: 'bank', description: 'Owned Items Log' },
 	{ name: 'temp', description: 'Temporary Log' },
-	{ name: 'tame', description: 'Tames Collection Log' }
+	{ name: 'tame', description: 'Tames Collection Log' },
+	{ name: 'disassembly', description: 'Disassembly Collection Log' }
 ] as const;
 export type CollectionLogType = typeof collectionLogTypes[number]['name'];
 export const CollectionLogFlags = [
