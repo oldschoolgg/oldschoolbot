@@ -143,7 +143,7 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 	const usersWith = randInt(1, 4);
 	for (const subStar of subStars) {
 		let dustReceived = subStar.dustAvailable;
-		if (usersWith > 1) dustReceived = reduceNumByPercent(dustReceived, usersWith * 22.5);
+		if (usersWith > 1) dustReceived = reduceNumByPercent(dustReceived, usersWith * 10);
 		loot.add('Stardust', dustReceived);
 		xp += subStar.xpPerDust * dustReceived;
 	}
@@ -154,7 +154,9 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 		duration: data.duration
 	});
 
-	let str = `${user}, your minion finished mining a size ${star.size} Shooting Star. You received ${loot}. ${xpStr}`;
+	let str = `${user}, your minion finished mining a size ${star.size} Shooting Star, there was ${
+		usersWith - 1 || 'no'
+	} other players mining with you. You received ${loot}. ${xpStr}`;
 
 	handleTripFinish(user, data.channelID, str, undefined, undefined!, data, null);
 }
