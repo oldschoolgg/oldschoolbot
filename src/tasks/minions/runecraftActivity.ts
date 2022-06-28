@@ -58,6 +58,8 @@ export default class extends Task {
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
 			if (roll(Math.floor(5000 / minutes))) {
+				str +=
+					'\n**<:obis:787028036792614974> An enchantment guardian takes note of your prowess in runecrafting and elects to join you.**';
 				loot.add('Obis');
 			}
 		}
