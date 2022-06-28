@@ -57,10 +57,18 @@ import {
 import getOSItem, { getItem } from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
+import { makeBankImage } from '../lib/util/makeBankImage';
+import { parseBank } from '../lib/util/parseStringBank';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import { mahojiParseNumber, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import {
+	clientSettingsUpdate,
+	mahojiClientSettingsFetch,
+	mahojiParseNumber,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch
+} from '../mahoji/mahojiSettings';
 import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
@@ -90,18 +98,20 @@ export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise
 
 	const brokenBank: number[] = [];
 	const allItemsToCheck = [
-		...Object.keys(rawBank),
-		...Object.keys(rawCL),
-		...Object.keys(rawTempCL),
-		...Object.keys(rawSB),
-		...favorites,
-		...allGearItemIDs
-	];
+		['bank', Object.keys(rawBank)],
+		['cl', Object.keys(rawCL)],
+		['tempcl', Object.keys(rawTempCL)],
+		['sacbank', Object.keys(rawSB)],
+		['favs', favorites],
+		['gear', allGearItemIDs]
+	] as const;
 
-	for (const id of allItemsToCheck.map(i => Number(i))) {
-		const item = Items.get(id);
-		if (!item) {
-			brokenBank.push(id);
+	for (const [, ids] of allItemsToCheck) {
+		for (const id of ids.map(i => Number(i))) {
+			const item = Items.get(id);
+			if (!item) {
+				brokenBank.push(id);
+			}
 		}
 	}
 
@@ -377,6 +387,14 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'invprizesleft': {
+				const remaining = await mahojiClientSettingsFetch({ invention_prizes_remaining: true });
+				const image = await makeBankImage({
+					bank: new Bank(remaining.invention_prizes_remaining as ItemBank),
+					title: 'Invention Prizes Left'
+				});
+				return msg.channel.send({ files: [new MessageAttachment(image.file.buffer)] });
+			}
 			case 'setmp': {
 				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
 				if (
@@ -1263,6 +1281,25 @@ ORDER BY qty DESC;`);
 **Average:** ${average}ms
 **Max:** ${max}ms
 **Min:** ${min}ms`);
+			}
+			case 'resetinvprizes': {
+				await clientSettingsUpdate({
+					invention_prizes_remaining: {}
+				});
+				return msg.channel.send('Done');
+			}
+			case 'invaddprizes': {
+				if (!input || typeof input !== 'string') return msg.channel.send('Invalid channel.');
+				const bank = parseBank({ inputStr: input });
+				if (bank.length === 0) return 'No items given.';
+				await msg.confirm(`Are you sure you want to add ${bank} to the invention prizes?`);
+				const current = (await mahojiClientSettingsFetch({ invention_prizes_remaining: true }))
+					.invention_prizes_remaining as ItemBank;
+				const newBank = bank.add(current);
+				await clientSettingsUpdate({
+					invention_prizes_remaining: newBank.bank
+				});
+				return msg.channel.send(`Added ${bank} to the invention prizes. The new prize pool is: ${newBank}.`);
 			}
 		}
 	}

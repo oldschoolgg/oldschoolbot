@@ -5,8 +5,11 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
 
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { CollectionLogType } from '../../tasks/collectionLogTask';
 import { dyedItems } from '../dyedItems';
 import { growablePets } from '../growablePets';
+import { Inventions } from '../invention/inventions';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
 import { Ignecarus } from '../minions/data/killableMonsters/custom/bosses/Ignecarus';
 import {
@@ -33,6 +36,7 @@ import { allFarmingItems } from '../skilling/skills/farming';
 import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import mixables from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
+import { ItemBank } from '../types';
 import { addArrayOfNumbers, removeFromArr, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
@@ -1071,6 +1075,10 @@ export const allCollectionLogs: ICollection = {
 					'Dwarven knife',
 					'Dwarven gauntlets'
 				])
+			},
+			Invention: {
+				alias: ['inv'],
+				items: [...Inventions.map(i => i.item.id), ...resolveItems('Cogsworth')]
 			}
 		}
 	},
@@ -1294,7 +1302,7 @@ function getLeftList(
 	return leftList;
 }
 
-export async function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'collection' | 'tame' | 'temp') {
+export async function getBank(user: KlasaUser, type: CollectionLogType) {
 	const userCheckBank = new Bank();
 	switch (type) {
 		case 'collection':
@@ -1313,12 +1321,17 @@ export async function getBank(user: KlasaUser, type: 'sacrifice' | 'bank' | 'col
 		case 'temp':
 			userCheckBank.add(user.settings.get(UserSettings.TempCL));
 			break;
+		case 'disassembly': {
+			const items = await mahojiUsersSettingsFetch(user.id, { disassembled_items_bank: true });
+			userCheckBank.add(items.disassembled_items_bank as ItemBank);
+			break;
+		}
 	}
 	return userCheckBank;
 }
 
 // Get the total items the user has in its CL and the total items to collect
-export async function getTotalCl(user: KlasaUser, logType: 'sacrifice' | 'bank' | 'collection' | 'tame' | 'temp') {
+export async function getTotalCl(user: KlasaUser, logType: CollectionLogType) {
 	const b = await getBank(user, logType);
 	return getUserClData(b, allCLItemsFiltered);
 }
@@ -1405,7 +1418,7 @@ export async function getCollection(options: {
 	user: KlasaUser;
 	search: string;
 	flags: { [key: string]: string | number };
-	logType?: 'collection' | 'sacrifice' | 'bank' | 'tame' | 'temp';
+	logType?: CollectionLogType;
 }): Promise<false | IToReturnCollection> {
 	let { user, search, flags, logType } = options;
 

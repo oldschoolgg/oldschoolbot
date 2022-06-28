@@ -162,7 +162,8 @@ export const enum Emoji {
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
 	SOTW = '<:SOTWtrophy:842938096097820693>',
-	OSRSSkull = '<:skull:863392427040440320>'
+	OSRSSkull = '<:skull:863392427040440320>',
+	Invention = '<:Invention:936219232146980874>'
 }
 
 export const ReactionEmoji = {
@@ -264,6 +265,8 @@ export const enum Tasks {
 	Nex = 'nexActivity',
 	BaxtorianBathhouses = 'bathhousesActivity',
 	TroubleBrewing = 'troubleBrewingActivity',
+	Disassembling = 'disassemblingActivity',
+	Research = 'researchActivity',
 	REMOVED = '__REMOVED__'
 }
 
@@ -500,7 +503,8 @@ export const skillEmoji = {
 	cml: '<:CrystalMathLabs:364657225249062912>',
 	clock: '<:ehpclock:352323705210142721>',
 	combat: '<:combat:802136963956080650>',
-	dungeoneering: '<:dungeoneering:828683755198873623>'
+	dungeoneering: '<:dungeoneering:828683755198873623>',
+	invention: '<:Invention:936219232146980874>'
 };
 
 export const LEVEL_99_XP = convertLVLtoXP(99);

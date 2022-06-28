@@ -16,7 +16,17 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, sumArr, Time } from 'e';
+import {
+	calcWhatPercent,
+	increaseNumByPercent,
+	objectEntries,
+	randArrItem,
+	randInt,
+	round,
+	shuffleArr,
+	sumArr,
+	Time
+} from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import { APIInteractionGuildMember, APIUser } from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
@@ -877,6 +887,13 @@ export async function asyncGzip(buffer: Buffer) {
 			resolve(gzipped);
 		});
 	});
+}
+
+export function increaseBankQuantitesByPercent(bank: Bank, percent: number) {
+	for (const [key, value] of Object.entries(bank.bank)) {
+		const increased = Math.floor(increaseNumByPercent(value, percent));
+		bank.bank[key] = increased;
+	}
 }
 
 export function generateXPLevelQuestion() {

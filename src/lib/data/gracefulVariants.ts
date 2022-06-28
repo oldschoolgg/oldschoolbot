@@ -43,7 +43,8 @@ export const gracefulFeet = [
 	'Hosidius graceful boots',
 	'Kourend graceful boots',
 	'Brimhaven graceful boots',
-	'Dark graceful boots'
+	'Dark graceful boots',
+	'Silverhawk boots'
 ];
 
 export const gracefulHands = [

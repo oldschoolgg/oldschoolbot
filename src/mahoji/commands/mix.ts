@@ -1,7 +1,8 @@
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Herblore from '../../lib/skilling/skills/herblore/herblore';
@@ -101,16 +102,37 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		const maxTripLength = user.maxTripLength('Herblore');
-
-		let { quantity } = options;
-		if (!quantity) quantity = Math.floor(maxTripLength / timeToMixSingleItem);
-
+		const boosts: string[] = [];
 		const baseCost = new Bank(mixableItem.inputItems);
 
 		const maxCanDo = user.bank({ withGP: true }).fits(baseCost);
 		if (maxCanDo === 0) {
 			return "You don't have enough supplies to mix even one of this item!";
 		}
+
+		if (!options.wesley && !options.zahur) {
+			const boostResult = await inventionItemBoost({
+				userID: BigInt(user.id),
+				inventionID: InventionID.MechaMortar,
+				duration: options.quantity
+					? options.quantity * timeToMixSingleItem
+					: Math.floor(maxTripLength / timeToMixSingleItem)
+			});
+			if (boostResult.success) {
+				timeToMixSingleItem = reduceNumByPercent(
+					timeToMixSingleItem,
+					inventionBoosts.mechaMortar.herbloreSpeedBoostPercent
+				);
+				boosts.push(
+					`${inventionBoosts.mechaMortar.herbloreSpeedBoostPercent}% boost for Mecha-Mortar (${boostResult.messages})`
+				);
+			}
+		}
+		let defaultQty = Math.floor(maxTripLength / timeToMixSingleItem);
+
+		let { quantity } = options;
+		if (!quantity) quantity = defaultQty;
+
 		if (maxCanDo < quantity) {
 			quantity = maxCanDo;
 		}
@@ -143,8 +165,12 @@ export const mineCommand: OSBMahojiCommand = {
 			type: 'Herblore'
 		});
 
-		return `${user.minionName} ${cost} making ${quantity} ${sets} ${
+		let str = `${user.minionName} ${cost} making ${quantity} ${sets} ${
 			mixableItem.name
 		}, it'll take around ${formatDuration(duration)} to finish.`;
+		if (boosts.length > 0) {
+			str += `\n**Boosts:** ${boosts.join(', ')}`;
+		}
+		return str;
 	}
 };

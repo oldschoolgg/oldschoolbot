@@ -1,11 +1,13 @@
-import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, Time } from 'e';
-import { Task } from 'klasa';
-import { MonsterKillOptions, Monsters } from 'oldschooljs';
+import { calcWhatPercent, increaseNumByPercent, percentChance, reduceNumByPercent, sumArr, Time } from 'e';
+import { KlasaUser, Task } from 'klasa';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { BitField, Emoji, PvMMethod } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -19,9 +21,129 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll } from '../../lib/util';
+import { assert, itemID, roll } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { trackClientBankStats } from '../../mahoji/mahojiSettings';
+
+async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
+	if (!hasItemsEquippedOrInBank(user, ['Gorajan bonecrusher', 'Superior bonecrusher'], 'one')) return;
+	if (user.bitfield.includes(BitField.DisabledGorajanBoneCrusher)) return;
+	let hasSuperior = user.owns('Superior bonecrusher');
+
+	let totalXP = 0;
+	for (const bone of bones) {
+		const amount = loot.amount(bone.inputId);
+		if (amount > 0) {
+			totalXP += bone.xp * amount * 4;
+			loot.remove(bone.inputId, amount);
+		}
+	}
+
+	let durationForCost = totalXP * 16.8;
+	let boostMsg: string | null = null;
+	if (hasSuperior && durationForCost > Number(Time.Minute)) {
+		const t = await inventionItemBoost({
+			userID: user.id,
+			inventionID: InventionID.SuperiorBonecrusher,
+			duration: durationForCost
+		});
+		if (!t.success) {
+			hasSuperior = false;
+		} else {
+			totalXP = increaseNumByPercent(totalXP, inventionBoosts.superiorBonecrusher.xpBoostPercent);
+			boostMsg = t.messages;
+		}
+	}
+
+	const xpStr = await user.addXP({
+		skillName: SkillsEnum.Prayer,
+		amount: totalXP,
+		duration,
+		minimal: true
+	});
+	messages.push(
+		`${xpStr} Prayer XP${
+			hasSuperior
+				? `(${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher, ${
+						boostMsg ? `, ${boostMsg}` : ''
+				  })`
+				: ''
+		}`
+	);
+}
+
+const hideLeatherMap = [
+	[getOSItem('Green dragonhide'), getOSItem('Green dragon leather')],
+	[getOSItem('Blue dragonhide'), getOSItem('Blue dragon leather')],
+	[getOSItem('Red dragonhide'), getOSItem('Red dragon leather')],
+	[getOSItem('Black dragonhide'), getOSItem('Black dragon leather')],
+	[getOSItem('Royal dragonhide'), getOSItem('Royal dragon leather')]
+] as const;
+
+async function portableTannerEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
+	if (!user.owns('Portable tanner')) return;
+	const boostRes = await inventionItemBoost({
+		userID: BigInt(user.id),
+		inventionID: InventionID.PortableTanner,
+		duration
+	});
+	if (!boostRes.success) return;
+	let triggered = false;
+	let toAdd = new Bank();
+	for (const [hide, leather] of hideLeatherMap) {
+		let qty = loot.amount(hide.id);
+		if (qty > 0) {
+			triggered = true;
+			loot.remove(hide.id, qty);
+			toAdd.add(leather.id, qty);
+		}
+	}
+	loot.add(toAdd);
+	trackClientBankStats('portable_tanner_loot', toAdd);
+	if (!triggered) return;
+	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
+}
+
+export async function clueUpgraderEffect(
+	user: KlasaUser,
+	loot: Bank,
+	messages: string[],
+	type: 'pvm' | 'pickpocketing'
+) {
+	if (!user.owns('Clue upgrader')) return false;
+	const upgradedClues = new Bank();
+	const removeBank = new Bank();
+	let durationForCost = 0;
+
+	const fn = type === 'pvm' ? inventionBoosts.clueUpgrader.chance : inventionBoosts.clueUpgrader.pickPocketChance;
+	for (let i = 0; i < 5; i++) {
+		const clueTier = ClueTiers[i];
+		if (!loot.has(clueTier.scrollID)) continue;
+		for (let t = 0; t < loot.amount(clueTier.scrollID); t++) {
+			if (percentChance(fn(clueTier))) {
+				removeBank.add(clueTier.scrollID);
+				upgradedClues.add(ClueTiers[i + 1].scrollID);
+				durationForCost += inventionBoosts.clueUpgrader.durationCalc(clueTier);
+			}
+		}
+	}
+	if (upgradedClues.length === 0) return false;
+	const boostRes = await inventionItemBoost({
+		userID: BigInt(user.id),
+		inventionID: InventionID.ClueUpgrader,
+		duration: durationForCost
+	});
+	if (!boostRes.success) return false;
+	trackClientBankStats('clue_upgrader_loot', upgradedClues);
+	loot.add(upgradedClues);
+	assert(loot.has(removeBank));
+	loot.remove(removeBank);
+	let totalCluesUpgraded = sumArr(upgradedClues.items().map(i => i[1]));
+	messages.push(`<:Clue_upgrader:986830303001722880> Upgraded ${totalCluesUpgraded} clues (${boostRes.messages})`);
+}
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -116,12 +238,13 @@ export default class extends Task {
 		});
 
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
+		const messages: string[] = [];
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 
 		if (masterCapeRolls > 0) {
-			str += `${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls `;
+			messages.push(`${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls`);
 		}
 
 		if (monster.id === Monsters.Vorkath.id && roll(6000)) {
@@ -161,17 +284,21 @@ export default class extends Task {
 		}
 
 		if (gotBrock) {
-			str += '\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.';
+			messages.push(
+				'<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.'
+			);
 		}
 
 		if (gotKlik) {
-			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
+			messages.push(
+				'<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.'
+			);
 		}
 
 		if (isDoubleLootActive(this.client, duration)) {
-			str += '\n\n**Double Loot!**';
+			messages.push('**Double Loot!**');
 		} else if (oriBoost) {
-			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
+			messages.push('Ori has used the abyss to transmute you +25% bonus loot!');
 		}
 
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
@@ -190,21 +317,9 @@ export default class extends Task {
 			loot.add('Clue hunter boots');
 		}
 
-		if (user.owns('Gorajan bonecrusher') && !user.bitfield.includes(BitField.DisabledGorajanBoneCrusher)) {
-			let totalXP = 0;
-			for (const bone of bones) {
-				const amount = loot.amount(bone.inputId);
-				if (amount > 0) {
-					totalXP += bone.xp * amount * 4;
-					loot.remove(bone.inputId, amount);
-				}
-			}
-			str += await user.addXP({
-				skillName: SkillsEnum.Prayer,
-				amount: totalXP,
-				duration
-			});
-		}
+		await bonecrusherEffect(user, loot, duration, messages);
+		await portableTannerEffect(user, loot, duration, messages);
+		await clueUpgraderEffect(user, loot, messages, 'pvm');
 
 		let thisTripFinishesTask = false;
 
@@ -290,6 +405,10 @@ export default class extends Task {
 				user,
 				previousCL
 			);
+
+		if (messages.length > 0) {
+			str += `\n**Messages:** ${messages.join(', ')}`;
+		}
 
 		handleTripFinish(
 			user,

@@ -47,7 +47,17 @@ export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
 		.setTitle(`${badgesStr}${user.minionName}`)
 		.addField({
 			name: '\u200b',
-			value: ['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
+			value: [
+				'attack',
+				'strength',
+				'defence',
+				'ranged',
+				'prayer',
+				'magic',
+				'runecraft',
+				'construction',
+				'invention'
+			]
 				.map(skillCell)
 				.join('\n'),
 			inline: true

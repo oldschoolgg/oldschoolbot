@@ -657,10 +657,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'skill',
 					description: 'The skill you want to select.',
 					required: true,
-					choices: [
-						{ name: 'Overall', value: 'overall' },
-						...Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
-					]
+					autocomplete: async (value: string) => {
+						return [
+							{ name: 'Overall', value: 'overall' },
+							...Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
+						].filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
+					}
 				},
 				{
 					type: ApplicationCommandOptionType.Boolean,

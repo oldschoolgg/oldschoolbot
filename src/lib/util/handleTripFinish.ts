@@ -10,16 +10,19 @@ import { MysteryBoxes } from '../bsoOpenables';
 import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
 import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ClientSettings } from '../settings/types/ClientSettings';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
+import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, itemID, roll, updateBankSetting, updateGPTrackSetting } from '../util';
+import { channelIsSendable, itemID, roll, toKMB, updateBankSetting, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { makeDoClueButton, makeOpenCasketButton, makeRepeatTripButton } from './globalInteractions';
+import { userHasItemsEquippedAnywhere } from './minionUtils';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -93,7 +96,7 @@ const tripFinishEffects: {
 		name: 'Custom Pet Perk',
 		fn: async ({ data, messages, user }) => {
 			const pet = user.equippedPet();
-			const minutes = data.duration / Time.Minute;
+			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
 			let bonusLoot = new Bank();
 			switch (pet) {
@@ -216,6 +219,31 @@ const tripFinishEffects: {
 				messages.push(
 					"Your Voidling didn't alch anything because you either don't have any nature runes or fire runes."
 				);
+			}
+		}
+	},
+	{
+		name: 'Invention Effects',
+		fn: async ({ data, messages, user }) => {
+			if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots') && data.duration > Time.Minute) {
+				const costRes = await inventionItemBoost({
+					userID: user.id,
+					inventionID: InventionID.SilverHawkBoots,
+					duration: data.duration
+				});
+				if (costRes.success) {
+					const xpToReceive = inventionBoosts.silverHawks.passiveXPCalc(
+						data.duration,
+						user.skillLevel(SkillsEnum.Agility)
+					);
+					await user.addXP({
+						skillName: SkillsEnum.Agility,
+						amount: xpToReceive,
+						multiplier: false,
+						duration: data.duration
+					});
+					messages.push(`+${toKMB(xpToReceive)} Agility XP from Silverhawk boots (${costRes.messages})`);
+				}
 			}
 		}
 	}
