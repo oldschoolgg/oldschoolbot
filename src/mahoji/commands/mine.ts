@@ -51,7 +51,6 @@ export const mineCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to mine things.',
 		examples: ['/mine name:Runite ore']
 	},
 	options: [

@@ -40,7 +40,6 @@ export const sellCommand: OSBMahojiCommand = {
 	description: 'Sell items from your bank to the bot for GP.',
 	attributes: {
 		categoryFlags: ['minion'],
-		description: 'Sell items from your bank to the bot for GP.',
 		examples: ['/sell items:10k trout, 5 coal']
 	},
 	options: [

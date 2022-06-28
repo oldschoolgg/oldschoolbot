@@ -52,7 +52,6 @@ export const killCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to kill things.',
 		examples: ['/k zulrah']
 	},
 	options: [
