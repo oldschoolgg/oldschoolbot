@@ -32,7 +32,7 @@ export const clientOptions: KlasaClientOptions = {
 		const deprecatedCommands = client.commands.filter(c => c.path.toLowerCase().includes('deprecated')).size;
 		const totalCmds = client.commands.size;
 		const commandsLeft = totalCmds - deprecatedCommands;
-		const endOfTheWorld = new Date('2022-08-31');
+		const endOfTheWorld = new Date('2022-08-14');
 		const diff = endOfTheWorld.getTime() - Date.now();
 		const daysUntil = diff / Time.Day;
 		const migrationStr = `There are ${
