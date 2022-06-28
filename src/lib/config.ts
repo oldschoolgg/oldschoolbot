@@ -41,7 +41,9 @@ export const clientOptions: KlasaClientOptions = {
 			.split(' ')
 			.slice(0, 2)
 			.join(' ')
-			.replace(',', '')} (${(commandsLeft / daysUntil).toFixed(2)} per day)`;
+			.replace(',', '')} (${(commandsLeft / daysUntil).toFixed(2)} per day). There are ${
+			globalClient.mahojiClient.commands.pieces.size
+		} mahoji commands.`;
 		return `[Old School Bot] Ready to serve ${client.guilds.cache.size} guilds. ${migrationStr}`;
 	},
 	partials: ['USER', 'CHANNEL'],
