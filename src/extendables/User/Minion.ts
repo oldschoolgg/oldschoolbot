@@ -21,6 +21,8 @@ import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
 import { fishingLocations } from '../../lib/fishingContest';
 import { hasGracefulEquipped } from '../../lib/gear';
+import { DisassembleTaskOptions } from '../../lib/invention/disassemble';
+import { ResearchTaskOptions } from '../../lib/invention/research';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
@@ -720,6 +722,18 @@ export default class extends Extendable {
 					data.quantity
 				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
+			case 'Disassembling': {
+				const data = currentTask as DisassembleTaskOptions;
+				return `${this.minionName} is currently disassembling ${data.qty}x ${itemNameFromID(
+					data.i
+				)}. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'Research': {
+				const data = currentTask as ResearchTaskOptions;
+				return `${this.minionName} is currently researching with '${
+					data.material
+				}' materials. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
 			case 'Easter':
 			case 'BlastFurnace': {
 				throw new Error('Removed');
@@ -832,7 +846,7 @@ export default class extends Extendable {
 		// Get the masterCape itemId for use in text output, and check for non-matching cape.
 		const masterCape = isMatchingCape
 			? isMatchingCape
-			: multiplier
+			: multiplier || params.masterCapeBoost === true
 			? allMasterCapes.find(cape => allCapes.includes(cape))
 			: undefined;
 

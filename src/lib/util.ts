@@ -1,7 +1,6 @@
 import { bold } from '@discordjs/builders';
 import type { PrismaClient, User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
-import { exec } from 'child_process';
 import crypto from 'crypto';
 import {
 	Channel,
@@ -16,7 +15,17 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, sumArr, Time } from 'e';
+import {
+	calcWhatPercent,
+	increaseNumByPercent,
+	objectEntries,
+	randArrItem,
+	randInt,
+	round,
+	shuffleArr,
+	sumArr,
+	Time
+} from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import { APIInteractionGuildMember, APIUser } from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
@@ -28,7 +37,6 @@ import Items from 'oldschooljs/dist/structures/Items';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
 import { bool, integer, nodeCrypto, real } from 'random-js';
-import { promisify } from 'util';
 
 import { CLIENT_ID, production } from '../config';
 import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
@@ -585,7 +593,6 @@ export function birdhouseLimit(user: KlasaUser) {
 	if (user.hasItemEquippedAnywhere('Hunter master cape')) base += 4;
 	return base;
 }
-export const asyncExec = promisify(exec);
 
 export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
 	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {
@@ -877,6 +884,13 @@ export async function asyncGzip(buffer: Buffer) {
 			resolve(gzipped);
 		});
 	});
+}
+
+export function increaseBankQuantitesByPercent(bank: Bank, percent: number) {
+	for (const [key, value] of Object.entries(bank.bank)) {
+		const increased = Math.floor(increaseNumByPercent(value, percent));
+		bank.bank[key] = increased;
+	}
 }
 
 export function generateXPLevelQuestion() {

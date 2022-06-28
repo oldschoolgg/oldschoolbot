@@ -1,0 +1,65 @@
+import getOSItem from '../../util/getOSItem';
+import { DisassemblySourceGroup } from '..';
+
+const i = getOSItem;
+
+export const Food: DisassemblySourceGroup = {
+	name: 'Food',
+	items: [
+		{ item: i('Bread'), lvl: 1 },
+		{ item: i('Cooked chicken'), lvl: 1 },
+		{ item: i('Karambwanji'), lvl: 1 },
+		{ item: i('Minnow'), lvl: 1 },
+		{ item: i('Purple sweets'), lvl: 1 },
+		{ item: i('Sardine'), lvl: 1 },
+		{ item: i('Shrimps'), lvl: 1 },
+		{ item: i('Herring'), lvl: 5 },
+		{
+			item: i('Cabbage'),
+			lvl: 7
+		},
+		{ item: i('Mackerel'), lvl: 10 },
+		{ item: i('Mushrooms'), lvl: 10 },
+		{ item: i('Trout'), lvl: 15 },
+		{ item: i('Cod'), lvl: 18 },
+		{ item: i('Pike'), lvl: 20 },
+		{ item: i('Wine of zamorak'), lvl: 20 },
+		{ item: i('Salmon'), lvl: 25 },
+		{ item: i('Cooked karambwan'), lvl: 30 },
+		{ item: i('Tuna'), lvl: 30 },
+		{ item: i('Strawberry'), lvl: 31 },
+		{ item: i('Banana'), lvl: 33 },
+		{ item: i('Jug of wine'), lvl: 35 },
+		{ item: i('Plain pizza'), lvl: 35 },
+		{ item: i('Big bass'), lvl: 43 },
+		{ item: i('Big swordfish'), lvl: 45 },
+		{ item: i('Meat pizza'), lvl: 45 },
+		{ item: i('Fish pie'), lvl: 47 },
+		{ item: i('Potato with cheese'), lvl: 47 },
+		{ item: i('Watermelon'), lvl: 47 },
+		{ item: i('Lobster'), lvl: 48 },
+		{ item: i('Chocolate cake'), lvl: 50 },
+		{ item: i('Pineapple'), lvl: 51 },
+		{ item: i('Bass'), lvl: 52 },
+		{ item: i('Lava eel'), lvl: 53 },
+		{ item: i('Swordfish'), lvl: 56 },
+		{ item: i('Papaya fruit'), lvl: 57 },
+		{ item: i('White berries'), lvl: 59 },
+		{ item: i('Curry'), lvl: 60 },
+		{ item: i('Monkfish'), lvl: 64 },
+		{ item: i('Coconut'), lvl: 68 },
+		{ item: i('Poison ivy berries'), lvl: 70 },
+		{ item: i('Mushroom potato'), lvl: 80 },
+		{ item: i('Shark'), lvl: 80 },
+		{ item: i('Sea turtle'), lvl: 82 },
+		{ item: i('Anglerfish'), lvl: 84 },
+		{ item: i('Tuna potato'), lvl: 85 },
+		{ item: i('Wild pie'), lvl: 85 },
+		{ item: i('Dark crab'), lvl: 90 },
+		{ item: i('Manta ray'), lvl: 91 },
+		{ item: i('Dragonfruit'), lvl: 95 },
+		{ item: i('Summer pie'), lvl: 95 },
+		{ item: i('Rocktail'), lvl: 99 }
+	],
+	parts: { organic: 100 }
+};

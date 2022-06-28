@@ -89,7 +89,7 @@ for (const usableUnlock of usableUnlocks) {
 	});
 }
 
-const genericUsables: { items: [Item, Item]; cost: Bank; loot: Bank | null; response: string }[] = [
+const genericUsables: { items: [Item, Item]; cost: Bank; loot: Bank | null; response: string; addToCL?: boolean }[] = [
 	{
 		items: [getOSItem('Banana'), getOSItem('Monkey')],
 		cost: new Bank().add('Banana').freeze(),
@@ -100,37 +100,43 @@ const genericUsables: { items: [Item, Item]; cost: Bank; loot: Bank | null; resp
 		items: [getOSItem('Knife'), getOSItem('Turkey')],
 		cost: new Bank().add('Turkey'),
 		loot: new Bank().add('Turkey drumstick', 3),
-		response: 'You cut your Turkey into 3 drumsticks!'
+		response: 'You cut your Turkey into 3 drumsticks!',
+		addToCL: true
 	},
 	{
 		items: [getOSItem('Shiny mango'), getOSItem('Magus scroll')],
 		cost: new Bank().add('Shiny mango').add('Magus scroll'),
 		loot: new Bank().add('Magical mango'),
-		response: 'You enchanted your Shiny mango into a Magical mango!'
+		response: 'You enchanted your Shiny mango into a Magical mango!',
+		addToCL: true
 	},
 	{
 		items: [getOSItem('Blabberbeak'), getOSItem('Magical mango')],
 		cost: new Bank().add('Magical mango').add('Blabberbeak'),
 		loot: new Bank().add('Mangobeak'),
-		response: 'You fed a Magical mango to Blabberbeak, and he transformed into a weird-looking mango bird, oops.'
+		response: 'You fed a Magical mango to Blabberbeak, and he transformed into a weird-looking mango bird, oops.',
+		addToCL: true
 	},
 	{
 		items: [getOSItem('Candle'), getOSItem('Celebratory cake')],
 		cost: new Bank().add('Candle').add('Celebratory cake'),
 		loot: new Bank().add('Celebratory cake with candle'),
-		response: 'You stick a candle in your cake.'
+		response: 'You stick a candle in your cake.',
+		addToCL: true
 	},
 	{
 		items: [getOSItem('Tinderbox'), getOSItem('Celebratory cake with candle')],
 		cost: new Bank().add('Celebratory cake with candle'),
 		loot: new Bank().add('Lit celebratory cake'),
-		response: 'You light the candle in your cake.'
+		response: 'You light the candle in your cake.',
+		addToCL: true
 	},
 	{
 		items: [getOSItem('Klik'), getOSItem('Celebratory cake with candle')],
 		cost: new Bank().add('Celebratory cake with candle'),
 		loot: new Bank().add('Burnt celebratory cake'),
-		response: 'You try to get Klik to light the candle... but he burnt the cake..'
+		response: 'You try to get Klik to light the candle... but he burnt the cake..',
+		addToCL: true
 	}
 ];
 
@@ -146,7 +152,8 @@ for (const group of dyedItems) {
 				items: [dyedVersion.item, dye],
 				cost: new Bank().add(dyedVersion.item.id).add(dye.id),
 				loot: new Bank().add(resultingItem.item.id),
-				response: `You used a ${dye.name} on your ${dyedVersion.item.name}, and received a ${resultingItem.item.name}.`
+				response: `You used a ${dye.name} on your ${dyedVersion.item.name}, and received a ${resultingItem.item.name}.`,
+				addToCL: false
 			});
 		}
 	}
@@ -157,7 +164,9 @@ for (const genericU of genericUsables) {
 		items: genericU.items,
 		run: async klasaUser => {
 			if (genericU.cost) await klasaUser.removeItemsFromBank(genericU.cost);
-			if (genericU.loot) await klasaUser.addItemsToBank({ items: genericU.loot });
+			if (genericU.loot) {
+				await klasaUser.addItemsToBank({ items: genericU.loot, collectionLog: genericU.addToCL ?? false });
+			}
 			return genericU.response;
 		}
 	});

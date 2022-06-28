@@ -416,7 +416,11 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async buy(msg: KlasaMessage) {
-		return minionBuyCommand(msg.author, await mahojiUsersSettingsFetch(msg.author.id), false);
+		return msg.channel.send(
+			convertMahojiResponseToDJSResponse(
+				await minionBuyCommand(msg.author, await mahojiUsersSettingsFetch(msg.author.id), false)
+			)
+		);
 	}
 
 	async setname(msg: KlasaMessage) {

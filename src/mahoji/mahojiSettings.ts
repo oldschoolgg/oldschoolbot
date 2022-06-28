@@ -263,7 +263,8 @@ export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSki
 		ranged: Number(user.skills_ranged),
 		hitpoints: Number(user.skills_hitpoints),
 		slayer: Number(user.skills_slayer),
-		dungeoneering: Number(user.skills_dungeoneering)
+		dungeoneering: Number(user.skills_dungeoneering),
+		invention: Number(user.skills_invention)
 	};
 	if (levels) {
 		for (const [key, val] of Object.entries(skills) as [keyof TSkills, number][]) {
@@ -303,6 +304,29 @@ export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSele
 	return clientSettings as ClientStorage;
 }
 
+export async function clientSettingsUpdate(data: Prisma.ClientStorageUpdateArgs['data']) {
+	try {
+		await prisma.clientStorage.update({
+			data,
+			where: {
+				id: CLIENT_ID
+			}
+		});
+	} catch (err) {
+		logError(err, {
+			updated_data: JSON.stringify(data)
+		});
+		throw err;
+	}
+}
+
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
+}
+
+export async function trackClientBankStats(key: 'clue_upgrader_loot' | 'portable_tanner_loot', newItems: Bank) {
+	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
+	await clientSettingsUpdate({
+		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
+	});
 }

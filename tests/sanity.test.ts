@@ -79,7 +79,10 @@ describe('Sanity', () => {
 			'Party horn',
 			'Diamond crown',
 			'Snappy the Turtle',
-			'Liber tea'
+			'Liber tea',
+			'Invention master cape',
+			'Portable tanner',
+			'Clue upgrader'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {

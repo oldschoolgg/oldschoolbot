@@ -14,14 +14,13 @@ import { OSBMahojiCommand } from '../lib/util';
 
 export const wintertodtCommand: OSBMahojiCommand = {
 	name: 'wintertodt',
-	description: 'Sends your minion to do Wintertodt.',
+	description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
 	attributes: {
 		altProtection: true,
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
 		requiredPermissionsForBot: ['ATTACH_FILES'],
 		categoryFlags: ['minion', 'skilling', 'minigame'],
-		description: 'Sends your minion to fight the Wintertodt. Requires food and warm items.',
 		examples: ['/wintertodt']
 	},
 	options: [],

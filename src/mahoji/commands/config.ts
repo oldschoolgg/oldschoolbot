@@ -10,6 +10,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
 import { BankSortMethods } from '../../lib/sorts';
@@ -715,6 +716,27 @@ export const configCommand: OSBMahojiCommand = {
 							required: false
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'toggle_invention',
+					description: 'Toggle an invention on/off.',
+					options: [
+						{
+							name: 'invention',
+							type: ApplicationCommandOptionType.String,
+							description: 'The invention you want to toggle on/off.',
+							required: true,
+							autocomplete: async value => {
+								return Inventions.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({
+									name: i.name,
+									value: i.name
+								}));
+							}
+						}
+					]
 				}
 			]
 		}
@@ -741,6 +763,7 @@ export const configCommand: OSBMahojiCommand = {
 			favorite_alchs?: { add?: string; remove?: string; add_many?: string };
 			favorite_food?: { add?: string; remove?: string };
 			favorite_items?: { add?: string; remove?: string };
+			toggle_invention?: { invention: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([
@@ -791,6 +814,24 @@ export const configCommand: OSBMahojiCommand = {
 			}
 			if (favorite_items) {
 				return favItemConfig(mahojiUser, favorite_items.add, favorite_items.remove);
+			}
+			if (options.user.toggle_invention) {
+				const invention = Inventions.find(i =>
+					stringMatches(i.name, options.user?.toggle_invention?.invention ?? '')
+				);
+				if (!invention) return 'Invalid invention.';
+				if (mahojiUser.disabled_inventions.includes(invention.id)) {
+					await mahojiUserSettingsUpdate(user.id, {
+						disabled_inventions: removeFromArr(mahojiUser.disabled_inventions, invention.id)
+					});
+					return `${invention.name} is now **Enabled**.`;
+				}
+				await mahojiUserSettingsUpdate(user.id, {
+					disabled_inventions: {
+						push: invention.id
+					}
+				});
+				return `${invention.name} is now **Disabled**.`;
 			}
 		}
 		return 'Invalid command.';

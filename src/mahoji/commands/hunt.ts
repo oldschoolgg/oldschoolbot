@@ -1,9 +1,10 @@
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import { HERBIBOAR_ID, RAZOR_KEBBIT_ID } from '../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../lib/gear/functions/hasWildyHuntGearEquipped';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { monkeyTiers } from '../../lib/monkeyRumble';
 import { trackLoot } from '../../lib/settings/prisma';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -25,7 +26,6 @@ export const huntCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to hunt things.',
 		examples: ['/hunt name:Ferret']
 	},
 	options: [
@@ -168,6 +168,19 @@ export const huntCommand: OSBMahojiCommand = {
 		}
 
 		const maxTripLength = user.maxTripLength('Hunter');
+		if (creature.huntTechnique === HunterTechniqueEnum.BoxTrapping) {
+			const boostRes = await inventionItemBoost({
+				userID: user.id,
+				inventionID: InventionID.QuickTrap,
+				duration: Math.floor(maxTripLength / ((catchTime * Time.Second) / traps))
+			});
+			if (boostRes.success) {
+				boosts.push(
+					`${inventionBoosts.quickTrap.boxTrapBoostPercent}% boost for Quick-Trap invention (${boostRes.messages})`
+				);
+				catchTime = reduceNumByPercent(catchTime, inventionBoosts.quickTrap.boxTrapBoostPercent);
+			}
+		}
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / ((catchTime * Time.Second) / traps));

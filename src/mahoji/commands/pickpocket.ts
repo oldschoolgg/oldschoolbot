@@ -23,7 +23,6 @@ export const pickpocketCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Sends your minion to pickpocket to train Thieving.',
 		examples: ['/pickpocket name:Man']
 	},
 	options: [

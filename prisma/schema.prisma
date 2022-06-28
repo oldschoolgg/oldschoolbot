@@ -153,6 +153,12 @@ model ClientStorage {
   bb_cost                 Json   @default("{}") @db.Json
   bb_loot                 Json   @default("{}") @db.Json
 
+  items_disassembled_cost    Json @default("{}") @db.Json
+  invention_materials_cost   Json @default("{}") @db.Json
+  invention_prizes_remaining Json @default("{}") @db.Json
+  clue_upgrader_loot         Json @default("{}") @db.Json
+  portable_tanner_loot       Json @default("{}") @db.Json
+
   @@map("clientStorage")
 }
 
@@ -423,13 +429,10 @@ model User {
   nursery                  Json?    @db.Json
   selected_tame            Int?
   monkeys_fought           String[]
-  times_fed_gregoyle       Int      @default(0)
-  wrong_accusations        Int      @default(0)
   gp_slots                 BigInt   @default(0)
   emerged_inferno_attempts Int      @default(0)
   skills_dungeoneering     BigInt   @default(0) @map("skills.dungeoneering")
   ourania_tokens           Int      @default(0)
-  spawned_rmb              Boolean  @default(false)
   total_item_contracts     Int      @default(0)
   last_item_contract_date  BigInt   @default(0)
   current_item_contract    Int?
@@ -438,9 +441,14 @@ model User {
   dungeoneering_tokens     Int      @default(0)
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
-  got_free_festive_present Boolean  @default(false)
-  eggs_delivered           Int      @default(0)
 
+  // Invention
+  skills_invention          BigInt @default(0) @map("skills.invention")
+  materials_owned           Json   @default("{}") @db.Json
+  disassembled_items_bank   Json   @default("{}") @db.Json
+  researched_materials_bank Json   @default("{}") @db.Json
+  unlocked_blueprints       Int[]
+  disabled_inventions       Int[]
 
   @@map("users")
 }
@@ -754,6 +762,9 @@ enum activity_type_enum {
   TroubleBrewing
   Easter
   BaxtorianBathhouses
+
+  Disassembling
+  Research
 }
 
 enum xp_gains_skill_enum {
@@ -781,6 +792,7 @@ enum xp_gains_skill_enum {
   hitpoints
   dungeoneering
   slayer
+  invention
 }
 
 enum tame_growth {
