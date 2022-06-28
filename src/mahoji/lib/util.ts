@@ -132,7 +132,9 @@ export function convertComponentDJSComponent(
 }
 export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return [
-		...Array.from(globalClient.commands.values() as any as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
+		...Array.from(globalClient.commands.values() as any as BotCommand[])
+			.filter(i => !i.category.toLowerCase().includes('deprecated'))
+			.map(convertKlasaCommandToAbstractCommand),
 		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
 	];
 }
