@@ -1,6 +1,4 @@
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
-import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { PoHObjects } from '../../lib/poh';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
@@ -13,6 +11,7 @@ import {
 	pohWallkitCommand,
 	pohWallkits
 } from '../lib/abstracted_commands/pohCommand';
+import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -92,20 +91,14 @@ export const pohCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'mountitem',
+			name: 'mount_item',
 			description: 'Mount an item into your PoH.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.String,
+					...ownedItemOption(),
 					name: 'name',
 					description: 'The item you want to mount.',
-					required: true,
-					autocomplete: async (value, user) => {
-						const mUser = await mahojiUsersSettingsFetch(user.id, { bank: true });
-						const bank = new Bank(mUser.bank as ItemBank);
-						let res = bank.items().filter(i => i[0].name.toLowerCase().includes(value.toLowerCase()));
-						return res.map(i => ({ name: `${i[0].name}`, value: i[0].name.toString() }));
-					}
+					required: true
 				}
 			]
 		}
