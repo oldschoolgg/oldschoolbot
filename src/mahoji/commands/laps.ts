@@ -75,7 +75,6 @@ export const lapsCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Do laps on Agility courses to train Agility.',
 		examples: ['/laps name:Ardougne rooftop course']
 	},
 	options: [

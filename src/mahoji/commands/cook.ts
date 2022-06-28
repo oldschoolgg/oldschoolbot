@@ -15,7 +15,6 @@ export const cookCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to cook things.',
 		examples: ['/cook name:Shrimp']
 	},
 	options: [

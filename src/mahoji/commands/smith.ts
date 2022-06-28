@@ -18,7 +18,6 @@ export const smithCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to smith things.',
 		examples: ['/smith name:Bronze platebody']
 	},
 	options: [

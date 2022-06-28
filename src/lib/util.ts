@@ -1,7 +1,6 @@
 import { bold } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
-import { exec } from 'child_process';
 import crypto from 'crypto';
 import {
 	Channel,
@@ -26,7 +25,6 @@ import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import { bool, integer, nodeCrypto, real } from 'random-js';
-import { promisify } from 'util';
 
 import { CLIENT_ID } from '../config';
 import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
@@ -539,8 +537,6 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 	}
 }
-
-export const asyncExec = promisify(exec);
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
 	if (!condition) {

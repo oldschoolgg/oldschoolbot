@@ -15,11 +15,10 @@ import { OSBMahojiCommand } from '../lib/util';
 
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',
-	description: 'Fish fish.',
+	description: 'Send your minion to fish fish.',
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to fish things.',
 		examples: ['/fish name:Shrimp']
 	},
 	options: [

@@ -14,7 +14,6 @@ export const collectionLogCommand: OSBMahojiCommand = {
 	description: 'See your Collection Log.',
 	attributes: {
 		requiresMinion: true,
-		description: 'See your Collection Log.',
 		examples: ['/cl name:Boss']
 	},
 	options: [

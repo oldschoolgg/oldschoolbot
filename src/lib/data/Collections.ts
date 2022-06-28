@@ -119,6 +119,7 @@ import {
 	zalcanoCL,
 	zulrahCL
 } from './CollectionsExport';
+import Createables from './createables';
 
 export const allCollectionLogs: ICollection = {
 	Bosses: {
@@ -836,6 +837,12 @@ export const allCollectionLogs: ICollection = {
 					...NexNonUniqueTable.allItems
 				],
 				items: [...godWarsDungeonCL, ...NexCL]
+			},
+			Creatables: {
+				counts: false,
+				items: Createables.filter(i => i.noCl !== true)
+					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
+					.flat()
 			}
 		}
 	}
