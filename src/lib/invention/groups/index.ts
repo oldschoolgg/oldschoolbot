@@ -8,7 +8,6 @@ import { Bows } from './Bows';
 import { Claws } from './Claws';
 import { Clothing } from './Clothing';
 import { Dagger } from './Dagger';
-import { Default } from './Default';
 import { Defender } from './Defender';
 import { Drygores } from './Drygores';
 import { Dwarven } from './Dwarven';
@@ -76,7 +75,6 @@ export const DisassemblyGroupMap = {
 	Spear,
 	UncutGems,
 	HybridArmour,
-	Default,
 	Bows,
 	Food,
 	Staff,

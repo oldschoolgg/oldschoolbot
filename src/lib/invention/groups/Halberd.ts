@@ -34,5 +34,5 @@ export const Halberd: DisassemblySourceGroup = {
 			lvl: 40
 		}
 	],
-	parts: { sharp: 30, protective: 5 }
+	parts: { sharp: 30, heavy: 30, base: 10 }
 };

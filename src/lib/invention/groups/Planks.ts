@@ -12,5 +12,5 @@ export const Planks: DisassemblySourceGroup = {
 		{ item: i('Mahogany plank'), lvl: 50 },
 		{ item: i('Elder plank'), lvl: 99 }
 	],
-	parts: { simple: 75, base: 25 }
+	parts: { organic: 50, base: 25, simple: 25 }
 };

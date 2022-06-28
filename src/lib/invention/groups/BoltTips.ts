@@ -17,5 +17,5 @@ export const BoltTips: DisassemblySourceGroup = {
 		{ item: i('Onyx bolt tips'), lvl: 73 },
 		{ item: i('Amethyst bolt tips'), lvl: 83 }
 	],
-	parts: { base: 40, sharp: 40, precious: 1 }
+	parts: { base: 10, sharp: 40, precious: 10 }
 };

@@ -27,5 +27,5 @@ export const BluntWeapons: DisassemblySourceGroup = {
 		{ item: i('Elder maul'), lvl: 90 },
 		{ item: i('Abyssal bludgeon'), lvl: 90 }
 	],
-	parts: { strong: 2, heavy: 3, base: 35, smooth: 30 }
+	parts: { strong: 10, heavy: 10, base: 15, smooth: 30 }
 };

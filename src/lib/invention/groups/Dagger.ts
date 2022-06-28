@@ -19,5 +19,5 @@ export const Dagger: DisassemblySourceGroup = {
 		{ item: i('Toktz-xil-ek'), lvl: 60 },
 		{ item: i('Abyssal dagger'), lvl: 90, flags: new Set(['abyssal']) }
 	],
-	parts: { sharp: 30, base: 35 }
+	parts: { sharp: 30, base: 10 }
 };

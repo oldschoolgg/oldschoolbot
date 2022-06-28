@@ -113,5 +113,5 @@ export const MagicArmour: DisassemblySourceGroup = {
 			lvl: 99
 		}
 	],
-	parts: { magic: 30, powerful: 3, protective: 32 }
+	parts: { magic: 30, powerful: 5, protective: 32 }
 };

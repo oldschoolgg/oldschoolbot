@@ -17,7 +17,7 @@ export const Glass: DisassemblySourceGroup = {
 		{ item: i('Earth orb'), lvl: 60 },
 		{ item: i('Fire orb'), lvl: 63 }
 	],
-	parts: { precious: 32, smooth: 30 }
+	parts: { precious: 20, smooth: 40 }
 };
 
 export default Glass;
