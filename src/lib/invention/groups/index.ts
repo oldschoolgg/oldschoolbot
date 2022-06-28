@@ -1,3 +1,5 @@
+import getOSItem from '../../util/getOSItem';
+import { DisassemblySourceGroup } from '..';
 import { Ashes } from './Ashes';
 import { Axes } from './Axes';
 import { Barrows } from './Barrows';
@@ -50,6 +52,12 @@ import { TreasureTrails } from './TreasureTrails';
 import { UncutGems } from './UncutGems';
 import { UnstrungBows } from './UnstrungBows';
 
+const Whips: DisassemblySourceGroup = {
+	name: 'Whips',
+	items: [{ item: getOSItem('Abyssal whip'), lvl: 90, flags: new Set(['abyssal']) }],
+	parts: { abyssal: 50, sharp: 25, flexible: 25 }
+};
+
 export const DisassemblyGroupMap = {
 	LeatherHides,
 	Projectiles,
@@ -101,7 +109,8 @@ export const DisassemblyGroupMap = {
 	EnsouledHeads,
 	RawFood,
 	MysteryBoxes,
-	Gilded
+	Gilded,
+	Whips
 } as const;
 
 export const DisassemblySourceGroups = Object.values(DisassemblyGroupMap);
