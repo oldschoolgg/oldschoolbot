@@ -1,12 +1,15 @@
 import { Embed } from '@discordjs/builders';
 import { Activity, User } from '@prisma/client';
+import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField, PerkTier } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
+import backgroundImages from '../../lib/minions/data/bankBackgrounds';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
@@ -14,6 +17,7 @@ import { asyncGzip, formatDuration, getUsername, stringMatches } from '../../lib
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
@@ -211,6 +215,106 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 		.join('\n')}`;
 }
 
+const statsNames = ['servers', 'minions', 'ironmen', 'sacrificed', 'bankbg', 'monsters', 'clues', 'icons'] as const;
+type Stat = typeof statsNames[number];
+async function statsCommand(user: User, type: Stat): CommandResponse {
+	const cooldown = Cooldowns.get(user.id, 'stats_command', Time.Second * 60);
+	if (cooldown !== null) {
+		return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}`;
+	}
+	switch (type) {
+		case 'servers': {
+			return `Old School Bot is in ${globalClient.guilds.cache.size} servers.`;
+		}
+		case 'minions': {
+			const result = await prisma.$queryRawUnsafe<any>(
+				'SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;'
+			);
+			return `There are ${result[0].count.toLocaleString()} minions!`;
+		}
+		case 'ironmen': {
+			const result = await prisma.$queryRawUnsafe<any>(
+				'SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;'
+			);
+			return `There are ${parseInt(result[0].count).toLocaleString()} ironman minions!`;
+		}
+		case 'icons': {
+			const result: { icon: string | null; qty: number }[] = await prisma.$queryRawUnsafe(
+				'SELECT "minion.icon" as icon, COUNT(*) as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;'
+			);
+			return `**Current minion tiers and their number of users:**\n${Object.values(result)
+				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
+				.join('\n')}`;
+		}
+		case 'bankbg': {
+			const result = await prisma.$queryRawUnsafe<any>(`SELECT "bankBackground", COUNT(*)
+FROM users
+WHERE "bankBackground" <> 1
+GROUP BY "bankBackground";`);
+
+			return result
+				.map(
+					(res: any) =>
+						`**${backgroundImages[res.bankBackground - 1].name}:** ${parseInt(res.count).toLocaleString()}`
+				)
+				.join('\n');
+		}
+		case 'sacrificed': {
+			const result = await prisma.$queryRawUnsafe<any>('SELECT SUM ("sacrificedValue") AS total FROM users;');
+			return `There has been ${parseInt(result[0].total).toLocaleString()} GP worth of items sacrificed!`;
+		}
+		case 'monsters': {
+			const totalBank: { [key: string]: number } = {};
+
+			const res: any = await prisma.$queryRawUnsafe(
+				'SELECT ARRAY(SELECT "monsterScores" FROM users WHERE "monsterScores"::text <> \'{}\'::text);'
+			);
+
+			const banks: ItemBank[] = res[0].array;
+
+			banks.map(bank => {
+				for (const [id, qty] of Object.entries(bank)) {
+					if (!totalBank[id]) totalBank[id] = qty;
+					else totalBank[id] += qty;
+				}
+			});
+
+			let str = 'Bot Stats Monsters\n\n';
+			str += Object.entries(totalBank)
+				.sort(([, qty1], [, qty2]) => qty2 - qty1)
+				.map(([monID, qty]) => {
+					return `${Monsters.get(parseInt(monID))?.name}: ${qty.toLocaleString()}`;
+				})
+				.join('\n');
+
+			return { attachments: [{ buffer: Buffer.from(str), fileName: 'Bot Stats Monsters.txt' }] };
+		}
+		case 'clues': {
+			const totalBank: { [key: string]: number } = {};
+
+			const res: any = await prisma.$queryRawUnsafe(
+				'SELECT ARRAY(SELECT "clueScores" FROM users WHERE "clueScores"::text <> \'{}\'::text);'
+			);
+
+			const banks: ItemBank[] = res[0].array;
+
+			banks.map(bank => {
+				for (const [id, qty] of Object.entries(bank)) {
+					if (!totalBank[id]) totalBank[id] = qty;
+					else totalBank[id] += qty;
+				}
+			});
+
+			return Object.entries(totalBank)
+				.map(
+					([clueID, qty]) =>
+						`**${ClueTiers.find(t => t.id === parseInt(clueID))?.name}:** ${qty.toLocaleString()}`
+				)
+				.join('\n');
+		}
+	}
+}
+
 export const toolsCommand: OSBMahojiCommand = {
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
@@ -314,6 +418,20 @@ export const toolsCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stats',
+					description: 'Check various stats.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'stat',
+							description: 'The stat you want to check',
+							choices: statsNames.map(i => ({ name: i, value: i })),
+							required: true
+						}
+					]
 				}
 			]
 		}
@@ -347,6 +465,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			};
 			minion_stats?: {};
 			activity_export?: {};
+			stats?: { stat: Stat };
 		};
 	}>) => {
 		interaction.deferReply();
@@ -412,6 +531,9 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 				const result = await promise;
 				return result;
+			}
+			if (patron.stats) {
+				return statsCommand(mahojiUser, patron.stats.stat);
 			}
 		}
 		return 'Invalid command!';
