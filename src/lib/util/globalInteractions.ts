@@ -1,6 +1,8 @@
+/* eslint-disable no-case-declarations */
 import { MessageButton } from 'discord.js';
 import { APIInteraction, APIMessageComponentInteraction, InteractionType } from 'mahoji';
 
+import { shootingStarsCommand, starCache } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { lastTripCache } from '../constants';
 import { ClueTier } from '../minions/data/clueTiers';
@@ -22,9 +24,11 @@ const globalInteractionActions = [
 	'OPEN_HARD_CASKET',
 	'OPEN_ELITE_CASKET',
 	'OPEN_MASTER_CASKET',
-	'REPEAT_TRIP'
+	'REPEAT_TRIP',
+	'DO_SHOOTING_STAR'
 ] as const;
-type GlobalInteractionAction = typeof globalInteractionActions[number];
+
+export type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
 	return globalInteractionActions.includes(str as GlobalInteractionAction);
 }
@@ -70,7 +74,7 @@ export async function interactionHook(data: APIInteraction) {
 	};
 
 	async function doClue(data: APIMessageComponentInteraction, tier: ClueTier['name']) {
-		await respondToButton(data.id, data.token);
+		await respondToButton({ id: data.id, token: data.token });
 		runCommand({
 			commandName: 'clue',
 			args: { tier },
@@ -80,7 +84,7 @@ export async function interactionHook(data: APIInteraction) {
 	}
 
 	async function openCasket(tier: ClueTier['name']) {
-		await respondToButton(data.id, data.token);
+		await respondToButton({ id: data.id, token: data.token });
 		runCommand({
 			commandName: 'open',
 			args: {
@@ -92,19 +96,19 @@ export async function interactionHook(data: APIInteraction) {
 	}
 
 	if (minionIsBusy(user.id)) {
-		return respondToButton(data.id, data.token, `${minionName(user)} is busy.`);
+		return respondToButton({ id: data.id, token: data.token, text: `${minionName(user)} is busy.` });
 	}
 
 	switch (id) {
 		case 'REPEAT_TRIP': {
 			const entry = lastTripCache.get(userID);
 			if (entry) {
-				await respondToButton(data.id, data.token);
+				await respondToButton({ id: data.id, token: data.token });
 				return entry.continue({
 					...options
 				});
 			}
-			return respondToButton(data.id, data.token, "Couldn't find a last trip to repeat.");
+			return respondToButton({ id: data.id, token: data.token, text: "Couldn't find a last trip to repeat." });
 		}
 		case 'DO_BEGINNER_CLUE':
 			return doClue(data, 'Beginner');
@@ -131,6 +135,15 @@ export async function interactionHook(data: APIInteraction) {
 			return openCasket('Elite');
 		case 'OPEN_MASTER_CASKET':
 			return openCasket('Master');
+
+		case 'DO_SHOOTING_STAR':
+			const star = starCache.get(user.id);
+			starCache.delete(user.id);
+			if (star && star.expiry > Date.now()) {
+				return shootingStarsCommand(data, BigInt(data.channel_id), user, star);
+			}
+			return respondToButton({ id: data.id, token: data.token, text: 'That Shooting Star has expired!' });
+
 		default: {
 		}
 	}

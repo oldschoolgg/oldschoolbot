@@ -4,6 +4,7 @@ import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js'
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
 import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
@@ -126,6 +127,7 @@ export async function handleTripFinish(
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
+	handleTriggerShootingStar(user, data, components);
 
 	sendToChannelID(channelID, {
 		content: message,

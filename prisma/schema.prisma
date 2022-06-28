@@ -615,6 +615,7 @@ enum activity_type_enum {
   Nex
   TroubleBrewing
   Easter
+  ShootingStars
 }
 
 enum xp_gains_skill_enum {
