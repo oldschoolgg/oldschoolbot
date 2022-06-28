@@ -9,7 +9,7 @@ import { prisma } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { getBankOfMissingItems, itemNameFromID, updateBankSetting } from '../../../lib/util';
+import { itemNameFromID, updateBankSetting } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
 import PoHImage from '../../../tasks/pohImage';
@@ -175,7 +175,7 @@ export async function pohMountItemCommand(user: KlasaUser, name: string) {
 	const costBank = new Bank().add(item.id);
 	if (poh.mounted_item !== 1112) costBank.add('Magic stone', 2);
 	if (!userBank.has(costBank)) {
-		const missingBank = getBankOfMissingItems(userBank, costBank);
+		const missingBank = costBank.remove(userBank);
 		return `You don't have all the required materials: ${costBank}\n\nYou're missing ${missingBank}`;
 	}
 
