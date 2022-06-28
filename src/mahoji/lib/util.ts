@@ -50,13 +50,13 @@ export function convertKlasaCommandToAbstractCommand(command: BotCommand): Abstr
 }
 
 export interface OSBMahojiCommand extends ICommand {
-	attributes?: AbstractCommandAttributes;
+	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 }
 
 export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand): AbstractCommand {
 	return {
 		name: command.name,
-		attributes: command.attributes
+		attributes: { ...command.attributes, description: command.description }
 	};
 }
 
