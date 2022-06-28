@@ -383,7 +383,7 @@ In the meantime...
 - Pick which invention you want to aim for first, and focus on getting the materials needed for it!
 - ${
 				user.skillLevel(SkillsEnum.Crafting) < 90
-					? "You don't have 90 Crafting, so you won't be able to train Inventio1n"
+					? "You don't have 90 Crafting, so you won't be able to train Invention."
 					: 'You have 90 Crafting! You can train Invention.'
 			}`;
 		}
