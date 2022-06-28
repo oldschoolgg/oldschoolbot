@@ -1,15 +1,8 @@
-import { CommandStore, KlasaMessage } from 'klasa';
+import { KlasaMessage } from 'klasa';
 
-import { BotCommand } from '../lib/structures/BotCommand';
+import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
-	public constructor(store: CommandStore, file: string[], directory: string) {
-		super(store, file, directory, {
-			description: 'Shows information about BSO',
-			examples: ['+bso']
-		});
-	}
-
 	async run(msg: KlasaMessage) {
 		return msg.channel.send(
 			'This command is being removed, in the future please use `/info`\n\n' +
