@@ -15,7 +15,7 @@ export const BluntWeapons: DisassemblySourceGroup = {
 			lvl: 25
 		},
 		{ item: i('Granite maul'), lvl: 55 },
-		{ item: i('Dragon warhammer'), lvl: 60 },
+		{ item: i('Dragon warhammer'), lvl: 60, flags: new Set(['orikalkum']) },
 		{ item: i("Statius's warhammer"), lvl: 78 },
 		{ item: i('Bronze warhammer'), lvl: 1 },
 		{ item: i('Iron warhammer'), lvl: 10 },

@@ -15,7 +15,7 @@ export const Spear: DisassemblySourceGroup = {
 		},
 		{ item: i('Mithril spear'), lvl: 30 },
 		{ item: i('Rune spear'), lvl: 50 },
-		{ item: i('Dragon spear'), lvl: 60 },
+		{ item: i('Dragon spear'), lvl: 60, flags: new Set(['orikalkum']) },
 		{
 			item: i('Zamorakian spear'),
 			lvl: 75

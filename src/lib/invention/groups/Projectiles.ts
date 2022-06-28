@@ -18,7 +18,7 @@ export const Projectiles: DisassemblySourceGroup = {
 		{ item: i('Adamant dart'), lvl: 30 },
 		{ item: i('Rune dart'), lvl: 50 },
 		{ item: i('Amethyst dart'), lvl: 50 },
-		{ item: i('Dragon dart'), lvl: 60 },
+		{ item: i('Dragon dart'), lvl: 60, flags: new Set(['orikalkum']) },
 		// Javelins
 		{ item: i('Bronze javelin'), lvl: 1 },
 		{ item: i('Iron javelin'), lvl: 10 },
@@ -26,7 +26,7 @@ export const Projectiles: DisassemblySourceGroup = {
 		{ item: i('Mithril javelin'), lvl: 30 },
 		{ item: i('Adamant javelin'), lvl: 30 },
 		{ item: i('Rune javelin'), lvl: 50 },
-		{ item: i('Dragon javelin'), lvl: 60 },
+		{ item: i('Dragon javelin'), lvl: 60, flags: new Set(['orikalkum']) },
 		{ item: i("Morrigan's javelin"), lvl: 78 },
 		// Arrows
 		{ item: i('Bronze arrow'), lvl: 1 },
@@ -41,7 +41,7 @@ export const Projectiles: DisassemblySourceGroup = {
 		{ item: i('Rune brutal'), lvl: 21 },
 		{ item: i('Adamant arrow'), lvl: 25 },
 		{ item: i('Rune arrow'), lvl: 25 },
-		{ item: i('Dragon arrow'), lvl: 30 },
+		{ item: i('Dragon arrow'), lvl: 30, flags: new Set(['orikalkum']) },
 		// Knives
 		{ item: i('Bronze knife'), lvl: 1 },
 		{ item: i('Iron knife'), lvl: 10 },
@@ -53,7 +53,7 @@ export const Projectiles: DisassemblySourceGroup = {
 		{ item: i('Mithril knife'), lvl: 30 },
 		{ item: i('Adamant knife'), lvl: 40 },
 		{ item: i('Rune knife'), lvl: 50 },
-		{ item: i('Dragon knife'), lvl: 60 },
+		{ item: i('Dragon knife'), lvl: 60, flags: new Set(['orikalkum']) },
 		// Bolts
 		{ item: i('Bronze bolts'), lvl: 1 },
 		{ item: i('Iron bolts'), lvl: 5 },
@@ -84,8 +84,8 @@ export const Projectiles: DisassemblySourceGroup = {
 		{ item: i('Adamant bolts (unf)'), lvl: 50 },
 		{ item: i('Runite bolts'), lvl: 50 },
 		{ item: i('Runite bolts (unf)'), lvl: 50 },
-		{ item: i('Dragon bolts'), lvl: 60 },
-		{ item: i('Dragon bolts (unf)'), lvl: 60 },
+		{ item: i('Dragon bolts'), lvl: 60, flags: new Set(['orikalkum']) },
+		{ item: i('Dragon bolts (unf)'), lvl: 60, flags: new Set(['orikalkum']) },
 		{ item: i('Dragonstone bolts (e)'), lvl: 71 },
 		{ item: i('Onyx dragon bolts'), lvl: 84 }
 	],

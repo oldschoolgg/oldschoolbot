@@ -27,9 +27,9 @@ export const Sword: DisassemblySourceGroup = {
 		{ item: i('Adamant 2h sword'), lvl: 60 },
 		{ item: i('Rune sword'), lvl: 60 },
 		{ item: i('Rune 2h sword'), lvl: 70 },
-		{ item: i('Dragon 2h sword'), lvl: 80 },
+		{ item: i('Dragon 2h sword'), lvl: 80, flags: new Set(['orikalkum']) },
 		{ item: i('Leaf-bladed sword'), lvl: 60 },
-		{ item: i('Dragon sword'), lvl: 80 },
+		{ item: i('Dragon sword'), lvl: 80, flags: new Set(['orikalkum']) },
 		{
 			item: [
 				'Armadyl godsword',

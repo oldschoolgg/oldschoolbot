@@ -70,8 +70,8 @@ export const MeleeArmour: DisassemblySourceGroup = {
 			lvl: 50
 		},
 		{ item: i('Granite body'), lvl: 55 },
-		{ item: i('Dragon chainbody'), lvl: 60 },
-		{ item: i('Dragon platebody'), lvl: 60 },
+		{ item: i('Dragon chainbody'), lvl: 60, flags: new Set(['orikalkum']) },
+		{ item: i('Dragon platebody'), lvl: 60, flags: new Set(['orikalkum']) },
 		{
 			item: i('Bandos chestplate'),
 			lvl: 70
@@ -175,7 +175,7 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		},
 		{ item: i('Granite helm'), lvl: 55 },
 		{ item: i('Helm of neitiznot'), lvl: 55 },
-		{ item: i('Dragon full helm'), lvl: 60 },
+		{ item: i('Dragon full helm'), lvl: 60, flags: new Set(['orikalkum']) },
 		{ item: i("Statius's full helm"), lvl: 78 },
 		{
 			item: ['Bronze full helm', 'Bronze full helm (g)', 'Bronze platebody (t)', 'Bronze platebody (g)'].map(
@@ -217,8 +217,8 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		{ item: i('Rune plateskirt (g)'), lvl: 50 },
 		{ item: i('Rune plateskirt (t)'), lvl: 50 },
 		{ item: i('Granite legs'), lvl: 55 },
-		{ item: i('Dragon platelegs'), lvl: 60 },
-		{ item: i('Dragon plateskirt'), lvl: 60 },
+		{ item: i('Dragon platelegs'), lvl: 60, flags: new Set(['orikalkum']) },
+		{ item: i('Dragon plateskirt'), lvl: 60, flags: new Set(['orikalkum']) },
 		{
 			item: i('Bandos tassets'),
 			lvl: 70
@@ -342,15 +342,16 @@ export const MeleeArmour: DisassemblySourceGroup = {
 		},
 		{
 			item: i('Dragon med helm'),
-			lvl: 60
+			lvl: 60,
+			flags: new Set(['orikalkum'])
 		},
 		{
 			item: i('White boots'),
 			lvl: 25
 		},
 		{ item: i('Rock-shell boots'), lvl: 50 },
-		{ item: i('Dragon boots'), lvl: 60 },
-		{ item: i('Royal dragon platebody'), lvl: 80 },
+		{ item: i('Dragon boots'), lvl: 60, flags: new Set(['orikalkum']) },
+		{ item: i('Royal dragon platebody'), lvl: 80, flags: new Set(['orikalkum']) },
 		{ item: ['Primordial boots', 'Eternal boots', 'Pegasian boots'].map(i), lvl: 85 },
 		{
 			item: i('Bandos boots'),

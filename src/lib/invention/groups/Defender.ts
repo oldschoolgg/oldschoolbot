@@ -12,7 +12,7 @@ export const Defender: DisassemblySourceGroup = {
 		{ item: i('Black defender'), lvl: 25 },
 		{ item: i('Mithril defender'), lvl: 30 },
 		{ item: i('Rune defender'), lvl: 50 },
-		{ item: i('Dragon defender'), lvl: 60 }
+		{ item: i('Dragon defender'), lvl: 60, flags: new Set(['orikalkum']) }
 	],
 	parts: { base: 40, protective: 40, sharp: 10 }
 };

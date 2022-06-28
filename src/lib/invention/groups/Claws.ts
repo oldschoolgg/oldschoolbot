@@ -11,7 +11,7 @@ export const Claws: DisassemblySourceGroup = {
 		{ item: i('Steel claws'), lvl: 20 },
 		{ item: i('Mithril claws'), lvl: 30 },
 		{ item: i('Rune claws'), lvl: 50 },
-		{ item: i('Dragon claws'), lvl: 99 }
+		{ item: i('Dragon claws'), lvl: 99, flags: new Set(['orikalkum']) }
 	],
 	parts: { sharp: 60, swift: 20 }
 };

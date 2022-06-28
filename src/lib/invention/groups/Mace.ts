@@ -31,7 +31,7 @@ export const Mace: DisassemblySourceGroup = {
 			item: i('Dragon cane'),
 			lvl: 58
 		},
-		{ item: i('Dragon mace'), lvl: 60 },
+		{ item: i('Dragon mace'), lvl: 60, flags: new Set(['orikalkum']) },
 		{ item: i('Tzhaar-ket-em'), lvl: 60 },
 		{ item: i('Bronze mace'), lvl: 1 },
 		{ item: i('Iron mace'), lvl: 10 },
