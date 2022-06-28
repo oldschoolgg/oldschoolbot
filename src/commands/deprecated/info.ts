@@ -16,6 +16,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage) {
 		return msg.channel.send({
+			content: '**This command is being removed, please use `/help` instead!**',
 			embeds: [
 				new MessageEmbed()
 					.setTitle('Old School Bot')
