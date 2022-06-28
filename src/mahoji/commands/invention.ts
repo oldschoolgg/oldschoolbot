@@ -26,7 +26,7 @@ import { mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 const RELEASE_TIME_UNIX_TIME = 1_656_766_800;
 const RELEASE_DATE = new Date(RELEASE_TIME_UNIX_TIME * 1000);
 
-export const askCommand: OSBMahojiCommand = {
+export const inventionCommand: OSBMahojiCommand = {
 	name: 'invention',
 	description: 'The invention skill.',
 	options: [
@@ -221,14 +221,6 @@ export const askCommand: OSBMahojiCommand = {
 		};
 		details?: { invention: string };
 	}>) => {
-		if (production && Date.now() < RELEASE_DATE.getTime()) {
-			return `Invention will be released at ${time(RELEASE_DATE, 'F')}, ${time(RELEASE_DATE, 'R')}.
-In the meantime...
-- Read the wiki: <https://bso-wiki.oldschool.gg/skills/invention>
-- Think about what items you'll disassemble... doing a varying trips with your biggest (or cheapest) stacks of items is recommended for fast, cheap training.
-- Pick which invention you want to aim for first, and focus on getting the materials needed for it!`;
-		}
-
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (options.details) {
@@ -381,6 +373,19 @@ These Inventions are still not unlocked: ${locked
 					return { attachments: [{ buffer: Buffer.from(str), fileName: 'groups.txt' }] };
 				}
 			}
+		}
+
+		if (user.id !== '157797566833098752' && production && Date.now() < RELEASE_DATE.getTime()) {
+			return `Invention will be released at ${time(RELEASE_DATE, 'F')}, ${time(RELEASE_DATE, 'R')}.
+In the meantime...
+- Read the wiki: <https://bso-wiki.oldschool.gg/skills/invention>
+- Think about what items you'll disassemble... doing a varying trips with your biggest (or cheapest) stacks of items is recommended for fast, cheap training.
+- Pick which invention you want to aim for first, and focus on getting the materials needed for it!
+- ${
+				user.skillLevel(SkillsEnum.Crafting) < 90
+					? "You don't have 90 Crafting, so you won't be able to train Inventio1n"
+					: 'You have 90 Crafting! You can train Invention.'
+			}`;
 		}
 
 		if (user.skillLevel(SkillsEnum.Crafting) < 90) {
