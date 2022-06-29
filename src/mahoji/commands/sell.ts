@@ -31,16 +31,17 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 	let basePrice = customPrices[item.id] ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
-	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
+	price = clamp(price, 0, MAX_INT_JAVA);
 	return { price, basePrice };
 }
 
 export function sellStorePriceOfItem(item: Item, qty: number): { price: number; basePrice: number } {
 	if (!item.cost || !item.lowalch) return { price: 0, basePrice: 0 };
 	let basePrice = item.cost;
-	// Sell price decline with stock by 3% and is always low alch price when stock is 0.
-	let price = (0.4 - 0.03 * Math.min(qty - 1, 10)) * basePrice;
-	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
+	// Sell price decline with stock by 3% until 10% of item value and is always low alch price when stock is 0.
+	const percentageFirstEleven = (0.4 - 0.015 * Math.min(qty - 1, 10)) * Math.min(qty, 11);
+	let price = ((percentageFirstEleven + Math.max(qty - 11, 0) * 0.1) * item.cost) / qty;
+	price = clamp(price, 0, MAX_INT_JAVA);
 	return { price, basePrice };
 }
 
@@ -112,7 +113,7 @@ export const sellCommand: OSBMahojiCommand = {
 				const { price } = user.isIronman
 					? sellStorePriceOfItem(item, qty)
 					: sellPriceOfItem(item, taxRatePercent);
-				totalPrice += price * qty;
+				totalPrice += Math.floor(price * qty);
 			}
 		}
 
