@@ -20,7 +20,7 @@ import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
-import { convertLVLtoXP, convertMahojiResponseToDJSResponse, getClueScoresFromOpenables } from '../../lib/util';
+import { convertMahojiResponseToDJSResponse, getClueScoresFromOpenables } from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
