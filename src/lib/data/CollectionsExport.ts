@@ -972,6 +972,29 @@ export const cluesHardRareCL = resolveItems([
 	'Gilded spear',
 	'Gilded hasta'
 ]);
+
+export const allGildedItems = resolveItems([
+	'Gilded scimitar',
+	'Gilded boots',
+	'Gilded platebody',
+	'Gilded platelegs',
+	'Gilded plateskirt',
+	'Gilded full helm',
+	'Gilded kiteshield',
+	'Gilded med helm',
+	'Gilded chainbody',
+	'Gilded sq shield',
+	'Gilded 2h sword',
+	'Gilded spear',
+	'Gilded hasta',
+	'Gilded coif',
+	"Gilded d'hide vambraces",
+	"Gilded d'hide body",
+	"Gilded d'hide chaps",
+	'Gilded pickaxe',
+	'Gilded axe',
+	'Gilded spade'
+]);
 export const cluesEliteRareCL = resolveItems([
 	'3rd age longsword',
 	'3rd age wand',
@@ -1012,6 +1035,31 @@ export const cluesEliteRareCL = resolveItems([
 	'Gilded spade',
 	'Ring of nature',
 	'Lava dragon mask'
+]);
+export const all3rdAgeItems = resolveItems([
+	'3rd age pickaxe',
+	'3rd age axe',
+	'3rd age longsword',
+	'3rd age wand',
+	'3rd age cloak',
+	'3rd age bow',
+	'3rd age range coif',
+	'3rd age range top',
+	'3rd age range legs',
+	'3rd age vambraces',
+	'3rd age robe top',
+	'3rd age robe',
+	'3rd age mage hat',
+	'3rd age amulet',
+	'3rd age plateskirt',
+	'3rd age platelegs',
+	'3rd age platebody',
+	'3rd age full helmet',
+	'3rd age kiteshield',
+	'3rd age druidic robe bottoms',
+	'3rd age druidic robe top',
+	'3rd age druidic staff',
+	'3rd age druidic cloak'
 ]);
 export const cluesMasterRareCL = resolveItems([
 	'3rd age pickaxe',
