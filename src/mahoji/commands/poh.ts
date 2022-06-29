@@ -112,7 +112,7 @@ export const pohCommand: OSBMahojiCommand = {
 		wallkit?: { name: string };
 		build?: { name: string };
 		destroy?: { name: string };
-		mountitem?: { name: string };
+		mount_item?: { name: string };
 	}>) => {
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -130,8 +130,8 @@ export const pohCommand: OSBMahojiCommand = {
 		if (options.destroy) {
 			return pohDestroyCommand(user, options.destroy.name);
 		}
-		if (options.mountitem) {
-			return pohMountItemCommand(user, options.mountitem.name);
+		if (options.mount_item) {
+			return pohMountItemCommand(user, options.mount_item.name);
 		}
 		return 'Invalid command.';
 	}
