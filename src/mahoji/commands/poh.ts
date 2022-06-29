@@ -20,7 +20,6 @@ export const pohCommand: OSBMahojiCommand = {
 	description: 'Allows you to access and build in your POH.',
 	attributes: {
 		requiresMinion: true,
-		description: 'Allows you to access and build in your POH.',
 		examples: ['/poh build:Demonic throne']
 	},
 	options: [

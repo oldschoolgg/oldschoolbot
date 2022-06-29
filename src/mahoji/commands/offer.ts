@@ -59,7 +59,6 @@ export const mineCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Offer bones or bird eggs.',
 		examples: ['/offer name:Dragon bones']
 	},
 	options: [

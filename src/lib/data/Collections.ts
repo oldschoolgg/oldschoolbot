@@ -2,7 +2,7 @@ import { MessageAttachment } from 'discord.js';
 import { uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Clues, Monsters } from 'oldschooljs';
-import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
 
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
@@ -119,6 +119,7 @@ import {
 	zalcanoCL,
 	zulrahCL
 } from './CollectionsExport';
+import Createables from './createables';
 
 export const allCollectionLogs: ICollection = {
 	Bosses: {
@@ -754,7 +755,7 @@ export const allCollectionLogs: ICollection = {
 					"Farmer's shirt",
 					"Farmer's boro trousers",
 					"Farmer's boots",
-					"Pharaoh's sceptre (3)",
+					"Pharaoh's sceptre",
 					'Baby chinchompa',
 					'Kyatt hat',
 					'Kyatt top',
@@ -836,6 +837,12 @@ export const allCollectionLogs: ICollection = {
 					...NexNonUniqueTable.allItems
 				],
 				items: [...godWarsDungeonCL, ...NexCL]
+			},
+			Creatables: {
+				counts: false,
+				items: Createables.filter(i => i.noCl !== true)
+					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
+					.flat()
 			}
 		}
 	}
@@ -994,6 +1001,13 @@ function getUserClData(usarBank: ItemBank, clItems: number[]) {
 	const owned = Object.keys(usarBank).filter(i => clItems.includes(Number(i)));
 	return [clItems.length, owned.length];
 }
+
+export const allClNames: string[] = [];
+for (const [category, val] of Object.entries(allCollectionLogs)) {
+	allClNames.push(category);
+	allClNames.push(...Object.keys(val.activities));
+}
+for (const mon of killableMonsters) allClNames.push(mon.name);
 
 // Main function that gets the user collection based on its search parameter
 export async function getCollection(options: {
