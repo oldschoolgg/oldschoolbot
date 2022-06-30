@@ -172,7 +172,18 @@ export default class extends Task {
 				str += `\n**Boosts:** Due to using Dark Lure, you have an increased chance at getting Nature Implings and above. You used: ${itemCost}. ${saved}`;
 			}
 		}
-		str += `\nYou received: **${bank}**.`;
+		str += `\nYou received: **${bank
+			.items()
+			.sort((curr, next) => {
+				const currHunterLevel = implings[curr[0].id].level;
+				const nextHunterLevel = implings[next[0].id].level;
+				return nextHunterLevel - currHunterLevel;
+			})
+			.map(item => {
+				console.log(item[0].name);
+				return `${item[1]}x ${item[0].name}`;
+			})
+			.join(', ')}**.`;
 
 		if (missed.length > 0) str += `\nYou missed out on ${missed} due to your hunter level being too low.`;
 
