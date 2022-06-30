@@ -41,7 +41,7 @@ export const clientOptions: KlasaClientOptions = {
 			.slice(0, 2)
 			.join(' ')
 			.replace(',', '')} (${(commandsLeft / daysUntil).toFixed(2)} per day)`;
-		return `[BSO] Ready to serve ${client.guilds.cache.size} guilds. ${migrationStr}.  There are ${globalClient.mahojiClient.commands.pieces.size} mahoji commands.`;
+		return `[BSO] Ready to serve ${client.guilds.cache.size} guilds. ${migrationStr}. There are ${globalClient.mahojiClient.commands.pieces.size} mahoji commands.`;
 	},
 	partials: ['USER', 'CHANNEL'],
 	production,
