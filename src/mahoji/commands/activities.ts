@@ -334,9 +334,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 					name: 'dark_lure',
 					description: 'Use the Dark Lure spell for increased implings?',
 					required: false
-				},
+				}
 			]
-			},
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'alch',

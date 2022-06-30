@@ -620,10 +620,9 @@ export default class extends Extendable {
 				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'PuroPuro': {
-				const data = currentTask as MinigameActivityTaskOptions;
-				return `${this.minionName} is currently hunting ${
-					data.quantity
-				} times in Puro-Puro. The trip should take ${formatDuration(durationRemaining)}.`;
+				return `${this.minionName} is currently hunting in Puro-Puro. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
 			}
 			case 'Easter':
 			case 'BlastFurnace': {
