@@ -126,7 +126,6 @@ export default class extends Task {
 			str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
 		} else {
 			str += `\n${minionName(user)} failed to spot any ${impling} this trip.`;
-						
 			handleTripFinish(
 				user,
 				channelID,
@@ -136,8 +135,7 @@ export default class extends Task {
 				data,
 				bank
 			);
-			return 
-			
+			return;
 		}
 
 		if (darkLure) {
