@@ -3,7 +3,7 @@ import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { COMMAND_BECAME_SLASH_COMMAND_MESSAGE, Emoji, lastTripCache, PerkTier } from '../../lib/constants';
+import { Emoji, lastTripCache, PerkTier } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -39,25 +39,12 @@ const patMessages = [
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 const subCommands = [
-	'lvl',
-	'seticon',
 	'clues',
-	'k',
-	'kill',
-	'setname',
 	'buy',
-	'clue',
-	'kc',
 	'pat',
-	'ironman',
-	'stats',
 	'opens',
 	'info',
-	'equippet',
-	'unequippet',
 	'activities',
-	'ep',
-	'uep',
 	'lapcounts',
 	'cancel',
 	'train',
@@ -302,49 +289,9 @@ export default class MinionCommand extends BotCommand {
 		return tempCLCommand(msg, input);
 	}
 
-	async unequippet(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
-	}
-
-	async equippet(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
-	}
-
-	async uep(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
-	}
-
-	async ep(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
-	}
-
-	async lvl(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion level'));
-	}
-
-	async seticon(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_icon'));
-	}
-
 	@requiresMinion
 	async pat(msg: KlasaMessage) {
 		return msg.channel.send(randomPatMessage(msg.author.minionName));
-	}
-
-	async stats(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion stats'));
-	}
-
-	async kc(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion kc'));
-	}
-
-	async ironman(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion ironman'));
-	}
-
-	async qp(msg: KlasaMessage) {
-		return msg.channel.send('You can see your QP in `/minion stats`.');
 	}
 
 	@requiresMinion
@@ -370,22 +317,6 @@ export default class MinionCommand extends BotCommand {
 				await minionBuyCommand(await mahojiUsersSettingsFetch(msg.author.id), false)
 			)
 		);
-	}
-
-	async setname(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_name'));
-	}
-
-	async clue(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/clue`');
-	}
-
-	async k(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/k`');
-	}
-
-	async kill(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/k`');
 	}
 
 	async opens(msg: KlasaMessage) {
