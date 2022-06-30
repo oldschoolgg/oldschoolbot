@@ -28,7 +28,6 @@ export namespace UserSettings {
 	export const CollectionLogBank = T<Readonly<ItemBank>>('collectionLogBank');
 	export const MonsterScores = T<Readonly<ItemBank>>('monsterScores');
 	export const CreatureScores = T<Readonly<ItemBank>>('creatureScores');
-	export const ClueScores = T<Readonly<ItemBank>>('clueScores');
 	export const LapsScores = T<Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const LastTearsOfGuthixTimestamp = T<number>('lastTearsOfGuthixTimestamp');

@@ -49,7 +49,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
-			user.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 1
+			user.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 1
 		);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
