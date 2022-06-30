@@ -19,8 +19,9 @@ import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
+mport { ItemBank } from '../../lib/types';
 import { getUsersTame, repeatTameTrip, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
-import { convertMahojiResponseToDJSResponse } from '../../lib/util';
+import { convertMahojiResponseToDJSResponse, getClueScoresFromOpenables } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { getItemContractDetails } from '../../mahoji/commands/ic';
 import { spawnLampIsReady } from '../../mahoji/commands/tools';
@@ -404,13 +405,17 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async clues(msg: KlasaMessage) {
-		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
-		if (Object.keys(clueScores).length === 0) return msg.channel.send("You haven't done any clues yet.");
+		const userData = await mahojiUsersSettingsFetch(msg.author.id, {
+			openable_scores: true
+		});
+
+		const clueScores = getClueScoresFromOpenables(new Bank(userData.openable_scores as ItemBank));
+		if (clueScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
 
 		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
-		for (const [clueID, clueScore] of Object.entries(clueScores)) {
+		for (const [clueID, clueScore] of Object.entries(clueScores.bank)) {
 			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
-			res += `**${clue!.name}**: ${clueScore}\n`;
+			res += `**${clue!.name}**: ${clueScore.toLocaleString()}\n`;
 		}
 		return msg.channel.send(res);
 	}

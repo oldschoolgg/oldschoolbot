@@ -923,3 +923,7 @@ export function generateXPLevelQuestion() {
 export function getUsername(id: string | bigint) {
 	return usernameCache.get(id.toString()) ?? 'Unknown';
 }
+
+export function getClueScoresFromOpenables(openableScores: Bank, mutate = false) {
+	return openableScores.filter(item => Boolean(clueTiers.find(ct => ct.id === item.id)), mutate);
+}

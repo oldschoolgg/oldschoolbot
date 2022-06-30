@@ -416,7 +416,6 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 	}
 
 	const combinedBank = new Bank().add(myBank).add(myLoot);
-
 	if (numBludgeonPieces) {
 		for (let x = 0; x < numBludgeonPieces; x++) {
 			const bank: number[] = [];
@@ -425,9 +424,11 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 				bank.push(combinedBank.amount(piece));
 			}
 			const minBank = Math.min(...bank);
+
 			for (let i = 0; i < bank.length; i++) {
 				if (bank[i] === minBank) {
 					myLoot.add(bludgeonPieces[i]);
+					combinedBank.add(bludgeonPieces[i]);
 					myClLoot.add(bludgeonPieces[i]);
 					break;
 				}
@@ -444,6 +445,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 			for (let i = 0; i < bank.length; i++) {
 				if (bank[i] === minBank) {
 					myLoot.add(totemPieces[i]);
+					combinedBank.add(totemPieces[i]);
 					myClLoot.add(totemPieces[i]);
 					break;
 				}
@@ -460,6 +462,7 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 			for (let i = 0; i < bank.length; i++) {
 				if (bank[i] === minBank) {
 					myLoot.add(ringPieces[i]);
+					combinedBank.add(ringPieces[i]);
 					myClLoot.add(ringPieces[i]);
 					break;
 				}

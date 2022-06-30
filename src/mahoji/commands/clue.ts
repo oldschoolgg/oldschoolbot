@@ -64,7 +64,10 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const boosts = [];
 
-		let [timeToFinish, percentReduced] = reducedClueTime(clueTier, clueScores[clueTier.id] ?? 1);
+		const [timeToFinish, percentReduced] = reducedClueTime(
+			clueTier,
+			user.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 1
+		);
 
 		timeToFinish /= 2;
 		boosts.push('👻 2x Boost');
