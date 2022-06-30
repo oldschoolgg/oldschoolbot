@@ -1,3 +1,5 @@
+import { CompostTier } from '@prisma/client';
+
 import { Emoji } from '../../../constants';
 import getOSItem from '../../../util/getOSItem';
 import itemID from '../../../util/itemID';
@@ -36,19 +38,18 @@ export const allFarmingItems: number[] = [];
 
 export const CompostTiers = [
 	{
-		name: 'compost',
+		name: CompostTier.compost,
 		item: getOSItem('Compost')
 	},
 	{
-		name: 'supercompost',
+		name: CompostTier.supercompost,
 		item: getOSItem('Supercompost')
 	},
 	{
-		name: 'ultracompost',
+		name: CompostTier.ultracompost,
 		item: getOSItem('Ultracompost')
 	}
 ] as const;
-export type CompostName = typeof CompostTiers[number]['name'];
 
 for (const plant of plants) {
 	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);

@@ -334,25 +334,6 @@ model User {
   gear_wildy                 Json?    @map("gear.wildy") @db.Json
   gear_fashion               Json?    @map("gear.fashion") @db.Json
   gear_other                 Json?    @map("gear.other") @db.Json
-  farmingPatches_herb        Json?    @map("farmingPatches.herb") @db.Json
-  farmingPatches_fruit_tree  Json?    @map("farmingPatches.fruit tree") @db.Json
-  farmingPatches_tree        Json?    @map("farmingPatches.tree") @db.Json
-  farmingPatches_allotment   Json?    @map("farmingPatches.allotment") @db.Json
-  farmingPatches_hops        Json?    @map("farmingPatches.hops") @db.Json
-  farmingPatches_cactus      Json?    @map("farmingPatches.cactus") @db.Json
-  farmingPatches_bush        Json?    @map("farmingPatches.bush") @db.Json
-  farmingPatches_spirit      Json?    @map("farmingPatches.spirit") @db.Json
-  farmingPatches_hardwood    Json?    @map("farmingPatches.hardwood") @db.Json
-  farmingPatches_seaweed     Json?    @map("farmingPatches.seaweed") @db.Json
-  farmingPatches_vine        Json?    @map("farmingPatches.vine") @db.Json
-  farmingPatches_calquat     Json?    @map("farmingPatches.calquat") @db.Json
-  farmingPatches_redwood     Json?    @map("farmingPatches.redwood") @db.Json
-  farmingPatches_crystal     Json?    @map("farmingPatches.crystal") @db.Json
-  farmingPatches_celastrus   Json?    @map("farmingPatches.celastrus") @db.Json
-  farmingPatches_hespori     Json?    @map("farmingPatches.hespori") @db.Json
-  farmingPatches_flower      Json?    @map("farmingPatches.flower") @db.Json
-  farmingPatches_mushroom    Json?    @map("farmingPatches.mushroom") @db.Json
-  farmingPatches_belladonna  Json?    @map("farmingPatches.belladonna") @db.Json
   kourend_favour             Json?    @map("kourend_favour") @db.Json
   bank_sort_method           String?  @db.VarChar(16)
   bank_sort_weightings       Json     @default("{}") @db.Json
@@ -531,6 +512,48 @@ model EconomyTransaction {
   items_received Json? @default("{}") @db.Json
 
   @@map("economy_transaction")
+}
+
+enum CompostTier {
+  compost
+  supercompost
+  ultracompost
+}
+
+enum FarmingPatchName {
+  herb
+  fruit_tree
+  tree
+  allotment
+  hops
+  cactus
+  bush
+  spirit
+  hardwood
+  seaweed
+  vine
+  calquat
+  redwood
+  crystal
+  celastrus
+  hespori
+  flower
+  mushroom
+  belladonna
+}
+
+model FarmingPatch {
+  user_id BigInt
+  patch   FarmingPatchName
+
+  plant_id   Int
+  compost    CompostTier?
+  did_pay    Boolean
+  plant_date DateTime     @default(now())
+  quantity   Int
+
+  @@id([user_id, patch])
+  @@map("farming_patch")
 }
 
 enum command_usage_status {
