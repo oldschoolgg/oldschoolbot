@@ -143,7 +143,7 @@ export async function shootingStarsActivity(data: ShootingStarsData) {
 	const usersWith = randInt(1, 4);
 	for (const subStar of subStars) {
 		let dustReceived = subStar.dustAvailable;
-		if (usersWith > 1) dustReceived = reduceNumByPercent(dustReceived, usersWith * 10);
+		if (usersWith > 1) dustReceived = Math.floor(reduceNumByPercent(dustReceived, usersWith * 10));
 		loot.add('Stardust', dustReceived);
 		xp += subStar.xpPerDust * dustReceived;
 	}

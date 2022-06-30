@@ -1,12 +1,14 @@
 import { reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { checkUserCanUseDegradeableItem, degradeItem } from '../../lib/degradeableItems';
 import Mining from '../../lib/skilling/skills/mining';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { determineScaledOreTime, formatDuration, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
+import getOSItem from '../../lib/util/getOSItem';
 import itemID from '../../lib/util/itemID';
 import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
@@ -88,12 +90,28 @@ export const mineCommand: OSBMahojiCommand = {
 		if (skills.mining < ore.level) {
 			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
 		}
+		let level = skills.mining;
+		const maxTripLength = calcMaxTripLength(user, 'Mining');
+		const klasaUser = await globalClient.fetchUser(user.id);
+		const boosts = [];
 
+		const baseQuantityForCheck = determineScaledOreTime(ore!.xp, ore.respawnTime, skills.mining);
+		const ownsCelestRing = hasItemsEquippedOrInBank(user, ['Celestial ring']);
+		console.log(klasaUser.username, Math.floor(maxTripLength / baseQuantityForCheck) * 5);
+		const hasRingBoost =
+			ownsCelestRing &&
+			checkUserCanUseDegradeableItem({
+				item: getOSItem('Celestial ring'),
+				chargesToDegrade: Math.floor(maxTripLength / baseQuantityForCheck) * 5,
+				user: klasaUser
+			}).hasEnough;
+		if (hasRingBoost) {
+			level += 4;
+		}
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
-		let timeToMine = determineScaledOreTime(ore!.xp, ore.respawnTime, skills.mining);
+		let timeToMine = determineScaledOreTime(ore!.xp, ore.respawnTime, level);
 
 		// For each pickaxe, if they have it, give them its' bonus and break.
-		const boosts = [];
 		for (const pickaxe of pickaxes) {
 			if (hasItemsEquippedOrInBank(user, [pickaxe.id]) && skills.mining >= pickaxe.miningLvl) {
 				timeToMine = reduceNumByPercent(timeToMine, pickaxe.reductionPercent);
@@ -116,12 +134,19 @@ export const mineCommand: OSBMahojiCommand = {
 			boosts.push('50% for having an Amulet of glory equipped');
 		}
 
-		const maxTripLength = calcMaxTripLength(user, 'Mining');
-
 		// If no quantity provided, set it to the max.
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToMine);
 		}
+		if (hasRingBoost) {
+			const { userMessage } = await degradeItem({
+				item: getOSItem('Celestial ring'),
+				chargesToDegrade: quantity,
+				user: klasaUser
+			});
+			boosts.push(`+4 level boost for Celestial ring(${userMessage})`);
+		}
+
 		const duration = quantity * timeToMine;
 
 		if (duration > maxTripLength) {

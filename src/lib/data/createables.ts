@@ -1812,6 +1812,16 @@ const Createables: Createable[] = [
 			[itemID('Ecumenical key')]: 1
 		}
 	},
+	{
+		name: 'Celestial signet',
+		inputItems: new Bank({
+			'Celestial ring': 1,
+			'Elven signet': 1,
+			Stardust: 1000,
+			'Crystal shard': 100
+		}),
+		outputItems: new Bank().add('Celestial signet')
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,

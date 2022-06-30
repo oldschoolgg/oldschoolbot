@@ -2,16 +2,18 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { GearSetupType } from './gear';
+import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { GearSetupType, GearSetupTypes } from './gear';
 import { ClientSettings } from './settings/types/ClientSettings';
 import { assert, updateBankSetting } from './util';
 import getOSItem from './util/getOSItem';
+import { userHasItemsEquippedAnywhere } from './util/minionUtils';
 
 interface DegradeableItem {
 	item: Item;
-	settingsKey: 'tentacle_charges' | 'sang_charges';
+	settingsKey: 'tentacle_charges' | 'sang_charges' | 'celestial_ring_charges';
 	itemsToRefundOnBreak: Bank;
-	setup: GearSetupType;
+	setup: GearSetupType | null;
 	aliases: string[];
 	chargeInput: {
 		cost: Bank;
@@ -44,6 +46,19 @@ export const degradeableItems: DegradeableItem[] = [
 			charges: 1
 		},
 		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
+		convertOnCharge: true
+	},
+	{
+		item: getOSItem('Celestial ring'),
+		settingsKey: 'celestial_ring_charges',
+		itemsToRefundOnBreak: new Bank().add('Celestial ring (uncharged)'),
+		setup: null,
+		aliases: ['celestial ring'],
+		chargeInput: {
+			cost: new Bank().add('Stardust', 10),
+			charges: 10
+		},
+		unchargedItem: getOSItem('Celestial ring (uncharged)'),
 		convertOnCharge: true
 	}
 ];
@@ -91,18 +106,28 @@ export async function degradeItem({
 
 	if (newCharges <= 0) {
 		// If no more charges left, break and refund the item.
-		const hasEquipped = user.getGear(degItem.setup).equippedWeapon() === item;
+		const hasEquipped =
+			degItem.setup === null
+				? userHasItemsEquippedAnywhere(user, degItem.item.id)
+				: user.getGear(degItem.setup).equippedWeapon() === item;
 		const hasInBank = user.owns(item.id);
-		await user.settings.update(degItem.settingsKey, 0);
+		await mahojiUserSettingsUpdate(user.id, { [degItem.settingsKey]: 0 });
 		const itemsDeleted = new Bank().add(item.id);
 
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.DegradedItemsCost, itemsDeleted);
 
-		if (hasEquipped) {
+		const gearSetup =
+			degItem.setup === null
+				? GearSetupTypes.find(i => user.getGear(i).hasEquipped(degItem.item.id))
+				: degItem.setup;
+
+		if (hasEquipped && gearSetup) {
 			// If its equipped, unequip and delete it.
-			const gear = { ...user.getGear(degItem.setup).raw() };
+			const gear = { ...user.getGear(gearSetup).raw() };
 			gear.weapon = null;
-			await user.settings.update(`gear.${degItem.setup}`, gear);
+			await mahojiUserSettingsUpdate(user.id, {
+				[`gear_${degItem.setup}`]: gear
+			});
 			if (degItem.itemsToRefundOnBreak) {
 				await user.addItemsToBank({ items: degItem.itemsToRefundOnBreak, collectionLog: false });
 			}
@@ -115,7 +140,7 @@ export async function degradeItem({
 		} else {
 			// If its not in bank OR equipped, something weird has gone on.
 			throw new Error(
-				`${user.sanitizedName} had missing ${item.name} when trying to degrade by ${chargesToDegrade}`
+				`${user.sanitizedName} had missing ${item.name} when trying to degrade by ${chargesToDegrade}. ${hasEquipped} ${gearSetup} ${hasInBank}`
 			);
 		}
 
@@ -124,8 +149,10 @@ export async function degradeItem({
 		};
 	}
 	// If it has charges left still, just remove those charges and nothing else.
-	await user.settings.update(degItem.settingsKey, newCharges);
-	const chargesAfter = user.settings.get(degItem.settingsKey);
+	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+		[degItem.settingsKey]: newCharges
+	});
+	const chargesAfter = newUser[degItem.settingsKey];
 	assert(typeof chargesAfter === 'number' && chargesAfter > 0);
 	return {
 		userMessage: `Your ${item.name} degraded by ${chargesToDegrade} charges, and now has ${chargesAfter} remaining.`

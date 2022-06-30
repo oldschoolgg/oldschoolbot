@@ -12,8 +12,9 @@ export const shootingStarsBuyables: Buyable[] = [
 		itemCost: new Bank().add('Stardust', 3000)
 	},
 	{
-		name: 'Bag full of gems',
-		itemCost: new Bank().add('Stardust', 300)
+		name: 'Bag full of gems (Stardust)',
+		itemCost: new Bank().add('Stardust', 300),
+		outputItems: new Bank().add('Bag full of gems')
 	},
 	{
 		name: 'Soft clay pack',
