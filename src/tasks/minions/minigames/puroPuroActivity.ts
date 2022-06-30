@@ -2,7 +2,6 @@ import { randInt, reduceNumByPercent, roll, Time } from 'e';
 import { KlasaUser, Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { implings, puroImplings, puroImpNormalTable, puroImpSpellTable } from '../../../lib/implings';
 import { incrementMinigameScore } from '../../../lib/settings/minigames';
@@ -128,22 +127,16 @@ export default class extends Task {
 				return previousVal;
 			}, 0);
 
-			itemCost.add('Nature Rune', spellsUsed);
-			itemCost.add('Death Rune', spellsUsed);
 			let savedRunes = 0;
 			if (user.hasItemEquippedAnywhere(bryophytasStaffId)) {
 				for (let i = 0; i < spellsUsed; i++) {
 					if (roll(15)) savedRunes++;
 				}
-
-				if (savedRunes > 0) {
-					const returnedRunes = resolveNameBank({
-						'Nature rune': savedRunes
-					});
-
-					bank.add(returnedRunes);
-				}
 			}
+
+			itemCost.add('Nature Rune', spellsUsed - savedRunes);
+			itemCost.add('Death Rune', spellsUsed);
+
 			const saved = savedRunes > 0 ? `\nYour Bryophyta's staff saved you ${savedRunes} Nature runes.` : '';
 			let magicXP = 0;
 
