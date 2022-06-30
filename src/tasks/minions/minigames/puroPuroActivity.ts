@@ -13,30 +13,24 @@ import { minionName } from '../../../lib/util/minionUtils';
 
 function singleImpHunt(minutes: number, user: KlasaUser) {
 	let totalQty = 0;
-	let sumQty = 0;
 	for (let i = 0; i < minutes; i++) {
 		let qty = randInt(4, 7);
-		sumQty += qty;
-		if (!user.hasGracefulEquipped()) {
-			totalQty = Math.floor(reduceNumByPercent(sumQty, 20));
-		} else {
-			totalQty = sumQty;
-		}
+		totalQty += qty;
+	}
+	if (!user.hasGracefulEquipped()) {
+		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	}
 	return totalQty;
 }
 
 function allImpHunt(minutes: number, user: KlasaUser) {
 	let totalQty = 0;
-	let sumQty = 0;
 	for (let i = 0; i < minutes; i++) {
 		let qty = randInt(1, 3);
-		sumQty += qty;
-		if (!user.hasGracefulEquipped()) {
-			totalQty = Math.floor(reduceNumByPercent(sumQty, 20));
-		} else {
-			totalQty = sumQty;
-		}
+		totalQty += qty;
+	}
+	if (!user.hasGracefulEquipped()) {
+		totalQty = Math.floor(reduceNumByPercent(totalQty, 20));
 	}
 	return totalQty;
 }
@@ -61,7 +55,6 @@ export default class extends Task {
 
 		const allImpQty = allImpHunt(minutes, user);
 		const singleImpQty = singleImpHunt(minutes, user);
-		let totalQty = 0;
 		switch (impling) {
 			case 'Dragon Implings': {
 				const dragonOdds = darkLure ? 25 : 45;
@@ -69,7 +62,6 @@ export default class extends Task {
 					if (roll(dragonOdds)) {
 						bank.add('Dragon Impling Jar');
 						hunterXP += 65;
-						totalQty += 1;
 					}
 				}
 				break;
@@ -77,32 +69,26 @@ export default class extends Task {
 			case 'Eclectic Implings':
 				bank.add('Eclectic Impling Jar', singleImpQty);
 				hunterXP += 30 * singleImpQty;
-				totalQty += singleImpQty;
 				break;
 			case 'Essence Implings':
 				bank.add('Essence Impling Jar', singleImpQty);
 				hunterXP += 22 * singleImpQty;
-				totalQty += singleImpQty;
 				break;
 			case 'Earth Implings':
 				bank.add('Earth Impling Jar', singleImpQty);
 				hunterXP += 25 * singleImpQty;
-				totalQty += singleImpQty;
 				break;
 			case 'Gourmet Implings':
 				bank.add('Gourmet Impling Jar', singleImpQty);
 				hunterXP += 22 * singleImpQty;
-				totalQty += singleImpQty;
 				break;
 			case 'Young Implings':
 				bank.add('Young Impling Jar', singleImpQty);
 				hunterXP += 20 * singleImpQty;
-				totalQty += singleImpQty;
 				break;
 			case 'Baby Implings':
 				bank.add('Baby Impling Jar', singleImpQty);
 				hunterXP += 18 * singleImpQty;
-				totalQty += singleImpQty;
 				break;
 			default:
 				for (let j = 0; j < allImpQty; j++) {
@@ -114,7 +100,6 @@ export default class extends Task {
 						bank.add(loot);
 						const implingReceivedXP = puroImplings[loot.items()[0][0].id]!;
 						hunterXP += Number(implingReceivedXP.catchXP);
-						totalQty += 1;
 					}
 				}
 
@@ -136,7 +121,13 @@ export default class extends Task {
 		}
 
 		if (darkLure) {
-			const spellsUsed = impling === 'Dragon Implings' ? totalQty : Math.floor(totalQty / 10);
+			const spellsUsed = bank.items().reduce((prev, curr) => {
+				let previousVal = prev;
+				const huntLevel = implings[curr[0].id].level;
+				if (huntLevel >= 58) previousVal += curr[1];
+				return previousVal;
+			}, 0);
+
 			itemCost.add('Nature Rune', spellsUsed);
 			itemCost.add('Death Rune', spellsUsed);
 			let savedRunes = 0;
@@ -172,6 +163,7 @@ export default class extends Task {
 				str += `\n**Boosts:** Due to using Dark Lure, you have an increased chance at getting Nature Implings and above. You used: ${itemCost}. ${saved}`;
 			}
 		}
+
 		str += `\nYou received: **${bank
 			.items()
 			.sort((curr, next) => {
@@ -180,7 +172,6 @@ export default class extends Task {
 				return nextHunterLevel - currHunterLevel;
 			})
 			.map(item => {
-				console.log(item[0].name);
 				return `${item[1]}x ${item[0].name}`;
 			})
 			.join(', ')}**.`;
