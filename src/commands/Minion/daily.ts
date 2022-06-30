@@ -4,7 +4,6 @@ import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { COINS_ID, Emoji, SupportServer } from '../../lib/constants';
 import pets from '../../lib/data/pets';
 import { getRandomTriviaQuestion } from '../../lib/roboChimp';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import dailyRoll from '../../lib/simulation/dailyTable';
 import { BotCommand } from '../../lib/structures/BotCommand';
@@ -144,7 +143,7 @@ export default class DailyCommand extends BotCommand {
 		}
 
 		if (loot[COINS_ID] > 0) {
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceDaily, loot[COINS_ID]);
+			updateGPTrackSetting('gp_daily', loot[COINS_ID]);
 		}
 
 		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
