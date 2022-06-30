@@ -50,7 +50,7 @@ export const clueCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string; quantity?: number }>) => {
 		const user = await globalClient.fetchUser(userID);
-		const mUser = await mahojiUsersSettingsFetch(user.id);
+		const mUser = await mahojiUsersSettingsFetch(user.id, { openable_scores: true });
 		const clueScores = mUser.openable_scores as ItemBank;
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, options.tier));
