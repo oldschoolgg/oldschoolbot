@@ -249,7 +249,6 @@ model User {
   bank                       Json     @default("{}") @db.Json
   collectionLogBank          Json     @default("{}") @db.JsonB
   creatureScores             Json     @default("{}") @db.Json
-  clueScores                 Json     @default("{}") @db.Json
   monsterScores              Json     @default("{}") @db.Json
   lapsScores                 Json     @default("{}") @db.Json
   bankBackground             Int      @default(1)

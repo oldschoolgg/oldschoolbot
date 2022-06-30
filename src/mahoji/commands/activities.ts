@@ -335,7 +335,8 @@ export const activitiesCommand: OSBMahojiCommand = {
 					description: 'Use the Dark Lure spell for increased implings?',
 					required: false
 				},
-			}
+			]
+			},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'alch',
@@ -459,6 +460,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		if (options.puro_puro) {
 			return puroPuroStartCommand(klasaUser, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
 		}
+
 		return 'Invalid command.';
 	}
 };
