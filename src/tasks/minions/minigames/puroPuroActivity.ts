@@ -125,7 +125,19 @@ export default class extends Task {
 		if (hunterXP > 0) {
 			str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
 		} else {
-			str += `${minionName(user)} failed to spot any ${impling} this trip.`;
+			str += `\n${minionName(user)} failed to spot any ${impling} this trip.`;
+						
+			handleTripFinish(
+				user,
+				channelID,
+				str,
+				['activities', { puro_puro: { impling, dark_lure: darkLure } }, true],
+				undefined,
+				data,
+				bank
+			);
+			return 
+			
 		}
 
 		if (darkLure) {
