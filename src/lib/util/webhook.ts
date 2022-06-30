@@ -80,7 +80,7 @@ export async function sendToChannelID(
 		if (data.embed) embeds.push(data.embed);
 		if (channel instanceof WebhookClient) {
 			try {
-				return webhookSend(channel, {
+				await webhookSend(channel, {
 					content: data.content,
 					files,
 					embeds,
@@ -99,7 +99,7 @@ export async function sendToChannelID(
 				}
 			}
 		} else {
-			return channel.send({
+			await channel.send({
 				content: data.content,
 				files,
 				embeds,
