@@ -57,10 +57,19 @@ export default class extends Task {
 		switch (impling) {
 			case 'Dragon Implings': {
 				const dragonOdds = darkLure ? 25 : 45;
+				const luckyOdds = darkLure ? 200 : 360;
 				for (let i = 0; i < minutes; i++) {
 					if (roll(dragonOdds)) {
 						bank.add('Dragon Impling Jar');
 						hunterXP += 65;
+					}
+				}
+				if (hunterLevel > 89) {
+					for (let i = 0; i < minutes; i++) {
+						if (roll(luckyOdds)) {
+							bank.add('Lucky Impling Jar');
+							hunterXP += 80;
+						}
 					}
 				}
 				break;
