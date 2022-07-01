@@ -17,6 +17,8 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '../diaries';
+import { Cookables } from '../skilling/skills/cooking';
+import Fishing from '../skilling/skills/fishing';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { leaguesHasCatches, leaguesHasKC, Task } from './leagues';
@@ -300,6 +302,20 @@ export const easyTasks: Task[] = [
 		name: 'Open a PMB',
 		has: async ({ opens }) => {
 			return opens.has('Pet mystery box');
+		}
+	},
+	{
+		id: 41,
+		name: 'Fish 1000 fish',
+		has: async ({ cl }) => {
+			return sumArr(Fishing.Fishes.map(i => cl.amount(i.id))) >= 1000;
+		}
+	},
+	{
+		id: 41,
+		name: 'Cook 1000 of anything',
+		has: async ({ cl }) => {
+			return sumArr(Cookables.map(i => cl.amount(i.id))) >= 1000;
 		}
 	}
 ];
