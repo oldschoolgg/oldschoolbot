@@ -138,7 +138,7 @@ const inhibitors: Inhibitor[] = [
 				if (disabledCommandBaseName === command.name && parts.length === 0) {
 					isDisabled = true;
 					break;
-				} else if (parts.length > 0 && args !== null) {
+				} else if (disabledCommandBaseName === command.name && parts.length > 0 && args !== null) {
 					let currentPath = args as any;
 					let matchCount = 0;
 					for (const subCommand of parts) {
