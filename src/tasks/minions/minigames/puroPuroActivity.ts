@@ -64,7 +64,7 @@ export default class extends Task {
 						hunterXP += 65;
 					}
 				}
-				if (hunterLevel > 89) {
+				if (hunterLevel >= 89) {
 					for (let i = 0; i < minutes; i++) {
 						if (roll(luckyOdds)) {
 							bank.add('Lucky Impling Jar');
