@@ -1904,7 +1904,8 @@ export const masterCapesCL = resolveItems([
 	'Hitpoints master cape',
 	'Ranged master cape',
 	'Slayer master cape',
-	'Dungeoneering master cape'
+	'Dungeoneering master cape',
+	'Invention master cape'
 ]);
 
 export const expertCapesCL = resolveItems(["Combatant's cape", "Artisan's cape", 'Support cape', "Gatherer's cape"]);
