@@ -1,15 +1,12 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { chunk } from 'e';
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../lib/constants';
 import { GearSetupType, GearSetupTypes, resolveGearTypeSetting } from '../../lib/gear';
-import { generateAllGearImage, generateGearImage } from '../../lib/gear/functions/generateGearImage';
+import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
 import { minionNotBusy } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { makePaginatedMessage } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -70,48 +67,11 @@ export default class extends BotCommand {
 		}
 
 		if (msg.flagArgs.text) {
-			const textBank = [];
-
-			if (msg.flagArgs.all) {
-				for (const type of ['melee', 'range', 'mage', 'misc', 'skilling']) {
-					const gear = msg.author.getGear(type as GearSetupType);
-					for (const gearItem of Object.values(gear.raw())) {
-						if (!gearItem) continue;
-						textBank.push(`${getOSItem(gearItem.item).name}: ${gearItem.quantity.toLocaleString()}`);
-					}
-				}
-			} else {
-				for (const gearItem of Object.values(gear.raw())) {
-					if (!gearItem) continue;
-					textBank.push(`${getOSItem(gearItem.item).name}: ${gearItem.quantity.toLocaleString()}`);
-				}
-			}
-
-			if (textBank.length === 0) {
-				return msg.channel.send('No items found.');
-			}
-
-			const pages = [];
-			for (const page of chunk(textBank, 12)) {
-				pages.push({
-					embeds: [
-						new MessageEmbed()
-							.setTitle(`${msg.author.username}'s ${gearType} gear`)
-							.setDescription(page.join('\n'))
-					]
-				});
-			}
-
-			await makePaginatedMessage(msg, pages);
-
-			return null;
+			return msg.channel.send('This feature has been moved to `/gear view`');
 		}
 
 		if (msg.flagArgs.all) {
-			return msg.channel.send({
-				content: 'Here are all your gear setups',
-				files: [new MessageAttachment(await generateAllGearImage(msg.author), 'osbot.png')]
-			});
+			return msg.channel.send('This feature has been moved to `/gear view setup:all`');
 		}
 
 		const image = await generateGearImage(
@@ -121,6 +81,9 @@ export default class extends BotCommand {
 			msg.author.settings.get(UserSettings.Minion.EquippedPet)
 		);
 
-		return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
+		return msg.channel.send({
+			content: 'This command has been moved to `/gear view`, but is temporarily still available.',
+			files: [new MessageAttachment(image, 'osbot.png')]
+		});
 	}
 }

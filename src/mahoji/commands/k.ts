@@ -30,6 +30,12 @@ const autocompleteMonsters = [
 		aliases: ['zalcano'],
 		id: ZALCANO_ID,
 		emoji: '<:Smolcano:604670895113633802>'
+	},
+	{
+		name: 'Wintertodt',
+		aliases: ['wt', 'wintertodt', 'todt'],
+		id: -1,
+		emoji: '<:Phoenix:324127378223792129>'
 	}
 ];
 
@@ -52,7 +58,7 @@ export const killCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		examples: ['/k zulrah']
+		examples: ['/k name:zulrah']
 	},
 	options: [
 		{
