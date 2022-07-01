@@ -140,14 +140,7 @@ const inhibitors: Inhibitor[] = [
 					break;
 				} else if (disabledCommandBaseName === command.name && parts.length > 0 && args !== null) {
 					let currentPath = args as any;
-					let matchCount = 0;
-					for (const subCommand of parts) {
-						if (subCommand in currentPath) {
-							matchCount++;
-							currentPath = currentPath[subCommand];
-						}
-					}
-					if (matchCount === parts.length) {
+					if (parts.every(p => p in currentPath && (currentPath = currentPath[p]))) {
 						isDisabled = true;
 						break;
 					}
