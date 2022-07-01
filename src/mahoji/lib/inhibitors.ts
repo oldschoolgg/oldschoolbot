@@ -41,6 +41,7 @@ interface Inhibitor {
 		APIUser: User;
 		user: MUser;
 		command: AbstractCommand;
+		args: CommandArgs | null;
 		guild: Guild | null;
 		channel: TextChannel | DMChannel;
 		member: GuildMember | null;
@@ -129,12 +130,31 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'disabled',
-		run: async ({ command, guild, APIUser }) => {
-			if (
-				!OWNER_IDS.includes(APIUser.id) &&
-				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
-			) {
-				return { content: 'This command is globally disabled.' };
+		run: async ({ command, guild, APIUser, args }) => {
+			let isDisabled = false;
+			for (const disabledCommand of DISABLED_COMMANDS) {
+				const parts = disabledCommand.split(':');
+				const disabledCommandBaseName = parts.shift();
+				if (disabledCommandBaseName === command.name && parts.length === 0) {
+					isDisabled = true;
+					break;
+				} else if (parts.length > 0 && args !== null) {
+					let currentPath = args as any;
+					let matchCount = 0;
+					for (const subCommand of parts) {
+						if (subCommand in currentPath) {
+							matchCount++;
+							currentPath = currentPath[subCommand];
+						}
+					}
+					if (matchCount === parts.length) {
+						isDisabled = true;
+						break;
+					}
+				}
+			}
+			if (!OWNER_IDS.includes(APIUser.id) && (command.attributes?.enabled === false || isDisabled)) {
+				return 'This command is globally disabled.';
 			}
 			if (!guild) return false;
 			const cachedSettings = untrustedGuildSettingsCache.get(guild.id);
@@ -227,6 +247,7 @@ export async function runInhibitors({
 	channel,
 	member,
 	command,
+	args,
 	guild,
 	bypassInhibitors,
 	APIUser
@@ -236,12 +257,13 @@ export async function runInhibitors({
 	channel: TextChannel | DMChannel;
 	member: GuildMember | null;
 	command: AbstractCommand;
+	args: CommandArgs | null;
 	guild: Guild | null;
 	bypassInhibitors: boolean;
 }): Promise<undefined | { reason: InteractionReplyOptions; silent: boolean }> {
 	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
-		const result = await run({ user, channel, member, command, guild, APIUser });
+		const result = await run({ user, channel, member, command, guild, args, APIUser });
 		if (result !== false) {
 			return { reason: result, silent: Boolean(silent) };
 		}
