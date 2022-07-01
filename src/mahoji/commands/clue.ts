@@ -50,8 +50,8 @@ export const clueCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string; quantity?: number }>) => {
 		const user = await globalClient.fetchUser(userID);
-		const mUser = await mahojiUsersSettingsFetch(user.id);
-		const clueScores = mUser.clueScores as ItemBank;
+		const mUser = await mahojiUsersSettingsFetch(user.id, { openable_scores: true });
+		const clueScores = mUser.openable_scores as ItemBank;
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, options.tier));
 		if (!clueTier) return 'Invalid clue tier.';
@@ -64,7 +64,10 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const boosts = [];
 
-		let [timeToFinish, percentReduced] = reducedClueTime(clueTier, clueScores[clueTier.id] ?? 1);
+		let [timeToFinish, percentReduced] = reducedClueTime(
+			clueTier,
+			user.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 1
+		);
 
 		timeToFinish /= 2;
 		boosts.push('👻 2x Boost');
