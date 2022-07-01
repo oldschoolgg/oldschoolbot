@@ -15,6 +15,7 @@ export const Scimitar: DisassemblySourceGroup = {
 		{ item: i('Iron scimitar'), lvl: 10 },
 		{ item: i('Steel scimitar'), lvl: 20 },
 		{ item: i('Mithril scimitar'), lvl: 30 },
+		{ item: i('Adamant scimitar'), lvl: 40 },
 		{ item: i('Rune scimitar'), lvl: 50 },
 		{ item: i('Dragon scimitar'), lvl: 60, flags: new Set(['orikalkum']) }
 	],
