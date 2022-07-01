@@ -16,7 +16,7 @@ export async function degradeableItemsCommand(
 	const item = degradeableItems.find(i => [i.item.name, ...i.aliases].some(n => stringMatches(n, input ?? '')));
 	const number = mahojiParseNumber({ input: quantity, min: 1, max: 1_000_000 });
 
-	if (!input || !number || !item || isNaN(number) || number < 1 || number > 10_000) {
+	if (!input || !number || !item || number < 1 || number > 10_000) {
 		return `Use \`/minion charge [${degradeableItems.map(i => i.item.name).join('|')}], [1-10,000]\`
 ${degradeableItems
 	.map(i => {

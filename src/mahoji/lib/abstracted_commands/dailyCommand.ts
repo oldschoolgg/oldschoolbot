@@ -126,7 +126,7 @@ export async function dailyCommand(channelID: bigint, user: KlasaUser): CommandR
 
 	const { question, answers } = await getRandomTriviaQuestion();
 
-	await `**${Emoji.Diango} Diango asks ${user.username}...** ${question}`;
+	await channel.send(`**${Emoji.Diango} Diango asks ${user.username}...** ${question}`);
 	try {
 		const collected = await channel.awaitMessages({
 			...options,
