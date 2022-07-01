@@ -2553,3 +2553,17 @@ export const LMSBuyables: LMSBuyable[] = [
 	{ item: getOSItem('Golden bandos special attack'), cost: 75, onlyCL: true },
 	{ item: getOSItem('Golden zamorak special attack'), cost: 75, onlyCL: true }
 ];
+
+export const fishingContestCL = resolveItems([
+	'Fishing hat',
+	'Fishing jacket',
+	'Fishing waders',
+	'Fishing boots',
+	'Contest rod',
+	"Beginner's tackle box",
+	'Basic tackle box',
+	'Standard tackle box',
+	'Professional tackle box',
+	"Champion's tackle box",
+	'Golden fishing trophy'
+]);

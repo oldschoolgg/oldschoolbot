@@ -22,8 +22,8 @@ interface HasFunctionArgs {
 	bank: Bank;
 	user: KlasaUser;
 	lapScores: ItemBank;
-	skillsLevels: Skills;
-	skillsXP: Skills;
+	skillsLevels: Required<Skills>;
+	skillsXP: Required<Skills>;
 	poh: PlayerOwnedHouse;
 	gear: UserFullGearSetup;
 	allItemsOwned: Bank;
@@ -33,15 +33,15 @@ interface HasFunctionArgs {
 	activityCounts: Record<activity_type_enum, number>;
 	slayerTasksCompleted: number;
 	minigames: Minigame;
+	opens: Bank;
+	disassembledItems: Bank;
 }
 
-interface Task {
+export interface Task {
 	id: number;
 	name: string;
 	has: (opts: HasFunctionArgs) => Promise<boolean>;
 }
-
-export type TaskWithoutID = Omit<Task, 'id'>;
 
 export function leaguesHasKC(args: HasFunctionArgs, mon: Monster, amount = 1) {
 	return (args.monsterScores[mon.id] ?? 0) >= amount;
@@ -61,12 +61,15 @@ const a = [
 	{ name: 'Master', tasks: masterTasks }
 ];
 
+let totalTasks = 0;
 let str = '';
 for (const { name, tasks } of a) {
 	str += `--------- ${name} (${tasks.length} tasks) -----------\n`;
 	for (const task of tasks) {
 		str += `${task.name}\n`;
 	}
+	totalTasks += tasks.length;
 	str += '\n\n';
 }
+str = `There are a total of ${totalTasks} tasks.\n\n${str}`;
 writeFileSync('./leagues.txt', Buffer.from(str));

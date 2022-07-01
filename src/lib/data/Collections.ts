@@ -85,6 +85,7 @@ import {
 	discontinuedCustomPetsCL,
 	expertCapesCL,
 	fightCavesCL,
+	fishingContestCL,
 	fishingTrawlerCL,
 	fossilIslandNotesCL,
 	generalGraardorCL,
@@ -861,19 +862,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Fishing Contest': {
 				alias: ['fc'],
-				items: resolveItems([
-					'Fishing hat',
-					'Fishing jacket',
-					'Fishing waders',
-					'Fishing boots',
-					'Contest rod',
-					"Beginner's tackle box",
-					'Basic tackle box',
-					'Standard tackle box',
-					'Professional tackle box',
-					"Champion's tackle box",
-					'Golden fishing trophy'
-				])
+				items: fishingContestCL
 			},
 			'Baxtorian Bathhouses': {
 				alias: ['bb', 'bax bath', 'baxtorian bathhouses', 'bath', 'baths'],
