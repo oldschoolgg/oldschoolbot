@@ -1,6 +1,7 @@
 import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { cluesBeginnerCL, cluesEasyCL, customPetsCL } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
@@ -19,6 +20,7 @@ import {
 } from '../diaries';
 import { Cookables } from '../skilling/skills/cooking';
 import Fishing from '../skilling/skills/fishing';
+import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { leaguesHasCatches, leaguesHasKC, Task } from './leagues';
@@ -312,10 +314,46 @@ export const easyTasks: Task[] = [
 		}
 	},
 	{
-		id: 41,
+		id: 42,
 		name: 'Cook 1000 of anything',
 		has: async ({ cl }) => {
 			return sumArr(Cookables.map(i => cl.amount(i.id))) >= 1000;
+		}
+	},
+	{
+		id: 43,
+		name: 'Complete a Farming contract',
+		has: async ({ mahojiUser }) => {
+			const contract = getFarmingContractOfUser(mahojiUser);
+			return contract.contractsCompleted >= 1;
+		}
+	},
+	{
+		id: 44,
+		name: 'Complete an Item Contract',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.total_item_contracts >= 1;
+		}
+	},
+	{
+		id: 45,
+		name: 'Kill 10 unique monsters',
+		has: async ({ mahojiUser }) => {
+			return Object.keys(mahojiUser.monsterScores as ItemBank).length >= 10;
+		}
+	},
+	{
+		id: 46,
+		name: 'Slay a superior slayer creature',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.slayer_superior_count >= 1;
+		}
+	},
+	{
+		id: 47,
+		name: 'Sacrifice 100m worth of items/GP',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.sacrificedValue >= 100_000_000;
 		}
 	}
 ];

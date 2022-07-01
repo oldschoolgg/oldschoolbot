@@ -1,5 +1,6 @@
 import { sumArr } from 'e';
 
+import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import {
 	all3rdAgeItems,
 	chambersOfXericCL,
@@ -15,7 +16,9 @@ import {
 } from '../data/CollectionsExport';
 import { Inventions } from '../invention/inventions';
 import { NexMonster } from '../nex';
+import { dungBuyables } from '../skilling/skills/dung/dungData';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { calcCombatLevel, calcTotalLevel, itemID } from '../util';
 import resolveItems from '../util/resolveItems';
 import { Task } from './leagues';
@@ -775,6 +778,63 @@ export const masterTasks: Task[] = [
 		name: 'Receive 5b Invention',
 		has: async ({ skillsXP }) => {
 			return skillsXP.invention >= 5_000_000_000;
+		}
+	},
+	{
+		id: 4102,
+		name: 'Complete 500 Farming contracts',
+		has: async ({ mahojiUser }) => {
+			const contract = getFarmingContractOfUser(mahojiUser);
+			return contract.contractsCompleted >= 500;
+		}
+	},
+	{
+		id: 4103,
+		name: 'Unlock every slayer unlock',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.slayer_unlocks.length === Object.keys(SlayerTaskUnlocksEnum).length;
+		}
+	},
+	{
+		id: 4104,
+		name: 'Complete 100 Item Contracts',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.total_item_contracts >= 100;
+		}
+	},
+	{
+		id: 4105,
+		name: 'Achieve an Item Contract streak of 50',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.item_contract_streak >= 50;
+		}
+	},
+	{
+		id: 4106,
+		name: 'Buy every dungeoneering reward',
+		has: async ({ cl }) => {
+			return dungBuyables.every(i => cl.has(i.item.id));
+		}
+	},
+	{
+		id: 4107,
+		name: 'Slay 500 superior slayer creatures',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.slayer_superior_count >= 500;
+		}
+	},
+	{
+		id: 4108,
+		name: 'Sacrifice 20b worth of items/GP',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.sacrificedValue >= 20_000_000_000;
+		}
+	},
+	{
+		id: 4109,
+		name: 'Create an Infernal slayer helmet(i)',
+		has: async ({ cl }) => {
+			return cl.has('Infernal slayer helmet (i)');
 		}
 	}
 ];

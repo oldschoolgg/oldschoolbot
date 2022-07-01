@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
@@ -32,12 +33,17 @@ const contractToFarmingLevel = {
 	hard: 85
 };
 
+export function getFarmingContractOfUser(user: User) {
+	const currentContract: FarmingContract =
+		(user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
+	return currentContract;
+}
+
 export async function farmingContractCommand(userID: bigint, input?: ContractOption): CommandResponse {
 	const user = await mahojiUsersSettingsFetch(userID);
 	const bank = getMahojiBank(user);
 	const farmingLevel = getSkillsOfMahojiUser(user, true).farming;
-	const currentContract: FarmingContract =
-		(user.minion_farmingContract as FarmingContract | null) ?? defaultFarmingContract;
+	const currentContract = getFarmingContractOfUser(user);
 	const plant = currentContract.hasContract ? findPlant(currentContract.plantToGrow) : null;
 
 	if (!input) {

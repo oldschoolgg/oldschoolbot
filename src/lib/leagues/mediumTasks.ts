@@ -1,6 +1,7 @@
 import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
+import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { cluesBeginnerCL, cluesEasyCL, cluesMediumCL, customPetsCL, cyclopsCL } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
@@ -17,10 +18,12 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '../diaries';
+import { baseUserKourendFavour, UserKourendFavour } from '../minions/data/kourendFavour';
+import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel, itemID } from '../util';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { leaguesHasCatches, Task } from './leagues';
+import { leaguesHasCatches, leaguesHasKC, Task } from './leagues';
 
 export const mediumTasks: Task[] = [
 	{
@@ -378,6 +381,113 @@ export const mediumTasks: Task[] = [
 		name: 'Disassemble some items',
 		has: async ({ disassembledItems }) => {
 			return disassembledItems.length >= 0;
+		}
+	},
+	{
+		id: 1052,
+		name: 'Complete 20 Farming contracts',
+		has: async ({ mahojiUser }) => {
+			const contract = getFarmingContractOfUser(mahojiUser);
+			return contract.contractsCompleted >= 20;
+		}
+	},
+	{
+		id: 1053,
+		name: 'Offer a chewed bones',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.slayer_chewed_offered >= 1;
+		}
+	},
+	{
+		id: 1054,
+		name: 'Offer an unsired',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.slayer_unsired_offered >= 1;
+		}
+	},
+	{
+		id: 1055,
+		name: 'Do a birdhouse trip',
+		has: async ({ activityCounts }) => {
+			return (activityCounts.Birdhouse ?? 0) >= 1;
+		}
+	},
+	{
+		id: 1056,
+		name: 'Complete 10 Item Contracts',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.total_item_contracts >= 10;
+		}
+	},
+	{
+		id: 1057,
+		name: 'Achieve an Item Contract streak of 5',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.item_contract_streak >= 5;
+		}
+	},
+	{
+		id: 1058,
+		name: 'Kill 25 unique monsters',
+		has: async ({ mahojiUser }) => {
+			return Object.keys(mahojiUser.monsterScores as ItemBank).length >= 25;
+		}
+	},
+	{
+		id: 1059,
+		name: 'Slay 15 superior slayer creatures',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.slayer_superior_count >= 5;
+		}
+	},
+	{
+		id: 1060,
+		name: 'Sacrifice 1b worth of items/GP',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.sacrificedValue >= 1_000_000_000;
+		}
+	},
+	{
+		id: 1061,
+		name: 'Reach honour level 5',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.honour_level === 5;
+		}
+	},
+	{
+		id: 1062,
+		name: 'Defeat Skotizo',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Skotizo, 1);
+		}
+	},
+	{
+		id: 1063,
+		name: 'Defeat Skotizo 10 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Skotizo, 10);
+		}
+	},
+	{
+		id: 1064,
+		name: 'Complete the Gauntlet',
+		has: async ({ minigames }) => {
+			return minigames.gauntlet >= 1;
+		}
+	},
+	{
+		id: 1065,
+		name: 'Complete the Gauntlet 100 times',
+		has: async ({ minigames }) => {
+			return minigames.gauntlet >= 1;
+		}
+	},
+	{
+		id: 1066,
+		name: 'Achieve maximum kourend favour',
+		has: async ({ mahojiUser }) => {
+			const currentUserFavour = (mahojiUser.kourend_favour ?? baseUserKourendFavour) as any as UserKourendFavour;
+			return Object.values(currentUserFavour).every(val => val >= 100);
 		}
 	}
 ];

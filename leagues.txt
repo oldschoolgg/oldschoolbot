@@ -1,6 +1,6 @@
-There are a total of 286 tasks.
+There are a total of 334 tasks.
 
---------- Easy (40 tasks) -----------
+--------- Easy (47 tasks) -----------
 Smith 100 Bronze bars from scratch
 Do 50 laps at the Gnome Stronghold Agility Course
 Obtain 10 Marks of grace
@@ -41,9 +41,16 @@ Open a EMB
 Open a CMB
 Open a HMB
 Open a PMB
+Fish 1000 fish
+Cook 1000 of anything
+Complete a Farming contract
+Complete an Item Contract
+Kill 10 unique monsters
+Slay a superior slayer creature
+Sacrifice 100m worth of items/GP
 
 
---------- Medium (51 tasks) -----------
+--------- Medium (66 tasks) -----------
 Complete the Medium Wilderness diary
 Complete the Medium Western Prov diary
 Complete the Medium Ardougne diary
@@ -95,9 +102,24 @@ Complete a Grandmaster clue scroll
 Receive any XP lamp
 Compete in the Fishing Contest
 Disassemble some items
+Complete 20 Farming contracts
+Offer a chewed bones
+Offer an unsired
+Do a birdhouse trip
+Complete 10 Item Contracts
+Achieve an Item Contract streak of 5
+Kill 25 unique monsters
+Slay 15 superior slayer creatures
+Sacrifice 1b worth of items/GP
+Reach honour level 5
+Defeat Skotizo
+Defeat Skotizo 10 times
+Complete the Gauntlet
+Complete the Gauntlet 100 times
+Achieve maximum kourend favour
 
 
---------- Hard (58 tasks) -----------
+--------- Hard (67 tasks) -----------
 Complete the Hard Wilderness diary
 Complete the Hard Western Prov diary
 Complete the Hard Ardougne diary
@@ -156,9 +178,18 @@ Create any invention
 Disassemble 100 unique items
 Achieve base level 90 stats
 Do a total of 3000 agility course laps 
+Complete 50 Farming contracts
+Complete 30 Item Contracts
+Achieve an Item Contract streak of 15
+Kill 75 unique monsters
+Slay 50 superior slayer creatures
+Sacrifice 3b worth of items/GP
+Complete the Corrupted Gauntlet
+Complete the Corrupted Gauntlet 100 times
+Unlock every invention blueprint
 
 
---------- Elite (36 tasks) -----------
+--------- Elite (46 tasks) -----------
 Complete the Elite Wilderness diary
 Complete the Elite Western Prov diary
 Complete the Elite Ardougne diary
@@ -195,9 +226,19 @@ Finish the Nex CL
 Receive any 25 custom pets
 Disassemble 250 unique items
 Achieve base level 100 stats
+Complete 100 Farming contracts
+Complete 50 Item Contracts
+Achieve an Item Contract streak of 20
+Kill 150 unique monsters
+Slay 250 superior slayer creatures
+Sacrifice 10b worth of items/GP
+Receive a dragon egg and hatch it
+Receive a monkey egg and hatch it
+Feed a perk-item to your Igne tame
+Feed a perk-item to your Monkey tame
 
 
---------- Master (101 tasks) -----------
+--------- Master (108 tasks) -----------
 Build a Demonic Throne
 Defeat Nex 500 Times
 Receive atleast 1000 Agility Arena tickets
@@ -299,5 +340,12 @@ Receive 5b Hitpoints
 Receive 5b Dungeoneering
 Receive 5b Slayer
 Receive 5b Invention
+Complete 500 Farming contracts
+Unlock every slayer unlock
+Complete 100 Item Contracts
+Achieve an Item Contract streak of 50
+Buy every dungeoneering reward
+Slay 500 superior slayer creatures
+Sacrifice 20b worth of items/GP
 
 

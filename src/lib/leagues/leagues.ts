@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { activity_type_enum, Minigame, PlayerOwnedHouse } from '@prisma/client';
+import { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User } from '@prisma/client';
 import { writeFileSync } from 'fs';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -35,6 +35,8 @@ interface HasFunctionArgs {
 	minigames: Minigame;
 	opens: Bank;
 	disassembledItems: Bank;
+	mahojiUser: User;
+	tames: Tame[];
 }
 
 export interface Task {
@@ -61,11 +63,15 @@ const a = [
 	{ name: 'Master', tasks: masterTasks }
 ];
 
+let taskIDs = new Set();
+
 let totalTasks = 0;
 let str = '';
 for (const { name, tasks } of a) {
 	str += `--------- ${name} (${tasks.length} tasks) -----------\n`;
 	for (const task of tasks) {
+		if (taskIDs.has(task.id)) throw new Error(`WTFFFFFFFFFFF: ${task.id}`);
+		taskIDs.add(task.id);
 		str += `${task.name}\n`;
 	}
 	totalTasks += tasks.length;

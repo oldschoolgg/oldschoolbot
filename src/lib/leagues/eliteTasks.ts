@@ -1,5 +1,8 @@
 import { sumArr } from 'e';
+import { Bank } from 'oldschooljs';
 
+import { feedableItems } from '../../mahoji/commands/tames';
+import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import {
 	all3rdAgeItems,
 	cluesHardCL,
@@ -24,6 +27,8 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '../diaries';
+import { TameSpeciesID, TameType } from '../tames';
+import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { leaguesHasCatches, Task } from './leagues';
@@ -289,6 +294,91 @@ export const eliteTasks: Task[] = [
 		name: 'Achieve base level 100 stats',
 		has: async ({ skillsLevels }) => {
 			return Object.values(skillsLevels).every(i => i >= 100);
+		}
+	},
+	{
+		id: 3036,
+		name: 'Complete 100 Farming contracts',
+		has: async ({ mahojiUser }) => {
+			const contract = getFarmingContractOfUser(mahojiUser);
+			return contract.contractsCompleted >= 100;
+		}
+	},
+	{
+		id: 3037,
+		name: 'Complete 50 Item Contracts',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.total_item_contracts >= 50;
+		}
+	},
+	{
+		id: 3038,
+		name: 'Achieve an Item Contract streak of 20',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.item_contract_streak >= 20;
+		}
+	},
+	{
+		id: 3039,
+		name: 'Kill 150 unique monsters',
+		has: async ({ mahojiUser }) => {
+			return Object.keys(mahojiUser.monsterScores as ItemBank).length >= 150;
+		}
+	},
+	{
+		id: 3040,
+		name: 'Slay 250 superior slayer creatures',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.slayer_superior_count >= 250;
+		}
+	},
+	{
+		id: 3041,
+		name: 'Sacrifice 10b worth of items/GP',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.sacrificedValue >= 10_000_000_000;
+		}
+	},
+	{
+		id: 3042,
+		name: 'Receive a dragon egg and hatch it',
+		has: async ({ tames, cl }) => {
+			return cl.has('Dragon egg') && tames.some(t => t.species_id === TameSpeciesID.Igne);
+		}
+	},
+	{
+		id: 3043,
+		name: 'Receive a monkey egg and hatch it',
+		has: async ({ tames, cl }) => {
+			return cl.has('Monkey egg') && tames.some(t => t.species_id === TameSpeciesID.Monkey);
+		}
+	},
+	{
+		id: 3044,
+		name: 'Feed a perk-item to your Igne tame',
+		has: async ({ tames }) => {
+			return tames
+				.filter(t => t.species_id === TameSpeciesID.Igne)
+				.some(t => {
+					const fedItems = new Bank(t.fed_items as ItemBank);
+					return feedableItems.some(
+						i => i.tameSpeciesCanBeFedThis.includes(TameType.Combat) && fedItems.has(i.item.id)
+					);
+				});
+		}
+	},
+	{
+		id: 3045,
+		name: 'Feed a perk-item to your Monkey tame',
+		has: async ({ tames }) => {
+			return tames
+				.filter(t => t.species_id === TameSpeciesID.Monkey)
+				.some(t => {
+					const fedItems = new Bank(t.fed_items as ItemBank);
+					return feedableItems.some(
+						i => i.tameSpeciesCanBeFedThis.includes(TameType.Gatherer) && fedItems.has(i.item.id)
+					);
+				});
 		}
 	}
 ];
