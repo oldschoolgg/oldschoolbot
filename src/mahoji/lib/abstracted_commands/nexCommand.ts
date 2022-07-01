@@ -116,10 +116,14 @@ export async function nexCommand(
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'No channel found.';
-	const [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel, user, partyOptions);
-	await reactionAwaiter();
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
-
+	let users: KlasaUser[] = [];
+	if (type === 'mass') {
+		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel, user, partyOptions);
+		await reactionAwaiter();
+		users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
+	} else {
+		users = [user];
+	}
 	let debugStr = '';
 	let effectiveTime = NexMonster.timeToFinish;
 	if (isWeekend()) {
