@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -76,7 +75,7 @@ export default class extends Task {
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
+			updateGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${

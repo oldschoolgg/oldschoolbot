@@ -159,6 +159,7 @@ export namespace UserSettings {
 	export const LMSPoints = T<number>('lms_points');
 	export const GPLuckyPick = T<number>('gp_luckypick');
 	export const GPDice = T<number>('gp_dice');
+	export const GPSlots = T<number>('gp_slots');
 
 	export const BankSortWeightings = T<Readonly<ItemBank>>('bank_sort_weightings');
 	export const BankSortMethod = T<BankSortMethod | null>('bank_sort_method');

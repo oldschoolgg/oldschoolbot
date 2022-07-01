@@ -5,7 +5,6 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
 import { mahojiParseNumber } from '../../mahojiSettings';
@@ -106,11 +105,7 @@ export async function duelCommand(
 		const tax = winningAmount - winningAmount * 0.95;
 
 		const dividedAmount = tax / 1_000_000;
-		updateGPTrackSetting(
-			globalClient,
-			ClientSettings.EconomyStats.DuelTaxBank,
-			Math.floor(Math.round(dividedAmount * 100) / 100)
-		);
+		updateGPTrackSetting('duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
 		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins) as number;
 		winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);

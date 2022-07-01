@@ -115,7 +115,7 @@ export const sellCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bankToSell.bank);
 		await user.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
 
-		updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceSellingItems, totalPrice);
+		updateGPTrackSetting('gp_sell', totalPrice);
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
 
 		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
