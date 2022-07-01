@@ -10,8 +10,6 @@ import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { dataCommand } from '../../lib/minions/functions/dataCommand';
-import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
-import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -22,10 +20,10 @@ import { BotCommand } from '../../lib/structures/BotCommand';
 import { ItemBank } from '../../lib/types';
 import { convertMahojiResponseToDJSResponse, getClueScoresFromOpenables } from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { isUsersDailyReady } from './daily';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -108,8 +106,8 @@ export default class MinionCommand extends BotCommand {
 				emoji: Emoji.MoneyBag,
 				fn: () =>
 					runCommand({
-						commandName: 'daily',
-						args: [],
+						commandName: 'minion',
+						args: { daily: {} },
 						bypassInhibitors: true,
 						...cmdOptions
 					}),
@@ -260,8 +258,8 @@ export default class MinionCommand extends BotCommand {
 		return msg.channel.send(data);
 	}
 
-	async charge(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return degradeableItemsCommand(msg, input);
+	async charge(msg: KlasaMessage) {
+		return msg.channel.send('This command has been moved to `/minion charge`');
 	}
 
 	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
@@ -285,8 +283,8 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async tempcl(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return tempCLCommand(msg, input);
+	async tempcl(msg: KlasaMessage) {
+		return msg.channel.send('This has been moved to `/cl type:temp`');
 	}
 
 	@requiresMinion

@@ -66,6 +66,7 @@ import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
 import { revsCommand } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
+import { wintertodtCommand } from './wintertodtCommand';
 import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
@@ -126,6 +127,7 @@ export async function minionKillCommand(
 	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
 	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);

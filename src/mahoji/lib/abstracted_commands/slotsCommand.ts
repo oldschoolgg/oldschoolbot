@@ -100,21 +100,11 @@ export async function slotsCommand(
 
 ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 	}
-	// if (!production) {
-	// 	let houseBalance = 0;
-	// 	let betQuantity = 500_000;
 
-	// 	for (let i = 0; i < betQuantity; i++) {
-	// 		let betSize = amount;
-	// 		houseBalance += betSize;
-	// 		const buttons = getButtons();
-	// 		const { amountReceived } = determineWinnings(betSize, buttons);
-	// 		houseBalance -= amountReceived;
-	// 	}
-	// 	return `With ${betQuantity} bets, the house ended up with ${toKMB(houseBalance)}. Average profit of ${toKMB(
-	// 		houseBalance / betQuantity
-	// 	)} per bet.`;
-	// }
+	if (amount < 20_000_000 || amount > 1_000_000_000) {
+		return 'You can only gamble between 20m and 1b.';
+	}
+
 	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 
@@ -153,16 +143,18 @@ ${buttonsData.map(b => `${b.name}: ${b.mod(1)}x`).join('\n')}`;
 		})
 		.catch(noOp);
 	await sleep(2000);
-	sentMessage?.edit({ content: 'Slots', components: getCurrentButtons({ columnsToHide: [] }) }).catch(noOp);
+
+	const finishContent =
+		amountReceived === 0
+			? "Unlucky, you didn't win anything, and lost your bet!"
+			: `You won ${toKMB(amountReceived)}!`;
+	sentMessage?.edit({ content: finishContent, components: getCurrentButtons({ columnsToHide: [] }) }).catch(noOp);
 
 	await user.addItemsToBank({ items: new Bank().add('Coins', amountReceived), collectionLog: false });
 	await updateGPTrackSetting('gp_slots', amountReceived - amount);
 	await updateGPTrackSetting('gp_slots', amountReceived - amount, user);
 
 	return {
-		content:
-			amountReceived === 0
-				? "Unlucky, you didn't win anything, and lost your bet!"
-				: `You won ${toKMB(amountReceived)}!`
+		content: finishContent
 	};
 }

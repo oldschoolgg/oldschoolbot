@@ -8,7 +8,7 @@ import { EquipmentSlot, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA, PATRON_ONLY_GEAR_SETUP, PerkTier } from '../../../lib/constants';
 import { defaultGear, GearSetup, GearSetupType, GearStat, globalPresets } from '../../../lib/gear';
-import { generateGearImage } from '../../../lib/gear/functions/generateGearImage';
+import { generateAllGearImage, generateGearImage } from '../../../lib/gear/functions/generateGearImage';
 import getUserBestGearFromBank from '../../../lib/minions/functions/getUserBestGearFromBank';
 import { unEquipAllCommand } from '../../../lib/minions/functions/unequipAllCommand';
 import { prisma } from '../../../lib/settings/prisma';
@@ -19,6 +19,7 @@ import {
 	formatSkillRequirements,
 	isValidGearSetup,
 	skillsMeetRequirements,
+	stringMatches,
 	toTitleCase
 } from '../../../lib/util';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
@@ -350,4 +351,30 @@ export async function gearStatsCommand(user: User, input: string): CommandRespon
 	}
 	const image = await generateGearImage(user, new Gear(gear), null, null);
 	return { attachments: [{ fileName: 'image.jpg', buffer: image }] };
+}
+
+export async function gearViewCommand(user: User, input: string, text: boolean): CommandResponse {
+	if (stringMatches(input, 'all')) {
+		const file = text
+			? {
+					buffer: Buffer.from(
+						Object.entries(getUserGear(user))
+							.map(i => `${i[0]}: ${i[1].toString()}`)
+							.join('\n')
+					),
+					fileName: 'gear.txt'
+			  }
+			: { buffer: await generateAllGearImage(user), fileName: 'osbot.png' };
+		return {
+			content: 'Here are all your gear setups',
+			attachments: [file]
+		};
+	}
+	if (!isValidGearSetup(input)) return 'Invalid setup.';
+	const gear = getUserGear(user)[input];
+	if (text) {
+		return gear.toString();
+	}
+	const image = await generateGearImage(user, gear, input, user.minion_equippedPet);
+	return { attachments: [{ buffer: image, fileName: 'gear.jpg' }] };
 }
