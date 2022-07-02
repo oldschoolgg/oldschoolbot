@@ -18,7 +18,7 @@ import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
 import { ActivityTaskOptions } from '../types/minions';
-import { calcPerHour, clamp, formatDuration, toKMB } from '../util';
+import { calcPerHour, clamp, formatDuration, itemID, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
@@ -408,11 +408,12 @@ export async function disassembleCommand({
 ${result.messages.length > 0 ? `**Messages:** ${result.messages.join(', ')}` : ''}`;
 }
 
-async function handleInventionPrize(): Promise<Bank | null> {
+async function handleInventionPrize(isIron: boolean): Promise<Bank | null> {
 	const remaining = (await mahojiClientSettingsFetch({ invention_prizes_remaining: true }))
 		.invention_prizes_remaining as ItemBank;
 	const remainingBank = new Bank(remaining);
 	const toGive = remainingBank.random()?.id;
+	if (isIron && toGive !== itemID('Double loot token')) return null;
 	if (!toGive) return null;
 	const loot = new Bank().add(toGive);
 	await clientSettingsUpdate({
@@ -472,7 +473,7 @@ ${xpStr}`;
 			loot.add('Cogsworth');
 		}
 		if (roll(prizeChance)) {
-			const prize = await handleInventionPrize();
+			const prize = await handleInventionPrize(klasaUser.isIronman);
 			if (prize) prizeLoot.add(prize);
 		}
 	}
