@@ -1,6 +1,7 @@
 import { roll } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 
 import { COINS_ID, dailyResetTime, Emoji, SupportServer } from '../../../lib/constants';
 import { getRandomTriviaQuestion } from '../../../lib/roboChimp';
@@ -109,7 +110,12 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 	return { content: dmStr, attachments: [image.file] };
 }
 
-export async function dailyCommand(channelID: bigint, user: KlasaUser): CommandResponse {
+export async function dailyCommand(
+	interaction: SlashCommandInteraction,
+	channelID: bigint,
+	user: KlasaUser
+): CommandResponse {
+	await interaction.deferReply();
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const check = isUsersDailyReady(user);
