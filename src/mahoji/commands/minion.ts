@@ -259,6 +259,11 @@ export const minionCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'daily',
+			description: 'Claim some daily free GP.'
 		}
 	],
 	run: async ({
@@ -362,7 +367,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
 		}
 		if (options.daily) {
-			return dailyCommand(channelID, user);
+			return dailyCommand(interaction, channelID, user);
 		}
 
 		return 'Unknown command';
