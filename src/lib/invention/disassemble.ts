@@ -23,6 +23,7 @@ import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
 import { handleTripFinish } from '../util/handleTripFinish';
+import { minionIsBusy } from '../util/minionIsBusy';
 import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../util/minionUtils';
 import {
 	allItemsThatCanBeDisassembledIDs,
@@ -374,6 +375,7 @@ export async function disassembleCommand({
 	quantityToDisassemble: number | undefined;
 	channelID: bigint;
 }): CommandResponse {
+	if (minionIsBusy(mahojiUser.id)) return 'Your minion is busy.';
 	const item = getItem(itemToDisassembleName);
 	if (!item) return "That's not a valid item.";
 	const group = findDisassemblyGroup(item);
