@@ -1,15 +1,13 @@
-import { MessageAttachment } from 'discord.js';
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { Emoji, lastTripCache, PerkTier } from '../../lib/constants';
+import { Emoji, lastTripCache } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
-import { dataCommand } from '../../lib/minions/functions/dataCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -227,20 +225,8 @@ export default class MinionCommand extends BotCommand {
 		return trainCommand(msg, input);
 	}
 
-	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		if (msg.author.perkTier < PerkTier.Four) {
-			return msg.channel.send('Sorry, you need to be a Tier 3 Patron to use this command.');
-		}
-		const result = await dataCommand(msg, input);
-		if ('bank' in result) {
-			return msg.channel.sendBankImage({
-				title: result.title,
-				bank: result.bank,
-				content: result.content
-			});
-		}
-		const output = Buffer.isBuffer(result) ? { files: [new MessageAttachment(result)] } : result;
-		return msg.channel.send(output);
+	async data(msg: KlasaMessage) {
+		return msg.channel.send('This command was moved to `/tools patron stats`');
 	}
 
 	async lapcounts(msg: KlasaMessage) {

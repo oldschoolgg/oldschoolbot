@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { determineKillLimit } from '../../commands/OSRS_Fun/kill';
+import { determineKillLimit } from '../../commands/deprecated/kill';
 import { toTitleCase } from '../../lib/util';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';

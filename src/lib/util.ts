@@ -24,7 +24,7 @@ import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
-import { bool, integer, nodeCrypto, real } from 'random-js';
+import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
 import { CLIENT_ID } from '../config';
 import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
@@ -809,4 +809,9 @@ export function getUsername(id: string | bigint) {
 
 export function getClueScoresFromOpenables(openableScores: Bank, mutate = false) {
 	return openableScores.filter(item => Boolean(clueTiers.find(ct => ct.id === item.id)), mutate);
+}
+
+export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
+	const engine = MersenneTwister19937.seed(input);
+	return shuffle(engine, [...arr]);
 }

@@ -378,3 +378,33 @@ export async function gearViewCommand(user: User, input: string, text: boolean):
 	const image = await generateGearImage(user, gear, input, user.minion_equippedPet);
 	return { attachments: [{ buffer: image, fileName: 'gear.jpg' }] };
 }
+
+export async function gearSwapCommand(
+	interaction: SlashCommandInteraction,
+	user: User,
+	first: GearSetupType,
+	second: GearSetupType
+) {
+	if (!first || !second || first === second || !isValidGearSetup(first) || !isValidGearSetup(second)) {
+		return 'Invalid gear setups. You must provide two unique gear setups to switch gear between.';
+	}
+	if (first === 'wildy' || second === 'wildy') {
+		await handleMahojiConfirmation(
+			interaction,
+			'Are you sure you want to swap your gear with a wilderness setup? You can lose items on your wilderness setup!'
+		);
+	}
+
+	if ([first, second].includes('other') && getUsersPerkTier(user) < PerkTier.Four) {
+		return PATRON_ONLY_GEAR_SETUP;
+	}
+
+	const gear = getUserGear(user);
+
+	await mahojiUserSettingsUpdate(user.id, {
+		[`gear_${first}`]: gear[second],
+		[`gear_${second}`]: gear[first]
+	});
+
+	return `You swapped your ${first} gear with your ${second} gear.`;
+}
