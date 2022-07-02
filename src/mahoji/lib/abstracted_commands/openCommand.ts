@@ -7,7 +7,6 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { ItemBank } from '../../../lib/types';
 import { assert, updateGPTrackSetting } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
@@ -172,7 +171,7 @@ async function finalizeOpening({
 	);
 
 	if (loot.has('Coins')) {
-		await updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
+		await updateGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables

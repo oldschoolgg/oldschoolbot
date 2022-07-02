@@ -44,7 +44,7 @@ const tripFinishEffects: {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+					updateGPTrackSetting('gp_pvm', GP);
 				}
 			}
 		}
@@ -197,11 +197,7 @@ const tripFinishEffects: {
 
 				updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 
-				updateGPTrackSetting(
-					globalClient,
-					ClientSettings.EconomyStats.GPSourceAlching,
-					alchResult.bankToAdd.amount('Coins')
-				);
+				updateGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'));
 				messages.push(
 					`Your Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
 						alchResult.bankToRemove
