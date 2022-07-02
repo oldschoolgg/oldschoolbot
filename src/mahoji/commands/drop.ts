@@ -37,6 +37,9 @@ export const dropCommand: OSBMahojiCommand = {
 		options,
 		userID
 	}: CommandRunOptions<{ items: string; filter?: string; search?: string }>) => {
+		if (!options.filter && !options.items && !options.search) {
+			return "You didn't provide any items, filter or search.";
+		}
 		const user = await globalClient.fetchUser(userID);
 		const mUser = await mahojiUsersSettingsFetch(userID, { favoriteItems: true });
 		const bank = parseBank({

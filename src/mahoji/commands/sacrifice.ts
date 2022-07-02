@@ -51,6 +51,10 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		options,
 		interaction
 	}: CommandRunOptions<{ items?: string; filter?: string; search?: string }>) => {
+		if (!options.filter && !options.items && !options.search) {
+			return "You didn't provide any items, filter or search.";
+		}
+
 		const user = await globalClient.fetchUser(userID.toString());
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const bankToSac = parseBank({
@@ -59,7 +63,8 @@ export const sacrificeCommand: OSBMahojiCommand = {
 			excludeItems: mUser.favoriteItems,
 			user,
 			search: options.search,
-			filters: [options.filter]
+			filters: [options.filter],
+			maxSize: 70
 		});
 
 		const sacVal = Number(mUser.sacrificedValue);

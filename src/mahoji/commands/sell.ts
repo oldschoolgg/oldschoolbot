@@ -32,7 +32,7 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
-	return { price, basePrice };
+	return { price: Math.floor(price), basePrice: Math.floor(basePrice) };
 }
 
 export const sellCommand: OSBMahojiCommand = {

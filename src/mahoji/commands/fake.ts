@@ -1,10 +1,9 @@
-import { MessageAttachment } from 'discord.js';
 import { randInt } from 'e';
 import fs from 'fs';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Canvas, CanvasRenderingContext2D, loadImage } from 'skia-canvas/lib';
 
-import { BotCommand } from '../../lib/structures/BotCommand';
+import { OSBMahojiCommand } from '../lib/util';
 
 const bg = fs.readFileSync('./src/lib/resources/images/tob-bg.png');
 
@@ -162,19 +161,25 @@ const thingMap = [
 	[new Set(['arma', 'armadyl']), arma]
 ] as const;
 
-export default class extends BotCommand {
-	public constructor(store: CommandStore, file: string[], directory: string) {
-		super(store, file, directory, {
-			description: 'Generates fake loot images.',
-			examples: ['+fake arma Magnaboy'],
-			requiredPermissionsForBot: ['ATTACH_FILES'],
-			usage: '<zammy|tob|sara|corp|bandos|arma> <username:...string>',
-			usageDelim: ' ',
-			categoryFlags: ['fun']
-		});
-	}
-
-	async run(msg: KlasaMessage, [thingName, username]: [string, string]) {
+export const fakeCommand: OSBMahojiCommand = {
+	name: 'fake',
+	description: 'Generate fake images of getting loot.',
+	options: [
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'type',
+			description: 'The type you want to generate.',
+			required: true,
+			choices: thingMap.map(i => Array.from(i[0])[0]).map(i => ({ name: i, value: i }))
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'username',
+			description: 'The username to put on the image.',
+			required: true
+		}
+	],
+	run: async ({ options }: CommandRunOptions<{ type: string; username: string }>) => {
 		const canvas = new Canvas(399, 100);
 		const ctx = canvas.getContext('2d');
 
@@ -184,20 +189,18 @@ export default class extends BotCommand {
 		const image = await loadImage(bg);
 		ctx.drawImage(image, 0, 0, image.width, image.height);
 		for (const [names, fn] of thingMap) {
-			if (names.has(thingName.toLowerCase())) {
-				fn(ctx, username);
-				return msg.channel.send({
-					files: [
-						new MessageAttachment(await canvas.toBuffer('png'), `${Math.round(Math.random() * 10_000)}.jpg`)
+			if (names.has(options.type.toLowerCase())) {
+				fn(ctx, options.username);
+				return {
+					attachments: [
+						{
+							buffer: await canvas.toBuffer('png'),
+							fileName: `${Math.round(Math.random() * 10_000)}.jpg`
+						}
 					]
-				});
+				};
 			}
 		}
-		return msg.channel
-			.send(`Invalid name. You need to specify what monster/thing you want to make a fake loot of, valid options are: ${thingMap
-			.map(i => Array.from(i[0].values())[0])
-			.join(', ')}.
-
-For example: \`${msg.cmdPrefix}\`fake bandos Magnaboy`);
+		return 'Invalid input.';
 	}
-}
+};
