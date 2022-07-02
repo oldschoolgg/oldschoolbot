@@ -467,7 +467,7 @@ ${xpStr}`;
 	const cogsworthChancePerHour = 100;
 	const chancePerMinute = cogsworthChancePerHour * 60;
 	const prizeLoot = new Bank();
-	const prizeChance = Math.floor(chancePerMinute / 15);
+	const prizeChance = Math.floor(chancePerMinute / 40);
 	for (let i = 0; i < minutes; i++) {
 		if (roll(chancePerMinute)) {
 			loot.add('Cogsworth');
