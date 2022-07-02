@@ -18,6 +18,7 @@ export const Halberd: DisassemblySourceGroup = {
 			lvl: 25
 		},
 		{ item: i('Mithril halberd'), lvl: 30 },
+		{ item: i('Adamant halberd'), lvl: 40 },
 		{ item: i('Rune halberd'), lvl: 50 },
 		{ item: i('Dragon halberd'), lvl: 60, flags: new Set(['orikalkum']) },
 		{

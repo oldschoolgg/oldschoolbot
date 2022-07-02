@@ -42,6 +42,7 @@ import { CLIENT_ID, production } from '../config';
 import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
 import { BitField, ProjectileType, skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
+import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
 import { prisma } from './settings/prisma';
@@ -922,4 +923,8 @@ export function generateXPLevelQuestion() {
 
 export function getUsername(id: string | bigint) {
 	return usernameCache.get(id.toString()) ?? 'Unknown';
+}
+
+export function getClueScoresFromOpenables(openableScores: Bank, mutate = false) {
+	return openableScores.filter(item => Boolean(clueTiers.find(ct => ct.id === item.id)), mutate);
 }
