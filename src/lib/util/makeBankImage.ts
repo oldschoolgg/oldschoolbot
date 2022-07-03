@@ -31,7 +31,7 @@ export async function makeBankImage({
 	file: MahojiAttachment;
 }> {
 	let realFlags: Flags = { ...flags, background: background ?? 1, nocache: 1 };
-	if (showNewCL) realFlags.showNewCL = 1;
+	if (showNewCL || previousCL !== undefined) realFlags.showNewCL = 1;
 	const { image, isTransparent } = await (globalClient.tasks.get('bankImage')! as BankImageTask).generateBankImage({
 		bank,
 		title,
