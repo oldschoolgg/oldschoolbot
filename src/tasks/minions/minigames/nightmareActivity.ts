@@ -10,6 +10,7 @@ import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
@@ -85,9 +86,12 @@ export default class extends Task {
 				content: `${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`
 			});
 		} else {
-			const { image } = await this.client.tasks
-				.get('bankImage')!
-				.generateBankImage(itemsAdded, `${quantity}x Nightmare`, true, { showNewCL: 1 }, user, previousCL);
+			const image = await makeBankImage({
+				bank: itemsAdded,
+				title: `${quantity}x Nightmare`,
+				user,
+				previousCL
+			});
 
 			const kc = user.getKC(monsterID);
 			handleTripFinish(
@@ -99,7 +103,7 @@ export default class extends Task {
 					{ name: isPhosani ? 'phosani nightmare' : method === 'solo' ? 'solo nightmare' : 'mass nightmare' },
 					true
 				],
-				image!,
+				image.file.buffer,
 				data,
 				itemsAdded
 			);

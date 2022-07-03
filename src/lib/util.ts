@@ -1,7 +1,6 @@
 import { bold } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
-import crypto from 'crypto';
 import {
 	Channel,
 	Client,
@@ -255,10 +254,6 @@ export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 
 export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
-}
-
-export function sha256Hash(x: string) {
-	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }
 
 export function countSkillsAtleast99(user: KlasaUser | User) {
