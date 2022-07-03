@@ -114,11 +114,11 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 }
 
 export async function dailyCommand(
-	interaction: SlashCommandInteraction,
+	interaction: SlashCommandInteraction | null,
 	channelID: bigint,
 	user: KlasaUser
 ): CommandResponse {
-	await interaction.deferReply();
+	if (interaction) await interaction.deferReply();
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return 'Invalid channel.';
 	const check = isUsersDailyReady(user);
