@@ -24,6 +24,7 @@ import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { assert, itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { trackClientBankStats } from '../../mahoji/mahojiSettings';
@@ -395,16 +396,12 @@ export default class extends Task {
 			duration
 		});
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity} ${monster.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity} ${monster.name}:`,
+			user,
+			previousCL
+		});
 
 		if (messages.length > 0) {
 			str += `\n**Messages:** ${messages.join(', ')}`;
@@ -432,7 +429,7 @@ export default class extends Task {
 							isContinue: true
 						});
 				  },
-			image!,
+			image!.file.buffer,
 			data,
 			itemsAdded
 		);

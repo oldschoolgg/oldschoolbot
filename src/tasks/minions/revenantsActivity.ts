@@ -16,6 +16,7 @@ import { updateBankSetting } from '../../lib/util';
 import calculateGearLostOnDeathWilderness from '../../lib/util/calculateGearLostOnDeathWilderness';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: RevenantOptions) {
@@ -92,16 +93,12 @@ export default class extends Task {
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 		await user.addItemsToCollectionLog({ items: clLoot });
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity} ${monster.name} (${skulled ? 'skulled' : 'unskulled'}):`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity} ${monster.name} (${skulled ? 'skulled' : 'unskulled'}):`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
 			user,
@@ -117,7 +114,7 @@ export default class extends Task {
 					isContinue: true
 				});
 			},
-			image!,
+			image.file.buffer,
 			data,
 			itemsAdded
 		);

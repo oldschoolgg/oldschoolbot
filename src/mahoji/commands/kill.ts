@@ -4,6 +4,7 @@ import { Bank, Monsters } from 'oldschooljs';
 import { determineKillLimit } from '../../commands/deprecated/kill';
 import { PerkTier } from '../../lib/constants';
 import { stringMatches, toTitleCase } from '../../lib/util';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -62,18 +63,13 @@ export const killCommand: OSBMahojiCommand = {
 			return result.error;
 		}
 
-		const { image } = await globalClient.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				new Bank(result.bank?.bank),
-				result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
-				true,
-				{},
-				user
-			);
-
+		const image = await makeBankImage({
+			bank: new Bank(result.bank?.bank),
+			title: result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
+			user
+		});
 		return {
-			attachments: [{ buffer: image!, fileName: 'osbot.png' }],
+			attachments: [image.file],
 			content: result.content
 		};
 	}
