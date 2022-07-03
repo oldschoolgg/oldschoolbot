@@ -24,7 +24,7 @@ export async function makeBankImage({
 	background,
 	user,
 	previousCL,
-	showNewCL = true,
+	showNewCL = false,
 	flags = {},
 	flag
 }: MakeBankImageOptions): Promise<{
