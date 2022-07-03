@@ -6,6 +6,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
+import { beeHiveTripEffect } from '../beeHive';
 import { MysteryBoxes } from '../bsoOpenables';
 import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -34,10 +35,12 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
-const tripFinishEffects: {
+export interface TripFinishEffect {
 	name: string;
 	fn: (options: { data: ActivityTaskOptions; user: KlasaUser; loot: Bank | null; messages: string[] }) => unknown;
-}[] = [
+}
+
+const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Track GP Analytics',
 		fn: ({ data, loot }) => {
@@ -242,7 +245,8 @@ const tripFinishEffects: {
 				}
 			}
 		}
-	}
+	},
+	beeHiveTripEffect
 ];
 
 export async function handleTripFinish(
