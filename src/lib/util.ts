@@ -962,3 +962,19 @@ export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
 }
+
+export function clAdjustedDroprate(
+	user: KlasaUser | User,
+	item: string | number,
+	baseRate: number,
+	increaseMultiplier: number
+) {
+	const cl = user instanceof KlasaUser ? user.cl() : new Bank(user.collectionLogBank as ItemBank);
+	const amountInCL = cl.amount(item);
+	if (amountInCL === 0) return baseRate;
+	let newRate = baseRate;
+	for (let i = 0; i < amountInCL; i++) {
+		newRate *= increaseMultiplier;
+	}
+	return newRate;
+}

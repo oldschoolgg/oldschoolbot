@@ -1249,6 +1249,11 @@ export const allCollectionLogs: ICollection = {
 					'Golden partyhat'
 				]),
 				counts: false
+			},
+			'BSO Birthday 2022': {
+				alias: ['bso birthday 2022'],
+				items: resolveItems(['Honey', 'Honeycomb', 'Beehive', 'Buzz']),
+				counts: false
 			}
 		}
 	}

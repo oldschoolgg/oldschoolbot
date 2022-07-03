@@ -1,10 +1,11 @@
+import { User } from 'discord.js';
 import { calcPercentOfNum, reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Eatables } from '../src/lib/data/eatables';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
+import { clAdjustedDroprate, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem } from '../src/mahoji/commands/sell';
 import { getSkillsOfMahojiUser } from '../src/mahoji/mahojiSettings';
@@ -88,5 +89,17 @@ describe('util', () => {
 	test('getSkillsOfMahojiUser', () => {
 		expect(getSkillsOfMahojiUser(mockUser(), true).agility).toEqual(73);
 		expect(getSkillsOfMahojiUser(mockUser()).agility).toEqual(1_000_000);
+	});
+
+	test('clAdjustedDroprate', () => {
+		expect(
+			clAdjustedDroprate({ collectionLogBank: new Bank().add('Coal', 0).bank } as any as User, 'Coal', 100, 2)
+		).toEqual(100);
+		expect(
+			clAdjustedDroprate({ collectionLogBank: new Bank().add('Coal', 1).bank } as any as User, 'Coal', 100, 2)
+		).toEqual(200);
+		expect(
+			clAdjustedDroprate({ collectionLogBank: new Bank().add('Coal', 2).bank } as any as User, 'Coal', 100, 2)
+		).toEqual(400);
 	});
 });
