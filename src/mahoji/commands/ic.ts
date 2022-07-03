@@ -237,7 +237,7 @@ async function handInContract(
 
 	updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractCost, cost);
 	updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractLoot, loot);
-	updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceItemContracts, loot.amount('Coins'));
+	updateGPTrackSetting('gp_ic', loot.amount('Coins'));
 	let res = `You handed in a ${currentItem.name} and received ${loot}. You've completed ${
 		totalContracts + 1
 	} Item Contracts, and your streak is now at ${newStreak}.`;

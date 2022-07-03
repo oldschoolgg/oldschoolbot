@@ -1,5 +1,6 @@
+import { User } from '@prisma/client';
 import { MessageAttachment } from 'discord.js';
-import { uniqueArr } from 'e';
+import { calcWhatPercent, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
@@ -37,7 +38,7 @@ import { Fletchables } from '../skilling/skills/fletching/fletchables';
 import mixables from '../skilling/skills/herblore/mixables';
 import smithables from '../skilling/skills/smithing/smithables';
 import { ItemBank } from '../types';
-import { addArrayOfNumbers, removeFromArr, stringMatches } from '../util';
+import { addArrayOfNumbers, removeFromArr, shuffleRandom, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalDragonCL,
@@ -1248,6 +1249,11 @@ export const allCollectionLogs: ICollection = {
 					'Golden partyhat'
 				]),
 				counts: false
+			},
+			'BSO Birthday 2022': {
+				alias: ['bso birthday 2022'],
+				items: resolveItems(['Honey', 'Honeycomb', 'Beehive', 'Buzz']),
+				counts: false
 			}
 		}
 	}
@@ -1283,6 +1289,24 @@ export const allCLItemsFiltered = [
 			.flat(100)
 	)
 ];
+
+export function calcCLDetails(user: User | KlasaUser) {
+	const clBank =
+		user instanceof KlasaUser ? user.settings.get(UserSettings.CollectionLogBank) : user.collectionLogBank;
+	const clItems = new Bank(clBank as ItemBank).filter(i => allCLItemsFiltered.includes(i.id), true);
+	const debugBank = new Bank().add(clItems);
+	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
+	const notOwned = shuffleRandom(
+		Number(user.id),
+		allCLItemsFiltered.filter(i => !clItems.has(i))
+	).slice(0, 10);
+	return {
+		percent: calcWhatPercent(owned.length, allCLItemsFiltered.length),
+		notOwned,
+		owned,
+		debugBank
+	};
+}
 
 // Get the left list to be added to the cls
 function getLeftList(

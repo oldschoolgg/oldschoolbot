@@ -11,9 +11,11 @@ import { production } from '../../config';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { BitField, Channel, Emoji, giveBoxResetTime, PerkTier, spawnLampResetTime } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
+import pets from '../../lib/data/pets';
 import backgroundImages from '../../lib/minions/data/bankBackgrounds';
 import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { dataPoints } from '../../lib/minions/functions/dataCommand';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
@@ -347,6 +349,14 @@ async function statsCommand(user: User, type: Stat): CommandResponse {
 	if (cooldown !== null) {
 		return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}`;
 	}
+	const dataPoint = dataPoints.find(dp => stringMatches(dp.name, type));
+	if (dataPoint) {
+		if (getUsersPerkTier(user) < PerkTier.Four) {
+			return 'Sorry, you need to be a Tier 3 Patron to use this command.';
+		}
+		return dataPoint.run(user);
+	}
+
 	switch (type) {
 		case 'servers': {
 			return `Old School Bot is in ${globalClient.guilds.cache.size} servers.`;
@@ -418,13 +428,14 @@ GROUP BY "bankBackground";`);
 			const totalBank: { [key: string]: number } = {};
 
 			const res: any = await prisma.$queryRawUnsafe(
-				'SELECT ARRAY(SELECT "clueScores" FROM users WHERE "clueScores"::text <> \'{}\'::text);'
+				'SELECT ARRAY(SELECT "openable_scores" FROM users WHERE "openable_scores"::text <> \'{}\'::text);'
 			);
 
 			const banks: ItemBank[] = res[0].array;
 
 			banks.map(bank => {
 				for (const [id, qty] of Object.entries(bank)) {
+					if (!ClueTiers.some(i => i.id === Number(id))) continue;
 					if (!totalBank[id]) totalBank[id] = qty;
 					else totalBank[id] += qty;
 				}
@@ -576,10 +587,30 @@ export const toolsCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'stat',
 							description: 'The stat you want to check',
-							choices: statsNames.map(i => ({ name: i, value: i })),
+							autocomplete: async (value: string) => {
+								return [...statsNames, ...dataPoints.map(i => i.name)]
+									.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i,
+										value: i
+									}));
+							},
 							required: true
 						}
 					]
+				}
+			]
+		},
+		{
+			name: 'user',
+			description: 'Various tools for yourself.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'mypets',
+					description: 'See the chat pets you have.',
+					options: []
 				}
 			]
 		}
@@ -621,6 +652,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			spawnbox?: {};
 			stats?: { stat: Stat };
 		};
+		user?: { mypets?: {} };
 	}>) => {
 		if (interaction) interaction.deferReply();
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -697,6 +729,19 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (patron.spawnbox) return spawnBoxCommand(mahojiUser, channelID);
 			if (patron.stats) {
 				return statsCommand(mahojiUser, patron.stats.stat);
+			}
+		}
+		if (options.user) {
+			if (options.user.mypets) {
+				let b = new Bank();
+				for (const [pet, qty] of Object.entries(mahojiUser.pets as ItemBank)) {
+					const petObj = pets.find(i => i.id === Number(pet));
+					if (!petObj) continue;
+					b.add(petObj.name, qty);
+				}
+				return {
+					attachments: [(await makeBankImage({ bank: b, title: 'Your Chat Pets' })).file]
+				};
 			}
 		}
 		return 'Invalid command!';

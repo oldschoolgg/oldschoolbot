@@ -858,6 +858,18 @@ const Buyables: Buyable[] = [
 			'Rainbow flower crown': 1
 		})
 	},
+	{
+		name: 'Beehive',
+		itemCost: new Bank({
+			Coins: 15_000
+		}),
+		outputItems: new Bank({
+			Beehive: 1
+		}),
+		customReq: async (user: KlasaUser) => {
+			return user.owns('Beehive') ? [false, 'You already own a Beehive.'] : [true];
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,

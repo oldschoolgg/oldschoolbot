@@ -1,6 +1,7 @@
 import { Guild } from 'discord.js';
 import { noOp, notEmpty } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { production } from '../config';
 import { BOT_TYPE, Roles, SupportServer, usernameCache } from '../lib/constants';
@@ -9,6 +10,7 @@ import ClueTiers from '../lib/minions/data/clueTiers';
 import { Minigames } from '../lib/settings/minigames';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
+import { ItemBank } from '../lib/types';
 import { convertXPtoLVL } from '../lib/util';
 import { logError } from '../lib/util/logError';
 
@@ -431,6 +433,26 @@ LIMIT 2;`
 			result += await addRoles({ g: g!, users: [res[0].id], role: '886180040465870918', badge: null });
 		}
 
+		async function topInventor() {
+			const userMap = {};
+			let topInventors: string[] = [];
+			const mostUniques = await q<
+				{ id: string; uniques: number; disassembled_items_bank: ItemBank }[]
+			>(`SELECT u.id, u.uniques, u.disassembled_items_bank FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("disassembled_items_bank")) uniques, id, disassembled_items_bank FROM users WHERE "skills.invention" > 0
+) u
+ORDER BY u.uniques DESC LIMIT 300;`);
+			topInventors.push(mostUniques[0].id);
+			addToUserMap(userMap, mostUniques[0].id, 'Most Uniques Disassembled');
+			const parsed = mostUniques
+				.map(i => ({ ...i, value: new Bank(i.disassembled_items_bank).value() }))
+				.sort((a, b) => b.value - a.value);
+			topInventors.push(parsed[0].id);
+			addToUserMap(userMap, parsed[0].id, 'Most Value Disassembled');
+
+			result += await addRoles({ g: g!, users: topInventors, role: Roles.TopInventor, badge: null, userMap });
+		}
+
 		const tup = [
 			['Top Slayer', slayer],
 			['Top Clue Hunters', topClueHunters],
@@ -439,7 +461,8 @@ LIMIT 2;`
 			['Top Collectors', topCollector],
 			['Top Skillers', topSkillers],
 			['Monkey King', monkeyKing],
-			['Top Farmers', farmers]
+			['Top Farmers', farmers],
+			['Top Inventor', topInventor]
 		] as const;
 
 		let failed: string[] = [];

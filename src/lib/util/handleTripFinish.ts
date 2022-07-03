@@ -6,6 +6,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
+import { beeHiveTripEffect } from '../beeHive';
 import { MysteryBoxes } from '../bsoOpenables';
 import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -34,17 +35,19 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
-const tripFinishEffects: {
+export interface TripFinishEffect {
 	name: string;
 	fn: (options: { data: ActivityTaskOptions; user: KlasaUser; loot: Bank | null; messages: string[] }) => unknown;
-}[] = [
+}
+
+const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Track GP Analytics',
 		fn: ({ data, loot }) => {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+					updateGPTrackSetting('gp_pvm', GP);
 				}
 			}
 		}
@@ -197,11 +200,7 @@ const tripFinishEffects: {
 
 				updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 
-				updateGPTrackSetting(
-					globalClient,
-					ClientSettings.EconomyStats.GPSourceAlching,
-					alchResult.bankToAdd.amount('Coins')
-				);
+				updateGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'));
 				messages.push(
 					`Your Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
 						alchResult.bankToRemove
@@ -246,7 +245,8 @@ const tripFinishEffects: {
 				}
 			}
 		}
-	}
+	},
+	beeHiveTripEffect
 ];
 
 export async function handleTripFinish(

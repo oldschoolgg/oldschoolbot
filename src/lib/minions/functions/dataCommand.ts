@@ -1,33 +1,56 @@
-import { activity_type_enum } from '@prisma/client';
-import { MessageAttachment, MessageOptions } from 'discord.js';
+import { activity_type_enum, User } from '@prisma/client';
 import { sumArr, Time } from 'e';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { getMahojiBank } from '../../../mahoji/mahojiSettings';
+import { calcCLDetails } from '../../data/Collections';
 import { TOBRooms } from '../../data/tob';
 import { prisma } from '../../settings/prisma';
-import { UserSettings } from '../../settings/types/UserSettings';
 import { SkillsEnum } from '../../skilling/types';
 import { sorts } from '../../sorts';
+import { ItemBank } from '../../types';
 import { InfernoOptions } from '../../types/minions';
-import { formatDuration, stringMatches } from '../../util';
+import { formatDuration } from '../../util';
 import { barChart, lineChart, pieChart } from '../../util/chart';
+import { makeBankImage } from '../../util/makeBankImage';
 import killableMonsters from '../data/killableMonsters';
 
 interface DataPiece {
 	name: string;
-	run: (user: KlasaUser) => Promise<MessageOptions | Buffer | { bank: Bank; title: string; content?: string }>;
+	run: (user: User) => CommandResponse;
 }
 
 function wrap(str: string) {
 	return `'"${str}"'`;
 }
 
-const dataPoints: DataPiece[] = [
+async function makeResponseForBank(bank: Bank, title: string, content?: string) {
+	const image = await makeBankImage({
+		title,
+		bank
+	});
+	return {
+		attachments: [image.file],
+		content
+	};
+}
+function makeResponseForBuffer(buffer: Buffer) {
+	return {
+		attachments: [
+			{
+				buffer,
+				fileName: 'image.jpg'
+			}
+		]
+	};
+}
+
+export const dataPoints: DataPiece[] = [
 	{
 		name: 'Personal Activity Types',
-		run: async (user: KlasaUser) => {
+		run: async (user: User) => {
 			const result: { type: activity_type_enum; qty: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT type, count(type) AS qty
 FROM activity
@@ -36,12 +59,12 @@ AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
 			const dataPoints: [string, number][] = result.filter(i => i.qty >= 5).map(i => [i.type, i.qty]);
-			return barChart(`${user.username}'s Activity Types`, val => `${val} Trips`, dataPoints);
+			return makeResponseForBuffer(await barChart('Your Activity Types', val => `${val} Trips`, dataPoints));
 		}
 	},
 	{
 		name: 'Personal Activity Durations',
-		run: async (user: KlasaUser) => {
+		run: async (user: User) => {
 			const result: { type: activity_type_enum; hours: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT type, sum(duration) / ${Time.Hour} AS hours
 FROM activity
@@ -50,12 +73,13 @@ AND user_id = ${BigInt(user.id)}
 OR (data->>'users')::jsonb @> ${wrap(user.id)}::jsonb
 GROUP BY type;`);
 			const dataPoints: [string, number][] = result.filter(i => i.hours >= 1).map(i => [i.type, i.hours]);
-			return barChart(`${user.username}'s Activity Durations`, val => `${val} Hours`, dataPoints);
+			const buffer = await barChart('Your Activity Durations', val => `${val} Hours`, dataPoints);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
 		name: 'Personal Monster KC',
-		run: async (user: KlasaUser) => {
+		run: async (user: User) => {
 			const result: { id: number; kc: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT (data->>'monsterID')::int as id, SUM((data->>'quantity')::int) AS kc
 FROM activity
@@ -69,13 +93,15 @@ GROUP BY data->>'monsterID';`);
 				.sort((a, b) => b.kc - a.kc)
 				.slice(0, 30)
 				.map(i => [killableMonsters.find(mon => mon.id === i.id)?.name ?? i.id.toString(), i.kc]);
-			return barChart(`${user.username}'s Monster KC's`, val => `${val} KC`, dataPoints);
+			const buffer = await barChart("Your Monster KC's", val => `${val} KC`, dataPoints);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
 		name: 'Personal Top Bank Value Items',
-		run: async (user: KlasaUser) => {
-			const items = user.bank().items().sort(sorts.value);
+		run: async (user: User) => {
+			const bank = getMahojiBank(user);
+			const items = bank.items().sort(sorts.value);
 			const dataPoints: [string, number][] = items
 				.filter(i => i[1] >= 1)
 				.slice(0, 15)
@@ -84,23 +110,19 @@ GROUP BY data->>'monsterID';`);
 			let everythingElseBank = new Bank();
 			for (const i of everythingElse) everythingElseBank.add(i[0].id, i[1]);
 			dataPoints.push(['Everything else', everythingElseBank.value()]);
-			return barChart(`${user.username}'s Top Bank Value Items`, val => `${toKMB(val)} GP`, dataPoints);
+			const buffer = await barChart('Your Top Bank Value Items', val => `${toKMB(val)} GP`, dataPoints);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
 		name: 'Personal Collection Log Progress',
-		run: async (user: KlasaUser) => {
-			const { percent } = user.completion();
-			return {
-				files: [
-					new MessageAttachment(
-						await pieChart(`${user.username}'s Personal Collection Log Progress`, val => `${toKMB(val)}%`, [
-							['Complete Collection Log Items', percent, '#9fdfb2'],
-							['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
-						])
-					)
-				]
-			};
+		run: async (user: User): CommandResponse => {
+			const { percent } = calcCLDetails(user);
+			const buffer: Buffer = await pieChart('Your Personal Collection Log Progress', val => `${toKMB(val)}%`, [
+				['Complete Collection Log Items', percent, '#9fdfb2'],
+				['Incomplete Collection Log Items', 100 - percent, '#df9f9f']
+			]);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -112,16 +134,17 @@ FROM activity
 WHERE type = 'Inferno'
 AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`;
-			return lineChart(
+			const buffer = await lineChart(
 				'Global Inferno Death Times',
 				val => `${val} Mins`,
 				result.map(i => [i.mins.toString(), i.count])
 			);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
 		name: 'Personal Inferno Death Times',
-		run: async (user: KlasaUser) => {
+		run: async (user: User) => {
 			const result: { mins: number; count: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT mins, COUNT(mins) FROM (SELECT ((data->>'deathTime')::int / 1000 / 60) as mins
 FROM activity
@@ -129,16 +152,17 @@ WHERE type = 'Inferno'
 AND user_id = ${BigInt(user.id)}
 AND data->>'deathTime' IS NOT NULL) death_mins
 GROUP BY mins;`);
-			return lineChart(
+			const buffer = await lineChart(
 				'Personal Inferno Death Times',
 				val => `${val} Mins`,
 				result.map(i => [i.mins.toString(), i.count])
 			);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
 		name: 'Personal Inferno',
-		run: async (user: KlasaUser) => {
+		run: async (user: User) => {
 			const activities = await prisma.activity.findMany({
 				where: {
 					user_id: BigInt(user.id),
@@ -160,18 +184,19 @@ GROUP BY mins;`);
 				}
 				totalCost.add(data.cost);
 			}
-			return {
-				content: `**First Cape:** ${completedAt ? `After ${completedAt} attempts` : 'Never'}
+
+			return makeResponseForBank(
+				totalCost,
+				'Your Personal Inferno',
+				`**First Cape:** ${completedAt ? `After ${completedAt} attempts` : 'Never'}
 **Extra Capes:** ${postFirstCapeCompletions}
-**Total Time Spent in Inferno:** ${formatDuration(sumArr(activities.map(i => i.duration)))}`,
-				bank: totalCost,
-				title: `${user.username}'s Personal Inferno`
-			};
+**Total Time Spent in Inferno:** ${formatDuration(sumArr(activities.map(i => i.duration)))}`
+			);
 		}
 	},
 	{
 		name: 'Personal TOB Wipes',
-		run: async (user: KlasaUser) => {
+		run: async (user: User) => {
 			const result: { wiped_room: number; count: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT (data->>'wipedRoom')::int AS wiped_room, COUNT(data->>'wipedRoom')::int
 FROM activity
@@ -184,11 +209,12 @@ GROUP BY 1;`);
 			if (result.length === 0) {
 				return { content: "You haven't wiped in any Theatre of Blood raids yet." };
 			}
-			return barChart(
+			const buffer = await barChart(
 				'Personal TOB Deaths',
 				val => `${val} Deaths`,
 				result.map(i => [TOBRooms[i.wiped_room].name, i.count])
 			);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -201,11 +227,12 @@ WHERE type = 'TheatreOfBlood'
 AND completed = true
 AND data->>'wipedRoom' IS NOT NULL
 GROUP BY 1;`;
-			return barChart(
+			const buffer = await barChart(
 				'Global TOB Deaths',
 				val => `${val} Deaths`,
 				result.map(i => [TOBRooms[i.wiped_room].name, i.count])
 			);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -223,16 +250,17 @@ WHERE "skills.${skillName}" = 200000000;`) as Promise<{ qty: number; skill_name:
 			)
 				.map(i => i[0])
 				.sort((a, b) => b.qty - a.qty);
-			return barChart(
+			const buffer = await barChart(
 				'Global 200ms',
 				val => `${val} 200ms`,
 				result.map(i => [i.skill_name, i.qty])
 			);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
 		name: 'Personal Farmed Crops',
-		run: async (user: KlasaUser) => {
+		run: async (user: User) => {
 			const result: { plant: string; qty: number }[] =
 				await prisma.$queryRawUnsafe(`SELECT data->>'plantsName' as plant, COUNT(data->>'plantsName') AS qty
 FROM activity
@@ -241,11 +269,12 @@ AND data->>'plantsName' IS NOT NULL
 AND user_id = ${BigInt(user.id)}
 GROUP BY data->>'plantsName'`);
 			result.sort((a, b) => b.qty - a.qty);
-			return barChart(
+			const buffer = await barChart(
 				'Global Farmed Crops',
 				val => `${val} Crops`,
 				result.map(i => [i.plant, i.qty])
 			);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
@@ -258,37 +287,32 @@ WHERE type = 'Farming'
 AND data->>'plantsName' IS NOT NULL
 GROUP BY data->>'plantsName'`;
 			result.sort((a, b) => b.qty - a.qty);
-			return barChart(
+			const buffer = await barChart(
 				'Global Farmed Crops',
 				val => `${val} Crops`,
 				result.map(i => [i.plant, i.qty])
 			);
+			return makeResponseForBuffer(buffer);
 		}
 	},
 	{
 		name: 'Personal TOB Cost',
-		run: async (user: KlasaUser) => {
-			return {
-				bank: new Bank(user.settings.get(UserSettings.TOBCost)),
-				title: `${user.username}'s TOB Cost`
-			};
+		run: async (user: User) => {
+			return makeResponseForBank(new Bank(user.tob_cost as ItemBank), 'Your TOB Cost');
 		}
 	},
 	{
 		name: 'Personal TOB Loot',
-		run: async (user: KlasaUser) => {
-			return {
-				bank: new Bank(user.settings.get(UserSettings.TOBLoot)),
-				title: `${user.username}'s TOB Loot`
-			};
+		run: async (user: User) => {
+			return makeResponseForBank(new Bank(user.tob_loot as ItemBank), 'Your TOB Loot');
 		}
 	},
 	{
 		name: 'Gambling PNL',
-		run: async (user: KlasaUser) => {
-			const gpDice = toKMB(user.settings.get(UserSettings.GPDice));
-			const gpLuckyPick = toKMB(user.settings.get(UserSettings.GPLuckyPick));
-			const gpSlots = toKMB(user.settings.get(UserSettings.GPSlots));
+		run: async (user: User) => {
+			const gpDice = toKMB(Number(user.gp_dice));
+			const gpLuckyPick = toKMB(Number(user.gp_luckypick));
+			const gpSlots = toKMB(Number(user.gp_slots));
 
 			return {
 				content: `**Dicing:** ${gpDice}
@@ -298,13 +322,3 @@ GROUP BY data->>'plantsName'`;
 		}
 	}
 ];
-
-export async function dataCommand(msg: KlasaMessage, input: string) {
-	const dataPoint = dataPoints.find(dp => stringMatches(dp.name, input));
-	if (!dataPoint) {
-		return {
-			content: `The data points you can see are: ${dataPoints.map(i => i.name).join(', ')}.`
-		};
-	}
-	return dataPoint.run(msg.author);
-}
