@@ -9,6 +9,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { TemporossActivityTaskOptions } from '../../../lib/types/minions';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: TemporossActivityTaskOptions) {
@@ -64,16 +65,12 @@ export default class extends Task {
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			itemsAdded,
-			`${rewardTokens} reward pool rolls`,
-			true,
-			{
-				showNewCL: 1
-			},
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `${rewardTokens} reward pool rolls`,
 			user,
 			previousCL
-		);
+		});
 
 		let output = `${user}, ${
 			user.minionName
@@ -88,7 +85,7 @@ export default class extends Task {
 			channelID,
 			output,
 			['k', { name: 'Tempoross', quantity }, true],
-			image!,
+			image.file.buffer,
 			data,
 			itemsAdded
 		);

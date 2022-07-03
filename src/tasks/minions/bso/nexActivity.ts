@@ -17,6 +17,7 @@ import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, updateBankSetting } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 interface NexUser {
@@ -169,17 +170,13 @@ export default class extends Task {
 			const image = !kcAmounts[userID]
 				? undefined
 				: (
-						await this.client.tasks
-							.get('bankImage')!
-							.generateBankImage(
-								soloItemsAdded,
-								`Loot From ${quantity} ${NexMonster.name}:`,
-								true,
-								{ showNewCL: 1 },
-								leaderUser,
-								soloPrevCl
-							)
-				  ).image;
+						await makeBankImage({
+							bank: soloItemsAdded,
+							title: `Loot From ${quantity} ${NexMonster.name}:`,
+							user: leaderUser,
+							previousCL: soloPrevCl
+						})
+				  ).file.buffer;
 			handleTripFinish(
 				leaderUser,
 				channelID,

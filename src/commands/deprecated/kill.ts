@@ -7,6 +7,7 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { stringMatches, toTitleCase } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 
 export function determineKillLimit(user: KlasaUser) {
@@ -81,16 +82,20 @@ export default class extends BotCommand {
 			return msg.channel.send(result.error);
 		}
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				new Bank(result.bank?.bank),
+		const image = await makeBankImage({
+			bank: new Bank(result.bank?.bank),
+			title:
 				result.title ?? `Loot from ${quantity.toLocaleString()} ${toTitleCase(osjsMonster?.name ?? bossName)}`,
-				true,
-				msg.flagArgs,
-				msg.author
-			);
+			flags: msg.flagArgs,
+			user: msg.author
+		});
 
-		return msg.channel.send({ files: [new MessageAttachment(image!, 'osbot.png')], content: result.content });
+		if (!result.content) result.content = '';
+		result.content +=
+			'\nThis command is now also available as a Slash Command! Try `/kill`, also try out the killing simulator on the website: <https://www.oldschool.gg/monsters>';
+		return msg.channel.send({
+			files: [new MessageAttachment(image.file.buffer, 'osbot.png')],
+			content: result.content
+		});
 	}
 }

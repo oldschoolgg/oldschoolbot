@@ -7,6 +7,7 @@ import { Emoji } from '../../lib/constants';
 import { filterableTypes } from '../../lib/data/filterables';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { makePaginatedMessage } from '../../lib/util';
+import { makeBankImageKlasa } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 
 export default class extends BotCommand {
@@ -118,14 +119,16 @@ export default class extends BotCommand {
 			return null;
 		}
 
-		return msg.channel.sendBankImage({
-			bank,
-			title: `${msg.author.username}'s Bank`,
-			flags: {
-				...msg.flagArgs,
-				page: page - 1
-			},
-			user: msg.author
-		});
+		return msg.channel.send(
+			await makeBankImageKlasa({
+				bank,
+				title: `${msg.author.username}'s Bank`,
+				flags: {
+					...msg.flagArgs,
+					page: page - 1
+				},
+				user: msg.author
+			})
+		);
 	}
 }

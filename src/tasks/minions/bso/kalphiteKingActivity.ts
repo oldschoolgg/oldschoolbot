@@ -18,6 +18,7 @@ import { BossActivityTaskOptions } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 interface NexUser {
@@ -185,17 +186,13 @@ export default class extends Task {
 			const image = !kcAmounts[userID]
 				? undefined
 				: (
-						await this.client.tasks
-							.get('bankImage')!
-							.generateBankImage(
-								soloItemsAdded!,
-								`Loot From ${quantity} Kalphite King:`,
-								true,
-								{ showNewCL: 1 },
-								leaderUser,
-								soloPrevCl!
-							)
-				  ).image;
+						await makeBankImage({
+							bank: soloItemsAdded ?? new Bank(),
+							title: `Loot From ${quantity} Kalphite King`,
+							user: leaderUser,
+							previousCL: soloPrevCl ?? undefined
+						})
+				  ).file.buffer;
 			handleTripFinish(
 				leaderUser,
 				channelID,
