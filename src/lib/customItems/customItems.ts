@@ -2719,3 +2719,7 @@ setCustomItem(
 
 setCustomItem(52_617, 'Lava flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
 setCustomItem(52_618, 'Purple flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
+setCustomItem(52_630, 'Beehive', 'Coal', {}, 10_000);
+setCustomItem(52_631, 'Honeycomb', 'Coal', {}, 10_000);
+setCustomItem(52_632, 'Honey', 'Coal', {}, 10_000);
+setCustomItem(52_633, 'Buzz', 'Herbi', {}, 1_000_000);

@@ -3,7 +3,7 @@ import { Prisma, User } from '@prisma/client';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
 import { MessageAttachment, MessageOptions, TextChannel, Util } from 'discord.js';
-import { notEmpty, randInt, sumArr, uniqueArr } from 'e';
+import { notEmpty, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
@@ -55,7 +55,7 @@ import {
 import getOSItem, { getItem } from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
-import { makeBankImage } from '../lib/util/makeBankImage';
+import { makeBankImage, makeBankImageKlasa } from '../lib/util/makeBankImage';
 import { parseBank } from '../lib/util/parseStringBank';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
@@ -67,7 +67,6 @@ import {
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../mahoji/mahojiSettings';
-import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
 export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise<[string] | [string, any[]]> {
@@ -303,8 +302,10 @@ async function unsafeEval({
 
 	stopwatch.stop();
 	if (flags.bk || result instanceof Bank) {
-		const image = await globalClient.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
-		return { files: [new MessageAttachment(image.image!)], rawOutput: result };
+		const image = await makeBankImage({
+			bank: result
+		});
+		return { files: [new MessageAttachment(image.file.buffer)], rawOutput: result };
 	}
 
 	if (Buffer.isBuffer(result)) {
@@ -914,9 +915,7 @@ LIMIT 10;
 			case 'bank': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
-				return msg.channel.sendBankImage({
-					bank: input.allItemsOwned()
-				});
+				return msg.channel.send(await makeBankImageKlasa({ bank: input.allItemsOwned() }));
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) {
@@ -1038,12 +1037,6 @@ LIMIT 10;
 				await this.client.settings.update(ClientSettings.DoubleLootFinishTime, 0);
 				return msg.channel.send('Reset the double loot timer.');
 			}
-			case 'bankimage':
-			case 'bi': {
-				if (typeof input !== 'string') return;
-				const bank = JSON.parse(input.replace(/'/g, '"'));
-				return msg.channel.sendBankImage({ bank });
-			}
 			case 'reboot': {
 				await msg.channel.send('Rebooting...');
 				await Promise.all(this.client.providers.map(provider => provider.shutdown()));
@@ -1086,12 +1079,10 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					['Loot', new Bank(loot.loot as any)]
 				] as const;
 
-				const task = this.client.tasks.get('bankImage') as BankImageTask;
-
 				for (const [name, bank] of arr) {
 					msg.channel.send({
 						content: convertBankToPerHourStats(bank, durationMillis).join(', '),
-						files: [new MessageAttachment((await task.generateBankImage(bank, name)).image!)]
+						...(await makeBankImageKlasa({ bank, title: name }))
 					});
 				}
 
@@ -1207,36 +1198,6 @@ ORDER BY qty DESC;`);
 				return msg.channel.send(
 					`Removed ${allBrokenItems.size} (${str}) from ${usersChanged} users, out of ${users.length} checked`
 				);
-			}
-			case 'bitest': {
-				const times = [];
-				let amount = 100;
-
-				const bank = new Bank();
-				while (bank.length < 1000) bank.add(Items.random().id, randInt(1, 100));
-				for (let i = 0; i < amount; i++) {
-					let start = Date.now();
-					await (globalClient.tasks.get('bankImage') as BankImageTask).generateBankImage(
-						bank,
-						'Title',
-						false,
-						{
-							full: 'full'
-						},
-						msg.author,
-						undefined
-					);
-					let finish = Date.now();
-					times.push(finish - start);
-				}
-				times.sort((a, b) => b - a);
-				let average = sumArr(times) / times.length;
-				let max = times[0];
-				let min = times[times.length - 1];
-				return msg.channel.send(`Generated ${amount} bank images
-**Average:** ${average}ms
-**Max:** ${max}ms
-**Min:** ${min}ms`);
 			}
 			case 'resetinvprizes': {
 				await clientSettingsUpdate({

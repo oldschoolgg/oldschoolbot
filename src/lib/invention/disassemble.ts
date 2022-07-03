@@ -18,11 +18,12 @@ import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
 import { ActivityTaskOptions } from '../types/minions';
-import { calcPerHour, clamp, formatDuration, toKMB } from '../util';
+import { calcPerHour, clamp, formatDuration, itemID, toKMB } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import getOSItem, { getItem } from '../util/getOSItem';
 import { handleTripFinish } from '../util/handleTripFinish';
+import { minionIsBusy } from '../util/minionIsBusy';
 import { hasItemsEquippedOrInBank, minionName, userHasItemsEquippedAnywhere } from '../util/minionUtils';
 import {
 	allItemsThatCanBeDisassembledIDs,
@@ -374,6 +375,7 @@ export async function disassembleCommand({
 	quantityToDisassemble: number | undefined;
 	channelID: bigint;
 }): CommandResponse {
+	if (minionIsBusy(mahojiUser.id)) return 'Your minion is busy.';
 	const item = getItem(itemToDisassembleName);
 	if (!item) return "That's not a valid item.";
 	const group = findDisassemblyGroup(item);
@@ -408,17 +410,27 @@ export async function disassembleCommand({
 ${result.messages.length > 0 ? `**Messages:** ${result.messages.join(', ')}` : ''}`;
 }
 
-async function handleInventionPrize(): Promise<Bank | null> {
+async function handleInventionPrize(isIron: boolean): Promise<Bank | null> {
 	const remaining = (await mahojiClientSettingsFetch({ invention_prizes_remaining: true }))
 		.invention_prizes_remaining as ItemBank;
 	const remainingBank = new Bank(remaining);
 	const toGive = remainingBank.random()?.id;
+	if (isIron && toGive !== itemID('Double loot token')) return null;
 	if (!toGive) return null;
 	const loot = new Bank().add(toGive);
 	await clientSettingsUpdate({
 		invention_prizes_remaining: remainingBank.remove(loot).bank
 	});
 	return loot;
+}
+
+export function calcWholeDisXP(user: KlasaUser, item: Item, quantity: number) {
+	const group = findDisassemblyGroup(item);
+	const inventionLevel = user.skillLevel(SkillsEnum.Invention);
+	if (group && inventionLevel >= group.data.lvl) {
+		return calculateDisXP(group.group, inventionLevel, quantity, group?.data.lvl).xp;
+	}
+	return null;
 }
 
 export async function disassemblyTask(data: DisassembleTaskOptions) {
@@ -466,13 +478,13 @@ ${xpStr}`;
 	const cogsworthChancePerHour = 100;
 	const chancePerMinute = cogsworthChancePerHour * 60;
 	const prizeLoot = new Bank();
-	const prizeChance = Math.floor(chancePerMinute / 15);
+	const prizeChance = Math.floor(chancePerMinute / 40);
 	for (let i = 0; i < minutes; i++) {
 		if (roll(chancePerMinute)) {
 			loot.add('Cogsworth');
 		}
 		if (roll(prizeChance)) {
-			const prize = await handleInventionPrize();
+			const prize = await handleInventionPrize(klasaUser.isIronman);
 			if (prize) prizeLoot.add(prize);
 		}
 	}

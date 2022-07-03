@@ -37,7 +37,7 @@ export const Bows: DisassemblySourceGroup = {
 				'Twisted bow (blood)',
 				'Twisted bow (3a)'
 			].map(i),
-			lvl: 75,
+			lvl: 99,
 			flags: new Set(['dyed'])
 		},
 		{ item: i('Zaryte bow'), lvl: 99 },

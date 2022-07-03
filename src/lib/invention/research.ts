@@ -16,6 +16,7 @@ import { clamp, formatDuration, roll } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { handleTripFinish } from '../util/handleTripFinish';
+import { minionIsBusy } from '../util/minionIsBusy';
 import { minionName } from '../util/minionUtils';
 import { IMaterialBank, MaterialType, materialTypes } from '.';
 import { Invention, Inventions, transactMaterialsFromUser } from './inventions';
@@ -49,6 +50,7 @@ export async function researchCommand({
 	channelID: bigint;
 	interaction?: SlashCommandInteraction;
 }): CommandResponse {
+	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	material = material.toLowerCase() as MaterialType;
 	if (!materialTypes.includes(material)) {
 		return "That's not a valid material.";

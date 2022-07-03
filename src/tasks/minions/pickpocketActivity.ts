@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -100,7 +99,7 @@ export default class extends Task {
 		}
 
 		if (loot.has('Coins')) {
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourcePickpocket, loot.amount('Coins'));
+			updateGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
