@@ -867,7 +867,7 @@ const Buyables: Buyable[] = [
 			Beehive: 1
 		}),
 		customReq: async (user: KlasaUser) => {
-			return user.owns('Beehive') ? [true] : [false, 'You already own a Beehive.'];
+			return user.owns('Beehive') ? [false, 'You already own a Beehive.'] : [true];
 		}
 	},
 	...sepulchreBuyables,

@@ -9,7 +9,7 @@ const chancePerMinute = petChancePerHour * 60;
 
 export const beeHiveTripEffect: TripFinishEffect = {
 	name: 'Beehive',
-	fn: ({ user, data, messages }) => {
+	fn: async ({ user, data, messages }) => {
 		if (!user.owns('Beehive')) return;
 		let minutes = Math.floor(data.duration / Time.Minute);
 		if (minutes < 1) return;
@@ -25,12 +25,9 @@ export const beeHiveTripEffect: TripFinishEffect = {
 				loot.add('Honeycomb');
 			}
 		}
-		console.log(
-			`${user.username} Minutes[${minutes}] Droprate[1 in ${petDroprate}] Effective[1 in ${
-				petDroprate / minutes
-			}]`
-		);
+
 		if (loot.length === 0) return;
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		messages.push(`You checked your Beehive and found... ${loot}.`);
 	}
 };
