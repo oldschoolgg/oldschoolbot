@@ -6,6 +6,7 @@ import { Flags } from '../../lib/minions/types';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { BankFlag, bankFlags } from '../../tasks/bankImage';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -43,6 +44,13 @@ export const askCommand: OSBMahojiCommand = {
 			description: 'The method to sort your bank by.',
 			required: false,
 			choices: BankSortMethods.map(i => ({ name: i, value: i }))
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'flag',
+			description: 'A particular flag to apply to your bank.',
+			required: false,
+			choices: bankFlags.map(i => ({ name: i, value: i }))
 		}
 	],
 	run: async ({
@@ -56,6 +64,7 @@ export const askCommand: OSBMahojiCommand = {
 		filter?: string;
 		item?: string;
 		sort?: BankSortMethod;
+		flag?: BankFlag;
 	}>) => {
 		await interaction.deferReply();
 		const klasaUser = await globalClient.fetchUser(user.id);
@@ -106,7 +115,8 @@ export const askCommand: OSBMahojiCommand = {
 						bank,
 						title: `${klasaUser.username}'s Bank`,
 						flags,
-						user: klasaUser
+						user: klasaUser,
+						flag: options.flag
 					})
 				).file
 			]
