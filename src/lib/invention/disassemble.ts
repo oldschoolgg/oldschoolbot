@@ -424,6 +424,15 @@ async function handleInventionPrize(isIron: boolean): Promise<Bank | null> {
 	return loot;
 }
 
+export function calcWholeDisXP(user: KlasaUser, item: Item, quantity: number) {
+	const group = findDisassemblyGroup(item);
+	const inventionLevel = user.skillLevel(SkillsEnum.Invention);
+	if (group && inventionLevel >= group.data.lvl) {
+		return calculateDisXP(group.group, inventionLevel, quantity, group?.data.lvl).xp;
+	}
+	return null;
+}
+
 export async function disassemblyTask(data: DisassembleTaskOptions) {
 	const { userID, qty } = data;
 	const klasaUser = await globalClient.fetchUser(userID);

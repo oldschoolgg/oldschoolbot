@@ -11,10 +11,12 @@ import { Canvas, CanvasRenderingContext2D, FontLibrary, Image, loadImage } from 
 import { BitField, PerkTier } from '../lib/constants';
 import { allCLItems } from '../lib/data/Collections';
 import { filterableTypes } from '../lib/data/filterables';
+import { calcWholeDisXP, findDisassemblyGroup } from '../lib/invention/disassemble';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../lib/skilling/types';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
 import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
@@ -193,7 +195,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Lychee seed'), 'lychee']
 ]);
 
-export const bankFlags = ['show_price', 'show_alch', 'show_id', 'show_names'] as const;
+export const bankFlags = ['show_price', 'show_alch', 'show_id', 'show_names', 'invention_xp'] as const;
 export type BankFlag = typeof bankFlags[number];
 
 export default class BankImageTask extends Task {
@@ -407,7 +409,8 @@ export default class BankImageTask extends Task {
 		items: [Item, number][],
 		flags: FlagMap,
 		currentCL: Bank | undefined,
-		flag: BankFlag | undefined
+		flag: BankFlag | undefined,
+		user: KlasaUser | undefined
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -485,6 +488,15 @@ export default class BankImageTask extends Task {
 				bottomItemText = item.id.toString();
 			} else if (flags.has('names') || flag === 'show_names') {
 				bottomItemText = item.name;
+			} else if (flag === 'invention_xp' && user) {
+				const group = findDisassemblyGroup(item);
+				const inventionLevel = user.skillLevel(SkillsEnum.Invention);
+				const xp = group && inventionLevel >= group.data.lvl && calcWholeDisXP(user, item, quantity);
+				if (xp) {
+					bottomItemText = `${toKMB(xp)}XP`;
+				} else {
+					bottomItemText = 0;
+				}
 			}
 
 			const forcedShortName = forcedShortNameMap.get(item.id);
@@ -700,7 +712,18 @@ export default class BankImageTask extends Task {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
-		await this.drawItems(ctx, compact, spacer, itemsPerRow, itemWidthSize, items, flags, currentCL, opts.flag);
+		await this.drawItems(
+			ctx,
+			compact,
+			spacer,
+			itemsPerRow,
+			itemWidthSize,
+			items,
+			flags,
+			currentCL,
+			opts.flag,
+			user
+		);
 
 		const image = await canvas.toBuffer('png');
 
