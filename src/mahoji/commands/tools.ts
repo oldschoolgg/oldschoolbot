@@ -448,6 +448,9 @@ GROUP BY "bankBackground";`);
 				)
 				.join('\n');
 		}
+		default: {
+			return 'Invalid stat name.';
+		}
 	}
 }
 
