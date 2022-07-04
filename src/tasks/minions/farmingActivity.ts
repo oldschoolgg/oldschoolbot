@@ -12,7 +12,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
 import { assert, rand, roll, updateBankSetting } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
-import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { logError } from '../../lib/util/logError';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';

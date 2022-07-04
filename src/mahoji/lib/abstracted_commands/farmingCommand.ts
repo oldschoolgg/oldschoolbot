@@ -1,3 +1,4 @@
+import { CompostTier } from '@prisma/client';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -10,7 +11,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { calcNumOfPatches } from '../../../lib/skilling/functions/calcsFarming';
 import { getFarmingInfo } from '../../../lib/skilling/functions/getFarmingInfo';
-import Farming, { CompostName } from '../../../lib/skilling/skills/farming';
+import Farming from '../../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
@@ -253,7 +254,7 @@ export async function farmingPlantCommand({
 	}
 
 	const compostTier = user.settings.get(UserSettings.Minion.DefaultCompostToUse) ?? 'compost';
-	let upgradeType: CompostName | null = null;
+	let upgradeType: CompostTier | null = null;
 	if ((didPay && plant.canCompostandPay) || (!didPay && plant.canCompostPatch && compostTier)) {
 		const compostCost = new Bank().add(compostTier, quantity);
 		if (user.owns(compostCost)) {

@@ -1,4 +1,4 @@
-import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
+import type { ClientStorage, FarmingPatchName, Guild, Prisma, User } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
@@ -304,4 +304,25 @@ export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSele
 
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
+}
+
+export async function updateFarmingPatch(
+	userID: string,
+	patch: FarmingPatchName,
+	input: Omit<Prisma.FarmingPatchCreateInput, 'user_id' | 'patch' | 'plant_date'>
+) {
+	return prisma.farmingPatch.upsert({
+		where: {
+			user_id_patch: {
+				user_id: BigInt(userID),
+				patch
+			}
+		},
+		update: input,
+		create: {
+			...input,
+			patch,
+			user_id: BigInt(userID)
+		}
+	});
 }

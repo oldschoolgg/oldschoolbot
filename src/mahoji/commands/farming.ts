@@ -1,3 +1,4 @@
+import { CompostTier } from '@prisma/client';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import TitheFarmBuyables from '../../lib/data/buyables/titheFarmBuyables';
@@ -6,7 +7,7 @@ import { ContractOption, ContractOptions } from '../../lib/minions/farming/types
 import { autoFarm } from '../../lib/minions/functions/autoFarm';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import Farming, { CompostName, CompostTiers } from '../../lib/skilling/skills/farming';
+import Farming, { CompostTiers } from '../../lib/skilling/skills/farming';
 import { stringMatches } from '../../lib/util';
 import { farmingPatchNames, userGrowingProgressStr } from '../../lib/util/farmingHelpers';
 import { compostBinCommand, farmingPlantCommand, harvestCommand } from '../lib/abstracted_commands/farmingCommand';
@@ -169,7 +170,7 @@ export const farmingCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		check_patches?: {};
 		auto_farm?: {};
-		default_compost?: { compost: CompostName };
+		default_compost?: { compost: CompostTier };
 		always_pay?: {};
 		plant?: { plant_name: string; quantity?: number; pay?: boolean };
 		harvest?: { patch_name: string };
