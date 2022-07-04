@@ -9,6 +9,7 @@ import { calcCLDetails } from '../../data/Collections';
 import { TOBRooms } from '../../data/tob';
 import { prisma } from '../../settings/prisma';
 import { SkillsEnum } from '../../skilling/types';
+import { getSlayerTaskStats } from '../../slayer/slayerUtil';
 import { sorts } from '../../sorts';
 import { ItemBank } from '../../types';
 import { InfernoOptions } from '../../types/minions';
@@ -305,6 +306,18 @@ GROUP BY data->>'plantsName'`;
 		name: 'Personal TOB Loot',
 		run: async (user: User) => {
 			return makeResponseForBank(new Bank(user.tob_loot as ItemBank), 'Your TOB Loot');
+		}
+	},
+	{
+		name: 'Personal Slayer Tasks',
+		run: async (user: User) => {
+			const res = await getSlayerTaskStats(user.id);
+			return `**Your Top Slayer Tasks**
+${res
+	.sort((a, b) => b.total_killed - a.total_killed)
+	.slice(0, 15)
+	.map(i => `**${i.monsterName}**: ${i.total_killed.toLocaleString()} Killed in ${i.total_tasks} tasks`)
+	.join('\n')}`;
 		}
 	}
 ];
