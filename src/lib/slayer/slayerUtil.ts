@@ -493,9 +493,5 @@ ORDER BY qty DESC;`;
 				total_tasks: i.qty
 			};
 		})
-		.filter(notEmpty)
-		.map(i => {
-			console.log(i);
-			return i;
-		});
+		.filter(notEmpty);
 }
