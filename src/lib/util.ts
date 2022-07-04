@@ -486,7 +486,7 @@ export function userHasMasterFarmerOutfit(user: KlasaUser) {
 	return true;
 }
 
-export function updateGPTrackSetting(
+export async function updateGPTrackSetting(
 	setting:
 		| 'gp_luckypick'
 		| 'gp_daily'
@@ -503,7 +503,7 @@ export function updateGPTrackSetting(
 	user?: KlasaUser
 ) {
 	if (!user) {
-		return prisma.clientStorage.update({
+		await prisma.clientStorage.update({
 			where: {
 				id: CLIENT_ID
 			},
@@ -513,8 +513,9 @@ export function updateGPTrackSetting(
 				}
 			}
 		});
+		return;
 	}
-	return mahojiUserSettingsUpdate(user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		[setting]: {
 			increment: amount
 		}
