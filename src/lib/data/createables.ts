@@ -33,6 +33,49 @@ export interface Createable {
 	maxCanOwn?: number;
 }
 
+const goldenProspectorCreatables: Createable[] = [
+	{
+		name: 'Golden prospector boots',
+		inputItems: new Bank({
+			'Prospector boots': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector boots': 1
+		})
+	},
+	{
+		name: 'Golden prospector helmet',
+		inputItems: new Bank({
+			'Prospector helmet': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector helmet': 1
+		})
+	},
+	{
+		name: 'Golden prospector jacket',
+		inputItems: new Bank({
+			'Prospector jacket': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector jacket': 1
+		})
+	},
+	{
+		name: 'Golden prospector legs',
+		inputItems: new Bank({
+			'Prospector legs': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector legs': 1
+		})
+	}
+];
+
 const revWeapons: Createable[] = [
 	{
 		name: 'Bracelet of ethereum',
@@ -1784,7 +1827,8 @@ const Createables: Createable[] = [
 	...tobCreatables,
 	...lmsCreatables,
 	...nexCreatables,
-	...amrodCreatables
+	...amrodCreatables,
+	...goldenProspectorCreatables
 ];
 
 export default Createables;

@@ -7,11 +7,11 @@ import { Bank, LootTable } from 'oldschooljs';
 
 import { PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { ItemBank } from '../../../lib/types';
 import { updateGPTrackSetting } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate, patronMsg } from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
@@ -131,21 +131,18 @@ async function finalizeOpening({
 		filterLoot: false
 	});
 
-	const image = await globalClient.tasks.get('bankImage')!.generateBankImage(
-		loot,
-		openables.length === 1
-			? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
-			: 'Loot From Opening',
-		true,
-		{
-			showNewCL: 'showNewCL'
-		},
+	const image = await makeBankImage({
+		bank: loot,
+		title:
+			openables.length === 1
+				? `Loot from ${cost.amount(openables[0].openedItem.id)}x ${openables[0].name}`
+				: 'Loot From Opening',
 		user,
 		previousCL
-	);
+	});
 
 	if (loot.has('Coins')) {
-		await updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceOpen, loot.amount('Coins'));
+		await updateGPTrackSetting('gp_open', loot.amount('Coins'));
 	}
 
 	const openedStr = openables
@@ -153,12 +150,7 @@ async function finalizeOpening({
 		.join(', ');
 
 	let response: Awaited<CommandResponse> = {
-		attachments: [
-			{
-				fileName: `loot.${image.isTransparent ? 'png' : 'jpg'}`,
-				buffer: image.image!
-			}
-		],
+		attachments: [image.file],
 		content: `You have now opened a total of ${openedStr}
 ${messages.join(', ')}`
 	};

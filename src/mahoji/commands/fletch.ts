@@ -19,7 +19,6 @@ export const fletchCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to fletch things.',
 		examples: ['/craft name:Onyx necklace']
 	},
 	options: [

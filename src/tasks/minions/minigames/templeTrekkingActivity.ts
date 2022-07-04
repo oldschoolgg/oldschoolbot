@@ -15,6 +15,7 @@ import { TempleTrekkingActivityTaskOptions } from '../../../lib/types/minions';
 import { percentChance, stringMatches } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	getLowestCountOutfitPiece(bank: Bank, user: User): number {
@@ -86,23 +87,19 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished Temple Trekking ${quantity}x times. ${totalEncounters}x encounters were defeated.`;
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity}x Temple Treks:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Temple Treks`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
 			user,
 			channelID,
 			str,
 			['minigames', { temple_trek: { start: { difficulty, quantity } } }, true],
-			image!,
+			image.file.buffer,
 			data,
 			itemsAdded
 		);

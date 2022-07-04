@@ -35,7 +35,6 @@ export const chopCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Chop logs using the Woodcutting skill.',
 		examples: ['/chop name:Logs']
 	},
 	options: [

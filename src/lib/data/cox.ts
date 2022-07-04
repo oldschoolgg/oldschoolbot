@@ -265,7 +265,8 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			if (
 				users.length > 1 &&
 				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow')
+				!user.hasItemEquippedOrInBank('Twisted bow') &&
+				!user.hasItemEquippedOrInBank('Bow of faerdhinen (c)')
 			) {
 				return `${user.username} doesn't own a Twisted bow or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}

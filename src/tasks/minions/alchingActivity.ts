@@ -2,7 +2,6 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { roll, updateGPTrackSetting } from '../../lib/util';
@@ -37,7 +36,7 @@ export default class extends Task {
 			}
 		}
 		await user.addItemsToBank({ items: loot });
-		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchValue);
+		updateGPTrackSetting('gp_alch', alchValue);
 
 		const xpReceived = quantity * 65;
 		const xpRes = await user.addXP({
