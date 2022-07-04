@@ -28,6 +28,7 @@ import { getSimilarItems } from '../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../lib/doubleLoot';
 import { evalMathExpression } from '../lib/expressionParser';
 import { GearSetup, GearSetupTypes } from '../lib/gear';
+import { leaguesCheckUser } from '../lib/leagues/leagues';
 import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
@@ -1217,6 +1218,11 @@ ORDER BY qty DESC;`);
 					invention_prizes_remaining: newBank.bank
 				});
 				return msg.channel.send(`Added ${bank} to the invention prizes. The new prize pool is: ${newBank}.`);
+			}
+			case 'leagues': {
+				if (!input || !(input instanceof KlasaUser)) return;
+				const res = await leaguesCheckUser(input.id);
+				return msg.channel.send(res);
 			}
 		}
 	}

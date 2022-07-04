@@ -33,6 +33,7 @@ import {
 } from '../diaries';
 import { dyedItems } from '../dyedItems';
 import { Inventions } from '../invention/inventions';
+import { allThirdAgeItems } from '../simulation/sharedTables';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -246,31 +247,21 @@ export const hardTasks: Task[] = [
 		id: 2030,
 		name: 'Mix 100 Super attack potions.',
 		has: async ({ cl }) => {
-			return (
-				sumArr(resolveItems(['Super attack potion (3)', 'Super attack potion (4)']).map(i => cl.amount(i))) >=
-				100
-			);
+			return sumArr(resolveItems(['Super attack (3)', 'Super attack (4)']).map(i => cl.amount(i))) >= 100;
 		}
 	},
 	{
 		id: 2031,
 		name: 'Mix 100 Super strength potions.',
 		has: async ({ cl }) => {
-			return (
-				sumArr(
-					resolveItems(['Super strength potion (3)', 'Super strength potion (4)']).map(i => cl.amount(i))
-				) >= 100
-			);
+			return sumArr(resolveItems(['Super strength (3)', 'Super strength (4)']).map(i => cl.amount(i))) >= 100;
 		}
 	},
 	{
 		id: 2032,
 		name: 'Mix 100 Super defence potions.',
 		has: async ({ cl }) => {
-			return (
-				sumArr(resolveItems(['Super defence potion (3)', 'Super defence potion (4)']).map(i => cl.amount(i))) >=
-				100
-			);
+			return sumArr(resolveItems(['Super defence (3)', 'Super defence (4)']).map(i => cl.amount(i))) >= 100;
 		}
 	},
 	{
@@ -725,6 +716,144 @@ export const hardTasks: Task[] = [
 		name: 'Achieve level 120 Invention',
 		has: async ({ skillsLevels }) => {
 			return skillsLevels.invention >= 120;
+		}
+	},
+	{
+		id: 2095,
+		name: 'Make 100 Delicious kibble',
+		has: async ({ cl }) => {
+			return cl.amount('Delicious kibble') >= 100;
+		}
+	},
+	{
+		id: 2096,
+		name: 'Receive a Zippy',
+		has: async ({ cl }) => {
+			return cl.has('Zippy');
+		}
+	},
+	{
+		id: 2097,
+		name: 'Open 250x TMB',
+		has: async ({ opens }) => {
+			return opens.amount('Tradeable mystery box') >= 250;
+		}
+	},
+	{
+		id: 2098,
+		name: 'Open 250x UMB',
+		has: async ({ opens }) => {
+			return opens.amount('Untradeable mystery box') >= 250;
+		}
+	},
+	{
+		id: 2099,
+		name: 'Open 50x EMB',
+		has: async ({ opens }) => {
+			return opens.amount('Equippable mystery box') >= 50;
+		}
+	},
+	{
+		id: 2100,
+		name: 'Open 25x CMB',
+		has: async ({ opens }) => {
+			return opens.amount('Clothing mystery box') >= 25;
+		}
+	},
+	{
+		id: 2101,
+		name: 'Open 20x HMB',
+		has: async ({ opens }) => {
+			return opens.amount('Holiday mystery box') >= 20;
+		}
+	},
+	{
+		id: 2102,
+		name: 'Open 20x PMB',
+		has: async ({ opens }) => {
+			return opens.amount('Pet mystery box') >= 20;
+		}
+	},
+	{
+		id: 2103,
+		name: 'Kill every Godwars Dungeon Boss 250 times',
+		has: async args => {
+			return [
+				Monsters.GeneralGraardor,
+				Monsters.CommanderZilyana,
+				Monsters.KrilTsutsaroth,
+				Monsters.Kreearra
+			].every(mon => leaguesHasKC(args, mon, 250));
+		}
+	},
+	{
+		id: 2104,
+		name: 'Kill Zulrah 100 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Zulrah, 100);
+		}
+	},
+	{
+		id: 2105,
+		name: 'Kill the Corporeal Beast 250 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.CorporealBeast, 250);
+		}
+	},
+	{
+		id: 2106,
+		name: 'Kill Hespori 100 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Hespori, 100);
+		}
+	},
+	{
+		id: 2107,
+		name: 'Defeat the Inferno',
+		has: async ({ minigames }) => {
+			return minigames.inferno >= 1;
+		}
+	},
+	{
+		id: 2108,
+		name: 'Fletch 5000 Dragon arrows',
+		has: async ({ cl }) => {
+			return ['Dragon arrow', 'Headless arrow', 'Dragon arrowtips'].every(i => cl.amount(i) >= 5000);
+		}
+	},
+	{
+		id: 2109,
+		name: 'Catch 20 Lucky implings',
+		has: async ({ cl }) => {
+			return cl.amount('Lucky impling jar') >= 20;
+		}
+	},
+	{
+		id: 2110,
+		name: 'Sacrifice 2b GP',
+		has: async ({ sacrificedBank }) => {
+			return sacrificedBank.amount('Coins') >= 2_000_000_000;
+		}
+	},
+	{
+		id: 2111,
+		name: 'Sacrifice any third age item',
+		has: async ({ sacrificedBank }) => {
+			return allThirdAgeItems.some(i => sacrificedBank.has(i));
+		}
+	},
+	{
+		id: 2112,
+		name: 'Sacrifice 100 different items',
+		has: async ({ sacrificedBank }) => {
+			return sacrificedBank.length >= 100;
+		}
+	},
+	{
+		id: 2113,
+		name: 'Do 50 High gambles in Barb assault',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.high_gambles >= 50;
 		}
 	}
 ];

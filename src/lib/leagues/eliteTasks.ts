@@ -1,5 +1,5 @@
 import { sumArr } from 'e';
-import { Bank } from 'oldschooljs';
+import { Bank, Monsters } from 'oldschooljs';
 
 import { feedableItems } from '../../mahoji/commands/tames';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -31,7 +31,7 @@ import { TameSpeciesID, TameType } from '../tames';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { leaguesHasCatches, Task } from './leagues';
+import { leaguesHasCatches, leaguesHasKC, Task } from './leagues';
 
 export const eliteTasks: Task[] = [
 	{
@@ -122,7 +122,7 @@ export const eliteTasks: Task[] = [
 		id: 3012,
 		name: 'Smith 100 Adamantite bars from scratch',
 		has: async ({ cl }) => {
-			return cl.amount('Adamantite ore') >= 100 && cl.amount('Adamant bar') >= 100;
+			return cl.amount('Adamantite ore') >= 100 && cl.amount('Adamantite bar') >= 100;
 		}
 	},
 	{
@@ -130,13 +130,6 @@ export const eliteTasks: Task[] = [
 		name: 'Complete 250 slayer tasks',
 		has: async ({ slayerTasksCompleted }) => {
 			return slayerTasksCompleted >= 250;
-		}
-	},
-	{
-		id: 3014,
-		name: 'Do 50 laps at the Pollnivneach Course',
-		has: async ({ lapScores }) => {
-			return (lapScores[9] ?? 0) >= 50;
 		}
 	},
 	{
@@ -185,31 +178,21 @@ export const eliteTasks: Task[] = [
 		id: 3021,
 		name: 'Mix 500 Super attack potions.',
 		has: async ({ cl }) => {
-			return (
-				sumArr(resolveItems(['Super attack potion (3)', 'Super attack potion (4)']).map(i => cl.amount(i))) >=
-				500
-			);
+			return sumArr(resolveItems(['Super attack (3)', 'Super attack (4)']).map(i => cl.amount(i))) >= 500;
 		}
 	},
 	{
 		id: 3022,
 		name: 'Mix 500 Super strength potions.',
 		has: async ({ cl }) => {
-			return (
-				sumArr(
-					resolveItems(['Super strength potion (3)', 'Super strength potion (4)']).map(i => cl.amount(i))
-				) >= 500
-			);
+			return sumArr(resolveItems(['Super strength (3)', 'Super strength (4)']).map(i => cl.amount(i))) >= 500;
 		}
 	},
 	{
 		id: 3023,
 		name: 'Mix 500 Super defence potions.',
 		has: async ({ cl }) => {
-			return (
-				sumArr(resolveItems(['Super defence potion (3)', 'Super defence potion (4)']).map(i => cl.amount(i))) >=
-				500
-			);
+			return sumArr(resolveItems(['Super defence (3)', 'Super defence (4)']).map(i => cl.amount(i))) >= 500;
 		}
 	},
 	{
@@ -379,6 +362,90 @@ export const eliteTasks: Task[] = [
 						i => i.tameSpeciesCanBeFedThis.includes(TameType.Gatherer) && fedItems.has(i.item.id)
 					);
 				});
+		}
+	},
+	{
+		id: 3046,
+		name: 'Make 100 Extraordinary kibble',
+		has: async ({ cl }) => {
+			return cl.amount('Extraordinary kibble') >= 100;
+		}
+	},
+	{
+		id: 3047,
+		name: 'Open 1000x TMB',
+		has: async ({ opens }) => {
+			return opens.amount('Tradeable mystery box') >= 1000;
+		}
+	},
+	{
+		id: 3048,
+		name: 'Open 1000x UMB',
+		has: async ({ opens }) => {
+			return opens.amount('Untradeable mystery box') >= 1000;
+		}
+	},
+	{
+		id: 3049,
+		name: 'Open 100x EMB',
+		has: async ({ opens }) => {
+			return opens.amount('Equippable mystery box') >= 100;
+		}
+	},
+	{
+		id: 3050,
+		name: 'Open 50x CMB',
+		has: async ({ opens }) => {
+			return opens.amount('Clothing mystery box') >= 50;
+		}
+	},
+	{
+		id: 3051,
+		name: 'Open 50x HMB',
+		has: async ({ opens }) => {
+			return opens.amount('Holiday mystery box') >= 50;
+		}
+	},
+	{
+		id: 3052,
+		name: 'Open 50x PMB',
+		has: async ({ opens }) => {
+			return opens.amount('Pet mystery box') >= 50;
+		}
+	},
+	{
+		id: 3053,
+		name: 'Kill Zulrah 1000 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Zulrah, 1000);
+		}
+	},
+	{
+		id: 3054,
+		name: 'Kill the Corporeal Beast 1000 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.CorporealBeast, 1000);
+		}
+	},
+	{
+		id: 3055,
+		name: 'Defeat the Emerged Inferno',
+		has: async ({ minigames }) => {
+			return minigames.emerged_inferno >= 1;
+		}
+	},
+	{
+		id: 3056,
+		name: 'Sacrifice 5b GP',
+		has: async ({ sacrificedBank }) => {
+			return sacrificedBank.amount('Coins') >= 5_000_000_000;
+		}
+	},
+	{
+		id: 3057,
+		name: 'Sacrifice 250 different items',
+		has: async ({ sacrificedBank }) => {
+			return sacrificedBank.length >= 250;
 		}
 	}
 ];

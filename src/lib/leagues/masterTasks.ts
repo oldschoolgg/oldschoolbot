@@ -19,7 +19,8 @@ import { NexMonster } from '../nex';
 import { dungBuyables } from '../skilling/skills/dung/dungData';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
-import { calcCombatLevel, calcTotalLevel, itemID } from '../util';
+import { getTameSpecies } from '../tames';
+import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { Task } from './leagues';
 
@@ -203,15 +204,15 @@ export const masterTasks: Task[] = [
 	{
 		id: 4019,
 		name: 'Complete 500 Elite clue scrolls',
-		has: async ({ clueScores }) => {
-			return (clueScores[itemID('Clue scroll (elite)')] ?? 0) >= 500;
+		has: async ({ opens }) => {
+			return opens.amount('Clue scroll (elite)') >= 500;
 		}
 	},
 	{
 		id: 4020,
 		name: 'Complete 200 Grandmaster clue scrolls',
-		has: async ({ clueScores }) => {
-			return (clueScores[itemID('Clue scroll (grandmaster)')] ?? 0) >= 200;
+		has: async ({ opens }) => {
+			return opens.amount('Clue scroll (grandmaster)') >= 200;
 		}
 	},
 	{
@@ -385,7 +386,7 @@ export const masterTasks: Task[] = [
 		id: 4044,
 		name: 'Create a Dwarven warhammer from scratch',
 		has: async ({ cl }) => {
-			return resolveItems(['Dwarven warhammer', 'Dwarven warhammer (broken)']).every(i => cl.has(i));
+			return resolveItems(['Dwarven warhammer', 'Broken dwarven warhammer']).every(i => cl.has(i));
 		}
 	},
 	{
@@ -835,6 +836,101 @@ export const masterTasks: Task[] = [
 		name: 'Create an Infernal slayer helmet(i)',
 		has: async ({ cl }) => {
 			return cl.has('Infernal slayer helmet (i)');
+		}
+	},
+	{
+		id: 4110,
+		name: "Buy a Combatant's cape",
+		has: async ({ cl }) => {
+			return cl.has("Combatant's cape");
+		}
+	},
+	{
+		id: 4111,
+		name: "Buy a Artisan's cape",
+		has: async ({ cl }) => {
+			return cl.has("Artisan's cape");
+		}
+	},
+	{
+		id: 4112,
+		name: 'Buy a Support cape',
+		has: async ({ cl }) => {
+			return cl.has('Support cape');
+		}
+	},
+	{
+		id: 4113,
+		name: "Buy a Gatherer's cape",
+		has: async ({ cl }) => {
+			return cl.has("Gatherer's cape");
+		}
+	},
+	{
+		id: 4114,
+		name: 'Open 5000x TMB',
+		has: async ({ opens }) => {
+			return opens.amount('Tradeable mystery box') >= 5000;
+		}
+	},
+	{
+		id: 4115,
+		name: 'Open 5000x UMB',
+		has: async ({ opens }) => {
+			return opens.amount('Untradeable mystery box') >= 5000;
+		}
+	},
+	{
+		id: 4116,
+		name: 'Open 500x EMB',
+		has: async ({ opens }) => {
+			return opens.amount('Equippable mystery box') >= 500;
+		}
+	},
+	{
+		id: 4117,
+		name: 'Open 150x CMB',
+		has: async ({ opens }) => {
+			return opens.amount('Clothing mystery box') >= 150;
+		}
+	},
+	{
+		id: 4118,
+		name: 'Open 500x HMB',
+		has: async ({ opens }) => {
+			return opens.amount('Holiday mystery box') >= 500;
+		}
+	},
+	{
+		id: 4119,
+		name: 'Open 500x PMB',
+		has: async ({ opens }) => {
+			return opens.amount('Pet mystery box') >= 500;
+		}
+	},
+	{
+		id: 4120,
+		name: 'Sacrifice 10b GP',
+		has: async ({ sacrificedBank }) => {
+			return sacrificedBank.amount('Coins') >= 10_000_000_000;
+		}
+	},
+	{
+		id: 4121,
+		name: 'Sacrifice 1000 different items',
+		has: async ({ sacrificedBank }) => {
+			return sacrificedBank.length >= 1000;
+		}
+	},
+	{
+		id: 4122,
+		name: 'Hatch a tame which is atleast level 90',
+		has: async ({ tames }) => {
+			return tames.some(i => {
+				const species = getTameSpecies(i);
+				const level = i[`max_${species.relevantLevelCategory}_level`];
+				return level >= 90;
+			});
 		}
 	}
 ];

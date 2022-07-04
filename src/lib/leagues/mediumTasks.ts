@@ -2,7 +2,14 @@ import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { cluesBeginnerCL, cluesEasyCL, cluesMediumCL, customPetsCL, cyclopsCL } from '../data/CollectionsExport';
+import {
+	barrowsChestCL,
+	cluesBeginnerCL,
+	cluesEasyCL,
+	cluesMediumCL,
+	customPetsCL,
+	cyclopsCL
+} from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -18,12 +25,14 @@ import {
 	WesternProv,
 	WildernessDiary
 } from '../diaries';
+import { QueenBlackDragon } from '../minions/data/killableMonsters/custom/demiBosses';
+import { TormentedDemon } from '../minions/data/killableMonsters/custom/TormentedDemon';
 import { baseUserKourendFavour, UserKourendFavour } from '../minions/data/kourendFavour';
 import { ItemBank } from '../types';
-import { calcCombatLevel, calcTotalLevel, itemID } from '../util';
+import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { leaguesHasCatches, leaguesHasKC, Task } from './leagues';
+import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leagues';
 
 export const mediumTasks: Task[] = [
 	{
@@ -358,8 +367,8 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1048,
 		name: 'Complete a Grandmaster clue scroll',
-		has: async ({ clueScores }) => {
-			return (clueScores[itemID('Clue scroll (grandmaster)')] ?? 0) >= 1;
+		has: async ({ opens }) => {
+			return opens.amount('Clue scroll (grandmaster)') >= 1;
 		}
 	},
 	{
@@ -488,6 +497,256 @@ export const mediumTasks: Task[] = [
 		has: async ({ mahojiUser }) => {
 			const currentUserFavour = (mahojiUser.kourend_favour ?? baseUserKourendFavour) as any as UserKourendFavour;
 			return Object.values(currentUserFavour).every(val => val >= 100);
+		}
+	},
+	{
+		id: 1067,
+		name: 'Build a Tame Nursery',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.nursery !== null;
+		}
+	},
+	{
+		id: 1068,
+		name: 'Make 100 Simple kibble',
+		has: async ({ cl }) => {
+			return cl.amount('Simple kibble') >= 100;
+		}
+	},
+	{
+		id: 1069,
+		name: 'Kill a Tormented Demon',
+		has: async args => {
+			return leaguesHasKC(args, TormentedDemon, 1);
+		}
+	},
+	{
+		id: 1070,
+		name: 'Kill the Queen Black dragon',
+		has: async args => {
+			return leaguesHasKC(args, QueenBlackDragon, 1);
+		}
+	},
+	{
+		id: 1071,
+		name: 'Achieve base level 80 stats',
+		has: async ({ skillsLevels }) => {
+			return Object.values(skillsLevels).every(i => i >= 80);
+		}
+	},
+	{
+		id: 1072,
+		name: 'Disassemble 1000 Rune armor pieces',
+		has: async ({ disassembledItems }) => {
+			return (
+				sumArr(
+					resolveItems([
+						'Rune full helm',
+						'Rune med helm',
+						'Rune platebody',
+						'Rune platelegs',
+						'Rune boots',
+						'Rune chainbody',
+						'Rune plateskirt',
+						'Rune sq shield',
+						'Rune kiteshield'
+					]).map(i => disassembledItems.amount(i))
+				) >= 1000
+			);
+		}
+	},
+	{
+		id: 1073,
+		name: 'Open 100x TMB',
+		has: async ({ opens }) => {
+			return opens.amount('Tradeable mystery box') >= 100;
+		}
+	},
+	{
+		id: 1074,
+		name: 'Open 100x UMB',
+		has: async ({ opens }) => {
+			return opens.amount('Untradeable mystery box') >= 100;
+		}
+	},
+	{
+		id: 1075,
+		name: 'Open 30x EMB',
+		has: async ({ opens }) => {
+			return opens.amount('Equippable mystery box') >= 30;
+		}
+	},
+	{
+		id: 1076,
+		name: 'Open 10x CMB',
+		has: async ({ opens }) => {
+			return opens.amount('Clothing mystery box') >= 10;
+		}
+	},
+	{
+		id: 1077,
+		name: 'Open 5x HMB',
+		has: async ({ opens }) => {
+			return opens.amount('Holiday mystery box') >= 5;
+		}
+	},
+	{
+		id: 1078,
+		name: 'Open 5x PMB',
+		has: async ({ opens }) => {
+			return opens.amount('Pet mystery box') >= 5;
+		}
+	},
+	{
+		id: 1079,
+		name: 'Kill every Godwars Dungeon Boss 50 times',
+		has: async args => {
+			return [
+				Monsters.GeneralGraardor,
+				Monsters.CommanderZilyana,
+				Monsters.KrilTsutsaroth,
+				Monsters.Kreearra
+			].every(mon => leaguesHasKC(args, mon, 50));
+		}
+	},
+	{
+		id: 1080,
+		name: 'Kill Zulrah',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Zulrah, 1);
+		}
+	},
+	{
+		id: 1081,
+		name: 'Kill the Corporeal Beast',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.CorporealBeast, 1);
+		}
+	},
+	{
+		id: 1082,
+		name: 'Kill Hespori 25 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Hespori, 25);
+		}
+	},
+	{
+		id: 1083,
+		name: 'Fletch 1000 Magic shortbows',
+		has: async ({ cl }) => {
+			return ['Magic shortbow (u)', 'Bow string', 'Magic shortbow'].every(i => cl.amount(i) >= 1000);
+		}
+	},
+	{
+		id: 1084,
+		name: 'Fletch 1000 Magic longbows',
+		has: async ({ cl }) => {
+			return ['Magic longbow (u)', 'Bow string', 'Magic longbow'].every(i => cl.amount(i) >= 1000);
+		}
+	},
+	{
+		id: 1085,
+		name: 'Fletch 1000 Rune arrows',
+		has: async ({ cl }) => {
+			return ['Rune arrow', 'Headless arrow', 'Rune arrowtips'].every(i => cl.amount(i) >= 1000);
+		}
+	},
+	{
+		id: 1086,
+		name: 'Fletch 1000 Adamant arrows',
+		has: async ({ cl }) => {
+			return ['Adamant arrow', 'Headless arrow', 'Adamant arrowtips'].every(i => cl.amount(i) >= 1000);
+		}
+	},
+	{
+		id: 1087,
+		name: 'Fletch 1000 Amethyst arrows',
+		has: async ({ cl }) => {
+			return ['Amethyst arrow', 'Headless arrow', 'Amethyst arrowtips'].every(i => cl.amount(i) >= 1000);
+		}
+	},
+	{
+		id: 1088,
+		name: 'Fletch 1000 Dragon arrows',
+		has: async ({ cl }) => {
+			return ['Dragon arrow', 'Headless arrow', 'Dragon arrowtips'].every(i => cl.amount(i) >= 1000);
+		}
+	},
+	{
+		id: 1089,
+		name: 'Catch 5 Lucky implings',
+		has: async ({ cl }) => {
+			return cl.amount('Lucky impling jar') >= 5;
+		}
+	},
+	{
+		id: 1090,
+		name: 'Catch 5 Dragon implings',
+		has: async ({ cl }) => {
+			return cl.amount('Dragon impling jar') >= 5;
+		}
+	},
+	{
+		id: 1091,
+		name: 'Sacrifice 500m GP',
+		has: async ({ sacrificedBank }) => {
+			return sacrificedBank.amount('Coins') >= 500_000_000;
+		}
+	},
+	{
+		id: 1092,
+		name: 'Sacrifice all barrows items',
+		has: async ({ sacrificedBank }) => {
+			return barrowsChestCL.every(i => sacrificedBank.has(i));
+		}
+	},
+	{
+		id: 1093,
+		name: 'Sacrifice 50 different items',
+		has: async ({ sacrificedBank }) => {
+			return sacrificedBank.length >= 50;
+		}
+	},
+	{
+		id: 1094,
+		name: 'Complete 5 Gargoyle slayer tasks',
+		has: async args => {
+			return leaguesSlayerTaskForMonster(args, Monsters.Gargoyle);
+		}
+	},
+	{
+		id: 1095,
+		name: 'Complete 5 Blue dragon slayer tasks',
+		has: async args => {
+			return leaguesSlayerTaskForMonster(args, Monsters.BlueDragon);
+		}
+	},
+	{
+		id: 1096,
+		name: 'Complete 5 Abyssal Demon slayer tasks',
+		has: async args => {
+			return leaguesSlayerTaskForMonster(args, Monsters.AbyssalDemon);
+		}
+	},
+	{
+		id: 1097,
+		name: 'Complete 5 Hellhound slayer tasks',
+		has: async args => {
+			return leaguesSlayerTaskForMonster(args, Monsters.Hellhound);
+		}
+	},
+	{
+		id: 1098,
+		name: 'Complete 5 Nechryael slayer tasks',
+		has: async args => {
+			return leaguesSlayerTaskForMonster(args, Monsters.Nechryael);
+		}
+	},
+	{
+		id: 1099,
+		name: 'Do 10 High gambles in Barb assault',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.high_gambles >= 10;
 		}
 	}
 ];

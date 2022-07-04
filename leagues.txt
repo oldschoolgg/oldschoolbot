@@ -1,6 +1,6 @@
-There are a total of 334 tasks.
+There are a total of 453 tasks.
 
---------- Easy (47 tasks) -----------
+--------- Easy (62 tasks) -----------
 Smith 100 Bronze bars from scratch
 Do 50 laps at the Gnome Stronghold Agility Course
 Obtain 10 Marks of grace
@@ -48,9 +48,24 @@ Complete an Item Contract
 Kill 10 unique monsters
 Slay a superior slayer creature
 Sacrifice 100m worth of items/GP
+Achieve base level 20 stats
+Complete the barrows collection log
+Kill the King Black Dragon 100 times
+Kill Obor 5 times
+Kill every Wilderness boss 5 times
+Kill every Dagannoth King 50 times
+Kill every Godwars Dungeon Boss
+Kill Hespori
+Kill Hespori 5 times
+Obtain a fire cape
+Sacrifice 10 different items
+Complete 5 Bloodveld slayer tasks
+Complete 5 Dagannoth slayer tasks
+Do the Tears of Guthix
+Do a High gamble in Barb assault
 
 
---------- Medium (66 tasks) -----------
+--------- Medium (99 tasks) -----------
 Complete the Medium Wilderness diary
 Complete the Medium Western Prov diary
 Complete the Medium Ardougne diary
@@ -117,9 +132,42 @@ Defeat Skotizo 10 times
 Complete the Gauntlet
 Complete the Gauntlet 100 times
 Achieve maximum kourend favour
+Build a Tame Nursery
+Make 100 Simple kibble
+Kill a Tormented Demon
+Kill the Queen Black dragon
+Achieve base level 80 stats
+Disassemble 1000 Rune armor pieces
+Open 100x TMB
+Open 100x UMB
+Open 30x EMB
+Open 10x CMB
+Open 5x HMB
+Open 5x PMB
+Kill every Godwars Dungeon Boss 50 times
+Kill Zulrah
+Kill the Corporeal Beast
+Kill Hespori 25 times
+Fletch 1000 Magic shortbows
+Fletch 1000 Magic longbows
+Fletch 1000 Rune arrows
+Fletch 1000 Adamant arrows
+Fletch 1000 Amethyst arrows
+Fletch 1000 Dragon arrows
+Catch 5 Lucky implings
+Catch 5 Dragon implings
+Sacrifice 500m GP
+Sacrifice all barrows items
+Sacrifice 50 different items
+Complete 5 Gargoyle slayer tasks
+Complete 5 Blue dragon slayer tasks
+Complete 5 Abyssal Demon slayer tasks
+Complete 5 Hellhound slayer tasks
+Complete 5 Nechryael slayer tasks
+Do 10 High gambles in Barb assault
 
 
---------- Hard (67 tasks) -----------
+--------- Hard (113 tasks) -----------
 Complete the Hard Wilderness diary
 Complete the Hard Western Prov diary
 Complete the Hard Ardougne diary
@@ -187,9 +235,55 @@ Sacrifice 3b worth of items/GP
 Complete the Corrupted Gauntlet
 Complete the Corrupted Gauntlet 100 times
 Unlock every invention blueprint
+Dye an item
+Achieve level 120 Agility
+Achieve level 120 Cooking
+Achieve level 120 Fishing
+Achieve level 120 Mining
+Achieve level 120 Smithing
+Achieve level 120 Woodcutting
+Achieve level 120 Firemaking
+Achieve level 120 Runecraft
+Achieve level 120 Crafting
+Achieve level 120 Prayer
+Achieve level 120 Fleching
+Achieve level 120 Farming
+Achieve level 120 Herblore
+Achieve level 120 Herblore
+Achieve level 120 Thieving
+Achieve level 120 Hunter
+Achieve level 120 Construction
+Achieve level 120 Magic
+Achieve level 120 Attack
+Achieve level 120 Strength
+Achieve level 120 Defence
+Achieve level 120 Ranged
+Achieve level 120 Hitpoints
+Achieve level 120 Dungeoneering
+Achieve level 120 Slayer
+Achieve level 120 Invention
+Make 100 Delicious kibble
+Receive a Zippy
+Open 250x TMB
+Open 250x UMB
+Open 50x EMB
+Open 25x CMB
+Open 20x HMB
+Open 20x PMB
+Kill every Godwars Dungeon Boss 250 times
+Kill Zulrah 100 times
+Kill the Corporeal Beast 250 times
+Kill Hespori 100 times
+Defeat the Inferno
+Fletch 5000 Dragon arrows
+Catch 20 Lucky implings
+Sacrifice 2b GP
+Sacrifice any third age item
+Sacrifice 100 different items
+Do 50 High gambles in Barb assault
 
 
---------- Elite (46 tasks) -----------
+--------- Elite (57 tasks) -----------
 Complete the Elite Wilderness diary
 Complete the Elite Western Prov diary
 Complete the Elite Ardougne diary
@@ -204,7 +298,6 @@ Complete the Elite Morytania diary
 Complete the Elite Varrock diary
 Smith 100 Adamantite bars from scratch
 Complete 250 slayer tasks
-Do 50 laps at the Pollnivneach Course
 Obtain 1000 Marks of grace
 Reach combat level 110
 Reach total level 2000
@@ -236,9 +329,21 @@ Receive a dragon egg and hatch it
 Receive a monkey egg and hatch it
 Feed a perk-item to your Igne tame
 Feed a perk-item to your Monkey tame
+Make 100 Extraordinary kibble
+Open 1000x TMB
+Open 1000x UMB
+Open 100x EMB
+Open 50x CMB
+Open 50x HMB
+Open 50x PMB
+Kill Zulrah 1000 times
+Kill the Corporeal Beast 1000 times
+Defeat the Emerged Inferno
+Sacrifice 5b GP
+Sacrifice 250 different items
 
 
---------- Master (108 tasks) -----------
+--------- Master (122 tasks) -----------
 Build a Demonic Throne
 Defeat Nex 500 Times
 Receive atleast 1000 Agility Arena tickets
@@ -347,5 +452,19 @@ Achieve an Item Contract streak of 50
 Buy every dungeoneering reward
 Slay 500 superior slayer creatures
 Sacrifice 20b worth of items/GP
+Create an Infernal slayer helmet(i)
+Buy a Combatant's cape
+Buy a Artisan's cape
+Buy a Support cape
+Buy a Gatherer's cape
+Open 5000x TMB
+Open 5000x UMB
+Open 500x EMB
+Open 150x CMB
+Open 500x HMB
+Open 500x PMB
+Sacrifice 10b GP
+Sacrifice 1000 different items
+Hatch a tame which is atleast level 90
 
 

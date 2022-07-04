@@ -2,7 +2,7 @@ import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { cluesBeginnerCL, cluesEasyCL, customPetsCL } from '../data/CollectionsExport';
+import { barrowsChestCL, cluesBeginnerCL, cluesEasyCL, customPetsCL } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -23,7 +23,7 @@ import Fishing from '../skilling/skills/fishing';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { leaguesHasCatches, leaguesHasKC, Task } from './leagues';
+import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leagues';
 
 export const easyTasks: Task[] = [
 	{
@@ -354,6 +354,127 @@ export const easyTasks: Task[] = [
 		name: 'Sacrifice 100m worth of items/GP',
 		has: async ({ mahojiUser }) => {
 			return mahojiUser.sacrificedValue >= 100_000_000;
+		}
+	},
+	{
+		id: 48,
+		name: 'Achieve base level 20 stats',
+		has: async ({ skillsLevels }) => {
+			return Object.values(skillsLevels).every(i => i >= 20);
+		}
+	},
+	{
+		id: 49,
+		name: 'Complete the barrows collection log',
+		has: async ({ cl }) => {
+			return barrowsChestCL.every(i => cl.has(i));
+		}
+	},
+	{
+		id: 50,
+		name: 'Kill the King Black Dragon 100 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.KingBlackDragon, 100);
+		}
+	},
+	{
+		id: 51,
+		name: 'Kill Obor 5 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Obor, 5);
+		}
+	},
+	{
+		id: 52,
+		name: 'Kill every Wilderness boss 5 times',
+		has: async args => {
+			return [
+				Monsters.ChaosElemental,
+				Monsters.ChaosFanatic,
+				Monsters.Callisto,
+				Monsters.CrazyArchaeologist,
+				Monsters.KingBlackDragon,
+				Monsters.Scorpia,
+				Monsters.Venenatis,
+				Monsters.Vetion
+			].every(mon => leaguesHasKC(args, mon, 5));
+		}
+	},
+	{
+		id: 53,
+		name: 'Kill every Dagannoth King 50 times',
+		has: async args => {
+			return [Monsters.DagannothPrime, Monsters.DagannothRex, Monsters.DagannothSupreme].every(mon =>
+				leaguesHasKC(args, mon, 50)
+			);
+		}
+	},
+	{
+		id: 54,
+		name: 'Kill every Godwars Dungeon Boss',
+		has: async args => {
+			return [
+				Monsters.GeneralGraardor,
+				Monsters.CommanderZilyana,
+				Monsters.KrilTsutsaroth,
+				Monsters.Kreearra
+			].every(mon => leaguesHasKC(args, mon, 1));
+		}
+	},
+	{
+		id: 55,
+		name: 'Kill Hespori',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Hespori, 1);
+		}
+	},
+	{
+		id: 56,
+		name: 'Kill Hespori 5 times',
+		has: async args => {
+			return leaguesHasKC(args, Monsters.Hespori, 5);
+		}
+	},
+	{
+		id: 57,
+		name: 'Obtain a fire cape',
+		has: async ({ cl }) => {
+			return cl.has('Fire cape');
+		}
+	},
+	{
+		id: 58,
+		name: 'Sacrifice 10 different items',
+		has: async ({ sacrificedBank }) => {
+			return sacrificedBank.length >= 10;
+		}
+	},
+	{
+		id: 59,
+		name: 'Complete 5 Bloodveld slayer tasks',
+		has: async args => {
+			return leaguesSlayerTaskForMonster(args, Monsters.Bloodveld);
+		}
+	},
+	{
+		id: 60,
+		name: 'Complete 5 Dagannoth slayer tasks',
+		has: async args => {
+			return leaguesSlayerTaskForMonster(args, Monsters.Dagannoth);
+		}
+	},
+	{
+		id: 61,
+		name: 'Do the Tears of Guthix',
+		has: async ({ mahojiUser }) => {
+			return Number(mahojiUser.lastTearsOfGuthixTimestamp) !== 1;
+		}
+	},
+	{
+		id: 62,
+		name: 'Do a High gamble in Barb assault',
+		has: async ({ mahojiUser }) => {
+			return mahojiUser.high_gambles >= 1;
 		}
 	}
 ];
