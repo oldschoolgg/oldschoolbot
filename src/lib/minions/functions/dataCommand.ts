@@ -4,10 +4,12 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
+import { collectables } from '../../../mahoji/lib/abstracted_commands/collectCommand';
 import { getMahojiBank } from '../../../mahoji/mahojiSettings';
 import { calcCLDetails } from '../../data/Collections';
 import { TOBRooms } from '../../data/tob';
 import { prisma } from '../../settings/prisma';
+import { Castables } from '../../skilling/skills/magic/castables';
 import { SkillsEnum } from '../../skilling/types';
 import { getSlayerTaskStats } from '../../slayer/slayerUtil';
 import { sorts } from '../../sorts';
@@ -36,7 +38,6 @@ WHERE type = 'Construction'
 AND user_id = '${user.id}'::bigint
 AND data->>'objectID' IS NOT NULL
 GROUP BY data->>'objectID';`);
-	result.sort((a, b) => b.qty - a.qty);
 	const items = new Bank();
 	for (const res of result) {
 		const item = getItem(res.id);
@@ -44,6 +45,140 @@ GROUP BY data->>'objectID';`);
 		items.add(item.id, res.qty);
 	}
 	return items;
+}
+
+export async function personalFiremakingStats(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'burnableID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Firemaking'
+AND user_id = '${user.id}'::bigint
+AND data->>'burnableID' IS NOT NULL
+GROUP BY data->>'burnableID';`);
+	const items = new Bank();
+	for (const res of result) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		items.add(item.id, res.qty);
+	}
+	return items;
+}
+
+export async function personalWoodcuttingStats(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'logID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Woodcutting'
+AND user_id = '${user.id}'::bigint
+AND data->>'logID' IS NOT NULL
+GROUP BY data->>'logID';`);
+	const items = new Bank();
+	for (const res of result) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		items.add(item.id, res.qty);
+	}
+	return items;
+}
+
+export async function personalMiningStats(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'oreID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Mining'
+AND user_id = '${user.id}'::bigint
+AND data->>'oreID' IS NOT NULL
+GROUP BY data->>'oreID';`);
+	const items = new Bank();
+	for (const res of result) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		items.add(item.id, res.qty);
+	}
+	return items;
+}
+
+export async function personalHerbloreStats(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Herblore'
+AND user_id = '${user.id}'::bigint
+AND data->>'mixableID' IS NOT NULL
+GROUP BY data->>'mixableID';`);
+	const items = new Bank();
+	for (const res of result) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		items.add(item.id, res.qty);
+	}
+	return items;
+}
+export async function personalAlchingStats(user: User, includeAgilityAlching = true) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'itemID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Alching'
+AND user_id = '${user.id}'::bigint
+AND data->>'itemID' IS NOT NULL
+GROUP BY data->>'itemID';`);
+	const agilityAlchRes: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (((data->>'alch')::json)->>'itemID')::int AS id, SUM((((data->>'alch')::json)->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Agility'
+AND user_id = '${user.id}'::bigint
+AND data->>'alch' IS NOT NULL
+GROUP BY ((data->>'alch')::json)->>'itemID';`);
+
+	const items = new Bank();
+	for (const res of [...result, ...(includeAgilityAlching ? agilityAlchRes : [])]) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		items.add(item.id, res.qty);
+	}
+	return items;
+}
+export async function personalSmithingStats(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'smithedBarID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Smithing'
+AND user_id = '${user.id}'::bigint
+AND data->>'smithedBarID' IS NOT NULL
+GROUP BY data->>'smithedBarID';`);
+	const items = new Bank();
+	for (const res of result) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		items.add(item.id, res.qty);
+	}
+	return items;
+}
+export async function personalSpellCastStats(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'spellID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Casting'
+AND user_id = '${user.id}'::bigint
+AND data->>'spellID' IS NOT NULL
+GROUP BY data->>'spellID';`);
+	return result.map(i => ({ castable: Castables.find(t => t.id === i.id)!, id: i.id, qty: i.qty }));
+}
+export async function personalCollectingStats(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'collectableID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Collecting'
+AND user_id = '${user.id}'::bigint
+AND data->>'collectableID' IS NOT NULL
+GROUP BY data->>'collectableID';`);
+	let bank = new Bank();
+	for (const { id, qty } of result) {
+		const col = collectables.find(t => t.item.id === id);
+		if (!col) continue;
+		bank.add(col.item.id, col.quantity * qty);
+	}
+	return bank;
 }
 
 async function makeResponseForBank(bank: Bank, title: string, content?: string) {
@@ -340,15 +475,127 @@ ${res
 		}
 	},
 	{
-		name: 'Personal Construction',
+		name: 'Personal Construction Stats',
 		run: async (user: User) => {
 			const result = await personalConstructionStats(user);
 			if (result.length === 0) return "You haven't built anything yet.";
 			return `You've built...
 ${result
 	.items()
+	.sort(sorts.quantity)
 	.slice(0, 15)
-	.map(i => `${i[0].name ?? 'Unknown'}: ${i[1].toLocaleString()}`)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Alching Stats',
+		run: async (user: User) => {
+			const result = await personalAlchingStats(user);
+			if (result.length === 0) return "You haven't alched anything yet.";
+			return `You've alched...
+${result
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Herblore Stats',
+		run: async (user: User) => {
+			const result = await personalHerbloreStats(user);
+			if (result.length === 0) return "You haven't made anything yet.";
+			return `You've made...
+${result
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Mining Stats',
+		run: async (user: User) => {
+			const result = await personalMiningStats(user);
+			if (result.length === 0) return "You haven't mined anything yet.";
+			return `You've mined...
+${result
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Firemaking Stats',
+		run: async (user: User) => {
+			const result = await personalFiremakingStats(user);
+			if (result.length === 0) return "You haven't burnt anything yet.";
+			return `You've burnt...
+${result
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Smithing Stats',
+		run: async (user: User) => {
+			const result = await personalSmithingStats(user);
+			if (result.length === 0) return "You haven't smithed anything yet.";
+			return `You've smithed...
+${result
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Spell Casting Stats',
+		run: async (user: User) => {
+			const result = await personalSpellCastStats(user);
+			if (result.length === 0) return "You haven't cast anything yet.";
+			return `You've cast...
+${result
+	.sort((a, b) => b.qty - a.qty)
+	.slice(0, 15)
+	.map(i => `${i.castable.name}: ${i.qty.toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Collecting Stats',
+		run: async (user: User) => {
+			const result = await personalCollectingStats(user);
+			if (result.length === 0) return "You haven't collected anything yet.";
+			return `You've collected...
+${result
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Woodcutting Stats',
+		run: async (user: User) => {
+			const result = await personalWoodcuttingStats(user);
+			if (result.length === 0) return "You haven't chopped anything yet.";
+			return `You've chopped...
+${result
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
 	.join('\n')}`;
 		}
 	}
