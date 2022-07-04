@@ -1,4 +1,4 @@
-import { randFloat, randInt } from 'e';
+import { notEmpty, randFloat, randInt } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -473,4 +473,29 @@ export function filterLootReplace(myBank: Bank, myLoot: Bank) {
 		bankLoot: myLoot,
 		clLoot: myClLoot
 	};
+}
+
+export async function getSlayerTaskStats(userID: string) {
+	const result: { monster_id: number; total_quantity: number; qty: number }[] =
+		await prisma.$queryRaw`SELECT monster_id, SUM(quantity) AS total_quantity, COUNT(monster_id) AS qty
+FROM slayer_tasks
+WHERE user_id = ${userID}
+GROUP BY monster_id
+ORDER BY qty DESC;`;
+	return result
+		.map(i => {
+			const mon = Monsters.get(i.monster_id);
+			if (!mon) return null;
+			return {
+				monsterID: mon.id,
+				monsterName: mon.name,
+				total_killed: i.total_quantity,
+				total_tasks: i.qty
+			};
+		})
+		.filter(notEmpty)
+		.map(i => {
+			console.log(i);
+			return i;
+		});
 }
