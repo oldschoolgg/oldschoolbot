@@ -345,7 +345,7 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 const statsNames = ['servers', 'minions', 'ironmen', 'sacrificed', 'bankbg', 'monsters', 'clues', 'icons'] as const;
 type Stat = typeof statsNames[number];
 async function statsCommand(user: User, type: Stat): CommandResponse {
-	const cooldown = Cooldowns.get(user.id, 'stats_command', Time.Second * 60);
+	const cooldown = Cooldowns.get(user.id, 'stats_command', Time.Second * 5);
 	if (cooldown !== null) {
 		return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}`;
 	}
