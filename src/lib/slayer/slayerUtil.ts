@@ -433,6 +433,8 @@ export async function getSlayerTaskStats(userID: string) {
 		await prisma.$queryRaw`SELECT monster_id, SUM(quantity) AS total_quantity, COUNT(monster_id) AS qty
 FROM slayer_tasks
 WHERE user_id = ${userID}
+AND quantity_remaining = 0
+AND skipped = false
 GROUP BY monster_id
 ORDER BY qty DESC;`;
 	return result
