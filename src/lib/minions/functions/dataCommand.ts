@@ -15,6 +15,7 @@ import { ItemBank } from '../../types';
 import { InfernoOptions } from '../../types/minions';
 import { formatDuration } from '../../util';
 import { barChart, lineChart, pieChart } from '../../util/chart';
+import { getItem } from '../../util/getOSItem';
 import { makeBankImage } from '../../util/makeBankImage';
 import killableMonsters from '../data/killableMonsters';
 
@@ -25,6 +26,24 @@ interface DataPiece {
 
 function wrap(str: string) {
 	return `'"${str}"'`;
+}
+
+export async function personalConstructionStats(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'objectID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Construction'
+AND user_id = '${user.id}'::bigint
+AND data->>'objectID' IS NOT NULL
+GROUP BY data->>'objectID';`);
+	result.sort((a, b) => b.qty - a.qty);
+	const items = new Bank();
+	for (const res of result) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		items.add(item.id, res.qty);
+	}
+	return items;
 }
 
 async function makeResponseForBank(bank: Bank, title: string, content?: string) {
@@ -317,6 +336,19 @@ ${res
 	.sort((a, b) => b.total_killed - a.total_killed)
 	.slice(0, 15)
 	.map(i => `**${i.monsterName}**: ${i.total_killed.toLocaleString()} Killed in ${i.total_tasks} tasks`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Construction',
+		run: async (user: User) => {
+			const result = await personalConstructionStats(user);
+			if (result.length === 0) return "You haven't built anything yet.";
+			return `You've built...
+${result
+	.items()
+	.slice(0, 15)
+	.map(i => `${i[0].name ?? 'Unknown'}: ${i[1].toLocaleString()}`)
 	.join('\n')}`;
 		}
 	}
