@@ -154,10 +154,7 @@ export async function pohBuildCommand(interaction: SlashCommandInteraction, user
 	};
 }
 
-export async function mountItemCommand(user: KlasaUser, name: string) {
-	if (1 < 2) {
-		return 'Item mounting is currently disabled.';
-	}
+export async function pohMountItemCommand(user: KlasaUser, name: string) {
 	const poh = await getPOH(user.id);
 	if (!name) {
 		return makePOHImage(user);
@@ -172,20 +169,20 @@ export async function mountItemCommand(user: KlasaUser, name: string) {
 		return "You can't mount this item.";
 	}
 
-	const userBank = user.bank();
-	if (!userBank.has(item.id)) {
-		return `You don't have 1x ${item.name}.`;
-	}
-	if (userBank.amount('Magic stone') < 2) {
-		return "You don't have 2x Magic stone.";
-	}
 	const currItem = poh.mounted_item === 1112 ? null : poh.mounted_item;
 
-	userBank.remove(item.id);
-	if (currItem) {
-		userBank.add(item.id);
+	const userBank = user.bank();
+	const costBank = new Bank().add(item.id);
+	if (poh.mounted_item !== 1112) costBank.add('Magic stone', 2);
+	if (!userBank.has(costBank)) {
+		const missingBank = costBank.remove(userBank);
+		return `You don't have all the required materials: ${costBank}\n\nYou're missing ${missingBank}`;
 	}
-	await user.settings.update(UserSettings.Bank, userBank.bank);
+
+	await user.removeItemsFromBank(costBank);
+	if (currItem) {
+		await user.addItemsToBank({ items: { [currItem]: 1 } });
+	}
 
 	await prisma.playerOwnedHouse.update({
 		where: {

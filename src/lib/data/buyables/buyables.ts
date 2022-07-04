@@ -17,6 +17,7 @@ import { gnomeClothes } from './gnomeClothes';
 import { miningBuyables } from './mining';
 import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
+import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
 import { troubleBrewingBuyables } from './troubleBrewingShop';
@@ -813,7 +814,8 @@ const Buyables: Buyable[] = [
 	...skillCapeBuyables,
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
-	...ironmenBuyables
+	...ironmenBuyables,
+	...shootingStarsBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

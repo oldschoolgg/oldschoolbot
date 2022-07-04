@@ -18,7 +18,6 @@ export const mineCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Mix potions to train Herblore.',
 		examples: ['/mix name:Prayer potion']
 	},
 	options: [

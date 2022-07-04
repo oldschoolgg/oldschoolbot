@@ -88,6 +88,7 @@ export namespace ClientSettings {
 		export const GPSourceOpen = T<number>('gp_open');
 		export const GPSourceDaily = T<number>('gp_daily');
 		export const GPSourceLuckyPick = T<number>('gp_luckypick');
+		export const GPSourceSlots = T<number>('gp_slots');
 	}
 
 	export const CustomPrices = T<Readonly<ItemBank>>('custom_prices');

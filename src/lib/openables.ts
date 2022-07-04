@@ -76,7 +76,7 @@ for (const clueTier of ClueTiers) {
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
-			const nthCasket = (user.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
+			const nthCasket = (user.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 0) + quantity;
 
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
@@ -103,8 +103,6 @@ for (const clueTier of ClueTiers) {
 			if (loot.length === 0) {
 				return { bank: loot };
 			}
-
-			await user.incrementClueScore(clueTier.id, quantity);
 
 			if (mimicNumber > 0) {
 				await user.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);

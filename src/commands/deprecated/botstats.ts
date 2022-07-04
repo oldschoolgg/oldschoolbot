@@ -1,19 +1,16 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { COMMAND_BECAME_SLASH_COMMAND_MESSAGE } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			description: 'Displays the invite link for the bot.',
-			examples: ['+invite'],
-			categoryFlags: ['utility']
+			aliases: ['bstats']
 		});
 	}
 
 	async run(msg: KlasaMessage) {
-		return msg.channel.send(
-			'You can invite the bot to your server using this link: <https://www.oldschool.gg/invite/osb>'
-		);
+		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'tools patron stats'));
 	}
 }

@@ -6,6 +6,7 @@ import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	getLowestCountOutfitPiece(bank: Bank): number {
@@ -49,23 +50,19 @@ export default class extends Task {
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			itemsAdded,
-			`Loot From ${quantity}x Rogues' Den maze`,
-			false,
-			{
-				showNewCL: 1
-			},
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Rogues' Den maze`,
 			user,
 			previousCL
-		);
+		});
 
 		handleTripFinish(
 			user,
 			channelID,
 			str,
 			['minigames', { rogues_den: {} }, true],
-			gotLoot ? image! : undefined,
+			gotLoot ? image.file.buffer : undefined,
 			data,
 			itemsAdded
 		);
