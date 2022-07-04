@@ -1,7 +1,9 @@
+import { MessageAttachment, TextChannel } from 'discord.js';
 import { roll, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { Bank } from 'oldschooljs';
 
 import { COINS_ID, Emoji, SupportServer } from '../../../lib/constants';
 import pets from '../../../lib/data/pets';
@@ -30,7 +32,7 @@ export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isRead
 	return { isReady: true };
 }
 
-async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse {
+async function reward(user: KlasaUser, channel: TextChannel, triviaCorrect: boolean): CommandResponse {
 	const guild = globalClient.guilds.cache.get(SupportServer);
 	const member = await guild?.members.fetch(user).catch(() => null);
 
@@ -110,7 +112,8 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 		previousCL,
 		showNewCL: true
 	});
-	return { content: dmStr, attachments: [image.file] };
+	await channel.send({ content: dmStr, files: [new MessageAttachment(image.file.buffer)] });
+	return { content: `${dmStr}\nYou received ${new Bank(loot)}` };
 }
 
 export async function dailyCommand(
@@ -142,9 +145,9 @@ export async function dailyCommand(
 				answers.some(_ans => stringMatches(_ans, answer.content))
 		});
 		const winner = collected.first();
-		if (winner) return reward(user, true);
+		if (winner) return reward(user, channel, true);
 	} catch (err) {
-		return reward(user, false);
+		return reward(user, channel, false);
 	}
 	return 'Something went wrong!';
 }
