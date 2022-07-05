@@ -348,7 +348,10 @@ export const enum BitField {
 	HasScrollOfTheHunt = 204,
 	HasBananaEnchantmentScroll = 205,
 	HasDaemonheimAgilityPass = 206,
-	DisabledGorajanBoneCrusher = 207
+	DisabledGorajanBoneCrusher = 207,
+	DisabledClueUpgrader = 208,
+	DisabledDwarvenToolkit = 209,
+	DisabledMasterHammerAndChisel = 210
 }
 
 interface BitFieldData {
@@ -405,6 +408,21 @@ export const BitFieldData: Record<BitField, BitFieldData> = {
 	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
 	[BitField.DisabledGorajanBoneCrusher]: {
 		name: 'Disabled Gorajan Bonecrusher',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledClueUpgrader]: {
+		name: 'Disabled Clue Upgrader',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledDwarvenToolkit]: {
+		name: 'Disabled Dwarven Toolkit',
+		protected: false,
+		userConfigurable: true
+	},
+	[BitField.DisabledMasterHammerAndChisel]: {
+		name: 'Disabled Master Hammer And Chisel',
 		protected: false,
 		userConfigurable: true
 	}

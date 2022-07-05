@@ -41,6 +41,18 @@ const toggles = [
 	{
 		name: 'Disable Gorajan Bonecrusher',
 		bit: BitField.DisabledGorajanBoneCrusher
+	},
+	{
+		name: 'Disable Clue Upgrader',
+		bit: BitField.DisabledClueUpgrader
+	},
+	{
+		name: 'Disable Dwarven Toolkit',
+		bit: BitField.DisabledDwarvenToolkit
+	},
+	{
+		name: 'Disable Master Hammer and Chisel',
+		bit: BitField.DisabledMasterHammerAndChisel
 	}
 ];
 

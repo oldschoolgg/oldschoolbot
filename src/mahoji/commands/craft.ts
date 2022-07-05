@@ -1,6 +1,7 @@
 import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { BitField } from '../../lib/constants';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -88,19 +89,21 @@ export const craftCommand: OSBMahojiCommand = {
 				timeToCraftSingleItem /= 2;
 				boosts.push('2x faster for Dwarven greathammer');
 			}
-			const res = await inventionItemBoost({
-				userID: BigInt(user.id),
-				inventionID: InventionID.MasterHammerAndChisel,
-				duration: quantity ? quantity * timeToCraftSingleItem : maxTripLength
-			});
-			if (res.success) {
-				timeToCraftSingleItem = reduceNumByPercent(
-					timeToCraftSingleItem,
-					inventionBoosts.masterHammerAndChisel.speedBoostPercent
-				);
-				boosts.push(
-					`${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster for Master hammer and chisel (${res.messages})`
-				);
+			if (!user.bitfield.includes(BitField.DisabledMasterHammerAndChisel)) {
+				const res = await inventionItemBoost({
+					userID: BigInt(user.id),
+					inventionID: InventionID.MasterHammerAndChisel,
+					duration: quantity ? quantity * timeToCraftSingleItem : maxTripLength
+				});
+				if (res.success) {
+					timeToCraftSingleItem = reduceNumByPercent(
+						timeToCraftSingleItem,
+						inventionBoosts.masterHammerAndChisel.speedBoostPercent
+					);
+					boosts.push(
+						`${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster for Master hammer and chisel (${res.messages})`
+					);
+				}
 			}
 		}
 

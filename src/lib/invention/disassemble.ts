@@ -13,7 +13,7 @@ import {
 	mahojiClientSettingsFetch,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
-import { Emoji } from '../constants';
+import { BitField, Emoji } from '../constants';
 import Skillcapes from '../skilling/skillcapes';
 import { SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
@@ -201,7 +201,7 @@ export async function handleDisassembly({
 	let timePer = Time.Second * 0.33;
 
 	let messages: string[] = [];
-	if (bank.has('Dwarven toolkit')) {
+	if (bank.has('Dwarven toolkit') && !user.bitfield.includes(BitField.DisabledDwarvenToolkit)) {
 		const boostRes = await inventionItemBoost({
 			userID: user.id,
 			inventionID: InventionID.DwarvenToolkit,

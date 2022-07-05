@@ -115,6 +115,7 @@ export async function clueUpgraderEffect(
 	type: 'pvm' | 'pickpocketing'
 ) {
 	if (!user.owns('Clue upgrader')) return false;
+	if (user.bitfield.includes(BitField.DisabledClueUpgrader)) return false;
 	const upgradedClues = new Bank();
 	const removeBank = new Bank();
 	let durationForCost = 0;
