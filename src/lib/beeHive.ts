@@ -15,7 +15,7 @@ export const beeHiveTripEffect: TripFinishEffect = {
 		if (minutes < 1) return;
 
 		const loot = new Bank();
-		const petDroprate = clAdjustedDroprate(user, 'Buzz', chancePerMinute, 1.5);
+		const petDroprate = clAdjustedDroprate(user, 'Buzz', chancePerMinute, 5);
 		for (let i = 0; i < minutes; i++) {
 			if (roll(petDroprate)) loot.add('Buzz');
 			if (roll(183)) {
