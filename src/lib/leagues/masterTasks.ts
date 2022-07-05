@@ -224,7 +224,7 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4022,
-		name: 'Smith 100 Runite bars from scratch',
+		name: 'Smelt 500 Runite bars from scratch',
 		has: async ({ cl }) => {
 			return cl.amount('Runite ore') >= 100 && cl.amount('Runite bar') >= 100;
 		}
@@ -601,184 +601,184 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4075,
-		name: 'Receive 5b Agility',
+		name: 'Receive 1b Agility',
 		has: async ({ skillsXP }) => {
-			return skillsXP.agility >= 5_000_000_000;
+			return skillsXP.agility >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4076,
-		name: 'Receive 5b Cooking',
+		name: 'Receive 1b Cooking',
 		has: async ({ skillsXP }) => {
-			return skillsXP.cooking >= 5_000_000_000;
+			return skillsXP.cooking >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4077,
-		name: 'Receive 5b Fishing',
+		name: 'Receive 1b Fishing',
 		has: async ({ skillsXP }) => {
-			return skillsXP.fishing >= 5_000_000_000;
+			return skillsXP.fishing >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4078,
-		name: 'Receive 5b Mining',
+		name: 'Receive 1b Mining',
 		has: async ({ skillsXP }) => {
-			return skillsXP.mining >= 5_000_000_000;
+			return skillsXP.mining >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4079,
-		name: 'Receive 5b Smithing',
+		name: 'Receive 1b Smithing',
 		has: async ({ skillsXP }) => {
-			return skillsXP.smithing >= 5_000_000_000;
+			return skillsXP.smithing >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4080,
-		name: 'Receive 5b Woodcutting',
+		name: 'Receive 1b Woodcutting',
 		has: async ({ skillsXP }) => {
-			return skillsXP.woodcutting >= 5_000_000_000;
+			return skillsXP.woodcutting >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4081,
-		name: 'Receive 5b Firemaking',
+		name: 'Receive 1b Firemaking',
 		has: async ({ skillsXP }) => {
-			return skillsXP.firemaking >= 5_000_000_000;
+			return skillsXP.firemaking >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4082,
-		name: 'Receive 5b Runecraft',
+		name: 'Receive 1b Runecraft',
 		has: async ({ skillsXP }) => {
-			return skillsXP.runecraft >= 5_000_000_000;
+			return skillsXP.runecraft >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4083,
-		name: 'Receive 5b Crafting',
+		name: 'Receive 1b Crafting',
 		has: async ({ skillsXP }) => {
-			return skillsXP.crafting >= 5_000_000_000;
+			return skillsXP.crafting >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4084,
-		name: 'Receive 5b Prayer',
+		name: 'Receive 1b Prayer',
 		has: async ({ skillsXP }) => {
-			return skillsXP.prayer >= 5_000_000_000;
+			return skillsXP.prayer >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4085,
-		name: 'Receive 5b Fleching',
+		name: 'Receive 1b Fleching',
 		has: async ({ skillsXP }) => {
-			return skillsXP.fletching >= 5_000_000_000;
+			return skillsXP.fletching >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4086,
-		name: 'Receive 5b Farming',
+		name: 'Receive 1b Farming',
 		has: async ({ skillsXP }) => {
-			return skillsXP.farming >= 5_000_000_000;
+			return skillsXP.farming >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4087,
-		name: 'Receive 5b Herblore',
+		name: 'Receive 1b Herblore',
 		has: async ({ skillsXP }) => {
-			return skillsXP.herblore >= 5_000_000_000;
+			return skillsXP.herblore >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4088,
-		name: 'Receive 5b Herblore',
+		name: 'Receive 1b Herblore',
 		has: async ({ skillsXP }) => {
-			return skillsXP.herblore >= 5_000_000_000;
+			return skillsXP.herblore >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4089,
-		name: 'Receive 5b Thieving',
+		name: 'Receive 1b Thieving',
 		has: async ({ skillsXP }) => {
-			return skillsXP.thieving >= 5_000_000_000;
+			return skillsXP.thieving >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4090,
-		name: 'Receive 5b Hunter',
+		name: 'Receive 1b Hunter',
 		has: async ({ skillsXP }) => {
-			return skillsXP.hunter >= 5_000_000_000;
+			return skillsXP.hunter >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4091,
-		name: 'Receive 5b Construction',
+		name: 'Receive 1b Construction',
 		has: async ({ skillsXP }) => {
-			return skillsXP.construction >= 5_000_000_000;
+			return skillsXP.construction >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4092,
-		name: 'Receive 5b Magic',
+		name: 'Receive 1b Magic',
 		has: async ({ skillsXP }) => {
-			return skillsXP.magic >= 5_000_000_000;
+			return skillsXP.magic >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4093,
-		name: 'Receive 5b Attack',
+		name: 'Receive 1b Attack',
 		has: async ({ skillsXP }) => {
-			return skillsXP.attack >= 5_000_000_000;
+			return skillsXP.attack >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4094,
-		name: 'Receive 5b Strength',
+		name: 'Receive 1b Strength',
 		has: async ({ skillsXP }) => {
-			return skillsXP.strength >= 5_000_000_000;
+			return skillsXP.strength >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4095,
-		name: 'Receive 5b Defence',
+		name: 'Receive 1b Defence',
 		has: async ({ skillsXP }) => {
-			return skillsXP.defence >= 5_000_000_000;
+			return skillsXP.defence >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4096,
-		name: 'Receive 5b Ranged',
+		name: 'Receive 1b Ranged',
 		has: async ({ skillsXP }) => {
-			return skillsXP.ranged >= 5_000_000_000;
+			return skillsXP.ranged >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4097,
-		name: 'Receive 5b Hitpoints',
+		name: 'Receive 1b Hitpoints',
 		has: async ({ skillsXP }) => {
-			return skillsXP.hitpoints >= 5_000_000_000;
+			return skillsXP.hitpoints >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4099,
-		name: 'Receive 5b Dungeoneering',
+		name: 'Receive 1b Dungeoneering',
 		has: async ({ skillsXP }) => {
-			return skillsXP.dungeoneering >= 5_000_000_000;
+			return skillsXP.dungeoneering >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4100,
-		name: 'Receive 5b Slayer',
+		name: 'Receive 1b Slayer',
 		has: async ({ skillsXP }) => {
-			return skillsXP.slayer >= 5_000_000_000;
+			return skillsXP.slayer >= 1_000_000_000;
 		}
 	},
 	{
 		id: 4101,
-		name: 'Receive 5b Invention',
+		name: 'Receive 1b Invention',
 		has: async ({ skillsXP }) => {
-			return skillsXP.invention >= 5_000_000_000;
+			return skillsXP.invention >= 1_000_000_000;
 		}
 	},
 	{
@@ -889,9 +889,9 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4117,
-		name: 'Open 150x CMB',
+		name: 'Open 500x CMB',
 		has: async ({ opens }) => {
-			return opens.amount('Clothing mystery box') >= 150;
+			return opens.amount('Clothing mystery box') >= 500;
 		}
 	},
 	{
@@ -931,6 +931,104 @@ export const masterTasks: Task[] = [
 				const level = i[`max_${species.relevantLevelCategory}_level`];
 				return level >= 90;
 			});
+		}
+	},
+	{
+		id: 4123,
+		name: 'Reach 90% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 90;
+		}
+	},
+	{
+		id: 4124,
+		name: 'Construct 100,000 objects',
+		has: async ({ conStats }) => {
+			return sumArr(conStats.items().map(i => i[1])) >= 100_000;
+		}
+	},
+	{
+		id: 4125,
+		name: 'Chop 100,000 of any logs',
+		has: async ({ woodcuttingStats }) => {
+			return sumArr(woodcuttingStats.items().map(i => i[1])) >= 100_000;
+		}
+	},
+	{
+		id: 4126,
+		name: 'Alch 10,000 of any item',
+		has: async ({ alchingStats }) => {
+			return sumArr(alchingStats.items().map(i => i[1])) >= 10_000;
+		}
+	},
+	{
+		id: 4127,
+		name: 'Clean 100,000 herbs',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.herbs.items().map(i => i[1])) >= 100_000;
+		}
+	},
+	{
+		id: 4128,
+		name: 'Mix 100,000 unf potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.unfPots.items().map(i => i[1])) >= 100_000;
+		}
+	},
+	{
+		id: 4129,
+		name: 'Mix 100,000 potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.pots.items().map(i => i[1])) >= 100_000;
+		}
+	},
+	{
+		id: 4130,
+		name: 'Mine 50,000 ores',
+		has: async ({ miningStats }) => {
+			return sumArr(miningStats.items().map(i => i[1])) >= 50_000;
+		}
+	},
+	{
+		id: 4131,
+		name: 'Burn 15,000 logs',
+		has: async ({ firemakingStats }) => {
+			return sumArr(firemakingStats.items().map(i => i[1])) >= 15_000;
+		}
+	},
+	{
+		id: 4132,
+		name: 'Smith 3000 Adamant items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('adamant'))
+						.map(i => i[1])
+				) >= 1000
+			);
+		}
+	},
+	{
+		id: 4133,
+		name: 'Smith 2000 Rune items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('rune'))
+						.map(i => i[1])
+				) >= 2000
+			);
+		}
+	},
+	{
+		id: 4134,
+		name: 'Cast 10,000 spells',
+		has: async ({ spellCastingStats }) => {
+			return sumArr(spellCastingStats.map(i => i.qty)) >= 10_000;
 		}
 	}
 ];

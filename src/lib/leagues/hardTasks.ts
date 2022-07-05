@@ -133,7 +133,7 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2013,
-		name: 'Smith 100 Mithril bars from scratch',
+		name: 'Smelt 100 Mithril bars from scratch',
 		has: async ({ cl }) => {
 			return cl.amount('Mithril ore') >= 100 && cl.amount('Mithril bar') >= 100;
 		}
@@ -854,6 +854,146 @@ export const hardTasks: Task[] = [
 		name: 'Do 50 High gambles in Barb assault',
 		has: async ({ mahojiUser }) => {
 			return mahojiUser.high_gambles >= 50;
+		}
+	},
+	{
+		id: 2114,
+		name: 'Reach 30% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 30;
+		}
+	},
+	{
+		id: 2115,
+		name: 'Construct 25,000 objects',
+		has: async ({ conStats }) => {
+			return sumArr(conStats.items().map(i => i[1])) >= 25_000;
+		}
+	},
+	{
+		id: 2116,
+		name: 'Chop 10,000 of any logs',
+		has: async ({ woodcuttingStats }) => {
+			return sumArr(woodcuttingStats.items().map(i => i[1])) >= 10_000;
+		}
+	},
+	{
+		id: 2117,
+		name: 'Alch 2500 of any item',
+		has: async ({ alchingStats }) => {
+			return sumArr(alchingStats.items().map(i => i[1])) >= 2500;
+		}
+	},
+	{
+		id: 2118,
+		name: 'Clean 5000 herbs',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.herbs.items().map(i => i[1])) >= 5000;
+		}
+	},
+	{
+		id: 2119,
+		name: 'Mix 5000 unf potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.unfPots.items().map(i => i[1])) >= 5000;
+		}
+	},
+	{
+		id: 2120,
+		name: 'Mix 5000 potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.pots.items().map(i => i[1])) >= 5000;
+		}
+	},
+	{
+		id: 2121,
+		name: 'Mine 10,000 ores',
+		has: async ({ miningStats }) => {
+			return sumArr(miningStats.items().map(i => i[1])) >= 10_000;
+		}
+	},
+	{
+		id: 2122,
+		name: 'Burn 3500 logs',
+		has: async ({ firemakingStats }) => {
+			return sumArr(firemakingStats.items().map(i => i[1])) >= 3500;
+		}
+	},
+	{
+		id: 2123,
+		name: 'Smith 2500 Iron items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('iron'))
+						.map(i => i[1])
+				) >= 2500
+			);
+		}
+	},
+	{
+		id: 2124,
+		name: 'Smith 2500 Steel items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('steel'))
+						.map(i => i[1])
+				) >= 2500
+			);
+		}
+	},
+	{
+		id: 2125,
+		name: 'Smith 250 Adamant items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('adamant'))
+						.map(i => i[1])
+				) >= 250
+			);
+		}
+	},
+	{
+		id: 2126,
+		name: 'Smith 100 Rune items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('rune'))
+						.map(i => i[1])
+				) >= 100
+			);
+		}
+	},
+	{
+		id: 2127,
+		name: 'Smith 500 Mithril items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('mithril'))
+						.map(i => i[1])
+				) >= 500
+			);
+		}
+	},
+	{
+		id: 2128,
+		name: 'Cast 2500 spells',
+		has: async ({ spellCastingStats }) => {
+			return sumArr(spellCastingStats.map(i => i.qty)) >= 2500;
 		}
 	}
 ];

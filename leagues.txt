@@ -1,7 +1,7 @@
-There are a total of 453 tasks.
+There are a total of 518 tasks.
 
---------- Easy (62 tasks) -----------
-Smith 100 Bronze bars from scratch
+--------- Easy (73 tasks) -----------
+Smelt 100 Bronze bars from scratch
 Do 50 laps at the Gnome Stronghold Agility Course
 Obtain 10 Marks of grace
 Cut 5 Sapphires
@@ -63,9 +63,20 @@ Complete 5 Bloodveld slayer tasks
 Complete 5 Dagannoth slayer tasks
 Do the Tears of Guthix
 Do a High gamble in Barb assault
+Reach 5% CL completion
+Construct 500 objects
+Chop 250 of any logs
+Alch 250 of any item
+Clean 250 herbs
+Mix 250 unf potions
+Mix 250 potions
+Mine 250 ores
+Burn 250 logs
+Smith 100 Bronze items
+Cast 100 spells
 
 
---------- Medium (99 tasks) -----------
+--------- Medium (114 tasks) -----------
 Complete the Medium Wilderness diary
 Complete the Medium Western Prov diary
 Complete the Medium Ardougne diary
@@ -79,7 +90,7 @@ Complete the Medium Lumbridge/Draynor diary
 Complete the Medium Morytania diary
 Complete the Medium Varrock diary
 Defeat a greater demon
-Smith 100 Iron bars from scratch
+Smelt 500 Iron bars from scratch
 Build a pool in your PoH
 Build a throne in your PoH
 Build a jewellery box in your PoH
@@ -165,9 +176,24 @@ Complete 5 Abyssal Demon slayer tasks
 Complete 5 Hellhound slayer tasks
 Complete 5 Nechryael slayer tasks
 Do 10 High gambles in Barb assault
+Reach 15% CL completion
+Construct 10,000 objects
+Chop 5000 of any logs
+Alch 1000 of any item
+Clean 500 herbs
+Mix 500 unf potions
+Mix 500 potions
+Mine 1000 ores
+Burn 500 logs
+Smith 500 Iron items
+Smith 1000 Bronze items
+Cast 250 spells
+Collect 500 Blue dragon scales
+Collect 500 Mort myre fungus
+Collect 500 Red spider's eggs
 
 
---------- Hard (113 tasks) -----------
+--------- Hard (128 tasks) -----------
 Complete the Hard Wilderness diary
 Complete the Hard Western Prov diary
 Complete the Hard Ardougne diary
@@ -181,7 +207,7 @@ Complete the Hard Lumbridge/Draynor diary
 Complete the Hard Morytania diary
 Complete the Hard Varrock diary
 Defeat a black demon
-Smith 100 Mithril bars from scratch
+Smelt 100 Mithril bars from scratch
 Defeat a lava dragon
 Complete 100 slayer tasks
 Do 50 laps at the Ape Atoll Course
@@ -281,9 +307,24 @@ Sacrifice 2b GP
 Sacrifice any third age item
 Sacrifice 100 different items
 Do 50 High gambles in Barb assault
+Reach 30% CL completion
+Construct 25,000 objects
+Chop 10,000 of any logs
+Alch 2500 of any item
+Clean 5000 herbs
+Mix 5000 unf potions
+Mix 5000 potions
+Mine 10,000 ores
+Burn 3500 logs
+Smith 2500 Iron items
+Smith 2500 Steel items
+Smith 250 Adamant items
+Smith 100 Rune items
+Smith 500 Mithril items
+Cast 2500 spells
 
 
---------- Elite (57 tasks) -----------
+--------- Elite (69 tasks) -----------
 Complete the Elite Wilderness diary
 Complete the Elite Western Prov diary
 Complete the Elite Ardougne diary
@@ -296,7 +337,7 @@ Complete the Elite Kourend Kebos diary
 Complete the Elite Lumbridge/Draynor diary
 Complete the Elite Morytania diary
 Complete the Elite Varrock diary
-Smith 100 Adamantite bars from scratch
+Smelt 300 Adamantite bars from scratch
 Complete 250 slayer tasks
 Obtain 1000 Marks of grace
 Reach combat level 110
@@ -341,9 +382,21 @@ Kill the Corporeal Beast 1000 times
 Defeat the Emerged Inferno
 Sacrifice 5b GP
 Sacrifice 250 different items
+Reach 60% CL completion
+Construct 10,000 objects
+Chop 50,000 of any logs
+Alch 5000 of any item
+Clean 15,000 herbs
+Mix 15,000 unf potions
+Mix 15,000 potions
+Mine 25,000 ores
+Burn 8000 logs
+Smith 1000 Adamant items
+Smith 500 Rune items
+Cast 5000 spells
 
 
---------- Master (122 tasks) -----------
+--------- Master (134 tasks) -----------
 Build a Demonic Throne
 Defeat Nex 500 Times
 Receive atleast 1000 Agility Arena tickets
@@ -366,7 +419,7 @@ Finish the god wars CL
 Complete 500 Elite clue scrolls
 Complete 200 Grandmaster clue scrolls
 Complete the Inferno 30 Times
-Smith 100 Runite bars from scratch
+Smelt 500 Runite bars from scratch
 Build a Ancient rejuvenation pool in your PoH
 Complete 500 slayer tasks
 Do 2000 laps at the Ardougne Rooftop Course
@@ -419,32 +472,32 @@ Receive 500m Hitpoints
 Receive 500m Dungeoneering
 Receive 500m Slayer
 Receive 500m Invention
-Receive 5b Agility
-Receive 5b Cooking
-Receive 5b Fishing
-Receive 5b Mining
-Receive 5b Smithing
-Receive 5b Woodcutting
-Receive 5b Firemaking
-Receive 5b Runecraft
-Receive 5b Crafting
-Receive 5b Prayer
-Receive 5b Fleching
-Receive 5b Farming
-Receive 5b Herblore
-Receive 5b Herblore
-Receive 5b Thieving
-Receive 5b Hunter
-Receive 5b Construction
-Receive 5b Magic
-Receive 5b Attack
-Receive 5b Strength
-Receive 5b Defence
-Receive 5b Ranged
-Receive 5b Hitpoints
-Receive 5b Dungeoneering
-Receive 5b Slayer
-Receive 5b Invention
+Receive 1b Agility
+Receive 1b Cooking
+Receive 1b Fishing
+Receive 1b Mining
+Receive 1b Smithing
+Receive 1b Woodcutting
+Receive 1b Firemaking
+Receive 1b Runecraft
+Receive 1b Crafting
+Receive 1b Prayer
+Receive 1b Fleching
+Receive 1b Farming
+Receive 1b Herblore
+Receive 1b Herblore
+Receive 1b Thieving
+Receive 1b Hunter
+Receive 1b Construction
+Receive 1b Magic
+Receive 1b Attack
+Receive 1b Strength
+Receive 1b Defence
+Receive 1b Ranged
+Receive 1b Hitpoints
+Receive 1b Dungeoneering
+Receive 1b Slayer
+Receive 1b Invention
 Complete 500 Farming contracts
 Unlock every slayer unlock
 Complete 100 Item Contracts
@@ -460,11 +513,23 @@ Buy a Gatherer's cape
 Open 5000x TMB
 Open 5000x UMB
 Open 500x EMB
-Open 150x CMB
+Open 500x CMB
 Open 500x HMB
 Open 500x PMB
 Sacrifice 10b GP
 Sacrifice 1000 different items
 Hatch a tame which is atleast level 90
+Reach 90% CL completion
+Construct 100,000 objects
+Chop 100,000 of any logs
+Alch 10,000 of any item
+Clean 100,000 herbs
+Mix 100,000 unf potions
+Mix 100,000 potions
+Mine 50,000 ores
+Burn 15,000 logs
+Smith 3000 Adamant items
+Smith 2000 Rune items
+Cast 10,000 spells
 
 

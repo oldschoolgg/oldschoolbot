@@ -28,7 +28,7 @@ import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } fr
 export const easyTasks: Task[] = [
 	{
 		id: 1,
-		name: 'Smith 100 Bronze bars from scratch',
+		name: 'Smelt 100 Bronze bars from scratch',
 		has: async ({ cl }) => {
 			return cl.amount('Copper ore') >= 100 && cl.amount('Tin ore') >= 100 && cl.amount('Bronze bar') >= 100;
 		}
@@ -475,6 +475,90 @@ export const easyTasks: Task[] = [
 		name: 'Do a High gamble in Barb assault',
 		has: async ({ mahojiUser }) => {
 			return mahojiUser.high_gambles >= 1;
+		}
+	},
+	{
+		id: 63,
+		name: 'Reach 5% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 5;
+		}
+	},
+	{
+		id: 64,
+		name: 'Construct 500 objects',
+		has: async ({ conStats }) => {
+			return sumArr(conStats.items().map(i => i[1])) >= 500;
+		}
+	},
+	{
+		id: 65,
+		name: 'Chop 250 of any logs',
+		has: async ({ woodcuttingStats }) => {
+			return sumArr(woodcuttingStats.items().map(i => i[1])) >= 250;
+		}
+	},
+	{
+		id: 66,
+		name: 'Alch 250 of any item',
+		has: async ({ alchingStats }) => {
+			return sumArr(alchingStats.items().map(i => i[1])) >= 250;
+		}
+	},
+	{
+		id: 67,
+		name: 'Clean 250 herbs',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.herbs.items().map(i => i[1])) >= 250;
+		}
+	},
+	{
+		id: 68,
+		name: 'Mix 250 unf potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.unfPots.items().map(i => i[1])) >= 250;
+		}
+	},
+	{
+		id: 69,
+		name: 'Mix 250 potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.pots.items().map(i => i[1])) >= 250;
+		}
+	},
+	{
+		id: 70,
+		name: 'Mine 250 ores',
+		has: async ({ miningStats }) => {
+			return sumArr(miningStats.items().map(i => i[1])) >= 250;
+		}
+	},
+	{
+		id: 71,
+		name: 'Burn 250 logs',
+		has: async ({ firemakingStats }) => {
+			return sumArr(firemakingStats.items().map(i => i[1])) >= 250;
+		}
+	},
+	{
+		id: 72,
+		name: 'Smith 100 Bronze items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('bronze'))
+						.map(i => i[1])
+				) >= 100
+			);
+		}
+	},
+	{
+		id: 73,
+		name: 'Cast 100 spells',
+		has: async ({ spellCastingStats }) => {
+			return sumArr(spellCastingStats.map(i => i.qty)) >= 100;
 		}
 	}
 ];

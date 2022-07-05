@@ -128,7 +128,7 @@ export const mediumTasks: Task[] = [
 	},
 	{
 		id: 1014,
-		name: 'Smith 100 Iron bars from scratch',
+		name: 'Smelt 500 Iron bars from scratch',
 		has: async ({ cl }) => {
 			return cl.amount('Iron ore') >= 100 && cl.amount('Iron bar') >= 100;
 		}
@@ -747,6 +747,125 @@ export const mediumTasks: Task[] = [
 		name: 'Do 10 High gambles in Barb assault',
 		has: async ({ mahojiUser }) => {
 			return mahojiUser.high_gambles >= 10;
+		}
+	},
+	{
+		id: 1100,
+		name: 'Reach 15% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 15;
+		}
+	},
+	{
+		id: 1101,
+		name: 'Construct 10,000 objects',
+		has: async ({ conStats }) => {
+			return sumArr(conStats.items().map(i => i[1])) >= 10_000;
+		}
+	},
+	{
+		id: 1102,
+		name: 'Chop 5000 of any logs',
+		has: async ({ woodcuttingStats }) => {
+			return sumArr(woodcuttingStats.items().map(i => i[1])) >= 5000;
+		}
+	},
+	{
+		id: 1103,
+		name: 'Alch 1000 of any item',
+		has: async ({ alchingStats }) => {
+			return sumArr(alchingStats.items().map(i => i[1])) >= 1000;
+		}
+	},
+	{
+		id: 1104,
+		name: 'Clean 500 herbs',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.herbs.items().map(i => i[1])) >= 500;
+		}
+	},
+	{
+		id: 1105,
+		name: 'Mix 500 unf potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.unfPots.items().map(i => i[1])) >= 500;
+		}
+	},
+	{
+		id: 1106,
+		name: 'Mix 500 potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.pots.items().map(i => i[1])) >= 500;
+		}
+	},
+	{
+		id: 1107,
+		name: 'Mine 1000 ores',
+		has: async ({ miningStats }) => {
+			return sumArr(miningStats.items().map(i => i[1])) >= 1000;
+		}
+	},
+	{
+		id: 1108,
+		name: 'Burn 500 logs',
+		has: async ({ firemakingStats }) => {
+			return sumArr(firemakingStats.items().map(i => i[1])) >= 500;
+		}
+	},
+	{
+		id: 1109,
+		name: 'Smith 500 Iron items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('iron'))
+						.map(i => i[1])
+				) >= 500
+			);
+		}
+	},
+	{
+		id: 1110,
+		name: 'Smith 1000 Bronze items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('bronze'))
+						.map(i => i[1])
+				) >= 1000
+			);
+		}
+	},
+	{
+		id: 1111,
+		name: 'Cast 250 spells',
+		has: async ({ spellCastingStats }) => {
+			return sumArr(spellCastingStats.map(i => i.qty)) >= 250;
+		}
+	},
+	{
+		id: 1112,
+		name: 'Collect 500 Blue dragon scales',
+		has: async ({ collectingStats }) => {
+			return collectingStats.amount('Blue dragon scale') >= 500;
+		}
+	},
+	{
+		id: 1113,
+		name: 'Collect 500 Mort myre fungus',
+		has: async ({ collectingStats }) => {
+			return collectingStats.amount('Mort myre fungus') >= 500;
+		}
+	},
+	{
+		id: 1114,
+		name: "Collect 500 Red spider's eggs",
+		has: async ({ collectingStats }) => {
+			return collectingStats.amount("Red spiders' eggs") >= 500;
 		}
 	}
 ];

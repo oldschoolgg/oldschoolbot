@@ -120,7 +120,7 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3012,
-		name: 'Smith 100 Adamantite bars from scratch',
+		name: 'Smelt 300 Adamantite bars from scratch',
 		has: async ({ cl }) => {
 			return cl.amount('Adamantite ore') >= 100 && cl.amount('Adamantite bar') >= 100;
 		}
@@ -446,6 +446,104 @@ export const eliteTasks: Task[] = [
 		name: 'Sacrifice 250 different items',
 		has: async ({ sacrificedBank }) => {
 			return sacrificedBank.length >= 250;
+		}
+	},
+	{
+		id: 3058,
+		name: 'Reach 60% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 60;
+		}
+	},
+	{
+		id: 3059,
+		name: 'Construct 10,000 objects',
+		has: async ({ conStats }) => {
+			return sumArr(conStats.items().map(i => i[1])) >= 10_000;
+		}
+	},
+	{
+		id: 3060,
+		name: 'Chop 50,000 of any logs',
+		has: async ({ woodcuttingStats }) => {
+			return sumArr(woodcuttingStats.items().map(i => i[1])) >= 50_000;
+		}
+	},
+	{
+		id: 3061,
+		name: 'Alch 5000 of any item',
+		has: async ({ alchingStats }) => {
+			return sumArr(alchingStats.items().map(i => i[1])) >= 5000;
+		}
+	},
+	{
+		id: 3062,
+		name: 'Clean 15,000 herbs',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.herbs.items().map(i => i[1])) >= 15_000;
+		}
+	},
+	{
+		id: 3063,
+		name: 'Mix 15,000 unf potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.unfPots.items().map(i => i[1])) >= 15_000;
+		}
+	},
+	{
+		id: 3064,
+		name: 'Mix 15,000 potions',
+		has: async ({ herbloreStats }) => {
+			return sumArr(herbloreStats.pots.items().map(i => i[1])) >= 15_000;
+		}
+	},
+	{
+		id: 3065,
+		name: 'Mine 25,000 ores',
+		has: async ({ miningStats }) => {
+			return sumArr(miningStats.items().map(i => i[1])) >= 25_000;
+		}
+	},
+	{
+		id: 3066,
+		name: 'Burn 8000 logs',
+		has: async ({ firemakingStats }) => {
+			return sumArr(firemakingStats.items().map(i => i[1])) >= 8000;
+		}
+	},
+	{
+		id: 3067,
+		name: 'Smith 1000 Adamant items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('adamant'))
+						.map(i => i[1])
+				) >= 1000
+			);
+		}
+	},
+	{
+		id: 3068,
+		name: 'Smith 500 Rune items',
+		has: async ({ smithingStats }) => {
+			return (
+				sumArr(
+					smithingStats
+						.items()
+						.filter(i => i[0].name.toLowerCase().includes('rune'))
+						.map(i => i[1])
+				) >= 500
+			);
+		}
+	},
+	{
+		id: 3069,
+		name: 'Cast 5000 spells',
+		has: async ({ spellCastingStats }) => {
+			return sumArr(spellCastingStats.map(i => i.qty)) >= 5000;
 		}
 	}
 ];

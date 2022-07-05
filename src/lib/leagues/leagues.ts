@@ -8,10 +8,25 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
 import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { calcCLDetails } from '../data/Collections';
 import { UserFullGearSetup } from '../gear';
 import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
+import {
+	personalAlchingStats,
+	personalCollectingStats,
+	personalConstructionStats,
+	personalFiremakingStats,
+	personalHerbloreStats,
+	personalMiningStats,
+	personalSmithingStats,
+	personalSpellCastStats,
+	personalWoodcuttingStats
+} from '../minions/functions/dataCommand';
 import { getMinigameEntity } from '../settings/minigames';
 import { prisma } from '../settings/prisma';
+import Grimy from '../skilling/skills/herblore/mixables/grimy';
+import Potions from '../skilling/skills/herblore/mixables/potions';
+import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
 import creatures from '../skilling/skills/hunter/creatures';
 import { getSlayerTaskStats } from '../slayer/slayerUtil';
 import { getAllUserTames } from '../tames';
@@ -46,6 +61,16 @@ interface HasFunctionArgs {
 	tames: Tame[];
 	sacrificedBank: Bank;
 	slayerStats: Awaited<ReturnType<typeof getSlayerTaskStats>>;
+	clPercent: number;
+	conStats: Bank;
+	woodcuttingStats: Bank;
+	alchingStats: Bank;
+	herbloreStats: ReturnType<typeof betterHerbloreStats>;
+	miningStats: Bank;
+	firemakingStats: Bank;
+	smithingStats: Bank;
+	spellCastingStats: Awaited<ReturnType<typeof personalSpellCastStats>>;
+	collectingStats: Bank;
 }
 
 export interface Task {
@@ -111,9 +136,65 @@ GROUP BY type;`;
 	return rec;
 }
 
+function betterHerbloreStats(herbStats: Bank) {
+	const herbs = new Bank();
+	const unfPots = new Bank();
+	const pots = new Bank();
+
+	for (const item of herbStats.items()) {
+		for (const [array, bank] of [
+			[Grimy, herbs],
+			[unfinishedPotions, unfPots],
+			[Potions, pots]
+		] as const) {
+			if (array.some(i => i.id === item[0].id)) {
+				bank.add(item[1]);
+			}
+		}
+	}
+
+	return { herbs, unfPots, pots };
+}
+
 export async function leaguesCheckUser(userID: string) {
-	const klasaUser = await globalClient.fetchUser(userID);
-	const mahojiUser = await mahojiUsersSettingsFetch(userID);
+	const [klasaUser, mahojiUser] = await Promise.all([
+		globalClient.fetchUser(userID),
+		mahojiUsersSettingsFetch(userID)
+	]);
+	const [
+		conStats,
+		poh,
+		tames,
+		slayerStats,
+		activityCounts,
+		minigames,
+		slayerTasksCompleted,
+		alchingStats,
+		herbloreStats,
+		miningStats,
+		firemakingStats,
+		smithingStats,
+		spellCastingStats,
+		collectingStats,
+		woodcuttingStats
+	] = await Promise.all([
+		personalConstructionStats(mahojiUser),
+		getPOH(userID),
+		getAllUserTames(userID),
+		getSlayerTaskStats(userID),
+		getActivityCounts(userID),
+		getMinigameEntity(userID),
+		prisma.slayerTask.count({ where: { user_id: userID } }),
+		personalAlchingStats(mahojiUser),
+		personalHerbloreStats(mahojiUser),
+		personalMiningStats(mahojiUser),
+		personalFiremakingStats(mahojiUser),
+		personalSmithingStats(mahojiUser),
+		personalSpellCastStats(mahojiUser),
+		personalCollectingStats(mahojiUser),
+		personalWoodcuttingStats(mahojiUser)
+	]);
+	const clPercent = calcCLDetails(mahojiUser).percent;
 
 	const args: HasFunctionArgs = {
 		cl: new Bank(mahojiUser.collectionLogBank as ItemBank),
@@ -122,20 +203,30 @@ export async function leaguesCheckUser(userID: string) {
 		mahojiUser,
 		skillsLevels: getSkillsOfMahojiUser(mahojiUser, true),
 		skillsXP: getSkillsOfMahojiUser(mahojiUser, false),
-		poh: await getPOH(userID),
+		poh,
 		gear: getUserGear(mahojiUser),
 		allItemsOwned: klasaUser.allItemsOwned(),
 		monsterScores: mahojiUser.monsterScores as ItemBank,
 		creatureScores: mahojiUser.creatureScores as ItemBank,
 		opens: new Bank(mahojiUser.openable_scores as ItemBank),
 		disassembledItems: new Bank(mahojiUser.disassembled_items_bank as ItemBank),
-		tames: await getAllUserTames(userID),
+		tames,
 		sacrificedBank: new Bank(mahojiUser.sacrificedBank as ItemBank),
-		slayerStats: await getSlayerTaskStats(userID),
-		activityCounts: await getActivityCounts(userID),
-		minigames: await getMinigameEntity(userID),
+		slayerStats,
+		activityCounts,
+		minigames,
 		lapScores: mahojiUser.lapsScores as ItemBank,
-		slayerTasksCompleted: await prisma.slayerTask.count({ where: { user_id: userID } })
+		slayerTasksCompleted,
+		clPercent,
+		conStats,
+		alchingStats,
+		herbloreStats: betterHerbloreStats(herbloreStats),
+		miningStats,
+		firemakingStats,
+		smithingStats,
+		spellCastingStats,
+		collectingStats,
+		woodcuttingStats
 	};
 
 	let resStr = '';
@@ -155,11 +246,6 @@ export async function leaguesCheckUser(userID: string) {
 			}
 		}
 		totalFinished += finished.length;
-		// resStr += `-------- ${name} ---------`;
-		// resStr += `Finished ${finished.length} tasks: ${finished.map(i => i.name).join(', ')}\n`;
-		// resStr += `Not Finished ${notFinished.length} tasks: ${notFinished.map(i => i.name).join(', ')}`;
-		// resStr += '--------------------------';
-		// resStr += '\n\n';
 		resStr += `${name}: Finished ${finished.length}/${tasks.length}\n`;
 	}
 
