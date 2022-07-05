@@ -68,9 +68,10 @@ export async function sendToChannelID(
 		content?: string;
 		image?: Buffer | MessageAttachment;
 		embed?: MessageEmbed;
+		components?: MessageOptions['components'];
 	}
 ) {
-	queue.add(async () => {
+	async function queuedFn() {
 		const channel = await resolveChannel(channelID);
 		if (!channel) return;
 
@@ -82,7 +83,8 @@ export async function sendToChannelID(
 				await webhookSend(channel, {
 					content: data.content,
 					files,
-					embeds
+					embeds,
+					components: data.components
 				});
 			} catch (err: any) {
 				const error = err as Error;
@@ -100,10 +102,12 @@ export async function sendToChannelID(
 			await channel.send({
 				content: data.content,
 				files,
-				embeds
+				embeds,
+				components: data.components
 			});
 		}
-	});
+	}
+	queue.add(queuedFn);
 }
 
 async function webhookSend(channel: WebhookClient, input: MessageOptions) {
@@ -114,20 +118,26 @@ async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 		const split = Util.splitMessage(input.content, { maxLength });
 		const newPayload = { ...input };
 		// Separate files and components from payload for interactions
-		const { files, embeds } = newPayload;
+		const { files, embeds, components } = newPayload;
 		delete newPayload.files;
 		delete newPayload.embeds;
+		delete newPayload.components;
 		await webhookSend(channel, { ...newPayload, content: split[0] });
 
 		for (let i = 1; i < split.length; i++) {
 			if (i + 1 === split.length) {
 				// Add files to last msg, and components for interactions to the final message.
-				await webhookSend(channel, { files, embeds, content: split[i] });
+				await webhookSend(channel, { files, embeds, content: split[i], components });
 			} else {
 				await webhookSend(channel, { content: split[i] });
 			}
 		}
 		return;
 	}
-	await channel.send({ content: input.content, embeds: input.embeds, files: input.files });
+	return channel.send({
+		content: input.content,
+		embeds: input.embeds,
+		files: input.files,
+		components: input.components
+	});
 }

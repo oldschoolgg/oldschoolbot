@@ -28,7 +28,6 @@ export namespace UserSettings {
 	export const CollectionLogBank = T<Readonly<ItemBank>>('collectionLogBank');
 	export const MonsterScores = T<Readonly<ItemBank>>('monsterScores');
 	export const CreatureScores = T<Readonly<ItemBank>>('creatureScores');
-	export const ClueScores = T<Readonly<ItemBank>>('clueScores');
 	export const LapsScores = T<Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const LastTearsOfGuthixTimestamp = T<number>('lastTearsOfGuthixTimestamp');
@@ -160,6 +159,7 @@ export namespace UserSettings {
 	export const LMSPoints = T<number>('lms_points');
 	export const GPLuckyPick = T<number>('gp_luckypick');
 	export const GPDice = T<number>('gp_dice');
+	export const GPSlots = T<number>('gp_slots');
 
 	export const BankSortWeightings = T<Readonly<ItemBank>>('bank_sort_weightings');
 	export const BankSortMethod = T<BankSortMethod | null>('bank_sort_method');

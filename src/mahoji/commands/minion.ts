@@ -2,9 +2,13 @@ import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { MAX_LEVEL, PerkTier } from '../../lib/constants';
+import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
+import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
+import creatures from '../../lib/skilling/skills/hunter/creatures';
 import { convertLVLtoXP, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
@@ -17,7 +21,10 @@ import {
 import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand';
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
+import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
+import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
+import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -33,6 +40,19 @@ export const minionCommand: OSBMahojiCommand = {
 	name: 'minion',
 	description: 'Manage and control your minion.',
 	options: [
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'buy',
+			description: 'Buy a minion so you can start playing the bot!',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'ironman',
+					description: 'Do you want to be an ironman?',
+					required: false
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'cracker',
@@ -200,18 +220,57 @@ export const minionCommand: OSBMahojiCommand = {
 					description: 'The monster/thing you want to check your KC of.',
 					required: true,
 					autocomplete: async (value: string) => {
-						return effectiveMonsters
+						return [...effectiveMonsters, ...Minigames, ...creatures]
 							.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 							.map(i => ({ name: i.name, value: i.name }));
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'ironman',
+			description: 'Become an ironman, or de-iron.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'permanent',
+					description: 'Do you want to become a permanent ironman?',
+					required: false
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'charge',
+			description: 'Charge an item.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'item',
+					description: 'The item you want to charge',
+					required: false,
+					choices: degradeableItems.map(i => ({ name: i.item.name, value: i.item.name }))
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'amount',
+					description: 'The amount you want to charge',
+					required: false
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'daily',
+			description: 'Claim some daily free GP.'
 		}
 	],
 	run: async ({
 		userID,
 		options,
-		interaction
+		interaction,
+		channelID
 	}: CommandRunOptions<{
 		stats?: {};
 		achievementdiary?: { diary?: string; claim?: boolean };
@@ -224,6 +283,10 @@ export const minionCommand: OSBMahojiCommand = {
 		set_name?: { name: string };
 		level?: { skill: string };
 		kc?: { name: string };
+		buy?: { ironman?: boolean };
+		ironman?: { permanent?: boolean };
+		charge?: { item?: string; amount?: number };
+		daily?: {};
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -296,6 +359,15 @@ export const minionCommand: OSBMahojiCommand = {
 				return "That's not a valid monster, minigame or hunting creature.";
 			}
 			return `Your ${kcName} KC is: ${kcAmount}.`;
+		}
+
+		if (options.buy) return minionBuyCommand(mahojiUser, Boolean(options.buy.ironman));
+		if (options.ironman) return ironmanCommand(user, interaction, Boolean(options.ironman.permanent));
+		if (options.charge) {
+			return degradeableItemsCommand(interaction, user, options.charge.item, options.charge.amount);
+		}
+		if (options.daily) {
+			return dailyCommand(interaction, channelID, user);
 		}
 
 		return 'Unknown command';

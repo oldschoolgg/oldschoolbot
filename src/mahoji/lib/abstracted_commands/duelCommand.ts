@@ -5,9 +5,8 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank, Util } from 'oldschooljs';
 
 import { Emoji, Events } from '../../../lib/constants';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { channelIsSendable } from '../../../lib/util';
+import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
 async function checkBal(user: KlasaUser, amount: number) {
@@ -105,12 +104,8 @@ export async function duelCommand(
 		const winningAmount = amount * 2;
 		const tax = winningAmount - winningAmount * 0.95;
 
-		const dicingBank = globalClient.settings.get(ClientSettings.EconomyStats.DuelTaxBank) as number;
 		const dividedAmount = tax / 1_000_000;
-		globalClient.settings.update(
-			ClientSettings.EconomyStats.DuelTaxBank,
-			Math.floor(dicingBank + Math.round(dividedAmount * 100) / 100)
-		);
+		updateGPTrackSetting('duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
 		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins) as number;
 		winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);

@@ -111,8 +111,8 @@ async function resetAccount(user: KlasaUser) {
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
 	await prisma.newUser.deleteMany({ where: { id: user.id } });
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
-	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await prisma.user.deleteMany({ where: { id: user.id } });
+	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await user.settings.sync(true);
 	return 'Reset all your data.';
 }

@@ -58,7 +58,7 @@ function alching(user: KlasaUser, tripLength: number) {
 
 	if (maxCasts === 0 || bankToRemove.length === 0) return null;
 
-	const alchGP = itemToAlch.highalch * maxCasts;
+	const alchGP = itemToAlch.highalch! * maxCasts;
 	const bankToAdd = new Bank().add('Coins', alchGP);
 
 	return {
@@ -75,7 +75,6 @@ export const lapsCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Do laps on Agility courses to train Agility.',
 		examples: ['/laps name:Ardougne rooftop course']
 	},
 	options: [

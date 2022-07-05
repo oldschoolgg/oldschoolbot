@@ -1,8 +1,6 @@
 import { bold } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
-import { exec } from 'child_process';
-import crypto from 'crypto';
 import {
 	Channel,
 	Client,
@@ -16,7 +14,7 @@ import {
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, Time } from 'e';
+import { calcWhatPercent, objectEntries, round, Time } from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
 import { APIInteractionGuildMember, APIUser } from 'mahoji';
 import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
@@ -25,12 +23,11 @@ import { gzip } from 'node:zlib';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
-import { bool, integer, nodeCrypto, real } from 'random-js';
-import { promisify } from 'util';
+import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
 import { CLIENT_ID } from '../config';
-import { getSkillsOfMahojiUser } from '../mahoji/mahojiSettings';
-import { CENA_CHARS, continuationChars, PerkTier, skillEmoji, SupportServer } from './constants';
+import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
@@ -227,19 +224,6 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	return amountEquipped * 20;
 }
 
-export function generateContinuationChar(user: KlasaUser) {
-	const baseChar =
-		user.perkTier > PerkTier.One
-			? 'y'
-			: Date.now() - user.createdTimestamp < Time.Month * 6
-			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
-			: randArrItem(continuationChars);
-
-	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
-		.slice(0, randInt(1, 2))
-		.join('')}`;
-}
-
 export function isValidGearSetup(str: string): str is GearSetupType {
 	return GearSetupTypes.includes(str as any);
 }
@@ -270,10 +254,6 @@ export function isTobActivity(data: any): data is TheatreOfBloodTaskOptions {
 
 export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
-}
-
-export function sha256Hash(x: string) {
-	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
 }
 
 export function countSkillsAtleast99(user: KlasaUser | User) {
@@ -460,10 +440,39 @@ export function updateBankSetting(
 	return client.settings.update(setting, newBank.bank);
 }
 
-export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: string, amount: number) {
-	const current = client.settings.get(setting) as number;
-	const newValue = current + amount;
-	return client.settings.update(setting, newValue);
+export async function updateGPTrackSetting(
+	setting:
+		| 'gp_luckypick'
+		| 'gp_daily'
+		| 'gp_open'
+		| 'gp_dice'
+		| 'gp_slots'
+		| 'gp_sell'
+		| 'gp_pvm'
+		| 'gp_alch'
+		| 'gp_pickpocket'
+		| 'duelTaxBank',
+	amount: number,
+	user?: KlasaUser
+) {
+	if (!user) {
+		await prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				[setting]: {
+					increment: amount
+				}
+			}
+		});
+		return;
+	}
+	await mahojiUserSettingsUpdate(user.id, {
+		[setting]: {
+			increment: amount
+		}
+	});
 }
 
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
@@ -494,7 +503,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
+export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[], target?: KlasaUser) {
 	const display = new PaginatedMessage();
 	// @ts-ignore 2445
 	display.setUpReactions = () => null;
@@ -518,12 +527,12 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 	}
 
-	await display.run(message);
+	await display.run(message, target);
 
 	if (pages.length > 1) {
 		const collector = display.response!.createMessageComponentInteractionCollector({
 			time: Time.Minute,
-			filter: i => i.user.id === message.author.id
+			filter: i => i.user.id === (target ? target.id : message.author.id)
 		});
 
 		collector.on('collect', async interaction => {
@@ -551,12 +560,6 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 			display.response!.edit({ components: [] });
 		});
 	}
-}
-
-export const asyncExec = promisify(exec);
-
-export function getUsername(id: string): string {
-	return (globalClient.commands.get('leaderboard') as any)!.getUsername(id);
 }
 
 export function assert(condition: boolean, desc?: string, context?: Record<string, string>) {
@@ -794,4 +797,17 @@ export async function asyncGzip(buffer: Buffer) {
 			resolve(gzipped);
 		});
 	});
+}
+
+export function getUsername(id: string | bigint) {
+	return usernameCache.get(id.toString()) ?? 'Unknown';
+}
+
+export function getClueScoresFromOpenables(openableScores: Bank, mutate = false) {
+	return openableScores.filter(item => Boolean(clueTiers.find(ct => ct.id === item.id)), mutate);
+}
+
+export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
+	const engine = MersenneTwister19937.seed(input);
+	return shuffle(engine, [...arr]);
 }

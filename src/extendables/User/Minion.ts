@@ -363,8 +363,9 @@ export default class extends Extendable {
 
 			case 'Nightmare': {
 				const data = currentTask as NightmareActivityTaskOptions;
-
-				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
+				return `${this.minionName} is currently killing The Nightmare${
+					data.method === 'solo' ? 'solo' : 'in a team'
+				}. ${formattedDuration}`;
 			}
 
 			case 'AnimatedArmour': {
@@ -865,13 +866,6 @@ export default class extends Extendable {
 			UserSettings.MonsterScores,
 			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
 		);
-	}
-
-	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const currentClueScores = this.settings.get(UserSettings.ClueScores);
-
-		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
 	}
 
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {

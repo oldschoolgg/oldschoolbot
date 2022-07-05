@@ -258,6 +258,7 @@ const barrows = resolveItems([
 
 const seeds = resolveItems([
 	'Pineapple seed',
+	'Crystal acorn',
 	'Magic seed',
 	'Yew seed',
 	'Maple seed',

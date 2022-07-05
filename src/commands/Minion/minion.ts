@@ -1,39 +1,27 @@
-import { MessageAttachment, MessageEmbed } from 'discord.js';
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import {
-	BitField,
-	COMMAND_BECAME_SLASH_COMMAND_MESSAGE,
-	Emoji,
-	informationalButtons,
-	lastTripCache,
-	PerkTier
-} from '../../lib/constants';
+import { Emoji, lastTripCache } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
-import { dataCommand } from '../../lib/minions/functions/dataCommand';
-import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
-import { equipPet } from '../../lib/minions/functions/equipPet';
-import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
 import { trainCommand } from '../../lib/minions/functions/trainCommand';
-import { unequipPet } from '../../lib/minions/functions/unequipPet';
-import { prisma } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertMahojiResponseToDJSResponse } from '../../lib/util';
+import { ItemBank } from '../../lib/types';
+import { convertMahojiResponseToDJSResponse, getClueScoresFromOpenables } from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { isUsersDailyReady } from './daily';
+import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -46,28 +34,13 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
-const ironmanArmor = new Bank({ 'Ironman helm': 1, 'Ironman platebody': 1, 'Ironman platelegs': 1 });
-
 const subCommands = [
-	'lvl',
-	'seticon',
 	'clues',
-	'k',
-	'kill',
-	'setname',
 	'buy',
-	'clue',
-	'kc',
 	'pat',
-	'stats',
-	'ironman',
 	'opens',
 	'info',
-	'equippet',
-	'unequippet',
 	'activities',
-	'ep',
-	'uep',
 	'lapcounts',
 	'cancel',
 	'train',
@@ -75,8 +48,7 @@ const subCommands = [
 	'blowpipe',
 	'bp',
 	'charge',
-	'data',
-	'commands'
+	'data'
 ];
 
 export default class MinionCommand extends BotCommand {
@@ -101,17 +73,26 @@ export default class MinionCommand extends BotCommand {
 
 		const dynamicButtons = new DynamicButtons({ channel: msg.channel, usersWhoCanInteract: [msg.author.id] });
 
+		const cmdOptions = {
+			msg,
+			channelID: msg.channel.id,
+			userID: msg.author.id,
+			guildID: msg.guild?.id,
+			user: msg.author,
+			member: msg.member
+		};
+
 		dynamicButtons.add({
 			name: 'Auto Farm',
 			emoji: Emoji.Farming,
 			fn: () =>
 				runCommand({
-					message: msg,
 					commandName: 'farming',
 					args: {
 						auto_farm: {}
 					},
-					bypassInhibitors: true
+					bypassInhibitors: true,
+					...cmdOptions
 				}),
 			cantBeBusy: true
 		});
@@ -123,10 +104,10 @@ export default class MinionCommand extends BotCommand {
 				emoji: Emoji.MoneyBag,
 				fn: () =>
 					runCommand({
-						message: msg,
-						commandName: 'daily',
-						args: [],
-						bypassInhibitors: true
+						commandName: 'minion',
+						args: { daily: {} },
+						bypassInhibitors: true,
+						...cmdOptions
 					}),
 				cantBeBusy: true
 			});
@@ -138,10 +119,10 @@ export default class MinionCommand extends BotCommand {
 				emoji: Emoji.Minion,
 				fn: () =>
 					runCommand({
-						message: msg,
 						commandName: 'minion',
 						args: { cancel: {} },
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						...cmdOptions
 					}),
 				cantBeBusy: false
 			});
@@ -152,10 +133,10 @@ export default class MinionCommand extends BotCommand {
 			emoji: Emoji.Slayer,
 			fn: () =>
 				runCommand({
-					message: msg,
 					commandName: 'autoslay',
 					args: [],
-					bypassInhibitors: true
+					bypassInhibitors: true,
+					...cmdOptions
 				}),
 			cantBeBusy: true
 		});
@@ -164,10 +145,10 @@ export default class MinionCommand extends BotCommand {
 			emoji: Emoji.Stopwatch,
 			fn: () =>
 				runCommand({
-					message: msg,
 					commandName: 'farming',
 					args: { check_patches: {} },
-					bypassInhibitors: true
+					bypassInhibitors: true,
+					...cmdOptions
 				}),
 			cantBeBusy: false
 		});
@@ -177,10 +158,10 @@ export default class MinionCommand extends BotCommand {
 				emoji: '692946556399124520',
 				fn: () =>
 					runCommand({
-						message: msg,
 						commandName: 'activities',
 						args: { birdhouses: { action: 'harvest' } },
-						bypassInhibitors: true
+						bypassInhibitors: true,
+						...cmdOptions
 					}),
 				cantBeBusy: true
 			});
@@ -201,7 +182,17 @@ export default class MinionCommand extends BotCommand {
 
 		const lastTrip = lastTripCache.get(msg.author.id);
 		if (lastTrip && !msg.author.minionIsBusy) {
-			dynamicButtons.add({ name: `Repeat ${lastTrip.data.type} Trip`, fn: () => lastTrip.continue(msg) });
+			dynamicButtons.add({
+				name: `Repeat ${lastTrip.data.type} Trip`,
+				fn: () =>
+					lastTrip.continue({
+						user: msg.author,
+						userID: msg.author.id,
+						member: msg.member,
+						guildID: msg.guild?.id,
+						channelID: msg.channel.id
+					})
+			});
 		}
 
 		const bank = msg.author.bank();
@@ -213,10 +204,10 @@ export default class MinionCommand extends BotCommand {
 				name: `Do ${tier.name} Clue`,
 				fn: () => {
 					return runCommand({
-						message: msg,
-						commandName: 'mclue',
-						args: [tier.name],
-						bypassInhibitors: true
+						commandName: 'clue',
+						args: { tier: tier.name },
+						bypassInhibitors: true,
+						...cmdOptions
 					});
 				},
 				emoji: '365003979840552960',
@@ -234,42 +225,8 @@ export default class MinionCommand extends BotCommand {
 		return trainCommand(msg, input);
 	}
 
-	async commands(msg: KlasaMessage) {
-		const commands = await prisma.commandUsage.findMany({
-			where: {
-				user_id: BigInt(msg.author.id)
-			},
-			orderBy: {
-				date: 'desc'
-			},
-			take: 15
-		});
-		return msg.channel.send(
-			commands
-				.map(
-					(c, inde) =>
-						`${inde + 1}. \`+${c.command_name}\` Args[${JSON.stringify(c.args)}] Date[<t:${Math.round(
-							c.date.getTime() / 1000
-						)}:R>] isContinue[${c.is_continue ? 'Yes' : 'No'}]`
-				)
-				.join('\n')
-		);
-	}
-
-	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		if (msg.author.perkTier < PerkTier.Four) {
-			return msg.channel.send('Sorry, you need to be a Tier 3 Patron to use this command.');
-		}
-		const result = await dataCommand(msg, input);
-		if ('bank' in result) {
-			return msg.channel.sendBankImage({
-				title: result.title,
-				bank: result.bank,
-				content: result.content
-			});
-		}
-		const output = Buffer.isBuffer(result) ? { files: [new MessageAttachment(result)] } : result;
-		return msg.channel.send(output);
+	async data(msg: KlasaMessage) {
+		return msg.channel.send('This command was moved to `/tools patron stats`');
 	}
 
 	async lapcounts(msg: KlasaMessage) {
@@ -287,8 +244,8 @@ export default class MinionCommand extends BotCommand {
 		return msg.channel.send(data);
 	}
 
-	async charge(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return degradeableItemsCommand(msg, input);
+	async charge(msg: KlasaMessage) {
+		return msg.channel.send('This command has been moved to `/minion charge`');
 	}
 
 	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
@@ -300,154 +257,20 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async info(msg: KlasaMessage) {
-		return runCommand({ message: msg, commandName: 'rp', args: ['c', msg.author], bypassInhibitors: true });
-	}
-
-	async tempcl(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return tempCLCommand(msg, input);
-	}
-
-	async unequippet(msg: KlasaMessage) {
-		return unequipPet(msg);
-	}
-
-	async equippet(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return equipPet(msg, input);
-	}
-
-	async uep(msg: KlasaMessage) {
-		return unequipPet(msg);
-	}
-
-	async ep(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return equipPet(msg, input);
-	}
-
-	async lvl(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion level'));
-	}
-
-	async seticon(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_icon'));
-	}
-
-	@requiresMinion
-	@minionNotBusy
-	async ironman(msg: KlasaMessage) {
-		/**
-		 * If the user is an ironman already, lets ask them if they want to de-iron.
-		 */
-		if (msg.author.isIronman) {
-			const isPerm = msg.author.bitfield.includes(BitField.PermanentIronman);
-			if (isPerm) {
-				if (msg.flagArgs.armor) {
-					if (msg.author.owns(ironmanArmor)) {
-						return msg.channel.send('You already own a set of ironman armor.');
-					}
-					await msg.author.addItemsToBank({ items: ironmanArmor, collectionLog: false });
-					return msg.channel.send('Gave you a set of ironman armor.');
-				}
-				return msg.channel.send("You're a **permanent** ironman and you cannot de-iron.");
-			}
-			if (msg.flagArgs.permanent) {
-				await msg.channel.send(
-					`Would you like to change your ironman to a *permanent* iron? The only thing in your account that will change, is that you will no longer be able to de-iron. This is *permanent* and cannot be reversed, its permanent ironman mode.
-Please say \`permanent\` to confirm.`
-				);
-				try {
-					await msg.channel.awaitMessages({
-						max: 1,
-						time: 15_000,
-						errors: ['time'],
-						filter: answer =>
-							answer.author.id === msg.author.id && answer.content.toLowerCase() === 'permanent'
-					});
-					await msg.author.settings.update(UserSettings.BitField, BitField.PermanentIronman);
-					await msg.author.addItemsToBank({ items: ironmanArmor });
-					return msg.channel.send(
-						'You are now a **permanent** Ironman. You also received a set of ironmen armor. Enjoy!'
-					);
-				} catch (err) {
-					return msg.channel.send('Cancelled.');
-				}
-			}
-
-			await msg.channel.send(
-				'Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say `deiron` to confirm.'
-			);
-			try {
-				await msg.channel.awaitMessages({
-					max: 1,
-					time: 15_000,
-					errors: ['time'],
-					filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'deiron'
-				});
-				await msg.author.settings.update(UserSettings.Minion.Ironman, false);
-				return msg.channel.send('You are no longer an ironman.');
-			} catch (err) {
-				return msg.channel.send('Cancelled de-ironning.');
-			}
-		}
-
-		const existingGiveaways = await prisma.giveaway.findMany({
-			where: {
-				user_id: msg.author.id,
-				completed: false
-			}
+		return runCommand({
+			commandName: 'rp',
+			args: ['c', msg.author],
+			bypassInhibitors: true,
+			channelID: msg.channel.id,
+			userID: msg.author.id,
+			guildID: msg.guild?.id,
+			user: msg.author,
+			member: msg.member
 		});
+	}
 
-		if (existingGiveaways.length !== 0) {
-			return msg.channel.send("You can't become an ironman because you have active giveaways.");
-		}
-
-		await msg.channel.send(
-			`Are you sure you want to start over and play as an ironman?
-
-:warning: **Read the following text before confirming. This is your only warning. ** :warning:
-
-The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.
-
-After becoming an ironman:
-	- You will no longer be able to receive GP from  \`+daily\`
-	- You will no longer be able to use \`+pay\`, \`+duel\`, \`+sellto\`, \`+sell\`, \`+dice\`
-	- You can de-iron at any time, and keep all your stuff acquired while playing as an ironman.
-
-Type \`confirm\` if you understand the above information, and want to become an ironman now.`
-		);
-
-		try {
-			await msg.channel.awaitMessages({
-				max: 1,
-				time: 15_000,
-				errors: ['time'],
-				filter: answer => answer.author.id === msg.author.id && answer.content.toLowerCase() === 'confirm'
-			});
-
-			msg.author.log(
-				`just became an ironman, previous settings: ${JSON.stringify(msg.author.settings.toJSON())}`
-			);
-
-			const allSchemaKeys = Array.from(this.client.gateways.get('users')!.schema.keys());
-			const keysToReset = allSchemaKeys.filter(k => !['pets', 'RSN', 'patreon_id', 'github_id'].includes(k));
-			await msg.author.settings.reset([...keysToReset]);
-
-			try {
-				await prisma.slayerTask.deleteMany({ where: { user_id: msg.author.id } });
-				await prisma.playerOwnedHouse.delete({ where: { user_id: msg.author.id } });
-				await prisma.minigame.delete({ where: { user_id: msg.author.id } });
-				await prisma.xPGain.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
-				await prisma.newUser.delete({ where: { id: msg.author.id } });
-				await prisma.activity.deleteMany({ where: { user_id: BigInt(msg.author.id) } });
-			} catch (_) {}
-
-			await msg.author.settings.update([
-				[UserSettings.Minion.Ironman, true],
-				[UserSettings.Minion.HasBought, true]
-			]);
-			return msg.channel.send('You are now an ironman.');
-		} catch (err) {
-			return msg.channel.send('Cancelled ironman swap.');
-		}
+	async tempcl(msg: KlasaMessage) {
+		return msg.channel.send('This has been moved to `/cl type:temp`');
 	}
 
 	@requiresMinion
@@ -455,77 +278,29 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
 
-	async stats(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion stats'));
-	}
-
-	async kc(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion kc'));
-	}
-
-	async qp(msg: KlasaMessage) {
-		return msg.channel.send('You can see your QP in `/minion stats`.');
-	}
-
 	@requiresMinion
 	async clues(msg: KlasaMessage) {
-		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
-		if (Object.keys(clueScores).length === 0) return msg.channel.send("You haven't done any clues yet.");
+		const userData = await mahojiUsersSettingsFetch(msg.author.id, {
+			openable_scores: true
+		});
+
+		const clueScores = getClueScoresFromOpenables(new Bank(userData.openable_scores as ItemBank));
+		if (clueScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
 
 		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
-		for (const [clueID, clueScore] of Object.entries(clueScores)) {
+		for (const [clueID, clueScore] of Object.entries(clueScores.bank)) {
 			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
-			res += `**${clue!.name}**: ${clueScore}\n`;
+			res += `**${clue!.name}**: ${clueScore.toLocaleString()}\n`;
 		}
 		return msg.channel.send(res);
 	}
 
 	async buy(msg: KlasaMessage) {
-		if (msg.author.hasMinion) return msg.channel.send('You already have a minion!');
-
-		await mahojiUserSettingsUpdate(msg.author.id, {
-			minion_hasBought: true,
-			minion_bought_date: new Date()
-		});
-		return msg.channel.send({
-			embeds: [
-				new MessageEmbed().setTitle('Your minion is now ready to use!').setDescription(
-					`You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
-
-<:ironman:626647335900020746> You can make your new minion an Ironman by using the command: \`${msg.cmdPrefix}m ironman\`.
-
-🧑‍⚖️ **Rules:** You *must* follow our 5 simple rules, breaking any rule can result in a permanent ban - and "I didn't know the rules" is not a valid excuse, read them here: <https://wiki.oldschool.gg/rules>
-
-<:patreonLogo:679334888792391703> **Patreon:** If you're able too, please consider supporting my work on Patreon, it's highly appreciated and helps me hugely <https://www.patreon.com/oldschoolbot> ❤️
-
-<:BSO:863823820435619890> **BSO:** I run a 2nd bot called BSO (Bot School Old), which you can also play, it has lots of fun and unique changes, like 5x XP and infinitely stacking clues. Type \`${msg.cmdPrefix}bso\` for more information.
-
-Please click the buttons below for important links.`
-				)
-			],
-			components: [informationalButtons]
-		});
-	}
-
-	async setname(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_name'));
-	}
-
-	@requiresMinion
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
-		runCommand({ message: msg, commandName: 'mclue', args: [quantity, tierName], bypassInhibitors: true });
-	}
-
-	@requiresMinion
-	@minionNotBusy
-	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		runCommand({ message: msg, commandName: 'k', args: { name, quantity }, bypassInhibitors: true });
-	}
-
-	@requiresMinion
-	@minionNotBusy
-	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		runCommand({ message: msg, commandName: 'k', args: { name, quantity }, bypassInhibitors: true });
+		return msg.channel.send(
+			convertMahojiResponseToDJSResponse(
+				await minionBuyCommand(await mahojiUsersSettingsFetch(msg.author.id), false)
+			)
+		);
 	}
 
 	async opens(msg: KlasaMessage) {
