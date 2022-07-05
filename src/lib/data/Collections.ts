@@ -1,7 +1,9 @@
+import { User } from '@prisma/client';
 import { MessageAttachment } from 'discord.js';
+import { calcWhatPercent, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, Clues, Monsters } from 'oldschooljs';
-import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
 
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../minions/data/killableMonsters';
@@ -16,7 +18,7 @@ import { UserSettings } from '../settings/types/UserSettings';
 import { NexNonUniqueTable, NexUniqueTable } from '../simulation/misc';
 import { allFarmingItems } from '../skilling/skills/farming';
 import { ItemBank } from '../types';
-import { addArrayOfNumbers, stringMatches } from '../util';
+import { addArrayOfNumbers, removeFromArr, shuffleRandom, stringMatches } from '../util';
 import resolveItems from '../util/resolveItems';
 import {
 	abyssalSireCL,
@@ -118,6 +120,7 @@ import {
 	zalcanoCL,
 	zulrahCL
 } from './CollectionsExport';
+import Createables from './createables';
 
 export const allCollectionLogs: ICollection = {
 	Bosses: {
@@ -359,7 +362,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['beginner', 'clues beginner', 'clue beginner'],
 				allItems: Clues.Beginner.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[23_245] || 0
+					Default: async user => user.settings.get(UserSettings.OpenableScores)[23_245] || 0
 				},
 				items: cluesBeginnerCL,
 
@@ -369,7 +372,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['easy', 'clues easy', 'clue easy'],
 				allItems: Clues.Easy.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_546] || 0
+					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_546] || 0
 				},
 				items: cluesEasyCL,
 
@@ -379,7 +382,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['medium', 'clues medium', 'clue medium'],
 				allItems: Clues.Medium.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_545] || 0
+					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_545] || 0
 				},
 				items: cluesMediumCL,
 				isActivity: true
@@ -388,7 +391,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['hard', 'clues hard', 'clue hard'],
 				allItems: Clues.Hard.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544] || 0
+					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_544] || 0
 				},
 				items: cluesHardCL,
 				isActivity: true
@@ -397,7 +400,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['elite', 'clues elite', 'clue elite'],
 				allItems: Clues.Elite.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543] || 0
+					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_543] || 0
 				},
 				items: cluesEliteCL,
 				isActivity: true
@@ -406,7 +409,7 @@ export const allCollectionLogs: ICollection = {
 				alias: ['master', 'clues master', 'clue master'],
 				allItems: Clues.Master.allItems,
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836] || 0
+					Default: async user => user.settings.get(UserSettings.OpenableScores)[19_836] || 0
 				},
 				items: cluesMasterCL,
 				isActivity: true
@@ -422,7 +425,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare hard'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_544] || 0
+					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_544] || 0
 				},
 				items: cluesHardRareCL,
 				isActivity: true
@@ -438,7 +441,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare elite'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[20_543] || 0
+					Default: async user => user.settings.get(UserSettings.OpenableScores)[20_543] || 0
 				},
 				items: cluesEliteRareCL,
 				isActivity: true
@@ -454,7 +457,7 @@ export const allCollectionLogs: ICollection = {
 					'clues rare master'
 				],
 				kcActivity: {
-					Default: async user => user.settings.get(UserSettings.ClueScores)[19_836] || 0
+					Default: async user => user.settings.get(UserSettings.OpenableScores)[19_836] || 0
 				},
 				items: cluesMasterRareCL,
 				isActivity: true
@@ -462,13 +465,17 @@ export const allCollectionLogs: ICollection = {
 			'Shared Treasure Trail Rewards': {
 				alias: ['shared', 'clues shared', 'clue shared'],
 				kcActivity: {
-					Default: async user =>
-						(user.settings.get(UserSettings.ClueScores)[23_245] || 0) +
-						(user.settings.get(UserSettings.ClueScores)[20_546] || 0) +
-						(user.settings.get(UserSettings.ClueScores)[20_545] || 0) +
-						(user.settings.get(UserSettings.ClueScores)[20_544] || 0) +
-						(user.settings.get(UserSettings.ClueScores)[20_543] || 0) +
-						(user.settings.get(UserSettings.ClueScores)[19_836] || 0)
+					Default: async user => {
+						const scores = user.settings.get(UserSettings.OpenableScores);
+						return (
+							(scores[23_245] ?? 0) +
+							(scores[20_546] ?? 0) +
+							(scores[20_545] ?? 0) +
+							(scores[20_544] ?? 0) +
+							(scores[20_543] ?? 0) +
+							(scores[19_836] ?? 0)
+						);
+					}
 				},
 				items: cluesSharedCL,
 
@@ -477,10 +484,10 @@ export const allCollectionLogs: ICollection = {
 			'Rare Treasure Trail Rewards': {
 				alias: ['clues rare', 'rares'],
 				kcActivity: {
-					Default: async user =>
-						(user.settings.get(UserSettings.ClueScores)[20_544] || 0) +
-						(user.settings.get(UserSettings.ClueScores)[20_543] || 0) +
-						(user.settings.get(UserSettings.ClueScores)[19_836] || 0)
+					Default: async user => {
+						const scores = user.settings.get(UserSettings.OpenableScores);
+						return (scores[20_544] ?? 0) + (scores[20_543] ?? 0) + (scores[19_836] ?? 0);
+					}
 				},
 				items: [...cluesHardRareCL, ...cluesEliteRareCL, ...cluesMasterRareCL],
 				isActivity: true
@@ -753,7 +760,7 @@ export const allCollectionLogs: ICollection = {
 					"Farmer's shirt",
 					"Farmer's boro trousers",
 					"Farmer's boots",
-					"Pharaoh's sceptre (3)",
+					"Pharaoh's sceptre",
 					'Baby chinchompa',
 					'Kyatt hat',
 					'Kyatt top',
@@ -835,51 +842,64 @@ export const allCollectionLogs: ICollection = {
 					...NexNonUniqueTable.allItems
 				],
 				items: [...godWarsDungeonCL, ...NexCL]
+			},
+			Creatables: {
+				counts: false,
+				items: Createables.filter(i => i.noCl !== true)
+					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
+					.flat()
 			}
 		}
 	}
 };
 // Get all items, from all monsters and all CLs into a variable, for uses like mostdrops
-export const allDroppedItems = [
-	...new Set([
-		...Object.entries(allCollectionLogs)
-			.map(e =>
-				Object.entries(e[1].activities).map(a => [
-					...new Set([...a[1].items, ...(a[1].allItems !== undefined ? a[1].allItems : [])])
-				])
-			)
-			.flat(100),
-		...Object.values(Monsters)
-			.map(m => (m && m.allItems ? m.allItems : []))
-			.flat(100)
-	])
-];
+export const allDroppedItems = uniqueArr([
+	...Object.values(allCollectionLogs)
+		.map(e =>
+			Object.values(e.activities).map(a => [
+				...new Set([...a.items, ...(a.allItems !== undefined ? a.allItems : [])])
+			])
+		)
+		.flat(100),
+	...Object.values(Monsters)
+		.map(m => (m && m.allItems ? m.allItems : []))
+		.flat(100)
+]);
 
-export const allCLItems = [
-	...new Set(
-		Object.entries(allCollectionLogs)
-			.map(e => Object.entries(e[1].activities).map(a => a[1].items))
-			.flat(100)
-	)
-];
+export const allCLItems = uniqueArr(
+	Object.values(allCollectionLogs)
+		.map(e => Object.values(e.activities).map(a => a.items))
+		.flat(100)
+);
 
 export const allCLItemsFiltered = [
 	...new Set(
-		Object.entries(allCollectionLogs)
+		Object.values(allCollectionLogs)
 			.map(e =>
-				Object.entries(e[1].activities)
-					.filter(f => f[1].counts === undefined)
-					.map(a => a[1].items)
+				Object.values(e.activities)
+					.filter(f => f.counts === undefined)
+					.map(a => a.items)
 			)
 			.flat(100)
 	)
 ];
-export function convertCLtoBank(items: number[]) {
-	const clBank = new Bank();
-	for (const item of items) {
-		clBank.add(item, 1);
-	}
-	return clBank;
+
+export function calcCLDetails(user: User | KlasaUser) {
+	const clBank =
+		user instanceof KlasaUser ? user.settings.get(UserSettings.CollectionLogBank) : user.collectionLogBank;
+	const clItems = new Bank(clBank as ItemBank).filter(i => allCLItemsFiltered.includes(i.id), true);
+	const debugBank = new Bank().add(clItems);
+	const owned = clItems.filter(i => allCLItemsFiltered.includes(i.id));
+	const notOwned = shuffleRandom(
+		Number(user.id),
+		allCLItemsFiltered.filter(i => !clItems.has(i))
+	).slice(0, 10);
+	return {
+		percent: calcWhatPercent(owned.length, allCLItemsFiltered.length),
+		notOwned,
+		owned,
+		debugBank
+	};
 }
 
 // Get the left list to be added to the cls
@@ -967,14 +987,12 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 			stringMatches(category, collection) ||
 			(entries.alias && entries.alias.some(a => stringMatches(a, collection)))
 		) {
-			_items = [
-				...new Set(
-					Object.entries(entries.activities)
+			_items = uniqueArr(
+				Object.values(entries.activities)
+					.map(e => [...new Set([...e.items, ...(allItems ? e.allItems ?? [] : [])])])
+					.flat(2)
+			);
 
-						.map(e => [...new Set([...e[1].items, ...(allItems && e[1].allItems ? e[1].allItems : [])])])
-						.flat(2)
-				)
-			];
 			break;
 		}
 		for (const [activityName, attributes] of Object.entries(entries.activities)) {
@@ -991,14 +1009,14 @@ export function getCollectionItems(collection: string, allItems = false, removeC
 	}
 
 	if (_items.length === 0) {
-		const _monster = killableMonsters.find(
-			m => stringMatches(m.name, collection) || m.aliases.some(name => stringMatches(name, collection))
+		const _monster = killableMonsters.find(m =>
+			[m.name, ...m.aliases].some(name => stringMatches(name, collection))
 		);
 		if (_monster) {
-			_items = Array.from(new Set(Object.values(Monsters.get(_monster!.id)!.allItems!).flat(100))) as number[];
+			_items = uniqueArr(Monsters.get(_monster!.id)!.allItems);
 		}
 	}
-	if (removeCoins && _items.includes(995)) _items.splice(_items.indexOf(995), 1);
+	if (removeCoins && _items.includes(995)) _items = removeFromArr(_items, 995);
 	return _items;
 }
 
@@ -1006,6 +1024,13 @@ function getUserClData(usarBank: ItemBank, clItems: number[]) {
 	const owned = Object.keys(usarBank).filter(i => clItems.includes(Number(i)));
 	return [clItems.length, owned.length];
 }
+
+export const allClNames: string[] = [];
+for (const [category, val] of Object.entries(allCollectionLogs)) {
+	allClNames.push(category);
+	allClNames.push(...Object.keys(val.activities));
+}
+for (const mon of killableMonsters) allClNames.push(mon.name);
 
 // Main function that gets the user collection based on its search parameter
 export async function getCollection(options: {

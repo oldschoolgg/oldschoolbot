@@ -6,6 +6,7 @@ import { Events, ZALCANO_ID } from '../../../lib/constants';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: ZalcanoActivityTaskOptions) {
@@ -50,9 +51,12 @@ export default class extends Task {
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(itemsAdded, `Loot From ${quantity}x Zalcano`, true, { showNewCL: 1 }, user, previousCL);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Zalcano`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
 			user,
@@ -61,7 +65,7 @@ export default class extends Task {
 				kc + quantity
 			}. ${xpRes}`,
 			['k', { name: 'zalcano' }, true],
-			image!,
+			image!.file.buffer,
 			data,
 			itemsAdded
 		);

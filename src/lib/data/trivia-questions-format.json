@@ -1,8 +1,0 @@
-{
-	"triviaQuestionsFormat": [
-		{ "q": "QUESTION", "a": ["ARRAY_OF_ANSWERS"] },
-		{ "q": "How much HP does a Lobster heal?", "a": ["12"] },
-		{ "q": "What is the only ring to give a stab bonus?", "a": ["treasonous", "treasonous ring"] },
-		{ "q": "From which NPC can you purchase the Attack Skillcape?", "a": ["ajjat"] }
-	]
-}

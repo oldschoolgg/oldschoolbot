@@ -15,6 +15,7 @@ import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerIn
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -152,16 +153,12 @@ export default class extends Task {
 			duration
 		});
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity} ${monster.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity} ${monster.name}:`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
 			user,
@@ -175,7 +172,7 @@ export default class extends Task {
 						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
 						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
 						return runCommand({
-							message: res,
+							...res,
 							commandName: 'k',
 							args: {
 								name: monster.name,
@@ -185,7 +182,7 @@ export default class extends Task {
 							isContinue: true
 						});
 				  },
-			image!,
+			image!.file.buffer,
 			data,
 			itemsAdded
 		);
