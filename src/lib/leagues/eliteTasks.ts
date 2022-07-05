@@ -4,13 +4,17 @@ import { Bank, Monsters } from 'oldschooljs';
 import { feedableItems } from '../../mahoji/commands/tames';
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import {
+	abyssalDragonCL,
 	all3rdAgeItems,
-	cluesHardCL,
 	customPetsCL,
+	gracefulCL,
+	ignecarusCL,
 	kalphiteKingCL,
+	kingGoldemarCL,
 	nexCL,
 	queenBlackDragonCL,
-	seaKrakenCL
+	seaKrakenCL,
+	vasaMagusCL
 } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
@@ -29,7 +33,7 @@ import {
 } from '../diaries';
 import { TameSpeciesID, TameType } from '../tames';
 import { ItemBank } from '../types';
-import { calcCombatLevel, calcTotalLevel } from '../util';
+import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { leaguesHasCatches, leaguesHasKC, Task } from './leagues';
 
@@ -140,17 +144,10 @@ export const eliteTasks: Task[] = [
 		}
 	},
 	{
-		id: 3016,
-		name: 'Reach combat level 110',
-		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP) >= 110;
-		}
-	},
-	{
 		id: 3017,
-		name: 'Reach total level 2000',
+		name: 'Reach total level 2500',
 		has: async ({ skillsLevels }) => {
-			return calcTotalLevel(skillsLevels) >= 2000;
+			return calcTotalLevel(skillsLevels) >= 2400;
 		}
 	},
 	{
@@ -207,13 +204,6 @@ export const eliteTasks: Task[] = [
 		name: 'Mix 2000 Saradomin brews.',
 		has: async ({ cl }) => {
 			return sumArr(resolveItems(['Saradomin brew (3)', 'Saradomin brew (4)']).map(i => cl.amount(i))) >= 2000;
-		}
-	},
-	{
-		id: 3026,
-		name: 'Finish the hard clue CL',
-		has: async ({ cl }) => {
-			return cluesHardCL.filter(i => cl.has(i)).length === cluesHardCL.length;
 		}
 	},
 	{
@@ -457,9 +447,9 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3059,
-		name: 'Construct 10,000 objects',
+		name: 'Construct 50,000 objects',
 		has: async ({ conStats }) => {
-			return sumArr(conStats.items().map(i => i[1])) >= 10_000;
+			return sumArr(conStats.items().map(i => i[1])) >= 50_000;
 		}
 	},
 	{
@@ -513,37 +503,121 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3067,
-		name: 'Smith 1000 Adamant items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('adamant'))
-						.map(i => i[1])
-				) >= 1000
-			);
+		name: 'Smith items from 50,000 Adamantite bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Adamantite bar') >= 50_000;
 		}
 	},
 	{
 		id: 3068,
-		name: 'Smith 500 Rune items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('rune'))
-						.map(i => i[1])
-				) >= 500
-			);
+		name: 'Smith items from 30,000 Runite bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Runite bar') >= 30_000;
 		}
 	},
 	{
 		id: 3069,
-		name: 'Cast 5000 spells',
+		name: 'Cast 10,000 spells',
 		has: async ({ spellCastingStats }) => {
-			return sumArr(spellCastingStats.map(i => i.qty)) >= 5000;
+			return sumArr(spellCastingStats.map(i => i.qty)) >= 10_000;
+		}
+	},
+	{
+		id: 3070,
+		name: 'Finish the graceful CL',
+		has: async ({ cl }) => {
+			return gracefulCL.every(i => cl.has(i));
+		}
+	},
+	{
+		id: 3071,
+		name: 'Finish the Queen Black Dragon CL',
+		has: async ({ cl }) => {
+			return queenBlackDragonCL.every(gs => cl.has(gs));
+		}
+	},
+	{
+		id: 3072,
+		name: 'Finish the Vasa Magus CL',
+		has: async ({ cl }) => {
+			return vasaMagusCL.every(gs => cl.has(gs));
+		}
+	},
+	{
+		id: 3073,
+		name: 'Finish the Abyssal Dragon CL',
+		has: async ({ cl }) => {
+			return abyssalDragonCL.every(gs => cl.has(gs));
+		}
+	},
+	{
+		id: 3074,
+		name: 'Finish the Kalphite King CL',
+		has: async ({ cl }) => {
+			return kalphiteKingCL.every(gs => cl.has(gs));
+		}
+	},
+	{
+		id: 3075,
+		name: 'Finish the Ignecarus CL',
+		has: async ({ cl }) => {
+			return ignecarusCL.every(gs => cl.has(gs));
+		}
+	},
+	{
+		id: 3076,
+		name: 'Finish the King Goldemar CL',
+		has: async ({ cl }) => {
+			return kingGoldemarCL.every(gs => cl.has(gs));
+		}
+	},
+	{
+		id: 3077,
+		name: 'Acquire, complete and open 500 Beginner clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (beginner)') >= 500;
+		}
+	},
+	{
+		id: 3078,
+		name: 'Acquire, complete and open 500 Easy clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (easy)') >= 500;
+		}
+	},
+	{
+		id: 3079,
+		name: 'Acquire, complete and open 300 Medium clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (medium)') >= 300;
+		}
+	},
+	{
+		id: 3080,
+		name: 'Acquire, complete and open 300 Hard clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (hard)') >= 300;
+		}
+	},
+	{
+		id: 3081,
+		name: 'Acquire, complete and open 500 Elite clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (elite)') >= 300;
+		}
+	},
+	{
+		id: 3082,
+		name: 'Acquire, complete and open 200 Master clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (master)') >= 200;
+		}
+	},
+	{
+		id: 3083,
+		name: 'Acquire, complete and open 200 Grandmaster clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (grandmaster)') >= 200;
 		}
 	}
 ];

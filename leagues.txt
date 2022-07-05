@@ -1,6 +1,6 @@
-There are a total of 518 tasks.
+There are a total of 554 tasks.
 
---------- Easy (73 tasks) -----------
+--------- Easy (79 tasks) -----------
 Smelt 100 Bronze bars from scratch
 Do 50 laps at the Gnome Stronghold Agility Course
 Obtain 10 Marks of grace
@@ -22,9 +22,7 @@ Complete the Easy Varrock diary
 Do a Tears of Guthix Trip
 Do 5 Pest Control Trips
 Reach combat level 50
-Reach total level 300
-Obtain 3 unique items from Beginner caskets
-Obtain 3 unique items from Easy caskets
+Reach total level 500
 Defeat a lesser demon
 Catch a Crimson swift
 Catch a Swamp lizard
@@ -72,11 +70,19 @@ Mix 250 unf potions
 Mix 250 potions
 Mine 250 ores
 Burn 250 logs
-Smith 100 Bronze items
+Smith items from 250 Bronze bars
 Cast 100 spells
+Smith items from 50 Iron bars
+Acquire, complete and open 100 Beginner clues/caskets
+Acquire, complete and open 50 Easy clues/caskets
+Acquire, complete and open 20 Medium clues/caskets
+Acquire, complete and open 10 Hard clues/caskets
+Acquire, complete and open 5 Elite clues/caskets
+Acquire, complete and open 2 Master clues/caskets
+Acquire, complete and open 1 Grandmaster clues/caskets
 
 
---------- Medium (114 tasks) -----------
+--------- Medium (119 tasks) -----------
 Complete the Medium Wilderness diary
 Complete the Medium Western Prov diary
 Complete the Medium Ardougne diary
@@ -89,7 +95,7 @@ Complete the Medium Kourend Kebos diary
 Complete the Medium Lumbridge/Draynor diary
 Complete the Medium Morytania diary
 Complete the Medium Varrock diary
-Defeat a greater demon
+Defeat 100 greater demons
 Smelt 500 Iron bars from scratch
 Build a pool in your PoH
 Build a throne in your PoH
@@ -100,7 +106,7 @@ Complete 50 slayer tasks
 Do 50 laps at the Varrock Rooftop Course
 Obtain 100 Marks of grace
 Reach combat level 70
-Reach total level 600
+Reach total level 1000
 Defeat Tempoross 50 times
 Complete 20 Gnome restaurant deliveries
 Receive the full Angler outfit
@@ -110,10 +116,6 @@ Catch 200 Orange salamanders
 Mix 100 Restore potions.
 Mix 100 Energy potions.
 Mix 500 Prayer potions.
-Obtain 5 unique items from Medium caskets
-Finish the beginner clue CL
-Finish the easy clue CL
-Finish the easy clue CL
 Receive every defender
 Complete 5 games of Monkey Rumble
 Receive any 5 custom pets
@@ -124,7 +126,6 @@ Open a Chimpling jar
 Open a Mystery impling jar
 Open a Eternal impling jar
 Open a Infernal impling jar
-Complete a Grandmaster clue scroll
 Receive any XP lamp
 Compete in the Fishing Contest
 Disassemble some items
@@ -185,15 +186,25 @@ Mix 500 unf potions
 Mix 500 potions
 Mine 1000 ores
 Burn 500 logs
-Smith 500 Iron items
-Smith 1000 Bronze items
-Cast 250 spells
+Smith items from 500 Iron bars
+Smith items from 1000 Bronze bars
+Cast 500 spells
 Collect 500 Blue dragon scales
 Collect 500 Mort myre fungus
 Collect 500 Red spider's eggs
+Smith items from 2500 Steel bars
+Create every godsword
+Finish the Treebeard CL
+Acquire, complete and open 200 Beginner clues/caskets
+Acquire, complete and open 200 Easy clues/caskets
+Acquire, complete and open 200 Medium clues/caskets
+Acquire, complete and open 200 Hard clues/caskets
+Acquire, complete and open 50 Elite clues/caskets
+Acquire, complete and open 20 Master clues/caskets
+Acquire, complete and open 10 Grandmaster clues/caskets
 
 
---------- Hard (128 tasks) -----------
+--------- Hard (135 tasks) -----------
 Complete the Hard Wilderness diary
 Complete the Hard Western Prov diary
 Complete the Hard Ardougne diary
@@ -212,8 +223,8 @@ Defeat a lava dragon
 Complete 100 slayer tasks
 Do 50 laps at the Ape Atoll Course
 Obtain 500 Marks of grace
-Reach combat level 95
-Reach total level 1500
+Reach combat level 126
+Reach total level 2000
 Defeat Tempoross 100 times
 Complete 100 Gnome restaurant deliveries
 Defeat Wintertodt 250 times
@@ -316,15 +327,22 @@ Mix 5000 unf potions
 Mix 5000 potions
 Mine 10,000 ores
 Burn 3500 logs
-Smith 2500 Iron items
-Smith 2500 Steel items
-Smith 250 Adamant items
-Smith 100 Rune items
-Smith 500 Mithril items
-Cast 2500 spells
+Smith items from 20,000 Mithril bars
+Smith items from 15,000 Adamantite bars
+Smith items from 10,000 Runite bars
+Cast 5000 spells
+Defeat Nex 500 Times
+Finish the Sea Kraken CL
+Acquire, complete and open 250 Beginner clues/caskets
+Acquire, complete and open 250 Easy clues/caskets
+Acquire, complete and open 250 Medium clues/caskets
+Acquire, complete and open 250 Hard clues/caskets
+Acquire, complete and open 250 Elite clues/caskets
+Acquire, complete and open 50 Master clues/caskets
+Acquire, complete and open 30 Grandmaster clues/caskets
 
 
---------- Elite (69 tasks) -----------
+--------- Elite (81 tasks) -----------
 Complete the Elite Wilderness diary
 Complete the Elite Western Prov diary
 Complete the Elite Ardougne diary
@@ -340,8 +358,7 @@ Complete the Elite Varrock diary
 Smelt 300 Adamantite bars from scratch
 Complete 250 slayer tasks
 Obtain 1000 Marks of grace
-Reach combat level 110
-Reach total level 2000
+Reach total level 2500
 Complete 300 Gnome restaurant deliveries
 Defeat Wintertodt 1000 times
 Catch 200 Black salamanders
@@ -350,7 +367,6 @@ Mix 500 Super strength potions.
 Mix 500 Super defence potions.
 Mix 500 Stamina potions.
 Mix 2000 Saradomin brews.
-Finish the hard clue CL
 Receive 3 3rd age items
 Complete 250 games of Monkey Rumble
 Finish the QBD CL
@@ -383,7 +399,7 @@ Defeat the Emerged Inferno
 Sacrifice 5b GP
 Sacrifice 250 different items
 Reach 60% CL completion
-Construct 10,000 objects
+Construct 50,000 objects
 Chop 50,000 of any logs
 Alch 5000 of any item
 Clean 15,000 herbs
@@ -391,16 +407,28 @@ Mix 15,000 unf potions
 Mix 15,000 potions
 Mine 25,000 ores
 Burn 8000 logs
-Smith 1000 Adamant items
-Smith 500 Rune items
-Cast 5000 spells
+Smith items from 50,000 Adamantite bars
+Smith items from 30,000 Runite bars
+Cast 10,000 spells
+Finish the graceful CL
+Finish the Queen Black Dragon CL
+Finish the Vasa Magus CL
+Finish the Abyssal Dragon CL
+Finish the Kalphite King CL
+Finish the Ignecarus CL
+Finish the King Goldemar CL
+Acquire, complete and open 500 Beginner clues/caskets
+Acquire, complete and open 500 Easy clues/caskets
+Acquire, complete and open 300 Medium clues/caskets
+Acquire, complete and open 300 Hard clues/caskets
+Acquire, complete and open 500 Elite clues/caskets
+Acquire, complete and open 200 Master clues/caskets
+Acquire, complete and open 200 Grandmaster clues/caskets
 
 
---------- Master (134 tasks) -----------
+--------- Master (140 tasks) -----------
 Build a Demonic Throne
-Defeat Nex 500 Times
 Receive atleast 1000 Agility Arena tickets
-Create every godsword
 Receive all Justiciar items
 Receive all Inquisitor armour pieces
 Receive all Chambers of Xeric Weapons
@@ -416,8 +444,6 @@ Achieve a TzKal cape
 Create every piece of Zenyte jewellery
 Create every piece of enchanted Zenyte jewellery
 Finish the god wars CL
-Complete 500 Elite clue scrolls
-Complete 200 Grandmaster clue scrolls
 Complete the Inferno 30 Times
 Smelt 500 Runite bars from scratch
 Build a Ancient rejuvenation pool in your PoH
@@ -426,15 +452,12 @@ Do 2000 laps at the Ardougne Rooftop Course
 Do 1000 laps at the Prifddinas Rooftop Course
 Do 1000 laps at the Daemonheim Rooftop Course
 Obtain 5000 Marks of grace
-Reach combat level 126
-Reach total level 2300
+Reach total level 3000
 Complete 1000 Gnome restaurant deliveries
 Defeat Wintertodt 2500 times
 Mix 1000 Stamina potions.
 Mix 5000 Saradomin brews.
 Mix 5000 Super restores.
-Finish the elite clue CL
-Finish the master clue CL
 Obtain a First Age item
 Receive 10 3rd age items
 Complete 1000 games of Monkey Rumble
@@ -528,8 +551,21 @@ Mix 100,000 unf potions
 Mix 100,000 potions
 Mine 50,000 ores
 Burn 15,000 logs
-Smith 3000 Adamant items
-Smith 2000 Rune items
-Cast 10,000 spells
+Smith items from 200,000 Adamantite bars
+Smith 100,000 Rune items
+Cast 50,000 spells
+Acquire, complete and open 1000 Beginner clues/caskets
+Acquire, complete and open 1000 Easy clues/caskets
+Acquire, complete and open 1000 Medium clues/caskets
+Acquire, complete and open 1000 Hard clues/caskets
+Acquire, complete and open 1000 Elite clues/caskets
+Acquire, complete and open 750 Master clues/caskets
+Acquire, complete and open 500 Grandmaster clues/caskets
+Reach 92% CL completion
+Reach 94% CL completion
+Reach 97% CL completion
+Reach 98% CL completion
+Reach 99% CL completion
+Reach 100% CL completion
 
 

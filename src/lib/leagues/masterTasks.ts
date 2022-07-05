@@ -4,8 +4,6 @@ import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/f
 import {
 	all3rdAgeItems,
 	chambersOfXericCL,
-	cluesEliteCL,
-	cluesMasterCL,
 	cmbClothes,
 	customPetsCL,
 	fishingContestCL,
@@ -15,12 +13,11 @@ import {
 	gorajanWarriorOutfit
 } from '../data/CollectionsExport';
 import { Inventions } from '../invention/inventions';
-import { NexMonster } from '../nex';
 import { dungBuyables } from '../skilling/skills/dung/dungData';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { getTameSpecies } from '../tames';
-import { calcCombatLevel, calcTotalLevel } from '../util';
+import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { Task } from './leagues';
 
@@ -33,30 +30,10 @@ export const masterTasks: Task[] = [
 		}
 	},
 	{
-		id: 4001,
-		name: 'Defeat Nex 500 Times',
-		has: async ({ monsterScores }) => {
-			return (monsterScores[NexMonster.id] ?? 0) >= 500;
-		}
-	},
-	{
 		id: 4002,
 		name: 'Receive atleast 1000 Agility Arena tickets',
 		has: async ({ cl }) => {
 			return cl.amount('Agility arena ticket') >= 1000;
-		}
-	},
-	{
-		id: 4003,
-		name: 'Create every godsword',
-		has: async ({ cl }) => {
-			return resolveItems([
-				'Armadyl godsword',
-				'Bandos godsword',
-				'Saradomin godsword',
-				'Zamorak godsword',
-				'Ancient godsword'
-			]).every(gs => cl.has(gs));
 		}
 	},
 	{
@@ -202,20 +179,6 @@ export const masterTasks: Task[] = [
 		}
 	},
 	{
-		id: 4019,
-		name: 'Complete 500 Elite clue scrolls',
-		has: async ({ opens }) => {
-			return opens.amount('Clue scroll (elite)') >= 500;
-		}
-	},
-	{
-		id: 4020,
-		name: 'Complete 200 Grandmaster clue scrolls',
-		has: async ({ opens }) => {
-			return opens.amount('Clue scroll (grandmaster)') >= 200;
-		}
-	},
-	{
 		id: 4021,
 		name: 'Complete the Inferno 30 Times',
 		has: async ({ activityCounts }) => {
@@ -272,17 +235,10 @@ export const masterTasks: Task[] = [
 		}
 	},
 	{
-		id: 4029,
-		name: 'Reach combat level 126',
-		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP) >= 126;
-		}
-	},
-	{
 		id: 4030,
-		name: 'Reach total level 2300',
+		name: 'Reach total level 3000',
 		has: async ({ skillsLevels }) => {
-			return calcTotalLevel(skillsLevels) >= 2300;
+			return calcTotalLevel(skillsLevels) >= 2800;
 		}
 	},
 	{
@@ -318,20 +274,6 @@ export const masterTasks: Task[] = [
 		name: 'Mix 5000 Super restores.',
 		has: async ({ cl }) => {
 			return sumArr(resolveItems(['Super restore (3)', 'Super restore (4)']).map(i => cl.amount(i))) >= 5000;
-		}
-	},
-	{
-		id: 4036,
-		name: 'Finish the elite clue CL',
-		has: async ({ cl }) => {
-			return cluesEliteCL.filter(i => cl.has(i)).length === cluesEliteCL.length;
-		}
-	},
-	{
-		id: 4037,
-		name: 'Finish the master clue CL',
-		has: async ({ cl }) => {
-			return cluesMasterCL.filter(i => cl.has(i)).length === cluesMasterCL.length;
 		}
 	},
 	{
@@ -998,37 +940,114 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4132,
-		name: 'Smith 3000 Adamant items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('adamant'))
-						.map(i => i[1])
-				) >= 1000
-			);
+		name: 'Smith items from 200,000 Adamantite bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Adamantite bar') >= 200_000;
 		}
 	},
 	{
 		id: 4133,
-		name: 'Smith 2000 Rune items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('rune'))
-						.map(i => i[1])
-				) >= 2000
-			);
+		name: 'Smith 100,000 Rune items',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Runite bar') >= 100_000;
 		}
 	},
 	{
 		id: 4134,
-		name: 'Cast 10,000 spells',
+		name: 'Cast 50,000 spells',
 		has: async ({ spellCastingStats }) => {
-			return sumArr(spellCastingStats.map(i => i.qty)) >= 10_000;
+			return sumArr(spellCastingStats.map(i => i.qty)) >= 50_000;
+		}
+	},
+	{
+		id: 4135,
+		name: 'Acquire, complete and open 1000 Beginner clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (beginner)') >= 1000;
+		}
+	},
+	{
+		id: 4136,
+		name: 'Acquire, complete and open 1000 Easy clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (easy)') >= 1000;
+		}
+	},
+	{
+		id: 4137,
+		name: 'Acquire, complete and open 1000 Medium clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (medium)') >= 1000;
+		}
+	},
+	{
+		id: 4138,
+		name: 'Acquire, complete and open 1000 Hard clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (hard)') >= 1000;
+		}
+	},
+	{
+		id: 4139,
+		name: 'Acquire, complete and open 1000 Elite clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (elite)') >= 1000;
+		}
+	},
+	{
+		id: 4140,
+		name: 'Acquire, complete and open 750 Master clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (master)') >= 750;
+		}
+	},
+	{
+		id: 4141,
+		name: 'Acquire, complete and open 500 Grandmaster clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (grandmaster)') >= 500;
+		}
+	},
+	{
+		id: 4142,
+		name: 'Reach 92% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 92;
+		}
+	},
+	{
+		id: 4143,
+		name: 'Reach 94% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 94;
+		}
+	},
+	{
+		id: 4144,
+		name: 'Reach 97% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 97;
+		}
+	},
+	{
+		id: 4145,
+		name: 'Reach 98% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 98;
+		}
+	},
+	{
+		id: 4146,
+		name: 'Reach 99% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 99;
+		}
+	},
+	{
+		id: 4147,
+		name: 'Reach 100% CL completion',
+		has: async ({ clPercent }) => {
+			return clPercent >= 100;
 		}
 	}
 ];

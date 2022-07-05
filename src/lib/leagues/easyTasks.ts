@@ -2,7 +2,7 @@ import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { barrowsChestCL, cluesBeginnerCL, cluesEasyCL, customPetsCL } from '../data/CollectionsExport';
+import { barrowsChestCL, customPetsCL } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -175,23 +175,9 @@ export const easyTasks: Task[] = [
 	},
 	{
 		id: 22,
-		name: 'Reach total level 300',
+		name: 'Reach total level 500',
 		has: async ({ skillsLevels }) => {
-			return calcTotalLevel(skillsLevels) >= 300;
-		}
-	},
-	{
-		id: 23,
-		name: 'Obtain 3 unique items from Beginner caskets',
-		has: async ({ cl }) => {
-			return cluesBeginnerCL.filter(i => cl.has(i)).length >= 3;
-		}
-	},
-	{
-		id: 24,
-		name: 'Obtain 3 unique items from Easy caskets',
-		has: async ({ cl }) => {
-			return cluesEasyCL.filter(i => cl.has(i)).length >= 3;
+			return calcTotalLevel(skillsLevels) >= 500;
 		}
 	},
 	{
@@ -542,16 +528,9 @@ export const easyTasks: Task[] = [
 	},
 	{
 		id: 72,
-		name: 'Smith 100 Bronze items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('bronze'))
-						.map(i => i[1])
-				) >= 100
-			);
+		name: 'Smith items from 250 Bronze bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Bronze bar') >= 250;
 		}
 	},
 	{
@@ -559,6 +538,62 @@ export const easyTasks: Task[] = [
 		name: 'Cast 100 spells',
 		has: async ({ spellCastingStats }) => {
 			return sumArr(spellCastingStats.map(i => i.qty)) >= 100;
+		}
+	},
+	{
+		id: 74,
+		name: 'Smith items from 50 Iron bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Iron bar') >= 50;
+		}
+	},
+	{
+		id: 75,
+		name: 'Acquire, complete and open 100 Beginner clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (beginner)') >= 100;
+		}
+	},
+	{
+		id: 76,
+		name: 'Acquire, complete and open 50 Easy clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (easy)') >= 50;
+		}
+	},
+	{
+		id: 77,
+		name: 'Acquire, complete and open 20 Medium clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (medium)') >= 20;
+		}
+	},
+	{
+		id: 78,
+		name: 'Acquire, complete and open 10 Hard clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (hard)') >= 10;
+		}
+	},
+	{
+		id: 79,
+		name: 'Acquire, complete and open 5 Elite clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (elite)') >= 5;
+		}
+	},
+	{
+		id: 80,
+		name: 'Acquire, complete and open 2 Master clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (master)') >= 2;
+		}
+	},
+	{
+		id: 81,
+		name: 'Acquire, complete and open 1 Grandmaster clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (grandmaster)') >= 1;
 		}
 	}
 ];

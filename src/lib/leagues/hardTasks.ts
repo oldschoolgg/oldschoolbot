@@ -11,6 +11,7 @@ import {
 	masterCapesCL,
 	monkeyBackpacksCL,
 	pernixOutfit,
+	seaKrakenCL,
 	skillingPetsCL,
 	torvaOutfit,
 	virtusOutfit
@@ -33,6 +34,7 @@ import {
 } from '../diaries';
 import { dyedItems } from '../dyedItems';
 import { Inventions } from '../invention/inventions';
+import { NexMonster } from '../nex';
 import { allThirdAgeItems } from '../simulation/sharedTables';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
@@ -168,16 +170,16 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2018,
-		name: 'Reach combat level 95',
+		name: 'Reach combat level 126',
 		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP) >= 95;
+			return calcCombatLevel(skillsXP) >= 126;
 		}
 	},
 	{
 		id: 2019,
-		name: 'Reach total level 1500',
+		name: 'Reach total level 2000',
 		has: async ({ skillsLevels }) => {
-			return calcTotalLevel(skillsLevels) >= 1500;
+			return calcTotalLevel(skillsLevels) >= 2000;
 		}
 	},
 	{
@@ -921,79 +923,93 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2123,
-		name: 'Smith 2500 Iron items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('iron'))
-						.map(i => i[1])
-				) >= 2500
-			);
-		}
-	},
-	{
-		id: 2124,
-		name: 'Smith 2500 Steel items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('steel'))
-						.map(i => i[1])
-				) >= 2500
-			);
+		name: 'Smith items from 20,000 Mithril bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Mithril bar') >= 20_000;
 		}
 	},
 	{
 		id: 2125,
-		name: 'Smith 250 Adamant items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('adamant'))
-						.map(i => i[1])
-				) >= 250
-			);
+		name: 'Smith items from 15,000 Adamantite bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Adamantite bar') >= 20_000;
 		}
 	},
 	{
 		id: 2126,
-		name: 'Smith 100 Rune items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('rune'))
-						.map(i => i[1])
-				) >= 100
-			);
-		}
-	},
-	{
-		id: 2127,
-		name: 'Smith 500 Mithril items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('mithril'))
-						.map(i => i[1])
-				) >= 500
-			);
+		name: 'Smith items from 10,000 Runite bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Runite bar') >= 10_000;
 		}
 	},
 	{
 		id: 2128,
-		name: 'Cast 2500 spells',
+		name: 'Cast 5000 spells',
 		has: async ({ spellCastingStats }) => {
-			return sumArr(spellCastingStats.map(i => i.qty)) >= 2500;
+			return sumArr(spellCastingStats.map(i => i.qty)) >= 5000;
+		}
+	},
+	{
+		id: 2129,
+		name: 'Defeat Nex 500 Times',
+		has: async ({ monsterScores }) => {
+			return (monsterScores[NexMonster.id] ?? 0) >= 500;
+		}
+	},
+	{
+		id: 2130,
+		name: 'Finish the Sea Kraken CL',
+		has: async ({ cl }) => {
+			return seaKrakenCL.every(gs => cl.has(gs));
+		}
+	},
+	{
+		id: 2131,
+		name: 'Acquire, complete and open 250 Beginner clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (beginner)') >= 250;
+		}
+	},
+	{
+		id: 2132,
+		name: 'Acquire, complete and open 250 Easy clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (easy)') >= 250;
+		}
+	},
+	{
+		id: 2133,
+		name: 'Acquire, complete and open 250 Medium clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (medium)') >= 250;
+		}
+	},
+	{
+		id: 2134,
+		name: 'Acquire, complete and open 250 Hard clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (hard)') >= 250;
+		}
+	},
+	{
+		id: 2135,
+		name: 'Acquire, complete and open 250 Elite clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (elite)') >= 250;
+		}
+	},
+	{
+		id: 2136,
+		name: 'Acquire, complete and open 50 Master clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (master)') >= 50;
+		}
+	},
+	{
+		id: 2137,
+		name: 'Acquire, complete and open 30 Grandmaster clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (grandmaster)') >= 30;
 		}
 	}
 ];

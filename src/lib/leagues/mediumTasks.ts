@@ -2,14 +2,7 @@ import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import {
-	barrowsChestCL,
-	cluesBeginnerCL,
-	cluesEasyCL,
-	cluesMediumCL,
-	customPetsCL,
-	cyclopsCL
-} from '../data/CollectionsExport';
+import { barrowsChestCL, customPetsCL, cyclopsCL, treeBeardCL } from '../data/CollectionsExport';
 import {
 	ArdougneDiary,
 	DesertDiary,
@@ -121,9 +114,9 @@ export const mediumTasks: Task[] = [
 	},
 	{
 		id: 1013,
-		name: 'Defeat a greater demon',
+		name: 'Defeat 100 greater demons',
 		has: async ({ monsterScores }) => {
-			return (monsterScores[Monsters.GreaterDemon.id] ?? 0) >= 1;
+			return (monsterScores[Monsters.GreaterDemon.id] ?? 0) >= 100;
 		}
 	},
 	{
@@ -193,14 +186,14 @@ export const mediumTasks: Task[] = [
 		id: 1023,
 		name: 'Reach combat level 70',
 		has: async ({ skillsXP }) => {
-			return calcCombatLevel(skillsXP) >= 70;
+			return calcCombatLevel(skillsXP) >= 90;
 		}
 	},
 	{
 		id: 1024,
-		name: 'Reach total level 600',
+		name: 'Reach total level 1000',
 		has: async ({ skillsLevels }) => {
-			return calcTotalLevel(skillsLevels) >= 600;
+			return calcTotalLevel(skillsLevels) >= 1000;
 		}
 	},
 	{
@@ -264,34 +257,6 @@ export const mediumTasks: Task[] = [
 		name: 'Mix 500 Prayer potions.',
 		has: async ({ cl }) => {
 			return sumArr(resolveItems(['Prayer potion (3)', 'Prayer potion (4)']).map(i => cl.amount(i))) >= 500;
-		}
-	},
-	{
-		id: 1034,
-		name: 'Obtain 5 unique items from Medium caskets',
-		has: async ({ cl }) => {
-			return cluesMediumCL.filter(i => cl.has(i)).length >= 5;
-		}
-	},
-	{
-		id: 1035,
-		name: 'Finish the beginner clue CL',
-		has: async ({ cl }) => {
-			return cluesBeginnerCL.filter(i => cl.has(i)).length === cluesBeginnerCL.length;
-		}
-	},
-	{
-		id: 1036,
-		name: 'Finish the easy clue CL',
-		has: async ({ cl }) => {
-			return cluesEasyCL.filter(i => cl.has(i)).length === cluesEasyCL.length;
-		}
-	},
-	{
-		id: 1037,
-		name: 'Finish the easy clue CL',
-		has: async ({ cl }) => {
-			return cluesEasyCL.filter(i => cl.has(i)).length === cluesEasyCL.length;
 		}
 	},
 	{
@@ -362,13 +327,6 @@ export const mediumTasks: Task[] = [
 		name: 'Open a Infernal impling jar',
 		has: async ({ opens }) => {
 			return opens.has('Infernal impling jar');
-		}
-	},
-	{
-		id: 1048,
-		name: 'Complete a Grandmaster clue scroll',
-		has: async ({ opens }) => {
-			return opens.amount('Clue scroll (grandmaster)') >= 1;
 		}
 	},
 	{
@@ -814,37 +772,23 @@ export const mediumTasks: Task[] = [
 	},
 	{
 		id: 1109,
-		name: 'Smith 500 Iron items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('iron'))
-						.map(i => i[1])
-				) >= 500
-			);
+		name: 'Smith items from 500 Iron bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Iron bar') >= 500;
 		}
 	},
 	{
 		id: 1110,
-		name: 'Smith 1000 Bronze items',
-		has: async ({ smithingStats }) => {
-			return (
-				sumArr(
-					smithingStats
-						.items()
-						.filter(i => i[0].name.toLowerCase().includes('bronze'))
-						.map(i => i[1])
-				) >= 1000
-			);
+		name: 'Smith items from 1000 Bronze bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Bronze bar') >= 1000;
 		}
 	},
 	{
 		id: 1111,
-		name: 'Cast 250 spells',
+		name: 'Cast 500 spells',
 		has: async ({ spellCastingStats }) => {
-			return sumArr(spellCastingStats.map(i => i.qty)) >= 250;
+			return sumArr(spellCastingStats.map(i => i.qty)) >= 500;
 		}
 	},
 	{
@@ -866,6 +810,82 @@ export const mediumTasks: Task[] = [
 		name: "Collect 500 Red spider's eggs",
 		has: async ({ collectingStats }) => {
 			return collectingStats.amount("Red spiders' eggs") >= 500;
+		}
+	},
+	{
+		id: 1115,
+		name: 'Smith items from 2500 Steel bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Steel bar') >= 2500;
+		}
+	},
+	{
+		id: 1116,
+		name: 'Create every godsword',
+		has: async ({ cl }) => {
+			return resolveItems([
+				'Armadyl godsword',
+				'Bandos godsword',
+				'Saradomin godsword',
+				'Zamorak godsword',
+				'Ancient godsword'
+			]).every(gs => cl.has(gs));
+		}
+	},
+	{
+		id: 1117,
+		name: 'Finish the Treebeard CL',
+		has: async ({ cl }) => {
+			return treeBeardCL.every(gs => cl.has(gs));
+		}
+	},
+	{
+		id: 1118,
+		name: 'Acquire, complete and open 200 Beginner clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (beginner)') >= 200;
+		}
+	},
+	{
+		id: 1119,
+		name: 'Acquire, complete and open 200 Easy clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (easy)') >= 200;
+		}
+	},
+	{
+		id: 1120,
+		name: 'Acquire, complete and open 200 Medium clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (medium)') >= 200;
+		}
+	},
+	{
+		id: 1121,
+		name: 'Acquire, complete and open 200 Hard clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (hard)') >= 200;
+		}
+	},
+	{
+		id: 1122,
+		name: 'Acquire, complete and open 50 Elite clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (elite)') >= 50;
+		}
+	},
+	{
+		id: 1123,
+		name: 'Acquire, complete and open 20 Master clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (master)') >= 20;
+		}
+	},
+	{
+		id: 1124,
+		name: 'Acquire, complete and open 10 Grandmaster clues/caskets',
+		has: async ({ actualClues }) => {
+			return actualClues.amount('Clue scroll (grandmaster)') >= 10;
 		}
 	}
 ];

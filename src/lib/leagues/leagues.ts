@@ -10,13 +10,13 @@ import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
 import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { calcCLDetails } from '../data/Collections';
 import { UserFullGearSetup } from '../gear';
+import ClueTiers from '../minions/data/clueTiers';
 import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import {
 	personalAlchingStats,
 	personalCollectingStats,
 	personalConstructionStats,
 	personalFiremakingStats,
-	personalHerbloreStats,
 	personalMiningStats,
 	personalSmithingStats,
 	personalSpellCastStats,
@@ -28,10 +28,12 @@ import Grimy from '../skilling/skills/herblore/mixables/grimy';
 import Potions from '../skilling/skills/herblore/mixables/potions';
 import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
 import creatures from '../skilling/skills/hunter/creatures';
+import smithables from '../skilling/skills/smithing/smithables';
 import { getSlayerTaskStats } from '../slayer/slayerUtil';
 import { getAllUserTames } from '../tames';
 import { ItemBank, Skills } from '../types';
 import { stringMatches } from '../util';
+import { getItem } from '../util/getOSItem';
 import { easyTasks } from './easyTasks';
 import { eliteTasks } from './eliteTasks';
 import { hardTasks } from './hardTasks';
@@ -71,6 +73,8 @@ interface HasFunctionArgs {
 	smithingStats: Bank;
 	spellCastingStats: Awaited<ReturnType<typeof personalSpellCastStats>>;
 	collectingStats: Bank;
+	smithingSuppliesUsed: Bank;
+	actualClues: Bank;
 }
 
 export interface Task {
@@ -156,6 +160,65 @@ function betterHerbloreStats(herbStats: Bank) {
 	return { herbs, unfPots, pots };
 }
 
+export async function personalHerbloreStatsWithoutZahur(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Herblore'
+AND user_id = '${user.id}'::bigint
+AND data->>'mixableID' IS NOT NULL
+AND (data->>'zahur')::boolean = false
+GROUP BY data->>'mixableID';`);
+	const items = new Bank();
+	for (const res of result) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		items.add(item.id, res.qty);
+	}
+	return items;
+}
+
+function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
+	let input = new Bank();
+	for (const [item, qty] of itemsSmithed.items()) {
+		const smithable = smithables.find(i => i.id === item.id);
+		if (!smithable) continue;
+		input.add(new Bank(smithable.inputBars).multiply(qty));
+	}
+	return input;
+}
+
+async function calcActualClues(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'ClueCompletion'
+AND user_id = '${user.id}'::bigint
+AND data->>'clueID' IS NOT NULL
+GROUP BY data->>'clueID';`);
+	const casketsCompleted = new Bank();
+	for (const res of result) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		casketsCompleted.add(item.id, res.qty);
+	}
+	const cl = new Bank(user.collectionLogBank as ItemBank);
+	const opens = new Bank(user.openable_scores as ItemBank);
+
+	// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
+	const actualClues = new Bank();
+
+	for (const [item, qtyCompleted] of casketsCompleted.items()) {
+		const clueTier = ClueTiers.find(i => i.id === item.id)!;
+		actualClues.add(
+			clueTier.scrollID,
+			Math.min(qtyCompleted, cl.amount(clueTier.scrollID), opens.amount(clueTier.id))
+		);
+	}
+
+	return casketsCompleted;
+}
+
 export async function leaguesCheckUser(userID: string) {
 	const [klasaUser, mahojiUser] = await Promise.all([
 		globalClient.fetchUser(userID),
@@ -176,7 +239,8 @@ export async function leaguesCheckUser(userID: string) {
 		smithingStats,
 		spellCastingStats,
 		collectingStats,
-		woodcuttingStats
+		woodcuttingStats,
+		actualClues
 	] = await Promise.all([
 		personalConstructionStats(mahojiUser),
 		getPOH(userID),
@@ -186,16 +250,16 @@ export async function leaguesCheckUser(userID: string) {
 		getMinigameEntity(userID),
 		prisma.slayerTask.count({ where: { user_id: userID } }),
 		personalAlchingStats(mahojiUser),
-		personalHerbloreStats(mahojiUser),
+		personalHerbloreStatsWithoutZahur(mahojiUser),
 		personalMiningStats(mahojiUser),
 		personalFiremakingStats(mahojiUser),
 		personalSmithingStats(mahojiUser),
 		personalSpellCastStats(mahojiUser),
 		personalCollectingStats(mahojiUser),
-		personalWoodcuttingStats(mahojiUser)
+		personalWoodcuttingStats(mahojiUser),
+		calcActualClues(mahojiUser)
 	]);
 	const clPercent = calcCLDetails(mahojiUser).percent;
-
 	const args: HasFunctionArgs = {
 		cl: new Bank(mahojiUser.collectionLogBank as ItemBank),
 		bank: new Bank(mahojiUser.bank as ItemBank),
@@ -226,7 +290,9 @@ export async function leaguesCheckUser(userID: string) {
 		smithingStats,
 		spellCastingStats,
 		collectingStats,
-		woodcuttingStats
+		woodcuttingStats,
+		smithingSuppliesUsed: calcSuppliesUsedForSmithing(smithingStats),
+		actualClues
 	};
 
 	let resStr = '';
@@ -251,5 +317,7 @@ export async function leaguesCheckUser(userID: string) {
 
 	return `${calcWhatPercent(totalFinished, totalTasks).toFixed(1)}% Completion
 
-${resStr}`;
+${resStr}
+
+**Actual Clues:** ${actualClues}`;
 }
