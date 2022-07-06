@@ -157,10 +157,10 @@ export async function minionKillCommand(
 	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
 	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
 	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
-	if (name.toLowerCase().includes('ignecarus')) return igneCommand(interaction, user, channelID, name);
-	if (name.toLowerCase().includes('goldemar')) return kgCommand(interaction, user, channelID, name);
-	if (name.toLowerCase().includes('kalphite king')) return kkCommand(interaction, user, channelID, name);
-	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name);
+	if (name.toLowerCase().includes('ignecarus')) return igneCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes('goldemar')) return kgCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes('kalphite king')) return kkCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name, quantity);
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
