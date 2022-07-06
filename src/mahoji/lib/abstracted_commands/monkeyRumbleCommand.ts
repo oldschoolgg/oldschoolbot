@@ -60,6 +60,10 @@ export async function monkeyRumbleCommand(user: KlasaUser, channelID: bigint): C
 		};
 	}
 
+	if (user.minionIsBusy) {
+		return 'Your minion is busy.';
+	}
+
 	const boosts = [];
 
 	let fightDuration = Time.Minute * 9;

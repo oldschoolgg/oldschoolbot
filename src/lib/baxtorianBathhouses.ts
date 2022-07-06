@@ -296,6 +296,9 @@ export async function baxtorianBathhousesStartCommand({
 	ore?: string;
 	mixture?: string;
 }) {
+	if (klasaUser.minionIsBusy) {
+		return 'Your minion is busy.';
+	}
 	const userBank = new Bank(user.bank as ItemBank);
 	const maxTripLength = calcMaxTripLength(user);
 	const durationPerPath = Time.Minute * 10;

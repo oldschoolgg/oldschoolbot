@@ -35,7 +35,9 @@ export async function fishingContestStartCommand(user: KlasaUser, channelID: big
 	if (!['Contest rod', "Beginner's tackle box"].every(i => user.hasItemEquippedOrInBank(i))) {
 		return 'You need to buy a Contest rod and a tackle box to compete in the Fishing contest.';
 	}
-
+	if (user.minionIsBusy) {
+		return 'Your minion is busy.';
+	}
 	let quantity = 1;
 	let duration = Math.floor(quantity * Time.Minute * 1.69);
 	let quantityBoosts = [];
