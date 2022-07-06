@@ -76,51 +76,45 @@ export async function duelCommand(
 
 	async function confirm(amount: number) {
 		duelMessage.edit({ components: [] }).catch(noOp);
-		duelTargetUser.toggleBusy(true);
-		duelSourceUser.toggleBusy(true);
 		if (!(await checkBal(duelSourceUser, amount)) || !(await checkBal(duelTargetUser, amount))) {
 			duelMessage.delete().catch(noOp);
-			duelTargetUser.toggleBusy(false);
-			duelSourceUser.toggleBusy(false);
 			return 'User appears to be less wealthy than expected (they lost some money before accepting...).';
 		}
+
+		const b = new Bank().add('Coins', amount);
+		await duelSourceUser.removeItemsFromBank(b);
+		await duelTargetUser.removeItemsFromBank(b);
+
+		await duelMessage
+			.edit(`${duelTargetUser.username} accepted the duel. You both enter the duel arena...`)
+			.catch(noOp);
+
+		await sleep(2000);
+		await duelMessage
+			.edit(`${duelSourceUser.username} and ${duelTargetUser.username} begin fighting...`)
+			.catch(noOp);
+
 		const [winner, loser] =
 			Math.random() > 0.5 ? [duelSourceUser, duelTargetUser] : [duelTargetUser, duelSourceUser];
+
+		await sleep(2000);
+		await duelMessage.edit('The fight is almost over...').catch(noOp);
+		await sleep(2000);
+
 		const winningAmount = amount * 2;
 		const tax = winningAmount - winningAmount * 0.95;
 
-		try {
-			const b = new Bank().add('Coins', amount);
-			await duelSourceUser.removeItemsFromBank(b);
-			await duelTargetUser.removeItemsFromBank(b);
+		const dividedAmount = tax / 1_000_000;
+		updateGPTrackSetting('duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
 
-			await duelMessage
-				.edit(`${duelTargetUser.username} accepted the duel. You both enter the duel arena...`)
-				.catch(noOp);
+		const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins) as number;
+		winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);
 
-			await sleep(2000);
-			await duelMessage
-				.edit(`${duelSourceUser.username} and ${duelTargetUser.username} begin fighting...`)
-				.catch(noOp);
+		const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses) as number;
+		loser.settings.update(UserSettings.Stats.DuelLosses, lossesOfLoser + 1);
 
-			await sleep(2000);
-			await duelMessage.edit('The fight is almost over...').catch(noOp);
-			await sleep(2000);
+		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount - tax), collectionLog: false });
 
-			const dividedAmount = tax / 1_000_000;
-			updateGPTrackSetting('duelTaxBank', Math.floor(Math.round(dividedAmount * 100) / 100));
-
-			const winsOfWinner = winner.settings.get(UserSettings.Stats.DuelWins) as number;
-			winner.settings.update(UserSettings.Stats.DuelWins, winsOfWinner + 1);
-
-			const lossesOfLoser = loser.settings.get(UserSettings.Stats.DuelLosses) as number;
-			loser.settings.update(UserSettings.Stats.DuelLosses, lossesOfLoser + 1);
-
-			await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount - tax), collectionLog: false });
-		} finally {
-			duelTargetUser.toggleBusy(false);
-			duelSourceUser.toggleBusy(false);
-		}
 		if (amount >= 1_000_000_000) {
 			globalClient.emit(
 				Events.ServerNotification,
