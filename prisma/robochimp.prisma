@@ -28,5 +28,10 @@ model User {
     id   BigInt @id @unique
     bits Int[]
 
+    // HAS TO BE IN OSBB TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+    leagues_completed_tasks_ids Int[]
+    leagues_points_balance      Int
+    leagues_points_total        Int
+
     @@map("user")
 }

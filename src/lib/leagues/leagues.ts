@@ -98,7 +98,7 @@ export function leaguesSlayerTaskForMonster(args: HasFunctionArgs, mon: Monster 
 	return data !== undefined && data.total_tasks >= amount;
 }
 
-const a = [
+export const leagueTasks = [
 	{ name: 'Easy', tasks: easyTasks },
 	{ name: 'Medium', tasks: mediumTasks },
 	{ name: 'Hard', tasks: hardTasks },
@@ -106,11 +106,13 @@ const a = [
 	{ name: 'Master', tasks: masterTasks }
 ];
 
+export const allLeagueTasks = leagueTasks.map(i => i.tasks).flat(2);
+
 let taskIDs = new Set();
 
 let totalTasks = 0;
 let str = '';
-for (const { name, tasks } of a) {
+for (const { name, tasks } of leagueTasks) {
 	str += `--------- ${name} (${tasks.length} tasks) -----------\n`;
 	for (const task of tasks) {
 		if (taskIDs.has(task.id)) throw new Error(`WTFFFFFFFFFFF: ${task.id}`);
@@ -222,7 +224,8 @@ GROUP BY data->>'clueID';`);
 export async function leaguesCheckUser(userID: string) {
 	const [klasaUser, mahojiUser] = await Promise.all([
 		globalClient.fetchUser(userID),
-		mahojiUsersSettingsFetch(userID)
+		mahojiUsersSettingsFetch(userID),
+		roboChimpClient.user.findFirst({ where: { id: BigInt(userID) } })
 	]);
 	const [
 		conStats,
@@ -233,7 +236,7 @@ export async function leaguesCheckUser(userID: string) {
 		minigames,
 		slayerTasksCompleted,
 		alchingStats,
-		herbloreStats,
+		_herbloreStats,
 		miningStats,
 		firemakingStats,
 		smithingStats,
@@ -260,6 +263,8 @@ export async function leaguesCheckUser(userID: string) {
 		calcActualClues(mahojiUser)
 	]);
 	const clPercent = calcCLDetails(mahojiUser).percent;
+	const herbloreStats = betterHerbloreStats(_herbloreStats);
+	const smithingSuppliesUsed = calcSuppliesUsedForSmithing(smithingStats);
 	const args: HasFunctionArgs = {
 		cl: new Bank(mahojiUser.collectionLogBank as ItemBank),
 		bank: new Bank(mahojiUser.bank as ItemBank),
@@ -284,28 +289,30 @@ export async function leaguesCheckUser(userID: string) {
 		clPercent,
 		conStats,
 		alchingStats,
-		herbloreStats: betterHerbloreStats(herbloreStats),
+		herbloreStats,
 		miningStats,
 		firemakingStats,
 		smithingStats,
 		spellCastingStats,
 		collectingStats,
 		woodcuttingStats,
-		smithingSuppliesUsed: calcSuppliesUsedForSmithing(smithingStats),
+		smithingSuppliesUsed,
 		actualClues
 	};
 
 	let resStr = '';
 	let totalTasks = 0;
 	let totalFinished = 0;
+	const finishedIDs: number[] = [];
 
-	for (const { name, tasks } of a) {
+	for (const { name, tasks } of leagueTasks) {
 		const finished: Task[] = [];
 		const notFinished: Task[] = [];
 		totalTasks += tasks.length;
 		for (const task of tasks) {
 			const has = await task.has(args);
 			if (has) {
+				finishedIDs.push(task.id);
 				finished.push(task);
 			} else {
 				notFinished.push(task);
@@ -315,9 +322,12 @@ export async function leaguesCheckUser(userID: string) {
 		resStr += `${name}: Finished ${finished.length}/${tasks.length}\n`;
 	}
 
-	return `${calcWhatPercent(totalFinished, totalTasks).toFixed(1)}% Completion
+	return {
+		content: `${calcWhatPercent(totalFinished, totalTasks).toFixed(1)}% Completion
 
 ${resStr}
 
-**Actual Clues:** ${actualClues}`;
+**Actual Clues:** ${actualClues}`,
+		finished: finishedIDs
+	};
 }
