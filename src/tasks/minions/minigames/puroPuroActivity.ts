@@ -13,7 +13,7 @@ import { minionName } from '../../../lib/util/minionUtils';
 function singleImpHunt(minutes: number, user: KlasaUser) {
 	let totalQty = 0;
 	for (let i = 0; i < minutes; i++) {
-		let qty = randInt(4, 7);
+		let qty = randInt(5, 6);
 		totalQty += qty;
 	}
 	if (!user.hasGracefulEquipped()) {
