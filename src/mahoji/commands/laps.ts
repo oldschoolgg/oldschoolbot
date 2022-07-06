@@ -157,7 +157,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			const costRes = await inventionItemBoost({
 				userID: user.id,
 				inventionID: InventionID.SilverHawkBoots,
-				duration: timePerLap * (options.quantity ?? Math.floor(maxTripLength / timePerLap))
+				duration: Math.min(maxTripLength, options.quantity ? options.quantity * timePerLap : maxTripLength)
 			});
 			if (costRes.success) {
 				timePerLap = Math.floor(timePerLap / inventionBoosts.silverHawks.agilityBoostMultiplier);
