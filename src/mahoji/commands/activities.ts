@@ -487,7 +487,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.puro_puro) {
 			return puroPuroStartCommand(klasaUser, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
-    }
+		}
 		if (options.cast) {
 			return castCommand(channelID, klasaUser, options.cast.spell, options.cast.quantity);
 		}
