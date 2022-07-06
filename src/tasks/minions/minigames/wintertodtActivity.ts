@@ -13,6 +13,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -123,16 +124,11 @@ export default class extends Task {
 		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
-		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			itemsAdded,
-			'',
-			true,
-			{
-				showNewCL: 1
-			},
+		const image = await makeBankImage({
+			bank: itemsAdded,
 			user,
 			previousCL
-		);
+		});
 
 		let output = `${user}, ${
 			user.minionName
@@ -155,6 +151,14 @@ export default class extends Task {
 			kc: quantity
 		});
 
-		handleTripFinish(user, channelID, output, ['wintertodt', {}, true], image!, data, itemsAdded);
+		handleTripFinish(
+			user,
+			channelID,
+			output,
+			['k', { name: 'wintertodt' }, true],
+			image.file.buffer,
+			data,
+			itemsAdded
+		);
 	}
 }

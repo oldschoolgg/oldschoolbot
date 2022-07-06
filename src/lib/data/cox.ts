@@ -21,6 +21,7 @@ import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
+import { userHasItemsEquippedAnywhere } from '../util/minionUtils';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -265,7 +266,12 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			if (
 				users.length > 1 &&
 				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow')
+				!user.hasItemEquippedOrInBank('Twisted bow') &&
+				!userHasItemsEquippedAnywhere(
+					user,
+					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],
+					true
+				)
 			) {
 				return `${user.username} doesn't own a Twisted bow or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}

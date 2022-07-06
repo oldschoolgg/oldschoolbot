@@ -10,6 +10,7 @@ import { GauntletOptions } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: GauntletOptions) {
@@ -64,23 +65,19 @@ export default class extends Task {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.GauntletLoot, loot);
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				loot,
-				`Loot From ${quantity - deaths}x ${name}`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: loot,
+			title: `Loot From ${quantity - deaths}x ${name}`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
 			user,
 			channelID,
 			str,
 			['minigames', { gauntlet: { start: { corrupted } } }, true],
-			image!,
+			image.file.buffer,
 			data,
 			loot
 		);

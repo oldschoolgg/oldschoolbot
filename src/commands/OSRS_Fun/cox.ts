@@ -1,9 +1,11 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { chambersOfXericCL } from '../../lib/data/CollectionsExport';
 import { BotCommand } from '../../lib/structures/BotCommand';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 
 const itemsToShow = chambersOfXericCL;
 
@@ -50,11 +52,12 @@ export default class extends BotCommand {
 					loot.add(lootBank);
 				}
 			}
-
-			return msg.channel.sendBankImage({
+			const image = await makeBankImage({
 				bank: loot,
 				title: `Loot from ${amount} solo raids with ${Util.toKMB(points)} points.`
 			});
+
+			return msg.channel.send({ files: [new MessageAttachment(image.file.buffer)] });
 		}
 
 		if (amount > limit) {

@@ -4,6 +4,7 @@ import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_com
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
+import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { MahojiUserOption } from '../mahojiSettings';
 
@@ -92,6 +93,24 @@ export const gambleCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		/**
+		 *
+		 * Slots
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'slots',
+			description: 'Allows you play slots and risk your GP to win big.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'amount',
+					description: 'Amount you wish to gamble.',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({
@@ -103,8 +122,9 @@ export const gambleCommand: OSBMahojiCommand = {
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
+		slots?: { amount?: string };
 	}>) => {
-		const KlasaUser = await globalClient.fetchUser(userID);
+		const klasaUser = await globalClient.fetchUser(userID);
 
 		/**
 		 *
@@ -113,9 +133,9 @@ export const gambleCommand: OSBMahojiCommand = {
 		 */
 		if (options.cape) {
 			if (options.cape.type) {
-				return capeGambleCommand(KlasaUser, options.cape.type, interaction);
+				return capeGambleCommand(klasaUser, options.cape.type, interaction);
 			}
-			return capeGambleStatsCommand(KlasaUser);
+			return capeGambleStatsCommand(klasaUser);
 		}
 		/**
 		 *
@@ -123,7 +143,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.dice) {
-			return diceCommand(KlasaUser, options.dice.amount);
+			return diceCommand(klasaUser, options.dice.amount);
 		}
 		/**
 		 *
@@ -132,7 +152,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		 */
 		if (options.duel) {
 			return duelCommand(
-				KlasaUser,
+				klasaUser,
 				interaction,
 				await globalClient.fetchUser(options.duel.user.user.id),
 				options.duel.amount
@@ -144,7 +164,16 @@ export const gambleCommand: OSBMahojiCommand = {
 		 *
 		 */
 		if (options.lucky_pick) {
-			return luckyPickCommand(KlasaUser, options.lucky_pick.amount, interaction);
+			return luckyPickCommand(klasaUser, options.lucky_pick.amount, interaction);
+		}
+
+		/**
+		 *
+		 * Slots
+		 *
+		 */
+		if (options.slots) {
+			return slotsCommand(interaction, klasaUser, options.slots.amount);
 		}
 		return 'Invalid command.';
 	}
