@@ -140,7 +140,7 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 			) {
 				return [
 					true,
-					'You need either a Dragon hunter crossbow or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
+					'You need either a Dragon hunter crossbow, Bow of faerdhinen (c) or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
 				];
 			}
 
