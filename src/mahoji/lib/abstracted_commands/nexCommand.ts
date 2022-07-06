@@ -55,7 +55,8 @@ export async function nexCommand(
 	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	channelID: bigint,
-	inputName: string
+	inputName: string,
+	inputQuantity: number | undefined
 ) {
 	if (interaction) interaction.deferReply();
 	const userBank = user.bank();
@@ -245,7 +246,7 @@ export async function nexCommand(
 	let [quantity, duration, perKillTime] = await calcDurQty(
 		users,
 		{ ...NexMonster, timeToFinish: effectiveTime },
-		undefined,
+		inputQuantity,
 		Time.Minute * 2,
 		Time.Minute * 30
 	);

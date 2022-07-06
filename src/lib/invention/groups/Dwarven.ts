@@ -13,6 +13,7 @@ export const Dwarven: DisassemblySourceGroup = {
 		{ item: i('Dwarven knife'), lvl: 99 },
 		{ item: i('Dwarven greataxe'), lvl: 99 },
 		{ item: i('Dwarven pickaxe'), lvl: 99 },
+		{ item: i('Dwarven gauntlets'), lvl: 99 },
 		{ item: i('Dwarven blessing'), lvl: 99, flags: new Set(['treasure_trails']) },
 		{ item: i('Dwarven full helm'), lvl: 99 },
 		{ item: i('Dwarven platebody'), lvl: 99 },

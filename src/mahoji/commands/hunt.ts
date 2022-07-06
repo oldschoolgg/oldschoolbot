@@ -167,25 +167,27 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
+		let timePerCatch = (catchTime * Time.Second) / traps;
+
 		const maxTripLength = user.maxTripLength('Hunter');
 		if (creature.huntTechnique === HunterTechniqueEnum.BoxTrapping) {
 			const boostRes = await inventionItemBoost({
 				userID: user.id,
 				inventionID: InventionID.QuickTrap,
-				duration: Math.floor(maxTripLength / ((catchTime * Time.Second) / traps))
+				duration: Math.min(maxTripLength, options.quantity ? options.quantity * timePerCatch : maxTripLength)
 			});
 			if (boostRes.success) {
 				boosts.push(
 					`${inventionBoosts.quickTrap.boxTrapBoostPercent}% boost for Quick-Trap invention (${boostRes.messages})`
 				);
-				catchTime = reduceNumByPercent(catchTime, inventionBoosts.quickTrap.boxTrapBoostPercent);
+				timePerCatch = reduceNumByPercent(timePerCatch, inventionBoosts.quickTrap.boxTrapBoostPercent);
 			}
 		}
 
 		let { quantity } = options;
-		if (!quantity) quantity = Math.floor(maxTripLength / ((catchTime * Time.Second) / traps));
+		if (!quantity) quantity = Math.floor(maxTripLength / timePerCatch);
 
-		let duration = Math.floor(((quantity * catchTime) / traps) * Time.Second);
+		let duration = Math.floor(quantity * timePerCatch);
 
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
