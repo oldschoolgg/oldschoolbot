@@ -101,7 +101,7 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The name of the bank background you want.',
 					autocomplete: async (value, user) => {
-						const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+						const mahojiUser = await mahojiUsersSettingsFetch(user.id, { bitfield: true });
 						const isMod = mahojiUser.bitfield.includes(BitField.isModerator);
 						const bankImages = (globalClient.tasks.get('bankImage') as BankImageTask).backgroundImages;
 						return bankImages
