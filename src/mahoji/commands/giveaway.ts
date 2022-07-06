@@ -18,7 +18,6 @@ export const giveawayCommand: OSBMahojiCommand = {
 	description: 'Giveaway items from your ban to other players.',
 	attributes: {
 		requiresMinion: true,
-		requiresMinionNotBusy: true,
 		examples: ['/giveaway items:10 trout, 5 coal time:1h']
 	},
 	options: [
