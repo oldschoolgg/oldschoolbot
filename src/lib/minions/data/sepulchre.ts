@@ -135,7 +135,7 @@ const pages = resolveItems([
 	'Mysterious page 5'
 ]);
 
-export function openCoffin(floor: number, cl: Bank): ItemBank {
+export function openCoffin(floor: number): ItemBank {
 	const loot = new Bank();
 	const floorObj = sepulchreFloors[floor - 1];
 	if (roll(floorObj.lockpickCoffinChance)) {
