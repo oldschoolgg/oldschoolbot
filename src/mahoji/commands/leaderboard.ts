@@ -514,12 +514,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'farming_contracts',
-			description: 'Check the kc leaderboard.'
+			description: 'Check the farming contracts leaderboard.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'inferno',
-			description: 'Check the kc leaderboard.'
+			description: 'Check the inferno leaderboard.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,

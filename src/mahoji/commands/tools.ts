@@ -580,7 +580,9 @@ export const toolsCommand: OSBMahojiCommand = {
 					b.add(petObj.name, qty);
 				}
 				return {
-					attachments: [(await makeBankImage({ bank: b, title: 'Your Chat Pets' })).file]
+					attachments: [
+						(await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })).file
+					]
 				};
 			}
 		}
