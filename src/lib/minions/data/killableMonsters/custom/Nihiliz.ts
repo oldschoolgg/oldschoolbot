@@ -1,6 +1,5 @@
-import RareDropTable, { GemTable } from 'oldschooljs/dist/simulation/subtables/RareDropTable';
-import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
-import WyvernHerbTable from 'oldschooljs/dist/simulation/subtables/WyvernHerbTable';
+import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
+import RareSeedTable from 'oldschooljs/dist/simulation/subtables/RareSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { StaffOrbTable } from '../../../../simulation/sharedTables';
@@ -29,15 +28,14 @@ const foodTable = new LootTable()
 	.add('Raw anglerfish', [5, 10], 2)
 	.add('Raw rocktail', [2, 5], 2);
 
+const fletchBowTable = new LootTable()
+	.add('Elder bow (u)', [3, 9], 2)
+	.add('Magic longbow (u)', [5, 15], 3)
+	.add('Magic shortbow (u)', [5, 15], 3)
+	.add('Yew longbow (u)', [10, 25], 5)
+	.add('Yew shortbow (u)', [10, 25], 5);
+
 const regularTable = new LootTable()
-	/* Armour and weaponry */
-	.add('Battlestaff', 5, 2)
-	.add('Air battlestaff', 3, 2)
-	.add('Fire battlestaff', 3, 2)
-
-	.oneIn(1000, 'Ancient staff')
-	.oneIn(1000, 'Smoke battlestaff')
-
 	/* Supplies */
 	.add('Dragon bolts (unf)', [20, 30], 2)
 	.add('Cadantine seed', [1, 3], 2)
@@ -51,6 +49,7 @@ const regularTable = new LootTable()
 	.add('Death rune', [200, 500])
 	.add('Amethyst', [10, 25])
 	.add('Uncut dragonstone', [10, 20])
+	.add(fletchBowTable, 1, 15)
 
 	/* Food */
 	.add(foodTable, 1, 14)
@@ -58,17 +57,13 @@ const regularTable = new LootTable()
 	/* Other */
 	.add('Coins', [50_000, 200_000])
 	.add('Pure essence', [2000, 3000])
+	.oneIn(1000, 'Ancient staff')
 	.tertiary(500, 'Uncut zenyte', [1, 3])
-
-	/* Troll drops */
-	.oneIn(73_000, StaffOrbTable, 1000, { multiply: true })
 
 	/* Sub Tables */
 	.add(StaffOrbTable, [15, 25], 6, { multiply: true })
-	.add(WyvernHerbTable, 3, 2)
-	.add(TreeHerbSeedTable, 3)
-	.add(GemTable, 2, 3)
-	.add(new LootTable().add(RareDropTable, 2, 1, { multiply: true }), 2)
+	.add(RareSeedTable, 2, 3, { multiply: true })
+	.add(RareDropTable, 2, 1, { multiply: true })
 	.add(stoneSpiritTable, 3);
 
 export const NihilizLootTable = new LootTable()
