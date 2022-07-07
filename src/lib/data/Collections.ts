@@ -14,6 +14,7 @@ import {
 	KalphiteKingMonster
 } from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import KingGoldemar from '../minions/data/killableMonsters/custom/bosses/KingGoldemar';
+import { Naxxus, NaxxusLootTable } from '../minions/data/killableMonsters/custom/bosses/Naxxus';
 import { VasaMagus } from '../minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { sepulchreFloors } from '../minions/data/sepulchre';
@@ -111,6 +112,7 @@ import {
 	miscellaneousCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
+	naxxusCL,
 	nexCL,
 	oborCL,
 	pestControlCL,
@@ -409,6 +411,11 @@ export const allCollectionLogs: ICollection = {
 				alias: NexMonster.aliases,
 				allItems: nexLootTable.allItems,
 				items: nexCL
+			},
+			Naxxus: {
+				alias: Naxxus.aliases,
+				allItems: NaxxusLootTable.allItems,
+				items: naxxusCL
 			},
 			'Vasa Magus': {
 				alias: VasaMagus.aliases,

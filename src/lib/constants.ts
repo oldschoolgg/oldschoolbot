@@ -1,292 +1,302 @@
-import { User } from '@prisma/client';
-import { MessageButton } from 'discord.js';
-import { Time } from 'e';
-import { Command, KlasaMessage } from 'klasa';
-import { APIButtonComponent, ButtonStyle, ComponentType } from 'mahoji';
-import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank } from 'oldschooljs';
-import { convertLVLtoXP } from 'oldschooljs/dist/util';
-import PQueue from 'p-queue';
-import { join } from 'path';
+import { User } from "@prisma/client";
+import { MessageButton } from "discord.js";
+import { Time } from "e";
+import { Command, KlasaMessage } from "klasa";
+import { APIButtonComponent, ButtonStyle, ComponentType } from "mahoji";
+import { CommandResponse } from "mahoji/dist/lib/structures/ICommand";
+import { Bank } from "oldschooljs";
+import { convertLVLtoXP } from "oldschooljs/dist/util";
+import PQueue from "p-queue";
+import { join } from "path";
 
-import { DISCORD_SETTINGS, production } from '../config';
-import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
-import { RunCommandArgs } from './settings/settings';
-import { UserSettings } from './settings/types/UserSettings';
-import { SkillsEnum } from './skilling/types';
-import { ActivityTaskOptions } from './types/minions';
-import getOSItem from './util/getOSItem';
-import getUsersPerkTier from './util/getUsersPerkTier';
-import resolveItems from './util/resolveItems';
+import { DISCORD_SETTINGS, production } from "../config";
+import { AbstractCommand, CommandArgs } from "../mahoji/lib/inhibitors";
+import { RunCommandArgs } from "./settings/settings";
+import { UserSettings } from "./settings/types/UserSettings";
+import { SkillsEnum } from "./skilling/types";
+import { ActivityTaskOptions } from "./types/minions";
+import getOSItem from "./util/getOSItem";
+import getUsersPerkTier from "./util/getUsersPerkTier";
+import resolveItems from "./util/resolveItems";
 
-export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
-export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
+export const SupportServer =
+	DISCORD_SETTINGS.SupportServer ?? "342983479501389826";
+export const BotID = DISCORD_SETTINGS.BotID ?? "729244028989603850";
 
 export const Channel = {
-	General: DISCORD_SETTINGS.Channels?.General ?? '342983479501389826',
-	Notifications: DISCORD_SETTINGS.Channels?.Notifications ?? '811589869314899980',
-	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? '665678499578904596',
-	GrandExchange: DISCORD_SETTINGS.Channels?.GrandExchange ?? '738780181946171493',
-	Developers: DISCORD_SETTINGS.Channels?.Developers ?? '648196527294251020',
-	BlacklistLogs: DISCORD_SETTINGS.Channels?.BlacklistLogs ?? '782459317218967602',
-	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? '802029843712573510',
-	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? '806744016309714966',
-	HelpAndSupport: DISCORD_SETTINGS.Channels?.HelpAndSupport ?? '668073484731154462',
-	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? '680770361893322761',
+	General: DISCORD_SETTINGS.Channels?.General ?? "342983479501389826",
+	Notifications:
+		DISCORD_SETTINGS.Channels?.Notifications ?? "811589869314899980",
+	ErrorLogs: DISCORD_SETTINGS.Channels?.ErrorLogs ?? "665678499578904596",
+	GrandExchange:
+		DISCORD_SETTINGS.Channels?.GrandExchange ?? "738780181946171493",
+	Developers: DISCORD_SETTINGS.Channels?.Developers ?? "648196527294251020",
+	BlacklistLogs:
+		DISCORD_SETTINGS.Channels?.BlacklistLogs ?? "782459317218967602",
+	EconomyLogs: DISCORD_SETTINGS.Channels?.EconomyLogs ?? "802029843712573510",
+	NewSponsors: DISCORD_SETTINGS.Channels?.NewSponsors ?? "806744016309714966",
+	HelpAndSupport:
+		DISCORD_SETTINGS.Channels?.HelpAndSupport ?? "668073484731154462",
+	TestingMain: DISCORD_SETTINGS.Channels?.TestingMain ?? "680770361893322761",
 	// BSO Channels
-	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? '792691343284764693',
-	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? '732207379818479756',
-	BSOGambling: DISCORD_SETTINGS.Channels?.BSOChannel ?? '792692390778896424',
-	BSOGrandExchange: DISCORD_SETTINGS.Channels?.BSOChannel ?? '738780181946171493'
+	BSOGeneral: DISCORD_SETTINGS.Channels?.BSOGeneral ?? "792691343284764693",
+	BSOChannel: DISCORD_SETTINGS.Channels?.BSOChannel ?? "732207379818479756",
+	BSOGambling: DISCORD_SETTINGS.Channels?.BSOChannel ?? "792692390778896424",
+	BSOGrandExchange:
+		DISCORD_SETTINGS.Channels?.BSOChannel ?? "738780181946171493",
 };
 
 export const Roles = {
-	Booster: DISCORD_SETTINGS.Roles?.Booster ?? '665908237152813057',
-	Contributor: DISCORD_SETTINGS.Roles?.Contributor ?? '456181501437018112',
-	Moderator: DISCORD_SETTINGS.Roles?.Moderator ?? '622806157563527178',
-	PatronTier1: DISCORD_SETTINGS.Roles?.PatronTier1 ?? '678970545789730826',
-	PatronTier2: DISCORD_SETTINGS.Roles?.PatronTier2 ?? '678967943979204608',
-	PatronTier3: DISCORD_SETTINGS.Roles?.PatronTier3 ?? '687408140832342043',
-	Patron: DISCORD_SETTINGS.Roles?.Patron ?? '679620175838183424',
-	MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? '734055552933429280',
-	BSOMassHoster: DISCORD_SETTINGS.Roles?.BSOMassHoster ?? '759572886364225558',
-	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? '848966830617788427',
-	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? '848966773885763586',
-	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '848966732265160775',
-	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '867967884515770419',
-	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219'
+	Booster: DISCORD_SETTINGS.Roles?.Booster ?? "665908237152813057",
+	Contributor: DISCORD_SETTINGS.Roles?.Contributor ?? "456181501437018112",
+	Moderator: DISCORD_SETTINGS.Roles?.Moderator ?? "622806157563527178",
+	PatronTier1: DISCORD_SETTINGS.Roles?.PatronTier1 ?? "678970545789730826",
+	PatronTier2: DISCORD_SETTINGS.Roles?.PatronTier2 ?? "678967943979204608",
+	PatronTier3: DISCORD_SETTINGS.Roles?.PatronTier3 ?? "687408140832342043",
+	Patron: DISCORD_SETTINGS.Roles?.Patron ?? "679620175838183424",
+	MassHoster: DISCORD_SETTINGS.Roles?.MassHoster ?? "734055552933429280",
+	BSOMassHoster:
+		DISCORD_SETTINGS.Roles?.BSOMassHoster ?? "759572886364225558",
+	TopSkiller: DISCORD_SETTINGS.Roles?.TopSkiller ?? "848966830617788427",
+	TopCollector: DISCORD_SETTINGS.Roles?.TopCollector ?? "848966773885763586",
+	TopSacrificer:
+		DISCORD_SETTINGS.Roles?.TopSacrificer ?? "848966732265160775",
+	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? "867967884515770419",
+	TopClueHunter:
+		DISCORD_SETTINGS.Roles?.TopClueHunter ?? "848967350120218636",
+	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? "867967551819358219",
 };
 
 export const enum DefaultPingableRoles {
 	// Tester roles:
-	Tester = '682052620809928718',
-	BSOTester = '829368646182371419',
+	Tester = "682052620809928718",
+	BSOTester = "829368646182371419",
 	// Mass roles:
-	BSOMass = '759573020464906242'
+	BSOMass = "759573020464906242",
 }
 
 export const enum Emoji {
-	MoneyBag = '<:MoneyBag:493286312854683654>',
-	OSBot = '<:OSBot:601768469905801226>',
-	Joy = '😂',
-	Bpaptu = '<:bpaptu:660333438292983818>',
-	Diamond = '💎',
-	Dice = '<:dice:660128887111548957>',
-	Fireworks = '🎆',
-	Tick = '✅',
-	RedX = '❌',
-	Search = '🔎',
-	FancyLoveheart = '💝',
-	Gift = '🎁',
-	Sad = '<:RSSad:380915244652036097>',
-	Happy = '<:RSHappy:380915244760825857>',
-	PeepoOSBot = '<:peepoOSBot:601695641088950282>',
-	PeepoSlayer = '<:peepoSlayer:644411576425775104>',
-	PeepoRanger = '<:peepoRanger:663096705746731089>',
-	PeepoNoob = '<:peepoNoob:660712001500086282>',
-	XP = '<:xp:630911040510623745>',
-	GP = '<:RSGP:369349580040437770>',
-	ThumbsUp = '👍',
-	ThumbsDown = '👎',
-	Casket = '<:Casket:365003978678730772>',
-	Agility = '<:agility:630911040355565568>',
-	Cooking = '<:cooking:630911040426868756>',
-	Fishing = '<:fishing:630911040091193356>',
-	Mining = '<:mining:630911040128811010>',
-	Smithing = '<:smithing:630911040452034590>',
-	Woodcutting = '<:woodcutting:630911040099450892>',
-	Runecraft = '<:runecraft:630911040435257364>',
-	Prayer = '<:prayer:630911040426868746>',
-	Construction = '<:construction:630911040493715476>',
-	Diango = '<:diangoChatHead:678146375300415508>',
-	MysteryBox = '<:mysterybox:680783258488799277>',
-	QuestIcon = '<:questIcon:690191385907036179>',
-	MinigameIcon = '<:minigameIcon:630400565070921761>',
-	Warning = '⚠️',
-	Ironman = '<:ironman:626647335900020746>',
-	Firemaking = '<:firemaking:630911040175210518>',
-	Crafting = '<:crafting:630911040460161047>',
-	EasterEgg = '<:easterEgg:695473553314938920>',
-	Join = '<:join:705971600956194907>',
-	TzRekJad = '<:Tzrekjad:324127379188613121>',
-	Phoenix = '<:Phoenix:324127378223792129>',
-	TinyTempor = '<:TinyTempor:824483631694217277>',
-	AnimatedFireCape = '<a:FireCape:394692985184583690>',
-	Fletching = '<:fletching:630911040544309258>',
-	Farming = '<:farming:630911040355565599>',
-	Tangleroot = '<:tangleroot:324127378978635778>',
-	Herblore = '<:herblore:630911040535658496>',
-	Purple = '🟪',
-	Green = '🟩',
-	Blue = '🟦',
-	Thieving = '<:thieving:630910829352452123>',
-	Hunter = '<:hunter:630911040166559784>',
-	Ely = '<:ely:784453586033049630>',
-	Timer = '<:ehpclock:352323705210142721>',
-	ChristmasCracker = '<:cracker:785389969962958858>',
-	SantaHat = '<:santaHat:785874868905181195>',
-	RottenPotato = '<:rottenPotato:791498767051915275>',
-	Magic = '<:magic:630911040334331917>',
-	Hitpoints = '<:hitpoints:630911040460292108>',
-	Strength = '<:strength:630911040481263617>',
-	Attack = '<:attack:630911039969427467>',
-	Defence = '<:defence:630911040393052180>',
-	Ranged = '<:ranged:630911040258834473>',
-	Dungeoneering = '<:dungeoneering:828683755198873623>',
-	Gear = '<:gear:835314891950129202>',
-	Slayer = '<:slayer:630911040560824330>',
-	SlayerMasterCape = '<:slayerMasterCape:869497600284459008>',
-	RunecraftMasterCape = '<:runecraftMasterCape:869497600997470258>',
-	Flappy = '<:Flappy:884799334737129513>',
-	Stopwatch = '⏱️',
-	Smokey = '<:Smokey:886284971914969149>',
-	ItemContract = '<:Item_contract:988422348434718812>',
+	MoneyBag = "<:MoneyBag:493286312854683654>",
+	OSBot = "<:OSBot:601768469905801226>",
+	Joy = "😂",
+	Bpaptu = "<:bpaptu:660333438292983818>",
+	Diamond = "💎",
+	Dice = "<:dice:660128887111548957>",
+	Fireworks = "🎆",
+	Tick = "✅",
+	RedX = "❌",
+	Search = "🔎",
+	FancyLoveheart = "💝",
+	Gift = "🎁",
+	Sad = "<:RSSad:380915244652036097>",
+	Happy = "<:RSHappy:380915244760825857>",
+	PeepoOSBot = "<:peepoOSBot:601695641088950282>",
+	PeepoSlayer = "<:peepoSlayer:644411576425775104>",
+	PeepoRanger = "<:peepoRanger:663096705746731089>",
+	PeepoNoob = "<:peepoNoob:660712001500086282>",
+	XP = "<:xp:630911040510623745>",
+	GP = "<:RSGP:369349580040437770>",
+	ThumbsUp = "👍",
+	ThumbsDown = "👎",
+	Casket = "<:Casket:365003978678730772>",
+	Agility = "<:agility:630911040355565568>",
+	Cooking = "<:cooking:630911040426868756>",
+	Fishing = "<:fishing:630911040091193356>",
+	Mining = "<:mining:630911040128811010>",
+	Smithing = "<:smithing:630911040452034590>",
+	Woodcutting = "<:woodcutting:630911040099450892>",
+	Runecraft = "<:runecraft:630911040435257364>",
+	Prayer = "<:prayer:630911040426868746>",
+	Construction = "<:construction:630911040493715476>",
+	Diango = "<:diangoChatHead:678146375300415508>",
+	MysteryBox = "<:mysterybox:680783258488799277>",
+	QuestIcon = "<:questIcon:690191385907036179>",
+	MinigameIcon = "<:minigameIcon:630400565070921761>",
+	Warning = "⚠️",
+	Ironman = "<:ironman:626647335900020746>",
+	Firemaking = "<:firemaking:630911040175210518>",
+	Crafting = "<:crafting:630911040460161047>",
+	EasterEgg = "<:easterEgg:695473553314938920>",
+	Join = "<:join:705971600956194907>",
+	TzRekJad = "<:Tzrekjad:324127379188613121>",
+	Phoenix = "<:Phoenix:324127378223792129>",
+	TinyTempor = "<:TinyTempor:824483631694217277>",
+	AnimatedFireCape = "<a:FireCape:394692985184583690>",
+	Fletching = "<:fletching:630911040544309258>",
+	Farming = "<:farming:630911040355565599>",
+	Tangleroot = "<:tangleroot:324127378978635778>",
+	Herblore = "<:herblore:630911040535658496>",
+	Purple = "🟪",
+	Green = "🟩",
+	Blue = "🟦",
+	Thieving = "<:thieving:630910829352452123>",
+	Hunter = "<:hunter:630911040166559784>",
+	Ely = "<:ely:784453586033049630>",
+	Timer = "<:ehpclock:352323705210142721>",
+	ChristmasCracker = "<:cracker:785389969962958858>",
+	SantaHat = "<:santaHat:785874868905181195>",
+	RottenPotato = "<:rottenPotato:791498767051915275>",
+	Magic = "<:magic:630911040334331917>",
+	Hitpoints = "<:hitpoints:630911040460292108>",
+	Strength = "<:strength:630911040481263617>",
+	Attack = "<:attack:630911039969427467>",
+	Defence = "<:defence:630911040393052180>",
+	Ranged = "<:ranged:630911040258834473>",
+	Dungeoneering = "<:dungeoneering:828683755198873623>",
+	Gear = "<:gear:835314891950129202>",
+	Slayer = "<:slayer:630911040560824330>",
+	SlayerMasterCape = "<:slayerMasterCape:869497600284459008>",
+	RunecraftMasterCape = "<:runecraftMasterCape:869497600997470258>",
+	Flappy = "<:Flappy:884799334737129513>",
+	Stopwatch = "⏱️",
+	Smokey = "<:Smokey:886284971914969149>",
+	ItemContract = "<:Item_contract:988422348434718812>",
 	// Badges,
-	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
-	GreenGem = '<:greenGem:778418736495067166>',
-	PinkGem = '<:pinkGem:778418736276963349>',
-	OrangeGem = '<:orangeGem:778418736474095616>',
-	Minion = '<:minion:778418736180494347>',
-	Spanner = '<:spanner:778418736621158410>',
-	DoubleSpanner = '<:doubleSpanner:778418736327688194>',
-	Hammer = '<:hammer:778418736595206184>',
-	Bug = '<:bug:778418736330833951>',
-	Trophy = '<:goldTrophy:778418736561782794>',
-	Crab = '<:crab:778418736432021505>',
-	Snake = '🐍',
-	Skiller = '<:skiller:802136963775463435>',
-	Incinerator = '<:incinerator:802136963674275882>',
-	CollectionLog = '<:collectionLog:802136964027121684>',
-	Minigames = '<:minigameIcon:630400565070921761>',
-	Skull = '<:Skull:802136963926065165>',
-	CombatSword = '<:combat:802136963956080650>',
-	SOTW = '<:SOTWtrophy:842938096097820693>',
-	OSRSSkull = '<:skull:863392427040440320>'
+	BigOrangeGem = "<:bigOrangeGem:778418736188489770>",
+	GreenGem = "<:greenGem:778418736495067166>",
+	PinkGem = "<:pinkGem:778418736276963349>",
+	OrangeGem = "<:orangeGem:778418736474095616>",
+	Minion = "<:minion:778418736180494347>",
+	Spanner = "<:spanner:778418736621158410>",
+	DoubleSpanner = "<:doubleSpanner:778418736327688194>",
+	Hammer = "<:hammer:778418736595206184>",
+	Bug = "<:bug:778418736330833951>",
+	Trophy = "<:goldTrophy:778418736561782794>",
+	Crab = "<:crab:778418736432021505>",
+	Snake = "🐍",
+	Skiller = "<:skiller:802136963775463435>",
+	Incinerator = "<:incinerator:802136963674275882>",
+	CollectionLog = "<:collectionLog:802136964027121684>",
+	Minigames = "<:minigameIcon:630400565070921761>",
+	Skull = "<:Skull:802136963926065165>",
+	CombatSword = "<:combat:802136963956080650>",
+	SOTW = "<:SOTWtrophy:842938096097820693>",
+	OSRSSkull = "<:skull:863392427040440320>",
 }
 
 export const ReactionEmoji = {
-	Join: production ? '705971600956194907' : '951309579302604900',
-	Stop: production ? '705972260950769669' : '951309579248091166',
-	Start: production ? '705973302719414329' : '951309579302604880'
+	Join: production ? "705971600956194907" : "951309579302604900",
+	Stop: production ? "705972260950769669" : "951309579248091166",
+	Start: production ? "705973302719414329" : "951309579302604880",
 };
 
 export const enum Image {
-	DiceBag = 'https://i.imgur.com/sySQkSX.png'
+	DiceBag = "https://i.imgur.com/sySQkSX.png",
 }
 
 export const enum Color {
-	Orange = 16_098_851
+	Orange = 16_098_851,
 }
 
 export const enum Tasks {
-	AgilityActivity = 'agilityActivity',
-	CookingActivity = 'cookingActivity',
-	MonsterActivity = 'monsterActivity',
-	GroupMonsterActivity = 'groupMonsterActivity',
-	ClueActivity = 'clueActivity',
-	FishingActivity = 'fishingActivity',
-	MiningActivity = 'miningActivity',
-	SmeltingActivity = 'smeltingActivity',
-	SmithingActivity = 'smithingActivity',
-	WoodcuttingActivity = 'woodcuttingActivity',
-	RunecraftActivity = 'runecraftActivity',
-	FiremakingActivity = 'firemakingActivity',
-	CraftingActivity = 'craftingActivity',
-	BuryingActivity = 'buryingActivity',
-	OfferingActivity = 'offeringActivity',
-	FletchingActivity = 'fletchingActivity',
-	FarmingActivity = 'farmingActivity',
-	HerbloreActivity = 'herbloreActivity',
-	HunterActivity = 'hunterActivity',
-	ConstructionActivity = 'constructionActivity',
-	QuestingActivity = 'questingActivity',
-	FightCavesActivity = 'fightCavesActivity',
-	WintertodtActivity = 'wintertodtActivity',
-	TemporossActivity = 'temporossActivity',
-	AlchingActivity = 'alchingActivity',
-	RaidsActivity = 'raidsActivity',
-	NightmareActivity = 'nightmareActivity',
-	AnimatedArmourActivity = 'animatedArmourActivity',
-	CyclopsActivity = 'cyclopsActivity',
-	SepulchreActivity = 'sepulchreActivity',
-	PlunderActivity = 'plunderActivity',
-	FishingTrawler = 'trawlerActivity',
-	ZalcanoActivity = 'zalcanoActivity',
-	SawmillActivity = 'sawmillActivity',
-	PickpocketActivity = 'pickpocketActivity',
-	Enchanting = 'enchantingActivity',
-	Casting = 'castingActivity',
-	GloryCharging = 'gloryChargingActivity',
-	WealthCharging = 'wealthChargingActivity',
-	TitheFarmActivity = 'titheFarmActivity',
-	BarbarianAssault = 'barbarianAssaultActivity',
-	AgilityArena = 'agilityArenaActivity',
-	ChampionsChallenge = 'championsChallengeActivity',
-	BirdhouseActivity = 'birdhouseActivity',
-	AerialFishingActivity = 'aerialFishingActivity',
-	DriftNetActivity = 'driftNetActivity',
-	MahoganyHomes = 'mahoganyHomesActivity',
-	NexActivity = 'nexActivity',
-	GnomeRestaurant = 'gnomeRestaurantActivity',
-	SoulWars = 'soulWarsActivity',
-	RoguesDenMaze = 'roguesDenMazeActivity',
-	KalphiteKing = 'kalphiteKingActivity',
-	Gauntlet = 'gauntletActivity',
-	Dungeoneering = 'dungeoneeringActivity',
-	CastleWars = 'castleWarsActivity',
-	MageArena = 'mageArenaActivity',
-	Collecting = 'collectingActivity',
-	MageTrainingArena = 'mageTrainingArenaActivity',
-	MageArena2 = 'mageArena2Activity',
-	BigChompyBirdHunting = 'chompyHuntActivity',
-	KingGoldemar = 'kingGoldemarActivity',
-	VasaMagus = 'vasaMagusActivity',
-	OuraniaDeliveryService = 'ouraniaDeliveryServiceActivity',
-	DarkAltar = 'darkAltarActivity',
-	Ignecarus = 'ignecarusActivity',
-	TrekkingActivity = 'templeTrekkingActivity',
-	KibbleActivity = 'kibbleActivity',
-	RevenantsActivity = 'revenantsActivity',
-	PestControl = 'pestControlActivity',
-	VolcanicMine = 'volcanicMineActivity',
-	MonkeyRumble = 'monkeyRumbleActivity',
-	TrickOrTreat = 'trickOrTreatActivity',
-	BossEvent = 'bossEventActivity',
-	KourendFavour = 'kourendFavourActivity',
-	Inferno = 'infernoActivity',
-	ToB = 'tobActivity',
-	FishingContest = 'fishingContestActivity',
-	TearsOfGuthix = 'tearsOfGuthixActivity',
-	LastManStanding = 'lmsActivity',
-	BirthdayEvent = 'birthdayEventActivity',
-	TokkulShop = 'tokkulShopActivity',
-	Nex = 'nexActivity',
-	BaxtorianBathhouses = 'bathhousesActivity',
-	TroubleBrewing = 'troubleBrewingActivity',
-	REMOVED = '__REMOVED__'
+	AgilityActivity = "agilityActivity",
+	CookingActivity = "cookingActivity",
+	MonsterActivity = "monsterActivity",
+	GroupMonsterActivity = "groupMonsterActivity",
+	ClueActivity = "clueActivity",
+	FishingActivity = "fishingActivity",
+	MiningActivity = "miningActivity",
+	SmeltingActivity = "smeltingActivity",
+	SmithingActivity = "smithingActivity",
+	WoodcuttingActivity = "woodcuttingActivity",
+	RunecraftActivity = "runecraftActivity",
+	FiremakingActivity = "firemakingActivity",
+	CraftingActivity = "craftingActivity",
+	BuryingActivity = "buryingActivity",
+	OfferingActivity = "offeringActivity",
+	FletchingActivity = "fletchingActivity",
+	FarmingActivity = "farmingActivity",
+	HerbloreActivity = "herbloreActivity",
+	HunterActivity = "hunterActivity",
+	ConstructionActivity = "constructionActivity",
+	QuestingActivity = "questingActivity",
+	FightCavesActivity = "fightCavesActivity",
+	WintertodtActivity = "wintertodtActivity",
+	TemporossActivity = "temporossActivity",
+	AlchingActivity = "alchingActivity",
+	RaidsActivity = "raidsActivity",
+	NightmareActivity = "nightmareActivity",
+	AnimatedArmourActivity = "animatedArmourActivity",
+	CyclopsActivity = "cyclopsActivity",
+	SepulchreActivity = "sepulchreActivity",
+	PlunderActivity = "plunderActivity",
+	FishingTrawler = "trawlerActivity",
+	ZalcanoActivity = "zalcanoActivity",
+	SawmillActivity = "sawmillActivity",
+	PickpocketActivity = "pickpocketActivity",
+	Enchanting = "enchantingActivity",
+	Casting = "castingActivity",
+	GloryCharging = "gloryChargingActivity",
+	WealthCharging = "wealthChargingActivity",
+	TitheFarmActivity = "titheFarmActivity",
+	BarbarianAssault = "barbarianAssaultActivity",
+	AgilityArena = "agilityArenaActivity",
+	ChampionsChallenge = "championsChallengeActivity",
+	BirdhouseActivity = "birdhouseActivity",
+	AerialFishingActivity = "aerialFishingActivity",
+	DriftNetActivity = "driftNetActivity",
+	MahoganyHomes = "mahoganyHomesActivity",
+	NexActivity = "nexActivity",
+	GnomeRestaurant = "gnomeRestaurantActivity",
+	SoulWars = "soulWarsActivity",
+	RoguesDenMaze = "roguesDenMazeActivity",
+	KalphiteKing = "kalphiteKingActivity",
+	Gauntlet = "gauntletActivity",
+	Dungeoneering = "dungeoneeringActivity",
+	CastleWars = "castleWarsActivity",
+	MageArena = "mageArenaActivity",
+	Collecting = "collectingActivity",
+	MageTrainingArena = "mageTrainingArenaActivity",
+	MageArena2 = "mageArena2Activity",
+	BigChompyBirdHunting = "chompyHuntActivity",
+	KingGoldemar = "kingGoldemarActivity",
+	VasaMagus = "vasaMagusActivity",
+	OuraniaDeliveryService = "ouraniaDeliveryServiceActivity",
+	DarkAltar = "darkAltarActivity",
+	Ignecarus = "ignecarusActivity",
+	TrekkingActivity = "templeTrekkingActivity",
+	KibbleActivity = "kibbleActivity",
+	RevenantsActivity = "revenantsActivity",
+	PestControl = "pestControlActivity",
+	VolcanicMine = "volcanicMineActivity",
+	MonkeyRumble = "monkeyRumbleActivity",
+	TrickOrTreat = "trickOrTreatActivity",
+	BossEvent = "bossEventActivity",
+	KourendFavour = "kourendFavourActivity",
+	Inferno = "infernoActivity",
+	ToB = "tobActivity",
+	FishingContest = "fishingContestActivity",
+	TearsOfGuthix = "tearsOfGuthixActivity",
+	LastManStanding = "lmsActivity",
+	BirthdayEvent = "birthdayEventActivity",
+	TokkulShop = "tokkulShopActivity",
+	Nex = "nexActivity",
+	BaxtorianBathhouses = "bathhousesActivity",
+	TroubleBrewing = "troubleBrewingActivity",
+	REMOVED = "__REMOVED__",
+	Naxxus = "naxxusActivity",
 }
 
 export enum ActivityGroup {
-	Skilling = 'Skilling',
-	Clue = 'Clue',
-	Monster = 'Monster',
-	Minigame = 'Minigame'
+	Skilling = "Skilling",
+	Clue = "Clue",
+	Monster = "Monster",
+	Minigame = "Minigame",
 }
 
 export const enum Events {
-	Debug = 'debug',
-	Error = 'error',
-	Log = 'log',
-	Verbose = 'verbose',
-	Warn = 'warn',
-	Wtf = 'wtf',
-	ServerNotification = 'serverNotification',
-	SkillLevelUp = 'skillLevelUp',
-	EconomyLog = 'economyLog'
+	Debug = "debug",
+	Error = "error",
+	Log = "log",
+	Verbose = "verbose",
+	Warn = "warn",
+	Wtf = "wtf",
+	ServerNotification = "serverNotification",
+	SkillLevelUp = "skillLevelUp",
+	EconomyLog = "economyLog",
 }
 
-export const rootFolder = join(__dirname, '..', '..', '..');
+export const rootFolder = join(__dirname, "..", "..", "..");
 
 export const COINS_ID = 995;
 
@@ -314,7 +324,7 @@ export const enum PerkTier {
 	/**
 	 * Tier 5 Patron
 	 */
-	Six = 6
+	Six = 6,
 }
 
 export const enum BitField {
@@ -344,7 +354,7 @@ export const enum BitField {
 	HasScrollOfTheHunt = 204,
 	HasBananaEnchantmentScroll = 205,
 	HasDaemonheimAgilityPass = 206,
-	DisabledGorajanBoneCrusher = 207
+	DisabledGorajanBoneCrusher = 207,
 }
 
 interface BitFieldData {
@@ -357,62 +367,154 @@ interface BitFieldData {
 }
 
 export const BitFieldData: Record<BitField, BitFieldData> = {
-	[BitField.IsWikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
-	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
-	[BitField.isContributor]: { name: 'Contributor', protected: true, userConfigurable: false },
+	[BitField.IsWikiContributor]: {
+		name: "Wiki Contributor",
+		protected: true,
+		userConfigurable: false,
+	},
+	[BitField.isModerator]: {
+		name: "Moderator",
+		protected: true,
+		userConfigurable: false,
+	},
+	[BitField.isContributor]: {
+		name: "Contributor",
+		protected: true,
+		userConfigurable: false,
+	},
 
-	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
-	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
-	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
-
-	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
-	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
-	[BitField.HasArcaneScroll]: { name: 'Arcane Scroll Used', protected: false, userConfigurable: false },
-	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
-	[BitField.HasSlepeyTablet]: { name: 'Slepey Tablet Used', protected: false, userConfigurable: false },
-	[BitField.HasScrollOfFarming]: { name: 'Scroll of Farming Used', protected: false, userConfigurable: false },
-	[BitField.HasScrollOfLongevity]: { name: 'Scroll of Longevity Used', protected: false, userConfigurable: false },
-	[BitField.HasScrollOfTheHunt]: { name: 'Scroll of the Hunt Used', protected: false, userConfigurable: false },
-	[BitField.HasBananaEnchantmentScroll]: {
-		name: 'Banana Enchantment Scroll Used',
+	[BitField.HasPermanentTierOne]: {
+		name: "Permanent Tier 1",
 		protected: false,
-		userConfigurable: false
+		userConfigurable: false,
+	},
+	[BitField.HasPermanentSpawnLamp]: {
+		name: "Permanent Spawn Lamp",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.IsPatronTier1]: {
+		name: "Tier 1 Patron",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.IsPatronTier2]: {
+		name: "Tier 2 Patron",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.IsPatronTier3]: {
+		name: "Tier 3 Patron",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.IsPatronTier4]: {
+		name: "Tier 4 Patron",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.IsPatronTier5]: {
+		name: "Tier 5 Patron",
+		protected: false,
+		userConfigurable: false,
+	},
+
+	[BitField.HasHosidiusWallkit]: {
+		name: "Hosidius Wall Kit Unlocked",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.HasDexScroll]: {
+		name: "Dexterous Scroll Used",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.HasArcaneScroll]: {
+		name: "Arcane Scroll Used",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.HasTornPrayerScroll]: {
+		name: "Torn Prayer Scroll Used",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.HasSlepeyTablet]: {
+		name: "Slepey Tablet Used",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.HasScrollOfFarming]: {
+		name: "Scroll of Farming Used",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.HasScrollOfLongevity]: {
+		name: "Scroll of Longevity Used",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.HasScrollOfTheHunt]: {
+		name: "Scroll of the Hunt Used",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.HasBananaEnchantmentScroll]: {
+		name: "Banana Enchantment Scroll Used",
+		protected: false,
+		userConfigurable: false,
 	},
 	[BitField.HasDaemonheimAgilityPass]: {
-		name: 'Daemonheim Agility Pass Used',
+		name: "Daemonheim Agility Pass Used",
 		protected: false,
-		userConfigurable: false
+		userConfigurable: false,
 	},
 
-	[BitField.HasGivenBirthdayPack]: { name: 'Has Given Birthday Pack', protected: false, userConfigurable: false },
-	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
+	[BitField.HasGivenBirthdayPack]: {
+		name: "Has Given Birthday Pack",
+		protected: false,
+		userConfigurable: false,
+	},
+	[BitField.BypassAgeRestriction]: {
+		name: "Bypassed Age Restriction",
+		protected: false,
+		userConfigurable: false,
+	},
 	[BitField.HasPermanentEventBackgrounds]: {
-		name: 'Permanent Event Backgrounds',
+		name: "Permanent Event Backgrounds",
 		protected: false,
-		userConfigurable: false
+		userConfigurable: false,
 	},
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
-
-	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
-	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true },
-	[BitField.DisabledGorajanBoneCrusher]: {
-		name: 'Disabled Gorajan Bonecrusher',
+	[BitField.PermanentIronman]: {
+		name: "Permanent Ironman",
 		protected: false,
-		userConfigurable: true
-	}
+		userConfigurable: false,
+	},
+
+	[BitField.AlwaysSmallBank]: {
+		name: "Always Use Small Banks",
+		protected: false,
+		userConfigurable: true,
+	},
+	[BitField.DisabledRandomEvents]: {
+		name: "Disabled Random Events",
+		protected: false,
+		userConfigurable: true,
+	},
+	[BitField.DisabledGorajanBoneCrusher]: {
+		name: "Disabled Gorajan Bonecrusher",
+		protected: false,
+		userConfigurable: true,
+	},
 } as const;
 
 export const enum PatronTierID {
-	One = '4608201',
-	Two = '4608226',
-	Three = '4720356',
-	Four = '5262065',
-	Five = '5262216',
-	Six = '8091554'
+	One = "4608201",
+	Two = "4608226",
+	Three = "4720356",
+	Four = "5262065",
+	Five = "5262216",
+	Six = "8091554",
 }
 
 export const enum BadgesEnum {
@@ -428,7 +530,7 @@ export const enum BadgesEnum {
 	TopSkiller = 9,
 	TopCollector = 10,
 	TopMinigame = 11,
-	SotWTrophy = 12
+	SotWTrophy = 12,
 }
 
 export const badges: { [key: number]: string } = {
@@ -444,7 +546,7 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.TopSkiller]: Emoji.Skiller,
 	[BadgesEnum.TopCollector]: Emoji.CollectionLog,
 	[BadgesEnum.TopMinigame]: Emoji.MinigameIcon,
-	[BadgesEnum.SotWTrophy]: Emoji.SOTW
+	[BadgesEnum.SotWTrophy]: Emoji.SOTW,
 };
 
 export const MAX_REAL_QP = 284;
@@ -472,128 +574,139 @@ export const userQueues: Map<string, PQueue> = new Map();
 export const bankImageCache = new Map<string, string>();
 
 export const skillEmoji = {
-	runecraft: '<:runecraft:630911040435257364>',
-	firemaking: '<:firemaking:630911040175210518>',
-	thieving: '<:thieving:630910829352452123>',
-	mining: '<:mining:630911040128811010>',
-	ranged: '<:ranged:630911040258834473>',
-	construction: '<:construction:630911040493715476>',
-	smithing: '<:smithing:630911040452034590>',
-	herblore: '<:herblore:630911040535658496>',
-	attack: '<:attack:630911039969427467>',
-	strength: '<:strength:630911040481263617>',
-	defence: '<:defence:630911040393052180>',
-	fishing: '<:fishing:630911040091193356>',
-	hitpoints: '<:hitpoints:630911040460292108>',
-	total: '<:xp:630911040510623745>',
-	overall: '<:xp:630911040510623745>',
-	magic: '<:magic:630911040334331917>',
-	crafting: '<:crafting:630911040460161047>',
-	agility: '<:agility:630911040355565568>',
-	fletching: '<:fletching:630911040544309258>',
-	cooking: '<:cooking:630911040426868756>',
-	farming: '<:farming:630911040355565599>',
-	slayer: '<:slayer:630911040560824330>',
-	prayer: '<:prayer:630911040426868746>',
-	woodcutting: '<:woodcutting:630911040099450892>',
-	hunter: '<:hunter:630911040166559784>',
-	cml: '<:CrystalMathLabs:364657225249062912>',
-	clock: '<:ehpclock:352323705210142721>',
-	combat: '<:combat:802136963956080650>',
-	dungeoneering: '<:dungeoneering:828683755198873623>'
+	runecraft: "<:runecraft:630911040435257364>",
+	firemaking: "<:firemaking:630911040175210518>",
+	thieving: "<:thieving:630910829352452123>",
+	mining: "<:mining:630911040128811010>",
+	ranged: "<:ranged:630911040258834473>",
+	construction: "<:construction:630911040493715476>",
+	smithing: "<:smithing:630911040452034590>",
+	herblore: "<:herblore:630911040535658496>",
+	attack: "<:attack:630911039969427467>",
+	strength: "<:strength:630911040481263617>",
+	defence: "<:defence:630911040393052180>",
+	fishing: "<:fishing:630911040091193356>",
+	hitpoints: "<:hitpoints:630911040460292108>",
+	total: "<:xp:630911040510623745>",
+	overall: "<:xp:630911040510623745>",
+	magic: "<:magic:630911040334331917>",
+	crafting: "<:crafting:630911040460161047>",
+	agility: "<:agility:630911040355565568>",
+	fletching: "<:fletching:630911040544309258>",
+	cooking: "<:cooking:630911040426868756>",
+	farming: "<:farming:630911040355565599>",
+	slayer: "<:slayer:630911040560824330>",
+	prayer: "<:prayer:630911040426868746>",
+	woodcutting: "<:woodcutting:630911040099450892>",
+	hunter: "<:hunter:630911040166559784>",
+	cml: "<:CrystalMathLabs:364657225249062912>",
+	clock: "<:ehpclock:352323705210142721>",
+	combat: "<:combat:802136963956080650>",
+	dungeoneering: "<:dungeoneering:828683755198873623>",
 };
 
 export const LEVEL_99_XP = convertLVLtoXP(99);
 export const LEVEL_120_XP = convertLVLtoXP(120);
 export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
-export const SILENT_ERROR = 'SILENT_ERROR';
+export const SILENT_ERROR = "SILENT_ERROR";
 
 const buttonSource = [
 	{
-		label: 'Wiki',
-		emoji: '802136964027121684',
-		url: 'https://bso-wiki.oldschool.gg/'
+		label: "Wiki",
+		emoji: "802136964027121684",
+		url: "https://bso-wiki.oldschool.gg/",
 	},
 	{
-		label: 'Patreon',
-		emoji: '679334888792391703',
-		url: 'https://www.patreon.com/oldschoolbot'
+		label: "Patreon",
+		emoji: "679334888792391703",
+		url: "https://www.patreon.com/oldschoolbot",
 	},
 	{
-		label: 'Support Server',
-		emoji: '778418736180494347',
-		url: 'https://www.discord.gg/ob'
+		label: "Support Server",
+		emoji: "778418736180494347",
+		url: "https://www.discord.gg/ob",
 	},
 	{
-		label: 'Bot Invite',
-		emoji: '778418736180494347',
-		url: 'http://www.oldschool.gg/invite/bso'
-	}
+		label: "Bot Invite",
+		emoji: "778418736180494347",
+		url: "http://www.oldschool.gg/invite/bso",
+	},
 ];
 
-export const informationalButtons = buttonSource.map(i =>
-	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+export const informationalButtons = buttonSource.map((i) =>
+	new MessageButton()
+		.setLabel(i.label)
+		.setEmoji(i.emoji)
+		.setURL(i.url)
+		.setStyle("LINK")
 );
-export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
-	type: ComponentType.Button,
-	label: i.label,
-	emoji: { id: i.emoji },
-	style: ButtonStyle.Link,
-	url: i.url
-}));
+export const mahojiInformationalButtons: APIButtonComponent[] =
+	buttonSource.map((i) => ({
+		type: ComponentType.Button,
+		label: i.label,
+		emoji: { id: i.emoji },
+		style: ButtonStyle.Link,
+		url: i.url,
+	}));
 
-export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
+export type LastTripRunArgs = Omit<RunCommandArgs, "commandName" | "args">;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
+	{
+		continue: (args: LastTripRunArgs) => Promise<CommandResponse>;
+		data: ActivityTaskOptions;
+	}
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
-	'Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.';
+	"Sorry - but the `other` gear setup is only available for Tier 3 Patrons (and higher) to use.";
 
-export const BOT_TYPE: 'BSO' | 'OSB' = 'BSO';
+export const BOT_TYPE: "BSO" | "OSB" = "BSO";
 
 export const scaryEatables = [
 	{
-		item: getOSItem('Candy teeth'),
-		healAmount: 3
+		item: getOSItem("Candy teeth"),
+		healAmount: 3,
 	},
 	{
-		item: getOSItem('Toffeet'),
-		healAmount: 5
+		item: getOSItem("Toffeet"),
+		healAmount: 5,
 	},
 	{
-		item: getOSItem('Chocolified skull'),
-		healAmount: 8
+		item: getOSItem("Chocolified skull"),
+		healAmount: 8,
 	},
 	{
-		item: getOSItem('Rotten sweets'),
-		healAmount: 9
+		item: getOSItem("Rotten sweets"),
+		healAmount: 9,
 	},
 	{
-		item: getOSItem('Hairyfloss'),
-		healAmount: 12
+		item: getOSItem("Hairyfloss"),
+		healAmount: 12,
 	},
 	{
-		item: getOSItem('Eyescream'),
-		healAmount: 13
+		item: getOSItem("Eyescream"),
+		healAmount: 13,
 	},
 	{
-		item: getOSItem('Goblinfinger soup'),
-		healAmount: 20
+		item: getOSItem("Goblinfinger soup"),
+		healAmount: 20,
 	},
 	{
 		item: getOSItem("Benny's brain brew"),
-		healAmount: 50
+		healAmount: 50,
 	},
 	{
-		item: getOSItem('Roasted newt'),
-		healAmount: 120
-	}
+		item: getOSItem("Roasted newt"),
+		healAmount: 120,
+	},
 ];
 
-export function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number): false | Bank {
+export function getScaryFoodFromBank(
+	userBank: Bank,
+	totalHealingNeeded: number
+): false | Bank {
 	let totalHealingCalc = totalHealingNeeded;
 	let foodToRemove = new Bank();
 
@@ -625,16 +738,22 @@ export function getScaryFoodFromBank(userBank: Bank, totalHealingNeeded: number)
 	if (totalHealingCalc > 0) return false;
 	return foodToRemove;
 }
-export type ProjectileType = 'arrow' | 'bolt';
+export type ProjectileType = "arrow" | "bolt";
 export const projectiles: Record<ProjectileType, number[]> = {
-	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow', 'Hellfire arrow']),
+	arrow: resolveItems([
+		"Adamant arrow",
+		"Rune arrow",
+		"Amethyst arrow",
+		"Dragon arrow",
+		"Hellfire arrow",
+	]),
 	bolt: resolveItems([
-		'Runite bolts',
-		'Dragon bolts',
-		'Diamond bolts (e)',
-		'Diamond dragon bolts (e)',
-		'Ruby dragon bolts (e)'
-	])
+		"Runite bolts",
+		"Dragon bolts",
+		"Diamond bolts (e)",
+		"Diamond dragon bolts (e)",
+		"Ruby dragon bolts (e)",
+	]),
 };
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
@@ -648,7 +767,9 @@ export const spawnLampResetTime = (user: User) => {
 	const hasTier5 = perkTier >= PerkTier.Five;
 	const hasTier4 = !hasTier5 && perkTier === PerkTier.Four;
 
-	let cooldown = [PerkTier.Six, PerkTier.Five].includes(perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+	let cooldown = [PerkTier.Six, PerkTier.Five].includes(perkTier)
+		? Time.Hour * 12
+		: Time.Hour * 24;
 
 	if (!hasTier5 && !hasTier4 && hasPerm) {
 		cooldown = Time.Hour * 48;
@@ -659,19 +780,28 @@ export const spawnLampResetTime = (user: User) => {
 export const itemContractResetTime = Time.Hour * 8;
 export const giveBoxResetTime = Time.Hour * 24;
 
-const lastBox: keyof User = 'lastGivenBoxx';
+const lastBox: keyof User = "lastGivenBoxx";
 
 export const userTimers = [
-	[dailyResetTime, UserSettings.LastDailyTimestamp, 'Daily'],
-	[itemContractResetTime, UserSettings.LastItemContractDate, 'ItemContract'],
-	[giveBoxResetTime, lastBox, 'GiveBox'],
-	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
+	[dailyResetTime, UserSettings.LastDailyTimestamp, "Daily"],
+	[itemContractResetTime, UserSettings.LastItemContractDate, "ItemContract"],
+	[giveBoxResetTime, lastBox, "GiveBox"],
+	[spawnLampResetTime, UserSettings.LastSpawnLamp, "SpawnLamp"],
 ] as const;
-export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
-export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
+export const COMMANDS_TO_NOT_TRACK = [
+	["minion", ["k", "kill", "clue", "info"]],
+];
+export function shouldTrackCommand(
+	command: AbstractCommand,
+	args: CommandArgs
+) {
 	if (!Array.isArray(args)) return true;
 	for (const [name, subs] of COMMANDS_TO_NOT_TRACK) {
-		if (command.name === name && typeof args[0] === 'string' && subs.includes(args[0])) {
+		if (
+			command.name === name &&
+			typeof args[0] === "string" &&
+			subs.includes(args[0])
+		) {
 			return false;
 		}
 	}
@@ -679,9 +809,9 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 }
 export function getCommandArgs(command: Command, args: any[]) {
 	if (args.length === 0) return undefined;
-	if (command.name === 'bank') return undefined;
-	if (command.name === 'rp' && ['c'].includes(args[0])) return undefined;
-	if (command.name === 'eval') return undefined;
+	if (command.name === "bank") return undefined;
+	if (command.name === "rp" && ["c"].includes(args[0])) return undefined;
+	if (command.name === "eval") return undefined;
 	return args;
 }
 
@@ -694,12 +824,12 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
 - Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`${msg?.cmdPrefix ?? '+'}${
+- You no longer use this command using \`${msg?.cmdPrefix ?? "+"}${
 	commandName ?? msg?.command?.name
 }\`, now you use: \`/${commandName ?? msg?.command?.name}\`
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();
-export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export const PVM_METHODS = ["barrage", "cannon", "burst", "none"] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();

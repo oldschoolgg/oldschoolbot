@@ -14,6 +14,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { SkillsEnum } from '../skilling/types';
@@ -33,6 +34,7 @@ export const bareMinStats: Skills = {
 
 export const SANGUINESTI_CHARGES_PER_COX = 150;
 export const TENTACLE_CHARGES_PER_COX = 200;
+export const VOID_STAFF_CHARGES_PER_COX = 15;
 
 export function hasMinRaidsRequirements(user: KlasaUser) {
 	return skillsMeetRequirements(user.rawSkills, bareMinStats);
@@ -245,9 +247,14 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 	if (!hasFarmer) {
 		return 'nobody with atleast level 55 Farming';
 	}
-	const userWithoutSupplies = users.find(u => !u.owns(minimumCoxSuppliesNeeded));
+
+	const userWithoutSupplies = users.find(u => {
+		const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, 10, 5);
+		foodBank.add('Stamina potion(4)', 3);
+		return hasEnough ? !u.owns(foodBank) : !u.owns(minimumCoxSuppliesNeeded);
+	});
 	if (userWithoutSupplies) {
-		return `${userWithoutSupplies.username} doesn't have enough supplies`;
+		return `${userWithoutSupplies.username} doesn't have enough supplies - ${minimumCoxSuppliesNeeded}`;
 	}
 
 	for (const user of users) {
@@ -295,6 +302,16 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			});
 			if (!sangResult.hasEnough) {
 				return sangResult.userMessage;
+			}
+		}
+		if (user.getGear('mage').hasEquipped('Void staff')) {
+			const voidStaffResult = checkUserCanUseDegradeableItem({
+				item: getOSItem('Void staff'),
+				chargesToDegrade: VOID_STAFF_CHARGES_PER_COX,
+				user
+			});
+			if (!voidStaffResult.hasEnough) {
+				return voidStaffResult.userMessage;
 			}
 		}
 	}
@@ -417,6 +434,14 @@ const itemBoosts: ItemBoost[][] = [
 			setup: 'mage',
 			mustBeCharged: true,
 			requiredCharges: SANGUINESTI_CHARGES_PER_COX
+		},
+		{
+			item: getOSItem('Void staff'),
+			boost: 8,
+			mustBeEquipped: true,
+			setup: 'mage',
+			mustBeCharged: true,
+			requiredCharges: VOID_STAFF_CHARGES_PER_COX
 		}
 	],
 	[
@@ -512,16 +537,19 @@ export async function calcCoxDuration(
 }
 
 export async function calcCoxInput(u: KlasaUser, solo: boolean) {
-	const items = new Bank();
 	const kc = await u.getMinigameScore('raids');
-	items.add('Stamina potion(4)', solo ? 2 : 1);
 
 	let brewsNeeded = Math.max(1, 8 - Math.max(1, Math.ceil((kc + 1) / 30)));
 	if (solo) brewsNeeded++;
 	const restoresNeeded = Math.max(1, Math.floor(brewsNeeded / 3));
 
-	items.add('Saradomin brew(4)', brewsNeeded);
-	items.add('Super restore(4)', restoresNeeded);
+	// Find if the user has enough brews&restores with enhanced ones
+	// If they do not, default back to just normals
+	const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, brewsNeeded, restoresNeeded);
+	const defaultBank = new Bank()
+		.add('Saradomin brew(4)', brewsNeeded)
+		.add('Super restore(4)', restoresNeeded)
+		.add('Stamina potion(4)', solo ? 2 : 1);
 
-	return items;
+	return hasEnough ? foodBank.add('Stamina potion(4)', solo ? 2 : 1) : defaultBank;
 }

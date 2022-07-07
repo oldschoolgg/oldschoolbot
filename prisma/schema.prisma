@@ -138,6 +138,8 @@ model ClientStorage {
   kg_loot                 Json   @default("{}") @db.Json
   nex_cost                Json   @default("{}") @db.Json
   nex_loot                Json   @default("{}") @db.Json
+  naxxus_cost             Json   @default("{}") @db.Json
+  naxxus_loot             Json   @default("{}") @db.Json
   kk_cost                 Json   @default("{}") @db.Json
   kk_loot                 Json   @default("{}") @db.Json
   vasa_cost               Json   @default("{}") @db.Json
@@ -402,8 +404,9 @@ model User {
   temp_cl            Json      @default("{}") @db.Json
   last_temp_cl_reset DateTime? @db.Timestamp(6)
 
-  tentacle_charges Int @default(10000)
-  sang_charges     Int @default(0)
+  tentacle_charges    Int @default(10000)
+  sang_charges        Int @default(0)
+  void_staff_charges  Int @default(0)
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
@@ -754,6 +757,7 @@ enum activity_type_enum {
   TroubleBrewing
   Easter
   BaxtorianBathhouses
+  Naxxus
 }
 
 enum xp_gains_skill_enum {
