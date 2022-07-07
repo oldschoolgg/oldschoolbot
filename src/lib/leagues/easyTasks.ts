@@ -156,14 +156,14 @@ export const easyTasks: Task[] = [
 		id: 19,
 		name: 'Do a Tears of Guthix Trip',
 		has: async ({ activityCounts }) => {
-			return (activityCounts.TearsOfGuthix ?? 0) >= 1;
+			return activityCounts.TearsOfGuthix >= 1;
 		}
 	},
 	{
 		id: 20,
 		name: 'Do 5 Pest Control Trips',
 		has: async ({ activityCounts }) => {
-			return (activityCounts.PestControl ?? 0) >= 1;
+			return activityCounts.PestControl >= 1;
 		}
 	},
 	{

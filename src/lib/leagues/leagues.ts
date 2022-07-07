@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User } from '@prisma/client';
+import { User as RoboChimpUser } from '@prisma/robochimp';
 import { calcWhatPercent } from 'e';
-import { writeFileSync } from 'fs';
 import { KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
@@ -22,6 +23,7 @@ import {
 	personalSpellCastStats,
 	personalWoodcuttingStats
 } from '../minions/functions/dataCommand';
+import { roboChimpUserFetch } from '../roboChimp';
 import { getMinigameEntity } from '../settings/minigames';
 import { prisma } from '../settings/prisma';
 import Grimy from '../skilling/skills/herblore/mixables/grimy';
@@ -99,31 +101,33 @@ export function leaguesSlayerTaskForMonster(args: HasFunctionArgs, mon: Monster 
 }
 
 export const leagueTasks = [
-	{ name: 'Easy', tasks: easyTasks },
-	{ name: 'Medium', tasks: mediumTasks },
-	{ name: 'Hard', tasks: hardTasks },
-	{ name: 'Elite', tasks: eliteTasks },
-	{ name: 'Master', tasks: masterTasks }
+	{ name: 'Easy', tasks: easyTasks, points: 20 },
+	{ name: 'Medium', tasks: mediumTasks, points: 45 },
+	{ name: 'Hard', tasks: hardTasks, points: 85 },
+	{ name: 'Elite', tasks: eliteTasks, points: 150 },
+	{ name: 'Master', tasks: masterTasks, points: 250 }
 ];
 
 export const allLeagueTasks = leagueTasks.map(i => i.tasks).flat(2);
 
-let taskIDs = new Set();
-
-let totalTasks = 0;
-let str = '';
-for (const { name, tasks } of leagueTasks) {
-	str += `--------- ${name} (${tasks.length} tasks) -----------\n`;
-	for (const task of tasks) {
-		if (taskIDs.has(task.id)) throw new Error(`WTFFFFFFFFFFF: ${task.id}`);
-		taskIDs.add(task.id);
-		str += `${task.name}\n`;
+export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], excludeFinished: boolean | undefined) {
+	let totalTasks = 0;
+	let totalPoints = 0;
+	let str = '';
+	for (const { name, tasks, points } of leagueTasks) {
+		let realTasks = excludeFinished ? tasks.filter(i => !finishedTasksIDs.includes(i.id)) : tasks;
+		let ptsThisGroup = realTasks.length * points;
+		str += `--------- ${name} (${realTasks.length} tasks - ${ptsThisGroup.toLocaleString()} points) -----------\n`;
+		for (const task of realTasks) {
+			str += `${task.name}\n`;
+		}
+		totalTasks += realTasks.length;
+		totalPoints += ptsThisGroup;
+		str += '\n\n';
 	}
-	totalTasks += tasks.length;
-	str += '\n\n';
+	str = `There are a total of ${totalTasks} tasks (${totalPoints.toLocaleString()} Points).\n\n${str}`;
+	return { attachments: [{ buffer: Buffer.from(str), fileName: 'all-tasks.txt' }] };
 }
-str = `There are a total of ${totalTasks} tasks.\n\n${str}`;
-writeFileSync('./leagues.txt', Buffer.from(str));
 
 async function getActivityCounts(userID: string) {
 	const result: { type: activity_type_enum; count: bigint }[] = await prisma.$queryRaw`SELECT type, COUNT(type)
@@ -218,14 +222,33 @@ GROUP BY data->>'clueID';`);
 		);
 	}
 
-	return casketsCompleted;
+	return actualClues;
+}
+
+export async function calcLeaguesRanking(user: RoboChimpUser) {
+	const [pointsRanking, tasksRanking] = await Promise.all([
+		roboChimpClient.user.count({
+			where: {
+				leagues_points_total: {
+					gt: user.leagues_points_total
+				}
+			}
+		}),
+		roboChimpClient.$queryRaw<any>`SELECT COUNT(*) AS count
+FROM public.user
+WHERE COALESCE(cardinality(leagues_completed_tasks_ids), 0) > ${user.leagues_completed_tasks_ids.length};`
+	]);
+	return {
+		pointsRanking: pointsRanking + 1,
+		tasksRanking: (tasksRanking[0].count as number) + 1
+	};
 }
 
 export async function leaguesCheckUser(userID: string) {
-	const [klasaUser, mahojiUser] = await Promise.all([
+	const [klasaUser, mahojiUser, roboChimpUser] = await Promise.all([
 		globalClient.fetchUser(userID),
 		mahojiUsersSettingsFetch(userID),
-		roboChimpClient.user.findFirst({ where: { id: BigInt(userID) } })
+		roboChimpUserFetch(BigInt(userID))
 	]);
 	const [
 		conStats,
@@ -243,7 +266,8 @@ export async function leaguesCheckUser(userID: string) {
 		spellCastingStats,
 		collectingStats,
 		woodcuttingStats,
-		actualClues
+		actualClues,
+		ranking
 	] = await Promise.all([
 		personalConstructionStats(mahojiUser),
 		getPOH(userID),
@@ -260,7 +284,8 @@ export async function leaguesCheckUser(userID: string) {
 		personalSpellCastStats(mahojiUser),
 		personalCollectingStats(mahojiUser),
 		personalWoodcuttingStats(mahojiUser),
-		calcActualClues(mahojiUser)
+		calcActualClues(mahojiUser),
+		calcLeaguesRanking(roboChimpUser)
 	]);
 	const clPercent = calcCLDetails(mahojiUser).percent;
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
@@ -300,7 +325,7 @@ export async function leaguesCheckUser(userID: string) {
 		actualClues
 	};
 
-	let resStr = '';
+	let resStr = '\n';
 	let totalTasks = 0;
 	let totalFinished = 0;
 	const finishedIDs: number[] = [];
@@ -319,15 +344,66 @@ export async function leaguesCheckUser(userID: string) {
 			}
 		}
 		totalFinished += finished.length;
-		resStr += `${name}: Finished ${finished.length}/${tasks.length}\n`;
+		resStr += `**${name}:** Finished ${finished.length}/${tasks.length}\n`;
 	}
 
 	return {
-		content: `${calcWhatPercent(totalFinished, totalTasks).toFixed(1)}% Completion
+		content: `**Your Leagues Progress**
 
+**Total Tasks Completed:** ${totalFinished} (${calcWhatPercent(totalFinished, totalTasks).toFixed(1)}%) (Rank ${
+			ranking.tasksRanking
+		})
+**Total Points:** ${roboChimpUser.leagues_points_total.toLocaleString()} (Rank ${ranking.pointsRanking})
+**Points Balance:** ${roboChimpUser.leagues_points_balance.toLocaleString()}
 ${resStr}
 
 **Actual Clues:** ${actualClues}`,
 		finished: finishedIDs
 	};
+}
+
+export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: number[]) {
+	const roboChimpUser = await roboChimpUserFetch(userID);
+	const newlyFinishedTasks = finishedTaskIDs.filter(i => !roboChimpUser.leagues_completed_tasks_ids.includes(i));
+	if (newlyFinishedTasks.length === 0) return "You don't have any unclaimed points.";
+
+	const fullNewlyFinishedTasks: Task[] = [];
+	let pointsToAward = 0;
+	for (const task of newlyFinishedTasks) {
+		const group = leagueTasks.find(i => i.tasks.some(t => t.id === task))!;
+		pointsToAward += group.points;
+		fullNewlyFinishedTasks.push(group.tasks.find(i => i.id === task)!);
+	}
+
+	const newUser = await roboChimpClient.user.update({
+		where: {
+			id: userID
+		},
+		data: {
+			leagues_completed_tasks_ids: {
+				push: newlyFinishedTasks
+			},
+			leagues_points_balance: {
+				increment: pointsToAward
+			},
+			leagues_points_total: {
+				increment: pointsToAward
+			}
+		}
+	});
+
+	let response: Awaited<CommandResponse> = {
+		content: `You claimed ${newlyFinishedTasks.length} tasks, and received ${pointsToAward} points. You now have a balance of ${newUser.leagues_points_balance} points, and ${newUser.leagues_points_total} total points. You have completed a total of ${newUser.leagues_completed_tasks_ids.length} tasks.`
+	};
+
+	if (newlyFinishedTasks.length > 10) {
+		response.content += '\nAttached is a text file showing all the tasks you just claimed.';
+		response.attachments = [
+			{ buffer: Buffer.from(fullNewlyFinishedTasks.map(i => i.name).join('\n')), fileName: 'new-tasks.txt' }
+		];
+	} else {
+		response.content += `\n**Finished Tasks:** ${fullNewlyFinishedTasks.map(i => i.name).join(', ')}.`;
+	}
+
+	return response;
 }

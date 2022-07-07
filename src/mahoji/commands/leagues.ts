@@ -1,6 +1,16 @@
+import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { allLeagueTasks, leaguesCheckUser, leagueTasks } from '../../lib/leagues/leagues';
+import { production } from '../../config';
+import {
+	allLeagueTasks,
+	generateLeaguesTasksTextFile,
+	leaguesCheckUser,
+	leaguesClaimCommand,
+	leagueTasks
+} from '../../lib/leagues/leagues';
+import { formatDuration } from '../../lib/util';
+import { Cooldowns } from '../lib/Cooldowns';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const leaguesCommand: OSBMahojiCommand = {
@@ -29,9 +39,38 @@ export const leaguesCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'claim',
+			description: 'Claim the points from your completed tasks.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'view_all_tasks',
+			description: 'View all tasks.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'exclude_finished',
+					description: 'Exclude tasks you have finished?'
+				}
+			]
 		}
 	],
-	run: async ({ options, userID }: CommandRunOptions<{ check?: {}; view_task?: { task: string } }>) => {
+	run: async ({
+		options,
+		userID
+	}: CommandRunOptions<{
+		check?: {};
+		view_task?: { task: string };
+		claim?: {};
+		view_all_tasks?: { exclude_finished?: boolean };
+	}>) => {
+		const cooldown = Cooldowns.get(userID.toString(), 'leagues', Time.Second * 30);
+		if (cooldown && production) {
+			return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}.`;
+		}
 		const { content, finished } = await leaguesCheckUser(userID.toString());
 		if (options.check) {
 			return content;
@@ -48,9 +87,15 @@ export const leaguesCommand: OSBMahojiCommand = {
 					}
 				}
 			});
-			return `**Description:** **${task.name}**
-**Tier: ${group.name}**
-${count} users have finished this task, ${finished.includes(task.id) ? 'including you.' : "but you haven't."}`;
+			return `**Description:** ${task.name}
+**Tier:** ${group.name}
+${count} users have finished this task, ${finished.includes(task.id) ? 'including you.' : "you haven't."}`;
+		}
+		if (options.claim) {
+			return leaguesClaimCommand(userID, finished);
+		}
+		if (options.view_all_tasks) {
+			return generateLeaguesTasksTextFile(finished, options.view_all_tasks.exclude_finished);
 		}
 
 		return 'Invalid command.';

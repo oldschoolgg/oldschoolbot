@@ -20,3 +20,18 @@ ORDER BY random()
 LIMIT 1;`;
 	return random[0];
 }
+
+export async function roboChimpUserFetch(userID: bigint) {
+	const result = await roboChimpClient.user.upsert({
+		where: {
+			id: userID
+		},
+		create: {
+			id: userID,
+			leagues_points_balance: 0,
+			leagues_points_total: 0
+		},
+		update: {}
+	});
+	return result;
+}
