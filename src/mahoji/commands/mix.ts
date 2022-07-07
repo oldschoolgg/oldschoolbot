@@ -113,9 +113,10 @@ export const mineCommand: OSBMahojiCommand = {
 			const boostResult = await inventionItemBoost({
 				userID: BigInt(user.id),
 				inventionID: InventionID.MechaMortar,
-				duration: options.quantity
-					? options.quantity * timeToMixSingleItem
-					: Math.floor(maxTripLength / timeToMixSingleItem)
+				duration: Math.min(
+					maxTripLength,
+					options.quantity ? options.quantity * timeToMixSingleItem : maxTripLength
+				)
 			});
 			if (boostResult.success) {
 				timeToMixSingleItem = reduceNumByPercent(

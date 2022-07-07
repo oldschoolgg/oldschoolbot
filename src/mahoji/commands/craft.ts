@@ -91,7 +91,7 @@ export const craftCommand: OSBMahojiCommand = {
 			const res = await inventionItemBoost({
 				userID: BigInt(user.id),
 				inventionID: InventionID.MasterHammerAndChisel,
-				duration: quantity ? quantity * timeToCraftSingleItem : maxTripLength
+				duration: Math.min(maxTripLength, quantity ? quantity * timeToCraftSingleItem : maxTripLength)
 			});
 			if (res.success) {
 				timeToCraftSingleItem = reduceNumByPercent(
