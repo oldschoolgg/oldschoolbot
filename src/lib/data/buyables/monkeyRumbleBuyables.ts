@@ -1,3 +1,4 @@
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { monkeyTiers } from '../../monkeyRumble';
@@ -38,6 +39,12 @@ for (const tier of monkeyTiers) {
 		itemCost:
 			index === 0
 				? new Bank().add('Coins', 50_000)
-				: new Bank().add('Rumble token', Math.floor((index + 1) * 8.5))
+				: new Bank().add('Rumble token', Math.floor((index + 1) * 8.5)),
+		customReq: async (user: KlasaUser) => {
+			if (user.owns(tier.greegrees[0].id)) {
+				return [false, 'You already own this greegree.'];
+			}
+			return [true];
+		}
 	});
 }
