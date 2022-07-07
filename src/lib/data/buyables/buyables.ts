@@ -274,7 +274,7 @@ const magicBuyables: Buyable[] = [
 		skillsNeeded: {
 			magic: 66
 		}
-	}	
+	}
 ];
 
 const questBuyables: Buyable[] = [
