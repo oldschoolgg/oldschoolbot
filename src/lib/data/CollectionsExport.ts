@@ -1856,7 +1856,8 @@ export const masterCapesCL = resolveItems([
 	'Hitpoints master cape',
 	'Ranged master cape',
 	'Slayer master cape',
-	'Dungeoneering master cape'
+	'Dungeoneering master cape',
+	'Invention master cape'
 ]);
 
 export const expertCapesCL = resolveItems(["Combatant's cape", "Artisan's cape", 'Support cape', "Gatherer's cape"]);
@@ -2049,7 +2050,8 @@ export const customPetsCL = resolveItems([
 	'Queen black dragonling',
 	'Mr. E',
 	'Nexterminator',
-	'Phoenix eggling'
+	'Phoenix eggling',
+	'Cogsworth'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([
@@ -2063,7 +2065,8 @@ export const discontinuedCustomPetsCL = resolveItems([
 	'Gregoyle',
 	'Mini Pumpkinhead',
 	'Seer',
-	'Leia'
+	'Leia',
+	'Buzz'
 ]);
 
 export const kingGoldemarCL = resolveItems([

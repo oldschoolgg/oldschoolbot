@@ -96,7 +96,8 @@ export async function kkCommand(
 	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	channelID: bigint,
-	inputName: string
+	inputName: string,
+	inputQuantity: number | undefined
 ): CommandResponse {
 	if (interaction) interaction.deferReply();
 	const failureRes = checkReqs([user], KalphiteKingMonster, 2);
@@ -319,7 +320,7 @@ export async function kkCommand(
 	let [quantity, duration, perKillTime] = await calcDurQty(
 		users,
 		{ ...KalphiteKingMonster, timeToFinish: effectiveTime },
-		undefined,
+		inputQuantity,
 		Time.Minute * minDuration,
 		Time.Minute * 30
 	);

@@ -69,6 +69,8 @@ import { Pickpocketables } from "../../lib/skilling/skills/thieving/stealables";
 import Woodcutting from "../../lib/skilling/skills/woodcutting";
 import { Creature, SkillsEnum } from "../../lib/skilling/types";
 import { Skills as TSkills } from "../../lib/types";
+import { DisassembleTaskOptions } from "../../lib/invention/disassemble";
+import { ResearchTaskOptions } from "../../lib/invention/research";
 import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
@@ -862,6 +864,26 @@ export default class extends Extendable {
 				return `${this.minionName} is currently doing ${
 					data.quantity
 				}x games of Trouble Brewing. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case "Easter":
+			case "BlastFurnace": {
+				throw new Error("Removed");
+			}
+			case "Disassembling": {
+				const data = currentTask as DisassembleTaskOptions;
+				return `${this.minionName} is currently disassembling ${
+					data.qty
+				}x ${itemNameFromID(
+					data.i
+				)}. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case "Research": {
+				const data = currentTask as ResearchTaskOptions;
+				return `${this.minionName} is currently researching with '${
+					data.material
+				}' materials. The trip should take ${formatDuration(
 					durationRemaining
 				)}.`;
 			}

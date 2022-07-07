@@ -17,7 +17,8 @@ export async function kgCommand(
 	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	channelID: bigint,
-	inputName: string
+	inputName: string,
+	quantity: number | undefined
 ) {
 	if (interaction) interaction.deferReply();
 	const channel = globalClient.channels.cache.get(channelID.toString());
@@ -92,6 +93,7 @@ export async function kgCommand(
 		solo: type === "solo",
 		canDie: true,
 		kcLearningCap: 50,
+		quantity,
 	});
 	try {
 		const { bossUsers } = await instance.start();

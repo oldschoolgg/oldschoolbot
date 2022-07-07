@@ -70,7 +70,8 @@ export async function nexCommand(
 	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	channelID: bigint,
-	inputName: string
+	inputName: string,
+	inputQuantity: number | undefined
 ) {
 	if (interaction) interaction.deferReply();
 	const userBank = user.bank();
@@ -136,14 +137,18 @@ export async function nexCommand(
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) return "No channel found.";
-	const [usersWhoConfirmed, reactionAwaiter] = await setupParty(
-		channel,
-		user,
-		partyOptions
-	);
-	await reactionAwaiter();
-	const users = usersWhoConfirmed.filter((u) => !u.minionIsBusy);
-
+	let users: KlasaUser[] = [];
+	if (type === "mass") {
+		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(
+			channel,
+			user,
+			partyOptions
+		);
+		await reactionAwaiter();
+		users = usersWhoConfirmed.filter((u) => !u.minionIsBusy);
+	} else {
+		users = [user];
+	}
 	let debugStr = "";
 	let effectiveTime = NexMonster.timeToFinish;
 	if (isWeekend()) {
@@ -278,7 +283,7 @@ export async function nexCommand(
 	let [quantity, duration, perKillTime] = await calcDurQty(
 		users,
 		{ ...NexMonster, timeToFinish: effectiveTime },
-		undefined,
+		inputQuantity,
 		Time.Minute * 2,
 		Time.Minute * 30
 	);

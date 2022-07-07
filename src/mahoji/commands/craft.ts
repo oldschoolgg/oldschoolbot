@@ -1,7 +1,8 @@
-import { Time } from 'e';
+import { reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
@@ -19,7 +20,6 @@ export const craftCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to mine things.',
 		examples: ['/craft name:Onyx necklace']
 	},
 	options: [
@@ -68,6 +68,8 @@ export const craftCommand: OSBMahojiCommand = {
 
 		await user.settings.sync(true);
 		const userBank = user.bank({ withGP: true });
+		const maxTripLength = user.maxTripLength('Crafting');
+		const boosts: string[] = [];
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.
 		let timeToCraftSingleItem = craftable.tickRate * Time.Second * 0.6 + Time.Second / 4;
@@ -75,13 +77,32 @@ export const craftCommand: OSBMahojiCommand = {
 		if (craftable.bankChest && (hasFallyHard || user.skillLevel(SkillsEnum.Crafting) >= 99)) {
 			timeToCraftSingleItem /= 3.25;
 		}
-		if (user.usingPet('Klik') && Tanning.includes(craftable)) {
-			timeToCraftSingleItem /= 3;
-		} else if (userHasItemsEquippedAnywhere(user, 'Dwarven greathammer')) {
-			timeToCraftSingleItem /= 2;
-		}
 
-		const maxTripLength = user.maxTripLength('Crafting');
+		const isTannable = Tanning.includes(craftable);
+		if (user.usingPet('Klik') && isTannable) {
+			timeToCraftSingleItem /= 3;
+			boosts.push('3x faster for Klik helping Tan');
+		}
+		if (!isTannable) {
+			if (userHasItemsEquippedAnywhere(user, 'Dwarven greathammer')) {
+				timeToCraftSingleItem /= 2;
+				boosts.push('2x faster for Dwarven greathammer');
+			}
+			const res = await inventionItemBoost({
+				userID: BigInt(user.id),
+				inventionID: InventionID.MasterHammerAndChisel,
+				duration: Math.min(maxTripLength, quantity ? quantity * timeToCraftSingleItem : maxTripLength)
+			});
+			if (res.success) {
+				timeToCraftSingleItem = reduceNumByPercent(
+					timeToCraftSingleItem,
+					inventionBoosts.masterHammerAndChisel.speedBoostPercent
+				);
+				boosts.push(
+					`${inventionBoosts.masterHammerAndChisel.speedBoostPercent}% faster for Master hammer and chisel (${res.messages})`
+				);
+			}
+		}
 
 		if (!quantity) {
 			quantity = Math.floor(maxTripLength / timeToCraftSingleItem);
@@ -119,9 +140,13 @@ export const craftCommand: OSBMahojiCommand = {
 			duration,
 			type: 'Crafting'
 		});
-
-		return `${user.minionName} is now crafting ${quantity}${sets} ${
+		let str = `${user.minionName} is now crafting ${quantity}${sets} ${
 			craftable.name
 		}, it'll take around ${formatDuration(duration)} to finish. Removed ${itemsNeeded} from your bank.`;
+		if (boosts.length > 0) {
+			str += `**Boosts:** ${boosts.join(', ')}`;
+		}
+
+		return str;
 	}
 };

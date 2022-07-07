@@ -16,7 +16,8 @@ export async function igneCommand(
 	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	channelID: bigint,
-	inputName: string
+	inputName: string,
+	quantity: number | undefined
 ) {
 	if (interaction) interaction.deferReply();
 	const channel = globalClient.channels.cache.get(channelID.toString());
@@ -121,7 +122,7 @@ export async function igneCommand(
 			}
 			return baseDeathChance;
 		},
-		quantity: undefined,
+		quantity,
 		allowMoreThan1Solo: true,
 		allowMoreThan1Group: true,
 	});

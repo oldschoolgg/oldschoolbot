@@ -7,6 +7,7 @@ import { KlasaUser } from 'klasa';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 import { Canvas, Image } from 'skia-canvas/lib';
 
+import { getUserGear } from '../../../mahoji/mahojiSettings';
 import BankImageTask from '../../../tasks/bankImage';
 import { monkeyTiers } from '../../monkeyRumble';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -323,7 +324,7 @@ export async function generateGearImage(
 	return canvas.toBuffer('png');
 }
 
-export async function generateAllGearImage(user: KlasaUser) {
+export async function generateAllGearImage(user: KlasaUser | User) {
 	if (!bankTask) {
 		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 	}
@@ -332,9 +333,11 @@ export async function generateAllGearImage(user: KlasaUser) {
 		sprite: bgSprite,
 		uniqueSprite: hasBgSprite,
 		background: userBg
-	} = bankTask.getBgAndSprite(user.settings.get(UserSettings.BankBackground) ?? 1);
+	} = bankTask.getBgAndSprite(
+		(user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackground) : user.bankBackground) ?? 1
+	);
 
-	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+	const hexColor = user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackgroundHex) : user.bank_bg_hex;
 
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
 	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
@@ -375,7 +378,7 @@ export async function generateAllGearImage(user: KlasaUser) {
 			y += gearTemplateImage.height + 30;
 			i = 0;
 		}
-		const gear = user.getGear(type as GearSetupType);
+		const gear = user instanceof KlasaUser ? user.getGear(type) : getUserGear(user)[type];
 		ctx.save();
 		ctx.translate(15 + i * (gearTemplateImage.width + 10), y);
 		ctx.font = '16px RuneScape Bold 12';
@@ -404,7 +407,8 @@ export async function generateAllGearImage(user: KlasaUser) {
 	const petY = canvas.height / 2 + 20;
 	drawText(canvas, 'Pet', petX + 5, petY - 5);
 	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
-	const userPet = user.settings.get(UserSettings.Minion.EquippedPet);
+	const userPet =
+		user instanceof KlasaUser ? user.settings.get(UserSettings.Minion.EquippedPet) : user.minion_equippedPet;
 	if (userPet) {
 		const image = await globalClient.tasks.get('bankImage')!.getItemImage(userPet, 1);
 		ctx.drawImage(image, petX, petY, image.width, image.height);

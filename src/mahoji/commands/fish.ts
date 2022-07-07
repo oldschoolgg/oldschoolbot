@@ -1,8 +1,9 @@
-import { calcPercentOfNum, Time } from 'e';
+import { calcPercentOfNum, reduceNumByPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
 
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Fishing from '../../lib/skilling/skills/fishing';
@@ -16,11 +17,10 @@ import { OSBMahojiCommand } from '../lib/util';
 
 export const fishCommand: OSBMahojiCommand = {
 	name: 'fish',
-	description: 'Fish fish.',
+	description: 'Send your minion to fish fish.',
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to fish things.',
 		examples: ['/fish name:Shrimp']
 	},
 	options: [
@@ -93,6 +93,18 @@ export const fishCommand: OSBMahojiCommand = {
 		const hasShelldon = user.usingPet('Shelldon');
 		if (hasShelldon) {
 			scaledTimePerFish /= 2;
+			boosts.push('2x faster for Shelldon');
+		}
+		let maxTripLength = user.maxTripLength('Fishing');
+
+		const res = await inventionItemBoost({
+			userID: BigInt(user.id),
+			inventionID: InventionID.MechaRod,
+			duration: Math.min(maxTripLength, options.quantity ? options.quantity * scaledTimePerFish : maxTripLength)
+		});
+		if (res.success) {
+			scaledTimePerFish = reduceNumByPercent(scaledTimePerFish, inventionBoosts.mechaRod.speedBoostPercent);
+			boosts.push(`${inventionBoosts.mechaRod.speedBoostPercent}% faster for Mecha rod (${res.messages})`);
 		}
 
 		switch (fish.bait) {
@@ -133,7 +145,6 @@ export const fishCommand: OSBMahojiCommand = {
 			);
 		}
 
-		let maxTripLength = user.maxTripLength('Fishing');
 		const tackleBoxes = [
 			"Champion's tackle box",
 			'Professional tackle box',
@@ -187,11 +198,7 @@ export const fishCommand: OSBMahojiCommand = {
 
 		let response = `${user.minionName} is now fishing ${quantity}x ${fish.name}, it'll take around ${formatDuration(
 			duration
-		)} to finish.  ${
-			hasShelldon
-				? `\n<:shelldon:748496988407988244> ${user.minionName} picks up Shelldon to help them fish!`
-				: ''
-		}`;
+		)} to finish.`;
 
 		if (boosts.length > 0) {
 			response += `\n\n**Boosts:** ${boosts.join(', ')}.`;

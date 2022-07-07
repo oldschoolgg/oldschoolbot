@@ -5,7 +5,6 @@ import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'm
 
 import { badges, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
@@ -297,27 +296,15 @@ async function openLb(user: KlasaUser, channelID: bigint, name: string, ironmanO
 	let key = '';
 	let openableName = '';
 
-	const clue = !name
+	const openable = !name
 		? undefined
-		: ClueTiers.find(
-				clue => stringMatches(clue.name, name) || clue.name.toLowerCase().includes(name.toLowerCase())
+		: allOpenables.find(
+				item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
 		  );
-
-	if (clue) {
-		entityID = clue.id;
-		key = 'clueScores';
-		openableName = clue.name;
-	} else {
-		const openable = !name
-			? undefined
-			: allOpenables.find(
-					item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
-			  );
-		if (openable) {
-			entityID = openable.id;
-			key = 'openable_scores';
-			openableName = openable.name;
-		}
+	if (openable) {
+		entityID = openable.id;
+		key = 'openable_scores';
+		openableName = openable.name;
 	}
 
 	if (entityID === -1) {
@@ -657,10 +644,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 					name: 'skill',
 					description: 'The skill you want to select.',
 					required: true,
-					choices: [
-						{ name: 'Overall', value: 'overall' },
-						...Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
-					]
+					autocomplete: async (value: string) => {
+						return [
+							{ name: 'Overall', value: 'overall' },
+							...Object.values(SkillsEnum).map(i => ({ name: toTitleCase(i), value: i }))
+						].filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
+					}
 				},
 				{
 					type: ApplicationCommandOptionType.Boolean,

@@ -65,6 +65,7 @@ export const Roles = {
 	TopClueHunter:
 		DISCORD_SETTINGS.Roles?.TopClueHunter ?? "848967350120218636",
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? "867967551819358219",
+	TopInventor: "992799099801833582",
 };
 
 export const enum DefaultPingableRoles {
@@ -172,6 +173,7 @@ export const enum Emoji {
 	CombatSword = "<:combat:802136963956080650>",
 	SOTW = "<:SOTWtrophy:842938096097820693>",
 	OSRSSkull = "<:skull:863392427040440320>",
+	Invention = "<:Invention:936219232146980874>",
 }
 
 export const ReactionEmoji = {
@@ -273,8 +275,9 @@ export const enum Tasks {
 	Nex = "nexActivity",
 	BaxtorianBathhouses = "bathhousesActivity",
 	TroubleBrewing = "troubleBrewingActivity",
-	REMOVED = "__REMOVED__",
 	Naxxus = "naxxusActivity",
+	Research = "researchActivity",
+	REMOVED = "__REMOVED__",
 }
 
 export enum ActivityGroup {
@@ -571,8 +574,6 @@ export const HESPORI_ID = 8583;
  */
 export const userQueues: Map<string, PQueue> = new Map();
 
-export const bankImageCache = new Map<string, string>();
-
 export const skillEmoji = {
 	runecraft: "<:runecraft:630911040435257364>",
 	firemaking: "<:firemaking:630911040175210518>",
@@ -603,6 +604,7 @@ export const skillEmoji = {
 	clock: "<:ehpclock:352323705210142721>",
 	combat: "<:combat:802136963956080650>",
 	dungeoneering: "<:dungeoneering:828683755198873623>",
+	invention: "<:Invention:936219232146980874>",
 };
 
 export const LEVEL_99_XP = convertLVLtoXP(99);

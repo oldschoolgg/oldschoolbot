@@ -1,4 +1,8 @@
+// Base custom items are referenced elsewhere in the custom items files and must be loaded first
+
+import "./baseCustomItems";
 import "../deletedItems";
+import "./invention";
 import "./customItemsFancy";
 import "./farming";
 import "./pets";
@@ -3378,3 +3382,27 @@ setCustomItem(
 	10_000_000
 );
 setCustomItem(70_018, "Grand Crystal Acorn", "Magic seed", {}, 50_000);
+setCustomItem(
+	52_617,
+	"Lava flower crown",
+	"Rainbow flower crown",
+	{ tradeable: false },
+	10_000
+);
+setCustomItem(
+	52_618,
+	"Purple flower crown",
+	"Rainbow flower crown",
+	{ tradeable: false },
+	10_000
+);
+setCustomItem(52_630, "Beehive", "Coal", {}, 10_000);
+setCustomItem(52_631, "Honeycomb", "Coal", {}, 10_000);
+setCustomItem(52_632, "Honey", "Coal", {}, 10_000);
+setCustomItem(
+	52_633,
+	"Buzz",
+	"Herbi",
+	{ customItemData: { isSuperUntradeable: true } },
+	1_000_000
+);

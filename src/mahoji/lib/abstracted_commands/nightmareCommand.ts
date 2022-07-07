@@ -241,13 +241,20 @@ export async function nightmareCommand(user: KlasaUser, channelID: bigint, name:
 			return `${user} doesn't own ${cost}.`;
 		}
 		let healingMod = isPhosani ? 1.5 : 1;
-		const { foodRemoved } = await removeFoodFromUser({
-			user,
-			totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
-			healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,
-			activityName: NightmareMonster.name,
-			attackStylesUsed: ['melee']
-		});
+		let foodRemoved: Bank = new Bank();
+		try {
+			foodRemoved = (
+				await removeFoodFromUser({
+					user,
+					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
+					healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,
+					activityName: NightmareMonster.name,
+					attackStylesUsed: ['melee']
+				})
+			).foodRemoved;
+		} catch (_err: any) {
+			return typeof _err === 'string' ? _err : _err.message;
+		}
 		const { realCost } = await user.specialRemoveItems(cost);
 		soloFoodUsage = realCost.clone().add(foodRemoved);
 

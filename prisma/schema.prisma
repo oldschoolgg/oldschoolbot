@@ -108,6 +108,7 @@ model ClientStorage {
   gp_open                      BigInt   @default(0)
   gp_daily                     BigInt   @default(0)
   gp_luckypick                 BigInt   @default(0)
+  gp_slots                     BigInt   @default(0)
   custom_prices                Json     @default("{}") @db.Json
   nightmare_cost               Json     @default("{}") @db.Json
   create_cost                  Json     @default("{}") @db.Json
@@ -124,7 +125,6 @@ model ClientStorage {
   // BSO
   gp_ic                   BigInt @default(0)
   double_loot_finish_time BigInt @default(0)
-  gp_slots                BigInt @default(0)
   gp_pet                  BigInt @default(0)
   bank_lottery            Json   @default("{}") @db.Json
   ignecarus_cost          Json   @default("{}") @db.Json
@@ -154,6 +154,12 @@ model ClientStorage {
   market_prices           Json   @default("{}") @db.Json
   bb_cost                 Json   @default("{}") @db.Json
   bb_loot                 Json   @default("{}") @db.Json
+
+  items_disassembled_cost    Json @default("{}") @db.Json
+  invention_materials_cost   Json @default("{}") @db.Json
+  invention_prizes_remaining Json @default("{}") @db.Json
+  clue_upgrader_loot         Json @default("{}") @db.Json
+  portable_tanner_loot       Json @default("{}") @db.Json
 
   @@map("clientStorage")
 }
@@ -289,7 +295,6 @@ model User {
   bank                       Json     @default("{}") @db.Json
   collectionLogBank          Json     @default("{}") @db.JsonB
   creatureScores             Json     @default("{}") @db.Json
-  clueScores                 Json     @default("{}") @db.Json
   monsterScores              Json     @default("{}") @db.Json
   lapsScores                 Json     @default("{}") @db.Json
   bankBackground             Int      @default(1)
@@ -410,6 +415,7 @@ model User {
 
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
+  gp_slots     BigInt @default(0)
 
   tob_cost Json @default("{}") @db.Json
   tob_loot Json @default("{}") @db.Json
@@ -426,13 +432,9 @@ model User {
   nursery                  Json?    @db.Json
   selected_tame            Int?
   monkeys_fought           String[]
-  times_fed_gregoyle       Int      @default(0)
-  wrong_accusations        Int      @default(0)
-  gp_slots                 BigInt   @default(0)
   emerged_inferno_attempts Int      @default(0)
   skills_dungeoneering     BigInt   @default(0) @map("skills.dungeoneering")
   ourania_tokens           Int      @default(0)
-  spawned_rmb              Boolean  @default(false)
   total_item_contracts     Int      @default(0)
   last_item_contract_date  BigInt   @default(0)
   current_item_contract    Int?
@@ -441,9 +443,14 @@ model User {
   dungeoneering_tokens     Int      @default(0)
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
-  got_free_festive_present Boolean  @default(false)
-  eggs_delivered           Int      @default(0)
 
+  // Invention
+  skills_invention          BigInt @default(0) @map("skills.invention")
+  materials_owned           Json   @default("{}") @db.Json
+  disassembled_items_bank   Json   @default("{}") @db.Json
+  researched_materials_bank Json   @default("{}") @db.Json
+  unlocked_blueprints       Int[]
+  disabled_inventions       Int[]
 
   @@map("users")
 }
@@ -758,6 +765,8 @@ enum activity_type_enum {
   Easter
   BaxtorianBathhouses
   Naxxus
+  Disassembling
+  Research
 }
 
 enum xp_gains_skill_enum {
@@ -785,6 +794,7 @@ enum xp_gains_skill_enum {
   hitpoints
   dungeoneering
   slayer
+  invention
 }
 
 enum tame_growth {

@@ -6,20 +6,24 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
+import { beeHiveTripEffect } from '../beeHive';
 import { MysteryBoxes } from '../bsoOpenables';
 import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
 import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ClientSettings } from '../settings/types/ClientSettings';
 import { RuneTable, WilvusTable, WoodTable } from '../simulation/seedTable';
 import { DougTable, PekyTable } from '../simulation/sharedTables';
+import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
-import { channelIsSendable, itemID, roll, updateBankSetting, updateGPTrackSetting } from '../util';
+import { channelIsSendable, itemID, roll, toKMB, updateBankSetting, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
 import { makeDoClueButton, makeOpenCasketButton, makeRepeatTripButton } from './globalInteractions';
+import { userHasItemsEquippedAnywhere } from './minionUtils';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -31,17 +35,19 @@ const activitiesToTrackAsPVMGPSource: activity_type_enum[] = [
 	'ClueCompletion'
 ];
 
-const tripFinishEffects: {
+export interface TripFinishEffect {
 	name: string;
 	fn: (options: { data: ActivityTaskOptions; user: KlasaUser; loot: Bank | null; messages: string[] }) => unknown;
-}[] = [
+}
+
+const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Track GP Analytics',
 		fn: ({ data, loot }) => {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+					updateGPTrackSetting('gp_pvm', GP);
 				}
 			}
 		}
@@ -93,7 +99,7 @@ const tripFinishEffects: {
 		name: 'Custom Pet Perk',
 		fn: async ({ data, messages, user }) => {
 			const pet = user.equippedPet();
-			const minutes = data.duration / Time.Minute;
+			const minutes = Math.floor(data.duration / Time.Minute);
 			if (minutes < 5) return;
 			let bonusLoot = new Bank();
 			switch (pet) {
@@ -194,11 +200,7 @@ const tripFinishEffects: {
 
 				updateBankSetting(globalClient, ClientSettings.EconomyStats.MagicCostBank, alchResult.bankToRemove);
 
-				updateGPTrackSetting(
-					globalClient,
-					ClientSettings.EconomyStats.GPSourceAlching,
-					alchResult.bankToAdd.amount('Coins')
-				);
+				updateGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'));
 				messages.push(
 					`Your Voidling alched ${alchResult.maxCasts}x ${alchResult.itemToAlch.name}. Removed ${
 						alchResult.bankToRemove
@@ -218,7 +220,33 @@ const tripFinishEffects: {
 				);
 			}
 		}
-	}
+	},
+	{
+		name: 'Invention Effects',
+		fn: async ({ data, messages, user }) => {
+			if (userHasItemsEquippedAnywhere(user, 'Silverhawk boots') && data.duration > Time.Minute) {
+				const costRes = await inventionItemBoost({
+					userID: user.id,
+					inventionID: InventionID.SilverHawkBoots,
+					duration: data.duration
+				});
+				if (costRes.success) {
+					const xpToReceive = inventionBoosts.silverHawks.passiveXPCalc(
+						data.duration,
+						user.skillLevel(SkillsEnum.Agility)
+					);
+					await user.addXP({
+						skillName: SkillsEnum.Agility,
+						amount: xpToReceive,
+						multiplier: false,
+						duration: data.duration
+					});
+					messages.push(`+${toKMB(xpToReceive)} Agility XP from Silverhawk boots (${costRes.messages})`);
+				}
+			}
+		}
+	},
+	beeHiveTripEffect
 ];
 
 export async function handleTripFinish(
@@ -256,7 +284,7 @@ export async function handleTripFinish(
 	const runCmdOptions = {
 		channelID,
 		userID: user.id,
-		guildID: isGuildBasedChannel(channel) ? channel.guild.id : undefined,
+		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
 		user,
 		member: null
 	};
@@ -281,7 +309,6 @@ export async function handleTripFinish(
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
-
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

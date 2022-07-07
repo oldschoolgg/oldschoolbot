@@ -8,27 +8,16 @@ import { Image } from 'skia-canvas/lib';
 import { CommentStream, SubmissionStream } from 'snoostorm';
 
 import { GetUserBankOptions } from '../../extendables/User/Bank';
-import { BankImageResult } from '../../tasks/bankImage';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
 import { AttackStyles } from '../minions/functions';
-import { AddXpParams, Flags, KillableMonster } from '../minions/types';
+import { AddXpParams, KillableMonster } from '../minions/types';
 import { MinigameName } from '../settings/minigames';
 import { CustomGet } from '../settings/types/UserSettings';
 import { Creature, SkillsEnum } from '../skilling/types';
 import { Gear } from '../structures/Gear';
 import { chatHeads } from '../util/chatHeadImage';
 import { ItemBank, MakePartyOptions, Skills } from '.';
-
-type SendBankImageFn = (options: {
-	bank: Bank;
-	content?: string;
-	title?: string;
-	background?: number;
-	flags?: Record<string, string | number>;
-	user?: KlasaUser;
-	cl?: Bank;
-}) => Promise<KlasaMessage>;
 
 declare module 'klasa' {
 	interface KlasaClient {
@@ -67,14 +56,6 @@ declare module 'klasa' {
 	}
 
 	interface Task {
-		generateBankImage(
-			bank: Bank,
-			title?: string,
-			showValue?: boolean,
-			flags?: Flags,
-			user?: KlasaUser,
-			cl?: Bank
-		): Promise<BankImageResult>;
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
 	}
 
@@ -136,7 +117,6 @@ declare module 'discord.js' {
 		specialRemoveItems(items: Bank): Promise<{ realCost: Bank }>;
 		addItemsToCollectionLog(options: { items: Bank; dontAddToTempCL?: boolean }): Promise<SettingsUpdateResult>;
 		incrementMonsterScore(monsterID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
-		incrementClueScore(clueID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		incrementCreatureScore(creatureID: number, numberToAdd?: number): Promise<SettingsUpdateResult>;
 		log(stringLog: string): void;
 		addQP(amount: number): Promise<SettingsUpdateResult>;
@@ -228,24 +208,5 @@ declare module 'discord.js' {
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;
-	}
-
-	interface TextChannel {
-		sendBankImage: SendBankImageFn;
-	}
-
-	interface Newshannel {
-		sendBankImage: SendBankImageFn;
-	}
-	interface ThreadChannel {
-		sendBankImage: SendBankImageFn;
-	}
-
-	interface DMChannel {
-		sendBankImage: SendBankImageFn;
-	}
-
-	interface NewsChannel {
-		sendBankImage: SendBankImageFn;
 	}
 }

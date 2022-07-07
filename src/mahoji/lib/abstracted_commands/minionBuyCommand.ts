@@ -1,4 +1,3 @@
-import { Embed } from '@discordjs/builders';
 import { User } from '@prisma/client';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
@@ -42,9 +41,7 @@ export async function minionBuyCommand(klasaUser: KlasaUser, user: User, ironman
 	}
 
 	return {
-		embeds: [
-			new Embed().setTitle('Your minion is now ready to use!').setDescription(
-				`You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
+		content: `You have successfully got yourself a minion, and you're ready to use the bot now! Please check out the links below for information you should read.
 
 <:ironman:626647335900020746> You can make your new minion an Ironman by using the command: \`/minion ironman\`.
 
@@ -56,9 +53,7 @@ export async function minionBuyCommand(klasaUser: KlasaUser, user: User, ironman
 
 Please click the buttons below for important links.
 
-${starter !== null ? `**You received these starter items:** ${starter}.` : ''}`
-			)
-		],
+${starter !== null ? `**You received these starter items:** ${starter}.` : ''}`,
 		components: [
 			{
 				type: ComponentType.ActionRow,

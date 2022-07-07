@@ -212,8 +212,7 @@ export const dgCommand: OSBMahojiCommand = {
 	name: 'dg',
 	description: 'The Dungeoneering skill.',
 	attributes: {
-		requiresMinion: true,
-		description: 'The Dungeoneering skill.'
+		requiresMinion: true
 	},
 	options: [
 		{

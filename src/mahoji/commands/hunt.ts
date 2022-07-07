@@ -1,4 +1,3 @@
-import { Time } from "e";
 import { ApplicationCommandOptionType, CommandRunOptions } from "mahoji";
 import { Bank } from "oldschooljs";
 
@@ -12,13 +11,20 @@ import creatures from "../../lib/skilling/skills/hunter/creatures";
 import Hunter from "../../lib/skilling/skills/hunter/hunter";
 import { HunterTechniqueEnum, SkillsEnum } from "../../lib/skilling/types";
 import { HunterActivityTaskOptions } from "../../lib/types/minions";
-import { formatDuration, itemID, updateBankSetting } from "../../lib/util";
+import { formatDuration, updateBankSetting } from "../../lib/util";
 import addSubTaskToActivityTask from "../../lib/util/addSubTaskToActivityTask";
 import brewRestoreSupplyCalc from "../../lib/util/brewRestoreSupplyCalc";
 import { stringMatches } from "../../lib/util/cleanString";
 import { userHasItemsEquippedAnywhere } from "../../lib/util/minionUtils";
 import { Peak } from "../../tasks/WildernessPeakInterval";
 import { OSBMahojiCommand } from "../lib/util";
+import { reduceNumByPercent, Time } from "e";
+
+import {
+	inventionBoosts,
+	InventionID,
+	inventionItemBoost,
+} from "../../lib/invention/inventions";
 
 export const huntCommand: OSBMahojiCommand = {
 	name: "hunt",
@@ -26,7 +32,6 @@ export const huntCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: "Send your minion to hunt things.",
 		examples: ["/hunt name:Ferret"],
 	},
 	options: [
@@ -213,17 +218,35 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
+		let timePerCatch = (catchTime * Time.Second) / traps;
+
 		const maxTripLength = user.maxTripLength("Hunter");
+		if (creature.huntTechnique === HunterTechniqueEnum.BoxTrapping) {
+			const boostRes = await inventionItemBoost({
+				userID: user.id,
+				inventionID: InventionID.QuickTrap,
+				duration: Math.min(
+					maxTripLength,
+					options.quantity
+						? options.quantity * timePerCatch
+						: maxTripLength
+				),
+			});
+			if (boostRes.success) {
+				boosts.push(
+					`${inventionBoosts.quickTrap.boxTrapBoostPercent}% boost for Quick-Trap invention (${boostRes.messages})`
+				);
+				timePerCatch = reduceNumByPercent(
+					timePerCatch,
+					inventionBoosts.quickTrap.boxTrapBoostPercent
+				);
+			}
+		}
 
 		let { quantity } = options;
-		if (!quantity)
-			quantity = Math.floor(
-				maxTripLength / ((catchTime * Time.Second) / traps)
-			);
+		if (!quantity) quantity = Math.floor(maxTripLength / timePerCatch);
 
-		let duration = Math.floor(
-			((quantity * catchTime) / traps) * Time.Second
-		);
+		let duration = Math.floor(quantity * timePerCatch);
 
 		if (duration > maxTripLength) {
 			return `${

@@ -30,11 +30,19 @@ import {
 	degradeItem,
 } from "../../../lib/degradeableItems";
 import { GearSetupType } from "../../../lib/gear";
+
+import {
+	canAffordInventionBoost,
+	InventionID,
+	inventionItemBoost,
+} from "../../../lib/invention/inventions";
 import {
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
 	boostIceBurst,
+	boostSuperiorCannon,
+	boostSuperiorCannonMulti,
 	cannonMultiConsumables,
 	cannonSingleConsumables,
 	CombatCannonItemBank,
@@ -42,6 +50,7 @@ import {
 	iceBarrageConsumables,
 	iceBurstConsumables,
 	SlayerActivityConstants,
+	superiorCannonSingleConsumables,
 } from "../../../lib/minions/data/combatConstants";
 import { revenantMonsters } from "../../../lib/minions/data/killableMonsters/revs";
 import { Favours, gotFavour } from "../../../lib/minions/data/kourendFavour";
@@ -87,6 +96,7 @@ import { getPOH } from "./pohCommand";
 import { revsCommand } from "./revsCommand";
 import { temporossCommand } from "./temporossCommand";
 import { vasaCommand } from "./vasaCommand";
+import { wintertodtCommand } from "./wintertodtCommand";
 import { zalcanoCommand } from "./zalcanoCommand";
 
 const invalidMonsterMsg =
@@ -187,14 +197,16 @@ export async function minionKillCommand(
 		return vasaCommand(user, channelID, quantity);
 	if (name.toLowerCase().includes("nightmare"))
 		return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes("wintertodt"))
+		return wintertodtCommand(user, channelID);
 	if (name.toLowerCase().includes("ignecarus"))
-		return igneCommand(interaction, user, channelID, name);
+		return igneCommand(interaction, user, channelID, name, quantity);
 	if (name.toLowerCase().includes("goldemar"))
-		return kgCommand(interaction, user, channelID, name);
+		return kgCommand(interaction, user, channelID, name, quantity);
 	if (name.toLowerCase().includes("kalphite king"))
-		return kkCommand(interaction, user, channelID, name);
+		return kkCommand(interaction, user, channelID, name, quantity);
 	if (name.toLowerCase().includes("nex"))
-		return nexCommand(interaction, user, channelID, name);
+		return nexCommand(interaction, user, channelID, name, quantity);
 
 	if (
 		revenantMonsters.some((i) =>
@@ -207,6 +219,7 @@ export async function minionKillCommand(
 
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
+	const maxTripLength = user.maxTripLength("MonsterKilling");
 
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
@@ -406,7 +419,9 @@ export async function minionKillCommand(
 	let usingCannon = false;
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
-	const hasCannon = user.owns(CombatCannonItemBank);
+	const hasSuperiorCannon = user.owns("Superior dwarf multicannon");
+	const hasCannon = user.owns(CombatCannonItemBank) || hasSuperiorCannon;
+
 	if (!isOnTask && method && method !== "none") {
 		return "You can only burst/barrage/cannon while on task in BSO.";
 	}
@@ -429,8 +444,37 @@ export async function minionKillCommand(
 			SkillsEnum.Magic
 		)}`;
 	}
+	const { canAfford, mUser } = await canAffordInventionBoost(
+		BigInt(user.id),
+		InventionID.SuperiorDwarfMultiCannon,
+		timeToFinish
+	);
+	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
 
 	if (
+		boostChoice === "cannon" &&
+		!mUser.disabled_inventions.includes(
+			InventionID.SuperiorDwarfMultiCannon
+		) &&
+		canAffordSuperiorCannonBoost &&
+		(monster.canCannon || monster.cannonMulti)
+	) {
+		let qty = quantity || floor(maxTripLength / timeToFinish);
+		const res = await inventionItemBoost({
+			userID: BigInt(user.id),
+			inventionID: InventionID.SuperiorDwarfMultiCannon,
+			duration: timeToFinish * qty,
+		});
+		if (res.success) {
+			usingCannon = true;
+			consumableCosts.push(superiorCannonSingleConsumables);
+			let boost = monster.cannonMulti
+				? boostSuperiorCannonMulti
+				: boostSuperiorCannon;
+			timeToFinish = reduceNumByPercent(timeToFinish, boost);
+			boosts.push(`${boost}% for Superior Cannon (${res.messages})`);
+		}
+	} else if (
 		boostChoice === "barrage" &&
 		attackStyles.includes(SkillsEnum.Magic) &&
 		monster!.canBarrage
@@ -460,8 +504,6 @@ export async function minionKillCommand(
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
 	}
-
-	const maxTripLength = user.maxTripLength("MonsterKilling");
 
 	const hasBlessing = user.hasItemEquippedAnywhere("Dwarven blessing");
 	const hasZealotsAmulet = user.hasItemEquippedAnywhere("Amulet of zealots");
@@ -720,6 +762,9 @@ export async function minionKillCommand(
 				return e.message;
 			}
 		}
+	} else {
+		boosts.push("4% for no food");
+		duration = reduceNumByPercent(duration, 4);
 	}
 
 	// Boosts that don't affect quantity:

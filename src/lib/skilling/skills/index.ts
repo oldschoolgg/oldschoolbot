@@ -77,6 +77,12 @@ export const Skills: Record<string, Skill> = {
 		id: SkillsEnum.Dungeoneering,
 		emoji: Emoji.Dungeoneering,
 		name: 'Dungeoneering'
+	},
+	Invention: {
+		aliases: ['invention', 'inv'],
+		id: SkillsEnum.Invention,
+		emoji: Emoji.Invention,
+		name: 'Invention'
 	}
 };
 

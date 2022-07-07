@@ -2,8 +2,8 @@ import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Prisma, User } from '@prisma/client';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
-import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
-import { notEmpty, randInt, sumArr, uniqueArr } from 'e';
+import { MessageAttachment, MessageOptions, TextChannel, Util } from 'discord.js';
+import { notEmpty, uniqueArr } from 'e';
 import { ArrayActions, CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
@@ -35,11 +35,9 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import { ItemBank } from '../lib/types';
 import {
-	asyncExec,
 	bankValueWithMarketPrices,
 	calcPerHour,
 	channelIsSendable,
-	cleanString,
 	convertBankToPerHourStats,
 	formatDuration,
 	getSupportGuild,
@@ -57,11 +55,18 @@ import {
 import getOSItem, { getItem } from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
+import { makeBankImage, makeBankImageKlasa } from '../lib/util/makeBankImage';
+import { parseBank } from '../lib/util/parseStringBank';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import { mahojiParseNumber, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import BankImageTask from '../tasks/bankImage';
+import {
+	clientSettingsUpdate,
+	mahojiClientSettingsFetch,
+	mahojiParseNumber,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch
+} from '../mahoji/mahojiSettings';
 import PatreonTask from '../tasks/patreon';
 
 export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise<[string] | [string, any[]]> {
@@ -90,18 +95,20 @@ export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise
 
 	const brokenBank: number[] = [];
 	const allItemsToCheck = [
-		...Object.keys(rawBank),
-		...Object.keys(rawCL),
-		...Object.keys(rawTempCL),
-		...Object.keys(rawSB),
-		...favorites,
-		...allGearItemIDs
-	];
+		['bank', Object.keys(rawBank)],
+		['cl', Object.keys(rawCL)],
+		['tempcl', Object.keys(rawTempCL)],
+		['sacbank', Object.keys(rawSB)],
+		['favs', favorites],
+		['gear', allGearItemIDs]
+	] as const;
 
-	for (const id of allItemsToCheck.map(i => Number(i))) {
-		const item = Items.get(id);
-		if (!item) {
-			brokenBank.push(id);
+	for (const [, ids] of allItemsToCheck) {
+		for (const id of ids.map(i => Number(i))) {
+			const item = Items.get(id);
+			if (!item) {
+				brokenBank.push(id);
+			}
 		}
 	}
 
@@ -295,8 +302,10 @@ async function unsafeEval({
 
 	stopwatch.stop();
 	if (flags.bk || result instanceof Bank) {
-		const image = await globalClient.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
-		return { files: [new MessageAttachment(image.image!)], rawOutput: result };
+		const image = await makeBankImage({
+			bank: result
+		});
+		return { files: [new MessageAttachment(image.file.buffer)], rawOutput: result };
 	}
 
 	if (Buffer.isBuffer(result)) {
@@ -377,6 +386,14 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'invprizesleft': {
+				const remaining = await mahojiClientSettingsFetch({ invention_prizes_remaining: true });
+				const image = await makeBankImage({
+					bank: new Bank(remaining.invention_prizes_remaining as ItemBank),
+					title: 'Invention Prizes Left'
+				});
+				return msg.channel.send({ files: [new MessageAttachment(image.file.buffer)] });
+			}
 			case 'setmp': {
 				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
 				if (
@@ -557,24 +574,6 @@ ${(await generateReadyThings(u)).join('\n')}
 				if (typeof input !== 'string') return;
 				return itemSearch(msg, input);
 			}
-			case 'git': {
-				try {
-					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
-						timeout: 30
-					});
-					const rawStr = currentCommit.stdout.trim();
-					const [commitHash, ...commentArr] = rawStr.split(' ');
-					return msg.channel.send({
-						embeds: [
-							new MessageEmbed()
-								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...bso)
-**Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
-						]
-					});
-				} catch {
-					return msg.channel.send('Failed to fetch git info.');
-				}
-			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
 				const item = getOSItem(input);
@@ -595,30 +594,6 @@ ${
 		? "You don't have this item equipped anywhere."
 		: `You have ${item.name} equipped in these setups: ${setupsWith.join(', ')}.`
 }`);
-			}
-			case 'issues': {
-				if (typeof input !== 'string' || input.length < 3 || input.length > 25) return;
-				const query = cleanString(input);
-
-				const searchURL = new URL('https://api.github.com/search/issues');
-
-				searchURL.search = new URLSearchParams([
-					['q', ['repo:oldschoolgg/oldschoolbot', 'is:issue', 'is:open', query].join(' ')]
-				]).toString();
-				const { items } = (await fetch(searchURL.toString()).then(res => res.json())) as Record<string, any>;
-				if (items.length === 0) return msg.channel.send('No results found.');
-				return msg.channel.send({
-					embeds: [
-						new MessageEmbed()
-							.setTitle(`${items.length} Github issues found from your search`)
-							.setDescription(
-								items
-									.slice(0, 10)
-									.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
-									.join('\n')
-							)
-					]
-				});
 			}
 			case 'doubletime': {
 				const diff = this.client.settings.get(ClientSettings.DoubleLootFinishTime) - Date.now();
@@ -940,9 +915,7 @@ LIMIT 10;
 			case 'bank': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
-				return msg.channel.sendBankImage({
-					bank: input.allItemsOwned()
-				});
+				return msg.channel.send(await makeBankImageKlasa({ bank: input.allItemsOwned() }));
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) {
@@ -1064,12 +1037,6 @@ LIMIT 10;
 				await this.client.settings.update(ClientSettings.DoubleLootFinishTime, 0);
 				return msg.channel.send('Reset the double loot timer.');
 			}
-			case 'bankimage':
-			case 'bi': {
-				if (typeof input !== 'string') return;
-				const bank = JSON.parse(input.replace(/'/g, '"'));
-				return msg.channel.sendBankImage({ bank });
-			}
 			case 'reboot': {
 				await msg.channel.send('Rebooting...');
 				await Promise.all(this.client.providers.map(provider => provider.shutdown()));
@@ -1112,12 +1079,10 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					['Loot', new Bank(loot.loot as any)]
 				] as const;
 
-				const task = this.client.tasks.get('bankImage') as BankImageTask;
-
 				for (const [name, bank] of arr) {
 					msg.channel.send({
 						content: convertBankToPerHourStats(bank, durationMillis).join(', '),
-						files: [new MessageAttachment((await task.generateBankImage(bank, name)).image!)]
+						...(await makeBankImageKlasa({ bank, title: name }))
 					});
 				}
 
@@ -1234,35 +1199,24 @@ ORDER BY qty DESC;`);
 					`Removed ${allBrokenItems.size} (${str}) from ${usersChanged} users, out of ${users.length} checked`
 				);
 			}
-			case 'bitest': {
-				const times = [];
-				let amount = 100;
-
-				const bank = new Bank();
-				while (bank.length < 1000) bank.add(Items.random().id, randInt(1, 100));
-				for (let i = 0; i < amount; i++) {
-					let start = Date.now();
-					await (globalClient.tasks.get('bankImage') as BankImageTask).generateBankImage(
-						bank,
-						'Title',
-						false,
-						{
-							full: 'full'
-						},
-						msg.author,
-						undefined
-					);
-					let finish = Date.now();
-					times.push(finish - start);
-				}
-				times.sort((a, b) => b - a);
-				let average = sumArr(times) / times.length;
-				let max = times[0];
-				let min = times[times.length - 1];
-				return msg.channel.send(`Generated ${amount} bank images
-**Average:** ${average}ms
-**Max:** ${max}ms
-**Min:** ${min}ms`);
+			case 'resetinvprizes': {
+				await clientSettingsUpdate({
+					invention_prizes_remaining: {}
+				});
+				return msg.channel.send('Done');
+			}
+			case 'invaddprizes': {
+				if (!input || typeof input !== 'string') return msg.channel.send('Invalid channel.');
+				const bank = parseBank({ inputStr: input });
+				if (bank.length === 0) return 'No items given.';
+				await msg.confirm(`Are you sure you want to add ${bank} to the invention prizes?`);
+				const current = (await mahojiClientSettingsFetch({ invention_prizes_remaining: true }))
+					.invention_prizes_remaining as ItemBank;
+				const newBank = bank.add(current);
+				await clientSettingsUpdate({
+					invention_prizes_remaining: newBank.bank
+				});
+				return msg.channel.send(`Added ${bank} to the invention prizes. The new prize pool is: ${newBank}.`);
 			}
 		}
 	}
