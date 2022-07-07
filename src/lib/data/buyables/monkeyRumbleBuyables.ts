@@ -35,6 +35,9 @@ for (const tier of monkeyTiers) {
 		skillsNeeded: {
 			strength: tier.strengthLevelReq
 		},
-		itemCost: index === 0 ? undefined : new Bank().add('Rumble token', Math.floor((index + 1) * 8.5))
+		itemCost:
+			index === 0
+				? new Bank().add('Coins', 50_000)
+				: new Bank().add('Rumble token', Math.floor((index + 1) * 8.5))
 	});
 }
