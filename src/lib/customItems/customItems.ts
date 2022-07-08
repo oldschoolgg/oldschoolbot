@@ -111,37 +111,6 @@ setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
 // 	}
 // });
 
-// Abyssal Cape || 24214 = Victor's cape (100) [DUPLICATE]
-setCustomItem(
-	24_214,
-	'Abyssal cape',
-	'Infernal cape',
-	{
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Abyssal cape',
-		equipment: {
-			attack_stab: 12,
-			attack_slash: 12,
-			attack_crush: 12,
-			attack_magic: 6,
-			attack_ranged: 6,
-			defence_stab: 36,
-			defence_slash: 36,
-			defence_crush: 36,
-			defence_magic: 36,
-			defence_ranged: 36,
-			melee_strength: 24,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 10,
-			slot: EquipmentSlot.Cape,
-			requirements: null
-		}
-	},
-	100_000_000
-);
-
 // Abyssal thread || 24212 = Victor's cape (50) [DUPLICATE]
 setCustomItem(24_212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
 
@@ -2678,20 +2647,18 @@ setCustomItem(
 	100_000
 );
 
-setCustomItem(52_616, 'Double loot token', 'Coal', {
-	customItemData: {
-		cantDropFromMysteryBoxes: true,
-		isSuperUntradeable: true
-	}
-}),
-	setCustomItem(70_001, 'Grimy Korulsi', 'Magic seed', {}, 25_000);
-setCustomItem(70_002, 'Korulsi', 'Magic seed', {}, 25_000);
-setCustomItem(70_003, 'Korulsi Seed', 'Magic seed', {}, 25_000);
-setCustomItem(70_004, 'Enhanced Saradomin Brew', 'Vial of Water', {}, 10_000);
-setCustomItem(70_005, 'Enhanced Super Restore', 'Vial of Water', {}, 10_000);
-setCustomItem(70_006, 'Enhanced Stamina Potion', 'Vial of Water', {}, 10_000);
-setCustomItem(70_007, 'Enhanced Divine Water', 'Vial of Water', {}, 10_000);
-setCustomItem(70_008, 'Dark Crystal', 'Onyx');
+setCustomItem(
+	52_616,
+	'Double loot token',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000_000
+);
 
 setCustomItem(
 	152_616,
@@ -2786,222 +2753,6 @@ setCustomItem(
 	10_000
 );
 
-setCustomItem(52_617, 'Lava flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
-setCustomItem(52_618, 'Purple flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
-setCustomItem(
-	70_009,
-	'Void Staff (u)',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		}
-	},
-	50_000_000
-);
-setCustomItem(
-	70_010,
-	'Void Staff',
-	'Battlestaff',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		},
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 250,
-			attack_ranged: 0,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 50,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 17.5,
-			prayer: 0,
-			slot: EquipmentSlot.Weapon,
-			requirements: { magic: 90 }
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	70_011,
-	'Dark Animica',
-	'Runite Ore',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: false
-		}
-	},
-	25_000
-);
-setCustomItem(
-	70_012,
-	'Tattered Tome',
-	'Magic Seed',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		}
-	},
-	25_000_000
-);
-setCustomItem(
-	70_013,
-	'Abyssal Tome',
-	'Book of law',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		},
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 45,
-			attack_ranged: 0,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 35,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 2.5,
-			prayer: 0,
-			slot: EquipmentSlot.Shield,
-			requirements: { magic: 90 }
-		},
-		highalch: 50_000_000
-	},
-	50_000_000
-);
-setCustomItem(
-	70_014,
-	'Abyssal Gem',
-	'Zenyte',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		}
-	},
-	10_000_000
-);
-setCustomItem(
-	70_015,
-	'Abyssal Amulet',
-	'Amulet of Torture',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		},
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 0,
-			attack_ranged: 0,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 0,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 0,
-			slot: EquipmentSlot.Neck,
-			requirements: null
-		},
-		highalch: 10_000_000
-	},
-	10_000_000
-);
-setCustomItem(
-	70_016,
-	'Spellbound Ring',
-	'Seers Ring',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		},
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 20,
-			attack_ranged: 0,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 20,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 0,
-			slot: EquipmentSlot.Ring,
-			requirements: { magic: 90 }
-		},
-		highalch: 10_000_000
-	},
-	10_000_000
-);
-setCustomItem(
-	70_017,
-	'Spellbound Ring(i)',
-	'Seers Ring',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		},
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 25,
-			attack_ranged: 0,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 25,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 0,
-			slot: EquipmentSlot.Ring,
-			requirements: { magic: 90 }
-		},
-		highalch: 10_000_000
-	},
-	10_000_000
-);
-setCustomItem(70_018, 'Grand Crystal Acorn', 'Magic seed', {}, 50_000);
 setCustomItem(52_617, 'Lava flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
 setCustomItem(52_618, 'Purple flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
 setCustomItem(52_630, 'Beehive', 'Coal', {}, 10_000);
