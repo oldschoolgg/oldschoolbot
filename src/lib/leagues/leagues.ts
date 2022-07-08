@@ -354,7 +354,7 @@ export async function leaguesCheckUser(userID: string) {
 			ranking.tasksRanking
 		})
 **Total Points:** ${roboChimpUser.leagues_points_total.toLocaleString()} (Rank ${ranking.pointsRanking})
-**Points Balance:** ${roboChimpUser.leagues_points_balance.toLocaleString()}
+**Points Balance:** ${roboChimpUser.leagues_points_balance_osb.toLocaleString()} OSB / ${roboChimpUser.leagues_points_balance_bso.toLocaleString()} BSO
 ${resStr}
 
 **Actual Clues:** ${actualClues}`,
@@ -383,7 +383,10 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 			leagues_completed_tasks_ids: {
 				push: newlyFinishedTasks
 			},
-			leagues_points_balance: {
+			leagues_points_balance_osb: {
+				increment: pointsToAward
+			},
+			leagues_points_balance_bso: {
 				increment: pointsToAward
 			},
 			leagues_points_total: {
@@ -393,7 +396,7 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 	});
 
 	let response: Awaited<CommandResponse> = {
-		content: `You claimed ${newlyFinishedTasks.length} tasks, and received ${pointsToAward} points. You now have a balance of ${newUser.leagues_points_balance} points, and ${newUser.leagues_points_total} total points. You have completed a total of ${newUser.leagues_completed_tasks_ids.length} tasks.`
+		content: `You claimed ${newlyFinishedTasks.length} tasks, and received ${pointsToAward} points. You now have a balance of ${newUser.leagues_points_balance_osb} OSB points and ${newUser.leagues_points_balance_bso} BSO points, and ${newUser.leagues_points_total} total points. You have completed a total of ${newUser.leagues_completed_tasks_ids.length} tasks.`
 	};
 
 	if (newlyFinishedTasks.length > 10) {
