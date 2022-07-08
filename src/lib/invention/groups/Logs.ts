@@ -28,5 +28,5 @@ export const Logs: DisassemblySourceGroup = {
 		{ item: i('Redwood logs'), lvl: 90 },
 		{ item: i('Elder logs'), lvl: 90 }
 	],
-	parts: { organic: 5, simple: 95 }
+	parts: { flexible: 1, organic: 5, simple: 94 }
 };

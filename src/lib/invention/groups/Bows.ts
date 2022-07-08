@@ -14,16 +14,16 @@ export const Bows: DisassemblySourceGroup = {
 		{ item: i('Willow longbow'), lvl: 25 },
 		{ item: i('Willow comp bow'), lvl: 25 },
 		{ item: i('Comp ogre bow'), lvl: 30 },
-		{ item: i('Maple shortbow'), lvl: 40 },
-		{ item: i('Maple longbow'), lvl: 45 },
-		{ item: i('Yew shortbow'), lvl: 50 },
-		{ item: i('Yew longbow'), lvl: 50 },
-		{ item: i('Yew comp bow'), lvl: 55 },
-		{ item: i('Magic shortbow'), lvl: 60 },
-		{ item: i('Magic longbow'), lvl: 65 },
-		{ item: i('Elder bow'), lvl: 70 },
+		{ item: i('Maple shortbow'), lvl: 40, outputMultiplier: 3 },
+		{ item: i('Maple longbow'), lvl: 45, outputMultiplier: 3 },
+		{ item: i('Yew shortbow'), lvl: 50, outputMultiplier: 3 },
+		{ item: i('Yew longbow'), lvl: 50, outputMultiplier: 3 },
+		{ item: i('Yew comp bow'), lvl: 55, outputMultiplier: 3 },
+		{ item: i('Magic shortbow'), lvl: 60, outputMultiplier: 3 },
+		{ item: i('Magic longbow'), lvl: 65, outputMultiplier: 3 },
+		{ item: i('Elder bow'), lvl: 80, outputMultiplier: 12 },
 
-		{ item: i('Dark bow'), lvl: 90 },
+		{ item: i('Dark bow'), lvl: 90, outputMultiplier: 30 },
 		{
 			item: i('Crystal bow'),
 			lvl: 70
@@ -67,17 +67,19 @@ export const Bows: DisassemblySourceGroup = {
 		{ item: i('Iron crossbow'), lvl: 10 },
 		{ item: i('Steel crossbow'), lvl: 20 },
 		{ item: i('Mithril crossbow'), lvl: 30 },
-		{ item: i('Rune crossbow'), lvl: 50 },
-		{ item: i('Dragon crossbow'), lvl: 60 },
-		{ item: i('Royal crossbow'), lvl: 70 },
+		{ item: i('Rune crossbow'), lvl: 50, outputMultiplier: 4 },
+		{ item: i('Dragon crossbow'), lvl: 60, outputMultiplier: 10 },
+		{ item: i('Royal crossbow'), lvl: 70, outputMultiplier: 30 },
 		{
 			item: i('Armadyl crossbow'),
-			lvl: 99
+			lvl: 99,
+			outputMultiplier: 200
 		},
 		{
 			item: i("Craw's bow (u)"),
-			lvl: 99
+			lvl: 99,
+			outputMultiplier: 100
 		}
 	],
-	parts: { flexible: 30, dextrous: 20, swift: 20 }
+	parts: { flexible: 40, dextrous: 20, swift: 20 }
 };
