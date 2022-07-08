@@ -29,8 +29,9 @@ model User {
     bits Int[]
 
     leagues_completed_tasks_ids Int[]
-    leagues_points_balance      Int
-    leagues_points_total        Int
+    leagues_points_balance_osb  Int   @default(0)
+    leagues_points_balance_bso  Int   @default(0)
+    leagues_points_total        Int   @default(0)
 
     @@map("user")
 }

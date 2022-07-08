@@ -3,6 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
+import { roboChimpUserFetch } from '../roboChimp';
 import { stringMatches } from '../util';
 import getOSItem from '../util/getOSItem';
 
@@ -148,7 +149,22 @@ export async function leaguesBuyCommand(user: KlasaUser, itemName: string, quant
 	if (!item) return "That's not a valid item.";
 	let baseCost = item.price * pointsCostMultiplier;
 	const cost = quantity * baseCost;
+	const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
+	if (roboChimpUser.leagues_points_balance_osb < cost) {
+		return `You don't have enough League Points to purchase this. You need ${cost}, but you have ${roboChimpUser.leagues_points_balance_osb}.`;
+	}
+	const newUser = await roboChimpClient.user.update({
+		where: {
+			id: BigInt(user.id)
+		},
+		data: {
+			leagues_points_balance_osb: {
+				decrement: cost
+			}
+		}
+	});
+
 	const loot = new Bank().add(item.item.id, quantity);
 	await user.addItemsToBank({ items: loot, collectionLog: true });
-	return cost;
+	return `You spent ${cost} Leagues Points and received ${loot}. You have ${newUser.leagues_points_balance_osb} points remaining.`;
 }

@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
-import { leagueBuyables } from '../../lib/data/leaguesBuyables';
+import { leagueBuyables, leaguesBuyCommand } from '../../lib/data/leaguesBuyables';
 import { kittens } from '../../lib/growablePets';
 import { Minigames } from '../../lib/settings/minigames';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -85,6 +85,9 @@ export const buyCommand: OSBMahojiCommand = {
 				})),
 				content: `Removed ${cost} from your bank.`
 			};
+		}
+		if (leagueBuyables.some(i => stringMatches(i.item.name, name))) {
+			return leaguesBuyCommand(user, name, quantity);
 		}
 
 		const buyable = Buyables.find(
