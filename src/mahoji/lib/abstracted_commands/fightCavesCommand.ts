@@ -1,30 +1,30 @@
-import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from "e";
-import { KlasaClient, KlasaUser } from "klasa";
-import { CommandResponse } from "mahoji/dist/lib/structures/ICommand";
-import { Bank, Monsters } from "oldschooljs";
-import { SkillsEnum } from "oldschooljs/dist/constants";
-import TzTokJad from "oldschooljs/dist/simulation/monsters/special/TzTokJad";
-import { itemID } from "oldschooljs/dist/util";
+import { calcWhatPercent, percentChance, reduceNumByPercent, Time } from 'e';
+import { KlasaClient, KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { Bank, Monsters } from 'oldschooljs';
+import { SkillsEnum } from 'oldschooljs/dist/constants';
+import TzTokJad from 'oldschooljs/dist/simulation/monsters/special/TzTokJad';
+import { itemID } from 'oldschooljs/dist/util';
 
-import { ClientSettings } from "../../../lib/settings/types/ClientSettings";
-import { UserSettings } from "../../../lib/settings/types/UserSettings";
-import { getUsersCurrentSlayerInfo } from "../../../lib/slayer/slayerUtil";
-import { FightCavesActivityTaskOptions } from "../../../lib/types/minions";
-import { formatDuration, rand, updateBankSetting } from "../../../lib/util";
-import addSubTaskToActivityTask from "../../../lib/util/addSubTaskToActivityTask";
-import brewRestoreSupplyCalc from "../../../lib/util/brewRestoreSupplyCalc";
-import { newChatHeadImage } from "../../../lib/util/chatHeadImage";
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { FightCavesActivityTaskOptions } from '../../../lib/types/minions';
+import { formatDuration, rand, updateBankSetting } from '../../../lib/util';
+import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import brewRestoreSupplyCalc from '../../../lib/util/brewRestoreSupplyCalc';
+import { newChatHeadImage } from '../../../lib/util/chatHeadImage';
 
 export const fightCavesCost = new Bank({
-	"Prayer potion(4)": 10,
-	"Saradomin brew(4)": 6,
-	"Super restore(4)": 4,
+	'Prayer potion(4)': 10,
+	'Saradomin brew(4)': 6,
+	'Super restore(4)': 4
 });
 
 function determineDuration(user: KlasaUser): [number, string] {
 	let baseTime = Time.Hour * 2;
-	const gear = user.getGear("range");
-	let debugStr = "";
+	const gear = user.getGear('range');
+	let debugStr = '';
 
 	// Reduce time based on KC
 	const jadKC = user.getKC(TzTokJad.id);
@@ -34,12 +34,11 @@ function determineDuration(user: KlasaUser): [number, string] {
 
 	// Reduce time based on Gear
 	const usersRangeStats = gear.stats;
-	const percentIncreaseFromRangeStats =
-		Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
+	const percentIncreaseFromRangeStats = Math.floor(calcWhatPercent(usersRangeStats.attack_ranged, 236)) / 2;
 	baseTime = reduceNumByPercent(baseTime, percentIncreaseFromRangeStats);
 
-	if (user.hasItemEquippedOrInBank("Twisted bow")) {
-		debugStr += ", 15% from Twisted bow";
+	if (user.hasItemEquippedOrInBank('Twisted bow')) {
+		debugStr += ', 15% from Twisted bow';
 		baseTime = reduceNumByPercent(baseTime, 15);
 	}
 
@@ -53,7 +52,7 @@ function determineChanceOfDeathPreJad(user: KlasaUser) {
 	let deathChance = Math.max(14 - attempts * 2, 5);
 
 	// -4% Chance of dying before Jad if you have SGS.
-	if (user.hasItemEquippedAnywhere(itemID("Saradomin godsword"))) {
+	if (user.hasItemEquippedAnywhere(itemID('Saradomin godsword'))) {
 		deathChance -= 4;
 	}
 
@@ -62,46 +61,37 @@ function determineChanceOfDeathPreJad(user: KlasaUser) {
 
 function determineChanceOfDeathInJad(user: KlasaUser) {
 	const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
-	const chance = Math.floor(
-		100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50
-	);
+	const chance = Math.floor(100 - (Math.log(attempts) / Math.log(Math.sqrt(15))) * 50);
 
 	// Chance of death cannot be 100% or <5%.
 	return Math.max(Math.min(chance, 99), 5);
 }
 
 function checkGear(user: KlasaUser): string | undefined {
-	const gear = user.getGear("range");
+	const gear = user.getGear('range');
 	const equippedWeapon = gear.equippedWeapon();
 
 	const usersRangeStats = gear.stats;
 
-	if (
-		!equippedWeapon ||
-		!equippedWeapon.weapon ||
-		!["crossbow", "bow"].includes(equippedWeapon.weapon.weapon_type)
-	) {
-		return "JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with a bow or a crossbow.";
+	if (!equippedWeapon || !equippedWeapon.weapon || !['crossbow', 'bow'].includes(equippedWeapon.weapon.weapon_type)) {
+		return 'JalYt, you not wearing ranged weapon?! TzTok-Jad stomp you to death if you get close, come back with a bow or a crossbow.';
 	}
 
 	if (usersRangeStats.attack_ranged < 160) {
-		return "JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.";
+		return 'JalYt, your ranged gear not strong enough! You die very quickly with your bad gear, come back with better range gear.';
 	}
 
 	const { hasEnough, foodBank } = brewRestoreSupplyCalc(user, 6, 4);
-	if (!hasEnough || !user.owns(foodBank.add("Prayer potion(4)", 10))) {
+	if (!hasEnough || !user.owns(foodBank.add('Prayer potion(4)', 10))) {
 		return `JalYt, you need supplies to have a chance in the caves...come back with ${fightCavesCost}.`;
 	}
 
 	if (user.skillLevel(SkillsEnum.Prayer) < 43) {
-		return "JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.";
+		return 'JalYt, come back when you have atleast 43 Prayer, TzTok-Jad annihilate you without protection from gods.';
 	}
 }
 
-export async function fightCavesCommand(
-	user: KlasaUser,
-	channelID: bigint
-): CommandResponse {
+export async function fightCavesCommand(user: KlasaUser, channelID: bigint): CommandResponse {
 	const gearFailure = checkGear(user);
 	if (gearFailure) {
 		return {
@@ -109,11 +99,11 @@ export async function fightCavesCommand(
 				{
 					buffer: await newChatHeadImage({
 						content: gearFailure,
-						head: "mejJal",
+						head: 'mejJal'
 					}),
-					fileName: "fightcaves.jpg",
-				},
-			],
+					fileName: 'fightcaves.jpg'
+				}
+			]
 		};
 	}
 
@@ -122,12 +112,12 @@ export async function fightCavesCommand(
 	let preJadDeathChance = determineChanceOfDeathPreJad(user);
 
 	const attempts = user.settings.get(UserSettings.Stats.FightCavesAttempts);
-	const usersRangeStats = user.getGear("range").stats;
+	const usersRangeStats = user.getGear('range').stats;
 	const jadKC = user.getKC(TzTokJad.id);
 
 	duration += (rand(1, 5) * duration) / 100;
 
-	const hasToad = user.usingPet("Wintertoad");
+	const hasToad = user.usingPet('Wintertoad');
 	if (hasToad) {
 		duration /= 2;
 		preJadDeathChance = 0;
@@ -141,13 +131,12 @@ export async function fightCavesCommand(
 		usersTask.currentTask !== null &&
 		usersTask.currentTask !== undefined &&
 		usersTask.currentTask!.monster_id === Monsters.TzHaarKet.id &&
-		usersTask.currentTask!.quantity_remaining ===
-			usersTask.currentTask!.quantity;
+		usersTask.currentTask!.quantity_remaining === usersTask.currentTask!.quantity;
 
 	// 15% boost for on task
-	if (isOnTask && user.hasItemEquippedOrInBank("Black mask (i)")) {
+	if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
 		duration *= 0.85;
-		debugStr += ", 15% on Task with Black mask (i)";
+		debugStr += ', 15% on Task with Black mask (i)';
 	}
 
 	const diedPreJad = percentChance(preJadDeathChance);
@@ -164,31 +153,20 @@ export async function fightCavesCommand(
 		channelID: channelID.toString(),
 		quantity: 1,
 		duration,
-		type: "FightCaves",
+		type: 'FightCaves',
 		jadDeathChance,
 		preJadDeathChance,
 		preJadDeathTime,
 		cost: foodBank.bank,
-		fakeDuration,
+		fakeDuration
 	});
 
-	updateBankSetting(
-		user.client as KlasaClient,
-		ClientSettings.EconomyStats.FightCavesCost,
-		fightCavesCost
-	);
+	updateBankSetting(user.client as KlasaClient, ClientSettings.EconomyStats.FightCavesCost, fightCavesCost);
 
-	const totalDeathChance = (
-		((100 - preJadDeathChance) * (100 - jadDeathChance)) /
-		100
-	).toFixed(1);
+	const totalDeathChance = (((100 - preJadDeathChance) * (100 - jadDeathChance)) / 100).toFixed(1);
 
 	return {
-		content: `**Duration:** ${formatDuration(fakeDuration)} (${(
-			fakeDuration /
-			1000 /
-			60
-		).toFixed(2)} minutes)
+		content: `**Duration:** ${formatDuration(fakeDuration)} (${(fakeDuration / 1000 / 60).toFixed(2)} minutes)
 **Boosts:** ${debugStr}
 **Range Attack Bonus:** ${usersRangeStats.attack_ranged}
 **Jad KC:** ${jadKC}
@@ -197,17 +175,17 @@ export async function fightCavesCommand(
 **Removed from your bank:** ${foodBank}
 ${
 	hasToad
-		? "<:wintertoad:749945071230779493> The extreme cold of your Wintertoad counters the Fight Caves, allowing you to kill the creatures much faster!"
-		: ""
+		? '<:wintertoad:749945071230779493> The extreme cold of your Wintertoad counters the Fight Caves, allowing you to kill the creatures much faster!'
+		: ''
 }`,
 		attachments: [
 			{
 				buffer: await newChatHeadImage({
 					content: `You're on your own now JalYt, prepare to fight for your life! I think you have ${totalDeathChance}% chance of survival.`,
-					head: "mejJal",
+					head: 'mejJal'
 				}),
-				fileName: "fightcaves.jpg",
-			},
-		],
+				fileName: 'fightcaves.jpg'
+			}
+		]
 	};
 }
