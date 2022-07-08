@@ -304,20 +304,14 @@ export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSele
 	return clientSettings as ClientStorage;
 }
 
-export async function clientSettingsUpdate(data: Prisma.ClientStorageUpdateArgs['data']) {
-	try {
-		await prisma.clientStorage.update({
-			data,
-			where: {
-				id: CLIENT_ID
-			}
-		});
-	} catch (err) {
-		logError(err, {
-			updated_data: JSON.stringify(data)
-		});
-		throw err;
-	}
+export async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdateInput) {
+	await prisma.clientStorage.update({
+		where: {
+			id: CLIENT_ID
+		},
+		data
+	});
+	await globalClient.settings.sync(true);
 }
 
 export function getMahojiBank(user: User) {
@@ -326,7 +320,7 @@ export function getMahojiBank(user: User) {
 
 export async function trackClientBankStats(key: 'clue_upgrader_loot' | 'portable_tanner_loot', newItems: Bank) {
 	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
-	await clientSettingsUpdate({
+	await mahojiClientSettingsUpdate({
 		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
 	});
 }
