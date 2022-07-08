@@ -421,6 +421,7 @@ setCustomItem(
 );
 // ----------
 // MMMR
+<<<<<<< HEAD
 setCustomItem(40_061, "Beginner rumble greegree", "Bronze dagger", {}, 999_995);
 setCustomItem(
 	40_062,
@@ -444,6 +445,49 @@ setCustomItem(
 	"Bronze dagger",
 	{},
 	1_000_000
+=======
+setCustomItem(
+	40_061,
+	'Beginner rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	40_062,
+	'Intermediate rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_001
+);
+setCustomItem(
+	40_063,
+	'Ninja rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_002
+);
+setCustomItem(
+	40_064,
+	'Expert ninja rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_003
+);
+setCustomItem(
+	40_065,
+	'Elder rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_004
+);
+setCustomItem(
+	40_066,
+	'Gorilla rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_005
+>>>>>>> 73472811403237c8d38c48e44bc2de66bdf4bd4e
 );
 
 setCustomItem(
