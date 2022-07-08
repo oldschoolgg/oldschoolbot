@@ -2,10 +2,26 @@ import { Time } from 'e';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { nexCL } from './data/CollectionsExport';
+import {
+	brokenPernixOutfit,
+	brokenTorvaOutfit,
+	brokenVirtusOutfit,
+	nexUniqueDrops,
+	pernixOutfit,
+	torvaOutfit,
+	virtusOutfit
+} from './data/CollectionsExport';
 import { GearStat } from './gear';
 import { KillableMonster } from './minions/types';
+import getOSItem from './util/getOSItem';
+import itemID from './util/itemID';
 import { makeKillTable } from './util/setCustomMonster';
+
+export const nexBrokenArmorDetails = [
+	[getOSItem('Armadylean components'), brokenPernixOutfit, pernixOutfit],
+	[getOSItem('Bandosian components'), brokenTorvaOutfit, torvaOutfit],
+	[getOSItem('Ancestral components'), brokenVirtusOutfit, virtusOutfit]
+] as const;
 
 export const nexLootTable = new LootTable()
 	.every('Big bones')
@@ -25,9 +41,10 @@ export const nexLootTable = new LootTable()
 	.add(RareDropTable, 2, 1, { multiply: true })
 	.tertiary(1500, 'Ancient emblem')
 	.tertiary(5, 'Tradeable mystery box')
-	.tertiary(14, 'Clue scroll (hard)')
-	.tertiary(16, new LootTable().add('Clue scroll (elite)', 1, 99).add('Clue scroll (master)', 1, 1))
+	.tertiary(16, 'Clue scroll (hard)')
+	.tertiary(19, new LootTable().add('Clue scroll (elite)', 1, 99).add('Clue scroll (master)', 1, 1))
 	.tertiary(20, 'Clue scroll (grandmaster)')
+	.tertiary(86, 'Ancient hilt')
 	.tertiary(3000, 'Bloodsoaked feather');
 
 export const NexMonster: KillableMonster = {
@@ -35,7 +52,7 @@ export const NexMonster: KillableMonster = {
 	name: 'Nex',
 	aliases: ['nex'],
 	timeToFinish: Time.Minute * 25,
-	notifyDrops: nexCL,
+	notifyDrops: [...nexUniqueDrops, itemID('Bloodsoaked feather')],
 	table: makeKillTable(nexLootTable),
 	emoji: '',
 	wildy: false,

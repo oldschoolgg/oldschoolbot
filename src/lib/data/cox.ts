@@ -12,7 +12,7 @@ import {
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
@@ -272,9 +272,9 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			if (
 				users.length > 1 &&
 				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow')
+				!['Twisted bow', 'Zaryte bow', 'Bow of faerdhinen (c)'].some(i => user.hasItemEquippedOrInBank(i))
 			) {
-				return `${user.username} doesn't own a Twisted bow or Dragon hunter crossbow, which is required for Challenge Mode.`;
+				return `${user.username} doesn't own a Twisted bow, Zaryte bow, or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
 			const kc = await user.getMinigameScore('raids');
 			if (kc < 200) {
@@ -367,7 +367,7 @@ interface ItemBoost {
 	item: Item;
 	boost: number;
 	mustBeEquipped: boolean;
-	setup?: 'mage' | 'melee';
+	setup?: 'mage' | 'range' | 'melee';
 	mustBeCharged?: boolean;
 	requiredCharges?: number;
 }

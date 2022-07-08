@@ -1,24 +1,17 @@
-import { Image } from 'canvas';
-import { KlasaMessage } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank, MonsterKillOptions } from 'oldschooljs';
-import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
-import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
-import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
-import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
-import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
 import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
-import { O } from 'ts-toolbelt';
+import { Image } from 'skia-canvas/lib';
 
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
-import { CombatOptionsEnum } from './data/combatConstants';
+import { MonsterActivityTaskOptions } from '../types/minions';
 import { AttackStyles } from './functions';
 
-export interface BankBackground {
+export type BankBackground = {
 	image: Image | null;
 	id: number;
 	name: string;
@@ -33,22 +26,19 @@ export interface BankBackground {
 	skillsNeeded?: Skills;
 	transparent?: true;
 	owners?: string[];
-}
+} & (
+	| {
+			hasPurple: true;
+			purpleImage: Image | null;
+	  }
+	| {
+			hasPurple?: null;
+	  }
+);
 
 export interface ClueMilestoneReward {
 	itemReward: number;
 	scoreNeeded: number;
-}
-
-export interface ClueTier {
-	name: string;
-	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
-	id: number;
-	scrollID: number;
-	timeToFinish: number;
-	milestoneReward?: ClueMilestoneReward;
-	mimicChance: number | false;
-	aliases: string[];
 }
 
 export type GearRequirement = Partial<{ [key in GearStat]: number }>;
@@ -107,6 +97,7 @@ export interface KillableMonster {
 	canBarrage?: boolean;
 	canCannon?: boolean;
 	cannonMulti?: boolean;
+	specialLoot?: (loot: Bank, user: KlasaUser, data: MonsterActivityTaskOptions) => Promise<void>;
 }
 /*
  * Monsters will have an array of Consumables
@@ -129,6 +120,7 @@ export interface AddXpParams {
 	multiplier?: boolean;
 	minimal?: boolean;
 	artificial?: boolean;
+	masterCapeBoost?: boolean;
 }
 
 export interface AddMonsterXpParams {
@@ -142,14 +134,6 @@ export interface AddMonsterXpParams {
 	cannonMulti?: boolean;
 	burstOrBarrage?: number;
 	superiorCount?: number;
-}
-
-export interface DetermineBoostParams {
-	cbOpts: CombatOptionsEnum[];
-	msg: KlasaMessage;
-	monster: KillableMonster;
-	method?: string | null;
-	isOnTask?: boolean;
 }
 
 export interface ResolveAttackStylesParams {
@@ -171,10 +155,12 @@ export interface MegaDuckLocation {
 	steps: [number, number][];
 }
 
-export const defaultMegaDuckLocation: O.Readonly<MegaDuckLocation> = {
+export const defaultMegaDuckLocation: Readonly<MegaDuckLocation> = {
 	x: 1356,
 	y: 209,
 	usersParticipated: {},
 	placesVisited: [],
 	steps: []
 };
+export type Flags = Record<string, string | number>;
+export type FlagMap = Map<string, string | number>;

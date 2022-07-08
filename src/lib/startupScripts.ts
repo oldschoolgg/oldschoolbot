@@ -1,9 +1,8 @@
-export const startupScripts: string[] = [];
+export const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 const arrayColumns = [
 	['clientStorage', 'userBlacklist'],
 	['clientStorage', 'guildBlacklist'],
-	['clientStorage', 'locked_skills'],
 	['guilds', 'disabledCommands'],
 	['guilds', 'staffOnlyChannels'],
 	['users', 'badges'],
@@ -17,11 +16,43 @@ const arrayColumns = [
 	['users', 'slayer.unlocks'],
 	['users', 'slayer.blocked_ids'],
 	['users', 'slayer.autoslay_options'],
-	['users', 'monkeys_fought']
+	['users', 'monkeys_fought'],
+	['users', 'unlocked_blueprints'],
+	['users', 'disabled_inventions']
 ];
 
 for (const [table, column] of arrayColumns) {
-	startupScripts.push(`ALTER TABLE "${table}"
-                             ALTER COLUMN "${column}" SET DEFAULT '{}',
-                             ALTER COLUMN "${column}" SET NOT NULL;`);
+	startupScripts.push({
+		sql: `UPDATE "${table}" SET "${column}" = '{}' WHERE "${column}" IS NULL;`
+	});
+	startupScripts.push({
+		sql: `
+ALTER TABLE "${table}"
+	ALTER COLUMN "${column}" SET DEFAULT '{}',
+	ALTER COLUMN "${column}" SET NOT NULL;`
+	});
 }
+
+interface CheckConstraint {
+	table: 'users';
+	column: 'lms_points';
+	name: `${CheckConstraint['table']}_${CheckConstraint['column']}_${string}`;
+	body: string;
+}
+const checkConstraints: CheckConstraint[] = [
+	{
+		table: 'users',
+		column: 'lms_points',
+		name: 'users_lms_points_min',
+		body: 'lms_points >= 0'
+	}
+];
+for (const { table, name, body } of checkConstraints) {
+	startupScripts.push({ sql: `ALTER TABLE ${table} ADD CONSTRAINT ${name} CHECK (${body});`, ignoreErrors: true });
+}
+startupScripts.push({
+	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS activity_only_one_task ON activity (user_id, completed) WHERE NOT completed;'
+});
+startupScripts.push({
+	sql: 'CREATE UNIQUE INDEX IF NOT EXISTS tame_only_one_task ON tame_activity (user_id, completed) WHERE NOT completed;'
+});

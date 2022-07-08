@@ -1,3 +1,4 @@
+import { activity_type_enum } from '@prisma/client';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
@@ -63,6 +64,7 @@ const defaultImpTable = new LootTable()
 	.add('Magpie impling jar', 1, 44)
 	.add('Ninja impling jar', 1, 41)
 	.add('Dragon impling jar', 1, 24)
+	.add('Lucky impling jar', 1, 3)
 	.add('Infernal impling jar', 1, 9)
 	.add('Chimpling jar', 1, 19)
 	.add('Eternal impling jar', 1, 7)
@@ -94,7 +96,19 @@ const implingTableByWorldLocation: TWorldLocationImplingTable = {
 };
 
 export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskOptions) {
-	if (['FightCaves', 'Inferno', 'Christmas', 'TheatreOfBlood'].includes(data.type)) return null;
+	if (
+		[
+			'FightCaves',
+			'Inferno',
+			'Christmas',
+			'TheatreOfBlood',
+			activity_type_enum.BarbarianAssault,
+			activity_type_enum.CastleWars,
+			activity_type_enum.LastManStanding,
+			activity_type_enum.PestControl
+		].includes(data.type)
+	)
+		return null;
 	const minutes = Math.floor(data.duration / Time.Minute);
 
 	if (minutes < 4) return null;

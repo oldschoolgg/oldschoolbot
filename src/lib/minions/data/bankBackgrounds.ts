@@ -76,7 +76,8 @@ const backgroundImages: BankBackground[] = [
 			'Armadyl godsword': 1,
 			'Zamorak godsword': 1,
 			'Bandos godsword': 1,
-			'Saradomin godsword': 1
+			'Saradomin godsword': 1,
+			'Ancient godsword': 1
 		}),
 		gpCost: 100_000_000
 	},
@@ -165,6 +166,8 @@ const backgroundImages: BankBackground[] = [
 		id: 14,
 		name: 'CoX',
 		image: null,
+		hasPurple: true,
+		purpleImage: null,
 		available: true,
 		bitfield: BitField.HasPermanentEventBackgrounds
 	},
@@ -201,9 +204,46 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 19,
-		name: 'tob',
+		name: 'Rick CustomBG',
 		image: null,
-		available: false
+		available: false,
+		owners: ['604278562320810009']
+	},
+	{
+		id: 22,
+		name: 'Nieve',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000
+	},
+	{
+		id: 23,
+		name: 'ToB',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 24,
+		name: 'Zilyana',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000
+	},
+	{
+		id: 25,
+		name: 'Zilyana Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000,
+		transparent: true
 	},
 	{
 		id: 26,
@@ -336,6 +376,8 @@ const backgroundImages: BankBackground[] = [
 		id: 52,
 		name: 'Cyrillax CustomBG',
 		image: null,
+		hasPurple: true,
+		purpleImage: null,
 		available: false,
 		owners: ['425134194436341760']
 	},
@@ -531,6 +573,27 @@ const backgroundImages: BankBackground[] = [
 		gpCost: 100_000_000,
 		perkTierNeeded: PerkTier.Four,
 		transparent: true
+	},
+	{
+		id: 93,
+		name: 'Purrincess CustomBG',
+		image: null,
+		available: false,
+		owners: ['538600275221413900']
+	},
+	{
+		id: 94,
+		name: 'Rezero CustomBG',
+		image: null,
+		available: false,
+		owners: ['192621282452439041']
+	},
+	{
+		id: 95,
+		name: 'OilInGasLife CustomBG',
+		image: null,
+		available: false,
+		owners: ['944238795329511465']
 	}
 ];
 

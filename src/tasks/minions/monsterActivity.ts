@@ -1,12 +1,13 @@
-import { calcWhatPercent, randArrItem, reduceNumByPercent, Time } from 'e';
-import { Task } from 'klasa';
-import { MonsterKillOptions, Monsters } from 'oldschooljs';
+import { calcWhatPercent, increaseNumByPercent, percentChance, reduceNumByPercent, sumArr, Time } from 'e';
+import { KlasaUser, Task } from 'klasa';
+import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
-import { Emoji } from '../../lib/constants';
-import { frozenKeyPieces } from '../../lib/data/CollectionsExport';
-import { getRandomMysteryBox } from '../../lib/data/openables';
+import { MysteryBoxes } from '../../lib/bsoOpenables';
+import { BitField, Emoji, PvMMethod } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
+import ClueTiers from '../../lib/minions/data/clueTiers';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -20,9 +21,130 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, roll } from '../../lib/util';
+import { assert, itemID, roll } from '../../lib/util';
+import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
+import { trackClientBankStats } from '../../mahoji/mahojiSettings';
+
+async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
+	if (!hasItemsEquippedOrInBank(user, ['Gorajan bonecrusher', 'Superior bonecrusher'], 'one')) return;
+	if (user.bitfield.includes(BitField.DisabledGorajanBoneCrusher)) return;
+	let hasSuperior = user.owns('Superior bonecrusher');
+
+	let totalXP = 0;
+	for (const bone of bones) {
+		const amount = loot.amount(bone.inputId);
+		if (amount > 0) {
+			totalXP += bone.xp * amount * 4;
+			loot.remove(bone.inputId, amount);
+		}
+	}
+
+	let durationForCost = totalXP * 16.8;
+	let boostMsg: string | null = null;
+	if (hasSuperior && durationForCost > Number(Time.Minute)) {
+		const t = await inventionItemBoost({
+			userID: user.id,
+			inventionID: InventionID.SuperiorBonecrusher,
+			duration: durationForCost
+		});
+		if (!t.success) {
+			hasSuperior = false;
+		} else {
+			totalXP = increaseNumByPercent(totalXP, inventionBoosts.superiorBonecrusher.xpBoostPercent);
+			boostMsg = t.messages;
+		}
+	}
+
+	const xpStr = await user.addXP({
+		skillName: SkillsEnum.Prayer,
+		amount: totalXP,
+		duration,
+		minimal: true
+	});
+	messages.push(
+		`${xpStr} Prayer XP${
+			hasSuperior
+				? `(${inventionBoosts.superiorBonecrusher.xpBoostPercent}% more from Superior bonecrusher, ${
+						boostMsg ? `, ${boostMsg}` : ''
+				  })`
+				: ''
+		}`
+	);
+}
+
+const hideLeatherMap = [
+	[getOSItem('Green dragonhide'), getOSItem('Green dragon leather')],
+	[getOSItem('Blue dragonhide'), getOSItem('Blue dragon leather')],
+	[getOSItem('Red dragonhide'), getOSItem('Red dragon leather')],
+	[getOSItem('Black dragonhide'), getOSItem('Black dragon leather')],
+	[getOSItem('Royal dragonhide'), getOSItem('Royal dragon leather')]
+] as const;
+
+async function portableTannerEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
+	if (!user.owns('Portable tanner')) return;
+	const boostRes = await inventionItemBoost({
+		userID: BigInt(user.id),
+		inventionID: InventionID.PortableTanner,
+		duration
+	});
+	if (!boostRes.success) return;
+	let triggered = false;
+	let toAdd = new Bank();
+	for (const [hide, leather] of hideLeatherMap) {
+		let qty = loot.amount(hide.id);
+		if (qty > 0) {
+			triggered = true;
+			loot.remove(hide.id, qty);
+			toAdd.add(leather.id, qty);
+		}
+	}
+	loot.add(toAdd);
+	trackClientBankStats('portable_tanner_loot', toAdd);
+	if (!triggered) return;
+	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
+}
+
+export async function clueUpgraderEffect(
+	user: KlasaUser,
+	loot: Bank,
+	messages: string[],
+	type: 'pvm' | 'pickpocketing'
+) {
+	if (!user.owns('Clue upgrader')) return false;
+	const upgradedClues = new Bank();
+	const removeBank = new Bank();
+	let durationForCost = 0;
+
+	const fn = type === 'pvm' ? inventionBoosts.clueUpgrader.chance : inventionBoosts.clueUpgrader.pickPocketChance;
+	for (let i = 0; i < 5; i++) {
+		const clueTier = ClueTiers[i];
+		if (!loot.has(clueTier.scrollID)) continue;
+		for (let t = 0; t < loot.amount(clueTier.scrollID); t++) {
+			if (percentChance(fn(clueTier))) {
+				removeBank.add(clueTier.scrollID);
+				upgradedClues.add(ClueTiers[i + 1].scrollID);
+				durationForCost += inventionBoosts.clueUpgrader.durationCalc(clueTier);
+			}
+		}
+	}
+	if (upgradedClues.length === 0) return false;
+	const boostRes = await inventionItemBoost({
+		userID: BigInt(user.id),
+		inventionID: InventionID.ClueUpgrader,
+		duration: durationForCost
+	});
+	if (!boostRes.success) return false;
+	trackClientBankStats('clue_upgrader_loot', upgradedClues);
+	loot.add(upgradedClues);
+	assert(loot.has(removeBank));
+	loot.remove(removeBank);
+	let totalCluesUpgraded = sumArr(upgradedClues.items().map(i => i[1]));
+	messages.push(`<:Clue_upgrader:986830303001722880> Upgraded ${totalCluesUpgraded} clues (${boostRes.messages})`);
+}
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -31,7 +153,7 @@ export default class extends Task {
 		const fullMonster = Monsters.get(monsterID);
 		const user = await this.client.fetchUser(userID);
 		if (monster.name === 'Koschei the deathless' && !roll(5000)) {
-			sendToChannelID(this.client, channelID, {
+			sendToChannelID(channelID, {
 				content: `${user}, ${user.minionName} failed to defeat Koschei the deathless.`
 			});
 		}
@@ -45,7 +167,7 @@ export default class extends Task {
 			oriBoost = true;
 			if (duration > Time.Minute * 5) {
 				// Original boost for 5+ minute task:
-				boostedQuantity = Math.ceil(quantity * 1.25);
+				boostedQuantity = Math.ceil(increaseNumByPercent(quantity, 25));
 			} else {
 				// 25% chance at extra kill otherwise:
 				for (let i = 0; i < quantity; i++) {
@@ -93,6 +215,10 @@ export default class extends Task {
 		let masterCapeRolls = user.hasItemEquippedAnywhere('Slayer master cape') ? newSuperiorCount : 0;
 		newSuperiorCount += masterCapeRolls;
 
+		if (monster.specialLoot) {
+			monster.specialLoot(loot, user, data);
+		}
+
 		if (newSuperiorCount) {
 			// Superior loot and totems if in catacombs
 			loot.add(superiorTable!.kill(newSuperiorCount));
@@ -113,20 +239,13 @@ export default class extends Task {
 		});
 
 		const superiorMessage = newSuperiorCount ? `, including **${newSuperiorCount} superiors**` : '';
+		const messages: string[] = [];
 		let str =
 			`${user}, ${user.minionName} finished killing ${quantity} ${monster.name}${superiorMessage}.` +
 			` Your ${monster.name} KC is now ${user.getKC(monsterID)}.\n${xpRes}\n`;
 
 		if (masterCapeRolls > 0) {
-			str += `${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls `;
-		}
-
-		if ([3129, 2205, 2215, 3162].includes(monster.id)) {
-			for (let i = 0; i < quantity; i++) {
-				if (roll(20)) {
-					loot.add(randArrItem(frozenKeyPieces));
-				}
-			}
+			messages.push(`${Emoji.SlayerMasterCape} You received ${masterCapeRolls}x bonus superior rolls`);
 		}
 
 		if (monster.id === Monsters.Vorkath.id && roll(6000)) {
@@ -166,17 +285,21 @@ export default class extends Task {
 		}
 
 		if (gotBrock) {
-			str += '\n<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.';
+			messages.push(
+				'<:brock:787310793183854594> On the way to Zulrah, you found a Badger that wants to join you.'
+			);
 		}
 
 		if (gotKlik) {
-			str += '\n\n<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.';
+			messages.push(
+				'<:klik:749945070932721676> A small fairy dragon appears! Klik joins you on your adventures.'
+			);
 		}
 
 		if (isDoubleLootActive(this.client, duration)) {
-			str += '\n\n**Double Loot!**';
+			messages.push('**Double Loot!**');
 		} else if (oriBoost) {
-			str += '\n\nOri has used the abyss to transmute you +25% bonus loot!';
+			messages.push('Ori has used the abyss to transmute you +25% bonus loot!');
 		}
 
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
@@ -195,21 +318,9 @@ export default class extends Task {
 			loot.add('Clue hunter boots');
 		}
 
-		if (user.settings.get(UserSettings.Bank)[itemID('Gorajan bonecrusher')]) {
-			let totalXP = 0;
-			for (const bone of bones) {
-				const amount = loot.amount(bone.inputId);
-				if (amount > 0) {
-					totalXP += bone.xp * amount * 4;
-					loot.remove(bone.inputId, amount);
-				}
-			}
-			str += await user.addXP({
-				skillName: SkillsEnum.Prayer,
-				amount: totalXP,
-				duration
-			});
-		}
+		await bonecrusherEffect(user, loot, duration, messages);
+		await portableTannerEffect(user, loot, duration, messages);
+		await clueUpgraderEffect(user, loot, messages, 'pvm');
 
 		let thisTripFinishesTask = false;
 
@@ -260,7 +371,7 @@ export default class extends Task {
 				mysteryBoxChance = Math.max(1, mysteryBoxChance);
 
 				if (roll(mysteryBoxChance)) {
-					loot.add(getRandomMysteryBox());
+					loot.add(MysteryBoxes.roll());
 				}
 			}
 
@@ -285,33 +396,40 @@ export default class extends Task {
 			duration
 		});
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity} ${monster.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity} ${monster.name}:`,
+			user,
+			previousCL
+		});
+
+		if (messages.length > 0) {
+			str += `\n**Messages:** ${messages.join(', ')}`;
+		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
 			isOnTask && thisTripFinishesTask
 				? undefined
 				: res => {
-						user.log(`continued trip of killing ${monster.name}`);
-						let args = [quantity, monster.name];
-						if (usingCannon) args.push('cannon');
-						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
-						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
-						return runCommand(res, 'k', args, true);
+						let method: PvMMethod = 'none';
+						if (usingCannon) method = 'cannon';
+						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
+						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
+						return runCommand({
+							...res,
+							commandName: 'k',
+							args: {
+								name: monster.name,
+								quantity,
+								method
+							},
+							isContinue: true
+						});
 				  },
-			image!,
+			image!.file.buffer,
 			data,
 			itemsAdded
 		);

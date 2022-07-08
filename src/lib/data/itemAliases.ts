@@ -1,11 +1,12 @@
 import { Items } from 'oldschooljs';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-
-export function cleanString(str: string): string {
-	return str.replace(/\s/g, '').toUpperCase();
-}
+import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
 function setItemAlias(id: number, name: string | string[], rename = true) {
+	const existingItem = Items.get(id);
+	if (!existingItem) {
+		throw new Error(`Tried to add item alias for a non-existant item: ${name} ${id}`);
+	}
 	let firstName: string | null = null;
 	// Add the item to the custom items array
 	if (typeof name === 'string') {
@@ -199,7 +200,6 @@ setItemAlias(20_593, 'Armadyl godsword (LMS)');
 setItemAlias(20_408, 'Dark bow (LMS)');
 setItemAlias(20_389, 'Dragon arrow (LMS)');
 setItemAlias(20_784, 'Dragon claws (LMS)');
-setItemAlias(21_205, 'Elder maul (LMS)');
 setItemAlias(23_628, 'Ghrazi rapier (LMS)');
 setItemAlias(20_557, 'Granite maul (LMS)');
 setItemAlias(23_630, 'Heavy ballista (LMS)');
@@ -268,3 +268,30 @@ setItemAlias(1563, 'Brown cat');
 setItemAlias(1564, 'Black cat');
 setItemAlias(1565, 'Grey and brown cat');
 setItemAlias(1566, 'Grey and blue cat');
+
+// Sepulchre pages
+setItemAlias(24_763, 'Mysterious page 1');
+setItemAlias(24_765, 'Mysterious page 2');
+setItemAlias(24_767, 'Mysterious page 3');
+setItemAlias(24_769, 'Mysterious page 4');
+setItemAlias(24_771, 'Mysterious page 5');
+
+// LMS ornaments
+setItemAlias(24_225, 'Granite maul (ornate handle)');
+setItemAlias(12_848, 'Granite maul (or)');
+setItemAlias(24_227, 'Granite maul (or) (ornate handle)');
+setItemAlias(12_797, 'Dragon pickaxe (upgraded)');
+setItemAlias(12_806, 'Malediction ward (or)');
+setItemAlias(12_807, 'Odium ward (or)');
+setItemAlias(12_765, 'Dark bow (green)');
+setItemAlias(12_766, 'Dark bow (blue)');
+setItemAlias(12_767, 'Dark bow (yellow)');
+setItemAlias(12_768, 'Dark bow (white)');
+setItemAlias(12_796, 'Mystic steam staff (or)');
+setItemAlias(12_795, 'Steam battlestaff (or)');
+setItemAlias(21_200, 'Mystic lava staff (or)');
+setItemAlias(21_198, 'Lava battlestaff (or)');
+
+// Trouble Brewing
+setItemAlias(8940, 'Red rum (trouble brewing)');
+setItemAlias(8941, 'Blue rum (trouble brewing)');

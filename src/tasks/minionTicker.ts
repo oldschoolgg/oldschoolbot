@@ -2,7 +2,9 @@ import { Activity } from '@prisma/client';
 import { Task } from 'klasa';
 
 import { production } from '../config';
-import { completeActivity, prisma } from '../lib/settings/prisma';
+import { prisma } from '../lib/settings/prisma';
+import { completeActivity } from '../lib/settings/settings';
+import { logError } from '../lib/util/logError';
 
 export default class extends Task {
 	async init() {
@@ -35,7 +37,7 @@ export default class extends Task {
 
 				await Promise.all(activities.map(completeActivity));
 			} catch (err) {
-				console.error(err);
+				logError(err);
 			} finally {
 				this.client.minionTicker = setTimeout(ticker, 5000);
 			}

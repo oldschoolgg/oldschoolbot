@@ -1,183 +1,193 @@
-import { resolveNameBank } from '../../util';
+import { Bank } from 'oldschooljs';
+
 import { Createable } from '../createables';
 
 export const tobCreatables: Createable[] = [
 	{
 		name: 'Scythe of vitur',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Scythe of vitur (uncharged)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Scythe of vitur': 1
 		})
 	},
 	{
 		name: 'Sanguinesti staff',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Sanguinesti staff (uncharged)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Sanguinesti staff': 1
 		})
 	},
 	{
 		name: 'Holy sanguinesti staff',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Holy sanguinesti staff (uncharged)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Holy sanguinesti staff': 1
 		})
 	},
 	{
 		name: 'Revert sanguinesti staff',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Sanguinesti staff': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Sanguinesti staff (uncharged)': 1
 		})
 	},
 	{
+		name: 'Revert holy sanguinesti staff',
+		inputItems: new Bank({
+			'Holy sanguinesti staff': 1
+		}),
+		outputItems: new Bank({
+			'Holy sanguinesti staff (uncharged)': 1
+		})
+	},
+	{
 		name: 'Revert scythe of vitur',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Scythe of vitur': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Scythe of vitur (uncharged)': 1
 		})
 	},
 	{
 		name: 'Holy scythe of vitur',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Holy scythe of vitur (uncharged)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Holy scythe of vitur': 1
 		})
 	},
 	{
 		name: 'Revert holy scythe of vitur',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Holy scythe of vitur': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Holy scythe of vitur (uncharged)': 1
 		})
 	},
 	{
 		name: 'Revert holy scythe of vitur (uncharged)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Holy scythe of vitur (uncharged)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Scythe of vitur (uncharged)': 1,
 			'Holy ornament kit': 1
 		})
 	},
 	{
 		name: 'Sanguine scythe of vitur',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Sanguine scythe of vitur (uncharged)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Sanguine scythe of vitur': 1
 		})
 	},
 	{
 		name: 'Revert sanguine scythe of vitur',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Sanguine scythe of vitur': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Sanguine scythe of vitur (uncharged)': 1
 		})
 	},
 	{
 		name: 'Sanguine scythe of vitur (uncharged)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Scythe of vitur (uncharged)': 1,
 			'Sanguine ornament kit': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Sanguine scythe of vitur (uncharged)': 1
 		})
 	},
 	{
 		name: 'Revert sanguine scythe of vitur (uncharged)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Sanguine scythe of vitur (uncharged)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Scythe of vitur (uncharged)': 1,
 			'Sanguine ornament kit': 1
 		})
 	},
 	{
 		name: 'Holy scythe of vitur (uncharged)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Scythe of vitur (uncharged)': 1,
 			'Holy ornament kit': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Holy scythe of vitur (uncharged)': 1
 		})
 	},
 	{
 		name: 'Holy sanguinesti staff (uncharged)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Sanguinesti staff (uncharged)': 1,
 			'Holy ornament kit': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Holy sanguinesti staff (uncharged)': 1
 		})
 	},
 	{
 		name: 'Revert holy sanguinesti staff (uncharged)',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'holy sanguinesti staff (uncharged)': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Sanguinesti staff (uncharged)': 1,
 			'Holy ornament kit': 1
 		})
 	},
 	{
 		name: 'Avernic defender',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Dragon defender': 1,
 			'Avernic defender hilt': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Avernic defender': 1
 		})
 	},
 	{
 		name: 'Revert avernic defender',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Avernic defender': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Dragon defender': 1
 		})
 	},
 	{
 		name: 'Holy ghrazi rapier',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Ghrazi rapier': 1,
 			'Holy ornament kit': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Holy ghrazi rapier': 1
 		})
 	},
 	{
 		name: 'Revert holy ghrazi rapier',
-		inputItems: resolveNameBank({
+		inputItems: new Bank({
 			'Holy ghrazi rapier': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Ghrazi rapier': 1,
 			'Holy ornament kit': 1
 		})

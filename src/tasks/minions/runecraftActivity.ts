@@ -3,16 +3,15 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
-import { calcMaxRCQuantity } from '../../lib/skilling/functions/calcMaxRCQuantity';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
-import { roll } from '../../lib/util';
+import { calcMaxRCQuantity, roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: RunecraftActivityTaskOptions) {
-		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration } = data;
+		const { runeID, essenceQuantity, userID, channelID, imbueCasts, duration, useStaminas } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const rune = Runecraft.Runes.find(_rune => _rune.id === runeID)!;
@@ -59,6 +58,8 @@ export default class extends Task {
 		if (duration >= MIN_LENGTH_FOR_PET) {
 			const minutes = duration / Time.Minute;
 			if (roll(Math.floor(5000 / minutes))) {
+				str +=
+					'\n**<:obis:787028036792614974> An enchantment guardian takes note of your prowess in runecrafting and elects to join you.**';
 				loot.add('Obis');
 			}
 		}
@@ -81,11 +82,10 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['rc', [essenceQuantity, rune.name], true],
+			['runecraft', { quantity: essenceQuantity, rune: rune.name, usestams: useStaminas }, true],
 			undefined,
 			data,
 			loot

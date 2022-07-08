@@ -11,6 +11,7 @@ import { KillableMonster } from '../../types';
 import { NIGHTMARES_HP } from './../../../constants';
 import { bossKillables } from './bosses';
 import { chaeldarMonsters } from './chaeldarMonsters';
+import { creatureCreationCreatures } from './creatureCreation';
 import { Ignecarus } from './custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from './custom/bosses/KalphiteKing';
 import KingGoldemar from './custom/bosses/KingGoldemar';
@@ -22,6 +23,7 @@ import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
 import { mazchnaMonsters } from './mazchnaMonsters';
 import { nieveMonsters } from './nieveMonsters';
+import { revenantMonsters } from './revs';
 import { turaelMonsters } from './turaelMonsters';
 import { vannakaMonsters } from './vannakaMonsters';
 
@@ -36,6 +38,7 @@ const killableMonsters: KillableMonster[] = [
 	...vannakaMonsters,
 	...low,
 	...customKillableMonsters,
+	...creatureCreationCreatures,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
@@ -164,10 +167,12 @@ const killableMonsters: KillableMonster[] = [
 		qpRequired: 0,
 		itemInBankBoosts: [
 			{
-				[itemID('Bandos chestplate')]: 2
+				[itemID('Bandos chestplate')]: 2,
+				[itemID('Torva platebody')]: 2
 			},
 			{
-				[itemID('Bandos tassets')]: 2
+				[itemID('Bandos tassets')]: 2,
+				[itemID('Torva platelegs')]: 2
 			},
 			{
 				[itemID('Saradomin godsword')]: 4,
@@ -331,6 +336,7 @@ export default killableMonsters;
 
 export const effectiveMonsters = [
 	...killableMonsters,
+	...revenantMonsters,
 	NightmareMonster,
 	{
 		name: 'Zalcano',

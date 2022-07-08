@@ -1,23 +1,12 @@
-import fs from 'fs';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
+import { getRandomTriviaQuestion } from '../../lib/roboChimp';
 import { BotCommand } from '../../lib/structures/BotCommand';
-
-let triviaQuestions: any = null;
-try {
-	// eslint-disable-next-line prefer-destructuring
-	triviaQuestions = JSON.parse(
-		fs.readFileSync('./src/lib/resources/trivia-questions.json').toString()
-	).triviaQuestions;
-} catch (err) {
-	console.log('No trivia questions file found. Disabling trivia command.');
-}
+import { stringMatches } from '../../lib/util';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
-			oneAtTime: true,
 			description: 'Sends a OSRS related trivia question.',
 			examples: ['+t'],
 			categoryFlags: ['fun'],
@@ -25,23 +14,14 @@ export default class extends BotCommand {
 		});
 	}
 
-	async init() {
-		if (!triviaQuestions) this.disable();
-	}
-
 	async run(msg: KlasaMessage, [user]: [KlasaUser | undefined]) {
-		if (!msg.channel.__triviaQuestionsDone || msg.channel.__triviaQuestionsDone.length === triviaQuestions.length) {
-			msg.channel.__triviaQuestionsDone = [];
-		}
-
 		const triviaDuelUsers: [KlasaUser, KlasaUser] | null = user === undefined ? null : [msg.author, user];
 
-		const [item, index] = this.findNewTrivia(msg.channel.__triviaQuestionsDone);
-		msg.channel.__triviaQuestionsDone.push(index);
+		const { question, answers } = await getRandomTriviaQuestion();
 		await msg.channel.send(
 			triviaDuelUsers === null
-				? item.q
-				: `**Trivia Duel between ${msg.author.username} and ${user!.username}:** ${item.q}`
+				? question
+				: `**Trivia Duel between ${msg.author.username} and ${user!.username}:** ${question}`
 		);
 		try {
 			const collected = await msg.channel.awaitMessages({
@@ -49,7 +29,7 @@ export default class extends BotCommand {
 				time: 30_000,
 				errors: ['time'],
 				filter: answer => {
-					if (!item.a.includes(answer.content.toLowerCase())) return false;
+					if (!answers.some(i => stringMatches(answer.content, i))) return false;
 					if (triviaDuelUsers) {
 						return triviaDuelUsers.includes(answer.author);
 					}
@@ -64,13 +44,5 @@ export default class extends BotCommand {
 		} catch (err) {
 			return msg.channel.send('Nobody answered correctly.');
 		}
-	}
-
-	findNewTrivia(_triviaQuestionsDone: any[]): any {
-		const index = Math.floor(Math.random() * triviaQuestions.length);
-		if (!_triviaQuestionsDone.includes(index)) {
-			return [triviaQuestions[index], index];
-		}
-		return this.findNewTrivia(_triviaQuestionsDone);
 	}
 }

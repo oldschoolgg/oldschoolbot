@@ -7,7 +7,7 @@ import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { sorts } from '../../lib/sorts';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks, isSuperUntradeable, itemID, toKMB } from '../../lib/util';
+import { isSuperUntradeable, itemID, toKMB } from '../../lib/util';
 import { parseBank } from '../../lib/util/parseStringBank';
 
 const specialPrices = new Bank()
@@ -110,10 +110,8 @@ const specialPrices = new Bank()
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 1,
 			usage: '[str:...str]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			categoryFlags: ['minion'],
 			description: 'Sacrifices items from your bank.',
 			examples: ['+sacrifice 1 Elysian sigil'],
@@ -122,6 +120,9 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [str]: [string | undefined]) {
+		if (1 > 0) {
+			return msg.channel.send("There currently isn't a lottery running!");
+		}
 		if (msg.author.isIronman) {
 			return msg.channel.send('Ironmen cannot participate in the lottery.');
 		}
@@ -223,7 +224,7 @@ WHERE bank->>'5021' IS NOT NULL;`
 
 		await this.client.settings.update(
 			ClientSettings.BankLottery,
-			addBanks([this.client.settings.get(ClientSettings.BankLottery), bankToSell.bank])
+			new Bank().add(bankToSell).add(this.client.settings.get(ClientSettings.BankLottery))
 		);
 
 		return msg.channel.send(

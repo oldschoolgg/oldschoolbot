@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { MysteryBoxes } from '../../../../../data/openables';
+import { MysteryBoxes } from '../../../../../bsoOpenables';
 import setCustomMonster from '../../../../../util/setCustomMonster';
 
 const dwarvenArmorTable = new LootTable()
@@ -39,7 +39,7 @@ export const KingGoldemarLootTable = new LootTable()
 	.add('Dwarven stout')
 	.tertiary(4, 'Clue scroll (grandmaster)')
 	.tertiary(20, MysteryBoxes)
-	.tertiary(60, 'Blacksmith crate');
+	.tertiary(25, 'Blacksmith crate');
 
 setCustomMonster(696_969, 'King Goldemar', KingGoldemarLootTable, Monsters.GeneralGraardor, {
 	id: 696_969,

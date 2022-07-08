@@ -73,6 +73,22 @@ export default class extends Task {
 			str += `\n\nYou received some tips from Wizards in your delivery route: ${loot}.`;
 		}
 
-		handleTripFinish(this.client, user, channelID, str, ['ods', [], true, 'start'], undefined, data, null);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			[
+				'bsominigames',
+				{
+					ourania_delivery_service: {
+						start: {}
+					}
+				},
+				true
+			],
+			undefined,
+			data,
+			null
+		);
 	}
 }

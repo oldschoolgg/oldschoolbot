@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { randArrItem, reduceNumByPercent, roll } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -12,10 +13,11 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { Nursery, Species, tameSpecies } from '../../lib/tames';
 import { formatDuration, gaussianRandom, stringMatches, updateBankSetting } from '../../lib/util';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { tame_growth } from '.prisma/client';
 
-export async function generateNewTame(user: KlasaUser, species: Species) {
-	let shinyChance = user.hasItemEquippedAnywhere('Ring of luck')
+export async function generateNewTame(user: KlasaUser | User, species: Species) {
+	let shinyChance = hasItemsEquippedOrInBank(user, ['Ring of luck'])
 		? Math.floor(reduceNumByPercent(species.shinyChance, 3))
 		: species.shinyChance;
 
@@ -50,7 +52,6 @@ export async function generateNewTame(user: KlasaUser, species: Species) {
 export default class POHCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			oneAtTime: true,
 			altProtection: true,
 			categoryFlags: ['minion'],
 			description: 'Allows you to access and build in your POH.',

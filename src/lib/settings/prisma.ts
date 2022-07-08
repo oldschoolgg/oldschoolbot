@@ -1,15 +1,10 @@
 import { Activity, activity_type_enum, loot_track_type, Prisma, PrismaClient } from '@prisma/client';
 import { Time } from 'e';
-import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
-import { PerkTier } from '../constants';
 import { ItemBank } from '../types';
 import { ActivityTaskData } from '../types/minions';
-import { cleanString, isGroupActivity } from '../util';
-import { taskNameFromType } from '../util/taskNameFromType';
-import { minionActivityCache, minionActivityCacheDelete } from './settings';
+import { cleanString } from '../util';
 
 declare global {
 	namespace NodeJS {
@@ -19,7 +14,6 @@ declare global {
 	}
 }
 export const prisma = global.prisma || new PrismaClient();
-
 if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
 
 export function convertStoredActivityToFlatActivity(activity: Activity): ActivityTaskData {
@@ -32,39 +26,6 @@ export function convertStoredActivityToFlatActivity(activity: Activity): Activit
 		finishDate: activity.finish_date.getTime(),
 		id: activity.id
 	};
-}
-
-export function activitySync(activity: Activity) {
-	const users: bigint[] | string[] = isGroupActivity(activity.data)
-		? ((activity.data as Prisma.JsonObject).users! as string[])
-		: [activity.user_id];
-	for (const user of users) {
-		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
-	}
-}
-
-export async function completeActivity(_activity: Activity) {
-	const activity = convertStoredActivityToFlatActivity(_activity);
-	if (_activity.completed) {
-		throw new Error('Tried to complete an already completed task.');
-	}
-
-	const taskName = taskNameFromType(activity.type);
-	const task = client.tasks.get(taskName);
-
-	if (!task) {
-		throw new Error('Missing task');
-	}
-
-	client.oneCommandAtATimeCache.add(activity.userID);
-	try {
-		await task.run(activity);
-	} catch (err) {
-		console.error(err);
-	} finally {
-		client.oneCommandAtATimeCache.delete(activity.userID);
-		minionActivityCacheDelete(activity.userID);
-	}
 }
 
 /**
@@ -81,17 +42,6 @@ export async function countUsersWithItemInCl(itemID: number, ironmenOnly: boolea
 		throw new Error(`countUsersWithItemInCl produced invalid number '${result}' for ${itemID}`);
 	}
 	return result;
-}
-
-export async function isElligibleForPresent(user: KlasaUser) {
-	if (user.isIronman) return true;
-	if (user.perkTier >= PerkTier.Four) return true;
-	if (user.totalLevel() >= 2000) return true;
-	const totalActivityDuration: [{ sum: number }] = await prisma.$queryRaw`SELECT SUM(duration)
-FROM activity
-WHERE user_id = ${user.id};`;
-	if (totalActivityDuration[0].sum >= Time.Hour * 80) return true;
-	return false;
 }
 
 type TrackLootOptions =

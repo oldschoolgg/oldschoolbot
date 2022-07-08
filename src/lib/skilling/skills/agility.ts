@@ -150,7 +150,14 @@ export const courses: Course[] = [
 	{
 		id: 13,
 		name: 'Prifddinas Rooftop Course',
-		aliases: ['priff', 'prif', 'prifddinas', 'prifddinas course', 'prifddinas agility course'],
+		aliases: [
+			'priff',
+			'prif',
+			'prifddinas',
+			'prifddinas course',
+			'prifddinas agility course',
+			'prifddinas rooftop course'
+		],
 		level: 75,
 		xp: 1340.6,
 		marksPer60: 0,
@@ -161,7 +168,7 @@ export const courses: Course[] = [
 	{
 		id: 30,
 		name: 'Daemonheim Rooftop Course',
-		aliases: ['daemonheim', 'dh'],
+		aliases: ['daemonheim', 'dh', 'daemonheim rooftop course'],
 		level: 101,
 		xp: 10_140.6,
 		marksPer60: 35,

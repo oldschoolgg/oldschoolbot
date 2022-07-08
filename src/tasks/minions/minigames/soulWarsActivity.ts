@@ -1,12 +1,11 @@
-import { increaseNumByPercent, noOp, reduceNumByPercent } from 'e';
+import { increaseNumByPercent, reduceNumByPercent } from 'e';
 import { Task } from 'klasa';
 
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { SoulWarsOptions } from '../../../lib/types/minions';
+import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { sendToChannelID } from '../../../lib/util/webhook';
+import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
 function calcPoints() {
 	let base = 42.5;
@@ -25,34 +24,37 @@ function calcPoints() {
 }
 
 export default class extends Task {
-	async run(data: SoulWarsOptions) {
-		const { channelID, leader, users, quantity } = data;
-		const leaderUser = await this.client.fetchUser(leader);
-		let str = `${leaderUser}, your party finished doing ${quantity}x games of Soul Wars.\n\n`;
+	async run(data: MinigameActivityTaskOptions) {
+		const { channelID, quantity, userID } = data;
+		const user = await this.client.fetchUser(userID);
 
-		for (const id of users) {
-			const user = await this.client.fetchUser(id).catch(noOp);
-			if (!user) continue;
-
-			let points = 0;
-			for (let i = 0; i < quantity; i++) {
-				points += calcPoints();
-			}
-
-			if (user.usingPet('Flappy')) {
-				points *= 2;
-			}
-
-			await user.settings.update(UserSettings.ZealTokens, user.settings.get(UserSettings.ZealTokens) + points);
-
-			await incrementMinigameScore(user.id, 'soul_wars', quantity);
-			str += `${user} received ${points}x Zeal Tokens.`;
+		let points = 0;
+		for (let i = 0; i < quantity; i++) {
+			points += calcPoints();
 		}
 
-		if (users.length === 1) {
-			handleTripFinish(this.client, leaderUser, channelID, str, ['sw', ['solo'], true], undefined!, data, null);
-		} else {
-			sendToChannelID(this.client, channelID, { content: str });
+		if (user.usingPet('Flappy')) {
+			points *= 2;
 		}
+
+		const { newUser } = await mahojiUserSettingsUpdate(userID, {
+			zeal_tokens: {
+				increment: points
+			}
+		});
+
+		await incrementMinigameScore(user.id, 'soul_wars', quantity);
+
+		const str = `${user}, ${user.minionName} finished doing ${quantity}x games of Soul Wars, you received ${points} Zeal Tokens, you now have ${newUser.zeal_tokens}.\n\n`;
+
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { soul_wars: { start: {} } }, true],
+			undefined!,
+			data,
+			null
+		);
 	}
 }

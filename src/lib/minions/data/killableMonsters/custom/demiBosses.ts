@@ -3,7 +3,7 @@ import { LootTable, Monsters } from 'oldschooljs';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { HighSeedPackTable } from '../../../../../commands/Minion/seedpack';
+import { HighSeedPackTable } from '../../../../data/seedPackTables';
 import { GearStat } from '../../../../gear';
 import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
@@ -181,7 +181,7 @@ const QueenBlackDragon: CustomMonster = {
 			prayer: 3
 		}
 	},
-	itemsRequired: deepResolveItems([['Dragonfire shield']]),
+	itemsRequired: deepResolveItems([['Dragonfire shield', 'Dragonfire ward']]),
 	respawnTime: Time.Second * 20,
 	levelRequirements: {
 		prayer: 70,

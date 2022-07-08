@@ -2,7 +2,7 @@ import { calcPercentOfNum, roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../../lib/data/openables';
+import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { catchFishAtLocation, fishingLocations } from '../../../lib/fishingContest';
 import { prisma, trackLoot } from '../../../lib/settings/prisma';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
@@ -109,7 +109,6 @@ export default class extends Task {
 		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished fishing at ${fishLocation.name}, you caught: ${caughtFish

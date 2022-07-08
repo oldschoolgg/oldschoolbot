@@ -1,23 +1,19 @@
-import { User } from 'discord.js';
+import { User } from "discord.js";
 import {
-	calcPercentOfNum,
-	calcWhatPercent,
 	increaseNumByPercent,
 	notEmpty,
 	objectValues,
 	randInt,
 	Time,
-	uniqueArr
-} from 'e';
-import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
-import { Bank, Monsters } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
-import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
+	uniqueArr,
+} from "e";
+import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from "klasa";
+import { Bank, Monsters } from "oldschooljs";
+import { Item } from "oldschooljs/dist/meta/types";
+import Monster from "oldschooljs/dist/structures/Monster";
+import SimpleTable from "oldschooljs/dist/structures/SimpleTable";
 
-import { sotwConfig, sotwIsActive } from '../../commands/bso/sotw';
-import { collectables } from '../../commands/Minion/collect';
-import { DungeoneeringOptions } from '../../commands/Minion/dung';
-import { bossEvents } from '../../lib/bossEvents';
+import { bossEvents } from "../../lib/bossEvents";
 import {
 	Emoji,
 	Events,
@@ -25,48 +21,60 @@ import {
 	MAX_QP,
 	MAX_TOTAL_LEVEL,
 	MAX_XP,
-	PerkTier,
-	skillEmoji
-} from '../../lib/constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
-import { getSimilarItems } from '../../lib/data/similarItems';
-import { onMax } from '../../lib/events';
-import { fishingLocations } from '../../lib/fishingContest';
-import { hasGracefulEquipped } from '../../lib/gear';
-import ClueTiers from '../../lib/minions/data/clueTiers';
-import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { Planks } from '../../lib/minions/data/planks';
-import { AttackStyles } from '../../lib/minions/functions';
-import { AddXpParams, KillableMonster } from '../../lib/minions/types';
-import { prisma } from '../../lib/settings/prisma';
-import { getActivityOfUser, getMinigameScore, MinigameName, Minigames } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
-import Skills from '../../lib/skilling/skills';
-import Agility from '../../lib/skilling/skills/agility';
-import Cooking from '../../lib/skilling/skills/cooking';
-import Crafting from '../../lib/skilling/skills/crafting';
-import Farming from '../../lib/skilling/skills/farming';
-import Firemaking from '../../lib/skilling/skills/firemaking';
-import Fishing from '../../lib/skilling/skills/fishing';
-import Herblore from '../../lib/skilling/skills/herblore/herblore';
-import Creatures from '../../lib/skilling/skills/hunter/creatures';
-import Hunter from '../../lib/skilling/skills/hunter/hunter';
-import { Castables } from '../../lib/skilling/skills/magic/castables';
-import { Enchantables } from '../../lib/skilling/skills/magic/enchantables';
-import Mining from '../../lib/skilling/skills/mining';
-import Prayer from '../../lib/skilling/skills/prayer';
-import Runecraft from '../../lib/skilling/skills/runecraft';
-import Smithing from '../../lib/skilling/skills/smithing';
-import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
-import Woodcutting from '../../lib/skilling/skills/woodcutting';
-import { Creature, SkillsEnum } from '../../lib/skilling/types';
-import { Skills as TSkills } from '../../lib/types';
+	skillEmoji,
+} from "../../lib/constants";
 import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit,
+} from "../../lib/data/CollectionsExport";
+import { getSimilarItems } from "../../lib/data/similarItems";
+import { onMax } from "../../lib/events";
+import { fishingLocations } from "../../lib/fishingContest";
+import { hasGracefulEquipped } from "../../lib/gear";
+import ClueTiers from "../../lib/minions/data/clueTiers";
+import killableMonsters, {
+	effectiveMonsters,
+} from "../../lib/minions/data/killableMonsters";
+import { Planks } from "../../lib/minions/data/planks";
+import { AttackStyles } from "../../lib/minions/functions";
+import { AddXpParams, KillableMonster } from "../../lib/minions/types";
+import { prisma } from "../../lib/settings/prisma";
+import {
+	getActivityOfUser,
+	getMinigameScore,
+	MinigameName,
+	Minigames,
+} from "../../lib/settings/settings";
+import { UserSettings } from "../../lib/settings/types/UserSettings";
+import Skillcapes from "../../lib/skilling/skillcapes";
+import Skills from "../../lib/skilling/skills";
+import Agility from "../../lib/skilling/skills/agility";
+import Cooking from "../../lib/skilling/skills/cooking";
+import Crafting from "../../lib/skilling/skills/crafting";
+import { DungeoneeringOptions } from "../../lib/skilling/skills/dung/dungData";
+import Farming from "../../lib/skilling/skills/farming";
+import Firemaking from "../../lib/skilling/skills/firemaking";
+import Fishing from "../../lib/skilling/skills/fishing";
+import Herblore from "../../lib/skilling/skills/herblore/herblore";
+import Creatures from "../../lib/skilling/skills/hunter/creatures";
+import Hunter from "../../lib/skilling/skills/hunter/hunter";
+import { Castables } from "../../lib/skilling/skills/magic/castables";
+import { Enchantables } from "../../lib/skilling/skills/magic/enchantables";
+import Mining from "../../lib/skilling/skills/mining";
+import Prayer from "../../lib/skilling/skills/prayer";
+import Runecraft from "../../lib/skilling/skills/runecraft";
+import Smithing from "../../lib/skilling/skills/smithing";
+import { Pickpocketables } from "../../lib/skilling/skills/thieving/stealables";
+import Woodcutting from "../../lib/skilling/skills/woodcutting";
+import { Creature, SkillsEnum } from "../../lib/skilling/types";
+import { Skills as TSkills } from "../../lib/types";
+import { DisassembleTaskOptions } from "../../lib/invention/disassemble";
+import { ResearchTaskOptions } from "../../lib/invention/research";
+import {
+	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
-	BarbarianAssaultActivityTaskOptions,
-	BlastFurnaceActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
@@ -78,13 +86,12 @@ import {
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
+	FightCavesActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	FishingContestOptions,
-	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
-	GloryChargingActivityTaskOptions,
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
@@ -107,13 +114,10 @@ import {
 	SepulchreActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	SoulWarsOptions,
 	TheatreOfBloodTaskOptions,
-	VolcanicMineActivityTaskOptions,
-	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
-	ZalcanoActivityTaskOptions
-} from '../../lib/types/minions';
+	ZalcanoActivityTaskOptions,
+} from "../../lib/types/minions";
 import {
 	addItemToBank,
 	convertLVLtoXP,
@@ -121,25 +125,28 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
-	patronMaxTripCalc,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
 	toTitleCase,
-	Util
-} from '../../lib/util';
-import { formatOrdinal } from '../../lib/util/formatOrdinal';
-import resolveItems from '../../lib/util/resolveItems';
-import { activity_type_enum } from '.prisma/client';
+} from "../../lib/util";
+import { calcMaxTripLength } from "../../lib/util/calcMaxTripLength";
+import { formatOrdinal } from "../../lib/util/formatOrdinal";
+import getOSItem from "../../lib/util/getOSItem";
+import { minionIsBusy } from "../../lib/util/minionIsBusy";
+import { getKC, minionName, skillLevel } from "../../lib/util/minionUtils";
+import resolveItems from "../../lib/util/resolveItems";
+import { collectables } from "../../mahoji/lib/abstracted_commands/collectCommand";
+import { activity_type_enum } from ".prisma/client";
 
 const suffixes = new SimpleTable<string>()
-	.add('🎉', 200)
-	.add('🎆', 10)
-	.add('🙌', 10)
-	.add('🎇', 10)
-	.add('🥳', 10)
-	.add('🍻', 10)
-	.add('🎊', 10)
+	.add("🎉", 200)
+	.add("🎆", 10)
+	.add("🙌", 10)
+	.add("🎇", 10)
+	.add("🥳", 10)
+	.add("🍻", 10)
+	.add("🎊", 10)
 	.add(Emoji.PeepoNoob, 1)
 	.add(Emoji.PeepoRanger, 1)
 	.add(Emoji.PeepoSlayer);
@@ -148,8 +155,33 @@ function levelUpSuffix() {
 	return suffixes.roll().item;
 }
 
+interface StaticXPBoost {
+	item: Item;
+	boostPercent: number;
+	skill: SkillsEnum;
+}
+const staticXPBoosts = new Map<SkillsEnum, StaticXPBoost[]>().set(
+	SkillsEnum.Firemaking,
+	[
+		{
+			item: getOSItem("Flame gloves"),
+			boostPercent: 2.5,
+			skill: SkillsEnum.Firemaking,
+		},
+		{
+			item: getOSItem("Ring of fire"),
+			boostPercent: 2.5,
+			skill: SkillsEnum.Firemaking,
+		},
+	]
+);
+
 export default class extends Extendable {
-	public constructor(store: ExtendableStore, file: string[], directory: string) {
+	public constructor(
+		store: ExtendableStore,
+		file: string[],
+		directory: string
+	) {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
@@ -162,151 +194,191 @@ export default class extends Extendable {
 		}
 
 		const durationRemaining = currentTask.finishDate - Date.now();
-		let formattedDuration = `${formatDuration(durationRemaining)} remaining.`;
+		let formattedDuration = `${formatDuration(
+			durationRemaining
+		)} remaining.`;
 
-		if (this.settings.get('troll')) {
-			formattedDuration = `Approximately ${formatDuration(randInt(Time.Minute, Time.Minute * 1200))} remaining.`;
+		if (this.settings.get("troll")) {
+			formattedDuration = `Approximately ${formatDuration(
+				randInt(Time.Minute, Time.Minute * 1200)
+			)} remaining.`;
 		}
 
 		switch (currentTask.type) {
-			case 'MonsterKilling': {
+			case "MonsterKilling": {
 				const data = currentTask as MonsterActivityTaskOptions;
-				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
+				const monster = killableMonsters.find(
+					(mon) => mon.id === data.monsterID
+				);
 
-				return `${this.minionName} is currently killing ${data.quantity}x ${
-					monster!.name
-				}. ${formattedDuration}`;
+				return `${this.minionName} is currently killing ${
+					data.quantity
+				}x ${monster!.name}. ${formattedDuration}`;
 			}
 
-			case 'GroupMonsterKilling': {
+			case "GroupMonsterKilling": {
 				const data = currentTask as GroupMonsterActivityTaskOptions;
-				const monster = killableMonsters.find(mon => mon.id === data.monsterID);
+				const monster = killableMonsters.find(
+					(mon) => mon.id === data.monsterID
+				);
 
-				return `${this.minionName} is currently killing ${data.quantity}x ${monster!.name} with a party of ${
+				return `${this.minionName} is currently killing ${
+					data.quantity
+				}x ${monster!.name} with a party of ${
 					data.users.length
 				}. ${formattedDuration}`;
 			}
 
-			case 'ClueCompletion': {
+			case "ClueCompletion": {
 				const data = currentTask as ClueActivityTaskOptions;
 
-				const clueTier = ClueTiers.find(tier => tier.id === data.clueID);
+				const clueTier = ClueTiers.find(
+					(tier) => tier.id === data.clueID
+				);
 
-				return `${this.minionName} is currently completing ${data.quantity}x ${
-					clueTier!.name
-				} clues. ${formattedDuration}`;
+				return `${this.minionName} is currently completing ${
+					data.quantity
+				}x ${clueTier!.name} clues. ${formattedDuration}`;
 			}
 
-			case 'Crafting': {
+			case "Crafting": {
 				const data = currentTask as CraftingActivityTaskOptions;
-				const craftable = Crafting.Craftables.find(item => item.id === data.craftableID);
+				const craftable = Crafting.Craftables.find(
+					(item) => item.id === data.craftableID
+				);
 
-				return `${this.minionName} is currently crafting ${data.quantity}x ${
-					craftable!.name
-				}. ${formattedDuration} Your ${Emoji.Crafting} Crafting level is ${this.skillLevel(
-					SkillsEnum.Crafting
-				)}`;
+				return `${this.minionName} is currently crafting ${
+					data.quantity
+				}x ${craftable!.name}. ${formattedDuration} Your ${
+					Emoji.Crafting
+				} Crafting level is ${this.skillLevel(SkillsEnum.Crafting)}`;
 			}
 
-			case 'Agility': {
+			case "Agility": {
 				const data = currentTask as AgilityActivityTaskOptions;
 
-				const course = Agility.Courses.find(course => course.name === data.courseID);
+				const course = Agility.Courses.find(
+					(course) => course.name === data.courseID
+				);
 
-				return `${this.minionName} is currently running ${data.quantity}x ${
-					course!.name
-				} laps. ${formattedDuration} Your ${Emoji.Agility} Agility level is ${this.skillLevel(
-					SkillsEnum.Agility
-				)}`;
+				return `${this.minionName} is currently running ${
+					data.quantity
+				}x ${course!.name} laps. ${formattedDuration} Your ${
+					Emoji.Agility
+				} Agility level is ${this.skillLevel(SkillsEnum.Agility)}`;
 			}
 
-			case 'Cooking': {
+			case "Cooking": {
 				const data = currentTask as CookingActivityTaskOptions;
 
-				const cookable = Cooking.Cookables.find(cookable => cookable.id === data.cookableID);
+				const cookable = Cooking.Cookables.find(
+					(cookable) => cookable.id === data.cookableID
+				);
 
-				return `${this.minionName} is currently cooking ${data.quantity}x ${
-					cookable!.name
-				}. ${formattedDuration} Your ${Emoji.Cooking} Cooking level is ${this.skillLevel(SkillsEnum.Cooking)}`;
+				return `${this.minionName} is currently cooking ${
+					data.quantity
+				}x ${cookable!.name}. ${formattedDuration} Your ${
+					Emoji.Cooking
+				} Cooking level is ${this.skillLevel(SkillsEnum.Cooking)}`;
 			}
 
-			case 'Fishing': {
+			case "Fishing": {
 				const data = currentTask as FishingActivityTaskOptions;
 
-				const fish = Fishing.Fishes.find(fish => fish.id === data.fishID);
+				const fish = Fishing.Fishes.find(
+					(fish) => fish.id === data.fishID
+				);
 
-				return `${this.minionName} is currently fishing ${data.quantity}x ${
-					fish!.name
-				}. ${formattedDuration} Your ${Emoji.Fishing} Fishing level is ${this.skillLevel(SkillsEnum.Fishing)}`;
+				return `${this.minionName} is currently fishing ${
+					data.quantity
+				}x ${fish!.name}. ${formattedDuration} Your ${
+					Emoji.Fishing
+				} Fishing level is ${this.skillLevel(SkillsEnum.Fishing)}`;
 			}
 
-			case 'Mining': {
+			case "Mining": {
 				const data = currentTask as MiningActivityTaskOptions;
 
-				const ore = Mining.Ores.find(ore => ore.id === data.oreID);
+				const ore = Mining.Ores.find((ore) => ore.id === data.oreID);
 
-				return `${this.minionName} is currently mining ${data.quantity}x ${
-					ore!.name
-				}. ${formattedDuration} Your ${Emoji.Mining} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
+				return `${this.minionName} is currently mining ${
+					data.quantity
+				}x ${ore!.name}. ${formattedDuration} Your ${
+					Emoji.Mining
+				} Mining level is ${this.skillLevel(SkillsEnum.Mining)}`;
 			}
 
-			case 'Smelting': {
+			case "Smelting": {
 				const data = currentTask as SmeltingActivityTaskOptions;
 
-				const bar = Smithing.Bars.find(bar => bar.id === data.barID);
+				const bar = Smithing.Bars.find((bar) => bar.id === data.barID);
 
-				return `${this.minionName} is currently smelting ${data.quantity}x ${
-					bar!.name
-				}. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
-					SkillsEnum.Smithing
-				)}`;
+				return `${this.minionName} is currently smelting ${
+					data.quantity
+				}x ${bar!.name}. ${formattedDuration} Your ${
+					Emoji.Smithing
+				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
 			}
 
-			case 'Smithing': {
+			case "Smithing": {
 				const data = currentTask as SmithingActivityTaskOptions;
 
-				const SmithableItem = Smithing.SmithableItems.find(item => item.id === data.smithedBarID);
+				const SmithableItem = Smithing.SmithableItems.find(
+					(item) => item.id === data.smithedBarID
+				);
 
-				return `${this.minionName} is currently smithing ${data.quantity}x ${
-					SmithableItem!.name
-				}. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
-					SkillsEnum.Smithing
-				)}`;
+				return `${this.minionName} is currently smithing ${
+					data.quantity
+				}x ${SmithableItem!.name}. ${formattedDuration} Your ${
+					Emoji.Smithing
+				} Smithing level is ${this.skillLevel(SkillsEnum.Smithing)}`;
 			}
 
-			case 'Offering': {
+			case "Offering": {
 				const data = currentTask as OfferingActivityTaskOptions;
 
-				const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
+				const bones = Prayer.Bones.find(
+					(bones) => bones.inputId === data.boneID
+				);
 
-				return `${this.minionName} is currently offering ${data.quantity}x ${
-					bones!.name
-				}. ${formattedDuration} Your ${Emoji.Prayer} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
+				return `${this.minionName} is currently offering ${
+					data.quantity
+				}x ${bones!.name}. ${formattedDuration} Your ${
+					Emoji.Prayer
+				} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
 			}
 
-			case 'Burying': {
+			case "Burying": {
 				const data = currentTask as BuryingActivityTaskOptions;
 
-				const bones = Prayer.Bones.find(bones => bones.inputId === data.boneID);
+				const bones = Prayer.Bones.find(
+					(bones) => bones.inputId === data.boneID
+				);
 
-				return `${this.minionName} is currently burying ${data.quantity}x ${
-					bones!.name
-				}. ${formattedDuration} Your ${Emoji.Prayer} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
+				return `${this.minionName} is currently burying ${
+					data.quantity
+				}x ${bones!.name}. ${formattedDuration} Your ${
+					Emoji.Prayer
+				} Prayer level is ${this.skillLevel(SkillsEnum.Prayer)}`;
 			}
 
-			case 'Firemaking': {
+			case "Firemaking": {
 				const data = currentTask as FiremakingActivityTaskOptions;
 
-				const burn = Firemaking.Burnables.find(burn => burn.inputLogs === data.burnableID);
+				const burn = Firemaking.Burnables.find(
+					(burn) => burn.inputLogs === data.burnableID
+				);
 
-				return `${this.minionName} is currently lighting ${data.quantity}x ${
-					burn!.name
-				}. ${formattedDuration} Your ${Emoji.Firemaking} Firemaking level is ${this.skillLevel(
+				return `${this.minionName} is currently lighting ${
+					data.quantity
+				}x ${burn!.name}. ${formattedDuration} Your ${
+					Emoji.Firemaking
+				} Firemaking level is ${this.skillLevel(
 					SkillsEnum.Firemaking
 				)}`;
 			}
 
-			case 'Questing': {
+			case "Questing": {
 				return `${
 					this.minionName
 				} is currently Questing. ${formattedDuration} Your current Quest Point count is: ${this.settings.get(
@@ -314,371 +386,430 @@ export default class extends Extendable {
 				)}.`;
 			}
 
-			case 'Woodcutting': {
+			case "Woodcutting": {
 				const data = currentTask as WoodcuttingActivityTaskOptions;
 
-				const log = Woodcutting.Logs.find(log => log.id === data.logID);
+				const log = Woodcutting.Logs.find(
+					(log) => log.id === data.logID
+				);
 
-				return `${this.minionName} is currently chopping ${data.quantity}x ${
-					log!.name
-				}. ${formattedDuration} Your ${Emoji.Woodcutting} Woodcutting level is ${this.skillLevel(
+				return `${this.minionName} is currently chopping ${
+					data.quantity
+				}x ${log!.name}. ${formattedDuration} Your ${
+					Emoji.Woodcutting
+				} Woodcutting level is ${this.skillLevel(
 					SkillsEnum.Woodcutting
 				)}`;
 			}
-			case 'Runecraft': {
+			case "Runecraft": {
 				const data = currentTask as RunecraftActivityTaskOptions;
 
-				const rune = Runecraft.Runes.find(_rune => _rune.id === data.runeID);
+				const rune = Runecraft.Runes.find(
+					(_rune) => _rune.id === data.runeID
+				);
 
-				const quantity = data.obisEssenceQuantity ?? data.essenceQuantity;
-				return `${this.minionName} is currently turning ${quantity}x Essence into ${
+				const quantity =
+					data.obisEssenceQuantity ?? data.essenceQuantity;
+				return `${
+					this.minionName
+				} is currently turning ${quantity}x Essence into ${
 					rune!.name
-				}. ${formattedDuration} Your ${Emoji.Runecraft} Runecraft level is ${this.skillLevel(
-					SkillsEnum.Runecraft
-				)}`;
+				}. ${formattedDuration} Your ${
+					Emoji.Runecraft
+				} Runecraft level is ${this.skillLevel(SkillsEnum.Runecraft)}`;
 			}
 
-			case 'FightCaves': {
-				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
+			case "FightCaves": {
+				const data = currentTask as FightCavesActivityTaskOptions;
+				const durationRemaining =
+					data.finishDate -
+					data.duration +
+					data.fakeDuration -
+					Date.now();
+				return `${this.minionName} is currently attempting the ${
+					Emoji.AnimatedFireCape
+				} **Fight caves** ${
+					Emoji.TzRekJad
+				}. If they're successful and don't die, the trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
 			}
-			case 'TitheFarm': {
+			case "TitheFarm": {
 				return `${this.minionName} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
 			}
 
-			case 'Fletching': {
+			case "Fletching": {
 				const data = currentTask as FletchingActivityTaskOptions;
 
-				return `${this.minionName} is currently fletching ${data.quantity}x ${
-					data.fletchableName
-				}. ${formattedDuration} Your ${Emoji.Fletching} Fletching level is ${this.skillLevel(
-					SkillsEnum.Fletching
-				)}`;
+				return `${this.minionName} is currently fletching ${
+					data.quantity
+				}x ${data.fletchableName}. ${formattedDuration} Your ${
+					Emoji.Fletching
+				} Fletching level is ${this.skillLevel(SkillsEnum.Fletching)}`;
 			}
-			case 'Herblore': {
+			case "Herblore": {
 				const data = currentTask as HerbloreActivityTaskOptions;
-				const mixable = Herblore.Mixables.find(item => item.id === data.mixableID);
+				const mixable = Herblore.Mixables.find(
+					(item) => item.id === data.mixableID
+				);
 
-				return `${this.minionName} is currently mixing ${data.quantity}x ${
-					mixable!.name
-				}. ${formattedDuration} Your ${Emoji.Herblore} Herblore level is ${this.skillLevel(
-					SkillsEnum.Herblore
-				)}`;
+				return `${this.minionName} is currently mixing ${
+					data.quantity
+				}x ${mixable!.name}. ${formattedDuration} Your ${
+					Emoji.Herblore
+				} Herblore level is ${this.skillLevel(SkillsEnum.Herblore)}`;
 			}
-			case 'Wintertodt': {
+			case "Wintertodt": {
 				return `${this.minionName} is currently fighting the Wintertodt. ${formattedDuration}`;
 			}
-			case 'Tempoross': {
+			case "Tempoross": {
 				return `${this.minionName} is currently fighting Tempoross. ${formattedDuration}`;
 			}
 
-			case 'Alching': {
+			case "Alching": {
 				const data = currentTask as AlchingActivityTaskOptions;
 
-				return `${this.minionName} is currently alching ${data.quantity}x ${itemNameFromID(
-					data.itemID
-				)}. ${formattedDuration}`;
+				return `${this.minionName} is currently alching ${
+					data.quantity
+				}x ${itemNameFromID(data.itemID)}. ${formattedDuration}`;
 			}
 
-			case 'Farming': {
+			case "Farming": {
 				const data = currentTask as FarmingActivityTaskOptions;
 
-				const plants = Farming.Plants.find(plants => plants.name === data.plantsName);
+				const plants = Farming.Plants.find(
+					(plants) => plants.name === data.plantsName
+				);
 
-				return `${this.minionName} is currently farming ${data.quantity}x ${
-					plants!.name
-				}. ${formattedDuration} Your ${Emoji.Farming} Farming level is ${this.skillLevel(SkillsEnum.Farming)}.`;
+				return `${this.minionName} is currently farming ${
+					data.quantity
+				}x ${plants!.name}. ${formattedDuration} Your ${
+					Emoji.Farming
+				} Farming level is ${this.skillLevel(SkillsEnum.Farming)}.`;
 			}
 
-			case 'Sawmill': {
+			case "Sawmill": {
 				const data = currentTask as SawmillActivityTaskOptions;
-				const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
-				return `${this.minionName} is currently creating ${data.plankQuantity}x ${itemNameFromID(
-					plank!.outputItem
-				)}s. ${formattedDuration}`;
+				const plank = Planks.find(
+					(_plank) => _plank.outputItem === data.plankID
+				);
+				return `${this.minionName} is currently creating ${
+					data.plankQuantity
+				}x ${itemNameFromID(plank!.outputItem)}s. ${formattedDuration}`;
 			}
 
-			case 'Nightmare': {
+			case "Nightmare": {
 				const data = currentTask as NightmareActivityTaskOptions;
-
-				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
+				return `${this.minionName} is currently killing The Nightmare${
+					data.method === "solo" ? "solo" : "in a team"
+				}. ${formattedDuration}`;
 			}
 
-			case 'AnimatedArmour': {
+			case "AnimatedArmour": {
 				return `${this.minionName} is currently fighting animated armour in the Warriors' Guild. ${formattedDuration}`;
 			}
 
-			case 'Cyclops': {
+			case "Cyclops": {
 				return `${this.minionName} is currently fighting cyclopes in the Warriors' Guild. ${formattedDuration}`;
 			}
 
-			case 'Sepulchre': {
+			case "Sepulchre": {
 				const data = currentTask as SepulchreActivityTaskOptions;
 
 				return `${this.minionName} is currently doing ${data.quantity}x laps of the Hallowed Sepulchre. ${formattedDuration}`;
 			}
 
-			case 'Plunder': {
+			case "Plunder": {
 				const data = currentTask as PlunderActivityTaskOptions;
 
 				return `${this.minionName} is currently doing Pyramid Plunder x ${data.quantity}x times. ${formattedDuration}`;
 			}
 
-			case 'FishingTrawler': {
-				const data = currentTask as FishingTrawlerActivityTaskOptions;
+			case "FishingTrawler": {
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently aboard the Fishing Trawler, doing ${data.quantity}x trips. ${formattedDuration}`;
 			}
 
-			case 'Zalcano': {
+			case "Zalcano": {
 				const data = currentTask as ZalcanoActivityTaskOptions;
 				return `${this.minionName} is currently killing Zalcano ${data.quantity}x times. ${formattedDuration}`;
 			}
 
-			case 'Pickpocket': {
+			case "Pickpocket": {
 				const data = currentTask as PickpocketActivityTaskOptions;
-				const npc = Pickpocketables.find(_npc => _npc.id === data.monsterID)!;
+				const npc = Pickpocketables.find(
+					(_npc) => _npc.id === data.monsterID
+				)!;
 				return `${this.minionName} is currently pickpocketing a ${npc.name} ${data.quantity}x times. ${formattedDuration}`;
 			}
 
-			case 'BarbarianAssault': {
-				const data = currentTask as BarbarianAssaultActivityTaskOptions;
-
-				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault, with a party of ${data.users.length}. ${formattedDuration}`;
+			case "BarbarianAssault": {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault. ${formattedDuration}`;
 			}
 
-			case 'AgilityArena': {
+			case "AgilityArena": {
 				return `${this.minionName} is currently doing the Brimhaven Agility Arena. ${formattedDuration}`;
 			}
 
-			case 'ChampionsChallenge': {
+			case "ChampionsChallenge": {
 				return `${this.minionName} is currently doing the **Champion's Challenge**. ${formattedDuration}`;
 			}
 
-			case 'Hunter': {
+			case "Hunter": {
 				const data = currentTask as HunterActivityTaskOptions;
 
-				const creature = Hunter.Creatures.find(creature =>
+				const creature = Hunter.Creatures.find((creature) =>
 					creature.aliases.some(
-						alias =>
+						(alias) =>
 							stringMatches(alias, data.creatureName) ||
-							stringMatches(alias.split(' ')[0], data.creatureName)
+							stringMatches(
+								alias.split(" ")[0],
+								data.creatureName
+							)
 					)
 				);
-				return `${this.minionName} is currently hunting ${data.quantity}x ${
-					creature!.name
-				}. ${formattedDuration}`;
+				return `${this.minionName} is currently hunting ${
+					data.quantity
+				}x ${creature!.name}. ${formattedDuration}`;
 			}
 
-			case 'Birdhouse': {
+			case "Birdhouse": {
 				return `${this.minionName} is currently doing a bird house run. ${formattedDuration}`;
 			}
 
-			case 'AerialFishing': {
+			case "AerialFishing": {
 				return `${this.minionName} is currently aerial fishing. ${formattedDuration}`;
 			}
 
-			case 'DriftNet': {
+			case "DriftNet": {
 				return `${this.minionName} is currently drift net fishing. ${formattedDuration}`;
 			}
 
-			case 'Construction': {
+			case "Construction": {
 				const data = currentTask as ConstructionActivityTaskOptions;
-				return `${this.minionName} is currently building ${data.quantity}x ${itemNameFromID(
-					data.objectID
-				)}. ${formattedDuration}`;
+				return `${this.minionName} is currently building ${
+					data.quantity
+				}x ${itemNameFromID(data.objectID)}. ${formattedDuration}`;
 			}
 
-			case 'MahoganyHomes': {
+			case "MahoganyHomes": {
 				return `${this.minionName} is currently doing Mahogany Homes. ${formattedDuration}`;
 			}
-			case 'Nex': {
+			case "Nex": {
 				const data = currentTask as BossActivityTaskOptions;
 
 				return `${this.minionName} is currently killing ${data.quantity} Nex, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
-			case 'Naxxus': {
+			case "Naxxus": {
 				const data = currentTask as NaxxusActivityTaskOptions;
 
 				return `${this.minionName} is currently killing ${data.quantity} Naxxus. ${formattedDuration}`;
 			}
-			case 'KingGoldemar': {
+			case "KingGoldemar": {
 				const data = currentTask as BossActivityTaskOptions;
 
 				return `${this.minionName} is currently killing ${data.quantity} King Goldemar, with a party of ${data.users.length}. ${formattedDuration}`;
 			}
 
-			case 'Enchanting': {
+			case "Enchanting": {
 				const data = currentTask as EnchantingActivityTaskOptions;
-				const enchantable = Enchantables.find(i => i.id === data.itemID);
-				return `${this.minionName} is currently enchanting ${data.quantity}x ${
-					enchantable!.name
-				}. ${formattedDuration}`;
+				const enchantable = Enchantables.find(
+					(i) => i.id === data.itemID
+				);
+				return `${this.minionName} is currently enchanting ${
+					data.quantity
+				}x ${enchantable!.name}. ${formattedDuration}`;
 			}
 
-			case 'Casting': {
+			case "Casting": {
 				const data = currentTask as CastingActivityTaskOptions;
-				const spell = Castables.find(i => i.id === data.spellID);
-				return `${this.minionName} is currently casting ${data.quantity}x ${spell!.name}. ${formattedDuration}`;
+				const spell = Castables.find((i) => i.id === data.spellID);
+				return `${this.minionName} is currently casting ${
+					data.quantity
+				}x ${spell!.name}. ${formattedDuration}`;
 			}
 
-			case 'GloryCharging': {
-				const data = currentTask as GloryChargingActivityTaskOptions;
+			case "GloryCharging": {
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 			}
 
-			case 'WealthCharging': {
-				const data = currentTask as WealthChargingActivityTaskOptions;
+			case "WealthCharging": {
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
 			}
 
-			case 'GnomeRestaurant': {
+			case "GnomeRestaurant": {
 				return `${this.minionName} is currently doing Gnome Restaurant deliveries. ${formattedDuration}`;
 			}
 
-			case 'SoulWars': {
-				const data = currentTask as SoulWarsOptions;
+			case "SoulWars": {
+				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
 			}
 
-			case 'RoguesDenMaze': {
+			case "RoguesDenMaze": {
 				return `${this.minionName} is currently attempting the Rogues' Den maze. ${formattedDuration}`;
 			}
 
-			case 'KalphiteKing': {
+			case "KalphiteKing": {
 				return `${this.minionName} is currently killing the Kalphite King. ${formattedDuration}`;
 			}
 
-			case 'Gauntlet': {
+			case "Gauntlet": {
 				const data = currentTask as GauntletOptions;
-				return `${this.minionName} is currently doing ${data.quantity}x ${
-					data.corrupted ? 'Corrupted' : 'Normal'
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				}x ${
+					data.corrupted ? "Corrupted" : "Normal"
 				} Gauntlet. ${formattedDuration}`;
 			}
 
-			case 'Dungeoneering': {
+			case "Dungeoneering": {
 				const data = currentTask as DungeoneeringOptions;
-				return `${this.minionName} is currently doing Dungeoneering with a team of ${
+				return `${
+					this.minionName
+				} is currently doing Dungeoneering with a team of ${
 					data.users.length
-				} minions, on the ${formatOrdinal(data.floor)} floor. ${formattedDuration}`;
+				} minions, on the ${formatOrdinal(
+					data.floor
+				)} floor. ${formattedDuration}`;
 			}
 
-			case 'CastleWars': {
+			case "CastleWars": {
 				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity}x Castle Wars games. ${formattedDuration}`;
 			}
 
-			case 'MageArena': {
+			case "MageArena": {
 				return `${this.minionName} is currently doing the Mage Arena. ${formattedDuration}`;
 			}
 
-			case 'Raids': {
+			case "Raids": {
 				const data = currentTask as RaidsOptions;
-				return `${this.minionName} is currently doing the Chamber's of Xeric${
-					data.challengeMode ? ' in Challenge Mode' : ''
+				return `${
+					this.minionName
+				} is currently doing the Chamber's of Xeric${
+					data.challengeMode ? " in Challenge Mode" : ""
 				}, ${
-					data.users.length === 1 ? 'as a solo.' : `with a team of ${data.users.length} minions.`
+					data.users.length === 1
+						? "as a solo."
+						: `with a team of ${data.users.length} minions.`
 				} ${formattedDuration}`;
 			}
 
-			case 'Collecting': {
+			case "Collecting": {
 				const data = currentTask as CollectingOptions;
-				const collectable = collectables.find(c => c.item.id === data.collectableID)!;
-				return `${this.minionName} is currently collecting ${data.quantity * collectable.quantity}x ${
-					collectable.item.name
-				}. ${formattedDuration}`;
+				const collectable = collectables.find(
+					(c) => c.item.id === data.collectableID
+				)!;
+				return `${this.minionName} is currently collecting ${
+					data.quantity * collectable.quantity
+				}x ${collectable.item.name}. ${formattedDuration}`;
 			}
 
-			case 'MageTrainingArena': {
+			case "MageTrainingArena": {
 				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
 
-			case 'BlastFurnace': {
-				const data = currentTask as BlastFurnaceActivityTaskOptions;
-
-				const bar = Smithing.BlastableBars.find(bar => bar.id === data.barID);
-
-				return `${this.minionName} is currently smelting ${data.quantity}x ${
-					bar!.name
-				} at the Blast Furnace. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
-					SkillsEnum.Smithing
-				)}`;
-			}
-
-			case 'OuraniaDeliveryService': {
+			case "OuraniaDeliveryService": {
 				return `${this.minionName} is currently delivering in the Ourania Deliver Service. ${formattedDuration}`;
 			}
 
-			case 'VasaMagus': {
+			case "VasaMagus": {
 				return `${this.minionName} is currently killing Vasa Magus. ${formattedDuration}`;
 			}
 
-			case 'Ignecarus': {
+			case "Ignecarus": {
 				return `${this.minionName} is currently killing Ignecarus. ${formattedDuration}`;
 			}
 
-			case 'MageArena2': {
+			case "MageArena2": {
 				return `${this.minionName} is currently attempting the Mage Arena II. ${formattedDuration}`;
 			}
 
-			case 'BigChompyBirdHunting': {
+			case "BigChompyBirdHunting": {
 				return `${this.minionName} is currently hunting Chompy Birds! ${formattedDuration}`;
 			}
 
-			case 'DarkAltar': {
+			case "DarkAltar": {
 				const data = currentTask as DarkAltarOptions;
-				return `${this.minionName} is currently runecrafting ${toTitleCase(
+				return `${
+					this.minionName
+				} is currently runecrafting ${toTitleCase(
 					data.rune
 				)} runes at the Dark Altar. ${formattedDuration}`;
 			}
-			case 'Trekking': {
+			case "Trekking": {
 				return `${this.minionName} is currently Temple Trekking. ${formattedDuration}`;
 			}
-			case 'KibbleMaking': {
+			case "KibbleMaking": {
 				return `${this.minionName} is currently making Kibble. ${formattedDuration}`;
 			}
-			case 'Revenants': {
+			case "Revenants": {
 				const data = currentTask as RevenantOptions;
-				return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${this.minionName} is currently killing ${
-					data.quantity
-				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
+				const durationRemaining =
+					data.finishDate -
+					data.duration +
+					data.fakeDuration -
+					Date.now();
+				return `${data.skulled ? `${Emoji.OSRSSkull} ` : ""} ${
+					this.minionName
+				} is currently killing ${data.quantity}x ${
+					Monsters.get(data.monsterID)!.name
+				} in the wilderness. If they don't die, the trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
 			}
-			case 'PestControl': {
+			case "PestControl": {
 				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
 			}
-			case 'VolcanicMine': {
-				const data = currentTask as VolcanicMineActivityTaskOptions;
+			case "VolcanicMine": {
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
-			case 'MonkeyRumble': {
+			case "MonkeyRumble": {
 				const data = currentTask as MonkeyRumbleOptions;
-				return `${data.monkeys.some(m => m.special) ? Emoji.Purple : ''} ${
-					this.minionName
-				} is currently doing ${data.quantity} fights in Monkey Rumble. ${formattedDuration}`;
+				return `${
+					data.monkeys.some((m) => m.special) ? Emoji.Purple : ""
+				} ${this.minionName} is currently doing ${
+					data.quantity
+				} fights in Monkey Rumble. ${formattedDuration}`;
 			}
-			case 'TrickOrTreat': {
+			case "TrickOrTreat": {
 				return `${this.minionName} is currently trick or treating! ${formattedDuration}`;
 			}
-			case 'BossEvent': {
+			case "BossEvent": {
 				const data = currentTask as NewBossOptions;
-				const bossDoing = bossEvents.find(b => b.id === data.bossID)!;
+				const bossDoing = bossEvents.find((b) => b.id === data.bossID)!;
 				return `${this.minionName} is currently doing a ${bossDoing.name} Boss Event! ${formattedDuration}`;
 			}
-			case 'KourendFavour': {
+			case "KourendFavour": {
 				const data = currentTask as KourendFavourActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.favour.name} Favour tasks. ${formattedDuration}`;
 			}
-			case 'Inferno': {
+			case "Inferno": {
 				const data = currentTask as InfernoOptions;
-				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+				const durationRemaining =
+					data.finishDate -
+					data.duration +
+					data.fakeDuration -
+					Date.now();
 				return `${
 					this.minionName
 				} is currently attempting the Inferno, if they're successful and don't die, the trip should take ${formatDuration(
 					durationRemaining
 				)}.`;
 			}
-			case 'TheatreOfBlood': {
+			case "TheatreOfBlood": {
 				const data = currentTask as TheatreOfBloodTaskOptions;
-				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+				const durationRemaining =
+					data.finishDate -
+					data.duration +
+					data.fakeDuration -
+					Date.now();
 
 				return `${
 					this.minionName
@@ -686,53 +817,128 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
-			case 'FishingContest': {
+			case "FishingContest": {
 				const data = currentTask as FishingContestOptions;
 
-				return `${this.minionName} is currently fishing for the fishing contest at ${
-					fishingLocations.find(i => i.id === data.location)!.name
+				return `${
+					this.minionName
+				} is currently fishing for the fishing contest at ${
+					fishingLocations.find((i) => i.id === data.location)!.name
 				}. ${formattedDuration}`;
 			}
-			case 'TearsOfGuthix': {
+			case "TearsOfGuthix": {
 				return `${this.minionName} is currently doing Tears Of Guthix. ${formattedDuration}`;
+			}
+			case "LastManStanding": {
+				const data = currentTask as MinigameActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				} Last Man Standing matches, the trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case "BirthdayEvent": {
+				return `${
+					this.minionName
+				} is currently doing the Birthday Event! The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case "TokkulShop": {
+				return `${
+					this.minionName
+				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case "BaxtorianBathhouses": {
+				return `${
+					this.minionName
+				} is currently heating baths at the Baxtorian Bathhouses. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case "TroubleBrewing": {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				}x games of Trouble Brewing. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case "Easter":
+			case "BlastFurnace": {
+				throw new Error("Removed");
+			}
+			case "Disassembling": {
+				const data = currentTask as DisassembleTaskOptions;
+				return `${this.minionName} is currently disassembling ${
+					data.qty
+				}x ${itemNameFromID(
+					data.i
+				)}. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case "Research": {
+				const data = currentTask as ResearchTaskOptions;
+				return `${this.minionName} is currently researching with '${
+					data.material
+				}' materials. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case "Easter":
+			case "BlastFurnace": {
+				throw new Error("Removed");
 			}
 		}
 	}
 
 	getKC(this: KlasaUser, id: number) {
-		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
-	}
-
-	getOpenableScore(this: KlasaUser, id: number) {
-		return this.settings.get(UserSettings.OpenableScores)[id] ?? 0;
+		return getKC(this, id);
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
 		const mon = effectiveMonsters.find(
-			mon => stringMatches(mon.name, kcName) || mon.aliases.some(alias => stringMatches(alias, kcName))
+			(mon) =>
+				stringMatches(mon.name, kcName) ||
+				mon.aliases.some((alias) => stringMatches(alias, kcName))
 		);
 		if (mon) {
 			return [mon.name, this.getKC((mon as unknown as Monster).id)];
 		}
 
 		const minigame = Minigames.find(
-			game => stringMatches(game.name, kcName) || game.aliases.some(alias => stringMatches(alias, kcName))
+			(game) =>
+				stringMatches(game.name, kcName) ||
+				game.aliases.some((alias) => stringMatches(alias, kcName))
 		);
 		if (minigame) {
-			return [minigame.name, await this.getMinigameScore(minigame.column)];
+			return [
+				minigame.name,
+				await this.getMinigameScore(minigame.column),
+			];
 		}
 
-		const creature = Creatures.find(c => c.aliases.some(alias => stringMatches(alias, kcName)));
+		const creature = Creatures.find((c) =>
+			c.aliases.some((alias) => stringMatches(alias, kcName))
+		);
 		if (creature) {
 			return [creature.name, this.getCreatureScore(creature)];
 		}
 
 		const special = [
-			[['superior', 'superiors', 'superior slayer monster'], UserSettings.Slayer.SuperiorCount],
-			[['tithefarm', 'tithe'], UserSettings.Stats.TitheFarmsCompleted]
-		].find(s => s[0].includes(kcName));
+			[
+				["superior", "superiors", "superior slayer monster"],
+				UserSettings.Slayer.SuperiorCount,
+			],
+			[["tithefarm", "tithe"], UserSettings.Stats.TitheFarmsCompleted],
+		].find((s) => s[0].includes(kcName));
 		if (special) {
-			return [special[0][0], await this.settings.get(special![1] as string)];
+			return [
+				special[0][0],
+				await this.settings.get(special![1] as string),
+			];
 		}
 
 		return [null, 0];
@@ -749,79 +955,12 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public maxTripLength(this: User, activity?: activity_type_enum) {
-		let max = Time.Minute * 30;
-
-		max += patronMaxTripCalc(this);
-
-		const hasMasterHPCape = this.hasItemEquippedAnywhere('Hitpoints master cape');
-		let masterHPCapeBoost = 0;
-		let regularHPBoost = false;
-
-		switch (activity) {
-			case 'Fishing':
-				if (this.hasItemEquippedAnywhere('Fish sack')) {
-					max += Time.Minute * 9;
-				}
-				break;
-			case 'Nightmare':
-			case 'GroupMonsterKilling':
-			case 'MonsterKilling':
-			case 'Wintertodt':
-			case 'Zalcano':
-			case 'BarbarianAssault':
-			case 'AnimatedArmour':
-			case 'Sepulchre':
-			case 'Pickpocket':
-			case 'SoulWars':
-			case 'Cyclops': {
-				masterHPCapeBoost = 20;
-				regularHPBoost = true;
-				break;
-			}
-			case 'KalphiteKing':
-			case 'Nex':
-			case 'VasaMagus':
-			case 'Naxxus':
-			case 'Ignecarus':
-			case 'KingGoldemar':
-			case 'Dungeoneering': {
-				masterHPCapeBoost = 10;
-				regularHPBoost = true;
-				break;
-			}
-			case 'Alching': {
-				max *= 2;
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-
-		if (regularHPBoost) {
-			const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
-			const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
-			max += calcPercentOfNum(hpPercent, Time.Minute * 5);
-
-			if (hasMasterHPCape) {
-				max += calcPercentOfNum(masterHPCapeBoost, max);
-			}
-		}
-
-		if (this.usingPet('Zak')) {
-			max *= 1.4;
-		}
-
-		const sac = this.settings.get(UserSettings.SacrificedValue);
-		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
-		max += calcPercentOfNum(sacPercent, this.perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
-		return max;
+		return calcMaxTripLength(this, activity);
 	}
 
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.id);
-		return Boolean(usersTask);
+		return minionIsBusy(this.id);
 	}
 
 	public hasGracefulEquipped(this: User) {
@@ -834,23 +973,22 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionName(this: User): string {
-		const name = this.settings.get(UserSettings.Minion.Name);
-		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
-
-		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
-
-		return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
+		return minionName(this);
 	}
 
 	public async addXP(this: User, params: AddXpParams): Promise<string> {
 		await this.settings.sync(true);
-		const currentXP = this.settings.get(`skills.${params.skillName}`) as number;
+		const currentXP = this.settings.get(
+			`skills.${params.skillName}`
+		) as number;
 		const currentLevel = this.skillLevel(params.skillName);
 		const multiplier = params.multiplier !== false;
 
 		const name = toTitleCase(params.skillName);
 
-		const skill = Object.values(Skills).find(skill => skill.id === params.skillName)!;
+		const skill = Object.values(Skills).find(
+			(skill) => skill.id === params.skillName
+		)!;
 		const currentTotalLevel = this.totalLevel();
 
 		if (multiplier) {
@@ -859,55 +997,72 @@ export default class extends Extendable {
 
 		const rawGear = this.rawGear();
 		const allCapes = objectValues(rawGear)
-			.map(val => val.cape)
+			.map((val) => val.cape)
 			.filter(notEmpty)
-			.map(i => i.item);
+			.map((i) => i.item);
 
 		// Build list of all Master capes including combined capes.
-		const allMasterCapes = MasterSkillcapes.map(msc => getSimilarItems(msc.item.id)).flat(Infinity) as number[];
+		const allMasterCapes = Skillcapes.map((i) => i.masterCape)
+			.map((msc) => getSimilarItems(msc.id))
+			.flat(Infinity) as number[];
 
 		// Get cape object from MasterSkillCapes that matches active skill.
-		const matchingCape = multiplier ? MasterSkillcapes.find(cape => params.skillName === cape.skill) : undefined;
+		const matchingCape = multiplier
+			? Skillcapes.find((cape) => params.skillName === cape.skill)
+					?.masterCape
+			: undefined;
 
 		// If the matching cape [or similar] is equipped, isMatchingCape = matched itemId.
 		const isMatchingCape =
 			multiplier && matchingCape
-				? allCapes.find(cape => getSimilarItems(matchingCape.item.id).includes(cape))
+				? allCapes.find((cape) =>
+						getSimilarItems(matchingCape.id).includes(cape)
+				  )
 				: false;
 
 		// Get the masterCape itemId for use in text output, and check for non-matching cape.
 		const masterCape = isMatchingCape
 			? isMatchingCape
 			: multiplier
-			? allMasterCapes.find(cape => allCapes.includes(cape))
+			? allMasterCapes.find((cape) => allCapes.includes(cape))
 			: undefined;
 
-		// When SOTW is active, don't give extra boosts to it
-		const isSkillThatShouldntGetExtraBoost = sotwIsActive() && sotwConfig.skill === params.skillName;
-
-		if (masterCape && !isSkillThatShouldntGetExtraBoost) {
-			params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);
+		if (masterCape) {
+			params.amount = increaseNumByPercent(
+				params.amount,
+				isMatchingCape ? 8 : 3
+			);
 		}
 		// Check if each gorajan set is equipped:
-		const wildyOutfit = this.getGear('wildy');
+		const wildyOutfit = this.getGear("wildy");
 		const gorajanMeleeEquipped =
-			this.getGear('melee').hasEquipped(gorajanWarriorOutfit, true) ||
+			this.getGear("melee").hasEquipped(gorajanWarriorOutfit, true) ||
 			wildyOutfit.hasEquipped(gorajanWarriorOutfit, true);
 		const gorajanRangeEquipped =
-			this.getGear('range').hasEquipped(gorajanArcherOutfit, true) ||
+			this.getGear("range").hasEquipped(gorajanArcherOutfit, true) ||
 			wildyOutfit.hasEquipped(gorajanArcherOutfit, true);
 		const gorajanMageEquipped =
-			this.getGear('mage').hasEquipped(gorajanOccultOutfit, true) ||
+			this.getGear("mage").hasEquipped(gorajanOccultOutfit, true) ||
 			wildyOutfit.hasEquipped(gorajanOccultOutfit, true);
 
 		// Determine if boost should apply based on skill + equipped sets:
 		let gorajanBoost = false;
 		const gorajanMeleeBoost =
 			multiplier &&
-			[SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence].includes(params.skillName) &&
+			[
+				SkillsEnum.Attack,
+				SkillsEnum.Strength,
+				SkillsEnum.Defence,
+			].includes(params.skillName) &&
 			gorajanMeleeEquipped;
-		const gorajanRangeBoost = multiplier && params.skillName === SkillsEnum.Ranged && gorajanRangeEquipped;
-		const gorajanMageBoost = multiplier && params.skillName === SkillsEnum.Magic && gorajanMageEquipped;
+		const gorajanRangeBoost =
+			multiplier &&
+			params.skillName === SkillsEnum.Ranged &&
+			gorajanRangeEquipped;
+		const gorajanMageBoost =
+			multiplier &&
+			params.skillName === SkillsEnum.Magic &&
+			gorajanMageEquipped;
 		// 2x HP if all 3 gorajan sets are equipped:
 		const gorajanHpBoost =
 			multiplier &&
@@ -916,29 +1071,49 @@ export default class extends Extendable {
 			gorajanRangeEquipped &&
 			gorajanMageEquipped;
 
-		if (gorajanMeleeBoost || gorajanRangeBoost || gorajanMageBoost || gorajanHpBoost) {
+		if (
+			gorajanMeleeBoost ||
+			gorajanRangeBoost ||
+			gorajanMageBoost ||
+			gorajanHpBoost
+		) {
 			params.amount *= 2;
 			gorajanBoost = true;
 		}
 
 		let firstAgeEquipped = 0;
 		for (const item of resolveItems([
-			'First age tiara',
-			'First age amulet',
-			'First age cape',
-			'First age bracelet',
-			'First age ring'
+			"First age tiara",
+			"First age amulet",
+			"First age cape",
+			"First age bracelet",
+			"First age ring",
 		])) {
 			if (this.hasItemEquippedAnywhere(item)) {
 				firstAgeEquipped += 1;
 			}
 		}
 
-		if (firstAgeEquipped > 0 && !isSkillThatShouldntGetExtraBoost) {
+		if (firstAgeEquipped > 0) {
 			if (firstAgeEquipped === 5) {
 				params.amount = increaseNumByPercent(params.amount, 6);
 			} else {
-				params.amount = increaseNumByPercent(params.amount, firstAgeEquipped);
+				params.amount = increaseNumByPercent(
+					params.amount,
+					firstAgeEquipped
+				);
+			}
+		}
+
+		const boosts = staticXPBoosts.get(params.skillName);
+		if (boosts && !params.artificial) {
+			for (const booster of boosts) {
+				if (this.hasItemEquippedAnywhere(booster.item.id)) {
+					params.amount = increaseNumByPercent(
+						params.amount,
+						booster.boostPercent
+					);
+				}
 			}
 		}
 
@@ -957,8 +1132,8 @@ export default class extends Extendable {
 					user_id: BigInt(this.id),
 					skill: params.skillName,
 					xp: Math.floor(totalXPAdded),
-					artificial: params.artificial ? true : null
-				}
+					artificial: params.artificial ? true : null,
+				},
 			});
 		}
 
@@ -970,8 +1145,8 @@ export default class extends Extendable {
 					skill: params.skillName,
 					xp: Math.floor(params.amount - totalXPAdded),
 					artificial: params.artificial ? true : null,
-					post_max: true
-				}
+					post_max: true,
+				},
 			});
 		}
 
@@ -980,8 +1155,8 @@ export default class extends Extendable {
 			// If they reached a XP milestone, send a server notification.
 			// 500m and 5b are handled below
 			for (const XPMilestone of [
-				50_000_000, 100_000_000, 150_000_000, 200_000_000, 1_000_000_000, 2_000_000_000, 3_000_000_000,
-				4_000_000_000
+				50_000_000, 100_000_000, 150_000_000, 200_000_000,
+				1_000_000_000, 2_000_000_000, 3_000_000_000, 4_000_000_000,
 			]) {
 				if (newXP < XPMilestone) break;
 
@@ -990,7 +1165,9 @@ export default class extends Extendable {
 						Events.ServerNotification,
 						`${skill.emoji} **${this.username}'s** minion, ${
 							this.minionName
-						}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(params.skillName)}!`
+						}, just achieved ${newXP.toLocaleString()} XP in ${toTitleCase(
+							params.skillName
+						)}!`
 					);
 					break;
 				}
@@ -998,36 +1175,52 @@ export default class extends Extendable {
 
 			// Announcements with nthUser
 			for (const { type, value } of [
-				{ type: 'lvl', value: 120 },
-				{ type: 'xp', value: 500_000_000 },
-				{ type: 'xp', value: 5_000_000_000 }
+				{ type: "lvl", value: 120 },
+				{ type: "xp", value: 500_000_000 },
+				{ type: "xp", value: 5_000_000_000 },
 			]) {
 				// Ignore check
-				if (type === 'lvl') {
-					if (newLevel < value || currentLevel >= value || newLevel < value) continue;
-				} else if (newXP < value || currentXP >= value || newXP < value) continue;
+				if (type === "lvl") {
+					if (
+						newLevel < value ||
+						currentLevel >= value ||
+						newLevel < value
+					)
+						continue;
+				} else if (newXP < value || currentXP >= value || newXP < value)
+					continue;
 
 				const skillNameCased = toTitleCase(params.skillName);
 
-				let resultStr = '';
+				let resultStr = "";
 				let queryValue = 0;
 
 				// Prepare the message to be sent
-				if (type === 'lvl') {
+				if (type === "lvl") {
 					queryValue = convertLVLtoXP(value);
-					resultStr += `${skill.emoji} **${this.username}'s** minion, ${
+					resultStr += `${skill.emoji} **${
+						this.username
+					}'s** minion, ${
 						this.minionName
 					}, just achieved level ${value} in ${skillNameCased}! They are the {nthUser} to get level ${value} in ${skillNameCased}.${
-						!this.isIronman ? '' : ` They are the {nthIron} to get level ${value} in ${skillNameCased}`
+						!this.isIronman
+							? ""
+							: ` They are the {nthIron} to get level ${value} in ${skillNameCased}`
 					}`;
 				} else {
 					queryValue = value;
-					resultStr += `${skill.emoji} **${this.username}'s** minion, ${
-						this.minionName
-					}, just achieved ${toKMB(value)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
+					resultStr += `${skill.emoji} **${
+						this.username
+					}'s** minion, ${this.minionName}, just achieved ${toKMB(
+						value
+					)} XP in ${skillNameCased}! They are the {nthUser} to get ${toKMB(
 						value
 					)} in ${skillNameCased}.${
-						!this.isIronman ? '' : ` They are the {nthIron} to get ${toKMB(value)} XP in ${skillNameCased}`
+						!this.isIronman
+							? ""
+							: ` They are the {nthIron} to get ${toKMB(
+									value
+							  )} XP in ${skillNameCased}`
 					}`;
 				}
 
@@ -1036,8 +1229,13 @@ export default class extends Extendable {
 					{
 						count: string;
 					}[]
-				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
-				resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count) + 1));
+				>(
+					`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`
+				);
+				resultStr = resultStr.replace(
+					"{nthUser}",
+					formatOrdinal(Number(nthUser.count) + 1)
+				);
 				if (this.isIronman) {
 					const [nthIron] = await this.client.query<
 						{
@@ -1046,44 +1244,65 @@ export default class extends Extendable {
 					>(
 						`SELECT COUNT(*) FROM users WHERE "minion.ironman" = true AND "skills.${params.skillName}" >= ${queryValue};`
 					);
-					resultStr = resultStr.replace('{nthIron}', formatOrdinal(Number(nthIron.count) + 1));
+					resultStr = resultStr.replace(
+						"{nthIron}",
+						formatOrdinal(Number(nthIron.count) + 1)
+					);
 				}
 
 				this.client.emit(Events.ServerNotification, resultStr);
 			}
 
-			await this.settings.update(`skills.${params.skillName}`, Math.floor(newXP));
+			await this.settings.update(
+				`skills.${params.skillName}`,
+				Math.floor(newXP)
+			);
 		}
 
 		if (currentXP >= MAX_XP) {
-			let xpStr = '';
+			let xpStr = "";
 			if (params.duration && !params.minimal) {
-				xpStr += `You received no XP because you have ${toKMB(MAX_XP)} ${name} XP already.`;
-				xpStr += ` Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
-				let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
+				xpStr += `You received no XP because you have ${toKMB(
+					MAX_XP
+				)} ${name} XP already.`;
+				xpStr += ` Tracked ${params.amount.toLocaleString()} ${
+					skill.emoji
+				} XP.`;
+				let rawXPHr =
+					(params.amount / (params.duration / Time.Minute)) * 60;
 				rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 				xpStr += ` (${toKMB(rawXPHr)}/Hr)`;
 			} else {
-				xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()} ${skill.emoji} XP.`;
+				xpStr += `:no_entry_sign: Tracked ${params.amount.toLocaleString()} ${
+					skill.emoji
+				} XP.`;
 			}
 			return xpStr;
 		}
-		let str = '';
+		let str = "";
 		if (preMax !== -1) {
 			str = params.minimal
-				? `+${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]}`
-				: `You received ${Math.ceil(params.amount).toLocaleString()} ${skillEmoji[params.skillName]} XP`;
+				? `+${Math.ceil(params.amount).toLocaleString()} ${
+						skillEmoji[params.skillName]
+				  }`
+				: `You received ${Math.ceil(params.amount).toLocaleString()} ${
+						skillEmoji[params.skillName]
+				  } XP`;
 
 			if (masterCape && !params.minimal) {
 				if (isMatchingCape) {
-					str += ` You received 8% bonus XP for having a ${itemNameFromID(masterCape)}.`;
+					str += ` You received 8% bonus XP for having a ${itemNameFromID(
+						masterCape
+					)}.`;
 				} else {
-					str += ` You received 3% bonus XP for having a ${itemNameFromID(masterCape)}.`;
+					str += ` You received 3% bonus XP for having a ${itemNameFromID(
+						masterCape
+					)}.`;
 				}
 			}
 
 			if (gorajanBoost && !params.minimal) {
-				str += ' (2x boost from Gorajan armor)';
+				str += " (2x boost from Gorajan armor)";
 			}
 
 			if (firstAgeEquipped && !params.minimal) {
@@ -1093,13 +1312,18 @@ export default class extends Extendable {
 			}
 
 			if (params.duration && !params.minimal) {
-				let rawXPHr = (params.amount / (params.duration / Time.Minute)) * 60;
+				let rawXPHr =
+					(params.amount / (params.duration / Time.Minute)) * 60;
 				rawXPHr = Math.floor(rawXPHr / 1000) * 1000;
 				str += ` (${toKMB(rawXPHr)}/Hr)`;
 			}
 
-			if (currentTotalLevel < MAX_TOTAL_LEVEL && this.totalLevel() >= MAX_TOTAL_LEVEL) {
-				str += '\n\n**Congratulations, your minion has reached the maximum total level!**\n\n';
+			if (
+				currentTotalLevel < MAX_TOTAL_LEVEL &&
+				this.totalLevel() >= MAX_TOTAL_LEVEL
+			) {
+				str +=
+					"\n\n**Congratulations, your minion has reached the maximum total level!**\n\n";
 				onMax(this);
 			} else if (currentLevel !== newLevel) {
 				str += params.minimal
@@ -1111,7 +1335,7 @@ export default class extends Extendable {
 	}
 
 	public skillLevel(this: User, skillName: SkillsEnum) {
-		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number, 120);
+		return skillLevel(this, skillName);
 	}
 
 	public totalLevel(this: User, returnXP = false) {
@@ -1126,7 +1350,10 @@ export default class extends Extendable {
 	// @ts-ignore 2784
 	get isBusy(this: User) {
 		const client = this.client as KlasaClient;
-		return client.oneCommandAtATimeCache.has(this.id) || client.secondaryUserBusyCache.has(this.id);
+		return (
+			client.oneCommandAtATimeCache.has(this.id) ||
+			client.secondaryUserBusyCache.has(this.id)
+		);
 	}
 
 	/**
@@ -1156,8 +1383,6 @@ export default class extends Extendable {
 				`${Emoji.QuestIcon} **${this.username}'s** minion, ${this.minionName}, just achieved the maximum amount of Quest Points!`
 			);
 		}
-
-		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
 		return this.settings.update(UserSettings.QP, newQP);
 	}
 
@@ -1166,11 +1391,15 @@ export default class extends Extendable {
 		return this.settings.get(UserSettings.Minion.Ironman);
 	}
 
-	public async incrementMonsterScore(this: User, monsterID: number, amountToAdd = 1) {
+	public async incrementMonsterScore(
+		this: User,
+		monsterID: number,
+		amountToAdd = 1
+	) {
 		await this.settings.sync(true);
-		const currentMonsterScores = this.settings.get(UserSettings.MonsterScores);
-
-		this.log(`had Quantity[${amountToAdd}] KC added to Monster[${monsterID}]`);
+		const currentMonsterScores = this.settings.get(
+			UserSettings.MonsterScores
+		);
 
 		return this.settings.update(
 			UserSettings.MonsterScores,
@@ -1178,27 +1407,29 @@ export default class extends Extendable {
 		);
 	}
 
-	public async incrementOpenableScore(this: User, openableID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const scores = this.settings.get(UserSettings.OpenableScores);
-
-		return this.settings.update(UserSettings.OpenableScores, addItemToBank(scores, openableID, amountToAdd));
-	}
-
-	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
+	public async incrementClueScore(
+		this: User,
+		clueID: number,
+		amountToAdd = 1
+	) {
 		await this.settings.sync(true);
 		const currentClueScores = this.settings.get(UserSettings.ClueScores);
 
-		this.log(`had Quantity[${amountToAdd}] KC added to Clue[${clueID}]`);
-
-		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
+		return this.settings.update(
+			UserSettings.ClueScores,
+			addItemToBank(currentClueScores, clueID, amountToAdd)
+		);
 	}
 
-	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {
+	public async incrementCreatureScore(
+		this: User,
+		creatureID: number,
+		amountToAdd = 1
+	) {
 		await this.settings.sync(true);
-		const currentCreatureScores = this.settings.get(UserSettings.CreatureScores);
-
-		this.log(`had Quantity[${amountToAdd}] Score added to Creature[${creatureID}]`);
+		const currentCreatureScores = this.settings.get(
+			UserSettings.CreatureScores
+		);
 
 		return this.settings.update(
 			UserSettings.CreatureScores,
@@ -1207,9 +1438,13 @@ export default class extends Extendable {
 	}
 
 	public async setAttackStyle(this: User, newStyles: AttackStyles[]) {
-		await this.settings.update(UserSettings.AttackStyle, uniqueArr(newStyles), {
-			arrayAction: 'overwrite'
-		});
+		await this.settings.update(
+			UserSettings.AttackStyle,
+			uniqueArr(newStyles),
+			{
+				arrayAction: "overwrite",
+			}
+		);
 	}
 
 	public getAttackStyles(this: User) {

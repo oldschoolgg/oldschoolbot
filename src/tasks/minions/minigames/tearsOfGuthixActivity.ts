@@ -5,11 +5,11 @@ import { LumbridgeDraynorDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { TearsOfGuthixActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run(data: TearsOfGuthixActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		await incrementMinigameScore(userID, 'tears_of_guthix', 1);
@@ -18,12 +18,14 @@ export default class extends Task {
 		// Find lowest level skill
 		let lowestXp = Object.values(user.rawSkills)[0];
 		let lowestSkill = Object.keys(user.rawSkills)[0] as SkillsEnum;
-		Object.entries(user.rawSkills).forEach(([skill, xp]) => {
-			if (xp < lowestXp) {
-				lowestXp = xp;
-				lowestSkill = skill as SkillsEnum;
-			}
-		});
+		Object.entries(user.rawSkills)
+			.filter(i => i[0] !== SkillsEnum.Invention)
+			.forEach(([skill, xp]) => {
+				if (xp < lowestXp) {
+					lowestXp = xp;
+					lowestSkill = skill as SkillsEnum;
+				}
+			});
 
 		// Calculate number of tears collected
 		// QP = Game length in ticks
@@ -58,6 +60,6 @@ export default class extends Task {
 			hasDiary ? '\n10% XP bonus for Lumbridge & Draynor Hard diary.' : ''
 		}`;
 
-		handleTripFinish(this.client, user, channelID, output, undefined, undefined, data, null);
+		handleTripFinish(user, channelID, output, undefined, undefined, data, null);
 	}
 }

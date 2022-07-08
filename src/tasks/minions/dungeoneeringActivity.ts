@@ -1,51 +1,21 @@
 import { noOp, reduceNumByPercent, Time } from 'e';
-import { KlasaUser, Task } from 'klasa';
+import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { DungeoneeringOptions, maxFloorUserCanDo } from '../../commands/Minion/dung';
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji } from '../../lib/constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../lib/data/CollectionsExport';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { DungeoneeringOptions } from '../../lib/skilling/skills/dung/dungData';
+import {
+	gorajanShardChance,
+	maxFloorUserCanDo,
+	numberOfGorajanOutfitsEquipped
+} from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { randomVariation, roll, toKMB } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
-export function gorajanShardChance(user: KlasaUser) {
-	let goraShardBoosts = [];
-	let baseRate = 2000;
-	if (user.hasItemEquippedAnywhere('Dungeoneering master cape')) {
-		baseRate /= 2;
-		goraShardBoosts.push('2x for Dung. mastery');
-	} else if (user.skillLevel(SkillsEnum.Dungeoneering) >= 99) {
-		baseRate = reduceNumByPercent(baseRate, 30);
-		goraShardBoosts.push('30% for 99+ Dungeoneering');
-	}
-
-	if (user.hasItemEquippedAnywhere('Ring of luck')) {
-		baseRate = reduceNumByPercent(baseRate, 5);
-		goraShardBoosts.push('5% for Ring of Luck');
-	}
-	return {
-		chance: baseRate,
-		boosts: goraShardBoosts
-	};
-}
-
-const data = [
-	[gorajanWarriorOutfit, 'melee'],
-	[gorajanOccultOutfit, 'mage'],
-	[gorajanArcherOutfit, 'range']
-] as const;
-
-export function numberOfGorajanOutfitsEquipped(user: KlasaUser) {
-	let num = 0;
-	for (const outfit of data) {
-		if (user.getGear(outfit[1]).hasEquipped(outfit[0], true)) num++;
-	}
-	return num;
-}
 export default class extends Task {
 	async run(data: DungeoneeringOptions) {
 		const { channelID, duration, userID, floor, quantity, users } = data;
@@ -94,7 +64,7 @@ export default class extends Task {
 			boxScrollChance += Math.floor(differenceFromMax * 11.5);
 			for (let i = 0; i < quantity; i++) {
 				if (u.bank().has('Scroll of mystery') && roll(boxScrollChance)) {
-					await u.addItemsToBank({ items: new Bank().add(getRandomMysteryBox(), 1), collectionLog: true });
+					await u.addItemsToBank({ items: new Bank().add(MysteryBoxes.roll()), collectionLog: true });
 					if (!gotMysteryBox) gotMysteryBox = true;
 				}
 			}
@@ -125,11 +95,10 @@ export default class extends Task {
 		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			users.length > 1 ? undefined : ['dung', ['solo'], true, 'start'],
+			['dg', { start: { floor, solo: users.length === 1 } }, true],
 			undefined,
 			data,
 			null

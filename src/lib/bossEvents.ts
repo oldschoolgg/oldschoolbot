@@ -25,7 +25,7 @@ interface BossEvent {
 	id: number;
 	name: string;
 	bossOptions: Omit<BossOptions, 'leader' | 'channel' | 'massText' | 'settingsKeys'>;
-	handleFinish: (client: KlasaClient, options: NewBossOptions, bossUsers: BossUser[]) => Promise<void>;
+	handleFinish: (options: NewBossOptions, bossUsers: BossUser[]) => Promise<void>;
 }
 
 export const bossEventChannelID = production ? '897170239333220432' : '895410639835639808';
@@ -34,7 +34,7 @@ export const bossEvents: BossEvent[] = [
 	{
 		id: PUMPKINHEAD_ID,
 		name: 'Pumpkinhead',
-		handleFinish: async (client, data, bossUsers) => {
+		handleFinish: async (data, bossUsers) => {
 			const lootElligible = shuffleArr(bossUsers.filter(i => !percentChance(i.deathChance)));
 			let userLoot: Record<string, Bank> = {};
 			for (const i of lootElligible) {
@@ -121,7 +121,7 @@ export const bossEvents: BossEvent[] = [
 				await user.user.addItemsToBank({ items: bank, collectionLog: true });
 			}
 
-			sendToChannelID(client, data.channelID, {
+			sendToChannelID(data.channelID, {
 				content: `<@&896845245873025067> **Your Group Finished Fighting Pumpkinhead the Pumpkinheaded Horror!**
 
 *Everyone* received some Halloween candy!

@@ -2,16 +2,19 @@ import { roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
+import { InventionID } from '../../lib/invention/inventions';
 import { stoneSpirits } from '../../lib/minions/data/stoneSpirits';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
 import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { itemID, multiplyBank, rand } from '../../lib/util';
+import { multiplyBank, rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
 	async run(data: MiningActivityTaskOptions) {
@@ -44,7 +47,7 @@ export default class extends Task {
 			}
 		}
 		const currentLevel = user.skillLevel(SkillsEnum.Mining);
-		const xpRes = await user.addXP({
+		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Mining,
 			amount: xpReceived,
 			duration
@@ -59,7 +62,7 @@ export default class extends Task {
 		if (roll(10)) {
 			if (duration > Time.Minute * 10) {
 				loot.bank = multiplyBank(loot.values(), 2);
-				loot.add(getRandomMysteryBox(), 1);
+				loot.add(MysteryBoxes.roll());
 			}
 		}
 
@@ -136,9 +139,9 @@ export default class extends Task {
 			loot.add(ore.id, quantity);
 		}
 
-		const hasKlik = user.equippedPet() === itemID('Klik');
+		const hasKlik = user.usingPet('Klik');
 		if (hasKlik) {
-			const smeltedOre = Smithing.Bars.find(o => o.inputOres[ore.id] && Object.keys(o.inputOres).length === 1);
+			const smeltedOre = Smithing.Bars.find(o => o.inputOres.bank[ore.id] && o.inputOres.length === 1);
 			if (smeltedOre) {
 				loot.remove(ore.id, loot.amount(ore.id));
 				loot.add(smeltedOre.id, quantity);
@@ -157,6 +160,27 @@ export default class extends Task {
 			}
 		}
 
+		const hasAdze = userHasItemsEquippedAnywhere(user, ['Superior inferno adze']);
+		const adzeIsDisabled = (
+			await mahojiUsersSettingsFetch(user.id, { disabled_inventions: true })
+		).disabled_inventions.includes(InventionID.SuperiorInfernoAdze);
+		if (hasAdze && !adzeIsDisabled) {
+			const smeltedOre = Smithing.Bars.find(
+				o => o.inputOres.bank[ore.id] && o.inputOres.items().filter(i => i[0].name !== 'Coal').length === 1
+			);
+			if (smeltedOre) {
+				loot.remove(ore.id, loot.amount(ore.id));
+				loot.add(smeltedOre.id, quantity);
+
+				str += ` ${await user.addXP({
+					skillName: SkillsEnum.Smithing,
+					amount: smeltedOre.xp * quantity,
+					duration
+				})}`;
+				str += ' Your Superior inferno adze smelted all the ore you mined (No materials used).';
+			}
+		}
+
 		str += `\n\nYou received: ${loot}.`;
 		if (bonusXP > 0) {
 			str += `\n\n**Bonus XP:** ${bonusXP.toLocaleString()}`;
@@ -168,15 +192,6 @@ export default class extends Task {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['mine', [quantity, ore.name], true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, ['mine', { name: ore.name, quantity }, true], undefined, data, loot);
 	}
 }

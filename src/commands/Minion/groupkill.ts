@@ -20,10 +20,8 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '<monster:string> [quantity:int{2,50}]',
 			usageDelim: ' ',
-			cooldown: 5,
-			oneAtTime: true,
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES'],
+			requiredPermissionsForBot: ['ADD_REACTIONS', 'ATTACH_FILES'],
 			aliases: ['mass'],
 			description: 'Allows you to mass/groupkill bosses with other people.',
 			examples: ['+mass corp', '+mass bandos'],
@@ -131,7 +129,6 @@ export default class extends BotCommand {
 			for (const user of users) {
 				const [healAmountNeeded] = calculateMonsterFood(monster, user);
 				await removeFoodFromUser({
-					client: this.client,
 					user,
 					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
 					healPerAction: Math.ceil(healAmountNeeded / quantity),

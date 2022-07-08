@@ -1,11 +1,29 @@
 import { Time } from 'e';
 import { Clues } from 'oldschooljs';
+import { BeginnerCasket, BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
+import { EasyCasket, EasyClueTable } from 'oldschooljs/dist/simulation/clues/Easy';
+import { EliteCasket, EliteClueTable } from 'oldschooljs/dist/simulation/clues/Elite';
+import { HardCasket, HardClueTable } from 'oldschooljs/dist/simulation/clues/Hard';
+import { MasterCasket, MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
+import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { GrandmasterClueTable } from '../../simulation/grandmasterClue';
 import itemID from '../../util/itemID';
-import { ClueTier } from '../types';
+import { ClueMilestoneReward } from '../types';
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
+
+export interface ClueTier {
+	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master' | 'Grandmaster';
+	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
+	id: number;
+	scrollID: number;
+	timeToFinish: number;
+	milestoneReward?: ClueMilestoneReward;
+	mimicChance: number | false;
+	allItems: number[];
+	aliases: string[];
+}
 
 const ClueTiers: ClueTier[] = [
 	{
@@ -15,7 +33,8 @@ const ClueTiers: ClueTier[] = [
 		id: 23_245,
 		scrollID: 23_182,
 		timeToFinish: Time.Minute * 4.5,
-		mimicChance: false
+		mimicChance: false,
+		allItems: BeginnerClueTable.allItems
 	},
 	{
 		name: 'Easy',
@@ -28,7 +47,8 @@ const ClueTiers: ClueTier[] = [
 			itemReward: itemID('Large spade'),
 			scoreNeeded: 500
 		},
-		mimicChance: false
+		mimicChance: false,
+		allItems: EasyClueTable.allItems
 	},
 	{
 		name: 'Medium',
@@ -41,7 +61,8 @@ const ClueTiers: ClueTier[] = [
 			itemReward: itemID('Clueless scroll'),
 			scoreNeeded: 400
 		},
-		mimicChance: false
+		mimicChance: false,
+		allItems: MediumClueTable.allItems
 	},
 	{
 		name: 'Hard',
@@ -50,7 +71,8 @@ const ClueTiers: ClueTier[] = [
 		id: 20_544,
 		scrollID: 2722,
 		timeToFinish: Time.Minute * 12.5,
-		mimicChance: false
+		mimicChance: false,
+		allItems: HardClueTable.allItems
 	},
 	{
 		name: 'Elite',
@@ -63,7 +85,8 @@ const ClueTiers: ClueTier[] = [
 			itemReward: itemID('Heavy casket'),
 			scoreNeeded: 200
 		},
-		mimicChance: 35
+		mimicChance: 35,
+		allItems: EliteClueTable.allItems
 	},
 	{
 		name: 'Master',
@@ -76,7 +99,8 @@ const ClueTiers: ClueTier[] = [
 			itemReward: itemID('Scroll sack'),
 			scoreNeeded: 100
 		},
-		mimicChance: 15
+		mimicChance: 15,
+		allItems: MasterClueTable.allItems
 	},
 	{
 		name: 'Grandmaster',
@@ -85,7 +109,8 @@ const ClueTiers: ClueTier[] = [
 		id: 19_838,
 		scrollID: 19_837,
 		timeToFinish: Time.Minute * 29.3,
-		mimicChance: false
+		mimicChance: false,
+		allItems: GrandmasterClueTable.allItems
 	}
 ];
 

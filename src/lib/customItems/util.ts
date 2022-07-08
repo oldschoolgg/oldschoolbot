@@ -2,12 +2,10 @@ import deepMerge from 'deepmerge';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
+import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
 import getOSItem from '../util/getOSItem';
 
-function cleanString(str: string): string {
-	return str.replace(/\s/g, '').toUpperCase();
-}
 export const customPrices: Record<number, number> = [];
 
 export const customItems: number[] = [];
@@ -19,6 +17,7 @@ export function isCustomItem(itemID: number) {
 interface CustomItemData {
 	isSuperUntradeable?: boolean;
 	cantDropFromMysteryBoxes?: boolean;
+	cantBeSacrificed?: true;
 }
 declare module 'oldschooljs/dist/meta/types' {
 	interface Item {
@@ -46,4 +45,14 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	// Add the item to the custom items array
 	customItems.push(id);
 	hasSet.push(data);
+}
+
+export const UN_EQUIPPABLE = {
+	equipable: undefined,
+	equipment: undefined,
+	equipable_by_player: undefined
+};
+
+export function setDataOfNonCustomItem(item: Item, data: Partial<Item>) {
+	Items.set(item.id, deepMerge(item, data));
 }

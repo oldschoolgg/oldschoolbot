@@ -44,6 +44,20 @@ const killableMonsters: KillableMonster[] = [
 		attackStylesUsed: [GearStat.AttackSlash]
 	},
 	{
+		id: Monsters.Goat.id,
+		name: Monsters.Goat.name,
+		aliases: Monsters.Goat.aliases,
+		timeToFinish: Time.Second * 28.2,
+		table: Monsters.Goat,
+		wildy: false,
+		difficultyRating: 1,
+		qpRequired: 0,
+		respawnTime: Time.Second * 30,
+		healAmountNeeded: 10,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
 		id: Monsters.TzHaarXil.id,
 		name: Monsters.TzHaarXil.name,
 		aliases: Monsters.TzHaarXil.aliases,
@@ -70,6 +84,23 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.GiantFrog.id,
+		name: Monsters.GiantFrog.name,
+		aliases: Monsters.GiantFrog.aliases,
+		timeToFinish: Time.Second * 35,
+		table: Monsters.GiantFrog,
+		healAmountNeeded: 30,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.JubblyBird.id,
+		name: Monsters.JubblyBird.name,
+		aliases: Monsters.JubblyBird.aliases,
+		timeToFinish: Time.Second * 20,
+		table: Monsters.JubblyBird
 	}
 ];
 

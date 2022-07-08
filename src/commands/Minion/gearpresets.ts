@@ -1,17 +1,11 @@
 import { MessageAttachment, MessageEmbed } from 'discord.js';
-import { objectValues } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
-import { Bank } from 'oldschooljs';
 
 import { Color } from '../../lib/constants';
-import { defaultGear, gearPresetToString, globalPresets, resolveGearTypeSetting } from '../../lib/gear';
-import { generateGearImage } from '../../lib/gear/functions/generateGearImage';
-import { unEquipAllCommand } from '../../lib/minions/functions/unequipAllCommand';
+import { gearPresetToString } from '../../lib/gear';
 import { prisma } from '../../lib/settings/prisma';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { cleanString, isValidGearSetup } from '../../lib/util';
-import { GearPreset } from '.prisma/client';
 
 function maxPresets(user: KlasaUser) {
 	return user.perkTier * 2 + 3;
@@ -21,7 +15,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			cooldown: 1,
 			description: 'Allows you to manage your gear presets.',
 			aliases: ['gps'],
 			usageDelim: ' ',
@@ -53,92 +46,8 @@ export default class extends BotCommand {
 		return msg.channel.send({ embeds: [embed] });
 	}
 
-	async equip(msg: KlasaMessage, [name, setup]: [string, string]) {
-		if (msg.author.minionIsBusy) {
-			return msg.channel.send(
-				`${msg.author.minionName} is currently out on a trip, so you can't change their gear!`
-			);
-		}
-
-		if (!name) return msg.channel.send("You didn't supply a name.");
-		if (!setup) return msg.channel.send("You didn't supply a setup.");
-
-		if (!isValidGearSetup(setup)) {
-			return msg.channel.send("That's not a valid gear setup.");
-		}
-
-		const userPreset = await prisma.gearPreset.findFirst({ where: { user_id: msg.author.id, name } });
-		const globalPreset = globalPresets.find(i => i.name === name);
-		if (!userPreset && !globalPreset) {
-			return msg.channel.send("You don't have a gear preset with that name.");
-		}
-		const preset = (userPreset ?? globalPreset) as GearPreset;
-
-		const toRemove = new Bank();
-		function gearItem(val: null | number) {
-			if (val === null) return null;
-			toRemove.add(val);
-			return {
-				item: val,
-				quantity: 1
-			};
-		}
-
-		const newGear = { ...defaultGear };
-		newGear.head = gearItem(preset.head);
-		newGear.neck = gearItem(preset.neck);
-		newGear.body = gearItem(preset.body);
-		newGear.legs = gearItem(preset.legs);
-		newGear.cape = gearItem(preset.cape);
-		newGear['2h'] = gearItem(preset.two_handed);
-		newGear.hands = gearItem(preset.hands);
-		newGear.feet = gearItem(preset.feet);
-		newGear.shield = gearItem(preset.shield);
-		newGear.weapon = gearItem(preset.weapon);
-		newGear.ring = gearItem(preset.ring);
-
-		if (preset.ammo) {
-			newGear.ammo = { item: preset.ammo, quantity: preset.ammo_qty! };
-			toRemove.add(preset.ammo, preset.ammo_qty!);
-		}
-
-		const userBankWithEquippedItems = msg.author.bank().clone();
-		for (const e of objectValues(msg.author.getGear(setup).raw())) {
-			if (e) userBankWithEquippedItems.add(e.item, e.quantity);
-		}
-
-		if (!userBankWithEquippedItems.has(toRemove.bank)) {
-			return msg.channel.send(
-				`You don't have the items in this preset. You're missing: ${toRemove.remove(msg.author.bank())}.`
-			);
-		}
-
-		const unequipAllMessage = await unEquipAllCommand(msg, setup);
-		if (
-			!(unequipAllMessage instanceof KlasaMessage) ||
-			(!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you unequipped all items') &&
-				!(unequipAllMessage as KlasaMessage).content.toLowerCase().includes('you have no items in your'))
-		) {
-			return msg.channel.send(
-				`It was not possible to equip your **${preset.name}** preset on your ${setup} gear setup.`
-			);
-		}
-
-		await msg.author.removeItemsFromBank(toRemove.bank);
-
-		await msg.author.settings.update(resolveGearTypeSetting(setup), newGear);
-		const image = await generateGearImage(
-			this.client,
-			msg.author,
-			msg.author.getGear(setup),
-			setup,
-			msg.author.settings.get(UserSettings.Minion.EquippedPet)
-		);
-
-		return msg.channel.send({
-			content: `You equipped the ${preset.name} preset in your ${setup} setup.`,
-			files: [new MessageAttachment(image)]
-		});
+	async equip(msg: KlasaMessage) {
+		return msg.channel.send('Gear presets are now equipped using `/gear equip preset:name`');
 	}
 
 	async delete(msg: KlasaMessage, [name]: [string]) {

@@ -3,9 +3,13 @@ import { Bank } from 'oldschooljs';
 import { resolveBank } from 'oldschooljs/dist/util';
 
 import { dyedItems } from '../../dyedItems';
+import { nexBrokenArmorDetails } from '../../nex';
 import { bones } from '../../skilling/skills/prayer';
 import { assert, resolveNameBank } from '../../util';
+import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
+import resolveItems from '../../util/resolveItems';
+import { brokenPernixOutfit, brokenTorvaOutfit, brokenVirtusOutfit } from '../CollectionsExport';
 import { Createable } from '../createables';
 
 const dyeCreatables: Createable[] = [];
@@ -18,6 +22,143 @@ for (const { baseItem, dyedVersions } of dyedItems) {
 		});
 	}
 }
+
+const nexCreatables: Createable[] = [
+	{
+		name: 'Virtus wand',
+		inputItems: {
+			[itemID('Kodai wand')]: 1,
+			[itemID('Virtus crystal')]: 1
+		},
+		outputItems: {
+			[itemID('Virtus wand')]: 1
+		},
+		requiredSkills: { smithing: 80, crafting: 80 }
+	},
+	{
+		name: 'Virtus book',
+		inputItems: {
+			[itemID("Mage's book")]: 1,
+			[itemID('Virtus crystal')]: 1
+		},
+		outputItems: {
+			[itemID('Virtus book')]: 1
+		},
+		requiredSkills: { smithing: 80, crafting: 80 }
+	},
+	...brokenPernixOutfit.map(piece => ({
+		name: `Revert ${getOSItem(piece).name}`,
+		inputItems: new Bank().add(piece),
+		outputItems: {
+			[itemID('Armadylean components')]: 1
+		}
+	})),
+	...brokenTorvaOutfit.map(piece => ({
+		name: `Revert ${getOSItem(piece).name}`,
+		inputItems: new Bank().add(piece),
+		outputItems: {
+			[itemID('Bandosian components')]: 1
+		}
+	})),
+	...brokenVirtusOutfit.map(piece => ({
+		name: `Revert ${getOSItem(piece).name}`,
+		inputItems: new Bank().add(piece),
+		outputItems: {
+			[itemID('Ancestral components')]: 1
+		}
+	}))
+];
+
+for (const [component, brokenOutfit, repairedOutfit] of nexBrokenArmorDetails) {
+	for (let i = 0; i < brokenOutfit.length; i++) {
+		nexCreatables.push({
+			name: getOSItem(repairedOutfit[i]).name,
+			inputItems: {
+				[component.id]: 1,
+				[brokenOutfit[i]]: 1
+			},
+			outputItems: {
+				[repairedOutfit[i]]: 1
+			},
+			requiredSkills: { smithing: 80, crafting: 80 }
+		});
+	}
+}
+
+const componentRevertables: Createable[] = [
+	{
+		name: 'Revert bandos chestplate',
+		inputItems: {
+			[itemID('Bandos chestplate')]: 1
+		},
+		outputItems: {
+			[itemID('Bandosian components')]: 3
+		}
+	},
+	{
+		name: 'Revert bandos tassets',
+		inputItems: {
+			[itemID('Bandos tassets')]: 1
+		},
+		outputItems: {
+			[itemID('Bandosian components')]: 2
+		}
+	},
+	{
+		name: 'Revert armadyl helmet',
+		inputItems: {
+			[itemID('Armadyl helmet')]: 1
+		},
+		outputItems: {
+			[itemID('Armadylean components')]: 1
+		}
+	},
+	{
+		name: 'Revert armadyl chestplate',
+		inputItems: {
+			[itemID('Armadyl chestplate')]: 1
+		},
+		outputItems: {
+			[itemID('Armadylean components')]: 2
+		}
+	},
+	{
+		name: 'Revert armadyl chainskirt',
+		inputItems: {
+			[itemID('Armadyl chainskirt')]: 1
+		},
+		outputItems: {
+			[itemID('Armadylean components')]: 2
+		}
+	},
+	{
+		name: 'Revert ancestral hat',
+		inputItems: {
+			[itemID('Ancestral hat')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral components')]: 2
+		}
+	},
+	{
+		name: 'Revert ancestral robe top',
+		inputItems: {
+			[itemID('Ancestral robe top')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral components')]: 3
+		}
+	},
+	{
+		name: 'Revert ancestral robe bottom',
+		inputItems: {
+			[itemID('Ancestral robe bottom')]: 1
+		},
+		outputItems: {
+			[itemID('Ancestral components')]: 3
+		}
+	}
+];
 
 const chaoticCreatables: Createable[] = [
 	{
@@ -542,23 +683,18 @@ const bsoItems: Createable[] = [
 		}
 	},
 	{
-		name: 'Frozen key',
-		inputItems: resolveNameBank({
-			'Key piece 1': 1,
-			'Key piece 2': 1,
-			'Key piece 3': 1,
-			'Key piece 4': 1
-		}),
-		outputItems: {
-			[itemID('Frozen key')]: 1
-		}
-	},
-	{
 		name: 'Vasa cloak',
-		inputItems: resolveNameBank({
-			'Tattered robes of Vasa': 1,
-			'Abyssal cape': 1
-		}),
+		inputItems: user => {
+			const cost = new Bank({ 'Tattered robes of Vasa': 1, 'Abyssal cape': 1 });
+			const capes = resolveItems(['Imbued saradomin cape', 'Imbued zamorak cape', 'Imbued guthix cape']);
+			const capeToUse =
+				user
+					.bank()
+					.items()
+					.filter(i => capes.includes(i?.[0]?.id))?.[0]?.[0]?.id ?? itemID('Imbued saradomin cape');
+			cost.add(capeToUse);
+			return cost;
+		},
 		outputItems: {
 			[itemID('Vasa cloak')]: 1
 		},
@@ -1019,5 +1155,7 @@ export const BsoCreateables: Createable[] = [
 	...dyeCreatables,
 	...ganodermic,
 	...grifolic,
-	...dragonBoneCreatables
+	...dragonBoneCreatables,
+	...nexCreatables,
+	...componentRevertables
 ];

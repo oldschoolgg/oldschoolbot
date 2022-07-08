@@ -1,6 +1,5 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import { FarmingPatchTypes } from '../../minions/farming/types';
 import { BlowpipeData } from '../../minions/types';
 import { SkillsEnum } from '../../skilling/types';
 import { baseUserKourendFavour } from './../../minions/data/kourendFavour';
@@ -29,7 +28,6 @@ Client.defaultUserSchema
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('creatureScores', 'any', { default: {} })
-	.add('clueScores', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
@@ -42,7 +40,6 @@ Client.defaultUserSchema
 	.add('carpenter_points', 'integer', { default: 0 })
 	.add('zeal_tokens', 'integer', { default: 0 })
 	.add('openable_scores', 'any', { default: {} })
-	.add('spawned_rmb', 'boolean', { default: false })
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('dungeoneering_tokens', 'integer', { default: 0 })
 	.add('total_cox_points', 'integer', { default: 0 })
@@ -149,6 +146,10 @@ Client.defaultUserSchema
 				default: 0,
 				maximum: Number.MAX_SAFE_INTEGER
 			})
+			.add(SkillsEnum.Invention, 'integer', {
+				default: 0,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder
@@ -161,28 +162,6 @@ Client.defaultUserSchema
 			.add('fashion', 'any', { default: null })
 			.add('other', 'any', { default: null })
 	)
-	.add('farmingPatches', (folder: SchemaFolder) =>
-		folder
-			.add(FarmingPatchTypes.Herb, 'any', { default: null })
-			.add(FarmingPatchTypes.FruitTree, 'any', { default: null })
-			.add(FarmingPatchTypes.Tree, 'any', { default: null })
-			.add(FarmingPatchTypes.Allotment, 'any', { default: null })
-			.add(FarmingPatchTypes.Hops, 'any', { default: null })
-			.add(FarmingPatchTypes.Cactus, 'any', { default: null })
-			.add(FarmingPatchTypes.Bush, 'any', { default: null })
-			.add(FarmingPatchTypes.Spirit, 'any', { default: null })
-			.add(FarmingPatchTypes.Hardwood, 'any', { default: null })
-			.add(FarmingPatchTypes.Seaweed, 'any', { default: null })
-			.add(FarmingPatchTypes.Vine, 'any', { default: null })
-			.add(FarmingPatchTypes.Calquat, 'any', { default: null })
-			.add(FarmingPatchTypes.Redwood, 'any', { default: null })
-			.add(FarmingPatchTypes.Crystal, 'any', { default: null })
-			.add(FarmingPatchTypes.Celastrus, 'any', { default: null })
-			.add(FarmingPatchTypes.Hespori, 'any', { default: null })
-			.add(FarmingPatchTypes.Flower, 'any', { default: null })
-			.add(FarmingPatchTypes.Mushroom, 'any', { default: null })
-			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
-	)
 	.add('nursery', 'any', { default: null })
 	.add('selected_tame', 'any', { default: null })
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
@@ -191,6 +170,10 @@ Client.defaultUserSchema
 	.add('monkeys_fought', 'string', { array: true, default: [] })
 	.add('tob_cost', 'any', { default: {} })
 	.add('tob_loot', 'any', { default: {} })
+	.add('lms_points', 'integer', { default: 0 })
 
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
-	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER });
+	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+
+	.add('bank_sort_method', 'string', { default: null })
+	.add('bank_sort_weightings', 'any', { default: {} });

@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { HexColorString } from 'discord.js';
-import { O } from 'ts-toolbelt';
 
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
-import { PatchTypes } from '../../minions/farming';
-import { CompostTier, FarmingContract, FarmingPatchTypes } from '../../minions/farming/types';
 import { BlowpipeData } from '../../minions/types';
+import { CompostName } from '../../skilling/skills/farming';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
+import { BankSortMethod } from '../../sorts';
 import { Nursery } from '../../tames';
 import { ItemBank } from '../../types';
 import { UserKourendFavour } from './../../minions/data/kourendFavour';
@@ -24,24 +23,22 @@ export function T<TCustom>(k: string): CustomGet<string, TCustom> {
 export namespace UserSettings {
 	export const GP = T<number>('GP');
 	export const QP = T<number>('QP');
-	export const Bank = T<O.Readonly<ItemBank>>('bank');
+	export const Bank = T<Readonly<ItemBank>>('bank');
 	export const BankBackground = T<number>('bankBackground');
-	export const Pets = T<O.Readonly<ItemBank>>('pets');
-	export const CollectionLogBank = T<O.Readonly<ItemBank>>('collectionLogBank');
-	export const MonsterScores = T<O.Readonly<ItemBank>>('monsterScores');
-	export const CreatureScores = T<O.Readonly<ItemBank>>('creatureScores');
-	export const ClueScores = T<O.Readonly<ItemBank>>('clueScores');
-	export const LapsScores = T<O.Readonly<ItemBank>>('lapsScores');
+	export const Pets = T<Readonly<ItemBank>>('pets');
+	export const CollectionLogBank = T<Readonly<ItemBank>>('collectionLogBank');
+	export const MonsterScores = T<Readonly<ItemBank>>('monsterScores');
+	export const CreatureScores = T<Readonly<ItemBank>>('creatureScores');
+	export const LapsScores = T<Readonly<ItemBank>>('lapsScores');
 	export const LastDailyTimestamp = T<number>('lastDailyTimestamp');
 	export const LastSpawnLamp = T<number>('lastSpawnLamp');
-	export const LastGivenBox = T<number>('lastGivenBoxx');
 	export const LastTearsOfGuthixTimestamp = T<number>('lastTearsOfGuthixTimestamp');
 	export const BitField = T<readonly BitField[]>('bitfield');
 	export const FavoriteItems = T<readonly number[]>('favoriteItems');
 	export const Badges = T<readonly number[]>('badges');
 	export const RSN = T<string>('RSN');
 	export const SacrificedValue = T<number>('sacrificedValue');
-	export const SacrificedBank = T<O.Readonly<ItemBank>>('sacrificedBank');
+	export const SacrificedBank = T<Readonly<ItemBank>>('sacrificedBank');
 	export const HonourLevel = T<number>('honour_level');
 	export const HonourPoints = T<number>('honour_points');
 	export const HighGambles = T<number>('high_gambles');
@@ -49,15 +46,14 @@ export namespace UserSettings {
 	export const GithubID = T<number | null>('github_id');
 	export const CarpenterPoints = T<number>('carpenter_points');
 	export const ZealTokens = T<number>('zeal_tokens');
-	export const OpenableScores = T<O.Readonly<ItemBank>>('openable_scores');
-	export const HasSpawnedRMB = T<boolean>('spawned_rmb');
+	export const OpenableScores = T<Readonly<ItemBank>>('openable_scores');
 	export const AttackStyle = T<readonly SkillsEnum[]>('attack_style');
 	export const DungeoneeringTokens = T<number>('dungeoneering_tokens');
 	export const TotalCoxPoints = T<number>('total_cox_points');
 	export const TotalItemContracts = T<number>('total_item_contracts');
 	export const LastItemContractDate = T<number>('last_item_contract_date');
 	export const CurrentItemContract = T<number | null>('current_item_contract');
-	export const ItemContractBank = T<O.Readonly<ItemBank>>('item_contract_bank');
+	export const ItemContractBank = T<Readonly<ItemBank>>('item_contract_bank');
 	export const ItemContractStreak = T<number>('item_contract_streak');
 	export const OuraniaTokens = T<number>('ourania_tokens');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
@@ -71,13 +67,13 @@ export namespace UserSettings {
 	export const KourendFavour = T<UserKourendFavour>('kourend_favour');
 	export const IronmanAlts = T<readonly string[]>('ironman_alts');
 	export const MainAccount = T<string | null>('main_account');
-	export const TempCL = T<O.Readonly<ItemBank>>('temp_cl');
+	export const TempCL = T<Readonly<ItemBank>>('temp_cl');
 
 	export const InfernoAttempts = T<number>('inferno_attempts');
 	export const EmergedInfernoAttempts = T<number>('emerged_inferno_attempts');
 	export const InfernoCapeSacrifices = T<number>('inferno_cape_sacrifices');
 
-	export const Blowpipe = T<O.Readonly<BlowpipeData>>('blowpipe');
+	export const Blowpipe = T<Readonly<BlowpipeData>>('blowpipe');
 
 	export const PremiumBalanceTier = T<number | null>('premium_balance_tier');
 	export const PremiumBalanceExpiryDate = T<number | null>('premium_balance_expiry_date');
@@ -86,8 +82,8 @@ export namespace UserSettings {
 	export const SangCharges = T<number>('sang_charges');
 	export const VoidStaffCharges = T<number>('void_staff_charges');
 
-	export const TOBCost = T<O.Readonly<ItemBank>>('tob_cost');
-	export const TOBLoot = T<O.Readonly<ItemBank>>('tob_loot');
+	export const TOBCost = T<Readonly<ItemBank>>('tob_cost');
+	export const TOBLoot = T<Readonly<ItemBank>>('tob_loot');
 
 	export namespace Slayer {
 		export const SlayerPoints = T<number>('slayer.points');
@@ -130,8 +126,7 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
-		export const FarmingContract = T<FarmingContract | null>('minion.farmingContract');
-		export const DefaultCompostToUse = T<CompostTier>('minion.defaultCompostToUse');
+		export const DefaultCompostToUse = T<CompostName | null>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
 		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');
 	}
@@ -174,32 +169,14 @@ export namespace UserSettings {
 		export const Other = T<GearSetup | null>('gear.other');
 	}
 
-	export namespace FarmingPatches {
-		export const Herb = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Herb}`);
-		export const FruitTree = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.FruitTree}`);
-		export const Tree = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Tree}`);
-		export const Allotment = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Allotment}`);
-		export const Hops = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Hops}`);
-		export const Cactus = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Cactus}`);
-		export const Bush = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Bush}`);
-		export const Spirit = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Spirit}`);
-		export const Hardwood = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Hardwood}`);
-		export const Seaweed = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Seaweed}`);
-		export const Vine = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Vine}`);
-		export const Calquat = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Calquat}`);
-		export const Redwood = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Redwood}`);
-		export const Crystal = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Crystal}`);
-		export const Celastrus = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Celastrus}`);
-		export const Hespori = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Hespori}`);
-		export const Flower = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Flower}`);
-		export const Mushroom = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Mushroom}`);
-		export const Belladonna = T<PatchTypes.PatchData>(`farmingPatches.${FarmingPatchTypes.Belladonna}`);
-	}
-
 	export const Nursery = T<Nursery | null>('nursery');
-	export const SelectedTame = T<number | null>('selected_tame');
 
+	export const LMSPoints = T<number>('lms_points');
 	export const GPLuckyPick = T<number>('gp_luckypick');
 	export const GPDice = T<number>('gp_dice');
 	export const GPSlots = T<number>('gp_slots');
+
+	export const BankSortWeightings = T<Readonly<ItemBank>>('bank_sort_weightings');
+	export const BankSortMethod = T<BankSortMethod | null>('bank_sort_method');
+	export const EggsDelivered = T<number>('eggs_delivered');
 }

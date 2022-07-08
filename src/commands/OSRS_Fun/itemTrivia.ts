@@ -12,15 +12,13 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['it', 'itemtrivia'],
 			description: 'Sends a picture of a random item that you have to guess the name of.',
-			cooldown: 1,
-			oneAtTime: true,
 			examples: ['+it'],
 			categoryFlags: ['fun']
 		});
 	}
 
 	async run(msg: KlasaMessage) {
-		const randomItem = Items.filter(i => (i as Item).tradeable_on_ge).random() as Item;
+		const randomItem = Items.filter(i => Boolean((i as Item).tradeable_on_ge)).random() as Item;
 
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)

@@ -1,10 +1,10 @@
 import { noOp, randArrItem, roll, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { addBanks, itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs/dist/util';
 
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
@@ -24,7 +24,7 @@ export default class extends Task {
 			let loot = monster.table.kill(1, {});
 			if (roll(10) && monster.id !== 696_969) {
 				loot.multiply(4);
-				loot.add(getRandomMysteryBox());
+				loot.add(MysteryBoxes.roll());
 			}
 			const userWhoGetsLoot = randArrItem(users);
 			const currentLoot = teamsLoot[userWhoGetsLoot];
@@ -50,7 +50,7 @@ export default class extends Task {
 			totalLoot.add(loot);
 			const kcToAdd = kcAmounts[user.id];
 			if (user.equippedPet() === itemID('Ori') && duration > Time.Minute * 5) {
-				loot.bank = addBanks([monster.table.kill(Math.ceil(kcToAdd * 0.25), {}).bank ?? {}, loot.bank]);
+				loot.add(monster.table.kill(Math.ceil(kcToAdd * 0.25), {}));
 			}
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 			totalLoot.add(loot);
@@ -78,6 +78,6 @@ export default class extends Task {
 			resultStr += `${usersWithoutLoot.map(id => `<@${id}>`).join(', ')} - Got no loot, sad!`;
 		}
 
-		handleTripFinish(this.client, leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot);
+		handleTripFinish(leaderUser, channelID, resultStr, undefined, undefined, data, totalLoot);
 	}
 }

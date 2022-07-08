@@ -1,40 +1,63 @@
 import { randInt, Time } from 'e';
-import { Task } from 'klasa';
+import { KlasaUser, Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { production } from '../../config';
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events } from '../../lib/constants';
-import { getRandomMysteryBox } from '../../lib/data/openables';
+import { handleNaxxusTeaser } from '../../lib/handleNaxxusTeaser';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Plant, SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { bankHasItem, rand, roll } from '../../lib/util';
+import { assert, increaseBankQuantitesByPercent, itemID, rand, roll, updateBankSetting } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
+import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
+import { logError } from '../../lib/util/logError';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
+import { sendToChannelID } from '../../lib/util/webhook';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+
+const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
+assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
+
+async function arcaneHarvesterEffect(user: KlasaUser, plant: Plant, loot: Bank): Promise<string | undefined> {
+	if (plantsNotUsedForArcaneHarvester.includes(plant)) return;
+	if (hasItemsEquippedOrInBank(user, ['Arcane harvester'])) {
+		const boostRes = await inventionItemBoost({
+			userID: BigInt(user.id),
+			inventionID: InventionID.ArcaneHarvester,
+			duration: plant.level * Time.Second * 30
+		});
+		if (boostRes.success) {
+			increaseBankQuantitesByPercent(loot, inventionBoosts.arcaneHarvester.harvestBoostPercent);
+			return `\n${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`;
+		}
+	}
+}
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {
 		const {
 			plantsName,
 			patchType,
-			getPatchType,
 			quantity,
 			upgradeType,
 			payment,
 			userID,
 			channelID,
 			planting,
-			duration,
 			currentDate,
-			autoFarmed
+			autoFarmed,
+			duration
 		} = data;
 		const user = await this.client.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		const currentFarmingLevel = Math.min(99, user.skillLevel(SkillsEnum.Farming));
 		const currentWoodcuttingLevel = Math.min(99, user.skillLevel(SkillsEnum.Woodcutting));
 		let baseBonus = 1;
@@ -63,21 +86,12 @@ export default class extends Task {
 		const hasPlopper = user.allItemsOwned().has('Plopper');
 
 		const plant = Farming.Plants.find(plant => plant.name === plantsName);
-		const userBank = user.settings.get(UserSettings.Bank);
 
-		if (
-			bankHasItem(userBank, itemID('Magic secateurs')) ||
-			user.hasItemEquippedAnywhere(itemID('Magic secateurs'))
-		) {
+		if (hasItemsEquippedOrInBank(user, ['Magic secateurs'])) {
 			baseBonus += 0.1;
 		}
 
-		if (
-			bankHasItem(userBank, itemID('Farming cape')) ||
-			bankHasItem(userBank, itemID('Farming cape(t)')) ||
-			user.hasItemEquippedAnywhere(itemID('Farming cape')) ||
-			user.hasItemEquippedAnywhere(itemID('Farming cape(t)'))
-		) {
+		if (hasItemsEquippedOrInBank(user, ['Farming cape'])) {
 			baseBonus += 0.05;
 		}
 
@@ -121,7 +135,7 @@ export default class extends Task {
 
 		if (!patchType.patchPlanted) {
 			if (!plant) {
-				this.client.wtf(new Error(`${user.sanitizedName}'s new patch had no plant found.`));
+				logError(new Error(`${user.sanitizedName}'s new patch had no plant found.`), { user_id: user.id });
 				return;
 			}
 
@@ -151,13 +165,15 @@ export default class extends Task {
 			}
 
 			if (hasPlopper) loot.multiply(4);
+			const res = await arcaneHarvesterEffect(user, plant, loot);
+			if (res) infoStr.push(res);
 
 			// This code gives the boxes for planing when ONLY planting.
 			if (plant.name === 'Mysterious tree') {
 				for (let j = 0; j < quantity; j++) {
 					let upper = randInt(1, 4);
 					for (let i = 0; i < upper; i++) {
-						loot.add(getRandomMysteryBox());
+						loot.add(MysteryBoxes.roll());
 					}
 				}
 			}
@@ -166,36 +182,38 @@ export default class extends Task {
 				loot.bank[itemID('Plopper')] = 1;
 			}
 
-			if (Object.keys(loot).length > 0) {
+			if (loot.has('Tormented skull')) {
+				loot.bank[itemID('Tormented skull')] = 1;
+			}
+
+			if (loot.length > 0) {
 				str += `\n\nYou received: ${loot}.`;
 			}
 
-			await this.client.settings.update(
-				ClientSettings.EconomyStats.FarmingLootBank,
-				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
-			);
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingLootBank, loot);
 			await user.addItemsToBank({ items: loot, collectionLog: true });
-			const updatePatches: PatchTypes.PatchData = {
+			const newPatch: PatchTypes.PatchData = {
 				lastPlanted: plant.name,
 				patchPlanted: true,
-				plantTime: currentDate + (production ? duration : 1),
+				plantTime: currentDate,
 				lastQuantity: quantity,
 				lastUpgradeType: upgradeType,
 				lastPayment: payment ?? false
 			};
 
-			await user.settings.update(getPatchType, updatePatches);
+			await mahojiUserSettingsUpdate(user.id, {
+				[getFarmingKeyFromName(plant.seedType)]: newPatch
+			});
 
 			str += `\n\n${user.minionName} tells you to come back after your plants have finished growing!`;
 
 			if (hasPlopper) str += '\nYou received 4x loot from Plopper';
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				str,
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				undefined,
 				data,
 				null
@@ -236,8 +254,7 @@ export default class extends Task {
 					);
 				} else if (plantToHarvest.fixedOutput) {
 					if (!plantToHarvest.fixedOutputAmount) return;
-					cropYield = plantToHarvest.fixedOutputAmount;
-					if (plantToHarvest.seedType === 'mushroom') cropYield *= alivePlants;
+					cropYield = plantToHarvest.fixedOutputAmount * alivePlants;
 				} else {
 					const plantChanceFactor =
 						Math.floor(
@@ -287,17 +304,20 @@ export default class extends Task {
 					const GP = user.settings.get(UserSettings.GP);
 					const gpToCutTree = plantToHarvest.seedType === 'redwood' ? 2000 * alivePlants : 200 * alivePlants;
 					if (GP < gpToCutTree) {
-						throw `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`;
-					} else {
-						payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
-						await user.removeGP(gpToCutTree);
+						return sendToChannelID(channelID, {
+							content: `You do not have the required woodcutting level or enough GP to clear your patches, in order to be able to plant more. You need ${gpToCutTree} GP.`
+						});
 					}
+					payStr = `*You did not have the woodcutting level required, so you paid a nearby farmer ${gpToCutTree} GP to remove the previous trees.*`;
+					await user.removeItemsFromBank(new Bank().add('Coins', gpToCutTree));
 
 					harvestXp = 0;
 				}
 				if (plantToHarvest.givesLogs && chopped) {
-					if (!plantToHarvest.outputLogs) return;
-					if (!plantToHarvest.woodcuttingXp) return;
+					assert(
+						typeof plantToHarvest.outputLogs === 'number' &&
+							typeof plantToHarvest.woodcuttingXp === 'number'
+					);
 
 					const amountOfLogs = rand(5, 10) * alivePlants;
 					loot.add(plantToHarvest.outputLogs, amountOfLogs);
@@ -306,7 +326,7 @@ export default class extends Task {
 						loot.add(plantToHarvest.outputRoots, rand(1, 4) * alivePlants);
 					}
 
-					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp;
+					woodcuttingXp += amountOfLogs * plantToHarvest.woodcuttingXp!;
 					wcStr = ` You also received ${woodcuttingXp.toLocaleString()} Woodcutting XP.`;
 
 					harvestXp = 0;
@@ -378,16 +398,24 @@ export default class extends Task {
 
 			if (duration > Time.Minute * 20 && roll(10)) {
 				loot.multiply(2);
-				loot.add(getRandomMysteryBox());
+				loot.add(MysteryBoxes.roll());
 			}
 
 			let tangleroot = false;
 			if (plantToHarvest.seedType === 'hespori') {
-				await user.incrementMonsterScore(Monsters.Hespori.id);
+				await user.incrementMonsterScore(Monsters.Hespori.id, patchType.lastQuantity);
 				const hesporiLoot = Monsters.Hespori.kill(patchType.lastQuantity, {
 					farmingLevel: currentFarmingLevel
 				});
+				const shouldReceiveSkull = await handleNaxxusTeaser(user);
+
 				loot = hesporiLoot;
+				if (shouldReceiveSkull) {
+					loot.add('Tormented skull');
+					infoStr.push(
+						'**As you land a killing blow on Hespori, your chainmace glows strongly as it seems to disintegrate it, leaving behind only a skull.**'
+					);
+				}
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
 				if (roll((plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5)) {
 					loot.add('Plopper');
@@ -429,7 +457,7 @@ export default class extends Task {
 				);
 			}
 
-			let updatePatches: PatchTypes.PatchData = {
+			let newPatch: PatchTypes.PatchData = {
 				lastPlanted: null,
 				patchPlanted: false,
 				plantTime: 0,
@@ -439,21 +467,24 @@ export default class extends Task {
 			};
 
 			if (planting) {
-				updatePatches = {
+				newPatch = {
 					lastPlanted: plant.name,
 					patchPlanted: true,
-					plantTime: currentDate + (production ? duration : 1),
+					plantTime: currentDate,
 					lastQuantity: quantity,
 					lastUpgradeType: upgradeType,
 					lastPayment: payment ? payment : false
 				};
 			}
 
-			await user.settings.update(getPatchType, updatePatches);
+			await mahojiUserSettingsUpdate(user.id, {
+				[getFarmingKeyFromName(plant.seedType)]: newPatch
+			});
 
-			const currentContract = user.settings.get(UserSettings.Minion.FarmingContract) ?? {
-				...defaultFarmingContract
-			};
+			const currentContract: FarmingContract | null =
+				(mahojiUser.minion_farmingContract as FarmingContract | null) ?? {
+					...defaultFarmingContract
+				};
 
 			const { contractsCompleted } = currentContract;
 
@@ -467,7 +498,10 @@ export default class extends Task {
 					contractsCompleted: contractsCompleted + 1
 				};
 
-				user.settings.update(UserSettings.Minion.FarmingContract, farmingContractUpdate);
+				await mahojiUserSettingsUpdate(user.id, {
+					minion_farmingContract: farmingContractUpdate as any
+				});
+
 				loot.add('Seed pack');
 
 				janeMessage = true;
@@ -486,15 +520,20 @@ export default class extends Task {
 			}
 
 			if (hasPlopper) loot.multiply(4);
+			const res = await arcaneHarvesterEffect(user, plant, loot);
+			if (res) infoStr.push(res);
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;
+			}
+			if (loot.has('Tormented skull')) {
+				loot.bank[itemID('Tormented skull')] = 1;
 			}
 
 			if (user.hasItemEquippedOrInBank(itemID('Farming master cape'))) {
 				for (let j = 0; j < alivePlants; j++) {
 					if (roll(10)) {
-						loot.add(getRandomMysteryBox());
+						loot.add(MysteryBoxes.roll());
 					}
 				}
 			}
@@ -503,7 +542,7 @@ export default class extends Task {
 				for (let j = 0; j < quantity; j++) {
 					let upper = randInt(1, 4);
 					for (let i = 0; i < upper; i++) {
-						loot.add(getRandomMysteryBox());
+						loot.add(MysteryBoxes.roll());
 					}
 				}
 			}
@@ -512,7 +551,7 @@ export default class extends Task {
 				for (let j = 0; j < alivePlants; j++) {
 					let upper = randInt(1, 6);
 					for (let i = 0; i < upper; i++) {
-						loot.add(getRandomMysteryBox());
+						loot.add(MysteryBoxes.roll());
 					}
 				}
 			}
@@ -524,20 +563,16 @@ export default class extends Task {
 				infoStr.push(`\nYou received: ${loot}.`);
 			}
 
-			await this.client.settings.update(
-				ClientSettings.EconomyStats.FarmingLootBank,
-				new Bank(this.client.settings.get(ClientSettings.EconomyStats.FarmingLootBank)).add(loot).bank
-			);
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.FarmingLootBank, loot);
 			await user.addItemsToBank({ items: loot, collectionLog: true });
 
 			if (hasPlopper) infoStr.push('\nYou received 4x loot from Plopper');
 
 			handleTripFinish(
-				this.client,
 				user,
 				channelID,
 				infoStr.join('\n'),
-				autoFarmed ? ['m', [], true, 'autofarm'] : undefined,
+				autoFarmed ? ['farming', { auto_farm: {} }, true] : undefined,
 				janeMessage
 					? await chatHeadImage({
 							content: `You've completed your contract and I have rewarded you with 1 Seed pack. Please open this Seed pack before asking for a new contract!\nYou have completed ${

@@ -7,9 +7,9 @@ import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 
 import { production } from '../config';
+import { MysteryBoxes } from '../lib/bsoOpenables';
 import { Channel, Color, SupportServer } from '../lib/constants';
 import Createables from '../lib/data/createables';
-import { getRandomMysteryBox } from '../lib/data/openables';
 import { roll, stringMatches } from '../lib/util';
 
 export async function triviaChallenge(msg: KlasaMessage): Promise<KlasaUser | null> {
@@ -85,7 +85,6 @@ export async function createdChallenge(msg: KlasaMessage): Promise<KlasaUser | n
 			) && Object.keys(i.outputItems).length === 1
 	);
 	const randomCreatable = randArrItem(all);
-	console.log(all.map(i => i.name));
 
 	const embed = new MessageEmbed()
 		.setColor(Color.Orange)
@@ -94,6 +93,8 @@ export async function createdChallenge(msg: KlasaMessage): Promise<KlasaUser | n
 			`What item is created using these? ${
 				isFunction(randomCreatable.inputItems)
 					? randomCreatable.inputItems(msg.author)
+					: randomCreatable.inputItems instanceof Bank
+					? randomCreatable.inputItems
 					: new Bank(randomCreatable.inputItems)
 			}`
 		);
@@ -140,7 +141,7 @@ async function challenge(msg: KlasaMessage) {
 	const item = randArrItem([itemChallenge, itemChallenge, createdChallenge, reactChallenge, triviaChallenge]);
 	const winner = await item(msg);
 	if (winner) {
-		const loot = new Bank().add(getRandomMysteryBox());
+		const loot = MysteryBoxes.roll();
 		await winner.addItemsToBank({ items: loot, collectionLog: false });
 		return msg.channel.send(`Congratulations, ${winner}! You received: **${loot}**.`);
 	}

@@ -1,6 +1,7 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from '@discordjs/builders';
 import { shuffleArr } from 'e';
 import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 
@@ -11,10 +12,11 @@ import { getAllMinigameScores } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { courses } from '../skilling/skills/agility';
 import creatures from '../skilling/skills/hunter/creatures';
-import { Skills } from '../types';
-import { addArrayOfNumbers, toTitleCase } from '../util';
+import { ItemBank, Skills } from '../types';
+import { addArrayOfNumbers, getClueScoresFromOpenables, toTitleCase } from '../util';
+import { logError } from './logError';
 
-export async function minionStatsEmbed(user: KlasaUser) {
+export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
 	const { rawSkills } = user;
 	const QP = user.settings.get(UserSettings.QP);
 
@@ -34,7 +36,10 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		).toLocaleString()} (${toKMB(skillXP)})`;
 	};
 
-	const clueEntries = Object.entries(user.settings.get(UserSettings.ClueScores));
+	const openableScores = new Bank(user.settings.get(UserSettings.OpenableScores) as ItemBank);
+	getClueScoresFromOpenables(openableScores, true);
+
+	const clueEntries = Object.entries(openableScores.bank);
 	const minigameScores = (await getAllMinigameScores(user.id))
 		.filter(i => i.score > 0)
 		.sort((a, b) => b.score - a.score);
@@ -42,25 +47,35 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	const rawBadges = user.settings.get(UserSettings.Badges);
 	const badgesStr = rawBadges.map(num => badges[num]).join(' ');
 
-	const embed = new MessageEmbed()
+	const embed = new Embed()
 		.setTitle(`${badgesStr}${user.minionName}`)
-		.addField(
-			'\u200b',
-			['attack', 'strength', 'defence', 'ranged', 'prayer', 'magic', 'runecraft', 'construction']
+		.addField({
+			name: '\u200b',
+			value: [
+				'attack',
+				'strength',
+				'defence',
+				'ranged',
+				'prayer',
+				'magic',
+				'runecraft',
+				'construction',
+				'invention'
+			]
 				.map(skillCell)
 				.join('\n'),
-			true
-		)
-		.addField(
-			'\u200b',
-			['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
+			inline: true
+		})
+		.addField({
+			name: '\u200b',
+			value: ['hitpoints', 'agility', 'herblore', 'thieving', 'crafting', 'fletching', 'slayer', 'hunter']
 				.map(skillCell)
 				.join('\n'),
-			true
-		)
-		.addField(
-			'\u200b',
-			[
+			inline: true
+		})
+		.addField({
+			name: '\u200b',
+			value: [
 				'mining',
 				'smithing',
 				'fishing',
@@ -73,51 +88,51 @@ export async function minionStatsEmbed(user: KlasaUser) {
 			]
 				.map(skillCell)
 				.join('\n'),
-			true
-		);
+			inline: true
+		});
 
 	if (user.isIronman) {
 		embed.setColor(5_460_819);
 	}
 
 	const { percent } = user.completion();
-	embed.addField(
-		`${skillEmoji.total} Overall`,
-		`**Level:** ${totalLevel}
+	embed.addField({
+		name: `${skillEmoji.total} Overall`,
+		value: `**Level:** ${totalLevel}
 **XP:** ${xp.toLocaleString()}
 **QP** ${QP}
 **CL Completion:** ${percent.toFixed(1)}%`,
-		true
-	);
+		inline: true
+	});
 
 	if (clueEntries.length > 0) {
-		embed.addField(
-			'<:Clue_scroll:365003979840552960> Clue Scores',
-			clueEntries
+		embed.addField({
+			name: '<:Clue_scroll:365003979840552960> Clue Scores',
+			value: clueEntries
 				.map(([id, qty]) => {
 					const clueTier = ClueTiers.find(t => t.id === parseInt(id));
 					if (!clueTier) {
-						console.error(`No clueTier: ${id}`);
+						logError(`No clueTier: ${id}`);
 						return;
 					}
 					return `**${toTitleCase(clueTier.name)}:** ${qty.toLocaleString()}`;
 				})
 				.join('\n'),
-			true
-		);
+			inline: true
+		});
 	}
 
 	if (minigameScores.length > 0) {
-		embed.addField(
-			'<:minigameIcon:630400565070921761> Minigames',
-			minigameScores
+		embed.addField({
+			name: '<:minigameIcon:630400565070921761> Minigames',
+			value: minigameScores
 				.slice(0, 4)
 				.map(minigame => {
 					return `**${toTitleCase(minigame.minigame.name)}:** ${minigame.score.toLocaleString()}`;
 				})
 				.join('\n'),
-			true
-		);
+			inline: true
+		});
 	}
 
 	const otherStats: [string, number | string][] = [
@@ -148,7 +163,7 @@ export async function minionStatsEmbed(user: KlasaUser) {
 		const [id, score] = monsterScores[0];
 		const res = effectiveMonsters.find(c => c.id === parseInt(id))!;
 		if (!res) {
-			console.error(`No monster found with id ${id} for stats embed`);
+			logError(`No monster found with id ${id} for stats embed`);
 		} else {
 			otherStats.push([`${res.name} KC`, score]);
 		}
@@ -158,23 +173,21 @@ export async function minionStatsEmbed(user: KlasaUser) {
 	if (hunterScores.length > 0) {
 		const [id, score] = hunterScores[0];
 		const res = creatures.find(c => c.id === parseInt(id))!;
-		if (!res) {
-			console.error(`No creature found with id ${id} for stats embed`);
-		} else {
+		if (res) {
 			otherStats.push([`${res.name}'s Caught`, score]);
 		}
 	}
 
-	embed.addField(
-		'Other',
-		shuffleArr(otherStats)
+	embed.addField({
+		name: 'Other',
+		value: shuffleArr(otherStats)
 			.slice(0, 4)
 			.map(([name, text]) => {
 				return `**${name}:** ${text}`;
 			})
 			.join('\n'),
-		true
-	);
+		inline: true
+	});
 
 	return embed;
 }

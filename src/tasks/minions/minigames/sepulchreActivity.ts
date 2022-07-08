@@ -9,6 +9,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: SepulchreActivityTaskOptions) {
@@ -30,7 +31,7 @@ export default class extends Task {
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
-					loot.add(openCoffin(floor.number));
+					loot.add(openCoffin(floor.number, user.cl()));
 				}
 
 				agilityXP += floor.xp;
@@ -60,17 +61,21 @@ export default class extends Task {
 			floors[0]
 		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpStr}`;
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity}x Hallowed Sepulchre:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Hallowed Sepulchre`,
+			user,
+			previousCL
+		});
 
-		handleTripFinish(this.client, user, channelID, str, ['sepulchre', [], true], image!, data, itemsAdded);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { sepulchre: { start: {} } }, true],
+			image.file.buffer,
+			data,
+			itemsAdded
+		);
 	}
 }

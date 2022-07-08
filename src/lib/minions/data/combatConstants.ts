@@ -1,11 +1,13 @@
 import { Bank } from 'oldschooljs';
 
-import itemID from '../../util/itemID';
+import { inventionBoosts } from '../../invention/inventions';
 import { Consumable } from '../types';
 
 // Configure boost percents
 export const boostCannon = 30;
 export const boostCannonMulti = 55;
+export const boostSuperiorCannon = inventionBoosts.superiorCannon.speedBoostPercentSingles;
+export const boostSuperiorCannonMulti = inventionBoosts.superiorCannon.speedBoostPercentMulti;
 export const boostIceBurst = 35;
 export const boostIceBarrage = 55;
 // What % of the kills should be cannon XP
@@ -32,12 +34,12 @@ export enum SlayerActivityConstants {
 	IceBurst,
 	Cannon
 }
-export const CombatCannonItemBank = {
-	[itemID('Cannon barrels')]: 1,
-	[itemID('Cannon base')]: 1,
-	[itemID('Cannon furnace')]: 1,
-	[itemID('Cannon stand')]: 1
-};
+export const CombatCannonItemBank = new Bank({
+	'Cannon barrels': 1,
+	'Cannon base': 1,
+	'Cannon furnace': 1,
+	'Cannon stand': 1
+});
 
 export const CombatOptionsArray: CombatOptionsDesc[] = [
 	{
@@ -78,4 +80,9 @@ export const iceBurstConsumables: Consumable = {
 	itemCost: new Bank().add('Water rune', 4).add('Chaos rune', 4).add('Death rune', 2),
 	qtyPerMinute: 16,
 	isRuneCost: true
+};
+
+export const superiorCannonSingleConsumables: Consumable = {
+	itemCost: new Bank().add('Cannonball', 1),
+	qtyPerMinute: 20
 };

@@ -1,6 +1,6 @@
 import { MessageAttachment, TextChannel } from 'discord.js';
 import { calcPercentOfNum, calcWhatPercent, randFloat, reduceNumByPercent, sumArr, Time } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { table } from 'table';
 
@@ -110,6 +110,7 @@ export interface BossOptions {
 	id: number;
 	baseDuration: number;
 	skillRequirements: Skills;
+	// The total combined values for item boosts equal their relative contribution to the speed, see `speedMaxReduction`
 	itemBoosts: [string, number][];
 	customDenier: (user: KlasaUser) => Promise<UserDenyResult>;
 	bisGear: Gear;
@@ -131,6 +132,12 @@ export interface BossOptions {
 	allowMoreThan1Group?: boolean;
 	quantity?: number;
 	automaticStartTime?: number;
+	// The total % reduction that perfect gear/kc/boosts nets:
+	speedMaxReduction?: number;
+	// The relative weight that gear score contributes to the speed:
+	speedGearWeight?: number;
+	// The relative weight that KC contributes to the speed:
+	speedKcWeight?: number;
 }
 
 export interface BossUser {
@@ -160,7 +167,6 @@ export class BossInstance {
 	allowMoreThan1Group: boolean = false;
 	totalPercent: number = -1;
 	settingsKeys?: [string, string];
-	client: KlasaClient;
 	channel: TextChannel;
 	activity: activity_type_enum;
 	massText: string;
@@ -174,6 +180,9 @@ export class BossInstance {
 	boosts: string[] = [];
 	automaticStartTime?: number;
 	maxSize: number;
+	speedMaxReduction: number = 40;
+	speedGearWeight: number = 25;
+	speedKcWeight: number = 35;
 
 	constructor(options: BossOptions) {
 		this.baseDuration = options.baseDuration;
@@ -188,12 +197,14 @@ export class BossInstance {
 		this.food = options.food;
 		this.settingsKeys = options.settingsKeys;
 		this.channel = options.channel;
-		this.client = this.channel.client as KlasaClient;
 		this.activity = options.activity;
 		this.leader = options.leader;
 		this.minSize = options.minSize;
 		this.solo = options.solo;
 		this.canDie = options.canDie;
+		this.speedKcWeight = options.speedKcWeight ?? 35;
+		this.speedGearWeight = options.speedGearWeight ?? 25;
+		this.speedMaxReduction = options.speedMaxReduction ?? 40;
 		this.kcLearningCap = options.kcLearningCap ?? 250;
 		this.customDeathChance = options.customDeathChance ?? null;
 		this.allowMoreThan1Solo = options.allowMoreThan1Solo ?? false;
@@ -310,10 +321,13 @@ export class BossInstance {
 	}
 
 	async calculateBossUsers() {
-		const maxReduction = 40;
-		const speedReductionForGear = 25;
-		const speedReductionForKC = 35;
-		let speedReductionForBoosts = sumArr(this.itemBoosts.map(i => i[1]));
+		const {
+			speedMaxReduction: maxReduction,
+			speedGearWeight: speedReductionForGear,
+			speedKcWeight: speedReductionForKC
+		} = this;
+		// The total combined values for item boosts equal their relative contribution to the speed
+		const speedReductionForBoosts = sumArr(this.itemBoosts.map(i => i[1]));
 		const totalSpeedReduction = speedReductionForGear + speedReductionForKC + speedReductionForBoosts;
 
 		const bossUsers: BossUser[] = [];
@@ -405,7 +419,7 @@ export class BossInstance {
 			totalCost.add(itemsToRemove);
 		}
 		if (this.settingsKeys) {
-			updateBankSetting(this.client, this.settingsKeys[0], totalCost);
+			updateBankSetting(globalClient, this.settingsKeys[0], totalCost);
 		}
 
 		const monster = effectiveMonsters.find(m => m.id === this.id);

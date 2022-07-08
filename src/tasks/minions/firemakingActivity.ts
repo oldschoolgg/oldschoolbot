@@ -36,7 +36,11 @@ export default class extends Task {
 			}
 		}
 
-		const xpRes = await user.addXP({ skillName: SkillsEnum.Firemaking, amount: xpReceived });
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Firemaking,
+			amount: xpReceived,
+			duration: data.duration
+		});
 
 		let str = `${user}, ${user.minionName} finished lighting ${quantity} ${burnable.name}. ${xpRes}`;
 
@@ -45,11 +49,10 @@ export default class extends Task {
 		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['light', [quantity, burnable.name], true],
+			['light', { name: burnable.name, quantity }, true],
 			undefined,
 			data,
 			null

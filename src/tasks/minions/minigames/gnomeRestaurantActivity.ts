@@ -2,12 +2,13 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { roll, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { minionName } from '../../../lib/util/minionUtils';
 
 const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')
@@ -77,7 +78,6 @@ export default class extends Task {
 			loot.add(tipTable.roll());
 		}
 
-		const minionName = await getMinionName(userID);
 		const user = await this.client.fetchUser(userID);
 
 		if (user.usingPet('Flappy')) {
@@ -91,7 +91,9 @@ export default class extends Task {
 			duration
 		});
 
-		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${
+		let str = `<@${userID}>, ${minionName(
+			user
+		)} finished completing ${quantity}x Gnome Restaurant deliveries.  You received **${loot}**. ${xpRes} ${
 			user.usingPet('Flappy')
 				? ' \n\n<:flappy:812280578195456002> Flappy helps you in your minigame, granting you 2x rewards.'
 				: ''
@@ -99,6 +101,14 @@ export default class extends Task {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.GnomeRestaurantLootBank, loot);
 
-		handleTripFinish(this.client, user, channelID, str, ['gnomerestaurant', [], true], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { gnome_restaurant: { start: {} } }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }

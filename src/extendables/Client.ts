@@ -1,7 +1,7 @@
-import * as Sentry from '@sentry/node';
 import { Client } from 'discord.js';
 import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
 
+import { logError } from '../lib/util/logError';
 import PostgresProvider from '../providers/postgres';
 
 export default class extends Extendable {
@@ -14,6 +14,6 @@ export default class extends Extendable {
 	}
 
 	async wtf(this: KlasaClient, error: Error) {
-		Sentry.captureException(error);
+		logError(error);
 	}
 }

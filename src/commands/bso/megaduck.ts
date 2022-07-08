@@ -1,20 +1,16 @@
 /* eslint-disable prefer-destructuring */
-import { Image } from 'canvas';
-import { Canvas } from 'canvas-constructor';
 import { MessageAttachment } from 'discord.js';
 import { readFileSync } from 'fs';
-import jimp from 'jimp';
-import { CommandStore, KlasaClient, KlasaMessage } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { O } from 'ts-toolbelt';
+import { Canvas, Image } from 'skia-canvas/lib';
 
 import { Events, PerkTier } from '../../lib/constants';
 import { defaultMegaDuckLocation, MegaDuckLocation } from '../../lib/minions/types';
-import { getGuildSettings } from '../../lib/settings/settings';
-import { GuildSettings } from '../../lib/settings/types/GuildSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsername } from '../../lib/util';
-import { canvasImageFromBuffer } from '../../lib/util/canvasUtil';
+import { canvasImageFromBuffer, drawCircle } from '../../lib/util/canvasUtil';
+import { mahojiGuildSettingsFetch, mahojiGuildSettingsUpdate } from '../../mahoji/mahojiSettings';
 
 const _mapImage = readFileSync('./src/lib/resources/images/megaduckmap.png');
 const _noMoveImage = readFileSync('./src/lib/resources/images/megaducknomovemap.png');
@@ -38,15 +34,15 @@ function locationIsFinished(location: MegaDuckLocation) {
 	return location.x < 770 && location.y > 1011;
 }
 
-function topFeeders(client: KlasaClient, entries: any[]) {
+function topFeeders(entries: any[]) {
 	return `Top 10 Feeders: ${[...entries]
 		.sort((a, b) => b[1] - a[1])
 		.slice(0, 10)
-		.map(ent => `${getUsername(client, ent[0])}. ${ent[1]}`)
+		.map(ent => `${getUsername(ent[0])}. ${ent[1]}`)
 		.join(', ')}`;
 }
 
-function applyDirection(location: MegaDuckLocation, direction: 'up' | 'down' | 'left' | 'right') {
+function applyDirection(location: MegaDuckLocation, direction: 'up' | 'down' | 'left' | 'right'): MegaDuckLocation {
 	let newLocation = { ...location };
 	switch (direction) {
 		case 'up':
@@ -70,7 +66,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			cooldown: 120,
-			oneAtTime: true,
 			description: 'Looks up the price of an item using the OSBuddy API.',
 			usage: '[up|down|left|right]',
 			runIn: ['text'],
@@ -88,23 +83,23 @@ export default class extends BotCommand {
 		const mapImage = await canvasImageFromBuffer(_mapImage);
 
 		const canvas = new Canvas(mapImage.width, mapImage.height);
-		canvas.context.imageSmoothingEnabled = false;
-		canvas.addImage(mapImage as any, 0, 0);
+		const ctx = canvas.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
+		ctx.drawImage(mapImage, 0, 0);
 
 		const locations: { loc: MegaDuckLocation; steps: [number, number][] }[] = await this.client
 			.query(`SELECT mega_duck_location as loc
 FROM guilds
 WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 		for (const { loc } of locations) {
-			canvas.setColor('rgba(255,0,0,0.5)');
-			canvas.addCircle(loc.x, loc.y, 10);
-			canvas.setColor('rgba(0,0,255,0.25)');
+			drawCircle(ctx, loc.x, loc.y, 10);
+			ctx.fillStyle = 'rgba(0,0,255,0.25)';
 			for (const [x, y] of loc.steps || []) {
-				canvas.addRect(x, y, 1, 1);
+				ctx.fillRect(x, y, 1, 1);
 			}
 		}
 
-		return canvas.toBufferAsync();
+		return canvas.toBuffer('png');
 	}
 
 	async makeImage(location: MegaDuckLocation) {
@@ -118,50 +113,58 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 		const centerPosition = Math.floor(canvasSize / 2 / scale);
 
 		const canvas = new Canvas(canvasSize, canvasSize);
-		canvas.context.imageSmoothingEnabled = false;
+		const ctx = canvas.getContext('2d');
+		ctx.imageSmoothingEnabled = false;
 
-		const image = await canvas
-			.scale(scale, scale)
-			.addImage(mapImage as any, 0 - x + centerPosition, 0 - y + centerPosition);
+		ctx.scale(scale, scale);
+		ctx.drawImage(mapImage, 0 - x + centerPosition, 0 - y + centerPosition);
 
 		// image.addImage(noMoveImage as any, 0 - x + centerPosition, 0 - y + centerPosition);
 
-		image.setTextFont('14px Arial').setColor('#ffff00').addRect(centerPosition, centerPosition, 1, 1);
+		ctx.font = '14px Arial';
+		ctx.fillStyle = '#ffff00';
+		ctx.fillRect(centerPosition, centerPosition, 1, 1);
 
-		const noMoveCanvas = new Canvas(noMoveImage.width, noMoveImage.height).addImage(noMoveImage as any, 0, 0);
+		const noMoveCanvas = new Canvas(noMoveImage.width, noMoveImage.height);
+		const noMoveCanvasCtx = noMoveCanvas.getContext('2d');
+		noMoveCanvasCtx.drawImage(noMoveImage, 0, 0);
 
 		const currentColor = this.getPixel(
 			x,
 			y,
-			noMoveCanvas.context.getImageData(0, 0, noMoveCanvas.canvas.width, noMoveCanvas.canvas.height).data,
-			noMoveCanvas.canvas.width
+			noMoveCanvasCtx.getImageData(0, 0, noMoveCanvasCtx.canvas.width, noMoveCanvasCtx.canvas.height).data,
+			noMoveCanvas.width
 		);
 
-		image.setColor('rgba(0,0,255,0.25)');
+		ctx.fillStyle = 'rgba(0,0,255,0.25)';
 		for (const [_xS, _yS] of steps) {
 			let xS = _xS - x + centerPosition;
 			let yS = _yS - y + centerPosition;
-			image.addRect(xS, yS, 1, 1);
+			ctx.fillRect(xS, yS, 1, 1);
 		}
 
-		const buffer = await image.toBufferAsync();
+		const buffer = await canvas.toBuffer('png');
 
 		return {
-			image: await (await jimp.read(buffer)).quality(65).getBufferAsync(jimp.MIME_JPEG),
+			image: buffer,
 			currentColor
 		};
 	}
 
 	async run(msg: KlasaMessage, [direction]: ['up' | 'down' | 'left' | 'right' | undefined]) {
-		const settings = await getGuildSettings(msg.guild!);
-		const location: O.Readonly<MegaDuckLocation> = { ...settings.get(GuildSettings.MegaDuckLocation) };
+		const settings = await mahojiGuildSettingsFetch(msg.guild!);
+		const location: Readonly<MegaDuckLocation> = {
+			...((settings.mega_duck_location as any) || defaultMegaDuckLocation)
+		};
 		if (msg.flagArgs.reset && msg.member && msg.member.permissions.has('ADMINISTRATOR')) {
 			await msg.confirm(
 				'Are you sure you want to reset your megaduck back to Falador Park? This will reset all data, and where its been, and who has contributed steps.'
 			);
-			await settings.update(GuildSettings.MegaDuckLocation, {
-				...defaultMegaDuckLocation,
-				steps: location.steps
+			await mahojiGuildSettingsUpdate(msg.guild!, {
+				mega_duck_location: {
+					...defaultMegaDuckLocation,
+					steps: location.steps
+				}
 			});
 		}
 		if (msg.flagArgs.all && msg.author.perkTier >= PerkTier.Five) {
@@ -176,7 +179,7 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			return msg.channel.send({
 				content: `${msg.author} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[msg.author.id] ?? 0
-				} times. ${topFeeders(this.client, Object.entries(location.usersParticipated))}`,
+				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
 				files: [image]
 			});
 		}
@@ -214,7 +217,9 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 			}
 		}
 		newLocation.steps.push([newLocation.x, newLocation.y]);
-		await settings.update(GuildSettings.MegaDuckLocation, newLocation);
+		await mahojiGuildSettingsUpdate(msg.guild!, {
+			mega_duck_location: newLocation as any
+		});
 		if (
 			!locationIsFinished(location) &&
 			locationIsFinished(newLocation) &&
@@ -233,17 +238,19 @@ WHERE (mega_duck_location->>'usersParticipated')::text != '{}';`);
 				usersParticipated: {},
 				placesVisited: [...newLocation.placesVisited, 'ocean']
 			};
-			await settings.update(GuildSettings.MegaDuckLocation, newT);
+			await mahojiGuildSettingsUpdate(msg.guild!, {
+				mega_duck_location: newT as any
+			});
 			this.client.emit(
 				Events.ServerNotification,
 				`The ${msg.guild!.name} server just returned Mega Duck into the ocean with Mrs Duck, ${
 					Object.keys(newLocation.usersParticipated).length
-				} users received a Baby duckling pet. ${topFeeders(this.client, entries)}`
+				} users received a Baby duckling pet. ${topFeeders(entries)}`
 			);
 			return msg.channel.send(
 				`Mega duck has arrived at his destination! ${
 					Object.keys(newLocation.usersParticipated).length
-				} users received a Baby duckling pet. ${topFeeders(this.client, entries)}`
+				} users received a Baby duckling pet. ${topFeeders(entries)}`
 			);
 		}
 		return msg.channel.send({

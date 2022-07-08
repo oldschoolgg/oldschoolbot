@@ -130,11 +130,10 @@ export default class extends Task {
 		}`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			returnStr,
-			['tithefarm', [], true],
+			['farming', { tithe_farm: {} }, true],
 			undefined,
 			data,
 			loot.length > 0 ? loot : null

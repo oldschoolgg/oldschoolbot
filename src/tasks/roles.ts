@@ -1,16 +1,18 @@
 import { Guild } from 'discord.js';
 import { noOp, notEmpty } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
-import { BOT_TYPE, Roles, SupportServer } from '../lib/constants';
+import { BOT_TYPE, Roles, SupportServer, usernameCache } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import ClueTiers from '../lib/minions/data/clueTiers';
 import { Minigames } from '../lib/settings/minigames';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
+import { ItemBank } from '../lib/types';
 import { convertXPtoLVL } from '../lib/util';
+import { logError } from '../lib/util/logError';
 
 function addToUserMap(userMap: Record<string, string[]>, id: string, reason: string) {
 	if (!userMap[id]) userMap[id] = [];
@@ -19,7 +21,18 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const collections = ['rolepets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'Dyed Items', 'other', 'custom'];
+const collections = [
+	'rolepets',
+	'skilling',
+	'clues',
+	'bosses',
+	'minigames',
+	'raids',
+	'Dyed Items',
+	'slayer',
+	'other',
+	'custom'
+];
 
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
@@ -57,11 +70,7 @@ async function addRoles({
 	let _role = await g.roles.fetch(role);
 	if (!_role) return 'Could not check role';
 	for (const u of users.filter(notEmpty)) {
-		try {
-			await g.members.fetch(u);
-		} catch {
-			console.error(`Failed to fetch \`${u}\` member.`);
-		}
+		await g.members.fetch(u).catch(noOp);
 	}
 	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {
@@ -105,7 +114,7 @@ async function addRoles({
 	if (userMap) {
 		let userArr = [];
 		for (const [id, arr] of Object.entries(userMap)) {
-			let username = (g.client.commands.get('leaderboard') as any)!.getUsername(id);
+			let username = usernameCache.get(id) ?? 'Unknown';
 			userArr.push(`${username}(${arr.join(', ')})`);
 		}
 		str += `\n${userArr.join(',')}`;
@@ -131,7 +140,7 @@ export default class extends Task {
 		// eslint-disable-next-line @typescript-eslint/unbound-method
 		const q = async <T>(str: string) => {
 			const result = await this.client.query<T>(str).catch(err => {
-				console.error(`This query failed: ${str}`, err);
+				logError(`This query failed: ${str}`, err);
 				return [];
 			});
 			return result;
@@ -163,23 +172,23 @@ export default class extends Task {
 
 			// Rank 1 Total Level
 			const rankOneTotal = (
-				await q<SkillUser[]>(
+				await q<any>(
 					`SELECT id,  ${skillVals.map(s => `"skills.${s.id}"`)}, ${skillVals
 						.map(s => `"skills.${s.id}"::bigint`)
 						.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 200;`
 				)
 			)
-				.map(u => {
+				.map((u: any) => {
 					let totalLevel = 0;
 					for (const skill of skillVals) {
-						totalLevel += convertXPtoLVL(Number(u[`skills.${skill.id}` as keyof SkillUser]) as any);
+						totalLevel += convertXPtoLVL(Number(u[`skills.${skill.id}` as keyof any]) as any);
 					}
 					return {
 						id: u.id,
 						totalLevel
 					};
 				})
-				.sort((a, b) => b.totalLevel - a.totalLevel)[0];
+				.sort((a: any, b: any) => b.totalLevel - a.totalLevel)[0];
 			topSkillers.push(rankOneTotal.id);
 
 			result += await addRoles({ g: g!, users: topSkillers, role: Roles.TopSkiller, badge: 9 });
@@ -214,21 +223,21 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 					collections.map(async clName => {
 						const items = getCollectionItems(clName);
 						if (!items || items.length === 0) {
-							console.error(`${clName} collection log doesnt exist`);
+							logError(`${clName} collection log doesnt exist`);
 							return [];
 						}
 
-						function handleErr(): CLUser[] {
-							console.error(`Failed to select top collectors for ${clName}`);
+						function handleErr(): any[] {
+							logError(`Failed to select top collectors for ${clName}`);
 							return [];
 						}
 
 						const [users, ironUsers] = await Promise.all([
 							q<any>(generateQuery(items, false, 1))
-								.then(i => i.filter((i: any) => i.qty > 0) as CLUser[])
+								.then(i => i.filter((i: any) => i.qty > 0) as any[])
 								.catch(handleErr),
 							q<any>(generateQuery(items, true, 1))
-								.then(i => i.filter((i: any) => i.qty > 0) as CLUser[])
+								.then(i => i.filter((i: any) => i.qty > 0) as any[])
 								.catch(handleErr)
 						]);
 
@@ -252,10 +261,18 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 
 			const topIronUsers = (await q<any>(generateQuery(getCollectionItems('overall'), true, 3))).filter(
 				(i: any) => i.qty > 0
-			) as CLUser[];
+			) as any[];
 			for (let i = 0; i < topIronUsers.length; i++) {
 				const id = topIronUsers[i]?.id;
 				addToUserMap(userMap, id, `Rank ${i + 1} Ironman Collector`);
+				topCollectors.push(id);
+			}
+			const topNormieUsers = (await q<any>(generateQuery(getCollectionItems('overall'), false, 3))).filter(
+				(i: any) => i.qty > 0
+			) as any[];
+			for (let i = 0; i < topNormieUsers.length; i++) {
+				const id = topNormieUsers[i]?.id;
+				addToUserMap(userMap, id, `Rank ${i + 1} Collector`);
 				topCollectors.push(id);
 			}
 
@@ -266,12 +283,12 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 		async function topSacrificers() {
 			const userMap = {};
 			let topSacrificers: string[] = [];
-			const mostValue = await q<SkillUser[]>('SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;');
+			const mostValue = await q<any[]>('SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;');
 			for (let i = 0; i < 3; i++) {
 				topSacrificers.push(mostValue[i].id);
 				addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
 			}
-			const mostUniques = await q<SkillUser[]>(`SELECT u.id, u.sacbanklength FROM (
+			const mostUniques = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
   SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
@@ -316,9 +333,9 @@ LIMIT 1;`
 				await Promise.all(
 					ClueTiers.map(t =>
 						q(
-							`SELECT id, '${t.name}' as n, ("clueScores"->>'${t.id}')::int as qty
+							`SELECT id, '${t.name}' as n, (openable_scores->>'${t.id}')::int as qty
 FROM users
-WHERE "clueScores"->>'${t.id}' IS NOT NULL
+WHERE "openable_scores"->>'${t.id}' IS NOT NULL
 ORDER BY qty DESC
 LIMIT 1;`
 						)
@@ -416,6 +433,26 @@ LIMIT 2;`
 			result += await addRoles({ g: g!, users: [res[0].id], role: '886180040465870918', badge: null });
 		}
 
+		async function topInventor() {
+			const userMap = {};
+			let topInventors: string[] = [];
+			const mostUniques = await q<
+				{ id: string; uniques: number; disassembled_items_bank: ItemBank }[]
+			>(`SELECT u.id, u.uniques, u.disassembled_items_bank FROM (
+  SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("disassembled_items_bank")) uniques, id, disassembled_items_bank FROM users WHERE "skills.invention" > 0
+) u
+ORDER BY u.uniques DESC LIMIT 300;`);
+			topInventors.push(mostUniques[0].id);
+			addToUserMap(userMap, mostUniques[0].id, 'Most Uniques Disassembled');
+			const parsed = mostUniques
+				.map(i => ({ ...i, value: new Bank(i.disassembled_items_bank).value() }))
+				.sort((a, b) => b.value - a.value);
+			topInventors.push(parsed[0].id);
+			addToUserMap(userMap, parsed[0].id, 'Most Value Disassembled');
+
+			result += await addRoles({ g: g!, users: topInventors, role: Roles.TopInventor, badge: null, userMap });
+		}
+
 		const tup = [
 			['Top Slayer', slayer],
 			['Top Clue Hunters', topClueHunters],
@@ -424,7 +461,8 @@ LIMIT 2;`
 			['Top Collectors', topCollector],
 			['Top Skillers', topSkillers],
 			['Monkey King', monkeyKing],
-			['Top Farmers', farmers]
+			['Top Farmers', farmers],
+			['Top Inventor', topInventor]
 		] as const;
 
 		let failed: string[] = [];
@@ -434,7 +472,7 @@ LIMIT 2;`
 					await fn();
 				} catch (err: any) {
 					failed.push(`${name} (${err.message})`);
-					console.error(err);
+					logError(err);
 				}
 			})
 		);

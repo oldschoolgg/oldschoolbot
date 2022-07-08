@@ -1,14 +1,14 @@
 import { noOp, shuffleArr } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
-import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
+import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
-import { getRandomMysteryBox } from '../../../lib/data/openables';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore, runCommand } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
@@ -16,7 +16,6 @@ import { roll, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
-import { sendToChannelID } from '../../../lib/util/webhook';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -66,7 +65,7 @@ export default class extends Task {
 			const userLoot = new Bank(_userLoot);
 			if (roll(10)) {
 				userLoot.multiply(2);
-				userLoot.add(getRandomMysteryBox());
+				userLoot.add(MysteryBoxes.roll());
 			} else if (user.usingPet('Flappy')) {
 				userLoot.multiply(2);
 			}
@@ -131,31 +130,25 @@ export default class extends Task {
 			teamSize: users.length
 		});
 
-		if (allUsers.length === 1) {
-			handleTripFinish(
-				this.client,
-				allUsers[0],
-				channelID,
-				resultMessage,
-				res => {
-					const flags: Record<string, string> = challengeMode ? { cm: 'cm' } : {};
-
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					if (!res.prompter) res.prompter = {};
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					res.prompter.flags = flags;
-
-					allUsers[0].log('continued trip of solo CoX');
-					return runCommand(res, 'raid', ['solo'], true);
+		handleTripFinish(
+			allUsers[0],
+			channelID,
+			resultMessage,
+			[
+				'raid',
+				{
+					cox: {
+						start: {
+							challenge_mode: challengeMode,
+							type: users.length === 1 ? 'solo' : 'mass'
+						}
+					}
 				},
-				undefined,
-				data,
-				null
-			);
-		} else {
-			sendToChannelID(this.client, channelID, { content: resultMessage });
-		}
+				true
+			],
+			undefined,
+			data,
+			null
+		);
 	}
 }

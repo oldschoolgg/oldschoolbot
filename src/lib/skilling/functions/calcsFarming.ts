@@ -1,10 +1,8 @@
-import { MessageAttachment } from 'discord.js';
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 
 import { BitField } from '../../constants';
 import { Favours, gotFavour } from '../../minions/data/kourendFavour';
-import Farming from '../../skilling/skills/farming';
-import { itemNameFromID, rand, userHasMasterFarmerOutfit } from '../../util';
+import { rand, userHasMasterFarmerOutfit } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 
 export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number): [number, string | undefined] {
@@ -70,25 +68,4 @@ export function calcVariableYield(
 
 	if (!cropYield) return 0;
 	return cropYield;
-}
-
-export function returnListOfPlants(msg: KlasaMessage) {
-	const attachment = new MessageAttachment(
-		Buffer.from(
-			Farming.Plants.map(
-				plant =>
-					`${plant.seedType}: ${plant.name} -- lvl ${plant.level}: ${Object.entries(plant.inputItems)
-						.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-						.join(', ')}\n	Default # of patches: ${
-						plant.defaultNumOfPatches
-					}\n${plant.additionalPatchesByFarmGuildAndLvl.map(
-						entry => `	| Farming Level: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
-					)} ${plant.additionalPatchesByQP.map(
-						entry => `	| Quest Points: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
-					)} `
-			).join('\n')
-		),
-		'Farming Plants.txt'
-	);
-	return msg.channel.send({ files: [attachment] });
 }

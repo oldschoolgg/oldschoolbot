@@ -1,21 +1,26 @@
 import itemID from '../../util/itemID';
 
-interface TokkulShopItem {
+interface BaseTKSItem {
 	name: string;
-	inputItem: number;
+	itemID: number;
+	stock?: number;
+	aliases?: string[];
+	requireFireCape?: boolean;
+}
+
+interface TokkulShopItem extends BaseTKSItem {
 	tokkulReturn: number;
 	tokkulCost?: number;
 	diaryTokkulCost?: number;
 	diaryTokkulReturn?: number;
-	aliases?: string[];
-	requireFireCape?: boolean;
 }
 
 const TokkulShopItems: TokkulShopItem[] = [
 	// Ore and Gem Store
 	{
 		name: 'Tin ore',
-		inputItem: itemID('Tin ore'),
+		itemID: itemID('Tin ore'),
+		stock: 5,
 		tokkulReturn: 1,
 		tokkulCost: 4,
 		diaryTokkulReturn: 1,
@@ -24,7 +29,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Copper ore',
-		inputItem: itemID('Copper ore'),
+		itemID: itemID('Copper ore'),
+		stock: 5,
 		tokkulReturn: 1,
 		tokkulCost: 4,
 		diaryTokkulReturn: 1,
@@ -33,7 +39,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Iron ore',
-		inputItem: itemID('Iron ore'),
+		itemID: itemID('Iron ore'),
+		stock: 2,
 		tokkulReturn: 1,
 		tokkulCost: 25,
 		diaryTokkulReturn: 3,
@@ -42,48 +49,49 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Silver ore',
-		inputItem: itemID('Silver ore'),
+		itemID: itemID('Silver ore'),
 		tokkulReturn: 7,
 		diaryTokkulReturn: 15,
 		aliases: ['silver']
 	},
 	{
 		name: 'Coal',
-		inputItem: itemID('Coal'),
+		itemID: itemID('Coal'),
 		tokkulReturn: 4,
 		diaryTokkulReturn: 9
 	},
 	{
 		name: 'Gold ore',
-		inputItem: itemID('Gold ore'),
+		itemID: itemID('Gold ore'),
 		tokkulReturn: 15,
 		diaryTokkulReturn: 34,
 		aliases: ['gold']
 	},
 	{
 		name: 'Mithril ore',
-		inputItem: itemID('Mithril ore'),
+		itemID: itemID('Mithril ore'),
 		tokkulReturn: 16,
 		diaryTokkulReturn: 37,
 		aliases: ['mithril']
 	},
 	{
 		name: 'Adamantite ore',
-		inputItem: itemID('Adamantite ore'),
+		itemID: itemID('Adamantite ore'),
 		tokkulReturn: 40,
 		diaryTokkulReturn: 93,
 		aliases: ['adamantite', 'adamant', 'addy']
 	},
 	{
 		name: 'Runite ore',
-		inputItem: itemID('Runite ore'),
+		itemID: itemID('Runite ore'),
 		tokkulReturn: 320,
 		diaryTokkulReturn: 746,
 		aliases: ['runite', 'rune ore', 'rune']
 	},
 	{
 		name: 'Uncut sapphire',
-		inputItem: itemID('Uncut sapphire'),
+		itemID: itemID('Uncut sapphire'),
+		stock: 1,
 		tokkulReturn: 2,
 		tokkulCost: 37,
 		diaryTokkulReturn: 5,
@@ -92,7 +100,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Uncut emerald',
-		inputItem: itemID('Uncut emerald'),
+		itemID: itemID('Uncut emerald'),
+		stock: 1,
 		tokkulReturn: 5,
 		tokkulCost: 75,
 		diaryTokkulReturn: 11,
@@ -101,27 +110,28 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Uncut ruby',
-		inputItem: itemID('Uncut ruby'),
+		itemID: itemID('Uncut ruby'),
 		tokkulReturn: 10,
 		diaryTokkulReturn: 23,
 		aliases: ['ruby']
 	},
 	{
 		name: 'Uncut diamond',
-		inputItem: itemID('Uncut diamond'),
+		itemID: itemID('Uncut diamond'),
 		tokkulReturn: 20,
 		diaryTokkulReturn: 46,
 		aliases: ['diamond']
 	},
 	{
 		name: 'Uncut dragonstone',
-		inputItem: itemID('Uncut dragonstone'),
+		itemID: itemID('Uncut dragonstone'),
 		tokkulReturn: 100,
 		diaryTokkulReturn: 233
 	},
 	{
 		name: 'Uncut onyx',
-		inputItem: itemID('Uncut onyx'),
+		itemID: itemID('Uncut onyx'),
+		stock: 1,
 		tokkulReturn: 20_000,
 		tokkulCost: 300_000,
 		diaryTokkulReturn: 46_662,
@@ -130,7 +140,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Onyx bolt tips',
-		inputItem: itemID('Onyx bolt tips'),
+		itemID: itemID('Onyx bolt tips'),
+		stock: 50,
 		tokkulReturn: 100,
 		tokkulCost: 1500,
 		diaryTokkulReturn: 233,
@@ -140,7 +151,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	// Equipment Store
 	{
 		name: 'Obsidian throwing ring',
-		inputItem: itemID('Toktz-xil-ul'),
+		itemID: itemID('Toktz-xil-ul'),
+		stock: 500,
 		tokkulReturn: 25,
 		tokkulCost: 375,
 		diaryTokkulReturn: 57,
@@ -149,7 +161,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian sword',
-		inputItem: itemID('Toktz-xil-ak'),
+		itemID: itemID('Toktz-xil-ak'),
+		stock: 1,
 		tokkulReturn: 4000,
 		tokkulCost: 60_000,
 		diaryTokkulReturn: 9332,
@@ -158,7 +171,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian dagger',
-		inputItem: itemID('Toktz-xil-ek'),
+		itemID: itemID('Toktz-xil-ek'),
+		stock: 1,
 		tokkulReturn: 2500,
 		tokkulCost: 37_500,
 		diaryTokkulReturn: 5827,
@@ -167,7 +181,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian maul',
-		inputItem: itemID('Tzhaar-ket-om'),
+		itemID: itemID('Tzhaar-ket-om'),
+		stock: 1,
 		tokkulReturn: 5000,
 		tokkulCost: 75_001,
 		diaryTokkulReturn: 11_665,
@@ -176,7 +191,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian staff',
-		inputItem: itemID('Toktz-mej-tal'),
+		itemID: itemID('Toktz-mej-tal'),
+		stock: 1,
 		tokkulReturn: 3500,
 		tokkulCost: 52_500,
 		diaryTokkulReturn: 8166,
@@ -185,7 +201,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian mace',
-		inputItem: itemID('Tzhaar-ket-em'),
+		itemID: itemID('Tzhaar-ket-em'),
+		stock: 1,
 		tokkulReturn: 3000,
 		tokkulCost: 45_000,
 		diaryTokkulReturn: 7000,
@@ -194,7 +211,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian cape',
-		inputItem: itemID('Obsidian cape'),
+		itemID: itemID('Obsidian cape'),
+		stock: 1,
 		tokkulReturn: 6000,
 		tokkulCost: 90_000,
 		diaryTokkulReturn: 14_000,
@@ -203,7 +221,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian shield',
-		inputItem: itemID('Toktz-ket-xil'),
+		itemID: itemID('Toktz-ket-xil'),
+		stock: 1,
 		tokkulReturn: 4500,
 		tokkulCost: 67_500,
 		diaryTokkulReturn: 10_500,
@@ -212,7 +231,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian helmet',
-		inputItem: itemID('Obsidian helmet'),
+		itemID: itemID('Obsidian helmet'),
+		stock: 1,
 		tokkulReturn: 5632,
 		tokkulCost: 84_480,
 		diaryTokkulReturn: 13_141,
@@ -222,7 +242,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian platebody',
-		inputItem: itemID('Obsidian platebody'),
+		itemID: itemID('Obsidian platebody'),
+		stock: 1,
 		tokkulReturn: 8400,
 		tokkulCost: 126_000,
 		diaryTokkulReturn: 19_600,
@@ -232,7 +253,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Obsidian platelegs',
-		inputItem: itemID('Obsidian platelegs'),
+		itemID: itemID('Obsidian platelegs'),
+		stock: 1,
 		tokkulReturn: 6700,
 		tokkulCost: 100_500,
 		diaryTokkulReturn: 15_633,
@@ -243,43 +265,48 @@ const TokkulShopItems: TokkulShopItem[] = [
 	// Runes
 	{
 		name: 'Fire rune',
-		inputItem: itemID('Fire rune'),
-		tokkulReturn: 1,
+		itemID: itemID('Fire rune'),
+		stock: 5000,
+		tokkulReturn: 0,
 		tokkulCost: 6,
-		diaryTokkulReturn: 1,
+		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
 		aliases: ['fire']
 	},
 	{
 		name: 'Water rune',
-		inputItem: itemID('Water rune'),
-		tokkulReturn: 1,
+		itemID: itemID('Water rune'),
+		stock: 5000,
+		tokkulReturn: 0,
 		tokkulCost: 6,
-		diaryTokkulReturn: 1,
+		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
 		aliases: ['water']
 	},
 	{
 		name: 'Air rune',
-		inputItem: itemID('Air rune'),
-		tokkulReturn: 1,
+		itemID: itemID('Air rune'),
+		stock: 5000,
+		tokkulReturn: 0,
 		tokkulCost: 6,
-		diaryTokkulReturn: 1,
+		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
 		aliases: ['air']
 	},
 	{
 		name: 'Earth rune',
-		inputItem: itemID('Earth rune'),
-		tokkulReturn: 1,
+		itemID: itemID('Earth rune'),
+		stock: 5000,
+		tokkulReturn: 0,
 		tokkulCost: 6,
-		diaryTokkulReturn: 1,
+		diaryTokkulReturn: 0,
 		diaryTokkulCost: 5,
 		aliases: ['earth']
 	},
 	{
 		name: 'Mind rune',
-		inputItem: itemID('Mind rune'),
+		itemID: itemID('Mind rune'),
+		stock: 5000,
 		tokkulReturn: 1,
 		tokkulCost: 4,
 		diaryTokkulReturn: 1,
@@ -288,7 +315,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Body rune',
-		inputItem: itemID('Body rune'),
+		itemID: itemID('Body rune'),
+		stock: 5000,
 		tokkulReturn: 1,
 		tokkulCost: 4,
 		diaryTokkulReturn: 1,
@@ -297,7 +325,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Chaos rune',
-		inputItem: itemID('Chaos rune'),
+		itemID: itemID('Chaos rune'),
+		stock: 2500,
 		tokkulReturn: 9,
 		tokkulCost: 135,
 		diaryTokkulReturn: 20,
@@ -306,7 +335,8 @@ const TokkulShopItems: TokkulShopItem[] = [
 	},
 	{
 		name: 'Death rune',
-		inputItem: itemID('Death rune'),
+		itemID: itemID('Death rune'),
+		stock: 2500,
 		tokkulReturn: 18,
 		tokkulCost: 270,
 		diaryTokkulReturn: 42,

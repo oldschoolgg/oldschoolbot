@@ -13,7 +13,7 @@ import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: SmeltingActivityTaskOptions) {
-		let { barID, quantity, userID, channelID, duration } = data;
+		let { barID, quantity, userID, channelID, duration, blastf } = data;
 		const user = await this.client.fetchUser(userID);
 
 		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
@@ -21,8 +21,7 @@ export default class extends Task {
 		// If this bar has a chance of failing to smelt, calculate that here.
 		const masterCapeInEffect = bar.chanceOfFail > 0 && user.hasItemEquippedAnywhere('Smithing master cape');
 		const oldQuantity = quantity;
-
-		if (bar.chanceOfFail > 0) {
+		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let chance = masterCapeInEffect ? bar.chanceOfFail / 2 : bar.chanceOfFail;
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
@@ -59,16 +58,14 @@ export default class extends Task {
 			[bar.id]: quantity
 		});
 
-		if (duration >= MIN_LENGTH_FOR_PET) {
+		if (duration >= MIN_LENGTH_FOR_PET && !blastf && user.settings.get(UserSettings.QP) > 10) {
 			const numMinutes = duration / Time.Minute;
-			if (user.settings.get(UserSettings.QP) > 10) {
-				for (let i = 0; i < numMinutes; i++) {
-					if (roll(6500)) {
-						str +=
-							'\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him \'Zak\'.';
-						loot.add('Zak');
-						break;
-					}
+			for (let i = 0; i < numMinutes; i++) {
+				if (roll(6500)) {
+					str +=
+						'\n\n<:zak:751035589952012298> While Smelting ores on Neitiznot, a Yak approaches you and says "Moooo". and is now following you around. You decide to name him \'Zak\'.';
+					loot.add('Zak');
+					break;
 				}
 			}
 		}
@@ -76,11 +73,18 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['smelt', [oldQuantity, bar.name], true],
+			[
+				'smelt',
+				{
+					name: bar.name,
+					quantity: oldQuantity,
+					blast_furnace: blastf
+				},
+				true
+			],
 			undefined,
 			data,
 			loot

@@ -1,7 +1,7 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { getRandomMysteryBox } from '../../lib/data/openables';
+import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Planks } from '../../lib/minions/data/planks';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SawmillActivityTaskOptions } from '../../lib/types/minions';
@@ -22,7 +22,7 @@ export default class extends Task {
 		if (plank.name === 'Elder plank') boxRolls *= 2;
 		for (let i = 0; i < boxRolls; i++) {
 			if (roll(boxChancePerPlank)) {
-				loot.add(getRandomMysteryBox());
+				loot.add(MysteryBoxes.roll());
 			}
 		}
 
@@ -43,11 +43,10 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['sawmill', [plankQuantity, plank.name], true],
+			['activities', { sawmill: { quantity: plankQuantity, type: plank.name } }, true],
 			undefined,
 			data,
 			loot

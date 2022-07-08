@@ -43,7 +43,7 @@ export default class extends Task {
 			user.minionName
 		} carefully places the reward casket${
 			quantity > 1 ? 's' : ''
-		} in your bank. You can open this casket using \`=open ${clueTier.name}\``;
+		} in your bank. You can open this casket using \`/open name:${clueTier.name}\``;
 
 		let loot = new Bank().add(clueTier.id, quantity);
 
@@ -70,20 +70,6 @@ export default class extends Task {
 		}
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		this.client.emit(
-			Events.Log,
-			`${user.username}[${user.id}] received ${quantity} ${clueTier.name} Clue Caskets.`
-		);
-
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => this.client.commands.get('mclue')!.run(res, [quantity, clueTier.name]),
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, ['clue', { tier: clueTier.name, quantity }], undefined, data, loot);
 	}
 }

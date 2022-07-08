@@ -1,11 +1,12 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { hasBlackSmithEquipped } from '../../commands/Minion/smith';
+import { BlacksmithOutfit } from '../../lib/bsoOpenables';
 import Smithing from '../../lib/skilling/skills/smithing/';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 
 export default class extends Task {
 	async run(data: SmithingActivityTaskOptions) {
@@ -15,15 +16,12 @@ export default class extends Task {
 		const smithedItem = Smithing.SmithableItems.find(item => item.id === smithedBarID)!;
 
 		let xpReceived = quantity * smithedItem.xp;
-		const hasBS = hasBlackSmithEquipped(user.getGear('skilling'));
+
+		const hasBS = hasItemsEquippedOrInBank(user, BlacksmithOutfit, 'every');
 		if (hasBS) {
 			xpReceived *= 1.1;
 		}
 
-		await user.addXP({
-			skillName: SkillsEnum.Smithing,
-			amount: xpReceived
-		});
 		const xpRes = await user.addXP({
 			skillName: SkillsEnum.Smithing,
 			amount: xpReceived,
@@ -40,11 +38,10 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['smith', [quantity, smithedItem.name], true],
+			['smith', { name: smithedItem.name, quantity }, true],
 			undefined,
 			data,
 			loot

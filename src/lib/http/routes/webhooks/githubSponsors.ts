@@ -1,10 +1,9 @@
 import { TextChannel } from 'discord.js';
 import { KlasaUser } from 'klasa';
 
-import { client } from '../../../..';
 import PatreonTask from '../../../../tasks/patreon';
 import { boxFrenzy } from '../../../boxFrenzy';
-import { Channel, PerkTier } from '../../../constants';
+import { Channel } from '../../../constants';
 import { addPatronLootTime } from '../../../doubleLoot';
 import { sendToChannelID } from '../../../util/webhook';
 import { GithubSponsorsWebhookData } from '../../githubApiTypes';
@@ -27,32 +26,21 @@ const githubSponsors = (server: FastifyServer) =>
 				case 'created': {
 					const tier = parseStrToTier(data.sponsorship.tier.name);
 					let effectiveTier = tier - 1;
-					sendToChannelID(client, Channel.NewSponsors, {
+					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] became a Tier ${effectiveTier} sponsor.`
 					});
 					if (user) {
-						await (client.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
+						await (globalClient.tasks.get('patreon') as PatreonTask)!.givePerks(user.id, tier);
 					}
 
-					addPatronLootTime(tier, client, user as KlasaUser);
+					addPatronLootTime(tier, user as KlasaUser);
 
-					const isDoingReset = [PerkTier.Five, PerkTier.Six].includes(tier);
-					if (isDoingReset) {
-						await client.query(`
-UPDATE users
-SET "lastDailyTimestamp" = 0
-WHERE "lastDailyTimestamp" != 0;
-`);
-					}
 					for (const id of [Channel.BSOChannel, Channel.BSOGeneral]) {
 						boxFrenzy(
-							client.channels.cache.get(id) as TextChannel,
+							globalClient.channels.cache.get(id) as TextChannel,
 							`🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
-${
-	data.sender.login
-} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.
-${isDoingReset ? 'Everyones daily cooldown has been reset.' : ''}
+${data.sender.login} became a Github sponsor, as a reward for everyone, here is a box frenzy, guess any of the items in the image for a mystery box.
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉
 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉`,
 							tier * 3
@@ -64,22 +52,22 @@ ${isDoingReset ? 'Everyones daily cooldown has been reset.' : ''}
 				case 'pending_tier_change': {
 					const from = parseStrToTier(data.changes!.tier.from.name);
 					const to = parseStrToTier(data.sponsorship.tier.name);
-					sendToChannelID(client, Channel.NewSponsors, {
+					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] changed their sponsorship from Tier ${
 							from - 1
 						} to Tier ${to - 1}.`
 					});
 					if (user) {
-						await (client.tasks.get('patreon') as PatreonTask)!.changeTier(user.id, from, to);
+						await (globalClient.tasks.get('patreon') as PatreonTask)!.changeTier(user.id, from, to);
 					}
 					break;
 				}
 				case 'cancelled': {
 					if (user) {
-						await (client.tasks.get('patreon') as PatreonTask)!.removePerks(user.id);
+						await (globalClient.tasks.get('patreon') as PatreonTask)!.removePerks(user.id);
 					}
 
-					sendToChannelID(client, Channel.NewSponsors, {
+					sendToChannelID(Channel.NewSponsors, {
 						content: `${data.sender.login}[${data.sender.id}] cancelled being a Tier ${
 							parseStrToTier(data.sponsorship.tier.name) - 1
 						} sponsor. ${

@@ -5,16 +5,14 @@ import { Bank } from 'oldschooljs';
 import { Emoji, Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import { ArdougneDiary, userhasDiaryTier } from '../../lib/diaries';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
-import { runCommand } from '../../lib/settings/settings';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Agility from '../../lib/skilling/skills/agility';
+import { gorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { addItemToBank, randomVariation, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import { gorajanShardChance } from './dungeoneeringActivity';
 
 export default class extends Task {
 	async run(data: AgilityActivityTaskOptions) {
@@ -75,14 +73,14 @@ export default class extends Task {
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
-			const alchGP = alchedItem.highalch * alch.quantity;
+			const alchGP = alchedItem.highalch! * alch.quantity;
 			loot.add('Coins', alchGP);
 			xpRes += ` ${await user.addXP({
 				skillName: SkillsEnum.Magic,
 				amount: alch.quantity * 65,
 				duration
 			})}`;
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchGP);
+			updateGPTrackSetting('gp_alch', alchGP);
 		}
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
@@ -169,22 +167,10 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				const flags: Record<string, string> = alch === null ? {} : { alch: 'alch' };
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				if (!res.prompter) res.prompter = {};
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				res.prompter.flags = flags;
-
-				user.log(`continued trip of ${quantity}x ${course.name} laps`);
-				return runCommand(res, 'laps', [quantity, course.aliases[0], true]);
-			},
+			['laps', { name: course.name, quantity, alch: Boolean(alch) }, true],
 			undefined,
 			data,
 			loot

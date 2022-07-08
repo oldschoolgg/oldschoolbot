@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
 import { MIN_LENGTH_FOR_PET } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AlchingActivityTaskOptions } from '../../lib/types/minions';
 import { roll, updateGPTrackSetting } from '../../lib/util';
@@ -43,7 +42,7 @@ export default class extends Task {
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
-		updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourceAlching, alchValue);
+		updateGPTrackSetting('gp_alch', alchValue);
 
 		const xpReceived = quantity * 65;
 		const xpRes = await user.addXP({
@@ -62,15 +61,6 @@ export default class extends Task {
 				'<:lil_lamb:749240864345423903> While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.';
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			responses,
-			['alch', [quantity, [item]], true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, responses, ['alch', [quantity, [item]], true], undefined, data, loot);
 	}
 }

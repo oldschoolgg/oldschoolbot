@@ -1,21 +1,22 @@
+/* eslint-disable no-case-declarations */
 import { MessageCollector } from 'discord.js';
-import { round, Time } from 'e';
+import { increaseNumByPercent, round, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { client } from '..';
-import { collectables } from '../commands/Minion/collect';
-import BankImageTask from '../tasks/bankImage';
-import { effectiveMonsters } from './minions/data/killableMonsters';
+import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import killableMonsters, { effectiveMonsters } from './minions/data/killableMonsters';
 import { prisma, trackLoot } from './settings/prisma';
-import { UserSettings } from './settings/types/UserSettings';
-import { generateContinuationChar, itemNameFromID, roll } from './util';
+import { runCommand } from './settings/settings';
+import { itemNameFromID, roll } from './util';
 import { createCollector } from './util/createCollector';
 import getOSItem from './util/getOSItem';
 import { collectors } from './util/handleTripFinish';
+import { makeBankImage } from './util/makeBankImage';
 import { sendToChannelID } from './util/webhook';
-import { Tame, tame_growth, TameActivity } from '.prisma/client';
+import { Tame, tame_growth, TameActivity, User } from '.prisma/client';
 
 interface NurseryEgg {
 	species: number;
@@ -48,9 +49,14 @@ export interface TameTaskGathererOptions {
 
 export type TameTaskOptions = TameTaskCombatOptions | TameTaskGathererOptions;
 
+export enum TameSpeciesID {
+	Igne = 1,
+	Monkey = 2
+}
+
 export const tameSpecies: Species[] = [
 	{
-		id: 1,
+		id: TameSpeciesID.Igne,
 		type: TameType.Combat,
 		name: 'Igne',
 		variants: [1, 2, 3],
@@ -72,10 +78,11 @@ export const tameSpecies: Species[] = [
 			.add('Elder rune', 100)
 			.add('Astral rune', 600)
 			.add('Coins', 10_000_000),
-		emoji: '<:dragonEgg:858948148641660948>'
+		emoji: '<:dragonEgg:858948148641660948>',
+		emojiID: '858948148641660948'
 	},
 	{
-		id: 2,
+		id: TameSpeciesID.Monkey,
 		type: TameType.Gatherer,
 		name: 'Monkey',
 		variants: [1, 2, 3],
@@ -89,6 +96,7 @@ export const tameSpecies: Species[] = [
 		hatchTime: Time.Hour * 4.5,
 		egg: getOSItem('Monkey egg'),
 		emoji: '<:monkey_egg:883326001445224488>',
+		emojiID: '883326001445224488',
 		mergingCost: new Bank()
 			.add('Banana', 3000)
 			.add('Magic banana', 50)
@@ -179,6 +187,17 @@ export async function addDurationToTame(tame: Tame, duration: number) {
 	return `Your tame has grown ${percentToAdd.toFixed(2)}%!`;
 }
 
+function doubleLootCheck(tame: Tame, loot: Bank) {
+	const hasMrE = tameHasBeenFed(tame, 'Mr. E');
+	let doubleLootMsg = '';
+	if (hasMrE && roll(12)) {
+		loot.multiply(2);
+		doubleLootMsg = '\n**2x Loot from Mr. E**';
+	}
+
+	return { loot, doubleLootMsg };
+}
+
 export interface Species {
 	id: number;
 	type: TameType;
@@ -207,6 +226,22 @@ export interface Species {
 	egg: Item;
 	mergingCost: Bank;
 	emoji: string;
+	emojiID: string;
+}
+
+export function shortTameTripDesc(activity: TameActivity) {
+	const data = activity.data as unknown as TameTaskOptions;
+	switch (data.type) {
+		case TameType.Combat: {
+			const mon = killableMonsters.find(i => i.id === data.monsterID);
+			return `Killing ${mon!.name}`;
+		}
+		case TameType.Gatherer: {
+			return `Collecting ${itemNameFromID(data.itemID)}`;
+		}
+		default:
+			return 'Nothing';
+	}
 }
 
 export async function runTameTask(activity: TameActivity, tame: Tame) {
@@ -225,21 +260,20 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		const addRes = await addDurationToTame(tame, activity.duration);
 		if (addRes) res.message += `\n${addRes}`;
 
-		const continuationChar = generateContinuationChar(res.user);
+		// TODO: make tames use buttons for continuing
+		const continuationChar = 'y';
 		res.message += `\nSay \`${continuationChar}\` to repeat this trip.`;
 
-		sendToChannelID(client, activity.channel_id, {
+		sendToChannelID(activity.channel_id, {
 			content: res.message,
 			image: (
-				await (client.tasks.get('bankImage') as BankImageTask).generateBankImage(
-					res.loot,
-					`${tameName(tame)}'s Loot`,
-					true,
-					{ showNewCL: 1 },
-					res.user,
-					previousTameCl
-				)
-			).image!
+				await makeBankImage({
+					bank: res.loot,
+					title: `${tameName(tame)}'s Loot`,
+					user: res.user,
+					previousCL: previousTameCl
+				})
+			).file.buffer
 		});
 
 		createCollector({
@@ -247,23 +281,50 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			channelID: activity.channel_id,
 			continuationCharacter: [continuationChar],
 			toExecute: async (mes: KlasaMessage, collector: MessageCollector) => {
-				if (client.oneCommandAtATimeCache.has(mes.author.id)) {
+				if (globalClient.oneCommandAtATimeCache.has(mes.author.id)) {
 					collector.stop();
 					collectors.delete(mes.author.id);
 					return;
 				}
-				client.oneCommandAtATimeCache.add(mes.author.id);
+				globalClient.oneCommandAtATimeCache.add(mes.author.id);
 				try {
 					const activityData = activity.data as any as TameTaskOptions;
-					let tameInteraction = '';
 					switch (activityData.type) {
 						case TameType.Combat:
-							tameInteraction = effectiveMonsters.find(e => e.id === activityData.monsterID)!.name;
-							(client.commands.get('tame') as any)!.k(mes, [tameInteraction]);
+							const monsterName = effectiveMonsters.find(e => e.id === activityData.monsterID)!.name;
+							await runCommand({
+								commandName: 'tames',
+								args: {
+									kill: {
+										name: monsterName
+									}
+								},
+								isContinue: true,
+								bypassInhibitors: true,
+								channelID: mes.channel.id,
+								userID: mes.author.id,
+								guildID: mes.guild?.id,
+								user: mes.author,
+								member: mes.member
+							});
 							break;
 						case TameType.Gatherer:
-							tameInteraction = itemNameFromID(activityData.itemID)!.toLowerCase();
-							(client.commands.get('tame') as any)!.c(mes, [tameInteraction]);
+							const collectableName = itemNameFromID(activityData.itemID)!.toLowerCase();
+							await runCommand({
+								commandName: 'tames',
+								args: {
+									collect: {
+										name: collectableName
+									}
+								},
+								isContinue: true,
+								bypassInhibitors: true,
+								channelID: mes.channel.id,
+								userID: mes.author.id,
+								guildID: mes.guild?.id,
+								user: mes.author,
+								member: mes.member
+							});
 							break;
 						default:
 							break;
@@ -272,7 +333,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 					console.log({ err });
 					mes.channel.send(err);
 				} finally {
-					setTimeout(() => client.oneCommandAtATimeCache.delete(mes.author.id), 300);
+					setTimeout(() => globalClient.oneCommandAtATimeCache.delete(mes.author.id), 300);
 				}
 			}
 		});
@@ -287,7 +348,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			// If less than 8 kills, roll 25% chance per kill
 			if (hasOri) {
 				if (killQty >= 8) {
-					killQty = Math.ceil(killQty * 1.25);
+					killQty = Math.ceil(increaseNumByPercent(killQty, 25));
 				} else {
 					for (let i = 0; i < quantity; i++) {
 						if (roll(4)) killQty++;
@@ -296,7 +357,7 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			}
 			const fullMonster = Monsters.get(monsterID)!;
 			const loot = fullMonster.kill(killQty, {});
-			const user = await client.fetchUser(activity.user_id);
+			const user = await globalClient.fetchUser(activity.user_id);
 			let str = `${user}, ${tameName(tame)} finished killing ${quantity}x ${fullMonster.name}.`;
 			const boosts = [];
 			if (hasOri) {
@@ -305,6 +366,8 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			if (boosts.length > 0) {
 				str += `\n\n**Boosts:** ${boosts.join(', ')}.`;
 			}
+			const { doubleLootMsg } = doubleLootCheck(tame, loot);
+			str += doubleLootMsg;
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			await trackLoot({
 				duration: activity.duration,
@@ -327,10 +390,12 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 			const collectable = collectables.find(c => c.item.id === itemID)!;
 			const totalQuantity = quantity * collectable.quantity;
 			const loot = new Bank().add(collectable.item.id, totalQuantity);
-			const user = await client.fetchUser(activity.user_id);
+			const user = await globalClient.fetchUser(activity.user_id);
 			let str = `${user}, ${tameName(tame)} finished collecting ${totalQuantity}x ${
 				collectable.item.name
 			}. (${Math.round((totalQuantity / (activity.duration / Time.Minute)) * 60).toLocaleString()}/hr)`;
+			const { doubleLootMsg } = doubleLootCheck(tame, loot);
+			str += doubleLootMsg;
 			const { itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: false });
 			handleFinish({
 				loot: itemsAdded,
@@ -346,10 +411,77 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 	}
 }
 
-export async function getUsersTame(user: KlasaUser): Promise<[Tame | null, TameActivity | null]> {
-	const selectedTame = user.settings.get(UserSettings.SelectedTame);
+export async function tameLastFinishedActivity(user: User) {
+	const tameID = user.selected_tame;
+	if (!tameID) return null;
+	return prisma.tameActivity.findFirst({
+		where: {
+			user_id: user.id,
+			tame_id: tameID
+		},
+		orderBy: {
+			finish_date: 'desc'
+		}
+	});
+}
+
+export function repeatTameTrip(msg: KlasaMessage, activity: TameActivity) {
+	const data = activity.data as unknown as TameTaskOptions;
+	switch (data.type) {
+		case TameType.Combat: {
+			const mon = killableMonsters.find(i => i.id === data.monsterID);
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					kill: {
+						name: mon!.name
+					}
+				},
+				bypassInhibitors: true,
+				channelID: msg.channel.id,
+				userID: msg.author.id,
+				guildID: msg.guild?.id,
+				user: msg.author,
+				member: msg.member
+			});
+		}
+		case TameType.Gatherer: {
+			return runCommand({
+				commandName: 'tames',
+				args: {
+					collect: {
+						name: itemNameFromID(data.itemID)
+					}
+				},
+				bypassInhibitors: true,
+				channelID: msg.channel.id,
+				userID: msg.author.id,
+				guildID: msg.guild?.id,
+				user: msg.author,
+				member: msg.member
+			});
+		}
+		default: {
+		}
+	}
+}
+
+export async function getUsersTame(
+	user: KlasaUser | User
+): Promise<
+	{ tame: null; activity: null; species: null } | { tame: Tame; species: Species; activity: TameActivity | null }
+> {
+	const selectedTame = (
+		await mahojiUsersSettingsFetch(user.id, {
+			selected_tame: true
+		})
+	).selected_tame;
 	if (!selectedTame) {
-		return [null, null];
+		return {
+			tame: null,
+			activity: null,
+			species: null
+		};
 	}
 	const tame = await prisma.tame.findFirst({ where: { id: selectedTame } });
 	if (!tame) {
@@ -358,7 +490,8 @@ export async function getUsersTame(user: KlasaUser): Promise<[Tame | null, TameA
 	const activity = await prisma.tameActivity.findFirst({
 		where: { user_id: user.id, tame_id: tame.id, completed: false }
 	});
-	return [tame, activity];
+	const species = tameSpecies.find(i => i.id === tame.species_id)!;
+	return { tame, activity, species };
 }
 
 export async function createTameTask({
@@ -391,4 +524,20 @@ export async function createTameTask({
 	});
 
 	return activity;
+}
+
+export async function getAllUserTames(userID: bigint | string) {
+	const tames = await prisma.tame.findMany({
+		where: {
+			user_id: userID.toString()
+		},
+		include: {
+			tame_activity: {
+				where: {
+					completed: false
+				}
+			}
+		}
+	});
+	return tames;
 }
