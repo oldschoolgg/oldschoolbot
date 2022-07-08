@@ -3188,13 +3188,12 @@ setCustomItem(
 setCustomItem(
 	70_009,
 	"Void Staff (u)",
-	"Battlestaff",
+	"Coal",
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
 			isSuperUntradeable: true,
 		},
-		equipable: false,
 	},
 	50_000_000
 );
