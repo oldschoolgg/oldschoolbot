@@ -42,6 +42,7 @@ export async function hotColdCommand(
 	choice: 'hot' | 'cold' | undefined,
 	_amount: string | undefined
 ) {
+	if (user.minion_ironman) return 'Ironmen cannot gamble.';
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
 	if (!amount || !choice || !['hot', 'cold'].includes(choice) || !Number.isInteger(amount)) return explanation;
 	if (amount < 10_000_000 || amount > 500_000_000) return 'You must gamble between 10m and 500m.';
