@@ -3,10 +3,11 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
+import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { MahojiUserOption } from '../mahojiSettings';
+import { MahojiUserOption, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -111,6 +112,31 @@ export const gambleCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
+		},
+		/**
+		 *
+		 * Hot Cold
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'hot_cold',
+			description: 'Allows you play Hot Cold and risk your GP to win big.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'choice',
+					description: 'The flower type you want to guess.',
+					required: false,
+					choices: ['hot', 'cold'].map(i => ({ name: i, value: i }))
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'amount',
+					description: 'Amount you wish to gamble.',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({
@@ -123,33 +149,21 @@ export const gambleCommand: OSBMahojiCommand = {
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
 		slots?: { amount?: string };
+		hot_cold?: { type?: 'hot' | 'cold'; amount?: string };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 
-		/**
-		 *
-		 * Cape
-		 *
-		 */
 		if (options.cape) {
 			if (options.cape.type) {
 				return capeGambleCommand(klasaUser, options.cape.type, interaction);
 			}
 			return capeGambleStatsCommand(klasaUser);
 		}
-		/**
-		 *
-		 * Dice
-		 *
-		 */
+
 		if (options.dice) {
 			return diceCommand(klasaUser, options.dice.amount);
 		}
-		/**
-		 *
-		 * Duel
-		 *
-		 */
+
 		if (options.duel) {
 			return duelCommand(
 				klasaUser,
@@ -158,22 +172,19 @@ export const gambleCommand: OSBMahojiCommand = {
 				options.duel.amount
 			);
 		}
-		/**
-		 *
-		 * Lucky Pick
-		 *
-		 */
+
 		if (options.lucky_pick) {
 			return luckyPickCommand(klasaUser, options.lucky_pick.amount, interaction);
 		}
 
-		/**
-		 *
-		 * Slots
-		 *
-		 */
 		if (options.slots) {
 			return slotsCommand(interaction, klasaUser, options.slots.amount);
+		}
+
+		const mahojiUser = await mahojiUsersSettingsFetch(klasaUser.id);
+
+		if (options.hot_cold) {
+			return hotColdCommand(interaction, klasaUser, mahojiUser, options.hot_cold.type, options.hot_cold.amount);
 		}
 		return 'Invalid command.';
 	}
