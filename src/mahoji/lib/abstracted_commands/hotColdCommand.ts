@@ -1,10 +1,9 @@
 import { Embed } from '@discordjs/builders';
 import { User } from '@prisma/client';
-import { roll } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
-import { Bank, LootTable } from 'oldschooljs';
+import { LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import resolveItems from '../../../lib/util/resolveItems';
@@ -48,7 +47,6 @@ export async function hotColdCommand(
 	if (amount < 10_000_000 || amount > 500_000_000) return 'You must gamble between 10m and 500m.';
 	if (user.GP < amount) return "You can't afford to gamble that much.";
 	let flowerLoot = flowerTable.roll();
-	if (roll(2)) flowerLoot = new Bank().add('Black flowers');
 	let flower = flowerLoot.items()[0][0];
 
 	await handleMahojiConfirmation(
