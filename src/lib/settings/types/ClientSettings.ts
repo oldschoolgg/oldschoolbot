@@ -128,6 +128,7 @@ export namespace ClientSettings {
 		export const GPSourceItemContracts = T<number>('gp_ic');
 		export const GPSourceLuckyPick = T<number>('gp_luckypick');
 		export const GPSourceSlots = T<number>('gp_slots');
+		export const GPHotCold = T<number>('gp_hotcold');
 	}
 
 	export const CustomPrices = T<Readonly<ItemBank>>('custom_prices');

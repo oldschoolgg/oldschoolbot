@@ -49,7 +49,7 @@ export const sellCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'items',
-			description: 'The items you want to sell.',
+			description: 'The items you want to sell (e.g. 1 trout, 5 coal',
 			required: false
 		},
 		filterOption,

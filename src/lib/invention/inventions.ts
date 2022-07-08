@@ -7,8 +7,8 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import {
-	clientSettingsUpdate,
 	mahojiClientSettingsFetch,
+	mahojiClientSettingsUpdate,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
@@ -418,7 +418,7 @@ export async function transactMaterialsFromUser({
 
 	if (addToGlobalInventionCostBank && remove) {
 		const current = await mahojiClientSettingsFetch({ invention_materials_cost: true });
-		await clientSettingsUpdate({
+		await mahojiClientSettingsUpdate({
 			invention_materials_cost: new MaterialBank(current.invention_materials_cost as IMaterialBank).add(remove)
 				.bank
 		});
