@@ -18,7 +18,6 @@ export const giveawayCommand: OSBMahojiCommand = {
 	description: 'Giveaway items from your ban to other players.',
 	attributes: {
 		requiresMinion: true,
-		requiresMinionNotBusy: true,
 		examples: ['/giveaway items:10 trout, 5 coal time:1h']
 	},
 	options: [
@@ -57,6 +56,7 @@ export const giveawayCommand: OSBMahojiCommand = {
 		channelID
 	}: CommandRunOptions<{ start?: { duration: string; items?: string; filter?: string; search?: string } }>) => {
 		const user = await globalClient.fetchUser(userID);
+		if (user.isIronman) return 'You cannot do giveaways!';
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channelIsSendable(channel)) return 'Invalid channel.';

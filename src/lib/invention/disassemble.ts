@@ -8,9 +8,9 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { table } from 'table';
 
 import {
-	clientSettingsUpdate,
 	getSkillsOfMahojiUser,
 	mahojiClientSettingsFetch,
+	mahojiClientSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
 import { Emoji } from '../constants';
@@ -418,7 +418,7 @@ async function handleInventionPrize(isIron: boolean): Promise<Bank | null> {
 	if (isIron && toGive !== itemID('Double loot token')) return null;
 	if (!toGive) return null;
 	const loot = new Bank().add(toGive);
-	await clientSettingsUpdate({
+	await mahojiClientSettingsUpdate({
 		invention_prizes_remaining: remainingBank.remove(loot).bank
 	});
 	return loot;
@@ -456,7 +456,7 @@ export async function disassemblyTask(data: DisassembleTaskOptions) {
 	const { items_disassembled_cost } = await mahojiClientSettingsFetch({
 		items_disassembled_cost: true
 	});
-	await clientSettingsUpdate({
+	await mahojiClientSettingsUpdate({
 		items_disassembled_cost: new Bank(items_disassembled_cost as ItemBank).add(cost).bank
 	});
 

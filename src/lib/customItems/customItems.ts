@@ -2759,3 +2759,10 @@ setCustomItem(52_630, 'Beehive', 'Coal', {}, 10_000);
 setCustomItem(52_631, 'Honeycomb', 'Coal', {}, 10_000);
 setCustomItem(52_632, 'Honey', 'Coal', {}, 10_000);
 setCustomItem(52_633, 'Buzz', 'Herbi', { customItemData: { isSuperUntradeable: true } }, 1_000_000);
+setCustomItem(
+	52_634,
+	'Elder table',
+	'Coal',
+	{ customItemData: { isSuperUntradeable: true, cantDropFromMysteryBoxes: true } },
+	1
+);

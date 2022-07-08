@@ -241,6 +241,44 @@ const hunterBuyables: Buyable[] = [
 	}
 ];
 
+const magicBuyables: Buyable[] = [
+	{
+		name: 'Mystic hat',
+		gpCost: 15_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe top',
+		gpCost: 120_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe bottom',
+		gpCost: 80_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic gloves',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic boots',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	}
+];
+
 const questBuyables: Buyable[] = [
 	{
 		name: 'Goldsmith gauntlets',
@@ -870,9 +908,18 @@ const Buyables: Buyable[] = [
 			return user.owns('Beehive') ? [false, 'You already own a Beehive.'] : [true];
 		}
 	},
+	{
+		name: 'Mithril seeds',
+		gpCost: 3000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Mithril seeds': 1
+		})
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
+	...magicBuyables,
 	...questBuyables,
 	...noveltyFood,
 	...fremennikClothes,

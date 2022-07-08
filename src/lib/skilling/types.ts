@@ -152,6 +152,8 @@ export interface Craftable {
 	bankChest?: boolean;
 	outputMultiple?: number;
 	otherSkillRequirements?: Partial<Skills>;
+	qpRequired?: number;
+	wcLvl?: number;
 }
 
 export interface Fletchable {
