@@ -19,6 +19,7 @@ import {
 	personalConstructionStats,
 	personalFiremakingStats,
 	personalMiningStats,
+	personalSmeltingStats,
 	personalSmithingStats,
 	personalSpellCastStats,
 	personalWoodcuttingStats
@@ -77,6 +78,7 @@ interface HasFunctionArgs {
 	collectingStats: Bank;
 	smithingSuppliesUsed: Bank;
 	actualClues: Bank;
+	smeltingStats: Bank;
 }
 
 export interface Task {
@@ -267,7 +269,8 @@ export async function leaguesCheckUser(userID: string) {
 		collectingStats,
 		woodcuttingStats,
 		actualClues,
-		ranking
+		ranking,
+		smeltingStats
 	] = await Promise.all([
 		personalConstructionStats(mahojiUser),
 		getPOH(userID),
@@ -285,7 +288,8 @@ export async function leaguesCheckUser(userID: string) {
 		personalCollectingStats(mahojiUser),
 		personalWoodcuttingStats(mahojiUser),
 		calcActualClues(mahojiUser),
-		calcLeaguesRanking(roboChimpUser)
+		calcLeaguesRanking(roboChimpUser),
+		personalSmeltingStats(mahojiUser)
 	]);
 	const clPercent = calcCLDetails(mahojiUser).percent;
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
@@ -322,7 +326,8 @@ export async function leaguesCheckUser(userID: string) {
 		collectingStats,
 		woodcuttingStats,
 		smithingSuppliesUsed,
-		actualClues
+		actualClues,
+		smeltingStats
 	};
 
 	let resStr = '\n';

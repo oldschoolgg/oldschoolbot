@@ -122,8 +122,8 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1014,
 		name: 'Smelt 500 Iron bars from scratch',
-		has: async ({ cl }) => {
-			return cl.amount('Iron ore') >= 100 && cl.amount('Iron bar') >= 100;
+		has: async ({ smeltingStats }) => {
+			return smeltingStats.amount('Iron bar') >= 500;
 		}
 	},
 	{

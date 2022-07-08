@@ -187,9 +187,9 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4022,
-		name: 'Smelt 500 Runite bars from scratch',
-		has: async ({ cl }) => {
-			return cl.amount('Runite ore') >= 100 && cl.amount('Runite bar') >= 100;
+		name: 'Smelt 1000 Runite bars from scratch',
+		has: async ({ smeltingStats }) => {
+			return smeltingStats.amount('Runite bar') >= 2000;
 		}
 	},
 	{

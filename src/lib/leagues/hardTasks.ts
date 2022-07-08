@@ -136,8 +136,8 @@ export const hardTasks: Task[] = [
 	{
 		id: 2013,
 		name: 'Smelt 100 Mithril bars from scratch',
-		has: async ({ cl }) => {
-			return cl.amount('Mithril ore') >= 100 && cl.amount('Mithril bar') >= 100;
+		has: async ({ smeltingStats }) => {
+			return smeltingStats.amount('Mithril bar') >= 100;
 		}
 	},
 	{

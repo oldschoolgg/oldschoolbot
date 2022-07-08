@@ -125,8 +125,8 @@ export const eliteTasks: Task[] = [
 	{
 		id: 3012,
 		name: 'Smelt 300 Adamantite bars from scratch',
-		has: async ({ cl }) => {
-			return cl.amount('Adamantite ore') >= 100 && cl.amount('Adamantite bar') >= 100;
+		has: async ({ smeltingStats }) => {
+			return smeltingStats.amount('Adamantite bar') >= 300;
 		}
 	},
 	{

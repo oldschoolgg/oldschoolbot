@@ -29,8 +29,8 @@ export const easyTasks: Task[] = [
 	{
 		id: 1,
 		name: 'Smelt 100 Bronze bars from scratch',
-		has: async ({ cl }) => {
-			return cl.amount('Copper ore') >= 100 && cl.amount('Tin ore') >= 100 && cl.amount('Bronze bar') >= 100;
+		has: async ({ smeltingStats }) => {
+			return smeltingStats.amount('Bronze bar') >= 100;
 		}
 	},
 	{
@@ -218,8 +218,8 @@ export const easyTasks: Task[] = [
 	{
 		id: 30,
 		name: 'Complete a Fishing Trawler trip.',
-		has: async ({ activityCounts }) => {
-			return (activityCounts.FishingTrawler ?? 0) >= 1;
+		has: async ({ minigames }) => {
+			return minigames.fishing_trawler >= 1;
 		}
 	},
 	{
