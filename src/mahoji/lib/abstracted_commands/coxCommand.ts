@@ -135,7 +135,11 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 			if (
 				isChallengeMode &&
 				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Bow of faerdhinen (c)') &&
+				!userHasItemsEquippedAnywhere(
+					user,
+					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],
+					true
+				) &&
 				!user.hasItemEquippedOrInBank('Twisted bow')
 			) {
 				return [
