@@ -18,12 +18,14 @@ export default class extends Task {
 		// Find lowest level skill
 		let lowestXp = Object.values(user.rawSkills)[0];
 		let lowestSkill = Object.keys(user.rawSkills)[0] as SkillsEnum;
-		Object.entries(user.rawSkills).forEach(([skill, xp]) => {
-			if (xp < lowestXp) {
-				lowestXp = xp;
-				lowestSkill = skill as SkillsEnum;
-			}
-		});
+		Object.entries(user.rawSkills)
+			.filter(i => i[0] !== SkillsEnum.Invention)
+			.forEach(([skill, xp]) => {
+				if (xp < lowestXp) {
+					lowestXp = xp;
+					lowestSkill = skill as SkillsEnum;
+				}
+			});
 
 		// Calculate number of tears collected
 		// QP = Game length in ticks

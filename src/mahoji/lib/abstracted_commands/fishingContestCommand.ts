@@ -17,6 +17,7 @@ import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/u
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 
 export async function fishingContestStartCommand(user: KlasaUser, channelID: bigint, loc: string) {
+	if (!loc) return fishingContestStatsCommand(user);
 	const fishingLocation = fishingLocations.find(i => stringMatches(i.name, loc));
 	if (!fishingLocation) {
 		return `That's not a valid location to fish at, you can fish at these locations: ${fishingLocations

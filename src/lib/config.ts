@@ -31,7 +31,7 @@ export const clientOptions: KlasaClientOptions = {
 		const deprecatedCommands = client.commands.filter(c => c.path.toLowerCase().includes('deprecated')).size;
 		const totalCmds = client.commands.size;
 		const commandsLeft = totalCmds - deprecatedCommands;
-		const endOfTheWorld = new Date('2022-08-31');
+		const endOfTheWorld = new Date('2022-08-14');
 		const diff = endOfTheWorld.getTime() - Date.now();
 		const daysUntil = diff / Time.Day;
 		const migrationStr = `There are ${
@@ -41,7 +41,7 @@ export const clientOptions: KlasaClientOptions = {
 			.slice(0, 2)
 			.join(' ')
 			.replace(',', '')} (${(commandsLeft / daysUntil).toFixed(2)} per day)`;
-		return `[BSO] Ready to serve ${client.guilds.cache.size} guilds. ${migrationStr}`;
+		return `[BSO] Ready to serve ${client.guilds.cache.size} guilds. ${migrationStr}. There are ${globalClient.mahojiClient.commands.pieces.size} mahoji commands.`;
 	},
 	partials: ['USER', 'CHANNEL'],
 	production,

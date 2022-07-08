@@ -19,6 +19,7 @@ import { miningBuyables } from './mining';
 import { monkeyRumbleBuyables } from './monkeyRumbleBuyables';
 import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
+import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
 import { troubleBrewingBuyables } from './troubleBrewingShop';
@@ -857,6 +858,18 @@ const Buyables: Buyable[] = [
 			'Rainbow flower crown': 1
 		})
 	},
+	{
+		name: 'Beehive',
+		itemCost: new Bank({
+			Coins: 15_000
+		}),
+		outputItems: new Bank({
+			Beehive: 1
+		}),
+		customReq: async (user: KlasaUser) => {
+			return user.owns('Beehive') ? [false, 'You already own a Beehive.'] : [true];
+		}
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -879,7 +892,8 @@ const Buyables: Buyable[] = [
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
 	...monkeyRumbleBuyables,
-	...ironmenBuyables
+	...ironmenBuyables,
+	...shootingStarsBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

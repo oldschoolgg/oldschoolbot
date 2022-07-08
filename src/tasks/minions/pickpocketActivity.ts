@@ -4,7 +4,6 @@ import { Bank } from 'oldschooljs';
 
 import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import ClueTiers from '../../lib/minions/data/clueTiers';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
@@ -12,11 +11,13 @@ import { rogueOutfitPercentBonus, roll, updateGPTrackSetting } from '../../lib/u
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import itemID from '../../lib/util/itemID';
 import resolveItems from '../../lib/util/resolveItems';
+import { clueUpgraderEffect } from './monsterActivity';
 
 const notMultiplied = resolveItems([
 	'Blood shard',
 	'Enhanced crystal teleport seed',
-	...ClueTiers.map(i => i.scrollID)
+	...ClueTiers.map(i => i.scrollID),
+	...ClueTiers.map(i => i.id)
 ]);
 
 export function calcLootXPPickpocketing(
@@ -81,8 +82,8 @@ export default class extends Task {
 			}
 		}
 
-		let boosts = [];
-
+		let boosts: string[] = [];
+		await clueUpgraderEffect(user, loot, boosts, 'pickpocketing');
 		if (user.hasItemEquippedOrInBank(itemID("Thieves' armband"))) {
 			boosts.push('3x loot for Thieves armband');
 			loot.multiply(3, notMultiplied);
@@ -98,7 +99,7 @@ export default class extends Task {
 		}
 
 		if (loot.has('Coins')) {
-			updateGPTrackSetting(this.client, ClientSettings.EconomyStats.GPSourcePickpocket, loot.amount('Coins'));
+			updateGPTrackSetting('gp_pickpocket', loot.amount('Coins'));
 		}
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
@@ -127,6 +128,9 @@ export default class extends Task {
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${user.minionName}, just received a **Rocky** <:Rocky:324127378647285771> while pickpocketing a ${npc.name}, their Thieving level is ${currentLevel}!`
 			);
+		}
+		if (boosts.length > 0) {
+			str += `\n\n**Messages:** ${boosts.join(', ')}`;
 		}
 
 		handleTripFinish(

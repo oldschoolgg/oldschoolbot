@@ -28,7 +28,6 @@ Client.defaultUserSchema
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('creatureScores', 'any', { default: {} })
-	.add('clueScores', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
@@ -41,7 +40,6 @@ Client.defaultUserSchema
 	.add('carpenter_points', 'integer', { default: 0 })
 	.add('zeal_tokens', 'integer', { default: 0 })
 	.add('openable_scores', 'any', { default: {} })
-	.add('spawned_rmb', 'boolean', { default: false })
 	.add('attack_style', 'string', { array: true, default: [] })
 	.add('dungeoneering_tokens', 'integer', { default: 0 })
 	.add('total_cox_points', 'integer', { default: 0 })
@@ -68,6 +66,7 @@ Client.defaultUserSchema
 	.add('premium_balance_expiry_date', 'integer', { default: null, maximum: Number.MAX_SAFE_INTEGER })
 	.add('tentacle_charges', 'integer', { default: 10_000 })
 	.add('sang_charges', 'integer', { default: 0 })
+	.add('void_staff_charges', 'integer', { default: 0 })
 	.add('temp_cl', 'any', { default: {} })
 	.add('volcanic_mine_points', 'integer', { default: 0 })
 	.add('slayer', folder =>
@@ -147,6 +146,10 @@ Client.defaultUserSchema
 				default: 0,
 				maximum: Number.MAX_SAFE_INTEGER
 			})
+			.add(SkillsEnum.Invention, 'integer', {
+				default: 0,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder
@@ -173,5 +176,4 @@ Client.defaultUserSchema
 	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 
 	.add('bank_sort_method', 'string', { default: null })
-	.add('bank_sort_weightings', 'any', { default: {} })
-	.add('eggs_delivered', 'integer', { default: 0 });
+	.add('bank_sort_weightings', 'any', { default: {} });

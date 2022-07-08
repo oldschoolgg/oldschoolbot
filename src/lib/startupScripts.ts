@@ -16,7 +16,9 @@ const arrayColumns = [
 	['users', 'slayer.unlocks'],
 	['users', 'slayer.blocked_ids'],
 	['users', 'slayer.autoslay_options'],
-	['users', 'monkeys_fought']
+	['users', 'monkeys_fought'],
+	['users', 'unlocked_blueprints'],
+	['users', 'disabled_inventions']
 ];
 
 for (const [table, column] of arrayColumns) {

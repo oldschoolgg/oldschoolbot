@@ -3,6 +3,7 @@ import { Bank, Items } from 'oldschooljs';
 
 import { MysteryBoxes } from './bsoOpenables';
 import { stringMatches } from './util';
+import { makeBankImageKlasa } from './util/makeBankImage';
 
 export async function boxFrenzy(channel: TextChannel, content: string, quantity: number) {
 	let bank = new Bank();
@@ -14,10 +15,9 @@ export async function boxFrenzy(channel: TextChannel, content: string, quantity:
 	const guessed = new Set();
 
 	try {
-		channel.sendBankImage({
-			bank,
+		channel.send({
 			content,
-			title: 'Guess These Item Names For A Mystery Box'
+			...(await makeBankImageKlasa({ bank, title: 'Guess These Item Names For A Mystery Box' }))
 		});
 
 		await channel.awaitMessages({

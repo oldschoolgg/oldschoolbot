@@ -1,19 +1,20 @@
 import { randInt, Time } from 'e';
-import { Task } from 'klasa';
+import { KlasaUser, Task } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
 import { Emoji, Events } from '../../lib/constants';
 import { handleNaxxusTeaser } from '../../lib/handleNaxxusTeaser';
+import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { defaultFarmingContract, PatchTypes } from '../../lib/minions/farming';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
-import { SkillsEnum } from '../../lib/skilling/types';
+import { Plant, SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { assert, itemID, rand, roll, updateBankSetting } from '../../lib/util';
+import { assert, increaseBankQuantitesByPercent, itemID, rand, roll, updateBankSetting } from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -21,6 +22,24 @@ import { logError } from '../../lib/util/logError';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+
+const plantsNotUsedForArcaneHarvester = ['Mysterious tree'].map(i => Farming.Plants.find(p => p.name === i)!);
+assert(!(plantsNotUsedForArcaneHarvester as any[]).includes(undefined));
+
+async function arcaneHarvesterEffect(user: KlasaUser, plant: Plant, loot: Bank): Promise<string | undefined> {
+	if (plantsNotUsedForArcaneHarvester.includes(plant)) return;
+	if (hasItemsEquippedOrInBank(user, ['Arcane harvester'])) {
+		const boostRes = await inventionItemBoost({
+			userID: BigInt(user.id),
+			inventionID: InventionID.ArcaneHarvester,
+			duration: plant.level * Time.Second * 30
+		});
+		if (boostRes.success) {
+			increaseBankQuantitesByPercent(loot, inventionBoosts.arcaneHarvester.harvestBoostPercent);
+			return `\n${inventionBoosts.arcaneHarvester.harvestBoostPercent}% bonus yield from Arcane Harvester (${boostRes.messages})`;
+		}
+	}
+}
 
 export default class extends Task {
 	async run(data: FarmingActivityTaskOptions) {
@@ -146,6 +165,8 @@ export default class extends Task {
 			}
 
 			if (hasPlopper) loot.multiply(4);
+			const res = await arcaneHarvesterEffect(user, plant, loot);
+			if (res) infoStr.push(res);
 
 			// This code gives the boxes for planing when ONLY planting.
 			if (plant.name === 'Mysterious tree') {
@@ -499,6 +520,8 @@ export default class extends Task {
 			}
 
 			if (hasPlopper) loot.multiply(4);
+			const res = await arcaneHarvesterEffect(user, plant, loot);
+			if (res) infoStr.push(res);
 
 			if (loot.has('Plopper')) {
 				loot.bank[itemID('Plopper')] = 1;

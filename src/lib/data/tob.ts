@@ -3,6 +3,7 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
+import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { blowpipeDarts } from '../minions/functions/blowpipeCommand';
@@ -314,11 +315,9 @@ export async function checkTOBUser(
 		];
 	}
 
-	if (!user.owns(minimumTOBSuppliesNeeded)) {
-		return [
-			true,
-			`${user.username} doesn't have enough items, you need a minimum of this amount of items: ${minimumTOBSuppliesNeeded}.`
-		];
+	const { hasEnough, foodReason } = brewRestoreSupplyCalc(user, 10, 5);
+	if (!hasEnough) {
+		return [true, `${foodReason}`];
 	}
 	const { total } = calculateTOBUserGearPercents(user);
 	if (total < 20) {
@@ -684,8 +683,13 @@ export async function calcTOBInput(u: KlasaUser) {
 			new Bank().add('Shark', 5)
 	);
 
-	items.add('Saradomin brew(4)', brewsNeeded);
-	items.add('Super restore(4)', restoresNeeded);
+	// Find if the user has enough brews&restores with enhanced ones
+	// If they do not, default back to just normals
+	const { hasEnough, foodBank } = brewRestoreSupplyCalc(u, brewsNeeded, restoresNeeded);
+	const defaultBank = new Bank().add('Saradomin brew(4)', brewsNeeded).add('Super restore(4)', restoresNeeded);
+
+	if (!hasEnough) items.add(defaultBank);
+	else items.add(foodBank);
 
 	items.add('Blood rune', 110);
 	items.add('Death rune', 100);

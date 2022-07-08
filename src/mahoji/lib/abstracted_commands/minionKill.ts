@@ -6,48 +6,72 @@ import {
 	reduceNumByPercent,
 	round,
 	Time,
-	uniqueArr
-} from 'e';
-import { KlasaUser } from 'klasa';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
-import { Bank, Monsters } from 'oldschooljs';
-import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import Monster from 'oldschooljs/dist/structures/Monster';
-import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
+	uniqueArr,
+} from "e";
+import { KlasaUser } from "klasa";
+import { SlashCommandInteraction } from "mahoji/dist/lib/structures/SlashCommandInteraction";
+import { Bank, Monsters } from "oldschooljs";
+import { SkillsEnum } from "oldschooljs/dist/constants";
+import { MonsterAttribute } from "oldschooljs/dist/meta/monsterData";
+import Monster from "oldschooljs/dist/structures/Monster";
+import { addArrayOfNumbers, itemID } from "oldschooljs/dist/util";
 
-import { PvMMethod } from '../../../lib/constants';
-import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
-import { Eatables } from '../../../lib/data/eatables';
-import { getSimilarItems } from '../../../lib/data/similarItems';
-import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
-import { GearSetupType } from '../../../lib/gear';
+import { PvMMethod } from "../../../lib/constants";
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit,
+} from "../../../lib/data/CollectionsExport";
+import { Eatables } from "../../../lib/data/eatables";
+import { getSimilarItems } from "../../../lib/data/similarItems";
+import {
+	checkUserCanUseDegradeableItem,
+	degradeableItems,
+	degradeItem,
+} from "../../../lib/degradeableItems";
+import { GearSetupType } from "../../../lib/gear";
+
+import {
+	canAffordInventionBoost,
+	InventionID,
+	inventionItemBoost,
+} from "../../../lib/invention/inventions";
 import {
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
 	boostIceBurst,
+	boostSuperiorCannon,
+	boostSuperiorCannonMulti,
 	cannonMultiConsumables,
 	cannonSingleConsumables,
 	CombatCannonItemBank,
 	CombatOptionsEnum,
 	iceBarrageConsumables,
 	iceBurstConsumables,
-	SlayerActivityConstants
-} from '../../../lib/minions/data/combatConstants';
-import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
-import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../../lib/minions/functions';
-import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
-import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import { Consumable, KillableMonster } from '../../../lib/minions/types';
-import { calcPOHBoosts } from '../../../lib/poh';
-import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
-import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
-import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
+	SlayerActivityConstants,
+	superiorCannonSingleConsumables,
+} from "../../../lib/minions/data/combatConstants";
+import { revenantMonsters } from "../../../lib/minions/data/killableMonsters/revs";
+import { Favours, gotFavour } from "../../../lib/minions/data/kourendFavour";
+import {
+	AttackStyles,
+	calculateMonsterFood,
+	resolveAttackStyles,
+} from "../../../lib/minions/functions";
+import reducedTimeFromKC from "../../../lib/minions/functions/reducedTimeFromKC";
+import removeFoodFromUser from "../../../lib/minions/functions/removeFoodFromUser";
+import { Consumable, KillableMonster } from "../../../lib/minions/types";
+import { calcPOHBoosts } from "../../../lib/poh";
+import { trackLoot } from "../../../lib/settings/prisma";
+import { ClientSettings } from "../../../lib/settings/types/ClientSettings";
+import { UserSettings } from "../../../lib/settings/types/UserSettings";
+import { SlayerTaskUnlocksEnum } from "../../../lib/slayer/slayerUnlocks";
+import {
+	determineBoostChoice,
+	getUsersCurrentSlayerInfo,
+} from "../../../lib/slayer/slayerUtil";
+import { MonsterActivityTaskOptions } from "../../../lib/types/minions";
 import {
 	convertAttackStyleToGearSetup,
 	formatDuration,
@@ -56,61 +80,80 @@ import {
 	itemNameFromID,
 	randomVariation,
 	stringMatches,
-	updateBankSetting
-} from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import findMonster from '../../../lib/util/findMonster';
-import getOSItem from '../../../lib/util/getOSItem';
-import { sendToChannelID } from '../../../lib/util/webhook';
-import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
-import { igneCommand } from './igneCommand';
-import { kgCommand } from './kgCommand';
-import { kkCommand } from './kkCommand';
-import { nexCommand } from './nexCommand';
-import { nightmareCommand } from './nightmareCommand';
-import { getPOH } from './pohCommand';
-import { revsCommand } from './revsCommand';
-import { temporossCommand } from './temporossCommand';
-import { vasaCommand } from './vasaCommand';
-import { zalcanoCommand } from './zalcanoCommand';
+	updateBankSetting,
+} from "../../../lib/util";
+import addSubTaskToActivityTask from "../../../lib/util/addSubTaskToActivityTask";
+import findMonster from "../../../lib/util/findMonster";
+import getOSItem from "../../../lib/util/getOSItem";
+import { sendToChannelID } from "../../../lib/util/webhook";
+import { mahojiUsersSettingsFetch } from "../../mahojiSettings";
+import { igneCommand } from "./igneCommand";
+import { kgCommand } from "./kgCommand";
+import { kkCommand } from "./kkCommand";
+import { nexCommand } from "./nexCommand";
+import { nightmareCommand } from "./nightmareCommand";
+import { getPOH } from "./pohCommand";
+import { revsCommand } from "./revsCommand";
+import { temporossCommand } from "./temporossCommand";
+import { vasaCommand } from "./vasaCommand";
+import { wintertodtCommand } from "./wintertodtCommand";
+import { zalcanoCommand } from "./zalcanoCommand";
 
-const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
+const invalidMonsterMsg =
+	"That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
 const { floor } = Math;
 
 const gorajanBoosts = [
-	[gorajanArcherOutfit, 'range'],
-	[gorajanWarriorOutfit, 'melee'],
-	[gorajanOccultOutfit, 'mage']
+	[gorajanArcherOutfit, "range"],
+	[gorajanWarriorOutfit, "melee"],
+	[gorajanOccultOutfit, "mage"],
 ] as const;
 
 const gearstatToSetup = new Map()
-	.set('attack_stab', 'melee')
-	.set('attack_slash', 'melee')
-	.set('attack_crush', 'melee')
-	.set('attack_magic', 'mage')
-	.set('attack_ranged', 'range');
+	.set("attack_stab", "melee")
+	.set("attack_slash", "melee")
+	.set("attack_crush", "melee")
+	.set("attack_magic", "mage")
+	.set("attack_ranged", "range");
 
 const degradeableItemsCanUse = [
 	{
-		item: getOSItem('Sanguinesti staff'),
-		attackStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 25,
-		boost: 6
+		item: getOSItem("Sanguinesti staff"),
+		attackStyle: "mage",
+		charges: (
+			_killableMon: KillableMonster,
+			_monster: Monster,
+			totalHP: number
+		) => totalHP / 25,
+		boost: 6,
 	},
 	{
-		item: getOSItem('Abyssal tentacle'),
-		attackStyle: 'melee',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
-		boost: 3
-	}
+		item: getOSItem("Abyssal tentacle"),
+		attackStyle: "melee",
+		charges: (
+			_killableMon: KillableMonster,
+			_monster: Monster,
+			totalHP: number
+		) => totalHP / 20,
+		boost: 3,
+	},
+	{
+		item: getOSItem("Void staff"),
+		attackStyle: "mage",
+		boost: 8,
+	},
 ];
 
-function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
-	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
+function applySkillBoost(
+	user: KlasaUser,
+	duration: number,
+	styles: AttackStyles[]
+): [number, string] {
+	const skillTotal = addArrayOfNumbers(styles.map((s) => user.skillLevel(s)));
 
 	let newDuration = duration;
-	let str = '';
+	let str = "";
 	let percent = round(calcWhatPercent(skillTotal, styles.length * 99), 2);
 
 	if (percent < 50) {
@@ -141,28 +184,42 @@ export async function minionKillCommand(
 
 	if (!name) return invalidMonsterMsg;
 
-	if (user.usingPet('Ishi')) {
+	if (user.usingPet("Ishi")) {
 		sendToChannelID(channelID.toString(), {
-			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`
+			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`,
 		});
-		name = 'Ogress Warrior';
+		name = "Ogress Warrior";
 	}
-	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
-	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
-	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
-	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
-	if (name.toLowerCase().includes('ignecarus')) return igneCommand(interaction, user, channelID, name);
-	if (name.toLowerCase().includes('goldemar')) return kgCommand(interaction, user, channelID, name);
-	if (name.toLowerCase().includes('kalphite king')) return kkCommand(interaction, user, channelID, name);
-	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name);
+	if (stringMatches(name, "zalcano")) return zalcanoCommand(user, channelID);
+	if (stringMatches(name, "tempoross"))
+		return temporossCommand(user, channelID, quantity);
+	if (["vasa", "vasa magus"].some((i) => stringMatches(i, name)))
+		return vasaCommand(user, channelID, quantity);
+	if (name.toLowerCase().includes("nightmare"))
+		return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes("wintertodt"))
+		return wintertodtCommand(user, channelID);
+	if (name.toLowerCase().includes("ignecarus"))
+		return igneCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes("goldemar"))
+		return kgCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes("kalphite king"))
+		return kkCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes("nex"))
+		return nexCommand(interaction, user, channelID, name, quantity);
 
-	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
+	if (
+		revenantMonsters.some((i) =>
+			i.aliases.some((a) => stringMatches(a, name))
+		)
+	) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		return revsCommand(user, mUser, channelID, interaction, name);
 	}
 
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
+	const maxTripLength = user.maxTripLength("MonsterKilling");
 
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
@@ -181,62 +238,84 @@ export async function minionKillCommand(
 		user,
 		monster,
 		method,
-		isOnTask
+		isOnTask,
 	});
 
 	// Check requirements
 	const [hasReqs, reason] = user.hasMonsterRequirements(monster);
-	if (!hasReqs) return reason ?? "You don't have the requirements to fight this monster";
+	if (!hasReqs)
+		return (
+			reason ?? "You don't have the requirements to fight this monster"
+		);
 
 	const [hasFavour, requiredPoints] = gotFavour(user, Favours.Shayzien, 100);
 	if (!hasFavour && monster.id === Monsters.LizardmanShaman.id) {
 		return `${user.minionName} needs ${requiredPoints}% Shayzien Favour to kill Lizardman shamans.`;
 	}
 
-	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, user.getKC(monster.id));
+	let [timeToFinish, percentReduced] = reducedTimeFromKC(
+		monster,
+		user.getKC(monster.id)
+	);
 
 	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
 		monsterID: monster.id,
-		boostMethod: boostChoice
+		boostMethod: boostChoice,
 	});
-	const [newTime, skillBoostMsg] = applySkillBoost(user, timeToFinish, attackStyles);
+	const [newTime, skillBoostMsg] = applySkillBoost(
+		user,
+		timeToFinish,
+		attackStyles
+	);
 
 	timeToFinish = newTime;
 	boosts.push(skillBoostMsg);
 
 	timeToFinish /= 2;
-	boosts.push('2x BSO Boost');
+	boosts.push("2x BSO Boost");
 
 	if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
 	if (monster.pohBoosts) {
-		const [boostPercent, messages] = calcPOHBoosts(await getPOH(user.id), monster.pohBoosts);
+		const [boostPercent, messages] = calcPOHBoosts(
+			await getPOH(user.id),
+			monster.pohBoosts
+		);
 		if (boostPercent > 0) {
 			timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
-			boosts.push(messages.join(' + '));
+			boosts.push(messages.join(" + "));
 		}
 	}
 
-	for (const [itemID, boostAmount] of Object.entries(user.resolveAvailableItemBoosts(monster))) {
+	for (const [itemID, boostAmount] of Object.entries(
+		user.resolveAvailableItemBoosts(monster)
+	)) {
 		timeToFinish *= (100 - boostAmount) / 100;
 		boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
 	}
 
-	if (user.usingPet('Gregoyle') && [Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id].includes(monster.id)) {
+	if (
+		user.usingPet("Gregoyle") &&
+		[Monsters.Gargoyle.id, Monsters.GrotesqueGuardians.id].includes(
+			monster.id
+		)
+	) {
 		timeToFinish = reduceNumByPercent(timeToFinish, 20);
-		boosts.push('20% boost for Gregoyle');
+		boosts.push("20% boost for Gregoyle");
 	}
-	if (user.hasItemEquippedAnywhere('Dwarven warhammer') && !monster.wildy) {
+	if (user.hasItemEquippedAnywhere("Dwarven warhammer") && !monster.wildy) {
 		timeToFinish = reduceNumByPercent(timeToFinish, 40);
-		boosts.push('40% boost for Dwarven warhammer');
+		boosts.push("40% boost for Dwarven warhammer");
 	}
-	if (user.getGear('wildy').hasEquipped(['Hellfire bow']) && monster.wildy) {
+	if (user.getGear("wildy").hasEquipped(["Hellfire bow"]) && monster.wildy) {
 		timeToFinish /= 3;
-		boosts.push('3x boost for Hellfire bow');
+		boosts.push("3x boost for Hellfire bow");
 	}
 
 	const monsterHP = osjsMon?.data.hitpoints ?? 100;
-	const estimatedQuantity = floor(user.maxTripLength('MonsterKilling') / timeToFinish);
+	const estimatedQuantity = floor(
+		user.maxTripLength("MonsterKilling") / timeToFinish
+	);
 	const totalMonsterHP = monsterHP * estimatedQuantity;
 
 	/**
@@ -245,63 +324,91 @@ export async function minionKillCommand(
 	 *
 	 */
 	const degItemBeingUsed = [];
-	for (const degItem of degradeableItemsCanUse) {
+	for (const degItemCanUse of degradeableItemsCanUse) {
 		const isUsing =
 			monster.attackStyleToUse &&
-			convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItem.attackStyle &&
-			user.getGear(degItem.attackStyle).hasEquipped(degItem.item.id);
+			convertAttackStyleToGearSetup(monster.attackStyleToUse) ===
+				degItemCanUse.attackStyle &&
+			user
+				.getGear(degItemCanUse.attackStyle)
+				.hasEquipped(degItemCanUse.item.id);
 		if (isUsing) {
-			const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
-			await checkUserCanUseDegradeableItem({
-				item: degItem.item,
-				chargesToDegrade: estimatedChargesNeeded,
+			const degradeableItem = degradeableItems.find(
+				(item) => item.item.name === degItemCanUse.item.name
+			);
+			const estimatedChargesNeeded = degradeableItem!.charges(
+				totalMonsterHP,
+				estimatedQuantity * timeToFinish,
 				user
+			);
+
+			const res = checkUserCanUseDegradeableItem({
+				item: degItemCanUse.item,
+				chargesToDegrade: estimatedChargesNeeded,
+				user,
 			});
-			degItemBeingUsed.push(degItem);
+
+			if (res.hasEnough === false) {
+				return res.userMessage!;
+			}
+			degItemBeingUsed.push(degItemCanUse);
 		}
 	}
 
 	// Removed vorkath because he has a special boost.
-	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
+	if (
+		monster.name.toLowerCase() !== "vorkath" &&
+		osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)
+	) {
 		if (
-			user.hasItemEquippedOrInBank('Dragon hunter lance') &&
+			user.hasItemEquippedOrInBank("Dragon hunter lance") &&
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 20);
-			boosts.push('20% for Dragon hunter lance');
-		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
+			boosts.push("20% for Dragon hunter lance");
+		} else if (
+			user.hasItemEquippedOrInBank("Dragon hunter crossbow") &&
+			attackStyles.includes(SkillsEnum.Ranged)
+		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 20);
-			boosts.push('20% for Dragon hunter crossbow');
+			boosts.push("20% for Dragon hunter crossbow");
 		}
 	}
 
 	// Black mask and salve don't stack.
-	const salveBoost = boosts.join('').toLowerCase().includes('salve amulet');
+	const salveBoost = boosts.join("").toLowerCase().includes("salve amulet");
 	if (!salveBoost) {
 		// Add 15% slayer boost on task if they have black mask or similar
-		if (isOnTask && user.hasItemEquippedOrInBank('Infernal slayer helmet(i)')) {
+		if (
+			isOnTask &&
+			user.hasItemEquippedOrInBank("Infernal slayer helmet(i)")
+		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 22);
-			boosts.push('22% for Infernal slayer helmet(i) on task');
+			boosts.push("22% for Infernal slayer helmet(i) on task");
 		} else if (
 			isOnTask &&
-			user.hasItemEquippedOrInBank('Infernal slayer helmet') &&
+			user.hasItemEquippedOrInBank("Infernal slayer helmet") &&
 			!attackStyles.includes(SkillsEnum.Ranged) &&
 			!attackStyles.includes(SkillsEnum.Magic)
 		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 17);
-			boosts.push('17% for Infernal slayer helmet on task');
-		} else if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-			if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
+			boosts.push("17% for Infernal slayer helmet on task");
+		} else if (
+			attackStyles.includes(SkillsEnum.Ranged) ||
+			attackStyles.includes(SkillsEnum.Magic)
+		) {
+			if (isOnTask && user.hasItemEquippedOrInBank("Black mask (i)")) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Black mask (i) on non-melee task');
+				boosts.push("15% for Black mask (i) on non-melee task");
 			}
 		} else if (
 			isOnTask &&
-			(user.hasItemEquippedOrInBank('Black mask') || user.hasItemEquippedOrInBank('Black mask (i)'))
+			(user.hasItemEquippedOrInBank("Black mask") ||
+				user.hasItemEquippedOrInBank("Black mask (i)"))
 		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Black mask on melee task');
+			boosts.push("15% for Black mask on melee task");
 		}
 	}
 
@@ -312,71 +419,115 @@ export async function minionKillCommand(
 	let usingCannon = false;
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
-	const hasCannon = user.owns(CombatCannonItemBank);
-	if (!isOnTask && method && method !== 'none') {
-		return 'You can only burst/barrage/cannon while on task in BSO.';
+	const hasSuperiorCannon = user.owns("Superior dwarf multicannon");
+	const hasCannon = user.owns(CombatCannonItemBank) || hasSuperiorCannon;
+
+	if (!isOnTask && method && method !== "none") {
+		return "You can only burst/barrage/cannon while on task in BSO.";
 	}
-	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
+	if ((method === "burst" || method === "barrage") && !monster!.canBarrage) {
 		return `${monster!.name} cannot be barraged or burst.`;
 	}
-	if (method === 'cannon' && !hasCannon) {
+	if (method === "cannon" && !hasCannon) {
 		return "You don't own a Dwarf multicannon, so how could you use one?";
 	}
-	if (method === 'cannon' && !monster!.canCannon) {
+	if (method === "cannon" && !monster!.canCannon) {
 		return `${monster!.name} cannot be killed with a cannon.`;
 	}
-	if (boostChoice === 'barrage' && user.skillLevel(SkillsEnum.Magic) < 94) {
-		return `You need 94 Magic to use Ice Barrage. You have ${user.skillLevel(SkillsEnum.Magic)}`;
+	if (boostChoice === "barrage" && user.skillLevel(SkillsEnum.Magic) < 94) {
+		return `You need 94 Magic to use Ice Barrage. You have ${user.skillLevel(
+			SkillsEnum.Magic
+		)}`;
 	}
-	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
-		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
+	if (boostChoice === "burst" && user.skillLevel(SkillsEnum.Magic) < 70) {
+		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(
+			SkillsEnum.Magic
+		)}`;
 	}
+	const { canAfford, mUser } = await canAffordInventionBoost(
+		BigInt(user.id),
+		InventionID.SuperiorDwarfMultiCannon,
+		timeToFinish
+	);
+	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
 
-	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	if (
+		boostChoice === "cannon" &&
+		!mUser.disabled_inventions.includes(
+			InventionID.SuperiorDwarfMultiCannon
+		) &&
+		canAffordSuperiorCannonBoost &&
+		(monster.canCannon || monster.cannonMulti)
+	) {
+		let qty = quantity || floor(maxTripLength / timeToFinish);
+		const res = await inventionItemBoost({
+			userID: BigInt(user.id),
+			inventionID: InventionID.SuperiorDwarfMultiCannon,
+			duration: timeToFinish * qty,
+		});
+		if (res.success) {
+			usingCannon = true;
+			consumableCosts.push(superiorCannonSingleConsumables);
+			let boost = monster.cannonMulti
+				? boostSuperiorCannonMulti
+				: boostSuperiorCannon;
+			timeToFinish = reduceNumByPercent(timeToFinish, boost);
+			boosts.push(`${boost}% for Superior Cannon (${res.messages})`);
+		}
+	} else if (
+		boostChoice === "barrage" &&
+		attackStyles.includes(SkillsEnum.Magic) &&
+		monster!.canBarrage
+	) {
 		consumableCosts.push(iceBarrageConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 		boosts.push(`${boostIceBarrage}% for Ice Barrage`);
 		burstOrBarrage = SlayerActivityConstants.IceBarrage;
-	} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	} else if (
+		boostChoice === "burst" &&
+		attackStyles.includes(SkillsEnum.Magic) &&
+		monster!.canBarrage
+	) {
 		consumableCosts.push(iceBurstConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
 		boosts.push(`${boostIceBurst}% for Ice Burst`);
 		burstOrBarrage = SlayerActivityConstants.IceBurst;
-	} else if (boostChoice === 'cannon' && hasCannon && monster!.cannonMulti) {
+	} else if (boostChoice === "cannon" && hasCannon && monster!.cannonMulti) {
 		usingCannon = true;
 		cannonMulti = true;
 		consumableCosts.push(cannonMultiConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannonMulti);
 		boosts.push(`${boostCannonMulti}% for Cannon in multi`);
-	} else if (boostChoice === 'cannon' && hasCannon && monster!.canCannon) {
+	} else if (boostChoice === "cannon" && hasCannon && monster!.canCannon) {
 		usingCannon = true;
 		consumableCosts.push(cannonSingleConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
 	}
 
-	const maxTripLength = user.maxTripLength('MonsterKilling');
-
-	const hasBlessing = user.hasItemEquippedAnywhere('Dwarven blessing');
-	const hasZealotsAmulet = user.hasItemEquippedAnywhere('Amulet of zealots');
+	const hasBlessing = user.hasItemEquippedAnywhere("Dwarven blessing");
+	const hasZealotsAmulet = user.hasItemEquippedAnywhere("Amulet of zealots");
 	if (hasZealotsAmulet && hasBlessing) {
 		timeToFinish *= 0.75;
-		boosts.push('25% for Dwarven blessing & Amulet of zealots');
+		boosts.push("25% for Dwarven blessing & Amulet of zealots");
 	} else if (hasBlessing) {
 		timeToFinish *= 0.8;
-		boosts.push('20% for Dwarven blessing');
+		boosts.push("20% for Dwarven blessing");
 	}
 	if (monster.wildy && hasZealotsAmulet) {
 		timeToFinish *= 0.95;
-		boosts.push('5% for Amulet of zealots');
+		boosts.push("5% for Amulet of zealots");
 	}
-	const allGorajan = gorajanBoosts.every(e => user.getGear(e[1]).hasEquipped(e[0], true));
+	const allGorajan = gorajanBoosts.every((e) =>
+		user.getGear(e[1]).hasEquipped(e[0], true)
+	);
 	for (const [outfit, setup] of gorajanBoosts) {
 		if (
 			allGorajan ||
-			(gearstatToSetup.get(monster.attackStyleToUse) === setup && user.getGear(setup).hasEquipped(outfit, true))
+			(gearstatToSetup.get(monster.attackStyleToUse) === setup &&
+				user.getGear(setup).hasEquipped(outfit, true))
 		) {
-			boosts.push('10% for Gorajan');
+			boosts.push("10% for Gorajan");
 			timeToFinish *= 0.9;
 			break;
 		}
@@ -397,11 +548,16 @@ export async function minionKillCommand(
 			usersTask.currentTask!.monster_id !== Monsters.KrilTsutsaroth.id
 		) {
 			effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
-		} else if (monster.id === Monsters.Kreearra.id && usersTask.currentTask!.monster_id !== Monsters.Kreearra.id) {
+		} else if (
+			monster.id === Monsters.Kreearra.id &&
+			usersTask.currentTask!.monster_id !== Monsters.Kreearra.id
+		) {
 			effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 4);
 		} else if (
 			monster.id === Monsters.GrotesqueGuardians.id &&
-			user.settings.get(UserSettings.Slayer.SlayerUnlocks).includes(SlayerTaskUnlocksEnum.DoubleTrouble)
+			user.settings
+				.get(UserSettings.Slayer.SlayerUnlocks)
+				.includes(SlayerTaskUnlocksEnum.DoubleTrouble)
 		) {
 			effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 		}
@@ -410,12 +566,13 @@ export async function minionKillCommand(
 	let duration = timeToFinish * quantity;
 
 	// If you have dwarven blessing, you need 1 prayer pot per 5 mins
-	const prayerPots = user.bank().amount('Prayer potion(4)');
+	const prayerPots = user.bank().amount("Prayer potion(4)");
 	const fiveMinIncrements = Math.ceil(duration / (Time.Minute * 5));
 	let prayerPotsNeeded = Math.max(1, fiveMinIncrements);
-	const hasPrayerMasterCape = user.hasItemEquippedAnywhere('Prayer master cape');
+	const hasPrayerMasterCape =
+		user.hasItemEquippedAnywhere("Prayer master cape");
 	if (hasPrayerMasterCape && hasBlessing) {
-		boosts.push('40% less prayer pots');
+		boosts.push("40% less prayer pots");
 		prayerPotsNeeded = Math.floor(0.6 * prayerPotsNeeded);
 	}
 	prayerPotsNeeded = Math.max(1, prayerPotsNeeded);
@@ -429,9 +586,9 @@ export async function minionKillCommand(
 	if (quantity > 1 && duration > maxTripLength) {
 		return `${minionName} can't go on PvM trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
-			maxTripLength / timeToFinish
-		)}.`;
+		)}, try a lower quantity. The highest amount you can do for ${
+			monster.name
+		} is ${floor(maxTripLength / timeToFinish)}.`;
 	}
 
 	const totalCost = new Bank();
@@ -442,13 +599,18 @@ export async function minionKillCommand(
 		consumableCosts.push(monster.itemCost);
 	}
 
-	const infiniteWaterRunes = user.hasItemEquippedAnywhere(getSimilarItems(itemID('Staff of water')));
+	const infiniteWaterRunes = user.hasItemEquippedAnywhere(
+		getSimilarItems(itemID("Staff of water"))
+	);
 	const perKillCost = new Bank();
 	// Calculate per kill cost:
 	if (consumableCosts.length > 0) {
 		for (const cc of consumableCosts) {
 			let consumable = cc;
-			if (consumable.alternativeConsumables && !user.owns(consumable.itemCost)) {
+			if (
+				consumable.alternativeConsumables &&
+				!user.owns(consumable.itemCost)
+			) {
 				for (const c of consumable.alternativeConsumables) {
 					if (user.owns(c.itemCost)) {
 						consumable = c;
@@ -457,13 +619,16 @@ export async function minionKillCommand(
 				}
 			}
 
-			let itemMultiple = consumable.qtyPerKill ?? consumable.qtyPerMinute ?? null;
+			let itemMultiple =
+				consumable.qtyPerKill ?? consumable.qtyPerMinute ?? null;
 			if (itemMultiple) {
 				if (consumable.isRuneCost) {
 					// Free casts for kodai + sotd
-					if (user.hasItemEquippedAnywhere('Kodai wand')) {
+					if (user.hasItemEquippedAnywhere("Kodai wand")) {
 						itemMultiple = Math.ceil(0.85 * itemMultiple);
-					} else if (user.hasItemEquippedAnywhere('Staff of the dead')) {
+					} else if (
+						user.hasItemEquippedAnywhere("Staff of the dead")
+					) {
 						itemMultiple = Math.ceil((6 / 7) * itemMultiple);
 					}
 				}
@@ -471,19 +636,24 @@ export async function minionKillCommand(
 				let multiply = itemMultiple;
 
 				// Calculate the duration for 1 kill and check how much will be used in 1 kill
-				if (consumable.qtyPerMinute) multiply = (timeToFinish / Time.Minute) * itemMultiple;
+				if (consumable.qtyPerMinute)
+					multiply = (timeToFinish / Time.Minute) * itemMultiple;
 
 				// Calculate supply for 1 kill
-				const oneKcCost = consumable.itemCost.clone().multiply(multiply);
+				const oneKcCost = consumable.itemCost
+					.clone()
+					.multiply(multiply);
 				// Can't use Bank.add() because it discards < 1 qty.
 				for (const [itemID, qty] of Object.entries(oneKcCost.bank)) {
-					if (perKillCost.bank[itemID]) perKillCost.bank[itemID] += qty;
+					if (perKillCost.bank[itemID])
+						perKillCost.bank[itemID] += qty;
 					else perKillCost.bank[itemID] = qty;
 				}
 			}
 		}
 		// This will be replaced with a generic function in another PR
-		if (infiniteWaterRunes) perKillCost.remove('Water rune', perKillCost.amount('Water rune'));
+		if (infiniteWaterRunes)
+			perKillCost.remove("Water rune", perKillCost.amount("Water rune"));
 		// Calculate how many monsters can be killed with that cost:
 		const fits = user.bank({ withGP: true }).fits(perKillCost);
 		if (fits < Number(quantity)) {
@@ -503,17 +673,29 @@ export async function minionKillCommand(
 		if (quantity === 0 || !user.owns(lootToRemove)) {
 			return `You don't have the items needed to kill any amount of ${
 				monster.name
-			}, you need: ${formatMissingItems(consumableCosts, timeToFinish)} per kill.`;
+			}, you need: ${formatMissingItems(
+				consumableCosts,
+				timeToFinish
+			)} per kill.`;
 		}
 	}
 	// Check food
-	let foodStr: string = '';
-	if (monster.healAmountNeeded && monster.attackStyleToUse && monster.attackStylesUsed) {
-		const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, user);
+	let foodStr: string = "";
+	if (
+		monster.healAmountNeeded &&
+		monster.attackStyleToUse &&
+		monster.attackStylesUsed
+	) {
+		const [healAmountNeeded, foodMessages] = calculateMonsterFood(
+			monster,
+			user
+		);
 		foodStr += foodMessages;
 
-		let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
-		if (monster.wildy) gearToCheck = 'wildy';
+		let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(
+			monster.attackStyleToUse
+		);
+		if (monster.wildy) gearToCheck = "wildy";
 
 		try {
 			const { foodRemoved, reductions } = await removeFoodFromUser({
@@ -522,28 +704,42 @@ export async function minionKillCommand(
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
 				attackStylesUsed: monster.wildy
-					? ['wildy']
-					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced
+					? ["wildy"]
+					: uniqueArr([
+							...objectKeys(
+								monster.minimumGearRequirements ?? {}
+							),
+							gearToCheck,
+					  ]),
+				learningPercentage: percentReduced,
 			});
 
 			if (foodRemoved.length === 0) {
-				boosts.push('4% for no food');
+				boosts.push("4% for no food");
 				duration = reduceNumByPercent(duration, 4);
 			} else {
 				for (const [item, qty] of foodRemoved.items()) {
-					const eatable = Eatables.find(e => e.id === item.id);
+					const eatable = Eatables.find((e) => e.id === item.id);
 					if (!eatable) continue;
 
 					const healAmount =
-						typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(user);
+						typeof eatable.healAmount === "number"
+							? eatable.healAmount
+							: eatable.healAmount(user);
 					const amountHealed = qty * healAmount;
-					if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
+					if (
+						amountHealed <
+						calcPercentOfNum(75, healAmountNeeded * quantity)
+					)
+						continue;
 					const boost = eatable.pvmBoost;
 					if (boost) {
 						if (boost < 0) {
 							boosts.push(`${boost}% for ${eatable.name}`);
-							duration = increaseNumByPercent(duration, Math.abs(boost));
+							duration = increaseNumByPercent(
+								duration,
+								Math.abs(boost)
+							);
 						} else {
 							boosts.push(`${boost}% for ${eatable.name}`);
 							duration = reduceNumByPercent(duration, boost);
@@ -555,56 +751,93 @@ export async function minionKillCommand(
 
 			totalCost.add(foodRemoved);
 			if (reductions.length > 0) {
-				foodStr += `, ${reductions.join(', ')}`;
+				foodStr += `, ${reductions.join(", ")}`;
 			}
 			foodStr += `, **Removed ${foodRemoved}**`;
 		} catch (e: any) {
-			if (typeof e === 'string') {
+			if (typeof e === "string") {
 				return e;
 			}
 			if (e.message) {
 				return e.message;
 			}
 		}
+	} else {
+		boosts.push("4% for no food");
+		duration = reduceNumByPercent(duration, 4);
 	}
 
 	// Boosts that don't affect quantity:
 	duration = randomVariation(duration, 3);
 
 	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
+		const chargesNeeded = degItem.charges(
+			monster,
+			osjsMon!,
+			monsterHP * quantity
+		);
 		await degradeItem({
 			item: degItem.item,
 			chargesToDegrade: chargesNeeded,
-			user
+			user,
 		});
 		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
 		duration = reduceNumByPercent(duration, degItem.boost);
 	}
 
 	if (isWeekend()) {
-		boosts.push('10% for Weekend');
+		boosts.push("10% for Weekend");
 		duration *= 0.9;
 	}
 
-	if (attackStyles.includes(SkillsEnum.Ranged) && user.hasItemEquippedAnywhere('Ranged master cape')) {
+	if (
+		attackStyles.includes(SkillsEnum.Ranged) &&
+		user.hasItemEquippedAnywhere("Ranged master cape")
+	) {
 		duration *= 0.85;
-		boosts.push('15% for Ranged master cape');
-	} else if (attackStyles.includes(SkillsEnum.Magic) && user.hasItemEquippedAnywhere('Magic master cape')) {
+		boosts.push("15% for Ranged master cape");
+	} else if (
+		attackStyles.includes(SkillsEnum.Magic) &&
+		user.hasItemEquippedAnywhere("Magic master cape")
+	) {
 		duration *= 0.85;
-		boosts.push('15% for Magic master cape');
-	} else if (user.hasItemEquippedAnywhere('Attack master cape')) {
+		boosts.push("15% for Magic master cape");
+	} else if (user.hasItemEquippedAnywhere("Attack master cape")) {
 		duration *= 0.85;
-		boosts.push('15% for Attack master cape');
+		boosts.push("15% for Attack master cape");
 	}
+
+	// Some degrading items use charges based on DURATION
+	// It is important this is after duration modifiers so that the item isn't over-charged
+	for (const degItem of degItemBeingUsed) {
+		const degradeableItem = degradeableItems.find(
+			(item) => item.item.name === degItem.item.name
+		);
+		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
+		duration = reduceNumByPercent(duration, degItem.boost);
+		const chargesNeeded = degradeableItem!.charges(
+			monsterHP * quantity,
+			duration,
+			user
+		);
+		await degradeItem({
+			item: degItem.item,
+			chargesToDegrade: chargesNeeded,
+			user: user,
+		});
+	}
+
 	if (hasBlessing && prayerPotsNeeded) {
-		const prayerPotsBank = new Bank().add('Prayer potion(4)', prayerPotsNeeded);
+		const prayerPotsBank = new Bank().add(
+			"Prayer potion(4)",
+			prayerPotsNeeded
+		);
 		totalCost.add(prayerPotsBank);
 		await user.removeItemsFromBank(prayerPotsBank);
 	}
-	const rangeSetup = { ...user.getGear('range').raw() };
+	const rangeSetup = { ...user.getGear("range").raw() };
 	let usedDart = false;
-	if (rangeSetup.weapon?.item === itemID('Deathtouched dart')) {
+	if (rangeSetup.weapon?.item === itemID("Deathtouched dart")) {
 		duration = 1;
 		if (rangeSetup.weapon.quantity > 1) {
 			rangeSetup.weapon.quantity--;
@@ -612,20 +845,24 @@ export async function minionKillCommand(
 			rangeSetup.weapon = null;
 		}
 		await user.settings.update(UserSettings.Gear.Range, rangeSetup);
-		if (monster.name === 'Koschei the deathless') {
+		if (monster.name === "Koschei the deathless") {
 			return (
-				'You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks' +
-				' eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly.'
+				"You send your minion off to fight Koschei with a Deathtouched dart, they stand a safe distance and throw the dart - Koschei immediately locks" +
+				" eyes with your minion and grabs the dart mid-air, and throws it back, killing your minion instantly."
 			);
 		}
 		usedDart = true;
 	}
-	if (monster.name === 'Koschei the deathless') {
-		return 'You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.';
+	if (monster.name === "Koschei the deathless") {
+		return "You send your minion off to fight Koschei, before they even get close, they feel an immense, powerful fear and return back.";
 	}
 
 	if (lootToRemove.length > 0) {
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		updateBankSetting(
+			globalClient,
+			ClientSettings.EconomyStats.PVMCost,
+			lootToRemove
+		);
 		await user.removeItemsFromBank(lootToRemove);
 		totalCost.add(lootToRemove);
 	}
@@ -634,8 +871,8 @@ export async function minionKillCommand(
 		await trackLoot({
 			id: monster.name,
 			cost: totalCost,
-			type: 'Monster',
-			changeType: 'cost'
+			type: "Monster",
+			changeType: "cost",
 		});
 	}
 
@@ -645,30 +882,32 @@ export async function minionKillCommand(
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'MonsterKilling',
+		type: "MonsterKilling",
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
-		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
+		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage,
 	});
 
 	if (usedDart) {
 		return `<:deathtouched_dart:822674661967265843> ${user.minionName} used a **Deathtouched dart**.`;
 	}
 
-	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
+	let response = `${minionName} is now killing ${quantity}x ${
+		monster.name
+	}, it'll take around ${formatDuration(
 		duration
-	)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
+	)} to finish. Attack styles used: ${attackStyles.join(", ")}.`;
 
 	if (pvmCost) {
 		response += ` Removed ${lootToRemove}.`;
 	}
 
 	if (boosts.length > 0) {
-		response += `\n**Boosts:** ${boosts.join(', ')}.`;
+		response += `\n**Boosts:** ${boosts.join(", ")}.`;
 	}
 
 	if (messages.length > 0) {
-		response += `\n**Messages:** ${messages.join(', ')}.`;
+		response += `\n**Messages:** ${messages.join(", ")}.`;
 	}
 
 	if (foodStr) {

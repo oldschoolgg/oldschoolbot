@@ -1,27 +1,40 @@
-import { increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
-import { KlasaUser } from 'klasa';
-import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
-import { Bank } from 'oldschooljs';
-import { itemID, resolveNameBank } from 'oldschooljs/dist/util';
+import { increaseNumByPercent, reduceNumByPercent, round, Time } from "e";
+import { KlasaUser } from "klasa";
+import { SlashCommandInteraction } from "mahoji/dist/lib/structures/SlashCommandInteraction";
+import { Bank } from "oldschooljs";
+import { itemID, resolveNameBank } from "oldschooljs/dist/util";
 
-import { setupParty } from '../../../extendables/Message/Party';
-import { Emoji } from '../../../lib/constants';
-import { gorajanArcherOutfit, pernixOutfit } from '../../../lib/data/CollectionsExport';
-import { calculateMonsterFood } from '../../../lib/minions/functions';
-import hasEnoughFoodForMonster from '../../../lib/minions/functions/hasEnoughFoodForMonster';
-import { KillableMonster } from '../../../lib/minions/types';
-import { NexMonster } from '../../../lib/nex';
-import { trackLoot } from '../../../lib/settings/prisma';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { MakePartyOptions } from '../../../lib/types';
-import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { channelIsSendable, formatDuration, isWeekend, updateBankSetting } from '../../../lib/util';
-import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import calcDurQty from '../../../lib/util/calcMassDurationQuantity';
-import { getNexGearStats } from '../../../lib/util/getNexGearStats';
+import { setupParty } from "../../../extendables/Message/Party";
+import { Emoji } from "../../../lib/constants";
+import {
+	gorajanArcherOutfit,
+	pernixOutfit,
+} from "../../../lib/data/CollectionsExport";
+import { calculateMonsterFood } from "../../../lib/minions/functions";
+import hasEnoughFoodForMonster from "../../../lib/minions/functions/hasEnoughFoodForMonster";
+import { KillableMonster } from "../../../lib/minions/types";
+import { NexMonster } from "../../../lib/nex";
+import { trackLoot } from "../../../lib/settings/prisma";
+import { ClientSettings } from "../../../lib/settings/types/ClientSettings";
+import { UserSettings } from "../../../lib/settings/types/UserSettings";
+import { MakePartyOptions } from "../../../lib/types";
+import { BossActivityTaskOptions } from "../../../lib/types/minions";
+import {
+	channelIsSendable,
+	formatDuration,
+	isWeekend,
+	updateBankSetting,
+} from "../../../lib/util";
+import addSubTaskToActivityTask from "../../../lib/util/addSubTaskToActivityTask";
+import brewRestoreSupplyCalc from "../../../lib/util/brewRestoreSupplyCalc";
+import calcDurQty from "../../../lib/util/calcMassDurationQuantity";
+import { getNexGearStats } from "../../../lib/util/getNexGearStats";
 
-function checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: number): string | undefined {
+function checkReqs(
+	users: KlasaUser[],
+	monster: KillableMonster,
+	quantity: number
+): string | undefined {
 	// Check if every user has the requirements for this monster.
 	for (const user of users) {
 		if (!user.hasMinion) {
@@ -37,15 +50,17 @@ function checkReqs(users: KlasaUser[], monster: KillableMonster, quantity: numbe
 			return `${user.username} doesn't have the requirements for this monster: ${reason}`;
 		}
 
-		if (!user.owns('Frozen key')) {
+		if (!user.owns("Frozen key")) {
 			return `${user} doesn't have a Frozen key.`;
 		}
 
 		if (!hasEnoughFoodForMonster(monster, user, quantity, users.length)) {
 			return `${
 				users.length === 1 ? "You don't" : `${user.username} doesn't`
-			} have enough brews/restores. You need at least ${monster.healAmountNeeded! * quantity} HP in food to ${
-				users.length === 1 ? 'start the mass' : 'enter the mass'
+			} have enough brews/restores. You need at least ${
+				monster.healAmountNeeded! * quantity
+			} HP in food to ${
+				users.length === 1 ? "start the mass" : "enter the mass"
 			}.`;
 		}
 	}
@@ -55,14 +70,15 @@ export async function nexCommand(
 	interaction: SlashCommandInteraction | null,
 	user: KlasaUser,
 	channelID: bigint,
-	inputName: string
+	inputName: string,
+	inputQuantity: number | undefined
 ) {
 	if (interaction) interaction.deferReply();
 	const userBank = user.bank();
-	if (!userBank.has('Frozen key')) {
+	if (!userBank.has("Frozen key")) {
 		return `${user.minionName} attempts to enter the Ancient Prison to fight Nex, but finds a giant frozen, metal door blocking their way.`;
 	}
-	const type = inputName.toLowerCase().includes('mass') ? 'mass' : 'solo';
+	const type = inputName.toLowerCase().includes("mass") ? "mass" : "solo";
 
 	const failureReason = checkReqs([user], NexMonster, 2);
 	if (failureReason) return failureReason;
@@ -72,22 +88,27 @@ export async function nexCommand(
 		minSize: 2,
 		maxSize: 8,
 		ironmanAllowed: true,
-		message: `${user.username} is doing a ${NexMonster.name} mass! Anyone can click the ${
+		message: `${user.username} is doing a ${
+			NexMonster.name
+		} mass! Anyone can click the ${
 			Emoji.Join
 		} reaction to join, click it again to leave. The maximum size for this mass is ${8}.`,
-		customDenier: async user => {
+		customDenier: async (user) => {
 			if (!user.hasMinion) {
 				return [true, "you don't have a minion."];
 			}
 			if (user.minionIsBusy) {
-				return [true, 'your minion is busy.'];
+				return [true, "your minion is busy."];
 			}
 			const [hasReqs, reason] = user.hasMonsterRequirements(NexMonster);
 			if (!hasReqs) {
-				return [true, `you don't have the requirements for this monster; ${reason}`];
+				return [
+					true,
+					`you don't have the requirements for this monster; ${reason}`,
+				];
 			}
 
-			if (!user.hasItemEquippedOrInBank(itemID('Frozen key'))) {
+			if (!user.hasItemEquippedOrInBank(itemID("Frozen key"))) {
 				return [true, `${user} doesn't have a Frozen key.`];
 			}
 
@@ -105,46 +126,62 @@ export async function nexCommand(
 						true,
 						`You don't have enough food. You need at least ${
 							NexMonster.healAmountNeeded * 2
-						} HP in food to enter the mass.`
+						} HP in food to enter the mass.`,
 					];
 				}
 			}
 
 			return [false];
-		}
+		},
 	};
 
 	const channel = globalClient.channels.cache.get(channelID.toString());
-	if (!channelIsSendable(channel)) return 'No channel found.';
-	const [usersWhoConfirmed, reactionAwaiter] = await setupParty(channel, user, partyOptions);
-	await reactionAwaiter();
-	const users = usersWhoConfirmed.filter(u => !u.minionIsBusy);
-
-	let debugStr = '';
+	if (!channelIsSendable(channel)) return "No channel found.";
+	let users: KlasaUser[] = [];
+	if (type === "mass") {
+		const [usersWhoConfirmed, reactionAwaiter] = await setupParty(
+			channel,
+			user,
+			partyOptions
+		);
+		await reactionAwaiter();
+		users = usersWhoConfirmed.filter((u) => !u.minionIsBusy);
+	} else {
+		users = [user];
+	}
+	let debugStr = "";
 	let effectiveTime = NexMonster.timeToFinish;
 	if (isWeekend()) {
 		effectiveTime = reduceNumByPercent(effectiveTime, 5);
-		debugStr += '5% Weekend boost\n';
+		debugStr += "5% Weekend boost\n";
 	}
 	const isSolo = users.length === 1;
 
-	if (isSolo && (users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) < 200) {
+	if (
+		isSolo &&
+		(users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ??
+			0) < 200
+	) {
 		effectiveTime = increaseNumByPercent(effectiveTime, 20);
 	}
 
-	if (isSolo && (users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0) > 500) {
+	if (
+		isSolo &&
+		(users[0].settings.get(UserSettings.MonsterScores)[NexMonster.id] ??
+			0) > 500
+	) {
 		effectiveTime = reduceNumByPercent(effectiveTime, 20);
 	}
 
 	for (const user of users) {
 		const [data] = getNexGearStats(
 			user,
-			users.map(u => u.id)
+			users.map((u) => u.id)
 		);
 		debugStr += `**${user.username}**: `;
 		let msgs = [];
 
-		const rangeGear = user.getGear('range');
+		const rangeGear = user.getGear("range");
 		if (rangeGear.hasEquipped(pernixOutfit, true, true)) {
 			const percent = isSolo ? 20 : 8;
 			effectiveTime = reduceNumByPercent(effectiveTime, percent);
@@ -174,11 +211,11 @@ export async function nexCommand(
 			effectiveTime = increaseNumByPercent(effectiveTime, percent);
 			msgs.push(`-${percent}% penalty for <200 ranged attack`);
 		}
-		if (rangeGear.hasEquipped('Zaryte bow', true, true)) {
+		if (rangeGear.hasEquipped("Zaryte bow", true, true)) {
 			const percent = isSolo ? 20 : 14;
 			effectiveTime = reduceNumByPercent(effectiveTime, percent);
 			msgs.push(`${percent}% boost for Zaryte bow`);
-		} else if (rangeGear.hasEquipped('Twisted bow', true, true)) {
+		} else if (rangeGear.hasEquipped("Twisted bow", true, true)) {
 			const percent = isSolo ? 15 : 9;
 			effectiveTime = reduceNumByPercent(effectiveTime, percent);
 			msgs.push(`${percent}% boost for Twisted bow`);
@@ -195,7 +232,9 @@ export async function nexCommand(
 		}
 		if (rangeStrBonus !== 0) {
 			effectiveTime = increaseNumByPercent(effectiveTime, rangeStrBonus);
-			msgs.push(`-${rangeStrBonus}% penalty for ${data.percentRangeStrength}% range strength`);
+			msgs.push(
+				`-${rangeStrBonus}% penalty for ${data.percentRangeStrength}% range strength`
+			);
 		}
 
 		// Increase duration for lower KC.
@@ -211,7 +250,10 @@ export async function nexCommand(
 		}
 
 		if (kcBonus < 0) {
-			effectiveTime = reduceNumByPercent(effectiveTime, Math.abs(kcBonus));
+			effectiveTime = reduceNumByPercent(
+				effectiveTime,
+				Math.abs(kcBonus)
+			);
 			msgs.push(`${Math.abs(kcBonus)}% boost for KC`);
 		} else {
 			effectiveTime = increaseNumByPercent(effectiveTime, kcBonus);
@@ -235,24 +277,25 @@ export async function nexCommand(
 			msgs.push(`5% for ${user.username} over 50 kc`);
 		}
 
-		debugStr += `${msgs.join(', ')}. `;
+		debugStr += `${msgs.join(", ")}. `;
 	}
 
 	let [quantity, duration, perKillTime] = await calcDurQty(
 		users,
 		{ ...NexMonster, timeToFinish: effectiveTime },
-		undefined,
+		inputQuantity,
 		Time.Minute * 2,
 		Time.Minute * 30
 	);
 	const secondCheck = checkReqs(users, NexMonster, quantity);
 	if (secondCheck) return secondCheck;
 
-	let foodString = 'Removed brews/restores from users: ';
+	let foodString = "Removed brews/restores from users: ";
 	let foodRemoved = [];
 	for (const user of users) {
 		let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
-		const kc = user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0;
+		const kc =
+			user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0;
 		if (kc > 50) healAmountNeeded *= 0.5;
 		else if (kc > 30) healAmountNeeded *= 0.6;
 		else if (kc > 15) healAmountNeeded *= 0.7;
@@ -263,22 +306,19 @@ export async function nexCommand(
 		}
 
 		const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-		const restoresNeeded = Math.ceil(brewsNeeded / 3);
-		if (
-			!user.bank().has(
-				resolveNameBank({
-					'Saradomin brew(4)': brewsNeeded,
-					'Super restore(4)': restoresNeeded
-				})
-			)
-		) {
-			throw `${user.username} doesn't have enough brews or restores.`;
+		const { hasEnough, foodReason } = brewRestoreSupplyCalc(
+			user,
+			brewsNeeded
+		);
+		if (!hasEnough) {
+			throw foodReason;
 		}
 	}
 	const totalCost = new Bank();
 	for (const user of users) {
 		let [healAmountNeeded] = calculateMonsterFood(NexMonster, user);
-		const kc = user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0;
+		const kc =
+			user.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0;
 		if (kc > 50) healAmountNeeded *= 0.5;
 		else if (kc > 30) healAmountNeeded *= 0.6;
 		else if (kc > 15) healAmountNeeded *= 0.7;
@@ -290,46 +330,51 @@ export async function nexCommand(
 		}
 
 		const brewsNeeded = Math.ceil(healAmountNeeded / 16) * quantity;
-		const restoresNeeded = Math.ceil(brewsNeeded / 3);
-		const items = new Bank({
-			'Saradomin brew(4)': brewsNeeded,
-			'Super restore(4)': restoresNeeded
-		});
-		totalCost.add(items);
-		await user.removeItemsFromBank(items);
-		foodRemoved.push(`${brewsNeeded}/${restoresNeeded} from ${user.username}`);
+		const { foodBank } = brewRestoreSupplyCalc(user, brewsNeeded);
+
+		totalCost.add(foodBank);
+		await user.removeItemsFromBank(foodBank);
+		foodRemoved.push(`${foodBank.toString()} from ${user.username}`);
 	}
 
 	await trackLoot({
-		changeType: 'cost',
+		changeType: "cost",
 		cost: totalCost,
 		id: NexMonster.name,
-		type: 'Monster'
+		type: "Monster",
 	});
 
-	foodString += `${foodRemoved.join(', ')}.`;
+	foodString += `${foodRemoved.join(", ")}.`;
 
 	await addSubTaskToActivityTask<BossActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
 		duration,
-		type: 'Nex',
-		users: users.map(u => u.id)
+		type: "Nex",
+		users: users.map((u) => u.id),
 	});
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.NexCost, totalCost);
+	updateBankSetting(
+		globalClient,
+		ClientSettings.EconomyStats.NexCost,
+		totalCost
+	);
 
 	let str =
-		type === 'solo'
+		type === "solo"
 			? `Your minion is now attempting to kill ${quantity}x Nex. ${foodString}. The trip will take ${formatDuration(
 					duration
 			  )}.`
 			: `${partyOptions.leader.username}'s party (${users
-					.map(u => u.username)
-					.join(', ')}) is now off to kill ${quantity}x ${NexMonster.name}. Each kill takes ${formatDuration(
+					.map((u) => u.username)
+					.join(", ")}) is now off to kill ${quantity}x ${
+					NexMonster.name
+			  }. Each kill takes ${formatDuration(
 					perKillTime
-			  )} instead of ${formatDuration(NexMonster.timeToFinish)} - the total trip will take ${formatDuration(
+			  )} instead of ${formatDuration(
+					NexMonster.timeToFinish
+			  )} - the total trip will take ${formatDuration(
 					duration
 			  )}. ${foodString}`;
 

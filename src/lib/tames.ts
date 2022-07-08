@@ -7,7 +7,6 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import BankImageTask from '../tasks/bankImage';
 import killableMonsters, { effectiveMonsters } from './minions/data/killableMonsters';
 import { prisma, trackLoot } from './settings/prisma';
 import { runCommand } from './settings/settings';
@@ -15,6 +14,7 @@ import { itemNameFromID, roll } from './util';
 import { createCollector } from './util/createCollector';
 import getOSItem from './util/getOSItem';
 import { collectors } from './util/handleTripFinish';
+import { makeBankImage } from './util/makeBankImage';
 import { sendToChannelID } from './util/webhook';
 import { Tame, tame_growth, TameActivity, User } from '.prisma/client';
 
@@ -267,15 +267,13 @@ export async function runTameTask(activity: TameActivity, tame: Tame) {
 		sendToChannelID(activity.channel_id, {
 			content: res.message,
 			image: (
-				await (globalClient.tasks.get('bankImage') as BankImageTask).generateBankImage(
-					res.loot,
-					`${tameName(tame)}'s Loot`,
-					true,
-					{ showNewCL: 1 },
-					res.user,
-					previousTameCl
-				)
-			).image!
+				await makeBankImage({
+					bank: res.loot,
+					title: `${tameName(tame)}'s Loot`,
+					user: res.user,
+					previousCL: previousTameCl
+				})
+			).file.buffer
 		});
 
 		createCollector({

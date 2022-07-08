@@ -63,6 +63,12 @@ const autocompleteMonsters = [
 	{
 		...KalphiteKingMonster,
 		name: 'Kalphite King (Mass)'
+	},
+	{
+		name: 'Wintertodt',
+		aliases: ['wt', 'wintertodt', 'todt'],
+		id: -1,
+		emoji: '<:Phoenix:324127378223792129>'
 	}
 ];
 
@@ -85,8 +91,7 @@ export const killCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to kill things.',
-		examples: ['/k zulrah']
+		examples: ['/k name:zulrah']
 	},
 	options: [
 		{

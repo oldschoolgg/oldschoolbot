@@ -12,6 +12,7 @@ import killableMonsters from '../data/killableMonsters';
 import { Ignecarus } from '../data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../data/killableMonsters/custom/bosses/KalphiteKing';
 import KingGoldemar from '../data/killableMonsters/custom/bosses/KingGoldemar';
+import { Naxxus } from '../data/killableMonsters/custom/bosses/Naxxus';
 import { VasaMagus } from '../data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../data/killableMonsters/custom/customMonsters';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
@@ -36,7 +37,8 @@ const miscHpMap: Record<number, number> = {
 	[VasaMagus.id]: 3900,
 	[KalphiteKingMonster.id]: 5300,
 	[BSOMonsters.SeaKraken.id]: 5200,
-	[Ignecarus.id]: 10_000
+	[Ignecarus.id]: 10_000,
+	[Naxxus.id]: 3900
 };
 
 function meleeOnly(user: KlasaUser): AttackStyles[] {
