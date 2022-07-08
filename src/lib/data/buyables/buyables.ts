@@ -794,6 +794,14 @@ const Buyables: Buyable[] = [
 			'Rainbow flower crown': 1
 		})
 	},
+	{
+		name: 'Mithril seeds',
+		gpCost: 3000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Mithril seeds': 1
+		})
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
