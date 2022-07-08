@@ -89,6 +89,16 @@ const Misc: Craftable[] = [
 		tickRate: 3
 	},
 	{
+		name: 'Neitiznot shield',
+		id: itemID('Neitiznot shield'),
+		level: 1,
+		xp: 34,
+		inputItems: new Bank({ 'Arctic pine logs': 2, 'Bronze nails': 1 }),
+		tickRate: 3,
+		qpRequired: 4,
+		wcLvl: 56
+	},
+	{
 		name: 'Water battlestaff',
 		id: itemID('Water battlestaff'),
 		level: 54,
