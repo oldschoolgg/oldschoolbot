@@ -1,9 +1,10 @@
 import { Embed } from '@discordjs/builders';
 import { User } from '@prisma/client';
+import { roll } from 'e';
 import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
-import { LootTable } from 'oldschooljs';
+import { Bank, LootTable } from 'oldschooljs';
 import { toKMB } from 'oldschooljs/dist/util';
 
 import resolveItems from '../../../lib/util/resolveItems';
@@ -14,7 +15,7 @@ import {
 	mahojiUserSettingsUpdate
 } from '../../mahojiSettings';
 
-const flowerTable = new LootTable()
+export const flowerTable = new LootTable()
 	.add('Red flowers', 1, 150)
 	.add('Yellow flowers', 1, 150)
 	.add('Orange flowers', 1, 150)
@@ -30,10 +31,10 @@ const flowerTable = new LootTable()
 
 const hot = resolveItems(['Red flowers', 'Yellow flowers', 'Orange flowers']);
 const cold = resolveItems(['Blue flowers', 'Purple flowers', 'Assorted flowers']);
-const rerolls = resolveItems(['Black flowers', 'White flowers']);
+const blackAndWhite = resolveItems(['Black flowers', 'White flowers']);
 
 const explanation =
-	"Hot and Cold Rules: You pick hot (red, yellow, orange) or cold (purple, blue, assorted), and if you guess right, you win. If it's mixed, you lose. If its black or white, nobody wins and you're refunded.";
+	"Hot and Cold Rules: You pick hot (red, yellow, orange) or cold (purple, blue, assorted), and if you guess right, you win. If it's mixed, you lose. If its black or white, you win **5x** your bet.";
 
 export async function hotColdCommand(
 	interaction: SlashCommandInteraction,
@@ -43,10 +44,11 @@ export async function hotColdCommand(
 	_amount: string | undefined
 ) {
 	const amount = mahojiParseNumber({ input: _amount, min: 1 });
-	if (!amount || !choice || !['hot', 'cold'].includes(choice)) return explanation;
+	if (!amount || !choice || !['hot', 'cold'].includes(choice) || !Number.isInteger(amount)) return explanation;
 	if (amount < 10_000_000 || amount > 500_000_000) return 'You must gamble between 10m and 500m.';
 	if (user.GP < amount) return "You can't afford to gamble that much.";
-	const flowerLoot = flowerTable.roll();
+	let flowerLoot = flowerTable.roll();
+	if (roll(2)) flowerLoot = new Bank().add('Black flowers');
 	let flower = flowerLoot.items()[0][0];
 
 	await handleMahojiConfirmation(
@@ -67,10 +69,30 @@ ${explanation}`
 		embeds: [embed]
 	};
 
-	if (rerolls.includes(flower.id)) {
-		embed.setDescription('The gamble was cancelled, no GP was removed or added.');
+	// You get 5x if you roll a black/white flower
+	if (blackAndWhite.includes(flower.id)) {
+		const amountWon = amount * 5;
+		await mahojiUserSettingsUpdate(user.id, {
+			gp_hotcold: {
+				increment: amountWon
+			},
+			GP: {
+				increment: amountWon
+			}
+		});
+		await mahojiClientSettingsUpdate({
+			gp_hotcold: {
+				decrement: amountWon
+			}
+		});
+		embed
+			.setDescription(
+				`You rolled a special flower, and received 5x of your bet! You received ${toKMB(amountWon)}`
+			)
+			.setColor(6_875_960);
 		return response;
 	}
+
 	await mahojiUserSettingsUpdate(user.id, {
 		GP: {
 			decrement: amount

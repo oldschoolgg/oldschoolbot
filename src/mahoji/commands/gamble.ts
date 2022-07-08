@@ -149,7 +149,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
 		slots?: { amount?: string };
-		hot_cold?: { type?: 'hot' | 'cold'; amount?: string };
+		hot_cold?: { choice?: 'hot' | 'cold'; amount?: string };
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 
@@ -184,7 +184,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		const mahojiUser = await mahojiUsersSettingsFetch(klasaUser.id);
 
 		if (options.hot_cold) {
-			return hotColdCommand(interaction, klasaUser, mahojiUser, options.hot_cold.type, options.hot_cold.amount);
+			return hotColdCommand(interaction, klasaUser, mahojiUser, options.hot_cold.choice, options.hot_cold.amount);
 		}
 		return 'Invalid command.';
 	}
