@@ -795,7 +795,7 @@ const Buyables: Buyable[] = [
 		})
 	},
 	{
-		name: 'Mithril seed',
+		name: 'Mithril seeds',
 		gpCost: 3000,
 		ironmanPrice: 600,
 		outputItems: new Bank({
