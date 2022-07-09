@@ -425,6 +425,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
 				if (options.max) {
+					await roboChimpClient.user.update({
+						where: {
+							id: BigInt(user.id)
+						},
+						data: {
+							leagues_points_balance_osb: {
+								increment: 25_000
+							}
+						}
+					});
 					return giveMaxStats(user);
 				}
 				if (options.patron) {
