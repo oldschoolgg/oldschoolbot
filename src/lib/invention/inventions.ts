@@ -313,7 +313,7 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 85,
-		usageCostMultiplier: 0.75
+		usageCostMultiplier: 0.7
 	},
 	{
 		id: InventionID.MasterHammerAndChisel,
