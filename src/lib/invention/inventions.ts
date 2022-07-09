@@ -307,7 +307,7 @@ export const Inventions: readonly Invention[] = [
 		item: getOSItem('Mecha rod'),
 		materialTypeBank: new MaterialBank({
 			flexible: 4,
-			organic: 4,
+			organic: 3,
 			strong: 2
 		}),
 		flags: ['bank'],
