@@ -306,14 +306,14 @@ export const Inventions: readonly Invention[] = [
 		description: `Makes fishing ${inventionBoosts.mechaRod.speedBoostPercent}% faster.`,
 		item: getOSItem('Mecha rod'),
 		materialTypeBank: new MaterialBank({
-			flexible: 4,
+			flexible: 5,
 			organic: 3,
 			strong: 2
 		}),
 		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 85,
-		usageCostMultiplier: 0.75
+		usageCostMultiplier: 0.9
 	},
 	{
 		id: InventionID.MasterHammerAndChisel,
