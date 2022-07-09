@@ -241,57 +241,87 @@ export const hardTasks: Task[] = [
 	{
 		id: 2029,
 		name: 'Mix 1000 Prayer potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Prayer potion (3)', 'Prayer potion (4)']).map(i => cl.amount(i))) >= 1000;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Prayer potion (3)', 'Prayer potion (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 1000
+			);
 		}
 	},
 	{
 		id: 2030,
 		name: 'Mix 100 Super attack potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Super attack (3)', 'Super attack (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(resolveItems(['Super attack (3)', 'Super attack (4)']).map(i => herbloreStats.pots.amount(i))) >=
+				100
+			);
 		}
 	},
 	{
 		id: 2031,
 		name: 'Mix 100 Super strength potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Super strength (3)', 'Super strength (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Super strength (3)', 'Super strength (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 100
+			);
 		}
 	},
 	{
 		id: 2032,
 		name: 'Mix 100 Super defence potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Super defence (3)', 'Super defence (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Super defence (3)', 'Super defence (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 100
+			);
 		}
 	},
 	{
 		id: 2033,
 		name: 'Mix 100 Ranging potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Ranging potion (3)', 'Ranging potion (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Ranging potion (3)', 'Ranging potion (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 100
+			);
 		}
 	},
 	{
 		id: 2034,
 		name: 'Mix 100 Magic potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Magic potion (3)', 'Magic potion (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(resolveItems(['Magic potion (3)', 'Magic potion (4)']).map(i => herbloreStats.pots.amount(i))) >=
+				100
+			);
 		}
 	},
 	{
 		id: 2035,
 		name: 'Mix 100 Stamina potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Stamina potion (3)', 'Stamina potion (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Stamina potion (3)', 'Stamina potion (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 100
+			);
 		}
 	},
 	{
 		id: 2036,
 		name: 'Mix 100 Saradomin brews.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Saradomin brew (3)', 'Saradomin brew (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Saradomin brew (3)', 'Saradomin brew (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 100
+			);
 		}
 	},
 	{
@@ -331,16 +361,16 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2042,
-		name: 'Defeat 10 Obor',
+		name: 'Defeat 50 Obor',
 		has: async args => {
-			return leaguesHasKC(args, Monsters.Obor, 10);
+			return leaguesHasKC(args, Monsters.Obor, 50);
 		}
 	},
 	{
 		id: 2043,
-		name: 'Defeat 10 Bryophyta',
+		name: 'Defeat 50 Bryophyta',
 		has: async args => {
-			return leaguesHasKC(args, Monsters.Bryophyta, 10);
+			return leaguesHasKC(args, Monsters.Bryophyta, 50);
 		}
 	},
 	{
@@ -374,14 +404,14 @@ export const hardTasks: Task[] = [
 	{
 		id: 2048,
 		name: 'Mix 100 Heat res. brews from scratch',
-		has: async ({ cl, skillsLevels }) => {
+		has: async ({ cl, herbloreStats, skillsLevels }) => {
 			return (
 				skillsLevels.farming > 99 &&
 				skillsLevels.herblore > 120 &&
 				cl.amount('Athelas seed') >= 1 &&
 				cl.amount('Athelas') >= 50 &&
-				cl.amount('Heat res. vial') >= 100 &&
-				cl.amount('Heat res. brew') >= 100
+				herbloreStats.pots.amount('Heat res. vial') >= 100 &&
+				herbloreStats.pots.amount('Heat res. brew') >= 100
 			);
 		}
 	},
@@ -860,9 +890,9 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2114,
-		name: 'Reach 30% CL completion',
+		name: 'Reach 35% CL completion',
 		has: async ({ clPercent }) => {
-			return clPercent >= 30;
+			return clPercent >= 35;
 		}
 	},
 	{
@@ -881,23 +911,23 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2117,
-		name: 'Alch 2500 of any item',
+		name: 'Alch 5000 of any item',
 		has: async ({ alchingStats }) => {
-			return sumArr(alchingStats.items().map(i => i[1])) >= 2500;
+			return sumArr(alchingStats.items().map(i => i[1])) >= 5000;
 		}
 	},
 	{
 		id: 2118,
-		name: 'Clean 5000 herbs',
+		name: 'Clean 10,000 herbs',
 		has: async ({ herbloreStats }) => {
-			return sumArr(herbloreStats.herbs.items().map(i => i[1])) >= 5000;
+			return sumArr(herbloreStats.herbs.items().map(i => i[1])) >= 10_000;
 		}
 	},
 	{
 		id: 2119,
-		name: 'Mix 5000 unf potions',
+		name: 'Mix 10,000 unf potions',
 		has: async ({ herbloreStats }) => {
-			return sumArr(herbloreStats.unfPots.items().map(i => i[1])) >= 5000;
+			return sumArr(herbloreStats.unfPots.items().map(i => i[1])) >= 10_000;
 		}
 	},
 	{

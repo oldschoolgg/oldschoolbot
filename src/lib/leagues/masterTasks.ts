@@ -258,22 +258,34 @@ export const masterTasks: Task[] = [
 	{
 		id: 4033,
 		name: 'Mix 1000 Stamina potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Stamina potion (3)', 'Stamina potion (4)']).map(i => cl.amount(i))) >= 1000;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Stamina potion (3)', 'Stamina potion (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 1000
+			);
 		}
 	},
 	{
 		id: 4034,
 		name: 'Mix 5000 Saradomin brews.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Saradomin brew (3)', 'Saradomin brew (4)']).map(i => cl.amount(i))) >= 5000;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Saradomin brew (3)', 'Saradomin brew (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 5000
+			);
 		}
 	},
 	{
 		id: 4035,
 		name: 'Mix 5000 Super restores.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Super restore (3)', 'Super restore (4)']).map(i => cl.amount(i))) >= 5000;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Super restore (3)', 'Super restore (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 5000
+			);
 		}
 	},
 	{

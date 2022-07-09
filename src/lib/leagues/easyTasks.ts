@@ -161,9 +161,9 @@ export const easyTasks: Task[] = [
 	},
 	{
 		id: 20,
-		name: 'Do 5 Pest Control Trips',
-		has: async ({ activityCounts }) => {
-			return activityCounts.PestControl >= 1;
+		name: 'Do 5 Pest Control Games',
+		has: async ({ minigames }) => {
+			return minigames.pest_control >= 5;
 		}
 	},
 	{
@@ -212,7 +212,7 @@ export const easyTasks: Task[] = [
 		id: 29,
 		name: 'Offer any bones.',
 		has: async ({ activityCounts }) => {
-			return (activityCounts.Offering ?? 0) >= 1;
+			return activityCounts.Offering >= 1;
 		}
 	},
 	{
@@ -225,22 +225,31 @@ export const easyTasks: Task[] = [
 	{
 		id: 31,
 		name: 'Mix 100 Attack potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Attack potion(3)', 'Attack potion(4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(resolveItems(['Attack potion(3)', 'Attack potion(4)']).map(i => herbloreStats.pots.amount(i))) >=
+				100
+			);
 		}
 	},
 	{
 		id: 32,
 		name: 'Mix 100 Antipoison potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Antipoison (3)', 'Antipoison (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(resolveItems(['Antipoison (3)', 'Antipoison (4)']).map(i => herbloreStats.pots.amount(i))) >= 100
+			);
 		}
 	},
 	{
 		id: 33,
 		name: 'Mix 100 Strength potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Strength potion (3)', 'Strength potion (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Strength potion (3)', 'Strength potion (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 100
+			);
 		}
 	},
 	{
@@ -365,7 +374,7 @@ export const easyTasks: Task[] = [
 	},
 	{
 		id: 51,
-		name: 'Kill Obor 5 times',
+		name: 'Defeat Obor 5 times',
 		has: async args => {
 			return leaguesHasKC(args, Monsters.Obor, 5);
 		}

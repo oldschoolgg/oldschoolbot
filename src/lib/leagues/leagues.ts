@@ -131,11 +131,11 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 	return { attachments: [{ buffer: Buffer.from(str), fileName: 'all-tasks.txt' }] };
 }
 
-async function getActivityCounts(userID: string) {
-	const result: { type: activity_type_enum; count: bigint }[] = await prisma.$queryRaw`SELECT type, COUNT(type)
+async function getActivityCounts(user: User) {
+	const result: { type: activity_type_enum; count: bigint }[] = await prisma.$queryRawUnsafe(`SELECT type, COUNT(type)
 FROM activity
-WHERE user_id = ${Number(userID)}
-GROUP BY type;`;
+WHERE user_id = ${user.id}
+GROUP BY type;`);
 	const parsed = result.map(i => ({ type: i.type, count: Number(i.count) }));
 	// @ts-ignore trust me
 	let rec: Record<activity_type_enum, number> = {};
@@ -160,7 +160,7 @@ function betterHerbloreStats(herbStats: Bank) {
 			[Potions, pots]
 		] as const) {
 			if (array.some(i => i.id === item[0].id)) {
-				bank.add(item[1]);
+				bank.add(item[0].id, item[1]);
 			}
 		}
 	}
@@ -276,7 +276,7 @@ export async function leaguesCheckUser(userID: string) {
 		getPOH(userID),
 		getAllUserTames(userID),
 		getSlayerTaskStats(userID),
-		getActivityCounts(userID),
+		getActivityCounts(mahojiUser),
 		getMinigameEntity(userID),
 		prisma.slayerTask.count({ where: { user_id: userID } }),
 		personalAlchingStats(mahojiUser),
@@ -362,7 +362,10 @@ export async function leaguesCheckUser(userID: string) {
 **Points Balance:** ${roboChimpUser.leagues_points_balance_osb.toLocaleString()} OSB / ${roboChimpUser.leagues_points_balance_bso.toLocaleString()} BSO
 ${resStr}
 
-**Actual Clues:** ${actualClues}`,
+**Actual Clues:** ${actualClues}
+**Potions Made:** ${herbloreStats.pots}
+**Unf Potions Made:** ${herbloreStats.unfPots}
+**Herbs cleaned:** ${herbloreStats.herbs}`,
 		finished: finishedIDs
 	};
 }

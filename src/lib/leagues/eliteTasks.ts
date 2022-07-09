@@ -166,44 +166,63 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3020,
-		name: 'Catch 200 Black salamanders',
+		name: 'Catch 500 Black salamanders',
 		has: async args => {
-			return leaguesHasCatches(args, 'Red salamander', 200);
+			return leaguesHasCatches(args, 'Black salamander', 500);
 		}
 	},
 	{
 		id: 3021,
 		name: 'Mix 500 Super attack potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Super attack (3)', 'Super attack (4)']).map(i => cl.amount(i))) >= 500;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(resolveItems(['Super attack (3)', 'Super attack (4)']).map(i => herbloreStats.pots.amount(i))) >=
+				500
+			);
 		}
 	},
 	{
 		id: 3022,
 		name: 'Mix 500 Super strength potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Super strength (3)', 'Super strength (4)']).map(i => cl.amount(i))) >= 500;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Super strength (3)', 'Super strength (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 500
+			);
 		}
 	},
 	{
 		id: 3023,
 		name: 'Mix 500 Super defence potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Super defence (3)', 'Super defence (4)']).map(i => cl.amount(i))) >= 500;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Super defence (3)', 'Super defence (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 500
+			);
 		}
 	},
 	{
 		id: 3024,
 		name: 'Mix 500 Stamina potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Stamina potion (3)', 'Stamina potion (4)']).map(i => cl.amount(i))) >= 500;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Stamina potion (3)', 'Stamina potion (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 500
+			);
 		}
 	},
 	{
 		id: 3025,
 		name: 'Mix 2000 Saradomin brews.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Saradomin brew (3)', 'Saradomin brew (4)']).map(i => cl.amount(i))) >= 2000;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Saradomin brew (3)', 'Saradomin brew (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 2000
+			);
 		}
 	},
 	{

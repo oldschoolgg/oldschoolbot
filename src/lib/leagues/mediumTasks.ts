@@ -241,22 +241,34 @@ export const mediumTasks: Task[] = [
 	{
 		id: 1031,
 		name: 'Mix 100 Restore potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Restore potion (3)', 'Restore potion (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Restore potion (3)', 'Restore potion (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 100
+			);
 		}
 	},
 	{
 		id: 1032,
 		name: 'Mix 100 Energy potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Energy potion (3)', 'Energy potion (4)']).map(i => cl.amount(i))) >= 100;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Energy potion (3)', 'Energy potion (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 100
+			);
 		}
 	},
 	{
 		id: 1033,
 		name: 'Mix 500 Prayer potions.',
-		has: async ({ cl }) => {
-			return sumArr(resolveItems(['Prayer potion (3)', 'Prayer potion (4)']).map(i => cl.amount(i))) >= 500;
+		has: async ({ herbloreStats }) => {
+			return (
+				sumArr(
+					resolveItems(['Prayer potion (3)', 'Prayer potion (4)']).map(i => herbloreStats.pots.amount(i))
+				) >= 500
+			);
 		}
 	},
 	{
@@ -592,14 +604,14 @@ export const mediumTasks: Task[] = [
 		id: 1083,
 		name: 'Fletch 1000 Magic shortbows',
 		has: async ({ cl }) => {
-			return ['Magic shortbow (u)', 'Bow string', 'Magic shortbow'].every(i => cl.amount(i) >= 1000);
+			return ['Magic shortbow (u)', 'Magic shortbow'].every(i => cl.amount(i) >= 1000);
 		}
 	},
 	{
 		id: 1084,
 		name: 'Fletch 1000 Magic longbows',
 		has: async ({ cl }) => {
-			return ['Magic longbow (u)', 'Bow string', 'Magic longbow'].every(i => cl.amount(i) >= 1000);
+			return ['Magic longbow (u)', 'Magic longbow'].every(i => cl.amount(i) >= 1000);
 		}
 	},
 	{
