@@ -20,8 +20,9 @@ model Activity {
   data           Json               @db.Json
 
 
-  @@index([group_activity], map: "IDX_73e0d6954aecafe0383b77d390")
-  @@index([completed], map: "IDX_d71ac68a9d4b4245287caab788")
+  @@index([group_activity])
+  @@index([completed])
+  @@index([user_id, type])
   @@map("activity")
 }
 
@@ -406,8 +407,7 @@ model XPGain {
   artificial Boolean?
   post_max   Boolean             @default(false)
 
-  @@index([date])
-  @@index([skill])
+  @@index([date, skill])
   @@map("xp_gains")
 }
 
@@ -461,6 +461,8 @@ model Minigame {
   trouble_brewing         Int    @default(0)
 
   new_user NewUser?
+
+  @@index([user_id])
   @@map("minigames")
 }
 
