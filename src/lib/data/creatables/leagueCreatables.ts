@@ -596,12 +596,230 @@ const other: Createable[] = [
 	}
 ];
 
+const clothes: Createable[] = [
+	{
+		name: 'Unpack Twisted relic hunter (t1) armour set',
+		inputItems: new Bank({
+			'Twisted relic hunter (t1) armour set': 1
+		}),
+		outputItems: new Bank()
+			.add('Twisted hat (t1)')
+			.add('Twisted coat (t1)')
+			.add('Twisted trousers (t1)')
+			.add('Twisted boots (t1)'),
+		noCl: true
+	},
+	{
+		name: 'Unpack Twisted relic hunter (t2) armour set',
+		inputItems: new Bank({
+			'Twisted relic hunter (t2) armour set': 1
+		}),
+		outputItems: new Bank()
+			.add('Twisted hat (t2)')
+			.add('Twisted coat (t2)')
+			.add('Twisted trousers (t2)')
+			.add('Twisted boots (t2)'),
+		noCl: true
+	},
+	{
+		name: 'Unpack Twisted relic hunter (t3) armour set',
+		inputItems: new Bank({
+			'Twisted relic hunter (t3) armour set': 1
+		}),
+		outputItems: new Bank()
+			.add('Twisted hat (t3)')
+			.add('Twisted coat (t3)')
+			.add('Twisted trousers (t3)')
+			.add('Twisted boots (t3)'),
+		noCl: true
+	},
+	//
+	{
+		name: 'Unpack Trailblazer relic hunter (t1) armour set',
+		inputItems: new Bank({
+			'Trailblazer relic hunter (t1) armour set': 1
+		}),
+		outputItems: new Bank()
+			.add('Trailblazer hood (t1)')
+			.add('Trailblazer top (t1)')
+			.add('Trailblazer trousers (t1)')
+			.add('Trailblazer boots (t1)'),
+		noCl: true
+	},
+	{
+		name: 'Unpack Trailblazer relic hunter (t2) armour set',
+		inputItems: new Bank({
+			'Trailblazer relic hunter (t2) armour set': 1
+		}),
+		outputItems: new Bank()
+			.add('Trailblazer hood (t2)')
+			.add('Trailblazer top (t2)')
+			.add('Trailblazer trousers (t2)')
+			.add('Trailblazer boots (t2)'),
+		noCl: true
+	},
+	{
+		name: 'Unpack Trailblazer relic hunter (t3) armour set',
+		inputItems: new Bank({
+			'Trailblazer relic hunter (t3) armour set': 1
+		}),
+		outputItems: new Bank()
+			.add('Trailblazer hood (t3)')
+			.add('Trailblazer top (t3)')
+			.add('Trailblazer trousers (t3)')
+			.add('Trailblazer boots (t3)'),
+		noCl: true
+	},
+	//
+	{
+		name: 'Unpack Shattered relic hunter (t1) armour set',
+		inputItems: new Bank({
+			'Shattered relic hunter (t1) armour set	': 1
+		}),
+		outputItems: new Bank()
+			.add('Shattered hood (t1)')
+			.add('Shattered top (t1)')
+			.add('Shattered trousers (t1)')
+			.add('Shattered boots (t1)'),
+		noCl: true
+	},
+	{
+		name: 'Unpack Shattered relic hunter (t2) armour set',
+		inputItems: new Bank({
+			'Shattered relic hunter (t2) armour set	': 1
+		}),
+		outputItems: new Bank()
+			.add('Shattered hood (t2)')
+			.add('Shattered top (t2)')
+			.add('Shattered trousers (t2)')
+			.add('Shattered boots (t2)'),
+		noCl: true
+	},
+	{
+		name: 'Unpack Shattered relic hunter (t3) armour set',
+		inputItems: new Bank({
+			'Shattered relic hunter (t3) armour set	': 1
+		}),
+		outputItems: new Bank()
+			.add('Shattered hood (t3)')
+			.add('Shattered top (t3)')
+			.add('Shattered trousers (t3)')
+			.add('Shattered boots (t3)'),
+		noCl: true
+	}
+];
+
+const graceful: Createable[] = [
+	{
+		name: 'Trailblazer graceful hood',
+		inputItems: new Bank({
+			'Graceful hood': 1,
+			'Trailblazer graceful ornament kit': 1
+		}),
+		outputItems: new Bank().add('Trailblazer graceful hood')
+	},
+	{
+		name: 'Revert Trailblazer graceful hood',
+		inputItems: new Bank({
+			'Trailblazer graceful hood': 1
+		}),
+		outputItems: new Bank().add('Graceful hood').add('Trailblazer graceful ornament kit'),
+		noCl: true
+	},
+	//
+	{
+		name: 'Trailblazer graceful cape',
+		inputItems: new Bank({
+			'Graceful cape': 1,
+			'Trailblazer graceful ornament kit': 1
+		}),
+		outputItems: new Bank().add('Trailblazer graceful cape')
+	},
+	{
+		name: 'Revert Trailblazer graceful cape',
+		inputItems: new Bank({
+			'Trailblazer graceful cape': 1
+		}),
+		outputItems: new Bank().add('Graceful cape').add('Trailblazer graceful ornament kit'),
+		noCl: true
+	},
+	//
+	{
+		name: 'Trailblazer graceful top',
+		inputItems: new Bank({
+			'Graceful top': 1,
+			'Trailblazer graceful ornament kit': 1
+		}),
+		outputItems: new Bank().add('Trailblazer graceful top')
+	},
+	{
+		name: 'Revert Trailblazer graceful top',
+		inputItems: new Bank({
+			'Trailblazer graceful top': 1
+		}),
+		outputItems: new Bank().add('Graceful top').add('Trailblazer graceful ornament kit'),
+		noCl: true
+	},
+	//
+	{
+		name: 'Trailblazer graceful legs',
+		inputItems: new Bank({
+			'Graceful legs': 1,
+			'Trailblazer graceful ornament kit': 1
+		}),
+		outputItems: new Bank().add('Trailblazer graceful legs')
+	},
+	{
+		name: 'Revert Trailblazer graceful legs',
+		inputItems: new Bank({
+			'Trailblazer graceful legs': 1
+		}),
+		outputItems: new Bank().add('Graceful legs').add('Trailblazer graceful ornament kit'),
+		noCl: true
+	},
+	//
+	{
+		name: 'Trailblazer graceful gloves',
+		inputItems: new Bank({
+			'Graceful gloves': 1,
+			'Trailblazer graceful ornament kit': 1
+		}),
+		outputItems: new Bank().add('Trailblazer graceful gloves')
+	},
+	{
+		name: 'Revert Trailblazer graceful gloves',
+		inputItems: new Bank({
+			'Trailblazer graceful gloves': 1
+		}),
+		outputItems: new Bank().add('Graceful gloves').add('Trailblazer graceful ornament kit'),
+		noCl: true
+	},
+	//
+	{
+		name: 'Trailblazer graceful boots',
+		inputItems: new Bank({
+			'Graceful boots': 1,
+			'Trailblazer graceful ornament kit': 1
+		}),
+		outputItems: new Bank().add('Trailblazer graceful boots')
+	},
+	{
+		name: 'Revert Trailblazer graceful boots',
+		inputItems: new Bank({
+			'Trailblazer graceful boots': 1
+		}),
+		outputItems: new Bank().add('Graceful boots').add('Trailblazer graceful ornament kit'),
+		noCl: true
+	}
+];
+
 export const leaguesCreatables = [
 	...toolCreatables,
 	...varietyOrnaments,
 	...voidOrnaments,
 	...cannonOrnaments,
 	...mysticOrnaments,
+	...clothes,
+	...graceful,
 	...other
 ];
-console.log(leaguesCreatables.map(i => `${i.name} - Created with ${i.inputItems} - Gives ${i.outputItems}`).join('\n'));
