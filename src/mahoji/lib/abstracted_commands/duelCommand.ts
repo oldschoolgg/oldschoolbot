@@ -38,8 +38,6 @@ export async function duelCommand(
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
 	if (!(duelTargetUser instanceof User)) return "You didn't mention a user to duel.";
 	if (duelTargetUser.bot) return 'You cant duel a bot.';
-	if (duelSourceUser.minionIsBusy) return `${duelSourceUser.minionName} is busy.`;
-	if (duelTargetUser.minionIsBusy) return 'That user is busy right now.';
 
 	if (!(await checkBal(duelSourceUser, amount))) {
 		return 'You dont have have enough GP to duel that much.';

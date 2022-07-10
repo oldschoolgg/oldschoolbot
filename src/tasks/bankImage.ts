@@ -185,7 +185,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (master)'), 'master']
 ]);
 
-export const bankFlags = ['show_price', 'show_alch', 'show_id', 'show_names', 'show_weights'] as const;
+export const bankFlags = ['show_price', 'show_alch', 'show_id', 'show_names', 'show_weights', 'show_all'] as const;
 export type BankFlag = typeof bankFlags[number];
 
 export default class BankImageTask extends Task {
@@ -562,8 +562,10 @@ export default class BankImageTask extends Task {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
 
+		const isShowingFullBankImage = flags.has('full') || opts.flag === 'show_all';
+
 		// Paging
-		if (typeof page === 'number' && !flags.has('full')) {
+		if (typeof page === 'number' && !isShowingFullBankImage) {
 			let pageLoot = chunked[page];
 			let asItem = Items.get(page + 1);
 			if (asItem && !pageLoot) {
