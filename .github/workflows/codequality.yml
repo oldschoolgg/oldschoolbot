@@ -13,21 +13,21 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Project
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Use Node.js 16.14.0
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
                   node-version: 16.14.0
                   cache: yarn
             - name: Restore CI Cache
-              uses: actions/cache@v1
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
               run: yarn --frozen-lockfile
             - name: Generate Prisma Client
-              run: npx prisma generate
+              run: yarn gen
             - name: Run ESLint
               run: yarn test:lint
 
@@ -36,14 +36,14 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Project
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Use Node.js 16.14.0
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
                   node-version: 16.14.0
                   cache: yarn
             - name: Restore CI Cache
-              uses: actions/cache@v1
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
@@ -55,6 +55,6 @@ jobs:
                   cp config.example.ts config.ts &&
                   popd
             - name: Generate Prisma Client
-              run: npx prisma generate
+              run: yarn gen
             - name: Build code
               run: yarn build
