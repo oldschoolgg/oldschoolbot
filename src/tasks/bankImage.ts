@@ -16,6 +16,7 @@ import { BankBackground, FlagMap, Flags } from '../lib/minions/types';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BankSortMethod, BankSortMethods, sorts } from '../lib/sorts';
+import { ItemBank } from '../lib/types';
 import { addArrayOfNumbers, cleanString, formatItemStackQuantity, generateHexColorForCashStack } from '../lib/util';
 import { drawImageWithOutline, fillTextXTimesInCtx, getClippedRegion } from '../lib/util/canvasUtil';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
@@ -184,7 +185,7 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (master)'), 'master']
 ]);
 
-export const bankFlags = ['show_price', 'show_alch', 'show_id', 'show_names'] as const;
+export const bankFlags = ['show_price', 'show_alch', 'show_id', 'show_names', 'show_weights', 'show_all'] as const;
 export type BankFlag = typeof bankFlags[number];
 
 export default class BankImageTask extends Task {
@@ -386,7 +387,8 @@ export default class BankImageTask extends Task {
 		items: [Item, number][],
 		flags: FlagMap,
 		currentCL: Bank | undefined,
-		flag: BankFlag | undefined
+		flag: BankFlag | undefined,
+		weightings: Readonly<ItemBank> | undefined
 	) {
 		// Draw Items
 		ctx.textAlign = 'start';
@@ -453,6 +455,8 @@ export default class BankImageTask extends Task {
 				bottomItemText = item.id.toString();
 			} else if (flags.has('names') || flag === 'show_names') {
 				bottomItemText = item.name;
+			} else if (flag === 'show_weights' && weightings && weightings[item.id]) {
+				bottomItemText = weightings[item.id];
 			}
 
 			const forcedShortName = forcedShortNameMap.get(item.id);
@@ -558,8 +562,10 @@ export default class BankImageTask extends Task {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
 
+		const isShowingFullBankImage = flags.has('full') || opts.flag === 'show_all';
+
 		// Paging
-		if (typeof page === 'number' && !flags.has('full')) {
+		if (typeof page === 'number' && !isShowingFullBankImage) {
 			let pageLoot = chunked[page];
 			let asItem = Items.get(page + 1);
 			if (asItem && !pageLoot) {
@@ -662,7 +668,18 @@ export default class BankImageTask extends Task {
 		if (!isTransparent && noBorder !== 1) {
 			this.drawBorder(ctx, bgSprite, bgImage.name === 'Default');
 		}
-		await this.drawItems(ctx, compact, spacer, itemsPerRow, itemWidthSize, items, flags, currentCL, opts.flag);
+		await this.drawItems(
+			ctx,
+			compact,
+			spacer,
+			itemsPerRow,
+			itemWidthSize,
+			items,
+			flags,
+			currentCL,
+			opts.flag,
+			weightings
+		);
 
 		const image = await canvas.toBuffer('png');
 
