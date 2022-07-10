@@ -117,7 +117,7 @@ export default class extends BotCommand {
 		}
 		const [hasReqs, rejectReason] = user.hasMonsterRequirements(Naxxus);
 		if (!hasReqs) {
-			return msg.channel.send(`${user.username} doesn't have the requirements for this monster: ${rejectReason}`);
+			return msg.channel.send(`${user.username} doesn't meet the requirements to fight Naxxus: ${rejectReason}`);
 		}
 
 		const boosts = [];
@@ -165,7 +165,7 @@ export default class extends BotCommand {
 		boosts.push(
 			`${calcPercentOfNum(Math.ceil(totalGearPercent), speedReductionMaxPercent)}% gear stats [${Math.ceil(
 				melee
-			)}% of max melee, ${Math.ceil(mage)}% of max mage]`
+			)}% of max melee gear, ${Math.ceil(mage)}% of max mage gear]`
 		);
 
 		itemBoosts.forEach(itemBoost => {
@@ -182,7 +182,7 @@ export default class extends BotCommand {
 		}
 		if (quantity * effectiveTime > maxTripLength) {
 			return msg.channel.send(
-				`The max number of Naxxus you can do is ${Math.floor(maxTripLength / effectiveTime)}!`
+				`The max amount of times you can fight Naxxus is ${Math.floor(maxTripLength / effectiveTime)}!`
 			);
 		}
 
@@ -198,13 +198,13 @@ export default class extends BotCommand {
 
 		if (!hasEnough) {
 			return msg.channel.send(
-				`${user.username} doesn't have the food requirements for this monster: ${foodReason}`
+				`${user.username} doesn't have the necessary potions to fight Naxxus: ${foodReason}`
 			);
 		}
 
 		if (!user.bank().has(new Bank().add('Enhanced Divine Water', 2 * quantity))) {
 			return msg.channel.send(
-				`${user.username} doesn't have the food requirements for this monster: Requires 2 Enhanced Divine Water`
+				`${user.username} doesn't have the necessary potions to fight Naxxus: For this fight you will need 2 Enhanced Divine Water`
 			);
 		}
 		foodBank.add('Enhanced Divine Water', 2 * quantity);
@@ -255,7 +255,7 @@ export default class extends BotCommand {
 
 		const embed = new MessageEmbed()
 			.setDescription(
-				`Your minion is now attempting to kill ${quantity}x Naxxus. The trip will take ${formatDuration(
+				`Your minion is now attempting to defeat Naxxus ${quantity}x times. The trip will take ${formatDuration(
 					duration
 				)}.
 				**Supplies**: ${foodBank.toString()}.
