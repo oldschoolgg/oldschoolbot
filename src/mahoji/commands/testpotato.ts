@@ -8,6 +8,7 @@ import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import { BitField, MAX_QP } from '../../lib/constants';
+import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
@@ -160,12 +161,16 @@ farmingPreset.add('Ultracompost', 10_000);
 const usables = new Bank();
 for (const usable of allUsableItems) usables.add(usable, 100);
 
+const leaguesPreset = new Bank();
+for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
 	['equippables', equippablesBank],
 	['farming', farmingPreset],
-	['usables', usables]
+	['usables', usables],
+	['leagues', leaguesPreset]
 ] as const;
 
 const nexSupplies = new Bank()
@@ -425,6 +430,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
 				if (options.max) {
+					await roboChimpClient.user.update({
+						where: {
+							id: BigInt(user.id)
+						},
+						data: {
+							leagues_points_balance_osb: {
+								increment: 25_000
+							}
+						}
+					});
 					return giveMaxStats(user);
 				}
 				if (options.patron) {
