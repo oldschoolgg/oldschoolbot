@@ -101,7 +101,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			usage: '[quantity:int{1,100}]',
 			usageDelim: ' ',
-			oneAtTime: true,
 			aliases: ['naxx'],
 			altProtection: true,
 			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
