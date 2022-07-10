@@ -50,7 +50,7 @@ export default class extends BotCommand {
 		if (!page) page = 1;
 
 		if (msg.flagArgs.smallbank) {
-			return msg.channel.send('You now use `/config user small_bank` to change this setting.');
+			return msg.channel.send('You now use `/config user toggle name:Small Bank Images` to change this setting.');
 		}
 
 		if (baseBank.length === 0) {
