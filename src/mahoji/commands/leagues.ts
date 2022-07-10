@@ -2,6 +2,7 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { production } from '../../config';
+import { PerkTier } from '../../lib/constants';
 import {
 	allLeagueTasks,
 	generateLeaguesTasksTextFile,
@@ -10,6 +11,7 @@ import {
 	leagueTasks
 } from '../../lib/leagues/leagues';
 import { formatDuration } from '../../lib/util';
+import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { Cooldowns } from '../lib/Cooldowns';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -67,7 +69,12 @@ export const leaguesCommand: OSBMahojiCommand = {
 		claim?: {};
 		view_all_tasks?: { exclude_finished?: boolean };
 	}>) => {
-		const cooldown = Cooldowns.get(userID.toString(), 'leagues', Time.Second * 30);
+		const user = await globalClient.fetchUser(userID);
+		const cooldown = Cooldowns.get(
+			userID.toString(),
+			'leagues',
+			getUsersPerkTier(user) >= PerkTier.Two ? Time.Second * 5 : Time.Second * 30
+		);
 		if (cooldown && production) {
 			return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}.`;
 		}
