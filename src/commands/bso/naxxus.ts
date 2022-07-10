@@ -102,7 +102,7 @@ export default class extends BotCommand {
 			usage: '[quantity:int{1,100}]',
 			usageDelim: ' ',
 			aliases: ['naxx'],
-			altProtection: true,
+			altProtection: true
 		});
 	}
 

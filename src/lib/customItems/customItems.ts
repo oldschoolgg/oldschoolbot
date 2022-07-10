@@ -2602,31 +2602,31 @@ setCustomItem(
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
+			isSuperUntradeable: true
 		}
 	},
 	15_000_000
 );
 setCustomItem(
 	70_009,
-	"Void Staff (u)",
-	"Coal",
+	'Void Staff (u)',
+	'Coal',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-		},
+			isSuperUntradeable: true
+		}
 	},
 	50_000_000
 );
 setCustomItem(
 	70_010,
-	"Void Staff",
-	"Battlestaff",
+	'Void Staff',
+	'Battlestaff',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
+			isSuperUntradeable: true
 		},
 		equipment: {
 			attack_stab: 0,
@@ -2646,44 +2646,44 @@ setCustomItem(
 			magic_damage: 17.5,
 			prayer: 0,
 			slot: EquipmentSlot.Weapon,
-			requirements: { magic: 90 },
+			requirements: { magic: 90 }
 		},
-		highalch: 50_000_000,
+		highalch: 50_000_000
 	},
 	50_000_000
 );
 setCustomItem(
 	70_011,
-	"Dark Animica",
-	"Runite Ore",
+	'Dark Animica',
+	'Runite Ore',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: false,
-		},
+			isSuperUntradeable: false
+		}
 	},
 	25_000
 );
 setCustomItem(
 	70_012,
-	"Tattered Tome",
-	"Magic Seed",
+	'Tattered Tome',
+	'Magic Seed',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-		},
+			isSuperUntradeable: true
+		}
 	},
 	25_000_000
 );
 setCustomItem(
 	70_013,
-	"Abyssal Tome",
-	"Book of law",
+	'Abyssal Tome',
+	'Book of law',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
+			isSuperUntradeable: true
 		},
 		equipment: {
 			attack_stab: 0,
@@ -2703,32 +2703,32 @@ setCustomItem(
 			magic_damage: 2.5,
 			prayer: 0,
 			slot: EquipmentSlot.Shield,
-			requirements: { magic: 90 },
+			requirements: { magic: 90 }
 		},
-		highalch: 50_000_000,
+		highalch: 50_000_000
 	},
 	50_000_000
 );
 setCustomItem(
 	70_014,
-	"Abyssal Gem",
-	"Zenyte",
+	'Abyssal Gem',
+	'Zenyte',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
-		},
+			isSuperUntradeable: true
+		}
 	},
 	10_000_000
 );
 setCustomItem(
 	70_015,
-	"Abyssal Amulet",
-	"Amulet of Torture",
+	'Abyssal Amulet',
+	'Amulet of Torture',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
+			isSuperUntradeable: true
 		},
 		equipment: {
 			attack_stab: 0,
@@ -2748,20 +2748,20 @@ setCustomItem(
 			magic_damage: 0,
 			prayer: 0,
 			slot: EquipmentSlot.Neck,
-			requirements: null,
+			requirements: null
 		},
-		highalch: 10_000_000,
+		highalch: 10_000_000
 	},
 	10_000_000
 );
 setCustomItem(
 	70_016,
-	"Spellbound Ring",
-	"Seers Ring",
+	'Spellbound Ring',
+	'Seers Ring',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
+			isSuperUntradeable: true
 		},
 		equipment: {
 			attack_stab: 0,
@@ -2781,20 +2781,20 @@ setCustomItem(
 			magic_damage: 0,
 			prayer: 0,
 			slot: EquipmentSlot.Ring,
-			requirements: { magic: 90 },
+			requirements: { magic: 90 }
 		},
-		highalch: 10_000_000,
+		highalch: 10_000_000
 	},
 	10_000_000
 );
 setCustomItem(
 	70_017,
-	"Spellbound Ring(i)",
-	"Seers Ring",
+	'Spellbound Ring(i)',
+	'Seers Ring',
 	{
 		customItemData: {
 			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true,
+			isSuperUntradeable: true
 		},
 		equipment: {
 			attack_stab: 0,
@@ -2814,10 +2814,10 @@ setCustomItem(
 			magic_damage: 0,
 			prayer: 0,
 			slot: EquipmentSlot.Ring,
-			requirements: { magic: 90 },
+			requirements: { magic: 90 }
 		},
-		highalch: 10_000_000,
+		highalch: 10_000_000
 	},
 	10_000_000
 );
-setCustomItem(70_018, 'Grand Crystal Acorn', 'Coal', { tradeable: true }, 6_000);
+setCustomItem(70_018, 'Grand Crystal Acorn', 'Coal', { tradeable: true }, 6000);
