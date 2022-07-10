@@ -86,7 +86,9 @@ export default class extends Task {
 				gpOpen: this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen),
 				gpDice: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice),
 				gpDaily: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily),
-				gpLuckypick: this.client.settings.get(ClientSettings.EconomyStats.GPSourceLuckyPick)
+				gpLuckypick: this.client.settings.get(ClientSettings.EconomyStats.GPSourceLuckyPick),
+				gpSlots: this.client.settings.get(ClientSettings.EconomyStats.GPSourceSlots),
+				gpHotCold: this.client.settings.get(ClientSettings.EconomyStats.GPHotCold)
 			}
 		});
 	}

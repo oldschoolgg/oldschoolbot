@@ -28,5 +28,10 @@ model User {
     id   BigInt @id @unique
     bits Int[]
 
+    leagues_completed_tasks_ids Int[]
+    leagues_points_balance_osb  Int   @default(0)
+    leagues_points_balance_bso  Int   @default(0)
+    leagues_points_total        Int   @default(0)
+
     @@map("user")
 }

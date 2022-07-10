@@ -26,9 +26,9 @@ import {
 	boostCannonMulti,
 	boostIceBarrage,
 	boostIceBurst,
+	cannonBanks,
 	cannonMultiConsumables,
 	cannonSingleConsumables,
-	CombatCannonItemBank,
 	CombatOptionsEnum,
 	iceBarrageConsumables,
 	iceBurstConsumables,
@@ -258,7 +258,7 @@ export async function minionKillCommand(
 	let usingCannon = false;
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
-	const hasCannon = user.owns(CombatCannonItemBank);
+	const hasCannon = cannonBanks.some(i => user.owns(i));
 	if ((method === 'burst' || method === 'barrage') && !monster!.canBarrage) {
 		return `${monster!.name} cannot be barraged or burst.`;
 	}
