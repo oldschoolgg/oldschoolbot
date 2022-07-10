@@ -293,13 +293,6 @@ export const mediumTasks: Task[] = [
 		}
 	},
 	{
-		id: 1041,
-		name: 'Open a Christmas cracker',
-		has: async ({ opens }) => {
-			return opens.amount('Christmas cracker') >= 1;
-		}
-	},
-	{
 		id: 1042,
 		name: 'Open a Monkey crate',
 		has: async ({ opens }) => {

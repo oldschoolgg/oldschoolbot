@@ -120,9 +120,10 @@ export function generateLeaguesTasksTextFile(finishedTasksIDs: number[], exclude
 		let realTasks = excludeFinished ? tasks.filter(i => !finishedTasksIDs.includes(i.id)) : tasks;
 		let ptsThisGroup = realTasks.length * points;
 		str += `--------- ${name} (${realTasks.length} tasks - ${ptsThisGroup.toLocaleString()} points) -----------\n`;
-		for (const task of realTasks) {
-			str += `${task.name}\n`;
-		}
+		str += realTasks
+			.map(i => i.name)
+			.sort((a, b) => b.localeCompare(a))
+			.join('\n');
 		totalTasks += realTasks.length;
 		totalPoints += ptsThisGroup;
 		str += '\n\n';
