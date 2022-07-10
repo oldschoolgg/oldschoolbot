@@ -4,6 +4,7 @@ import { PVM_METHODS, PvMMethod, ZALCANO_ID } from '../../lib/constants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
+import { Naxxus } from '../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
 import { MOKTANG_ID } from '../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
@@ -64,6 +65,10 @@ const autocompleteMonsters = [
 	{
 		...KalphiteKingMonster,
 		name: 'Kalphite King (Mass)'
+	},
+	{
+		...Naxxus,
+		name: 'Naxxus'
 	},
 	{
 		name: 'Wintertodt',

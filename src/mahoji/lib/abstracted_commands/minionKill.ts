@@ -78,6 +78,7 @@ import { igneCommand } from './igneCommand';
 import { kgCommand } from './kgCommand';
 import { kkCommand } from './kkCommand';
 import { moktangCommand } from './moktangCommand';
+import { naxxusCommand } from './naxxusCommand';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
 import { getPOH } from './pohCommand';
@@ -195,6 +196,7 @@ export async function minionKillCommand(
 	if (name.toLowerCase().includes('kalphite king')) return kkCommand(interaction, user, channelID, name, quantity);
 	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name, quantity);
 	if (name.toLowerCase().includes('moktang')) return moktangCommand(user, channelID, quantity);
+	if (name.toLowerCase().includes('naxxus')) return naxxusCommand(user, channelID, quantity);
 
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
