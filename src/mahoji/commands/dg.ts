@@ -52,7 +52,6 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 	let message = `${user.username} has created a Dungeoneering party! Anyone can click the ${
 		Emoji.Join
 	} reaction to join, click it again to leave.
-
 **Floor:** ${floorToDo}
 **Duration:** ${formatDuration(duration)}
 **Min. Quantity:** ${quantity}
@@ -182,7 +181,7 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 	return str;
 }
 
-async function buyCommand(user: KlasaUser, name: string) {
+async function buyCommand(user: KlasaUser, name: string, quantity?: number) {
 	const buyable = dungBuyables.find(i => stringMatches(name, i.item.name));
 	if (!buyable) {
 		return `That isn't a buyable item. Here are the items you can buy: \n\n${dungBuyables
@@ -190,22 +189,27 @@ async function buyCommand(user: KlasaUser, name: string) {
 			.join('\n')}.`;
 	}
 
-	const { item, cost } = buyable;
-	const balance = user.settings.get(UserSettings.DungeoneeringTokens);
-	if (balance < cost) {
-		return `You don't have enough Dungeoneering tokens to buy the ${
-			item.name
-		}. You need ${cost.toLocaleString()}, but you have only ${balance.toLocaleString()}.`;
+	if (!quantity) {
+		quantity = 1;
 	}
 
-	await user.addItemsToBank({ items: { [item.id]: 1 }, collectionLog: true });
+	const { item, cost } = buyable;
+	const overallCost = cost * quantity;
+	const balance = user.settings.get(UserSettings.DungeoneeringTokens);
+	if (balance < overallCost) {
+		return `You don't have enough Dungeoneering tokens to buy the ${quantity}x ${
+			item.name
+		}. You need ${overallCost}, but you have only ${balance.toLocaleString()}.`;
+	}
+
+	await user.addItemsToBank({ items: { [item.id]: quantity }, collectionLog: true });
 	await mahojiUserSettingsUpdate(user.id, {
 		dungeoneering_tokens: {
-			decrement: cost
+			decrement: overallCost
 		}
 	});
 
-	return `Successfully purchased 1x ${item.name} for ${cost.toLocaleString()} Dungeoneering tokens.`;
+	return `Successfully purchased ${quantity}x ${item.name} for ${overallCost} Dungeoneering tokens.`;
 }
 
 export const dgCommand: OSBMahojiCommand = {
@@ -260,6 +264,13 @@ export const dgCommand: OSBMahojiCommand = {
 							.map(i => ({ name: i.item.name, value: i.item.name }));
 					},
 					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity you wish to buy.',
+					required: false,
+					min_value: 1
 				}
 			]
 		}
@@ -269,11 +280,15 @@ export const dgCommand: OSBMahojiCommand = {
 		userID,
 		channelID,
 		interaction
-	}: CommandRunOptions<{ start?: { floor?: string; solo?: boolean }; buy?: { item: string }; stats?: {} }>) => {
+	}: CommandRunOptions<{
+		start?: { floor?: string; solo?: boolean };
+		buy?: { item: string; quantity?: number };
+		stats?: {};
+	}>) => {
 		if (interaction) await interaction.deferReply();
 		const user = await globalClient.fetchUser(userID);
 		if (options.start) return startCommand(channelID, user, options.start.floor, options.start.solo);
-		if (options.buy) return buyCommand(user, options.buy.item);
+		if (options.buy) return buyCommand(user, options.buy.item, options.buy.quantity);
 		let str = `<:dungeoneeringToken:829004684685606912> **Dungeoneering Tokens:** ${user.settings
 			.get(UserSettings.DungeoneeringTokens)
 			.toLocaleString()}
