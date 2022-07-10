@@ -3,6 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
+import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { kittens } from '../../lib/growablePets';
 import { Minigames } from '../../lib/settings/minigames';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -16,8 +17,11 @@ import {
 } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
+import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
+
+const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -29,7 +33,7 @@ export const buyCommand: OSBMahojiCommand = {
 			description: 'The item you want to buy.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return [...Buyables, { name: 'Kitten' }]
+				return allBuyablesAutocomplete
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
 			}
@@ -82,6 +86,9 @@ export const buyCommand: OSBMahojiCommand = {
 				})),
 				content: `Removed ${cost} from your bank.`
 			};
+		}
+		if (leagueBuyables.some(i => stringMatches(i.item.name, name))) {
+			return leaguesBuyCommand(user, name, quantity);
 		}
 
 		const buyable = Buyables.find(
