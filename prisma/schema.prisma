@@ -816,6 +816,7 @@ enum activity_type_enum {
   PuroPuro
   Easter
   BaxtorianBathhouses
+  Naxxus
   Disassembling
   Research
   Moktang
