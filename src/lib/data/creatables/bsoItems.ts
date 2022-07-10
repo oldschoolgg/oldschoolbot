@@ -882,7 +882,6 @@ const bsoItems: Createable[] = [
 	{
 		name: 'Void Staff (u)',
 		inputItems: resolveNameBank({
-			'Kodai Wand': 1,
 			'Virtus Wand': 1,
 			'Dark Crystal': 1,
 			'Dark Animica': 75
