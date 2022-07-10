@@ -530,6 +530,62 @@ const Potions: Mixable[] = [
 		}),
 		tickRate: 10,
 		bankTimePerPotion: 0.5
+	},
+	{
+		name: 'Enhanced Saradomin Brew',
+		aliases: ['enhanced saradomin brew', 'enhanced brew'],
+		id: itemID('Enhanced Saradomin Brew'),
+		level: 110,
+		xp: 240,
+		inputItems: resolveNameBank({
+			Korulsi: 1,
+			'Crystal Dust': 10,
+			'Saradomin Brew (4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		name: 'Enhanced Super Restore',
+		aliases: ['enhanced super restore', 'enhanced restore'],
+		id: itemID('Enhanced Super Restore'),
+		level: 110,
+		xp: 240,
+		inputItems: resolveNameBank({
+			Korulsi: 1,
+			'Crystal Dust': 10,
+			'Super Restore (4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		name: 'Enhanced Stamina Potion',
+		aliases: ['enhanced stamina potion', 'enhanced stam', 'enhanced stamina'],
+		id: itemID('Enhanced Stamina Potion'),
+		level: 110,
+		xp: 240,
+		inputItems: resolveNameBank({
+			Korulsi: 1,
+			'Crystal Dust': 10,
+			'Stamina Potion (4)': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
+	},
+	{
+		name: 'Enhanced Divine Water',
+		aliases: ['enhanced divine water', 'enhanced div', 'enhanced water', 'enhanced div water'],
+		id: itemID('Enhanced Divine Water'),
+		level: 110,
+		xp: 240,
+		inputItems: resolveNameBank({
+			Korulsi: 1,
+			'Crystal Dust': 10,
+			'Divine Water': 1
+		}),
+		tickRate: 2,
+		bankTimePerPotion: 0.3
 	}
 ];
 

@@ -69,6 +69,9 @@ export namespace ClientSettings {
 		export const VasaCost = T<Readonly<ItemBank>>('vasa_cost');
 		export const VasaLoot = T<Readonly<ItemBank>>('vasa_loot');
 
+		export const NaxxusCost = T<Readonly<ItemBank>>('naxxus_cost');
+		export const NaxxusLoot = T<Readonly<ItemBank>>('naxxus_loot');
+
 		export const ODSCost = T<Readonly<ItemBank>>('ods_cost');
 		export const ODSLoot = T<Readonly<ItemBank>>('ods_loot');
 

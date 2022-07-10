@@ -2285,6 +2285,14 @@ export const nexCL = [
 	...resolveItems(['Frozen key', 'Bloodsoaked feather', 'Ancient emblem', 'Ancient hilt'])
 ];
 
+export const naxxusCL = resolveItems([
+	'Dark Crystal',
+	'Abyssal Gem',
+	'Tattered Tome',
+	'Spellbound Ring',
+	'Korulsi Seed'
+]);
+
 export const kalphiteKingCL = resolveItems([
 	'Drygore mace',
 	'Offhand drygore mace',
@@ -2307,6 +2315,8 @@ export const treeBeardCL = resolveItems([
 	24_561,
 	24_563,
 	'Mysterious seed',
+	'Korulsi seed',
+	'Grand Crystal Acorn',
 	'Ent hide'
 ]);
 

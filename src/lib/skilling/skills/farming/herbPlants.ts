@@ -585,6 +585,42 @@ const herbPlants: Plant[] = [
 		timePerPatchTravel: 20,
 		timePerHarvest: 10,
 		additionalPatchesByFarmGuildAndLvl: []
+	},
+	{
+		level: 110,
+		plantXp: 0,
+		checkXp: 9750,
+		harvestXp: 24_000,
+		name: 'Korulsi',
+		aliases: ['korulsi seed'],
+		inputItems: new Bank({ 'Korulsi seed': 1 }),
+		outputCrop: itemID('Grimy Korulsi'),
+		petChance: 97_364,
+		seedType: 'herb',
+		growthTime: 85,
+		numOfStages: 4,
+		chance1: 71,
+		chance99: 80,
+		chanceOfDeath: 28,
+		needsChopForHarvest: false,
+		fixedOutput: false,
+		givesLogs: false,
+		givesCrops: true,
+		defaultNumOfPatches: 4,
+		canPayFarmer: false,
+		canCompostPatch: true,
+		canCompostandPay: false,
+		// [QP, Patches Gained]
+		additionalPatchesByQP: [
+			[900, 1], // Canifs Patches (1)
+			[1500, 2], // Troll Stronghold (1)
+			[3000, 3] // Harmony Island Patch (1)
+		],
+		// [Farm Lvl, Patches Gained]
+		additionalPatchesByFarmLvl: [],
+		timePerPatchTravel: 20,
+		timePerHarvest: 10,
+		additionalPatchesByFarmGuildAndLvl: []
 	}
 ];
 

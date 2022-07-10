@@ -34,6 +34,8 @@ Client.defaultClientSchema
 	.add('kk_loot', 'any', { default: {} })
 	.add('vasa_cost', 'any', { default: {} })
 	.add('vasa_loot', 'any', { default: {} })
+	.add('naxxus_cost', 'any', { default: {} })
+	.add('naxxus_loot', 'any', { default: {} })
 	.add('ods_cost', 'any', { default: {} })
 	.add('ods_loot', 'any', { default: {} })
 	.add('mage_arena_cost', 'any', { default: {} })

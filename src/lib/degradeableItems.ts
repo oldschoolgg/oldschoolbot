@@ -9,7 +9,7 @@ import getOSItem from './util/getOSItem';
 
 interface DegradeableItem {
 	item: Item;
-	settingsKey: 'tentacle_charges' | 'sang_charges';
+	settingsKey: 'tentacle_charges' | 'sang_charges' | 'void_staff_charges';
 	itemsToRefundOnBreak: Bank;
 	setup: GearSetupType;
 	aliases: string[];
@@ -45,6 +45,17 @@ export const degradeableItems: DegradeableItem[] = [
 		},
 		unchargedItem: getOSItem('Sanguinesti staff (uncharged)'),
 		convertOnCharge: true
+	},
+	{
+		item: getOSItem('Void staff'),
+		settingsKey: 'void_staff_charges',
+		itemsToRefundOnBreak: new Bank().add('Void staff (u)'),
+		setup: 'mage',
+		aliases: ['void staff'],
+		chargeInput: {
+			cost: new Bank().add('Elder rune', 5),
+			charges: 1
+		}
 	}
 ];
 

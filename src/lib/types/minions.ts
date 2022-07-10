@@ -347,6 +347,10 @@ export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
+export interface NaxxusActivityTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+}
+
 export interface MonkeyRumbleOptions extends MinigameActivityTaskOptions {
 	quantity: number;
 	monkeys: Monkey[];
