@@ -1,7 +1,6 @@
 import './lib/customItems/customItems';
 import './lib/data/itemAliases';
 import './lib/crons';
-import './lib/leagues/leagues';
 
 import { Stopwatch } from '@sapphire/stopwatch';
 import * as Sentry from '@sentry/node';

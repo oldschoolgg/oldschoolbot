@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User } from '@prisma/client';
 import { User as RoboChimpUser } from '@prisma/robochimp';
 import { calcWhatPercent } from 'e';
@@ -337,20 +336,17 @@ export async function leaguesCheckUser(userID: string) {
 	const finishedIDs: number[] = [];
 
 	for (const { name, tasks } of leagueTasks) {
-		const finished: Task[] = [];
-		const notFinished: Task[] = [];
+		let finished = 0;
 		totalTasks += tasks.length;
 		for (const task of tasks) {
 			const has = await task.has(args);
 			if (has) {
 				finishedIDs.push(task.id);
-				finished.push(task);
-			} else {
-				notFinished.push(task);
+				finished++;
 			}
 		}
-		totalFinished += finished.length;
-		resStr += `**${name}:** Finished ${finished.length}/${tasks.length}\n`;
+		totalFinished += finished;
+		resStr += `**${name}:** Finished ${finished}/${tasks.length}\n`;
 	}
 
 	return {
@@ -385,7 +381,7 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 	}
 
 	if (1 > 0) {
-		return `Claiming points is currently disabled. However, you would have finished ${newlyFinishedTasks.length} tasks and received ${pointsToAward} points.`
+		return `Claiming points is currently disabled. However, you would have finished ${newlyFinishedTasks.length} tasks and received ${pointsToAward} points.`;
 	}
 
 	const newUser = await roboChimpClient.user.update({
