@@ -158,6 +158,7 @@ import {
 } from './CollectionsExport';
 import Createables from './createables';
 import { kibbles } from './kibble';
+import { leagueBuyables } from './leaguesBuyables';
 
 export const allCollectionLogs: ICollection = {
 	PvM: {
@@ -1164,6 +1165,10 @@ export const allCollectionLogs: ICollection = {
 				items: Createables.filter(i => i.noCl !== true)
 					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
 					.flat()
+			},
+			Leagues: {
+				counts: false,
+				items: leagueBuyables.map(i => i.item.id)
 			}
 		}
 	},

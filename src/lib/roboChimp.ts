@@ -27,10 +27,7 @@ export async function roboChimpUserFetch(userID: bigint) {
 			id: userID
 		},
 		create: {
-			id: userID,
-			leagues_points_balance_osb: 0,
-			leagues_points_balance_bso: 0,
-			leagues_points_total: 0
+			id: userID
 		},
 		update: {}
 	});
