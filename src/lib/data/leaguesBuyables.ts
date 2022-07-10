@@ -142,8 +142,6 @@ const pointsCostMultiplier = 150;
 
 export const leagueBuyables = [...twistedBuyables, ...trailblazerBuyables, ...shatteredRelicsBuyables];
 
-console.log(`All leagues buyables cost: ${sumArr(leagueBuyables.map(i => i.price * pointsCostMultiplier))}`);
-
 export async function leaguesBuyCommand(user: KlasaUser, itemName: string, quantity = 1) {
 	const item = leagueBuyables.find(i => stringMatches(i.item.name, itemName));
 	if (!item) return "That's not a valid item.";
