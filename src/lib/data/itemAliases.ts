@@ -247,3 +247,5 @@ setItemAlias(21_198, 'Lava battlestaff (or)');
 // Trouble Brewing
 setItemAlias(8940, 'Red rum (trouble brewing)');
 setItemAlias(8941, 'Blue rum (trouble brewing)');
+
+setItemAlias(25_376, 'Dragon pickaxe (or) (Trailblazer)');
