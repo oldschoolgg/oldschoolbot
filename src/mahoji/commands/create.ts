@@ -162,7 +162,7 @@ export const createCommand: OSBMahojiCommand = {
 		const inItems = new Bank(createableItem.inputItems).multiply(quantity);
 
 		if (createableItem.GPCost) {
-			inItems.add('Coins', createableItem.GPCost * quantity);
+			inItems.add('Coins', createableItem.GPCost);
 		}
 
 		await user.settings.sync(true);
@@ -183,18 +183,24 @@ export const createCommand: OSBMahojiCommand = {
 		if (action === 'revert') {
 			await handleMahojiConfirmation(
 				interaction,
-				`${user}, please confirm that you want to revert **${inItems}** into ${outItems}.`
+				`${user}, please confirm that you want to revert **${inItems}${
+					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
+				}** into ${outItems}.`
 			);
 		} else {
 			await handleMahojiConfirmation(
 				interaction,
-				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}.`
+				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}${
+					createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
+				}.`
 			);
 		}
 
 		// Ensure they have the required items to create the item.
 		if (!user.owns(inItems)) {
-			return `You don't have the required items to ${action} this item. You need: ${inItems}.`;
+			return `You don't have the required items to ${action} this item. You need: ${inItems}${
+				createableItem.GPCost ? ` and ${(createableItem.GPCost * quantity).toLocaleString()} GP` : ''
+			}.`;
 		}
 
 		await user.removeItemsFromBank(inItems);
