@@ -183,24 +183,18 @@ export const createCommand: OSBMahojiCommand = {
 		if (action === 'revert') {
 			await handleMahojiConfirmation(
 				interaction,
-				`${user}, please confirm that you want to revert **${inItems}${
-					createableItem.GPCost ? ` ` : ''
-				}** into ${outItems}.`
+				`${user}, please confirm that you want to revert **${inItems}** into ${outItems}.`
 			);
 		} else {
 			await handleMahojiConfirmation(
 				interaction,
-				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}${
-					createableItem.GPCost ? ` ` : ''
-				}.`
+				`${user}, please confirm that you want to ${action} **${outItems}** using ${inItems}.`
 			);
 		}
 
 		// Ensure they have the required items to create the item.
 		if (!user.owns(inItems)) {
-			return `You don't have the required items to ${action} this item. You need: ${inItems}${
-				createableItem.GPCost ? ` ` : ''
-			}.`;
+			return `You don't have the required items to ${action} this item. You need: ${inItems}.`;
 		}
 
 		await user.removeItemsFromBank(inItems);
