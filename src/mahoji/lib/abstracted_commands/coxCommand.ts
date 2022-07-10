@@ -21,6 +21,7 @@ import { MakePartyOptions } from '../../../lib/types';
 import { RaidsOptions } from '../../../lib/types/minions';
 import { channelIsSendable, formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
 
 const uniques = [
 	'Dexterous prayer scroll',
@@ -135,11 +136,16 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 			if (
 				isChallengeMode &&
 				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow')
+				!user.hasItemEquippedOrInBank('Twisted bow') &&
+				!userHasItemsEquippedAnywhere(
+					user,
+					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],
+					true
+				)
 			) {
 				return [
 					true,
-					'You need either a Dragon hunter crossbow or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
+					'You need either a Dragon hunter crossbow, Bow of faerdhinen (c) or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
 				];
 			}
 
