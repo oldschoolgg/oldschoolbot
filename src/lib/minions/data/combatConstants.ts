@@ -39,7 +39,12 @@ export const CombatCannonItemBank = new Bank({
 	'Cannon base': 1,
 	'Cannon furnace': 1,
 	'Cannon stand': 1
-});
+}).freeze();
+
+export const cannonBanks = [
+	CombatCannonItemBank,
+	new Bank().add('Cannon barrels (or)').add('Cannon base (or)').add('Cannon furnace (or)').add('Cannon stand (or)')
+];
 
 export const CombatOptionsArray: CombatOptionsDesc[] = [
 	{

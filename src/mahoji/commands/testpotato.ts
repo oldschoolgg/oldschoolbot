@@ -18,6 +18,7 @@ import {
 	torvaOutfit,
 	virtusOutfit
 } from '../../lib/data/CollectionsExport';
+import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
 import { dyedItems } from '../../lib/dyedItems';
 import { materialTypes } from '../../lib/invention';
@@ -212,6 +213,8 @@ for (const group of DisassemblySourceGroups) {
 		disassembly.add(item.id, 1000);
 	}
 }
+const leaguesPreset = new Bank();
+for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
 
 const spawnPresets = [
 	['openables', openablesBank],
@@ -222,7 +225,9 @@ const spawnPresets = [
 	['baxtorian_bathhouse', baxBathBank],
 	['usables', usables],
 	['bsogear', bsoGear],
-	['disassembly', disassembly]
+	['disassembly', disassembly],
+	['usables', usables],
+	['leagues', leaguesPreset]
 ] as const;
 
 const nexSupplies = new Bank()
@@ -551,6 +556,16 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return 'Invalid thing to reset.';
 				}
 				if (options.max) {
+					await roboChimpClient.user.update({
+						where: {
+							id: BigInt(user.id)
+						},
+						data: {
+							leagues_points_balance_osb: {
+								increment: 25_000
+							}
+						}
+					});
 					return giveMaxStats(user);
 				}
 				if (options.patron) {
