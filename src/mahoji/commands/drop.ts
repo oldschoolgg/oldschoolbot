@@ -14,7 +14,6 @@ export const dropCommand: OSBMahojiCommand = {
 	description: 'Drop items from your bank.',
 	attributes: {
 		requiresMinion: true,
-		requiresMinionNotBusy: true,
 		examples: ['/drop items:10 trout, 5 coal']
 	},
 	options: [
