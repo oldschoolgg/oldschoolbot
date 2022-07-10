@@ -357,12 +357,7 @@ export async function leaguesCheckUser(userID: string) {
 		})
 **Total Points:** ${roboChimpUser.leagues_points_total.toLocaleString()} (Rank ${ranking.pointsRanking})
 **Points Balance:** ${roboChimpUser.leagues_points_balance_osb.toLocaleString()} OSB / ${roboChimpUser.leagues_points_balance_bso.toLocaleString()} BSO
-${resStr}
-
-**Actual Clues:** ${actualClues}
-**Potions Made:** ${herbloreStats.pots}
-**Unf Potions Made:** ${herbloreStats.unfPots}
-**Herbs cleaned:** ${herbloreStats.herbs}`,
+${resStr}`,
 		finished: finishedIDs
 	};
 }
