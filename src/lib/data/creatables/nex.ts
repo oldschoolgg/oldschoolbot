@@ -8,16 +8,14 @@ export const nexCreatables: Createable[] = [
 		inputItems: new Bank({
 			'Bandos chestplate': 1
 		}),
-		outputItems: new Bank({ 'Bandosian components': 3 }),
-		revertCl: true
+		outputItems: new Bank({ 'Bandosian components': 3 })
 	},
 	{
 		name: 'Revert bandos tassets',
 		inputItems: new Bank({
 			'Bandos tassets': 1
 		}),
-		outputItems: new Bank({ 'Bandosian components': 2 }),
-		revertCl: true
+		outputItems: new Bank({ 'Bandosian components': 2 })
 	},
 	{
 		name: 'Torva full helm',

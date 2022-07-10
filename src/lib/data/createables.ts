@@ -27,7 +27,6 @@ export interface Createable {
 	requiredSkills?: Skills;
 	QPRequired?: number;
 	noCl?: boolean;
-	revertCl?: boolean;
 	GPCost?: number;
 	cantBeInCL?: boolean;
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];

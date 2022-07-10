@@ -212,8 +212,6 @@ export const createCommand: OSBMahojiCommand = {
 		// Only allow +create to add items to CL
 		if (!createableItem.noCl && action === 'create') await user.addItemsToCollectionLog({ items: outItems });
 
-		if (createableItem.revertCl) await user.addItemsToCollectionLog({ items: outItems });
-
 		if (action === 'revert') {
 			return `You reverted ${inItems} into ${outItems}.`;
 		}
