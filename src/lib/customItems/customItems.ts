@@ -2591,10 +2591,10 @@ setCustomItem(
 setCustomItem(70_001, 'Grimy Korulsi', 'Coal', { tradeable: true }, 100_000);
 setCustomItem(70_002, 'Korulsi', 'Coal', { tradeable: true }, 100_000);
 setCustomItem(70_003, 'Korulsi Seed', 'Coal', { tradeable: true }, 50_000);
-setCustomItem(70_004, 'Enhanced Saradomin Brew', 'a', { tradeable: true }, 10_000);
-setCustomItem(70_005, 'Enhanced Super Restore', 'a', { tradeable: true }, 10_000);
-setCustomItem(70_006, 'Enhanced Stamina Potion', 'a', { tradeable: true }, 10_000);
-setCustomItem(70_007, 'Enhanced Divine Water', 'a', { tradeable: true }, 10_000);
+setCustomItem(70_004, 'Enhanced Saradomin Brew', 'Coal', { tradeable: true }, 10_000);
+setCustomItem(70_005, 'Enhanced Super Restore', 'Coal', { tradeable: true }, 10_000);
+setCustomItem(70_006, 'Enhanced Stamina Potion', 'Coal', { tradeable: true }, 10_000);
+setCustomItem(70_007, 'Enhanced Divine Water', 'Coal', { tradeable: true }, 10_000);
 setCustomItem(
 	70_008,
 	'Dark Crystal',
