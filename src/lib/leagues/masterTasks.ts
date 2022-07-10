@@ -941,16 +941,16 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4132,
-		name: 'Smith items from 200,000 Adamantite bars',
+		name: 'Smith items from 90,000 Adamantite bars',
 		has: async ({ smithingSuppliesUsed }) => {
-			return smithingSuppliesUsed.amount('Adamantite bar') >= 200_000;
+			return smithingSuppliesUsed.amount('Adamantite bar') >= 90_000;
 		}
 	},
 	{
 		id: 4133,
-		name: 'Smith items from 100,000 Runite bars',
+		name: 'Smith items from 50,000 Runite bars',
 		has: async ({ smithingSuppliesUsed }) => {
-			return smithingSuppliesUsed.amount('Runite bar') >= 100_000;
+			return smithingSuppliesUsed.amount('Runite bar') >= 50_000;
 		}
 	},
 	{
