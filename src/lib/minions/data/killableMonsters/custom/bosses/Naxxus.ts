@@ -61,7 +61,7 @@ const naxxusLoot = new LootTable().add(runes, 3).add(talismans, 3).add(herbs, 3)
 
 export const NaxxusLootTable = new LootTable()
 	.add(naxxusLoot, 2)
-	.tertiary(3, 'Clue scroll (Grandmaster)')
+	.tertiary(7, 'Clue scroll (Grandmaster)')
 	.tertiary(750, 'Dark Crystal')
 	.tertiary(500, 'Abyssal Gem')
 	.tertiary(750, 'Tattered Tome')
