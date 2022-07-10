@@ -448,14 +448,14 @@ export const easyTasks: Task[] = [
 		id: 59,
 		name: 'Complete 5 Bloodveld slayer tasks',
 		has: async args => {
-			return leaguesSlayerTaskForMonster(args, Monsters.Bloodveld);
+			return leaguesSlayerTaskForMonster(args, Monsters.Bloodveld, 5);
 		}
 	},
 	{
 		id: 60,
 		name: 'Complete 5 Dagannoth slayer tasks',
 		has: async args => {
-			return leaguesSlayerTaskForMonster(args, Monsters.Dagannoth);
+			return leaguesSlayerTaskForMonster(args, Monsters.Dagannoth, 5);
 		}
 	},
 	{

@@ -134,12 +134,15 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4014,
-		name: 'Create every nightmare staff',
+		name: 'Create every nightmare staff from scratch',
 		has: async ({ cl }) => {
 			return resolveItems([
 				'Volatile nightmare staff',
 				'Harmonised nightmare staff',
-				'Eldritch nightmare staff'
+				'Eldritch nightmare staff',
+				'Volatile orb',
+				'Harmonised orb',
+				'Eldritch orb'
 			]).every(gs => cl.has(gs));
 		}
 	},
@@ -187,7 +190,7 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4022,
-		name: 'Smelt 1000 Runite bars from scratch',
+		name: 'Smelt 2000 Runite bars from scratch',
 		has: async ({ smeltingStats }) => {
 			return smeltingStats.amount('Runite bar') >= 2000;
 		}
@@ -238,7 +241,7 @@ export const masterTasks: Task[] = [
 		id: 4030,
 		name: 'Reach total level 3000',
 		has: async ({ skillsLevels }) => {
-			return calcTotalLevel(skillsLevels) >= 2800;
+			return calcTotalLevel(skillsLevels) >= 3000;
 		}
 	},
 	{
@@ -463,13 +466,6 @@ export const masterTasks: Task[] = [
 		}
 	},
 	{
-		id: 4062,
-		name: 'Receive 500m Herblore',
-		has: async ({ skillsXP }) => {
-			return skillsXP.herblore >= 500_000_000;
-		}
-	},
-	{
 		id: 4063,
 		name: 'Receive 500m Thieving',
 		has: async ({ skillsXP }) => {
@@ -639,13 +635,6 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4087,
-		name: 'Receive 1b Herblore',
-		has: async ({ skillsXP }) => {
-			return skillsXP.herblore >= 1_000_000_000;
-		}
-	},
-	{
-		id: 4088,
 		name: 'Receive 1b Herblore',
 		has: async ({ skillsXP }) => {
 			return skillsXP.herblore >= 1_000_000_000;
@@ -959,7 +948,7 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4133,
-		name: 'Smith 100,000 Rune items',
+		name: 'Smith items from 100,000 Runite bars',
 		has: async ({ smithingSuppliesUsed }) => {
 			return smithingSuppliesUsed.amount('Runite bar') >= 100_000;
 		}
@@ -1029,37 +1018,16 @@ export const masterTasks: Task[] = [
 	},
 	{
 		id: 4143,
-		name: 'Reach 94% CL completion',
+		name: 'Reach 93% CL completion',
 		has: async ({ clPercent }) => {
-			return clPercent >= 94;
+			return clPercent >= 93;
 		}
 	},
 	{
 		id: 4144,
-		name: 'Reach 97% CL completion',
-		has: async ({ clPercent }) => {
-			return clPercent >= 97;
-		}
-	},
-	{
-		id: 4145,
-		name: 'Reach 98% CL completion',
-		has: async ({ clPercent }) => {
-			return clPercent >= 98;
-		}
-	},
-	{
-		id: 4146,
-		name: 'Reach 99% CL completion',
-		has: async ({ clPercent }) => {
-			return clPercent >= 99;
-		}
-	},
-	{
-		id: 4147,
-		name: 'Reach 100% CL completion',
-		has: async ({ clPercent }) => {
-			return clPercent >= 100;
+		name: 'Smith items from 200,000 Mithril bars',
+		has: async ({ smithingSuppliesUsed }) => {
+			return smithingSuppliesUsed.amount('Mithril bar') >= 200_000;
 		}
 	}
 ];

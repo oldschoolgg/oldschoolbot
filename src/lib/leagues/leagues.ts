@@ -97,7 +97,7 @@ export function leaguesHasCatches(args: HasFunctionArgs, name: string, amount = 
 	return (args.creatureScores[creature.id] ?? 0) >= amount;
 }
 
-export function leaguesSlayerTaskForMonster(args: HasFunctionArgs, mon: Monster | CustomMonster, amount = 1) {
+export function leaguesSlayerTaskForMonster(args: HasFunctionArgs, mon: Monster | CustomMonster, amount: number) {
 	let data = args.slayerStats.find(i => i.monsterID === mon.id);
 	return data !== undefined && data.total_tasks >= amount;
 }

@@ -147,7 +147,7 @@ export const eliteTasks: Task[] = [
 		id: 3017,
 		name: 'Reach total level 2500',
 		has: async ({ skillsLevels }) => {
-			return calcTotalLevel(skillsLevels) >= 2400;
+			return calcTotalLevel(skillsLevels) >= 2500;
 		}
 	},
 	{
@@ -173,61 +173,61 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3021,
-		name: 'Mix 500 Super attack potions.',
+		name: 'Mix 1500 Super attack potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(resolveItems(['Super attack (3)', 'Super attack (4)']).map(i => herbloreStats.pots.amount(i))) >=
-				500
+				1500
 			);
 		}
 	},
 	{
 		id: 3022,
-		name: 'Mix 500 Super strength potions.',
+		name: 'Mix 1500 Super strength potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(
 					resolveItems(['Super strength (3)', 'Super strength (4)']).map(i => herbloreStats.pots.amount(i))
-				) >= 500
+				) >= 1500
 			);
 		}
 	},
 	{
 		id: 3023,
-		name: 'Mix 500 Super defence potions.',
+		name: 'Mix 1500 Super defence potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(
 					resolveItems(['Super defence (3)', 'Super defence (4)']).map(i => herbloreStats.pots.amount(i))
-				) >= 500
+				) >= 1500
 			);
 		}
 	},
 	{
 		id: 3024,
-		name: 'Mix 500 Stamina potions.',
+		name: 'Mix 1500 Stamina potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(
 					resolveItems(['Stamina potion (3)', 'Stamina potion (4)']).map(i => herbloreStats.pots.amount(i))
-				) >= 500
+				) >= 1500
 			);
 		}
 	},
 	{
 		id: 3025,
-		name: 'Mix 2000 Saradomin brews.',
+		name: 'Mix 2500 Saradomin brews.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(
 					resolveItems(['Saradomin brew (3)', 'Saradomin brew (4)']).map(i => herbloreStats.pots.amount(i))
-				) >= 2000
+				) >= 2500
 			);
 		}
 	},
 	{
 		id: 3027,
-		name: 'Receive 3 3rd age items',
+		name: 'Receive 3x 3rd age items',
 		has: async ({ cl }) => {
 			return all3rdAgeItems.filter(i => cl.has(i)).length >= 3;
 		}
@@ -564,7 +564,7 @@ export const eliteTasks: Task[] = [
 	},
 	{
 		id: 3073,
-		name: 'Finish the Abyssal Dragon CL',
+		name: 'Finish the Abyssal Dragon (Malygos) CL',
 		has: async ({ cl }) => {
 			return abyssalDragonCL.every(gs => cl.has(gs));
 		}

@@ -184,7 +184,7 @@ export const mediumTasks: Task[] = [
 	},
 	{
 		id: 1023,
-		name: 'Reach combat level 70',
+		name: 'Reach combat level 90',
 		has: async ({ skillsXP }) => {
 			return calcCombatLevel(skillsXP) >= 90;
 		}
@@ -329,14 +329,14 @@ export const mediumTasks: Task[] = [
 	},
 	{
 		id: 1046,
-		name: 'Open a Eternal impling jar',
+		name: 'Open an Eternal impling jar',
 		has: async ({ opens }) => {
 			return opens.has('Eternal impling jar');
 		}
 	},
 	{
 		id: 1047,
-		name: 'Open a Infernal impling jar',
+		name: 'Open an Infernal impling jar',
 		has: async ({ opens }) => {
 			return opens.has('Infernal impling jar');
 		}
@@ -414,9 +414,9 @@ export const mediumTasks: Task[] = [
 	},
 	{
 		id: 1059,
-		name: 'Slay 15 superior slayer creatures',
+		name: 'Slay 20 superior slayer creatures',
 		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_superior_count >= 5;
+			return mahojiUser.slayer_superior_count >= 20;
 		}
 	},
 	{
@@ -458,12 +458,12 @@ export const mediumTasks: Task[] = [
 		id: 1065,
 		name: 'Complete the Gauntlet 100 times',
 		has: async ({ minigames }) => {
-			return minigames.gauntlet >= 1;
+			return minigames.gauntlet >= 100;
 		}
 	},
 	{
 		id: 1066,
-		name: 'Achieve maximum kourend favour',
+		name: 'Achieve maximum Kourend favour',
 		has: async ({ mahojiUser }) => {
 			const currentUserFavour = (mahojiUser.kourend_favour ?? baseUserKourendFavour) as any as UserKourendFavour;
 			return Object.values(currentUserFavour).every(val => val >= 100);
@@ -681,35 +681,35 @@ export const mediumTasks: Task[] = [
 		id: 1094,
 		name: 'Complete 5 Gargoyle slayer tasks',
 		has: async args => {
-			return leaguesSlayerTaskForMonster(args, Monsters.Gargoyle);
+			return leaguesSlayerTaskForMonster(args, Monsters.Gargoyle, 5);
 		}
 	},
 	{
 		id: 1095,
 		name: 'Complete 5 Blue dragon slayer tasks',
 		has: async args => {
-			return leaguesSlayerTaskForMonster(args, Monsters.BlueDragon);
+			return leaguesSlayerTaskForMonster(args, Monsters.BlueDragon, 5);
 		}
 	},
 	{
 		id: 1096,
 		name: 'Complete 5 Abyssal Demon slayer tasks',
 		has: async args => {
-			return leaguesSlayerTaskForMonster(args, Monsters.AbyssalDemon);
+			return leaguesSlayerTaskForMonster(args, Monsters.AbyssalDemon, 5);
 		}
 	},
 	{
 		id: 1097,
 		name: 'Complete 5 Hellhound slayer tasks',
 		has: async args => {
-			return leaguesSlayerTaskForMonster(args, Monsters.Hellhound);
+			return leaguesSlayerTaskForMonster(args, Monsters.Hellhound, 5);
 		}
 	},
 	{
 		id: 1098,
 		name: 'Complete 5 Nechryael slayer tasks',
 		has: async args => {
-			return leaguesSlayerTaskForMonster(args, Monsters.Nechryael);
+			return leaguesSlayerTaskForMonster(args, Monsters.Nechryael, 5);
 		}
 	},
 	{

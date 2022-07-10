@@ -212,30 +212,30 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2024,
-		name: 'Complete 100 Castle Wars games',
+		name: 'Complete 250 Castle Wars games',
 		has: async ({ minigames }) => {
-			return minigames.castle_wars >= 100;
+			return minigames.castle_wars >= 250;
 		}
 	},
 	{
 		id: 2025,
-		name: 'Complete 100 Temple Treks',
+		name: 'Complete 250 Temple Treks',
 		has: async ({ minigames }) => {
-			return minigames.temple_trekking >= 100;
+			return minigames.temple_trekking >= 250;
 		}
 	},
 	{
 		id: 2026,
-		name: 'Complete 100 Last Man Standing',
+		name: 'Complete 500 Last Man Standing games',
 		has: async ({ minigames }) => {
-			return minigames.lms >= 100;
+			return minigames.lms >= 500;
 		}
 	},
 	{
 		id: 2028,
-		name: 'Catch 200 Red salamanders',
+		name: 'Catch 500 Red salamanders',
 		has: async args => {
-			return leaguesHasCatches(args, 'Red salamander', 200);
+			return leaguesHasCatches(args, 'Red salamander', 500);
 		}
 	},
 	{
@@ -251,76 +251,76 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2030,
-		name: 'Mix 100 Super attack potions.',
+		name: 'Mix 500 Super attack potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(resolveItems(['Super attack (3)', 'Super attack (4)']).map(i => herbloreStats.pots.amount(i))) >=
-				100
+				500
 			);
 		}
 	},
 	{
 		id: 2031,
-		name: 'Mix 100 Super strength potions.',
+		name: 'Mix 500 Super strength potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(
 					resolveItems(['Super strength (3)', 'Super strength (4)']).map(i => herbloreStats.pots.amount(i))
-				) >= 100
+				) >= 500
 			);
 		}
 	},
 	{
 		id: 2032,
-		name: 'Mix 100 Super defence potions.',
+		name: 'Mix 500 Super defence potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(
 					resolveItems(['Super defence (3)', 'Super defence (4)']).map(i => herbloreStats.pots.amount(i))
-				) >= 100
+				) >= 500
 			);
 		}
 	},
 	{
 		id: 2033,
-		name: 'Mix 100 Ranging potions.',
+		name: 'Mix 500 Ranging potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(
 					resolveItems(['Ranging potion (3)', 'Ranging potion (4)']).map(i => herbloreStats.pots.amount(i))
-				) >= 100
+				) >= 500
 			);
 		}
 	},
 	{
 		id: 2034,
-		name: 'Mix 100 Magic potions.',
+		name: 'Mix 500 Magic potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(resolveItems(['Magic potion (3)', 'Magic potion (4)']).map(i => herbloreStats.pots.amount(i))) >=
-				100
+				500
 			);
 		}
 	},
 	{
 		id: 2035,
-		name: 'Mix 100 Stamina potions.',
+		name: 'Mix 500 Stamina potions.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(
 					resolveItems(['Stamina potion (3)', 'Stamina potion (4)']).map(i => herbloreStats.pots.amount(i))
-				) >= 100
+				) >= 500
 			);
 		}
 	},
 	{
 		id: 2036,
-		name: 'Mix 100 Saradomin brews.',
+		name: 'Mix 500 Saradomin brews.',
 		has: async ({ herbloreStats }) => {
 			return (
 				sumArr(
 					resolveItems(['Saradomin brew (3)', 'Saradomin brew (4)']).map(i => herbloreStats.pots.amount(i))
-				) >= 100
+				) >= 500
 			);
 		}
 	},
@@ -403,15 +403,15 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2048,
-		name: 'Mix 100 Heat res. brews from scratch',
+		name: 'Mix 250 Heat res. brews from scratch',
 		has: async ({ cl, herbloreStats, skillsLevels }) => {
 			return (
 				skillsLevels.farming > 99 &&
 				skillsLevels.herblore > 120 &&
-				cl.amount('Athelas seed') >= 1 &&
-				cl.amount('Athelas') >= 50 &&
-				herbloreStats.pots.amount('Heat res. vial') >= 100 &&
-				herbloreStats.pots.amount('Heat res. brew') >= 100
+				cl.amount('Athelas seed') >= 3 &&
+				cl.amount('Athelas') >= 100 &&
+				cl.amount('Heat res. vial') >= 250 &&
+				herbloreStats.pots.amount('Heat res. brew') >= 250
 			);
 		}
 	},
@@ -654,13 +654,6 @@ export const hardTasks: Task[] = [
 	},
 	{
 		id: 2081,
-		name: 'Achieve level 120 Herblore',
-		has: async ({ skillsLevels }) => {
-			return skillsLevels.herblore >= 120;
-		}
-	},
-	{
-		id: 2082,
 		name: 'Achieve level 120 Herblore',
 		has: async ({ skillsLevels }) => {
 			return skillsLevels.herblore >= 120;
@@ -962,7 +955,7 @@ export const hardTasks: Task[] = [
 		id: 2125,
 		name: 'Smith items from 15,000 Adamantite bars',
 		has: async ({ smithingSuppliesUsed }) => {
-			return smithingSuppliesUsed.amount('Adamantite bar') >= 20_000;
+			return smithingSuppliesUsed.amount('Adamantite bar') >= 15_000;
 		}
 	},
 	{
@@ -1040,6 +1033,20 @@ export const hardTasks: Task[] = [
 		name: 'Acquire, complete and open 30 Grandmaster clues/caskets',
 		has: async ({ actualClues }) => {
 			return actualClues.amount('Clue scroll (grandmaster)') >= 30;
+		}
+	},
+	{
+		id: 2138,
+		name: 'Mix 250 Heat res. restore from scratch',
+		has: async ({ cl, herbloreStats, skillsLevels }) => {
+			return (
+				skillsLevels.farming > 99 &&
+				skillsLevels.herblore > 120 &&
+				cl.amount('Athelas seed') >= 3 &&
+				cl.amount('Athelas') >= 100 &&
+				cl.amount('Heat res. vial') >= 250 &&
+				herbloreStats.pots.amount('Heat res. restore') >= 250
+			);
 		}
 	}
 ];
