@@ -5,6 +5,7 @@ export const inviteCommand: OSBMahojiCommand = {
 	description: 'Shows the invite link for the bot.',
 	options: [],
 	run: async () => {
-		return 'https://www.oldschool.gg/invite/osb';
+		return `OSB - https://www.oldschool.gg/invite/osb
+BSO - https://www.oldschool.gg/invite/bso`;
 	}
 };
