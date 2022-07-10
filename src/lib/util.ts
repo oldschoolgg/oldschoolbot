@@ -332,6 +332,10 @@ export function calcCombatLevel(skills: Skills) {
 	const mage = 0.325 * (Math.floor(magic / 2) + magic);
 	return Math.floor(base + Math.max(melee, range, mage));
 }
+export function calcTotalLevel(skills: Skills) {
+	return sumArr(Object.values(skills));
+}
+
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
 		if ((skillName as string) === 'combat') {

@@ -510,6 +510,57 @@ async function itemContractLb(user: KlasaUser, channelID: bigint) {
 	return lbMsg('Item Contract Streak');
 }
 
+async function leaguesPointsLeaderboard(user: KlasaUser, channelID: bigint) {
+	const result = await roboChimpClient.user.findMany({
+		where: {
+			leagues_points_total: {
+				gt: 0
+			}
+		},
+		orderBy: {
+			leagues_points_total: 'desc'
+		},
+		take: 100
+	});
+	doMenu(
+		user,
+		channelID,
+		chunk(result, 10).map(subList =>
+			subList
+				.map(
+					({ id, leagues_points_total }) =>
+						`**${getUsername(id)}:** ${leagues_points_total.toLocaleString()} Pts`
+				)
+				.join('\n')
+		),
+		'Leagues Points Leaderboard'
+	);
+	return lbMsg('Leagues Points');
+}
+
+async function leaguesLeaderboard(user: KlasaUser, channelID: bigint, type: 'points' | 'tasks') {
+	if (type === 'points') return leaguesPointsLeaderboard(user, channelID);
+	const result: { id: number; tasks_completed: number }[] =
+		await roboChimpClient.$queryRaw`SELECT id, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
+										  FROM public.user
+										  ORDER BY tasks_completed DESC
+										  LIMIT 100;`;
+	doMenu(
+		user,
+		channelID,
+		chunk(result, 10).map(subList =>
+			subList
+				.map(
+					({ id, tasks_completed }) =>
+						`**${getUsername(id.toString())}:** ${tasks_completed.toLocaleString()} Tasks`
+				)
+				.join('\n')
+		),
+		'Leagues Tasks Leaderboard'
+	);
+	return lbMsg('Leagues Tasks');
+}
+
 const ironmanOnlyOption = {
 	type: ApplicationCommandOptionType.Boolean,
 	name: 'ironmen_only',
@@ -708,6 +759,20 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'item_contract_streak',
 			description: 'The item contract streak leaderboard.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'leagues',
+			description: 'Check the Leagues leaderboards.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'type',
+					description: 'The leagues lb you want to select.',
+					required: true,
+					choices: ['points', 'tasks'].map(i => ({ name: i, value: i }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -728,6 +793,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		opens?: { openable: string; ironmen_only?: boolean };
 		cl?: { cl: string; ironmen_only?: boolean };
 		item_contract_streak?: {};
+		leagues?: { type: 'points' | 'tasks' };
 	}>) => {
 		await interaction.deferReply();
 		const user = await globalClient.fetchUser(userID);
@@ -743,7 +809,8 @@ export const leaderboardCommand: OSBMahojiCommand = {
 			gp,
 			skills,
 			cl,
-			item_contract_streak
+			item_contract_streak,
+			leagues
 		} = options;
 		if (kc) return kcLb(user, channelID, kc.monster, Boolean(kc.ironmen_only));
 		if (farming_contracts) return farmingContractLb(user, channelID, Boolean(farming_contracts.ironmen_only));
@@ -759,6 +826,7 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		if (opens) return openLb(user, channelID, opens.openable, Boolean(opens.ironmen_only));
 		if (cl) return clLb(user, channelID, cl.cl, Boolean(cl.ironmen_only));
 		if (item_contract_streak) return itemContractLb(user, channelID);
+		if (leagues) return leaguesLeaderboard(user, channelID, leagues.type);
 		return 'Invalid input.';
 	}
 };
