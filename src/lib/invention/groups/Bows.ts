@@ -23,7 +23,7 @@ export const Bows: DisassemblySourceGroup = {
 		{ item: i('Magic longbow'), lvl: 85 },
 		{ item: i('Elder bow'), lvl: 99 },
 
-		{ item: i('Dark bow'), lvl: 90 },
+		{ item: i('Dark bow'), lvl: 99 },
 		{
 			item: i('Crystal bow'),
 			lvl: 70
