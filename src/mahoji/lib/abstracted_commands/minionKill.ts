@@ -30,9 +30,9 @@ import {
 	boostIceBurst,
 	boostSuperiorCannon,
 	boostSuperiorCannonMulti,
+	cannonBanks,
 	cannonMultiConsumables,
 	cannonSingleConsumables,
-	CombatCannonItemBank,
 	CombatOptionsEnum,
 	iceBarrageConsumables,
 	iceBurstConsumables,
@@ -320,7 +320,7 @@ export async function minionKillCommand(
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
 	const hasSuperiorCannon = user.owns('Superior dwarf multicannon');
-	const hasCannon = user.owns(CombatCannonItemBank) || hasSuperiorCannon;
+	const hasCannon = cannonBanks.some(i => user.owns(i)) || hasSuperiorCannon;
 
 	if (!isOnTask && method && method !== 'none') {
 		return 'You can only burst/barrage/cannon while on task in BSO.';
