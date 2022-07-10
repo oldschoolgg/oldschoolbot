@@ -175,7 +175,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 	let { hasEnough, foodBank, foodReason } = brewRestoreSupplyCalc(user, brewsNeeded);
 
 	if (!hasEnough) {
-		`${user.username} doesn't have the food requirements for this monster: ${foodReason}`;
+		return `${user.username} doesn't have the food requirements for this monster: ${foodReason}`;
 	}
 
 	if (!user.bank().has(new Bank().add('Enhanced Divine Water', 2 * quantity))) {
