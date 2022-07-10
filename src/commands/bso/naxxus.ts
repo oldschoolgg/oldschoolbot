@@ -103,7 +103,6 @@ export default class extends BotCommand {
 			usageDelim: ' ',
 			aliases: ['naxx'],
 			altProtection: true,
-			requiredPermissions: ['ADD_REACTIONS', 'ATTACH_FILES']
 		});
 	}
 
