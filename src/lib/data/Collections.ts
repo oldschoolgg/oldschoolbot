@@ -86,6 +86,7 @@ import {
 	discontinuedCustomPetsCL,
 	expertCapesCL,
 	fightCavesCL,
+	fishingContestCL,
 	fishingTrawlerCL,
 	fossilIslandNotesCL,
 	generalGraardorCL,
@@ -157,6 +158,7 @@ import {
 } from './CollectionsExport';
 import Createables from './createables';
 import { kibbles } from './kibble';
+import { leagueBuyables } from './leaguesBuyables';
 
 export const allCollectionLogs: ICollection = {
 	PvM: {
@@ -866,19 +868,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Fishing Contest': {
 				alias: ['fc'],
-				items: resolveItems([
-					'Fishing hat',
-					'Fishing jacket',
-					'Fishing waders',
-					'Fishing boots',
-					'Contest rod',
-					"Beginner's tackle box",
-					'Basic tackle box',
-					'Standard tackle box',
-					'Professional tackle box',
-					"Champion's tackle box",
-					'Golden fishing trophy'
-				])
+				items: fishingContestCL
 			},
 			'Baxtorian Bathhouses': {
 				alias: ['bb', 'bax bath', 'baxtorian bathhouses', 'bath', 'baths'],
@@ -1175,6 +1165,10 @@ export const allCollectionLogs: ICollection = {
 				items: Createables.filter(i => i.noCl !== true)
 					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
 					.flat()
+			},
+			Leagues: {
+				counts: false,
+				items: leagueBuyables.map(i => i.item.id)
 			}
 		}
 	},

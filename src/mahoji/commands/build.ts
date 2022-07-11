@@ -75,7 +75,10 @@ export const buildCommand: OSBMahojiCommand = {
 			const boostRes = await inventionItemBoost({
 				userID: BigInt(user.id),
 				inventionID: InventionID.DrygoreSaw,
-				duration: options.quantity ? options.quantity * timeToBuildSingleObject : maxTripLength
+				duration: Math.min(
+					maxTripLength,
+					options.quantity ? options.quantity * timeToBuildSingleObject : maxTripLength
+				)
 			});
 			if (boostRes.success) {
 				timeToBuildSingleObject = reduceNumByPercent(

@@ -7,8 +7,8 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import {
-	clientSettingsUpdate,
 	mahojiClientSettingsFetch,
+	mahojiClientSettingsUpdate,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
@@ -306,14 +306,14 @@ export const Inventions: readonly Invention[] = [
 		description: `Makes fishing ${inventionBoosts.mechaRod.speedBoostPercent}% faster.`,
 		item: getOSItem('Mecha rod'),
 		materialTypeBank: new MaterialBank({
-			flexible: 5,
-			organic: 3,
+			flexible: 4,
+			organic: 4,
 			strong: 2
 		}),
 		flags: ['bank'],
 		itemCost: null,
 		inventionLevelNeeded: 85,
-		usageCostMultiplier: 0.9
+		usageCostMultiplier: 0.7
 	},
 	{
 		id: InventionID.MasterHammerAndChisel,
@@ -418,7 +418,7 @@ export async function transactMaterialsFromUser({
 
 	if (addToGlobalInventionCostBank && remove) {
 		const current = await mahojiClientSettingsFetch({ invention_materials_cost: true });
-		await clientSettingsUpdate({
+		await mahojiClientSettingsUpdate({
 			invention_materials_cost: new MaterialBank(current.invention_materials_cost as IMaterialBank).add(remove)
 				.bank
 		});

@@ -4,6 +4,7 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { roboChimpUserFetch } from '../../../lib/roboChimp';
 import { prisma } from '../../../lib/settings/prisma';
 import { assert } from '../../../lib/util';
 import { minionIsBusy } from '../../../lib/util/minionIsBusy';
@@ -12,7 +13,7 @@ import { handleMahojiConfirmation, mahojiUserSettingsUpdate, mahojiUsersSettings
 export async function ironmanCommand(user: KlasaUser, interaction: SlashCommandInteraction) {
 	if (minionIsBusy(user.id)) return 'Your minion is busy.';
 	if (user.isIronman) {
-		return 'You are akrady an ironman.';
+		return 'You are alrady an ironman.';
 	}
 
 	const existingGiveaways = await prisma.giveaway.findMany({
@@ -87,6 +88,19 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		await prisma.tameActivity.deleteMany({ where: { user_id: user.id } });
 		await prisma.tame.deleteMany({ where: { user_id: user.id } });
 		await prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(user.id) } });
+
+		// Refund the leagues points they spent
+		const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
+		if (roboChimpUser.leagues_points_total >= 0) {
+			await roboChimpClient.user.update({
+				where: {
+					id: Number(user.id)
+				},
+				data: {
+					leagues_points_balance_bso: roboChimpUser.leagues_points_balance_bso
+				}
+			});
+		}
 	} catch (_) {}
 
 	const { newUser } = await mahojiUserSettingsUpdate(user.id, {

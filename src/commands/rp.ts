@@ -24,10 +24,12 @@ import {
 	SupportServer,
 	userTimers
 } from '../lib/constants';
+import { getCollectionItems } from '../lib/data/Collections';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../lib/doubleLoot';
 import { evalMathExpression } from '../lib/expressionParser';
 import { GearSetup, GearSetupTypes } from '../lib/gear';
+import { leaguesCheckUser, leaguesClaimCommand } from '../lib/leagues/leagues';
 import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
@@ -56,17 +58,10 @@ import getOSItem, { getItem } from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 import { makeBankImage, makeBankImageKlasa } from '../lib/util/makeBankImage';
-import { parseBank } from '../lib/util/parseStringBank';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import {
-	clientSettingsUpdate,
-	mahojiClientSettingsFetch,
-	mahojiParseNumber,
-	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
-} from '../mahoji/mahojiSettings';
+import { mahojiParseNumber, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import PatreonTask from '../tasks/patreon';
 
 export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise<[string] | [string, any[]]> {
@@ -386,14 +381,6 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
-			case 'invprizesleft': {
-				const remaining = await mahojiClientSettingsFetch({ invention_prizes_remaining: true });
-				const image = await makeBankImage({
-					bank: new Bank(remaining.invention_prizes_remaining as ItemBank),
-					title: 'Invention Prizes Left'
-				});
-				return msg.channel.send({ files: [new MessageAttachment(image.file.buffer)] });
-			}
 			case 'setmp': {
 				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
 				if (
@@ -1199,24 +1186,49 @@ ORDER BY qty DESC;`);
 					`Removed ${allBrokenItems.size} (${str}) from ${usersChanged} users, out of ${users.length} checked`
 				);
 			}
-			case 'resetinvprizes': {
-				await clientSettingsUpdate({
-					invention_prizes_remaining: {}
+			case 'massleaguesclaim': {
+				const items = getCollectionItems('overall', false);
+				if (!items || items.length === 0) {
+					return;
+				}
+				msg.channel.send('running...');
+				const usersWithPts = await roboChimpClient.user.findMany({
+					where: {
+						leagues_points_total: {
+							gt: 0
+						}
+					},
+					select: {
+						id: true
+					}
 				});
-				return msg.channel.send('Done');
-			}
-			case 'invaddprizes': {
-				if (!input || typeof input !== 'string') return msg.channel.send('Invalid channel.');
-				const bank = parseBank({ inputStr: input });
-				if (bank.length === 0) return 'No items given.';
-				await msg.confirm(`Are you sure you want to add ${bank} to the invention prizes?`);
-				const current = (await mahojiClientSettingsFetch({ invention_prizes_remaining: true }))
-					.invention_prizes_remaining as ItemBank;
-				const newBank = bank.add(current);
-				await clientSettingsUpdate({
-					invention_prizes_remaining: newBank.bank
-				});
-				return msg.channel.send(`Added ${bank} to the invention prizes. The new prize pool is: ${newBank}.`);
+				const lbCl = (
+					await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
+SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
+				  FROM (
+  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
+  				id, "collectionLogBank",
+			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
+					.map(i => `'${i}'`)
+					.join(', ')}]))) "inverse_length"
+  FROM users
+  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
+) u
+ORDER BY qty DESC
+LIMIT 100;
+`)
+				).filter(i => i.qty > 0);
+
+				let done = 0;
+				for (const { id } of lbCl) {
+					if (usersWithPts.some(i => i.id.toString() === id)) continue;
+					const user = await globalClient.fetchUser(id);
+					await repairBrokenItemsFromUser(user as KlasaUser);
+					const { finished } = await leaguesCheckUser(id.toString());
+					await leaguesClaimCommand(BigInt(id), finished);
+					done++;
+				}
+				return msg.channel.send(`Claimed points for ${done} users`);
 			}
 		}
 	}

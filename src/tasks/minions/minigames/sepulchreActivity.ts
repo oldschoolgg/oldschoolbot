@@ -13,7 +13,7 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, userID } = data;
+		const { channelID, quantity, floors, userID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		await incrementMinigameScore(userID, 'sepulchre', quantity);
 
@@ -46,7 +46,12 @@ export default class extends Task {
 		}
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
-		const xpStr = await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
+
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Agility,
+			amount: agilityXP,
+			duration
+		});
 
 		await trackLoot({
 			loot: itemsAdded,
@@ -59,7 +64,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
 			floors[0]
-		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpStr}`;
+		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}`;
 
 		const image = await makeBankImage({
 			bank: itemsAdded,
