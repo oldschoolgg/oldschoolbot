@@ -131,11 +131,17 @@ export async function coxCommand(channelID: bigint, user: KlasaUser, type: 'solo
 			if (
 				isChallengeMode &&
 				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!userHasItemsEquippedAnywhere(user, ['Twisted bow', 'Zaryte bow'], false)
+				!user.hasItemEquippedOrInBank('Twisted bow') &&
+				!user.hasItemEquippedOrInBank('Zaryte bow') &&
+				!userHasItemsEquippedAnywhere(
+					user,
+					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],
+					true
+				)
 			) {
 				return [
 					true,
-					'You need either a Dragon hunter crossbow or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
+					'You need either a Dragon hunter crossbow, Bow of faerdhinen (c) or Twisted bow to attempt Challenge Mode Chambers of Xeric.'
 				];
 			}
 
