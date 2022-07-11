@@ -406,8 +406,8 @@ export const hardTasks: Task[] = [
 		name: 'Mix 250 Heat res. brews from scratch',
 		has: async ({ cl, herbloreStats, skillsLevels }) => {
 			return (
-				skillsLevels.farming > 99 &&
-				skillsLevels.herblore > 120 &&
+				skillsLevels.farming >= 99 &&
+				skillsLevels.herblore >= 120 &&
 				cl.amount('Athelas seed') >= 3 &&
 				cl.amount('Athelas') >= 100 &&
 				cl.amount('Heat res. vial') >= 250 &&
@@ -1040,8 +1040,8 @@ export const hardTasks: Task[] = [
 		name: 'Mix 250 Heat res. restore from scratch',
 		has: async ({ cl, herbloreStats, skillsLevels }) => {
 			return (
-				skillsLevels.farming > 99 &&
-				skillsLevels.herblore > 120 &&
+				skillsLevels.farming >= 99 &&
+				skillsLevels.herblore >= 120 &&
 				cl.amount('Athelas seed') >= 3 &&
 				cl.amount('Athelas') >= 100 &&
 				cl.amount('Heat res. vial') >= 250 &&
