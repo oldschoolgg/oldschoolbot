@@ -1,4 +1,5 @@
 import { sumArr } from 'e';
+import { Bank } from 'oldschooljs';
 
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import {
@@ -350,7 +351,14 @@ export const masterTasks: Task[] = [
 		id: 4045,
 		name: 'Create every Dwarven item from scratch',
 		has: async ({ cl, skillsLevels }) => {
-			return Dwarven.every(i => cl.has(i.inputBars) && skillsLevels.smithing >= i.level && cl.has(i.id));
+			let totalInput = new Bank();
+			for (const item of Dwarven) {
+				if (skillsLevels.smithing < item.level) return false;
+				if (!cl.has(item.id)) return false;
+				totalInput.add(item.inputBars);
+			}
+			totalInput.add('Dwarven ore', totalInput.amount('Dwarven bar'));
+			return cl.has(totalInput);
 		}
 	},
 	{
