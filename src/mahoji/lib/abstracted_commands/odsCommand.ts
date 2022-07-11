@@ -72,6 +72,9 @@ export async function odsBuyCommand(user: User, klasaUser: KlasaUser, name: stri
 }
 
 export async function odsStartCommand(klasaUser: KlasaUser, channelID: bigint) {
+	if (klasaUser.minionIsBusy) {
+		return 'Your minion is busy.';
+	}
 	const boosts = [];
 
 	let waveTime = randomVariation(Time.Minute * 4, 10);

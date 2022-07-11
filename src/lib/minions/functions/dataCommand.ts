@@ -154,6 +154,22 @@ GROUP BY data->>'smithedBarID';`);
 	}
 	return items;
 }
+export async function personalSmeltingStats(user: User) {
+	const result: { id: number; qty: number }[] =
+		await prisma.$queryRawUnsafe(`SELECT (data->>'barID')::int AS id, SUM((data->>'quantity')::int) AS qty
+FROM activity
+WHERE type = 'Smelting'
+AND user_id = '${user.id}'::bigint
+AND data->>'barID' IS NOT NULL
+GROUP BY data->>'barID';`);
+	const items = new Bank();
+	for (const res of result) {
+		const item = getItem(res.id);
+		if (!item) continue;
+		items.add(item.id, res.qty);
+	}
+	return items;
+}
 export async function personalSpellCastStats(user: User) {
 	const result: { id: number; qty: number }[] =
 		await prisma.$queryRawUnsafe(`SELECT (data->>'spellID')::int AS id, SUM((data->>'quantity')::int) AS qty
@@ -605,6 +621,20 @@ ${result
 			const result = await personalWoodcuttingStats(user);
 			if (result.length === 0) return "You haven't chopped anything yet.";
 			return `You've chopped...
+${result
+	.items()
+	.sort(sorts.quantity)
+	.slice(0, 15)
+	.map(i => `${i[0].name}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Personal Smelting Stats',
+		run: async (user: User) => {
+			const result = await personalSmeltingStats(user);
+			if (result.length === 0) return "You haven't smelted anything yet.";
+			return `You've smelted...
 ${result
 	.items()
 	.sort(sorts.quantity)

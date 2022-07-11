@@ -20,8 +20,9 @@ model Activity {
   data           Json               @db.Json
 
 
-  @@index([group_activity], map: "IDX_73e0d6954aecafe0383b77d390")
-  @@index([completed], map: "IDX_d71ac68a9d4b4245287caab788")
+  @@index([group_activity])
+  @@index([completed])
+  @@index([user_id, type])
   @@map("activity")
 }
 
@@ -50,6 +51,7 @@ model Analytic {
   gpItemContracts    BigInt?
   gpLuckyPick        BigInt?
   gpSlots            BigInt?
+  gpHotCold          BigInt?
 
   @@map("analytics_table")
 }
@@ -109,6 +111,7 @@ model ClientStorage {
   gp_daily                     BigInt   @default(0)
   gp_luckypick                 BigInt   @default(0)
   gp_slots                     BigInt   @default(0)
+  gp_hotcold                   BigInt   @default(0)
   custom_prices                Json     @default("{}") @db.Json
   nightmare_cost               Json     @default("{}") @db.Json
   create_cost                  Json     @default("{}") @db.Json
@@ -413,11 +416,10 @@ model User {
   gp_luckypick BigInt @default(0)
   gp_dice      BigInt @default(0)
   gp_slots     BigInt @default(0)
+  gp_hotcold   BigInt @default(0)
 
   tob_cost Json @default("{}") @db.Json
   tob_loot Json @default("{}") @db.Json
-
-  weekly_buy_bank Json @default("{}") @db.Json
 
   total_gp_traded BigInt @default(0)
 
@@ -469,8 +471,7 @@ model XPGain {
   artificial Boolean?
   post_max   Boolean             @default(false)
 
-  @@index([date])
-  @@index([skill])
+  @@index([date, skill])
   @@map("xp_gains")
 }
 
@@ -530,7 +531,9 @@ model Minigame {
   fishing_contest          Int @default(0)
   bax_baths                Int @default(0)
 
-  NewUser NewUser[]
+  new_user NewUser?
+
+  @@index([user_id])
   @@map("minigames")
 }
 

@@ -23,7 +23,7 @@ export default class extends Task {
 		const [hasDiary] = await userhasDiaryTier(klasaUser, KandarinDiary.hard);
 		if (hasDiary) {
 			pts *= 1.1;
-			resultStr += `${klasaUser.username} 10% extra pts for Kandarin Hard diary. `;
+			resultStr += `${klasaUser.username} received 10% extra pts for Kandarin Hard diary. `;
 		}
 		let totalPoints = Math.floor(pts * quantity);
 

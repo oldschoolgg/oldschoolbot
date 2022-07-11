@@ -4,6 +4,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { FaladorDiary, userhasDiaryTier } from '../../lib/diaries';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { Craftables } from '../../lib/skilling/skills/crafting/craftables';
 import Tanning from '../../lib/skilling/skills/crafting/craftables/tanning';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -62,6 +63,17 @@ export const craftCommand: OSBMahojiCommand = {
 			sets = ' sets of';
 		}
 
+		const userQP = user.settings.get(UserSettings.QP);
+		const currentWoodcutLevel = user.skillLevel(SkillsEnum.Woodcutting);
+
+		if (craftable.qpRequired && userQP < craftable.qpRequired) {
+			return `${user.minionName} needs ${craftable.qpRequired} QP to craft ${craftable.name}.`;
+		}
+
+		if (craftable.wcLvl && currentWoodcutLevel < craftable.wcLvl) {
+			return `${user.minionName} needs ${craftable.wcLvl} Woodcutting Level to craft ${craftable.name}.`;
+		}
+
 		if (user.skillLevel(SkillsEnum.Crafting) < craftable.level) {
 			return `${user.minionName} needs ${craftable.level} Crafting to craft ${craftable.name}.`;
 		}
@@ -91,7 +103,7 @@ export const craftCommand: OSBMahojiCommand = {
 			const res = await inventionItemBoost({
 				userID: BigInt(user.id),
 				inventionID: InventionID.MasterHammerAndChisel,
-				duration: quantity ? quantity * timeToCraftSingleItem : maxTripLength
+				duration: Math.min(maxTripLength, quantity ? quantity * timeToCraftSingleItem : maxTripLength)
 			});
 			if (res.success) {
 				timeToCraftSingleItem = reduceNumByPercent(

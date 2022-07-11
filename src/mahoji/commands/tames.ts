@@ -79,7 +79,7 @@ interface FeedableItem {
 	announcementString: string;
 }
 
-const feedableItems: FeedableItem[] = [
+export const feedableItems: FeedableItem[] = [
 	{
 		item: getOSItem('Ori'),
 		description: '25% extra loot',
