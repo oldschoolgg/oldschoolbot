@@ -375,10 +375,6 @@ export async function leaguesClaimCommand(userID: bigint, finishedTaskIDs: numbe
 		fullNewlyFinishedTasks.push(group.tasks.find(i => i.id === task)!);
 	}
 
-	if (1 > 0) {
-		return `Claiming points is currently disabled. However, you would have finished ${newlyFinishedTasks.length} tasks and received ${pointsToAward} points.`;
-	}
-
 	const newUser = await roboChimpClient.user.update({
 		where: {
 			id: userID
