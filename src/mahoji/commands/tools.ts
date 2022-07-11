@@ -249,7 +249,8 @@ async function spawnLampCommand(user: User, channelID: bigint): CommandResponse 
 		str: `<:Huge_lamp:988325171498721290> ${userMention(user.id)} spawned a Lamp: ${question}`,
 		ironmenAllowed: false,
 		answers,
-		creator: BigInt(user.id)
+		creator: BigInt(user.id),
+		creatorGetsTwoGuesses: true
 	});
 	if (!winnerID) return `Nobody got it. ${explainAnswer}`;
 	const winner = await globalClient.fetchUser(winnerID);
