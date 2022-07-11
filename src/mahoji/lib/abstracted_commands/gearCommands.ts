@@ -89,24 +89,117 @@ export async function gearPresetEquipCommand(user: MUser, gearSetup: string, pre
 		files: [{ name: 'gear.jpg', attachment: image }]
 	};
 }
+export async function gearEquipMultiCommand(
+	user: MUser,
+	interaction: SlashCommandInteraction,
+	setup: string,
+	items: string
+) {
+	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
+	if (setup === 'wildy') {
+		await handleMahojiConfirmation(
+			interaction,
+			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
+		);
+	}
+	const oneItemPerSlot: { [key in EquipmentSlot]?: boolean } = {};
+	const userSkills = getSkillsOfMahojiUser(user);
+	const failedToEquipBank = new Bank();
+	const equipBank = new Bank();
+	for (const [i, _qty] of parseStringBank(items, undefined, true)) {
+		const qty = i.stackable ? _qty || 1 : 1;
+		if (user.bank.amount(i.id) < qty) continue;
+		// Check skill requirements
+		if (i.equipment?.requirements) {
+			if (!skillsMeetRequirements(userSkills, i.equipment.requirements)) {
+				// Warn only for skill requirements, and conflicting weapon/2h/shield loadouts (below).
+				failedToEquipBank.add(i.id, qty);
+				continue;
+			}
+		}
+		// Make sure it's valid equipment
+		if (i.equipable_by_player && i.equipment && !oneItemPerSlot[i.equipment.slot]) {
+			// Ignore items that conflict with previously specified items:
+			if (
+				(oneItemPerSlot[EquipmentSlot.TwoHanded] &&
+					(i.equipment.slot === EquipmentSlot.Weapon || i.equipment.slot === EquipmentSlot.Shield)) ||
+				((oneItemPerSlot[EquipmentSlot.Shield] || oneItemPerSlot[EquipmentSlot.Weapon]) &&
+					i.equipment.slot === EquipmentSlot.TwoHanded)
+			) {
+				continue;
+			}
+			oneItemPerSlot[i.equipment.slot] = true;
+			equipBank.add(i.id, qty);
+		}
+	}
+
+	const allGear = getUserGear(user);
+	const equippedGear = { ...allGear[setup].raw() };
+
+	const unequipBank = new Bank();
+
+	for (const [item, qty] of equipBank.items()) {
+		const { slot } = item.equipment!;
+		if (slot === EquipmentSlot.TwoHanded && equippedGear[EquipmentSlot.Shield]) {
+			unequipBank.add(equippedGear[EquipmentSlot.Shield]!.item, equippedGear[EquipmentSlot.Shield]!.quantity);
+			equippedGear[EquipmentSlot.Shield] = null;
+		}
+		if (slot === EquipmentSlot.TwoHanded && equippedGear[EquipmentSlot.Weapon]) {
+			unequipBank.add(equippedGear[EquipmentSlot.Weapon]!.item, equippedGear[EquipmentSlot.Weapon]!.quantity);
+			equippedGear[EquipmentSlot.Weapon] = null;
+		}
+		if (equippedGear[EquipmentSlot.TwoHanded] && (slot === EquipmentSlot.Shield || slot === EquipmentSlot.Weapon)) {
+			unequipBank.add(
+				equippedGear[EquipmentSlot.TwoHanded]!.item,
+				equippedGear[EquipmentSlot.TwoHanded]!.quantity
+			);
+			equippedGear[EquipmentSlot.TwoHanded] = null;
+		}
+		if (equippedGear[slot]) {
+			unequipBank.add(equippedGear[slot]!.item, equippedGear[slot]!.quantity);
+		}
+		equippedGear[slot] = { item: item.id, quantity: qty };
+	}
+
+	const dbKey = `gear_${setup}` as const;
+	const { newUser } = await mahojiUserSettingsUpdate(user.id, {
+		[dbKey]: equippedGear
+	});
+	await klasaUser.removeItemsFromBank(equipBank);
+	await klasaUser.addItemsToBank({ items: unequipBank });
+
+	const image = await generateGearImage(user, newUser[dbKey] as GearSetup, setup, user.minion_equippedPet);
+	let content = `You equipped ${equipBank} on your ${setup} setup, and unequipped ${unequipBank}.`;
+	if (failedToEquipBank.length > 0) {
+		content += `\nThese items failed to be equipped as you don't have the requirements: ${failedToEquipBank}.`;
+	}
+	return {
+		content,
+		attachments: [{ fileName: 'gear.jpg', buffer: image }]
+	};
+}
 
 export async function gearEquipCommand(args: {
 	interaction: ChatInputCommandInteraction;
 	userID: string;
 	setup: string;
 	item: string | undefined;
+	items: string | undefined;
 	preset: string | undefined;
 	quantity: number | undefined;
 	unEquippedItem: Bank | undefined;
 	auto: string | undefined;
 }): CommandResponse {
-	const { interaction, userID, setup, item, preset, quantity: _quantity, auto } = args;
+	const { interaction, userID, setup, item, items, preset, quantity: _quantity, auto } = args;
 	if (!isValidGearSetup(setup)) return 'Invalid gear setup.';
 	const user = await mUserFetch(userID);
 	if (minionIsBusy(user.id)) {
 		return `${user.minionName} is currently out on a trip, so you can't change their gear!`;
 	}
 
+	if (items) {
+		return gearEquipMultiCommand(user, interaction, setup, items);
+	}
 	if (setup === 'other' && getUsersPerkTier(user) < PerkTier.Four) {
 		return PATRON_ONLY_GEAR_SETUP;
 	}
@@ -185,6 +278,7 @@ export async function gearEquipCommand(args: {
 			interaction,
 			setup,
 			item,
+			items,
 			preset,
 			quantity,
 			unEquippedItem: loot,
