@@ -459,13 +459,6 @@ export const easyTasks: Task[] = [
 		}
 	},
 	{
-		id: 61,
-		name: 'Do the Tears of Guthix',
-		has: async ({ mahojiUser }) => {
-			return Number(mahojiUser.lastTearsOfGuthixTimestamp) !== 1;
-		}
-	},
-	{
 		id: 62,
 		name: 'Do a High gamble in Barb assault',
 		has: async ({ mahojiUser }) => {
