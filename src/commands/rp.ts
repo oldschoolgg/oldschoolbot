@@ -24,10 +24,12 @@ import {
 	SupportServer,
 	userTimers
 } from '../lib/constants';
+import { getCollectionItems } from '../lib/data/Collections';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../lib/doubleLoot';
 import { evalMathExpression } from '../lib/expressionParser';
 import { GearSetup, GearSetupTypes } from '../lib/gear';
+import { leaguesCheckUser, leaguesClaimCommand } from '../lib/leagues/leagues';
 import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
@@ -1183,6 +1185,50 @@ ORDER BY qty DESC;`);
 				return msg.channel.send(
 					`Removed ${allBrokenItems.size} (${str}) from ${usersChanged} users, out of ${users.length} checked`
 				);
+			}
+			case 'massleaguesclaim': {
+				const items = getCollectionItems('overall', false);
+				if (!items || items.length === 0) {
+					return;
+				}
+				msg.channel.send('running...');
+				const usersWithPts = await roboChimpClient.user.findMany({
+					where: {
+						leagues_points_total: {
+							gt: 0
+						}
+					},
+					select: {
+						id: true
+					}
+				});
+				const lbCl = (
+					await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
+SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
+				  FROM (
+  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
+  				id, "collectionLogBank",
+			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
+					.map(i => `'${i}'`)
+					.join(', ')}]))) "inverse_length"
+  FROM users
+  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
+) u
+ORDER BY qty DESC
+LIMIT 100;
+`)
+				).filter(i => i.qty > 0);
+
+				let done = 0;
+				for (const { id } of lbCl) {
+					if (usersWithPts.some(i => i.id.toString() === id)) continue;
+					const user = await globalClient.fetchUser(id);
+					await repairBrokenItemsFromUser(user as KlasaUser);
+					const { finished } = await leaguesCheckUser(id.toString());
+					await leaguesClaimCommand(BigInt(id), finished);
+					done++;
+				}
+				return msg.channel.send(`Claimed points for ${done} users`);
 			}
 		}
 	}
