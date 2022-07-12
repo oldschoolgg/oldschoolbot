@@ -11,7 +11,8 @@ export async function buttonUserPicker({
 	timer = Time.Second * 30,
 	ironmenAllowed,
 	answers,
-	creator
+	creator,
+	creatorGetsTwoGuesses
 }: {
 	channelID: bigint | string;
 	str: string;
@@ -20,6 +21,7 @@ export async function buttonUserPicker({
 	initialUsers?: bigint[];
 	answers: string[];
 	creator: bigint;
+	creatorGetsTwoGuesses?: boolean;
 }) {
 	const channel = globalClient.channels.cache.get(channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
@@ -49,13 +51,20 @@ export async function buttonUserPicker({
 		collector.on('collect', async i => {
 			const id = BigInt(i.user.id);
 			const mUser = await mahojiUsersSettingsFetch(id);
+			const isCreator = id === creator;
 			let notAllowed = !ironmenAllowed && mUser.minion_ironman;
-			if (notAllowed && id !== creator) {
+			if (notAllowed && isCreator) {
 				i.reply({ ephemeral: true, content: "You aren't allowed to participate.." });
 				return false;
 			}
 			if (guessed.includes(id)) {
-				return i.reply({ ephemeral: true, content: 'You already guessed wrong.' });
+				const amountTimesGuessed = guessed.filter(g => g.toString() === i.user.id).length;
+				if (
+					i.user.id !== creator.toString() ||
+					(amountTimesGuessed < 2 && isCreator && creatorGetsTwoGuesses)
+				) {
+					return i.reply({ ephemeral: true, content: 'You already guessed wrong.' });
+				}
 			}
 			if (i.customID === correctCustomID) {
 				resolve(id);
