@@ -12,14 +12,6 @@ import { sendToChannelID } from './util/webhook';
 
 export function initCrons(client: OldSchoolBotClient) {
 	/**
-	 * Reset weekly buy banks
-	 */
-	schedule('0 0 * * 0', async () => {
-		await prisma.$queryRawUnsafe(`UPDATE users
-SET weekly_buy_bank = '{}'::json
-WHERE weekly_buy_bank::text <> '{}'::text;`);
-	});
-	/**
 	 * Capture economy item data
 	 */
 	schedule('0 */6 * * *', async () => {
