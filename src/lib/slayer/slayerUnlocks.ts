@@ -555,3 +555,5 @@ export const SlayerRewardsShop: SlayerTaskUnlocks[] = [
 		aliases: ['pore decisions', 'poor decisions']
 	}
 ];
+
+export const slayerUnlockableRewards = SlayerRewardsShop.filter(reward => !reward.item);
