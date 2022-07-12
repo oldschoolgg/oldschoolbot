@@ -120,6 +120,10 @@ export const smeltingCommand: OSBMahojiCommand = {
 				timeToSmithSingleBar *= 1.075;
 				boosts.push('-7.5% penalty for not having graceful equipped.');
 			}
+			if (user.hasItemEquippedAnywhere('Smithing master cape')) {
+				timeToSmithSingleBar /= 2;
+				boosts.push('2x boost for Smithing master cape');
+			}
 		}
 
 		const maxTripLength = user.maxTripLength('Smithing');
@@ -183,7 +187,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 		const response = `${user.minionName} is now smelting ${quantity}x ${
 			bar.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${
-			blast_furnace ? `You paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
+			blast_furnace ? `\nYou paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
 		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
 
 		return response;
