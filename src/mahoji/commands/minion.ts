@@ -25,6 +25,7 @@ import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
 import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
+import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -69,7 +70,25 @@ export const minionCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'stats',
-			description: 'Check the stats of your minion.'
+			description: 'Check the stats of your minion.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'stat',
+					description: 'The stat you want to see.',
+					autocomplete: async (value: string) => {
+						return dataPoints
+							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({
+								name: `${i.name} ${
+									i.perkTierNeeded === null ? '' : `(Tier ${i.perkTierNeeded - 1} Patrons)`
+								}`,
+								value: i.name
+							}));
+					},
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -274,7 +293,7 @@ export const minionCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{
-		stats?: {};
+		stats?: { stat?: string };
 		achievementdiary?: { diary?: string; claim?: boolean };
 		bankbg?: { name?: string };
 		cracker?: { user: MahojiUserOption };
@@ -295,6 +314,10 @@ export const minionCommand: OSBMahojiCommand = {
 		const perkTier = getUsersPerkTier(user);
 
 		if (options.stats) {
+			if (options.stats.stat) {
+				await interaction.deferReply();
+				return statsCommand(mahojiUser, options.stats.stat);
+			}
 			return { embeds: [await minionStatsEmbed(user)] };
 		}
 
