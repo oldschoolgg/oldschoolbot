@@ -37,6 +37,7 @@ FROM activity
 WHERE type = 'Construction'
 AND user_id = '${user.id}'::bigint
 AND data->>'objectID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'objectID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -54,6 +55,7 @@ FROM activity
 WHERE type = 'Firemaking'
 AND user_id = '${user.id}'::bigint
 AND data->>'burnableID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'burnableID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -71,6 +73,7 @@ FROM activity
 WHERE type = 'Woodcutting'
 AND user_id = '${user.id}'::bigint
 AND data->>'logID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'logID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -88,6 +91,7 @@ FROM activity
 WHERE type = 'Mining'
 AND user_id = '${user.id}'::bigint
 AND data->>'oreID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'oreID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -105,6 +109,7 @@ FROM activity
 WHERE type = 'Herblore'
 AND user_id = '${user.id}'::bigint
 AND data->>'mixableID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'mixableID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -121,6 +126,7 @@ FROM activity
 WHERE type = 'Alching'
 AND user_id = '${user.id}'::bigint
 AND data->>'itemID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'itemID';`);
 	const agilityAlchRes: { id: number; qty: number }[] =
 		await prisma.$queryRawUnsafe(`SELECT (((data->>'alch')::json)->>'itemID')::int AS id, SUM((((data->>'alch')::json)->>'quantity')::int) AS qty
@@ -128,6 +134,7 @@ FROM activity
 WHERE type = 'Agility'
 AND user_id = '${user.id}'::bigint
 AND data->>'alch' IS NOT NULL
+AND completed = true
 GROUP BY ((data->>'alch')::json)->>'itemID';`);
 
 	const items = new Bank();
@@ -145,6 +152,7 @@ FROM activity
 WHERE type = 'Smithing'
 AND user_id = '${user.id}'::bigint
 AND data->>'smithedBarID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'smithedBarID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -161,6 +169,7 @@ FROM activity
 WHERE type = 'Smelting'
 AND user_id = '${user.id}'::bigint
 AND data->>'barID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'barID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -177,6 +186,7 @@ FROM activity
 WHERE type = 'Casting'
 AND user_id = '${user.id}'::bigint
 AND data->>'spellID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'spellID';`);
 	return result.map(i => ({ castable: Castables.find(t => t.id === i.id)!, id: i.id, qty: i.qty }));
 }
@@ -187,6 +197,7 @@ FROM activity
 WHERE type = 'Collecting'
 AND user_id = '${user.id}'::bigint
 AND data->>'collectableID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'collectableID';`);
 	let bank = new Bank();
 	for (const { id, qty } of result) {
@@ -304,6 +315,7 @@ GROUP BY data->>'monsterID';`);
 FROM activity
 WHERE type = 'Inferno'
 AND data->>'deathTime' IS NOT NULL) death_mins
+AND completed = true
 GROUP BY mins;`;
 			const buffer = await lineChart(
 				'Global Inferno Death Times',
@@ -322,6 +334,7 @@ FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${BigInt(user.id)}
 AND data->>'deathTime' IS NOT NULL) death_mins
+AND completed = true
 GROUP BY mins;`);
 			const buffer = await lineChart(
 				'Personal Inferno Death Times',
