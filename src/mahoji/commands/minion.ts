@@ -5,7 +5,9 @@ import { BitField, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { AttackStyles } from '../../lib/minions/functions';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
+import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -285,6 +287,20 @@ export const minionCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'daily',
 			description: 'Claim some daily free GP.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'train',
+			description: 'Select what combat style you want to train.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'style',
+					description: 'The attack style you want to train with',
+					required: true,
+					choices: allPossibleStyles.map(i => ({ name: i, value: i }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -308,6 +324,7 @@ export const minionCommand: OSBMahojiCommand = {
 		ironman?: { permanent?: boolean };
 		charge?: { item?: string; amount?: number };
 		daily?: {};
+		train?: { style: AttackStyles };
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -394,6 +411,7 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.daily) {
 			return dailyCommand(interaction, channelID, user);
 		}
+		if (options.train) return trainCommand(user, options.train.style);
 
 		return 'Unknown command';
 	}

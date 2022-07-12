@@ -7,22 +7,25 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 import { TOBRooms } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 import { toKMB } from 'oldschooljs/dist/util';
 
-import { PerkTier } from '../../../lib/constants';
+import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails } from '../../../lib/data/Collections';
 import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
 import ClueTiers from '../../../lib/minions/data/clueTiers';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
+import { getMinigameScore } from '../../../lib/settings/minigames';
 import { prisma } from '../../../lib/settings/prisma';
+import Agility from '../../../lib/skilling/skills/agility';
 import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, getClueScoresFromOpenables, stringMatches } from '../../../lib/util';
 import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { getMahojiBank } from '../../mahojiSettings';
+import { minionName } from '../../../lib/util/minionUtils';
+import { getMahojiBank, mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { Cooldowns } from '../Cooldowns';
 import { collectables } from './collectCommand';
 
@@ -794,6 +797,47 @@ GROUP BY "bankBackground";`);
 						`**${ClueTiers.find(t => t.id === parseInt(clueID))?.name}:** ${qty.toLocaleString()}`
 				)
 				.join('\n');
+		}
+	},
+	{
+		name: 'Personal Clue Stats',
+		perkTierNeeded: null,
+		run: async (user: User) => {
+			const userData = await mahojiUsersSettingsFetch(user.id, {
+				openable_scores: true
+			});
+
+			const clueScores = getClueScoresFromOpenables(new Bank(userData.openable_scores as ItemBank));
+			if (clueScores.length === 0) return "You haven't done any clues yet.";
+
+			let res = `${Emoji.Casket} **${minionName(user)}'s Clue Scores:**\n\n`;
+			for (const [clueID, clueScore] of Object.entries(clueScores.bank)) {
+				const clue = ClueTiers.find(c => c.id === parseInt(clueID));
+				res += `**${clue!.name}**: ${clueScore.toLocaleString()}\n`;
+			}
+			return res;
+		}
+	},
+	{
+		name: 'Personal Open Stats',
+		perkTierNeeded: null,
+		run: async (user: User) => {
+			return makeResponseForBank(new Bank(user.openable_scores as ItemBank), "You've opened...");
+		}
+	},
+	{
+		name: 'Personal Agility Stats',
+		perkTierNeeded: null,
+		run: async (user: User) => {
+			const entries = Object.entries(user.lapsScores as ItemBank).map(arr => [parseInt(arr[0]), arr[1]]);
+			const sepulchreCount = await getMinigameScore(user.id, 'sepulchre');
+			if (sepulchreCount === 0 && entries.length === 0) {
+				return "You haven't done any laps yet! Sad.";
+			}
+			const data = `${entries
+				.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
+				.join('\n')}\n**Hallowed Sepulchre:** ${sepulchreCount}`;
+			return data;
 		}
 	}
 ] as const;
