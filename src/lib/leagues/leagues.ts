@@ -176,6 +176,7 @@ WHERE type = 'Herblore'
 AND user_id = '${user.id}'::bigint
 AND data->>'mixableID' IS NOT NULL
 AND (data->>'zahur')::boolean = false
+AND completed = true
 GROUP BY data->>'mixableID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -203,6 +204,7 @@ FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${user.id}'::bigint
 AND data->>'clueID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'clueID';`);
 	const casketsCompleted = new Bank();
 	for (const res of result) {
