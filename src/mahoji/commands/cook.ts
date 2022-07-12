@@ -66,12 +66,18 @@ export const cookCommand: OSBMahojiCommand = {
 		if (cookable.id === itemID('Jug of wine') || cookable.id === itemID('Wine of zamorak')) {
 			timeToCookSingleCookable /= 1.6;
 			if (hasRemy) timeToCookSingleCookable /= 1.5;
-		} else if (userHasItemsEquippedAnywhere(user, 'Cooking master cape')) {
-			timeToCookSingleCookable /= 5;
-		} else if (hasRemy) {
-			timeToCookSingleCookable /= 2;
-		} else if (userHasItemsEquippedAnywhere(user, 'Dwarven gauntlets')) {
-			timeToCookSingleCookable /= 3;
+		} else {
+			let boostDivisor = 1;
+			if (hasRemy) {
+				boostDivisor += 1;
+			}
+			if (userHasItemsEquippedAnywhere(user, 'Dwarven gauntlets')) {
+				boostDivisor += 2;
+			}
+			if (userHasItemsEquippedAnywhere(user, 'Cooking master cape')) {
+				boostDivisor += 4;
+			}
+			timeToCookSingleCookable /= boostDivisor;
 		}
 
 		const userBank = user.bank();
