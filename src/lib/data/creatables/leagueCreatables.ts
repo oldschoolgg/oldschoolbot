@@ -491,7 +491,7 @@ const cannonOrnaments: Createable[] = [
 	{
 		name: 'Cannon barrels (or)',
 		inputItems: new Bank({
-			'Shattered relics mystic ornament kit': 1,
+			'Shattered cannon ornament kit': 1,
 			'Cannon barrels': 1
 		}),
 		outputItems: new Bank().add('Cannon barrels (or)')
@@ -508,7 +508,7 @@ const cannonOrnaments: Createable[] = [
 	{
 		name: 'Cannon base (or)',
 		inputItems: new Bank({
-			'Shattered relics mystic ornament kit': 1,
+			'Shattered cannon ornament kit': 1,
 			'Cannon base': 1
 		}),
 		outputItems: new Bank().add('Cannon base (or)')
@@ -525,7 +525,7 @@ const cannonOrnaments: Createable[] = [
 	{
 		name: 'Cannon furnace (or)',
 		inputItems: new Bank({
-			'Shattered relics mystic ornament kit': 1,
+			'Shattered cannon ornament kit': 1,
 			'Cannon furnace': 1
 		}),
 		outputItems: new Bank().add('Cannon furnace (or)')
@@ -542,7 +542,7 @@ const cannonOrnaments: Createable[] = [
 	{
 		name: 'Cannon stand (or)',
 		inputItems: new Bank({
-			'Shattered relics mystic ornament kit': 1,
+			'Shattered cannon ornament kit': 1,
 			'Cannon stand': 1
 		}),
 		outputItems: new Bank().add('Cannon stand (or)')
