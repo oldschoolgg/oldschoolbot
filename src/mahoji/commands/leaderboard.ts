@@ -5,7 +5,6 @@ import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'm
 
 import { badges, Emoji, usernameCache } from '../../lib/constants';
 import { allClNames, getCollectionItems } from '../../lib/data/Collections';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
@@ -297,27 +296,15 @@ async function openLb(user: KlasaUser, channelID: bigint, name: string, ironmanO
 	let key = '';
 	let openableName = '';
 
-	const clue = !name
+	const openable = !name
 		? undefined
-		: ClueTiers.find(
-				clue => stringMatches(clue.name, name) || clue.name.toLowerCase().includes(name.toLowerCase())
+		: allOpenables.find(
+				item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
 		  );
-
-	if (clue) {
-		entityID = clue.id;
-		key = 'clueScores';
-		openableName = clue.name;
-	} else {
-		const openable = !name
-			? undefined
-			: allOpenables.find(
-					item => stringMatches(item.name, name) || item.name.toLowerCase().includes(name.toLowerCase())
-			  );
-		if (openable) {
-			entityID = openable.id;
-			key = 'openable_scores';
-			openableName = openable.name;
-		}
+	if (openable) {
+		entityID = openable.id;
+		key = 'openable_scores';
+		openableName = openable.name;
 	}
 
 	if (entityID === -1) {
@@ -527,12 +514,12 @@ export const leaderboardCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'farming_contracts',
-			description: 'Check the kc leaderboard.'
+			description: 'Check the farming contracts leaderboard.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'inferno',
-			description: 'Check the kc leaderboard.'
+			description: 'Check the inferno leaderboard.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,

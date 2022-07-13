@@ -7,6 +7,7 @@ import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { BitField, PerkTier } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
+import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
@@ -14,6 +15,7 @@ import { asyncGzip, formatDuration, getUsername, stringMatches } from '../../lib
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
@@ -314,6 +316,41 @@ export const toolsCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stats',
+					description: 'Check various stats.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'stat',
+							description: 'The stat you want to check',
+							autocomplete: async (value: string) => {
+								return dataPoints
+									.map(i => i.name)
+									.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i,
+										value: i
+									}));
+							},
+							required: true
+						}
+					]
+				}
+			]
+		},
+		{
+			name: 'user',
+			description: 'Various tools for yourself.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'mypets',
+					description: 'See the chat pets you have.',
+					options: []
 				}
 			]
 		}
@@ -347,7 +384,9 @@ export const toolsCommand: OSBMahojiCommand = {
 			};
 			minion_stats?: {};
 			activity_export?: {};
+			stats?: { stat: string };
 		};
+		user?: { mypets?: {} };
 	}>) => {
 		interaction.deferReply();
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -412,6 +451,24 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 				const result = await promise;
 				return result;
+			}
+			if (patron.stats) {
+				return statsCommand(mahojiUser, patron.stats.stat);
+			}
+		}
+		if (options.user) {
+			if (options.user.mypets) {
+				let b = new Bank();
+				for (const [pet, qty] of Object.entries(mahojiUser.pets as ItemBank)) {
+					const petObj = pets.find(i => i.id === Number(pet));
+					if (!petObj) continue;
+					b.add(petObj.name, qty);
+				}
+				return {
+					attachments: [
+						(await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })).file
+					]
+				};
 			}
 		}
 		return 'Invalid command!';

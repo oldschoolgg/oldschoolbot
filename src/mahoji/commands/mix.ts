@@ -18,7 +18,6 @@ export const mineCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Mix potions to train Herblore.',
 		examples: ['/mix name:Prayer potion']
 	},
 	options: [
@@ -109,7 +108,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 		const maxCanDo = user.bank({ withGP: true }).fits(baseCost);
 		if (maxCanDo === 0) {
-			return "You don't have enough supplies to mix even one of this item!";
+			return `You don't have enough supplies to mix even one of this item!\nTo mix/clean a ${mixableItem.name}, you need to have ${baseCost}.`;
 		}
 		if (maxCanDo < quantity) {
 			quantity = maxCanDo;

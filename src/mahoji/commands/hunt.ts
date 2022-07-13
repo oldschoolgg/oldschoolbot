@@ -23,7 +23,6 @@ export const huntCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to hunt things.',
 		examples: ['/hunt name:Ferret']
 	},
 	options: [

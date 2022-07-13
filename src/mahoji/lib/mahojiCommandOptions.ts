@@ -21,7 +21,7 @@ export const filterOption: CommandOption = {
 	autocomplete: async (value: string) => {
 		let res = !value
 			? filterableTypes
-			: filterableTypes.filter(filter => filter.name.toLowerCase().includes(value.toLowerCase()));
+			: [...filterableTypes].filter(filter => filter.name.toLowerCase().includes(value.toLowerCase()));
 		return [...res]
 			.sort((a, b) => baseFilters.indexOf(b) - baseFilters.indexOf(a))
 			.map(val => ({ name: val.name, value: val.aliases[0] ?? val.name }));

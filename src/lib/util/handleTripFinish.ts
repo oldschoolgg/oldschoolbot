@@ -11,7 +11,6 @@ import { handlePassiveImplings } from '../implings';
 import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
-import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
@@ -37,7 +36,7 @@ const tripFinishEffects: {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+					updateGPTrackSetting('gp_pvm', GP);
 				}
 			}
 		}
@@ -102,7 +101,7 @@ export async function handleTripFinish(
 	const runCmdOptions = {
 		channelID,
 		userID: user.id,
-		guildID: isGuildBasedChannel(channel) ? channel.guild.id : undefined,
+		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
 		user,
 		member: null
 	};

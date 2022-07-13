@@ -32,7 +32,7 @@ export function sellPriceOfItem(item: Item, taxRate = 20): { price: number; base
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
 	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
-	return { price, basePrice };
+	return { price: Math.floor(price), basePrice: Math.floor(basePrice) };
 }
 
 export const sellCommand: OSBMahojiCommand = {
@@ -40,14 +40,13 @@ export const sellCommand: OSBMahojiCommand = {
 	description: 'Sell items from your bank to the bot for GP.',
 	attributes: {
 		categoryFlags: ['minion'],
-		description: 'Sell items from your bank to the bot for GP.',
 		examples: ['/sell items:10k trout, 5 coal']
 	},
 	options: [
 		{
 			type: ApplicationCommandOptionType.String,
 			name: 'items',
-			description: 'The items you want to sell.',
+			description: 'The items you want to sell (e.g. 1 trout, 5 coal',
 			required: false
 		},
 		filterOption,
@@ -116,7 +115,7 @@ export const sellCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bankToSell.bank);
 		await user.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
 
-		updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceSellingItems, totalPrice);
+		updateGPTrackSetting('gp_sell', totalPrice);
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
 
 		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
