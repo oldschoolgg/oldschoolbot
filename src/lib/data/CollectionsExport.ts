@@ -336,9 +336,8 @@ export const chambersOfXericMetamorphPets = resolveItems([
 	'Vespina'
 ]);
 export const tobMetamorphPets = resolveItems(["Lil' Maiden", "Lil' Bloat", "Lil' Nylo", "Lil' Sot", "Lil' Xarp"]);
-export const chambersOfXericCL = resolveItems([
+export const chambersOfXericNormalCL = resolveItems([
 	'Olmlet',
-	'Metamorphic dust',
 	'Twisted bow',
 	'Elder maul',
 	'Kodai insignia',
@@ -353,7 +352,11 @@ export const chambersOfXericCL = resolveItems([
 	'Twisted buckler',
 	'Torn prayer scroll',
 	'Dark relic',
-	'Onyx',
+	'Onyx'
+]);
+export const chambersOfXericCL = resolveItems([
+	...chambersOfXericNormalCL,
+	'Metamorphic dust',
 	'Twisted ancestral colour kit',
 	"Xeric's guard",
 	"Xeric's warrior",
