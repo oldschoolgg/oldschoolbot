@@ -430,11 +430,15 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
 				if (options.max) {
-					await roboChimpClient.user.update({
+					await roboChimpClient.user.upsert({
 						where: {
 							id: BigInt(user.id)
 						},
-						data: {
+						create: {
+							id: BigInt(user.id),
+							leagues_points_balance_osb: 25_000
+						},
+						update: {
 							leagues_points_balance_osb: {
 								increment: 25_000
 							}

@@ -1,6 +1,5 @@
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
 
 import { Emoji, lastTripCache } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
@@ -8,15 +7,11 @@ import ClueTiers from '../../lib/minions/data/clueTiers';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
-import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { runCommand } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { ItemBank } from '../../lib/types';
-import { convertMahojiResponseToDJSResponse, getClueScoresFromOpenables } from '../../lib/util';
+import { convertMahojiResponseToDJSResponse } from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
@@ -221,8 +216,8 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async train(msg: KlasaMessage, [input]: [string | undefined]) {
-		return trainCommand(msg, input);
+	async train(msg: KlasaMessage) {
+		return msg.channel.send('This command was moved to `/minion train`');
 	}
 
 	async data(msg: KlasaMessage) {
@@ -230,18 +225,7 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async lapcounts(msg: KlasaMessage) {
-		const entries = Object.entries(msg.author.settings.get(UserSettings.LapsScores)).map(arr => [
-			parseInt(arr[0]),
-			arr[1]
-		]);
-		const sepulchreCount = await msg.author.getMinigameScore('sepulchre');
-		if (sepulchreCount === 0 && entries.length === 0) {
-			return msg.channel.send("You haven't done any laps yet! Sad.");
-		}
-		const data = `${entries
-			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
-			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
-		return msg.channel.send(data);
+		return msg.channel.send('This command was moved to `/minion stats stat:Personal Agility Stats`');
 	}
 
 	async charge(msg: KlasaMessage) {
@@ -269,30 +253,13 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async tempcl(msg: KlasaMessage) {
-		return msg.channel.send('This has been moved to `/cl type:temp`');
-	}
-
 	@requiresMinion
 	async pat(msg: KlasaMessage) {
 		return msg.channel.send(randomPatMessage(msg.author.minionName));
 	}
 
-	@requiresMinion
 	async clues(msg: KlasaMessage) {
-		const userData = await mahojiUsersSettingsFetch(msg.author.id, {
-			openable_scores: true
-		});
-
-		const clueScores = getClueScoresFromOpenables(new Bank(userData.openable_scores as ItemBank));
-		if (clueScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
-
-		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
-		for (const [clueID, clueScore] of Object.entries(clueScores.bank)) {
-			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
-			res += `**${clue!.name}**: ${clueScore.toLocaleString()}\n`;
-		}
-		return msg.channel.send(res);
+		return msg.channel.send('This command was moved to `/minion stats stat:Personal Clue Stats`');
 	}
 
 	async buy(msg: KlasaMessage) {
@@ -304,7 +271,6 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async opens(msg: KlasaMessage) {
-		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
-		return msg.channel.send(`You've opened... ${openableScores}`);
+		return msg.channel.send('This command was moved to `/minion stats stat:Personal Open Stats`');
 	}
 }
