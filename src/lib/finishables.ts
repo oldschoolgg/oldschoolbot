@@ -1,9 +1,9 @@
-import { notEmpty, roll, Time } from 'e';
+import { notEmpty, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 
 import { getCollectionItems } from './data/Collections';
-import { chambersOfXericCL, chambersOfXericNormalCL, wintertodtCL } from './data/CollectionsExport';
+import { chambersOfXericNormalCL, wintertodtCL } from './data/CollectionsExport';
 import pets from './data/pets';
 import { WintertodtCrate } from './simulation/wintertodt';
 import itemID from './util/itemID';
@@ -25,16 +25,6 @@ export const finishables: Finishable[] = [
 		name: 'Chambers of Xeric (Solo, Non-CM)',
 		cl: chambersOfXericNormalCL,
 		kill: () => ChambersOfXeric.complete({ team: [{ id: '1', personalPoints: 25_000 }] })['1']
-	},
-	{
-		name: 'Chambers of Xeric (Solo, CM)',
-		cl: chambersOfXericCL,
-		kill: () =>
-			ChambersOfXeric.complete({
-				team: [{ id: '1', personalPoints: 25_000 }],
-				challengeMode: true,
-				timeToComplete: Time.Minute * 9
-			})['1']
 	},
 	{
 		name: 'Wintertodt (500pt crates, Max stats)',
