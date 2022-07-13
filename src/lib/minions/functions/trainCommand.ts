@@ -21,23 +21,25 @@ const invalidCombinations: [AttackStyles, AttackStyles][] = [
 	[SkillsEnum.Attack, SkillsEnum.Magic],
 	[SkillsEnum.Strength, SkillsEnum.Magic],
 	[SkillsEnum.Attack, SkillsEnum.Ranged],
-	[SkillsEnum.Strength, SkillsEnum.Ranged]
+	[SkillsEnum.Strength, SkillsEnum.Ranged],
+	[SkillsEnum.Magic, SkillsEnum.Ranged]
 ];
 
-export const allPossibleStyles: string[] = [
+export const allPossibleStyles: string[] = uniqueArr([
 	'shared',
+	...validStyles,
 	...validStyles
 		.map(i => {
 			let styles = [];
 			for (const style of validStyles) {
 				if (style === i) continue;
 				if (invalidCombinations.some(t => t.includes(i) && t.includes(style))) continue;
-				styles.push(`${style} ${i}`);
+				styles.push([style, i].sort().reverse().join(' '));
 			}
 			return styles;
 		})
 		.flat(2)
-];
+]);
 
 export async function trainCommand(user: KlasaUser, _styles: string | undefined) {
 	if (user.minionIsBusy) {
