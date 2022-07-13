@@ -10,6 +10,7 @@ const pointsCostMultiplier = 150;
 export async function leaguesBuyCommand(user: KlasaUser, itemName: string, quantity = 1) {
 	const item = leagueBuyables.find(i => stringMatches(i.item.name, itemName));
 	if (!item) return "That's not a valid item.";
+
 	let baseCost = item.price * pointsCostMultiplier;
 	const cost = quantity * baseCost;
 	const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));

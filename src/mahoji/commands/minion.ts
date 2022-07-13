@@ -5,7 +5,9 @@ import { BitField, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import { AttackStyles } from '../../lib/minions/functions';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
+import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -25,6 +27,7 @@ import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
 import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
+import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
@@ -69,7 +72,25 @@ export const minionCommand: OSBMahojiCommand = {
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'stats',
-			description: 'Check the stats of your minion.'
+			description: 'Check the stats of your minion.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'stat',
+					description: 'The stat you want to see.',
+					autocomplete: async (value: string) => {
+						return dataPoints
+							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({
+								name: `${i.name} ${
+									i.perkTierNeeded === null ? '' : `(Tier ${i.perkTierNeeded - 1} Patrons)`
+								}`,
+								value: i.name
+							}));
+					},
+					required: false
+				}
+			]
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -266,6 +287,20 @@ export const minionCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'daily',
 			description: 'Claim some daily free GP.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'train',
+			description: 'Select what combat style you want to train.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'style',
+					description: 'The attack style you want to train with',
+					required: true,
+					choices: allPossibleStyles.map(i => ({ name: i, value: i }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -274,7 +309,7 @@ export const minionCommand: OSBMahojiCommand = {
 		interaction,
 		channelID
 	}: CommandRunOptions<{
-		stats?: {};
+		stats?: { stat?: string };
 		achievementdiary?: { diary?: string; claim?: boolean };
 		bankbg?: { name?: string };
 		cracker?: { user: MahojiUserOption };
@@ -289,12 +324,17 @@ export const minionCommand: OSBMahojiCommand = {
 		ironman?: { permanent?: boolean };
 		charge?: { item?: string; amount?: number };
 		daily?: {};
+		train?: { style: AttackStyles };
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 		const perkTier = getUsersPerkTier(user);
 
 		if (options.stats) {
+			if (options.stats.stat) {
+				await interaction.deferReply();
+				return statsCommand(mahojiUser, options.stats.stat);
+			}
 			return { embeds: [await minionStatsEmbed(user)] };
 		}
 
@@ -371,6 +411,7 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.daily) {
 			return dailyCommand(interaction, channelID, user);
 		}
+		if (options.train) return trainCommand(user, options.train.style);
 
 		return 'Unknown command';
 	}
