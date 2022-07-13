@@ -2,10 +2,11 @@ import { notEmpty, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 
-import { getCollectionItems } from './data/Collections';
+import { allCollectionLogsFlat } from './data/Collections';
 import { chambersOfXericNormalCL, wintertodtCL } from './data/CollectionsExport';
 import pets from './data/pets';
 import { WintertodtCrate } from './simulation/wintertodt';
+import { stringMatches } from './util';
 import itemID from './util/itemID';
 
 interface KillArgs {
@@ -49,12 +50,12 @@ export const finishables: Finishable[] = [
 ];
 
 const monsterPairedCLs = Monsters.map(mon => {
-	const cl = getCollectionItems(mon.name);
+	const cl = allCollectionLogsFlat.find(c => stringMatches(c.name, mon.name));
 	if (!cl) return null;
-	if (!cl.every(id => mon.allItems.includes(id))) return null;
+	if (!cl.items.every(id => mon.allItems.includes(id))) return null;
 	return {
 		name: mon.name,
-		cl,
+		cl: cl.items,
 		mon
 	};
 }).filter(notEmpty);

@@ -33,7 +33,7 @@ export interface ILeftListStatus {
 	[key: string]: 'not_started' | 'started' | 'completed';
 }
 
-interface IKCActivity {
+export interface IKCActivity {
 	[key: string]: string | string[] | ((user: KlasaUser) => Promise<number>);
 }
 

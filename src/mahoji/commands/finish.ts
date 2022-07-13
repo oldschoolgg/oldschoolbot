@@ -26,11 +26,11 @@ export const finishCommand: OSBMahojiCommand = {
 	run: async ({ interaction, options }: CommandRunOptions<{ input: string }>) => {
 		await interaction.deferReply();
 		const val = finishables.find(i => stringMatches(i.name, options.input));
-		if (!val) return 'no';
+		if (!val) return "That's not a valid thing you can simulate finishing.";
 		let loot = new Bank();
 		const kcBank = new Bank();
 		let kc = 0;
-		const maxAttempts = val.maxAttempts ?? 500_000;
+		const maxAttempts = val.maxAttempts ?? 100_000;
 		for (let i = 0; i < maxAttempts; i++) {
 			if (val.cl.every(id => loot.has(id))) break;
 			kc++;
