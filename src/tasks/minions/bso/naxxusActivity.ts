@@ -62,7 +62,7 @@ export default class extends Task {
 			`${user}, ${user.minionName} finished killing ${quantity} ${Naxxus.name}. Your Naxxus KC is now ${
 				user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0
 			}.\n\n${xpStr}`,
-			['k', { name: "Naxxus" }, true],
+			['k', { name: 'Naxxus' }, true],
 			image.file.buffer,
 			data,
 			itemsAdded
