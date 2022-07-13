@@ -50,7 +50,16 @@ async function handleToggle(user: User, name: string) {
 	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.`;
 }
 
-async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+async function favFoodConfig(
+	user: User,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	reset: string | undefined
+) {
+	if (reset && stringMatches(reset, 'true')) {
+		await mahojiUserSettingsUpdate(user.id, { favorite_food: [] });
+		return 'Cleared all favorite food.';
+	}
 	const currentFavorites = user.favorite_food;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite food is: ${
@@ -72,7 +81,16 @@ async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRe
 	return currentItems;
 }
 
-async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+async function favItemConfig(
+	user: User,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	reset: string | undefined
+) {
+	if (reset && stringMatches(reset, 'true')) {
+		await mahojiUserSettingsUpdate(user.id, { favoriteItems: [] });
+		return 'Cleared all favorite items.';
+	}
 	const currentFavorites = user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
@@ -100,8 +118,13 @@ async function favAlchConfig(
 	user: User,
 	itemToAdd: string | undefined,
 	itemToRemove: string | undefined,
-	manyToAdd: string | undefined
+	manyToAdd: string | undefined,
+	reset: string | undefined
 ) {
+	if (reset && stringMatches(reset, 'true')) {
+		await mahojiUserSettingsUpdate(user.id, { favorite_alchables: [] });
+		return 'Cleared all favorite alchables.';
+	}
 	const currentFavorites = user.favorite_alchables;
 	if (manyToAdd) {
 		const items = parseBank({ inputStr: manyToAdd, noDuplicateItems: true })
@@ -747,6 +770,16 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'add_many',
 							description: 'Add many to your favorite alchables at once.',
 							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'reset',
+							description: 'Reset / clear all favorite alchs',
+							choices: [
+								{ name: 'True', value: 'true' },
+								{ name: 'False', value: 'false' }
+							],
+							required: false
 						}
 					]
 				},
@@ -784,6 +817,16 @@ export const configCommand: OSBMahojiCommand = {
 									value: i.id.toString()
 								}));
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'reset',
+							description: 'Reset / clear all favorite foods',
+							choices: [
+								{ name: 'True', value: 'true' },
+								{ name: 'False', value: 'false' }
+							],
+							required: false
 						}
 					]
 				},
@@ -802,6 +845,16 @@ export const configCommand: OSBMahojiCommand = {
 							...itemOption(),
 							name: 'remove',
 							description: 'Remove an item from your favorite items.',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'reset',
+							description: 'Reset / clear all favorite items',
+							choices: [
+								{ name: 'True', value: 'true' },
+								{ name: 'False', value: 'false' }
+							],
 							required: false
 						}
 					]
@@ -828,9 +881,9 @@ export const configCommand: OSBMahojiCommand = {
 			set_rsn?: { username: string };
 			bg_color?: { color?: string };
 			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
-			favorite_alchs?: { add?: string; remove?: string; add_many?: string };
-			favorite_food?: { add?: string; remove?: string };
-			favorite_items?: { add?: string; remove?: string };
+			favorite_alchs?: { add?: string; remove?: string; add_many?: string; reset?: string };
+			favorite_food?: { add?: string; remove?: string; reset?: string };
+			favorite_items?: { add?: string; remove?: string; reset?: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([
@@ -888,13 +941,19 @@ export const configCommand: OSBMahojiCommand = {
 				);
 			}
 			if (favorite_alchs) {
-				return favAlchConfig(mahojiUser, favorite_alchs.add, favorite_alchs.remove, favorite_alchs.add_many);
+				return favAlchConfig(
+					mahojiUser,
+					favorite_alchs.add,
+					favorite_alchs.remove,
+					favorite_alchs.add_many,
+					favorite_alchs.reset
+				);
 			}
 			if (favorite_food) {
-				return favFoodConfig(mahojiUser, favorite_food.add, favorite_food.remove);
+				return favFoodConfig(mahojiUser, favorite_food.add, favorite_food.remove, favorite_food.reset);
 			}
 			if (favorite_items) {
-				return favItemConfig(mahojiUser, favorite_items.add, favorite_items.remove);
+				return favItemConfig(mahojiUser, favorite_items.add, favorite_items.remove, favorite_items.reset);
 			}
 		}
 		return 'Invalid command.';
