@@ -11,7 +11,6 @@ import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
-import { sendToChannelID } from '../../../lib/util/webhook';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 const RawNightmare = Misc.Nightmare;
@@ -82,9 +81,19 @@ export default class extends Task {
 		});
 
 		if (!kc) {
-			sendToChannelID(channelID, {
-				content: `${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`
-			});
+			handleTripFinish(
+				user,
+				channelID,
+				`${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
+				[
+					'k',
+					{ name: isPhosani ? 'phosani nightmare' : method === 'solo' ? 'solo nightmare' : 'mass nightmare' },
+					true
+				],
+				undefined,
+				data,
+				null
+			);
 		} else {
 			const image = await makeBankImage({
 				bank: itemsAdded,
