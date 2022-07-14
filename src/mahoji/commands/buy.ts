@@ -3,7 +3,6 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
-import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { kittens } from '../../lib/growablePets';
 import { Minigames } from '../../lib/settings/minigames';
 import { isElligibleForPresent } from '../../lib/settings/settings';
@@ -18,11 +17,10 @@ import {
 } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
-import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
-const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
+const allBuyablesAutocomplete = [...Buyables, { name: 'Kitten' }];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -87,9 +85,6 @@ export const buyCommand: OSBMahojiCommand = {
 				})),
 				content: `Removed ${cost} from your bank.`
 			};
-		}
-		if (leagueBuyables.some(i => stringMatches(i.item.name, name))) {
-			return leaguesBuyCommand(user, name, quantity);
 		}
 
 		const buyable = Buyables.find(
@@ -159,8 +154,6 @@ export const buyCommand: OSBMahojiCommand = {
 				gpCost = Math.floor(100_000_000 * (previouslyBought + 1) * ((previouslyBought + 1) / 3));
 			}
 		}
-
-		if (buyable.name === 'Beehive') quantity = 1;
 
 		// If itemCost is undefined, it creates a new empty Bank, like we want:
 		const singleCost: Bank = new Bank(buyable.itemCost);

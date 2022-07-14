@@ -53,7 +53,7 @@ export async function buttonUserPicker({
 			const mUser = await mahojiUsersSettingsFetch(id);
 			const isCreator = id === creator;
 			let notAllowed = !ironmenAllowed && mUser.minion_ironman;
-			if (notAllowed && isCreator) {
+			if (notAllowed && !isCreator) {
 				i.reply({ ephemeral: true, content: "You aren't allowed to participate.." });
 				return false;
 			}

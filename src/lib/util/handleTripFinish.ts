@@ -6,7 +6,6 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
-import { beeHiveTripEffect } from '../beeHive';
 import { MysteryBoxes } from '../bsoOpenables';
 import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
@@ -245,8 +244,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 			}
 		}
-	},
-	beeHiveTripEffect
+	}
 ];
 
 export async function handleTripFinish(
