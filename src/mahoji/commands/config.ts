@@ -774,7 +774,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'reset',
-							description: 'Reset / clear all favorite alchs',
+							description: 'Reset all of your favorite alchs',
 							required: false
 						}
 					]
@@ -817,7 +817,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'reset',
-							description: 'Reset / clear all favorite foods',
+							description: 'Reset all of your favorite foods',
 							required: false
 						}
 					]
@@ -842,7 +842,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.Boolean,
 							name: 'reset',
-							description: 'Reset / clear all favorite items',
+							description: 'Reset all of your favorite items',
 							required: false
 						}
 					]
