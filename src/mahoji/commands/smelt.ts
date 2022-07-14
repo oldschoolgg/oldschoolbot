@@ -89,7 +89,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 
 		// All bars take 2.4s to smith normally, add on quarter of a second to account for banking/etc.
 		let timeToSmithSingleBar = blast_furnace ? bar.timeToUse + Time.Second / 10 : bar.timeToUse + Time.Second / 4;
-		
+
 		if (blast_furnace) {
 			const requiredSkills = {
 				[SkillsEnum.Crafting]: 12,
