@@ -10,6 +10,7 @@ import './fishing';
 import './nex';
 import './nonCustomChanges';
 import './baxBath';
+import './moktang';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 

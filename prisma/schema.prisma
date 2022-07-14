@@ -764,9 +764,9 @@ enum activity_type_enum {
   TroubleBrewing
   Easter
   BaxtorianBathhouses
-
   Disassembling
   Research
+  Moktang
 }
 
 enum xp_gains_skill_enum {

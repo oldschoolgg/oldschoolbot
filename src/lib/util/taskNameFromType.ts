@@ -175,6 +175,7 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 		case 'Research':
 			return Tasks.Research;
 		case 'Easter':
+		case 'Moktang':
 		case 'BlastFurnace':
 			return Tasks.REMOVED;
 	}
