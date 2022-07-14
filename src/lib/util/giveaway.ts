@@ -1,6 +1,6 @@
-import { TextChannel } from 'discord.js';
+import { Snowflake, TextChannel } from 'discord.js';
 import { noOp, randArrItem } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
@@ -9,12 +9,12 @@ import { prisma } from '../settings/prisma';
 import { logError } from './logError';
 import { Giveaway } from '.prisma/client';
 
-export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Giveaway) {
+export async function handleGiveawayCompletion(giveaway: Giveaway) {
 	if (giveaway.completed) {
 		throw new Error('Tried to complete an already completed giveaway.');
 	}
 
-	const loot: ItemBank = giveaway.loot as ItemBank;
+	const loot = new Bank(giveaway.loot as ItemBank);
 
 	try {
 		await prisma.giveaway.updateMany({
@@ -26,21 +26,24 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 			}
 		});
 
-		const channel = client.channels.cache.get(giveaway.channel_id) as TextChannel | undefined;
-		const message = await channel?.messages.fetch(giveaway.message_id).catch(noOp);
+		const channel = globalClient.channels.cache.get(giveaway.channel_id as Snowflake) as TextChannel | undefined;
+		if (!channel?.messages) return;
+		const message = await channel?.messages.fetch(giveaway.message_id as Snowflake).catch(noOp);
 
 		const reactions = message ? message.reactions.cache.get(giveaway.reaction_id) : undefined;
 		const users: KlasaUser[] = !reactions
 			? []
-			: (await reactions.users.fetch())!
-					.array()!
-					.filter(u => !u.isIronman && !u.bot && u.id !== giveaway.user_id);
-		const creator = await client.fetchUser(giveaway.user_id);
+			: Array.from(
+					(await reactions.users.fetch())!
+						.filter(u => !u.isIronman && !u.bot && u.id !== giveaway.user_id)
+						.values()
+			  );
+		const creator = await globalClient.fetchUser(giveaway.user_id);
 
 		if (users.length === 0 || !channel || !message) {
 			logError('Giveaway failed');
 			await creator.addItemsToBank({ items: loot });
-			creator.send(`Your giveaway failed to finish, you were refunded the items: ${new Bank(loot)}.`).catch(noOp);
+			creator.send(`Your giveaway failed to finish, you were refunded the items: ${loot}.`).catch(noOp);
 
 			if (message && channel) {
 				channel.send('Nobody entered the giveaway :(');
@@ -50,16 +53,25 @@ export async function handleGiveawayCompletion(client: KlasaClient, giveaway: Gi
 
 		const winner = randArrItem(users);
 		await winner.addItemsToBank({ items: loot });
+		await prisma.economyTransaction.create({
+			data: {
+				guild_id: undefined,
+				sender: BigInt(creator.id),
+				recipient: BigInt(winner.id),
+				items_sent: loot.bank,
+				items_received: undefined,
+				type: 'giveaway'
+			}
+		});
 
-		const osBank = new Bank(loot);
-		client.emit(
+		globalClient.emit(
 			Events.EconomyLog,
-			`${winner.username}[${winner.id}] won ${osBank} in a giveaway of ${users.length} made by ${creator.username}[${creator.id}].`
+			`${winner.username}[${winner.id}] won ${loot} in a giveaway of ${users.length} made by ${creator.username}[${creator.id}].`
 		);
 
 		const str = `<@${giveaway.user_id}> **Giveaway finished:** ${users.length} users joined, the winner is... ||**${winner}**||
 			
-They received these items: ${osBank}`;
+They received these items: ${loot}`;
 
 		const resultMsg = await channel.send(str);
 		message.edit(

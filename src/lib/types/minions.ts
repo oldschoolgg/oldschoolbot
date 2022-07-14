@@ -15,18 +15,15 @@ export interface ActivityTaskOptions {
 	channelID: string;
 }
 
+export interface ActivityTaskOptionsWithQuantity extends ActivityTaskOptions {
+	quantity: number;
+}
+
 export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	runeID: number;
 	essenceQuantity: number;
 	imbueCasts: number;
-}
-
-export interface GloryChargingActivityTaskOptions extends ActivityTaskOptions {
-	quantity: number;
-}
-
-export interface WealthChargingActivityTaskOptions extends ActivityTaskOptions {
-	quantity: number;
+	useStaminas?: boolean;
 }
 
 export interface DarkAltarOptions extends ActivityTaskOptions {
@@ -66,6 +63,7 @@ export interface RevenantOptions extends ActivityTaskOptions {
 	monsterID: number;
 	quantity: number;
 	died: boolean;
+	fakeDuration: number;
 	usingPrayerPots: boolean;
 	skulled: boolean;
 	style: 'melee' | 'range' | 'mage';
@@ -88,6 +86,7 @@ export interface MiningActivityTaskOptions extends ActivityTaskOptions {
 export interface SmeltingActivityTaskOptions extends ActivityTaskOptions {
 	barID: number;
 	quantity: number;
+	blastf: boolean;
 }
 
 export interface SmithingActivityTaskOptions extends ActivityTaskOptions {
@@ -142,10 +141,6 @@ export interface OfferingActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface CyclopsActivityTaskOptions extends ActivityTaskOptions {
-	quantity: number;
-}
-
 export interface AnimatedArmourActivityTaskOptions extends ActivityTaskOptions {
 	armourID: string;
 	quantity: number;
@@ -174,6 +169,7 @@ export interface FightCavesActivityTaskOptions extends ActivityTaskOptions {
 	jadDeathChance: number;
 	preJadDeathChance: number;
 	preJadDeathTime: number | null;
+	fakeDuration: number;
 	quantity: number;
 }
 export interface InfernoOptions extends ActivityTaskOptions {
@@ -186,15 +182,12 @@ export interface InfernoOptions extends ActivityTaskOptions {
 	cost: ItemBank;
 }
 
-export interface QuestingActivityTaskOptions extends ActivityTaskOptions {}
-
 export interface FarmingActivityTaskOptions extends ActivityTaskOptions {
 	plantsName: string | null;
 	quantity: number;
 	upgradeType: string | null;
 	payment?: boolean;
 	patchType: IPatchData;
-	getPatchType: string;
 	planting: boolean;
 	currentDate: number;
 	autoFarmed: boolean;
@@ -208,14 +201,6 @@ export interface BirdhouseActivityTaskOptions extends ActivityTaskOptions {
 	currentDate: number;
 }
 
-export interface AerialFishingActivityTaskOptions extends ActivityTaskOptions {
-	quantity: number;
-}
-
-export interface DriftNetActivityTaskOptions extends ActivityTaskOptions {
-	quantity: number;
-}
-
 export interface MinigameActivityTaskOptions extends ActivityTaskOptions {
 	minigameID: MinigameName;
 	quantity: number;
@@ -227,17 +212,10 @@ export interface MahoganyHomesActivityTaskOptions extends MinigameActivityTaskOp
 	points: number;
 }
 
-export interface FishingTrawlerActivityTaskOptions extends MinigameActivityTaskOptions {}
-
 export interface NightmareActivityTaskOptions extends ActivityTaskOptions {
-	leader: string;
-	users: string[];
+	method: 'solo' | 'mass';
 	quantity: number;
 	isPhosani?: boolean;
-}
-
-export interface WintertodtActivityTaskOptions extends MinigameActivityTaskOptions {
-	quantity: number;
 }
 
 export interface TemporossActivityTaskOptions extends MinigameActivityTaskOptions {
@@ -261,28 +239,8 @@ export interface ZalcanoActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 }
 
-export interface BarbarianAssaultActivityTaskOptions extends MinigameActivityTaskOptions {
-	leader: string;
-	users: string[];
-	totalLevel: number;
-}
-
-export interface AgilityArenaActivityTaskOptions extends MinigameActivityTaskOptions {}
-
 export interface TempleTrekkingActivityTaskOptions extends MinigameActivityTaskOptions {
 	difficulty: string;
-}
-
-export interface MonsterKillingTickerTaskData {
-	subTasks: (MonsterActivityTaskOptions | GroupMonsterActivityTaskOptions)[];
-}
-
-export interface ClueTickerTaskData {
-	subTasks: ClueActivityTaskOptions[];
-}
-
-export interface SkillingTickerTaskData {
-	subTasks: ActivityTaskOptions[];
 }
 
 export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
@@ -292,16 +250,6 @@ export interface SawmillActivityTaskOptions extends ActivityTaskOptions {
 
 export interface GnomeRestaurantActivityTaskOptions extends MinigameActivityTaskOptions {
 	gloriesRemoved: number;
-}
-
-export interface SoulWarsOptions extends MinigameActivityTaskOptions {
-	leader: string;
-	users: string[];
-	quantity: number;
-}
-
-export interface RoguesDenMazeTaskOptions extends MinigameActivityTaskOptions {
-	quantity: number;
 }
 
 export interface GauntletOptions extends ActivityTaskOptions {
@@ -329,37 +277,38 @@ export interface TheatreOfBloodTaskOptions extends ActivityTaskOptions {
 	deaths: number[][];
 }
 
+export interface NexTaskOptions extends ActivityTaskOptions {
+	quantity: number;
+	leader: string;
+	users: string[];
+	userDetails: [string, number, number[]][];
+	fakeDuration: number;
+	wipedKill: number | null;
+}
+
 export interface CollectingOptions extends ActivityTaskOptions {
 	collectableID: number;
 	quantity: number;
 }
-
-export interface BlastFurnaceActivityTaskOptions extends ActivityTaskOptions {
-	barID: number;
-	quantity: number;
-}
-
-export interface VolcanicMineActivityTaskOptions extends ActivityTaskOptions {
-	quantity: number;
-}
-
-export interface TearsOfGuthixActivityTaskOptions extends MinigameActivityTaskOptions {}
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
 	favour: KourendFavour;
 	quantity: number;
 }
 
+export interface TokkulShopOptions extends ActivityTaskOptions {
+	itemID: number;
+	quantity: number;
+}
+
 export type ActivityTaskData =
 	| ActivityTaskOptions
 	| MonsterActivityTaskOptions
-	| BlastFurnaceActivityTaskOptions
 	| WoodcuttingActivityTaskOptions
 	| CollectingOptions
 	| RaidsOptions
 	| MinigameActivityTaskOptions
 	| GauntletOptions
-	| SoulWarsOptions
 	| CastingActivityTaskOptions
 	| EnchantingActivityTaskOptions
 	| ConstructionActivityTaskOptions
@@ -372,6 +321,4 @@ export type ActivityTaskData =
 	| RunecraftActivityTaskOptions
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
-	| VolcanicMineActivityTaskOptions
-	| TearsOfGuthixActivityTaskOptions
 	| KourendFavourActivityTaskOptions;

@@ -13,19 +13,19 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                node_version: [16.8.0]
+                node_version: [16.14.0]
                 os: [ubuntu-latest, windows-latest]
 
         steps:
             - name: Checkout Project
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
             - name: Use Node.js ${{ matrix.node_version }}
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node_version }}
                   cache: yarn
             - name: Restore CI Cache
-              uses: actions/cache@v1
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: ${{ runner.os }}-${{ matrix.node_version }}-${{ hashFiles(matrix.os == 'windows-latest' && '**\yarn.lock' || '**/yarn.lock') }}
@@ -37,7 +37,7 @@ jobs:
                   cp config.example.ts config.ts &&
                   popd
             - name: Generate Prisma Client
-              run: npx prisma generate
+              run: yarn gen
             - name: Test
               run: yarn test:unit
             - name: Upload coverage data to Codecov

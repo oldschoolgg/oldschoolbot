@@ -15,7 +15,7 @@ export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, duration, userID } = data;
 
-		incrementMinigameScore(userID, 'magic_training_arena', quantity);
+		await incrementMinigameScore(userID, 'magic_training_arena', quantity);
 
 		const loot = new Bank();
 
@@ -39,6 +39,14 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x Magic Training Arena rooms. You received **${pizazzPoints} Pizazz points**. ${xpRes}`;
 
-		handleTripFinish(this.client, user, channelID, str, ['mta', [], true, 'train'], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { mage_training_arena: { start: {} } }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }

@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import driftNetCreatures from '../../../lib/skilling/skills/hunter/driftNet';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { DriftNetActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 // Bonus loot from higher fishing level
@@ -32,7 +32,7 @@ const fishBonusLoot = [
 ];
 
 export default class extends Task {
-	async run(data: DriftNetActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		let { quantity, userID, channelID, duration } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
@@ -78,18 +78,10 @@ export default class extends Task {
 		str += `\n\nYou received: ${loot}.`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log('continued trip of Drift net fishing.');
-				return this.client.commands
-					.get('driftnet')!
-					.run(res, [
-						Math.floor(Math.min(user.maxTripLength('DriftNet') / Time.Minute, duration / Time.Minute))
-					]);
-			},
+			['activities', { driftnet_fishing: { minutes: Math.floor(duration / Time.Minute) } }, true],
 			undefined,
 			data,
 			loot

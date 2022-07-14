@@ -2,7 +2,8 @@ import { Activity } from '@prisma/client';
 import { Task } from 'klasa';
 
 import { production } from '../config';
-import { completeActivity, prisma } from '../lib/settings/prisma';
+import { prisma } from '../lib/settings/prisma';
+import { completeActivity } from '../lib/settings/settings';
 import { logError } from '../lib/util/logError';
 
 export default class extends Task {

@@ -2,11 +2,11 @@ import { roll } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { chompyHats } from '../../../commands/Minion/chompyhunt';
 import { userhasDiaryTier, WesternProv } from '../../../lib/diaries';
 import { getMinigameEntity, incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
@@ -37,6 +37,14 @@ export default class extends Task {
 			}
 		}
 
-		handleTripFinish(this.client, user, channelID, str, ['chompyhunt', []], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['activities', { chompy_hunt: { action: 'start' } }],
+			undefined,
+			data,
+			loot
+		);
 	}
 }
