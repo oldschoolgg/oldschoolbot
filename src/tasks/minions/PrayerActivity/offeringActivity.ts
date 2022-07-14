@@ -52,15 +52,6 @@ export default class extends Task {
 			str += `\n\n${user.minionName}'s Prayer level is now ${newLevel}!`;
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['offer', [quantity, bone.name], true],
-			undefined,
-			data,
-			null
-		);
+		handleTripFinish(user, channelID, str, ['offer', { quantity, name: bone.name }, true], undefined, data, null);
 	}
 }

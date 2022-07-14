@@ -1,10 +1,13 @@
 import { MessageButton } from 'discord.js';
 import { KlasaMessage } from 'klasa';
+import { APIButtonComponent, ButtonStyle, ComponentType } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
-import { DISCORD_SETTINGS } from '../config';
+import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
+import { RunCommandArgs } from './settings/settings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
@@ -83,7 +86,6 @@ export const enum Emoji {
 	Prayer = '<:prayer:630911040426868746>',
 	Construction = '<:construction:630911040493715476>',
 	Diango = '<:diangoChatHead:678146375300415508>',
-	BirthdayPresent = '<:birthdayPresent:680041979710668880>',
 	MysteryBox = '<:mysterybox:680783258488799277>',
 	QuestIcon = '<:questIcon:690191385907036179>',
 	MinigameIcon = '<:minigameIcon:630400565070921761>',
@@ -119,6 +121,7 @@ export const enum Emoji {
 	Ranged = '<:ranged:630911040258834473>',
 	Gear = '<:gear:835314891950129202>',
 	Slayer = '<:slayer:630911040560824330>',
+	Stopwatch = '⏱️',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -142,11 +145,11 @@ export const enum Emoji {
 	SOTWTrophy = '<:SOTWtrophy:842938096097820693>'
 }
 
-export const enum ReactionEmoji {
-	Join = '705971600956194907',
-	Stop = '705972260950769669',
-	Start = '705973302719414329'
-}
+export const ReactionEmoji = {
+	Join: production ? '705971600956194907' : '951309579302604900',
+	Stop: production ? '705972260950769669' : '951309579248091166',
+	Start: production ? '705973302719414329' : '951309579302604880'
+};
 
 export const enum Image {
 	DiceBag = 'https://i.imgur.com/sySQkSX.png'
@@ -212,7 +215,6 @@ export const enum Tasks {
 	Raids = 'raidsActivity',
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
-	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	DarkAltar = 'darkAltarActivity',
@@ -223,7 +225,13 @@ export const enum Tasks {
 	KourendFavour = 'kourendFavourActivity',
 	Inferno = 'infernoActivity',
 	TearsOfGuthix = 'tearsOfGuthixActivity',
-	ToB = 'tobActivity'
+	ToB = 'tobActivity',
+	LastManStanding = 'lmsActivity',
+	BirthdayEvent = 'birthdayEventActivity',
+	TokkulShop = 'tokkulShopActivity',
+	Nex = 'nexActivity',
+	TroubleBrewing = 'troubleBrewingActivity',
+	REMOVED = '__REMOVED__'
 }
 
 export enum ActivityGroup {
@@ -277,7 +285,6 @@ export const enum PerkTier {
 }
 
 export const enum BitField {
-	HasGivenBirthdayPresent = 1,
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
@@ -301,23 +308,41 @@ export const enum BitField {
 
 interface BitFieldData {
 	name: string;
+	/**
+	 * Users can never 'choose' to get this, even in testing.
+	 */
+	protected: boolean;
+	userConfigurable: boolean;
 }
 
-export const BitFieldData: Partial<Record<BitField, BitFieldData>> = {
-	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron' },
-	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron' },
-	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron' },
-	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron' },
-	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron' },
-	[BitField.isModerator]: { name: 'Moderator' },
-	[BitField.isContributor]: { name: 'Contributor' },
-	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction' },
-	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked' },
-	[BitField.HasPermanentEventBackgrounds]: { name: 'Permanent Event Backgrounds' },
-	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1' },
-	[BitField.PermanentIronman]: { name: 'Permanent Ironman' },
-	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks' },
-	[BitField.IsWikiContributor]: { name: 'Wiki Contributor' }
+export const BitFieldData: Record<BitField, BitFieldData> = {
+	[BitField.IsWikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
+	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
+	[BitField.isContributor]: { name: 'Contributor', protected: true, userConfigurable: false },
+
+	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier1]: { name: 'Tier 1 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier2]: { name: 'Tier 2 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier3]: { name: 'Tier 3 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier4]: { name: 'Tier 4 Patron', protected: false, userConfigurable: false },
+	[BitField.IsPatronTier5]: { name: 'Tier 5 Patron', protected: false, userConfigurable: false },
+
+	[BitField.HasHosidiusWallkit]: { name: 'Hosidius Wall Kit Unlocked', protected: false, userConfigurable: false },
+	[BitField.HasDexScroll]: { name: 'Dexterous Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasArcaneScroll]: { name: 'Arcane Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasTornPrayerScroll]: { name: 'Torn Prayer Scroll Used', protected: false, userConfigurable: false },
+	[BitField.HasSlepeyTablet]: { name: 'Slepey Tablet Used', protected: false, userConfigurable: false },
+
+	[BitField.BypassAgeRestriction]: { name: 'Bypassed Age Restriction', protected: false, userConfigurable: false },
+	[BitField.HasPermanentEventBackgrounds]: {
+		name: 'Permanent Event Backgrounds',
+		protected: false,
+		userConfigurable: false
+	},
+	[BitField.PermanentIronman]: { name: 'Permanent Ironman', protected: false, userConfigurable: false },
+
+	[BitField.AlwaysSmallBank]: { name: 'Always Use Small Banks', protected: false, userConfigurable: true },
+	[BitField.DisabledRandomEvents]: { name: 'Disabled Random Events', protected: false, userConfigurable: true }
 } as const;
 
 export const enum PatronTierID {
@@ -325,7 +350,8 @@ export const enum PatronTierID {
 	Two = '4608226',
 	Three = '4720356',
 	Four = '5262065',
-	Five = '5262216'
+	Five = '5262216',
+	Six = '8091554'
 }
 
 export const enum BadgesEnum {
@@ -360,32 +386,26 @@ export const badges: { [key: number]: string } = {
 	[BadgesEnum.SotWTrophy]: Emoji.SOTWTrophy
 };
 
-export const MAX_QP = 284;
+export const MAX_QP = 289;
 export const MAX_XP = 200_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
-export const continuationChars = 'abdefghjknoprstuvwxyz123456789'.split('');
-export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
-export const TWEETS_RATELIMITING =
-	'Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.' +
-	'You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.';
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
 export const ZALCANO_ID = 9049;
 export const NIGHTMARE_ID = 9415;
 export const HESPORI_ID = 8583;
+export const NEX_ID = 11_278;
 
 /**
  * Map<user_id, PromiseQueue>
  */
 export const userQueues: Map<string, PQueue> = new Map();
-
-export const bankImageCache = new Map<string, string>();
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
@@ -423,28 +443,44 @@ export const MAX_LEVEL = 99;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
-export const informationalButtons = [
-	new MessageButton().setLabel('Wiki').setEmoji('📰').setURL('https://wiki.oldschool.gg/').setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Patreon')
-		.setEmoji('679334888792391703')
-		.setURL('https://www.patreon.com/oldschoolbot')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Support Server')
-		.setEmoji('778418736180494347')
-		.setURL('https://www.discord.gg/ob')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Bot Invite')
-		.setEmoji('🤖')
-		.setURL('http://www.oldschool.gg/invite/osb')
-		.setStyle('LINK')
+const buttonSource = [
+	{
+		label: 'Wiki',
+		emoji: '802136964027121684',
+		url: 'https://wiki.oldschool.gg/'
+	},
+	{
+		label: 'Patreon',
+		emoji: '679334888792391703',
+		url: 'https://www.patreon.com/oldschoolbot'
+	},
+	{
+		label: 'Support Server',
+		emoji: '778418736180494347',
+		url: 'https://www.discord.gg/ob'
+	},
+	{
+		label: 'Bot Invite',
+		emoji: '778418736180494347',
+		url: 'http://www.oldschool.gg/invite/osb'
+	}
 ];
 
+export const informationalButtons = buttonSource.map(i =>
+	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+);
+export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
+	type: ComponentType.Button,
+	label: i.label,
+	emoji: { id: i.emoji },
+	style: ButtonStyle.Link,
+	url: i.url
+}));
+
+export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -453,7 +489,13 @@ export const PATRON_ONLY_GEAR_SETUP =
 export type ProjectileType = 'arrow' | 'bolt';
 export const projectiles: Record<ProjectileType, number[]> = {
 	arrow: resolveItems(['Adamant arrow', 'Rune arrow', 'Amethyst arrow', 'Dragon arrow']),
-	bolt: resolveItems(['Runite bolts', 'Dragon bolts', 'Diamond bolts (e)', 'Diamond dragon bolts (e)'])
+	bolt: resolveItems([
+		'Runite bolts',
+		'Dragon bolts',
+		'Diamond bolts (e)',
+		'Diamond dragon bolts (e)',
+		'Ruby dragon bolts (e)'
+	])
 };
 
 export const BOT_TYPE: 'BSO' | 'OSB' = 'OSB';
@@ -470,12 +512,18 @@ export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) 
 }
 
 export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
-	msg: KlasaMessage
+	msg: KlasaMessage | null,
+	commandName?: string
 ) => `This command you're trying to use, has been changed to a 'slash command'.
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
-- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used too though.
-- You no longer use this command using \`${msg.cmdPrefix}${msg.command?.name}\`, now you use: \`/${msg.command?.name}\`
+- Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
+- You no longer use this command using \`${msg?.cmdPrefix ?? '+'}${
+	commandName ?? msg?.command?.name
+}\`, now you use: \`/${commandName ?? msg?.command?.name}\`
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();
+export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
+export type PvMMethod = typeof PVM_METHODS[number];
+export const usernameCache = new Map<string, string>();

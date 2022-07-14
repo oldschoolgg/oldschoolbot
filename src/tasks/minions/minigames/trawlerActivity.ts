@@ -6,12 +6,13 @@ import { ArdougneDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { fishingTrawlerLoot } from '../../../lib/simulation/fishingTrawler';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { FishingTrawlerActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { anglerBoostPercent } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
-	async run(data: FishingTrawlerActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
 		const user = await this.client.fetchUser(userID);
 
@@ -58,17 +59,22 @@ export default class extends Task {
 		if (currentLevel !== newLevel) {
 			str += `\n\n${user.minionName}'s Fishing level is now ${newLevel}!`;
 		}
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity}x Fishing Trawler`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
 
-		handleTripFinish(this.client, user, channelID, str, ['fishingtrawler', [], true], image!, data, itemsAdded);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Fishing Trawler`,
+			user,
+			previousCL
+		});
+
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { fishing_trawler: { start: {} } }, true],
+			image.file.buffer,
+			data,
+			itemsAdded
+		);
 	}
 }

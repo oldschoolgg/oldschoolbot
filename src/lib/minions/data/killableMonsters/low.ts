@@ -84,6 +84,23 @@ const killableMonsters: KillableMonster[] = [
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.GiantFrog.id,
+		name: Monsters.GiantFrog.name,
+		aliases: Monsters.GiantFrog.aliases,
+		timeToFinish: Time.Second * 35,
+		table: Monsters.GiantFrog,
+		healAmountNeeded: 30,
+		attackStyleToUse: GearStat.AttackSlash,
+		attackStylesUsed: [GearStat.AttackSlash]
+	},
+	{
+		id: Monsters.JubblyBird.id,
+		name: Monsters.JubblyBird.name,
+		aliases: Monsters.JubblyBird.aliases,
+		timeToFinish: Time.Second * 20,
+		table: Monsters.JubblyBird
 	}
 ];
 

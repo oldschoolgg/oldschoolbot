@@ -1,6 +1,7 @@
 import { Task } from 'klasa';
 import { MonsterKillOptions, Monsters } from 'oldschooljs';
 
+import { PvMMethod } from '../../lib/constants';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -14,6 +15,7 @@ import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerIn
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -151,33 +153,36 @@ export default class extends Task {
 			duration
 		});
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity} ${monster.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity} ${monster.name}:`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
 			isOnTask && thisTripFinishesTask
 				? undefined
 				: res => {
-						user.log(`continued trip of killing ${monster.name}`);
-						let args = [quantity, monster.name];
-						if (usingCannon) args.push('cannon');
-						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) args.push('barrage');
-						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) args.push('burst');
-						return runCommand({ message: res, commandName: 'k', args, isContinue: true });
+						let method: PvMMethod = 'none';
+						if (usingCannon) method = 'cannon';
+						else if (burstOrBarrage === SlayerActivityConstants.IceBarrage) method = 'barrage';
+						else if (burstOrBarrage === SlayerActivityConstants.IceBurst) method = 'burst';
+						return runCommand({
+							...res,
+							commandName: 'k',
+							args: {
+								name: monster.name,
+								quantity,
+								method
+							},
+							isContinue: true
+						});
 				  },
-			image!,
+			image!.file.buffer,
 			data,
 			itemsAdded
 		);

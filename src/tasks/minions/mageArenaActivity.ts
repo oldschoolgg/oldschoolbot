@@ -11,7 +11,6 @@ export default class extends Task {
 		const loot = new Bank().add('Saradomin cape').add('Zamorak cape').add('Guthix cape');
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished the Mage Arena, you received: ${loot}.`,

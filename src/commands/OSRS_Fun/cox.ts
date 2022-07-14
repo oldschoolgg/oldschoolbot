@@ -1,11 +1,11 @@
+import { MessageAttachment } from 'discord.js';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
-import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { chambersOfXericCL } from '../../lib/data/CollectionsExport';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { addBanks } from '../../lib/util';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 
 const itemsToShow = chambersOfXericCL;
 
@@ -52,11 +52,12 @@ export default class extends BotCommand {
 					loot.add(lootBank);
 				}
 			}
-
-			return msg.channel.sendBankImage({
+			const image = await makeBankImage({
 				bank: loot,
 				title: `Loot from ${amount} solo raids with ${Util.toKMB(points)} points.`
 			});
+
+			return msg.channel.send({ files: [new MessageAttachment(image.file.buffer)] });
 		}
 
 		if (amount > limit) {
@@ -76,8 +77,11 @@ export default class extends BotCommand {
 		}));
 
 		const loot: {
-			[key: string]: ItemBank;
+			[key: string]: Bank;
 		} = {};
+		for (const t of team) {
+			loot[t.id] = new Bank();
+		}
 		for (let i = 0; i < amount; i++) {
 			const singleRaidLoot = ChambersOfXeric.complete({
 				team,
@@ -86,16 +90,13 @@ export default class extends BotCommand {
 			});
 
 			for (const [memberID, lootBank] of Object.entries(singleRaidLoot)) {
-				loot[memberID] = addBanks([loot[memberID] || {}, lootBank]);
+				loot[memberID]!.add(lootBank);
 			}
 		}
 
 		let result = `In a group raid with ${team.length} users with ${Util.toKMB(points)} points each...\n`;
 		for (const [memberID, lootBank] of Object.entries(loot)) {
-			result += `**${memberID}** received: ${new Bank(lootBank).filter(
-				item => itemsToShow.includes(item.id),
-				false
-			)}\n`;
+			result += `**${memberID}** received: ${lootBank.filter(item => itemsToShow.includes(item.id), false)}\n`;
 		}
 
 		return msg.channel.send(result);

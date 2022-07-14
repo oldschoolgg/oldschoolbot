@@ -2,9 +2,8 @@ import { Guild } from 'discord.js';
 import { noOp, notEmpty } from 'e';
 import { Task } from 'klasa';
 
-import { CLUser, SkillUser } from '../commands/Minion/leaderboard';
 import { production } from '../config';
-import { BOT_TYPE, Roles, SupportServer } from '../lib/constants';
+import { BOT_TYPE, Roles, SupportServer, usernameCache } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
 import ClueTiers from '../lib/minions/data/clueTiers';
 import { Minigames } from '../lib/settings/minigames';
@@ -20,7 +19,7 @@ function addToUserMap(userMap: Record<string, string[]>, id: string, reason: str
 
 const minigames = Minigames.map(game => game.column).filter(i => i !== 'tithe_farm');
 
-const collections = ['pets', 'skilling', 'clues', 'bosses', 'minigames', 'cox', 'tob', 'slayer', 'other', 'custom'];
+const collections = ['pets', 'skilling', 'clues', 'bosses', 'minigames', 'raids', 'slayer', 'other', 'custom'];
 
 const mostSlayerPointsQuery = `SELECT id, 'Most Points' as desc
 FROM users
@@ -58,11 +57,7 @@ async function addRoles({
 	let _role = await g.roles.fetch(role);
 	if (!_role) return 'Could not check role';
 	for (const u of users.filter(notEmpty)) {
-		try {
-			await g.members.fetch(u);
-		} catch {
-			logError(`Failed to fetch \`${u}\` member.`);
-		}
+		await g.members.fetch(u).catch(noOp);
 	}
 	const roleName = _role.name!;
 	for (const mem of g.members.cache.values()) {
@@ -106,7 +101,7 @@ async function addRoles({
 	if (userMap) {
 		let userArr = [];
 		for (const [id, arr] of Object.entries(userMap)) {
-			let username = (g.client.commands.get('leaderboard') as any)!.getUsername(id);
+			let username = usernameCache.get(id) ?? 'Unknown';
 			userArr.push(`${username}(${arr.join(', ')})`);
 		}
 		str += `\n${userArr.join(',')}`;
@@ -164,23 +159,23 @@ export default class extends Task {
 
 			// Rank 1 Total Level
 			const rankOneTotal = (
-				await q<SkillUser[]>(
+				await q<any>(
 					`SELECT id,  ${skillVals.map(s => `"skills.${s.id}"`)}, ${skillVals
 						.map(s => `"skills.${s.id}"::bigint`)
 						.join(' + ')} as totalxp FROM users ORDER BY totalxp DESC LIMIT 200;`
 				)
 			)
-				.map(u => {
+				.map((u: any) => {
 					let totalLevel = 0;
 					for (const skill of skillVals) {
-						totalLevel += convertXPtoLVL(Number(u[`skills.${skill.id}` as keyof SkillUser]) as any);
+						totalLevel += convertXPtoLVL(Number(u[`skills.${skill.id}` as keyof any]) as any);
 					}
 					return {
 						id: u.id,
 						totalLevel
 					};
 				})
-				.sort((a, b) => b.totalLevel - a.totalLevel)[0];
+				.sort((a: any, b: any) => b.totalLevel - a.totalLevel)[0];
 			topSkillers.push(rankOneTotal.id);
 
 			result += await addRoles({ g: g!, users: topSkillers, role: Roles.TopSkiller, badge: 9 });
@@ -219,17 +214,17 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 							return [];
 						}
 
-						function handleErr(): CLUser[] {
+						function handleErr(): any[] {
 							logError(`Failed to select top collectors for ${clName}`);
 							return [];
 						}
 
 						const [users, ironUsers] = await Promise.all([
 							q<any>(generateQuery(items, false, 1))
-								.then(i => i.filter((i: any) => i.qty > 0) as CLUser[])
+								.then(i => i.filter((i: any) => i.qty > 0) as any[])
 								.catch(handleErr),
 							q<any>(generateQuery(items, true, 1))
-								.then(i => i.filter((i: any) => i.qty > 0) as CLUser[])
+								.then(i => i.filter((i: any) => i.qty > 0) as any[])
 								.catch(handleErr)
 						]);
 
@@ -253,10 +248,18 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 
 			const topIronUsers = (await q<any>(generateQuery(getCollectionItems('overall'), true, 3))).filter(
 				(i: any) => i.qty > 0
-			) as CLUser[];
+			) as any[];
 			for (let i = 0; i < topIronUsers.length; i++) {
 				const id = topIronUsers[i]?.id;
 				addToUserMap(userMap, id, `Rank ${i + 1} Ironman Collector`);
+				topCollectors.push(id);
+			}
+			const topNormieUsers = (await q<any>(generateQuery(getCollectionItems('overall'), false, 3))).filter(
+				(i: any) => i.qty > 0
+			) as any[];
+			for (let i = 0; i < topNormieUsers.length; i++) {
+				const id = topNormieUsers[i]?.id;
+				addToUserMap(userMap, id, `Rank ${i + 1} Collector`);
 				topCollectors.push(id);
 			}
 
@@ -267,12 +270,12 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
 		async function topSacrificers() {
 			const userMap = {};
 			let topSacrificers: string[] = [];
-			const mostValue = await q<SkillUser[]>('SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;');
+			const mostValue = await q<any[]>('SELECT id FROM users ORDER BY "sacrificedValue" DESC LIMIT 3;');
 			for (let i = 0; i < 3; i++) {
 				topSacrificers.push(mostValue[i].id);
 				addToUserMap(userMap, mostValue[i].id, `Rank ${i + 1} Sacrifice Value`);
 			}
-			const mostUniques = await q<SkillUser[]>(`SELECT u.id, u.sacbanklength FROM (
+			const mostUniques = await q<any[]>(`SELECT u.id, u.sacbanklength FROM (
   SELECT (SELECT COUNT(*) FROM JSON_OBJECT_KEYS("sacrificedBank")) sacbanklength, id FROM users
 ) u
 ORDER BY u.sacbanklength DESC LIMIT 1;`);
@@ -317,9 +320,9 @@ LIMIT 1;`
 				await Promise.all(
 					ClueTiers.map(t =>
 						q(
-							`SELECT id, '${t.name}' as n, ("clueScores"->>'${t.id}')::int as qty
+							`SELECT id, '${t.name}' as n, (openable_scores->>'${t.id}')::int as qty
 FROM users
-WHERE "clueScores"->>'${t.id}' IS NOT NULL
+WHERE "openable_scores"->>'${t.id}' IS NOT NULL
 ORDER BY qty DESC
 LIMIT 1;`
 						)

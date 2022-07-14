@@ -12,7 +12,7 @@ import {
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
-import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
@@ -21,6 +21,7 @@ import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
+import { userHasItemsEquippedAnywhere } from '../util/minionUtils';
 
 export const bareMinStats: Skills = {
 	attack: 80,
@@ -177,7 +178,7 @@ export const maxRangeGear = constructGearSetup({
 	neck: 'Necklace of anguish',
 	body: 'Armadyl chestplate',
 	cape: "Ava's assembler",
-	hands: 'Barrows gloves',
+	hands: 'Zaryte vambraces',
 	legs: 'Armadyl chainskirt',
 	feet: 'Pegasian boots',
 	'2h': 'Twisted bow',
@@ -265,9 +266,14 @@ export async function checkCoxTeam(users: KlasaUser[], cm: boolean): Promise<str
 			if (
 				users.length > 1 &&
 				!user.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				!user.hasItemEquippedOrInBank('Twisted bow')
+				!user.hasItemEquippedOrInBank('Twisted bow') &&
+				!userHasItemsEquippedAnywhere(
+					user,
+					['Bow of faerdhinen (c)', 'Crystal helm', 'Crystal legs', 'Crystal body'],
+					true
+				)
 			) {
-				return `${user.username} doesn't own a Twisted bow or Dragon hunter crossbow, which is required for Challenge Mode.`;
+				return `${user.username} doesn't own a Twisted bow, Bow of faerdhinen (c) or Dragon hunter crossbow, which is required for Challenge Mode.`;
 			}
 			const kc = await user.getMinigameScore('raids');
 			if (kc < 200) {
@@ -350,7 +356,7 @@ interface ItemBoost {
 	item: Item;
 	boost: number;
 	mustBeEquipped: boolean;
-	setup?: 'mage';
+	setup?: 'mage' | 'range';
 	mustBeCharged?: boolean;
 	requiredCharges?: number;
 }
@@ -412,6 +418,14 @@ const itemBoosts: ItemBoost[][] = [
 			setup: 'mage',
 			mustBeCharged: true,
 			requiredCharges: SANGUINESTI_CHARGES_PER_COX
+		}
+	],
+	[
+		{
+			item: getOSItem('Zaryte vambraces'),
+			boost: 4,
+			mustBeEquipped: true,
+			setup: 'range'
 		}
 	]
 ];
