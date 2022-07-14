@@ -37,6 +37,8 @@ Client.defaultClientSchema
 	.add('create_loot', 'any', { default: {} })
 	.add('tob_cost', 'any', { default: {} })
 	.add('tob_loot', 'any', { default: {} })
+	.add('tks_cost', 'any', { default: {} })
+	.add('tks_loot', 'any', { default: {} })
 	.add('degraded_items_cost', 'any', { default: {} })
 	.add('economyStats', folder =>
 		folder
@@ -62,5 +64,4 @@ Client.defaultClientSchema
 	.add('gp_daily', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 
-	.add('locked_skills', 'any', { array: true, default: [] })
 	.add('custom_prices', 'any', { default: {} });

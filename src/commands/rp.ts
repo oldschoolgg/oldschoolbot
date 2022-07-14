@@ -1,17 +1,16 @@
 import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
-import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
+import { MessageAttachment, MessageOptions, TextChannel, Util } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
+import { ArrayActions, CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { client, mahojiClient } from '..';
-import { CLIENT_ID } from '../config';
+import { CLIENT_ID, production } from '../config';
 import {
 	badges,
 	BitField,
@@ -24,30 +23,77 @@ import {
 } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { evalMathExpression } from '../lib/expressionParser';
-import { countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
+import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import {
-	asyncExec,
 	channelIsSendable,
-	cleanString,
 	convertBankToPerHourStats,
 	formatDuration,
 	getSupportGuild,
 	getUsername,
+	isGroupActivity,
+	isNexActivity,
+	isRaidsActivity,
+	isTobActivity,
 	itemNameFromID,
 	stringMatches
 } from '../lib/util';
-import getOSItem from '../lib/util/getOSItem';
+import getOSItem, { getItem } from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
+import { makeBankImage, makeBankImageKlasa } from '../lib/util/makeBankImage';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
+
+async function checkMassesCommand(msg: KlasaMessage) {
+	if (!msg.guild) return null;
+	const channelIDs = msg.guild.channels.cache.filter(c => c.type === 'text').map(c => BigInt(c.id));
+
+	const masses = (
+		await prisma.activity.findMany({
+			where: {
+				completed: false,
+				group_activity: true,
+				channel_id: { in: channelIDs }
+			},
+			orderBy: {
+				finish_date: 'asc'
+			}
+		})
+	)
+		.map(convertStoredActivityToFlatActivity)
+		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
+
+	if (masses.length === 0) {
+		return msg.channel.send('There are no active masses in this server.');
+	}
+	const now = Date.now();
+	const massStr = masses
+		.map(m => {
+			const remainingTime =
+				isTobActivity(m) || isNexActivity(m)
+					? m.finishDate - m.duration + m.fakeDuration - now
+					: m.finishDate - now;
+			if (isGroupActivity(m)) {
+				return [
+					remainingTime,
+					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
+						m.users.length
+					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`
+				];
+			}
+		})
+		.sort((a, b) => (a![0] < b![0] ? -1 : a![0] > b![0] ? 1 : 0))
+		.map(m => m![1])
+		.join('\n');
+	return msg.channel.send(`**Masses in this server:**
+${massStr}`);
+}
 
 function itemSearch(msg: KlasaMessage, name: string) {
 	const items = Items.filter(i => {
@@ -93,7 +139,7 @@ async function unsafeEval({
 	code: string;
 	flags: Record<string, string>;
 	msg: KlasaMessage;
-}): Promise<MessageOptions> {
+}): Promise<MessageOptions & { rawOutput: string }> {
 	code = code.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
 	const stopwatch = new Stopwatch();
 	let syncTime = '?';
@@ -126,13 +172,16 @@ async function unsafeEval({
 
 	stopwatch.stop();
 	if (flags.bk || result instanceof Bank) {
-		const image = await client.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
-		return { files: [new MessageAttachment(image.image!)] };
+		const image = await makeBankImage({
+			bank: result
+		});
+		return { files: [new MessageAttachment(image.file.buffer)], rawOutput: result };
 	}
 
 	if (Buffer.isBuffer(result)) {
 		return {
-			content: 'The result was a buffer.'
+			content: 'The result was a buffer.',
+			rawOutput: 'Buffer'
 		};
 	}
 
@@ -147,24 +196,24 @@ async function unsafeEval({
 		content: `${codeBlock(Util.escapeCodeBlock(result))}
 **Type:** ${inlineCode(type.toString())}
 **Time:** ${asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`}
-`
+`,
+		rawOutput: result
 	};
 }
 
 async function evalCommand(msg: KlasaMessage, code: string) {
 	try {
-		if (!client.owners.has(msg.author)) {
+		if (!globalClient.owners.has(msg.author)) {
 			return "You don't have permission to use this command.";
 		}
 		const res = await unsafeEval({ code, flags: msg.flagArgs, msg });
-
 		if ('silent' in msg.flagArgs) return null;
 
 		// Handle too-long-messages
 		if (res.content && res.content.length > 2000) {
-			return {
-				files: [new MessageAttachment(Buffer.from(res.content), 'output.txt')]
-			};
+			return msg.channel.send({
+				files: [new MessageAttachment(Buffer.from(res.rawOutput), 'output.txt')]
+			});
 		}
 
 		// If it's a message that can be sent correctly, send it
@@ -174,7 +223,7 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 	}
 }
 
-export const emoji = (client: KlasaClient) => getSupportGuild(client)?.emojis.cache.random().toString();
+export const emoji = () => getSupportGuild()?.emojis.cache.random()?.toString();
 
 const statusMap = {
 	'0': '🟢 Ready',
@@ -206,6 +255,25 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'ping': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
+				if (!input || typeof input !== 'string') return;
+				const roles = await prisma.pingableRole.findMany();
+				const roleToPing = roles.find(i => i.id === Number(input) || stringMatches(i.name, input));
+				if (!roleToPing) {
+					return msg.channel.send('No role with that name found.');
+				}
+				if (!msg.member) return;
+				if (!msg.member.roles.cache.has(Roles.MassHoster)) {
+					return;
+				}
+				return msg.channel.send(
+					`<@&${roleToPing.role_id}> You were pinged because you have this role, you can remove it using \`+roles ${roleToPing.name}\`.`
+				);
+			}
+			case 'checkmasses': {
+				return checkMassesCommand(msg);
+			}
 			case 'pingmass':
 			case 'pm': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
@@ -264,14 +332,12 @@ export default class extends BotCommand {
 
 **Main Account:** ${
 						u.settings.get(UserSettings.MainAccount) !== null
-							? `${getUsername(this.client, u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
+							? `${getUsername(u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
 									UserSettings.MainAccount
 							  )}]`
 							: 'None'
 					}
-**Ironman Alt Accounts:** ${u.settings
-						.get(UserSettings.IronmanAlts)
-						.map(id => `${getUsername(this.client, id)}[${id}]`)}
+**Ironman Alt Accounts:** ${u.settings.get(UserSettings.IronmanAlts).map(id => `${getUsername(id)}[${id}]`)}
 `
 				);
 			}
@@ -279,35 +345,6 @@ export default class extends BotCommand {
 			case 'is': {
 				if (typeof input !== 'string') return;
 				return itemSearch(msg, input);
-			}
-			case 'pingtesters': {
-				if (
-					!msg.guild ||
-					msg.channel.id !== Channel.TestingMain ||
-					!msg.member ||
-					(!msg.member.roles.cache.has(Roles.Moderator) && !msg.member.roles.cache.has(Roles.Contributor))
-				) {
-					return;
-				}
-				return msg.channel.send(`<@&${Roles.Testers}>`);
-			}
-			case 'git': {
-				try {
-					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
-						timeout: 30
-					});
-					const rawStr = currentCommit.stdout.trim();
-					const [commitHash, ...commentArr] = rawStr.split(' ');
-					return msg.channel.send({
-						embeds: [
-							new MessageEmbed()
-								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...master)
-**Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
-						]
-					});
-				} catch {
-					return msg.channel.send('Failed to fetch git info.');
-				}
 			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
@@ -329,30 +366,6 @@ ${
 		? "You don't have this item equipped anywhere."
 		: `You have ${item.name} equipped in these setups: ${setupsWith.join(', ')}.`
 }`);
-			}
-			case 'issues': {
-				if (typeof input !== 'string' || input.length < 3 || input.length > 25) return;
-				const query = cleanString(input);
-
-				const searchURL = new URL('https://api.github.com/search/issues');
-
-				searchURL.search = new URLSearchParams([
-					['q', ['repo:oldschoolgg/oldschoolbot', 'is:issue', 'is:open', query].join(' ')]
-				]).toString();
-				const { items } = (await fetch(searchURL.toString()).then(res => res.json())) as Record<string, any>;
-				if (items.length === 0) return msg.channel.send('No results found.');
-				return msg.channel.send({
-					embeds: [
-						new MessageEmbed()
-							.setTitle(`${items.length} Github issues found from your search`)
-							.setDescription(
-								items
-									.slice(0, 10)
-									.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
-									.join('\n')
-							)
-					]
-				});
 			}
 		}
 
@@ -376,7 +389,7 @@ ${
 				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
 					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
 				});
-				const emoji = getSupportGuild(this.client)?.emojis.cache.random().toString();
+				const emoji = getSupportGuild()?.emojis.cache.random()?.toString();
 				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
 
 				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
@@ -437,12 +450,12 @@ ${
 				);
 			}
 			case 'setprice': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (typeof input !== 'string') return;
 				const [itemName, rawPrice] = input.split(',');
 				const item = getOSItem(itemName);
 				const price = evalMathExpression(rawPrice);
 				if (!price || price < 1 || price > 1_000_000_000) return;
-				if (!price || isNaN(price)) return msg.channel.send('Invalid price');
 				await msg.confirm(
 					`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
 						item.wiki_url
@@ -491,15 +504,17 @@ ${
 `);
 			}
 			case 'patreon': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				msg.channel.send('Running patreon task...');
 				await this.client.tasks.get('patreon')?.run();
 				return msg.channel.send('Finished syncing patrons.');
 			}
 			case 'roles': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				msg.channel.send('Running roles task...');
 				try {
 					const result = (await this.client.tasks.get('roles')?.run()) as string;
-					return sendToChannelID(this.client, msg.channel.id, {
+					return sendToChannelID(msg.channel.id, {
 						content: result.slice(0, 2500)
 					});
 				} catch (err: any) {
@@ -508,6 +523,7 @@ ${
 				}
 			}
 			case 'canceltask': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
 				await cancelTask(input.id);
 				this.client.oneCommandAtATimeCache.delete(input.id);
@@ -539,6 +555,7 @@ ${
 				return msg.channel.send(`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`);
 			}
 			case 'giveperm': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
 				await input.settings.update(
 					UserSettings.BitField,
@@ -549,13 +566,14 @@ ${
 					],
 					{ arrayAction: 'overwrite' }
 				);
-				sendToChannelID(this.client, Channel.ErrorLogs, {
+				sendToChannelID(Channel.ErrorLogs, {
 					content: `${msg.author.username} gave permanent t1/bgs to ${input.username}`
 				});
 				return msg.channel.send(`Gave permanent perks to ${input.username}.`);
 			}
 
 			case 'bf': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !str || !(input instanceof KlasaUser) || typeof str !== 'string') {
 					return msg.channel.send(
 						Object.entries(BitFieldData)
@@ -601,6 +619,7 @@ ${
 			}
 
 			case 'badges': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !str || !(input instanceof KlasaUser) || typeof str !== 'string') {
 					return msg.channel.send(
 						Object.entries(badges)
@@ -642,6 +661,7 @@ ${
 			}
 
 			case 'mostactive': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				const res = await this.client.query<{ num: number; username: string }[]>(`
 SELECT sum(duration) as num, "new_user"."username", user_id
 FROM activity
@@ -658,14 +678,15 @@ LIMIT 10;
 				);
 			}
 			case 'bank': {
+				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
-				return msg.channel.sendBankImage({
-					bank: input.allItemsOwned()
-				});
+				return msg.channel.send(await makeBankImageKlasa({ bank: input.allItemsOwned() }));
 			}
 			case 'disable': {
-				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
+				if (!input || input instanceof KlasaUser) {
+					return msg.channel.send(`Disabled Commands: ${Array.from(DISABLED_COMMANDS).join(', ')}.`);
+				}
+				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
 					where: { id: CLIENT_ID },
@@ -688,7 +709,7 @@ LIMIT 10;
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client).find(c => stringMatches(c.name, input));
+				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
@@ -723,30 +744,34 @@ LIMIT 10;
 				const currentBalanceTier = input.settings.get(UserSettings.PremiumBalanceTier);
 				const currentBalanceTime = input.settings.get(UserSettings.PremiumBalanceExpiryDate);
 
-				if (input.perkTier > 1 && !currentBalanceTier) {
-					return msg.channel.send(`${input.username} is already a patron.`);
+				const oldPerkTier = input.perkTier;
+				if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
+					return msg.channel.send(`${input.username} is already a patron of at least that tier.`);
 				}
 				if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-					return msg.channel.send(
+					await msg.confirm(
 						`${input} already has ${formatDuration(
 							currentBalanceTime!
-						)} of Tier ${currentBalanceTier}, you can't add time for a different tier.`
+						)} of Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 					);
 				}
 				await msg.confirm(
 					`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}?`
 				);
 				await input.settings.update(UserSettings.PremiumBalanceTier, tier);
-				if (currentBalanceTime !== null) {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, currentBalanceTime + ms);
+
+				let newBalanceExpiryTime = 0;
+				if (currentBalanceTime !== null && tier === currentBalanceTier) {
+					newBalanceExpiryTime = currentBalanceTime + ms;
 				} else {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, Date.now() + ms);
+					newBalanceExpiryTime = Date.now() + ms;
 				}
+				await input.settings.update(UserSettings.PremiumBalanceExpiryDate, newBalanceExpiryTime);
 
 				return msg.channel.send(
 					`Gave ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}. They have ${formatDuration(
-						input.settings.get(UserSettings.PremiumBalanceExpiryDate)! - Date.now()
-					)} remaning.`
+						newBalanceExpiryTime - Date.now()
+					)} remaining.`
 				);
 			}
 		}
@@ -760,12 +785,6 @@ LIMIT 10;
 				return msg.channel.send({
 					files: [new MessageAttachment(Buffer.from(JSON.stringify(result, null, 4)), 'patreon.txt')]
 				});
-			}
-			case 'bankimage':
-			case 'bi': {
-				if (typeof input !== 'string') return;
-				const bank = JSON.parse(input.replace(/'/g, '"'));
-				return msg.channel.sendBankImage({ bank });
 			}
 			case 'reboot': {
 				await msg.channel.send('Rebooting...');
@@ -809,12 +828,10 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					['Loot', new Bank(loot.loot as any)]
 				] as const;
 
-				const task = this.client.tasks.get('bankImage') as BankImageTask;
-
 				for (const [name, bank] of arr) {
 					msg.channel.send({
 						content: convertBankToPerHourStats(bank, durationMillis).join(', '),
-						files: [new MessageAttachment((await task.generateBankImage(bank, name)).image!)]
+						...(await makeBankImageKlasa({ bank, title: name }))
 					});
 				}
 
@@ -829,20 +846,54 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 			case 'localmahojisync': {
 				await msg.channel.send('Syncing commands locally...');
 				await bulkUpdateCommands({
-					client: mahojiClient,
-					commands: mahojiClient.commands.values,
+					client: globalClient.mahojiClient,
+					commands: globalClient.mahojiClient.commands.values,
 					guildID: msg.guild!.id
 				});
 				return msg.channel.send('Locally synced slash commands.');
 			}
+			case 'globalcommandnuke': {
+				await msg.channel.send('Syncing commands...');
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: [],
+					guildID: null
+				});
+				return msg.channel.send('Globally nuked slash commands.');
+			}
 			case 'globalmahojisync': {
 				await msg.channel.send('Syncing commands...');
 				await bulkUpdateCommands({
-					client: mahojiClient,
-					commands: mahojiClient.commands.values,
+					client: globalClient.mahojiClient,
+					commands: globalClient.mahojiClient.commands.values,
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
+			}
+			case 'itemdata': {
+				if (typeof input !== 'string') return;
+				const item = getItem(input);
+				if (!item) return;
+				return msg.channel.send(JSON.stringify(item, null, 2));
+			}
+			case 'testercheck': {
+				if (production) return;
+				let time = '12hours';
+				if (typeof input === 'string') time = input;
+				const result = await prisma.$queryRawUnsafe<
+					{ username: string; qty: number }[]
+				>(`SELECT "new_user"."username", COUNT(user_id) AS qty
+FROM command_usage
+INNER JOIN "new_users" "new_user" on "new_user"."id" = "command_usage"."user_id"::text
+WHERE date > now() - INTERVAL '${time}'
+GROUP BY "new_user"."username"
+ORDER BY qty DESC;`);
+				return msg.channel.send(
+					result
+						.slice(0, 10)
+						.map(u => `${u.username}: ${u.qty} commands`)
+						.join('\n')
+				);
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import {
+	Guild,
 	MessageActionRow,
 	MessageActionRowOptions,
 	MessageButtonStyleResolvable,
@@ -8,19 +9,20 @@ import {
 	MessageEmbedOptions
 } from 'discord.js';
 import { Time } from 'e';
-import { KlasaClient } from 'klasa';
+import { KlasaUser } from 'klasa';
 import {
 	APIActionRowComponent,
 	APIEmbed,
 	APIInteractionDataResolvedChannel,
+	APIMessageActionRowComponent,
 	APIRole,
 	APIUser,
 	ComponentType,
-	ICommand
+	ICommand,
+	MahojiClient
 } from 'mahoji';
 import { CommandOptions } from 'mahoji/dist/lib/types';
 
-import { mahojiClient } from '../..';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { AbstractCommand, AbstractCommandAttributes, CommandArgs } from './inhibitors';
 
@@ -48,13 +50,13 @@ export function convertKlasaCommandToAbstractCommand(command: BotCommand): Abstr
 }
 
 export interface OSBMahojiCommand extends ICommand {
-	attributes?: AbstractCommandAttributes;
+	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 }
 
 export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand): AbstractCommand {
 	return {
 		name: command.name,
-		attributes: command.attributes
+		attributes: { ...command.attributes, description: command.description }
 	};
 }
 
@@ -62,7 +64,7 @@ export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand)
  * Options/Args in mahoji can be full/big objects for users/roles/etc, this replaces them with just an ID.
  */
 function compressMahojiArgs(options: CommandArgs) {
-	let newOptions: Record<string, string | number | boolean> = {};
+	let newOptions: Record<string, string | number | boolean | null> = {};
 	for (const [key, val] of Object.entries(options) as [
 		keyof CommandOptions,
 		CommandOptions[keyof CommandOptions]
@@ -82,7 +84,7 @@ function compressMahojiArgs(options: CommandArgs) {
 			continue;
 		}
 
-		newOptions.key = 'unknown?';
+		newOptions[key] = null;
 	}
 	return newOptions;
 }
@@ -103,7 +105,9 @@ export function convertAPIEmbedToDJSEmbed(embed: APIEmbed) {
 	return new MessageEmbed(data);
 }
 
-export function convertComponentDJSComponent(component: APIActionRowComponent): MessageActionRow {
+export function convertComponentDJSComponent(
+	component: APIActionRowComponent<APIMessageActionRowComponent>
+): MessageActionRow {
 	const data: MessageActionRowOptions = {
 		components: component.components.map(cp => {
 			if (cp.type === ComponentType.Button) {
@@ -126,9 +130,17 @@ export function convertComponentDJSComponent(component: APIActionRowComponent): 
 	};
 	return new MessageActionRow(data);
 }
-export function allAbstractCommands(client: KlasaClient): AbstractCommand[] {
+export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return [
-		...(client.commands.array() as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
+		...Array.from(globalClient.commands.values() as any as BotCommand[])
+			.filter(i => !i.category.toLowerCase().includes('deprecated'))
+			.map(convertKlasaCommandToAbstractCommand),
 		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
 	];
+}
+
+export async function hasBanMemberPerms(user: KlasaUser, guild: Guild) {
+	const member = await guild.members.fetch(user).catch(() => null);
+	if (!member) return false;
+	return member.permissions.has('BAN_MEMBERS');
 }

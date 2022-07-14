@@ -123,11 +123,10 @@ export default class extends Task {
 		const returnStr = `${harvestStr} ${bonusXpStr}\n\n${completedStr}${levelStr}${lootStr}\n`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			returnStr,
-			['tithefarm', [], true],
+			['farming', { tithe_farm: {} }, true],
 			undefined,
 			data,
 			loot.length > 0 ? loot : null

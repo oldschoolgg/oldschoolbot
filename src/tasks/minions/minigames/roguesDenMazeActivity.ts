@@ -4,8 +4,9 @@ import { Bank } from 'oldschooljs';
 
 import { roguesDenOutfit } from '../../../lib/data/CollectionsExport';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
-import { RoguesDenMazeTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	getLowestCountOutfitPiece(bank: Bank): number {
@@ -23,7 +24,7 @@ export default class extends Task {
 		return lowestCountPiece;
 	}
 
-	async run(data: RoguesDenMazeTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, quantity, userID } = data;
 
 		incrementMinigameScore(userID, 'rogues_den', quantity);
@@ -49,24 +50,19 @@ export default class extends Task {
 
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			itemsAdded,
-			`Loot From ${quantity}x Rogues' Den maze`,
-			false,
-			{
-				showNewCL: 1
-			},
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Rogues' Den maze`,
 			user,
 			previousCL
-		);
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['roguesden', [], true],
-			gotLoot ? image! : undefined,
+			['minigames', { rogues_den: {} }, true],
+			gotLoot ? image.file.buffer : undefined,
 			data,
 			itemsAdded
 		);

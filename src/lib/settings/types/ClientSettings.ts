@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { SkillsEnum } from '../../skilling/types';
 import { ItemBank, ItemPriceCache } from '../../types';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
@@ -78,6 +77,9 @@ export namespace ClientSettings {
 
 		export const DegradedItemsCost = T<Readonly<ItemBank>>('degraded_items_cost');
 
+		export const TKSCost = T<Readonly<ItemBank>>('tks_cost');
+		export const TKSLoot = T<Readonly<ItemBank>>('tks_loot');
+
 		export const GPSourceSellingItems = T<number>('gp_sell');
 		export const GPSourcePVMLoot = T<number>('gp_pvm');
 		export const GPSourceAlching = T<number>('gp_alch');
@@ -86,8 +88,9 @@ export namespace ClientSettings {
 		export const GPSourceOpen = T<number>('gp_open');
 		export const GPSourceDaily = T<number>('gp_daily');
 		export const GPSourceLuckyPick = T<number>('gp_luckypick');
+		export const GPSourceSlots = T<number>('gp_slots');
+		export const GPHotCold = T<number>('gp_hotcold');
 	}
 
-	export const LockedSkills = T<readonly SkillsEnum[]>('locked_skills');
 	export const CustomPrices = T<Readonly<ItemBank>>('custom_prices');
 }

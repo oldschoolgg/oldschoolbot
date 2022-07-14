@@ -7,7 +7,7 @@ import {
 	gracefulHoods,
 	gracefulLegs,
 	gracefulTops
-} from './CollectionsExport';
+} from './gracefulVariants';
 
 const scytheChargedSimilar = ['Holy scythe of vitur', 'Sanguine scythe of vitur'];
 const scytheUnchargedSimilar = ['Holy scythe of vitur (uncharged)', 'Sanguine scythe of vitur (uncharged)'];
@@ -84,6 +84,7 @@ const source: [string, (string | number)[]][] = [
 	['Necklace of anguish', ['Necklace of anguish (or)']],
 	['Occult necklace', ['Occult necklace (or)']],
 	['Dragon hunter crossbow', ['Dragon hunter crossbow (t)', 'Dragon hunter crossbow (b)']],
+	['Armadyl crossbow', ['Zaryte crossbow']],
 	['Dragon pickaxe', ['Dragon pickaxe(or)', 12_797, '3rd age pickaxe', 'Infernal pickaxe']],
 	['Dragon axe', ['3rd age axe']],
 	['Steam battlestaff', [12_795]],
@@ -162,6 +163,7 @@ const source: [string, (string | number)[]][] = [
 	["Ava's accumulator", ['Accumulator max cape']],
 	["Ava's assembler", ['Assembler max cape', 'Assembler max cape (l)']],
 	['Mythical cape', ['Mythical max cape']],
+	['Achievement diary cape', ['Achievement diary cape(t)']],
 	[
 		'Imbued guthix cape',
 		[
@@ -239,6 +241,7 @@ const source: [string, (string | number)[]][] = [
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
+	['Farming cape', ['Max cape', 'Farming cape(t)']],
 	['Ivandis flail', ['Blisterwood flail']],
 	['Angler hat', ['Spirit angler headband']],
 	['Angler top', ['Spirit angler top']],
@@ -267,7 +270,13 @@ const source: [string, (string | number)[]][] = [
 	['Scythe of vitur', [...scytheChargedSimilar]],
 	['Scythe of vitur (uncharged)', [...scytheUnchargedSimilar]],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
-	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']]
+	['Sanguinesti staff (uncharged)', ['Holy sanguinesti staff (uncharged)']],
+	['Magic shortbow', ['Magic shortbow (i)']],
+	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
+	['Prospector jacket', ['Golden prospector jacket']],
+	['Prospector legs', ['Golden prospector legs']],
+	['Prospector boots', ['Golden prospector boots']],
+	['Prospector helmet', ['Golden prospector helmet']]
 ];
 
 export const similarItems: Map<number, number[]> = new Map(

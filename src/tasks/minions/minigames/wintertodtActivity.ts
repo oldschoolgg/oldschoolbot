@@ -1,5 +1,6 @@
 import { randInt } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { Emoji, Events } from '../../../lib/constants';
@@ -9,11 +10,10 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { ItemBank } from '../../../lib/types';
-import { WintertodtActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, bankHasItem } from '../../../lib/util';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import itemID from '../../../lib/util/itemID';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 const PointsTable = new SimpleTable<number>()
 	.add(420)
@@ -39,12 +39,12 @@ const PointsTable = new SimpleTable<number>()
 	.add(850);
 
 export default class extends Task {
-	async run(data: WintertodtActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { userID, channelID, quantity } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Firemaking);
 
-		let loot: ItemBank = {};
+		let loot = new Bank();
 
 		let totalPoints = 0;
 
@@ -52,23 +52,19 @@ export default class extends Task {
 			const points = PointsTable.roll().item;
 			totalPoints += points;
 
-			loot = addBanks([
-				loot,
+			loot.add(
 				WintertodtCrate.open({
 					points,
-					itemsOwned: addBanks([user.allItemsOwned().bank, loot]),
+					itemsOwned: user.allItemsOwned().clone().add(loot).bank,
 					skills: user.rawSkills
 				})
-			]);
+			);
 		}
 
-		// Track this food cost in Economy Stats
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.WintertodtLoot,
-			addBanks([this.client.settings.get(ClientSettings.EconomyStats.WintertodtLoot), loot])
-		);
+		// Track loot in Economy Stats
+		await updateBankSetting(this.client, ClientSettings.EconomyStats.WintertodtLoot, loot);
 
-		if (bankHasItem(loot, itemID('Phoenix'))) {
+		if (loot.has('Phoenix')) {
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Phoenix} **${user.username}'s** minion, ${
@@ -128,16 +124,11 @@ export default class extends Task {
 		const { itemsAdded, previousCL } = await user.addItemsToBank({ items: loot, collectionLog: true });
 		incrementMinigameScore(user.id, 'wintertodt', quantity);
 
-		const { image } = await this.client.tasks.get('bankImage')!.generateBankImage(
-			itemsAdded,
-			'',
-			true,
-			{
-				showNewCL: 1
-			},
+		const image = await makeBankImage({
+			bank: itemsAdded,
 			user,
 			previousCL
-		);
+		});
 
 		let output = `${user}, ${
 			user.minionName
@@ -160,6 +151,14 @@ export default class extends Task {
 			kc: quantity
 		});
 
-		handleTripFinish(this.client, user, channelID, output, ['wintertodt', {}, true], image!, data, itemsAdded);
+		handleTripFinish(
+			user,
+			channelID,
+			output,
+			['k', { name: 'wintertodt' }, true],
+			image.file.buffer,
+			data,
+			itemsAdded
+		);
 	}
 }

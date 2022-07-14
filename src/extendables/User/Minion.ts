@@ -1,12 +1,11 @@
 import { User } from 'discord.js';
-import { calcPercentOfNum, calcWhatPercent, Time, uniqueArr } from 'e';
+import { Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { collectables } from '../../commands/Minion/collect';
-import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, PerkTier, skillEmoji } from '../../lib/constants';
+import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear';
 import ClueTiers from '../../lib/minions/data/clueTiers';
@@ -38,10 +37,9 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
 import { Skills as TSkills } from '../../lib/types';
 import {
+	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
-	BarbarianAssaultActivityTaskOptions,
-	BlastFurnaceActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
@@ -52,12 +50,11 @@ import {
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
+	FightCavesActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
-	FishingTrawlerActivityTaskOptions,
 	FletchingActivityTaskOptions,
 	GauntletOptions,
-	GloryChargingActivityTaskOptions,
 	GroupMonsterActivityTaskOptions,
 	HerbloreActivityTaskOptions,
 	HunterActivityTaskOptions,
@@ -66,6 +63,7 @@ import {
 	MinigameActivityTaskOptions,
 	MiningActivityTaskOptions,
 	MonsterActivityTaskOptions,
+	NexTaskOptions,
 	NightmareActivityTaskOptions,
 	OfferingActivityTaskOptions,
 	PickpocketActivityTaskOptions,
@@ -77,10 +75,7 @@ import {
 	SepulchreActivityTaskOptions,
 	SmeltingActivityTaskOptions,
 	SmithingActivityTaskOptions,
-	SoulWarsOptions,
 	TheatreOfBloodTaskOptions,
-	VolcanicMineActivityTaskOptions,
-	WealthChargingActivityTaskOptions,
 	WoodcuttingActivityTaskOptions,
 	ZalcanoActivityTaskOptions
 } from '../../lib/types/minions';
@@ -90,14 +85,16 @@ import {
 	formatDuration,
 	formatSkillRequirements,
 	itemNameFromID,
-	patronMaxTripCalc,
 	skillsMeetRequirements,
 	stringMatches,
 	toKMB,
-	toTitleCase,
-	Util
+	toTitleCase
 } from '../../lib/util';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import { minionIsBusy } from '../../lib/util/minionIsBusy';
+import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
+import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -302,7 +299,11 @@ export default class extends Extendable {
 			}
 
 			case 'FightCaves': {
-				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
+				const data = currentTask as FightCavesActivityTaskOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${
+					Emoji.TzRekJad
+				}. If they're successful and don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'TitheFarm': {
 				return `${this.minionName} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
@@ -362,8 +363,9 @@ export default class extends Extendable {
 
 			case 'Nightmare': {
 				const data = currentTask as NightmareActivityTaskOptions;
-
-				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
+				return `${this.minionName} is currently killing The Nightmare${
+					data.method === 'solo' ? 'solo' : 'in a team'
+				}. ${formattedDuration}`;
 			}
 
 			case 'AnimatedArmour': {
@@ -387,7 +389,7 @@ export default class extends Extendable {
 			}
 
 			case 'FishingTrawler': {
-				const data = currentTask as FishingTrawlerActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently aboard the Fishing Trawler, doing ${data.quantity}x trips. ${formattedDuration}`;
 			}
 
@@ -403,9 +405,8 @@ export default class extends Extendable {
 			}
 
 			case 'BarbarianAssault': {
-				const data = currentTask as BarbarianAssaultActivityTaskOptions;
-
-				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault, with a party of ${data.users.length}. ${formattedDuration}`;
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${data.quantity} waves of Barbarian Assault. ${formattedDuration}`;
 			}
 
 			case 'AgilityArena': {
@@ -469,12 +470,12 @@ export default class extends Extendable {
 			}
 
 			case 'GloryCharging': {
-				const data = currentTask as GloryChargingActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of glories at the Fountain of Rune. ${formattedDuration}`;
 			}
 
 			case 'WealthCharging': {
-				const data = currentTask as WealthChargingActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently charging ${data.quantity}x inventories of rings of wealth at the Fountain of Rune. ${formattedDuration}`;
 			}
 
@@ -483,7 +484,7 @@ export default class extends Extendable {
 			}
 
 			case 'SoulWars': {
-				const data = currentTask as SoulWarsOptions;
+				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity}x games of Soul Wars. ${formattedDuration}`;
 			}
 
@@ -528,18 +529,6 @@ export default class extends Extendable {
 				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
 
-			case 'BlastFurnace': {
-				const data = currentTask as BlastFurnaceActivityTaskOptions;
-
-				const bar = Smithing.BlastableBars.find(bar => bar.id === data.barID);
-
-				return `${this.minionName} is currently smelting ${data.quantity}x ${
-					bar!.name
-				} at the Blast Furnace. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
-					SkillsEnum.Smithing
-				)}`;
-			}
-
 			case 'MageArena2': {
 				return `${this.minionName} is currently attempting the Mage Arena II. ${formattedDuration}`;
 			}
@@ -559,16 +548,19 @@ export default class extends Extendable {
 			}
 			case 'Revenants': {
 				const data = currentTask as RevenantOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 				return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${this.minionName} is currently killing ${
 					data.quantity
-				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
+				}x ${
+					Monsters.get(data.monsterID)!.name
+				} in the wilderness. If they don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'PestControl': {
 				const data = currentTask as MinigameActivityTaskOptions;
 				return `${this.minionName} is currently doing ${data.quantity} games of Pest Control. ${formattedDuration}`;
 			}
 			case 'VolcanicMine': {
-				const data = currentTask as VolcanicMineActivityTaskOptions;
+				const data = currentTask as ActivityTaskOptionsWithQuantity;
 				return `${this.minionName} is currently doing ${data.quantity} games of Volcanic Mine. ${formattedDuration}`;
 			}
 			case 'TearsOfGuthix': {
@@ -597,15 +589,45 @@ export default class extends Extendable {
 					durationRemaining
 				)}.`;
 			}
+			case 'LastManStanding': {
+				const data = currentTask as MinigameActivityTaskOptions;
+
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				} Last Man Standing matches, the trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'BirthdayEvent': {
+				return `${this.minionName} is currently doing the Birthday Event! The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
+			case 'TokkulShop': {
+				return `${
+					this.minionName
+				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'Nex': {
+				const data = currentTask as NexTaskOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+				return `${this.minionName} is currently killing Nex ${data.quantity} times with a team of ${
+					data.users.length
+				}. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'TroubleBrewing': {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'Easter':
+			case 'BlastFurnace': {
+				throw new Error('Removed');
+			}
 		}
 	}
 
 	getKC(this: KlasaUser, id: number) {
-		return this.settings.get(UserSettings.MonsterScores)[id] ?? 0;
-	}
-
-	getOpenableScore(this: KlasaUser, id: number) {
-		return this.settings.get(UserSettings.OpenableScores)[id] ?? 0;
+		return getKC(this, id);
 	}
 
 	public async getKCByName(this: KlasaUser, kcName: string) {
@@ -650,46 +672,12 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public maxTripLength(this: User, activity?: activity_type_enum) {
-		let max = Time.Minute * 30;
-
-		max += patronMaxTripCalc(this);
-
-		switch (activity) {
-			case 'Nightmare':
-			case 'GroupMonsterKilling':
-			case 'MonsterKilling':
-			case 'Wintertodt':
-			case 'Zalcano':
-			case 'BarbarianAssault':
-			case 'AnimatedArmour':
-			case 'Sepulchre':
-			case 'Pickpocket':
-			case 'SoulWars':
-			case 'Cyclops': {
-				const hpLevel = this.skillLevel(SkillsEnum.Hitpoints);
-				const hpPercent = calcWhatPercent(hpLevel - 10, 99 - 10);
-				max += calcPercentOfNum(hpPercent, Time.Minute * 5);
-				break;
-			}
-			case 'Alching': {
-				max *= 2;
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-
-		const sac = this.settings.get(UserSettings.SacrificedValue);
-		const sacPercent = Math.min(100, calcWhatPercent(sac, this.isIronman ? 5_000_000_000 : 10_000_000_000));
-		max += calcPercentOfNum(sacPercent, this.perkTier >= PerkTier.Four ? Time.Minute * 3 : Time.Minute);
-		return max;
+		return calcMaxTripLength(this, activity);
 	}
 
 	// @ts-ignore 2784
 	public get minionIsBusy(this: User): boolean {
-		const usersTask = getActivityOfUser(this.id);
-		return Boolean(usersTask);
+		return minionIsBusy(this.id);
 	}
 
 	public hasGracefulEquipped(this: User) {
@@ -702,12 +690,7 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	public get minionName(this: User): string {
-		const name = this.settings.get(UserSettings.Minion.Name);
-		const prefix = this.settings.get(UserSettings.Minion.Ironman) ? Emoji.Ironman : '';
-
-		const icon = this.settings.get(UserSettings.Minion.Icon) ?? Emoji.Minion;
-
-		return name ? `${prefix} ${icon} **${Util.escapeMarkdown(name)}**` : `${prefix} ${icon} Your minion`;
+		return minionName(this);
 	}
 
 	public async addXP(this: User, params: AddXpParams): Promise<string> {
@@ -822,7 +805,7 @@ export default class extends Extendable {
 	}
 
 	public skillLevel(this: User, skillName: SkillsEnum) {
-		return convertXPtoLVL(this.settings.get(`skills.${skillName}`) as number);
+		return skillLevel(this, skillName);
 	}
 
 	public totalLevel(this: User, returnXP = false) {
@@ -867,8 +850,6 @@ export default class extends Extendable {
 				`${Emoji.QuestIcon} **${this.username}'s** minion, ${this.minionName}, just achieved the maximum amount of Quest Points!`
 			);
 		}
-
-		this.log(`had ${newQP} QP added. Before[${currentQP}] New[${newQP}]`);
 		return this.settings.update(UserSettings.QP, newQP);
 	}
 
@@ -881,35 +862,15 @@ export default class extends Extendable {
 		await this.settings.sync(true);
 		const currentMonsterScores = this.settings.get(UserSettings.MonsterScores);
 
-		this.log(`had Quantity[${amountToAdd}] KC added to Monster[${monsterID}]`);
-
 		return this.settings.update(
 			UserSettings.MonsterScores,
 			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
 		);
 	}
 
-	public async incrementOpenableScore(this: User, openableID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const scores = this.settings.get(UserSettings.OpenableScores);
-
-		return this.settings.update(UserSettings.OpenableScores, addItemToBank(scores, openableID, amountToAdd));
-	}
-
-	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const currentClueScores = this.settings.get(UserSettings.ClueScores);
-
-		this.log(`had Quantity[${amountToAdd}] KC added to Clue[${clueID}]`);
-
-		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
-	}
-
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {
 		await this.settings.sync(true);
 		const currentCreatureScores = this.settings.get(UserSettings.CreatureScores);
-
-		this.log(`had Quantity[${amountToAdd}] Score added to Creature[${creatureID}]`);
 
 		return this.settings.update(
 			UserSettings.CreatureScores,

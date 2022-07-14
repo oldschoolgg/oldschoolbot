@@ -1,5 +1,5 @@
 import { objectEntries, reduceNumByPercent } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
@@ -12,7 +12,6 @@ import { updateBankSetting } from '../../util';
 import getUserFoodFromBank from './getUserFoodFromBank';
 
 export default async function removeFoodFromUser({
-	client,
 	user,
 	totalHealingNeeded,
 	healPerAction,
@@ -20,7 +19,6 @@ export default async function removeFoodFromUser({
 	attackStylesUsed,
 	learningPercentage
 }: {
-	client: KlasaClient;
 	user: KlasaUser;
 	totalHealingNeeded: number;
 	healPerAction: number;
@@ -60,7 +58,7 @@ export default async function removeFoodFromUser({
 	} else {
 		await user.removeItemsFromBank(foodToRemove);
 
-		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, foodToRemove);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.PVMCost, foodToRemove);
 
 		return {
 			foodRemoved: foodToRemove,

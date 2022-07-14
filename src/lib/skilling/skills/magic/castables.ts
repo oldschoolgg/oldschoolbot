@@ -1,7 +1,7 @@
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-interface Castable {
+export interface Castable {
 	id: number;
 	input: Bank;
 	output: Bank | null;

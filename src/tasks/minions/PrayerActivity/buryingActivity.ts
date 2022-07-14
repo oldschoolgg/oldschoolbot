@@ -45,11 +45,10 @@ export default class extends Task {
 		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['bury', [quantity, bone.name], true],
+			['activities', { bury: { quantity, name: bone.name } }, true],
 			undefined,
 			data,
 			null
