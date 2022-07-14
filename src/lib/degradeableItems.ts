@@ -1,4 +1,4 @@
-import { Time } from '@sapphire/time-utilities';
+import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
