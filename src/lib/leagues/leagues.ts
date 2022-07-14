@@ -7,11 +7,6 @@ import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
-import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { calcCLDetails } from '../data/Collections';
-import { UserFullGearSetup } from '../gear';
-import ClueTiers from '../minions/data/clueTiers';
-import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import {
 	personalAlchingStats,
 	personalCollectingStats,
@@ -22,7 +17,12 @@ import {
 	personalSmithingStats,
 	personalSpellCastStats,
 	personalWoodcuttingStats
-} from '../minions/functions/dataCommand';
+} from '../../mahoji/lib/abstracted_commands/statCommand';
+import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { calcCLDetails } from '../data/Collections';
+import { UserFullGearSetup } from '../gear';
+import ClueTiers from '../minions/data/clueTiers';
+import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import { roboChimpUserFetch } from '../roboChimp';
 import { getMinigameEntity } from '../settings/minigames';
 import { prisma } from '../settings/prisma';

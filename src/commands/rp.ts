@@ -675,7 +675,6 @@ ${
 				const item = getOSItem(itemName);
 				const price = evalMathExpression(rawPrice);
 				if (!price || price < 1 || price > 1_000_000_000) return;
-				if (!price || isNaN(price)) return msg.channel.send('Invalid price');
 				await msg.confirm(
 					`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
 						item.wiki_url
