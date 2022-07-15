@@ -197,14 +197,12 @@ for (const { mon, magicLvl, cost, prayerXP, magicXP } of renanimatedMonstersRaw)
 			let xpStr = await user.addXP({
 				skillName: SkillsEnum.Prayer,
 				amount: prayerXP * quantity,
-				minimal: true,
 				duration: data.duration
 			});
 			xpStr += ' ';
 			xpStr += await user.addXP({
 				skillName: SkillsEnum.Magic,
 				amount: magicXP * quantity,
-				minimal: true,
 				duration: data.duration
 			});
 			messages.push(xpStr);
