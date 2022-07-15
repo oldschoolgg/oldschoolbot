@@ -566,21 +566,24 @@ model TameActivity {
 }
 
 model Tame {
-  id                 Int            @id(map: "PK_1defac3bf951ca2b2de3f944702") @default(autoincrement())
-  user_id            String         @db.VarChar(19)
-  date               DateTime       @default(now()) @db.Timestamp(6)
-  nickname           String?        @db.VarChar(64)
-  species_id         Int
-  growth_stage       tame_growth
-  growth_percent     Float          @default(0)
-  max_combat_level   Int
-  max_artisan_level  Int
-  max_gatherer_level Int
-  max_support_level  Int
-  max_total_loot     Json           @db.Json
-  fed_items          Json           @default("{}") @db.Json
-  species_variant    Int            @default(1)
-  tame_activity      TameActivity[]
+  id                    Int         @id(map: "PK_1defac3bf951ca2b2de3f944702") @default(autoincrement())
+  user_id               String      @db.VarChar(19)
+  date                  DateTime    @default(now()) @db.Timestamp(6)
+  nickname              String?     @db.VarChar(64)
+  species_id            Int
+  growth_stage          tame_growth
+  growth_percent        Float       @default(0)
+  max_combat_level      Int
+  max_artisan_level     Int
+  max_gatherer_level    Int
+  max_support_level     Int
+  max_total_loot        Json        @db.Json
+  fed_items             Json        @default("{}") @db.Json
+  species_variant       Int         @default(1)
+  primary_equipped_item Int?
+
+
+  tame_activity TameActivity[]
 
   @@index([date], map: "IDX_d84ebb9dcec7acde63c223cf1b")
   @@map("tames")

@@ -131,3 +131,15 @@ setCustomItem(
 	},
 	10_000
 );
+
+setCustomItem(
+	52_661,
+	'Claws frame',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
