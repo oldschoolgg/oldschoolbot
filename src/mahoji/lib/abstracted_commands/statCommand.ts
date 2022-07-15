@@ -1,3 +1,4 @@
+import { bold } from '@discordjs/builders';
 import { activity_type_enum, User } from '@prisma/client';
 import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
@@ -9,6 +10,7 @@ import { toKMB } from 'oldschooljs/dist/util';
 
 import { Emoji, PerkTier } from '../../../lib/constants';
 import { calcCLDetails } from '../../../lib/data/Collections';
+import { calcActualClues } from '../../../lib/leagues/leagues';
 import backgroundImages from '../../../lib/minions/data/bankBackgrounds';
 import ClueTiers from '../../../lib/minions/data/clueTiers';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
@@ -853,6 +855,19 @@ GROUP BY "bankBackground";`);
 				.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
 				.join('\n')}\n**Hallowed Sepulchre:** ${sepulchreCount}`;
 			return data;
+		}
+	},
+	{
+		name: 'Actual Clues Done',
+		perkTierNeeded: null,
+		run: async (user: User) => {
+			const actualClues = await calcActualClues(user);
+			return `These are the clues you have acquired, completed and opened yourself:
+
+${actualClues
+	.items()
+	.map(i => `${bold(i[0].name)}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
 		}
 	}
 ] as const;
