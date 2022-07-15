@@ -56,13 +56,14 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 205,
 		itemInBankBoosts: [
 			{
+				[itemID('Zaryte crossbow')]: 18,
 				[itemID('Bandos godsword')]: 13,
 				[itemID('Dragon warhammer')]: 13,
 				[itemID('Dragon claws')]: 8
 			},
 			{
 				[itemID('Dragon hunter lance')]: 15,
-				[itemID('Dragon hunter crossbow')]: 25
+				[itemID('Dragon hunter crossbow')]: 15
 			},
 			{
 				[itemID('Salve amulet(ei)')]: 20,
@@ -237,8 +238,8 @@ const killableBosses: KillableMonster[] = [
 
 		difficultyRating: 7,
 		itemsRequired: deepResolveItems([
-			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate'],
-			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets'],
+			["Torag's platebody", "Dharok's platebody", 'Bandos chestplate', 'Torva platebody'],
+			["Torag's platelegs", "Dharok's platelegs", 'Bandos tassets', 'Torva platelegs'],
 			['Zamorakian spear', 'Zamorakian hasta']
 		]),
 		notifyDrops: resolveItems(['Hellpuppy', 'Jar of souls']),
@@ -247,10 +248,12 @@ const killableBosses: KillableMonster[] = [
 			{ [itemID('Spectral spirit shield')]: 10 },
 			{
 				[itemID('Bandos chestplate')]: 5,
+				[itemID('Torva platebody')]: 6,
 				[itemID("Inquisitor's hauberk")]: 8
 			},
 			{
 				[itemID('Bandos tassets')]: 5,
+				[itemID('Torva platelegs')]: 6,
 				[itemID("Inquisitor's plateskirt")]: 8
 			},
 			{
