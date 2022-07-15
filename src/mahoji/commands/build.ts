@@ -87,7 +87,7 @@ export const buildCommand: OSBMahojiCommand = {
 				return `${user.minionName} needs 205 Quest Points to build a ${object.name}.`;
 			}
 			if (!hasDs2Requirements) {
-				return `${user.minionName} to build a ${object.name}, you need: ${ds2Reason}.`;
+				return `In order to build a ${object.name}, you need: ${ds2Reason}.`;
 			}
 			if (!user.hasItemEquippedOrInBank('Mythical cape')) {
 				return `${user.minionName} needs to own a Mythical cape to build a ${object.name}.`;
