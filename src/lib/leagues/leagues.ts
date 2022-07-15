@@ -197,7 +197,7 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 	return input;
 }
 
-async function calcActualClues(user: User) {
+export async function calcActualClues(user: User) {
 	const result: { id: number; qty: number }[] =
 		await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
 FROM activity

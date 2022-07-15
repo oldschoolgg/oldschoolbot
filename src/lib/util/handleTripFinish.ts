@@ -257,7 +257,8 @@ export async function handleTripFinish(
 		| ((args: LastTripRunArgs) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
-	loot: Bank | null
+	loot: Bank | null,
+	_messages?: string[]
 ) {
 	const perkTier = getUsersPerkTier(user);
 	const messages: string[] = [];
@@ -265,6 +266,7 @@ export async function handleTripFinish(
 
 	const clueReceived = loot ? ClueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
+	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
 	}
