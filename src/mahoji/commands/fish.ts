@@ -162,6 +162,25 @@ export const fishCommand: OSBMahojiCommand = {
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / scaledTimePerFish);
+
+		if (fish.bait) {
+			const baseCost = new Bank().add(fish.bait);
+
+			const maxCanDo = user.bank().fits(baseCost);
+			if (maxCanDo === 0) {
+				return `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
+			}
+			if (maxCanDo < quantity) {
+				quantity = maxCanDo;
+			}
+
+			const cost = new Bank();
+			cost.add(baseCost.multiply(quantity));
+
+			// Remove the bait from their bank.
+			await user.removeItemsFromBank(new Bank().add(fish.bait, quantity));
+		}
+
 		let duration = quantity * scaledTimePerFish;
 
 		if (duration > maxTripLength) {
@@ -172,20 +191,8 @@ export const fishCommand: OSBMahojiCommand = {
 			)}.`;
 		}
 
-		if (fish.bait) {
-			const hasBait = user.bank().amount(fish.bait) >= quantity;
-			if (!hasBait) {
-				return `You need ${itemNameFromID(fish.bait)} to fish ${fish.name}!`;
-			}
-		}
-
 		const tenPercent = Math.floor(calcPercentOfNum(10, duration));
 		duration += rand(-tenPercent, tenPercent);
-
-		// Remove the bait from their bank.
-		if (fish.bait) {
-			await user.removeItemsFromBank(new Bank().add(fish.bait, quantity));
-		}
 
 		await addSubTaskToActivityTask<FishingActivityTaskOptions>({
 			fishID: fish.id,
