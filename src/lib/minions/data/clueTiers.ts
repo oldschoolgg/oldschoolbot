@@ -9,6 +9,16 @@ import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues
 
 import itemID from '../../util/itemID';
 import { ClueMilestoneReward } from '../types';
+import { beginnerReqs, ClueReqs } from './clueReqs';
+import {
+	beginnerStashes,
+	easyStashes,
+	eliteStashes,
+	hardStashes,
+	masterStashes,
+	mediumStashes,
+	StashUnitTier
+} from './stashUnits';
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
 
@@ -21,6 +31,8 @@ export interface ClueTier {
 	milestoneReward?: ClueMilestoneReward;
 	mimicChance: number | false;
 	allItems: number[];
+	stashUnits: StashUnitTier;
+	reqs: ClueReqs;
 }
 
 const ClueTiers: ClueTier[] = [
@@ -31,7 +43,9 @@ const ClueTiers: ClueTier[] = [
 		scrollID: 23_182,
 		timeToFinish: Time.Minute * 4.5,
 		mimicChance: false,
-		allItems: BeginnerClueTable.allItems
+		allItems: BeginnerClueTable.allItems,
+		stashUnits: beginnerStashes,
+		reqs: beginnerReqs
 	},
 	{
 		name: 'Easy',
@@ -44,7 +58,9 @@ const ClueTiers: ClueTier[] = [
 			scoreNeeded: 500
 		},
 		mimicChance: false,
-		allItems: EasyClueTable.allItems
+		allItems: EasyClueTable.allItems,
+		stashUnits: easyStashes,
+		reqs: beginnerReqs
 	},
 	{
 		name: 'Medium',
@@ -57,7 +73,9 @@ const ClueTiers: ClueTier[] = [
 			scoreNeeded: 400
 		},
 		mimicChance: false,
-		allItems: MediumClueTable.allItems
+		allItems: MediumClueTable.allItems,
+		stashUnits: mediumStashes,
+		reqs: beginnerReqs
 	},
 	{
 		name: 'Hard',
@@ -66,7 +84,9 @@ const ClueTiers: ClueTier[] = [
 		scrollID: 2722,
 		timeToFinish: Time.Minute * 12.5,
 		mimicChance: false,
-		allItems: HardClueTable.allItems
+		allItems: HardClueTable.allItems,
+		stashUnits: hardStashes,
+		reqs: beginnerReqs
 	},
 	{
 		name: 'Elite',
@@ -79,7 +99,9 @@ const ClueTiers: ClueTier[] = [
 			scoreNeeded: 200
 		},
 		mimicChance: 35,
-		allItems: EliteClueTable.allItems
+		allItems: EliteClueTable.allItems,
+		stashUnits: eliteStashes,
+		reqs: beginnerReqs
 	},
 	{
 		name: 'Master',
@@ -92,7 +114,9 @@ const ClueTiers: ClueTier[] = [
 			scoreNeeded: 100
 		},
 		mimicChance: 15,
-		allItems: MasterClueTable.allItems
+		allItems: MasterClueTable.allItems,
+		stashUnits: masterStashes,
+		reqs: beginnerReqs
 	}
 ];
 
