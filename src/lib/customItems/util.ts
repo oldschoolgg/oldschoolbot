@@ -2,8 +2,8 @@ import deepMerge from 'deepmerge';
 import { Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
-import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
+import { cleanString } from '../util/cleanString';
 import getOSItem from '../util/getOSItem';
 
 export const customPrices: Record<number, number> = [];
