@@ -4,6 +4,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { cleanString } from 'oldschooljs/dist/util/cleanString';
 
+import { cleanString as deepCleanString } from '../util/cleanString';
 import getOSItem from '../util/getOSItem';
 
 export const customPrices: Record<number, number> = [];
@@ -30,7 +31,7 @@ export const hasSet: Item[] = [];
 
 // Prevent old item names from matching customItems
 export function ensureCustomItemName(nameToTest: string) {
-	const cleanNameToTest = cleanString(nameToTest);
+	const cleanNameToTest = deepCleanString(nameToTest);
 	if (overwrittenItemNames.get(cleanNameToTest)) {
 		return false;
 	}
@@ -50,7 +51,7 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	// Track names of re-mapped items to break the link:
 	const oldItem = Items.get(id);
 	if (oldItem) {
-		overwrittenItemNames.set(cleanString(oldItem.name), oldItem);
+		overwrittenItemNames.set(deepCleanString(oldItem.name), oldItem);
 	}
 	Items.set(id, data);
 	const cleanName = cleanString(name);
