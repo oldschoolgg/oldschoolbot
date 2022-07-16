@@ -27,6 +27,21 @@ declare module 'oldschooljs/dist/meta/types' {
 
 export const hasSet: Item[] = [];
 
+// Prevent old item names from matching customItems
+export function ensureCustomItemName(nameToTest: string) {
+	const cleanNameToTest = cleanString(nameToTest);
+	const itemMapItemId = itemNameMap.get(cleanNameToTest);
+	if (itemMapItemId) {
+		const reverseMapItem = Items.get(itemMapItemId);
+		if (reverseMapItem) {
+			if (cleanNameToTest !== cleanString(reverseMapItem.name)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 export function setCustomItem(id: number, name: string, baseItem: string, newItemData?: Partial<Item>, price = 0) {
 	if (hasSet.some(i => i.id === id)) {
 		throw new Error(`Tried to add 2 custom items with same id ${id}, called ${name}`);

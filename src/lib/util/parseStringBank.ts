@@ -7,6 +7,7 @@ import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 import { filterableTypes } from '../data/filterables';
 import { evalMathExpression } from '../expressionParser';
 import { cleanString, stringMatches } from '../util';
+import {ensureCustomItemName} from "../customItems/util";
 
 const { floor, max, min } = Math;
 
@@ -24,6 +25,8 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	}
 
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
+
+	if (!ensureCustomItemName(potentialName.join(' ')) || !ensureCustomItemName(str)) return [];
 
 	let lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
