@@ -33,10 +33,8 @@ export function ensureCustomItemName(nameToTest: string) {
 	const itemMapItemId = itemNameMap.get(cleanNameToTest);
 	if (itemMapItemId) {
 		const reverseMapItem = Items.get(itemMapItemId);
-		if (reverseMapItem) {
-			if (cleanNameToTest !== cleanString(reverseMapItem.name)) {
-				return false;
-			}
+		if (reverseMapItem && cleanNameToTest !== cleanString(reverseMapItem.name)) {
+			return false;
 		}
 	}
 	return true;
