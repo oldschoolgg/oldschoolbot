@@ -7,8 +7,7 @@ import { HardCasket, HardClueTable } from 'oldschooljs/dist/simulation/clues/Har
 import { MasterCasket, MasterClueTable } from 'oldschooljs/dist/simulation/clues/Master';
 import { MediumCasket, MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
-import itemID from '../../util/itemID';
-import { ClueMilestoneReward } from '../types';
+import itemID from '../util/itemID';
 import { beginnerReqs, ClueReqs } from './clueReqs';
 import {
 	beginnerStashes,
@@ -21,6 +20,11 @@ import {
 } from './stashUnits';
 
 const { Beginner, Easy, Medium, Hard, Elite, Master } = Clues;
+
+export interface ClueMilestoneReward {
+	itemReward: number;
+	scoreNeeded: number;
+}
 
 export interface ClueTier {
 	name: 'Beginner' | 'Easy' | 'Medium' | 'Hard' | 'Elite' | 'Master';
@@ -35,7 +39,7 @@ export interface ClueTier {
 	reqs: ClueReqs;
 }
 
-const ClueTiers: ClueTier[] = [
+export const ClueTiers: ClueTier[] = [
 	{
 		name: 'Beginner',
 		table: Beginner,
@@ -119,5 +123,3 @@ const ClueTiers: ClueTier[] = [
 		reqs: beginnerReqs
 	}
 ];
-
-export default ClueTiers;

@@ -1,12 +1,14 @@
 import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { MinigameName } from '../../settings/settings';
 import { Skills } from '../../types';
+import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
@@ -871,6 +873,18 @@ for (const [chompyHat, qty] of chompyHats) {
 		outputItems: new Bank().add(chompyHat.id),
 		gpCost: qty * 44,
 		minigameScoreReq: ['big_chompy_bird_hunting', qty]
+	});
+}
+
+export const allTeamCapes: Item[] = [];
+for (let i = 1; i < 50; i++) {
+	allTeamCapes.push(getOSItem(`Team-${i} cape`));
+}
+for (const cape of allTeamCapes) {
+	Buyables.push({
+		name: cape.name,
+		outputItems: new Bank().add(cape.id),
+		gpCost: 1000
 	});
 }
 

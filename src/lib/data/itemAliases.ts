@@ -249,3 +249,8 @@ setItemAlias(8940, 'Red rum (trouble brewing)');
 setItemAlias(8941, 'Blue rum (trouble brewing)');
 
 setItemAlias(25_376, 'Dragon pickaxe (or) (Trailblazer)');
+
+setItemAlias(3343, 'Bruise blue snelm (pointed)');
+setItemAlias(3337, 'Myre snelm (pointed)');
+setItemAlias(3339, "Blood'n'tar snelm (pointed)");
+setItemAlias(3341, 'Ochre snelm (pointed)');
