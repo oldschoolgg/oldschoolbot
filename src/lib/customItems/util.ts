@@ -9,6 +9,7 @@ import getOSItem from '../util/getOSItem';
 export const customPrices: Record<number, number> = [];
 
 export const customItems: number[] = [];
+export const overwrittenItemNames: Map<string, Item> = new Map();
 
 export function isCustomItem(itemID: number) {
 	return customItems.includes(itemID);
@@ -30,12 +31,8 @@ export const hasSet: Item[] = [];
 // Prevent old item names from matching customItems
 export function ensureCustomItemName(nameToTest: string) {
 	const cleanNameToTest = cleanString(nameToTest);
-	const itemMapItemId = itemNameMap.get(cleanNameToTest);
-	if (itemMapItemId) {
-		const reverseMapItem = Items.get(itemMapItemId);
-		if (reverseMapItem && cleanNameToTest !== cleanString(reverseMapItem.name)) {
-			return false;
-		}
+	if (overwrittenItemNames.get(cleanNameToTest)) {
+		return false;
 	}
 	return true;
 }
@@ -50,6 +47,11 @@ export function setCustomItem(id: number, name: string, baseItem: string, newIte
 	const data = deepMerge({ ...getOSItem(baseItem) }, { ...newItemData, name, id });
 	data.price = price || 1;
 
+	// Track names of re-mapped items to break the link:
+	const oldItem = Items.get(id);
+	if (oldItem) {
+		overwrittenItemNames.set(cleanString(oldItem.name), oldItem);
+	}
 	Items.set(id, data);
 	const cleanName = cleanString(name);
 	itemNameMap.set(cleanName, id);
