@@ -380,8 +380,7 @@ export const toolsCommand: OSBMahojiCommand = {
 							autocomplete: async (value: string) => {
 								return allStashUnitsFlat
 									.filter(i => (!value ? true : i.desc.toLowerCase().includes(value.toLowerCase())))
-									.map(i => `${i.desc}`)
-									.map(i => ({ name: i, value: i }));
+									.map(i => ({ name: i.desc, value: i.id }));
 							}
 						}
 					]
@@ -414,8 +413,7 @@ export const toolsCommand: OSBMahojiCommand = {
 									.filter(i =>
 										!value ? true : i.unit.desc.toLowerCase().includes(value.toLowerCase())
 									)
-									.map(i => `${i.unit.desc}`)
-									.map(i => ({ name: i, value: i }));
+									.map(i => ({ name: i.unit.desc, value: i.unit.id }));
 							}
 						}
 					]

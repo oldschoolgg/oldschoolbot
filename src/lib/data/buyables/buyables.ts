@@ -842,6 +842,90 @@ const Buyables: Buyable[] = [
 			'Mithril seeds': 1
 		})
 	},
+	{
+		name: 'Brown apron',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	{
+		name: 'Bull roarer',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	{
+		name: 'Rolling pin',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	...[
+		'Pirate bandana (white)',
+		'Stripy pirate shirt (white)',
+		'Pirate leggings (white)',
+		'Pirate bandana (blue)',
+		'Stripy pirate shirt (blue)',
+		'Pirate leggings (blue)',
+		'Pirate bandana (brown)',
+		'Stripy pirate shirt (brown)',
+		'Pirate leggings (brown)',
+		'Pirate bandana (red)',
+		'Stripy pirate shirt (red)',
+		'Pirate leggings (red)'
+	].map(i => ({
+		name: i,
+		gpCost: 2000,
+		ironmanPrice: 100
+	})),
+	...[
+		'Ghostly boots',
+		'Ghostly cloak',
+		'Ghostly gloves',
+		'Ghostly hood',
+		'Ghostly robe top',
+		'Ghostly robe bottom',
+		'Shadow sword'
+	].map(i => ({
+		name: i,
+		gpCost: 10_000,
+		qpRequired: 10
+	})),
+	{
+		name: 'Menaphite purple outfit',
+		gpCost: 5000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Menaphite purple hat': 1,
+			'Menaphite purple top': 1,
+			'Menaphite purple robe': 1,
+			'Menaphite purple kilt': 1
+		})
+	},
+	{
+		name: 'Menaphite red outfit',
+		gpCost: 5000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Menaphite red hat': 1,
+			'Menaphite red top': 1,
+			'Menaphite red robe': 1,
+			'Menaphite red kilt': 1
+		})
+	},
+	{
+		name: 'Bone club',
+		gpCost: 1000
+	},
+	{
+		name: 'Bone spear',
+		gpCost: 1000
+	},
+	{
+		name: 'Bone dagger',
+		gpCost: 2500
+	},
+	{
+		name: 'Dorgeshuun crossbow',
+		gpCost: 2500
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,

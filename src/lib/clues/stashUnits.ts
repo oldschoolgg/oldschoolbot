@@ -1,4 +1,5 @@
 import { StashUnit, User } from '@prisma/client';
+import { assert } from 'console';
 import { partition } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
@@ -229,20 +230,20 @@ export const mediumStashes: StashUnitTier = {
 			desc: 'Digsite',
 			items: resolveItems(['Green hat', 'Snakeskin boots', 'Iron pickaxe'])
 		},
-		{
-			id: 39,
-			desc: 'Shantay Pass',
-			items: deepResolveItems([
-				resolveItems([
-					'Bruise blue snelm (pointed)',
-					'Myre snelm (pointed)',
-					"Blood'n'tar snelm (pointed)",
-					'Ochre snelm (pointed)'
-				]),
-				'Staff of air',
-				'Bronze sq shield'
-			])
-		},
+		// {
+		// 	id: 39,
+		// 	desc: 'Shantay Pass',
+		// 	items: deepResolveItems([
+		// 		resolveItems([
+		// 			'Bruise blue snelm (pointed)',
+		// 			'Myre snelm (pointed)',
+		// 			"Blood'n'tar snelm (pointed)",
+		// 			'Ochre snelm (pointed)'
+		// 		]),
+		// 		'Staff of air',
+		// 		'Bronze sq shield'
+		// 	])
+		// },
 		{
 			id: 40,
 			desc: 'Outside Catherby bank',
@@ -488,7 +489,16 @@ export const eliteStashes: StashUnitTier = {
 		{
 			id: 87,
 			desc: 'Outside the bar by the Fight Arena',
-			items: resolveItems(['Pirate bandana', 'Dragon necklace', 'Magic longbow'])
+			items: deepResolveItems([
+				resolveItems([
+					'Pirate bandana (red)',
+					'Pirate bandana (white)',
+					'Pirate bandana (brown)',
+					'Pirate bandana (blue)'
+				]),
+				'Dragon necklace',
+				'Magic longbow'
+			])
 		}
 	]
 };
@@ -591,16 +601,23 @@ export const masterStashes: StashUnitTier = {
 			id: 108,
 			desc: 'Behind Miss Schism in Draynor Village',
 			items: resolveItems(['Abyssal whip', 'Cape of legends', 'Spined chaps'])
-		},
-		{
-			id: 109,
-			desc: 'North of Prifddinas by several maple trees',
-			items: resolveItems(["Bryophyta's staff", 'Nature tiara'])
 		}
+		// {
+		// 	id: 109,
+		// 	desc: 'North of Prifddinas by several maple trees',
+		// 	items: resolveItems(["Bryophyta's staff", 'Nature tiara'])
+		// }
 	]
 };
 
-const allStashUnitTiers = [beginnerStashes, easyStashes, mediumStashes, hardStashes, eliteStashes, masterStashes];
+export const allStashUnitTiers = [
+	beginnerStashes,
+	easyStashes,
+	mediumStashes,
+	hardStashes,
+	eliteStashes,
+	masterStashes
+];
 
 export const allStashUnitsFlat = allStashUnitTiers.map(i => i.units).flat();
 
@@ -620,7 +637,7 @@ export async function getParsedStashUnits(userID: string): Promise<ParsedUnit[]>
 			isFull: builtUnit
 				? unit.items.every(slot => {
 						if (Array.isArray(slot)) {
-							return slot.every(i => builtUnit.items_contained.includes(i));
+							return slot.some(i => builtUnit.items_contained.includes(i));
 						}
 						return builtUnit.items_contained.includes(slot);
 				  })
@@ -679,7 +696,7 @@ export async function stashUnitBuildAllCommand(klasaUser: KlasaUser, user: User)
 		return 'There are no STASH units that you are able to build currently, due to lack of supplies or Construction level.';
 	}
 
-	if (!klasaUser.owns(costBank)) return `You don't own ${costBank}.`;
+	if (!klasaUser.owns(costBank)) return "You don't own the items to do this.";
 	await klasaUser.removeItemsFromBank(costBank);
 	await prisma.stashUnit.createMany({
 		data: toBuild.map(parsedUnit => ({
@@ -712,6 +729,8 @@ export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User)
 			costForThisUnit.add(ownedItem);
 		}
 		if (checkBank.has(costForThisUnit)) {
+			checkBank.remove(costForThisUnit);
+			costBank.add(costForThisUnit);
 			toFill.push({ ...parsedUnit, itemsToFillWith: costForThisUnit });
 		}
 	}
@@ -719,11 +738,12 @@ export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User)
 	if (toFill.length === 0) {
 		return 'There are no STASH units that you are able to fill currently.';
 	}
+	assert(costBank.length !== 0);
 
-	if (!user.owns(costBank)) return `You don't own ${costBank}.`;
+	if (!user.owns(costBank)) return "You don't own the items to do this.";
 	await user.removeItemsFromBank(costBank);
 
-	await prisma.$transaction(
+	const result = await prisma.$transaction(
 		toFill.map(i =>
 			prisma.stashUnit.update({
 				where: {
@@ -738,8 +758,9 @@ export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User)
 			})
 		)
 	);
+	assert(result.length === toFill.length);
 
-	return `You filled ${toFill.length} STASH units, with ${costBank}.`;
+	return `You filled ${result.length} STASH units, with ${costBank}.`;
 }
 
 export async function stashUnitUnfillCommand(klasaUser: KlasaUser, user: User, unitID: string) {
