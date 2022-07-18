@@ -28,6 +28,9 @@ export default class extends BotCommand {
 			if (roll(pet.chance)) hasPet = true;
 		}
 
-		return msg.channel.send(pet.formatFinish(count));
+		return msg.channel
+			.send(`**This command is moving to \`/finish\`. Just search for the pet you want in that command.**
+	
+${pet.formatFinish(count)}`);
 	}
 }

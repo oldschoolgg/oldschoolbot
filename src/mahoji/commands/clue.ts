@@ -24,6 +24,7 @@ export const clueCommand: OSBMahojiCommand = {
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
 		requiresMinion: true,
+		requiresMinionNotBusy: true,
 		examples: ['/cl name:Boss']
 	},
 	options: [
