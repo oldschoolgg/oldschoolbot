@@ -117,7 +117,7 @@ export const pohCommand: OSBMahojiCommand = {
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!mahojiUser.minion_hasBought) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {
-			return makePOHImage(user, options.view?.build_mode);
+			return makePOHImage(user, options.view.build_mode);
 		}
 		if (options.wallkit) {
 			return pohWallkitCommand(user, options.wallkit.name);

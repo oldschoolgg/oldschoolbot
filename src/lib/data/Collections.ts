@@ -1142,3 +1142,7 @@ export async function getCollection(options: {
 
 	return false;
 }
+
+export const allCollectionLogsFlat = Object.values(allCollectionLogs)
+	.map(i => Object.entries(i.activities).map(entry => ({ ...entry[1], name: entry[0] })))
+	.flat();
