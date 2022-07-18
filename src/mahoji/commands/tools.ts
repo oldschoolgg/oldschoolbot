@@ -439,6 +439,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
+				interaction.deferReply();
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser);
 			}
