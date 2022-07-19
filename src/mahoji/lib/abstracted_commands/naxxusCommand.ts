@@ -49,22 +49,22 @@ const itemBoosts: {
 	setup: 'mage' | 'melee';
 }[] = [
 	{
-		item: getOSItem('Void Staff'),
+		item: getOSItem('Void staff'),
 		boost: 10,
 		setup: 'mage'
 	},
 	{
-		item: getOSItem('Abyssal Tome'),
+		item: getOSItem('Abyssa tome'),
 		boost: 7.5,
 		setup: 'mage'
 	},
 	{
-		item: getOSItem('Spellbound Ring(i)'),
+		item: getOSItem('Spellbound ring(i)'),
 		boost: 2.5,
 		setup: 'mage'
 	},
 	{
-		item: getOSItem('Spellbound Ring'),
+		item: getOSItem('Spellbound ring'),
 		boost: 2,
 		setup: 'mage'
 	}
@@ -148,12 +148,12 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		)}% of max melee, ${Math.ceil(mage)}% of max mage]`
 	);
 
-	itemBoosts.forEach(itemBoost => {
+	for (let itemBoost of itemBoosts) {
 		if (user.getGear(itemBoost.setup).hasEquipped(itemBoost.item.id)) {
 			effectiveTime = reduceNumByPercent(effectiveTime, itemBoost.boost);
 			boosts.push(`${itemBoost.boost}% ${itemBoost.item.name}`);
 		}
-	});
+	}
 
 	const maxTripLength = user.maxTripLength('Naxxus');
 	// If no quantity provided, set it to the max.
@@ -178,10 +178,10 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		return `${user.username} doesn't have the food requirements for this monster: ${foodReason}`;
 	}
 
-	if (!user.bank().has(new Bank().add('Enhanced Divine Water', 2 * quantity))) {
-		return `${user.username} doesn't have the food requirements for this monster: Requires 2 Enhanced Divine Water`;
+	if (!user.bank().has(new Bank().add('Enhanced divine water', 2 * quantity))) {
+		return `${user.username} doesn't have the food requirements for this monster: Requires 2 Enhanced divine water`;
 	}
-	foodBank.add('Enhanced Divine Water', 2 * quantity);
+	foodBank.add('Enhanced divine water', 2 * quantity);
 
 	const duration = effectiveTime * quantity;
 	// Some degrading items use charges based on DURATION
