@@ -50,6 +50,14 @@ export default class extends Task {
 			`${user}, ${user.minionName} has finished alching ${quantity}x ${item.name}! ${loot} has been added to your bank. ${xpRes}. ${saved}`
 		].join('\n');
 
-		handleTripFinish(user, channelID, responses, ['alch', [quantity, [item]], true], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			responses,
+			['activities', { alch: { quantity, item: item.name } }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }
