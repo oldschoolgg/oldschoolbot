@@ -21,6 +21,7 @@ import {
 } from '../data/CollectionsExport';
 import { prisma } from '../settings/prisma';
 import { itemNameFromID, stringMatches } from '../util';
+import { makeBankImage } from '../util/makeBankImage';
 import resolveItems, { deepResolveItems } from '../util/resolveItems';
 import { ClueTier } from './clueTiers';
 
@@ -733,7 +734,7 @@ export async function stashUnitBuildAllCommand(klasaUser: KlasaUser, user: User)
 	return `You created ${toBuild.length} STASH units, using ${costBank}.`;
 }
 
-export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User) {
+export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User): CommandResponse {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	const notBuiltAndNotFilled = parsedUnits.filter(i => i.builtUnit !== undefined && !i.isFull);
 	if (notBuiltAndNotFilled.length === 0) return 'There are no STASH units left that you can fill.';
@@ -783,7 +784,9 @@ export async function stashUnitFillAllCommand(user: KlasaUser, mahojiUser: User)
 	);
 	assert(result.length === toFill.length);
 
-	return `You filled ${result.length} STASH units, with ${costBank}.`;
+	const { file } = await makeBankImage({ bank: costBank, title: 'Items Removed For Stash Units' });
+
+	return { attachments: [file], content: `You filled ${result.length} STASH units, with these items.` };
 }
 
 export async function stashUnitUnfillCommand(klasaUser: KlasaUser, user: User, unitID: string) {
