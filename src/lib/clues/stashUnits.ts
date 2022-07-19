@@ -2,6 +2,7 @@ import { StashUnit, User } from '@prisma/client';
 import { assert } from 'console';
 import { partition } from 'e';
 import { KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 
 import { getMahojiBank, getSkillsOfMahojiUser } from '../../mahoji/mahojiSettings';
@@ -655,13 +656,35 @@ interface ParsedUnit {
 	builtUnit: StashUnit | undefined;
 	tier: StashUnitTier;
 }
-export async function stashUnitViewCommand(user: User, stashID: string | undefined) {
+export async function stashUnitViewCommand(
+	user: User,
+	stashID: string | undefined,
+	notBuilt: boolean | undefined
+): CommandResponse {
 	const parsedUnits = await getParsedStashUnits(user.id);
 	if (stashID) {
 		const unit = parsedUnits.find(i => stringMatches(i.unit.id.toString(), stashID));
 		if (!unit || !unit.builtUnit) return "You don't have this unit built.";
 		return `${unit.unit.desc} - ${unit.tier.tier} STASH Unit
 Contains: ${unit.builtUnit.items_contained.map(itemNameFromID).join(', ')}`;
+	}
+
+	if (notBuilt) {
+		let str = "Stash units you haven't built/filled:\n";
+		for (const { unit, tier } of parsedUnits.filter(i => !i.isFull || !i.builtUnit)) {
+			str += `${unit.desc} (${tier.tier} tier): ${unit.items
+				.map(item => [item].flat()[0])
+				.map(itemNameFromID)
+				.join(', ')}\n`;
+		}
+		if (str.length < 1000) {
+			return {
+				content: str
+			};
+		}
+		return {
+			attachments: [{ buffer: Buffer.from(str), fileName: 'stashunits.txt' }]
+		};
 	}
 
 	let str = '**Your STASH Units**\n';
