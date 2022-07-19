@@ -153,6 +153,8 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (user.usingPet('Takon')) {
 			str += ' Takon is Smithing for you, at incredible speeds and skill.';
+		} else if (user.hasItemEquippedAnywhere('Dwarven greathammer')) {
+			str += ' 2x faster for Dwarven greathammer.';
 		}
 		if (hasScroll) {
 			str += ' Your Scroll of efficiency enables you to save 15% of the bars used.';
