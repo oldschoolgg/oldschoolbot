@@ -2,11 +2,13 @@ import { Bank } from 'oldschooljs';
 
 import { Skills } from '../types';
 import { ClueTier } from './clueTiers';
+import { allStashUnitTiers } from './stashUnits';
 
 export interface ClueReq {
 	itemCost?: Bank;
 	skillReqs?: Partial<Skills>;
-	hideyHoleID?: number;
+	stashUnitID?: number;
+	weight?: number;
 }
 
 export interface ClueReqs {
@@ -52,14 +54,6 @@ export const beginnerReqs: ClueReqs = {
 				crafting: 18
 			}
 		},
-		{
-			hideyHoleID: 1
-		},
-		{
-			hideyHoleID: 2
-		},
-		{
-			hideyHoleID: 3
-		}
+		...allStashUnitTiers.find(i => i.tier === 'Beginner')!.units.map(i => ({ stashUnitID: i.id }))
 	]
 };
