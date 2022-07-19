@@ -503,8 +503,8 @@ describe('Bank Parsers', () => {
 			flags: {},
 			excludeItems: resolveItems(['Fire rune'])
 		});
-		expect(result16.bank.length).toStrictEqual(1);
-		expect(result16.bank.has('Fire rune')).toEqual(true);
+		expect(result16.bank.length).toStrictEqual(0);
+		expect(result16.bank.has('Fire rune')).toEqual(false);
 
 		//
 		const result17 = parseInputBankWithPrice({

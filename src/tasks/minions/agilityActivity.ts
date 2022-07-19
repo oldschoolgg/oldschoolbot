@@ -62,9 +62,14 @@ export default class extends Task {
 			duration
 		});
 
-		const loot = new Bank({
-			'Mark of grace': totalMarks
-		});
+		const loot = new Bank();
+		if (course.marksPer60) loot.add('Mark of grace', totalMarks);
+
+		// Calculate Crystal Shards for Priff
+		if (course.name === 'Prifddinas Rooftop Course') {
+			// 15 Shards per hour
+			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		}
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
@@ -80,8 +85,8 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
-		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
-			diaryBonus ? '(25% bonus Marks for Ardougne Elite diary)' : ''
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
+			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
 		}.\n${xpRes}`;
 
 		if (course.id === 6) {

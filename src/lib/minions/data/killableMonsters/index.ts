@@ -16,6 +16,7 @@ import { krystiliaMonsters } from './krystiliaMonsters';
 import low from './low';
 import { mazchnaMonsters } from './mazchnaMonsters';
 import { nieveMonsters } from './nieveMonsters';
+import { reanimatedMonsters } from './reanimated';
 import { revenantMonsters } from './revs';
 import { turaelMonsters } from './turaelMonsters';
 import { vannakaMonsters } from './vannakaMonsters';
@@ -31,6 +32,7 @@ const killableMonsters: KillableMonster[] = [
 	...vannakaMonsters,
 	...low,
 	...creatureCreationCreatures,
+	...reanimatedMonsters,
 	{
 		id: Monsters.Barrows.id,
 		name: Monsters.Barrows.name,
