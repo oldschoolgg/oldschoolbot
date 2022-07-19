@@ -520,7 +520,7 @@ export default class extends Task {
 			}
 
 			if (hasPlopper) loot.multiply(4);
-			const res = await arcaneHarvesterEffect(user, plant, loot);
+			const res = await arcaneHarvesterEffect(user, plantToHarvest, loot);
 			if (res) infoStr.push(res);
 
 			if (loot.has('Plopper')) {

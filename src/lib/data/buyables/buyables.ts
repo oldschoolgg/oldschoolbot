@@ -897,18 +897,6 @@ const Buyables: Buyable[] = [
 		})
 	},
 	{
-		name: 'Beehive',
-		itemCost: new Bank({
-			Coins: 15_000
-		}),
-		outputItems: new Bank({
-			Beehive: 1
-		}),
-		customReq: async (user: KlasaUser) => {
-			return user.owns('Beehive') ? [false, 'You already own a Beehive.'] : [true];
-		}
-	},
-	{
 		name: 'Mithril seeds',
 		gpCost: 3000,
 		ironmanPrice: 600,
