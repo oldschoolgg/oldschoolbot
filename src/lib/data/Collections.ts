@@ -554,12 +554,6 @@ export const allCollectionLogs: ICollection = {
 				kcActivity: Monsters.TzHaarKet.name,
 				allItems: Monsters.TzHaarKet.allItems,
 				items: tzHaarCL
-			},
-			"Glough's Experiments": {
-				alias: Monsters.DemonicGorilla.aliases,
-				allItems: Monsters.DemonicGorilla.allItems,
-				kcActivity: Monsters.DemonicGorilla.name,
-				items: demonicGorillaCL
 			}
 		}
 	},
