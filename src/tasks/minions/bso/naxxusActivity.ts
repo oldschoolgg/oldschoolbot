@@ -21,7 +21,7 @@ export default class extends Task {
 		loot.add(Naxxus.table.kill(quantity, {}));
 
 		const xpStr = await addMonsterXP(user, {
-			monsterID: 294_820,
+			monsterID: Naxxus.id,
 			quantity,
 			duration,
 			isOnTask: false,
