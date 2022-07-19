@@ -127,6 +127,7 @@ export async function handleTripFinish(
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
+	if (casketReceived) components[0].push(makeRepeatTripButton());
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,
