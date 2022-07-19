@@ -62,11 +62,11 @@ const naxxusLoot = new LootTable().add(runes, 3).add(talismans, 3).add(herbs, 3)
 export const NaxxusLootTable = new LootTable()
 	.add(naxxusLoot, 2)
 	.tertiary(7, 'Clue scroll (Grandmaster)')
-	.tertiary(750, 'Dark Crystal')
-	.tertiary(500, 'Abyssal Gem')
-	.tertiary(750, 'Tattered Tome')
-	.tertiary(500, 'Spellbound Ring')
-	.tertiary(10, 'Korulsi Seed');
+	.tertiary(750, 'Dark crystal')
+	.tertiary(500, 'Abyssal gem')
+	.tertiary(750, 'Tattered tome')
+	.tertiary(500, 'Spellbound ring')
+	.tertiary(10, 'Korulsi seed');
 
 export const Naxxus: KillableMonster = {
 	id: 294_820,

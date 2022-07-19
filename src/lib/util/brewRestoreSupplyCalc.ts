@@ -14,9 +14,9 @@ export default function brewRestoreSupplyCalc(
 	const brews = userItems.amount('Saradomin brew(4)');
 
 	totalBrews += enhancedBrews * 2;
-	if (totalBrews >= brewsNeeded) itemBank.add('Enhanced Saradomin Brew', Math.ceil(brewsNeeded / 2));
+	if (totalBrews >= brewsNeeded) itemBank.add('Enhanced saradomin brew', Math.ceil(brewsNeeded / 2));
 	else {
-		itemBank.add('Enhanced Saradomin Brew', enhancedBrews);
+		itemBank.add('Enhanced saradomin brew', enhancedBrews);
 		totalBrews += brews;
 		if (totalBrews >= brewsNeeded) {
 			itemBank.add('Saradomin Brew (4)', brewsNeeded - enhancedBrews * 2);
@@ -35,9 +35,9 @@ export default function brewRestoreSupplyCalc(
 	const restores = userItems.amount('Super restore(4)');
 
 	totalRestores += enhancedRestores * 2;
-	if (totalRestores >= restoresNeeded) itemBank.add('Enhanced Super Restore', Math.ceil(restoresNeeded / 2));
+	if (totalRestores >= restoresNeeded) itemBank.add('Enhanced super restore', Math.ceil(restoresNeeded / 2));
 	else {
-		itemBank.add('Enhanced Super Restore', enhancedRestores);
+		itemBank.add('Enhanced super restore', enhancedRestores);
 		totalRestores += restores;
 		if (totalRestores >= restoresNeeded) {
 			itemBank.add('Super Restore (4)', restoresNeeded - enhancedRestores * 2);

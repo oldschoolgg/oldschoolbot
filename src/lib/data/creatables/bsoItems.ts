@@ -880,14 +880,14 @@ const bsoItems: Createable[] = [
 		}
 	},
 	{
-		name: 'Void Staff (u)',
+		name: 'Void staff (u)',
 		inputItems: resolveNameBank({
-			'Virtus Wand': 1,
-			'Dark Crystal': 1,
-			'Dark Animica': 75
+			'Virtus wand': 1,
+			'Dark crystal': 1,
+			'Dark animica': 75
 		}),
 		outputItems: resolveNameBank({
-			'Void Staff (u)': 1
+			'Void staff (u)': 1
 		}),
 		requiredSkills: {
 			magic: 110,
@@ -896,32 +896,32 @@ const bsoItems: Createable[] = [
 		}
 	},
 	{
-		name: 'Void Staff',
+		name: 'Void staff',
 		inputItems: resolveNameBank({
-			'Void Staff (u)': 1
+			'Void staff (u)': 1
 		}),
 		outputItems: resolveNameBank({
-			'Void Staff': 1
+			'Void staff': 1
 		})
 	},
 	{
-		name: 'Abyssal Tome',
+		name: 'Abyssa tome',
 		inputItems: resolveNameBank({
-			'Tattered Tome': 1,
-			'Virtus Book': 1
+			'Tattered tome': 1,
+			'Virtus book': 1
 		}),
 		outputItems: resolveNameBank({
-			'Abyssal Tome': 1
+			'Abyssa tome': 1
 		})
 	},
 	{
-		name: 'Spellbound Ring(i)',
+		name: 'Spellbound ring(i)',
 		inputItems: resolveNameBank({
-			'Spellbound Ring': 1,
-			'Magus Scroll': 1
+			'Spellbound ring': 1,
+			'Magus scroll': 1
 		}),
 		outputItems: resolveNameBank({
-			'Spellbound Ring(i)': 1
+			'Spellbound ring(i)': 1
 		})
 	}
 ];

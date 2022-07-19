@@ -164,7 +164,7 @@ const ores: Ore[] = [
 		level: 105,
 		xp: 275,
 		id: 70_011,
-		name: 'Dark Animica',
+		name: 'Dark animica',
 		respawnTime: 5,
 		petChance: 30_000,
 		clueScrollChance: 46_350
