@@ -60,8 +60,9 @@ export async function buttonUserPicker({
 			if (guessed.includes(id)) {
 				const amountTimesGuessed = guessed.filter(g => g.toString() === i.user.id).length;
 				if (
+					!creatorGetsTwoGuesses ||
 					i.user.id !== creator.toString() ||
-					(amountTimesGuessed < 2 && isCreator && creatorGetsTwoGuesses)
+					(amountTimesGuessed >= 2 && isCreator && creatorGetsTwoGuesses)
 				) {
 					return i.reply({ ephemeral: true, content: 'You already guessed wrong.' });
 				}
