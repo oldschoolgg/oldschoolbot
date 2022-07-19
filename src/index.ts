@@ -13,7 +13,6 @@ import { botToken, CLIENT_ID, DEV_SERVER_ID, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
-import { assert } from './lib/util';
 import { interactionHook } from './lib/util/globalInteractions';
 import { logError } from './lib/util/logError';
 import { onStartup } from './mahoji/lib/events';
@@ -73,8 +72,7 @@ declare global {
 const client = new OldSchoolBotClient(clientOptions);
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
-assert(client === globalClient);
-assert(client.mahojiClient === mahojiClient);
+
 client.on('raw', async event => {
 	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
 	// TODO: Ignore interactions if client not ready, they will error and fail to execute

@@ -43,6 +43,14 @@ export default class extends Task {
 			loot ?? 'no items'
 		}. ${xpRes} ${craftXpRes}`;
 
-		handleTripFinish(user, channelID, str, ['cast', [quantity, spell.name], true], undefined, data, loot ?? null);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['activities', { cast: { spell: spell.name, quantity } }, true],
+			undefined,
+			data,
+			loot ?? null
+		);
 	}
 }

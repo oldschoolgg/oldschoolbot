@@ -80,7 +80,7 @@ export async function sendToChannelID(
 		if (data.embed) embeds.push(data.embed);
 		if (channel instanceof WebhookClient) {
 			try {
-				return webhookSend(channel, {
+				await webhookSend(channel, {
 					content: data.content,
 					files,
 					embeds,
@@ -99,7 +99,7 @@ export async function sendToChannelID(
 				}
 			}
 		} else {
-			return channel.send({
+			await channel.send({
 				content: data.content,
 				files,
 				embeds,
@@ -118,15 +118,16 @@ async function webhookSend(channel: WebhookClient, input: MessageOptions) {
 		const split = Util.splitMessage(input.content, { maxLength });
 		const newPayload = { ...input };
 		// Separate files and components from payload for interactions
-		const { files, embeds } = newPayload;
+		const { files, embeds, components } = newPayload;
 		delete newPayload.files;
 		delete newPayload.embeds;
+		delete newPayload.components;
 		await webhookSend(channel, { ...newPayload, content: split[0] });
 
 		for (let i = 1; i < split.length; i++) {
 			if (i + 1 === split.length) {
 				// Add files to last msg, and components for interactions to the final message.
-				await webhookSend(channel, { files, embeds, content: split[i] });
+				await webhookSend(channel, { files, embeds, content: split[i], components });
 			} else {
 				await webhookSend(channel, { content: split[i] });
 			}

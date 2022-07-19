@@ -17,6 +17,7 @@ import { gnomeClothes } from './gnomeClothes';
 import { miningBuyables } from './mining';
 import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
+import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
 import { troubleBrewingBuyables } from './troubleBrewingShop';
@@ -235,6 +236,44 @@ const hunterBuyables: Buyable[] = [
 	{
 		name: 'Magic box',
 		gpCost: 1500
+	}
+];
+
+const magicBuyables: Buyable[] = [
+	{
+		name: 'Mystic hat',
+		gpCost: 15_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe top',
+		gpCost: 120_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe bottom',
+		gpCost: 80_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic gloves',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic boots',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
 	}
 ];
 
@@ -793,9 +832,18 @@ const Buyables: Buyable[] = [
 			'Rainbow flower crown': 1
 		})
 	},
+	{
+		name: 'Mithril seeds',
+		gpCost: 3000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Mithril seeds': 1
+		})
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
+	...magicBuyables,
 	...questBuyables,
 	...noveltyFood,
 	...fremennikClothes,
@@ -813,7 +861,8 @@ const Buyables: Buyable[] = [
 	...skillCapeBuyables,
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
-	...ironmenBuyables
+	...ironmenBuyables,
+	...shootingStarsBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {

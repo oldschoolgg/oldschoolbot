@@ -7,9 +7,11 @@ import {
 	makePOHImage,
 	pohBuildCommand,
 	pohDestroyCommand,
+	pohMountItemCommand,
 	pohWallkitCommand,
 	pohWallkits
 } from '../lib/abstracted_commands/pohCommand';
+import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -18,7 +20,6 @@ export const pohCommand: OSBMahojiCommand = {
 	description: 'Allows you to access and build in your POH.',
 	attributes: {
 		requiresMinion: true,
-		description: 'Allows you to access and build in your POH.',
 		examples: ['/poh build:Demonic throne']
 	},
 	options: [
@@ -86,6 +87,19 @@ export const pohCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'mount_item',
+			description: 'Mount an item into your PoH.',
+			options: [
+				{
+					...ownedItemOption(),
+					name: 'name',
+					description: 'The item you want to mount.',
+					required: true
+				}
+			]
 		}
 	],
 	run: async ({
@@ -97,12 +111,13 @@ export const pohCommand: OSBMahojiCommand = {
 		wallkit?: { name: string };
 		build?: { name: string };
 		destroy?: { name: string };
+		mount_item?: { name: string };
 	}>) => {
 		const user = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!mahojiUser.minion_hasBought) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {
-			return makePOHImage(user, options.view?.build_mode);
+			return makePOHImage(user, options.view.build_mode);
 		}
 		if (options.wallkit) {
 			return pohWallkitCommand(user, options.wallkit.name);
@@ -113,6 +128,9 @@ export const pohCommand: OSBMahojiCommand = {
 		}
 		if (options.destroy) {
 			return pohDestroyCommand(user, options.destroy.name);
+		}
+		if (options.mount_item) {
+			return pohMountItemCommand(user, options.mount_item.name);
 		}
 		return 'Invalid command.';
 	}
