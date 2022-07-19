@@ -123,6 +123,14 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
+		name: 'Revert toxic staff (uncharged)',
+		inputItems: new Bank({
+			'Toxic staff (uncharged)': 1
+		}),
+		outputItems: new Bank({ 'Magic fang': 1, 'Staff of the dead': 1 }),
+		GPCost: 0
+	},
+	{
 		name: 'Abyssal tentacle',
 		inputItems: new Bank({
 			'Kraken tentacle': 1,
