@@ -416,7 +416,7 @@ Your current streak is ${msg.author.settings.get(UserSettings.Slayer.TaskStreak)
 		if (commonName === 'TzHaar') {
 			returnMessage = 'Ah... Tzhaar... ';
 			commonName +=
-				`. You can choose to kill TzTok-Jad with \`${msg.cmdPrefix}fightcaves\`, or TzKal-Zuk with \`${msg.cmdPrefix}inferno start\` as long as you ` +
+				'. You can choose to kill TzTok-Jad with `/activities fight_caves `, or TzKal-Zuk with `/activities inferno action:Start Inferno Trip ` as long as you ' +
 				"don't kill any regular TzHaar first.";
 		}
 

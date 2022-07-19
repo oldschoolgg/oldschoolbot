@@ -7,11 +7,6 @@ import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
-import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { calcCLDetails } from '../data/Collections';
-import { UserFullGearSetup } from '../gear';
-import ClueTiers from '../minions/data/clueTiers';
-import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import {
 	personalAlchingStats,
 	personalCollectingStats,
@@ -22,7 +17,12 @@ import {
 	personalSmithingStats,
 	personalSpellCastStats,
 	personalWoodcuttingStats
-} from '../minions/functions/dataCommand';
+} from '../../mahoji/lib/abstracted_commands/statCommand';
+import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { calcCLDetails } from '../data/Collections';
+import { UserFullGearSetup } from '../gear';
+import ClueTiers from '../minions/data/clueTiers';
+import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import { roboChimpUserFetch } from '../roboChimp';
 import { getMinigameEntity } from '../settings/minigames';
 import { prisma } from '../settings/prisma';
@@ -176,6 +176,7 @@ WHERE type = 'Herblore'
 AND user_id = '${user.id}'::bigint
 AND data->>'mixableID' IS NOT NULL
 AND (data->>'zahur')::boolean = false
+AND completed = true
 GROUP BY data->>'mixableID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -196,13 +197,14 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 	return input;
 }
 
-async function calcActualClues(user: User) {
+export async function calcActualClues(user: User) {
 	const result: { id: number; qty: number }[] =
 		await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
 FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${user.id}'::bigint
 AND data->>'clueID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'clueID';`);
 	const casketsCompleted = new Bank();
 	for (const res of result) {

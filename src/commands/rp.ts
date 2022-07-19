@@ -675,7 +675,6 @@ ${
 				const item = getOSItem(itemName);
 				const price = evalMathExpression(rawPrice);
 				if (!price || price < 1 || price > 1_000_000_000) return;
-				if (!price || isNaN(price)) return msg.channel.send('Invalid price');
 				await msg.confirm(
 					`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
 						item.wiki_url
@@ -1215,7 +1214,7 @@ SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
   WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
 ) u
 ORDER BY qty DESC
-LIMIT 100;
+LIMIT 500;
 `)
 				).filter(i => i.qty > 0);
 

@@ -16,7 +16,7 @@ import {
 import { Inventions } from '../invention/inventions';
 import { dungBuyables } from '../skilling/skills/dung/dungData';
 import Dwarven from '../skilling/skills/smithing/smithables/dwarven';
-import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
+import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
 import { getTameSpecies } from '../tames';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
@@ -744,7 +744,7 @@ export const masterTasks: Task[] = [
 		id: 4103,
 		name: 'Unlock every slayer unlock',
 		has: async ({ mahojiUser }) => {
-			return mahojiUser.slayer_unlocks.length === Object.keys(SlayerTaskUnlocksEnum).length;
+			return mahojiUser.slayer_unlocks.length >= slayerUnlockableRewards.length;
 		}
 	},
 	{

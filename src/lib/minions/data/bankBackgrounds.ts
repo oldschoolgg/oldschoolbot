@@ -342,7 +342,9 @@ const backgroundImages: BankBackground[] = [
 		name: 'Turbo CustomBG',
 		image: null,
 		available: false,
-		owners: ['288054683161853952']
+		owners: ['288054683161853952'],
+		purpleImage: null,
+		hasPurple: true
 	},
 	{
 		id: 41,
