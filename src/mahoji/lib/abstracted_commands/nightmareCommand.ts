@@ -115,8 +115,8 @@ function perUserCost(isPhosani: boolean, quantity: number) {
 		cost.add('Super combat potion(4)', Math.max(1, Math.floor(quantity / 2)))
 			.add('Sanfew serum(4)', quantity)
 			.add('Super restore(4)', quantity)
-			.add('Fire rune', 11 * 100 * quantity)
-			.add('Air rune', 7 * 100 * quantity)
+			.add('Fire rune', 10 * 70 * quantity)
+			.add('Air rune', 7 * 70 * quantity)
 			.add('Wrath rune', 70 * quantity);
 	}
 	return cost;
