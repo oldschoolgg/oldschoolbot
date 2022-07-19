@@ -905,13 +905,13 @@ const bsoItems: Createable[] = [
 		})
 	},
 	{
-		name: 'Abyssa tome',
+		name: 'Abyssal tome',
 		inputItems: resolveNameBank({
 			'Tattered tome': 1,
 			'Virtus book': 1
 		}),
 		outputItems: resolveNameBank({
-			'Abyssa tome': 1
+			'Abyssal tome': 1
 		})
 	},
 	{

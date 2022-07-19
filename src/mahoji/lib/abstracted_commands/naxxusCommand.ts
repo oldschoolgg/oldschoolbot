@@ -54,7 +54,7 @@ const itemBoosts: {
 		setup: 'mage'
 	},
 	{
-		item: getOSItem('Abyssa tome'),
+		item: getOSItem('Abyssal tome'),
 		boost: 7.5,
 		setup: 'mage'
 	},
