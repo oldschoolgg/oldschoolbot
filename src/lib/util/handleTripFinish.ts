@@ -4,7 +4,7 @@ import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js'
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
+import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import ClueTiers from '../minions/data/clueTiers';
@@ -87,6 +87,10 @@ export async function handleTripFinish(
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
+	}
+
+	if (clueReceived) {
+		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
 	}
 
 	const existingCollector = collectors.get(user.id);
