@@ -59,7 +59,6 @@ export default class extends Task {
 		// Roll for pet
 		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
 			loot.add('Rock golem');
-			str += "\nYou have a funny feeling you're being followed...";
 			str += '\n```diff';
 			str += "\n- You have a funny feeling you're being followed...";
 			str += '```';
