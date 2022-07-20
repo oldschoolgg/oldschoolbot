@@ -133,7 +133,7 @@ const ores: Ore[] = [
 	{
 		level: 80,
 		xp: 1115,
-		id: itemID('Obsidian shard'),
+		id: itemID('Obsidian shards'),
 		name: 'Obsidian',
 		respawnTime: 111,
 		petChance: 50_000,

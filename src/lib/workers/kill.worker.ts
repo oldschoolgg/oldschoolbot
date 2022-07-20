@@ -4,6 +4,7 @@ import '../minions/data/killableMonsters/custom/customMonsters';
 
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
+import { MoktangLootTable } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import { stringMatches } from '../util/cleanString';
 import { KillWorkerArgs, KillWorkerReturn } from '.';
 
@@ -31,6 +32,10 @@ export default ({ quantity, bossName, limit, catacombs, onTask }: KillWorkerArgs
 			bank.add(Misc.Nightmare.kill({ team: [{ damageDone: 2400, id: 'id' }], isPhosani: false }).id);
 		}
 		return { bank };
+	}
+
+	if (stringMatches(bossName, 'moktang')) {
+		return { bank: MoktangLootTable.roll(quantity) };
 	}
 
 	return { error: "I don't have that monster!" };

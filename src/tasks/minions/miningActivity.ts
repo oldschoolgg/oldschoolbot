@@ -119,7 +119,7 @@ export default class extends Task {
 			['Volcanic pickaxe', 'Offhand volcanic pickaxe'],
 			false
 		);
-		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shard']).includes(ore.id);
+		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
 
 		// Gem rocks roll off the GemRockTable
 		if (ore.id === 1625) {
@@ -147,7 +147,7 @@ export default class extends Task {
 			loot.add(ore.id, quantity);
 		}
 
-		if (isDestroyed) str += '\nYour volcanic pickaxe melted and destroyed the ores.';
+		if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
 
 		const hasKlik = user.usingPet('Klik');
 		if (hasKlik) {

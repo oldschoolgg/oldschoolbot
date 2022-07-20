@@ -104,7 +104,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		if (ore.requiredPickaxes) {
-			if (!userHasItemsEquippedAnywhere(user, ore.requiredPickaxes, false)) {
+			if (!hasItemsEquippedOrInBank(user, ore.requiredPickaxes, 'one')) {
 				return `You need to be using one of these pickaxes to be able to mine ${
 					ore.name
 				}: ${ore.requiredPickaxes.map(itemNameFromID).join(', ')}.`;
@@ -139,8 +139,8 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		if (userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe')) {
-			timeToMine = reduceNumByPercent(timeToMine, 35);
-			boosts.push('35% for Offhand volcanic pickaxe');
+			timeToMine = reduceNumByPercent(timeToMine, 55);
+			boosts.push('55% for Offhand volcanic pickaxe');
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Mining');

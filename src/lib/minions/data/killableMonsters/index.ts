@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { MOKTANG_ID } from '../../../../mahoji/lib/abstracted_commands/moktangCommand';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
@@ -382,5 +383,10 @@ export const effectiveMonsters = [
 		name: "Phosani's Nightmare",
 		aliases: ['phosani', 'phosanis nightmare'],
 		id: PHOSANI_NIGHTMARE_ID
+	},
+	{
+		name: 'Moktang',
+		aliases: ['moktang'],
+		id: MOKTANG_ID
 	}
 ];

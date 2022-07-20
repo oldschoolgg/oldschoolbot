@@ -115,6 +115,7 @@ import {
 	mahoganyHomesCL,
 	masterCapesCL,
 	miscellaneousCL,
+	moktangCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
 	nexCL,
@@ -386,6 +387,10 @@ export const allCollectionLogs: ICollection = {
 				alias: Monsters.Vorkath.aliases,
 				allItems: Monsters.Vorkath.allItems,
 				items: vorkathCL
+			},
+			Moktang: {
+				alias: ['mt', 'moktang'],
+				items: moktangCL
 			},
 			Wintertodt: {
 				alias: ['todt', 'wintertodt', 'wt'],

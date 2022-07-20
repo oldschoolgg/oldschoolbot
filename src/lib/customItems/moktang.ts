@@ -2,7 +2,7 @@ import { setCustomItem } from './util';
 
 setCustomItem(
 	52_650,
-	'Obsidian shard',
+	'Obsidian shards',
 	'Coal',
 	{
 		customItemData: {
@@ -26,11 +26,12 @@ setCustomItem(
 
 setCustomItem(
 	52_652,
-	'Volcanic gloves',
-	'Barrows gloves',
+	'Dwarven gloves (Volcanic)',
+	'Dwarven gloves',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	10_000
@@ -38,11 +39,12 @@ setCustomItem(
 
 setCustomItem(
 	52_653,
-	'Volcanic boots',
-	'Dragon boots',
+	'Dwarven boots (Volcanic)',
+	'Dwarven boots',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	10_000
@@ -50,11 +52,12 @@ setCustomItem(
 
 setCustomItem(
 	52_654,
-	'Volcanic platelegs',
-	'Dragon platelegs',
+	'Dwarven platelegs (Volcanic)',
+	'Dwarven platelegs',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	10_000
@@ -62,11 +65,12 @@ setCustomItem(
 
 setCustomItem(
 	52_655,
-	'Volcanic platebody',
-	'Dragon platebody',
+	'Dwarven platebody (Volcanic)',
+	'Dwarven platebody',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	10_000
@@ -74,23 +78,12 @@ setCustomItem(
 
 setCustomItem(
 	52_656,
-	'Volcanic helm',
-	'Dragon full helm',
+	'Dwarven full helm (Volcanic)',
+	'Dwarven full helm',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000
-);
-
-setCustomItem(
-	52_657,
-	'Volcanic kiteshield',
-	'Dragon kiteshield',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	10_000
@@ -135,6 +128,134 @@ setCustomItem(
 setCustomItem(
 	52_661,
 	'Claws frame',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_662,
+	'Runite igne claws',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_663,
+	'Dragon igne claws',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_664,
+	'Barrows igne claws',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_665,
+	'Obsidian igne claws',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_667,
+	'Drygore igne claws',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_668,
+	'Dwarven igne claws',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_669,
+	'Gorajan igne claws',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_670,
+	'Moktang totem',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_671,
+	'Volcanic shards',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	100_000
+);
+
+setCustomItem(
+	52_672,
+	'Volcanic dye',
 	'Coal',
 	{
 		customItemData: {

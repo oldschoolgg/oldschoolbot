@@ -1,6 +1,8 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { moktangCreatables } from '../../mahoji/lib/abstracted_commands/moktangCommand';
+import { MaterialBank } from '../invention/MaterialBank';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
@@ -21,6 +23,7 @@ import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 import { tobCreatables } from './creatables/tob';
+import { tameCreatables } from './tameCreatables';
 
 export interface Createable {
 	name: string;
@@ -35,6 +38,7 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
+	materialCost?: MaterialBank;
 }
 
 const goldenProspectorCreatables: Createable[] = [
@@ -1883,7 +1887,9 @@ const Createables: Createable[] = [
 	...nexCreatables,
 	...amrodCreatables,
 	...goldenProspectorCreatables,
-	...leaguesCreatables
+	...leaguesCreatables,
+	...tameCreatables,
+	...moktangCreatables
 ];
 
 export default Createables;

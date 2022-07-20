@@ -118,6 +118,7 @@ import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { MoktangTaskOptions } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -733,6 +734,12 @@ export default class extends Extendable {
 				return `${this.minionName} is currently researching with '${
 					data.material
 				}' materials. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'Moktang': {
+				const data = currentTask as MoktangTaskOptions;
+				return `${this.minionName} is currently killing ${
+					data.qty
+				}x Moktang. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'Easter':
 			case 'BlastFurnace': {
