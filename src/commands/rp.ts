@@ -11,7 +11,6 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { CLIENT_ID, production } from '../config';
-import { ClueTiers } from '../lib/clues/clueTiers';
 import {
 	badges,
 	BitField,
@@ -256,16 +255,6 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
-			case 'allstashitems': {
-				const items = ClueTiers.map(i => i.stashUnits)
-					.map(i => i.units)
-					.flat()
-					.map(i => i.items.flat(2))
-					.flat(2);
-				let b = new Bank();
-				for (const i of items) b.add(i);
-				return msg.channel.send({ ...(await makeBankImageKlasa({ bank: b })) });
-			}
 			case 'ping': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || typeof input !== 'string') return;
