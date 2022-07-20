@@ -98,6 +98,7 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		let { quantity } = options;
+		const klasaUser = await globalClient.fetchUser(userID);
 		const user = await mahojiUsersSettingsFetch(userID);
 		const skills = getSkillsOfMahojiUser(user, true);
 		if (skills.mining < ore.level) {
@@ -105,12 +106,12 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		// Check for daeyalt shard requirements.
-		const [hasDaeyaltReqs, daeyaltReason] = user.hasSkillReqs(daeyaltEssenceSkillRequirements);
+		const [hasDaeyaltReqs, daeyaltReason] = klasaUser.hasSkillReqs(daeyaltEssenceSkillRequirements);
 		if (ore.id === 24_704) {
 			if (!hasDaeyaltReqs) {
 				return `To mine ${ore.name}, you need ${daeyaltReason}.`;
 			}
-			if (user.settings.get(UserSettings.QP) < 16) {
+			if (klasaUser.settings.get(UserSettings.QP) < 16) {
 				return `To mine ${ore.name}, you need atleast 16 Quest Points.`;
 			}
 		}
