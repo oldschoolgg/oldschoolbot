@@ -2,7 +2,7 @@ import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import ClueTiers, { ClueTier } from '../../lib/minions/data/clueTiers';
+import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
@@ -24,7 +24,7 @@ export const clueCommand: OSBMahojiCommand = {
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
 		requiresMinion: true,
-		description: 'Send your minion to complete clue scrolls.',
+		requiresMinionNotBusy: true,
 		examples: ['/cl name:Boss']
 	},
 	options: [
@@ -50,7 +50,7 @@ export const clueCommand: OSBMahojiCommand = {
 
 		const [timeToFinish, percentReduced] = reducedClueTime(
 			clueTier,
-			user.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 1
+			user.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 1
 		);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);

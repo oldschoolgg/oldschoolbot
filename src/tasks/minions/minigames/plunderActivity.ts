@@ -6,6 +6,7 @@ import { lootRoom, plunderRooms } from '../../../lib/minions/data/plunder';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { PlunderActivityTaskOptions } from './../../../lib/types/minions';
 
 export default class extends Task {
@@ -50,17 +51,21 @@ export default class extends Task {
 			);
 		}
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity}x Pyramid Plunder:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			user,
+			previousCL,
+			title: `Loot From ${quantity}x Pyramid Plunder:`
+		});
 
-		handleTripFinish(user, channelID, str, ['minigames', { pyramid_plunder: {} }, true], image!, data, itemsAdded);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['minigames', { pyramid_plunder: {} }, true],
+			image.file.buffer,
+			data,
+			itemsAdded
+		);
 	}
 }

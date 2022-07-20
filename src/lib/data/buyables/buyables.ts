@@ -1,12 +1,15 @@
 import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
+import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
 import { Skills } from '../../types';
+import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
 import { aerialFishBuyables } from './aerialFishBuyables';
 import { canifisClothes } from './canifisClothes';
@@ -17,6 +20,7 @@ import { gnomeClothes } from './gnomeClothes';
 import { miningBuyables } from './mining';
 import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
+import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
 import { troubleBrewingBuyables } from './troubleBrewingShop';
@@ -29,6 +33,7 @@ export interface Buyable {
 	itemCost?: Bank;
 	aliases?: string[];
 	skillsNeeded?: Skills;
+	requiredFavour?: Favours;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
@@ -164,6 +169,11 @@ const constructionBuyables: Buyable[] = [
 		qpRequired: 23
 	},
 	{
+		name: 'Arceuus signet',
+		gpCost: 100_000,
+		requiredFavour: Favours.Arceuus
+	},
+	{
 		name: 'Ancient signet',
 		gpCost: 100_000,
 		qpRequired: 105
@@ -235,6 +245,44 @@ const hunterBuyables: Buyable[] = [
 	{
 		name: 'Magic box',
 		gpCost: 1500
+	}
+];
+
+const magicBuyables: Buyable[] = [
+	{
+		name: 'Mystic hat',
+		gpCost: 15_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe top',
+		gpCost: 120_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe bottom',
+		gpCost: 80_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic gloves',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic boots',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
 	}
 ];
 
@@ -822,9 +870,102 @@ const Buyables: Buyable[] = [
 			'Rainbow flower crown': 1
 		})
 	},
+	{
+		name: 'Mithril seeds',
+		gpCost: 3000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Mithril seeds': 1
+		})
+	},
+	{
+		name: 'Brown apron',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	{
+		name: 'Bull roarer',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	{
+		name: 'Rolling pin',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	...[
+		'Pirate bandana (white)',
+		'Stripy pirate shirt (white)',
+		'Pirate leggings (white)',
+		'Pirate bandana (blue)',
+		'Stripy pirate shirt (blue)',
+		'Pirate leggings (blue)',
+		'Pirate bandana (brown)',
+		'Stripy pirate shirt (brown)',
+		'Pirate leggings (brown)',
+		'Pirate bandana (red)',
+		'Stripy pirate shirt (red)',
+		'Pirate leggings (red)'
+	].map(i => ({
+		name: i,
+		gpCost: 2000,
+		ironmanPrice: 100
+	})),
+	...[
+		'Ghostly boots',
+		'Ghostly cloak',
+		'Ghostly gloves',
+		'Ghostly hood',
+		'Ghostly robe top',
+		'Ghostly robe bottom',
+		'Shadow sword'
+	].map(i => ({
+		name: i,
+		gpCost: 10_000,
+		qpRequired: 10
+	})),
+	{
+		name: 'Menaphite purple outfit',
+		gpCost: 5000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Menaphite purple hat': 1,
+			'Menaphite purple top': 1,
+			'Menaphite purple robe': 1,
+			'Menaphite purple kilt': 1
+		})
+	},
+	{
+		name: 'Menaphite red outfit',
+		gpCost: 5000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Menaphite red hat': 1,
+			'Menaphite red top': 1,
+			'Menaphite red robe': 1,
+			'Menaphite red kilt': 1
+		})
+	},
+	{
+		name: 'Bone club',
+		gpCost: 1000
+	},
+	{
+		name: 'Bone spear',
+		gpCost: 1000
+	},
+	{
+		name: 'Bone dagger',
+		gpCost: 2500
+	},
+	{
+		name: 'Dorgeshuun crossbow',
+		gpCost: 2500
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
+	...magicBuyables,
 	...questBuyables,
 	...noveltyFood,
 	...fremennikClothes,
@@ -842,7 +983,8 @@ const Buyables: Buyable[] = [
 	...skillCapeBuyables,
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
-	...ironmenBuyables
+	...ironmenBuyables,
+	...shootingStarsBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
@@ -851,6 +993,18 @@ for (const [chompyHat, qty] of chompyHats) {
 		outputItems: new Bank().add(chompyHat.id),
 		gpCost: qty * 44,
 		minigameScoreReq: ['big_chompy_bird_hunting', qty]
+	});
+}
+
+export const allTeamCapes: Item[] = [];
+for (let i = 1; i < 50; i++) {
+	allTeamCapes.push(getOSItem(`Team-${i} cape`));
+}
+for (const cape of allTeamCapes) {
+	Buyables.push({
+		name: cape.name,
+		outputItems: new Bank().add(cape.id),
+		gpCost: 1000
 	});
 }
 

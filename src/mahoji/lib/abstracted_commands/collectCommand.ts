@@ -12,7 +12,7 @@ import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/u
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
 
-interface Collectable {
+export interface Collectable {
 	item: Item;
 	skillReqs?: Skills;
 	itemCost?: Bank;

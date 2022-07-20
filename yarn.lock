@@ -960,9 +960,9 @@
     prettier "^2.4.1"
 
 "@prisma/client@^3.15.1":
-  version "3.15.1"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-3.15.1.tgz#798e8bf0370abe686d599c822e93f7adb7c0c9c0"
-  integrity sha512-Lsk7oupvO9g99mrIs07iE6BIMouHs46Yq/YY8itTsUQNKfecsPuZvVYvcKci0pqRQ0neOpvIvoA/ouZmIMBCrQ==
+  version "3.15.2"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-3.15.2.tgz#2181398147afc79bfe0d83c03a88dc45b49bd365"
+  integrity sha512-ErqtwhX12ubPhU4d++30uFY/rPcyvjk+mdifaZO5SeM21zS3t4jQrscy8+6IyB0GIYshl5ldTq6JSBo1d63i8w==
   dependencies:
     "@prisma/engines-version" "3.15.1-1.461d6a05159055555eb7dfb337c9fb271cbd4d7e"
 
@@ -2183,6 +2183,11 @@ e@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/e/-/e-0.2.1.tgz#ecef23b48dd3b8122bcb974d8f9caf906f6c2338"
   integrity sha512-07oBQ1ewLgTChyGb2H9HrdUjCK/yFDmPHf7WQCZf+m4Rzyrw9gK8wjBVYWpOHntTKxGxxwXA/lyCBYWy4XlfWw==
+
+e@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/e/-/e-0.2.2.tgz#d8a076a92afdd75909b18620ffbaad04e3a8b2f3"
+  integrity sha512-GJ6Ex2MpGkzwmiddGXtJffKP5C6Ao3Db56DevROE49msv8l3CXNQCM3QOy0ug3YG5TPZQqHH/5oBwHz16yTWug==
 
 electron-to-chromium@^1.3.723:
   version "1.3.780"
@@ -4344,10 +4349,10 @@ object.values@^1.1.5:
     define-properties "^1.1.3"
     es-abstract "^1.19.1"
 
-oldschooljs@^2.1.55:
-  version "2.1.55"
-  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.55.tgz#85b7632e7ede45f18268508f013827e8a1e05777"
-  integrity sha512-MzORvixlPVrNYmSyoGYwG65CcRvQO2EAVQxopLBs91YuXBrDx2SI8bDNmS3L9rBcHCKz6BNiGy/EnuWznEOohA==
+oldschooljs@^2.1.58:
+  version "2.1.58"
+  resolved "https://registry.yarnpkg.com/oldschooljs/-/oldschooljs-2.1.58.tgz#64c65c020a607651b10f8b089391e4aa7d2cd88e"
+  integrity sha512-mWovBIjNMAkyIWi+AE6DGsIiBgGtIbUkzRhsW1sHgh1v2kQipUgIPM8RZ8PsEsPixY8jpHDDPGu+a8Aibv4p2A==
   dependencies:
     "@oldschoolgg/eslint-config" "^1.2.5"
     e "^0.2.1"
@@ -4699,9 +4704,9 @@ pretty-format@^27.5.1:
     react-is "^17.0.1"
 
 prisma@^3.15.1:
-  version "3.15.1"
-  resolved "https://registry.yarnpkg.com/prisma/-/prisma-3.15.1.tgz#5f7e22012775af3861ce0ff517cba581c9bd7350"
-  integrity sha512-MLO3JUGJpe5+EVisA/i47+zlyF8Ug0ivvGYG4B9oSXQcPiUHB1ccmnpxqR7o0Up5SQgmxkBiEU//HgR6UuIKOw==
+  version "3.15.2"
+  resolved "https://registry.yarnpkg.com/prisma/-/prisma-3.15.2.tgz#4ebe32fb284da3ac60c49fbc16c75e56ecf32067"
+  integrity sha512-nMNSMZvtwrvoEQ/mui8L/aiCLZRCj5t6L3yujKpcDhIPk7garp8tL4nMx2+oYsN0FWBacevJhazfXAbV1kfBzA==
   dependencies:
     "@prisma/engines" "3.15.1-1.461d6a05159055555eb7dfb337c9fb271cbd4d7e"
 
@@ -5511,10 +5516,10 @@ typedarray-to-buffer@^3.1.5:
   dependencies:
     is-typedarray "^1.0.0"
 
-typescript@^4.5.5:
-  version "4.5.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.5.tgz#d8c953832d28924a9e3d37c73d729c846c5896f3"
-  integrity sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==
+typescript@^4.7.4:
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.7.4.tgz#1a88596d1cf47d59507a1bcdfb5b9dfe4d488235"
+  integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
 
 unbox-primitive@^1.0.1:
   version "1.0.1"
@@ -5543,10 +5548,10 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-utf-8-validate@^5.0.8:
-  version "5.0.8"
-  resolved "https://registry.yarnpkg.com/utf-8-validate/-/utf-8-validate-5.0.8.tgz#4a735a61661dbb1c59a0868c397d2fe263f14e58"
-  integrity sha512-k4dW/Qja1BYDl2qD4tOMB9PFVha/UJtxTc1cXYOe3WwA/2m0Yn4qB7wLMpJyLJ/7DR0XnTut3HsCSzDT4ZvKgA==
+utf-8-validate@^5.0.9:
+  version "5.0.9"
+  resolved "https://registry.yarnpkg.com/utf-8-validate/-/utf-8-validate-5.0.9.tgz#ba16a822fbeedff1a58918f2a6a6b36387493ea3"
+  integrity sha512-Yek7dAy0v3Kl0orwMlvi7TPtiCNrdfHNd7Gcc/pLq4BLXqfAmd0J7OWMizUQnTTJsyjKn02mU7anqwfmUP4J8Q==
   dependencies:
     node-gyp-build "^4.3.0"
 

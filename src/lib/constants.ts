@@ -407,8 +407,6 @@ export const NEX_ID = 11_278;
  */
 export const userQueues: Map<string, PQueue> = new Map();
 
-export const bankImageCache = new Map<string, string>();
-
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
 	firemaking: '<:firemaking:630911040175210518>',

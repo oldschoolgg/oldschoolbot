@@ -35,11 +35,6 @@ export type BankBackground = {
 	  }
 );
 
-export interface ClueMilestoneReward {
-	itemReward: number;
-	scoreNeeded: number;
-}
-
 export type GearRequirement = Partial<{ [key in GearStat]: number }>;
 export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;
 
@@ -97,6 +92,14 @@ export interface KillableMonster {
 	canCannon?: boolean;
 	cannonMulti?: boolean;
 	specialLoot?: (loot: Bank, user: KlasaUser, data: MonsterActivityTaskOptions) => Promise<void>;
+	effect?: (opts: {
+		messages: string[];
+		user: KlasaUser;
+		quantity: number;
+		monster: KillableMonster;
+		loot: Bank;
+		data: MonsterActivityTaskOptions;
+	}) => Promise<unknown>;
 }
 /*
  * Monsters will have an array of Consumables

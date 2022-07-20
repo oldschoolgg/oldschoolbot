@@ -9,8 +9,7 @@ export const raidCommand: OSBMahojiCommand = {
 	name: 'raid',
 	description: 'Send your minion to do raids - CoX or ToB.',
 	attributes: {
-		requiresMinion: true,
-		description: 'Send your minion to do raids - CoX or ToB.'
+		requiresMinion: true
 	},
 	options: [
 		{

@@ -12,7 +12,9 @@ import { armorAndItemPacks } from './creatables/armorPacks';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
+import { leaguesCreatables } from './creatables/leagueCreatables';
 import { lmsCreatables } from './creatables/lms';
+import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
@@ -32,6 +34,49 @@ export interface Createable {
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
 }
+
+const goldenProspectorCreatables: Createable[] = [
+	{
+		name: 'Golden prospector boots',
+		inputItems: new Bank({
+			'Prospector boots': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector boots': 1
+		})
+	},
+	{
+		name: 'Golden prospector helmet',
+		inputItems: new Bank({
+			'Prospector helmet': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector helmet': 1
+		})
+	},
+	{
+		name: 'Golden prospector jacket',
+		inputItems: new Bank({
+			'Prospector jacket': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector jacket': 1
+		})
+	},
+	{
+		name: 'Golden prospector legs',
+		inputItems: new Bank({
+			'Prospector legs': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector legs': 1
+		})
+	}
+];
 
 const revWeapons: Createable[] = [
 	{
@@ -317,6 +362,45 @@ const crystalTools: Createable[] = [
 			[itemID('Crystal halberd')]: 1
 		},
 		requiredSkills: { smithing: 78, crafting: 78 },
+		QPRequired: 150,
+		noCl: true
+	},
+	{
+		name: 'Crystal helm',
+		inputItems: new Bank({
+			'Crystal armour seed': 1,
+			'Crystal shard': 150
+		}),
+		outputItems: {
+			[itemID('Crystal helm')]: 1
+		},
+		requiredSkills: { smithing: 70, crafting: 70 },
+		QPRequired: 150,
+		noCl: true
+	},
+	{
+		name: 'Crystal legs',
+		inputItems: new Bank({
+			'Crystal armour seed': 2,
+			'Crystal shard': 300
+		}),
+		outputItems: {
+			[itemID('Crystal legs')]: 1
+		},
+		requiredSkills: { smithing: 72, crafting: 72 },
+		QPRequired: 150,
+		noCl: true
+	},
+	{
+		name: 'Crystal body',
+		inputItems: new Bank({
+			'Crystal armour seed': 3,
+			'Crystal shard': 450
+		}),
+		outputItems: {
+			[itemID('Crystal body')]: 1
+		},
+		requiredSkills: { smithing: 74, crafting: 74 },
 		QPRequired: 150,
 		noCl: true
 	}
@@ -1769,6 +1853,16 @@ const Createables: Createable[] = [
 			[itemID('Ecumenical key')]: 1
 		}
 	},
+	{
+		name: 'Death tiara',
+		inputItems: new Bank({
+			'Death talisman': 1,
+			Tiara: 1
+		}),
+		outputItems: {
+			[itemID('Death tiara')]: 1
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
@@ -1783,8 +1877,11 @@ const Createables: Createable[] = [
 	...gracefulOutfitCreatables,
 	...tobCreatables,
 	...lmsCreatables,
+	...mysticStavesCreatables,
 	...nexCreatables,
-	...amrodCreatables
+	...amrodCreatables,
+	...goldenProspectorCreatables,
+	...leaguesCreatables
 ];
 
 export default Createables;

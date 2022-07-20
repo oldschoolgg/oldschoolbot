@@ -2,8 +2,9 @@ import { reduceNumByPercent } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { deduplicateClueScrolls } from '../src/lib/clues/clueUtils';
 import getUserFoodFromBank from '../src/lib/minions/functions/getUserFoodFromBank';
-import { deduplicateClueScrolls, sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
+import { sanitizeBank, stripEmojis, truncateString } from '../src/lib/util';
 import getOSItem from '../src/lib/util/getOSItem';
 import { sellPriceOfItem } from '../src/mahoji/commands/sell';
 import { getSkillsOfMahojiUser } from '../src/mahoji/mahojiSettings';
