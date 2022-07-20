@@ -104,7 +104,7 @@ export default class MinionCommand extends BotCommand {
 						bypassInhibitors: true,
 						...cmdOptions
 					}),
-				cantBeBusy: true
+				cantBeBusy: false
 			});
 		}
 
