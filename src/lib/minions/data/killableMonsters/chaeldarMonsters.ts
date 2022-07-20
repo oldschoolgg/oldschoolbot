@@ -343,9 +343,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 6,
-		itemsRequired: deepResolveItems([
-			["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe', 'Toxic blowpipe (empty)']
-		]),
+		itemsRequired: deepResolveItems([["Karil's crossbow", 'Rune crossbow', 'Armadyl crossbow', 'Toxic blowpipe']]),
 		notifyDrops: resolveItems(['Dragon warhammer']),
 		qpRequired: 30,
 		itemInBankBoosts: [
@@ -355,7 +353,6 @@ export const chaeldarMonsters: KillableMonster[] = [
 			},
 			{
 				[itemID('Toxic blowpipe')]: 15,
-				[itemID('Toxic blowpipe (empty)')]: 10,
 				[itemID('Armadyl crossbow')]: 8
 			},
 			{
