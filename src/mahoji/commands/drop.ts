@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import ClueTiers from '../../lib/minions/data/clueTiers';
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { itemNameFromID, updateBankSetting } from '../../lib/util';
