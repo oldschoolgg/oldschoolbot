@@ -3,7 +3,9 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
+import { leagueBuyables } from '../../lib/data/leaguesBuyables';
 import { kittens } from '../../lib/growablePets';
+import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { Minigames } from '../../lib/settings/minigames';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -16,8 +18,11 @@ import {
 } from '../../lib/util';
 import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
+import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
+
+const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
 export const buyCommand: OSBMahojiCommand = {
 	name: 'buy',
@@ -29,7 +34,7 @@ export const buyCommand: OSBMahojiCommand = {
 			description: 'The item you want to buy.',
 			required: true,
 			autocomplete: async (value: string) => {
-				return [...Buyables, { name: 'Kitten' }]
+				return allBuyablesAutocomplete
 					.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
 					.map(i => ({ name: i.name, value: i.name }));
 			}
@@ -83,6 +88,9 @@ export const buyCommand: OSBMahojiCommand = {
 				content: `Removed ${cost} from your bank.`
 			};
 		}
+		if (leagueBuyables.some(i => stringMatches(i.item.name, name))) {
+			return leaguesBuyCommand(user, name, quantity);
+		}
 
 		const buyable = Buyables.find(
 			item =>
@@ -118,6 +126,13 @@ export const buyCommand: OSBMahojiCommand = {
 			return `You don't have the required stats to buy this item. You need ${formatSkillRequirements(
 				buyable.skillsNeeded
 			)}.`;
+		}
+
+		if (buyable.requiredFavour) {
+			const [success, points] = gotFavour(user, buyable.requiredFavour, 100);
+			if (!success) {
+				return `You don't have the required amount of Favour to buy this item.\n\nRequired: ${points}% ${buyable.requiredFavour.toString()} Favour.`;
+			}
 		}
 
 		if (buyable.minigameScoreReq) {

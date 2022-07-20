@@ -2,7 +2,6 @@ import { KlasaUser } from 'klasa';
 import { Bank, Util } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
-import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { rand, updateGPTrackSetting } from '../../../lib/util';
 import { mahojiParseNumber } from '../../mahojiSettings';
@@ -34,8 +33,8 @@ export async function diceCommand(klasaUser: KlasaUser, diceamount?: string) {
 	const won = roll >= 55;
 	let amountToAdd = won ? amount : -amount;
 
-	await updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourceDice, amountToAdd);
-	await updateGPTrackSetting(klasaUser, UserSettings.GPDice, amountToAdd);
+	await updateGPTrackSetting('gp_dice', amountToAdd);
+	await updateGPTrackSetting('gp_dice', amountToAdd, klasaUser);
 
 	if (won) {
 		const wins = klasaUser.settings.get(UserSettings.Stats.DiceWins);

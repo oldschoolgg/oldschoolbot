@@ -19,7 +19,6 @@ export const fletchCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to fletch things.',
 		examples: ['/craft name:Onyx necklace']
 	},
 	options: [
@@ -67,7 +66,7 @@ export const fletchCommand: OSBMahojiCommand = {
 				fletchable.requiredSlayerUnlocks
 			);
 			if (!success) {
-				throw `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
+				return `You don't have the required Slayer Unlocks to create this item.\n\nRequired: ${errors}`;
 			}
 		}
 

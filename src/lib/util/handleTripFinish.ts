@@ -10,7 +10,6 @@ import { handlePassiveImplings } from '../implings';
 import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
-import { ClientSettings } from '../settings/types/ClientSettings';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
@@ -36,7 +35,7 @@ const tripFinishEffects: {
 			if (loot && activitiesToTrackAsPVMGPSource.includes(data.type)) {
 				const GP = loot.amount(COINS_ID);
 				if (typeof GP === 'number') {
-					updateGPTrackSetting(globalClient, ClientSettings.EconomyStats.GPSourcePVMLoot, GP);
+					updateGPTrackSetting('gp_pvm', GP);
 				}
 			}
 		}
@@ -76,7 +75,8 @@ export async function handleTripFinish(
 		| ((args: LastTripRunArgs) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
-	loot: Bank | null
+	loot: Bank | null,
+	_messages?: string[]
 ) {
 	const perkTier = getUsersPerkTier(user);
 	const messages: string[] = [];
@@ -84,6 +84,7 @@ export async function handleTripFinish(
 
 	const clueReceived = loot ? ClueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
+	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
 	}
@@ -101,7 +102,7 @@ export async function handleTripFinish(
 	const runCmdOptions = {
 		channelID,
 		userID: user.id,
-		guildID: isGuildBasedChannel(channel) ? channel.guild.id : undefined,
+		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
 		user,
 		member: null
 	};
@@ -126,7 +127,6 @@ export async function handleTripFinish(
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
-
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

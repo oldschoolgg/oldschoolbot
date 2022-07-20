@@ -5,6 +5,7 @@ import { Bank } from 'oldschooljs';
 import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
+import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
 import { Skills } from '../../types';
 import itemID from '../../util/itemID';
@@ -17,6 +18,7 @@ import { gnomeClothes } from './gnomeClothes';
 import { miningBuyables } from './mining';
 import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
+import { shootingStarsBuyables } from './shootingStarsBuyables';
 import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
 import { troubleBrewingBuyables } from './troubleBrewingShop';
@@ -29,6 +31,7 @@ export interface Buyable {
 	itemCost?: Bank;
 	aliases?: string[];
 	skillsNeeded?: Skills;
+	requiredFavour?: Favours;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
@@ -164,6 +167,11 @@ const constructionBuyables: Buyable[] = [
 		qpRequired: 23
 	},
 	{
+		name: 'Arceuus signet',
+		gpCost: 100_000,
+		requiredFavour: Favours.Arceuus
+	},
+	{
 		name: 'Ancient signet',
 		gpCost: 100_000,
 		qpRequired: 105
@@ -235,6 +243,44 @@ const hunterBuyables: Buyable[] = [
 	{
 		name: 'Magic box',
 		gpCost: 1500
+	}
+];
+
+const magicBuyables: Buyable[] = [
+	{
+		name: 'Mystic hat',
+		gpCost: 15_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe top',
+		gpCost: 120_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe bottom',
+		gpCost: 80_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic gloves',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic boots',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
 	}
 ];
 
@@ -793,9 +839,18 @@ const Buyables: Buyable[] = [
 			'Rainbow flower crown': 1
 		})
 	},
+	{
+		name: 'Mithril seeds',
+		gpCost: 3000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Mithril seeds': 1
+		})
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
+	...magicBuyables,
 	...questBuyables,
 	...noveltyFood,
 	...fremennikClothes,
@@ -813,7 +868,8 @@ const Buyables: Buyable[] = [
 	...skillCapeBuyables,
 	...aerialFishBuyables,
 	...troubleBrewingBuyables,
-	...ironmenBuyables
+	...ironmenBuyables,
+	...shootingStarsBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
