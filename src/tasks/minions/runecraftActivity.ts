@@ -56,6 +56,10 @@ export default class extends Task {
 			);
 		}
 
+		if (daeyaltEssence) {
+			str += '\nYou are gaining 50% more Runecrafting XP due to using Daeyalt Essence.';
+		}
+
 		str += `\n\nYou received: ${loot}.`;
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });

@@ -254,6 +254,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			channelID: channelID.toString(),
 			essenceQuantity: quantity,
 			useStaminas: usestams,
+			daeyaltEssence: daeyalt_essence,
 			duration,
 			imbueCasts,
 			type: 'Runecraft'

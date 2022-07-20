@@ -1,7 +1,6 @@
 import { reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
 import { Skills } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
@@ -111,7 +110,7 @@ export const mineCommand: OSBMahojiCommand = {
 			if (!hasDaeyaltReqs) {
 				return `To mine ${ore.name}, you need ${daeyaltReason}.`;
 			}
-			if (klasaUser.settings.get(UserSettings.QP) < 16) {
+			if (user.QP < 16) {
 				return `To mine ${ore.name}, you need atleast 16 Quest Points.`;
 			}
 		}
