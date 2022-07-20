@@ -1,7 +1,9 @@
 import { reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Mining from '../../lib/skilling/skills/mining';
+import { Skills } from '../../lib/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { determineScaledOreTime, formatDuration, itemNameFromID } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -45,6 +47,20 @@ const gloves = [
 	}
 ];
 
+const daeyaltEssenceSkillRequirements: Skills = {
+	woodcutting: 62,
+	fletching: 60,
+	crafting: 56,
+	agility: 52,
+	attack: 50,
+	slayer: 50,
+	magic: 49,
+	herblore: 40,
+	construction: 5,
+	thieving: 22,
+	strength: 40
+};
+
 export const mineCommand: OSBMahojiCommand = {
 	name: 'mine',
 	description: 'Send your minion to mine things.',
@@ -86,6 +102,17 @@ export const mineCommand: OSBMahojiCommand = {
 		const skills = getSkillsOfMahojiUser(user, true);
 		if (skills.mining < ore.level) {
 			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
+		}
+
+		// Check for daeyalt shard requirements.
+		const [hasDaeyaltReqs, daeyaltReason] = user.hasSkillReqs(daeyaltEssenceSkillRequirements);
+		if (ore.id === 24_704) {
+			if (!hasDaeyaltReqs) {
+				return `To mine ${ore.name}, you need ${daeyaltReason}.`;
+			}
+			if (user.settings.get(UserSettings.QP) < 16) {
+				return `To mine ${ore.name}, you need atleast 16 Quest Points.`;
+			}
 		}
 
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
