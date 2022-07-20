@@ -106,7 +106,7 @@ export const mineCommand: OSBMahojiCommand = {
 
 		// Check for daeyalt shard requirements.
 		const [hasDaeyaltReqs, daeyaltReason] = klasaUser.hasSkillReqs(daeyaltEssenceSkillRequirements);
-		if (ore.id === 24_704) {
+		if (ore.id === 24_706) {
 			if (!hasDaeyaltReqs) {
 				return `To mine ${ore.name}, you need ${daeyaltReason}.`;
 			}

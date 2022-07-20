@@ -933,6 +933,15 @@ const Buyables: Buyable[] = [
 		name: 'Dorgeshuun crossbow',
 		gpCost: 2500
 	},
+	{
+		name: 'Daeyalt essence',
+		itemCost: new Bank({
+			'Daeyalt shard': 1
+		}),
+		outputItems: new Bank({
+			'Daeyalt essence': 1
+		})
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,

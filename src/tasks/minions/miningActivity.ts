@@ -106,7 +106,7 @@ export default class extends Task {
 					break;
 				}
 			}
-		} else if (ore.id === 24_704) {
+		} else if (ore.id === 24_706) {
 			for (let i = 0; i < quantity; i++) {
 				daeyaltQty += rand(2, 3);
 			}
