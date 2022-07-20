@@ -1,9 +1,9 @@
 import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, PerkTier } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
@@ -108,7 +108,7 @@ export default class MinionCommand extends BotCommand {
 						bypassInhibitors: true,
 						...cmdOptions
 					}),
-				cantBeBusy: true
+				cantBeBusy: false
 			});
 		}
 

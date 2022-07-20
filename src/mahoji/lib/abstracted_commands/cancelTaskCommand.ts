@@ -45,14 +45,6 @@ export async function cancelTaskCommand(user: User, interaction?: SlashCommandIn
 		}
 	}
 
-	if (currentTask.type === 'BarbarianAssault') {
-		return `${mName} is currently doing Barbarian Assault, and cant leave their team!`;
-	}
-
-	if (currentTask.type === 'SoulWars') {
-		return `${mName} is currently doing Soul Wars, and cant leave their team!`;
-	}
-
 	if (currentTask.type === 'Raids' || currentTask.type === 'TheatreOfBlood') {
 		const data = currentTask as RaidsOptions;
 		if (data.users.length > 1) {

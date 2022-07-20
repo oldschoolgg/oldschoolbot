@@ -678,6 +678,17 @@ model EconomyTransaction {
   @@map("economy_transaction")
 }
 
+model StashUnit {
+  stash_id        Int
+  user_id         BigInt
+  items_contained Int[]
+  has_built       Boolean
+
+
+  @@unique([stash_id, user_id])
+  @@map("stash_unit")
+}
+
 enum command_usage_status {
   Unknown
   Success

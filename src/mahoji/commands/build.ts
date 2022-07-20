@@ -4,8 +4,10 @@ import { Bank } from 'oldschooljs';
 
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Constructables from '../../lib/skilling/skills/construction/constructables';
 import { SkillsEnum } from '../../lib/skilling/types';
+import { Skills } from '../../lib/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
@@ -13,6 +15,28 @@ import { stringMatches } from '../../lib/util/cleanString';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
+
+const ds2Requirements: Skills = {
+	magic: 75,
+	smithing: 70,
+	mining: 68,
+	crafting: 62,
+	agility: 60,
+	thieving: 60,
+	construction: 50,
+	hitpoints: 50,
+	herblore: 45,
+	prayer: 42,
+	strength: 50,
+	woodcutting: 55,
+	fishing: 53,
+	cooking: 53,
+	ranged: 30,
+	defence: 40,
+	firemaking: 49,
+	fletching: 25,
+	slayer: 18
+};
 
 export const buildCommand: OSBMahojiCommand = {
 	name: 'build',
@@ -52,11 +76,24 @@ export const buildCommand: OSBMahojiCommand = {
 		const object = Constructables.find(
 			object => stringMatches(object.name, options.name) || stringMatches(object.name.split(' ')[0], options.name)
 		);
+		const [hasDs2Requirements, ds2Reason] = user.hasSkillReqs(ds2Requirements);
 
 		if (!object) return 'Thats not a valid object to build.';
 
 		if (user.skillLevel(SkillsEnum.Construction) < object.level) {
 			return `${user.minionName} needs ${object.level} Construction to create a ${object.name}.`;
+		}
+
+		if (object.name === 'Mythical cape (mounted)') {
+			if (user.settings.get(UserSettings.QP) < 205) {
+				return `${user.minionName} needs 205 Quest Points to build a ${object.name}.`;
+			}
+			if (!hasDs2Requirements) {
+				return `In order to build a ${object.name}, you need: ${ds2Reason}.`;
+			}
+			if (!user.hasItemEquippedOrInBank('Mythical cape')) {
+				return `${user.minionName} needs to own a Mythical cape to build a ${object.name}.`;
+			}
 		}
 
 		let timeToBuildSingleObject = object.ticks * 300;

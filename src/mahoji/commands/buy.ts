@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import Buyables from '../../lib/data/buyables/buyables';
 import { kittens } from '../../lib/growablePets';
+import { gotFavour } from '../../lib/minions/data/kourendFavour';
 import { Minigames } from '../../lib/settings/minigames';
 import { isElligibleForPresent } from '../../lib/settings/settings';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -125,6 +126,13 @@ export const buyCommand: OSBMahojiCommand = {
 			return `You don't have the required stats to buy this item. You need ${formatSkillRequirements(
 				buyable.skillsNeeded
 			)}.`;
+		}
+
+		if (buyable.requiredFavour) {
+			const [success, points] = gotFavour(user, buyable.requiredFavour, 100);
+			if (!success) {
+				return `You don't have the required amount of Favour to buy this item.\n\nRequired: ${points}% ${buyable.requiredFavour.toString()} Favour.`;
+			}
 		}
 
 		if (buyable.minigameScoreReq) {

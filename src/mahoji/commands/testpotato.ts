@@ -9,6 +9,7 @@ import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 import { generateNewTame } from '../../commands/bso/nursery';
 import { production } from '../../config';
 import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
+import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
 import { BitField, MAX_QP } from '../../lib/constants';
 import {
 	gorajanArcherOutfit,
@@ -216,6 +217,16 @@ for (const group of DisassemblySourceGroups) {
 const leaguesPreset = new Bank();
 for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
 
+const allStashUnitItems = new Bank();
+for (const unit of allStashUnitsFlat) {
+	for (const i of [unit.items].flat(2)) {
+		allStashUnitItems.add(i);
+	}
+}
+for (const tier of allStashUnitTiers) {
+	allStashUnitItems.add(tier.cost.clone().multiply(tier.units.length));
+}
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
@@ -227,7 +238,8 @@ const spawnPresets = [
 	['bsogear', bsoGear],
 	['disassembly', disassembly],
 	['usables', usables],
-	['leagues', leaguesPreset]
+	['leagues', leaguesPreset],
+	['stashunits', allStashUnitItems]
 ] as const;
 
 const nexSupplies = new Bank()

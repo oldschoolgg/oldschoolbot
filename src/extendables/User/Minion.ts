@@ -7,6 +7,7 @@ import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
 import { bossEvents } from '../../lib/bossEvents';
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import {
 	Emoji,
 	Events,
@@ -23,7 +24,6 @@ import { fishingLocations } from '../../lib/fishingContest';
 import { hasGracefulEquipped } from '../../lib/gear';
 import { DisassembleTaskOptions } from '../../lib/invention/disassemble';
 import { ResearchTaskOptions } from '../../lib/invention/research';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
