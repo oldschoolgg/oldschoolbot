@@ -203,7 +203,7 @@ export const Cookables: Cookable[] = [
 	},
 	{
 		level: 82,
-		xp: 211,
+		xp: 211.3,
 		id: itemID('Sea turtle'),
 		name: 'Sea turtle',
 		alias: ['sea', 'turtle'],
@@ -234,7 +234,7 @@ export const Cookables: Cookable[] = [
 	},
 	{
 		level: 91,
-		xp: 216.2,
+		xp: 216.3,
 		id: itemID('Manta ray'),
 		name: 'Manta ray',
 		alias: ['manta'],

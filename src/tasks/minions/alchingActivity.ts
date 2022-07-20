@@ -61,6 +61,14 @@ export default class extends Task {
 				'<:lil_lamb:749240864345423903> While standing at the bank alching, a small lamb, abandoned by its family, licks your minions hand. Your minion adopts the lamb.';
 		}
 
-		handleTripFinish(user, channelID, responses, ['alch', [quantity, [item]], true], undefined, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			responses,
+			['activities', { alch: { quantity, item: item.name } }, true],
+			undefined,
+			data,
+			loot
+		);
 	}
 }

@@ -551,8 +551,17 @@ export const allCollectionLogs: ICollection = {
 				items: slayerCL
 			},
 			TzHaar: {
-				kcActivity: Monsters.TzHaarKet.name,
-				allItems: Monsters.TzHaarKet.allItems,
+				kcActivity: {
+					Default: [Monsters.TzHaarKet.name, Monsters.TzHaarMej.name, Monsters.TzHaarXil.name],
+					Ket: Monsters.TzHaarKet.name,
+					Mej: Monsters.TzHaarMej.name,
+					Xil: Monsters.TzHaarXil.name
+				},
+				allItems: [
+					...Monsters.TzHaarKet.allItems,
+					...Monsters.TzHaarMej.allItems,
+					...Monsters.TzHaarXil.allItems
+				],
 				items: tzHaarCL
 			}
 		}

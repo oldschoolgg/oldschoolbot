@@ -30,7 +30,7 @@
 		"chokidar": "^3.5.3",
 		"deepmerge": "^4.2.2",
 		"discord.js": "github:gc/discord.js#fd4c015610e3c10d96c131b6e3e7e3ab78132dad",
-		"e": "^0.2.1",
+		"e": "^0.2.2",
 		"emoji-regex": "^9.2.2",
 		"fastify": "^3.25.1",
 		"fastify-cors": "^5.2.0",

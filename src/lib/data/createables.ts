@@ -1864,6 +1864,16 @@ const Createables: Createable[] = [
 			[itemID('Ecumenical key')]: 1
 		}
 	},
+	{
+		name: 'Death tiara',
+		inputItems: new Bank({
+			'Death talisman': 1,
+			Tiara: 1
+		}),
+		outputItems: {
+			[itemID('Death tiara')]: 1
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
