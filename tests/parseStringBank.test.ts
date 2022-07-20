@@ -527,4 +527,32 @@ describe('Bank Parsers', () => {
 		expect(result18.bank.amount('Ranarr seed')).toEqual(20);
 		expect(result18.price).toEqual(50_000_000);
 	});
+	test('ensureOldNamesDontWorkForCustomItems', () => {
+		const usersBank = new Bank()
+			.add('Smokey', 10)
+			.add('Doug', 3)
+			.add('Lil lamb', 10)
+			.add('Tradeable mystery box', 6);
+
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'snakeweed mixture, 1 an indigo pentagon, an indigo square, tmb'
+			}).toString()
+		).toEqual('6x Tradeable Mystery Box');
+
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'snakeweed mixture, 1 an indigo pentagon, an indigo square, mystery box'
+			}).toString()
+		).toEqual('No items');
+
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'snake@w-eed miXture, 0 doug, 1 lil lamb, 1 an indigo pentagon, an indigo square, mystery box'
+			}).toString()
+		).toEqual('3x Doug, 1x Lil Lamb');
+	});
 });

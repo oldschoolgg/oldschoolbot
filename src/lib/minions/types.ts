@@ -36,11 +36,6 @@ export type BankBackground = {
 	  }
 );
 
-export interface ClueMilestoneReward {
-	itemReward: number;
-	scoreNeeded: number;
-}
-
 export type GearRequirement = Partial<{ [key in GearStat]: number }>;
 export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;
 
