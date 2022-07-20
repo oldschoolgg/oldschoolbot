@@ -103,7 +103,9 @@ export default class extends Task {
 		// Roll for pet
 		if (course.petChance && roll((course.petChance - user.skillLevel(SkillsEnum.Agility) * 25) / quantity)) {
 			loot.add('Giant squirrel');
-			str += "\nYou have a funny feeling you're being followed...";
+			str += '\n```diff';
+			str += "\n- You have a funny feeling you're being followed...";
+			str += '```';
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running ${course.name} laps at level ${currentLevel} Agility!`

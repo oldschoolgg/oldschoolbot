@@ -39,7 +39,9 @@ export default class extends Task {
 
 		if (roll((1_795_758 - user.skillLevel(SkillsEnum.Runecraft) * 25) / essenceQuantity)) {
 			loot.add('Rift guardian');
-			str += "\nYou have a funny feeling you're being followed...";
+			str += '\n```diff';
+			str += "\n- You have a funny feeling you're being followed...";
+			str += '```';
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Runecraft} **${user.username}'s** minion, ${

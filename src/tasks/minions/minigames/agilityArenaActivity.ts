@@ -53,7 +53,9 @@ export default class extends Task {
 					items: new Bank().add('Giant Squirrel'),
 					collectionLog: true
 				});
-				str += "**\nYou have a funny feeling you're being followed...**";
+				str += '\n```diff';
+				str += "\n- You have a funny feeling you're being followed...";
+				str += '```';
 				this.client.emit(
 					Events.ServerNotification,
 					`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`

@@ -52,7 +52,9 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished completing ${quantity}x ${name}. **${chanceOfDeath}% chance of death**, you died in ${deaths}/${quantity} of the attempts.\nYour ${name} KC is now ${newKc}.`;
 
 		if (loot.amount('Youngllef') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
+			str += '\n```diff';
+			str += "\n- You have a funny feeling you're being followed...";
+			str += '```';
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${

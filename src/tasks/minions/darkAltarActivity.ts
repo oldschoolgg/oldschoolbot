@@ -50,7 +50,9 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished runecrafting at the Dark altar, you received ${loot}. ${xpRes1} ${xpRes2} ${xpRes3}`;
 
 		if (loot.amount('Rift guardian') > 0) {
-			str += "\n\n**You have a funny feeling you're being followed...**";
+			str += '\n```diff';
+			str += "\n- You have a funny feeling you're being followed...";
+			str += '```';
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${user.minionName}, just received a Rift guardian while crafting ${
