@@ -170,9 +170,7 @@ export default class extends Task {
 		}
 
 		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
-			str += '\n```diff';
-			str += "\n- You have a funny feeling you're being followed...";
-			str += '```';
+			str += "\n```diff\n- You have a funny feeling you're being followed...```";
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${user.minionName}, just received a ${

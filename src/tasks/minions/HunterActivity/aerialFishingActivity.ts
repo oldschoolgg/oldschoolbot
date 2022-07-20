@@ -138,9 +138,7 @@ export default class extends Task {
 		const totalFishCaught = greaterSirenCaught + mottledEelCaught + commonTenchCaught + bluegillCaught;
 		if (roll((636_833 - user.skillLevel(SkillsEnum.Fishing) * 25) / totalFishCaught)) {
 			loot.add('Heron');
-			str += '\n```diff';
-			str += "\n- You have a funny feeling you're being followed...";
-			str += '```';
+			str += "\n```diff\n- You have a funny feeling you're being followed...```";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a **Heron** while Aerial fishing at level ${currentFishLevel} Fishing!`

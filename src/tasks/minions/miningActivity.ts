@@ -59,9 +59,7 @@ export default class extends Task {
 		// Roll for pet
 		if (ore.petChance && roll((ore.petChance - currentLevel * 25) / quantity)) {
 			loot.add('Rock golem');
-			str += '\n```diff';
-			str += "\n- You have a funny feeling you're being followed...";
-			str += '```';
+			str += "\n```diff\n- You have a funny feeling you're being followed...```";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received a Rock golem while mining ${ore.name} at level ${currentLevel} Mining!`

@@ -83,9 +83,7 @@ export default class extends Task {
 		}\nYou received **${pointsReceived.toLocaleString()}** Volcanic Mine points. ${warningMessage}`;
 
 		if (loot.has('Rock golem')) {
-			str += '\n```diff';
-			str += "\n- You have a funny feeling you're being followed...";
-			str += '```';
+			str += "\n```diff\n- You have a funny feeling you're being followed...```";
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Mining} **${user.username}'s** minion, ${user.minionName}, just received ${

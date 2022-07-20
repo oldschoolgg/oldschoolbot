@@ -362,9 +362,7 @@ export default class extends Task {
 			}
 
 			if (tangleroot) {
-				infoStr.push('\n```diff');
-				infoStr.push("\n- You have a funny feeling you're being followed...");
-				infoStr.push('```');
+				infoStr.push("\n```diff\n- You have a funny feeling you're being followed...```");
 				this.client.emit(
 					Events.ServerNotification,
 					`${Emoji.Farming} **${user.username}'s** minion, ${user.minionName}, just received a Tangleroot while farming ${patchType.lastPlanted} at level ${currentFarmingLevel} Farming!`

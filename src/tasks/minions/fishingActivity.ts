@@ -185,9 +185,7 @@ export default class extends Task {
 			for (let i = 0; i < quantity; i++) {
 				if (roll(chance)) {
 					loot.add('Heron');
-					str += '\n```diff';
-					str += "\n- You have a funny feeling you're being followed...";
-					str += '```';
+					str += "\n```diff\n- You have a funny feeling you're being followed...```";
 					this.client.emit(
 						Events.ServerNotification,
 						`${Emoji.Fishing} **${user.username}'s** minion, ${user.minionName}, just received a Heron while fishing ${fish.name} at level ${currentLevel} Fishing!`

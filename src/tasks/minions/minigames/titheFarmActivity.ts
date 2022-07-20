@@ -105,9 +105,7 @@ export default class extends Task {
 
 		if (roll((7_494_389 - user.skillLevel(SkillsEnum.Farming) * 25) / determineHarvest)) {
 			loot.add('Tangleroot');
-			lootStr.push('\n\n```diff');
-			lootStr.push("\n- You have a funny feeling you're being followed...");
-			lootStr.push('```');
+			lootStr.push("\n```diff\n- You have a funny feeling you're being followed...```");
 			this.client.emit(
 				Events.ServerNotification,
 				`${Emoji.Farming} **${user.username}'s** minion, ${
