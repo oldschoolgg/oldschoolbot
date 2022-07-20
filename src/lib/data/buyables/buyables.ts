@@ -6,6 +6,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
+import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
 import { Skills } from '../../types';
 import getOSItem from '../../util/getOSItem';
@@ -32,6 +33,7 @@ export interface Buyable {
 	itemCost?: Bank;
 	aliases?: string[];
 	skillsNeeded?: Skills;
+	requiredFavour?: Favours;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
@@ -165,6 +167,11 @@ const constructionBuyables: Buyable[] = [
 		name: 'Fairy enchantment',
 		gpCost: 100_000,
 		qpRequired: 23
+	},
+	{
+		name: 'Arceuus signet',
+		gpCost: 100_000,
+		requiredFavour: Favours.Arceuus
 	},
 	{
 		name: 'Ancient signet',
