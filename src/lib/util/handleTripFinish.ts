@@ -124,8 +124,7 @@ export async function handleTripFinish(
 	const components: MessageOptions['components'] = [[]];
 	if (onContinueFn) components[0].push(makeRepeatTripButton());
 	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
-	if (message.includes('tells you to come back after your birdhouses are full!'))
-		components[0].push(makeRepeatTripButton());
+	if (message.includes('your birdhouses')) components[0].push(makeRepeatTripButton());
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
