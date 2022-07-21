@@ -136,13 +136,21 @@ export const collectables: Collectable[] = [
 	}
 ];
 
-export async function collectCommand(mahojiUser: User, user: KlasaUser, channelID: bigint, objectName: string) {
+export async function collectCommand(
+	mahojiUser: User,
+	user: KlasaUser,
+	channelID: bigint,
+	objectName: string,
+	no_stams?: boolean
+) {
 	const collectable = collectables.find(c => stringMatches(c.item.name, objectName));
 	if (!collectable) {
 		return `That's not something your minion can collect, you can collect these things: ${collectables
 			.map(i => i.item.name)
 			.join(', ')}.`;
 	}
+
+	console.log(no_stams);
 
 	const maxTripLength = user.maxTripLength('Collecting');
 	if (collectable.qpRequired && mahojiUser.QP < collectable.qpRequired) {
@@ -157,6 +165,10 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 		}
 	}
 
+	if (no_stams === undefined) {
+		no_stams = false;
+	}
+
 	const quantity = Math.floor(maxTripLength / collectable.duration);
 
 	let duration = collectable.duration * quantity;
@@ -168,8 +180,14 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 		)}.`;
 	}
 
-	const cost = collectable.itemCost?.clone().multiply(quantity) ?? null;
-	if (cost) {
+	let cost: Bank = new Bank();
+	if (collectable.itemCost) {
+		cost = collectable.itemCost.clone().multiply(quantity);
+		if (cost.has('Stamina potion(4)') && no_stams) {
+			// 50% longer trip time for not using stamina potion (4)
+			duration *= 1.5;
+			cost.remove('Stamina potion(4)', cost.amount('Stamina potion (4)'));
+		}
 		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}
@@ -184,11 +202,16 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 		channelID: channelID.toString(),
 		quantity,
 		duration,
+		noStaminas: no_stams,
 		type: 'Collecting'
 	});
 
 	return `${user.minionName} is now collecting ${quantity * collectable.quantity}x ${
 		collectable.item.name
-	}, it'll take around ${formatDuration(duration)} to finish.
-${cost ? `\nRemoved ${cost} from your bank.` : ''}`;
+	}, it'll take around ${formatDuration(duration)} to finish.${
+		cost.toString().length > 0
+			? `
+Removed ${cost} from your bank.`
+			: ''
+	}${no_stams ? '\n50% longer trip due to not using Stamina potions.' : ''}`;
 }
