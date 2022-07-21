@@ -469,6 +469,77 @@ const hunterClothing: Createable[] = [
 	}
 ];
 
+const metamorphPets: Createable[] = [
+	{
+		name: 'Midnight',
+		inputItems: {
+			[itemID('Noon')]: 1
+		},
+		outputItems: {
+			[itemID('Midnight')]: 1
+		}
+	},
+	{
+		name: 'Baby mole-rat',
+		inputItems: {
+			[itemID('Baby mole')]: 1,
+			[itemID('Mole claw')]: 1
+		},
+		outputItems: {
+			[itemID('Baby mole-rat')]: 1
+		}
+	},
+	{
+		name: 'Tzrek-zuk',
+		inputItems: {
+			[itemID('Jal-nib-rek')]: 1
+		},
+		outputItems: {
+			[itemID('Tzrek-zuk')]: 1
+		}
+	},
+	{
+		name: 'Little parasite',
+		inputItems: {
+			[itemID('Parasitic egg')]: 1,
+			[itemID('Little nightmare')]: 1
+		},
+		outputItems: {
+			[itemID('Little parasite')]: 1
+		}
+	},
+	{
+		name: 'Ziggy',
+		inputItems: {
+			[itemID('Rocky')]: 1,
+			[itemID('Poison ivy berries')]: 1
+		},
+		outputItems: {
+			[itemID('Ziggy')]: 1
+		}
+	},
+	{
+		name: 'Red',
+		inputItems: {
+			[itemID('Rocky')]: 1,
+			[itemID('Redberries')]: 1
+		},
+		outputItems: {
+			[itemID('Red')]: 1
+		}
+	},
+	{
+		name: 'Great blue heron',
+		inputItems: {
+			[itemID('Heron')]: 1,
+			[itemID('Spirit flakes')]: 3000
+		},
+		outputItems: {
+			[itemID('Great blue heron')]: 1
+		}
+	}
+];
+
 const Reverteables: Createable[] = [
 	{
 		name: 'Revert tanzanite fang',
@@ -1004,6 +1075,80 @@ const Reverteables: Createable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1,
 			[itemID('Zamorak hilt')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert midnight',
+		inputItems: {
+			[itemID('Midnight')]: 1
+		},
+		outputItems: {
+			[itemID('Noon')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert baby mole-rat',
+		inputItems: {
+			[itemID('Baby mole-rat')]: 1,
+			[itemID('Mole skin')]: 1
+		},
+		outputItems: {
+			[itemID('Baby mole')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert tzrek-zuk',
+		inputItems: {
+			[itemID('Tzrek-zuk')]: 1
+		},
+		outputItems: {
+			[itemID('Jal-nib-rek')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert little parasite',
+		inputItems: {
+			[itemID('Little parasite')]: 1
+		},
+		outputItems: {
+			[itemID('Little nightmare')]: 1,
+			[itemID('Parasitic egg')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert ziggy',
+		inputItems: {
+			[itemID('Ziggy')]: 1,
+			[itemID('White berries')]: 1
+		},
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert red',
+		inputItems: {
+			[itemID('Red')]: 1,
+			[itemID('White berries')]: 1
+		},
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert great blue heron',
+		inputItems: {
+			[itemID('Great blue heron')]: 1
+		},
+		outputItems: {
+			[itemID('Heron')]: 1
 		},
 		noCl: true
 	}
@@ -1810,16 +1955,6 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Little parasite',
-		inputItems: new Bank({
-			'Parasitic egg': 1,
-			'Little nightmare': 1
-		}),
-		outputItems: {
-			[itemID('Little parasite')]: 1
-		}
-	},
-	{
 		name: 'Strange hallowed tome',
 		inputItems: new Bank({
 			'Mysterious page 1': 1,
@@ -1869,6 +2004,7 @@ const Createables: Createable[] = [
 	...hunterClothing,
 	...twistedAncestral,
 	...metamorphPetCreatables,
+	...metamorphPets,
 	...slayerCreatables,
 	...capeCreatables,
 	...dragonFireShieldCreatables,
