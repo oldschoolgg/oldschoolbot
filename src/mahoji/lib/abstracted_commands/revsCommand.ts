@@ -11,6 +11,7 @@ import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/rev
 import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
+import { Skills } from '../../../lib/types';
 import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
@@ -23,6 +24,16 @@ const specialWeapons = {
 	mage: getOSItem("Thammaron's sceptre")
 } as const;
 
+const maxCombat: Skills = {
+	magic: 99,
+	ranged: 99,
+	prayer: 99,
+	hitpoints: 99,
+	attack: 99,
+	strength: 99,
+	defence: 99
+};
+
 export async function revsCommand(
 	user: KlasaUser,
 	mUser: User,
@@ -32,6 +43,7 @@ export async function revsCommand(
 ): CommandResponse {
 	const style = convertAttackStylesToSetup(mUser.attack_style);
 	const userGear = getUserGear(mUser).wildy;
+	const [hasMaxed] = user.hasSkillReqs(maxCombat);
 
 	const boosts = [];
 	const monster = revenantMonsters.find(
@@ -100,6 +112,10 @@ export async function revsCommand(
 	let deathChanceFromGear = Math.max(20, 100 - defensiveGearPercent) / 4;
 	deathChance += deathChanceFromGear;
 
+	if (hasMaxed) {
+		deathChance -= 5;
+	}
+
 	const died = percentChance(deathChance);
 
 	await addSubTaskToActivityTask<RevenantOptions>({
@@ -122,7 +138,12 @@ export async function revsCommand(
 ${Emoji.OSRSSkull} Skulled
 **Death Chance:** ${deathChance.toFixed(2)}% (${deathChanceFromGear.toFixed(2)}% from magic def${
 		deathChanceFromDefenceLevel > 0 ? `, ${deathChanceFromDefenceLevel.toFixed(2)}% from defence level` : ''
-	} + 5% as default chance).${cost.length > 0 ? `\nRemoved from bank: ${cost}` : ''}${
+	} + 5% as default chance.)`;
+	if (hasMaxed) {
+		response += ' (Your default chance has been removed due to being maxed combat.)';
+	}
+
+	response += `${cost.length > 0 ? `\nRemoved from bank: ${cost}` : ''}${
 		boosts.length > 0 ? `\nBoosts: ${boosts.join(', ')}` : ''
 	}`;
 
