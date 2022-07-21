@@ -5,7 +5,7 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, LootTable } from 'oldschooljs';
 
-import { PerkTier } from '../../../lib/constants';
+import { Events, PerkTier } from '../../../lib/constants';
 import { allOpenables, UnifiedOpenable } from '../../../lib/openables';
 import { ItemBank } from '../../../lib/types';
 import { updateGPTrackSetting } from '../../../lib/util';
@@ -148,6 +148,13 @@ async function finalizeOpening({
 	const openedStr = openables
 		.map(({ openedItem }) => `${newOpenableScores.amount(openedItem.id)}x ${openedItem.name}`)
 		.join(', ');
+
+	if (loot.has("Lil' Creator")) {
+		globalClient.emit(
+			Events.ServerNotification,
+			`<:Lil_creator:798221383951319111> **${user.username}'s** minion, ${user.minionName}, just received a Lil' Creator from their ${openedStr} crate!`
+		);
+	}
 
 	let response: Awaited<CommandResponse> = {
 		attachments: [image.file],
