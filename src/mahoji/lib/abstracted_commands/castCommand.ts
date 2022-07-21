@@ -39,39 +39,39 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 
 	let castTimeMilliSeconds = spell.ticks * Time.Second * 0.6 + Time.Second / 4;
 
-		if (spell.travelTime) {
-			let { travelTime } = spell;
-			if (user.hasGracefulEquipped()) {
-				travelTime = reduceNumByPercent(travelTime, 20); // 20% boost for having graceful
-				boosts.push('20% for Graceful outfit');
-			} else {
-				missedBoosts.push('20% for Graceful outfit');
-			}
-
-			if (spell.agilityBoost) {
-				const boostLevels = spell.agilityBoost.map(boost => boost[0]);
-				const boostPercentages = spell.agilityBoost.map(boost => boost[1]);
-
-				const availableBoost = boostLevels.find(boost => user.skillLevel(SkillsEnum.Agility) >= boost);
-				if (availableBoost) {
-					const boostIndex = boostLevels.indexOf(availableBoost);
-
-					travelTime = reduceNumByPercent(travelTime, boostPercentages[boostIndex]); // Apply an agility boost based on tier
-					boosts.push(`${boostPercentages[boostIndex]}% for ${availableBoost}+ Agility`);
-
-					if (boostIndex > 0) {
-						missedBoosts.push(
-							`${boostPercentages[boostIndex - 1]}% for ${boostLevels[boostIndex - 1]}+ Agility`
-						);
-					}
-				} else {
-					const worstBoost = spell.agilityBoost[spell.agilityBoost.length - 1];
-					missedBoosts.push(`${worstBoost[1]}% for ${worstBoost[0]}+ Agility`);
-				}
-			}
-
-			castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
+	if (spell.travelTime) {
+		let { travelTime } = spell;
+		if (user.hasGracefulEquipped()) {
+			travelTime = reduceNumByPercent(travelTime, 20); // 20% boost for having graceful
+			boosts.push('20% for Graceful outfit');
+		} else {
+			missedBoosts.push('20% for Graceful outfit');
 		}
+
+		if (spell.agilityBoost) {
+			const boostLevels = spell.agilityBoost.map(boost => boost[0]);
+			const boostPercentages = spell.agilityBoost.map(boost => boost[1]);
+
+			const availableBoost = boostLevels.find(boost => user.skillLevel(SkillsEnum.Agility) >= boost);
+			if (availableBoost) {
+				const boostIndex = boostLevels.indexOf(availableBoost);
+
+				travelTime = reduceNumByPercent(travelTime, boostPercentages[boostIndex]); // Apply an agility boost based on tier
+				boosts.push(`${boostPercentages[boostIndex]}% for ${availableBoost}+ Agility`);
+
+				if (boostIndex > 0) {
+					missedBoosts.push(
+						`${boostPercentages[boostIndex - 1]}% for ${boostLevels[boostIndex - 1]}+ Agility`
+					);
+				}
+			} else {
+				const worstBoost = spell.agilityBoost[spell.agilityBoost.length - 1];
+				missedBoosts.push(`${worstBoost[1]}% for ${worstBoost[0]}+ Agility`);
+			}
+		}
+
+		castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
+	}
 
 	const maxTripLength = user.maxTripLength('Casting');
 
@@ -125,11 +125,9 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 		((spell.xp * quantity) / (duration / Time.Minute)) * 60
 	).toLocaleString()} Magic XP/Hr`;
 
-	let response = `${user.minionName} is now casting ${quantity}x ${
-		spell.name
-	}, it'll take around ${formatDuration(duration)} to finish. Removed ${cost}${
-		spell.gpCost ? ` and ${gpCost} Coins` : ''
-	} from your bank. **${magicXpHr}**`;
+	let response = `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
+		duration
+	)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${magicXpHr}**`;
 
 	if (spell.craftXp) {
 		response = `and** ${Math.round(
