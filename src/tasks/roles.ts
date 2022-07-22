@@ -3,9 +3,9 @@ import { noOp, notEmpty } from 'e';
 import { Task } from 'klasa';
 
 import { production } from '../config';
+import { ClueTiers } from '../lib/clues/clueTiers';
 import { BOT_TYPE, Roles, SupportServer, usernameCache } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
-import ClueTiers from '../lib/minions/data/clueTiers';
 import { Minigames } from '../lib/settings/minigames';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';

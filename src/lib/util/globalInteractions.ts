@@ -2,8 +2,8 @@ import { MessageButton } from 'discord.js';
 import { APIInteraction, APIMessageComponentInteraction, InteractionType } from 'mahoji';
 
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache } from '../constants';
-import { ClueTier } from '../minions/data/clueTiers';
 import { runCommand } from '../settings/settings';
 import { minionIsBusy } from './minionIsBusy';
 import { minionName } from './minionUtils';
