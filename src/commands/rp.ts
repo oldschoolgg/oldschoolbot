@@ -24,12 +24,10 @@ import {
 	SupportServer,
 	userTimers
 } from '../lib/constants';
-import { getCollectionItems } from '../lib/data/Collections';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../lib/doubleLoot';
 import { evalMathExpression } from '../lib/expressionParser';
 import { GearSetup, GearSetupTypes } from '../lib/gear';
-import { leaguesCheckUser, leaguesClaimCommand } from '../lib/leagues/leagues';
 import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
@@ -54,7 +52,7 @@ import {
 	stringMatches,
 	toKMB
 } from '../lib/util';
-import getOSItem, { getItem } from '../lib/util/getOSItem';
+import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 import { makeBankImage, makeBankImageKlasa } from '../lib/util/makeBankImage';
@@ -1141,93 +1139,6 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				return msg.channel.send({
 					files: [new MessageAttachment(Buffer.from(str), 'output.txt')]
 				});
-			}
-			case 'itemdata': {
-				if (typeof input !== 'string') return;
-				const item = getItem(input);
-				if (!item) return;
-				return msg.channel.send(JSON.stringify(item, null, 2));
-			}
-			case 'testercheck': {
-				if (production) return;
-				let time = '12hours';
-				if (typeof input === 'string') time = input;
-				const result = await prisma.$queryRawUnsafe<
-					{ username: string; qty: number }[]
-				>(`SELECT "new_user"."username", COUNT(user_id) AS qty
-FROM command_usage
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "command_usage"."user_id"::text
-WHERE date > now() - INTERVAL '${time}'
-GROUP BY "new_user"."username"
-ORDER BY qty DESC;`);
-				return msg.channel.send(
-					result
-						.slice(0, 10)
-						.map(u => `${u.username}: ${u.qty} commands`)
-						.join('\n')
-				);
-			}
-			case 'masscheckbankfix': {
-				let usersChanged = 0;
-				const allBrokenItems = new Set<any>();
-				const users = Array.from(globalClient.users.cache.values()).filter(
-					u => Object.keys(u.settings.get(UserSettings.Bank)).length !== 0
-				);
-				for (const user of users) {
-					const [, arr] = await repairBrokenItemsFromUser(user as KlasaUser);
-					if (arr) {
-						for (const i of arr) allBrokenItems.add(i);
-						usersChanged++;
-					}
-				}
-				let str = Array.from(allBrokenItems.values());
-				return msg.channel.send(
-					`Removed ${allBrokenItems.size} (${str}) from ${usersChanged} users, out of ${users.length} checked`
-				);
-			}
-			case 'massleaguesclaim': {
-				const items = getCollectionItems('overall', false);
-				if (!items || items.length === 0) {
-					return;
-				}
-				msg.channel.send('running...');
-				const usersWithPts = await roboChimpClient.user.findMany({
-					where: {
-						leagues_points_total: {
-							gt: 0
-						}
-					},
-					select: {
-						id: true
-					}
-				});
-				const lbCl = (
-					await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
-SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
-				  FROM (
-  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
-  				id, "collectionLogBank",
-			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
-					.map(i => `'${i}'`)
-					.join(', ')}]))) "inverse_length"
-  FROM users
-  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
-) u
-ORDER BY qty DESC
-LIMIT 500;
-`)
-				).filter(i => i.qty > 0);
-
-				let done = 0;
-				for (const { id } of lbCl) {
-					if (usersWithPts.some(i => i.id.toString() === id)) continue;
-					const user = await globalClient.fetchUser(id);
-					await repairBrokenItemsFromUser(user as KlasaUser);
-					const { finished } = await leaguesCheckUser(id.toString());
-					await leaguesClaimCommand(BigInt(id), finished);
-					done++;
-				}
-				return msg.channel.send(`Claimed points for ${done} users`);
 			}
 		}
 	}

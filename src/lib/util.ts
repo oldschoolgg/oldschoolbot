@@ -971,5 +971,5 @@ export function clAdjustedDroprate(
 	for (let i = 0; i < amountInCL; i++) {
 		newRate *= increaseMultiplier;
 	}
-	return newRate;
+	return Math.floor(newRate);
 }
