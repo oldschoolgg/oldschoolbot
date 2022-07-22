@@ -96,7 +96,7 @@ const igneClaws = [
 		boost: 14
 	},
 	{
-		item: getOSItem('Obsidian igne claws'),
+		item: getOSItem('Volcanic igne claws'),
 		boost: 17
 	},
 	{
@@ -798,6 +798,7 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 	for (const { item, boost } of igneClaws) {
 		if (tame.equipped_primary === item.id) {
 			boosts.push(`${boost}% faster (${item.name})`);
+			speed = reduceNumByPercent(speed, boost);
 			break;
 		}
 	}

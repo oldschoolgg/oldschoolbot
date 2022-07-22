@@ -57,11 +57,12 @@ export const tameCreatables: Createable[] = [
 		})
 	},
 	{
-		name: 'Obsidian igne claws',
+		name: 'Volcanic igne claws',
 		inputItems: new Bank({
 			'Barrows igne claws': 1,
 			Leather: 10,
-			'Obsidian shards': 250
+			'Obsidian shards': 250,
+			'Volcanic shards': 2
 		}),
 		materialCost: new MaterialBank({
 			metallic: 1500,
@@ -70,13 +71,13 @@ export const tameCreatables: Createable[] = [
 			sharp: 200
 		}),
 		outputItems: new Bank({
-			'Obsidian igne claws': 1
+			'Volcanic igne claws': 1
 		})
 	},
 	{
 		name: 'Drygore igne claws',
 		inputItems: new Bank({
-			'Obsidian igne claws': 1,
+			'Volcanic igne claws': 1,
 			Leather: 10
 		}),
 		materialCost: new MaterialBank({

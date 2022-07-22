@@ -14,14 +14,14 @@ import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettin
 
 const pickaxes = [
 	{
-		id: itemID('Dwarven pickaxe'),
-		reductionPercent: 50,
+		id: itemID('Volcanic pickaxe'),
+		reductionPercent: 60,
 		miningLvl: 99
 	},
 	{
-		id: itemID('Volcanic pickaxe'),
-		reductionPercent: 40,
-		miningLvl: 80
+		id: itemID('Dwarven pickaxe'),
+		reductionPercent: 50,
+		miningLvl: 99
 	},
 	{
 		id: itemID('3rd age pickaxe'),
@@ -139,8 +139,8 @@ export const mineCommand: OSBMahojiCommand = {
 		}
 
 		if (userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe')) {
-			timeToMine = reduceNumByPercent(timeToMine, 55);
-			boosts.push('55% for Offhand volcanic pickaxe');
+			timeToMine = reduceNumByPercent(timeToMine, 60);
+			boosts.push('60% for Offhand volcanic pickaxe');
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Mining');

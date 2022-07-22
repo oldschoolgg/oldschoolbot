@@ -53,17 +53,6 @@ export const moktangCreatables: Createable[] = [
 			rocky: 500,
 			magic: 50
 		})
-	},
-	{
-		name: 'Volcanic bar',
-		inputItems: new Bank({
-			'Volcanic shards': 3
-		}),
-		outputItems: new Bank({ 'Moktang totem': 1 }),
-		materialCost: new MaterialBank({
-			rocky: 500,
-			magic: 50
-		})
 	}
 ];
 
@@ -116,8 +105,10 @@ export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQu
 
 	return `${user.minionName} is now off to kill Moktang ${quantity}x times, their trip will take ${formatDuration(
 		duration
-	)}.
-**Boosts:** ${timeToKill.messages.join(', ')} ${spoiler(timeToKill.missed.join(', '))}`;
+	)}. Removed ${cost}.
+**Boosts:** ${timeToKill.messages.join(', ')} ${
+		timeToKill.missed.length > 0 ? spoiler(timeToKill.missed.join(', ')) : ''
+	}`;
 }
 
 export const MOKTANG_ID = 391_241;
@@ -125,6 +116,7 @@ export const MOKTANG_ID = 391_241;
 const BarTable = new LootTable().add('Bronze bar', 10).add('Iron bar', 10).add('Steel bar', 10);
 
 export const MoktangLootTable = new LootTable()
+	.every(StoneSpiritTable, [2, 5])
 	.tertiary(1536, 'Mini moktang')
 	.tertiary(1200, 'Volcanic dye')
 	.tertiary(1024, 'Claws frame')
@@ -133,7 +125,6 @@ export const MoktangLootTable = new LootTable()
 	.tertiary(16, MysteryBoxes)
 	.add(BarTable)
 	.add(lowRuneHighAdamantTable)
-	.add(StoneSpiritTable, [2, 5])
 	.add(FletchingTipsTable)
 	.add(runeWeaponTable);
 
@@ -142,7 +133,7 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 	const klasaUser = await globalClient.fetchUser(userID);
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
-	let xpPer = klasaUser.skillLevel(SkillsEnum.Mining) * 1300;
+	await klasaUser.incrementMonsterScore(MOKTANG_ID, qty);
 
 	let loot = new Bank();
 
@@ -155,7 +146,7 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 
 	const xpStr = await klasaUser.addXP({
 		skillName: SkillsEnum.Mining,
-		amount: xpPer,
+		amount: klasaUser.skillLevel(SkillsEnum.Mining) * 1300 * qty,
 		duration: data.duration,
 		multiplier: false,
 		masterCapeBoost: true

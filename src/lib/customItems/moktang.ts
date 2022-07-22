@@ -13,18 +13,6 @@ setCustomItem(
 );
 
 setCustomItem(
-	52_651,
-	'Volcanic bar',
-	'Coal',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true
-		}
-	},
-	10_000
-);
-
-setCustomItem(
 	52_652,
 	'Dwarven gloves (Volcanic)',
 	'Dwarven gloves',
@@ -178,7 +166,7 @@ setCustomItem(
 
 setCustomItem(
 	52_665,
-	'Obsidian igne claws',
+	'Volcanic igne claws',
 	'Coal',
 	{
 		customItemData: {
@@ -263,4 +251,15 @@ setCustomItem(
 		}
 	},
 	100_000
+);
+setCustomItem(
+	52_673,
+	'Dwarven warhammer (volcanic)',
+	'Dwarven warhammer',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	1_000_000_000
 );

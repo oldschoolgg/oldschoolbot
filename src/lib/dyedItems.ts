@@ -344,6 +344,10 @@ export const dyedItems: DyedItem[] = [
 			{
 				item: getOSItem('Dwarven warnana'),
 				dye: getOSItem('Monkey dye')
+			},
+			{
+				item: getOSItem('Dwarven warhammer (volcanic)'),
+				dye: getOSItem('Volcanic dye')
 			}
 		]
 	},
