@@ -150,8 +150,6 @@ export async function collectCommand(
 			.join(', ')}.`;
 	}
 
-	console.log(no_stams);
-
 	const maxTripLength = user.maxTripLength('Collecting');
 	if (collectable.qpRequired && mahojiUser.QP < collectable.qpRequired) {
 		return `You need ${collectable.qpRequired} QP to collect ${collectable.item.name}.`;
