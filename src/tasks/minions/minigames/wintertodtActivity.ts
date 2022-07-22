@@ -10,7 +10,7 @@ import { WintertodtCrate } from '../../../lib/simulation/wintertodt';
 import Firemaking from '../../../lib/skilling/skills/firemaking';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
-import { itemID, rand, roll, updateBankSetting } from '../../../lib/util';
+import { clAdjustedDroprate, rand, roll, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
@@ -38,9 +38,10 @@ export default class extends Task {
 		}
 
 		let gotToad = false;
-		if (duration > Time.Minute * 20 && roll(3000 / Math.floor(duration / Time.Minute))) {
+		const dropRate = clAdjustedDroprate(user, 'Wintertoad', 3000 / Math.floor(duration / Time.Minute), 1.2);
+		if (duration > Time.Minute * 20 && roll(dropRate)) {
 			gotToad = true;
-			loot.bank[itemID('Wintertoad')] = 1;
+			loot.add('Wintertoad');
 		}
 
 		// Track loot in Economy Stats
