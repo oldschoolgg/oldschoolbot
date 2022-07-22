@@ -94,8 +94,11 @@ export const sellCommand: OSBMahojiCommand = {
 		if (bankToSell.has('Golden tench')) {
 			const loot = new Bank();
 			const tenchBank = new Bank();
-			const amt = tenchBank.amount('Golden tench');
-			loot.add('Molch pearl', 100 * amt);
+			tenchBank.add('Golden tench', bankToSell.amount('Golden tench')):
+			for (let i = 0; i < tenchBank.amount('Golden tench'); i++) {			
+			loot.add('Molch pearl', 100);
+			}
+
 			await handleMahojiConfirmation(
 				interaction,
 				`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`
