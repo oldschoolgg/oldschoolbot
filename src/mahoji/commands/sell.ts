@@ -93,15 +93,16 @@ export const sellCommand: OSBMahojiCommand = {
 
 		if (bankToSell.has('Golden tench')) {
 			const loot = new Bank();
-			const amt = bankToSell.amount('Golden tench');
+			const tenchBank = new Bank();
+			const amt = tenchBank.amount('Golden tench');
 			loot.add('Molch pearl', 100 * amt);
 			await handleMahojiConfirmation(
 				interaction,
-				`${user}, please confirm you want to sell ${bankToSell} for **${loot}**.`
+				`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`
 			);
-			await user.removeItemsFromBank(bankToSell);
+			await user.removeItemsFromBank(tenchBank);
 			await user.addItemsToBank({ items: loot, collectionLog: false });
-			return `You exchanged ${bankToSell} and received: ${loot}.`;
+			return `You exchanged ${tenchBank} and received: ${loot}.`;
 		}
 
 		let totalPrice = 0;
