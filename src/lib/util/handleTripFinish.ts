@@ -4,10 +4,10 @@ import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js'
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
-import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
