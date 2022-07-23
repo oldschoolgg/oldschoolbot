@@ -28,18 +28,12 @@ const foodTable = new LootTable()
 	.add('Raw anglerfish', [5, 10], 2)
 	.add('Raw rocktail', [2, 5], 2);
 
-const fletchBowTable = new LootTable()
-	.add('Elder bow (u)', [3, 9], 2)
-	.add('Magic longbow (u)', [5, 15], 3)
-	.add('Magic shortbow (u)', [5, 15], 3)
-	.add('Yew longbow (u)', [10, 25], 5)
-	.add('Yew shortbow (u)', [10, 25], 5);
-
 const regularTable = new LootTable()
 	/* Supplies */
 	.add('Dragon bolts (unf)', [20, 30], 2)
 	.add('Cadantine seed', [1, 3], 2)
 	.add('Toadflax seed', [1, 3], 2)
+	.add('Lantadyme seed', [1, 3], 2)
 	.add('Bow string', [100, 400], 2)
 	.add('Ruby bolt tips', [15, 75])
 	.add('Dragonstone bolt tips', [10, 50])
@@ -49,14 +43,14 @@ const regularTable = new LootTable()
 	.add('Death rune', [200, 500])
 	.add('Amethyst', [10, 25])
 	.add('Uncut dragonstone', [10, 20])
-	.add(fletchBowTable, 1, 15)
+	.add('Elder logs', [10, 50], 2)
 
 	/* Food */
 	.add(foodTable, 1, 14)
 
 	/* Other */
 	.add('Coins', [50_000, 200_000])
-	.add('Pure essence', [2000, 3000])
+	.add('Pure essence', [2000, 3000], 2)
 	.oneIn(1000, 'Ancient staff')
 	.tertiary(500, 'Uncut zenyte', [1, 3])
 
@@ -75,5 +69,5 @@ export const NihilizLootTable = new LootTable()
 	.tertiary(10, 'Nihil shard', [5, 20])
 	.tertiary(1200, 'Nihil horn')
 	.tertiary(900, 'Zaryte vambraces')
-	.tertiary(100, 'Clue scroll (grandmaster)')
+	.tertiary(128, 'Clue scroll (grandmaster)')
 	.tertiary(5000, 'Nexling');
