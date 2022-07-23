@@ -2068,12 +2068,23 @@ export const gracefulCL = resolveItems([
 	...gracefulCapes
 ]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)']).includes(id));
 
+export const metamorphPets = resolveItems([
+	'Little parasite',
+	'Dark squirrel',
+	'Baby mole-rat',
+	'Midnight',
+	'Tzrek-zuk',
+	'Ziggy',
+	'Red',
+	'Great blue heron'
+]);
+
 export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems(['Little parasite', 'Dark squirrel', 'Abyssal protector'])
+	...metamorphPets
 ];
 
 export const antiSantaOutfit = new Bank({
