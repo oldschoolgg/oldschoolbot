@@ -22,7 +22,8 @@ const globalInteractionActions = [
 	'OPEN_HARD_CASKET',
 	'OPEN_ELITE_CASKET',
 	'OPEN_MASTER_CASKET',
-	'REPEAT_TRIP'
+	'REPEAT_TRIP',
+	'BIRDHOUSE_RUN'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
@@ -51,6 +52,14 @@ export function makeOpenCasketButton(tier: ClueTier) {
 
 export function makeRepeatTripButton() {
 	return new MessageButton().setCustomID('REPEAT_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY').setEmoji('🔁');
+}
+
+export function makeBirdHouseTripButton() {
+	return new MessageButton()
+		.setCustomID('BIRDHOUSE_RUN')
+		.setLabel('Birdhouse Run')
+		.setStyle('SECONDARY')
+		.setEmoji('692946556399124520');
 }
 
 export async function interactionHook(data: APIInteraction) {
@@ -130,6 +139,14 @@ export async function interactionHook(data: APIInteraction) {
 			return openCasket('Elite');
 		case 'OPEN_MASTER_CASKET':
 			return openCasket('Master');
+		case 'BIRDHOUSE_RUN':
+			await respondToButton(data.id, data.token);
+			return runCommand({
+				commandName: 'activities',
+				args: { birdhouses: { action: 'harvest' } },
+				bypassInhibitors: true,
+				...options
+			});
 		default: {
 		}
 	}
