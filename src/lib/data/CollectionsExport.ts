@@ -60,6 +60,17 @@ export interface ICollection {
 	};
 }
 
+export const allChaoticWeapons = resolveItems([
+	'Chaotic rapier',
+	'Chaotic longsword',
+	'Chaotic maul',
+	'Chaotic staff',
+	'Chaotic crossbow',
+	'Offhand Chaotic rapier',
+	'Offhand Chaotic longsword',
+	'Offhand Chaotic crossbow'
+]);
+
 export const boaters = resolveItems([
 	'Red boater',
 	'Green boater',
