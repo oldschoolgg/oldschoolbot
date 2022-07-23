@@ -127,7 +127,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		let str = '';
 		const hasSkipper = user.usingPet('Skipper') || user.owns('Skipper');
 		if (hasSkipper) {
-			totalPrice = Math.floor(totalPrice * 1.15);
+			totalPrice = Math.floor(totalPrice * 1.4);
 		}
 
 		let gotHammy = false;
