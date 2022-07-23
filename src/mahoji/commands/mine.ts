@@ -110,7 +110,7 @@ export const mineCommand: OSBMahojiCommand = {
 			if (!hasDaeyaltReqs) {
 				return `To mine ${ore.name}, you need ${daeyaltReason}.`;
 			}
-			if (user.QP < 16) {
+			if (user.QP < 17) {
 				return `To mine ${ore.name}, you need atleast 16 Quest Points.`;
 			}
 		}

@@ -87,8 +87,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 			usestams = true;
 		}
 
-		if (daeyalt_essence === undefined) daeyalt_essence = false;
-
 		if (!usestams && !runeObj.stams) {
 			usestams = true;
 		}
@@ -242,7 +240,9 @@ export const runecraftCommand: OSBMahojiCommand = {
 		if (daeyalt_essence) {
 			totalCost.add('Daeyalt essence', quantity);
 			if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
-		} else totalCost.add('Pure essence', quantity);
+		} else {
+			totalCost.add('Pure essence', quantity);
+		}
 		if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 		await user.removeItemsFromBank(totalCost);
