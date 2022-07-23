@@ -43,7 +43,6 @@ const regularTable = new LootTable()
 	.add('Death rune', [200, 500])
 	.add('Amethyst', [10, 25])
 	.add('Uncut dragonstone', [10, 20])
-	.add('Elder logs', [10, 50], 2)
 
 	/* Food */
 	.add(foodTable, 1, 14)
