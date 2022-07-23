@@ -152,7 +152,11 @@ async function finalizeOpening({
 	if (loot.has("Lil' Creator")) {
 		globalClient.emit(
 			Events.ServerNotification,
-			`<:Lil_creator:798221383951319111> **${user.username}'s** minion, ${user.minionName}, just received a Lil' Creator from their ${openedStr} crate!`
+			`<:lil_creator:798221383951319111> **${user.username}'s** minion, ${
+				user.minionName
+			}, just received a Lil' creator! They've done ${await user.getMinigameScore(
+				'soul_wars'
+			)} Soul wars games, and this is their x Spoils of war crate.`
 		);
 	}
 
