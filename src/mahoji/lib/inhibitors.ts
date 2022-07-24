@@ -50,6 +50,19 @@ interface Inhibitor {
 	silent?: true;
 }
 
+function checkIfCommandDisabled(disabledCommand: string, command: AbstractCommand, args: CommandArgs | null) {
+	const parts = disabledCommand.split(':');
+	const disabledCommandBaseName = parts.shift();
+	if (disabledCommandBaseName === command.name && parts.length === 0) {
+		return true;
+	} else if (disabledCommandBaseName === command.name && parts.length > 0 && args !== null) {
+		let currentPath = args as any;
+		if (parts.every(p => p in currentPath && (currentPath = currentPath[p]))) {
+			return true;
+		}
+	}
+	return false;
+}
 const inhibitors: Inhibitor[] = [
 	{
 		name: 'settingSyncer',
@@ -133,17 +146,9 @@ const inhibitors: Inhibitor[] = [
 		run: async ({ command, guild, APIUser, args }) => {
 			let isDisabled = false;
 			for (const disabledCommand of DISABLED_COMMANDS) {
-				const parts = disabledCommand.split(':');
-				const disabledCommandBaseName = parts.shift();
-				if (disabledCommandBaseName === command.name && parts.length === 0) {
+				if (checkIfCommandDisabled(disabledCommand, command, args)) {
 					isDisabled = true;
 					break;
-				} else if (disabledCommandBaseName === command.name && parts.length > 0 && args !== null) {
-					let currentPath = args as any;
-					if (parts.every(p => p in currentPath && (currentPath = currentPath[p]))) {
-						isDisabled = true;
-						break;
-					}
 				}
 			}
 			if (!OWNER_IDS.includes(APIUser.id) && (command.attributes?.enabled === false || isDisabled)) {
