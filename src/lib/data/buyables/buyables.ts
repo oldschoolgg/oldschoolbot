@@ -972,7 +972,7 @@ for (const [chompyHat, qty] of chompyHats) {
 }
 
 export const allTeamCapes: Item[] = [];
-for (let i = 1; i < 50; i++) {
+for (let i = 1; i < 51; i++) {
 	allTeamCapes.push(getOSItem(`Team-${i} cape`));
 }
 for (const cape of allTeamCapes) {
