@@ -13,5 +13,6 @@ const defaultBirdhouseTrap: BirdhouseData = {
 	birdhousePlaced: false,
 	birdhouseTime: 0
 };
+Object.freeze(defaultBirdhouseTrap);
 
 export default defaultBirdhouseTrap;

@@ -1,10 +1,6 @@
-import { Skill } from '../types';
+import { Emoji } from '../../constants';
+import { Skill, SkillsEnum } from '../types';
 import Agility from './agility';
-import Attack from './combat/attack';
-import Defence from './combat/defence';
-import Hitpoints from './combat/hitpoints';
-import Ranged from './combat/ranged';
-import Strength from './combat/strength';
 import Construction from './construction';
 import Cooking from './cooking';
 import Crafting from './crafting';
@@ -39,12 +35,43 @@ export const Skills: Record<string, Skill> = {
 	Herblore,
 	Hunter,
 	Construction,
-	Attack,
-	Strength,
-	Defence,
-	Ranged,
 	Magic,
-	Hitpoints
+	Hitpoints: {
+		aliases: ['hitpoints', 'hp'],
+		id: SkillsEnum.Hitpoints,
+		emoji: Emoji.Hitpoints,
+		name: 'Hitpoints'
+	},
+	Attack: {
+		aliases: ['attack', 'atk'],
+		id: SkillsEnum.Attack,
+		emoji: Emoji.Attack,
+		name: 'Attack'
+	},
+	Strength: {
+		aliases: ['str', 'strength'],
+		id: SkillsEnum.Strength,
+		emoji: Emoji.Strength,
+		name: 'Strength'
+	},
+	Defence: {
+		aliases: ['def', 'defence'],
+		id: SkillsEnum.Defence,
+		emoji: Emoji.Defence,
+		name: 'Defence'
+	},
+	Ranged: {
+		aliases: ['range', 'ranged'],
+		id: SkillsEnum.Ranged,
+		emoji: Emoji.Ranged,
+		name: 'Ranged'
+	},
+	Slayer: {
+		aliases: ['worst skill', 'slayer', 'slay'],
+		id: SkillsEnum.Slayer,
+		emoji: Emoji.Slayer,
+		name: 'Slayer'
+	}
 };
 
 export const skillsValues = Object.values(Skills);

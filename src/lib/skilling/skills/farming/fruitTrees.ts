@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../util/itemID';
 import { Plant } from '../../types';
 
@@ -6,20 +7,20 @@ const fruitTrees: Plant[] = [
 	{
 		level: 27,
 		plantXp: 22,
-		checkXp: 1_199.5,
+		checkXp: 1199.5,
 		harvestXp: 8.5,
-		name: `Apple tree`,
+		name: 'Apple tree',
 		aliases: ['apple tree', 'apple'],
-		inputItems: resolveNameBank({ 'Apple tree seed': 1 }),
+		inputItems: new Bank({ 'Apple tree seed': 1 }).freeze(),
 		outputCrop: itemID('Cooking apple'),
-		petChance: 9_000,
-		seedType: 'fruit tree',
+		petChance: 9000,
+		seedType: 'fruit_tree',
 		growthTime: 960,
 		numOfStages: 6,
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ Sweetcorn: 9 }),
+		protectionPayment: new Bank({ Sweetcorn: 9 }).freeze(),
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
 		woodcuttingXp: 0,
@@ -36,8 +37,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -45,20 +47,20 @@ const fruitTrees: Plant[] = [
 	{
 		level: 33,
 		plantXp: 28,
-		checkXp: 1_750.5,
+		checkXp: 1750.5,
 		harvestXp: 10.5,
-		name: `Banana tree`,
+		name: 'Banana tree',
 		aliases: ['banana tree', 'banana'],
-		inputItems: resolveNameBank({ 'Banana tree seed': 1 }),
+		inputItems: new Bank({ 'Banana tree seed': 1 }).freeze(),
 		outputCrop: itemID('Banana'),
-		petChance: 9_000,
-		seedType: 'fruit tree',
+		petChance: 9000,
+		seedType: 'fruit_tree',
 		growthTime: 960,
 		numOfStages: 6,
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ 'Apples(5)': 4 }),
+		protectionPayment: new Bank({ 'Apples(5)': 4 }).freeze(),
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
 		woodcuttingXp: 0,
@@ -75,8 +77,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -84,20 +87,20 @@ const fruitTrees: Plant[] = [
 	{
 		level: 39,
 		plantXp: 35.5,
-		checkXp: 2_470.2,
+		checkXp: 2470.2,
 		harvestXp: 13.5,
-		name: `Orange tree`,
+		name: 'Orange tree',
 		aliases: ['orange tree', 'orange'],
-		inputItems: resolveNameBank({ 'Orange tree seed': 1 }),
+		inputItems: new Bank({ 'Orange tree seed': 1 }).freeze(),
 		outputCrop: itemID('Orange'),
-		petChance: 9_000,
-		seedType: 'fruit tree',
+		petChance: 9000,
+		seedType: 'fruit_tree',
 		growthTime: 960,
 		numOfStages: 6,
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ 'Strawberries(5)': 3 }),
+		protectionPayment: new Bank({ 'Strawberries(5)': 3 }).freeze(),
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
 		woodcuttingXp: 0,
@@ -114,8 +117,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -123,20 +127,20 @@ const fruitTrees: Plant[] = [
 	{
 		level: 42,
 		plantXp: 40,
-		checkXp: 2_906.9,
+		checkXp: 2906.9,
 		harvestXp: 15,
-		name: `Curry tree`,
+		name: 'Curry tree',
 		aliases: ['curry tree', 'curry'],
-		inputItems: resolveNameBank({ 'Curry tree seed': 1 }),
+		inputItems: new Bank({ 'Curry tree seed': 1 }).freeze(),
 		outputCrop: itemID('Curry leaf'),
-		petChance: 9_000,
-		seedType: 'fruit tree',
+		petChance: 9000,
+		seedType: 'fruit_tree',
 		growthTime: 960,
 		numOfStages: 6,
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ 'Bananas(5)': 5 }),
+		protectionPayment: new Bank({ 'Bananas(5)': 5 }).freeze(),
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
 		woodcuttingXp: 0,
@@ -153,8 +157,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -162,20 +167,20 @@ const fruitTrees: Plant[] = [
 	{
 		level: 51,
 		plantXp: 57,
-		checkXp: 4_605.7,
+		checkXp: 4605.7,
 		harvestXp: 21.5,
-		name: `Pineapple tree`,
+		name: 'Pineapple tree',
 		aliases: ['pineapple tree', 'pineapple'],
-		inputItems: resolveNameBank({ 'Pineapple seed': 1 }),
+		inputItems: new Bank({ 'Pineapple seed': 1 }).freeze(),
 		outputCrop: itemID('Pineapple'),
-		petChance: 9_000,
-		seedType: 'fruit tree',
+		petChance: 9000,
+		seedType: 'fruit_tree',
 		growthTime: 960,
 		numOfStages: 6,
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ Watermelon: 10 }),
+		protectionPayment: new Bank({ Watermelon: 10 }).freeze(),
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
 		woodcuttingXp: 0,
@@ -192,8 +197,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -201,20 +207,20 @@ const fruitTrees: Plant[] = [
 	{
 		level: 57,
 		plantXp: 72,
-		checkXp: 6_146.4,
+		checkXp: 6146.4,
 		harvestXp: 27,
-		name: `Papaya tree`,
+		name: 'Papaya tree',
 		aliases: ['papaya tree', 'papaya'],
-		inputItems: resolveNameBank({ 'Papaya tree seed': 1 }),
+		inputItems: new Bank({ 'Papaya tree seed': 1 }).freeze(),
 		outputCrop: itemID('Papaya fruit'),
-		petChance: 9_000,
-		seedType: 'fruit tree',
+		petChance: 9000,
+		seedType: 'fruit_tree',
 		growthTime: 960,
 		numOfStages: 6,
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ Pineapple: 10 }),
+		protectionPayment: new Bank({ Pineapple: 10 }).freeze(),
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
 		woodcuttingXp: 0,
@@ -231,8 +237,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -242,18 +249,18 @@ const fruitTrees: Plant[] = [
 		plantXp: 110.5,
 		checkXp: 10_150.1,
 		harvestXp: 41.5,
-		name: `Palm tree`,
+		name: 'Palm tree',
 		aliases: ['palm tree', 'palm', 'coconut'],
-		inputItems: resolveNameBank({ 'Palm tree seed': 1 }),
+		inputItems: new Bank({ 'Palm tree seed': 1 }).freeze(),
 		outputCrop: itemID('Coconut'),
-		petChance: 9_000,
-		seedType: 'fruit tree',
+		petChance: 9000,
+		seedType: 'fruit_tree',
 		growthTime: 960,
 		numOfStages: 6,
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ 'Papaya fruit': 15 }),
+		protectionPayment: new Bank({ 'Papaya fruit': 15 }).freeze(),
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
 		woodcuttingXp: 0,
@@ -270,8 +277,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -281,18 +289,18 @@ const fruitTrees: Plant[] = [
 		plantXp: 140,
 		checkXp: 17_335,
 		harvestXp: 70,
-		name: `Dragonfruit tree`,
+		name: 'Dragonfruit tree',
 		aliases: ['dragonfruit tree', 'dragonfruit'],
-		inputItems: resolveNameBank({ 'Dragonfruit tree seed': 1 }),
+		inputItems: new Bank({ 'Dragonfruit tree seed': 1 }).freeze(),
 		outputCrop: itemID('Dragonfruit'),
-		petChance: 9_000,
-		seedType: 'fruit tree',
+		petChance: 9000,
+		seedType: 'fruit_tree',
 		growthTime: 960,
 		numOfStages: 6,
 		chance1: 0,
 		chance99: 0,
 		chanceOfDeath: 17,
-		protectionPayment: resolveNameBank({ Coconut: 15 }),
+		protectionPayment: new Bank({ Coconut: 15 }).freeze(),
 		treeWoodcuttingLevel: 1,
 		fixedOutputAmount: 6,
 		woodcuttingXp: 0,
@@ -309,8 +317,9 @@ const fruitTrees: Plant[] = [
 			[22, 1] // Lletya Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[85, 1] // Farming Guide High (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[85, 1] // Farming Guild High (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10

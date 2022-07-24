@@ -1,37 +1,41 @@
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Events } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { ItemBank } from '../../types';
-import createReadableItemListFromBank from '../../util/createReadableItemListFromTuple';
-import filterBankFromArrayOfItems from '../../util/filterBankFromArrayOfItems';
-import { KillableMonster } from '../types';
+import { ArrayItemsResolved } from '../../types';
+import { effectiveMonsters } from '../data/killableMonsters';
 
-export default async function announceLoot(
-	client: KlasaClient,
-	user: KlasaUser,
-	monster: KillableMonster,
-	quantity: number,
-	loot: ItemBank,
-	team?: { leader: KlasaUser; lootRecipient: KlasaUser; size: number }
-) {
-	if (!monster.notifyDrops) return;
-	const kc = (user.settings.get(UserSettings.MonsterScores)[monster.id] ?? 0) + quantity;
-	const itemsToAnnounce = filterBankFromArrayOfItems(
-		(monster.notifyDrops as number[]) ?? [],
-		loot
-	);
-	if (Object.keys(itemsToAnnounce).length > 0) {
-		const lootStr = await createReadableItemListFromBank(client, itemsToAnnounce);
-
+export default async function announceLoot({
+	user,
+	monsterID,
+	notifyDrops: _notifyDrops,
+	loot,
+	team
+}: {
+	user: KlasaUser;
+	monsterID: number;
+	notifyDrops?: number[] | ArrayItemsResolved;
+	loot: Bank;
+	team?: { leader: KlasaUser; lootRecipient: KlasaUser; size: number };
+}) {
+	if (!_notifyDrops) return;
+	const notifyDrops = _notifyDrops.flat(Infinity);
+	const kc = user.settings.get(UserSettings.MonsterScores)[monsterID] ?? 0;
+	const itemsToAnnounce = loot.clone().filter(i => notifyDrops.includes(i.id));
+	if (itemsToAnnounce.length > 0) {
 		let notif = '';
 
-		if (team) {
-			notif = `In **${team.leader.username}'s** party of ${team.size} minions killing ${monster.name}, ${team.lootRecipient.username} just received **${lootStr}**!`;
+		if (team && team.size > 1) {
+			notif = `In ${team.leader.username}'s party of ${team.size} minions killing ${
+				effectiveMonsters.find(m => m.id === monsterID)!.name
+			}, **${team.lootRecipient.username}** just received **${itemsToAnnounce}**!`;
 		} else {
-			notif = `**${user.username}'s** minion, ${user.minionName}, just received **${lootStr}**, their ${monster.name} KC is ${kc}!`;
+			notif = `**${user.username}'s** minion, ${user.minionName}, just received **${itemsToAnnounce}**, their ${
+				effectiveMonsters.find(m => m.id === monsterID)!.name
+			} KC is ${kc.toLocaleString()}!`;
 		}
 
-		client.emit(Events.ServerNotification, notif);
+		user.client.emit(Events.ServerNotification, notif);
 	}
 }

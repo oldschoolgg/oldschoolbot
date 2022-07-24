@@ -1,25 +1,28 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
-import { itemID } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
-		const { channelID, duration, userID } = data;
-		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
+		const { channelID, userID } = data;
+		const user = await this.client.fetchUser(userID);
+		await incrementMinigameScore(userID, 'champions_challenge', 1);
 
-		user.incrementMinigameScore('ChampionsChallenge', 1);
-		user.addItemsToBank({ [itemID(`Champion's cape`)]: 1 }, true);
+		const loot = new Bank({ "Champion's cape": 1 });
+
+		await user.addItemsToBank({ items: loot, collectionLog: true });
+
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} completed the Champion's Challenge! You have received the **Champion's cape**.`,
 			undefined,
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

@@ -1,9 +1,8 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 import { constants, Hiscores } from 'oldschooljs';
-import { cleanString } from 'oldschooljs/dist/util';
 
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { toTitleCase } from '../../lib/util';
+import { cleanString, toTitleCase } from '../../lib/util';
 
 const aliasNameMap: Record<string, string> = {
 	corp: 'corporealBeast',
@@ -28,10 +27,9 @@ const aliasNameMap: Record<string, string> = {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			usage: '<boss:string> (username:rsn)',
 			usageDelim: ',',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+osrskc giant mole, Magnaboy', '+osrskc giant mole'],
 			categoryFlags: ['utility'],
 			description: 'Shows the KC for a boss for an OSRS account.'
@@ -49,11 +47,9 @@ export default class extends BotCommand {
 			for (const [boss, { rank, score }] of Object.entries(bossRecords)) {
 				if (cleanString(boss) === cleanString(bossName)) {
 					if (score === -1 || rank === -1) {
-						return msg.send(
-							`${toTitleCase(username)}'s has no recorded KC for that boss.`
-						);
+						return msg.channel.send(`${toTitleCase(username)}'s has no recorded KC for that boss.`);
 					}
-					return msg.send(
+					return msg.channel.send(
 						`${toTitleCase(username)}'s ${constants.bossNameMap.get(
 							boss
 						)} KC is **${score.toLocaleString()}** (Rank ${rank.toLocaleString()})`
@@ -61,11 +57,9 @@ export default class extends BotCommand {
 				}
 			}
 
-			return msg.send(
-				`${toTitleCase(username)} doesn't have any recorded kills for that boss.`
-			);
-		} catch (err) {
-			return msg.send(err.message);
+			return msg.channel.send(`${toTitleCase(username)} doesn't have any recorded kills for that boss.`);
+		} catch (err: any) {
+			return msg.channel.send(err.message);
 		}
 	}
 }

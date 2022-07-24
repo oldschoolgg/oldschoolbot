@@ -5,8 +5,8 @@ describe('itemArg', () => {
 	test('stripEmojis', async () => {
 		const itemArg = mockArgument(ItemArgument);
 		const expectedResults: [string | number, { id: number; name: string }[]][] = [
-			['3rd age platebody', [{ id: 10348, name: '3rd age platebody' }]],
-			[20011, [{ id: 20011, name: '3rd age axe' }]],
+			['3rd age platebody', [{ id: 10_348, name: '3rd age platebody' }]],
+			[20_011, [{ id: 20_011, name: '3rd age axe' }]],
 			['Dragon dagger(p++)', [{ id: 5698, name: 'Dragon dagger(p++)' }]]
 		];
 

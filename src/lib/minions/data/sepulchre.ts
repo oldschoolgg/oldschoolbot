@@ -1,11 +1,11 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
-import { Time } from '../../constants';
 import { ItemBank } from '../../types';
 import { roll } from '../../util';
+import resolveItems from '../../util/resolveItems';
 
 const LowTierCoffin = new LootTable()
 	.add("Monk's robe top")
@@ -54,7 +54,8 @@ export const sepulchreFloors = [
 		coffinTable: new LootTable()
 			.add(LowTierCoffin, 1, 60)
 			.add(MidTierCoffin, 1, 35)
-			.add(HighTierCoffin, 1, 5),
+			.add(HighTierCoffin, 1, 5)
+			.tertiary(50, 'Clue scroll (easy)'),
 		numCoffins: 1,
 		marksRange: [1, 1]
 	},
@@ -68,7 +69,8 @@ export const sepulchreFloors = [
 		coffinTable: new LootTable()
 			.add(LowTierCoffin, 1, 30)
 			.add(MidTierCoffin, 1, 60)
-			.add(HighTierCoffin, 1, 10),
+			.add(HighTierCoffin, 1, 10)
+			.tertiary(50, 'Clue scroll (medium)'),
 		numCoffins: 2,
 		marksRange: [2, 3]
 	},
@@ -82,7 +84,8 @@ export const sepulchreFloors = [
 		coffinTable: new LootTable()
 			.add(LowTierCoffin, 1, 15)
 			.add(MidTierCoffin, 1, 65)
-			.add(HighTierCoffin, 1, 20),
+			.add(HighTierCoffin, 1, 20)
+			.tertiary(25, 'Clue scroll (medium)'),
 		numCoffins: 2,
 		marksRange: [3, 5]
 	},
@@ -93,7 +96,10 @@ export const sepulchreFloors = [
 		xp: 2625,
 		time: Time.Minute * 2.2,
 		lockpickCoffinChance: 800,
-		coffinTable: new LootTable().add(MidTierCoffin, 1, 60).add(HighTierCoffin, 1, 40),
+		coffinTable: new LootTable()
+			.add(MidTierCoffin, 1, 60)
+			.add(HighTierCoffin, 1, 40)
+			.tertiary(50, 'Clue scroll (hard)'),
 		numCoffins: 2,
 		marksRange: [3, 6]
 	},
@@ -102,9 +108,12 @@ export const sepulchreFloors = [
 		petChance: 2000,
 		agilityLevel: 92,
 		xp: 5850,
-		time: Time.Minute * 4.3,
+		time: Time.Minute * 3.75,
 		lockpickCoffinChance: 600,
-		coffinTable: new LootTable().add(MidTierCoffin, 1, 20).add(HighTierCoffin, 1, 80),
+		coffinTable: new LootTable()
+			.add(MidTierCoffin, 1, 20)
+			.add(HighTierCoffin, 1, 80)
+			.tertiary(60, 'Clue scroll (elite)'),
 		numCoffins: 3,
 		marksRange: [4, 6]
 	}
@@ -112,14 +121,21 @@ export const sepulchreFloors = [
 
 export const sepulchreBoosts = resolveNameBank({
 	'Strange old lockpick': 1,
-	'Hallowed grapple': 3,
-	'Hallowed focus': 3,
-	'Hallowed symbol': 3,
-	'Hallowed hammer': 3,
-	'Ring of endurance (uncharged)': 4
+	'Hallowed grapple': 4,
+	'Hallowed focus': 4,
+	'Hallowed symbol': 4,
+	'Hallowed hammer': 4
 });
 
-export function openCoffin(floor: number): ItemBank {
+const pages = resolveItems([
+	'Mysterious page 1',
+	'Mysterious page 2',
+	'Mysterious page 3',
+	'Mysterious page 4',
+	'Mysterious page 5'
+]);
+
+export function openCoffin(floor: number, cl: Bank): ItemBank {
 	const loot = new Bank();
 	const floorObj = sepulchreFloors[floor - 1];
 	if (roll(floorObj.lockpickCoffinChance)) {
@@ -127,5 +143,10 @@ export function openCoffin(floor: number): ItemBank {
 	}
 	loot.add(floorObj.coffinTable.roll());
 	loot.add('Hallowed mark', randInt(floorObj.marksRange[0], floorObj.marksRange[1]));
+
+	const page = pages[floor - 1];
+	if (!cl.has(page) && roll(10)) {
+		loot.add(page);
+	}
 	return loot.bank;
 }

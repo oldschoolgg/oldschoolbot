@@ -13,7 +13,7 @@ export default class extends Argument {
 		let newItems: [Item, number][] = [];
 		const userBank = message.author.bank();
 		for (const [item, qty] of items) {
-			newItems.push([item, qty === 0 ? Math.max(1, userBank.amount(item.id)) : qty]);
+			newItems.push([item, !qty ? Math.max(1, userBank.amount(item.id)) : qty]);
 		}
 		if (newItems.length === 0) {
 			throw 'Please input some items.';

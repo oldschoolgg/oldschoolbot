@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { randInt, roll } from 'e';
+import { calcPercentOfNum, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
-import { ReturnedLootItem } from 'oldschooljs/dist/meta/types';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
-import { addBanks } from 'oldschooljs/dist/util';
 
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ItemBank } from '../types';
-import { calcPercentOfNum, convertXPtoLVL } from '../util';
+import { convertXPtoLVL, normal } from '../util';
 import itemID from '../util/itemID';
-import { normal } from '../util/normal';
 import resolveItems from '../util/resolveItems';
 
 interface WintertodtCrateOptions {
@@ -140,17 +137,12 @@ const pyroPieces = resolveItems([
 
 export class WintertodtCrateClass {
 	public pickWeightedLootItem<T>(lvl: number, array: T[]): T {
-		const maxIndex = Math.max(
-			Math.floor(calcPercentOfNum(Math.min(lvl + 15, 99), array.length)),
-			1
-		);
+		const maxIndex = Math.max(Math.floor(calcPercentOfNum(Math.min(lvl + 15, 99), array.length)), 1);
 		const minIndex = Math.floor(calcPercentOfNum(Math.max(lvl - 70, 1), array.length));
 		const avg = (maxIndex + minIndex) / 2;
 		const rolledIndex = Math.min(
 			Math.max(
-				Math.round(
-					normal(avg * (lvl > 50 ? 1.2 : 1.1), (avg - minIndex) * (lvl > 50 ? 1.8 : 2), 3)
-				),
+				Math.round(normal(avg * (lvl > 50 ? 1.2 : 1.1), (avg - minIndex) * (lvl > 50 ? 1.8 : 2), 3)),
 				minIndex
 			),
 			maxIndex
@@ -176,17 +168,14 @@ export class WintertodtCrateClass {
 		}
 	}
 
-	public lootRoll(skills: Partial<LevelRequirements>): ReturnedLootItem[] {
+	public lootRoll(skills: Partial<LevelRequirements>) {
 		const roll = randInt(1, 9);
 
 		if (roll <= 6) {
 			const matTable = roll === 1 ? SeedTables.roll() : MaterialTables.roll();
 			const skill = this.determineSkillOfTableSlot(matTable.item);
 			const skillLevel = convertXPtoLVL(skills[skill] ?? 1);
-			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(
-				skillLevel,
-				matTable.item
-			);
+			const rolledItem = this.pickWeightedLootItem<WintertodtTableSlot>(skillLevel, matTable.item);
 			return [
 				{
 					item: rolledItem[0],
@@ -207,13 +196,13 @@ export class WintertodtCrateClass {
 		return rolls + 1;
 	}
 
-	public rollUnique(itemsOwned: ItemBank): number | undefined {
+	public rollUnique(itemsOwned: Bank): number | undefined {
 		// https://oldschool.runescape.wiki/w/Supply_crate#Reward_rolls
 		if (roll(10_000)) return itemID('Dragon axe');
-		if (roll(5_000)) return itemID('Phoenix');
-		if (roll(1_000)) return itemID('Tome of fire');
+		if (roll(5000)) return itemID('Phoenix');
+		if (roll(1000)) return itemID('Tome of fire');
 		if (roll(150)) {
-			const glovesOwned = itemsOwned[itemID('Warm gloves')];
+			const glovesOwned = itemsOwned.amount('Warm gloves');
 
 			// If they already own 3 gloves, give only magic seeds.
 			if (glovesOwned && glovesOwned >= 3) {
@@ -224,7 +213,7 @@ export class WintertodtCrateClass {
 
 		if (roll(150)) {
 			const torchID = itemID('Bruma torch');
-			const torchesOwned = itemsOwned[torchID];
+			const torchesOwned = itemsOwned.amount(torchID);
 
 			// If they already own 3 gloves, give only magic seeds.
 			if (torchesOwned && torchesOwned >= 3) {
@@ -239,7 +228,7 @@ export class WintertodtCrateClass {
 			// Otherwise, rewards the first one
 			const bank: number[] = [];
 			for (const piece of pyroPieces) {
-				bank.push(itemsOwned[piece] ?? 0);
+				bank.push(itemsOwned.amount(piece));
 			}
 			const minBank = Math.min(...bank);
 			for (let i = 0; i < bank.length; i++) {
@@ -257,7 +246,7 @@ export class WintertodtCrateClass {
 		const loot = new Bank();
 
 		for (let i = 0; i < rolls; i++) {
-			const rolledUnique = this.rollUnique(addBanks([itemsOwned, loot.values()]));
+			const rolledUnique = this.rollUnique(new Bank().add(itemsOwned).add(loot.values()));
 			if (rolledUnique) {
 				loot.add(rolledUnique);
 				continue;

@@ -1,36 +1,39 @@
 import { User } from 'discord.js';
-import { Extendable, ExtendableStore, KlasaUser } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
+import { Bank } from 'oldschooljs';
+import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import { calcCLDetails } from '../../lib/data/Collections';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { ItemBank } from '../../lib/types';
-import { addBanks } from '../../lib/util';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
 		super(store, file, directory, { appliesTo: [User] });
 	}
 
+	public cl(this: User) {
+		return new Bank(this.settings.get(UserSettings.CollectionLogBank));
+	}
+
 	// @ts-ignore 2784
-	public get collectionLog(this: User) {
-		return this.settings.get(UserSettings.CollectionLogBank);
+	public completion(this: User) {
+		return calcCLDetails(this);
 	}
 
-	getCL(this: KlasaUser, itemID: number) {
-		return this.settings.get(UserSettings.CollectionLogBank)[itemID] ?? 0;
-	}
-
-	public async addItemsToCollectionLog(this: User, items: ItemBank) {
+	public async addItemsToCollectionLog(
+		this: User,
+		{ items, dontAddToTempCL = false }: { items: Bank; dontAddToTempCL?: boolean }
+	) {
 		await this.settings.sync(true);
-		this.log(`had following items added to collection log: [${JSON.stringify(items)}`);
 
-		return this.settings.update(
-			UserSettings.CollectionLogBank,
-			addBanks([
-				items,
-				{
-					...this.settings.get(UserSettings.CollectionLogBank)
-				}
-			])
-		);
+		let updates: [string, ItemBank][] = [
+			[UserSettings.CollectionLogBank, items.clone().add(this.settings.get(UserSettings.CollectionLogBank)).bank]
+		];
+
+		if (!dontAddToTempCL) {
+			updates.push([UserSettings.TempCL, items.clone().add(this.settings.get(UserSettings.TempCL)).bank]);
+		}
+
+		return this.settings.update(updates);
 	}
 }

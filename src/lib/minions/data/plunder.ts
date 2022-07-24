@@ -5,10 +5,7 @@ import { resolveNameBank } from 'oldschooljs/dist/util';
 import { ItemBank } from '../../types';
 import { rand, roll } from '../../util';
 
-const Room1Table = new LootTable()
-	.add('Ivory Comb', 1, 3)
-	.add('Pottery scarab')
-	.add('Pottery statuette');
+const Room1Table = new LootTable().add('Ivory Comb', 1, 3).add('Pottery scarab').add('Pottery statuette');
 
 const Room2Table = new LootTable().add('Ivory Comb').add('Pottery scarab').add('Pottery statuette');
 
@@ -112,14 +109,14 @@ export const plunderRooms = [
 		number: 8,
 		petChance: 2000,
 		thievingLevel: 91,
-		xp: 12_423,
+		xp: 12_665,
 		rockyChance: 6893,
 		roomTable: Room8Table
 	}
 ];
 
 export const plunderBoosts = resolveNameBank({
-	"Pharaoh's sceptre (3)": 5
+	"Pharaoh's sceptre": 5
 });
 
 export function lootRoom(room: number): [ItemBank, number] {
@@ -133,7 +130,7 @@ export function lootRoom(room: number): [ItemBank, number] {
 
 	for (let i = 0; i < 2; i++) {
 		if (roll(sceptreChance)) {
-			loot.add("Pharaoh's sceptre (3)");
+			loot.add("Pharaoh's sceptre");
 			break;
 		}
 	}

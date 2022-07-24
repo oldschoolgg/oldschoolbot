@@ -1,20 +1,20 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { gloriesInventorySize } from '../../commands/Minion/chargeglories';
-import { GloryChargingActivityTaskOptions } from '../../lib/types/minions';
+import { Events } from '../../lib/constants';
+import { ActivityTaskOptionsWithQuantity } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { gloriesInventorySize } from '../../mahoji/lib/abstracted_commands/chargeGloriesCommand';
 
 export default class extends Task {
-	async run(data: GloryChargingActivityTaskOptions) {
-		const { quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
+	async run(data: ActivityTaskOptionsWithQuantity) {
+		const { quantity, userID, channelID } = data;
+		const user = await this.client.fetchUser(userID);
 		let deaths = 0;
 		let loot = new Bank();
 		for (let i = 0; i < quantity; i++) {
-			if (roll(9)) {
+			if (roll(99)) {
 				deaths++;
 			} else {
 				for (let i = 0; i < gloriesInventorySize; i++) {
@@ -35,27 +35,28 @@ export default class extends Task {
 				: `${user}, ${user.minionName} finished charging ${amnt} Amulets of glory.`;
 
 		if (loot.length !== 0 && deaths > 0) {
-			str += ` They died ${deaths}x times, causing the loss of ${
-				gloriesInventorySize * deaths
-			} glories.`;
+			str += ` They died ${deaths}x times, causing the loss of ${gloriesInventorySize * deaths} glories.`;
 		}
 
 		if (loot.has('Amulet of eternal glory')) {
-			str += `\n**Your minion received an Amulet of eternal glory.**`;
+			str += '\n**Your minion received an Amulet of eternal glory.**';
+			this.client.emit(
+				Events.ServerNotification,
+				`**${user.username}'s** minion, ${user.minionName}, just received **${loot.amount(
+					'Amulet of eternal glory'
+				)}x Amulet of eternal glory**!`
+			);
 		}
 
-		await user.addItemsToBank(loot.bank, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of charging ${quantity}x glories`);
-				return this.client.commands.get('chargeglories')!.run(res, [quantity]);
-			},
+			['activities', { charge: { item: 'glory', quantity } }, true],
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

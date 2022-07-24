@@ -1,5 +1,6 @@
 import { randInt } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
@@ -9,17 +10,14 @@ import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: SmeltingActivityTaskOptions) {
-		let { barID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
-		const currentLevel = user.skillLevel(SkillsEnum.Smithing);
+		let { barID, quantity, userID, channelID, duration, blastf } = data;
+		const user = await this.client.fetchUser(userID);
 
-		const bar = Smithing.Bars.find(bar => bar.id === barID);
-		if (!bar) return;
+		const bar = Smithing.Bars.find(bar => bar.id === barID)!;
 
 		// If this bar has a chance of failing to smelt, calculate that here.
 		const oldQuantity = quantity;
-		if (bar.chanceOfFail > 0) {
+		if ((bar.chanceOfFail > 0 && bar.name !== 'Iron bar') || (!blastf && bar.name === 'Iron bar')) {
 			let newQuantity = 0;
 			for (let i = 0; i < quantity; i++) {
 				if (randInt(0, 100) > bar.chanceOfFail) {
@@ -31,45 +29,44 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (
-			bar.id === itemID('Gold bar') &&
-			user.hasItemEquippedAnywhere(itemID('Goldsmith gauntlets'))
-		) {
+		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 
-		await user.addXP(SkillsEnum.Smithing, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Smithing);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Smithing,
+			amount: xpReceived,
+			duration
+		});
 
-		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${
-			bar.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Smithing level is now ${newLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished smelting ${quantity}x ${bar.name}. ${xpRes}`;
 
 		if (bar.chanceOfFail > 0 && oldQuantity > quantity) {
 			str += `\n\n${oldQuantity - quantity} ${bar.name}s failed to smelt.`;
 		}
 
-		const loot = {
+		const loot = new Bank({
 			[bar.id]: quantity
-		};
+		});
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${oldQuantity}x ${bar.name}[${bar.id}]`);
-				return this.client.commands.get('smelt')!.run(res, [oldQuantity, bar.name]);
-			},
+			[
+				'smelt',
+				{
+					name: bar.name,
+					quantity: oldQuantity,
+					blast_furnace: blastf
+				},
+				true
+			],
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

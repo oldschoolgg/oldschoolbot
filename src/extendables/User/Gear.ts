@@ -1,12 +1,10 @@
 import { User } from 'discord.js';
 import { Extendable, ExtendableStore } from 'klasa';
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { getSimilarItems } from '../../lib/data/similarItems';
-import { defaultGear, itemInSlot, resolveGearTypeSetting } from '../../lib/gear';
-import { sumOfSetupStats } from '../../lib/gear/functions/sumOfSetupStats';
-import { GearSetup, GearSetupTypes, UserFullGearSetup } from '../../lib/gear/types';
-import { itemID } from '../../lib/util';
+import { defaultGear, GearSetupType, resolveGearTypeSetting } from '../../lib/gear';
+import { GearSetup, UserFullGearSetup } from '../../lib/gear/types';
+import { Gear } from '../../lib/structures/Gear';
+import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -19,48 +17,31 @@ export default class extends Extendable {
 		const misc = this.getGear('misc');
 		const mage = this.getGear('mage');
 		const skilling = this.getGear('skilling');
+		const wildy = this.getGear('wildy');
+		const fashion = this.getGear('fashion');
+		const other = this.getGear('other');
+
 		return {
 			melee,
 			range,
 			misc,
 			skilling,
-			mage
+			mage,
+			wildy,
+			fashion,
+			other
 		};
 	}
 
-	public hasItemEquippedAnywhere(this: User, itemID: number) {
-		const gear = this.rawGear();
-		const gearValues = Object.values(gear);
-		const similarItems = getSimilarItems(itemID);
-
-		for (const setup of gearValues) {
-			const thisItemEquipped = Object.values(setup).find(
-				setup => setup?.item && similarItems.includes(setup.item)
-			);
-			if (thisItemEquipped) return true;
-		}
-
-		return false;
+	public hasItemEquippedAnywhere(this: User, _item: number | string | string[] | number[], every = false): boolean {
+		return userHasItemsEquippedAnywhere(this, _item, every);
 	}
 
-	public hasItemEquippedOrInBank(this: User, item: number | string) {
-		const id = typeof item === 'string' ? itemID(item) : item;
-		return this.hasItemEquippedAnywhere(id) || this.numItemsInBankSync(id, true) > 0;
+	public hasItemEquippedOrInBank(this: User, item: number | string | string[]) {
+		return hasItemsEquippedOrInBank(this, Array.isArray(item) ? item : [item]);
 	}
 
-	public equippedWeapon(this: User, setup: GearSetupTypes) {
-		const gear = this.rawGear()[setup];
-
-		const [normalWeapon] = itemInSlot(gear, EquipmentSlot.Weapon);
-		const [twoHandedWeapon] = itemInSlot(gear, EquipmentSlot.TwoHanded);
-		return normalWeapon === null ? twoHandedWeapon : normalWeapon;
-	}
-
-	public setupStats(this: User, setup: GearSetupTypes) {
-		return sumOfSetupStats(this.rawGear()[setup]);
-	}
-
-	public getGear(this: User, setup: 'melee' | 'mage' | 'range' | 'misc' | 'skilling'): GearSetup {
-		return this.settings.get(resolveGearTypeSetting(setup)) ?? defaultGear;
+	public getGear(this: User, setup: GearSetupType): GearSetup {
+		return new Gear(this.settings.get(resolveGearTypeSetting(setup)) ?? defaultGear);
 	}
 }

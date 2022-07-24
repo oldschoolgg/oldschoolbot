@@ -1,96 +1,152 @@
-import { Activity, Tasks } from '../constants';
+import { Tasks } from '../constants';
+import { activity_type_enum } from '.prisma/client';
 
-export function taskNameFromType(activityType: Activity) {
+export function taskNameFromType(activityType: activity_type_enum): Tasks {
 	switch (activityType) {
-		case Activity.Agility:
+		case 'Agility':
 			return Tasks.AgilityActivity;
-		case Activity.ClueCompletion:
+		case 'ClueCompletion':
 			return Tasks.ClueActivity;
-		case Activity.Cooking:
+		case 'Cooking':
 			return Tasks.CookingActivity;
-		case Activity.MonsterKilling:
+		case 'MonsterKilling':
 			return Tasks.MonsterActivity;
-		case Activity.GroupMonsterKilling:
+		case 'GroupMonsterKilling':
 			return Tasks.GroupMonsterActivity;
-		case Activity.Fishing:
+		case 'Fishing':
 			return Tasks.FishingActivity;
-		case Activity.Mining:
+		case 'Mining':
 			return Tasks.MiningActivity;
-		case Activity.Smelting:
+		case 'Smelting':
 			return Tasks.SmeltingActivity;
-		case Activity.Smithing:
+		case 'Smithing':
 			return Tasks.SmithingActivity;
-		case Activity.Woodcutting:
+		case 'Woodcutting':
 			return Tasks.WoodcuttingActivity;
-		case Activity.Firemaking:
+		case 'Firemaking':
 			return Tasks.FiremakingActivity;
-		case Activity.Crafting:
+		case 'Crafting':
 			return Tasks.CraftingActivity;
-		case Activity.Questing:
+		case 'Questing':
 			return Tasks.QuestingActivity;
-		case Activity.Runecraft:
+		case 'Runecraft':
 			return Tasks.RunecraftActivity;
-		case Activity.Burying:
+		case 'Burying':
 			return Tasks.BuryingActivity;
-		case Activity.Offering:
+		case 'Offering':
 			return Tasks.OfferingActivity;
-		case Activity.FightCaves:
+		case 'FightCaves':
 			return Tasks.FightCavesActivity;
-		case Activity.Fletching:
+		case 'Fletching':
 			return Tasks.FletchingActivity;
-		case Activity.Wintertodt:
+		case 'Wintertodt':
 			return Tasks.WintertodtActivity;
-		case Activity.Alching:
+		case 'Tempoross':
+			return Tasks.TemporossActivity;
+		case 'Alching':
 			return Tasks.AlchingActivity;
-		case Activity.Herblore:
+		case 'Herblore':
 			return Tasks.HerbloreActivity;
-		case Activity.Nightmare:
+		case 'Nightmare':
 			return Tasks.NightmareActivity;
-		case Activity.AnimatedArmour:
+		case 'AnimatedArmour':
 			return Tasks.AnimatedArmourActivity;
-		case Activity.Cyclops:
+		case 'Cyclops':
 			return Tasks.CyclopsActivity;
-		case Activity.Sawmill:
+		case 'Sawmill':
 			return Tasks.SawmillActivity;
-		case Activity.Sepulchre:
+		case 'Sepulchre':
 			return Tasks.SepulchreActivity;
-		case Activity.Plunder:
+		case 'Plunder':
 			return Tasks.PlunderActivity;
-		case Activity.FishingTrawler:
+		case 'FishingTrawler':
 			return Tasks.FishingTrawler;
-		case Activity.Zalcano:
+		case 'Zalcano':
 			return Tasks.ZalcanoActivity;
-		case Activity.Pickpocket:
+		case 'Pickpocket':
 			return Tasks.PickpocketActivity;
-		case Activity.Farming:
+		case 'Farming':
 			return Tasks.FarmingActivity;
-		case Activity.TitheFarm:
+		case 'TitheFarm':
 			return Tasks.TitheFarmActivity;
-		case Activity.BarbarianAssault:
+		case 'BarbarianAssault':
 			return Tasks.BarbarianAssault;
-		case Activity.AgilityArena:
+		case 'AgilityArena':
 			return Tasks.AgilityArena;
-		case Activity.ChampionsChallenge:
+		case 'ChampionsChallenge':
 			return Tasks.ChampionsChallenge;
-		case Activity.Hunter:
+		case 'Hunter':
 			return Tasks.HunterActivity;
-		case Activity.Birdhouse:
+		case 'Birdhouse':
 			return Tasks.BirdhouseActivity;
-		case Activity.AerialFishing:
+		case 'AerialFishing':
 			return Tasks.AerialFishingActivity;
-		case Activity.Construction:
+		case 'DriftNet':
+			return Tasks.DriftNetActivity;
+		case 'Construction':
 			return Tasks.ConstructionActivity;
-		case Activity.MahoganyHomes:
+		case 'MahoganyHomes':
 			return Tasks.MahoganyHomes;
-		case Activity.Enchanting:
+		case 'Enchanting':
 			return Tasks.Enchanting;
-		case Activity.Casting:
+		case 'Casting':
 			return Tasks.Casting;
-		case Activity.GloryCharging:
+		case 'GloryCharging':
 			return Tasks.GloryCharging;
-		case Activity.GnomeRestaurant:
+		case 'WealthCharging':
+			return Tasks.WealthCharging;
+		case 'GnomeRestaurant':
 			return Tasks.GnomeRestaurant;
-		case Activity.BirthdayEvent:
+		case 'SoulWars':
+			return Tasks.SoulWars;
+		case 'RoguesDenMaze':
+			return Tasks.RoguesDenMaze;
+		case 'Gauntlet':
+			return Tasks.Gauntlet;
+		case 'CastleWars':
+			return Tasks.CastleWars;
+		case 'MageArena':
+			return Tasks.MageArena;
+		case 'Raids':
+			return Tasks.Raids;
+		case 'Collecting':
+			return Tasks.Collecting;
+		case 'MageTrainingArena':
+			return Tasks.MageTrainingArena;
+		case 'MageArena2':
+			return Tasks.MageArena2;
+		case 'BigChompyBirdHunting':
+			return Tasks.BigChompyBirdHunting;
+		case 'DarkAltar':
+			return Tasks.DarkAltar;
+		case 'Trekking':
+			return Tasks.TrekkingActivity;
+		case 'Revenants':
+			return Tasks.RevenantsActivity;
+		case 'PestControl':
+			return Tasks.PestControl;
+		case 'VolcanicMine':
+			return Tasks.VolcanicMine;
+		case 'KourendFavour':
+			return Tasks.KourendFavour;
+		case 'Inferno':
+			return Tasks.Inferno;
+		case 'TearsOfGuthix':
+			return Tasks.TearsOfGuthix;
+		case 'TheatreOfBlood':
+			return Tasks.ToB;
+		case 'LastManStanding':
+			return Tasks.LastManStanding;
+		case 'BirthdayEvent':
 			return Tasks.BirthdayEvent;
+		case 'TokkulShop':
+			return Tasks.TokkulShop;
+		case 'Nex':
+			return Tasks.Nex;
+		case 'TroubleBrewing':
+			return Tasks.TroubleBrewing;
+		case 'Easter':
+		case 'BlastFurnace':
+			return Tasks.REMOVED;
 	}
 }

@@ -8,10 +8,9 @@ import { toTitleCase } from '../../lib/util';
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			description: 'Shows the Clue Highscores of an account.',
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			categoryFlags: ['utility']
 		});
 	}
@@ -22,20 +21,22 @@ export default class extends BotCommand {
 
 			const embed = new MessageEmbed()
 				.setAuthor(username)
-				.setColor(52224)
+				.setColor(52_224)
 				.setThumbnail('https://i.imgur.com/azW3cSB.png');
 
 			for (const tier of Object.keys(clues) as (keyof typeof clues)[]) {
 				embed.addField(
 					toTitleCase(tier),
-					msg.language.get('CLUE_SCORE_FORMAT', clues[tier].rank, clues[tier].score),
+					`**Rank:** ${clues[tier].rank.toLocaleString()}\n**Score:** ${clues[
+						tier
+					].score.toLocaleString()}\n`,
 					true
 				);
 			}
 
-			return msg.send({ embed });
-		} catch (err) {
-			return msg.send(err.message);
+			return msg.channel.send({ embeds: [embed] });
+		} catch (err: any) {
+			return msg.channel.send(err.message);
 		}
 	}
 }

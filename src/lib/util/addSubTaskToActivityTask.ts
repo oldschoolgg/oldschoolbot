@@ -1,40 +1,58 @@
-import { Client } from 'klasa';
-
-import { production } from '../../config';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { OldSchoolBotClient } from '../structures/OldSchoolBotClient';
+import { prisma } from '../settings/prisma';
+import { activitySync, getActivityOfUser } from '../settings/settings';
 import { ActivityTaskOptions } from '../types/minions';
-import { uuid } from '../util';
-import getActivityOfUser from './getActivityOfUser';
+import { isGroupActivity } from '../util';
+import { logError } from './logError';
 
-export default function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
-	client: Client,
-	subTaskToAdd: Omit<T, 'finishDate' | 'id'>
+export default async function addSubTaskToActivityTask<T extends ActivityTaskOptions>(
+	taskToAdd: Omit<T, 'finishDate' | 'id'>
 ) {
-	const usersTask = getActivityOfUser(client, subTaskToAdd.userID);
+	const usersTask = getActivityOfUser(taskToAdd.userID);
 	if (usersTask) {
-		throw `That user is busy, so they can't do this minion activity.`;
+		throw `That user is busy, so they can't do this minion activity. They have a ${usersTask.type} activity still ongoing`;
 	}
 
-	const finishDate = Date.now() + (production ? subTaskToAdd.duration : 1);
-	const newSubtask: ActivityTaskOptions = {
-		...subTaskToAdd,
-		finishDate,
-		id: uuid()
+	let duration = Math.floor(taskToAdd.duration);
+	if (duration < 0) {
+		const error = new Error('Task has a negative duration');
+		logError(error, {
+			user_id: taskToAdd.userID,
+			task: taskToAdd.type
+		});
+		throw error;
+	}
+
+	const finishDate = new Date(Date.now() + duration);
+
+	let __newData: Partial<ActivityTaskOptions> = { ...taskToAdd };
+	delete __newData.type;
+	delete __newData.userID;
+	delete __newData.id;
+	delete __newData.channelID;
+	delete __newData.duration;
+
+	let newData: Omit<ActivityTaskOptions, 'finishDate' | 'id' | 'type' | 'channelID' | 'userID' | 'duration'> = {
+		...__newData
 	};
 
-	if ('users' in newSubtask) {
-		for (const user of (newSubtask as GroupMonsterActivityTaskOptions).users) {
-			(client as OldSchoolBotClient).minionActivityCache.set(user, newSubtask);
-		}
-	} else {
-		(client as OldSchoolBotClient).minionActivityCache.set(newSubtask.userID, newSubtask);
+	try {
+		const createdActivity = await prisma.activity.create({
+			data: {
+				user_id: BigInt(taskToAdd.userID),
+				start_date: new Date(),
+				finish_date: finishDate,
+				completed: false,
+				type: taskToAdd.type,
+				data: newData,
+				group_activity: isGroupActivity(taskToAdd),
+				channel_id: BigInt(taskToAdd.channelID),
+				duration
+			}
+		});
+		activitySync(createdActivity);
+		return createdActivity;
+	} catch (err: any) {
+		logError(err);
+		throw 'There was an error starting your activity.';
 	}
-
-	return (client as OldSchoolBotClient).boss.publishAfter(
-		'minionActivity',
-		newSubtask,
-		{ retentionHours: 2 },
-		new Date(finishDate)
-	);
 }

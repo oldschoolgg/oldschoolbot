@@ -2,12 +2,13 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
-import { getMinionName, incrementMinigameScore } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, incrementMinionDailyDuration, roll } from '../../../lib/util';
+import { roll, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { minionName } from '../../../lib/util/minionUtils';
 
 const tipTable = new LootTable()
 	.oneIn(210, 'Gnome scarf')
@@ -62,8 +63,7 @@ export default class extends Task {
 	async run(data: GnomeRestaurantActivityTaskOptions) {
 		const { channelID, quantity, duration, userID, gloriesRemoved } = data;
 
-		incrementMinionDailyDuration(this.client, userID, duration);
-		incrementMinigameScore(userID, 'GnomeRestaurant', quantity);
+		incrementMinigameScore(userID, 'gnome_restaurant', quantity);
 
 		const loot = new Bank();
 
@@ -78,37 +78,28 @@ export default class extends Task {
 			loot.add(tipTable.roll());
 		}
 
-		const minionName = await getMinionName(userID);
+		const user = await this.client.fetchUser(userID);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Cooking,
+			amount: totalXP,
+			duration
+		});
 
-		let str = `<@${userID}>, ${minionName} finished completing ${quantity}x Gnome Restaurant deliveries. You received ${totalXP.toLocaleString()} Cooking XP and **${loot}**.`;
+		let str = `<@${userID}>, ${minionName(
+			user
+		)} finished completing ${quantity}x Gnome Restaurant deliveries. You received **${loot}**. ${xpRes}`;
 
-		const user = await this.client.users.fetch(userID);
-		await user.addItemsToBank(loot.bank, true);
-		const currentLevel = user.skillLevel(SkillsEnum.Cooking);
-		await user.addXP(SkillsEnum.Cooking, totalXP);
-		const newLevel = user.skillLevel(SkillsEnum.Cooking);
-		if (currentLevel !== newLevel) {
-			str += `\n\n${minionName}'s Cooking level is now ${newLevel}!`;
-		}
-		await this.client.settings.update(
-			ClientSettings.EconomyStats.GnomeRestaurantLootBank,
-			addBanks([
-				this.client.settings.get(ClientSettings.EconomyStats.GnomeRestaurantLootBank),
-				loot.bank
-			])
-		);
+		updateBankSetting(this.client, ClientSettings.EconomyStats.GnomeRestaurantLootBank, loot);
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued gnome restaurant`);
-				return this.client.commands.get('gnomerestaurant')!.run(res, []);
-			},
+			['minigames', { gnome_restaurant: { start: {} } }, true],
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

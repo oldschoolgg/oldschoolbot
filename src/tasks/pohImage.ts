@@ -1,20 +1,13 @@
-import { Canvas, CanvasRenderingContext2D, createCanvas, Image } from 'canvas';
-import { MessageAttachment } from 'discord.js';
 import { objectEntries, randInt } from 'e';
 import * as fs from 'fs';
 import { Task } from 'klasa';
 import path from 'path';
+import { Canvas, CanvasRenderingContext2D, Image } from 'skia-canvas/lib';
 
-import {
-	DUNGEON_FLOOR_Y,
-	GROUND_FLOOR_Y,
-	HOUSE_WIDTH,
-	Placeholders,
-	TOP_FLOOR_Y
-} from '../lib/poh';
-import { PoHTable } from '../lib/typeorm/PoHTable.entity';
-import { canvasImageFromBuffer } from '../lib/util/canvasImageFromBuffer';
-import getActivityOfUser from '../lib/util/getActivityOfUser';
+import { DUNGEON_FLOOR_Y, GROUND_FLOOR_Y, HOUSE_WIDTH, Placeholders, TOP_FLOOR_Y } from '../lib/poh';
+import { getActivityOfUser } from '../lib/settings/settings';
+import { canvasImageFromBuffer } from '../lib/util/canvasUtil';
+import { PlayerOwnedHouse } from '.prisma/client';
 
 const CONSTRUCTION_IMG_DIR = './src/lib/poh/images';
 const FOLDERS = [
@@ -32,7 +25,8 @@ const FOLDERS = [
 	'torch',
 	'dungeon_decoration',
 	'prison',
-	'minion'
+	'minion',
+	'garden_decoration'
 ];
 
 const bg = fs.readFileSync('./src/lib/poh/images/bg_1.jpg');
@@ -59,7 +53,7 @@ export default class PoHImage extends Task {
 
 	generateCanvas(bgId: number): [Canvas, CanvasRenderingContext2D] {
 		const bgImage = this.bgImages[bgId - 1]!;
-		const canvas = createCanvas(bgImage.width, bgImage.height);
+		const canvas = new Canvas(bgImage.width, bgImage.height);
 
 		const ctx = canvas.getContext('2d');
 		ctx.imageSmoothingEnabled = false;
@@ -87,14 +81,15 @@ export default class PoHImage extends Task {
 		}
 	}
 
-	async run(poh: PoHTable, showSpaces = true) {
-		const [canvas, ctx] = this.generateCanvas(poh.backgroundID);
+	async run(poh: PlayerOwnedHouse, showSpaces = true) {
+		const [canvas, ctx] = this.generateCanvas(poh.background_id);
 		for (const [key, objects] of objectEntries(Placeholders)) {
+			if (!key || !objects) continue;
 			const [placeholder, coordArr] = objects;
 			for (const obj of coordArr) {
 				const [x, y] = obj;
 				let id = poh[key] ?? placeholder;
-				const isMountedItem = key === 'mountedItem' && id !== 1111;
+				const isMountedItem = key === 'mounted_item' && id !== 1111;
 				if (isMountedItem) {
 					const hasCustomItem = id !== 1112;
 					const mount = this.imageCache.get(1112)!;
@@ -106,13 +101,7 @@ export default class PoHImage extends Task {
 						const image = await this.client.tasks.get('bankImage')!.getItemImage(id, 1);
 						const h = image.height * 0.8;
 						const w = image.width * 0.8;
-						ctx.drawImage(
-							image,
-							mX + (mount.width - w) / 2,
-							mY + (mount.height - h) / 2,
-							w,
-							h
-						);
+						ctx.drawImage(image, mX + (mount.width - w) / 2, mY + (mount.height - h) / 2, w, h);
 					}
 
 					continue;
@@ -124,12 +113,12 @@ export default class PoHImage extends Task {
 				ctx.drawImage(image, x - width / 2, y - height, width, height);
 			}
 		}
-		const activity = getActivityOfUser(this.client, poh.userID);
+		const activity = getActivityOfUser(poh.user_id);
 		if (!activity) {
 			const image = this.imageCache.get(11)!;
 			const [x, y] = this.randMinionCoords();
 			ctx.drawImage(image, x - image.width, y - image.height, image.width, image.height);
 		}
-		return new MessageAttachment(canvas.toBuffer('image/png'));
+		return canvas.toBuffer('png');
 	}
 }

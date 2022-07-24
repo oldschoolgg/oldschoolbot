@@ -1,14 +1,20 @@
+import { Permissions } from 'discord.js';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
-import { PermissionLevelsEnum } from '../lib/constants';
-import { GuildSettings } from '../lib/settings/types/GuildSettings';
-import { floatPromise } from '../lib/util';
+import { syncNewUserUsername } from '../lib/settings/settings';
+import { BotCommand } from '../lib/structures/BotCommand';
+import { logError } from '../lib/util/logError';
+import { postCommand } from '../mahoji/lib/postCommand';
+import { preCommand } from '../mahoji/lib/preCommand';
+import { convertKlasaCommandToAbstractCommand } from '../mahoji/lib/util';
+import { mahojiGuildSettingsFetch } from '../mahoji/mahojiSettings';
 
 export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			ignoreOthers: false,
-			ignoreEdits: !store.client.options.commandEditing
+			ignoreEdits: true,
+			ignoreBots: false
 		});
 	}
 
@@ -16,101 +22,92 @@ export default class extends Monitor {
 		if (message.guild && message.guild.me === null) {
 			await message.guild.members.fetch(this.client.user!.id);
 		}
-		if (!message.channel.postable) return undefined;
 		if (!message.commandText && message.prefix === this.client.mentionPrefix) {
 			return this.sendPrefixReminder(message);
 		}
-		if (!message.commandText) return undefined;
-		if (!message.command) {
-			return this.client.emit(
-				'commandUnknown',
-				message,
-				message.commandText,
-				message.prefix,
-				message.prefixLength
-			);
-		}
-		this.client.emit('commandRun', message, message.command, message.args);
+		if (!message.commandText || !message.channel.postable || !message.command) return undefined;
 
 		return this.runCommand(message);
 	}
 
 	public async sendPrefixReminder(message: KlasaMessage) {
+		const settings = await mahojiGuildSettingsFetch(message.guild!);
+
 		if (message.guild !== null) {
-			const staffOnlyChannels = message.guild.settings.get(GuildSettings.StaffOnlyChannels);
+			const { staffOnlyChannels } = settings;
 			if (
-				staffOnlyChannels.includes(message.channel.id) &&
-				!(await message.hasAtLeastPermissionLevel(PermissionLevelsEnum.Moderator))
+				!message.member ||
+				(staffOnlyChannels.includes(message.channel.id) &&
+					!message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
 			) {
 				return;
 			}
 		}
-		const prefix = message.guildSettings.get(GuildSettings.Prefix);
-		return message.sendLocale('PREFIX_REMINDER', [prefix.length ? prefix : undefined]);
+
+		return message.channel.send(`The prefix in this guild is set to: \`${settings.prefix}\``);
 	}
 
-	public async runCommand(message: KlasaMessage) {
+	public async runCommand(msg: KlasaMessage) {
+		syncNewUserUsername(msg);
+
+		const command = msg.command! as BotCommand;
+		const { params } = msg;
+
 		const timer = new Stopwatch();
-		if (this.client.options.typing) floatPromise(this, message.channel.startTyping());
 
+		let response: KlasaMessage | null = null;
+
+		const userID = msg.author.id;
+		const channelID = msg.channel.id;
+		const guildID = msg.guild?.id ?? null;
+		const abstractCommand = convertKlasaCommandToAbstractCommand(command);
+
+		let error: Error | string | null = null;
+		let inhibited = false;
 		try {
-			await this.client.inhibitors.run(message, message.command!);
-			if (message.command!.oneAtTime) {
-				this.client.oneCommandAtATimeCache.add(message.author.id);
-			}
-			try {
-				// @ts-ignore 2341
-				await message.prompter!.run();
-				try {
-					const subcommand = message.command!.subcommands
-						? message.params.shift()
-						: undefined;
+			const inhibitedReason = await preCommand({
+				abstractCommand,
+				userID,
+				channelID,
+				guildID,
+				bypassInhibitors: false
+			});
 
-					const commandRun = subcommand
-						? // @ts-ignore 7053
-						  message.command![subcommand](message, message.params)
-						: message.command!.run(message, message.params);
-					timer.stop();
-					const response = await commandRun;
-					floatPromise(
-						this,
-						this.client.finalizers.run(message, message.command!, response, timer)
-					);
-					this.client.emit(
-						'commandSuccess',
-						message,
-						message.command,
-						message.params,
-						response
-					);
-				} catch (error) {
-					this.client.emit(
-						'commandError',
-						message,
-						message.command,
-						message.params,
-						error
-					);
-				}
-			} catch (argumentError) {
-				this.client.emit(
-					'argumentError',
-					message,
-					message.command,
-					message.params,
-					argumentError
-				);
-			} finally {
-				if (message.command!.oneAtTime) {
-					setTimeout(
-						() => this.client.oneCommandAtATimeCache.delete(message.author.id),
-						1500
-					);
-				}
+			if (inhibitedReason) {
+				inhibited = true;
+				if (inhibitedReason.silent) return;
+				return msg.channel.send(inhibitedReason.reason);
 			}
-		} catch (response) {
-			return this.client.emit('commandInhibited', message, message.command, response);
+
+			// @ts-ignore 2341
+			await msg.prompter!.run();
+			const subcommand = command.subcommands ? params.shift() : undefined;
+
+			const commandRun = subcommand
+				? // @ts-ignore 7053
+				  command[subcommand](msg, params)
+				: command.run(msg, params);
+			timer.stop();
+			response = await commandRun;
+		} catch (err) {
+			error = err as Error | string;
+		} finally {
+			try {
+				await postCommand({
+					abstractCommand,
+					userID,
+					guildID,
+					channelID,
+					error,
+					args: msg.args,
+					isContinue: false,
+					inhibited
+				});
+			} catch (err) {
+				logError(err);
+			}
 		}
-		if (this.client.options.typing) message.channel.stopTyping();
+
+		return response;
 	}
 }

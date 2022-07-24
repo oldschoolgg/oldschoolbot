@@ -1,13 +1,19 @@
 import { Client, SchemaFolder } from 'klasa';
 
 import { CombatsEnum } from '../../../commands/Minion/combatsetup';
-import defaultContracts from '../../minions/farming/defaultContracts';
-import { FarmingPatchTypes } from '../../minions/farming/types';
 import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
+import { BlowpipeData } from '../../minions/types';
 import { SkillsEnum } from '../../skilling/types';
+import { baseUserKourendFavour } from './../../minions/data/kourendFavour';
+
+const defaultBlowpipe: BlowpipeData = {
+	scales: 0,
+	dartID: null,
+	dartQuantity: 0
+};
 
 Client.defaultUserSchema
-	.add('GP', 'integer', { default: 0 })
+	.add('GP', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('QP', 'integer', { default: 0 })
 	.add('RSN', 'string', { default: null })
 	.add('pets', 'any', { default: {} })
@@ -17,12 +23,14 @@ Client.defaultUserSchema
 	.add('selectedPrayers', 'string', { array: true, default: [] })
 	.add('selectedPotions', 'string', { array: true, default: [] })
 	.add('unlockedPrayers', 'string', { array: true, default: [] })
+	.add('favorite_alchables', 'integer', { array: true, default: [] })
+	.add('favorite_food', 'integer', { array: true, default: [] })
 	.add('lastDailyTimestamp', 'integer', { default: 1 })
-	.add('sacrificedValue', 'integer', { default: 0, maximum: 100_000_000_000, minimum: 0 })
+	.add('lastTearsOfGuthixTimestamp', 'integer', { default: 1 })
+	.add('sacrificedValue', 'integer', { default: 0, minimum: 0, maximum: Number.MAX_SAFE_INTEGER })
 	.add('bank', 'any', { default: {} })
 	.add('collectionLogBank', 'any', { default: {} })
 	.add('creatureScores', 'any', { default: {} })
-	.add('clueScores', 'any', { default: {} })
 	.add('monsterScores', 'any', { default: {} })
 	.add('lapsScores', 'any', { default: {} })
 	.add('bankBackground', 'integer', { default: 1 })
@@ -33,15 +41,51 @@ Client.defaultUserSchema
 	.add('patreon_id', 'string', { default: null })
 	.add('github_id', 'integer', { default: null })
 	.add('carpenter_points', 'integer', { default: 0 })
+	.add('zeal_tokens', 'integer', { default: 0 })
+	.add('openable_scores', 'any', { default: {} })
+	.add('attack_style', 'string', { array: true, default: [] })
+	.add('total_cox_points', 'integer', { default: 0 })
+	.add('combat_options', 'integer', { array: true, default: [] })
+	.add('farming_patch_reminders', 'boolean', { default: true })
+	.add('pest_control_points', 'integer', { default: 0 })
+	.add('inferno_attempts', 'integer', { default: 0 })
+	.add('infernal_cape_sacrifices', 'integer', { default: 0 })
+	.add('tob_attempts', 'integer', { default: 0 })
+	.add('tob_hard_attempts', 'integer', { default: 0 })
+	.add('volcanic_mine_points', 'integer', { default: 0 })
+	.add('kourend_favour', 'any', { default: { ...baseUserKourendFavour } })
+	.add('blowpipe', 'any', { default: { ...defaultBlowpipe } })
+	.add('ironman_alts', 'string', { array: true, default: [] })
+	.add('main_account', 'string', { default: null })
+	.add('premium_balance_tier', 'integer', { default: null })
+	.add('premium_balance_expiry_date', 'integer', { default: null, maximum: Number.MAX_SAFE_INTEGER })
+	.add('tentacle_charges', 'integer', { default: 10_000 })
+	.add('sang_charges', 'integer', { default: 0 })
+	.add('temp_cl', 'any', { default: {} })
+	.add('volcanic_mine_points', 'integer', { default: 0 })
+	.add('slayer', folder =>
+		folder
+			.add('points', 'integer', { default: 0 })
+			.add('task_streak', 'integer', { default: 0 })
+			.add('remember_master', 'string', { default: null })
+			.add('unlocks', 'integer', { array: true, default: [] })
+			.add('blocked_ids', 'integer', { array: true, default: [] })
+			.add('autoslay_options', 'integer', { array: true, default: [] })
+			.add('superior_count', 'integer', { default: 0 })
+			.add('last_task', 'integer', { default: 0 })
+			.add('unsired_offered', 'integer', { default: 0 })
+			.add('chewed_offered', 'integer', { default: 0 })
+	)
+
+	.add('bank_bg_hex', 'string', { default: null })
 	.add('minion', folder =>
 		folder
 			.add('name', 'string')
 			.add('hasBought', 'boolean', { default: false })
-			.add('dailyDuration', 'integer', { default: 0 })
 			.add('ironman', 'boolean', { default: false })
 			.add('icon', 'string', { default: null })
 			.add('equippedPet', 'integer', { default: null })
-			.add('farmingContract', 'any', { default: defaultContracts })
+			.add('farmingContract', 'any', { default: null })
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
 			.add('defaultDartToUse', 'string', { default: 'bronze dart' })
 			.add('defaultPay', 'boolean', { default: false })
@@ -70,29 +114,38 @@ Client.defaultUserSchema
 	)
 	.add('skills', (folder: SchemaFolder) =>
 		folder
-			.add(SkillsEnum.Attack, 'integer', { default: 0 })
-			.add(SkillsEnum.Strength, 'integer', { default: 0 })
-			.add(SkillsEnum.Defence, 'integer', { default: 0 })
-			.add(SkillsEnum.Ranged, 'integer', { default: 0 })
-			.add(SkillsEnum.Magic, 'integer', { default: 0 })
-			.add(SkillsEnum.Hitpoints, 'integer', { default: 0 })
-			.add(SkillsEnum.Agility, 'integer', { default: 0 })
-			.add(SkillsEnum.Cooking, 'integer', { default: 0 })
-			.add(SkillsEnum.Fishing, 'integer', { default: 0 })
-			.add(SkillsEnum.Mining, 'integer', { default: 0 })
-			.add(SkillsEnum.Smithing, 'integer', { default: 0 })
-			.add(SkillsEnum.Woodcutting, 'integer', { default: 0 })
-			.add(SkillsEnum.Firemaking, 'integer', { default: 0 })
-			.add(SkillsEnum.Runecraft, 'integer', { default: 0 })
-			.add(SkillsEnum.Crafting, 'integer', { default: 0 })
-			.add(SkillsEnum.Prayer, 'integer', { default: 0 })
-			.add(SkillsEnum.Fletching, 'integer', { default: 0 })
-			.add(SkillsEnum.Thieving, 'integer', { default: 0 })
-			.add(SkillsEnum.Farming, 'integer', { default: 0 })
-			.add(SkillsEnum.Herblore, 'integer', { default: 0 })
-			.add(SkillsEnum.Hunter, 'integer', { default: 0 })
-			.add(SkillsEnum.Construction, 'integer', { default: 0 })
-			.add(SkillsEnum.Magic, 'integer', { default: 0 })
+			.add(SkillsEnum.Agility, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Cooking, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Fishing, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Mining, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Smithing, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Woodcutting, 'integer', {
+				default: 0,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
+			.add(SkillsEnum.Firemaking, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Runecraft, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Crafting, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Prayer, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Fletching, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Thieving, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Farming, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Herblore, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Hunter, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Construction, 'integer', {
+				default: 0,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
+			.add(SkillsEnum.Magic, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Ranged, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Attack, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Strength, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Defence, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Slayer, 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+			.add(SkillsEnum.Hitpoints, 'integer', {
+				default: 1154,
+				maximum: Number.MAX_SAFE_INTEGER
+			})
 	)
 	.add('gear', (folder: SchemaFolder) =>
 		folder
@@ -101,26 +154,16 @@ Client.defaultUserSchema
 			.add('range', 'any', { default: null })
 			.add('misc', 'any', { default: null })
 			.add('skilling', 'any', { default: null })
+			.add('wildy', 'any', { default: null })
+			.add('fashion', 'any', { default: null })
+			.add('other', 'any', { default: null })
 	)
-	.add('farmingPatches', (folder: SchemaFolder) =>
-		folder
-			.add(FarmingPatchTypes.Herb, 'any', { default: null })
-			.add(FarmingPatchTypes.FruitTree, 'any', { default: null })
-			.add(FarmingPatchTypes.Tree, 'any', { default: null })
-			.add(FarmingPatchTypes.Allotment, 'any', { default: null })
-			.add(FarmingPatchTypes.Hops, 'any', { default: null })
-			.add(FarmingPatchTypes.Cactus, 'any', { default: null })
-			.add(FarmingPatchTypes.Bush, 'any', { default: null })
-			.add(FarmingPatchTypes.Spirit, 'any', { default: null })
-			.add(FarmingPatchTypes.Hardwood, 'any', { default: null })
-			.add(FarmingPatchTypes.Seaweed, 'any', { default: null })
-			.add(FarmingPatchTypes.Vine, 'any', { default: null })
-			.add(FarmingPatchTypes.Calquat, 'any', { default: null })
-			.add(FarmingPatchTypes.Redwood, 'any', { default: null })
-			.add(FarmingPatchTypes.Crystal, 'any', { default: null })
-			.add(FarmingPatchTypes.Celastrus, 'any', { default: null })
-			.add(FarmingPatchTypes.Hespori, 'any', { default: null })
-			.add(FarmingPatchTypes.Flower, 'any', { default: null })
-			.add(FarmingPatchTypes.Mushroom, 'any', { default: null })
-			.add(FarmingPatchTypes.Belladonna, 'any', { default: null })
-	);
+	.add('tob_cost', 'any', { default: {} })
+	.add('tob_loot', 'any', { default: {} })
+	.add('lms_points', 'integer', { default: 0 })
+
+	.add('gp_luckypick', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+	.add('gp_dice', 'integer', { default: 0, maximum: Number.MAX_SAFE_INTEGER })
+
+	.add('bank_sort_method', 'string', { default: null })
+	.add('bank_sort_weightings', 'any', { default: {} });

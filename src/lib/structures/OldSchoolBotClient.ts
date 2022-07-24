@@ -1,26 +1,20 @@
-import { Client as TagsClient } from '@kcp/tags';
-import { Client, KlasaClientOptions } from 'klasa';
-import pLimit from 'p-limit';
-import { join } from 'path';
-import PgBoss from 'pg-boss';
-import { Connection, createConnection } from 'typeorm';
+import { Client, KlasaClientOptions, KlasaUser } from 'klasa';
+import { MahojiClient } from 'mahoji';
 
-import { providerConfig } from '../../config';
-import { clientOptions } from '../config/config';
-import { initItemAliases } from '../data/itemAliases';
-import { GroupMonsterActivityTaskOptions } from '../minions/types';
-import { ActivityTaskOptions } from '../types/minions';
+import { cacheUsernames } from '../../mahoji/commands/leaderboard';
+import { clientOptions } from '../config';
+import { initCrons } from '../crons';
+import { prisma } from '../settings/prisma';
+import { syncActivityCache } from '../settings/settings';
+import { startupScripts } from '../startupScripts';
+import { logError } from '../util/logError';
 import { piscinaPool } from '../workers';
-
-Client.use(TagsClient);
 
 const { production } = clientOptions;
 
 if (typeof production !== 'boolean') {
-	throw new Error(`Must provide production boolean.`);
+	throw new Error('Must provide production boolean.');
 }
-
-const { port, user, password, database } = providerConfig!.postgres!;
 
 import('../settings/schemas/UserSchema');
 import('../settings/schemas/GuildSchema');
@@ -29,59 +23,51 @@ import('../settings/schemas/ClientSchema');
 export class OldSchoolBotClient extends Client {
 	public oneCommandAtATimeCache = new Set<string>();
 	public secondaryUserBusyCache = new Set<string>();
-	public queuePromise = pLimit(1);
 	public piscinaPool = piscinaPool;
 	public production = production ?? false;
-	public orm!: Connection;
-	public boss!: PgBoss;
-
-	public minionActivityCache = new Map<string, ActivityTaskOptions>();
+	public mahojiClient!: MahojiClient;
+	_emojis: any;
 
 	public constructor(clientOptions: KlasaClientOptions) {
 		super(clientOptions);
+		this._emojis = super.emojis;
+	}
+
+	refreshEmojis() {
+		this._emojis = super.emojis;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	get emojis() {
+		return this._emojis;
 	}
 
 	public async login(token?: string) {
-		this.orm = await createConnection({
-			type: 'postgres',
-			host: 'localhost',
-			port,
-			username: user,
-			password,
-			database,
-			entities: [join(__dirname, '..', 'typeorm', '*.entity{.ts,.js}')],
-			synchronize: !production
-		});
-		const existingTasks = await this.orm.query(
-			`SELECT pgboss.job.data FROM pgboss.job WHERE pgboss.job.name = 'minionActivity' AND state = 'created';`
+		let promises = [];
+		promises.push(syncActivityCache());
+		promises.push(
+			...startupScripts.map(query =>
+				prisma
+					.$queryRawUnsafe(query.sql)
+					.catch(err =>
+						query.ignoreErrors ? null : logError(`Startup script failed: ${err.message} ${query.sql}`)
+					)
+			)
 		);
-
-		for (const task of existingTasks.map((t: any) => t.data)) {
-			if ('users' in task) {
-				for (const user of (task as GroupMonsterActivityTaskOptions).users) {
-					this.minionActivityCache.set(user, task);
-				}
-			} else {
-				this.minionActivityCache.set(task.userID, task);
-			}
-		}
-
-		this.boss = new PgBoss({ ...providerConfig?.postgres, deleteAfterHours: 2 });
-		this.boss.on('error', error => console.error(error));
-		await this.boss.start();
-
+		await Promise.all(promises);
 		return super.login(token);
 	}
 
-	async cancelTask(userID: string) {
-		await this.orm.query(
-			`DELETE FROM pgboss.job WHERE pgboss.job.name = 'minionActivity' AND cast(pgboss.job.data->>'userID' as text) = '${userID}' AND state = 'created';`
-		);
-		this.minionActivityCache.delete(userID);
+	async fetchUser(id: string | bigint): Promise<KlasaUser> {
+		const user = await this.users.fetch(typeof id === 'string' ? id : id.toString());
+		await user.settings.sync();
+		return user;
 	}
 
-	public init = async (): Promise<this> => {
-		initItemAliases();
-		return this;
+	init = () => {
+		initCrons(this);
+		this.refreshEmojis();
+		cacheUsernames();
 	};
 }

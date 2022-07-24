@@ -10,7 +10,7 @@ const minionNotBusy = createFunctionInhibitor(
 	},
 	(msg: KlasaMessage) => {
 		msg.author.log('[TTK-BUSY] Decorator');
-		return msg.send(`${msg.author.minionName} is currently busy.`);
+		return msg.channel.send(`${msg.author.minionName} is currently busy.`);
 	}
 );
 

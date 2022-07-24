@@ -1,7 +1,10 @@
 import { Message, Permissions, TextChannel } from 'discord.js';
+import { noOp } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage } from 'klasa';
 
-import { noOp } from '../../lib/util';
+import { customClientOptions } from '../../config';
+import chatHeadImage, { chatHeads } from '../../lib/util/chatHeadImage';
+import { untrustedGuildSettingsCache } from '../../mahoji/mahojiSettings';
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -10,35 +13,22 @@ export default class extends Extendable {
 
 	// @ts-ignore 2784
 	get cmdPrefix(this: KlasaMessage) {
-		return this.guild ? this.guild.settings.get('prefix') : '+';
-	}
-
-	async sendLarge(
-		this: KlasaMessage,
-		content: any,
-		fileName = 'large-response.txt',
-		messageTooLong = 'Response was too long, please see text file.'
-	) {
-		if (content.length <= 2000 && !this.flagArgs.file) return this.send(content);
-
-		return this.channel.sendFile(Buffer.from(content), fileName, messageTooLong);
+		let defaultPrefix = customClientOptions.prefix ?? '+';
+		return this.guild ? untrustedGuildSettingsCache.get(this.guild.id)?.prefix ?? defaultPrefix : defaultPrefix;
 	}
 
 	removeAllReactions(this: KlasaMessage) {
 		// Remove all reactions if the user has permissions to do so
 		if (
 			this.guild &&
-			(this.channel as TextChannel)
-				.permissionsFor(this.guild.me!)!
-				.has(Permissions.FLAGS.MANAGE_MESSAGES)
+			(this.channel as TextChannel).permissionsFor(this.guild.me!)!.has(Permissions.FLAGS.MANAGE_MESSAGES)
 		) {
 			this.reactions.removeAll().catch(noOp);
 		}
 	}
-}
 
-declare module 'discord.js' {
-	export interface Message {
-		sendLarge(content: string, fileName?: string, tooLong?: string): Promise<KlasaMessage>;
+	async chatHeadImage(this: KlasaMessage, head: keyof typeof chatHeads, content: string, messageContent?: string) {
+		const file = await chatHeadImage({ head, content });
+		this.channel.send({ files: [file], content: messageContent });
 	}
 }

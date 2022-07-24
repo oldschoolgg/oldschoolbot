@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import { Canvas, createCanvas } from 'canvas';
+import { User } from '@prisma/client';
 import * as fs from 'fs';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Canvas } from 'skia-canvas/lib';
 
-import { GearSetup, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
+import { getUserGear } from '../../../mahoji/mahojiSettings';
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
+import { Gear } from '../../structures/Gear';
 import { toTitleCase } from '../../util';
-import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
-import { drawItemQuantityText } from '../../util/drawItemQuantityText';
-import { drawTitleText } from '../../util/drawTitleText';
-import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
-import { sumOfSetupStats } from './sumOfSetupStats';
+import { canvasImageFromBuffer, drawItemQuantityText, drawTitleText, fillTextXTimesInCtx } from '../../util/canvasUtil';
+import { GearSetupType, GearSetupTypes, maxDefenceStats, maxOffenceStats } from '..';
+import { GearSetup } from '../types';
 
 const gearTemplateFile = fs.readFileSync('./src/lib/resources/images/gear_template.png');
+const gearTemplateCompactFile = fs.readFileSync('./src/lib/resources/images/gear_template_compact.png');
 
 /**
  * The default gear in a gear setup, when nothing is equipped.
@@ -32,6 +33,21 @@ const slotCoordinates: { [key in EquipmentSlot]: [number, number] } = {
 	[EquipmentSlot.Ring]: [127, 190],
 	[EquipmentSlot.Shield]: [127, 110],
 	[EquipmentSlot.Weapon]: [15, 108]
+};
+
+const slotCoordinatesCompact: { [key in EquipmentSlot]: [number, number] } = {
+	[EquipmentSlot.Head]: [43, 1],
+	[EquipmentSlot.Cape]: [2, 40],
+	[EquipmentSlot.Neck]: [43, 40],
+	[EquipmentSlot.Ammo]: [84, 40],
+	[EquipmentSlot.TwoHanded]: [2, 79],
+	[EquipmentSlot.Weapon]: [2, 79],
+	[EquipmentSlot.Body]: [43, 79],
+	[EquipmentSlot.Shield]: [84, 79],
+	[EquipmentSlot.Legs]: [43, 119],
+	[EquipmentSlot.Hands]: [2, 159],
+	[EquipmentSlot.Feet]: [43, 159],
+	[EquipmentSlot.Ring]: [84, 159]
 };
 
 const slotSize = 36;
@@ -65,33 +81,46 @@ function drawText(canvas: Canvas, text: string, x: number, y: number, maxStat = 
 }
 
 export async function generateGearImage(
-	client: KlasaClient,
-	user: KlasaUser,
-	gearSetup: GearSetup,
-	gearType: GearSetupTypes | null,
+	user: KlasaUser | User,
+	gearSetup: Gear | GearSetup,
+	gearType: GearSetupType | null,
 	petID: number | null
 ) {
 	// Init the background images if they are not already
 	if (!bankTask) {
-		bankTask = client.tasks.get('bankImage') as BankImageTask;
+		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 	}
 
-	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
-	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
+	const bankBg =
+		(user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackground) : user.bankBackground) ?? 1;
 
-	const gearStats = sumOfSetupStats(gearSetup);
+	let { sprite, uniqueSprite, background: userBgImage } = bankTask.getBgAndSprite(bankBg);
+
+	const hexColor = user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackgroundHex) : user.bank_bg_hex;
+
+	const gearStats = gearSetup instanceof Gear ? gearSetup.stats : new Gear(gearSetup).stats;
 	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateFile);
-	const canvas = createCanvas(gearTemplateImage.width, gearTemplateImage.height);
+	const canvas = new Canvas(gearTemplateImage.width, gearTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
+
+	ctx.fillStyle = userBgImage.transparent
+		? hexColor
+			? hexColor
+			: 'transparent'
+		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(
-		userBg,
-		(canvas.width - userBg.width) * 0.5,
-		(canvas.height - userBg.height) * 0.5
-	);
+
+	if (!uniqueSprite) {
+		ctx.drawImage(
+			userBgImage.image!,
+			(canvas.width - userBgImage.image!.width) * 0.5,
+			(canvas.height - userBgImage.image!.height) * 0.5
+		);
+	}
 	ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
-	bankTask?.drawBorder(canvas, false);
+
+	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
 
 	ctx.font = '16px OSRSFontCompact';
 	// Draw preset title
@@ -314,15 +343,9 @@ export async function generateGearImage(
 	ctx.translate(225, 0);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'start';
-	drawText(canvas, `Attack bonus`, 0, 25);
+	drawText(canvas, 'Attack bonus', 0, 25);
 	ctx.font = '16px OSRSFontCompact';
-	drawText(
-		canvas,
-		`Stab: ${gearStats.attack_stab}`,
-		0,
-		50,
-		maxOffenceStats.attack_stab === gearStats.attack_stab
-	);
+	drawText(canvas, `Stab: ${gearStats.attack_stab}`, 0, 50, maxOffenceStats.attack_stab === gearStats.attack_stab);
 	drawText(
 		canvas,
 		`Slash: ${gearStats.attack_slash}`,
@@ -353,18 +376,12 @@ export async function generateGearImage(
 	);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - bankTask.borderVertical!.width * 2, 0);
+	ctx.translate(canvas.width - 6 * 2, 0);
 	ctx.font = '16px RuneScape Bold 12';
 	ctx.textAlign = 'end';
-	drawText(canvas, `Defence bonus`, 0, 25);
+	drawText(canvas, 'Defence bonus', 0, 25);
 	ctx.font = '16px OSRSFontCompact';
-	drawText(
-		canvas,
-		`Stab: ${gearStats.defence_stab}`,
-		0,
-		50,
-		maxDefenceStats.defence_stab === gearStats.defence_stab
-	);
+	drawText(canvas, `Stab: ${gearStats.defence_stab}`, 0, 50, maxDefenceStats.defence_stab === gearStats.defence_stab);
 	drawText(
 		canvas,
 		`Slash: ${gearStats.defence_slash}`,
@@ -406,17 +423,16 @@ export async function generateGearImage(
 	// drawText(canvas, `Undead: ${(0).toFixed(1)} %`, 0, 201, false);
 	ctx.restore();
 	ctx.save();
-	ctx.translate(canvas.width - bankTask.borderVertical!.width * 2, 0);
+	ctx.translate(canvas.width - 6 * 2, 0);
 	ctx.font = '16px OSRSFontCompact';
 	ctx.textAlign = 'end';
 	drawText(canvas, `Magic Dmg.: ${gearStats.magic_damage.toFixed(1)}%`, 0, 165, false);
 	drawText(canvas, `Prayer: ${gearStats.prayer}`, 0, 183, false);
-	// drawText(canvas, `Slayer: ${(0).toFixed(1)} %`, 0, 201, false);
 	ctx.restore();
 
 	// Draw items
 	if (petID) {
-		const image = await client.tasks.get('bankImage')!.getItemImage(petID, 1);
+		const image = await globalClient.tasks.get('bankImage')!.getItemImage(petID, 1);
 		ctx.drawImage(
 			image,
 			178 + slotSize / 2 - image.width / 2,
@@ -429,7 +445,7 @@ export async function generateGearImage(
 	for (const enumName of Object.values(EquipmentSlot)) {
 		const item = gearSetup[enumName];
 		if (!item) continue;
-		const image = await client.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
+		const image = await globalClient.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
 
 		let [x, y] = slotCoordinates[enumName];
 		x = x + slotSize / 2 - image.width / 2;
@@ -441,5 +457,100 @@ export async function generateGearImage(
 		}
 	}
 
-	return canvas.toBuffer();
+	return canvas.toBuffer('png');
+}
+
+export async function generateAllGearImage(user: KlasaUser | User) {
+	if (!bankTask) {
+		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
+	}
+
+	let {
+		sprite: bgSprite,
+		uniqueSprite: hasBgSprite,
+		background: userBg
+	} = bankTask.getBgAndSprite(
+		(user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackground) : user.bankBackground) ?? 1
+	);
+
+	const hexColor = user instanceof KlasaUser ? user.settings.get(UserSettings.BankBackgroundHex) : user.bank_bg_hex;
+
+	const gearTemplateImage = await canvasImageFromBuffer(gearTemplateCompactFile);
+	const canvas = new Canvas((gearTemplateImage.width + 10) * 4 + 20, Number(gearTemplateImage.height) * 2 + 70);
+	const ctx = canvas.getContext('2d');
+	ctx.imageSmoothingEnabled = false;
+
+	ctx.fillStyle = userBg.transparent
+		? hexColor
+			? hexColor
+			: 'transparent'
+		: ctx.createPattern(bgSprite.repeatableBg, 'repeat')!;
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	if (!hasBgSprite) {
+		let imgHeight = 0;
+		let imgWidth = 0;
+		if (userBg.transparent) {
+			const ratio = canvas.width / userBg.image!.width;
+			imgHeight = userBg.image!.height * ratio;
+			imgWidth = canvas.width;
+		} else {
+			const ratio = canvas.height / userBg.image!.height;
+			imgWidth = userBg.image!.width * ratio;
+			imgHeight = userBg.image!.height * ratio;
+		}
+		ctx.drawImage(
+			userBg.image!,
+			(canvas.width - imgWidth) / 2,
+			(canvas.height - imgHeight) / 2,
+			imgWidth,
+			imgHeight
+		);
+	}
+	let i = 0;
+	let y = 30;
+	for (const type of GearSetupTypes) {
+		if (i === 4) {
+			y += gearTemplateImage.height + 30;
+			i = 0;
+		}
+		const gear = user instanceof KlasaUser ? user.getGear(type) : getUserGear(user)[type];
+		ctx.save();
+		ctx.translate(15 + i * (gearTemplateImage.width + 10), y);
+		ctx.font = '16px RuneScape Bold 12';
+		ctx.textAlign = 'center';
+		drawText(canvas, toTitleCase(type), gearTemplateImage.width / 2, -7);
+		ctx.drawImage(gearTemplateImage, 0, 0, gearTemplateImage.width, gearTemplateImage.height);
+		for (const enumName of Object.values(EquipmentSlot)) {
+			const item = gear[enumName];
+			if (!item) continue;
+			const image = await globalClient.tasks.get('bankImage')!.getItemImage(item.item, item.quantity);
+			let [x, y] = slotCoordinatesCompact[enumName];
+			x = x + slotSize / 2 - image.width / 2;
+			y = y + slotSize / 2 - image.height / 2;
+			ctx.drawImage(image, x, y, image.width, image.height);
+
+			if (item.quantity > 1) {
+				drawItemQuantityText(ctx, item.quantity, x + 1, y + 9);
+			}
+		}
+		i++;
+		ctx.restore();
+	}
+
+	ctx.font = '16px RuneScape Bold 12';
+	const petX = canvas.width - 50;
+	const petY = canvas.height / 2 + 20;
+	drawText(canvas, 'Pet', petX + 5, petY - 5);
+	ctx.drawImage(gearTemplateImage, 42, 1, 36, 36, petX, petY, 36, 36);
+	const userPet =
+		user instanceof KlasaUser ? user.settings.get(UserSettings.Minion.EquippedPet) : user.minion_equippedPet;
+	if (userPet) {
+		const image = await globalClient.tasks.get('bankImage')!.getItemImage(userPet, 1);
+		ctx.drawImage(image, petX, petY, image.width, image.height);
+	}
+
+	if (!userBg.transparent) bankTask?.drawBorder(ctx, bgSprite, false);
+
+	return canvas.toBuffer('png');
 }

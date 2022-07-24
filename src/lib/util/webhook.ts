@@ -1,73 +1,143 @@
-import { MessageEmbed, TextChannel, WebhookClient } from 'discord.js';
-import { KlasaClient } from 'klasa';
+import {
+	MessageAttachment,
+	MessageEmbed,
+	MessageOptions,
+	Permissions,
+	TextChannel,
+	Util,
+	WebhookClient
+} from 'discord.js';
 import PQueue from 'p-queue';
 
-import { WebhookTable } from '../typeorm/WebhookTable.entity';
-import { channelIsSendable } from './channelIsSendable';
+import { prisma } from '../settings/prisma';
+import { channelIsSendable } from '../util';
+import { logError } from './logError';
 
 const webhookCache: Map<string, WebhookClient> = new Map();
 
-export async function resolveChannel(
-	client: KlasaClient,
-	channelID: string
-): Promise<WebhookClient | TextChannel | undefined> {
-	const channel = client.channels.get(channelID);
+export async function resolveChannel(channelID: string): Promise<WebhookClient | TextChannel | undefined> {
+	const channel = globalClient.channels.cache.get(channelID);
+	if (!channel) return undefined;
+	if (channel.type === 'dm') {
+		return channel as TextChannel;
+	}
 	if (!channelIsSendable(channel)) return undefined;
 
 	const cached = webhookCache.get(channelID);
 	if (cached) return cached;
 
-	const db = await WebhookTable.findOne({ channelID });
+	const db = await prisma.webhook.findFirst({ where: { channel_id: channelID } });
 	if (db) {
-		client.emit('log', `Restoring webhook from DB.`);
-		webhookCache.set(db.channelID, new WebhookClient(db.webhookID, db.webhookToken));
-		return webhookCache.get(db.channelID);
+		webhookCache.set(db.channel_id, new WebhookClient(db.webhook_id, db.webhook_token));
+		return webhookCache.get(db.channel_id);
+	}
+
+	if (!channel.permissionsFor(globalClient.user!)?.has(Permissions.FLAGS.MANAGE_WEBHOOKS)) {
+		return channel;
 	}
 
 	try {
-		client.emit('log', `Trying to create webhook.`);
-		const createdWebhook = await channel.createWebhook(client.user!.username, {
-			avatar: client.user!.displayAvatarURL({})
+		const createdWebhook = await channel.createWebhook(globalClient.user!.username, {
+			avatar: globalClient.user!.displayAvatarURL({})
 		});
-		await WebhookTable.insert({
-			channelID,
-			webhookID: createdWebhook.id,
-			webhookToken: createdWebhook.token!
+		await prisma.webhook.create({
+			data: {
+				channel_id: channelID,
+				webhook_id: createdWebhook.id,
+				webhook_token: createdWebhook.token!
+			}
 		});
 		const webhook = new WebhookClient(createdWebhook.id, createdWebhook.token!);
 		webhookCache.set(channelID, webhook);
 		return webhook;
 	} catch (_) {
-		client.emit('log', 'Failed to create webhook');
 		return channel;
 	}
+}
+
+async function deleteWebhook(channelID: string) {
+	webhookCache.delete(channelID);
+	await prisma.webhook.delete({ where: { channel_id: channelID } });
 }
 
 const queue = new PQueue({ concurrency: 10 });
 
 export async function sendToChannelID(
-	client: KlasaClient,
 	channelID: string,
 	data: {
 		content?: string;
-		image?: Buffer;
+		image?: Buffer | MessageAttachment;
 		embed?: MessageEmbed;
+		components?: MessageOptions['components'];
 	}
 ) {
-	queue.add(async () => {
-		const channel = await resolveChannel(client, channelID);
+	async function queuedFn() {
+		const channel = await resolveChannel(channelID);
 		if (!channel) return;
 
-		client.emit('log', `Sending to channelID[${channelID}].`);
 		let files = data.image ? [data.image] : undefined;
+		let embeds = [];
+		if (data.embed) embeds.push(data.embed);
 		if (channel instanceof WebhookClient) {
-			channel.send(data.content, {
-				files,
-				embeds: data.embed ? [data.embed] : undefined,
-				split: true
-			});
+			try {
+				await webhookSend(channel, {
+					content: data.content,
+					files,
+					embeds,
+					components: data.components
+				});
+			} catch (err: any) {
+				const error = err as Error;
+				if (error.message === 'Unknown Webhook') {
+					await deleteWebhook(channelID);
+					await sendToChannelID(channelID, data);
+				} else {
+					logError(error, {
+						content: data.content ?? 'None',
+						channelID
+					});
+				}
+			}
 		} else {
-			channel.send(data.content, { files, embed: data.embed, split: true });
+			await channel.send({
+				content: data.content,
+				files,
+				embeds,
+				components: data.components
+			});
 		}
+	}
+	queue.add(queuedFn);
+}
+
+async function webhookSend(channel: WebhookClient, input: MessageOptions) {
+	const maxLength = 2000;
+
+	if (input.content && input.content.length > maxLength) {
+		// Moves files + components to the final message.
+		const split = Util.splitMessage(input.content, { maxLength });
+		const newPayload = { ...input };
+		// Separate files and components from payload for interactions
+		const { files, embeds, components } = newPayload;
+		delete newPayload.files;
+		delete newPayload.embeds;
+		delete newPayload.components;
+		await webhookSend(channel, { ...newPayload, content: split[0] });
+
+		for (let i = 1; i < split.length; i++) {
+			if (i + 1 === split.length) {
+				// Add files to last msg, and components for interactions to the final message.
+				await webhookSend(channel, { files, embeds, content: split[i], components });
+			} else {
+				await webhookSend(channel, { content: split[i] });
+			}
+		}
+		return;
+	}
+	return channel.send({
+		content: input.content,
+		embeds: input.embeds,
+		files: input.files,
+		components: input.components
 	});
 }

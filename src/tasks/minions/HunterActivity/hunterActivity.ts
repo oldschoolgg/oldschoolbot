@@ -1,9 +1,12 @@
+import { Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
-import { Events, Time } from '../../../lib/constants';
+import { Events } from '../../../lib/constants';
 import { hasWildyHuntGearEquipped } from '../../../lib/gear/functions/hasWildyHuntGearEquipped';
+import { trackLoot } from '../../../lib/settings/prisma';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import {
 	calcBabyChinchompaChance,
@@ -13,7 +16,7 @@ import {
 import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
-import { rand, roll, stringMatches } from '../../../lib/util';
+import { rand, roll, stringMatches, updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
@@ -36,18 +39,9 @@ const riskDeathNumbers = [
 
 export default class extends Task {
 	async run(data: HunterActivityTaskOptions) {
-		const {
-			creatureName,
-			quantity,
-			userID,
-			channelID,
-			usingHuntPotion,
-			wildyPeak,
-			duration
-		} = data;
-		const user = await this.client.users.fetch(userID);
+		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration } = data;
+		const user = await this.client.fetchUser(userID);
 		const userBank = user.bank();
-		user.incrementMinionDailyDuration(duration);
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentHerbLevel = user.skillLevel(SkillsEnum.Herblore);
 		let gotPked = false;
@@ -58,9 +52,7 @@ export default class extends Task {
 
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
-				alias =>
-					stringMatches(alias, creatureName) ||
-					stringMatches(alias.split(' ')[0], creatureName)
+				alias => stringMatches(alias, creatureName) || stringMatches(alias.split(' ')[0], creatureName)
 			)
 		);
 
@@ -75,17 +67,13 @@ export default class extends Task {
 		if (creature.wildy) {
 			let riskPkChance = creature.id === BLACK_CHIN_ID ? 100 : 200;
 			riskPkChance +=
-				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)
-					?.extraChance ?? 0;
+				riskDeathNumbers.find(_peaktier => _peaktier.peakTier === wildyPeak?.peakTier)?.extraChance ?? 0;
 			let riskDeathChance = 20;
 			// The more experienced the less chance of death.
-			riskDeathChance += Math.min(
-				Math.floor((user.getCreatureScore(creature) ?? 1) / 100),
-				200
-			);
+			riskDeathChance += Math.min(Math.floor((user.getCreatureScore(creature) ?? 1) / 100), 200);
 
-			// Gives lower death chance depending on what the user got equipped in misc.
-			const [, , score] = hasWildyHuntGearEquipped(user.getGear('misc'));
+			// Gives lower death chance depending on what the user got equipped in wildy.
+			const [, , score] = hasWildyHuntGearEquipped(user.getGear('wildy'));
 			riskDeathChance += score;
 			for (let i = 0; i < duration / Time.Minute; i++) {
 				if (roll(riskPkChance)) {
@@ -95,31 +83,27 @@ export default class extends Task {
 			}
 			if (gotPked && roll(riskDeathChance)) {
 				died = true;
-				if (
-					userBank.amount(itemID('Saradomin brew(4)')) >= 10 &&
-					userBank.amount(itemID('Super restore(4)')) >= 5
-				) {
-					await user.removeItemFromBank(itemID('Saradomin brew(4)'), 10);
-					await user.removeItemFromBank(itemID('Super restore(4)'), 5);
+				const cost = new Bank().add('Saradomin brew(4)', 10).add('Super restore(4)', 5);
+				if (userBank.has(cost)) {
+					await user.removeItemsFromBank(cost);
 				}
-				const newGear = { ...user.settings.get(UserSettings.Gear.Misc) };
+				const newGear = { ...user.settings.get(UserSettings.Gear.Wildy) };
 				newGear[EquipmentSlot.Body] = null;
 				newGear[EquipmentSlot.Legs] = null;
-				await user.settings.update(UserSettings.Gear.Misc, newGear);
+				await user.settings.update(UserSettings.Gear.Wildy, newGear);
 				pkedQuantity = 0.5 * successfulQuantity;
 				xpReceived *= 0.8;
-				diedStr = `Your minion got killed during the activity and lost gear, catch quantity, 10x Saradomin brew and 5x Super restore.`;
+				diedStr =
+					'Your minion got killed during the activity and lost gear, catch quantity, 10x Saradomin brew and 5x Super restore.';
 			}
 			if (gotPked && !died) {
-				if (
-					userBank.amount(itemID('Saradomin brew(4)')) >= 10 &&
-					userBank.amount(itemID('Super restore(4)')) >= 5
-				) {
+				if (userBank.amount('Saradomin brew(4)') >= 10 && userBank.amount('Super restore(4)') >= 5) {
 					let lostBrew = rand(1, 10);
 					let lostRestore = rand(1, 5);
-					await user.removeItemFromBank(itemID('Saradomin brew(4)'), lostBrew);
-					await user.removeItemFromBank(itemID('Super restore(4)'), lostRestore);
-					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, ${lostBrew}x Saradomin brew and ${lostRestore}x Super restore.`;
+					const cost = new Bank().add('Saradomin brew(4)', lostBrew).add('Super restore(4)', lostRestore);
+					await user.removeItemsFromBank(cost);
+
+					pkStr = `Your minion got attacked during the activity, escaped and lost some catch quantity, and ${cost}.`;
 					pkedQuantity = 0.1 * successfulQuantity;
 					xpReceived *= 0.9;
 				}
@@ -134,18 +118,23 @@ export default class extends Task {
 		let creatureTable = creature.table;
 		let magicSecStr = '';
 		let herbXP = 0;
+		let xpStr = '';
 		if (creature.id === HERBIBOAR_ID) {
 			creatureTable = generateHerbiTable(
 				user.skillLevel(SkillsEnum.Herblore),
 				user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))
 			);
 			if (user.hasItemEquippedOrInBank(Number(itemID('Magic secateurs')))) {
-				magicSecStr = ` Extra herbs for Magic secateurs`;
+				magicSecStr = ' Extra herbs for Magic secateurs';
 			}
 			// TODO: Check wiki in future for herblore xp from herbiboar
 			if (currentHerbLevel >= 31) {
 				herbXP += quantity * rand(25, 75);
-				await user.addXP(SkillsEnum.Herblore, herbXP);
+				xpStr = await user.addXP({
+					skillName: SkillsEnum.Herblore,
+					amount: herbXP,
+					duration
+				});
 			}
 		}
 		const loot = new Bank();
@@ -157,31 +146,18 @@ export default class extends Task {
 		}
 
 		await user.incrementCreatureScore(creature.id, Math.floor(successfulQuantity));
-		await user.addItemsToBank(loot.values(), true);
-		await user.addXP(SkillsEnum.Hunter, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Hunter);
-		const newHerbLevel = user.skillLevel(SkillsEnum.Herblore);
-		const xpHr = `${Math.round(
-			(xpReceived / (duration / Time.Minute)) * 60
-		).toLocaleString()} XP/Hr`;
+		await user.addItemsToBank({ items: loot, collectionLog: true });
+		xpStr += await user.addXP({
+			skillName: SkillsEnum.Hunter,
+			amount: xpReceived,
+			duration
+		});
 
 		let str = `${user}, ${user.minionName} finished hunting ${
 			creature.name
 		} ${quantity}x times, due to clever creatures you missed out on ${
 			quantity - successfulQuantity
-		}x catches, you also received ${xpReceived.toLocaleString()} XP (${xpHr}).`;
-
-		if (herbXP > 0) {
-			str += `\nYou also received ${herbXP} Herblore XP from harvesting ${creature.name}!`;
-		}
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Hunter level is now ${newLevel}!`;
-		}
-
-		if (newHerbLevel > currentHerbLevel) {
-			str += `\n\n${user.minionName}'s Herblore level is now ${newHerbLevel}!`;
-		}
+		}x catches. ${xpStr}`;
 
 		str += `\n\nYou received: ${loot}.${magicSecStr.length > 1 ? magicSecStr : ''}`;
 
@@ -194,28 +170,35 @@ export default class extends Task {
 		}
 
 		if (loot.amount('Baby chinchompa') > 0 || loot.amount('Herbi') > 0) {
-			str += `\n\n**You have a funny feeling like you're being followed....**`;
+			str += "\n\n**You have a funny feeling like you're being followed....**";
 			this.client.emit(
 				Events.ServerNotification,
 				`**${user.username}'s** minion, ${user.minionName}, just received a ${
 					loot.amount('Baby chinchompa') > 0
-						? `**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>`
-						: `**Herbi** <:Herbi:357773175318249472>`
+						? '**Baby chinchompa** <:Baby_chinchompa_red:324127375539306497>'
+						: '**Herbi** <:Herbi:357773175318249472>'
 				} while hunting a ${creature.name}, their Hunter level is ${currentLevel}!`
 			);
 		}
 
+		updateBankSetting(this.client, ClientSettings.EconomyStats.HunterLoot, loot);
+		await trackLoot({
+			id: creature.name,
+			changeType: 'loot',
+			duration,
+			kc: quantity,
+			loot,
+			type: 'Skilling'
+		});
+
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${creatureName}[${creatureName}]`);
-				return this.client.commands.get('hunt')!.run(res, [quantity, creatureName]);
-			},
+			['hunt', { name: creatureName, quantity, hunter_potion: data.usingHuntPotion }, true],
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

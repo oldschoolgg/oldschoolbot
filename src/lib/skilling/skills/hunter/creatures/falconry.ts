@@ -4,7 +4,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const falconryCreatures: Creature[] = [
 	{
-		name: `Spotted kebbit`,
+		name: 'Spotted kebbit',
 		id: 19,
 		aliases: ['spotted kebbit'],
 		level: 43,
@@ -16,7 +16,7 @@ const falconryCreatures: Creature[] = [
 		intercept: 10
 	},
 	{
-		name: `Dark kebbit`,
+		name: 'Dark kebbit',
 		id: 20,
 		aliases: ['dark kebbit'],
 		level: 57,
@@ -28,7 +28,7 @@ const falconryCreatures: Creature[] = [
 		intercept: 10
 	},
 	{
-		name: `Dashing kebbit`,
+		name: 'Dashing kebbit',
 		id: 21,
 		aliases: ['dashing kebbit'],
 		level: 69,

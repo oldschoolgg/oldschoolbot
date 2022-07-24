@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../../util/itemID';
 import { Craftable } from '../../../types';
 
@@ -8,7 +9,7 @@ const Birdhouse: Craftable[] = [
 		id: itemID('Bird house'),
 		level: 5,
 		xp: 15,
-		inputItems: resolveNameBank({ Logs: 1, Clockwork: 1 }),
+		inputItems: new Bank({ Logs: 1, Clockwork: 1 }),
 		tickRate: 2
 	},
 	{
@@ -16,7 +17,7 @@ const Birdhouse: Craftable[] = [
 		id: itemID('Oak bird house'),
 		level: 15,
 		xp: 20,
-		inputItems: resolveNameBank({ 'Oak logs': 1, Clockwork: 1 }),
+		inputItems: new Bank({ 'Oak logs': 1, Clockwork: 1 }),
 		tickRate: 2
 	},
 	{
@@ -24,7 +25,7 @@ const Birdhouse: Craftable[] = [
 		id: itemID('Willow bird house'),
 		level: 25,
 		xp: 25,
-		inputItems: resolveNameBank({ 'Willow logs': 1, Clockwork: 1 }),
+		inputItems: new Bank({ 'Willow logs': 1, Clockwork: 1 }),
 		tickRate: 2
 	},
 	{
@@ -32,7 +33,7 @@ const Birdhouse: Craftable[] = [
 		id: itemID('Teak bird house'),
 		level: 35,
 		xp: 30,
-		inputItems: resolveNameBank({ 'Teak logs': 1, Clockwork: 1 }),
+		inputItems: new Bank({ 'Teak logs': 1, Clockwork: 1 }),
 		tickRate: 2
 	},
 	{
@@ -40,7 +41,7 @@ const Birdhouse: Craftable[] = [
 		id: itemID('Maple bird house'),
 		level: 45,
 		xp: 35,
-		inputItems: resolveNameBank({ 'Maple logs': 1, Clockwork: 1 }),
+		inputItems: new Bank({ 'Maple logs': 1, Clockwork: 1 }),
 		tickRate: 2
 	},
 	{
@@ -48,7 +49,7 @@ const Birdhouse: Craftable[] = [
 		id: itemID('Mahogany bird house'),
 		level: 50,
 		xp: 40,
-		inputItems: resolveNameBank({ 'Mahogany logs': 1, Clockwork: 1 }),
+		inputItems: new Bank({ 'Mahogany logs': 1, Clockwork: 1 }),
 		tickRate: 2
 	},
 	{
@@ -56,7 +57,7 @@ const Birdhouse: Craftable[] = [
 		id: itemID('Yew bird house'),
 		level: 60,
 		xp: 45,
-		inputItems: resolveNameBank({ 'Yew logs': 1, Clockwork: 1 }),
+		inputItems: new Bank({ 'Yew logs': 1, Clockwork: 1 }),
 		tickRate: 2
 	},
 	{
@@ -64,7 +65,7 @@ const Birdhouse: Craftable[] = [
 		id: itemID('Magic bird house'),
 		level: 75,
 		xp: 50,
-		inputItems: resolveNameBank({ 'Magic logs': 1, Clockwork: 1 }),
+		inputItems: new Bank({ 'Magic logs': 1, Clockwork: 1 }),
 		tickRate: 2
 	},
 	{
@@ -72,7 +73,7 @@ const Birdhouse: Craftable[] = [
 		id: itemID('Redwood bird house'),
 		level: 90,
 		xp: 55,
-		inputItems: resolveNameBank({ 'Redwood logs': 1, Clockwork: 1 }),
+		inputItems: new Bank({ 'Redwood logs': 1, Clockwork: 1 }),
 		tickRate: 2
 	}
 ];

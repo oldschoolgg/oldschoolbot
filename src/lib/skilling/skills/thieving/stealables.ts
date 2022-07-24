@@ -1,24 +1,26 @@
 import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
-import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/CaveGoblin';
-import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/DesertBandit';
-import Farmer from 'oldschooljs/dist/simulation/monsters/low/Farmer';
-import FremennikCitizen from 'oldschooljs/dist/simulation/monsters/low/FremennikCitizen';
-import Gnome from 'oldschooljs/dist/simulation/monsters/low/Gnome';
-import Guard from 'oldschooljs/dist/simulation/monsters/low/Guard';
-import HamMember from 'oldschooljs/dist/simulation/monsters/low/HamMember';
-import Hero from 'oldschooljs/dist/simulation/monsters/low/Hero';
-import KnightOfArdougne from 'oldschooljs/dist/simulation/monsters/low/KnightOfArdougne';
-import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/MasterFarmer';
-import MenaphiteThug from 'oldschooljs/dist/simulation/monsters/low/MenaphiteThug';
-import Paladin from 'oldschooljs/dist/simulation/monsters/low/Paladin';
-import PollnivnianBandit from 'oldschooljs/dist/simulation/monsters/low/PollnivnianBandit';
-import PrifddinasElf from 'oldschooljs/dist/simulation/monsters/low/PrifddinasElf';
-import Rogue from 'oldschooljs/dist/simulation/monsters/low/Rogue';
-import TzHaarHur from 'oldschooljs/dist/simulation/monsters/low/TzHaarHur';
-import Vyre from 'oldschooljs/dist/simulation/monsters/low/Vyre';
-import WarriorWoman from 'oldschooljs/dist/simulation/monsters/low/WarriorWoman';
-import YanilleWatchman from 'oldschooljs/dist/simulation/monsters/low/YanilleWatchman';
+import BeardedBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/BeardedBandit';
+import CaveGoblin from 'oldschooljs/dist/simulation/monsters/low/a-f/CaveGoblin';
+import DesertBandit from 'oldschooljs/dist/simulation/monsters/low/a-f/DesertBandit';
+import Farmer from 'oldschooljs/dist/simulation/monsters/low/a-f/Farmer';
+import FemaleHamMember from 'oldschooljs/dist/simulation/monsters/low/a-f/FemaleHamMember';
+import FremennikCitizen from 'oldschooljs/dist/simulation/monsters/low/a-f/FremennikCitizen';
+import Gnome from 'oldschooljs/dist/simulation/monsters/low/g-m/Gnome';
+import Guard from 'oldschooljs/dist/simulation/monsters/low/g-m/Guard';
+import Hero from 'oldschooljs/dist/simulation/monsters/low/g-m/Hero';
+import KnightOfArdougne from 'oldschooljs/dist/simulation/monsters/low/g-m/KnightOfArdougne';
+import MaleHamMember from 'oldschooljs/dist/simulation/monsters/low/g-m/MaleHamMember';
+import MasterFarmer from 'oldschooljs/dist/simulation/monsters/low/g-m/MasterFarmer';
+import MenaphiteThug from 'oldschooljs/dist/simulation/monsters/low/g-m/MenaphiteThug';
+import Paladin from 'oldschooljs/dist/simulation/monsters/low/n-s/Paladin';
+import PollnivnianBandit from 'oldschooljs/dist/simulation/monsters/low/n-s/PollnivnianBandit';
+import PrifddinasElf from 'oldschooljs/dist/simulation/monsters/low/n-s/PrifddinasElf';
+import Rogue from 'oldschooljs/dist/simulation/monsters/low/n-s/Rogue';
+import TzHaarHur from 'oldschooljs/dist/simulation/monsters/low/t-z/TzHaarHur';
+import Vyre from 'oldschooljs/dist/simulation/monsters/low/t-z/Vyre';
+import WarriorWoman from 'oldschooljs/dist/simulation/monsters/low/t-z/WarriorWoman';
+import YanilleWatchman from 'oldschooljs/dist/simulation/monsters/low/t-z/YanilleWatchman';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
@@ -39,6 +41,7 @@ export interface Stall extends Stealable {
 }
 
 export interface Pickpockable extends Stealable {
+	alias?: string[];
 	stunTime: number;
 	stunDamage: number;
 	slope: number;
@@ -68,11 +71,7 @@ export const Stalls: Stall[] = [
 		level: 5,
 		xp: 16,
 		id: 4707,
-		table: new LootTable()
-			.add('Cake')
-			.add('Bread')
-			.add('Chocolate slice')
-			.tertiary(124_066, 'Rocky'),
+		table: new LootTable().add('Cake').add('Bread').add('Chocolate slice').tertiary(124_066, 'Rocky'),
 		respawnTime: Time.Second * 2
 	},
 	{
@@ -151,8 +150,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Monsters.Man.id,
 		stunTime: 5,
 		stunDamage: 1,
-		slope: 0.23918,
-		intercept: 70.46118
+		slope: 0.239_18,
+		intercept: 70.461_18
 	},
 	{
 		name: 'Woman',
@@ -162,8 +161,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Monsters.Woman.id,
 		stunTime: 5,
 		stunDamage: 1,
-		slope: 0.23918,
-		intercept: 70.46118
+		slope: 0.239_18,
+		intercept: 70.461_18
 	},
 	{
 		name: 'Farmer',
@@ -174,30 +173,32 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 1,
 		// No current data on slope/intercept
-		slope: 0.23918,
-		intercept: 70.46118
+		slope: 0.239_18,
+		intercept: 70.461_18
 	},
 	{
 		name: 'Female H.A.M. member',
 		level: 15,
 		xp: 18.5,
-		table: HamMember.pickpocketTable!,
-		id: HamMember.id,
+		alias: ['female ham'],
+		table: FemaleHamMember.pickpocketTable!,
+		id: FemaleHamMember.id,
 		stunTime: 4,
 		stunDamage: 2,
-		slope: 0.41847,
-		intercept: 52.71147
+		slope: 0.418_47,
+		intercept: 52.711_47
 	},
 	{
 		name: 'Male H.A.M. member',
 		level: 20,
 		xp: 22.5,
-		table: HamMember.pickpocketTable!,
-		id: HamMember.id,
+		alias: ['ham', 'male ham'],
+		table: MaleHamMember.pickpocketTable!,
+		id: MaleHamMember.id,
 		stunTime: 4,
 		stunDamage: 2,
-		slope: 0.49031,
-		intercept: 45.59931
+		slope: 0.490_31,
+		intercept: 45.599_31
 	},
 	{
 		name: 'Warrior woman',
@@ -208,8 +209,8 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 2,
 		// No current data on slope/intercept
-		slope: 0.53031,
-		intercept: 43.59931
+		slope: 0.530_31,
+		intercept: 43.599_31
 	},
 	{
 		name: 'Rogue',
@@ -219,31 +220,33 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Rogue.id,
 		stunTime: 5,
 		stunDamage: 2,
-		slope: 0.66879,
-		intercept: 27.92979
+		slope: 0.668_79,
+		intercept: 27.929_79
 	},
 	{
 		name: 'Cave goblin',
 		level: 36,
 		xp: 40,
+		alias: ['goblin'],
 		table: CaveGoblin.pickpocketTable!,
 		id: CaveGoblin.id,
 		stunTime: 5,
 		stunDamage: 1,
 		// No current data on slope/intercept
-		slope: 0.66879,
-		intercept: 27.92979
+		slope: 0.668_79,
+		intercept: 27.929_79
 	},
 	{
 		name: 'Master Farmer',
 		level: 38,
 		xp: 43,
+		alias: ['mf', 'master'],
 		table: MasterFarmer.pickpocketTable!,
 		id: MasterFarmer.id,
 		stunTime: 5,
 		stunDamage: 3,
-		slope: 0.59786,
-		intercept: 34.95186
+		slope: 0.597_86,
+		intercept: 34.951_86
 	},
 	{
 		name: 'Guard',
@@ -253,45 +256,62 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Guard.id,
 		stunTime: 5,
 		stunDamage: 2,
-		slope: 0.76776,
-		intercept: 18.13176
+		slope: 0.767_76,
+		intercept: 18.131_76
 	},
 	{
 		name: 'Fremennik Citizen',
 		level: 45,
 		xp: 65,
+		alias: ['fremmy', 'fremennik'],
 		table: FremennikCitizen.pickpocketTable!,
 		id: FremennikCitizen.id,
 		stunTime: 5,
 		stunDamage: 2,
 		// No current data on slope/intercept
-		slope: 0.76776,
-		intercept: 18.13176
+		slope: 0.767_76,
+		intercept: 18.131_76
+	},
+	{
+		name: 'Bearded Pollnivnian Bandit',
+		level: 45,
+		xp: 65,
+		alias: ['bearded bandit', 'beard', 'beard bandit'],
+		table: BeardedBandit.pickpocketTable!,
+		id: BeardedBandit.id,
+		stunTime: 5,
+		stunDamage: 3,
+		// No current data on slope/intercept
+		slope: 0.767_76,
+		intercept: 18.131_76,
+		customTickRate: 2.5
 	},
 	{
 		name: 'Desert Bandit',
 		level: 53,
 		xp: 79.5,
+		alias: ['desert'],
 		table: DesertBandit.pickpocketTable!,
-		id: 33322,
+		id: 33_322,
 		stunTime: 5,
 		stunDamage: 3,
-		slope: 0.75735,
-		intercept: 19.16235
+		slope: 0.757_35,
+		intercept: 19.162_35
 	},
 	{
 		name: 'Knight of Ardougne',
 		level: 55,
 		xp: 84.3,
+		alias: ['knight', 'ardy knight'],
 		table: KnightOfArdougne.pickpocketTable!,
 		id: KnightOfArdougne.id,
 		stunTime: 5,
 		stunDamage: 3,
-		slope: 0.77209,
-		intercept: 17.70309
+		slope: 0.772_09,
+		intercept: 17.703_09
 	},
 	{
-		name: 'Pollnivian Bandit',
+		name: 'Pollnivnian Bandit',
 		level: 55,
 		xp: 84.3,
 		table: PollnivnianBandit.pickpocketTable!,
@@ -299,14 +319,15 @@ export const Pickpocketables: Pickpockable[] = [
 		stunTime: 5,
 		stunDamage: 5,
 		// No current data on slope/intercept
-		slope: 0.77209,
-		intercept: 17.70309,
+		slope: 0.772_09,
+		intercept: 17.703_09,
 		customTickRate: 2.5
 	},
 	{
 		name: 'Yanille Watchman',
 		level: 65,
 		xp: 137.5,
+		alias: ['yanille'],
 		table: YanilleWatchman.pickpocketTable!,
 		id: YanilleWatchman.id,
 		stunTime: 5,
@@ -318,12 +339,13 @@ export const Pickpocketables: Pickpockable[] = [
 		name: 'Menaphite Thug',
 		level: 65,
 		xp: 137.5,
+		alias: ['thug'],
 		table: MenaphiteThug.pickpocketTable!,
 		id: MenaphiteThug.id,
 		stunTime: 5,
 		stunDamage: 5,
-		slope: 0.65485,
-		intercept: 29.30985,
+		slope: 0.654_85,
+		intercept: 29.309_85,
 		customTickRate: 2.5
 	},
 	{
@@ -334,8 +356,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Paladin.id,
 		stunTime: 5,
 		stunDamage: 3,
-		slope: 0.40429,
-		intercept: 18.95529
+		slope: 0.404_29,
+		intercept: 18.955_29
 	},
 	{
 		name: 'Gnome',
@@ -345,8 +367,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Gnome.id,
 		stunTime: 5,
 		stunDamage: 1,
-		slope: 0.47565,
-		intercept: 0.18065
+		slope: 0.475_65,
+		intercept: 0.180_65
 	},
 	{
 		name: 'Hero',
@@ -356,8 +378,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Hero.id,
 		stunTime: 6,
 		stunDamage: 4,
-		slope: 0.39056,
-		intercept: 0.78456
+		slope: 0.390_56,
+		intercept: 0.784_56
 	},
 	{
 		name: 'Vyre',
@@ -367,8 +389,8 @@ export const Pickpocketables: Pickpockable[] = [
 		id: Vyre.id,
 		stunTime: 5,
 		stunDamage: 5,
-		slope: 0.48813,
-		intercept: 2.06513
+		slope: 0.488_13,
+		intercept: 2.065_13
 	},
 	{
 		name: 'Elf',
@@ -378,20 +400,21 @@ export const Pickpocketables: Pickpockable[] = [
 		id: PrifddinasElf.id,
 		stunTime: 6,
 		stunDamage: 5,
-		slope: 0.42077,
-		intercept: -2.20623,
+		slope: 0.420_77,
+		intercept: -2.206_23,
 		qpRequired: 200
 	},
 	{
 		name: 'TzHaar-Hur',
 		level: 90,
 		xp: 103.4,
+		alias: ['tzhaar'],
 		table: TzHaarHur.pickpocketTable!,
 		id: TzHaarHur.id,
 		stunTime: 5,
 		stunDamage: 4,
-		slope: 1.61125,
-		intercept: -80.99375,
+		slope: 1.611_25,
+		intercept: -80.993_75,
 		itemsRequired: resolveNameBank({
 			'Fire cape': 1
 		})

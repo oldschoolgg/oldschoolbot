@@ -9,7 +9,6 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			description: 'Rolls a chance at getting every Pet at once.',
 			cooldown: 5,
-			oneAtTime: true,
 			usage: '<amount:int{1,100}>',
 			examples: ['+petroll 1'],
 			categoryFlags: ['fun', 'simulation']
@@ -25,7 +24,7 @@ export default class extends BotCommand {
 			}
 		}
 
-		if (received.length === 0) return msg.send("You didn't get any pets!");
-		return msg.send(received.join(' '));
+		if (received.length === 0) return msg.channel.send("You didn't get any pets!");
+		return msg.channel.send(received.join(' '));
 	}
 }

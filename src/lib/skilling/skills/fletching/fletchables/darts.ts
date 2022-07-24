@@ -53,6 +53,14 @@ const Darts: Fletchable[] = [
 		tickRate: 0.08
 	},
 	{
+		name: 'Amethyst dart',
+		id: itemID('Amethyst dart'),
+		level: 90,
+		xp: 21,
+		inputItems: new Bank({ 'Amethyst dart tip': 1, Feather: 1 }),
+		tickRate: 0.08
+	},
+	{
 		name: 'Dragon dart',
 		id: itemID('Dragon dart'),
 		level: 95,

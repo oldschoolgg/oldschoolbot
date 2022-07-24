@@ -1,6 +1,6 @@
 import { QueryBuilder } from '@klasa/querybuilder';
 import { isNumber, makeObject, mergeDefault } from '@klasa/utils';
-import { SchemaEntry, SchemaFolder, SettingsUpdateResults, SQLProvider, Type } from 'klasa';
+import { SchemaEntry, SchemaFolder, SettingsUpdateResults, SQLProvider } from 'klasa';
 import {
 	Pool,
 	PoolConfig,
@@ -21,9 +21,7 @@ export default class extends SQLProvider {
 	public qb = new QueryBuilder({
 		array: type => `${type}[]`,
 		arraySerializer: (values, piece, resolver) =>
-			values.length
-				? `ARRAY[${values.map(value => resolver(value, piece)).join(', ')}]`
-				: "'{}'",
+			values.length ? `ARRAY[${values.map(value => resolver(value, piece)).join(', ')}]` : "'{}'",
 		formatDatatype: (name, datatype, def = null) =>
 			`"${name}" ${datatype}${def === null ? '' : ` NOT NULL DEFAULT ${def}`}`
 	})
@@ -61,10 +59,10 @@ export default class extends SQLProvider {
 				port: 5432,
 				database: 'klasa',
 				max: 30,
-				idleTimeoutMillis: 30000,
+				idleTimeoutMillis: 30_000,
 				connectionTimeoutMillis: 0
 			},
-			this.client.options.providers.postgres
+			this.client.options.providers!.postgres
 		);
 
 		this.pgsql = new Pool(poolOptions);
@@ -79,9 +77,7 @@ export default class extends SQLProvider {
 
 	public async hasTable(table: string) {
 		try {
-			const result = await this.runAll(
-				`SELECT true FROM pg_tables WHERE tablename = '${table}';`
-			);
+			const result = await this.runAll(`SELECT true FROM pg_tables WHERE tablename = '${table}';`);
 			return result.length !== 0 && result[0].bool === true;
 		} catch {
 			return false;
@@ -92,9 +88,7 @@ export default class extends SQLProvider {
 		// If rows were given, use them
 		if (rows) {
 			return this.run(/* sql */ `
-				CREATE TABLE ${this.cIdentifier(table)} (${rows
-				.map(([k, v]) => `${this.cIdentifier(k)} ${v}`)
-				.join(', ')});
+				CREATE TABLE ${this.cIdentifier(table)} (${rows.map(([k, v]) => `${this.cIdentifier(k)} ${v}`).join(', ')});
 			`);
 		}
 
@@ -415,7 +409,7 @@ export default class extends SQLProvider {
 			case 'undefined':
 				return 'NULL';
 			default:
-				throw new TypeError(`Cannot serialize a ${new Type(value)}`);
+				throw new TypeError(`Cannot serialize ${value}`);
 		}
 	}
 

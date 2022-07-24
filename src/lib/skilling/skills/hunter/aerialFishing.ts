@@ -4,7 +4,7 @@ import { Creature, HunterTechniqueEnum } from '../../types';
 
 const aerialFishingCreatures: Creature[] = [
 	{
-		name: `Bluegill`,
+		name: 'Bluegill',
 		id: 37,
 		aliases: ['bluegill'],
 		level: 35,
@@ -18,7 +18,7 @@ const aerialFishingCreatures: Creature[] = [
 		intercept: 100
 	},
 	{
-		name: `Common tench`,
+		name: 'Common tench',
 		id: 38,
 		aliases: ['common tench'],
 		level: 51,
@@ -32,7 +32,7 @@ const aerialFishingCreatures: Creature[] = [
 		intercept: 100
 	},
 	{
-		name: `Mottled eel`,
+		name: 'Mottled eel',
 		id: 39,
 		aliases: ['mottled eel'],
 		level: 68,
@@ -46,7 +46,7 @@ const aerialFishingCreatures: Creature[] = [
 		intercept: 100
 	},
 	{
-		name: `Greater siren`,
+		name: 'Greater siren',
 		id: 40,
 		aliases: ['greater siren'],
 		level: 87,

@@ -1,16 +1,29 @@
-import { KlasaMessage, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 
-import Farming from '../../skilling/skills/farming';
-import { itemNameFromID, rand } from '../../util';
+import { Favours, gotFavour } from '../../minions/data/kourendFavour';
+import { rand } from '../../util';
 import { Plant, SkillsEnum } from '../types';
 
-export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
+export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number): [number, string | undefined] {
 	let numOfPatches = plant.defaultNumOfPatches;
 	const farmingLevel = user.skillLevel(SkillsEnum.Farming);
 	const questPoints = qp;
 	for (let i = plant.additionalPatchesByQP.length; i > 0; i--) {
 		const [questPointsReq, additionalPatches] = plant.additionalPatchesByQP[i - 1];
 		if (questPoints >= questPointsReq) {
+			numOfPatches += additionalPatches;
+			break;
+		}
+	}
+	let errorMessage: string | undefined = undefined;
+	for (let i = plant.additionalPatchesByFarmGuildAndLvl.length; i > 0; i--) {
+		const [hasFavour, requiredPoints] = gotFavour(user, Favours.Hosidius, 60);
+		if (!hasFavour) {
+			errorMessage = `${user.minionName} needs ${requiredPoints}% Hosidius Favour to use Farming guild patches.`;
+			break;
+		}
+		const [farmingLevelReq, additionalPatches] = plant.additionalPatchesByFarmGuildAndLvl[i - 1];
+		if (farmingLevel >= farmingLevelReq) {
 			numOfPatches += additionalPatches;
 			break;
 		}
@@ -22,7 +35,7 @@ export function calcNumOfPatches(plant: Plant, user: KlasaUser, qp: number) {
 			break;
 		}
 	}
-	return numOfPatches;
+	return [numOfPatches, errorMessage];
 }
 
 export function calcVariableYield(
@@ -51,28 +64,4 @@ export function calcVariableYield(
 
 	if (!cropYield) return 0;
 	return cropYield;
-}
-
-export function returnListOfPlants(msg: KlasaMessage) {
-	return msg.channel.sendFile(
-		Buffer.from(
-			Farming.Plants.map(
-				plant =>
-					`${plant.seedType}: ${plant.name} -- lvl ${plant.level}: ${Object.entries(
-						plant.inputItems
-					)
-						.map(entry => `${entry[1]} ${itemNameFromID(parseInt(entry[0]))}`)
-						.join(', ')}\n	Default # of patches: ${
-						plant.defaultNumOfPatches
-					}\n${plant.additionalPatchesByFarmLvl.map(
-						entry =>
-							`	| Farming Level: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
-					)} ${plant.additionalPatchesByQP.map(
-						entry =>
-							`	| Quest Points: ${entry[0]} => Total Additional Patches: ${entry[1]} |\n`
-					)} `
-			).join('\n')
-		),
-		`Farming Plants.txt`
-	);
 }

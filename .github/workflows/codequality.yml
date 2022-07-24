@@ -13,44 +13,48 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Project
-              uses: actions/checkout@v2
-            - name: Use Node.js 14
-              uses: actions/setup-node@v1
+              uses: actions/checkout@v3
+            - name: Use Node.js 16.14.0
+              uses: actions/setup-node@v3
               with:
-                  node-version: 14
+                  node-version: 16.14.0
+                  cache: yarn
             - name: Restore CI Cache
-              uses: actions/cache@v1
+              uses: actions/cache@v3
               with:
                   path: node_modules
                   key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
-              run: yarn
+              run: yarn --frozen-lockfile
+            - name: Generate Prisma Client
+              run: yarn gen
             - name: Run ESLint
-              uses: icrawl/action-eslint@v1
+              run: yarn test:lint
 
     Typescript:
         name: Typescript
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Project
-              uses: actions/checkout@v2
-            - name: Use Node.js 14
-              uses: actions/setup-node@v1
+              uses: actions/checkout@v3
+            - name: Use Node.js 16.14.0
+              uses: actions/setup-node@v3
               with:
-                  node-version: 14
+                  node-version: 16.14.0
+                  cache: yarn
             - name: Restore CI Cache
-              uses: actions/cache@v1
+              uses: actions/cache@v3
               with:
                   path: node_modules
-                  key: ${{ runner.os }}-14-${{ hashFiles('**/yarn.lock') }}
+                  key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
             - name: Install Dependencies
-              run: yarn
+              run: yarn --frozen-lockfile
             - name: Copy Configuration
               run: |
                   pushd src &&
                   cp config.example.ts config.ts &&
                   popd
-            - name: Run TSC
-              uses: icrawl/action-tsc@v1
-              with:
-                  build: src
+            - name: Generate Prisma Client
+              run: yarn gen
+            - name: Build code
+              run: yarn build

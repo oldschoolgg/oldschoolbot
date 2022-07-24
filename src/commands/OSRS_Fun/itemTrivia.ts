@@ -12,42 +12,36 @@ export default class extends BotCommand {
 		super(store, file, directory, {
 			aliases: ['it', 'itemtrivia'],
 			description: 'Sends a picture of a random item that you have to guess the name of.',
-			cooldown: 1,
-			oneAtTime: true,
 			examples: ['+it'],
 			categoryFlags: ['fun']
 		});
 	}
 
 	async run(msg: KlasaMessage) {
-		const randomItem = Items.filter(i => (i as Item).tradeable_on_ge).random() as Item;
+		const randomItem = Items.filter(i => Boolean((i as Item).tradeable_on_ge)).random() as Item;
 
 		const embed = new MessageEmbed()
 			.setColor(Color.Orange)
 			.setThumbnail(`https://static.runelite.net/cache/item/icon/${randomItem.id}.png`)
-			.setTitle(
-				`${msg.author.username} has started a item trivia. Tell me what this item is called!`
-			)
-			.setDescription(randomItem.examine);
+			.setTitle(`${msg.author.username} has started a item trivia. Tell me what this item is called!`)
+			.setDescription(randomItem.examine ?? '*No examine text.*');
 
-		await msg.channel.send(embed);
+		await msg.channel.send({ embeds: [embed] });
 
 		try {
-			const collected = await msg.channel.awaitMessages(
-				_msg => stringMatches(_msg.content, randomItem.name),
-				{
-					max: 1,
-					time: 14_000,
-					errors: ['time']
-				}
-			);
+			const collected = await msg.channel.awaitMessages({
+				max: 1,
+				time: 14_000,
+				errors: ['time'],
+				filter: _msg => stringMatches(_msg.content, randomItem.name)
+			});
 
 			const winner = collected.first()!.author;
 			return msg.channel.send(
 				`<:RSTickBox:381462594734522372> ${winner.username} had the right answer with \`${randomItem.name}\`!`
 			);
 		} catch (err) {
-			return msg.channel.send(`<:RSXBox:381462594961014794> Nobody answered correctly.`);
+			return msg.channel.send('<:RSXBox:381462594961014794> Nobody answered correctly.');
 		}
 	}
 }

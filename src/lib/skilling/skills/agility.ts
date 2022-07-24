@@ -5,12 +5,7 @@ export const courses: Course[] = [
 	{
 		id: 1,
 		name: 'Gnome Stronghold Agility Course',
-		aliases: [
-			'gnome',
-			'gnome stronghold',
-			'gnome stronghold agility',
-			'gnome stronghold agility course'
-		],
+		aliases: ['gnome', 'gnome stronghold', 'gnome stronghold agility', 'gnome stronghold agility course'],
 		level: 1,
 		xp: 88,
 		lapTime: 34,
@@ -19,12 +14,7 @@ export const courses: Course[] = [
 	{
 		id: 2,
 		name: 'Draynor Village Rooftop Course',
-		aliases: [
-			'draynor',
-			'draynor village',
-			'draynor village rooftop',
-			'draynor village rooftop course'
-		],
+		aliases: ['draynor', 'draynor village', 'draynor village rooftop', 'draynor village rooftop course'],
 		level: 10,
 		xp: 120,
 		marksPer60: 12,
@@ -64,10 +54,9 @@ export const courses: Course[] = [
 	{
 		id: 6,
 		name: 'Ape Atoll Agility Course',
-		aliases: ['ape atoll', 'ape atoll agility course', 'ape atoll course', 'monky', 'ape'],
+		aliases: ['ape atoll', 'ape atoll agility course', 'ape atoll course', 'monky', 'ape', 'monkey'],
 		level: 48,
 		xp: 580,
-		marksPer60: 0,
 		lapTime: 45,
 		petChance: 37_720,
 		qpRequired: 82
@@ -75,7 +64,7 @@ export const courses: Course[] = [
 	{
 		id: 7,
 		name: 'Falador Rooftop Course',
-		aliases: ['fally', 'falador', 'fally rooftop', 'falador rooftop', 'falador rooftop course'],
+		aliases: ['fally', 'falador', 'fally rooftop', 'falador rooftop', 'falador rooftop course', 'faly'],
 		level: 50,
 		xp: 440,
 		marksPer60: 13,
@@ -84,12 +73,15 @@ export const courses: Course[] = [
 	},
 	{
 		id: 8,
-		name: `Seers' Village Rooftop Course`,
+		name: "Seers' Village Rooftop Course",
 		aliases: [
 			'seers',
 			'seers village',
 			'seers village rooftop',
-			'seers village rooftop course'
+			'seers village rooftop course',
+			'seer',
+			'cammy',
+			'camelot'
 		],
 		level: 60,
 		xp: 570,
@@ -100,7 +92,15 @@ export const courses: Course[] = [
 	{
 		id: 9,
 		name: 'Pollnivneach Rooftop Course',
-		aliases: ['pol', 'pollnivneach', 'pollnivneach rooftop', 'pollnivneach rooftop course'],
+		aliases: [
+			'pol',
+			'pollnivneach',
+			'pollnivneach rooftop',
+			'pollnivneach rooftop course',
+			'poll',
+			'polly',
+			'poly'
+		],
 		level: 70,
 		xp: 890,
 		marksPer60: 9,
@@ -110,7 +110,17 @@ export const courses: Course[] = [
 	{
 		id: 10,
 		name: 'Rellekka Rooftop Course',
-		aliases: ['rel', 'rellekka', 'rellekka rooftop', 'rellekka rooftop course'],
+		aliases: [
+			'rel',
+			'rellekka',
+			'rellekka rooftop',
+			'rellekka rooftop course',
+			'fremmy',
+			'frem',
+			'fremennik',
+			'fremmennik',
+			'fremy'
+		],
 		level: 80,
 		xp: 780,
 		marksPer60: 14,
@@ -126,6 +136,32 @@ export const courses: Course[] = [
 		marksPer60: 22,
 		lapTime: 45.6,
 		petChance: 34_440
+	},
+	{
+		id: 12,
+		name: 'Penguin Agility Course',
+		aliases: ['peng', 'penguin agility course', 'penguin'],
+		level: 30,
+		xp: 540,
+		lapTime: 65.6,
+		petChance: 9979
+	},
+	{
+		id: 13,
+		name: 'Prifddinas Rooftop Course',
+		aliases: [
+			'priff',
+			'prif',
+			'prifddinas',
+			'prifddinas course',
+			'prifddinas agility course',
+			'prifddinas rooftop course'
+		],
+		level: 75,
+		xp: 1340.6,
+		lapTime: 74.2,
+		petChance: 25_146,
+		qpRequired: 205
 	}
 ];
 
@@ -142,32 +178,32 @@ export const gracefulItems = [
 
 export const MonkeyBackpacks = [
 	{
-		id: 24862,
+		id: 24_862,
 		name: 'Karamjan monkey',
 		lapsRequired: 100
 	},
 	{
-		id: 24863,
+		id: 24_863,
 		name: 'Zombie monkey',
 		lapsRequired: 250
 	},
 	{
-		id: 24864,
+		id: 24_864,
 		name: 'Maniacal monkey',
 		lapsRequired: 500
 	},
 	{
-		id: 24865,
+		id: 24_865,
 		name: 'Skeleton monkey',
 		lapsRequired: 1000
 	},
 	{
-		id: 24866,
+		id: 24_866,
 		name: 'Kruk jr',
 		lapsRequired: 1500
 	},
 	{
-		id: 24867,
+		id: 24_867,
 		name: 'Princely monkey',
 		lapsRequired: 2000
 	}

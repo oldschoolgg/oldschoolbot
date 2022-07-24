@@ -1,4 +1,4 @@
-import { PerkTier } from '../../constants';
+import { BitField, PerkTier } from '../../constants';
 import { resolveNameBank } from '../../util';
 import { BankBackground } from '../types';
 
@@ -70,13 +70,22 @@ const backgroundImages: BankBackground[] = [
 			'Pet general graardor': 1,
 			"Pet k'ril tsutsaroth": 1,
 			"Pet kree'arra": 1,
-			'Pet zilyana': 1
+			'Pet zilyana': 1,
+			Nexling: 1,
+			'Ancient hilt': 1,
+			'Nihil horn': 1,
+			'Zaryte vambraces': 1,
+			'Torva full helm (damaged)': 1,
+			'Torva platebody (damaged)': 1,
+			'Torva platelegs (damaged)': 1,
+			'Nihil shard': 1
 		}),
 		itemCost: resolveNameBank({
 			'Armadyl godsword': 1,
 			'Zamorak godsword': 1,
 			'Bandos godsword': 1,
-			'Saradomin godsword': 1
+			'Saradomin godsword': 1,
+			'Ancient godsword': 1
 		}),
 		gpCost: 100_000_000
 	},
@@ -91,7 +100,8 @@ const backgroundImages: BankBackground[] = [
 			'Spectral sigil': 1,
 			'Arcane sigil': 1,
 			'Elysian sigil': 1,
-			'Pet dark core': 1
+			'Pet dark core': 1,
+			'Jar of spirits': 1
 		}),
 		itemCost: resolveNameBank({
 			'Spectral spirit shield': 1,
@@ -128,7 +138,9 @@ const backgroundImages: BankBackground[] = [
 			"Inquisitor's mace": 1,
 			'Eldritch orb': 1,
 			'Harmonised orb': 1,
-			'Volatile orb': 1
+			'Volatile orb': 1,
+			'Slepey tablet': 1,
+			'Parasitic egg': 1
 		}),
 		itemCost: resolveNameBank({
 			'Eldritch orb': 1,
@@ -160,6 +172,150 @@ const backgroundImages: BankBackground[] = [
 		available: true,
 		perkTierNeeded: PerkTier.Four,
 		gpCost: 10_000_000
+	},
+	{
+		id: 14,
+		name: 'CoX',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds,
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 15,
+		name: 'OSB',
+		image: null,
+		available: true,
+		bitfield: BitField.HasPermanentEventBackgrounds
+	},
+	{
+		id: 16,
+		name: 'Wilderness',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		collectionLogItemsNeeded: resolveNameBank({
+			'Dragon pickaxe': 1,
+			'Dragon med helm': 1,
+			'Kbd heads': 1,
+			'Draconic visage': 1,
+			'Prince black dragon': 1,
+			'Dragon 2h sword': 1,
+			'Pet chaos elemental': 1,
+			'Malediction shard 1': 1,
+			'Odium shard 1': 1,
+			'Malediction shard 2': 1,
+			'Odium shard 2': 1,
+			Fedora: 1,
+			'Malediction shard 3': 1,
+			'Odium shard 3': 1,
+			"Scorpia's offspring": 1,
+			'Treasonous ring': 1,
+			'Venenatis spiderling': 1,
+			'Tyrannical ring': 1,
+			'Callisto cub': 1,
+			'Ring of the gods': 1,
+			"Vet'ion jr.": 1
+		}),
+		itemCost: resolveNameBank({
+			'Dragon pickaxe': 1,
+			'Dragon med helm': 1,
+			'Draconic visage': 1,
+			'Dragon 2h sword': 1,
+			'Odium ward ': 1,
+			'Malediction ward': 1,
+			'Treasonous ring': 1,
+			'Tyrannical ring': 1,
+			'Ring of the gods': 1
+		}),
+		gpCost: 100_000_000
+	},
+	{
+		id: 17,
+		name: 'Grand Exchange',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 2_147_483_647,
+		sacValueRequired: 2_147_483_647
+	},
+	{
+		id: 18,
+		name: 'Falador Park',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		collectionLogItemsNeeded: resolveNameBank({
+			Tangleroot: 1
+		}),
+		gpCost: 100_000_000,
+		skillsNeeded: {
+			farming: 99
+		}
+	},
+	{
+		id: 19,
+		name: 'Pets',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
+	},
+	{
+		id: 20,
+		name: 'Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
+	},
+	{
+		id: 21,
+		name: 'Smokey',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true
+	},
+	{
+		id: 22,
+		name: 'Nieve',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000
+	},
+	{
+		id: 23,
+		name: 'ToB',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Four,
+		gpCost: 20_000_000,
+		transparent: true,
+		hasPurple: true,
+		purpleImage: null
+	},
+	{
+		id: 24,
+		name: 'Zilyana',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000
+	},
+	{
+		id: 25,
+		name: 'Zilyana Transparent',
+		image: null,
+		available: true,
+		perkTierNeeded: PerkTier.Three,
+		gpCost: 20_000_000,
+		transparent: true
 	}
 ];
 

@@ -3,7 +3,8 @@ import { Items } from 'oldschooljs';
 import { ArrayItemsResolvable, ArrayItemsResolved } from '../types';
 
 // Resolve an array of item IDs or names into an array of item IDs
-export default function resolveItems(itemArray: (string | number)[]): number[] {
+export default function resolveItems(_itemArray: string | number | (string | number)[]): number[] {
+	const itemArray = Array.isArray(_itemArray) ? _itemArray : [_itemArray];
 	const newArray: number[] = [];
 
 	for (const item of itemArray) {

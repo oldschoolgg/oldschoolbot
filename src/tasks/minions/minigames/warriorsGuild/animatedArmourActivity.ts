@@ -1,39 +1,34 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-import { Armours } from '../../../../commands/Minion/warriorsguild';
 import { AnimatedArmourActivityTaskOptions } from '../../../../lib/types/minions';
-import { resolveNameBank } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
+import { Armours } from '../../../../mahoji/lib/abstracted_commands/warriorsGuildCommand';
 
 export default class extends Task {
 	async run(data: AnimatedArmourActivityTaskOptions) {
-		const { armourID, userID, channelID, quantity, duration } = data;
-		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
+		const { armourID, userID, channelID, quantity } = data;
+		const user = await this.client.fetchUser(userID);
 		const armour = Armours.find(armour => armour.name === armourID)!;
 
 		const str = `${user}, ${user.minionName} finished killing ${quantity}x animated ${
 			armour.name
 		} armour and received ${quantity * armour.tokens}x Warrior guild tokens.`;
 
-		await user.addItemsToBank(
-			resolveNameBank({
-				'Warrior guild token': quantity * armour.tokens
-			}),
-			true
-		);
+		const loot = new Bank({
+			'Warrior guild token': quantity * armour.tokens
+		});
+
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of animated armor`);
-				return this.client.commands.get('warriorsguild')!.run(res, [quantity, 'tokens']);
-			},
+			['activities', { warriors_guild: { action: 'tokens', quantity } }, true],
 			undefined,
-			data
+			data,
+			loot
 		);
 	}
 }

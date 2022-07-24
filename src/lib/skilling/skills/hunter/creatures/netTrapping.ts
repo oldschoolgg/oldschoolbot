@@ -4,7 +4,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const netTrappingCreatures: Creature[] = [
 	{
-		name: `Swamp lizard`,
+		name: 'Swamp lizard',
 		id: 23,
 		aliases: ['swamp lizard'],
 		level: 29,
@@ -17,7 +17,7 @@ const netTrappingCreatures: Creature[] = [
 		intercept: 15
 	},
 	{
-		name: `Orange salamander`,
+		name: 'Orange salamander',
 		id: 24,
 		aliases: ['orange salamander'],
 		level: 47,
@@ -30,7 +30,7 @@ const netTrappingCreatures: Creature[] = [
 		intercept: 5
 	},
 	{
-		name: `Red salamander`,
+		name: 'Red salamander',
 		id: 25,
 		aliases: ['red salamander'],
 		level: 59,
@@ -43,7 +43,7 @@ const netTrappingCreatures: Creature[] = [
 		intercept: 25
 	},
 	{
-		name: `Black salamander`,
+		name: 'Black salamander',
 		id: 26,
 		aliases: ['Black salamander'],
 		level: 67,

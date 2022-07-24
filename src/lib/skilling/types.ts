@@ -2,7 +2,9 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../constants';
+import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
 import { ItemBank } from '../types';
+import { FarmingPatchName } from '../util/farmingHelpers';
 
 export enum SkillsEnum {
 	Agility = 'agility',
@@ -21,12 +23,13 @@ export enum SkillsEnum {
 	Thieving = 'thieving',
 	Hunter = 'hunter',
 	Construction = 'construction',
-	Attack = 'attack',
-	Defence = 'defence',
-	Strength = 'strength',
-	Ranged = 'ranged',
 	Magic = 'magic',
-	Hitpoints = 'hitpoints'
+	Attack = 'attack',
+	Strength = 'strength',
+	Defence = 'defence',
+	Ranged = 'ranged',
+	Hitpoints = 'hitpoints',
+	Slayer = 'slayer'
 }
 
 export interface Ore {
@@ -46,6 +49,7 @@ export interface Log {
 	xp: number;
 	id: number;
 	name: string;
+	aliases?: string[];
 	respawnTime: number;
 	petChance?: number;
 	qpRequired: number;
@@ -64,13 +68,14 @@ export interface Fish {
 	xp: number;
 	id: number;
 	name: string;
-	petChance: number;
+	petChance?: number;
 	timePerFish: number;
 	bait?: number;
 	qpRequired?: number;
 	bigFish?: number;
 	bigFishRate?: number;
 	clueScrollChance?: number;
+	alias?: string[];
 }
 
 export interface Course {
@@ -85,15 +90,6 @@ export interface Course {
 	qpRequired?: number;
 }
 
-export interface Rune {
-	levels: number[][];
-	xp: number;
-	id: number;
-	name: string;
-	qpRequired?: number;
-	tripLength: number;
-}
-
 export interface Cookable {
 	level: number;
 	xp: number;
@@ -101,8 +97,9 @@ export interface Cookable {
 	name: string;
 	inputCookables: ItemBank;
 	stopBurnAt: number;
-	stopBurnAtCG: number;
+	stopBurnAtCG?: number;
 	burntCookable: number;
+	alias?: string[];
 }
 
 export interface Bar {
@@ -110,11 +107,21 @@ export interface Bar {
 	xp: number;
 	id: number;
 	name: string;
-	inputOres: ItemBank;
+	inputOres: Bank;
 	/**
 	 * Chance that the ore will fail to smelt (i.e iron), out of 100
 	 */
 	chanceOfFail: number;
+	timeToUse: number;
+}
+
+export interface BlastableBar {
+	level: number;
+	xp: number;
+	id: number;
+	name: string;
+	inputOres: Bank;
+	timeToUse: number;
 }
 
 export interface SmithedItem {
@@ -125,16 +132,22 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
+	qpRequired?: number;
 }
 
 export interface Craftable {
 	name: string;
+	alias?: string[];
 	id: number;
 	level: number;
 	xp: number;
-	inputItems: ItemBank;
+	inputItems: Bank;
 	tickRate: number;
 	crushChance?: number[];
+	bankChest?: boolean;
+	outputMultiple?: number;
+	qpRequired?: number;
+	wcLvl?: number;
 }
 
 export interface Fletchable {
@@ -145,6 +158,7 @@ export interface Fletchable {
 	inputItems: Bank;
 	tickRate: number;
 	outputMultiple?: number;
+	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 }
 
 export interface Mixable {
@@ -184,11 +198,9 @@ export interface Prayer {
 	overHead?: boolean;
 }
 
-export type LevelRequirements = Partial<
-	{
-		[key in SkillsEnum]: number;
-	}
->;
+export type LevelRequirements = Partial<{
+	[key in SkillsEnum]: number;
+}>;
 
 export interface Skill {
 	aliases: string[];
@@ -205,7 +217,6 @@ export interface Plankable {
 }
 
 export interface Plant {
-	name: string;
 	id?: number;
 	level: number;
 	prayerxp?: number;
@@ -214,10 +225,8 @@ export interface Plant {
 	magicxp?: number;
 	category?: string;
 	harvestXp: number;
-	farmingxp?: number;
-	craftingxp?: number;
-	baseMaxHit?: number;
-	inputItems: ItemBank;
+	name: string;
+	inputItems: Bank;
 	aliases: string[];
 	outputCrop?: number;
 	outputLogs?: number;
@@ -232,25 +241,27 @@ export interface Plant {
 	givesLogs: boolean;
 	givesCrops: boolean;
 	petChance: number;
-	seedType: string;
+	seedType: FarmingPatchName;
 	growthTime: number;
 	numOfStages: number;
 	chance1: number;
 	chance99: number;
 	chanceOfDeath: number;
-	protectionPayment?: ItemBank;
+	protectionPayment?: Bank;
 	defaultNumOfPatches: number;
 	canPayFarmer: boolean;
 	canCompostPatch: boolean;
 	canCompostandPay: boolean;
 	additionalPatchesByQP: number[][];
 	additionalPatchesByFarmLvl: number[][];
+	additionalPatchesByFarmGuildAndLvl: number[][];
 	timePerPatchTravel: number;
 	timePerHarvest: number;
 }
 
 export enum HunterTechniqueEnum {
 	AerialFishing = 'aerial fishing',
+	DriftNet = 'drift net fishing',
 	BirdSnaring = 'bird snaring',
 	BoxTrapping = 'box trapping',
 	ButterflyNetting = 'butterfly netting',

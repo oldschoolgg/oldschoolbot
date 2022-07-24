@@ -1,8 +1,7 @@
 import { objectEntries } from 'e';
 
 import { Skills } from '../src/lib/skilling/skills';
-import { convertLVLtoXP } from '../src/lib/util';
-import { skillsMeetRequirements } from '../src/lib/util/skillsMeetRequirements';
+import { convertLVLtoXP, skillsMeetRequirements } from '../src/lib/util';
 
 function convert(bank: Record<keyof typeof Skills, number>) {
 	let newObj: Record<keyof typeof Skills, number> = {};
@@ -48,9 +47,7 @@ describe('skillsMeetRequirements', () => {
 	test('doesnt meet requirements', () => {
 		expect(skillsMeetRequirements(convert({ agility: 1 }), { agility: 10 })).toBeFalsy();
 		expect(skillsMeetRequirements(convert({ agility: 49 }), { agility: 50 })).toBeFalsy();
-		expect(
-			skillsMeetRequirements(convert({ agility: 49, runecraft: 1 }), { agility: 50 })
-		).toBeFalsy();
+		expect(skillsMeetRequirements(convert({ agility: 49, runecraft: 1 }), { agility: 50 })).toBeFalsy();
 		expect(
 			skillsMeetRequirements(
 				convert({

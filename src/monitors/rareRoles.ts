@@ -1,7 +1,8 @@
 import { TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { KlasaMessage, Monitor, MonitorStore } from 'klasa';
 
-import { Channel, Emoji, SupportServer, Time } from '../lib/constants';
+import { Channel, Emoji, SupportServer } from '../lib/constants';
 import { roll } from '../lib/util';
 
 const rareRoles: [string, number, string][] = [
@@ -53,14 +54,14 @@ export default class extends Monitor {
 
 		for (const [roleID, chance, name] of rareRoles) {
 			if (roll(chance / 10)) {
-				if (msg.member?.roles.has(roleID)) continue;
+				if (msg.member?.roles.cache.has(roleID)) continue;
 				if (!this.client.production) {
-					return msg.send(`${msg.author}, you would've gotten the **${name}** role.`);
+					return msg.channel.send(`${msg.author}, you would've gotten the **${name}** role.`);
 				}
 				msg.member?.roles.add(roleID);
 				msg.react(Emoji.Gift);
 
-				const channel = this.client.channels.get(Channel.Notifications);
+				const channel = this.client.channels.cache.get(Channel.Notifications);
 
 				if (
 					!rareRoles

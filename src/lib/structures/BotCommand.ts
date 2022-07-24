@@ -1,3 +1,4 @@
+import { PermissionResolvable } from 'discord.js';
 import { Command, CommandOptions, CommandStore, KlasaMessage, util } from 'klasa';
 
 import { BitField } from '../constants';
@@ -6,18 +7,15 @@ import { CategoryFlag } from '../types';
 export abstract class BotCommand extends Command {
 	public altProtection: boolean;
 	public guildOnly: boolean;
-	public oneAtTime: boolean;
 	public perkTier?: number;
 	public ironCantUse?: boolean;
 	public examples: string[];
 	public categoryFlags: CategoryFlag[];
+	public cooldown?: number;
+	public requiredPermissionsForBot: PermissionResolvable[];
+	public requiredPermissionsForUser: PermissionResolvable[];
 
-	public constructor(
-		store: CommandStore,
-		file: string[],
-		directory: string,
-		options: BotCommandOptions = {}
-	) {
+	public constructor(store: CommandStore, file: string[], directory: string, options: BotCommandOptions = {}) {
 		super(
 			store,
 			file,
@@ -25,7 +23,6 @@ export abstract class BotCommand extends Command {
 			util.mergeDefault(
 				{
 					altProtection: false,
-					oneAtTime: false,
 					guildOnly: false,
 					ironCantUse: false
 				},
@@ -33,13 +30,16 @@ export abstract class BotCommand extends Command {
 			)
 		);
 		this.altProtection = options.altProtection!;
-		this.oneAtTime = options.oneAtTime!;
 		this.guildOnly = options.guildOnly!;
 		this.perkTier = options.perkTier;
 		this.ironCantUse = options.ironCantUse;
 		this.examples = options.examples || [];
 		this.categoryFlags = options.categoryFlags || [];
 		this.bitfieldsRequired = options.bitfieldsRequired || [];
+		this.cooldown = options.cooldown;
+		this.requiredPermissionsForBot = options.requiredPermissionsForBot || [];
+		this.requiredPermissionsForUser = options.requiredPermissionsForUser || [];
+		this.testingCommand = options.testingCommand;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -55,7 +55,6 @@ export abstract class BotCommand extends Command {
 
 export interface BotCommandOptions extends CommandOptions {
 	altProtection?: boolean;
-	oneAtTime?: boolean;
 	guildOnly?: boolean;
 	perkTier?: number;
 	ironCantUse?: boolean;
@@ -64,4 +63,7 @@ export interface BotCommandOptions extends CommandOptions {
 	description?: string;
 	categoryFlags?: CategoryFlag[];
 	bitfieldsRequired?: BitField[];
+	cooldown?: number;
+	requiredPermissionsForBot?: PermissionResolvable[];
+	requiredPermissionsForUser?: PermissionResolvable[];
 }

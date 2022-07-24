@@ -1,19 +1,17 @@
-import { Image } from 'canvas';
-import { BeginnerCasket } from 'oldschooljs/dist/simulation/clues/Beginner';
-import { EasyCasket } from 'oldschooljs/dist/simulation/clues/Easy';
-import { EliteCasket } from 'oldschooljs/dist/simulation/clues/Elite';
-import { HardCasket } from 'oldschooljs/dist/simulation/clues/Hard';
-import { MasterCasket } from 'oldschooljs/dist/simulation/clues/Master';
-import { MediumCasket } from 'oldschooljs/dist/simulation/clues/Medium';
+import { KlasaUser } from 'klasa';
+import { Bank, MonsterKillOptions } from 'oldschooljs';
+import SimpleMonster from 'oldschooljs/dist/structures/SimpleMonster';
+import { Image } from 'skia-canvas/lib';
 
-import { PerkTier } from '../constants';
-import { GearSetupTypes, GearStat, OffenceGearStat } from '../gear/types';
+import { BitField, PerkTier } from '../constants';
+import { GearSetupType, GearStat, OffenceGearStat } from '../gear/types';
 import { POHBoosts } from '../poh';
-import { LevelRequirements } from '../skilling/types';
-import { ArrayItemsResolved, ItemBank } from '../types';
+import { LevelRequirements, SkillsEnum } from '../skilling/types';
+import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
+import { AttackStyles } from './functions';
 
-export interface BankBackground {
+export type BankBackground = {
 	image: Image | null;
 	id: number;
 	name: string;
@@ -23,25 +21,22 @@ export interface BankBackground {
 	gpCost?: number;
 	itemCost?: ItemBank;
 	repeatImage?: Image | null;
-}
-
-export interface ClueMilestoneReward {
-	itemReward: number;
-	scoreNeeded: number;
-}
-
-export interface ClueTier {
-	name: string;
-	table: BeginnerCasket | EasyCasket | MediumCasket | HardCasket | EliteCasket | MasterCasket;
-	id: number;
-	scrollID: number;
-	timeToFinish: number;
-	milestoneReward?: ClueMilestoneReward;
-	mimicChance: number | false;
-}
+	bitfield?: BitField;
+	sacValueRequired?: number;
+	skillsNeeded?: Skills;
+	transparent?: true;
+} & (
+	| {
+			hasPurple: true;
+			purpleImage: Image | null;
+	  }
+	| {
+			hasPurple?: null;
+	  }
+);
 
 export type GearRequirement = Partial<{ [key in GearStat]: number }>;
-export type GearRequirements = Partial<{ [key in GearSetupTypes]: GearRequirement }>;
+export type GearRequirements = Partial<{ [key in GearSetupType]: GearRequirement }>;
 
 export interface KillableMonster {
 	id: number;
@@ -49,29 +44,39 @@ export interface KillableMonster {
 	aliases: string[];
 	noneCombatCalcTimeToFinish: number;
 	table: {
-		kill(quantity: number): ItemBank;
+		kill(quantity: number, options: MonsterKillOptions): Bank;
 	};
-	emoji: string;
-	wildy: boolean;
+	emoji?: string;
+	wildy?: boolean;
+	difficultyRating?: number;
 	itemsRequired?: ArrayItemsResolved;
 	notifyDrops?: ArrayItemsResolved;
-	qpRequired: number;
+	existsInCatacombs?: boolean;
+	qpRequired?: number;
+
 	/**
-	 * A object of ([key: itemID]: boostPercentage) boosts that apply to
-	 * this monster.
+	 * An array of objects of ([key: itemID]: boostPercentage) boosts that apply to
+	 * this monster. For each set, only the item with the greatest boost (that the user also possesses)
+	 * will be used as boost.
 	 */
-	itemInBankBoosts?: ItemBank;
+	itemInBankBoosts?: ItemBank[];
 	/**
 	 * Whether or not this monster can be groupkilled.
 	 */
-	groupKillable?: true;
-	respawnTimeGroup?: number;
+	groupKillable?: boolean;
+	respawnTime?: number;
 	levelRequirements?: LevelRequirements;
 	uniques?: ArrayItemsResolved;
 	/**
 	 * How much healing (health points restored) is needed per kill.
 	 */
 	healAmountNeeded?: number;
+	attackStyleToUse?: OffenceGearStat;
+	attackStylesUsed?: OffenceGearStat[];
+	/**
+	 * The minimum *required* gear stats to fight this monster.
+	 */
+	minimumGearRequirements?: GearRequirements;
 	/**
 	 * Boosts for POH objects.
 	 */
@@ -90,9 +95,71 @@ export interface KillableMonster {
 	killsPerBankTrip: number;
 	respawnTime?: number;
 	// Add variable for multiStyleFight like Zulrah. How?
+	defaultAttackStyles?: AttackStyles[];
+	disallowedAttackStyles?: AttackStyles[];
+	customMonsterHP?: number;
+	combatXpMultiplier?: number;
+	itemCost?: Consumable;
+	superior?: SimpleMonster;
+	slayerOnly?: boolean;
+	canBarrage?: boolean;
+	canCannon?: boolean;
+	cannonMulti?: boolean;
+	specialLoot?: (loot: Bank, user: KlasaUser, data: MonsterActivityTaskOptions) => Promise<void>;
+	effect?: (opts: {
+		messages: string[];
+		user: KlasaUser;
+		quantity: number;
+		monster: KillableMonster;
+		loot: Bank;
+		data: MonsterActivityTaskOptions;
+	}) => Promise<unknown>;
+}
+/*
+ * Monsters will have an array of Consumables
+ * Math.ceil(duration / Time.Minute * qtyPerMinute)
+ * Or quantity * qtyPerKill.
+ */
+export interface Consumable {
+	itemCost: Bank;
+	qtyPerMinute?: number;
+	qtyPerKill?: number;
+	// For staff of the dead / kodai
+	isRuneCost?: boolean;
+	alternativeConsumables?: Consumable[];
 }
 
-export interface GroupMonsterActivityTaskOptions extends MonsterActivityTaskOptions {
-	leader: string;
-	users: string[];
+export interface AddXpParams {
+	skillName: SkillsEnum;
+	amount: number;
+	duration?: number;
+	multiplier?: boolean;
+	minimal?: boolean;
+	artificial?: boolean;
 }
+
+export interface AddMonsterXpParams {
+	monsterID: number;
+	quantity: number;
+	duration: number;
+	isOnTask: boolean;
+	taskQuantity: number | null;
+	minimal?: boolean;
+	usingCannon?: boolean;
+	cannonMulti?: boolean;
+	burstOrBarrage?: number;
+	superiorCount?: number;
+}
+
+export interface ResolveAttackStylesParams {
+	monsterID: number;
+	boostMethod?: string;
+}
+
+export interface BlowpipeData {
+	scales: number;
+	dartQuantity: number;
+	dartID: number | null;
+}
+export type Flags = Record<string, string | number>;
+export type FlagMap = Map<string, string | number>;

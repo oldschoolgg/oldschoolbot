@@ -1,88 +1,296 @@
-import { Util } from 'discord.js';
-import { Gateway, Settings } from 'klasa';
-import { getConnection } from 'typeorm';
+import { Activity, NewUser, Prisma, User } from '@prisma/client';
+import { GuildMember, MessageAttachment } from 'discord.js';
+import { roll } from 'e';
+import { Gateway, KlasaMessage, KlasaUser, Settings } from 'klasa';
+import { APIInteractionGuildMember } from 'mahoji';
 
-import { client } from '../..';
-import { MinigameKey, Minigames } from '../../extendables/User/Minigame';
-import { Emoji } from '../constants';
-import { MinigameTable } from '../typeorm/MinigameTable.entity';
-import { NewUserTable } from '../typeorm/NewUserTable.entity';
-import { parseUsername } from '../util';
+import { CommandArgs } from '../../mahoji/lib/inhibitors';
+import { postCommand } from '../../mahoji/lib/postCommand';
+import { preCommand } from '../../mahoji/lib/preCommand';
+import {
+	convertAPIEmbedToDJSEmbed,
+	convertComponentDJSComponent,
+	convertKlasaCommandToAbstractCommand,
+	convertMahojiCommandToAbstractCommand
+} from '../../mahoji/lib/util';
+import { BotCommand } from '../structures/BotCommand';
+import { ActivityTaskData } from '../types/minions';
+import { channelIsSendable, cleanUsername, isGroupActivity } from '../util';
+import { logError } from '../util/logError';
+import { taskNameFromType } from '../util/taskNameFromType';
+import { convertStoredActivityToFlatActivity, prisma } from './prisma';
+
+export * from './minigames';
 
 export async function getUserSettings(userID: string): Promise<Settings> {
-	return (client.gateways.get('users') as Gateway)!
+	return (globalClient.gateways.get('users') as Gateway)!
 		.acquire({
 			id: userID
 		})
 		.sync(true);
 }
 
-export async function syncNewUserUsername(id: string, username: string) {
-	let value = await NewUserTable.findOne({ id });
+export async function getNewUser(id: string): Promise<NewUser> {
+	const value = await prisma.newUser.findUnique({ where: { id } });
 	if (!value) {
-		value = new NewUserTable();
-		value.id = id;
-		value.username = username;
-		value.save();
-		return;
-	}
-	value.username = username;
-	value.save();
-}
-
-export async function batchSyncNewUserUsernames(arr: [string, string][]) {
-	await getConnection()
-		.createQueryBuilder()
-		.insert()
-		.into(NewUserTable)
-		.values(arr.map(arr => ({ id: arr[0], username: parseUsername(arr[1]) })))
-		.orUpdate({
-			conflict_target: ['id'],
-			overwrite: ['username']
-		})
-		.execute();
-}
-
-export async function getMinigameEntity(userID: string): Promise<MinigameTable> {
-	let value = await MinigameTable.findOne({ userID });
-	if (!value) {
-		value = new MinigameTable();
-		value.userID = userID;
-		await value.save();
+		return prisma.newUser.create({
+			data: {
+				id,
+				minigame: {}
+			}
+		});
 	}
 	return value;
 }
 
-export async function incrementMinigameScore(
-	userID: string,
-	minigame: MinigameKey,
-	amountToAdd = 1
-) {
-	const game = Minigames.find(m => m.key === minigame)!;
-	await getConnection()
-		.createQueryBuilder()
-		.update(MinigameTable)
-		.set({ [minigame]: () => `${game.column} + ${amountToAdd}` })
-		.where('userID = :userID', { userID })
-		.execute();
+export async function syncNewUserUsername(message: KlasaMessage) {
+	if (!roll(20)) return;
+	const cleanedUsername = cleanUsername(message.author.username);
+	const username = cleanedUsername.length > 32 ? cleanedUsername.substring(0, 32) : cleanedUsername;
+	await prisma.newUser.upsert({
+		where: {
+			id: message.author.id
+		},
+		update: {
+			username
+		},
+		create: {
+			id: message.author.id,
+			username
+		}
+	});
 }
 
-export async function getMinionName(userID: string): Promise<string> {
-	const result = await client.query<{ name?: string; isIronman: boolean; icon?: string }[]>(
-		`SELECT "minion.name" as name, "minion.ironman" as isIronman, "minion.icon" as icon FROM users WHERE id = $1;`,
-		[userID]
-	);
-	if (result.length === 0) {
-		throw new Error(`No user found in database for minion name.`);
+declare global {
+	namespace NodeJS {
+		interface Global {
+			minionActivityCache: Map<string, ActivityTaskData> | undefined;
+		}
+	}
+}
+export const minionActivityCache: Map<string, ActivityTaskData> = global.minionActivityCache || new Map();
+
+if (process.env.NODE_ENV !== 'production') global.minionActivityCache = minionActivityCache;
+
+export function getActivityOfUser(userID: string) {
+	const task = minionActivityCache.get(userID);
+	return task ?? null;
+}
+
+export function minionActivityCacheDelete(userID: string) {
+	const entry = minionActivityCache.get(userID);
+	if (!entry) return;
+
+	const users: string[] = isGroupActivity(entry) ? entry.users : [entry.userID];
+	for (const u of users) {
+		minionActivityCache.delete(u);
+	}
+}
+
+export async function cancelTask(userID: string) {
+	await prisma.activity.deleteMany({ where: { user_id: BigInt(userID), completed: false } });
+	minionActivityCache.delete(userID);
+}
+
+export async function syncActivityCache() {
+	const tasks = await prisma.activity.findMany({ where: { completed: false } });
+
+	minionActivityCache.clear();
+	for (const task of tasks) {
+		activitySync(task);
+	}
+}
+
+export async function runMahojiCommand({
+	channelID,
+	userID,
+	guildID,
+	commandName,
+	options,
+	user,
+	member
+}: {
+	commandName: string;
+	options: Record<string, unknown>;
+	channelID: bigint | string;
+	userID: bigint | string;
+	guildID: bigint | string | undefined;
+	user: User | KlasaUser;
+	member: APIInteractionGuildMember | GuildMember | null;
+}) {
+	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
+	if (!mahojiCommand) {
+		throw new Error(`No mahoji command found for ${commandName}`);
 	}
 
-	const [{ name, isIronman, icon }] = result;
+	return mahojiCommand.run({
+		userID: BigInt(userID),
+		guildID: guildID ? BigInt(guildID) : undefined,
+		channelID: BigInt(channelID),
+		options,
+		// TODO: Make this typesafe
+		user: user as any,
+		member: member as any,
+		client: globalClient.mahojiClient,
+		interaction: null as any
+	});
+}
 
-	const prefix = isIronman ? Emoji.Ironman : '';
+export interface RunCommandArgs {
+	commandName: string;
+	args: CommandArgs;
+	user: User | KlasaUser;
+	channelID: string | bigint;
+	userID: string | bigint;
+	member: APIInteractionGuildMember | GuildMember | null;
+	isContinue?: boolean;
+	method?: string;
+	bypassInhibitors?: true;
+	guildID: string | bigint | undefined;
+	msg?: KlasaMessage;
+}
+export async function runCommand({
+	commandName,
+	args,
+	isContinue,
+	method = 'run',
+	bypassInhibitors,
+	userID,
+	channelID,
+	guildID,
+	user,
+	member,
+	msg
+}: RunCommandArgs) {
+	const channel = globalClient.channels.cache.get(channelID.toString());
+	if (!channel || !channelIsSendable(channel)) return;
+	const mahojiCommand = globalClient.mahojiClient.commands.values.find(c => c.name === commandName);
+	const command = globalClient.commands.get(commandName) as BotCommand | undefined;
+	const actualCommand = mahojiCommand ?? command;
+	if (!actualCommand) throw new Error('No command found');
+	const abstractCommand =
+		actualCommand instanceof BotCommand
+			? convertKlasaCommandToAbstractCommand(actualCommand)
+			: convertMahojiCommandToAbstractCommand(actualCommand);
 
-	const displayIcon = icon ?? Emoji.Minion;
+	let error: Error | null = null;
+	let inhibited = false;
+	try {
+		const inhibitedReason = await preCommand({
+			abstractCommand,
+			userID,
+			channelID,
+			guildID,
+			bypassInhibitors: bypassInhibitors ?? false
+		});
 
-	return name
-		? `${prefix} ${displayIcon} **${Util.escapeMarkdown(name)}**`
-		: `${prefix} ${displayIcon} Your minion`;
+		if (inhibitedReason) {
+			inhibited = true;
+			if (inhibitedReason.silent) return;
+			return channel.send(inhibitedReason.reason);
+		}
+
+		if (mahojiCommand) {
+			if (Array.isArray(args)) throw new Error(`Had array of args for mahoji command called ${commandName}`);
+			const result = await runMahojiCommand({
+				options: args,
+				commandName,
+				guildID,
+				channelID,
+				userID,
+				member,
+				user
+			});
+			if (channelIsSendable(channel)) {
+				if (typeof result === 'string') {
+					await channel.send(result);
+				} else {
+					await channel.send({
+						content: result.content,
+						embeds: result.embeds?.map(convertAPIEmbedToDJSEmbed),
+						components: result.components?.map(convertComponentDJSComponent),
+						files: result.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
+					});
+				}
+			}
+		} else {
+			if (!Array.isArray(args)) throw new Error('Had object args for non-mahoji command');
+			if (!command) throw new Error(`Tried to run \`${commandName}\` command, but couldn't find the piece.`);
+			if (!command.enabled) throw new Error(`The ${command.name} command is disabled.`);
+			const fakeMessage = msg ?? {
+				author: user,
+				member,
+				channel
+			};
+			try {
+				// @ts-ignore Cant be typechecked
+				const result = await command[method](fakeMessage, args);
+				return result;
+			} catch (err) {
+				logError(err, {
+					user_id: userID.toString(),
+					command_name: commandName,
+					args: JSON.stringify(args)
+				});
+			}
+		}
+	} catch (err: any) {
+		if (typeof err === 'string') {
+			if (channelIsSendable(channel)) {
+				return channel.send(err);
+			}
+		}
+		error = err as Error;
+	} finally {
+		try {
+			await postCommand({
+				abstractCommand,
+				userID,
+				guildID,
+				channelID,
+				args,
+				error,
+				isContinue: isContinue ?? false,
+				inhibited
+			});
+		} catch (err) {
+			logError(err);
+		}
+	}
+
+	return null;
+}
+
+export function activitySync(activity: Activity) {
+	const users: bigint[] | string[] = isGroupActivity(activity.data)
+		? ((activity.data as Prisma.JsonObject).users! as string[])
+		: [activity.user_id];
+	for (const user of users) {
+		minionActivityCache.set(user.toString(), convertStoredActivityToFlatActivity(activity));
+	}
+}
+
+export async function completeActivity(_activity: Activity) {
+	const activity = convertStoredActivityToFlatActivity(_activity);
+	if (_activity.completed) {
+		throw new Error('Tried to complete an already completed task.');
+	}
+
+	const taskName = taskNameFromType(activity.type);
+	const task = globalClient.tasks.get(taskName);
+
+	if (!task) {
+		throw new Error('Missing task');
+	}
+
+	globalClient.oneCommandAtATimeCache.add(activity.userID);
+	try {
+		globalClient.emit('debug', `Running ${task.name} for ${activity.userID}`);
+		await task.run(activity);
+	} catch (err) {
+		logError(err);
+	} finally {
+		globalClient.oneCommandAtATimeCache.delete(activity.userID);
+		minionActivityCacheDelete(activity.userID);
+	}
 }

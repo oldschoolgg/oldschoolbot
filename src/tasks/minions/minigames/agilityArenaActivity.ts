@@ -1,27 +1,20 @@
+import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
-import {
-	determineXPFromTickets,
-	hasKaramjaEliteDiary
-} from '../../../commands/Minion/agilityarena';
-import { Time } from '../../../lib/constants';
-import { roll } from '../../../lib/data/monsters/raids';
+import { Emoji, Events } from '../../../lib/constants';
+import { KaramjaDiary, userhasDiaryTier } from '../../../lib/diaries';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
-import { AgilityArenaActivityTaskOptions } from '../../../lib/types/minions';
-import {
-	calcWhatPercent,
-	formatDuration,
-	itemID,
-	randomVariation,
-	reduceNumByPercent
-} from '../../../lib/util';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
+import { formatDuration, randomVariation, roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { determineXPFromTickets } from '../../../mahoji/lib/abstracted_commands/agilityArenaCommand';
 
 export default class extends Task {
-	async run(data: AgilityArenaActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, duration, userID } = data;
-		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
+		const user = await this.client.fetchUser(userID);
 		const currentLevel = user.skillLevel(SkillsEnum.Agility);
 
 		// You get 1 ticket per minute at best without diary
@@ -34,25 +27,39 @@ export default class extends Task {
 
 		// 10% bonus tickets for karamja med
 		let bonusTickets = 0;
-		if (hasKaramjaEliteDiary(user)) {
+		const [hasKaramjaElite] = await userhasDiaryTier(user, KaramjaDiary.elite);
+		if (hasKaramjaElite) {
 			for (let i = 0; i < ticketsReceived; i++) {
 				if (roll(10)) bonusTickets++;
 			}
 		}
 		ticketsReceived += bonusTickets;
 
-		user.incrementMinigameScore('AgilityArena', ticketsReceived);
+		await incrementMinigameScore(user.id, 'agility_arena', ticketsReceived);
 
-		await user.addXP(SkillsEnum.Agility, agilityXP);
+		await user.addXP({ skillName: SkillsEnum.Agility, amount: agilityXP });
 		const nextLevel = user.skillLevel(SkillsEnum.Agility);
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing the Brimhaven Agility Arena for ${formatDuration(
+		let str = `${user}, ${user.minionName} finished doing the Brimhaven Agility Arena for ${formatDuration(
 			duration
 		)}, you received ${Math.floor(
 			agilityXP
 		).toLocaleString()} Agility XP and ${ticketsReceived} Agility arena tickets.`;
+
+		// Roll for pet
+		for (let i = 0; i < ticketsReceived; i++) {
+			if (roll(26_404 - user.skillLevel(SkillsEnum.Agility) * 25)) {
+				user.addItemsToBank({
+					items: new Bank().add('Giant Squirrel'),
+					collectionLog: true
+				});
+				str += "**\nYou have a funny feeling you're being followed...**";
+				this.client.emit(
+					Events.ServerNotification,
+					`${Emoji.Agility} **${user.username}'s** minion, ${user.minionName}, just received a Giant squirrel while running at the Agility Arena at level ${currentLevel} Agility!`
+				);
+			}
+		}
 
 		if (nextLevel > currentLevel) {
 			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
@@ -62,25 +69,25 @@ export default class extends Task {
 			str += `\nYou received ${bonusTickets} bonus tickets for the Karamja Medium Diary.`;
 		}
 
-		let xpFromTickets = determineXPFromTickets(ticketsReceived, user);
+		let xpFromTickets = determineXPFromTickets(ticketsReceived, user, hasKaramjaElite);
 		const xpFromTrip = xpFromTickets + agilityXP;
 		str += `\n${(
 			(xpFromTrip / (duration / Time.Minute)) *
 			60
 		).toLocaleString()} XP/Hr (after redeeming tickets at 1000 qty)`;
-		await user.addItemsToBank({ [itemID('Agility arena ticket')]: ticketsReceived }, true);
+		await user.addItemsToBank({
+			items: new Bank().add('Agility arena ticket', ticketsReceived),
+			collectionLog: true
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of agility arena`);
-				return this.client.commands.get('agilityarena')!.run(res, []);
-			},
+			['minigames', { agility_arena: { start: {} } }, true],
 			undefined,
-			data
+			data,
+			null
 		);
 	}
 }

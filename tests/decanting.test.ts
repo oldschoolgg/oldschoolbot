@@ -1,11 +1,10 @@
-import { resolveNameBank } from 'oldschooljs/dist/util';
+import { Bank } from 'oldschooljs';
 
 import decantPotionFromBank from '../src/lib/minions/functions/decantPotionFromBank';
-import itemID from '../src/lib/util/itemID';
 
 describe('decantPotionFromBank', () => {
 	test('decantPotionFromBank', () => {
-		const userBank = resolveNameBank({
+		const userBank = new Bank({
 			'Magic potion (3)': 1000,
 			'Defence potion (4)': 733,
 			'Defence potion (3)': 233,
@@ -14,11 +13,11 @@ describe('decantPotionFromBank', () => {
 			'Strength potion (1)': 1000
 		});
 		expect(decantPotionFromBank(userBank, 'magic potion', 4)).toMatchObject({
-			potionsToAdd: { [itemID('Magic potion (4)')]: 750 },
-			potionsToRemove: { [itemID('Magic potion (3)')]: 1000 },
+			potionsToAdd: new Bank({ 'Magic potion (4)': 750 }),
+			potionsToRemove: new Bank({ 'Magic potion (3)': 1000 }),
 			sumOfPots: 1000,
 			potionName: 'Magic potion',
-			finalUserBank: resolveNameBank({
+			finalUserBank: new Bank({
 				'Magic potion (4)': 750,
 				'Defence potion (4)': 733,
 				'Defence potion (3)': 233,
@@ -28,18 +27,18 @@ describe('decantPotionFromBank', () => {
 			})
 		});
 		expect(decantPotionFromBank(userBank, 'defence potion', 2)).toMatchObject({
-			potionsToAdd: resolveNameBank({
+			potionsToAdd: new Bank({
 				'Defence potion (2)': 1819,
 				'Defence potion (1)': 1
 			}),
-			potionsToRemove: resolveNameBank({
+			potionsToRemove: new Bank({
 				'Defence potion (4)': 733,
 				'Defence potion (3)': 233,
 				'Defence potion (1)': 8
 			}),
 			sumOfPots: 974,
 			potionName: 'Defence potion',
-			finalUserBank: resolveNameBank({
+			finalUserBank: new Bank({
 				'Magic potion (3)': 1000,
 				'Defence potion (2)': 1819,
 				'Defence potion (1)': 1,
@@ -47,19 +46,19 @@ describe('decantPotionFromBank', () => {
 				'Strength potion (1)': 1000
 			})
 		});
-		expect(() => decantPotionFromBank(userBank, 'attack potion', 2)).toThrowError(
-			"You don't have any **Attack potion** to decant!"
-		);
+		expect(decantPotionFromBank(userBank, 'attack potion', 2)).toEqual({
+			error: "You don't have any **Attack potion** to decant!"
+		});
 		expect(decantPotionFromBank(userBank, 'attack potion', 4)).toMatchObject({
-			potionsToAdd: resolveNameBank({
+			potionsToAdd: new Bank({
 				'Attack potion (4)': 500
 			}),
-			potionsToRemove: resolveNameBank({
+			potionsToRemove: new Bank({
 				'Attack potion (2)': 1000
 			}),
 			sumOfPots: 1000,
 			potionName: 'Attack potion',
-			finalUserBank: resolveNameBank({
+			finalUserBank: new Bank({
 				'Magic potion (3)': 1000,
 				'Defence potion (4)': 733,
 				'Defence potion (3)': 233,
@@ -69,16 +68,16 @@ describe('decantPotionFromBank', () => {
 			})
 		});
 		expect(decantPotionFromBank(userBank, 'strength potion', 3)).toMatchObject({
-			potionsToAdd: resolveNameBank({
+			potionsToAdd: new Bank({
 				'Strength potion (3)': 333,
 				'Strength potion (1)': 1
 			}),
-			potionsToRemove: resolveNameBank({
+			potionsToRemove: new Bank({
 				'Strength potion (1)': 1000
 			}),
 			sumOfPots: 1000,
 			potionName: 'Strength potion',
-			finalUserBank: resolveNameBank({
+			finalUserBank: new Bank({
 				'Magic potion (3)': 1000,
 				'Defence potion (4)': 733,
 				'Defence potion (3)': 233,

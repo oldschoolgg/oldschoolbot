@@ -1,5 +1,5 @@
+import { constructGearSetup } from '../src/lib/gear';
 import { calcConBonusXP } from '../src/lib/util/calcConBonusXP';
-import { constructGearSetup } from './utils';
 
 describe('calcConBonusXP.test', () => {
 	test('calcConBonusXP', () => {

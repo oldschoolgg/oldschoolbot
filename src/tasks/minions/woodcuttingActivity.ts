@@ -1,4 +1,5 @@
 import { Task } from 'klasa';
+import { Bank } from 'oldschooljs';
 
 import { Emoji, Events } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
@@ -6,77 +7,78 @@ import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
-import createReadableItemListFromBank from '../../lib/util/createReadableItemListFromTuple';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: WoodcuttingActivityTaskOptions) {
 		const { logID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
-		const currentLevel = user.skillLevel(SkillsEnum.Woodcutting);
+		const user = await this.client.fetchUser(userID);
 
-		const Log = Woodcutting.Logs.find(Log => Log.id === logID);
+		const log = Woodcutting.Logs.find(Log => Log.id === logID)!;
 
-		if (!Log) return;
+		let xpReceived = quantity * log.xp;
+		let bonusXP = 0;
 
-		const xpReceived = quantity * Log.xp;
-
-		await user.addXP(SkillsEnum.Woodcutting, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Woodcutting);
-
-		let str = `${user}, ${user.minionName} finished Woodcutting ${quantity} ${
-			Log.name
-		}, you also received ${xpReceived.toLocaleString()} XP.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Woodcutting level is now ${newLevel}!`;
+		// If they have the entire lumberjack outfit, give an extra 0.5% xp bonus
+		if (
+			user.getGear('skilling').hasEquipped(
+				Object.keys(Woodcutting.lumberjackItems).map(i => parseInt(i)),
+				true
+			)
+		) {
+			const amountToAdd = Math.floor(xpReceived * (2.5 / 100));
+			xpReceived += amountToAdd;
+			bonusXP += amountToAdd;
+		} else {
+			// For each lumberjack item, check if they have it, give its' XP boost if so.
+			for (const [itemID, bonus] of Object.entries(Woodcutting.lumberjackItems)) {
+				if (user.getGear('skilling').hasEquipped([parseInt(itemID)], false)) {
+					const amountToAdd = Math.floor(xpReceived * (bonus / 100));
+					xpReceived += amountToAdd;
+					bonusXP += amountToAdd;
+				}
+			}
 		}
 
-		let loot = {
-			[Log.id]: quantity
-		};
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Woodcutting,
+			amount: xpReceived,
+			duration
+		});
+
+		let loot = new Bank({
+			[log.id]: quantity
+		});
 
 		// Add clue scrolls
-		if (Log.clueScrollChance) {
-			loot = addSkillingClueToLoot(
-				user,
-				SkillsEnum.Woodcutting,
-				quantity,
-				Log.clueScrollChance,
-				loot
-			);
+		if (log.clueScrollChance) {
+			addSkillingClueToLoot(user, SkillsEnum.Woodcutting, quantity, log.clueScrollChance, loot);
+		}
+
+		let str = `${user}, ${user.minionName} finished woodcutting. ${xpRes}`;
+
+		if (bonusXP > 0) {
+			str += `. **Bonus XP:** ${bonusXP.toLocaleString()}`;
 		}
 
 		// Roll for pet
-		if (
-			Log.petChance &&
-			roll((Log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)
-		) {
-			loot[itemID('Beaver')] = 1;
-			str += `\nYou have a funny feeling you're being followed...`;
+		if (log.petChance && roll((log.petChance - user.skillLevel(SkillsEnum.Woodcutting) * 25) / quantity)) {
+			loot.add('Beaver');
+			str += "\n**You have a funny feeling you're being followed...**";
 			this.client.emit(
 				Events.ServerNotification,
-				`${Emoji.Woodcutting} **${user.username}'s** minion, ${user.minionName}, just received a Beaver while cutting ${Log.name} at level ${currentLevel} Woodcutting!`
+				`${Emoji.Woodcutting} **${user.username}'s** minion, ${
+					user.minionName
+				}, just received a Beaver while cutting ${log.name} at level ${user.skillLevel(
+					SkillsEnum.Woodcutting
+				)} Woodcutting!`
 			);
 		}
 
-		str += `\n\nYou received: ${await createReadableItemListFromBank(this.client, loot)}.`;
+		str += `\nYou received ${loot}.`;
 
-		await user.addItemsToBank(loot, true);
+		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${Log.name}[${Log.id}]`);
-				return this.client.commands.get('chop')!.run(res, [quantity, Log.name]);
-			},
-			undefined,
-			data
-		);
+		handleTripFinish(user, channelID, str, ['chop', { name: log.name, quantity }, true], undefined, data, loot);
 	}
 }

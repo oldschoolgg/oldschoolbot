@@ -1,4 +1,5 @@
 import { Emoji } from '../../../constants';
+import getOSItem from '../../../util/getOSItem';
 import itemID from '../../../util/itemID';
 import { Plant, SkillsEnum } from '../../types';
 import allotmentPlants from './allotments';
@@ -8,7 +9,7 @@ import hopsPlants from './hops';
 import specialPlants from './specialPlants';
 import trees from './trees';
 
-const plants: Plant[] = [
+export const plants: Plant[] = [
 	...herbPlants,
 	...trees,
 	...allotmentPlants,
@@ -18,18 +19,46 @@ const plants: Plant[] = [
 ];
 
 const maleFarmerItems: { [key: number]: number } = {
-	[itemID(`Farmer's strawhat`)]: 0.4,
-	[itemID(`Farmer's jacket`)]: 0.8,
-	[itemID(`Farmer's boro trousers`)]: 0.6,
-	[itemID(`Farmer's boots`)]: 0.2
+	[itemID("Farmer's strawhat")]: 0.4,
+	[itemID("Farmer's jacket")]: 0.8,
+	[itemID("Farmer's boro trousers")]: 0.6,
+	[itemID("Farmer's boots")]: 0.2
 };
 
 const femaleFarmerItems: { [key: number]: number } = {
-	[itemID(`Farmer's strawhat`)]: 0.4,
-	[itemID(`Farmer's shirt`)]: 0.8,
-	[itemID(`Farmer's boro trousers`)]: 0.6,
-	[itemID(`Farmer's boots`)]: 0.2
+	[itemID("Farmer's strawhat")]: 0.4,
+	[itemID("Farmer's shirt")]: 0.8,
+	[itemID("Farmer's boro trousers")]: 0.6,
+	[itemID("Farmer's boots")]: 0.2
 };
+
+export const allFarmingItems: number[] = [];
+
+export const CompostTiers = [
+	{
+		name: 'compost',
+		item: getOSItem('Compost')
+	},
+	{
+		name: 'supercompost',
+		item: getOSItem('Supercompost')
+	},
+	{
+		name: 'ultracompost',
+		item: getOSItem('Ultracompost')
+	}
+] as const;
+export type CompostName = typeof CompostTiers[number]['name'];
+
+for (const plant of plants) {
+	if (plant.outputCrop) allFarmingItems.push(plant.outputCrop);
+	for (const key of Object.keys(plant.inputItems.bank)) {
+		allFarmingItems.push(Number(key));
+	}
+	if (plant.outputLogs) allFarmingItems.push(plant.outputLogs);
+	if (plant.outputRoots) allFarmingItems.push(plant.outputRoots);
+}
+allFarmingItems.push(itemID('Tangleroot'));
 
 const Farming = {
 	aliases: ['farming'],

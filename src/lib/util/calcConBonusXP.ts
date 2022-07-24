@@ -1,5 +1,6 @@
+import { round } from 'e';
+
 import { GearSetup } from '../gear';
-import { round } from '../util';
 import itemID from './itemID';
 
 export function calcConBonusXP(setup: GearSetup): number {

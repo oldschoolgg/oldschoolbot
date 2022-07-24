@@ -1,7 +1,8 @@
-import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
+import { Prisma, User } from '@prisma/client';
+import { Bank } from 'oldschooljs';
 
-import { GearSetup } from '../src/lib/gear';
-import { itemID } from '../src/lib/util';
+import { PartialGearSetup } from '../src/lib/gear';
+import { Gear } from '../src/lib/structures/Gear';
 
 export function mockArgument(arg: any) {
 	return new arg(
@@ -21,24 +22,23 @@ export function mockArgument(arg: any) {
 	);
 }
 
-type PartialGearSetup = Partial<
-	{
-		[key in EquipmentSlot]: string;
-	}
->;
-export function constructGearSetup(setup: PartialGearSetup): GearSetup {
-	return {
-		'2h': setup['2h'] ? { item: itemID(setup['2h']), quantity: 1 } : null,
-		ammo: setup.ammo ? { item: itemID(setup.ammo), quantity: 1 } : null,
-		body: setup.body ? { item: itemID(setup.body), quantity: 1 } : null,
-		cape: setup.cape ? { item: itemID(setup.cape), quantity: 1 } : null,
-		feet: setup.feet ? { item: itemID(setup.feet), quantity: 1 } : null,
-		hands: setup.hands ? { item: itemID(setup.hands), quantity: 1 } : null,
-		head: setup.head ? { item: itemID(setup.head), quantity: 1 } : null,
-		legs: setup.legs ? { item: itemID(setup.legs), quantity: 1 } : null,
-		neck: setup.neck ? { item: itemID(setup.neck), quantity: 1 } : null,
-		ring: setup.ring ? { item: itemID(setup.ring), quantity: 1 } : null,
-		shield: setup.shield ? { item: itemID(setup.shield), quantity: 1 } : null,
-		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
-	};
+interface MockUserArgs {
+	bank?: Bank;
+	meleeGear?: PartialGearSetup;
 }
+
+export const mockUser = (overrides?: MockUserArgs): User => {
+	return {
+		...overrides,
+		gear_fashion: new Gear().raw() as Prisma.JsonValue,
+		gear_mage: new Gear().raw() as Prisma.JsonValue,
+		gear_melee: new Gear(overrides?.meleeGear).raw() as Prisma.JsonValue,
+		gear_misc: new Gear().raw() as Prisma.JsonValue,
+		gear_other: new Gear().raw() as Prisma.JsonValue,
+		gear_range: new Gear().raw() as Prisma.JsonValue,
+		gear_skilling: new Gear().raw() as Prisma.JsonValue,
+		gear_wildy: new Gear().raw() as Prisma.JsonValue,
+		bank: overrides?.bank?.bank ?? (new Bank().bank as Prisma.JsonValue),
+		skills_agility: 1_000_000
+	} as unknown as User;
+};

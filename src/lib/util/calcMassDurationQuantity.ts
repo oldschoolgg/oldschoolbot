@@ -19,7 +19,7 @@ export default async function calcDurQty(
 		perKillTime = Math.min(max, perKillTime);
 	}
 
-	const maxQty = Math.floor(users[0].maxTripLength / perKillTime);
+	const maxQty = Math.floor(users[0].maxTripLength('GroupMonsterKilling') / perKillTime);
 	if (!quantity) quantity = maxQty;
 	if (quantity > maxQty) {
 		throw `The max amount of ${monster.name} this party can kill per trip is ${maxQty}.`;

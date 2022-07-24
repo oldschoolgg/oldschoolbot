@@ -5,7 +5,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const butterflyNettingCreatures: Creature[] = [
 	{
-		name: `Ruby harvest`,
+		name: 'Ruby harvest',
 		id: 10,
 		aliases: ['ruby harvest'],
 		level: 15,
@@ -18,7 +18,7 @@ const butterflyNettingCreatures: Creature[] = [
 		intercept: 35
 	},
 	{
-		name: `Sapphire glacialis`,
+		name: 'Sapphire glacialis',
 		id: 11,
 		aliases: ['sapphire glacialis'],
 		level: 25,
@@ -31,7 +31,7 @@ const butterflyNettingCreatures: Creature[] = [
 		intercept: 40
 	},
 	{
-		name: `Snowy knight`,
+		name: 'Snowy knight',
 		id: 12,
 		aliases: ['snowy knight'],
 		level: 35,
@@ -44,7 +44,7 @@ const butterflyNettingCreatures: Creature[] = [
 		intercept: 30
 	},
 	{
-		name: `Black warlock`,
+		name: 'Black warlock',
 		id: 13,
 		aliases: ['black warlock'],
 		level: 45,

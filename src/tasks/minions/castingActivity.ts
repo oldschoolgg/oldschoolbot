@@ -8,41 +8,49 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 export default class extends Task {
 	async run(data: CastingActivityTaskOptions) {
 		let { spellID, quantity, userID, channelID, duration } = data;
-		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
+		const user = await this.client.fetchUser(userID);
 
-		const spell = Castables.find(i => i.id === spellID);
-		if (!spell) return;
+		const spell = Castables.find(i => i.id === spellID)!;
 
-		const currentLevel = user.skillLevel(SkillsEnum.Magic);
 		const xpReceived = quantity * spell.xp;
-		await user.addXP(SkillsEnum.Magic, xpReceived);
-		const newLevel = user.skillLevel(SkillsEnum.Magic);
+		const xpRes = await user.addXP({
+			skillName: SkillsEnum.Magic,
+			amount: xpReceived,
+			duration
+		});
+
+		let craftXpReceived = 0;
+		let craftXpRes = '';
+		if (spell.craftXp) {
+			craftXpReceived = spell.craftXp * quantity;
+
+			craftXpRes = await user.addXP({
+				skillName: SkillsEnum.Crafting,
+				amount: craftXpReceived,
+				duration
+			});
+		}
+
+		// let craftXpRes = ``;
+		// const craftXpReceived = await user.addXP(SkillsEnum.Crafting, craftXpReceived, duration);
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
-			await user.addItemsToBank(loot.bank, true);
+			await user.addItemsToBank({ items: loot, collectionLog: true });
 		}
 
-		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${
-			spell.name
-		}, you received ${xpReceived.toLocaleString()} Magic XP and ${loot ?? 'no items'}.`;
-
-		if (newLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Magic level is now ${newLevel}!`;
-		}
+		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
+			loot ?? 'no items'
+		}. ${xpRes} ${craftXpRes}`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x ${spell.name}[${spell.id}]`);
-				return this.client.commands.get('cast')!.run(res, [quantity, spell.name]);
-			},
+			['activities', { cast: { spell: spell.name, quantity } }, true],
 			undefined,
-			data
+			data,
+			loot ?? null
 		);
 	}
 }

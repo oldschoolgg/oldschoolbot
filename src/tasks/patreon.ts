@@ -1,19 +1,19 @@
-import { TextChannel } from 'discord.js';
+import { MessageAttachment, TextChannel } from 'discord.js';
+import { Time } from 'e';
 import { ArrayActions, Gateway, Task } from 'klasa';
 import fetch from 'node-fetch';
 
 import { patreonConfig, production } from '../config';
-import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier, Time } from '../lib/constants';
+import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from '../lib/constants';
 import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Patron } from '../lib/types';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { logError } from '../lib/util/logError';
 
-const patreonApiURL = new URL(
-	`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`
-);
+const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
 patreonApiURL.search = new URLSearchParams([
 	['include', ['user', 'currently_entitled_tiers'].join(',')],
@@ -29,12 +29,14 @@ patreonApiURL.search = new URLSearchParams([
 	],
 	['fields[user]', ['social_connections'].join(',')]
 ]).toString();
-const tiers: [PatronTierID, BitField][] = [
-	[PatronTierID.One, BitField.IsPatronTier1],
-	[PatronTierID.Two, BitField.IsPatronTier2],
-	[PatronTierID.Three, BitField.IsPatronTier3],
+
+export const tiers: [PatronTierID, BitField][] = [
+	[PatronTierID.Six, BitField.IsPatronTier5],
+	[PatronTierID.Five, BitField.IsPatronTier5],
 	[PatronTierID.Four, BitField.IsPatronTier4],
-	[PatronTierID.Five, BitField.IsPatronTier5]
+	[PatronTierID.Three, BitField.IsPatronTier3],
+	[PatronTierID.Two, BitField.IsPatronTier2],
+	[PatronTierID.One, BitField.IsPatronTier1]
 ];
 
 function bitFieldFromPerkTier(tier: PerkTier): BitField {
@@ -82,8 +84,8 @@ export default class PatreonTask extends Task {
 
 	async validatePerks(userID: string, shouldHave: PerkTier): Promise<string | null> {
 		const settings = await getUserSettings(userID);
-		let perkTier: PerkTier | null = getUsersPerkTier(settings.get(UserSettings.BitField));
-		if (perkTier === 0 || perkTier === 1) perkTier = null;
+		let perkTier: PerkTier | 0 | null = getUsersPerkTier(settings.get(UserSettings.BitField));
+		if (perkTier === 0 || perkTier === PerkTier.One) perkTier = null;
 
 		if (!perkTier) {
 			await this.givePerks(userID, shouldHave);
@@ -97,30 +99,27 @@ export default class PatreonTask extends Task {
 	}
 
 	async changeTier(userID: string, from: PerkTier, to: PerkTier) {
-		const settings = await (this.client.gateways.get('users') as Gateway)!
-			.acquire({
-				id: userID
-			})
-			.sync(true);
+		const user = await globalClient.fetchUser(userID);
 
-		const userBitfield = settings.get(UserSettings.BitField);
+		const userBitfield = user.settings.get(UserSettings.BitField);
 
 		const bitFieldToRemove = bitFieldFromPerkTier(from);
 		const bitFieldToAdd = bitFieldFromPerkTier(to);
-		const newBitfield = [...userBitfield, bitFieldToAdd].filter(i => i !== bitFieldToRemove);
+		const newBitfield = [...userBitfield.filter(i => i !== bitFieldToRemove), bitFieldToAdd];
 
 		// Remove any/all the patron bits from this user.
 		try {
-			await settings.update(UserSettings.BitField, newBitfield, {
+			await user.settings.update(UserSettings.BitField, newBitfield, {
 				arrayAction: ArrayActions.Overwrite
 			});
 		} catch (_) {}
 
 		// Remove patron bank background
-		const bg = backgroundImages.find(bg => bg.id === settings.get(UserSettings.BankBackground));
+		const bg = backgroundImages.find(bg => bg.id === user.settings.get(UserSettings.BankBackground));
 		if (bg && bg.perkTierNeeded && bg.perkTierNeeded > to) {
-			await settings.update(UserSettings.BankBackground, 1);
+			await user.settings.update(UserSettings.BankBackground, 1);
 		}
+		await user.settings.sync(true);
 	}
 
 	async givePerks(userID: string, perkTier: PerkTier) {
@@ -133,10 +132,7 @@ export default class PatreonTask extends Task {
 		const userBadges = settings.get(UserSettings.Badges);
 
 		// If they have neither the limited time badge or normal badge, give them the normal one.
-		if (
-			!userBadges.includes(BadgesEnum.Patron) &&
-			!userBadges.includes(BadgesEnum.LimitedPatron)
-		) {
+		if (!userBadges.includes(BadgesEnum.Patron) && !userBadges.includes(BadgesEnum.LimitedPatron)) {
 			try {
 				await settings.update(UserSettings.Badges, BadgesEnum.Patron, {
 					arrayAction: ArrayActions.Add
@@ -147,16 +143,14 @@ export default class PatreonTask extends Task {
 		const userBitfield = settings.get(UserSettings.BitField);
 
 		try {
-			await settings.update(
-				UserSettings.BitField,
-				[
-					...userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
-					bitFieldFromPerkTier(perkTier)
-				],
-				{
-					arrayAction: ArrayActions.Overwrite
-				}
-			);
+			let newField = [
+				...userBitfield.filter(number => !tiers.map(t => t[1]).includes(number)),
+				bitFieldFromPerkTier(perkTier)
+			];
+
+			await settings.update(UserSettings.BitField, newField, {
+				arrayAction: ArrayActions.Overwrite
+			});
 		} catch (_) {}
 	}
 
@@ -182,9 +176,7 @@ export default class PatreonTask extends Task {
 		// Remove patreon badge(s)
 		await settings.update(
 			UserSettings.Badges,
-			userBadges.filter(
-				number => ![BadgesEnum.Patron, BadgesEnum.LimitedPatron].includes(number)
-			),
+			userBadges.filter(number => ![BadgesEnum.Patron, BadgesEnum.LimitedPatron].includes(number)),
 			{
 				arrayAction: ArrayActions.Overwrite
 			}
@@ -194,6 +186,9 @@ export default class PatreonTask extends Task {
 		const bg = backgroundImages.find(bg => bg.id === settings.get(UserSettings.BankBackground));
 		if (bg?.perkTierNeeded) {
 			await settings.update(UserSettings.BankBackground, 1);
+		}
+		if (settings.get(UserSettings.BankBackgroundHex) !== null) {
+			await settings.reset(UserSettings.BankBackgroundHex);
 		}
 	}
 
@@ -222,6 +217,21 @@ export default class PatreonTask extends Task {
 				continue;
 			}
 
+			const duplicateAccount = fetchedPatrons.find(
+				p => p.discordID === patron.discordID && p.patreonID !== patron.patreonID
+			);
+			if (duplicateAccount) {
+				const thisDate = new Date(patron.lastChargeDate).getTime();
+				const duplicateDate = new Date(duplicateAccount.lastChargeDate).getTime();
+				// If the other account paid after this one did, we should skip this account.
+				if (duplicateDate > thisDate) {
+					messages.push(
+						`Discord[${patron.discordID}] Patron[${patron.patreonID}] is a duplicate of Patron[${duplicateAccount.patreonID}], so continuing.`
+					);
+					continue;
+				}
+			}
+
 			const settings = await (this.client.gateways.get('users') as Gateway)!
 				.acquire({
 					id: patron.discordID
@@ -231,15 +241,14 @@ export default class PatreonTask extends Task {
 			if (settings.get(UserSettings.GithubID)) continue;
 
 			const username =
-				this.client.users.get(patron.discordID)?.username ??
-				`${patron.discordID}|${patron.patreonID}`;
+				this.client.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
 
 			if (settings.get(UserSettings.PatreonID) !== patron.patreonID) {
-				settings.update(UserSettings.PatreonID, patron.patreonID);
+				await settings.update(UserSettings.PatreonID, patron.patreonID);
 			}
 			const userBitfield = settings.get(UserSettings.BitField);
 			if (
-				[BitField.isModerator, BitField.isContributor].some(bit =>
+				[BitField.isModerator, BitField.isContributor, BitField.IsWikiContributor].some(bit =>
 					userBitfield.includes(bit)
 				)
 			) {
@@ -254,9 +263,7 @@ export default class PatreonTask extends Task {
 				const perkTier = getUsersPerkTier(userBitfield);
 				if (perkTier < PerkTier.Two) continue;
 				result.push(`${username} hasn't paid in over 1 month, so removing perks.`);
-				messages.push(
-					`Removing T${perkTier} patron perks from ${username} PatreonID[${patron.patreonID}]`
-				);
+				messages.push(`Removing T${perkTier} patron perks from ${username} PatreonID[${patron.patreonID}]`);
 				this.removePerks(patron.discordID);
 				continue;
 			}
@@ -265,22 +272,21 @@ export default class PatreonTask extends Task {
 				const [tierID, bitField] = tiers[i];
 
 				if (!patron.entitledTiers.includes(tierID)) continue;
-				if (userBitfield.includes(bitField)) continue;
+				if (userBitfield.includes(bitField)) break;
 
 				result.push(`${username} was given Tier ${i + 1}.`);
-				messages.push(
-					`Giving T${i + 1} patron perks to ${username} PatreonID[${patron.patreonID}]`
-				);
+				messages.push(`Giving T${i + 1} patron perks to ${username} PatreonID[${patron.patreonID}]`);
 				await this.givePerks(patron.discordID, perkTierFromBitfield(bitField));
+				break;
 			}
 		}
 
 		const githubResult = await this.syncGithub();
 		messages = messages.concat(githubResult);
 
-		const channel = this.client.channels.get(Channel.ErrorLogs) as TextChannel;
+		const channel = this.client.channels.cache.get(Channel.ErrorLogs) as TextChannel;
 		if (production) {
-			channel.sendFile(Buffer.from(result.join('\n')), 'patreon.txt');
+			channel.send({ files: [new MessageAttachment(Buffer.from(result.join('\n')), 'patreon.txt')] });
 			channel.send(messages.join(', '));
 		} else {
 			console.log(messages.join('\n'));
@@ -291,26 +297,23 @@ export default class PatreonTask extends Task {
 
 	async fetchPatrons(url?: string): Promise<Patron[]> {
 		const users: Patron[] = [];
-		const result: any = await fetch(url || patreonApiURL, {
+		const result: any = await fetch(url ?? patreonApiURL.toString(), {
 			headers: { Authorization: `Bearer ${patreonConfig!.token}` }
 		}).then(res => res.json());
 
 		if (result.errors) {
-			console.error(result.errors);
-			throw `Failed to fetch patrons.`;
+			logError(result.errors);
+			throw 'Failed to fetch patrons.';
 		}
 
 		for (const user of result.data) {
-			const socialConnections = result.included.find(
-				(i: any) => i.id === user.relationships.user.data.id
-			).attributes.social_connections;
+			const socialConnections = result.included.find((i: any) => i.id === user.relationships.user.data.id)
+				.attributes.social_connections;
 
 			const patron: Patron = {
 				patreonID: user.relationships.user.data.id,
 				discordID: socialConnections?.discord?.user_id,
-				entitledTiers: user.relationships.currently_entitled_tiers.data.map(
-					(i: any) => i.id
-				),
+				entitledTiers: user.relationships.currently_entitled_tiers.data.map((i: any) => i.id),
 				lastChargeDate: user.attributes.last_charge_date,
 				lastChargeStatus: user.attributes.last_charge_status,
 				lifeTimeSupportCents: user.attributes.lifetime_support_cents,

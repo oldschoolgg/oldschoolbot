@@ -1,18 +1,21 @@
 import { Task } from 'klasa';
-import { Bank, Openables } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
+import { GrandHallowedCoffin } from 'oldschooljs/dist/simulation/misc/GrandHallowedCoffin';
 
 import { openCoffin, sepulchreFloors } from '../../../lib/minions/data/sepulchre';
+import { trackLoot } from '../../../lib/settings/prisma';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { roll } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: SepulchreActivityTaskOptions) {
-		const { channelID, quantity, floors, duration, userID } = data;
-		const user = await this.client.users.fetch(userID);
-		user.incrementMinionDailyDuration(duration);
-		user.incrementMinigameScore('Sepulchre', quantity);
+		const { channelID, quantity, floors, userID, duration } = data;
+		const user = await this.client.fetchUser(userID);
+		await incrementMinigameScore(userID, 'sepulchre', quantity);
 
 		const completedFloors = sepulchreFloors.filter(fl => floors.includes(fl.number));
 		const loot = new Bank();
@@ -22,13 +25,13 @@ export default class extends Task {
 		for (let i = 0; i < quantity; i++) {
 			for (const floor of completedFloors) {
 				if (floor.number === 5) {
-					loot.add(Openables.GrandHallowedCoffin.open());
+					loot.add(GrandHallowedCoffin.roll());
 				}
 
 				const numCoffinsToOpen = 1;
 				numCoffinsOpened += numCoffinsToOpen;
 				for (let i = 0; i < numCoffinsToOpen; i++) {
-					loot.add(openCoffin(floor.number));
+					loot.add(openCoffin(floor.number, user.cl()));
 				}
 
 				agilityXP += floor.xp;
@@ -38,42 +41,42 @@ export default class extends Task {
 			}
 		}
 
-		await user.addItemsToBank(loot.bank, true);
-		const currentLevel = user.skillLevel(SkillsEnum.Agility);
-		await user.addXP(SkillsEnum.Agility, agilityXP);
-		const nextLevel = user.skillLevel(SkillsEnum.Agility);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		let str = `${user}, ${
-			user.minionName
-		} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${floors[0]}-${
-			floors[floors.length - 1]
-		}), you received ${agilityXP.toLocaleString()} Agility XP. ${numCoffinsOpened}x coffins opened.`;
+		let xpRes = await user.addXP({
+			skillName: SkillsEnum.Agility,
+			amount: agilityXP,
+			duration
+		});
 
-		if (nextLevel > currentLevel) {
-			str += `\n\n${user.minionName}'s Agility level is now ${nextLevel}!`;
-		}
+		await trackLoot({
+			loot: itemsAdded,
+			id: 'sepulchre',
+			type: 'Minigame',
+			changeType: 'loot',
+			duration: data.duration,
+			kc: quantity
+		});
 
-		const image = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				loot.bank,
-				`Loot From ${quantity}x Hallowed Sepulchre:`,
-				true,
-				{ showNewCL: 1 },
-				user
-			);
+		let str = `${user}, ${user.minionName} finished doing the Hallowed Sepulchre ${quantity}x times (floor ${
+			floors[0]
+		}-${floors[floors.length - 1]}), and opened ${numCoffinsOpened}x coffins.\n\n${xpRes}`;
+
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Hallowed Sepulchre`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued trip of ${quantity}x sepulchre`);
-				return this.client.commands.get('sepulchre')!.run(res, []);
-			},
-			image,
-			data
+			['minigames', { sepulchre: { start: {} } }, true],
+			image.file.buffer,
+			data,
+			itemsAdded
 		);
 	}
 }

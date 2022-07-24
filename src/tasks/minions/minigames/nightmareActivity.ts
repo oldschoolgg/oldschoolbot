@@ -1,137 +1,121 @@
 import { percentChance } from 'e';
 import { Task } from 'klasa';
-import { Misc } from 'oldschooljs';
+import { Bank, Misc } from 'oldschooljs';
 
-import { Emoji } from '../../../lib/constants';
+import { BitField, NIGHTMARE_ID, PHOSANI_NIGHTMARE_ID } from '../../../lib/constants';
+import { addMonsterXP } from '../../../lib/minions/functions';
 import announceLoot from '../../../lib/minions/functions/announceLoot';
-import isImportantItemForMonster from '../../../lib/minions/functions/isImportantItemForMonster';
-import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { ItemBank } from '../../../lib/types';
+import { trackLoot } from '../../../lib/settings/prisma';
 import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, noOp, queuedMessageSend, randomVariation } from '../../../lib/util';
-import { channelIsSendable } from '../../../lib/util/channelIsSendable';
-import createReadableItemListFromBank from '../../../lib/util/createReadableItemListFromTuple';
+import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
-
-interface NightmareUser {
-	id: string;
-	chanceOfDeath: number;
-	damageDone: number;
-}
 
 const RawNightmare = Misc.Nightmare;
 
 export default class extends Task {
-	async run({ channelID, leader, users, quantity, duration }: NightmareActivityTaskOptions) {
-		const teamsLoot: { [key: string]: ItemBank } = {};
-		const kcAmounts: { [key: string]: number } = {};
+	async run(data: NightmareActivityTaskOptions) {
+		const { channelID, quantity, duration, isPhosani = false, userID, method } = data;
 
-		const parsedUsers: NightmareUser[] = [];
+		const monsterID = isPhosani ? PHOSANI_NIGHTMARE_ID : NightmareMonster.id;
+		const monsterName = isPhosani ? "Phosani's Nightmare" : 'Nightmare';
+		const user = await this.client.fetchUser(userID);
+		const team = method === 'solo' ? [user.id] : [user.id, '1', '2', '3'];
 
-		// For each user in the party, calculate their damage and death chance.
-		for (const id of users) {
-			const user = await this.client.users.fetch(id).catch(noOp);
-			if (!user) continue;
-			user.incrementMinionDailyDuration(duration);
-			const [data] = getNightmareGearStats(user, users);
-			parsedUsers.push({ ...data, id: user.id });
-		}
-
-		// Store total amount of deaths
-		const deaths: Record<string, number> = {};
+		const [userStats] = getNightmareGearStats(user, team, isPhosani);
+		const parsedUsers = team.map(id => ({ ...userStats, id }));
+		const userLoot = new Bank();
+		let kc = 0;
+		let deaths = 0;
 
 		for (let i = 0; i < quantity; i++) {
-			const loot = RawNightmare.kill({
+			const _loot = RawNightmare.kill({
 				team: parsedUsers.map(user => ({
 					id: user.id,
-					damageDone: users.length === 1 ? 2400 : randomVariation(user.damageDone, 5)
-				}))
+					damageDone: team.length === 1 ? 2400 : randomVariation(user.damageDone, 5)
+				})),
+				isPhosani
 			});
 
-			// Give every team member a +1 to their KC.
-			for (const user of parsedUsers) {
-				kcAmounts[user.id] = Boolean(kcAmounts[user.id]) ? ++kcAmounts[user.id] : 1;
-			}
-
-			for (const user of parsedUsers) {
-				if (percentChance(user.chanceOfDeath)) {
-					deaths[user.id] = deaths[user.id] ? ++deaths[user.id] : 1;
-					kcAmounts[user.id]--;
-				} else {
-					teamsLoot[user.id] = addBanks([teamsLoot[user.id] ?? {}, loot[user.id]]);
-				}
-			}
-		}
-
-		const leaderUser = await this.client.users.fetch(leader);
-
-		let resultStr = `${leaderUser}, your party finished killing ${quantity}x ${NightmareMonster.name}!\n\n`;
-
-		for (const [userID, loot] of Object.entries(teamsLoot)) {
-			const user = await this.client.users.fetch(userID).catch(noOp);
-			if (!user) continue;
-
-			await user.addItemsToBank(loot, true);
-			const kcToAdd = kcAmounts[user.id];
-			if (kcToAdd) user.incrementMonsterScore(NightmareMonster.id, kcToAdd);
-			const purple = Object.keys(loot).some(itemID =>
-				isImportantItemForMonster(parseInt(itemID), NightmareMonster)
-			);
-
-			resultStr += `${
-				purple ? Emoji.Purple : ''
-			} **${user} received:** ||${await createReadableItemListFromBank(
-				this.client,
-				loot
-			)}||\n`;
-
-			announceLoot(this.client, leaderUser, NightmareMonster, quantity, loot, {
-				leader: leaderUser,
-				lootRecipient: user,
-				size: users.length
-			});
-		}
-
-		// Show deaths in the result
-		const deathEntries = Object.entries(deaths);
-		if (deathEntries.length > 0) {
-			const deaths = [];
-			for (const [id, qty] of deathEntries) {
-				const user = await this.client.users.fetch(id).catch(noOp);
-				if (!user) continue;
-				deaths.push(`**${user.username}**: ${qty}x`);
-			}
-			resultStr += `\n**Deaths**: ${deaths.join(', ')}.`;
-		}
-
-		if (users.length > 1) {
-			queuedMessageSend(this.client, channelID, resultStr);
-		} else {
-			const channel = this.client.channels.get(channelID);
-			if (!channelIsSendable(channel)) return;
-
-			if (!kcAmounts[leader]) {
-				channel.send(
-					`${leaderUser}, ${leaderUser.minionName} died in all their attempts to kill the Nightmare, they apologize and promise to try harder next time.`
-				);
+			const died = percentChance(userStats.chanceOfDeath);
+			if (died) {
+				deaths++;
 			} else {
-				channel.sendBankImage({
-					bank: teamsLoot[leader],
-					content: `${leaderUser}, ${
-						leaderUser.minionName
-					} finished killing ${quantity} ${NightmareMonster.name}, you died ${
-						deaths[leader] ?? 0
-					} times. Your Nightmare KC is now ${
-						(leaderUser.settings.get(UserSettings.MonsterScores)[NightmareMonster.id] ??
-							0) + quantity
-					}.`,
-					title: `${quantity}x Nightmare`,
-					background: leaderUser.settings.get(UserSettings.BankBackground),
-					user: leaderUser,
-					flags: { showNewCL: 1 }
-				});
+				userLoot.add(_loot[user.id]);
+				kc++;
 			}
+		}
+
+		await addMonsterXP(user, {
+			monsterID: NIGHTMARE_ID,
+			quantity: Math.ceil(quantity / team.length),
+			duration,
+			isOnTask: false,
+			taskQuantity: null
+		});
+
+		if (user.owns('Slepey tablet') || user.bitfield.includes(BitField.HasSlepeyTablet)) {
+			userLoot.remove('Slepey tablet', userLoot.amount('Slepey tablet'));
+		}
+		// Fix purple items on solo kills
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
+
+		if (kc) await user.incrementMonsterScore(monsterID, kc);
+
+		announceLoot({
+			user,
+			monsterID,
+			loot: itemsAdded,
+			notifyDrops: NightmareMonster.notifyDrops
+		});
+
+		await trackLoot({
+			loot: itemsAdded,
+			id: monsterName,
+			type: 'Monster',
+			changeType: 'loot',
+			duration,
+			kc: quantity
+		});
+
+		if (!kc) {
+			handleTripFinish(
+				user,
+				channelID,
+				`${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
+				[
+					'k',
+					{ name: isPhosani ? 'phosani nightmare' : method === 'solo' ? 'solo nightmare' : 'mass nightmare' },
+					true
+				],
+				undefined,
+				data,
+				null
+			);
+		} else {
+			const image = await makeBankImage({
+				bank: itemsAdded,
+				title: `${quantity}x Nightmare`,
+				user,
+				previousCL
+			});
+
+			const kc = user.getKC(monsterID);
+			handleTripFinish(
+				user,
+				channelID,
+				`${user}, ${user.minionName} finished killing ${quantity} ${monsterName}, you died ${deaths} times. Your ${monsterName} KC is now ${kc}.`,
+				[
+					'k',
+					{ name: isPhosani ? 'phosani nightmare' : method === 'solo' ? 'solo nightmare' : 'mass nightmare' },
+					true
+				],
+				image.file.buffer,
+				data,
+				itemsAdded
+			);
 		}
 	}
 }

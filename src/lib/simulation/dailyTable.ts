@@ -30,15 +30,15 @@ const CommonTable = new LootTable()
 	.add('Grey toy horsey')
 
 	// Boxing Gloves - they have the same names so need to use IDs.
-	.add(11705)
-	.add(11706)
+	.add(11_705)
+	.add(11_706)
 
 	.add(UncommonTable);
 
 const DailyTable = new LootTable()
-	.every('Coins', [1_000_000, 3_000_000])
+	.every('Coins', [100_000, 1_000_000])
 
-	.add('Coins', [100_000, 10_000_000])
+	.add('Coins', [100_000, 500_000])
 	.add(UncommonTable)
 	.add(CommonTable, 1, 2)
 	.add('Mystery box', 1, 2);

@@ -1,8 +1,8 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
 import { chunk, sleep } from 'e';
+import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Monsters, Util } from 'oldschooljs';
 
 import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
 import clueTiers from '../../lib/minions/data/clueTiers';
@@ -29,6 +29,22 @@ const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
 		.map(mon => mon.name)
 		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
+import { ClueTiers } from '../../lib/clues/clueTiers';
+import { Emoji, lastTripCache } from '../../lib/constants';
+import { DynamicButtons } from '../../lib/DynamicButtons';
+import { requiresMinion } from '../../lib/minions/decorators';
+import { FarmingContract } from '../../lib/minions/farming/types';
+import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
+import { runCommand } from '../../lib/settings/settings';
+import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { convertMahojiResponseToDJSResponse } from '../../lib/util';
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
+import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -39,383 +55,239 @@ const patMessages = [
 	'You give {name} head pats, they get comfortable and start falling asleep.'
 ];
 
-const randomPatMessage = (minionName: string) =>
-	randomItemFromArray(patMessages).replace('{name}', minionName);
+const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
-async function runCommand(msg: KlasaMessage, name: string, args: unknown[]) {
-	try {
-		const command = msg.client.commands.get(name)!;
-		await command!.run(msg, args);
-	} catch (err) {
-		msg.send(typeof err === 'string' ? err : err.message);
-	}
-}
+const subCommands = [
+	'clues',
+	'buy',
+	'pat',
+	'opens',
+	'info',
+	'activities',
+	'lapcounts',
+	'cancel',
+	'train',
+	'tempcl',
+	'blowpipe',
+	'bp',
+	'charge',
+	'data'
+];
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
-			cooldown: 1,
 			aliases: ['m'],
-			usage:
-				'[seticon|clues|k|kill|setname|buy|clue|kc|pat|stats|mine|smith|quest|qp|chop|ironman|light|fish|laps|cook|smelt|craft|bury|offer|fletch|cancel|farm|harvest|mix|hunt] [quantity:int{1}|name:...string] [name:...string] [name:...string]',
-
+			usage: `[${subCommands.join('|')}] [quantity:int{1}|name:...string] [name:...string] [name:...string]`,
 			usageDelim: ' ',
-			subcommands: true
+			subcommands: true,
+			requiredPermissionsForBot: ['EMBED_LINKS']
 		});
 	}
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		return msg.send(msg.author.minionStatus);
-	}
+		const [birdhouseDetails, mahojiUser, farmingDetails] = await Promise.all([
+			calculateBirdhouseDetails(msg.author.id),
+			mahojiUsersSettingsFetch(msg.author.id, { minion_farmingContract: true }),
+			getFarmingInfo(msg.author.id)
+		]);
 
-	@requiresMinion
-	async seticon(msg: KlasaMessage, [icon]: [string]) {
-		if (msg.author.perkTier < PerkTier.Six) {
-			return msg.send(
-				`You need to be a Tier 5 Patron to change your minion's icon to a custom icon.`
-			);
-		}
+		const dynamicButtons = new DynamicButtons({ channel: msg.channel, usersWhoCanInteract: [msg.author.id] });
 
-		const res = FormattedCustomEmoji.exec(icon);
-		if (!res || !res[0]) {
-			return msg.channel.send(`That's not a valid emoji.`);
-		}
-		await msg.author.settings.update(UserSettings.Minion.Icon, res[0]);
+		const cmdOptions = {
+			msg,
+			channelID: msg.channel.id,
+			userID: msg.author.id,
+			guildID: msg.guild?.id,
+			user: msg.author,
+			member: msg.member
+		};
 
-		return msg.send(`Changed your minion icon to ${res}.`);
-	}
-
-	@requiresMinion
-	@minionNotBusy
-	async ironman(msg: KlasaMessage) {
-		/**
-		 * If the user is an ironman already, lets ask them if they want to de-iron.
-		 */
-		if (msg.author.isIronman) {
-			await msg.send(
-				`Would you like to stop being an ironman? You will keep all your items and stats but you will have to start over if you want to play as an ironman again. Please say \`deiron\` to confirm.`
-			);
-			try {
-				await msg.channel.awaitMessages(
-					answer =>
-						answer.author.id === msg.author.id &&
-						answer.content.toLowerCase() === 'deiron',
-					{
-						max: 1,
-						time: 15000,
-						errors: ['time']
-					}
-				);
-				await msg.author.settings.update(UserSettings.Minion.Ironman, false);
-				return msg.send('You are no longer an ironman.');
-			} catch (err) {
-				return msg.channel.send('Cancelled de-ironning.');
-			}
-		}
-
-		await msg.send(
-			`Are you sure you want to start over and play as an ironman?
-
-:warning: **Read the following text before confirming. This is your only warning. ** :warning:
-
-The following things will be COMPLETELY reset/wiped from your account, with no chance of being recovered: Your entire bank, collection log, GP/Coins, QP/Quest Points, Clue Scores, Monster Scores, all XP. If you type \`confirm\`, they will all be wiped.
-
-After becoming an ironman:
-	- You will no longer be able to receive GP from  \`+daily\`
-	- You will no longer be able to use \`+pay\`, \`+duel\`, \`+sellto\`, \`+sell\`, \`+dice\`
-	- You can de-iron at any time, and keep all your stuff acquired while playing as an ironman.
-
-Type \`confirm\` if you understand the above information, and want to become an ironman now.`
-		);
-
-		try {
-			await msg.channel.awaitMessages(
-				answer =>
-					answer.author.id === msg.author.id &&
-					answer.content.toLowerCase() === 'confirm',
-				{
-					max: 1,
-					time: 15000,
-					errors: ['time']
-				}
-			);
-
-			msg.author.log(
-				`just became an ironman, previous settings: ${JSON.stringify(
-					msg.author.settings.toJSON()
-				)}`
-			);
-
-			await msg.author.settings.reset([
-				UserSettings.Bank,
-				UserSettings.CollectionLogBank,
-				UserSettings.GP,
-				UserSettings.QP,
-				UserSettings.MonsterScores,
-				UserSettings.ClueScores,
-				UserSettings.BankBackground,
-				UserSettings.SacrificedValue,
-				UserSettings.SacrificedBank,
-				UserSettings.HonourLevel,
-				UserSettings.HonourPoints,
-				UserSettings.HighGambles,
-				UserSettings.CarpenterPoints,
-				'gear',
-				'stats',
-				'skills',
-				'minion',
-				'farmingPatches'
-			]);
-
-			try {
-				await PoHTable.delete({ userID: msg.author.id });
-				await MinigameTable.delete({ userID: msg.author.id });
-			} catch (_) {}
-
-			await msg.author.settings.update([
-				[UserSettings.Minion.Ironman, true],
-				[UserSettings.Minion.HasBought, true]
-			]);
-			return msg.send('You are now an ironman.');
-		} catch (err) {
-			return msg.channel.send('Cancelled ironman swap.');
-		}
-	}
-
-	@requiresMinion
-	@minionNotBusy
-	async pat(msg: KlasaMessage) {
-		return msg.send(randomPatMessage(msg.author.minionName));
-	}
-
-	@requiresMinion
-	async stats(msg: KlasaMessage) {
-		const embed = await minionStatsEmbed(msg.author);
-		return msg.send(embed);
-	}
-
-	@requiresMinion
-	async kc(msg: KlasaMessage) {
-		const monsterScores = msg.author.settings.get(UserSettings.MonsterScores);
-		const entries = Object.entries(monsterScores);
-		if (entries.length === 0) throw `${msg.author.minionName} hasn't killed any monsters yet!`;
-
-		const embed = new MessageEmbed()
-			.setColor(Color.Orange)
-			.setTitle(`**${msg.author.minionName}'s KCs**`)
-			.setDescription(
-				`These are your minions Kill Counts for all monsters, to see your Clue Scores, use \`${msg.cmdPrefix}m clues\`.`
-			);
-
-		for (const monsterScoreChunk of chunk(entries, 10)) {
-			embed.addField(
-				'\u200b',
-				monsterScoreChunk
-					.map(([monID, monKC]) => {
-						if (parseInt(monID) === MIMIC_MONSTER_ID) {
-							return `${Emoji.Casket} **Mimic:** ${monKC}`;
-						}
-						const mon = killableMonsters.find(m => m.id === parseInt(monID));
-						if (!mon) return `**${Monsters.get(parseInt(monID))?.name}:** ${monKC}`;
-						return `${mon!.emoji} **${mon!.name}**: ${monKC}`;
-					})
-					.join('\n'),
-				true
-			);
-		}
-
-		return msg.send(embed);
-	}
-
-	@requiresMinion
-	async qp(msg: KlasaMessage) {
-		return msg.send(
-			`${msg.author.minionName}'s Quest Point count is: ${msg.author.settings.get(
-				UserSettings.QP
-			)}.`
-		);
-	}
-
-	@requiresMinion
-	async clues(msg: KlasaMessage) {
-		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
-		if (Object.keys(clueScores).length === 0) throw `You haven't done any clues yet.`;
-
-		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
-		for (const [clueID, clueScore] of Object.entries(clueScores)) {
-			const clue = clueTiers.find(c => c.id === parseInt(clueID));
-			res += `**${clue!.name}**: ${clueScore}\n`;
-		}
-		return msg.send(res);
-	}
-
-	async buy(msg: KlasaMessage) {
-		if (msg.author.hasMinion) throw 'You already have a minion!';
-
-		await msg.author.settings.sync(true);
-		const balance = msg.author.settings.get(UserSettings.GP);
-
-		let cost = 20_000_000;
-		const accountAge = Date.now() - msg.author.createdTimestamp;
-		if (accountAge > Time.Month * 6 || getUsersPerkTier(msg.author) >= PerkTier.One) {
-			cost = 0;
-		}
-
-		if (cost === 0) {
-			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
-			return msg.channel.send(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them, and check https://www.oldschool.gg/oldschoolbot for more information on them, and **make sure** to read the rules! Breaking the bot rules could result in you being banned or your account wiped - read them here: <https://www.oldschool.gg/oldschoolbot/rules>`
-			);
-		}
-
-		if (balance < cost) {
-			throw `You can't afford to buy a minion! You need ${Util.toKMB(cost)}`;
-		}
-
-		await msg.send(
-			`Are you sure you want to spend ${Util.toKMB(
-				cost
-			)} on buying a minion? Please say \`yes\` to confirm.`
-		);
-
-		try {
-			await msg.channel.awaitMessages(
-				answer =>
-					answer.author.id === msg.author.id && answer.content.toLowerCase() === 'yes',
-				{
-					max: 1,
-					time: 15000,
-					errors: ['time']
-				}
-			);
-			const response = await msg.channel.send(
-				`${Emoji.Search} Finding the right minion for you...`
-			);
-
-			await sleep(3000);
-
-			await response.edit(
-				`${Emoji.FancyLoveheart} Letting your new minion say goodbye to the unadopted minions...`
-			);
-
-			await sleep(3000);
-
-			await msg.author.settings.sync(true);
-			const balance = msg.author.settings.get(UserSettings.GP);
-			if (balance < cost) return;
-
-			await msg.author.settings.update(UserSettings.GP, balance - cost);
-			await msg.author.settings.update(UserSettings.Minion.HasBought, true);
-
-			await response.edit(
-				`${Emoji.Gift} Your new minion is ready! Use \`${msg.cmdPrefix}minion\` to manage them.`
-			);
-		} catch (err) {
-			return msg.channel.send('Cancelled minion purchase.');
-		}
-	}
-
-	@requiresMinion
-	async setname(msg: KlasaMessage, [name]: [string]) {
-		if (
-			!name ||
-			typeof name !== 'string' ||
-			name.length < 2 ||
-			name.length > 30 ||
-			['\n', '`', '@', '<', ':'].some(char => name.includes(char))
-		) {
-			return msg.send(`That's not a valid name for your minion.`);
-		}
-
-		await msg.author.settings.update(UserSettings.Minion.Name, name);
-		return msg.send(`Renamed your minion to ${msg.author.minionName}.`);
-	}
-
-	async fish(msg: KlasaMessage, [quantity, fishName]: [number, string]) {
-		runCommand(msg, 'fish', [quantity, fishName]);
-	}
-
-	async laps(msg: KlasaMessage, [quantity, courseName]: [number, string]) {
-		runCommand(msg, 'laps', [quantity, courseName]);
-	}
-
-	async mine(msg: KlasaMessage, [quantity, oreName]: [number, string]) {
-		runCommand(msg, 'mine', [quantity, oreName]);
-	}
-
-	async smelt(msg: KlasaMessage, [quantity, barName]: [number, string]) {
-		runCommand(msg, 'smelt', [quantity, barName]);
-	}
-
-	async cook(msg: KlasaMessage, [quantity, cookableName]: [number | string, string]) {
-		runCommand(msg, 'cook', [quantity, cookableName]);
-	}
-
-	async smith(msg: KlasaMessage, [quantity, smithableItemName]: [number, string]) {
-		runCommand(msg, 'smith', [quantity, smithableItemName]);
-	}
-
-	async chop(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		runCommand(msg, 'chop', [quantity, logName]);
-	}
-
-	async light(msg: KlasaMessage, [quantity, logName]: [number, string]) {
-		runCommand(msg, 'light', [quantity, logName]);
-	}
-
-	async craft(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		runCommand(msg, 'craft', [quantity, itemName]);
-	}
-
-	async fletch(msg: KlasaMessage, [quantity, itemName]: [number, string]) {
-		runCommand(msg, 'fletch', [quantity, itemName]);
-	}
-
-	async bury(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
-		runCommand(msg, 'bury', [quantity, boneName]);
-	}
-
-	async farm(msg: KlasaMessage, [quantity, seedName, upgradeType]: [number, string, string]) {
-		runCommand(msg, 'farm', [quantity, seedName, upgradeType]);
-	}
-
-	async harvest(msg: KlasaMessage, [seedType]: [string]) {
-		runCommand(msg, 'harvest', [seedType]);
-	}
-
-	async offer(msg: KlasaMessage, [quantity, boneName]: [number, string]) {
-		runCommand(msg, 'offer', [quantity, boneName]);
-	}
-
-	async mix(msg: KlasaMessage, [quantity, mixName]: [number, string]) {
-		runCommand(msg, 'mix', [quantity, mixName]);
-	}
-
-	async hunt(msg: KlasaMessage, [quantity, creatureName]: [number, string]) {
-		runCommand(msg, 'hunt', [quantity, creatureName]);
-	}
-
-	async quest(msg: KlasaMessage) {
-		runCommand(msg, 'quest', []);
-	}
-
-	async cancel(msg: KlasaMessage) {
-		runCommand(msg, 'cancel', []);
-	}
-
-	@requiresMinion
-	async clue(msg: KlasaMessage, [quantity, tierName]: [number | string, string]) {
-		runCommand(msg, 'mclue', [quantity, tierName]);
-	}
-
-	async k(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		await this.kill(msg, [quantity, name]).catch(err => {
-			throw err;
+		dynamicButtons.add({
+			name: 'Auto Farm',
+			emoji: Emoji.Farming,
+			fn: () =>
+				runCommand({
+					commandName: 'farming',
+					args: {
+						auto_farm: {}
+					},
+					bypassInhibitors: true,
+					...cmdOptions
+				}),
+			cantBeBusy: true
 		});
+
+		const dailyIsReady = isUsersDailyReady(msg.author);
+		if (dailyIsReady.isReady) {
+			dynamicButtons.add({
+				name: 'Claim Daily',
+				emoji: Emoji.MoneyBag,
+				fn: () =>
+					runCommand({
+						commandName: 'minion',
+						args: { daily: {} },
+						bypassInhibitors: true,
+						...cmdOptions
+					}),
+				cantBeBusy: false
+			});
+		}
+
+		if (msg.author.minionIsBusy) {
+			dynamicButtons.add({
+				name: 'Cancel Trip',
+				emoji: Emoji.Minion,
+				fn: () =>
+					runCommand({
+						commandName: 'minion',
+						args: { cancel: {} },
+						bypassInhibitors: true,
+						...cmdOptions
+					}),
+				cantBeBusy: false
+			});
+		}
+
+		dynamicButtons.add({
+			name: 'Auto-Slay',
+			emoji: Emoji.Slayer,
+			fn: () =>
+				runCommand({
+					commandName: 'autoslay',
+					args: [],
+					bypassInhibitors: true,
+					...cmdOptions
+				}),
+			cantBeBusy: true
+		});
+		dynamicButtons.add({
+			name: 'Check Patches',
+			emoji: Emoji.Stopwatch,
+			fn: () =>
+				runCommand({
+					commandName: 'farming',
+					args: { check_patches: {} },
+					bypassInhibitors: true,
+					...cmdOptions
+				}),
+			cantBeBusy: false
+		});
+		if (birdhouseDetails.isReady) {
+			dynamicButtons.add({
+				name: 'Birdhouse Run',
+				emoji: '692946556399124520',
+				fn: () =>
+					runCommand({
+						commandName: 'activities',
+						args: { birdhouses: { action: 'harvest' } },
+						bypassInhibitors: true,
+						...cmdOptions
+					}),
+				cantBeBusy: true
+			});
+		}
+		const contract = mahojiUser.minion_farmingContract as FarmingContract | null;
+		const contractedPlant = farmingDetails.patchesDetailed.find(p => p.plant?.name === contract?.plantToGrow);
+		if (msg.author.skillLevel(SkillsEnum.Farming) > 45 && (!contractedPlant || contractedPlant.ready !== false)) {
+			dynamicButtons.add({
+				name: 'Auto Farming Contract',
+				emoji: '977410792754413668',
+				fn: async () => {
+					const result = await autoContract(msg.author, BigInt(msg.channel.id), BigInt(msg.author.id));
+					return msg.channel.send(convertMahojiResponseToDJSResponse(result));
+				},
+				cantBeBusy: true
+			});
+		}
+
+		const lastTrip = lastTripCache.get(msg.author.id);
+		if (lastTrip && !msg.author.minionIsBusy) {
+			dynamicButtons.add({
+				name: `Repeat ${lastTrip.data.type} Trip`,
+				fn: () =>
+					lastTrip.continue({
+						user: msg.author,
+						userID: msg.author.id,
+						member: msg.member,
+						guildID: msg.guild?.id,
+						channelID: msg.channel.id
+					})
+			});
+		}
+
+		const bank = msg.author.bank();
+
+		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
+			.reverse()
+			.slice(0, 3)) {
+			dynamicButtons.add({
+				name: `Do ${tier.name} Clue`,
+				fn: () => {
+					return runCommand({
+						commandName: 'clue',
+						args: { tier: tier.name },
+						bypassInhibitors: true,
+						...cmdOptions
+					});
+				},
+				emoji: '365003979840552960',
+				cantBeBusy: true
+			});
+		}
+
+		dynamicButtons.render({
+			isBusy: msg.author.minionIsBusy,
+			messageOptions: { content: msg.author.minionStatus }
+		});
+	}
+
+	async train(msg: KlasaMessage) {
+		return msg.channel.send('This command was moved to `/minion train`');
+	}
+
+	async data(msg: KlasaMessage) {
+		return msg.channel.send('This command was moved to `/tools patron stats`');
+	}
+
+	async lapcounts(msg: KlasaMessage) {
+		return msg.channel.send('This command was moved to `/minion stats stat:Personal Agility Stats`');
+	}
+
+	async charge(msg: KlasaMessage) {
+		return msg.channel.send('This command has been moved to `/minion charge`');
+	}
+
+	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return this.blowpipe(msg, [input]);
+	}
+
+	async blowpipe(msg: KlasaMessage, [input = '']: [string | undefined]) {
+		return blowpipeCommand(msg, input);
+	}
+
+	async info(msg: KlasaMessage) {
+		return runCommand({
+			commandName: 'rp',
+			args: ['c', msg.author],
+			bypassInhibitors: true,
+			channelID: msg.channel.id,
+			userID: msg.author.id,
+			guildID: msg.guild?.id,
+			user: msg.author,
+			member: msg.member
+		});
+	}
+
+	@requiresMinion
+	async pat(msg: KlasaMessage) {
+		return msg.channel.send(randomPatMessage(msg.author.minionName));
+	}
+
+	async clues(msg: KlasaMessage) {
+		return msg.channel.send('This command was moved to `/minion stats stat:Personal Clue Stats`');
 	}
 
 	@requiresMinion
@@ -543,5 +415,16 @@ Type \`confirm\` if you understand the above information, and want to become an 
 		}
 
 		return msg.send(response);
+	}
+	async buy(msg: KlasaMessage) {
+		return msg.channel.send(
+			convertMahojiResponseToDJSResponse(
+				await minionBuyCommand(await mahojiUsersSettingsFetch(msg.author.id), false)
+			)
+		);
+	}
+
+	async opens(msg: KlasaMessage) {
+		return msg.channel.send('This command was moved to `/minion stats stat:Personal Open Stats`');
 	}
 }

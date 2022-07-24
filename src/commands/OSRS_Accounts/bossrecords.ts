@@ -1,11 +1,11 @@
 import { MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
-import { CommandStore, KlasaMessage, RichDisplay } from 'klasa';
+import { CommandStore, KlasaMessage } from 'klasa';
 import { constants, Hiscores } from 'oldschooljs';
 
 import pets from '../../lib/data/pets';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { toTitleCase } from '../../lib/util';
+import { makePaginatedMessage, toTitleCase } from '../../lib/util';
 
 // Emojis for bosses with no pets
 const miscEmojis = {
@@ -23,10 +23,9 @@ type MiscEmojisKeys = keyof typeof miscEmojis;
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			aliases: ['br'],
 			usage: '(username:rsn)',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			categoryFlags: ['utility'],
 			description: 'Shows the boss records (boss hiscores) for an OSRS account.',
 			examples: ['+br mylife212', '+bossrecords Woox']
@@ -52,20 +51,12 @@ export default class extends BotCommand {
 			.sort(([, a], [, b]) => a.rank - b.rank);
 
 		if (sortedEntries.length === 0) {
-			return msg.send(
-				'You have no boss records!. Try logging into the game, and logging out.'
-			);
+			return msg.channel.send('You have no boss records!. Try logging into the game, and logging out.');
 		}
 
-		const loadingMsg = msg.send(new MessageEmbed().setDescription('Loading...'));
-
-		const display = new RichDisplay();
-		display.setFooterPrefix(`Page `);
-
+		const pages = [];
 		for (const page of chunk(sortedEntries, 12)) {
-			const embed = new MessageEmbed()
-				.setAuthor(`${toTitleCase(username)} - Boss Records`)
-				.setColor(52224);
+			const embed = new MessageEmbed().setAuthor(`${toTitleCase(username)} - Boss Records`).setColor(52_224);
 
 			for (const [name, { rank, score }] of page) {
 				embed.addField(
@@ -75,10 +66,10 @@ export default class extends BotCommand {
 				);
 			}
 
-			display.addPage(embed);
+			pages.push({ embeds: [embed] });
 		}
 
-		display.run(await loadingMsg, { jump: false, stop: false });
+		await makePaginatedMessage(msg, pages);
 		return null;
 	}
 }

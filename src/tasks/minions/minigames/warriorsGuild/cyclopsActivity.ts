@@ -3,10 +3,11 @@ import { Bank } from 'oldschooljs';
 
 import { UserSettings } from '../../../../lib/settings/types/UserSettings';
 import { CyclopsTable } from '../../../../lib/simulation/cyclops';
-import { CyclopsActivityTaskOptions } from '../../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../../lib/types/minions';
 import { roll } from '../../../../lib/util';
 import { handleTripFinish } from '../../../../lib/util/handleTripFinish';
 import itemID from '../../../../lib/util/itemID';
+import { makeBankImage } from '../../../../lib/util/makeBankImage';
 
 const cyclopsID = 2097;
 
@@ -46,25 +47,22 @@ const defenders = [
 ];
 
 export default class extends Task {
-	async run(data: CyclopsActivityTaskOptions) {
-		const { userID, channelID, quantity, duration } = data;
-		const user = await this.client.users.fetch(userID);
+	async run(data: ActivityTaskOptionsWithQuantity) {
+		const { userID, channelID, quantity } = data;
+		const user = await this.client.fetchUser(userID);
 		const userBank = new Bank(user.settings.get(UserSettings.Bank));
-		user.incrementMinionDailyDuration(duration);
 
 		let loot = new Bank();
 
 		for (let i = 0; i < quantity; i++) {
 			const highestDefenderOwned = defenders.find(
-				def => userBank.has(def.itemID) || loot.has(def.itemID)
+				def => userBank.has(def.itemID) || user.hasItemEquippedAnywhere(def.itemID) || loot.has(def.itemID)
 			);
 			const possibleDefenderToDrop =
 				defenders[
 					Math.max(
 						0,
-						highestDefenderOwned
-							? defenders.indexOf(highestDefenderOwned) - 1
-							: defenders.length - 1
+						highestDefenderOwned ? defenders.indexOf(highestDefenderOwned) - 1 : defenders.length - 1
 					)
 				];
 			if (roll(possibleDefenderToDrop.rollChance)) {
@@ -73,36 +71,29 @@ export default class extends Task {
 			loot.add(CyclopsTable.roll());
 		}
 
-		await user.addItemsToBank(loot.bank, true);
+		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		let str = `${user}, ${
-			user.minionName
-		} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${
+		let str = `${user}, ${user.minionName} finished killing ${quantity} Cyclops. Your Cyclops KC is now ${
 			(user.settings.get(UserSettings.MonsterScores)[cyclopsID] ?? 0) + quantity
 		}.`;
 
-		user.incrementMonsterScore(cyclopsID, quantity);
-		const image = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				loot.bank,
-				`Loot From ${quantity}x Cyclops`,
-				true,
-				{ showNewCL: 1 },
-				user
-			);
+		await user.incrementMonsterScore(cyclopsID, quantity);
+
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity}x Cyclops`,
+			user,
+			previousCL
+		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			res => {
-				user.log(`continued cyclops`);
-				return this.client.commands.get('wg')!.run(res, [quantity, 'cyclops']);
-			},
-			image,
-			data
+			['activities', { warriors_guild: { action: 'cyclops', quantity } }, true],
+			image.file.buffer,
+			data,
+			itemsAdded
 		);
 	}
 }

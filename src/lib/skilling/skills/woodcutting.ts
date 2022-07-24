@@ -1,4 +1,5 @@
 import { Emoji } from '../../constants';
+import itemID from '../../util/itemID';
 import { Log, SkillsEnum } from '../types';
 
 const logs: Log[] = [
@@ -7,6 +8,7 @@ const logs: Log[] = [
 		xp: 25,
 		id: 1511,
 		name: 'Logs',
+		aliases: ['normal'],
 		respawnTime: 3,
 		petChance: 317_647,
 		qpRequired: 0,
@@ -16,7 +18,7 @@ const logs: Log[] = [
 		level: 1,
 		xp: 25,
 		id: 2862,
-		name: 'Achey Logs',
+		name: 'Achey Tree Logs',
 		respawnTime: 2.5,
 		petChance: 317_647,
 		qpRequired: 0,
@@ -85,7 +87,7 @@ const logs: Log[] = [
 	{
 		level: 54,
 		xp: 40,
-		id: 10810,
+		id: 10_810,
 		name: 'Arctic Pine Logs',
 		respawnTime: 4.5,
 		petChance: 145_758,
@@ -107,6 +109,7 @@ const logs: Log[] = [
 		xp: 127,
 		id: 6004,
 		name: 'Sulliusceps',
+		aliases: ['sul', 'sulli', 'mush', 'mushroom'],
 		respawnTime: -2,
 		petChance: 343_000,
 		qpRequired: 25,
@@ -125,7 +128,7 @@ const logs: Log[] = [
 	{
 		level: 90,
 		xp: 380,
-		id: 19669,
+		id: 19_669,
 		name: 'Redwood Logs',
 		respawnTime: 1.5,
 		petChance: 72_321,
@@ -134,12 +137,20 @@ const logs: Log[] = [
 	}
 ];
 
+const lumberjackItems: { [key: number]: number } = {
+	[itemID('Lumberjack hat')]: 0.4,
+	[itemID('Lumberjack top')]: 0.8,
+	[itemID('Lumberjack legs')]: 0.6,
+	[itemID('Lumberjack boots')]: 0.2
+};
+
 const Woodcutting = {
 	aliases: ['wc', 'woodcutting'],
 	Logs: logs,
 	id: SkillsEnum.Woodcutting,
 	emoji: Emoji.Woodcutting,
-	name: 'Woodcutting'
+	name: 'Woodcutting',
+	lumberjackItems
 };
 
 export default Woodcutting;

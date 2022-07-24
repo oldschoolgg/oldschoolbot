@@ -1,5 +1,4 @@
-import { hasGracefulEquipped } from '../src/lib/gear/functions/hasGracefulEquipped';
-import { constructGearSetup } from './utils';
+import { constructGearSetup, hasGracefulEquipped } from '../src/lib/gear';
 
 describe('hasGracefulEquipped', () => {
 	test('has graceful equipped', () => {
@@ -11,7 +10,7 @@ describe('hasGracefulEquipped', () => {
 					feet: 'Shayzien graceful boots',
 					hands: 'Dark graceful gloves',
 					head: 'Piscarilius graceful hood',
-					legs: 'Hosidius graceful legs'
+					legs: 'Piscarilius graceful legs'
 				})
 			)
 		).toEqual(true);
@@ -22,17 +21,16 @@ describe('hasGracefulEquipped', () => {
 	});
 
 	test('agility cape instead of graceful cape', () => {
-		expect(
-			hasGracefulEquipped(
-				constructGearSetup({
-					body: 'Graceful top',
-					cape: 'Agility cape',
-					feet: 'Shayzien graceful boots',
-					hands: 'Dark graceful gloves',
-					head: 'Piscarilius graceful hood',
-					legs: 'Hosidius graceful legs'
-				})
-			)
-		).toEqual(true);
+		const base = {
+			body: 'Graceful top',
+			feet: 'Shayzien graceful boots',
+			hands: 'Dark graceful gloves',
+			head: 'Piscarilius graceful hood',
+			legs: 'Hosidius graceful legs'
+		};
+		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Agility cape' }))).toEqual(true);
+		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Agility cape(t)' }))).toEqual(true);
+		expect(hasGracefulEquipped(constructGearSetup({ ...base, cape: 'Max cape' }))).toEqual(true);
+		expect(hasGracefulEquipped(constructGearSetup({ ...base }))).toEqual(false);
 	});
 });

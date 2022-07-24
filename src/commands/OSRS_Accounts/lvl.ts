@@ -3,6 +3,7 @@ import { Hiscores } from 'oldschooljs';
 import { SkillsScore } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, convertXPtoLVL } from 'oldschooljs/dist/util';
 
+import { MAX_XP } from '../../lib/constants';
 import { BotCommand } from '../../lib/structures/BotCommand';
 
 const xpLeft = (xp: number) => {
@@ -14,7 +15,6 @@ const xpLeft = (xp: number) => {
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
-			cooldown: 2,
 			description: 'Shows the level of a single stat, and the XP remaining.',
 			usage:
 				'<attack|defence|strength|hitpoints|ranged|prayer|' +
@@ -22,7 +22,7 @@ export default class extends BotCommand {
 				'crafting|smithing|mining|herblore|agility|thieving|slayer|' +
 				'farming|runecraft|hunter|construction> (username:...rsn)',
 			usageDelim: ' ',
-			requiredPermissions: ['EMBED_LINKS'],
+			requiredPermissionsForBot: ['EMBED_LINKS'],
 			examples: ['+lvl attack Woox', '+lvl strength'],
 			categoryFlags: ['utility']
 		});
@@ -37,12 +37,12 @@ export default class extends BotCommand {
 			if (res.level < 99) {
 				str += ` **${xpLeft(res.xp)}** XP away from level **${res.level + 1}**.`;
 			} else {
-				str += ` **${(200000000 - res.xp).toLocaleString()}** XP away from **200m**.`;
+				str += ` **${(MAX_XP - res.xp).toLocaleString()}** XP away from **200m**.`;
 			}
 
-			return msg.send(str);
-		} catch (err) {
-			return msg.send(err.message);
+			return msg.channel.send(str);
+		} catch (err: any) {
+			return msg.channel.send(err.message);
 		}
 	}
 }

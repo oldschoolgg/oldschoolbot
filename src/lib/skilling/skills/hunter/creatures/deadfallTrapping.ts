@@ -5,7 +5,7 @@ import { Creature, HunterTechniqueEnum } from '../../../types';
 
 const deadfallTrappingCreatures: Creature[] = [
 	{
-		name: `Wild kebbit`,
+		name: 'Wild kebbit',
 		id: 14,
 		aliases: ['wild kebbit'],
 		level: 23,
@@ -17,7 +17,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		intercept: 15
 	},
 	{
-		name: `Barb-tailed kebbit`,
+		name: 'Barb-tailed kebbit',
 		id: 15,
 		aliases: ['barb-tailed kebbit', 'barb kebbit', 'barb tail kebbit'],
 		level: 33,
@@ -29,7 +29,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		intercept: 17
 	},
 	{
-		name: `Prickly kebbit`,
+		name: 'Prickly kebbit',
 		id: 16,
 		aliases: ['prickly kebbit'],
 		level: 37,
@@ -41,7 +41,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		intercept: 10
 	},
 	{
-		name: `Sabre-toothed kebbit`,
+		name: 'Sabre-toothed kebbit',
 		id: 17,
 		aliases: ['sabre-toothed kebbit', 'sabre kebbit', 'sab tooth kebbit'],
 		level: 51,
@@ -53,7 +53,7 @@ const deadfallTrappingCreatures: Creature[] = [
 		intercept: -3
 	},
 	{
-		name: `Maniacal monkey`,
+		name: 'Maniacal monkey',
 		id: 18,
 		aliases: ['maniacal monkey'],
 		level: 60,

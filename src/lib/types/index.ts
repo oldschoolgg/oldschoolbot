@@ -6,38 +6,6 @@ export interface ItemBank {
 	[key: string]: number;
 }
 
-export interface SettingsEntry {
-	id: string;
-	RSN?: string;
-	GP?: number;
-	badges?: string[];
-	bank?: ItemBank;
-	clueScores?: ItemBank;
-	monsterScores?: ItemBank;
-	collectionLog?: number[];
-	collectionLogBank?: ItemBank;
-	pets?: number[];
-	lastDailyTimestamp?: number;
-	bitfield?: number[];
-	minion?: {
-		name?: string;
-		hasBought: boolean;
-		ironman: boolean;
-	};
-}
-
-export interface Pet {
-	id: number;
-	emoji: string;
-	chance: number;
-	name: string;
-	type: string;
-	altNames: string[];
-	bossKeys?: string[];
-	finish?(): number;
-	formatFinish(num: number): string;
-}
-
 export interface CachedItemPrice {
 	price: number;
 	fetchedAt: number;
@@ -45,28 +13,6 @@ export interface CachedItemPrice {
 
 export interface ItemPriceCache {
 	[key: string]: CachedItemPrice;
-}
-
-export interface OSRSPoll {
-	title: string;
-	description: string;
-	questions: PollQuestion[];
-}
-
-export interface PollQuestion {
-	question: string;
-	votes: PollVotes;
-}
-
-export interface PollVotes {
-	Yes: string;
-	No: string;
-	'Skip question': string;
-}
-
-export interface JMod {
-	redditUsername: string;
-	formattedName: string;
 }
 
 export type AnyObject = Record<PropertyKey, unknown> | {};
@@ -91,25 +37,10 @@ export type RedditAppConfig = null | {
 	password: string;
 };
 
-export type TwitterAppConfig = null | {
-	consumer_key: string;
-	consumer_secret: string;
-	access_token: string;
-	access_token_key?: string;
-	access_token_secret: string;
-};
-
-export type MongoDBConfig = null | {
-	dbUrl: string;
-	dbName: string;
-};
-
 export type PatreonConfig = null | {
 	campaignID: number;
 	token: string;
 };
-
-export type ItemTuple = [number, number, number];
 
 export interface Patron {
 	patreonID: string;
@@ -134,14 +65,12 @@ export interface MakePartyOptions {
 	ironmanAllowed: boolean;
 	usersAllowed?: string[];
 	party?: boolean;
-	customDenier?(user: KlasaUser): [boolean, string] | [boolean];
+	customDenier?(user: KlasaUser): Promise<[false] | [true, string]>;
 }
 
-export type Skills = Partial<
-	{
-		[key in SkillsEnum]: number;
-	}
->;
+export type Skills = Partial<{
+	[key in SkillsEnum]: number;
+}>;
 
 export type CategoryFlag =
 	| 'minion'
@@ -153,3 +82,11 @@ export type CategoryFlag =
 	| 'utility'
 	| 'fun'
 	| 'simulation';
+
+export interface IDiscordSettings {
+	Roles: Record<string, string>;
+	Channels: Record<string, string>;
+	Emojis: Record<string, string>;
+	SupportServer: string;
+	BotID: string;
+}

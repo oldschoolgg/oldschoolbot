@@ -1,4 +1,5 @@
-import { resolveNameBank } from '../../../util';
+import { Bank } from 'oldschooljs';
+
 import itemID from '../../../util/itemID';
 import { Plant } from '../../types';
 
@@ -8,9 +9,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 11,
 		harvestXp: 12.5,
-		name: `Guam`,
+		name: 'Guam',
 		aliases: ['guam weed', 'guam'],
-		inputItems: resolveNameBank({ 'Guam seed': 1 }),
+		inputItems: new Bank({ 'Guam seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy guam leaf'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -35,8 +36,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -46,9 +48,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 13.5,
 		harvestXp: 15,
-		name: `Marrentill`,
+		name: 'Marrentill',
 		aliases: ['marrentill weed', 'marrentill'],
-		inputItems: resolveNameBank({ 'Marrentill seed': 1 }),
+		inputItems: new Bank({ 'Marrentill seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy marrentill'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -73,8 +75,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -84,9 +87,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 16,
 		harvestXp: 18,
-		name: `Tarromin`,
+		name: 'Tarromin',
 		aliases: ['tarromin weed', 'tarromin'],
-		inputItems: resolveNameBank({ 'Tarromin seed': 1 }),
+		inputItems: new Bank({ 'Tarromin seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy tarromin'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -111,8 +114,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -122,9 +126,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 21.5,
 		harvestXp: 24,
-		name: `Harralander`,
+		name: 'Harralander',
 		aliases: ['harralander weed', 'harralander'],
-		inputItems: resolveNameBank({ 'Harralander seed': 1 }),
+		inputItems: new Bank({ 'Harralander seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy harralander'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -149,8 +153,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -160,9 +165,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 27,
 		harvestXp: 30.5,
-		name: `Ranarr`,
+		name: 'Ranarr',
 		aliases: ['ranarr weed', 'ranarr'],
-		inputItems: resolveNameBank({ 'Ranarr seed': 1 }),
+		inputItems: new Bank({ 'Ranarr seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy ranarr weed'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -187,8 +192,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -198,9 +204,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 34,
 		harvestXp: 38.5,
-		name: `Toadflax`,
+		name: 'Toadflax',
 		aliases: ['toadflax weed', 'toadflax'],
-		inputItems: resolveNameBank({ 'Toadflax seed': 1 }),
+		inputItems: new Bank({ 'Toadflax seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy toadflax'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -225,8 +231,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -236,9 +243,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 43,
 		harvestXp: 48.5,
-		name: `Irit`,
+		name: 'Irit',
 		aliases: ['irit weed', 'irit'],
-		inputItems: resolveNameBank({ 'Irit seed': 1 }),
+		inputItems: new Bank({ 'Irit seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy irit leaf'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -263,8 +270,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -274,9 +282,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 54.5,
 		harvestXp: 61.5,
-		name: `Avantoe`,
+		name: 'Avantoe',
 		aliases: ['avantoe weed', 'avantoe'],
-		inputItems: resolveNameBank({ 'Avantoe seed': 1 }),
+		inputItems: new Bank({ 'Avantoe seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy avantoe'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -301,8 +309,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -312,9 +321,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 69,
 		harvestXp: 78,
-		name: `Kwuarm`,
+		name: 'Kwuarm',
 		aliases: ['kwuarm weed', 'kwuarm'],
-		inputItems: resolveNameBank({ 'Kwuarm seed': 1 }),
+		inputItems: new Bank({ 'Kwuarm seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy kwuarm'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -339,8 +348,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -350,9 +360,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 87.5,
 		harvestXp: 98.5,
-		name: `Snapdragon`,
+		name: 'Snapdragon',
 		aliases: ['snapdragon weed', 'snapdragon'],
-		inputItems: resolveNameBank({ 'Snapdragon seed': 1 }),
+		inputItems: new Bank({ 'Snapdragon seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy snapdragon'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -377,8 +387,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -388,9 +399,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 106.5,
 		harvestXp: 120,
-		name: `Cadantine`,
+		name: 'Cadantine',
 		aliases: ['cadantine weed', 'cadantine'],
-		inputItems: resolveNameBank({ 'Cadantine seed': 1 }),
+		inputItems: new Bank({ 'Cadantine seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy cadantine'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -415,8 +426,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -426,9 +438,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 134.5,
 		harvestXp: 151.5,
-		name: `Lantadyme`,
+		name: 'Lantadyme',
 		aliases: ['lantadyme weed', 'lantadyme'],
-		inputItems: resolveNameBank({ 'Lantadyme seed': 1 }),
+		inputItems: new Bank({ 'Lantadyme seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy lantadyme'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -453,8 +465,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -464,9 +477,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 170.5,
 		harvestXp: 192,
-		name: `Dwarf weed`,
+		name: 'Dwarf weed',
 		aliases: ['dwarf weed', 'dwarf'],
-		inputItems: resolveNameBank({ 'Dwarf weed seed': 1 }),
+		inputItems: new Bank({ 'Dwarf weed seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy dwarf weed'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -491,8 +504,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10
@@ -502,9 +516,9 @@ const herbPlants: Plant[] = [
 		plantXp: 0,
 		checkXp: 199.5,
 		harvestXp: 224.5,
-		name: `Torstol`,
+		name: 'Torstol',
 		aliases: ['torstol weed', 'torstol'],
-		inputItems: resolveNameBank({ 'Torstol seed': 1 }),
+		inputItems: new Bank({ 'Torstol seed': 1 }).freeze(),
 		outputCrop: itemID('Grimy torstol'),
 		petChance: 98_364,
 		seedType: 'herb',
@@ -529,8 +543,9 @@ const herbPlants: Plant[] = [
 			[31, 4] // Weiss Patch (1)
 		],
 		// [Farm Lvl, Patches Gained]
-		additionalPatchesByFarmLvl: [
-			[65, 1] // Farming Guide Med (1)
+		additionalPatchesByFarmLvl: [],
+		additionalPatchesByFarmGuildAndLvl: [
+			[65, 1] // Farming Guild Med (1)
 		],
 		timePerPatchTravel: 20,
 		timePerHarvest: 10

@@ -1,6 +1,9 @@
 import { watch } from 'chokidar';
+import { debounce } from 'e';
 import { Piece, Stopwatch, Task, TaskStore } from 'klasa';
 import { basename, extname, join, sep } from 'path';
+
+import { mahojiClient } from '..';
 
 const nodeModules = `${sep}node_modules${sep}`;
 
@@ -20,30 +23,17 @@ export default class extends Task {
 
 		for (const module of Object.keys(require.cache)) {
 			if (!module.includes(nodeModules) && extname(module) !== '.node') {
-				if (module.includes('.entity.js')) continue;
-				if (module.includes(`${sep}typeorm${sep}`)) continue;
-				if (module.includes(`OldSchoolBotClient`)) continue;
+				if (module.includes('OldSchoolBotClient')) continue;
 				if (module.includes(`dist${sep}index`)) continue;
 				delete require.cache[module];
 			}
 		}
 
 		let log = '';
-		const reload = this.client.commands.get('reload');
-		if (!reload) return;
-		if (piece) {
-			// @ts-expect-error Running command with fake message object
-			await reload.run({ sendLocale: () => null, sendMessage: () => null }, [piece]);
-			log = `Reloaded it in ${timer}`;
-		} else {
-			// @ts-expect-error Running command with fake message object
-			await reload.everything({
-				sendLocale: () => null,
-				sendMessage: () => null
-			});
-			log = `Reloaded everything in ${timer}.`;
-		}
 
+		if (piece) {
+			await piece.reload();
+		}
 		timer.stop();
 		this.client.emit('log', `${name} was updated. ${log}`);
 		return null;
@@ -57,6 +47,7 @@ export default class extends Task {
 		});
 
 		const reloadStore = async (_path: string) => {
+			await mahojiClient.commands.load();
 			const store = _path.split(sep).find(dir => this.client.pieceStores.has(dir));
 
 			const name = basename(_path);
@@ -72,11 +63,12 @@ export default class extends Task {
 			const piece = this.client.pieceStores.get(store).get(name.replace(extname(name), ''));
 
 			await this.reloadPiece(name, _path, piece);
+			await mahojiClient.loadStores();
 		};
 
 		for (const event of ['add', 'change', 'unlink']) {
 			if (this.client._fileChangeWatcher) {
-				this.client._fileChangeWatcher.on(event, reloadStore);
+				this.client._fileChangeWatcher.on(event, debounce(reloadStore, 1000));
 			}
 		}
 	}
