@@ -12,7 +12,7 @@ import { chunk, noOp, Time } from 'e';
 import { KlasaMessage } from 'klasa';
 import murmurhash from 'murmurhash';
 
-import { ClientSettings } from './settings/types/ClientSettings';
+import { BLACKLISTED_USERS } from './blacklists';
 
 type DynamicButtonFn = (opts: { message: KlasaMessage; interaction: MessageComponentInteraction }) => unknown;
 
@@ -67,7 +67,7 @@ export class DynamicButtons {
 		const collectedInteraction = await this.message
 			.awaitMessageComponentInteraction({
 				filter: i => {
-					if (globalClient.settings.get(ClientSettings.UserBlacklist).includes(i.user.id)) return false;
+					if (BLACKLISTED_USERS.has(i.user.id)) return false;
 					if (this.usersWhoCanInteract.includes(i.user.id)) {
 						return true;
 					}

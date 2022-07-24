@@ -2,13 +2,7 @@ import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/clie
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
-import {
-	APIInteractionDataResolvedGuildMember,
-	APIUser,
-	InteractionResponseType,
-	InteractionType,
-	MessageFlags
-} from 'mahoji';
+import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -231,11 +225,6 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
 	await (globalClient.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
 	return { newGuild };
-}
-
-export interface MahojiUserOption {
-	user: APIUser;
-	member: APIInteractionDataResolvedGuildMember;
 }
 
 export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSkills> {
