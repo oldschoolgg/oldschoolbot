@@ -585,7 +585,8 @@ export function getMysteryBoxItem(user: User | KlasaUser, tradeables: boolean): 
 	let result = randArrItem(table);
 	if (cantBeDropped.includes(result)) return getMysteryBoxItem(user, tradeables);
 	if (result >= 40_000 && result <= 50_000) return getMysteryBoxItem(user, tradeables);
-	if (clAdjustedDroprate(user, 'Mr. E', MR_E_DROPRATE_FROM_UMB_AND_TMB, 1.2)) {
+	const mrEDroprate = clAdjustedDroprate(user, 'Mr. E', MR_E_DROPRATE_FROM_UMB_AND_TMB, 1.2);
+	if (roll(mrEDroprate)) {
 		return itemID('Mr. E');
 	}
 	return result;
