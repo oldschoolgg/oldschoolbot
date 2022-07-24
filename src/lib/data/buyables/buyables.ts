@@ -941,8 +941,8 @@ const Buyables: Buyable[] = [
 		outputItems: new Bank({
 			'Daeyalt essence': 1
 		})
-  },
-  {
+	},
+	{
 		name: 'Crystal bow',
 		gpCost: 900_000
 	},
