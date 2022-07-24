@@ -146,7 +146,7 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 
 	const xpStr = await klasaUser.addXP({
 		skillName: SkillsEnum.Mining,
-		amount: klasaUser.skillLevel(SkillsEnum.Mining) * 1300 * qty,
+		amount: klasaUser.skillLevel(SkillsEnum.Mining) * 2000 * qty,
 		duration: data.duration,
 		multiplier: false,
 		masterCapeBoost: true

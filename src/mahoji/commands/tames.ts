@@ -78,7 +78,7 @@ export const tameEquipSlots = ['equipped_primary', 'equipped_armor'] as const;
 export type TameEquipSlot = typeof tameEquipSlots[number];
 interface TameEquippable {
 	item: Item;
-	tameSpeciesCanBeFedThis: TameSpeciesID[];
+	tameSpecies: TameSpeciesID[];
 	slot: TameEquipSlot;
 }
 
@@ -111,7 +111,7 @@ const igneClaws = [
 		item: getOSItem('Gorajan igne claws'),
 		boost: 35
 	}
-].map(i => ({ ...i, tameSpeciesCanBeFedThis: [TameSpeciesID.Igne], slot: 'equipped_primary' as const }));
+].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_primary' as const }));
 
 export const tameEquippables: TameEquippable[] = [...igneClaws];
 
@@ -1004,13 +1004,13 @@ async function tameEquipCommand(user: KlasaUser, itemName: string) {
 	const { tame, activity } = await getUsersTame(user);
 	if (!tame) return "You don't have a tame selected.";
 	if (activity) {
-		return "You can't unequip something to your tame, because it is busy.";
+		return "You can't equip something to your tame, because it is busy.";
 	}
 	const item = getItem(itemName);
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";
-	if (!equippable.tameSpeciesCanBeFedThis.includes(tame.species_id)) {
+	if (!equippable.tameSpecies.includes(tame.species_id)) {
 		return 'This item cannot be equipped to this tame species.';
 	}
 	const cost = new Bank().add(item.id);
@@ -1049,7 +1049,7 @@ async function tameUnequipCommand(user: KlasaUser, itemName: string) {
 	if (!item) return "That's not a valid item.";
 	const equippable = tameEquippables.find(i => i.item === item);
 	if (!equippable) return "That's not an item you can equip to a tame.";
-	if (!equippable.tameSpeciesCanBeFedThis.includes(tame.species_id)) {
+	if (!equippable.tameSpecies.includes(tame.species_id)) {
 		return 'This item cannot be equipped to this tame species.';
 	}
 
