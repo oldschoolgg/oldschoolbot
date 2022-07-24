@@ -21,7 +21,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, itemID, roll } from '../../lib/util';
+import { assert, clAdjustedDroprate, itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -255,8 +255,9 @@ export default class extends Task {
 		let gotKlik = false;
 		const minutes = Math.ceil(duration / Time.Minute);
 		if (fullMonster?.data.attributes.includes(MonsterAttribute.Dragon)) {
+			const dropRate = clAdjustedDroprate(user, 'Klik', 8500, 1.2);
 			for (let i = 0; i < minutes; i++) {
-				if (roll(8500)) {
+				if (roll(dropRate)) {
 					gotKlik = true;
 					loot.add('Klik');
 					break;

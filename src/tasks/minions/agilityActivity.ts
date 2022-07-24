@@ -10,7 +10,7 @@ import Agility from '../../lib/skilling/skills/agility';
 import { gorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, randomVariation, updateGPTrackSetting } from '../../lib/util';
+import { addItemToBank, clAdjustedDroprate, randomVariation, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -132,8 +132,9 @@ export default class extends Task {
 			}
 
 			if (course.id === 12) {
+				const dropRate = clAdjustedDroprate(user, 'Skipper', 1600, 1.3);
 				for (let i = 0; i < minutes; i++) {
-					if (roll(1600)) {
+					if (roll(dropRate)) {
 						loot.add('Skipper');
 						str +=
 							"\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.";
