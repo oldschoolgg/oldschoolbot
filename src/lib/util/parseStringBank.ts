@@ -26,7 +26,8 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
 
-	if (!ensureCustomItemName(potentialName.join(' ')) || !ensureCustomItemName(str)) return [];
+	if (!ensureCustomItemName(str)) return [];
+	if (!isNaN(Number(potentialQty)) && !ensureCustomItemName(potentialName.join(' '))) return [];
 
 	let lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {

@@ -2371,6 +2371,17 @@ export const gorajanArcherOutfit = resolveItems([
 	'Gorajan archer boots'
 ]);
 
+export const metamorphPets = resolveItems([
+	'Little parasite',
+	'Dark squirrel',
+	'Baby mole-rat',
+	'Midnight',
+	'Tzrek-zuk',
+	'Ziggy',
+	'Red',
+	'Great blue heron'
+]);
+
 export const allPetIDs = [
 	...allPetsCL,
 	...customPetsCL,
@@ -2378,7 +2389,8 @@ export const allPetIDs = [
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector'])
+	...resolveItems(['Little parasite', 'Dark squirrel', 'Black swan', 'Abyssal protector']),
+	...metamorphPets
 ];
 
 export const antiSantaOutfit = new Bank({
