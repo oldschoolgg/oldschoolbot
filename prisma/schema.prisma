@@ -19,7 +19,6 @@ model Activity {
   channel_id     BigInt
   data           Json               @db.Json
 
-
   @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
@@ -123,7 +122,6 @@ model ClientStorage {
   tks_loot                     Json     @default("{}") @db.Json
   disabled_commands            String[] @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
-
 
   // BSO
   gp_ic                   BigInt @default(0)
@@ -676,7 +674,6 @@ model StashUnit {
   user_id         BigInt
   items_contained Int[]
   has_built       Boolean
-
 
   @@unique([stash_id, user_id])
   @@map("stash_unit")
