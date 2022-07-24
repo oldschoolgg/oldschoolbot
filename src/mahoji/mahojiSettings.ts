@@ -1,4 +1,4 @@
-import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
+import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
@@ -314,4 +314,23 @@ export async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdat
 
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
+}
+
+export async function userStatsUpdate(userID: string, data: (u: UserStats) => Prisma.UserStatsUpdateInput) {
+	const id = Number(userID);
+	const userStats = await prisma.userStats.upsert({
+		create: {
+			user_id: id
+		},
+		update: {},
+		where: {
+			user_id: id
+		}
+	});
+	await prisma.userStats.update({
+		data: data(userStats),
+		where: {
+			user_id: id
+		}
+	});
 }
