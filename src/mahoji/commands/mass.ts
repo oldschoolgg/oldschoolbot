@@ -72,6 +72,7 @@ export const massCommand: OSBMahojiCommand = {
 	run: async ({ interaction, options, userID, channelID }: CommandRunOptions<{ monster: string }>) => {
 		interaction.deferReply();
 		const user = await globalClient.fetchUser(userID);
+		if (user.isIronman) return 'Ironmen cannot do masses.';
 		const channel = globalClient.channels.cache.get(channelID.toString());
 		if (!channel || !channelIsSendable(channel)) return 'Invalid channel.';
 		const monster = findMonster(options.monster);
