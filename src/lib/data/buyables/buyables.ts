@@ -933,6 +933,10 @@ const Buyables: Buyable[] = [
 		name: 'Dorgeshuun crossbow',
 		gpCost: 2500
 	},
+	{
+		name: 'Crystal bow',
+		gpCost: 900_000
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
