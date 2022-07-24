@@ -18,10 +18,10 @@ export default async function removeRunesFromUser(
 	await user.settings.sync(true);
 	// Check if tridents are used and consume runes depending on trident if so in future
 	const castName = user.settings.get(UserSettings.Minion.CombatSpell);
-	if (!castName) throw `No combat spell been set.`;
+	if (!castName) throw 'No combat spell been set.';
 	const castableItem = Magic.Castables.find(item => stringMatches(item.name, castName));
 	if (!castableItem) {
-		throw `That is not a valid spell that been set.`;
+		throw 'That is not a valid spell that been set.';
 	}
 	if (user.skillLevel(SkillsEnum.Magic) < castableItem.level) {
 		throw `${user.minionName} needs ${castableItem.level} Magic to cast ${castableItem.name}.`;
@@ -35,34 +35,19 @@ export default async function removeRunesFromUser(
 	}
 	let trident = false;
 	let coins = false;
-	if (
-		staff &&
-		(staff.item === itemID('trident of the seas') ||
-			staff.item === itemID('trident of the seas (e)'))
-	) {
+	if (staff && (staff.item === itemID('trident of the seas') || staff.item === itemID('trident of the seas (e)'))) {
 		trident = true;
 		coins = true;
-		runeBank = new Bank()
-			.add('Death rune')
-			.add('Chaos rune')
-			.add('Fire rune', 5);
+		runeBank = new Bank().add('Death rune').add('Chaos rune').add('Fire rune', 5);
 		runeBank = runeBank.clone().multiply(casts);
 		if (user.settings.get(UserSettings.GP) < casts * 10) {
-			throw `You don't have enough GP to use the trident.`;
+			throw "You don't have enough GP to use the trident.";
 		}
 		await user.removeGP(casts * 10);
 	}
-	if (
-		staff &&
-		(staff.item === itemID('trident of the swamp') ||
-			staff.item === itemID('trident of the swamp (e)'))
-	) {
+	if (staff && (staff.item === itemID('trident of the swamp') || staff.item === itemID('trident of the swamp (e)'))) {
 		trident = true;
-		runeBank = new Bank()
-			.add('Death rune')
-			.add('Chaos rune')
-			.add('Fire rune', 5)
-			.add("Zulrah's scales");
+		runeBank = new Bank().add('Death rune').add('Chaos rune').add('Fire rune', 5).add("Zulrah's scales");
 		runeBank = runeBank.clone().multiply(casts);
 	}
 	if (staff) {
@@ -75,11 +60,13 @@ export default async function removeRunesFromUser(
 		}
 	}
 	if (!userBank.has(runeBank.bank)) {
-		throw `You don't have the materials needed to cast ${casts}x ${trident ? 'Built-in magic spell' : castableItem.name}, you need ${runeBank}, you're missing **${runeBank
-			.clone()
-			.remove(userBank)}**.`;
+		throw `You don't have the materials needed to cast ${casts}x ${
+			trident ? 'Built-in magic spell' : castableItem.name
+		}, you need ${runeBank}, you're missing **${runeBank.clone().remove(userBank)}**.`;
 	}
 	await user.removeItemsFromBank(runeBank.bank);
 
-	return `${await createReadableItemListFromBank(client, runeBank.bank)}${coins ? `, ${casts * 10}x Coins` : ''} from ${user.username}`;
+	return `${await createReadableItemListFromBank(client, runeBank.bank)}${
+		coins ? `, ${casts * 10}x Coins` : ''
+	} from ${user.username}`;
 }

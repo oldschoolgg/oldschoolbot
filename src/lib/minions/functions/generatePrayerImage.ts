@@ -92,11 +92,7 @@ export async function generatePrayerImage(client: KlasaClient, user: KlasaUser) 
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(
-		userBg,
-		(canvas.width - userBg.width) * 0.5,
-		(canvas.height - userBg.height) * 0.5
-	);
+	ctx.drawImage(userBg, (canvas.width - userBg.width) * 0.5, (canvas.height - userBg.height) * 0.5);
 	ctx.drawImage(prayerTemplateImage, 0, 0, prayerTemplateImage.width, prayerTemplateImage.height);
 	bankTask?.drawBorder(canvas, false);
 

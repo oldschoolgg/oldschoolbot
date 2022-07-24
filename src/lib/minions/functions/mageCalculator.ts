@@ -55,16 +55,14 @@ export default async function mageCalculator(
 	}
 	const mageGear = user.settings.get(UserSettings.Gear.Mage);
 
-	if (!mageGear) throw `No mage gear on user.`;
+	if (!mageGear) throw 'No mage gear on user.';
 	if (combatSpell === null) {
-		throw `Spell is null`;
+		throw 'Spell is null';
 	}
-	const spell = castables.find(_spell =>
-		stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase())
-	);
+	const spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase()));
 
 	if (!spell) {
-		throw `The default spell is wrong.`;
+		throw 'The default spell is wrong.';
 	}
 
 	if (!spell.baseMaxHit) {
@@ -89,8 +87,7 @@ export default async function mageCalculator(
 			break;
 		}
 	}
-	let effectiveMageLvl =
-		Math.floor(user.skillLevel(SkillsEnum.Magic) + magePotionBoost) * prayerMageBonus + 8;
+	let effectiveMageLvl = Math.floor(user.skillLevel(SkillsEnum.Magic) + magePotionBoost) * prayerMageBonus + 8;
 	let attackStyle = '';
 	for (let stance of mageWeapon.weapon.stances) {
 		if (stance.combat_style.toLowerCase() === combatStyle) {
@@ -117,17 +114,11 @@ export default async function mageCalculator(
 	// Calculate max hit
 	let maxHit = spell.baseMaxHit * (1 + gearStats.magic_damage / 100);
 
-	if (
-		mageWeapon.name.toLowerCase() === 'trident of the seas' ||
-		mageWeapon.name === 'Trident of the seas (e)'
-	) {
+	if (mageWeapon.name.toLowerCase() === 'trident of the seas' || mageWeapon.name === 'Trident of the seas (e)') {
 		maxHit = Math.floor(effectiveMageLvl / 3 - 5);
 	}
 
-	if (
-		mageWeapon.name === 'Trident of the swamp' ||
-		mageWeapon.name === 'Trident of the swamp (e)'
-	) {
+	if (mageWeapon.name === 'Trident of the swamp' || mageWeapon.name === 'Trident of the swamp (e)') {
 		maxHit = Math.floor(effectiveMageLvl / 3 - 2);
 	}
 

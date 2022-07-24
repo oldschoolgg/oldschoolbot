@@ -23,9 +23,7 @@ export default async function removePotionsFromUser(
 	let potsToRemove: ItemBank = {};
 
 	for (const pot of uniqPots) {
-		const selectedPotion = Potions.find(
-			_potion => _potion.name.toLowerCase() === pot.toLowerCase()
-		);
+		const selectedPotion = Potions.find(_potion => _potion.name.toLowerCase() === pot.toLowerCase());
 		if (!selectedPotion) continue;
 		if (!bankHasItem(userBank, selectedPotion?.items[3])) {
 			throw `You don't have enough ${itemNameFromID(selectedPotion.items[3])} in the bank.`;

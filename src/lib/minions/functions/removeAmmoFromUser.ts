@@ -11,14 +11,10 @@ import createReadableItemListFromBank from '../../util/createReadableItemListFro
 import getOSItem from '../../util/getOSItem';
 import { GearSetupTypes } from './../../gear/types';
 
-export default async function removeAmmoFromUser(
-	client: KlasaClient,
-	user: KlasaUser,
-	hits: number
-): Promise<string> {
+export default async function removeAmmoFromUser(client: KlasaClient, user: KlasaUser, hits: number): Promise<string> {
 	await user.settings.sync(true);
 	const rangeWeapon = user.equippedWeapon(GearSetupTypes.Range);
-	if (!rangeWeapon) throw `No weapon is equipped in range.`;
+	if (!rangeWeapon) throw 'No weapon is equipped in range.';
 	const gear = user.rawGear()[GearSetupTypes.Range];
 	const [cape] = itemInSlot(gear, EquipmentSlot.Cape);
 	let [ammo] = itemInSlot(gear, EquipmentSlot.Ammo);
@@ -28,25 +24,25 @@ export default async function removeAmmoFromUser(
 		const defaultDart = user.settings.get(UserSettings.Minion.defaultDartToUse);
 		const dart = getOSItem(defaultDart);
 		ammo = dart;
-		if (!ammo) throw `No default dart have been choosen.`;
+		if (!ammo) throw 'No default dart have been choosen.';
 	}
-	if (!ammo) throw `No ammo is equipped in range.`;
+	if (!ammo) throw 'No ammo is equipped in range.';
 	if (rangeWeapon.name.includes('dart')) {
 		ammo = rangeWeapon;
 	} else if (blowpipe) {
 		if (!user.settings.get(UserSettings.Minion.defaultDartToUse).includes('dart')) {
-			throw `The ammunition type used by toxic blowpipe is darts and scales. Default a dart type with the command combatsetup.`;
+			throw 'The ammunition type used by toxic blowpipe is darts and scales. Default a dart type with the command combatsetup.';
 		}
 	} else if (rangeWeapon.name.includes('cross')) {
 		if (!ammo.name.includes('bolt')) {
-			throw `The ammunition type used by crossbows is bolts. Equip a bolt in the range setup.`;
+			throw 'The ammunition type used by crossbows is bolts. Equip a bolt in the range setup.';
 		}
 	} else if (rangeWeapon.name.includes('ballista')) {
 		if (!ammo.name.includes('javelin')) {
-			throw `The ammunition type used by ballistas is javelins. Equip a javelin in the range setup.`;
+			throw 'The ammunition type used by ballistas is javelins. Equip a javelin in the range setup.';
 		}
 	} else if (!ammo.name.includes('arrow')) {
-		throw `The ammunition type used by bows is arrows. Equip a arrow in the range setup.`;
+		throw 'The ammunition type used by bows is arrows. Equip a arrow in the range setup.';
 	}
 	let brokenAmmo = 0;
 	let dropOnFloor = 1;
@@ -57,7 +53,7 @@ export default async function removeAmmoFromUser(
 		} else if (cape.name.includes('accumulator')) {
 			dropOnFloor = 12;
 		} else if (cape.name.includes('assembler')) {
-			dropOnFloor = 999999;
+			dropOnFloor = 999_999;
 		}
 	}
 
@@ -82,12 +78,9 @@ export default async function removeAmmoFromUser(
 	}
 	if (blowpipe) {
 		if (!bankHasItem(userBank, itemID("Zulrah's scales"), Math.floor(brokenAmmo * 3.3))) {
-			throw `You don't have enough Zulrah's scales in the bank.`;
+			throw "You don't have enough Zulrah's scales in the bank.";
 		}
-		ammoToRemove = addBanks([
-			ammoToRemove,
-			{ [itemID("Zulrah's scales")]: Math.floor(brokenAmmo * 3.3) }
-		]);
+		ammoToRemove = addBanks([ammoToRemove, { [itemID("Zulrah's scales")]: Math.floor(brokenAmmo * 3.3) }]);
 		await user.removeItemFromBank(itemID("Zulrah's scales"), Math.floor(brokenAmmo * 3.3));
 	}
 	// Remove the required items from their bank.

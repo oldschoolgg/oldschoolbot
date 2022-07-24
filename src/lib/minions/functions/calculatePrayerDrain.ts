@@ -18,9 +18,7 @@ export default async function calculatePrayerDrain(
 	let totalDrainEffect = 0;
 	const selectedPrayers = user.settings.get(UserSettings.SelectedPrayers);
 	for (const prayer of selectedPrayers) {
-		const foundPrayer = Prayer.Prayers.find(
-			_prayer => _prayer.name.toLowerCase() === prayer.toLowerCase()
-		);
+		const foundPrayer = Prayer.Prayers.find(_prayer => _prayer.name.toLowerCase() === prayer.toLowerCase());
 		if (!foundPrayer) continue;
 		totalDrainEffect += foundPrayer.drainEffect;
 	}
@@ -33,8 +31,7 @@ export default async function calculatePrayerDrain(
 		user.skillLevel(SkillsEnum.Prayer)
 	) {
 		prayerPointsDrainedPerBankCycle =
-			(PrayerPointsEverySecond * averageKillSpeed) / Time.Second -
-			user.skillLevel(SkillsEnum.Prayer);
+			(PrayerPointsEverySecond * averageKillSpeed) / Time.Second - user.skillLevel(SkillsEnum.Prayer);
 	}
 	const bankCycles = quantity / monster.killsPerBankTrip;
 	const totalPrayerPoints = bankCycles * prayerPointsDrainedPerBankCycle;
@@ -51,13 +48,10 @@ export default async function calculatePrayerDrain(
 		) &&
 		totalDosesUsed > 0
 	) {
-		throw `You don't have enough Prayer potion(4) in the bank.`;
+		throw "You don't have enough Prayer potion(4) in the bank.";
 	}
 	if (totalDosesUsed > 0) {
-		await user.removeItemFromBank(
-			itemID('Prayer potion(4)'),
-			Math.floor(totalDosesUsed / 4) + 1
-		);
+		await user.removeItemFromBank(itemID('Prayer potion(4)'), Math.floor(totalDosesUsed / 4) + 1);
 
 		const leftOverDoses = 4 - (totalDosesUsed % 4);
 		if (leftOverDoses !== 4) {

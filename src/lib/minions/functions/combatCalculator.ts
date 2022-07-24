@@ -23,8 +23,7 @@ export default async function combatCalculator(
 ): Promise<[number, number, number, number, number, string[]]> {
 	let combatSkill = msg.author.settings.get(UserSettings.Minion.CombatSkill);
 
-	if (combatSkill === CombatsEnum.NoCombat)
-		throw `Nocombat shouldn't get here, Error in kill command.`;
+	if (combatSkill === CombatsEnum.NoCombat) throw "Nocombat shouldn't get here, Error in kill command.";
 
 	if (combatSkill === CombatsEnum.Auto) {
 		const defaultMonsterStyle = monster.defaultStyleToUse;
@@ -36,12 +35,10 @@ export default async function combatCalculator(
 			defaultMonsterStyle === GearStat.AttackStab
 		) {
 			combatSkill = CombatsEnum.Melee;
-			await msg.client.commands
-				.get('autoequip')!
-				.run(msg, [combatSkill, 'attack', style, null, true]);
+			await msg.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
 			const weapon = msg.author.equippedWeapon(GearSetupTypes.Melee);
 			if (weapon === null || weapon.weapon === null) {
-				throw `No weapon is equipped.`;
+				throw 'No weapon is equipped.';
 			}
 			let i = 0;
 			let styleArray = [];
@@ -63,22 +60,17 @@ export default async function combatCalculator(
 
 		if (defaultMonsterStyle === GearStat.AttackRanged) {
 			combatSkill = CombatsEnum.Range;
-			await msg.client.commands
-				.get('autoequip')!
-				.run(msg, [combatSkill, 'attack', style, null, true]);
+			await msg.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
 			const weapon = msg.author.equippedWeapon(GearSetupTypes.Range);
 			if (weapon === null || weapon.weapon === null) {
-				throw `No weapon is equipped.`;
+				throw 'No weapon is equipped.';
 			}
 			for (let stance of weapon.weapon.stances) {
 				if (stance === null) {
 					continue;
 				}
 				if (stance.combat_style.toLowerCase() === 'rapid') {
-					await msg.author.settings.update(
-						UserSettings.Minion.RangeCombatStyle,
-						stance.combat_style
-					);
+					await msg.author.settings.update(UserSettings.Minion.RangeCombatStyle, stance.combat_style);
 					break;
 				}
 			}
@@ -86,9 +78,7 @@ export default async function combatCalculator(
 
 		if (defaultMonsterStyle === GearStat.AttackMagic) {
 			combatSkill = CombatsEnum.Mage;
-			await msg.client.commands
-				.get('autoequip')!
-				.run(msg, [combatSkill, 'attack', style, null, true]);
+			await msg.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
 			await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, 'standard');
 
 			let CombatSpells = castables.filter(
@@ -101,12 +91,12 @@ export default async function combatCalculator(
 			await msg.author.settings.update(UserSettings.Minion.CombatSpell, CombatSpells[0].name);
 		}
 
-		if (combatSkill === CombatsEnum.Auto) throw `No defaultMonsterStyle matched`;
+		if (combatSkill === CombatsEnum.Auto) throw 'No defaultMonsterStyle matched';
 		await autoPrayerPicker(msg, combatSkill);
 	}
 
 	if (combatSkill === null) {
-		throw `No combat skill been set in combatsetup.`;
+		throw 'No combat skill been set in combatsetup.';
 	}
 
 	// Handle multistyle combat here somehow.

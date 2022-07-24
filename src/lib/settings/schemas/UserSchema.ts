@@ -1,8 +1,8 @@
 import { Client, SchemaFolder } from 'klasa';
 
 import { CombatsEnum } from '../../../commands/Minion/combatsetup';
-import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { BlowpipeData } from '../../minions/types';
+import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
 import { baseUserKourendFavour } from './../../minions/data/kourendFavour';
 

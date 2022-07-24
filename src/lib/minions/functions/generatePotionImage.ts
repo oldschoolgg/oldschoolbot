@@ -38,7 +38,7 @@ export async function generatePotionImage(client: KlasaClient, user: KlasaUser) 
 		.get('bankImage')!
 		.generateBankImage(
 			viewPotions,
-			`Currently selected potions to use.`,
+			'Currently selected potions to use.',
 			false,
 			{ userBgID, names: 'names' },
 			user
@@ -48,11 +48,7 @@ export async function generatePotionImage(client: KlasaClient, user: KlasaUser) 
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(
-		userBg,
-		(canvas.width - userBg.width) * 0.5,
-		(canvas.height - userBg.height) * 0.5
-	);
+	ctx.drawImage(userBg, (canvas.width - userBg.width) * 0.5, (canvas.height - userBg.height) * 0.5);
 	ctx.drawImage(potionTemplateImage, 0, 0, potionTemplateImage.width, potionTemplateImage.height);
 	bankTask?.drawBorder(canvas, false);
 

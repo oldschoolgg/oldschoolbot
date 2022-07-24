@@ -1,12 +1,13 @@
 import { User } from 'discord.js';
-// import { objectEntries } from 'e';
-import PromiseQueue from 'p-queue';
-import { Events, PerkTier, userQueues } from '../../lib/constants';
 // import { readableStatName } from '../../lib/gear';
 // import { gearSetupMeetsRequirement } from '../../lib/minions/functions/gearSetupMeetsRequirement';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser, SettingsFolder } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
+// import { objectEntries } from 'e';
+import PromiseQueue from 'p-queue';
+
+import { Events, PerkTier, userQueues } from '../../lib/constants';
 import { KillableMonster } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';

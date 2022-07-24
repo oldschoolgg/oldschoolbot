@@ -49,9 +49,7 @@ export default class extends BotCommand {
 		[combatSkill, combatStyle, combatSpell]: [string, string, string]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			return msg.send(
-				`${msg.author.minionName} is currently out on a trip, so you can't change combat style!`
-			);
+			return msg.send(`${msg.author.minionName} is currently out on a trip, so you can't change combat style!`);
 		}
 		const oldCombatSkill = msg.author.settings.get(UserSettings.Minion.CombatSkill);
 		if (!combatSkill) {
@@ -79,7 +77,7 @@ export default class extends BotCommand {
 			combatStyle = combatStyle.toLowerCase();
 			const weapon = msg.author.equippedWeapon(GearSetupTypes.Melee);
 			if (weapon === null || weapon.weapon === null) {
-				throw `No weapon is equipped.`;
+				throw 'No weapon is equipped.';
 			}
 			await msg.author.settings.update(UserSettings.Minion.CombatSkill, CombatsEnum.Melee);
 
@@ -88,10 +86,7 @@ export default class extends BotCommand {
 					continue;
 				}
 				if (stance.combat_style.toLowerCase() === combatStyle) {
-					await msg.author.settings.update(
-						UserSettings.Minion.MeleeCombatStyle,
-						combatStyle
-					);
+					await msg.author.settings.update(UserSettings.Minion.MeleeCombatStyle, combatStyle);
 
 					return msg.send(
 						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
@@ -114,13 +109,10 @@ export default class extends BotCommand {
 			let changedDartTier = false;
 			if (combatSpell && dartTier.includes(combatSpell.toLowerCase())) {
 				changedDartTier = true;
-				await msg.author.settings.update(
-					UserSettings.Minion.defaultDartToUse,
-					combatSpell.toLowerCase()
-				);
+				await msg.author.settings.update(UserSettings.Minion.defaultDartToUse, combatSpell.toLowerCase());
 			}
 			if (weapon === null || weapon.weapon === null) {
-				throw `No weapon is equipped.`;
+				throw 'No weapon is equipped.';
 			}
 			await msg.author.settings.update(UserSettings.Minion.CombatSkill, CombatsEnum.Range);
 
@@ -129,18 +121,13 @@ export default class extends BotCommand {
 					continue;
 				}
 				if (stance.combat_style.toLowerCase() === combatStyle) {
-					await msg.author.settings.update(
-						UserSettings.Minion.RangeCombatStyle,
-						combatStyle
-					);
+					await msg.author.settings.update(UserSettings.Minion.RangeCombatStyle, combatStyle);
 
 					return msg.send(
 						`${
 							msg.author.minionName
 						} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}. ${
-							changedDartTier
-								? `And changed default dart to ${combatSpell.toLowerCase()}.`
-								: ''
+							changedDartTier ? `And changed default dart to ${combatSpell.toLowerCase()}.` : ''
 						}`
 					);
 				}
@@ -162,10 +149,7 @@ export default class extends BotCommand {
 
 			if (combatStyle === 'standard' || combatStyle === 'defensive') {
 				if (!combatSpell) {
-					await msg.author.settings.update(
-						UserSettings.Minion.MageCombatStyle,
-						combatStyle
-					);
+					await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, combatStyle);
 
 					return msg.send(
 						`${
@@ -181,13 +165,13 @@ export default class extends BotCommand {
 
 				if (combatSpell === 'iban blast') {
 					if (weapon === null || weapon.weapon === null) {
-						throw `No weapon is equipped.`;
+						throw 'No weapon is equipped.';
 					}
 					if (
 						weapon.name.toLowerCase() !== "iban's staff" &&
 						weapon.name.toLowerCase() !== "iban's staff (u)"
 					) {
-						throw `No variation of iban's staff is equipped for spell Iban Blast.`;
+						throw "No variation of iban's staff is equipped for spell Iban Blast.";
 					}
 				}
 
@@ -195,9 +179,7 @@ export default class extends BotCommand {
 					_spell => _spell.category.toLowerCase() === 'combat' && _spell.baseMaxHit
 				);
 
-				const Spell = CombatSpells.find(_spell =>
-					stringMatches(_spell.name.toLowerCase(), combatSpell)
-				);
+				const Spell = CombatSpells.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell));
 
 				if (!Spell) {
 					return msg.send(
@@ -223,21 +205,15 @@ export default class extends BotCommand {
 				weapon?.name.toLowerCase() === 'trident of the swamp (e)'
 			) {
 				if (weapon === null || weapon.weapon === null) {
-					throw `No trident seems to be equipped or fetched data is wrong.`;
+					throw 'No trident seems to be equipped or fetched data is wrong.';
 				}
 				for (let stance of weapon!.weapon!.stances) {
 					if (stance === null) {
 						continue;
 					}
 					if (stance.combat_style.toLowerCase() === combatStyle) {
-						await msg.author.settings.update(
-							UserSettings.Minion.MageCombatStyle,
-							combatStyle
-						);
-						await msg.author.settings.update(
-							UserSettings.Minion.CombatSpell,
-							'wind strike'
-						);
+						await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, combatStyle);
+						await msg.author.settings.update(UserSettings.Minion.CombatSpell, 'wind strike');
 
 						return msg.send(
 							`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`

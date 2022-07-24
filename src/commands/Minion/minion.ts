@@ -1,27 +1,38 @@
 import { FormattedCustomEmoji } from '@sapphire/discord-utilities';
 import { MessageEmbed } from 'discord.js';
-import { chunk, sleep } from 'e';
-import { randArrItem } from 'e';
+import { chunk, randArrItem, sleep } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { Activity, Color, Emoji, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
+import { ClueTiers } from '../../lib/clues/clueTiers';
+import { Activity, Color, Emoji, Emoji, lastTripCache, MIMIC_MONSTER_ID, PerkTier, Time } from '../../lib/constants';
+import { DynamicButtons } from '../../lib/DynamicButtons';
 import clueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { minionNotBusy, requiresMinion, requiresMinion } from '../../lib/minions/decorators';
+import { FarmingContract } from '../../lib/minions/farming/types';
+import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import combatCalculator from '../../lib/minions/functions/combatCalculator';
 import findMonster from '../../lib/minions/functions/findMonster';
 import removeAmmoFromUser from '../../lib/minions/functions/removeAmmoFromUser';
 import removePotionsFromUser from '../../lib/minions/functions/removePotionsFromUser';
 import removeRunesFromUser from '../../lib/minions/functions/removeRunesFromUser';
+import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { BotCommand } from '../../lib/structures/BotCommand';
+import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
+import { SkillsEnum } from '../../lib/skilling/types';
+import { BotCommand, BotCommand } from '../../lib/structures/BotCommand';
 import { MinigameTable } from '../../lib/typeorm/MinigameTable.entity';
 import { PoHTable } from '../../lib/typeorm/PoHTable.entity';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { formatDuration, randomItemFromArray, round } from '../../lib/util';
+import { convertMahojiResponseToDJSResponse, formatDuration, randomItemFromArray, round } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
+import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
+import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { GearStat } from './../../lib/gear/types';
 import { CombatsEnum } from './combatsetup';
 
@@ -29,22 +40,6 @@ const invalidMonster = (prefix: string) =>
 	`That isn't a valid monster, the available monsters are: ${killableMonsters
 		.map(mon => mon.name)
 		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { Emoji, lastTripCache } from '../../lib/constants';
-import { DynamicButtons } from '../../lib/DynamicButtons';
-import { requiresMinion } from '../../lib/minions/decorators';
-import { FarmingContract } from '../../lib/minions/farming/types';
-import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
-import { runCommand } from '../../lib/settings/settings';
-import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import { SkillsEnum } from '../../lib/skilling/types';
-import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertMahojiResponseToDJSResponse } from '../../lib/util';
-import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
-import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 const patMessages = [
 	'You pat {name} on the head.',
@@ -304,9 +299,7 @@ export default class MinionCommand extends BotCommand {
 
 		const monster =
 			name === 'random'
-				? randomItemFromArray(
-						killableMonsters.filter(mon => msg.author.hasMonsterRequirements(mon)[0])
-				  )
+				? randomItemFromArray(killableMonsters.filter(mon => msg.author.hasMonsterRequirements(mon)[0]))
 				: findMonster(name);
 		if (!monster) throw invalidMonster(msg.cmdPrefix);
 
@@ -316,10 +309,7 @@ export default class MinionCommand extends BotCommand {
 
 		if (monster.immuneToCombatSkills) {
 			for (let cs of monster.immuneToCombatSkills) {
-				if (
-					cs.toString().toLowerCase() ===
-					msg.author.settings.get(UserSettings.Minion.CombatSkill)
-				) {
+				if (cs.toString().toLowerCase() === msg.author.settings.get(UserSettings.Minion.CombatSkill)) {
 					return msg.send(
 						`${monster.name} can not be attacked using ${msg.author.settings.get(
 							UserSettings.Minion.CombatSkill
@@ -332,7 +322,7 @@ export default class MinionCommand extends BotCommand {
 		combatCalcInfo = await combatCalculator(monster, msg, quantity);
 
 		if (!combatCalcInfo) {
-			throw `Something went wrong with the combatCalculator`;
+			throw 'Something went wrong with the combatCalculator';
 		}
 		let [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, potsUsed] = combatCalcInfo;
 
@@ -348,9 +338,9 @@ export default class MinionCommand extends BotCommand {
 			return msg.send(
 				`${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
 					msg.author.maxTripLength
-				)}, try a lower quantity. The highest amount you can do for ${
-					monster.name
-				} is around ${Math.floor(msg.author.maxTripLength / (monsterKillSpeed * 1.3))}.`
+				)}, try a lower quantity. The highest amount you can do for ${monster.name} is around ${Math.floor(
+					msg.author.maxTripLength / (monsterKillSpeed * 1.3)
+				)}.`
 			);
 		}
 
@@ -367,24 +357,12 @@ export default class MinionCommand extends BotCommand {
 				(msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
 					monster.defaultStyleToUse === GearStat.AttackMagic)
 			) {
-				messages.push(
-					`Removed ${await removeRunesFromUser(this.client, msg.author, hits)}`
-				);
+				messages.push(`Removed ${await removeRunesFromUser(this.client, msg.author, hits)}`);
 			}
-			const potionStr = await removePotionsFromUser(
-				this.client,
-				msg.author,
-				potsUsed,
-				combatDuration
-			);
+			const potionStr = await removePotionsFromUser(this.client, msg.author, potsUsed, combatDuration);
 			if (potionStr.includes('x')) {
 				messages.push(
-					`Removed ${await removePotionsFromUser(
-						this.client,
-						msg.author,
-						potsUsed,
-						combatDuration
-					)}`
+					`Removed ${await removePotionsFromUser(this.client, msg.author, potsUsed, combatDuration)}`
 				);
 			}
 		}
@@ -408,7 +386,7 @@ export default class MinionCommand extends BotCommand {
 		)}. The average kill time is ${formatDuration(monsterKillSpeed)} (Without banking/mechanics/respawn).`;
 
 		if (noneCombat) {
-			response += `\nNONE COMBAT TRIP due to bad gear/stats or minion none combat setting activated.`;
+			response += '\nNONE COMBAT TRIP due to bad gear/stats or minion none combat setting activated.';
 		}
 		if (messages.length > 0) {
 			response += `\n**Messages:** ${messages.join('\n')}.`;
@@ -416,6 +394,7 @@ export default class MinionCommand extends BotCommand {
 
 		return msg.send(response);
 	}
+
 	async buy(msg: KlasaMessage) {
 		return msg.channel.send(
 			convertMahojiResponseToDJSResponse(

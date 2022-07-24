@@ -111,7 +111,7 @@ export default async function meleeCalculator(
 	}
 	const meleeGear = user.settings.get(UserSettings.Gear.Melee);
 
-	if (!meleeGear) throw `No melee gear on user.`;
+	if (!meleeGear) throw 'No melee gear on user.';
 	const gearStats = sumOfSetupStats(user.getGear('melee'));
 
 	// Calculate effective strength level
@@ -125,8 +125,7 @@ export default async function meleeCalculator(
 			break;
 		}
 	}
-	let effectiveStrLvl =
-		Math.floor(user.skillLevel(SkillsEnum.Strength) + strengthPotionBoost) * prayerStrBonus + 8;
+	let effectiveStrLvl = Math.floor(user.skillLevel(SkillsEnum.Strength) + strengthPotionBoost) * prayerStrBonus + 8;
 	let attackStyle = '';
 	let combatType = '';
 	for (let stance of meleeWeapon.weapon.stances) {
@@ -157,8 +156,7 @@ export default async function meleeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet or salve amulet (e), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		(hasItemEquipped(itemID('Salve amulet'), meleeGear) ||
-			hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) &&
+		(hasItemEquipped(itemID('Salve amulet'), meleeGear) || hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 7 / 6;
@@ -180,9 +178,7 @@ export default async function meleeCalculator(
 		}
 		if (
 			meleeStrengthBonus.againstAttribute &&
-			currentMonsterData.attributes.find(
-				_attribue => _attribue === meleeStrengthBonus.againstAttribute
-			)
+			currentMonsterData.attributes.find(_attribue => _attribue === meleeStrengthBonus.againstAttribute)
 		) {
 			maxHit *= meleeStrengthBonus.damageBoost;
 			break;
@@ -214,8 +210,7 @@ export default async function meleeCalculator(
 			break;
 		}
 	}
-	let effectiveAttackLvl =
-		Math.floor(user.skillLevel(SkillsEnum.Attack) + attackPotionBoost) * prayerAttackBonus + 8;
+	let effectiveAttackLvl = Math.floor(user.skillLevel(SkillsEnum.Attack) + attackPotionBoost) * prayerAttackBonus + 8;
 
 	if (attackStyle === 'accurate') {
 		effectiveAttackLvl += 3;
@@ -249,8 +244,7 @@ export default async function meleeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet or salve amulet (e), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		(hasItemEquipped(itemID('Salve amulet'), meleeGear) ||
-			hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) &&
+		(hasItemEquipped(itemID('Salve amulet'), meleeGear) || hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		attackRoll *= 7 / 6;

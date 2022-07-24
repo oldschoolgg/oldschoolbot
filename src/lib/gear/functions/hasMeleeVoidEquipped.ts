@@ -1,5 +1,5 @@
-import { GearSetup, hasGearEquipped } from '..';
 import resolveItems from '../../util/resolveItems';
+import { GearSetup, hasGearEquipped } from '..';
 
 export function hasMeleeVoidEquipped(setup: GearSetup) {
 	return hasGearEquipped(setup, {

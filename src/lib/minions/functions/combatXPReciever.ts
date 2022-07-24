@@ -45,9 +45,7 @@ export default async function combatXPReciever(
 			console.log('Spell is null.');
 			return str;
 		}
-		spell = castables.find(_spell =>
-			stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase())
-		);
+		spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase()));
 	}
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
@@ -101,9 +99,7 @@ export default async function combatXPReciever(
 					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
 					newAttackLevel = user.skillLevel(SkillsEnum.Attack);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
-					str = `\nYou also received ${(
-						4 * totalHP
-					).toLocaleString()} Attack XP and ${Math.round(
+					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Attack XP and ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Hitpoints XP.`;
 					if (newAttackLevel > currentAttackLevel) {
@@ -118,9 +114,7 @@ export default async function combatXPReciever(
 					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
 					newStrengthLevel = user.skillLevel(SkillsEnum.Strength);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
-					str = `\nYou also received ${(
-						4 * totalHP
-					).toLocaleString()} Strength XP and ${Math.round(
+					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Strength XP and ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Hitpoints XP.`;
 					if (newStrengthLevel > currentStrengthLevel) {
@@ -135,9 +129,7 @@ export default async function combatXPReciever(
 					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
 					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
-					str = `\nYou also received ${(
-						4 * totalHP
-					).toLocaleString()} Defence XP and ${Math.round(
+					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Defence XP and ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Hitpoints XP.`;
 					if (newDefenceLevel > currentDefenceLevel) {
@@ -156,15 +148,11 @@ export default async function combatXPReciever(
 					newStrengthLevel = user.skillLevel(SkillsEnum.Strength);
 					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
-					str = `\nYou also received ${Math.round(
-						1.33 * totalHP
-					).toLocaleString()} Attack XP, ${Math.round(
+					str = `\nYou also received ${Math.round(1.33 * totalHP).toLocaleString()} Attack XP, ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Strength XP, ${Math.round(
 						1.33 * totalHP
-					).toLocaleString()} Defence XP and ${Math.round(
-						1.33 * totalHP
-					).toLocaleString()} Hitpoints XP.`;
+					).toLocaleString()} Defence XP and ${Math.round(1.33 * totalHP).toLocaleString()} Hitpoints XP.`;
 					if (newAttackLevel > currentAttackLevel) {
 						str += `\n\n${user.minionName}'s Attack level is now ${newAttackLevel}!`;
 					}
@@ -195,9 +183,7 @@ export default async function combatXPReciever(
 					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
 					newRangedLevel = user.skillLevel(SkillsEnum.Ranged);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
-					str = `\nYou also received ${(
-						4 * totalHP
-					).toLocaleString()} Ranged XP and ${Math.round(
+					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Ranged XP and ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Hitpoints XP.`;
 					if (newRangedLevel > currentRangedLevel) {
@@ -212,9 +198,7 @@ export default async function combatXPReciever(
 					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
 					newRangedLevel = user.skillLevel(SkillsEnum.Ranged);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
-					str = `\nYou also received ${(
-						4 * totalHP
-					).toLocaleString()} Ranged XP and ${Math.round(
+					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Ranged XP and ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Hitpoints XP.`;
 					if (newRangedLevel > currentRangedLevel) {
@@ -233,9 +217,7 @@ export default async function combatXPReciever(
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(2 * totalHP).toLocaleString()} Ranged XP, ${(
 						2 * totalHP
-					).toLocaleString()} Defence XP and ${Math.round(
-						1.33 * totalHP
-					).toLocaleString()} Hitpoints XP.`;
+					).toLocaleString()} Defence XP and ${Math.round(1.33 * totalHP).toLocaleString()} Hitpoints XP.`;
 					if (newRangedLevel > currentRangedLevel) {
 						str += `\n\n${user.minionName}'s Ranged level is now ${newRangedLevel}!`;
 					}
@@ -258,9 +240,7 @@ export default async function combatXPReciever(
 					str = `\nYou also received ${(
 						2 * totalHP +
 						hits * spell?.magicxp!
-					).toLocaleString()} Magic XP and ${Math.round(
-						1.33 * totalHP
-					).toLocaleString()} Hitpoints XP.`;
+					).toLocaleString()} Magic XP and ${Math.round(1.33 * totalHP).toLocaleString()} Hitpoints XP.`;
 					if (newMagicLevel > currentMagicLevel) {
 						str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
 					}
@@ -269,10 +249,7 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'defensive':
-					await user.addXP(
-						SkillsEnum.Magic,
-						Math.round(1.33 * totalHP) + hits * spell?.magicxp!
-					);
+					await user.addXP(SkillsEnum.Magic, Math.round(1.33 * totalHP) + hits * spell?.magicxp!);
 					await user.addXP(SkillsEnum.Defence, Number(totalHP));
 					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
 					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
@@ -281,9 +258,7 @@ export default async function combatXPReciever(
 					str = `\nYou also received ${(
 						Math.round(1.33 * totalHP) +
 						hits * spell?.magicxp!
-					).toLocaleString()} Magic XP, ${Number(
-						totalHP
-					).toLocaleString()} Defence XP and ${Math.round(
+					).toLocaleString()} Magic XP, ${Number(totalHP).toLocaleString()} Defence XP and ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Hitpoints XP.`;
 					if (newMagicLevel > currentMagicLevel) {
@@ -296,51 +271,41 @@ export default async function combatXPReciever(
 						str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
 					}
 					return str;
-					case 'accurate':
-						await user.addXP(
-							SkillsEnum.Magic,
-							Math.round(2 * totalHP));
-						await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
-						newMagicLevel = user.skillLevel(SkillsEnum.Magic);
-						newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
-						str = `\nYou also received ${(
-							Math.round(2 * totalHP)
-						).toLocaleString()} Magic XP and ${Math.round(
-							1.33 * totalHP
-						).toLocaleString()} Hitpoints XP.`;
-						if (newMagicLevel > currentMagicLevel) {
-							str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
-						}
-						if (newHitpointsLevel > currentHitpointsLevel) {
-							str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
-						}
-						return str;
-					case 'longrange':
-						await user.addXP(
-							SkillsEnum.Magic,
-							Math.round(2 * totalHP));
-						await user.addXP(SkillsEnum.Defence, Number(totalHP));
-						await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
-						newMagicLevel = user.skillLevel(SkillsEnum.Magic);
-						newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
-						newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
-						str = `\nYou also received ${(
-							Math.round(1.33 * totalHP)
-						).toLocaleString()} Magic XP, ${Number(
-							totalHP
-						).toLocaleString()} Defence XP and ${Math.round(
-							1.33 * totalHP
-						).toLocaleString()} Hitpoints XP.`;
-						if (newMagicLevel > currentMagicLevel) {
-							str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
-						}
-						if (newDefenceLevel > currentDefenceLevel) {
-							str += `\n\n${user.minionName}'s Defence level is now ${newDefenceLevel}!`;
-						}
-						if (newHitpointsLevel > currentHitpointsLevel) {
-							str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
-						}
-						return str;
+				case 'accurate':
+					await user.addXP(SkillsEnum.Magic, Math.round(2 * totalHP));
+					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
+					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
+					str = `\nYou also received ${Math.round(2 * totalHP).toLocaleString()} Magic XP and ${Math.round(
+						1.33 * totalHP
+					).toLocaleString()} Hitpoints XP.`;
+					if (newMagicLevel > currentMagicLevel) {
+						str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
+					}
+					if (newHitpointsLevel > currentHitpointsLevel) {
+						str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
+					}
+					return str;
+				case 'longrange':
+					await user.addXP(SkillsEnum.Magic, Math.round(2 * totalHP));
+					await user.addXP(SkillsEnum.Defence, Number(totalHP));
+					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
+					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
+					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
+					str = `\nYou also received ${Math.round(1.33 * totalHP).toLocaleString()} Magic XP, ${Number(
+						totalHP
+					).toLocaleString()} Defence XP and ${Math.round(1.33 * totalHP).toLocaleString()} Hitpoints XP.`;
+					if (newMagicLevel > currentMagicLevel) {
+						str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
+					}
+					if (newDefenceLevel > currentDefenceLevel) {
+						str += `\n\n${user.minionName}'s Defence level is now ${newDefenceLevel}!`;
+					}
+					if (newHitpointsLevel > currentHitpointsLevel) {
+						str += `\n\n${user.minionName}'s Hitpoints level is now ${newHitpointsLevel}!`;
+					}
+					return str;
 			}
 			break;
 	}

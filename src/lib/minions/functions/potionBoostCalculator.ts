@@ -143,10 +143,7 @@ const magePotionsPrio: PotionSimple[] = [
 	}
 ];
 
-export default function potionBoostCalculator(
-	user: KlasaUser,
-	combatSkill: SkillsEnum
-): [number, string] {
+export default function potionBoostCalculator(user: KlasaUser, combatSkill: SkillsEnum): [number, string] {
 	const pickedPotions = user.settings.get(UserSettings.SelectedPotions);
 
 	switch (combatSkill) {
@@ -155,8 +152,7 @@ export default function potionBoostCalculator(
 				if (pickedPotions.includes(attackPotion.name.toLowerCase())) {
 					return [
 						Math.floor(
-							user.skillLevel(SkillsEnum.Attack) * attackPotion.multipler +
-								attackPotion.addition
+							user.skillLevel(SkillsEnum.Attack) * attackPotion.multipler + attackPotion.addition
 						) / 2,
 						attackPotion.name
 					];
@@ -168,8 +164,7 @@ export default function potionBoostCalculator(
 				if (pickedPotions.includes(strengthPotion.name.toLowerCase())) {
 					return [
 						Math.floor(
-							user.skillLevel(SkillsEnum.Strength) * strengthPotion.multipler +
-								strengthPotion.addition
+							user.skillLevel(SkillsEnum.Strength) * strengthPotion.multipler + strengthPotion.addition
 						) / 2,
 						strengthPotion.name
 					];
@@ -181,8 +176,7 @@ export default function potionBoostCalculator(
 				if (pickedPotions.includes(defencePotion.name.toLowerCase())) {
 					return [
 						Math.floor(
-							user.skillLevel(SkillsEnum.Defence) * defencePotion.multipler +
-								defencePotion.addition
+							user.skillLevel(SkillsEnum.Defence) * defencePotion.multipler + defencePotion.addition
 						) / 2,
 						defencePotion.name
 					];
@@ -194,8 +188,7 @@ export default function potionBoostCalculator(
 				if (pickedPotions.includes(hitpointsPotion.name.toLowerCase())) {
 					return [
 						Math.floor(
-							user.skillLevel(SkillsEnum.Hitpoints) * hitpointsPotion.multipler +
-								hitpointsPotion.addition
+							user.skillLevel(SkillsEnum.Hitpoints) * hitpointsPotion.multipler + hitpointsPotion.addition
 						) / 2,
 						hitpointsPotion.name
 					];
@@ -206,10 +199,8 @@ export default function potionBoostCalculator(
 			for (const rangePotion of rangePotionsPrio) {
 				if (pickedPotions.includes(rangePotion.name.toLowerCase())) {
 					return [
-						Math.floor(
-							user.skillLevel(SkillsEnum.Ranged) * rangePotion.multipler +
-								rangePotion.addition
-						) / 2,
+						Math.floor(user.skillLevel(SkillsEnum.Ranged) * rangePotion.multipler + rangePotion.addition) /
+							2,
 						rangePotion.name
 					];
 				}
@@ -219,10 +210,7 @@ export default function potionBoostCalculator(
 			for (const magePotion of magePotionsPrio) {
 				if (pickedPotions.includes(magePotion.name.toLowerCase())) {
 					return [
-						Math.floor(
-							user.skillLevel(SkillsEnum.Magic) * magePotion.multipler +
-								magePotion.addition
-						) / 2,
+						Math.floor(user.skillLevel(SkillsEnum.Magic) * magePotion.multipler + magePotion.addition) / 2,
 						magePotion.name
 					];
 				}

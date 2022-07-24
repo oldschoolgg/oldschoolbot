@@ -75,7 +75,7 @@ export default async function rangeCalculator(
 	}
 	const rangeGear = user.settings.get(UserSettings.Gear.Range);
 
-	if (!rangeGear) throw `No range gear on user.`;
+	if (!rangeGear) throw 'No range gear on user.';
 	let gearStats = sumOfSetupStats(user.getGear('range'));
 
 	if (rangeWeapon.name.toLowerCase() === 'toxic blowpipe') {
@@ -98,8 +98,7 @@ export default async function rangeCalculator(
 			break;
 		}
 	}
-	let effectiveRangeStr =
-		Math.floor(user.skillLevel(SkillsEnum.Ranged) + rangePotionBoost) * prayerRangeBonus + 8;
+	let effectiveRangeStr = Math.floor(user.skillLevel(SkillsEnum.Ranged) + rangePotionBoost) * prayerRangeBonus + 8;
 
 	if (combatStyle === 'accurate') {
 		effectiveRangeStr += 3;
@@ -141,9 +140,7 @@ export default async function rangeCalculator(
 		}
 		if (
 			rangeMaxHitWeaponBonus.againstAttribute &&
-			currentMonsterData.attributes.find(
-				_attribue => _attribue === rangeMaxHitWeaponBonus.againstAttribute
-			)
+			currentMonsterData.attributes.find(_attribue => _attribue === rangeMaxHitWeaponBonus.againstAttribute)
 		) {
 			maxHit *= rangeMaxHitWeaponBonus.damageBoost;
 			break;
@@ -162,15 +159,10 @@ export default async function rangeCalculator(
 			break;
 		}
 		if (hasItemEquipped(itemID('Twisted bow'), rangeGear)) {
-			const twistBowMagicPick = Math.max(
-				currentMonsterData.magicLevel,
-				currentMonsterData.attackMagic
-			);
+			const twistBowMagicPick = Math.max(currentMonsterData.magicLevel, currentMonsterData.attackMagic);
 			maxHit *=
 				Math.min(
-					250 +
-						(3 * twistBowMagicPick - 14) / 100 -
-						Math.pow((3 * twistBowMagicPick) / 10 - 140, 2) / 100,
+					250 + (3 * twistBowMagicPick - 14) / 100 - Math.pow((3 * twistBowMagicPick) / 10 - 140, 2) / 100,
 					250
 				) / 100;
 			break;
@@ -180,8 +172,7 @@ export default async function rangeCalculator(
 	maxHit = Math.floor(maxHit);
 
 	// Calculate effective ranged attack
-	let effectiveRangeAttack =
-		Math.floor(user.skillLevel(SkillsEnum.Ranged) + rangePotionBoost) * prayerRangeBonus + 8;
+	let effectiveRangeAttack = Math.floor(user.skillLevel(SkillsEnum.Ranged) + rangePotionBoost) * prayerRangeBonus + 8;
 
 	if (combatStyle === 'accurate') {
 		effectiveRangeAttack += 3;
@@ -225,15 +216,10 @@ export default async function rangeCalculator(
 	) {
 		attackRoll *= 1.3;
 	} else if (hasItemEquipped(itemID('Twisted bow'), rangeGear)) {
-		const twistBowMagicPick = Math.max(
-			currentMonsterData.magicLevel,
-			currentMonsterData.attackMagic
-		);
+		const twistBowMagicPick = Math.max(currentMonsterData.magicLevel, currentMonsterData.attackMagic);
 		attackRoll *=
 			Math.min(
-				140 +
-					(3 * twistBowMagicPick - 10) / 100 -
-					Math.pow((3 * twistBowMagicPick) / 10 - 100, 2) / 100,
+				140 + (3 * twistBowMagicPick - 10) / 100 - Math.pow((3 * twistBowMagicPick) / 10 - 100, 2) / 100,
 				140
 			) / 100;
 	}
@@ -262,9 +248,7 @@ export default async function rangeCalculator(
 	const DamagePerHit = (maxHit * hitChance) / 2;
 
 	let rangeAttackSpeed =
-		combatStyle === 'rapid'
-			? rangeWeapon.weapon.attack_speed - 1
-			: rangeWeapon.weapon.attack_speed;
+		combatStyle === 'rapid' ? rangeWeapon.weapon.attack_speed - 1 : rangeWeapon.weapon.attack_speed;
 	const DPS = DamagePerHit / (rangeAttackSpeed * 0.6);
 
 	// Calculates hits required, combat time and average monster kill speed.

@@ -395,7 +395,7 @@ const Arceuus: Castable[] = [
 		tickRate: 4
 	},
 	{
-		name: `Fenkenstrain's castle teleport`,
+		name: "Fenkenstrain's castle teleport",
 		level: 48,
 		magicxp: 50,
 		category: 'Teleport',
@@ -403,7 +403,7 @@ const Arceuus: Castable[] = [
 		tickRate: 4
 	},
 	{
-		name: `West ardougne teleport`,
+		name: 'West ardougne teleport',
 		level: 61,
 		magicxp: 68,
 		category: 'Teleport',
@@ -411,7 +411,7 @@ const Arceuus: Castable[] = [
 		tickRate: 4
 	},
 	{
-		name: `Harmony island teleport`,
+		name: 'Harmony island teleport',
 		level: 65,
 		magicxp: 74,
 		category: 'Teleport',
@@ -419,7 +419,7 @@ const Arceuus: Castable[] = [
 		tickRate: 4
 	},
 	{
-		name: `Cemetery teleport`,
+		name: 'Cemetery teleport',
 		level: 71,
 		magicxp: 82,
 		category: 'Teleport',
@@ -427,7 +427,7 @@ const Arceuus: Castable[] = [
 		tickRate: 4
 	},
 	{
-		name: `Barrows teleport`,
+		name: 'Barrows teleport',
 		level: 83,
 		magicxp: 90,
 		category: 'Teleport',
@@ -435,7 +435,7 @@ const Arceuus: Castable[] = [
 		tickRate: 4
 	},
 	{
-		name: `Aple atoll teleport`,
+		name: 'Aple atoll teleport',
 		level: 90,
 		magicxp: 100,
 		category: 'Teleport',

@@ -77,7 +77,7 @@ const magePrayerPrio: PrayerSimple[] = [
 
 export default async function autoPrayerPicker(msg: KlasaMessage, combatSkill: CombatsEnum) {
 	if (combatSkill === CombatsEnum.Auto || combatSkill === CombatsEnum.NoCombat)
-		throw `Wrong input to autoPrayerPicker function`;
+		throw 'Wrong input to autoPrayerPicker function';
 
 	const unlockedPrayers = msg.author.settings.get(UserSettings.UnlockedPrayers);
 	const userPrayerLevel = msg.author.skillLevel(SkillsEnum.Prayer);
@@ -86,57 +86,33 @@ export default async function autoPrayerPicker(msg: KlasaMessage, combatSkill: C
 		case CombatsEnum.Melee:
 			for (const simplePrayer of meleePrayerPrio) {
 				if (userPrayerLevel < simplePrayer.level) continue;
-				if (
-					simplePrayer.unlockable &&
-					!unlockedPrayers.includes(simplePrayer.name.toLowerCase())
-				)
-					continue;
+				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
 
-				await msg.author.settings.update(
-					UserSettings.SelectedPrayers,
-					simplePrayer.name.toLowerCase(),
-					{
-						arrayAction: ArrayActions.Overwrite
-					}
-				);
+				await msg.author.settings.update(UserSettings.SelectedPrayers, simplePrayer.name.toLowerCase(), {
+					arrayAction: ArrayActions.Overwrite
+				});
 				break;
 			}
 			break;
 		case CombatsEnum.Range:
 			for (const simplePrayer of rangePrayerPrio) {
 				if (userPrayerLevel < simplePrayer.level) continue;
-				if (
-					simplePrayer.unlockable &&
-					!unlockedPrayers.includes(simplePrayer.name.toLowerCase())
-				)
-					continue;
+				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
 
-				await msg.author.settings.update(
-					UserSettings.SelectedPrayers,
-					simplePrayer.name.toLowerCase(),
-					{
-						arrayAction: ArrayActions.Overwrite
-					}
-				);
+				await msg.author.settings.update(UserSettings.SelectedPrayers, simplePrayer.name.toLowerCase(), {
+					arrayAction: ArrayActions.Overwrite
+				});
 				break;
 			}
 			break;
 		case CombatsEnum.Mage:
 			for (const simplePrayer of magePrayerPrio) {
 				if (userPrayerLevel < simplePrayer.level) continue;
-				if (
-					simplePrayer.unlockable &&
-					!unlockedPrayers.includes(simplePrayer.name.toLowerCase())
-				)
-					continue;
+				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
 
-				await msg.author.settings.update(
-					UserSettings.SelectedPrayers,
-					simplePrayer.name.toLowerCase(),
-					{
-						arrayAction: ArrayActions.Overwrite
-					}
-				);
+				await msg.author.settings.update(UserSettings.SelectedPrayers, simplePrayer.name.toLowerCase(), {
+					arrayAction: ArrayActions.Overwrite
+				});
 				break;
 			}
 			break;

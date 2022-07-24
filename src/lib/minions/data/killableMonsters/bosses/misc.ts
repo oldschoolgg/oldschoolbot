@@ -21,14 +21,13 @@ const killableBosses: KillableMonster[] = [
 		qpRequired: 205,
 		levelRequirements: {
 			prayer: 43
-		},		
+		},
 		defaultStyleToUse: GearStat.AttackRanged,
 		mechanicsTime: Time.Second * 24,
 		bankTripTime: Time.Second * 40,
 		killsPerBankTrip: 5,
 		respawnTime: 2.4 * Time.Second
-
-	}/*,
+	} /* ,
 		{
 		id: Monsters.GiantMole.id,
 		name: Monsters.GiantMole.name,
@@ -328,4 +327,3 @@ const killableBosses: KillableMonster[] = [
 ];
 
 export default killableBosses;
-
