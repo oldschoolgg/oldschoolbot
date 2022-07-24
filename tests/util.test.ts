@@ -99,6 +99,19 @@ describe('util', () => {
 		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
 	});
 
+	test('sellStorePriceOfItem', () => {
+		const item = getOSItem('Dragon pickaxe');
+		const { cost } = item;
+
+		let expectedOneQty =
+			(((0.4 - 0.015 * Math.min(1 - 1, 10)) * Math.min(1, 11) + Math.max(1 - 11, 0) * 0.1) * cost) / 1;
+		let expectedTwentytwoQty =
+			(((0.4 - 0.015 * Math.min(22 - 1, 10)) * Math.min(22, 11) + Math.max(22 - 11, 0) * 0.1) * cost) / 22;
+		expect(sellStorePriceOfItem(item, 1)).toEqual({ price: expectedOneQty, basePrice: cost });
+		expect(sellStorePriceOfItem(item, 22)).toEqual({ price: expectedTwentytwoQty, basePrice: cost });
+		expect(sellStorePriceOfItem(getOSItem('A yellow square'), 1)).toEqual({ price: 0, basePrice: 0 });
+	});
+
 	test('getSkillsOfMahojiUser', () => {
 		expect(getSkillsOfMahojiUser(mockUser(), true).agility).toEqual(73);
 		expect(getSkillsOfMahojiUser(mockUser()).agility).toEqual(1_000_000);

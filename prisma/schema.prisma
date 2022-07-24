@@ -679,6 +679,14 @@ model StashUnit {
   @@map("stash_unit")
 }
 
+model UserStats {
+  user_id         BigInt @id
+  sell_gp         BigInt @default(0)
+  items_sold_bank Json   @default("{}") @db.Json
+
+  @@map("user_stats")
+}
+
 enum command_usage_status {
   Unknown
   Success

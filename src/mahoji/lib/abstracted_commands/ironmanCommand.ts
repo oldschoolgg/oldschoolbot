@@ -86,6 +86,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		await prisma.newUser.delete({ where: { id: user.id } }).catch(noOp);
 		await prisma.activity.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 		await prisma.stashUnit.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
+		await prisma.userStats.deleteMany({ where: { user_id: BigInt(user.id) } }).catch(noOp);
 		await prisma.tameActivity.deleteMany({ where: { user_id: user.id } });
 		await prisma.tame.deleteMany({ where: { user_id: user.id } });
 		await prisma.fishingContestCatch.deleteMany({ where: { user_id: BigInt(user.id) } });
