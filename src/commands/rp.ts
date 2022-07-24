@@ -10,7 +10,7 @@ import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { CLIENT_ID, production } from '../config';
+import { CLIENT_ID } from '../config';
 import {
 	badges,
 	BitField,
@@ -41,7 +41,7 @@ import {
 	itemNameFromID,
 	stringMatches
 } from '../lib/util';
-import getOSItem, { getItem } from '../lib/util/getOSItem';
+import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 import { makeBankImage, makeBankImageKlasa } from '../lib/util/makeBankImage';
@@ -492,17 +492,6 @@ ${
 				});
 				return msg.channel.send(`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`);
 			}
-			case 'gptrack': {
-				return msg.channel.send(`
-**Sell** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceSellingItems)}
-**PvM/Clues** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot)}
-**Alch** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching)}
-**Pickpocket** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket)}
-**Dice** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice)}
-**Open** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen)}
-**Daily** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily)}
-`);
-			}
 			case 'patreon': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				msg.channel.send('Running patreon task...');
@@ -869,31 +858,6 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
-			}
-			case 'itemdata': {
-				if (typeof input !== 'string') return;
-				const item = getItem(input);
-				if (!item) return;
-				return msg.channel.send(JSON.stringify(item, null, 2));
-			}
-			case 'testercheck': {
-				if (production) return;
-				let time = '12hours';
-				if (typeof input === 'string') time = input;
-				const result = await prisma.$queryRawUnsafe<
-					{ username: string; qty: number }[]
-				>(`SELECT "new_user"."username", COUNT(user_id) AS qty
-FROM command_usage
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "command_usage"."user_id"::text
-WHERE date > now() - INTERVAL '${time}'
-GROUP BY "new_user"."username"
-ORDER BY qty DESC;`);
-				return msg.channel.send(
-					result
-						.slice(0, 10)
-						.map(u => `${u.username}: ${u.qty} commands`)
-						.join('\n')
-				);
 			}
 		}
 	}
