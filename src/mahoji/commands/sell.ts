@@ -1,7 +1,7 @@
 import { reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -10,7 +10,7 @@ import { clamp, itemID, toKMB, updateBankSetting, updateGPTrackSetting } from '.
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -126,8 +126,16 @@ export const sellCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bankToSell.bank);
 		await user.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
 
-		updateGPTrackSetting('gp_sell', totalPrice);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
+		await Promise.all([
+			updateGPTrackSetting('gp_sell', totalPrice),
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank),
+			userStatsUpdate(user.id, userStats => ({
+				items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+				sell_gp: {
+					increment: totalPrice
+				}
+			}))
+		]);
 
 		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**${
 			user.isIronman ? ' (General store price)' : ` (${taxRatePercent}% below market price)`
