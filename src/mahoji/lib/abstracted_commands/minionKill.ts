@@ -252,17 +252,18 @@ export async function minionKillCommand(
 	}
 
 	// Calculate Salve amulet boost on task if the monster is undead or similar
-	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-		if (isOnTask && user.hasItemEquippedOrInBank('Salve amulet (i)')) {
-			const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet (ei)');
-			salveAmuletBoost = enhancedBoost ? oneSixthBoost : 20;
-			salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet ${
+	const undeadMonster = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
+	if (undeadMonster && (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic))) {
+		if (user.hasItemEquippedOrInBank('Salve amulet(i)')) {
+			const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet(ei)');
+			salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
+			salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
 				enhancedBoost ? '(ei)' : '(i)'
 			} on non-melee task`;
 		}
-	} else if (isOnTask && user.hasItemEquippedOrInBank('Black mask')) {
-		const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet (e)');
-		salveAmuletBoost = enhancedBoost ? oneSixthBoost : 20;
+	} else if (undeadMonster && user.hasItemEquippedOrInBank('Salve amulet')) {
+		const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet(e)');
+		salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
 		salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${enhancedBoost ? ' (e)' : ''} on melee task`;
 	}
 
