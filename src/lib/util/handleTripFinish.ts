@@ -4,8 +4,8 @@ import { MessageAttachment, MessageCollector, MessageOptions } from 'discord.js'
 import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { ClueTiers } from '../clues/clueTiers';
+import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
@@ -89,7 +89,7 @@ export async function handleTripFinish(
 		message += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	if (clueReceived) {
+	if (clueReceived && perkTier < PerkTier.One) {
 		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
 	}
 
