@@ -260,9 +260,15 @@ export const runecraftCommand: OSBMahojiCommand = {
 			type: 'Runecraft'
 		});
 
-		let response = `${user.minionName} is now turning ${quantity}x Essence into ${
-			runeObj.name
-		}, it'll take around ${formatDuration(
+		let response = `${user.minionName} is now turning ${quantity}x`;
+
+		if (daeyalt_essence) {
+			response += ' Daeyalt ';
+		} else {
+			response += ' Pure ';
+		}
+
+		response += `Essence into ${runeObj.name}, it'll take around ${formatDuration(
 			duration
 		)} to finish, this will take ${numberOfInventories}x trips to the altar. You'll get ${
 			quantityPerEssence * quantity
