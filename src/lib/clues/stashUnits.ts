@@ -436,7 +436,7 @@ export const eliteStashes: StashUnitTier = {
 		{
 			id: 76,
 			desc: 'Entrance of the cavern under the whirlpool',
-			items: resolveItems(['Granite shield', 'Splitbark body', 'Rune heraldic helm'])
+			items: deepResolveItems(['Granite shield', 'Splitbark body', resolveItems(runeHeraldicHelms)])
 		},
 		{
 			id: 77,
