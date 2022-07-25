@@ -11,7 +11,7 @@ import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { CLIENT_ID } from '../config';
+import { CLIENT_ID, production } from '../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../lib/blacklists';
 import {
 	badges,
