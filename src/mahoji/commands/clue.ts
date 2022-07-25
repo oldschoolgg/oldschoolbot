@@ -2,7 +2,7 @@ import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
-import ClueTiers, { ClueTier } from '../../lib/minions/data/clueTiers';
+import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, stringMatches } from '../../lib/util';

@@ -1,5 +1,6 @@
 import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { BitField, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
@@ -33,7 +34,6 @@ import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import {
 	handleMahojiConfirmation,
-	MahojiUserOption,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch,
 	patronMsg
