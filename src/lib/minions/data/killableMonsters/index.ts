@@ -244,7 +244,7 @@ const killableMonsters: KillableMonster[] = [
 		},
 		uniques: resolveItems(['Sraracha', 'Jar of eyes', 'Giant egg sac(full)', 'Sarachnis cudgel']),
 		healAmountNeeded: 9 * 20,
-		attackStyleToUse: GearStat.AttackSlash,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
 		minimumGearRequirements: {
 			melee: {
