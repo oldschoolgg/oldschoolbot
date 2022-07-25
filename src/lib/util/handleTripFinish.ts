@@ -89,7 +89,7 @@ export async function handleTripFinish(
 		message += `\n**Messages:** ${messages.join(', ')}`;
 	}
 
-	if (clueReceived && perkTier < PerkTier.One) {
+	if (clueReceived && perkTier < PerkTier.Two) {
 		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
 	}
 
