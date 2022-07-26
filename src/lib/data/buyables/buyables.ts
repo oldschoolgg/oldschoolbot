@@ -141,23 +141,28 @@ const constructionBuyables: Buyable[] = [
 	{ name: 'Bolt of cloth', outputItems: new Bank({ 'Bolt of cloth': 1 }), gpCost: 5000 },
 	{
 		name: 'Limestone brick',
-		gpCost: 1000
+		gpCost: 1000,
+		ironmanPrice: 40
 	},
 	{
 		name: 'Gold leaf',
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 130_000
 	},
 	{
 		name: 'Marble block',
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 325_000
 	},
 	{
 		name: 'Magic stone',
-		gpCost: 4_000_000
+		gpCost: 4_000_000,
+		ironmanPrice: 975_000
 	},
 	{
 		name: 'Red dye',
-		gpCost: 100_000
+		gpCost: 100_000,
+		ironmanPrice: 25
 	},
 	{
 		name: 'Skull',
@@ -166,6 +171,7 @@ const constructionBuyables: Buyable[] = [
 	{
 		name: 'Fairy enchantment',
 		gpCost: 100_000,
+		ironmanPrice: 100,
 		qpRequired: 23
 	},
 	{
@@ -185,7 +191,8 @@ const constructionBuyables: Buyable[] = [
 	},
 	{
 		name: 'Bucket of water',
-		gpCost: 500
+		gpCost: 500,
+		ironmanPrice: 7
 	}
 ];
 
@@ -933,6 +940,10 @@ const Buyables: Buyable[] = [
 		name: 'Dorgeshuun crossbow',
 		gpCost: 2500
 	},
+	{
+		name: 'Crystal bow',
+		gpCost: 900_000
+	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
@@ -968,7 +979,7 @@ for (const [chompyHat, qty] of chompyHats) {
 }
 
 export const allTeamCapes: Item[] = [];
-for (let i = 1; i < 50; i++) {
+for (let i = 1; i < 51; i++) {
 	allTeamCapes.push(getOSItem(`Team-${i} cape`));
 }
 for (const cape of allTeamCapes) {
