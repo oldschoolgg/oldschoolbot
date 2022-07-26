@@ -55,7 +55,7 @@ export async function tiaraRunecraftCommand({
 		boosts.push('5% for 60+ Agility');
 	}
 
-	if (numTiaraOwned === 0 || quantity === 0 || numTiaraOwned < quantity) {
+	if (numTiaraOwned === 0 || numTiaraOwned < quantity) {
 		return `You don't have enough tiaras to craft ${quantity}x ${tiaraObj.name}. You can acquire some through crafting at a furnance, or purchasing from other players.`;
 	}
 
