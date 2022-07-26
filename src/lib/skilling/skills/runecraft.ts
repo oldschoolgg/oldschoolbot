@@ -17,6 +17,15 @@ export interface Rune {
 	stams?: boolean;
 }
 
+export interface Tiara {
+	xp: number;
+	id: number;
+	name: string;
+	qpRequired?: number;
+	tripLength: number;
+	inputTalisman: Bank;
+}
+
 const Runes: Rune[] = [
 	{
 		xp: 5,
@@ -257,9 +266,108 @@ const RCPouches = [
 	}
 ];
 
+const Tiaras: Tiara[] = [
+	{
+		xp: 25,
+		id: itemID('Air tiara'),
+		name: 'Air tiara',
+		tripLength: Time.Minute,
+		inputTalisman: new Bank({ 'Air talisman': 1 })
+	},
+	{
+		xp: 52.5,
+		id: itemID('Blood tiara'),
+		name: 'Blood tiara',
+		tripLength: Time.Minute,
+		inputTalisman: new Bank({ 'Blood talisman': 1 })
+	},
+	{
+		xp: 37.5,
+		id: itemID('Body tiara'),
+		name: 'Body tiara',
+		tripLength: Time.Minute,
+		inputTalisman: new Bank({ 'Body talisman': 1 })
+	},
+	{
+		xp: 42.5,
+		id: itemID('Chaos tiara'),
+		name: 'Chaos tiara',
+		tripLength: Time.Minute * 2,
+		inputTalisman: new Bank({ 'Chaos talisman': 1 })
+	},
+	{
+		xp: 40,
+		id: itemID('Cosmic tiara'),
+		name: 'Cosmic tiara',
+		tripLength: Time.Minute * 1.3,
+		inputTalisman: new Bank({ 'Cosmic talisman': 1 }),
+		qpRequired: 5
+	},
+	{
+		xp: 50,
+		id: itemID('Death tiara'),
+		name: 'Death tiara',
+		tripLength: Time.Minute * 1.3,
+		inputTalisman: new Bank({ 'Death talisman': 1 }),
+		qpRequired: 10
+	},
+	{
+		xp: 32.5,
+		id: itemID('Earth tiara'),
+		name: 'Earth tiara',
+		tripLength: Time.Minute,
+		inputTalisman: new Bank({ 'Earth talisman': 1 })
+	},
+	{
+		xp: 35,
+		id: itemID('Fire tiara'),
+		name: 'Fire tiara',
+		tripLength: Time.Minute,
+		inputTalisman: new Bank({ 'Fire talisman': 1 })
+	},
+	{
+		xp: 47.5,
+		id: itemID('Law tiara'),
+		name: 'Law tiara',
+		tripLength: Time.Minute * 1.7,
+		inputTalisman: new Bank({ 'Law talisman': 1 }),
+		qpRequired: 10
+	},
+	{
+		xp: 27.5,
+		id: itemID('Mind tiara'),
+		name: 'Mind tiara',
+		tripLength: Time.Minute,
+		inputTalisman: new Bank({ 'Mind talisman': 1 })
+	},
+	{
+		xp: 45,
+		id: itemID('Nature tiara'),
+		name: 'Nature tiara',
+		tripLength: Time.Minute * 1.5,
+		inputTalisman: new Bank({ 'Nature talisman': 1 })
+	},
+	{
+		xp: 30,
+		id: itemID('Water tiara'),
+		name: 'Water tiara',
+		tripLength: Time.Minute,
+		inputTalisman: new Bank({ 'Water talisman': 1 })
+	},
+	{
+		xp: 52.5,
+		id: itemID('Wrath tiara'),
+		name: 'Wrath tiara',
+		tripLength: Time.Minute,
+		inputTalisman: new Bank({ 'Wrath talisman': 1 }),
+		qpRequired: 200
+	}
+];
+
 const Runecraft = {
 	aliases: ['runecraft', 'runecrafting'],
 	Runes,
+	Tiara: Tiaras,
 	id: SkillsEnum.Runecraft,
 	emoji: Emoji.Runecraft,
 	timePerInventory: Time.Minute,

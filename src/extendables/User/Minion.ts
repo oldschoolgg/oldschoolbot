@@ -619,6 +619,9 @@ export default class extends Extendable {
 					data.quantity
 				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
+			case 'TiaraRunecraft': {
+				return `${this.minionName} is currently runecrafting tiaras at the Altar. ${formattedDuration}`;
+			}
 			case 'Easter':
 			case 'BlastFurnace': {
 				throw new Error('Removed');

@@ -145,6 +145,8 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.Nex;
 		case 'TroubleBrewing':
 			return Tasks.TroubleBrewing;
+		case 'TiaraRunecraft':
+			return Tasks.TiaraRunecraft;
 		case 'Easter':
 		case 'BlastFurnace':
 			return Tasks.REMOVED;
