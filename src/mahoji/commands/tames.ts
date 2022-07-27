@@ -12,6 +12,7 @@ import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/
 
 import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { KillableMonster } from '../../lib/minions/types';
@@ -637,7 +638,8 @@ async function feedCommand(interaction: SlashCommandInteraction, user: KlasaUser
 
 	let specialStrArr = [];
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
-		if (bankToAdd.has(item.id)) {
+		const similarItems = [item.id, ...getSimilarItems(item.id)];
+		if (similarItems.some(si => bankToAdd.has(si))) {
 			if (!tameSpeciesCanBeFedThis.includes(species!.type)) {
 				await handleMahojiConfirmation(
 					interaction,
