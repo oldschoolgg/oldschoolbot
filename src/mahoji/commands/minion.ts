@@ -1,5 +1,7 @@
 import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
+import { randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { BitField, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
@@ -33,11 +35,21 @@ import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import {
 	handleMahojiConfirmation,
-	MahojiUserOption,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch,
 	patronMsg
 } from '../mahojiSettings';
+
+const patMessages = [
+	'You pat {name} on the head.',
+	'You gently pat {name} on the head, they look back at you happily.',
+	'You pat {name} softly on the head, and thank them for their hard work.',
+	'You pat {name} on the head, they feel happier now.',
+	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
+	'You give {name} head pats, they get comfortable and start falling asleep.'
+];
+
+const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
 export const minionCommand: OSBMahojiCommand = {
 	name: 'minion',
@@ -301,6 +313,11 @@ export const minionCommand: OSBMahojiCommand = {
 					choices: allPossibleStyles.map(i => ({ name: i, value: i }))
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'pat',
+			description: 'Pat your minion on the head!'
 		}
 	],
 	run: async ({
@@ -325,6 +342,7 @@ export const minionCommand: OSBMahojiCommand = {
 		charge?: { item?: string; amount?: number };
 		daily?: {};
 		train?: { style: AttackStyles };
+		pat?: {};
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -412,6 +430,7 @@ export const minionCommand: OSBMahojiCommand = {
 			return dailyCommand(interaction, channelID, user);
 		}
 		if (options.train) return trainCommand(user, options.train.style);
+		if (options.pat) return randomPatMessage(user.minionName);
 
 		return 'Unknown command';
 	}
