@@ -646,7 +646,14 @@ async function feedCommand(interaction: SlashCommandInteraction, user: KlasaUser
 					`Feeding a '${item.name}' to your tame won't give it a perk, are you sure you want to?`
 				);
 			}
-			specialStrArr.push(`**${item.name}**: ${description}`);
+			if (tameHasBeenFed(tame, item.id)) {
+				await handleMahojiConfirmation(
+					interaction,
+					`You already have the perk, '${description}.' Feeding another **${item.name}** won't increase the boost.`
+				);
+			} else {
+				specialStrArr.push(`**${item.name}**: ${description}`);
+			}
 		}
 	}
 	let specialStr = specialStrArr.length === 0 ? '' : `\n\n${specialStrArr.join(', ')}`;
@@ -912,7 +919,7 @@ async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
 **Hatch Date:** ${time(tame.date)} / ${time(tame.date, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame[`max_${species.relevantLevelCategory}_level`]}
 **Boosts:** ${feedableItems
-			.filter(i => [i.item.id, ...getSimilarItems(i.item.id)].some(si => fedItems.has(si)))
+			.filter(i => tameHasBeenFed(tame, i.item.id))
 			.map(i => `${i.item.name} (${i.description})`)
 			.join(', ')}`,
 		attachments: [image.file, fedImage.file]
