@@ -912,7 +912,7 @@ async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
 **Hatch Date:** ${time(tame.date)} / ${time(tame.date, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame[`max_${species.relevantLevelCategory}_level`]}
 **Boosts:** ${feedableItems
-			.filter(i => fedItems.has(i.item.id))
+			.filter(i => [i.item.id, ...getSimilarItems(i.item.id)].some(si => fedItems.has(si)))
 			.map(i => `${i.item.name} (${i.description})`)
 			.join(', ')}`,
 		attachments: [image.file, fedImage.file]
