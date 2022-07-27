@@ -8,12 +8,14 @@ import { Bank } from 'oldschooljs';
 import { getMahojiBank, getSkillsOfMahojiUser } from '../../mahoji/mahojiSettings';
 import { allTeamCapes } from '../data/buyables/buyables';
 import {
+	allChaoticWeapons,
 	barrowsItemArr,
 	boaters,
 	bobShirts,
 	croziers,
 	godBooks,
 	headbands,
+	masterCapesCL,
 	mitres,
 	runeHeraldicHelms,
 	runeHeraldicShields,
@@ -612,6 +614,125 @@ export const masterStashes: StashUnitTier = {
 	]
 };
 
+export const grandmasterStashes: StashUnitTier = {
+	tier: 'Grandmaster',
+	cost: new Bank().add('Elder plank', 4).add('Rune nails', 10).add('Gold leaf', 2),
+	constructionLevel: 99,
+	xp: 2500,
+	units: [
+		{
+			id: 300,
+			desc: 'East of witchaven',
+			items: resolveItems(['Max cape', 'Brown apron'])
+		},
+		{
+			id: 301,
+			desc: 'South of the Ranging guild',
+			items: deepResolveItems([allChaoticWeapons, 'Ignecarus mask'])
+		},
+		{
+			id: 302,
+			desc: 'The Kourend woodlands',
+			items: deepResolveItems([
+				masterCapesCL,
+				resolveItems([
+					'Red Partyhat',
+					'Yellow partyhat',
+					'Blue partyhat',
+					'Purple partyhat',
+					'Green partyhat',
+					'White partyhat'
+				]),
+				'Abyssal whip'
+			])
+		},
+		{
+			id: 303,
+			desc: "Xeric's Lookout",
+			items: deepResolveItems(['Torva full helm', 'Dragon chainbody', 'Dragon plateskirt'])
+		},
+		{
+			id: 304,
+			desc: 'Lovakengj Blast Mine',
+			items: deepResolveItems(['Tzkal cape', 'Dragon battleaxe', 'Treasonous ring'])
+		},
+		{
+			id: 305,
+			desc: 'The Forsaken Tower',
+			items: deepResolveItems([
+				'Castle wars cape (expert)',
+				'Saradomin banner',
+				resolveItems([
+					'Ancient halo',
+					'Armadyl halo',
+					'Bandos halo',
+					'Brassica halo',
+					'Guthix halo',
+					'Saradomin halo',
+					'Seren halo',
+					'Zamorak halo'
+				])
+			])
+		},
+		{
+			id: 306,
+			desc: 'Outside King Goldemars Keep',
+			items: deepResolveItems(['Dwarven platebody', 'Dragon platelegs', 'Tyrannical ring'])
+		},
+		{
+			id: 307,
+			desc: 'North of Sea Kraken Cove',
+			items: deepResolveItems(['Malediction ward', 'Infernal cape', 'Dragon chainbody'])
+		},
+		{
+			id: 308,
+			desc: 'Fossil Island Tar Swamp',
+			items: deepResolveItems(['Armadyl godsword', 'Armadyl chestplate'])
+		},
+		{
+			id: 309,
+			desc: 'East of the Digsite camp',
+			items: deepResolveItems(['Elder bow', 'Ranging cape(t)', 'Ranger boots'])
+		},
+		{
+			id: 310,
+			desc: 'South of Rimmington',
+			items: deepResolveItems(['Royal dragonhide chaps', 'Dragon crossbow', 'Pernix cowl'])
+		},
+		{
+			id: 311,
+			desc: 'Gwenith mine',
+			items: deepResolveItems([
+				"Musketeer's trousers (blue, male)",
+				'Elf-style dress top (black)',
+				'Highland boots (blue, female)'
+			])
+		},
+		{
+			id: 312,
+			desc: 'West of the Falconer',
+			items: deepResolveItems(['Werewolf paws (red, male)', 'Akkorokamui orokami mask', "Shaman's poncho"])
+		},
+		{
+			id: 313,
+			desc: 'West of the Golden Apple Tree',
+			items: deepResolveItems(['Tuxedo jacket', 'Pyjama bottoms', 'Blessed spirit shield'])
+		},
+		{
+			id: 314,
+			desc: 'South of Wintertodt',
+			items: deepResolveItems(['Tuxedo jacket', 'Pyjama bottoms', 'Blessed spirit shield'])
+		}
+	]
+};
+- ring of fire, firemaking cape, Regen bracelet
+- infinity bottoms, Dark bow (green), Bandos chestplate
+- Inquisitor's plateskirt, Hill giant club, Occult necklace
+- Dragon hunter crossbow, Odium ward, Justiciar chestguard
+- Berserker ring (i), Abyssal bludgeon, Primordial boots
+- Dharok's platebody, Elite void robe, Dragon defender
+- Any gorajan head piece, 	Gilded platebody,	Karil's leatherskirt
+- Any 3rd age bottom, Fighter torso, Gilded boots
 export const allStashUnitTiers = [
 	beginnerStashes,
 	easyStashes,
