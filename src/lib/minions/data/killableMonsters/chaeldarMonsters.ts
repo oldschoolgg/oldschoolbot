@@ -363,7 +363,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 20 * 2,
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,
