@@ -102,7 +102,8 @@ const killableMonsters: KillableMonster[] = [
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 100,
 		attackStyleToUse: GearStat.AttackRanged,
-		attackStylesUsed: [GearStat.AttackMagic]
+		attackStylesUsed: [GearStat.AttackMagic],
+		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Attack, SkillsEnum.Defence, SkillsEnum.Strength]
 	},
 	{
 		id: Monsters.DagannothRex.id,
@@ -139,7 +140,8 @@ const killableMonsters: KillableMonster[] = [
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 100,
 		attackStyleToUse: GearStat.AttackMagic,
-		attackStylesUsed: [GearStat.AttackSlash]
+		attackStylesUsed: [GearStat.AttackSlash],
+		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Defence, SkillsEnum.Strength, SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.DagannothSupreme.id,
@@ -180,7 +182,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		healAmountNeeded: 100,
 		attackStyleToUse: GearStat.AttackSlash,
-		attackStylesUsed: [GearStat.AttackRanged]
+		attackStylesUsed: [GearStat.AttackRanged],
+		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.Man.id,
