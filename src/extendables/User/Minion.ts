@@ -842,13 +842,16 @@ export default class extends Extendable {
 			.flat(Infinity) as number[];
 
 		// Get cape object from MasterSkillCapes that matches active skill.
-		const matchingCape = multiplier
-			? Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape
-			: undefined;
+		const matchingCape =
+			multiplier || params.masterCapeBoost
+				? Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape
+				: undefined;
 
 		// If the matching cape [or similar] is equipped, isMatchingCape = matched itemId.
 		const isMatchingCape =
-			multiplier && matchingCape ? allCapes.find(cape => getSimilarItems(matchingCape.id).includes(cape)) : false;
+			(multiplier || params.masterCapeBoost) && matchingCape
+				? allCapes.find(cape => getSimilarItems(matchingCape.id).includes(cape))
+				: false;
 
 		// Get the masterCape itemId for use in text output, and check for non-matching cape.
 		const masterCape = isMatchingCape

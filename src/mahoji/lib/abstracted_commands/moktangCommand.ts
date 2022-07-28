@@ -50,8 +50,8 @@ export const moktangCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({ 'Moktang totem': 1 }),
 		materialCost: new MaterialBank({
-			rocky: 500,
-			magic: 50
+			rocky: 50,
+			magic: 20
 		})
 	}
 ];
