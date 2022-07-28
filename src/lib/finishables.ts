@@ -1,4 +1,4 @@
-import { notEmpty, roll, Time } from 'e';
+import { notEmpty, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 
