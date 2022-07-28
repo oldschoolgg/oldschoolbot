@@ -116,9 +116,9 @@ export const MOKTANG_ID = 391_241;
 const BarTable = new LootTable().add('Bronze bar', 10).add('Iron bar', 10).add('Steel bar', 10);
 
 export const MoktangLootTable = new LootTable()
-	.every(StoneSpiritTable, [2, 5])
+	.every(StoneSpiritTable, [3, 6])
 	.tertiary(1536, 'Mini moktang')
-	.tertiary(1200, 'Volcanic dye')
+	.tertiary(750, 'Volcanic dye')
 	.tertiary(1024, 'Claws frame')
 	.tertiary(128, 'Volcanic shards')
 	.tertiary(5, ClueTable)

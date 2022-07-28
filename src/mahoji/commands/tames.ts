@@ -418,7 +418,7 @@ async function tameImage(user: KlasaUser): CommandResponse {
 			const thisY = tameY + tameImageSize;
 			const iconSize = Math.floor(calcPercentOfNum(75, sprites.gearIconBg.width));
 			ctx.drawImage(sprites.gearIconBg, thisX, thisY, iconSize, iconSize);
-			const icon = await bankTask.getItemImage(52_661);
+			const icon = await bankTask.getItemImage(equippedInThisSlot);
 			const iconWidth = Math.floor(calcPercentOfNum(65, icon.width));
 			const iconHeight = Math.floor(calcPercentOfNum(65, icon.height));
 			ctx.drawImage(

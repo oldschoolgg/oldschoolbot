@@ -19,7 +19,12 @@ export const tameCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Runite igne claws': 1
-		})
+		}),
+		requiredSkills: {
+			smithing: 80,
+			invention: 80,
+			crafting: 80
+		}
 	},
 	{
 		name: 'Dragon igne claws',
@@ -37,7 +42,12 @@ export const tameCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Dragon igne claws': 1
-		})
+		}),
+		requiredSkills: {
+			smithing: 85,
+			invention: 85,
+			crafting: 85
+		}
 	},
 	{
 		name: 'Barrows igne claws',
@@ -54,7 +64,12 @@ export const tameCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Barrows igne claws': 1
-		})
+		}),
+		requiredSkills: {
+			smithing: 90,
+			invention: 90,
+			crafting: 90
+		}
 	},
 	{
 		name: 'Volcanic igne claws',
@@ -72,7 +87,12 @@ export const tameCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Volcanic igne claws': 1
-		})
+		}),
+		requiredSkills: {
+			smithing: 95,
+			invention: 95,
+			crafting: 95
+		}
 	},
 	{
 		name: 'Drygore igne claws',
@@ -89,7 +109,12 @@ export const tameCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Drygore igne claws': 1
-		})
+		}),
+		requiredSkills: {
+			smithing: 100,
+			invention: 100,
+			crafting: 100
+		}
 	},
 	{
 		name: 'Dwarven igne claws',
@@ -106,7 +131,12 @@ export const tameCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Dwarven igne claws': 1
-		})
+		}),
+		requiredSkills: {
+			smithing: 110,
+			invention: 110,
+			crafting: 110
+		}
 	},
 	{
 		name: 'Gorajan igne claws',
@@ -123,6 +153,11 @@ export const tameCreatables: Createable[] = [
 		}),
 		outputItems: new Bank({
 			'Gorajan igne claws': 1
-		})
+		}),
+		requiredSkills: {
+			smithing: 120,
+			invention: 120,
+			crafting: 120
+		}
 	}
 ];
