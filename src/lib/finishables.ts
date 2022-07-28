@@ -1,9 +1,10 @@
-import { notEmpty, roll } from 'e';
+import { notEmpty, roll, Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 
+import { MoktangLootTable } from '../mahoji/lib/abstracted_commands/moktangCommand';
 import { allCollectionLogsFlat } from './data/Collections';
-import { chambersOfXericNormalCL, wintertodtCL } from './data/CollectionsExport';
+import { chambersOfXericNormalCL, moktangCL, wintertodtCL } from './data/CollectionsExport';
 import pets from './data/pets';
 import { WintertodtCrate } from './simulation/wintertodt';
 import { stringMatches } from './util';
@@ -13,7 +14,7 @@ interface KillArgs {
 	accumulatedLoot: Bank;
 }
 
-interface Finishable {
+export interface Finishable {
 	name: string;
 	cl: number[];
 	kill: (args: KillArgs) => Bank;
@@ -46,6 +47,11 @@ export const finishables: Finishable[] = [
 					}
 				})
 			)
+	},
+	{
+		name: 'Moktang',
+		cl: moktangCL,
+		kill: () => MoktangLootTable.roll()
 	}
 ];
 
