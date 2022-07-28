@@ -138,7 +138,11 @@ export const mineCommand: OSBMahojiCommand = {
 			boosts.push('50% for having an Amulet of glory equipped');
 		}
 
-		if (userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe') && skills.strength >= 100) {
+		if (
+			userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe') &&
+			skills.strength >= 100 &&
+			skills.mining >= 105
+		) {
 			timeToMine = reduceNumByPercent(timeToMine, 60);
 			boosts.push('60% for Offhand volcanic pickaxe');
 		}
