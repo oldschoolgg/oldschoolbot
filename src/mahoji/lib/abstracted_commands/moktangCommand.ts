@@ -46,7 +46,7 @@ export const moktangCreatables: Createable[] = [
 	{
 		name: 'Moktang totem',
 		inputItems: new Bank({
-			'Elder rune': 3
+			'Elder rune': 20
 		}),
 		outputItems: new Bank({ 'Moktang totem': 1 }),
 		materialCost: new MaterialBank({
@@ -65,7 +65,7 @@ const requiredPickaxes = resolveItems(['Crystal pickaxe', 'Volcanic pickaxe', 'D
 export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQuantity: number | undefined) {
 	const timeToKill = new PercentCounter(Time.Minute * 15, 'time');
 	const miningLevel = user.skillLevel(SkillsEnum.Mining);
-	if (miningLevel < 85) return 'You need 85 Mining to fight Moktang.';
+	if (miningLevel < 105) return 'You need 105 Mining to fight Moktang.';
 	if (!userHasItemsEquippedAnywhere(user, requiredPickaxes, false)) {
 		return `You need to have one of these pickaxes equipped to fight Moktang: ${requiredPickaxes
 			.map(itemNameFromID)
@@ -85,7 +85,7 @@ export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQu
 	const quantity = Math.min(maxCanDo, inputQuantity ?? maxCanDo);
 	const duration = timeToKill.value * quantity;
 
-	let brewsRequiredPerKill = 4;
+	let brewsRequiredPerKill = 5;
 	const hasDwarven = userHasItemsEquippedAnywhere(user, dwarvenOutfit, true);
 	if (hasDwarven) brewsRequiredPerKill -= 2;
 	const totalBrewsRequired = brewsRequiredPerKill * quantity;
