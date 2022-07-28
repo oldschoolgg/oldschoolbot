@@ -135,8 +135,11 @@ export function lootRoom(room: number): [ItemBank, number] {
 		loot.add('Rocky');
 	}
 
-	if (roll(roomObj.sceptreChance)) {
-		loot.add("Pharaoh's sceptre");
+	for (let i = 0; i < 2; i++) {
+		if (roll(roomObj.sceptreChance)) {
+			loot.add("Pharaoh's sceptre");
+			break;
+		}
 	}
 
 	const amountUrns = rand(9, 14);
