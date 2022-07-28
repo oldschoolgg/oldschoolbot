@@ -74,7 +74,11 @@ export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQu
 	const miningLevelBoost = miningLevel - 84;
 	timeToKill.add(true, 0 - miningLevelBoost, 'Mining level');
 	timeToKill.add(userHasItemsEquippedAnywhere(user, 'Volcanic pickaxe'), -5, 'Volcanic pickaxe');
-	timeToKill.add(userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe'), -3, 'Offhand volcanic pickaxe');
+	timeToKill.add(
+		userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe') && user.skillLevel(SkillsEnum.Strength) >= 100,
+		-3,
+		'Offhand volcanic pickaxe'
+	);
 	timeToKill.add(userHasItemsEquippedAnywhere(user, 'Mining master cape'), -5, 'Mining mastery');
 
 	const maxCanDo = Math.floor(user.maxTripLength('Moktang') / timeToKill.value);

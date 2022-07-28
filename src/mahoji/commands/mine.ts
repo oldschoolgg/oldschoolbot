@@ -16,7 +16,7 @@ const pickaxes = [
 	{
 		id: itemID('Volcanic pickaxe'),
 		reductionPercent: 60,
-		miningLvl: 99
+		miningLvl: 105
 	},
 	{
 		id: itemID('Dwarven pickaxe'),
@@ -138,7 +138,7 @@ export const mineCommand: OSBMahojiCommand = {
 			boosts.push('50% for having an Amulet of glory equipped');
 		}
 
-		if (userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe')) {
+		if (userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe') && skills.strength >= 100) {
 			timeToMine = reduceNumByPercent(timeToMine, 60);
 			boosts.push('60% for Offhand volcanic pickaxe');
 		}
