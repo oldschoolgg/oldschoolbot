@@ -151,13 +151,6 @@ export async function gearEquipCommand(args: {
 	const allGear = getUserGear(user);
 	const currentEquippedGear = allGear[setup];
 
-	if (setup === 'wildy') {
-		await handleMahojiConfirmation(
-			interaction,
-			"You're trying to equip items into your *wildy* setup. ANY item in this setup can potentially be lost if doing Wilderness activities. Please confirm you understand this."
-		);
-	}
-
 	/**
 	 * Handle 2h items
 	 */
