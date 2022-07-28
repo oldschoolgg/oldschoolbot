@@ -1,5 +1,5 @@
 import { notEmpty, randFloat, randInt } from 'e';
-import { KlasaUser } from 'klasa';
+import { ArrayActions, KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
@@ -11,20 +11,14 @@ import { prisma } from '../settings/prisma';
 import { getNewUser } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { SkillsEnum } from '../skilling/types';
-import { bankHasItem, roll, skillsMeetRequirements } from '../util';
+import { bankHasItem, roll, skillsMeetRequirements, stringMatches } from '../util';
 import itemID from '../util/itemID';
 import resolveItems from '../util/resolveItems';
+import { autoslayModes } from './constants';
 import { slayerMasters } from './slayerMasters';
 import { SlayerRewardsShop, SlayerTaskUnlocksEnum } from './slayerUnlocks';
 import { bossTasks } from './tasks/bossTasks';
 import { AssignableSlayerTask, SlayerMaster } from './types';
-
-export enum AutoslayOptionsEnum {
-	Reserved,
-	HighestUnlocked,
-	MaxEfficiency,
-	LowestCombat
-}
 
 export enum SlayerMasterEnum {
 	Reserved,
@@ -449,4 +443,48 @@ ORDER BY qty DESC;`;
 			};
 		})
 		.filter(notEmpty);
+}
+
+export async function setDefaultSlayerMaster(
+	user: KlasaUser,
+	newMaster: string
+): Promise<{ success: boolean; message: string }> {
+	if (!newMaster || newMaster === 'clear') {
+		await user.settings.update(UserSettings.Slayer.RememberSlayerMaster, null);
+		return { success: true, message: 'Saved Slayer master has been erased.' };
+	}
+	const master = slayerMasters.find(
+		sm => stringMatches(newMaster, sm.name) || sm.aliases.some(alias => stringMatches(newMaster, alias))
+	);
+	if (!master) {
+		return { success: false, message: `Couldn't find matching slayer master for '${newMaster}` };
+	}
+	if (!userCanUseMaster(user, master)) {
+		return { success: false, message: `You cannot use ${master.name} to assign tasks yet.` };
+	}
+	await user.settings.update(UserSettings.Slayer.RememberSlayerMaster, master.name);
+	return { success: true, message: `Slayer master updated to: ${master.name}` };
+}
+
+export async function setDefaultAutoslay(
+	user: KlasaUser,
+	newAutoslayMode: string
+): Promise<{ success: boolean; message: string }> {
+	if (!newAutoslayMode || newAutoslayMode === 'clear') {
+		await user.settings.update(UserSettings.Slayer.AutoslayOptions, [], {
+			arrayAction: ArrayActions.Overwrite
+		});
+		return { success: true, message: 'Saved autoslay method has been erased.' };
+	}
+	const autoslayOption = autoslayModes.find(
+		asc =>
+			stringMatches(newAutoslayMode, asc.name) || asc.aliases.some(alias => stringMatches(newAutoslayMode, alias))
+	);
+	if (!autoslayOption) {
+		return { success: false, message: `Couldn't find matching autoslay option for '${newAutoslayMode}` };
+	}
+	await user.settings.update(UserSettings.Slayer.AutoslayOptions, [autoslayOption.key], {
+		arrayAction: ArrayActions.Overwrite
+	});
+	return { success: true, message: `Autoslay method updated to: ${autoslayOption.name} (${autoslayOption.focus})` };
 }

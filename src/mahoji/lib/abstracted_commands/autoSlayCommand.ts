@@ -6,12 +6,8 @@ import { PvMMethod } from '../../../lib/constants';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import {
-	AutoslayOptionsEnum,
-	getCommonTaskName,
-	getUsersCurrentSlayerInfo,
-	SlayerMasterEnum
-} from '../../../lib/slayer/slayerUtil';
+import { AutoslayOptionsEnum } from '../../../lib/slayer/constants';
+import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
 
 interface AutoslayLink {
 	monsterID: number;

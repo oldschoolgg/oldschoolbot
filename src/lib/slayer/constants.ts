@@ -1,33 +1,46 @@
+export enum AutoslayOptionsEnum {
+	Default,
+	HighestUnlocked,
+	MaxEfficiency,
+	LowestCombat
+}
+
 export const slayerMasterChoices = [
-	{ name: 'Duradel', value: 'duradel' },
-	{ name: 'Vannaka', value: 'vannaka' },
-	{ name: 'Konar quo Maten', value: 'konar quo maten' },
-	{ name: 'Nieve', value: 'nieve' },
-	{ name: 'Chaeldar', value: 'chaeldar' },
-	{ name: 'Mazchna', value: 'mazchna' },
-	{ name: 'Turael', value: 'turael' }
-];
+	'Duradel',
+	'Vannaka',
+	'Konar quo Maten',
+	'Nieve',
+	'Chaeldar',
+	'Mazchna',
+	'Turael'
+].map(smc => {
+	return { name: smc, value: smc };
+});
 
 export const autoslayModes = [
 	{
 		name: 'default',
 		aliases: ['default', 'normal'],
-		focus: 'Assigned monster'
+		focus: 'Assigned monster',
+		key: AutoslayOptionsEnum.Default
 	},
 	{
 		name: 'ehp',
 		aliases: ['ehp', 'efficient', 'xp'],
-		focus: 'XP/hr'
+		focus: 'XP/hr',
+		key: AutoslayOptionsEnum.MaxEfficiency
 	},
 	{
 		name: 'boss',
 		aliases: ['boss', 'highest', 'high'],
-		focus: 'Boss/strongest monster'
+		focus: 'Boss/strongest monster',
+		key: AutoslayOptionsEnum.HighestUnlocked
 	},
 	{
 		name: 'low',
 		aliases: ['low', 'lowest', 'speed'],
-		focus: 'Lowest level'
+		focus: 'Lowest level',
+		key: AutoslayOptionsEnum.LowestCombat
 	}
 ];
 

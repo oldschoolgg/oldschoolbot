@@ -48,26 +48,87 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.Subcommand,
+			type: ApplicationCommandOptionType.SubcommandGroup,
 			name: 'manage',
 			description: 'Manage your Slayer task/block list.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'skip',
 					description: 'Skip your current task',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.Boolean,
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'block',
 					description: 'Block your current task.',
 					required: false
 				},
 				{
-					type: ApplicationCommandOptionType.String,
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'unblock',
 					description: 'Unblock a task',
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'assignment',
+							description: 'Assignment to block',
+							required: true,
+							autocomplete: async (value: string) => {
+								// Todo: return matching blocked tasks for the user.
+								return [{ name: 'test', value: `test-${value}` }];
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			name: 'rewards',
+			description: 'Spend your Slayer rewards points.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'unlock',
+					description: 'Unlock tasks, extensions, cosmetics, etc',
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'unlockable',
+							description: 'Unlockable to purchase',
+							required: true,
+							autocomplete: async (value: string) => {
+								// Todo:, return matching unlockables
+								return [{ name: 'test', value: `test-${value}` }];
+							}
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'buy',
+					description: 'Purchase something with points',
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'item',
+							description: 'Item to purchase',
+							required: true,
+							autocomplete: async (value: string) => {
+								// Todo:, return matching purchasables
+								return [{ name: 'test', value: `test-${value}` }];
+							}
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'show',
+					description: 'Show purchased unlocks',
 					required: false
 				}
 			]
@@ -77,13 +138,16 @@ export const slayerCommand: OSBMahojiCommand = {
 		user,
 		options,
 		channelID,
-		userID,
-		interaction
-	}: CommandRunOptions<{
+		userID
+	}: // , interaction
+	CommandRunOptions<{
 		autoslay?: { mode?: string; save?: boolean };
 		task?: { master?: string; save?: boolean };
-		manage?: { skip?: boolean; block?: boolean; unblock?: string };
+		manage?: { skip?: {}; block?: {}; unblock?: { assignment: string } };
+		rewards?: { unlock?: { unlockable: string }; buy?: { item: string }; show?: {} };
 	}>) => {
-		return `${user.username} asked: *${options.question}*, and my answer is **${answer}**.`;
+		console.log(options);
+		console.log(`channel: ${channelID} - user: ${userID}`);
+		return `${user.username} - ${JSON.stringify(options)}`;
 	}
 };
