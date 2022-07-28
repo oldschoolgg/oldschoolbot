@@ -846,6 +846,31 @@ export const configCommand: OSBMahojiCommand = {
 							required: false
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'slayer',
+					description: 'Manage your Slayer options',
+					options: [
+						{
+							...itemOption(),
+							name: 'add',
+							description: 'Add an item to your favorite items.',
+							required: false
+						},
+						{
+							...itemOption(),
+							name: 'remove',
+							description: 'Remove an item from your favorite items.',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset all of your favorite items',
+							required: false
+						}
+					]
 				}
 			]
 		}
