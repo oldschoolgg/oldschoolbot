@@ -71,6 +71,9 @@ export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQu
 			.map(itemNameFromID)
 			.join(', ')}.`;
 	}
+	const totemsOwned = user.bank().amount('Moktang totem');
+	if (totemsOwned === 0) return "You don't have any Moktang totems, you cannot summon the boss!";
+
 	const miningLevelBoost = miningLevel - 84;
 	timeToKill.add(true, 0 - miningLevelBoost, 'Mining level');
 	timeToKill.add(userHasItemsEquippedAnywhere(user, 'Volcanic pickaxe'), -5, 'Volcanic pickaxe');
@@ -82,7 +85,7 @@ export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQu
 	timeToKill.add(userHasItemsEquippedAnywhere(user, 'Mining master cape'), -5, 'Mining mastery');
 
 	const maxCanDo = Math.floor(user.maxTripLength('Moktang') / timeToKill.value);
-	const quantity = Math.min(maxCanDo, inputQuantity ?? maxCanDo);
+	const quantity = Math.max(1, Math.min(totemsOwned, maxCanDo, inputQuantity ?? maxCanDo));
 	const duration = timeToKill.value * quantity;
 
 	let brewsRequiredPerKill = 5;
@@ -91,6 +94,8 @@ export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQu
 	const totalBrewsRequired = brewsRequiredPerKill * quantity;
 	const restoresNeeded = Math.max(1, Math.floor(totalBrewsRequired / 3));
 	const cost = new Bank().add('Heat res. brew', totalBrewsRequired).add('Heat res. restore', restoresNeeded);
+	cost.add('Moktang totem', quantity);
+
 	if (!user.owns(cost))
 		return `You don't have the required items to fight Moktang: ${cost}.${
 			!hasDwarven ? ' Tip: Dwarven armor reduces the amount of brews needed.' : ''
