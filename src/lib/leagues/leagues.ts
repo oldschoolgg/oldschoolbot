@@ -20,6 +20,7 @@ import {
 } from '../../mahoji/lib/abstracted_commands/statCommand';
 import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTiers } from '../clues/clueTiers';
+import { getParsedStashUnits, ParsedUnit } from '../clues/stashUnits';
 import { calcCLDetails } from '../data/Collections';
 import { UserFullGearSetup } from '../gear';
 import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
@@ -78,6 +79,7 @@ interface HasFunctionArgs {
 	smithingSuppliesUsed: Bank;
 	actualClues: Bank;
 	smeltingStats: Bank;
+	stashUnits: ParsedUnit[];
 }
 
 export interface Task {
@@ -272,7 +274,8 @@ export async function leaguesCheckUser(userID: string) {
 		woodcuttingStats,
 		actualClues,
 		ranking,
-		smeltingStats
+		smeltingStats,
+		stashUnits
 	] = await Promise.all([
 		personalConstructionStats(mahojiUser),
 		getPOH(userID),
@@ -291,7 +294,8 @@ export async function leaguesCheckUser(userID: string) {
 		personalWoodcuttingStats(mahojiUser),
 		calcActualClues(mahojiUser),
 		calcLeaguesRanking(roboChimpUser),
-		personalSmeltingStats(mahojiUser)
+		personalSmeltingStats(mahojiUser),
+		getParsedStashUnits(userID)
 	]);
 	const clPercent = calcCLDetails(mahojiUser).percent;
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
@@ -329,7 +333,8 @@ export async function leaguesCheckUser(userID: string) {
 		woodcuttingStats,
 		smithingSuppliesUsed,
 		actualClues,
-		smeltingStats
+		smeltingStats,
+		stashUnits
 	};
 
 	let resStr = '\n';
