@@ -162,14 +162,6 @@ export const slayerCreatables: Createable[] = [
 		GPCost: 0
 	},
 	{
-		name: 'Uncharged black mask',
-		inputItems: new Bank({
-			'Black mask (10)': 1
-		}),
-		outputItems: new Bank({ 'Black mask': 1 }),
-		GPCost: 0
-	},
-	{
 		name: 'Slayer ring (8)',
 		inputItems: new Bank({
 			'Gold bar': 1,
