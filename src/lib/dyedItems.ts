@@ -1,5 +1,59 @@
+import { Item } from 'oldschooljs/dist/meta/types';
+
 import getOSItem from './util/getOSItem';
 
+interface DyedItem {
+	baseItem: Item;
+	dyedVersions: { item: Item; dye: Item }[];
+}
+
+const dwarvenDyed: DyedItem[] = [
+	{
+		baseItem: getOSItem('Dwarven full helm'),
+		dyedVersions: [
+			{
+				item: getOSItem('Dwarven full helm (Volcanic)'),
+				dye: getOSItem('Volcanic dye')
+			}
+		]
+	},
+	{
+		baseItem: getOSItem('Dwarven platebody'),
+		dyedVersions: [
+			{
+				item: getOSItem('Dwarven platebody (Volcanic)'),
+				dye: getOSItem('Volcanic dye')
+			}
+		]
+	},
+	{
+		baseItem: getOSItem('Dwarven platelegs'),
+		dyedVersions: [
+			{
+				item: getOSItem('Dwarven platelegs (Volcanic)'),
+				dye: getOSItem('Volcanic dye')
+			}
+		]
+	},
+	{
+		baseItem: getOSItem('Dwarven gloves'),
+		dyedVersions: [
+			{
+				item: getOSItem('Dwarven gloves (Volcanic)'),
+				dye: getOSItem('Volcanic dye')
+			}
+		]
+	},
+	{
+		baseItem: getOSItem('Dwarven boots'),
+		dyedVersions: [
+			{
+				item: getOSItem('Dwarven boots (Volcanic)'),
+				dye: getOSItem('Volcanic dye')
+			}
+		]
+	}
+];
 const gorajan = [
 	// Warrior
 	{
@@ -141,7 +195,7 @@ const gorajan = [
 	}
 ];
 
-export const dyedItems = [
+export const dyedItems: DyedItem[] = [
 	{
 		baseItem: getOSItem('Drygore rapier'),
 		dyedVersions: [
@@ -290,6 +344,10 @@ export const dyedItems = [
 			{
 				item: getOSItem('Dwarven warnana'),
 				dye: getOSItem('Monkey dye')
+			},
+			{
+				item: getOSItem('Dwarven warhammer (volcanic)'),
+				dye: getOSItem('Volcanic dye')
 			}
 		]
 	},
@@ -352,5 +410,6 @@ export const dyedItems = [
 			}
 		]
 	},
-	...gorajan
+	...gorajan,
+	...dwarvenDyed
 ];

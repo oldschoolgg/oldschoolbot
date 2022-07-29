@@ -60,6 +60,15 @@ export interface ICollection {
 	};
 }
 
+export const moktangCL = resolveItems(['Mini moktang', 'Volcanic dye', 'Claws frame', 'Volcanic shards']);
+
+export const dwarvenOutfit = resolveItems([
+	'Dwarven full helm',
+	'Dwarven platebody',
+	'Dwarven platelegs',
+	'Dwarven boots',
+	'Dwarven gloves'
+]);
 export const boaters = resolveItems([
 	'Red boater',
 	'Green boater',
@@ -2183,7 +2192,8 @@ export const customPetsCL = resolveItems([
 	'Mr. E',
 	'Nexterminator',
 	'Phoenix eggling',
-	'Cogsworth'
+	'Cogsworth',
+	'Mini moktang'
 ]);
 
 export const discontinuedCustomPetsCL = resolveItems([

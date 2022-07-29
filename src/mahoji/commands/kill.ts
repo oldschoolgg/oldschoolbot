@@ -3,7 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { determineKillLimit } from '../../commands/deprecated/kill';
 import { PerkTier } from '../../lib/constants';
-import { stringMatches, toTitleCase } from '../../lib/util';
+import { stringMatches, toKMB, toTitleCase } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
@@ -21,7 +21,8 @@ export const killCommand: OSBMahojiCommand = {
 				return [
 					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
 					{ name: 'nex', aliases: ['nex'] },
-					{ name: 'nightmare', aliases: ['nightmare'] }
+					{ name: 'nightmare', aliases: ['nightmare'] },
+					{ name: 'Moktang', aliases: ['moktang'] }
 				]
 					.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 					.map(i => ({
@@ -63,11 +64,14 @@ export const killCommand: OSBMahojiCommand = {
 			return result.error;
 		}
 
+		const bank = new Bank(result.bank?.bank);
 		const image = await makeBankImage({
-			bank: new Bank(result.bank?.bank),
+			bank,
 			title: result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
 			user
 		});
+
+		result.content += `\n\nAverage of ${toKMB(bank.value() / options.quantity)} GP per kill`;
 		return {
 			attachments: [image.file],
 			content: result.content
