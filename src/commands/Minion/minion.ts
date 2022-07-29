@@ -1,4 +1,3 @@
-import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
@@ -22,33 +21,7 @@ import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContra
 import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
-const patMessages = [
-	'You pat {name} on the head.',
-	'You gently pat {name} on the head, they look back at you happily.',
-	'You pat {name} softly on the head, and thank them for their hard work.',
-	'You pat {name} on the head, they feel happier now.',
-	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
-	'You give {name} head pats, they get comfortable and start falling asleep.'
-];
-
-const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
-
-const subCommands = [
-	'clues',
-	'buy',
-	'pat',
-	'opens',
-	'info',
-	'activities',
-	'lapcounts',
-	'cancel',
-	'train',
-	'tempcl',
-	'blowpipe',
-	'bp',
-	'charge',
-	'data'
-];
+const subCommands = ['buy', 'pat', 'info', 'blowpipe', 'bp'];
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -272,22 +245,6 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async train(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/minion train`');
-	}
-
-	async data(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/tools patron stats`');
-	}
-
-	async lapcounts(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/minion stats stat:Personal Agility Stats`');
-	}
-
-	async charge(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/minion charge`');
-	}
-
 	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		return this.blowpipe(msg, [input]);
 	}
@@ -309,13 +266,8 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	@requiresMinion
 	async pat(msg: KlasaMessage) {
-		return msg.channel.send(randomPatMessage(msg.author.minionName));
-	}
-
-	async clues(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/minion stats stat:Personal Clue Stats`');
+		return msg.channel.send('This command was moved to `/minion pat`');
 	}
 
 	async buy(msg: KlasaMessage) {
@@ -324,9 +276,5 @@ export default class MinionCommand extends BotCommand {
 				await minionBuyCommand(msg.author, await mahojiUsersSettingsFetch(msg.author.id), false)
 			)
 		);
-	}
-
-	async opens(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/minion stats stat:Personal Open Stats`');
 	}
 }
