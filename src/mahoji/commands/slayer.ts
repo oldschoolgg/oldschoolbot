@@ -1,7 +1,10 @@
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { Monsters } from 'oldschooljs';
 
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
+import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const slayerCommand: OSBMahojiCommand = {
 	name: 'slayer',
@@ -73,14 +76,30 @@ export const slayerCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'assignment',
-							description: 'Assignment to block',
+							description: 'Assignment to unblock',
 							required: true,
-							autocomplete: async (value: string) => {
-								// Todo: return matching blocked tasks for the user.
-								return [{ name: 'test', value: `test-${value}` }];
+							autocomplete: async (value: string, user: APIUser) => {
+								const blockList = await mahojiUsersSettingsFetch(user.id, { slayer_blocked_ids: true });
+								if (blockList.slayer_blocked_ids.length === 0) {
+									return [{ name: "You don't have any monsters blocked", value: '' }];
+								}
+								const blockedMonsters = blockList.slayer_blocked_ids.map(mId =>
+									Monsters.find(m => m.id === mId)
+								);
+								return blockedMonsters
+									.filter(m => (!value ? true : m!.name.toLowerCase().includes(value.toLowerCase())))
+									.map(m => {
+										return { name: m!.name, value: m!.name };
+									});
 							}
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'list_blocks',
+					description: 'List your blocked tasks.',
+					required: false
 				}
 			]
 		},
@@ -101,8 +120,18 @@ export const slayerCommand: OSBMahojiCommand = {
 							description: 'Unlockable to purchase',
 							required: true,
 							autocomplete: async (value: string) => {
-								// Todo:, return matching unlockables
-								return [{ name: 'test', value: `test-${value}` }];
+								return SlayerRewardsShop.filter(
+									r =>
+										!r.item &&
+										(!value
+											? true
+											: r.name.toLowerCase().includes(value) ||
+											  r.aliases?.some(alias =>
+													alias.toLowerCase().includes(value.toLowerCase())
+											  ))
+								).map(m => {
+									return { name: m.name, value: m.name };
+								});
 							}
 						}
 					]
@@ -119,8 +148,18 @@ export const slayerCommand: OSBMahojiCommand = {
 							description: 'Item to purchase',
 							required: true,
 							autocomplete: async (value: string) => {
-								// Todo:, return matching purchasables
-								return [{ name: 'test', value: `test-${value}` }];
+								return SlayerRewardsShop.filter(
+									r =>
+										r.item &&
+										(!value
+											? true
+											: r.name.toLowerCase().includes(value) ||
+											  r.aliases?.some(alias =>
+													alias.toLowerCase().includes(value.toLowerCase())
+											  ))
+								).map(m => {
+									return { name: m.name, value: m.name };
+								});
 							}
 						}
 					]
@@ -143,7 +182,7 @@ export const slayerCommand: OSBMahojiCommand = {
 	CommandRunOptions<{
 		autoslay?: { mode?: string; save?: boolean };
 		task?: { master?: string; save?: boolean };
-		manage?: { skip?: {}; block?: {}; unblock?: { assignment: string } };
+		manage?: { skip?: {}; block?: {}; unblock?: { assignment: string }; list_blocks?: {} };
 		rewards?: { unlock?: { unlockable: string }; buy?: { item: string }; show?: {} };
 	}>) => {
 		console.log(options);
