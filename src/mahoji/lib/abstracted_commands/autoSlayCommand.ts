@@ -330,7 +330,7 @@ export async function autoSlayCommand(
 			}
 		}
 
-		if (!maxMobName) {
+		if (maxMobName) {
 			return runCommand({
 				commandName: 'k',
 				args: { name: maxMobName },
