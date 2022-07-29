@@ -172,7 +172,7 @@ export async function gearEquipCommand(args: {
 		return "You can't equip more than 1 of this item at once, as it isn't stackable!";
 	}
 
-	if (itemToEquip.equipment?.requirements) {
+	if (itemToEquip.equipment.requirements) {
 		if (!skillsMeetRequirements(getSkillsOfMahojiUser(user), itemToEquip.equipment.requirements)) {
 			return `You can't equip a ${
 				itemToEquip.name
