@@ -173,13 +173,10 @@ export async function gearEquipCommand(args: {
 	}
 
 	if (!skillsMeetRequirements(getSkillsOfMahojiUser(user), itemToEquip.equipment.requirements)) {
-			return `You can't equip a ${
-				itemToEquip.name
-			} because you don't have the required stats: ${formatSkillRequirements(
-				itemToEquip.equipment.requirements
-			)}.`;
+		return `You can't equip a ${
+			itemToEquip.name
+		} because you don't have the required stats: ${formatSkillRequirements(itemToEquip.equipment.requirements)}.`;
 	}
-	
 
 	if (setup === 'wildy') {
 		await handleMahojiConfirmation(
