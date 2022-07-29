@@ -166,7 +166,7 @@ export const slayerCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'show',
+					name: 'show_unlocks',
 					description: 'Show purchased unlocks',
 					required: false
 				}
@@ -183,7 +183,7 @@ export const slayerCommand: OSBMahojiCommand = {
 		autoslay?: { mode?: string; save?: boolean };
 		task?: { master?: string; save?: boolean };
 		manage?: { skip?: {}; block?: {}; unblock?: { assignment: string }; list_blocks?: {} };
-		rewards?: { unlock?: { unlockable: string }; buy?: { item: string }; show?: {} };
+		rewards?: { unlock?: { unlockable: string }; buy?: { item: string }; show_unlocks?: {} };
 	}>) => {
 		console.log(options);
 		console.log(`channel: ${channelID} - user: ${userID}`);
