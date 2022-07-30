@@ -10,7 +10,7 @@ import { CommentStream, SubmissionStream } from 'snoostorm';
 import { GetUserBankOptions } from '../../extendables/User/Bank';
 import { BitField, PerkTier } from '../constants';
 import { GearSetupType, UserFullGearSetup } from '../gear/types';
-import { AttackStyles } from '../minions/functions';
+import { CombatStyles } from '../minions/functions';
 import { AddXpParams, KillableMonster } from '../minions/types';
 import { MinigameName } from '../settings/minigames';
 import { CustomGet } from '../settings/types/UserSettings';
@@ -167,8 +167,8 @@ declare module 'discord.js' {
 		bank(options?: GetUserBankOptions): Bank;
 		getUserFavAlchs(duration: number): Item[];
 		getGear(gearType: GearSetupType): Gear;
-		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
-		getAttackStyles(): AttackStyles[];
+		setCombatStyles(newStyles: CombatStyles[]): Promise<void>;
+		getCombatStyles(): CombatStyles[];
 		owns(bank: ItemBank | Bank | string | number): boolean;
 		completion(): {
 			percent: number;

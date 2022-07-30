@@ -13,60 +13,60 @@ import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
 
-export const attackStylesArr = [
+export const combatStylesArr = [
 	SkillsEnum.Attack,
 	SkillsEnum.Strength,
 	SkillsEnum.Defence,
 	SkillsEnum.Magic,
 	SkillsEnum.Ranged
 ] as const;
-export type AttackStyles = typeof attackStylesArr[number];
+export type CombatStyles = typeof combatStylesArr[number];
 
 const miscHpMap: Record<number, number> = {
 	9415: NIGHTMARES_HP,
 	3127: 250
 };
 
-export function resolveAttackStyles(
+export function resolveCombatStyles(
 	user: KlasaUser,
 	params: ResolveAttackStylesParams
-): [KillableMonster | undefined, Monster | undefined, AttackStyles[]] {
+): [KillableMonster | undefined, Monster | undefined, CombatStyles[]] {
 	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
 	const osjsMon = Monsters.get(params.monsterID);
 
 	// The styles chosen by this user to use.
-	let attackStyles = user.getAttackStyles();
+	let combatStyles = user.getCombatStyles();
 
 	// The default attack styles to use for this monster, defaults to shared (melee)
 	const monsterStyles =
-		killableMon?.defaultAttackStyles ??
-		attackStylesArr.filter(i => !killableMon?.disallowedAttackStyles?.includes(i)).slice(0, 1);
+		killableMon?.defaultCombatStyles ??
+		combatStylesArr.filter(i => !killableMon?.disallowedCombatStyles?.includes(i)).slice(0, 1);
 
 	// If their attack style can't be used on this monster, or they have no selected attack styles selected,
 	// use the monsters default attack style.
-	if (attackStyles.length === 0 || attackStyles.some(s => killableMon?.disallowedAttackStyles?.includes(s))) {
-		attackStyles = monsterStyles;
+	if (combatStyles.length === 0 || combatStyles.some(s => killableMon?.disallowedCombatStyles?.includes(s))) {
+		combatStyles = monsterStyles;
 	}
 
 	// Automatically use magic if barrage/burst is chosen
 	if (
 		params.boostMethod &&
 		(params.boostMethod === 'barrage' || params.boostMethod === 'burst') &&
-		!attackStyles.includes(SkillsEnum.Magic)
+		!combatStyles.includes(SkillsEnum.Magic)
 	) {
-		if (attackStyles.includes(SkillsEnum.Defence)) {
-			attackStyles = [SkillsEnum.Magic, SkillsEnum.Defence];
+		if (combatStyles.includes(SkillsEnum.Defence)) {
+			combatStyles = [SkillsEnum.Magic, SkillsEnum.Defence];
 		} else {
-			attackStyles = [SkillsEnum.Magic];
+			combatStyles = [SkillsEnum.Magic];
 		}
 	}
-	return [killableMon, osjsMon, attackStyles];
+	return [killableMon, osjsMon, combatStyles];
 }
 
 export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) {
 	const boostMethod = params.burstOrBarrage ? 'barrage' : 'none';
 
-	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
+	const [, osjsMon, combatStyles] = resolveCombatStyles(user, {
 		monsterID: params.monsterID,
 		boostMethod
 	});
@@ -114,11 +114,11 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	}
 
 	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
-	const xpPerSkill = totalXP / attackStyles.length;
+	const xpPerSkill = totalXP / combatStyles.length;
 
 	let res: string[] = [];
 
-	for (const style of attackStyles) {
+	for (const style of combatStyles) {
 		res.push(
 			await user.addXP({
 				skillName: style,
@@ -180,7 +180,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	return `**XP Gains:** ${res.join(' ')}`;
 }
 
-export function convertAttackStylesToSetup(styles: AttackStyles | User['attack_style']): 'melee' | 'range' | 'mage' {
+export function convertCombatStylesToSetup(styles: CombatStyles | User['combat_style']): 'melee' | 'range' | 'mage' {
 	if (styles.includes(SkillsEnum.Magic)) return 'mage';
 	if (styles.includes(SkillsEnum.Ranged)) return 'range';
 	return 'melee';

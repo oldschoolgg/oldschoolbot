@@ -3,9 +3,9 @@ import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { toTitleCase } from '../../util';
-import { AttackStyles } from '.';
+import { CombatStyles } from '.';
 
-const validStyles: AttackStyles[] = [
+const validStyles: CombatStyles[] = [
 	SkillsEnum.Attack,
 	SkillsEnum.Strength,
 	SkillsEnum.Defence,
@@ -13,11 +13,11 @@ const validStyles: AttackStyles[] = [
 	SkillsEnum.Magic
 ];
 
-function isValidAttackStyle(str: string): str is AttackStyles {
+function isValidCombatStyle(str: string): str is CombatStyles {
 	return (validStyles as string[]).includes(str);
 }
 
-const invalidCombinations: [AttackStyles, AttackStyles][] = [
+const invalidCombinations: [CombatStyles, CombatStyles][] = [
 	[SkillsEnum.Attack, SkillsEnum.Magic],
 	[SkillsEnum.Strength, SkillsEnum.Magic],
 	[SkillsEnum.Attack, SkillsEnum.Ranged],
@@ -47,7 +47,7 @@ export async function trainCommand(user: KlasaUser, _styles: string | undefined)
 	}
 	if (!_styles || typeof _styles !== 'string') {
 		return `Your current attack style is ${user
-			.getAttackStyles()
+			.getCombatStyles()
 			.map(toTitleCase)}, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.`;
 	}
 	const parsed = _styles
@@ -55,15 +55,15 @@ export async function trainCommand(user: KlasaUser, _styles: string | undefined)
 		.split(' ')
 		.map(i => i.trim());
 
-	if (uniqueArr(parsed).length !== parsed.length || (_styles !== 'shared' && !parsed.every(isValidAttackStyle))) {
+	if (uniqueArr(parsed).length !== parsed.length || (_styles !== 'shared' && !parsed.every(isValidCombatStyle))) {
 		return 'That is not a valid attack style, the available styles are: Shared, Attack, Strength, Defence, Magic, Ranged.';
 	}
-	const styles: AttackStyles[] =
+	const styles: CombatStyles[] =
 		_styles === 'shared'
 			? [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence]
-			: isValidAttackStyle(_styles)
+			: isValidCombatStyle(_styles)
 			? [_styles]
-			: parsed.filter(isValidAttackStyle);
+			: parsed.filter(isValidCombatStyle);
 
 	for (const comb of invalidCombinations) {
 		if (comb.every(i => styles.includes(i))) {
@@ -71,7 +71,7 @@ export async function trainCommand(user: KlasaUser, _styles: string | undefined)
 		}
 	}
 
-	await user.setAttackStyle(styles);
+	await user.setCombatStyles(styles);
 
 	return `You're now training: ${styles
 		.map(toTitleCase)

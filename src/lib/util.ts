@@ -598,7 +598,7 @@ export function murMurHashChance(input: string, percent: number) {
 	return hash < percent * 100;
 }
 
-export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
+export function convertCombatStyleToGearSetup(style: OffenceGearStat | DefenceGearStat) {
 	let setup: GearSetupType = 'melee';
 
 	switch (style) {

@@ -61,7 +61,7 @@ const killableMonsters: KillableMonster[] = [
 				'Ornate rejuvenation pool': 10
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
+		defaultCombatStyles: [SkillsEnum.Attack, SkillsEnum.Magic, SkillsEnum.Ranged],
 		customMonsterHP: 600,
 		combatXpMultiplier: 1.09
 	},
@@ -192,7 +192,7 @@ const killableMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 0,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Attack]
+		defaultCombatStyles: [SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.Guard.id,

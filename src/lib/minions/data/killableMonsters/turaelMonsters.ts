@@ -700,8 +700,8 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 1,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Strength, SkillsEnum.Attack]
+		defaultCombatStyles: [SkillsEnum.Ranged],
+		disallowedCombatStyles: [SkillsEnum.Strength, SkillsEnum.Attack]
 	},
 	{
 		id: Monsters.MonkeyArcher.id,
@@ -714,7 +714,7 @@ export const turaelMonsters: KillableMonster[] = [
 
 		difficultyRating: 2,
 		qpRequired: 20,
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
+		disallowedCombatStyles: [SkillsEnum.Attack, SkillsEnum.Strength],
 		healAmountNeeded: 18,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged]

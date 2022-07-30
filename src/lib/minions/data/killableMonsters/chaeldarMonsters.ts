@@ -35,8 +35,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		wildy: false,
 		difficultyRating: 4,
 		qpRequired: 0,
-		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		defaultCombatStyles: [SkillsEnum.Ranged],
+		disallowedCombatStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		healAmountNeeded: 24
 	},
 	{
@@ -105,8 +105,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 			slayer: 87
 		},
 		slayerOnly: true,
-		defaultAttackStyles: [SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
+		defaultCombatStyles: [SkillsEnum.Magic],
+		disallowedCombatStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
 		healAmountNeeded: 20,
 		attackStyleToUse: GearStat.AttackMagic,
 		attackStylesUsed: [GearStat.AttackMagic]
@@ -290,8 +290,8 @@ export const chaeldarMonsters: KillableMonster[] = [
 		levelRequirements: {
 			slayer: 87
 		},
-		defaultAttackStyles: [SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
+		defaultCombatStyles: [SkillsEnum.Magic],
+		disallowedCombatStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Ranged],
 		slayerOnly: true,
 		healAmountNeeded: 20 * 7,
 		attackStyleToUse: GearStat.AttackMagic,
@@ -363,7 +363,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 			prayer: 43
 		},
 		healAmountNeeded: 20 * 2,
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		disallowedCombatStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackRanged],
 		canCannon: true,

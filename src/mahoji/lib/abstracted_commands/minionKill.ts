@@ -36,7 +36,7 @@ import {
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../../lib/minions/functions';
+import { calculateMonsterFood, CombatStyles, resolveCombatStyles } from '../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import { Consumable, KillableMonster } from '../../../lib/minions/types';
@@ -48,7 +48,7 @@ import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
 import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
-	convertAttackStyleToGearSetup,
+	convertCombatStyleToGearSetup,
 	formatDuration,
 	formatMissingItems,
 	isWeekend,
@@ -76,19 +76,19 @@ const { floor } = Math;
 const degradeableItemsCanUse = [
 	{
 		item: getOSItem('Sanguinesti staff'),
-		attackStyle: 'mage',
+		combatStyle: 'mage',
 		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 25,
 		boost: 6
 	},
 	{
 		item: getOSItem('Abyssal tentacle'),
-		attackStyle: 'melee',
+		combatStyle: 'melee',
 		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
 		boost: 3
 	}
 ];
 
-function applySkillBoost(user: KlasaUser, duration: number, styles: AttackStyles[]): [number, string] {
+function applySkillBoost(user: KlasaUser, duration: number, styles: CombatStyles[]): [number, string] {
 	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
 
 	let newDuration = duration;
@@ -168,11 +168,11 @@ export async function minionKillCommand(
 
 	let [timeToFinish, percentReduced] = reducedTimeFromKC(monster, user.getKC(monster.id));
 
-	const [, osjsMon, attackStyles] = resolveAttackStyles(user, {
+	const [, osjsMon, combatStyles] = resolveCombatStyles(user, {
 		monsterID: monster.id,
 		boostMethod: boostChoice
 	});
-	const [newTime, skillBoostMsg] = applySkillBoost(user, timeToFinish, attackStyles);
+	const [newTime, skillBoostMsg] = applySkillBoost(user, timeToFinish, combatStyles);
 
 	timeToFinish = newTime;
 	boosts.push(skillBoostMsg);
@@ -205,8 +205,8 @@ export async function minionKillCommand(
 	for (const degItem of degradeableItemsCanUse) {
 		const isUsing =
 			monster.attackStyleToUse &&
-			convertAttackStyleToGearSetup(monster.attackStyleToUse) === degItem.attackStyle &&
-			user.getGear(degItem.attackStyle).hasEquipped(degItem.item.id);
+			convertCombatStyleToGearSetup(monster.attackStyleToUse) === degItem.combatStyle &&
+			user.getGear(degItem.combatStyle).hasEquipped(degItem.item.id);
 		if (isUsing) {
 			const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
 			await checkUserCanUseDegradeableItem({
@@ -222,12 +222,12 @@ export async function minionKillCommand(
 	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
 		if (
 			user.hasItemEquippedOrInBank('Dragon hunter lance') &&
-			!attackStyles.includes(SkillsEnum.Ranged) &&
-			!attackStyles.includes(SkillsEnum.Magic)
+			!combatStyles.includes(SkillsEnum.Ranged) &&
+			!combatStyles.includes(SkillsEnum.Magic)
 		) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			boosts.push('15% for Dragon hunter lance');
-		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && attackStyles.includes(SkillsEnum.Ranged)) {
+		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && combatStyles.includes(SkillsEnum.Ranged)) {
 			timeToFinish = reduceNumByPercent(timeToFinish, 15);
 			boosts.push('15% for Dragon hunter crossbow');
 		}
@@ -237,7 +237,7 @@ export async function minionKillCommand(
 	const salveBoost = boosts.join('').toLowerCase().includes('salve amulet');
 	if (!salveBoost) {
 		// Add 15% slayer boost on task if they have black mask or similar
-		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+		if (combatStyles.includes(SkillsEnum.Ranged) || combatStyles.includes(SkillsEnum.Magic)) {
 			if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				boosts.push('15% for Black mask (i) on non-melee task');
@@ -275,12 +275,12 @@ export async function minionKillCommand(
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
 
-	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	if (boostChoice === 'barrage' && combatStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBarrageConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 		boosts.push(`${boostIceBarrage}% for Ice Barrage`);
 		burstOrBarrage = SlayerActivityConstants.IceBarrage;
-	} else if (boostChoice === 'burst' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	} else if (boostChoice === 'burst' && combatStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBurstConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBurst);
 		boosts.push(`${boostIceBurst}% for Ice Burst`);
@@ -414,7 +414,7 @@ export async function minionKillCommand(
 		const [healAmountNeeded, foodMessages] = calculateMonsterFood(monster, user);
 		foodStr += foodMessages;
 
-		let gearToCheck: GearSetupType = convertAttackStyleToGearSetup(monster.attackStyleToUse);
+		let gearToCheck: GearSetupType = convertCombatStyleToGearSetup(monster.attackStyleToUse);
 		if (monster.wildy) gearToCheck = 'wildy';
 
 		try {
@@ -423,7 +423,7 @@ export async function minionKillCommand(
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
 				activityName: monster.name,
-				attackStylesUsed: monster.wildy
+				combatStylesUsed: monster.wildy
 					? ['wildy']
 					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
 				learningPercentage: percentReduced
@@ -520,7 +520,7 @@ export async function minionKillCommand(
 	});
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		duration
-	)} to finish. Attack styles used: ${attackStyles.join(', ')}.`;
+	)} to finish. Attack styles used: ${combatStyles.join(', ')}.`;
 
 	if (pvmCost) {
 		response += ` Removed ${lootToRemove}.`;

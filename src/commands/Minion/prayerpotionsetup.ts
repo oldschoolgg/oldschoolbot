@@ -1,5 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 import { ArrayActions, CommandStore, KlasaMessage } from 'klasa';
+import { Bank } from 'oldschooljs';
+import { bankHasItem } from 'oldschooljs/dist/util';
 
 import Potions from '../../lib/minions/data/potions';
 import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
@@ -10,6 +12,7 @@ import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
+import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -32,17 +35,23 @@ export default class extends BotCommand {
 		const currentPotions = msg.author.settings.get(UserSettings.SelectedPotions);
 
 		if (currentPrayers.length === 0 && currentPotions.length === 0) {
-			return msg.send('You have no prayers activated and no potions selected.');
+			return msg.channel.send('You have no prayers activated and no potions selected.');
 		}
 
 		if (currentPrayers.length === 0) {
 			const image = await generatePotionImage(this.client, msg.author);
-			return msg.send('You have no prayers activated.', new MessageAttachment(image, 'osbot.png'));
+			return msg.channel.send({
+				files: [new MessageAttachment(image, 'osbot.png')],
+				content: 'You have no prayers activated.'
+			});
 		}
 
 		if (currentPotions.length === 0) {
 			const image = await generatePrayerImage(this.client, msg.author);
-			return msg.send('You have no potions selected.', new MessageAttachment(image, 'osbot.png'));
+			return msg.channel.send({
+				files: [new MessageAttachment(image, 'osbot.png')],
+				content: 'You have no potions selected.'
+			});
 		}
 
 		const imagePrayerBuffer = await generatePrayerImage(this.client, msg.author);
@@ -50,13 +59,13 @@ export default class extends BotCommand {
 		const imagePotionBuffer = await generatePotionImage(this.client, msg.author);
 		const imagePotion = new MessageAttachment(imagePotionBuffer, 'osbot1.png');
 
-		return msg.send(
-			`Currently selected potions: ${msg.author.settings
+		return msg.channel.send({
+			files: [imagePotion, imagePrayer],
+			content: `Currently selected potions: ${msg.author.settings
 				.get(UserSettings.SelectedPotions)
 				.map(_potion => _potion)
-				.join(', ')}`,
-			[imagePotion, imagePrayer]
-		);
+				.join(', ')}`
+		});
 	}
 
 	@requiresMinion
@@ -66,15 +75,15 @@ export default class extends BotCommand {
 		const unlockedPrayers = msg.author.settings.get(UserSettings.UnlockedPrayers);
 		if (!prayer) {
 			if (currentPrayers.length === 0) {
-				return msg.send('You have no prayers activated.');
+				return msg.channel.send('You have no prayers activated.');
 			}
 			const image = await generatePrayerImage(this.client, msg.author);
 
-			return msg.send(new MessageAttachment(image, 'osbot.png'));
+			return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 		}
 		const selectedPrayer = Prayer.Prayers.find(_prayer => _prayer.name.toLowerCase() === prayer.toLowerCase());
 		if (!selectedPrayer) {
-			return msg.send(
+			return msg.channel.send(
 				`${prayer} is not a prayer, the following prayers are possible to be activated: ${Prayer.Prayers.map(
 					_prayer => _prayer.name
 				).join(', ')}.`
@@ -87,17 +96,17 @@ export default class extends BotCommand {
 			});
 			const image = await generatePrayerImage(this.client, msg.author);
 
-			return msg.send(new MessageAttachment(image, 'osbot.png'));
+			return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 		}
 
 		if (!selectedPrayer.unlocked && !unlockedPrayers.includes(selectedPrayer.name.toLowerCase())) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs to unlock ${selectedPrayer.name} before it can be activated.`
 			);
 		}
 
 		if (msg.author.skillLevel(SkillsEnum.Prayer) < selectedPrayer.level) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${selectedPrayer.level} prayer to activate prayer ${selectedPrayer.name}.`
 			);
 		}
@@ -151,7 +160,7 @@ export default class extends BotCommand {
 
 		const image = await generatePrayerImage(this.client, msg.author);
 
-		return msg.send(new MessageAttachment(image, 'osbot.png'));
+		return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 	}
 
 	@requiresMinion
@@ -161,15 +170,15 @@ export default class extends BotCommand {
 
 		if (!potion) {
 			if (currentPotions.length === 0) {
-				return msg.send('You have no potions selected.');
+				return msg.channel.send('You have no potions selected.');
 			}
 			const image = await generatePotionImage(this.client, msg.author);
 
-			return msg.send(new MessageAttachment(image, 'osbot.png'));
+			return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 		}
 		const selectedPotion = Potions.find(_potion => _potion.name.toLowerCase() === potion.toLowerCase());
 		if (!selectedPotion) {
-			return msg.send(
+			return msg.channel.send(
 				`${potion} is not a potion, the following potions are possible to be selected: ${Potions.map(
 					_potion => _potion.name
 				).join(', ')}.`
@@ -182,13 +191,13 @@ export default class extends BotCommand {
 			});
 			const image = await generatePotionImage(this.client, msg.author);
 
-			return msg.send(
-				`Currently selected potions: ${msg.author.settings
+			return msg.channel.send({
+				files: [new MessageAttachment(image, 'osbot.png')],
+				content: `Currently selected potions: ${msg.author.settings
 					.get(UserSettings.SelectedPotions)
 					.map(_potion => _potion)
-					.join(', ')}`,
-				new MessageAttachment(image, 'osbot.png')
-			);
+					.join(', ')}`
+			});
 		}
 
 		await msg.author.settings.update(UserSettings.SelectedPotions, selectedPotion.name.toLowerCase(), {
@@ -197,19 +206,19 @@ export default class extends BotCommand {
 
 		const image = await generatePotionImage(this.client, msg.author);
 
-		return msg.send(
-			`Currently selected potions: ${msg.author.settings
+		return msg.channel.send({
+			files: [new MessageAttachment(image, 'osbot.png')],
+			content: `Currently selected potions: ${msg.author.settings
 				.get(UserSettings.SelectedPotions)
 				.map(_potion => _potion)
-				.join(', ')}`,
-			new MessageAttachment(image, 'osbot.png')
-		);
+				.join(', ')}`
+		});
 	}
 
 	@requiresMinion
 	async unlock(msg: KlasaMessage, [input]: [string | undefined]) {
 		if (!input) {
-			return msg.send(
+			return msg.channel.send(
 				`Possible prayers to unlock are: ${Prayer.Prayers.map(_prayer =>
 					!_prayer.unlocked ? _prayer.name : ''
 				).join(', ')}.`
@@ -219,7 +228,7 @@ export default class extends BotCommand {
 		const unlockable = Prayer.Prayers.find(_prayer => _prayer.name.toLowerCase() === input.toLowerCase());
 
 		if (!unlockable || unlockable.unlocked) {
-			return msg.send(
+			return msg.channel.send(
 				`That is not a valid prayer to unlock, possible prayers to unlock are: ${Prayer.Prayers.map(_prayer =>
 					!_prayer.unlocked ? _prayer.name : ''
 				).join(', ')}.`
@@ -231,35 +240,35 @@ export default class extends BotCommand {
 		const unlockedPrayers = msg.author.settings.get(UserSettings.UnlockedPrayers);
 
 		if (unlockedPrayers.includes(unlockable.name.toLowerCase())) {
-			return msg.send(`You already unlocked prayer ${unlockable.name}.`);
+			return msg.channel.send(`You already unlocked prayer ${unlockable.name}.`);
 		}
 
 		if (unlockable.defLvl && msg.author.skillLevel(SkillsEnum.Defence) < unlockable.defLvl) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${unlockable.defLvl} defence to unlock prayer ${unlockable.name}.`
 			);
 		}
 
 		if (unlockable.qpRequired && msg.author.settings.get(UserSettings.QP) < unlockable.qpRequired) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} needs ${unlockable.qpRequired} questpoints to unlock prayer ${unlockable.name}.`
 			);
 		}
 
+		const userBank = msg.author.settings.get(UserSettings.Bank);
+
 		if (unlockable.inputId) {
-			const hasRequiredScroll = await msg.author.hasItem(unlockable.inputId, 1, true);
-			if (!hasRequiredScroll)
-				return msg.send(
+			if (bankHasItem(userBank, unlockable.inputId, 1))
+				return msg.channel.send(
 					`You have no ${itemNameFromID(unlockable.inputId)} to unlock prayer ${unlockable.name}.`
 				);
-
-			await msg.author.removeItemFromBank(unlockable.inputId, 1);
+			await msg.author.removeItemsFromBank(new Bank().add(unlockable.inputId));
 		}
 
 		await msg.author.settings.update(UserSettings.UnlockedPrayers, unlockable.name.toLowerCase(), {
 			arrayAction: ArrayActions.Add
 		});
 
-		return msg.send(`${msg.author.minionName} have unlocked prayer ${unlockable.name}. Congratulations!`);
+		return msg.channel.send(`${msg.author.minionName} have unlocked prayer ${unlockable.name}. Congratulations!`);
 	}
 }

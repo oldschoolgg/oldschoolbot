@@ -11,7 +11,7 @@ import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
-import { AttackStyles } from '../../lib/minions/functions';
+import { CombatStyles } from '../../lib/minions/functions';
 import { AddXpParams, KillableMonster } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
 import { getActivityOfUser, getMinigameScore, MinigameName, Minigames } from '../../lib/settings/settings';
@@ -878,14 +878,14 @@ export default class extends Extendable {
 		);
 	}
 
-	public async setAttackStyle(this: User, newStyles: AttackStyles[]) {
-		await this.settings.update(UserSettings.AttackStyle, uniqueArr(newStyles), {
+	public async setCombatStyles(this: User, newStyles: CombatStyles[]) {
+		await this.settings.update(UserSettings.CombatStyle, uniqueArr(newStyles), {
 			arrayAction: 'overwrite'
 		});
 	}
 
-	public getAttackStyles(this: User) {
-		const styles = this.settings.get(UserSettings.AttackStyle);
+	public getCombatStyles(this: User) {
+		const styles = this.settings.get(UserSettings.CombatStyle);
 		if (styles.length === 0) {
 			return [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence];
 		}

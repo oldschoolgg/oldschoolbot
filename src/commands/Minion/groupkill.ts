@@ -1,3 +1,4 @@
+/*
 import { objectKeys, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
@@ -130,7 +131,7 @@ export default class extends BotCommand {
 					totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity,
 					healPerAction: Math.ceil(healAmountNeeded / quantity),
 					activityName: monster.name,
-					attackStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
+					combatStylesUsed: objectKeys(monster.minimumGearRequirements ?? {})
 				});
 			}
 		}
@@ -164,3 +165,4 @@ export default class extends BotCommand {
 		);
 	}
 }
+*/

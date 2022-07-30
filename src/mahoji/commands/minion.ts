@@ -5,7 +5,7 @@ import { BitField, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { AttackStyles } from '../../lib/minions/functions';
+import { CombatStyles } from '../../lib/minions/functions';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
 import { Minigames } from '../../lib/settings/minigames';
@@ -324,7 +324,7 @@ export const minionCommand: OSBMahojiCommand = {
 		ironman?: { permanent?: boolean };
 		charge?: { item?: string; amount?: number };
 		daily?: {};
-		train?: { style: AttackStyles };
+		train?: { style: CombatStyles };
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);

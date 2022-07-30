@@ -1,3 +1,4 @@
+/*
 import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
@@ -8,7 +9,7 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Favours, gotFavour } from '../../lib/minions/data/kourendFavour';
 import { requiresMinion } from '../../lib/minions/decorators';
-import { resolveAttackStyles } from '../../lib/minions/functions';
+import { resolveCombatStyles } from '../../lib/minions/functions';
 import calculateMonsterFood from '../../lib/minions/functions/calculateMonsterFood';
 import reducedTimeFromKC from '../../lib/minions/functions/reducedTimeFromKC';
 import { calcPOHBoosts } from '../../lib/poh';
@@ -60,7 +61,7 @@ export default class MinionCommand extends BotCommand {
 			});
 		}
 		const osjsMon = Monsters.get(monster.id);
-		const [, , attackStyles] = resolveAttackStyles(user, {
+		const [, , combatStyles] = resolveCombatStyles(user, {
 			monsterID: monster.id
 		});
 
@@ -81,15 +82,15 @@ export default class MinionCommand extends BotCommand {
 			isDragon = true;
 			if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter lance') &&
-				!attackStyles.includes(SkillsEnum.Ranged) &&
-				!attackStyles.includes(SkillsEnum.Magic)
+				!combatStyles.includes(SkillsEnum.Ranged) &&
+				!combatStyles.includes(SkillsEnum.Magic)
 			) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				ownedBoostItems.push('Dragon hunter lance');
 				totalItemBoost += 15;
 			} else if (
 				msg.author.hasItemEquippedOrInBank('Dragon hunter crossbow') &&
-				attackStyles.includes(SkillsEnum.Ranged)
+				combatStyles.includes(SkillsEnum.Ranged)
 			) {
 				timeToFinish = reduceNumByPercent(timeToFinish, 15);
 				ownedBoostItems.push('Dragon hunter crossbow');
@@ -107,9 +108,9 @@ export default class MinionCommand extends BotCommand {
 			}
 		}
 		// combat stat boosts
-		const skillTotal = addArrayOfNumbers(attackStyles.map(s => user.skillLevel(s)));
+		const skillTotal = addArrayOfNumbers(combatStyles.map(s => user.skillLevel(s)));
 
-		let percent = round(calcWhatPercent(skillTotal, attackStyles.length * 99), 2);
+		let percent = round(calcWhatPercent(skillTotal, combatStyles.length * 99), 2);
 
 		const str = [`**${monster.name}**\n`];
 
@@ -239,3 +240,4 @@ export default class MinionCommand extends BotCommand {
 		return msg.channel.send(str.join('\n'));
 	}
 }
+*/

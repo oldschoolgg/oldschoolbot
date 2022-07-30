@@ -8,7 +8,7 @@ import { Bank } from 'oldschooljs';
 import { Emoji } from '../../../lib/constants';
 import { maxDefenceStats, maxOffenceStats } from '../../../lib/gear';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
-import { convertAttackStylesToSetup } from '../../../lib/minions/functions';
+import { convertCombatStylesToSetup } from '../../../lib/minions/functions';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { RevenantOptions } from '../../../lib/types/minions';
@@ -30,7 +30,7 @@ export async function revsCommand(
 	interaction: SlashCommandInteraction | null,
 	name: string
 ): CommandResponse {
-	const style = convertAttackStylesToSetup(mUser.attack_style);
+	const style = convertCombatStylesToSetup(mUser.combat_style);
 	const userGear = getUserGear(mUser).wildy;
 
 	const boosts = [];

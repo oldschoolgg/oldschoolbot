@@ -22,7 +22,7 @@ export default class extends Task {
 			user.hasItemEquippedAnywhere('Iron dagger') &&
 			user.hasItemEquippedAnywhere('Bronze arrow') &&
 			user.hasItemEquippedAnywhere('Iron med helm') &&
-			user.getAttackStyles().includes(SkillsEnum.Strength) &&
+			user.getCombatStyles().includes(SkillsEnum.Strength) &&
 			!user.hasItemEquippedOrInBank('Helm of raedwald')
 		) {
 			loot.add('Helm of raedwald');

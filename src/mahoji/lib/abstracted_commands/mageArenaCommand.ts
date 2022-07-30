@@ -31,7 +31,7 @@ export async function mageArenaCommand(user: KlasaUser, channelID: bigint) {
 		totalHealingNeeded: 20 * 23,
 		healPerAction: 20 * 23,
 		activityName: 'Mage Arena',
-		attackStylesUsed: ['mage']
+		combatStylesUsed: ['mage']
 	});
 
 	const totalCost = itemsNeeded.clone().add(foodRemoved);

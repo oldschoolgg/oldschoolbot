@@ -1,6 +1,5 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { GearSetupTypes } from '../../lib/gear/types';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import Ancient from '../../lib/skilling/skills/combat/magic/castables/Ancient';
@@ -35,7 +34,6 @@ export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
 		super(store, file, directory, {
 			altProtection: true,
-			oneAtTime: true,
 			cooldown: 1,
 			usage: '[melee|mage|range|auto|nocombat] [combatStyle:string] [combatSpell:...string]',
 			usageDelim: ' ',
@@ -49,11 +47,13 @@ export default class extends BotCommand {
 		[combatSkill, combatStyle, combatSpell]: [string, string, string]
 	): Promise<KlasaMessage> {
 		if (msg.author.minionIsBusy) {
-			return msg.send(`${msg.author.minionName} is currently out on a trip, so you can't change combat style!`);
+			return msg.channel.send(
+				`${msg.author.minionName} is currently out on a trip, so you can't change combat style!`
+			);
 		}
 		const oldCombatSkill = msg.author.settings.get(UserSettings.Minion.CombatSkill);
 		if (!combatSkill) {
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} is currently using combat skill ${oldCombatSkill}. To swap skill type \`${msg.cmdPrefix}combatsetup melee/range/mage/auto/nocombat\`.`
 			);
 		}
@@ -68,14 +68,14 @@ export default class extends BotCommand {
 
 			msg.author.log(`Changed combat skill to ${combatSkill}`);
 
-			return msg.send(
+			return msg.channel.send(
 				`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill}.`
 			);
 		}
 
 		if (combatSkill === 'melee') {
 			combatStyle = combatStyle.toLowerCase();
-			const weapon = msg.author.equippedWeapon(GearSetupTypes.Melee);
+			const weapon = msg.author.getGear('melee').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';
 			}
@@ -88,13 +88,13 @@ export default class extends BotCommand {
 				if (stance.combat_style.toLowerCase() === combatStyle) {
 					await msg.author.settings.update(UserSettings.Minion.MeleeCombatStyle, combatStyle);
 
-					return msg.send(
+					return msg.channel.send(
 						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
 					);
 				}
 			}
 
-			return msg.send(
+			return msg.channel.send(
 				`The combatstyle \`${combatStyle}\` dosen't match any of the styles that the current equipped weapon ${
 					weapon?.name
 				} have. The following combat styles is possible: ${weapon?.weapon?.stances
@@ -105,7 +105,7 @@ export default class extends BotCommand {
 
 		if (combatSkill === 'range') {
 			combatStyle = combatStyle.toLowerCase();
-			const weapon = msg.author.equippedWeapon(GearSetupTypes.Range);
+			const weapon = msg.author.getGear('range').equippedWeapon();
 			let changedDartTier = false;
 			if (combatSpell && dartTier.includes(combatSpell.toLowerCase())) {
 				changedDartTier = true;
@@ -123,7 +123,7 @@ export default class extends BotCommand {
 				if (stance.combat_style.toLowerCase() === combatStyle) {
 					await msg.author.settings.update(UserSettings.Minion.RangeCombatStyle, combatStyle);
 
-					return msg.send(
+					return msg.channel.send(
 						`${
 							msg.author.minionName
 						} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}. ${
@@ -133,7 +133,7 @@ export default class extends BotCommand {
 				}
 			}
 
-			return msg.send(
+			return msg.channel.send(
 				`The combatstyle \`${combatStyle}\` dosen't match any of the styles that the current equipped weapon ${
 					weapon?.name
 				} have. The following combat styles is possible: ${weapon?.weapon?.stances
@@ -144,14 +144,14 @@ export default class extends BotCommand {
 
 		if (combatSkill === 'mage') {
 			combatStyle = combatStyle.toLowerCase();
-			const weapon = msg.author.equippedWeapon(GearSetupTypes.Mage);
+			const weapon = msg.author.getGear('mage').equippedWeapon();
 			await msg.author.settings.update(UserSettings.Minion.CombatSkill, CombatsEnum.Mage);
 
 			if (combatStyle === 'standard' || combatStyle === 'defensive') {
 				if (!combatSpell) {
 					await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, combatStyle);
 
-					return msg.send(
+					return msg.channel.send(
 						`${
 							msg.author.minionName
 						} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}, your current combat spell is ${msg.author.settings.get(
@@ -182,7 +182,7 @@ export default class extends BotCommand {
 				const Spell = CombatSpells.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell));
 
 				if (!Spell) {
-					return msg.send(
+					return msg.channel.send(
 						`The combat spell \`${combatSpell}\` dosen't match any of the available combat spells. The following combat spells is possible: ${CombatSpells.map(
 							spell => spell.name
 						).join(', ')}.`
@@ -193,7 +193,7 @@ export default class extends BotCommand {
 
 				await msg.author.settings.update(UserSettings.Minion.CombatSpell, Spell.name);
 
-				return msg.send(
+				return msg.channel.send(
 					`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill}, combat style to ${combatStyle} and combat spell to ${Spell.name}.`
 				);
 			}
@@ -215,12 +215,12 @@ export default class extends BotCommand {
 						await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, combatStyle);
 						await msg.author.settings.update(UserSettings.Minion.CombatSpell, 'wind strike');
 
-						return msg.send(
+						return msg.channel.send(
 							`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
 						);
 					}
 				}
-				return msg.send(
+				return msg.channel.send(
 					`The combatstyle \`${combatStyle}\` dosen't match any of the styles that the current equipped weapon ${
 						weapon?.name
 					} have. The following combat styles is possible: ${weapon?.weapon?.stances
@@ -229,10 +229,10 @@ export default class extends BotCommand {
 				);
 			}
 
-			return msg.send(
+			return msg.channel.send(
 				`The combatstyle \`${combatStyle}\` dosen't match any of the available styles. The following combat styles is possible: Standard, Defensive or if a trident is equipped Accurate or Longrange.`
 			);
 		}
-		return msg.send('Unexpected error');
+		return msg.channel.send('Unexpected error');
 	}
 }

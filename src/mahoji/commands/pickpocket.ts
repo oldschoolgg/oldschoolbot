@@ -105,7 +105,7 @@ export const pickpocketCommand: OSBMahojiCommand = {
 			totalHealingNeeded: damageTaken,
 			healPerAction: Math.ceil(damageTaken / quantity),
 			activityName: 'Pickpocketing',
-			attackStylesUsed: []
+			combatStylesUsed: []
 		});
 
 		if (rogueOutfitPercentBonus(user) > 0) {

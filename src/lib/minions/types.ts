@@ -9,7 +9,7 @@ import { POHBoosts } from '../poh';
 import { LevelRequirements, SkillsEnum } from '../skilling/types';
 import { ArrayItemsResolved, ItemBank, Skills } from '../types';
 import { MonsterActivityTaskOptions } from '../types/minions';
-import { AttackStyles } from './functions';
+import { CombatStyles } from './functions';
 
 export type BankBackground = {
 	image: Image | null;
@@ -95,8 +95,8 @@ export interface KillableMonster {
 	killsPerBankTrip: number;
 	respawnTime?: number;
 	// Add variable for multiStyleFight like Zulrah. How?
-	defaultAttackStyles?: AttackStyles[];
-	disallowedAttackStyles?: AttackStyles[];
+	defaultCombatStyles?: CombatStyles[];
+	disallowedCombatStyles?: CombatStyles[];
 	customMonsterHP?: number;
 	combatXpMultiplier?: number;
 	itemCost?: Consumable;

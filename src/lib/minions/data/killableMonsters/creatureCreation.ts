@@ -22,7 +22,7 @@ for (const [creature, cost] of creatures) {
 		aliases: creature.aliases,
 		timeToFinish: Time.Minute * 1.3,
 		table: creature,
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultCombatStyles: [SkillsEnum.Attack],
 		healAmountNeeded: 20 * 3,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackCrush, GearStat.AttackRanged],

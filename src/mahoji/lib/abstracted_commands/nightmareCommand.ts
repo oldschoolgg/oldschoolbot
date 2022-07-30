@@ -242,7 +242,7 @@ export async function nightmareCommand(user: KlasaUser, channelID: bigint, name:
 				totalHealingNeeded: Math.ceil(healAmountNeeded / users.length) * quantity * healingMod,
 				healPerAction: Math.ceil(healAmountNeeded / quantity) * healingMod,
 				activityName: NightmareMonster.name,
-				attackStylesUsed: ['melee']
+				combatStylesUsed: ['melee']
 			});
 
 			const { realCost } = await user.specialRemoveItems(cost);

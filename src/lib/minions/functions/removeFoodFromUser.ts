@@ -16,14 +16,14 @@ export default async function removeFoodFromUser({
 	totalHealingNeeded,
 	healPerAction,
 	activityName,
-	attackStylesUsed,
+	combatStylesUsed: attackStylesUsed,
 	learningPercentage
 }: {
 	user: KlasaUser;
 	totalHealingNeeded: number;
 	healPerAction: number;
 	activityName: string;
-	attackStylesUsed: GearSetupType[];
+	combatStylesUsed: GearSetupType[];
 	learningPercentage?: number;
 }): Promise<{ foodRemoved: Bank; reductions: string[] }> {
 	await user.settings.sync(true);

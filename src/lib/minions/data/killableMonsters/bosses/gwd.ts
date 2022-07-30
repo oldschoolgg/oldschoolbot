@@ -39,7 +39,7 @@ const killableBosses: KillableMonster[] = [
 			strength: 70
 		},
 		uniques: [...resolveItems(['Rune sword']), ...generalGraardorCL],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultCombatStyles: [SkillsEnum.Attack],
 		customMonsterHP: 656,
 		combatXpMultiplier: 1.126,
 		healAmountNeeded: 20 * 5,
@@ -85,7 +85,7 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultCombatStyles: [SkillsEnum.Ranged],
 		customMonsterHP: 723,
 		combatXpMultiplier: 1.132,
 		healAmountNeeded: 18 * 4,
@@ -127,8 +127,8 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Ranged],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
+		defaultCombatStyles: [SkillsEnum.Ranged],
+		disallowedCombatStyles: [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Magic],
 		customMonsterHP: 641,
 		combatXpMultiplier: 1.159,
 		healAmountNeeded: 18 * 4,
@@ -174,7 +174,7 @@ const killableBosses: KillableMonster[] = [
 			["Karil's leathertop", 'Armadyl chestplate'],
 			["Karil's leatherskirt", 'Armadyl chainskirt']
 		]),
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultCombatStyles: [SkillsEnum.Attack],
 		customMonsterHP: 708,
 		combatXpMultiplier: 1.135,
 		healAmountNeeded: 20 * 3,

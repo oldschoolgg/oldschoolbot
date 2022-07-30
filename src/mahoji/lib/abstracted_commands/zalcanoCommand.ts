@@ -72,7 +72,7 @@ export async function zalcanoCommand(user: KlasaUser, channelID: bigint) {
 		totalHealingNeeded: healAmountNeeded * quantity,
 		healPerAction: Math.ceil(healAmountNeeded / quantity),
 		activityName: 'Zalcano',
-		attackStylesUsed: []
+		combatStylesUsed: []
 	});
 
 	await addSubTaskToActivityTask<ZalcanoActivityTaskOptions>({

@@ -36,7 +36,7 @@ export async function mageArena2Command(user: KlasaUser, channelID: bigint) {
 		totalHealingNeeded: 20 * 23,
 		healPerAction: 20 * 23,
 		activityName: 'Mage Arena II',
-		attackStylesUsed: ['mage']
+		combatStylesUsed: ['mage']
 	});
 
 	await user.removeItemsFromBank(itemsNeeded);
