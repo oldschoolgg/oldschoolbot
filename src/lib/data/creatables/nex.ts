@@ -4,14 +4,14 @@ import { Createable } from '../createables';
 
 export const nexCreatables: Createable[] = [
 	{
-		name: 'Revert bandos chestplate',
+		name: 'Bandosian components (chestplate)',
 		inputItems: new Bank({
 			'Bandos chestplate': 1
 		}),
 		outputItems: new Bank({ 'Bandosian components': 3 })
 	},
 	{
-		name: 'Revert bandos tassets',
+		name: 'Bandosian components (tassets)',
 		inputItems: new Bank({
 			'Bandos tassets': 1
 		}),
