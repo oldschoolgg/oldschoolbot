@@ -13,6 +13,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { CLIENT_ID, production } from '../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../lib/blacklists';
+import { embTable, tmbTable, umbTable } from '../lib/bsoOpenables';
 import {
 	badges,
 	BitField,
@@ -379,6 +380,16 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'inboxes': {
+				if (typeof input !== 'string') return;
+				const item = getOSItem(input);
+				return msg.channel.send(`
+Is ${item.name} dropped by boxes?
+
+TMB: ${tmbTable.includes(item.id)}
+UMB: ${umbTable.includes(item.id)}
+EMB: ${embTable.includes(item.id)}`);
+			}
 			case 'setmp': {
 				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
 				if (
