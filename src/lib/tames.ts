@@ -18,15 +18,14 @@ import { makeBankImage } from './util/makeBankImage';
 import { sendToChannelID } from './util/webhook';
 import { Tame, tame_growth, TameActivity, User } from '.prisma/client';
 
-interface NurseryEgg {
-	species: number;
-	insertedAt: number;
-}
-export interface Nursery {
-	egg: NurseryEgg | null;
+export type Nursery = {
+	egg: {
+		species: number;
+		insertedAt: number;
+	} | null;
 	eggsHatched: number;
 	hasFuel: boolean;
-}
+} | null;
 
 export const enum TameType {
 	Combat = 'pvm',
