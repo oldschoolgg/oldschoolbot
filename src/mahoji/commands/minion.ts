@@ -26,6 +26,7 @@ import { bankBgCommand } from '../lib/abstracted_commands/bankBgCommand';
 import { cancelTaskCommand } from '../lib/abstracted_commands/cancelTaskCommand';
 import { crackerCommand } from '../lib/abstracted_commands/crackerCommand';
 import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
+import { feedHammyCommand } from '../lib/abstracted_commands/hammyCommand';
 import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
@@ -318,6 +319,16 @@ export const minionCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'pat',
 			description: 'Pat your minion on the head!'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'feed_hammy',
+			description: 'Feed an item to your Hammy pet.',
+			options: [
+				{
+					...ownedItemOption()
+				}
+			]
 		}
 	],
 	run: async ({
@@ -343,6 +354,9 @@ export const minionCommand: OSBMahojiCommand = {
 		daily?: {};
 		train?: { style: AttackStyles };
 		pat?: {};
+		feed_hammy?: {
+			item: string;
+		};
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -431,6 +445,7 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 		if (options.train) return trainCommand(user, options.train.style);
 		if (options.pat) return randomPatMessage(user.minionName);
+		if (options.feed_hammy) return feedHammyCommand(interaction, user, options.feed_hammy.item);
 
 		return 'Unknown command';
 	}
