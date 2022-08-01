@@ -1,12 +1,13 @@
+import { User } from '@prisma/client';
 import { MessageButton } from 'discord.js';
-import { randInt } from 'e';
+import { notEmpty, randInt } from 'e';
 import { KlasaUser } from 'klasa';
-import { APIInteractionGuildMember } from 'mahoji';
+import { APIInteractionGuildMember, InteractionResponseType, InteractionType } from 'mahoji';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Monsters } from 'oldschooljs';
 
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { prisma } from '../../../lib/settings/prisma';
-import { runCommand } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
@@ -19,7 +20,10 @@ import {
 	userCanUseMaster
 } from '../../../lib/slayer/slayerUtil';
 import { AssignableSlayerTask } from '../../../lib/slayer/types';
+import { channelIsSendable, removeFromArr } from '../../../lib/util';
 import { stringMatches } from '../../../lib/util/cleanString';
+import { logError } from '../../../lib/util/logError';
+import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 const returnSuccessButtons = [
 	[
@@ -83,112 +87,60 @@ function getAlternateMonsterList(assignedTask: AssignableSlayerTask | null) {
 	return '';
 }
 
-export async function slayerTaskCommand(
-	user: KlasaUser,
-	member: APIInteractionGuildMember,
-	guildID: bigint,
-	channelID: bigint
+export function slayerListBlocksCommand(mahojiUser: User) {
+	const maxBlocks = calcMaxBlockedTasks(mahojiUser);
+	const myBlockList = mahojiUser.slayer_blocked_ids;
+
+	let outstr =
+		`You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
+		` and have ${maxBlocks - myBlockList.length} remaining\n\n**Blocked Tasks:**\n`;
+	const myBlockedMonsters = Monsters.filter(m => myBlockList.includes(m.id));
+	outstr += `${myBlockedMonsters.map(getCommonTaskName).join('\n')}`;
+	return `${outstr}\n\nTry: \`st --block\` to block a task.`;
+}
+
+export async function slayerSkipTaskCommand(
+	mahojiUser: User,
+	block: boolean,
+	newTask: boolean,
+	interaction: SlashCommandInteraction
 ) {
-	const { currentTask, assignedTask } = await getUsersCurrentSlayerInfo(user.id);
-	const myBlockList = user.settings.get(UserSettings.Slayer.BlockedTasks);
-	const myQPs = user.settings.get(UserSettings.QP);
-	const maxBlocks = calcMaxBlockedTasks(myQPs);
-
-	let returnMessage = '';
-
-	if (
-		msg.flagArgs.listblocks ||
-		msg.flagArgs.blocks ||
-		msg.flagArgs.blocklist ||
-		msg.flagArgs.list ||
-		(input && input === 'listblocks') ||
-		(input && input === 'list') ||
-		(input && input === 'blocks') ||
-		(input && input === 'blocklist')
-	) {
-		let outstr =
-			`You have a maximum of ${maxBlocks} task blocks. You are using ${myBlockList.length}` +
-			` and have ${maxBlocks - myBlockList.length} remaining\n\n**Blocked Tasks:**\n`;
-		const myBlockedMonsters = Monsters.filter(m => {
-			return myBlockList.includes(m.id);
-		});
-		outstr += `${myBlockedMonsters
-			.map(mbm => {
-				return `${getCommonTaskName(mbm)}`;
-			})
-			.join('\n')}`;
-		return `${outstr}\n\nTry: \`st --block\` to block a task.`;
+	const { currentTask } = await getUsersCurrentSlayerInfo(mahojiUser.id);
+	const myBlockList = mahojiUser.slayer_blocked_ids;
+	const klasaUser = await globalClient.fetchUser(mahojiUser.id);
+	const maxBlocks = calcMaxBlockedTasks(mahojiUser);
+	if (klasaUser.minionIsBusy) {
+		return 'You cannot change your task while your minion is busy.';
 	}
-	const inputArray = input ? input.split(' ') : undefined;
-	const inputUnblock = inputArray?.slice(0, 1)[0] === 'unblock';
-	if (msg.flagArgs.unblock || inputUnblock) {
-		const monToBlock = inputUnblock ? inputArray!.slice(1).join(' ') : input;
-		if (!monToBlock) {
-			return 'You must specify a monster to unblock!';
-		}
-
-		let idToRemove = parseInt(monToBlock);
-		const osjsMonster = isNaN(idToRemove)
-			? Monsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monToBlock)))
-			: Monsters.find(mon => mon.id === idToRemove);
-		if (!osjsMonster) {
-			return 'Failed to find a monster with that name or id!';
-		}
-		idToRemove = osjsMonster.id;
-
-		// Now we can remove based on ID.
-		if (!myBlockList.includes(idToRemove)) {
-			return `${idToRemove}: ${osjsMonster.name} is not on the block list!`;
-		}
-
-		// await msg.confirm(`Really unblock ${osjsMonster.name}? You will have to pay to block it again in the future.`);
-		await user.settings.update(UserSettings.Slayer.BlockedTasks, idToRemove);
-		return `${osjsMonster.name} have been unblocked`;
+	if (!currentTask) {
+		return "You don't have an active task!";
 	}
 
-	// Prevent any actions that affect the layer task list when minion is busy.
-	if (user.minionIsBusy) {
-		const slayerPoints = user.settings.get(UserSettings.Slayer.SlayerPoints);
-		const slayerStreak = user.settings.get(UserSettings.Slayer.TaskStreak);
-
+	if (block && myBlockList.length >= maxBlocks) {
 		return (
-			'Your minion is busy, but you can still manage your block list: `st blocks`' +
-			`${
-				currentTask
-					? `\nYour current task is to kill **${getCommonTaskName(
-							assignedTask!.monster
-					  )}**. You have ${currentTask.quantity_remaining.toLocaleString()} kills remaining.`
-					: ''
-			}` +
-			`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${slayerStreak} tasks in a row.`
+			`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n` +
+			'`st --unblock kalphite`\n to remove a block.\n' +
+			'`st --list` for list of blocked monsters and their IDs.'
 		);
 	}
-	if (input && (input === 'skip' || input === 'block')) msg.flagArgs[input] = 'yes';
-	if (currentTask && (msg.flagArgs.skip || msg.flagArgs.block)) {
-		const toBlock = msg.flagArgs.block ? true : false;
-		if (toBlock && myBlockList.length >= maxBlocks) {
-			return (
-				`You cannot have more than ${maxBlocks} slayer blocks!\n\nUse:\n` +
-				'`st --unblock kalphite`\n to remove a block.\n' +
-				'`st --list` for list of blocked monsters and their IDs.'
-			);
-		}
-		let slayerPoints = user.settings.get(UserSettings.Slayer.SlayerPoints) ?? 0;
-		if (slayerPoints < (toBlock ? 100 : 30)) {
-			return (
-				`You need ${toBlock ? 100 : 30} points to ${toBlock ? 'block' : 'cancel'},` +
-				` you only have: ${slayerPoints.toLocaleString()}`
-			);
-		}
-		// await msg.confirm(
-		// 	`Really ${toBlock ? 'block' : 'skip'} task? You have ${slayerPoints.toLocaleString()} and this will cost ${
-		// 		toBlock ? 100 : 30
-		// 	} slayer points.\n\nPlease confirm you want to ${toBlock ? 'block' : 'skip'}.`
-		// );
+	let slayerPoints = mahojiUser.slayer_points ?? 0;
+	if (slayerPoints < (block ? 100 : 30)) {
+		return (
+			`You need ${block ? 100 : 30} points to ${block ? 'block' : 'cancel'},` +
+			` you only have: ${slayerPoints.toLocaleString()}`
+		);
+	}
 
-		slayerPoints -= toBlock ? 100 : 30;
-		await user.settings.update(UserSettings.Slayer.SlayerPoints, slayerPoints);
-		if (toBlock) await user.settings.update(UserSettings.Slayer.BlockedTasks, currentTask.monster_id);
+	slayerPoints -= block ? 100 : 30;
+	const updateData: { slayer_points: number; slayer_blocked_ids?: number[] } = { slayer_points: slayerPoints };
+
+	try {
+		if (block)
+			updateData.slayer_blocked_ids = [
+				...removeFromArr(myBlockList, currentTask.monster_id),
+				currentTask.monster_id
+			];
+		await mahojiUserSettingsUpdate(mahojiUser.id, updateData);
 		await prisma.slayerTask.update({
 			where: {
 				id: currentTask.id
@@ -198,61 +150,126 @@ export async function slayerTaskCommand(
 				quantity_remaining: 0
 			}
 		});
-		await `Your task has been ${
-			toBlock ? 'blocked' : 'skipped'
+		const resultMessage = `Your task has been ${
+			block ? 'blocked' : 'skipped'
 		}. You have ${slayerPoints.toLocaleString()} slayer points.`;
-		if (Boolean(msg.flagArgs.new)) {
-			return runCommand({
-				commandName: 'slayertask',
-				args: [],
-				bypassInhibitors: true,
-				channelID: msg.channel.id,
-				userID: user.id,
-				guildID: msg.guild?.id,
-				user,
-				member: msg.member,
-				msg
-			});
+
+		if (newTask) {
+			return await slayerNewTaskCommand(mahojiUser, interaction, resultMessage);
 		}
-		return;
+		return resultMessage;
+	} catch (e) {
+		logError(e, {
+			user_id: mahojiUser.id.toString(),
+			command: 'slayerSkipTaskCommand',
+			current_task_id: currentTask.id.toString(),
+			current_task: currentTask.monster_id.toString()
+		});
+		return 'An error occurred while performing this action. Please try again, or contact #help-and-support if the issue persists.';
 	}
+}
+export async function slayerStatusCommand(mahojiUser: User) {
+	const { currentTask, assignedTask } = await getUsersCurrentSlayerInfo(mahojiUser.id);
+	const { slayer_points: slayerPoints, slayer_task_streak: slayerStreak } = mahojiUser;
+	return (
+		`${
+			currentTask
+				? `\nYour current task is to kill **${getCommonTaskName(
+						assignedTask!.monster
+				  )}**${getAlternateMonsterList(
+						newSlayerTask.assignedTask
+				  )}. You have ${currentTask.quantity_remaining.toLocaleString()} kills remaining.`
+				: ''
+		}` +
+		`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${slayerStreak} tasks in a row.`
+	);
+}
+async function returnSuccess(interaction: SlashCommandInteraction, content: string) {
+	// Close the interaction so we don't hold it open while the buttons are active.
+	await interaction.respond({
+		type: InteractionType.ApplicationCommand,
+		response: {
+			type: InteractionResponseType.ChannelMessageWithSource,
+			data: { content }
+		},
+		interaction
+	});
 
-	let rememberedSlayerMaster: string = '';
-	if (msg.flagArgs.unfav || msg.flagArgs.delete || msg.flagArgs.forget) {
-		await user.settings.update(UserSettings.Slayer.RememberSlayerMaster, null);
-	} else {
-		rememberedSlayerMaster = user.settings.get(UserSettings.Slayer.RememberSlayerMaster) ?? '';
+	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
+
+	// Todo: Send returnSuccess() buttons
+}
+export async function slayerNewTaskCommand(
+	mahojiUser: User,
+	interaction: SlashCommandInteraction,
+	extraContent: string,
+	slayerMasterOverride: string | undefined,
+	saveDefaultSlayerMaster: boolean
+) {
+	// TODO: Assign new task, store message in newTaskContent, etc
+	const klasaUser = await globalClient.fetchUser(mahojiUser.id);
+	const { currentTask, assignedTask } = await getUsersCurrentSlayerInfo(mahojiUser.id);
+	const {
+		slayer_points: slayerPoints,
+		slayer_task_streak: slayerStreak,
+		slayer_remember_master: rememberedSlayerMaster
+	} = mahojiUser;
+
+	if (klasaUser.minionIsBusy) {
+		return `Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${slayerStatusCommand(
+			mahojiUser
+		)}`;
 	}
+	const closeInteraction = async (interaction: SlashCommandInteraction, message: string) => {
+		// Close the interaction so we don't hold it open while the buttons are active.
+		await interaction.respond({
+			type: InteractionType.ApplicationCommand,
+			response: {
+				type: InteractionResponseType.ChannelMessageWithSource,
+				data: { content: message }
+			},
+			interaction
+		});
+	};
 
-	// Match on input slayermaster if specified, falling back to remembered.
-	const has99SlayerCape = user.skillLevel(SkillsEnum.Slayer) >= 99 && user.hasItemEquippedOrInBank('Slayer cape');
+	const has99SlayerCape =
+		klasaUser.skillLevel(SkillsEnum.Slayer) >= 99 && klasaUser.hasItemEquippedOrInBank('Slayer cape');
 
+	// Match any master if they're 99, otherwise find master that matches the override, otherwise fallback to saved:
 	const slayerMaster =
-		input && has99SlayerCape
-			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
-			: input
+		slayerMasterOverride && has99SlayerCape
+			? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null
+			: slayerMasterOverride
 			? slayerMasters
-					.filter(m => userCanUseMaster(user, m))
-					.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
-			: rememberedSlayerMaster !== ''
+					.filter(m => userCanUseMaster(klasaUser, m))
+					.find(m => m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))) ?? null
+			: rememberedSlayerMaster
 			? slayerMasters
-					.filter(m => userCanUseMaster(user, m))
+					.filter(m => userCanUseMaster(klasaUser, m))
 					.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ?? null
 			: null;
 
-	const matchedSlayerMaster = input
-		? slayerMasters.find(m => m.aliases.some(alias => stringMatches(alias, input))) ?? null
+	// Above matches only if the Master is usable by player, this always matches so we can tell player why it failed:
+	const matchedSlayerMaster = slayerMasterOverride
+		? slayerMasters.find(
+				m =>
+					stringMatches(m.name, slayerMasterOverride) ||
+					m.aliases.some(alias => stringMatches(alias, slayerMasterOverride))
+		  ) ?? null
 		: null;
 
 	// Special handling for Turael skip
-	if (currentTask && input && slayerMaster && slayerMaster.name === 'Turael') {
+	if (currentTask && slayerMasterOverride && slayerMaster && slayerMaster.name === 'Turael') {
 		if (slayerMaster.tasks.find(t => t.monster.id === currentTask.monster_id)) {
 			return 'You cannot skip this task because Turael assigns it.';
 		}
-		// await msg.confirm(
-		// 	`Really cancel task? This will reset your streak to 0 and give you a new ${slayerMaster.name} task.`
-		// );
-
+		// TODO: Add a confirmation here since it resets streak.
+		//
+		await handleMahojiConfirmation(
+			interaction,
+			`Really cancel task? This will reset your streak to 0 and give you a new ${slayerMaster.name} task.`
+		);
 		await prisma.slayerTask.update({
 			where: {
 				id: currentTask.id
@@ -262,21 +279,28 @@ export async function slayerTaskCommand(
 				quantity_remaining: 0
 			}
 		});
-		user.settings.update(UserSettings.Slayer.TaskStreak, 0);
-		const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
+		await mahojiUserSettingsUpdate(mahojiUser.id, { slayer_task_streak: 0 });
+		const newSlayerTask = await assignNewSlayerTask(klasaUser, slayerMaster);
 		let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
-		returnMessage =
+		const returnMessage =
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
-			` has assigned you to kill ${
-				newSlayerTask.currentTask.quantity
-			}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
-		this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+			` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}${getAlternateMonsterList(
+				newSlayerTask.assignedTask
+			)}.`;
+
+		returnSuccess(interaction, `${extraContent}\n\n${returnMessage}`);
 		return;
+	}
+	let resultMessage = '';
+	// Store favorite slayer master if requested:
+	if (saveDefaultSlayerMaster && slayerMaster) {
+		await mahojiUserSettingsUpdate(mahojiUser.id, { slayer_remember_master: slayerMaster.name });
+		resultMessage = `**Saved ${slayerMaster!.name} as default slayer master.**\n\n`;
 	}
 
 	if (currentTask || !slayerMaster) {
 		let warningInfo = '';
-		if (input && !slayerMaster && matchedSlayerMaster) {
+		if (slayerMasterOverride && !slayerMaster && matchedSlayerMaster) {
 			let aRequirements: string[] = [];
 			if (matchedSlayerMaster.slayerLvl) aRequirements.push(`Slayer Level: ${matchedSlayerMaster.slayerLvl}`);
 			if (matchedSlayerMaster.combatLvl) aRequirements.push(`Combat Level: ${matchedSlayerMaster.combatLvl}`);
@@ -286,34 +310,21 @@ export async function slayerTaskCommand(
 		}
 
 		let baseInfo = currentTask
-			? `Your current task is to kill ${currentTask.quantity}x ${getCommonTaskName(
-					assignedTask!.monster
-			  )}${this.getAlternateMonsterList(assignedTask)}, you have ${
-					currentTask.quantity_remaining
-			  } kills remaining.`
-			: `You have no task at the moment, you can get a task using \`slayertask ${slayerMasters
+			? await slayerStatusCommand(mahojiUser)
+			: `You have no task at the moment, you can get a task using \`/slayer task master:${slayerMasters
 					.map(i => i.name)
 					.join('/')}\``;
 
-		returnMessage = `${warningInfo}${baseInfo}
-
-Your current streak is ${user.settings.get(UserSettings.Slayer.TaskStreak)}.`;
+		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
-			this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+			returnSuccess(interaction, resultMessage);
 			return;
 		}
-		return returnMessage;
+		return resultMessage;
 	}
 
-	// Store favorite slayer master if requested:
-	let updateMsg = '';
-	if (msg.flagArgs.remember || msg.flagArgs.fav || msg.flagArgs.save) {
-		await user.settings.update(UserSettings.Slayer.RememberSlayerMaster, slayerMaster.name);
-		updateMsg = `\n\n**Saved ${slayerMaster!.name} as default slayer master.**`;
-	}
-
-	const newSlayerTask = await assignNewSlayerTask(user, slayerMaster);
-	const myUnlocks = (await user.settings.get(UserSettings.Slayer.SlayerUnlocks)) ?? undefined;
+	const newSlayerTask = await assignNewSlayerTask(klasaUser, slayerMaster);
+	const myUnlocks = mahojiUser.slayer_unlocks ?? [];
 	const extendReward = SlayerRewardsShop.find(
 		srs => srs.extendID && srs.extendID.includes(newSlayerTask.currentTask.monster_id)
 	);
@@ -335,14 +346,39 @@ Your current streak is ${user.settings.get(UserSettings.Slayer.TaskStreak)}.`;
 
 	let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 	if (commonName === 'TzHaar') {
-		returnMessage = 'Ah... Tzhaar... ';
+		resultMessage += 'Ah... Tzhaar... ';
 		commonName +=
 			'. You can choose to kill TzTok-Jad with `/activities fight_caves `, or TzKal-Zuk with `/activities inferno action:Start Inferno Trip ` as long as you ' +
 			"don't kill any regular TzHaar first.";
 	}
 
-	returnMessage += `${slayerMaster.name} has assigned you to kill ${
+	resultMessage += `${slayerMaster.name} has assigned you to kill ${
 		newSlayerTask.currentTask.quantity
-	}x ${commonName}${this.getAlternateMonsterList(newSlayerTask.assignedTask)}.${updateMsg}`;
-	this.returnSuccess(msg, returnMessage, Boolean(msg.flagArgs.as) || Boolean(msg.flagArgs.autoslay));
+	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
+	returnSuccess(interaction, resultMessage);
+}
+export async function slayerUnblockCommand(mahojiUser: User, monsterName: string) {
+	const osjsMonster = Monsters.find(
+		m => stringMatches(m.name, monsterName) || m.aliases.some(alias => stringMatches(alias, monsterName))
+	);
+	if (!osjsMonster) {
+		return `Cannot find Monster with name **${monsterName}**`;
+	}
+	const blockedMonsters = mahojiUser.slayer_blocked_ids.map(mId => Monsters.find(m => m.id === mId)).filter(notEmpty);
+	if (blockedMonsters.length === 0) {
+		return "You don't currently have any monsters blocked.";
+	}
+	const monsterToUnblock = blockedMonsters.find(m => m.id === osjsMonster.id);
+	if (!monsterToUnblock) {
+		return `You don't currently have ${getCommonTaskName(osjsMonster)} blocked.`;
+	}
+	try {
+		await mahojiUserSettingsUpdate(mahojiUser.id, {
+			slayer_blocked_ids: removeFromArr(mahojiUser.slayer_blocked_ids, monsterToUnblock.id)
+		});
+		return `**${getCommonTaskName(monsterToUnblock)}** has been unblocked`;
+	} catch (e) {
+		logError(e, { user_id: mahojiUser.id.toString(), command: 'slayerUnblockCommand', assignment: monsterName });
+		return 'An error occurred while trying to remove task. Please try again, or ask #help-and-support if the issue persists.';
+	}
 }

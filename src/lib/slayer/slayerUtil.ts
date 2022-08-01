@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { notEmpty, randFloat, randInt } from 'e';
 import { ArrayActions, KlasaUser } from 'klasa';
 import { Bank, Monsters, MonsterSlayerMaster } from 'oldschooljs';
@@ -207,7 +208,8 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	return { currentTask, assignedTask };
 }
 
-export function calcMaxBlockedTasks(qps: number) {
+export function calcMaxBlockedTasks(user: User) {
+	const qps = user.QP;
 	// 6 Blocks total 5 for 250 qps, + 1 for lumby.
 	// For now we're do 1 free + 1 for every 50 qps.
 	return Math.min(1 + Math.floor(qps / 50), 6);

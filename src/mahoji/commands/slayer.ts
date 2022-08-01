@@ -3,6 +3,13 @@ import { Monsters } from 'oldschooljs';
 
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
+import {
+	slayerListBlocksCommand,
+	slayerNewTaskCommand,
+	slayerSkipTaskCommand,
+	slayerStatusCommand,
+	slayerUnblockCommand
+} from '../lib/abstracted_commands/slayerTaskCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -59,13 +66,29 @@ export const slayerCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'skip',
 					description: 'Skip your current task',
-					required: false
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'new',
+							description: 'Get a new task automatically',
+							required: false
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'block',
 					description: 'Block your current task.',
-					required: false
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'new',
+							description: 'Get a new task automatically',
+							required: false
+						}
+					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -177,14 +200,51 @@ export const slayerCommand: OSBMahojiCommand = {
 		user,
 		options,
 		channelID,
-		userID
-	}: // , interaction
-	CommandRunOptions<{
+		userID,
+		interaction
+	}: CommandRunOptions<{
 		autoslay?: { mode?: string; save?: boolean };
 		task?: { master?: string; save?: boolean };
-		manage?: { skip?: {}; block?: {}; unblock?: { assignment: string }; list_blocks?: {} };
+		manage?: {
+			skip?: { new?: boolean };
+			block?: { new?: boolean };
+			unblock?: { assignment: string };
+			list_blocks?: {};
+		};
 		rewards?: { unlock?: { unlockable: string }; buy?: { item: string }; show_unlocks?: {} };
+		status?: {};
 	}>) => {
+		const klasaUser = globalClient.fetchUser(userID);
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+
+		if (options.task) {
+			return await slayerNewTaskCommand(
+				mahojiUser,
+				interaction,
+				'',
+				options.task.master,
+				Boolean(options.task.save)
+			);
+		}
+		if (options.manage) {
+			if (options.manage.list_blocks) {
+				return slayerListBlocksCommand(mahojiUser);
+			}
+			if (options.manage.unblock) {
+				return await slayerUnblockCommand(mahojiUser, options.manage.unblock.assignment);
+			}
+			if (options.manage.skip || options.manage.block) {
+				return await slayerSkipTaskCommand(
+					mahojiUser,
+					Boolean(options.manage.block),
+					Boolean(options.manage.skip?.new ?? options.manage.block?.new),
+					interaction
+				);
+			}
+		}
+		if (options.status) {
+			return slayerStatusCommand(mahojiUser);
+		}
 		console.log(options);
 		console.log(`channel: ${channelID} - user: ${userID}`);
 		return `${user.username} - ${JSON.stringify(options)}`;
