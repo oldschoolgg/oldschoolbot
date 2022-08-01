@@ -366,6 +366,19 @@ const crystalTools: Createable[] = [
 		noCl: true
 	},
 	{
+		name: 'Crystal bow',
+		inputItems: new Bank({
+			'Crystal weapon seed': 1,
+			'Crystal shard': 40
+		}),
+		outputItems: {
+			[itemID('Crystal bow')]: 1
+		},
+		requiredSkills: { smithing: 78, crafting: 78 },
+		QPRequired: 150,
+		noCl: true
+	},
+	{
 		name: 'Crystal helm',
 		inputItems: new Bank({
 			'Crystal armour seed': 1,
