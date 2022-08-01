@@ -157,6 +157,7 @@ export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	usingHuntPotion: boolean;
 	wildyPeak: Peak | null;
+	usingStaminaPotion: boolean;
 }
 
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
