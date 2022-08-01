@@ -193,6 +193,7 @@ export const enum Tasks {
 	FishingTrawler = 'trawlerActivity',
 	ZalcanoActivity = 'zalcanoActivity',
 	SawmillActivity = 'sawmillActivity',
+	ButlerActivity = 'butlerActivity',
 	PickpocketActivity = 'pickpocketActivity',
 	Enchanting = 'enchantingActivity',
 	Casting = 'castingActivity',

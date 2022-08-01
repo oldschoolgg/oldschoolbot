@@ -55,6 +55,8 @@ export function taskNameFromType(activityType: activity_type_enum): Tasks {
 			return Tasks.CyclopsActivity;
 		case 'Sawmill':
 			return Tasks.SawmillActivity;
+		case 'Butler':
+			return Tasks.ButlerActivity;
 		case 'Sepulchre':
 			return Tasks.SepulchreActivity;
 		case 'Plunder':

@@ -41,6 +41,7 @@ import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
+	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -355,6 +356,14 @@ export default class extends Extendable {
 
 			case 'Sawmill': {
 				const data = currentTask as SawmillActivityTaskOptions;
+				const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
+				return `${this.minionName} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+					plank!.outputItem
+				)}s. ${formattedDuration}`;
+			}
+
+			case 'Butler': {
+				const data = currentTask as ButlerActivityTaskOptions;
 				const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
 				return `${this.minionName} is currently creating ${data.plankQuantity}x ${itemNameFromID(
 					plank!.outputItem
