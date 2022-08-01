@@ -619,6 +619,11 @@ export default class extends Extendable {
 					data.quantity
 				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
+			case 'PuroPuro': {
+				return `${this.minionName} is currently hunting in Puro-Puro. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 			case 'Easter':
 			case 'BlastFurnace': {
 				throw new Error('Removed');
