@@ -39,7 +39,8 @@ const riskDeathNumbers = [
 
 export default class extends Task {
 	async run(data: HunterActivityTaskOptions) {
-		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration } = data;
+		const { creatureName, quantity, userID, channelID, usingHuntPotion, wildyPeak, duration, usingStaminaPotion } =
+			data;
 		const user = await this.client.fetchUser(userID);
 		const userBank = user.bank();
 		const currentLevel = user.skillLevel(SkillsEnum.Hunter);
@@ -195,7 +196,16 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['hunt', { name: creatureName, quantity, hunter_potion: data.usingHuntPotion }, true],
+			[
+				'hunt',
+				{
+					name: creatureName,
+					quantity,
+					hunter_potion: data.usingHuntPotion,
+					stamina_potions: usingStaminaPotion
+				},
+				true
+			],
 			undefined,
 			data,
 			loot
