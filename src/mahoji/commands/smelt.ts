@@ -121,14 +121,14 @@ export const smeltingCommand: OSBMahojiCommand = {
 				timeToSmithSingleBar /= 2;
 				boosts.push('2x boost for Smithing master cape');
 			}
-			if (user.hasItemEquippedAnywhere(itemID('Dwarven gauntlets')) && bar.id !== itemID('Gold bar')) {
-				boosts.push('2x boost for having a Dwarven gauntlets equipped.');
+			if (user.hasItemEquippedAnywhere('Dwarven gauntlets') && bar.id !== itemID('Gold bar')) {
+				boosts.push('2x boost for having Dwarven gauntlets equipped.');
 				timeToSmithSingleBar /= 2;
 			}
 		}
 
 		if (!blast_furnace) {
-			if (user.hasItemEquippedAnywhere(itemID('Dwarven gauntlets'))) {
+			if (user.hasItemEquippedAnywhere('Dwarven gauntlets')) {
 				boosts.push('2x boost for having a Dwarven gauntlets equipped.');
 				timeToSmithSingleBar /= 2;
 			}
