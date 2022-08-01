@@ -1,11 +1,13 @@
 import { spoiler, userMention } from '@discordjs/builders';
-import { Time } from 'e';
+import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank, LootTable } from 'oldschooljs';
 
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
+import { Events } from '../../../lib/constants';
 import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
 import { Createable } from '../../../lib/data/createables';
+import { isDoubleLootActive } from '../../../lib/doubleLoot';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
 import { trackLoot } from '../../../lib/settings/prisma';
 import {
@@ -20,7 +22,9 @@ import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { minionName, userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
 import resolveItems from '../../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
@@ -150,14 +154,18 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 	await klasaUser.incrementMonsterScore(MOKTANG_ID, qty);
+	const newKC = klasaUser.getKC(MOKTANG_ID);
 
 	let loot = new Bank();
 
 	for (let i = 0; i < qty; i++) {
 		loot.add(MoktangLootTable.roll());
 	}
+	if (isDoubleLootActive(globalClient, data.duration)) {
+		loot.multiply(2);
+	}
 
-	await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
+	const res = await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
 	await updateBankSetting(globalClient, 'moktang_loot', loot);
 	await trackLoot({
 		duration: data.duration,
@@ -176,6 +184,25 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 		multiplier: false,
 		masterCapeBoost: true
 	});
+
+	const image = await makeBankImage({
+		bank: res.itemsAdded,
+		title: `Loot From ${qty} Moktang`,
+		user: klasaUser,
+		previousCL: res.previousCL
+	});
+
+	for (const item of resolveItems(['Claws frame', 'Mini moktang'])) {
+		if (loot.has(item)) {
+			globalClient.emit(
+				Events.ServerNotification,
+				`**${klasaUser.username}'s** minion just received their ${formatOrdinal(
+					klasaUser.cl().amount(item)
+				)} ${itemNameFromID(item)} on their ${formatOrdinal(randInt(newKC - qty, newKC))} kill!`
+			);
+		}
+	}
+
 	let str = `${userMention(data.userID)}, ${minionName(
 		mahojiUser
 	)} finished killing ${qty}x Moktang. Received ${loot}.
@@ -193,7 +220,7 @@ ${xpStr}`;
 			},
 			true
 		],
-		undefined,
+		image.file.buffer,
 		data,
 		null
 	);

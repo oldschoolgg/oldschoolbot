@@ -258,7 +258,8 @@ setCustomItem(
 	'Dwarven warhammer',
 	{
 		customItemData: {
-			cantDropFromMysteryBoxes: true
+			cantDropFromMysteryBoxes: true,
+			isSuperUntradeable: true
 		}
 	},
 	1_000_000_000
