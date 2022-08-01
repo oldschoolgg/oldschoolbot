@@ -29,7 +29,6 @@ import { CLIENT_ID } from '../config';
 import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 import { skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
 import { prisma } from './settings/prisma';
@@ -616,22 +615,6 @@ export function convertAttackStyleToGearSetup(style: OffenceGearStat | DefenceGe
 	return setup;
 }
 
-/**
- * Removes extra clue scrolls from loot, if they got more than 1 or if they already own 1.
- */
-export function deduplicateClueScrolls({ loot, currentBank }: { loot: Bank; currentBank: Bank }) {
-	const newLoot = loot.clone();
-	for (const { scrollID } of clueTiers) {
-		if (!newLoot.has(scrollID)) continue;
-		if (currentBank.has(scrollID)) {
-			newLoot.remove(scrollID, newLoot.amount(scrollID));
-		} else {
-			newLoot.bank[scrollID] = 1;
-		}
-	}
-	return newLoot;
-}
-
 export function sanitizeBank(bank: Bank) {
 	for (const [key, value] of Object.entries(bank.bank)) {
 		if (value < 1) {
@@ -801,10 +784,6 @@ export async function asyncGzip(buffer: Buffer) {
 
 export function getUsername(id: string | bigint) {
 	return usernameCache.get(id.toString()) ?? 'Unknown';
-}
-
-export function getClueScoresFromOpenables(openableScores: Bank, mutate = false) {
-	return openableScores.filter(item => Boolean(clueTiers.find(ct => ct.id === item.id)), mutate);
 }
 
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {

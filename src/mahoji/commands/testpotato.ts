@@ -7,6 +7,7 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
+import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
 import { BitField, MAX_QP } from '../../lib/constants';
 import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
@@ -164,13 +165,24 @@ for (const usable of allUsableItems) usables.add(usable, 100);
 const leaguesPreset = new Bank();
 for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
 
+const allStashUnitItems = new Bank();
+for (const unit of allStashUnitsFlat) {
+	for (const i of [unit.items].flat(2)) {
+		allStashUnitItems.add(i);
+	}
+}
+for (const tier of allStashUnitTiers) {
+	allStashUnitItems.add(tier.cost.clone().multiply(tier.units.length));
+}
+
 const spawnPresets = [
 	['openables', openablesBank],
 	['random', new Bank()],
 	['equippables', equippablesBank],
 	['farming', farmingPreset],
 	['usables', usables],
-	['leagues', leaguesPreset]
+	['leagues', leaguesPreset],
+	['stashunits', allStashUnitItems]
 ] as const;
 
 const nexSupplies = new Bank()

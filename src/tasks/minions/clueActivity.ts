@@ -1,15 +1,15 @@
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events } from '../../lib/constants';
-import clueTiers from '../../lib/minions/data/clueTiers';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: ClueActivityTaskOptions) {
 		const { clueID, userID, channelID, quantity } = data;
-		const clueTier = clueTiers.find(mon => mon.id === clueID);
+		const clueTier = ClueTiers.find(mon => mon.id === clueID);
 		const user = await this.client.fetchUser(userID);
 
 		const logInfo = `ClueID[${clueID}] userID[${userID}] channelID[${channelID}] quantity[${quantity}]`;
