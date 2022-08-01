@@ -13,7 +13,7 @@ export default class extends Task {
 		const [klasaUser, user] = await Promise.all([globalClient.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
 		let basePoints = 35;
 
-		let resultStr = `The base amount of points is 35. Your Honour Level is ${user.honour_level}.`;
+		let resultStr = `The base amount of points is 35. Your Honour Level is ${user.honour_level}. `;
 
 		const teamSkillPercent = calcWhatPercent(user.honour_level, 5);
 
