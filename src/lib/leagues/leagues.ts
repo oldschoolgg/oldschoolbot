@@ -88,7 +88,7 @@ export interface Task {
 	has: (opts: HasFunctionArgs) => Promise<boolean>;
 }
 
-export function leaguesHasKC(args: HasFunctionArgs, mon: Monster | CustomMonster, amount = 1) {
+export function leaguesHasKC(args: HasFunctionArgs, mon: Monster | CustomMonster | { id: number }, amount = 1) {
 	return (args.monsterScores[mon.id] ?? 0) >= amount;
 }
 

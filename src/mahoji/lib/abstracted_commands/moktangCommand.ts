@@ -7,6 +7,7 @@ import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
 import { Createable } from '../../../lib/data/createables';
 import { MaterialBank } from '../../../lib/invention/MaterialBank';
+import { trackLoot } from '../../../lib/settings/prisma';
 import {
 	ClueTable,
 	FletchingTipsTable,
@@ -103,6 +104,12 @@ export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQu
 
 	await user.removeItemsFromBank(cost);
 	await updateBankSetting(globalClient, 'moktang_cost', cost);
+	await trackLoot({
+		changeType: 'cost',
+		cost,
+		id: 'moktang',
+		type: 'Monster'
+	});
 
 	await addSubTaskToActivityTask<MoktangTaskOptions>({
 		userID: user.id,
@@ -152,6 +159,15 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 
 	await klasaUser.addItemsToBank({ items: loot, collectionLog: true });
 	await updateBankSetting(globalClient, 'moktang_loot', loot);
+	await trackLoot({
+		duration: data.duration,
+		teamSize: 1,
+		loot,
+		type: 'Monster',
+		changeType: 'loot',
+		id: 'moktang',
+		kc: qty
+	});
 
 	const xpStr = await klasaUser.addXP({
 		skillName: SkillsEnum.Mining,

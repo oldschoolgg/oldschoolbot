@@ -638,5 +638,19 @@ export const eliteTasks: Task[] = [
 		has: async ({ actualClues }) => {
 			return actualClues.amount('Clue scroll (grandmaster)') >= 200;
 		}
+	},
+	{
+		id: 3084,
+		name: 'Create Drygore igne claws',
+		has: async ({ cl }) => {
+			return cl.has('Drygore igne claws');
+		}
+	},
+	{
+		id: 3085,
+		name: 'Create Dwarven igne claws',
+		has: async ({ cl }) => {
+			return cl.has('Dwarven igne claws');
+		}
 	}
 ];
