@@ -234,20 +234,47 @@ export async function minionKillCommand(
 	}
 
 	// Black mask and salve don't stack.
-	const salveBoost = boosts.join('').toLowerCase().includes('salve amulet');
-	if (!salveBoost) {
-		// Add 15% slayer boost on task if they have black mask or similar
-		if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
-			if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
-				timeToFinish = reduceNumByPercent(timeToFinish, 15);
-				boosts.push('15% for Black mask (i) on non-melee task');
-			}
-		} else if (
-			isOnTask &&
-			(user.hasItemEquippedOrInBank('Black mask') || user.hasItemEquippedOrInBank('Black mask (i)'))
-		) {
-			timeToFinish = reduceNumByPercent(timeToFinish, 15);
-			boosts.push('15% for Black mask on melee task');
+	const oneSixthBoost = 16.67;
+	let blackMaskBoost = 0;
+	let blackMaskBoostMsg = '';
+	let salveAmuletBoost = 0;
+	let salveAmuletBoostMsg = '';
+
+	// Calculate Slayer helmet boost on task if they have black mask or similar
+	if (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic)) {
+		if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
+			blackMaskBoost = oneSixthBoost;
+			blackMaskBoostMsg = `${blackMaskBoost}% for Black mask (i) on non-melee task`;
+		}
+	} else if (isOnTask && user.hasItemEquippedOrInBank('Black mask')) {
+		blackMaskBoost = oneSixthBoost;
+		blackMaskBoostMsg = `${blackMaskBoost}% for Black mask on melee task`;
+	}
+
+	// Calculate Salve amulet boost on task if the monster is undead or similar
+	const undeadMonster = osjsMon?.data?.attributes?.includes(MonsterAttribute.Undead);
+	if (undeadMonster && (attackStyles.includes(SkillsEnum.Ranged) || attackStyles.includes(SkillsEnum.Magic))) {
+		if (user.hasItemEquippedOrInBank('Salve amulet(i)')) {
+			const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet(ei)');
+			salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
+			salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${
+				enhancedBoost ? '(ei)' : '(i)'
+			} on non-melee task`;
+		}
+	} else if (undeadMonster && user.hasItemEquippedOrInBank('Salve amulet')) {
+		const enhancedBoost = user.hasItemEquippedOrInBank('Salve amulet(e)');
+		salveAmuletBoost = enhancedBoost ? 20 : oneSixthBoost;
+		salveAmuletBoostMsg = `${salveAmuletBoost}% for Salve amulet${enhancedBoost ? ' (e)' : ''} on melee task`;
+	}
+
+	// Only choose greater boost:
+	if (salveAmuletBoost || blackMaskBoost) {
+		if (salveAmuletBoost > blackMaskBoost) {
+			timeToFinish = reduceNumByPercent(timeToFinish, salveAmuletBoost);
+			boosts.push(salveAmuletBoostMsg);
+		} else {
+			timeToFinish = reduceNumByPercent(timeToFinish, blackMaskBoost);
+			boosts.push(blackMaskBoostMsg);
 		}
 	}
 
