@@ -5,7 +5,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { ClueTiers } from '../clues/clueTiers';
-import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
+import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
@@ -87,6 +87,10 @@ export async function handleTripFinish(
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
+	}
+
+	if (clueReceived && perkTier < PerkTier.Two) {
+		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
 	}
 
 	const existingCollector = collectors.get(user.id);

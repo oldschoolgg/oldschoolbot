@@ -119,8 +119,9 @@ export default class extends BotCommand {
 			return null;
 		}
 
-		return msg.channel.send(
-			await makeBankImageKlasa({
+		return msg.channel.send({
+			content: 'Try out the new `/bank` slash command!',
+			...(await makeBankImageKlasa({
 				bank,
 				title: `${msg.author.username}'s Bank`,
 				flags: {
@@ -128,7 +129,7 @@ export default class extends BotCommand {
 					page: page - 1
 				},
 				user: msg.author
-			})
-		);
+			}))
+		});
 	}
 }
