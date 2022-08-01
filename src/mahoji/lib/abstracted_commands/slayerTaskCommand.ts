@@ -2,7 +2,6 @@ import { User } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageButton } from 'discord.js';
 import { notEmpty, randInt, Time } from 'e';
-import { InteractionResponseType, InteractionType } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Monsters } from 'oldschooljs';
 
@@ -96,7 +95,7 @@ export function slayerListBlocksCommand(mahojiUser: User) {
 		` and have ${maxBlocks - myBlockList.length} remaining\n\n**Blocked Tasks:**\n`;
 	const myBlockedMonsters = Monsters.filter(m => myBlockList.includes(m.id));
 	outstr += `${myBlockedMonsters.map(getCommonTaskName).join('\n')}`;
-	return `${outstr}\n\nTry: \`st --block\` to block a task.`;
+	return `${outstr}\n\nTry: \`/slayer manage block\` to block a task.`;
 }
 
 export async function slayerSkipTaskCommand(
@@ -185,24 +184,7 @@ export async function slayerStatusCommand(mahojiUser: User) {
 		`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${slayerStreak} tasks in a row.`
 	);
 }
-async function returnSuccess(
-	interaction: SlashCommandInteraction,
-	channelID: bigint | string,
-	mahojiUser: User,
-	content: string
-) {
-	if (interaction) {
-		// Close the interaction so we don't hold it open while the buttons are active.
-		await interaction.respond({
-			type: InteractionType.ApplicationCommand,
-			response: {
-				type: InteractionResponseType.ChannelMessageWithSource,
-				data: { content: 'Please wait a moment...' }
-			},
-			interaction
-		});
-	}
-
+async function returnSuccess(channelID: bigint | string, mahojiUser: User, content: string) {
 	const channel = globalClient.channels.cache.get(String(channelID));
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 
@@ -360,8 +342,8 @@ export async function slayerNewTaskCommand(
 				newSlayerTask.assignedTask
 			)}.`;
 
-		returnSuccess(interaction, channelID, mahojiUser, `${extraContent}\n\n${returnMessage}`);
-		return;
+		returnSuccess(channelID, mahojiUser, `${extraContent}\n\n${returnMessage}`);
+		return 'Slayer task assigned.';
 	}
 	let resultMessage = '';
 	// Store favorite slayer master if requested:
@@ -386,11 +368,14 @@ export async function slayerNewTaskCommand(
 			: `You have no task at the moment, you can get a task using \`/slayer task master:${slayerMasters
 					.map(i => i.name)
 					.join('/')}\``;
+		baseInfo +=
+			'\n\nYou must save a default Slayer Master before you can get new tasks without specifying a Slayer Master:' +
+			'\n`/slayer task master:Duradel save:True';
 
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
-			returnSuccess(interaction, channelID, mahojiUser, resultMessage);
-			return;
+			returnSuccess(channelID, mahojiUser, resultMessage);
+			return 'Here is your current slayer task';
 		}
 		return resultMessage;
 	}
@@ -427,7 +412,8 @@ export async function slayerNewTaskCommand(
 	resultMessage += `${slayerMaster.name} has assigned you to kill ${
 		newSlayerTask.currentTask.quantity
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
-	returnSuccess(interaction, channelID, mahojiUser, resultMessage);
+	returnSuccess(channelID, mahojiUser, resultMessage);
+	return 'Slayer task assigned.';
 }
 export async function slayerUnblockCommand(mahojiUser: User, monsterName: string) {
 	const osjsMonster = Monsters.find(

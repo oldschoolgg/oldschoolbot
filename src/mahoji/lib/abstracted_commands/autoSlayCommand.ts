@@ -257,7 +257,7 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 
 		if (currentMonID === null) throw new Error('Could not get Monster data to find a task.');
 
-		return runCommand({
+		runCommand({
 			commandName: 'k',
 			args: {
 				name: Monsters.get(currentMonID)!.name
@@ -265,6 +265,7 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
+		return 'Starting slayer task.';
 	}
 	if (method === 'ehp') {
 		const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
@@ -276,7 +277,7 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 
 		// If we don't have the requirements for the efficient monster, revert to default monster
 		if (ehpKillable?.levelRequirements !== undefined && !user.hasSkillReqs(ehpKillable.levelRequirements)[0]) {
-			return runCommand({
+			runCommand({
 				commandName: 'k',
 				args: {
 					name: usersTask.assignedTask!.monster.name
@@ -284,10 +285,11 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
+			return 'Starting slayer task.';
 		}
 
 		if (ehpMonster && ehpMonster.efficientName) {
-			return runCommand({
+			runCommand({
 				commandName: 'k',
 				args: {
 					name: ehpMonster.efficientName,
@@ -296,8 +298,9 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
+			return 'Starting slayer task.';
 		}
-		return runCommand({
+		runCommand({
 			commandName: 'k',
 			args: {
 				name: usersTask.assignedTask!.monster.name
@@ -305,18 +308,20 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
+		return 'Starting slayer task.';
 	}
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
 		const myQPs = await user.settings.get(UserSettings.QP);
 		let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
-			return runCommand({
+			runCommand({
 				commandName: 'activities',
 				args: { fight_caves: {} },
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
+			return 'Starting slayer task.';
 		}
 
 		const allMonsters = killableMonsters.filter(m => {
@@ -339,19 +344,21 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 		}
 
 		if (maxMobName) {
-			return runCommand({
+			runCommand({
 				commandName: 'k',
 				args: { name: maxMobName },
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
+			return 'Starting slayer task.';
 		}
 		return "Can't find any monsters you have the requirements to kill!";
 	}
-	return runCommand({
+	runCommand({
 		commandName: 'k',
 		args: { name: usersTask.assignedTask!.monster.name },
 		bypassInhibitors: true,
 		...cmdRunOptions
 	});
+	return 'Starting slayer task.';
 }
