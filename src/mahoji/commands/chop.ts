@@ -93,12 +93,14 @@ export const chopCommand: OSBMahojiCommand = {
 		// Calculate the time it takes to chop a single log of this type, at this persons level.
 		let timetoChop = determineScaledLogTime(log!.xp, log.respawnTime, user.skillLevel(SkillsEnum.Woodcutting));
 
-		if (userHasItemsEquippedAnywhere(user, 'Dwarven greataxe')) {
-			timetoChop /= 2;
-		}
-
 		// If the user has an axe apply boost
 		const boosts = [];
+
+		if (userHasItemsEquippedAnywhere(user, 'Dwarven greataxe')) {
+			timetoChop /= 2;
+			boosts.push('2x faster for Dwarven greataxe');
+		}
+
 		for (const axe of axes) {
 			if (user.hasItemEquippedOrInBank(axe.id) && user.skillLevel(SkillsEnum.Woodcutting) >= axe.wcLvl) {
 				timetoChop = reduceNumByPercent(timetoChop, axe.reductionPercent);
