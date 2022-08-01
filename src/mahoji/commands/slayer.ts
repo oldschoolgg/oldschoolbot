@@ -225,6 +225,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			return await slayerNewTaskCommand(
 				mahojiUser,
 				interaction,
+				channelID,
 				'',
 				options.task.master,
 				Boolean(options.task.save)
@@ -242,7 +243,8 @@ export const slayerCommand: OSBMahojiCommand = {
 					mahojiUser,
 					Boolean(options.manage.block),
 					Boolean(options.manage.skip?.new ?? options.manage.block?.new),
-					interaction
+					interaction,
+					channelID
 				);
 			}
 		}

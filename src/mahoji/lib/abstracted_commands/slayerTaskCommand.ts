@@ -103,7 +103,8 @@ export async function slayerSkipTaskCommand(
 	mahojiUser: User,
 	block: boolean,
 	newTask: boolean,
-	interaction: SlashCommandInteraction
+	interaction: SlashCommandInteraction,
+	channelID: bigint | string
 ) {
 	const { currentTask } = await getUsersCurrentSlayerInfo(mahojiUser.id);
 	const myBlockList = mahojiUser.slayer_blocked_ids;
@@ -155,7 +156,7 @@ export async function slayerSkipTaskCommand(
 		}. You have ${slayerPoints.toLocaleString()} slayer points.`;
 
 		if (newTask) {
-			return await slayerNewTaskCommand(mahojiUser, interaction, resultMessage);
+			return await slayerNewTaskCommand(mahojiUser, interaction, channelID, resultMessage);
 		}
 		return resultMessage;
 	} catch (e) {
@@ -184,18 +185,25 @@ export async function slayerStatusCommand(mahojiUser: User) {
 		`\nYou have ${slayerPoints.toLocaleString()} slayer points, and have completed ${slayerStreak} tasks in a row.`
 	);
 }
-async function returnSuccess(interaction: SlashCommandInteraction, mahojiUser: User, content: string) {
-	// Close the interaction so we don't hold it open while the buttons are active.
-	await interaction.respond({
-		type: InteractionType.ApplicationCommand,
-		response: {
-			type: InteractionResponseType.ChannelMessageWithSource,
-			data: { content }
-		},
-		interaction
-	});
+async function returnSuccess(
+	interaction: SlashCommandInteraction,
+	channelID: bigint | string,
+	mahojiUser: User,
+	content: string
+) {
+	if (interaction) {
+		// Close the interaction so we don't hold it open while the buttons are active.
+		await interaction.respond({
+			type: InteractionType.ApplicationCommand,
+			response: {
+				type: InteractionResponseType.ChannelMessageWithSource,
+				data: { content: 'Please wait a moment...' }
+			},
+			interaction
+		});
+	}
 
-	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(String(channelID));
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 
 	const sentMessage = await channel.send({ content, components: returnSuccessButtons });
@@ -283,11 +291,11 @@ async function returnSuccess(interaction: SlashCommandInteraction, mahojiUser: U
 export async function slayerNewTaskCommand(
 	mahojiUser: User,
 	interaction: SlashCommandInteraction,
+	channelID: string | bigint,
 	extraContent: string,
 	slayerMasterOverride?: string | undefined,
 	saveDefaultSlayerMaster?: boolean
 ) {
-	// TODO: Assign new task, store message in newTaskContent, etc
 	const klasaUser = await globalClient.fetchUser(mahojiUser.id);
 	const { currentTask } = await getUsersCurrentSlayerInfo(mahojiUser.id);
 	const { slayer_remember_master: rememberedSlayerMaster } = mahojiUser;
@@ -352,7 +360,7 @@ export async function slayerNewTaskCommand(
 				newSlayerTask.assignedTask
 			)}.`;
 
-		returnSuccess(interaction, mahojiUser, `${extraContent}\n\n${returnMessage}`);
+		returnSuccess(interaction, channelID, mahojiUser, `${extraContent}\n\n${returnMessage}`);
 		return;
 	}
 	let resultMessage = '';
@@ -381,7 +389,7 @@ export async function slayerNewTaskCommand(
 
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
-			returnSuccess(interaction, mahojiUser, resultMessage);
+			returnSuccess(interaction, channelID, mahojiUser, resultMessage);
 			return;
 		}
 		return resultMessage;
@@ -419,7 +427,7 @@ export async function slayerNewTaskCommand(
 	resultMessage += `${slayerMaster.name} has assigned you to kill ${
 		newSlayerTask.currentTask.quantity
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
-	returnSuccess(interaction, mahojiUser, resultMessage);
+	returnSuccess(interaction, channelID, mahojiUser, resultMessage);
 }
 export async function slayerUnblockCommand(mahojiUser: User, monsterName: string) {
 	const osjsMonster = Monsters.find(
