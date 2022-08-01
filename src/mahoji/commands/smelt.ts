@@ -133,8 +133,6 @@ export const smeltingCommand: OSBMahojiCommand = {
 			}
 		}
 
-		console.log(timeToSmithSingleBar);
-
 		const maxTripLength = user.maxTripLength('Smithing');
 
 		// If no quantity provided, set it to the max.
