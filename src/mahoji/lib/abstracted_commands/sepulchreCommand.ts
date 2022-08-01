@@ -10,9 +10,14 @@ import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask
 
 export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 	const agilityLevel = user.skillLevel(SkillsEnum.Agility);
+	const thievingLevel = user.skillLevel(SkillsEnum.Thieving);
 	const minLevel = sepulchreFloors[0].agilityLevel;
 	if (agilityLevel < minLevel) {
 		return `You need atleast level ${minLevel} Agility to do the Hallowed Sepulchre.`;
+	}
+
+	if (thievingLevel < 66) {
+		return 'You need atleast level 66 Thieving to do the Hallowed Sepulchre.';
 	}
 
 	if (!user.hasGracefulEquipped()) {
