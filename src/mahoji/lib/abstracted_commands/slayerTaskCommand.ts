@@ -283,7 +283,7 @@ export async function slayerNewTaskCommand(
 	const { slayer_remember_master: rememberedSlayerMaster } = mahojiUser;
 
 	if (klasaUser.minionIsBusy) {
-		return `Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${slayerStatusCommand(
+		return `Your minion is busy, but you can still manage your block list: \`/slayer manage list_blocks\`${await slayerStatusCommand(
 			mahojiUser
 		)}`;
 	}
