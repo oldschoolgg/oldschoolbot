@@ -2,6 +2,7 @@ import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { MOKTANG_ID } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import {
 	allGildedItems,
 	brokenPernixOutfit,
@@ -1054,6 +1055,27 @@ export const hardTasks: Task[] = [
 		name: 'Build and fill all master stash units',
 		has: async ({ stashUnits }) => {
 			return stashUnits.filter(i => i.tier.tier === 'Master').every(i => i.isFull && Boolean(i.builtUnit));
+		}
+	},
+	{
+		id: 2140,
+		name: 'Kill Moktang',
+		has: async args => {
+			return leaguesHasKC(args, { id: MOKTANG_ID }, 1);
+		}
+	},
+	{
+		id: 2141,
+		name: 'Create a mainhand and offhand Volcanic pickaxe',
+		has: async ({ cl }) => {
+			return cl.has('Volcanic pickaxe') && cl.has('Offhand volcanic pickaxe');
+		}
+	},
+	{
+		id: 2142,
+		name: 'Create Volcanic igne claws',
+		has: async ({ cl }) => {
+			return cl.has('Volcanic igne claws');
 		}
 	}
 ];

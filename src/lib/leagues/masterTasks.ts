@@ -1037,5 +1037,12 @@ export const masterTasks: Task[] = [
 		has: async ({ smithingSuppliesUsed }) => {
 			return smithingSuppliesUsed.amount('Mithril bar') >= 200_000;
 		}
+	},
+	{
+		id: 4145,
+		name: 'Create Gorajan igne claws',
+		has: async ({ cl }) => {
+			return cl.has('Gorajan igne claws');
+		}
 	}
 ];
