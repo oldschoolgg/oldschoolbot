@@ -125,7 +125,7 @@ async function fuelCommand(interaction: SlashCommandInteraction, user: KlasaUser
 }
 
 async function buildCommand(user: KlasaUser, mahojiUser: User) {
-	const nursery = mahojiUser;
+	const nursery = mahojiUser.nursery as Nursery;
 	if (nursery) {
 		return 'You already have a nursery built.';
 	}
