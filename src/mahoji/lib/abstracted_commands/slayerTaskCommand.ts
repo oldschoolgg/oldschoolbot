@@ -365,12 +365,14 @@ export async function slayerNewTaskCommand(
 
 		let baseInfo = currentTask
 			? await slayerStatusCommand(mahojiUser)
-			: `You have no task at the moment, you can get a task using \`/slayer task master:${slayerMasters
-					.map(i => i.name)
-					.join('/')}\``;
-		baseInfo +=
-			'\n\nYou must save a default Slayer Master before you can get new tasks without specifying a Slayer Master:' +
-			'\n`/slayer task master:Duradel save:True';
+			: 'You have no task at the moment, you can get a task using `/slayer task master:Turael`' +
+			  `All slayer Masters: ${slayerMasters.map(i => i.name).join(', ')}`;
+
+		if (!currentTask && !rememberedSlayerMaster) {
+			baseInfo +=
+				'\n\nYou must save a default Slayer Master before you can get new tasks without specifying a Slayer Master:' +
+				'\n`/slayer task master:Duradel save:True';
+		}
 
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
