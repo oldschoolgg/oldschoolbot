@@ -18,7 +18,6 @@ export const smithCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Send your minion to smith things.',
 		examples: ['/smith name:Bronze platebody']
 	},
 	options: [
@@ -93,9 +92,9 @@ export const smithCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${smithedItem.name}s you can smith is ${Math.floor(
-				maxTripLength / timeToSmithSingleBar
-			)}.`;
+			)}, try a lower quantity. The highest amount of ${smithedItem.name}${
+				smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
+			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
 		await user.removeItemsFromBank(cost);

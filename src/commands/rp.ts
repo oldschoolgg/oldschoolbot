@@ -1,16 +1,17 @@
 import { codeBlock, inlineCode } from '@discordjs/builders';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
-import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
-import { notEmpty, randInt, sumArr, uniqueArr } from 'e';
-import { ArrayActions, CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
+import { MessageAttachment, MessageOptions, TextChannel, Util } from 'discord.js';
+import { notEmpty, uniqueArr } from 'e';
+import { CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { CLIENT_ID, production } from '../config';
+import { CLIENT_ID } from '../config';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../lib/blacklists';
 import {
 	badges,
 	BitField,
@@ -18,7 +19,6 @@ import {
 	Channel,
 	DISABLED_COMMANDS,
 	Emoji,
-	NEX_ID,
 	Roles,
 	SupportServer
 } from '../lib/constants';
@@ -28,13 +28,8 @@ import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } f
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
-import { calculateNexDetails, nexGearStats } from '../lib/simulation/nex';
 import { BotCommand } from '../lib/structures/BotCommand';
 import {
-	asyncExec,
-	calcPerHour,
-	channelIsSendable,
-	cleanString,
 	convertBankToPerHourStats,
 	formatDuration,
 	getSupportGuild,
@@ -46,14 +41,13 @@ import {
 	itemNameFromID,
 	stringMatches
 } from '../lib/util';
-import getOSItem, { getItem } from '../lib/util/getOSItem';
+import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
+import { makeBankImage, makeBankImageKlasa } from '../lib/util/makeBankImage';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
-import BankImageTask from '../tasks/bankImage';
 import PatreonTask from '../tasks/patreon';
 
 async function checkMassesCommand(msg: KlasaMessage) {
@@ -178,8 +172,10 @@ async function unsafeEval({
 
 	stopwatch.stop();
 	if (flags.bk || result instanceof Bank) {
-		const image = await globalClient.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
-		return { files: [new MessageAttachment(image.image!)], rawOutput: result };
+		const image = await makeBankImage({
+			bank: result
+		});
+		return { files: [new MessageAttachment(image.file.buffer)], rawOutput: result };
 	}
 
 	if (Buffer.isBuffer(result)) {
@@ -259,34 +255,6 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
-			case 'nexsim': {
-				if (production) return;
-				let str =
-					'Simulating Nex kills with 2-10 team sizes, assuming each team member is a copy of your account.\n';
-				const user = await mahojiUsersSettingsFetch(msg.author.id);
-				const gearStats = nexGearStats(user);
-				const kc = msg.flagArgs.kc ?? (user.monsterScores as any)[NEX_ID];
-				(user.monsterScores as any)[NEX_ID] = kc;
-				str += `Offence[${gearStats.offence.toFixed(1)}] Defence[${gearStats.defence.toFixed(1)}] KC[${
-					(user.monsterScores as any)[NEX_ID]
-				}]\n\n`;
-				for (let i = 2; i < 10; i++) {
-					const res = calculateNexDetails({ team: new Array(i).fill(user) });
-					str += `**${i}:** `;
-					if (!res.quantity) {
-						str += 'Died';
-					} else {
-						str += `${calcPerHour(res.quantity, res.duration).toFixed(1)}/hr (${
-							res.quantity
-						} kills in ${formatDuration(res.duration)} - ${formatDuration(
-							res.duration / res.quantity,
-							true
-						)} per kill)`;
-					}
-					str += '\n';
-				}
-				return msg.channel.send(str);
-			}
 			case 'ping': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || typeof input !== 'string') return;
@@ -342,7 +310,7 @@ export default class extends BotCommand {
 				const taskText = task ? `${task.type}` : 'None';
 
 				const userBadges = u.settings.get(UserSettings.Badges).map(i => badges[i]);
-				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(u.id);
+				const isBlacklisted = BLACKLISTED_USERS.has(u.id);
 
 				const premiumDate = u.settings.get(UserSettings.PremiumBalanceExpiryDate);
 				const premiumTier = u.settings.get(UserSettings.PremiumBalanceTier);
@@ -378,36 +346,6 @@ export default class extends BotCommand {
 				if (typeof input !== 'string') return;
 				return itemSearch(msg, input);
 			}
-			case 'pingtesters': {
-				if (!msg.guild || msg.guild.id !== SupportServer) return;
-				if (
-					!msg.guild ||
-					msg.channel.id !== Channel.TestingMain ||
-					!msg.member ||
-					(!msg.member.roles.cache.has(Roles.Moderator) && !msg.member.roles.cache.has(Roles.Contributor))
-				) {
-					return;
-				}
-				return msg.channel.send(`<@&${Roles.Testers}>`);
-			}
-			case 'git': {
-				try {
-					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
-						timeout: 30
-					});
-					const rawStr = currentCommit.stdout.trim();
-					const [commitHash, ...commentArr] = rawStr.split(' ');
-					return msg.channel.send({
-						embeds: [
-							new MessageEmbed()
-								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...master)
-**Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
-						]
-					});
-				} catch {
-					return msg.channel.send('Failed to fetch git info.');
-				}
-			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
 				const item = getOSItem(input);
@@ -429,30 +367,6 @@ ${
 		: `You have ${item.name} equipped in these setups: ${setupsWith.join(', ')}.`
 }`);
 			}
-			case 'issues': {
-				if (typeof input !== 'string' || input.length < 3 || input.length > 25) return;
-				const query = cleanString(input);
-
-				const searchURL = new URL('https://api.github.com/search/issues');
-
-				searchURL.search = new URLSearchParams([
-					['q', ['repo:oldschoolgg/oldschoolbot', 'is:issue', 'is:open', query].join(' ')]
-				]).toString();
-				const { items } = (await fetch(searchURL.toString()).then(res => res.json())) as Record<string, any>;
-				if (items.length === 0) return msg.channel.send('No results found.');
-				return msg.channel.send({
-					embeds: [
-						new MessageEmbed()
-							.setTitle(`${items.length} Github issues found from your search`)
-							.setDescription(
-								items
-									.slice(0, 10)
-									.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
-									.join('\n')
-							)
-					]
-				});
-			}
 		}
 
 		if (!isMod && !isOwner) return null;
@@ -463,31 +377,6 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
-			case 'blacklist':
-			case 'bl': {
-				if (!input || !(input instanceof KlasaUser)) return;
-				if (str instanceof KlasaUser) return;
-				const reason = str;
-				const entry = this.client.settings.get(ClientSettings.UserBlacklist);
-
-				const alreadyBlacklisted = entry.includes(input.id);
-
-				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
-					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
-				});
-				const emoji = getSupportGuild()?.emojis.cache.random()?.toString();
-				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
-
-				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
-				if (channelIsSendable(channel)) {
-					channel.send(
-						`\`${input.username}\` was ${newStatus} by ${msg.author.username} for \`${
-							reason ?? 'no reason'
-						}\`.`
-					);
-				}
-				return msg.channel.send(`${emoji} Successfully ${newStatus} ${input.username}.`);
-			}
 			case 'addimalt': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				if (!str || !(str instanceof KlasaUser)) return;
@@ -542,7 +431,6 @@ ${
 				const item = getOSItem(itemName);
 				const price = evalMathExpression(rawPrice);
 				if (!price || price < 1 || price > 1_000_000_000) return;
-				if (!price || isNaN(price)) return msg.channel.send('Invalid price');
 				await msg.confirm(
 					`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
 						item.wiki_url
@@ -579,17 +467,6 @@ ${
 				});
 				return msg.channel.send(`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`);
 			}
-			case 'gptrack': {
-				return msg.channel.send(`
-**Sell** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceSellingItems)}
-**PvM/Clues** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot)}
-**Alch** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching)}
-**Pickpocket** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket)}
-**Dice** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice)}
-**Open** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen)}
-**Daily** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily)}
-`);
-			}
 			case 'patreon': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				msg.channel.send('Running patreon task...');
@@ -619,6 +496,12 @@ ${
 				minionActivityCacheDelete(input.id);
 
 				return msg.react(Emoji.Tick);
+			}
+			case 'bl':
+			case 'blacklist': {
+				await syncBlacklists();
+				return msg.channel.send(`Users Blacklisted: ${BLACKLISTED_USERS.size}
+Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`);
 			}
 			case 'setgh': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -767,9 +650,7 @@ LIMIT 10;
 			case 'bank': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
-				return msg.channel.sendBankImage({
-					bank: input.allItemsOwned()
-				});
+				return msg.channel.send(await makeBankImageKlasa({ bank: input.allItemsOwned() }));
 			}
 			case 'disable': {
 				if (!input || input instanceof KlasaUser) {
@@ -875,12 +756,6 @@ LIMIT 10;
 					files: [new MessageAttachment(Buffer.from(JSON.stringify(result, null, 4)), 'patreon.txt')]
 				});
 			}
-			case 'bankimage':
-			case 'bi': {
-				if (typeof input !== 'string') return;
-				const bank = JSON.parse(input.replace(/'/g, '"'));
-				return msg.channel.sendBankImage({ bank });
-			}
 			case 'reboot': {
 				await msg.channel.send('Rebooting...');
 				await Promise.all(this.client.providers.map(provider => provider.shutdown()));
@@ -923,12 +798,10 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					['Loot', new Bank(loot.loot as any)]
 				] as const;
 
-				const task = this.client.tasks.get('bankImage') as BankImageTask;
-
 				for (const [name, bank] of arr) {
 					msg.channel.send({
 						content: convertBankToPerHourStats(bank, durationMillis).join(', '),
-						files: [new MessageAttachment((await task.generateBankImage(bank, name)).image!)]
+						...(await makeBankImageKlasa({ bank, title: name }))
 					});
 				}
 
@@ -967,60 +840,39 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				});
 				return msg.channel.send('Globally synced slash commands.');
 			}
-			case 'itemdata': {
-				if (typeof input !== 'string') return;
-				const item = getItem(input);
-				if (!item) return;
-				return msg.channel.send(JSON.stringify(item, null, 2));
-			}
-			case 'testercheck': {
-				if (production) return;
-				let time = '12hours';
-				if (typeof input === 'string') time = input;
-				const result = await prisma.$queryRawUnsafe<
-					{ username: string; qty: number }[]
-				>(`SELECT "new_user"."username", COUNT(user_id) AS qty
-FROM command_usage
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "command_usage"."user_id"::text
-WHERE date > now() - INTERVAL '${time}'
-GROUP BY "new_user"."username"
-ORDER BY qty DESC;`);
-				return msg.channel.send(
-					result
-						.slice(0, 10)
-						.map(u => `${u.username}: ${u.qty} commands`)
-						.join('\n')
-				);
-			}
-			case 'bitest': {
-				const times = [];
-				let amount = 100;
-
-				const bank = new Bank();
-				while (bank.length < 1000) bank.add(Items.random().id, randInt(1, 100));
-				for (let i = 0; i < amount; i++) {
-					let start = Date.now();
-					await (globalClient.tasks.get('bankImage') as BankImageTask).generateBankImage(
-						bank,
-						'Title',
-						false,
-						{
-							full: 'full'
-						},
-						msg.author,
-						undefined
-					);
-					let finish = Date.now();
-					times.push(finish - start);
+			case 'blacklistsync': {
+				const blacklistedUsers = globalClient.settings.get(ClientSettings.UserBlacklist);
+				const blacklistedGuilds = globalClient.settings.get(ClientSettings.GuildBlacklist);
+				await syncBlacklists();
+				let usersAdded = 0;
+				let guildsAdded = 0;
+				for (const user of blacklistedUsers) {
+					if (!BLACKLISTED_USERS.has(user)) {
+						try {
+							await roboChimpClient.blacklistedEntity.create({
+								data: {
+									id: BigInt(user),
+									type: 'user'
+								}
+							});
+							usersAdded++;
+						} catch {}
+					}
 				}
-				times.sort((a, b) => b - a);
-				let average = sumArr(times) / times.length;
-				let max = times[0];
-				let min = times[times.length - 1];
-				return msg.channel.send(`Generated ${amount} bank images
-**Average:** ${average}ms
-**Max:** ${max}ms
-**Min:** ${min}ms`);
+				for (const guild of blacklistedGuilds) {
+					if (!BLACKLISTED_GUILDS.has(guild)) {
+						try {
+							await roboChimpClient.blacklistedEntity.create({
+								data: {
+									id: BigInt(guild),
+									type: 'guild'
+								}
+							});
+							guildsAdded++;
+						} catch {}
+					}
+				}
+				return msg.channel.send(`${usersAdded} users, ${guildsAdded} guilds`);
 			}
 		}
 	}

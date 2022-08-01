@@ -1,6 +1,7 @@
 import { userMention } from '@discordjs/builders';
 import { TextChannel } from 'discord.js';
 import { KlasaUser } from 'klasa';
+import { MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -36,8 +37,11 @@ export async function nexCommand(interaction: SlashCommandInteraction, user: Kla
 	});
 	try {
 		await reactionAwaiter();
-	} catch (err) {
-		return typeof err === 'string' ? err : 'An error occurred.';
+	} catch (err: any) {
+		return {
+			content: typeof err === 'string' ? err : 'Your mass failed to start.',
+			flags: MessageFlags.Ephemeral
+		};
 	}
 	usersWhoConfirmed = usersWhoConfirmed.filter(i => !i.minionIsBusy);
 

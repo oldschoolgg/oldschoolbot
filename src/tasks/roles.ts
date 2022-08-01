@@ -3,9 +3,9 @@ import { noOp, notEmpty } from 'e';
 import { Task } from 'klasa';
 
 import { production } from '../config';
+import { ClueTiers } from '../lib/clues/clueTiers';
 import { BOT_TYPE, Roles, SupportServer, usernameCache } from '../lib/constants';
 import { getCollectionItems } from '../lib/data/Collections';
-import ClueTiers from '../lib/minions/data/clueTiers';
 import { Minigames } from '../lib/settings/minigames';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import Skills from '../lib/skilling/skills';
@@ -320,9 +320,9 @@ LIMIT 1;`
 				await Promise.all(
 					ClueTiers.map(t =>
 						q(
-							`SELECT id, '${t.name}' as n, ("clueScores"->>'${t.id}')::int as qty
+							`SELECT id, '${t.name}' as n, (openable_scores->>'${t.id}')::int as qty
 FROM users
-WHERE "clueScores"->>'${t.id}' IS NOT NULL
+WHERE "openable_scores"->>'${t.id}' IS NOT NULL
 ORDER BY qty DESC
 LIMIT 1;`
 						)

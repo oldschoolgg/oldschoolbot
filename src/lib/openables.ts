@@ -6,9 +6,9 @@ import { Mimic } from 'oldschooljs/dist/simulation/misc';
 import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
+import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { cluesRaresCL } from './data/CollectionsExport';
-import ClueTiers from './minions/data/clueTiers';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { UserSettings } from './settings/types/UserSettings';
@@ -49,7 +49,7 @@ export interface UnifiedOpenable {
 
 const clueItemsToNotifyOf = cluesRaresCL
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
-	.concat([itemID('Bloodhound')]);
+	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
@@ -76,7 +76,7 @@ for (const clueTier of ClueTiers) {
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 
-			const nthCasket = (user.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
+			const nthCasket = (user.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 0) + quantity;
 
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
@@ -103,8 +103,6 @@ for (const clueTier of ClueTiers) {
 			if (loot.length === 0) {
 				return { bank: loot };
 			}
-
-			await user.incrementClueScore(clueTier.id, quantity);
 
 			if (mimicNumber > 0) {
 				await user.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);

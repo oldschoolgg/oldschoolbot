@@ -2,8 +2,8 @@ import { MessageButton } from 'discord.js';
 import { APIInteraction, APIMessageComponentInteraction, InteractionType } from 'mahoji';
 
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache } from '../constants';
-import { ClueTier } from '../minions/data/clueTiers';
 import { runCommand } from '../settings/settings';
 import { minionIsBusy } from './minionIsBusy';
 import { minionName } from './minionUtils';
@@ -57,10 +57,9 @@ export async function interactionHook(data: APIInteraction) {
 	if (data.type !== InteractionType.MessageComponent) return;
 	const id = data.data.custom_id;
 	if (!isValidGlobalInteraction(id)) return;
-	const userID = data.member?.user?.id;
+	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
 	const user = await mahojiUsersSettingsFetch(userID);
-
 	const options = {
 		user,
 		member: data.member ?? null,

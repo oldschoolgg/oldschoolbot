@@ -231,6 +231,7 @@ export const enum Tasks {
 	TokkulShop = 'tokkulShopActivity',
 	Nex = 'nexActivity',
 	TroubleBrewing = 'troubleBrewingActivity',
+	PuroPuro = 'puroPuroActivity',
 	REMOVED = '__REMOVED__'
 }
 
@@ -406,8 +407,6 @@ export const NEX_ID = 11_278;
  * Map<user_id, PromiseQueue>
  */
 export const userQueues: Map<string, PQueue> = new Map();
-
-export const bankImageCache = new Map<string, string>();
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',

@@ -1,71 +1,23 @@
-import { MessageAttachment } from 'discord.js';
-import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
 
-import { COMMAND_BECAME_SLASH_COMMAND_MESSAGE, Emoji, lastTripCache, PerkTier } from '../../lib/constants';
+import { ClueTiers } from '../../lib/clues/clueTiers';
+import { Emoji, lastTripCache } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
-import { dataCommand } from '../../lib/minions/functions/dataCommand';
-import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
-import { tempCLCommand } from '../../lib/minions/functions/tempCLCommand';
-import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { runCommand } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertMahojiResponseToDJSResponse } from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { isUsersDailyReady } from './daily';
 
-const patMessages = [
-	'You pat {name} on the head.',
-	'You gently pat {name} on the head, they look back at you happily.',
-	'You pat {name} softly on the head, and thank them for their hard work.',
-	'You pat {name} on the head, they feel happier now.',
-	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
-	'You give {name} head pats, they get comfortable and start falling asleep.'
-];
-
-const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
-
-const subCommands = [
-	'lvl',
-	'seticon',
-	'clues',
-	'k',
-	'kill',
-	'setname',
-	'buy',
-	'clue',
-	'kc',
-	'pat',
-	'ironman',
-	'stats',
-	'opens',
-	'info',
-	'equippet',
-	'unequippet',
-	'activities',
-	'ep',
-	'uep',
-	'lapcounts',
-	'cancel',
-	'train',
-	'tempcl',
-	'blowpipe',
-	'bp',
-	'charge',
-	'data'
-];
+const subCommands = ['buy', 'pat', 'info', 'blowpipe', 'bp'];
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -120,12 +72,12 @@ export default class MinionCommand extends BotCommand {
 				emoji: Emoji.MoneyBag,
 				fn: () =>
 					runCommand({
-						commandName: 'daily',
-						args: [],
+						commandName: 'minion',
+						args: { daily: {} },
 						bypassInhibitors: true,
 						...cmdOptions
 					}),
-				cantBeBusy: true
+				cantBeBusy: false
 			});
 		}
 
@@ -237,45 +189,6 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async train(msg: KlasaMessage, [input]: [string | undefined]) {
-		return trainCommand(msg, input);
-	}
-
-	async data(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		if (msg.author.perkTier < PerkTier.Four) {
-			return msg.channel.send('Sorry, you need to be a Tier 3 Patron to use this command.');
-		}
-		const result = await dataCommand(msg, input);
-		if ('bank' in result) {
-			return msg.channel.sendBankImage({
-				title: result.title,
-				bank: result.bank,
-				content: result.content
-			});
-		}
-		const output = Buffer.isBuffer(result) ? { files: [new MessageAttachment(result)] } : result;
-		return msg.channel.send(output);
-	}
-
-	async lapcounts(msg: KlasaMessage) {
-		const entries = Object.entries(msg.author.settings.get(UserSettings.LapsScores)).map(arr => [
-			parseInt(arr[0]),
-			arr[1]
-		]);
-		const sepulchreCount = await msg.author.getMinigameScore('sepulchre');
-		if (sepulchreCount === 0 && entries.length === 0) {
-			return msg.channel.send("You haven't done any laps yet! Sad.");
-		}
-		const data = `${entries
-			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
-			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
-		return msg.channel.send(data);
-	}
-
-	async charge(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return degradeableItemsCommand(msg, input);
-	}
-
 	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		return this.blowpipe(msg, [input]);
 	}
@@ -297,90 +210,15 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async tempcl(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return tempCLCommand(msg, input);
-	}
-
-	async unequippet(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
-	}
-
-	async equippet(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
-	}
-
-	async uep(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
-	}
-
-	async ep(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'gear pet'));
-	}
-
-	async lvl(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion level'));
-	}
-
-	async seticon(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_icon'));
-	}
-
-	@requiresMinion
 	async pat(msg: KlasaMessage) {
-		return msg.channel.send(randomPatMessage(msg.author.minionName));
-	}
-
-	async stats(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion stats'));
-	}
-
-	async kc(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion kc'));
-	}
-
-	async ironman(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion ironman'));
-	}
-
-	async qp(msg: KlasaMessage) {
-		return msg.channel.send('You can see your QP in `/minion stats`.');
-	}
-
-	@requiresMinion
-	async clues(msg: KlasaMessage) {
-		const clueScores = msg.author.settings.get(UserSettings.ClueScores);
-		if (Object.keys(clueScores).length === 0) return msg.channel.send("You haven't done any clues yet.");
-
-		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
-		for (const [clueID, clueScore] of Object.entries(clueScores)) {
-			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
-			res += `**${clue!.name}**: ${clueScore}\n`;
-		}
-		return msg.channel.send(res);
+		return msg.channel.send('This command was moved to `/minion pat`');
 	}
 
 	async buy(msg: KlasaMessage) {
-		return minionBuyCommand(await mahojiUsersSettingsFetch(msg.author.id), false);
-	}
-
-	async setname(msg: KlasaMessage) {
-		return msg.channel.send(COMMAND_BECAME_SLASH_COMMAND_MESSAGE(msg, 'minion set_name'));
-	}
-
-	async clue(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/clue`');
-	}
-
-	async k(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/k`');
-	}
-
-	async kill(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/k`');
-	}
-
-	async opens(msg: KlasaMessage) {
-		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
-		return msg.channel.send(`You've opened... ${openableScores}`);
+		return msg.channel.send(
+			convertMahojiResponseToDJSResponse(
+				await minionBuyCommand(await mahojiUsersSettingsFetch(msg.author.id), false)
+			)
+		);
 	}
 }

@@ -10,7 +10,7 @@ import { NightmareActivityTaskOptions } from '../../../lib/types/minions';
 import { randomVariation } from '../../../lib/util';
 import { getNightmareGearStats } from '../../../lib/util/getNightmareGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
-import { sendToChannelID } from '../../../lib/util/webhook';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { NightmareMonster } from './../../../lib/minions/data/killableMonsters/index';
 
 const RawNightmare = Misc.Nightmare;
@@ -81,13 +81,26 @@ export default class extends Task {
 		});
 
 		if (!kc) {
-			sendToChannelID(channelID, {
-				content: `${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`
-			});
+			handleTripFinish(
+				user,
+				channelID,
+				`${user}, ${user.minionName} died in all their attempts to kill the ${monsterName}, they apologize and promise to try harder next time.`,
+				[
+					'k',
+					{ name: isPhosani ? 'phosani nightmare' : method === 'solo' ? 'solo nightmare' : 'mass nightmare' },
+					true
+				],
+				undefined,
+				data,
+				null
+			);
 		} else {
-			const { image } = await this.client.tasks
-				.get('bankImage')!
-				.generateBankImage(itemsAdded, `${quantity}x Nightmare`, true, { showNewCL: 1 }, user, previousCL);
+			const image = await makeBankImage({
+				bank: itemsAdded,
+				title: `${quantity}x Nightmare`,
+				user,
+				previousCL
+			});
 
 			const kc = user.getKC(monsterID);
 			handleTripFinish(
@@ -99,7 +112,7 @@ export default class extends Task {
 					{ name: isPhosani ? 'phosani nightmare' : method === 'solo' ? 'solo nightmare' : 'mass nightmare' },
 					true
 				],
-				image!,
+				image.file.buffer,
 				data,
 				itemsAdded
 			);

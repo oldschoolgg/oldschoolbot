@@ -15,6 +15,7 @@ import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerIn
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
@@ -141,6 +142,17 @@ export default class extends Task {
 			});
 		}
 
+		const messages: string[] = [];
+		if (monster.effect) {
+			await monster.effect({
+				user,
+				quantity,
+				monster,
+				loot,
+				data,
+				messages
+			});
+		}
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		await trackLoot({
@@ -152,16 +164,15 @@ export default class extends Task {
 			duration
 		});
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity} ${monster.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image =
+			itemsAdded.length === 0
+				? undefined
+				: await makeBankImage({
+						bank: itemsAdded,
+						title: `Loot From ${quantity} ${monster.name}:`,
+						user,
+						previousCL
+				  });
 
 		handleTripFinish(
 			user,
@@ -185,9 +196,10 @@ export default class extends Task {
 							isContinue: true
 						});
 				  },
-			image!,
+			image?.file.buffer,
 			data,
-			itemsAdded
+			itemsAdded,
+			messages
 		);
 	}
 }

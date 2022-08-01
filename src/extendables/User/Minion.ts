@@ -5,10 +5,10 @@ import { Bank, Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
 import { hasGracefulEquipped } from '../../lib/gear';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
@@ -621,6 +621,11 @@ export default class extends Extendable {
 					data.quantity
 				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
+			case 'PuroPuro': {
+				return `${this.minionName} is currently hunting in Puro-Puro. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 			case 'Easter':
 			case 'BlastFurnace': {
 				throw new Error('Removed');
@@ -868,13 +873,6 @@ export default class extends Extendable {
 			UserSettings.MonsterScores,
 			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
 		);
-	}
-
-	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const currentClueScores = this.settings.get(UserSettings.ClueScores);
-
-		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
 	}
 
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {

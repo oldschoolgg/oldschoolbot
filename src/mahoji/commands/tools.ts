@@ -5,8 +5,17 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
+import {
+	allStashUnitsFlat,
+	getParsedStashUnits,
+	stashUnitBuildAllCommand,
+	stashUnitFillAllCommand,
+	stashUnitUnfillCommand,
+	stashUnitViewCommand
+} from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
+import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
@@ -14,6 +23,7 @@ import { asyncGzip, formatDuration, getUsername, stringMatches } from '../../lib
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import { handleMahojiConfirmation, mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
@@ -314,6 +324,105 @@ export const toolsCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'activity_export',
 					description: 'Export all your activities (For advanced users).'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stats',
+					description: 'Check various stats.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'stat',
+							description: 'The stat you want to check',
+							autocomplete: async (value: string) => {
+								return dataPoints
+									.map(i => i.name)
+									.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({
+										name: i,
+										value: i
+									}));
+							},
+							required: true
+						}
+					]
+				}
+			]
+		},
+		{
+			name: 'user',
+			description: 'Various tools for yourself.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'mypets',
+					description: 'See the chat pets you have.',
+					options: []
+				}
+			]
+		},
+		{
+			name: 'stash_units',
+			description: 'Build and fill your treasure trails S.T.A.S.H units.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'view',
+					description: 'View your STASH units.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'unit',
+							description: 'The specific unit you want to view (optional).',
+							required: false,
+							autocomplete: async (value: string) => {
+								return allStashUnitsFlat
+									.filter(i => (!value ? true : i.desc.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.desc, value: i.id }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'not_filled',
+							description: 'View all STASH units that you have not filled/built.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'build_all',
+					description: 'Automatically build all the STASH units that you can.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'fill_all',
+					description: 'Automatically fill all the STASH units that you can.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'unfill',
+					description: 'Remove the items from a specific stash.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'unit',
+							description: 'The specific unit you want to unfill.',
+							required: true,
+							autocomplete: async (value, user) => {
+								return (await getParsedStashUnits(user.id))
+									.filter(i => i.builtUnit !== undefined && i.builtUnit.items_contained.length > 0)
+									.filter(i =>
+										!value ? true : i.unit.desc.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.unit.desc, value: i.unit.id }));
+							}
+						}
+					]
 				}
 			]
 		}
@@ -347,6 +456,14 @@ export const toolsCommand: OSBMahojiCommand = {
 			};
 			minion_stats?: {};
 			activity_export?: {};
+			stats?: { stat: string };
+		};
+		user?: { mypets?: {} };
+		stash_units?: {
+			view?: { unit?: string; not_filled?: boolean };
+			build_all?: {};
+			fill_all?: {};
+			unfill?: { unit: string };
 		};
 	}>) => {
 		interaction.deferReply();
@@ -400,6 +517,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
+				interaction.deferReply();
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser);
 			}
@@ -412,6 +530,39 @@ export const toolsCommand: OSBMahojiCommand = {
 				);
 				const result = await promise;
 				return result;
+			}
+			if (patron.stats) {
+				return statsCommand(mahojiUser, patron.stats.stat);
+			}
+		}
+		if (options.user) {
+			if (options.user.mypets) {
+				let b = new Bank();
+				for (const [pet, qty] of Object.entries(mahojiUser.pets as ItemBank)) {
+					const petObj = pets.find(i => i.id === Number(pet));
+					if (!petObj) continue;
+					b.add(petObj.name, qty);
+				}
+				return {
+					attachments: [
+						(await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })).file
+					]
+				};
+			}
+		}
+		if (options.stash_units) {
+			const klasaUser = await globalClient.fetchUser(mahojiUser.id);
+			if (options.stash_units.view) {
+				return stashUnitViewCommand(
+					mahojiUser,
+					options.stash_units.view.unit,
+					options.stash_units.view.not_filled
+				);
+			}
+			if (options.stash_units.build_all) return stashUnitBuildAllCommand(klasaUser, mahojiUser);
+			if (options.stash_units.fill_all) return stashUnitFillAllCommand(klasaUser, mahojiUser);
+			if (options.stash_units.unfill) {
+				return stashUnitUnfillCommand(klasaUser, mahojiUser, options.stash_units.unfill.unit);
 			}
 		}
 		return 'Invalid command!';
