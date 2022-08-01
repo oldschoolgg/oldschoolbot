@@ -3,6 +3,7 @@ import { Monsters } from 'oldschooljs';
 
 import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
+import { autoSlayCommand } from '../lib/abstracted_commands/autoSlayCommand';
 import {
 	slayerListBlocksCommand,
 	slayerNewTaskCommand,
@@ -214,10 +215,11 @@ export const slayerCommand: OSBMahojiCommand = {
 		rewards?: { unlock?: { unlockable: string }; buy?: { item: string }; show_unlocks?: {} };
 		status?: {};
 	}>) => {
-		const klasaUser = globalClient.fetchUser(userID);
+		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		if (options.autoslay) {
+			return autoSlayCommand(klasaUser, channelID, options.autoslay.mode, Boolean(options.autoslay.save));
 		}
 		if (options.task) {
 			return await slayerNewTaskCommand(
