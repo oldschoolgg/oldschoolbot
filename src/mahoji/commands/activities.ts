@@ -25,6 +25,7 @@ import { enchantCommand } from '../lib/abstracted_commands/enchantCommand';
 import { favourCommand } from '../lib/abstracted_commands/favourCommand';
 import { fightCavesCommand } from '../lib/abstracted_commands/fightCavesCommand';
 import { infernoStartCommand, infernoStatsCommand } from '../lib/abstracted_commands/infernoCommand';
+import puroOptions, { puroPuroStartCommand } from '../lib/abstracted_commands/puroPuroCommand';
 import { questCommand } from '../lib/abstracted_commands/questCommand';
 import { sawmillCommand } from '../lib/abstracted_commands/sawmillCommand';
 import { warriorsGuildCommand } from '../lib/abstracted_commands/warriorsGuildCommand';
@@ -323,6 +324,27 @@ export const activitiesCommand: OSBMahojiCommand = {
 				}
 			]
 		},
+
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'puro_puro',
+			description: 'Hunt implings in Puro-Puro.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'impling',
+					description: 'The impling you want to hunt',
+					required: true,
+					choices: puroOptions.map(i => ({ name: i.name, value: i.name }))
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'dark_lure',
+					description: 'Use the Dark Lure spell for increased implings?',
+					required: false
+				}
+			]
+		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'alch',
@@ -388,6 +410,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		aerial_fishing?: {};
 		enchant?: { name: string; quantity?: number };
 		bury?: { name: string; quantity?: number };
+		puro_puro?: { impling: string; dark_lure?: boolean };
 		alch?: { item: string; quantity?: number };
 		cast?: { spell: string; quantity?: number };
 	}>) => {
@@ -467,6 +490,9 @@ export const activitiesCommand: OSBMahojiCommand = {
 		}
 		if (options.alch) {
 			return alchCommand(interaction, channelID, klasaUser, options.alch.item, options.alch.quantity);
+		}
+		if (options.puro_puro) {
+			return puroPuroStartCommand(klasaUser, channelID, options.puro_puro.impling, options.puro_puro.dark_lure);
 		}
 		if (options.cast) {
 			return castCommand(channelID, klasaUser, options.cast.spell, options.cast.quantity);
