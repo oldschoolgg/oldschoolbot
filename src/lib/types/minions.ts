@@ -157,6 +157,7 @@ export interface HunterActivityTaskOptions extends ActivityTaskOptions {
 	quantity: number;
 	usingHuntPotion: boolean;
 	wildyPeak: Peak | null;
+	usingStaminaPotion: boolean;
 }
 
 export interface AlchingActivityTaskOptions extends ActivityTaskOptions {
@@ -289,6 +290,7 @@ export interface NexTaskOptions extends ActivityTaskOptions {
 export interface CollectingOptions extends ActivityTaskOptions {
 	collectableID: number;
 	quantity: number;
+	noStaminas?: boolean;
 }
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
