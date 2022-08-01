@@ -1,4 +1,6 @@
+import { User } from '@prisma/client';
 import { randArrItem, roll } from 'e';
+import { KlasaUser } from 'klasa';
 import { Bank, Items, LootTable } from 'oldschooljs';
 import TreeHerbSeedTable from 'oldschooljs/dist/simulation/subtables/TreeHerbSeedTable';
 
@@ -13,10 +15,11 @@ import {
 } from './data/CollectionsExport';
 import { baseHolidayItems, PartyhatTable } from './data/holidayItems';
 import { FishTable } from './minions/data/killableMonsters/custom/SeaKraken';
-import { OpenArgs, UnifiedOpenable } from './openables';
+import { UnifiedOpenable } from './openables';
 import { ChimplingImpling, EternalImpling, InfernalImpling, MysteryImpling } from './simulation/customImplings';
 import { RuneTable } from './simulation/seedTable';
 import { ExoticSeedsTable } from './simulation/sharedTables';
+import { clAdjustedDroprate } from './util';
 import getOSItem from './util/getOSItem';
 import itemID from './util/itemID';
 import resolveItems from './util/resolveItems';
@@ -361,14 +364,12 @@ for (const item of Items.values()) {
 
 export const allMbTables = [...new Set([...tmbTable, ...umbTable, ...embTable])];
 
-function makeOutputFromArrayOfItemIDs(fn: () => number) {
-	return async (args: OpenArgs) => {
-		const loot = new Bank();
-		for (let i = 0; i < args.quantity; i++) {
-			loot.add(fn());
-		}
-		return { bank: loot };
-	};
+function makeOutputFromArrayOfItemIDs(fn: () => number, quantity: number) {
+	const loot = new Bank();
+	for (let i = 0; i < quantity; i++) {
+		loot.add(fn());
+	}
+	return { bank: loot };
 }
 
 export const bsoOpenables: UnifiedOpenable[] = [
@@ -377,7 +378,9 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		id: 6199,
 		openedItem: getOSItem(6199),
 		aliases: ['mystery', 'mystery box', 'tradeables mystery box', 'tmb'],
-		output: makeOutputFromArrayOfItemIDs(() => getMysteryBoxItem(true)),
+
+		output: async ({ user, quantity }) =>
+			makeOutputFromArrayOfItemIDs(() => getMysteryBoxItem(user, true), quantity),
 		emoji: Emoji.MysteryBox,
 		allItems: [],
 		isMysteryBox: true,
@@ -388,7 +391,8 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		id: 19_939,
 		openedItem: getOSItem(19_939),
 		aliases: ['untradeables mystery box', 'umb'],
-		output: makeOutputFromArrayOfItemIDs(() => getMysteryBoxItem(false)),
+		output: async ({ user, quantity }) =>
+			makeOutputFromArrayOfItemIDs(() => getMysteryBoxItem(user, false), quantity),
 		allItems: [],
 		isMysteryBox: true,
 		smokeyApplies: true
@@ -398,7 +402,7 @@ export const bsoOpenables: UnifiedOpenable[] = [
 		id: itemID('Equippable mystery box'),
 		openedItem: getOSItem('Equippable mystery box'),
 		aliases: ['equippable mystery box', 'emb'],
-		output: makeOutputFromArrayOfItemIDs(randomEquippable),
+		output: async ({ quantity }) => makeOutputFromArrayOfItemIDs(randomEquippable, quantity),
 		allItems: [],
 		isMysteryBox: true,
 		smokeyApplies: true
@@ -576,12 +580,13 @@ function randomEquippable(): number {
 	return res;
 }
 
-export function getMysteryBoxItem(tradeables: boolean): number {
+export function getMysteryBoxItem(user: User | KlasaUser, tradeables: boolean): number {
 	const table = tradeables ? tmbTable : umbTable;
 	let result = randArrItem(table);
-	if (cantBeDropped.includes(result)) return getMysteryBoxItem(tradeables);
-	if (result >= 40_000 && result <= 50_000) return getMysteryBoxItem(tradeables);
-	if (roll(MR_E_DROPRATE_FROM_UMB_AND_TMB)) {
+	if (cantBeDropped.includes(result)) return getMysteryBoxItem(user, tradeables);
+	if (result >= 40_000 && result <= 50_000) return getMysteryBoxItem(user, tradeables);
+	const mrEDroprate = clAdjustedDroprate(user, 'Mr. E', MR_E_DROPRATE_FROM_UMB_AND_TMB, 1.2);
+	if (roll(mrEDroprate)) {
 		return itemID('Mr. E');
 	}
 	return result;

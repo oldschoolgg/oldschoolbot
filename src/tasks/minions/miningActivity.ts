@@ -14,6 +14,7 @@ import { MiningActivityTaskOptions } from '../../lib/types/minions';
 import { multiplyBank, rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
+import resolveItems from '../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
 export default class extends Task {
@@ -113,6 +114,13 @@ export default class extends Task {
 			}
 		}
 
+		const isUsingObsidianPickaxe = userHasItemsEquippedAnywhere(
+			user,
+			['Volcanic pickaxe', 'Offhand volcanic pickaxe'],
+			false
+		);
+		const isDestroyed = isUsingObsidianPickaxe && !resolveItems(['Obsidian shards']).includes(ore.id);
+
 		// Gem rocks roll off the GemRockTable
 		if (ore.id === 1625) {
 			for (let i = 0; i < quantity; i++) {
@@ -135,9 +143,11 @@ export default class extends Task {
 					break;
 				}
 			}
-		} else {
+		} else if (!isDestroyed) {
 			loot.add(ore.id, quantity);
 		}
+
+		if (isDestroyed) str += '\nYour volcanic pickaxe destroyed the ores.';
 
 		const hasKlik = user.usingPet('Klik');
 		if (hasKlik) {

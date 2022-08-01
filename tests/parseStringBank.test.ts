@@ -503,8 +503,8 @@ describe('Bank Parsers', () => {
 			flags: {},
 			excludeItems: resolveItems(['Fire rune'])
 		});
-		expect(result16.bank.length).toStrictEqual(1);
-		expect(result16.bank.has('Fire rune')).toEqual(true);
+		expect(result16.bank.length).toStrictEqual(0);
+		expect(result16.bank.has('Fire rune')).toEqual(false);
 
 		//
 		const result17 = parseInputBankWithPrice({
@@ -526,5 +526,43 @@ describe('Bank Parsers', () => {
 		expect(result18.bank.length).toStrictEqual(3);
 		expect(result18.bank.amount('Ranarr seed')).toEqual(20);
 		expect(result18.price).toEqual(50_000_000);
+	});
+	test('ensureOldNamesDontWorkForCustomItems', () => {
+		const usersBank = new Bank()
+			.add('Smokey', 10)
+			.add('Doug', 3)
+			.add('Lil lamb', 10)
+			.add('Tradeable mystery box', 6)
+			.add('Huge lamp', 33)
+			.add('Average lamp');
+
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'snakeweed mixture, 1 an indigo pentagon, an indigo square, tmb'
+			}).toString()
+		).toEqual('6x Tradeable Mystery Box');
+
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'snakeweed mixture, 1 an indigo pentagon, an indigo square, mystery box'
+			}).toString()
+		).toEqual('No items');
+
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'snake@w-eed miXture, 0 doug, 1 lil lamb, 1 an indigo pentagon, an indigo square, mystery box'
+			}).toString()
+		).toEqual('3x Doug, 1x Lil Lamb');
+
+		// Test when part of the name matches an overwritten item (ie. "lamp")
+		expect(
+			parseBank({
+				inputBank: usersBank,
+				inputStr: 'Huge lamp, Lil lamb, Smokey, average lamp'
+			}).toString()
+		).toEqual('33x Huge lamp, 10x Smokey, 10x Lil Lamb, 1x Average lamp');
 	});
 });

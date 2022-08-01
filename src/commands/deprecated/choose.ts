@@ -16,6 +16,11 @@ export default class extends BotCommand {
 	}
 
 	async run(msg: KlasaMessage, [choices]: [string]) {
-		return msg.channel.send(`I choose... **${cleanMentions(msg.guild, randArrItem(choices.split(',')))}**.`);
+		return msg.channel.send(
+			`This command has been moved to a slash command, \`/choose\` but - I choose... **${cleanMentions(
+				msg.guild,
+				randArrItem(choices.split(','))
+			)}**.`
+		);
 	}
 }

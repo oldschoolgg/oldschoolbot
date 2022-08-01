@@ -21,7 +21,8 @@ export const killCommand: OSBMahojiCommand = {
 				return [
 					...Monsters.map(i => ({ name: i.name, aliases: i.aliases })),
 					{ name: 'nex', aliases: ['nex'] },
-					{ name: 'nightmare', aliases: ['nightmare'] }
+					{ name: 'nightmare', aliases: ['nightmare'] },
+					{ name: 'Moktang', aliases: ['moktang'] }
 				]
 					.filter(i => (!value ? true : i.aliases.some(alias => alias.includes(value.toLowerCase()))))
 					.map(i => ({
@@ -63,11 +64,13 @@ export const killCommand: OSBMahojiCommand = {
 			return result.error;
 		}
 
+		const bank = new Bank(result.bank?.bank);
 		const image = await makeBankImage({
-			bank: new Bank(result.bank?.bank),
+			bank,
 			title: result.title ?? `Loot from ${options.quantity.toLocaleString()} ${toTitleCase(options.name)}`,
 			user
 		});
+
 		return {
 			attachments: [image.file],
 			content: result.content

@@ -4,7 +4,7 @@ import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
 import { MessageAttachment, MessageOptions, TextChannel, Util } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { ArrayActions, CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
 import fetch from 'node-fetch';
@@ -12,6 +12,8 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { CLIENT_ID, production } from '../config';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../lib/blacklists';
+import { embTable, tmbTable, umbTable } from '../lib/bsoOpenables';
 import {
 	badges,
 	BitField,
@@ -24,12 +26,10 @@ import {
 	SupportServer,
 	userTimers
 } from '../lib/constants';
-import { getCollectionItems } from '../lib/data/Collections';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { addPatronLootTime, addToDoubleLootTimer } from '../lib/doubleLoot';
 import { evalMathExpression } from '../lib/expressionParser';
 import { GearSetup, GearSetupTypes } from '../lib/gear';
-import { leaguesCheckUser, leaguesClaimCommand } from '../lib/leagues/leagues';
 import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
@@ -39,7 +39,6 @@ import { ItemBank } from '../lib/types';
 import {
 	bankValueWithMarketPrices,
 	calcPerHour,
-	channelIsSendable,
 	convertBankToPerHourStats,
 	formatDuration,
 	getSupportGuild,
@@ -54,7 +53,7 @@ import {
 	stringMatches,
 	toKMB
 } from '../lib/util';
-import getOSItem, { getItem } from '../lib/util/getOSItem';
+import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
 import { makeBankImage, makeBankImageKlasa } from '../lib/util/makeBankImage';
@@ -381,6 +380,16 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'inboxes': {
+				if (typeof input !== 'string') return;
+				const item = getOSItem(input);
+				return msg.channel.send(`
+Is ${item.name} dropped by boxes?
+
+TMB: ${tmbTable.includes(item.id)}
+UMB: ${umbTable.includes(item.id)}
+EMB: ${embTable.includes(item.id)}`);
+			}
 			case 'setmp': {
 				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
 				if (
@@ -524,7 +533,7 @@ export default class extends BotCommand {
 				const taskText = task ? `${task.type}` : 'None';
 
 				const userBadges = u.settings.get(UserSettings.Badges).map(i => badges[i]);
-				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(u.id);
+				const isBlacklisted = BLACKLISTED_USERS.has(u.id);
 
 				const premiumDate = u.settings.get(UserSettings.PremiumBalanceExpiryDate);
 				const premiumTier = u.settings.get(UserSettings.PremiumBalanceTier);
@@ -599,31 +608,6 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
-			case 'blacklist':
-			case 'bl': {
-				if (!input || !(input instanceof KlasaUser)) return;
-				if (str instanceof KlasaUser) return;
-				const reason = str;
-				const entry = this.client.settings.get(ClientSettings.UserBlacklist);
-
-				const alreadyBlacklisted = entry.includes(input.id);
-
-				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
-					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
-				});
-				const emoji = getSupportGuild()?.emojis.cache.random()?.toString();
-				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
-
-				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
-				if (channelIsSendable(channel)) {
-					channel.send(
-						`\`${input.username}\` was ${newStatus} by ${msg.author.username} for \`${
-							reason ?? 'no reason'
-						}\`.`
-					);
-				}
-				return msg.channel.send(`${emoji} Successfully ${newStatus} ${input.username}.`);
-			}
 			case 'addimalt': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				if (!str || !(str instanceof KlasaUser)) return;
@@ -675,7 +659,6 @@ ${
 				const item = getOSItem(itemName);
 				const price = evalMathExpression(rawPrice);
 				if (!price || price < 1 || price > 1_000_000_000) return;
-				if (!price || isNaN(price)) return msg.channel.send('Invalid price');
 				await msg.confirm(
 					`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
 						item.wiki_url
@@ -712,19 +695,6 @@ ${
 				});
 				return msg.channel.send(`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`);
 			}
-			case 'gptrack': {
-				return msg.channel.send(`
-**Sell** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceSellingItems)}
-**PvM** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot)}
-**Alch** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching)}
-**Pickpocket** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket)}
-**Dice** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice)}
-**Open** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen)}
-**Pet** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePet)}
-**Daily** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily)}
-**Item Contracts** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceItemContracts)}
-`);
-			}
 			case 'patreon': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				msg.channel.send('Running patreon task...');
@@ -754,6 +724,12 @@ ${
 				minionActivityCacheDelete(input.id);
 
 				return msg.react(Emoji.Tick);
+			}
+			case 'bl':
+			case 'blacklist': {
+				await syncBlacklists();
+				return msg.channel.send(`Users Blacklisted: ${BLACKLISTED_USERS.size}
+Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`);
 			}
 			case 'setgh': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -1143,92 +1119,39 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					files: [new MessageAttachment(Buffer.from(str), 'output.txt')]
 				});
 			}
-			case 'itemdata': {
-				if (typeof input !== 'string') return;
-				const item = getItem(input);
-				if (!item) return;
-				return msg.channel.send(JSON.stringify(item, null, 2));
-			}
-			case 'testercheck': {
-				if (production) return;
-				let time = '12hours';
-				if (typeof input === 'string') time = input;
-				const result = await prisma.$queryRawUnsafe<
-					{ username: string; qty: number }[]
-				>(`SELECT "new_user"."username", COUNT(user_id) AS qty
-FROM command_usage
-INNER JOIN "new_users" "new_user" on "new_user"."id" = "command_usage"."user_id"::text
-WHERE date > now() - INTERVAL '${time}'
-GROUP BY "new_user"."username"
-ORDER BY qty DESC;`);
-				return msg.channel.send(
-					result
-						.slice(0, 10)
-						.map(u => `${u.username}: ${u.qty} commands`)
-						.join('\n')
-				);
-			}
-			case 'masscheckbankfix': {
-				let usersChanged = 0;
-				const allBrokenItems = new Set<any>();
-				const users = Array.from(globalClient.users.cache.values()).filter(
-					u => Object.keys(u.settings.get(UserSettings.Bank)).length !== 0
-				);
-				for (const user of users) {
-					const [, arr] = await repairBrokenItemsFromUser(user as KlasaUser);
-					if (arr) {
-						for (const i of arr) allBrokenItems.add(i);
-						usersChanged++;
+			case 'blacklistsync': {
+				const blacklistedUsers = globalClient.settings.get(ClientSettings.UserBlacklist);
+				const blacklistedGuilds = globalClient.settings.get(ClientSettings.GuildBlacklist);
+				await syncBlacklists();
+				let usersAdded = 0;
+				let guildsAdded = 0;
+				for (const user of blacklistedUsers) {
+					if (!BLACKLISTED_USERS.has(user)) {
+						try {
+							await roboChimpClient.blacklistedEntity.create({
+								data: {
+									id: BigInt(user),
+									type: 'user'
+								}
+							});
+							usersAdded++;
+						} catch {}
 					}
 				}
-				let str = Array.from(allBrokenItems.values());
-				return msg.channel.send(
-					`Removed ${allBrokenItems.size} (${str}) from ${usersChanged} users, out of ${users.length} checked`
-				);
-			}
-			case 'massleaguesclaim': {
-				const items = getCollectionItems('overall', false);
-				if (!items || items.length === 0) {
-					return;
-				}
-				msg.channel.send('running...');
-				const usersWithPts = await roboChimpClient.user.findMany({
-					where: {
-						leagues_points_total: {
-							gt: 0
-						}
-					},
-					select: {
-						id: true
+				for (const guild of blacklistedGuilds) {
+					if (!BLACKLISTED_GUILDS.has(guild)) {
+						try {
+							await roboChimpClient.blacklistedEntity.create({
+								data: {
+									id: BigInt(guild),
+									type: 'guild'
+								}
+							});
+							guildsAdded++;
+						} catch {}
 					}
-				});
-				const lbCl = (
-					await prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(`
-SELECT id, (cardinality(u.cl_keys) - u.inverse_length) as qty
-				  FROM (
-  SELECT array(SELECT * FROM jsonb_object_keys("collectionLogBank")) "cl_keys",
-  				id, "collectionLogBank",
-			    cardinality(array(SELECT * FROM jsonb_object_keys("collectionLogBank" - array[${items
-					.map(i => `'${i}'`)
-					.join(', ')}]))) "inverse_length"
-  FROM users
-  WHERE "collectionLogBank" ?| array[${items.map(i => `'${i}'`).join(', ')}]
-) u
-ORDER BY qty DESC
-LIMIT 100;
-`)
-				).filter(i => i.qty > 0);
-
-				let done = 0;
-				for (const { id } of lbCl) {
-					if (usersWithPts.some(i => i.id.toString() === id)) continue;
-					const user = await globalClient.fetchUser(id);
-					await repairBrokenItemsFromUser(user as KlasaUser);
-					const { finished } = await leaguesCheckUser(id.toString());
-					await leaguesClaimCommand(BigInt(id), finished);
-					done++;
 				}
-				return msg.channel.send(`Claimed points for ${done} users`);
+				return msg.channel.send(`${usersAdded} users, ${guildsAdded} guilds`);
 			}
 		}
 	}

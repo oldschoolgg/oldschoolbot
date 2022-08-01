@@ -1,14 +1,8 @@
-import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
+import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
-import {
-	APIInteractionDataResolvedGuildMember,
-	APIUser,
-	InteractionResponseType,
-	InteractionType,
-	MessageFlags
-} from 'mahoji';
+import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -233,11 +227,6 @@ export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: 
 	return { newGuild };
 }
 
-export interface MahojiUserOption {
-	user: APIUser;
-	member: APIInteractionDataResolvedGuildMember;
-}
-
 export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSkills> {
 	const skills: Required<TSkills> = {
 		agility: Number(user.skills_agility),
@@ -322,5 +311,24 @@ export async function trackClientBankStats(key: 'clue_upgrader_loot' | 'portable
 	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
 	await mahojiClientSettingsUpdate({
 		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
+	});
+}
+
+export async function userStatsUpdate(userID: string, data: (u: UserStats) => Prisma.UserStatsUpdateInput) {
+	const id = Number(userID);
+	const userStats = await prisma.userStats.upsert({
+		create: {
+			user_id: id
+		},
+		update: {},
+		where: {
+			user_id: id
+		}
+	});
+	await prisma.userStats.update({
+		data: data(userStats),
+		where: {
+			user_id: id
+		}
 	});
 }

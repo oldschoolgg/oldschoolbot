@@ -61,7 +61,7 @@ export async function sawmillCommand(
 	let cost = plank!.gpCost * 2 * quantity;
 
 	if (speed && !isNaN(speed) && typeof speed === 'number' && speed > 1 && speed < 6) {
-		cost += cost * (speed * ((speed + 0.2) / 6));
+		cost += Math.ceil(cost * (speed * ((speed + 0.2) / 6)));
 		duration /= speed;
 	}
 
@@ -77,14 +77,10 @@ export async function sawmillCommand(
 		)}.`;
 	}
 
-	const costBank = new Bank().add('Coins', plank!.gpCost * quantity).add(plank!.inputItem, quantity);
+	const costBank = new Bank().add('Coins', cost).add(plank!.inputItem, quantity);
 	await user.removeItemsFromBank(costBank);
 
-	await updateBankSetting(
-		globalClient,
-		ClientSettings.EconomyStats.ConstructCostBank,
-		new Bank().add('Coins', plank!.gpCost * quantity)
-	);
+	await updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, new Bank().add('Coins', cost));
 
 	await addSubTaskToActivityTask<SawmillActivityTaskOptions>({
 		type: 'Sawmill',

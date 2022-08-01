@@ -5,6 +5,7 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank } from 'oldschooljs';
 
 import { Emoji } from '../../../lib/constants';
+import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
 import { Ignecarus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { BossInstance } from '../../../lib/structures/Boss';
@@ -85,13 +86,7 @@ export async function igneCommand(
 		customDeathChance: (user, preCalcedDeathChance, solo) => {
 			let baseDeathChance = 95;
 			const gear = user.getGear('melee');
-			for (const item of [
-				'Dwarven full helm',
-				'Dwarven platebody',
-				'Dwarven platelegs',
-				'Dwarven boots',
-				'Dwarven gloves'
-			]) {
+			for (const item of dwarvenOutfit) {
 				if (gear.hasEquipped(item)) {
 					baseDeathChance -= 9.5;
 				}

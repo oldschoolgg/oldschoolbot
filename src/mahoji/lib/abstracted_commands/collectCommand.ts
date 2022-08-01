@@ -11,6 +11,7 @@ import { CollectingOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
+import { getPOH } from './pohCommand';
 
 export interface Collectable {
 	item: Item;
@@ -194,8 +195,17 @@ export async function collectCommand(mahojiUser: User, user: KlasaUser, channelI
 		)}.`;
 	}
 
-	const cost = collectable.itemCost?.clone().multiply(quantity) ?? null;
-	if (cost) {
+	const poh = await getPOH(user.id);
+	const hasJewelleryBox = poh.jewellery_box !== null;
+
+	let cost: Bank = new Bank();
+
+	if (collectable.itemCost) {
+		{
+			cost = collectable.itemCost.clone().multiply(quantity);
+			if (cost.has('Ring of dueling(8)') && hasJewelleryBox)
+				cost.remove('Ring of dueling(8)', cost.amount('Ring of dueling(8)'));
+		}
 		if (!user.owns(cost)) {
 			return `You don't have the items needed for this trip, you need: ${cost}.`;
 		}

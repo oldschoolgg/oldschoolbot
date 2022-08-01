@@ -205,6 +205,11 @@ describe('Sanity', () => {
 			if (allMbTables.includes(id)) throw new Error(`${name} is in box tables`);
 		}
 		expect(itemID('Clue box')).toEqual(12_789);
+		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Trailblazer tool ornament kit'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Twisted horns'))).toEqual(true);
 	});
 	test('casket names', () => {
 		expect(itemID('Reward casket (beginner)')).toEqual(23_245);

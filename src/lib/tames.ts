@@ -7,6 +7,7 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { getSimilarItems } from './data/similarItems';
 import killableMonsters, { effectiveMonsters } from './minions/data/killableMonsters';
 import { prisma, trackLoot } from './settings/prisma';
 import { runCommand } from './settings/settings';
@@ -18,15 +19,14 @@ import { makeBankImage } from './util/makeBankImage';
 import { sendToChannelID } from './util/webhook';
 import { Tame, tame_growth, TameActivity, User } from '.prisma/client';
 
-interface NurseryEgg {
-	species: number;
-	insertedAt: number;
-}
-export interface Nursery {
-	egg: NurseryEgg | null;
+export type Nursery = {
+	egg: {
+		species: number;
+		insertedAt: number;
+	} | null;
 	eggsHatched: number;
 	hasFuel: boolean;
-}
+} | null;
 
 export const enum TameType {
 	Combat = 'pvm',
@@ -110,7 +110,8 @@ export const tameSpecies: Species[] = [
 
 export function tameHasBeenFed(tame: Tame, item: string | number) {
 	const { id } = Items.get(item)!;
-	return Boolean((tame.fed_items as ItemBank)[id]);
+	const items = [id, ...getSimilarItems(id)];
+	return items.some(i => Boolean((tame.fed_items as ItemBank)[i]));
 }
 
 export function tameGrowthLevel(tame: Tame) {

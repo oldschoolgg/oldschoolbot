@@ -53,15 +53,16 @@ export async function buttonUserPicker({
 			const mUser = await mahojiUsersSettingsFetch(id);
 			const isCreator = id === creator;
 			let notAllowed = !ironmenAllowed && mUser.minion_ironman;
-			if (notAllowed && isCreator) {
+			if (notAllowed && !isCreator) {
 				i.reply({ ephemeral: true, content: "You aren't allowed to participate.." });
 				return false;
 			}
 			if (guessed.includes(id)) {
 				const amountTimesGuessed = guessed.filter(g => g.toString() === i.user.id).length;
 				if (
+					!creatorGetsTwoGuesses ||
 					i.user.id !== creator.toString() ||
-					(amountTimesGuessed < 2 && isCreator && creatorGetsTwoGuesses)
+					(amountTimesGuessed >= 2 && isCreator && creatorGetsTwoGuesses)
 				) {
 					return i.reply({ ephemeral: true, content: 'You already guessed wrong.' });
 				}

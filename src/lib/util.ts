@@ -41,7 +41,6 @@ import { CLIENT_ID, production } from '../config';
 import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 import { BitField, ProjectileType, skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
-import clueTiers from './minions/data/clueTiers';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
 import { prisma } from './settings/prisma';
@@ -954,10 +953,6 @@ export function getUsername(id: string | bigint) {
 	return usernameCache.get(id.toString()) ?? 'Unknown';
 }
 
-export function getClueScoresFromOpenables(openableScores: Bank, mutate = false) {
-	return openableScores.filter(item => Boolean(clueTiers.find(ct => ct.id === item.id)), mutate);
-}
-
 export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
 	const engine = MersenneTwister19937.seed(input);
 	return shuffle(engine, [...arr]);
@@ -976,5 +971,5 @@ export function clAdjustedDroprate(
 	for (let i = 0; i < amountInCL; i++) {
 		newRate *= increaseMultiplier;
 	}
-	return newRate;
+	return Math.floor(newRate);
 }

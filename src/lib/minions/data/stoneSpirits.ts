@@ -17,6 +17,10 @@ export const stoneSpirits: StoneSpirit[] = [
 		ore: getOSItem('Tin ore')
 	},
 	{
+		spirit: getOSItem('Iron stone spirit'),
+		ore: getOSItem('Iron ore')
+	},
+	{
 		spirit: getOSItem('Coal stone spirit'),
 		ore: getOSItem('Coal')
 	},

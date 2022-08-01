@@ -12,7 +12,7 @@ import {
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch
 } from '../../mahoji/mahojiSettings';
-import ClueTiers, { ClueTier } from '../minions/data/clueTiers';
+import { ClueTier, ClueTiers } from '../clues/clueTiers';
 import { ItemBank } from '../types';
 import { clamp, formatDuration, stringMatches, toKMB } from '../util';
 import getOSItem from '../util/getOSItem';
