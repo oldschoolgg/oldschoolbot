@@ -217,6 +217,8 @@ export const slayerCommand: OSBMahojiCommand = {
 		const klasaUser = globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
+		if (options.autoslay) {
+		}
 		if (options.task) {
 			return await slayerNewTaskCommand(
 				mahojiUser,
