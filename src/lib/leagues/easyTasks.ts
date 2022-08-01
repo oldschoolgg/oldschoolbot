@@ -597,5 +597,26 @@ export const easyTasks: Task[] = [
 		has: async ({ actualClues }) => {
 			return actualClues.amount('Clue scroll (grandmaster)') >= 1;
 		}
+	},
+	{
+		id: 82,
+		name: 'Build and fill all beginner stash units',
+		has: async ({ stashUnits }) => {
+			return stashUnits.filter(i => i.tier.tier === 'Beginner').every(i => i.isFull && Boolean(i.builtUnit));
+		}
+	},
+	{
+		id: 83,
+		name: 'Build and fill all easy stash units',
+		has: async ({ stashUnits }) => {
+			return stashUnits.filter(i => i.tier.tier === 'Easy').every(i => i.isFull && Boolean(i.builtUnit));
+		}
+	},
+	{
+		id: 84,
+		name: 'Build and fill all medium stash units',
+		has: async ({ stashUnits }) => {
+			return stashUnits.filter(i => i.tier.tier === 'Medium').every(i => i.isFull && Boolean(i.builtUnit));
+		}
 	}
 ];

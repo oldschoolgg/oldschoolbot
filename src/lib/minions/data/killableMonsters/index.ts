@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
+import { MOKTANG_ID } from '../../../../mahoji/lib/abstracted_commands/moktangCommand';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
@@ -278,6 +279,23 @@ const killableMonsters: KillableMonster[] = [
 			}
 		},
 		itemCost: { itemCost: new Bank().add('Stamina potion(4)', 5).add('Ruby dragon bolts (e)', 100), qtyPerKill: 1 }
+	},
+	{
+		id: Monsters.DerangedArchaeologist.id,
+		name: Monsters.DerangedArchaeologist.name,
+		aliases: Monsters.DerangedArchaeologist.aliases,
+		timeToFinish: Time.Minute,
+		table: Monsters.DerangedArchaeologist,
+		emoji: '',
+		wildy: false,
+
+		difficultyRating: 5,
+		qpRequired: 50,
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
+		defaultAttackStyles: [SkillsEnum.Magic],
+		healAmountNeeded: 4 * 20,
+		attackStyleToUse: GearStat.AttackMagic,
+		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]
 	}
 ];
 
@@ -382,5 +400,10 @@ export const effectiveMonsters = [
 		name: "Phosani's Nightmare",
 		aliases: ['phosani', 'phosanis nightmare'],
 		id: PHOSANI_NIGHTMARE_ID
+	},
+	{
+		name: 'Moktang',
+		aliases: ['moktang'],
+		id: MOKTANG_ID
 	}
 ];

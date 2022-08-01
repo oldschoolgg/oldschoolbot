@@ -6,6 +6,7 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
 
+import { MoktangLootTable } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { CollectionLogType } from '../../tasks/collectionLogTask';
 import { dyedItems } from '../dyedItems';
@@ -115,6 +116,7 @@ import {
 	mahoganyHomesCL,
 	masterCapesCL,
 	miscellaneousCL,
+	moktangCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
 	nexCL,
@@ -386,6 +388,11 @@ export const allCollectionLogs: ICollection = {
 				alias: Monsters.Vorkath.aliases,
 				allItems: Monsters.Vorkath.allItems,
 				items: vorkathCL
+			},
+			Moktang: {
+				alias: ['mt', 'moktang'],
+				items: moktangCL,
+				allItems: MoktangLootTable.allItems
 			},
 			Wintertodt: {
 				alias: ['todt', 'wintertodt', 'wt'],

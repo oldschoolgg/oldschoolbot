@@ -45,6 +45,7 @@ export interface Ore {
 	nuggets?: boolean;
 	minerals?: number;
 	clueScrollChance?: number;
+	requiredPickaxes?: number[];
 }
 
 export interface Log {

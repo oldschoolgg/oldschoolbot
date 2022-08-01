@@ -118,6 +118,7 @@ import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { MoktangTaskOptions } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -734,6 +735,12 @@ export default class extends Extendable {
 					data.material
 				}' materials. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
+			case 'Moktang': {
+				const data = currentTask as MoktangTaskOptions;
+				return `${this.minionName} is currently killing ${
+					data.qty
+				}x Moktang. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
 			case 'Easter':
 			case 'BlastFurnace': {
 				throw new Error('Removed');
@@ -835,13 +842,16 @@ export default class extends Extendable {
 			.flat(Infinity) as number[];
 
 		// Get cape object from MasterSkillCapes that matches active skill.
-		const matchingCape = multiplier
-			? Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape
-			: undefined;
+		const matchingCape =
+			multiplier || params.masterCapeBoost
+				? Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape
+				: undefined;
 
 		// If the matching cape [or similar] is equipped, isMatchingCape = matched itemId.
 		const isMatchingCape =
-			multiplier && matchingCape ? allCapes.find(cape => getSimilarItems(matchingCape.id).includes(cape)) : false;
+			(multiplier || params.masterCapeBoost) && matchingCape
+				? allCapes.find(cape => getSimilarItems(matchingCape.id).includes(cape))
+				: false;
 
 		// Get the masterCape itemId for use in text output, and check for non-matching cape.
 		const masterCape = isMatchingCape

@@ -1048,5 +1048,12 @@ export const hardTasks: Task[] = [
 				herbloreStats.pots.amount('Heat res. restore') >= 250
 			);
 		}
+	},
+	{
+		id: 2139,
+		name: 'Build and fill all master stash units',
+		has: async ({ stashUnits }) => {
+			return stashUnits.filter(i => i.tier.tier === 'Master').every(i => i.isFull && Boolean(i.builtUnit));
+		}
 	}
 ];

@@ -2,6 +2,7 @@ import LootTable from 'oldschooljs/dist/structures/LootTable';
 
 import { Emoji } from '../../constants';
 import itemID from '../../util/itemID';
+import resolveItems from '../../util/resolveItems';
 import { Ore, SkillsEnum } from '../types';
 
 export const GemRockTable = new LootTable()
@@ -128,6 +129,16 @@ const ores: Ore[] = [
 		petChance: 60_000,
 		nuggets: true,
 		clueScrollChance: 59_328
+	},
+	{
+		level: 80,
+		xp: 1115,
+		id: itemID('Obsidian shards'),
+		name: 'Obsidian',
+		respawnTime: 111,
+		petChance: 50_000,
+		nuggets: false,
+		requiredPickaxes: resolveItems(['Crystal pickaxe', 'Dwarven pickaxe', 'Volcanic pickaxe'])
 	},
 	{
 		level: 85,
