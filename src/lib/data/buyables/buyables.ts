@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
 import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
+import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
 import { MAX_QP } from '../../constants';
 import { CombatCannonItemBank } from '../../minions/data/combatConstants';
 import { Favours } from '../../minions/data/kourendFavour';
@@ -862,6 +863,11 @@ const Buyables: Buyable[] = [
 		ironmanPrice: 100
 	},
 	{
+		name: 'White apron',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	{
 		name: 'Bull roarer',
 		gpCost: 1000,
 		ironmanPrice: 100
@@ -870,6 +876,13 @@ const Buyables: Buyable[] = [
 		name: 'Rolling pin',
 		gpCost: 1000,
 		ironmanPrice: 100
+	},
+	{
+		name: 'Adamant halberd',
+		gpCost: 100_000,
+		ironmanPrice: 9600,
+		qpRequired: 150,
+		skillsNeeded: soteSkillRequirements
 	},
 	...[
 		'Pirate bandana (white)',
