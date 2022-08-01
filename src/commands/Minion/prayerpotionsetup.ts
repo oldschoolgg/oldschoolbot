@@ -12,7 +12,6 @@ import Prayer from '../../lib/skilling/skills/prayer';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { itemNameFromID } from '../../lib/util';
-import itemID from '../../lib/util/itemID';
 
 export default class extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {

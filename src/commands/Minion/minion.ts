@@ -312,8 +312,10 @@ export default class MinionCommand extends BotCommand {
 				}
 			}
 		}
-		let combatCalcInfo: [number, number, number, number, number, string[]] | undefined;
-		combatCalcInfo = await combatCalculator(monster, msg, quantity);
+		let combatCalcInfo = undefined;
+		if (monster.isConverted) {
+			combatCalcInfo = await combatCalculator(monster, msg, quantity);
+		}
 
 		if (!combatCalcInfo) {
 			throw 'Something went wrong with the combatCalculator';

@@ -64,7 +64,6 @@ export interface KillableMonster {
 	 * Whether or not this monster can be groupkilled.
 	 */
 	groupKillable?: boolean;
-	respawnTime?: number;
 	levelRequirements?: LevelRequirements;
 	uniques?: ArrayItemsResolved;
 	/**
@@ -84,15 +83,15 @@ export interface KillableMonster {
 	/**
 	 * Whether or not this monster can be attacked using certain combatskills.
 	 */
-	immuneToCombatSkills?: GearSetupTypes[];
+	immuneToCombatSkills?: GearSetupType[];
 	/**
 	 * Combat simulation information. The time should be specified in seconds.
 	 */
-	defaultStyleToUse: OffenceGearStat;
+	defaultStyleToUse?: OffenceGearStat;
 	mechanicsTime?: number;
 	mechanicsDamage?: number;
-	bankTripTime: number;
-	killsPerBankTrip: number;
+	bankTripTime?: number;
+	killsPerBankTrip?: number;
 	respawnTime?: number;
 	// Add variable for multiStyleFight like Zulrah. How?
 	defaultCombatStyles?: CombatStyles[];
@@ -114,6 +113,7 @@ export interface KillableMonster {
 		loot: Bank;
 		data: MonsterActivityTaskOptions;
 	}) => Promise<unknown>;
+	isConverted?: Boolean;
 }
 /*
  * Monsters will have an array of Consumables

@@ -1,13 +1,12 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { NEX_ID, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
+import { NEX_ID, NIGHTMARES_HP, PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { SkillsEnum } from '../../../skilling/types';
 import itemID from '../../../util/itemID';
 import resolveItems, { deepResolveItems } from '../../../util/resolveItems';
 import { KillableMonster } from '../../types';
-import { NIGHTMARES_HP } from './../../../constants';
 import bosses from './bosses';
 import { chaeldarMonsters } from './chaeldarMonsters';
 import { creatureCreationCreatures } from './creatureCreation';
@@ -273,10 +272,8 @@ const killableMonsters: KillableMonster[] = [
 		},
 		itemCost: { itemCost: new Bank().add('Stamina potion(4)', 5).add('Ruby dragon bolts (e)', 100), qtyPerKill: 1 }
 	}
-	*/
 ];
 
-/*
 export const NightmareMonster: KillableMonster = {
 	id: 9415,
 	name: 'The Nightmare',
@@ -328,7 +325,6 @@ export const NightmareMonster: KillableMonster = {
 	},
 	customMonsterHP: NIGHTMARES_HP
 };
-*/
 
 export default killableMonsters;
 
