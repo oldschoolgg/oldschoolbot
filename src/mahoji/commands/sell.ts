@@ -31,7 +31,7 @@ export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; base
 	let basePrice = customPrices[item.id] ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
-	if (price < (item.highalch ?? 0) * 3) {
+	if (!(item.id in customPrices) && price < (item.highalch ?? 0) * 3) {
 		price = calcPercentOfNum(30, item.highalch!);
 	}
 	price = clamp(price, 0, MAX_INT_JAVA);
