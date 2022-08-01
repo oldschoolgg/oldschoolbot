@@ -55,7 +55,8 @@ export const stealCommand: OSBMahojiCommand = {
 		const user = await globalClient.fetchUser(userID);
 		stealables;
 		const stealable: Stealable | undefined = stealables.find(
-			obj => stringMatches(obj.name, options.name) || obj.alias?.some(alias => stringMatches(alias, options.name))
+			obj =>
+				stringMatches(obj.name, options.name) || obj.aliases?.some(alias => stringMatches(alias, options.name))
 		);
 
 		if (!stealable) {

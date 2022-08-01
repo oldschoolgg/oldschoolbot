@@ -29,7 +29,7 @@ import { ItemBank } from '../../../types';
 export interface Stealable {
 	name: string;
 	type: 'pickpockable' | 'stall';
-	alias?: string[];
+	aliases?: string[];
 	level: number;
 	xp: number;
 	qpRequired?: number;
@@ -51,7 +51,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Vegetable stall',
 		type: 'stall',
-		alias: ['Veg stall', 'Vegetable', 'Veggi stall'],
+		aliases: ['veg stall', 'vegetable', 'veggi stall'],
 		level: 2,
 		xp: 10,
 		id: 4706,
@@ -69,7 +69,7 @@ const stalls: Stealable[] = [
 	{
 		name: "Baker's stall",
 		type: 'stall',
-		alias: ['Baker stall', 'Baker', 'Bakers stall'],
+		aliases: ['baker stall', 'baker', 'bakers stall'],
 		level: 5,
 		xp: 16,
 		id: 4707,
@@ -80,7 +80,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Tea stall',
 		type: 'stall',
-		alias: ['Tea', 'Tea stall'],
+		aliases: ['tea', 'tea stall'],
 		level: 5,
 		xp: 16,
 		id: 4708,
@@ -91,7 +91,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Silk stall',
 		type: 'stall',
-		alias: ['Silk'],
+		aliases: ['silk'],
 		level: 20,
 		xp: 24,
 		id: 4709,
@@ -102,7 +102,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Wine stall',
 		type: 'stall',
-		alias: ['Wine'],
+		aliases: ['wine'],
 		level: 22,
 		xp: 27,
 		id: 4710,
@@ -119,7 +119,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Fruit stall',
 		type: 'stall',
-		alias: ['Fruit', 'Fruits'],
+		aliases: ['fruit', 'fruits'],
 		level: 25,
 		xp: 28.5,
 		id: 4711,
@@ -141,7 +141,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Fur stall',
 		type: 'stall',
-		alias: ['Fur', 'Furs'],
+		aliases: ['fur', 'furs'],
 		level: 35,
 		xp: 36,
 		id: 4712,
@@ -152,7 +152,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Fish stall',
 		type: 'stall',
-		alias: ['Fish', 'Fishy'],
+		aliases: ['fish', 'fishy'],
 		level: 42,
 		xp: 42,
 		id: 4713,
@@ -163,7 +163,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Silver stall',
 		type: 'stall',
-		alias: ['Silver'],
+		aliases: ['silver'],
 		level: 50,
 		xp: 54,
 		id: 4714,
@@ -174,7 +174,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Gem stall',
 		type: 'stall',
-		alias: ['Gem', 'Gems'],
+		aliases: ['gem', 'gems'],
 		level: 75,
 		xp: 160,
 		id: 4715,
@@ -191,7 +191,7 @@ const stalls: Stealable[] = [
 	{
 		name: 'Ore stall',
 		type: 'stall',
-		alias: ['Ore', 'Ores'],
+		aliases: ['ore', 'ores'],
 		level: 82,
 		xp: 180,
 		id: 4716,
@@ -256,7 +256,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 15,
 		xp: 18.5,
-		alias: ['female ham'],
+		aliases: ['female ham'],
 		table: FemaleHamMember.pickpocketTable!,
 		id: FemaleHamMember.id,
 		stunTime: 4,
@@ -269,7 +269,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 20,
 		xp: 22.5,
-		alias: ['ham', 'male ham'],
+		aliases: ['ham', 'male ham'],
 		table: MaleHamMember.pickpocketTable!,
 		id: MaleHamMember.id,
 		stunTime: 4,
@@ -307,7 +307,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 36,
 		xp: 40,
-		alias: ['goblin'],
+		aliases: ['goblin'],
 		table: CaveGoblin.pickpocketTable!,
 		id: CaveGoblin.id,
 		stunTime: 5,
@@ -321,7 +321,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 38,
 		xp: 43,
-		alias: ['mf', 'master'],
+		aliases: ['mf', 'master'],
 		table: MasterFarmer.pickpocketTable!,
 		id: MasterFarmer.id,
 		stunTime: 5,
@@ -346,7 +346,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 45,
 		xp: 65,
-		alias: ['fremmy', 'fremennik'],
+		aliases: ['fremmy', 'fremennik'],
 		table: FremennikCitizen.pickpocketTable!,
 		id: FremennikCitizen.id,
 		stunTime: 5,
@@ -360,7 +360,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 45,
 		xp: 65,
-		alias: ['bearded bandit', 'beard', 'beard bandit'],
+		aliases: ['bearded bandit', 'beard', 'beard bandit'],
 		table: BeardedBandit.pickpocketTable!,
 		id: BeardedBandit.id,
 		stunTime: 5,
@@ -375,7 +375,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 53,
 		xp: 79.5,
-		alias: ['desert'],
+		aliases: ['desert'],
 		table: DesertBandit.pickpocketTable!,
 		id: 33_322,
 		stunTime: 5,
@@ -388,7 +388,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 55,
 		xp: 84.3,
-		alias: ['knight', 'ardy knight'],
+		aliases: ['knight', 'ardy knight'],
 		table: KnightOfArdougne.pickpocketTable!,
 		id: KnightOfArdougne.id,
 		stunTime: 5,
@@ -415,7 +415,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 65,
 		xp: 137.5,
-		alias: ['yanille'],
+		aliases: ['yanille'],
 		table: YanilleWatchman.pickpocketTable!,
 		id: YanilleWatchman.id,
 		stunTime: 5,
@@ -428,7 +428,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 65,
 		xp: 137.5,
-		alias: ['thug'],
+		aliases: ['thug'],
 		table: MenaphiteThug.pickpocketTable!,
 		id: MenaphiteThug.id,
 		stunTime: 5,
@@ -503,7 +503,7 @@ const pickpocketables: Stealable[] = [
 		type: 'pickpockable',
 		level: 90,
 		xp: 103.4,
-		alias: ['tzhaar'],
+		aliases: ['tzhaar'],
 		table: TzHaarHur.pickpocketTable!,
 		id: TzHaarHur.id,
 		stunTime: 5,
