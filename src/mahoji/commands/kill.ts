@@ -3,7 +3,7 @@ import { Bank, Monsters } from 'oldschooljs';
 
 import { determineKillLimit } from '../../commands/deprecated/kill';
 import { PerkTier } from '../../lib/constants';
-import { stringMatches, toKMB, toTitleCase } from '../../lib/util';
+import { stringMatches, toTitleCase } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { Workers } from '../../lib/workers';
 import { OSBMahojiCommand } from '../lib/util';
@@ -71,7 +71,6 @@ export const killCommand: OSBMahojiCommand = {
 			user
 		});
 
-		result.content += `\n\nAverage of ${toKMB(bank.value() / options.quantity)} GP per kill`;
 		return {
 			attachments: [image.file],
 			content: result.content
