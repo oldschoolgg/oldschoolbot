@@ -112,6 +112,12 @@ export const activitiesCommand: OSBMahojiCommand = {
 							.map(p => ({ name: p.item.name, value: p.item.name }));
 					},
 					required: true
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'no_stams',
+					description: "Enable if you don't want to use stamina potions when collecting.",
+					required: false
 				}
 			]
 		},
@@ -370,7 +376,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 		chompy_hunt?: { action: 'start' | 'claim' };
 		champions_challenge?: {};
 		warriors_guild?: { action: string; quantity?: number };
-		collect?: { item: string };
+		collect?: { item: string; no_stams?: boolean };
 		quest?: {};
 		favour?: { name?: string; no_stams?: boolean };
 		decant?: { potion_name: string; dose?: number };
@@ -425,7 +431,7 @@ export const activitiesCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.collect) {
-			return collectCommand(mahojiUser, klasaUser, channelID, options.collect.item);
+			return collectCommand(mahojiUser, klasaUser, channelID, options.collect.item, options.collect.no_stams);
 		}
 		if (options.quest) {
 			return questCommand(klasaUser, channelID);
