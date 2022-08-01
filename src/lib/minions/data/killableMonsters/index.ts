@@ -238,7 +238,7 @@ const killableMonsters: KillableMonster[] = [
 		},
 		uniques: resolveItems(['Sraracha', 'Jar of eyes', 'Giant egg sac(full)', 'Sarachnis cudgel']),
 		healAmountNeeded: 9 * 20,
-		attackStyleToUse: GearStat.AttackSlash,
+		attackStyleToUse: GearStat.AttackCrush,
 		attackStylesUsed: [GearStat.AttackStab, GearStat.AttackRanged],
 		minimumGearRequirements: {
 			melee: {
@@ -272,6 +272,23 @@ const killableMonsters: KillableMonster[] = [
 			}
 		},
 		itemCost: { itemCost: new Bank().add('Stamina potion(4)', 5).add('Ruby dragon bolts (e)', 100), qtyPerKill: 1 }
+	},
+	{
+		id: Monsters.DerangedArchaeologist.id,
+		name: Monsters.DerangedArchaeologist.name,
+		aliases: Monsters.DerangedArchaeologist.aliases,
+		timeToFinish: Time.Minute,
+		table: Monsters.DerangedArchaeologist,
+		emoji: '',
+		wildy: false,
+
+		difficultyRating: 5,
+		qpRequired: 50,
+		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
+		defaultAttackStyles: [SkillsEnum.Magic],
+		healAmountNeeded: 4 * 20,
+		attackStyleToUse: GearStat.AttackMagic,
+		attackStylesUsed: [GearStat.AttackRanged, GearStat.AttackMagic]
 	}
 ];
 
