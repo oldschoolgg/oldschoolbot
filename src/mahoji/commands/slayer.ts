@@ -195,6 +195,11 @@ export const slayerCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'status',
+			description: 'Shows status of current slayer task',
 		}
 	],
 	run: async ({
