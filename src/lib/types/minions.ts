@@ -290,6 +290,7 @@ export interface NexTaskOptions extends ActivityTaskOptions {
 export interface CollectingOptions extends ActivityTaskOptions {
 	collectableID: number;
 	quantity: number;
+	noStaminas?: boolean;
 }
 
 export interface KourendFavourActivityTaskOptions extends ActivityTaskOptions {
