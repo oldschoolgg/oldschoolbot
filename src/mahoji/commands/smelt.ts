@@ -10,7 +10,6 @@ import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
 	formatSkillRequirements,
-	itemID,
 	skillsMeetRequirements,
 	stringMatches,
 	updateBankSetting
@@ -83,7 +82,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
 		}
 
-		if (bar.id === itemID('Dwarven bar') && !user.usingPet('Klik')) {
+		if (bar.name === 'Dwarven bar' && !user.usingPet('Klik')) {
 			return 'You try to smelt the bars, but nothing is happening. Perhaps the furnace is not hot enough to melt dwarven ore.';
 		}
 
@@ -115,21 +114,21 @@ export const smeltingCommand: OSBMahojiCommand = {
 			}
 			if (!user.hasGracefulEquipped()) {
 				timeToSmithSingleBar *= 1.075;
-				boosts.push('-7.5% penalty for not having graceful equipped.');
+				boosts.push('-7.5% penalty for not having graceful equipped');
 			}
 			if (user.hasItemEquippedAnywhere('Smithing master cape')) {
 				timeToSmithSingleBar /= 2;
 				boosts.push('2x boost for Smithing master cape');
 			}
-			if (user.hasItemEquippedAnywhere('Dwarven gauntlets') && bar.id !== itemID('Gold bar')) {
-				boosts.push('2x boost for having Dwarven gauntlets equipped.');
+			if (user.hasItemEquippedAnywhere('Dwarven gauntlets') && bar.name !== 'Gold bar') {
+				boosts.push('2x boost for having Dwarven gauntlets equipped');
 				timeToSmithSingleBar /= 2;
 			}
 		}
 
 		if (!blast_furnace) {
 			if (user.hasItemEquippedAnywhere('Dwarven gauntlets')) {
-				boosts.push('2x boost for having a Dwarven gauntlets equipped.');
+				boosts.push('2x boost for having a Dwarven gauntlets equipped');
 				timeToSmithSingleBar /= 2;
 			}
 		}
@@ -190,7 +189,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			type: 'Smelting'
 		});
 
-		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
+		if (bar.name === 'Gold bar' && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
 			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 
@@ -198,7 +197,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			bar.name
 		}, it'll take around ${formatDuration(duration)} to finish. ${
 			blast_furnace ? `\nYou paid ${coinsToRemove} GP to use the Blast Furnace.` : ''
-		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}` : ''}`;
+		} ${boosts.length > 0 ? `\n\n**Boosts: ** ${boosts.join(', ')}.` : ''}`;
 
 		return response;
 	}

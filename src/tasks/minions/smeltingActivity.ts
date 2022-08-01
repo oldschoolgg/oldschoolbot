@@ -10,7 +10,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import { roll } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 
 export default class extends Task {
@@ -37,7 +36,7 @@ export default class extends Task {
 
 		let xpReceived = quantity * bar.xp;
 
-		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
+		if (bar.name === 'Gold bar' && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
 			xpReceived = quantity * 56.2;
 		}
 
@@ -54,7 +53,7 @@ export default class extends Task {
 		}
 
 		if (masterCapeInEffect) {
-			if (!(blastf && bar.id === itemID('Iron bar'))) {
+			if (!(blastf && bar.name === 'Iron bar')) {
 				str += '\n2x less likely to fail from Smithing master cape.';
 			}
 		}
