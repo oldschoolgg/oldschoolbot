@@ -8,6 +8,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { rogueOutfitPercentBonus, updateGPTrackSetting } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../lib/util/makeBankImage';
 
 export function calcLootXPPickpocketing(
 	currentLevel: number,
@@ -111,17 +112,24 @@ export default class extends Task {
 			);
 		}
 
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${successfulQuantity} ${obj.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image =
+			itemsAdded.length === 0
+				? undefined
+				: await makeBankImage({
+						bank: itemsAdded,
+						title: `Loot From ${successfulQuantity} ${obj.name}:`,
+						user,
+						previousCL
+				  });
 
-		handleTripFinish(user, channelID, str, ['steal', { name: obj.name, quantity }, true], image!, data, loot);
+		handleTripFinish(
+			user,
+			channelID,
+			str,
+			['steal', { name: obj.name, quantity }, true],
+			image?.file.buffer,
+			data,
+			loot
+		);
 	}
 }

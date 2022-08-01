@@ -22,7 +22,6 @@ export const stealCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		requiresMinionNotBusy: true,
-		description: 'Sends your minion to steal to train Thieving.',
 		examples: ['/steal name:Man']
 	},
 	options: [
