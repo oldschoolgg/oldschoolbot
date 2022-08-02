@@ -120,6 +120,7 @@ export const minigamesCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'name',
 							description: 'The thing you want to buy.',
+							required: true,
 							autocomplete: async (value: string) => {
 								return OuraniaBuyables.filter(i =>
 									!value ? true : i.item.name.toLowerCase().includes(value.toLowerCase())
