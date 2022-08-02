@@ -6,7 +6,6 @@ import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
-import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -24,6 +23,7 @@ import {
 } from '../lib/constants';
 import { getSimilarItems } from '../lib/data/similarItems';
 import { evalMathExpression } from '../lib/expressionParser';
+import { roboChimpUserFetch } from '../lib/roboChimp';
 import { convertStoredActivityToFlatActivity, countUsersWithItemInCl, prisma } from '../lib/settings/prisma';
 import { cancelTask, minionActivityCache, minionActivityCacheDelete } from '../lib/settings/settings';
 import { ClientSettings } from '../lib/settings/types/ClientSettings';
@@ -298,6 +298,7 @@ export default class extends BotCommand {
 				}
 				if (!(u instanceof KlasaUser)) return;
 				await u.settings.sync(true);
+				const roboChimpUser = await roboChimpUserFetch(BigInt(u.id));
 
 				const bitfields = `${u.settings
 					.get(UserSettings.BitField)
@@ -322,9 +323,7 @@ export default class extends BotCommand {
 **Badges:** ${userBadges}
 **Current Task:** ${taskText}
 **Blacklisted:** ${isBlacklisted ? 'Yes' : 'No'}
-**Patreon/Github:** ${u.settings.get(UserSettings.PatreonID) ? 'Yes' : 'None'}/${
-						u.settings.get(UserSettings.GithubID) ? 'Yes' : 'None'
-					}
+**Patreon/Github:** ${roboChimpUser.patreon_id ? 'Yes' : 'None'}/${roboChimpUser.github_id ? 'Yes' : 'None'}
 **Ironman:** ${u.isIronman ? 'Yes' : 'No'}
 **Premium Balance:** ${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
 						premiumTier ? `Tier ${premiumTier}` : ''
@@ -502,27 +501,6 @@ ${
 				await syncBlacklists();
 				return msg.channel.send(`Users Blacklisted: ${BLACKLISTED_USERS.size}
 Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`);
-			}
-			case 'setgh': {
-				if (!input || !(input instanceof KlasaUser)) return;
-				if (!str || typeof str !== 'string') return;
-				const res = (await fetch(`https://api.github.com/users/${encodeURIComponent(str)}`)
-					.then(res => res.json())
-					.catch(() => null)) as Record<string, string> | null;
-				if (!res || !res.id) {
-					return msg.channel.send('Could not find user in github API. Is the username written properly?');
-				}
-				const alreadyHasName = await this.client.query<{ github_id: string }[]>(
-					`SELECT github_id FROM users WHERE github_id = '${res.id}'`
-				);
-				if (alreadyHasName.length > 0) {
-					return msg.channel.send('Someone already has this Github account connected.');
-				}
-				await input.settings.update(UserSettings.GithubID, parseInt(res.id));
-				if (!msg.flagArgs.nosync) {
-					await (this.client.tasks.get('patreon') as PatreonTask).syncGithub();
-				}
-				return msg.channel.send(`Set ${res.login}[${res.id}] as ${input.username}'s Github account.`);
 			}
 			case 'giveperm': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
