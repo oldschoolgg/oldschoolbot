@@ -5,6 +5,11 @@ import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import { autoSlayCommand } from '../lib/abstracted_commands/autoSlayCommand';
 import {
+	slayerShopBuyCommand,
+	slayerShopListMyUnlocks,
+	slayerShopListRewards
+} from '../lib/abstracted_commands/slayerShopCommand';
+import {
 	slayerListBlocksCommand,
 	slayerNewTaskCommand,
 	slayerSkipTaskCommand,
@@ -185,14 +190,68 @@ export const slayerCommand: OSBMahojiCommand = {
 									return { name: m.name, value: m.name };
 								});
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity to purchase, if applicable.',
+							required: false
 						}
 					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'show_unlocks',
+					name: 'my_unlocks',
 					description: 'Show purchased unlocks',
 					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'show_all_rewards',
+					description: 'Show all rewards',
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'type',
+							description: 'What type of rewards to show?',
+							required: false,
+							choices: ['all', 'buyables', 'unlocks'].map(t => {
+								return { name: t, value: t };
+							})
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'disable',
+					description: 'Disable unlocks, extensions, etc. They will need to be repurchased.',
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'unlockable',
+							description: 'Slayer unlock to disable',
+							required: true,
+							autocomplete: async (value: string, user: APIUser) => {
+								const mahojiUser = await mahojiUsersSettingsFetch(user.id, { slayer_unlocks: true });
+								return SlayerRewardsShop.filter(
+									r =>
+										!r.item &&
+										r.canBeRemoved &&
+										mahojiUser.slayer_unlocks.includes(r.id) &&
+										(!value
+											? true
+											: r.name.toLowerCase().includes(value) ||
+											  r.aliases?.some(alias =>
+													alias.toLowerCase().includes(value.toLowerCase())
+											  ))
+								).map(m => {
+									return { name: m.name, value: m.name };
+								});
+							}
+						}
+					]
 				}
 			]
 		},
@@ -203,7 +262,6 @@ export const slayerCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		user,
 		options,
 		channelID,
 		userID,
@@ -217,11 +275,18 @@ export const slayerCommand: OSBMahojiCommand = {
 			unblock?: { assignment: string };
 			list_blocks?: {};
 		};
-		rewards?: { unlock?: { unlockable: string }; buy?: { item: string }; show_unlocks?: {} };
+		rewards?: {
+			unlock?: { unlockable: string };
+			buy?: { item: string; quantity?: number };
+			my_unlocks?: {};
+			show_all_rewards?: { type?: 'all' | 'buyables' | 'unlocks' };
+			disable?: { unlockable: string };
+		};
 		status?: {};
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		await klasaUser.settings.sync(true);
 
 		if (options.autoslay) {
 			return autoSlayCommand(klasaUser, channelID, options.autoslay.mode, Boolean(options.autoslay.save));
@@ -253,11 +318,40 @@ export const slayerCommand: OSBMahojiCommand = {
 				);
 			}
 		}
+		if (options.rewards) {
+			if (options.rewards.my_unlocks) {
+				return slayerShopListMyUnlocks(mahojiUser);
+			}
+			if (options.rewards.show_all_rewards) {
+				return slayerShopListRewards(options.rewards.show_all_rewards.type ?? 'all');
+			}
+			if (options.rewards.disable) {
+				return await slayerShopBuyCommand({
+					mahojiUser,
+					disable: true,
+					buyable: options.rewards.disable.unlockable,
+					interaction
+				});
+			}
+			if (options.rewards.buy) {
+				return await slayerShopBuyCommand({
+					mahojiUser,
+					buyable: options.rewards.buy.item,
+					quantity: options.rewards.buy.quantity,
+					interaction
+				});
+			}
+			if (options.rewards.unlock) {
+				return await slayerShopBuyCommand({
+					mahojiUser,
+					buyable: options.rewards.unlock.unlockable,
+					interaction
+				});
+			}
+		}
 		if (options.status) {
 			return slayerStatusCommand(mahojiUser);
 		}
-		console.log(options);
-		console.log(`channel: ${channelID} - user: ${userID}`);
-		return `${user.username} - ${JSON.stringify(options)}`;
+		return 'This should not happen. Please contact support.';
 	}
 };
