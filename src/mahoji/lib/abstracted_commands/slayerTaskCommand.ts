@@ -368,13 +368,19 @@ export async function slayerNewTaskCommand({
 	return resultMessage;
 }
 
-export async function slayerSkipTaskCommand(
-	mahojiUser: User,
-	block: boolean,
-	newTask: boolean,
-	interaction: SlashCommandInteraction,
-	channelID: bigint | string
-) {
+export async function slayerSkipTaskCommand({
+	mahojiUser,
+	block,
+	newTask,
+	interaction,
+	channelID
+}: {
+	mahojiUser: User;
+	block: boolean;
+	newTask: boolean;
+	interaction: SlashCommandInteraction;
+	channelID: bigint | string;
+}) {
 	const { currentTask } = await getUsersCurrentSlayerInfo(mahojiUser.id);
 	const myBlockList = mahojiUser.slayer_blocked_ids;
 	const klasaUser = await globalClient.fetchUser(mahojiUser.id);
@@ -383,6 +389,14 @@ export async function slayerSkipTaskCommand(
 		return 'You cannot change your task while your minion is busy.';
 	}
 	if (!currentTask) {
+		if (newTask) {
+			return slayerNewTaskCommand({
+				mahojiUser,
+				interaction,
+				channelID,
+				showButtons: true
+			});
+		}
 		return "You don't have an active task!";
 	}
 
@@ -425,7 +439,7 @@ export async function slayerSkipTaskCommand(
 		}. You have ${slayerPoints.toLocaleString()} slayer points.`;
 
 		if (newTask) {
-			return await slayerNewTaskCommand({
+			return slayerNewTaskCommand({
 				mahojiUser: updatedMahojiUser,
 				interaction,
 				channelID,
