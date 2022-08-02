@@ -134,14 +134,12 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 			((spell.craftXp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} Crafting XP/Hr**`;
 	}
-  
-  let prayerXpHr = '';
+
 	if (spell.prayerXp) {
 		response = `and** ${Math.round(
 			((spell.prayerXp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} Prayer XP/Hr**`;
 	}
-
 
 	if (boosts.length > 0) {
 		response += `\n**Boosts:** ${boosts.join(', ')}.`;
