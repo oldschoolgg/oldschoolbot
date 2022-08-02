@@ -10,6 +10,7 @@ import { SmeltingActivityTaskOptions } from '../../lib/types/minions';
 import {
 	formatDuration,
 	formatSkillRequirements,
+	itemID,
 	skillsMeetRequirements,
 	stringMatches,
 	updateBankSetting
@@ -82,7 +83,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			return `${user.minionName} needs ${bar.level} Smithing to smelt ${bar.name}s.`;
 		}
 
-		if (bar.name === 'Dwarven bar' && !user.usingPet('Klik')) {
+		if (bar.id === itemID('Dwarven bar') && !user.usingPet('Klik')) {
 			return 'You try to smelt the bars, but nothing is happening. Perhaps the furnace is not hot enough to melt dwarven ore.';
 		}
 
@@ -120,7 +121,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 				timeToSmithSingleBar /= 2;
 				boosts.push('2x boost for Smithing master cape');
 			}
-			if (user.hasItemEquippedAnywhere('Dwarven gauntlets') && bar.name !== 'Gold bar') {
+			if (user.hasItemEquippedAnywhere('Dwarven gauntlets') && bar.id !== itemID('Gold bar')) {
 				boosts.push('2x boost for having Dwarven gauntlets equipped');
 				timeToSmithSingleBar /= 2;
 			}
@@ -187,7 +188,7 @@ export const smeltingCommand: OSBMahojiCommand = {
 			type: 'Smelting'
 		});
 
-		if (bar.name === 'Gold bar' && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
+		if (bar.id === itemID('Gold bar') && user.hasItemEquippedAnywhere('Goldsmith gauntlets')) {
 			boosts.push('56.2 xp per gold bar for Goldsmith gauntlets');
 		}
 
