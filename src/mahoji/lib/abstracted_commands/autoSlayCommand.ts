@@ -1,6 +1,8 @@
+import { User } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
-import { KlasaUser } from 'klasa';
 import { MessageFlags } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../../lib/constants';
@@ -11,6 +13,7 @@ import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constant
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../../lib/util';
 import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { slayerNewTaskCommand } from './slayerTaskCommand';
 
 interface AutoslayLink {
 	monsterID: number;
@@ -218,13 +221,32 @@ function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 	return method;
 }
 
-export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOverride?: string, saveMode?: boolean) {
+export async function autoSlayCommand({
+	mahojiUser,
+	channelID,
+	modeOverride,
+	saveMode,
+	interaction
+}: {
+	mahojiUser: User;
+	channelID: bigint;
+	modeOverride?: string;
+	saveMode?: boolean;
+	interaction: SlashCommandInteraction;
+}): Promise<CommandResponse> {
+	const user = await globalClient.fetchUser(mahojiUser.id);
 	const autoslayOptions = user.settings.get(UserSettings.Slayer.AutoslayOptions);
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		return { content: "You're not on a slayer task, so you can't autoslay!", flags: MessageFlags.Ephemeral };
+		await slayerNewTaskCommand({ mahojiUser, channelID, interaction });
+		const newTaskCheck = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTaskCheck = newTaskCheck.assignedTask !== null && newTaskCheck.currentTask !== null;
+		if (isOnTaskCheck) {
+			return autoSlayCommand({ mahojiUser, interaction, channelID, modeOverride, saveMode });
+		}
+		return { content: 'Cannot autoslay because we failed to get a new task', flags: MessageFlags.Ephemeral };
 	}
 	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
 	const method = modeOverride ?? savedMethod;

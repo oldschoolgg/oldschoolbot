@@ -289,17 +289,23 @@ export const slayerCommand: OSBMahojiCommand = {
 		await klasaUser.settings.sync(true);
 
 		if (options.autoslay) {
-			return autoSlayCommand(klasaUser, channelID, options.autoslay.mode, Boolean(options.autoslay.save));
+			return autoSlayCommand({
+				mahojiUser,
+				channelID,
+				modeOverride: options.autoslay.mode,
+				saveMode: Boolean(options.autoslay.save),
+				interaction
+			});
 		}
 		if (options.task) {
-			return slayerNewTaskCommand(
+			return slayerNewTaskCommand({
 				mahojiUser,
 				interaction,
 				channelID,
-				'',
-				options.task.master,
-				Boolean(options.task.save)
-			);
+				slayerMasterOverride: options.task.master,
+				saveDefaultSlayerMaster: Boolean(options.task.save),
+				showButtons: true
+			});
 		}
 		if (options.manage) {
 			if (options.manage.list_blocks) {

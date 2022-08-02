@@ -202,14 +202,23 @@ async function returnSuccess(channelID: bigint | string, mahojiUser: User, conte
 		await sentMessage.edit({ components: [] });
 	}
 }
-export async function slayerNewTaskCommand(
-	mahojiUser: User,
-	interaction: SlashCommandInteraction,
-	channelID: string | bigint,
-	extraContent: string,
-	slayerMasterOverride?: string | undefined,
-	saveDefaultSlayerMaster?: boolean
-) {
+export async function slayerNewTaskCommand({
+	mahojiUser,
+	interaction,
+	channelID,
+	extraContent,
+	slayerMasterOverride,
+	saveDefaultSlayerMaster,
+	showButtons
+}: {
+	mahojiUser: User;
+	interaction: SlashCommandInteraction;
+	channelID: string | bigint;
+	extraContent?: string;
+	slayerMasterOverride?: string | undefined;
+	saveDefaultSlayerMaster?: boolean;
+	showButtons?: boolean;
+}) {
 	const klasaUser = await globalClient.fetchUser(mahojiUser.id);
 	const { currentTask } = await getUsersCurrentSlayerInfo(mahojiUser.id);
 	const { slayer_remember_master: rememberedSlayerMaster } = mahojiUser;
@@ -274,8 +283,11 @@ export async function slayerNewTaskCommand(
 				newSlayerTask.assignedTask
 			)}.`;
 
-		returnSuccess(channelID, updatedMahojiUser, `${extraContent}\n\n${returnMessage}`);
-		return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
+		if (showButtons) {
+			returnSuccess(channelID, updatedMahojiUser, `${extraContent ?? ''}\n\n${returnMessage}`);
+			return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
+		}
+		return `${extraContent ?? ''}\n\n${returnMessage}`;
 	}
 	let resultMessage = '';
 	// Store favorite slayer master if requested:
@@ -309,8 +321,10 @@ export async function slayerNewTaskCommand(
 
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
-			returnSuccess(channelID, mahojiUser, resultMessage);
-			return { content: 'Here is your current slayer task', flags: MessageFlags.Ephemeral };
+			if (showButtons) {
+				returnSuccess(channelID, mahojiUser, resultMessage);
+				return { content: 'Here is your current slayer task', flags: MessageFlags.Ephemeral };
+			}
 		}
 		return resultMessage;
 	}
@@ -347,8 +361,11 @@ export async function slayerNewTaskCommand(
 	resultMessage += `${slayerMaster.name} has assigned you to kill ${
 		newSlayerTask.currentTask.quantity
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
-	returnSuccess(channelID, mahojiUser, resultMessage);
-	return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
+	if (showButtons) {
+		returnSuccess(channelID, mahojiUser, resultMessage);
+		return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
+	}
+	return resultMessage;
 }
 
 export async function slayerSkipTaskCommand(
@@ -408,7 +425,13 @@ export async function slayerSkipTaskCommand(
 		}. You have ${slayerPoints.toLocaleString()} slayer points.`;
 
 		if (newTask) {
-			return await slayerNewTaskCommand(updatedMahojiUser, interaction, channelID, resultMessage);
+			return await slayerNewTaskCommand({
+				mahojiUser: updatedMahojiUser,
+				interaction,
+				channelID,
+				extraContent: resultMessage,
+				showButtons: true
+			});
 		}
 		return resultMessage;
 	} catch (e) {
