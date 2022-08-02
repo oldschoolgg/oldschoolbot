@@ -456,6 +456,7 @@ model Minigame {
   tob_hard                Int    @default(0)
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
+  puro_puro               Int    @default(0)
 
   new_user NewUser?
 
@@ -637,6 +638,7 @@ enum activity_type_enum {
   Nex
   TiaraRunecraft
   TroubleBrewing
+  PuroPuro
   Easter
 }
 

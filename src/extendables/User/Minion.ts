@@ -622,6 +622,11 @@ export default class extends Extendable {
 			case 'TiaraRunecraft': {
 				return `${this.minionName} is currently runecrafting tiaras at the Altar. ${formattedDuration}`;
 			}
+			case 'PuroPuro': {
+				return `${this.minionName} is currently hunting in Puro-Puro. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 			case 'Easter':
 			case 'BlastFurnace': {
 				throw new Error('Removed');

@@ -232,6 +232,7 @@ export const enum Tasks {
 	Nex = 'nexActivity',
 	TiaraRunecraft = 'tiaraRunecraftActivity',
 	TroubleBrewing = 'troubleBrewingActivity',
+	PuroPuro = 'puroPuroActivity',
 	REMOVED = '__REMOVED__'
 }
 
