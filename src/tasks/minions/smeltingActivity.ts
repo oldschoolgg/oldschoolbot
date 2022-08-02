@@ -54,7 +54,7 @@ export default class extends Task {
 		}
 
 		if (masterCapeInEffect) {
-			if (!(blastf && bar.name === 'Iron bar')) {
+			if (!(blastf && bar.id === itemID('Gold bar'))) {
 				str += '\n2x less likely to fail from Smithing master cape.';
 			}
 		}
