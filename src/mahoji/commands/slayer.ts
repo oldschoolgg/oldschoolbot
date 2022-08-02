@@ -45,7 +45,7 @@ export const slayerCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'task',
+			name: 'new_task',
 			description: 'Send your minion to slay your current task.',
 			options: [
 				{
@@ -249,7 +249,7 @@ export const slayerCommand: OSBMahojiCommand = {
 		interaction
 	}: CommandRunOptions<{
 		autoslay?: { mode?: string; save?: boolean };
-		task?: { master?: string; save?: boolean };
+		new_task?: { master?: string; save?: boolean };
 		manage?: {
 			command: 'block' | 'skip' | 'list_blocks';
 			new?: boolean;
@@ -277,13 +277,13 @@ export const slayerCommand: OSBMahojiCommand = {
 				interaction
 			});
 		}
-		if (options.task) {
+		if (options.new_task) {
 			return slayerNewTaskCommand({
 				mahojiUser,
 				interaction,
 				channelID,
-				slayerMasterOverride: options.task.master,
-				saveDefaultSlayerMaster: Boolean(options.task.save),
+				slayerMasterOverride: options.new_task.master,
+				saveDefaultSlayerMaster: Boolean(options.new_task.save),
 				showButtons: true
 			});
 		}
