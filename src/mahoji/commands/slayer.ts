@@ -292,7 +292,7 @@ export const slayerCommand: OSBMahojiCommand = {
 			return autoSlayCommand(klasaUser, channelID, options.autoslay.mode, Boolean(options.autoslay.save));
 		}
 		if (options.task) {
-			return await slayerNewTaskCommand(
+			return slayerNewTaskCommand(
 				mahojiUser,
 				interaction,
 				channelID,
@@ -306,10 +306,10 @@ export const slayerCommand: OSBMahojiCommand = {
 				return slayerListBlocksCommand(mahojiUser);
 			}
 			if (options.manage.unblock) {
-				return await slayerUnblockCommand(mahojiUser, options.manage.unblock.assignment);
+				return slayerUnblockCommand(mahojiUser, options.manage.unblock.assignment);
 			}
 			if (options.manage.skip || options.manage.block) {
-				return await slayerSkipTaskCommand(
+				return slayerSkipTaskCommand(
 					mahojiUser,
 					Boolean(options.manage.block),
 					Boolean(options.manage.skip?.new ?? options.manage.block?.new),
@@ -326,7 +326,7 @@ export const slayerCommand: OSBMahojiCommand = {
 				return slayerShopListRewards(options.rewards.show_all_rewards.type ?? 'all');
 			}
 			if (options.rewards.disable) {
-				return await slayerShopBuyCommand({
+				return slayerShopBuyCommand({
 					mahojiUser,
 					disable: true,
 					buyable: options.rewards.disable.unlockable,
@@ -334,7 +334,7 @@ export const slayerCommand: OSBMahojiCommand = {
 				});
 			}
 			if (options.rewards.buy) {
-				return await slayerShopBuyCommand({
+				return slayerShopBuyCommand({
 					mahojiUser,
 					buyable: options.rewards.buy.item,
 					quantity: options.rewards.buy.quantity,
@@ -342,7 +342,7 @@ export const slayerCommand: OSBMahojiCommand = {
 				});
 			}
 			if (options.rewards.unlock) {
-				return await slayerShopBuyCommand({
+				return slayerShopBuyCommand({
 					mahojiUser,
 					buyable: options.rewards.unlock.unlockable,
 					interaction
