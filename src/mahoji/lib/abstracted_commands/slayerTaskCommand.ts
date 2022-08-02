@@ -2,6 +2,7 @@ import { User } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageButton } from 'discord.js';
 import { notEmpty, randInt, Time } from 'e';
+import { MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Monsters } from 'oldschooljs';
 
@@ -274,7 +275,7 @@ export async function slayerNewTaskCommand(
 			)}.`;
 
 		returnSuccess(channelID, updatedMahojiUser, `${extraContent}\n\n${returnMessage}`);
-		return 'Slayer task assigned.';
+		return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
 	}
 	let resultMessage = '';
 	// Store favorite slayer master if requested:
@@ -309,7 +310,7 @@ export async function slayerNewTaskCommand(
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
 			returnSuccess(channelID, mahojiUser, resultMessage);
-			return 'Here is your current slayer task';
+			return { content: 'Here is your current slayer task', flags: MessageFlags.Ephemeral };
 		}
 		return resultMessage;
 	}
@@ -347,7 +348,7 @@ export async function slayerNewTaskCommand(
 		newSlayerTask.currentTask.quantity
 	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
 	returnSuccess(channelID, mahojiUser, resultMessage);
-	return 'Slayer task assigned.';
+	return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
 }
 
 export async function slayerSkipTaskCommand(
