@@ -1,14 +1,14 @@
 import { noOp, shuffleArr } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
-import ChambersOfXeric from 'oldschooljs/dist/simulation/minigames/ChambersOfXeric';
+import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
 import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { Emoji, Events } from '../../../lib/constants';
 import { chambersOfXericCL, chambersOfXericMetamorphPets } from '../../../lib/data/CollectionsExport';
 import { createTeam } from '../../../lib/data/cox';
 import { trackLoot } from '../../../lib/settings/prisma';
-import { incrementMinigameScore, runCommand } from '../../../lib/settings/settings';
+import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { RaidsOptions } from '../../../lib/types/minions';
@@ -16,7 +16,6 @@ import { roll, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
-import { sendToChannelID } from '../../../lib/util/webhook';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -51,8 +50,6 @@ export default class extends Task {
 		} has finished. The total amount of points your team got is ${totalPoints.toLocaleString()}.\n`;
 		await Promise.all(allUsers.map(u => incrementMinigameScore(u.id, minigameID, 1)));
 
-		const onyxChance = users.length * 70;
-
 		for (let [userID, _userLoot] of Object.entries(loot)) {
 			const user = await this.client.fetchUser(userID).catch(noOp);
 			if (!user) continue;
@@ -86,9 +83,6 @@ export default class extends Task {
 			}
 			if (roll(2000)) {
 				userLoot.add('Steve');
-			}
-			if (!totalLoot.has('Onyx') && roll(onyxChance)) {
-				userLoot.add('Onyx');
 			}
 
 			const { itemsAdded } = await user.addItemsToBank({ items: userLoot, collectionLog: true });
@@ -131,30 +125,25 @@ export default class extends Task {
 			teamSize: users.length
 		});
 
-		if (allUsers.length === 1) {
-			handleTripFinish(
-				this.client,
-				allUsers[0],
-				channelID,
-				resultMessage,
-				res => {
-					const flags: Record<string, string> = challengeMode ? { cm: 'cm' } : {};
-
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					if (!res.prompter) res.prompter = {};
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					res.prompter.flags = flags;
-
-					return runCommand({ message: res, commandName: 'raid', args: ['solo'], isContinue: true });
+		handleTripFinish(
+			allUsers[0],
+			channelID,
+			resultMessage,
+			[
+				'raid',
+				{
+					cox: {
+						start: {
+							challenge_mode: challengeMode,
+							type: users.length === 1 ? 'solo' : 'mass'
+						}
+					}
 				},
-				undefined,
-				data,
-				null
-			);
-		} else {
-			sendToChannelID(this.client, channelID, { content: resultMessage });
-		}
+				true
+			],
+			undefined,
+			data,
+			null
+		);
 	}
 }

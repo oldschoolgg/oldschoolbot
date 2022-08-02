@@ -2,12 +2,12 @@ import { User } from 'discord.js';
 import { increaseNumByPercent, notEmpty, objectValues, randInt, Time, uniqueArr } from 'e';
 import { Extendable, ExtendableStore, KlasaClient, KlasaUser } from 'klasa';
 import { Bank, Monsters } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 
-import { sotwConfig, sotwIsActive } from '../../commands/bso/sotw';
-import { collectables } from '../../commands/Minion/collect';
 import { bossEvents } from '../../lib/bossEvents';
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import {
 	Emoji,
 	Events,
@@ -22,7 +22,8 @@ import { getSimilarItems } from '../../lib/data/similarItems';
 import { onMax } from '../../lib/events';
 import { fishingLocations } from '../../lib/fishingContest';
 import { hasGracefulEquipped } from '../../lib/gear';
-import ClueTiers from '../../lib/minions/data/clueTiers';
+import { DisassembleTaskOptions } from '../../lib/invention/disassemble';
+import { ResearchTaskOptions } from '../../lib/invention/research';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
@@ -30,7 +31,7 @@ import { AddXpParams, KillableMonster } from '../../lib/minions/types';
 import { prisma } from '../../lib/settings/prisma';
 import { getActivityOfUser, getMinigameScore, MinigameName, Minigames } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
-import { MasterSkillcapes } from '../../lib/skilling/skillcapes';
+import Skillcapes from '../../lib/skilling/skillcapes';
 import Skills from '../../lib/skilling/skills';
 import Agility from '../../lib/skilling/skills/agility';
 import Cooking from '../../lib/skilling/skills/cooking';
@@ -56,7 +57,6 @@ import {
 	ActivityTaskOptionsWithQuantity,
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
-	BlastFurnaceActivityTaskOptions,
 	BossActivityTaskOptions,
 	BuryingActivityTaskOptions,
 	CastingActivityTaskOptions,
@@ -68,6 +68,7 @@ import {
 	DarkAltarOptions,
 	EnchantingActivityTaskOptions,
 	FarmingActivityTaskOptions,
+	FightCavesActivityTaskOptions,
 	FiremakingActivityTaskOptions,
 	FishingActivityTaskOptions,
 	FishingContestOptions,
@@ -112,9 +113,12 @@ import {
 } from '../../lib/util';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
+import getOSItem from '../../lib/util/getOSItem';
 import { minionIsBusy } from '../../lib/util/minionIsBusy';
 import { getKC, minionName, skillLevel } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
+import { collectables } from '../../mahoji/lib/abstracted_commands/collectCommand';
+import { MoktangTaskOptions } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import { activity_type_enum } from '.prisma/client';
 
 const suffixes = new SimpleTable<string>()
@@ -132,6 +136,24 @@ const suffixes = new SimpleTable<string>()
 function levelUpSuffix() {
 	return suffixes.roll().item;
 }
+
+interface StaticXPBoost {
+	item: Item;
+	boostPercent: number;
+	skill: SkillsEnum;
+}
+const staticXPBoosts = new Map<SkillsEnum, StaticXPBoost[]>().set(SkillsEnum.Firemaking, [
+	{
+		item: getOSItem('Flame gloves'),
+		boostPercent: 2.5,
+		skill: SkillsEnum.Firemaking
+	},
+	{
+		item: getOSItem('Ring of fire'),
+		boostPercent: 2.5,
+		skill: SkillsEnum.Firemaking
+	}
+]);
 
 export default class extends Extendable {
 	public constructor(store: ExtendableStore, file: string[], directory: string) {
@@ -324,7 +346,11 @@ export default class extends Extendable {
 			}
 
 			case 'FightCaves': {
-				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${Emoji.TzRekJad}.`;
+				const data = currentTask as FightCavesActivityTaskOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
+				return `${this.minionName} is currently attempting the ${Emoji.AnimatedFireCape} **Fight caves** ${
+					Emoji.TzRekJad
+				}. If they're successful and don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'TitheFarm': {
 				return `${this.minionName} is currently farming at the **Tithe Farm**. ${formattedDuration}`;
@@ -384,8 +410,9 @@ export default class extends Extendable {
 
 			case 'Nightmare': {
 				const data = currentTask as NightmareActivityTaskOptions;
-
-				return `${this.minionName} is currently killing The Nightmare, with a party of ${data.users.length}. ${formattedDuration}`;
+				return `${this.minionName} is currently killing The Nightmare${
+					data.method === 'solo' ? 'solo' : 'in a team'
+				}. ${formattedDuration}`;
 			}
 
 			case 'AnimatedArmour': {
@@ -570,18 +597,6 @@ export default class extends Extendable {
 				return `${this.minionName} is currently training at the Mage Training Arena. ${formattedDuration}`;
 			}
 
-			case 'BlastFurnace': {
-				const data = currentTask as BlastFurnaceActivityTaskOptions;
-
-				const bar = Smithing.BlastableBars.find(bar => bar.id === data.barID);
-
-				return `${this.minionName} is currently smelting ${data.quantity}x ${
-					bar!.name
-				} at the Blast Furnace. ${formattedDuration} Your ${Emoji.Smithing} Smithing level is ${this.skillLevel(
-					SkillsEnum.Smithing
-				)}`;
-			}
-
 			case 'OuraniaDeliveryService': {
 				return `${this.minionName} is currently delivering in the Ourania Deliver Service. ${formattedDuration}`;
 			}
@@ -616,9 +631,12 @@ export default class extends Extendable {
 			}
 			case 'Revenants': {
 				const data = currentTask as RevenantOptions;
+				const durationRemaining = data.finishDate - data.duration + data.fakeDuration - Date.now();
 				return `${data.skulled ? `${Emoji.OSRSSkull} ` : ''} ${this.minionName} is currently killing ${
 					data.quantity
-				}x ${Monsters.get(data.monsterID)!.name} in the wilderness.`;
+				}x ${
+					Monsters.get(data.monsterID)!.name
+				} in the wilderness. If they don't die, the trip should take ${formatDuration(durationRemaining)}.`;
 			}
 			case 'PestControl': {
 				const data = currentTask as MinigameActivityTaskOptions;
@@ -692,10 +710,40 @@ export default class extends Extendable {
 					this.minionName
 				} is currently shopping at Tzhaar stores. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
-			case 'Easter': {
-				return `${this.minionName} is currently doing the Easter Event. The trip should take ${formatDuration(
+			case 'BaxtorianBathhouses': {
+				return `${
+					this.minionName
+				} is currently heating baths at the Baxtorian Bathhouses. The trip should take ${formatDuration(
 					durationRemaining
 				)}.`;
+			}
+			case 'TroubleBrewing': {
+				const data = currentTask as MinigameActivityTaskOptions;
+				return `${this.minionName} is currently doing ${
+					data.quantity
+				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'Disassembling': {
+				const data = currentTask as DisassembleTaskOptions;
+				return `${this.minionName} is currently disassembling ${data.qty}x ${itemNameFromID(
+					data.i
+				)}. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'Research': {
+				const data = currentTask as ResearchTaskOptions;
+				return `${this.minionName} is currently researching with '${
+					data.material
+				}' materials. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'Moktang': {
+				const data = currentTask as MoktangTaskOptions;
+				return `${this.minionName} is currently killing ${
+					data.qty
+				}x Moktang. The trip should take ${formatDuration(durationRemaining)}.`;
+			}
+			case 'Easter':
+			case 'BlastFurnace': {
+				throw new Error('Removed');
 			}
 		}
 	}
@@ -789,28 +837,30 @@ export default class extends Extendable {
 			.map(i => i.item);
 
 		// Build list of all Master capes including combined capes.
-		const allMasterCapes = MasterSkillcapes.map(msc => getSimilarItems(msc.item.id)).flat(Infinity) as number[];
+		const allMasterCapes = Skillcapes.map(i => i.masterCape)
+			.map(msc => getSimilarItems(msc.id))
+			.flat(Infinity) as number[];
 
 		// Get cape object from MasterSkillCapes that matches active skill.
-		const matchingCape = multiplier ? MasterSkillcapes.find(cape => params.skillName === cape.skill) : undefined;
+		const matchingCape =
+			multiplier || params.masterCapeBoost
+				? Skillcapes.find(cape => params.skillName === cape.skill)?.masterCape
+				: undefined;
 
 		// If the matching cape [or similar] is equipped, isMatchingCape = matched itemId.
 		const isMatchingCape =
-			multiplier && matchingCape
-				? allCapes.find(cape => getSimilarItems(matchingCape.item.id).includes(cape))
+			(multiplier || params.masterCapeBoost) && matchingCape
+				? allCapes.find(cape => getSimilarItems(matchingCape.id).includes(cape))
 				: false;
 
 		// Get the masterCape itemId for use in text output, and check for non-matching cape.
 		const masterCape = isMatchingCape
 			? isMatchingCape
-			: multiplier
+			: multiplier || params.masterCapeBoost === true
 			? allMasterCapes.find(cape => allCapes.includes(cape))
 			: undefined;
 
-		// When SOTW is active, don't give extra boosts to it
-		const isSkillThatShouldntGetExtraBoost = sotwIsActive() && sotwConfig.skill === params.skillName;
-
-		if (masterCape && !isSkillThatShouldntGetExtraBoost) {
+		if (masterCape) {
 			params.amount = increaseNumByPercent(params.amount, isMatchingCape ? 8 : 3);
 		}
 		// Check if each gorajan set is equipped:
@@ -859,11 +909,20 @@ export default class extends Extendable {
 			}
 		}
 
-		if (firstAgeEquipped > 0 && !isSkillThatShouldntGetExtraBoost) {
+		if (firstAgeEquipped > 0) {
 			if (firstAgeEquipped === 5) {
 				params.amount = increaseNumByPercent(params.amount, 6);
 			} else {
 				params.amount = increaseNumByPercent(params.amount, firstAgeEquipped);
+			}
+		}
+
+		const boosts = staticXPBoosts.get(params.skillName);
+		if (boosts && !params.artificial) {
+			for (const booster of boosts) {
+				if (this.hasItemEquippedAnywhere(booster.item.id)) {
+					params.amount = increaseNumByPercent(params.amount, booster.boostPercent);
+				}
 			}
 		}
 
@@ -1097,13 +1156,6 @@ export default class extends Extendable {
 			UserSettings.MonsterScores,
 			addItemToBank(currentMonsterScores, monsterID, amountToAdd)
 		);
-	}
-
-	public async incrementClueScore(this: User, clueID: number, amountToAdd = 1) {
-		await this.settings.sync(true);
-		const currentClueScores = this.settings.get(UserSettings.ClueScores);
-
-		return this.settings.update(UserSettings.ClueScores, addItemToBank(currentClueScores, clueID, amountToAdd));
 	}
 
 	public async incrementCreatureScore(this: User, creatureID: number, amountToAdd = 1) {

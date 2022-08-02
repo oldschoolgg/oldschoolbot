@@ -14,9 +14,10 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, roll, updateBankSetting } from '../../../lib/util';
+import { roll, updateBankSetting } from '../../../lib/util';
 import { getNexGearStats } from '../../../lib/util/getNexGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 interface NexUser {
@@ -80,7 +81,7 @@ export default class extends Task {
 			if (!winner) continue;
 			const currentLoot = teamsLoot[winner];
 			if (!currentLoot) teamsLoot[winner] = loot.bank;
-			else teamsLoot[winner] = addBanks([currentLoot, loot.bank]);
+			else teamsLoot[winner] = new Bank().add(currentLoot).add(loot).bank;
 
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
@@ -159,29 +160,24 @@ export default class extends Task {
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
-				sendToChannelID(this.client, channelID, {
+				sendToChannelID(channelID, {
 					content: `${users.map(id => `<@${id}>`).join(' ')} Your team all died, and failed to defeat Nex.`
 				});
 			} else {
-				sendToChannelID(this.client, channelID, { content: resultStr });
+				sendToChannelID(channelID, { content: resultStr });
 			}
 		} else {
 			const image = !kcAmounts[userID]
 				? undefined
 				: (
-						await this.client.tasks
-							.get('bankImage')!
-							.generateBankImage(
-								soloItemsAdded,
-								`Loot From ${quantity} ${NexMonster.name}:`,
-								true,
-								{ showNewCL: 1 },
-								leaderUser,
-								soloPrevCl
-							)
-				  ).image;
+						await makeBankImage({
+							bank: soloItemsAdded,
+							title: `Loot From ${quantity} ${NexMonster.name}:`,
+							user: leaderUser,
+							previousCL: soloPrevCl
+						})
+				  ).file.buffer;
 			handleTripFinish(
-				this.client,
 				leaderUser,
 				channelID,
 				!kcAmounts[userID]
@@ -191,7 +187,7 @@ export default class extends Task {
 					  }, you died ${deaths[userID] ?? 0} times. Your Nex KC is now ${
 							leaderUser.settings.get(UserSettings.MonsterScores)[NexMonster.id] ?? 0
 					  }.\n\n${soloXP}`,
-				['nex', ['solo'], true],
+				['k', { name: users.length === 1 ? 'Nex (Solo)' : 'Nex (Mass)' }, true],
 				image!,
 				data,
 				soloItemsAdded

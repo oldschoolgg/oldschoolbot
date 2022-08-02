@@ -1,44 +1,49 @@
 import { bold } from '@discordjs/builders';
-import type { PrismaClient } from '@prisma/client';
+import type { PrismaClient, User } from '@prisma/client';
 import { PaginatedMessage } from '@sapphire/discord.js-utilities';
-import { exec } from 'child_process';
-import crypto from 'crypto';
 import {
 	Channel,
 	Client,
 	DMChannel,
 	Guild,
 	GuildMember,
+	MessageAttachment,
 	MessageButton,
 	MessageOptions,
 	TextChannel,
 	User as DJSUser,
 	Util
 } from 'discord.js';
-import { APIInteractionGuildMember, APIUser } from 'discord-api-types';
-import { calcWhatPercent, objectEntries, randArrItem, randInt, round, shuffleArr, sumArr, Time } from 'e';
+import {
+	calcWhatPercent,
+	increaseNumByPercent,
+	objectEntries,
+	randArrItem,
+	randInt,
+	round,
+	shuffleArr,
+	sumArr,
+	Time
+} from 'e';
 import { KlasaClient, KlasaMessage, KlasaUser, SettingsFolder, SettingsUpdateResults } from 'klasa';
+import { APIInteractionGuildMember, APIUser } from 'mahoji';
+import { CommandResponse, InteractionResponseDataWithBufferAttachments } from 'mahoji/dist/lib/structures/ICommand';
 import murmurHash from 'murmurhash';
+import { gzip } from 'node:zlib';
 import { Bank, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import Items from 'oldschooljs/dist/structures/Items';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import { bool, integer, nodeCrypto, real } from 'random-js';
-import { promisify } from 'util';
+import { convertLVLtoXP } from 'oldschooljs/dist/util/util';
+import { bool, integer, MersenneTwister19937, nodeCrypto, real, shuffle } from 'random-js';
 
 import { CLIENT_ID, production } from '../config';
-import {
-	BitField,
-	CENA_CHARS,
-	continuationChars,
-	PerkTier,
-	ProjectileType,
-	skillEmoji,
-	SupportServer
-} from './constants';
+import { getSkillsOfMahojiUser, mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
+import { BitField, ProjectileType, skillEmoji, SupportServer, usernameCache } from './constants';
 import { DefenceGearStat, GearSetupType, GearSetupTypes, GearStat, OffenceGearStat } from './gear/types';
 import { Consumable } from './minions/types';
 import { POHBoosts } from './poh';
+import { prisma } from './settings/prisma';
 import { Rune } from './skilling/skills/runecraft';
 import { SkillsEnum } from './skilling/types';
 import { Gear } from './structures/Gear';
@@ -248,19 +253,6 @@ export function rogueOutfitPercentBonus(user: KlasaUser): number {
 	return amountEquipped * 20;
 }
 
-export function generateContinuationChar(user: KlasaUser) {
-	const baseChar =
-		user.perkTier > PerkTier.One
-			? 'y'
-			: Date.now() - user.createdTimestamp < Time.Month * 6
-			? shuffleArr(continuationChars).slice(0, randInt(1, 2)).join('')
-			: randArrItem(continuationChars);
-
-	return `${shuffleArr(CENA_CHARS).slice(0, randInt(1, 2)).join('')}${baseChar}${shuffleArr(CENA_CHARS)
-		.slice(0, randInt(1, 2))
-		.join('')}`;
-}
-
 export function isValidGearSetup(str: string): str is GearSetupType {
 	return GearSetupTypes.includes(str as any);
 }
@@ -289,17 +281,16 @@ export function isNexActivity(data: any): data is NexTaskOptions {
 	return 'wipedKill' in data && 'userDetails' in data && 'leader' in data;
 }
 
-export function sha256Hash(x: string) {
-	return crypto.createHash('sha256').update(x, 'utf8').digest('hex');
-}
-
-export function countSkillsAtleast99(user: KlasaUser) {
-	const skills = (user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>;
+export function countSkillsAtleast99(user: KlasaUser | User) {
+	const skills =
+		user instanceof KlasaUser
+			? ((user.settings.get('skills') as SettingsFolder).toJSON() as Record<string, number>)
+			: getSkillsOfMahojiUser(user);
 	return Object.values(skills).filter(xp => convertXPtoLVL(xp) >= 99).length;
 }
 
-export function getSupportGuild(client: Client): Guild | null {
-	const guild = client.guilds.cache.get(SupportServer);
+export function getSupportGuild(): Guild | null {
+	const guild = globalClient.guilds.cache.get(SupportServer);
 	if (!guild) return null;
 	return guild;
 }
@@ -340,6 +331,10 @@ export function calcCombatLevel(skills: Skills) {
 	const mage = 0.325 * (Math.floor(magic / 2) + magic);
 	return Math.floor(base + Math.max(melee, range, mage));
 }
+export function calcTotalLevel(skills: Skills) {
+	return sumArr(Object.values(skills));
+}
+
 export function skillsMeetRequirements(skills: Skills, requirements: Skills) {
 	for (const [skillName, level] of objectEntries(requirements)) {
 		if ((skillName as string) === 'combat') {
@@ -490,10 +485,40 @@ export function userHasMasterFarmerOutfit(user: KlasaUser) {
 	return true;
 }
 
-export function updateGPTrackSetting(client: KlasaClient | KlasaUser, setting: string, amount: number) {
-	const current = client.settings.get(setting) as number;
-	const newValue = current + amount;
-	return client.settings.update(setting, newValue);
+export async function updateGPTrackSetting(
+	setting:
+		| 'gp_luckypick'
+		| 'gp_daily'
+		| 'gp_open'
+		| 'gp_dice'
+		| 'gp_slots'
+		| 'gp_sell'
+		| 'gp_pvm'
+		| 'gp_alch'
+		| 'gp_pickpocket'
+		| 'duelTaxBank'
+		| 'gp_ic',
+	amount: number,
+	user?: KlasaUser
+) {
+	if (!user) {
+		await prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				[setting]: {
+					increment: amount
+				}
+			}
+		});
+		return;
+	}
+	await mahojiUserSettingsUpdate(user.id, {
+		[setting]: {
+			increment: amount
+		}
+	});
 }
 
 export async function wipeDBArrayByKey(user: KlasaUser, key: string): Promise<SettingsUpdateResults> {
@@ -522,7 +547,7 @@ export function isValidNickname(str?: string) {
 	);
 }
 
-export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[]) {
+export async function makePaginatedMessage(message: KlasaMessage, pages: MessageOptions[], target?: KlasaUser) {
 	const display = new PaginatedMessage();
 	// @ts-ignore 2445
 	display.setUpReactions = () => null;
@@ -546,12 +571,12 @@ export async function makePaginatedMessage(message: KlasaMessage, pages: Message
 		});
 	}
 
-	await display.run(message);
+	await display.run(message, target);
 
 	if (pages.length > 1) {
 		const collector = display.response!.createMessageComponentInteractionCollector({
 			time: Time.Minute,
-			filter: i => i.user.id === message.author.id
+			filter: i => i.user.id === (target ? target.id : message.author.id)
 		});
 
 		collector.on('collect', async interaction => {
@@ -597,11 +622,7 @@ export function birdhouseLimit(user: KlasaUser) {
 	if (user.hasItemEquippedAnywhere('Hunter master cape')) base += 4;
 	return base;
 }
-export const asyncExec = promisify(exec);
 
-export function getUsername(client: KlasaClient, id: string): string {
-	return (client.commands.get('leaderboard') as any)!.getUsername(id);
-}
 export function determineProjectileTypeFromGear(gear: Gear): ProjectileType | null {
 	if (resolveItems(['Twisted bow', 'Hellfire bow', 'Zaryte bow']).some(i => gear.hasEquipped(i))) {
 		return 'arrow';
@@ -701,13 +722,15 @@ export function averageArr(arr: number[]) {
 	return sumArr(arr) / arr.length;
 }
 
-/**
- * Removes items with 0 or less quantity
- */
 export function sanitizeBank(bank: Bank) {
 	for (const [key, value] of Object.entries(bank.bank)) {
-		if (value === 0 || value < 1) {
+		if (value < 1) {
 			delete bank.bank[key];
+		}
+		// If this bank contains a fractional/float,
+		// round it down.
+		if (!Number.isInteger(value)) {
+			bank.bank[key] = Math.floor(value);
 		}
 	}
 }
@@ -823,4 +846,130 @@ export async function bankValueWithMarketPrices(prisma: PrismaClient, bank: Bank
 
 export function discrimName(user: KlasaUser | APIUser) {
 	return `${user.username}#${user.discriminator}`;
+}
+
+export function isValidSkill(skill: string): skill is SkillsEnum {
+	return Object.values(SkillsEnum).includes(skill as SkillsEnum);
+}
+
+export async function addToGPTaxBalance(userID: bigint | string, amount: number) {
+	await Promise.all([
+		prisma.clientStorage.update({
+			where: {
+				id: CLIENT_ID
+			},
+			data: {
+				gp_tax_balance: {
+					increment: amount
+				}
+			}
+		}),
+		prisma.user.update({
+			where: {
+				id: userID.toString()
+			},
+			data: {
+				total_gp_traded: {
+					increment: amount
+				}
+			}
+		})
+	]);
+}
+
+export function convertMahojiResponseToDJSResponse(response: Awaited<CommandResponse>): string | MessageOptions {
+	if (typeof response === 'string') return response;
+	return {
+		content: response.content,
+		files: response.attachments?.map(i => new MessageAttachment(i.buffer, i.fileName))
+	};
+}
+
+function normalizeMahojiResponse(one: Awaited<CommandResponse>): InteractionResponseDataWithBufferAttachments {
+	if (typeof one === 'string') return { content: one };
+	const response: InteractionResponseDataWithBufferAttachments = {};
+	if (one.content) response.content = one.content;
+	if (one.attachments) response.attachments = one.attachments;
+	return response;
+}
+
+export function roughMergeMahojiResponse(one: Awaited<CommandResponse>, two: Awaited<CommandResponse>) {
+	const first = normalizeMahojiResponse(one);
+	const second = normalizeMahojiResponse(two);
+	const newResponse: InteractionResponseDataWithBufferAttachments = { content: '', attachments: [] };
+	for (const res of [first, second]) {
+		if (res.content) newResponse.content += `${res.content} `;
+		if (res.attachments) newResponse.attachments = [...newResponse.attachments!, ...res.attachments];
+	}
+	return newResponse;
+}
+
+export async function asyncGzip(buffer: Buffer) {
+	return new Promise<Buffer>((resolve, reject) => {
+		gzip(buffer, {}, (error, gzipped) => {
+			if (error) {
+				reject(error);
+			}
+			resolve(gzipped);
+		});
+	});
+}
+
+export function increaseBankQuantitesByPercent(bank: Bank, percent: number) {
+	for (const [key, value] of Object.entries(bank.bank)) {
+		const increased = Math.floor(increaseNumByPercent(value, percent));
+		bank.bank[key] = increased;
+	}
+}
+
+export function generateXPLevelQuestion() {
+	const level = randInt(1, 120);
+	const xp = randInt(convertLVLtoXP(level), convertLVLtoXP(level + 1) - 1);
+
+	let chanceOfSwitching = randInt(1, 4);
+
+	let answers: string[] = [level.toString()];
+	let arr = shuffleArr(['plus', 'minus'] as const);
+
+	while (answers.length < 4) {
+		let modifier = randArrItem([1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 7, 8, 9, 10, 10]);
+		let action = roll(chanceOfSwitching) ? arr[0] : arr[1];
+		let potentialAnswer = action === 'plus' ? level + modifier : level - modifier;
+		if (potentialAnswer < 1) potentialAnswer = level + modifier;
+		else if (potentialAnswer > 120) potentialAnswer = level - modifier;
+
+		if (answers.includes(potentialAnswer.toString())) continue;
+		answers.push(potentialAnswer.toString());
+	}
+
+	return {
+		question: `What level would you be at with **${xp.toLocaleString()}** XP?`,
+		answers,
+		explainAnswer: `${xp.toLocaleString()} is level ${level}!`
+	};
+}
+
+export function getUsername(id: string | bigint) {
+	return usernameCache.get(id.toString()) ?? 'Unknown';
+}
+
+export function shuffleRandom<T>(input: number, arr: readonly T[]): T[] {
+	const engine = MersenneTwister19937.seed(input);
+	return shuffle(engine, [...arr]);
+}
+
+export function clAdjustedDroprate(
+	user: KlasaUser | User,
+	item: string | number,
+	baseRate: number,
+	increaseMultiplier: number
+) {
+	const cl = user instanceof KlasaUser ? user.cl() : new Bank(user.collectionLogBank as ItemBank);
+	const amountInCL = cl.amount(item);
+	if (amountInCL === 0) return baseRate;
+	let newRate = baseRate;
+	for (let i = 0; i < amountInCL; i++) {
+		newRate *= increaseMultiplier;
+	}
+	return Math.floor(newRate);
 }

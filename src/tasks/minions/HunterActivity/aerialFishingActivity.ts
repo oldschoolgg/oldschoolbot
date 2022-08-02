@@ -1,4 +1,4 @@
-import { calcPercentOfNum, Time } from 'e';
+import { calcPercentOfNum } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
@@ -12,7 +12,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 
 export default class extends Task {
 	async run(data: ActivityTaskOptionsWithQuantity) {
-		let { quantity, userID, channelID, duration } = data;
+		let { quantity, userID, channelID } = data;
 		const user = await this.client.fetchUser(userID);
 		const currentHuntLevel = user.skillLevel(SkillsEnum.Hunter);
 		const currentFishLevel = user.skillLevel(SkillsEnum.Fishing);
@@ -156,21 +156,6 @@ export default class extends Task {
 			);
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			res => {
-				return this.client.commands
-					.get('aerialfish')!
-					.run(res, [
-						Math.floor(Math.min(user.maxTripLength('AerialFishing') / Time.Minute, duration / Time.Minute))
-					]);
-			},
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, ['activities', { aerial_fishing: {} }, true], undefined, data, loot);
 	}
 }

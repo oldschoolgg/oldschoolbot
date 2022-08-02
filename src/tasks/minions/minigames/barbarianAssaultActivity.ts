@@ -1,7 +1,6 @@
 import { calcPercentOfNum, calcWhatPercent, randInt } from 'e';
 import { Task } from 'klasa';
 
-import { client } from '../../..';
 import { KandarinDiary, userhasDiaryTier } from '../../../lib/diaries';
 import { incrementMinigameScore } from '../../../lib/settings/settings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
@@ -11,7 +10,7 @@ import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../../mah
 export default class extends Task {
 	async run(data: MinigameActivityTaskOptions) {
 		const { channelID, quantity, userID } = data;
-		const [klasaUser, user] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
+		const [klasaUser, user] = await Promise.all([globalClient.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
 		let basePoints = 35;
 
 		let resultStr = `The base amount of points is 35. Your Honour Level is ${user.honour_level}.`;
@@ -24,7 +23,7 @@ export default class extends Task {
 		const [hasDiary] = await userhasDiaryTier(klasaUser, KandarinDiary.hard);
 		if (hasDiary) {
 			pts *= 1.1;
-			resultStr += `${klasaUser.username} 10% extra pts for Kandarin Hard diary. `;
+			resultStr += `${klasaUser.username} received 10% extra pts for Kandarin Hard diary. `;
 		}
 		let totalPoints = Math.floor(pts * quantity);
 
@@ -34,7 +33,7 @@ export default class extends Task {
 		}
 
 		await incrementMinigameScore(user.id, 'barb_assault', quantity);
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			honour_points: {
 				increment: totalPoints
 			}
@@ -44,7 +43,6 @@ export default class extends Task {
 ${resultStr}`;
 
 		handleTripFinish(
-			this.client,
 			klasaUser,
 			channelID,
 			resultStr,

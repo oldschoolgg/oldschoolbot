@@ -4,7 +4,6 @@ import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Util } from 'oldschooljs';
 
-import { client } from '../../..';
 import { Emoji, Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { channelIsSendable } from '../../../lib/util';
@@ -39,8 +38,6 @@ export async function duelCommand(
 	if (duelSourceUser.id === duelTargetUser.id) return 'You cant duel yourself.';
 	if (!(duelTargetUser instanceof User)) return "You didn't mention a user to duel.";
 	if (duelTargetUser.bot) return 'You cant duel a bot.';
-	if (duelSourceUser.minionIsBusy) return `${duelSourceUser.minionName} is busy.`;
-	if (duelTargetUser.minionIsBusy) return 'That user is busy right now.';
 
 	if (!(await checkBal(duelSourceUser, amount))) {
 		return 'You dont have have enough GP to duel that much.';
@@ -50,7 +47,7 @@ export async function duelCommand(
 		return "That person doesn't have enough GP to duel that much.";
 	}
 
-	const channel = client.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	const duelMessage = await channel.send({
 		content: `${duelTargetUser}, do you accept the duel for ${Util.toKMB(amount)} GP?`,
@@ -113,7 +110,7 @@ export async function duelCommand(
 		await winner.addItemsToBank({ items: new Bank().add('Coins', winningAmount), collectionLog: false });
 
 		if (amount >= 1_000_000_000) {
-			client.emit(
+			globalClient.emit(
 				Events.ServerNotification,
 				`${Emoji.MoneyBag} **${winner.username}** just won a **${Util.toKMB(winningAmount)}** GP duel against ${
 					loser.username
@@ -121,7 +118,7 @@ export async function duelCommand(
 			);
 		}
 
-		client.emit(
+		globalClient.emit(
 			Events.EconomyLog,
 			`${winner.sanitizedName} won ${winningAmount} GP in a duel with ${loser.sanitizedName}.`
 		);

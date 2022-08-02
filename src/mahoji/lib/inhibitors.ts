@@ -2,10 +2,9 @@ import { DMChannel, Guild, GuildMember, PermissionResolvable, Permissions, TextC
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 
-import { client } from '../..';
 import { OWNER_ID, production } from '../../config';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import { BadgesEnum, BitField, BotID, Channel, DISABLED_COMMANDS, PerkTier, SupportServer } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
@@ -154,7 +153,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'disabled',
 		run: async ({ command, guild, user }) => {
 			if (
-				!client.owners.has(user) &&
+				!globalClient.owners.has(user) &&
 				(command.attributes?.enabled === false || DISABLED_COMMANDS.has(command.name))
 			) {
 				return 'This command is globally disabled.';
@@ -249,7 +248,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'testingCommands',
 		run: async ({ command }) => {
 			if (command.attributes?.testingCommand) {
-				if (production || !client.user || client.user.id === BotID) {
+				if (production || !globalClient.user || globalClient.user.id === BotID) {
 					return 'This is a testing command and cannot be used.';
 				}
 			}
@@ -277,7 +276,7 @@ const inhibitors: Inhibitor[] = [
 			if (!command.attributes?.requiredPermissionsForBot) return false;
 			const missing =
 				channel.type === 'text'
-					? channel.permissionsFor(client.user!)!.missing(command.attributes.requiredPermissionsForBot)
+					? channel.permissionsFor(globalClient.user!)!.missing(command.attributes.requiredPermissionsForBot)
 					: [];
 			if (missing.length > 0) {
 				return `To run this command, I need these permissions: ${missing.join(', ')}.`;
@@ -303,9 +302,12 @@ const inhibitors: Inhibitor[] = [
 	},
 	{
 		name: 'blacklisted',
-		run: async ({ user }) => {
-			if (client.settings.get(ClientSettings.UserBlacklist).includes(user.id)) {
+		run: async ({ user, guild }) => {
+			if (BLACKLISTED_USERS.has(user.id)) {
 				return 'This user is blacklisted.';
+			}
+			if (guild && BLACKLISTED_GUILDS.has(guild.id)) {
+				return 'This guild is blacklisted.';
 			}
 			return false;
 		},

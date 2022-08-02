@@ -79,7 +79,10 @@ describe('Sanity', () => {
 			'Party horn',
 			'Diamond crown',
 			'Snappy the Turtle',
-			'Liber tea'
+			'Liber tea',
+			'Invention master cape',
+			'Portable tanner',
+			'Clue upgrader'
 		]);
 		for (const i of shouldntBeIn) {
 			if (allMbTables.includes(i)) {
@@ -98,7 +101,9 @@ describe('Sanity', () => {
 			'Uncut sapphire',
 			'Oak plank',
 			'Pure essence',
-			'Runite bolts'
+			'Runite bolts',
+			'Lava flower crown',
+			'Purple flower crown'
 		]);
 		// These items should all still excluded by the 'Openables' rule. Some items are also excluded by other means.
 		const shouldntBeIn = resolveItems([
@@ -200,6 +205,11 @@ describe('Sanity', () => {
 			if (allMbTables.includes(id)) throw new Error(`${name} is in box tables`);
 		}
 		expect(itemID('Clue box')).toEqual(12_789);
+		expect(itemIsTradeable(itemID('Black santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Inverted santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Santa hat'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Trailblazer tool ornament kit'))).toEqual(true);
+		expect(itemIsTradeable(itemID('Twisted horns'))).toEqual(true);
 	});
 	test('casket names', () => {
 		expect(itemID('Reward casket (beginner)')).toEqual(23_245);
@@ -227,5 +237,11 @@ describe('Sanity', () => {
 			expect(num > 0 && num <= 100).toBeTruthy();
 		}
 		expect(exponentialPercentScale(100)).toEqual(100);
+	});
+	test('pharaohs sceptre', () => {
+		const scep = getOSItem("Pharaoh's sceptre");
+		expect(scep.id).toEqual(9044);
+		expect(scep.equipable).toEqual(true);
+		expect(scep.equipment?.slot).toEqual(EquipmentSlot.Weapon);
 	});
 });

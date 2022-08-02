@@ -218,7 +218,7 @@ export default class extends Task {
 				if (roll(8000)) {
 					loot.add('Shelldon');
 					str +=
-						'\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called Sheldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!';
+						'\n<:shelldon:748496988407988244> A crab steals your fish just as you catch it! After some talking, the crab, called shelldon, decides to join you on your fishing adventures. You can equip Shelldon and he will help you fish!';
 					break;
 				}
 			}
@@ -232,15 +232,6 @@ export default class extends Task {
 			str += `\nYour Rada's Blessing gives ${blessingChance}% chance of extra fish.`;
 		}
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['fish', [quantity, fish.name], true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, ['fish', { name: fish.name, quantity }, true], undefined, data, loot);
 	}
 }

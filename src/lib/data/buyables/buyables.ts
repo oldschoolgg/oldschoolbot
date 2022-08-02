@@ -1,14 +1,17 @@
+import { User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
+import { Item } from 'oldschooljs/dist/meta/types';
 
-import { chompyHats } from '../../../commands/Minion/chompyhunt';
+import { chompyHats } from '../../../mahoji/lib/abstracted_commands/chompyHuntCommand';
+import { soteSkillRequirements } from '../../../mahoji/lib/abstracted_commands/zalcanoCommand';
 import { MAX_QP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
-import { CombatCannonItemBank } from '../../minions/data/combatConstants';
+import { Favours } from '../../minions/data/kourendFavour';
 import { MinigameName } from '../../settings/settings';
-import { ItemBank, Skills } from '../../types';
-import { resolveNameBank } from '../../util';
-import itemID from '../../util/itemID';
+import { Skills } from '../../types';
+import getOSItem from '../../util/getOSItem';
+import { aerialFishBuyables } from './aerialFishBuyables';
 import { bsoBuyables } from './bsoBuyables';
 import { canifisClothes } from './canifisClothes';
 import { capeBuyables } from './capes';
@@ -16,18 +19,23 @@ import { castleWarsBuyables } from './castleWars';
 import { fremennikClothes } from './frem';
 import { gnomeClothes } from './gnomeClothes';
 import { miningBuyables } from './mining';
+import { monkeyRumbleBuyables } from './monkeyRumbleBuyables';
 import { perduBuyables } from './perdu';
 import { runeBuyables } from './runes';
+import { shootingStarsBuyables } from './shootingStarsBuyables';
+import { skillCapeBuyables } from './skillCapeBuyables';
 import { slayerBuyables } from './slayerBuyables';
+import { troubleBrewingBuyables } from './troubleBrewingShop';
 
 export interface Buyable {
 	name: string;
-	outputItems?: ItemBank | Bank;
+	outputItems?: Bank | ((user: User) => Bank);
 	qpRequired?: number;
 	gpCost?: number;
-	itemCost?: ItemBank;
+	itemCost?: Bank;
 	aliases?: string[];
 	skillsNeeded?: Skills;
+	requiredFavour?: Favours;
 	restockTime?: number;
 	minigameScoreReq?: [MinigameName, number];
 	ironmanPrice?: number;
@@ -38,34 +46,42 @@ export interface Buyable {
 const randomEventBuyables: Buyable[] = [
 	{
 		name: 'Prince outfit',
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			'Frog token': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Prince tunic': 1,
 			'Prince leggings': 1
 		})
 	},
 	{
 		name: 'Princess outfit',
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			'Frog token': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Princess blouse': 1,
 			'Princess skirt': 1
 		})
 	},
 	{
 		name: 'Frog mask',
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			'Frog token': 1
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Frog mask': 1
 		})
 	}
 ];
+
+const ironmenBuyables: Buyable[] = ['Ironman helm', 'Ironman platebody', 'Ironman platelegs'].map(str => ({
+	name: str,
+	customReq: async (user: KlasaUser) => {
+		return user.isIronman ? [true] : [false, 'Only ironmen can buy this.'];
+	},
+	gpCost: 1000
+}));
 
 const tobCapes: Buyable[] = [
 	{
@@ -124,26 +140,31 @@ const cmCapes: Buyable[] = [
 ];
 
 const constructionBuyables: Buyable[] = [
-	{ name: 'Bolt of cloth', outputItems: resolveNameBank({ 'Bolt of cloth': 1 }), gpCost: 5000 },
+	{ name: 'Bolt of cloth', outputItems: new Bank({ 'Bolt of cloth': 1 }), gpCost: 5000 },
 	{
 		name: 'Limestone brick',
-		gpCost: 1000
+		gpCost: 1000,
+		ironmanPrice: 40
 	},
 	{
 		name: 'Gold leaf',
-		gpCost: 500_000
+		gpCost: 500_000,
+		ironmanPrice: 130_000
 	},
 	{
 		name: 'Marble block',
-		gpCost: 1_000_000
+		gpCost: 1_000_000,
+		ironmanPrice: 325_000
 	},
 	{
 		name: 'Magic stone',
-		gpCost: 4_000_000
+		gpCost: 4_000_000,
+		ironmanPrice: 975_000
 	},
 	{
 		name: 'Red dye',
-		gpCost: 100_000
+		gpCost: 100_000,
+		ironmanPrice: 25
 	},
 	{
 		name: 'Skull',
@@ -152,7 +173,13 @@ const constructionBuyables: Buyable[] = [
 	{
 		name: 'Fairy enchantment',
 		gpCost: 100_000,
+		ironmanPrice: 100,
 		qpRequired: 23
+	},
+	{
+		name: 'Arceuus signet',
+		gpCost: 100_000,
+		requiredFavour: Favours.Arceuus
 	},
 	{
 		name: 'Ancient signet',
@@ -166,51 +193,56 @@ const constructionBuyables: Buyable[] = [
 	},
 	{
 		name: 'Bucket of water',
-		gpCost: 500
+		gpCost: 500,
+		ironmanPrice: 7
 	}
 ];
 
 const sepulchreBuyables: Buyable[] = [
 	{
 		name: 'Hallowed crystal shard',
-		itemCost: resolveNameBank({ 'Hallowed mark': 1 })
+		itemCost: new Bank({ 'Hallowed mark': 1 })
 	},
 	{
 		name: 'Hallowed token',
-		itemCost: resolveNameBank({ 'Hallowed mark': 10 })
+		itemCost: new Bank({ 'Hallowed mark': 10 })
 	},
 	{
 		name: 'Hallowed grapple',
-		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+		itemCost: new Bank({ 'Hallowed mark': 100 })
 	},
 	{
 		name: 'Hallowed focus',
-		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+		itemCost: new Bank({ 'Hallowed mark': 100 })
 	},
 	{
 		name: 'Hallowed symbol',
-		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+		itemCost: new Bank({ 'Hallowed mark': 100 })
 	},
 	{
 		name: 'Hallowed hammer',
-		itemCost: resolveNameBank({ 'Hallowed mark': 100 })
+		itemCost: new Bank({ 'Hallowed mark': 100 })
+	},
+	{
+		name: 'Hallowed sack',
+		itemCost: new Bank({ 'Hallowed mark': 100 })
 	},
 	{
 		name: 'Hallowed ring',
-		itemCost: resolveNameBank({ 'Hallowed mark': 250 })
+		itemCost: new Bank({ 'Hallowed mark': 250 })
 	},
 	{
 		name: 'Dark dye',
-		itemCost: resolveNameBank({ 'Hallowed mark': 300 })
+		itemCost: new Bank({ 'Hallowed mark': 300 })
 	},
 	{
 		name: 'Dark acorn',
-		outputItems: resolveNameBank({ 'Dark acorn': 1 }),
-		itemCost: resolveNameBank({ 'Hallowed mark': 3000 })
+		outputItems: new Bank({ 'Dark acorn': 1 }),
+		itemCost: new Bank({ 'Hallowed mark': 3000 })
 	},
 	{
 		name: 'Dark squirrel',
-		itemCost: resolveNameBank({ 'Dark acorn': 1, 'Giant squirrel': 1 })
+		itemCost: new Bank({ 'Dark acorn': 1, 'Giant squirrel': 1 })
 	}
 ];
 
@@ -225,12 +257,50 @@ const hunterBuyables: Buyable[] = [
 	}
 ];
 
+const magicBuyables: Buyable[] = [
+	{
+		name: 'Mystic hat',
+		gpCost: 15_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe top',
+		gpCost: 120_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic robe bottom',
+		gpCost: 80_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic gloves',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	},
+	{
+		name: 'Mystic boots',
+		gpCost: 10_000,
+		skillsNeeded: {
+			magic: 66
+		}
+	}
+];
+
 const questBuyables: Buyable[] = [
 	{
 		name: 'Goldsmith gauntlets',
-		outputItems: {
-			[itemID('Goldsmith gauntlets')]: 1
-		},
+		outputItems: new Bank({
+			'Goldsmith gauntlets': 1
+		}),
 		qpRequired: 25,
 		gpCost: 1_000_000,
 		ironmanPrice: 25_000
@@ -290,9 +360,9 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Rune gloves',
-		outputItems: {
-			[itemID('Rune gloves')]: 1
-		},
+		outputItems: new Bank({
+			'Rune gloves': 1
+		}),
 		qpRequired: 85,
 		gpCost: 700_000,
 		ironmanPrice: 6500
@@ -376,9 +446,9 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Monkey',
-		outputItems: {
+		outputItems: new Bank({
 			19_556: 1
-		},
+		}),
 		gpCost: 1_000_000,
 		qpRequired: 182
 	},
@@ -399,7 +469,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Lunar Outfit',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Lunar boots': 1,
 			'Lunar cape': 1,
 			'Lunar gloves': 1,
@@ -415,7 +485,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Moonclan Outfit',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Moonclan boots': 1,
 			'Moonclan cape': 1,
 			'Moonclan gloves': 1,
@@ -429,7 +499,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Jester Outfit',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Silly jester hat': 1,
 			'Silly jester top': 1,
 			'Silly jester tights': 1,
@@ -440,7 +510,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Ardougne Knight Outfit',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Ardougne knight helm': 1,
 			'Ardougne knight platebody': 1,
 			'Ardougne knight platelegs': 1
@@ -450,7 +520,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Desert Outfit',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			Fez: 1,
 			'Desert top': 1,
 			'Desert legs': 1,
@@ -464,7 +534,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Pirate boots',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Pirate boots': 1
 		}),
 		gpCost: 100_000,
@@ -472,7 +542,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Vyrewatch outfit',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Vyrewatch top': 1,
 			'Vyrewatch legs': 1,
 			'Vyrewatch shoes': 1
@@ -482,7 +552,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Climbing boots',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Climbing boots': 1
 		}),
 		gpCost: 100_000,
@@ -539,7 +609,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Initiate outfit',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Initiate sallet': 1,
 			'Initiate hauberk': 1,
 			'Initiate cuisse': 1
@@ -549,7 +619,7 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Proselyte outfit',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Proselyte sallet': 1,
 			'Proselyte hauberk': 1,
 			'Proselyte cuisse': 1,
@@ -580,43 +650,48 @@ const questBuyables: Buyable[] = [
 	},
 	{
 		name: 'Dwarf multicannon',
-		outputItems: CombatCannonItemBank,
+		outputItems: new Bank({
+			'Cannon barrels': 1,
+			'Cannon base': 1,
+			'Cannon furnace': 1,
+			'Cannon stand': 1
+		}).freeze(),
 		gpCost: 10_000_000,
 		qpRequired: 5,
 		ironmanPrice: 750_000
 	},
 	{
 		name: 'Cannon barrels',
-		outputItems: {
-			[itemID('Cannon barrels')]: 1
-		},
+		outputItems: new Bank({
+			'Cannon barrels': 1
+		}),
 		gpCost: 2_500_000,
 		qpRequired: 5,
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon base',
-		outputItems: {
-			[itemID('Cannon base')]: 1
-		},
+		outputItems: new Bank({
+			'Cannon base': 1
+		}),
 		gpCost: 2_500_000,
 		qpRequired: 5,
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon furnace',
-		outputItems: {
-			[itemID('Cannon furnace')]: 1
-		},
+		outputItems: new Bank({
+			'Cannon furnace': 1
+		}),
 		gpCost: 2_500_000,
 		qpRequired: 5,
 		ironmanPrice: 200_625
 	},
 	{
 		name: 'Cannon stand',
-		outputItems: {
-			[itemID('Cannon stand')]: 1
-		},
+		outputItems: new Bank({
+			'Cannon stand': 1
+		}),
 		gpCost: 2_500_000,
 		qpRequired: 5,
 		ironmanPrice: 200_625
@@ -647,10 +722,10 @@ const noveltyFood: Buyable[] = [
 const Buyables: Buyable[] = [
 	{
 		name: 'Quest point cape',
-		outputItems: {
-			[itemID('Quest point cape')]: 1,
-			[itemID('Quest point hood')]: 1
-		},
+		outputItems: new Bank({
+			'Quest point cape': 1,
+			'Quest point hood': 1
+		}),
 		aliases: ['quest cape'],
 		qpRequired: MAX_QP,
 		gpCost: 99_000
@@ -720,31 +795,31 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Empty bucket pack',
-		outputItems: {
-			[itemID('Bucket')]: 100
-		},
+		outputItems: new Bank({
+			Bucket: 100
+		}),
 		gpCost: 10_000
 	},
 	{
 		name: 'Compost',
-		outputItems: {
-			[itemID('Compost')]: 1
-		},
+		outputItems: new Bank({
+			Compost: 1
+		}),
 		gpCost: 500
 	},
 	{
 		name: 'Bank lottery ticket',
-		outputItems: {
-			[itemID('Bank lottery ticket')]: 1
-		},
+		outputItems: new Bank({
+			'Bank lottery ticket': 1
+		}),
 		gpCost: 10_000_000
 	},
 	{
 		name: 'Amylase pack',
-		outputItems: {
-			[itemID('Amylase crystal')]: 100
-		},
-		itemCost: resolveNameBank({ 'Mark of grace': 10 })
+		outputItems: new Bank({
+			'Amylase crystal': 100
+		}),
+		itemCost: new Bank({ 'Mark of grace': 10 })
 	},
 	{
 		name: 'Dragon scimitar',
@@ -753,16 +828,16 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Fishbowl pet',
-		outputItems: {
+		outputItems: new Bank({
 			6672: 1
-		},
+		}),
 		gpCost: 500_000
 	},
 	{
 		name: 'Potato with cheese',
-		outputItems: {
-			[itemID('Potato with cheese')]: 1
-		},
+		outputItems: new Bank({
+			'Potato with cheese': 1
+		}),
 		gpCost: 1666,
 		skillsNeeded: {
 			attack: 65,
@@ -771,11 +846,11 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Torstol',
-		itemCost: resolveNameBank({ 'Torstol potion (unf)': 1 })
+		itemCost: new Bank({ 'Torstol potion (unf)': 1 })
 	},
 	{
 		name: 'Ogre bow',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Ogre bow': 1
 		}),
 		gpCost: 10_000
@@ -786,7 +861,7 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Achievement diary cape',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Achievement diary cape': 1,
 			'Achievement diary cape(t)': 1,
 			'Achievement diary hood': 1
@@ -817,7 +892,7 @@ const Buyables: Buyable[] = [
 	{
 		name: 'Festive present',
 		gpCost: 100_000_000,
-		itemCost: new Bank().add('Festive wrapping paper', 10).bank
+		itemCost: new Bank().add('Festive wrapping paper', 10)
 	},
 	{
 		name: 'Granite Body',
@@ -826,16 +901,134 @@ const Buyables: Buyable[] = [
 	},
 	{
 		name: 'Raw shark',
-		itemCost: resolveNameBank({
+		itemCost: new Bank({
 			Minnow: 40
 		}),
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Raw shark': 1
 		})
+	},
+	{
+		name: 'Rainbow flower crown',
+		itemCost: new Bank({
+			Coins: 5000
+		}),
+		outputItems: new Bank({
+			'Rainbow flower crown': 1
+		})
+	},
+	{
+		name: 'Mithril seeds',
+		gpCost: 3000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Mithril seeds': 1
+		})
+	},
+	{
+		name: 'Brown apron',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	{
+		name: 'White apron',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	{
+		name: 'Bull roarer',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	{
+		name: 'Rolling pin',
+		gpCost: 1000,
+		ironmanPrice: 100
+	},
+	{
+		name: 'Adamant halberd',
+		gpCost: 100_000,
+		ironmanPrice: 9600,
+		qpRequired: 150,
+		skillsNeeded: soteSkillRequirements
+	},
+	...[
+		'Pirate bandana (white)',
+		'Stripy pirate shirt (white)',
+		'Pirate leggings (white)',
+		'Pirate bandana (blue)',
+		'Stripy pirate shirt (blue)',
+		'Pirate leggings (blue)',
+		'Pirate bandana (brown)',
+		'Stripy pirate shirt (brown)',
+		'Pirate leggings (brown)',
+		'Pirate bandana (red)',
+		'Stripy pirate shirt (red)',
+		'Pirate leggings (red)'
+	].map(i => ({
+		name: i,
+		gpCost: 2000,
+		ironmanPrice: 100
+	})),
+	...[
+		'Ghostly boots',
+		'Ghostly cloak',
+		'Ghostly gloves',
+		'Ghostly hood',
+		'Ghostly robe top',
+		'Ghostly robe bottom',
+		'Shadow sword'
+	].map(i => ({
+		name: i,
+		gpCost: 10_000,
+		qpRequired: 10
+	})),
+	{
+		name: 'Menaphite purple outfit',
+		gpCost: 5000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Menaphite purple hat': 1,
+			'Menaphite purple top': 1,
+			'Menaphite purple robe': 1,
+			'Menaphite purple kilt': 1
+		})
+	},
+	{
+		name: 'Menaphite red outfit',
+		gpCost: 5000,
+		ironmanPrice: 600,
+		outputItems: new Bank({
+			'Menaphite red hat': 1,
+			'Menaphite red top': 1,
+			'Menaphite red robe': 1,
+			'Menaphite red kilt': 1
+		})
+	},
+	{
+		name: 'Bone club',
+		gpCost: 1000
+	},
+	{
+		name: 'Bone spear',
+		gpCost: 1000
+	},
+	{
+		name: 'Bone dagger',
+		gpCost: 2500
+	},
+	{
+		name: 'Dorgeshuun crossbow',
+		gpCost: 2500
+	},
+	{
+		name: 'Crystal bow',
+		gpCost: 900_000
 	},
 	...sepulchreBuyables,
 	...constructionBuyables,
 	...hunterBuyables,
+	...magicBuyables,
 	...questBuyables,
 	...noveltyFood,
 	...fremennikClothes,
@@ -850,15 +1043,33 @@ const Buyables: Buyable[] = [
 	...bsoBuyables,
 	...randomEventBuyables,
 	...tobCapes,
-	...perduBuyables
+	...perduBuyables,
+	...skillCapeBuyables,
+	...aerialFishBuyables,
+	...troubleBrewingBuyables,
+	...monkeyRumbleBuyables,
+	...ironmenBuyables,
+	...shootingStarsBuyables
 ];
 
 for (const [chompyHat, qty] of chompyHats) {
 	Buyables.push({
 		name: chompyHat.name,
-		outputItems: new Bank().add(chompyHat.id).bank,
+		outputItems: new Bank().add(chompyHat.id),
 		gpCost: qty * 44,
 		minigameScoreReq: ['big_chompy_bird_hunting', qty]
+	});
+}
+
+export const allTeamCapes: Item[] = [];
+for (let i = 1; i < 51; i++) {
+	allTeamCapes.push(getOSItem(`Team-${i} cape`));
+}
+for (const cape of allTeamCapes) {
+	Buyables.push({
+		name: cape.name,
+		outputItems: new Bank().add(cape.id),
+		gpCost: 1000
 	});
 }
 

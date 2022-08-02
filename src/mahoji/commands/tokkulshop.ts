@@ -3,7 +3,6 @@ import { Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { client } from '../..';
 import TokkulShopItems from '../../lib/data/buyables/tokkulBuyables';
 import { KaramjaDiary, userhasDiaryTier } from '../../lib/diaries';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -24,7 +23,6 @@ export const tksCommand: OSBMahojiCommand = {
 	attributes: {
 		requiresMinion: true,
 		categoryFlags: ['minion'],
-		description: 'Purchase items from the Tzhaar shops using tokkul.',
 		examples: ['/tokkulshop buy Obsidian platebody', '/tokkulshop sell Chaos rune 5000']
 	},
 	options: [
@@ -92,7 +90,7 @@ export const tksCommand: OSBMahojiCommand = {
 		buy?: { name?: string; quantity?: number };
 		sell?: { name?: string; quantity?: number };
 	}>) => {
-		const user = await client.fetchUser(userID.toString());
+		const user = await globalClient.fetchUser(userID.toString());
 		if (user.minionIsBusy) return `${user.minionName} is currently busy and cannot go to the Tzhaar shops.`;
 		const [hasKaramjaDiary] = await userhasDiaryTier(user, KaramjaDiary.easy);
 		const item = TokkulShopItems.find(i => stringMatches(i.name, options.buy?.name ?? options.sell?.name ?? ''));
@@ -142,7 +140,7 @@ export const tksCommand: OSBMahojiCommand = {
 		);
 
 		await user.removeItemsFromBank(cost);
-		await updateBankSetting(client, ClientSettings.EconomyStats.TKSCost, cost);
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.TKSCost, cost);
 
 		await addSubTaskToActivityTask<TokkulShopOptions>({
 			userID: user.id,

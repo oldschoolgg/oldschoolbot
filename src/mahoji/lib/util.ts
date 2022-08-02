@@ -9,11 +9,12 @@ import {
 	MessageEmbedOptions
 } from 'discord.js';
 import { Time } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import {
 	APIActionRowComponent,
 	APIEmbed,
 	APIInteractionDataResolvedChannel,
+	APIMessageActionRowComponent,
 	APIRole,
 	APIUser,
 	ComponentType,
@@ -49,13 +50,13 @@ export function convertKlasaCommandToAbstractCommand(command: BotCommand): Abstr
 }
 
 export interface OSBMahojiCommand extends ICommand {
-	attributes?: AbstractCommandAttributes;
+	attributes?: Omit<AbstractCommandAttributes, 'description'>;
 }
 
 export function convertMahojiCommandToAbstractCommand(command: OSBMahojiCommand): AbstractCommand {
 	return {
 		name: command.name,
-		attributes: command.attributes
+		attributes: { ...command.attributes, description: command.description }
 	};
 }
 
@@ -104,7 +105,9 @@ export function convertAPIEmbedToDJSEmbed(embed: APIEmbed) {
 	return new MessageEmbed(data);
 }
 
-export function convertComponentDJSComponent(component: APIActionRowComponent): MessageActionRow {
+export function convertComponentDJSComponent(
+	component: APIActionRowComponent<APIMessageActionRowComponent>
+): MessageActionRow {
 	const data: MessageActionRowOptions = {
 		components: component.components.map(cp => {
 			if (cp.type === ComponentType.Button) {
@@ -127,9 +130,11 @@ export function convertComponentDJSComponent(component: APIActionRowComponent): 
 	};
 	return new MessageActionRow(data);
 }
-export function allAbstractCommands(client: KlasaClient, mahojiClient: MahojiClient): AbstractCommand[] {
+export function allAbstractCommands(mahojiClient: MahojiClient): AbstractCommand[] {
 	return [
-		...Array.from(client.commands.values() as any as BotCommand[]).map(convertKlasaCommandToAbstractCommand),
+		...Array.from(globalClient.commands.values() as any as BotCommand[])
+			.filter(i => !i.category.toLowerCase().includes('deprecated'))
+			.map(convertKlasaCommandToAbstractCommand),
 		...mahojiClient.commands.values.map(convertMahojiCommandToAbstractCommand)
 	];
 }

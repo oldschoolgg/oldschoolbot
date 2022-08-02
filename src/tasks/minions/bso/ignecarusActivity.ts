@@ -17,12 +17,14 @@ import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { BossUser } from '../../../lib/structures/Boss';
 import { NewBossOptions } from '../../../lib/types/minions';
 import { addArrayOfNumbers, updateBankSetting } from '../../../lib/util';
+import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 const methodsOfDeath = ['Burnt to death', 'Eaten', 'Crushed', 'Incinerated'];
 
 export default class extends Task {
-	async run({ channelID, users: idArr, duration, bossUsers: _bossUsers, quantity, userID }: NewBossOptions) {
+	async run(data: NewBossOptions) {
+		const { channelID, users: idArr, duration, bossUsers: _bossUsers, quantity, userID } = data;
 		const wrongFoodDeaths: KlasaUser[] = [];
 		const deaths: Record<string, { user: KlasaUser; qty: number }> = {};
 		const bossUsers: BossUser[] = await Promise.all(
@@ -50,15 +52,22 @@ export default class extends Task {
 
 		const tagAll = bossUsers.map(u => u.user.toString()).join(', ');
 		if (wrongFoodDeaths.length === bossUsers.length * quantity) {
-			return sendToChannelID(this.client, channelID, {
+			return sendToChannelID(channelID, {
 				content: `${tagAll}\n\nYour team began the fight, but the intense heat of the dragons lair melted your potions, and spoiled them - with no food left to eat, your entire team died.`
 			});
 		}
 
 		if (addArrayOfNumbers(objectValues(deaths).map(d => d.qty)) === idArr.length * quantity) {
-			return sendToChannelID(this.client, channelID, {
-				content: `${tagAll}\n\nYour team all died.`
-			});
+			handleTripFinish(
+				bossUsers[0].user,
+				channelID,
+				`${tagAll}\n\nYour team all died.`,
+				['k', { name: bossUsers.length === 1 ? 'Ignecarus (Solo)' : 'Ignecarus (Mass)' }, true],
+				undefined,
+				data,
+				null
+			);
+			return;
 		}
 
 		await Promise.all(bossUsers.map(u => u.user.incrementMonsterScore(Ignecarus.id, quantity)));
@@ -144,6 +153,14 @@ export default class extends Task {
 			kc: quantity
 		});
 
-		sendToChannelID(this.client, channelID, { content: resultStr });
+		handleTripFinish(
+			bossUsers[0].user,
+			channelID,
+			resultStr,
+			['k', { name: bossUsers.length === 1 ? 'Ignecarus (Solo)' : 'Ignecarus (Mass)' }, true],
+			undefined,
+			data,
+			null
+		);
 	}
 }

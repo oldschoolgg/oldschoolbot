@@ -1,6 +1,6 @@
 import { MessageActionRow, MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { KlasaMessage, Task, TaskStore } from 'klasa';
+import { Task, TaskStore } from 'klasa';
 
 import { production } from '../config';
 import { PerkTier } from '../lib/constants';
@@ -57,7 +57,7 @@ export default class extends Task {
 						if (!planted) continue;
 						if (difference < planted.growthTime * Time.Minute) continue;
 						if (patch.wasReminded) continue;
-						await mahojiUserSettingsUpdate(this.client, user.id, {
+						await mahojiUserSettingsUpdate(user.id, {
 							[getFarmingKeyFromName(patchType)]: { ...patch, wasReminded: true }
 						});
 
@@ -103,10 +103,14 @@ export default class extends Task {
 							if (selection.customID === 'HARVEST') {
 								message.author = user;
 								runCommand({
-									message: message as KlasaMessage,
 									commandName: 'farm',
 									args: [planted.name],
-									bypassInhibitors: true
+									bypassInhibitors: true,
+									channelID: message.channel.id,
+									userID: message.author.id,
+									guildID: message.guild?.id,
+									user: message.author,
+									member: message.member
 								});
 							}
 						} catch {

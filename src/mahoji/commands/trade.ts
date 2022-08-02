@@ -1,20 +1,16 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
-import { client } from '../..';
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { discrimName, truncateString } from '../../lib/util';
+import { addToGPTaxBalance, discrimName, truncateString } from '../../lib/util';
 import itemIsTradeable from '../../lib/util/itemIsTradeable';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import {
-	handleMahojiConfirmation,
-	mahojiClientSettingsFetch,
-	mahojiParseNumber,
-	MahojiUserOption
-} from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiParseNumber } from '../mahojiSettings';
 
 export const askCommand: OSBMahojiCommand = {
 	name: 'trade',
@@ -66,11 +62,10 @@ export const askCommand: OSBMahojiCommand = {
 		search?: string;
 	}>) => {
 		if (!guildID) return 'You can only run this in a server.';
-		const senderKlasaUser = await client.fetchUser(userID);
-		const recipientKlasaUser = await client.fetchUser(options.user.user.id);
-		const settings = await mahojiClientSettingsFetch({ userBlacklist: true });
+		const senderKlasaUser = await globalClient.fetchUser(userID);
+		const recipientKlasaUser = await globalClient.fetchUser(options.user.user.id);
 
-		const isBlacklisted = settings.userBlacklist.includes(recipientKlasaUser.id);
+		const isBlacklisted = BLACKLISTED_USERS.has(recipientKlasaUser.id);
 		if (isBlacklisted) return "Blacklisted players can't buy items.";
 		if (senderKlasaUser.isIronman || recipientKlasaUser.isIronman) return "Iron players can't trade items.";
 		if (recipientKlasaUser.id === senderKlasaUser.id) return "You can't trade yourself.";
@@ -135,10 +130,16 @@ Both parties must click confirm to make the trade.`,
 				type: 'trade'
 			}
 		});
-		client.emit(
+		globalClient.emit(
 			Events.EconomyLog,
 			`${senderKlasaUser.sanitizedName} sold ${itemsSent} to ${recipientKlasaUser.sanitizedName} for ${itemsReceived}.`
 		);
+		if (itemsReceived.has('Coins')) {
+			addToGPTaxBalance(recipientKlasaUser.id, itemsReceived.amount('Coins'));
+		}
+		if (itemsSent.has('Coins')) {
+			addToGPTaxBalance(senderKlasaUser.id, itemsSent.amount('Coins'));
+		}
 
 		return `${discrimName(senderKlasaUser)} sold ${itemsSent} to ${discrimName(
 			recipientKlasaUser

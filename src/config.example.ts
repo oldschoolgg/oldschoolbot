@@ -1,6 +1,6 @@
 import { KlasaClientOptions } from 'klasa';
 
-import { IDiscordSettings, PatreonConfig, ProviderConfig, RedditAppConfig, TwitterAppConfig } from './lib/types';
+import { IDiscordSettings, PatreonConfig, ProviderConfig, RedditAppConfig } from './lib/types';
 
 export const botToken = '';
 export const providerConfig: ProviderConfig | null = {
@@ -15,7 +15,6 @@ export const providerConfig: ProviderConfig | null = {
 export const production = false;
 
 export const redditAppConfig: RedditAppConfig = null;
-export const twitterAppConfig: TwitterAppConfig = null;
 export const patreonConfig: PatreonConfig = null;
 export const customClientOptions: Partial<KlasaClientOptions> = {
 	prefix: '-',
@@ -33,3 +32,4 @@ export const DISCORD_SETTINGS: Partial<IDiscordSettings> = {
 	BotID: '729244028989603850'
 };
 export const OWNER_ID = '157797566833098752';
+export const MAXING_MESSAGE = 'Congratulations on maxing!';

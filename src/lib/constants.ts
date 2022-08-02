@@ -1,18 +1,22 @@
 import { User } from '@prisma/client';
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { Command, KlasaMessage, KlasaUser } from 'klasa';
+import { Command, KlasaMessage } from 'klasa';
+import { APIButtonComponent, ButtonStyle, ComponentType } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
-import { DISCORD_SETTINGS } from '../config';
+import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
+import { RunCommandArgs } from './settings/settings';
 import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
+import getUsersPerkTier from './util/getUsersPerkTier';
 import resolveItems from './util/resolveItems';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
@@ -51,7 +55,8 @@ export const Roles = {
 	TopSacrificer: DISCORD_SETTINGS.Roles?.TopSacrificer ?? '848966732265160775',
 	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '867967884515770419',
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
-	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219'
+	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
+	TopInventor: '992799099801833582'
 };
 
 export const enum DefaultPingableRoles {
@@ -137,6 +142,7 @@ export const enum Emoji {
 	Flappy = '<:Flappy:884799334737129513>',
 	Stopwatch = '⏱️',
 	Smokey = '<:Smokey:886284971914969149>',
+	ItemContract = '<:Item_contract:988422348434718812>',
 	// Badges,
 	BigOrangeGem = '<:bigOrangeGem:778418736188489770>',
 	GreenGem = '<:greenGem:778418736495067166>',
@@ -157,14 +163,15 @@ export const enum Emoji {
 	Skull = '<:Skull:802136963926065165>',
 	CombatSword = '<:combat:802136963956080650>',
 	SOTW = '<:SOTWtrophy:842938096097820693>',
-	OSRSSkull = '<:skull:863392427040440320>'
+	OSRSSkull = '<:skull:863392427040440320>',
+	Invention = '<:Invention:936219232146980874>'
 }
 
-export const enum ReactionEmoji {
-	Join = '705971600956194907',
-	Stop = '705972260950769669',
-	Start = '705973302719414329'
-}
+export const ReactionEmoji = {
+	Join: production ? '705971600956194907' : '951309579302604900',
+	Stop: production ? '705972260950769669' : '951309579248091166',
+	Start: production ? '705973302719414329' : '951309579302604880'
+};
 
 export const enum Image {
 	DiceBag = 'https://i.imgur.com/sySQkSX.png'
@@ -233,7 +240,6 @@ export const enum Tasks {
 	MageArena = 'mageArenaActivity',
 	Collecting = 'collectingActivity',
 	MageTrainingArena = 'mageTrainingArenaActivity',
-	BlastFurnaceActivity = 'blastFurnaceActivity',
 	MageArena2 = 'mageArena2Activity',
 	BigChompyBirdHunting = 'chompyHuntActivity',
 	KingGoldemar = 'kingGoldemarActivity',
@@ -258,7 +264,12 @@ export const enum Tasks {
 	BirthdayEvent = 'birthdayEventActivity',
 	TokkulShop = 'tokkulShopActivity',
 	Nex = 'nexActivity',
-	Easter = 'easterActivity'
+	BaxtorianBathhouses = 'bathhousesActivity',
+	TroubleBrewing = 'troubleBrewingActivity',
+	Disassembling = 'disassemblingActivity',
+	Research = 'researchActivity',
+	Moktang = 'moktangActivity',
+	REMOVED = '__REMOVED__'
 }
 
 export enum ActivityGroup {
@@ -405,7 +416,8 @@ export const enum PatronTierID {
 	Two = '4608226',
 	Three = '4720356',
 	Four = '5262065',
-	Five = '5262216'
+	Five = '5262216',
+	Six = '8091554'
 }
 
 export const enum BadgesEnum {
@@ -446,14 +458,9 @@ export const MAX_XP = 5_000_000_000;
 
 export const MIMIC_MONSTER_ID = 23_184;
 
-export const continuationChars = 'abdefghjknoprstuvwxyz123456789'.split('');
-export const CENA_CHARS = ['​', '‎', '‍'];
 export const NIGHTMARES_HP = 2400;
 export const ZAM_HASTA_CRUSH = 65;
 export const MAX_INT_JAVA = 2_147_483_647;
-export const TWEETS_RATELIMITING =
-	'Tweets in Old School Bot can only be enabled in servers with more than 20 members, or by Tier 3 Patrons - this is due to ratelimiting issues.' +
-	'You can consider checking tweets in another server, or becoming a patron. Apologies for the inconvenience.';
 export const HERBIBOAR_ID = 36;
 export const RAZOR_KEBBIT_ID = 35;
 export const BLACK_CHIN_ID = 9;
@@ -466,8 +473,6 @@ export const HESPORI_ID = 8583;
  * Map<user_id, PromiseQueue>
  */
 export const userQueues: Map<string, PQueue> = new Map();
-
-export const bankImageCache = new Map<string, string>();
 
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
@@ -498,7 +503,8 @@ export const skillEmoji = {
 	cml: '<:CrystalMathLabs:364657225249062912>',
 	clock: '<:ehpclock:352323705210142721>',
 	combat: '<:combat:802136963956080650>',
-	dungeoneering: '<:dungeoneering:828683755198873623>'
+	dungeoneering: '<:dungeoneering:828683755198873623>',
+	invention: '<:Invention:936219232146980874>'
 };
 
 export const LEVEL_99_XP = convertLVLtoXP(99);
@@ -507,28 +513,44 @@ export const MAX_LEVEL = 120;
 export const MAX_TOTAL_LEVEL = Object.values(SkillsEnum).length * MAX_LEVEL;
 export const SILENT_ERROR = 'SILENT_ERROR';
 
-export const informationalButtons = [
-	new MessageButton().setLabel('Wiki').setEmoji('📰').setURL('https://wiki.oldschool.gg/').setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Wiki')
-		.setEmoji('863823820435619890')
-		.setURL('https://bso-wiki.oldschool.gg/')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Patreon')
-		.setEmoji('679334888792391703')
-		.setURL('https://www.patreon.com/oldschoolbot')
-		.setStyle('LINK'),
-	new MessageButton()
-		.setLabel('Bot Invite')
-		.setEmoji('🤖')
-		.setURL('http://www.oldschool.gg/invite/bso')
-		.setStyle('LINK')
+const buttonSource = [
+	{
+		label: 'Wiki',
+		emoji: '802136964027121684',
+		url: 'https://bso-wiki.oldschool.gg/'
+	},
+	{
+		label: 'Patreon',
+		emoji: '679334888792391703',
+		url: 'https://www.patreon.com/oldschoolbot'
+	},
+	{
+		label: 'Support Server',
+		emoji: '778418736180494347',
+		url: 'https://www.discord.gg/ob'
+	},
+	{
+		label: 'Bot Invite',
+		emoji: '778418736180494347',
+		url: 'http://www.oldschool.gg/invite/bso'
+	}
 ];
 
+export const informationalButtons = buttonSource.map(i =>
+	new MessageButton().setLabel(i.label).setEmoji(i.emoji).setURL(i.url).setStyle('LINK')
+);
+export const mahojiInformationalButtons: APIButtonComponent[] = buttonSource.map(i => ({
+	type: ComponentType.Button,
+	label: i.label,
+	emoji: { id: i.emoji },
+	style: ButtonStyle.Link,
+	url: i.url
+}));
+
+export type LastTripRunArgs = Omit<RunCommandArgs, 'commandName' | 'args'>;
 export const lastTripCache = new Map<
 	string,
-	{ continue: (message: KlasaMessage) => Promise<KlasaMessage | KlasaMessage[] | null>; data: ActivityTaskOptions }
+	{ continue: (args: LastTripRunArgs) => Promise<CommandResponse>; data: ActivityTaskOptions }
 >();
 
 export const PATRON_ONLY_GEAR_SETUP =
@@ -622,14 +644,15 @@ export const projectiles: Record<ProjectileType, number[]> = {
 export const PHOSANI_NIGHTMARE_ID = 9416;
 
 export const dailyResetTime = Time.Hour * 4;
-export const spawnLampResetTime = (user: KlasaUser) => {
-	const bf = user.settings.get(UserSettings.BitField);
+export const spawnLampResetTime = (user: User) => {
+	const bf = user.bitfield;
+	const perkTier = getUsersPerkTier(user, true);
 
 	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
-	const hasTier5 = user.perkTier >= PerkTier.Five;
-	const hasTier4 = !hasTier5 && user.perkTier === PerkTier.Four;
+	const hasTier5 = perkTier >= PerkTier.Five;
+	const hasTier4 = !hasTier5 && perkTier === PerkTier.Four;
 
-	let cooldown = [PerkTier.Six, PerkTier.Five].includes(user.perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+	let cooldown = [PerkTier.Six, PerkTier.Five].includes(perkTier) ? Time.Hour * 12 : Time.Hour * 24;
 
 	if (!hasTier5 && !hasTier4 && hasPerm) {
 		cooldown = Time.Hour * 48;
@@ -683,3 +706,4 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
+export const usernameCache = new Map<string, string>();

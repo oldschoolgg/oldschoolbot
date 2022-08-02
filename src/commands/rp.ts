@@ -1,17 +1,19 @@
 import { codeBlock, inlineCode } from '@discordjs/builders';
+import { Prisma, User } from '@prisma/client';
 import { Duration, Time } from '@sapphire/time-utilities';
 import { Type } from '@sapphire/type';
-import { MessageAttachment, MessageEmbed, MessageOptions, TextChannel, Util } from 'discord.js';
+import { MessageAttachment, MessageOptions, TextChannel, Util } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
-import { ArrayActions, CommandStore, KlasaClient, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
+import { CommandStore, KlasaMessage, KlasaUser, Stopwatch, util } from 'klasa';
 import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
 import fetch from 'node-fetch';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
-import { client, mahojiClient } from '..';
 import { CLIENT_ID, production } from '../config';
+import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../lib/blacklists';
+import { embTable, tmbTable, umbTable } from '../lib/bsoOpenables';
 import {
 	badges,
 	BitField,
@@ -35,11 +37,8 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import { ItemBank } from '../lib/types';
 import {
-	asyncExec,
 	bankValueWithMarketPrices,
 	calcPerHour,
-	channelIsSendable,
-	cleanString,
 	convertBankToPerHourStats,
 	formatDuration,
 	getSupportGuild,
@@ -57,21 +56,28 @@ import {
 import getOSItem from '../lib/util/getOSItem';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
+import { makeBankImage, makeBankImageKlasa } from '../lib/util/makeBankImage';
 import { sendToChannelID } from '../lib/util/webhook';
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 import { allAbstractCommands } from '../mahoji/lib/util';
-import { mahojiParseNumber } from '../mahoji/mahojiSettings';
-import BankImageTask from '../tasks/bankImage';
+import { mahojiParseNumber, mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 import PatreonTask from '../tasks/patreon';
 
-async function checkBank(msg: KlasaMessage) {
-	const rawBank = msg.author.settings.get(UserSettings.Bank);
-	const rawCL = msg.author.settings.get(UserSettings.CollectionLogBank);
-	const rawTempCL = msg.author.settings.get(UserSettings.TempCL);
-	const rawSB = msg.author.settings.get(UserSettings.SacrificedBank);
-	const favorites = msg.author.settings.get(UserSettings.FavoriteItems);
+export async function repairBrokenItemsFromUser(user: User | KlasaUser): Promise<[string] | [string, any[]]> {
+	const changes: Prisma.UserUpdateArgs['data'] = {};
+	const rawBank = user instanceof KlasaUser ? user.settings.get(UserSettings.Bank) : (user.bank as ItemBank);
+	const rawCL =
+		user instanceof KlasaUser
+			? user.settings.get(UserSettings.CollectionLogBank)
+			: (user.collectionLogBank as ItemBank);
+	const rawTempCL = user instanceof KlasaUser ? user.settings.get(UserSettings.TempCL) : (user.temp_cl as ItemBank);
+	const rawSB =
+		user instanceof KlasaUser ? user.settings.get(UserSettings.SacrificedBank) : (user.sacrificedBank as ItemBank);
+	const favorites = user instanceof KlasaUser ? user.settings.get(UserSettings.FavoriteItems) : user.favoriteItems;
 
-	const rawAllGear = GearSetupTypes.map(i => msg.author.settings.get(`gear.${i}`));
+	const rawAllGear = GearSetupTypes.map(i =>
+		user instanceof KlasaUser ? user.settings.get(`gear.${i}`) : user[`gear_${i}`]
+	);
 	const allGearItemIDs = rawAllGear
 		.filter(notEmpty)
 		.map((b: any) =>
@@ -83,18 +89,20 @@ async function checkBank(msg: KlasaMessage) {
 
 	const brokenBank: number[] = [];
 	const allItemsToCheck = [
-		...Object.keys(rawBank),
-		...Object.keys(rawCL),
-		...Object.keys(rawTempCL),
-		...Object.keys(rawSB),
-		...favorites,
-		...allGearItemIDs
-	];
+		['bank', Object.keys(rawBank)],
+		['cl', Object.keys(rawCL)],
+		['tempcl', Object.keys(rawTempCL)],
+		['sacbank', Object.keys(rawSB)],
+		['favs', favorites],
+		['gear', allGearItemIDs]
+	] as const;
 
-	for (const id of allItemsToCheck.map(i => Number(i))) {
-		const item = Items.get(id);
-		if (!item) {
-			brokenBank.push(id);
+	for (const [, ids] of allItemsToCheck) {
+		for (const id of ids.map(i => Number(i))) {
+			const item = Items.get(id);
+			if (!item) {
+				brokenBank.push(id);
+			}
 		}
 	}
 
@@ -112,7 +120,9 @@ async function checkBank(msg: KlasaMessage) {
 	}
 
 	for (const setupType of GearSetupTypes) {
-		const _gear = msg.author.settings.get(`gear.${setupType}`) as GearSetup | null;
+		const _gear = (
+			user instanceof KlasaUser ? user.settings.get(`gear.${setupType}`) : user[`gear_${setupType}`]
+		) as GearSetup | null;
 		if (_gear === null) continue;
 		const gear = { ..._gear };
 		for (const [key, value] of Object.entries(gear)) {
@@ -121,37 +131,42 @@ async function checkBank(msg: KlasaMessage) {
 				delete gear[key as keyof GearSetup];
 			}
 		}
-		await msg.author.settings.update(`gear.${setupType}`, gear);
+		// @ts-ignore ???
+		changes[`gear_${setupType}`] = gear;
 	}
 
 	if (brokenBank.length > 0) {
-		await msg.author.settings.update(UserSettings.FavoriteItems, newFavs, {
-			arrayAction: 'overwrite'
-		});
-		await msg.author.settings.update(UserSettings.Bank, newBank);
-		await msg.author.settings.update(UserSettings.CollectionLogBank, newCL);
-		await msg.author.settings.update(UserSettings.TempCL, newTempCL);
-		await msg.author.settings.update(UserSettings.SacrificedBank, newSB);
+		changes.favoriteItems = newFavs;
+		changes.bank = newBank;
+		changes.collectionLogBank = newCL;
+		changes.temp_cl = newTempCL;
+		changes.sacrificedBank = newSB;
+		if (newFavs.includes(NaN) || [newBank, newCL, newTempCL, newSB].some(i => Boolean(i['NaN']))) {
+			return ['Oopsie...'];
+		}
 
-		return msg.channel.send(
+		await mahojiUserSettingsUpdate(user.id, changes);
+
+		return [
 			`You had ${
 				brokenBank.length
 			} broken items in your bank/collection log/sacrifices/favorites/gear, they were removed. ${moidLink(
 				brokenBank
-			)}`
-		);
+			).slice(0, 500)}`,
+			Object.keys(brokenBank)
+		];
 	}
 
-	return msg.channel.send('You have no broken items on your account!');
+	return ['You have no broken items on your account!'];
 }
 
-function generateReadyThings(user: KlasaUser) {
+async function generateReadyThings(user: KlasaUser) {
 	const readyThings = [];
 	for (const [cooldown, setting, name] of userTimers) {
 		const lastTime: number = user.settings.get(setting) as number;
 		const difference = Date.now() - lastTime;
 
-		const cd = typeof cooldown === 'number' ? cooldown : cooldown(user);
+		const cd = typeof cooldown === 'number' ? cooldown : cooldown(await mahojiUsersSettingsFetch(user.id));
 
 		readyThings.push(
 			`**${name}:** ${difference < cd ? `*${formatDuration(Date.now() - (lastTime + cd), true)}*` : 'ready'}`
@@ -281,8 +296,10 @@ async function unsafeEval({
 
 	stopwatch.stop();
 	if (flags.bk || result instanceof Bank) {
-		const image = await client.tasks.get('bankImage')!.generateBankImage(result, flags.title, true, flags);
-		return { files: [new MessageAttachment(image.image!)], rawOutput: result };
+		const image = await makeBankImage({
+			bank: result
+		});
+		return { files: [new MessageAttachment(image.file.buffer)], rawOutput: result };
 	}
 
 	if (Buffer.isBuffer(result)) {
@@ -310,7 +327,7 @@ async function unsafeEval({
 
 async function evalCommand(msg: KlasaMessage, code: string) {
 	try {
-		if (!client.owners.has(msg.author)) {
+		if (!globalClient.owners.has(msg.author)) {
 			return "You don't have permission to use this command.";
 		}
 		const res = await unsafeEval({ code, flags: msg.flagArgs, msg });
@@ -330,7 +347,7 @@ async function evalCommand(msg: KlasaMessage, code: string) {
 	}
 }
 
-export const emoji = (client: KlasaClient) => getSupportGuild(client)?.emojis.cache.random()?.toString();
+export const emoji = () => getSupportGuild()?.emojis.cache.random()?.toString();
 
 const statusMap = {
 	'0': '🟢 Ready',
@@ -363,6 +380,16 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'inboxes': {
+				if (typeof input !== 'string') return;
+				const item = getOSItem(input);
+				return msg.channel.send(`
+Is ${item.name} dropped by boxes?
+
+TMB: ${tmbTable.includes(item.id)}
+UMB: ${umbTable.includes(item.id)}
+EMB: ${embTable.includes(item.id)}`);
+			}
 			case 'setmp': {
 				if (production && (!msg.guild || msg.guild.id !== SupportServer)) return;
 				if (
@@ -462,7 +489,9 @@ export default class extends BotCommand {
 				);
 			}
 			case 'checkbank': {
-				return checkBank(msg);
+				return msg.channel.send(
+					(await repairBrokenItemsFromUser(await mahojiUsersSettingsFetch(msg.author.id)))[0]
+				);
 			}
 			case 'givetgb': {
 				if (!(input instanceof KlasaUser)) return;
@@ -504,13 +533,13 @@ export default class extends BotCommand {
 				const taskText = task ? `${task.type}` : 'None';
 
 				const userBadges = u.settings.get(UserSettings.Badges).map(i => badges[i]);
-				const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(u.id);
+				const isBlacklisted = BLACKLISTED_USERS.has(u.id);
 
 				const premiumDate = u.settings.get(UserSettings.PremiumBalanceExpiryDate);
 				const premiumTier = u.settings.get(UserSettings.PremiumBalanceTier);
 
-				let str = `**${getUsername(this.client, u.id)}**
-${generateReadyThings(u).join('\n')}
+				let str = `**${getUsername(u.id)}**
+${(await generateReadyThings(u)).join('\n')}
 **Perk Tier:** ${getUsersPerkTier(u)}
 **Bitfields:** ${bitfields}
 **Badges:** ${userBadges}
@@ -526,14 +555,12 @@ ${generateReadyThings(u).join('\n')}
 
 **Main Account:** ${
 					u.settings.get(UserSettings.MainAccount) !== null
-						? `${getUsername(this.client, u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
+						? `${getUsername(u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
 								UserSettings.MainAccount
 						  )}]`
 						: 'None'
 				}
-**Ironman Alt Accounts:** ${u.settings
-					.get(UserSettings.IronmanAlts)
-					.map(id => `${getUsername(this.client, id)}[${id}]`)}
+**Ironman Alt Accounts:** ${u.settings.get(UserSettings.IronmanAlts).map(id => `${getUsername(id)}[${id}]`)}
 `;
 
 				return msg.channel.send(str);
@@ -542,24 +569,6 @@ ${generateReadyThings(u).join('\n')}
 			case 'is': {
 				if (typeof input !== 'string') return;
 				return itemSearch(msg, input);
-			}
-			case 'git': {
-				try {
-					const currentCommit = await asyncExec('git log --pretty=oneline -1', {
-						timeout: 30
-					});
-					const rawStr = currentCommit.stdout.trim();
-					const [commitHash, ...commentArr] = rawStr.split(' ');
-					return msg.channel.send({
-						embeds: [
-							new MessageEmbed()
-								.setDescription(`[Diff between latest and now](https://github.com/oldschoolgg/oldschoolbot/compare/${commitHash}...bso)
-**Last commit:** [\`${commentArr.join(' ')}\`](https://github.com/oldschoolgg/oldschoolbot/commit/${commitHash})`)
-						]
-					});
-				} catch {
-					return msg.channel.send('Failed to fetch git info.');
-				}
 			}
 			case 'hasequipped': {
 				if (typeof input !== 'string') return;
@@ -582,30 +591,6 @@ ${
 		: `You have ${item.name} equipped in these setups: ${setupsWith.join(', ')}.`
 }`);
 			}
-			case 'issues': {
-				if (typeof input !== 'string' || input.length < 3 || input.length > 25) return;
-				const query = cleanString(input);
-
-				const searchURL = new URL('https://api.github.com/search/issues');
-
-				searchURL.search = new URLSearchParams([
-					['q', ['repo:oldschoolgg/oldschoolbot', 'is:issue', 'is:open', query].join(' ')]
-				]).toString();
-				const { items } = (await fetch(searchURL.toString()).then(res => res.json())) as Record<string, any>;
-				if (items.length === 0) return msg.channel.send('No results found.');
-				return msg.channel.send({
-					embeds: [
-						new MessageEmbed()
-							.setTitle(`${items.length} Github issues found from your search`)
-							.setDescription(
-								items
-									.slice(0, 10)
-									.map((i: any, index: number) => `${index + 1}. [${i.title}](${i.html_url})`)
-									.join('\n')
-							)
-					]
-				});
-			}
 			case 'doubletime': {
 				const diff = this.client.settings.get(ClientSettings.DoubleLootFinishTime) - Date.now();
 				if (diff < 0) {
@@ -623,31 +608,6 @@ ${
 
 		// Mod commands
 		switch (cmd.toLowerCase()) {
-			case 'blacklist':
-			case 'bl': {
-				if (!input || !(input instanceof KlasaUser)) return;
-				if (str instanceof KlasaUser) return;
-				const reason = str;
-				const entry = this.client.settings.get(ClientSettings.UserBlacklist);
-
-				const alreadyBlacklisted = entry.includes(input.id);
-
-				this.client.settings.update(ClientSettings.UserBlacklist, input.id, {
-					arrayAction: alreadyBlacklisted ? ArrayActions.Remove : ArrayActions.Add
-				});
-				const emoji = getSupportGuild(this.client)?.emojis.cache.random()?.toString();
-				const newStatus = `${alreadyBlacklisted ? 'un' : ''}blacklisted`;
-
-				const channel = this.client.channels.cache.get(Channel.BlacklistLogs);
-				if (channelIsSendable(channel)) {
-					channel.send(
-						`\`${input.username}\` was ${newStatus} by ${msg.author.username} for \`${
-							reason ?? 'no reason'
-						}\`.`
-					);
-				}
-				return msg.channel.send(`${emoji} Successfully ${newStatus} ${input.username}.`);
-			}
 			case 'addimalt': {
 				if (!input || !(input instanceof KlasaUser)) return;
 				if (!str || !(str instanceof KlasaUser)) return;
@@ -699,7 +659,6 @@ ${
 				const item = getOSItem(itemName);
 				const price = evalMathExpression(rawPrice);
 				if (!price || price < 1 || price > 1_000_000_000) return;
-				if (!price || isNaN(price)) return msg.channel.send('Invalid price');
 				await msg.confirm(
 					`Are you sure you want to set the price of \`${item.name}\`(ID: ${item.id}, Wiki: ${
 						item.wiki_url
@@ -736,19 +695,6 @@ ${
 				});
 				return msg.channel.send(`${Emoji.RottenPotato} Bypassed age restriction for ${input.username}.`);
 			}
-			case 'gptrack': {
-				return msg.channel.send(`
-**Sell** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceSellingItems)}
-**PvM** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePVMLoot)}
-**Alch** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceAlching)}
-**Pickpocket** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePickpocket)}
-**Dice** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDice)}
-**Open** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceOpen)}
-**Pet** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourcePet)}
-**Daily** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily)}
-**Item Contracts** ${this.client.settings.get(ClientSettings.EconomyStats.GPSourceItemContracts)}
-`);
-			}
 			case 'patreon': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				msg.channel.send('Running patreon task...');
@@ -760,7 +706,7 @@ ${
 				msg.channel.send('Running roles task...');
 				try {
 					const result = (await this.client.tasks.get('roles')?.run()) as string;
-					return sendToChannelID(this.client, msg.channel.id, {
+					return sendToChannelID(msg.channel.id, {
 						content: result.slice(0, 2500)
 					});
 				} catch (err: any) {
@@ -778,6 +724,12 @@ ${
 				minionActivityCacheDelete(input.id);
 
 				return msg.react(Emoji.Tick);
+			}
+			case 'bl':
+			case 'blacklist': {
+				await syncBlacklists();
+				return msg.channel.send(`Users Blacklisted: ${BLACKLISTED_USERS.size}
+Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`);
 			}
 			case 'setgh': {
 				if (!input || !(input instanceof KlasaUser)) return;
@@ -812,7 +764,7 @@ ${
 					],
 					{ arrayAction: 'overwrite' }
 				);
-				sendToChannelID(this.client, Channel.ErrorLogs, {
+				sendToChannelID(Channel.ErrorLogs, {
 					content: `${msg.author.username} gave permanent t1/bgs to ${input.username}`
 				});
 				return msg.channel.send(`Gave permanent perks to ${input.username}.`);
@@ -926,13 +878,13 @@ LIMIT 10;
 			case 'bank': {
 				if (!msg.guild || msg.guild.id !== SupportServer) return;
 				if (!input || !(input instanceof KlasaUser)) return;
-				return msg.channel.sendBankImage({
-					bank: input.allItemsOwned()
-				});
+				return msg.channel.send(await makeBankImageKlasa({ bank: input.allItemsOwned() }));
 			}
 			case 'disable': {
-				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client, mahojiClient).find(c => stringMatches(c.name, input));
+				if (!input || input instanceof KlasaUser) {
+					return msg.channel.send(`Disabled Commands: ${Array.from(DISABLED_COMMANDS).join(', ')}.`);
+				}
+				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
 					where: { id: CLIENT_ID },
@@ -955,7 +907,7 @@ LIMIT 10;
 			}
 			case 'enable': {
 				if (!input || input instanceof KlasaUser) return;
-				const command = allAbstractCommands(this.client, mahojiClient).find(c => stringMatches(c.name, input));
+				const command = allAbstractCommands(globalClient.mahojiClient).find(c => stringMatches(c.name, input));
 				if (!command) return msg.channel.send("That's not a valid command.");
 
 				const currentDisabledCommands = (await prisma.clientStorage.findFirst({
@@ -979,7 +931,7 @@ LIMIT 10;
 			}
 			case 'dtp': {
 				if (!input || !(input instanceof KlasaUser)) return;
-				addPatronLootTime(input.perkTier, this.client, input);
+				addPatronLootTime(input.perkTier, input);
 				return msg.channel.send('Done.');
 			}
 			case 'addptime': {
@@ -995,30 +947,34 @@ LIMIT 10;
 				const currentBalanceTier = input.settings.get(UserSettings.PremiumBalanceTier);
 				const currentBalanceTime = input.settings.get(UserSettings.PremiumBalanceExpiryDate);
 
-				if (input.perkTier > 1 && !currentBalanceTier) {
-					return msg.channel.send(`${input.username} is already a patron.`);
+				const oldPerkTier = input.perkTier;
+				if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
+					return msg.channel.send(`${input.username} is already a patron of at least that tier.`);
 				}
 				if (currentBalanceTier !== null && currentBalanceTier !== tier) {
-					return msg.channel.send(
+					await msg.confirm(
 						`${input} already has ${formatDuration(
 							currentBalanceTime!
-						)} of Tier ${currentBalanceTier}, you can't add time for a different tier.`
+						)} of Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 					);
 				}
 				await msg.confirm(
 					`Are you sure you want to add ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}?`
 				);
 				await input.settings.update(UserSettings.PremiumBalanceTier, tier);
-				if (currentBalanceTime !== null) {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, currentBalanceTime + ms);
+
+				let newBalanceExpiryTime = 0;
+				if (currentBalanceTime !== null && tier === currentBalanceTier) {
+					newBalanceExpiryTime = currentBalanceTime + ms;
 				} else {
-					await input.settings.update(UserSettings.PremiumBalanceExpiryDate, Date.now() + ms);
+					newBalanceExpiryTime = Date.now() + ms;
 				}
+				await input.settings.update(UserSettings.PremiumBalanceExpiryDate, newBalanceExpiryTime);
 
 				return msg.channel.send(
 					`Gave ${formatDuration(ms)} of Tier ${tier} patron to ${input.username}. They have ${formatDuration(
-						input.settings.get(UserSettings.PremiumBalanceExpiryDate)! - Date.now()
-					)} remaning.`
+						newBalanceExpiryTime - Date.now()
+					)} remaining.`
 				);
 			}
 		}
@@ -1037,18 +993,12 @@ LIMIT 10;
 				if (typeof input !== 'string' || input.length < 2) return;
 				const duration = new Duration(input);
 				const ms = duration.offset;
-				addToDoubleLootTimer(this.client, ms, 'added by RP command');
+				addToDoubleLootTimer(ms, 'added by RP command');
 				return msg.channel.send(`Added ${formatDuration(ms)} to the double loot timer.`);
 			}
 			case 'resetdoubletime': {
 				await this.client.settings.update(ClientSettings.DoubleLootFinishTime, 0);
 				return msg.channel.send('Reset the double loot timer.');
-			}
-			case 'bankimage':
-			case 'bi': {
-				if (typeof input !== 'string') return;
-				const bank = JSON.parse(input.replace(/'/g, '"'));
-				return msg.channel.sendBankImage({ bank });
 			}
 			case 'reboot': {
 				await msg.channel.send('Rebooting...');
@@ -1092,12 +1042,10 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 					['Loot', new Bank(loot.loot as any)]
 				] as const;
 
-				const task = this.client.tasks.get('bankImage') as BankImageTask;
-
 				for (const [name, bank] of arr) {
 					msg.channel.send({
 						content: convertBankToPerHourStats(bank, durationMillis).join(', '),
-						files: [new MessageAttachment((await task.generateBankImage(bank, name)).image!)]
+						...(await makeBankImageKlasa({ bank, title: name }))
 					});
 				}
 
@@ -1112,17 +1060,26 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 			case 'localmahojisync': {
 				await msg.channel.send('Syncing commands locally...');
 				await bulkUpdateCommands({
-					client: mahojiClient,
-					commands: mahojiClient.commands.values,
+					client: globalClient.mahojiClient,
+					commands: globalClient.mahojiClient.commands.values,
 					guildID: msg.guild!.id
 				});
 				return msg.channel.send('Locally synced slash commands.');
 			}
+			case 'globalcommandnuke': {
+				await msg.channel.send('Syncing commands...');
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: [],
+					guildID: null
+				});
+				return msg.channel.send('Globally nuked slash commands.');
+			}
 			case 'globalmahojisync': {
 				await msg.channel.send('Syncing commands...');
 				await bulkUpdateCommands({
-					client: mahojiClient,
-					commands: mahojiClient.commands.values,
+					client: globalClient.mahojiClient,
+					commands: globalClient.mahojiClient.commands.values,
 					guildID: null
 				});
 				return msg.channel.send('Globally synced slash commands.');
@@ -1161,6 +1118,40 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 				return msg.channel.send({
 					files: [new MessageAttachment(Buffer.from(str), 'output.txt')]
 				});
+			}
+			case 'blacklistsync': {
+				const blacklistedUsers = globalClient.settings.get(ClientSettings.UserBlacklist);
+				const blacklistedGuilds = globalClient.settings.get(ClientSettings.GuildBlacklist);
+				await syncBlacklists();
+				let usersAdded = 0;
+				let guildsAdded = 0;
+				for (const user of blacklistedUsers) {
+					if (!BLACKLISTED_USERS.has(user)) {
+						try {
+							await roboChimpClient.blacklistedEntity.create({
+								data: {
+									id: BigInt(user),
+									type: 'user'
+								}
+							});
+							usersAdded++;
+						} catch {}
+					}
+				}
+				for (const guild of blacklistedGuilds) {
+					if (!BLACKLISTED_GUILDS.has(guild)) {
+						try {
+							await roboChimpClient.blacklistedEntity.create({
+								data: {
+									id: BigInt(guild),
+									type: 'guild'
+								}
+							});
+							guildsAdded++;
+						} catch {}
+					}
+				}
+				return msg.channel.send(`${usersAdded} users, ${guildsAdded} guilds`);
 			}
 		}
 	}

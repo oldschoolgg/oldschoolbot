@@ -108,6 +108,17 @@ const Crush: Mixable[] = [
 		bankTimePerPotion: 0.17,
 		wesley: false,
 		outputMultiple: 2
+	},
+	{
+		name: 'Nihil Dust',
+		aliases: ['nihil shard', 'nihil'],
+		id: itemID('Nihil dust'),
+		level: 1,
+		xp: 0,
+		inputItems: resolveNameBank({ 'Nihil shard': 1 }),
+		tickRate: 2,
+		bankTimePerPotion: 0,
+		wesley: true
 	}
 ];
 

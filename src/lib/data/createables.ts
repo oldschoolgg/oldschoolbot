@@ -1,6 +1,8 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { moktangCreatables } from '../../mahoji/lib/abstracted_commands/moktangCommand';
+import { MaterialBank } from '../invention/MaterialBank';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
 import { SlayerTaskUnlocksEnum } from '../slayer/slayerUnlocks';
@@ -8,16 +10,20 @@ import { ItemBank, Skills } from '../types';
 import { itemNameFromID } from '../util';
 import itemID from '../util/itemID';
 import { chambersOfXericMetamorphPets } from './CollectionsExport';
+import { amrodCreatables } from './creatables/amrod';
 import { armorAndItemPacks } from './creatables/armorPacks';
 import { BsoCreateables } from './creatables/bsoItems';
 import { capeCreatables } from './creatables/capes';
 import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
+import { leaguesCreatables } from './creatables/leagueCreatables';
 import { lmsCreatables } from './creatables/lms';
+import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
 import { slayerCreatables } from './creatables/slayer';
 import { tobCreatables } from './creatables/tob';
+import { tameCreatables } from './tameCreatables';
 
 export interface Createable {
 	name: string;
@@ -32,7 +38,51 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
+	materialCost?: MaterialBank;
 }
+
+const goldenProspectorCreatables: Createable[] = [
+	{
+		name: 'Golden prospector boots',
+		inputItems: new Bank({
+			'Prospector boots': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector boots': 1
+		})
+	},
+	{
+		name: 'Golden prospector helmet',
+		inputItems: new Bank({
+			'Prospector helmet': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector helmet': 1
+		})
+	},
+	{
+		name: 'Golden prospector jacket',
+		inputItems: new Bank({
+			'Prospector jacket': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector jacket': 1
+		})
+	},
+	{
+		name: 'Golden prospector legs',
+		inputItems: new Bank({
+			'Prospector legs': 1,
+			'Star fragment': 1
+		}),
+		outputItems: new Bank({
+			'Golden prospector legs': 1
+		})
+	}
+];
 
 const revWeapons: Createable[] = [
 	{
@@ -320,6 +370,58 @@ const crystalTools: Createable[] = [
 		requiredSkills: { smithing: 78, crafting: 78 },
 		QPRequired: 150,
 		noCl: true
+	},
+	{
+		name: 'Crystal bow',
+		inputItems: new Bank({
+			'Crystal weapon seed': 1,
+			'Crystal shard': 40
+		}),
+		outputItems: {
+			[itemID('Crystal bow')]: 1
+		},
+		requiredSkills: { smithing: 78, crafting: 78 },
+		QPRequired: 150,
+		noCl: true
+	},
+	{
+		name: 'Crystal helm',
+		inputItems: new Bank({
+			'Crystal armour seed': 1,
+			'Crystal shard': 150
+		}),
+		outputItems: {
+			[itemID('Crystal helm')]: 1
+		},
+		requiredSkills: { smithing: 70, crafting: 70 },
+		QPRequired: 150,
+		noCl: true
+	},
+	{
+		name: 'Crystal legs',
+		inputItems: new Bank({
+			'Crystal armour seed': 2,
+			'Crystal shard': 300
+		}),
+		outputItems: {
+			[itemID('Crystal legs')]: 1
+		},
+		requiredSkills: { smithing: 72, crafting: 72 },
+		QPRequired: 150,
+		noCl: true
+	},
+	{
+		name: 'Crystal body',
+		inputItems: new Bank({
+			'Crystal armour seed': 3,
+			'Crystal shard': 450
+		}),
+		outputItems: {
+			[itemID('Crystal body')]: 1
+		},
+		requiredSkills: { smithing: 74, crafting: 74 },
+		QPRequired: 150,
+		noCl: true
 	}
 ];
 
@@ -383,6 +485,77 @@ const hunterClothing: Createable[] = [
 		inputItems: new Bank({ 'Dark kebbit fur': 2 }),
 		outputItems: new Bank({ 'Gloves of silence': 1 }),
 		GPCost: 600
+	}
+];
+
+const metamorphPets: Createable[] = [
+	{
+		name: 'Midnight',
+		inputItems: {
+			[itemID('Noon')]: 1
+		},
+		outputItems: {
+			[itemID('Midnight')]: 1
+		}
+	},
+	{
+		name: 'Baby mole-rat',
+		inputItems: {
+			[itemID('Baby mole')]: 1,
+			[itemID('Mole claw')]: 1
+		},
+		outputItems: {
+			[itemID('Baby mole-rat')]: 1
+		}
+	},
+	{
+		name: 'Tzrek-zuk',
+		inputItems: {
+			[itemID('Jal-nib-rek')]: 1
+		},
+		outputItems: {
+			[itemID('Tzrek-zuk')]: 1
+		}
+	},
+	{
+		name: 'Little parasite',
+		inputItems: {
+			[itemID('Parasitic egg')]: 1,
+			[itemID('Little nightmare')]: 1
+		},
+		outputItems: {
+			[itemID('Little parasite')]: 1
+		}
+	},
+	{
+		name: 'Ziggy',
+		inputItems: {
+			[itemID('Rocky')]: 1,
+			[itemID('Poison ivy berries')]: 1
+		},
+		outputItems: {
+			[itemID('Ziggy')]: 1
+		}
+	},
+	{
+		name: 'Red',
+		inputItems: {
+			[itemID('Rocky')]: 1,
+			[itemID('Redberries')]: 1
+		},
+		outputItems: {
+			[itemID('Red')]: 1
+		}
+	},
+	{
+		name: 'Great blue heron',
+		inputItems: {
+			[itemID('Heron')]: 1,
+			[itemID('Spirit flakes')]: 3000
+		},
+		outputItems: {
+			[itemID('Great blue heron')]: 1
+		}
 	}
 ];
 
@@ -921,6 +1094,80 @@ const Reverteables: Createable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1,
 			[itemID('Zamorak hilt')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert midnight',
+		inputItems: {
+			[itemID('Midnight')]: 1
+		},
+		outputItems: {
+			[itemID('Noon')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert baby mole-rat',
+		inputItems: {
+			[itemID('Baby mole-rat')]: 1,
+			[itemID('Mole skin')]: 1
+		},
+		outputItems: {
+			[itemID('Baby mole')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert tzrek-zuk',
+		inputItems: {
+			[itemID('Tzrek-zuk')]: 1
+		},
+		outputItems: {
+			[itemID('Jal-nib-rek')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert little parasite',
+		inputItems: {
+			[itemID('Little parasite')]: 1
+		},
+		outputItems: {
+			[itemID('Little nightmare')]: 1,
+			[itemID('Parasitic egg')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert ziggy',
+		inputItems: {
+			[itemID('Ziggy')]: 1,
+			[itemID('White berries')]: 1
+		},
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert red',
+		inputItems: {
+			[itemID('Red')]: 1,
+			[itemID('White berries')]: 1
+		},
+		outputItems: {
+			[itemID('Rocky')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert great blue heron',
+		inputItems: {
+			[itemID('Great blue heron')]: 1
+		},
+		outputItems: {
+			[itemID('Heron')]: 1
 		},
 		noCl: true
 	}
@@ -1736,16 +1983,6 @@ const Createables: Createable[] = [
 		}
 	},
 	{
-		name: 'Little parasite',
-		inputItems: new Bank({
-			'Parasitic egg': 1,
-			'Little nightmare': 1
-		}),
-		outputItems: {
-			[itemID('Little parasite')]: 1
-		}
-	},
-	{
 		name: 'Strange hallowed tome',
 		inputItems: new Bank({
 			'Mysterious page 1': 1,
@@ -1779,12 +2016,23 @@ const Createables: Createable[] = [
 			[itemID('Ecumenical key')]: 1
 		}
 	},
+	{
+		name: 'Death tiara',
+		inputItems: new Bank({
+			'Death talisman': 1,
+			Tiara: 1
+		}),
+		outputItems: {
+			[itemID('Death tiara')]: 1
+		}
+	},
 	...Reverteables,
 	...crystalTools,
 	...ornamentKits,
 	...hunterClothing,
 	...twistedAncestral,
 	...metamorphPetCreatables,
+	...metamorphPets,
 	...slayerCreatables,
 	...capeCreatables,
 	...dragonFireShieldCreatables,
@@ -1794,7 +2042,13 @@ const Createables: Createable[] = [
 	...gracefulOutfitCreatables,
 	...tobCreatables,
 	...lmsCreatables,
-	...nexCreatables
+	...mysticStavesCreatables,
+	...nexCreatables,
+	...amrodCreatables,
+	...goldenProspectorCreatables,
+	...leaguesCreatables,
+	...tameCreatables,
+	...moktangCreatables
 ];
 
 export default Createables;

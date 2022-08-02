@@ -63,11 +63,10 @@ export default class extends Task {
 		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			hasMaxQP ? undefined : ['minion', { quest: { userID, channelID } }, true],
+			hasMaxQP ? undefined : ['activities', { quest: {} }, true],
 			undefined,
 			data,
 			null

@@ -73,11 +73,10 @@ export default class extends Task {
 		}
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['favour', [favour.name], true],
+			['activities', { favour: { name: confirmedFavour.name } }, true],
 			undefined,
 			data,
 			loot ?? null

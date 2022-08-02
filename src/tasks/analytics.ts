@@ -49,6 +49,8 @@ export default class extends Task {
 	}
 
 	async analyticsTick() {
+		await globalClient.settings.sync(true);
+
 		const [numberOfMinions, totalSacrificed, numberOfIronmen, totalGP] = (
 			await Promise.all(
 				[
@@ -61,7 +63,6 @@ export default class extends Task {
 		).map((result: any) => parseInt(result[0].count)) as number[];
 
 		const taskCounts = await this.calculateMinionTaskCounts();
-
 		await prisma.analytic.create({
 			data: {
 				guildsCount: this.client.guilds.cache.size,
@@ -87,7 +88,8 @@ export default class extends Task {
 				gpDaily: this.client.settings.get(ClientSettings.EconomyStats.GPSourceDaily),
 				gpItemContracts: this.client.settings.get(ClientSettings.EconomyStats.GPSourceItemContracts),
 				gpLuckyPick: this.client.settings.get(ClientSettings.EconomyStats.GPSourceLuckyPick),
-				gpSlots: this.client.settings.get(ClientSettings.EconomyStats.GPSourceSlots)
+				gpSlots: this.client.settings.get(ClientSettings.EconomyStats.GPSourceSlots),
+				gpHotCold: this.client.settings.get(ClientSettings.EconomyStats.GPHotCold)
 			}
 		});
 	}

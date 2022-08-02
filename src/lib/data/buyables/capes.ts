@@ -3,7 +3,6 @@ import { Bank } from 'oldschooljs';
 import { LEVEL_99_XP } from '../../constants';
 import { diaries, userhasDiaryTier } from '../../diaries';
 import { SkillsEnum } from '../../skilling/types';
-import { resolveNameBank } from '../../util';
 import { Buyable } from './buyables';
 
 export const capeBuyables: Buyable[] = [
@@ -49,7 +48,7 @@ export const capeBuyables: Buyable[] = [
 			.add('Fletching master cape')
 			.add('Herblore master cape')
 			.add('Runecraft master cape')
-			.add('Smithing master cape').bank,
+			.add('Smithing master cape'),
 		outputItems: new Bank({
 			"Artisan's cape": 1
 		}),
@@ -80,7 +79,7 @@ export const capeBuyables: Buyable[] = [
 			.add('Magic master cape')
 			.add('Prayer master cape')
 			.add('Ranged master cape')
-			.add('Strength master cape').bank,
+			.add('Strength master cape'),
 		outputItems: new Bank({
 			"Combatant's cape": 1
 		}),
@@ -108,7 +107,7 @@ export const capeBuyables: Buyable[] = [
 			.add('Fishing master cape')
 			.add('Hunter master cape')
 			.add('Mining master cape')
-			.add('Woodcutting master cape').bank,
+			.add('Woodcutting master cape'),
 		outputItems: new Bank({
 			"Gatherer's cape": 1
 		}),
@@ -133,7 +132,7 @@ export const capeBuyables: Buyable[] = [
 			.add('Agility master cape')
 			.add('Dungeoneering master cape')
 			.add('Thieving master cape')
-			.add('Slayer master cape').bank,
+			.add('Slayer master cape'),
 		outputItems: new Bank({
 			'Support cape': 1
 		}),
@@ -153,7 +152,7 @@ export const capeBuyables: Buyable[] = [
 	},
 	{
 		name: 'Master quest cape',
-		outputItems: resolveNameBank({
+		outputItems: new Bank({
 			'Master quest cape': 1
 		}),
 		gpCost: 1_000_000_000,

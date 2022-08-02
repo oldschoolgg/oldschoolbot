@@ -13,6 +13,7 @@ import { Gear } from '../structures/Gear';
 import { Skills } from '../types';
 import { assert, formatSkillRequirements, randFloat, randomVariation, skillsMeetRequirements } from '../util';
 import getOSItem from '../util/getOSItem';
+import { logError } from '../util/logError';
 import resolveItems from '../util/resolveItems';
 
 export const bareMinStats: Skills = {
@@ -417,8 +418,8 @@ export async function checkTOBUser(
 
 	if (teamSize === 2) {
 		const kc = await getMinigameScore(user.id, isHardMode ? 'tob_hard' : 'tob');
-		if (kc < 300) {
-			return [true, `${user.username} needs atleast 300 KC before doing duo's.`];
+		if (kc < 150) {
+			return [true, `${user.username} needs atleast 150 KC before doing duo's.`];
 		}
 	}
 
@@ -429,6 +430,9 @@ export async function checkTOBTeam(users: KlasaUser[], isHardMode: boolean): Pro
 	const userWithoutSupplies = users.find(u => !u.owns(minimumTOBSuppliesNeeded));
 	if (userWithoutSupplies) {
 		return `${userWithoutSupplies.username} doesn't have enough supplies`;
+	}
+	if (users.length < 2 || users.length > 5) {
+		return 'TOB team must be 2-5 users';
 	}
 
 	for (const user of users) {
@@ -650,6 +654,14 @@ export function createTOBTeam({
 	}
 
 	if (!wipedRoom) deathDuration = null;
+
+	if (wipedRoom !== null && (!TOBRooms.includes(wipedRoom) || [-1].includes(TOBRooms.indexOf(wipedRoom)))) {
+		logError(new Error('Had non-existant wiped room for tob'), {
+			room: JSON.stringify(wipedRoom),
+			team: JSON.stringify(parsedTeam)
+		});
+		wipedRoom = null;
+	}
 
 	return {
 		duration,

@@ -1,10 +1,12 @@
 import { codeBlock } from '@discordjs/builders';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
-import { client } from '../..';
 import { Emoji } from '../../lib/constants';
+import { Flags } from '../../lib/minions/types';
+import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
+import { BankFlag, bankFlags } from '../../tasks/bankImage';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -35,13 +37,37 @@ export const askCommand: OSBMahojiCommand = {
 			description: 'Text to search your bank with.',
 			required: false
 		},
-		filterOption
+		filterOption,
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'sort',
+			description: 'The method to sort your bank by.',
+			required: false,
+			choices: BankSortMethods.map(i => ({ name: i, value: i }))
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'flag',
+			description: 'A particular flag to apply to your bank.',
+			required: false,
+			choices: bankFlags.map(i => ({ name: i, value: i }))
+		}
 	],
 	run: async ({
 		user,
-		options
-	}: CommandRunOptions<{ page?: number; format?: BankFormat; search?: string; filter?: string; item?: string }>) => {
-		const klasaUser = await client.fetchUser(user.id);
+		options,
+		interaction
+	}: CommandRunOptions<{
+		page?: number;
+		format?: BankFormat;
+		search?: string;
+		filter?: string;
+		item?: string;
+		sort?: BankSortMethod;
+		flag?: BankFlag;
+	}>) => {
+		await interaction.deferReply();
+		const klasaUser = await globalClient.fetchUser(user.id);
 		const baseBank = klasaUser.bank({ withGP: true });
 
 		if (options.page && options.item) {
@@ -77,16 +103,20 @@ export const askCommand: OSBMahojiCommand = {
 			return `${codeBlock('json', json)}`;
 		}
 
+		let flags: Flags = {
+			page: options.page - 1
+		};
+		if (options.sort) flags.sort = options.sort;
+
 		return {
 			attachments: [
 				(
 					await makeBankImage({
 						bank,
 						title: `${klasaUser.username}'s Bank`,
-						flags: {
-							page: options.page - 1
-						},
-						user: klasaUser
+						flags,
+						user: klasaUser,
+						flag: options.flag
 					})
 				).file
 			]

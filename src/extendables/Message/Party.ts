@@ -3,8 +3,8 @@ import { Message, MessageReaction, TextChannel } from 'discord.js';
 import { debounce, noOp, sleep, Time } from 'e';
 import { Extendable, ExtendableStore, KlasaMessage, KlasaUser } from 'klasa';
 
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { ReactionEmoji, SILENT_ERROR } from '../../lib/constants';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { CustomReactionCollector } from '../../lib/structures/CustomReactionCollector';
 import { MakePartyOptions } from '../../lib/types';
 
@@ -106,7 +106,7 @@ export async function setupParty(
 
 			collector.on('collect', async (reaction, user) => {
 				if (user.partial) await user.fetch();
-				if (user.client.settings?.get(ClientSettings.UserBlacklist).includes(user.id)) return;
+				if (BLACKLISTED_USERS.has(user.id)) return;
 				switch (reaction.emoji.id) {
 					case ReactionEmoji.Join: {
 						if (usersWhoConfirmed.includes(user) || partyLockCache.has(user.id)) return;

@@ -5,7 +5,6 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import PromiseQueue from 'p-queue';
 
-import { timePerAlch } from '../../commands/Minion/alch';
 import { Events, PerkTier, userQueues } from '../../lib/constants';
 import { readableStatName } from '../../lib/gear';
 import { KillableMonster } from '../../lib/minions/types';
@@ -15,10 +14,11 @@ import { Skills } from '../../lib/types';
 import { formatItemReqs, itemID, itemNameFromID } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { timePerAlch } from '../../mahoji/lib/abstracted_commands/alchCommand';
 
 function alchPrice(bank: Bank, item: Item, tripLength: number) {
 	const maxCasts = Math.min(Math.floor(tripLength / timePerAlch), bank.amount(item.id));
-	return maxCasts * item.highalch;
+	return maxCasts * (item.highalch ?? 0);
 }
 
 export default class extends Extendable {
@@ -40,7 +40,7 @@ export default class extends Extendable {
 		if (monster.qpRequired && this.settings.get(UserSettings.QP) < monster.qpRequired) {
 			return [
 				false,
-				`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/minion quest\``
+				`You need ${monster.qpRequired} QP to kill ${monster.name}. You can get Quest Points through questing with \`/activities quest\``
 			];
 		}
 
@@ -139,7 +139,7 @@ export default class extends Extendable {
 			.get(UserSettings.FavoriteAlchables)
 			.filter(id => bank.has(id))
 			.map(getOSItem)
-			.filter(i => i.highalch > 0 && i.tradeable)
+			.filter(i => i.highalch !== undefined && i.highalch > 0 && i.tradeable)
 			.sort((a, b) => alchPrice(bank, b, duration) - alchPrice(bank, a, duration));
 	}
 

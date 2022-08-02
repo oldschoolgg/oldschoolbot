@@ -7,7 +7,6 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { randFloat } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
-import itemID from '../../lib/util/itemID';
 
 export default class extends Task {
 	async run(data: CraftingActivityTaskOptions) {
@@ -36,7 +35,7 @@ export default class extends Task {
 			loot.add('crushed gem', crushed);
 		}
 
-		const hasScroll = await user.hasItem(itemID('Scroll of dexterity'));
+		const hasScroll = user.owns('Scroll of dexterity');
 		if (hasScroll) {
 			let _qty = quantityToGive - crushed;
 			_qty = Math.floor(increaseNumByPercent(_qty, 15));
@@ -59,6 +58,6 @@ export default class extends Task {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(this.client, user, channelID, str, ['craft', [quantity, item.name]], undefined, data, loot);
+		handleTripFinish(user, channelID, str, ['craft', { name: item.name, quantity }], undefined, data, loot);
 	}
 }

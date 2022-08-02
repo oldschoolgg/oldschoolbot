@@ -1,13 +1,11 @@
-import { Image } from 'canvas';
-import { Canvas } from 'canvas-constructor';
-import { MessageAttachment } from 'discord.js';
 import { randArrItem, randInt, roll } from 'e';
 import fs from 'fs/promises';
 import { KlasaUser } from 'klasa';
 import { Item } from 'oldschooljs/dist/meta/types';
+import { Canvas, Image } from 'skia-canvas/lib';
 
 import { toTitleCase } from './util';
-import { canvasImageFromBuffer } from './util/canvasUtil';
+import { canvasImageFromBuffer, printWrappedText } from './util/canvasUtil';
 import { textBoxFile } from './util/chatHeadImage';
 import getOSItem from './util/getOSItem';
 
@@ -185,27 +183,22 @@ export const specialHeads: [Promise<Buffer>, number][] = [1234, 1467, 3542].map(
 
 export async function monkeyHeadImage({ monkey, content }: { monkey: Monkey; content: string }) {
 	const canvas = new Canvas(519, 142);
-	canvas.context.imageSmoothingEnabled = false;
+	const ctx = canvas.getContext('2d');
+	ctx.imageSmoothingEnabled = false;
 	const bg = await canvasImageFromBuffer(textBoxFile);
 	const headImage = await canvasImageFromBuffer(
 		await [...normalHeads, ...specialHeads].find(h => h[1] === monkey.head)![0]
 	);
+	ctx.font = '16px RuneScape Quill 8';
+	ctx.drawImage(bg, 0, 0);
+	ctx.drawImage(headImage, 28, bg.height / 2 - headImage.height / 2);
+	ctx.fillStyle = monkey.special ? '#924eff' : '#810303';
+	const nameWidth = Math.floor(ctx.measureText(monkey.name).width);
+	ctx.fillText(monkey.name, 307 - nameWidth / 2, 36);
+	ctx.fillStyle = '#000';
+	printWrappedText(ctx, content, 316, 58, 361);
 
-	const image = await canvas
-		.addImage(bg as any, 0, 0)
-		.addImage(headImage as any, 28, bg.height / 2 - headImage.height / 2)
-		.setTextAlign('center')
-		.setTextFont('16px RuneScape Quill 8')
-
-		.setColor(monkey.special ? '#924eff' : '#810303')
-		.addText(monkey.name, 307, 36)
-
-		.setColor('#000')
-		.addMultilineText(content, 307, 58, 361, 18)
-
-		.toBufferAsync();
-
-	return new MessageAttachment(image);
+	return canvas.toBuffer('png');
 }
 
 export interface Monkey {

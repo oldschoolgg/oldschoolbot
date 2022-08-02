@@ -130,7 +130,7 @@ const Treebeard: CustomMonster = {
 	baseMonster: Monsters.Hespori
 };
 
-const QueenBlackDragon: CustomMonster = {
+export const QueenBlackDragon: CustomMonster = {
 	id: 192_195,
 	name: 'Queen Black Dragon',
 	aliases: ['qbd', 'qdb'],

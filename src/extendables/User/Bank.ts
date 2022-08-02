@@ -1,6 +1,6 @@
 import { User } from 'discord.js';
 import { percentChance } from 'e';
-import { Extendable, ExtendableStore, KlasaClient } from 'klasa';
+import { Extendable, ExtendableStore } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -9,7 +9,7 @@ import { blowpipeDarts, validateBlowpipeData } from '../../lib/minions/functions
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { filterLootReplace } from '../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../lib/types';
-import { bankHasAllItemsFromBank, itemNameFromID, removeBankFromBank, sanitizeBank } from '../../lib/util';
+import { bankHasAllItemsFromBank, itemNameFromID, sanitizeBank } from '../../lib/util';
 import { determineRunes } from '../../lib/util/determineRunes';
 import itemID from '../../lib/util/itemID';
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
@@ -48,13 +48,6 @@ export default class extends Extendable {
 		return totalBank;
 	}
 
-	public async removeGP(this: User, amount: number) {
-		await this.settings.sync(true);
-		const currentGP = this.settings.get(UserSettings.GP);
-		if (currentGP < amount) throw `${this.sanitizedName} doesn't have enough GP.`;
-		this.settings.update(UserSettings.GP, currentGP - amount);
-	}
-
 	public async addItemsToBank(
 		this: User,
 		{
@@ -67,8 +60,6 @@ export default class extends Extendable {
 		return this.queueFn(async user => {
 			await this.settings.sync(true);
 			let loot = items instanceof Bank ? items.clone() : new Bank(items);
-
-			sanitizeBank(loot);
 
 			const previousCL = user.cl();
 
@@ -83,7 +74,7 @@ export default class extends Extendable {
 			// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
 			const coinsInLoot = loot.amount('Coins');
 			if (coinsInLoot > 0) {
-				await mahojiUserSettingsUpdate(this.client as KlasaClient, user.id, {
+				await mahojiUserSettingsUpdate(user.id, {
 					GP: {
 						increment: coinsInLoot
 					}
@@ -91,9 +82,9 @@ export default class extends Extendable {
 				loot.remove('Coins', loot.amount('Coins'));
 			}
 
-			const newBank = user.bank().add(loot).bank;
-
-			await this.settings.update(UserSettings.Bank, newBank);
+			const newBank = user.bank().add(loot);
+			sanitizeBank(newBank);
+			await this.settings.update(UserSettings.Bank, newBank.bank);
 
 			// Re-add the coins to the loot
 			if (coinsInLoot > 0) loot.add('Coins', coinsInLoot);
@@ -107,31 +98,30 @@ export default class extends Extendable {
 
 	public async removeItemsFromBank(this: User, _itemBank: Readonly<ItemBank>) {
 		return this.queueFn(async user => {
-			const itemBank = _itemBank instanceof Bank ? { ..._itemBank.bank } : _itemBank;
+			const itemBank = new Bank(_itemBank instanceof Bank ? { ..._itemBank.bank } : { ..._itemBank });
 
 			await user.settings.sync(true);
 
-			const currentBank = user.settings.get(UserSettings.Bank);
-			const GP = user.settings.get(UserSettings.GP);
-			if (!bankHasAllItemsFromBank({ ...currentBank, 995: GP }, itemBank)) {
+			const owned = this.bank({ withGP: true });
+			if (!owned.has(itemBank)) {
 				throw new Error(
-					`Tried to remove ${new Bank(itemBank)} from ${
-						user.username
-					} but failed because they don't own all these items.`
+					`Tried to remove ${itemBank} from ${user.username} but failed because they don't own all these items.`
 				);
 			}
 
-			const items = {
-				...itemBank
-			};
-
-			if (items[995]) {
-				await user.removeGP(items[995]);
-				delete items[995];
+			if (itemBank.has('Coins')) {
+				await mahojiUserSettingsUpdate(this.id, {
+					GP: {
+						decrement: itemBank.amount('Coins')
+					}
+				});
+				itemBank.remove('Coins', itemBank.amount('Coins'));
 			}
-			if (Object.keys(items).length === 0) return;
 
-			return user.settings.update(UserSettings.Bank, removeBankFromBank(currentBank, items));
+			if (itemBank.length === 0) return;
+			const newBank = this.bank().remove(itemBank);
+			sanitizeBank(newBank);
+			return user.settings.update(UserSettings.Bank, newBank.bank);
 		});
 	}
 
@@ -249,20 +239,6 @@ export default class extends Extendable {
 		return {
 			realCost
 		};
-	}
-
-	public async hasItem(this: User, itemID: number, amount = 1, sync = true) {
-		if (sync) await this.settings.sync(true);
-
-		const bank = this.settings.get(UserSettings.Bank);
-		return typeof bank[itemID] !== 'undefined' && bank[itemID] >= amount;
-	}
-
-	public async numberOfItemInBank(this: User, itemID: number, sync = true) {
-		if (sync) await this.settings.sync(true);
-
-		const bank = this.settings.get(UserSettings.Bank);
-		return typeof bank[itemID] !== 'undefined' ? bank[itemID] : 0;
 	}
 
 	public owns(this: User, bank: ItemBank | Bank | string | number) {

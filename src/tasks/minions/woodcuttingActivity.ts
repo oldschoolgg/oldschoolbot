@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 
 import { Emoji, Events, MAX_LEVEL, MIN_LENGTH_FOR_PET } from '../../lib/constants';
 import addSkillingClueToLoot from '../../lib/minions/functions/addSkillingClueToLoot';
+import Firemaking from '../../lib/skilling/skills/firemaking';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { WoodcuttingActivityTaskOptions } from '../../lib/types/minions';
@@ -47,13 +48,24 @@ export default class extends Task {
 			}
 		}
 
-		const xpRes = await user.addXP({
+		let xpRes = await user.addXP({
 			skillName: SkillsEnum.Woodcutting,
 			amount: xpReceived,
 			duration
 		});
 
 		let loot = new Bank().add(log.id, quantity);
+		const logItem = Firemaking.Burnables.find(i => i.inputLogs === log.id);
+		if (user.hasItemEquippedAnywhere('Inferno adze') && logItem) {
+			loot.remove(log.id, quantity);
+			loot.add('Ashes', quantity);
+			xpRes += '\n';
+			xpRes += await user.addXP({
+				skillName: SkillsEnum.Firemaking,
+				amount: logItem.xp * quantity,
+				duration
+			});
+		}
 
 		if (user.hasItemEquippedAnywhere('Woodcutting master cape')) {
 			loot.multiply(2);
@@ -94,15 +106,6 @@ export default class extends Task {
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
-		handleTripFinish(
-			this.client,
-			user,
-			channelID,
-			str,
-			['chop', [quantity, log.name], true],
-			undefined,
-			data,
-			loot
-		);
+		handleTripFinish(user, channelID, str, ['chop', { name: log.name, quantity }, true], undefined, data, loot);
 	}
 }

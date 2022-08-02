@@ -1,31 +1,57 @@
 import { Prisma, tame_growth } from '@prisma/client';
-import { uniqueArr } from 'e';
+import { Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank, Items } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { convertLVLtoXP, itemID } from 'oldschooljs/dist/util';
 
-import { client } from '../..';
-import { generateNewTame } from '../../commands/bso/nursery';
 import { production } from '../../config';
+import { BathhouseOres, BathwaterMixtures } from '../../lib/baxtorianBathhouses';
+import { allStashUnitsFlat, allStashUnitTiers } from '../../lib/clues/stashUnits';
 import { BitField, MAX_QP } from '../../lib/constants';
+import {
+	gorajanArcherOutfit,
+	gorajanOccultOutfit,
+	gorajanWarriorOutfit,
+	pernixOutfit,
+	torvaOutfit,
+	virtusOutfit
+} from '../../lib/data/CollectionsExport';
+import { leaguesCreatables } from '../../lib/data/creatables/leagueCreatables';
 import { TOBMaxMageGear, TOBMaxMeleeGear, TOBMaxRangeGear } from '../../lib/data/tob';
+import { dyedItems } from '../../lib/dyedItems';
+import { materialTypes } from '../../lib/invention';
+import { DisassemblySourceGroups } from '../../lib/invention/groups';
+import { Inventions, transactMaterialsFromUser } from '../../lib/invention/inventions';
+import { MaterialBank } from '../../lib/invention/MaterialBank';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { allOpenables } from '../../lib/openables';
 import { Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
+import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import Skills from '../../lib/skilling/skills';
+import Farming from '../../lib/skilling/skills/farming';
 import { Gear } from '../../lib/structures/Gear';
 import { tameSpecies } from '../../lib/tames';
-import { stringMatches } from '../../lib/util';
+import { assert, stringMatches } from '../../lib/util';
+import {
+	FarmingPatchName,
+	farmingPatchNames,
+	getFarmingKeyFromName,
+	userGrowingProgressStr
+} from '../../lib/util/farmingHelpers';
 import getOSItem from '../../lib/util/getOSItem';
 import { logError } from '../../lib/util/logError';
 import { parseStringBank } from '../../lib/util/parseStringBank';
+import resolveItems from '../../lib/util/resolveItems';
 import { tiers } from '../../tasks/patreon';
+import { getPOH } from '../lib/abstracted_commands/pohCommand';
+import { allUsableItems } from '../lib/abstracted_commands/useCommand';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { generateNewTame } from './nursery';
 
 async function giveMaxStats(user: KlasaUser, level = 99, qp = MAX_QP) {
 	const paths = Object.values(Skills).map(sk => `skills.${sk.id}`);
@@ -39,13 +65,13 @@ async function givePatronLevel(user: KlasaUser, tier: number) {
 	const tierToGive = tiers[tier];
 	const currentBitfield = user.settings.get(UserSettings.BitField);
 	if (!tier || !tierToGive) {
-		await mahojiUserSettingsUpdate(client, user, {
+		await mahojiUserSettingsUpdate(user, {
 			bitfield: currentBitfield.filter(i => !tiers.map(t => t[1]).includes(i))
 		});
 		return 'Removed patron perks.';
 	}
 	const newBitField: BitField[] = [...currentBitfield, tierToGive[1]];
-	await mahojiUserSettingsUpdate(client, user, {
+	await mahojiUserSettingsUpdate(user, {
 		bitfield: uniqueArr(newBitField)
 	});
 	return `Gave you tier ${tierToGive[1] - 1} patron.`;
@@ -83,7 +109,7 @@ async function giveGear(user: KlasaUser) {
 	await user.settings.update(UserSettings.GP, 1_000_000_000);
 	await user.settings.update(UserSettings.Slayer.SlayerPoints, 100_000);
 
-	await user.getPOH();
+	await getPOH(user.id);
 	await prisma.playerOwnedHouse.update({
 		where: {
 			user_id: user.id
@@ -102,10 +128,10 @@ async function resetAccount(user: KlasaUser) {
 	await prisma.giveaway.deleteMany({ where: { user_id: user.id } });
 	await prisma.lastManStandingGame.deleteMany({ where: { user_id: BigInt(user.id) } });
 	await prisma.minigame.deleteMany({ where: { user_id: user.id } });
-	await prisma.newUser.deleteMany({ where: { id: user.id } });
 	await prisma.playerOwnedHouse.deleteMany({ where: { user_id: user.id } });
-	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await prisma.user.deleteMany({ where: { id: user.id } });
+	await prisma.newUser.deleteMany({ where: { id: user.id } });
+	await prisma.slayerTask.deleteMany({ where: { user_id: user.id } });
 	await user.settings.sync(true);
 	return 'Reset all your data.';
 }
@@ -127,7 +153,7 @@ async function setMinigameKC(user: KlasaUser, _minigame: string, kc: number) {
 async function setXP(user: KlasaUser, skillName: string, xp: number) {
 	const skill = Object.values(Skills).find(c => c.id === skillName);
 	if (!skill) return 'No xp set because invalid skill.';
-	await mahojiUserSettingsUpdate(client, user, {
+	await mahojiUserSettingsUpdate(user, {
 		[`skills_${skill.id}`]: xp
 	});
 	return `Set ${skill.name} XP to ${xp}.`;
@@ -136,9 +162,84 @@ const openablesBank = new Bank();
 for (const i of allOpenables.values()) {
 	openablesBank.add(i.id, 100);
 }
+const baxBathBank = new Bank();
+for (const o of BathhouseOres) {
+	baxBathBank.add(o.item.id, 100_000);
+	baxBathBank.add(o.logs.id, 100_000);
+}
+for (const m of BathwaterMixtures) {
+	for (const i of m.items) baxBathBank.add(i.id, 100_000);
+}
+baxBathBank.add('Coal', 100_000);
+
+const equippablesBank = new Bank();
+for (const i of Items.filter(i => Boolean(i.equipment) && Boolean(i.equipable)).values()) {
+	equippablesBank.add(i.id);
+}
+
+const farmingPreset = new Bank();
+for (const plant of Farming.Plants) {
+	farmingPreset.add(plant.inputItems.clone().multiply(100));
+	if (plant.protectionPayment) {
+		farmingPreset.add(plant.protectionPayment.clone().multiply(100));
+	}
+}
+farmingPreset.add('Ultracompost', 10_000);
+const usables = new Bank();
+for (const usable of allUsableItems) usables.add(usable, 100);
+
+const bsoGear = new Bank();
+for (const i of [
+	...gorajanArcherOutfit,
+	...gorajanOccultOutfit,
+	...gorajanWarriorOutfit,
+	...torvaOutfit,
+	...virtusOutfit,
+	...pernixOutfit,
+	...dyedItems.map(i => i.baseItem.id),
+	...resolveItems([
+		'Ignis ring(i)',
+		'TzKal cape',
+		'Arcane blast necklace',
+		'Farsight snapshot necklace',
+		"Brawler's hook necklace"
+	])
+]) {
+	bsoGear.add(i);
+}
+
+const disassembly = new Bank();
+for (const group of DisassemblySourceGroups) {
+	for (const item of group.items.map(i => i.item).flat(10)) {
+		disassembly.add(item.id, 1000);
+	}
+}
+const leaguesPreset = new Bank();
+for (const a of leaguesCreatables) leaguesPreset.add(a.outputItems);
+
+const allStashUnitItems = new Bank();
+for (const unit of allStashUnitsFlat) {
+	for (const i of [unit.items].flat(2)) {
+		allStashUnitItems.add(i);
+	}
+}
+for (const tier of allStashUnitTiers) {
+	allStashUnitItems.add(tier.cost.clone().multiply(tier.units.length));
+}
+
 const spawnPresets = [
 	['openables', openablesBank],
-	['random', new Bank()]
+	['random', new Bank()],
+	['equippables', equippablesBank],
+	['farming', farmingPreset],
+
+	['baxtorian_bathhouse', baxBathBank],
+	['usables', usables],
+	['bsogear', bsoGear],
+	['disassembly', disassembly],
+	['usables', usables],
+	['leagues', leaguesPreset],
+	['stashunits', allStashUnitItems]
 ] as const;
 
 const nexSupplies = new Bank()
@@ -146,6 +247,8 @@ const nexSupplies = new Bank()
 	.add('Saradomin brew(4)', 100)
 	.add('Super restore(4)', 100)
 	.add('Ranging potion(4)', 100);
+
+const thingsToWipe = ['bank', 'materials'] as const;
 
 export const testPotatoCommand: OSBMahojiCommand | null = production
 	? null
@@ -155,9 +258,33 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 			options: [
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'wipe',
+					description: 'Wipe/reset a part of your account.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'thing',
+							description: 'The thing you want to wipe.',
+							required: true,
+							choices: thingsToWipe.map(i => ({ name: i, value: i }))
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'spawn',
 					description: 'Spawn stuff.',
 					options: [
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'inventionmax',
+							description: 'Gets you totally maxed for invention.'
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'materials',
+							description: 'Spawns you 10,000 of every material.'
+						},
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'preset',
@@ -209,7 +336,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							description: 'The xp you want.',
 							required: true,
 							min_value: 1,
-							max_value: 200_000_000
+							max_value: 500_000_000
 						}
 					]
 				},
@@ -247,6 +374,11 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'reset',
 					description: 'Totally reset your account.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'refreshic',
+					description: 'Refresh IC.'
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
@@ -350,6 +482,25 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 					type: ApplicationCommandOptionType.Subcommand,
 					name: 'spawntames',
 					description: 'Spawns you adult tames.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'forcegrow',
+					description: 'Force a plant to grow.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'patch_name',
+							description: 'The patches you want to harvest.',
+							required: true,
+							choices: farmingPatchNames.map(i => ({ name: i, value: i }))
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'stresstest',
+					description: 'Stress test.'
 				}
 			],
 			run: async ({
@@ -362,27 +513,75 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 				reset?: {};
 				setminigamekc?: { minigame: string; kc: number };
 				setxp?: { skill: string; xp: number };
-				spawn?: { preset?: string; collectionlog?: boolean; item?: string; items?: string };
+				spawn?: {
+					preset?: string;
+					collectionlog?: boolean;
+					item?: string;
+					items?: string;
+					materials?: boolean;
+					inventionmax?: boolean;
+				};
 				nexhax?: {};
 				badnexgear?: {};
 				setmonsterkc?: { monster: string; kc: string };
 				irontoggle?: {};
 				spawntames?: {};
+				forcegrow?: { patch_name: FarmingPatchName };
+				stresstest?: {};
+				wipe?: { thing: typeof thingsToWipe[number] };
+				refreshic?: {};
 			}>) => {
 				if (production) {
 					logError('Test command ran in production', { userID: userID.toString() });
 					return 'This will never happen...';
 				}
-				const user = await client.fetchUser(userID.toString());
+				const user = await globalClient.fetchUser(userID.toString());
 				const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+				if (options.refreshic) {
+					await mahojiUserSettingsUpdate(user.id, {
+						last_item_contract_date: 0
+					});
+					return 'reset your last contract date';
+				}
 				if (options.irontoggle) {
 					const current = mahojiUser.minion_ironman;
-					await mahojiUserSettingsUpdate(client, user.id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						minion_ironman: !current
 					});
 					return `You now ${!current ? 'ARE' : 'ARE NOT'} an ironman.`;
 				}
+				if (options.wipe) {
+					let { thing } = options.wipe;
+					if (thing === 'bank') {
+						await mahojiUserSettingsUpdate(user.id, {
+							bank: {}
+						});
+						return 'Reset your bank.';
+					}
+					if (thing === 'materials') {
+						await mahojiUserSettingsUpdate(user.id, {
+							materials_owned: {},
+							researched_materials_bank: {}
+						});
+						return 'Reset your materials owned.';
+					}
+					return 'Invalid thing to reset.';
+				}
 				if (options.max) {
+					await roboChimpClient.user.upsert({
+						where: {
+							id: BigInt(user.id)
+						},
+						create: {
+							id: BigInt(user.id),
+							leagues_points_balance_osb: 25_000
+						},
+						update: {
+							leagues_points_balance_osb: {
+								increment: 25_000
+							}
+						}
+					});
 					return giveMaxStats(user);
 				}
 				if (options.patron) {
@@ -427,6 +626,26 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 							bankToGive.add(i.id, qty || 1);
 						}
 					}
+					if (options.spawn.materials) {
+						const loot = new MaterialBank();
+						for (const t of materialTypes) loot.add(t, 10_000);
+						await transactMaterialsFromUser({ userID: BigInt(user.id), add: loot });
+						return `Gave you ${loot}.`;
+					}
+					if (options.spawn.inventionmax) {
+						const loot = new MaterialBank();
+						for (const t of materialTypes) loot.add(t, 10_000);
+						await transactMaterialsFromUser({ userID: BigInt(user.id), add: loot });
+						await mahojiUserSettingsUpdate(user.id, {
+							unlocked_blueprints: Inventions.map(i => i.id),
+							skills_invention: 200_000_000
+						});
+						const bBank = new Bank();
+						for (const inv of Inventions) bBank.add(inv.item.id);
+						await user.addItemsToBank({ items: bBank });
+
+						return `Gave you ${loot}, ${bBank}, 200m invention xp, unlocked all blueprints.`;
+					}
 
 					await user.addItemsToBank({ items: bankToGive, collectionLog: Boolean(collectionlog) });
 					return `Spawned: ${bankToGive.toString().slice(0, 500)}.`;
@@ -446,7 +665,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring (i)'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(client, user.id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						skills_ranged: convertLVLtoXP(99),
 						skills_prayer: convertLVLtoXP(99),
@@ -472,7 +691,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						[EquipmentSlot.Ring]: 'Archers ring'
 					});
 					gear.ammo!.quantity = 1_000_000;
-					await mahojiUserSettingsUpdate(client, user.id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						gear_range: gear.raw() as Prisma.InputJsonObject,
 						bank: user.bank().add(nexSupplies).bank
 					});
@@ -483,7 +702,7 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						stringMatches(m.name, options.setmonsterkc?.monster ?? '')
 					);
 					if (!monster) return 'Invalid monster';
-					await mahojiUserSettingsUpdate(client, user.id, {
+					await mahojiUserSettingsUpdate(user.id, {
 						monsterScores: {
 							...(mahojiUser.monsterScores as Record<string, unknown>),
 							[monster.id]: options.setmonsterkc.kc ?? 1
@@ -504,6 +723,47 @@ export const testPotatoCommand: OSBMahojiCommand | null = production
 						});
 					}
 					return 'Gave you an adult of each tame.';
+				}
+				if (options.forcegrow) {
+					const farmingDetails = await getFarmingInfo(userID);
+					const thisPlant = farmingDetails.patchesDetailed.find(
+						p => p.plant?.seedType === options.forcegrow?.patch_name
+					);
+					if (!thisPlant || !thisPlant.plant) return 'You have nothing planted there.';
+					const rawPlant = farmingDetails.patches[thisPlant.plant.seedType];
+
+					await mahojiUserSettingsUpdate(user.id, {
+						[getFarmingKeyFromName(thisPlant.plant.seedType)]: {
+							...rawPlant,
+							plantTime: Date.now() - Time.Month
+						}
+					});
+					return userGrowingProgressStr((await getFarmingInfo(userID)).patchesDetailed);
+				}
+				if (options.stresstest) {
+					const currentBalance = user.settings.get(UserSettings.GP);
+					const currentTbow = user.bank().amount('Twisted bow');
+
+					const b = new Bank().add('Coins', 1).add('Twisted bow');
+					for (let i = 0; i < 30; i++) {
+						await user.addItemsToBank({ items: b });
+						assert(user.settings.get(UserSettings.GP) === currentBalance + 1);
+						assert(user.bank().amount('Twisted bow') === currentTbow + 1);
+						await user.removeItemsFromBank(b);
+						await user.addItemsToBank({ items: b });
+						await user.removeItemsFromBank(b);
+						await user.addItemsToBank({ items: b });
+						await user.removeItemsFromBank(b);
+
+						const a = user.bank().bank;
+						if (!a[itemID('Twisted bow')]) a[itemID('Twisted bow')] = 0;
+						a[itemID('Twisted bow')] += 1.5;
+						await user.settings.update(UserSettings.Bank, a);
+						await user.removeItemsFromBank(new Bank().add('Twisted bow'));
+					}
+					const newBal = user.settings.get(UserSettings.GP);
+					const newTbow = user.bank().amount('Twisted bow');
+					return `Bank/GP: ${currentBalance === newBal && currentTbow === newTbow ? 'OK' : 'FAIL'}`;
 				}
 				return 'Nothin!';
 			}

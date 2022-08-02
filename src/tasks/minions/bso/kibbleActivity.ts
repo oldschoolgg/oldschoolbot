@@ -28,11 +28,10 @@ export default class extends Task {
 		});
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, your minion finished cooking ${quantity}x ${kibble.item.name}. ${xpRes}`,
-			['kibble', [quantity, kibble.item.name], true],
+			['kibble', { quantity, kibble: kibble.item.name }, true],
 			undefined,
 			data,
 			loot

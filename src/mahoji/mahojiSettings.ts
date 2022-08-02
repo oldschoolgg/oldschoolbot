@@ -1,14 +1,8 @@
-import type { ClientStorage, Guild, Prisma, User } from '@prisma/client';
+import type { ClientStorage, Guild, Prisma, User, UserStats } from '@prisma/client';
 import { Guild as DJSGuild, MessageButton } from 'discord.js';
 import { Time } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
-import {
-	APIInteractionDataResolvedGuildMember,
-	APIUser,
-	InteractionResponseType,
-	InteractionType,
-	MessageFlags
-} from 'mahoji';
+import { KlasaUser } from 'klasa';
+import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
@@ -21,6 +15,8 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Gear } from '../lib/structures/Gear';
 import type { ItemBank, Skills as TSkills } from '../lib/types';
 import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
+import { logError } from '../lib/util/logError';
+import { respondToButton } from '../lib/util/respondToButton';
 
 export function mahojiParseNumber({
 	input,
@@ -41,7 +37,7 @@ export function mahojiParseNumber({
 }
 
 export async function handleMahojiConfirmation(interaction: SlashCommandInteraction, str: string, _users?: bigint[]) {
-	const channel = interaction.client._djsClient.channels.cache.get(interaction.channelID.toString());
+	const channel = globalClient.channels.cache.get(interaction.channelID.toString());
 	if (!channelIsSendable(channel)) throw new Error('Channel for confirmation not found.');
 	if (!interaction.deferred) {
 		await interaction.deferReply();
@@ -78,12 +74,12 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 			confirmed.push(id);
 			if (!isConfirmed()) return;
 			collector.stop();
-			await confirmMessage.delete();
+			if (!confirmMessage.deleted) await confirmMessage.delete();
 			resolve();
 		}
 
 		const cancel = async (reason: 'time' | 'cancel') => {
-			await confirmMessage.delete();
+			if (!confirmMessage.deleted) await confirmMessage.delete();
 			await interaction.respond({
 				type: InteractionType.ApplicationCommand,
 				response: {
@@ -110,7 +106,7 @@ export async function handleMahojiConfirmation(interaction: SlashCommandInteract
 				return cancel('cancel');
 			}
 			if (i.customID === 'CONFIRM') {
-				i.reply({ ephemeral: true, content: 'You confirmed.' });
+				respondToButton(i.id, i.token);
 				return confirm(id);
 			}
 		});
@@ -141,44 +137,57 @@ export async function mahojiUsersSettingsFetch(user: bigint | string, select?: P
 	return result as User;
 }
 
-export async function mahojiUserSettingsUpdate(
-	client: KlasaClient,
-	user: string | bigint | KlasaUser,
-	data: Prisma.UserUpdateArgs['data']
-) {
-	const klasaUser = typeof user === 'string' || typeof user === 'bigint' ? await client.fetchUser(user) : user;
+export async function mahojiUserSettingsUpdate(user: string | bigint | KlasaUser, data: Prisma.UserUpdateArgs['data']) {
+	try {
+		const klasaUser =
+			typeof user === 'string' || typeof user === 'bigint' ? await globalClient.fetchUser(user) : user;
 
-	const newUser = await prisma.user.update({
-		data,
-		where: {
-			id: klasaUser.id
+		const newUser = await prisma.user.update({
+			data,
+			where: {
+				id: klasaUser.id
+			}
+		});
+
+		await klasaUser.settings.sync(true);
+
+		const errorContext = {
+			user_id: klasaUser.id
+		};
+
+		assert(
+			BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP,
+			'Patched user should match',
+			errorContext
+		);
+		assert(
+			klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points,
+			'Patched user should match',
+			errorContext
+		);
+		const klasaBank = klasaUser.settings.get(UserSettings.Bank);
+		const newBank = newUser.bank;
+		for (const [key, value] of Object.entries(klasaBank)) {
+			assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
 		}
-	});
+		assert(
+			klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
+			'Patched user should match',
+			errorContext
+		);
+		assert(
+			JSON.stringify(klasaUser.settings.get('gear.melee')) === JSON.stringify(newUser.gear_melee),
+			'Melee gear should match'
+		);
 
-	await klasaUser.settings.sync(true);
-
-	const errorContext = {
-		user_id: klasaUser.id
-	};
-
-	assert(BigInt(klasaUser.settings.get(UserSettings.GP)) === newUser.GP, 'Patched user should match', errorContext);
-	assert(
-		klasaUser.settings.get(UserSettings.LMSPoints) === newUser.lms_points,
-		'Patched user should match',
-		errorContext
-	);
-	const klasaBank = klasaUser.settings.get(UserSettings.Bank);
-	const newBank = newUser.bank;
-	for (const [key, value] of Object.entries(klasaBank)) {
-		assert((newBank as any)[key] === value, `Item[${key}] in patched user should match`, errorContext);
+		return { newUser };
+	} catch (err) {
+		logError(err, {
+			user_id: user.toString(),
+			updated_data: JSON.stringify(data)
+		});
+		throw err;
 	}
-	assert(
-		klasaUser.settings.get(UserSettings.HonourLevel) === newUser.honour_level,
-		'Patched user should match',
-		errorContext
-	);
-
-	return { newUser };
 }
 
 /**
@@ -204,11 +213,7 @@ export async function mahojiGuildSettingsFetch(guild: string | DJSGuild) {
 	return result;
 }
 
-export async function mahojiGuildSettingsUpdate(
-	client: KlasaClient,
-	guild: string | DJSGuild,
-	data: Prisma.GuildUpdateArgs['data']
-) {
+export async function mahojiGuildSettingsUpdate(guild: string | DJSGuild, data: Prisma.GuildUpdateArgs['data']) {
 	const guildID = typeof guild === 'string' ? guild : guild.id;
 
 	const newGuild = await prisma.guild.update({
@@ -218,13 +223,8 @@ export async function mahojiGuildSettingsUpdate(
 		}
 	});
 	untrustedGuildSettingsCache.set(newGuild.id, newGuild);
-	await (client.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
+	await (globalClient.gateways.get('guilds') as any)?.get(guildID)?.sync(true);
 	return { newGuild };
-}
-
-export interface MahojiUserOption {
-	user: APIUser;
-	member: APIInteractionDataResolvedGuildMember;
 }
 
 export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSkills> {
@@ -252,7 +252,8 @@ export function getSkillsOfMahojiUser(user: User, levels = false): Required<TSki
 		ranged: Number(user.skills_ranged),
 		hitpoints: Number(user.skills_hitpoints),
 		slayer: Number(user.skills_slayer),
-		dungeoneering: Number(user.skills_dungeoneering)
+		dungeoneering: Number(user.skills_dungeoneering),
+		invention: Number(user.skills_invention)
 	};
 	if (levels) {
 		for (const [key, val] of Object.entries(skills) as [keyof TSkills, number][]) {
@@ -292,6 +293,42 @@ export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSele
 	return clientSettings as ClientStorage;
 }
 
+export async function mahojiClientSettingsUpdate(data: Prisma.ClientStorageUpdateInput) {
+	await prisma.clientStorage.update({
+		where: {
+			id: CLIENT_ID
+		},
+		data
+	});
+	await globalClient.settings.sync(true);
+}
+
 export function getMahojiBank(user: User) {
 	return new Bank(user.bank as ItemBank);
+}
+
+export async function trackClientBankStats(key: 'clue_upgrader_loot' | 'portable_tanner_loot', newItems: Bank) {
+	const currentTrackedLoot = await mahojiClientSettingsFetch({ [key]: true });
+	await mahojiClientSettingsUpdate({
+		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
+	});
+}
+
+export async function userStatsUpdate(userID: string, data: (u: UserStats) => Prisma.UserStatsUpdateInput) {
+	const id = Number(userID);
+	const userStats = await prisma.userStats.upsert({
+		create: {
+			user_id: id
+		},
+		update: {},
+		where: {
+			user_id: id
+		}
+	});
+	await prisma.userStats.update({
+		data: data(userStats),
+		where: {
+			user_id: id
+		}
+	});
 }

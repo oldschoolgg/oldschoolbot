@@ -4,12 +4,13 @@ import { KlasaUser } from 'klasa';
 import { Bank, LootTable, Openables } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { Mimic } from 'oldschooljs/dist/simulation/misc';
+import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/HallowedSack';
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
 import { bsoOpenables } from './bsoOpenables';
+import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
-import { clueHunterOutfit, cluesRaresCL } from './data/CollectionsExport';
-import ClueTiers from './minions/data/clueTiers';
+import { clueHunterOutfit } from './data/CollectionsExport';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { UserSettings } from './settings/types/UserSettings';
@@ -52,11 +53,34 @@ export interface UnifiedOpenable {
 	excludeFromOpenAll?: true;
 }
 
-const clueItemsToNotifyOf = cluesRaresCL
+const clueItemsToNotifyOf = resolveItems([
+	'3rd age range coif',
+	'3rd age range top',
+	'3rd age range legs',
+	'3rd age vambraces',
+	'3rd age robe top',
+	'3rd age robe',
+	'3rd age mage hat',
+	'3rd age amulet',
+	'3rd age plateskirt',
+	'3rd age platelegs',
+	'3rd age platebody',
+	'3rd age full helmet',
+	'3rd age kiteshield',
+	'3rd age longsword',
+	'3rd age wand',
+	'3rd age cloak',
+	'3rd age bow',
+	'3rd age pickaxe',
+	'3rd age axe',
+	'3rd age druidic robe bottoms',
+	'3rd age druidic robe top',
+	'3rd age druidic staff',
+	'3rd age druidic cloak'
+])
 	.concat(ClueTiers.filter(i => Boolean(i.milestoneReward)).map(i => i.milestoneReward!.itemReward))
 	.concat(
 		resolveItems([
-			'Bloodhound',
 			'Dwarven blessing',
 			'First age tiara',
 			'First age amulet',
@@ -64,7 +88,8 @@ const clueItemsToNotifyOf = cluesRaresCL
 			'First age bracelet',
 			'First age ring'
 		])
-	);
+	)
+	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {
@@ -103,10 +128,10 @@ for (const clueTier of ClueTiers) {
 				mimicNumber > 0 ? `with ${mimicNumber} mimic${mimicNumber > 1 ? 's' : ''}` : ''
 			}`;
 			if (extraClueRolls > 0) {
-				message += `${extraClueRolls} extra rolls`;
+				message += `${mimicNumber ? ' ' : ''}${extraClueRolls} extra rolls`;
 			}
 
-			const nthCasket = (user.settings.get(UserSettings.ClueScores)[clueTier.id] ?? 0) + quantity;
+			const nthCasket = (user.settings.get(UserSettings.OpenableScores)[clueTier.id] ?? 0) + quantity;
 
 			// If this tier has a milestone reward, and their new score meets the req, and
 			// they don't own it already, add it to the loot.
@@ -134,8 +159,6 @@ for (const clueTier of ClueTiers) {
 				return { bank: loot };
 			}
 
-			await user.incrementClueScore(clueTier.id, quantity);
-
 			if (mimicNumber > 0) {
 				await user.incrementMonsterScore(MIMIC_MONSTER_ID, mimicNumber);
 			}
@@ -146,6 +169,9 @@ for (const clueTier of ClueTiers) {
 		allItems: clueTier.allItems
 	});
 }
+
+const masterClue = clueOpenables.find(c => c.name === 'Reward casket (master)');
+masterClue!.allItems.push(itemID('Clue scroll (grandmaster)'));
 
 const osjsOpenables: UnifiedOpenable[] = [
 	{
@@ -272,7 +298,7 @@ const osjsOpenables: UnifiedOpenable[] = [
 		name: 'Seed pack',
 		id: 22_993,
 		openedItem: getOSItem(22_993),
-		aliases: ['seed pack'],
+		aliases: ['seed pack', 'sp'],
 		output: async (
 			args: OpenArgs
 		): Promise<{
@@ -344,6 +370,14 @@ export const allOpenables: UnifiedOpenable[] = [
 		aliases: ['builders supply crate'],
 		output: BuildersSupplyCrateTable,
 		allItems: BuildersSupplyCrateTable.allItems
+	},
+	{
+		name: 'Hallowed sack',
+		id: 24_946,
+		openedItem: getOSItem('Hallowed sack'),
+		aliases: ['hallowed sack', 'hallow sack'],
+		output: HallowedSackTable,
+		allItems: HallowedSackTable.allItems
 	},
 	{
 		name: 'Infernal eel',

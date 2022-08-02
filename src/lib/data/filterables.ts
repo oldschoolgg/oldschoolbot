@@ -8,6 +8,8 @@ import { MediumClueTable } from 'oldschooljs/dist/simulation/clues/Medium';
 
 import { tmbTable, umbTable } from '../bsoOpenables';
 import { customItems } from '../customItems/util';
+import { materialTypes } from '../invention';
+import { DisassemblySourceGroups } from '../invention/groups';
 import { monkeyEatables } from '../monkeyRumble';
 import { allOpenables } from '../openables';
 import { GrandmasterClueTable } from '../simulation/grandmasterClue';
@@ -274,6 +276,7 @@ const barrows = resolveItems([
 
 const seeds = resolveItems([
 	'Pineapple seed',
+	'Crystal acorn',
 	'Magic seed',
 	'Yew seed',
 	'Maple seed',
@@ -553,7 +556,7 @@ const godwars = resolveItems([
 	...godwarsGear
 ]);
 
-const nex = resolveItems([...torvaOutfit, ...pernixOutfit, ...virtusOutfit, ...nexCL]);
+const nex = resolveItems(['Virtus book', 'Virtus wand', ...torvaOutfit, ...pernixOutfit, ...virtusOutfit, ...nexCL]);
 
 const dagannothkings = resolveItems([
 	'Berserker ring',
@@ -1229,4 +1232,16 @@ for (const clGroup of Object.values(allCollectionLogs).map(c => c.activities)) {
 			});
 		}
 	}
+}
+
+for (const type of materialTypes) {
+	const items = DisassemblySourceGroups.filter(i => Boolean(i.parts[type]))
+		.map(i => i.items.map(i => (Array.isArray(i.item) ? i.item : [i.item])))
+		.flat(5)
+		.map(i => i.id);
+	filterableTypes.push({
+		name: `${type}-material`,
+		aliases: [type],
+		items: () => items
+	});
 }

@@ -31,7 +31,8 @@ export enum SkillsEnum {
 	Ranged = 'ranged',
 	Hitpoints = 'hitpoints',
 	Dungeoneering = 'dungeoneering',
-	Slayer = 'slayer'
+	Slayer = 'slayer',
+	Invention = 'invention'
 }
 
 export interface Ore {
@@ -44,6 +45,7 @@ export interface Ore {
 	nuggets?: boolean;
 	minerals?: number;
 	clueScrollChance?: number;
+	requiredPickaxes?: number[];
 }
 
 export interface Log {
@@ -109,11 +111,12 @@ export interface Bar {
 	xp: number;
 	id: number;
 	name: string;
-	inputOres: ItemBank;
+	inputOres: Bank;
 	/**
 	 * Chance that the ore will fail to smelt (i.e iron), out of 100
 	 */
 	chanceOfFail: number;
+	timeToUse: number;
 }
 
 export interface BlastableBar {
@@ -133,8 +136,9 @@ export interface SmithedItem {
 	inputBars: ItemBank;
 	timeToUse: number;
 	outputMultiple: number;
-	requiresBlacksmith?: boolean;
 	qpRequired?: number;
+	requiresBlacksmith?: boolean;
+	cantBeDoubled?: boolean;
 }
 
 export interface Craftable {
@@ -149,6 +153,8 @@ export interface Craftable {
 	bankChest?: boolean;
 	outputMultiple?: number;
 	otherSkillRequirements?: Partial<Skills>;
+	qpRequired?: number;
+	wcLvl?: number;
 }
 
 export interface Fletchable {

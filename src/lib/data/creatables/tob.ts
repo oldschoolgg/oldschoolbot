@@ -40,6 +40,15 @@ export const tobCreatables: Createable[] = [
 		})
 	},
 	{
+		name: 'Revert holy sanguinesti staff',
+		inputItems: new Bank({
+			'Holy sanguinesti staff': 1
+		}),
+		outputItems: new Bank({
+			'Holy sanguinesti staff (uncharged)': 1
+		})
+	},
+	{
 		name: 'Revert scythe of vitur',
 		inputItems: new Bank({
 			'Scythe of vitur': 1

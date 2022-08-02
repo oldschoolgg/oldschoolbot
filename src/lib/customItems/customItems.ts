@@ -1,10 +1,16 @@
+// Base custom items are referenced elsewhere in the custom items files and must be loaded first
+import './baseCustomItems';
 import '../deletedItems';
+import './invention';
 import './customItemsFancy';
 import './farming';
 import './pets';
 import './fishing';
 import './nex';
 import './nonCustomChanges';
+import './baxBath';
+import './dwarven';
+import './moktang';
 
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 
@@ -18,40 +24,6 @@ setCustomItem(3713, 'Holiday Mystery Box', 'Mystery box', {}, 100_000);
 setCustomItem(13_345, 'Tester Gift Box', 'Mystery box', {}, 100_000);
 setCustomItem(12_592, 'Divine sigil', 'Elysian sigil', {}, 930_000_000);
 setCustomItem(3454, 'Divine spirit shield', 'Elysian spirit shield', {}, 900_000_000);
-
-// Dwarven Items
-
-// 2x faster chopping and wintertodt
-setCustomItem(472, 'Dwarven greataxe', 'Dragon pickaxe', {}, 1_000_000);
-// 2x faster mining
-setCustomItem(476, 'Dwarven pickaxe', 'Dragon pickaxe', {}, 1_000_000);
-// 2x faster smithing and crafting
-setCustomItem(474, 'Dwarven greathammer', 'Dragon warhammer', {}, 1_000_000);
-// 2x faster smelting
-setCustomItem(12_594, 'Dwarven gauntlets', 'Cooking gauntlets', {}, 1_000_000);
-
-setCustomItem(478, 'Dwarven knife', 'Bronze knife', {}, 1_000_000);
-// setCustomItem(11923, 'Dwarven tinderbox', ('Tinderbox'));
-
-setCustomItem(506, 'Dwarven bar', 'Steel bar', {}, 500_000);
-setCustomItem(508, 'Dwarven ore', 'Iron ore', {}, 100_000);
-
-setCustomItem(
-	6741,
-	'Dwarven warhammer',
-	'Dragon warhammer',
-	{
-		equipment: {
-			...getOSItem('Dragon warhammer').equipment!,
-			requirements: {
-				strength: 99
-			}
-		}
-	},
-	1_000_000_000
-);
-
-setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
 
 // Abyssal Dragon
 // Abyssal lance || 24218 = Guthixian icon [DUPLICATE]
@@ -105,37 +77,6 @@ setCustomItem(8871, 'Dwarven crate', 'Mystery box', {}, 100_000);
 // 		requirements: null
 // 	}
 // });
-
-// Abyssal Cape || 24214 = Victor's cape (100) [DUPLICATE]
-setCustomItem(
-	24_214,
-	'Abyssal cape',
-	'Infernal cape',
-	{
-		tradeable: true,
-		tradeable_on_ge: true,
-		wiki_name: 'Abyssal cape',
-		equipment: {
-			attack_stab: 12,
-			attack_slash: 12,
-			attack_crush: 12,
-			attack_magic: 6,
-			attack_ranged: 6,
-			defence_stab: 36,
-			defence_slash: 36,
-			defence_crush: 36,
-			defence_magic: 36,
-			defence_ranged: 36,
-			melee_strength: 24,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 10,
-			slot: EquipmentSlot.Cape,
-			requirements: null
-		}
-	},
-	100_000_000
-);
 
 // Abyssal thread || 24212 = Victor's cape (50) [DUPLICATE]
 setCustomItem(24_212, 'Abyssal thread', 'Giant pouch', {}, 10_000_000);
@@ -356,12 +297,48 @@ setCustomItem(
 );
 // ----------
 // MMMR
-setCustomItem(40_061, 'Beginner rumble greegree', 'Bronze dagger', {}, 999_995);
-setCustomItem(40_062, 'Intermediate rumble greegree', 'Bronze dagger', {}, 999_996);
-setCustomItem(40_063, 'Ninja rumble greegree', 'Bronze dagger', {}, 999_997);
-setCustomItem(40_064, 'Expert ninja rumble greegree', 'Bronze dagger', {}, 999_998);
-setCustomItem(40_065, 'Elder rumble greegree', 'Bronze dagger', {}, 999_999);
-setCustomItem(40_066, 'Gorilla rumble greegree', 'Bronze dagger', {}, 1_000_000);
+setCustomItem(
+	40_061,
+	'Beginner rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_000
+);
+setCustomItem(
+	40_062,
+	'Intermediate rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_001
+);
+setCustomItem(
+	40_063,
+	'Ninja rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_002
+);
+setCustomItem(
+	40_064,
+	'Expert ninja rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_003
+);
+setCustomItem(
+	40_065,
+	'Elder rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_004
+);
+setCustomItem(
+	40_066,
+	'Gorilla rumble greegree',
+	'Bronze dagger',
+	{ customItemData: { isSuperUntradeable: true, cantBeSacrificed: true } },
+	10_005
+);
 
 setCustomItem(40_067, 'Dwarven warnana', 'Dwarven warhammer', {}, 1_000_000_000);
 setCustomItem(40_068, 'Twisted bownana', 'Twisted bow', {}, 500_000_000);
@@ -616,7 +593,7 @@ setCustomItem(47_521, 'Beach mystery box', 'Mystery box', {}, 1_000_000);
 setCustomItem(47_523, 'Beach ball', 'Coal', {}, 100_000);
 setCustomItem(47_524, 'Water balloon', 'Coal', {}, 100_000);
 setCustomItem(47_525, 'Ice cream', 'Coal', {}, 100_000);
-setCustomItem(47_526, 'Crab hat', 'Coal', {}, 100_000);
+setCustomItem(47_526, 'Crab hat', 'Santa hat', {}, 100_000);
 
 setCustomItem(47_528, "Bryophyta's staff(i)", "Bryophyta's staff", {}, 1_000_000);
 
@@ -838,150 +815,6 @@ setCustomItem(48_014, 'Gorajan bonecrusher (u)', 'Coal', {}, 20_000_000);
 /**
  * END DUNGEONEERING
  */
-
-/**
- * START DWARVEN ARMOR
- */
-setCustomItem(
-	48_015,
-	'Dwarven full helm',
-	'Torva full helm',
-	{
-		equipment: {
-			attack_stab: 7,
-			attack_slash: 7,
-			attack_crush: 28,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 5,
-			defence_slash: 55,
-			defence_crush: 115,
-			defence_magic: -5,
-			defence_ranged: 55,
-
-			melee_strength: 3,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Head,
-			requirements: null
-		}
-	},
-	50_000_000
-);
-setCustomItem(
-	48_016,
-	'Dwarven platebody',
-	'Torva platebody',
-	{
-		equipment: {
-			attack_stab: 12,
-			attack_slash: 12,
-			attack_crush: 43,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 65,
-			defence_slash: 65,
-			defence_crush: 200,
-			defence_magic: 0,
-			defence_ranged: 105,
-
-			melee_strength: 2,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Body,
-			requirements: null
-		}
-	},
-	50_000_000
-);
-setCustomItem(
-	48_017,
-	'Dwarven platelegs',
-	'Torva platelegs',
-	{
-		equipment: {
-			attack_stab: 8,
-			attack_slash: 8,
-			attack_crush: 34,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 50,
-			defence_slash: 50,
-			defence_crush: 190,
-			defence_magic: 0,
-			defence_ranged: 50,
-
-			melee_strength: 3,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Legs,
-			requirements: null
-		}
-	},
-	50_000_000
-);
-setCustomItem(
-	48_018,
-	'Dwarven boots',
-	'Torva boots',
-	{
-		equipment: {
-			attack_stab: 5,
-			attack_slash: 2,
-			attack_crush: 10,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 5,
-			defence_slash: 5,
-			defence_crush: 24,
-			defence_magic: 0,
-			defence_ranged: 15,
-
-			melee_strength: 3,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Feet,
-			requirements: null
-		}
-	},
-	50_000_000
-);
-setCustomItem(
-	48_019,
-	'Dwarven gloves',
-	'Torva gloves',
-	{
-		equipment: {
-			attack_stab: 4,
-			attack_slash: 9,
-			attack_crush: 15,
-			attack_magic: -5,
-			attack_ranged: 0,
-
-			defence_stab: 5,
-			defence_slash: 5,
-			defence_crush: 18,
-			defence_magic: 0,
-			defence_ranged: 10,
-
-			melee_strength: 3,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 1,
-			slot: EquipmentSlot.Hands,
-			requirements: null
-		}
-	},
-	50_000_000
-);
 
 setCustomItem(48_200, 'Scroll of farming', 'Coal', {}, 1_000_000);
 
@@ -2730,4 +2563,29 @@ setCustomItem(
 		}
 	},
 	1_000_000
+);
+setCustomItem(
+	63_204,
+	'Chimpchompa',
+	'Coal',
+	{
+		customItemData: {
+			cantDropFromMysteryBoxes: true
+		}
+	},
+	10_000
+);
+
+setCustomItem(52_617, 'Lava flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
+setCustomItem(52_618, 'Purple flower crown', 'Rainbow flower crown', { tradeable: false }, 10_000);
+setCustomItem(52_630, 'Beehive', 'Coal', {}, 10_000);
+setCustomItem(52_631, 'Honeycomb', 'Coal', {}, 10_000);
+setCustomItem(52_632, 'Honey', 'Coal', {}, 10_000);
+setCustomItem(52_633, 'Buzz', 'Herbi', {}, 1_000_000);
+setCustomItem(
+	52_634,
+	'Elder table',
+	'Coal',
+	{ customItemData: { isSuperUntradeable: true, cantDropFromMysteryBoxes: true } },
+	1
 );

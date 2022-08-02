@@ -38,6 +38,15 @@ describe('hasItemsEquippedOrInBank', () => {
 				['Black mask']
 			)
 		).toEqual(true);
+		expect(
+			hasItemsEquippedOrInBank(
+				mockUser({
+					bank: new Bank().add('Farming cape(t)'),
+					meleeGear: {}
+				}),
+				['Farming cape']
+			)
+		).toEqual(true);
 	});
 	test('More than one item passing', () => {
 		expect(

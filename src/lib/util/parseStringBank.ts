@@ -4,6 +4,7 @@ import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { itemNameMap } from 'oldschooljs/dist/structures/Items';
 
+import { ensureCustomItemName } from '../customItems/util';
 import { filterableTypes } from '../data/filterables';
 import { evalMathExpression } from '../expressionParser';
 import { cleanString, stringMatches } from '../util';
@@ -24,6 +25,9 @@ export function parseQuantityAndItem(str = '', inputBank?: Bank): [Item[], numbe
 	}
 
 	let [potentialQty, ...potentialName] = split.length === 1 ? ['', [split[0]]] : split;
+
+	if (!ensureCustomItemName(str)) return [];
+	if (!isNaN(Number(potentialQty)) && !ensureCustomItemName(potentialName.join(' '))) return [];
 
 	let lazyItemGet = Items.get(potentialName.join(' ')) ?? Items.get(Number(potentialName.join(' ')));
 	if (str.includes('#') && lazyItemGet && inputBank) {
@@ -114,7 +118,7 @@ export function parseBankFromFlags({
 
 		const qty = Math.min(maxQuantity, quantity === 0 ? Math.max(1, bank.amount(item.id)) : quantity);
 		if (filter && !filter.items(user).includes(item.id)) continue;
-		if ((filter || flagsKeys.length) && excludeItems.includes(item.id)) continue;
+		if (excludeItems.includes(item.id)) continue;
 
 		newBank.add(item.id, qty);
 	}

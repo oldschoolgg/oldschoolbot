@@ -1,6 +1,7 @@
 import { noOp } from 'e';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 
+import { MAXING_MESSAGE } from '../config';
 import { Channel, Events, LEVEL_120_XP } from './constants';
 import { prisma } from './settings/prisma';
 import Skills from './skilling/skills';
@@ -35,6 +36,6 @@ export async function onMax(user: KlasaUser) {
 	)}** minion to be maxed${user.isIronman ? `, and the **${formatOrdinal(irons)}** ironman to max.` : '.'} 🎉`;
 
 	user.client.emit(Events.ServerNotification, str);
-	sendToChannelID(user.client as KlasaClient, Channel.BSOGeneral, { content: str }).catch(noOp);
-	user.send('Congratulations on maxing!').catch(noOp);
+	sendToChannelID(Channel.BSOGeneral, { content: str }).catch(noOp);
+	user.send(MAXING_MESSAGE).catch(noOp);
 }

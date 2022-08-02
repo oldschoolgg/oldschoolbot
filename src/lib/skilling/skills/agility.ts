@@ -57,7 +57,6 @@ export const courses: Course[] = [
 		aliases: ['ape atoll', 'ape atoll agility course', 'ape atoll course', 'monky', 'ape', 'monkey'],
 		level: 48,
 		xp: 580,
-		marksPer60: 0,
 		lapTime: 45,
 		petChance: 37_720,
 		qpRequired: 82
@@ -150,10 +149,16 @@ export const courses: Course[] = [
 	{
 		id: 13,
 		name: 'Prifddinas Rooftop Course',
-		aliases: ['priff', 'prif', 'prifddinas', 'prifddinas course', 'prifddinas agility course'],
+		aliases: [
+			'priff',
+			'prif',
+			'prifddinas',
+			'prifddinas course',
+			'prifddinas agility course',
+			'prifddinas rooftop course'
+		],
 		level: 75,
 		xp: 1340.6,
-		marksPer60: 0,
 		lapTime: 74.2,
 		petChance: 25_146,
 		qpRequired: 205
@@ -161,7 +166,7 @@ export const courses: Course[] = [
 	{
 		id: 30,
 		name: 'Daemonheim Rooftop Course',
-		aliases: ['daemonheim', 'dh'],
+		aliases: ['daemonheim', 'dh', 'daemonheim rooftop course'],
 		level: 101,
 		xp: 10_140.6,
 		marksPer60: 35,

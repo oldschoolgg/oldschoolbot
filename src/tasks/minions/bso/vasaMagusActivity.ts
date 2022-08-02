@@ -16,6 +16,7 @@ import { NewBossOptions } from '../../../lib/types/minions';
 import { getMonster, itemNameFromID, updateBankSetting } from '../../../lib/util';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
 
 const vasaBosses: Monster[] = [
@@ -89,17 +90,12 @@ export default class extends Task {
 			id: VasaMagus.name,
 			kc: quantity
 		});
-
-		const { image } = await this.client.tasks
-			.get('bankImage')!
-			.generateBankImage(
-				itemsAdded,
-				`Loot From ${quantity} ${VasaMagus.name}:`,
-				true,
-				{ showNewCL: 1 },
-				user,
-				previousCL
-			);
+		const image = await makeBankImage({
+			bank: itemsAdded,
+			title: `Loot From ${quantity} ${VasaMagus.name}`,
+			user,
+			previousCL
+		});
 
 		resultStr += `\n${xpRes}\n`;
 
@@ -112,6 +108,14 @@ export default class extends Task {
 
 		updateBankSetting(this.client, ClientSettings.EconomyStats.VasaLoot, loot);
 
-		handleTripFinish(this.client, user, channelID, resultStr, ['vasa', [quantity], true], image!, data, itemsAdded);
+		handleTripFinish(
+			user,
+			channelID,
+			resultStr,
+			['k', { name: 'vasa' }, true],
+			image.file.buffer,
+			data,
+			itemsAdded
+		);
 	}
 }

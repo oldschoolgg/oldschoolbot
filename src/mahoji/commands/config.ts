@@ -8,9 +8,9 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
-import { client, mahojiClient } from '../..';
 import { BitField, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { Inventions } from '../../lib/invention/inventions';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
 import { BankSortMethods } from '../../lib/sorts';
@@ -49,13 +49,22 @@ async function handleToggle(user: User, name: string) {
 	if (!toggle) return 'Invalid toggle name.';
 	const includedNow = user.bitfield.includes(toggle.bit);
 	const nextArr = includedNow ? removeFromArr(user.bitfield, toggle.bit) : [...user.bitfield, toggle.bit];
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		bitfield: nextArr
 	});
 	return `Toggled '${toggle.name}' ${includedNow ? 'Off' : 'On'}.`;
 }
 
-async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+async function favFoodConfig(
+	user: User,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	reset: boolean
+) {
+	if (reset) {
+		await mahojiUserSettingsUpdate(user.id, { favorite_food: [] });
+		return 'Cleared all favorite food.';
+	}
 	const currentFavorites = user.favorite_food;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite food is: ${
@@ -66,18 +75,27 @@ async function favFoodConfig(user: User, itemToAdd: string | undefined, itemToRe
 
 	if (itemToAdd) {
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, { favorite_food: [...currentFavorites, item.id] });
+		await mahojiUserSettingsUpdate(user.id, { favorite_food: [...currentFavorites, item.id] });
 		return `You favorited ${item.name}.`;
 	}
 	if (itemToRemove) {
 		if (!currentFavorites.includes(item.id)) return 'This item is not favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, { favorite_food: removeFromArr(currentFavorites, item.id) });
+		await mahojiUserSettingsUpdate(user.id, { favorite_food: removeFromArr(currentFavorites, item.id) });
 		return `You unfavorited ${item.name}.`;
 	}
 	return currentItems;
 }
 
-async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRemove: string | undefined) {
+async function favItemConfig(
+	user: User,
+	itemToAdd: string | undefined,
+	itemToRemove: string | undefined,
+	reset: boolean
+) {
+	if (reset) {
+		await mahojiUserSettingsUpdate(user.id, { favoriteItems: [] });
+		return 'Cleared all favorite items.';
+	}
 	const currentFavorites = user.favoriteItems;
 	const item = getItem(itemToAdd ?? itemToRemove);
 	const currentItems = `Your current favorite items are: ${
@@ -90,12 +108,12 @@ async function favItemConfig(user: User, itemToAdd: string | undefined, itemToRe
 			return `You can't favorite anymore items, you can favorite a maximum of ${limit}.`;
 		}
 		if (currentFavorites.includes(item.id)) return 'This item is already favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: [...currentFavorites, item.id] });
+		await mahojiUserSettingsUpdate(user.id, { favoriteItems: [...currentFavorites, item.id] });
 		return `You favorited ${item.name}.`;
 	}
 	if (itemToRemove) {
 		if (!currentFavorites.includes(item.id)) return 'This item is not favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, { favoriteItems: removeFromArr(currentFavorites, item.id) });
+		await mahojiUserSettingsUpdate(user.id, { favoriteItems: removeFromArr(currentFavorites, item.id) });
 		return `You unfavorited ${item.name}.`;
 	}
 	return currentItems;
@@ -105,16 +123,21 @@ async function favAlchConfig(
 	user: User,
 	itemToAdd: string | undefined,
 	itemToRemove: string | undefined,
-	manyToAdd: string | undefined
+	manyToAdd: string | undefined,
+	reset: boolean
 ) {
+	if (reset) {
+		await mahojiUserSettingsUpdate(user.id, { favorite_alchables: [] });
+		return 'Cleared all favorite alchables.';
+	}
 	const currentFavorites = user.favorite_alchables;
 	if (manyToAdd) {
 		const items = parseBank({ inputStr: manyToAdd, noDuplicateItems: true })
-			.filter(i => i.highalch > 1)
+			.filter(i => i.highalch !== undefined && i.highalch > 1)
 			.filter(i => !currentFavorites.includes(i.id));
 		if (items.length === 0) return 'No valid items were given.';
 		const newFavs = uniqueArr([...currentFavorites, ...items.items().map(i => i[0].id)]);
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			favorite_alchables: newFavs
 		});
 		return `Added ${items
@@ -141,13 +164,13 @@ async function favAlchConfig(
 
 	if (action === 'remove') {
 		if (!isAlreadyFav) return 'That item is not favorited.';
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			favorite_alchables: removeFromArr(currentFavorites, item.id)
 		});
 		return `Removed ${item.name} from your favorite alchable items.`;
 	}
 	if (isAlreadyFav) return 'That item is already favorited.';
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		favorite_alchables: uniqueArr([...currentFavorites, item.id])
 	});
 	return `Added ${item.name} to your favorite alchable items.`;
@@ -184,7 +207,7 @@ async function bankSortConfig(
 					await makeBankImage({
 						bank: currentWeightingBank,
 						title: 'Bank Sort Weightings',
-						user: client.users.cache.get(mahojiUser.id)
+						user: globalClient.users.cache.get(mahojiUser.id)
 					})
 				).file
 			];
@@ -196,7 +219,7 @@ async function bankSortConfig(
 		if (!(BankSortMethods as readonly string[]).includes(sortMethod)) {
 			return `That's not a valid bank sort method. Valid methods are: ${BankSortMethods.join(', ')}.`;
 		}
-		await mahojiUserSettingsUpdate(client, mahojiUser.id, {
+		await mahojiUserSettingsUpdate(mahojiUser.id, {
 			bank_sort_method: sortMethod
 		});
 
@@ -213,7 +236,7 @@ async function bankSortConfig(
 	if (addWeightingBank) newBank.add(inputBank);
 	else if (removeWeightingBank) newBank.remove(inputBank);
 
-	const { newUser } = await mahojiUserSettingsUpdate(client, mahojiUser.id, {
+	const { newUser } = await mahojiUserSettingsUpdate(mahojiUser.id, {
 		bank_sort_weightings: newBank.bank
 	});
 
@@ -226,7 +249,7 @@ async function bgColorConfig(user: User, hex?: string) {
 	const embed = new Embed();
 
 	if (hex === 'reset') {
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			bank_bg_hex: null
 		});
 		return 'Reset your bank background color.';
@@ -251,7 +274,7 @@ async function bgColorConfig(user: User, hex?: string) {
 		return "That's not a valid hex color. It needs to be 7 characters long, starting with '#', for example: #4e42f5 - use this to pick one: <https://www.google.com/search?q=hex+color+picker>";
 	}
 
-	await mahojiUserSettingsUpdate(client, user.id, {
+	await mahojiUserSettingsUpdate(user.id, {
 		bank_bg_hex: hex
 	});
 
@@ -279,7 +302,7 @@ async function handleChannelEnable(
 	if (choice === 'disable') {
 		if (isDisabled) return 'This channel is already disabled.';
 
-		await mahojiGuildSettingsUpdate(client, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			staffOnlyChannels: [...settings.staffOnlyChannels, cID]
 		});
 
@@ -287,7 +310,7 @@ async function handleChannelEnable(
 	}
 	if (!isDisabled) return 'This channel is already enabled.';
 
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		staffOnlyChannels: settings.staffOnlyChannels.filter(i => i !== cID)
 	});
 
@@ -309,7 +332,7 @@ async function handlePetMessagesEnable(
 		if (settings.petchannel) {
 			return 'Pet Messages are already enabled in this guild.';
 		}
-		await mahojiGuildSettingsUpdate(client, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			petchannel: cID
 		});
 		return 'Enabled Pet Messages in this guild.';
@@ -317,7 +340,7 @@ async function handlePetMessagesEnable(
 	if (settings.petchannel === null) {
 		return "Pet Messages aren't enabled, so you can't disable them.";
 	}
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		petchannel: null
 	});
 	return 'Disabled Pet Messages in this guild.';
@@ -332,7 +355,7 @@ async function handleCommandEnable(
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
 	const settings = await mahojiGuildSettingsFetch(guild);
-	const command = allAbstractCommands(client, mahojiClient).find(
+	const command = allAbstractCommands(globalClient.mahojiClient).find(
 		i => i.name.toLowerCase() === commandName.toLowerCase()
 	);
 	if (!command) return "That's not a valid command.";
@@ -341,7 +364,7 @@ async function handleCommandEnable(
 		if (!settings.disabledCommands.includes(commandName)) {
 			return "That command isn't disabled.";
 		}
-		await mahojiGuildSettingsUpdate(client, guild.id, {
+		await mahojiGuildSettingsUpdate(guild.id, {
 			disabledCommands: settings.disabledCommands.filter(i => i !== command.name)
 		});
 
@@ -351,7 +374,7 @@ async function handleCommandEnable(
 	if (settings.disabledCommands.includes(command.name)) {
 		return 'That command is already disabled.';
 	}
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		disabledCommands: [...settings.disabledCommands, command.name]
 	});
 
@@ -362,7 +385,7 @@ async function handlePrefixChange(user: KlasaUser, guild: Guild | null, newPrefi
 	if (!newPrefix || newPrefix.length === 0 || newPrefix.length > 3) return 'Invalid prefix.';
 	if (!guild) return 'This command can only be run in servers.';
 	if (!(await hasBanMemberPerms(user, guild))) return "You need to be 'Ban Member' permissions to use this command.";
-	await mahojiGuildSettingsUpdate(client, guild.id, {
+	await mahojiGuildSettingsUpdate(guild.id, {
 		prefix: newPrefix
 	});
 	return `Changed Command Prefix for this server to \`${newPrefix}\``;
@@ -429,11 +452,11 @@ async function handleCombatOptions(user: KlasaUser, command: 'add' | 'remove' | 
 		warningMsg = priorityWarningMsg;
 	}
 	if (nextBool && !settings.combat_options.includes(newcbopt.id)) {
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			combat_options: [...settings.combat_options, newcbopt.id]
 		});
 	} else if (!nextBool && settings.combat_options.includes(newcbopt.id)) {
-		await mahojiUserSettingsUpdate(client, user.id, {
+		await mahojiUserSettingsUpdate(user.id, {
 			combat_options: removeFromArr(settings.combat_options, newcbopt.id)
 		});
 	} else {
@@ -497,7 +520,7 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The command you want to enable/disable.',
 							required: true,
 							autocomplete: async value => {
-								return allAbstractCommands(client, mahojiClient)
+								return allAbstractCommands(globalClient.mahojiClient)
 									.map(i => ({ name: i.name, value: i.name }))
 									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())));
 							}
@@ -542,7 +565,7 @@ export const configCommand: OSBMahojiCommand = {
 						{
 							type: ApplicationCommandOptionType.String,
 							name: 'name',
-							description: 'The thing you want to toggle on/off.',
+							description: 'The setting you want to toggle on/off.',
 							required: true,
 							autocomplete: async (value, user) => {
 								const mUser = await prisma.user.findFirst({
@@ -590,7 +613,6 @@ export const configCommand: OSBMahojiCommand = {
 							description: 'The option you want to add/remove.',
 							required: false,
 							autocomplete: async value => {
-								console.log(value);
 								return CombatOptionsArray.filter(i =>
 									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
 								).map(i => ({ name: i.name, value: i.name }));
@@ -643,13 +665,13 @@ export const configCommand: OSBMahojiCommand = {
 					description: 'Manage your favorite alchables.',
 					options: [
 						{
-							...itemOption(item => item.highalch > 10),
+							...itemOption(item => item.highalch !== undefined && item.highalch > 10),
 							name: 'add',
 							description: 'Add an item to your favorite alchables.',
 							required: false
 						},
 						{
-							...itemOption(item => item.highalch > 10),
+							...itemOption(item => item.highalch !== undefined && item.highalch > 10),
 							name: 'remove',
 							description: 'Remove an item from your favorite alchables.',
 							required: false
@@ -658,6 +680,12 @@ export const configCommand: OSBMahojiCommand = {
 							type: ApplicationCommandOptionType.String,
 							name: 'add_many',
 							description: 'Add many to your favorite alchables at once.',
+							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset all of your favorite alchs',
 							required: false
 						}
 					]
@@ -696,6 +724,12 @@ export const configCommand: OSBMahojiCommand = {
 									value: i.id.toString()
 								}));
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset all of your favorite foods',
+							required: false
 						}
 					]
 				},
@@ -715,6 +749,33 @@ export const configCommand: OSBMahojiCommand = {
 							name: 'remove',
 							description: 'Remove an item from your favorite items.',
 							required: false
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset all of your favorite items',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'toggle_invention',
+					description: 'Toggle an invention on/off.',
+					options: [
+						{
+							name: 'invention',
+							type: ApplicationCommandOptionType.String,
+							description: 'The invention you want to toggle on/off.',
+							required: true,
+							autocomplete: async value => {
+								return Inventions.filter(i =>
+									!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+								).map(i => ({
+									name: i.name,
+									value: i.name
+								}));
+							}
 						}
 					]
 				}
@@ -729,7 +790,6 @@ export const configCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		server?: {
 			channel?: { choice: 'enable' | 'disable' };
-			jmod_tweets?: { choice: 'enable' | 'disable' };
 			pet_messages?: { choice: 'enable' | 'disable' };
 			jmod_comments?: { choice: 'enable' | 'disable' };
 			command?: { command: string; choice: 'enable' | 'disable' };
@@ -741,13 +801,17 @@ export const configCommand: OSBMahojiCommand = {
 			set_rsn?: { username: string };
 			bg_color?: { color?: string };
 			bank_sort?: { sort_method?: string; add_weightings?: string; remove_weightings?: string };
-			favorite_alchs?: { add?: string; remove?: string; add_many?: string };
-			favorite_food?: { add?: string; remove?: string };
-			favorite_items?: { add?: string; remove?: string };
+			favorite_alchs?: { add?: string; remove?: string; add_many?: string; reset?: boolean };
+			favorite_food?: { add?: string; remove?: string; reset?: boolean };
+			favorite_items?: { add?: string; remove?: string; reset?: boolean };
+			toggle_invention?: { invention: string };
 		};
 	}>) => {
-		const [user, mahojiUser] = await Promise.all([client.fetchUser(userID), mahojiUsersSettingsFetch(userID)]);
-		const guild = guildID ? client.guilds.cache.get(guildID.toString()) ?? null : null;
+		const [user, mahojiUser] = await Promise.all([
+			globalClient.fetchUser(userID),
+			mahojiUsersSettingsFetch(userID)
+		]);
+		const guild = guildID ? globalClient.guilds.cache.get(guildID.toString()) ?? null : null;
 		if (options.server) {
 			if (options.server.channel) {
 				return handleChannelEnable(user, guild, channelID, options.server.channel.choice);
@@ -784,13 +848,42 @@ export const configCommand: OSBMahojiCommand = {
 				);
 			}
 			if (favorite_alchs) {
-				return favAlchConfig(mahojiUser, favorite_alchs.add, favorite_alchs.remove, favorite_alchs.add_many);
+				return favAlchConfig(
+					mahojiUser,
+					favorite_alchs.add,
+					favorite_alchs.remove,
+					favorite_alchs.add_many,
+					Boolean(favorite_alchs.reset)
+				);
 			}
 			if (favorite_food) {
-				return favFoodConfig(mahojiUser, favorite_food.add, favorite_food.remove);
+				return favFoodConfig(mahojiUser, favorite_food.add, favorite_food.remove, Boolean(favorite_food.reset));
 			}
 			if (favorite_items) {
-				return favItemConfig(mahojiUser, favorite_items.add, favorite_items.remove);
+				return favItemConfig(
+					mahojiUser,
+					favorite_items.add,
+					favorite_items.remove,
+					Boolean(favorite_items.reset)
+				);
+			}
+			if (options.user.toggle_invention) {
+				const invention = Inventions.find(i =>
+					stringMatches(i.name, options.user?.toggle_invention?.invention ?? '')
+				);
+				if (!invention) return 'Invalid invention.';
+				if (mahojiUser.disabled_inventions.includes(invention.id)) {
+					await mahojiUserSettingsUpdate(user.id, {
+						disabled_inventions: removeFromArr(mahojiUser.disabled_inventions, invention.id)
+					});
+					return `${invention.name} is now **Enabled**.`;
+				}
+				await mahojiUserSettingsUpdate(user.id, {
+					disabled_inventions: {
+						push: invention.id
+					}
+				});
+				return `${invention.name} is now **Disabled**.`;
 			}
 		}
 		return 'Invalid command.';

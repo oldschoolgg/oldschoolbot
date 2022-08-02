@@ -15,9 +15,10 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
 import { ItemBank } from '../../../lib/types';
 import { BossActivityTaskOptions } from '../../../lib/types/minions';
-import { addBanks, updateBankSetting } from '../../../lib/util';
+import { updateBankSetting } from '../../../lib/util';
 import { getKalphiteKingGearStats } from '../../../lib/util/getKalphiteKingGearStats';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
+import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { sendToChannelID } from '../../../lib/util/webhook';
 
 interface NexUser {
@@ -78,7 +79,7 @@ export default class extends Task {
 			if (!winner) continue;
 			const currentLoot = teamsLoot[winner];
 			if (!currentLoot) teamsLoot[winner] = loot.bank;
-			else teamsLoot[winner] = addBanks([currentLoot, loot.bank]);
+			else teamsLoot[winner] = new Bank().add(currentLoot).add(loot).bank;
 
 			kcAmounts[winner] = Boolean(kcAmounts[winner]) ? ++kcAmounts[winner] : 1;
 		}
@@ -173,31 +174,26 @@ export default class extends Task {
 
 		if (users.length > 1) {
 			if (Object.values(kcAmounts).length === 0) {
-				sendToChannelID(this.client, channelID, {
+				sendToChannelID(channelID, {
 					content: `${users
 						.map(id => `<@${id}>`)
 						.join(' ')} Your team all died, and failed to defeat the Kalphite King.`
 				});
 			} else {
-				sendToChannelID(this.client, channelID, { content: resultStr });
+				sendToChannelID(channelID, { content: resultStr });
 			}
 		} else {
 			const image = !kcAmounts[userID]
 				? undefined
 				: (
-						await this.client.tasks
-							.get('bankImage')!
-							.generateBankImage(
-								soloItemsAdded!,
-								`Loot From ${quantity} Kalphite King:`,
-								true,
-								{ showNewCL: 1 },
-								leaderUser,
-								soloPrevCl!
-							)
-				  ).image;
+						await makeBankImage({
+							bank: soloItemsAdded ?? new Bank(),
+							title: `Loot From ${quantity} Kalphite King`,
+							user: leaderUser,
+							previousCL: soloPrevCl ?? undefined
+						})
+				  ).file.buffer;
 			handleTripFinish(
-				this.client,
 				leaderUser,
 				channelID,
 				!kcAmounts[userID]
@@ -207,7 +203,7 @@ export default class extends Task {
 					  }, you died ${deaths[userID] ?? 0} times. Your Kalphite King KC is now ${
 							leaderUser.settings.get(UserSettings.MonsterScores)[KalphiteKingMonster.id] ?? 0
 					  }.\n\n${soloXP}`,
-				['kk', ['solo'], true],
+				['k', { name: 'Kalphite King' }, true],
 				image!,
 				data,
 				soloItemsAdded

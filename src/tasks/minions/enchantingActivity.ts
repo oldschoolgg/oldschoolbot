@@ -25,11 +25,10 @@ export default class extends Task {
 		let str = `${user}, ${user.minionName} finished enchanting ${quantity}x ${enchantable.name}, you received ${loot}. ${xpRes}`;
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['enchant', [quantity, enchantable.name], true],
+			['activities', { enchant: { quantity, name: enchantable.name } }, true],
 			undefined,
 			data,
 			loot

@@ -29,11 +29,10 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			`${user}, ${user.minionName} finished fletching ${quantity}${sets} ${fletchableItem.name}, and received ${loot}. ${xpRes}`,
-			['fletch', [quantity, fletchableItem.name], true],
+			['fletch', { name: fletchableItem.name, quantity }, true],
 			undefined,
 			data,
 			loot

@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
-import { client } from '../../..';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
@@ -83,7 +82,7 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 
 	await user.removeItemsFromBank(itemsToRemove.bank);
 
-	await updateBankSetting(client, ClientSettings.EconomyStats.GnomeRestaurantCostBank, itemsToRemove);
+	await updateBankSetting(globalClient, ClientSettings.EconomyStats.GnomeRestaurantCostBank, itemsToRemove);
 	await addSubTaskToActivityTask<GnomeRestaurantActivityTaskOptions>({
 		userID: user.id,
 		channelID: channelID.toString(),

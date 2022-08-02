@@ -16,25 +16,28 @@ import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import Monster from 'oldschooljs/dist/structures/Monster';
 import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
-import { client } from '../../..';
 import { PvMMethod } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
 import { GearSetupType } from '../../../lib/gear';
+import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import {
 	boostCannon,
 	boostCannonMulti,
 	boostIceBarrage,
 	boostIceBurst,
+	boostSuperiorCannon,
+	boostSuperiorCannonMulti,
+	cannonBanks,
 	cannonMultiConsumables,
 	cannonSingleConsumables,
-	CombatCannonItemBank,
 	CombatOptionsEnum,
 	iceBarrageConsumables,
 	iceBurstConsumables,
-	SlayerActivityConstants
+	SlayerActivityConstants,
+	superiorCannonSingleConsumables
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
@@ -64,7 +67,18 @@ import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { sendToChannelID } from '../../../lib/util/webhook';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { igneCommand } from './igneCommand';
+import { kgCommand } from './kgCommand';
+import { kkCommand } from './kkCommand';
+import { moktangCommand } from './moktangCommand';
+import { nexCommand } from './nexCommand';
+import { nightmareCommand } from './nightmareCommand';
+import { getPOH } from './pohCommand';
 import { revsCommand } from './revsCommand';
+import { temporossCommand } from './temporossCommand';
+import { vasaCommand } from './vasaCommand';
+import { wintertodtCommand } from './wintertodtCommand';
+import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
@@ -134,11 +148,22 @@ export async function minionKillCommand(
 	if (!name) return invalidMonsterMsg;
 
 	if (user.usingPet('Ishi')) {
-		sendToChannelID(client, channelID.toString(), {
+		sendToChannelID(channelID.toString(), {
 			content: `${user} Ishi Says: Let's kill some ogress warriors instead? 🥰 🐳`
 		});
 		name = 'Ogress Warrior';
 	}
+	if (stringMatches(name, 'zalcano')) return zalcanoCommand(user, channelID);
+	if (stringMatches(name, 'tempoross')) return temporossCommand(user, channelID, quantity);
+	if (['vasa', 'vasa magus'].some(i => stringMatches(i, name))) return vasaCommand(user, channelID, quantity);
+	if (name.toLowerCase().includes('nightmare')) return nightmareCommand(user, channelID, name);
+	if (name.toLowerCase().includes('wintertodt')) return wintertodtCommand(user, channelID);
+	if (name.toLowerCase().includes('ignecarus')) return igneCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes('goldemar')) return kgCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes('kalphite king')) return kkCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes('nex')) return nexCommand(interaction, user, channelID, name, quantity);
+	if (name.toLowerCase().includes('moktang')) return moktangCommand(user, channelID, quantity);
+
 	if (revenantMonsters.some(i => i.aliases.some(a => stringMatches(a, name)))) {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		return revsCommand(user, mUser, channelID, interaction, name);
@@ -146,6 +171,7 @@ export async function minionKillCommand(
 
 	const monster = findMonster(name);
 	if (!monster) return invalidMonsterMsg;
+	const maxTripLength = user.maxTripLength('MonsterKilling');
 
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask =
@@ -193,7 +219,7 @@ export async function minionKillCommand(
 	if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
 
 	if (monster.pohBoosts) {
-		const [boostPercent, messages] = calcPOHBoosts(await user.getPOH(), monster.pohBoosts);
+		const [boostPercent, messages] = calcPOHBoosts(await getPOH(user.id), monster.pohBoosts);
 		if (boostPercent > 0) {
 			timeToFinish = reduceNumByPercent(timeToFinish, boostPercent);
 			boosts.push(messages.join(' + '));
@@ -295,7 +321,9 @@ export async function minionKillCommand(
 	let usingCannon = false;
 	let cannonMulti = false;
 	let burstOrBarrage = 0;
-	const hasCannon = user.owns(CombatCannonItemBank);
+	const hasSuperiorCannon = user.owns('Superior dwarf multicannon');
+	const hasCannon = cannonBanks.some(i => user.owns(i)) || hasSuperiorCannon;
+
 	if (!isOnTask && method && method !== 'none') {
 		return 'You can only burst/barrage/cannon while on task in BSO.';
 	}
@@ -314,8 +342,33 @@ export async function minionKillCommand(
 	if (boostChoice === 'burst' && user.skillLevel(SkillsEnum.Magic) < 70) {
 		return `You need 70 Magic to use Ice Burst. You have ${user.skillLevel(SkillsEnum.Magic)}`;
 	}
+	const { canAfford, mUser } = await canAffordInventionBoost(
+		BigInt(user.id),
+		InventionID.SuperiorDwarfMultiCannon,
+		timeToFinish
+	);
+	const canAffordSuperiorCannonBoost = hasSuperiorCannon ? canAfford : false;
 
-	if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
+	if (
+		boostChoice === 'cannon' &&
+		!mUser.disabled_inventions.includes(InventionID.SuperiorDwarfMultiCannon) &&
+		canAffordSuperiorCannonBoost &&
+		(monster.canCannon || monster.cannonMulti)
+	) {
+		let qty = quantity || floor(maxTripLength / timeToFinish);
+		const res = await inventionItemBoost({
+			userID: BigInt(user.id),
+			inventionID: InventionID.SuperiorDwarfMultiCannon,
+			duration: timeToFinish * qty
+		});
+		if (res.success) {
+			usingCannon = true;
+			consumableCosts.push(superiorCannonSingleConsumables);
+			let boost = monster.cannonMulti ? boostSuperiorCannonMulti : boostSuperiorCannon;
+			timeToFinish = reduceNumByPercent(timeToFinish, boost);
+			boosts.push(`${boost}% for Superior Cannon (${res.messages})`);
+		}
+	} else if (boostChoice === 'barrage' && attackStyles.includes(SkillsEnum.Magic) && monster!.canBarrage) {
 		consumableCosts.push(iceBarrageConsumables);
 		timeToFinish = reduceNumByPercent(timeToFinish, boostIceBarrage);
 		boosts.push(`${boostIceBarrage}% for Ice Barrage`);
@@ -337,8 +390,6 @@ export async function minionKillCommand(
 		timeToFinish = reduceNumByPercent(timeToFinish, boostCannon);
 		boosts.push(`${boostCannon}% for Cannon in singles`);
 	}
-
-	const maxTripLength = user.maxTripLength('MonsterKilling');
 
 	const hasBlessing = user.hasItemEquippedAnywhere('Dwarven blessing');
 	const hasZealotsAmulet = user.hasItemEquippedAnywhere('Amulet of zealots');
@@ -500,7 +551,6 @@ export async function minionKillCommand(
 
 		try {
 			const { foodRemoved, reductions } = await removeFoodFromUser({
-				client,
 				user,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
@@ -550,6 +600,9 @@ export async function minionKillCommand(
 				return e.message;
 			}
 		}
+	} else {
+		boosts.push('4% for no food');
+		duration = reduceNumByPercent(duration, 4);
 	}
 
 	// Boosts that don't affect quantity:
@@ -609,7 +662,7 @@ export async function minionKillCommand(
 	}
 
 	if (lootToRemove.length > 0) {
-		updateBankSetting(client, ClientSettings.EconomyStats.PVMCost, lootToRemove);
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.PVMCost, lootToRemove);
 		await user.removeItemsFromBank(lootToRemove);
 		totalCost.add(lootToRemove);
 	}

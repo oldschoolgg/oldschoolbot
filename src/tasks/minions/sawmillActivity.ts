@@ -43,11 +43,10 @@ export default class extends Task {
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		handleTripFinish(
-			this.client,
 			user,
 			channelID,
 			str,
-			['sawmill', [plankQuantity, plank.name], true],
+			['activities', { sawmill: { quantity: plankQuantity, type: plank.name } }, true],
 			undefined,
 			data,
 			loot

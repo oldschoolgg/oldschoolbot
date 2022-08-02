@@ -1,13 +1,14 @@
-import { ApplicationCommandOptionType } from 'discord-api-types';
-import { CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
-import { client } from '../..';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
+import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
+import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { MahojiUserOption } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
@@ -94,6 +95,49 @@ export const gambleCommand: OSBMahojiCommand = {
 					required: true
 				}
 			]
+		},
+		/**
+		 *
+		 * Slots
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'slots',
+			description: 'Allows you play slots and risk your GP to win big.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'amount',
+					description: 'Amount you wish to gamble.',
+					required: false
+				}
+			]
+		},
+		/**
+		 *
+		 * Hot Cold
+		 *
+		 */
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'hot_cold',
+			description: 'Allows you play Hot Cold and risk your GP to win big.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'choice',
+					description: 'The flower type you want to guess.',
+					required: false,
+					choices: ['hot', 'cold'].map(i => ({ name: i, value: i }))
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'amount',
+					description: 'Amount you wish to gamble.',
+					required: false
+				}
+			]
 		}
 	],
 	run: async ({
@@ -105,48 +149,43 @@ export const gambleCommand: OSBMahojiCommand = {
 		dice?: { amount?: string };
 		duel?: { user: MahojiUserOption; amount?: string };
 		lucky_pick?: { amount: string };
+		slots?: { amount?: string };
+		hot_cold?: { choice?: 'hot' | 'cold'; amount?: string };
 	}>) => {
-		const KlasaUser = await client.fetchUser(userID);
+		const klasaUser = await globalClient.fetchUser(userID);
 
-		/**
-		 *
-		 * Cape
-		 *
-		 */
 		if (options.cape) {
 			if (options.cape.type) {
-				return capeGambleCommand(KlasaUser, options.cape.type, interaction);
+				return capeGambleCommand(klasaUser, options.cape.type, interaction);
 			}
-			return capeGambleStatsCommand(KlasaUser);
+			return capeGambleStatsCommand(klasaUser);
 		}
-		/**
-		 *
-		 * Dice
-		 *
-		 */
+
 		if (options.dice) {
-			return diceCommand(KlasaUser, options.dice.amount);
+			return diceCommand(klasaUser, options.dice.amount);
 		}
-		/**
-		 *
-		 * Duel
-		 *
-		 */
+
 		if (options.duel) {
 			return duelCommand(
-				KlasaUser,
+				klasaUser,
 				interaction,
-				await client.fetchUser(options.duel.user.user.id),
+				await globalClient.fetchUser(options.duel.user.user.id),
 				options.duel.amount
 			);
 		}
-		/**
-		 *
-		 * Lucky Pick
-		 *
-		 */
+
 		if (options.lucky_pick) {
-			return luckyPickCommand(KlasaUser, options.lucky_pick.amount, interaction);
+			return luckyPickCommand(klasaUser, options.lucky_pick.amount, interaction);
+		}
+
+		if (options.slots) {
+			return slotsCommand(interaction, klasaUser, options.slots.amount);
+		}
+
+		const mahojiUser = await mahojiUsersSettingsFetch(klasaUser.id);
+
+		if (options.hot_cold) {
+			return hotColdCommand(interaction, klasaUser, mahojiUser, options.hot_cold.choice, options.hot_cold.amount);
 		}
 		return 'Invalid command.';
 	}

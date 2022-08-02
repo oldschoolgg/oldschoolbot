@@ -146,6 +146,14 @@ const Constructables: Constructable[] = [
 		ticks: 5
 	},
 	{
+		id: 21_913,
+		name: 'Mythical cape (mounted)',
+		input: [Plank.TeakPlank, 3],
+		xp: 370,
+		level: 47,
+		ticks: 5
+	},
+	{
 		id: itemID('Mahogany armchair'),
 		name: 'Mahogany armchair',
 		input: [Plank.MahoganyPlank, 2],
@@ -186,7 +194,7 @@ const Constructables: Constructable[] = [
 		ticks: 5
 	},
 	{
-		id: 838_338_383,
+		id: 52_634,
 		name: 'Elder table',
 		input: [Plank.ElderPlank, 6],
 		xp: 1540,
