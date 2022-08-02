@@ -1,4 +1,5 @@
 /* eslint-disable prefer-destructuring */
+import { Time } from 'e';
 import { readFileSync } from 'fs';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
@@ -124,7 +125,8 @@ export const megaDuckCommand: OSBMahojiCommand = {
 	description: 'Mega duck!.',
 	attributes: {
 		requiresMinion: true,
-		guildOnly: true
+		guildOnly: true,
+		cooldown: 2 * Time.Minute
 	},
 	options: [
 		{
@@ -177,7 +179,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 				content: `${user} Mega duck is at ${location.x}x ${location.y}y. You've moved it ${
 					location.usersParticipated[user.id] ?? 0
 				} times. ${topFeeders(Object.entries(location.usersParticipated))}`,
-				files: [image]
+				attachments: [{ buffer: image, fileName: 'megaduck.png' }]
 			};
 		}
 
@@ -252,7 +254,7 @@ export const megaDuckCommand: OSBMahojiCommand = {
 			content: `${user} You moved Mega Duck ${direction}! You've moved him ${
 				newLocation.usersParticipated[user.id]
 			} times. Removed ${cost} from your bank.${str}`,
-			files: location.steps?.length % 2 === 0 ? [newLocationResult.image] : []
+			attachments: location.steps?.length % 2 === 0 ? [{ buffer: image, fileName: 'megaduck.png' }] : []
 		};
 	}
 };
