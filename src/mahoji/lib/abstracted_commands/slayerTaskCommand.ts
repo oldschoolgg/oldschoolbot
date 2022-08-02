@@ -181,7 +181,7 @@ async function returnSuccess(channelID: bigint | string, mahojiUser: User, conte
 			case 'skip': {
 				await runCommand({
 					commandName: 'slayer',
-					args: { manage: { skip: { new: true } } },
+					args: { manage: { command: 'skip', new: true } },
 					bypassInhibitors: true,
 					...options
 				});
@@ -190,7 +190,7 @@ async function returnSuccess(channelID: bigint | string, mahojiUser: User, conte
 			case 'block': {
 				await runCommand({
 					commandName: 'slayer',
-					args: { manage: { block: { new: true } } },
+					args: { manage: { command: 'block', new: true } },
 					bypassInhibitors: true,
 					...options
 				});
