@@ -1,17 +1,15 @@
+import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { KlasaUser } from 'klasa';
-import { APIInteractionGuildMember } from 'mahoji';
 import { Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../../lib/constants';
 import killableMonsters from '../../../lib/minions/data/killableMonsters';
 import { runCommand } from '../../../lib/settings/settings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import {
-	AutoslayOptionsEnum,
-	getCommonTaskName,
-	getUsersCurrentSlayerInfo,
-	SlayerMasterEnum
-} from '../../../lib/slayer/slayerUtil';
+import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constants';
+import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
+import { stringMatches } from '../../../lib/util';
+import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
 interface AutoslayLink {
 	monsterID: number;
@@ -216,12 +214,7 @@ function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 	}
 	return method;
 }
-export async function autoSlayCommand(
-	user: KlasaUser,
-	member: APIInteractionGuildMember,
-	guildID: bigint,
-	channelID: bigint
-) {
+export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOverride?: string, saveMode?: boolean) {
 	const autoslayOptions = user.settings.get(UserSettings.Slayer.AutoslayOptions);
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
@@ -229,14 +222,25 @@ export async function autoSlayCommand(
 	if (!isOnTask) {
 		return "You're not on a slayer task, so you can't autoslay!";
 	}
-	const method = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
+	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
+	const method = modeOverride ?? savedMethod;
 
+	if (modeOverride && saveMode) {
+		const autoslayIdToSave = autoslayModes.find(
+			asm =>
+				stringMatches(modeOverride, asm.name) || asm.aliases.some(alias => stringMatches(modeOverride, alias))
+		);
+		if (autoslayIdToSave) {
+			await mahojiUserSettingsUpdate(user.id, { slayer_autoslay_options: [autoslayIdToSave.key] });
+		}
+	}
+	const channel = globalClient.channels.cache.get(channelID.toString());
 	const cmdRunOptions = {
 		channelID,
 		userID: user.id,
-		guildID,
+		guildID: isGuildBasedChannel(channel) ? channel.guild.id : undefined,
 		user,
-		member
+		member: null
 	};
 
 	if (method === 'low') {
@@ -253,7 +257,7 @@ export async function autoSlayCommand(
 
 		if (currentMonID === null) throw new Error('Could not get Monster data to find a task.');
 
-		return runCommand({
+		runCommand({
 			commandName: 'k',
 			args: {
 				name: Monsters.get(currentMonID)!.name
@@ -261,6 +265,7 @@ export async function autoSlayCommand(
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
+		return 'Starting slayer task.';
 	}
 	if (method === 'ehp') {
 		const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
@@ -272,7 +277,7 @@ export async function autoSlayCommand(
 
 		// If we don't have the requirements for the efficient monster, revert to default monster
 		if (ehpKillable?.levelRequirements !== undefined && !user.hasSkillReqs(ehpKillable.levelRequirements)[0]) {
-			return runCommand({
+			runCommand({
 				commandName: 'k',
 				args: {
 					name: usersTask.assignedTask!.monster.name
@@ -280,10 +285,11 @@ export async function autoSlayCommand(
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
+			return 'Starting slayer task.';
 		}
 
 		if (ehpMonster && ehpMonster.efficientName) {
-			return runCommand({
+			runCommand({
 				commandName: 'k',
 				args: {
 					name: ehpMonster.efficientName,
@@ -292,8 +298,9 @@ export async function autoSlayCommand(
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
+			return 'Starting slayer task.';
 		}
-		return runCommand({
+		runCommand({
 			commandName: 'k',
 			args: {
 				name: usersTask.assignedTask!.monster.name
@@ -301,18 +308,20 @@ export async function autoSlayCommand(
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
+		return 'Starting slayer task.';
 	}
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
 		const myQPs = await user.settings.get(UserSettings.QP);
 		let commonName = getCommonTaskName(usersTask.assignedTask!.monster);
 		if (commonName === 'TzHaar') {
-			return runCommand({
+			runCommand({
 				commandName: 'activities',
 				args: { fight_caves: {} },
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
+			return 'Starting slayer task.';
 		}
 
 		const allMonsters = killableMonsters.filter(m => {
@@ -334,20 +343,22 @@ export async function autoSlayCommand(
 			}
 		}
 
-		if (!maxMobName) {
-			return runCommand({
+		if (maxMobName) {
+			runCommand({
 				commandName: 'k',
 				args: { name: maxMobName },
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
+			return 'Starting slayer task.';
 		}
 		return "Can't find any monsters you have the requirements to kill!";
 	}
-	return runCommand({
+	runCommand({
 		commandName: 'k',
 		args: { name: usersTask.assignedTask!.monster.name },
 		bypassInhibitors: true,
 		...cmdRunOptions
 	});
+	return 'Starting slayer task.';
 }
