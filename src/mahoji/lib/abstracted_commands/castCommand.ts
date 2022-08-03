@@ -96,9 +96,16 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 		).toLocaleString()} Crafting XP/Hr**`;
 	}
 
+	let prayerXpHr = '';
+	if (spell.prayerXp) {
+		prayerXpHr = `and** ${Math.round(
+			((spell.prayerXp * quantity) / (duration / Time.Minute)) * 60
+		).toLocaleString()} Prayer XP/Hr**`;
+	}
+
 	return `${user.minionName} is now casting ${quantity}x ${spell.name}, it'll take around ${formatDuration(
 		duration
 	)} to finish. Removed ${cost}${
 		spell.gpCost ? ` and ${gpCost} Coins` : ''
-	} from your bank. **${magicXpHr}** ${craftXpHr}`;
+	} from your bank. **${magicXpHr}** ${craftXpHr}${prayerXpHr}`;
 }
