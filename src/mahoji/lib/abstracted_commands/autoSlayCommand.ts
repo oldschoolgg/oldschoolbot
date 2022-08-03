@@ -207,7 +207,9 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientMethod: 'cannon'
 	}
 ];
-const startingSlayerTaskResponse = { content: 'Starting slayer task.', flags: MessageFlags.Ephemeral };
+const startingSlayerTaskResponse = (slayerMaster: string) => {
+	return { content: `Starting slayer task from ${slayerMaster}.`, flags: MessageFlags.Ephemeral };
+};
 
 function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 	let method = 'default';
@@ -291,7 +293,7 @@ export async function autoSlayCommand({
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
-		return startingSlayerTaskResponse;
+		return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
 	}
 	if (method === 'ehp') {
 		const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
@@ -311,7 +313,7 @@ export async function autoSlayCommand({
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return startingSlayerTaskResponse;
+			return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
 		}
 
 		if (ehpMonster && ehpMonster.efficientName) {
@@ -324,7 +326,7 @@ export async function autoSlayCommand({
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return startingSlayerTaskResponse;
+			return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
 		}
 		runCommand({
 			commandName: 'k',
@@ -334,7 +336,7 @@ export async function autoSlayCommand({
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
-		return startingSlayerTaskResponse;
+		return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
 	}
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
@@ -347,7 +349,7 @@ export async function autoSlayCommand({
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return startingSlayerTaskResponse;
+			return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
 		}
 
 		const allMonsters = killableMonsters.filter(m => {
@@ -376,7 +378,7 @@ export async function autoSlayCommand({
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return startingSlayerTaskResponse;
+			return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
 		}
 		return { content: "Can't find any monsters you have the requirements to kill!", flags: MessageFlags.Ephemeral };
 	}
@@ -386,5 +388,5 @@ export async function autoSlayCommand({
 		bypassInhibitors: true,
 		...cmdRunOptions
 	});
-	return startingSlayerTaskResponse;
+	return startingSlayerTaskResponse(usersTask.slayerMaster!.name);
 }
