@@ -7,7 +7,7 @@ import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
 import { KillableMonster } from '../types';
 import { GearStat } from './../../gear/types';
-import { SkillsEnum } from './../../skilling/types';
+import { Castable, SkillsEnum } from './../../skilling/types';
 
 export default async function combatXPReciever(
 	monster: KillableMonster,
@@ -17,9 +17,9 @@ export default async function combatXPReciever(
 ) {
 	// Returned XP and level up string.
 	let str = '';
-	let spell;
+	let spell: Castable | undefined = undefined;
 	let combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
-	if (combatSkill === 'auto') {
+	if (combatSkill === CombatsEnum.Auto) {
 		const defaultMonsterStyle = monster.defaultStyleToUse;
 
 		if (
@@ -39,7 +39,7 @@ export default async function combatXPReciever(
 		}
 	}
 
-	if (combatSkill === 'mage') {
+	if (combatSkill === CombatsEnum.Mage) {
 		const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
 		if (combatSpell === null) {
 			console.log('Spell is null.');
@@ -72,18 +72,18 @@ export default async function combatXPReciever(
 	let newMagicLevel = user.skillLevel(SkillsEnum.Magic);
 	let newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 
-	const meleeCombatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle);
+	const meleeCombatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle)!;
 
 	const meleeWeapon = user.getGear('melee').equippedWeapon();
 	let meleeAttackStyle = '';
 
-	const rangeCombatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle);
+	const rangeCombatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle)!;
 	const rangeWeapon = user.getGear('range').equippedWeapon();
 
-	const mageCombatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle);
+	const mageCombatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle)!;
 
 	switch (combatSkill) {
-		case 'melee':
+		case CombatsEnum.Melee:
 			if (meleeWeapon === null || meleeWeapon.weapon === null) {
 				console.log('Weapon is null.');
 				return str;
@@ -199,7 +199,7 @@ export default async function combatXPReciever(
 					return str;
 			}
 			break;
-		case 'range':
+		case CombatsEnum.Range:
 			if (rangeWeapon === null || rangeWeapon.weapon === null) {
 				console.log('Weapon is null.');
 				return str;
@@ -282,12 +282,12 @@ export default async function combatXPReciever(
 					return str;
 			}
 			break;
-		case 'mage':
+		case CombatsEnum.Mage:
 			switch (mageCombatStyle) {
 				case 'standard':
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
-						amount: 2 * totalHP + hits * spell?.magicxp!
+						amount: 2 * totalHP + hits * spell!.magicxp
 					});
 					await user.addXP({
 						skillName: SkillsEnum.Hitpoints,
@@ -297,7 +297,7 @@ export default async function combatXPReciever(
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(
 						2 * totalHP +
-						hits * spell?.magicxp!
+						hits * spell!.magicxp
 					).toLocaleString()} Magic XP and ${Math.round(1.33 * totalHP).toLocaleString()} Hitpoints XP.`;
 					if (newMagicLevel > currentMagicLevel) {
 						str += `\n\n${user.minionName}'s Magic level is now ${newMagicLevel}!`;
@@ -309,7 +309,7 @@ export default async function combatXPReciever(
 				case 'defensive':
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
-						amount: Math.round(1.33 * totalHP) + hits * spell?.magicxp!
+						amount: Math.round(1.33 * totalHP) + hits * spell!.magicxp
 					});
 					await user.addXP({
 						skillName: SkillsEnum.Defence,
@@ -324,7 +324,7 @@ export default async function combatXPReciever(
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(
 						Math.round(1.33 * totalHP) +
-						hits * spell?.magicxp!
+						hits * spell!.magicxp
 					).toLocaleString()} Magic XP, ${Number(totalHP).toLocaleString()} Defence XP and ${Math.round(
 						1.33 * totalHP
 					).toLocaleString()} Hitpoints XP.`;
@@ -390,6 +390,10 @@ export default async function combatXPReciever(
 					return str;
 			}
 			break;
+		case CombatsEnum.Auto:
+			return "Auto Combat XP Receiver function didn't find combat style.";
+		case CombatsEnum.NoCombat:
+			return 'No combat means NO XP.';
 	}
 	return '\nNot working..';
 }

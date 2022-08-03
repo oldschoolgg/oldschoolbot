@@ -216,7 +216,8 @@ export default function potionBoostCalculator(user: KlasaUser, combatSkill: Skil
 				}
 			}
 			return [0, 'none'];
-	}
 
-	return [0, 'none'];
+		default:
+			return [0, 'none'];
+	}
 }

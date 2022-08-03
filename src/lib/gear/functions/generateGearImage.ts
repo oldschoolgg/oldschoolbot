@@ -154,10 +154,10 @@ export async function generateGearImage(
 			user instanceof KlasaUser
 				? user.getGear('melee').equippedWeapon()
 				: getUserGear(user).melee.equippedWeapon();
-		if (meleeWeapon != null && meleeWeapon.weapon != null) {
+		if (meleeWeapon !== null && meleeWeapon.weapon !== null) {
 			let attackStyle = '';
 			let combatType = '';
-			for (let stance of meleeWeapon.weapon.stances) {
+			for (let stance of meleeWeapon.weapon!.stances) {
 				if (
 					stance.combat_style.toLowerCase() ===
 					(user instanceof KlasaUser
