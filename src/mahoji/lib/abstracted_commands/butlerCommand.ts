@@ -9,6 +9,31 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ButlerActivityTaskOptions } from '../../../lib/types/minions';
 import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import resolveItems from '../../../lib/util/resolveItems';
+
+const unlimitedEarthRuneProviders = resolveItems([
+	'Staff of earth',
+	'Mystic earth staff',
+	'Earth battlestaff',
+	'Mystic lava staff',
+	'Lava battlestaff',
+	'Mystic mud staff',
+	'Mud battlestaff',
+	'Mystic dust staff',
+	'Dust battlestaff'
+]);
+
+const unlimitedAirRuneProviders = resolveItems([
+	'Staff of air',
+	'Mystic air staff',
+	'Air battlestaff',
+	'Mystic smoke staff',
+	'Smoke battlestaff',
+	'Mystic mist staff',
+	'Mist battlestaff',
+	'Mystic dust staff',
+	'Dust battlestaff'
+]);
 
 export async function butlerCommand(
 	user: KlasaUser,
@@ -52,33 +77,53 @@ export async function butlerCommand(
 
 	let inventories = Math.ceil(quantity / 26);
 
-	cost += Math.ceil(1250 * inventories);
+	cost += 1250 * inventories;
 
 	if (GP < cost) {
 		return `You need ${toKMB(cost)} GP to create ${quantity} planks.`;
 	}
 
-	const itemCost = new Bank();
+	let earthRuneCost = 0;
+	let airRuneCost = 0;
+	let lawRuneCost = 0;
 
-	if (user.hasItemEquippedAnywhere('Construct. cape')) {
-	} else {
-		itemCost.add('Law Rune', inventories);
-		itemCost.add('Air Rune', inventories);
-		itemCost.add('Earth Rune', inventories);
+	if (!user.hasItemEquippedAnywhere('Construct. cape')) {
+		lawRuneCost += inventories;
+		airRuneCost += inventories;
+		earthRuneCost += inventories;
 	}
 
-	if (user.hasItemEquippedAnywhere('Crafting cape')) {
-	} else {
-		itemCost.add('Law Rune', inventories);
-		itemCost.add('Air Rune', inventories * 5);
+	if (!user.hasItemEquippedAnywhere('Crafting cape')) {
+		lawRuneCost += inventories;
+		airRuneCost += inventories * 5;
 	}
+
+	for (const runeProvider of unlimitedAirRuneProviders) {
+		if (user.hasItemEquippedAnywhere(runeProvider)) {
+			airRuneCost = 0;
+			break;
+		}
+	}
+
+	for (const runeProvider of unlimitedEarthRuneProviders) {
+		if (user.hasItemEquippedAnywhere(runeProvider)) {
+			earthRuneCost = 0;
+			break;
+		}
+	}
+
+	const consumedItems = new Bank({
+		...(earthRuneCost > 0 ? { 'Earth rune': earthRuneCost } : {}),
+		...(airRuneCost > 0 ? { 'Air rune': airRuneCost } : {}),
+		...(lawRuneCost > 0 ? { 'Law rune': lawRuneCost } : {})
+	});
 
 	const userBank = user.bank();
 
-	if (!userBank.has(itemCost)) {
+	if (!userBank.has(consumedItems)) {
 		return `You don't have the required runes to do ${quantity} planks. You need: ${new Bank(
-			itemCost
-		)}, you're missing: ${new Bank(itemCost).remove(userBank)}.`;
+			consumedItems
+		)}, you're missing: ${new Bank(consumedItems).remove(userBank)}.`;
 	}
 
 	const duration = quantity * timePerPlank;
@@ -93,7 +138,7 @@ export async function butlerCommand(
 
 	const costBank = new Bank().add('Coins', cost).add(plank!.inputItem, quantity);
 	await user.removeItemsFromBank(costBank);
-	await user.removeItemsFromBank(itemCost);
+	await user.removeItemsFromBank(consumedItems);
 
 	await updateBankSetting(globalClient, ClientSettings.EconomyStats.ConstructCostBank, new Bank().add('Coins', cost));
 
@@ -110,8 +155,8 @@ export async function butlerCommand(
 		quantity > 1 ? 's' : ''
 	}. The demon butler has charged you ${toKMB(cost)} GP.`;
 
-	if (itemCost.length) {
-		response += `\nYou have used ${itemCost} for teleports.`;
+	if (consumedItems.length) {
+		response += `\nYou have used ${consumedItems} for teleports.`;
 	}
 
 	response += `\nThey'll come back in around ${formatDuration(duration)}.`;
