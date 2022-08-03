@@ -1,4 +1,3 @@
-/*
 import { MessageAttachment } from 'discord.js';
 import { calcWhatPercent, increaseNumByPercent, reduceNumByPercent, round, Time } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
@@ -213,7 +212,7 @@ export default class MinionCommand extends BotCommand {
 			`Maximum trip length: ${formatDuration(
 				msg.author.maxTripLength('MonsterKilling')
 			)}\nNormal kill time: ${formatDuration(
-				monster.timeToFinish
+				monster.noneCombatCalcTimeToFinish
 			)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`
 		);
 		str.push(
@@ -221,7 +220,7 @@ export default class MinionCommand extends BotCommand {
 				reduceNumByPercent(timeToFinish, 15)
 			)} per kill).`
 		);
-		const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.timeToFinish);
+		const kcForOnePercent = Math.ceil((Time.Hour * 5) / monster.noneCombatCalcTimeToFinish);
 
 		str.push(
 			`Every ${kcForOnePercent}kc you will gain a 1% (upto 10%).\nYou currently recieve a ${percentReduced}% boost with your ${userKc}kc.\n`
@@ -240,4 +239,3 @@ export default class MinionCommand extends BotCommand {
 		return msg.channel.send(str.join('\n'));
 	}
 }
-*/

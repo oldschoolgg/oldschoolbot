@@ -10,7 +10,7 @@ const arrayColumns = [
 	['users', 'favoriteItems'],
 	['users', 'favorite_alchables'],
 	['users', 'favorite_food'],
-	['users', 'attack_style'],
+	['users', 'combat_style'],
 	['users', 'combat_options'],
 	['users', 'ironman_alts'],
 	['users', 'slayer.unlocks'],

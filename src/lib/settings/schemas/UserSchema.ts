@@ -43,7 +43,7 @@ Client.defaultUserSchema
 	.add('carpenter_points', 'integer', { default: 0 })
 	.add('zeal_tokens', 'integer', { default: 0 })
 	.add('openable_scores', 'any', { default: {} })
-	.add('attack_style', 'string', { array: true, default: [] })
+	.add('combat_style', 'string', { array: true, default: [] })
 	.add('total_cox_points', 'integer', { default: 0 })
 	.add('combat_options', 'integer', { array: true, default: [] })
 	.add('farming_patch_reminders', 'boolean', { default: true })

@@ -48,7 +48,7 @@ export namespace UserSettings {
 	export const CarpenterPoints = T<number>('carpenter_points');
 	export const ZealTokens = T<number>('zeal_tokens');
 	export const OpenableScores = T<Readonly<ItemBank>>('openable_scores');
-	export const CombatStyle = T<readonly SkillsEnum[]>('attack_style');
+	export const CombatStyle = T<readonly SkillsEnum[]>('combat_style');
 	export const TotalCoxPoints = T<number>('total_cox_points');
 	export const FavoriteAlchables = T<readonly number[]>('favorite_alchables');
 	export const BankBackgroundHex = T<HexColorString | null>('bank_bg_hex');

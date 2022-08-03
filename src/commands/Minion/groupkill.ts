@@ -1,4 +1,3 @@
-/*
 import { objectKeys, Time } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
 
@@ -141,6 +140,7 @@ export default class extends BotCommand {
 			monsterID: monster.id,
 			userID: msg.author.id,
 			channelID: msg.channel.id,
+			noneCombat: true,
 			quantity,
 			hits,
 			duration,
@@ -159,10 +159,9 @@ export default class extends BotCommand {
 				.map(u => u.username)
 				.join(', ')}) is now off to kill ${quantity}x ${monster.name}. Each kill takes ${formatDuration(
 				perKillTime
-			)} instead of ${formatDuration(monster.timeToFinish)}- the total trip will take ${formatDuration(
-				duration
-			)}. ${killsPerHr}`
+			)} instead of ${formatDuration(
+				monster.noneCombatCalcTimeToFinish
+			)}- the total trip will take ${formatDuration(duration)}. ${killsPerHr}`
 		);
 	}
 }
-*/
