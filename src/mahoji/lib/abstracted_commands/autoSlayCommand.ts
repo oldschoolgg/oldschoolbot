@@ -1,5 +1,8 @@
+import { User } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
-import { KlasaUser } from 'klasa';
+import { MessageFlags } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Monsters } from 'oldschooljs';
 
 import { PvMMethod } from '../../../lib/constants';
@@ -10,6 +13,7 @@ import { autoslayModes, AutoslayOptionsEnum } from '../../../lib/slayer/constant
 import { getCommonTaskName, getUsersCurrentSlayerInfo, SlayerMasterEnum } from '../../../lib/slayer/slayerUtil';
 import { stringMatches } from '../../../lib/util';
 import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
+import { slayerNewTaskCommand } from './slayerTaskCommand';
 
 interface AutoslayLink {
 	monsterID: number;
@@ -203,6 +207,8 @@ const AutoSlayMaxEfficiencyTable: AutoslayLink[] = [
 		efficientMethod: 'cannon'
 	}
 ];
+const startingSlayerTaskResponse = { content: 'Starting slayer task.', flags: MessageFlags.Ephemeral };
+
 function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 	let method = 'default';
 	if (autoslayOptions.includes(AutoslayOptionsEnum.MaxEfficiency)) {
@@ -214,13 +220,33 @@ function determineAutoslayMethod(autoslayOptions: AutoslayOptionsEnum[]) {
 	}
 	return method;
 }
-export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOverride?: string, saveMode?: boolean) {
+
+export async function autoSlayCommand({
+	mahojiUser,
+	channelID,
+	modeOverride,
+	saveMode,
+	interaction
+}: {
+	mahojiUser: User;
+	channelID: bigint;
+	modeOverride?: string;
+	saveMode?: boolean;
+	interaction: SlashCommandInteraction;
+}): Promise<CommandResponse> {
+	const user = await globalClient.fetchUser(mahojiUser.id);
 	const autoslayOptions = user.settings.get(UserSettings.Slayer.AutoslayOptions);
 	const usersTask = await getUsersCurrentSlayerInfo(user.id);
 	const isOnTask = usersTask.assignedTask !== null && usersTask.currentTask !== null;
 
 	if (!isOnTask) {
-		return "You're not on a slayer task, so you can't autoslay!";
+		await slayerNewTaskCommand({ mahojiUser, channelID, interaction });
+		const newTaskCheck = await getUsersCurrentSlayerInfo(user.id);
+		const isOnTaskCheck = newTaskCheck.assignedTask !== null && newTaskCheck.currentTask !== null;
+		if (isOnTaskCheck) {
+			return autoSlayCommand({ mahojiUser, interaction, channelID, modeOverride, saveMode });
+		}
+		return { content: 'Cannot autoslay because we failed to get a new task', flags: MessageFlags.Ephemeral };
 	}
 	const savedMethod = determineAutoslayMethod(autoslayOptions as AutoslayOptionsEnum[]);
 	const method = modeOverride ?? savedMethod;
@@ -265,7 +291,7 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
-		return 'Starting slayer task.';
+		return startingSlayerTaskResponse;
 	}
 	if (method === 'ehp') {
 		const ehpMonster = AutoSlayMaxEfficiencyTable.find(e => {
@@ -285,7 +311,7 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return 'Starting slayer task.';
+			return startingSlayerTaskResponse;
 		}
 
 		if (ehpMonster && ehpMonster.efficientName) {
@@ -298,7 +324,7 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return 'Starting slayer task.';
+			return startingSlayerTaskResponse;
 		}
 		runCommand({
 			commandName: 'k',
@@ -308,7 +334,7 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 			bypassInhibitors: true,
 			...cmdRunOptions
 		});
-		return 'Starting slayer task.';
+		return startingSlayerTaskResponse;
 	}
 	if (method === 'boss') {
 		// This code handles the 'highest/boss' setting of autoslay.
@@ -321,7 +347,7 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return 'Starting slayer task.';
+			return startingSlayerTaskResponse;
 		}
 
 		const allMonsters = killableMonsters.filter(m => {
@@ -350,9 +376,9 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 				bypassInhibitors: true,
 				...cmdRunOptions
 			});
-			return 'Starting slayer task.';
+			return startingSlayerTaskResponse;
 		}
-		return "Can't find any monsters you have the requirements to kill!";
+		return { content: "Can't find any monsters you have the requirements to kill!", flags: MessageFlags.Ephemeral };
 	}
 	runCommand({
 		commandName: 'k',
@@ -360,5 +386,5 @@ export async function autoSlayCommand(user: KlasaUser, channelID: bigint, modeOv
 		bypassInhibitors: true,
 		...cmdRunOptions
 	});
-	return 'Starting slayer task.';
+	return startingSlayerTaskResponse;
 }
