@@ -328,6 +328,7 @@ export type ActivityTaskData =
 	| HunterActivityTaskOptions
 	| ZalcanoActivityTaskOptions
 	| SawmillActivityTaskOptions
+	| ButlerActivityTaskOptions
 	| FarmingActivityTaskOptions
 	| HerbloreActivityTaskOptions
 	| FletchingActivityTaskOptions
@@ -335,5 +336,4 @@ export type ActivityTaskData =
 	| TempleTrekkingActivityTaskOptions
 	| TemporossActivityTaskOptions
 	| PuroPuroActivityTaskOptions
-	| KourendFavourActivityTaskOptions
-	| ButlerActivityTaskOptions;
+	| KourendFavourActivityTaskOptions;

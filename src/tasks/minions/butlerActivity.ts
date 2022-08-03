@@ -2,11 +2,11 @@ import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { Planks } from '../../lib/minions/data/planks';
-import { SawmillActivityTaskOptions } from '../../lib/types/minions';
+import { ButlerActivityTaskOptions } from '../../lib/types/minions';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
 export default class extends Task {
-	async run(data: SawmillActivityTaskOptions) {
+	async run(data: ButlerActivityTaskOptions) {
 		const { userID, channelID, plankID, plankQuantity } = data;
 		const user = await this.client.fetchUser(userID);
 		const plank = Planks.find(plank => plank.outputItem === plankID)!;

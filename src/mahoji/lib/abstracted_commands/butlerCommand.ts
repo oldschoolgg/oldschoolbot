@@ -29,9 +29,9 @@ export async function butlerCommand(
 		return 'You need level 50 Construction to use the demon butler.';
 	}
 
-	let timePerPlank = (Time.Second * 15) / 27;
+	let timePerPlank = (Time.Second * 15) / 26;
 
-	const maxTripLength = user.maxTripLength('Sawmill');
+	const maxTripLength = user.maxTripLength('Butler');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
@@ -50,9 +50,9 @@ export async function butlerCommand(
 	const GP = user.settings.get(UserSettings.GP);
 	let cost = plank!.gpCost * quantity;
 
-	let inventories = quantity / 26;
+	let inventories = Math.ceil(quantity / 26);
 
-	cost += Math.floor(1250 * inventories);
+	cost += Math.ceil(1250 * inventories);
 
 	if (GP < cost) {
 		return `You need ${toKMB(cost)} GP to create ${quantity} planks.`;
@@ -108,7 +108,13 @@ export async function butlerCommand(
 
 	let response = `${user.minionName} is now creating ${quantity} ${itemNameFromID(plank.outputItem)}${
 		quantity > 1 ? 's' : ''
-	}. The demon butler has charged you ${toKMB(cost)} GP. They'll come back in around ${formatDuration(duration)}.`;
+	}. The demon butler has charged you ${toKMB(cost)} GP.`;
+
+	if (itemCost.length) {
+		response += `\nYou have used ${itemCost} for teleports.`;
+	}
+
+	response += `\nThey'll come back in around ${formatDuration(duration)}.`;
 
 	return response;
 }
