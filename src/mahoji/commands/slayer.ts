@@ -5,6 +5,11 @@ import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants
 import { SlayerRewardsShop } from '../../lib/slayer/slayerUnlocks';
 import { autoSlayCommand } from '../lib/abstracted_commands/autoSlayCommand';
 import {
+	slayerShopBuyCommand,
+	slayerShopListMyUnlocks,
+	slayerShopListRewards
+} from '../lib/abstracted_commands/slayerShopCommand';
+import {
 	slayerListBlocksCommand,
 	slayerNewTaskCommand,
 	slayerSkipTaskCommand,
@@ -40,7 +45,7 @@ export const slayerCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
-			name: 'task',
+			name: 'new_task',
 			description: 'Send your minion to slay your current task.',
 			options: [
 				{
@@ -59,70 +64,23 @@ export const slayerCommand: OSBMahojiCommand = {
 			]
 		},
 		{
-			type: ApplicationCommandOptionType.SubcommandGroup,
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'manage',
-			description: 'Manage your Slayer task/block list.',
+			description: 'Manage your current Slayer task.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'skip',
+					type: ApplicationCommandOptionType.String,
+					name: 'command',
 					description: 'Skip your current task',
-					required: false,
-					options: [
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'new',
-							description: 'Get a new task automatically',
-							required: false
-						}
-					]
+					required: true,
+					choices: ['skip', 'block', 'list_blocks'].map(c => {
+						return { name: c, value: c };
+					})
 				},
 				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'block',
-					description: 'Block your current task.',
-					required: false,
-					options: [
-						{
-							type: ApplicationCommandOptionType.Boolean,
-							name: 'new',
-							description: 'Get a new task automatically',
-							required: false
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'unblock',
-					description: 'Unblock a task',
-					required: false,
-					options: [
-						{
-							type: ApplicationCommandOptionType.String,
-							name: 'assignment',
-							description: 'Assignment to unblock',
-							required: true,
-							autocomplete: async (value: string, user: APIUser) => {
-								const blockList = await mahojiUsersSettingsFetch(user.id, { slayer_blocked_ids: true });
-								if (blockList.slayer_blocked_ids.length === 0) {
-									return [{ name: "You don't have any monsters blocked", value: '' }];
-								}
-								const blockedMonsters = blockList.slayer_blocked_ids.map(mId =>
-									Monsters.find(m => m.id === mId)
-								);
-								return blockedMonsters
-									.filter(m => (!value ? true : m!.name.toLowerCase().includes(value.toLowerCase())))
-									.map(m => {
-										return { name: m!.name, value: m!.name };
-									});
-							}
-						}
-					]
-				},
-				{
-					type: ApplicationCommandOptionType.Subcommand,
-					name: 'list_blocks',
-					description: 'List your blocked tasks.',
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'new',
+					description: 'Get a new task (if applicable)',
 					required: false
 				}
 			]
@@ -162,6 +120,34 @@ export const slayerCommand: OSBMahojiCommand = {
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
+					name: 'unblock',
+					description: 'Unblock a task',
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'assignment',
+							description: 'Assignment to unblock',
+							required: true,
+							autocomplete: async (value: string, user: APIUser) => {
+								const blockList = await mahojiUsersSettingsFetch(user.id, { slayer_blocked_ids: true });
+								if (blockList.slayer_blocked_ids.length === 0) {
+									return [{ name: "You don't have any monsters blocked", value: '' }];
+								}
+								const blockedMonsters = blockList.slayer_blocked_ids.map(mId =>
+									Monsters.find(m => m.id === mId)
+								);
+								return blockedMonsters
+									.filter(m => (!value ? true : m!.name.toLowerCase().includes(value.toLowerCase())))
+									.map(m => {
+										return { name: m!.name, value: m!.name };
+									});
+							}
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
 					name: 'buy',
 					description: 'Purchase something with points',
 					required: false,
@@ -185,14 +171,68 @@ export const slayerCommand: OSBMahojiCommand = {
 									return { name: m.name, value: m.name };
 								});
 							}
+						},
+						{
+							type: ApplicationCommandOptionType.Integer,
+							name: 'quantity',
+							description: 'The quantity to purchase, if applicable.',
+							required: false
 						}
 					]
 				},
 				{
 					type: ApplicationCommandOptionType.Subcommand,
-					name: 'show_unlocks',
+					name: 'my_unlocks',
 					description: 'Show purchased unlocks',
 					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'show_all_rewards',
+					description: 'Show all rewards',
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'type',
+							description: 'What type of rewards to show?',
+							required: false,
+							choices: ['all', 'buyables', 'unlocks'].map(t => {
+								return { name: t, value: t };
+							})
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'disable',
+					description: 'Disable unlocks, extensions, etc. They will need to be repurchased.',
+					required: false,
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'unlockable',
+							description: 'Slayer unlock to disable',
+							required: true,
+							autocomplete: async (value: string, user: APIUser) => {
+								const mahojiUser = await mahojiUsersSettingsFetch(user.id, { slayer_unlocks: true });
+								return SlayerRewardsShop.filter(
+									r =>
+										!r.item &&
+										r.canBeRemoved &&
+										mahojiUser.slayer_unlocks.includes(r.id) &&
+										(!value
+											? true
+											: r.name.toLowerCase().includes(value) ||
+											  r.aliases?.some(alias =>
+													alias.toLowerCase().includes(value.toLowerCase())
+											  ))
+								).map(m => {
+									return { name: m.name, value: m.name };
+								});
+							}
+						}
+					]
 				}
 			]
 		},
@@ -203,61 +243,101 @@ export const slayerCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		user,
 		options,
 		channelID,
 		userID,
 		interaction
 	}: CommandRunOptions<{
 		autoslay?: { mode?: string; save?: boolean };
-		task?: { master?: string; save?: boolean };
+		new_task?: { master?: string; save?: boolean };
 		manage?: {
-			skip?: { new?: boolean };
-			block?: { new?: boolean };
-			unblock?: { assignment: string };
-			list_blocks?: {};
+			command: 'block' | 'skip' | 'list_blocks';
+			new?: boolean;
 		};
-		rewards?: { unlock?: { unlockable: string }; buy?: { item: string }; show_unlocks?: {} };
+		rewards?: {
+			unlock?: { unlockable: string };
+			unblock?: { assignment: string };
+			buy?: { item: string; quantity?: number };
+			my_unlocks?: {};
+			show_all_rewards?: { type?: 'all' | 'buyables' | 'unlocks' };
+			disable?: { unlockable: string };
+		};
 		status?: {};
 	}>) => {
 		const klasaUser = await globalClient.fetchUser(userID);
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
+		await klasaUser.settings.sync(true);
 
 		if (options.autoslay) {
-			return autoSlayCommand(klasaUser, channelID, options.autoslay.mode, Boolean(options.autoslay.save));
+			return autoSlayCommand({
+				mahojiUser,
+				channelID,
+				modeOverride: options.autoslay.mode,
+				saveMode: Boolean(options.autoslay.save),
+				interaction
+			});
 		}
-		if (options.task) {
-			return await slayerNewTaskCommand(
+		if (options.new_task) {
+			return slayerNewTaskCommand({
 				mahojiUser,
 				interaction,
 				channelID,
-				'',
-				options.task.master,
-				Boolean(options.task.save)
-			);
+				slayerMasterOverride: options.new_task.master,
+				saveDefaultSlayerMaster: Boolean(options.new_task.save),
+				showButtons: true
+			});
 		}
 		if (options.manage) {
-			if (options.manage.list_blocks) {
+			if (options.manage.command === 'list_blocks') {
 				return slayerListBlocksCommand(mahojiUser);
 			}
-			if (options.manage.unblock) {
-				return await slayerUnblockCommand(mahojiUser, options.manage.unblock.assignment);
-			}
-			if (options.manage.skip || options.manage.block) {
-				return await slayerSkipTaskCommand(
+			if (options.manage.command === 'skip' || options.manage.command === 'block') {
+				return slayerSkipTaskCommand({
 					mahojiUser,
-					Boolean(options.manage.block),
-					Boolean(options.manage.skip?.new ?? options.manage.block?.new),
+					block: options.manage.command === 'block',
+					newTask: Boolean(options.manage.new),
 					interaction,
 					channelID
-				);
+				});
+			}
+		}
+		if (options.rewards) {
+			if (options.rewards.my_unlocks) {
+				return slayerShopListMyUnlocks(mahojiUser);
+			}
+			if (options.rewards.unblock) {
+				return slayerUnblockCommand(mahojiUser, options.rewards.unblock.assignment);
+			}
+			if (options.rewards.show_all_rewards) {
+				return slayerShopListRewards(options.rewards.show_all_rewards.type ?? 'all');
+			}
+			if (options.rewards.disable) {
+				return slayerShopBuyCommand({
+					mahojiUser,
+					disable: true,
+					buyable: options.rewards.disable.unlockable,
+					interaction
+				});
+			}
+			if (options.rewards.buy) {
+				return slayerShopBuyCommand({
+					mahojiUser,
+					buyable: options.rewards.buy.item,
+					quantity: options.rewards.buy.quantity,
+					interaction
+				});
+			}
+			if (options.rewards.unlock) {
+				return slayerShopBuyCommand({
+					mahojiUser,
+					buyable: options.rewards.unlock.unlockable,
+					interaction
+				});
 			}
 		}
 		if (options.status) {
 			return slayerStatusCommand(mahojiUser);
 		}
-		console.log(options);
-		console.log(`channel: ${channelID} - user: ${userID}`);
-		return `${user.username} - ${JSON.stringify(options)}`;
+		return 'This should not happen. Please contact support.';
 	}
 };

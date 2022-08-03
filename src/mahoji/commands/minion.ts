@@ -355,11 +355,6 @@ export const minionCommand: OSBMahojiCommand = {
 					min_value: 1
 				}
 			]
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'autoslay',
-			description: 'Automatically get/run slayer tasks.'
 		}
 	],
 	run: async ({
@@ -386,7 +381,6 @@ export const minionCommand: OSBMahojiCommand = {
 		train?: { style: AttackStyles };
 		pat?: {};
 		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
-		autoslay?: {};
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -483,8 +477,6 @@ export const minionCommand: OSBMahojiCommand = {
 				options.blowpipe.add,
 				options.blowpipe.quantity
 			);
-		}
-		if (options.autoslay) {
 		}
 
 		return 'Unknown command';
