@@ -139,7 +139,7 @@ export async function nightmareCommand(user: KlasaUser, channelID: bigint, name:
 	const users = type === 'mass' ? [user, user, user, user] : [user];
 	const soloBoosts: string[] = [];
 
-	let effectiveTime = NightmareMonster.timeToFinish;
+	let effectiveTime = NightmareMonster.noneCombatCalcTimeToFinish;
 	const [data] = getNightmareGearStats(
 		user,
 		users.map(u => u.id),
@@ -217,7 +217,7 @@ export async function nightmareCommand(user: KlasaUser, channelID: bigint, name:
 
 	let [quantity, duration, perKillTime] = await calcDurQty(
 		users,
-		{ ...NightmareMonster, timeToFinish: effectiveTime },
+		{ ...NightmareMonster, noneCombatCalcTimeToFinish: effectiveTime },
 		undefined,
 		Time.Minute * 5,
 		Time.Minute * 30
@@ -282,7 +282,7 @@ Removed ${soloFoodUsage} from your bank.`
 			  } is now off to kill ${quantity}x Nightmare. Each kill takes ${formatDuration(
 					perKillTime
 			  )} instead of ${formatDuration(
-					NightmareMonster.timeToFinish
+					NightmareMonster.noneCombatCalcTimeToFinish
 			  )} - the total trip will take ${formatDuration(duration)}.`;
 
 	return str;

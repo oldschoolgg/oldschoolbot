@@ -265,9 +265,12 @@ model User {
   carpenter_points           Int      @default(0)
   zeal_tokens                Int      @default(0)
   openable_scores            Json     @default("{}") @db.Json
-  attack_style               String[]
+  combat_style               String[]
   total_cox_points           Int      @default(0)
   combat_options             Int[]
+  selectedPrayers            String[]
+  selectedPotions            String[]
+  unlockedPrayers            String[]  
   farming_patch_reminders    Boolean  @default(true)
   pest_control_points        Int      @default(0)
   inferno_attempts           Int      @default(0)
@@ -298,6 +301,15 @@ model User {
   minion_defaultCompostToUse String   @default("compost") @map("minion.defaultCompostToUse")
   minion_defaultPay          Boolean  @default(false) @map("minion.defaultPay")
   minion_birdhouseTraps      Json?    @map("minion.birdhouseTraps") @db.Json
+  minion_combatSpell         String?  @map("minion.combatSpell")
+  minion_mageCombatStyle     String?  @map("minion.mageCombatStyle")
+  minion_rangeCombatStyle    String?  @map("minion.rangeCombatStyle")
+  minion_meleeCombatStyle    String?  @map("minion.meleeCombatStyle")
+  minion_combatSkill         Json?    @map("minion.combatSkill") @db.Json
+  minion_mageAttackStyle     String?  @map("minion.mageAttackStyle")
+  minion_rangeAttackStyle    String?  @map("minion.rangeAttackStyle")
+  minion_meleeAttackStyle    String?  @map("minion.meleeAttackStyle")
+  minion_defaultDartToUse    String   @default("bronze dart") @map("minion.defaultDartToUse")
   stats_deaths               Int      @default(0) @map("stats.deaths")
   stats_diceWins             Int      @default(0) @map("stats.diceWins")
   stats_diceLosses           Int      @default(0) @map("stats.diceLosses")

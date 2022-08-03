@@ -57,7 +57,7 @@ export async function revsCommand(
 		return `Your weapon is terrible, you can't kill revenants. You should have ${style} gear equipped in your wildy outfit, as this is what you're currently training. You can change this using \`+m train\``;
 	}
 
-	let timePerMonster = monster.timeToFinish;
+	let timePerMonster = monster.noneCombatCalcTimeToFinish;
 	timePerMonster = reduceNumByPercent(timePerMonster, gearPercent / 4);
 	boosts.push(`${(gearPercent / 4).toFixed(2)}% (out of a possible 25%) for ${key}`);
 

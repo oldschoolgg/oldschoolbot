@@ -1,7 +1,8 @@
+import { Time } from 'e';
 import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { bankHasItem, itemID } from 'oldschooljs/dist/util';
 
-import { Time } from '../../constants';
 import { UserSettings } from '../../settings/types/UserSettings';
 import Prayer from '../../skilling/skills/prayer';
 import { SkillsEnum } from '../../skilling/types';
@@ -27,13 +28,13 @@ export default async function calculatePrayerDrain(
 	let prayerPointsDrainedPerBankCycle = 0;
 
 	if (
-		((PrayerPointsEverySecond * averageKillSpeed) / Time.Second) * monster.killsPerBankTrip >
+		((PrayerPointsEverySecond * averageKillSpeed) / Time.Second) * monster.killsPerBankTrip! >
 		user.skillLevel(SkillsEnum.Prayer)
 	) {
 		prayerPointsDrainedPerBankCycle =
 			(PrayerPointsEverySecond * averageKillSpeed) / Time.Second - user.skillLevel(SkillsEnum.Prayer);
 	}
-	const bankCycles = quantity / monster.killsPerBankTrip;
+	const bankCycles = quantity / monster.killsPerBankTrip!;
 	const totalPrayerPoints = bankCycles * prayerPointsDrainedPerBankCycle;
 
 	const prayerPointsPerDose = Number(user.skillLevel(SkillsEnum.Prayer)) / 4 + 7;
@@ -50,12 +51,16 @@ export default async function calculatePrayerDrain(
 	) {
 		throw "You don't have enough Prayer potion(4) in the bank.";
 	}
+
 	if (totalDosesUsed > 0) {
-		await user.removeItemFromBank(itemID('Prayer potion(4)'), Math.floor(totalDosesUsed / 4) + 1);
+		await user.removeItemsFromBank(new Bank().add(itemID('Prayer potion(4)'), Math.floor(totalDosesUsed / 4) + 1));
 
 		const leftOverDoses = 4 - (totalDosesUsed % 4);
 		if (leftOverDoses !== 4) {
-			await user.addItemsToBank({ [itemID(`Prayer potion(${leftOverDoses})`)]: 1 }, true);
+			await user.addItemsToBank({
+				items: new Bank().add(itemID(`Prayer potion(${leftOverDoses})`), 1),
+				collectionLog: false
+			});
 		}
 	}
 }

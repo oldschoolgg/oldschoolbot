@@ -12,7 +12,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.AncientZygomite.id,
 		name: Monsters.AncientZygomite.name,
 		aliases: Monsters.AncientZygomite.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.AncientZygomite,
 
 		wildy: false,
@@ -29,7 +29,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Aviansie.id,
 		name: Monsters.Aviansie.name,
 		aliases: Monsters.Aviansie.aliases,
-		timeToFinish: Time.Second * 60,
+		noneCombatCalcTimeToFinish: Time.Second * 60,
 		table: Monsters.Aviansie,
 
 		wildy: false,
@@ -43,7 +43,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.BlackDemon.id,
 		name: Monsters.BlackDemon.name,
 		aliases: Monsters.BlackDemon.aliases,
-		timeToFinish: Time.Second * 36,
+		noneCombatCalcTimeToFinish: Time.Second * 36,
 		table: Monsters.BlackDemon,
 		wildy: false,
 
@@ -70,7 +70,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.CaveHorror.id,
 		name: Monsters.CaveHorror.name,
 		aliases: Monsters.CaveHorror.aliases,
-		timeToFinish: Time.Second * 16,
+		noneCombatCalcTimeToFinish: Time.Second * 16,
 		table: Monsters.CaveHorror,
 		wildy: false,
 
@@ -95,7 +95,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.CaveKraken.id,
 		name: Monsters.CaveKraken.name,
 		aliases: Monsters.CaveKraken.aliases,
-		timeToFinish: Time.Second * 35,
+		noneCombatCalcTimeToFinish: Time.Second * 35,
 		table: Monsters.CaveKraken,
 		wildy: false,
 
@@ -115,7 +115,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.FossilIslandWyvernAncient.id,
 		name: Monsters.FossilIslandWyvernAncient.name,
 		aliases: Monsters.FossilIslandWyvernAncient.aliases,
-		timeToFinish: Time.Second * 117,
+		noneCombatCalcTimeToFinish: Time.Second * 117,
 		table: Monsters.FossilIslandWyvernAncient,
 		wildy: false,
 
@@ -137,7 +137,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.FossilIslandWyvernLongTailed.id,
 		name: Monsters.FossilIslandWyvernLongTailed.name,
 		aliases: Monsters.FossilIslandWyvernLongTailed.aliases,
-		timeToFinish: Time.Second * 65,
+		noneCombatCalcTimeToFinish: Time.Second * 65,
 		table: Monsters.FossilIslandWyvernLongTailed,
 
 		wildy: false,
@@ -160,7 +160,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.FossilIslandWyvernSpitting.id,
 		name: Monsters.FossilIslandWyvernSpitting.name,
 		aliases: Monsters.FossilIslandWyvernSpitting.aliases,
-		timeToFinish: Time.Second * 65,
+		noneCombatCalcTimeToFinish: Time.Second * 65,
 		table: Monsters.FossilIslandWyvernSpitting,
 
 		wildy: false,
@@ -183,7 +183,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.FossilIslandWyvernTaloned.id,
 		name: Monsters.FossilIslandWyvernTaloned.name,
 		aliases: Monsters.FossilIslandWyvernTaloned.aliases,
-		timeToFinish: Time.Second * 65,
+		noneCombatCalcTimeToFinish: Time.Second * 65,
 		table: Monsters.FossilIslandWyvernTaloned,
 
 		wildy: false,
@@ -206,7 +206,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.GreaterDemon.id,
 		name: Monsters.GreaterDemon.name,
 		aliases: Monsters.GreaterDemon.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.GreaterDemon,
 
 		wildy: false,
@@ -233,7 +233,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.IronDragon.id,
 		name: Monsters.IronDragon.name,
 		aliases: Monsters.IronDragon.aliases,
-		timeToFinish: Time.Second * 92,
+		noneCombatCalcTimeToFinish: Time.Second * 92,
 		table: Monsters.IronDragon,
 
 		wildy: false,
@@ -254,7 +254,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Kraken.id,
 		name: Monsters.Kraken.name,
 		aliases: Monsters.Kraken.aliases,
-		timeToFinish: Time.Second * 90,
+		noneCombatCalcTimeToFinish: Time.Second * 90,
 		table: Monsters.Kraken,
 
 		wildy: false,
@@ -301,7 +301,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Lizardman.id,
 		name: Monsters.Lizardman.name,
 		aliases: Monsters.Lizardman.aliases,
-		timeToFinish: Time.Second * 13,
+		noneCombatCalcTimeToFinish: Time.Second * 13,
 		table: Monsters.Lizardman,
 		emoji: '<:Xerics_talisman_inert:456176488669249539>',
 		wildy: false,
@@ -319,7 +319,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.LizardmanBrute.id,
 		name: Monsters.LizardmanBrute.name,
 		aliases: Monsters.LizardmanBrute.aliases,
-		timeToFinish: Time.Second * 16,
+		noneCombatCalcTimeToFinish: Time.Second * 16,
 		table: Monsters.LizardmanBrute,
 		emoji: '<:Xerics_talisman_inert:456176488669249539>',
 		wildy: false,
@@ -337,7 +337,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.LizardmanShaman.id,
 		name: Monsters.LizardmanShaman.name,
 		aliases: Monsters.LizardmanShaman.aliases,
-		timeToFinish: Time.Second * 52,
+		noneCombatCalcTimeToFinish: Time.Second * 52,
 		table: Monsters.LizardmanShaman,
 		emoji: '<:Dragon_warhammer:405998717154623488>',
 		wildy: false,
@@ -374,7 +374,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.SkeletalWyvern.id,
 		name: Monsters.SkeletalWyvern.name,
 		aliases: Monsters.SkeletalWyvern.aliases,
-		timeToFinish: Time.Second * 84,
+		noneCombatCalcTimeToFinish: Time.Second * 84,
 		table: Monsters.SkeletalWyvern,
 
 		wildy: false,
@@ -396,7 +396,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Skotizo.id,
 		name: Monsters.Skotizo.name,
 		aliases: Monsters.Skotizo.aliases,
-		timeToFinish: Time.Second * 160,
+		noneCombatCalcTimeToFinish: Time.Second * 160,
 		table: Monsters.Skotizo,
 
 		wildy: false,
@@ -419,7 +419,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.TzHaarKet.id,
 		name: Monsters.TzHaarKet.name,
 		aliases: Monsters.TzHaarKet.aliases,
-		timeToFinish: Time.Second * 35,
+		noneCombatCalcTimeToFinish: Time.Second * 35,
 		table: Monsters.TzHaarKet,
 
 		wildy: false,
@@ -432,7 +432,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Wyrm.id,
 		name: Monsters.Wyrm.name,
 		aliases: Monsters.Wyrm.aliases,
-		timeToFinish: Time.Second * 27,
+		noneCombatCalcTimeToFinish: Time.Second * 27,
 		table: Monsters.Wyrm,
 
 		wildy: false,
@@ -452,7 +452,7 @@ export const chaeldarMonsters: KillableMonster[] = [
 		id: Monsters.Zygomite.id,
 		name: Monsters.Zygomite.name,
 		aliases: Monsters.Zygomite.aliases,
-		timeToFinish: Time.Second * 15,
+		noneCombatCalcTimeToFinish: Time.Second * 15,
 		table: Monsters.Zygomite,
 		wildy: false,
 

@@ -6,7 +6,7 @@ import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
 import { KillableMonster } from '../types';
-import { GearSetupTypes, GearStat } from './../../gear/types';
+import { GearStat } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
 
 export default async function combatXPReciever(
@@ -73,11 +73,12 @@ export default async function combatXPReciever(
 	let newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 
 	const meleeCombatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle);
-	const meleeWeapon = user.equippedWeapon(GearSetupTypes.Melee);
+
+	const meleeWeapon = user.getGear('melee').equippedWeapon();
 	let meleeAttackStyle = '';
 
 	const rangeCombatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle);
-	const rangeWeapon = user.equippedWeapon(GearSetupTypes.Range);
+	const rangeWeapon = user.getGear('range').equippedWeapon();
 
 	const mageCombatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle);
 
@@ -87,16 +88,22 @@ export default async function combatXPReciever(
 				console.log('Weapon is null.');
 				return str;
 			}
-			for (let stance of meleeWeapon.weapon.stances) {
+			for (let stance of meleeWeapon.weapon!.stances) {
 				if (stance.combat_style.toLowerCase() === meleeCombatStyle) {
-					meleeAttackStyle = stance.attack_style;
+					meleeAttackStyle = stance.attack_style!;
 					break;
 				}
 			}
 			switch (meleeAttackStyle.toLowerCase()) {
 				case 'accurate':
-					await user.addXP(SkillsEnum.Attack, 4 * totalHP);
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Attack,
+						amount: 4 * totalHP
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newAttackLevel = user.skillLevel(SkillsEnum.Attack);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Attack XP and ${Math.round(
@@ -110,8 +117,14 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'aggressive':
-					await user.addXP(SkillsEnum.Strength, 4 * totalHP);
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Strength,
+						amount: 4 * totalHP
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newStrengthLevel = user.skillLevel(SkillsEnum.Strength);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Strength XP and ${Math.round(
@@ -125,8 +138,14 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'defensive':
-					await user.addXP(SkillsEnum.Defence, 4 * totalHP);
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: 4 * totalHP
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Defence XP and ${Math.round(
@@ -140,10 +159,22 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'controlled':
-					await user.addXP(SkillsEnum.Attack, Math.round(1.33 * totalHP));
-					await user.addXP(SkillsEnum.Strength, Math.round(1.33 * totalHP));
-					await user.addXP(SkillsEnum.Defence, Math.round(1.33 * totalHP));
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Attack,
+						amount: Math.round(1.33 * totalHP)
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Strength,
+						amount: Math.round(1.33 * totalHP)
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: Math.round(1.33 * totalHP)
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newAttackLevel = user.skillLevel(SkillsEnum.Attack);
 					newStrengthLevel = user.skillLevel(SkillsEnum.Strength);
 					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
@@ -179,8 +210,14 @@ export default async function combatXPReciever(
 			}
 			switch (rangeCombatStyle.toLowerCase()) {
 				case 'accurate':
-					await user.addXP(SkillsEnum.Ranged, 4 * totalHP);
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Ranged,
+						amount: 4 * totalHP
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newRangedLevel = user.skillLevel(SkillsEnum.Ranged);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Ranged XP and ${Math.round(
@@ -194,8 +231,14 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'rapid':
-					await user.addXP(SkillsEnum.Ranged, 4 * totalHP);
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Ranged,
+						amount: 4 * totalHP
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newRangedLevel = user.skillLevel(SkillsEnum.Ranged);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(4 * totalHP).toLocaleString()} Ranged XP and ${Math.round(
@@ -209,9 +252,18 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'longrange':
-					await user.addXP(SkillsEnum.Ranged, 2 * totalHP);
-					await user.addXP(SkillsEnum.Defence, 2 * totalHP);
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Ranged,
+						amount: 2 * totalHP
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: 2 * totalHP
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newRangedLevel = user.skillLevel(SkillsEnum.Ranged);
 					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
@@ -233,8 +285,14 @@ export default async function combatXPReciever(
 		case 'mage':
 			switch (mageCombatStyle) {
 				case 'standard':
-					await user.addXP(SkillsEnum.Magic, 2 * totalHP + hits * spell?.magicxp!);
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Magic,
+						amount: 2 * totalHP + hits * spell?.magicxp!
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${(
@@ -249,9 +307,18 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'defensive':
-					await user.addXP(SkillsEnum.Magic, Math.round(1.33 * totalHP) + hits * spell?.magicxp!);
-					await user.addXP(SkillsEnum.Defence, Number(totalHP));
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Magic,
+						amount: Math.round(1.33 * totalHP) + hits * spell?.magicxp!
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: totalHP
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
 					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
@@ -272,8 +339,14 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'accurate':
-					await user.addXP(SkillsEnum.Magic, Math.round(2 * totalHP));
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Magic,
+						amount: Math.round(2 * totalHP)
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);
 					str = `\nYou also received ${Math.round(2 * totalHP).toLocaleString()} Magic XP and ${Math.round(
@@ -287,9 +360,18 @@ export default async function combatXPReciever(
 					}
 					return str;
 				case 'longrange':
-					await user.addXP(SkillsEnum.Magic, Math.round(2 * totalHP));
-					await user.addXP(SkillsEnum.Defence, Number(totalHP));
-					await user.addXP(SkillsEnum.Hitpoints, Math.round(1.33 * totalHP));
+					await user.addXP({
+						skillName: SkillsEnum.Magic,
+						amount: Math.round(1.33 * totalHP)
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: totalHP
+					});
+					await user.addXP({
+						skillName: SkillsEnum.Hitpoints,
+						amount: Math.round(1.33 * totalHP)
+					});
 					newMagicLevel = user.skillLevel(SkillsEnum.Magic);
 					newDefenceLevel = user.skillLevel(SkillsEnum.Defence);
 					newHitpointsLevel = user.skillLevel(SkillsEnum.Hitpoints);

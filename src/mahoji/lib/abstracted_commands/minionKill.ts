@@ -507,17 +507,24 @@ export async function minionKillCommand(
 		});
 	}
 
+	// Temp variables
+	let noneCombat = true;
+	let hits = 0;
+
 	await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
 		monsterID: monster.id,
 		userID: user.id,
 		channelID: channelID.toString(),
+		noneCombat,
 		quantity,
 		duration,
+		hits,
 		type: 'MonsterKilling',
 		usingCannon: !usingCannon ? undefined : usingCannon,
 		cannonMulti: !cannonMulti ? undefined : cannonMulti,
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
 	});
+
 	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		duration
 	)} to finish. Attack styles used: ${combatStyles.join(', ')}.`;

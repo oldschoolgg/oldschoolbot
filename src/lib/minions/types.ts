@@ -64,6 +64,7 @@ export interface KillableMonster {
 	 * Whether or not this monster can be groupkilled.
 	 */
 	groupKillable?: boolean;
+	respawnTimeGroup?: number;
 	levelRequirements?: LevelRequirements;
 	uniques?: ArrayItemsResolved;
 	/**

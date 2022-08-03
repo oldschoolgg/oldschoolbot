@@ -251,7 +251,7 @@ const killableMonsters: KillableMonster[] = [
 		id: Monsters.PriffRabbit.id,
 		name: Monsters.PriffRabbit.name,
 		aliases: Monsters.PriffRabbit.aliases,
-		timeToFinish: Time.Hour,
+		noneCombatCalcTimeToFinish: Time.Hour,
 		table: Monsters.PriffRabbit,
 		emoji: '',
 		wildy: false,

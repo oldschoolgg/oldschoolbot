@@ -40,5 +40,8 @@ export default async function reducedTimeForGroup(
 		messages.push(`${multiplier.toFixed(2)}x bonus from ${user.username}`);
 	}
 
-	return [Math.max(Math.floor(monster.timeToFinish / reductionMultiplier), monster.respawnTime!), messages];
+	return [
+		Math.max(Math.floor(monster.noneCombatCalcTimeToFinish / reductionMultiplier), monster.respawnTime!),
+		messages
+	];
 }

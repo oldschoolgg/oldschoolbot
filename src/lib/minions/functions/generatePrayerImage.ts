@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
-import { Canvas, createCanvas } from 'canvas';
 import * as fs from 'fs';
 import { KlasaClient, KlasaUser } from 'klasa';
+import { Canvas } from 'skia-canvas/lib';
 
 import BankImageTask from '../../../tasks/bankImage';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { toTitleCase } from '../../util';
-import { canvasImageFromBuffer } from '../../util/canvasImageFromBuffer';
-import { fillTextXTimesInCtx } from '../../util/fillTextXTimesInCtx';
+import { canvasImageFromBuffer, fillTextXTimesInCtx } from '../../util/canvasUtil';
 import { SkillsEnum } from './../../skilling/types';
 
 const prayerTemplateFile = fs.readFileSync('./src/lib/resources/images/prayer_template.png');
@@ -84,17 +83,18 @@ export async function generatePrayerImage(client: KlasaClient, user: KlasaUser) 
 
 	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
 	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
+	let { sprite } = bankTask.getBgAndSprite(userBgID);
 	const prayerSetup = user.settings.get(UserSettings.SelectedPrayers);
 	const prayerLvl = user.skillLevel(SkillsEnum.Prayer);
 	const prayerTemplateImage = await canvasImageFromBuffer(prayerTemplateFile);
 	const yellowCircleImage = await canvasImageFromBuffer(yellowCircleFile);
-	const canvas = createCanvas(prayerTemplateImage.width, prayerTemplateImage.height);
+	const canvas = new Canvas(prayerTemplateImage.width, prayerTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.drawImage(userBg, (canvas.width - userBg.width) * 0.5, (canvas.height - userBg.height) * 0.5);
 	ctx.drawImage(prayerTemplateImage, 0, 0, prayerTemplateImage.width, prayerTemplateImage.height);
-	bankTask?.drawBorder(canvas, false);
+	bankTask?.drawBorder(ctx, sprite, false);
 
 	// Draw Prayer level
 	ctx.save();
@@ -113,5 +113,5 @@ export async function generatePrayerImage(client: KlasaClient, user: KlasaUser) 
 		ctx.drawImage(yellowCircleImage, x, y);
 	}
 
-	return canvas.toBuffer();
+	return canvas.toBuffer('png');
 }

@@ -1,27 +1,25 @@
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
+import { Bank } from 'oldschooljs';
 import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
-import { addBanks, bankHasItem, itemID } from 'oldschooljs/dist/util';
+import { bankHasItem, itemID } from 'oldschooljs/dist/util';
 
 import { roll } from '../../../lib/util';
 import { itemInSlot } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
-import { ItemBank } from '../../types/index';
 import { itemNameFromID } from '../../util';
-import createReadableItemListFromBank from '../../util/createReadableItemListFromTuple';
 import getOSItem from '../../util/getOSItem';
-import { GearSetupTypes } from './../../gear/types';
 
-export default async function removeAmmoFromUser(client: KlasaClient, user: KlasaUser, hits: number): Promise<string> {
+export default async function removeAmmoFromUser(user: KlasaUser, hits: number): Promise<string> {
 	await user.settings.sync(true);
-	const rangeWeapon = user.equippedWeapon(GearSetupTypes.Range);
+	const rangeWeapon = user.getGear('range').equippedWeapon();
 	if (!rangeWeapon) throw 'No weapon is equipped in range.';
-	const gear = user.rawGear()[GearSetupTypes.Range];
+	const gear = user.getGear('range');
 	const [cape] = itemInSlot(gear, EquipmentSlot.Cape);
 	let [ammo] = itemInSlot(gear, EquipmentSlot.Ammo);
 	let blowpipe = false;
 	if (rangeWeapon.name.toLowerCase() === 'toxic blowpipe') {
 		blowpipe = true;
-		const defaultDart = user.settings.get(UserSettings.Minion.defaultDartToUse);
+		const defaultDart = user.settings.get(UserSettings.Minion.DefaultDartToUse);
 		const dart = getOSItem(defaultDart);
 		ammo = dart;
 		if (!ammo) throw 'No default dart have been choosen.';
@@ -30,7 +28,7 @@ export default async function removeAmmoFromUser(client: KlasaClient, user: Klas
 	if (rangeWeapon.name.includes('dart')) {
 		ammo = rangeWeapon;
 	} else if (blowpipe) {
-		if (!user.settings.get(UserSettings.Minion.defaultDartToUse).includes('dart')) {
+		if (!user.settings.get(UserSettings.Minion.DefaultDartToUse).includes('dart')) {
 			throw 'The ammunition type used by toxic blowpipe is darts and scales. Default a dart type with the command combatsetup.';
 		}
 	} else if (rangeWeapon.name.includes('cross')) {
@@ -72,7 +70,7 @@ export default async function removeAmmoFromUser(client: KlasaClient, user: Klas
 	if (rangeWeapon.name.includes('ballista')) brokenAmmo = hits;
 
 	const userBank = user.settings.get(UserSettings.Bank);
-	let ammoToRemove: ItemBank = {};
+	let ammoToRemove = new Bank();
 	if (!bankHasItem(userBank, ammo.id, brokenAmmo)) {
 		throw `You don't have enough ${itemNameFromID(ammo.id)} in the bank.`;
 	}
@@ -80,12 +78,11 @@ export default async function removeAmmoFromUser(client: KlasaClient, user: Klas
 		if (!bankHasItem(userBank, itemID("Zulrah's scales"), Math.floor(brokenAmmo * 3.3))) {
 			throw "You don't have enough Zulrah's scales in the bank.";
 		}
-		ammoToRemove = addBanks([ammoToRemove, { [itemID("Zulrah's scales")]: Math.floor(brokenAmmo * 3.3) }]);
-		await user.removeItemFromBank(itemID("Zulrah's scales"), Math.floor(brokenAmmo * 3.3));
+		ammoToRemove.add(itemID("Zulrah's scales"), Math.floor(brokenAmmo * 3.3));
 	}
 	// Remove the required items from their bank.
-	ammoToRemove = addBanks([ammoToRemove, { [ammo.id]: brokenAmmo }]);
-	await user.removeItemFromBank(ammo.id, brokenAmmo);
+	ammoToRemove.add(ammo.id, brokenAmmo);
+	await user.removeItemsFromBank(ammoToRemove);
 
-	return `${await createReadableItemListFromBank(client, ammoToRemove)} from ${user.username}`;
+	return `Removed ${ammoToRemove} from ${user.username}`;
 }

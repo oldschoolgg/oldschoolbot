@@ -10,7 +10,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.AsynShade.id,
 		name: Monsters.AsynShade.name,
 		aliases: Monsters.AsynShade.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.AsynShade,
 		wildy: false,
 
@@ -27,7 +27,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Catablepon.id,
 		name: Monsters.Catablepon.name,
 		aliases: Monsters.Catablepon.aliases,
-		timeToFinish: Time.Second * 14,
+		noneCombatCalcTimeToFinish: Time.Second * 14,
 		table: Monsters.Catablepon,
 		wildy: false,
 
@@ -44,7 +44,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Cockatrice.id,
 		name: Monsters.Cockatrice.name,
 		aliases: Monsters.Cockatrice.aliases,
-		timeToFinish: Time.Second * 14,
+		noneCombatCalcTimeToFinish: Time.Second * 14,
 		table: Monsters.Cockatrice,
 		wildy: false,
 
@@ -63,7 +63,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Cyclops.id,
 		name: Monsters.Cyclops.name,
 		aliases: Monsters.Cyclops.aliases,
-		timeToFinish: Time.Second * 35,
+		noneCombatCalcTimeToFinish: Time.Second * 35,
 		table: Monsters.Cyclops,
 		wildy: false,
 
@@ -78,7 +78,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.EarthWarrior.id,
 		name: Monsters.EarthWarrior.name,
 		aliases: Monsters.EarthWarrior.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.EarthWarrior,
 		wildy: true,
 
@@ -98,7 +98,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.FeralVampyre.id,
 		name: Monsters.FeralVampyre.name,
 		aliases: Monsters.FeralVampyre.aliases,
-		timeToFinish: Time.Second * 30,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
 		table: Monsters.FeralVampyre,
 		wildy: false,
 		itemInBankBoosts: [
@@ -115,7 +115,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.FiyrShade.id,
 		name: Monsters.FiyrShade.name,
 		aliases: Monsters.FiyrShade.aliases,
-		timeToFinish: Time.Second * 30,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
 		table: Monsters.FiyrShade,
 		wildy: false,
 
@@ -132,7 +132,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.FleshCrawler.id,
 		name: Monsters.FleshCrawler.name,
 		aliases: Monsters.FleshCrawler.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.FleshCrawler,
 		wildy: false,
 
@@ -146,7 +146,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Ghoul.id,
 		name: Monsters.Ghoul.name,
 		aliases: Monsters.Ghoul.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.Ghoul,
 		wildy: false,
 
@@ -161,7 +161,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.HillGiant.id,
 		name: Monsters.HillGiant.name,
 		aliases: Monsters.HillGiant.aliases,
-		timeToFinish: Time.Second * 10,
+		noneCombatCalcTimeToFinish: Time.Second * 10,
 		table: Monsters.HillGiant,
 		wildy: false,
 
@@ -179,7 +179,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Obor.id,
 		name: Monsters.Obor.name,
 		aliases: Monsters.Obor.aliases,
-		timeToFinish: Time.Second * 65,
+		noneCombatCalcTimeToFinish: Time.Second * 65,
 		table: Monsters.Obor,
 		wildy: false,
 
@@ -195,7 +195,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Hobgoblin.id,
 		name: Monsters.Hobgoblin.name,
 		aliases: Monsters.Hobgoblin.aliases,
-		timeToFinish: Time.Second * 27,
+		noneCombatCalcTimeToFinish: Time.Second * 27,
 		table: Monsters.Hobgoblin,
 		wildy: true,
 
@@ -212,7 +212,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.IceWarrior.id,
 		name: Monsters.IceWarrior.name,
 		aliases: Monsters.IceWarrior.aliases,
-		timeToFinish: Time.Second * 28,
+		noneCombatCalcTimeToFinish: Time.Second * 28,
 		table: Monsters.IceWarrior,
 		wildy: true,
 
@@ -229,7 +229,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Killerwatt.id,
 		name: Monsters.Killerwatt.name,
 		aliases: Monsters.Killerwatt.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.Killerwatt,
 		wildy: false,
 
@@ -246,7 +246,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.LoarShade.id,
 		name: Monsters.LoarShade.name,
 		aliases: Monsters.LoarShade.aliases,
-		timeToFinish: Time.Second * 15,
+		noneCombatCalcTimeToFinish: Time.Second * 15,
 		table: Monsters.LoarShade,
 		wildy: false,
 
@@ -263,7 +263,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Mogre.id,
 		name: Monsters.Mogre.name,
 		aliases: Monsters.Mogre.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.Mogre,
 		wildy: false,
 
@@ -280,7 +280,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.PhrinShade.id,
 		name: Monsters.PhrinShade.name,
 		aliases: Monsters.PhrinShade.aliases,
-		timeToFinish: Time.Second * 18,
+		noneCombatCalcTimeToFinish: Time.Second * 18,
 		table: Monsters.PhrinShade,
 
 		wildy: false,
@@ -298,7 +298,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.UriumShade.id,
 		name: Monsters.UriumShade.name,
 		aliases: Monsters.UriumShade.aliases,
-		timeToFinish: Time.Second * 30,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
 		table: Monsters.UriumShade,
 
 		wildy: false,
@@ -316,7 +316,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Pyrefiend.id,
 		name: Monsters.Pyrefiend.name,
 		aliases: Monsters.Pyrefiend.aliases,
-		timeToFinish: Time.Second * 22,
+		noneCombatCalcTimeToFinish: Time.Second * 22,
 		table: Monsters.Pyrefiend,
 
 		wildy: false,
@@ -335,7 +335,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Pyrelord.id,
 		name: Monsters.Pyrelord.name,
 		aliases: Monsters.Pyrelord.aliases,
-		timeToFinish: Time.Second * 40,
+		noneCombatCalcTimeToFinish: Time.Second * 40,
 		table: Monsters.Pyrelord,
 
 		wildy: false,
@@ -354,7 +354,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.RiylShade.id,
 		name: Monsters.RiylShade.name,
 		aliases: Monsters.RiylShade.aliases,
-		timeToFinish: Time.Second * 27,
+		noneCombatCalcTimeToFinish: Time.Second * 27,
 		table: Monsters.RiylShade,
 
 		wildy: false,
@@ -372,7 +372,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Rockslug.id,
 		name: Monsters.Rockslug.name,
 		aliases: Monsters.Rockslug.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.Rockslug,
 
 		wildy: false,
@@ -391,7 +391,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Shade.id,
 		name: Monsters.Shade.name,
 		aliases: Monsters.Shade.aliases,
-		timeToFinish: Time.Second * 45,
+		noneCombatCalcTimeToFinish: Time.Second * 45,
 		table: Monsters.Shade,
 
 		wildy: false,
@@ -410,7 +410,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.VampyreJuvinate.id,
 		name: Monsters.VampyreJuvinate.name,
 		aliases: Monsters.VampyreJuvinate.aliases,
-		timeToFinish: Time.Second * 30,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
 		table: Monsters.VampyreJuvinate,
 
 		wildy: false,
@@ -428,7 +428,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.Vyrewatch.id,
 		name: Monsters.Vyrewatch.name,
 		aliases: Monsters.Vyrewatch.aliases,
-		timeToFinish: Time.Second * 40,
+		noneCombatCalcTimeToFinish: Time.Second * 40,
 		table: Monsters.Vyrewatch,
 
 		wildy: false,
@@ -449,7 +449,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.VyrewatchSentinel.id,
 		name: Monsters.VyrewatchSentinel.name,
 		aliases: Monsters.VyrewatchSentinel.aliases,
-		timeToFinish: Time.Second * 30,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
 		table: Monsters.VyrewatchSentinel,
 
 		wildy: false,
@@ -469,7 +469,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		id: Monsters.WallBeast.id,
 		name: Monsters.WallBeast.name,
 		aliases: Monsters.WallBeast.aliases,
-		timeToFinish: Time.Second * 35,
+		noneCombatCalcTimeToFinish: Time.Second * 35,
 		table: Monsters.WallBeast,
 		wildy: false,
 

@@ -109,7 +109,7 @@ export default class extends BotCommand {
 			let changedDartTier = false;
 			if (combatSpell && dartTier.includes(combatSpell.toLowerCase())) {
 				changedDartTier = true;
-				await msg.author.settings.update(UserSettings.Minion.defaultDartToUse, combatSpell.toLowerCase());
+				await msg.author.settings.update(UserSettings.Minion.DefaultDartToUse, combatSpell.toLowerCase());
 			}
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';

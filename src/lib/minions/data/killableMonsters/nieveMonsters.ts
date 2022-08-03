@@ -10,7 +10,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.BabyBlackDragon.id,
 		name: Monsters.BabyBlackDragon.name,
 		aliases: Monsters.BabyBlackDragon.aliases,
-		timeToFinish: Time.Second * 16,
+		noneCombatCalcTimeToFinish: Time.Second * 16,
 		table: Monsters.BabyBlackDragon,
 
 		wildy: false,
@@ -28,7 +28,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.BlackDragon.id,
 		name: Monsters.BlackDragon.name,
 		aliases: Monsters.BlackDragon.aliases,
-		timeToFinish: Time.Second * 76,
+		noneCombatCalcTimeToFinish: Time.Second * 76,
 		table: Monsters.BlackDragon,
 
 		wildy: false,
@@ -47,7 +47,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.BrutalBlackDragon.id,
 		name: Monsters.BrutalBlackDragon.name,
 		aliases: Monsters.BrutalBlackDragon.aliases,
-		timeToFinish: Time.Second * 165,
+		noneCombatCalcTimeToFinish: Time.Second * 165,
 		table: Monsters.BrutalBlackDragon,
 
 		wildy: false,
@@ -74,7 +74,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.LocustRider.id,
 		name: Monsters.LocustRider.name,
 		aliases: Monsters.LocustRider.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.LocustRider,
 
 		wildy: false,
@@ -92,7 +92,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.ScarabMage.id,
 		name: Monsters.ScarabMage.name,
 		aliases: Monsters.ScarabMage.aliases,
-		timeToFinish: Time.Second * 15,
+		noneCombatCalcTimeToFinish: Time.Second * 15,
 		table: Monsters.ScarabMage,
 
 		wildy: false,
@@ -110,7 +110,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.SteelDragon.id,
 		name: Monsters.SteelDragon.name,
 		aliases: Monsters.SteelDragon.aliases,
-		timeToFinish: Time.Second * 63,
+		noneCombatCalcTimeToFinish: Time.Second * 63,
 		table: Monsters.SteelDragon,
 
 		wildy: false,
@@ -134,7 +134,7 @@ export const nieveMonsters: KillableMonster[] = [
 		id: Monsters.Suqah.id,
 		name: Monsters.Suqah.name,
 		aliases: Monsters.Suqah.aliases,
-		timeToFinish: Time.Second * 23,
+		noneCombatCalcTimeToFinish: Time.Second * 23,
 		table: Monsters.Suqah,
 		wildy: false,
 

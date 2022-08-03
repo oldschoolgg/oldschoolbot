@@ -11,7 +11,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.AberrantSpectre.id,
 		name: Monsters.AberrantSpectre.name,
 		aliases: Monsters.AberrantSpectre.aliases,
-		timeToFinish: Time.Second * 24,
+		noneCombatCalcTimeToFinish: Time.Second * 24,
 		table: Monsters.AberrantSpectre,
 
 		wildy: false,
@@ -34,7 +34,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.AbyssalDemon.id,
 		name: Monsters.AbyssalDemon.name,
 		aliases: Monsters.AbyssalDemon.aliases,
-		timeToFinish: Time.Second * 29,
+		noneCombatCalcTimeToFinish: Time.Second * 29,
 		table: Monsters.AbyssalDemon,
 
 		wildy: false,
@@ -64,7 +64,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.AbyssalSire.id,
 		name: Monsters.AbyssalSire.name,
 		aliases: Monsters.AbyssalSire.aliases,
-		timeToFinish: Time.Second * 195,
+		noneCombatCalcTimeToFinish: Time.Second * 195,
 		table: Monsters.AbyssalSire,
 
 		wildy: false,
@@ -99,7 +99,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Ankou.id,
 		name: Monsters.Ankou.name,
 		aliases: Monsters.Ankou.aliases,
-		timeToFinish: Time.Second * 14,
+		noneCombatCalcTimeToFinish: Time.Second * 14,
 		table: Monsters.Ankou,
 
 		wildy: true,
@@ -123,7 +123,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BabyBlueDragon.id,
 		name: Monsters.BabyBlueDragon.name,
 		aliases: Monsters.BabyBlueDragon.aliases,
-		timeToFinish: Time.Second * 15,
+		noneCombatCalcTimeToFinish: Time.Second * 15,
 		table: Monsters.BabyBlueDragon,
 
 		wildy: false,
@@ -138,7 +138,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BabyGreenDragon.id,
 		name: Monsters.BabyGreenDragon.name,
 		aliases: Monsters.BabyGreenDragon.aliases,
-		timeToFinish: Time.Second * 17,
+		noneCombatCalcTimeToFinish: Time.Second * 17,
 		table: Monsters.BabyGreenDragon,
 
 		wildy: false,
@@ -153,7 +153,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Basilisk.id,
 		name: Monsters.Basilisk.name,
 		aliases: Monsters.Basilisk.aliases,
-		timeToFinish: Time.Second * 38,
+		noneCombatCalcTimeToFinish: Time.Second * 38,
 		table: Monsters.Basilisk,
 
 		wildy: false,
@@ -172,7 +172,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BasiliskKnight.id,
 		name: Monsters.BasiliskKnight.name,
 		aliases: Monsters.BasiliskKnight.aliases,
-		timeToFinish: Time.Second * 80,
+		noneCombatCalcTimeToFinish: Time.Second * 80,
 		table: Monsters.BasiliskKnight,
 
 		wildy: false,
@@ -203,7 +203,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Bloodveld.id,
 		name: Monsters.Bloodveld.name,
 		aliases: Monsters.Bloodveld.aliases,
-		timeToFinish: Time.Second * 27,
+		noneCombatCalcTimeToFinish: Time.Second * 27,
 		table: Monsters.Bloodveld,
 
 		wildy: false,
@@ -228,7 +228,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BlueDragon.id,
 		name: Monsters.BlueDragon.name,
 		aliases: Monsters.BlueDragon.aliases,
-		timeToFinish: Time.Second * 30,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
 		table: Monsters.BlueDragon,
 
 		wildy: false,
@@ -246,7 +246,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BrineRat.id,
 		name: Monsters.BrineRat.name,
 		aliases: Monsters.BrineRat.aliases,
-		timeToFinish: Time.Second * 13,
+		noneCombatCalcTimeToFinish: Time.Second * 13,
 		table: Monsters.BrineRat,
 
 		wildy: false,
@@ -265,7 +265,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BronzeDragon.id,
 		name: Monsters.BronzeDragon.name,
 		aliases: Monsters.BronzeDragon.aliases,
-		timeToFinish: Time.Second * 85,
+		noneCombatCalcTimeToFinish: Time.Second * 85,
 		table: Monsters.BronzeDragon,
 
 		wildy: false,
@@ -283,7 +283,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BrutalBlueDragon.id,
 		name: Monsters.BrutalBlueDragon.name,
 		aliases: Monsters.BrutalBlueDragon.aliases,
-		timeToFinish: Time.Second * 140,
+		noneCombatCalcTimeToFinish: Time.Second * 140,
 		table: Monsters.BrutalBlueDragon,
 
 		wildy: false,
@@ -301,7 +301,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.BrutalGreenDragon.id,
 		name: Monsters.BrutalGreenDragon.name,
 		aliases: Monsters.BrutalGreenDragon.aliases,
-		timeToFinish: Time.Second * 130,
+		noneCombatCalcTimeToFinish: Time.Second * 130,
 		table: Monsters.BrutalGreenDragon,
 
 		wildy: false,
@@ -317,7 +317,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Crocodile.id,
 		name: Monsters.Crocodile.name,
 		aliases: Monsters.Crocodile.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.Crocodile,
 
 		wildy: false,
@@ -336,7 +336,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Dagannoth.id,
 		name: Monsters.Dagannoth.name,
 		aliases: Monsters.Dagannoth.aliases,
-		timeToFinish: Time.Second * 15,
+		noneCombatCalcTimeToFinish: Time.Second * 15,
 		table: Monsters.Dagannoth,
 
 		wildy: false,
@@ -360,7 +360,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.DagannothSpawn.id,
 		name: Monsters.DagannothSpawn.name,
 		aliases: Monsters.DagannothSpawn.aliases,
-		timeToFinish: Time.Second * 8,
+		noneCombatCalcTimeToFinish: Time.Second * 8,
 		table: Monsters.DagannothSpawn,
 
 		wildy: false,
@@ -375,7 +375,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.DaganothFledgeling.id,
 		name: Monsters.DaganothFledgeling.name,
 		aliases: Monsters.DaganothFledgeling.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.DaganothFledgeling,
 
 		wildy: false,
@@ -390,7 +390,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.DeviantSpectre.id,
 		name: Monsters.DeviantSpectre.name,
 		aliases: Monsters.DeviantSpectre.aliases,
-		timeToFinish: Time.Second * 45,
+		noneCombatCalcTimeToFinish: Time.Second * 45,
 		table: Monsters.DeviantSpectre,
 
 		wildy: false,
@@ -410,7 +410,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.DustDevil.id,
 		name: Monsters.DustDevil.name,
 		aliases: Monsters.DustDevil.aliases,
-		timeToFinish: Time.Second * 18,
+		noneCombatCalcTimeToFinish: Time.Second * 18,
 		table: Monsters.DustDevil,
 
 		wildy: false,
@@ -440,7 +440,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.ElfArcher.id,
 		name: Monsters.ElfArcher.name,
 		aliases: Monsters.ElfArcher.aliases,
-		timeToFinish: Time.Second * 27,
+		noneCombatCalcTimeToFinish: Time.Second * 27,
 		table: Monsters.ElfArcher,
 
 		wildy: false,
@@ -458,7 +458,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.ElfWarrior.id,
 		name: Monsters.ElfWarrior.name,
 		aliases: Monsters.ElfWarrior.aliases,
-		timeToFinish: Time.Second * 27,
+		noneCombatCalcTimeToFinish: Time.Second * 27,
 		table: Monsters.ElfWarrior,
 
 		wildy: false,
@@ -476,7 +476,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.FeverSpider.id,
 		name: Monsters.FeverSpider.name,
 		aliases: Monsters.FeverSpider.aliases,
-		timeToFinish: Time.Second * 12,
+		noneCombatCalcTimeToFinish: Time.Second * 12,
 		table: Monsters.FeverSpider,
 
 		wildy: false,
@@ -494,7 +494,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.FireGiant.id,
 		name: Monsters.FireGiant.name,
 		aliases: Monsters.FireGiant.aliases,
-		timeToFinish: Time.Second * 18,
+		noneCombatCalcTimeToFinish: Time.Second * 18,
 		table: Monsters.FireGiant,
 
 		wildy: true,
@@ -512,7 +512,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Gargoyle.id,
 		name: Monsters.Gargoyle.name,
 		aliases: Monsters.Gargoyle.aliases,
-		timeToFinish: Time.Second * 15,
+		noneCombatCalcTimeToFinish: Time.Second * 15,
 		table: Monsters.Gargoyle,
 
 		wildy: false,
@@ -531,7 +531,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.GrotesqueGuardians.id,
 		name: Monsters.GrotesqueGuardians.name,
 		aliases: Monsters.GrotesqueGuardians.aliases,
-		timeToFinish: Time.Second * 180,
+		noneCombatCalcTimeToFinish: Time.Second * 180,
 		table: Monsters.GrotesqueGuardians,
 
 		wildy: false,
@@ -567,7 +567,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.GreaterNechryael.id,
 		name: Monsters.GreaterNechryael.name,
 		aliases: Monsters.GreaterNechryael.aliases,
-		timeToFinish: Time.Second * 37.2,
+		noneCombatCalcTimeToFinish: Time.Second * 37.2,
 		table: Monsters.GreaterNechryael,
 
 		wildy: false,
@@ -596,7 +596,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.GreenDragon.id,
 		name: Monsters.GreenDragon.name,
 		aliases: Monsters.GreenDragon.aliases,
-		timeToFinish: Time.Second * 26,
+		noneCombatCalcTimeToFinish: Time.Second * 26,
 		table: Monsters.GreenDragon,
 
 		wildy: true,
@@ -613,7 +613,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.HarpieBugSwarm.id,
 		name: Monsters.HarpieBugSwarm.name,
 		aliases: Monsters.HarpieBugSwarm.aliases,
-		timeToFinish: Time.Second * 16,
+		noneCombatCalcTimeToFinish: Time.Second * 16,
 		table: Monsters.HarpieBugSwarm,
 
 		wildy: false,
@@ -632,7 +632,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Hellhound.id,
 		name: Monsters.Hellhound.name,
 		aliases: Monsters.Hellhound.aliases,
-		timeToFinish: Time.Second * 39,
+		noneCombatCalcTimeToFinish: Time.Second * 39,
 		table: Monsters.Hellhound,
 
 		wildy: false,
@@ -658,7 +658,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IceGiant.id,
 		name: Monsters.IceGiant.name,
 		aliases: Monsters.IceGiant.aliases,
-		timeToFinish: Time.Second * 16,
+		noneCombatCalcTimeToFinish: Time.Second * 16,
 		table: Monsters.IceGiant,
 		wildy: true,
 
@@ -676,7 +676,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IceTroll.id,
 		name: Monsters.IceTroll.name,
 		aliases: Monsters.IceTroll.aliases,
-		timeToFinish: Time.Second * 23,
+		noneCombatCalcTimeToFinish: Time.Second * 23,
 		table: Monsters.IceTroll,
 		wildy: false,
 
@@ -698,7 +698,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.InfernalMage.id,
 		name: Monsters.InfernalMage.name,
 		aliases: Monsters.InfernalMage.aliases,
-		timeToFinish: Time.Second * 18,
+		noneCombatCalcTimeToFinish: Time.Second * 18,
 		table: Monsters.InfernalMage,
 
 		wildy: false,
@@ -717,7 +717,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IorwerthArcher.id,
 		name: Monsters.IorwerthArcher.name,
 		aliases: Monsters.IorwerthArcher.aliases,
-		timeToFinish: Time.Second * 30,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
 		table: Monsters.IorwerthArcher,
 
 		wildy: false,
@@ -733,7 +733,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.IorwerthWarrior.id,
 		name: Monsters.IorwerthWarrior.name,
 		aliases: Monsters.IorwerthWarrior.aliases,
-		timeToFinish: Time.Second * 32,
+		noneCombatCalcTimeToFinish: Time.Second * 32,
 		table: Monsters.IorwerthWarrior,
 
 		wildy: false,
@@ -749,7 +749,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Jelly.id,
 		name: Monsters.Jelly.name,
 		aliases: Monsters.Jelly.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.Jelly,
 
 		wildy: false,
@@ -768,7 +768,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.JungleHorror.id,
 		name: Monsters.JungleHorror.name,
 		aliases: Monsters.JungleHorror.aliases,
-		timeToFinish: Time.Second * 18,
+		noneCombatCalcTimeToFinish: Time.Second * 18,
 		table: Monsters.JungleHorror,
 
 		wildy: false,
@@ -784,7 +784,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Kurask.id,
 		name: Monsters.Kurask.name,
 		aliases: Monsters.Kurask.aliases,
-		timeToFinish: Time.Second * 22,
+		noneCombatCalcTimeToFinish: Time.Second * 22,
 		table: Monsters.Kurask,
 
 		wildy: false,
@@ -808,7 +808,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.LesserDemon.id,
 		name: Monsters.LesserDemon.name,
 		aliases: Monsters.LesserDemon.aliases,
-		timeToFinish: Time.Second * 22,
+		noneCombatCalcTimeToFinish: Time.Second * 22,
 		table: Monsters.LesserDemon,
 
 		wildy: true,
@@ -828,7 +828,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Molanisk.id,
 		name: Monsters.Molanisk.name,
 		aliases: Monsters.Molanisk.aliases,
-		timeToFinish: Time.Second * 18,
+		noneCombatCalcTimeToFinish: Time.Second * 18,
 		table: Monsters.Molanisk,
 
 		wildy: false,
@@ -846,7 +846,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.MossGiant.id,
 		name: Monsters.MossGiant.name,
 		aliases: Monsters.MossGiant.aliases,
-		timeToFinish: Time.Second * 14,
+		noneCombatCalcTimeToFinish: Time.Second * 14,
 		table: Monsters.MossGiant,
 
 		wildy: true,
@@ -863,7 +863,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Bryophyta.id,
 		name: Monsters.Bryophyta.name,
 		aliases: Monsters.Bryophyta.aliases,
-		timeToFinish: Time.Second * 75,
+		noneCombatCalcTimeToFinish: Time.Second * 75,
 		table: Monsters.Bryophyta,
 
 		wildy: false,
@@ -880,7 +880,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.MountainTroll.id,
 		name: Monsters.MountainTroll.name,
 		aliases: Monsters.MountainTroll.aliases,
-		timeToFinish: Time.Second * 27,
+		noneCombatCalcTimeToFinish: Time.Second * 27,
 		table: Monsters.MountainTroll,
 
 		wildy: false,
@@ -896,7 +896,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Mourner.id,
 		name: Monsters.Mourner.name,
 		aliases: Monsters.Mourner.aliases,
-		timeToFinish: Time.Second * 13,
+		noneCombatCalcTimeToFinish: Time.Second * 13,
 		table: Monsters.Mourner,
 
 		wildy: false,
@@ -912,7 +912,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.MutatedBloodveld.id,
 		name: Monsters.MutatedBloodveld.name,
 		aliases: Monsters.MutatedBloodveld.aliases,
-		timeToFinish: Time.Second * 30,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
 		table: Monsters.MutatedBloodveld,
 
 		wildy: false,
@@ -939,7 +939,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Nechryael.id,
 		name: Monsters.Nechryael.name,
 		aliases: Monsters.Nechryael.aliases,
-		timeToFinish: Time.Second * 19,
+		noneCombatCalcTimeToFinish: Time.Second * 19,
 		table: Monsters.Nechryael,
 
 		wildy: false,
@@ -963,7 +963,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Ogre.id,
 		name: Monsters.Ogre.name,
 		aliases: Monsters.Ogre.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.Ogre,
 
 		wildy: false,
@@ -982,7 +982,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.OgressShaman.id,
 		name: Monsters.OgressShaman.name,
 		aliases: Monsters.OgressShaman.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.OgressShaman,
 
 		wildy: false,
@@ -997,7 +997,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.OgressWarrior.id,
 		name: Monsters.OgressWarrior.name,
 		aliases: Monsters.OgressWarrior.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.OgressWarrior,
 
 		wildy: false,
@@ -1011,7 +1011,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Otherworldlybeing.id,
 		name: Monsters.Otherworldlybeing.name,
 		aliases: Monsters.Otherworldlybeing.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.Otherworldlybeing,
 
 		wildy: false,
@@ -1026,7 +1026,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.SeaSnakeHatchling.id,
 		name: Monsters.SeaSnakeHatchling.name,
 		aliases: Monsters.SeaSnakeHatchling.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.SeaSnakeHatchling,
 
 		wildy: false,
@@ -1045,7 +1045,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.SeaSnakeYoung.id,
 		name: Monsters.SeaSnakeYoung.name,
 		aliases: Monsters.SeaSnakeYoung.aliases,
-		timeToFinish: Time.Second * 28,
+		noneCombatCalcTimeToFinish: Time.Second * 28,
 		table: Monsters.SeaSnakeYoung,
 
 		wildy: false,
@@ -1064,7 +1064,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.ShadowWarrior.id,
 		name: Monsters.ShadowWarrior.name,
 		aliases: Monsters.ShadowWarrior.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.ShadowWarrior,
 
 		wildy: false,
@@ -1079,7 +1079,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.SpiritualMage.id,
 		name: Monsters.SpiritualMage.name,
 		aliases: Monsters.SpiritualMage.aliases,
-		timeToFinish: Time.Second * 15,
+		noneCombatCalcTimeToFinish: Time.Second * 15,
 		table: Monsters.SpiritualMage,
 
 		wildy: false,
@@ -1097,7 +1097,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.SpiritualRanger.id,
 		name: Monsters.SpiritualRanger.name,
 		aliases: Monsters.SpiritualRanger.aliases,
-		timeToFinish: Time.Second * 18,
+		noneCombatCalcTimeToFinish: Time.Second * 18,
 		table: Monsters.SpiritualRanger,
 
 		wildy: false,
@@ -1115,7 +1115,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.SpiritualWarrior.id,
 		name: Monsters.SpiritualWarrior.name,
 		aliases: Monsters.SpiritualWarrior.aliases,
-		timeToFinish: Time.Second * 19,
+		noneCombatCalcTimeToFinish: Time.Second * 19,
 		table: Monsters.SpiritualWarrior,
 
 		wildy: false,
@@ -1133,7 +1133,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.TerrorDog.id,
 		name: Monsters.TerrorDog.name,
 		aliases: Monsters.TerrorDog.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.TerrorDog,
 
 		wildy: false,
@@ -1151,7 +1151,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.TrollGeneral.id,
 		name: Monsters.TrollGeneral.name,
 		aliases: Monsters.TrollGeneral.aliases,
-		timeToFinish: Time.Second * 60,
+		noneCombatCalcTimeToFinish: Time.Second * 60,
 		table: Monsters.TrollGeneral,
 
 		wildy: false,
@@ -1166,7 +1166,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Turoth.id,
 		name: Monsters.Turoth.name,
 		aliases: Monsters.Turoth.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.Turoth,
 
 		wildy: false,
@@ -1190,7 +1190,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.WarpedJelly.id,
 		name: Monsters.WarpedJelly.name,
 		aliases: Monsters.WarpedJelly.aliases,
-		timeToFinish: Time.Second * 19,
+		noneCombatCalcTimeToFinish: Time.Second * 19,
 		table: Monsters.WarpedJelly,
 
 		wildy: false,
@@ -1215,7 +1215,7 @@ export const vannakaMonsters: KillableMonster[] = [
 		id: Monsters.Werewolf.id,
 		name: Monsters.Werewolf.name,
 		aliases: Monsters.Werewolf.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.Werewolf,
 
 		wildy: false,

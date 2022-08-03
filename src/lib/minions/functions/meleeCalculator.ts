@@ -1,14 +1,12 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, hasItemEquipped } from '../../../lib/gear';
-import { Time } from '../../constants';
-import { hasMeleeVoidEquipped } from '../../gear/functions/hasMeleeVoidEquipped';
-import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
+import { hasMeleeVoidEquipped } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
+import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
@@ -105,14 +103,15 @@ export default async function meleeCalculator(
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
 	}
-	const meleeWeapon = user.equippedWeapon(GearSetupTypes.Melee);
+
+	const meleeWeapon = user.getGear('melee').equippedWeapon();
 	if (meleeWeapon === null || meleeWeapon.weapon === null || combatStyle === null) {
 		throw 'No melee weapon is equipped or combatStyle is not choosen.';
 	}
-	const meleeGear = user.settings.get(UserSettings.Gear.Melee);
+	const meleeGear = user.getGear('melee');
 
 	if (!meleeGear) throw 'No melee gear on user.';
-	const gearStats = sumOfSetupStats(user.getGear('melee'));
+	const gearStats = user.getGear('melee').stats;
 
 	// Calculate effective strength level
 
@@ -128,10 +127,10 @@ export default async function meleeCalculator(
 	let effectiveStrLvl = Math.floor(user.skillLevel(SkillsEnum.Strength) + strengthPotionBoost) * prayerStrBonus + 8;
 	let attackStyle = '';
 	let combatType = '';
-	for (let stance of meleeWeapon.weapon.stances) {
+	for (let stance of meleeWeapon.weapon!.stances) {
 		if (stance.combat_style.toLowerCase() === combatStyle) {
-			attackStyle = stance.attack_style;
-			combatType = stance.attack_type;
+			attackStyle = stance.attack_style!;
+			combatType = stance.attack_type!;
 			break;
 		}
 	}
@@ -156,24 +155,25 @@ export default async function meleeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet or salve amulet (e), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		(hasItemEquipped(itemID('Salve amulet'), meleeGear) || hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) &&
+		(user.getGear('melee').hasEquipped(itemID('Salve amulet')) ||
+			user.getGear('melee').hasEquipped(itemID('Salve amulet(i)'))) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 7 / 6;
 	} else if (
-		(hasItemEquipped(itemID('Salve amulet (e)'), meleeGear) ||
-			hasItemEquipped(itemID('Salve amulet(ei)'), meleeGear)) &&
+		(user.getGear('melee').hasEquipped(itemID('Salve amulet (e)')) ||
+			user.getGear('melee').hasEquipped(itemID('Salve amulet(ei)'))) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 1.2;
-	} else if (hasItemEquipped(itemID('Black mask'), meleeGear)) {
+	} else if (user.getGear('melee').hasEquipped(itemID('Black mask'))) {
 		maxHit *= 7 / 6;
 	}
 
 	maxHit = Math.floor(maxHit);
 
 	for (const meleeStrengthBonus of meleeStrengthWeaponBonuses) {
-		if (!hasItemEquipped(meleeStrengthBonus.id, meleeGear)) {
+		if (!user.getGear('melee').hasEquipped(meleeStrengthBonus.id)) {
 			continue;
 		}
 		if (
@@ -244,17 +244,18 @@ export default async function meleeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet or salve amulet (e), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		(hasItemEquipped(itemID('Salve amulet'), meleeGear) || hasItemEquipped(itemID('Salve amulet(i)'), meleeGear)) &&
+		(user.getGear('melee').hasEquipped(itemID('Salve amulet')) ||
+			user.getGear('melee').hasEquipped(itemID('Salve amulet(i)'))) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		attackRoll *= 7 / 6;
 	} else if (
-		(hasItemEquipped(itemID('Salve amulet (e)'), meleeGear) ||
-			hasItemEquipped(itemID('Salve amulet(ei)'), meleeGear)) &&
+		(user.getGear('melee').hasEquipped(itemID('Salve amulet (e)')) ||
+			user.getGear('melee').hasEquipped(itemID('Salve amulet(ei)'))) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		attackRoll *= 1.2;
-	} else if (hasItemEquipped(itemID('Black mask'), meleeGear)) {
+	} else if (user.getGear('melee').hasEquipped(itemID('Black mask'))) {
 		attackRoll *= 7 / 6;
 	}
 
@@ -262,12 +263,12 @@ export default async function meleeCalculator(
 
 	// Check if passive weapon accuracy.
 	if (
-		hasItemEquipped(itemID('Arclight'), meleeGear) &&
+		user.getGear('melee').hasEquipped(itemID('Arclight')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Demon)
 	) {
 		attackRoll *= 1.7;
 	} else if (
-		hasItemEquipped(itemID('Dragon hunter lance'), meleeGear) &&
+		user.getGear('melee').hasEquipped(itemID('Dragon hunter lance')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Dragon)
 	) {
 		attackRoll *= 1.2;
@@ -305,15 +306,18 @@ export default async function meleeCalculator(
 
 	// Calculate average damage per hit and dps
 	const DamagePerHit = (maxHit * hitChance) / 2;
-	const DPS = DamagePerHit / (meleeWeapon.weapon.attack_speed * 0.6);
+	const DPS = DamagePerHit / (meleeWeapon.weapon!.attack_speed * 0.6);
 
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;
 
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
 	// If no quantity provided, set it to the max.
-	if (quantity === null || user.maxTripLength * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)) {
-		quantity = Math.min(Math.floor(user.maxTripLength / (monsterKillSpeed * 1.3)), 5000);
+	if (
+		quantity === null ||
+		calcMaxTripLength(user, 'MonsterKilling') * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)
+	) {
+		quantity = Math.min(Math.floor(calcMaxTripLength(user, 'MonsterKilling') / (monsterKillSpeed * 1.3)), 5000);
 		if (quantity < 1) quantity = 1;
 	}
 	let hits = 0;
@@ -330,13 +334,13 @@ export default async function meleeCalculator(
 		}
 	}
 
-	let combatDuration = hits * meleeWeapon.weapon.attack_speed * 0.6 * Time.Second;
+	let combatDuration = hits * meleeWeapon.weapon!.attack_speed * 0.6 * Time.Second;
 
 	combatDuration += monster.mechanicsTime ? monster.mechanicsTime * quantity : 0;
 
 	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
 
-	combatDuration += (monster.bankTripTime / monster.killsPerBankTrip) * quantity;
+	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
 
 	// Calculates prayer drain and removes enough prayer potion doses.
 	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);

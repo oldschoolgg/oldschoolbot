@@ -11,7 +11,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.AdamantDragon.id,
 		name: Monsters.AdamantDragon.name,
 		aliases: Monsters.AdamantDragon.aliases,
-		timeToFinish: Time.Second * 80,
+		noneCombatCalcTimeToFinish: Time.Second * 80,
 		table: Monsters.AdamantDragon,
 
 		wildy: false,
@@ -29,7 +29,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.BabyRedDragon.id,
 		name: Monsters.BabyRedDragon.name,
 		aliases: Monsters.BabyRedDragon.aliases,
-		timeToFinish: Time.Second * 30,
+		noneCombatCalcTimeToFinish: Time.Second * 30,
 		table: Monsters.BabyRedDragon,
 
 		wildy: false,
@@ -44,7 +44,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.BrutalRedDragon.id,
 		name: Monsters.BrutalRedDragon.name,
 		aliases: Monsters.BrutalRedDragon.aliases,
-		timeToFinish: Time.Second * 155,
+		noneCombatCalcTimeToFinish: Time.Second * 155,
 		table: Monsters.BrutalRedDragon,
 
 		wildy: false,
@@ -62,7 +62,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.DarkBeast.id,
 		name: Monsters.DarkBeast.name,
 		aliases: Monsters.DarkBeast.aliases,
-		timeToFinish: Time.Second * 45,
+		noneCombatCalcTimeToFinish: Time.Second * 45,
 		table: Monsters.DarkBeast,
 
 		wildy: false,
@@ -84,7 +84,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.Drake.id,
 		name: Monsters.Drake.name,
 		aliases: Monsters.Drake.aliases,
-		timeToFinish: Time.Second * 49,
+		noneCombatCalcTimeToFinish: Time.Second * 49,
 		table: Monsters.Drake,
 
 		wildy: false,
@@ -108,7 +108,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.Hydra.id,
 		name: Monsters.Hydra.name,
 		aliases: Monsters.Hydra.aliases,
-		timeToFinish: Time.Second * 110,
+		noneCombatCalcTimeToFinish: Time.Second * 110,
 		table: Monsters.Hydra,
 		wildy: false,
 
@@ -137,7 +137,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.AlchemicalHydra.id,
 		name: Monsters.AlchemicalHydra.name,
 		aliases: Monsters.AlchemicalHydra.aliases,
-		timeToFinish: Time.Second * 240,
+		noneCombatCalcTimeToFinish: Time.Second * 240,
 		table: Monsters.AlchemicalHydra,
 		wildy: false,
 
@@ -178,7 +178,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.MithrilDragon.id,
 		name: Monsters.MithrilDragon.name,
 		aliases: Monsters.MithrilDragon.aliases,
-		timeToFinish: Time.Second * 54,
+		noneCombatCalcTimeToFinish: Time.Second * 54,
 		table: Monsters.MithrilDragon,
 		wildy: false,
 
@@ -194,7 +194,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.RedDragon.id,
 		name: Monsters.RedDragon.name,
 		aliases: Monsters.RedDragon.aliases,
-		timeToFinish: Time.Second * 27,
+		noneCombatCalcTimeToFinish: Time.Second * 27,
 		table: Monsters.RedDragon,
 		wildy: false,
 
@@ -212,7 +212,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.RuneDragon.id,
 		name: Monsters.RuneDragon.name,
 		aliases: Monsters.RuneDragon.aliases,
-		timeToFinish: Time.Second * 100,
+		noneCombatCalcTimeToFinish: Time.Second * 100,
 		table: Monsters.RuneDragon,
 		wildy: false,
 
@@ -228,7 +228,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.SmokeDevil.id,
 		name: Monsters.SmokeDevil.name,
 		aliases: Monsters.SmokeDevil.aliases,
-		timeToFinish: Time.Second * 17,
+		noneCombatCalcTimeToFinish: Time.Second * 17,
 		table: Monsters.SmokeDevil,
 		wildy: false,
 
@@ -257,7 +257,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.ThermonuclearSmokeDevil.id,
 		name: Monsters.ThermonuclearSmokeDevil.name,
 		aliases: Monsters.ThermonuclearSmokeDevil.aliases,
-		timeToFinish: Time.Second * 78,
+		noneCombatCalcTimeToFinish: Time.Second * 78,
 		table: Monsters.ThermonuclearSmokeDevil,
 		wildy: false,
 
@@ -301,7 +301,7 @@ export const konarMonsters: KillableMonster[] = [
 		id: Monsters.Waterfiend.id,
 		name: Monsters.Waterfiend.name,
 		aliases: Monsters.Waterfiend.aliases,
-		timeToFinish: Time.Second * 40,
+		noneCombatCalcTimeToFinish: Time.Second * 40,
 		table: Monsters.Waterfiend,
 		wildy: false,
 

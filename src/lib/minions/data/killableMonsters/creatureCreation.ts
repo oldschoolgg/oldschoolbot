@@ -20,7 +20,7 @@ for (const [creature, cost] of creatures) {
 		id: creature.id,
 		name: creature.name,
 		aliases: creature.aliases,
-		timeToFinish: Time.Minute * 1.3,
+		noneCombatCalcTimeToFinish: Time.Minute * 1.3,
 		table: creature,
 		defaultCombatStyles: [SkillsEnum.Attack],
 		healAmountNeeded: 20 * 3,

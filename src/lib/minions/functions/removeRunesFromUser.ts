@@ -1,20 +1,14 @@
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { hasItemEquipped } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
 import Magic from '../../skilling/skills/combat/magic/magic';
 import { stringMatches } from '../../util';
-import createReadableItemListFromBank from '../../util/createReadableItemListFromTuple';
-import { staves } from '../../util/determineRunes';
+import { runeItems } from '../../util/determineRunes';
 import { SkillsEnum } from './../../skilling/types';
 
-export default async function removeRunesFromUser(
-	client: KlasaClient,
-	user: KlasaUser,
-	casts: number
-): Promise<string> {
+export default async function removeRunesFromUser(user: KlasaUser, casts: number): Promise<string> {
 	await user.settings.sync(true);
 	// Check if tridents are used and consume runes depending on trident if so in future
 	const castName = user.settings.get(UserSettings.Minion.CombatSpell);
@@ -30,20 +24,19 @@ export default async function removeRunesFromUser(
 	let runeBank = castableItem.inputItems.clone().multiply(casts);
 	const gear = user.rawGear();
 	const staff = gear.mage.weapon;
-	if (hasItemEquipped(itemID('Tome of fire'), gear.mage) && castableItem.name.toLowerCase().includes('fire')) {
+	if (user.getGear('mage').hasEquipped(itemID('Tome of fire')) && castableItem.name.toLowerCase().includes('fire')) {
 		runeBank.add('Burnt page', Math.max(Math.floor(casts / 20), 1));
 	}
+
 	let trident = false;
-	let coins = false;
 	if (staff && (staff.item === itemID('trident of the seas') || staff.item === itemID('trident of the seas (e)'))) {
 		trident = true;
-		coins = true;
 		runeBank = new Bank().add('Death rune').add('Chaos rune').add('Fire rune', 5);
 		runeBank = runeBank.clone().multiply(casts);
 		if (user.settings.get(UserSettings.GP) < casts * 10) {
 			throw "You don't have enough GP to use the trident.";
 		}
-		await user.removeGP(casts * 10);
+		runeBank.add('Coins', casts * 10);
 	}
 	if (staff && (staff.item === itemID('trident of the swamp') || staff.item === itemID('trident of the swamp (e)'))) {
 		trident = true;
@@ -51,7 +44,7 @@ export default async function removeRunesFromUser(
 		runeBank = runeBank.clone().multiply(casts);
 	}
 	if (staff) {
-		for (const [staffSet, runes] of staves) {
+		for (const [staffSet, runes] of runeItems) {
 			if (staffSet.includes(staff.item)) {
 				for (const rune of runes) {
 					runeBank.remove(rune, runeBank.amount(rune));
@@ -66,7 +59,5 @@ export default async function removeRunesFromUser(
 	}
 	await user.removeItemsFromBank(runeBank.bank);
 
-	return `${await createReadableItemListFromBank(client, runeBank.bank)}${
-		coins ? `, ${casts * 10}x Coins` : ''
-	} from ${user.username}`;
+	return `Removed ${runeBank} from ${user.username}`;
 }

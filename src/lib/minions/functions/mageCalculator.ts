@@ -1,17 +1,14 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, hasItemEquipped } from '../../../lib/gear';
-import { Time } from '../../constants';
-import { hasEliteMagicVoidEquipped } from '../../gear/functions/hasEliteMagicVoidEquipped';
-import { hasMagicVoidEquipped } from '../../gear/functions/hasMagicVoidEquipped';
-import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
+import { hasEliteMagicVoidEquipped, hasMagicVoidEquipped } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
+import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
@@ -49,11 +46,12 @@ export default async function mageCalculator(
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
 	}
-	const mageWeapon = user.equippedWeapon(GearSetupTypes.Mage);
+
+	const mageWeapon = user.getGear('mage').equippedWeapon();
 	if (mageWeapon === null || mageWeapon.weapon === null || combatStyle === null) {
 		throw 'No mage weapon is equipped or combatStyle is not choosen.';
 	}
-	const mageGear = user.settings.get(UserSettings.Gear.Mage);
+	const mageGear = user.getGear('mage');
 
 	if (!mageGear) throw 'No mage gear on user.';
 	if (combatSpell === null) {
@@ -74,7 +72,7 @@ export default async function mageCalculator(
 	) {
 		throw 'Crumble undead can only be used against undead enemies.';
 	}
-	const gearStats = sumOfSetupStats(user.getGear('mage'));
+	const gearStats = mageGear.stats;
 
 	// Calculate effective magic level
 
@@ -89,9 +87,9 @@ export default async function mageCalculator(
 	}
 	let effectiveMageLvl = Math.floor(user.skillLevel(SkillsEnum.Magic) + magePotionBoost) * prayerMageBonus + 8;
 	let attackStyle = '';
-	for (let stance of mageWeapon.weapon.stances) {
+	for (let stance of mageWeapon.weapon!.stances) {
 		if (stance.combat_style.toLowerCase() === combatStyle) {
-			attackStyle = stance.attack_style;
+			attackStyle = stance.attack_style!;
 			break;
 		}
 	}
@@ -126,12 +124,9 @@ export default async function mageCalculator(
 	if (hasEliteMagicVoidEquipped(mageGear)) {
 		maxHit *= 1.025;
 	}
-
+	mageGear.hasEquipped(itemID('Smoke battlestaff'));
 	// Check if passive weapon damage bonus smoke staff.
-	if (
-		hasItemEquipped(itemID('Smoke battlestaff'), mageGear) ||
-		hasItemEquipped(itemID('Mystic smoke staff'), mageGear)
-	) {
+	if (mageGear.hasEquipped(itemID('Smoke battlestaff')) || mageGear.hasEquipped(itemID('Mystic moke staff'))) {
 		maxHit *= 1.1;
 	}
 
@@ -140,22 +135,22 @@ export default async function mageCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		hasItemEquipped(itemID('Salve amulet(i)'), mageGear) &&
+		mageGear.hasEquipped(itemID('Salve amulet(i)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 1.15;
 	} else if (
-		hasItemEquipped(itemID('Salve amulet(ei)'), mageGear) &&
+		mageGear.hasEquipped(itemID('Salve amulet(ei)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 1.2;
-	} else if (hasItemEquipped(itemID('Black mask (i)'), mageGear)) {
+	} else if (mageGear.hasEquipped(itemID('Black mask (i)'))) {
 		maxHit *= 1.15;
 	}
 
 	maxHit = Math.floor(maxHit);
 
-	if (hasItemEquipped(itemID('Tome of fire'), mageGear) && spell.name.toLowerCase().includes('fire')) {
+	if (mageGear.hasEquipped(itemID('Tome of fire')) && spell.name.toLowerCase().includes('fire')) {
 		maxHit *= 1.5;
 	}
 
@@ -167,26 +162,23 @@ export default async function mageCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		hasItemEquipped(itemID('Salve amulet(i)'), mageGear) &&
+		mageGear.hasEquipped(itemID('Salve amulet(i)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		accuracyRoll *= 1.15;
 	} else if (
-		hasItemEquipped(itemID('Salve amulet(ei)'), mageGear) &&
+		mageGear.hasEquipped(itemID('Salve amulet(ei)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		accuracyRoll *= 1.2;
-	} else if (hasItemEquipped(itemID('Black mask (i)'), mageGear)) {
+	} else if (mageGear.hasEquipped(itemID('Black mask (i)'))) {
 		accuracyRoll *= 1.15;
 	}
 
 	accuracyRoll = Math.floor(accuracyRoll);
 
 	// Check if passive weapon accuracy.
-	if (
-		hasItemEquipped(itemID('Smoke battlestaff'), mageGear) ||
-		hasItemEquipped(itemID('Mystic smoke staff'), mageGear)
-	) {
+	if (mageGear.hasEquipped(itemID('Smoke battlestaff')) || mageGear.hasEquipped(itemID('Mystic smoke staff'))) {
 		accuracyRoll *= 1.1;
 	}
 
@@ -229,8 +221,11 @@ export default async function mageCalculator(
 	const monsterHP = currentMonsterData.hitpoints;
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
 	// If no quantity provided, set it to the max.
-	if (quantity === null || user.maxTripLength * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)) {
-		quantity = Math.min(Math.floor(user.maxTripLength / (monsterKillSpeed * 1.3)), 5000);
+	if (
+		quantity === null ||
+		calcMaxTripLength(user, 'MonsterKilling') * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)
+	) {
+		quantity = Math.min(Math.floor(calcMaxTripLength(user, 'MonsterKilling') / (monsterKillSpeed * 1.3)), 5000);
 		if (quantity < 1) quantity = 1;
 	}
 	let hits = 0;
@@ -252,7 +247,7 @@ export default async function mageCalculator(
 
 	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
 
-	combatDuration += (monster.bankTripTime / monster.killsPerBankTrip) * quantity;
+	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
 
 	// Calculates prayer drain and removes enough prayer potion doses.
 	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);

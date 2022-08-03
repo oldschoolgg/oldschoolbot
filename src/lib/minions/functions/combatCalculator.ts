@@ -1,12 +1,12 @@
+import { randArrItem } from 'e';
 import { KlasaMessage } from 'klasa';
 
 import { UserSettings } from '../../settings/types/UserSettings';
 import Ancient from '../../skilling/skills/combat/magic/castables/Ancient';
 import Standard from '../../skilling/skills/combat/magic/castables/Standard';
-import { randomItemFromArray } from '../../util';
 import { KillableMonster } from '../types';
 import { CombatsEnum } from './../../../commands/Minion/combatsetup';
-import { GearSetupTypes, GearStat } from './../../gear/types';
+import { GearStat } from './../../gear/types';
 import { Castable, SkillsEnum } from './../../skilling/types';
 import autoPrayerPicker from './autoPrayerPicker';
 import mageCalculator from './mageCalculator';
@@ -27,7 +27,7 @@ export default async function combatCalculator(
 
 	if (combatSkill === CombatsEnum.Auto) {
 		const defaultMonsterStyle = monster.defaultStyleToUse;
-		const style = defaultMonsterStyle.substr(7);
+		const style = defaultMonsterStyle!;
 
 		if (
 			defaultMonsterStyle === GearStat.AttackCrush ||
@@ -36,36 +36,36 @@ export default async function combatCalculator(
 		) {
 			combatSkill = CombatsEnum.Melee;
 			await msg.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
-			const weapon = msg.author.equippedWeapon(GearSetupTypes.Melee);
+			const weapon = msg.author.getGear('melee').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';
 			}
 			let i = 0;
 			let styleArray = [];
-			for (let stance of weapon.weapon.stances) {
+			for (let stance of weapon.weapon!.stances) {
 				if (stance === null) {
 					i++;
 					continue;
 				}
-				if (stance.attack_type.toLowerCase() === style.toLowerCase()) {
+				if (stance.attack_type!.toLowerCase() === style.toLowerCase()) {
 					styleArray.push(i);
 				}
 				i++;
 			}
 			await msg.author.settings.update(
 				UserSettings.Minion.MeleeCombatStyle,
-				weapon.weapon.stances[randomItemFromArray(styleArray)].combat_style
+				weapon.weapon!.stances[randArrItem(styleArray)].combat_style
 			);
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackRanged) {
 			combatSkill = CombatsEnum.Range;
 			await msg.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
-			const weapon = msg.author.equippedWeapon(GearSetupTypes.Range);
+			const weapon = msg.author.getGear('range').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';
 			}
-			for (let stance of weapon.weapon.stances) {
+			for (let stance of weapon.weapon!.stances) {
 				if (stance === null) {
 					continue;
 				}

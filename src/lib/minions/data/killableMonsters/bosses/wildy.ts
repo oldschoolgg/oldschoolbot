@@ -1,4 +1,4 @@
-/* import { Time } from 'e';
+import { Time } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { GearStat } from '../../../../gear';
@@ -13,7 +13,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Callisto.name,
 		aliases: Monsters.Callisto.aliases,
 		table: Monsters.Callisto,
-		timeToFinish: Time.Minute * 5.4,
+		noneCombatCalcTimeToFinish: Time.Minute * 5.4,
 		emoji: '<:Callisto_cub:324127376273440768>',
 		wildy: true,
 
@@ -33,7 +33,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 				[itemID('Barrows gloves')]: 3
 			}
 		],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultCombatStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.225,
 		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -58,7 +58,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			},
 			{ [itemID('Dragon warhammer')]: 3 }
 		],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultCombatStyles: [SkillsEnum.Attack],
 		customMonsterHP: 1110,
 		combatXpMultiplier: 1.156,
 		healAmountNeeded: 5 * 20,
@@ -70,7 +70,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Venenatis.name,
 		aliases: Monsters.Venenatis.aliases,
 		table: Monsters.Venenatis,
-		timeToFinish: Time.Minute * 4.5,
+		noneCombatCalcTimeToFinish: Time.Minute * 4.5,
 		emoji: '<:Venenatis_spiderling:324127379092144129>',
 		wildy: true,
 
@@ -84,7 +84,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			},
 			{ [itemID('Barrows gloves')]: 3 }
 		],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultCombatStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.525,
 		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -118,7 +118,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 				[itemID('Barrows gloves')]: 3
 			}
 		],
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultCombatStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.075,
 		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -142,7 +142,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 			{ [itemID("Karil's leathertop")]: 3 },
 			{ [itemID("Karil's leatherskirt")]: 3 }
 		],
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultCombatStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.125,
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -159,7 +159,7 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		difficultyRating: 6,
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }],
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultCombatStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.25,
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
@@ -170,18 +170,17 @@ export const wildyKillableMonsters: KillableMonster[] = [
 		name: Monsters.Scorpia.name,
 		aliases: Monsters.Scorpia.aliases,
 		table: Monsters.Scorpia,
-		timeToFinish: Time.Minute * 3.0,
+		noneCombatCalcTimeToFinish: Time.Minute * 3.0,
 		emoji: '<:Scorpias_offspring:324127378773377024>',
 		wildy: true,
 		difficultyRating: 8,
 		notifyDrops: resolveItems(["Scorpia's offspring"]),
 		qpRequired: 0,
 		itemInBankBoosts: [{ [itemID('Occult necklace')]: 10 }, { [itemID('Harmonised nightmare staff')]: 10 }],
-		defaultAttackStyles: [SkillsEnum.Magic],
+		defaultCombatStyles: [SkillsEnum.Magic],
 		combatXpMultiplier: 1.3,
 		healAmountNeeded: 4 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	}
 ];
-*/

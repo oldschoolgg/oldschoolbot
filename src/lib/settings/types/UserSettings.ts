@@ -12,6 +12,7 @@ import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { BankSortMethod } from '../../sorts';
 import { ItemBank } from '../../types';
 import { UserKourendFavour } from './../../minions/data/kourendFavour';
+import { CompostName } from './../../skilling/skills/farming/index';
 
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
@@ -116,7 +117,8 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
-		export const defaultDartToUse = T<string>('minion.defaultDartToUse');
+		export const DefaultDartToUse = T<string>('minion.defaultDartToUse');
+		export const DefaultCompostToUse = T<CompostName | null>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
 		export const MeleeAttackStyle = T<string | null>('minion.meleeAttackStyle');
 		export const RangeAttackStyle = T<string | null>('minion.rangeAttackStyle');

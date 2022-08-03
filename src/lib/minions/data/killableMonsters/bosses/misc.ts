@@ -27,8 +27,8 @@ const killableBosses: KillableMonster[] = [
 		bankTripTime: Time.Second * 40,
 		killsPerBankTrip: 5,
 		respawnTime: 2.4 * Time.Second
-	} /* ,
-		{
+	},
+	{
 		id: Monsters.GiantMole.id,
 		name: Monsters.GiantMole.name,
 		aliases: Monsters.GiantMole.aliases,
@@ -53,7 +53,7 @@ const killableBosses: KillableMonster[] = [
 		levelRequirements: {
 			prayer: 43
 		},
-		defaultAttackStyles: [SkillsEnum.Attack],
+		defaultCombatStyles: [SkillsEnum.Attack],
 		combatXpMultiplier: 1.075,
 		itemCost: {
 			itemCost: new Bank().add('Prayer potion(4)'),
@@ -64,7 +64,7 @@ const killableBosses: KillableMonster[] = [
 		id: Monsters.Vorkath.id,
 		name: Monsters.Vorkath.name,
 		aliases: Monsters.Vorkath.aliases,
-		timeToFinish: Time.Minute * 3.85,
+		noneCombatCalcTimeToFinish: Time.Minute * 3.85,
 		table: Monsters.Vorkath,
 		emoji: '<:Vorki:400713309252222977>',
 		wildy: false,
@@ -95,7 +95,7 @@ const killableBosses: KillableMonster[] = [
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
-		defaultAttackStyles: [SkillsEnum.Ranged]
+		defaultCombatStyles: [SkillsEnum.Ranged]
 	},
 	{
 		id: Monsters.Zulrah.id,
@@ -157,8 +157,8 @@ const killableBosses: KillableMonster[] = [
 				[GearStat.AttackRanged]: 47
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
-		disallowedAttackStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
+		defaultCombatStyles: [SkillsEnum.Ranged, SkillsEnum.Magic],
+		disallowedCombatStyles: [SkillsEnum.Attack, SkillsEnum.Strength]
 	},
 	{
 		id: Monsters.KalphiteQueen.id,
@@ -196,7 +196,7 @@ const killableBosses: KillableMonster[] = [
 				'Ornate rejuvenation pool': 10
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Strength],
+		defaultCombatStyles: [SkillsEnum.Strength],
 		customMonsterHP: 510,
 		combatXpMultiplier: 1.05,
 		healAmountNeeded: 20 * 3,
@@ -205,7 +205,7 @@ const killableBosses: KillableMonster[] = [
 				[GearStat.MeleeStrength]: 10
 			}
 		},
-		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		disallowedCombatStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
 		attackStylesUsed: [GearStat.AttackMagic],
 		attackStyleToUse: GearStat.AttackCrush
 	},
@@ -242,8 +242,8 @@ const killableBosses: KillableMonster[] = [
 				'Ornate rejuvenation pool': 50
 			}
 		},
-		defaultAttackStyles: [SkillsEnum.Attack],
-		disallowedAttackStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
+		defaultCombatStyles: [SkillsEnum.Attack],
+		disallowedCombatStyles: [SkillsEnum.Magic, SkillsEnum.Ranged],
 		combatXpMultiplier: 1.55
 	},
 	{
@@ -288,7 +288,7 @@ const killableBosses: KillableMonster[] = [
 			slayer: 91
 		},
 		slayerOnly: true,
-		defaultAttackStyles: [SkillsEnum.Strength],
+		defaultCombatStyles: [SkillsEnum.Strength],
 		combatXpMultiplier: 1.15,
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackCrush,
@@ -299,7 +299,7 @@ const killableBosses: KillableMonster[] = [
 		name: Monsters.KingBlackDragon.name,
 		aliases: Monsters.KingBlackDragon.aliases,
 		table: Monsters.KingBlackDragon,
-		timeToFinish: Time.Minute * 3.1,
+		noneCombatCalcTimeToFinish: Time.Minute * 3.1,
 		emoji: '<:Prince_black_dragon:324127378538364928>',
 		wildy: false,
 		difficultyRating: 6,
@@ -317,13 +317,12 @@ const killableBosses: KillableMonster[] = [
 				[itemID('Twisted bow')]: 10
 			}
 		],
-		defaultAttackStyles: [SkillsEnum.Ranged],
+		defaultCombatStyles: [SkillsEnum.Ranged],
 		combatXpMultiplier: 1.075,
 		healAmountNeeded: 5 * 20,
 		attackStyleToUse: GearStat.AttackSlash,
 		attackStylesUsed: [GearStat.AttackSlash]
 	}
-	*/
 ];
 
 export default killableBosses;

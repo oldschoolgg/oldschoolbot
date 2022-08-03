@@ -65,6 +65,26 @@ export function hasGracefulEquipped(setup: Gear) {
 	);
 }
 
+export function hasEliteMagicVoidEquipped(setup: Gear) {
+	return setup.hasEquipped(['Void mage helm', 'Elite void top', 'Elite void robe', 'Void knight gloves'], true);
+}
+
+export function hasEliteRangedVoidEquipped(setup: Gear) {
+	return setup.hasEquipped(['Void ranger helm', 'Elite void top', 'Elite void robe', 'Void knight gloves'], true);
+}
+
+export function hasMagicVoidEquipped(setup: Gear) {
+	return setup.hasEquipped(['Void mage helm', 'Void knight top', 'Void knight robe', 'Void knight gloves'], true);
+}
+
+export function hasRangedVoidEquipped(setup: Gear) {
+	return setup.hasEquipped(['Void ranger helm', 'Void knight top', 'Void knight robe', 'Void knight gloves'], true);
+}
+
+export function hasMeleeVoidEquipped(setup: Gear) {
+	return setup.hasEquipped(['Void melee helm', 'Void knight top', 'Void knight robe', 'Void knight gloves'], true);
+}
+
 export function gearPresetToString(gearPreset: GearPreset) {
 	let parsed = [];
 	const keys = Object.keys(gearPreset) as (keyof GearPreset)[];

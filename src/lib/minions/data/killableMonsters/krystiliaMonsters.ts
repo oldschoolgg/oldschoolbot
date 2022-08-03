@@ -9,10 +9,9 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.BlackKnight.id,
 		name: Monsters.BlackKnight.name,
 		aliases: Monsters.BlackKnight.aliases,
-		timeToFinish: Time.Second * 25,
+		noneCombatCalcTimeToFinish: Time.Second * 25,
 		table: Monsters.BlackKnight,
 		wildy: true,
-
 		difficultyRating: 5,
 		qpRequired: 0
 	},
@@ -20,7 +19,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.ChaosDruid.id,
 		name: Monsters.ChaosDruid.name,
 		aliases: Monsters.ChaosDruid.aliases,
-		timeToFinish: Time.Second * 17,
+		noneCombatCalcTimeToFinish: Time.Second * 17,
 		table: Monsters.ChaosDruid,
 
 		wildy: true,
@@ -35,7 +34,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.DarkWarrior.id,
 		name: Monsters.DarkWarrior.name,
 		aliases: Monsters.DarkWarrior.aliases,
-		timeToFinish: Time.Second * 18,
+		noneCombatCalcTimeToFinish: Time.Second * 18,
 		table: Monsters.DarkWarrior,
 
 		wildy: true,
@@ -50,7 +49,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.DeadlyRedSpider.id,
 		name: Monsters.DeadlyRedSpider.name,
 		aliases: Monsters.DeadlyRedSpider.aliases,
-		timeToFinish: Time.Second * 24,
+		noneCombatCalcTimeToFinish: Time.Second * 24,
 		table: Monsters.DeadlyRedSpider,
 
 		wildy: true,
@@ -65,7 +64,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.ElderChaosDruid.id,
 		name: Monsters.ElderChaosDruid.name,
 		aliases: Monsters.ElderChaosDruid.aliases,
-		timeToFinish: Time.Second * 56,
+		noneCombatCalcTimeToFinish: Time.Second * 56,
 		table: Monsters.ElderChaosDruid,
 
 		wildy: true,
@@ -80,7 +79,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.Ent.id,
 		name: Monsters.Ent.name,
 		aliases: Monsters.Ent.aliases,
-		timeToFinish: Time.Second * 37,
+		noneCombatCalcTimeToFinish: Time.Second * 37,
 		table: Monsters.Ent,
 
 		wildy: true,
@@ -96,7 +95,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.GuardBandit.id,
 		name: Monsters.GuardBandit.name,
 		aliases: Monsters.GuardBandit.aliases,
-		timeToFinish: Time.Second * 8,
+		noneCombatCalcTimeToFinish: Time.Second * 8,
 		table: Monsters.GuardBandit,
 
 		wildy: true,
@@ -111,7 +110,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.LavaDragon.id,
 		name: Monsters.LavaDragon.name,
 		aliases: Monsters.LavaDragon.aliases,
-		timeToFinish: Time.Second * 110,
+		noneCombatCalcTimeToFinish: Time.Second * 110,
 		table: Monsters.LavaDragon,
 
 		wildy: true,
@@ -125,7 +124,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.MagicAxe.id,
 		name: Monsters.MagicAxe.name,
 		aliases: Monsters.MagicAxe.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.MagicAxe,
 
 		wildy: true,
@@ -141,7 +140,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.Mammoth.id,
 		name: Monsters.Mammoth.name,
 		aliases: Monsters.Mammoth.aliases,
-		timeToFinish: Time.Second * 38,
+		noneCombatCalcTimeToFinish: Time.Second * 38,
 		table: Monsters.Mammoth,
 
 		wildy: true,
@@ -156,7 +155,7 @@ export const krystiliaMonsters: KillableMonster[] = [
 		id: Monsters.Pirate.id,
 		name: Monsters.Pirate.name,
 		aliases: Monsters.Pirate.aliases,
-		timeToFinish: Time.Second * 20,
+		noneCombatCalcTimeToFinish: Time.Second * 20,
 		table: Monsters.Pirate,
 
 		wildy: true,

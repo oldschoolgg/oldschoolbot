@@ -1,15 +1,12 @@
-import { randInt } from 'e';
+import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { GearSetupTypes, hasItemEquipped } from '../../../lib/gear';
-import { Time } from '../../constants';
-import { hasEliteRangedVoidEquipped } from '../../gear/functions/hasEliteRangedVoidEquipped';
-import { hasRangedVoidEquipped } from '../../gear/functions/hasRangedVoidEquipped';
-import { sumOfSetupStats } from '../../gear/functions/sumOfSetupStats';
+import { hasEliteRangedVoidEquipped, hasRangedVoidEquipped } from '../../../lib/gear';
 import { UserSettings } from '../../settings/types/UserSettings';
+import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
 import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
@@ -69,17 +66,17 @@ export default async function rangeCalculator(
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
 	}
-	const rangeWeapon = user.equippedWeapon(GearSetupTypes.Range);
-	if (rangeWeapon === null || rangeWeapon.weapon === null || combatStyle === null) {
+	const rangeWeapon = user.getGear('range').equippedWeapon();
+	if (!rangeWeapon || rangeWeapon === null || rangeWeapon.weapon === null || combatStyle === null) {
 		throw 'No range weapon is equipped or combatStyle is not choosen.';
 	}
-	const rangeGear = user.settings.get(UserSettings.Gear.Range);
+	const rangeGear = user.getGear('range');
 
 	if (!rangeGear) throw 'No range gear on user.';
-	let gearStats = sumOfSetupStats(user.getGear('range'));
+	let gearStats = user.getGear('range').stats;
 
 	if (rangeWeapon.name.toLowerCase() === 'toxic blowpipe') {
-		const defaultDart = user.settings.get(UserSettings.Minion.defaultDartToUse);
+		const defaultDart = user.settings.get(UserSettings.Minion.DefaultDartToUse);
 		const dart = getOSItem(defaultDart);
 		if (dart.equipment) {
 			gearStats.attack_ranged += dart.equipment.attack_ranged;
@@ -119,23 +116,23 @@ export default async function rangeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		hasItemEquipped(itemID('Salve amulet(i)'), rangeGear) &&
+		rangeGear.hasEquipped(itemID('Salve amulet(i)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 1.15;
 	} else if (
-		hasItemEquipped(itemID('Salve amulet(ei)'), rangeGear) &&
+		rangeGear.hasEquipped(itemID('Salve amulet(ei)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 1.2;
-	} else if (hasItemEquipped(itemID('Black mask (i)'), rangeGear)) {
+	} else if (rangeGear.hasEquipped(itemID('Black mask (i)'))) {
 		maxHit *= 1.15;
 	}
 
 	maxHit = Math.floor(maxHit);
 
 	for (const rangeMaxHitWeaponBonus of rangeMaxHitWeaponBonuses) {
-		if (!hasItemEquipped(rangeMaxHitWeaponBonus.id, rangeGear)) {
+		if (!rangeGear.hasEquipped(rangeMaxHitWeaponBonus.id)) {
 			continue;
 		}
 		if (
@@ -158,7 +155,7 @@ export default async function rangeCalculator(
 			maxHit *= rangeMaxHitWeaponBonus.damageBoost;
 			break;
 		}
-		if (hasItemEquipped(itemID('Twisted bow'), rangeGear)) {
+		if (rangeGear.hasEquipped(itemID('Twisted bow'))) {
 			const twistBowMagicPick = Math.max(currentMonsterData.magicLevel, currentMonsterData.attackMagic);
 			maxHit *=
 				Math.min(
@@ -194,16 +191,16 @@ export default async function rangeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		hasItemEquipped(itemID('Salve amulet(i)'), rangeGear) &&
+		rangeGear.hasEquipped(itemID('Salve amulet(i)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		attackRoll *= 1.15;
 	} else if (
-		hasItemEquipped(itemID('Salve amulet(ei)'), rangeGear) &&
+		rangeGear.hasEquipped(itemID('Salve amulet(ei)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		attackRoll *= 1.2;
-	} else if (hasItemEquipped(itemID('Black mask (i)'), rangeGear)) {
+	} else if (rangeGear.hasEquipped(itemID('Black mask (i)'))) {
 		attackRoll *= 1.15;
 	}
 
@@ -211,11 +208,11 @@ export default async function rangeCalculator(
 
 	// Check if passive weapon accuracy.
 	if (
-		hasItemEquipped(itemID('Dragon hunter crossbow'), rangeGear) &&
+		rangeGear.hasEquipped(itemID('Dragon hunter crossbow')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Dragon)
 	) {
 		attackRoll *= 1.3;
-	} else if (hasItemEquipped(itemID('Twisted bow'), rangeGear)) {
+	} else if (rangeGear.hasEquipped(itemID('Twisted bow'))) {
 		const twistBowMagicPick = Math.max(currentMonsterData.magicLevel, currentMonsterData.attackMagic);
 		attackRoll *=
 			Math.min(
@@ -248,17 +245,21 @@ export default async function rangeCalculator(
 	const DamagePerHit = (maxHit * hitChance) / 2;
 
 	let rangeAttackSpeed =
-		combatStyle === 'rapid' ? rangeWeapon.weapon.attack_speed - 1 : rangeWeapon.weapon.attack_speed;
+		combatStyle === 'rapid' ? rangeWeapon.weapon!.attack_speed - 1 : rangeWeapon.weapon!.attack_speed;
 	const DPS = DamagePerHit / (rangeAttackSpeed * 0.6);
 
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
 	// If no quantity provided, set it to the max.
-	if (quantity === null || user.maxTripLength * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)) {
-		quantity = Math.min(Math.floor(user.maxTripLength / (monsterKillSpeed * 1.3)), 5000);
+	if (
+		quantity === null ||
+		calcMaxTripLength(user, 'MonsterKilling') * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)
+	) {
+		quantity = Math.min(Math.floor(calcMaxTripLength(user, 'MonsterKilling') / (monsterKillSpeed * 1.3)), 5000);
 		if (quantity < 1) quantity = 1;
 	}
+
 	let hits = 0;
 
 	for (let i = 0; i < quantity; i++) {
@@ -278,7 +279,7 @@ export default async function rangeCalculator(
 
 	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
 
-	combatDuration += (monster.bankTripTime / monster.killsPerBankTrip) * quantity;
+	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
 
 	// Calculates prayer drain and removes enough prayer potion doses.
 	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);

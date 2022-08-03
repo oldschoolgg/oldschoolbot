@@ -346,20 +346,18 @@ export default class MinionCommand extends BotCommand {
 				(msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
 					monster.defaultStyleToUse === GearStat.AttackRanged)
 			) {
-				messages.push(`Removed ${await removeAmmoFromUser(this.client, msg.author, hits)}`);
+				messages.push(`Removed ${await removeAmmoFromUser(msg.author, hits)}`);
 			}
 			if (
 				msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Mage ||
 				(msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
 					monster.defaultStyleToUse === GearStat.AttackMagic)
 			) {
-				messages.push(`Removed ${await removeRunesFromUser(this.client, msg.author, hits)}`);
+				messages.push(`Removed ${await removeRunesFromUser(msg.author, hits)}`);
 			}
-			const potionStr = await removePotionsFromUser(this.client, msg.author, potsUsed, combatDuration);
+			const potionStr = await removePotionsFromUser(msg.author, potsUsed, combatDuration);
 			if (potionStr.includes('x')) {
-				messages.push(
-					`Removed ${await removePotionsFromUser(this.client, msg.author, potsUsed, combatDuration)}`
-				);
+				messages.push(`Removed ${await removePotionsFromUser(msg.author, potsUsed, combatDuration)}`);
 			}
 		}
 
