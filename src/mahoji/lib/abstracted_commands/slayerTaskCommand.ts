@@ -232,6 +232,11 @@ export async function slayerNewTaskCommand({
 	const has99SlayerCape =
 		klasaUser.skillLevel(SkillsEnum.Slayer) >= 99 && klasaUser.hasItemEquippedOrInBank('Slayer cape');
 
+	// Chooses a default slayer master:
+	const proposedDefaultMaster = slayerMasters
+		.sort((a, b) => b.basePoints - a.basePoints)
+		.find(sm => userCanUseMaster(klasaUser, sm));
+
 	// Contains (if matched) the slayer master requested, falling back on saved default, if they have requirements
 	const slayerMaster =
 		slayerMasterOverride && has99SlayerCape
@@ -243,8 +248,9 @@ export async function slayerNewTaskCommand({
 			: rememberedSlayerMaster
 			? slayerMasters
 					.filter(m => userCanUseMaster(klasaUser, m))
-					.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ?? null
-			: null;
+					.find(m => m.aliases.some(alias => stringMatches(alias, rememberedSlayerMaster))) ??
+			  proposedDefaultMaster
+			: proposedDefaultMaster;
 
 	// Contains (if matched) the requested Slayer Master regardless of requirements.
 	const matchedSlayerMaster = slayerMasterOverride
@@ -312,12 +318,6 @@ export async function slayerNewTaskCommand({
 			? await slayerStatusCommand(mahojiUser)
 			: 'You have no task at the moment, you can get a task using `/slayer task master:Turael`' +
 			  `All slayer Masters: ${slayerMasters.map(i => i.name).join(', ')}`;
-
-		if (!currentTask && !rememberedSlayerMaster) {
-			baseInfo +=
-				'\n\nYou must save a default Slayer Master before you can get new tasks without specifying a Slayer Master:' +
-				'\n`/slayer task master:Duradel save:True';
-		}
 
 		resultMessage += `${warningInfo}${baseInfo}`;
 		if (currentTask && !warningInfo) {
