@@ -38,7 +38,8 @@ export enum InventionID {
 	DrygoreSaw = 10,
 	DwarvenToolkit = 11,
 	MechaRod = 12,
-	MasterHammerAndChisel = 13
+	MasterHammerAndChisel = 13,
+	AbyssalAmulet = 14
 }
 
 export type Invention = Readonly<{
@@ -60,6 +61,16 @@ export type Invention = Readonly<{
 }>;
 
 export const inventionBoosts = {
+	abyssalAmulet: {
+		boosts: [
+			{ runes: ['Fire rune', 'Water rune', 'Air rune', 'Earth rune', 'Body rune', 'Mind rune'], boost: 65 },
+			{ runes: ['Mist rune', 'Mud rune', 'Lava rune', 'Steam rune', 'Dust rune', 'Smoke rune'], boost: 30 },
+			{ runes: ['Cosmic rune', 'Astral rune', 'Soul rune', 'Law rune', 'Nature rune'], boost: 70 },
+			{ runes: ['Chaos rune', 'Death rune'], boost: 75 },
+			{ runes: ['Blood rune', 'Wrath rune'], boost: 85 },
+			{ runes: ['Elder rune'], boost: 60 }
+		]
+	},
 	silverHawks: {
 		passiveXPCalc: (duration: number, agilityLevel: number) => {
 			const minuteSegments = Math.floor(duration / Time.Minute);
@@ -330,6 +341,21 @@ export const Inventions: readonly Invention[] = [
 		itemCost: null,
 		inventionLevelNeeded: 90,
 		usageCostMultiplier: 0.9
+	},
+	{
+		id: InventionID.AbyssalAmulet,
+		name: 'Abyssal amulet',
+		description: 'Provides a significant boost to Runecrafting runes.',
+		item: getOSItem('Abyssal amulet'),
+		materialTypeBank: new MaterialBank({
+			magic: 4,
+			treasured: 2,
+			metallic: 2
+		}),
+		flags: ['bank'],
+		itemCost: new Bank().add('Abyssal gem').freeze(),
+		inventionLevelNeeded: 120,
+		usageCostMultiplier: null
 	}
 ] as const;
 

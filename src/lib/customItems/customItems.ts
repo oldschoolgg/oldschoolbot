@@ -2722,39 +2722,6 @@ setCustomItem(
 	10_000_000
 );
 setCustomItem(
-	70_015,
-	'Abyssal amulet',
-	'Amulet of torture',
-	{
-		customItemData: {
-			cantDropFromMysteryBoxes: true,
-			isSuperUntradeable: true
-		},
-		equipment: {
-			attack_stab: 0,
-			attack_slash: 0,
-			attack_crush: 0,
-			attack_magic: 0,
-			attack_ranged: 0,
-
-			defence_stab: 0,
-			defence_slash: 0,
-			defence_crush: 0,
-			defence_magic: 0,
-			defence_ranged: 0,
-
-			melee_strength: 0,
-			ranged_strength: 0,
-			magic_damage: 0,
-			prayer: 0,
-			slot: EquipmentSlot.Neck,
-			requirements: null
-		},
-		highalch: 10_000_000
-	},
-	10_000_000
-);
-setCustomItem(
 	70_016,
 	'Spellbound ring',
 	'Seers ring',
