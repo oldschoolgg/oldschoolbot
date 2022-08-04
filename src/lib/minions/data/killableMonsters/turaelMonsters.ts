@@ -201,12 +201,16 @@ export const turaelMonsters: KillableMonster[] = [
 		table: Monsters.Cow,
 		emoji: '🐮',
 		wildy: false,
-
+		defaultCombatStyles: [SkillsEnum.Attack],
+		bankTripTime: 10,
+		killsPerBankTrip: 28,
+		respawnTime: 1,
 		difficultyRating: 1,
 		qpRequired: 0,
 		canCannon: true,
 		cannonMulti: false,
-		canBarrage: false
+		canBarrage: false,
+		isConverted: true
 	},
 	{
 		id: Monsters.CowCalf.id,

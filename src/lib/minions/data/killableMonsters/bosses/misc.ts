@@ -26,7 +26,8 @@ const killableBosses: KillableMonster[] = [
 		mechanicsTime: Time.Second * 24,
 		bankTripTime: Time.Second * 40,
 		killsPerBankTrip: 5,
-		respawnTime: 2.4 * Time.Second
+		respawnTime: 2.4 * Time.Second,
+		isConverted: true
 	},
 	{
 		id: Monsters.GiantMole.id,

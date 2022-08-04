@@ -1,4 +1,4 @@
-import { ArrayActions, KlasaMessage } from 'klasa';
+import { ArrayActions, KlasaUser } from 'klasa';
 
 import { UserSettings } from '../../settings/types/UserSettings';
 import { CombatsEnum } from './../../../commands/Minion/combatsetup';
@@ -75,12 +75,12 @@ const magePrayerPrio: PrayerSimple[] = [
 	}
 ];
 
-export default async function autoPrayerPicker(msg: KlasaMessage, combatSkill: CombatsEnum) {
+export default async function autoPrayerPicker(user: KlasaUser, combatSkill: CombatsEnum) {
 	if (combatSkill === CombatsEnum.Auto || combatSkill === CombatsEnum.NoCombat)
 		throw 'Wrong input to autoPrayerPicker function';
 
-	const unlockedPrayers = msg.author.settings.get(UserSettings.UnlockedPrayers);
-	const userPrayerLevel = msg.author.skillLevel(SkillsEnum.Prayer);
+	const unlockedPrayers = user.settings.get(UserSettings.UnlockedPrayers);
+	const userPrayerLevel = user.skillLevel(SkillsEnum.Prayer);
 
 	switch (combatSkill) {
 		case CombatsEnum.Melee:
@@ -88,7 +88,7 @@ export default async function autoPrayerPicker(msg: KlasaMessage, combatSkill: C
 				if (userPrayerLevel < simplePrayer.level) continue;
 				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
 
-				await msg.author.settings.update(UserSettings.SelectedPrayers, simplePrayer.name.toLowerCase(), {
+				await user.settings.update(UserSettings.SelectedPrayers, simplePrayer.name.toLowerCase(), {
 					arrayAction: ArrayActions.Overwrite
 				});
 				break;
@@ -99,7 +99,7 @@ export default async function autoPrayerPicker(msg: KlasaMessage, combatSkill: C
 				if (userPrayerLevel < simplePrayer.level) continue;
 				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
 
-				await msg.author.settings.update(UserSettings.SelectedPrayers, simplePrayer.name.toLowerCase(), {
+				await user.settings.update(UserSettings.SelectedPrayers, simplePrayer.name.toLowerCase(), {
 					arrayAction: ArrayActions.Overwrite
 				});
 				break;
@@ -110,7 +110,7 @@ export default async function autoPrayerPicker(msg: KlasaMessage, combatSkill: C
 				if (userPrayerLevel < simplePrayer.level) continue;
 				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
 
-				await msg.author.settings.update(UserSettings.SelectedPrayers, simplePrayer.name.toLowerCase(), {
+				await user.settings.update(UserSettings.SelectedPrayers, simplePrayer.name.toLowerCase(), {
 					arrayAction: ArrayActions.Overwrite
 				});
 				break;

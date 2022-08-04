@@ -1,67 +1,23 @@
-import { activity_type_enum } from '@prisma/client';
-import { randArrItem, round } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Emoji, lastTripCache } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
-import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { minionNotBusy, requiresMinion } from '../../lib/minions/decorators';
+import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
-import combatCalculator from '../../lib/minions/functions/combatCalculator';
-import removeAmmoFromUser from '../../lib/minions/functions/removeAmmoFromUser';
-import removePotionsFromUser from '../../lib/minions/functions/removePotionsFromUser';
-import removeRunesFromUser from '../../lib/minions/functions/removeRunesFromUser';
 import { runCommand } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { convertMahojiResponseToDJSResponse, formatDuration } from '../../lib/util';
-import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import findMonster from '../../lib/util/findMonster';
+import { convertMahojiResponseToDJSResponse } from '../../lib/util';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { GearStat } from './../../lib/gear/types';
-import { CombatsEnum } from './combatsetup';
 
-const invalidMonster = (prefix: string) =>
-	`That isn't a valid monster, the available monsters are: ${killableMonsters
-		.map(mon => mon.name)
-		.join(', ')}. For example, \`${prefix}minion kill 5 zulrah\``;
-
-const patMessages = [
-	'You pat {name} on the head.',
-	'You gently pat {name} on the head, they look back at you happily.',
-	'You pat {name} softly on the head, and thank them for their hard work.',
-	'You pat {name} on the head, they feel happier now.',
-	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
-	'You give {name} head pats, they get comfortable and start falling asleep.'
-];
-
-const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
-
-const subCommands = [
-	'clues',
-	'buy',
-	'pat',
-	'opens',
-	'info',
-	'activities',
-	'lapcounts',
-	'cancel',
-	'train',
-	'tempcl',
-	'blowpipe',
-	'bp',
-	'charge',
-	'data'
-];
+const subCommands = ['buy', 'pat', 'info', 'blowpipe', 'bp'];
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -233,22 +189,6 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async train(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/minion train`');
-	}
-
-	async data(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/tools patron stats`');
-	}
-
-	async lapcounts(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/minion stats stat:Personal Agility Stats`');
-	}
-
-	async charge(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/minion charge`');
-	}
-
 	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		return this.blowpipe(msg, [input]);
 	}
@@ -270,123 +210,8 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	@requiresMinion
 	async pat(msg: KlasaMessage) {
-		return msg.channel.send(randomPatMessage(msg.author.minionName));
-	}
-
-	async clues(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/minion stats stat:Personal Clue Stats`');
-	}
-
-	@requiresMinion
-	@minionNotBusy
-	async kill(msg: KlasaMessage, [quantity, name = '']: [null | number | string, string]) {
-		let messages: string[] = [];
-
-		if (typeof quantity === 'string') {
-			name = quantity;
-			quantity = null;
-		}
-
-		if (!name) throw invalidMonster(msg.cmdPrefix);
-
-		const monster =
-			name === 'random'
-				? randArrItem(killableMonsters.filter(mon => msg.author.hasMonsterRequirements(mon)[0]))
-				: findMonster(name);
-		if (!monster) throw invalidMonster(msg.cmdPrefix);
-
-		// Check requirements
-		const [hasReqs, reason] = msg.author.hasMonsterRequirements(monster);
-		if (!hasReqs) throw reason;
-
-		if (monster.immuneToCombatSkills) {
-			for (let cs of monster.immuneToCombatSkills) {
-				if (cs.toString().toLowerCase() === msg.author.settings.get(UserSettings.Minion.CombatSkill)) {
-					return msg.channel.send(
-						`${monster.name} can not be attacked using ${msg.author.settings.get(
-							UserSettings.Minion.CombatSkill
-						)}`
-					);
-				}
-			}
-		}
-		let combatCalcInfo = undefined;
-		if (monster.isConverted) {
-			combatCalcInfo = await combatCalculator(monster, msg, quantity);
-		}
-
-		if (!combatCalcInfo) {
-			throw 'Something went wrong with the combatCalculator';
-		}
-		let [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, potsUsed] = combatCalcInfo;
-
-		let baseDuration = monster.noneCombatCalcTimeToFinish * calcQuantity;
-		let noneCombat = false;
-		if (
-			baseDuration * 2 < combatDuration ||
-			msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.NoCombat
-		) {
-			noneCombat = true;
-			combatDuration = baseDuration;
-		} else if (combatDuration > msg.author.maxTripLength(activity_type_enum.MonsterKilling) * 1.5) {
-			return msg.channel.send(
-				`${msg.author.minionName} can't go on PvM trips longer than ${formatDuration(
-					msg.author.maxTripLength(activity_type_enum.MonsterKilling)
-				)}, try a lower quantity. The highest amount you can do for ${monster.name} is around ${Math.floor(
-					msg.author.maxTripLength(activity_type_enum.MonsterKilling) / (monsterKillSpeed * 1.3)
-				)}.`
-			);
-		}
-
-		if (!noneCombat) {
-			if (
-				msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Range ||
-				(msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
-					monster.defaultStyleToUse === GearStat.AttackRanged)
-			) {
-				messages.push(`Removed ${await removeAmmoFromUser(msg.author, hits)}`);
-			}
-			if (
-				msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Mage ||
-				(msg.author.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
-					monster.defaultStyleToUse === GearStat.AttackMagic)
-			) {
-				messages.push(`Removed ${await removeRunesFromUser(msg.author, hits)}`);
-			}
-			const potionStr = await removePotionsFromUser(msg.author, potsUsed, combatDuration);
-			if (potionStr.includes('x')) {
-				messages.push(`Removed ${await removePotionsFromUser(msg.author, potsUsed, combatDuration)}`);
-			}
-		}
-
-		await addSubTaskToActivityTask<MonsterActivityTaskOptions>({
-			monsterID: monster.id,
-			userID: msg.author.id,
-			channelID: msg.channel.id,
-			noneCombat,
-			quantity: calcQuantity,
-			duration: combatDuration,
-			hits,
-			type: 'MonsterKilling'
-		});
-
-		let response = `${msg.author.minionName} is now killing ${calcQuantity}x ${
-			monster.name
-		}, it'll take around ${formatDuration(combatDuration)} to finish. Your DPS is ${round(
-			DPS,
-			2
-		)}. The average kill time is ${formatDuration(monsterKillSpeed)} (Without banking/mechanics/respawn).`;
-
-		if (noneCombat) {
-			response += '\nNONE COMBAT TRIP due to bad gear/stats or minion none combat setting activated.';
-		}
-		if (messages.length > 0) {
-			response += `\n**Messages:** ${messages.join('\n')}.`;
-		}
-
-		return msg.channel.send(response);
+		return msg.channel.send('This command was moved to `/minion pat`');
 	}
 
 	async buy(msg: KlasaMessage) {
@@ -395,9 +220,5 @@ export default class MinionCommand extends BotCommand {
 				await minionBuyCommand(await mahojiUsersSettingsFetch(msg.author.id), false)
 			)
 		);
-	}
-
-	async opens(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/minion stats stat:Personal Open Stats`');
 	}
 }

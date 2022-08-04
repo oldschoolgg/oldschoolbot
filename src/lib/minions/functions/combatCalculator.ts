@@ -1,5 +1,5 @@
 import { randArrItem } from 'e';
-import { KlasaMessage } from 'klasa';
+import { KlasaUser } from 'klasa';
 
 import { UserSettings } from '../../settings/types/UserSettings';
 import Ancient from '../../skilling/skills/combat/magic/castables/Ancient';
@@ -18,10 +18,10 @@ const castables: Castable[] = [...Standard, ...Ancient];
 
 export default async function combatCalculator(
 	monster: KillableMonster,
-	msg: KlasaMessage,
-	quantity: number | null
+	user: KlasaUser,
+	quantity: number | undefined
 ): Promise<[number, number, number, number, number, string[]]> {
-	let combatSkill = msg.author.settings.get(UserSettings.Minion.CombatSkill);
+	let combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
 
 	if (combatSkill === CombatsEnum.NoCombat) throw "Nocombat shouldn't get here, Error in kill command.";
 
@@ -35,8 +35,8 @@ export default async function combatCalculator(
 			defaultMonsterStyle === GearStat.AttackStab
 		) {
 			combatSkill = CombatsEnum.Melee;
-			await msg.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
-			const weapon = msg.author.getGear('melee').equippedWeapon();
+			//	await user.client.commands.get('autoequip')!.run(, [combatSkill, 'attack', style, null, true]);
+			const weapon = user.getGear('melee').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';
 			}
@@ -52,7 +52,7 @@ export default async function combatCalculator(
 				}
 				i++;
 			}
-			await msg.author.settings.update(
+			await user.settings.update(
 				UserSettings.Minion.MeleeCombatStyle,
 				weapon.weapon!.stances[randArrItem(styleArray)].combat_style
 			);
@@ -60,8 +60,8 @@ export default async function combatCalculator(
 
 		if (defaultMonsterStyle === GearStat.AttackRanged) {
 			combatSkill = CombatsEnum.Range;
-			await msg.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
-			const weapon = msg.author.getGear('range').equippedWeapon();
+			//		await user.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
+			const weapon = user.getGear('range').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';
 			}
@@ -70,7 +70,7 @@ export default async function combatCalculator(
 					continue;
 				}
 				if (stance.combat_style.toLowerCase() === 'rapid') {
-					await msg.author.settings.update(UserSettings.Minion.RangeCombatStyle, stance.combat_style);
+					await user.settings.update(UserSettings.Minion.RangeCombatStyle, stance.combat_style);
 					break;
 				}
 			}
@@ -78,21 +78,21 @@ export default async function combatCalculator(
 
 		if (defaultMonsterStyle === GearStat.AttackMagic) {
 			combatSkill = CombatsEnum.Mage;
-			await msg.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
-			await msg.author.settings.update(UserSettings.Minion.MageCombatStyle, 'standard');
+			//		await user.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
+			await user.settings.update(UserSettings.Minion.MageCombatStyle, 'standard');
 
 			let CombatSpells = castables.filter(
 				_spell =>
 					_spell.category.toLowerCase() === 'combat' &&
 					_spell.baseMaxHit &&
-					msg.author.skillLevel(SkillsEnum.Magic) >= _spell.level
+					user.skillLevel(SkillsEnum.Magic) >= _spell.level
 			);
 			CombatSpells = CombatSpells.sort((a, b) => b.level - a.level);
-			await msg.author.settings.update(UserSettings.Minion.CombatSpell, CombatSpells[0].name);
+			await user.settings.update(UserSettings.Minion.CombatSpell, CombatSpells[0].name);
 		}
 
 		if (combatSkill === CombatsEnum.Auto) throw 'No defaultMonsterStyle matched';
-		await autoPrayerPicker(msg, combatSkill);
+		await autoPrayerPicker(user, combatSkill);
 	}
 
 	if (combatSkill === null) {
@@ -102,10 +102,10 @@ export default async function combatCalculator(
 	// Handle multistyle combat here somehow.
 	switch (combatSkill) {
 		case CombatsEnum.Melee:
-			return meleeCalculator(monster, msg.author, quantity);
+			return meleeCalculator(monster, user, quantity);
 		case CombatsEnum.Range:
-			return rangeCalculator(monster, msg.author, quantity);
+			return rangeCalculator(monster, user, quantity);
 		case CombatsEnum.Mage:
-			return mageCalculator(monster, msg.author, quantity);
+			return mageCalculator(monster, user, quantity);
 	}
 }

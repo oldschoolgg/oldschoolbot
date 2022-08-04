@@ -58,7 +58,7 @@ const rangePrayerBonuses = [
 export default async function rangeCalculator(
 	monster: KillableMonster,
 	user: KlasaUser,
-	quantity: number | null
+	quantity: number | undefined
 ): Promise<[number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Ranged as source.
 	const combatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle);
@@ -252,10 +252,7 @@ export default async function rangeCalculator(
 	const monsterHP = currentMonsterData.hitpoints;
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
 	// If no quantity provided, set it to the max.
-	if (
-		quantity === null ||
-		calcMaxTripLength(user, 'MonsterKilling') * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)
-	) {
+	if (!quantity || calcMaxTripLength(user, 'MonsterKilling') * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)) {
 		quantity = Math.min(Math.floor(calcMaxTripLength(user, 'MonsterKilling') / (monsterKillSpeed * 1.3)), 5000);
 		if (quantity < 1) quantity = 1;
 	}

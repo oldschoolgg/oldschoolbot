@@ -95,7 +95,7 @@ const meleeAttackPrayerBonuses = [
 export default async function meleeCalculator(
 	monster: KillableMonster,
 	user: KlasaUser,
-	quantity: number | null
+	quantity: number | undefined
 ): Promise<[number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Melee as source.
 	const combatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle);
@@ -313,10 +313,7 @@ export default async function meleeCalculator(
 
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
 	// If no quantity provided, set it to the max.
-	if (
-		quantity === null ||
-		calcMaxTripLength(user, 'MonsterKilling') * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)
-	) {
+	if (!quantity || calcMaxTripLength(user, 'MonsterKilling') * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)) {
 		quantity = Math.min(Math.floor(calcMaxTripLength(user, 'MonsterKilling') / (monsterKillSpeed * 1.3)), 5000);
 		if (quantity < 1) quantity = 1;
 	}
