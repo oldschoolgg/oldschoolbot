@@ -31,8 +31,17 @@ export default class extends Task {
 			});
 		}
 
-		// let craftXpRes = ``;
-		// const craftXpReceived = await user.addXP(SkillsEnum.Crafting, craftXpReceived, duration);
+		let prayerXpReceived = 0;
+		let prayerXpRes = '';
+		if (spell.prayerXp) {
+			prayerXpReceived = spell.prayerXp * quantity;
+
+			prayerXpRes = await user.addXP({
+				skillName: SkillsEnum.Prayer,
+				amount: prayerXpReceived,
+				duration
+			});
+		}
 
 		const loot = spell.output?.clone().multiply(quantity);
 		if (loot) {
@@ -41,7 +50,7 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished casting ${quantity}x ${spell.name}, you received ${
 			loot ?? 'no items'
-		}. ${xpRes} ${craftXpRes}`;
+		}. ${xpRes} ${craftXpRes}${prayerXpRes}`;
 
 		handleTripFinish(
 			user,
