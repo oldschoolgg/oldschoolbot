@@ -136,7 +136,6 @@ export async function canRunAutoContract(userID: string) {
 		minion_farmingContract: true,
 		skills_farming: true
 	});
-	console.log(getSkillsOfMahojiUser(partialUser, true).farming);
 	const farmingDetails = await getFarmingInfo(userID);
 	const contract = partialUser.minion_farmingContract as FarmingContract | null;
 	const contractedPlant = farmingDetails.patchesDetailed.find(p => p.plant?.name === contract?.plantToGrow);

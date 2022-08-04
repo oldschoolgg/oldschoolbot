@@ -55,7 +55,7 @@ export default class extends BotCommand {
 
 		if (baseBank.length === 0) {
 			return msg.channel.send(
-				`You have no items or GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command, and you can get items by sending your minion to do tasks.`
+				`You have no items or GP yet ${Emoji.Sad} You can get some GP by using the +daily command, and you can get items by sending your minion to do tasks.`
 			);
 		}
 

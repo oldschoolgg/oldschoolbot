@@ -77,7 +77,8 @@ export async function interactionHook(data: APIInteraction) {
 		guildID: data.guild_id
 	};
 
-	function buttonReply(str?: string) {
+	async function buttonReply(str?: string) {
+		await respondToButton(data.id, data.token, str);
 		if (data.message && data.channel_id) {
 			const webhook = webhookMessageCache.get(data.message.id);
 
@@ -94,7 +95,6 @@ export async function interactionHook(data: APIInteraction) {
 				});
 			}
 		}
-		return respondToButton(data.id, data.token, str);
 	}
 
 	async function doClue(tier: ClueTier['name']) {
@@ -198,10 +198,10 @@ export async function interactionHook(data: APIInteraction) {
 				...options
 			});
 		case 'AUTO_SLAY': {
-			if (1 > 0) return buttonReply('This is currently disabled.');
+			await buttonReply();
 			return runCommand({
-				commandName: 'autoslay',
-				args: [],
+				commandName: 'slayer',
+				args: { autoslay: {} },
 				bypassInhibitors: true,
 				...options
 			});

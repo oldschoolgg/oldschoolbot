@@ -56,15 +56,13 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 
-		if (1 > 2) {
-			extraButtons.push(
-				new MessageButton()
-					.setLabel('Auto Slay')
-					.setEmoji(Emoji.Slayer)
-					.setCustomID('AUTO_SLAY')
-					.setStyle('SECONDARY')
-			);
-		}
+		extraButtons.push(
+			new MessageButton()
+				.setLabel('Auto Slay')
+				.setEmoji(Emoji.Slayer)
+				.setCustomID('AUTO_SLAY')
+				.setStyle('SECONDARY')
+		);
 
 		extraButtons.push(
 			new MessageButton()
