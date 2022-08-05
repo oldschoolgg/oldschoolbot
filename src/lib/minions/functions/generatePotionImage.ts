@@ -1,4 +1,4 @@
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { addItemToBank } from 'oldschooljs/dist/util';
 import { Canvas } from 'skia-canvas/lib';
@@ -14,15 +14,17 @@ import { ItemBank } from './../../types/index';
 
 let bankTask: BankImageTask | null = null;
 
-export async function generatePotionImage(client: KlasaClient, user: KlasaUser) {
+export async function generatePotionImage(user: KlasaUser) {
 	// Init the background images if they are not already
 	if (!bankTask) {
-		bankTask = client.tasks.get('bankImage') as BankImageTask;
+		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 	}
 
-	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
-	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
-	let { sprite } = bankTask.getBgAndSprite(userBgID);
+	const bankBg = user.settings.get(UserSettings.BankBackground) ?? 1;
+
+	let { sprite, uniqueSprite, background: userBgImage } = bankTask.getBgAndSprite(bankBg);
+
+	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
 
 	const userBank = user.settings.get(UserSettings.Bank);
 	const potionSetup = user.settings.get(UserSettings.SelectedPotions);
@@ -41,7 +43,8 @@ export async function generatePotionImage(client: KlasaClient, user: KlasaUser) 
 	const potionBankImage = await makeBankImage({
 		bank: new Bank(viewPotions),
 		title: 'Currently selected potions to use.',
-		flags: { userBgID, names: 'names' },
+		background: bankBg,
+		flags: { names: 'names' },
 		user
 	});
 
@@ -49,10 +52,22 @@ export async function generatePotionImage(client: KlasaClient, user: KlasaUser) 
 	const canvas = new Canvas(potionTemplateImage.width, potionTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
+	ctx.fillStyle = userBgImage.transparent
+		? hexColor
+			? hexColor
+			: 'transparent'
+		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(userBg, (canvas.width - userBg.width) * 0.5, (canvas.height - userBg.height) * 0.5);
+
+	if (!uniqueSprite) {
+		ctx.drawImage(
+			userBgImage.image!,
+			(canvas.width - userBgImage.image!.width) * 0.5,
+			(canvas.height - userBgImage.image!.height) * 0.5
+		);
+	}
 	ctx.drawImage(potionTemplateImage, 0, 0, potionTemplateImage.width, potionTemplateImage.height);
-	bankTask?.drawBorder(ctx, sprite, false);
+	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
 
 	return canvas.toBuffer('png');
 }

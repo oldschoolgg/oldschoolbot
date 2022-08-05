@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import * as fs from 'fs';
-import { KlasaClient, KlasaUser } from 'klasa';
+import { KlasaUser } from 'klasa';
 import { Canvas } from 'skia-canvas/lib';
 
 import BankImageTask from '../../../tasks/bankImage';
@@ -75,15 +75,18 @@ function drawText(canvas: Canvas, text: string, x: number, y: number) {
 	}
 }
 
-export async function generatePrayerImage(client: KlasaClient, user: KlasaUser) {
+export async function generatePrayerImage(user: KlasaUser) {
 	// Init the background images if they are not already
 	if (!bankTask) {
-		bankTask = client.tasks.get('bankImage') as BankImageTask;
+		bankTask = globalClient.tasks.get('bankImage') as BankImageTask;
 	}
 
-	const userBgID = user.settings.get(UserSettings.BankBackground) ?? 1;
-	const userBg = bankTask.backgroundImages.find(i => i.id === userBgID)!.image!;
-	let { sprite } = bankTask.getBgAndSprite(userBgID);
+	const bankBg = user.settings.get(UserSettings.BankBackground) ?? 1;
+
+	let { sprite, uniqueSprite, background: userBgImage } = bankTask.getBgAndSprite(bankBg);
+
+	const hexColor = user.settings.get(UserSettings.BankBackgroundHex);
+
 	const prayerSetup = user.settings.get(UserSettings.SelectedPrayers);
 	const prayerLvl = user.skillLevel(SkillsEnum.Prayer);
 	const prayerTemplateImage = await canvasImageFromBuffer(prayerTemplateFile);
@@ -91,10 +94,23 @@ export async function generatePrayerImage(client: KlasaClient, user: KlasaUser) 
 	const canvas = new Canvas(prayerTemplateImage.width, prayerTemplateImage.height);
 	const ctx = canvas.getContext('2d');
 	ctx.imageSmoothingEnabled = false;
+	ctx.fillStyle = userBgImage.transparent
+		? hexColor
+			? hexColor
+			: 'transparent'
+		: ctx.createPattern(sprite.repeatableBg, 'repeat')!;
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(userBg, (canvas.width - userBg.width) * 0.5, (canvas.height - userBg.height) * 0.5);
+
+	if (!uniqueSprite) {
+		ctx.drawImage(
+			userBgImage.image!,
+			(canvas.width - userBgImage.image!.width) * 0.5,
+			(canvas.height - userBgImage.image!.height) * 0.5
+		);
+	}
+
 	ctx.drawImage(prayerTemplateImage, 0, 0, prayerTemplateImage.width, prayerTemplateImage.height);
-	bankTask?.drawBorder(ctx, sprite, false);
+	if (!userBgImage.transparent) bankTask?.drawBorder(ctx, sprite, false);
 
 	// Draw Prayer level
 	ctx.save();

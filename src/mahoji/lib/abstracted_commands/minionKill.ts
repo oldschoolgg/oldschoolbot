@@ -354,9 +354,7 @@ export async function minionKillCommand(
 	}
 
 	quantity = Math.max(1, quantity);
-	if (calcQuantity > quantity) {
-		quantity = Math.max(1, calcQuantity);
-	}
+
 	let noneCombatDuration = noneCombatTimeToFinish * quantity;
 	let noneCombat = false;
 
@@ -366,6 +364,8 @@ export async function minionKillCommand(
 	) {
 		noneCombat = true;
 		combatDuration = noneCombatDuration;
+	} else {
+		quantity = calcQuantity;
 	}
 	if (quantity > 1 && noneCombatDuration > maxTripLength) {
 		return `${minionName} can't go on PvM trips longer than ${formatDuration(
@@ -593,18 +593,17 @@ export async function minionKillCommand(
 	)} to finish. Attack styles used: ${combatStyles.join(', ')}.`;
 	*/
 
-	let response = `${user.minionName} is now killing ${calcQuantity}x ${
-		monster.name
-	}, it'll take around ${formatDuration(combatDuration)} to finish. Your DPS is ${round(
-		DPS,
-		2
-	)}. The average kill time is ${formatDuration(monsterKillSpeed)} (Without banking/mechanics/respawn).`;
+	let response = `${user.minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
+		combatDuration
+	)} to finish. Your DPS is ${round(DPS, 2)}. The average kill time is ${formatDuration(
+		monsterKillSpeed
+	)} (Without banking/mechanics/respawn).`;
 
 	if (noneCombat) {
 		response +=
 			'\nNONE COMBAT TRIP due to bad gear/stats, monster not converted or minion none combat setting activated.';
 	}
-
+	/*
 	if (pvmCost) {
 		response += ` Removed ${lootToRemove}.`;
 	}
@@ -612,6 +611,7 @@ export async function minionKillCommand(
 	if (boosts.length > 0) {
 		response += `\n**Boosts:** ${boosts.join(', ')}.`;
 	}
+	*/
 
 	if (messages.length > 0) {
 		response += `\n**Messages:** ${messages.join(', ')}.`;

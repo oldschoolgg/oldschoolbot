@@ -6,7 +6,7 @@ import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants'
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
 import announceLoot from '../../lib/minions/functions/announceLoot';
-// import combatXPReciever from '../../lib/minions/functions/combatXPReciever';
+import combatXPReciever from '../../lib/minions/functions/combatXPReciever';
 import { prisma, trackLoot } from '../../lib/settings/prisma';
 import { runCommand } from '../../lib/settings/settings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -20,7 +20,8 @@ import { makeBankImage } from '../../lib/util/makeBankImage';
 
 export default class extends Task {
 	async run(data: MonsterActivityTaskOptions) {
-		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage } = data;
+		const { monsterID, userID, channelID, quantity, duration, usingCannon, cannonMulti, burstOrBarrage, hits } =
+			data;
 		const monster = killableMonsters.find(mon => mon.id === monsterID)!;
 		const user = await this.client.fetchUser(userID);
 		await user.incrementMonsterScore(monsterID, quantity);
@@ -68,7 +69,7 @@ export default class extends Task {
 
 		const xpRes = await addMonsterXP(user, {
 			monsterID,
-			quantity,
+			quantity: 0,
 			duration,
 			isOnTask,
 			taskQuantity: quantitySlayed,
@@ -143,7 +144,7 @@ export default class extends Task {
 			});
 		}
 
-		//	combatXPReciever(monster, user, quantity, hits);
+		await combatXPReciever(monster, user, quantity, hits);
 		const messages: string[] = [];
 		if (monster.effect) {
 			await monster.effect({

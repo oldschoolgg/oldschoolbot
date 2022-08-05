@@ -38,7 +38,7 @@ export default class extends BotCommand {
 		}
 
 		if (currentPrayers.length === 0) {
-			const image = await generatePotionImage(this.client, msg.author);
+			const image = await generatePotionImage(msg.author);
 			return msg.channel.send({
 				files: [new MessageAttachment(image, 'osbot.png')],
 				content: 'You have no prayers activated.'
@@ -46,16 +46,16 @@ export default class extends BotCommand {
 		}
 
 		if (currentPotions.length === 0) {
-			const image = await generatePrayerImage(this.client, msg.author);
+			const image = await generatePrayerImage(msg.author);
 			return msg.channel.send({
 				files: [new MessageAttachment(image, 'osbot.png')],
 				content: 'You have no potions selected.'
 			});
 		}
 
-		const imagePrayerBuffer = await generatePrayerImage(this.client, msg.author);
+		const imagePrayerBuffer = await generatePrayerImage(msg.author);
 		const imagePrayer = new MessageAttachment(imagePrayerBuffer, 'osbot2.png');
-		const imagePotionBuffer = await generatePotionImage(this.client, msg.author);
+		const imagePotionBuffer = await generatePotionImage(msg.author);
 		const imagePotion = new MessageAttachment(imagePotionBuffer, 'osbot1.png');
 
 		return msg.channel.send({
@@ -76,7 +76,7 @@ export default class extends BotCommand {
 			if (currentPrayers.length === 0) {
 				return msg.channel.send('You have no prayers activated.');
 			}
-			const image = await generatePrayerImage(this.client, msg.author);
+			const image = await generatePrayerImage(msg.author);
 
 			return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 		}
@@ -93,7 +93,7 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.SelectedPrayers, selectedPrayer.name.toLowerCase(), {
 				arrayAction: ArrayActions.Remove
 			});
-			const image = await generatePrayerImage(this.client, msg.author);
+			const image = await generatePrayerImage(msg.author);
 
 			return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 		}
@@ -157,7 +157,7 @@ export default class extends BotCommand {
 			arrayAction: ArrayActions.Add
 		});
 
-		const image = await generatePrayerImage(this.client, msg.author);
+		const image = await generatePrayerImage(msg.author);
 
 		return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 	}
@@ -171,7 +171,7 @@ export default class extends BotCommand {
 			if (currentPotions.length === 0) {
 				return msg.channel.send('You have no potions selected.');
 			}
-			const image = await generatePotionImage(this.client, msg.author);
+			const image = await generatePotionImage(msg.author);
 
 			return msg.channel.send({ files: [new MessageAttachment(image, 'osbot.png')] });
 		}
@@ -188,7 +188,7 @@ export default class extends BotCommand {
 			await msg.author.settings.update(UserSettings.SelectedPotions, selectedPotion.name.toLowerCase(), {
 				arrayAction: ArrayActions.Remove
 			});
-			const image = await generatePotionImage(this.client, msg.author);
+			const image = await generatePotionImage(msg.author);
 
 			return msg.channel.send({
 				files: [new MessageAttachment(image, 'osbot.png')],
@@ -203,7 +203,7 @@ export default class extends BotCommand {
 			arrayAction: ArrayActions.Add
 		});
 
-		const image = await generatePotionImage(this.client, msg.author);
+		const image = await generatePotionImage(msg.author);
 
 		return msg.channel.send({
 			files: [new MessageAttachment(image, 'osbot.png')],
