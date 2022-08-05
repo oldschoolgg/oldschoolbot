@@ -1,26 +1,14 @@
-import {
-	calcPercentOfNum,
-	calcWhatPercent,
-	increaseNumByPercent,
-	objectKeys,
-	reduceNumByPercent,
-	round,
-	Time,
-	uniqueArr
-} from 'e';
+import { calcPercentOfNum, objectKeys, reduceNumByPercent, round, Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
-import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import Monster from 'oldschooljs/dist/structures/Monster';
-import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
+import { itemID } from 'oldschooljs/dist/util';
 
 import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 import { PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
-import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
 import { GearSetupType } from '../../../lib/gear';
 import {
 	boostCannon,
@@ -37,15 +25,13 @@ import {
 } from '../../../lib/minions/data/combatConstants';
 import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
 import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
-import { calculateMonsterFood, CombatStyles, resolveCombatStyles } from '../../../lib/minions/functions';
+import { calculateMonsterFood, resolveCombatStyles } from '../../../lib/minions/functions';
 import combatCalculator from '../../../lib/minions/functions/combatCalculator';
-import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
 import removeAmmoFromUser from '../../../lib/minions/functions/removeAmmoFromUser';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import removePotionsFromUser from '../../../lib/minions/functions/removePotionsFromUser';
 import removeRunesFromUser from '../../../lib/minions/functions/removeRunesFromUser';
-import { Consumable, KillableMonster } from '../../../lib/minions/types';
-import { calcPOHBoosts } from '../../../lib/poh';
+import { Consumable } from '../../../lib/minions/types';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -56,20 +42,15 @@ import {
 	convertCombatStyleToGearSetup,
 	formatDuration,
 	formatMissingItems,
-	isWeekend,
-	itemNameFromID,
-	randomVariation,
 	stringMatches,
 	updateBankSetting
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../../lib/util/findMonster';
-import getOSItem from '../../../lib/util/getOSItem';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { GearStat } from './../../../lib/gear/types';
 import { nexCommand } from './nexCommand';
 import { nightmareCommand } from './nightmareCommand';
-import { getPOH } from './pohCommand';
 import { revsCommand } from './revsCommand';
 import { temporossCommand } from './temporossCommand';
 import { wintertodtCommand } from './wintertodtCommand';
@@ -78,41 +59,6 @@ import { zalcanoCommand } from './zalcanoCommand';
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 
 const { floor } = Math;
-
-const degradeableItemsCanUse = [
-	{
-		item: getOSItem('Sanguinesti staff'),
-		combatStyle: 'mage',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 25,
-		boost: 6
-	},
-	{
-		item: getOSItem('Abyssal tentacle'),
-		combatStyle: 'melee',
-		charges: (_killableMon: KillableMonster, _monster: Monster, totalHP: number) => totalHP / 20,
-		boost: 3
-	}
-];
-
-function applySkillBoost(user: KlasaUser, duration: number, styles: CombatStyles[]): [number, string] {
-	const skillTotal = addArrayOfNumbers(styles.map(s => user.skillLevel(s)));
-
-	let newDuration = duration;
-	let str = '';
-	let percent = round(calcWhatPercent(skillTotal, styles.length * 99), 2);
-
-	if (percent < 50) {
-		percent = 50 - percent;
-		newDuration = increaseNumByPercent(newDuration, percent);
-		str = `-${percent.toFixed(2)}% for low stats`;
-	} else {
-		percent = Math.min(15, percent / 6.5);
-		newDuration = reduceNumByPercent(newDuration, percent);
-		str = `${percent.toFixed(2)}% for stats`;
-	}
-
-	return [newDuration, str];
-}
 
 export async function minionKillCommand(
 	interaction: SlashCommandInteraction,
@@ -182,101 +128,27 @@ export async function minionKillCommand(
 		}
 	}
 
+	let noneCombat = false;
 	let combatCalcInfo = undefined;
-	if (!monster.isConverted) {
-		return `${monster.name} isn't converted yet.`;
+	let [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, potsUsed] = [0, 0, 0, 0, 0, ['']];
+
+	if (monster.isConverted) {
+		combatCalcInfo = await combatCalculator(monster, user, quantity);
+		[combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, potsUsed] = combatCalcInfo;
+	} else {
+		noneCombat = true;
+		boosts.push('Monster NOT converted. NO combat');
+	}
+	if (combatDuration === 0 && hits === 0 && DPS === 0 && monsterKillSpeed === 0 && calcQuantity === 0) {
+		noneCombat = true;
 	}
 
-	combatCalcInfo = await combatCalculator(monster, user, quantity);
-	if (!combatCalcInfo) {
-		return 'Something went wrong with the combatCalculator';
-	}
-	let [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, potsUsed] = combatCalcInfo;
+	let noneCombatTimeToFinish = monster.noneCombatCalcTimeToFinish;
 
-	let [noneCombatTimeToFinish, percentReduced] = reducedTimeFromKC(monster, user.getKC(monster.id));
-
-	const [, osjsMon, combatStyles] = resolveCombatStyles(user, {
+	const [, , combatStyles] = resolveCombatStyles(user, {
 		monsterID: monster.id,
 		boostMethod: boostChoice
 	});
-	const [newTime, skillBoostMsg] = applySkillBoost(user, noneCombatTimeToFinish, combatStyles);
-
-	noneCombatTimeToFinish = newTime;
-	boosts.push(skillBoostMsg);
-
-	if (percentReduced >= 1) boosts.push(`${percentReduced}% for KC`);
-
-	if (monster.pohBoosts) {
-		const [boostPercent, messages] = calcPOHBoosts(await getPOH(user.id), monster.pohBoosts);
-		if (boostPercent > 0) {
-			noneCombatTimeToFinish = reduceNumByPercent(noneCombatTimeToFinish, boostPercent);
-			boosts.push(messages.join(' + '));
-		}
-	}
-
-	for (const [itemID, boostAmount] of Object.entries(user.resolveAvailableItemBoosts(monster))) {
-		noneCombatTimeToFinish *= (100 - boostAmount) / 100;
-		boosts.push(`${boostAmount}% for ${itemNameFromID(parseInt(itemID))}`);
-	}
-
-	const monsterHP = osjsMon?.data.hitpoints ?? 100;
-	const estimatedQuantity = floor(user.maxTripLength('MonsterKilling') / noneCombatTimeToFinish);
-	const totalMonsterHP = monsterHP * estimatedQuantity;
-
-	/**
-	 *
-	 * Degradeable Items
-	 *
-	 */
-	const degItemBeingUsed = [];
-	for (const degItem of degradeableItemsCanUse) {
-		const isUsing =
-			monster.attackStyleToUse &&
-			convertCombatStyleToGearSetup(monster.attackStyleToUse) === degItem.combatStyle &&
-			user.getGear(degItem.combatStyle).hasEquipped(degItem.item.id);
-		if (isUsing) {
-			const estimatedChargesNeeded = degItem.charges(monster, osjsMon!, totalMonsterHP);
-			await checkUserCanUseDegradeableItem({
-				item: degItem.item,
-				chargesToDegrade: estimatedChargesNeeded,
-				user
-			});
-			degItemBeingUsed.push(degItem);
-		}
-	}
-
-	// Removed vorkath because he has a special boost.
-	if (monster.name.toLowerCase() !== 'vorkath' && osjsMon?.data?.attributes?.includes(MonsterAttribute.Dragon)) {
-		if (
-			user.hasItemEquippedOrInBank('Dragon hunter lance') &&
-			!combatStyles.includes(SkillsEnum.Ranged) &&
-			!combatStyles.includes(SkillsEnum.Magic)
-		) {
-			noneCombatTimeToFinish = reduceNumByPercent(noneCombatTimeToFinish, 15);
-			boosts.push('15% for Dragon hunter lance');
-		} else if (user.hasItemEquippedOrInBank('Dragon hunter crossbow') && combatStyles.includes(SkillsEnum.Ranged)) {
-			noneCombatTimeToFinish = reduceNumByPercent(noneCombatTimeToFinish, 15);
-			boosts.push('15% for Dragon hunter crossbow');
-		}
-	}
-
-	// Black mask and salve don't stack.
-	const salveBoost = boosts.join('').toLowerCase().includes('salve amulet');
-	if (!salveBoost) {
-		// Add 15% slayer boost on task if they have black mask or similar
-		if (combatStyles.includes(SkillsEnum.Ranged) || combatStyles.includes(SkillsEnum.Magic)) {
-			if (isOnTask && user.hasItemEquippedOrInBank('Black mask (i)')) {
-				noneCombatTimeToFinish = reduceNumByPercent(noneCombatTimeToFinish, 15);
-				boosts.push('15% for Black mask (i) on non-melee task');
-			}
-		} else if (
-			isOnTask &&
-			(user.hasItemEquippedOrInBank('Black mask') || user.hasItemEquippedOrInBank('Black mask (i)'))
-		) {
-			noneCombatTimeToFinish = reduceNumByPercent(noneCombatTimeToFinish, 15);
-			boosts.push('15% for Black mask on melee task');
-		}
-	}
 
 	// Initialize consumable costs before any are calculated.
 	const consumableCosts: Consumable[] = [];
@@ -335,6 +207,37 @@ export async function minionKillCommand(
 			quantity = floor(maxTripLength / noneCombatTimeToFinish);
 		}
 	}
+
+	let noneCombatDuration = noneCombatTimeToFinish * quantity;
+
+	if (
+		noneCombatDuration * 2 < combatDuration ||
+		user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.NoCombat ||
+		noneCombat
+	) {
+		noneCombat = true;
+		combatDuration = noneCombatDuration;
+	} else {
+		quantity = calcQuantity;
+	}
+
+	quantity = Math.max(1, quantity);
+
+	if (quantity > 1 && combatDuration > maxTripLength && noneCombat) {
+		return `${minionName} can't go on PvM trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
+			maxTripLength / noneCombatTimeToFinish
+		)}.`;
+	}
+	if (combatDuration > maxTripLength * 1.5 && !noneCombat) {
+		return `${minionName} can't go on PvM trips longer than ${formatDuration(
+			maxTripLength
+		)}, try a lower quantity. The highest amount you can do for ${monster.name} is around ${Math.floor(
+			maxTripLength / (monsterKillSpeed * 1.3)
+		)} depending on RNGs.`;
+	}
+
 	if (isOnTask) {
 		let effectiveQtyRemaining = usersTask.currentTask!.quantity_remaining;
 		if (
@@ -351,35 +254,6 @@ export async function minionKillCommand(
 			effectiveQtyRemaining = Math.ceil(effectiveQtyRemaining / 2);
 		}
 		quantity = Math.min(quantity, effectiveQtyRemaining);
-	}
-
-	quantity = Math.max(1, quantity);
-
-	let noneCombatDuration = noneCombatTimeToFinish * quantity;
-	let noneCombat = false;
-
-	if (
-		noneCombatDuration * 2 < combatDuration ||
-		user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.NoCombat
-	) {
-		noneCombat = true;
-		combatDuration = noneCombatDuration;
-	} else {
-		quantity = calcQuantity;
-	}
-	if (quantity > 1 && noneCombatDuration > maxTripLength) {
-		return `${minionName} can't go on PvM trips longer than ${formatDuration(
-			maxTripLength
-		)}, try a lower quantity. The highest amount you can do for ${monster.name} is ${floor(
-			maxTripLength / noneCombatTimeToFinish
-		)}.`;
-	}
-	if (combatDuration > maxTripLength * 1.5) {
-		return `${minionName} can't go on PvM trips longer than ${formatDuration(
-			maxTripLength
-		)}, try a lower quantity. The highest amount you can do for ${monster.name} is around ${Math.floor(
-			maxTripLength / (monsterKillSpeed * 1.3)
-		)} depending on RNGs.`;
 	}
 
 	const totalCost = new Bank();
@@ -435,7 +309,7 @@ export async function minionKillCommand(
 		// Calculate how many monsters can be killed with that cost:
 		const fits = user.bank({ withGP: true }).fits(perKillCost);
 		if (fits < Number(quantity)) {
-			noneCombatDuration = Math.floor(noneCombatDuration * (fits / Number(quantity)));
+			combatDuration = Math.floor(combatDuration * (fits / Number(quantity)));
 			quantity = fits;
 		}
 		const { bank } = perKillCost.clone().multiply(Number(quantity));
@@ -471,13 +345,10 @@ export async function minionKillCommand(
 				activityName: monster.name,
 				combatStylesUsed: monster.wildy
 					? ['wildy']
-					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck]),
-				learningPercentage: percentReduced
+					: uniqueArr([...objectKeys(monster.minimumGearRequirements ?? {}), gearToCheck])
 			});
 
 			if (foodRemoved.length === 0) {
-				boosts.push('4% for no food');
-				noneCombatDuration = reduceNumByPercent(noneCombatDuration, 4);
 			} else {
 				for (const [item, qty] of foodRemoved.items()) {
 					const eatable = Eatables.find(e => e.id === item.id);
@@ -487,16 +358,6 @@ export async function minionKillCommand(
 						typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(user);
 					const amountHealed = qty * healAmount;
 					if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
-					const boost = eatable.pvmBoost;
-					if (boost) {
-						if (boost < 0) {
-							boosts.push(`${boost}% for ${eatable.name}`);
-							noneCombatDuration = increaseNumByPercent(noneCombatDuration, Math.abs(boost));
-						} else {
-							boosts.push(`${boost}% for ${eatable.name}`);
-							noneCombatDuration = reduceNumByPercent(noneCombatDuration, boost);
-						}
-					}
 					break;
 				}
 			}
@@ -514,28 +375,6 @@ export async function minionKillCommand(
 				return e.message;
 			}
 		}
-	} else {
-		boosts.push('4% for no food');
-		noneCombatDuration = reduceNumByPercent(noneCombatDuration, 4);
-	}
-
-	// Boosts that don't affect quantity:
-	noneCombatDuration = randomVariation(noneCombatDuration, 3);
-
-	for (const degItem of degItemBeingUsed) {
-		const chargesNeeded = degItem.charges(monster, osjsMon!, monsterHP * quantity);
-		await degradeItem({
-			item: degItem.item,
-			chargesToDegrade: chargesNeeded,
-			user
-		});
-		boosts.push(`${degItem.boost}% for ${degItem.item.name}`);
-		noneCombatDuration = reduceNumByPercent(noneCombatDuration, degItem.boost);
-	}
-
-	if (isWeekend()) {
-		boosts.push('10% for Weekend');
-		noneCombatDuration *= 0.9;
 	}
 
 	if (lootToRemove.length > 0) {
@@ -588,14 +427,9 @@ export async function minionKillCommand(
 		burstOrBarrage: !burstOrBarrage ? undefined : burstOrBarrage
 	});
 
-	/*	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
-		noneCombatDuration
-	)} to finish. Attack styles used: ${combatStyles.join(', ')}.`;
-	*/
-
-	let response = `${user.minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
+	let response = `${minionName} is now killing ${quantity}x ${monster.name}, it'll take around ${formatDuration(
 		combatDuration
-	)} to finish. Your DPS is ${round(DPS, 2)}. The average kill time is ${formatDuration(
+	)} to finish. Your DPS is ${round(DPS, 3)}. The average kill time is ${formatDuration(
 		monsterKillSpeed
 	)} (Without banking/mechanics/respawn).`;
 
@@ -603,7 +437,7 @@ export async function minionKillCommand(
 		response +=
 			'\nNONE COMBAT TRIP due to bad gear/stats, monster not converted or minion none combat setting activated.';
 	}
-	/*
+
 	if (pvmCost) {
 		response += ` Removed ${lootToRemove}.`;
 	}
@@ -611,7 +445,6 @@ export async function minionKillCommand(
 	if (boosts.length > 0) {
 		response += `\n**Boosts:** ${boosts.join(', ')}.`;
 	}
-	*/
 
 	if (messages.length > 0) {
 		response += `\n**Messages:** ${messages.join(', ')}.`;
