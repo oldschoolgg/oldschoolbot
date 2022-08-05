@@ -198,11 +198,11 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-					options,
-					userID,
-					interaction,
-					guildID
-				}: CommandRunOptions<{
+		options,
+		userID,
+		interaction,
+		guildID
+	}: CommandRunOptions<{
 		viewbank?: { user: MahojiUserOption };
 		reboot?: {};
 		debug_patreon?: {};
