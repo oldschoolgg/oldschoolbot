@@ -7,6 +7,7 @@ import { patreonConfig, production } from '../config';
 import { BadgesEnum, BitField, Channel, PatronTierID, PerkTier } from '../lib/constants';
 import { fetchSponsors, getUserFromGithubID } from '../lib/http/util';
 import backgroundImages from '../lib/minions/data/bankBackgrounds';
+import { roboChimpUserFetch } from '../lib/roboChimp';
 import { getUserSettings } from '../lib/settings/settings';
 import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Patron } from '../lib/types';
@@ -238,13 +239,22 @@ export default class PatreonTask extends Task {
 				})
 				.sync(true);
 
-			if (settings.get(UserSettings.GithubID)) continue;
+			const roboChimpUser = await roboChimpUserFetch(BigInt(patron.discordID));
+
+			if (roboChimpUser.github_id) continue;
 
 			const username =
 				this.client.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
 
-			if (settings.get(UserSettings.PatreonID) !== patron.patreonID) {
-				await settings.update(UserSettings.PatreonID, patron.patreonID);
+			if (roboChimpUser.patreon_id !== patron.patreonID) {
+				await roboChimpClient.user.update({
+					where: {
+						id: BigInt(patron.discordID)
+					},
+					data: {
+						patreon_id: patron.patreonID
+					}
+				});
 			}
 			const userBitfield = settings.get(UserSettings.BitField);
 			if (
