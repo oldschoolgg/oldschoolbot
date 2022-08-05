@@ -11,6 +11,7 @@ import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 
+import { production } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
 import { OWNER_IDS } from '../../lib/constants';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
@@ -212,7 +213,8 @@ export const adminCommand: OSBMahojiCommand = {
 		cancel_task?: { user: MahojiUserOption };
 		loot_track?: { name: string };
 	}>) => {
-		if (!guildID || guildID.toString() !== '342983479501389826') return 'Unauthorized';
+		if (!guildID) return 'Can only be run in a server';
+		if (production && guildID.toString() !== '342983479501389826') return 'Unauthorized';
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await cancelTask(user.id);
