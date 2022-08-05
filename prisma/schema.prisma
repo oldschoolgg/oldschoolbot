@@ -523,6 +523,7 @@ model Minigame {
   tob_hard                Int    @default(0)
   lms                     Int    @default(0)
   trouble_brewing         Int    @default(0)
+  puro_puro               Int    @default(0)
 
   // BSO
   ourania_delivery_service Int @default(0)
@@ -785,6 +786,7 @@ enum activity_type_enum {
   BirthdayEvent
   TokkulShop
   TroubleBrewing
+  PuroPuro
   Easter
   BaxtorianBathhouses
   Disassembling

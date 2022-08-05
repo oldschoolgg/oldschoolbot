@@ -1,4 +1,5 @@
 import { randInt, Time } from 'e';
+import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import HerbDropTable from 'oldschooljs/dist/simulation/subtables/HerbDropTable';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
@@ -187,7 +188,7 @@ const pages = resolveItems([
 	'Mysterious page 5'
 ]);
 
-export function openCoffin(floor: number, cl: Bank): ItemBank {
+export function openCoffin(floor: number, user: KlasaUser): ItemBank {
 	const loot = new Bank();
 	const floorObj = sepulchreFloors[floor - 1];
 	if (roll(floorObj.lockpickCoffinChance)) {
@@ -198,8 +199,12 @@ export function openCoffin(floor: number, cl: Bank): ItemBank {
 
 	if (floor <= 5) {
 		const page = pages[floor - 1];
-		if (!cl.has(page) && roll(10)) {
-			loot.add(page);
+
+		if (roll(10)) {
+			const bank = user.allItemsOwned();
+			if (!bank.has(page)) {
+				loot.add(page);
+			}
 		}
 	}
 	return loot.bank;

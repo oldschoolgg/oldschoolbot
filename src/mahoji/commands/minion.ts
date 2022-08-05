@@ -8,6 +8,7 @@ import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { AttackStyles } from '../../lib/minions/functions';
+import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
 import { Minigames } from '../../lib/settings/minigames';
@@ -322,6 +323,42 @@ export const minionCommand: OSBMahojiCommand = {
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
+			name: 'blowpipe',
+			description: 'Charge and uncharge your blowpipe.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'remove_darts',
+					description: 'Remove all darts from your blowpipe',
+					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.Boolean,
+					name: 'uncharge',
+					description: 'Remove all darts and scales from your blowpipe',
+					required: false
+				},
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'add',
+					description: 'Add darts or scales to your blowpipe',
+					required: false,
+					choices: [...blowpipeDarts, getOSItem("Zulrah's scales")].map(i => ({
+						name: i.name,
+						value: i.name
+					}))
+				},
+				{
+					type: ApplicationCommandOptionType.Integer,
+					name: 'quantity',
+					description: 'The quantity of darts/scales to add',
+					required: false,
+					min_value: 1
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
 			name: 'feed_hammy',
 			description: 'Feed an item to your Hammy pet.',
 			options: [
@@ -354,6 +391,7 @@ export const minionCommand: OSBMahojiCommand = {
 		daily?: {};
 		train?: { style: AttackStyles };
 		pat?: {};
+		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
 		feed_hammy?: {
 			item: string;
 		};
@@ -445,6 +483,15 @@ export const minionCommand: OSBMahojiCommand = {
 		}
 		if (options.train) return trainCommand(user, options.train.style);
 		if (options.pat) return randomPatMessage(user.minionName);
+		if (options.blowpipe) {
+			return blowpipeCommand(
+				user,
+				options.blowpipe.remove_darts,
+				options.blowpipe.uncharge,
+				options.blowpipe.add,
+				options.blowpipe.quantity
+			);
+		}
 		if (options.feed_hammy) return feedHammyCommand(interaction, user, options.feed_hammy.item);
 
 		return 'Unknown command';
