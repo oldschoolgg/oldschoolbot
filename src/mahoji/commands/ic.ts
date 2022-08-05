@@ -68,20 +68,8 @@ const itemContractItemsSet = new Set([
 		'Tradeable mystery box',
 		'Pet mystery box',
 		'Holiday mystery box',
-		'Klik',
-		'Scruffy',
-		'Shelldon',
-		'Remy',
-		'Divine sigil',
-		'Wintertoad',
-		'Hammy',
 		'Dwarven bar',
-		'Dwarven ore',
-		'Magic banana',
-		'Scroll of the hunt',
-		'Scroll of longevity',
-		'Scroll of life',
-		'Scroll of proficiency'
+		'Dwarven ore'
 	])
 ]);
 
