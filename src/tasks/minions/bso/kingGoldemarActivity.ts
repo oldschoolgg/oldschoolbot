@@ -47,11 +47,19 @@ export default class extends Task {
 
 		const tagAll = users.map(u => u.toString()).join(', ');
 		if (deaths.length === idArr.length) {
-			return sendToChannelID(channelID, {
-				content: `${tagAll}\n\n${
-					solo ? 'You were' : 'Your team was'
-				} crushed by King Goldemar, you never stood a chance.`
-			});
+			return handleTripFinish(
+				user,				
+				channelID,
+				`${tagAll}\n\n${solo ? 'You were' : 'Your team was'} crushed by King Goldemar, you never stood a chance.`
+				[
+					'k',
+					{ name: solo ? 'King Goldemar (Solo)' : 'King Goldemar (Mass) },
+					true
+				],
+				undefined,
+				data,
+				null
+			);
 		}
 
 		await Promise.all(users.map(u => u.incrementMonsterScore(KingGoldemar.id, 1)));
