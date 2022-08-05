@@ -60,13 +60,15 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 
-		extraButtons.push(
-			new MessageButton()
-				.setLabel('Auto Slay')
-				.setEmoji(Emoji.Slayer)
-				.setCustomID('AUTO_SLAY')
-				.setStyle('SECONDARY')
-		);
+		if (!msg.author.minionIsBusy) {
+			extraButtons.push(
+				new MessageButton()
+					.setLabel('Auto Slay')
+					.setEmoji(Emoji.Slayer)
+					.setCustomID('AUTO_SLAY')
+					.setStyle('SECONDARY')
+			);
+		}
 
 		extraButtons.push(
 			new MessageButton()
@@ -75,7 +77,8 @@ export default class MinionCommand extends BotCommand {
 				.setCustomID('CHECK_PATCHES')
 				.setStyle('SECONDARY')
 		);
-		if (birdhouseDetails.isReady) {
+
+		if (!msg.author.minionIsBusy && birdhouseDetails.isReady) {
 			extraButtons.push(
 				new MessageButton()
 					.setLabel('Birdhouse Run')
@@ -85,7 +88,7 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 
-		if (await canRunAutoContract(msg.author.id)) {
+		if (!msg.author.minionIsBusy && (await canRunAutoContract(msg.author.id))) {
 			extraButtons.push(
 				new MessageButton()
 					.setLabel('Auto Farming Contract')
@@ -125,10 +128,12 @@ export default class MinionCommand extends BotCommand {
 
 		const bank = msg.author.bank();
 
-		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
-			.reverse()
-			.slice(0, 3)) {
-			extraButtons.push(makeDoClueButton(tier));
+		if (!msg.author.minionIsBusy) {
+			for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
+				.reverse()
+				.slice(0, 3)) {
+				extraButtons.push(makeDoClueButton(tier));
+			}
 		}
 
 		if (getUsersPerkTier(msg.author) >= PerkTier.Two) {
