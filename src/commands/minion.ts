@@ -2,22 +2,22 @@ import { MessageButton } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { Emoji, lastTripCache, PerkTier } from '../../lib/constants';
-import { requiresMinion } from '../../lib/minions/decorators';
-import { runCommand } from '../../lib/settings/settings';
-import { BotCommand } from '../../lib/structures/BotCommand';
-import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
-import { convertMahojiResponseToDJSResponse } from '../../lib/util';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { makeDoClueButton, makeRepeatTripButton } from '../../lib/util/globalInteractions';
-import { getItemContractDetails } from '../../mahoji/commands/ic';
-import { spawnLampIsReady } from '../../mahoji/commands/tools';
-import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
-import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { ClueTiers } from '../lib/clues/clueTiers';
+import { Emoji, lastTripCache, PerkTier } from '../lib/constants';
+import { requiresMinion } from '../lib/minions/decorators';
+import { runCommand } from '../lib/settings/settings';
+import { BotCommand } from '../lib/structures/BotCommand';
+import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../lib/tames';
+import { convertMahojiResponseToDJSResponse } from '../lib/util';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { makeDoClueButton, makeRepeatTripButton } from '../lib/util/globalInteractions';
+import { getItemContractDetails } from '../mahoji/commands/ic';
+import { spawnLampIsReady } from '../mahoji/commands/tools';
+import { calculateBirdhouseDetails } from '../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../mahoji/lib/abstracted_commands/dailyCommand';
+import { canRunAutoContract } from '../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { minionBuyCommand } from '../mahoji/lib/abstracted_commands/minionBuyCommand';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 
 const subCommands = ['buy', 'pat', 'info', 'blowpipe', 'bp'];
 
