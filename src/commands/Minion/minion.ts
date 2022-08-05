@@ -1,23 +1,21 @@
+import { MessageButton } from 'discord.js';
+import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, PerkTier } from '../../lib/constants';
-import { DynamicButtons } from '../../lib/DynamicButtons';
 import { requiresMinion } from '../../lib/minions/decorators';
-import { FarmingContract } from '../../lib/minions/farming/types';
-import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
 import { runCommand } from '../../lib/settings/settings';
-import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { getUsersTame, repeatTameTrip, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
+import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
 import { convertMahojiResponseToDJSResponse } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { makeDoClueButton, makeRepeatTripButton } from '../../lib/util/globalInteractions';
 import { getItemContractDetails } from '../../mahoji/commands/ic';
 import { spawnLampIsReady } from '../../mahoji/commands/tools';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
-import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
@@ -37,172 +35,92 @@ export default class MinionCommand extends BotCommand {
 
 	@requiresMinion
 	async run(msg: KlasaMessage) {
-		const [birdhouseDetails, mahojiUser, farmingDetails] = await Promise.all([
-			calculateBirdhouseDetails(msg.author.id),
-			mahojiUsersSettingsFetch(msg.author.id),
-			getFarmingInfo(msg.author.id)
-		]);
+		const birdhouseDetails = await calculateBirdhouseDetails(msg.author.id);
 
-		const dynamicButtons = new DynamicButtons({ channel: msg.channel, usersWhoCanInteract: [msg.author.id] });
-
-		const cmdOptions = {
-			msg,
-			channelID: msg.channel.id,
-			userID: msg.author.id,
-			guildID: msg.guild?.id,
-			user: msg.author,
-			member: msg.member
-		};
-
-		dynamicButtons.add({
-			name: 'Auto Farm',
-			emoji: Emoji.Farming,
-			fn: () =>
-				runCommand({
-					commandName: 'farming',
-					args: {
-						auto_farm: {}
-					},
-					bypassInhibitors: true,
-					...cmdOptions
-				}),
-			cantBeBusy: true
-		});
+		const extraButtons: MessageButton[] = [];
 
 		const dailyIsReady = isUsersDailyReady(msg.author);
 		if (dailyIsReady.isReady) {
-			dynamicButtons.add({
-				name: 'Claim Daily',
-				emoji: Emoji.MoneyBag,
-				fn: () =>
-					runCommand({
-						commandName: 'minion',
-						args: { daily: {} },
-						bypassInhibitors: true,
-						...cmdOptions
-					}),
-				cantBeBusy: false
-			});
+			extraButtons.push(
+				new MessageButton()
+					.setLabel('Claim Daily')
+					.setEmoji(Emoji.MoneyBag)
+					.setCustomID('CLAIM_DAILY')
+					.setStyle('SECONDARY')
+			);
 		}
 
 		if (msg.author.minionIsBusy) {
-			dynamicButtons.add({
-				name: 'Cancel Trip',
-				emoji: Emoji.Minion,
-				fn: () =>
-					runCommand({
-						commandName: 'minion',
-						args: { cancel: {} },
-						bypassInhibitors: true,
-						...cmdOptions
-					}),
-				cantBeBusy: false
-			});
+			extraButtons.push(
+				new MessageButton()
+					.setLabel('Cancel Trip')
+					.setEmoji(Emoji.Minion)
+					.setCustomID('CANCEL_TRIP')
+					.setStyle('SECONDARY')
+			);
 		}
 
-		dynamicButtons.add({
-			name: 'Auto-Slay',
-			emoji: Emoji.Slayer,
-			fn: () =>
-				runCommand({
-					commandName: 'autoslay',
-					args: [],
-					bypassInhibitors: true,
-					...cmdOptions
-				}),
-			cantBeBusy: true
-		});
-		dynamicButtons.add({
-			name: 'Check Patches',
-			emoji: Emoji.Stopwatch,
-			fn: () =>
-				runCommand({
-					commandName: 'farming',
-					args: { check_patches: {} },
-					bypassInhibitors: true,
-					...cmdOptions
-				}),
-			cantBeBusy: false
-		});
+		extraButtons.push(
+			new MessageButton()
+				.setLabel('Auto Slay')
+				.setEmoji(Emoji.Slayer)
+				.setCustomID('AUTO_SLAY')
+				.setStyle('SECONDARY')
+		);
+
+		extraButtons.push(
+			new MessageButton()
+				.setLabel('Check Patches')
+				.setEmoji(Emoji.Stopwatch)
+				.setCustomID('CHECK_PATCHES')
+				.setStyle('SECONDARY')
+		);
 		if (birdhouseDetails.isReady) {
-			dynamicButtons.add({
-				name: 'Birdhouse Run',
-				emoji: '692946556399124520',
-				fn: () =>
-					runCommand({
-						commandName: 'activities',
-						args: { birdhouses: { action: 'harvest' } },
-						bypassInhibitors: true,
-						...cmdOptions
-					}),
-				cantBeBusy: true
-			});
+			extraButtons.push(
+				new MessageButton()
+					.setLabel('Birdhouse Run')
+					.setEmoji('692946556399124520')
+					.setCustomID('DO_BIRDHOUSE_RUN')
+					.setStyle('SECONDARY')
+			);
 		}
-		const contract = mahojiUser.minion_farmingContract as FarmingContract | null;
-		const contractedPlant = farmingDetails.patchesDetailed.find(p => p.plant?.name === contract?.plantToGrow);
-		if (msg.author.skillLevel(SkillsEnum.Farming) > 45 && (!contractedPlant || contractedPlant.ready !== false)) {
-			dynamicButtons.add({
-				name: 'Auto Farming Contract',
-				emoji: '977410792754413668',
-				fn: async () => {
-					const result = await autoContract(msg.author, BigInt(msg.channel.id), BigInt(msg.author.id));
-					return msg.channel.send(convertMahojiResponseToDJSResponse(result));
-				},
-				cantBeBusy: true
-			});
+
+		if (await canRunAutoContract(msg.author.id)) {
+			extraButtons.push(
+				new MessageButton()
+					.setLabel('Auto Farming Contract')
+					.setEmoji('977410792754413668')
+					.setCustomID('AUTO_FARMING_CONTRACT')
+					.setStyle('SECONDARY')
+			);
 		}
 
 		const lastTrip = lastTripCache.get(msg.author.id);
 		if (lastTrip && !msg.author.minionIsBusy) {
-			dynamicButtons.add({
-				name: `Repeat ${lastTrip.data.type} Trip`,
-				fn: () =>
-					lastTrip.continue({
-						user: msg.author,
-						userID: msg.author.id,
-						member: msg.member,
-						guildID: msg.guild?.id,
-						channelID: msg.channel.id
-					})
-			});
+			extraButtons.push(makeRepeatTripButton());
 		}
 
+		const mahojiUser = await mahojiUsersSettingsFetch(msg.author.id);
 		const [spawnLampReady] = spawnLampIsReady(mahojiUser, msg.channel.id);
 		if (spawnLampReady) {
-			dynamicButtons.add({
-				name: 'Spawn Lamp',
-				emoji: '988325171498721290',
-				fn: () =>
-					runCommand({
-						commandName: 'tools',
-						args: { patron: { spawnlamp: {} } },
-						bypassInhibitors: true,
-						channelID: msg.channel.id,
-						user: msg.author,
-						guildID: msg.guild?.id,
-						member: msg.member,
-						userID: msg.author.id
-					})
-			});
+			extraButtons.push(
+				new MessageButton()
+					.setLabel('Spawn Lamp')
+					.setEmoji('988325171498721290')
+					.setCustomID('SPAWN_LAMP')
+					.setStyle('SECONDARY')
+			);
 		}
 
 		const icDetails = getItemContractDetails(mahojiUser);
 		if (msg.author.perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
-			dynamicButtons.add({
-				name: `IC: ${icDetails.currentItem.name.slice(0, 20)}`,
-				emoji: '988422348434718812',
-				fn: () =>
-					runCommand({
-						commandName: 'ic',
-						args: { send: {} },
-						bypassInhibitors: true,
-						channelID: msg.channel.id,
-						user: msg.author,
-						guildID: msg.guild?.id,
-						member: msg.member,
-						userID: msg.author.id
-					})
-			});
+			extraButtons.push(
+				new MessageButton()
+					.setLabel(`IC: ${icDetails.currentItem.name.slice(0, 20)}`)
+					.setEmoji('988422348434718812')
+					.setCustomID('ITEM_CONTRACT_SEND')
+					.setStyle('SECONDARY')
+			);
 		}
 
 		const bank = msg.author.bank();
@@ -210,19 +128,7 @@ export default class MinionCommand extends BotCommand {
 		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
 			.reverse()
 			.slice(0, 3)) {
-			dynamicButtons.add({
-				name: `Do ${tier.name} Clue`,
-				fn: () => {
-					return runCommand({
-						commandName: 'clue',
-						args: { tier: tier.name },
-						bypassInhibitors: true,
-						...cmdOptions
-					});
-				},
-				emoji: '365003979840552960',
-				cantBeBusy: true
-			});
+			extraButtons.push(makeDoClueButton(tier));
 		}
 
 		if (getUsersPerkTier(msg.author) >= PerkTier.Two) {
@@ -230,27 +136,26 @@ export default class MinionCommand extends BotCommand {
 			if (tame && !activity) {
 				const lastTameAct = await tameLastFinishedActivity(mahojiUser);
 				if (lastTameAct) {
-					dynamicButtons.add({
-						name: `Repeat ${shortTameTripDesc(lastTameAct)}`,
-						emoji: species!.emojiID,
-						fn: () => repeatTameTrip(msg, lastTameAct)
-					});
+					extraButtons.push(
+						new MessageButton()
+							.setLabel(`Repeat ${shortTameTripDesc(lastTameAct)}`)
+							.setEmoji(species!.emojiID)
+							.setCustomID('REPEAT_TAME_TRIP')
+							.setStyle('SECONDARY')
+					);
 				}
 			}
 		}
 
-		dynamicButtons.render({
-			isBusy: msg.author.minionIsBusy,
-			messageOptions: { content: msg.author.minionStatus }
-		});
+		return msg.channel.send({ content: msg.author.minionStatus, components: chunk(extraButtons, 5) });
 	}
 
-	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return this.blowpipe(msg, [input]);
+	async bp(msg: KlasaMessage) {
+		return msg.channel.send('This command has been moved to `/minion blowpipe`');
 	}
 
-	async blowpipe(msg: KlasaMessage, [input = '']: [string | undefined]) {
-		return blowpipeCommand(msg, input);
+	async blowpipe(msg: KlasaMessage) {
+		return msg.channel.send('This command has been moved to `/minion blowpipe`');
 	}
 
 	async info(msg: KlasaMessage) {

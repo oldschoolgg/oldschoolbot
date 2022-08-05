@@ -510,6 +510,19 @@ export const toolsCommand: OSBMahojiCommand = {
 					name: 'mypets',
 					description: 'See the chat pets you have.',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'temp_cl',
+					description: 'Manage and view your temporary CL.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset your temporary CL.',
+							required: false
+						}
+					]
 				}
 			]
 		},
@@ -615,7 +628,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			spawnbox?: {};
 			stats?: { stat: string };
 		};
-		user?: { mypets?: {} };
+		user?: { mypets?: {}; temp_cl: { reset?: boolean } };
 		stash_units?: {
 			view?: { unit?: string; not_filled?: boolean };
 			build_all?: {};
@@ -716,8 +729,8 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 		}
+
 		if (options.stash_units) {
-			const klasaUser = await globalClient.fetchUser(mahojiUser.id);
 			if (options.stash_units.view) {
 				return stashUnitViewCommand(
 					mahojiUser,
@@ -730,6 +743,30 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (options.stash_units.unfill) {
 				return stashUnitUnfillCommand(klasaUser, mahojiUser, options.stash_units.unfill.unit);
 			}
+		}
+		if (options.user?.temp_cl) {
+			if (options.user.temp_cl === true) {
+				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
+				await mahojiUserSettingsUpdate(klasaUser.id, {
+					temp_cl: {},
+					last_temp_cl_reset: new Date()
+				});
+				return 'Reset your temporary CL.';
+			}
+			const lastReset = await prisma.user.findUnique({
+				where: {
+					id: klasaUser.id
+				},
+				select: {
+					last_temp_cl_reset: true
+				}
+			});
+			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
+You last reset your temporary CL: ${
+				Boolean(lastReset?.last_temp_cl_reset)
+					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
+					: 'Never'
+			}`;
 		}
 		return 'Invalid command!';
 	}

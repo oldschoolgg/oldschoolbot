@@ -1,7 +1,6 @@
 import { Time } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 
-import { MOKTANG_ID } from '../../../../mahoji/lib/abstracted_commands/moktangCommand';
 import { PHOSANI_NIGHTMARE_ID, ZALCANO_ID } from '../../../constants';
 import { GearStat } from '../../../gear/types';
 import { PUMPKINHEAD_ID } from '../../../simulation/pumpkinHead';
@@ -16,6 +15,7 @@ import { creatureCreationCreatures } from './creatureCreation';
 import { Ignecarus } from './custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from './custom/bosses/KalphiteKing';
 import KingGoldemar from './custom/bosses/KingGoldemar';
+import { MOKTANG_ID } from './custom/bosses/Moktang';
 import { VasaMagus } from './custom/bosses/VasaMagus';
 import { customKillableMonsters } from './custom/customMonsters';
 import { konarMonsters } from './konarMonsters';

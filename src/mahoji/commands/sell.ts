@@ -103,6 +103,22 @@ export const sellCommand: OSBMahojiCommand = {
 			return `You exchanged ${moleBank} and received: ${loot}.`;
 		}
 
+		if (bankToSell.has('Golden tench')) {
+			const loot = new Bank();
+			const tenchBank = new Bank();
+			tenchBank.add('Golden tench', bankToSell.amount('Golden tench'));
+
+			loot.add('Molch pearl', tenchBank.amount('Golden tench') * 100);
+
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`
+			);
+			await user.removeItemsFromBank(tenchBank);
+			await user.addItemsToBank({ items: loot, collectionLog: false });
+			return `You exchanged ${tenchBank} and received: ${loot}.`;
+		}
+
 		let totalPrice = 0;
 		const hasSkipper = user.usingPet('Skipper') || user.bank().has('Skipper');
 		const taxRatePercent = hasSkipper ? 15 : 25;

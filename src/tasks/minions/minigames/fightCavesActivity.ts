@@ -111,7 +111,7 @@ export default class extends Task {
 				user,
 				channelID,
 				`${user} ${msg}`,
-				['fightcaves', [], true],
+				['activities', { fight_caves: {} }, true],
 				await chatHeadImage({
 					content: `TzTok-Jad stomp you to death...nice try though JalYt, for your effort I give you ${tokkulReward}x Tokkul. ${attemptsStr}.`,
 					head: 'mejJal'

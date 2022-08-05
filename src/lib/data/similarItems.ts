@@ -316,7 +316,7 @@ const source: [string, (string | number)[]][] = [
 	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
-	['Salve amulet (i)', ['Salve amulet(ei)']],
+	['Salve amulet(i)', ['Salve amulet(ei)']],
 	['Zaryte bow', ['Hellfire bow']],
 	['Twisted bow', ['Hellfire bow']],
 	['Gorajan archer helmet', ['Infernal slayer helmet(i)']],

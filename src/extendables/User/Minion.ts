@@ -723,6 +723,11 @@ export default class extends Extendable {
 					data.quantity
 				}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
 			}
+			case 'PuroPuro': {
+				return `${this.minionName} is currently hunting in Puro-Puro. The trip should take ${formatDuration(
+					durationRemaining
+				)}.`;
+			}
 			case 'Disassembling': {
 				const data = currentTask as DisassembleTaskOptions;
 				return `${this.minionName} is currently disassembling ${data.qty}x ${itemNameFromID(
