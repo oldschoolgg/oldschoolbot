@@ -14,6 +14,11 @@ import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettin
 
 const pickaxes = [
 	{
+		id: itemID('Volcanic pickaxe'),
+		reductionPercent: 60,
+		miningLvl: 105
+	},
+	{
 		id: itemID('Dwarven pickaxe'),
 		reductionPercent: 50,
 		miningLvl: 99
@@ -98,6 +103,14 @@ export const mineCommand: OSBMahojiCommand = {
 			return `${minionName(user)} needs ${ore.level} Mining to mine ${ore.name}.`;
 		}
 
+		if (ore.requiredPickaxes) {
+			if (!hasItemsEquippedOrInBank(user, ore.requiredPickaxes, 'one')) {
+				return `You need to be using one of these pickaxes to be able to mine ${
+					ore.name
+				}: ${ore.requiredPickaxes.map(itemNameFromID).join(', ')}.`;
+			}
+		}
+
 		// Calculate the time it takes to mine a single ore of this type, at this persons level.
 		let timeToMine = determineScaledOreTime(ore!.xp, ore.respawnTime, skills.mining);
 
@@ -123,6 +136,15 @@ export const mineCommand: OSBMahojiCommand = {
 		if (ore.id === 1625 && userHasItemsEquippedAnywhere(user, 'Amulet of glory')) {
 			timeToMine = Math.floor(timeToMine / 2);
 			boosts.push('50% for having an Amulet of glory equipped');
+		}
+
+		if (
+			userHasItemsEquippedAnywhere(user, 'Offhand volcanic pickaxe') &&
+			skills.strength >= 100 &&
+			skills.mining >= 105
+		) {
+			timeToMine = reduceNumByPercent(timeToMine, 60);
+			boosts.push('60% for Offhand volcanic pickaxe');
 		}
 
 		const maxTripLength = calcMaxTripLength(user, 'Mining');

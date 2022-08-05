@@ -6,6 +6,7 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
 
+import { MoktangLootTable } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { CollectionLogType } from '../../tasks/collectionLogTask';
 import { dyedItems } from '../dyedItems';
@@ -115,6 +116,7 @@ import {
 	mahoganyHomesCL,
 	masterCapesCL,
 	miscellaneousCL,
+	moktangCL,
 	monkeyBackpacksCL,
 	motherlodeMineCL,
 	nexCL,
@@ -158,7 +160,6 @@ import {
 } from './CollectionsExport';
 import Createables from './createables';
 import { kibbles } from './kibble';
-import { leagueBuyables } from './leaguesBuyables';
 
 export const allCollectionLogs: ICollection = {
 	PvM: {
@@ -388,6 +389,11 @@ export const allCollectionLogs: ICollection = {
 				allItems: Monsters.Vorkath.allItems,
 				items: vorkathCL
 			},
+			Moktang: {
+				alias: ['mt', 'moktang'],
+				items: moktangCL,
+				allItems: MoktangLootTable.allItems
+			},
 			Wintertodt: {
 				alias: ['todt', 'wintertodt', 'wt'],
 				items: wintertodtCL
@@ -552,15 +558,18 @@ export const allCollectionLogs: ICollection = {
 				items: slayerCL
 			},
 			TzHaar: {
-				kcActivity: Monsters.TzHaarKet.name,
-				allItems: Monsters.TzHaarKet.allItems,
+				kcActivity: {
+					Default: [Monsters.TzHaarKet.name, Monsters.TzHaarMej.name, Monsters.TzHaarXil.name],
+					Ket: Monsters.TzHaarKet.name,
+					Mej: Monsters.TzHaarMej.name,
+					Xil: Monsters.TzHaarXil.name
+				},
+				allItems: [
+					...Monsters.TzHaarKet.allItems,
+					...Monsters.TzHaarMej.allItems,
+					...Monsters.TzHaarXil.allItems
+				],
 				items: tzHaarCL
-			},
-			"Glough's Experiments": {
-				alias: Monsters.DemonicGorilla.aliases,
-				allItems: Monsters.DemonicGorilla.allItems,
-				kcActivity: Monsters.DemonicGorilla.name,
-				items: demonicGorillaCL
 			}
 		}
 	},
@@ -1165,10 +1174,6 @@ export const allCollectionLogs: ICollection = {
 				items: Createables.filter(i => i.noCl !== true)
 					.map(i => new Bank(i.outputItems).items().map(i => i[0].id))
 					.flat()
-			},
-			Leagues: {
-				counts: false,
-				items: leagueBuyables.map(i => i.item.id)
 			}
 		}
 	},
@@ -1549,3 +1554,7 @@ export async function getCollection(options: {
 
 	return false;
 }
+
+export const allCollectionLogsFlat = Object.values(allCollectionLogs)
+	.map(i => Object.entries(i.activities).map(entry => ({ ...entry[1], name: entry[0] })))
+	.flat();

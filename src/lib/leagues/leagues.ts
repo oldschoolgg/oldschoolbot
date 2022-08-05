@@ -7,11 +7,6 @@ import { Bank } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
-import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { calcCLDetails } from '../data/Collections';
-import { UserFullGearSetup } from '../gear';
-import ClueTiers from '../minions/data/clueTiers';
-import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import {
 	personalAlchingStats,
 	personalCollectingStats,
@@ -22,7 +17,13 @@ import {
 	personalSmithingStats,
 	personalSpellCastStats,
 	personalWoodcuttingStats
-} from '../minions/functions/dataCommand';
+} from '../../mahoji/lib/abstracted_commands/statCommand';
+import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { ClueTiers } from '../clues/clueTiers';
+import { getParsedStashUnits, ParsedUnit } from '../clues/stashUnits';
+import { calcCLDetails } from '../data/Collections';
+import { UserFullGearSetup } from '../gear';
+import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import { roboChimpUserFetch } from '../roboChimp';
 import { getMinigameEntity } from '../settings/minigames';
 import { prisma } from '../settings/prisma';
@@ -78,6 +79,7 @@ interface HasFunctionArgs {
 	smithingSuppliesUsed: Bank;
 	actualClues: Bank;
 	smeltingStats: Bank;
+	stashUnits: ParsedUnit[];
 }
 
 export interface Task {
@@ -86,7 +88,7 @@ export interface Task {
 	has: (opts: HasFunctionArgs) => Promise<boolean>;
 }
 
-export function leaguesHasKC(args: HasFunctionArgs, mon: Monster | CustomMonster, amount = 1) {
+export function leaguesHasKC(args: HasFunctionArgs, mon: Monster | CustomMonster | { id: number }, amount = 1) {
 	return (args.monsterScores[mon.id] ?? 0) >= amount;
 }
 
@@ -176,6 +178,7 @@ WHERE type = 'Herblore'
 AND user_id = '${user.id}'::bigint
 AND data->>'mixableID' IS NOT NULL
 AND (data->>'zahur')::boolean = false
+AND completed = true
 GROUP BY data->>'mixableID';`);
 	const items = new Bank();
 	for (const res of result) {
@@ -196,13 +199,14 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 	return input;
 }
 
-async function calcActualClues(user: User) {
+export async function calcActualClues(user: User) {
 	const result: { id: number; qty: number }[] =
 		await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
 FROM activity
 WHERE type = 'ClueCompletion'
 AND user_id = '${user.id}'::bigint
 AND data->>'clueID' IS NOT NULL
+AND completed = true
 GROUP BY data->>'clueID';`);
 	const casketsCompleted = new Bank();
 	for (const res of result) {
@@ -270,7 +274,8 @@ export async function leaguesCheckUser(userID: string) {
 		woodcuttingStats,
 		actualClues,
 		ranking,
-		smeltingStats
+		smeltingStats,
+		stashUnits
 	] = await Promise.all([
 		personalConstructionStats(mahojiUser),
 		getPOH(userID),
@@ -289,7 +294,8 @@ export async function leaguesCheckUser(userID: string) {
 		personalWoodcuttingStats(mahojiUser),
 		calcActualClues(mahojiUser),
 		calcLeaguesRanking(roboChimpUser),
-		personalSmeltingStats(mahojiUser)
+		personalSmeltingStats(mahojiUser),
+		getParsedStashUnits(userID)
 	]);
 	const clPercent = calcCLDetails(mahojiUser).percent;
 	const herbloreStats = betterHerbloreStats(_herbloreStats);
@@ -327,7 +333,8 @@ export async function leaguesCheckUser(userID: string) {
 		woodcuttingStats,
 		smithingSuppliesUsed,
 		actualClues,
-		smeltingStats
+		smeltingStats,
+		stashUnits
 	};
 
 	let resStr = '\n';

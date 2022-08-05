@@ -1,6 +1,6 @@
 import { time } from '@discordjs/builders';
 import { Tame, tame_growth, TameActivity } from '@prisma/client';
-import { calcWhatPercent, reduceNumByPercent, Time } from 'e';
+import { calcPercentOfNum, calcWhatPercent, notEmpty, reduceNumByPercent, Time } from 'e';
 import { readFile } from 'fs/promises';
 import { KlasaClient, KlasaUser } from 'klasa';
 import { APIUser, ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
@@ -12,6 +12,7 @@ import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/
 
 import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { KillableMonster } from '../../lib/minions/types';
@@ -28,6 +29,7 @@ import {
 	tameHasBeenFed,
 	tameName,
 	tameSpecies,
+	TameSpeciesID,
 	TameTaskOptions,
 	TameType
 } from '../../lib/tames';
@@ -43,7 +45,7 @@ import {
 } from '../../lib/util';
 import { fillTextXTimesInCtx, getClippedRegion } from '../../lib/util/canvasUtil';
 import findMonster from '../../lib/util/findMonster';
-import getOSItem from '../../lib/util/getOSItem';
+import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { patronMaxTripCalc } from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseStringBank } from '../../lib/util/parseStringBank';
@@ -71,6 +73,48 @@ async function tameAutocomplete(value: string, user: APIUser) {
 		})
 		.filter(t => (!value ? true : t.name.toLowerCase().includes(value.toLowerCase())));
 }
+
+export const tameEquipSlots = ['equipped_primary', 'equipped_armor'] as const;
+
+export type TameEquipSlot = typeof tameEquipSlots[number];
+interface TameEquippable {
+	item: Item;
+	tameSpecies: TameSpeciesID[];
+	slot: TameEquipSlot;
+}
+
+const igneClaws = [
+	{
+		item: getOSItem('Runite igne claws'),
+		boost: 5
+	},
+	{
+		item: getOSItem('Dragon igne claws'),
+		boost: 8
+	},
+	{
+		item: getOSItem('Barrows igne claws'),
+		boost: 14
+	},
+	{
+		item: getOSItem('Volcanic igne claws'),
+		boost: 17
+	},
+	{
+		item: getOSItem('Drygore igne claws'),
+		boost: 22
+	},
+	{
+		item: getOSItem('Dwarven igne claws'),
+		boost: 27
+	},
+	{
+		item: getOSItem('Gorajan igne claws'),
+		boost: 35
+	}
+].map(i => ({ ...i, tameSpecies: [TameSpeciesID.Igne], slot: 'equipped_primary' as const }));
+
+export const tameEquippables: TameEquippable[] = [...igneClaws];
 
 interface FeedableItem {
 	item: Item;
@@ -156,10 +200,12 @@ let sprites: {
 		image: Image;
 		sprites: { type: number; growthStage: Record<tame_growth, Canvas> }[];
 	}[];
+	gearIconBg: Image;
 };
 async function initSprites() {
 	const tameSpriteBase = await loadImage(await readFile('./src/lib/resources/images/tames/tame_sprite.png'));
 	sprites = {
+		gearIconBg: await loadImage(await readFile('./src/lib/resources/images/gear_icon_bg.png')),
 		base: {
 			image: tameSpriteBase,
 			slot: getClippedRegion(tameSpriteBase, 0, 0, 256, 128),
@@ -286,16 +332,15 @@ async function tameImage(user: KlasaUser): CommandResponse {
 			256,
 			128
 		);
+
+		const tameX = (10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2;
+		const tameY = (10 + 128) * y + 10;
+		const tameImageSize = 96;
+		const tameImage = sprites
+			.tames!.find(t => t.id === species.id)!
+			.sprites.find(f => f.type === t.species_variant)!.growthStage[t.growth_stage];
 		// Draw tame
-		ctx.drawImage(
-			sprites.tames!.find(t => t.id === species.id)!.sprites.find(f => f.type === t.species_variant)!.growthStage[
-				t.growth_stage
-			],
-			(10 + 256) * x + (isTameActive ? 96 : 256 - 96) / 2,
-			(10 + 128) * y + 10,
-			96,
-			96
-		);
+		ctx.drawImage(tameImage, tameX, tameY, tameImageSize, tameImageSize);
 
 		// Draw tame name / level / stats
 		ctx.fillStyle = '#ffffff';
@@ -364,6 +409,28 @@ async function tameImage(user: KlasaUser): CommandResponse {
 				}
 			}
 		}
+
+		// Tame gear
+		for (let i = 0; i < tameEquipSlots.length; i++) {
+			const slot = tameEquipSlots[i];
+			const equippedInThisSlot = t[slot];
+			if (!equippedInThisSlot) continue;
+			const thisX = sprites.gearIconBg.width + tameX - 20 + (i * sprites.gearIconBg.width + 5);
+			const thisY = tameY + tameImageSize;
+			const iconSize = Math.floor(calcPercentOfNum(75, sprites.gearIconBg.width));
+			ctx.drawImage(sprites.gearIconBg, thisX, thisY, iconSize, iconSize);
+			const icon = await bankTask.getItemImage(equippedInThisSlot);
+			const iconWidth = Math.floor(calcPercentOfNum(65, icon.width));
+			const iconHeight = Math.floor(calcPercentOfNum(65, icon.height));
+			ctx.drawImage(
+				icon,
+				Math.floor(thisX + (iconSize - iconWidth) / 2) + 2,
+				Math.floor(thisY + (iconSize - iconHeight) / 2),
+				iconWidth,
+				iconHeight
+			);
+		}
+
 		i++;
 	}
 
@@ -637,7 +704,8 @@ async function feedCommand(interaction: SlashCommandInteraction, user: KlasaUser
 
 	let specialStrArr = [];
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
-		if (bankToAdd.has(item.id)) {
+		const similarItems = [item.id, ...getSimilarItems(item.id)];
+		if (similarItems.some(si => bankToAdd.has(si))) {
 			if (!tameSpeciesCanBeFedThis.includes(species!.type)) {
 				await handleMahojiConfirmation(
 					interaction,
@@ -718,6 +786,7 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 		maxTripLength += Time.Minute * 35;
 		boosts.push('+35mins trip length (ate a Zak)');
 	}
+
 	maxTripLength += patronMaxTripCalc(user) * 2;
 	if (isWeekend()) {
 		speed = reduceNumByPercent(speed, 10);
@@ -726,6 +795,14 @@ async function killCommand(user: KlasaUser, channelID: bigint, str: string) {
 	if (tameHasBeenFed(tame, itemID('Dwarven warhammer'))) {
 		speed = reduceNumByPercent(speed, 30);
 		boosts.push('30% faster (ate a DWWH)');
+	}
+
+	for (const { item, boost } of igneClaws) {
+		if (tame.equipped_primary === item.id) {
+			boosts.push(`${boost}% faster (${item.name})`);
+			speed = reduceNumByPercent(speed, boost);
+			break;
+		}
 	}
 
 	// Calculate monster quantity:
@@ -910,7 +987,7 @@ async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
 **Hatch Date:** ${time(tame.date)} / ${time(tame.date, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame[`max_${species.relevantLevelCategory}_level`]}
 **Boosts:** ${feedableItems
-			.filter(i => fedItems.has(i.item.id))
+			.filter(i => tameHasBeenFed(tame, i.item.id))
 			.map(i => `${i.item.name} (${i.description})`)
 			.join(', ')}`,
 		attachments: [image.file, fedImage.file]
@@ -924,6 +1001,80 @@ async function statusCommand(user: KlasaUser) {
 	}
 	return `${tameName(tame)} is currently: ${getTameStatus(activity)}`;
 }
+
+async function tameEquipCommand(user: KlasaUser, itemName: string) {
+	const { tame, activity } = await getUsersTame(user);
+	if (!tame) return "You don't have a tame selected.";
+	if (activity) {
+		return "You can't equip something to your tame, because it is busy.";
+	}
+	const item = getItem(itemName);
+	if (!item) return "That's not a valid item.";
+	const equippable = tameEquippables.find(i => i.item === item);
+	if (!equippable) return "That's not an item you can equip to a tame.";
+	if (!equippable.tameSpecies.includes(tame.species_id)) {
+		return 'This item cannot be equipped to this tame species.';
+	}
+	const cost = new Bank().add(item.id);
+	if (!user.owns(cost)) return `You don't own ${cost}.`;
+
+	const refundBank = new Bank();
+	const existingItem = tame[equippable.slot];
+	if (existingItem) refundBank.add(existingItem);
+	await user.removeItemsFromBank(cost);
+	if (refundBank.length > 0) {
+		await user.addItemsToBank({ items: refundBank, collectionLog: false, dontAddToTempCL: true });
+	}
+
+	await prisma.tame.update({
+		where: {
+			id: tame.id
+		},
+		data: {
+			[equippable.slot]: item.id
+		}
+	});
+
+	const refundStr = existingItem
+		? ` A ${itemNameFromID(existingItem)} was unequipped and returned to your bank.`
+		: '';
+	return `You equipped a ${equippable.item.name} to your ${tameName(tame)}.${refundStr}`;
+}
+
+async function tameUnequipCommand(user: KlasaUser, itemName: string) {
+	const { tame, activity } = await getUsersTame(user);
+	if (!tame) return "You don't have a tame selected.";
+	if (activity) {
+		return "You can't unequip something to your tame, because it is busy.";
+	}
+	const item = getItem(itemName);
+	if (!item) return "That's not a valid item.";
+	const equippable = tameEquippables.find(i => i.item === item);
+	if (!equippable) return "That's not an item you can equip to a tame.";
+	if (!equippable.tameSpecies.includes(tame.species_id)) {
+		return 'This item cannot be equipped to this tame species.';
+	}
+
+	const existingItem = tame[equippable.slot];
+	if (!existingItem || existingItem !== item.id) {
+		return "You don't have this item equipped in your tame.";
+	}
+
+	const loot = new Bank().add(equippable.item.id);
+	await user.addItemsToBank({ items: loot, collectionLog: false, dontAddToTempCL: true });
+
+	await prisma.tame.update({
+		where: {
+			id: tame.id
+		},
+		data: {
+			[equippable.slot]: null
+		}
+	});
+
+	return `You unequipped a ${equippable.item.name} from your ${tameName(tame)}.`;
+}
+
 export type TamesCommandOptions = CommandRunOptions<{
 	set_name?: { name: string };
 	cancel?: {};
@@ -935,6 +1086,8 @@ export type TamesCommandOptions = CommandRunOptions<{
 	select?: { tame: string };
 	view?: { tame: string };
 	status?: {};
+	equip?: { item: string };
+	unequip?: { item: string };
 }>;
 export const tamesCommand: OSBMahojiCommand = {
 	name: 'tames',
@@ -1062,6 +1215,47 @@ export const tamesCommand: OSBMahojiCommand = {
 					autocomplete: tameAutocomplete
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'equip',
+			description: 'Equip an tame to your selected tame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'item',
+					description: 'The item you want to equip.',
+					required: true,
+					autocomplete: async (value: string) => {
+						return tameEquippables
+							.filter(t => (!value ? true : t.item.name.toLowerCase().includes(value.toLowerCase())))
+							.map(i => ({ name: i.item.name, value: i.item.name }));
+					}
+				}
+			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'unequip',
+			description: 'Unequip an item from your selected tame.',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'item',
+					description: 'The item you want to unequip.',
+					required: true,
+					autocomplete: async (_, user) => {
+						const klasaUser = await globalClient.fetchUser(user.id);
+						const { tame } = await getUsersTame(klasaUser);
+						return tameEquipSlots
+							.map(i => tame?.[i])
+							.filter(notEmpty)
+							.map(itemNameFromID)
+							.filter(notEmpty)
+							.map(i => ({ name: i, value: i }));
+					}
+				}
+			]
 		}
 	],
 	run: async ({ options, userID, channelID, interaction }: TamesCommandOptions) => {
@@ -1076,6 +1270,8 @@ export const tamesCommand: OSBMahojiCommand = {
 		if (options.select) return selectCommand(user, Number(options.select.tame));
 		if (options.view) return viewCommand(user, Number(options.view.tame));
 		if (options.status) return statusCommand(user);
+		if (options.equip) return tameEquipCommand(user, options.equip.item);
+		if (options.unequip) return tameUnequipCommand(user, options.unequip.item);
 		return 'Invalid command.';
 	}
 };

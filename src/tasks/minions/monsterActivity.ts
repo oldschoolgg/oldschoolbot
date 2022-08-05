@@ -4,10 +4,10 @@ import { Bank, MonsterKillOptions, Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 
 import { MysteryBoxes } from '../../lib/bsoOpenables';
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { BitField, Emoji, PvMMethod } from '../../lib/constants';
 import { isDoubleLootActive } from '../../lib/doubleLoot';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../../lib/invention/inventions';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import { SlayerActivityConstants } from '../../lib/minions/data/combatConstants';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { addMonsterXP } from '../../lib/minions/functions';
@@ -21,7 +21,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../lib/slayer/slayerUnlocks';
 import { calculateSlayerPoints, getSlayerMasterOSJSbyID, getUsersCurrentSlayerInfo } from '../../lib/slayer/slayerUtil';
 import { MonsterActivityTaskOptions } from '../../lib/types/minions';
-import { assert, itemID, roll } from '../../lib/util';
+import { assert, clAdjustedDroprate, itemID, roll } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -255,8 +255,9 @@ export default class extends Task {
 		let gotKlik = false;
 		const minutes = Math.ceil(duration / Time.Minute);
 		if (fullMonster?.data.attributes.includes(MonsterAttribute.Dragon)) {
+			const dropRate = clAdjustedDroprate(user, 'Klik', 8500, 1.2);
 			for (let i = 0; i < minutes; i++) {
-				if (roll(8500)) {
+				if (roll(dropRate)) {
 					gotKlik = true;
 					loot.add('Klik');
 					break;
@@ -385,6 +386,16 @@ export default class extends Task {
 			});
 		}
 
+		if (monster.effect) {
+			await monster.effect({
+				user,
+				quantity,
+				monster,
+				loot,
+				data,
+				messages
+			});
+		}
 		const { previousCL, itemsAdded } = await user.addItemsToBank({ items: loot, collectionLog: true });
 
 		await trackLoot({
@@ -396,16 +407,15 @@ export default class extends Task {
 			duration
 		});
 
-		const image = await makeBankImage({
-			bank: itemsAdded,
-			title: `Loot From ${quantity} ${monster.name}:`,
-			user,
-			previousCL
-		});
-
-		if (messages.length > 0) {
-			str += `\n**Messages:** ${messages.join(', ')}`;
-		}
+		const image =
+			itemsAdded.length === 0
+				? undefined
+				: await makeBankImage({
+						bank: itemsAdded,
+						title: `Loot From ${quantity} ${monster.name}:`,
+						user,
+						previousCL
+				  });
 
 		handleTripFinish(
 			user,
@@ -429,9 +439,10 @@ export default class extends Task {
 							isContinue: true
 						});
 				  },
-			image!.file.buffer,
+			image?.file.buffer,
 			data,
-			itemsAdded
+			itemsAdded,
+			messages
 		);
 	}
 }

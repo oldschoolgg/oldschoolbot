@@ -3,8 +3,8 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { randomVariation } from 'oldschooljs/dist/util';
 
+import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
 import { clueHunterOutfit } from '../../lib/data/CollectionsExport';
-import ClueTiers, { ClueTier } from '../../lib/minions/data/clueTiers';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ItemBank } from '../../lib/types';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
@@ -27,6 +27,7 @@ export const clueCommand: OSBMahojiCommand = {
 	description: 'Send your minion to complete clue scrolls.',
 	attributes: {
 		requiresMinion: true,
+		requiresMinionNotBusy: true,
 		examples: ['/cl name:Boss']
 	},
 	options: [

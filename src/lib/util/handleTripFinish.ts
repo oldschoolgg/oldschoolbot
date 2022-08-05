@@ -6,13 +6,12 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
-import { beeHiveTripEffect } from '../beeHive';
 import { MysteryBoxes } from '../bsoOpenables';
+import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
-import ClueTiers from '../minions/data/clueTiers';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
 import { ClientSettings } from '../settings/types/ClientSettings';
@@ -245,8 +244,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				}
 			}
 		}
-	},
-	beeHiveTripEffect
+	}
 ];
 
 export async function handleTripFinish(
@@ -259,7 +257,8 @@ export async function handleTripFinish(
 		| ((args: LastTripRunArgs) => Promise<KlasaMessage | KlasaMessage[] | null>),
 	attachment: MessageAttachment | Buffer | undefined,
 	data: ActivityTaskOptions,
-	loot: Bank | null
+	loot: Bank | null,
+	_messages?: string[]
 ) {
 	const perkTier = getUsersPerkTier(user);
 	const messages: string[] = [];
@@ -267,6 +266,7 @@ export async function handleTripFinish(
 
 	const clueReceived = loot ? ClueTiers.find(tier => loot.amount(tier.scrollID) > 0) : undefined;
 
+	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
 	}

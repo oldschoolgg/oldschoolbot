@@ -31,12 +31,21 @@ export function sellPriceOfItem(item: Item, taxRate = 25): { price: number; base
 	let basePrice = customPrices[item.id] ?? item.price;
 	let price = basePrice;
 	price = reduceNumByPercent(price, taxRate);
-	price = Math.floor(price);
-	if (price < (item.highalch ?? 0) * 3) {
-		price = Math.floor(calcPercentOfNum(30, item.highalch!));
+	if (!(item.id in customPrices) && price < (item.highalch ?? 0) * 3) {
+		price = calcPercentOfNum(30, item.highalch!);
 	}
-	price = clamp(Math.floor(price), 0, MAX_INT_JAVA);
-	return { price: Math.floor(price), basePrice: Math.floor(basePrice) };
+	price = clamp(price, 0, MAX_INT_JAVA);
+	return { price, basePrice };
+}
+
+export function sellStorePriceOfItem(item: Item, qty: number): { price: number; basePrice: number } {
+	if (!item.cost || !item.lowalch) return { price: 0, basePrice: 0 };
+	let basePrice = item.cost;
+	// Sell price decline with stock by 3% until 10% of item value and is always low alch price when stock is 0.
+	const percentageFirstEleven = (0.4 - 0.015 * Math.min(qty - 1, 10)) * Math.min(qty, 11);
+	let price = ((percentageFirstEleven + Math.max(qty - 11, 0) * 0.1) * item.cost) / qty;
+	price = clamp(price, 0, MAX_INT_JAVA);
+	return { price, basePrice };
 }
 export const sellCommand: OSBMahojiCommand = {
 	name: 'sell',
@@ -103,9 +112,10 @@ export const sellCommand: OSBMahojiCommand = {
 			if (specialPrice) {
 				totalPrice += Math.floor(specialPrice * qty);
 			} else {
-				if (user.isIronman) return "Iron players can't sell items.";
-				const { price } = sellPriceOfItem(item, taxRatePercent);
-				totalPrice += price * qty;
+				const { price } = user.isIronman
+					? sellStorePriceOfItem(item, qty)
+					: sellPriceOfItem(item, taxRatePercent);
+				totalPrice += Math.floor(price * qty);
 			}
 		}
 
@@ -122,6 +132,9 @@ export const sellCommand: OSBMahojiCommand = {
 		updateGPTrackSetting('gp_sell', totalPrice);
 		updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
 
+		if (user.isIronman) {
+			return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;
+		}
 		return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(
 			totalPrice
 		)})** (${taxRatePercent}% below market price). ${

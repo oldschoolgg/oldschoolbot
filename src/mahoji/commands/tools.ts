@@ -4,18 +4,24 @@ import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import { Bank, Monsters } from 'oldschooljs';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
+import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
+import {
+	allStashUnitsFlat,
+	getParsedStashUnits,
+	stashUnitBuildAllCommand,
+	stashUnitFillAllCommand,
+	stashUnitUnfillCommand,
+	stashUnitViewCommand
+} from '../../lib/clues/stashUnits';
 import { BitField, Channel, Emoji, giveBoxResetTime, PerkTier, spawnLampResetTime } from '../../lib/constants';
 import { allDroppedItems } from '../../lib/data/Collections';
 import pets from '../../lib/data/pets';
-import backgroundImages from '../../lib/minions/data/bankBackgrounds';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { dataPoints } from '../../lib/minions/functions/dataCommand';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
@@ -31,13 +37,13 @@ import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier, { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { LampTable } from '../../lib/xpLamps';
+import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { buttonUserPicker } from '../lib/buttonUserPicker';
 import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 import {
 	handleMahojiConfirmation,
-	MahojiUserOption,
 	mahojiUserSettingsUpdate,
 	mahojiUsersSettingsFetch,
 	patronMsg
@@ -343,118 +349,6 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 		.join('\n')}`;
 }
 
-const statsNames = ['servers', 'minions', 'ironmen', 'sacrificed', 'bankbg', 'monsters', 'clues', 'icons'] as const;
-type Stat = typeof statsNames[number];
-async function statsCommand(user: User, type: Stat): CommandResponse {
-	const cooldown = Cooldowns.get(user.id, 'stats_command', Time.Second * 5);
-	if (cooldown !== null) {
-		return `This command is on cooldown, you can use it again in ${formatDuration(cooldown)}`;
-	}
-	const dataPoint = dataPoints.find(dp => stringMatches(dp.name, type));
-	if (dataPoint) {
-		if (getUsersPerkTier(user) < PerkTier.Four) {
-			return 'Sorry, you need to be a Tier 3 Patron to use this command.';
-		}
-		return dataPoint.run(user);
-	}
-
-	switch (type) {
-		case 'servers': {
-			return `Old School Bot is in ${globalClient.guilds.cache.size} servers.`;
-		}
-		case 'minions': {
-			const result = await prisma.$queryRawUnsafe<any>(
-				'SELECT COUNT(*) FROM users WHERE "minion.hasBought" = true;'
-			);
-			return `There are ${result[0].count.toLocaleString()} minions!`;
-		}
-		case 'ironmen': {
-			const result = await prisma.$queryRawUnsafe<any>(
-				'SELECT COUNT(*) FROM users WHERE "minion.ironman" = true;'
-			);
-			return `There are ${parseInt(result[0].count).toLocaleString()} ironman minions!`;
-		}
-		case 'icons': {
-			const result: { icon: string | null; qty: number }[] = await prisma.$queryRawUnsafe(
-				'SELECT "minion.icon" as icon, COUNT(*) as qty FROM users WHERE "minion.icon" is not null group by "minion.icon" order by qty asc;'
-			);
-			return `**Current minion tiers and their number of users:**\n${Object.values(result)
-				.map(row => `${row.icon ?? '<:minion:763743627092164658>'} : ${row.qty}`)
-				.join('\n')}`;
-		}
-		case 'bankbg': {
-			const result = await prisma.$queryRawUnsafe<any>(`SELECT "bankBackground", COUNT(*)
-FROM users
-WHERE "bankBackground" <> 1
-GROUP BY "bankBackground";`);
-
-			return result
-				.map(
-					(res: any) =>
-						`**${backgroundImages[res.bankBackground - 1].name}:** ${parseInt(res.count).toLocaleString()}`
-				)
-				.join('\n');
-		}
-		case 'sacrificed': {
-			const result = await prisma.$queryRawUnsafe<any>('SELECT SUM ("sacrificedValue") AS total FROM users;');
-			return `There has been ${parseInt(result[0].total).toLocaleString()} GP worth of items sacrificed!`;
-		}
-		case 'monsters': {
-			const totalBank: { [key: string]: number } = {};
-
-			const res: any = await prisma.$queryRawUnsafe(
-				'SELECT ARRAY(SELECT "monsterScores" FROM users WHERE "monsterScores"::text <> \'{}\'::text);'
-			);
-
-			const banks: ItemBank[] = res[0].array;
-
-			banks.map(bank => {
-				for (const [id, qty] of Object.entries(bank)) {
-					if (!totalBank[id]) totalBank[id] = qty;
-					else totalBank[id] += qty;
-				}
-			});
-
-			let str = 'Bot Stats Monsters\n\n';
-			str += Object.entries(totalBank)
-				.sort(([, qty1], [, qty2]) => qty2 - qty1)
-				.map(([monID, qty]) => {
-					return `${Monsters.get(parseInt(monID))?.name}: ${qty.toLocaleString()}`;
-				})
-				.join('\n');
-
-			return { attachments: [{ buffer: Buffer.from(str), fileName: 'Bot Stats Monsters.txt' }] };
-		}
-		case 'clues': {
-			const totalBank: { [key: string]: number } = {};
-
-			const res: any = await prisma.$queryRawUnsafe(
-				'SELECT ARRAY(SELECT "openable_scores" FROM users WHERE "openable_scores"::text <> \'{}\'::text);'
-			);
-
-			const banks: ItemBank[] = res[0].array;
-
-			banks.map(bank => {
-				for (const [id, qty] of Object.entries(bank)) {
-					if (!ClueTiers.some(i => i.id === Number(id))) continue;
-					if (!totalBank[id]) totalBank[id] = qty;
-					else totalBank[id] += qty;
-				}
-			});
-
-			return Object.entries(totalBank)
-				.map(
-					([clueID, qty]) =>
-						`**${ClueTiers.find(t => t.id === parseInt(clueID))?.name}:** ${qty.toLocaleString()}`
-				)
-				.join('\n');
-		}
-		default: {
-			return 'Invalid stat name.';
-		}
-	}
-}
-
 export const toolsCommand: OSBMahojiCommand = {
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
@@ -592,7 +486,8 @@ export const toolsCommand: OSBMahojiCommand = {
 							name: 'stat',
 							description: 'The stat you want to check',
 							autocomplete: async (value: string) => {
-								return [...statsNames, ...dataPoints.map(i => i.name)]
+								return dataPoints
+									.map(i => i.name)
 									.filter(i => (!value ? true : i.toLowerCase().includes(value.toLowerCase())))
 									.map(i => ({
 										name: i,
@@ -615,6 +510,70 @@ export const toolsCommand: OSBMahojiCommand = {
 					name: 'mypets',
 					description: 'See the chat pets you have.',
 					options: []
+				}
+			]
+		},
+		{
+			name: 'stash_units',
+			description: 'Build and fill your treasure trails S.T.A.S.H units.',
+			type: ApplicationCommandOptionType.SubcommandGroup,
+			options: [
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'view',
+					description: 'View your STASH units.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'unit',
+							description: 'The specific unit you want to view (optional).',
+							required: false,
+							autocomplete: async (value: string) => {
+								return allStashUnitsFlat
+									.filter(i => (!value ? true : i.desc.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.desc, value: i.id }));
+							}
+						},
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'not_filled',
+							description: 'View all STASH units that you have not filled/built.',
+							required: false
+						}
+					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'build_all',
+					description: 'Automatically build all the STASH units that you can.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'fill_all',
+					description: 'Automatically fill all the STASH units that you can.',
+					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'unfill',
+					description: 'Remove the items from a specific stash.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'unit',
+							description: 'The specific unit you want to unfill.',
+							required: true,
+							autocomplete: async (value, user) => {
+								return (await getParsedStashUnits(user.id))
+									.filter(i => i.builtUnit !== undefined && i.builtUnit.items_contained.length > 0)
+									.filter(i =>
+										!value ? true : i.unit.desc.toLowerCase().includes(value.toLowerCase())
+									)
+									.map(i => ({ name: i.unit.desc, value: i.unit.id }));
+							}
+						}
+					]
 				}
 			]
 		}
@@ -654,9 +613,15 @@ export const toolsCommand: OSBMahojiCommand = {
 			activity_export?: {};
 			spawnlamp?: {};
 			spawnbox?: {};
-			stats?: { stat: Stat };
+			stats?: { stat: string };
 		};
 		user?: { mypets?: {} };
+		stash_units?: {
+			view?: { unit?: string; not_filled?: boolean };
+			build_all?: {};
+			fill_all?: {};
+			unfill?: { unit: string };
+		};
 	}>) => {
 		if (interaction) interaction.deferReply();
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
@@ -710,6 +675,7 @@ export const toolsCommand: OSBMahojiCommand = {
 				return xpGains(patron.xp_gains.time, patron.xp_gains.skill);
 			}
 			if (patron.minion_stats) {
+				interaction.deferReply();
 				if (getUsersPerkTier(mahojiUser) < PerkTier.Four) return patronMsg(PerkTier.Four);
 				return minionStats(mahojiUser);
 			}
@@ -748,6 +714,21 @@ export const toolsCommand: OSBMahojiCommand = {
 						(await makeBankImage({ bank: b, title: `Your Chat Pets (${b.length}/${pets.length})` })).file
 					]
 				};
+			}
+		}
+		if (options.stash_units) {
+			const klasaUser = await globalClient.fetchUser(mahojiUser.id);
+			if (options.stash_units.view) {
+				return stashUnitViewCommand(
+					mahojiUser,
+					options.stash_units.view.unit,
+					options.stash_units.view.not_filled
+				);
+			}
+			if (options.stash_units.build_all) return stashUnitBuildAllCommand(klasaUser, mahojiUser);
+			if (options.stash_units.fill_all) return stashUnitFillAllCommand(klasaUser, mahojiUser);
+			if (options.stash_units.unfill) {
+				return stashUnitUnfillCommand(klasaUser, mahojiUser, options.stash_units.unfill.unit);
 			}
 		}
 		return 'Invalid command!';

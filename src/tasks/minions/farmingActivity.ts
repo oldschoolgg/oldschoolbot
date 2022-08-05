@@ -14,7 +14,15 @@ import { calcVariableYield } from '../../lib/skilling/functions/calcsFarming';
 import Farming from '../../lib/skilling/skills/farming';
 import { Plant, SkillsEnum } from '../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../lib/types/minions';
-import { assert, increaseBankQuantitesByPercent, itemID, rand, roll, updateBankSetting } from '../../lib/util';
+import {
+	assert,
+	clAdjustedDroprate,
+	increaseBankQuantitesByPercent,
+	itemID,
+	rand,
+	roll,
+	updateBankSetting
+} from '../../lib/util';
 import chatHeadImage from '../../lib/util/chatHeadImage';
 import { getFarmingKeyFromName } from '../../lib/util/farmingHelpers';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
@@ -417,9 +425,13 @@ export default class extends Task {
 					);
 				}
 				if (hesporiLoot.amount('Tangleroot')) tangleroot = true;
-				if (roll((plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5)) {
-					loot.add('Plopper');
-				}
+				const plopperDroprate = clAdjustedDroprate(
+					user,
+					'Plopper',
+					(plantToHarvest.petChance - currentFarmingLevel * 25) / patchType.lastQuantity / 5,
+					1.2
+				);
+				if (roll(plopperDroprate)) loot.add('Plopper');
 			} else if (
 				patchType.patchPlanted &&
 				plantToHarvest.petChance &&
@@ -428,13 +440,14 @@ export default class extends Task {
 			) {
 				loot.add('Tangleroot');
 				tangleroot = true;
-			} else if (
-				patchType.patchPlanted &&
-				plantToHarvest.petChance &&
-				alivePlants > 0 &&
-				roll((plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants / 5)
-			) {
-				loot.add('Plopper');
+			} else if (patchType.patchPlanted && plantToHarvest.petChance && alivePlants > 0) {
+				const plopperDroprate = clAdjustedDroprate(
+					user,
+					'Plopper',
+					(plantToHarvest.petChance - currentFarmingLevel * 25) / alivePlants / 5,
+					1.2
+				);
+				if (roll(plopperDroprate)) loot.add('Plopper');
 			}
 
 			if (plantToHarvest.seedType !== 'hespori') {
@@ -520,7 +533,7 @@ export default class extends Task {
 			}
 
 			if (hasPlopper) loot.multiply(4);
-			const res = await arcaneHarvesterEffect(user, plant, loot);
+			const res = await arcaneHarvesterEffect(user, plantToHarvest, loot);
 			if (res) infoStr.push(res);
 
 			if (loot.has('Plopper')) {

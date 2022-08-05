@@ -2,8 +2,8 @@ import { percentChance, randInt, Time } from 'e';
 import { Task } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Events, MIN_LENGTH_FOR_PET } from '../../lib/constants';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import { Pickpockable, Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';

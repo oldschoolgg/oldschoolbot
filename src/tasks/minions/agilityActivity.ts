@@ -10,7 +10,7 @@ import Agility from '../../lib/skilling/skills/agility';
 import { gorajanShardChance } from '../../lib/skilling/skills/dung/dungDbFunctions';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
-import { addItemToBank, randomVariation, updateGPTrackSetting } from '../../lib/util';
+import { addItemToBank, clAdjustedDroprate, randomVariation, updateGPTrackSetting } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 
@@ -67,9 +67,14 @@ export default class extends Task {
 			duration
 		});
 
-		const loot = new Bank({
-			'Mark of grace': totalMarks
-		});
+		const loot = new Bank();
+		if (course.marksPer60) loot.add('Mark of grace', totalMarks);
+
+		// Calculate Crystal Shards for Priff
+		if (course.name === 'Prifddinas Rooftop Course') {
+			// 15 Shards per hour
+			loot.add('Crystal shard', Math.floor((duration / Time.Hour) * 15));
+		}
 
 		if (alch) {
 			const alchedItem = getOSItem(alch.itemID);
@@ -85,8 +90,8 @@ export default class extends Task {
 
 		let str = `${user}, ${user.minionName} finished ${quantity} ${
 			course.name
-		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot} ${
-			diaryBonus ? '(25% bonus Marks for Ardougne Elite diary)' : ''
+		} laps and fell on ${lapsFailed} of them.\nYou received: ${loot}${
+			diaryBonus ? ' (25% bonus Marks for Ardougne Elite diary)' : ''
 		}.\n${xpRes}`;
 
 		if (user.usingPet('Harry')) {
@@ -127,8 +132,9 @@ export default class extends Task {
 			}
 
 			if (course.id === 12) {
+				const dropRate = clAdjustedDroprate(user, 'Skipper', 1600, 1.3);
 				for (let i = 0; i < minutes; i++) {
-					if (roll(1600)) {
+					if (roll(dropRate)) {
 						loot.add('Skipper');
 						str +=
 							"\n\n<:skipper:755853421801766912> As you finish the Penguin agility course, a lone penguin asks if you'd like to hire it as your accountant, you accept.";
