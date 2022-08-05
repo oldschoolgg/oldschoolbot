@@ -51,7 +51,7 @@ export default class extends Task {
 				return handleTripFinish(
 					users[0],
 					channelID,
-					`${tagAll}\n\n${'You were'} crushed by King Goldemar, you never stood a chance.`,
+					`${tagAll}\n\nYou were crushed by King Goldemar, you never stood a chance.`,
 					['k', { name: 'King Goldemar (Solo)' }, true],
 					undefined,
 					data,
