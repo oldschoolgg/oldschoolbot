@@ -2,18 +2,18 @@ import { MessageButton } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { Emoji, lastTripCache } from '../../lib/constants';
-import { requiresMinion } from '../../lib/minions/decorators';
-import { runCommand } from '../../lib/settings/settings';
-import { BotCommand } from '../../lib/structures/BotCommand';
-import { convertMahojiResponseToDJSResponse } from '../../lib/util';
-import { makeDoClueButton, makeRepeatTripButton } from '../../lib/util/globalInteractions';
-import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
-import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { ClueTiers } from '../lib/clues/clueTiers';
+import { Emoji, lastTripCache } from '../lib/constants';
+import { requiresMinion } from '../lib/minions/decorators';
+import { runCommand } from '../lib/settings/settings';
+import { BotCommand } from '../lib/structures/BotCommand';
+import { convertMahojiResponseToDJSResponse } from '../lib/util';
+import { makeDoClueButton, makeRepeatTripButton } from '../lib/util/globalInteractions';
+import { calculateBirdhouseDetails } from '../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../mahoji/lib/abstracted_commands/dailyCommand';
+import { canRunAutoContract } from '../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { minionBuyCommand } from '../mahoji/lib/abstracted_commands/minionBuyCommand';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 
 const subCommands = ['buy', 'pat', 'info', 'blowpipe', 'bp'];
 

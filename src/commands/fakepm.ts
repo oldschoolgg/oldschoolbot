@@ -3,7 +3,7 @@ import { readFile } from 'fs/promises';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Canvas, Image, loadImage } from 'skia-canvas/lib';
 
-import { BotCommand } from '../../lib/structures/BotCommand';
+import { BotCommand } from '../lib/structures/BotCommand';
 
 export default class extends BotCommand {
 	bg: Image;
