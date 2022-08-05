@@ -76,6 +76,12 @@ export const huntCommand: OSBMahojiCommand = {
 		let usingHuntPotion = Boolean(options.hunter_potion);
 		let wildyScore = 0;
 
+		if (options.stamina_potions === undefined) {
+			options.stamina_potions = true;
+		}
+
+		let usingStaminaPotion = Boolean(options.stamina_potions);
+
 		const creature = Hunter.Creatures.find(creature =>
 			creature.aliases.some(
 				alias => stringMatches(alias, options.name) || stringMatches(alias.split(' ')[0], options.name)
@@ -220,7 +226,7 @@ export const huntCommand: OSBMahojiCommand = {
 					? Math.round(duration / (9 * Time.Minute))
 					: Math.round(duration / (18 * Time.Minute));
 
-			if (options.stamina_potions !== false && userBank.amount('Stamina potion(4)') >= staminaPotionQuantity) {
+			if (usingStaminaPotion && userBank.amount('Stamina potion(4)') >= staminaPotionQuantity) {
 				removeBank.add('Stamina potion(4)', staminaPotionQuantity);
 				boosts.push(`20% boost for using ${staminaPotionQuantity}x Stamina potion(4)`);
 				duration *= 0.8;
@@ -278,6 +284,7 @@ export const huntCommand: OSBMahojiCommand = {
 			quantity,
 			duration,
 			usingHuntPotion,
+			usingStaminaPotion,
 			wildyPeak,
 			type: 'Hunter'
 		});

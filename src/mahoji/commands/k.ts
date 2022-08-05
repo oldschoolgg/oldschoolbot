@@ -5,12 +5,12 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
+import { MOKTANG_ID } from '../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { NexMonster } from '../../lib/nex';
 import { prisma } from '../../lib/settings/prisma';
-import { minionKillCommand } from '../lib/abstracted_commands/minionKill';
-import { MOKTANG_ID } from '../lib/abstracted_commands/moktangCommand';
+import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
 import { OSBMahojiCommand } from '../lib/util';
 
 const autocompleteMonsters = [
@@ -140,6 +140,12 @@ export const killCommand: OSBMahojiCommand = {
 			description: 'If you want to cannon/barrage/burst.',
 			required: false,
 			choices: PVM_METHODS.map(i => ({ name: i, value: i }))
+		},
+		{
+			type: ApplicationCommandOptionType.Boolean,
+			name: 'show_info',
+			description: 'Show information on this monster.',
+			required: false
 		}
 	],
 	run: async ({
@@ -147,8 +153,9 @@ export const killCommand: OSBMahojiCommand = {
 		userID,
 		channelID,
 		interaction
-	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod }>) => {
+	}: CommandRunOptions<{ name: string; quantity?: number; method?: PvMMethod; show_info?: boolean }>) => {
 		const user = await globalClient.fetchUser(userID);
+		if (options.show_info) return monsterInfo(user, options.name);
 		return minionKillCommand(interaction, user, channelID, options.name, options.quantity, options.method);
 	}
 };

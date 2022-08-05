@@ -1,12 +1,14 @@
 /* eslint-disable no-case-declarations */
-import { MessageCollector } from 'discord.js';
+import { GuildMember, MessageCollector } from 'discord.js';
 import { increaseNumByPercent, round, Time } from 'e';
 import { KlasaMessage, KlasaUser } from 'klasa';
+import { APIInteractionGuildMember } from 'mahoji';
 import { Bank, Items, Monsters } from 'oldschooljs';
 import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { collectables } from '../mahoji/lib/abstracted_commands/collectCommand';
 import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { getSimilarItems } from './data/similarItems';
 import killableMonsters, { effectiveMonsters } from './minions/data/killableMonsters';
 import { prisma, trackLoot } from './settings/prisma';
 import { runCommand } from './settings/settings';
@@ -109,7 +111,8 @@ export const tameSpecies: Species[] = [
 
 export function tameHasBeenFed(tame: Tame, item: string | number) {
 	const { id } = Items.get(item)!;
-	return Boolean((tame.fed_items as ItemBank)[id]);
+	const items = [id, ...getSimilarItems(id)];
+	return items.some(i => Boolean((tame.fed_items as ItemBank)[i]));
 }
 
 export function tameGrowthLevel(tame: Tame) {
@@ -424,7 +427,23 @@ export async function tameLastFinishedActivity(user: User) {
 	});
 }
 
-export function repeatTameTrip(msg: KlasaMessage, activity: TameActivity) {
+export async function repeatTameTrip({
+	channelID,
+	userID,
+	guildID,
+	user,
+	member
+}: {
+	channelID: string | bigint;
+	userID: string | bigint;
+	guildID: string | bigint | undefined;
+	user: User;
+	member: APIInteractionGuildMember | GuildMember | null;
+}) {
+	const activity = await tameLastFinishedActivity(user);
+	if (!activity) {
+		return;
+	}
 	const data = activity.data as unknown as TameTaskOptions;
 	switch (data.type) {
 		case TameType.Combat: {
@@ -437,11 +456,11 @@ export function repeatTameTrip(msg: KlasaMessage, activity: TameActivity) {
 					}
 				},
 				bypassInhibitors: true,
-				channelID: msg.channel.id,
-				userID: msg.author.id,
-				guildID: msg.guild?.id,
-				user: msg.author,
-				member: msg.member
+				channelID,
+				userID,
+				guildID,
+				user,
+				member
 			});
 		}
 		case TameType.Gatherer: {
@@ -453,11 +472,11 @@ export function repeatTameTrip(msg: KlasaMessage, activity: TameActivity) {
 					}
 				},
 				bypassInhibitors: true,
-				channelID: msg.channel.id,
-				userID: msg.author.id,
-				guildID: msg.guild?.id,
-				user: msg.author,
-				member: msg.member
+				channelID,
+				userID,
+				guildID,
+				user,
+				member
 			});
 		}
 		default: {

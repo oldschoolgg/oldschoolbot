@@ -4,7 +4,7 @@ import '../minions/data/killableMonsters/custom/customMonsters';
 
 import { Bank, Misc, Monsters } from 'oldschooljs';
 
-import { MoktangLootTable } from '../../mahoji/lib/abstracted_commands/moktangCommand';
+import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { stringMatches } from '../util/cleanString';
 import { KillWorkerArgs, KillWorkerReturn } from '.';
 

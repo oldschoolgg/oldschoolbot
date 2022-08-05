@@ -12,6 +12,7 @@ import { Canvas, CanvasRenderingContext2D, Image, loadImage } from 'skia-canvas/
 
 import { badges } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
+import { getSimilarItems } from '../../lib/data/similarItems';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
 import getUserFoodFromBank from '../../lib/minions/functions/getUserFoodFromBank';
 import { KillableMonster } from '../../lib/minions/types';
@@ -703,7 +704,8 @@ async function feedCommand(interaction: SlashCommandInteraction, user: KlasaUser
 
 	let specialStrArr = [];
 	for (const { item, description, tameSpeciesCanBeFedThis } of thisTameSpecialFeedableItems) {
-		if (bankToAdd.has(item.id)) {
+		const similarItems = [item.id, ...getSimilarItems(item.id)];
+		if (similarItems.some(si => bankToAdd.has(si))) {
 			if (!tameSpeciesCanBeFedThis.includes(species!.type)) {
 				await handleMahojiConfirmation(
 					interaction,
@@ -985,7 +987,7 @@ async function viewCommand(user: KlasaUser, tameID: number): CommandResponse {
 **Hatch Date:** ${time(tame.date)} / ${time(tame.date, 'R')}
 **${toTitleCase(species.relevantLevelCategory)} Level:** ${tame[`max_${species.relevantLevelCategory}_level`]}
 **Boosts:** ${feedableItems
-			.filter(i => fedItems.has(i.item.id))
+			.filter(i => tameHasBeenFed(tame, i.item.id))
 			.map(i => `${i.item.name} (${i.description})`)
 			.join(', ')}`,
 		attachments: [image.file, fedImage.file]

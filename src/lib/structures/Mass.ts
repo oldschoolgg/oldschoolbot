@@ -157,7 +157,6 @@ export class Mass {
 
 			collector.once('end', async () => {
 				await start();
-				this.message!.removeAllReactions();
 			});
 
 			for (const emoji of this.leader === undefined ? [ReactionEmoji.Join] : emojis) {

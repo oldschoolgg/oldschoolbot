@@ -6,7 +6,6 @@ import { Bank, Clues, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 import { table } from 'table';
 
-import { MoktangLootTable } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { CollectionLogType } from '../../tasks/collectionLogTask';
 import { dyedItems } from '../dyedItems';
@@ -19,6 +18,7 @@ import {
 	KalphiteKingMonster
 } from '../minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import KingGoldemar from '../minions/data/killableMonsters/custom/bosses/KingGoldemar';
+import { MoktangLootTable } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { VasaMagus } from '../minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { BSOMonsters } from '../minions/data/killableMonsters/custom/customMonsters';
 import { sepulchreFloors } from '../minions/data/sepulchre';
