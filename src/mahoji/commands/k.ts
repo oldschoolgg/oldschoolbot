@@ -5,12 +5,12 @@ import killableMonsters from '../../lib/minions/data/killableMonsters';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { KalphiteKingMonster } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
 import KingGoldemar from '../../lib/minions/data/killableMonsters/custom/bosses/KingGoldemar';
+import { MOKTANG_ID } from '../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
 import { VasaMagus } from '../../lib/minions/data/killableMonsters/custom/bosses/VasaMagus';
 import { revenantMonsters } from '../../lib/minions/data/killableMonsters/revs';
 import { NexMonster } from '../../lib/nex';
 import { prisma } from '../../lib/settings/prisma';
 import { minionKillCommand, monsterInfo } from '../lib/abstracted_commands/minionKill';
-import { MOKTANG_ID } from '../lib/abstracted_commands/moktangCommand';
 import { OSBMahojiCommand } from '../lib/util';
 
 const autocompleteMonsters = [

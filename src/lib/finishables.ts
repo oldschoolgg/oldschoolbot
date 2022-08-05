@@ -2,10 +2,10 @@ import { notEmpty, roll } from 'e';
 import { Bank, Monsters } from 'oldschooljs';
 import { ChambersOfXeric } from 'oldschooljs/dist/simulation/misc';
 
-import { MoktangLootTable } from '../mahoji/lib/abstracted_commands/moktangCommand';
 import { allCollectionLogsFlat } from './data/Collections';
 import { chambersOfXericNormalCL, moktangCL, wintertodtCL } from './data/CollectionsExport';
 import pets from './data/pets';
+import { MoktangLootTable } from './minions/data/killableMonsters/custom/bosses/Moktang';
 import { WintertodtCrate } from './simulation/wintertodt';
 import { stringMatches } from './util';
 import itemID from './util/itemID';

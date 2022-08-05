@@ -1,22 +1,13 @@
 import { spoiler, userMention } from '@discordjs/builders';
 import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
-import { Bank, LootTable } from 'oldschooljs';
+import { Bank } from 'oldschooljs';
 
-import { MysteryBoxes } from '../../../lib/bsoOpenables';
 import { Events } from '../../../lib/constants';
 import { dwarvenOutfit } from '../../../lib/data/CollectionsExport';
-import { Createable } from '../../../lib/data/createables';
 import { isDoubleLootActive } from '../../../lib/doubleLoot';
-import { MaterialBank } from '../../../lib/invention/MaterialBank';
+import { MOKTANG_ID, MoktangLootTable } from '../../../lib/minions/data/killableMonsters/custom/bosses/Moktang';
 import { trackLoot } from '../../../lib/settings/prisma';
-import {
-	ClueTable,
-	FletchingTipsTable,
-	lowRuneHighAdamantTable,
-	runeWeaponTable,
-	StoneSpiritTable
-} from '../../../lib/simulation/sharedTables';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
@@ -28,38 +19,6 @@ import { makeBankImage } from '../../../lib/util/makeBankImage';
 import { minionName, userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
 import resolveItems from '../../../lib/util/resolveItems';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
-
-export const moktangCreatables: Createable[] = [
-	{
-		name: 'Volcanic pickaxe',
-		inputItems: new Bank({
-			'Volcanic shards': 2,
-			'Dwarven pickaxe': 1,
-			'Obsidian shards': 250
-		}),
-		outputItems: new Bank({ 'Volcanic pickaxe': 1 })
-	},
-	{
-		name: 'Offhand volcanic pickaxe',
-		inputItems: new Bank({
-			'Volcanic shards': 1,
-			'Dwarven pickaxe': 1,
-			'Obsidian shards': 150
-		}),
-		outputItems: new Bank({ 'Offhand volcanic pickaxe': 1 })
-	},
-	{
-		name: 'Moktang totem',
-		inputItems: new Bank({
-			'Elder rune': 20
-		}),
-		outputItems: new Bank({ 'Moktang totem': 1 }),
-		materialCost: new MaterialBank({
-			rocky: 50,
-			magic: 20
-		})
-	}
-];
 
 export interface MoktangTaskOptions extends ActivityTaskOptions {
 	qty: number;
@@ -130,23 +89,6 @@ export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQu
 		timeToKill.missed.length > 0 ? spoiler(timeToKill.missed.join(', ')) : ''
 	}`;
 }
-
-export const MOKTANG_ID = 391_241;
-
-const BarTable = new LootTable().add('Bronze bar', 10).add('Iron bar', 10).add('Steel bar', 10);
-
-export const MoktangLootTable = new LootTable()
-	.every(StoneSpiritTable, [3, 6])
-	.tertiary(1536, 'Mini moktang')
-	.tertiary(750, 'Volcanic dye')
-	.tertiary(1024, 'Claws frame')
-	.tertiary(128, 'Volcanic shards')
-	.tertiary(5, ClueTable)
-	.tertiary(16, MysteryBoxes)
-	.add(BarTable)
-	.add(lowRuneHighAdamantTable)
-	.add(FletchingTipsTable)
-	.add(runeWeaponTable);
 
 export async function moktangActivity(data: MoktangTaskOptions) {
 	const { userID, qty } = data;
