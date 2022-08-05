@@ -729,7 +729,6 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 		}
-		const klasaUser = await globalClient.fetchUser(mahojiUser.id);
 
 		if (options.stash_units) {
 			if (options.stash_units.view) {
