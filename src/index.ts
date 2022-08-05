@@ -12,6 +12,7 @@ import { join } from 'path';
 import { botToken, CLIENT_ID, DEV_SERVER_ID, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
+import { modalInteractionHook } from './lib/modals';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { interactionHook } from './lib/util/globalInteractions';
 import { logError } from './lib/util/logError';
@@ -83,8 +84,10 @@ client.on('raw', async event => {
 	const data = event.d as APIInteraction;
 	client.emit('debug', `Received ${data.type} interaction`);
 	interactionHook(data);
+	if (data.type === InteractionType.ModalSubmit) return modalInteractionHook(data);
 	const timer = new Stopwatch();
 	const result = await mahojiClient.parseInteraction(data);
+	if (result === null) return;
 	timer.stop();
 	client.emit(
 		'debug',
