@@ -95,7 +95,7 @@ export async function interactionHook(data: APIInteraction) {
 						body: { components: [] }
 					}
 				);
-			} else {
+			} else if (!data.message.webhook_id) {
 				globalClient.mahojiClient.restManager.patch(Routes.channelMessage(data.channel_id, data.message?.id), {
 					body: { components: [] }
 				});
