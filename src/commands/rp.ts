@@ -2,6 +2,7 @@ import { Duration, Time } from '@sapphire/time-utilities';
 import { TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -585,6 +586,14 @@ LIMIT 10;
 
 		// Owner commands
 		switch (cmd.toLowerCase()) {
+			case 'globalsync': {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: globalClient.mahojiClient.commands.values,
+					guildID: null
+				});
+				return 'Synced commands.';
+			}
 			case 'loottrack': {
 				if (typeof input !== 'string') {
 					const tracks = await prisma.lootTrack.findMany();
