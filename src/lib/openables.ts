@@ -8,9 +8,9 @@ import { HallowedSackTable } from 'oldschooljs/dist/simulation/openables/Hallowe
 import { Implings } from 'oldschooljs/dist/simulation/openables/Implings';
 
 import { bsoOpenables } from './bsoOpenables';
+import { ClueTiers } from './clues/clueTiers';
 import { Emoji, Events, MIMIC_MONSTER_ID } from './constants';
 import { clueHunterOutfit } from './data/CollectionsExport';
-import ClueTiers from './minions/data/clueTiers';
 import { defaultFarmingContract } from './minions/farming';
 import { FarmingContract } from './minions/farming/types';
 import { UserSettings } from './settings/types/UserSettings';
@@ -88,7 +88,8 @@ const clueItemsToNotifyOf = resolveItems([
 			'First age bracelet',
 			'First age ring'
 		])
-	);
+	)
+	.concat([itemID('Bloodhound'), itemID('Ranger boots')]);
 
 const clueOpenables: UnifiedOpenable[] = [];
 for (const clueTier of ClueTiers) {

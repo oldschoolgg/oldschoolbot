@@ -34,7 +34,7 @@ export const lmsCreatables: Createable[] = [
 	 *
 	 */
 	{
-		name: 'Mystic steam staff (or)',
+		name: 'Mystic steam staff (or) (lms)',
 		inputItems: new Bank({
 			'Mystic steam staff': 1,
 			'Steam staff upgrade kit': 1
@@ -68,7 +68,7 @@ export const lmsCreatables: Createable[] = [
 	},
 	//
 	{
-		name: 'Mystic lava staff (or)',
+		name: 'Mystic lava staff (or) (lms)',
 		inputItems: new Bank({
 			'Mystic lava staff': 1,
 			'Lava staff upgrade kit': 1

@@ -3,7 +3,7 @@ import '../../lib/customItems/customItems';
 import { roll } from 'e';
 import { Bank, Misc } from 'oldschooljs';
 
-import ClueTiers from '../minions/data/clueTiers';
+import { ClueTiers } from '../clues/clueTiers';
 import { CasketWorkerArgs } from '.';
 
 export default ({ clueTierID, quantity }: CasketWorkerArgs): [Bank, string] => {

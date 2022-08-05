@@ -42,8 +42,11 @@ export async function wintertodtCommand(user: KlasaUser, channelID: bigint) {
 	healAmountNeeded -= warmGearAmount * 15;
 	durationPerTodt = reduceNumByPercent(durationPerTodt, 5 * warmGearAmount);
 
+	const boosts: string[] = [];
+
 	if (user.hasItemEquippedAnywhere('Dwarven greataxe')) {
 		durationPerTodt /= 2;
+		boosts.push('2x faster for Dwarven greataxe.');
 	}
 
 	if (healAmountNeeded !== baseHealAmountNeeded) {
@@ -94,7 +97,15 @@ export async function wintertodtCommand(user: KlasaUser, channelID: bigint) {
 		type: 'Wintertodt'
 	});
 
-	return `${user.minionName} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
+	let str = `${
+		user.minionName
+	} is now off to kill Wintertodt ${quantity}x times, their trip will take ${formatDuration(
 		durationPerTodt * quantity
 	)}. (${formatDuration(durationPerTodt)} per todt)\n\n${messages.join(', ')}.`;
+
+	if (boosts.length > 0) {
+		str += `**Boosts:** ${boosts.join(', ')}`;
+	}
+
+	return str;
 }

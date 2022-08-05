@@ -13,7 +13,7 @@ import {
 } from '../lib/abstracted_commands/pohCommand';
 import { ownedItemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const pohCommand: OSBMahojiCommand = {
 	name: 'poh',
@@ -60,11 +60,13 @@ export const pohCommand: OSBMahojiCommand = {
 					name: 'name',
 					description: 'The object you want to build.',
 					required: true,
-					autocomplete: async (value: string, user: APIUser) => {
-						const skills = getSkillsOfMahojiUser(await mahojiUsersSettingsFetch(user.id), true);
-						return PoHObjects.filter(i => i.level <= skills.construction)
-							.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-							.map(i => ({ name: i.name, value: i.name }));
+					autocomplete: async (value: string) => {
+						return PoHObjects.filter(i =>
+							!value ? true : i.name.toLowerCase().includes(value.toLowerCase())
+						).map(i => ({
+							name: i.name,
+							value: i.name
+						}));
 					}
 				}
 			]
@@ -117,7 +119,7 @@ export const pohCommand: OSBMahojiCommand = {
 		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 		if (!mahojiUser.minion_hasBought) return "You don't own a minion yet, so you have no PoH!";
 		if (options.view) {
-			return makePOHImage(user, options.view?.build_mode);
+			return makePOHImage(user, options.view.build_mode);
 		}
 		if (options.wallkit) {
 			return pohWallkitCommand(user, options.wallkit.name);

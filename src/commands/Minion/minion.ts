@@ -1,23 +1,17 @@
-import { randArrItem } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
-import { Bank } from 'oldschooljs';
 
+import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Emoji, lastTripCache, PerkTier } from '../../lib/constants';
 import { DynamicButtons } from '../../lib/DynamicButtons';
-import ClueTiers from '../../lib/minions/data/clueTiers';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { FarmingContract } from '../../lib/minions/farming/types';
 import { blowpipeCommand } from '../../lib/minions/functions/blowpipeCommand';
-import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { runCommand } from '../../lib/settings/settings';
-import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { getFarmingInfo } from '../../lib/skilling/functions/getFarmingInfo';
-import Agility from '../../lib/skilling/skills/agility';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { getUsersTame, repeatTameTrip, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
-import { ItemBank } from '../../lib/types';
-import { convertMahojiResponseToDJSResponse, getClueScoresFromOpenables } from '../../lib/util';
+import { convertMahojiResponseToDJSResponse } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { getItemContractDetails } from '../../mahoji/commands/ic';
 import { spawnLampIsReady } from '../../mahoji/commands/tools';
@@ -27,33 +21,7 @@ import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContra
 import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 
-const patMessages = [
-	'You pat {name} on the head.',
-	'You gently pat {name} on the head, they look back at you happily.',
-	'You pat {name} softly on the head, and thank them for their hard work.',
-	'You pat {name} on the head, they feel happier now.',
-	'After you pat {name}, they feel more motivated now and in the mood for PVM.',
-	'You give {name} head pats, they get comfortable and start falling asleep.'
-];
-
-const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
-
-const subCommands = [
-	'clues',
-	'buy',
-	'pat',
-	'opens',
-	'info',
-	'activities',
-	'lapcounts',
-	'cancel',
-	'train',
-	'tempcl',
-	'blowpipe',
-	'bp',
-	'charge',
-	'data'
-];
+const subCommands = ['buy', 'pat', 'info', 'blowpipe', 'bp'];
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -113,7 +81,7 @@ export default class MinionCommand extends BotCommand {
 						bypassInhibitors: true,
 						...cmdOptions
 					}),
-				cantBeBusy: true
+				cantBeBusy: false
 			});
 		}
 
@@ -277,33 +245,6 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async train(msg: KlasaMessage, [input]: [string | undefined]) {
-		return trainCommand(msg, input);
-	}
-
-	async data(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/tools patron stats`');
-	}
-
-	async lapcounts(msg: KlasaMessage) {
-		const entries = Object.entries(msg.author.settings.get(UserSettings.LapsScores)).map(arr => [
-			parseInt(arr[0]),
-			arr[1]
-		]);
-		const sepulchreCount = await msg.author.getMinigameScore('sepulchre');
-		if (sepulchreCount === 0 && entries.length === 0) {
-			return msg.channel.send("You haven't done any laps yet! Sad.");
-		}
-		const data = `${entries
-			.map(([id, qty]) => `**${Agility.Courses.find(c => c.id === id)!.name}:** ${qty}`)
-			.join('\n')}\n**Hallowed Sepulchre:** ${await sepulchreCount}`;
-		return msg.channel.send(data);
-	}
-
-	async charge(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/minion charge`');
-	}
-
 	async bp(msg: KlasaMessage, [input = '']: [string | undefined]) {
 		return this.blowpipe(msg, [input]);
 	}
@@ -325,30 +266,8 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	async tempcl(msg: KlasaMessage) {
-		return msg.channel.send('This has been moved to `/cl type:temp`');
-	}
-
-	@requiresMinion
 	async pat(msg: KlasaMessage) {
-		return msg.channel.send(randomPatMessage(msg.author.minionName));
-	}
-
-	@requiresMinion
-	async clues(msg: KlasaMessage) {
-		const userData = await mahojiUsersSettingsFetch(msg.author.id, {
-			openable_scores: true
-		});
-
-		const clueScores = getClueScoresFromOpenables(new Bank(userData.openable_scores as ItemBank));
-		if (clueScores.length === 0) return msg.channel.send("You haven't done any clues yet.");
-
-		let res = `${Emoji.Casket} **${msg.author.minionName}'s Clue Scores:**\n\n`;
-		for (const [clueID, clueScore] of Object.entries(clueScores.bank)) {
-			const clue = ClueTiers.find(c => c.id === parseInt(clueID));
-			res += `**${clue!.name}**: ${clueScore.toLocaleString()}\n`;
-		}
-		return msg.channel.send(res);
+		return msg.channel.send('This command was moved to `/minion pat`');
 	}
 
 	async buy(msg: KlasaMessage) {
@@ -357,10 +276,5 @@ export default class MinionCommand extends BotCommand {
 				await minionBuyCommand(msg.author, await mahojiUsersSettingsFetch(msg.author.id), false)
 			)
 		);
-	}
-
-	async opens(msg: KlasaMessage) {
-		const openableScores = new Bank(msg.author.settings.get(UserSettings.OpenableScores));
-		return msg.channel.send(`You've opened... ${openableScores}`);
 	}
 }

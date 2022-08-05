@@ -12,9 +12,9 @@ export const Ores: DisassemblySourceGroup = {
 		{ item: i('Silver ore'), lvl: 20 },
 		{ item: i('Coal'), lvl: 30 },
 		{ item: i('Gold ore'), lvl: 40 },
-		{ item: i('Mithril ore'), lvl: 55 },
-		{ item: i('Adamantite ore'), lvl: 70 },
-		{ item: i('Runite ore'), lvl: 85 }
+		{ item: i('Mithril ore'), lvl: 60 },
+		{ item: i('Adamantite ore'), lvl: 80 },
+		{ item: i('Runite ore'), lvl: 95 }
 	],
 	parts: { rocky: 70, heavy: 20, metallic: 10 }
 };

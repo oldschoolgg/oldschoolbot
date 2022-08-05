@@ -172,3 +172,23 @@ export const ClueTable = new LootTable()
 	.add('Clue scroll (elite)', 1, 3)
 	.add('Clue scroll (master)', 1, 2)
 	.add('Clue scroll (Grandmaster)', 1, 1);
+
+export const StoneSpiritTable = new LootTable()
+	.add('Copper stone spirit', 4, 2)
+	.add('Tin stone spirit', 4, 2)
+	.add('Iron stone spirit', 3, 2)
+	.add('Coal stone spirit', 3, 2)
+	.add('Silver stone spirit', 2, 2)
+	.add('Mithril stone spirit')
+	.add('Adamantite stone spirit')
+	.add('Gold stone spirit')
+	.add('Runite stone spirit');
+
+export const MithrilItemsTable = new LootTable()
+	.add('Mithril dagger')
+	.add('Mithril full helm')
+	.add('Mithril chainbody')
+	.add('Mithril scimitar')
+	.add('Mithril claws')
+	.add('Mithril mace')
+	.add('Mithril spear');

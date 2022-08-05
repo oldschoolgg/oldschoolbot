@@ -111,7 +111,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 
 		let totalPrice = 0;
 		for (const [item, qty] of bankToSac.items()) {
-			totalPrice += sellPriceOfItem(item, 0).basePrice * qty;
+			totalPrice += Math.floor(sellPriceOfItem(item, 0).basePrice * qty);
 		}
 
 		await handleMahojiConfirmation(
@@ -127,7 +127,7 @@ export const sacrificeCommand: OSBMahojiCommand = {
 		let str = '';
 		const hasSkipper = user.usingPet('Skipper') || user.owns('Skipper');
 		if (hasSkipper) {
-			totalPrice = Math.floor(totalPrice * 1.15);
+			totalPrice = Math.floor(totalPrice * 1.4);
 		}
 
 		let gotHammy = false;

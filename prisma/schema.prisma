@@ -19,7 +19,6 @@ model Activity {
   channel_id     BigInt
   data           Json               @db.Json
 
-
   @@index([group_activity])
   @@index([completed])
   @@index([user_id, type])
@@ -124,7 +123,6 @@ model ClientStorage {
   disabled_commands            String[] @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
 
-
   // BSO
   gp_ic                   BigInt @default(0)
   double_loot_finish_time BigInt @default(0)
@@ -155,6 +153,8 @@ model ClientStorage {
   market_prices           Json   @default("{}") @db.Json
   bb_cost                 Json   @default("{}") @db.Json
   bb_loot                 Json   @default("{}") @db.Json
+  moktang_cost            Json   @default("{}") @db.Json
+  moktang_loot            Json   @default("{}") @db.Json
 
   items_disassembled_cost    Json @default("{}") @db.Json
   invention_materials_cost   Json @default("{}") @db.Json
@@ -566,21 +566,26 @@ model TameActivity {
 }
 
 model Tame {
-  id                 Int            @id(map: "PK_1defac3bf951ca2b2de3f944702") @default(autoincrement())
-  user_id            String         @db.VarChar(19)
-  date               DateTime       @default(now()) @db.Timestamp(6)
-  nickname           String?        @db.VarChar(64)
+  id                 Int         @id(map: "PK_1defac3bf951ca2b2de3f944702") @default(autoincrement())
+  user_id            String      @db.VarChar(19)
+  date               DateTime    @default(now()) @db.Timestamp(6)
+  nickname           String?     @db.VarChar(64)
   species_id         Int
   growth_stage       tame_growth
-  growth_percent     Float          @default(0)
+  growth_percent     Float       @default(0)
   max_combat_level   Int
   max_artisan_level  Int
   max_gatherer_level Int
   max_support_level  Int
-  max_total_loot     Json           @db.Json
-  fed_items          Json           @default("{}") @db.Json
-  species_variant    Int            @default(1)
-  tame_activity      TameActivity[]
+  max_total_loot     Json        @db.Json
+  fed_items          Json        @default("{}") @db.Json
+  species_variant    Int         @default(1)
+
+  equipped_primary Int?
+  equipped_armor   Int?
+
+
+  tame_activity TameActivity[]
 
   @@index([date], map: "IDX_d84ebb9dcec7acde63c223cf1b")
   @@map("tames")
@@ -669,6 +674,24 @@ model EconomyTransaction {
   items_received Json? @default("{}") @db.Json
 
   @@map("economy_transaction")
+}
+
+model StashUnit {
+  stash_id        Int
+  user_id         BigInt
+  items_contained Int[]
+  has_built       Boolean
+
+  @@unique([stash_id, user_id])
+  @@map("stash_unit")
+}
+
+model UserStats {
+  user_id         BigInt @id
+  sell_gp         BigInt @default(0)
+  items_sold_bank Json   @default("{}") @db.Json
+
+  @@map("user_stats")
 }
 
 enum command_usage_status {
@@ -764,9 +787,9 @@ enum activity_type_enum {
   TroubleBrewing
   Easter
   BaxtorianBathhouses
-
   Disassembling
   Research
+  Moktang
 }
 
 enum xp_gains_skill_enum {

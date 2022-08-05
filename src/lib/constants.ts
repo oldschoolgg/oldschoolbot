@@ -268,6 +268,7 @@ export const enum Tasks {
 	TroubleBrewing = 'troubleBrewingActivity',
 	Disassembling = 'disassemblingActivity',
 	Research = 'researchActivity',
+	Moktang = 'moktangActivity',
 	REMOVED = '__REMOVED__'
 }
 

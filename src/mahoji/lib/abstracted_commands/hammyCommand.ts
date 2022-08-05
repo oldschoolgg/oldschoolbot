@@ -1,17 +1,12 @@
 import { randArrItem } from 'e';
-import { CommandStore, KlasaMessage } from 'klasa';
+import { KlasaUser } from 'klasa';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { Emoji } from '../../lib/constants';
-import { BotCommand } from '../../lib/structures/BotCommand';
-import { itemID, roll } from '../../lib/util';
-import getOSItem from '../../lib/util/getOSItem';
-
-const options = {
-	max: 1,
-	time: 10_000,
-	errors: ['time']
-};
+import { Emoji } from '../../../lib/constants';
+import { roll } from '../../../lib/util';
+import { getItem } from '../../../lib/util/getOSItem';
+import { handleMahojiConfirmation } from '../../mahojiSettings';
 
 // roll(chanceToDouble) to decide if the item doubles
 const chanceToDouble = 100;
@@ -50,55 +45,32 @@ const hammyDoubleMessages = [
 	"Hammy takes your {item} while you aren't looking and runs to the casino. He comes back rich and hands you an extra {item} for your trouble."
 ];
 
-export default class extends BotCommand {
-	public constructor(store: CommandStore, file: string[], directory: string) {
-		super(store, file, directory, {
-			usage: '<item:string>',
-			usageDelim: ',',
-			aliases: ['feed', 'feedhammy'],
-			cooldown: 5,
-			altProtection: true
-		});
+export async function feedHammyCommand(interaction: SlashCommandInteraction, user: KlasaUser, itemName: string) {
+	const firstItem = getItem(itemName);
+	if (!firstItem) return "That's not a valid item.";
+
+	await handleMahojiConfirmation(
+		interaction,
+		`${user}, are you sure you want to give ${firstItem.name} to Hammy? You probably won't get it back.`
+	);
+
+	const bank = user.bank();
+	if (!bank.has(firstItem.id)) {
+		return `You don't have a ${firstItem.name}.`;
+	}
+	if (!bank.has('Hammy')) {
+		return "You don't have a Hammy, so how could you feed it?";
 	}
 
-	async run(msg: KlasaMessage, [firstItemStr]: [string]) {
-		const bank = msg.author.bank();
-		const firstItem = getOSItem(firstItemStr);
-
-		if (!msg.flagArgs.confirm && !msg.flagArgs.cf && !msg.flagArgs.yes) {
-			const dropMsg = await msg.channel.send(
-				`${msg.author}, are you sure you want to give ${firstItem.name} to Hammy? You probably won't get it back... Type \`confirm\` to confirm.`
-			);
-
-			try {
-				await msg.channel.awaitMessages({
-					...options,
-					filter: _msg => _msg.author.id === msg.author.id && _msg.content.toLowerCase() === 'confirm'
-				});
-			} catch (err) {
-				return dropMsg.edit(
-					`You decide it's not worth risking your ${firstItem.name}, leaving Hammy to fend for himself.`
-				);
-			}
-		}
-
-		if (!bank.has(firstItem.id)) {
-			return msg.channel.send(`You don't have a ${firstItem.name}.`);
-		}
-		if (!bank.has(itemID('Hammy'))) {
-			return msg.channel.send("You don't have a Hammy, so how could you feed it?");
-		}
-
-		if (roll(chanceToDouble)) {
-			let loot = new Bank();
-			loot.add(firstItem.id);
-			await msg.author.addItemsToBank({ items: loot, collectionLog: false });
-			return msg.channel.send(randArrItem(hammyDoubleMessages).replace(/\{item\}/g, firstItem.name));
-		}
-		if (roll(chanceToSave)) {
-			return msg.channel.send(randArrItem(hammyFailMessages).replace(/\{item\}/g, firstItem.name));
-		}
-		await msg.author.removeItemsFromBank(new Bank().add(firstItem.id));
-		return msg.channel.send(randArrItem(hammyMessages).replace(/\{item\}/g, firstItem.name));
+	if (roll(chanceToDouble)) {
+		let loot = new Bank();
+		loot.add(firstItem.id);
+		await user.addItemsToBank({ items: loot, collectionLog: false });
+		return randArrItem(hammyDoubleMessages).replace(/\{item\}/g, firstItem.name);
 	}
+	if (roll(chanceToSave)) {
+		return randArrItem(hammyFailMessages).replace(/\{item\}/g, firstItem.name);
+	}
+	await user.removeItemsFromBank(new Bank().add(firstItem.id));
+	return randArrItem(hammyMessages).replace(/\{item\}/g, firstItem.name);
 }

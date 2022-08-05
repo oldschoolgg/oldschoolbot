@@ -892,5 +892,19 @@ export const mediumTasks: Task[] = [
 		has: async ({ actualClues }) => {
 			return actualClues.amount('Clue scroll (grandmaster)') >= 10;
 		}
+	},
+	{
+		id: 1125,
+		name: 'Build and fill all hard stash units',
+		has: async ({ stashUnits }) => {
+			return stashUnits.filter(i => i.tier.tier === 'Hard').every(i => i.isFull && Boolean(i.builtUnit));
+		}
+	},
+	{
+		id: 1126,
+		name: 'Build and fill all elite stash units',
+		has: async ({ stashUnits }) => {
+			return stashUnits.filter(i => i.tier.tier === 'Elite').every(i => i.isFull && Boolean(i.builtUnit));
+		}
 	}
 ];

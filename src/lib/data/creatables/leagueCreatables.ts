@@ -1,6 +1,5 @@
 import { Bank } from 'oldschooljs';
 
-import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { Createable } from '../createables';
 
 const toolCreatables: Createable[] = [
@@ -491,7 +490,7 @@ const cannonOrnaments: Createable[] = [
 	{
 		name: 'Cannon barrels (or)',
 		inputItems: new Bank({
-			'Shattered relics mystic ornament kit': 1,
+			'Shattered cannon ornament kit': 1,
 			'Cannon barrels': 1
 		}),
 		outputItems: new Bank().add('Cannon barrels (or)')
@@ -508,7 +507,7 @@ const cannonOrnaments: Createable[] = [
 	{
 		name: 'Cannon base (or)',
 		inputItems: new Bank({
-			'Shattered relics mystic ornament kit': 1,
+			'Shattered cannon ornament kit': 1,
 			'Cannon base': 1
 		}),
 		outputItems: new Bank().add('Cannon base (or)')
@@ -525,7 +524,7 @@ const cannonOrnaments: Createable[] = [
 	{
 		name: 'Cannon furnace (or)',
 		inputItems: new Bank({
-			'Shattered relics mystic ornament kit': 1,
+			'Shattered cannon ornament kit': 1,
 			'Cannon furnace': 1
 		}),
 		outputItems: new Bank().add('Cannon furnace (or)')
@@ -542,7 +541,7 @@ const cannonOrnaments: Createable[] = [
 	{
 		name: 'Cannon stand (or)',
 		inputItems: new Bank({
-			'Shattered relics mystic ornament kit': 1,
+			'Shattered cannon ornament kit': 1,
 			'Cannon stand': 1
 		}),
 		outputItems: new Bank().add('Cannon stand (or)')
@@ -554,45 +553,6 @@ const cannonOrnaments: Createable[] = [
 		}),
 		outputItems: new Bank().add('Cannon stand').add('Shattered cannon ornament kit'),
 		noCl: true
-	}
-];
-
-const other: Createable[] = [
-	{
-		name: 'Twisted slayer helmet',
-		inputItems: new Bank({
-			'Twisted horns': 1,
-			'Slayer helmet': 1
-		}),
-		outputItems: new Bank().add('Twisted slayer helmet'),
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.TwistedVision]
-	},
-	{
-		name: 'Revert Twisted slayer helmet',
-		inputItems: new Bank({
-			'Twisted slayer helmet': 1
-		}),
-		outputItems: new Bank().add('Slayer helmet').add('Twisted horns'),
-		noCl: true,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.TwistedVision]
-	},
-	{
-		name: 'Twisted slayer helmet (i)',
-		inputItems: new Bank({
-			'Twisted horns': 1,
-			'Slayer helmet (i)': 1
-		}),
-		outputItems: new Bank().add('Twisted slayer helmet (i)'),
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.TwistedVision]
-	},
-	{
-		name: 'Revert Twisted slayer helmet (i)',
-		inputItems: new Bank({
-			'Twisted slayer helmet (i)': 1
-		}),
-		outputItems: new Bank().add('Slayer helmet (i)').add('Twisted horns'),
-		noCl: true,
-		requiredSlayerUnlocks: [SlayerTaskUnlocksEnum.TwistedVision]
 	}
 ];
 
@@ -820,6 +780,5 @@ export const leaguesCreatables = [
 	...cannonOrnaments,
 	...mysticOrnaments,
 	...clothes,
-	...graceful,
-	...other
+	...graceful
 ];

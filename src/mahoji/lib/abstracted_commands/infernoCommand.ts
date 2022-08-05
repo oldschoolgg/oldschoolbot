@@ -637,9 +637,9 @@ export async function infernoStartCommand(user: KlasaUser, channelID: bigint, em
 		diedEmergedZuk
 	} = res;
 
-	let realCost = new Bank();
+	const realCost = new Bank();
 	try {
-		realCost = (await user.specialRemoveItems(cost)).realCost;
+		realCost.add((await user.specialRemoveItems(cost)).realCost);
 	} catch (err: any) {
 		return {
 			attachments: [

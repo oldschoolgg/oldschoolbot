@@ -131,9 +131,9 @@ export const smithCommand: OSBMahojiCommand = {
 		if (duration > maxTripLength) {
 			return `${user.minionName} can't go on trips longer than ${formatDuration(
 				maxTripLength
-			)}, try a lower quantity. The highest amount of ${smithedItem.name}s you can smith is ${Math.floor(
-				maxTripLength / timeToSmithSingleBar
-			)}.`;
+			)}, try a lower quantity. The highest amount of ${smithedItem.name}${
+				smithedItem.name.charAt(smithedItem.name.length - 1).toLowerCase() === 's' ? '' : 's'
+			} you can smith is ${Math.floor(maxTripLength / timeToSmithSingleBar)}.`;
 		}
 
 		await user.removeItemsFromBank(cost);
@@ -153,6 +153,8 @@ export const smithCommand: OSBMahojiCommand = {
 
 		if (user.usingPet('Takon')) {
 			str += ' Takon is Smithing for you, at incredible speeds and skill.';
+		} else if (user.hasItemEquippedAnywhere('Dwarven greathammer')) {
+			str += ' 2x faster for Dwarven greathammer.';
 		}
 		if (hasScroll) {
 			str += ' Your Scroll of efficiency enables you to save 15% of the bars used.';
