@@ -94,8 +94,6 @@ client.on('raw', async event => {
 		`Parsed ${result?.interaction?.data.interaction.data?.name ?? 'None'} interaction in ${timer.duration}ms`
 	);
 
-	if (result === null) return;
-
 	if ('error' in result) {
 		if (result.error.message === SILENT_ERROR) return;
 		logError(result.error, {
