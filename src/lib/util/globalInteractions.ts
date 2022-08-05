@@ -6,6 +6,7 @@ import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache } from '../constants';
 import { runCommand } from '../settings/settings';
+import { repeatTameTrip } from '../tames';
 import { minionIsBusy } from './minionIsBusy';
 import { minionName } from './minionUtils';
 import { respondToButton } from './respondToButton';
@@ -33,7 +34,10 @@ const globalInteractionActions = [
 	'AUTO_SLAY',
 	'CANCEL_TRIP',
 	'AUTO_FARM',
-	'AUTO_FARMING_CONTRACT'
+	'AUTO_FARMING_CONTRACT',
+	'SPAWN_LAMP',
+	'REPEAT_TAME_TRIP',
+	'ITEM_CONTRACT_SEND'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
@@ -222,6 +226,28 @@ export async function interactionHook(data: APIInteraction) {
 		case 'AUTO_FARMING_CONTRACT': {
 			await buttonReply();
 			return autoContract(await globalClient.fetchUser(user.id), BigInt(options.channelID), BigInt(user.id));
+		}
+		case 'SPAWN_LAMP': {
+			await buttonReply();
+			return runCommand({
+				commandName: 'tools',
+				args: { patron: { spawnlamp: {} } },
+				bypassInhibitors: true,
+				...options
+			});
+		}
+		case 'REPEAT_TAME_TRIP': {
+			await buttonReply();
+			return repeatTameTrip({ ...options });
+		}
+		case 'ITEM_CONTRACT_SEND': {
+			await buttonReply();
+			return runCommand({
+				commandName: 'ic',
+				args: { send: {} },
+				bypassInhibitors: true,
+				...options
+			});
 		}
 		default: {
 		}

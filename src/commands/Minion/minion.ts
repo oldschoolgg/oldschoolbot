@@ -7,10 +7,10 @@ import { Emoji, lastTripCache, PerkTier } from '../../lib/constants';
 import { requiresMinion } from '../../lib/minions/decorators';
 import { runCommand } from '../../lib/settings/settings';
 import { BotCommand } from '../../lib/structures/BotCommand';
-import { getUsersTame, repeatTameTrip, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
+import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
 import { convertMahojiResponseToDJSResponse } from '../../lib/util';
-import { makeDoClueButton, makeRepeatTripButton } from '../../lib/util/globalInteractions';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
+import { makeDoClueButton, makeRepeatTripButton } from '../../lib/util/globalInteractions';
 import { getItemContractDetails } from '../../mahoji/commands/ic';
 import { spawnLampIsReady } from '../../mahoji/commands/tools';
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
@@ -103,40 +103,24 @@ export default class MinionCommand extends BotCommand {
 		const mahojiUser = await mahojiUsersSettingsFetch(msg.author.id);
 		const [spawnLampReady] = spawnLampIsReady(mahojiUser, msg.channel.id);
 		if (spawnLampReady) {
-			dynamicButtons.add({
-				name: 'Spawn Lamp',
-				emoji: '988325171498721290',
-				fn: () =>
-					runCommand({
-						commandName: 'tools',
-						args: { patron: { spawnlamp: {} } },
-						bypassInhibitors: true,
-						channelID: msg.channel.id,
-						user: msg.author,
-						guildID: msg.guild?.id,
-						member: msg.member,
-						userID: msg.author.id
-					})
-			});
+			extraButtons.push(
+				new MessageButton()
+					.setLabel('Spawn Lamp')
+					.setEmoji('988325171498721290')
+					.setCustomID('SPAWN_LAMP')
+					.setStyle('SECONDARY')
+			);
 		}
 
 		const icDetails = getItemContractDetails(mahojiUser);
 		if (msg.author.perkTier >= PerkTier.Two && icDetails.currentItem && icDetails.owns) {
-			dynamicButtons.add({
-				name: `IC: ${icDetails.currentItem.name.slice(0, 20)}`,
-				emoji: '988422348434718812',
-				fn: () =>
-					runCommand({
-						commandName: 'ic',
-						args: { send: {} },
-						bypassInhibitors: true,
-						channelID: msg.channel.id,
-						user: msg.author,
-						guildID: msg.guild?.id,
-						member: msg.member,
-						userID: msg.author.id
-					})
-			});
+			extraButtons.push(
+				new MessageButton()
+					.setLabel(`IC: ${icDetails.currentItem.name.slice(0, 20)}`)
+					.setEmoji('988422348434718812')
+					.setCustomID('ITEM_CONTRACT_SEND')
+					.setStyle('SECONDARY')
+			);
 		}
 
 		const bank = msg.author.bank();
@@ -152,11 +136,13 @@ export default class MinionCommand extends BotCommand {
 			if (tame && !activity) {
 				const lastTameAct = await tameLastFinishedActivity(mahojiUser);
 				if (lastTameAct) {
-					dynamicButtons.add({
-						name: `Repeat ${shortTameTripDesc(lastTameAct)}`,
-						emoji: species!.emojiID,
-						fn: () => repeatTameTrip(msg, lastTameAct)
-					});
+					extraButtons.push(
+						new MessageButton()
+							.setLabel(`Repeat ${shortTameTripDesc(lastTameAct)}`)
+							.setEmoji(species!.emojiID)
+							.setCustomID('REPEAT_TAME_TRIP')
+							.setStyle('SECONDARY')
+					);
 				}
 			}
 		}

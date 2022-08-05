@@ -9,21 +9,21 @@ import {
 	Time,
 	uniqueArr
 } from 'e';
-import {KlasaUser} from 'klasa';
-import {CommandResponse} from 'mahoji/dist/lib/structures/ICommand';
-import {SlashCommandInteraction} from 'mahoji/dist/lib/structures/SlashCommandInteraction';
-import {Bank, Monsters} from 'oldschooljs';
-import {MonsterAttribute} from 'oldschooljs/dist/meta/monsterData';
+import { KlasaUser } from 'klasa';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
+import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
+import { Bank, Monsters } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import Monster from 'oldschooljs/dist/structures/Monster';
-import {addArrayOfNumbers, itemID} from 'oldschooljs/dist/util';
+import { addArrayOfNumbers, itemID } from 'oldschooljs/dist/util';
 
-import {PvMMethod} from '../../../lib/constants';
-import {gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit} from '../../../lib/data/CollectionsExport';
-import {Eatables} from '../../../lib/data/eatables';
-import {getSimilarItems} from '../../../lib/data/similarItems';
-import {checkUserCanUseDegradeableItem, degradeItem} from '../../../lib/degradeableItems';
-import {GearSetupType} from '../../../lib/gear';
-import {canAffordInventionBoost, InventionID, inventionItemBoost} from '../../../lib/invention/inventions';
+import { PvMMethod } from '../../../lib/constants';
+import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
+import { Eatables } from '../../../lib/data/eatables';
+import { getSimilarItems } from '../../../lib/data/similarItems';
+import { checkUserCanUseDegradeableItem, degradeItem } from '../../../lib/degradeableItems';
+import { GearSetupType } from '../../../lib/gear';
+import { canAffordInventionBoost, InventionID, inventionItemBoost } from '../../../lib/invention/inventions';
 import {
 	boostCannon,
 	boostCannonMulti,
@@ -40,19 +40,20 @@ import {
 	SlayerActivityConstants,
 	superiorCannonSingleConsumables
 } from '../../../lib/minions/data/combatConstants';
-import {revenantMonsters} from '../../../lib/minions/data/killableMonsters/revs';
-import {Favours, gotFavour} from '../../../lib/minions/data/kourendFavour';
-import {AttackStyles, calculateMonsterFood, resolveAttackStyles} from '../../../lib/minions/functions';
+import { revenantMonsters } from '../../../lib/minions/data/killableMonsters/revs';
+import { Favours, gotFavour } from '../../../lib/minions/data/kourendFavour';
+import { AttackStyles, calculateMonsterFood, resolveAttackStyles } from '../../../lib/minions/functions';
 import reducedTimeFromKC from '../../../lib/minions/functions/reducedTimeFromKC';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
-import {Consumable, KillableMonster} from '../../../lib/minions/types';
-import {calcPOHBoosts} from '../../../lib/poh';
-import {trackLoot} from '../../../lib/settings/prisma';
-import {ClientSettings} from '../../../lib/settings/types/ClientSettings';
-import {UserSettings} from '../../../lib/settings/types/UserSettings';
-import {SlayerTaskUnlocksEnum} from '../../../lib/slayer/slayerUnlocks';
-import {determineBoostChoice, getUsersCurrentSlayerInfo} from '../../../lib/slayer/slayerUtil';
-import {MonsterActivityTaskOptions} from '../../../lib/types/minions';
+import { Consumable, KillableMonster } from '../../../lib/minions/types';
+import { calcPOHBoosts } from '../../../lib/poh';
+import { trackLoot } from '../../../lib/settings/prisma';
+import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
+import { UserSettings } from '../../../lib/settings/types/UserSettings';
+import { SkillsEnum } from '../../../lib/skilling/types';
+import { SlayerTaskUnlocksEnum } from '../../../lib/slayer/slayerUnlocks';
+import { determineBoostChoice, getUsersCurrentSlayerInfo } from '../../../lib/slayer/slayerUtil';
+import { MonsterActivityTaskOptions } from '../../../lib/types/minions';
 import {
 	convertAttackStyleToGearSetup,
 	formatDuration,
@@ -70,21 +71,20 @@ import {
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
-import {sendToChannelID} from '../../../lib/util/webhook';
-import {mahojiUsersSettingsFetch} from '../../mahojiSettings';
-import {igneCommand} from './igneCommand';
-import {kgCommand} from './kgCommand';
-import {kkCommand} from './kkCommand';
-import {moktangCommand} from './moktangCommand';
-import {nexCommand} from './nexCommand';
-import {nightmareCommand} from './nightmareCommand';
-import {getPOH} from './pohCommand';
-import {revsCommand} from './revsCommand';
-import {temporossCommand} from './temporossCommand';
-import {vasaCommand} from './vasaCommand';
-import {wintertodtCommand} from './wintertodtCommand';
-import {zalcanoCommand} from './zalcanoCommand';
-import {SkillsEnum} from "../../../lib/skilling/types";
+import { sendToChannelID } from '../../../lib/util/webhook';
+import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
+import { igneCommand } from './igneCommand';
+import { kgCommand } from './kgCommand';
+import { kkCommand } from './kkCommand';
+import { moktangCommand } from './moktangCommand';
+import { nexCommand } from './nexCommand';
+import { nightmareCommand } from './nightmareCommand';
+import { getPOH } from './pohCommand';
+import { revsCommand } from './revsCommand';
+import { temporossCommand } from './temporossCommand';
+import { vasaCommand } from './vasaCommand';
+import { wintertodtCommand } from './wintertodtCommand';
+import { zalcanoCommand } from './zalcanoCommand';
 
 const invalidMonsterMsg = "That isn't a valid monster.\n\nFor example, `/k name:zulrah quantity:5`";
 

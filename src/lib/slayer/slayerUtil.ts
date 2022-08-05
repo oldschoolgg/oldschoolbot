@@ -223,11 +223,11 @@ export async function assignNewSlayerTask(_user: KlasaUser, master: SlayerMaster
 	let messages: string[] = [];
 	if (unlocks.includes(SlayerTaskUnlocksEnum.SizeMatters)) {
 		quantity *= 2;
-		messages.push('2x qty for unlock');
+		messages.push('2x qty for Size Matters unlock');
 	}
 	if (_user.bitfield.includes(BitField.HasScrollOfLongevity)) {
 		quantity *= 2;
-		messages.push('2x qty for scroll of longevity');
+		messages.push('2x qty for Scroll of longevity');
 	}
 
 	const currentTask = await prisma.slayerTask.create({
@@ -251,7 +251,7 @@ export function calcMaxBlockedTasks(user: User) {
 	// For now we're do 1 free + 1 for every 50 qps.
 	let amount = Math.min(1 + Math.floor(qps / 50), 6);
 
-	const unlocks = user.settings.get(UserSettings.Slayer.SlayerUnlocks);
+	const unlocks = user.slayer_unlocks;
 	const hasBlockAndRoll = unlocks.includes(SlayerTaskUnlocksEnum.BlockAndRoll);
 
 	if (hasBlockAndRoll) {
