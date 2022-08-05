@@ -11,8 +11,9 @@ import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
 import { inspect } from 'node:util';
 import { Bank } from 'oldschooljs';
 
+import { production } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { OWNER_IDS } from '../../lib/constants';
+import { BitField, OWNER_IDS } from '../../lib/constants';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { getItem } from '../../lib/util/getOSItem';
@@ -22,6 +23,7 @@ import PatreonTask from '../../tasks/patreon';
 import { Cooldowns } from '../lib/Cooldowns';
 import { itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 async function unsafeEval({ userID, code }: { userID: string; code: string }) {
 	if (!OWNER_IDS.includes(userID)) return { content: 'Unauthorized' };
@@ -196,11 +198,11 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 	],
 	run: async ({
-		options,
-		userID,
-		interaction,
-		guildID
-	}: CommandRunOptions<{
+					options,
+					userID,
+					interaction,
+					guildID
+				}: CommandRunOptions<{
 		viewbank?: { user: MahojiUserOption };
 		reboot?: {};
 		debug_patreon?: {};
@@ -212,7 +214,10 @@ export const adminCommand: OSBMahojiCommand = {
 		cancel_task?: { user: MahojiUserOption };
 		loot_track?: { name: string };
 	}>) => {
-		if (!guildID || guildID.toString() !== '342983479501389826') return 'Unauthorized';
+		const user = await mahojiUsersSettingsFetch(userID);
+		const isMod = user.bitfield.includes(BitField.isModerator);
+		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return 'Unauthorized';
+
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
 			await cancelTask(user.id);

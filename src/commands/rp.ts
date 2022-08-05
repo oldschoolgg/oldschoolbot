@@ -3,6 +3,7 @@ import { Duration, Time } from '@sapphire/time-utilities';
 import { MessageAttachment, TextChannel } from 'discord.js';
 import { notEmpty, uniqueArr } from 'e';
 import { CommandStore, KlasaMessage, KlasaUser } from 'klasa';
+import { bulkUpdateCommands } from 'mahoji/dist/lib/util'
 import { Bank, Items } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 
@@ -352,7 +353,7 @@ EMB: ${embTable.includes(item.id)}`);
 				return msg.channel.send(
 					`You set the price of ${item.name} to ${(updatedMarketPrices as ItemBank)[
 						item.id
-					].toLocaleString()}.`
+						].toLocaleString()}.`
 				);
 			}
 			case 'ping': {
@@ -451,8 +452,8 @@ ${(await generateReadyThings(u)).join('\n')}
 **Main Account:** ${
 					u.settings.get(UserSettings.MainAccount) !== null
 						? `${getUsername(u.settings.get(UserSettings.MainAccount)!)}[${u.settings.get(
-								UserSettings.MainAccount
-						  )}]`
+							UserSettings.MainAccount
+						)}]`
 						: 'None'
 				}
 **Ironman Alt Accounts:** ${u.settings.get(UserSettings.IronmanAlts).map(id => `${getUsername(id)}[${id}]`)}
@@ -481,10 +482,10 @@ ${(await generateReadyThings(u)).join('\n')}
 				return msg.channel.send(`${res}
 
 ${
-	setupsWith.length === 0
-		? "You don't have this item equipped anywhere."
-		: `You have ${item.name} equipped in these setups: ${setupsWith.join(', ')}.`
-}`);
+					setupsWith.length === 0
+						? "You don't have this item equipped anywhere."
+						: `You have ${item.name} equipped in these setups: ${setupsWith.join(', ')}.`
+				}`);
 			}
 			case 'doubletime': {
 				const diff = this.client.settings.get(ClientSettings.DoubleLootFinishTime) - Date.now();
@@ -817,6 +818,14 @@ LIMIT 10;
 
 		// Owner commands
 		switch (cmd.toLowerCase()) {
+			case 'globalsync': {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: globalClient.mahojiClient.commands.values,
+					guildID: null
+				});
+				return 'Synced commands.';
+			}
 			case 'adddoubleloottime': {
 				if (typeof input !== 'string' || input.length < 2) return;
 				const duration = new Duration(input);
