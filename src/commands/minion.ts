@@ -2,22 +2,22 @@ import { MessageButton } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { ClueTiers } from '../../lib/clues/clueTiers';
-import { Emoji, lastTripCache, PerkTier } from '../../lib/constants';
-import { requiresMinion } from '../../lib/minions/decorators';
-import { runCommand } from '../../lib/settings/settings';
-import { BotCommand } from '../../lib/structures/BotCommand';
-import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../../lib/tames';
-import { convertMahojiResponseToDJSResponse } from '../../lib/util';
-import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
-import { makeDoClueButton, makeRepeatTripButton } from '../../lib/util/globalInteractions';
-import { getItemContractDetails } from '../../mahoji/commands/ic';
-import { spawnLampIsReady } from '../../mahoji/commands/tools';
-import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
-import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { minionBuyCommand } from '../../mahoji/lib/abstracted_commands/minionBuyCommand';
-import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
+import { ClueTiers } from '../lib/clues/clueTiers';
+import { Emoji, lastTripCache, PerkTier } from '../lib/constants';
+import { requiresMinion } from '../lib/minions/decorators';
+import { runCommand } from '../lib/settings/settings';
+import { BotCommand } from '../lib/structures/BotCommand';
+import { getUsersTame, shortTameTripDesc, tameLastFinishedActivity } from '../lib/tames';
+import { convertMahojiResponseToDJSResponse } from '../lib/util';
+import getUsersPerkTier from '../lib/util/getUsersPerkTier';
+import { makeDoClueButton, makeRepeatTripButton } from '../lib/util/globalInteractions';
+import { getItemContractDetails } from '../mahoji/commands/ic';
+import { spawnLampIsReady } from '../mahoji/commands/tools';
+import { calculateBirdhouseDetails } from '../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../mahoji/lib/abstracted_commands/dailyCommand';
+import { canRunAutoContract } from '../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { minionBuyCommand } from '../mahoji/lib/abstracted_commands/minionBuyCommand';
+import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
 
 const subCommands = ['buy', 'pat', 'info', 'blowpipe', 'bp'];
 
@@ -60,13 +60,15 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 
-		extraButtons.push(
-			new MessageButton()
-				.setLabel('Auto Slay')
-				.setEmoji(Emoji.Slayer)
-				.setCustomID('AUTO_SLAY')
-				.setStyle('SECONDARY')
-		);
+		if (!msg.author.minionIsBusy) {
+			extraButtons.push(
+				new MessageButton()
+					.setLabel('Auto Slay')
+					.setEmoji(Emoji.Slayer)
+					.setCustomID('AUTO_SLAY')
+					.setStyle('SECONDARY')
+			);
+		}
 
 		extraButtons.push(
 			new MessageButton()
@@ -75,7 +77,8 @@ export default class MinionCommand extends BotCommand {
 				.setCustomID('CHECK_PATCHES')
 				.setStyle('SECONDARY')
 		);
-		if (birdhouseDetails.isReady) {
+
+		if (!msg.author.minionIsBusy && birdhouseDetails.isReady) {
 			extraButtons.push(
 				new MessageButton()
 					.setLabel('Birdhouse Run')
@@ -85,7 +88,7 @@ export default class MinionCommand extends BotCommand {
 			);
 		}
 
-		if (await canRunAutoContract(msg.author.id)) {
+		if (!msg.author.minionIsBusy && (await canRunAutoContract(msg.author.id))) {
 			extraButtons.push(
 				new MessageButton()
 					.setLabel('Auto Farming Contract')
@@ -125,10 +128,12 @@ export default class MinionCommand extends BotCommand {
 
 		const bank = msg.author.bank();
 
-		for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
-			.reverse()
-			.slice(0, 3)) {
-			extraButtons.push(makeDoClueButton(tier));
+		if (!msg.author.minionIsBusy) {
+			for (const tier of ClueTiers.filter(t => bank.has(t.scrollID))
+				.reverse()
+				.slice(0, 3)) {
+				extraButtons.push(makeDoClueButton(tier));
+			}
 		}
 
 		if (getUsersPerkTier(msg.author) >= PerkTier.Two) {
