@@ -53,7 +53,7 @@ export default class extends Task {
 				`${tagAll}\n\n${solo ? 'You were' : 'Your team was'} crushed by King Goldemar, you never stood a chance.`
 				[
 					'k',
-					{ name: solo ? 'King Goldemar (Solo)' : 'King Goldemar (Mass) },
+					{ name: solo ? 'King Goldemar (Solo)' : 'King Goldemar (Mass)' },
 					true
 				],
 				undefined,
