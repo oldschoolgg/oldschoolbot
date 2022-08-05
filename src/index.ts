@@ -91,7 +91,7 @@ client.on('raw', async event => {
 	timer.stop();
 	client.emit(
 		'debug',
-		`Parsed ${result?.interaction?.data.interaction.data?.name ?? 'None'} interaction in ${timer.duration}ms`
+		`Parsed ${result.interaction?.data.interaction.data?.name ?? 'None'} interaction in ${timer.duration}ms`
 	);
 
 	if ('error' in result) {
