@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { isGuildBasedChannel } from '@sapphire/discord.js-utilities';
 import { MessageButton } from 'discord.js';
-import { notEmpty, randInt, Time } from 'e';
+import { notEmpty, Time } from 'e';
 import { MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Monsters } from 'oldschooljs';
@@ -11,7 +11,6 @@ import { prisma } from '../../../lib/settings/prisma';
 import { runCommand } from '../../../lib/settings/settings';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { slayerMasters } from '../../../lib/slayer/slayerMasters';
-import { SlayerRewardsShop } from '../../../lib/slayer/slayerUnlocks';
 import {
 	assignNewSlayerTask,
 	calcMaxBlockedTasks,
@@ -287,7 +286,7 @@ export async function slayerNewTaskCommand({
 			`Your task has been skipped.\n\n ${slayerMaster.name}` +
 			` has assigned you to kill ${newSlayerTask.currentTask.quantity}x ${commonName}${getAlternateMonsterList(
 				newSlayerTask.assignedTask
-			)}.`;
+			)}.${newSlayerTask.messages.length > 0 ? `\n\n${newSlayerTask.messages.join('\n')}` : ''}`;
 
 		if (showButtons) {
 			returnSuccess(channelID, updatedMahojiUser, `${extraContent ?? ''}\n\n${returnMessage}`);
@@ -330,25 +329,6 @@ export async function slayerNewTaskCommand({
 	}
 
 	const newSlayerTask = await assignNewSlayerTask(klasaUser, slayerMaster);
-	const myUnlocks = mahojiUser.slayer_unlocks ?? [];
-	const extendReward = SlayerRewardsShop.find(
-		srs => srs.extendID && srs.extendID.includes(newSlayerTask.currentTask.monster_id)
-	);
-	if (extendReward && myUnlocks.includes(extendReward.id)) {
-		const quantity = newSlayerTask.assignedTask.extendedAmount
-			? randInt(newSlayerTask.assignedTask.extendedAmount[0], newSlayerTask.assignedTask.extendedAmount[1])
-			: Math.ceil(newSlayerTask.currentTask.quantity * extendReward.extendMult!);
-		newSlayerTask.currentTask.quantity = quantity;
-		await prisma.slayerTask.update({
-			where: {
-				id: newSlayerTask.currentTask.id
-			},
-			data: {
-				quantity: newSlayerTask.currentTask.quantity,
-				quantity_remaining: newSlayerTask.currentTask.quantity
-			}
-		});
-	}
 
 	let commonName = getCommonTaskName(newSlayerTask.assignedTask!.monster);
 	if (commonName === 'TzHaar') {
@@ -360,7 +340,9 @@ export async function slayerNewTaskCommand({
 
 	resultMessage += `${slayerMaster.name} has assigned you to kill ${
 		newSlayerTask.currentTask.quantity
-	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.`;
+	}x ${commonName}${getAlternateMonsterList(newSlayerTask.assignedTask)}.${
+		newSlayerTask.messages.length > 0 ? `\n\n${newSlayerTask.messages.join('\n')}` : ''
+	}`;
 	if (showButtons) {
 		returnSuccess(channelID, mahojiUser, resultMessage);
 		return { content: 'Slayer task assigned.', flags: MessageFlags.Ephemeral };
