@@ -185,7 +185,15 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (master)'), 'master']
 ]);
 
-export const bankFlags = ['show_price', 'show_alch', 'show_id', 'show_names', 'show_weights', 'show_all'] as const;
+export const bankFlags = [
+	'show_price',
+	'show_alch',
+	'show_id',
+	'show_names',
+	'show_weights',
+	'show_all',
+	'show_all_wide'
+] as const;
 export type BankFlag = typeof bankFlags[number];
 
 export default class BankImageTask extends Task {
@@ -557,12 +565,12 @@ export default class BankImageTask extends Task {
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const page = flags.get('page');
 		const noBorder = flags.get('noBorder');
-		const wide = flags.get('wide');
+		const wide = flags.get('wide') || opts.flag === 'show_all_wide';
 		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
 
-		const isShowingFullBankImage = flags.has('full') || opts.flag === 'show_all';
+		const isShowingFullBankImage = flags.has('full') || ['show_all', 'show_all_wide'].includes(opts.flag ?? '');
 
 		// Paging
 		if (typeof page === 'number' && !isShowingFullBankImage) {
