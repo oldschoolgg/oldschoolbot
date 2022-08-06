@@ -160,7 +160,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
-						amount: Math.floor(2 * totalHP + params.hits * spell!.magicxp),
+						amount: Math.floor(2 * totalHP + (params.hits ?? 0) * spell!.magicxp),
 						duration: params.duration,
 						minimal: params.minimal ?? true
 					})
@@ -170,7 +170,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
-						amount: Math.floor(1.33 * totalHP + params.hits * spell!.magicxp),
+						amount: Math.floor(1.33 * totalHP + (params.hits ?? 0) * spell!.magicxp),
 						duration: params.duration,
 						minimal: params.minimal ?? true
 					})
