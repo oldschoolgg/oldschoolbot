@@ -79,7 +79,9 @@ export async function interactionHook(data: APIInteraction) {
 
 	async function buttonReply(str?: string) {
 		await respondToButton(data.id, data.token, str);
-		if (data.message && data.channel_id) {
+
+		// Remove buttons, disabled for now
+		if (1 > 2 && data.message && data.channel_id) {
 			const webhook = webhookMessageCache.get(data.message.id);
 
 			if (webhook) {
