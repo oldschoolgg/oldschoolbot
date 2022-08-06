@@ -146,7 +146,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	const totalHP = hp * normalQty * xpMultiplier + superiorHP;
 
 	// Check what attack style
-	let attackStyle: string;
+	let attackStyle: string = '';
 	let res: string[] = [];
 	if (combatSkill === CombatsEnum.Mage) {
 		const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
