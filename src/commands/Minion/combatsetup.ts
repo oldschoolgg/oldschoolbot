@@ -87,6 +87,7 @@ export default class extends BotCommand {
 				}
 				if (stance.combat_style.toLowerCase() === combatStyle) {
 					await msg.author.settings.update(UserSettings.Minion.MeleeCombatStyle, combatStyle);
+					await msg.author.settings.update(UserSettings.Minion.MeleeAttackStyle, stance.attack_style);
 
 					return msg.channel.send(
 						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
@@ -122,6 +123,7 @@ export default class extends BotCommand {
 				}
 				if (stance.combat_style.toLowerCase() === combatStyle) {
 					await msg.author.settings.update(UserSettings.Minion.RangeCombatStyle, combatStyle);
+					await msg.author.settings.update(UserSettings.Minion.RangeAttackStyle, combatStyle);
 
 					return msg.channel.send(
 						`${

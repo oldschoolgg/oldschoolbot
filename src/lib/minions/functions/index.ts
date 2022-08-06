@@ -3,9 +3,13 @@ import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
+import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 import { NIGHTMARES_HP } from '../../constants';
-import { SkillsEnum } from '../../skilling/types';
-import { randomVariation } from '../../util';
+import { GearStat } from '../../gear';
+import { UserSettings } from '../../settings/types/UserSettings';
+import castables from '../../skilling/skills/combat/magic/castables';
+import { Castable, SkillsEnum } from '../../skilling/types';
+import { randomVariation, stringMatches } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
@@ -66,10 +70,11 @@ export function resolveCombatStyles(
 export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) {
 	const boostMethod = params.burstOrBarrage ? 'barrage' : 'none';
 
-	const [, osjsMon, combatStyles] = resolveCombatStyles(user, {
+	let [, osjsMon] = resolveCombatStyles(user, {
 		monsterID: params.monsterID,
 		boostMethod
 	});
+
 	const monster = killableMonsters.find(mon => mon.id === params.monsterID);
 	let hp = miscHpMap[params.monsterID] ?? 1;
 	let xpMultiplier = 1;
@@ -105,28 +110,219 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		xpMultiplier = monster.combatXpMultiplier;
 	}
 
+	let spell: Castable | undefined = undefined;
+	let combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
+	if (combatSkill === CombatsEnum.Auto && monster) {
+		const defaultMonsterStyle = monster.defaultStyleToUse;
+		if (
+			defaultMonsterStyle === GearStat.AttackCrush ||
+			defaultMonsterStyle === GearStat.AttackSlash ||
+			defaultMonsterStyle === GearStat.AttackStab
+		) {
+			combatSkill = CombatsEnum.Melee;
+		}
+
+		if (defaultMonsterStyle === GearStat.AttackRanged) {
+			combatSkill = CombatsEnum.Range;
+		}
+
+		if (defaultMonsterStyle === GearStat.AttackMagic) {
+			combatSkill = CombatsEnum.Mage;
+		}
+	}
+
+	if (combatSkill === null) {
+		return 'No combatSkill found or selected.';
+	}
+
 	// Calculate superior XP:
 	let superiorSlayXp = 0;
-	let superiorXp = 0;
+	let superiorHP = 0;
 	if (superiorQty) {
-		superiorXp = 4 * superiorQty * osjsSuperior!.data!.hitpoints;
+		superiorHP = superiorQty * osjsSuperior!.data!.hitpoints;
 		superiorSlayXp = superiorQty * osjsSuperior!.data!.slayerXP;
 	}
 
-	const totalXP = hp * 4 * normalQty * xpMultiplier + superiorXp;
-	const xpPerSkill = totalXP / combatStyles.length;
+	const totalHP = hp * normalQty * xpMultiplier + superiorHP;
 
+	// Check what attack style
+	let attackStyle: string;
 	let res: string[] = [];
-
-	for (const style of combatStyles) {
-		res.push(
-			await user.addXP({
-				skillName: style,
-				amount: Math.floor(xpPerSkill),
-				duration: params.duration,
-				minimal: params.minimal ?? true
-			})
-		);
+	if (combatSkill === CombatsEnum.Mage) {
+		const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
+		if (combatSpell === null) {
+			return 'Spell is null.';
+		}
+		spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase()));
+		const mageCombatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle)!;
+		switch (mageCombatStyle) {
+			case 'standard':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Magic,
+						amount: Math.floor(2 * totalHP + params.hits * spell!.magicxp),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			case 'defensive':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Magic,
+						amount: Math.floor(1.33 * totalHP + params.hits * spell!.magicxp),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: Math.floor(totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			case 'accurate':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Magic,
+						amount: Math.floor(2 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			case 'longrange':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Magic,
+						amount: Math.floor(1.33 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: Math.floor(totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			default:
+				return 'No attack style found or selected.';
+		}
+	}
+	if (combatSkill === CombatsEnum.Melee) {
+		attackStyle = user.settings.get(UserSettings.Minion.MeleeAttackStyle)!;
+		switch (attackStyle.toLowerCase()) {
+			case 'accurate':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Attack,
+						amount: Math.floor(4 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			case 'aggressive':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Strength,
+						amount: Math.floor(4 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			case 'defensive':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: Math.floor(4 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			case 'controlled':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Attack,
+						amount: Math.floor(1.33 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Strength,
+						amount: Math.floor(1.33 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: Math.floor(1.33 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			default:
+				return 'No attack style found or selected.';
+		}
+	}
+	if (combatSkill === CombatsEnum.Range) {
+		attackStyle = user.settings.get(UserSettings.Minion.RangeAttackStyle)!;
+		switch (attackStyle.toLowerCase()) {
+			case 'accurate':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Ranged,
+						amount: Math.floor(4 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			case 'rapid':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Ranged,
+						amount: Math.floor(4 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			case 'longrange':
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Ranged,
+						amount: Math.floor(2 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				res.push(
+					await user.addXP({
+						skillName: SkillsEnum.Defence,
+						amount: Math.floor(2 * totalHP),
+						duration: params.duration,
+						minimal: params.minimal ?? true
+					})
+				);
+				break;
+			default:
+				return 'No attack style found or selected.';
+		}
 	}
 
 	if (params.isOnTask) {
@@ -159,7 +355,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	res.push(
 		await user.addXP({
 			skillName: SkillsEnum.Hitpoints,
-			amount: Math.floor(hp * normalQty * 1.33 * xpMultiplier + superiorXp / 3),
+			amount: Math.floor(totalHP * 1.33 * xpMultiplier),
 			duration: params.duration,
 			minimal: params.minimal ?? true
 		})

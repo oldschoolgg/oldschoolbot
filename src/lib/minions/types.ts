@@ -143,6 +143,7 @@ export interface AddMonsterXpParams {
 	monsterID: number;
 	quantity: number;
 	duration: number;
+	hits: number;
 	isOnTask: boolean;
 	taskQuantity: number | null;
 	minimal?: boolean;
