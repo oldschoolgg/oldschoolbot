@@ -56,7 +56,8 @@ export const Roles = {
 	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '867967884515770419',
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
-	TopInventor: '992799099801833582'
+	TopInventor: '992799099801833582',
+	TopLeagues: '1005417171112972349'
 };
 
 export const enum DefaultPingableRoles {

@@ -47,10 +47,19 @@ export default class extends Task {
 
 		const tagAll = users.map(u => u.toString()).join(', ');
 		if (deaths.length === idArr.length) {
+			if (solo) {
+				return handleTripFinish(
+					users[0],
+					channelID,
+					`${tagAll}\n\nYou were crushed by King Goldemar, you never stood a chance.`,
+					['k', { name: 'King Goldemar (Solo)' }, true],
+					undefined,
+					data,
+					null
+				);
+			}
 			return sendToChannelID(channelID, {
-				content: `${tagAll}\n\n${
-					solo ? 'You were' : 'Your team was'
-				} crushed by King Goldemar, you never stood a chance.`
+				content: `${tagAll}\n\n${'Your team was'} crushed by King Goldemar, you never stood a chance.`
 			});
 		}
 
