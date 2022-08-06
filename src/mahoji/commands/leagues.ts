@@ -1,4 +1,4 @@
-import { Time } from 'e';
+import { calcWhatPercent, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { production } from '../../config';
@@ -94,9 +94,13 @@ export const leaguesCommand: OSBMahojiCommand = {
 					}
 				}
 			});
+			const totalUsers = await roboChimpClient.user.count({ where: { leagues_points_total: { gt: 0 } } });
+			const percentCompleted = calcWhatPercent(count, totalUsers);
 			return `**Description:** ${task.name}
 **Tier:** ${group.name}
-${count} users have finished this task, ${finished.includes(task.id) ? 'including you.' : "you haven't."}`;
+${percentCompleted.toFixed(2)}% of users have finished this task, ${
+				finished.includes(task.id) ? 'including you.' : "you haven't."
+			}`;
 		}
 		if (options.claim) {
 			return leaguesClaimCommand(userID, finished);
