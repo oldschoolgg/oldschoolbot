@@ -819,12 +819,24 @@ LIMIT 10;
 		// Owner commands
 		switch (cmd.toLowerCase()) {
 			case 'globalsync': {
+				const totalCommands = globalClient.mahojiClient.commands.values;
+				const globalCommands = totalCommands.filter(i => !i.guildID);
+				const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
 				await bulkUpdateCommands({
 					client: globalClient.mahojiClient,
-					commands: globalClient.mahojiClient.commands.values,
+					commands: globalCommands,
 					guildID: null
 				});
-				return 'Synced commands.';
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: guildCommands,
+					guildID: production ? '342983479501389826' : '940758552425955348'
+				});
+
+				return msg.channel.send(`Synced commands .
+${totalCommands.length} Total commands
+${globalCommands.length} Global commands
+${guildCommands.length} Guild commands`);
 			}
 			case 'adddoubleloottime': {
 				if (typeof input !== 'string' || input.length < 2) return;
