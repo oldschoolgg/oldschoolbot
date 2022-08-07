@@ -7,6 +7,7 @@ import { Bank, Util } from 'oldschooljs';
 import { Emoji, Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
+import { BotError, logError } from '../../../lib/util/logError';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
 async function checkBal(user: KlasaUser, amount: number) {
@@ -70,6 +71,20 @@ export async function duelCommand(
 	function cancel() {
 		duelMessage.delete().catch(noOp);
 		return "Duel cancelled, user didn't accept in time.";
+	}
+
+	function duelFail(err: BotError) {
+		duelMessage.delete().catch(noOp);
+		const wagerAmount = amount ?? 0;
+		const extras = {
+			user_id: String(duelSourceUser.id),
+			target_user_id: String(duelTargetUser.id),
+			wager: wagerAmount.toString(),
+			error_code: typeof err === 'object' && 'code' in err ? String(err.code) : 'NONE'
+		};
+		logError(err, extras);
+
+		return 'Duel failed, please contact support if there were any issues.';
 	}
 
 	async function confirm(amount: number) {
@@ -151,8 +166,14 @@ export async function duelCommand(
 		if (selection.customID === 'CONFIRM') {
 			return await confirm(amount);
 		}
-	} catch (err) {
-		return cancel();
+	} catch (err: any) {
+		const code = typeof err === 'object' && 'code' in err ? err.code : null;
+		if (code === 'INTERACTION_COLLECTOR_ERROR') {
+			return cancel();
+		}
+		return duelFail(
+			new BotError('Duel failed for unknown reason', `duelCommand Error${code ? `: [${code}]` : ''}`, code)
+		);
 	}
-	return cancel();
+	return duelFail(new BotError("duelCommand fell through try/catch this shouldn't happen", 'duelCommand Error'));
 }
