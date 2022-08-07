@@ -64,7 +64,7 @@ export function makeRepeatTripButton() {
 
 export function makeBirdHouseTripButton() {
 	return new MessageButton()
-		.setCustomID('BIRDHOUSE_RUN')
+		.setCustomID('DO_BIRDHOUSE_RUN')
 		.setLabel('Birdhouse Run')
 		.setStyle('SECONDARY')
 		.setEmoji('692946556399124520');
