@@ -12,6 +12,7 @@ import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, rand, rogueOutfitPercentBonus, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
 import { stringMatches } from '../../lib/util/cleanString';
+import { logError } from '../../lib/util/logError';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import { OSBMahojiCommand } from '../lib/util';
 import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
@@ -91,7 +92,11 @@ export const stealCommand: OSBMahojiCommand = {
 			stealable.type === 'pickpockable' ? (stealable.customTickRate ?? 2) * 600 : stealable.respawnTime;
 
 		if (!timeToTheft) {
-			return 'This NPC/Stall is not working as intended, report it.';
+			logError(new Error('respawnTime missing from stealable object.'), {
+				userID: user.id,
+				stealable: stealable.name
+			});
+			return 'This NPC/Stall is missing variable respawnTime.';
 		}
 
 		const maxTripLength = user.maxTripLength('Pickpocket');
