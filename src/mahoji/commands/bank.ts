@@ -1,16 +1,20 @@
 import { codeBlock } from '@discordjs/builders';
+import { MessageEmbed } from 'discord.js';
+import { chunk } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
 import { Emoji } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
 import { BankSortMethod, BankSortMethods } from '../../lib/sorts';
+import { channelIsSendable, makePaginatedMessage } from '../../lib/util';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { parseBank } from '../../lib/util/parseStringBank';
 import { BankFlag, bankFlags } from '../../tasks/bankImage';
 import { filterOption, itemOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
 
-const bankFormats = ['json'] as const;
+const bankFormats = ['json', 'text_paged', 'text_full'] as const;
+const bankItemsPerPage = 10;
 type BankFormat = typeof bankFormats[number];
 
 export const askCommand: OSBMahojiCommand = {
@@ -68,6 +72,7 @@ export const askCommand: OSBMahojiCommand = {
 	run: async ({
 		user,
 		options,
+		channelID,
 		interaction
 	}: CommandRunOptions<{
 		page?: number;
@@ -112,6 +117,39 @@ export const askCommand: OSBMahojiCommand = {
 			return 'No items found.';
 		}
 
+		if (['text_full', 'text_paged'].includes(options.format ?? '')) {
+			const textBank = [];
+			for (const [item, qty] of bank.items()) {
+				if (mahojiFlags.includes('show_id')) {
+					textBank.push(`${item.name} (${item.id.toString()}): ${qty.toLocaleString()}`);
+				} else {
+					textBank.push(`${item.name}: ${qty.toLocaleString()}`);
+				}
+			}
+			if (options.format === 'text_full') {
+				const attachment = Buffer.from(textBank.join('\n'));
+
+				return {
+					content: 'Here is your entire bank in txt file format.',
+					attachments: [{ buffer: attachment, fileName: `${klasaUser.username}s_Bank.txt` }]
+				};
+			}
+
+			const pages = [];
+			for (const page of chunk(textBank, bankItemsPerPage)) {
+				pages.push({
+					embeds: [
+						new MessageEmbed().setTitle(`${klasaUser.username}'s Bank`).setDescription(page.join('\n'))
+					]
+				});
+			}
+			const channel = globalClient.channels.cache.get(channelID.toString());
+			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
+			const bankMessage = await channel.send({ embeds: [new MessageEmbed().setDescription('Loading')] });
+
+			makePaginatedMessage(bankMessage, pages);
+			return `${klasaUser.username}s Bank:`;
+		}
 		if (options.format === 'json') {
 			const json = JSON.stringify(baseBank.bank);
 			if (json.length > 1900) {
