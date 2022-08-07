@@ -19,9 +19,7 @@ export default class extends BotCommand {
 		const coins = msg.author.settings.get(UserSettings.GP);
 
 		if (coins === 0) {
-			return msg.channel.send(
-				`You have no GP yet ${Emoji.Sad} You can get some GP by using the ${msg.cmdPrefix}daily command.`
-			);
+			return msg.channel.send(`You have no GP yet ${Emoji.Sad} You can get some GP by using the +daily command.`);
 		}
 
 		return msg.channel.send(`${Emoji.MoneyBag} You have ${coins.toLocaleString()} GP!`);

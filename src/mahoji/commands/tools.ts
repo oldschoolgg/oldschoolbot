@@ -3,7 +3,9 @@ import { Activity, User } from '@prisma/client';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { CoXUniqueTable } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
 import {
 	allStashUnitsFlat,
@@ -14,19 +16,27 @@ import {
 	stashUnitViewCommand
 } from '../../lib/clues/stashUnits';
 import { BitField, PerkTier } from '../../lib/constants';
-import { allDroppedItems } from '../../lib/data/Collections';
+import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
+import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
-import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { MinigameName, Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import { asyncGzip, formatDuration, getUsername, stringMatches } from '../../lib/util';
+import { asyncGzip, formatDuration, getUsername, itemNameFromID, stringMatches } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import resolveItems from '../../lib/util/resolveItems';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { itemOption, monsterOption, skillOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch, patronMsg } from '../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	mahojiUserSettingsUpdate,
+	mahojiUsersSettingsFetch,
+	patronMsg
+} from '../mahojiSettings';
 
 const TimeIntervals = ['day', 'week'] as const;
 const skillsVals = Object.values(Skills);
@@ -165,14 +175,156 @@ LIMIT 10`;
 	return { embeds: [embed] };
 }
 
+interface DrystreakMinigame {
+	name: string;
+	key: MinigameName;
+	items: number[];
+}
+
+const dryStreakMinigames: DrystreakMinigame[] = [
+	{
+		name: 'Theatre of Blood (ToB)',
+		key: 'tob',
+		items: ToBUniqueTable.allItems
+	},
+	{
+		name: 'Fishing Trawler',
+		key: 'fishing_trawler',
+		items: anglerOutfit
+	},
+	{
+		name: 'Gnome Restaurant',
+		key: 'gnome_restaurant',
+		items: gnomeRestaurantCL
+	},
+	{
+		name: 'Gauntlet',
+		key: 'gauntlet',
+		items: resolveItems(['Crystal weapon seed', 'Crystal armour seed', 'Enhanced crystal weapon seed', 'Youngllef'])
+	},
+	{
+		name: 'Inferno',
+		key: 'inferno',
+		items: resolveItems(['Jal-nib-rek'])
+	},
+	{
+		name: 'Winterotdt',
+		key: 'wintertodt',
+		items: resolveItems(['Tome of fire', 'Phoenix', 'Bruma torch', 'Warm gloves'])
+	}
+];
+
+interface DrystreakEntity {
+	name: string;
+	items: number[];
+	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<{ id: string; val: number }[]>;
+	format: (num: number) => string;
+}
+const dryStreakEntities: DrystreakEntity[] = [
+	{
+		name: 'Chambers of Xeric (CoX)',
+		items: CoXUniqueTable.allItems,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT id, total_cox_points AS val
+FROM users
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+ORDER BY total_cox_points DESC
+LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} points`
+	},
+	{
+		name: 'Nightmare',
+		items: resolveItems([
+			"Inquisitor's mace",
+			"Inquisitor's great helm",
+			"Inquisitor's hauberk",
+			"Inquisitor's plateskirt",
+			'Nightmare staff',
+			'Eldritch orb',
+			'Volatile orb',
+			'Harmonised orb'
+		]),
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT "id", ("monsterScores"->>'${NightmareMonster.id}')::int AS val
+				   FROM users
+				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
+				   AND "monsterScores"->>'${NightmareMonster.id}' IS NOT NULL 
+				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+				   ORDER BY ("monsterScores"->>'${NightmareMonster.id}')::int DESC
+				   LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} KC`
+	},
+	{
+		name: 'Barbarian Assault (Pet penance queen)',
+		items: resolveItems(['Pet penance queen']),
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT "id", high_gambles AS val
+				   FROM users
+				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
+				   AND high_gambles > 0
+				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+				   ORDER BY high_gambles DESC
+				   LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Gambles`
+	}
+];
+for (const minigame of dryStreakMinigames) {
+	dryStreakEntities.push({
+		name: minigame.name,
+		items: minigame.items,
+		run: async ({ item, ironmanOnly }) => {
+			const minigameObj = Minigames.find(i => i.column === minigame.key)!;
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, "minigame"."${
+				minigameObj.column
+			}" AS val
+FROM users
+INNER JOIN "minigames" "minigame" on "minigame"."user_id" = "users"."id"::text
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+ORDER BY "minigame"."${minigameObj.column}" DESC
+LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} KC`
+	});
+}
+
 async function dryStreakCommand(user: User, monsterName: string, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+
+	const item = getOSItem(itemName);
+
+	const entity = dryStreakEntities.find(i => stringMatches(i.name, monsterName));
+	if (entity) {
+		if (!entity.items.includes(item.id)) {
+			return `That's not a valid item dropped for this thing, valid items are: ${entity.items
+				.map(itemNameFromID)
+				.join(', ')}.`;
+		}
+
+		const result = await entity.run({ item, ironmanOnly });
+		if (result.length === 0) return 'No results found.';
+
+		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${result
+			.map(({ id, val }) => `${getUsername(id)}: ${entity.format(val || -1)}`)
+			.join('\n')}`;
+	}
+
 	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monsterName)));
 	if (!mon) {
 		return "That's not a valid monster or minigame.";
 	}
-
-	const item = getOSItem(itemName);
 
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	const key = 'monsterScores';
@@ -265,9 +417,22 @@ export const toolsCommand: OSBMahojiCommand = {
 					name: 'drystreak',
 					description: "Show's the biggest drystreaks for certain drops from a certain monster.",
 					options: [
-						monsterOption,
 						{
-							...itemOption(),
+							type: ApplicationCommandOptionType.String,
+							name: 'monster',
+							description: 'The monster you want to pick.',
+							required: true,
+							autocomplete: async value => {
+								return [
+									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
+									...killableMonsters
+								]
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.name, value: i.name }));
+							}
+						},
+						{
+							...itemOption(item => allCLItemsFiltered.includes(item.id)),
 							required: true
 						},
 						{
@@ -359,6 +524,19 @@ export const toolsCommand: OSBMahojiCommand = {
 					name: 'mypets',
 					description: 'See the chat pets you have.',
 					options: []
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'temp_cl',
+					description: 'Manage and view your temporary CL.',
+					options: [
+						{
+							type: ApplicationCommandOptionType.Boolean,
+							name: 'reset',
+							description: 'Reset your temporary CL.',
+							required: false
+						}
+					]
 				}
 			]
 		},
@@ -458,7 +636,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			activity_export?: {};
 			stats?: { stat: string };
 		};
-		user?: { mypets?: {} };
+		user?: { mypets?: {}; temp_cl: { reset?: boolean } };
 		stash_units?: {
 			view?: { unit?: string; not_filled?: boolean };
 			build_all?: {};
@@ -550,8 +728,9 @@ export const toolsCommand: OSBMahojiCommand = {
 				};
 			}
 		}
+		const klasaUser = await globalClient.fetchUser(mahojiUser.id);
+
 		if (options.stash_units) {
-			const klasaUser = await globalClient.fetchUser(mahojiUser.id);
 			if (options.stash_units.view) {
 				return stashUnitViewCommand(
 					mahojiUser,
@@ -564,6 +743,30 @@ export const toolsCommand: OSBMahojiCommand = {
 			if (options.stash_units.unfill) {
 				return stashUnitUnfillCommand(klasaUser, mahojiUser, options.stash_units.unfill.unit);
 			}
+		}
+		if (options.user?.temp_cl) {
+			if (options.user.temp_cl === true) {
+				await handleMahojiConfirmation(interaction, 'Are you sure you want to reset your temporary CL?');
+				await mahojiUserSettingsUpdate(klasaUser.id, {
+					temp_cl: {},
+					last_temp_cl_reset: new Date()
+				});
+				return 'Reset your temporary CL.';
+			}
+			const lastReset = await prisma.user.findUnique({
+				where: {
+					id: klasaUser.id
+				},
+				select: {
+					last_temp_cl_reset: true
+				}
+			});
+			return `You can view your temporary CL using, for example, \`/cl name:PvM type:Temp\`.
+You last reset your temporary CL: ${
+				Boolean(lastReset?.last_temp_cl_reset)
+					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
+					: 'Never'
+			}`;
 		}
 		return 'Invalid command!';
 	}
