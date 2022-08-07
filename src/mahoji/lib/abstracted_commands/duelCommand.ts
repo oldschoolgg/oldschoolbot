@@ -73,7 +73,7 @@ export async function duelCommand(
 		return "Duel cancelled, user didn't accept in time.";
 	}
 
-	function duelFail(err: BotError) {
+	function duelFail(err: BotError | Error) {
 		duelMessage.delete().catch(noOp);
 		const wagerAmount = amount ?? 0;
 		const extras = {
@@ -171,9 +171,11 @@ export async function duelCommand(
 		if (code === 'INTERACTION_COLLECTOR_ERROR') {
 			return cancel();
 		}
-		return duelFail(
-			new BotError('Duel failed for unknown reason', `duelCommand Error${code ? `: [${code}]` : ''}`, code)
-		);
+		const failError =
+			err instanceof Error
+				? err
+				: new BotError(`Duel failed for unknown reason: ${String(err)}`, 'duelCommand Error');
+		return duelFail(failError);
 	}
 	return duelFail(new BotError("duelCommand fell through try/catch this shouldn't happen", 'duelCommand Error'));
 }
