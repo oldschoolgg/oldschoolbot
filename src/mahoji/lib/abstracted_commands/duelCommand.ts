@@ -80,7 +80,8 @@ export async function duelCommand(
 			user_id: String(duelSourceUser.id),
 			target_user_id: String(duelTargetUser.id),
 			wager: wagerAmount.toString(),
-			error_code: typeof err === 'object' && 'code' in err ? String(err.code) : 'NONE'
+			error_code: typeof err === 'object' && 'code' in err ? String(err.code) : 'NONE',
+			command: 'duel'
 		};
 		logError(err, extras);
 
