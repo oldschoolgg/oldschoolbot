@@ -25,7 +25,7 @@ interface RangeMaxHitWeaponBonus {
 const rangeMaxHitWeaponBonuses: RangeMaxHitWeaponBonus[] = [
 	{
 		id: itemID('Dragon hunter crossbow'),
-		damageBoost: 1.3,
+		damageBoost: 1.25,
 		againstAttribute: MonsterAttribute.Dragon
 	},
 	{
@@ -277,7 +277,7 @@ export default async function rangeCalculator(
 	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
 
 	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
-	console.log(maxHit, combatStyle, hitChance)
+
 	// Calculates prayer drain and removes enough prayer potion doses.
 	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
 
