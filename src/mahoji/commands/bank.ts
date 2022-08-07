@@ -56,6 +56,13 @@ export const askCommand: OSBMahojiCommand = {
 			description: 'A particular flag to apply to your bank.',
 			required: false,
 			choices: bankFlags.map(i => ({ name: i, value: i }))
+		},
+		{
+			type: ApplicationCommandOptionType.String,
+			name: 'flag_extra',
+			description: 'An additional flag to apply to your bank.',
+			required: false,
+			choices: bankFlags.map(i => ({ name: i, value: i }))
 		}
 	],
 	run: async ({
@@ -71,11 +78,15 @@ export const askCommand: OSBMahojiCommand = {
 		items?: string;
 		sort?: BankSortMethod;
 		flag?: BankFlag;
+		flag_extra?: BankFlag;
 	}>) => {
 		await interaction.deferReply();
 		const klasaUser = await globalClient.fetchUser(user.id);
 		const baseBank = klasaUser.bank({ withGP: true });
+		const mahojiFlags: BankFlag[] = [];
 
+		if (options.flag) mahojiFlags.push(options.flag);
+		if (options.flag_extra) mahojiFlags.push(options.flag_extra);
 		if (options.page && options.item) {
 			options.item = `${options.page} ${options.item}`.trim();
 			options.page = undefined;
@@ -122,7 +133,7 @@ export const askCommand: OSBMahojiCommand = {
 						title: `${klasaUser.username}'s Bank`,
 						flags,
 						user: klasaUser,
-						flag: options.flag
+						mahojiFlags
 					})
 				).file
 			]
