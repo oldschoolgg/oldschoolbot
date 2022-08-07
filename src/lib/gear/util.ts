@@ -1,5 +1,8 @@
+import { User } from '@prisma/client';
+import { KlasaUser } from 'klasa';
 import { EquipmentSlot, Item } from 'oldschooljs/dist/meta/types';
 
+import { getUserGear } from '../../mahoji/mahojiSettings';
 import { UserSettings } from '../settings/types/UserSettings';
 import { Gear } from '../structures/Gear';
 import { itemID, toTitleCase } from '../util';
@@ -56,6 +59,14 @@ export function constructGearSetup(setup: PartialGearSetup): Gear {
 		shield: setup.shield ? { item: itemID(setup.shield), quantity: 1 } : null,
 		weapon: setup.weapon ? { item: itemID(setup.weapon), quantity: 1 } : null
 	});
+}
+
+export function hasGracefulEquippedAnywhere(user: KlasaUser | User) {
+	const rawGear = user instanceof KlasaUser ? user.rawGear() : getUserGear(user);
+	for (const i of Object.values(rawGear)) {
+		if (hasGracefulEquipped(i)) return true;
+	}
+	return false;
 }
 
 export function hasGracefulEquipped(setup: Gear) {

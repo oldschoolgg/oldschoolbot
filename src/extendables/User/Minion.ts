@@ -8,7 +8,7 @@ import SimpleTable from 'oldschooljs/dist/structures/SimpleTable';
 import { ClueTiers } from '../../lib/clues/clueTiers';
 import { Emoji, Events, LEVEL_99_XP, MAX_QP, MAX_TOTAL_LEVEL, MAX_XP, skillEmoji } from '../../lib/constants';
 import { onMax } from '../../lib/events';
-import { hasGracefulEquipped } from '../../lib/gear';
+import { hasGracefulEquippedAnywhere } from '../../lib/gear';
 import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { Planks } from '../../lib/minions/data/planks';
 import { AttackStyles } from '../../lib/minions/functions';
@@ -686,11 +686,7 @@ export default class extends Extendable {
 	}
 
 	public hasGracefulEquipped(this: User) {
-		const rawGear = this.rawGear();
-		for (const i of Object.values(rawGear)) {
-			if (hasGracefulEquipped(i)) return true;
-		}
-		return false;
+		return hasGracefulEquippedAnywhere(this);
 	}
 
 	// @ts-ignore 2784

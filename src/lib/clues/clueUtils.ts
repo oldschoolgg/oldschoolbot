@@ -10,6 +10,7 @@ export function getClueScoresFromOpenables(openableScores: Bank, mutate = false)
  * Removes extra clue scrolls from loot, if they got more than 1 or if they already own 1.
  */
 export function deduplicateClueScrolls({ loot, currentBank }: { loot: Bank; currentBank: Bank }) {
+	if (1 > 0) return loot;
 	const newLoot = loot.clone();
 	for (const { scrollID } of ClueTiers) {
 		if (!newLoot.has(scrollID)) continue;

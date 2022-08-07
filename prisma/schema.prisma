@@ -557,6 +557,25 @@ model UserStats {
   @@map("user_stats")
 }
 
+enum clue_tier_enum {
+  beginner
+  easy
+  medium
+  hard
+  elite
+  master
+}
+
+model ClueStatus {
+  user_id    BigInt         @id
+  tier       clue_tier_enum
+  seed       Int
+  steps      Int            @db.SmallInt
+  created_at DateTime       @default(now())
+
+  @@map("clue_status")
+}
+
 enum command_usage_status {
   Unknown
   Success

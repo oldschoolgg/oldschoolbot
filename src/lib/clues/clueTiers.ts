@@ -1,3 +1,4 @@
+import { clue_tier_enum } from '@prisma/client';
 import { Time } from 'e';
 import { Clues } from 'oldschooljs';
 import { BeginnerCasket, BeginnerClueTable } from 'oldschooljs/dist/simulation/clues/Beginner';
@@ -37,6 +38,8 @@ export interface ClueTier {
 	allItems: number[];
 	stashUnits: StashUnitTier;
 	reqs: ClueReqs;
+	enumTier: clue_tier_enum;
+	steps: [number, number];
 }
 
 export const ClueTiers: ClueTier[] = [
@@ -49,7 +52,9 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: BeginnerClueTable.allItems,
 		stashUnits: beginnerStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		enumTier: clue_tier_enum.beginner,
+		steps: [1, 3]
 	},
 	{
 		name: 'Easy',
@@ -64,7 +69,9 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: EasyClueTable.allItems,
 		stashUnits: easyStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		enumTier: clue_tier_enum.easy,
+		steps: [2, 4]
 	},
 	{
 		name: 'Medium',
@@ -79,7 +86,9 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: MediumClueTable.allItems,
 		stashUnits: mediumStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		enumTier: clue_tier_enum.medium,
+		steps: [3, 5]
 	},
 	{
 		name: 'Hard',
@@ -90,7 +99,9 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: false,
 		allItems: HardClueTable.allItems,
 		stashUnits: hardStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		enumTier: clue_tier_enum.hard,
+		steps: [4, 6]
 	},
 	{
 		name: 'Elite',
@@ -105,7 +116,9 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: 35,
 		allItems: EliteClueTable.allItems,
 		stashUnits: eliteStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		enumTier: clue_tier_enum.elite,
+		steps: [5, 7]
 	},
 	{
 		name: 'Master',
@@ -120,6 +133,8 @@ export const ClueTiers: ClueTier[] = [
 		mimicChance: 15,
 		allItems: MasterClueTable.allItems,
 		stashUnits: masterStashes,
-		reqs: beginnerReqs
+		reqs: beginnerReqs,
+		enumTier: clue_tier_enum.master,
+		steps: [6, 8]
 	}
 ];

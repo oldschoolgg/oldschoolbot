@@ -1,12 +1,16 @@
+import { User } from '@prisma/client';
 import { randInt, Time } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
 
+import { verifyClueStatusesForUser } from '../../lib/clues/clueReqs';
 import { ClueTier, ClueTiers } from '../../lib/clues/clueTiers';
+import { hasGracefulEquippedAnywhere } from '../../lib/gear';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -18,6 +22,29 @@ function reducedClueTime(clueTier: ClueTier, score: number) {
 
 	return [reducedTime, percentReduced];
 }
+
+interface ClueBoost {
+	description: string;
+	has: (user: User) => boolean;
+	change: (duration: number) => number;
+}
+const clueBoosts: ClueBoost[] = [
+	{
+		description: '10% for Graceful',
+		has: (user: User) => hasGracefulEquippedAnywhere(user),
+		change: (duration: number) => duration * 0.9
+	},
+	{
+		description: '10% for Weekend',
+		has: () => isWeekend(),
+		change: (duration: number) => duration * 0.9
+	},
+	{
+		description: '10% for Achievement diary cape',
+		has: (user: User) => hasItemsEquippedOrInBank(user, ['Achievement diary cape']),
+		change: (duration: number) => duration * 0.9
+	}
+];
 
 export const clueCommand: OSBMahojiCommand = {
 	name: 'clue',
@@ -41,10 +68,14 @@ export const clueCommand: OSBMahojiCommand = {
 	],
 	run: async ({ options, userID, channelID }: CommandRunOptions<{ tier: string }>) => {
 		const user = await globalClient.fetchUser(userID);
-		let quantity = 1;
+		const mahojiUser = await mahojiUsersSettingsFetch(userID);
 
 		const clueTier = ClueTiers.find(tier => stringMatches(tier.name, options.tier));
 		if (!clueTier) return 'Invalid clue tier.';
+
+		let quantity = user.bank().amount(clueTier.scrollID);
+		let duration = 0;
+		for (let i = 0; i < quantity; i++) {}
 
 		const boosts = [];
 
@@ -54,8 +85,6 @@ export const clueCommand: OSBMahojiCommand = {
 		);
 
 		if (percentReduced >= 1) boosts.push(`${percentReduced}% for clue score`);
-
-		let duration = timeToFinish * quantity;
 
 		const maxTripLength = user.maxTripLength('ClueCompletion');
 
@@ -71,23 +100,16 @@ export const clueCommand: OSBMahojiCommand = {
 		if (!user.owns(cost)) return `You don't own ${cost}.`;
 		await user.removeItemsFromBank(new Bank().add(clueTier.scrollID, quantity));
 
-		const randomAddedDuration = randInt(1, 20);
-		duration += (randomAddedDuration * duration) / 100;
-
-		if (user.hasGracefulEquipped()) {
-			boosts.push('10% for Graceful');
-			duration *= 0.9;
+		for (const boost of clueBoosts) {
+			if (boost.has(mahojiUser)) {
+				duration = boost.change(duration);
+				boosts.push(boost.description);
+			}
 		}
 
-		if (isWeekend()) {
-			boosts.push('10% for Weekend');
-			duration *= 0.9;
-		}
+		duration += Time.Second * randInt(1, 90);
 
-		if (user.hasItemEquippedOrInBank('Achievement diary cape')) {
-			boosts.push('10% for Achievement diary cape');
-			duration *= 0.9;
-		}
+		const clueStatuses = (await verifyClueStatusesForUser(user.id, clueTier))!.slice(0, quantity);
 
 		await addSubTaskToActivityTask<ClueActivityTaskOptions>({
 			clueID: clueTier.id,
