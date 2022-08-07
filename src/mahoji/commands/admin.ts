@@ -267,16 +267,24 @@ export const adminCommand: OSBMahojiCommand = {
 			const totalCommands = globalClient.mahojiClient.commands.values;
 			const globalCommands = totalCommands.filter(i => !i.guildID);
 			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
-			await bulkUpdateCommands({
-				client: globalClient.mahojiClient,
-				commands: globalCommands,
-				guildID: global ? null : guildID.toString()
-			});
-			await bulkUpdateCommands({
-				client: globalClient.mahojiClient,
-				commands: guildCommands,
-				guildID: guildID.toString()
-			});
+			if (global) {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: globalCommands,
+					guildID: null
+				});
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: guildCommands,
+					guildID: guildID.toString()
+				});
+			} else {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: totalCommands,
+					guildID: guildID.toString()
+				});
+			}
 
 			return `Synced commands ${global ? 'globally' : 'locally'}.
 ${totalCommands.length} Total commands
