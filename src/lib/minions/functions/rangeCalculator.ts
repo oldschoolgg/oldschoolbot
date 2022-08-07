@@ -61,7 +61,7 @@ export default async function rangeCalculator(
 	quantity: number | undefined
 ): Promise<[number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Ranged as source.
-	const combatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle);
+	const combatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
@@ -116,16 +116,16 @@ export default async function rangeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		rangeGear.hasEquipped(itemID('Salve amulet(i)')) &&
-		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
-	) {
-		maxHit *= 1.15;
-	} else if (
-		rangeGear.hasEquipped(itemID('Salve amulet(ei)')) &&
+		rangeGear.hasEquipped('Salve amulet(ei)') &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 1.2;
-	} else if (rangeGear.hasEquipped(itemID('Black mask (i)'))) {
+	} else if (
+		rangeGear.hasEquipped('Salve amulet(i)') &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		maxHit *= 1.15;
+	} else if (rangeGear.hasEquipped('Black mask (i)')) {
 		maxHit *= 1.15;
 	}
 
@@ -155,7 +155,7 @@ export default async function rangeCalculator(
 			maxHit *= rangeMaxHitWeaponBonus.damageBoost;
 			break;
 		}
-		if (rangeGear.hasEquipped(itemID('Twisted bow'))) {
+		if (rangeGear.hasEquipped('Twisted bow')) {
 			const twistBowMagicPick = Math.max(currentMonsterData.magicLevel, currentMonsterData.attackMagic);
 			maxHit *=
 				Math.min(
@@ -191,16 +191,16 @@ export default async function rangeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		rangeGear.hasEquipped(itemID('Salve amulet(i)')) &&
-		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
-	) {
-		attackRoll *= 1.15;
-	} else if (
-		rangeGear.hasEquipped(itemID('Salve amulet(ei)')) &&
+		rangeGear.hasEquipped('Salve amulet(ei)') &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		attackRoll *= 1.2;
-	} else if (rangeGear.hasEquipped(itemID('Black mask (i)'))) {
+	} else if (
+		rangeGear.hasEquipped('Salve amulet(i)') &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		attackRoll *= 1.15;
+	} else if (rangeGear.hasEquipped('Black mask (i)')) {
 		attackRoll *= 1.15;
 	}
 
@@ -208,11 +208,11 @@ export default async function rangeCalculator(
 
 	// Check if passive weapon accuracy.
 	if (
-		rangeGear.hasEquipped(itemID('Dragon hunter crossbow')) &&
+		rangeGear.hasEquipped('Dragon hunter crossbow') &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Dragon)
 	) {
 		attackRoll *= 1.3;
-	} else if (rangeGear.hasEquipped(itemID('Twisted bow'))) {
+	} else if (rangeGear.hasEquipped('Twisted bow')) {
 		const twistBowMagicPick = Math.max(currentMonsterData.magicLevel, currentMonsterData.attackMagic);
 		attackRoll *=
 			Math.min(
@@ -247,7 +247,7 @@ export default async function rangeCalculator(
 	let rangeAttackSpeed =
 		combatStyle === 'rapid' ? rangeWeapon.weapon!.attack_speed - 1 : rangeWeapon.weapon!.attack_speed;
 	const DPS = DamagePerHit / (rangeAttackSpeed * 0.6);
-
+	
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
@@ -277,7 +277,7 @@ export default async function rangeCalculator(
 	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
 
 	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
-
+	console.log(maxHit, combatStyle, hitChance)
 	// Calculates prayer drain and removes enough prayer potion doses.
 	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
 

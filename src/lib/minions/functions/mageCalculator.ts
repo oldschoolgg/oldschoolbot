@@ -2,7 +2,6 @@ import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
-import { itemID } from 'oldschooljs/dist/util';
 
 import { hasEliteMagicVoidEquipped, hasMagicVoidEquipped } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -40,7 +39,7 @@ export default async function mageCalculator(
 	quantity: number | undefined
 ): Promise<[number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Magic as source.
-	const combatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle);
+	const combatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
 	const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
@@ -124,9 +123,8 @@ export default async function mageCalculator(
 	if (hasEliteMagicVoidEquipped(mageGear)) {
 		maxHit *= 1.025;
 	}
-	mageGear.hasEquipped(itemID('Smoke battlestaff'));
 	// Check if passive weapon damage bonus smoke staff.
-	if (mageGear.hasEquipped(itemID('Smoke battlestaff')) || mageGear.hasEquipped(itemID('Mystic moke staff'))) {
+	if (mageGear.hasEquipped('Smoke battlestaff') || mageGear.hasEquipped('Mystic moke staff')) {
 		maxHit *= 1.1;
 	}
 
@@ -135,22 +133,22 @@ export default async function mageCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		mageGear.hasEquipped(itemID('Salve amulet(i)')) &&
-		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
-	) {
-		maxHit *= 1.15;
-	} else if (
-		mageGear.hasEquipped(itemID('Salve amulet(ei)')) &&
+		mageGear.hasEquipped('Salve amulet(ei)') &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 1.2;
-	} else if (mageGear.hasEquipped(itemID('Black mask (i)'))) {
+	} else if (
+		mageGear.hasEquipped('Salve amulet(i)') &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		maxHit *= 1.15;
+	} else if (mageGear.hasEquipped('Black mask (i)')) {
 		maxHit *= 1.15;
 	}
 
 	maxHit = Math.floor(maxHit);
 
-	if (mageGear.hasEquipped(itemID('Tome of fire')) && spell.name.toLowerCase().includes('fire')) {
+	if (mageGear.hasEquipped('Tome of fire') && spell.name.toLowerCase().includes('fire')) {
 		maxHit *= 1.5;
 	}
 
@@ -162,23 +160,23 @@ export default async function mageCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet(i) or salve amulet(ei), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		mageGear.hasEquipped(itemID('Salve amulet(i)')) &&
-		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
-	) {
-		accuracyRoll *= 1.15;
-	} else if (
-		mageGear.hasEquipped(itemID('Salve amulet(ei)')) &&
+		mageGear.hasEquipped('Salve amulet(ei)') &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		accuracyRoll *= 1.2;
-	} else if (mageGear.hasEquipped(itemID('Black mask (i)'))) {
+	} else if (
+		mageGear.hasEquipped('Salve amulet(i)') &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		accuracyRoll *= 1.15;
+	} else if (mageGear.hasEquipped('Black mask (i)')) {
 		accuracyRoll *= 1.15;
 	}
 
 	accuracyRoll = Math.floor(accuracyRoll);
 
 	// Check if passive weapon accuracy.
-	if (mageGear.hasEquipped(itemID('Smoke battlestaff')) || mageGear.hasEquipped(itemID('Mystic smoke staff'))) {
+	if (mageGear.hasEquipped('Smoke battlestaff') || mageGear.hasEquipped('Mystic smoke staff')) {
 		accuracyRoll *= 1.1;
 	}
 

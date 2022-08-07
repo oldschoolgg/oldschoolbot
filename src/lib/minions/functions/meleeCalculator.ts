@@ -98,7 +98,7 @@ export default async function meleeCalculator(
 	quantity: number | undefined
 ): Promise<[number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Melee as source.
-	const combatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle);
+	const combatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
@@ -155,18 +155,17 @@ export default async function meleeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet or salve amulet (e), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		(user.getGear('melee').hasEquipped(itemID('Salve amulet')) ||
-			user.getGear('melee').hasEquipped(itemID('Salve amulet(i)'))) &&
-		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
-	) {
-		maxHit *= 7 / 6;
-	} else if (
-		(user.getGear('melee').hasEquipped(itemID('Salve amulet (e)')) ||
-			user.getGear('melee').hasEquipped(itemID('Salve amulet(ei)'))) &&
+		(user.getGear('melee').hasEquipped('Salve amulet (e)') ||
+			user.getGear('melee').hasEquipped('Salve amulet(ei)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		maxHit *= 1.2;
-	} else if (user.getGear('melee').hasEquipped(itemID('Black mask'))) {
+	} else if (
+		(user.getGear('melee').hasEquipped('Salve amulet') || user.getGear('melee').hasEquipped('Salve amulet(i)')) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		maxHit *= 7 / 6;
+	} else if (user.getGear('melee').hasEquipped('Black mask')) {
 		maxHit *= 7 / 6;
 	}
 
@@ -244,18 +243,17 @@ export default async function meleeCalculator(
 	// Make sure black mask only work on slayer task in future
 	// Check if wearing salve amulet or salve amulet (e), if wearing salve amulet, black mask DOSEN'T STACK.
 	if (
-		(user.getGear('melee').hasEquipped(itemID('Salve amulet')) ||
-			user.getGear('melee').hasEquipped(itemID('Salve amulet(i)'))) &&
-		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
-	) {
-		attackRoll *= 7 / 6;
-	} else if (
-		(user.getGear('melee').hasEquipped(itemID('Salve amulet (e)')) ||
-			user.getGear('melee').hasEquipped(itemID('Salve amulet(ei)'))) &&
+		(user.getGear('melee').hasEquipped('Salve amulet (e)') ||
+			user.getGear('melee').hasEquipped('Salve amulet(ei)')) &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
 	) {
 		attackRoll *= 1.2;
-	} else if (user.getGear('melee').hasEquipped(itemID('Black mask'))) {
+	} else if (
+		(user.getGear('melee').hasEquipped('Salve amulet') || user.getGear('melee').hasEquipped('Salve amulet(i)')) &&
+		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Undead)
+	) {
+		attackRoll *= 7 / 6;
+	} else if (user.getGear('melee').hasEquipped('Black mask')) {
 		attackRoll *= 7 / 6;
 	}
 
@@ -263,12 +261,12 @@ export default async function meleeCalculator(
 
 	// Check if passive weapon accuracy.
 	if (
-		user.getGear('melee').hasEquipped(itemID('Arclight')) &&
+		user.getGear('melee').hasEquipped('Arclight') &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Demon)
 	) {
 		attackRoll *= 1.7;
 	} else if (
-		user.getGear('melee').hasEquipped(itemID('Dragon hunter lance')) &&
+		user.getGear('melee').hasEquipped('Dragon hunter lance') &&
 		currentMonsterData.attributes.find(_attribue => _attribue === MonsterAttribute.Dragon)
 	) {
 		attackRoll *= 1.2;

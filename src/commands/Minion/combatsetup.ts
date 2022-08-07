@@ -90,7 +90,7 @@ export default class extends BotCommand {
 					await msg.author.settings.update(UserSettings.Minion.MeleeAttackStyle, stance.attack_style);
 
 					return msg.channel.send(
-						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}.`
+						`${msg.author.minionName} changed main combat skill from ${oldCombatSkill} to ${combatSkill}, combat style to ${combatStyle} and attack style to ${stance.attack_style}.`
 					);
 				}
 			}
@@ -128,7 +128,7 @@ export default class extends BotCommand {
 					return msg.channel.send(
 						`${
 							msg.author.minionName
-						} changed main combat skill from ${oldCombatSkill} to ${combatSkill} and combat style to ${combatStyle}. ${
+						} changed main combat skill from ${oldCombatSkill} to ${combatSkill}, combat style to ${combatStyle} and attack style to ${combatStyle}. ${
 							changedDartTier ? `And changed default dart to ${combatSpell.toLowerCase()}.` : ''
 						}`
 					);

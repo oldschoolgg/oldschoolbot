@@ -76,19 +76,21 @@ export default class extends Task {
 			if (isInCatacombs) loot.add('Dark totem base', newSuperiorCount);
 		}
 
-		const xpRes = await addMonsterXP(user, {
-			monsterID,
-			quantity: noneCombat ? 0 : quantity,
-			duration,
-			isOnTask,
-			hits,
-			taskQuantity: quantitySlayed,
-			minimal: true,
-			usingCannon,
-			cannonMulti,
-			burstOrBarrage,
-			superiorCount: newSuperiorCount
-		});
+		const xpRes = noneCombat
+			? ''
+			: await addMonsterXP(user, {
+					monsterID,
+					quantity,
+					duration,
+					isOnTask,
+					hits,
+					taskQuantity: quantitySlayed,
+					minimal: true,
+					usingCannon,
+					cannonMulti,
+					burstOrBarrage,
+					superiorCount: newSuperiorCount
+			  });
 
 		announceLoot({ user, monsterID: monster.id, loot, notifyDrops: monster.notifyDrops });
 

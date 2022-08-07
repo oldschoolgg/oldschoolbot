@@ -154,7 +154,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 			return 'Spell is null.';
 		}
 		spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase()));
-		const mageCombatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle)!;
+		const mageCombatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
 		switch (mageCombatStyle) {
 			case 'standard':
 				res.push(
@@ -217,8 +217,8 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		}
 	}
 	if (combatSkill === CombatsEnum.Melee) {
-		attackStyle = user.settings.get(UserSettings.Minion.MeleeAttackStyle)!;
-		switch (attackStyle.toLowerCase()) {
+		attackStyle = user.settings.get(UserSettings.Minion.MeleeAttackStyle)!.replace(/[^a-zA-Z0-9]/g, '');
+		switch (attackStyle) {
 			case 'accurate':
 				res.push(
 					await user.addXP({
@@ -280,8 +280,8 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		}
 	}
 	if (combatSkill === CombatsEnum.Range) {
-		attackStyle = user.settings.get(UserSettings.Minion.RangeAttackStyle)!;
-		switch (attackStyle.toLowerCase()) {
+		attackStyle = user.settings.get(UserSettings.Minion.RangeAttackStyle)!.replace(/[^a-zA-Z0-9]/g, '');
+		switch (attackStyle) {
 			case 'accurate':
 				res.push(
 					await user.addXP({
