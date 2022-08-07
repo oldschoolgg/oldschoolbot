@@ -1384,16 +1384,14 @@ export const troubleBrewingCL = resolveItems([
 	'Blue rum (trouble brewing)'
 ]);
 export const volcanicMineCL = resolveItems(['Ash covered tome', 'Large water container', 'Volcanic mine teleport']);
+export const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const aerialFishingCL = resolveItems([
 	'Golden tench',
 	'Pearl fishing rod',
 	'Pearl fly fishing rod',
 	'Pearl barbarian rod',
 	'Fish sack',
-	'Angler hat',
-	'Angler top',
-	'Angler waders',
-	'Angler boots'
+	...anglerOutfit
 ]);
 export const allPetsCL = resolveItems([
 	'Abyssal orphan',
@@ -2068,12 +2066,23 @@ export const gracefulCL = resolveItems([
 	...gracefulCapes
 ]).filter(id => !resolveItems(['Max cape', 'Agility cape', 'Agility cape(t)']).includes(id));
 
+export const metamorphPets = resolveItems([
+	'Little parasite',
+	'Dark squirrel',
+	'Baby mole-rat',
+	'Midnight',
+	'Tzrek-zuk',
+	'Ziggy',
+	'Red',
+	'Great blue heron'
+]);
+
 export const allPetIDs = [
 	...allPetsCL,
 	...chambersOfXericMetamorphPets,
 	...tobMetamorphPets,
 	...growablePets.map(petSeries => petSeries.stages).flat(1),
-	...resolveItems(['Little parasite', 'Dark squirrel', 'Abyssal protector'])
+	...metamorphPets
 ];
 
 export const antiSantaOutfit = new Bank({

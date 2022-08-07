@@ -12,7 +12,7 @@ import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
+export const SupportServer = production ? '342983479501389826' : '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 export const Channel = {
@@ -231,6 +231,7 @@ export const enum Tasks {
 	TokkulShop = 'tokkulShopActivity',
 	Nex = 'nexActivity',
 	TroubleBrewing = 'troubleBrewingActivity',
+	PuroPuro = 'puroPuroActivity',
 	REMOVED = '__REMOVED__'
 }
 
@@ -518,12 +519,13 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
 - Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`${msg?.cmdPrefix ?? '+'}${
+- You no longer use this command using \`+${commandName ?? msg?.command?.name}\`, now you use: \`/${
 	commandName ?? msg?.command?.name
-}\`, now you use: \`/${commandName ?? msg?.command?.name}\`
+}\`
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
+export const OWNER_IDS = ['157797566833098752'];
