@@ -26,6 +26,11 @@ export const askCommand: OSBMahojiCommand = {
 		itemOption(),
 		{
 			type: ApplicationCommandOptionType.String,
+			name: 'items',
+			description: 'Type a bank string to lookup'
+		},
+		{
+			type: ApplicationCommandOptionType.String,
 			name: 'format',
 			description: 'The format to return your bank in.',
 			required: false,
@@ -63,6 +68,7 @@ export const askCommand: OSBMahojiCommand = {
 		search?: string;
 		filter?: string;
 		item?: string;
+		items?: string;
 		sort?: BankSortMethod;
 		flag?: BankFlag;
 	}>) => {
@@ -86,7 +92,7 @@ export const askCommand: OSBMahojiCommand = {
 				search: options.search,
 				filter: options.filter
 			},
-			inputStr: options.item,
+			inputStr: options.item ?? options.items,
 			user: klasaUser,
 			filters: options.filter ? [options.filter] : []
 		});
