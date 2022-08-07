@@ -262,6 +262,21 @@ LIMIT 10;`);
 			return result;
 		},
 		format: num => `${num.toLocaleString()} KC`
+	},
+	{
+		name: 'Barbarian Assault (Pet penance queen)',
+		items: resolveItems(['Pet penance queen']),
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT "id", high_gambles AS val
+				   FROM users
+				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
+				   AND high_gambles > 0
+				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+				   ORDER BY high_gambles DESC
+				   LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Gambles`
 	}
 ];
 for (const minigame of dryStreakMinigames) {
