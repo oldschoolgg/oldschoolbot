@@ -13,7 +13,7 @@ import { Bank } from 'oldschooljs';
 
 import { production } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib/blacklists';
-import { BitField, OWNER_IDS } from '../../lib/constants';
+import { BitField, OWNER_IDS, SupportServer } from '../../lib/constants';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
 import { getItem } from '../../lib/util/getOSItem';
@@ -105,7 +105,7 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 export const adminCommand: OSBMahojiCommand = {
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
-	guildID: production ? '342983479501389826' : '940758552425955348',
+	guildID: SupportServer,
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -217,8 +217,9 @@ export const adminCommand: OSBMahojiCommand = {
 	}>) => {
 		const user = await mahojiUsersSettingsFetch(userID);
 		const isMod = user.bitfield.includes(BitField.isModerator);
+		const isOwner = OWNER_IDS.includes(String(userID)) || OWNER_IDS.includes(String(interaction.userID));
 		if (!guildID) return 'Can only be run in a server';
-		if (!guildID || !isMod || (production && guildID.toString() !== '342983479501389826')) return 'Unauthorized';
+		if (!guildID || !isMod || (production && guildID.toString() !== SupportServer)) return 'Unauthorized';
 
 		if (options.cancel_task) {
 			const { user } = options.cancel_task.user;
@@ -230,13 +231,20 @@ export const adminCommand: OSBMahojiCommand = {
 			return 'Done.';
 		}
 
-		if (userID.toString() !== '157797566833098752' || interaction.userID.toString() !== '157797566833098752') {
-			return 'Unauthorized';
-		}
-		const klasaUser = await globalClient.fetchUser(userID);
 		if (options.viewbank) {
-			const bank = klasaUser.allItemsOwned();
-			return { attachments: [(await makeBankImage({ bank, title: klasaUser.username })).file] };
+			const targetUser = await globalClient.fetchUser(options.viewbank.user.user.id);
+			const bank = targetUser.allItemsOwned();
+			return { attachments: [(await makeBankImage({ bank, title: targetUser.username })).file] };
+		}
+		if (options.sync_blacklist) {
+			await syncBlacklists();
+			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
+Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
+		}
+
+		// Owner commands:
+		if (!isOwner) {
+			return 'Unauthorized';
 		}
 		if (options.reboot) {
 			await interaction.respond({
@@ -302,11 +310,6 @@ WHERE bank->>'${item.id}' IS NOT NULL;`);
 There are ${await countUsersWithItemInCl(item.id, isIron)} ${isIron ? 'ironmen' : 'people'} with atleast 1 ${
 				item.name
 			} in their collection log.`;
-		}
-		if (options.sync_blacklist) {
-			await syncBlacklists();
-			return `Users Blacklisted: ${BLACKLISTED_USERS.size}
-Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 		}
 		return 'Invalid command.';
 	}

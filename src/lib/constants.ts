@@ -5,14 +5,18 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import PQueue from 'p-queue';
 import { join } from 'path';
 
-import { DISCORD_SETTINGS, production } from '../config';
+import { customClientOptions, DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { RunCommandArgs } from './settings/settings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = production ? '342983479501389826' : '940758552425955348';
+export const SupportServer = DISCORD_SETTINGS.SupportServer
+	? production
+		? '342983479501389826'
+		: '940758552425955348'
+	: DISCORD_SETTINGS.SupportServer;
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 export const Channel = {
@@ -528,4 +532,6 @@ export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
-export const OWNER_IDS = ['157797566833098752'];
+export const OWNER_IDS = customClientOptions.owners
+	? ['157797566833098752', ...customClientOptions.owners]
+	: ['157797566833098752'];
