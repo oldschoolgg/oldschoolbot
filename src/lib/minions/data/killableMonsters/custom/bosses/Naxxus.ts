@@ -21,8 +21,8 @@ const runes = new LootTable()
 	.add('Blood rune', [1250, 3000])
 	.add('Soul rune', [1250, 3000])
 	.add('Wrath rune', [1250, 3000])
-	.add('Elder rune', [25, 150])
-	.add('Pure essence', [1000, 2000]);
+	.add('Elder rune', [75, 250])
+	.add('Pure essence', [2500, 5000]);
 
 const talismans = new LootTable()
 	.add('Cosmic talisman', [10, 25])
@@ -38,35 +38,41 @@ const talismans = new LootTable()
 	.add('Body talisman', [10, 25]);
 
 const herbs = new LootTable()
-	.add('Guam leaf', [100, 500])
-	.add('Marrentill', [100, 500])
-	.add('Tarromin', [100, 500])
-	.add('Harralander', [100, 250])
-	.add('Ranarr weed', [20, 30])
-	.add('Toadflax', [40, 60])
-	.add('Irit leaf', [100, 250])
-	.add('Avantoe', [50, 75])
-	.add('Kwuarm', [50, 75])
-	.add('Snapdragon', [5, 10])
-	.add('Cadantine', [40, 60])
-	.add('Lantadyme', [50, 75])
-	.add('Dwarf weed', [100, 250])
-	.add('Torstol', [20, 30])
-	.add('Athelas', [10, 15])
-	.add('Korulsi', [10, 15]);
+	.add('Guam leaf', [150, 500])
+	.add('Marrentill', [150, 500])
+	.add('Tarromin', [150, 500])
+	.add('Harralander', [150, 250])
+	.add('Ranarr weed', [30, 50])
+	.add('Toadflax', [50, 70])
+	.add('Irit leaf', [150, 250])
+	.add('Avantoe', [60, 75])
+	.add('Kwuarm', [60, 75])
+	.add('Snapdragon', [15, 25])
+	.add('Cadantine', [50, 75])
+	.add('Lantadyme', [75, 100])
+	.add('Dwarf weed', [150, 250])
+	.add('Torstol', [30, 50])
+	.add('Athelas', [15, 25])
+	.add('Korulsi', [15, 25]);
+
+	const custom = new LootTable()
+	.add('Battlestaff', [50, 100])
+	.add('Dark animica', [5, 10])
+ 
 
 const orbs = new LootTable().add('Air orb', 100).add('Earth orb', 100).add('Fire orb', 100).add('Water orb', 100);
 
-const naxxusLoot = new LootTable().add(runes, 3).add(talismans, 3).add(herbs, 3).add(orbs, 3);
+const naxxusLoot = new LootTable().add(runes, 3).add(talismans, 3).add(herbs, 3).add(orbs, 3).add(custom, 3);
 
 export const NaxxusLootTable = new LootTable()
 	.add(naxxusLoot, 2)
-	.tertiary(7, 'Clue scroll (Grandmaster)')
+	.tertiary(9, 'Clue scroll (Grandmaster)')
 	.tertiary(750, 'Dark crystal')
 	.tertiary(500, 'Abyssal gem')
 	.tertiary(750, 'Tattered tome')
 	.tertiary(500, 'Spellbound ring')
-	.tertiary(10, 'Korulsi seed');
+	.tertiary(10, 'Korulsi seed')
+	.tertiary(25, 'Grand crystal acorn');
 
 export const Naxxus: KillableMonster = {
 	id: 294_820,
