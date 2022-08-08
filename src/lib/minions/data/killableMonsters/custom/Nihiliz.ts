@@ -1,16 +1,5 @@
-import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import RareSeedTable from 'oldschooljs/dist/simulation/subtables/RareSeedTable';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
-
-import { StaffOrbTable } from '../../../../simulation/sharedTables';
-
-const stoneSpiritTable = new LootTable()
-	.add('Copper stone spirit', [1, 4], 3)
-	.add('Tin stone spirit', [1, 4], 3)
-	.add('Coal stone spirit', [2, 5], 4)
-	.add('Silver stone spirit', [1, 4], 3)
-	.add('Mithril stone spirit', [1, 3], 2)
-	.add('Runite stone spirit', 5, 1);
 
 const clueTable = new LootTable()
 	.add('Clue scroll (master)', [1, 3], 1)
@@ -54,10 +43,7 @@ const regularTable = new LootTable()
 	.tertiary(500, 'Uncut zenyte', [1, 3])
 
 	/* Sub Tables */
-	.add(StaffOrbTable, [15, 25], 6, { multiply: true })
-	.add(RareSeedTable, 2, 3, { multiply: true })
-	.add(RareDropTable, 2, 1, { multiply: true })
-	.add(stoneSpiritTable, 3);
+	.add(RareSeedTable, 2, 3, { multiply: true });
 
 export const NihilizLootTable = new LootTable()
 	.every(regularTable, 3)
