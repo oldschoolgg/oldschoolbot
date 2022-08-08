@@ -130,8 +130,8 @@ export const askCommand: OSBMahojiCommand = {
 				const attachment = Buffer.from(textBank.join('\n'));
 
 				return {
-					content: 'Here is your entire bank in txt file format.',
-					attachments: [{ buffer: attachment, fileName: `${klasaUser.username}s_Bank.txt` }]
+					content: 'Here is your selected bank in text file format.',
+					attachments: [{ buffer: attachment, fileName: 'Bank.txt' }]
 				};
 			}
 
@@ -148,7 +148,7 @@ export const askCommand: OSBMahojiCommand = {
 			const bankMessage = await channel.send({ embeds: [new MessageEmbed().setDescription('Loading')] });
 
 			makePaginatedMessage(bankMessage, pages);
-			return `${klasaUser.username}s Bank:`;
+			return `${klasaUser.username}'s Bank:`;
 		}
 		if (options.format === 'json') {
 			const json = JSON.stringify(baseBank.bank);

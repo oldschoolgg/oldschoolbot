@@ -570,7 +570,7 @@ export default class BankImageTask extends Task {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
 
-		const isShowingFullBankImage = flags.has('full') || opts.mahojiFlags?.includes('show_all');
+		const isShowingFullBankImage = wide || flags.has('full') || opts.mahojiFlags?.includes('show_all');
 
 		// Paging
 		if (typeof page === 'number' && !isShowingFullBankImage) {
