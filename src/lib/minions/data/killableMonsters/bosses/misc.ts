@@ -10,26 +10,6 @@ import { KillableMonster } from '../../../types';
 
 const killableBosses: KillableMonster[] = [
 	{
-		id: Monsters.Vorkath.id,
-		name: Monsters.Vorkath.name,
-		aliases: Monsters.Vorkath.aliases,
-		noneCombatCalcTimeToFinish: Time.Minute * 3.2,
-		table: Monsters.Vorkath,
-		emoji: '<:Vorki:400713309252222977>',
-		wildy: false,
-		notifyDrops: resolveItems(['Vorki', 'Jar of decay', 'Draconic visage', 'Skeletal visage']),
-		qpRequired: 205,
-		levelRequirements: {
-			prayer: 43
-		},
-		defaultStyleToUse: GearStat.AttackRanged,
-		mechanicsTime: Time.Second * 24,
-		bankTripTime: Time.Second * 40,
-		killsPerBankTrip: 5,
-		respawnTime: 2.4 * Time.Second,
-		isConverted: true
-	},
-	{
 		id: Monsters.GiantMole.id,
 		name: Monsters.GiantMole.name,
 		aliases: Monsters.GiantMole.aliases,
@@ -96,7 +76,13 @@ const killableBosses: KillableMonster[] = [
 		healAmountNeeded: 20 * 15,
 		attackStyleToUse: GearStat.AttackRanged,
 		attackStylesUsed: [GearStat.AttackMagic, GearStat.AttackRanged],
-		defaultCombatStyles: [SkillsEnum.Ranged]
+		defaultCombatStyles: [SkillsEnum.Ranged],
+		defaultStyleToUse: GearStat.AttackRanged,
+		mechanicsTime: Time.Second * 24,
+		bankTripTime: Time.Second * 40,
+		killsPerBankTrip: 5,
+		respawnTime: 2.4 * Time.Second,
+		isConverted: true
 	},
 	{
 		id: Monsters.Zulrah.id,

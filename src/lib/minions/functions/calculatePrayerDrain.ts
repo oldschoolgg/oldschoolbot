@@ -36,6 +36,6 @@ export default async function calculatePrayerDrain(
 	const totalPrayerPoints = bankCycles * prayerPointsDrainedPerBankCycle;
 
 	const prayerPointsPerDose = Number(user.skillLevel(SkillsEnum.Prayer)) / 4 + 7;
-	//Total Doses Used
+	// Total Doses Used
 	return Math.ceil(totalPrayerPoints / prayerPointsPerDose);
 }

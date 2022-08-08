@@ -131,7 +131,15 @@ export async function minionKillCommand(
 
 	let noneCombat = false;
 	let combatCalcInfo = undefined;
-	let [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, totalPrayerDosesUsed, potsUsed] = [0, 0, 0, 0, 0, 0, ['']];
+	let [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, totalPrayerDosesUsed, potsUsed] = [
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		['']
+	];
 
 	if (monster.isConverted) {
 		combatCalcInfo = await combatCalculator(monster, user, quantity);
@@ -413,7 +421,7 @@ export async function minionKillCommand(
 			messages.push(`${await removePotionsFromUser(user, potsUsed, combatDuration)}`);
 		}
 		if (totalPrayerDosesUsed > 0) {
-			messages.push(`${await removePrayerFromUser(user, totalPrayerDosesUsed)}`)
+			messages.push(`${await removePrayerFromUser(user, totalPrayerDosesUsed)}`);
 		}
 	}
 

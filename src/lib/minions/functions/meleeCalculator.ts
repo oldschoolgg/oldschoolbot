@@ -335,7 +335,10 @@ export default async function meleeCalculator(
 
 	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
 
-	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
+	combatDuration +=
+		monster.bankTripTime && monster.killsPerBankTrip
+			? (monster.bankTripTime / monster.killsPerBankTrip) * quantity
+			: 0;
 
 	// Calculates prayer drain and removes enough prayer potion doses.
 	const totalDosesUsed = await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);

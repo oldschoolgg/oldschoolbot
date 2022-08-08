@@ -247,7 +247,7 @@ export default async function rangeCalculator(
 	let rangeAttackSpeed =
 		combatStyle === 'rapid' ? rangeWeapon.weapon!.attack_speed - 1 : rangeWeapon.weapon!.attack_speed;
 	const DPS = DamagePerHit / (rangeAttackSpeed * 0.6);
-	
+
 	// Calculates hits required, combat time and average monster kill speed.
 	const monsterHP = currentMonsterData.hitpoints;
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
@@ -276,7 +276,10 @@ export default async function rangeCalculator(
 
 	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
 
-	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
+	combatDuration +=
+		monster.bankTripTime && monster.killsPerBankTrip
+			? (monster.bankTripTime / monster.killsPerBankTrip) * quantity
+			: 0;
 
 	// Calculates prayer drain and removes enough prayer potion doses.
 	const totalDosesUsed = await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
