@@ -37,7 +37,7 @@ export default async function mageCalculator(
 	monster: KillableMonster,
 	user: KlasaUser,
 	quantity: number | undefined
-): Promise<[number, number, number, number, number, string[]]> {
+): Promise<[number, number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Magic as source.
 	const combatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
 	const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
@@ -124,7 +124,7 @@ export default async function mageCalculator(
 		maxHit *= 1.025;
 	}
 	// Check if passive weapon damage bonus smoke staff.
-	if (mageGear.hasEquipped('Smoke battlestaff') || mageGear.hasEquipped('Mystic moke staff')) {
+	if (mageGear.hasEquipped('Smoke battlestaff') || mageGear.hasEquipped('Mystic smoke staff')) {
 		maxHit *= 1.1;
 	}
 
@@ -245,7 +245,7 @@ export default async function mageCalculator(
 	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
 
 	// Calculates prayer drain and removes enough prayer potion doses.
-	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
+	const totalDosesUsed = await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
 
-	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, [magePotUsed]];
+	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, totalDosesUsed, [magePotUsed]];
 }

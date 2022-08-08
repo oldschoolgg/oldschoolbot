@@ -30,6 +30,7 @@ import combatCalculator from '../../../lib/minions/functions/combatCalculator';
 import removeAmmoFromUser from '../../../lib/minions/functions/removeAmmoFromUser';
 import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUser';
 import removePotionsFromUser from '../../../lib/minions/functions/removePotionsFromUser';
+import removePrayerFromUser from '../../../lib/minions/functions/removePrayerFromUser';
 import removeRunesFromUser from '../../../lib/minions/functions/removeRunesFromUser';
 import { Consumable } from '../../../lib/minions/types';
 import { trackLoot } from '../../../lib/settings/prisma';
@@ -130,11 +131,11 @@ export async function minionKillCommand(
 
 	let noneCombat = false;
 	let combatCalcInfo = undefined;
-	let [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, potsUsed] = [0, 0, 0, 0, 0, ['']];
+	let [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, totalPrayerDosesUsed, potsUsed] = [0, 0, 0, 0, 0, 0, ['']];
 
 	if (monster.isConverted) {
 		combatCalcInfo = await combatCalculator(monster, user, quantity);
-		[combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, potsUsed] = combatCalcInfo;
+		[combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, totalPrayerDosesUsed, potsUsed] = combatCalcInfo;
 	} else {
 		noneCombat = true;
 		boosts.push('Monster NOT converted. NO combat');
@@ -409,7 +410,10 @@ export async function minionKillCommand(
 		}
 		const potionStr = await removePotionsFromUser(user, potsUsed, combatDuration);
 		if (potionStr.includes('x')) {
-			messages.push(`Removed ${await removePotionsFromUser(user, potsUsed, combatDuration)}`);
+			messages.push(`${await removePotionsFromUser(user, potsUsed, combatDuration)}`);
+		}
+		if (totalPrayerDosesUsed > 0) {
+			messages.push(`${await removePrayerFromUser(user, totalPrayerDosesUsed)}`)
 		}
 	}
 

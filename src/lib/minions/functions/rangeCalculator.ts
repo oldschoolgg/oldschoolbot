@@ -59,7 +59,7 @@ export default async function rangeCalculator(
 	monster: KillableMonster,
 	user: KlasaUser,
 	quantity: number | undefined
-): Promise<[number, number, number, number, number, string[]]> {
+): Promise<[number, number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Ranged as source.
 	const combatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
@@ -279,7 +279,7 @@ export default async function rangeCalculator(
 	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
 
 	// Calculates prayer drain and removes enough prayer potion doses.
-	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
+	const totalDosesUsed = await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
 
-	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, [rangePotUsed]];
+	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, totalDosesUsed, [rangePotUsed]];
 }

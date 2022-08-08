@@ -20,7 +20,7 @@ export default async function combatCalculator(
 	monster: KillableMonster,
 	user: KlasaUser,
 	quantity: number | undefined
-): Promise<[number, number, number, number, number, string[]]> {
+): Promise<[number, number, number, number, number, number, string[]]> {
 	let combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
 
 	if (combatSkill === CombatsEnum.NoCombat) throw "Nocombat shouldn't get here, Error in kill command.";

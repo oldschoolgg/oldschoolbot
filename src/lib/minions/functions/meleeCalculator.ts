@@ -96,7 +96,7 @@ export default async function meleeCalculator(
 	monster: KillableMonster,
 	user: KlasaUser,
 	quantity: number | undefined
-): Promise<[number, number, number, number, number, string[]]> {
+): Promise<[number, number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Melee as source.
 	const combatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
@@ -338,7 +338,7 @@ export default async function meleeCalculator(
 	combatDuration += (monster.bankTripTime! / monster.killsPerBankTrip!) * quantity;
 
 	// Calculates prayer drain and removes enough prayer potion doses.
-	await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
+	const totalDosesUsed = await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
 
-	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, [strPotUsed, attPotUsed]];
+	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, totalDosesUsed, [strPotUsed, attPotUsed]];
 }
