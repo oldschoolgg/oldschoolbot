@@ -17,12 +17,6 @@ export function openSeedPack(seedTier: number): Bank {
 	if (seedTier > 2) {
 		tempTable.tertiary(10, new LootTable().every('Mysterious seed', [1, 3]));
 	}
-	if (seedTier > 4) {
-		tempTable.tertiary(10, new LootTable().every('Korulsi seed', [1, 3]));
-	}
-	if (seedTier > 2) {
-		tempTable.tertiary(10, new LootTable().every('Grand crystal acorn', [1, 3]));
-	}
 
 	// Roll amount variables
 	let high = 0;
