@@ -32,6 +32,9 @@ const regularTable = new LootTable()
 	.add('Death rune', [200, 500])
 	.add('Amethyst', [50, 100])
 	.add('Uncut dragonstone', [10, 20])
+	.add('Mithril ore', [250, 350])
+	.add('Adamantite ore', [100, 200])
+	.add('Runite ore', [10, 50])
 
 	/* Food */
 	.add(foodTable, 1, 14)
@@ -54,5 +57,5 @@ export const NihilizLootTable = new LootTable()
 	.tertiary(10, 'Nihil shard', [5, 20])
 	.tertiary(1200, 'Nihil horn')
 	.tertiary(900, 'Zaryte vambraces')
-	.tertiary(100, 'Clue scroll (grandmaster)')
+	.tertiary(128, 'Clue scroll (grandmaster)')
 	.tertiary(5000, 'Nexling');
