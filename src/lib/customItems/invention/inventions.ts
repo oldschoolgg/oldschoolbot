@@ -28,4 +28,4 @@ addInvention(63_318, 'Drygore saw');
 addInvention(63_320, 'Dwarven toolkit');
 addInvention(63_322, 'Mecha rod');
 addInvention(63_324, 'Master hammer and chisel');
-addInvention(63_325, 'Abyssal amulet');
+addInvention(70_015, 'Abyssal amulet');
