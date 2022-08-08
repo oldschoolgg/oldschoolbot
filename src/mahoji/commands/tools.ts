@@ -208,7 +208,7 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		items: resolveItems(['Jal-nib-rek'])
 	},
 	{
-		name: 'Winterotdt',
+		name: 'Wintertodt',
 		key: 'wintertodt',
 		items: resolveItems(['Tome of fire', 'Phoenix', 'Bruma torch', 'Warm gloves'])
 	}
