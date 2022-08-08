@@ -87,6 +87,7 @@ export const askCommand: OSBMahojiCommand = {
 	}>) => {
 		await interaction.deferReply();
 		const klasaUser = await globalClient.fetchUser(user.id);
+		await klasaUser.settings.sync(true);
 		const baseBank = klasaUser.bank({ withGP: true });
 		const mahojiFlags: BankFlag[] = [];
 
