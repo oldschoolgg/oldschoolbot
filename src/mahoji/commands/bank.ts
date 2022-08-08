@@ -1,7 +1,7 @@
 import { codeBlock } from '@discordjs/builders';
 import { MessageEmbed } from 'discord.js';
 import { chunk } from 'e';
-import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { ApplicationCommandOptionType, CommandRunOptions, MessageFlags } from 'mahoji';
 
 import { Emoji } from '../../lib/constants';
 import { Flags } from '../../lib/minions/types';
@@ -147,8 +147,8 @@ export const askCommand: OSBMahojiCommand = {
 			if (!channelIsSendable(channel)) return 'Failed to send paginated bank message, sorry.';
 			const bankMessage = await channel.send({ embeds: [new MessageEmbed().setDescription('Loading')] });
 
-			makePaginatedMessage(bankMessage, pages);
-			return `${klasaUser.username}'s Bank:`;
+			makePaginatedMessage(bankMessage, pages, klasaUser);
+			return { content: 'Here is your selected bank:', flags: MessageFlags.Ephemeral };
 		}
 		if (options.format === 'json') {
 			const json = JSON.stringify(baseBank.bank);
