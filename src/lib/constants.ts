@@ -13,10 +13,10 @@ import { ActivityTaskOptions } from './types/minions';
 import resolveItems from './util/resolveItems';
 
 export const SupportServer = DISCORD_SETTINGS.SupportServer
-	? production
-		? '342983479501389826'
-		: '940758552425955348'
-	: DISCORD_SETTINGS.SupportServer;
+	? DISCORD_SETTINGS.SupportServer
+	: production
+	? '342983479501389826'
+	: '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '303730326692429825';
 
 export const Channel = {
