@@ -1,13 +1,14 @@
 import { objectValues } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { Skills } from '../../../lib/types';
 import { assert, clamp, isValidSkill } from '../../../lib/util';
 import { getItem } from '../../../lib/util/getOSItem';
 import resolveItems from '../../../lib/util/resolveItems';
+import { userStatsUpdate } from '../../mahojiSettings';
 
 interface IXPLamp {
 	itemID: number;
@@ -226,6 +227,17 @@ export async function lampCommand(user: KlasaUser, itemToUse: string, skill: str
 
 	let amount = skillsToReceive[skill]!;
 	assert(typeof amount === 'number' && amount > 0);
+	userStatsUpdate(user.id, u => {
+		let newLampedXp = {
+			...(u.lamped_xp as ItemBank)
+		};
+		if (!newLampedXp[skill]) newLampedXp[skill] = amount;
+		else newLampedXp[skill] += amount;
+
+		return {
+			lamped_xp: newLampedXp
+		};
+	});
 
 	await user.removeItemsFromBank(toRemoveFromBank);
 	const xpStr = await user.addXP({ skillName: skill, amount, artificial: true, multiplier: false });

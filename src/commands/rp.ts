@@ -277,6 +277,22 @@ export default class extends BotCommand {
 		const isOwner = this.client.owners.has(msg.author);
 
 		switch (cmd.toLowerCase()) {
+			case 'tracking': {
+				const stats = await prisma.userStats.findFirst({
+					where: {
+						user_id: BigInt(msg.author.id)
+					}
+				});
+				if (!stats) return msg.channel.send('No stats recorded.');
+				return msg.channel.send(`GP from selling: ${stats.sell_gp}
+Bars from inferno adze: ${new Bank().add(stats.bars_from_adze_bank as ItemBank)}
+Ores from spirits: ${new Bank().add(stats.ores_from_spirits_bank as ItemBank)}
+Bars from klik: ${new Bank().add(stats.bars_from_klik_bank as ItemBank)}
+Clues from clue upgrader: ${new Bank().add(stats.clue_upgrader_bank as ItemBank)}
+Silverhawks passive xp: ${stats.silverhawk_boots_passive_xp}
+Bonecrusher xp: ${stats.bonecrusher_prayer_xp}
+Lamped XP: ${JSON.stringify(stats.lamped_xp)}`);
+			}
 			case 'inboxes': {
 				if (typeof input !== 'string') return;
 				const item = getOSItem(input);

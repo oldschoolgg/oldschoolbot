@@ -332,3 +332,15 @@ export async function userStatsUpdate(userID: string, data: (u: UserStats) => Pr
 		}
 	});
 }
+
+type UserStatsBankKey =
+	| 'bars_from_adze_bank'
+	| 'ores_from_spirits_bank'
+	| 'bars_from_klik_bank'
+	| 'portable_tanner_bank'
+	| 'clue_upgrader_bank';
+export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
+	await userStatsUpdate(userID, u => ({
+		[key]: bank.clone().add(u[key] as ItemBank).bank
+	}));
+}
