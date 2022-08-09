@@ -6,7 +6,9 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
-import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
+import { CoXUniqueTable } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
+import { ToBUniqueTable } from 'oldschooljs/dist/simulation/misc/TheatreOfBlood';
 
 import { production } from '../../config';
 import { MysteryBoxes } from '../../lib/bsoOpenables';
@@ -19,9 +21,11 @@ import {
 	stashUnitViewCommand
 } from '../../lib/clues/stashUnits';
 import { BitField, Channel, Emoji, giveBoxResetTime, PerkTier, spawnLampResetTime } from '../../lib/constants';
-import { allDroppedItems } from '../../lib/data/Collections';
+import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
+import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
-import killableMonsters, { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
+import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
+import { MinigameName, Minigames } from '../../lib/settings/minigames';
 import { prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
@@ -30,12 +34,14 @@ import {
 	generateXPLevelQuestion,
 	getUsername,
 	itemID,
+	itemNameFromID,
 	roll,
 	stringMatches
 } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier, { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { buttonUserPicker } from '../lib/buttonUserPicker';
@@ -293,14 +299,174 @@ async function spawnBoxCommand(user: User, channelID: bigint): CommandResponse {
 	return `Congratulations, ${winner}! You received: **${loot}**. ${explainAnswer}`;
 }
 
+interface DrystreakMinigame {
+	name: string;
+	key: MinigameName;
+	items: number[];
+}
+
+const dryStreakMinigames: DrystreakMinigame[] = [
+	{
+		name: 'Theatre of Blood (ToB)',
+		key: 'tob',
+		items: ToBUniqueTable.allItems
+	},
+	{
+		name: 'Fishing Trawler',
+		key: 'fishing_trawler',
+		items: anglerOutfit
+	},
+	{
+		name: 'Gnome Restaurant',
+		key: 'gnome_restaurant',
+		items: gnomeRestaurantCL
+	},
+	{
+		name: 'Gauntlet',
+		key: 'gauntlet',
+		items: resolveItems(['Crystal weapon seed', 'Crystal armour seed', 'Enhanced crystal weapon seed', 'Youngllef'])
+	},
+	{
+		name: 'Inferno',
+		key: 'inferno',
+		items: resolveItems(['Jal-nib-rek'])
+	},
+	{
+		name: 'Wintertodt',
+		key: 'wintertodt',
+		items: resolveItems(['Tome of fire', 'Phoenix', 'Bruma torch', 'Warm gloves'])
+	},
+	{
+		name: 'Baxtorian Bathhouses',
+		key: 'bax_baths',
+		items: resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling'])
+	},
+	{
+		name: 'Monkey Rumble',
+		key: 'monkey_rumble',
+		items: resolveItems([
+			'Monkey egg',
+			'Marimbo statue',
+			'Monkey dye',
+			'Banana enchantment scroll',
+			'Rumble token',
+			'Big banana',
+			'Monkey crate'
+		])
+	}
+];
+
+interface DrystreakEntity {
+	name: string;
+	items: number[];
+	run: (args: { item: Item; ironmanOnly: boolean }) => Promise<{ id: string; val: number }[]>;
+	format: (num: number) => string;
+}
+const dryStreakEntities: DrystreakEntity[] = [
+	{
+		name: 'Chambers of Xeric (CoX)',
+		items: CoXUniqueTable.allItems,
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT id, total_cox_points AS val
+FROM users
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+ORDER BY total_cox_points DESC
+LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} points`
+	},
+	{
+		name: 'Nightmare',
+		items: resolveItems([
+			"Inquisitor's mace",
+			"Inquisitor's great helm",
+			"Inquisitor's hauberk",
+			"Inquisitor's plateskirt",
+			'Nightmare staff',
+			'Eldritch orb',
+			'Volatile orb',
+			'Harmonised orb'
+		]),
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<
+				{ id: string; val: number }[]
+			>(`SELECT "id", ("monsterScores"->>'${NightmareMonster.id}')::int AS val
+				   FROM users
+				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
+				   AND "monsterScores"->>'${NightmareMonster.id}' IS NOT NULL 
+				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+				   ORDER BY ("monsterScores"->>'${NightmareMonster.id}')::int DESC
+				   LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} KC`
+	},
+	{
+		name: 'Barbarian Assault (Pet penance queen)',
+		items: resolveItems(['Pet penance queen']),
+		run: async ({ item, ironmanOnly }) => {
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT "id", high_gambles AS val
+				   FROM users
+				   WHERE "collectionLogBank"->>'${item.id}' IS NULL
+				   AND high_gambles > 0
+				   ${ironmanOnly ? 'AND "minion.ironman" = true' : ''} 
+				   ORDER BY high_gambles DESC
+				   LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} Gambles`
+	}
+];
+for (const minigame of dryStreakMinigames) {
+	dryStreakEntities.push({
+		name: minigame.name,
+		items: minigame.items,
+		run: async ({ item, ironmanOnly }) => {
+			const minigameObj = Minigames.find(i => i.column === minigame.key)!;
+			const result = await prisma.$queryRawUnsafe<{ id: string; val: number }[]>(`SELECT users.id, "minigame"."${
+				minigameObj.column
+			}" AS val
+FROM users
+INNER JOIN "minigames" "minigame" on "minigame"."user_id" = "users"."id"::text
+WHERE "collectionLogBank"->>'${item.id}' IS NULL
+${ironmanOnly ? ' AND "minion.ironman" = true' : ''}
+ORDER BY "minigame"."${minigameObj.column}" DESC
+LIMIT 10;`);
+			return result;
+		},
+		format: num => `${num.toLocaleString()} KC`
+	});
+}
+
 async function dryStreakCommand(user: User, monsterName: string, itemName: string, ironmanOnly: boolean) {
 	if (getUsersPerkTier(user) < PerkTier.Four) return patronMsg(PerkTier.Four);
+
+	const item = getOSItem(itemName);
+
+	const entity = dryStreakEntities.find(i => stringMatches(i.name, monsterName));
+	if (entity) {
+		if (!entity.items.includes(item.id)) {
+			return `That's not a valid item dropped for this thing, valid items are: ${entity.items
+				.map(itemNameFromID)
+				.join(', ')}.`;
+		}
+
+		const result = await entity.run({ item, ironmanOnly });
+		if (result.length === 0) return 'No results found.';
+
+		return `**Dry Streaks for ${item.name} from ${entity.name}:**\n${result
+			.map(({ id, val }) => `${getUsername(id)}: ${entity.format(val || -1)}`)
+			.join('\n')}`;
+	}
+
 	const mon = effectiveMonsters.find(mon => mon.aliases.some(alias => stringMatches(alias, monsterName)));
 	if (!mon) {
 		return "That's not a valid monster or minigame.";
 	}
-
-	const item = getOSItem(itemName);
 
 	const ironmanPart = ironmanOnly ? 'AND "minion.ironman" = true' : '';
 	const key = 'monsterScores';
@@ -393,9 +559,22 @@ export const toolsCommand: OSBMahojiCommand = {
 					name: 'drystreak',
 					description: "Show's the biggest drystreaks for certain drops from a certain monster.",
 					options: [
-						monsterOption,
 						{
-							...itemOption(),
+							type: ApplicationCommandOptionType.String,
+							name: 'monster',
+							description: 'The monster you want to pick.',
+							required: true,
+							autocomplete: async value => {
+								return [
+									...dryStreakEntities.map(i => ({ name: i.name, value: i })),
+									...killableMonsters
+								]
+									.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+									.map(i => ({ name: i.name, value: i.name }));
+							}
+						},
+						{
+							...itemOption(item => allCLItemsFiltered.includes(item.id)),
 							required: true
 						},
 						{
