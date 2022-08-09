@@ -227,8 +227,8 @@ const Nihiliz: CustomMonster = {
 	},
 	itemInBankBoosts: [
 		{
-			[itemID('Zaryte crossbow')]: 20,
-			[itemID('Zaryte bow')]: 15
+			[itemID('Zaryte crossbow')]: 15,
+			[itemID('Zaryte bow')]: 10
 		},
 		{
 			[itemID('Drygore rapier')]: 15
