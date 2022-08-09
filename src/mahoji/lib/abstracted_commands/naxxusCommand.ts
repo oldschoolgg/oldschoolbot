@@ -14,7 +14,6 @@ import { Gear } from '../../../lib/structures/Gear';
 import { NaxxusActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, isWeekend, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
-import brewRestoreSupplyCalc from '../../../lib/util/brewRestoreSupplyCalc';
 import getOSItem from '../../../lib/util/getOSItem';
 
 const bisMageGear = new Gear({
@@ -165,23 +164,22 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 	}
 
 	const kc = user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0;
-	let brewsNeeded = 20;
+	let brewsNeeded = 10;
 	if (kc > 500) brewsNeeded *= 0.2;
 	else if (kc > 400) brewsNeeded *= 0.4;
 	else if (kc > 300) brewsNeeded *= 0.6;
 	else if (kc > 200) brewsNeeded *= 0.8;
 
 	brewsNeeded *= quantity;
-	let { hasEnough, foodBank, foodReason } = brewRestoreSupplyCalc(user, brewsNeeded);
 
-	if (!hasEnough) {
-		return `${user.username} doesn't have the food requirements for this monster: ${foodReason}`;
+	const foodBank = new Bank()
+		.add('Enhanced saradomin brew', brewsNeeded)
+		.add('Enhanced super restore', Math.floor(brewsNeeded/3) < 1 ? 1 : Math.floor(brewsNeeded/3))
+		.add('Enhanced divine water', 2);
+	
+	if (!user.owns(foodBank)) {
+		return `${user.username} doesn't have the food requirements for this monster: ${foodBank}`;
 	}
-
-	if (!user.bank().has(new Bank().add('Enhanced divine water', 2 * quantity))) {
-		return `${user.username} doesn't have the food requirements for this monster: Requires 2 Enhanced divine water`;
-	}
-	foodBank.add('Enhanced divine water', 2 * quantity);
 
 	const duration = effectiveTime * quantity;
 	// Some degrading items use charges based on DURATION
