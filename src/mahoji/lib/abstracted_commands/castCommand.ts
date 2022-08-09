@@ -130,13 +130,13 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 	)} to finish. Removed ${cost}${spell.gpCost ? ` and ${gpCost} Coins` : ''} from your bank. **${magicXpHr}**`;
 
 	if (spell.craftXp) {
-		response = `and** ${Math.round(
+		response += ` and** ${Math.round(
 			((spell.craftXp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} Crafting XP/Hr**`;
 	}
 
 	if (spell.prayerXp) {
-		response = `and** ${Math.round(
+		response += ` and** ${Math.round(
 			((spell.prayerXp * quantity) / (duration / Time.Minute)) * 60
 		).toLocaleString()} Prayer XP/Hr**`;
 	}
