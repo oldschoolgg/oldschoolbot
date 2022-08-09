@@ -232,6 +232,7 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 
 		if (options.viewbank) {
+			await interaction.deferReply();
 			const targetUser = await globalClient.fetchUser(options.viewbank.user.user.id);
 			const bank = targetUser.allItemsOwned();
 			return { attachments: [(await makeBankImage({ bank, title: targetUser.username })).file] };
