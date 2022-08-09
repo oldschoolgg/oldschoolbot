@@ -585,10 +585,9 @@ model Tame {
   equipped_primary Int?
   equipped_armor   Int?
 
-
   tame_activity TameActivity[]
 
-  @@index([date], map: "IDX_d84ebb9dcec7acde63c223cf1b")
+  @@index([user_id])
   @@map("tames")
 }
 
@@ -691,6 +690,18 @@ model UserStats {
   user_id         BigInt @id
   sell_gp         BigInt @default(0)
   items_sold_bank Json   @default("{}") @db.Json
+
+  // BSO
+  bars_from_adze_bank    Json @default("{}") @db.Json
+  ores_from_spirits_bank Json @default("{}") @db.Json
+  bars_from_klik_bank    Json @default("{}") @db.Json
+  portable_tanner_bank   Json @default("{}") @db.Json
+  clue_upgrader_bank     Json @default("{}") @db.Json
+
+  silverhawk_boots_passive_xp BigInt @default(0)
+  bonecrusher_prayer_xp       BigInt @default(0)
+
+  lamped_xp Json @default("{}") @db.Json
 
   @@map("user_stats")
 }
