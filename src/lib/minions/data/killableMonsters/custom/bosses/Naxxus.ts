@@ -55,10 +55,7 @@ const herbs = new LootTable()
 	.add('Athelas', [15, 25])
 	.add('Korulsi', [15, 25]);
 
-	const custom = new LootTable()
-	.add('Battlestaff', [50, 100])
-	.add('Dark animica', [5, 10])
- 
+const custom = new LootTable().add('Battlestaff', [50, 100]).add('Dark animica', [5, 10]);
 
 const orbs = new LootTable().add('Air orb', 100).add('Earth orb', 100).add('Fire orb', 100).add('Water orb', 100);
 

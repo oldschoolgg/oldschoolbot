@@ -56,7 +56,8 @@ export function resolveAttackStyles(
 	if (params.monsterID === VasaMagus.id) return [undefined, undefined, [SkillsEnum.Magic]];
 	if (params.monsterID === NexMonster.id) return [undefined, undefined, [SkillsEnum.Ranged]];
 	if (params.monsterID === KalphiteKingMonster.id) return [undefined, undefined, meleeOnly(user)];
-	if (params.monsterID === Naxxus.id) return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic]];
+	if (params.monsterID === Naxxus.id)
+		return [undefined, undefined, [SkillsEnum.Attack, SkillsEnum.Strength, SkillsEnum.Defence, SkillsEnum.Magic]];
 
 	const killableMon = killableMonsters.find(m => m.id === params.monsterID);
 

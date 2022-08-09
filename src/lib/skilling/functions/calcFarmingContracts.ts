@@ -15,7 +15,8 @@ export function openSeedPack(seedTier: number): Bank {
 	const tempTable = new LootTable().tertiary(3, 'Athelas seed');
 
 	if (seedTier > 2) {
-		tempTable.tertiary(10, new LootTable().every('Mysterious seed', [1, 3]))
+		tempTable
+			.tertiary(10, new LootTable().every('Mysterious seed', [1, 3]))
 			.tertiary(10, new LootTable().every('Korulsi seed', [1, 3]))
 			.tertiary(35, new LootTable().every('Grand crystal acorn', [1, 3]));
 	}

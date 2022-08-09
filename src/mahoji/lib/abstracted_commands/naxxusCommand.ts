@@ -174,9 +174,9 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 
 	const foodBank = new Bank()
 		.add('Enhanced saradomin brew', brewsNeeded)
-		.add('Enhanced super restore', Math.floor(brewsNeeded/3) < 1 ? 1 : Math.floor(brewsNeeded/3))
+		.add('Enhanced super restore', Math.floor(brewsNeeded / 3) < 1 ? 1 : Math.floor(brewsNeeded / 3))
 		.add('Enhanced divine water', 2);
-	
+
 	if (!user.owns(foodBank)) {
 		return `${user.username} doesn't have the food requirements for this monster: ${foodBank}`;
 	}
