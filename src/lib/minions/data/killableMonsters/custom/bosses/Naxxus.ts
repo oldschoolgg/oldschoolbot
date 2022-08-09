@@ -89,6 +89,7 @@ export const Naxxus: KillableMonster = {
 	respawnTime: Time.Second * 10,
 	levelRequirements: {
 		slayer: 110,
+		prayer: 110,
 		magic: 120
 	},
 	minimumGearRequirements: {
