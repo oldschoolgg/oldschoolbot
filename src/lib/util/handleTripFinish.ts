@@ -6,6 +6,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
+import { userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
@@ -234,6 +235,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 						data.duration,
 						user.skillLevel(SkillsEnum.Agility)
 					);
+					userStatsUpdate(user.id, () => ({
+						silverhawk_boots_passive_xp: {
+							increment: xpToReceive
+						}
+					}));
 					await user.addXP({
 						skillName: SkillsEnum.Agility,
 						amount: xpToReceive,
