@@ -335,6 +335,24 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		name: 'Wintertodt',
 		key: 'wintertodt',
 		items: resolveItems(['Tome of fire', 'Phoenix', 'Bruma torch', 'Warm gloves'])
+	},
+	{
+		name: 'Baxtorian Bathhouses',
+		key: 'bax_baths',
+		items: resolveItems(['Inferno adze', 'Flame gloves', 'Ring of fire', 'Phoenix eggling'])
+	},
+	{
+		name: 'Monkey Rumble',
+		key: 'monkey_rumble',
+		items: resolveItems([
+			'Monkey egg',
+			'Marimbo statue',
+			'Monkey dye',
+			'Banana enchantment scroll',
+			'Rumble token',
+			'Big banana',
+			'Monkey crate'
+		])
 	}
 ];
 
