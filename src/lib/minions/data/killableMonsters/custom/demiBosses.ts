@@ -199,6 +199,12 @@ export const QueenBlackDragon: CustomMonster = {
 	itemInBankBoosts: [
 		{
 			[itemID('Royal crossbow')]: 8
+		},
+		{
+			[itemID('Zaryte crossbow')]: 15
+		},
+		{
+			[itemID('Zaryte vambraces')]: 5
 		}
 	]
 };
