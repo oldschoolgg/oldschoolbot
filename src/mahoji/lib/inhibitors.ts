@@ -4,7 +4,7 @@ import { KlasaUser } from 'klasa';
 import { ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
-import { OWNER_ID, production } from '../../config';
+import { OWNER_IDS, production, SupportServer } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
 import {
 	BadgesEnum,
@@ -13,8 +13,7 @@ import {
 	Channel,
 	DISABLED_COMMANDS,
 	minionBuyButton,
-	PerkTier,
-	SupportServer
+	PerkTier
 } from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { CategoryFlag } from '../../lib/types';
@@ -281,7 +280,7 @@ const inhibitors: Inhibitor[] = [
 		name: 'cooldown',
 		run: async ({ user, command }) => {
 			if (!command.attributes?.cooldown) return false;
-			if (OWNER_ID === user.id || user.bitfield.includes(BitField.isModerator)) return false;
+			if (OWNER_IDS.includes(user.id) || user.bitfield.includes(BitField.isModerator)) return false;
 			const cooldownForThis = Cooldowns.get(user.id, command.name, command.attributes.cooldown);
 			if (cooldownForThis) {
 				return `This command is on cooldown, you can use it again in ${formatDuration(cooldownForThis)}`;
