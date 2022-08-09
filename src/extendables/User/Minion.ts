@@ -363,7 +363,7 @@ export default class extends Extendable {
 
 			case 'Nightmare': {
 				const data = currentTask as NightmareActivityTaskOptions;
-				return `${this.minionName} is currently killing The Nightmare${
+				return `${this.minionName} is currently killing The Nightmare ${
 					data.method === 'solo' ? 'solo' : 'in a team'
 				}. ${formattedDuration}`;
 			}
