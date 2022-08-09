@@ -49,7 +49,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Prayer from '../../lib/skilling/skills/prayer';
 import Runecraft from '../../lib/skilling/skills/runecraft';
 import Smithing from '../../lib/skilling/skills/smithing';
-import { Pickpocketables } from '../../lib/skilling/skills/thieving/stealables';
+import { stealables } from '../../lib/skilling/skills/thieving/stealables';
 import Woodcutting from '../../lib/skilling/skills/woodcutting';
 import { Creature, SkillsEnum } from '../../lib/skilling/types';
 import { Skills as TSkills } from '../../lib/types';
@@ -410,7 +410,7 @@ export default class extends Extendable {
 
 			case 'Nightmare': {
 				const data = currentTask as NightmareActivityTaskOptions;
-				return `${this.minionName} is currently killing The Nightmare${
+				return `${this.minionName} is currently killing The Nightmare ${
 					data.method === 'solo' ? 'solo' : 'in a team'
 				}. ${formattedDuration}`;
 			}
@@ -447,8 +447,10 @@ export default class extends Extendable {
 
 			case 'Pickpocket': {
 				const data = currentTask as PickpocketActivityTaskOptions;
-				const npc = Pickpocketables.find(_npc => _npc.id === data.monsterID)!;
-				return `${this.minionName} is currently pickpocketing a ${npc.name} ${data.quantity}x times. ${formattedDuration}`;
+				const obj = stealables.find(_obj => _obj.id === data.monsterID);
+				return `${this.minionName} is currently ${
+					obj!.type === 'pickpockable' ? 'pickpocketing' : 'stealing'
+				} from ${obj!.name} ${data.quantity}x times. ${formattedDuration}`;
 			}
 
 			case 'BarbarianAssault': {

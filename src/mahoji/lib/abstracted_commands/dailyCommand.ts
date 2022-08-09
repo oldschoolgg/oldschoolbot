@@ -80,7 +80,7 @@ async function reward(user: KlasaUser, triviaCorrect: boolean): CommandResponse 
 	const correct = triviaCorrect ? 'correct' : 'incorrect';
 	const reward = triviaCorrect
 		? "I've picked you some random items as a reward..."
-		: 'Even though you got it wrong, heres a little reward...';
+		: "Even though you got it wrong, here's a little reward...";
 
 	let dmStr = `${bonuses.join('')} **${Emoji.Diango} Diango says..** That's ${correct}! ${reward}\n`;
 
@@ -132,11 +132,12 @@ export async function dailyCommand(
 		usersWhoCanInteract: [user.id],
 		deleteAfterConfirm: true
 	});
-	for (const q of uniqueArr(shuffleArr([question, ...fakeQuestions]))) {
+	const allAnswers = uniqueArr(shuffleArr([question, ...fakeQuestions].map(q => q.answers[0])));
+	for (const answer of allAnswers) {
 		buttons.add({
-			name: q.answers[0],
+			name: answer,
 			fn: ({ interaction }) => {
-				if (question.answers.includes(q.answers[0]) ? true : false) {
+				if (question.answers.includes(answer) ? true : false) {
 					correctUser = interaction.user.id;
 				}
 			},
