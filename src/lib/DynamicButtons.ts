@@ -53,7 +53,15 @@ export class DynamicButtons {
 		this.deleteAfterConfirm = deleteAfterConfirm;
 	}
 
-	async render({ isBusy, messageOptions }: { isBusy: boolean; messageOptions: MessageOptions }) {
+	async render({
+		isBusy,
+		messageOptions,
+		extraButtons = []
+	}: {
+		isBusy: boolean;
+		messageOptions: MessageOptions;
+		extraButtons?: MessageButton[];
+	}) {
 		const buttons = this.buttons
 			.filter(b => {
 				if (isBusy && b.cantBeBusy) return false;
@@ -61,7 +69,8 @@ export class DynamicButtons {
 			})
 			.map(
 				b => new MessageButton({ label: b.name, customID: b.id, style: b.style ?? 'SECONDARY', emoji: b.emoji })
-			);
+			)
+			.concat(extraButtons);
 		const chunkedButtons = chunk(buttons, 5);
 		this.message = await this.channel.send({ ...messageOptions, components: chunkedButtons });
 		const collectedInteraction = await this.message
@@ -84,9 +93,9 @@ export class DynamicButtons {
 		}
 
 		if (collectedInteraction) {
-			collectedInteraction.deferUpdate();
 			for (const button of this.buttons) {
 				if (collectedInteraction.customID === button.id) {
+					collectedInteraction.deferUpdate();
 					if (collectedInteraction.user.minionIsBusy && button.cantBeBusy) {
 						return collectedInteraction.reply({
 							content: "Your action couldn't be performed, because your minion is busy.",
