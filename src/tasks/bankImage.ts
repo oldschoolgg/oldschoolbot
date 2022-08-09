@@ -192,7 +192,7 @@ export const bankFlags = [
 	'show_names',
 	'show_weights',
 	'show_all',
-	'show_wide'
+	'wide'
 ] as const;
 export type BankFlag = typeof bankFlags[number];
 
@@ -565,7 +565,7 @@ export default class BankImageTask extends Task {
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const page = flags.get('page');
 		const noBorder = flags.get('noBorder');
-		const wide = flags.get('wide') || opts.mahojiFlags?.includes('show_wide');
+		const wide = flags.get('wide') || opts.mahojiFlags?.includes('wide');
 		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
