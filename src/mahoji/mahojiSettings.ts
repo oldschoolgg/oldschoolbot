@@ -306,7 +306,7 @@ export function getMahojiBank(user: User) {
 }
 
 export async function userStatsUpdate(userID: string, data: (u: UserStats) => Prisma.UserStatsUpdateInput) {
-	const id = Number(userID);
+	const id = BigInt(userID);
 	const userStats = await prisma.userStats.upsert({
 		create: {
 			user_id: id

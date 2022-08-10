@@ -105,6 +105,7 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 export const adminCommand: OSBMahojiCommand = {
 	name: 'admin',
 	description: 'Allows you to trade items with other players.',
+	guildID: production ? '342983479501389826' : '940758552425955348',
 	options: [
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -263,12 +264,32 @@ export const adminCommand: OSBMahojiCommand = {
 		}
 		if (options.sync_commands) {
 			const global = Boolean(options.sync_commands.global);
-			await bulkUpdateCommands({
-				client: globalClient.mahojiClient,
-				commands: globalClient.mahojiClient.commands.values,
-				guildID: global ? null : guildID.toString()
-			});
-			return `Synced commands ${global ? 'globally' : 'locally'}.`;
+			const totalCommands = globalClient.mahojiClient.commands.values;
+			const globalCommands = totalCommands.filter(i => !i.guildID);
+			const guildCommands = totalCommands.filter(i => Boolean(i.guildID));
+			if (global) {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: globalCommands,
+					guildID: null
+				});
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: guildCommands,
+					guildID: guildID.toString()
+				});
+			} else {
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: totalCommands,
+					guildID: guildID.toString()
+				});
+			}
+
+			return `Synced commands ${global ? 'globally' : 'locally'}.
+${totalCommands.length} Total commands
+${globalCommands.length} Global commands
+${guildCommands.length} Guild commands`;
 		}
 		if (options.item_stats) {
 			const item = getItem(options.item_stats.item);
