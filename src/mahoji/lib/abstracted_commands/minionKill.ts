@@ -146,6 +146,9 @@ export async function minionKillCommand(
 	quantity: number | undefined,
 	method: PvMMethod | undefined
 ) {
+	if (user.minionIsBusy) {
+		return 'Your minion is busy.';
+	}
 	const { minionName } = user;
 
 	const boosts = [];

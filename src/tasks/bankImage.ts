@@ -203,6 +203,7 @@ export const bankFlags = [
 	'show_names',
 	'show_weights',
 	'show_all',
+	'wide',
 	'invention_xp'
 ] as const;
 export type BankFlag = typeof bankFlags[number];
@@ -418,8 +419,8 @@ export default class BankImageTask extends Task {
 		items: [Item, number][],
 		flags: FlagMap,
 		currentCL: Bank | undefined,
-		flag: BankFlag | undefined,
 		user: KlasaUser | undefined,
+		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined
 	) {
 		// Draw Items
@@ -490,15 +491,15 @@ export default class BankImageTask extends Task {
 
 			let bottomItemText: string | number | null = null;
 
-			if (flags.has('sv') || flag === 'show_price') {
+			if (flags.has('sv') || mahojiFlags?.includes('show_price')) {
 				bottomItemText = item.price * quantity;
-			} else if (flags.has('av') || flag === 'show_alch') {
+			} else if (flags.has('av') || mahojiFlags?.includes('show_alch')) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
-			} else if (flags.has('id') || flag === 'show_id') {
+			} else if (flags.has('id') || mahojiFlags?.includes('show_id')) {
 				bottomItemText = item.id.toString();
-			} else if (flags.has('names') || flag === 'show_names') {
+			} else if (flags.has('names') || mahojiFlags?.includes('show_names')) {
 				bottomItemText = item.name;
-			} else if (flag === 'invention_xp' && user) {
+			} else if (mahojiFlags?.includes('invention_xp') && user) {
 				const group = findDisassemblyGroup(item);
 				const inventionLevel = user.skillLevel(SkillsEnum.Invention);
 				const xp = group && inventionLevel >= group.data.lvl && calcWholeDisXP(user, item, quantity);
@@ -507,7 +508,7 @@ export default class BankImageTask extends Task {
 				} else {
 					bottomItemText = 0;
 				}
-			} else if (flag === 'show_weights' && weightings && weightings[item.id]) {
+			} else if (mahojiFlags?.includes('show_weights') && weightings && weightings[item.id]) {
 				bottomItemText = weightings[item.id];
 			}
 
@@ -536,7 +537,7 @@ export default class BankImageTask extends Task {
 		flags?: Flags;
 		user?: KlasaUser;
 		collectionLog?: Bank;
-		flag?: BankFlag;
+		mahojiFlags?: BankFlag[];
 	}): Promise<BankImageResult> {
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
@@ -615,12 +616,12 @@ export default class BankImageTask extends Task {
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const page = flags.get('page');
 		const noBorder = flags.get('noBorder');
-		const wide = flags.get('wide');
+		const wide = flags.get('wide') || opts.mahojiFlags?.includes('wide');
 		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
 
-		const isShowingFullBankImage = flags.has('full') || opts.flag === 'show_all';
+		const isShowingFullBankImage = wide || flags.has('full') || opts.mahojiFlags?.includes('show_all');
 
 		// Paging
 		if (typeof page === 'number' && !isShowingFullBankImage) {
@@ -735,8 +736,8 @@ export default class BankImageTask extends Task {
 			items,
 			flags,
 			currentCL,
-			opts.flag,
 			user,
+			opts.mahojiFlags,
 			weightings
 		);
 

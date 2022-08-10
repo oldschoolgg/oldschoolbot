@@ -96,7 +96,7 @@ Type \`confirm permanent ironman\` if you understand the above information, and 
 		if (roboChimpUser.leagues_points_total >= 0) {
 			await roboChimpClient.user.update({
 				where: {
-					id: Number(user.id)
+					id: BigInt(user.id)
 				},
 				data: {
 					leagues_points_balance_bso: roboChimpUser.leagues_points_balance_bso

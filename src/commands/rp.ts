@@ -33,6 +33,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { BotCommand } from '../lib/structures/BotCommand';
 import { ItemBank } from '../lib/types';
 import {
+	assert,
 	bankValueWithMarketPrices,
 	calcPerHour,
 	convertBankToPerHourStats,
@@ -883,6 +884,30 @@ ${guildCommands.length} Guild commands`);
 				return msg.channel.send({
 					files: [new MessageAttachment(Buffer.from(str), 'output.txt')]
 				});
+			}
+			case 'migrateids': {
+				const allStashUnits = await prisma.stashUnit.findMany();
+				const userIDs = await prisma.user.findMany({ select: { id: true } });
+				const idsToMigrate = [];
+
+				for (const id of userIDs.map(i => i.id)) {
+					const truncatedID = Number(BigInt(id));
+					const stashUnit = allStashUnits.filter(i => i.user_id === BigInt(truncatedID));
+					if (stashUnit.length === 0) continue;
+					idsToMigrate.push({ id, truncatedID });
+				}
+				assert(idsToMigrate.length === new Set(idsToMigrate.map(i => i.truncatedID)).size);
+				for (const { truncatedID, id } of idsToMigrate) {
+					await prisma.stashUnit.updateMany({
+						where: {
+							user_id: BigInt(truncatedID)
+						},
+						data: {
+							user_id: BigInt(id)
+						}
+					});
+				}
+				return msg.channel.send(`Migrated ${idsToMigrate.length} IDs`);
 			}
 			case 'loottrack': {
 				if (typeof input !== 'string') {
