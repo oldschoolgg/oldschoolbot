@@ -6,7 +6,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
-import { userStatsUpdate } from '../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
 import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
@@ -90,6 +90,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				const otherLoot = new Bank().add(MysteryBoxes.roll());
 				const bonusLoot = new Bank().add(loot).add(otherLoot);
 				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
+				userStatsBankUpdate(user.id, 'doubled_loot_bank', bonusLoot);
 				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
 				updateBankSetting(globalClient, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
 			}
@@ -109,6 +110,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 							bonusLoot.add(PekyTable.roll());
 						}
 					}
+					userStatsBankUpdate(user.id, 'peky_loot_bank', bonusLoot);
 					messages.push(
 						`<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`
 					);
@@ -119,6 +121,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(RuneTable.roll());
 					}
+					userStatsBankUpdate(user.id, 'obis_loot_bank', bonusLoot);
 					messages.push(
 						`<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`
 					);
@@ -129,6 +132,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(WoodTable.roll());
 					}
+					userStatsBankUpdate(user.id, 'brock_loot_bank', bonusLoot);
 					messages.push(
 						`<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${bonusLoot}.`
 					);
@@ -139,6 +143,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(WilvusTable.roll());
 					}
+					userStatsBankUpdate(user.id, 'wilvus_loot_bank', bonusLoot);
 					messages.push(
 						`<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${bonusLoot}.`
 					);
@@ -150,6 +155,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 							bonusLoot.add(MysteryBoxes.roll());
 						}
 					}
+					userStatsBankUpdate(user.id, 'smokey_loot_bank', bonusLoot);
 					if (bonusLoot.length > 0) {
 						messages.push(
 							`<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`
@@ -161,6 +167,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < minutes / 2; i++) {
 						bonusLoot.add(DougTable.roll());
 					}
+					userStatsBankUpdate(user.id, 'doug_loot_bank', bonusLoot);
 					messages.push(`Doug did some mining while you were on your trip and got you: ${bonusLoot}.`);
 					break;
 				}
@@ -168,6 +175,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < minutes; i++) {
 						bonusLoot.add('Banana', randInt(1, 3));
 					}
+					userStatsBankUpdate(user.id, 'harry_loot_bank', bonusLoot);
 					messages.push(`<:harry:749945071104819292>: ${bonusLoot}.`);
 					break;
 				}

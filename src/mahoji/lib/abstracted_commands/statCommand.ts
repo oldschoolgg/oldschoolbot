@@ -320,6 +320,69 @@ ${actualClues
 			return `**XP From Lamps**
 ${entries.map(i => `**${toTitleCase(i[0])}**: ${toKMB(i[1])}`).join('\n')}`;
 		}
+	},
+	{
+		name: 'Loot from Smokey',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.smokey_loot_bank as ItemBank), 'Loot From Smokey');
+		}
+	},
+	{
+		name: 'Loot from Zippy',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.loot_from_zippy_bank as ItemBank), 'Loot From Zippy');
+		}
+	},
+	{
+		name: 'Loot from Peky',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.peky_loot_bank as ItemBank), 'Loot From Peky');
+		}
+	},
+	{
+		name: 'Loot from Obis',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.obis_loot_bank as ItemBank), 'Loot From Obis');
+		}
+	},
+	{
+		name: 'Loot from Brock',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.brock_loot_bank as ItemBank), 'Loot From Brock');
+		}
+	},
+	{
+		name: 'Loot from Wilvus',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.wilvus_loot_bank as ItemBank), 'Loot From Wilvus');
+		}
+	},
+	{
+		name: 'Loot from Doug',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.doug_loot_bank as ItemBank), 'Loot From Doug');
+		}
+	},
+	{
+		name: 'Loot from Harry',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.harry_loot_bank as ItemBank), 'Loot From Harry');
+		}
+	},
+	{
+		name: 'Loot from Double Loot Trips',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.doubled_loot_bank as ItemBank), 'Loot From Double Loot Trips');
+		}
 	}
 ];
 
