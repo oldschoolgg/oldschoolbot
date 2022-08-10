@@ -698,6 +698,16 @@ model UserStats {
   portable_tanner_bank   Json @default("{}") @db.Json
   clue_upgrader_bank     Json @default("{}") @db.Json
 
+  loot_from_zippy_bank Json @default("{}") @db.Json
+  peky_loot_bank       Json @default("{}") @db.Json
+  obis_loot_bank       Json @default("{}") @db.Json
+  brock_loot_bank      Json @default("{}") @db.Json
+  wilvus_loot_bank     Json @default("{}") @db.Json
+  doug_loot_bank       Json @default("{}") @db.Json
+  harry_loot_bank      Json @default("{}") @db.Json
+  smokey_loot_bank     Json @default("{}") @db.Json
+  doubled_loot_bank    Json @default("{}") @db.Json
+
   silverhawk_boots_passive_xp BigInt @default(0)
   bonecrusher_prayer_xp       BigInt @default(0)
 

@@ -13,7 +13,12 @@ import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem, { getItem } from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 import resolveItems from '../../../lib/util/resolveItems';
-import { handleMahojiConfirmation, mahojiUserSettingsUpdate, patronMsg } from '../../mahojiSettings';
+import {
+	handleMahojiConfirmation,
+	mahojiUserSettingsUpdate,
+	patronMsg,
+	userStatsBankUpdate
+} from '../../mahojiSettings';
 
 const regex = /^(.*?)( \([0-9]+x Owned\))?$/;
 
@@ -143,6 +148,7 @@ async function finalizeOpening({
 			for (let i = 0; i < amountOfThisOpenable; i++) {
 				if (roll(10)) smokeyBonus++;
 			}
+			userStatsBankUpdate(user.id, 'smokey_loot_bank', new Bank().add(openable.openedItem.id, smokeyBonus));
 			loot.add((await getOpenableLoot({ user, mahojiUser, openable, quantity: smokeyBonus })).bank);
 			bonuses.push(`${smokeyBonus}x ${openable.name}`);
 		}
