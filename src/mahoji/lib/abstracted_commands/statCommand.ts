@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import { activity_type_enum, User } from '@prisma/client';
+import { activity_type_enum, User, UserStats } from '@prisma/client';
 import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
@@ -22,7 +22,7 @@ import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { getSlayerTaskStats } from '../../../lib/slayer/slayerUtil';
 import { sorts } from '../../../lib/sorts';
 import { InfernoOptions } from '../../../lib/types/minions';
-import { formatDuration, stringMatches } from '../../../lib/util';
+import { formatDuration, stringMatches, toTitleCase } from '../../../lib/util';
 import { barChart, lineChart, pieChart } from '../../../lib/util/chart';
 import { getItem } from '../../../lib/util/getOSItem';
 import getUsersPerkTier from '../../../lib/util/getUsersPerkTier';
@@ -35,7 +35,7 @@ import { collectables } from './collectCommand';
 interface DataPiece {
 	name: string;
 	perkTierNeeded: PerkTier | null;
-	run: (user: User) => CommandResponse;
+	run: (user: User, stats: UserStats) => CommandResponse;
 }
 
 function wrap(str: string) {
@@ -241,7 +241,90 @@ function makeResponseForBuffer(buffer: Buffer) {
 	};
 }
 
+const bsoOnlyDatapoints: readonly DataPiece[] = [
+	{
+		name: 'Actual Clues Done',
+		perkTierNeeded: null,
+		run: async (user: User) => {
+			const actualClues = await calcActualClues(user);
+			return `These are the clues you have acquired, completed and opened yourself:
+
+${actualClues
+	.items()
+	.map(i => `${bold(i[0].name)}: ${i[1].toLocaleString()}`)
+	.join('\n')}`;
+		}
+	},
+	{
+		name: 'Bars from Infernal adze',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.bars_from_adze_bank as ItemBank), 'Your Bars from Infernal Adze');
+		}
+	},
+	{
+		name: 'Bars from Klik',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.bars_from_klik_bank as ItemBank), 'Your Bars from Klik');
+		}
+	},
+	{
+		name: 'Ores from Mining spirits',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.ores_from_spirits_bank as ItemBank), 'Your Ores from Spirits');
+		}
+	},
+	{
+		name: 'Leather from Portable tanner',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(
+				new Bank(stats.portable_tanner_bank as ItemBank),
+				'Your Leather from Portable tanner'
+			);
+		}
+	},
+	{
+		name: 'Clues from Clue upgrader',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.clue_upgrader_bank as ItemBank), 'Clues from Clue upgrader');
+		}
+	},
+	{
+		name: 'XP from bonecrusher',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You have received ${Number(
+				stats.bonecrusher_prayer_xp
+			).toLocaleString()} XP from your Bonecrusher.`;
+		}
+	},
+	{
+		name: 'XP from Silverhawk boots passive',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You have received ${Number(
+				stats.silverhawk_boots_passive_xp
+			).toLocaleString()} XP from your Silverhawk boots passive.`;
+		}
+	},
+	{
+		name: 'XP from Lamps',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			const entries = Object.entries(stats.lamped_xp as ItemBank);
+			if (entries.length === 0) return 'No recorded lamp usages.';
+			return `**XP From Lamps**
+${entries.map(i => `**${toTitleCase(i[0])}**: ${toKMB(i[1])}`).join('\n')}`;
+		}
+	}
+];
+
 export const dataPoints: readonly DataPiece[] = [
+	...bsoOnlyDatapoints,
 	{
 		name: 'Personal Activity Types',
 		perkTierNeeded: PerkTier.Four,
@@ -859,16 +942,17 @@ GROUP BY "bankBackground";`);
 		}
 	},
 	{
-		name: 'Actual Clues Done',
-		perkTierNeeded: null,
-		run: async (user: User) => {
-			const actualClues = await calcActualClues(user);
-			return `These are the clues you have acquired, completed and opened yourself:
-
-${actualClues
-	.items()
-	.map(i => `${bold(i[0].name)}: ${i[1].toLocaleString()}`)
-	.join('\n')}`;
+		name: 'Total Items Sold',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.items_sold_bank as ItemBank), "You've sold...");
+		}
+	},
+	{
+		name: 'Total GP From Selling',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You've received **${Number(stats.sell_gp).toLocaleString()}** GP from selling items.`;
 		}
 	}
 ] as const;
@@ -884,5 +968,14 @@ export async function statsCommand(user: User, type: string): CommandResponse {
 	if (perkTierNeeded !== null && getUsersPerkTier(user) < perkTierNeeded) {
 		return `Sorry, you need to be a Tier ${perkTierNeeded + 1} Patron to see this stat.`;
 	}
-	return dataPoint.run(user);
+	const userStats = await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(user.id)
+		},
+		update: {},
+		create: {
+			user_id: BigInt(user.id)
+		}
+	});
+	return dataPoint.run(user, userStats);
 }
