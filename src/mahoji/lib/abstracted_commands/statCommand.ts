@@ -1,5 +1,5 @@
 import { bold } from '@discordjs/builders';
-import { activity_type_enum, User } from '@prisma/client';
+import { activity_type_enum, User, UserStats } from '@prisma/client';
 import { sumArr, Time } from 'e';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank, Monsters } from 'oldschooljs';
@@ -35,7 +35,7 @@ import { collectables } from './collectCommand';
 interface DataPiece {
 	name: string;
 	perkTierNeeded: PerkTier | null;
-	run: (user: User) => CommandResponse;
+	run: (user: User, stats: UserStats) => CommandResponse;
 }
 
 function wrap(str: string) {
@@ -870,6 +870,20 @@ ${actualClues
 	.map(i => `${bold(i[0].name)}: ${i[1].toLocaleString()}`)
 	.join('\n')}`;
 		}
+	},
+	{
+		name: 'Total Items Sold',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.items_sold_bank as ItemBank), "You've sold...");
+		}
+	},
+	{
+		name: 'Total GP From Selling',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return `You've received **${Number(stats.sell_gp).toLocaleString()}** GP from selling items.`;
+		}
 	}
 ] as const;
 
@@ -884,5 +898,14 @@ export async function statsCommand(user: User, type: string): CommandResponse {
 	if (perkTierNeeded !== null && getUsersPerkTier(user) < perkTierNeeded) {
 		return `Sorry, you need to be a Tier ${perkTierNeeded + 1} Patron to see this stat.`;
 	}
-	return dataPoint.run(user);
+	const userStats = await prisma.userStats.upsert({
+		where: {
+			user_id: BigInt(user.id)
+		},
+		update: {},
+		create: {
+			user_id: BigInt(user.id)
+		}
+	});
+	return dataPoint.run(user, userStats);
 }
