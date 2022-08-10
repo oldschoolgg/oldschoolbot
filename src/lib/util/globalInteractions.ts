@@ -157,6 +157,29 @@ export async function interactionHook(data: APIInteraction) {
 		});
 	}
 
+	if (id === 'SPAWN_LAMP') {
+		await buttonReply();
+		return runCommand({
+			commandName: 'tools',
+			args: { patron: { spawnlamp: {} } },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+	if (id === 'REPEAT_TAME_TRIP') {
+		await buttonReply();
+		return repeatTameTrip({ ...options });
+	}
+	if (id === 'ITEM_CONTRACT_SEND') {
+		await buttonReply();
+		return runCommand({
+			commandName: 'ic',
+			args: { send: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
 	if (minionIsBusy(user.id)) {
 		return buttonReply(`${minionName(user)} is busy.`);
 	}
@@ -228,28 +251,6 @@ export async function interactionHook(data: APIInteraction) {
 		case 'AUTO_FARMING_CONTRACT': {
 			await buttonReply();
 			return autoContract(await globalClient.fetchUser(user.id), BigInt(options.channelID), BigInt(user.id));
-		}
-		case 'SPAWN_LAMP': {
-			await buttonReply();
-			return runCommand({
-				commandName: 'tools',
-				args: { patron: { spawnlamp: {} } },
-				bypassInhibitors: true,
-				...options
-			});
-		}
-		case 'REPEAT_TAME_TRIP': {
-			await buttonReply();
-			return repeatTameTrip({ ...options });
-		}
-		case 'ITEM_CONTRACT_SEND': {
-			await buttonReply();
-			return runCommand({
-				commandName: 'ic',
-				args: { send: {} },
-				bypassInhibitors: true,
-				...options
-			});
 		}
 		default: {
 		}
