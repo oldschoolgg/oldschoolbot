@@ -349,8 +349,8 @@ export const Inventions: readonly Invention[] = [
 		item: getOSItem('Abyssal amulet'),
 		materialTypeBank: new MaterialBank({
 			magic: 4,
-			treasured: 2,
-			metallic: 2
+			treasured: 3,
+			metallic: 3
 		}),
 		flags: ['bank'],
 		itemCost: new Bank().add('Abyssal gem').freeze(),
