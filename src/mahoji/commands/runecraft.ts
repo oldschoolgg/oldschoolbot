@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Emoji } from '../../lib/constants';
-import { inventionBoosts, InventionID, Inventions } from '../../lib/invention/inventions';
+import { inventionBoosts, InventionID, inventionItemBoost, Inventions } from '../../lib/invention/inventions';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -134,17 +134,6 @@ export const runecraftCommand: OSBMahojiCommand = {
 			boosts.push(ringStr);
 		}
 
-		const amuletId = Inventions.find(inv => inv.id === InventionID.AbyssalAmulet)!.item.id;
-		if (hasItemsEquippedOrInBank(user, [amuletId])) {
-			const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
-				b.runes.some(r => stringMatches(r, runeObj.name))
-			);
-			if (abyssalAmuletBoost) {
-				tripLength = reduceNumByPercent(tripLength, abyssalAmuletBoost.boost);
-				boosts.push(`${abyssalAmuletBoost.boost}% boost for Abyssal amulet`);
-			}
-		}
-
 		let inventorySize = 28;
 
 		// For each pouch the user has, increase their inventory size.
@@ -164,6 +153,30 @@ export const runecraftCommand: OSBMahojiCommand = {
 			boosts.push('3% for Runecraft cape');
 		}
 		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
+
+		const amuletId = Inventions.find(inv => inv.id === InventionID.AbyssalAmulet)!.item.id;
+		if (hasItemsEquippedOrInBank(user, [amuletId])) {
+			const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
+				b.runes.some(r => stringMatches(r, runeObj.name))
+			);
+			if (abyssalAmuletBoost) {
+				const boostResult = await inventionItemBoost({
+					userID: BigInt(user.id),
+					inventionID: InventionID.AbyssalAmulet,
+					duration: Math.min(
+						maxTripLength,
+						quantity
+							? (quantity / inventorySize) * reduceNumByPercent(tripLength, abyssalAmuletBoost.boost)
+							: maxTripLength
+					)
+				});
+				if (boostResult.success) {
+					tripLength = reduceNumByPercent(tripLength, abyssalAmuletBoost.boost);
+					boosts.push(`${abyssalAmuletBoost.boost}% boost for Abyssal amulet`);
+					boosts.push(boostResult.materialCost.toString());
+				}
+			}
+		}
 
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
