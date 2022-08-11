@@ -7,13 +7,13 @@ import announceLoot from '../../../lib/minions/functions/announceLoot';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
-import { NaxxusActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { updateBankSetting } from '../../../lib/util';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export default class extends Task {
-	async run(data: NaxxusActivityTaskOptions) {
+	async run(data: ActivityTaskOptionsWithQuantity) {
 		const { channelID, userID, quantity, duration } = data;
 		const user = await this.client.fetchUser(userID);
 

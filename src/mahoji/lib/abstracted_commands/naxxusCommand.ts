@@ -11,7 +11,7 @@ import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Gear } from '../../../lib/structures/Gear';
-import { NaxxusActivityTaskOptions } from '../../../lib/types/minions';
+import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, isWeekend, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import getOSItem from '../../../lib/util/getOSItem';
@@ -170,7 +170,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 	else if (kc > 300) brewsNeeded *= 0.6;
 	else if (kc > 200) brewsNeeded *= 0.8;
 
-	brewsNeeded *= quantity;
+	brewsNeeded = Math.ceil(quantity * brewsNeeded);
 
 	const foodBank = new Bank()
 		.add('Enhanced saradomin brew', brewsNeeded)
@@ -212,7 +212,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		type: 'Monster'
 	});
 
-	await addSubTaskToActivityTask<NaxxusActivityTaskOptions>({
+	await addSubTaskToActivityTask<ActivityTaskOptionsWithQuantity>({
 		userID: user.id,
 		channelID: channelID.toString(),
 		quantity,
