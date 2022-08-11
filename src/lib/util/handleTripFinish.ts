@@ -59,6 +59,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
+				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
 				await user.addItemsToBank({ items: imp.bank, collectionLog: true });
 			}
 		}
