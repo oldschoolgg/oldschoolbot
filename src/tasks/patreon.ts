@@ -247,14 +247,22 @@ export default class PatreonTask extends Task {
 				this.client.users.cache.get(patron.discordID)?.username ?? `${patron.discordID}|${patron.patreonID}`;
 
 			if (roboChimpUser.patreon_id !== patron.patreonID) {
-				await roboChimpClient.user.update({
-					where: {
-						id: BigInt(patron.discordID)
-					},
-					data: {
+				try {
+					await roboChimpClient.user.update({
+						where: {
+							id: BigInt(patron.discordID)
+						},
+						data: {
+							patreon_id: patron.patreonID
+						}
+					});
+				} catch {
+					logError(new Error('Failed to set patreonID'), {
+						id: patron.discordID,
 						patreon_id: patron.patreonID
-					}
-				});
+					});
+					continue;
+				}
 			}
 			const userBitfield = settings.get(UserSettings.BitField);
 			if (

@@ -2,7 +2,6 @@ import './lib/customItems/customItems';
 import './lib/data/itemAliases';
 import './lib/crons';
 
-import { Stopwatch } from '@sapphire/stopwatch';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -86,15 +85,7 @@ client.on('raw', async event => {
 	client.emit('debug', `Received ${data.type} interaction`);
 	interactionHook(data);
 	if (data.type === InteractionType.ModalSubmit) return modalInteractionHook(data);
-	const timer = new Stopwatch();
 	const result = await mahojiClient.parseInteraction(data);
-	if (result === null) return;
-	timer.stop();
-	client.emit(
-		'debug',
-		`Parsed ${result?.interaction?.data.interaction.data?.name ?? 'None'} interaction in ${timer.duration}ms`
-	);
-
 	if (result === null) return;
 
 	if ('error' in result) {
