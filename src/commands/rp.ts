@@ -886,12 +886,13 @@ ${guildCommands.length} Guild commands`);
 				});
 			}
 			case 'migrateids': {
+				msg.channel.send('Starting...');
 				const allStashUnits = await prisma.stashUnit.findMany();
 				const userIDs = await prisma.user.findMany({ select: { id: true } });
 				const idsToMigrate = [];
 
 				for (const id of userIDs.map(i => i.id)) {
-					const truncatedID = Number(BigInt(id));
+					const truncatedID = BigInt(Number(id.toString()).toString());
 					const stashUnit = allStashUnits.filter(i => i.user_id === BigInt(truncatedID));
 					if (stashUnit.length === 0) continue;
 					idsToMigrate.push({ id, truncatedID });
