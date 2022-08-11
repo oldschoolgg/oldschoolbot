@@ -25,15 +25,17 @@ export default async function removeFoodFromUser({
 	activityName: string;
 	attackStylesUsed: GearSetupType[];
 	learningPercentage?: number;
-}): Promise<{ foodRemoved: Bank; reductions: string[] }> {
+}): Promise<{ foodRemoved: Bank; reductions: string[]; reductionPercent: number }> {
 	await user.settings.sync(true);
 
+	let reductionPercent = 100;
 	const rawGear = user.rawGear();
 	const gearSetupsUsed = objectEntries(rawGear).filter(entry => attackStylesUsed.includes(entry[0]));
 	const reductions = [];
 	const elyUsed = gearSetupsUsed.some(entry => entry[1].shield?.item === itemID('Elysian spirit shield'));
 	if (elyUsed) {
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 17.5);
+		reductionPercent = reduceNumByPercent(reductionPercent, 17.5);
 		reductions.push(`-17.5% for Ely ${Emoji.Ely}`);
 	}
 	if (
@@ -41,11 +43,13 @@ export default async function removeFoodFromUser({
 		rawGear.melee.hasEquipped(['Justiciar faceguard', 'Justiciar chestguard', 'Justiciar legguards'], true, true)
 	) {
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, 6.5);
+		reductionPercent = reduceNumByPercent(reductionPercent, 6.5);
 		reductions.push('-6.5% for Justiciar');
 	}
 
 	if (learningPercentage && learningPercentage > 1) {
 		totalHealingNeeded = reduceNumByPercent(totalHealingNeeded, learningPercentage);
+		reductionPercent = reduceNumByPercent(reductionPercent, learningPercentage);
 		reductions.push(`-${learningPercentage}% for experience`);
 	}
 	const favoriteFood = user.settings.get(UserSettings.FavoriteFood);
@@ -62,7 +66,8 @@ export default async function removeFoodFromUser({
 
 		return {
 			foodRemoved: foodToRemove,
-			reductions
+			reductions,
+			reductionPercent
 		};
 	}
 }
