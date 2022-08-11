@@ -136,12 +136,12 @@ export const runecraftCommand: OSBMahojiCommand = {
 
 		const amuletId = Inventions.find(inv => inv.id === InventionID.AbyssalAmulet)!.item.id;
 		if (hasItemsEquippedOrInBank(user, [amuletId])) {
-			const abyssalAmulet = inventionBoosts.abyssalAmulet.boosts.find(b =>
+			const abyssalAmuletBoost = inventionBoosts.abyssalAmulet.boosts.find(b =>
 				b.runes.some(r => stringMatches(r, runeObj.name))
 			);
-			if (abyssalAmulet) {
-				tripLength = reduceNumByPercent(tripLength, abyssalAmulet.boost);
-				boosts.push(`${abyssalAmulet.boost}% boost for Abyssal amulet`);
+			if (abyssalAmuletBoost) {
+				tripLength = reduceNumByPercent(tripLength, abyssalAmuletBoost.boost);
+				boosts.push(`${abyssalAmuletBoost.boost}% boost for Abyssal amulet`);
 			}
 		}
 
