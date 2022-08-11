@@ -10,6 +10,7 @@ import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { minionName } from '../../../lib/util/minionUtils';
 import puroOptions from '../../../mahoji/lib/abstracted_commands/puroPuroCommand';
+import { userStatsBankUpdate } from '../../../mahoji/mahojiSettings';
 
 function singleImpHunt(minutes: number, user: KlasaUser) {
 	let totalQty = 0;
@@ -195,6 +196,7 @@ export default class extends Task {
 
 		await user.addItemsToBank({ items: bank, collectionLog: true });
 		await user.removeItemsFromBank(itemCost);
+		userStatsBankUpdate(user.id, 'puropuro_implings_bank', bank);
 
 		handleTripFinish(
 			user,
