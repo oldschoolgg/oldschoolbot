@@ -64,7 +64,7 @@ export default async function removeFoodFromUser({
 		return {
 			foodRemoved: foodToRemove,
 			reductions,
-			reductionPercent: (totalHealingNeeded / originalTotalHealing) * 100
+			reductionPercent: totalHealingNeeded / originalTotalHealing
 		};
 	}
 }

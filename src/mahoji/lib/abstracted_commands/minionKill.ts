@@ -476,7 +476,7 @@ export async function minionKillCommand(
 					const healAmount =
 						typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(user);
 					const amountHealed = qty * healAmount;
-					if (amountHealed < calcPercentOfNum(0.75 * reductionPercent, healAmountNeeded * quantity)) continue;
+					if (amountHealed < calcPercentOfNum(75 * reductionPercent, healAmountNeeded * quantity)) continue;
 					const boost = eatable.pvmBoost;
 					if (boost) {
 						if (boost < 0) {
