@@ -1036,7 +1036,7 @@ const specialPlants: Plant[] = [
 		plantXp: 260,
 		checkXp: 19_240,
 		harvestXp: 0,
-		inputItems: new Bank({ 'Grand Crystal acorn': 1 }),
+		inputItems: new Bank({ 'Grand crystal acorn': 1 }),
 		outputCrop: itemID('Crystal shard'),
 		variableYield: true,
 		variableOutputAmount: [
