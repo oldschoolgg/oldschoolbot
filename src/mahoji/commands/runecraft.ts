@@ -4,7 +4,7 @@ import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 
 import { Emoji } from '../../lib/constants';
-import { inventionBoosts, Inventions } from '../../lib/invention/inventions';
+import { inventionBoosts, InventionID, Inventions } from '../../lib/invention/inventions';
 import { darkAltarCommand } from '../../lib/minions/functions/darkAltarCommand';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
@@ -134,7 +134,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			boosts.push(ringStr);
 		}
 
-		const amuletId = Inventions.find(inv => inv.name === 'Abyssal amulet')!.item.id;
+		const amuletId = Inventions.find(inv => inv.id === InventionID.AbyssalAmulet)!.item.id;
 		if (hasItemsEquippedOrInBank(user, [amuletId])) {
 			const abyssalAmulet = inventionBoosts.abyssalAmulet.boosts.find(b =>
 				b.runes.some(r => stringMatches(r, runeObj.name))
