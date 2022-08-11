@@ -62,7 +62,7 @@ async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, 
 	totalXP *= 5;
 	userStatsUpdate(user.id, () => ({
 		bonecrusher_prayer_xp: {
-			increment: totalXP
+			increment: Math.floor(totalXP)
 		}
 	}));
 	const xpStr = await user.addXP({
