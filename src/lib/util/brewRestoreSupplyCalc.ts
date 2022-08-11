@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-export default function brewRestoreSupplyCalc(
+export function brewRestoreSupplyCalc(
 	user: KlasaUser,
 	brewsNeeded: number,
 	restoresNeeded?: number

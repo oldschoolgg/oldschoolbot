@@ -14,7 +14,7 @@ import { Bank } from 'oldschooljs';
 import { Item } from 'oldschooljs/dist/meta/types';
 import { ChambersOfXericOptions } from 'oldschooljs/dist/simulation/misc/ChambersOfXeric';
 
-import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
+import { brewRestoreSupplyCalc } from '../../lib/util/brewRestoreSupplyCalc';
 import { checkUserCanUseDegradeableItem } from '../degradeableItems';
 import { constructGearSetup, GearStats } from '../gear';
 import { SkillsEnum } from '../skilling/types';

@@ -17,7 +17,7 @@ import Hunter from '../../../lib/skilling/skills/hunter/hunter';
 import { SkillsEnum } from '../../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../../lib/types/minions';
 import { rand, roll, stringMatches, updateBankSetting } from '../../../lib/util';
-import brewRestoreSupplyCalc from '../../../lib/util/brewRestoreSupplyCalc';
+import { brewRestoreSupplyCalc } from '../../../lib/util/brewRestoreSupplyCalc';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { BLACK_CHIN_ID, HERBIBOAR_ID } from './../../../lib/constants';
