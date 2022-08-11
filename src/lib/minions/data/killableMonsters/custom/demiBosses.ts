@@ -99,7 +99,7 @@ const Malygos: CustomMonster = {
 	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 	notifyDrops: resolveItems(['Abyssal cape', 'Ori']),
 	baseMonster: Monsters.Vorkath,
-	customMonsterData: { attributes: [MonsterAttribute.Dragon] }
+	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] }
 };
 
 const Treebeard: CustomMonster = {
