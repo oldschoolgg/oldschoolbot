@@ -6,7 +6,7 @@ import { Item } from 'oldschooljs/dist/meta/types';
 
 import { checkUserCanUseDegradeableItem, degradeableItems, degradeItem } from '../../../lib/degradeableItems';
 import { GearStats } from '../../../lib/gear';
-import { Naxxus } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
+import { Naxxus, NAXXUS_HP } from '../../../lib/minions/data/killableMonsters/custom/bosses/Naxxus';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
@@ -68,8 +68,6 @@ const itemBoosts: {
 		setup: 'mage'
 	}
 ];
-
-const NAXXUS_HP = 3900;
 
 function calcSetupPercent(
 	maxStats: GearStats,

@@ -103,3 +103,5 @@ export const Naxxus: KillableMonster = {
 		}
 	}
 };
+
+export const NAXXUS_HP = 3900;
