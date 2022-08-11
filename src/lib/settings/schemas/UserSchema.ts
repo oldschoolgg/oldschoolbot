@@ -1,6 +1,5 @@
 import { Client, SchemaFolder } from 'klasa';
 
-import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 import { BlowpipeData } from '../../minions/types';
 import defaultBirdHouseTrap from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
@@ -87,18 +86,9 @@ Client.defaultUserSchema
 			.add('equippedPet', 'integer', { default: null })
 			.add('farmingContract', 'any', { default: null })
 			.add('defaultCompostToUse', 'string', { default: 'compost' })
-			.add('defaultDartToUse', 'string', { default: 'bronze dart' })
 			.add('defaultPay', 'boolean', { default: false })
 			.add('birdhouseTraps', 'any', { default: defaultBirdHouseTrap })
-			.add('combatStyle', 'any', { default: CombatsEnum.Auto })
-			.add('meleeAttackStyle', 'any', { default: null })
-			.add('rangeAttackStyle', 'any', { default: null })
-			.add('mageAttackStyle', 'any', { default: null })
-			.add('combatSkill', 'any', { default: null })
-			.add('meleeCombatStyle', 'any', { default: null })
-			.add('rangeCombatStyle', 'any', { default: null })
-			.add('mageCombatStyle', 'any', { default: null })
-			.add('combatSpell', 'any', { default: null })
+			.add('combatStyle', 'any', { default: null })
 	)
 	.add('stats', (folder: SchemaFolder) =>
 		folder

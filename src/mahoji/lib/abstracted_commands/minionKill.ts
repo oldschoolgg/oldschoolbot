@@ -5,7 +5,6 @@ import { Bank, Monsters } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { itemID } from 'oldschooljs/dist/util';
 
-import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 import { PvMMethod } from '../../../lib/constants';
 import { Eatables } from '../../../lib/data/eatables';
 import { getSimilarItems } from '../../../lib/data/similarItems';
@@ -32,6 +31,7 @@ import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUse
 import removePotionsFromUser from '../../../lib/minions/functions/removePotionsFromUser';
 import removePrayerFromUser from '../../../lib/minions/functions/removePrayerFromUser';
 import removeRunesFromUser from '../../../lib/minions/functions/removeRunesFromUser';
+import { CombatsEnum } from '../../../lib/minions/functions/trainCommand';
 import { Consumable } from '../../../lib/minions/types';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -403,14 +403,14 @@ export async function minionKillCommand(
 
 	if (!noneCombat) {
 		if (
-			user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Range ||
+			user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Ranged ||
 			(user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
 				monster.defaultStyleToUse === GearStat.AttackRanged)
 		) {
 			messages.push(`Removed ${await removeAmmoFromUser(user, hits)}`);
 		}
 		if (
-			user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Mage ||
+			user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Magic ||
 			(user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
 				monster.defaultStyleToUse === GearStat.AttackMagic)
 		) {

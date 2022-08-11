@@ -1,3 +1,4 @@
+/*
 import { CommandStore, KlasaMessage } from 'klasa';
 
 import { requiresMinion } from '../../lib/minions/decorators';
@@ -238,3 +239,4 @@ export default class extends BotCommand {
 		return msg.channel.send('Unexpected error');
 	}
 }
+*/

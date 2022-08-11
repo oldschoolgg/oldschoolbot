@@ -1,8 +1,9 @@
 import { ArrayActions, KlasaUser } from 'klasa';
 
 import { UserSettings } from '../../settings/types/UserSettings';
-import { CombatsEnum } from './../../../commands/Minion/combatsetup';
+
 import { SkillsEnum } from './../../skilling/types';
+import { CombatsEnum } from './trainCommand';
 
 interface PrayerSimple {
 	level: number;
@@ -94,7 +95,7 @@ export default async function autoPrayerPicker(user: KlasaUser, combatSkill: Com
 				break;
 			}
 			break;
-		case CombatsEnum.Range:
+		case CombatsEnum.Ranged:
 			for (const simplePrayer of rangePrayerPrio) {
 				if (userPrayerLevel < simplePrayer.level) continue;
 				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
@@ -105,7 +106,7 @@ export default async function autoPrayerPicker(user: KlasaUser, combatSkill: Com
 				break;
 			}
 			break;
-		case CombatsEnum.Mage:
+		case CombatsEnum.Magic:
 			for (const simplePrayer of magePrayerPrio) {
 				if (userPrayerLevel < simplePrayer.level) continue;
 				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;

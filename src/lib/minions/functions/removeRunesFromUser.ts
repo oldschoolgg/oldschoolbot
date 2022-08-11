@@ -11,9 +11,9 @@ import { SkillsEnum } from './../../skilling/types';
 export default async function removeRunesFromUser(user: KlasaUser, casts: number): Promise<string> {
 	await user.settings.sync(true);
 	// Check if tridents are used and consume runes depending on trident if so in future
-	const castName = user.settings.get(UserSettings.Minion.CombatSpell);
-	if (!castName) throw 'No combat spell been set.';
-	const castableItem = Magic.Castables.find(item => stringMatches(item.name, castName));
+	const castable = user.settings.get(UserSettings.Minion.CombatSpell);
+	if (!castable) throw 'No combat spell been set.';
+	const castableItem = Magic.Castables.find(item => stringMatches(item.name, castable.name));
 	if (!castableItem) {
 		throw 'That is not a valid spell that been set.';
 	}

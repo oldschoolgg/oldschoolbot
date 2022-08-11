@@ -302,14 +302,13 @@ model User {
   minion_defaultPay          Boolean  @default(false) @map("minion.defaultPay")
   minion_birdhouseTraps      Json?    @map("minion.birdhouseTraps") @db.Json
   minion_combatSpell         String?  @map("minion.combatSpell")
-  minion_mageCombatStyle     String?  @map("minion.mageCombatStyle")
-  minion_rangeCombatStyle    String?  @map("minion.rangeCombatStyle")
-  minion_meleeCombatStyle    String?  @map("minion.meleeCombatStyle")
-  minion_combatSkill         Json?    @map("minion.combatSkill") @db.Json
-  minion_mageAttackStyle     String?  @map("minion.mageAttackStyle")
-  minion_rangeAttackStyle    String?  @map("minion.rangeAttackStyle")
-  minion_meleeAttackStyle    String?  @map("minion.meleeAttackStyle")
-  minion_defaultDartToUse    String   @default("bronze dart") @map("minion.defaultDartToUse")
+  minion_magicAttackStyle   Json?     @map("minion.magicAttackStyle") @db.Json
+  minion_rangedAttackStyle  Json?     @map("minion.rangdAttackStyle") @db.Json
+  minion_meleeAttackStyle   Json?     @map("minion.meleeAttackStyle") @db.Json
+  minion_combatSkill        Json?     @map("minion.combatSkill") @db.Json
+  minion_magicAttackType    Json?     @map("minion.magicAttackType") @db.Json
+  minion_rangedAttackType   Json?     @map("minion.rangedAttackType") @db.Json
+  minion_meleeAttackType    Json?     @map("minion.meleeAttackType") @db.Json
   stats_deaths               Int      @default(0) @map("stats.deaths")
   stats_diceWins             Int      @default(0) @map("stats.diceWins")
   stats_diceLosses           Int      @default(0) @map("stats.diceLosses")

@@ -3,7 +3,6 @@ import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
 
-import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 import { NIGHTMARES_HP } from '../../constants';
 import { GearStat } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -13,6 +12,7 @@ import { randomVariation, stringMatches } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
+import { AttackStyles, CombatsEnum } from './trainCommand';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -123,11 +123,11 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackRanged) {
-			combatSkill = CombatsEnum.Range;
+			combatSkill = CombatsEnum.Ranged;
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackMagic) {
-			combatSkill = CombatsEnum.Mage;
+			combatSkill = CombatsEnum.Magic;
 		}
 	}
 
@@ -146,17 +146,17 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	const totalHP = hp * normalQty * xpMultiplier + superiorHP;
 
 	// Check what attack style
-	let attackStyle: string = '';
+	let attackStyle: AttackStyles;
 	let res: string[] = [];
-	if (combatSkill === CombatsEnum.Mage) {
+	if (combatSkill === CombatsEnum.Magic) {
 		const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
 		if (combatSpell === null) {
 			return 'Spell is null.';
 		}
-		spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase()));
-		const mageCombatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
-		switch (mageCombatStyle) {
-			case 'standard':
+		spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.name));
+		const mageAttackStyle = user.settings.get(UserSettings.Minion.MagicAttackStyle)!;
+		switch (mageAttackStyle) {
+			case AttackStyles.Standard:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
@@ -166,7 +166,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case 'defensive':
+			case AttackStyles.Defensive:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
@@ -184,7 +184,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case 'accurate':
+			case AttackStyles.Accurate:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
@@ -194,7 +194,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case 'longrange':
+			case AttackStyles.Longrange:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
@@ -217,9 +217,9 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		}
 	}
 	if (combatSkill === CombatsEnum.Melee) {
-		attackStyle = user.settings.get(UserSettings.Minion.MeleeAttackStyle)!.replace(/[^a-zA-Z0-9]/g, '');
+		attackStyle = user.settings.get(UserSettings.Minion.MeleeAttackStyle)!;
 		switch (attackStyle) {
-			case 'accurate':
+			case AttackStyles.Accurate:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Attack,
@@ -229,7 +229,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case 'aggressive':
+			case AttackStyles.Aggressive:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Strength,
@@ -239,7 +239,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case 'defensive':
+			case AttackStyles.Defensive:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Defence,
@@ -249,7 +249,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case 'controlled':
+			case AttackStyles.Controlled:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Attack,
@@ -279,10 +279,10 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 				return 'No attack style found or selected.';
 		}
 	}
-	if (combatSkill === CombatsEnum.Range) {
-		attackStyle = user.settings.get(UserSettings.Minion.RangeAttackStyle)!.replace(/[^a-zA-Z0-9]/g, '');
+	if (combatSkill === CombatsEnum.Ranged) {
+		attackStyle = user.settings.get(UserSettings.Minion.RangedAttackStyle)!;
 		switch (attackStyle) {
-			case 'accurate':
+			case AttackStyles.Accurate:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Ranged,
@@ -292,7 +292,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case 'rapid':
+			case AttackStyles.Rapid:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Ranged,
@@ -302,7 +302,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case 'longrange':
+			case AttackStyles.Longrange:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Ranged,

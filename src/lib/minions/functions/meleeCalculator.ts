@@ -1,3 +1,4 @@
+import { GearStat } from './../../gear/types';
 import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
@@ -11,6 +12,7 @@ import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
 import potionBoostCalculator from './potionBoostCalculator';
+import { AttackStyles } from './trainCommand';
 
 interface MeleeStrengthWeaponBonus {
 	id: number;
@@ -98,14 +100,14 @@ export default async function meleeCalculator(
 	quantity: number | undefined
 ): Promise<[number, number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Melee as source.
-	const combatStyle = user.settings.get(UserSettings.Minion.MeleeCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
+	const attackStyle = user.settings.get(UserSettings.Minion.MeleeAttackStyle);
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
 	}
 
 	const meleeWeapon = user.getGear('melee').equippedWeapon();
-	if (meleeWeapon === null || meleeWeapon.weapon === null || combatStyle === null) {
+	if (meleeWeapon === null || meleeWeapon.weapon === null || attackStyle === null) {
 		throw 'No melee weapon is equipped or combatStyle is not choosen.';
 	}
 	const meleeGear = user.getGear('melee');
@@ -125,20 +127,12 @@ export default async function meleeCalculator(
 		}
 	}
 	let effectiveStrLvl = Math.floor(user.skillLevel(SkillsEnum.Strength) + strengthPotionBoost) * prayerStrBonus + 8;
-	let attackStyle = '';
-	let combatType = '';
-	for (let stance of meleeWeapon.weapon!.stances) {
-		if (stance.combat_style.toLowerCase() === combatStyle) {
-			attackStyle = stance.attack_style!;
-			combatType = stance.attack_type!;
-			break;
-		}
-	}
+	const attackType = user.settings.get(UserSettings.Minion.MeleeAttackType);
 
-	if (attackStyle === 'aggresive') {
+	if (attackStyle === AttackStyles.Aggressive) {
 		effectiveStrLvl += 3;
 	}
-	if (attackStyle === 'controlled') {
+	if (attackStyle === AttackStyles.Controlled) {
 		effectiveStrLvl += 1;
 	}
 
@@ -227,15 +221,15 @@ export default async function meleeCalculator(
 
 	// Calculate attack roll
 	let attackRoll = 0;
-
-	switch (combatType.toLowerCase()) {
-		case 'stab':
+	
+	switch (attackType) {
+		case GearStat.AttackStab:
 			attackRoll = effectiveAttackLvl * (gearStats.attack_stab + 64);
 			break;
-		case 'slash':
+		case GearStat.AttackSlash:
 			attackRoll = effectiveAttackLvl * (gearStats.attack_slash + 64);
 			break;
-		case 'crush':
+		case GearStat.AttackCrush:
 			attackRoll = effectiveAttackLvl * (gearStats.attack_crush + 64);
 			break;
 	}
@@ -279,14 +273,14 @@ export default async function meleeCalculator(
 	// Calculate Defence roll
 	let defenceRoll = currentMonsterData.defenceLevel + 9;
 
-	switch (combatType.toLowerCase()) {
-		case 'stab':
+	switch (attackType) {
+		case GearStat.AttackStab:
 			defenceRoll *= currentMonsterData.defenceStab + 64;
 			break;
-		case 'slash':
+		case GearStat.AttackSlash:
 			defenceRoll *= currentMonsterData.defenceSlash + 64;
 			break;
-		case 'crush':
+		case GearStat.AttackCrush:
 			defenceRoll *= currentMonsterData.defenceCrush + 64;
 			break;
 	}

@@ -1,3 +1,4 @@
+import { equippedWeaponCombatStyleOption, combatSpellOption } from './../lib/mahojiCommandOptions';
 import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -5,9 +6,8 @@ import { BitField, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
-import { CombatStyles } from '../../lib/minions/functions';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
-import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
+import { CombatsEnum, trainCommand } from '../../lib/minions/functions/trainCommand';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -295,11 +295,21 @@ export const minionCommand: OSBMahojiCommand = {
 			options: [
 				{
 					type: ApplicationCommandOptionType.String,
-					name: 'style',
-					description: 'The attack style you want to train with',
+					name: 'combat_skill',
+					description: 'The primary combat skill you want to train with',
 					required: true,
-					choices: allPossibleStyles.map(i => ({ name: i, value: i }))
-				}
+					choices: Object.keys(CombatsEnum).map(key => ({ name: key, value: key}))
+				},
+				{
+					...equippedWeaponCombatStyleOption(),
+					name: 'attack_style_type',
+					description: 'The attack style and attack type you want to use for specified combat skill'
+				},
+				{ 	
+					...combatSpellOption(),
+					name: 'combat_spell',
+					description: 'The combat spell you want to cast while training magic.',
+				} 
 			]
 		}
 	],
@@ -324,7 +334,7 @@ export const minionCommand: OSBMahojiCommand = {
 		ironman?: { permanent?: boolean };
 		charge?: { item?: string; amount?: number };
 		daily?: {};
-		train?: { style: CombatStyles };
+		train?: { combat_skill?: string; attack_style_type?: string; combat_spell?: string };
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
@@ -411,7 +421,7 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.daily) {
 			return dailyCommand(interaction, channelID, user);
 		}
-		if (options.train) return trainCommand(user, options.train.style);
+		if (options.train) return trainCommand(user, options.train.combat_skill, options.train.attack_style_type, options.train.combat_spell);
 
 		return 'Unknown command';
 	}

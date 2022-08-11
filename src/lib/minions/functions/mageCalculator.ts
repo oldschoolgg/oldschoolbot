@@ -12,6 +12,7 @@ import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
 import potionBoostCalculator from './potionBoostCalculator';
+import { AttackStyles } from './trainCommand';
 
 // Mage Prayer bonus
 const magePrayerBonuses = [
@@ -39,7 +40,7 @@ export default async function mageCalculator(
 	quantity: number | undefined
 ): Promise<[number, number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Magic as source.
-	const combatStyle = user.settings.get(UserSettings.Minion.MageCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
+	const attackStyle = user.settings.get(UserSettings.Minion.MagicAttackStyle);
 	const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
@@ -47,7 +48,7 @@ export default async function mageCalculator(
 	}
 
 	const mageWeapon = user.getGear('mage').equippedWeapon();
-	if (mageWeapon === null || mageWeapon.weapon === null || combatStyle === null) {
+	if (mageWeapon === null || mageWeapon.weapon === null || attackStyle === null) {
 		throw 'No mage weapon is equipped or combatStyle is not choosen.';
 	}
 	const mageGear = user.getGear('mage');
@@ -56,7 +57,7 @@ export default async function mageCalculator(
 	if (combatSpell === null) {
 		throw 'Spell is null';
 	}
-	const spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.toLowerCase()));
+	const spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.name));
 
 	if (!spell) {
 		throw 'The default spell is wrong.';
@@ -85,19 +86,12 @@ export default async function mageCalculator(
 		}
 	}
 	let effectiveMageLvl = Math.floor(user.skillLevel(SkillsEnum.Magic) + magePotionBoost) * prayerMageBonus + 8;
-	let attackStyle = '';
-	for (let stance of mageWeapon.weapon!.stances) {
-		if (stance.combat_style.toLowerCase() === combatStyle) {
-			attackStyle = stance.attack_style!;
-			break;
-		}
-	}
 
-	if (attackStyle === 'accurate') {
+	if (attackStyle === AttackStyles.Accurate) {
 		effectiveMageLvl += 3;
 	}
 
-	if (attackStyle === 'longrange') {
+	if (attackStyle === AttackStyles.Longrange) {
 		effectiveMageLvl += 1;
 	}
 

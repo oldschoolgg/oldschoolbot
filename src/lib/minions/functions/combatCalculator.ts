@@ -5,13 +5,14 @@ import { UserSettings } from '../../settings/types/UserSettings';
 import Ancient from '../../skilling/skills/combat/magic/castables/Ancient';
 import Standard from '../../skilling/skills/combat/magic/castables/Standard';
 import { KillableMonster } from '../types';
-import { CombatsEnum } from './../../../commands/Minion/combatsetup';
+
 import { GearStat } from './../../gear/types';
 import { Castable, SkillsEnum } from './../../skilling/types';
 import autoPrayerPicker from './autoPrayerPicker';
 import mageCalculator from './mageCalculator';
 import meleeCalculator from './meleeCalculator';
 import rangeCalculator from './rangeCalculator';
+import { CombatsEnum } from './trainCommand';
 
 // No Lunar at this point, vengence etc isn't useful here.
 const castables: Castable[] = [...Standard, ...Ancient];
@@ -52,35 +53,37 @@ export default async function combatCalculator(
 				}
 				i++;
 			}
+			//Random and store both attack_style and attack_type
 			await user.settings.update(
-				UserSettings.Minion.MeleeCombatStyle,
-				weapon.weapon!.stances[randArrItem(styleArray)].combat_style
+				UserSettings.Minion.MeleeAttackStyle,
+				weapon.weapon!.stances[randArrItem(styleArray)].attack_style
 			);
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackRanged) {
-			combatSkill = CombatsEnum.Range;
+			combatSkill = CombatsEnum.Ranged;
 			//		await user.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
 			const weapon = user.getGear('range').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';
 			}
+			//Pick random, rapid might not always exist and update both attack style and attack type
 			for (let stance of weapon.weapon!.stances) {
 				if (stance === null) {
 					continue;
 				}
 				if (stance.combat_style.toLowerCase() === 'rapid') {
-					await user.settings.update(UserSettings.Minion.RangeCombatStyle, stance.combat_style);
+					await user.settings.update(UserSettings.Minion.RangedAttackStyle, stance.attack_style);
 					break;
 				}
 			}
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackMagic) {
-			combatSkill = CombatsEnum.Mage;
+			combatSkill = CombatsEnum.Magic;
 			//		await user.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
-			await user.settings.update(UserSettings.Minion.MageCombatStyle, 'standard');
-
+			await user.settings.update(UserSettings.Minion.MagicAttackStyle, 'standard');
+			//This needs to try check avilable runes somehow
 			let CombatSpells = castables.filter(
 				_spell =>
 					_spell.category.toLowerCase() === 'combat' &&
@@ -103,9 +106,9 @@ export default async function combatCalculator(
 	switch (combatSkill) {
 		case CombatsEnum.Melee:
 			return meleeCalculator(monster, user, quantity);
-		case CombatsEnum.Range:
+		case CombatsEnum.Ranged:
 			return rangeCalculator(monster, user, quantity);
-		case CombatsEnum.Mage:
+		case CombatsEnum.Magic:
 			return mageCalculator(monster, user, quantity);
 	}
 }

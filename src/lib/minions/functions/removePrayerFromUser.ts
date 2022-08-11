@@ -17,12 +17,12 @@ export default async function removePrayerFromUser(user: KlasaUser, totalDosesUs
 
 	let str = '';
 	if (totalDosesUsed > 0) {
-		potsToRemove.add((itemID('Prayer potion(4)'), Math.floor(totalDosesUsed / 4) + 1));
+		potsToRemove.add('Prayer potion(4)', Math.max(Math.floor(totalDosesUsed / 4), 0) + 1);
 		str += `Removed ${potsToRemove} from ${user.username}.`;
 		const leftOverDoses = 4 - (totalDosesUsed % 4);
 		if (leftOverDoses !== 4) {
 			await user.addItemsToBank({
-				items: new Bank().add(itemID(`Prayer potion(${leftOverDoses})`), 1),
+				items: new Bank().add(`Prayer potion(${leftOverDoses})`, 1),
 				collectionLog: false
 			});
 			str += `\nReturned 1x Prayer potion(${leftOverDoses}) to the bank.`;

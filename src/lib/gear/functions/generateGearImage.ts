@@ -137,81 +137,57 @@ export async function generateGearImage(
 	if (
 		gearType === 'melee' &&
 		(user instanceof KlasaUser
-			? user.settings.get(UserSettings.Minion.MeleeCombatStyle)
-			: user.minion_meleeCombatStyle)
+			? user.settings.get(UserSettings.Minion.MeleeAttackStyle)
+			: user.minion_meleeAttackStyle)
 	) {
 		drawText(
 			canvas,
-			`Combat style: ${toTitleCase(
+			`Attack style: ${toTitleCase(
 				user instanceof KlasaUser
-					? user.settings.get(UserSettings.Minion.MeleeCombatStyle)!
-					: user.minion_meleeCombatStyle!
+					? user.settings.get(UserSettings.Minion.MeleeAttackStyle)?.toString()!
+					: user.minion_meleeAttackStyle!.toString()
 			)}`,
 			0,
 			0
 		);
-		const meleeWeapon =
+		drawText(canvas, `Attack type: ${toTitleCase( 
 			user instanceof KlasaUser
-				? user.getGear('melee').equippedWeapon()
-				: getUserGear(user).melee.equippedWeapon();
-		if (meleeWeapon !== null && meleeWeapon.weapon !== null) {
-			let attackStyle = '';
-			let combatType = '';
-			for (let stance of meleeWeapon.weapon!.stances) {
-				if (
-					stance.combat_style.toLowerCase() ===
-					(user instanceof KlasaUser
-						? user.settings.get(UserSettings.Minion.MeleeCombatStyle)
-						: user.minion_meleeCombatStyle)
-				) {
-					attackStyle = stance.attack_style!;
-					combatType = stance.attack_type!;
-					break;
-				}
-			}
-			drawText(canvas, `Combat type: ${toTitleCase(combatType)}`, 0, 16);
-			drawText(canvas, `Attack style: ${toTitleCase(attackStyle)}`, 0, 32);
-		}
+			? user.settings.get(UserSettings.Minion.MeleeAttackType)?.toString()!
+			: user.minion_meleeAttackType!.toString())}`, 0, 16);
 	}
 	if (
 		gearType === 'range' &&
 		(user instanceof KlasaUser
-			? user.settings.get(UserSettings.Minion.RangeCombatStyle)
-			: user.minion_rangeCombatStyle)
+			? user.settings.get(UserSettings.Minion.RangedAttackStyle)
+			: user.minion_rangedAttackStyle)
 	) {
 		drawText(
 			canvas,
-			`Combat style: ${toTitleCase(
-				(user instanceof KlasaUser
-					? user.settings.get(UserSettings.Minion.RangeCombatStyle)!
-					: user.minion_rangeCombatStyle)!
+			`Attack style: ${toTitleCase(
+				user instanceof KlasaUser
+					? user.settings.get(UserSettings.Minion.RangedAttackStyle)?.toString()!
+					: user.minion_rangedAttackStyle!.toString()
 			)}`,
 			0,
 			0
 		);
-		drawText(
-			canvas,
-			`Attack style: ${toTitleCase(
-				(user instanceof KlasaUser
-					? user.settings.get(UserSettings.Minion.RangeCombatStyle)!
-					: user.minion_rangeCombatStyle)!
-			)}`,
-			0,
-			16
-		);
+		drawText(canvas, `Attack type: ${toTitleCase( 
+			user instanceof KlasaUser
+			? user.settings.get(UserSettings.Minion.RangedAttackType)?.toString()!
+			: user.minion_rangedAttackType!.toString())}`, 0, 16);
 	}
 	if (
 		gearType === 'mage' &&
 		(user instanceof KlasaUser
-			? user.settings.get(UserSettings.Minion.MageCombatStyle)
-			: user.minion_mageCombatStyle)
+			? user.settings.get(UserSettings.Minion.MagicAttackStyle)
+			: user.minion_magicAttackStyle)
 	) {
 		drawText(
 			canvas,
-			`Combat style: ${toTitleCase(
+			`Attack style: ${toTitleCase(
 				(user instanceof KlasaUser
-					? user.settings.get(UserSettings.Minion.MageCombatStyle)!
-					: user.minion_mageCombatStyle)!
+					? user.settings.get(UserSettings.Minion.MagicAttackStyle)!.toString()
+					: user.minion_magicAttackStyle)!.toString()
 			)}`,
 			0,
 			0

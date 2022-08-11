@@ -37,5 +37,5 @@ export default async function calculatePrayerDrain(
 
 	const prayerPointsPerDose = Number(user.skillLevel(SkillsEnum.Prayer)) / 4 + 7;
 	// Total Doses Used
-	return Math.ceil(totalPrayerPoints / prayerPointsPerDose);
+	return Math.max(Math.ceil(totalPrayerPoints / prayerPointsPerDose), 0);
 }

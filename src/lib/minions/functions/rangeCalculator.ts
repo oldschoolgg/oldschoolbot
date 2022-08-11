@@ -12,6 +12,7 @@ import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
 import potionBoostCalculator from './potionBoostCalculator';
+import { AttackStyles } from './trainCommand';
 
 interface RangeMaxHitWeaponBonus {
 	id: number;
@@ -61,13 +62,13 @@ export default async function rangeCalculator(
 	quantity: number | undefined
 ): Promise<[number, number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Ranged as source.
-	const combatStyle = user.settings.get(UserSettings.Minion.RangeCombatStyle)!.replace(/[^a-zA-Z0-9]/g, '');
+	const attackStyle = user.settings.get(UserSettings.Minion.RangedAttackStyle)!.replace(/[^a-zA-Z0-9]/g, '');
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
 	}
 	const rangeWeapon = user.getGear('range').equippedWeapon();
-	if (!rangeWeapon || rangeWeapon === null || rangeWeapon.weapon === null || combatStyle === null) {
+	if (!rangeWeapon || rangeWeapon === null || rangeWeapon.weapon === null || attackStyle === null) {
 		throw 'No range weapon is equipped or combatStyle is not choosen.';
 	}
 	const rangeGear = user.getGear('range');
@@ -97,7 +98,7 @@ export default async function rangeCalculator(
 	}
 	let effectiveRangeStr = Math.floor(user.skillLevel(SkillsEnum.Ranged) + rangePotionBoost) * prayerRangeBonus + 8;
 
-	if (combatStyle === 'accurate') {
+	if (attackStyle === AttackStyles.Accurate) {
 		effectiveRangeStr += 3;
 	}
 
@@ -171,10 +172,10 @@ export default async function rangeCalculator(
 	// Calculate effective ranged attack
 	let effectiveRangeAttack = Math.floor(user.skillLevel(SkillsEnum.Ranged) + rangePotionBoost) * prayerRangeBonus + 8;
 
-	if (combatStyle === 'accurate') {
+	if (attackStyle === AttackStyles.Accurate) {
 		effectiveRangeAttack += 3;
 	}
-	if (combatStyle === 'controlled') {
+	if (attackStyle === AttackStyles.Controlled) {
 		effectiveRangeAttack += 1;
 	}
 
@@ -245,7 +246,7 @@ export default async function rangeCalculator(
 	const DamagePerHit = (maxHit * hitChance) / 2;
 
 	let rangeAttackSpeed =
-		combatStyle === 'rapid' ? rangeWeapon.weapon!.attack_speed - 1 : rangeWeapon.weapon!.attack_speed;
+		attackStyle === AttackStyles.Rapid ? rangeWeapon.weapon!.attack_speed - 1 : rangeWeapon.weapon!.attack_speed;
 	const DPS = DamagePerHit / (rangeAttackSpeed * 0.6);
 
 	// Calculates hits required, combat time and average monster kill speed.

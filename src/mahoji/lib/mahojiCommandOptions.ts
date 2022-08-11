@@ -7,11 +7,13 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes, globalPresets } from '../../lib/gear';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
+import { CombatsEnum } from '../../lib/minions/functions/trainCommand';
 import { prisma } from '../../lib/settings/prisma';
+import castables from '../../lib/skilling/skills/combat/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
-import { getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
@@ -129,3 +131,104 @@ export const gearPresetOption: CommandOption = {
 			.map(i => ({ name: i.name, value: i.name }));
 	}
 };
+
+export const equippedWeaponCombatStyleOption = (): CommandOption => ({
+	type: ApplicationCommandOptionType.String,
+	name: 'attack_style_type',
+	description: 'The attack style and attack type you want to use for specified combat skill',
+	required: false,
+	autocomplete: async (value, user) => {
+		const mUser = await mahojiUsersSettingsFetch(user.id);
+		const combatSkill = mUser.minion_combatSkill as CombatsEnum | undefined;
+		let results: APIApplicationCommandOptionChoice[] = [];
+		if (!combatSkill || combatSkill === CombatsEnum.Auto || CombatsEnum.NoCombat) return results;
+		if (combatSkill === CombatsEnum.Melee) {
+			const meleeWeapon = getUserGear(mUser).melee.equippedWeapon();
+			if (meleeWeapon === null || meleeWeapon.weapon === null || !meleeWeapon.weapon) {
+				//Push unarmed
+				results.push()
+				return results
+			}
+			for (let stance of meleeWeapon.weapon.stances) {
+				if (stance === null) {
+					continue;
+				}
+				results.push({
+					name: stance.attack_style!,
+					value: stance.attack_style!
+				})
+			}
+			return results;
+		}
+		if (combatSkill === CombatsEnum.Ranged) {
+			const rangeWeapon = getUserGear(mUser).range.equippedWeapon();
+			if (rangeWeapon === null || rangeWeapon.weapon === null || !rangeWeapon.weapon) {
+				//Push nothing? can't train ranged unarmed
+				return results
+			}
+			for (let stance of rangeWeapon.weapon.stances) {
+				if (stance === null) {
+					continue;
+				}
+				results.push({
+					name: stance.attack_style!,
+					value: stance.attack_style!
+				})
+			}
+			return results;
+		}
+		if (combatSkill === CombatsEnum.Magic) {
+			const mageWeapon = getUserGear(mUser).mage.equippedWeapon();
+			if (mageWeapon === null || mageWeapon.weapon === null || !mageWeapon.weapon) {
+				results.push({name: 'standard', value: 'standard'});
+				results.push({name: 'defensive', value: 'defensive'});
+				return results
+			}
+			//Make function that checks for equipped autocasting staff
+			if (
+				mageWeapon.name.toLowerCase() === 'trident of the seas' ||
+				mageWeapon.name.toLowerCase() === 'trident of the seas (e)' ||
+				mageWeapon.name.toLowerCase() === 'trident of the swamp' ||
+				mageWeapon.name.toLowerCase() === 'trident of the swamp (e)'
+			) {
+				for (let stance of mageWeapon.weapon.stances) {
+					if (stance === null) {
+						continue;
+					}
+					results.push({
+						name: stance.attack_style!,
+						value: stance.attack_style!
+					})
+				}
+				return results;
+			}
+			results.push({name: 'standard', value: 'standard'});
+			results.push({name: 'defensive', value: 'defensive'});
+			return results;
+		}
+
+		return results.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+		.map(i => ({ name: i.name, value: i.name }));
+	}
+});
+
+export const combatSpellOption = (): CommandOption => ({
+	type: ApplicationCommandOptionType.String,
+	name: 'combat_spell',
+	description: 'The combat spell you want to cast while training magic.',
+	required: false,
+	autocomplete: async (value, user) => {
+		const mUser = await mahojiUsersSettingsFetch(user.id);
+		let results: APIApplicationCommandOptionChoice[] = [];
+		const magicLvl = getSkillsOfMahojiUser(mUser, true).magic;
+		let allCastables = castables.filter(
+			_spell => _spell.category.toLowerCase() === 'combat' && _spell.baseMaxHit && _spell.level <= magicLvl
+		).sort((a, b) => b.level - a.level);
+		allCastables.length = 25;
+		results = allCastables.map(
+			spell => ({name: spell.name, value: spell.name})
+		)
+		return results.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+		.map(i => ({ name: i.name, value: i.name }));
+	}
+});

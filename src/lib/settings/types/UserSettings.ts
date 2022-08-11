@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 import { HexColorString } from 'discord.js';
 
-import { CombatsEnum } from '../../../commands/Minion/combatsetup';
 import { BitField } from '../../constants';
-import { GearSetup } from '../../gear';
+import { GearSetup, GearStat } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
+import { AttackStyles, CombatsEnum } from '../../minions/functions/trainCommand';
 import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
+import { Castable } from '../../skilling/skills/magic/castables';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { BankSortMethod } from '../../sorts';
@@ -120,14 +121,14 @@ export namespace UserSettings {
 		export const DefaultDartToUse = T<string>('minion.defaultDartToUse');
 		export const DefaultCompostToUse = T<CompostName | null>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
-		export const MeleeAttackStyle = T<string | null>('minion.meleeAttackStyle');
-		export const RangeAttackStyle = T<string | null>('minion.rangeAttackStyle');
-		export const MageAttackStyle = T<string | null>('minion.mageAttackStyle');
+		export const MeleeAttackStyle = T<AttackStyles | null>('minion.meleeAttackStyle');
+		export const RangedAttackStyle = T<AttackStyles | null>('minion.rangedAttackStyle');
+		export const MagicAttackStyle = T<AttackStyles | null>('minion.magicAttackStyle');
 		export const CombatSkill = T<CombatsEnum>('minion.combatSkill');
-		export const MeleeCombatStyle = T<string | null>('minion.meleeCombatStyle');
-		export const RangeCombatStyle = T<string | null>('minion.rangeCombatStyle');
-		export const MageCombatStyle = T<string | null>('minion.mageCombatStyle');
-		export const CombatSpell = T<string | null>('minion.combatSpell');
+		export const MeleeAttackType= T<GearStat | null>('minion.meleeAttackType');
+		export const RangedAttackType = T<GearStat | null>('minion.rangedAttackType');
+		export const MagicAttackType = T<GearStat | null>('minion.magicAttackType');
+		export const CombatSpell = T<Castable | null>('minion.combatSpell');
 		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');
 	}
 
