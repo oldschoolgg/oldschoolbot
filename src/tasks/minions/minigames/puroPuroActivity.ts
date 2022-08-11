@@ -9,6 +9,7 @@ import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import itemID from '../../../lib/util/itemID';
 import { minionName } from '../../../lib/util/minionUtils';
+import puroOptions from '../../../mahoji/lib/abstracted_commands/puroPuroCommand';
 
 function singleImpHunt(minutes: number, user: KlasaUser) {
 	let totalQty = 0;
@@ -38,7 +39,7 @@ const bryophytasStaffId = itemID("Bryophyta's staff");
 
 export default class extends Task {
 	async run(data: PuroPuroActivityTaskOptions) {
-		const { channelID, userID, quantity, impling, darkLure } = data;
+		const { channelID, userID, quantity, implingID, darkLure } = data;
 		const user = await this.client.fetchUser(userID);
 
 		await incrementMinigameScore(userID, 'puro_puro', quantity);
@@ -54,48 +55,48 @@ export default class extends Task {
 
 		const allImpQty = allImpHunt(minutes, user);
 		const singleImpQty = singleImpHunt(minutes, user);
-		switch (impling) {
-			case 'Dragon Implings': {
+		switch (implingID) {
+			case itemID('Dragon impling jar'): {
 				const dragonOdds = darkLure ? 25 : 45;
 				const luckyOdds = darkLure ? 200 : 360;
 				for (let i = 0; i < minutes; i++) {
 					if (roll(dragonOdds)) {
-						bank.add('Dragon Impling Jar');
+						bank.add('Dragon impling jar');
 						hunterXP += 65;
 					}
 				}
 				if (hunterLevel >= 89) {
 					for (let i = 0; i < minutes; i++) {
 						if (roll(luckyOdds)) {
-							bank.add('Lucky Impling Jar');
+							bank.add('Lucky impling jar');
 							hunterXP += 80;
 						}
 					}
 				}
 				break;
 			}
-			case 'Eclectic Implings':
-				bank.add('Eclectic Impling Jar', singleImpQty);
+			case itemID('Eclectic impling jar'):
+				bank.add('Eclectic impling jar', singleImpQty);
 				hunterXP += 30 * singleImpQty;
 				break;
-			case 'Essence Implings':
-				bank.add('Essence Impling Jar', singleImpQty);
+			case itemID('Essence impling jar'):
+				bank.add('Essence impling jar', singleImpQty);
 				hunterXP += 22 * singleImpQty;
 				break;
-			case 'Earth Implings':
-				bank.add('Earth Impling Jar', singleImpQty);
+			case itemID('Earth impling jar'):
+				bank.add('Earth impling jar', singleImpQty);
 				hunterXP += 25 * singleImpQty;
 				break;
-			case 'Gourmet Implings':
-				bank.add('Gourmet Impling Jar', singleImpQty);
+			case itemID('Gourmet impling jar'):
+				bank.add('Gourmet impling jar', singleImpQty);
 				hunterXP += 22 * singleImpQty;
 				break;
-			case 'Young Implings':
-				bank.add('Young Impling Jar', singleImpQty);
+			case itemID('Young impling jar'):
+				bank.add('Young impling jar', singleImpQty);
 				hunterXP += 20 * singleImpQty;
 				break;
-			case 'Baby Implings':
-				bank.add('Baby Impling Jar', singleImpQty);
+			case itemID('Baby impling jar'):
+				bank.add('Baby impling jar', singleImpQty);
 				hunterXP += 18 * singleImpQty;
 				break;
 			default:
@@ -122,15 +123,17 @@ export default class extends Task {
 			(hunterXP / (data.duration / Time.Minute)) * 60
 		).toLocaleString()} Hunter XP/Hr`;
 
+		const huntedImplingName = puroOptions.find(i => (i.item?.id ?? null) === implingID)!.name;
+
 		if (hunterXP > 0) {
 			str += `\n${xpStr}. You are getting ${hunterXpHr}.`;
 		} else {
-			str += `\n${minionName(user)} failed to spot any ${impling} this trip.`;
+			str += `\n${minionName(user)} failed to spot any ${huntedImplingName} this trip.`;
 			handleTripFinish(
 				user,
 				channelID,
 				str,
-				['activities', { puro_puro: { impling, dark_lure: darkLure } }, true],
+				['activities', { puro_puro: { impling: huntedImplingName, dark_lure: darkLure } }, true],
 				undefined,
 				data,
 				bank
@@ -169,8 +172,8 @@ export default class extends Task {
 
 			if (magicXP > 0) str += `\n${magicXpStr}. You are getting ${magicXpHr}.`;
 
-			if (impling === 'Dragon Implings') {
-				str += `\n**Boosts:** You have an increased chance of getting ${impling} due to using Dark Lure. You used: ${itemCost}. ${saved}`;
+			if (implingID === itemID('Dragon impling jar')) {
+				str += `\n**Boosts:** You have an increased chance of getting ${huntedImplingName} due to using Dark Lure. You used: ${itemCost}. ${saved}`;
 			} else {
 				str += `\n**Boosts:** Due to using Dark Lure, you have an increased chance at getting Nature Implings and above. You used: ${itemCost}. ${saved}`;
 			}
@@ -197,7 +200,7 @@ export default class extends Task {
 			user,
 			channelID,
 			str,
-			['activities', { puro_puro: { impling, dark_lure: darkLure } }, true],
+			['activities', { puro_puro: { impling: huntedImplingName, dark_lure: darkLure } }, true],
 			undefined,
 			data,
 			bank
