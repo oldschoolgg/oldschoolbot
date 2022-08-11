@@ -355,7 +355,7 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: new Bank().add('Abyssal gem').freeze(),
 		inventionLevelNeeded: 120,
-		usageCostMultiplier: null
+		usageCostMultiplier: 0.3
 	}
 ] as const;
 
