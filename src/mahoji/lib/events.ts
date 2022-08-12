@@ -5,13 +5,15 @@ import { prisma } from '../../lib/settings/prisma';
 
 export async function onStartup() {
 	// Sync disabled commands
-	const disabledCommands = await prisma.clientStorage.findFirst({
+	const disabledCommands = await prisma.clientStorage.upsert({
 		where: {
 			id: CLIENT_ID
 		},
-		select: {
-			disabled_commands: true
-		}
+		select: { disabled_commands: true },
+		create: {
+			id: CLIENT_ID
+		},
+		update: {}
 	});
 
 	for (const command of disabledCommands!.disabled_commands) {
