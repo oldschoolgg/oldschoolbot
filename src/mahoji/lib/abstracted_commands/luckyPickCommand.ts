@@ -122,7 +122,7 @@ export async function luckyPickCommand(
 		button: ButtonInstance;
 		interaction: MessageComponentInteraction;
 	}) => {
-		let amountReceived = button.mod(amount);
+		let amountReceived = Math.floor(button.mod(amount));
 		await klasaUser.addItemsToBank({ items: new Bank().add('Coins', amountReceived) });
 		await updateGPTrackSetting('gp_luckypick', amountReceived - amount);
 		await updateGPTrackSetting('gp_luckypick', amountReceived - amount, klasaUser);

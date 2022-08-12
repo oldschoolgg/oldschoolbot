@@ -36,7 +36,8 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 		});
 		let converted = convertMahojiResponseToDJSResponse(result);
 		if (typeof converted !== 'string') {
-			let str = 'Try out the new `/cl` slash command!';
+			let str =
+				'This command will be removed soon as we fully migrate to slash commands - start using the `/cl` slash command!';
 			if (!converted.content) converted.content = str;
 			else converted.content += ` ${str}`;
 		}

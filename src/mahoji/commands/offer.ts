@@ -203,7 +203,7 @@ export const mineCommand: OSBMahojiCommand = {
 			} to Barlak and received ${xp} Construction XP.`;
 		}
 
-		const speedMod = 4.8;
+		const speedMod = 1.5;
 
 		const bone = Prayer.Bones.find(
 			bone => stringMatches(bone.name, options.name) || stringMatches(bone.name.split(' ')[0], options.name)
