@@ -83,7 +83,7 @@ export default class extends BotCommand {
 
 		if (!result.content) result.content = '';
 		result.content +=
-			'\nThis command is now also available as a Slash Command! Try `/kill`, also try out the killing simulator on the website: <https://www.oldschool.gg/monsters>';
+			'\nThis command will be removed soon, as we migrate to slash commands, start using `/kill` now! Also try out the killing simulator on the website: <https://www.oldschool.gg/monsters>';
 		return msg.channel.send({
 			files: [new MessageAttachment(image.file.buffer, 'osbot.png')],
 			content: result.content

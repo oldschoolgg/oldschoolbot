@@ -17,16 +17,25 @@ model TriviaQuestion {
     @@map("trivia_question")
 }
 
-model BlacklistedUser {
-    user_id BigInt  @id @unique
-    reason  String?
+enum BlacklistedEntityType {
+    guild
+    user
+}
 
-    @@map("blacklisted_user")
+model BlacklistedEntity {
+    id     BigInt                @id @unique
+    type   BlacklistedEntityType
+    reason String?
+    date   DateTime              @default(now()) @db.Timestamp(6)
+
+    @@map("blacklisted_entity")
 }
 
 model User {
-    id   BigInt @id @unique
-    bits Int[]
+    id         BigInt  @id @unique
+    bits       Int[]
+    github_id  Int?
+    patreon_id String?
 
     leagues_completed_tasks_ids Int[]
     leagues_points_balance_osb  Int   @default(0)
