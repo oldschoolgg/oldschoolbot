@@ -7,7 +7,7 @@ import { Bank, Util } from 'oldschooljs';
 import { Emoji, Events } from '../../../lib/constants';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { channelIsSendable, updateGPTrackSetting } from '../../../lib/util';
-import { BotError, logError } from '../../../lib/util/logError';
+import { logError } from '../../../lib/util/logError';
 import { mahojiParseNumber } from '../../mahojiSettings';
 
 async function checkBal(user: KlasaUser, amount: number) {
@@ -73,7 +73,7 @@ export async function duelCommand(
 		return "Duel cancelled, user didn't accept in time.";
 	}
 
-	function duelFail(err: BotError | Error) {
+	function duelFail(err: any) {
 		duelMessage.delete().catch(noOp);
 		const wagerAmount = amount ?? 0;
 		const extras = {
@@ -172,11 +172,14 @@ export async function duelCommand(
 		if (code === 'INTERACTION_COLLECTOR_ERROR') {
 			return cancel();
 		}
-		const failError =
-			err instanceof Error
-				? err
-				: new BotError(`Duel failed for unknown reason: ${String(err)}`, 'duelCommand Error');
+		let failError = err;
+		if (!(failError instanceof Error)) {
+			failError = new Error(`Duel failed for unknown reason: ${String(err)}`);
+			failError.name = 'duelCommand Error';
+		}
 		return duelFail(failError);
 	}
-	return duelFail(new BotError("duelCommand fell through try/catch this shouldn't happen", 'duelCommand Error'));
+	const failError = new Error("duelCommand fell through try/catch this shouldn't happen");
+	failError.name = 'duelCommand Error';
+	return duelFail(failError);
 }
