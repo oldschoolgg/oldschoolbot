@@ -1,6 +1,8 @@
 import { DMChannel, Guild, GuildMember, PermissionResolvable, Permissions, TextChannel } from 'discord.js';
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
+import { ComponentType } from 'mahoji';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { OWNER_ID, production } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
@@ -10,6 +12,7 @@ import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
+import { minionBuyButton } from './abstracted_commands/minionStatusCommand';
 import { Cooldowns } from './Cooldowns';
 
 export type CommandArgs = (string | number | boolean | unknown)[] | Record<string, unknown>;
@@ -46,7 +49,7 @@ interface Inhibitor {
 		guild: Guild | null;
 		channel: TextChannel | DMChannel;
 		member: GuildMember | null;
-	}) => Promise<false | string>;
+	}) => Promise<false | Awaited<CommandResponse>>;
 	canBeDisabled: boolean;
 	silent?: true;
 }
@@ -88,7 +91,16 @@ const inhibitors: Inhibitor[] = [
 			if (!command.attributes?.requiresMinion) return false;
 
 			if (!user.hasMinion) {
-				return 'You need a minion to use this command.';
+				return {
+					content: 'You need a minion to use this command.',
+					components: [
+						{
+							components: [minionBuyButton],
+							type: ComponentType.ActionRow
+						}
+					],
+					flags: undefined
+				};
 			}
 
 			return false;
@@ -341,11 +353,11 @@ export async function runInhibitors({
 	command: AbstractCommand;
 	guild: Guild | null;
 	bypassInhibitors: boolean;
-}): Promise<undefined | { reason: string; silent: boolean }> {
+}): Promise<undefined | { reason: Awaited<CommandResponse>; silent: boolean }> {
 	for (const { run, canBeDisabled, silent } of inhibitors) {
 		if (bypassInhibitors && canBeDisabled) continue;
 		const result = await run({ user, channel, member, command, guild });
-		if (typeof result === 'string') {
+		if (result !== false) {
 			return { reason: result, silent: Boolean(silent) };
 		}
 	}

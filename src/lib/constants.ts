@@ -285,7 +285,7 @@ export const enum PerkTier {
 	Six = 6
 }
 
-export const enum BitField {
+export enum BitField {
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
@@ -355,21 +355,21 @@ export const enum PatronTierID {
 	Six = '8091554'
 }
 
-export const enum BadgesEnum {
-	Developer = 0,
-	Booster = 1,
-	LimitedPatron = 2,
-	Patron = 3,
-	Moderator = 4,
-	GreenGem = 5,
-	Bug = 6,
-	GoldenTrophy = 7,
-	TopSacrifice = 8,
-	TopSkiller = 9,
-	TopCollector = 10,
-	TopMinigame = 11,
-	SotWTrophy = 12
-}
+export const BadgesEnum = {
+	Developer: 0,
+	Booster: 1,
+	LimitedPatron: 2,
+	Patron: 3,
+	Moderator: 4,
+	GreenGem: 5,
+	Bug: 6,
+	GoldenTrophy: 7,
+	TopSacrifice: 8,
+	TopSkiller: 9,
+	TopCollector: 10,
+	TopMinigame: 11,
+	SotWTrophy: 12
+} as const;
 
 export const badges: { [key: number]: string } = {
 	[BadgesEnum.Developer]: Emoji.Spanner,
