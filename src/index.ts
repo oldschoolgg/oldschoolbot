@@ -1,7 +1,6 @@
 import './lib/data/itemAliases';
 import './lib/crons';
 
-import { Stopwatch } from '@sapphire/stopwatch';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -12,6 +11,7 @@ import { join } from 'path';
 import { botToken, CLIENT_ID, DEV_SERVER_ID, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
+import { modalInteractionHook } from './lib/modals';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { interactionHook } from './lib/util/globalInteractions';
 import { logError } from './lib/util/logError';
@@ -83,14 +83,8 @@ client.on('raw', async event => {
 	const data = event.d as APIInteraction;
 	client.emit('debug', `Received ${data.type} interaction`);
 	interactionHook(data);
-	const timer = new Stopwatch();
+	if (data.type === InteractionType.ModalSubmit) return modalInteractionHook(data);
 	const result = await mahojiClient.parseInteraction(data);
-	timer.stop();
-	client.emit(
-		'debug',
-		`Parsed ${result?.interaction?.data.interaction.data?.name ?? 'None'} interaction in ${timer.duration}ms`
-	);
-
 	if (result === null) return;
 
 	if ('error' in result) {
