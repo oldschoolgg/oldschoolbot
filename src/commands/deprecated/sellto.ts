@@ -2,9 +2,9 @@ import { GuildMember } from 'discord.js';
 import { CommandStore, KlasaMessage } from 'klasa';
 import { Bank } from 'oldschooljs';
 
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { Events } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
-import { ClientSettings } from '../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { addToGPTaxBalance, itemNameFromID } from '../../lib/util';
@@ -73,7 +73,7 @@ export default class extends BotCommand {
 		}
 
 		// Make sure blacklisted members can't be traded.
-		const isBlacklisted = this.client.settings.get(ClientSettings.UserBlacklist).includes(buyerMember.user.id);
+		const isBlacklisted = BLACKLISTED_USERS.has(buyerMember.user.id);
 		if (isBlacklisted) throw "Blacklisted players can't buy items.";
 		if (msg.author.isIronman) throw "Iron players can't sell items.";
 		if (buyerMember.user.isIronman) throw "Iron players can't be sold items.";
@@ -172,7 +172,7 @@ export default class extends BotCommand {
 		}
 
 		return msg.channel.send(
-			`Sale of ${bankStr} complete! Try out \`/trade\`, it's a new slash command for trading items.`
+			`Sale of ${bankStr} complete! Start using \`/trade\`, this command will be removed soon!`
 		);
 	}
 }

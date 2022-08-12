@@ -15,13 +15,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 4,
-		qpRequired: 4,
-		itemInBankBoosts: [
-			{
-				[itemID('Salve amulet(ei)')]: 15,
-				[itemID('Salve amulet(i)')]: 10
-			}
-		]
+		qpRequired: 4
 	},
 	{
 		id: Monsters.Catablepon.id,
@@ -120,13 +114,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 4,
-		itemInBankBoosts: [
-			{
-				[itemID('Salve amulet(ei)')]: 15,
-				[itemID('Salve amulet(i)')]: 10
-			}
-		]
+		qpRequired: 4
 	},
 	{
 		id: Monsters.FleshCrawler.id,
@@ -251,13 +239,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 4,
-		itemInBankBoosts: [
-			{
-				[itemID('Salve amulet(ei)')]: 15,
-				[itemID('Salve amulet(i)')]: 10
-			}
-		]
+		qpRequired: 4
 	},
 	{
 		id: Monsters.Mogre.id,
@@ -286,13 +268,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 4,
-		itemInBankBoosts: [
-			{
-				[itemID('Salve amulet(ei)')]: 15,
-				[itemID('Salve amulet(i)')]: 10
-			}
-		]
+		qpRequired: 4
 	},
 	{
 		id: Monsters.UriumShade.id,
@@ -304,13 +280,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 6,
-		qpRequired: 4,
-		itemInBankBoosts: [
-			{
-				[itemID('Salve amulet(ei)')]: 15,
-				[itemID('Salve amulet(i)')]: 10
-			}
-		]
+		qpRequired: 4
 	},
 	{
 		id: Monsters.Pyrefiend.id,
@@ -360,13 +330,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 		wildy: false,
 
 		difficultyRating: 2,
-		qpRequired: 4,
-		itemInBankBoosts: [
-			{
-				[itemID('Salve amulet(ei)')]: 15,
-				[itemID('Salve amulet(i)')]: 10
-			}
-		]
+		qpRequired: 4
 	},
 	{
 		id: Monsters.Rockslug.id,
@@ -398,13 +362,7 @@ export const mazchnaMonsters: KillableMonster[] = [
 
 		existsInCatacombs: true,
 		difficultyRating: 3,
-		qpRequired: 0,
-		itemInBankBoosts: [
-			{
-				[itemID('Salve amulet(ei)')]: 15,
-				[itemID('Salve amulet(i)')]: 10
-			}
-		]
+		qpRequired: 0
 	},
 	{
 		id: Monsters.VampyreJuvinate.id,

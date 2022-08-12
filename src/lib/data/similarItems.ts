@@ -266,7 +266,7 @@ const source: [string, (string | number)[]][] = [
 	['Crafting cape', ['Max cape', 'Crafting cape(t)']],
 	['Salve amulet', ['Salve amulet(ei)', 'Salve amulet(i)', 'Salve amulet (e)']],
 	['Salve amulet (e)', ['Salve amulet(ei)']],
-	['Salve amulet (i)', ['Salve amulet(ei)']],
+	['Salve amulet(i)', ['Salve amulet(ei)']],
 	['Scythe of vitur', [...scytheChargedSimilar]],
 	['Scythe of vitur (uncharged)', [...scytheUnchargedSimilar]],
 	['Sanguinesti staff', ['Holy sanguinesti staff']],
