@@ -9,11 +9,7 @@ const clueTable = new LootTable()
 	.add('Clue scroll (medium)', [1, 5], 4)
 	.add('Clue scroll (medium)', 1, 8);
 
-const rawFoodTable = new LootTable()
-	.add('Raw tuna', [50, 150], 3)
-	.add('Raw swordfish', [40, 120], 2)
-	.add('Raw trout', [30, 100], 4)
-	.add('Raw lobster', [40, 100], 5);
+const rawFoodTable = new LootTable().add('Raw tuna', [25, 75], 3).add('Raw swordfish', [20, 60], 2);
 
 const regularTable = new LootTable({ limit: 41 })
 	/* Supplies */
