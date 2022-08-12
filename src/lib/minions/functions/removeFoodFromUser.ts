@@ -25,7 +25,7 @@ export default async function removeFoodFromUser({
 	activityName: string;
 	attackStylesUsed: GearSetupType[];
 	learningPercentage?: number;
-}): Promise<{ foodRemoved: Bank; reductions: string[]; reductionPercent: number }> {
+}): Promise<{ foodRemoved: Bank; reductions: string[]; reductionRatio: number }> {
 	await user.settings.sync(true);
 
 	const originalTotalHealing = totalHealingNeeded;
@@ -64,7 +64,7 @@ export default async function removeFoodFromUser({
 		return {
 			foodRemoved: foodToRemove,
 			reductions,
-			reductionPercent: totalHealingNeeded / originalTotalHealing
+			reductionRatio: totalHealingNeeded / originalTotalHealing
 		};
 	}
 }
