@@ -13,6 +13,7 @@ import { UserSettings } from '../lib/settings/types/UserSettings';
 import { Patron } from '../lib/types';
 import getUsersPerkTier from '../lib/util/getUsersPerkTier';
 import { logError } from '../lib/util/logError';
+import { mahojiUserSettingsUpdate } from '../mahoji/mahojiSettings';
 
 const patreonApiURL = new URL(`https://patreon.com/api/oauth2/v2/campaigns/${patreonConfig?.campaignID}/members`);
 
@@ -175,13 +176,10 @@ export default class PatreonTask extends Task {
 		);
 
 		// Remove patreon badge(s)
-		await settings.update(
-			UserSettings.Badges,
-			userBadges.filter(number => ![BadgesEnum.Patron, BadgesEnum.LimitedPatron].includes(number)),
-			{
-				arrayAction: ArrayActions.Overwrite
-			}
-		);
+		const patronBadges: number[] = [BadgesEnum.Patron, BadgesEnum.LimitedPatron];
+		await mahojiUserSettingsUpdate(userID, {
+			badges: userBadges.filter(number => !patronBadges.includes(number))
+		});
 
 		// Remove patron bank background
 		const bg = backgroundImages.find(bg => bg.id === settings.get(UserSettings.BankBackground));

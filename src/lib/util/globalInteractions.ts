@@ -33,6 +33,7 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
+	'BUY_MINION',
 	'NEW_SLAYER_TASK'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
@@ -156,6 +157,16 @@ export async function interactionHook(data: APIInteraction) {
 		return runCommand({
 			commandName: 'minion',
 			args: { cancel: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	if (id === 'BUY_MINION') {
+		await buttonReply();
+		return runCommand({
+			commandName: 'minion',
+			args: { buy: {} },
 			bypassInhibitors: true,
 			...options
 		});

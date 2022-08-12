@@ -1,6 +1,6 @@
 import { MessageButton } from 'discord.js';
 import { KlasaMessage } from 'klasa';
-import { APIButtonComponent, ButtonStyle, ComponentType } from 'mahoji';
+import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import PQueue from 'p-queue';
 import { join } from 'path';
@@ -285,7 +285,7 @@ export const enum PerkTier {
 	Six = 6
 }
 
-export const enum BitField {
+export enum BitField {
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
@@ -355,21 +355,21 @@ export const enum PatronTierID {
 	Six = '8091554'
 }
 
-export const enum BadgesEnum {
-	Developer = 0,
-	Booster = 1,
-	LimitedPatron = 2,
-	Patron = 3,
-	Moderator = 4,
-	GreenGem = 5,
-	Bug = 6,
-	GoldenTrophy = 7,
-	TopSacrifice = 8,
-	TopSkiller = 9,
-	TopCollector = 10,
-	TopMinigame = 11,
-	SotWTrophy = 12
-}
+export const BadgesEnum = {
+	Developer: 0,
+	Booster: 1,
+	LimitedPatron: 2,
+	Patron: 3,
+	Moderator: 4,
+	GreenGem: 5,
+	Bug: 6,
+	GoldenTrophy: 7,
+	TopSacrifice: 8,
+	TopSkiller: 9,
+	TopCollector: 10,
+	TopMinigame: 11,
+	SotWTrophy: 12
+} as const;
 
 export const badges: { [key: number]: string } = {
 	[BadgesEnum.Developer]: Emoji.Spanner,
@@ -529,3 +529,10 @@ export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
 export const OWNER_IDS = ['157797566833098752'];
+export const minionBuyButton: APIButtonComponentWithCustomId = {
+	type: ComponentType.Button,
+	custom_id: 'BUY_MINION',
+	label: 'Buy Minion',
+	emoji: { id: '778418736180494347' },
+	style: ButtonStyle.Success
+};
