@@ -1,4 +1,3 @@
-import { Permissions } from 'discord.js';
 import { KlasaMessage, Monitor, MonitorStore, Stopwatch } from 'klasa';
 
 import { syncNewUserUsername } from '../lib/settings/settings';
@@ -7,7 +6,6 @@ import { logError } from '../lib/util/logError';
 import { postCommand } from '../mahoji/lib/postCommand';
 import { preCommand } from '../mahoji/lib/preCommand';
 import { convertKlasaCommandToAbstractCommand } from '../mahoji/lib/util';
-import { mahojiGuildSettingsFetch } from '../mahoji/mahojiSettings';
 
 export default class extends Monitor {
 	public constructor(store: MonitorStore, file: string[], directory: string) {
@@ -22,29 +20,9 @@ export default class extends Monitor {
 		if (message.guild && message.guild.me === null) {
 			await message.guild.members.fetch(this.client.user!.id);
 		}
-		if (!message.commandText && message.prefix === this.client.mentionPrefix) {
-			return this.sendPrefixReminder(message);
-		}
 		if (!message.commandText || !message.channel.postable || !message.command) return undefined;
 
 		return this.runCommand(message);
-	}
-
-	public async sendPrefixReminder(message: KlasaMessage) {
-		const settings = await mahojiGuildSettingsFetch(message.guild!);
-
-		if (message.guild !== null) {
-			const { staffOnlyChannels } = settings;
-			if (
-				!message.member ||
-				(staffOnlyChannels.includes(message.channel.id) &&
-					!message.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS))
-			) {
-				return;
-			}
-		}
-
-		return message.channel.send(`The prefix in this guild is set to: \`${settings.prefix}\``);
 	}
 
 	public async runCommand(msg: KlasaMessage) {
@@ -76,7 +54,11 @@ export default class extends Monitor {
 			if (inhibitedReason) {
 				inhibited = true;
 				if (inhibitedReason.silent) return;
-				return msg.channel.send(inhibitedReason.reason);
+				return msg.channel.send(
+					typeof inhibitedReason.reason === 'string'
+						? inhibitedReason.reason
+						: inhibitedReason.reason.content!
+				);
 			}
 
 			// @ts-ignore 2341
