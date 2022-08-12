@@ -4,6 +4,7 @@ import { DISABLED_COMMANDS } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
 
 export async function onStartup() {
+	// Sync disabled commands
 	const disabledCommands = await prisma.clientStorage.findFirst({
 		where: {
 			id: CLIENT_ID
@@ -17,5 +18,6 @@ export async function onStartup() {
 		DISABLED_COMMANDS.add(command);
 	}
 
+	// Sync blacklists
 	await syncBlacklists();
 }

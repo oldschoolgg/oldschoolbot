@@ -12,6 +12,8 @@ import { BitField, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { CombatOptionsArray, CombatOptionsEnum } from '../../lib/minions/data/combatConstants';
 import { prisma } from '../../lib/settings/prisma';
+import { autoslayChoices, slayerMasterChoices } from '../../lib/slayer/constants';
+import { setDefaultAutoslay, setDefaultSlayerMaster } from '../../lib/slayer/slayerUtil';
 import { BankSortMethods } from '../../lib/sorts';
 import { itemNameFromID, removeFromArr, stringMatches } from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
@@ -846,6 +848,27 @@ export const configCommand: OSBMahojiCommand = {
 							required: false
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'slayer',
+					description: 'Manage your Slayer options',
+					options: [
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'master',
+							description: 'Choose default slayer master',
+							required: false,
+							choices: slayerMasterChoices
+						},
+						{
+							type: ApplicationCommandOptionType.String,
+							name: 'autoslay',
+							description: 'Set default autoslay mode',
+							required: false,
+							choices: autoslayChoices
+						}
+					]
 				}
 			]
 		}
@@ -872,6 +895,7 @@ export const configCommand: OSBMahojiCommand = {
 			favorite_alchs?: { add?: string; remove?: string; add_many?: string; reset?: boolean };
 			favorite_food?: { add?: string; remove?: string; reset?: boolean };
 			favorite_items?: { add?: string; remove?: string; reset?: boolean };
+			slayer?: { master?: string; autoslay?: string };
 		};
 	}>) => {
 		const [user, mahojiUser] = await Promise.all([
@@ -905,7 +929,8 @@ export const configCommand: OSBMahojiCommand = {
 				bank_sort,
 				favorite_alchs,
 				favorite_food,
-				favorite_items
+				favorite_items,
+				slayer
 			} = options.user;
 			if (toggle) {
 				return handleToggle(mahojiUser, toggle.name);
@@ -947,6 +972,16 @@ export const configCommand: OSBMahojiCommand = {
 					favorite_items.remove,
 					Boolean(favorite_items.reset)
 				);
+			}
+			if (slayer) {
+				if (slayer.autoslay) {
+					const { message } = await setDefaultAutoslay(user, slayer.autoslay);
+					return message;
+				}
+				if (slayer.master) {
+					const { message } = await setDefaultSlayerMaster(user, slayer.master);
+					return message;
+				}
 			}
 		}
 		return 'Invalid command.';

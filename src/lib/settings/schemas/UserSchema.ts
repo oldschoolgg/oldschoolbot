@@ -33,8 +33,6 @@ Client.defaultUserSchema
 	.add('honour_level', 'integer', { default: 1 })
 	.add('honour_points', 'integer', { default: 0 })
 	.add('high_gambles', 'integer', { default: 0 })
-	.add('patreon_id', 'string', { default: null })
-	.add('github_id', 'integer', { default: null })
 	.add('carpenter_points', 'integer', { default: 0 })
 	.add('zeal_tokens', 'integer', { default: 0 })
 	.add('openable_scores', 'any', { default: {} })
