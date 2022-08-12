@@ -15,8 +15,10 @@ export default class extends Task {
 
 		const xpReceived = zahur && mixableItem.zahur === true ? 0 : quantity * mixableItem.xp;
 
+		let outputQuantity = quantity;
+
 		if (mixableItem.outputMultiple) {
-			quantity *= mixableItem.outputMultiple;
+			outputQuantity *= mixableItem.outputMultiple;
 		}
 
 		const xpRes = await user.addXP({
@@ -25,9 +27,9 @@ export default class extends Task {
 			duration
 		});
 
-		let str = `${user}, ${user.minionName} finished making ${quantity}x ${mixableItem.name}. ${xpRes}`;
+		let str = `${user}, ${user.minionName} finished making ${outputQuantity}x ${mixableItem.name}. ${xpRes}`;
 
-		const loot = new Bank().add(mixableItem.id, quantity);
+		const loot = new Bank().add(mixableItem.id, outputQuantity);
 
 		await user.addItemsToBank({ items: loot, collectionLog: true });
 
