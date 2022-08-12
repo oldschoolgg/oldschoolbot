@@ -655,7 +655,7 @@ LIMIT 10;
 			const user = await mahojiUsersSettingsFetch(options.bitfield.user.user.id);
 			const bitEntry = Object.entries(BitFieldData).find(i => i[0] === bitInput);
 			const action: 'add' | 'remove' = options.bitfield.add ? 'add' : 'remove';
-			if (!action || !bitEntry) {
+			if (!bitEntry) {
 				return Object.entries(BitFieldData)
 					.map(entry => `**${entry[0]}:** ${entry[1]?.name}`)
 					.join('\n');
@@ -810,18 +810,16 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			const input = await mahojiUsersSettingsFetch(userToGive.user.id);
 
 			const currentBalanceTier = input.premium_balance_tier;
-			const currentBalanceTime = Number(input.premium_balance_expiry_date);
 
 			const oldPerkTier = getUsersPerkTier(input.bitfield);
 			if (oldPerkTier > 1 && !currentBalanceTier && oldPerkTier <= tier + 1) {
 				return `${userToGive.user.username} is already a patron of at least that tier.`;
 			}
+
 			if (currentBalanceTier !== null && currentBalanceTier !== tier) {
 				await handleMahojiConfirmation(
 					interaction,
-					`${input} already has ${formatDuration(
-						currentBalanceTime
-					)} of Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
+					`${input} already has Tier ${currentBalanceTier}; this will replace the existing balance entirely, are you sure?`
 				);
 			}
 			await handleMahojiConfirmation(
@@ -833,6 +831,9 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			await mahojiUserSettingsUpdate(input.id, {
 				premium_balance_tier: tier
 			});
+
+			const currentBalanceTime =
+				input.premium_balance_expiry_date === null ? null : Number(input.premium_balance_expiry_date);
 
 			let newBalanceExpiryTime = 0;
 			if (currentBalanceTime !== null && tier === currentBalanceTier) {
