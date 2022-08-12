@@ -355,7 +355,14 @@ export const Inventions: readonly Invention[] = [
 		flags: ['bank'],
 		itemCost: new Bank().add('Abyssal gem').freeze(),
 		inventionLevelNeeded: 120,
-		usageCostMultiplier: 0.5
+		usageCostMultiplier: 0.5,
+		extraDescription: () => {
+			let str = '';
+			for (const boost of inventionBoosts.abyssalAmulet.boosts) {
+				str += `**${boost.boost}%** faster Runecrafting the follow runes: ${boost.runes.join(',')}\n`;
+			}
+			return str;
+		}
 	}
 ] as const;
 
