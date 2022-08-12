@@ -129,7 +129,7 @@ const stalls: Stealable[] = [
 			.add('Jangerberries', 1, 7)
 			.add('Lemon', 1, 5)
 			.add('Redberries', 1, 5)
-			.add('Pineapple', 1 ,5)
+			.add('Pineapple', 1, 5)
 			.add('Lime', 1, 5)
 			.add('Strawberry', 1, 5)
 			.add('Strange fruit', 1, 5)
