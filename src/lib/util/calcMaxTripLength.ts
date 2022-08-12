@@ -44,6 +44,7 @@ export function calcMaxTripLength(user: User | KlasaUser, activity?: activity_ty
 		case 'Ignecarus':
 		case 'KingGoldemar':
 		case 'Moktang':
+		case 'Naxxus':
 		case 'Dungeoneering': {
 			masterHPCapeBoost = 10;
 			regularHPBoost = true;

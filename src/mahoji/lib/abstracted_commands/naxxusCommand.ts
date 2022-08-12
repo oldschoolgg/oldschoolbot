@@ -155,9 +155,9 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 	const maxTripLength = user.maxTripLength('Naxxus');
 	// If no quantity provided, set it to the max.
 	if (quantity === undefined) {
-		quantity = Math.floor(maxTripLength / effectiveTime);
+		quantity = Math.max(1, Math.floor(maxTripLength / effectiveTime));
 	}
-	if (quantity * effectiveTime > maxTripLength) {
+	if (quantity > 1 && quantity * effectiveTime > maxTripLength) {
 		return `The max number of Naxxus you can do is ${Math.floor(maxTripLength / effectiveTime)}!`;
 	}
 
