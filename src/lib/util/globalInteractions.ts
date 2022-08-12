@@ -32,7 +32,8 @@ const globalInteractionActions = [
 	'AUTO_SLAY',
 	'CANCEL_TRIP',
 	'AUTO_FARM',
-	'AUTO_FARMING_CONTRACT'
+	'AUTO_FARMING_CONTRACT',
+	'BUY_MINION'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
@@ -147,6 +148,16 @@ export async function interactionHook(data: APIInteraction) {
 		return runCommand({
 			commandName: 'minion',
 			args: { cancel: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	if (id === 'BUY_MINION') {
+		await buttonReply();
+		return runCommand({
+			commandName: 'minion',
+			args: { buy: {} },
 			bypassInhibitors: true,
 			...options
 		});
