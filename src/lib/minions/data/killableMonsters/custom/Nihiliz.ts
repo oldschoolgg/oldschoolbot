@@ -9,15 +9,13 @@ const clueTable = new LootTable()
 	.add('Clue scroll (medium)', [1, 5], 4)
 	.add('Clue scroll (medium)', 1, 8);
 
-const foodTable = new LootTable()
-	.add('Shark', [1, 50], 3)
-	.add('Manta ray', [1, 50], 2)
+const rawFoodTable = new LootTable()
 	.add('Raw tuna', [50, 150], 3)
 	.add('Raw swordfish', [40, 120], 2)
-	.add('Raw anglerfish', [5, 10], 2)
-	.add('Raw rocktail', [2, 5], 2);
+	.add('Raw trout', [30, 100], 4)
+	.add('Raw lobster', [40, 100], 5);
 
-const regularTable = new LootTable()
+const regularTable = new LootTable({ limit: 41 })
 	/* Supplies */
 	.add('Dragon bolts (unf)', [20, 30], 2)
 	.add('Cadantine seed', [1, 3], 2)
@@ -37,7 +35,7 @@ const regularTable = new LootTable()
 	.add('Runite ore', [10, 50])
 
 	/* Food */
-	.add(foodTable, 1, 14)
+	.add(rawFoodTable, 1, 10)
 
 	/* Other */
 	.add('Coins', [50_000, 200_000])
@@ -52,7 +50,7 @@ export const NihilizLootTable = new LootTable()
 	.every(regularTable, 3)
 
 	/* Tertiary */
-	.tertiary(4, foodTable)
+	.tertiary(4, rawFoodTable)
 	.tertiary(8, clueTable)
 	.tertiary(10, 'Nihil shard', [5, 20])
 	.tertiary(1200, 'Nihil horn')
