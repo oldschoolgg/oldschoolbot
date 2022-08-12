@@ -306,7 +306,7 @@ export interface TokkulShopOptions extends ActivityTaskOptions {
 
 export interface PuroPuroActivityTaskOptions extends MinigameActivityTaskOptions {
 	quantity: number;
-	impling: string;
+	implingID: number | null;
 	darkLure: boolean;
 }
 

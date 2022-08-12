@@ -1,6 +1,7 @@
 import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
+import { Item } from 'oldschooljs/dist/meta/types';
 
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { Skills } from '../../../lib/types';
@@ -8,12 +9,14 @@ import { PuroPuroActivityTaskOptions } from '../../../lib/types/minions';
 import { bankHasItem, formatDuration, itemID, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
+import getOSItem from '../../../lib/util/getOSItem';
 import { minionName } from '../../../lib/util/minionUtils';
 
-interface implingName {
+interface PuroImpling {
 	name: string;
 	hunterLevel: number;
 	spell: boolean;
+	item: Item | null;
 }
 
 const puroPuroSkillRequirements: Skills = {
@@ -34,46 +37,54 @@ const darkLureSkillRequirements: Skills = {
 	strength: 16
 };
 
-const puroOptions: implingName[] = [
+export const puroOptions: PuroImpling[] = [
 	{
 		name: 'All Implings',
 		hunterLevel: 17,
-		spell: true
+		spell: true,
+		item: null
 	},
 	{
 		name: 'Dragon Implings',
 		hunterLevel: 83,
-		spell: true
+		spell: true,
+		item: getOSItem('Dragon impling jar')
 	},
 	{
 		name: 'Eclectic Implings',
 		hunterLevel: 50,
-		spell: false
+		spell: false,
+		item: getOSItem('Eclectic impling jar')
 	},
 	{
 		name: 'Essence Implings',
 		hunterLevel: 42,
-		spell: false
+		spell: false,
+		item: getOSItem('Essence impling jar')
 	},
 	{
 		name: 'Earth Implings',
 		hunterLevel: 36,
-		spell: false
+		spell: false,
+		item: getOSItem('Earth impling jar')
 	},
 	{
 		name: 'Gourmet Implings',
 		hunterLevel: 28,
-		spell: false
+		spell: false,
+		item: getOSItem('Gourmet impling jar')
 	},
 	{
 		name: 'Young Implings',
 		hunterLevel: 22,
-		spell: false
+		spell: false,
+		item: getOSItem('Young impling jar')
 	},
 	{
 		name: 'Baby Implings',
 		hunterLevel: 17,
-		spell: false
+		spell: false,
+		item: getOSItem('Baby impling jar')
 	}
 ];
 
@@ -148,7 +159,7 @@ export async function puroPuroStartCommand(
 	}
 
 	await addSubTaskToActivityTask<PuroPuroActivityTaskOptions>({
-		impling: impToHunt.name,
+		implingID: impToHunt.item?.id ?? null,
 		quantity,
 		userID: user.id,
 		duration,
