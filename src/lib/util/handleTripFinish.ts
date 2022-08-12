@@ -139,7 +139,11 @@ export async function handleTripFinish(
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
 	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
-	if ((currentTask === null || currentTask.quantity_remaining <= 0) && perkTier > PerkTier.One) {
+	if (
+		(currentTask === null || currentTask.quantity_remaining <= 0) &&
+		perkTier > PerkTier.One &&
+		data.type === 'MonsterKilling'
+	) {
 		components[0].push(makeNewSlayerTaskButton());
 	}
 	sendToChannelID(channelID, {
