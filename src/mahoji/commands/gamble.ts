@@ -1,4 +1,5 @@
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
+import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
@@ -7,7 +8,7 @@ import { hotColdCommand } from '../lib/abstracted_commands/hotColdCommand';
 import { luckyPickCommand } from '../lib/abstracted_commands/luckyPickCommand';
 import { slotsCommand } from '../lib/abstracted_commands/slotsCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { MahojiUserOption, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const gambleCommand: OSBMahojiCommand = {
 	name: 'gamble',
