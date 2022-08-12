@@ -185,7 +185,15 @@ const forcedShortNameMap = new Map<number, string>([
 	[i('Reward casket (master)'), 'master']
 ]);
 
-export const bankFlags = ['show_price', 'show_alch', 'show_id', 'show_names', 'show_weights', 'show_all'] as const;
+export const bankFlags = [
+	'show_price',
+	'show_alch',
+	'show_id',
+	'show_names',
+	'show_weights',
+	'show_all',
+	'wide'
+] as const;
 export type BankFlag = typeof bankFlags[number];
 
 export default class BankImageTask extends Task {
@@ -387,7 +395,7 @@ export default class BankImageTask extends Task {
 		items: [Item, number][],
 		flags: FlagMap,
 		currentCL: Bank | undefined,
-		flag: BankFlag | undefined,
+		mahojiFlags: BankFlag[] | undefined,
 		weightings: Readonly<ItemBank> | undefined
 	) {
 		// Draw Items
@@ -447,15 +455,15 @@ export default class BankImageTask extends Task {
 
 			let bottomItemText: string | number | null = null;
 
-			if (flags.has('sv') || flag === 'show_price') {
+			if (flags.has('sv') || mahojiFlags?.includes('show_price')) {
 				bottomItemText = item.price * quantity;
-			} else if (flags.has('av') || flag === 'show_alch') {
+			} else if (flags.has('av') || mahojiFlags?.includes('show_alch')) {
 				bottomItemText = (item.highalch ?? 0) * quantity;
-			} else if (flags.has('id') || flag === 'show_id') {
+			} else if (flags.has('id') || mahojiFlags?.includes('show_id')) {
 				bottomItemText = item.id.toString();
-			} else if (flags.has('names') || flag === 'show_names') {
+			} else if (flags.has('names') || mahojiFlags?.includes('show_names')) {
 				bottomItemText = item.name;
-			} else if (flag === 'show_weights' && weightings && weightings[item.id]) {
+			} else if (mahojiFlags?.includes('show_weights') && weightings && weightings[item.id]) {
 				bottomItemText = weightings[item.id];
 			}
 
@@ -484,7 +492,7 @@ export default class BankImageTask extends Task {
 		flags?: Flags;
 		user?: KlasaUser;
 		collectionLog?: Bank;
-		flag?: BankFlag;
+		mahojiFlags?: BankFlag[];
 	}): Promise<BankImageResult> {
 		let { user, collectionLog, title = '', showValue = true } = opts;
 		const bank = opts.bank.clone();
@@ -557,12 +565,12 @@ export default class BankImageTask extends Task {
 		// Get page flag to show the current page, full and showNewCL to avoid showing page n of y
 		const page = flags.get('page');
 		const noBorder = flags.get('noBorder');
-		const wide = flags.get('wide');
+		const wide = flags.get('wide') || opts.mahojiFlags?.includes('wide');
 		if (Number(page) >= 0) {
 			title += ` - Page ${(Number(page) ? Number(page) : 0) + 1} of ${chunked.length}`;
 		}
 
-		const isShowingFullBankImage = flags.has('full') || opts.flag === 'show_all';
+		const isShowingFullBankImage = wide || flags.has('full') || opts.mahojiFlags?.includes('show_all');
 
 		// Paging
 		if (typeof page === 'number' && !isShowingFullBankImage) {
@@ -677,7 +685,7 @@ export default class BankImageTask extends Task {
 			items,
 			flags,
 			currentCL,
-			opts.flag,
+			opts.mahojiFlags,
 			weightings
 		);
 

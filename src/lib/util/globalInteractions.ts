@@ -6,6 +6,7 @@ import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache } from '../constants';
 import { runCommand } from '../settings/settings';
+import { channelIsSendable, convertMahojiResponseToDJSResponse } from '../util';
 import { minionIsBusy } from './minionIsBusy';
 import { minionName } from './minionUtils';
 import { respondToButton } from './respondToButton';
@@ -221,7 +222,14 @@ export async function interactionHook(data: APIInteraction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			await buttonReply();
-			return autoContract(await globalClient.fetchUser(user.id), BigInt(options.channelID), BigInt(user.id));
+			const response = await autoContract(
+				await globalClient.fetchUser(user.id),
+				BigInt(options.channelID),
+				BigInt(user.id)
+			);
+			const channel = globalClient.channels.cache.get(options.channelID);
+			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
+			break;
 		}
 		default: {
 		}
