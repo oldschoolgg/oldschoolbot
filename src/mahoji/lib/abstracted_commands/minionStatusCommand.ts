@@ -3,20 +3,12 @@ import { chunk } from 'e';
 import { APIButtonComponentWithCustomId, ComponentType } from 'mahoji';
 
 import { ClueTiers } from '../../../lib/clues/clueTiers';
-import { Emoji, lastTripCache } from '../../../lib/constants';
+import { Emoji, lastTripCache, minionBuyButton } from '../../../lib/constants';
 import { minionStatus } from '../../../lib/util/minionStatus';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
 import { calculateBirdhouseDetails } from './birdhousesCommand';
 import { isUsersDailyReady } from './dailyCommand';
 import { canRunAutoContract } from './farmingContractCommand';
-
-export const minionBuyButton: APIButtonComponentWithCustomId = {
-	type: ComponentType.Button,
-	custom_id: 'BUY_MINION',
-	label: 'Buy Minion',
-	emoji: { id: '778418736180494347' },
-	style: ButtonStyle.Success
-};
 
 export async function minionStatusCommand(userID: bigint | string): Promise<{
 	content: string;

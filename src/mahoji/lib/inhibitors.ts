@@ -6,13 +6,21 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { OWNER_ID, production } from '../../config';
 import { BLACKLISTED_GUILDS, BLACKLISTED_USERS } from '../../lib/blacklists';
-import { BadgesEnum, BitField, BotID, Channel, DISABLED_COMMANDS, PerkTier, SupportServer } from '../../lib/constants';
+import {
+	BadgesEnum,
+	BitField,
+	BotID,
+	Channel,
+	DISABLED_COMMANDS,
+	minionBuyButton,
+	PerkTier,
+	SupportServer
+} from '../../lib/constants';
 import { UserSettings } from '../../lib/settings/types/UserSettings';
 import { CategoryFlag } from '../../lib/types';
 import { formatDuration } from '../../lib/util';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { mahojiGuildSettingsFetch, untrustedGuildSettingsCache } from '../mahojiSettings';
-import { minionBuyButton } from './abstracted_commands/minionStatusCommand';
 import { Cooldowns } from './Cooldowns';
 
 export type CommandArgs = (string | number | boolean | unknown)[] | Record<string, unknown>;

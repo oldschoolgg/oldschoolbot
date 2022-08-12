@@ -3920,11 +3920,6 @@ jwt-simple@^0.5.6:
   resolved "https://registry.yarnpkg.com/jwt-simple/-/jwt-simple-0.5.6.tgz#3357adec55b26547114157be66748995b75b333a"
   integrity sha512-40aUybvhH9t2h71ncA1/1SbtTNCVZHgsTsTgqPUxGWDmUDrXyDf2wMNQKEbdBjbf4AI+fQhbECNTV6lWxQKUzg==
 
-klasa-decorators@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
-  integrity sha512-uCoMz750Lnp0dM8VC787hnRrF9wqWfUrjT7dp+8ihqp6xmtX8ZSXoeK08WJgAhEdEdIDsUG+VMXi9gcG54EZMA==
-
 "klasa@https://github.com/gc/klasa.git#99ee76765f6b6172254cbeb363c73f4305d43f36":
   version "0.5.0-dev"
   resolved "https://github.com/gc/klasa.git#99ee76765f6b6172254cbeb363c73f4305d43f36"

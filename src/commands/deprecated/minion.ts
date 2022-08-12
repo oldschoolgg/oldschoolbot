@@ -2,16 +2,14 @@ import { MessageActionRow, MessageButton } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { ClueTiers } from '../lib/clues/clueTiers';
-import { Emoji, lastTripCache } from '../lib/constants';
-import { BotCommand } from '../lib/structures/BotCommand';
-import { convertMahojiResponseToDJSResponse } from '../lib/util';
-import { makeDoClueButton, makeRepeatTripButton } from '../lib/util/globalInteractions';
-import { calculateBirdhouseDetails } from '../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { isUsersDailyReady } from '../mahoji/lib/abstracted_commands/dailyCommand';
-import { canRunAutoContract } from '../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { minionBuyCommand } from '../mahoji/lib/abstracted_commands/minionBuyCommand';
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { CLIENT_ID } from '../../config';
+import { ClueTiers } from '../../lib/clues/clueTiers';
+import { Emoji, lastTripCache } from '../../lib/constants';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { makeDoClueButton, makeRepeatTripButton } from '../../lib/util/globalInteractions';
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
+import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 
 const subCommands = ['buy', 'pat', 'info'];
 
@@ -116,7 +114,11 @@ export default class MinionCommand extends BotCommand {
 			}
 		}
 
-		return msg.channel.send({ content: msg.author.minionStatus, components: chunk(extraButtons, 5) });
+		return msg.channel.send({
+			content: `${msg.author.minionStatus}
+*This command will be removed soon, switch to \`/minion\`,  \`/m\`, or just tag the bot to see the buttons (<@${CLIENT_ID}>)*`,
+			components: chunk(extraButtons, 5)
+		});
 	}
 
 	async info(msg: KlasaMessage) {
@@ -124,10 +126,6 @@ export default class MinionCommand extends BotCommand {
 	}
 
 	async buy(msg: KlasaMessage) {
-		return msg.channel.send(
-			convertMahojiResponseToDJSResponse(
-				await minionBuyCommand(await mahojiUsersSettingsFetch(msg.author.id), false)
-			)
-		);
+		return msg.channel.send('This command is now `/minion buy`');
 	}
 }
