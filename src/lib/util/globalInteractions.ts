@@ -32,7 +32,8 @@ const globalInteractionActions = [
 	'AUTO_SLAY',
 	'CANCEL_TRIP',
 	'AUTO_FARM',
-	'AUTO_FARMING_CONTRACT'
+	'AUTO_FARMING_CONTRACT',
+	'NEW_SLAYER_TASK'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
@@ -61,6 +62,14 @@ export function makeOpenCasketButton(tier: ClueTier) {
 
 export function makeRepeatTripButton() {
 	return new MessageButton().setCustomID('REPEAT_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY').setEmoji('🔁');
+}
+
+export function makeNewSlayerTaskButton() {
+	return new MessageButton()
+		.setCustomID('NEW_SLAYER_TASK')
+		.setLabel('New Slayer Task')
+		.setStyle('SECONDARY')
+		.setEmoji('630911040560824330');
 }
 
 export async function interactionHook(data: APIInteraction) {
@@ -230,6 +239,15 @@ export async function interactionHook(data: APIInteraction) {
 			const channel = globalClient.channels.cache.get(options.channelID);
 			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
 			break;
+		}
+		case 'NEW_SLAYER_TASK': {
+			await buttonReply();
+			return runCommand({
+				commandName: 'slayer',
+				args: { new_task: {} },
+				bypassInhibitors: true,
+				...options
+			});
 		}
 		default: {
 		}

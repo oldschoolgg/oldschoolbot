@@ -11,10 +11,16 @@ import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { triggerRandomEvent } from '../randomEvents';
 import { runCommand } from '../settings/settings';
+import { getUsersCurrentSlayerInfo } from '../slayer/slayerUtil';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
-import { makeDoClueButton, makeOpenCasketButton, makeRepeatTripButton } from './globalInteractions';
+import {
+	makeDoClueButton,
+	makeNewSlayerTaskButton,
+	makeOpenCasketButton,
+	makeRepeatTripButton
+} from './globalInteractions';
 import { sendToChannelID } from './webhook';
 
 export const collectors = new Map<string, MessageCollector>();
@@ -130,9 +136,12 @@ export async function handleTripFinish(
 	const components: MessageOptions['components'] = [[]];
 	if (onContinueFn) components[0].push(makeRepeatTripButton());
 	if (clueReceived && perkTier > PerkTier.One) components[0].push(makeDoClueButton(clueReceived));
-
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
+	const { currentTask } = await getUsersCurrentSlayerInfo(user.id);
+	if ((currentTask === null || currentTask.quantity_remaining <= 0) && perkTier > PerkTier.One) {
+		components[0].push(makeNewSlayerTaskButton());
+	}
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

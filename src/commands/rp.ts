@@ -587,6 +587,15 @@ LIMIT 10;
 
 		// Owner commands
 		switch (cmd.toLowerCase()) {
+			case 'localmahojisync': {
+				await msg.channel.send('Syncing commands locally...');
+				await bulkUpdateCommands({
+					client: globalClient.mahojiClient,
+					commands: globalClient.mahojiClient.commands.values,
+					guildID: msg.guild!.id
+				});
+				return msg.channel.send('Locally synced slash commands.');
+			}
 			case 'globalsync': {
 				const totalCommands = globalClient.mahojiClient.commands.values;
 				const globalCommands = totalCommands.filter(i => !i.guildID);
