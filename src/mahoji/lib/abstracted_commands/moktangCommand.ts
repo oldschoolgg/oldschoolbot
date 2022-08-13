@@ -164,6 +164,6 @@ ${xpStr}`;
 		],
 		image.file.buffer,
 		data,
-		null
+		loot
 	);
 }
