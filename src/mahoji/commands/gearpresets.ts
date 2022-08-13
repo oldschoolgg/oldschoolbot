@@ -215,7 +215,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 	}: CommandRunOptions<{
 		equip?: { gear_setup: GearSetupType; preset: string };
 		create?: InputGear & { copy_setup?: GearSetupType; name: string };
-		edit?: InputGear & { name: string };
+		edit?: InputGear & { preset: string };
 		delete?: { preset: string };
 		view?: { preset: string };
 	}>) => {
@@ -231,7 +231,7 @@ export const gearPresetsCommand: OSBMahojiCommand = {
 			);
 		}
 		if (options.edit) {
-			return createOrEditGearSetup(klasaUser, undefined, options.edit.name, true, options.edit);
+			return createOrEditGearSetup(klasaUser, undefined, options.edit.preset, true, options.edit);
 		}
 		if (options.delete) {
 			const preset = await prisma.gearPreset.findFirst({
