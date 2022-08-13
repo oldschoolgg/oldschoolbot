@@ -145,6 +145,8 @@ model ClientStorage {
   vasa_loot               Json   @default("{}") @db.Json
   ods_cost                Json   @default("{}") @db.Json
   ods_loot                Json   @default("{}") @db.Json
+  naxxus_loot             Json   @default("{}") @db.Json
+  naxxus_cost             Json   @default("{}") @db.Json
   tame_merging_cost       Json   @default("{}") @db.Json
   trip_doubling_loot      Json   @default("{}") @db.Json
   fc_cost                 Json   @default("{}") @db.Json
@@ -442,6 +444,7 @@ model User {
   dungeoneering_tokens     Int      @default(0)
   item_contract_streak     Int      @default(0)
   item_contract_bank       Json     @default("{}") @db.Json
+  void_staff_charges       Int      @default(0)
 
   // Invention
   skills_invention          BigInt @default(0) @map("skills.invention")
