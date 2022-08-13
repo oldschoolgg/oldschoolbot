@@ -403,11 +403,6 @@ export const NIGHTMARE_ID = 9415;
 export const HESPORI_ID = 8583;
 export const NEX_ID = 11_278;
 
-/**
- * Map<user_id, PromiseQueue>
- */
-export const userQueues: Map<string, PQueue> = new Map();
-
 export const skillEmoji = {
 	runecraft: '<:runecraft:630911040435257364>',
 	firemaking: '<:firemaking:630911040175210518>',

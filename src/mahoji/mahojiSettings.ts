@@ -5,16 +5,19 @@ import { KlasaUser } from 'klasa';
 import { InteractionResponseType, InteractionType, MessageFlags } from 'mahoji';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
+import PromiseQueue from 'p-queue';
 
 import { CLIENT_ID } from '../config';
+import { deduplicateClueScrolls } from '../lib/clues/clueUtils';
 import { SILENT_ERROR } from '../lib/constants';
 import { evalMathExpression } from '../lib/expressionParser';
 import { defaultGear } from '../lib/gear';
 import { prisma } from '../lib/settings/prisma';
 import { UserSettings } from '../lib/settings/types/UserSettings';
+import { filterLootReplace } from '../lib/slayer/slayerUtil';
 import { Gear } from '../lib/structures/Gear';
 import type { ItemBank, Skills as TSkills } from '../lib/types';
-import { assert, channelIsSendable, convertXPtoLVL } from '../lib/util';
+import { assert, channelIsSendable, convertXPtoLVL, sanitizeBank } from '../lib/util';
 import { logError } from '../lib/util/logError';
 import { respondToButton } from '../lib/util/respondToButton';
 
@@ -329,4 +332,106 @@ export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey,
 	await userStatsUpdate(userID, u => ({
 		[key]: bank.clone().add(u[key] as ItemBank).bank
 	}));
+}
+
+function allItemsOwned(user: KlasaUser | User): Bank {
+	const bank = new Bank();
+	if (user instanceof KlasaUser) {
+		bank.add(user.bank({ withGP: true }));
+		const equippedPet = user.settings.get(UserSettings.Minion.EquippedPet);
+		if (equippedPet) bank.add(equippedPet);
+	} else {
+		bank.add(user.bank as ItemBank);
+		bank.add('Coins', Number(user.GP));
+		if (user.minion_equippedPet) {
+			bank.add(user.minion_equippedPet);
+		}
+	}
+
+	const gear = user instanceof KlasaUser ? user.rawGear() : getUserGear(user);
+	for (const setup of Object.values(gear)) {
+		for (const equipped of Object.values(setup)) {
+			if (equipped?.item) {
+				bank.add(equipped.item, equipped.quantity);
+			}
+		}
+	}
+
+	return bank;
+}
+
+export const userQueues: Map<string, PromiseQueue> = new Map();
+function getUserUpdateQueue(userID: string) {
+	let currentQueue = userQueues.get(userID);
+	if (!currentQueue) {
+		let queue = new PromiseQueue({ concurrency: 1 });
+		userQueues.set(userID, queue);
+		return queue;
+	}
+	return currentQueue;
+}
+
+async function userQueueFn(userID: string, fn: () => Promise<any>) {
+	const queue = getUserUpdateQueue(userID);
+	return queue.add(() => fn());
+}
+
+export async function addItemsToBank({
+	items,
+	collectionLog = false,
+	filterLoot = true,
+	dontAddToTempCL = false,
+	userID
+}: {
+	userID: string;
+	items: ItemBank | Bank;
+	collectionLog?: boolean;
+	filterLoot?: boolean;
+	dontAddToTempCL?: boolean;
+}): Promise<{ previousCL: Bank; itemsAdded: Bank }> {
+	return userQueueFn(userID, async () => {
+		const settings = await mahojiUsersSettingsFetch(userID);
+		const currentBank = new Bank().add(settings.bank as ItemBank);
+		const previousCL = new Bank().add(settings.collectionLogBank as ItemBank);
+
+		let loot = deduplicateClueScrolls({
+			loot: items instanceof Bank ? items.clone() : new Bank(items),
+			currentBank
+		});
+
+		const { bankLoot, clLoot } = filterLoot
+			? filterLootReplace(allItemsOwned(settings), loot)
+			: { bankLoot: loot, clLoot: loot };
+		loot = bankLoot;
+		if (collectionLog) {
+			await user.addItemsToCollectionLog({ items: clLoot, dontAddToTempCL });
+		}
+
+		// Get the amount of coins in the loot and remove the coins from the items to be added to the user bank
+		const coinsInLoot = loot.amount('Coins');
+		if (coinsInLoot > 0) {
+			await mahojiUserSettingsUpdate(userID, {
+				GP: {
+					increment: coinsInLoot
+				}
+			});
+			loot.remove('Coins', loot.amount('Coins'));
+		}
+
+		const newBank = new Bank().add(currentBank).add(loot);
+		sanitizeBank(newBank);
+		const newUser = await mahojiUserSettingsUpdate(userID, {
+			bank: newBank.bank
+		});
+
+		// Re-add the coins to the loot
+		if (coinsInLoot > 0) loot.add('Coins', coinsInLoot);
+
+		return {
+			previousCL,
+			itemsAdded: loot,
+			newBank: new Bank(newUser.newUser.bank as ItemBank),
+			newCL: new Bank(newUser.newUser.collectionLogBank as ItemBank)
+		};
+	});
 }

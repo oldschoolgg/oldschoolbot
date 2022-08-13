@@ -144,14 +144,6 @@ declare module 'discord.js' {
 		rawGear(): UserFullGearSetup;
 		allItemsOwned(): Bank;
 		cl(): Bank;
-		/**
-		 * Returns this users update promise queue.
-		 */
-		getUpdateQueue(): PQueue;
-		/**
-		 * Queue a function to run on a per-user queue.
-		 */
-		queueFn(fn: (user: KlasaUser) => Promise<T>): Promise<T>;
 		bank(options?: GetUserBankOptions): Bank;
 		getUserFavAlchs(duration: number): Item[];
 		getGear(gearType: GearSetupType): Gear;
