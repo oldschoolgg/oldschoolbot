@@ -19,7 +19,14 @@ import { BLACKLISTED_GUILDS, BLACKLISTED_USERS, syncBlacklists } from '../../lib
 import { badges, BadgesEnum, BitField, BitFieldData, DISABLED_COMMANDS, OWNER_IDS } from '../../lib/constants';
 import { countUsersWithItemInCl, prisma } from '../../lib/settings/prisma';
 import { cancelTask, minionActivityCacheDelete } from '../../lib/settings/settings';
-import { convertBankToPerHourStats, formatDuration, stringMatches } from '../../lib/util';
+import {
+	calcPerHour,
+	convertBankToPerHourStats,
+	formatDuration,
+	sanitizeBank,
+	stringMatches,
+	toKMB
+} from '../../lib/util';
 import { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { logError } from '../../lib/util/logError';
@@ -412,6 +419,11 @@ export const adminCommand: OSBMahojiCommand = {
 					}
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'ltc',
+			description: 'Ltc?'
 		}
 	],
 	run: async ({
@@ -440,6 +452,7 @@ export const adminCommand: OSBMahojiCommand = {
 		set_price?: { item: string; price: number };
 		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
+		ltc?: {};
 	}>) => {
 		await interaction.deferReply();
 
@@ -848,6 +861,41 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			return `Gave ${formatDuration(ms)} of Tier ${tier} patron to ${
 				userToGive.user.username
 			}. They have ${formatDuration(newBalanceExpiryTime - Date.now())} remaining.`;
+		}
+
+		if (options.ltc) {
+			let str = '';
+			const results = await prisma.lootTrack.findMany();
+
+			str += `${['id', 'cost_h', 'cost', 'loot_h', 'loot', 'per_hour_h', 'per_hour', 'ratio'].join('\t')}\n`;
+			for (const res of results) {
+				if (!res.total_duration || !res.total_kc) continue;
+				if (Object.keys({ ...(res.cost as ItemBank), ...(res.loot as ItemBank) }).length === 0) continue;
+				const cost = new Bank(res.cost as ItemBank);
+				const loot = new Bank(res.loot as ItemBank);
+				sanitizeBank(cost);
+				sanitizeBank(loot);
+				const marketValueCost = Math.round(cost.value());
+				const marketValueLoot = Math.round(loot.value());
+				const ratio = marketValueLoot / marketValueCost;
+
+				if (!marketValueCost || !marketValueLoot || ratio === Infinity) continue;
+
+				str += `${[
+					res.id,
+					toKMB(marketValueCost),
+					marketValueCost,
+					toKMB(marketValueLoot),
+					marketValueLoot,
+					toKMB(calcPerHour(marketValueLoot, res.total_duration * Time.Minute)),
+					calcPerHour(marketValueLoot, res.total_duration * Time.Minute),
+					ratio
+				].join('\t')}\n`;
+			}
+
+			return {
+				attachments: [{ buffer: Buffer.from(str), fileName: 'output.txt' }]
+			};
 		}
 
 		return 'Invalid command.';
