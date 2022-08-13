@@ -213,7 +213,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		if (options.give_random_item) {
 			const senderUser = klasaUser;
 			const recipientKlasaUser = await globalClient.fetchUser(options.give_random_item.user.user.id);
-			if (senderUser.bot || recipientKlasaUser.id === senderUser.id) {
+			if (recipientKlasaUser.bot || recipientKlasaUser.id === senderUser.id) {
 				return "You can't do it with yourself.";
 			}
 
