@@ -4,6 +4,7 @@ import { Bank } from 'oldschooljs';
 import LootTable from 'oldschooljs/dist/structures/LootTable';
 import { resolveNameBank } from 'oldschooljs/dist/util';
 
+import { allItemsOwned } from '../../../mahoji/mahojiSettings';
 import { ItemBank } from '../../types';
 import { roll } from '../../util';
 import resolveItems from '../../util/resolveItems';
@@ -148,7 +149,7 @@ export function openCoffin(floor: number, user: KlasaUser): ItemBank {
 	const page = pages[floor - 1];
 
 	if (roll(10)) {
-		const bank = user.allItemsOwned();
+		const bank = allItemsOwned(user);
 		if (!bank.has(page)) {
 			loot.add(page);
 		}

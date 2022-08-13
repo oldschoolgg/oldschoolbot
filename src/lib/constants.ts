@@ -2,7 +2,6 @@ import { MessageButton } from 'discord.js';
 import { KlasaMessage } from 'klasa';
 import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
-import PQueue from 'p-queue';
 import { join } from 'path';
 
 import { DISCORD_SETTINGS, production } from '../config';

@@ -15,6 +15,7 @@ import { roll, updateBankSetting } from '../../../lib/util';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import resolveItems from '../../../lib/util/resolveItems';
+import { allItemsOwned } from '../../../mahoji/mahojiSettings';
 
 const notPurple = resolveItems(['Torn prayer scroll', 'Dark relic', 'Onyx']);
 const greenItems = resolveItems(['Twisted ancestral colour kit']);
@@ -61,7 +62,7 @@ export default class extends Task {
 
 			const userLoot = new Bank(_userLoot);
 			if (challengeMode && roll(50) && user.cl().has('Metamorphic dust')) {
-				const { bank } = user.allItemsOwned();
+				const { bank } = allItemsOwned(user);
 				const unownedPet = shuffleArr(chambersOfXericMetamorphPets).find(pet => !bank[pet]);
 				if (unownedPet) {
 					userLoot.add(unownedPet);

@@ -20,7 +20,12 @@ import { mahojiChatHead } from '../../lib/util/chatHeadImage';
 import getOSItem from '../../lib/util/getOSItem';
 import { leaguesBuyCommand } from '../lib/abstracted_commands/leaguesBuyCommand';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiParseNumber, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import {
+	allItemsOwned,
+	handleMahojiConfirmation,
+	mahojiParseNumber,
+	mahojiUsersSettingsFetch
+} from '../mahojiSettings';
 
 const allBuyablesAutocomplete = [...Buyables, ...leagueBuyables.map(i => ({ name: i.item.name })), { name: 'Kitten' }];
 
@@ -65,8 +70,8 @@ export const buyCommand: OSBMahojiCommand = {
 				});
 			}
 
-			const allItemsOwned = user.allItemsOwned();
-			if (kittens.some(kitten => allItemsOwned.has(kitten))) {
+			const allItemsOwnedBank = allItemsOwned(user);
+			if (kittens.some(kitten => allItemsOwnedBank.has(kitten))) {
 				return mahojiChatHead({
 					head: 'gertrude',
 					content: "You are already raising a kitten! You can't handle a second."

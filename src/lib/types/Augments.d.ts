@@ -142,7 +142,6 @@ declare module 'discord.js' {
 		 */
 		getCreatureScore(creature: Creature): number;
 		rawGear(): UserFullGearSetup;
-		allItemsOwned(): Bank;
 		cl(): Bank;
 		bank(options?: GetUserBankOptions): Bank;
 		getUserFavAlchs(duration: number): Item[];

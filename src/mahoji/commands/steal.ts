@@ -15,7 +15,7 @@ import { stringMatches } from '../../lib/util/cleanString';
 import { logError } from '../../lib/util/logError';
 import { calcLootXPPickpocketing } from '../../tasks/minions/pickpocketActivity';
 import { OSBMahojiCommand } from '../lib/util';
-import { getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { allItemsOwned, getSkillsOfMahojiUser, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
 export const stealCommand: OSBMahojiCommand = {
 	name: 'steal',
@@ -71,7 +71,7 @@ export const stealCommand: OSBMahojiCommand = {
 			} a ${stealable.name}.`;
 		}
 
-		if (stealable.itemsRequired && !user.allItemsOwned().has(stealable.itemsRequired)) {
+		if (stealable.itemsRequired && !allItemsOwned(user).has(stealable.itemsRequired)) {
 			return `You need these items to ${
 				stealable.type === 'pickpockable' ? 'pickpocket this NPC' : 'steal from this stall'
 			}: ${new Bank(stealable.itemsRequired)}.`;
