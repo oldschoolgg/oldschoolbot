@@ -3,7 +3,7 @@ import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 import { Bank } from 'oldschooljs';
 
-import itemIsTradeable from '../../lib/util/itemIsTradeable';
+import { isSuperUntradeable } from '../../lib/util';
 import { capeGambleCommand, capeGambleStatsCommand } from '../lib/abstracted_commands/capegamble';
 import { diceCommand } from '../lib/abstracted_commands/diceCommand';
 import { duelCommand } from '../lib/abstracted_commands/duelCommand';
@@ -228,7 +228,7 @@ export const gambleCommand: OSBMahojiCommand = {
 			const bank = senderUser
 				.bank()
 				.items()
-				.filter(i => itemIsTradeable(i[0].id))
+				.filter(i => !isSuperUntradeable(i[0].id))
 				.filter(i => !mahojiUser.favoriteItems.includes(i[0].id));
 			const entry = randArrItem(bank);
 			if (!entry) return 'You have no items you can give away!';
