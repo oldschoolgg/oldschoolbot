@@ -41,6 +41,7 @@ import {
 	RaidsOptions,
 	TheatreOfBloodTaskOptions
 } from './types/minions';
+import { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { logError } from './util/logError';
 import resolveItems from './util/resolveItems';
@@ -624,6 +625,11 @@ export function sanitizeBank(bank: Bank) {
 		// round it down.
 		if (!Number.isInteger(value)) {
 			bank.bank[key] = Math.floor(value);
+		}
+
+		const item = getItem(key);
+		if (!item) {
+			delete bank.bank[key];
 		}
 	}
 }
