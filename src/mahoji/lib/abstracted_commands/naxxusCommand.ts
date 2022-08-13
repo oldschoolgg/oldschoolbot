@@ -58,6 +58,21 @@ const itemBoosts: {
 		setup: 'mage'
 	},
 	{
+		item: getOSItem('Tzkal cape'),
+		boost: 5,
+		setup: 'melee'
+	},
+	{
+		item: getOSItem('Vasa cloak'),
+		boost: 5,
+		setup: 'mage'
+	},
+	{
+		item: getOSItem('Ignis ring(i)'),
+		boost: 2.5,
+		setup: 'melee'
+	},
+	{
 		item: getOSItem('Spellbound ring(i)'),
 		boost: 2.5,
 		setup: 'mage'
@@ -67,6 +82,15 @@ const itemBoosts: {
 		boost: 2,
 		setup: 'mage'
 	}
+];
+
+const naxxusKcBoosts: [number, number, string | null][] = [
+	[500, 20, null],
+	[400, 15, null],
+	[300, 10, null],
+	[200, 7.5, null],
+	[100, 5, null],
+	[0, -15, '< 100']
 ];
 
 function calcSetupPercent(
@@ -104,14 +128,17 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		boosts.push('5% Weekend boost');
 	}
 
-	if ((user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0) < 100) {
-		effectiveTime = increaseNumByPercent(effectiveTime, 15);
-		boosts.push('-15% <100 KC');
-	}
-
-	if ((user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0) > 500) {
-		effectiveTime = reduceNumByPercent(effectiveTime, 15);
-		boosts.push('15% >500 KC');
+	const naxxusKc = user.settings.get(UserSettings.MonsterScores)[Naxxus.id];
+	for (const [threshold, boost, subThreshold] of naxxusKcBoosts) {
+		if (naxxusKc >= threshold) {
+			if (boost < 0) {
+				effectiveTime = increaseNumByPercent(effectiveTime, Math.abs(boost));
+			} else {
+				effectiveTime = reduceNumByPercent(effectiveTime, boost);
+			}
+			boosts.push(`${boost}% for ${subThreshold ?? `> ${threshold}`} KC`);
+			break;
+		}
 	}
 
 	const mage = calcSetupPercent(bisMageGear.stats, user.getGear('mage').stats, 'attack_magic', [
