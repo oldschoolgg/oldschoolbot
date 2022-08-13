@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { codeBlock, inlineCode } from '@discordjs/builders';
+import { ClientStorage } from '@prisma/client';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { Duration } from '@sapphire/time-utilities';
 import Type from '@sapphire/type';
@@ -126,6 +127,18 @@ async function evalCommand(userID: string, code: string): CommandResponse {
 		return err.message ?? err;
 	}
 }
+
+const viewableThings: {
+	name: string;
+	run: (clientSettings: ClientStorage) => Bank;
+}[] = [
+	{
+		name: 'ToB Cost',
+		run: clientSettings => {
+			return new Bank(clientSettings.tob_cost as ItemBank);
+		}
+	}
+];
 
 export const adminCommand: OSBMahojiCommand = {
 	name: 'admin',
@@ -424,6 +437,20 @@ export const adminCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'ltc',
 			description: 'Ltc?'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'view',
+			description: 'View something',
+			options: [
+				{
+					type: ApplicationCommandOptionType.String,
+					name: 'thing',
+					description: 'The thing',
+					required: true,
+					choices: viewableThings.map(i => ({ name: i.name, value: i.name }))
+				}
+			]
 		}
 	],
 	run: async ({
@@ -453,6 +480,7 @@ export const adminCommand: OSBMahojiCommand = {
 		most_active?: {};
 		bitfield?: { user: MahojiUserOption; add?: string; remove?: string };
 		ltc?: {};
+		view?: { thing: string };
 	}>) => {
 		await interaction.deferReply();
 
@@ -896,6 +924,14 @@ Guilds Blacklisted: ${BLACKLISTED_GUILDS.size}`;
 			return {
 				attachments: [{ buffer: Buffer.from(str), fileName: 'output.txt' }]
 			};
+		}
+
+		if (options.view) {
+			const thing = viewableThings.find(i => i.name === options.view?.thing);
+			if (!thing) return 'Invalid';
+			const clientSettings = await mahojiClientSettingsFetch();
+			const image = await makeBankImage({ bank: thing.run(clientSettings), title: thing.name });
+			return { attachments: [image.file] };
 		}
 
 		return 'Invalid command.';
