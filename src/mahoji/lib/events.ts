@@ -1,6 +1,7 @@
 import { CLIENT_ID } from '../../config';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
+import { syncDoubleLoot } from '../../lib/doubleLoot';
 import { prisma } from '../../lib/settings/prisma';
 
 export async function onStartup() {
@@ -20,4 +21,6 @@ export async function onStartup() {
 
 	// Sync blacklists
 	await syncBlacklists();
+
+	await syncDoubleLoot();
 }

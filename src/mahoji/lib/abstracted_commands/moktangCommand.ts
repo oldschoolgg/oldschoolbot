@@ -103,7 +103,7 @@ export async function moktangActivity(data: MoktangTaskOptions) {
 	for (let i = 0; i < qty; i++) {
 		loot.add(MoktangLootTable.roll());
 	}
-	if (isDoubleLootActive(globalClient, data.duration)) {
+	if (isDoubleLootActive(data.duration)) {
 		loot.multiply(2);
 	}
 

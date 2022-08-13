@@ -5,12 +5,13 @@ import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
 import { Bank } from 'oldschooljs';
 
-import { COINS_ID, dailyResetTime, Emoji, SupportServer } from '../../../lib/constants';
+import { COINS_ID, Emoji, SupportServer } from '../../../lib/constants';
 import { DynamicButtons } from '../../../lib/DynamicButtons';
 import { getRandomTriviaQuestions } from '../../../lib/roboChimp';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import dailyRoll from '../../../lib/simulation/dailyTable';
 import { channelIsSendable, formatDuration, isWeekend, updateGPTrackSetting } from '../../../lib/util';
+import { dailyResetTime } from '../../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
 
 export function isUsersDailyReady(user: KlasaUser): { isReady: true } | { isReady: false; durationUntilReady: number } {

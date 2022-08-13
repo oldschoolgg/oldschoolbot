@@ -187,6 +187,7 @@ export const gambleCommand: OSBMahojiCommand = {
 		if (options.hot_cold) {
 			return hotColdCommand(interaction, klasaUser, mahojiUser, options.hot_cold.choice, options.hot_cold.amount);
 		}
+
 		return 'Invalid command.';
 	}
 };

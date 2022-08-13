@@ -4,9 +4,8 @@ import { notEmpty, Time } from 'e';
 import { KlasaUser } from 'klasa';
 
 import { mahojiUserSettingsUpdate } from '../../mahoji/mahojiSettings';
-import { BitField, PerkTier, Roles } from '../constants';
+import { BitField, PerkTier, Roles, SupportServer } from '../constants';
 import { UserSettings } from '../settings/types/UserSettings';
-import { getSupportGuild } from '../util';
 import { logError } from './logError';
 
 const tier3ElligibleBits = [
@@ -121,8 +120,8 @@ export default function getUsersPerkTier(
 	}
 	// This can be combined into one block because both the Mahoji/DB User type and [Klasa]User class have `id` member
 	if (isMahojiUser || userOrBitfield instanceof User) {
-		const supportGuild = getSupportGuild();
-		const member = supportGuild?.members.cache.get(userOrBitfield.id);
+		const guild = globalClient.guilds.cache.get(SupportServer);
+		const member = guild?.members.cache.get(userOrBitfield.id);
 		if (member && [Roles.Booster].some(roleID => member.roles.cache.has(roleID))) {
 			return PerkTier.One;
 		}
@@ -138,3 +137,32 @@ export function isPrimaryPatron(user: KlasaUser) {
 	const perkTier = getUsersPerkTier(user, true);
 	return perkTier > 0;
 }
+
+export const dailyResetTime = Time.Hour * 4;
+export const spawnLampResetTime = (user: MahojiUser) => {
+	const bf = user.bitfield;
+	const perkTier = getUsersPerkTier(user, true);
+
+	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
+	const hasTier5 = perkTier >= PerkTier.Five;
+	const hasTier4 = !hasTier5 && perkTier === PerkTier.Four;
+
+	let cooldown = [PerkTier.Six, PerkTier.Five].includes(perkTier) ? Time.Hour * 12 : Time.Hour * 24;
+
+	if (!hasTier5 && !hasTier4 && hasPerm) {
+		cooldown = Time.Hour * 48;
+	}
+
+	return cooldown;
+};
+export const itemContractResetTime = Time.Hour * 8;
+export const giveBoxResetTime = Time.Hour * 24;
+
+const lastBox: keyof MahojiUser = 'lastGivenBoxx';
+
+export const userTimers = [
+	[dailyResetTime, UserSettings.LastDailyTimestamp, 'Daily'],
+	[itemContractResetTime, UserSettings.LastItemContractDate, 'ItemContract'],
+	[giveBoxResetTime, lastBox, 'GiveBox'],
+	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
+] as const;

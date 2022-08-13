@@ -36,6 +36,7 @@ const globalInteractionActions = [
 	'CANCEL_TRIP',
 	'AUTO_FARM',
 	'AUTO_FARMING_CONTRACT',
+	'BUY_MINION',
 	'SPAWN_LAMP',
 	'REPEAT_TAME_TRIP',
 	'ITEM_CONTRACT_SEND'
@@ -176,6 +177,16 @@ export async function interactionHook(data: APIInteraction) {
 		return runCommand({
 			commandName: 'ic',
 			args: { send: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
+	if (id === 'BUY_MINION') {
+		await buttonReply();
+		return runCommand({
+			commandName: 'minion',
+			args: { buy: {} },
 			bypassInhibitors: true,
 			...options
 		});

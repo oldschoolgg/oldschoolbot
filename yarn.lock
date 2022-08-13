@@ -3925,11 +3925,6 @@ jwt-simple@^0.5.6:
   resolved "https://registry.yarnpkg.com/jwt-simple/-/jwt-simple-0.5.6.tgz#3357adec55b26547114157be66748995b75b333a"
   integrity sha512-40aUybvhH9t2h71ncA1/1SbtTNCVZHgsTsTgqPUxGWDmUDrXyDf2wMNQKEbdBjbf4AI+fQhbECNTV6lWxQKUzg==
 
-klasa-decorators@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/klasa-decorators/-/klasa-decorators-0.0.1.tgz#c4bcc7dd2b78814b4f625e611f82790ec6061d52"
-  integrity sha512-uCoMz750Lnp0dM8VC787hnRrF9wqWfUrjT7dp+8ihqp6xmtX8ZSXoeK08WJgAhEdEdIDsUG+VMXi9gcG54EZMA==
-
 "klasa@https://github.com/gc/klasa.git#99ee76765f6b6172254cbeb363c73f4305d43f36":
   version "0.5.0-dev"
   resolved "https://github.com/gc/klasa.git#99ee76765f6b6172254cbeb363c73f4305d43f36"
@@ -4032,10 +4027,10 @@ lru_map@^0.3.3:
   resolved "https://registry.yarnpkg.com/lru_map/-/lru_map-0.3.3.tgz#b5c8351b9464cbd750335a79650a0ec0e56118dd"
   integrity sha1-tcg1G5Rky9dQM1p5ZQoOwOVhGN0=
 
-mahoji@^0.0.55:
-  version "0.0.55"
-  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.55.tgz#62b3d4788c7a0373a000332413bbc55c70c8d437"
-  integrity sha512-dTbn0GSuw9ov4jHIzLfRgy4MbJj2GtA5c1cMDlX15fsY/38w4sRsQZeIcgO7nV+q9w0vP21KF49S/+qfP17tLA==
+mahoji@^0.0.56:
+  version "0.0.56"
+  resolved "https://registry.yarnpkg.com/mahoji/-/mahoji-0.0.56.tgz#70f1c59d3243bc1af4173bc88a6bb6a3aa940ad8"
+  integrity sha512-ywg3Lhz2nY55fRxkq4rXaEJmDv/AAN+ZfMchimP62sKCgabkwXcM6AdhBkmMZuB0rF/xptmdCwCY6r30+b4w5Q==
   dependencies:
     "@discordjs/rest" "^0.4.1"
     fastify "^3.29.0"

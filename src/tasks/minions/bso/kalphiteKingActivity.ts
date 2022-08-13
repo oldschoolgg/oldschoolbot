@@ -72,7 +72,7 @@ export default class extends Task {
 
 			const loot = new Bank();
 			loot.add(KalphiteKingMonster.table.kill(1, {}));
-			if (isDoubleLootActive(this.client, duration)) {
+			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
 			const winner = teamTable.roll()?.item;

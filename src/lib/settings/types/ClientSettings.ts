@@ -15,7 +15,6 @@ export namespace ClientSettings {
 	export const GuildBlacklist = T<readonly string[]>('guildBlacklist');
 	export const UserBlacklist = T<readonly string[]>('userBlacklist');
 	export const BankLottery = T<Readonly<ItemBank>>('bank_lottery');
-	export const DoubleLootFinishTime = T<number>('double_loot_finish_time');
 
 	export namespace EconomyStats {
 		export const DicingBank = T<number>('economyStats.dicingBank');
