@@ -60,7 +60,7 @@ export default class extends Task {
 			.map(l => `${l[1]}x ${l[0]}`)
 			.join(', ')}`;
 
-		if (isDoubleLootActive(this.client, duration)) {
+		if (isDoubleLootActive(duration)) {
 			loot.multiply(2);
 		}
 

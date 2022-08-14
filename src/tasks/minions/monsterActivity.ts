@@ -211,7 +211,7 @@ export default class extends Task {
 		};
 		// Regular loot
 		const loot = (monster as KillableMonster).table.kill(
-			isDoubleLootActive(this.client, duration) ? quantity * 2 : boostedQuantity,
+			isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity,
 			killOptions
 		);
 
@@ -306,7 +306,7 @@ export default class extends Task {
 			);
 		}
 
-		if (isDoubleLootActive(this.client, duration)) {
+		if (isDoubleLootActive(duration)) {
 			messages.push('**Double Loot!**');
 		} else if (oriBoost) {
 			messages.push('Ori has used the abyss to transmute you +25% bonus loot!');

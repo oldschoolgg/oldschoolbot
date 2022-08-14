@@ -20,27 +20,36 @@ import {
 	stashUnitUnfillCommand,
 	stashUnitViewCommand
 } from '../../lib/clues/stashUnits';
-import { BitField, Channel, Emoji, giveBoxResetTime, PerkTier, spawnLampResetTime } from '../../lib/constants';
+import { BitField, Channel, Emoji, PerkTier } from '../../lib/constants';
 import { allCLItemsFiltered, allDroppedItems } from '../../lib/data/Collections';
 import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExport';
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
-import { prisma } from '../../lib/settings/prisma';
+import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
 import {
 	asyncGzip,
 	formatDuration,
 	generateXPLevelQuestion,
 	getUsername,
+	isGroupActivity,
+	isNexActivity,
+	isRaidsActivity,
+	isTobActivity,
 	itemID,
 	itemNameFromID,
 	roll,
 	stringMatches
 } from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
-import getUsersPerkTier, { isPrimaryPatron } from '../../lib/util/getUsersPerkTier';
+import getUsersPerkTier, {
+	giveBoxResetTime,
+	isPrimaryPatron,
+	spawnLampResetTime
+} from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
+import { repairBrokenItemsFromUser } from '../../lib/util/repairBrokenItems';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
@@ -515,6 +524,53 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 		.join('\n')}`;
 }
 
+async function checkMassesCommand(guildID: bigint | undefined) {
+	if (!guildID) return 'This can only be used in a server.';
+	const guild = globalClient.guilds.cache.get(guildID.toString());
+	if (!guild) return 'Guild not found.';
+	const channelIDs = guild.channels.cache.filter(c => c.type === 'text').map(c => BigInt(c.id));
+
+	const masses = (
+		await prisma.activity.findMany({
+			where: {
+				completed: false,
+				group_activity: true,
+				channel_id: { in: channelIDs }
+			},
+			orderBy: {
+				finish_date: 'asc'
+			}
+		})
+	)
+		.map(convertStoredActivityToFlatActivity)
+		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
+
+	if (masses.length === 0) {
+		return 'There are no active masses in this server.';
+	}
+	const now = Date.now();
+	const massStr = masses
+		.map(m => {
+			const remainingTime =
+				isTobActivity(m) || isNexActivity(m)
+					? m.finishDate - m.duration + m.fakeDuration - now
+					: m.finishDate - now;
+			if (isGroupActivity(m)) {
+				return [
+					remainingTime,
+					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
+						m.users.length
+					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`
+				];
+			}
+		})
+		.sort((a, b) => (a![0] < b![0] ? -1 : a![0] > b![0] ? 1 : 0))
+		.map(m => m![1])
+		.join('\n');
+	return `**Masses in this server:**
+${massStr}`;
+}
+
 export const toolsCommand: OSBMahojiCommand = {
 	name: 'tools',
 	description: 'Various tools and miscellaneous commands.',
@@ -702,6 +758,16 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: false
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'checkmasses',
+					description: 'Check the masses going on in the server.'
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'fixbank',
+					description: 'Fix broken items in your bank/gear/etc.'
 				}
 			]
 		},
@@ -774,7 +840,8 @@ export const toolsCommand: OSBMahojiCommand = {
 		options,
 		userID,
 		interaction,
-		channelID
+		channelID,
+		guildID
 	}: CommandRunOptions<{
 		patron?: {
 			kc_gains?: {
@@ -807,7 +874,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			spawnbox?: {};
 			stats?: { stat: string };
 		};
-		user?: { mypets?: {}; temp_cl: { reset?: boolean } };
+		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {}; fixbank?: {} };
 		stash_units?: {
 			view?: { unit?: string; not_filled?: boolean };
 			build_all?: {};
@@ -946,6 +1013,12 @@ You last reset your temporary CL: ${
 					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
 					: 'Never'
 			}`;
+		}
+		if (options.user?.checkmasses) {
+			return checkMassesCommand(guildID);
+		}
+		if (options.user?.fixbank) {
+			return (await repairBrokenItemsFromUser(mahojiUser))[0];
 		}
 		return 'Invalid command!';
 	}

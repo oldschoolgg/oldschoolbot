@@ -91,7 +91,7 @@ export default class extends Task {
 			if (dwwhRecipient === user) {
 				loot.add('Broken dwarven warhammer');
 			}
-			if (isDoubleLootActive(this.client, duration)) {
+			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
 			totalLoot.add(loot);

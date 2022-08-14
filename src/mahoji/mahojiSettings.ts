@@ -283,7 +283,7 @@ export function patronMsg(tierNeeded: number) {
 }
 
 // Is not typesafe, returns only what is selected, but will say it contains everything.
-export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect) {
+export async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
 	const clientSettings = await prisma.clientStorage.findFirst({
 		where: {
 			id: CLIENT_ID

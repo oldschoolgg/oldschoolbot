@@ -266,7 +266,7 @@ export async function autoSlayCommand({
 	const cmdRunOptions = {
 		channelID,
 		userID: user.id,
-		guildID: isGuildBasedChannel(channel) ? channel.guild.id : undefined,
+		guildID: isGuildBasedChannel(channel) && channel.guild ? channel.guild.id : undefined,
 		user,
 		member: null
 	};

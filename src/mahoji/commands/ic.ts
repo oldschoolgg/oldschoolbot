@@ -6,7 +6,7 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank, LootTable } from 'oldschooljs';
 
 import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/bsoOpenables';
-import { Emoji, itemContractResetTime } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
@@ -20,6 +20,7 @@ import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/share
 import { formatDuration, itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
+import { itemContractResetTime } from '../../lib/util/getUsersPerkTier';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 import { OSBMahojiCommand } from '../lib/util';
