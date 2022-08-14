@@ -83,9 +83,6 @@ declare module 'discord.js' {
 		readonly readable: boolean;
 	}
 
-	interface Client {
-		public query<T>(query: string): Promise<T>;
-	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
 		addItemsToBank(options: {
