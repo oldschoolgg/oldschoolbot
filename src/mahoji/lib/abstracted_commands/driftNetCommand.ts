@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../../../lib/util/minionUtils';
 
 export async function driftNetCommand(
@@ -15,7 +16,7 @@ export async function driftNetCommand(
 	noStams: boolean | undefined
 ) {
 	const userBank = user.bank();
-	const maxTripLength = user.maxTripLength('DriftNet');
+	const maxTripLength = calcMaxTripLength(user, 'DriftNet');
 
 	if (!minutes) {
 		minutes = Math.floor(maxTripLength / Time.Minute);
