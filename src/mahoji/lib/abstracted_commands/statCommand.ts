@@ -1017,6 +1017,20 @@ GROUP BY "bankBackground";`);
 		run: async (_, stats) => {
 			return `You've received **${Number(stats.sell_gp).toLocaleString()}** GP from selling items.`;
 		}
+	},
+	{
+		name: 'Total Items Given For Item Contracts',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.ic_cost_bank as ItemBank), 'Item Contract Items Paid');
+		}
+	},
+	{
+		name: 'Total Loot From Item Contracts',
+		perkTierNeeded: PerkTier.Four,
+		run: async (_, stats) => {
+			return makeResponseForBank(new Bank(stats.ic_loot_bank as ItemBank), 'Item Contract Loot');
+		}
 	}
 ] as const;
 
