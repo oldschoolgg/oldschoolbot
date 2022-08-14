@@ -188,7 +188,7 @@ export default class extends Extendable {
 		// If they just reached 99, send a server notification.
 		if (currentLevel < 99 && newLevel >= 99) {
 			const skillNameCased = toTitleCase(params.skillName);
-			const [usersWith] = await this.client.query<
+			const [usersWith] = await prisma.$queryRawUnsafe<
 				{
 					count: string;
 				}[]
@@ -201,7 +201,7 @@ export default class extends Extendable {
 			)} to get 99 ${skillNameCased}.`;
 
 			if (this.isIronman) {
-				const [ironmenWith] = await this.client.query<
+				const [ironmenWith] = await prisma.$queryRawUnsafe<
 					{
 						count: string;
 					}[]
