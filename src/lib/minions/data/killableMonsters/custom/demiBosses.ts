@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { LootTable, Monsters } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import { itemID } from 'oldschooljs/dist/util';
 
@@ -97,7 +98,8 @@ const Malygos: CustomMonster = {
 	},
 	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 	notifyDrops: resolveItems(['Abyssal cape', 'Ori']),
-	baseMonster: Monsters.Vorkath
+	baseMonster: Monsters.Vorkath,
+	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] }
 };
 
 const Treebeard: CustomMonster = {
