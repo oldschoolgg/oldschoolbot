@@ -64,6 +64,14 @@ export function makeRepeatTripButton() {
 	return new MessageButton().setCustomID('REPEAT_TRIP').setLabel('Repeat Trip').setStyle('SECONDARY').setEmoji('🔁');
 }
 
+export function makeBirdHouseTripButton() {
+	return new MessageButton()
+		.setCustomID('DO_BIRDHOUSE_RUN')
+		.setLabel('Birdhouse Run')
+		.setStyle('SECONDARY')
+		.setEmoji('692946556399124520');
+}
+
 export async function interactionHook(data: APIInteraction) {
 	if (data.type !== InteractionType.MessageComponent) return;
 	const id = data.data.custom_id;
