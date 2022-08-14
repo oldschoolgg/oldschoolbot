@@ -1,4 +1,3 @@
-import { activity_type_enum } from '@prisma/client';
 import { FSWatcher } from 'chokidar';
 import { MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
@@ -173,7 +172,6 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: activity_type_enum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;
