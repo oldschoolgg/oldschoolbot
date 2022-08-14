@@ -176,7 +176,7 @@ const ores = resolveItems([
 	'Lovakite ore',
 	'Adamantite ore',
 	'Runite ore',
-	'Dark Animica'
+	'Dark animica'
 ]);
 
 const bars = resolveItems([

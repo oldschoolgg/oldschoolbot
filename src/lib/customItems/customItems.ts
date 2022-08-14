@@ -2588,7 +2588,7 @@ setCustomItem(
 	{ customItemData: { isSuperUntradeable: true, cantDropFromMysteryBoxes: true } },
 	1
 );
-setCustomItem(70_001, 'Grimy Korulsi', 'Coal', { tradeable: true }, 100_000);
+setCustomItem(70_001, 'Grimy korulsi', 'Coal', { tradeable: true }, 100_000);
 setCustomItem(70_002, 'Korulsi', 'Coal', { tradeable: true }, 100_000);
 setCustomItem(70_003, 'Korulsi seed', 'Coal', { tradeable: true }, 50_000);
 setCustomItem(70_004, 'Enhanced saradomin brew', 'Coal', { tradeable: true }, 10_000);
