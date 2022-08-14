@@ -6,6 +6,7 @@ import { KourendKebosDiary, userhasDiaryTier } from '../../diaries';
 import { DarkAltarOptions } from '../../types/minions';
 import { formatDuration } from '../../util';
 import addSubTaskToActivityTask from '../../util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import getOSItem from '../../util/getOSItem';
 import { Favours, gotFavour } from '../data/kourendFavour';
 
@@ -82,7 +83,7 @@ export async function darkAltarCommand({
 		timePerRune = increaseNumByPercent(timePerRune, agilityPenalty);
 	}
 
-	const maxTripLength = user.maxTripLength('DarkAltar');
+	const maxTripLength = calcMaxTripLength(user, 'DarkAltar');
 	const quantity = Math.floor(maxTripLength / timePerRune);
 	await addSubTaskToActivityTask<DarkAltarOptions>({
 		userID: user.id,
