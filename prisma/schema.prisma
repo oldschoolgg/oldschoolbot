@@ -555,6 +555,8 @@ model UserStats {
   items_sold_bank        Json   @default("{}") @db.Json
   puropuro_implings_bank Json   @default("{}") @db.Json
   passive_implings_bank  Json   @default("{}") @db.Json
+  create_cost_bank       Json   @default("{}") @db.Json
+  create_loot_bank       Json   @default("{}") @db.Json
 
   @@map("user_stats")
 }
