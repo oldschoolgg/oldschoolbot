@@ -139,14 +139,16 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 	required: false,
 	autocomplete: async (value, user) => {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
-		const combatSkill = mUser.minion_combatSkill as CombatsEnum | undefined;
+		const combatSkill: CombatsEnum | undefined = CombatsEnum[mUser.minion_combatSkill as keyof typeof CombatsEnum];
 		let results: APIApplicationCommandOptionChoice[] = [];
-		if (!combatSkill || combatSkill === CombatsEnum.Auto || CombatsEnum.NoCombat) return results;
+		if (!combatSkill || combatSkill === CombatsEnum.Auto || combatSkill === CombatsEnum.NoCombat) return results;
 		if (combatSkill === CombatsEnum.Melee) {
 			const meleeWeapon = getUserGear(mUser).melee.equippedWeapon();
 			if (meleeWeapon === null || meleeWeapon.weapon === null || !meleeWeapon.weapon) {
 				//Push unarmed
-				results.push()
+				results.push({name: `aggressive, crush`, value: `aggressive, crush`})
+				results.push({name: `accurate, crush`, value: `accurate, crush`})
+				results.push({name: `defensive, crush`, value: `defensive, crush`})
 				return results
 			}
 			for (let stance of meleeWeapon.weapon.stances) {
@@ -154,8 +156,8 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 					continue;
 				}
 				results.push({
-					name: stance.attack_style!,
-					value: stance.attack_style!
+					name: `${stance.attack_style!}, ${stance.attack_type!}`,
+					value: `${stance.attack_style!}, ${stance.attack_type!}`
 				})
 			}
 			return results;
@@ -171,8 +173,8 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 					continue;
 				}
 				results.push({
-					name: stance.attack_style!,
-					value: stance.attack_style!
+					name: `${stance.attack_style!}, ${stance.attack_type!}`,
+					value: `${stance.attack_style!}, ${stance.attack_type!}`
 				})
 			}
 			return results;
@@ -196,8 +198,8 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 						continue;
 					}
 					results.push({
-						name: stance.attack_style!,
-						value: stance.attack_style!
+						name: `${stance.attack_style!}, ${stance.attack_type!}`,
+						value: `${stance.attack_style!}, ${stance.attack_type!}`
 					})
 				}
 				return results;

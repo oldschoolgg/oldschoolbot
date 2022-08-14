@@ -297,7 +297,7 @@ export const minionCommand: OSBMahojiCommand = {
 					type: ApplicationCommandOptionType.String,
 					name: 'combat_skill',
 					description: 'The primary combat skill you want to train with',
-					required: true,
+					required: false,
 					choices: Object.keys(CombatsEnum).map(key => ({ name: key, value: key}))
 				},
 				{
