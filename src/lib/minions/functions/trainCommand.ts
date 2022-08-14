@@ -1,6 +1,6 @@
 import { KlasaUser } from 'klasa';
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 
+import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
@@ -22,18 +22,23 @@ export enum AttackStyles {
 	Longrange = 'longrange',
 	Standard = 'standard',
 	Blaze = 'blaze'
-};
+}
 
-export async function trainCommand(user: KlasaUser, _combatSkill: string | undefined, _attackStyleAndType: string | undefined, _combatSpell: string | undefined) {
+export async function trainCommand(
+	user: KlasaUser,
+	_combatSkill: string | undefined,
+	_attackStyleAndType: string | undefined,
+	_combatSpell: string | undefined
+) {
 	if (user.minionIsBusy) {
 		return "You can't change your combat style in the middle of a trip.";
 	}
-	//Fetch another way??
+	// Fetch another way??
 	const oldCombatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
 	if (!_combatSkill || typeof _combatSkill !== 'string') {
 		return `Your current combat skill is ${oldCombatSkill}. Available combat skill options are: Melee, Ranged, Magic, Auto, NoCombat.`;
 	}
-	_combatSkill = _combatSkill.toLowerCase()
+	_combatSkill = _combatSkill.toLowerCase();
 
 	for (const currentEnum of Object.keys(CombatsEnum)) {
 		if (currentEnum.toLowerCase() === _combatSkill.toLowerCase()) {
@@ -49,14 +54,14 @@ export async function trainCommand(user: KlasaUser, _combatSkill: string | undef
 	}
 
 	const parsedStyleAndType = _attackStyleAndType
-	.toLowerCase()
-	.split(', ')
-	.map(i => i.trim());
+		.toLowerCase()
+		.split(', ')
+		.map(i => i.trim());
 
 	const attackStyle = parsedStyleAndType[0];
 	let attackType: string | undefined = undefined;
 	if (parsedStyleAndType.length > 1) {
-	 attackType = parsedStyleAndType[1];
+		attackType = parsedStyleAndType[1];
 	}
 
 	if (_combatSkill === CombatsEnum.Melee) {
@@ -69,7 +74,11 @@ export async function trainCommand(user: KlasaUser, _combatSkill: string | undef
 			});
 		}
 
-		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle} ${attackType ? `and attack type to ${attackType}` : ''}.`;
+		return `${
+			user.minionName
+		} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle} ${
+			attackType ? `and attack type to ${attackType}` : ''
+		}.`;
 	}
 
 	if (_combatSkill === CombatsEnum.Ranged) {
@@ -82,7 +91,11 @@ export async function trainCommand(user: KlasaUser, _combatSkill: string | undef
 			});
 		}
 
-		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle} ${attackType ? `and attack type to ${attackType}` : ''}.`;
+		return `${
+			user.minionName
+		} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle} ${
+			attackType ? `and attack type to ${attackType}` : ''
+		}.`;
 	}
 
 	if (_combatSkill === CombatsEnum.Magic) {
@@ -104,15 +117,19 @@ export async function trainCommand(user: KlasaUser, _combatSkill: string | undef
 
 			if (!Spell) {
 				return `The combat spell \`${_combatSpell}\` dosen't match any of the available combat spells. The following combat spells is possible: ${CombatSpells.map(
-						spell => spell.name
-					).join(', ')}.`;
+					spell => spell.name
+				).join(', ')}.`;
 			}
 			await mahojiUserSettingsUpdate(user.id, {
 				minion_combatSpell: Spell.name
 			});
 		}
 
-		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle}${attackType ? ` and attack type to ${attackType}` : ''}${_combatSpell ? ` and combat spell to ${_combatSpell}` : ''}.`
+		return `${
+			user.minionName
+		} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle}${
+			attackType ? ` and attack type to ${attackType}` : ''
+		}${_combatSpell ? ` and combat spell to ${_combatSpell}` : ''}.`;
 	}
 
 	return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}.`;

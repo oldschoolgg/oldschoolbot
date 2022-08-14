@@ -125,7 +125,7 @@ export namespace UserSettings {
 		export const RangedAttackStyle = T<AttackStyles | null>('minion.rangedAttackStyle');
 		export const MagicAttackStyle = T<AttackStyles | null>('minion.magicAttackStyle');
 		export const CombatSkill = T<CombatsEnum>('minion.combatSkill');
-		export const MeleeAttackType= T<GearStat | null>('minion.meleeAttackType');
+		export const MeleeAttackType = T<GearStat | null>('minion.meleeAttackType');
 		export const RangedAttackType = T<GearStat | null>('minion.rangedAttackType');
 		export const MagicAttackType = T<GearStat | null>('minion.magicAttackType');
 		export const CombatSpell = T<Castable | null>('minion.combatSpell');

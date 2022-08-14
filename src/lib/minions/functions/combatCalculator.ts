@@ -5,7 +5,6 @@ import { UserSettings } from '../../settings/types/UserSettings';
 import Ancient from '../../skilling/skills/combat/magic/castables/Ancient';
 import Standard from '../../skilling/skills/combat/magic/castables/Standard';
 import { KillableMonster } from '../types';
-
 import { GearStat } from './../../gear/types';
 import { Castable, SkillsEnum } from './../../skilling/types';
 import autoPrayerPicker from './autoPrayerPicker';
@@ -53,7 +52,7 @@ export default async function combatCalculator(
 				}
 				i++;
 			}
-			//Random and store both attack_style and attack_type
+			// Random and store both attack_style and attack_type
 			await user.settings.update(
 				UserSettings.Minion.MeleeAttackStyle,
 				weapon.weapon!.stances[randArrItem(styleArray)].attack_style
@@ -67,7 +66,7 @@ export default async function combatCalculator(
 			if (weapon === null || weapon.weapon === null) {
 				throw 'No weapon is equipped.';
 			}
-			//Pick random, rapid might not always exist and update both attack style and attack type
+			// Pick random, rapid might not always exist and update both attack style and attack type
 			for (let stance of weapon.weapon!.stances) {
 				if (stance === null) {
 					continue;
@@ -83,7 +82,7 @@ export default async function combatCalculator(
 			combatSkill = CombatsEnum.Magic;
 			//		await user.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
 			await user.settings.update(UserSettings.Minion.MagicAttackStyle, 'standard');
-			//This needs to try check avilable runes somehow
+			// This needs to try check avilable runes somehow
 			let CombatSpells = castables.filter(
 				_spell =>
 					_spell.category.toLowerCase() === 'combat' &&

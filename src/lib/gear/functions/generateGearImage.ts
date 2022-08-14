@@ -150,10 +150,16 @@ export async function generateGearImage(
 			0,
 			0
 		);
-		drawText(canvas, `Attack type: ${toTitleCase( 
-			user instanceof KlasaUser
-			? user.settings.get(UserSettings.Minion.MeleeAttackType)?.toString()!
-			: user.minion_meleeAttackType!.toString())}`, 0, 16);
+		drawText(
+			canvas,
+			`Attack type: ${toTitleCase(
+				user instanceof KlasaUser
+					? user.settings.get(UserSettings.Minion.MeleeAttackType)?.toString()!
+					: user.minion_meleeAttackType!.toString()
+			)}`,
+			0,
+			16
+		);
 	}
 	if (
 		gearType === 'range' &&
@@ -171,10 +177,16 @@ export async function generateGearImage(
 			0,
 			0
 		);
-		drawText(canvas, `Attack type: ${toTitleCase( 
-			user instanceof KlasaUser
-			? user.settings.get(UserSettings.Minion.RangedAttackType)?.toString()!
-			: user.minion_rangedAttackType!.toString())}`, 0, 16);
+		drawText(
+			canvas,
+			`Attack type: ${toTitleCase(
+				user instanceof KlasaUser
+					? user.settings.get(UserSettings.Minion.RangedAttackType)?.toString()!
+					: user.minion_rangedAttackType!.toString()
+			)}`,
+			0,
+			16
+		);
 	}
 	if (
 		gearType === 'mage' &&

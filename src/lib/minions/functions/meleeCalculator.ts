@@ -1,4 +1,3 @@
-import { GearStat } from './../../gear/types';
 import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
@@ -9,6 +8,7 @@ import { hasMeleeVoidEquipped } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { KillableMonster } from '../types';
+import { GearStat } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
 import potionBoostCalculator from './potionBoostCalculator';
@@ -221,7 +221,7 @@ export default async function meleeCalculator(
 
 	// Calculate attack roll
 	let attackRoll = 0;
-	
+
 	switch (attackType) {
 		case GearStat.AttackStab:
 			attackRoll = effectiveAttackLvl * (gearStats.attack_stab + 64);

@@ -1,7 +1,6 @@
 import { ArrayActions, KlasaUser } from 'klasa';
 
 import { UserSettings } from '../../settings/types/UserSettings';
-
 import { SkillsEnum } from './../../skilling/types';
 import { CombatsEnum } from './trainCommand';
 

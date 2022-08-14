@@ -145,11 +145,11 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 		if (combatSkill === CombatsEnum.Melee) {
 			const meleeWeapon = getUserGear(mUser).melee.equippedWeapon();
 			if (meleeWeapon === null || meleeWeapon.weapon === null || !meleeWeapon.weapon) {
-				//Push unarmed
-				results.push({name: `aggressive, crush`, value: `aggressive, crush`})
-				results.push({name: `accurate, crush`, value: `accurate, crush`})
-				results.push({name: `defensive, crush`, value: `defensive, crush`})
-				return results
+				// Push unarmed
+				results.push({ name: 'aggressive, crush', value: 'aggressive, crush' });
+				results.push({ name: 'accurate, crush', value: 'accurate, crush' });
+				results.push({ name: 'defensive, crush', value: 'defensive, crush' });
+				return results;
 			}
 			for (let stance of meleeWeapon.weapon.stances) {
 				if (stance === null) {
@@ -158,15 +158,15 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 				results.push({
 					name: `${stance.attack_style!}, ${stance.attack_type!}`,
 					value: `${stance.attack_style!}, ${stance.attack_type!}`
-				})
+				});
 			}
 			return results;
 		}
 		if (combatSkill === CombatsEnum.Ranged) {
 			const rangeWeapon = getUserGear(mUser).range.equippedWeapon();
 			if (rangeWeapon === null || rangeWeapon.weapon === null || !rangeWeapon.weapon) {
-				//Push nothing? can't train ranged unarmed
-				return results
+				// Push nothing? can't train ranged unarmed
+				return results;
 			}
 			for (let stance of rangeWeapon.weapon.stances) {
 				if (stance === null) {
@@ -175,18 +175,18 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 				results.push({
 					name: `${stance.attack_style!}, ${stance.attack_type!}`,
 					value: `${stance.attack_style!}, ${stance.attack_type!}`
-				})
+				});
 			}
 			return results;
 		}
 		if (combatSkill === CombatsEnum.Magic) {
 			const mageWeapon = getUserGear(mUser).mage.equippedWeapon();
 			if (mageWeapon === null || mageWeapon.weapon === null || !mageWeapon.weapon) {
-				results.push({name: 'standard', value: 'standard'});
-				results.push({name: 'defensive', value: 'defensive'});
-				return results
+				results.push({ name: 'standard', value: 'standard' });
+				results.push({ name: 'defensive', value: 'defensive' });
+				return results;
 			}
-			//Make function that checks for equipped autocasting staff
+			// Make function that checks for equipped autocasting staff
 			if (
 				mageWeapon.name.toLowerCase() === 'trident of the seas' ||
 				mageWeapon.name.toLowerCase() === 'trident of the seas (e)' ||
@@ -200,17 +200,18 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 					results.push({
 						name: `${stance.attack_style!}, ${stance.attack_type!}`,
 						value: `${stance.attack_style!}, ${stance.attack_type!}`
-					})
+					});
 				}
 				return results;
 			}
-			results.push({name: 'standard', value: 'standard'});
-			results.push({name: 'defensive', value: 'defensive'});
+			results.push({ name: 'standard', value: 'standard' });
+			results.push({ name: 'defensive', value: 'defensive' });
 			return results;
 		}
 
-		return results.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-		.map(i => ({ name: i.name, value: i.name }));
+		return results
+			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+			.map(i => ({ name: i.name, value: i.name }));
 	}
 });
 
@@ -223,14 +224,15 @@ export const combatSpellOption = (): CommandOption => ({
 		const mUser = await mahojiUsersSettingsFetch(user.id);
 		let results: APIApplicationCommandOptionChoice[] = [];
 		const magicLvl = getSkillsOfMahojiUser(mUser, true).magic;
-		let allCastables = castables.filter(
-			_spell => _spell.category.toLowerCase() === 'combat' && _spell.baseMaxHit && _spell.level <= magicLvl
-		).sort((a, b) => b.level - a.level);
+		let allCastables = castables
+			.filter(
+				_spell => _spell.category.toLowerCase() === 'combat' && _spell.baseMaxHit && _spell.level <= magicLvl
+			)
+			.sort((a, b) => b.level - a.level);
 		allCastables.length = 25;
-		results = allCastables.map(
-			spell => ({name: spell.name, value: spell.name})
-		)
-		return results.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
-		.map(i => ({ name: i.name, value: i.name }));
+		results = allCastables.map(spell => ({ name: spell.name, value: spell.name }));
+		return results
+			.filter(i => (!value ? true : i.name.toLowerCase().includes(value.toLowerCase())))
+			.map(i => ({ name: i.name, value: i.name }));
 	}
 });

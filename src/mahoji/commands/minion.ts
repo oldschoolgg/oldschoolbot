@@ -1,4 +1,3 @@
-import { equippedWeaponCombatStyleOption, combatSpellOption } from './../lib/mahojiCommandOptions';
 import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -38,6 +37,7 @@ import {
 	mahojiUsersSettingsFetch,
 	patronMsg
 } from '../mahojiSettings';
+import { combatSpellOption, equippedWeaponCombatStyleOption } from './../lib/mahojiCommandOptions';
 
 export const minionCommand: OSBMahojiCommand = {
 	name: 'minion',
@@ -298,18 +298,18 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'combat_skill',
 					description: 'The primary combat skill you want to train with',
 					required: false,
-					choices: Object.keys(CombatsEnum).map(key => ({ name: key, value: key}))
+					choices: Object.keys(CombatsEnum).map(key => ({ name: key, value: key }))
 				},
 				{
 					...equippedWeaponCombatStyleOption(),
 					name: 'attack_style_type',
 					description: 'The attack style and attack type you want to use for specified combat skill'
 				},
-				{ 	
+				{
 					...combatSpellOption(),
 					name: 'combat_spell',
-					description: 'The combat spell you want to cast while training magic.',
-				} 
+					description: 'The combat spell you want to cast while training magic.'
+				}
 			]
 		}
 	],
@@ -421,7 +421,13 @@ export const minionCommand: OSBMahojiCommand = {
 		if (options.daily) {
 			return dailyCommand(interaction, channelID, user);
 		}
-		if (options.train) return trainCommand(user, options.train.combat_skill, options.train.attack_style_type, options.train.combat_spell);
+		if (options.train)
+			return trainCommand(
+				user,
+				options.train.combat_skill,
+				options.train.attack_style_type,
+				options.train.combat_spell
+			);
 
 		return 'Unknown command';
 	}
