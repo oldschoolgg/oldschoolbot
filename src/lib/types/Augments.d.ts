@@ -49,10 +49,6 @@ declare module 'klasa' {
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
 	}
 
-	interface KlasaMessage {
-		confirm(this: KlasaMessage, str: string): Promise<void>;
-	}
-
 	interface SettingsFolder {
 		get<K extends string, S>(key: CustomGet<K, S>): S;
 	}
