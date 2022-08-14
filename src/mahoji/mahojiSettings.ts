@@ -333,27 +333,7 @@ export async function userStatsUpdate(userID: string, data: (u: UserStats) => Pr
 	});
 }
 
-type BSOUserStatsBankKey =
-	| 'bars_from_adze_bank'
-	| 'ores_from_spirits_bank'
-	| 'bars_from_klik_bank'
-	| 'portable_tanner_bank'
-	| 'clue_upgrader_bank'
-	| 'loot_from_zippy_bank'
-	| 'peky_loot_bank'
-	| 'obis_loot_bank'
-	| 'brock_loot_bank'
-	| 'wilvus_loot_bank'
-	| 'doug_loot_bank'
-	| 'harry_loot_bank'
-	| 'smokey_loot_bank'
-	| 'doubled_loot_bank';
-type UserStatsBankKey =
-	| BSOUserStatsBankKey
-	| 'puropuro_implings_bank'
-	| 'passive_implings_bank'
-	| 'create_cost_bank'
-	| 'create_loot_bank';
+type UserStatsBankKey = keyof UserStats;
 export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
 	await userStatsUpdate(userID, u => ({
 		[key]: bank.clone().add(u[key] as ItemBank).bank

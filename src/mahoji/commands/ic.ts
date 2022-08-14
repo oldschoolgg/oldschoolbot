@@ -28,7 +28,8 @@ import {
 	getMahojiBank,
 	handleMahojiConfirmation,
 	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
+	mahojiUsersSettingsFetch,
+	userStatsBankUpdate
 } from '../mahojiSettings';
 
 const contractTable = new LootTable()
@@ -224,9 +225,14 @@ async function handInContract(
 	await user.removeItemsFromBank(cost);
 	await user.addItemsToBank({ items: loot, collectionLog: false });
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractCost, cost);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractLoot, loot);
-	updateGPTrackSetting('gp_ic', loot.amount('Coins'));
+	await Promise.all([
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractCost, cost),
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractLoot, loot),
+		updateGPTrackSetting('gp_ic', loot.amount('Coins')),
+		userStatsBankUpdate(user.id, 'ic_cost_bank', cost),
+		userStatsBankUpdate(user.id, 'ic_loot_bank', loot)
+	]);
+
 	let res = `You handed in a ${currentItem.name} and received ${loot}. You've completed ${
 		totalContracts + 1
 	} Item Contracts, and your streak is now at ${newStreak}.`;
