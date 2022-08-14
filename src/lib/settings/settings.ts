@@ -187,7 +187,9 @@ export async function runCommand({
 		if (inhibitedReason) {
 			inhibited = true;
 			if (inhibitedReason.silent) return;
-			return channel.send(inhibitedReason.reason);
+			return channel.send(
+				typeof inhibitedReason.reason === 'string' ? inhibitedReason.reason : inhibitedReason.reason.content!
+			);
 		}
 
 		if (mahojiCommand) {

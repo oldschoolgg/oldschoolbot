@@ -6,6 +6,7 @@ import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache } from '../constants';
 import { runCommand } from '../settings/settings';
+import { channelIsSendable, convertMahojiResponseToDJSResponse } from '../util';
 import { minionIsBusy } from './minionIsBusy';
 import { minionName } from './minionUtils';
 import { respondToButton } from './respondToButton';
@@ -31,7 +32,8 @@ const globalInteractionActions = [
 	'AUTO_SLAY',
 	'CANCEL_TRIP',
 	'AUTO_FARM',
-	'AUTO_FARMING_CONTRACT'
+	'AUTO_FARMING_CONTRACT',
+	'BUY_MINION'
 ] as const;
 type GlobalInteractionAction = typeof globalInteractionActions[number];
 function isValidGlobalInteraction(str: string): str is GlobalInteractionAction {
@@ -159,6 +161,16 @@ export async function interactionHook(data: APIInteraction) {
 		});
 	}
 
+	if (id === 'BUY_MINION') {
+		await buttonReply();
+		return runCommand({
+			commandName: 'minion',
+			args: { buy: {} },
+			bypassInhibitors: true,
+			...options
+		});
+	}
+
 	if (minionIsBusy(user.id)) {
 		return buttonReply(`${minionName(user)} is busy.`);
 	}
@@ -229,7 +241,14 @@ export async function interactionHook(data: APIInteraction) {
 		}
 		case 'AUTO_FARMING_CONTRACT': {
 			await buttonReply();
-			return autoContract(await globalClient.fetchUser(user.id), BigInt(options.channelID), BigInt(user.id));
+			const response = await autoContract(
+				await globalClient.fetchUser(user.id),
+				BigInt(options.channelID),
+				BigInt(user.id)
+			);
+			const channel = globalClient.channels.cache.get(options.channelID);
+			if (channelIsSendable(channel)) channel.send(convertMahojiResponseToDJSResponse(response));
+			break;
 		}
 		default: {
 		}

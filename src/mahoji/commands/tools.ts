@@ -21,9 +21,19 @@ import { anglerOutfit, gnomeRestaurantCL } from '../../lib/data/CollectionsExpor
 import pets from '../../lib/data/pets';
 import killableMonsters, { effectiveMonsters, NightmareMonster } from '../../lib/minions/data/killableMonsters';
 import { MinigameName, Minigames } from '../../lib/settings/minigames';
-import { prisma } from '../../lib/settings/prisma';
+import { convertStoredActivityToFlatActivity, prisma } from '../../lib/settings/prisma';
 import Skills from '../../lib/skilling/skills';
-import { asyncGzip, formatDuration, getUsername, itemNameFromID, stringMatches } from '../../lib/util';
+import {
+	asyncGzip,
+	formatDuration,
+	getUsername,
+	isGroupActivity,
+	isNexActivity,
+	isRaidsActivity,
+	isTobActivity,
+	itemNameFromID,
+	stringMatches
+} from '../../lib/util';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { makeBankImage } from '../../lib/util/makeBankImage';
@@ -159,7 +169,7 @@ GROUP BY 1
 ORDER BY qty DESC, lastDate ASC
 LIMIT 10`;
 
-	const res = await globalClient.query<{ user_id: string; qty: number }[]>(query);
+	const res = await prisma.$queryRawUnsafe<{ user_id: string; qty: number }[]>(query);
 
 	if (res.length === 0) {
 		return 'No results found.';
@@ -208,7 +218,7 @@ const dryStreakMinigames: DrystreakMinigame[] = [
 		items: resolveItems(['Jal-nib-rek'])
 	},
 	{
-		name: 'Winterotdt',
+		name: 'Wintertodt',
 		key: 'wintertodt',
 		items: resolveItems(['Tome of fire', 'Phoenix', 'Bruma torch', 'Warm gloves'])
 	}
@@ -331,7 +341,7 @@ async function dryStreakCommand(user: User, monsterName: string, itemName: strin
 	const { id } = mon;
 	const query = `SELECT "id", "${key}"->>'${id}' AS "KC" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NULL AND "${key}"->>'${id}' IS NOT NULL ${ironmanPart} ORDER BY ("${key}"->>'${id}')::int DESC LIMIT 10;`;
 
-	const result = await globalClient.query<
+	const result = await prisma.$queryRawUnsafe<
 		{
 			id: string;
 			KC: string;
@@ -356,7 +366,7 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 
 	const query = `SELECT "id", "collectionLogBank"->>'${item.id}' AS "qty" FROM users WHERE "collectionLogBank"->>'${item.id}' IS NOT NULL ${ironmanPart} ORDER BY ("collectionLogBank"->>'${item.id}')::int DESC LIMIT 10;`;
 
-	const result = await globalClient.query<
+	const result = await prisma.$queryRawUnsafe<
 		{
 			id: string;
 			qty: string;
@@ -371,6 +381,53 @@ async function mostDrops(user: User, itemName: string, ironmanOnly: boolean) {
 				`${result.length < 10 ? '(Anonymous)' : getUsername(id)}: ${parseInt(qty).toLocaleString()}`
 		)
 		.join('\n')}`;
+}
+
+async function checkMassesCommand(guildID: bigint | undefined) {
+	if (!guildID) return 'This can only be used in a server.';
+	const guild = globalClient.guilds.cache.get(guildID.toString());
+	if (!guild) return 'Guild not found.';
+	const channelIDs = guild.channels.cache.filter(c => c.type === 'text').map(c => BigInt(c.id));
+
+	const masses = (
+		await prisma.activity.findMany({
+			where: {
+				completed: false,
+				group_activity: true,
+				channel_id: { in: channelIDs }
+			},
+			orderBy: {
+				finish_date: 'asc'
+			}
+		})
+	)
+		.map(convertStoredActivityToFlatActivity)
+		.filter(m => (isRaidsActivity(m) || isGroupActivity(m) || isTobActivity(m)) && m.users.length > 1);
+
+	if (masses.length === 0) {
+		return 'There are no active masses in this server.';
+	}
+	const now = Date.now();
+	const massStr = masses
+		.map(m => {
+			const remainingTime =
+				isTobActivity(m) || isNexActivity(m)
+					? m.finishDate - m.duration + m.fakeDuration - now
+					: m.finishDate - now;
+			if (isGroupActivity(m)) {
+				return [
+					remainingTime,
+					`${m.type}${isRaidsActivity(m) && m.challengeMode ? ' CM' : ''}: ${
+						m.users.length
+					} users returning to <#${m.channelID}> in ${formatDuration(remainingTime)}`
+				];
+			}
+		})
+		.sort((a, b) => (a![0] < b![0] ? -1 : a![0] > b![0] ? 1 : 0))
+		.map(m => m![1])
+		.join('\n');
+	return `**Masses in this server:**
+${massStr}`;
 }
 
 export const toolsCommand: OSBMahojiCommand = {
@@ -537,6 +594,11 @@ export const toolsCommand: OSBMahojiCommand = {
 							required: false
 						}
 					]
+				},
+				{
+					type: ApplicationCommandOptionType.Subcommand,
+					name: 'checkmasses',
+					description: 'Check the masses going on in the server.'
 				}
 			]
 		},
@@ -608,7 +670,8 @@ export const toolsCommand: OSBMahojiCommand = {
 	run: async ({
 		options,
 		userID,
-		interaction
+		interaction,
+		guildID
 	}: CommandRunOptions<{
 		patron?: {
 			kc_gains?: {
@@ -636,7 +699,7 @@ export const toolsCommand: OSBMahojiCommand = {
 			activity_export?: {};
 			stats?: { stat: string };
 		};
-		user?: { mypets?: {}; temp_cl: { reset?: boolean } };
+		user?: { mypets?: {}; temp_cl: { reset?: boolean }; checkmasses?: {} };
 		stash_units?: {
 			view?: { unit?: string; not_filled?: boolean };
 			build_all?: {};
@@ -767,6 +830,9 @@ You last reset your temporary CL: ${
 					? `<t:${Math.floor((lastReset?.last_temp_cl_reset?.getTime() ?? 1) / 1000)}>`
 					: 'Never'
 			}`;
+		}
+		if (options.user?.checkmasses) {
+			return checkMassesCommand(guildID);
 		}
 		return 'Invalid command!';
 	}

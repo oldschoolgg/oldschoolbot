@@ -8,6 +8,7 @@ import { lmsSimCommand } from '../../../lib/minions/functions/lmsSimCommand';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getUsersLMSStats } from '../../../tasks/minions/minigames/lmsActivity';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
@@ -79,7 +80,7 @@ export async function lmsCommand(
 		return 'Your minion must not be busy to do an LMS trip';
 	}
 	const durationPerGame = Time.Minute * 5.5;
-	const quantity = Math.floor(user.maxTripLength('LastManStanding') / durationPerGame);
+	const quantity = Math.floor(calcMaxTripLength(user, 'LastManStanding') / durationPerGame);
 	const duration = randomVariation(quantity * durationPerGame, 5);
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({

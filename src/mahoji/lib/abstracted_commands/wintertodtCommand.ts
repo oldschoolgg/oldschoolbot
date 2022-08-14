@@ -11,6 +11,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function wintertodtCommand(user: KlasaUser, channelID: bigint) {
 	const fmLevel = user.skillLevel(SkillsEnum.Firemaking);
@@ -51,7 +52,7 @@ export async function wintertodtCommand(user: KlasaUser, channelID: bigint) {
 		);
 	}
 
-	const quantity = Math.floor(user.maxTripLength('Wintertodt') / durationPerTodt);
+	const quantity = Math.floor(calcMaxTripLength(user, 'Wintertodt') / durationPerTodt);
 
 	const bank = user.settings.get(UserSettings.Bank);
 	for (const food of Eatables) {

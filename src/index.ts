@@ -1,7 +1,6 @@
 import './lib/data/itemAliases';
 import './lib/crons';
 
-import { Stopwatch } from '@sapphire/stopwatch';
 import * as Sentry from '@sentry/node';
 import { Chart } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -12,6 +11,7 @@ import { join } from 'path';
 import { botToken, CLIENT_ID, DEV_SERVER_ID, SENTRY_DSN } from './config';
 import { clientOptions } from './lib/config';
 import { SILENT_ERROR } from './lib/constants';
+import { onMessage } from './lib/events';
 import { modalInteractionHook } from './lib/modals';
 import { OldSchoolBotClient } from './lib/structures/OldSchoolBotClient';
 import { interactionHook } from './lib/util/globalInteractions';
@@ -73,7 +73,7 @@ declare global {
 const client = new OldSchoolBotClient(clientOptions);
 client.mahojiClient = mahojiClient;
 global.globalClient = client;
-
+client.on('message', onMessage);
 client.on('raw', async event => {
 	if (![GatewayDispatchEvents.InteractionCreate].includes(event.t)) return;
 	// TODO: Ignore interactions if client not ready, they will error and fail to execute
@@ -85,15 +85,7 @@ client.on('raw', async event => {
 	client.emit('debug', `Received ${data.type} interaction`);
 	interactionHook(data);
 	if (data.type === InteractionType.ModalSubmit) return modalInteractionHook(data);
-	const timer = new Stopwatch();
 	const result = await mahojiClient.parseInteraction(data);
-	if (result === null) return;
-	timer.stop();
-	client.emit(
-		'debug',
-		`Parsed ${result?.interaction?.data.interaction.data?.name ?? 'None'} interaction in ${timer.duration}ms`
-	);
-
 	if (result === null) return;
 
 	if ('error' in result) {
