@@ -348,7 +348,12 @@ type BSOUserStatsBankKey =
 	| 'harry_loot_bank'
 	| 'smokey_loot_bank'
 	| 'doubled_loot_bank';
-type UserStatsBankKey = BSOUserStatsBankKey | 'puropuro_implings_bank' | 'passive_implings_bank';
+type UserStatsBankKey =
+	| BSOUserStatsBankKey
+	| 'puropuro_implings_bank'
+	| 'passive_implings_bank'
+	| 'create_cost_bank'
+	| 'create_loot_bank';
 export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
 	await userStatsUpdate(userID, u => ({
 		[key]: bank.clone().add(u[key] as ItemBank).bank
