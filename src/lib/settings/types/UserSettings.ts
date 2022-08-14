@@ -118,7 +118,6 @@ export namespace UserSettings {
 		export const Ironman = T<boolean>('minion.ironman');
 		export const Icon = T<string | null>('minion.icon');
 		export const EquippedPet = T<number | null>('minion.equippedPet');
-		export const DefaultDartToUse = T<string>('minion.defaultDartToUse');
 		export const DefaultCompostToUse = T<CompostName | null>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
 		export const MeleeAttackStyle = T<AttackStyles | null>('minion.meleeAttackStyle');

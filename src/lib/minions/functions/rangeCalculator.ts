@@ -77,8 +77,9 @@ export default async function rangeCalculator(
 	let gearStats = user.getGear('range').stats;
 
 	if (rangeWeapon.name.toLowerCase() === 'toxic blowpipe') {
-		const defaultDart = user.settings.get(UserSettings.Minion.DefaultDartToUse);
-		const dart = getOSItem(defaultDart);
+		const blowpipeData = user.settings.get(UserSettings.Blowpipe);
+		if (blowpipeData.dartID === null) throw 'No dart ID found'
+		const dart = getOSItem(blowpipeData.dartID);
 		if (dart.equipment) {
 			gearStats.attack_ranged += dart.equipment.attack_ranged;
 			gearStats.ranged_strength += dart.equipment.ranged_strength;

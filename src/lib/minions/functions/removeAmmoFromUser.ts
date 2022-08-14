@@ -19,18 +19,15 @@ export default async function removeAmmoFromUser(user: KlasaUser, hits: number):
 	let blowpipe = false;
 	if (rangeWeapon.name.toLowerCase() === 'toxic blowpipe') {
 		blowpipe = true;
-		const defaultDart = user.settings.get(UserSettings.Minion.DefaultDartToUse);
-		const dart = getOSItem(defaultDart);
+		const blowpipeData = user.settings.get(UserSettings.Blowpipe);
+		if (blowpipeData.dartID === null) throw 'No dart ID found'
+		const dart = getOSItem(blowpipeData.dartID);
 		ammo = dart;
-		if (!ammo) throw 'No default dart have been choosen.';
+		if (!ammo) throw 'No blowpipe dart have been choosen.';
 	}
 	if (!ammo) throw 'No ammo is equipped in range.';
 	if (rangeWeapon.name.includes('dart')) {
 		ammo = rangeWeapon;
-	} else if (blowpipe) {
-		if (!user.settings.get(UserSettings.Minion.DefaultDartToUse).includes('dart')) {
-			throw 'The ammunition type used by toxic blowpipe is darts and scales. Default a dart type with the command combatsetup.';
-		}
 	} else if (rangeWeapon.name.includes('cross')) {
 		if (!ammo.name.includes('bolt')) {
 			throw 'The ammunition type used by crossbows is bolts. Equip a bolt in the range setup.';
