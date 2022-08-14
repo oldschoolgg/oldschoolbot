@@ -1,4 +1,5 @@
 import { TextChannel } from 'discord.js';
+import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 
 import { mahojiUsersSettingsFetch } from '../mahojiSettings';
 import { AbstractCommand, runInhibitors } from './inhibitors';
@@ -26,7 +27,7 @@ export async function preCommand({
 	guildID?: string | bigint | null;
 	channelID: string | bigint;
 	bypassInhibitors: boolean;
-}): Promise<{ silent: boolean; reason: string } | undefined> {
+}): Promise<{ silent: boolean; reason: Awaited<CommandResponse> } | undefined> {
 	globalClient.emit('debug', `${userID} trying to run ${abstractCommand.name} command`);
 	const user = await globalClient.fetchUser(userID);
 	if (user.isBusy && !bypassInhibitors && !globalClient.owners.has(user)) {
