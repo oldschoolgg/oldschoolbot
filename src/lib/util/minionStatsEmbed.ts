@@ -8,6 +8,7 @@ import { convertXPtoLVL, toKMB } from 'oldschooljs/dist/util';
 import { ClueTiers } from '../clues/clueTiers';
 import { getClueScoresFromOpenables } from '../clues/clueUtils';
 import { badges, skillEmoji } from '../constants';
+import { calcCLDetails } from '../data/Collections';
 import { effectiveMonsters } from '../minions/data/killableMonsters';
 import { getAllMinigameScores } from '../settings/settings';
 import { UserSettings } from '../settings/types/UserSettings';
@@ -75,7 +76,7 @@ export async function minionStatsEmbed(user: KlasaUser): Promise<Embed> {
 		embed.setColor(5_460_819);
 	}
 
-	const { percent } = user.completion();
+	const { percent } = calcCLDetails(user);
 	embed.addField({
 		name: `${skillEmoji.total} Overall`,
 		value: `**Level:** ${totalLevel}

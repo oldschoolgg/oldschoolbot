@@ -154,13 +154,6 @@ declare module 'discord.js' {
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
 		owns(bank: ItemBank | Bank | string | number): boolean;
-		completion(): {
-			percent: number;
-			notOwned: number[];
-			owned: number[];
-			debugBank: Bank;
-		};
-
 		/**
 		 * Get item boosts the user has available for the given `KillableMonster`.
 		 */
