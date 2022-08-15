@@ -122,6 +122,8 @@ model ClientStorage {
   disabled_commands            String[] @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
 
+  bingo_prize_pool BigInt @default(0)
+
   @@map("clientStorage")
 }
 
@@ -384,6 +386,9 @@ model User {
 
   minion_bought_date DateTime? @db.Timestamp(6)
 
+  is_playing_bingo   Boolean @default(false)
+  bingo_contribution BigInt  @default(0)
+
   @@map("users")
 }
 
@@ -559,6 +564,17 @@ model UserStats {
   create_loot_bank       Json   @default("{}") @db.Json
 
   @@map("user_stats")
+}
+
+model BingoTeam {
+  id Int @id @unique @default(autoincrement())
+
+  first_user  String @unique @db.VarChar(19)
+  second_user String @unique @db.VarChar(19)
+  third_user  String @unique @db.VarChar(19)
+
+  // completed_tiles
+  // announced_tiles
 }
 
 enum command_usage_status {
