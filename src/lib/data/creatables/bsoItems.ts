@@ -5,7 +5,8 @@ import { resolveBank } from 'oldschooljs/dist/util';
 import { dyedItems } from '../../dyedItems';
 import { nexBrokenArmorDetails } from '../../nex';
 import { bones } from '../../skilling/skills/prayer';
-import { assert, resolveNameBank } from '../../util';
+import { Bone } from '../../skilling/types';
+import { assert, resolveNameBank, stringMatches } from '../../util';
 import getOSItem from '../../util/getOSItem';
 import itemID from '../../util/itemID';
 import resolveItems from '../../util/resolveItems';
@@ -763,17 +764,6 @@ const bsoItems: Createable[] = [
 		})
 	},
 	{
-		// TODO - Move to main createables when TOB is released
-		name: 'Avernic defender',
-		inputItems: {
-			[itemID('Avernic defender hilt')]: 1,
-			[itemID('Dragon defender')]: 1
-		},
-		outputItems: {
-			[itemID('Avernic defender')]: 1
-		}
-	},
-	{
 		name: 'Breadcrumbs',
 		inputItems: {
 			[itemID('Bread')]: 1
@@ -922,6 +912,25 @@ const bsoItems: Createable[] = [
 		}),
 		outputItems: resolveNameBank({
 			'Spellbound ring(i)': 1
+		})
+	},
+	{
+		name: 'Black swan',
+		inputItems: resolveNameBank({
+			Seer: 1,
+			'Squid dye': 1
+		}),
+		outputItems: resolveNameBank({
+			'Black swan': 1
+		})
+	},
+	{
+		name: 'Nexterminator',
+		inputItems: resolveNameBank({
+			'Bloodsoaked feather': 1
+		}),
+		outputItems: resolveNameBank({
+			Nexterminator: 1
 		})
 	}
 ];
@@ -1094,25 +1103,6 @@ const dragonBoneCreatables: Createable[] = [
 		})
 	},
 	{
-		name: 'Black swan',
-		inputItems: resolveNameBank({
-			Seer: 1,
-			'Squid dye': 1
-		}),
-		outputItems: resolveNameBank({
-			'Black swan': 1
-		})
-	},
-	{
-		name: 'Nexterminator',
-		inputItems: resolveNameBank({
-			'Bloodsoaked feather': 1
-		}),
-		outputItems: resolveNameBank({
-			Nexterminator: 1
-		})
-	},
-	{
 		name: 'Royal dragon platebody',
 		inputItems: resolveNameBank({
 			'Ruined dragon armour slice': 1,
@@ -1122,28 +1112,63 @@ const dragonBoneCreatables: Createable[] = [
 		outputItems: resolveNameBank({
 			'Royal dragon platebody': 1
 		})
-	},
+	}
+];
+
+const divineWaterBones = [
+	'Bones',
+	'Big bones',
+	'Babydragon bones',
+	'Dragon bones',
+	'Wyrm bones',
+	'Wyvern bones',
+	'Drake bones',
+	'Lava dragon bones',
+	'Hydra bones',
+	'Dagannoth bones',
+	'Superior dragon bones',
+	'Abyssal dragon bones',
+	'Frost dragon bones',
+	'Royal dragon bones'
+];
+
+function divineWaterInputItems(user: KlasaUser, preferredBone?: Bone) {
+	const userBank = user.bank();
+	const bonesToUse =
+		preferredBone ??
+		bones
+			.filter(i => userBank.has(i.inputId))
+			.sort((a, b) => userBank.amount(b.inputId) - userBank.amount(a.inputId))[0] ??
+		bones[0];
+	let perBone = 2000;
+	if (bones.indexOf(bonesToUse) < bones.indexOf(bones.find(b => b.name === 'Dragon bones')!)) {
+		perBone *= 2;
+	}
+	const quantity = Math.ceil(Math.floor(perBone / bonesToUse.xp));
+	assert(quantity > 0);
+	return new Bank().add(bonesToUse.inputId, quantity).add('Vial of water');
+}
+
+const divineWaterCreatbles: Createable[] = [
 	{
 		name: 'Divine water',
-		inputItems: (user: KlasaUser) => {
-			const userBank = user.bank();
-			const bonesToUse =
-				bones
-					.filter(i => userBank.has(i.inputId))
-					.sort((a, b) => userBank.amount(b.inputId) - userBank.amount(a.inputId))[0] ?? bones[0];
-			let perBone = 2000;
-			if (bones.indexOf(bonesToUse) < bones.indexOf(bones.find(b => b.name === 'Dragon bones')!)) {
-				perBone *= 2;
-			}
-			const quantity = Math.ceil(Math.floor(perBone / bonesToUse.xp));
-			assert(quantity > 0);
-			return new Bank().add(bonesToUse.inputId, quantity).add('Vial of water');
-		},
+		inputItems: (user: KlasaUser) => divineWaterInputItems(user),
 		outputItems: resolveNameBank({
 			'Divine water': 1
 		})
 	}
 ];
+
+for (const bone of divineWaterBones) {
+	const preferredBone = bones.find(b => stringMatches(b.name, bone))!;
+	divineWaterCreatbles.push({
+		name: `Divine water (${preferredBone.name})`,
+		inputItems: (user: KlasaUser) => divineWaterInputItems(user, preferredBone),
+		outputItems: resolveNameBank({
+			'Divine water': 1
+		})
+	});
+}
 
 export const BsoCreateables: Createable[] = [
 	...bsoItems,
@@ -1156,5 +1181,6 @@ export const BsoCreateables: Createable[] = [
 	...grifolic,
 	...dragonBoneCreatables,
 	...nexCreatables,
-	...componentRevertables
+	...componentRevertables,
+	...divineWaterCreatbles
 ];
