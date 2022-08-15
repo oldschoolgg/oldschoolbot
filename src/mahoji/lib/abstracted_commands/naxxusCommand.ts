@@ -128,7 +128,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		boosts.push('5% Weekend boost');
 	}
 
-	const naxxusKc = user.settings.get(UserSettings.MonsterScores)[Naxxus.id];
+	const naxxusKc = user.settings.get(UserSettings.MonsterScores)[Naxxus.id] ?? 0;
 	for (const [threshold, boost, subThreshold] of naxxusKcBoosts) {
 		if (naxxusKc >= threshold) {
 			if (boost < 0) {
