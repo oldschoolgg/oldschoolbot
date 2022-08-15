@@ -169,7 +169,7 @@ export async function duelCommand(
 		}
 	} catch (err: any) {
 		const code = typeof err === 'object' && 'code' in err ? err.code : null;
-		if (code === 'INTERACTION_COLLECTOR_ERROR') {
+		if (code === 'INTERACTION_COLLECTOR_ERROR' && err.message.endsWith('time')) {
 			return cancel();
 		}
 		let failError = err;
