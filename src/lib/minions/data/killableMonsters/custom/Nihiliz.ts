@@ -17,7 +17,7 @@ const regularTable = new LootTable({ limit: 41 })
 	.add('Cadantine seed', [1, 3], 2)
 	.add('Toadflax seed', [1, 3], 2)
 	.add('Lantadyme seed', [1, 3], 2)
-	.add('Bow string', [100, 400], 2)
+	.add('Bow string', [100, 250], 2)
 	.add('Ruby bolt tips', [15, 75])
 	.add('Dragonstone bolt tips', [10, 50])
 	.add('Onyx bolt tips', [5, 10])
@@ -35,7 +35,7 @@ const regularTable = new LootTable({ limit: 41 })
 
 	/* Other */
 	.add('Coins', [50_000, 200_000])
-	.add('Pure essence', [2000, 3000], 2)
+	.add('Pure essence', [1500, 2500], 2)
 	.oneIn(1000, 'Ancient staff')
 	.tertiary(500, 'Uncut zenyte', [1, 3])
 
