@@ -127,7 +127,7 @@ model ClientStorage {
 
 model GearPreset {
   user_id    String @db.VarChar(19)
-  name       String @db.VarChar(12)
+  name       String @db.VarChar(24)
   two_handed Int?
   body       Int?
   cape       Int?
