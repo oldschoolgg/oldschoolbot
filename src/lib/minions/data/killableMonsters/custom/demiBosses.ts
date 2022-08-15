@@ -245,7 +245,8 @@ const Nihiliz: CustomMonster = {
 			[itemID('Zaryte vambraces')]: 5
 		}
 	],
-	groupKillable: true,
+	groupKillable: false,
+	hp: 800,
 	respawnTime: Time.Second * 10,
 	levelRequirements: {
 		prayer: 95,
