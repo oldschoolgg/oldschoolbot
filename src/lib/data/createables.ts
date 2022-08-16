@@ -1,7 +1,6 @@
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
-import { moktangCreatables } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import { MaterialBank } from '../invention/MaterialBank';
 import { Favours } from '../minions/data/kourendFavour';
 import { blisterwoodRequirements, ivandisRequirements } from '../minions/data/templeTrekking';
@@ -18,6 +17,7 @@ import { dragonFireShieldCreatables } from './creatables/dragonfireShields';
 import { gracefulOutfitCreatables } from './creatables/gracefulOutfits';
 import { leaguesCreatables } from './creatables/leagueCreatables';
 import { lmsCreatables } from './creatables/lms';
+import { moktangCreatables } from './creatables/moktangCreatables';
 import { mysticStavesCreatables } from './creatables/mysticStaves';
 import { nexCreatables } from './creatables/nex';
 import { ornamentKits } from './creatables/ornaments';
@@ -1094,6 +1094,17 @@ const Reverteables: Createable[] = [
 		outputItems: {
 			[itemID('Godsword blade')]: 1,
 			[itemID('Zamorak hilt')]: 1
+		},
+		noCl: true
+	},
+	{
+		name: 'Revert Fish sack barrel',
+		inputItems: new Bank({
+			[itemID('Fish sack barrel')]: 1
+		}),
+		outputItems: {
+			[itemID('Fish sack')]: 1,
+			[itemID('Fish barrel')]: 1
 		},
 		noCl: true
 	},

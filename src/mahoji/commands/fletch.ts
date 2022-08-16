@@ -10,6 +10,7 @@ import { hasSlayerUnlock } from '../../lib/slayer/slayerUtil';
 import { FletchingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
@@ -95,7 +96,7 @@ export const fletchCommand: OSBMahojiCommand = {
 
 		timeToFletchSingleItem /= boost;
 
-		const maxTripLength = user.maxTripLength('Fletching');
+		const maxTripLength = calcMaxTripLength(user, 'Fletching');
 		let { quantity } = options;
 
 		if (!quantity) {

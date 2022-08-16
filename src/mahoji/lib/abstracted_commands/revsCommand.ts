@@ -14,6 +14,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { RevenantOptions } from '../../../lib/types/minions';
 import { formatDuration, percentChance, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import combatAmmoUsage from '../../../lib/util/combatAmmoUsage';
 import getOSItem from '../../../lib/util/getOSItem';
 import { getUserGear, handleMahojiConfirmation } from '../../mahojiSettings';
@@ -70,7 +71,7 @@ export async function revsCommand(
 	if (userGear.hasEquipped(['Hellfire bow'])) {
 		timePerMonster /= 5;
 	}
-	const quantity = Math.floor(user.maxTripLength('Revenants') / timePerMonster);
+	const quantity = Math.floor(calcMaxTripLength(user, 'Revenants') / timePerMonster);
 	let duration = quantity * timePerMonster;
 
 	const cost = new Bank();

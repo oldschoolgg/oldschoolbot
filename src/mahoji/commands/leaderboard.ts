@@ -541,7 +541,7 @@ async function leaguesPointsLeaderboard(user: KlasaUser, channelID: bigint) {
 async function leaguesLeaderboard(user: KlasaUser, channelID: bigint, type: 'points' | 'tasks') {
 	if (type === 'points') return leaguesPointsLeaderboard(user, channelID);
 	const result: { id: number; tasks_completed: number }[] =
-		await roboChimpClient.$queryRaw`SELECT id, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
+		await roboChimpClient.$queryRaw`SELECT id::text, COALESCE(cardinality(leagues_completed_tasks_ids), 0) AS tasks_completed
 										  FROM public.user
 										  ORDER BY tasks_completed DESC
 										  LIMIT 100;`;

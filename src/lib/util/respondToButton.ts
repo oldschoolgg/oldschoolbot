@@ -5,7 +5,7 @@ export async function respondToButton(id: string, token: string, text?: string) 
 	if (text) {
 		return globalClient.mahojiClient.restManager.post(route, {
 			body: {
-				type: InteractionResponseType.DeferredMessageUpdate,
+				type: InteractionResponseType.ChannelMessageWithSource,
 				data: { content: text, flags: MessageFlags.Ephemeral }
 			}
 		});

@@ -82,7 +82,7 @@ export default class extends Task {
 				str += ' **1x Gorajan shards**';
 				let quantity = 1;
 
-				if (isDoubleLootActive(this.client, duration)) {
+				if (isDoubleLootActive(duration)) {
 					quantity *= 2;
 				}
 				await u.addItemsToBank({ items: new Bank().add('Gorajan shards', quantity), collectionLog: true });

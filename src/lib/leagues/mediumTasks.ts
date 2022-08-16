@@ -25,7 +25,7 @@ import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
 import { LampTable } from '../xpLamps';
-import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leagues';
+import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leaguesUtils';
 
 export const mediumTasks: Task[] = [
 	{

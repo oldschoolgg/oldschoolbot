@@ -117,6 +117,11 @@ export const Minigames: readonly BotMinigame[] = [
 		column: 'ourania_delivery_service'
 	},
 	{
+		name: 'Puro Puro',
+		aliases: ['puro', 'puro puro'],
+		column: 'puro_puro'
+	},
+	{
 		name: 'Big Chompy Bird Hunting',
 		aliases: ['chimpy', 'bcbh'],
 		column: 'big_chompy_bird_hunting'

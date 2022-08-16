@@ -6,9 +6,11 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
-import { COINS_ID, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
+import { COINS_ID, Emoji, lastTripCache, LastTripRunArgs, PerkTier } from '../constants';
 import { handleGrowablePetGrowth } from '../growablePets';
 import { handlePassiveImplings } from '../implings';
 import { inventionBoosts, InventionID, inventionItemBoost } from '../invention/inventions';
@@ -21,7 +23,12 @@ import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, itemID, roll, toKMB, updateBankSetting, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
-import { makeDoClueButton, makeOpenCasketButton, makeRepeatTripButton } from './globalInteractions';
+import {
+	makeBirdHouseTripButton,
+	makeDoClueButton,
+	makeOpenCasketButton,
+	makeRepeatTripButton
+} from './globalInteractions';
 import { userHasItemsEquippedAnywhere } from './minionUtils';
 import { sendToChannelID } from './webhook';
 
@@ -58,6 +65,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (imp && imp.bank.length > 0) {
 				const many = imp.bank.length > 1;
 				messages.push(`Caught ${many ? 'some' : 'an'} impling${many ? 's' : ''}, you received: ${imp.bank}`);
+				userStatsBankUpdate(user.id, 'passive_implings_bank', imp.bank);
 				await user.addItemsToBank({ items: imp.bank, collectionLog: true });
 			}
 		}
@@ -89,6 +97,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 				const otherLoot = new Bank().add(MysteryBoxes.roll());
 				const bonusLoot = new Bank().add(loot).add(otherLoot);
 				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
+				userStatsBankUpdate(user.id, 'doubled_loot_bank', bonusLoot);
 				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
 				updateBankSetting(globalClient, ClientSettings.EconomyStats.TripDoublingLoot, bonusLoot);
 			}
@@ -108,6 +117,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 							bonusLoot.add(PekyTable.roll());
 						}
 					}
+					userStatsBankUpdate(user.id, 'peky_loot_bank', bonusLoot);
 					messages.push(
 						`<:peky:787028037031559168> Peky flew off and got you some seeds during this trip: ${bonusLoot}.`
 					);
@@ -118,6 +128,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(RuneTable.roll());
 					}
+					userStatsBankUpdate(user.id, 'obis_loot_bank', bonusLoot);
 					messages.push(
 						`<:obis:787028036792614974> Obis did some runecrafting during this trip and got you: ${bonusLoot}.`
 					);
@@ -128,6 +139,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(WoodTable.roll());
 					}
+					userStatsBankUpdate(user.id, 'brock_loot_bank', bonusLoot);
 					messages.push(
 						`<:brock:787310793183854594> Brock did some woodcutting during this trip and got you: ${bonusLoot}.`
 					);
@@ -138,6 +150,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < rolls; i++) {
 						bonusLoot.add(WilvusTable.roll());
 					}
+					userStatsBankUpdate(user.id, 'wilvus_loot_bank', bonusLoot);
 					messages.push(
 						`<:wilvus:787320791011164201> Wilvus did some pickpocketing during this trip and got you: ${bonusLoot}.`
 					);
@@ -149,6 +162,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 							bonusLoot.add(MysteryBoxes.roll());
 						}
 					}
+					userStatsBankUpdate(user.id, 'smokey_loot_bank', bonusLoot);
 					if (bonusLoot.length > 0) {
 						messages.push(
 							`<:smokey:787333617037869139> Smokey did some walking around while you were on your trip and found you ${bonusLoot}.`
@@ -160,6 +174,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < minutes / 2; i++) {
 						bonusLoot.add(DougTable.roll());
 					}
+					userStatsBankUpdate(user.id, 'doug_loot_bank', bonusLoot);
 					messages.push(`Doug did some mining while you were on your trip and got you: ${bonusLoot}.`);
 					break;
 				}
@@ -167,6 +182,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 					for (let i = 0; i < minutes; i++) {
 						bonusLoot.add('Banana', randInt(1, 3));
 					}
+					userStatsBankUpdate(user.id, 'harry_loot_bank', bonusLoot);
 					messages.push(`<:harry:749945071104819292>: ${bonusLoot}.`);
 					break;
 				}
@@ -234,6 +250,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 						data.duration,
 						user.skillLevel(SkillsEnum.Agility)
 					);
+					userStatsUpdate(user.id, () => ({
+						silverhawk_boots_passive_xp: {
+							increment: xpToReceive
+						}
+					}));
 					await user.addXP({
 						skillName: SkillsEnum.Agility,
 						amount: xpToReceive,
@@ -269,6 +290,10 @@ export async function handleTripFinish(
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message += `\n**Messages:** ${messages.join(', ')}`;
+	}
+
+	if (clueReceived && perkTier < PerkTier.Two) {
+		message += `\n${Emoji.Casket} **You got a ${clueReceived.name} clue scroll** in your loot.`;
 	}
 
 	const existingCollector = collectors.get(user.id);
@@ -309,6 +334,8 @@ export async function handleTripFinish(
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
+	const birdHousedetails = await calculateBirdhouseDetails(user.id);
+	if (birdHousedetails.isReady && perkTier > PerkTier.One) components[0].push(makeBirdHouseTripButton());
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

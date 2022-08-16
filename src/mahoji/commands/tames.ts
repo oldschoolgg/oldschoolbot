@@ -720,7 +720,9 @@ async function feedCommand(interaction: SlashCommandInteraction, user: KlasaUser
 		interaction,
 		`Are you sure you want to feed \`${bankToAdd}\` to ${tameName(
 			tame
-		)}? You **cannot** get these items back after they're eaten by your tame.${specialStr}`
+		)}? You **cannot** get these items back after they're eaten by your tame.${specialStr}
+
+Note: Some items must be equipped to your tame, not fed. Check that you are feeding something which is meant to be fed.`
 	);
 
 	let egg = '';

@@ -35,7 +35,7 @@ import { TameSpeciesID, TameType } from '../tames';
 import { ItemBank } from '../types';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { leaguesHasCatches, leaguesHasKC, Task } from './leagues';
+import { leaguesHasCatches, leaguesHasKC, Task } from './leaguesUtils';
 
 export const eliteTasks: Task[] = [
 	{

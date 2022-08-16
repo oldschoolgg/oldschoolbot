@@ -1493,16 +1493,14 @@ export const troubleBrewingCL = resolveItems([
 	'Blue rum (trouble brewing)'
 ]);
 export const volcanicMineCL = resolveItems(['Ash covered tome', 'Large water container', 'Volcanic mine teleport']);
+export const anglerOutfit = resolveItems(['Angler hat', 'Angler top', 'Angler waders', 'Angler boots']);
 export const aerialFishingCL = resolveItems([
 	'Golden tench',
 	'Pearl fishing rod',
 	'Pearl fly fishing rod',
 	'Pearl barbarian rod',
 	'Fish sack',
-	'Angler hat',
-	'Angler top',
-	'Angler waders',
-	'Angler boots'
+	...anglerOutfit
 ]);
 export const allPetsCL = resolveItems([
 	'Abyssal orphan',
@@ -1553,7 +1551,8 @@ export const allPetsCL = resolveItems([
 	'Little nightmare',
 	"Lil' creator",
 	'Tiny tempor',
-	'Abyssal protector'
+	'Abyssal protector',
+	'Nexling'
 ]);
 export const camdozaalCL = resolveItems([
 	'Barronite mace',
@@ -2219,6 +2218,8 @@ export const kingGoldemarCL = resolveItems([
 ]);
 
 export const abyssalDragonCL = resolveItems(['Abyssal thread', 'Abyssal cape', 'Dragon hunter lance', 'Ori']);
+
+export const nihilizCL = resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nihil shard', 'Nexling']);
 
 export const vasaMagusCL = resolveItems([
 	'Tattered robes of Vasa',

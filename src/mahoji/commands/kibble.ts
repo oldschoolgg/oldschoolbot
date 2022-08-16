@@ -9,6 +9,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { KibbleOptions } from '../../lib/types/minions';
 import { formatDuration, itemNameFromID, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const kibbleCommand: OSBMahojiCommand = {
@@ -96,10 +97,10 @@ export const kibbleCommand: OSBMahojiCommand = {
 			timePer = Math.floor(timePer / 2);
 		}
 		let duration = timePer * options.quantity;
-		let maxTripLength = user.maxTripLength('KibbleMaking');
-		if (duration > user.maxTripLength('KibbleMaking')) {
+		let maxTripLength = calcMaxTripLength(user, 'KibbleMaking');
+		if (duration > calcMaxTripLength(user, 'KibbleMaking')) {
 			return `The maximum amount of ${kibble.item.name} you can create in ${formatDuration(
-				user.maxTripLength('KibbleMaking')
+				calcMaxTripLength(user, 'KibbleMaking')
 			)} is ${Math.floor(maxTripLength / timePer)}.`;
 		}
 

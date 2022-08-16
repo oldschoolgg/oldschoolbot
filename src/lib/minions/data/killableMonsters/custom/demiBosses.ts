@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { LootTable, Monsters } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import { itemID } from 'oldschooljs/dist/util';
 
@@ -9,6 +10,7 @@ import { SkillsEnum } from '../../../../skilling/types';
 import resolveItems, { deepResolveItems } from '../../../../util/resolveItems';
 import { AbyssalDragonLootTable } from './AbyssalDragon';
 import { CustomMonster } from './customMonsters';
+import { NihilizLootTable } from './Nihiliz';
 import { KrakenTable } from './SeaKraken';
 import { TreebeardLootTable } from './Treebeard';
 
@@ -96,7 +98,8 @@ const Malygos: CustomMonster = {
 	},
 	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 	notifyDrops: resolveItems(['Abyssal cape', 'Ori']),
-	baseMonster: Monsters.Vorkath
+	baseMonster: Monsters.Vorkath,
+	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] }
 };
 
 const Treebeard: CustomMonster = {
@@ -202,9 +205,72 @@ export const QueenBlackDragon: CustomMonster = {
 	]
 };
 
+const Nihiliz: CustomMonster = {
+	id: 708_080,
+	name: 'Nihiliz',
+	aliases: ['nihiliz', 'shadow nihil boss', 'mini nex', 'nihilist'],
+	timeToFinish: Time.Minute * 16,
+	table: NihilizLootTable,
+	emoji: '',
+	wildy: false,
+	difficultyRating: 9,
+	qpRequired: 1000,
+	healAmountNeeded: 20 * 32,
+	attackStyleToUse: GearStat.AttackStab,
+	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
+	minimumGearRequirements: {
+		melee: {
+			[GearStat.AttackStab]: 100,
+			[GearStat.DefenceStab]: 150,
+			[GearStat.DefenceSlash]: 150,
+			[GearStat.DefenceMagic]: -20,
+			[GearStat.DefenceRanged]: 150
+		}
+	},
+	itemInBankBoosts: [
+		{
+			[itemID('Zaryte crossbow')]: 15,
+			[itemID('Zaryte bow')]: 10
+		},
+		{
+			[itemID('Drygore rapier')]: 15
+		},
+		{
+			[itemID('Offhand drygore rapier')]: 10
+		},
+		{
+			[itemID('Dragon warhammer')]: 5
+		},
+		{
+			[itemID('Zaryte vambraces')]: 5
+		}
+	],
+	groupKillable: false,
+	hp: 800,
+	respawnTime: Time.Second * 10,
+	levelRequirements: {
+		prayer: 95,
+		attack: 99,
+		strength: 105,
+		magic: 105,
+		defence: 99
+	},
+	pohBoosts: {
+		pool: {
+			'Fancy rejuvenation pool': 5,
+			'Ornate rejuvenation pool': 10,
+			'Ancient rejuvenation pool': 15
+		}
+	},
+	uniques: resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nihil shard', 'Nexling']),
+	notifyDrops: resolveItems(['Nihil horn', 'Zaryte vambraces', 'Nexling']),
+	baseMonster: Monsters.Hespori
+};
+
 export const customDemiBosses = {
 	Treebeard,
 	SeaKraken,
 	Malygos,
-	QueenBlackDragon
+	QueenBlackDragon,
+	Nihiliz
 };

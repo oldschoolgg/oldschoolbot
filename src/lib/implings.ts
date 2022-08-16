@@ -53,22 +53,64 @@ export const implings: Record<number, { level: number; customRequirements?: (use
 	[MysteryImpling.id]: { level: 105 }
 };
 
-const defaultImpTable = new LootTable()
-	.add('Baby impling jar', 1, 126)
-	.add('Young impling jar', 1, 85)
-	.add('Gourmet impling jar', 1, 88)
-	.add('Earth impling jar', 1, 68)
-	.add('Essence impling jar', 1, 49)
-	.add('Eclectic impling jar', 1, 44)
-	.add('Nature impling jar', 1, 63)
-	.add('Magpie impling jar', 1, 44)
-	.add('Ninja impling jar', 1, 41)
-	.add('Dragon impling jar', 1, 24)
-	.add('Lucky impling jar', 1, 3)
+export const puroImplings: Record<number, { catchXP: number }> = {
+	// [Impling ID, XP for Catch]
+	[BabyImpling.id]: { catchXP: 18 },
+	[YoungImpling.id]: { catchXP: 20 },
+	[GourmetImpling.id]: { catchXP: 22 },
+	[EarthImpling.id]: { catchXP: 25 },
+	[EssenceImpling.id]: { catchXP: 27 },
+	[EclecticImpling.id]: { catchXP: 30 },
+	[NatureImpling.id]: { catchXP: 34 },
+	[MagpieImpling.id]: { catchXP: 44 },
+	[NinjaImpling.id]: { catchXP: 52 },
+	[DragonImpling.id]: { catchXP: 65 },
+	[LuckyImpling.id]: { catchXP: 80 }
+};
+
+export const puroImpSpellTable = new LootTable()
+	.add('Baby impling jar', 1, 3100)
+	.add('Young impling jar', 1, 2885)
+	.add('Gourmet impling jar', 1, 2600)
+	.add('Earth impling jar', 1, 2400)
+	.add('Essence impling jar', 1, 2200)
+	.add('Eclectic impling jar', 1, 2000)
+	.add('Nature impling jar', 1, 1107)
+	.add('Magpie impling jar', 1, 1294)
+	.add('Ninja impling jar', 1, 272)
+	.add('Dragon impling jar', 1, 118)
+	.add('Lucky impling jar', 1, 24);
+
+export const puroImpNormalTable = new LootTable()
+	.add('Baby impling jar', 1, 3100)
+	.add('Young impling jar', 1, 2885)
+	.add('Gourmet impling jar', 1, 2600)
+	.add('Earth impling jar', 1, 2400)
+	.add('Essence impling jar', 1, 2200)
+	.add('Eclectic impling jar', 1, 2000)
+	.add('Nature impling jar', 1, 830)
+	.add('Magpie impling jar', 1, 970)
+	.add('Ninja impling jar', 1, 204)
+	.add('Dragon impling jar', 1, 88)
+	.add('Lucky impling jar', 1, 18);
+
+export const defaultImpTable = new LootTable()
+	.add('Baby impling jar', 1, 66)
+	.add('Young impling jar', 1, 55)
+	.add('Gourmet impling jar', 1, 48)
+	.add('Earth impling jar', 1, 38)
+	.add('Essence impling jar', 1, 29)
+	.add('Eclectic impling jar', 1, 24)
+	.add('Nature impling jar', 1, 33)
+	.add('Magpie impling jar', 1, 24)
+	.add('Ninja impling jar', 1, 21)
+	.add('Dragon impling jar', 1, 10)
+	.add('Lucky impling jar', 1, 1)
 	.add('Infernal impling jar', 1, 9)
 	.add('Chimpling jar', 1, 19)
 	.add('Eternal impling jar', 1, 7)
 	.add('Mystery impling jar', 1, 3);
+
 const mrETable = new LootTable()
 	.add('Earth impling jar', 1, 68)
 	.add('Essence impling jar', 1, 49)
@@ -103,6 +145,7 @@ export async function handlePassiveImplings(user: KlasaUser, data: ActivityTaskO
 			'Inferno',
 			'Christmas',
 			'TheatreOfBlood',
+			activity_type_enum.PuroPuro,
 			activity_type_enum.BarbarianAssault,
 			activity_type_enum.CastleWars,
 			activity_type_enum.LastManStanding,

@@ -100,7 +100,7 @@ export default class extends Task {
 				else lootRolls = quantity - deaths[user.id].qty;
 			}
 			const loot = new Bank().add(IgnecarusLootTable.roll(lootRolls));
-			if (isDoubleLootActive(this.client, duration)) {
+			if (isDoubleLootActive(duration)) {
 				loot.multiply(2);
 			}
 			totalLoot.add(loot);

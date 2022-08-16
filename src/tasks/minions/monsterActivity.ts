@@ -27,7 +27,7 @@ import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../lib/util/makeBankImage';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { sendToChannelID } from '../../lib/util/webhook';
-import { trackClientBankStats } from '../../mahoji/mahojiSettings';
+import { trackClientBankStats, userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 
 async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, messages: string[]) {
 	if (!hasItemsEquippedOrInBank(user, ['Gorajan bonecrusher', 'Superior bonecrusher'], 'one')) return;
@@ -59,11 +59,18 @@ async function bonecrusherEffect(user: KlasaUser, loot: Bank, duration: number, 
 		}
 	}
 
+	totalXP *= 5;
+	userStatsUpdate(user.id, () => ({
+		bonecrusher_prayer_xp: {
+			increment: Math.floor(totalXP)
+		}
+	}));
 	const xpStr = await user.addXP({
 		skillName: SkillsEnum.Prayer,
 		amount: totalXP,
 		duration,
-		minimal: true
+		minimal: true,
+		multiplier: false
 	});
 	messages.push(
 		`${xpStr} Prayer XP${
@@ -104,6 +111,7 @@ async function portableTannerEffect(user: KlasaUser, loot: Bank, duration: numbe
 	}
 	loot.add(toAdd);
 	trackClientBankStats('portable_tanner_loot', toAdd);
+	userStatsBankUpdate(user.id, 'portable_tanner_bank', toAdd);
 	if (!triggered) return;
 	messages.push(`Portable Tanner turned the hides into leathers (${boostRes.messages})`);
 }
@@ -139,6 +147,7 @@ export async function clueUpgraderEffect(
 	});
 	if (!boostRes.success) return false;
 	trackClientBankStats('clue_upgrader_loot', upgradedClues);
+	userStatsBankUpdate(user.id, 'clue_upgrader_bank', upgradedClues);
 	loot.add(upgradedClues);
 	assert(loot.has(removeBank));
 	loot.remove(removeBank);
@@ -202,7 +211,7 @@ export default class extends Task {
 		};
 		// Regular loot
 		const loot = (monster as KillableMonster).table.kill(
-			isDoubleLootActive(this.client, duration) ? quantity * 2 : boostedQuantity,
+			isDoubleLootActive(duration) ? quantity * 2 : boostedQuantity,
 			killOptions
 		);
 
@@ -297,7 +306,7 @@ export default class extends Task {
 			);
 		}
 
-		if (isDoubleLootActive(this.client, duration)) {
+		if (isDoubleLootActive(duration)) {
 			messages.push('**Double Loot!**');
 		} else if (oriBoost) {
 			messages.push('Ori has used the abyss to transmute you +25% bonus loot!');

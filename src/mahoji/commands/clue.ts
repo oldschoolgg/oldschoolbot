@@ -10,6 +10,7 @@ import { ItemBank } from '../../lib/types';
 import { ClueActivityTaskOptions } from '../../lib/types/minions';
 import { clamp, formatDuration, isWeekend, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
 import { getMahojiBank, mahojiUsersSettingsFetch } from '../mahojiSettings';
 
@@ -61,7 +62,7 @@ export const clueCommand: OSBMahojiCommand = {
 			return "You aren't experienced enough to complete a Grandmaster clue.";
 		}
 
-		const maxTripLength = user.maxTripLength('ClueCompletion');
+		const maxTripLength = calcMaxTripLength(user, 'ClueCompletion');
 
 		const boosts = [];
 
