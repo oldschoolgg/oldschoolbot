@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { combats_enum } from '@prisma/client';
+import { attackStyles_enum, combats_enum } from '@prisma/client';
 import { HexColorString } from 'discord.js';
 
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
-import { AttackStyles } from '../../minions/functions/trainCommand';
+
 import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
@@ -119,9 +119,9 @@ export namespace UserSettings {
 		export const EquippedPet = T<number | null>('minion.equippedPet');
 		export const DefaultCompostToUse = T<CompostName | null>('minion.defaultCompostToUse');
 		export const DefaultPay = T<boolean>('minion.defaultPay');
-		export const MeleeAttackStyle = T<AttackStyles | null>('minion.meleeAttackStyle');
-		export const RangedAttackStyle = T<AttackStyles | null>('minion.rangedAttackStyle');
-		export const MagicAttackStyle = T<AttackStyles | null>('minion.magicAttackStyle');
+		export const MeleeAttackStyle = T<attackStyles_enum | null>('minion.meleeAttackStyle');
+		export const RangedAttackStyle = T<attackStyles_enum | null>('minion.rangedAttackStyle');
+		export const MagicAttackStyle = T<attackStyles_enum | null>('minion.magicAttackStyle');
 		export const CombatSkill = T<combats_enum>('minion.combatSkill');
 		export const MeleeAttackType = T<string | null>('minion.meleeAttackType');
 		export const CombatSpell = T<string | null>('minion.combatSpell');

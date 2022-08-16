@@ -1,3 +1,4 @@
+import { attackStyles_enum } from '@prisma/client';
 import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
@@ -12,7 +13,6 @@ import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
 import potionBoostCalculator from './potionBoostCalculator';
-import { AttackStyles } from './trainCommand';
 
 // Mage Prayer bonus
 const magePrayerBonuses = [
@@ -87,11 +87,11 @@ export default async function mageCalculator(
 	}
 	let effectiveMageLvl = Math.floor(user.skillLevel(SkillsEnum.Magic) + magePotionBoost) * prayerMageBonus + 8;
 
-	if (attackStyle === AttackStyles.Accurate) {
+	if (attackStyle === attackStyles_enum.accurate) {
 		effectiveMageLvl += 3;
 	}
 
-	if (attackStyle === AttackStyles.Longrange) {
+	if (attackStyle === attackStyles_enum.longrange) {
 		effectiveMageLvl += 1;
 	}
 

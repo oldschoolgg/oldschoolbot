@@ -1,3 +1,4 @@
+import { attackStyles_enum } from '@prisma/client';
 import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
@@ -12,7 +13,6 @@ import { KillableMonster } from '../types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
 import potionBoostCalculator from './potionBoostCalculator';
-import { AttackStyles } from './trainCommand';
 
 interface RangeMaxHitWeaponBonus {
 	id: number;
@@ -99,7 +99,7 @@ export default async function rangeCalculator(
 	}
 	let effectiveRangeStr = Math.floor(user.skillLevel(SkillsEnum.Ranged) + rangePotionBoost) * prayerRangeBonus + 8;
 
-	if (attackStyle === AttackStyles.Accurate) {
+	if (attackStyle === attackStyles_enum.accurate) {
 		effectiveRangeStr += 3;
 	}
 
@@ -173,10 +173,10 @@ export default async function rangeCalculator(
 	// Calculate effective ranged attack
 	let effectiveRangeAttack = Math.floor(user.skillLevel(SkillsEnum.Ranged) + rangePotionBoost) * prayerRangeBonus + 8;
 
-	if (attackStyle === AttackStyles.Accurate) {
+	if (attackStyle === attackStyles_enum.accurate) {
 		effectiveRangeAttack += 3;
 	}
-	if (attackStyle === AttackStyles.Controlled) {
+	if (attackStyle === attackStyles_enum.controlled) {
 		effectiveRangeAttack += 1;
 	}
 
@@ -247,7 +247,7 @@ export default async function rangeCalculator(
 	const DamagePerHit = (maxHit * hitChance) / 2;
 
 	let rangeAttackSpeed =
-		attackStyle === AttackStyles.Rapid ? rangeWeapon.weapon!.attack_speed - 1 : rangeWeapon.weapon!.attack_speed;
+		attackStyle === attackStyles_enum.rapid ? rangeWeapon.weapon!.attack_speed - 1 : rangeWeapon.weapon!.attack_speed;
 	const DPS = DamagePerHit / (rangeAttackSpeed * 0.6);
 
 	// Calculates hits required, combat time and average monster kill speed.

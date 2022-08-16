@@ -4,18 +4,7 @@ import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
-import { combats_enum } from '.prisma/client';
-
-export enum AttackStyles {
-	Accurate = 'accurate',
-	Aggressive = 'aggressive',
-	Defensive = 'defensive',
-	Controlled = 'controlled',
-	Rapid = 'rapid',
-	Longrange = 'longrange',
-	Standard = 'standard',
-	Blaze = 'blaze'
-}
+import { combats_enum, attackStyles_enum } from '.prisma/client';
 
 export async function trainCommand(
 	user: KlasaUser,
@@ -59,7 +48,7 @@ export async function trainCommand(
 
 	if (_combatSkill === combats_enum.melee) {
 		await mahojiUserSettingsUpdate(user.id, {
-			minion_meleeAttackStyle: attackStyle as AttackStyles
+			minion_meleeAttackStyle: attackStyle as attackStyles_enum
 		});
 		if (attackType) {
 			await mahojiUserSettingsUpdate(user.id, {
@@ -76,7 +65,7 @@ export async function trainCommand(
 
 	if (_combatSkill === combats_enum.ranged) {
 		await mahojiUserSettingsUpdate(user.id, {
-			minion_rangedAttackStyle: attackStyle as AttackStyles
+			minion_rangedAttackStyle: attackStyle as attackStyles_enum
 		});
 
 		return `${
@@ -86,7 +75,7 @@ export async function trainCommand(
 
 	if (_combatSkill === combats_enum.magic) {
 		await mahojiUserSettingsUpdate(user.id, {
-			minion_magicAttackStyle: attackStyle as AttackStyles
+			minion_magicAttackStyle: attackStyle as attackStyles_enum
 		});
 
 		if (_combatSpell) {

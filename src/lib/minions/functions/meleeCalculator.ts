@@ -1,3 +1,4 @@
+import { attackStyles_enum } from '@prisma/client';
 import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
@@ -12,7 +13,6 @@ import { GearStat } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
 import potionBoostCalculator from './potionBoostCalculator';
-import { AttackStyles } from './trainCommand';
 
 interface MeleeStrengthWeaponBonus {
 	id: number;
@@ -129,10 +129,10 @@ export default async function meleeCalculator(
 	let effectiveStrLvl = Math.floor(user.skillLevel(SkillsEnum.Strength) + strengthPotionBoost) * prayerStrBonus + 8;
 	const attackType = user.settings.get(UserSettings.Minion.MeleeAttackType);
 
-	if (attackStyle === AttackStyles.Aggressive) {
+	if (attackStyle === attackStyles_enum.aggressive) {
 		effectiveStrLvl += 3;
 	}
-	if (attackStyle === AttackStyles.Controlled) {
+	if (attackStyle === attackStyles_enum.controlled) {
 		effectiveStrLvl += 1;
 	}
 

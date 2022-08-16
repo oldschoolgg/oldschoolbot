@@ -1,4 +1,4 @@
-import { User, combats_enum } from '@prisma/client';
+import { User, combats_enum, attackStyles_enum } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -12,7 +12,6 @@ import { randomVariation, stringMatches } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
-import { AttackStyles } from './trainCommand';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -146,7 +145,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	const totalHP = hp * normalQty * xpMultiplier + superiorHP;
 
 	// Check what attack style
-	let attackStyle: AttackStyles;
+	let attackStyle: attackStyles_enum;
 	let res: string[] = [];
 	if (combatSkill === combats_enum.magic) {
 		const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
@@ -156,7 +155,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 		spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell));
 		const mageAttackStyle = user.settings.get(UserSettings.Minion.MagicAttackStyle)!;
 		switch (mageAttackStyle) {
-			case AttackStyles.Standard:
+			case attackStyles_enum.standard:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
@@ -166,7 +165,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case AttackStyles.Defensive:
+			case attackStyles_enum.defensive:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
@@ -184,7 +183,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case AttackStyles.Accurate:
+			case attackStyles_enum.accurate:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
@@ -194,7 +193,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case AttackStyles.Longrange:
+			case attackStyles_enum.longrange:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Magic,
@@ -219,7 +218,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	if (combatSkill === combats_enum.melee) {
 		attackStyle = user.settings.get(UserSettings.Minion.MeleeAttackStyle)!;
 		switch (attackStyle) {
-			case AttackStyles.Accurate:
+			case attackStyles_enum.accurate:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Attack,
@@ -229,7 +228,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case AttackStyles.Aggressive:
+			case attackStyles_enum.aggressive:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Strength,
@@ -239,7 +238,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case AttackStyles.Defensive:
+			case attackStyles_enum.defensive:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Defence,
@@ -249,7 +248,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case AttackStyles.Controlled:
+			case attackStyles_enum.controlled:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Attack,
@@ -282,7 +281,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	if (combatSkill === combats_enum.ranged) {
 		attackStyle = user.settings.get(UserSettings.Minion.RangedAttackStyle)!;
 		switch (attackStyle) {
-			case AttackStyles.Accurate:
+			case attackStyles_enum.accurate:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Ranged,
@@ -292,7 +291,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case AttackStyles.Rapid:
+			case attackStyles_enum.rapid:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Ranged,
@@ -302,7 +301,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 					})
 				);
 				break;
-			case AttackStyles.Longrange:
+			case attackStyles_enum.longrange:
 				res.push(
 					await user.addXP({
 						skillName: SkillsEnum.Ranged,
