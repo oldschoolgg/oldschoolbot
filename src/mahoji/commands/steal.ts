@@ -71,7 +71,7 @@ export const stealCommand: OSBMahojiCommand = {
 			} a ${stealable.name}.`;
 		}
 
-		if ((stealable.fireCapeRequired = true)) {
+		if (stealable.fireCapeRequired) {
 			if (user.cl().amount('Fire cape') === 0) {
 				return `In order to ${
 					stealable.type === 'pickpockable' ? 'pickpocket this NPC' : 'steal from this stall'
