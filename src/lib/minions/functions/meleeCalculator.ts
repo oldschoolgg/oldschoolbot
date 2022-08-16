@@ -223,13 +223,13 @@ export default async function meleeCalculator(
 	let attackRoll = 0;
 
 	switch (attackType) {
-		case GearStat.AttackStab:
+		case 'stab':
 			attackRoll = effectiveAttackLvl * (gearStats.attack_stab + 64);
 			break;
-		case GearStat.AttackSlash:
+		case 'slash':
 			attackRoll = effectiveAttackLvl * (gearStats.attack_slash + 64);
 			break;
-		case GearStat.AttackCrush:
+		case 'crush':
 			attackRoll = effectiveAttackLvl * (gearStats.attack_crush + 64);
 			break;
 	}
