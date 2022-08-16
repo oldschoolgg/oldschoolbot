@@ -11,7 +11,7 @@ import Mining from '../../lib/skilling/skills/mining';
 import Smithing from '../../lib/skilling/skills/smithing';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { MiningActivityTaskOptions } from '../../lib/types/minions';
-import { multiplyBank, rand } from '../../lib/util';
+import { itemID, multiplyBank, rand } from '../../lib/util';
 import { handleTripFinish } from '../../lib/util/handleTripFinish';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
