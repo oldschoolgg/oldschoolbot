@@ -114,6 +114,10 @@ export const mineCommand: OSBMahojiCommand = {
 			return `You don't have enough supplies to mix even one of this item!\nTo mix/clean a ${mixableItem.name}, you need to have ${baseCost}.`;
 		}
 
+		if (maxCanDo < quantity) {
+			quantity = maxCanDo;
+		}
+
 		if (!options.wesley && !options.zahur) {
 			const boostResult = await inventionItemBoost({
 				userID: BigInt(user.id),
