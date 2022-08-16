@@ -30,6 +30,7 @@ import {
 	AgilityActivityTaskOptions,
 	AlchingActivityTaskOptions,
 	BuryingActivityTaskOptions,
+	ButlerActivityTaskOptions,
 	CastingActivityTaskOptions,
 	ClueActivityTaskOptions,
 	CollectingOptions,
@@ -381,6 +382,14 @@ export function minionStatus(user: KlasaUser) {
 			return `${name} is currently building ${data.quantity}x ${itemNameFromID(
 				data.objectID
 			)}. ${formattedDuration}`;
+		}
+
+		case 'Butler': {
+			const data = currentTask as ButlerActivityTaskOptions;
+			const plank = Planks.find(_plank => _plank.outputItem === data.plankID);
+			return `${name} is currently creating ${data.plankQuantity}x ${itemNameFromID(
+				plank!.outputItem
+			)}s. ${formattedDuration}`;
 		}
 
 		case 'MahoganyHomes': {
