@@ -543,6 +543,9 @@ export function minionStatus(user: KlasaUser) {
 				data.quantity
 			}x games of Trouble Brewing. The trip should take ${formatDuration(durationRemaining)}.`;
 		}
+		case 'TiaraRunecraft': {
+			return `${name} is currently runecrafting tiaras at the Altar. ${formattedDuration}`;
+		}
 		case 'PuroPuro': {
 			return `${name} is currently hunting in Puro-Puro. The trip should take ${formatDuration(
 				durationRemaining
