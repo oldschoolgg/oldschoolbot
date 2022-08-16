@@ -25,7 +25,7 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Abyssal tentacle'),
 		settingsKey: 'tentacle_charges',
-		itemsToRefundOnBreak: new Bank().add('Kraken tentacle'),
+		itemsToRefundOnBreak: new Bank().add('Abyssal tentacle'),
 		setup: 'melee',
 		aliases: ['tentacle', 'tent'],
 		chargeInput: {
