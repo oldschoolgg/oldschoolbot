@@ -33,7 +33,7 @@ export interface Stealable {
 	level: number;
 	xp: number;
 	qpRequired?: number;
-	itemsRequired?: ItemBank;
+	fireCapeRequired?: ItemBank;
 	table: LootTable;
 	id: number;
 	// Stall properties
@@ -208,7 +208,7 @@ const stalls: Stealable[] = [
 		// World hopping rate
 		respawnTime: Time.Second * 15,
 		lootPercent: 100,
-		itemsRequired: resolveNameBank({
+		fireCapeRequired: resolveNameBank({
 			'Fire cape': 1
 		})
 	}
@@ -511,7 +511,7 @@ const pickpocketables: Stealable[] = [
 		stunDamage: 4,
 		slope: 1.611_25,
 		intercept: -80.993_75,
-		itemsRequired: resolveNameBank({
+		fireCapeRequired: resolveNameBank({
 			'Fire cape': 1
 		})
 	}

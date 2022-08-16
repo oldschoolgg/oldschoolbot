@@ -72,10 +72,10 @@ export const stealCommand: OSBMahojiCommand = {
 			} a ${stealable.name}.`;
 		}
 
-		if (stealable.itemsRequired && !user.allItemsOwned().has(stealable.itemsRequired)) {
+		if (stealable.fireCapeRequired && !user.cl().has(stealable.fireCapeRequired)) {
 			return `You need these items to ${
 				stealable.type === 'pickpockable' ? 'pickpocket this NPC' : 'steal from this stall'
-			}: ${new Bank(stealable.itemsRequired)}.`;
+			}: ${new Bank(stealable.fireCapeRequired)}.`;
 		}
 
 		if (user.skillLevel(SkillsEnum.Thieving) < stealable.level) {
