@@ -281,7 +281,7 @@ export function patronMsg(tierNeeded: number) {
 }
 
 // Is not typesafe, returns only what is selected, but will say it contains everything.
-export async function mahojiClientSettingsFetch(select: Prisma.ClientStorageSelect) {
+export async function mahojiClientSettingsFetch(select?: Prisma.ClientStorageSelect) {
 	const clientSettings = await prisma.clientStorage.findFirst({
 		where: {
 			id: CLIENT_ID
@@ -306,7 +306,7 @@ export function getMahojiBank(user: User) {
 }
 
 export async function userStatsUpdate(userID: string, data: (u: UserStats) => Prisma.UserStatsUpdateInput) {
-	const id = Number(userID);
+	const id = BigInt(userID);
 	const userStats = await prisma.userStats.upsert({
 		create: {
 			user_id: id
@@ -322,4 +322,11 @@ export async function userStatsUpdate(userID: string, data: (u: UserStats) => Pr
 			user_id: id
 		}
 	});
+}
+
+type UserStatsBankKey = 'puropuro_implings_bank' | 'passive_implings_bank' | 'create_cost_bank' | 'create_loot_bank';
+export async function userStatsBankUpdate(userID: string, key: UserStatsBankKey, bank: Bank) {
+	await userStatsUpdate(userID, u => ({
+		[key]: bank.clone().add(u[key] as ItemBank).bank
+	}));
 }
