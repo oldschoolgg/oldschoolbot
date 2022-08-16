@@ -9,6 +9,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ButlerActivityTaskOptions } from '../../../lib/types/minions';
 import { clamp, formatDuration, itemNameFromID, stringMatches, toKMB, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import resolveItems from '../../../lib/util/resolveItems';
 
 const unlimitedEarthRuneProviders = resolveItems([
@@ -56,7 +57,7 @@ export async function butlerCommand(
 
 	let timePerPlank = (Time.Second * 15) / 26;
 
-	const maxTripLength = user.maxTripLength('Butler');
+	const maxTripLength = calcMaxTripLength(user, 'Butler');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / timePerPlank);
