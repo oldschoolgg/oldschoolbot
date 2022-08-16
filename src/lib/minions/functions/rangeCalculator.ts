@@ -78,7 +78,7 @@ export default async function rangeCalculator(
 
 	if (rangeWeapon.name.toLowerCase() === 'toxic blowpipe') {
 		const blowpipeData = user.settings.get(UserSettings.Blowpipe);
-		if (blowpipeData.dartID === null) throw 'No dart ID found'
+		if (blowpipeData.dartID === null) throw 'No dart ID found';
 		const dart = getOSItem(blowpipeData.dartID);
 		if (dart.equipment) {
 			gearStats.attack_ranged += dart.equipment.attack_ranged;
@@ -247,7 +247,9 @@ export default async function rangeCalculator(
 	const DamagePerHit = (maxHit * hitChance) / 2;
 
 	let rangeAttackSpeed =
-		attackStyle === attackStyles_enum.rapid ? rangeWeapon.weapon!.attack_speed - 1 : rangeWeapon.weapon!.attack_speed;
+		attackStyle === attackStyles_enum.rapid
+			? rangeWeapon.weapon!.attack_speed - 1
+			: rangeWeapon.weapon!.attack_speed;
 	const DPS = DamagePerHit / (rangeAttackSpeed * 0.6);
 
 	// Calculates hits required, combat time and average monster kill speed.

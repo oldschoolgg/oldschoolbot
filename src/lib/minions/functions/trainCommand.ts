@@ -4,7 +4,7 @@ import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
 import { UserSettings } from '../../settings/types/UserSettings';
 import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
-import { combats_enum, attackStyles_enum } from '.prisma/client';
+import { attackStyles_enum, combats_enum } from '.prisma/client';
 
 export async function trainCommand(
 	user: KlasaUser,
@@ -21,7 +21,7 @@ export async function trainCommand(
 		return `Your current combat skill is ${oldCombatSkill}. Available combat skill options are: Melee, Ranged, Magic, Auto, NoCombat.`;
 	}
 	_combatSkill = _combatSkill.toLowerCase();
-	
+
 	for (const currentEnum of Object.keys(combats_enum)) {
 		if (currentEnum.toLowerCase() === _combatSkill.toLowerCase()) {
 			await mahojiUserSettingsUpdate(user.id, {
@@ -34,7 +34,7 @@ export async function trainCommand(
 	if (!_attackStyleAndType || _combatSpell) {
 		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}.`;
 	}
-	
+
 	const parsedStyleAndType = _attackStyleAndType
 		.toLowerCase()
 		.split(', ')
@@ -68,9 +68,7 @@ export async function trainCommand(
 			minion_rangedAttackStyle: attackStyle as attackStyles_enum
 		});
 
-		return `${
-			user.minionName
-		} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle}.`;
+		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle}.`;
 	}
 
 	if (_combatSkill === combats_enum.magic) {
@@ -95,9 +93,9 @@ export async function trainCommand(
 			});
 		}
 
-		return `${
-			user.minionName
-		} changed main combat skill from ${oldCombatSkill} to ${_combatSkill} ${_combatSpell ? `and combat spell to ${_combatSpell}` : ''}.`;
+		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill} ${
+			_combatSpell ? `and combat spell to ${_combatSpell}` : ''
+		}.`;
 	}
 
 	return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}.`;

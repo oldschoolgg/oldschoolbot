@@ -20,7 +20,7 @@ export default async function removeAmmoFromUser(user: KlasaUser, hits: number):
 	if (rangeWeapon.name.toLowerCase() === 'toxic blowpipe') {
 		blowpipe = true;
 		const blowpipeData = user.settings.get(UserSettings.Blowpipe);
-		if (blowpipeData.dartID === null) throw 'No dart ID found'
+		if (blowpipeData.dartID === null) throw 'No dart ID found';
 		const dart = getOSItem(blowpipeData.dartID);
 		ammo = dart;
 		if (!ammo) throw 'No blowpipe dart have been choosen.';

@@ -1,4 +1,4 @@
-import { User, combats_enum, attackStyles_enum } from '@prisma/client';
+import { attackStyles_enum, combats_enum, User } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';

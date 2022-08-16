@@ -5,7 +5,6 @@ import { HexColorString } from 'discord.js';
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
-
 import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
@@ -14,6 +13,7 @@ import { BankSortMethod } from '../../sorts';
 import { ItemBank } from '../../types';
 import { UserKourendFavour } from './../../minions/data/kourendFavour';
 import { CompostName } from './../../skilling/skills/farming/index';
+
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
 export function T<TCustom>(k: string): CustomGet<string, TCustom> {

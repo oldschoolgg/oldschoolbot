@@ -14,6 +14,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
+
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
 	name: 'filter',
