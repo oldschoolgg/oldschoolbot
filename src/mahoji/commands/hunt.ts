@@ -15,6 +15,7 @@ import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { Peak } from '../../tasks/WildernessPeakInterval';
@@ -175,7 +176,7 @@ export const huntCommand: OSBMahojiCommand = {
 
 		let timePerCatch = (catchTime * Time.Second) / traps;
 
-		const maxTripLength = user.maxTripLength('Hunter');
+		const maxTripLength = calcMaxTripLength(user, 'Hunter');
 		if (creature.huntTechnique === HunterTechniqueEnum.BoxTrapping) {
 			const boostRes = await inventionItemBoost({
 				userID: user.id,

@@ -13,6 +13,7 @@ import { PercentCounter } from '../../../lib/structures/PercentCounter';
 import { ActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -48,7 +49,7 @@ export async function moktangCommand(user: KlasaUser, channelID: bigint, inputQu
 	);
 	timeToKill.add(userHasItemsEquippedAnywhere(user, 'Mining master cape'), -5, 'Mining mastery');
 
-	const maxCanDo = Math.floor(user.maxTripLength('Moktang') / timeToKill.value);
+	const maxCanDo = Math.floor(calcMaxTripLength(user, 'Moktang') / timeToKill.value);
 	const quantity = Math.max(1, Math.min(totemsOwned, maxCanDo, inputQuantity ?? maxCanDo));
 	const duration = timeToKill.value * quantity;
 

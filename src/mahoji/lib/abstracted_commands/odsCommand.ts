@@ -12,6 +12,7 @@ import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../../lib/util/cleanString';
 import getOSItem from '../../../lib/util/getOSItem';
 import { mahojiUserSettingsUpdate } from '../../mahojiSettings';
@@ -84,7 +85,7 @@ export async function odsStartCommand(klasaUser: KlasaUser, channelID: bigint) {
 		boosts.push(`${Emoji.RunecraftMasterCape} 2x faster`);
 	}
 
-	const quantity = Math.floor(klasaUser.maxTripLength('OuraniaDeliveryService') / waveTime);
+	const quantity = Math.floor(calcMaxTripLength(klasaUser, 'OuraniaDeliveryService') / waveTime);
 	const duration = quantity * waveTime;
 	const essenceRequired = quantity * randInt(235, 265);
 	const cost = new Bank().add('Pure essence', essenceRequired);

@@ -230,12 +230,10 @@ export const createCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(inItems);
 		await user.addItemsToBank({ items: outItems });
 
-		await Promise.all([
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems),
-			updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems),
-			userStatsBankUpdate(user.id, 'create_cost_bank', inItems),
-			userStatsBankUpdate(user.id, 'create_loot_bank', outItems)
-		]);
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateCost, inItems);
+		await updateBankSetting(globalClient, ClientSettings.EconomyStats.CreateLoot, outItems);
+		await userStatsBankUpdate(user.id, 'create_cost_bank', inItems);
+		await userStatsBankUpdate(user.id, 'create_loot_bank', outItems);
 
 		// Only allow +create to add items to CL
 		if (!createableItem.noCl && action === 'create') await user.addItemsToCollectionLog({ items: outItems });

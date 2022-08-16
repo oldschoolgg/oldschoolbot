@@ -12,6 +12,7 @@ import { HighGambleTable, LowGambleTable, MediumGambleTable } from '../../../lib
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { clamp, formatDuration, itemID, randomVariation, stringMatches } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../../lib/util/formatOrdinal';
 import getOSItem from '../../../lib/util/getOSItem';
 import { makeBankImage } from '../../../lib/util/makeBankImage';
@@ -246,7 +247,7 @@ export async function barbAssaultStartCommand(channelID: bigint, user: User, kla
 	boosts.push(`${kcPercentBoost.toFixed(2)}% for average KC`);
 	waveTime = reduceNumByPercent(waveTime, kcPercentBoost);
 
-	let quantity = Math.floor(klasaUser.maxTripLength('BarbarianAssault') / waveTime);
+	let quantity = Math.floor(calcMaxTripLength(user, 'BarbarianAssault') / waveTime);
 	const duration = quantity * waveTime;
 
 	boosts.push(`Each wave takes ${formatDuration(waveTime)}`);

@@ -247,19 +247,20 @@ const backgroundImages: BankBackground[] = [
 	},
 	{
 		id: 26,
-		name: 'Weeb',
+		name: 'Konar Transparent',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 20_000_000,
+		transparent: true
 	},
 	{
 		id: 27,
-		name: 'K-Pop',
+		name: 'Konar',
 		image: null,
 		available: true,
 		perkTierNeeded: PerkTier.Four,
-		gpCost: 10_000_000
+		gpCost: 20_000_000
 	},
 	{
 		id: 28,

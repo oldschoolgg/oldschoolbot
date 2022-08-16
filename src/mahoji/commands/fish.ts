@@ -11,6 +11,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { FishingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, itemNameFromID, rand } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
@@ -95,7 +96,7 @@ export const fishCommand: OSBMahojiCommand = {
 			scaledTimePerFish /= 2;
 			boosts.push('2x faster for Shelldon');
 		}
-		let maxTripLength = user.maxTripLength('Fishing');
+		let maxTripLength = calcMaxTripLength(user, 'Fishing');
 
 		const res = await inventionItemBoost({
 			userID: BigInt(user.id),

@@ -6,6 +6,7 @@ import { KlasaMessage, KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 
 import { alching } from '../../mahoji/commands/laps';
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { userStatsBankUpdate, userStatsUpdate } from '../../mahoji/mahojiSettings';
 import { MysteryBoxes } from '../bsoOpenables';
 import { ClueTiers } from '../clues/clueTiers';
@@ -22,7 +23,12 @@ import { SkillsEnum } from '../skilling/types';
 import { ActivityTaskOptions } from '../types/minions';
 import { channelIsSendable, itemID, roll, toKMB, updateBankSetting, updateGPTrackSetting } from '../util';
 import getUsersPerkTier from './getUsersPerkTier';
-import { makeDoClueButton, makeOpenCasketButton, makeRepeatTripButton } from './globalInteractions';
+import {
+	makeBirdHouseTripButton,
+	makeDoClueButton,
+	makeOpenCasketButton,
+	makeRepeatTripButton
+} from './globalInteractions';
 import { userHasItemsEquippedAnywhere } from './minionUtils';
 import { sendToChannelID } from './webhook';
 
@@ -328,6 +334,8 @@ export async function handleTripFinish(
 
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
 	if (casketReceived) components[0].push(makeOpenCasketButton(casketReceived));
+	const birdHousedetails = await calculateBirdhouseDetails(user.id);
+	if (birdHousedetails.isReady && perkTier > PerkTier.One) components[0].push(makeBirdHouseTripButton());
 	sendToChannelID(channelID, {
 		content: message,
 		image: attachment,

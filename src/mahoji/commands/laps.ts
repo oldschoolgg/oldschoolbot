@@ -13,6 +13,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { AgilityActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -148,7 +149,7 @@ export const lapsCommand: OSBMahojiCommand = {
 			return 'The Daemonheim guards deny you access to the course.';
 		}
 
-		const maxTripLength = user.maxTripLength('Agility');
+		const maxTripLength = calcMaxTripLength(user, 'Agility');
 
 		let timePerLap = course.lapTime * Time.Second;
 

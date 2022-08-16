@@ -1,5 +1,6 @@
 import { Time } from 'e';
 import { LootTable, Monsters } from 'oldschooljs';
+import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import RareDropTable from 'oldschooljs/dist/simulation/subtables/RareDropTable';
 import { itemID } from 'oldschooljs/dist/util';
 
@@ -97,7 +98,8 @@ const Malygos: CustomMonster = {
 	},
 	uniques: resolveItems(['Abyssal thread', 'Abyssal cape', 'Ori', 'Dragon hunter lance']),
 	notifyDrops: resolveItems(['Abyssal cape', 'Ori']),
-	baseMonster: Monsters.Vorkath
+	baseMonster: Monsters.Vorkath,
+	customMonsterData: { attributes: [MonsterAttribute.Dragon, MonsterAttribute.Fiery] }
 };
 
 const Treebeard: CustomMonster = {
@@ -207,13 +209,13 @@ const Nihiliz: CustomMonster = {
 	id: 708_080,
 	name: 'Nihiliz',
 	aliases: ['nihiliz', 'shadow nihil boss', 'mini nex', 'nihilist'],
-	timeToFinish: Time.Minute * 15,
+	timeToFinish: Time.Minute * 16,
 	table: NihilizLootTable,
 	emoji: '',
 	wildy: false,
 	difficultyRating: 9,
 	qpRequired: 1000,
-	healAmountNeeded: 20 * 25,
+	healAmountNeeded: 20 * 32,
 	attackStyleToUse: GearStat.AttackStab,
 	attackStylesUsed: [GearStat.AttackStab, GearStat.AttackSlash, GearStat.AttackMagic, GearStat.AttackRanged],
 	minimumGearRequirements: {
@@ -243,7 +245,8 @@ const Nihiliz: CustomMonster = {
 			[itemID('Zaryte vambraces')]: 5
 		}
 	],
-	groupKillable: true,
+	groupKillable: false,
+	hp: 800,
 	respawnTime: Time.Second * 10,
 	levelRequirements: {
 		prayer: 95,
