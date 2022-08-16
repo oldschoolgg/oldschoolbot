@@ -52,7 +52,7 @@ export async function trainCommand(
 	if (!_attackStyleAndType || _combatSpell) {
 		return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}.`;
 	}
-
+	
 	const parsedStyleAndType = _attackStyleAndType
 		.toLowerCase()
 		.split(', ')
@@ -70,7 +70,7 @@ export async function trainCommand(
 		});
 		if (attackType) {
 			await mahojiUserSettingsUpdate(user.id, {
-				minion_meleeAttackType: attackType as AttackStyles
+				minion_meleeAttackType: attackType
 			});
 		}
 
@@ -85,28 +85,16 @@ export async function trainCommand(
 		await mahojiUserSettingsUpdate(user.id, {
 			minion_rangedAttackStyle: attackStyle as AttackStyles
 		});
-		if (attackType) {
-			await mahojiUserSettingsUpdate(user.id, {
-				minion_rangedAttackType: attackType as AttackStyles
-			});
-		}
 
 		return `${
 			user.minionName
-		} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle} ${
-			attackType ? `and attack type to ${attackType}` : ''
-		}.`;
+		} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle}.`;
 	}
 
 	if (_combatSkill === CombatsEnum.Magic) {
 		await mahojiUserSettingsUpdate(user.id, {
 			minion_magicAttackStyle: attackStyle as AttackStyles
 		});
-		if (attackType) {
-			await mahojiUserSettingsUpdate(user.id, {
-				minion_magicAttackType: attackType as AttackStyles
-			});
-		}
 
 		if (_combatSpell) {
 			const CombatSpells = castables.filter(
@@ -127,9 +115,7 @@ export async function trainCommand(
 
 		return `${
 			user.minionName
-		} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}, attack style to ${attackStyle}${
-			attackType ? ` and attack type to ${attackType}` : ''
-		}${_combatSpell ? ` and combat spell to ${_combatSpell}` : ''}.`;
+		} changed main combat skill from ${oldCombatSkill} to ${_combatSkill} ${_combatSpell ? `and combat spell to ${_combatSpell}` : ''}.`;
 	}
 
 	return `${user.minionName} changed main combat skill from ${oldCombatSkill} to ${_combatSkill}.`;

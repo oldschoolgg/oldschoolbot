@@ -154,7 +154,7 @@ export async function generateGearImage(
 			canvas,
 			`Attack type: ${toTitleCase(
 				user instanceof KlasaUser
-					? user.settings.get(UserSettings.Minion.MeleeAttackType)?.toString()!
+					? user.settings.get(UserSettings.Minion.MeleeAttackType)!
 					: user.minion_meleeAttackType!.toString()
 			)}`,
 			0,
@@ -176,16 +176,6 @@ export async function generateGearImage(
 			)}`,
 			0,
 			0
-		);
-		drawText(
-			canvas,
-			`Attack type: ${toTitleCase(
-				user instanceof KlasaUser
-					? user.settings.get(UserSettings.Minion.RangedAttackType)?.toString()!
-					: user.minion_rangedAttackType!.toString()
-			)}`,
-			0,
-			16
 		);
 	}
 	if (

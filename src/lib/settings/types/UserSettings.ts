@@ -2,12 +2,11 @@
 import { HexColorString } from 'discord.js';
 
 import { BitField } from '../../constants';
-import { GearSetup, GearStat } from '../../gear';
+import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
 import { AttackStyles, CombatsEnum } from '../../minions/functions/trainCommand';
 import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
-import { Castable } from '../../skilling/skills/magic/castables';
 import { SkillsEnum } from '../../skilling/types';
 import { SlayerTaskUnlocksEnum } from '../../slayer/slayerUnlocks';
 import { BankSortMethod } from '../../sorts';
@@ -124,10 +123,8 @@ export namespace UserSettings {
 		export const RangedAttackStyle = T<AttackStyles | null>('minion.rangedAttackStyle');
 		export const MagicAttackStyle = T<AttackStyles | null>('minion.magicAttackStyle');
 		export const CombatSkill = T<CombatsEnum>('minion.combatSkill');
-		export const MeleeAttackType = T<GearStat | null>('minion.meleeAttackType');
-		export const RangedAttackType = T<GearStat | null>('minion.rangedAttackType');
-		export const MagicAttackType = T<GearStat | null>('minion.magicAttackType');
-		export const CombatSpell = T<Castable | null>('minion.combatSpell');
+		export const MeleeAttackType = T<string | null>('minion.meleeAttackType');
+		export const CombatSpell = T<string | null>('minion.combatSpell');
 		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');
 	}
 

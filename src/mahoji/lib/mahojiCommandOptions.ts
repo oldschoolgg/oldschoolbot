@@ -165,7 +165,7 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 		if (combatSkill === CombatsEnum.Ranged) {
 			const rangeWeapon = getUserGear(mUser).range.equippedWeapon();
 			if (rangeWeapon === null || rangeWeapon.weapon === null || !rangeWeapon.weapon) {
-				// Push nothing? can't train ranged unarmed
+				// Push nothing can't train ranged unarmed
 				return results;
 			}
 			for (let stance of rangeWeapon.weapon.stances) {
@@ -173,8 +173,8 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 					continue;
 				}
 				results.push({
-					name: `${stance.attack_style!}, ${stance.attack_type!}`,
-					value: `${stance.attack_style!}, ${stance.attack_type!}`
+					name: `${stance.attack_style!}`,
+					value: stance.attack_style!
 				});
 			}
 			return results;
@@ -198,8 +198,8 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 						continue;
 					}
 					results.push({
-						name: `${stance.attack_style!}, ${stance.attack_type!}`,
-						value: `${stance.attack_style!}, ${stance.attack_type!}`
+						name: `${stance.attack_style!}`,
+						value: stance.attack_style!
 					});
 				}
 				return results;

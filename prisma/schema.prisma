@@ -302,13 +302,11 @@ model User {
   minion_defaultPay          Boolean  @default(false) @map("minion.defaultPay")
   minion_birdhouseTraps      Json?    @map("minion.birdhouseTraps") @db.Json
   minion_combatSpell         String?  @map("minion.combatSpell")
-  minion_magicAttackStyle   Json?     @map("minion.magicAttackStyle") @db.Json
-  minion_rangedAttackStyle  Json?     @map("minion.rangdAttackStyle") @db.Json
-  minion_meleeAttackStyle   Json?     @map("minion.meleeAttackStyle") @db.Json
-  minion_combatSkill        Json?     @map("minion.combatSkill") @db.Json
-  minion_magicAttackType    Json?     @map("minion.magicAttackType") @db.Json
-  minion_rangedAttackType   Json?     @map("minion.rangedAttackType") @db.Json
-  minion_meleeAttackType    Json?     @map("minion.meleeAttackType") @db.Json
+  minion_magicAttackStyle    attackStyles_enum?  @map("minion.magicAttackStyle")
+  minion_rangedAttackStyle   attackStyles_enum?  @map("minion.rangdAttackStyle")
+  minion_meleeAttackStyle    attackStyles_enum?  @map("minion.meleeAttackStyle")
+  minion_combatSkill         combats_enum  @default(auto) @map("minion.combatSkill")
+  minion_meleeAttackType     String?  @map("minion.meleeAttackType")
   stats_deaths               Int      @default(0) @map("stats.deaths")
   stats_diceWins             Int      @default(0) @map("stats.diceWins")
   stats_diceLosses           Int      @default(0) @map("stats.diceLosses")
@@ -674,4 +672,23 @@ enum xp_gains_skill_enum {
   magic
   hitpoints
   slayer
+}
+
+enum combats_enum {
+	melee
+	ranged
+	magic
+	auto
+	nocombat
+}
+
+enum attackStyles_enum {
+	accurate
+	aggressive
+  defensive
+	controlled
+	rapid
+	longrange
+	standard
+	blaze
 }
