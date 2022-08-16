@@ -9,6 +9,7 @@ import { Skills } from '../../../lib/types';
 import { ZalcanoActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export const soteSkillRequirements: Skills = {
 	mining: 70,
@@ -64,7 +65,7 @@ export async function zalcanoCommand(user: KlasaUser, channelID: bigint) {
 	else if (kc > 50) healAmountNeeded = 3 * 12;
 	else if (kc > 20) healAmountNeeded = 5 * 12;
 
-	const quantity = Math.floor(user.maxTripLength('Zalcano') / baseTime);
+	const quantity = Math.floor(calcMaxTripLength(user, 'Zalcano') / baseTime);
 	const duration = quantity * baseTime;
 
 	const { foodRemoved } = await removeFoodFromUser({

@@ -10,6 +10,7 @@ import Runecraft from '../../lib/skilling/skills/runecraft';
 import { RunecraftActivityTaskOptions } from '../../lib/types/minions';
 import { calcMaxRCQuantity, formatDuration, stringMatches, toTitleCase, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../lib/util/determineRunes';
 import { tiaraRunecraftCommand } from '../lib/abstracted_commands/tiaraRunecraftCommand';
 import { OSBMahojiCommand } from '../lib/util';
@@ -151,7 +152,7 @@ export const runecraftCommand: OSBMahojiCommand = {
 			tripLength *= 0.97;
 			boosts.push('3% for Runecraft cape');
 		}
-		const maxTripLength = user.maxTripLength('Runecraft');
+		const maxTripLength = calcMaxTripLength(user, 'Runecraft');
 
 		const maxCanDo = Math.floor(maxTripLength / tripLength) * inventorySize;
 
