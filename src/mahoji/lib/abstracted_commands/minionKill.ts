@@ -64,6 +64,7 @@ import {
 	updateBankSetting
 } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import findMonster from '../../../lib/util/findMonster';
 import getOSItem from '../../../lib/util/getOSItem';
 import { mahojiUsersSettingsFetch } from '../../mahojiSettings';
@@ -202,7 +203,7 @@ export async function minionKillCommand(
 	}
 
 	const monsterHP = osjsMon?.data.hitpoints ?? 100;
-	const estimatedQuantity = floor(user.maxTripLength('MonsterKilling') / timeToFinish);
+	const estimatedQuantity = floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
 	const totalMonsterHP = monsterHP * estimatedQuantity;
 
 	/**
@@ -334,7 +335,7 @@ export async function minionKillCommand(
 		boosts.push(`${boostCannon}% for Cannon in singles`);
 	}
 
-	const maxTripLength = user.maxTripLength('MonsterKilling');
+	const maxTripLength = calcMaxTripLength(user, 'MonsterKilling');
 
 	// If no quantity provided, set it to the max.
 	if (!quantity) {
@@ -454,7 +455,7 @@ export async function minionKillCommand(
 		if (monster.wildy) gearToCheck = 'wildy';
 
 		try {
-			const { foodRemoved, reductions } = await removeFoodFromUser({
+			const { foodRemoved, reductions, reductionRatio } = await removeFoodFromUser({
 				user,
 				totalHealingNeeded: healAmountNeeded * quantity,
 				healPerAction: Math.ceil(healAmountNeeded / quantity),
@@ -476,7 +477,7 @@ export async function minionKillCommand(
 					const healAmount =
 						typeof eatable.healAmount === 'number' ? eatable.healAmount : eatable.healAmount(user);
 					const amountHealed = qty * healAmount;
-					if (amountHealed < calcPercentOfNum(75, healAmountNeeded * quantity)) continue;
+					if (amountHealed < calcPercentOfNum(75 * reductionRatio, healAmountNeeded * quantity)) continue;
 					const boost = eatable.pvmBoost;
 					if (boost) {
 						if (boost < 0) {
@@ -657,8 +658,8 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 			hpString = '4% boost for no food';
 		}
 	}
-	const maxCanKillSlay = Math.floor(user.maxTripLength('MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
-	const maxCanKill = Math.floor(user.maxTripLength('MonsterKilling') / timeToFinish);
+	const maxCanKillSlay = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / reduceNumByPercent(timeToFinish, 15));
+	const maxCanKill = Math.floor(calcMaxTripLength(user, 'MonsterKilling') / timeToFinish);
 
 	const QP = user.settings.get(UserSettings.QP);
 
@@ -731,7 +732,7 @@ export async function monsterInfo(user: KlasaUser, name: string): CommandRespons
 
 	str.push(
 		`Maximum trip length: ${formatDuration(
-			user.maxTripLength('MonsterKilling')
+			calcMaxTripLength(user, 'MonsterKilling')
 		)}\nNormal kill time: ${formatDuration(
 			monster.timeToFinish
 		)}. You can kill up to ${maxCanKill} per trip (${formatDuration(timeToFinish)} per kill).`
