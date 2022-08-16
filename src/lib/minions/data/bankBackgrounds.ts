@@ -1,3 +1,5 @@
+import { Bank } from 'oldschooljs';
+
 import { BitField, PerkTier } from '../../constants';
 import { resolveNameBank } from '../../util';
 import { BankBackground } from '../types';
@@ -597,6 +599,19 @@ const backgroundImages: BankBackground[] = [
 		image: null,
 		available: false,
 		owners: ['944238795329511465']
+	},
+	{
+		id: 96,
+		name: 'Remy',
+		image: null,
+		available: true,
+		gpCost: 10_000_000,
+		perkTierNeeded: PerkTier.Four,
+		transparent: true,
+		skillsNeeded: {
+			cooking: 120
+		},
+		collectionLogItemsNeeded: new Bank().add('Remy').bank
 	}
 ];
 
