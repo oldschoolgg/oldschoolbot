@@ -2,7 +2,6 @@ import { sumArr } from 'e';
 import { Monsters } from 'oldschooljs';
 
 import { getFarmingContractOfUser } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { MOKTANG_ID } from '../../mahoji/lib/abstracted_commands/moktangCommand';
 import {
 	allGildedItems,
 	brokenPernixOutfit,
@@ -35,12 +34,13 @@ import {
 } from '../diaries';
 import { dyedItems } from '../dyedItems';
 import { Inventions } from '../invention/inventions';
+import { MOKTANG_ID } from '../minions/data/killableMonsters/custom/bosses/Moktang';
 import { NexMonster } from '../nex';
 import { allThirdAgeItems } from '../simulation/sharedTables';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { leaguesHasCatches, leaguesHasKC, Task } from './leagues';
+import { leaguesHasCatches, leaguesHasKC, Task } from './leaguesUtils';
 
 export const hardTasks: Task[] = [
 	{

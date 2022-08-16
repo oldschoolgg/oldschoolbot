@@ -20,7 +20,7 @@ import { slayerUnlockableRewards } from '../slayer/slayerUnlocks';
 import { getTameSpecies } from '../tames';
 import { calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { Task } from './leagues';
+import { Task } from './leaguesUtils';
 
 export const masterTasks: Task[] = [
 	{

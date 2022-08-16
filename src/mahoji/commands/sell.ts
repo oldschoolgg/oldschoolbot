@@ -1,7 +1,7 @@
 import { calcPercentOfNum, reduceNumByPercent } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { Bank } from 'oldschooljs';
-import { Item } from 'oldschooljs/dist/meta/types';
+import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { MAX_INT_JAVA } from '../../lib/constants';
 import { ClientSettings } from '../../lib/settings/types/ClientSettings';
@@ -10,7 +10,7 @@ import { clamp, itemID, toKMB, updateBankSetting, updateGPTrackSetting } from '.
 import { parseBank } from '../../lib/util/parseStringBank';
 import { filterOption } from '../lib/mahojiCommandOptions';
 import { OSBMahojiCommand } from '../lib/util';
-import { handleMahojiConfirmation, mahojiUsersSettingsFetch } from '../mahojiSettings';
+import { handleMahojiConfirmation, mahojiUsersSettingsFetch, userStatsUpdate } from '../mahojiSettings';
 
 /**
  * - Hardcoded prices
@@ -103,6 +103,22 @@ export const sellCommand: OSBMahojiCommand = {
 			return `You exchanged ${moleBank} and received: ${loot}.`;
 		}
 
+		if (bankToSell.has('Golden tench')) {
+			const loot = new Bank();
+			const tenchBank = new Bank();
+			tenchBank.add('Golden tench', bankToSell.amount('Golden tench'));
+
+			loot.add('Molch pearl', tenchBank.amount('Golden tench') * 100);
+
+			await handleMahojiConfirmation(
+				interaction,
+				`${user}, please confirm you want to sell ${tenchBank} for **${loot}**.`
+			);
+			await user.removeItemsFromBank(tenchBank);
+			await user.addItemsToBank({ items: loot, collectionLog: false });
+			return `You exchanged ${tenchBank} and received: ${loot}.`;
+		}
+
 		let totalPrice = 0;
 		const hasSkipper = user.usingPet('Skipper') || user.bank().has('Skipper');
 		const taxRatePercent = hasSkipper ? 15 : 25;
@@ -129,8 +145,16 @@ export const sellCommand: OSBMahojiCommand = {
 		await user.removeItemsFromBank(bankToSell.bank);
 		await user.addItemsToBank({ items: new Bank().add('Coins', totalPrice) });
 
-		updateGPTrackSetting('gp_sell', totalPrice);
-		updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank);
+		await Promise.all([
+			updateGPTrackSetting('gp_sell', totalPrice),
+			updateBankSetting(globalClient, ClientSettings.EconomyStats.SoldItemsBank, bankToSell.bank),
+			userStatsUpdate(user.id, userStats => ({
+				items_sold_bank: new Bank(userStats.items_sold_bank as ItemBank).add(bankToSell).bank,
+				sell_gp: {
+					increment: totalPrice
+				}
+			}))
+		]);
 
 		if (user.isIronman) {
 			return `Sold ${bankToSell} for **${totalPrice.toLocaleString()}gp (${toKMB(totalPrice)})**`;

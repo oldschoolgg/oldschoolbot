@@ -1,11 +1,23 @@
 import { Time } from 'e';
 import { Task } from 'klasa';
 
-import { isDoubleLootActive } from '../lib/doubleLoot';
+import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive, syncDoubleLoot } from '../lib/doubleLoot';
+import { formatDuration } from '../lib/util';
 
 declare module 'klasa' {
 	interface KlasaClient {
 		_presenceInterval: NodeJS.Timeout;
+	}
+}
+
+export async function syncPrescence() {
+	await syncDoubleLoot();
+
+	let str = isDoubleLootActive()
+		? `${formatDuration(DOUBLE_LOOT_FINISH_TIME_CACHE - Date.now(), true)} Double Loot!`
+		: `${globalClient.options.prefix}info`;
+	if (globalClient.user!.presence.activities[0]?.name !== str) {
+		globalClient.user?.setActivity(str);
 	}
 }
 
@@ -15,15 +27,8 @@ export default class extends Task {
 			clearTimeout(this.client._presenceInterval);
 		}
 
-		const set = () => {
-			let str = isDoubleLootActive(this.client) ? 'Double Loot is active!' : `${this.client.options.prefix}info`;
-			if (this.client.user!.presence.activities[0]?.name !== str) {
-				this.client.user?.setActivity(str);
-			}
-		};
-
-		this.client._presenceInterval = setInterval(set, Time.Minute);
-		set();
+		this.client._presenceInterval = setInterval(syncPrescence, Time.Minute);
+		syncPrescence();
 	}
 
 	async run() {}

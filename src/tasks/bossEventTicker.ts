@@ -3,6 +3,7 @@ import { Task } from 'klasa';
 import { production } from '../config';
 import { bossEvents, startBossEvent } from '../lib/bossEvents';
 import { prisma } from '../lib/settings/prisma';
+import { logError } from '../lib/util/logError';
 import { BossEvent } from '.prisma/client';
 
 declare module 'klasa' {
@@ -48,7 +49,7 @@ export default class extends Task {
 							id: act.id
 						});
 					} catch (err: unknown) {
-						this.client.wtf(err as Error);
+						logError(err);
 					}
 				}
 			} catch (err) {

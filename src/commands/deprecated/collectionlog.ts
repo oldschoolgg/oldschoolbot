@@ -1,6 +1,6 @@
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { allCLItemsFiltered } from '../../lib/data/Collections';
+import { allCLItemsFiltered, calcCLDetails } from '../../lib/data/Collections';
 import { BotCommand } from '../../lib/structures/BotCommand';
 import { convertMahojiResponseToDJSResponse, itemNameFromID } from '../../lib/util';
 import CollectionLogTask from '../../tasks/collectionLogTask';
@@ -19,7 +19,7 @@ export default class extends BotCommand {
 
 	async run(msg: KlasaMessage, [collection]: [string]) {
 		if (!collection) {
-			const { percent, notOwned, owned } = msg.author.completion();
+			const { percent, notOwned, owned } = calcCLDetails(msg.author);
 			return msg.channel.send(
 				`You have ${owned.length}/${allCLItemsFiltered.length} (${percent.toFixed(
 					2
@@ -36,7 +36,8 @@ Go collect these items! ${notOwned.map(itemNameFromID).join(', ')}.`
 		});
 		let converted = convertMahojiResponseToDJSResponse(result);
 		if (typeof converted !== 'string') {
-			let str = 'Try out the new `/cl` slash command!';
+			let str =
+				'This command will be removed soon as we fully migrate to slash commands - start using the `/cl` slash command!';
 			if (!converted.content) converted.content = str;
 			else converted.content += ` ${str}`;
 		}

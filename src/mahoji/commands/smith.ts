@@ -11,6 +11,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { SmithingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import resolveItems from '../../lib/util/resolveItems';
 import { OSBMahojiCommand } from '../lib/util';
@@ -78,7 +79,7 @@ export const smithCommand: OSBMahojiCommand = {
 			timeToSmithSingleBar /= 2;
 		}
 
-		let maxTripLength = user.maxTripLength('Smithing');
+		let maxTripLength = calcMaxTripLength(user, 'Smithing');
 		if (smithedItem.name === 'Cannonball') {
 			maxTripLength *= 2;
 		}

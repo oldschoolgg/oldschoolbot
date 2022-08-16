@@ -21,6 +21,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { MonkeyRumbleOptions } from '../../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { mahojiChatHead } from '../../../lib/util/chatHeadImage';
 
 export async function monkeyRumbleStatsCommand(user: KlasaUser) {
@@ -75,7 +76,7 @@ export async function monkeyRumbleCommand(user: KlasaUser, channelID: bigint): C
 		fightDuration = reduceNumByPercent(fightDuration, 17);
 		boosts.push('17% faster fights for gorilla rumble greegree');
 	}
-	const quantity = Math.floor(user.maxTripLength('MonkeyRumble') / fightDuration);
+	const quantity = Math.floor(calcMaxTripLength(user, 'MonkeyRumble') / fightDuration);
 	let duration = quantity * fightDuration;
 
 	let chanceOfSpecial = Math.floor(125 * (6 - monkeyTierOfUser(user) / 2));

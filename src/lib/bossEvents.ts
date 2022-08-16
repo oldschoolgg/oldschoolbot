@@ -18,6 +18,7 @@ import { BossInstance, BossOptions, BossUser } from './structures/Boss';
 import { Gear } from './structures/Gear';
 import { NewBossOptions } from './types/minions';
 import { formatDuration, roll } from './util';
+import { logError } from './util/logError';
 import { sendToChannelID } from './util/webhook';
 import { LampTable } from './xpLamps';
 
@@ -246,6 +247,6 @@ export async function startBossEvent({
 			}
 		});
 	} catch (err: unknown) {
-		client.wtf(err as Error);
+		logError(err);
 	}
 }

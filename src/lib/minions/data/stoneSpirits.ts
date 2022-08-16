@@ -25,10 +25,6 @@ export const stoneSpirits: StoneSpirit[] = [
 		ore: getOSItem('Coal')
 	},
 	{
-		spirit: getOSItem('Copper stone spirit'),
-		ore: getOSItem('Copper ore')
-	},
-	{
 		spirit: getOSItem('Silver stone spirit'),
 		ore: getOSItem('Silver ore')
 	},

@@ -6,6 +6,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { GauntletOptions } from '../../../lib/types/minions';
 import { formatDuration, formatSkillRequirements, skillsMeetRequirements, toTitleCase } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 const baseRequirements = {
 	cooking: 70,
@@ -96,7 +97,7 @@ export async function gauntletCommand(user: KlasaUser, channelID: bigint, type: 
 	let gauntletLength = baseLength;
 	if (type === 'corrupted') gauntletLength *= 1.3;
 
-	const maxTripLength = user.maxTripLength('Gauntlet');
+	const maxTripLength = calcMaxTripLength(user, 'Gauntlet');
 
 	const quantity = Math.floor(maxTripLength / gauntletLength);
 	const duration = quantity * gauntletLength;

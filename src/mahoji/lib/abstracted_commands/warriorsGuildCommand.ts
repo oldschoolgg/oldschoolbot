@@ -6,6 +6,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { ActivityTaskOptionsWithQuantity, AnimatedArmourActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import resolveItems from '../../../lib/util/resolveItems';
 
 export const Armours = [
@@ -36,7 +37,7 @@ export const Armours = [
 ];
 
 async function tokensCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
-	const maxTripLength = user.maxTripLength('AnimatedArmour');
+	const maxTripLength = calcMaxTripLength(user, 'AnimatedArmour');
 	const userBank = user.bank();
 
 	const armorSet = Armours.find(set => userBank.has(set.items));
@@ -79,7 +80,7 @@ async function tokensCommand(user: KlasaUser, channelID: bigint, quantity: numbe
 async function cyclopsCommand(user: KlasaUser, channelID: bigint, quantity: number | undefined) {
 	const userBank = user.bank();
 	const hasAttackCape = user.getGear('melee').hasEquipped('Attack cape');
-	const maxTripLength = user.maxTripLength('Cyclops');
+	const maxTripLength = calcMaxTripLength(user, 'Cyclops');
 	// Check if either 100 warrior guild tokens or attack cape (similar items in future)
 	const amountTokens = userBank.amount('Warrior guild token');
 	if (!hasAttackCape && amountTokens < 100) {

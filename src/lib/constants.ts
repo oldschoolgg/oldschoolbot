@@ -1,8 +1,7 @@
-import { User } from '@prisma/client';
 import { MessageButton } from 'discord.js';
 import { Time } from 'e';
 import { Command, KlasaMessage } from 'klasa';
-import { APIButtonComponent, ButtonStyle, ComponentType } from 'mahoji';
+import { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
 import { convertLVLtoXP } from 'oldschooljs/dist/util';
@@ -12,14 +11,12 @@ import { join } from 'path';
 import { DISCORD_SETTINGS, production } from '../config';
 import { AbstractCommand, CommandArgs } from '../mahoji/lib/inhibitors';
 import { RunCommandArgs } from './settings/settings';
-import { UserSettings } from './settings/types/UserSettings';
 import { SkillsEnum } from './skilling/types';
 import { ActivityTaskOptions } from './types/minions';
 import getOSItem from './util/getOSItem';
-import getUsersPerkTier from './util/getUsersPerkTier';
 import resolveItems from './util/resolveItems';
 
-export const SupportServer = DISCORD_SETTINGS.SupportServer ?? '342983479501389826';
+export const SupportServer = DISCORD_SETTINGS.SupportServer ?? production ? '342983479501389826' : '940758552425955348';
 export const BotID = DISCORD_SETTINGS.BotID ?? '729244028989603850';
 
 export const Channel = {
@@ -56,7 +53,8 @@ export const Roles = {
 	TopMinigamer: DISCORD_SETTINGS.Roles?.TopMinigamer ?? '867967884515770419',
 	TopClueHunter: DISCORD_SETTINGS.Roles?.TopClueHunter ?? '848967350120218636',
 	TopSlayer: DISCORD_SETTINGS.Roles?.TopSlayer ?? '867967551819358219',
-	TopInventor: '992799099801833582'
+	TopInventor: '992799099801833582',
+	TopLeagues: '1005417171112972349'
 };
 
 export const enum DefaultPingableRoles {
@@ -266,6 +264,7 @@ export const enum Tasks {
 	Nex = 'nexActivity',
 	BaxtorianBathhouses = 'bathhousesActivity',
 	TroubleBrewing = 'troubleBrewingActivity',
+	PuroPuro = 'puroPuroActivity',
 	Disassembling = 'disassemblingActivity',
 	Research = 'researchActivity',
 	Moktang = 'moktangActivity',
@@ -322,7 +321,7 @@ export const enum PerkTier {
 	Six = 6
 }
 
-export const enum BitField {
+export enum BitField {
 	IsPatronTier1 = 2,
 	IsPatronTier2 = 3,
 	IsPatronTier3 = 4,
@@ -420,21 +419,21 @@ export const enum PatronTierID {
 	Six = '8091554'
 }
 
-export const enum BadgesEnum {
-	Developer = 0,
-	Booster = 1,
-	LimitedPatron = 2,
-	Patron = 3,
-	Moderator = 4,
-	GreenGem = 5,
-	Bug = 6,
-	GoldenTrophy = 7,
-	TopSacrifice = 8,
-	TopSkiller = 9,
-	TopCollector = 10,
-	TopMinigame = 11,
-	SotWTrophy = 12
-}
+export const BadgesEnum = {
+	Developer: 0,
+	Booster: 1,
+	LimitedPatron: 2,
+	Patron: 3,
+	Moderator: 4,
+	GreenGem: 5,
+	Bug: 6,
+	GoldenTrophy: 7,
+	TopSacrifice: 8,
+	TopSkiller: 9,
+	TopCollector: 10,
+	TopMinigame: 11,
+	SotWTrophy: 12
+} as const;
 
 export const badges: { [key: number]: string } = {
 	[BadgesEnum.Developer]: Emoji.Spanner,
@@ -643,34 +642,6 @@ export const projectiles: Record<ProjectileType, number[]> = {
 
 export const PHOSANI_NIGHTMARE_ID = 9416;
 
-export const dailyResetTime = Time.Hour * 4;
-export const spawnLampResetTime = (user: User) => {
-	const bf = user.bitfield;
-	const perkTier = getUsersPerkTier(user, true);
-
-	const hasPerm = bf.includes(BitField.HasPermanentSpawnLamp);
-	const hasTier5 = perkTier >= PerkTier.Five;
-	const hasTier4 = !hasTier5 && perkTier === PerkTier.Four;
-
-	let cooldown = [PerkTier.Six, PerkTier.Five].includes(perkTier) ? Time.Hour * 12 : Time.Hour * 24;
-
-	if (!hasTier5 && !hasTier4 && hasPerm) {
-		cooldown = Time.Hour * 48;
-	}
-
-	return cooldown;
-};
-export const itemContractResetTime = Time.Hour * 8;
-export const giveBoxResetTime = Time.Hour * 24;
-
-const lastBox: keyof User = 'lastGivenBoxx';
-
-export const userTimers = [
-	[dailyResetTime, UserSettings.LastDailyTimestamp, 'Daily'],
-	[itemContractResetTime, UserSettings.LastItemContractDate, 'ItemContract'],
-	[giveBoxResetTime, lastBox, 'GiveBox'],
-	[spawnLampResetTime, UserSettings.LastSpawnLamp, 'SpawnLamp']
-] as const;
 export const COMMANDS_TO_NOT_TRACK = [['minion', ['k', 'kill', 'clue', 'info']]];
 export function shouldTrackCommand(command: AbstractCommand, args: CommandArgs) {
 	if (!Array.isArray(args)) return true;
@@ -698,12 +669,20 @@ export const COMMAND_BECAME_SLASH_COMMAND_MESSAGE = (
 
 - Slash commands are integrated into the actual Discord client. We are *required* to change our commands to be slash commands.
 - Slash commands are generally easier to use, and also have new features like autocompletion. They take some time to get used to though.
-- You no longer use this command using \`${msg?.cmdPrefix ?? '+'}${
+- You no longer use this command using \`+${commandName ?? msg?.command?.name}\`, now you use: \`/${
 	commandName ?? msg?.command?.name
-}\`, now you use: \`/${commandName ?? msg?.command?.name}\`
+}\`
 `;
 
 export const DISABLED_COMMANDS = new Set<string>();
 export const PVM_METHODS = ['barrage', 'cannon', 'burst', 'none'] as const;
 export type PvMMethod = typeof PVM_METHODS[number];
 export const usernameCache = new Map<string, string>();
+export const OWNER_IDS = ['157797566833098752'];
+export const minionBuyButton: APIButtonComponentWithCustomId = {
+	type: ComponentType.Button,
+	custom_id: 'BUY_MINION',
+	label: 'Buy Minion',
+	emoji: { id: '778418736180494347' },
+	style: ButtonStyle.Success
+};

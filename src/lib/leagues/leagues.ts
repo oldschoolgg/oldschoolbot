@@ -1,10 +1,8 @@
-import { activity_type_enum, Minigame, PlayerOwnedHouse, Tame, User } from '@prisma/client';
+import { activity_type_enum, User } from '@prisma/client';
 import { User as RoboChimpUser } from '@prisma/robochimp';
 import { calcWhatPercent } from 'e';
-import { KlasaUser } from 'klasa';
 import { CommandResponse } from 'mahoji/dist/lib/structures/ICommand';
 import { Bank } from 'oldschooljs';
-import Monster from 'oldschooljs/dist/structures/Monster';
 
 import { getPOH } from '../../mahoji/lib/abstracted_commands/pohCommand';
 import {
@@ -19,89 +17,23 @@ import {
 	personalWoodcuttingStats
 } from '../../mahoji/lib/abstracted_commands/statCommand';
 import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
-import { ClueTiers } from '../clues/clueTiers';
-import { getParsedStashUnits, ParsedUnit } from '../clues/stashUnits';
+import { getParsedStashUnits } from '../clues/stashUnits';
 import { calcCLDetails } from '../data/Collections';
-import { UserFullGearSetup } from '../gear';
-import { CustomMonster } from '../minions/data/killableMonsters/custom/customMonsters';
 import { roboChimpUserFetch } from '../roboChimp';
 import { getMinigameEntity } from '../settings/minigames';
 import { prisma } from '../settings/prisma';
-import Grimy from '../skilling/skills/herblore/mixables/grimy';
-import Potions from '../skilling/skills/herblore/mixables/potions';
-import unfinishedPotions from '../skilling/skills/herblore/mixables/unfinishedPotions';
-import creatures from '../skilling/skills/hunter/creatures';
 import smithables from '../skilling/skills/smithing/smithables';
 import { getSlayerTaskStats } from '../slayer/slayerUtil';
 import { getAllUserTames } from '../tames';
-import { ItemBank, Skills } from '../types';
-import { stringMatches } from '../util';
+import { ItemBank } from '../types';
 import { getItem } from '../util/getOSItem';
 import { easyTasks } from './easyTasks';
 import { eliteTasks } from './eliteTasks';
 import { hardTasks } from './hardTasks';
+import { betterHerbloreStats, HasFunctionArgs, Task } from './leaguesUtils';
 import { masterTasks } from './masterTasks';
 import { mediumTasks } from './mediumTasks';
-
-// type LeagueTier = 'beginner' | 'easy' | 'medium' | 'hard' | 'elite' | 'master';
-
-interface HasFunctionArgs {
-	cl: Bank;
-	bank: Bank;
-	user: KlasaUser;
-	lapScores: ItemBank;
-	skillsLevels: Required<Skills>;
-	skillsXP: Required<Skills>;
-	poh: PlayerOwnedHouse;
-	gear: UserFullGearSetup;
-	allItemsOwned: Bank;
-	monsterScores: ItemBank;
-	creatureScores: ItemBank;
-	activityCounts: Record<activity_type_enum, number>;
-	slayerTasksCompleted: number;
-	minigames: Minigame;
-	opens: Bank;
-	disassembledItems: Bank;
-	mahojiUser: User;
-	tames: Tame[];
-	sacrificedBank: Bank;
-	slayerStats: Awaited<ReturnType<typeof getSlayerTaskStats>>;
-	clPercent: number;
-	conStats: Bank;
-	woodcuttingStats: Bank;
-	alchingStats: Bank;
-	herbloreStats: ReturnType<typeof betterHerbloreStats>;
-	miningStats: Bank;
-	firemakingStats: Bank;
-	smithingStats: Bank;
-	spellCastingStats: Awaited<ReturnType<typeof personalSpellCastStats>>;
-	collectingStats: Bank;
-	smithingSuppliesUsed: Bank;
-	actualClues: Bank;
-	smeltingStats: Bank;
-	stashUnits: ParsedUnit[];
-}
-
-export interface Task {
-	id: number;
-	name: string;
-	has: (opts: HasFunctionArgs) => Promise<boolean>;
-}
-
-export function leaguesHasKC(args: HasFunctionArgs, mon: Monster | CustomMonster | { id: number }, amount = 1) {
-	return (args.monsterScores[mon.id] ?? 0) >= amount;
-}
-
-export function leaguesHasCatches(args: HasFunctionArgs, name: string, amount = 1) {
-	const creature = creatures.find(i => stringMatches(i.name, name));
-	if (!creature) throw new Error(`${name} is not a creature`);
-	return (args.creatureScores[creature.id] ?? 0) >= amount;
-}
-
-export function leaguesSlayerTaskForMonster(args: HasFunctionArgs, mon: Monster | CustomMonster, amount: number) {
-	let data = args.slayerStats.find(i => i.monsterID === mon.id);
-	return data !== undefined && data.total_tasks >= amount;
-}
+import { calcActualClues } from './stats';
 
 export const leagueTasks = [
 	{ name: 'Easy', tasks: easyTasks, points: 20 },
@@ -150,26 +82,6 @@ GROUP BY type;`);
 	return rec;
 }
 
-function betterHerbloreStats(herbStats: Bank) {
-	const herbs = new Bank();
-	const unfPots = new Bank();
-	const pots = new Bank();
-
-	for (const item of herbStats.items()) {
-		for (const [array, bank] of [
-			[Grimy, herbs],
-			[unfinishedPotions, unfPots],
-			[Potions, pots]
-		] as const) {
-			if (array.some(i => i.id === item[0].id)) {
-				bank.add(item[0].id, item[1]);
-			}
-		}
-	}
-
-	return { herbs, unfPots, pots };
-}
-
 export async function personalHerbloreStatsWithoutZahur(user: User) {
 	const result: { id: number; qty: number }[] =
 		await prisma.$queryRawUnsafe(`SELECT (data->>'mixableID')::int AS id, SUM((data->>'quantity')::int) AS qty
@@ -197,38 +109,6 @@ function calcSuppliesUsedForSmithing(itemsSmithed: Bank) {
 		input.add(new Bank(smithable.inputBars).multiply(qty));
 	}
 	return input;
-}
-
-export async function calcActualClues(user: User) {
-	const result: { id: number; qty: number }[] =
-		await prisma.$queryRawUnsafe(`SELECT (data->>'clueID')::int AS id, SUM((data->>'quantity')::int) AS qty
-FROM activity
-WHERE type = 'ClueCompletion'
-AND user_id = '${user.id}'::bigint
-AND data->>'clueID' IS NOT NULL
-AND completed = true
-GROUP BY data->>'clueID';`);
-	const casketsCompleted = new Bank();
-	for (const res of result) {
-		const item = getItem(res.id);
-		if (!item) continue;
-		casketsCompleted.add(item.id, res.qty);
-	}
-	const cl = new Bank(user.collectionLogBank as ItemBank);
-	const opens = new Bank(user.openable_scores as ItemBank);
-
-	// Actual clues are only ones that you have: received in your cl, completed in trips, and opened.
-	const actualClues = new Bank();
-
-	for (const [item, qtyCompleted] of casketsCompleted.items()) {
-		const clueTier = ClueTiers.find(i => i.id === item.id)!;
-		actualClues.add(
-			clueTier.scrollID,
-			Math.min(qtyCompleted, cl.amount(clueTier.scrollID), opens.amount(clueTier.id))
-		);
-	}
-
-	return actualClues;
 }
 
 export async function calcLeaguesRanking(user: RoboChimpUser) {

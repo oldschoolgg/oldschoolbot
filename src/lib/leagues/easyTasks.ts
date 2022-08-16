@@ -23,7 +23,7 @@ import Fishing from '../skilling/skills/fishing';
 import { ItemBank } from '../types';
 import { calcCombatLevel, calcTotalLevel } from '../util';
 import resolveItems from '../util/resolveItems';
-import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leagues';
+import { leaguesHasCatches, leaguesHasKC, leaguesSlayerTaskForMonster, Task } from './leaguesUtils';
 
 export const easyTasks: Task[] = [
 	{

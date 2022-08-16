@@ -6,7 +6,7 @@ import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommand
 import { Bank, LootTable } from 'oldschooljs';
 
 import { allMbTables, MysteryBoxes, PMBTable } from '../../lib/bsoOpenables';
-import { Emoji, itemContractResetTime } from '../../lib/constants';
+import { Emoji } from '../../lib/constants';
 import { AbyssalDragonLootTable } from '../../lib/minions/data/killableMonsters/custom/AbyssalDragon';
 import { Ignecarus } from '../../lib/minions/data/killableMonsters/custom/bosses/Ignecarus';
 import { kalphiteKingLootTable } from '../../lib/minions/data/killableMonsters/custom/bosses/KalphiteKing';
@@ -20,6 +20,7 @@ import { allThirdAgeItems, runeAlchablesTable } from '../../lib/simulation/share
 import { formatDuration, itemID, updateBankSetting, updateGPTrackSetting } from '../../lib/util';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import getOSItem from '../../lib/util/getOSItem';
+import { itemContractResetTime } from '../../lib/util/getUsersPerkTier';
 import resolveItems from '../../lib/util/resolveItems';
 import { LampTable } from '../../lib/xpLamps';
 import { OSBMahojiCommand } from '../lib/util';
@@ -27,7 +28,8 @@ import {
 	getMahojiBank,
 	handleMahojiConfirmation,
 	mahojiUserSettingsUpdate,
-	mahojiUsersSettingsFetch
+	mahojiUsersSettingsFetch,
+	userStatsBankUpdate
 } from '../mahojiSettings';
 
 const contractTable = new LootTable()
@@ -68,20 +70,8 @@ const itemContractItemsSet = new Set([
 		'Tradeable mystery box',
 		'Pet mystery box',
 		'Holiday mystery box',
-		'Klik',
-		'Scruffy',
-		'Shelldon',
-		'Remy',
-		'Divine sigil',
-		'Wintertoad',
-		'Hammy',
 		'Dwarven bar',
-		'Dwarven ore',
-		'Magic banana',
-		'Scroll of the hunt',
-		'Scroll of longevity',
-		'Scroll of life',
-		'Scroll of proficiency'
+		'Dwarven ore'
 	])
 ]);
 
@@ -235,9 +225,14 @@ async function handInContract(
 	await user.removeItemsFromBank(cost);
 	await user.addItemsToBank({ items: loot, collectionLog: false });
 
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractCost, cost);
-	updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractLoot, loot);
-	updateGPTrackSetting('gp_ic', loot.amount('Coins'));
+	await Promise.all([
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractCost, cost),
+		updateBankSetting(globalClient, ClientSettings.EconomyStats.ItemContractLoot, loot),
+		updateGPTrackSetting('gp_ic', loot.amount('Coins')),
+		userStatsBankUpdate(user.id, 'ic_cost_bank', cost),
+		userStatsBankUpdate(user.id, 'ic_loot_bank', loot)
+	]);
+
 	let res = `You handed in a ${currentItem.name} and received ${loot}. You've completed ${
 		totalContracts + 1
 	} Item Contracts, and your streak is now at ${newStreak}.`;
