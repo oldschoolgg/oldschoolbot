@@ -10,6 +10,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { HerbloreActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { OSBMahojiCommand } from '../lib/util';
 
@@ -100,8 +101,12 @@ export const mineCommand: OSBMahojiCommand = {
 			cost = "decided to pay Wesley 50 gp for each item so they don't have to go";
 		}
 
-		const maxTripLength = user.maxTripLength('Herblore');
 		const boosts: string[] = [];
+		const maxTripLength = calcMaxTripLength(user, 'Herblore');
+
+		let { quantity } = options;
+		if (!quantity) quantity = Math.floor(maxTripLength / timeToMixSingleItem);
+
 		const baseCost = new Bank(mixableItem.inputItems);
 
 		const maxCanDo = user.bank({ withGP: true }).fits(baseCost);
@@ -128,15 +133,6 @@ export const mineCommand: OSBMahojiCommand = {
 				);
 			}
 		}
-		let defaultQty = Math.floor(maxTripLength / timeToMixSingleItem);
-
-		let { quantity } = options;
-		if (!quantity) quantity = defaultQty;
-
-		if (maxCanDo < quantity) {
-			quantity = maxCanDo;
-		}
-
 		const duration = quantity * timeToMixSingleItem;
 
 		if (duration > maxTripLength) {

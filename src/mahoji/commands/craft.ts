@@ -11,6 +11,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { CraftingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
@@ -80,7 +81,7 @@ export const craftCommand: OSBMahojiCommand = {
 
 		await user.settings.sync(true);
 		const userBank = user.bank({ withGP: true });
-		const maxTripLength = user.maxTripLength('Crafting');
+		const maxTripLength = calcMaxTripLength(user, 'Crafting');
 		const boosts: string[] = [];
 
 		// Get the base time to craft the item then add on quarter of a second per item to account for banking/etc.

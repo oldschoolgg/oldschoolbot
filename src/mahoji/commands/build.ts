@@ -11,6 +11,7 @@ import { Skills } from '../../lib/types';
 import { ConstructionActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { hasItemsEquippedOrInBank } from '../../lib/util/minionUtils';
 import { OSBMahojiCommand } from '../lib/util';
@@ -103,7 +104,7 @@ export const buildCommand: OSBMahojiCommand = {
 		const userBank = user.bank();
 		const planksHas = userBank.amount(plank);
 
-		const maxTripLength = user.maxTripLength('Construction');
+		const maxTripLength = calcMaxTripLength(user, 'Construction');
 		const maxForMaterials = planksHas / planksQtyCost;
 
 		let boosts: string[] = [];

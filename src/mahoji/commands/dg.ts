@@ -22,6 +22,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { MakePartyOptions } from '../../lib/types';
 import { channelIsSendable, formatDuration, formatSkillRequirements, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { formatOrdinal } from '../../lib/util/formatOrdinal';
 import { OSBMahojiCommand } from '../lib/util';
 import { mahojiUserSettingsUpdate } from '../mahojiSettings';
@@ -46,7 +47,7 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 	}
 
 	const dungeonLength = Time.Minute * 5 * (floorToDo / 2);
-	let quantity = Math.floor(user.maxTripLength('Dungeoneering') / dungeonLength);
+	let quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / dungeonLength);
 	let duration = quantity * dungeonLength;
 
 	let message = `${user.username} has created a Dungeoneering party! Anyone can click the ${
@@ -154,7 +155,7 @@ async function startCommand(channelID: bigint, user: KlasaUser, floor: string | 
 
 	// Calculate new number of floors will be done now that it is about to start
 	const perFloor = duration / quantity;
-	quantity = Math.floor(user.maxTripLength('Dungeoneering') / perFloor);
+	quantity = Math.floor(calcMaxTripLength(user, 'Dungeoneering') / perFloor);
 	duration = quantity * perFloor;
 
 	let str = `${partyOptions.leader.username}'s dungeoneering party (${users

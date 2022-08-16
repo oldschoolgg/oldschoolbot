@@ -362,14 +362,14 @@ export default class extends Extendable {
 				}
 
 				// Query nthUser and nthIronman
-				const [nthUser] = await this.client.query<
+				const [nthUser] = await prisma.$queryRawUnsafe<
 					{
 						count: string;
 					}[]
 				>(`SELECT COUNT(*) FROM users WHERE "skills.${params.skillName}" >= ${queryValue};`);
 				resultStr = resultStr.replace('{nthUser}', formatOrdinal(Number(nthUser.count) + 1));
 				if (this.isIronman) {
-					const [nthIron] = await this.client.query<
+					const [nthIron] = await prisma.$queryRawUnsafe<
 						{
 							count: string;
 						}[]

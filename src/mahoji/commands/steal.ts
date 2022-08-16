@@ -12,6 +12,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { PickpocketActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, rand, rogueOutfitPercentBonus, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { logError } from '../../lib/util/logError';
 import { hasItemsEquippedOrInBank, userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
@@ -112,7 +113,7 @@ export const stealCommand: OSBMahojiCommand = {
 			boosts.push('50% boost for Wilvus');
 		}
 
-		const maxTripLength = user.maxTripLength('Pickpocket');
+		const maxTripLength = calcMaxTripLength(user, 'Pickpocket');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / timeToTheft);

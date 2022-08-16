@@ -8,6 +8,7 @@ import { BitField, Emoji, projectiles } from '../../../lib/constants';
 import { gorajanArcherOutfit, gorajanOccultOutfit, gorajanWarriorOutfit } from '../../../lib/data/CollectionsExport';
 import { getSimilarItems } from '../../../lib/data/similarItems';
 import { blowpipeDarts } from '../../../lib/minions/functions/blowpipeCommand';
+import { prisma } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { SkillsEnum } from '../../../lib/skilling/types';
@@ -150,7 +151,7 @@ function baseDuration(_attempts: number, isEmergedZuk: boolean) {
 async function timesMadeToZuk(userID: string) {
 	const timesMadeToZuk = Number(
 		(
-			await globalClient.query<any>(`SELECT COUNT(*)
+			await prisma.$queryRawUnsafe<any>(`SELECT COUNT(*)
 FROM activity
 WHERE type = 'Inferno'
 AND user_id = ${userID}

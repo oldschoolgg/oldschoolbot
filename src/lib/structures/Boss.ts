@@ -12,6 +12,7 @@ import { Skills } from '../types';
 import { NewBossOptions } from '../types/minions';
 import { formatDuration, formatSkillRequirements, isWeekend, updateBankSetting } from '../util';
 import addSubTaskToActivityTask from '../util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../util/calcMaxTripLength';
 import { Gear } from './Gear';
 import { Mass } from './Mass';
 import { activity_type_enum } from '.prisma/client';
@@ -238,7 +239,7 @@ export class BossInstance {
 		let baseQty = this.tempQty;
 		// Calculate max kill qty
 		let tempQty = 1;
-		const maxTripLength = this.leader?.maxTripLength(this.activity) ?? Time.Hour;
+		const maxTripLength = this.leader ? calcMaxTripLength(this.leader, this.activity) : Time.Hour;
 		tempQty = Math.max(tempQty, Math.floor(maxTripLength / duration));
 		// This boss doesnt allow more than 1KC at time, limits to 1
 		if (

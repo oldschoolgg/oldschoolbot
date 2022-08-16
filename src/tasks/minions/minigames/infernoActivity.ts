@@ -227,7 +227,7 @@ export default class extends Task {
 			if (baseBank.has('Infernal cape') && isEmergedZuk && !diedEmergedZuk && emergedKC === 1) {
 				const usersDefeatedEmergedZuk = parseInt(
 					(
-						await this.client.query<any>(
+						await prisma.$queryRawUnsafe<any>(
 							`SELECT COUNT(user_id)
 							 FROM minigames
 						     WHERE "emerged_inferno" > 0;`
