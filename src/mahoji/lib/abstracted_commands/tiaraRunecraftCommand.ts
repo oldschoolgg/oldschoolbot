@@ -8,6 +8,7 @@ import Runecraft from '../../../lib/skilling/skills/runecraft';
 import { TiaraRunecraftOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function tiaraRunecraftCommand({
 	user,
@@ -59,7 +60,7 @@ export async function tiaraRunecraftCommand({
 		return `You don't have enough tiaras to craft ${quantity}x ${tiaraObj.name}. You can acquire some through crafting at a furnance, or purchasing from other players.`;
 	}
 
-	const maxTripLength = user.maxTripLength('Runecraft');
+	const maxTripLength = calcMaxTripLength(user, 'Runecraft');
 	const numberOfInventories = Math.max(Math.ceil(quantity / 14), 1);
 	const duration = numberOfInventories * tripLength;
 	const maxCanDo = Math.floor(maxTripLength / tripLength) * 14;
