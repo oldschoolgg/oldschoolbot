@@ -1,4 +1,6 @@
-import { CLIENT_ID } from '../../config';
+import { bulkUpdateCommands } from 'mahoji/dist/lib/util';
+
+import { CLIENT_ID, DEV_SERVER_ID, production } from '../../config';
 import { syncBlacklists } from '../../lib/blacklists';
 import { DISABLED_COMMANDS } from '../../lib/constants';
 import { prisma } from '../../lib/settings/prisma';
@@ -22,4 +24,13 @@ export async function onStartup() {
 
 	// Sync blacklists
 	await syncBlacklists();
+
+	if (!production) {
+		console.log('Syncing commands locally...');
+		await bulkUpdateCommands({
+			client: globalClient.mahojiClient,
+			commands: globalClient.mahojiClient.commands.values,
+			guildID: DEV_SERVER_ID
+		});
+	}
 }

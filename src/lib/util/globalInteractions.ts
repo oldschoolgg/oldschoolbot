@@ -1,7 +1,9 @@
 import { MessageButton } from 'discord.js';
+import { Time } from 'e';
 import { APIInteraction, InteractionType, Routes } from 'mahoji';
 
 import { autoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
+import { Cooldowns } from '../../mahoji/lib/Cooldowns';
 import { mahojiUsersSettingsFetch } from '../../mahoji/mahojiSettings';
 import { ClueTier } from '../clues/clueTiers';
 import { lastTripCache } from '../constants';
@@ -78,6 +80,7 @@ export async function interactionHook(data: APIInteraction) {
 	if (!isValidGlobalInteraction(id)) return;
 	const userID = data.member ? data.member.user?.id : data.user?.id;
 	if (!userID) return;
+
 	const user = await mahojiUsersSettingsFetch(userID);
 	const options = {
 		user,
@@ -107,6 +110,11 @@ export async function interactionHook(data: APIInteraction) {
 				});
 			}
 		}
+	}
+
+	const cd = Cooldowns.get(userID, 'button', Time.Second * 3);
+	if (cd !== null) {
+		return buttonReply();
 	}
 
 	async function doClue(tier: ClueTier['name']) {
