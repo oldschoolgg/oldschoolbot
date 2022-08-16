@@ -1,3 +1,4 @@
+import { combats_enum } from '@prisma/client';
 import { calcPercentOfNum, objectKeys, reduceNumByPercent, round, Time, uniqueArr } from 'e';
 import { KlasaUser } from 'klasa';
 import { SlashCommandInteraction } from 'mahoji/dist/lib/structures/SlashCommandInteraction';
@@ -31,7 +32,6 @@ import removeFoodFromUser from '../../../lib/minions/functions/removeFoodFromUse
 import removePotionsFromUser from '../../../lib/minions/functions/removePotionsFromUser';
 import removePrayerFromUser from '../../../lib/minions/functions/removePrayerFromUser';
 import removeRunesFromUser from '../../../lib/minions/functions/removeRunesFromUser';
-import { CombatsEnum } from '../../../lib/minions/functions/trainCommand';
 import { Consumable } from '../../../lib/minions/types';
 import { trackLoot } from '../../../lib/settings/prisma';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
@@ -221,7 +221,7 @@ export async function minionKillCommand(
 
 	if (
 		noneCombatDuration * 2 < combatDuration ||
-		user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.NoCombat ||
+		user.settings.get(UserSettings.Minion.CombatSkill) === combats_enum.nocombat ||
 		noneCombat
 	) {
 		noneCombat = true;
@@ -403,15 +403,15 @@ export async function minionKillCommand(
 
 	if (!noneCombat) {
 		if (
-			user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Ranged ||
-			(user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
+			user.settings.get(UserSettings.Minion.CombatSkill) === combats_enum.ranged ||
+			(user.settings.get(UserSettings.Minion.CombatSkill) === combats_enum.auto &&
 				monster.defaultStyleToUse === GearStat.AttackRanged)
 		) {
 			messages.push(`Removed ${await removeAmmoFromUser(user, hits)}`);
 		}
 		if (
-			user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Magic ||
-			(user.settings.get(UserSettings.Minion.CombatSkill) === CombatsEnum.Auto &&
+			user.settings.get(UserSettings.Minion.CombatSkill) === combats_enum.magic ||
+			(user.settings.get(UserSettings.Minion.CombatSkill) === combats_enum.auto &&
 				monster.defaultStyleToUse === GearStat.AttackMagic)
 		) {
 			messages.push(`Removed ${await removeRunesFromUser(user, hits)}`);

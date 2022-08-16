@@ -57,7 +57,7 @@ export default async function mageCalculator(
 	if (combatSpell === null) {
 		throw 'Spell is null';
 	}
-	const spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.name));
+	const spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell));
 
 	if (!spell) {
 		throw 'The default spell is wrong.';
@@ -221,7 +221,7 @@ export default async function mageCalculator(
 
 	for (let i = 0; i < quantity; i++) {
 		let hitpointsLeft = monsterHP;
-		while (hitpointsLeft > 0 && hits < 1000) {
+		while (hitpointsLeft > 0 && hits < 3000) {
 			let hitdamage = 0;
 			if (Math.random() <= hitChance) {
 				hitdamage = randInt(0, maxHit);

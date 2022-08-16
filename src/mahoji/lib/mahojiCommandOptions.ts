@@ -1,3 +1,4 @@
+import { combats_enum } from '@prisma/client';
 import { uniqueArr } from 'e';
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
@@ -7,14 +8,12 @@ import { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import { baseFilters, filterableTypes } from '../../lib/data/filterables';
 import { GearSetupTypes, globalPresets } from '../../lib/gear';
 import killableMonsters from '../../lib/minions/data/killableMonsters';
-import { CombatsEnum } from '../../lib/minions/functions/trainCommand';
 import { prisma } from '../../lib/settings/prisma';
 import castables from '../../lib/skilling/skills/combat/magic/castables';
 import { SkillsEnum } from '../../lib/skilling/types';
 import { toTitleCase } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import { getSkillsOfMahojiUser, getUserGear, mahojiUsersSettingsFetch } from '../mahojiSettings';
-
 export const filterOption: CommandOption = {
 	type: ApplicationCommandOptionType.String,
 	name: 'filter',
@@ -139,10 +138,10 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 	required: false,
 	autocomplete: async (value, user) => {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
-		const combatSkill: CombatsEnum | undefined = CombatsEnum[mUser.minion_combatSkill as keyof typeof CombatsEnum];
+		const combatSkill: combats_enum = mUser.minion_combatSkill as combats_enum;
 		let results: APIApplicationCommandOptionChoice[] = [];
-		if (!combatSkill || combatSkill === CombatsEnum.Auto || combatSkill === CombatsEnum.NoCombat) return results;
-		if (combatSkill === CombatsEnum.Melee) {
+		if (!combatSkill || combatSkill === combats_enum.auto || combatSkill === combats_enum.nocombat) return results;
+		if (combatSkill === combats_enum.melee) {
 			const meleeWeapon = getUserGear(mUser).melee.equippedWeapon();
 			if (meleeWeapon === null || meleeWeapon.weapon === null || !meleeWeapon.weapon) {
 				// Push unarmed
@@ -162,7 +161,7 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 			}
 			return results;
 		}
-		if (combatSkill === CombatsEnum.Ranged) {
+		if (combatSkill === combats_enum.ranged) {
 			const rangeWeapon = getUserGear(mUser).range.equippedWeapon();
 			if (rangeWeapon === null || rangeWeapon.weapon === null || !rangeWeapon.weapon) {
 				// Push nothing can't train ranged unarmed
@@ -179,7 +178,7 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 			}
 			return results;
 		}
-		if (combatSkill === CombatsEnum.Magic) {
+		if (combatSkill === combats_enum.magic) {
 			const mageWeapon = getUserGear(mUser).mage.equippedWeapon();
 			if (mageWeapon === null || mageWeapon.weapon === null || !mageWeapon.weapon) {
 				results.push({ name: 'standard', value: 'standard' });

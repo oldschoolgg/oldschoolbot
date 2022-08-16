@@ -1,3 +1,4 @@
+import { combats_enum } from '@prisma/client';
 import { randArrItem } from 'e';
 import { KlasaUser } from 'klasa';
 
@@ -11,7 +12,6 @@ import autoPrayerPicker from './autoPrayerPicker';
 import mageCalculator from './mageCalculator';
 import meleeCalculator from './meleeCalculator';
 import rangeCalculator from './rangeCalculator';
-import { CombatsEnum } from './trainCommand';
 
 // No Lunar at this point, vengence etc isn't useful here.
 const castables: Castable[] = [...Standard, ...Ancient];
@@ -23,9 +23,9 @@ export default async function combatCalculator(
 ): Promise<[number, number, number, number, number, number, string[]]> {
 	let combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
 
-	if (combatSkill === CombatsEnum.NoCombat) throw "Nocombat shouldn't get here, Error in kill command.";
+	if (combatSkill === combats_enum.nocombat) throw "Nocombat shouldn't get here, Error in kill command.";
 
-	if (combatSkill === CombatsEnum.Auto) {
+	if (combatSkill === combats_enum.auto) {
 		const defaultMonsterStyle = monster.defaultStyleToUse;
 		const style = defaultMonsterStyle!;
 
@@ -34,7 +34,7 @@ export default async function combatCalculator(
 			defaultMonsterStyle === GearStat.AttackSlash ||
 			defaultMonsterStyle === GearStat.AttackStab
 		) {
-			combatSkill = CombatsEnum.Melee;
+			combatSkill = combats_enum.melee;
 			//	await user.client.commands.get('autoequip')!.run(, [combatSkill, 'attack', style, null, true]);
 			const weapon = user.getGear('melee').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
@@ -60,7 +60,7 @@ export default async function combatCalculator(
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackRanged) {
-			combatSkill = CombatsEnum.Ranged;
+			combatSkill = combats_enum.ranged;
 			//		await user.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
 			const weapon = user.getGear('range').equippedWeapon();
 			if (weapon === null || weapon.weapon === null) {
@@ -79,7 +79,7 @@ export default async function combatCalculator(
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackMagic) {
-			combatSkill = CombatsEnum.Magic;
+			combatSkill = combats_enum.magic;
 			//		await user.client.commands.get('autoequip')!.run(msg, [combatSkill, 'attack', style, null, true]);
 			await user.settings.update(UserSettings.Minion.MagicAttackStyle, 'standard');
 			// This needs to try check avilable runes somehow
@@ -93,7 +93,7 @@ export default async function combatCalculator(
 			await user.settings.update(UserSettings.Minion.CombatSpell, CombatSpells[0].name);
 		}
 
-		if (combatSkill === CombatsEnum.Auto) throw 'No defaultMonsterStyle matched';
+		if (combatSkill === combats_enum.auto) throw 'No defaultMonsterStyle matched';
 		await autoPrayerPicker(user, combatSkill);
 	}
 
@@ -103,11 +103,11 @@ export default async function combatCalculator(
 
 	// Handle multistyle combat here somehow.
 	switch (combatSkill) {
-		case CombatsEnum.Melee:
+		case combats_enum.melee:
 			return meleeCalculator(monster, user, quantity);
-		case CombatsEnum.Ranged:
+		case combats_enum.ranged:
 			return rangeCalculator(monster, user, quantity);
-		case CombatsEnum.Magic:
+		case combats_enum.magic:
 			return mageCalculator(monster, user, quantity);
 	}
 }

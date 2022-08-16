@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+import { combats_enum } from '@prisma/client';
 import { HexColorString } from 'discord.js';
 
 import { BitField } from '../../constants';
 import { GearSetup } from '../../gear';
 import { CombatOptionsEnum } from '../../minions/data/combatConstants';
-import { AttackStyles, CombatsEnum } from '../../minions/functions/trainCommand';
+import { AttackStyles } from '../../minions/functions/trainCommand';
 import { BlowpipeData } from '../../minions/types';
 import { BirdhouseData } from '../../skilling/skills/hunter/defaultBirdHouseTrap';
 import { SkillsEnum } from '../../skilling/types';
@@ -13,7 +14,6 @@ import { BankSortMethod } from '../../sorts';
 import { ItemBank } from '../../types';
 import { UserKourendFavour } from './../../minions/data/kourendFavour';
 import { CompostName } from './../../skilling/skills/farming/index';
-
 export type CustomGet<K extends string, TCustom> = K & { __type__: TCustom };
 
 export function T<TCustom>(k: string): CustomGet<string, TCustom> {
@@ -122,7 +122,7 @@ export namespace UserSettings {
 		export const MeleeAttackStyle = T<AttackStyles | null>('minion.meleeAttackStyle');
 		export const RangedAttackStyle = T<AttackStyles | null>('minion.rangedAttackStyle');
 		export const MagicAttackStyle = T<AttackStyles | null>('minion.magicAttackStyle');
-		export const CombatSkill = T<CombatsEnum>('minion.combatSkill');
+		export const CombatSkill = T<combats_enum>('minion.combatSkill');
 		export const MeleeAttackType = T<string | null>('minion.meleeAttackType');
 		export const CombatSpell = T<string | null>('minion.combatSpell');
 		export const BirdhouseTraps = T<BirdhouseData | null>('minion.birdhouseTraps');

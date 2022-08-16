@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User, combats_enum } from '@prisma/client';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import Monster from 'oldschooljs/dist/structures/Monster';
@@ -12,7 +12,7 @@ import { randomVariation, stringMatches } from '../../util';
 import { xpCannonVaryPercent, xpPercentToCannon, xpPercentToCannonM } from '../data/combatConstants';
 import killableMonsters from '../data/killableMonsters';
 import { AddMonsterXpParams, KillableMonster, ResolveAttackStylesParams } from '../types';
-import { AttackStyles, CombatsEnum } from './trainCommand';
+import { AttackStyles } from './trainCommand';
 
 export { default as calculateMonsterFood } from './calculateMonsterFood';
 export { default as reducedTimeForGroup } from './reducedTimeForGroup';
@@ -112,22 +112,22 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 
 	let spell: Castable | undefined = undefined;
 	let combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
-	if (combatSkill === CombatsEnum.Auto && monster) {
+	if (combatSkill === combats_enum.auto && monster) {
 		const defaultMonsterStyle = monster.defaultStyleToUse;
 		if (
 			defaultMonsterStyle === GearStat.AttackCrush ||
 			defaultMonsterStyle === GearStat.AttackSlash ||
 			defaultMonsterStyle === GearStat.AttackStab
 		) {
-			combatSkill = CombatsEnum.Melee;
+			combatSkill = combats_enum.melee;
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackRanged) {
-			combatSkill = CombatsEnum.Ranged;
+			combatSkill = combats_enum.ranged;
 		}
 
 		if (defaultMonsterStyle === GearStat.AttackMagic) {
-			combatSkill = CombatsEnum.Magic;
+			combatSkill = combats_enum.magic;
 		}
 	}
 
@@ -148,12 +148,12 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 	// Check what attack style
 	let attackStyle: AttackStyles;
 	let res: string[] = [];
-	if (combatSkill === CombatsEnum.Magic) {
+	if (combatSkill === combats_enum.magic) {
 		const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
 		if (combatSpell === null) {
 			return 'Spell is null.';
 		}
-		spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell.name));
+		spell = castables.find(_spell => stringMatches(_spell.name.toLowerCase(), combatSpell));
 		const mageAttackStyle = user.settings.get(UserSettings.Minion.MagicAttackStyle)!;
 		switch (mageAttackStyle) {
 			case AttackStyles.Standard:
@@ -216,7 +216,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 				return 'No attack style found or selected.';
 		}
 	}
-	if (combatSkill === CombatsEnum.Melee) {
+	if (combatSkill === combats_enum.melee) {
 		attackStyle = user.settings.get(UserSettings.Minion.MeleeAttackStyle)!;
 		switch (attackStyle) {
 			case AttackStyles.Accurate:
@@ -279,7 +279,7 @@ export async function addMonsterXP(user: KlasaUser, params: AddMonsterXpParams) 
 				return 'No attack style found or selected.';
 		}
 	}
-	if (combatSkill === CombatsEnum.Ranged) {
+	if (combatSkill === combats_enum.ranged) {
 		attackStyle = user.settings.get(UserSettings.Minion.RangedAttackStyle)!;
 		switch (attackStyle) {
 			case AttackStyles.Accurate:

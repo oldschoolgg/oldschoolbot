@@ -263,7 +263,7 @@ export default async function rangeCalculator(
 
 	for (let i = 0; i < quantity; i++) {
 		let hitpointsLeft = monsterHP;
-		while (hitpointsLeft > 0 && hits < 1000) {
+		while (hitpointsLeft > 0 && hits < 3000) {
 			let hitdamage = 0;
 			if (Math.random() <= hitChance) {
 				hitdamage = randInt(0, maxHit);

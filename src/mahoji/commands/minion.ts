@@ -1,3 +1,4 @@
+import { combats_enum } from '@prisma/client';
 import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 
@@ -6,7 +7,7 @@ import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
-import { CombatsEnum, trainCommand } from '../../lib/minions/functions/trainCommand';
+import { trainCommand } from '../../lib/minions/functions/trainCommand';
 import { Minigames } from '../../lib/settings/minigames';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
@@ -298,7 +299,7 @@ export const minionCommand: OSBMahojiCommand = {
 					name: 'combat_skill',
 					description: 'The primary combat skill you want to train with',
 					required: false,
-					choices: Object.keys(CombatsEnum).map(key => ({ name: key, value: key }))
+					choices: Object.keys(combats_enum).map(key => ({ name: key, value: key }))
 				},
 				{
 					...equippedWeaponCombatStyleOption(),

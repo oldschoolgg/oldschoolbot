@@ -1,8 +1,8 @@
+import { combats_enum } from '@prisma/client';
 import { ArrayActions, KlasaUser } from 'klasa';
 
 import { UserSettings } from '../../settings/types/UserSettings';
 import { SkillsEnum } from './../../skilling/types';
-import { CombatsEnum } from './trainCommand';
 
 interface PrayerSimple {
 	level: number;
@@ -75,15 +75,15 @@ const magePrayerPrio: PrayerSimple[] = [
 	}
 ];
 
-export default async function autoPrayerPicker(user: KlasaUser, combatSkill: CombatsEnum) {
-	if (combatSkill === CombatsEnum.Auto || combatSkill === CombatsEnum.NoCombat)
+export default async function autoPrayerPicker(user: KlasaUser, combatSkill: combats_enum) {
+	if (combatSkill === combats_enum.auto || combatSkill === combats_enum.nocombat)
 		throw 'Wrong input to autoPrayerPicker function';
 
 	const unlockedPrayers = user.settings.get(UserSettings.UnlockedPrayers);
 	const userPrayerLevel = user.skillLevel(SkillsEnum.Prayer);
 
 	switch (combatSkill) {
-		case CombatsEnum.Melee:
+		case combats_enum.melee:
 			for (const simplePrayer of meleePrayerPrio) {
 				if (userPrayerLevel < simplePrayer.level) continue;
 				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
@@ -94,7 +94,7 @@ export default async function autoPrayerPicker(user: KlasaUser, combatSkill: Com
 				break;
 			}
 			break;
-		case CombatsEnum.Ranged:
+		case combats_enum.ranged:
 			for (const simplePrayer of rangePrayerPrio) {
 				if (userPrayerLevel < simplePrayer.level) continue;
 				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
@@ -105,7 +105,7 @@ export default async function autoPrayerPicker(user: KlasaUser, combatSkill: Com
 				break;
 			}
 			break;
-		case CombatsEnum.Magic:
+		case combats_enum.magic:
 			for (const simplePrayer of magePrayerPrio) {
 				if (userPrayerLevel < simplePrayer.level) continue;
 				if (simplePrayer.unlockable && !unlockedPrayers.includes(simplePrayer.name.toLowerCase())) continue;
