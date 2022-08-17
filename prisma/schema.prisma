@@ -386,8 +386,10 @@ model User {
 
   minion_bought_date DateTime? @db.Timestamp(6)
 
-  bingo_tickets_bought BigInt @default(0)
+  bingo_tickets_bought Int    @default(0)
+  bingo_gp_contributed BigInt @default(0)
 
+  @@index([bingo_tickets_bought, bingo_gp_contributed])
   @@map("users")
 }
 

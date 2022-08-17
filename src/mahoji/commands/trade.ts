@@ -107,7 +107,7 @@ export const askCommand: OSBMahojiCommand = {
 **${recipientKlasaUser}** is giving: ${truncateString(itemsReceived.toString(), 950)}
 
 Both parties must click confirm to make the trade.`,
-			[BigInt(recipientKlasaUser.id), BigInt(senderKlasaUser.id)]
+			[recipientKlasaUser.id, senderKlasaUser.id]
 		);
 
 		if (!recipientKlasaUser.owns(itemsReceived)) return "They don't own those items.";

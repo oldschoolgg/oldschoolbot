@@ -9,7 +9,7 @@ import { Bank } from 'oldschooljs';
 import { production } from '../../config';
 import { BLACKLISTED_USERS } from '../../lib/blacklists';
 import { prisma } from '../../lib/settings/prisma';
-import { clamp, getUsername, makeComponents, toKMB } from '../../lib/util';
+import { clamp, makeComponents, toKMB } from '../../lib/util';
 import { logError } from '../../lib/util/logError';
 import {
 	BINGO_TICKET_PRICE,
@@ -18,6 +18,7 @@ import {
 	bingoStart,
 	buyBingoTicketButton,
 	calculateBingoTeamDetails,
+	countTotalGPInPrizePool,
 	determineBingoProgress
 } from '../lib/bingo';
 import { OSBMahojiCommand } from '../lib/util';
@@ -27,6 +28,25 @@ type MakeTeamOptions = {
 	first_user: MahojiUserOption;
 	second_user: MahojiUserOption;
 } & {};
+
+async function findBingoTeamWithUser(userID: string) {
+	const teamWithUser = await prisma.bingoTeam.findFirst({
+		where: {
+			OR: [
+				{
+					first_user: userID
+				},
+				{
+					second_user: userID
+				},
+				{
+					third_user: userID
+				}
+			]
+		}
+	});
+	return teamWithUser;
+}
 
 /**
  * Check if a user is elligible to join a team.
@@ -44,22 +64,8 @@ async function userCanJoinTeam(userID: string) {
 	if (count !== 1) return false;
 
 	// Check if already in a team
-	const teamWithUser = await prisma.bingoTeam.count({
-		where: {
-			OR: [
-				{
-					first_user: userID
-				},
-				{
-					second_user: userID
-				},
-				{
-					third_user: userID
-				}
-			]
-		}
-	});
-	if (teamWithUser !== 0) return false;
+	const teamWithUser = await findBingoTeamWithUser(userID);
+	if (teamWithUser !== null) return false;
 
 	return true;
 }
@@ -74,14 +80,20 @@ async function makeTeamCommand(interaction: SlashCommandInteraction, user: User,
 	for (const member of allUsers) {
 		const canJoin = await userCanJoinTeam(member);
 		if (!canJoin) {
-			return `${userMention(
-				member
-			)} is not able to join a team, because they haven't bought a ticket, or are already in a team.`;
+			return {
+				content: `${userMention(
+					member
+				)} is not able to join a team, because they haven't bought a ticket, or are already in a team.`,
+				components: makeComponents([buyBingoTicketButton])
+			};
 		}
 	}
 	await handleMahojiConfirmation(
 		interaction,
-		`${allUsers.map(i => userMention(i)).join(', ')} - Do you want to join a bingo team with eachother?`
+		`${allUsers
+			.map(i => userMention(i))
+			.join(', ')} - Do you want to join a bingo team with eachother? All 3 users need to confirm.`,
+		allUsers
 	);
 
 	try {
@@ -107,28 +119,57 @@ export async function buyBingoTicketCommand(
 ): Promise<string> {
 	const klasaUser = await globalClient.fetchUser(userID);
 	const mahojiUser = await mahojiUsersSettingsFetch(userID);
+
+	if (mahojiUser.minion_ironman && mahojiUser.bingo_tickets_bought === 0) {
+		await mahojiUserSettingsUpdate(userID, {
+			bingo_tickets_bought: 1
+		});
+		return 'You got a free Bingo ticket.';
+	}
+
+	quantity = clamp(quantity, 1, 1000);
+	const gpCost = quantity * BINGO_TICKET_PRICE;
+	const cost = new Bank().add('Coins', gpCost);
+
 	if ((mahojiUser.bingo_tickets_bought > 0 || quantity > 1) && interaction) {
 		await handleMahojiConfirmation(
 			interaction,
-			`Are you sure you want to buy ${quantity}x Bingo Tickets? Tickets cannot be refunded or transferred.${
+			`Are you sure you want to buy ${quantity}x Bingo Tickets for ${cost}? Tickets cannot be refunded or transferred.${
 				mahojiUser.bingo_tickets_bought > 0
 					? ` **You have already bought ${mahojiUser.bingo_tickets_bought} tickets.**`
 					: ''
 			}`
 		);
 	}
-	quantity = clamp(quantity, 1, 1000);
-	const gpCost = quantity * BINGO_TICKET_PRICE;
-	const cost = new Bank().add('Coins', gpCost);
 
 	if (Number(mahojiUser.GP) < gpCost) return "You don't have enough GP.";
 	await mahojiUserSettingsUpdate(userID, {
 		bingo_tickets_bought: {
 			increment: quantity
+		},
+		bingo_gp_contributed: {
+			increment: quantity * BINGO_TICKET_PRICE
 		}
 	});
 	await klasaUser.removeItemsFromBank(cost);
 	return `You bought ${quantity}x Bingo Tickets for ${toKMB(gpCost)} GP!`;
+}
+
+async function leaveTeamCommand(interaction: SlashCommandInteraction) {
+	const bingoTeam = await findBingoTeamWithUser(interaction.user.id);
+	if (!bingoTeam) return "You're not in a bingo team.";
+	if (bingoIsActive() && production) return "You can't leave a bingo team after bingo has started.";
+	await handleMahojiConfirmation(
+		interaction,
+		'Are you sure you want to leave your team? Doing so will delete/disband the team, and all 3 of you will need to join a new team.'
+	);
+	await prisma.bingoTeam.delete({
+		where: {
+			id: bingoTeam.id
+		}
+	});
+	const users = [bingoTeam.first_user, bingoTeam.second_user, bingoTeam.third_user];
+	return `${users.map(userMention).join(', ')} Your Bingo team was deleted, you no longer are in a team.`;
 }
 
 export const bingoCommand: OSBMahojiCommand = {
@@ -165,48 +206,64 @@ export const bingoCommand: OSBMahojiCommand = {
 			description: 'Buy a bingo ticket.',
 			options: [
 				{
-					type: ApplicationCommandOptionType.User,
+					type: ApplicationCommandOptionType.Integer,
 					name: 'quantity',
 					description: 'The quantity you want to buy, only one is needed.',
-					required: false
+					required: false,
+					min_value: 1
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'info',
+			description: 'View bingo info.'
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'info',
+			description: 'View bingo info.'
 		}
 	],
 	run: async ({
 		userID,
 		options,
 		interaction
-	}: CommandRunOptions<{ make_team?: MakeTeamOptions; buy_ticket?: { quantity?: number } }>) => {
+	}: CommandRunOptions<{ make_team?: MakeTeamOptions; leave_team?: {}; buy_ticket?: { quantity?: number } }>) => {
 		const user = await mahojiUsersSettingsFetch(userID);
 		const components = user.bingo_tickets_bought > 0 ? undefined : makeComponents([buyBingoTicketButton]);
-		if (options.make_team) {
-			return {
-				content: await makeTeamCommand(interaction, user, options.make_team),
-				components
-			};
-		}
+		if (options.make_team) return makeTeamCommand(interaction, user, options.make_team);
 		if (options.buy_ticket) {
 			return buyBingoTicketCommand(interaction, userID.toString(), options.buy_ticket.quantity);
 		}
+		if (options.leave_team) return leaveTeamCommand(interaction);
 
 		const { bingoTableStr, tilesCompletedCount } = determineBingoProgress(user.temp_cl);
 		const teamResult = await calculateBingoTeamDetails(user.id);
 		const isParticipating = user.bingo_tickets_bought > 0 && teamResult !== null;
+		const prizePool = await countTotalGPInPrizePool();
 
-		const str = `**#1 - OSB Bingo**
-**Start:** ${time(bingoStart / 1000)}  (${time(bingoStart / 1000, 'R')})
-**Finish:** ${time(bingoEnd / 1000)} (${time(bingoEnd / 1000, 'R')})
+		const startUnix = Math.floor(bingoStart / 1000);
+		const endUnix = Math.floor(bingoEnd / 1000);
+
+		const str = `**#1 - OSB Bingo** ${toKMB(prizePool)} Prize Pool
+**Start:** ${time(startUnix)}  (${time(startUnix, 'R')})
+**Finish:** ${time(endUnix)} (${time(endUnix, 'R')})
 You have ${tilesCompletedCount} tiles completed.
 ${bingoTableStr}
-**Your team:** ${teamResult ? teamResult.team.map(id => getUsername(id)).join(', ') : '*No team :(*'})
+**Your team:** ${teamResult ? teamResult.team.map(userMention).join(', ') : '*No team :(*'}
 Your team has ${teamResult?.progress.tilesCompletedCount ?? 0} tiles completed.
 ${teamResult?.progress.bingoTableStr ?? ''}
 
-You ${isParticipating ? '**ARE**' : 'are **NOT**'} participating in the Bingo.`;
+You ${isParticipating ? '**ARE**' : 'are **NOT**'} participating in the Bingo. You have bought ${
+			user.bingo_tickets_bought
+		}x tickets.`;
 		return {
 			content: str,
-			components
+			components,
+			allowed_mentions: {
+				users: []
+			}
 		};
 	}
 };

@@ -37,19 +37,14 @@ type BingoTile = (
 
 export const bingoTiles: BingoTile[] = [
 	{
-		id: 2,
+		id: 1,
 		name: '1 Main Hand Drygore Weapon AND 1 Offhand Drygore Weapon',
 		customReq: cl => {
-			return (
-				resolveItems(['Drygore rapier', 'Drygore longsword', 'Drygore mace']).some(id => cl.has(id)) &&
-				resolveItems(['Offhand drygore rapier', 'Offhand drygore longsword', 'Offhand drygore mace']).some(id =>
-					cl.has(id)
-				)
-			);
+			return cl.has('Coal');
 		}
 	},
 	{
-		id: 17,
+		id: 2,
 		name: 'Any revs weapon OR amulet of avarice OR ancient crystal',
 		oneOf: resolveItems([
 			"Craw's bow (u)",
@@ -60,7 +55,172 @@ export const bingoTiles: BingoTile[] = [
 		])
 	},
 	{
+		id: 3,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 4,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 5,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 6,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 7,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 8,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 9,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 10,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 11,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 12,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 13,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 14,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 15,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 16,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 17,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 18,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 19,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 20,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 21,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 22,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 23,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 24,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
 		id: 25,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 26,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 27,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 28,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 29,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 30,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 31,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 32,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 33,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 34,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 35,
+		name: 'Enhanced crystal weapon seed!',
+		allOf: resolveItems(['Enhanced crystal weapon seed'])
+	},
+	{
+		id: 36,
 		name: 'Enhanced crystal weapon seed!',
 		allOf: resolveItems(['Enhanced crystal weapon seed'])
 	}
@@ -73,11 +233,11 @@ export function determineBingoProgress(_cl: ItemBank | Prisma.JsonValue | Bank) 
 
 	// prettier-ignore
 	const bingoTable = 
-		['', '', '', '', '',
-		 '', '', '', '', '',
-		 '', '', '', '', '',
-		 '', '', '', '', '',
-		 '', '', '', '', '']
+		['', '', '', '', '', '',
+		 '', '', '', '', '', '',
+		 '', '', '', '', '', '',
+		 '', '', '', '', '', '',
+		 '', '', '', '', '', ''];
 
 	for (let i = 0; i < bingoTiles.length; i++) {
 		const tile = bingoTiles[i];
@@ -101,7 +261,7 @@ export function determineBingoProgress(_cl: ItemBank | Prisma.JsonValue | Bank) 
 	return {
 		tilesCompletedCount,
 		bingoTable,
-		bingoTableStr: chunk(bingoTable, 5)
+		bingoTableStr: chunk(bingoTable, 6)
 			.map(row => `${row.join(' ')}`)
 			.join('\n'),
 		tilesCompleted
@@ -233,3 +393,12 @@ export const buyBingoTicketButton: APIButtonComponentWithCustomId = {
 	label: `Buy Bingo Ticket (${toKMB(BINGO_TICKET_PRICE)})`,
 	style: ButtonStyle.Secondary
 };
+
+export async function countTotalGPInPrizePool() {
+	const sum = await prisma.user.aggregate({
+		_sum: {
+			bingo_gp_contributed: true
+		}
+	});
+	return Number(sum._sum.bingo_gp_contributed);
+}
