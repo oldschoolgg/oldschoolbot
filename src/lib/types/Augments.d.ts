@@ -1,4 +1,3 @@
-import { activity_type_enum } from '@prisma/client';
 import { FSWatcher } from 'chokidar';
 import { MessageOptions, MessagePayload } from 'discord.js';
 import { KlasaMessage, KlasaUser, Settings, SettingsUpdateResult } from 'klasa';
@@ -49,10 +48,6 @@ declare module 'klasa' {
 		getItemImage(itemID: number, quantity: number): Promise<Image>;
 	}
 
-	interface KlasaMessage {
-		confirm(this: KlasaMessage, str: string): Promise<void>;
-	}
-
 	interface SettingsFolder {
 		get<K extends string, S>(key: CustomGet<K, S>): S;
 	}
@@ -87,9 +82,6 @@ declare module 'discord.js' {
 		readonly readable: boolean;
 	}
 
-	interface Client {
-		public query<T>(query: string): Promise<T>;
-	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	interface User {
 		addItemsToBank(options: {
@@ -158,13 +150,6 @@ declare module 'discord.js' {
 		setAttackStyle(newStyles: AttackStyles[]): Promise<void>;
 		getAttackStyles(): AttackStyles[];
 		owns(bank: ItemBank | Bank | string | number): boolean;
-		completion(): {
-			percent: number;
-			notOwned: number[];
-			owned: number[];
-			debugBank: Bank;
-		};
-
 		/**
 		 * Get item boosts the user has available for the given `KillableMonster`.
 		 */
@@ -187,7 +172,6 @@ declare module 'discord.js' {
 		minionName: string;
 		hasMinion: boolean;
 		isIronman: boolean;
-		maxTripLength(activity?: activity_type_enum): number;
 		rawSkills: Skills;
 		bitfield: readonly BitField[];
 		combatLevel: number;

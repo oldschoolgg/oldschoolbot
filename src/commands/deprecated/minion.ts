@@ -1,21 +1,17 @@
-import { MessageButton } from 'discord.js';
+import { MessageActionRow, MessageButton } from 'discord.js';
 import { chunk } from 'e';
 import { CommandStore, KlasaMessage } from 'klasa';
 
-import { ClueTiers } from '../lib/clues/clueTiers';
-import { Emoji, lastTripCache } from '../lib/constants';
-import { requiresMinion } from '../lib/minions/decorators';
-import { runCommand } from '../lib/settings/settings';
-import { BotCommand } from '../lib/structures/BotCommand';
-import { convertMahojiResponseToDJSResponse } from '../lib/util';
-import { makeDoClueButton, makeRepeatTripButton } from '../lib/util/globalInteractions';
-import { calculateBirdhouseDetails } from '../mahoji/lib/abstracted_commands/birdhousesCommand';
-import { isUsersDailyReady } from '../mahoji/lib/abstracted_commands/dailyCommand';
-import { canRunAutoContract } from '../mahoji/lib/abstracted_commands/farmingContractCommand';
-import { minionBuyCommand } from '../mahoji/lib/abstracted_commands/minionBuyCommand';
-import { mahojiUsersSettingsFetch } from '../mahoji/mahojiSettings';
+import { CLIENT_ID } from '../../config';
+import { ClueTiers } from '../../lib/clues/clueTiers';
+import { Emoji, lastTripCache } from '../../lib/constants';
+import { BotCommand } from '../../lib/structures/BotCommand';
+import { makeDoClueButton, makeRepeatTripButton } from '../../lib/util/globalInteractions';
+import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
+import { isUsersDailyReady } from '../../mahoji/lib/abstracted_commands/dailyCommand';
+import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 
-const subCommands = ['buy', 'pat', 'info', 'blowpipe', 'bp'];
+const subCommands = ['buy', 'pat', 'info'];
 
 export default class MinionCommand extends BotCommand {
 	public constructor(store: CommandStore, file: string[], directory: string) {
@@ -29,8 +25,17 @@ export default class MinionCommand extends BotCommand {
 		});
 	}
 
-	@requiresMinion
 	async run(msg: KlasaMessage) {
+		if (!msg.author.hasMinion) {
+			return {
+				content:
+					"You haven't bought a minion yet! Click the button below to buy a minion and start playing the bot.",
+				components: new MessageActionRow().addComponents([
+					new MessageButton().setCustomID('BUY_MINION').setLabel('Buy Minion').setEmoji('778418736180494347')
+				])
+			};
+		}
+
 		const birdhouseDetails = await calculateBirdhouseDetails(msg.author.id);
 
 		const extraButtons: MessageButton[] = [];
@@ -109,39 +114,18 @@ export default class MinionCommand extends BotCommand {
 			}
 		}
 
-		return msg.channel.send({ content: msg.author.minionStatus, components: chunk(extraButtons, 5) });
-	}
-
-	async bp(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/minion blowpipe`');
-	}
-
-	async blowpipe(msg: KlasaMessage) {
-		return msg.channel.send('This command has been moved to `/minion blowpipe`');
-	}
-
-	async info(msg: KlasaMessage) {
-		return runCommand({
-			commandName: 'rp',
-			args: ['c', msg.author],
-			bypassInhibitors: true,
-			channelID: msg.channel.id,
-			userID: msg.author.id,
-			guildID: msg.guild?.id,
-			user: msg.author,
-			member: msg.member
+		return msg.channel.send({
+			content: `${msg.author.minionStatus}
+*This command will be removed soon, switch to \`/minion\`,  \`/m\`, or just tag the bot to see the buttons (<@${CLIENT_ID}>)*`,
+			components: chunk(extraButtons, 5)
 		});
 	}
 
-	async pat(msg: KlasaMessage) {
-		return msg.channel.send('This command was moved to `/minion pat`');
+	async info(msg: KlasaMessage) {
+		return msg.channel.send('This command is now `/minion info`');
 	}
 
 	async buy(msg: KlasaMessage) {
-		return msg.channel.send(
-			convertMahojiResponseToDJSResponse(
-				await minionBuyCommand(await mahojiUsersSettingsFetch(msg.author.id), false)
-			)
-		);
+		return msg.channel.send('This command is now `/minion buy`');
 	}
 }

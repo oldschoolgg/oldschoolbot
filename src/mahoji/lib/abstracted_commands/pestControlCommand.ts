@@ -10,6 +10,7 @@ import { SkillsEnum } from '../../../lib/skilling/types';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, toTitleCase } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 import { handleMahojiConfirmation, mahojiUserSettingsUpdate } from '../../mahojiSettings';
 
@@ -154,7 +155,7 @@ export async function pestControlStartCommand(klasaUser: KlasaUser, channelID: b
 	}
 
 	let gameLength = Time.Minute * 2.8;
-	const maxLength = klasaUser.maxTripLength('PestControl');
+	const maxLength = calcMaxTripLength(klasaUser, 'PestControl');
 
 	let boosts = [];
 	const gear = klasaUser.getGear('melee');
