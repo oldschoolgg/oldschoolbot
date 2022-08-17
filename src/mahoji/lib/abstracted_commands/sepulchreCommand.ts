@@ -7,6 +7,7 @@ import { sepulchreBoosts, sepulchreFloors } from '../../../lib/minions/data/sepu
 import { SepulchreActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, itemNameFromID } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 	const agilityLevel = user.skillLevel(SkillsEnum.Agility);
@@ -45,7 +46,7 @@ export async function sepulchreCommand(user: KlasaUser, channelID: bigint) {
 			lapLength = reduceNumByPercent(lapLength, percent);
 		}
 	}
-	const maxLaps = Math.floor(user.maxTripLength('Sepulchre') / lapLength);
+	const maxLaps = Math.floor(calcMaxTripLength(user, 'Sepulchre') / lapLength);
 	const tripLength = maxLaps * lapLength;
 
 	await addSubTaskToActivityTask<SepulchreActivityTaskOptions>({

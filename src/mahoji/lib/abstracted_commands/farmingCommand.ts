@@ -15,6 +15,7 @@ import { Plant, SkillsEnum } from '../../../lib/skilling/types';
 import { FarmingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { farmingPatchNames, findPlant, isPatchName } from '../../../lib/util/farmingHelpers';
 import { hasItemsEquippedOrInBank } from '../../../lib/util/minionUtils';
 import { handleMahojiConfirmation } from '../../mahojiSettings';
@@ -83,7 +84,7 @@ export async function harvestCommand({
 		duration *= 0.9;
 	}
 
-	const maxTripLength = user.maxTripLength('Farming');
+	const maxTripLength = calcMaxTripLength(user, 'Farming');
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
@@ -190,7 +191,7 @@ export async function farmingPlantCommand({
 		return 'There are no available patches to you. Note: 60% Hosidius favour is required for farming guild.';
 	}
 
-	const maxTripLength = user.maxTripLength('Farming');
+	const maxTripLength = calcMaxTripLength(user, 'Farming');
 
 	// If no quantity provided, set it to the max PATCHES available.
 	const maxCanDo = Math.floor(maxTripLength / (timePerPatchTravel + timePerPatchPlant + timePerPatchHarvest));

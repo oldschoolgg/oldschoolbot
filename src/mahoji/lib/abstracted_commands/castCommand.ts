@@ -9,6 +9,7 @@ import { Castables } from '../../../lib/skilling/skills/magic/castables';
 import { CastingActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { determineRunes } from '../../../lib/util/determineRunes';
 
 export async function castCommand(channelID: bigint, user: KlasaUser, name: string, quantity: number | undefined) {
@@ -73,7 +74,7 @@ export async function castCommand(channelID: bigint, user: KlasaUser, name: stri
 		castTimeMilliSeconds += travelTime / 27; // One trip holds 27 casts, scale it down
 	}
 
-	const maxTripLength = user.maxTripLength('Casting');
+	const maxTripLength = calcMaxTripLength(user, 'Casting');
 
 	if (!quantity) {
 		quantity = Math.floor(maxTripLength / castTimeMilliSeconds);
