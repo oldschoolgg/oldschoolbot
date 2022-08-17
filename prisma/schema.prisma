@@ -122,8 +122,6 @@ model ClientStorage {
   disabled_commands            String[] @db.VarChar(32)
   gp_tax_balance               BigInt   @default(0)
 
-  bingo_prize_pool BigInt @default(0)
-
   @@map("clientStorage")
 }
 
