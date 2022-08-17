@@ -1,9 +1,11 @@
+import { User } from '@prisma/client';
 import { FormattedCustomEmoji } from '@sapphire/discord.js-utilities';
-import { randArrItem } from 'e';
+import { notEmpty, randArrItem } from 'e';
 import { ApplicationCommandOptionType, CommandRunOptions } from 'mahoji';
 import { MahojiUserOption } from 'mahoji/dist/lib/types';
 
-import { BitField, MAX_LEVEL, PerkTier } from '../../lib/constants';
+import { BLACKLISTED_USERS } from '../../lib/blacklists';
+import { badges, BitField, BitFieldData, MAX_LEVEL, PerkTier } from '../../lib/constants';
 import { degradeableItems } from '../../lib/degradeableItems';
 import { diaries } from '../../lib/diaries';
 import { effectiveMonsters } from '../../lib/minions/data/killableMonsters';
@@ -11,10 +13,12 @@ import { AttackStyles } from '../../lib/minions/functions';
 import { blowpipeCommand, blowpipeDarts } from '../../lib/minions/functions/blowpipeCommand';
 import { degradeableItemsCommand } from '../../lib/minions/functions/degradeableItemsCommand';
 import { allPossibleStyles, trainCommand } from '../../lib/minions/functions/trainCommand';
+import { roboChimpUserFetch } from '../../lib/roboChimp';
 import { Minigames } from '../../lib/settings/minigames';
+import { minionActivityCache } from '../../lib/settings/settings';
 import Skills from '../../lib/skilling/skills';
 import creatures from '../../lib/skilling/skills/hunter/creatures';
-import { convertLVLtoXP, isValidNickname } from '../../lib/util';
+import { convertLVLtoXP, getUsername, isValidNickname } from '../../lib/util';
 import getOSItem from '../../lib/util/getOSItem';
 import getUsersPerkTier from '../../lib/util/getUsersPerkTier';
 import { minionStatsEmbed } from '../../lib/util/minionStatsEmbed';
@@ -30,6 +34,7 @@ import { dailyCommand } from '../lib/abstracted_commands/dailyCommand';
 import { ironmanCommand } from '../lib/abstracted_commands/ironmanCommand';
 import { Lampables, lampCommand } from '../lib/abstracted_commands/lampCommand';
 import { minionBuyCommand } from '../lib/abstracted_commands/minionBuyCommand';
+import { minionStatusCommand } from '../lib/abstracted_commands/minionStatusCommand';
 import { dataPoints, statsCommand } from '../lib/abstracted_commands/statCommand';
 import { allUsableItems, useCommand } from '../lib/abstracted_commands/useCommand';
 import { ownedItemOption, skillOption } from '../lib/mahojiCommandOptions';
@@ -52,6 +57,55 @@ const patMessages = [
 
 const randomPatMessage = (minionName: string) => randArrItem(patMessages).replace('{name}', minionName);
 
+export async function getUserInfo(user: User) {
+	const klasaUser = await globalClient.fetchUser(user.id);
+	const roboChimpUser = await roboChimpUserFetch(BigInt(user.id));
+
+	const bitfields = `${(user.bitfield as BitField[])
+		.map(i => BitFieldData[i])
+		.filter(notEmpty)
+		.map(i => i.name)
+		.join(', ')}`;
+
+	const task = minionActivityCache.get(user.id);
+	const taskText = task ? `${task.type}` : 'None';
+
+	const userBadges = user.badges.map(i => badges[i]);
+
+	const premiumDate = Number(user.premium_balance_expiry_date);
+	const premiumTier = user.premium_balance_tier;
+
+	const result = {
+		perkTier: getUsersPerkTier(user),
+		isBlacklisted: BLACKLISTED_USERS.has(user.id),
+		badges: userBadges,
+		mainAccount: user.main_account !== null ? `${getUsername(user.main_account)}[${user.main_account}]` : 'None',
+		ironmanAlts: user.ironman_alts.map(id => `${getUsername(id)}[${id}]`),
+		premiumBalance: `${premiumDate ? new Date(premiumDate).toLocaleString() : ''} ${
+			premiumTier ? `Tier ${premiumTier}` : ''
+		}`,
+		isIronman: user.minion_ironman,
+		bitfields,
+		currentTask: taskText,
+		patreon: roboChimpUser.patreon_id ? 'Yes' : 'None',
+		github: roboChimpUser.github_id ? 'Yes' : 'None'
+	};
+	return {
+		...result,
+		everythingString: `${klasaUser.username}[${klasaUser.id}]
+**Perk Tier:** ${result.perkTier}
+**Blacklisted:** ${result.isBlacklisted}
+**Badges:** ${result.badges.join(' ')}
+**Main Account:** ${result.mainAccount}
+**Ironman Alts:** ${result.ironmanAlts}
+**Patron Balance:** ${result.premiumBalance}
+**Ironman:** ${result.isIronman}
+**Bitfields:** ${result.bitfields}
+**Patreon Connected:** ${result.patreon}
+**Github Connected:** ${result.github}`
+	};
+}
+
 export const minionCommand: OSBMahojiCommand = {
 	name: 'minion',
 	description: 'Manage and control your minion.',
@@ -68,6 +122,11 @@ export const minionCommand: OSBMahojiCommand = {
 					required: false
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'status',
+			description: 'View the status of your minion.'
 		},
 		{
 			type: ApplicationCommandOptionType.Subcommand,
@@ -355,6 +414,11 @@ export const minionCommand: OSBMahojiCommand = {
 					min_value: 1
 				}
 			]
+		},
+		{
+			type: ApplicationCommandOptionType.Subcommand,
+			name: 'info',
+			description: 'View general information about your account and minion.'
 		}
 	],
 	run: async ({
@@ -381,10 +445,15 @@ export const minionCommand: OSBMahojiCommand = {
 		train?: { style: AttackStyles };
 		pat?: {};
 		blowpipe?: { remove_darts?: boolean; uncharge?: boolean; add?: string; quantity?: number };
+		status?: {};
+		info?: {};
 	}>) => {
 		const user = await globalClient.fetchUser(userID.toString());
 		const mahojiUser = await mahojiUsersSettingsFetch(user.id);
 		const perkTier = getUsersPerkTier(user);
+
+		if (options.info) return (await getUserInfo(mahojiUser)).everythingString;
+		if (options.status) return minionStatusCommand(user.id);
 
 		if (options.stats) {
 			if (options.stats.stat) {

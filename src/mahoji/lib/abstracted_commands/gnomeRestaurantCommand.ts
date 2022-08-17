@@ -9,6 +9,7 @@ import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import { GnomeRestaurantActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, randomVariation, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import { getPOH } from './pohCommand';
 
 export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint) {
@@ -83,7 +84,7 @@ export async function gnomeRestaurantCommand(user: KlasaUser, channelID: bigint)
 		}
 	}
 
-	const quantity = Math.floor(user.maxTripLength('GnomeRestaurant') / deliveryLength);
+	const quantity = Math.floor(calcMaxTripLength(user, 'GnomeRestaurant') / deliveryLength);
 	const duration = randomVariation(deliveryLength * quantity, 5);
 
 	if (user.skillLevel(SkillsEnum.Magic) >= 66) {
