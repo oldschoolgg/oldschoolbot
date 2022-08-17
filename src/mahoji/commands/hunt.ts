@@ -13,6 +13,7 @@ import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { Peak } from '../../tasks/WildernessPeakInterval';
 import { OSBMahojiCommand } from '../lib/util';
@@ -149,7 +150,7 @@ export const huntCommand: OSBMahojiCommand = {
 			}
 		}
 
-		const maxTripLength = user.maxTripLength('Hunter');
+		const maxTripLength = calcMaxTripLength(user, 'Hunter');
 
 		let { quantity } = options;
 		if (!quantity) quantity = Math.floor(maxTripLength / ((catchTime * Time.Second) / traps));

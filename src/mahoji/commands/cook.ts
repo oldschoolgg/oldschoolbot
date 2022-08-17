@@ -7,6 +7,7 @@ import { SkillsEnum } from '../../lib/skilling/types';
 import { CookingActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, stringMatches } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { OSBMahojiCommand } from '../lib/util';
 
 export const cookCommand: OSBMahojiCommand = {
@@ -69,7 +70,7 @@ export const cookCommand: OSBMahojiCommand = {
 		const userBank = user.bank();
 		const inputCost = new Bank(cookable.inputCookables);
 
-		const maxTripLength = user.maxTripLength('Cooking');
+		const maxTripLength = calcMaxTripLength(user, 'Cooking');
 
 		let { quantity } = options;
 		if (!quantity) {
