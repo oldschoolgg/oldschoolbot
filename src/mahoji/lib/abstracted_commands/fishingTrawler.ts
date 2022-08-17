@@ -5,6 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { MinigameActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 
 export async function fishingTrawlerCommand(klasaUser: KlasaUser, channelID: bigint) {
 	if (klasaUser.skillLevel(SkillsEnum.Fishing) < 15) {
@@ -18,7 +19,7 @@ export async function fishingTrawlerCommand(klasaUser: KlasaUser, channelID: big
 	const boost = Math.min(100, calcWhatPercent(tripsDone, 50)) / 10;
 	tripLength = reduceNumByPercent(tripLength, boost);
 
-	const quantity = Math.floor(klasaUser.maxTripLength('FishingTrawler') / tripLength);
+	const quantity = Math.floor(calcMaxTripLength(klasaUser, 'FishingTrawler') / tripLength);
 	const duration = quantity * tripLength;
 
 	await addSubTaskToActivityTask<MinigameActivityTaskOptions>({

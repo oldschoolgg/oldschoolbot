@@ -5,6 +5,7 @@ import * as jwt from 'jwt-simple';
 
 import { CLIENT_SECRET, GITHUB_TOKEN } from '../../config';
 import { PerkTier } from '../constants';
+import { prisma } from '../settings/prisma';
 
 export function rateLimit(max: number, timeWindow: string) {
 	return {
@@ -108,7 +109,9 @@ export async function fetchSponsors() {
 }
 
 export async function getUserFromGithubID(githubID: string) {
-	const result = await globalClient.query<{ id: string }[]>(`SELECT id FROM users WHERE github_id = '${githubID}';`);
+	const result = await prisma.$queryRawUnsafe<{ id: string }[]>(
+		`SELECT id FROM users WHERE github_id = '${githubID}';`
+	);
 	if (result.length === 0) return null;
 	return globalClient.fetchUser(result[0].id);
 }
