@@ -386,8 +386,7 @@ model User {
 
   minion_bought_date DateTime? @db.Timestamp(6)
 
-  is_playing_bingo   Boolean @default(false)
-  bingo_contribution BigInt  @default(0)
+  bingo_tickets_bought BigInt @default(0)
 
   @@map("users")
 }

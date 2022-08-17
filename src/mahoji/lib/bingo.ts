@@ -1,7 +1,9 @@
 import { Prisma, User } from '@prisma/client';
 import { chunk, Time } from 'e';
+import { APIButtonComponentWithCustomId, ButtonStyle, ComponentType } from 'mahoji';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
+import { toKMB } from 'oldschooljs/dist/util';
 
 import { production } from '../../config';
 import { prisma } from '../../lib/settings/prisma';
@@ -13,6 +15,7 @@ const BINGO_NOTIFICATION_CHANNEL_ID = production ? '1008531589485043764' : '1008
 
 export const bingoStart = 1_660_586_078_890;
 export const bingoEnd = bingoStart + Time.Day * 7;
+export const BINGO_TICKET_PRICE = 150_000_000;
 
 export function bingoIsActive() {
 	return Date.now() >= bingoStart && Date.now() < bingoEnd;
@@ -115,7 +118,7 @@ export async function onFinishTile(
 		logError('No finished tile?', { user_id: user.id });
 		return;
 	}
-	if (!user.is_playing_bingo) return;
+	if (!user.bingo_tickets_bought) return;
 	const tile = bingoTiles.find(i => i.id === finishedTile)!;
 	sendToChannelID(BINGO_NOTIFICATION_CHANNEL_ID, {
 		content: `${user} just finished the '${tile.name}' tile! This is their ${after.tilesCompletedCount}/${bingoTiles.length} finished tile.`
@@ -125,7 +128,9 @@ export async function onFinishTile(
 async function getAllBingoPlayers() {
 	const users = await prisma.user.findMany({
 		where: {
-			is_playing_bingo: true
+			bingo_tickets_bought: {
+				gt: 0
+			}
 		},
 		select: {
 			id: true,
@@ -221,3 +226,10 @@ export async function bingoTeamLeaderboard() {
 
 	return result.sort((a, b) => b.progress.tilesCompletedCount - a.progress.tilesCompletedCount);
 }
+
+export const buyBingoTicketButton: APIButtonComponentWithCustomId = {
+	type: ComponentType.Button,
+	custom_id: 'BUY_BINGO_TICKET',
+	label: `Buy Bingo Ticket (${toKMB(BINGO_TICKET_PRICE)})`,
+	style: ButtonStyle.Secondary
+};
