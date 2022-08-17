@@ -5,7 +5,7 @@ import { SkillsEnum } from 'oldschooljs/dist/constants';
 import { ClientSettings } from '../../../lib/settings/types/ClientSettings';
 import { UserSettings } from '../../../lib/settings/types/UserSettings';
 import Runecraft from '../../../lib/skilling/skills/runecraft';
-import { TiaraRunecraftOptions } from '../../../lib/types/minions';
+import { RunecraftActivityTaskOptions } from '../../../lib/types/minions';
 import { formatDuration, stringMatches, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
 import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
@@ -86,13 +86,15 @@ export async function tiaraRunecraftCommand({
 	await user.removeItemsFromBank(totalCost);
 	updateBankSetting(globalClient, ClientSettings.EconomyStats.RunecraftCost, totalCost);
 
-	await addSubTaskToActivityTask<TiaraRunecraftOptions>({
+	await addSubTaskToActivityTask<RunecraftActivityTaskOptions>({
+		runeID: tiaraObj.id,
 		userID: user.id,
-		tiaraID: tiaraObj.id,
 		channelID: channelID.toString(),
-		quantity,
+		essenceQuantity: quantity,
+		useStaminas: false,
 		duration,
-		type: 'TiaraRunecraft'
+		imbueCasts: 0,
+		type: 'Runecraft'
 	});
 
 	let response = `${user.minionName} is now turning ${quantity}x Tiaras into ${

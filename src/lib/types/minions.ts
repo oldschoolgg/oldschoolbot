@@ -26,11 +26,6 @@ export interface RunecraftActivityTaskOptions extends ActivityTaskOptions {
 	useStaminas?: boolean;
 }
 
-export interface TiaraRunecraftOptions extends ActivityTaskOptions {
-	tiaraID: number;
-	quantity: number;
-}
-
 export interface DarkAltarOptions extends ActivityTaskOptions {
 	quantity: number;
 	hasElite: boolean;

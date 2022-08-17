@@ -640,7 +640,6 @@ enum activity_type_enum {
   BirthdayEvent
   TokkulShop
   Nex
-  TiaraRunecraft
   TroubleBrewing
   PuroPuro
   Easter
