@@ -33,6 +33,7 @@ export interface Createable {
 	requiredSlayerUnlocks?: SlayerTaskUnlocksEnum[];
 	requiredFavour?: Favours;
 	maxCanOwn?: number;
+	onCreate?:
 }
 
 const goldenProspectorCreatables: Createable[] = [
