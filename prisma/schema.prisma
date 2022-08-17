@@ -573,9 +573,6 @@ model BingoTeam {
   first_user  String @unique @db.VarChar(19)
   second_user String @unique @db.VarChar(19)
   third_user  String @unique @db.VarChar(19)
-
-  // completed_tiles
-  // announced_tiles
 }
 
 enum command_usage_status {

@@ -218,11 +218,6 @@ export const bingoCommand: OSBMahojiCommand = {
 			type: ApplicationCommandOptionType.Subcommand,
 			name: 'info',
 			description: 'View bingo info.'
-		},
-		{
-			type: ApplicationCommandOptionType.Subcommand,
-			name: 'info',
-			description: 'View bingo info.'
 		}
 	],
 	run: async ({
