@@ -21,6 +21,7 @@ export async function tiaraRunecraftCommand({
 	quantity?: number;
 	name: string;
 }) {
+	const TIARAS_PER_INVENTORY = 14;
 	const tiaraObj = Runecraft.Tiara.find(
 		_tiara => stringMatches(_tiara.name, name) || stringMatches(_tiara.name.split(' ')[0], name)
 	);
@@ -35,13 +36,10 @@ export async function tiaraRunecraftCommand({
 
 	const bank = user.bank();
 	const numTiaraOwned = bank.amount('Tiara');
-	let removeTalisman = new Bank();
-
-	if (!quantity) {
-		quantity = 1;
-	}
+	const numTalismansOwned = bank.fits(tiaraObj.inputTalisman);
 
 	let { tripLength } = tiaraObj;
+
 	const boosts = [];
 	if (user.hasGracefulEquipped()) {
 		tripLength -= tripLength * 0.1;
@@ -56,32 +54,35 @@ export async function tiaraRunecraftCommand({
 		boosts.push('5% for 60+ Agility');
 	}
 
-	if (numTiaraOwned === 0 || numTiaraOwned < quantity) {
-		return `You don't have enough tiaras to craft ${quantity}x ${tiaraObj.name}. You can acquire some through crafting at a furnance, or purchasing from other players.`;
-	}
+	const makeTiaraTime = 0.6;
+	const maxCanDoOwned = numTiaraOwned < numTalismansOwned ? numTiaraOwned : numTalismansOwned;
 
 	const maxTripLength = calcMaxTripLength(user, 'Runecraft');
-	const numberOfInventories = Math.max(Math.ceil(quantity / 14), 1);
-	const duration = numberOfInventories * tripLength;
-	const maxCanDo = Math.floor(maxTripLength / tripLength) * 14;
+	const maxCanDo = Math.floor((maxTripLength / tripLength) * (TIARAS_PER_INVENTORY * makeTiaraTime));
+	if (!quantity) {
+		quantity = maxCanDoOwned < maxCanDo ? maxCanDoOwned : maxCanDo;
+	}
+
+	if (numTiaraOwned === 0 || numTiaraOwned < quantity) {
+		return `You don't have enough tiaras to craft ${quantity}x ${tiaraObj.name}. You can acquire some through crafting at a furnance, or purchasing from other players.`;
+	} else if (numTalismansOwned === 0 || numTalismansOwned < quantity) {
+		return `You don't have enough talismans to craft ${quantity}x ${tiaraObj.name}. You can acquire some through drops, or purchasing from other players.`;
+	}
+
+	const numberOfInventories = Math.ceil(quantity / TIARAS_PER_INVENTORY);
+	const duration = numberOfInventories * (tripLength + (makeTiaraTime * quantity));
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
 			maxTripLength
-		)}, try a lower quantity. The highest amount of ${tiaraObj.name} you can craft is ${Math.floor(maxCanDo)}.`;
+		)}, try a lower quantity. The highest amount of ${tiaraObj.name} you can craft is ${Math.floor(
+			maxCanDoOwned < maxCanDo ? maxCanDoOwned : maxCanDo
+		)}.`;
 	}
 
 	const totalCost = new Bank();
-
-	removeTalisman.add(tiaraObj.inputTalisman.clone().multiply(quantity));
-	if (!bank.has(removeTalisman.bank)) {
-		return `You don't have enough talismans to craft ${quantity} ${tiaraObj.name}.`;
-	}
-
-	totalCost.add(removeTalisman);
-
+	totalCost.add(tiaraObj.inputTalisman.clone().multiply(quantity));
 	totalCost.add('Tiara', quantity);
-	if (!user.owns(totalCost)) return `You don't own: ${totalCost}.`;
 
 	await user.removeItemsFromBank(totalCost);
 	updateBankSetting(globalClient, ClientSettings.EconomyStats.RunecraftCost, totalCost);
