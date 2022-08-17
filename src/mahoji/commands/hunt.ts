@@ -15,7 +15,7 @@ import { HunterTechniqueEnum, SkillsEnum } from '../../lib/skilling/types';
 import { HunterActivityTaskOptions } from '../../lib/types/minions';
 import { formatDuration, itemID, updateBankSetting } from '../../lib/util';
 import addSubTaskToActivityTask from '../../lib/util/addSubTaskToActivityTask';
-import brewRestoreSupplyCalc from '../../lib/util/brewRestoreSupplyCalc';
+import { brewRestoreSupplyCalc } from '../../lib/util/brewRestoreSupplyCalc';
 import { calcMaxTripLength } from '../../lib/util/calcMaxTripLength';
 import { stringMatches } from '../../lib/util/cleanString';
 import { userHasItemsEquippedAnywhere } from '../../lib/util/minionUtils';
