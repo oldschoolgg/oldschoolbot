@@ -45,5 +45,8 @@ export const clientOptions: KlasaClientOptions = {
 	},
 	partials: ['USER', 'CHANNEL'],
 	production,
-	...customClientOptions
+	...customClientOptions,
+	allowedMentions: {
+		parse: ['roles', 'users']
+	}
 };
