@@ -241,7 +241,8 @@ const source: [string, (string | number)[]][] = [
 			'Mystic steam staff',
 			'Mud battlestaff',
 			'Mystic mud staff',
-			'Virtus wand'
+			'Virtus wand',
+			'Void staff'
 		]
 	],
 	['Attack cape', ['Max cape', 'Attack cape(t)']],
@@ -334,7 +335,9 @@ const source: [string, (string | number)[]][] = [
 	],
 	['Magic shortbow', ['Magic shortbow (i)']],
 	['Boots of stone', ['Boots of brimstone', 'Granite boots', "Rada's Blessing 4"]],
-	['Kodai wand', ['Virtus wand']],
+	['Kodai wand', ['Virtus wand', 'Void staff']],
+	['Virtus wand', ['Void staff']],
+	['Virtus book', ['Abyssal tome']],
 	['Prospector jacket', ['Golden prospector jacket']],
 	['Prospector legs', ['Golden prospector legs']],
 	['Prospector boots', ['Golden prospector boots']],

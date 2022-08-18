@@ -53,18 +53,18 @@ export const degradeableItems: DegradeableItem[] = [
 	{
 		item: getOSItem('Void staff'),
 		settingsKey: 'void_staff_charges',
-		itemsToRefundOnBreak: new Bank().add('Void staff (u)'),
+		itemsToRefundOnBreak: new Bank().add('Void staff'),
 		setup: 'mage',
 		aliases: ['void staff'],
 		chargeInput: {
 			cost: new Bank().add('Elder rune', 5),
 			charges: 1
 		},
-		charges: (totalHP: number, duration: number, user: KlasaUser) => {
+		charges: (_totalHP: number, duration: number, user: KlasaUser) => {
 			const mageGear = user.getGear('mage');
 			const minutesDuration = Math.ceil(duration / Time.Minute);
 			if (user.hasItemEquippedAnywhere('Magic master cape')) {
-				return Math.ceil(minutesDuration + (totalHP * 0) / 3);
+				return Math.ceil(minutesDuration / 3);
 			} else if (mageGear.hasEquipped('Vasa cloak')) {
 				return Math.ceil(minutesDuration / 2);
 			}

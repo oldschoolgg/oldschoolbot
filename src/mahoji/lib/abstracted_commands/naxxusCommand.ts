@@ -14,6 +14,7 @@ import { Gear } from '../../../lib/structures/Gear';
 import { ActivityTaskOptionsWithQuantity } from '../../../lib/types/minions';
 import { formatDuration, isWeekend, updateBankSetting } from '../../../lib/util';
 import addSubTaskToActivityTask from '../../../lib/util/addSubTaskToActivityTask';
+import { calcMaxTripLength } from '../../../lib/util/calcMaxTripLength';
 import getOSItem from '../../../lib/util/getOSItem';
 
 const bisMageGear = new Gear({
@@ -179,7 +180,7 @@ export async function naxxusCommand(user: KlasaUser, channelID: bigint, quantity
 		}
 	}
 
-	const maxTripLength = user.maxTripLength('Naxxus');
+	const maxTripLength = calcMaxTripLength(user, 'Naxxus');
 	// If no quantity provided, set it to the max.
 	if (quantity === undefined) {
 		quantity = Math.max(1, Math.floor(maxTripLength / effectiveTime));

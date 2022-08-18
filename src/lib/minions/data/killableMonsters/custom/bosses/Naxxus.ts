@@ -55,9 +55,13 @@ const herbs = new LootTable()
 	.add('Athelas', [15, 25])
 	.add('Korulsi', [15, 25]);
 
-const custom = new LootTable().add('Battlestaff', [50, 100]).add('Dark animica', [5, 10]);
+const custom = new LootTable().add('Battlestaff', [250, 500]).add('Dark animica', [5, 10]);
 
-const orbs = new LootTable().add('Air orb', 100).add('Earth orb', 100).add('Fire orb', 100).add('Water orb', 100);
+const orbs = new LootTable()
+	.add('Air orb', [50, 100])
+	.add('Earth orb', [50, 100])
+	.add('Fire orb', [50, 100])
+	.add('Water orb', [50, 100]);
 
 const naxxusLoot = new LootTable().add(runes, 3).add(talismans, 3).add(herbs, 3).add(orbs, 3).add(custom, 3);
 

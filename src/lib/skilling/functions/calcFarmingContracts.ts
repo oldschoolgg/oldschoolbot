@@ -12,7 +12,10 @@ import { SkillsEnum } from '../types';
 export function openSeedPack(seedTier: number): Bank {
 	const loot = new Bank();
 
-	const tempTable = new LootTable().tertiary(3, 'Athelas seed').tertiary(3, new LootTable().every('Korulsi seed'));
+	const tempTable = new LootTable()
+		.tertiary(3, 'Athelas seed')
+		.tertiary(4, 'Korulsi seed')
+		.tertiary(3, 'Crystal acorn', [1, 3]);
 
 	if (seedTier > 2) {
 		tempTable
