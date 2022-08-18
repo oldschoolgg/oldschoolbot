@@ -590,7 +590,7 @@ const herbPlants: Plant[] = [
 		level: 110,
 		plantXp: 0,
 		checkXp: 12_443,
-		harvestXp: 16_518,
+		harvestXp: 5996,
 		name: 'Korulsi',
 		aliases: ['korulsi seed'],
 		inputItems: new Bank({ 'Korulsi seed': 1 }),

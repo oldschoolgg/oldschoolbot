@@ -536,7 +536,7 @@ const Potions: Mixable[] = [
 		aliases: ['enhanced saradomin brew', 'enhanced brew'],
 		id: itemID('Enhanced saradomin brew'),
 		level: 110,
-		xp: 200,
+		xp: 160,
 		inputItems: resolveNameBank({
 			Korulsi: 1,
 			'Crystal dust': 10,
@@ -550,7 +550,7 @@ const Potions: Mixable[] = [
 		aliases: ['enhanced super restore', 'enhanced restore'],
 		id: itemID('Enhanced super restore'),
 		level: 110,
-		xp: 200,
+		xp: 160,
 		inputItems: resolveNameBank({
 			Korulsi: 1,
 			'Crystal dust': 10,
@@ -564,7 +564,7 @@ const Potions: Mixable[] = [
 		aliases: ['enhanced stamina potion', 'enhanced stam', 'enhanced stamina'],
 		id: itemID('Enhanced stamina potion'),
 		level: 110,
-		xp: 200,
+		xp: 160,
 		inputItems: resolveNameBank({
 			Korulsi: 1,
 			'Crystal dust': 10,
