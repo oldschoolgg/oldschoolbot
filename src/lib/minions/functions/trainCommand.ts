@@ -1,7 +1,7 @@
 import { KlasaUser } from 'klasa';
 
-import { mahojiUserSettingsUpdate } from '../../../mahoji/mahojiSettings';
-import { UserSettings } from '../../settings/types/UserSettings';
+import { mahojiUserSettingsUpdate, mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
+
 import castables from '../../skilling/skills/combat/magic/castables';
 import { stringMatches } from '../../util';
 import { attackStyles_enum, combats_enum } from '.prisma/client';
@@ -15,8 +15,9 @@ export async function trainCommand(
 	if (user.minionIsBusy) {
 		return "You can't change your combat style in the middle of a trip.";
 	}
-	// Fetch another way??
-	const oldCombatSkill = user.settings.get(UserSettings.Minion.CombatSkill) as combats_enum;
+
+	const mahojiUser = await mahojiUsersSettingsFetch(user.id,{minion_combatSkill: true});
+	const oldCombatSkill = mahojiUser.minion_combatSkill;
 	if (!_combatSkill || typeof _combatSkill !== 'string') {
 		return `Your current combat skill is ${oldCombatSkill}. Available combat skill options are: Melee, Ranged, Magic, Auto, NoCombat.`;
 	}
@@ -46,15 +47,15 @@ export async function trainCommand(
 		attackType = parsedStyleAndType[1];
 	}
 
-	if (_combatSkill === combats_enum.melee) {
+	if (_combatSkill === combats_enum.melee && attackType) {
+		//check so the actual/fist settings match viable options
 		await mahojiUserSettingsUpdate(user.id, {
 			minion_meleeAttackStyle: attackStyle as attackStyles_enum
 		});
-		if (attackType) {
-			await mahojiUserSettingsUpdate(user.id, {
-				minion_meleeAttackType: attackType
-			});
-		}
+
+		await mahojiUserSettingsUpdate(user.id, {
+			minion_meleeAttackType: attackType
+		});
 
 		return `${
 			user.minionName
@@ -64,6 +65,7 @@ export async function trainCommand(
 	}
 
 	if (_combatSkill === combats_enum.ranged) {
+		//check so the actual settings match viable options
 		await mahojiUserSettingsUpdate(user.id, {
 			minion_rangedAttackStyle: attackStyle as attackStyles_enum
 		});
@@ -72,6 +74,7 @@ export async function trainCommand(
 	}
 
 	if (_combatSkill === combats_enum.magic) {
+		//check so the actual settings match viable options
 		await mahojiUserSettingsUpdate(user.id, {
 			minion_magicAttackStyle: attackStyle as attackStyles_enum
 		});

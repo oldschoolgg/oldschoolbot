@@ -3,6 +3,7 @@ import { randInt, Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
 import { hasEliteMagicVoidEquipped, hasMagicVoidEquipped } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
@@ -40,8 +41,9 @@ export default async function mageCalculator(
 	quantity: number | undefined
 ): Promise<[number, number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Magic as source.
-	const attackStyle = user.settings.get(UserSettings.Minion.MagicAttackStyle);
-	const combatSpell = user.settings.get(UserSettings.Minion.CombatSpell);
+	const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+	const attackStyle = mahojiUser.minion_magicAttackStyle;
+	const combatSpell = mahojiUser.minion_combatSpell;
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
@@ -213,12 +215,14 @@ export default async function mageCalculator(
 	const monsterHP = currentMonsterData.hitpoints;
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
 	// If no quantity provided, set it to the max.
-	if (!quantity || calcMaxTripLength(user, 'MonsterKilling') * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)) {
-		quantity = Math.min(Math.floor(calcMaxTripLength(user, 'MonsterKilling') / (monsterKillSpeed * 1.3)), 5000);
-		if (quantity < 1) quantity = 1;
+	// If no quantity provided, set it to the max.
+	if (!quantity || quantity < 1) {
+		//Arbitrarily choosen 
+		quantity = 10_000;
 	}
 	let hits = 0;
-
+	let calcQuantity = 0;
+	let combatDuration = 0;
 	for (let i = 0; i < quantity; i++) {
 		let hitpointsLeft = monsterHP;
 		while (hitpointsLeft > 0 && hits < 3000) {
@@ -226,23 +230,21 @@ export default async function mageCalculator(
 			if (Math.random() <= hitChance) {
 				hitdamage = randInt(0, maxHit);
 			}
+			combatDuration += timeToCastSingleSpell * 0.6 * Time.Second;
 			hitpointsLeft -= hitdamage;
 			hits++;
 		}
+		calcQuantity++;
+		combatDuration += monster.mechanicsTime ? monster.mechanicsTime : 0;
+		combatDuration += monster.respawnTime ? monster.respawnTime : 0;
+		combatDuration +=
+			monster.bankTripTime && monster.killsPerBankTrip
+				? (monster.bankTripTime / monster.killsPerBankTrip) : 0;
+		if (combatDuration > calcMaxTripLength(user, 'MonsterKilling')) break;
 	}
-	let combatDuration = hits * timeToCastSingleSpell * Time.Second;
-
-	combatDuration += monster.mechanicsTime ? monster.mechanicsTime * quantity : 0;
-
-	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
-
-	combatDuration +=
-		monster.bankTripTime && monster.killsPerBankTrip
-			? (monster.bankTripTime / monster.killsPerBankTrip) * quantity
-			: 0;
 
 	// Calculates prayer drain and removes enough prayer potion doses.
-	const totalDosesUsed = await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
+	const totalDosesUsed = await calculatePrayerDrain(user, monster, calcQuantity, gearStats.prayer, monsterKillSpeed);
 
-	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, totalDosesUsed, [magePotUsed]];
+	return [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, totalDosesUsed, [magePotUsed]];
 }

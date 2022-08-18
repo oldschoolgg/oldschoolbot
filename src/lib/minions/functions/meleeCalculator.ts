@@ -4,12 +4,12 @@ import { KlasaUser } from 'klasa';
 import { Monsters } from 'oldschooljs';
 import { MonsterAttribute } from 'oldschooljs/dist/meta/monsterData';
 import { itemID } from 'oldschooljs/dist/util';
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
 import { hasMeleeVoidEquipped } from '../../gear';
 import { UserSettings } from '../../settings/types/UserSettings';
 import { calcMaxTripLength } from '../../util/calcMaxTripLength';
 import { KillableMonster } from '../types';
-import { GearStat } from './../../gear/types';
 import { SkillsEnum } from './../../skilling/types';
 import calculatePrayerDrain from './calculatePrayerDrain';
 import potionBoostCalculator from './potionBoostCalculator';
@@ -100,7 +100,8 @@ export default async function meleeCalculator(
 	quantity: number | undefined
 ): Promise<[number, number, number, number, number, number, string[]]> {
 	// https://oldschool.runescape.wiki/w/Damage_per_second/Melee as source.
-	const attackStyle = user.settings.get(UserSettings.Minion.MeleeAttackStyle);
+	const mahojiUser = await mahojiUsersSettingsFetch(user.id);
+	const attackStyle = mahojiUser.minion_meleeAttackStyle;
 	const currentMonsterData = Monsters.find(mon => mon.id === monster.id)?.data;
 	if (!currentMonsterData) {
 		throw "Monster dosen't exist.";
@@ -127,7 +128,7 @@ export default async function meleeCalculator(
 		}
 	}
 	let effectiveStrLvl = Math.floor(user.skillLevel(SkillsEnum.Strength) + strengthPotionBoost) * prayerStrBonus + 8;
-	const attackType = user.settings.get(UserSettings.Minion.MeleeAttackType);
+	const attackType = mahojiUser.minion_meleeAttackType;
 
 	if (attackStyle === attackStyles_enum.aggressive) {
 		effectiveStrLvl += 3;
@@ -205,10 +206,10 @@ export default async function meleeCalculator(
 	}
 	let effectiveAttackLvl = Math.floor(user.skillLevel(SkillsEnum.Attack) + attackPotionBoost) * prayerAttackBonus + 8;
 
-	if (attackStyle === 'accurate') {
+	if (attackStyle === attackStyles_enum.accurate) {
 		effectiveAttackLvl += 3;
 	}
-	if (attackStyle === 'controlled') {
+	if (attackStyle === attackStyles_enum.controlled) {
 		effectiveAttackLvl += 1;
 	}
 
@@ -274,13 +275,13 @@ export default async function meleeCalculator(
 	let defenceRoll = currentMonsterData.defenceLevel + 9;
 
 	switch (attackType) {
-		case GearStat.AttackStab:
+		case 'stab':
 			defenceRoll *= currentMonsterData.defenceStab + 64;
 			break;
-		case GearStat.AttackSlash:
+		case 'slash':
 			defenceRoll *= currentMonsterData.defenceSlash + 64;
 			break;
-		case GearStat.AttackCrush:
+		case 'crush':
 			defenceRoll *= currentMonsterData.defenceCrush + 64;
 			break;
 	}
@@ -305,12 +306,13 @@ export default async function meleeCalculator(
 
 	const monsterKillSpeed = (monsterHP / DPS) * Time.Second;
 	// If no quantity provided, set it to the max.
-	if (!quantity || calcMaxTripLength(user, 'MonsterKilling') * 1.1 < Math.abs(monsterKillSpeed * 1.3 * quantity)) {
-		quantity = Math.min(Math.floor(calcMaxTripLength(user, 'MonsterKilling') / (monsterKillSpeed * 1.3)), 5000);
-		if (quantity < 1) quantity = 1;
+	if (!quantity || quantity < 1) {
+		//Arbitrarily choosen 
+		quantity = 10_000;
 	}
 	let hits = 0;
-
+	let calcQuantity = 0;
+	let combatDuration = 0;
 	for (let i = 0; i < quantity; i++) {
 		let hitpointsLeft = monsterHP;
 		while (hitpointsLeft > 0 && hits < 3000) {
@@ -318,24 +320,21 @@ export default async function meleeCalculator(
 			if (Math.random() <= hitChance) {
 				hitdamage = randInt(0, maxHit);
 			}
+			combatDuration += meleeWeapon.weapon!.attack_speed * 0.6 * Time.Second;
 			hitpointsLeft -= hitdamage;
 			hits++;
 		}
+		calcQuantity++;
+		combatDuration += monster.mechanicsTime ? monster.mechanicsTime : 0;
+		combatDuration += monster.respawnTime ? monster.respawnTime : 0;
+		combatDuration +=
+			monster.bankTripTime && monster.killsPerBankTrip
+				? (monster.bankTripTime / monster.killsPerBankTrip) : 0;
+		if (combatDuration > calcMaxTripLength(user, 'MonsterKilling')) break;
 	}
 
-	let combatDuration = hits * meleeWeapon.weapon!.attack_speed * 0.6 * Time.Second;
-
-	combatDuration += monster.mechanicsTime ? monster.mechanicsTime * quantity : 0;
-
-	combatDuration += monster.respawnTime ? monster.respawnTime * quantity : 0;
-
-	combatDuration +=
-		monster.bankTripTime && monster.killsPerBankTrip
-			? (monster.bankTripTime / monster.killsPerBankTrip) * quantity
-			: 0;
-
 	// Calculates prayer drain and removes enough prayer potion doses.
-	const totalDosesUsed = await calculatePrayerDrain(user, monster, quantity, gearStats.prayer, monsterKillSpeed);
+	const totalDosesUsed = await calculatePrayerDrain(user, monster, calcQuantity, gearStats.prayer, monsterKillSpeed);
 
-	return [combatDuration, hits, DPS, monsterKillSpeed, quantity, totalDosesUsed, [strPotUsed, attPotUsed]];
+	return [combatDuration, hits, DPS, monsterKillSpeed, calcQuantity, totalDosesUsed, [strPotUsed, attPotUsed]];
 }

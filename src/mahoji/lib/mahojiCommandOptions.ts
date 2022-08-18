@@ -1,4 +1,4 @@
-import { combats_enum } from '@prisma/client';
+import { attackStyles_enum, combats_enum } from '@prisma/client';
 import { uniqueArr } from 'e';
 import { APIApplicationCommandOptionChoice, ApplicationCommandOptionType } from 'mahoji';
 import { CommandOption } from 'mahoji/dist/lib/types';
@@ -139,7 +139,7 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 	required: false,
 	autocomplete: async (value, user) => {
 		const mUser = await mahojiUsersSettingsFetch(user.id);
-		const combatSkill: combats_enum = mUser.minion_combatSkill as combats_enum;
+		const combatSkill = mUser.minion_combatSkill;
 		let results: APIApplicationCommandOptionChoice[] = [];
 		if (!combatSkill || combatSkill === combats_enum.auto || combatSkill === combats_enum.nocombat) return results;
 		if (combatSkill === combats_enum.melee) {
@@ -169,12 +169,12 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 				return results;
 			}
 			for (let stance of rangeWeapon.weapon.stances) {
-				if (stance === null) {
+				if (stance === null || !Object.keys(attackStyles_enum).includes(stance.combat_style)) {
 					continue;
 				}
 				results.push({
-					name: `${stance.attack_style!}`,
-					value: stance.attack_style!
+					name: `${stance.combat_style!}`,
+					value: `${stance.combat_style!}`
 				});
 			}
 			return results;
@@ -194,12 +194,12 @@ export const equippedWeaponCombatStyleOption = (): CommandOption => ({
 				mageWeapon.name.toLowerCase() === 'trident of the swamp (e)'
 			) {
 				for (let stance of mageWeapon.weapon.stances) {
-					if (stance === null) {
+					if (stance === null || !Object.keys(attackStyles_enum).includes(stance.combat_style)) {
 						continue;
 					}
 					results.push({
-						name: `${stance.attack_style!}`,
-						value: stance.attack_style!
+						name: `${stance.combat_style!}`,
+						value: `${stance.combat_style!}`
 					});
 				}
 				return results;

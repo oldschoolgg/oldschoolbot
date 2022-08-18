@@ -1,6 +1,7 @@
 import { combats_enum } from '@prisma/client';
 import { randArrItem } from 'e';
 import { KlasaUser } from 'klasa';
+import { mahojiUsersSettingsFetch } from '../../../mahoji/mahojiSettings';
 
 import { UserSettings } from '../../settings/types/UserSettings';
 import Ancient from '../../skilling/skills/combat/magic/castables/Ancient';
@@ -21,7 +22,8 @@ export default async function combatCalculator(
 	user: KlasaUser,
 	quantity: number | undefined
 ): Promise<[number, number, number, number, number, number, string[]]> {
-	let combatSkill = user.settings.get(UserSettings.Minion.CombatSkill);
+	const mahojiUser = await mahojiUsersSettingsFetch(user.id,{minion_combatSkill: true});
+	let combatSkill = mahojiUser.minion_combatSkill;
 
 	if (combatSkill === combats_enum.nocombat) throw "Nocombat shouldn't get here, Error in kill command.";
 
