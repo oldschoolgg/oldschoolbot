@@ -1,3 +1,4 @@
+import { Time } from 'e';
 import { KlasaUser } from 'klasa';
 import { Bank } from 'oldschooljs';
 import { SkillsEnum } from 'oldschooljs/dist/constants';
@@ -54,11 +55,11 @@ export async function tiaraRunecraftCommand({
 		boosts.push('5% for 60+ Agility');
 	}
 
-	const makeTiaraTime = 0.6;
+	const makeTiaraTime = (Time.Second * 0.6);
+	const adjTripTime = (tripLength + (TIARAS_PER_INVENTORY * makeTiaraTime));
 	const maxCanDoOwned = numTiaraOwned < numTalismansOwned ? numTiaraOwned : numTalismansOwned;
-
 	const maxTripLength = calcMaxTripLength(user, 'Runecraft');
-	const maxCanDo = Math.floor((maxTripLength / tripLength) * (TIARAS_PER_INVENTORY * makeTiaraTime));
+	const maxCanDo = Math.floor((maxTripLength / adjTripTime));
 	if (!quantity) {
 		quantity = maxCanDoOwned < maxCanDo ? maxCanDoOwned : maxCanDo;
 	}
@@ -69,8 +70,12 @@ export async function tiaraRunecraftCommand({
 		return `You don't have enough talismans to craft ${quantity}x ${tiaraObj.name}. You can acquire some through drops, or purchasing from other players.`;
 	}
 
+	
 	const numberOfInventories = Math.ceil(quantity / TIARAS_PER_INVENTORY);
-	const duration = numberOfInventories * (tripLength + (makeTiaraTime * quantity));
+	const quantityInLastInv = quantity % 14;
+	const duration = (numberOfInventories * adjTripTime) + (tripLength + (makeTiaraTime * quantityInLastInv));
+
+	console.log(duration);
 
 	if (duration > maxTripLength) {
 		return `${user.minionName} can't go on trips longer than ${formatDuration(
